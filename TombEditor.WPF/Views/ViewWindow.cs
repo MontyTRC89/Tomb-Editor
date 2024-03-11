@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Forms;
-using TombEditor.WPF.ViewModels;
 
 namespace TombEditor.WPF.Views;
 
@@ -13,7 +13,7 @@ public abstract class WindowEx : Window
 		=> _win32Parent.AssignHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
 }
 
-public abstract class ViewWindow<T> : WindowEx where T : ViewModelBase
+public abstract class ViewWindow<T> : WindowEx where T : class, INotifyPropertyChanged
 {
 	public T? ViewModel
 	{

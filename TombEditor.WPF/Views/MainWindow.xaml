@@ -20,6 +20,13 @@
 	WindowState="Maximized"
 	mc:Ignorable="d">
 
+	<Window.InputBindings>
+		<local:DynamicKeyBinding Command="{Binding NewLevelCommand}" InputGestureText="{local:KeyBindings NewLevel}" />
+		<local:DynamicKeyBinding Command="{Binding OpenLevelCommand}" InputGestureText="{local:KeyBindings OpenLevel}" />
+		<local:DynamicKeyBinding Command="{Binding SaveLevelCommand}" InputGestureText="{local:KeyBindings SaveLevel}" />
+		<local:DynamicKeyBinding Command="{Binding SaveLevelAsCommand}" InputGestureText="{local:KeyBindings SaveLevelAs}" />
+	</Window.InputBindings>
+
 	<Grid x:Name="layoutRoot">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -28,75 +35,63 @@
 		</Grid.RowDefinitions>
 		<Menu x:Name="menuStrip" VerticalAlignment="Stretch">
 			<MenuItem Header="File">
-				<MenuItem Command="{Binding NewLevelCommand}" Header="{local:Localize NewLevel}">
+				<MenuItem
+					Command="{Binding NewLevelCommand}"
+					Header="{local:Localize NewLevel}"
+					InputGestureText="{local:KeyBindings NewLevel}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_create_new-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem
-					x:Name="openLevelToolStripMenuItem"
-					Header="OpenLevel"
-					Tag="OpenLevel">
+					Command="{Binding OpenLevelCommand}"
+					Header="{local:Localize OpenLevel}"
+					InputGestureText="{local:KeyBindings OpenLevel}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Open-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem x:Name="openRecentToolStripMenuItem" Header="Open recent" />
+				<MenuItem Header="{local:Localize OpenRecent}" />
 				<MenuItem
-					x:Name="saveLevelToolStripMenuItem"
-					Header="SaveLevel"
-					Tag="SaveLevel">
+					Command="{Binding SaveLevelCommand}"
+					Header="{local:Localize SaveLevel}"
+					InputGestureText="{local:KeyBindings SaveLevel}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Save-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem
-					x:Name="saveAsToolStripMenuItem"
-					Header="SaveLevelAs"
-					Tag="SaveLevelAs">
+					Command="{Binding SaveLevelAsCommand}"
+					Header="{local:Localize SaveLevelAs}"
+					InputGestureText="{local:KeyBindings SaveLevelAs}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Save As-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator />
-				<MenuItem
-					x:Name="importTRLEPRJToolStripMenuItem"
-					Header="ImportPrj"
-					Tag="ImportPrj">
+				<MenuItem Command="{Binding ImportPrjCommand}" Header="{local:Localize ImportPrj}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem
-					x:Name="convertToTENToolstripMenuItem"
-					Header="ConvertLevelToTombEngine"
-					Tag="ConvertLevelToTombEngine">
+				<MenuItem Command="{Binding ConvertLevelToTombEngineCommand}" Header="{local:Localize ConvertLevelToTombEngine}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_TEN-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator />
-				<MenuItem
-					x:Name="buildLevelPlayToolStripMenuItem"
-					Header="BuildAndPlay"
-					Tag="BuildAndPlay">
+				<MenuItem Command="{Binding BuildAndPlayCommand}" Header="{local:Localize BuildAndPlay}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem
-					x:Name="buildLevelToolStripMenuItem"
-					Header="BuildLevel"
-					Tag="BuildLevel">
+				<MenuItem Command="{Binding BuildLevelCommand}" Header="{local:Localize BuildLevel}">
 					<MenuItem.Icon>
 						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_compile-16.png" />
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator />
-				<MenuItem
-					x:Name="exitToolStripMenuItem"
-					Header="QuitEditor"
-					Tag="QuitEditor" />
+				<MenuItem Command="{Binding QuitEditorCommand}" Header="{local:Localize QuitEditor}" />
 			</MenuItem>
 
 			<MenuItem Header="Edit">
