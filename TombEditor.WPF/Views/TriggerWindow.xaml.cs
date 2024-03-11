@@ -17,9 +17,9 @@ namespace TombEditor.WPF.Forms
     /// <summary>
     /// Logica di interazione per FormTrigger.xaml
     /// </summary>
-    public partial class FormTrigger : Window
+    public partial class TriggerWindow : Window
     {
-        public FormTrigger()
+        public TriggerWindow()
         {
             InitializeComponent();
         }

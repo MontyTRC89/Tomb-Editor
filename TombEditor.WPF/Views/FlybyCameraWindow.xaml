@@ -1,0 +1,147 @@
+﻿<Window x:Class="TombEditor.WPF.Views.FlybyCameraWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+        xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+        xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl" 
+        xmlns:local="clr-namespace:TombEditor.WPF.Views" xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Style="{DynamicResource CustomWindowStyle}"
+        mc:Ignorable="d"
+        Title="Flyby Camera" Height="391" Width="450">
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+        <sg:SpacedGrid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </sg:SpacedGrid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40*"/>
+            <ColumnDefinition Width="60*"/>
+        </Grid.ColumnDefinitions>
+        <sg:SpacedGrid Grid.Column="0">
+            <sg:SpacedGrid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </sg:SpacedGrid.RowDefinitions>
+            <sg:SpacedGrid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Sequence:" Width="55"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            </sg:SpacedGrid>
+            <sg:SpacedGrid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Number:" Width="55"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            </sg:SpacedGrid>
+            <sg:SpacedGrid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Timer:" Width="55"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            </sg:SpacedGrid>
+            <sg:SpacedGrid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Speed:" Width="55"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            </sg:SpacedGrid>
+            <sg:SpacedGrid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="FOV:" Width="55"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            </sg:SpacedGrid>
+            <sg:SpacedGrid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Roll:"  Width="55"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            </sg:SpacedGrid>
+            <sg:SpacedGrid Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Rotation X:"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            </sg:SpacedGrid>
+            <sg:SpacedGrid Grid.Row="7">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Rotation Y:"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            </sg:SpacedGrid>
+
+
+        </sg:SpacedGrid>
+        <sg:SpacedGrid Grid.Column="1">
+            <sg:SpacedGrid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </sg:SpacedGrid.RowDefinitions>
+            <CheckBox Content="Make a cut to flyby from Lara camera position"/>
+            <CheckBox Content="Track entity position" Grid.Row="1"/>
+            <CheckBox Content="Infinite loop" Grid.Row="2"/>
+            <CheckBox Content="Create tracking camera" Grid.Row="3"/>
+            <CheckBox Content="Focus on Lara's last head position" Grid.Row="4"/>
+            <CheckBox Content="Focus on Lara's head" Grid.Row="5"/>
+            <CheckBox Content="Snap back to Lara at the end of sequence" Grid.Row="6"/>
+            <CheckBox Content="Jump to another camera in sequence (Timer field)" Grid.Row="7"/>
+            <CheckBox Content="Freeze camera (Timer field)" Grid.Row="8"/>
+            <CheckBox Content="Freeze camera (Timer field)" Grid.Row="9"/>
+            <CheckBox Content='Disable exit from sequence with "Look At" key' Grid.Row="10"/>
+            <CheckBox Content="Cinematic mode" Grid.Row="11"/>
+            <CheckBox Content="Let Lara move in cinematic mode" Grid.Row="12"/>
+            <CheckBox Content="Unused" Grid.Row="13"/>
+            <CheckBox Content="Unused" Grid.Row="14"/>
+            <CheckBox Content="Activate heavy trigger" Grid.Row="15"/>
+            <CheckBox Content="Unused" Grid.Row="16"/>
+        </sg:SpacedGrid>
+        <sg:SpacedGrid Grid.Row="1" HorizontalAlignment="Right" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Width="80" Content="OK"/>
+            <Button Grid.Column="1" Width="80" Content="Cancel" IsDefault="True"/>
+        </sg:SpacedGrid>
+    </sg:SpacedGrid>
+</Window>

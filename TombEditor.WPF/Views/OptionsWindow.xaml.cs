@@ -6,9 +6,9 @@ using TombEditor.WPF.Views;
 
 namespace TombEditor.WPF.Forms;
 
-public partial class FormOptions : ViewWindow<OptionsViewModel>
+public partial class OptionsWindow : ViewWindow<OptionsViewModel>
 {
-	public FormOptions(Editor editor)
+	public OptionsWindow(Editor editor)
 	{
 		DataContext = new OptionsViewModel(editor.Configuration);
 		InitializeComponent();

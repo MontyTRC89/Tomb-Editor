@@ -5,9 +5,34 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:TombEditor.WPF.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	Title="ChooseRoomWindow"
-	Width="800"
-	Height="450"
+    xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+    xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+    xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl" 
+    Style="{DynamicResource CustomWindowStyle}"
+	Title="Choose a room"
+	Width="415" MinWidth="415"
+	Height="283" MinHeight="283"
+    ResizeMode="NoResize"
+    WindowStyle="ToolWindow"
 	mc:Ignorable="d">
-	<Grid />
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+        <sg:SpacedGrid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </sg:SpacedGrid.RowDefinitions>
+        <Label>
+            <TextBlock Text="titelLabel" TextWrapping="Wrap" />
+        </Label>
+        <ListBox Grid.Row="1">
+        </ListBox>
+        <sg:SpacedGrid Grid.Row="2" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Width="80" Content="OK"/>
+            <Button Grid.Column="1" Width="80" Content="Cancel" IsDefault="True"/>
+        </sg:SpacedGrid>
+    </sg:SpacedGrid>
 </Window>

@@ -1,5 +1,5 @@
 ﻿<views:ViewWindow
-	x:Class="TombEditor.WPF.Forms.FormOptions"
+	x:Class="TombEditor.WPF.Forms.OptionsWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"

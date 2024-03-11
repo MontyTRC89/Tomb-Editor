@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace TombEditor.WPF.Views
 {
     /// <summary>
-    /// Logica di interazione per FormAnimatedTextures.xaml
+    /// Logica di interazione per FindTexturesWindow.xaml
     /// </summary>
-    public partial class FormAnimatedTextures : Window
+    public partial class FindTexturesWindow : Window
     {
-        public FormAnimatedTextures()
+        public FindTexturesWindow()
         {
             InitializeComponent();
         }
