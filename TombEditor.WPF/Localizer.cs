@@ -28,7 +28,35 @@ namespace TombEditor.WPF
 				if (string.IsNullOrEmpty(text))
 					Gesture = new KeyGesture(Key.NoName);
 				else
-					Gesture = (KeyGesture)_serializer.ConvertFromString(text, null);
+				{
+					try
+					{
+						Gesture = (KeyGesture)_serializer.ConvertFromString(text, null);
+					}
+					catch (NotSupportedException)
+					{
+						string[] keys = text.Split('+');
+
+						if (keys.Length == 1)
+							Key = (Key)Enum.Parse(typeof(Key), keys[0]);
+						else
+						{
+							ModifierKeys modifiers = ModifierKeys.None;
+							Key key = Key.NoName;
+
+							foreach (string keyString in keys)
+							{
+								if (Enum.TryParse(keyString, true, out ModifierKeys modifier))
+									modifiers |= modifier;
+								else
+									key = (Key)Enum.Parse(typeof(Key), keyString);
+							}
+
+							Modifiers = modifiers;
+							Key = key;
+						}
+					}
+				}
 			}
 
 			base.OnPropertyChanged(e);
