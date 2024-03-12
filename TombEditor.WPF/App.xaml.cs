@@ -124,7 +124,7 @@ public partial class App : Application
 
 				var mainWindow = new MainWindow
 				{
-					ViewModel = new MainWindowViewModel()
+					ViewModel = new MainWindowViewModel(editor)
 				};
 
 				Current.MainWindow = mainWindow;

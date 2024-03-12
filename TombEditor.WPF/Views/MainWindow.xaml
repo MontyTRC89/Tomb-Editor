@@ -188,10 +188,8 @@
 					x:Name="editObjectToolStripMenuItem"
 					Header="EditObject"
 					Tag="EditObject" />
-				<MenuItem
-					x:Name="editEventSetsToolStripMenuItem"
-					Header="EditEventSets"
-					Tag="EditEventSets" />
+				<MenuItem Header="EditVolumeEventSets" Tag="EditVolumeEventSets" />
+				<MenuItem Header="EditGlobalEventSets" Tag="EditGlobalEventSets" />
 				<MenuItem
 					x:Name="searchToolStripMenuItem"
 					Header="Search"
@@ -707,6 +705,9 @@
 
 			<!--  Transform Menu  -->
 			<MenuItem Header="Transform">
+				<MenuItem Header="IncreaseStepHeight" Tag="IncreaseStepHeight" />
+				<MenuItem Header="DecreaseStepHeight" Tag="DecreaseStepHeight" />
+				<Separator />
 				<MenuItem
 					x:Name="smoothRandomFloorUpToolStripMenuItem"
 					Header="SmoothRandomFloorUp"

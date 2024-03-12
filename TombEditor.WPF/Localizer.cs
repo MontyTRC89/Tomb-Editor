@@ -52,7 +52,7 @@ namespace TombEditor.WPF
 			if (resource is not null)
 			{
 				using var reader = new StreamReader(resource);
-				Strings = JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd());
+				Strings = JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd(), new JsonSerializerOptions { ReadCommentHandling = JsonCommentHandling.Skip });
 
 				Invalidate();
 				return true;
