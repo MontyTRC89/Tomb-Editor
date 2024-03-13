@@ -183,5 +183,56 @@
 	"ToggleForceFloorSolid": "Force solid floor",
 	"FloorStep": "Floor step",
 	"CeilingStep": "Ceiling step",
-	"DiagonalWall": "Diag wall"
+	"DiagonalWall": "Diag wall",
+
+	// Components for 'Texture sounds' window
+	"TextureSoundsTitle": "Texture sounds",
+	"Mud": "Mud",
+	"Snow": "Snow",
+	"Sand": "Sand",
+	"Gravel": "Gravel",
+	"Ice": "Ice",
+	"Water": "Water",
+	"Stone": "Stone",
+	"Wood": "Wood",
+	"Metal": "Metal",
+	"Marble": "Marble",
+	"Grass": "Grass",
+	"Concrete": "Concrete",
+	"OldWood": "Old Wood",
+	"OldMetal": "Old Metal",
+	"Custom1": "Custom 1",
+	"Custom2": "Custom 2",
+	"Custom3": "Custom 3",
+	"Custom4": "Custom 4",
+	"Custom5": "Custom 5",
+	"Custom6": "Custom 6",
+	"Custom7": "Custom 7",
+	"Custom8": "Custom 8",
+	"AssignSound": "Assign sound",
+
+	//Components for 'Bumpmaps' window
+	"BumpmapsTitle": "Bumpmaps",
+	"UseCustomFile": "Use custom file:",
+	"CustomMapPath": "path to custom file",
+	"BumpmapsNone": "None",
+	"BumpmapsLevel1": "Level 1",
+	"BumpmapsLevel2": "Level 2",
+	"BumpmapsLevel3": "Level 3",
+	"AssignBumpmap": "Assign bumpmap",
+
+	//Components for 'Edit camera' window
+	"CameraTitle": "Edit camera",
+	"CameraGlideTimer": "Glide timer:",
+	"CameraGlideOut": "Glide out",
+	"CameraMode": "Camera mode:",
+	"CameraDefault": "Default",
+	"CameraLocked": "Locked",
+
+	//Components for 'Choose a room' window
+	"ChooseRoomTitle": "Choose a room",
+	"ChooseRoomtitelLabel": "titelLabel",
+
+	//Generic
+	"Cancel": "Cancel"
 }

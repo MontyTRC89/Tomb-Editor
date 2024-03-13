@@ -9,8 +9,10 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using TombEditor.Forms;
 using TombEditor.WPF.Forms;
 using TombEditor.WPF.ViewModels;
+using TombEditor.WPF.Views;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Utils;
@@ -112,40 +114,40 @@ public partial class App : Application
 			Editor.Instance = editor;
 
 			//TEST WINDOWS
-			//var mainWindow = new FindTexturesWindow { };
-			//Current.MainWindow = mainWindow;
-			//Current.MainWindow.Show();
+			var mainWindow = new ChooseRoomWindow { };
+			Current.MainWindow = mainWindow;
+			Current.MainWindow.Show();
 
 			// Run editor normally if no batch compile is pending.
 			// Otherwise, don't load main form and jump straight to batch-compiling levels.
 
-			if (!doBatchCompile)
-			{
+			//if (!doBatchCompile)
+			//{
 
-				var mainWindow = new MainWindow
-				{
-					ViewModel = new MainWindowViewModel(editor)
-				};
+			//	var mainWindow = new MainWindow
+			//	{
+			//		ViewModel = new MainWindowViewModel(editor)
+			//	};
 
-				Current.MainWindow = mainWindow;
-				Current.MainWindow.Show();
+			//	Current.MainWindow = mainWindow;
+			//	Current.MainWindow.Show();
 
-				if (!string.IsNullOrEmpty(startFile)) // Open files on start
-				{
-					if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-						EditorActions.OpenLevelPrj(mainWindow.ViewModel, startFile);
-					else
-						EditorActions.OpenLevel(mainWindow.ViewModel, startFile);
-				}
-				else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
-				{
-					if (TombEditor.Properties.Settings.Default.RecentProjects != null && TombEditor.Properties.Settings.Default.RecentProjects.Count > 0 &&
-						File.Exists(TombEditor.Properties.Settings.Default.RecentProjects[0]))
-						EditorActions.OpenLevel(mainWindow.ViewModel, TombEditor.Properties.Settings.Default.RecentProjects[0]);
-				}
-			}
-			else
-				EditorActions.BuildInBatch(editor, batchList, batchFile);
+			//	if (!string.IsNullOrEmpty(startFile)) // Open files on start
+			//	{
+			//		if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+			//			EditorActions.OpenLevelPrj(mainWindow.ViewModel, startFile);
+			//		else
+			//			EditorActions.OpenLevel(mainWindow.ViewModel, startFile);
+			//	}
+			//	else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
+			//	{
+			//		if (TombEditor.Properties.Settings.Default.RecentProjects != null && TombEditor.Properties.Settings.Default.RecentProjects.Count > 0 &&
+			//			File.Exists(TombEditor.Properties.Settings.Default.RecentProjects[0]))
+			//			EditorActions.OpenLevel(mainWindow.ViewModel, TombEditor.Properties.Settings.Default.RecentProjects[0]);
+			//	}
+			//}
+			//else
+			//	EditorActions.BuildInBatch(editor, batchList, batchFile);
 		}
         else if (startFile != null) // Send opening file to existing editor instance
 			SingleInstanceManagement.Send(Process.GetCurrentProcess(), new List<string>() { ".prj2" }, startFile);

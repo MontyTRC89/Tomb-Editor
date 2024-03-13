@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TombEditor.WPF.Forms
+namespace TombEditor.WPF.Views
 {
     /// <summary>
-    /// Logica di interazione per FormCamera.xaml
+    /// Logica di interazione per FootStepSoundsWindow.xaml
     /// </summary>
-    public partial class CameraWindow : Window
+    public partial class FootStepSoundsWindow : Window
     {
-        public CameraWindow()
+        public FootStepSoundsWindow()
         {
             InitializeComponent();
         }

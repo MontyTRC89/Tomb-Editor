@@ -3,13 +3,13 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:TombEditor.WPF.Views"
+	xmlns:local="clr-namespace:TombEditor.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
     xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
     xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl" 
     Style="{DynamicResource CustomWindowStyle}"
-	Title="Choose a room"
+	Title="{local:Localize ChooseRoomTitle}"
 	Width="415" MinWidth="415"
 	Height="283" MinHeight="283"
     ResizeMode="NoResize"
@@ -22,7 +22,7 @@
             <RowDefinition Height="auto"/>
         </sg:SpacedGrid.RowDefinitions>
         <Label>
-            <TextBlock Text="titelLabel" TextWrapping="Wrap" />
+            <TextBlock Text="titleLabel" TextWrapping="Wrap" />
         </Label>
         <ListBox Grid.Row="1">
         </ListBox>
@@ -32,7 +32,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button Width="80" Content="OK"/>
-            <Button Grid.Column="1" Width="80" Content="Cancel" IsDefault="True"/>
+            <Button Grid.Column="1" Width="80" Content="{local:Localize Cancel}" IsDefault="True"/>
         </sg:SpacedGrid>
     </sg:SpacedGrid>
 </Window>

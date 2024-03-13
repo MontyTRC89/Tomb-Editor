@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TombEditor.WPF"
         xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
         xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
         x:Class="TombEditor.WPF.Forms.BumpMapsWindow"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Bumpmaps" Height="601" MinHeight="601" Width="440" MinWidth="440">
+        Title="{local:Localize BumpmapsTitle}" Height="601" MinHeight="601" Width="440" MinWidth="440">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,24 +19,30 @@
             <RowDefinition Height="Auto"/>
         </sg:SpacedGrid.RowDefinitions>
         <darkCtrl:SearchableComboBox/>
-        <WindowsFormsHost x:Name="ViewportHost" Grid.Row="1" />
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <CheckBox Uid="customFile" Content="Use custom file:" Margin="0,0,4,0"/>
-            <Label Content="path to custom file" Opacity="0.4"/>
-        </StackPanel>
+        <Border Grid.Row="1" BorderBrush="#FF5C5C5C" BorderThickness="1">
+            <WindowsFormsHost x:Name="ViewportHost"/>
+        </Border>
+        <sg:SpacedGrid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <CheckBox Uid="customFile" Content="{local:Localize UseCustomFile}"/>
+            <Label Content="{local:Localize CustomMapPath}" Opacity="0.4" Grid.Column="1"/>
+        </sg:SpacedGrid>
         <sg:SpacedGrid Grid.Row="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition/>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <darkCtrl:SearchableComboBox>
-                <ComboBoxItem>None</ComboBoxItem>
-                <ComboBoxItem>Level1</ComboBoxItem>
-                <ComboBoxItem>Level2</ComboBoxItem>
-                <ComboBoxItem>Level3</ComboBoxItem>
-            </darkCtrl:SearchableComboBox>
-            <Button Grid.Column="1" Width="113" Content="Assign bumpmap"/>
+            <ComboBox>
+                <ComboBoxItem Content="{local:Localize BumpmapsNone}"/>
+                <ComboBoxItem Content="{local:Localize BumpmapsLevel1}"/>
+                <ComboBoxItem Content="{local:Localize BumpmapsLevel2}"/>
+                <ComboBoxItem Content="{local:Localize BumpmapsLevel3}"/>
+            </ComboBox>
+            <Button Grid.Column="1" Width="113" Content="{local:Localize AssignBumpmap}"/>
             <Button Grid.Column="2" Width="80" Content="OK" IsDefault="True" />
         </sg:SpacedGrid>
     </sg:SpacedGrid>
