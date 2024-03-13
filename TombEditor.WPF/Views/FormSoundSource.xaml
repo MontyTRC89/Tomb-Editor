@@ -1,0 +1,47 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+        xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+        xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+            Style="{DynamicResource CustomWindowStyle}"
+            Width="500"
+            Height="609"
+            Icon="/TombEditor.WPF;component/Resources/misc/TE.png">
+                <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+                <sg:SpacedGrid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                 </sg:SpacedGrid.RowDefinitions>
+                <GroupBox  Grid.Row="0" Header="Sound to play">
+            <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+                <sg:SpacedGrid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </sg:SpacedGrid.RowDefinitions> 
+                <darkCtrl:SearchableComboBox Grid.Row="0"/>
+                <WindowsFormsHost Grid.Row="1" x:Name="TreeViewHost" />
+                <sg:SpacedGrid Grid.Row="2" HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Width="80" Content="Play sound"/>
+                </sg:SpacedGrid>
+
+            </sg:SpacedGrid>
+        </GroupBox>
+                        <sg:SpacedGrid Grid.Row="1" HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Width="80" Content="OK"/>
+                            <Button Grid.Column="1" Width="80" Content="Cancel" IsDefault="True"/>
+                        </sg:SpacedGrid>
+                    </sg:SpacedGrid>
+</Window>

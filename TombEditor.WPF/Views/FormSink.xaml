@@ -1,0 +1,26 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+    xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+    xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+        Style="{DynamicResource CustomWindowStyle}"
+        Width="203"
+        Height="90"
+        Icon="/TombEditor.WPF;component/Resources/misc/TE.png">
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+        <sg:SpacedGrid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </sg:SpacedGrid.RowDefinitions>
+        <sg:SpacedGrid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </sg:SpacedGrid.ColumnDefinitions>
+        <Label Content="Current strength: " Width="85" Grid.Row="0" Grid.Column="0"/>
+        <xceed:IntegerUpDown Width="90" Grid.Row="0" Grid.Column="1"/>
+        <Button DockPanel.Dock="Right" Width="90" Content="Cancel" Grid.Row="1" Grid.Column="0"/>
+        <Button DockPanel.Dock="Right" Width="90" Content="OK" Grid.Row="1" Grid.Column="1"/>
+    </sg:SpacedGrid>
+</Window>
