@@ -12,14 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TombEditor.WPF.Views;
-/// <summary>
-/// Interaction logic for ChooseRoomWindow.xaml
-/// </summary>
-public partial class ChooseRoomWindow : Window
+namespace TombEditor.WPF.Views
 {
-	public ChooseRoomWindow()
-	{
-		InitializeComponent();
-	}
+    /// <summary>
+    /// Logica di interazione per FormAnimatedTextures.xaml
+    /// </summary>
+    public partial class AnimatedTexturesWindow : Window
+    {
+        public AnimatedTexturesWindow()
+        {
+            InitializeComponent();
+        }
+    }
 }

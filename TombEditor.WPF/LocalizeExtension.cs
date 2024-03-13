@@ -23,7 +23,7 @@ public class LocalizeExtension : MarkupExtension, IMultiValueConverter
 		binding.Bindings.Add(new Binding($"[{keyToUse}]")
 		{
 			Mode = BindingMode.OneWay,
-			Source = Localizer.Instance,
+			Source = Localizer.Instance
 		});
 
 		if (FindHotkeys)
@@ -35,11 +35,11 @@ public class LocalizeExtension : MarkupExtension, IMultiValueConverter
 				binding.Bindings.Add(new Binding($"[{keyToUse}]")
 				{
 					Mode = BindingMode.OneWay,
-					Source = uiKeys,
+					Source = uiKeys
 				});
 			}
 		}
-		
+
 		return binding.ProvideValue(serviceProvider);
 	}
 
@@ -48,4 +48,38 @@ public class LocalizeExtension : MarkupExtension, IMultiValueConverter
 
 	public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
 		=> throw new NotSupportedException();
+}
+
+public class KeyBindingsExtension : MarkupExtension, IValueConverter
+{
+	public string Key { get; set; }
+
+	public KeyBindingsExtension(string key)
+		=> Key = key;
+
+	public override object ProvideValue(IServiceProvider serviceProvider)
+	{
+		string keyToUse = Key;
+		HotkeySets uiKeys = Editor.Instance.Configuration.UI_Hotkeys;
+
+		if (uiKeys.Any(keyPair => keyPair.Key == keyToUse && keyPair.Value.Count > 0))
+		{
+			var binding = new Binding($"[{keyToUse}]")
+			{
+				Mode = BindingMode.OneWay,
+				Source = uiKeys,
+				Converter = this
+			};
+
+			return binding.ProvideValue(serviceProvider);
+		}
+
+		return string.Empty;
+	}
+
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		=> ((SortedSet<Hotkey>)value).First().ToString();
+
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		=> throw new NotImplementedException();
 }

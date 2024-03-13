@@ -1,0 +1,1263 @@
+﻿<views:ViewWindow
+	x:Class="TombEditor.WPF.Forms.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:local="clr-namespace:TombEditor.WPF"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+	xmlns:toolwindows="clr-namespace:TombEditor.WPF.ToolWindows"
+	xmlns:views="clr-namespace:TombEditor.WPF.Views"
+	xmlns:vm="clr-namespace:TombEditor.WPF.ViewModels"
+	xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+	Title="Tomb Editor"
+	Width="800"
+	Height="450"
+	x:TypeArguments="vm:MainWindowViewModel"
+	Icon="/TombEditor.WPF;component/Resources/misc/TE.png"
+	Style="{DynamicResource CustomWindowStyle}"
+	WindowState="Maximized"
+	mc:Ignorable="d">
+
+	<Window.InputBindings>
+		<!--  File Menu  -->
+		<local:DynamicKeyBinding Command="{Binding NewLevelCommand}" InputGestureText="{local:KeyBindings NewLevel}" />
+		<local:DynamicKeyBinding Command="{Binding OpenLevelCommand}" InputGestureText="{local:KeyBindings OpenLevel}" />
+		<local:DynamicKeyBinding Command="{Binding SaveLevelCommand}" InputGestureText="{local:KeyBindings SaveLevel}" />
+		<local:DynamicKeyBinding Command="{Binding SaveLevelAsCommand}" InputGestureText="{local:KeyBindings SaveLevelAs}" />
+		<local:DynamicKeyBinding Command="{Binding ImportPrjCommand}" InputGestureText="{local:KeyBindings ImportPrj}" />
+		<local:DynamicKeyBinding Command="{Binding ConvertLevelToTombEngineCommand}" InputGestureText="{local:KeyBindings ConvertLevelToTombEngine}" />
+		<local:DynamicKeyBinding Command="{Binding BuildAndPlayCommand}" InputGestureText="{local:KeyBindings BuildAndPlay}" />
+		<local:DynamicKeyBinding Command="{Binding BuildLevelCommand}" InputGestureText="{local:KeyBindings BuildLevel}" />
+		<local:DynamicKeyBinding Command="{Binding QuitEditorCommand}" InputGestureText="{local:KeyBindings QuitEditor}" />
+
+		<!--  Edit Menu  -->
+		<local:DynamicKeyBinding Command="{Binding UndoCommand}" InputGestureText="{local:KeyBindings Undo}" />
+		<local:DynamicKeyBinding Command="{Binding RedoCommand}" InputGestureText="{local:KeyBindings Redo}" />
+		<local:DynamicKeyBinding Command="{Binding CutCommand}" InputGestureText="{local:KeyBindings Cut}" />
+		<local:DynamicKeyBinding Command="{Binding CopyCommand}" InputGestureText="{local:KeyBindings Copy}" />
+		<local:DynamicKeyBinding Command="{Binding PasteCommand}" InputGestureText="{local:KeyBindings Paste}" />
+		<local:DynamicKeyBinding Command="{Binding StampObjectCommand}" InputGestureText="{local:KeyBindings StampObject}" />
+		<local:DynamicKeyBinding Command="{Binding DeleteCommand}" InputGestureText="{local:KeyBindings Delete}" />
+		<local:DynamicKeyBinding Command="{Binding SelectAllCommand}" InputGestureText="{local:KeyBindings SelectAll}" />
+		<local:DynamicKeyBinding Command="{Binding BookmarkObjectCommand}" InputGestureText="{local:KeyBindings BookmarkObject}" />
+		<local:DynamicKeyBinding Command="{Binding SelectBookmarkedObject}" InputGestureText="{local:KeyBindings SelectBookmarkedObject}" />
+		<local:DynamicKeyBinding Command="{Binding EditObjectCommand}" InputGestureText="{local:KeyBindings EditObject}" />
+		<local:DynamicKeyBinding Command="{Binding EditVolumeEventSetsCommand}" InputGestureText="{local:KeyBindings EditVolumeEventSets}" />
+		<local:DynamicKeyBinding Command="{Binding EditGlobalEventSetsCommand}" InputGestureText="{local:KeyBindings EditGlobalEventSets}" />
+		<local:DynamicKeyBinding Command="{Binding SearchCommand}" InputGestureText="{local:KeyBindings Search}" />
+		<local:DynamicKeyBinding Command="{Binding SearchAndReplaceObjectsCommand}" InputGestureText="{local:KeyBindings SearchAndReplaceObjects}" />
+
+		<!--  View Menu  -->
+		<local:DynamicKeyBinding Command="{Binding ResetCameraCommand}" InputGestureText="{local:KeyBindings ResetCamera}" />
+		<local:DynamicKeyBinding Command="{Binding RelocateCameraCommand}" InputGestureText="{local:KeyBindings RelocateCamera}" />
+		<local:DynamicKeyBinding Command="{Binding ToggleFlyModeCommand}" InputGestureText="{local:KeyBindings ToggleFlyMode}" />
+		<local:DynamicKeyBinding Command="{Binding DrawWhiteTextureLightingOnlyCommand}" InputGestureText="{local:KeyBindings DrawWhiteTextureLightingOnly}" />
+		<local:DynamicKeyBinding Command="{Binding ShowRealTintForObjectsCommand}" InputGestureText="{local:KeyBindings ShowRealTintForObjects}" />
+
+		<!--  Rooms Menu  -->
+		<local:DynamicKeyBinding Command="{Binding NewRoomUpCommand}" InputGestureText="{local:KeyBindings NewRoomUp}" />
+		<local:DynamicKeyBinding Command="{Binding NewRoomDownCommand}" InputGestureText="{local:KeyBindings NewRoomDown}" />
+		<local:DynamicKeyBinding Command="{Binding NewRoomLeftCommand}" InputGestureText="{local:KeyBindings NewRoomLeft}" />
+		<local:DynamicKeyBinding Command="{Binding NewRoomRightCommand}" InputGestureText="{local:KeyBindings NewRoomRight}" />
+		<local:DynamicKeyBinding Command="{Binding NewRoomFrontCommand}" InputGestureText="{local:KeyBindings NewRoomFront}" />
+		<local:DynamicKeyBinding Command="{Binding NewRoomBackCommand}" InputGestureText="{local:KeyBindings NewRoomBack}" />
+		<local:DynamicKeyBinding Command="{Binding DuplicateRoomCommand}" InputGestureText="{local:KeyBindings DuplicateRoom}" />
+		<local:DynamicKeyBinding Command="{Binding CropRoomCommand}" InputGestureText="{local:KeyBindings CropRoom}" />
+		<local:DynamicKeyBinding Command="{Binding SplitRoomCommand}" InputGestureText="{local:KeyBindings SplitRoom}" />
+		<local:DynamicKeyBinding Command="{Binding MergeRoomsHorizontallyCommand}" InputGestureText="{local:KeyBindings MergeRoomsHorizontally}" />
+		<local:DynamicKeyBinding Command="{Binding DeleteRoomsCommand}" InputGestureText="{local:KeyBindings DeleteRooms}" />
+		<local:DynamicKeyBinding Command="{Binding MoveRoomUpCommand}" InputGestureText="{local:KeyBindings MoveRoomUp}" />
+		<local:DynamicKeyBinding Command="{Binding MoveRoomUp4ClicksCommand}" InputGestureText="{local:KeyBindings MoveRoomUp4Clicks}" />
+		<local:DynamicKeyBinding Command="{Binding MoveRoomDownCommand}" InputGestureText="{local:KeyBindings MoveRoomDown}" />
+		<local:DynamicKeyBinding Command="{Binding MoveRoomDown4ClicksCommand}" InputGestureText="{local:KeyBindings MoveRoomDown4Clicks}" />
+		<local:DynamicKeyBinding Command="{Binding MoveRoomLeftCommand}" InputGestureText="{local:KeyBindings MoveRoomLeft}" />
+		<local:DynamicKeyBinding Command="{Binding MoveRoomRightCommand}" InputGestureText="{local:KeyBindings MoveRoomRight}" />
+		<local:DynamicKeyBinding Command="{Binding MoveRoomForwardCommand}" InputGestureText="{local:KeyBindings MoveRoomForward}" />
+		<local:DynamicKeyBinding Command="{Binding MoveRoomBackCommand}" InputGestureText="{local:KeyBindings MoveRoomBack}" />
+		<local:DynamicKeyBinding Command="{Binding RotateRoomsClockwiseCommand}" InputGestureText="{local:KeyBindings RotateRoomsClockwise}" />
+		<local:DynamicKeyBinding Command="{Binding RotateRoomsCounterClockwiseCommand}" InputGestureText="{local:KeyBindings RotateRoomsCounterClockwise}" />
+		<local:DynamicKeyBinding Command="{Binding MirrorRoomsXCommand}" InputGestureText="{local:KeyBindings MirrorRoomsX}" />
+		<local:DynamicKeyBinding Command="{Binding MirrorRoomsZCommand}" InputGestureText="{local:KeyBindings MirrorRoomsZ}" />
+		<local:DynamicKeyBinding Command="{Binding SelectWaterRoomsCommand}" InputGestureText="{local:KeyBindings SelectWaterRooms}" />
+		<local:DynamicKeyBinding Command="{Binding SelectSkyRoomsCommand}" InputGestureText="{local:KeyBindings SelectSkyRooms}" />
+		<local:DynamicKeyBinding Command="{Binding SelectOutsideRoomsCommand}" InputGestureText="{local:KeyBindings SelectOutsideRooms}" />
+		<local:DynamicKeyBinding Command="{Binding SelectQuicksandRoomsCommand}" InputGestureText="{local:KeyBindings SelectQuicksandRooms}" />
+		<local:DynamicKeyBinding Command="{Binding SelectConnectedRoomsCommand}" InputGestureText="{local:KeyBindings SelectConnectedRooms}" />
+		<local:DynamicKeyBinding Command="{Binding SelectRoomsByTagsCommand}" InputGestureText="{local:KeyBindings SelectRoomsByTags}" />
+		<local:DynamicKeyBinding Command="{Binding ExportRoomsCommand}" InputGestureText="{local:KeyBindings ExportRooms}" />
+		<local:DynamicKeyBinding Command="{Binding ImportRoomsCommand}" InputGestureText="{local:KeyBindings ImportRooms}" />
+		<local:DynamicKeyBinding Command="{Binding ApplyRoomPropertiesCommand}" InputGestureText="{local:KeyBindings ApplyRoomProperties}" />
+
+		<!--  Items Menu  -->
+		<local:DynamicKeyBinding Command="{Binding AddWadCommand}" InputGestureText="{local:KeyBindings AddWad}" />
+		<local:DynamicKeyBinding Command="{Binding RemoveWadsCommand}" InputGestureText="{local:KeyBindings RemoveWads}" />
+		<local:DynamicKeyBinding Command="{Binding ReloadWadsCommand}" InputGestureText="{local:KeyBindings ReloadWads}" />
+		<local:DynamicKeyBinding Command="{Binding ReloadSoundsCommand}" InputGestureText="{local:KeyBindings ReloadSounds}" />
+		<local:DynamicKeyBinding Command="{Binding AddCameraCommand}" InputGestureText="{local:KeyBindings AddCamera}" />
+		<local:DynamicKeyBinding Command="{Binding AddFlybyCameraCommand}" InputGestureText="{local:KeyBindings AddFlybyCamera}" />
+		<local:DynamicKeyBinding Command="{Binding AddSpriteCommand}" InputGestureText="{local:KeyBindings AddSprite}" />
+		<local:DynamicKeyBinding Command="{Binding AddSinkCommand}" InputGestureText="{local:KeyBindings AddSink}" />
+		<local:DynamicKeyBinding Command="{Binding AddSoundSourceCommand}" InputGestureText="{local:KeyBindings AddSoundSource}" />
+		<local:DynamicKeyBinding Command="{Binding AddImportedGeometryCommand}" InputGestureText="{local:KeyBindings AddImportedGeometry}" />
+		<local:DynamicKeyBinding Command="{Binding AddGhostBlockCommand}" InputGestureText="{local:KeyBindings AddGhostBlock}" />
+		<local:DynamicKeyBinding Command="{Binding AddMemoCommand}" InputGestureText="{local:KeyBindings AddMemo}" />
+		<local:DynamicKeyBinding Command="{Binding AddPortalCommand}" InputGestureText="{local:KeyBindings AddPortal}" />
+		<local:DynamicKeyBinding Command="{Binding AddTriggerCommand}" InputGestureText="{local:KeyBindings AddTrigger}" />
+		<local:DynamicKeyBinding Command="{Binding AddBoxVolumeCommand}" InputGestureText="{local:KeyBindings AddBoxVolume}" />
+		<local:DynamicKeyBinding Command="{Binding AddSphereVolumeCommand}" InputGestureText="{local:KeyBindings AddSphereVolume}" />
+		<local:DynamicKeyBinding Command="{Binding DeleteAllLightsCommand}" InputGestureText="{local:KeyBindings DeleteAllLights}" />
+		<local:DynamicKeyBinding Command="{Binding DeleteAllObjectsCommand}" InputGestureText="{local:KeyBindings DeleteAllObjects}" />
+		<local:DynamicKeyBinding Command="{Binding DeleteAllTriggersCommand}" InputGestureText="{local:KeyBindings DeleteAllTriggers}" />
+		<local:DynamicKeyBinding Command="{Binding DeleteMissingObjectsCommand}" InputGestureText="{local:KeyBindings DeleteMissingObjects}" />
+		<local:DynamicKeyBinding Command="{Binding LocateItemCommand}" InputGestureText="{local:KeyBindings LocateItem}" />
+		<local:DynamicKeyBinding Command="{Binding MoveLaraCommand}" InputGestureText="{local:KeyBindings MoveLara}" />
+		<local:DynamicKeyBinding Command="{Binding SelectAllObjectsInAreaCommand}" InputGestureText="{local:KeyBindings SelectAllObjectsInArea}" />
+		<local:DynamicKeyBinding Command="{Binding SelectFloorBelowObjectCommand}" InputGestureText="{local:KeyBindings SelectFloorBelowObject}" />
+		<local:DynamicKeyBinding Command="{Binding SplitSectorObjectOnSelectionCommand}" InputGestureText="{local:KeyBindings SplitSectorObjectOnSelection}" />
+		<local:DynamicKeyBinding Command="{Binding SetStaticMeshesColorToRoomLightCommand}" InputGestureText="{local:KeyBindings SetStaticMeshesColorToRoomLight}" />
+		<local:DynamicKeyBinding Command="{Binding SetStaticMeshesColorCommand}" InputGestureText="{local:KeyBindings SetStaticMeshesColor}" />
+		<local:DynamicKeyBinding Command="{Binding MakeQuickItemGroupCommand}" InputGestureText="{local:KeyBindings MakeQuickItemGroup}" />
+		<local:DynamicKeyBinding Command="{Binding GetObjectStatisticsCommand}" InputGestureText="{local:KeyBindings GetObjectStatistics}" />
+		<local:DynamicKeyBinding Command="{Binding GenerateObjectNamesCommand}" InputGestureText="{local:KeyBindings GenerateObjectNames}" />
+
+		<!--  Textures Menu  -->
+		<local:DynamicKeyBinding Command="{Binding AddTextureCommand}" InputGestureText="{local:KeyBindings AddTexture}" />
+		<local:DynamicKeyBinding Command="{Binding RemoveTexturesCommand}" InputGestureText="{local:KeyBindings RemoveTexture}" />
+		<local:DynamicKeyBinding Command="{Binding UnloadTexturesCommand}" InputGestureText="{local:KeyBindings UnloadTextures}" />
+		<local:DynamicKeyBinding Command="{Binding ReloadTexturesCommand}" InputGestureText="{local:KeyBindings ReloadTextures}" />
+		<local:DynamicKeyBinding Command="{Binding ConvertTexturesToPNGCommand}" InputGestureText="{local:KeyBindings ConvertTexturesToPNG}" />
+		<local:DynamicKeyBinding Command="{Binding RemapTextureCommand}" InputGestureText="{local:KeyBindings RemapTexture}" />
+		<local:DynamicKeyBinding Command="{Binding TextureFloorCommand}" InputGestureText="{local:KeyBindings TextureFloor}" />
+		<local:DynamicKeyBinding Command="{Binding TextureWallsCommand}" InputGestureText="{local:KeyBindings TextureWalls}" />
+		<local:DynamicKeyBinding Command="{Binding TextureCeilingCommand}" InputGestureText="{local:KeyBindings TextureCeiling}" />
+		<local:DynamicKeyBinding Command="{Binding ClearAllTexturesInRoomCommand}" InputGestureText="{local:KeyBindings ClearAllTexturesInRoom}" />
+		<local:DynamicKeyBinding Command="{Binding ClearAllTexturesInLevelCommand}" InputGestureText="{local:KeyBindings ClearAllTexturesInLevel}" />
+		<local:DynamicKeyBinding Command="{Binding SearchTexturesCommand}" InputGestureText="{local:KeyBindings SearchTextures}" />
+		<local:DynamicKeyBinding Command="{Binding EditAnimationRangesCommand}" InputGestureText="{local:KeyBindings EditAnimationRanges}" />
+
+		<!--  Transform Menu  -->
+	</Window.InputBindings>
+
+	<Grid x:Name="layoutRoot">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Menu x:Name="menuStrip" VerticalAlignment="Stretch">
+			<!--  File Menu  -->
+			<MenuItem Header="{local:Localize File}">
+				<MenuItem
+					Command="{Binding NewLevelCommand}"
+					Header="{local:Localize NewLevel}"
+					InputGestureText="{local:KeyBindings NewLevel}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_create_new-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding OpenLevelCommand}"
+					Header="{local:Localize OpenLevel}"
+					InputGestureText="{local:KeyBindings OpenLevel}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Open-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="{local:Localize OpenRecent}" />
+				<MenuItem
+					Command="{Binding SaveLevelCommand}"
+					Header="{local:Localize SaveLevel}"
+					InputGestureText="{local:KeyBindings SaveLevel}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Save-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding SaveLevelAsCommand}"
+					Header="{local:Localize SaveLevelAs}"
+					InputGestureText="{local:KeyBindings SaveLevelAs}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Save As-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					Command="{Binding ImportPrjCommand}"
+					Header="{local:Localize ImportPrj}"
+					InputGestureText="{local:KeyBindings ImportPrj}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding ConvertLevelToTombEngineCommand}"
+					Header="{local:Localize ConvertLevelToTombEngine}"
+					InputGestureText="{local:KeyBindings ConvertLevelToTombEngine}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_TEN-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					Command="{Binding BuildAndPlayCommand}"
+					Header="{local:Localize BuildAndPlay}"
+					InputGestureText="{local:KeyBindings BuildAndPlay}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding BuildLevelCommand}"
+					Header="{local:Localize BuildLevel}"
+					InputGestureText="{local:KeyBindings BuildLevel}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_compile-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					Command="{Binding QuitEditorCommand}"
+					Header="{local:Localize QuitEditor}"
+					InputGestureText="{local:KeyBindings QuitEditor}" />
+			</MenuItem>
+
+			<!--  Edit Menu  -->
+			<MenuItem Header="{local:Localize Edit}">
+				<MenuItem
+					Command="{Binding UndoCommand}"
+					Header="{local:Localize Undo}"
+					InputGestureText="{local:KeyBindings Undo}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_undo-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding RedoCommand}"
+					Header="{local:Localize Redo}"
+					InputGestureText="{local:KeyBindings Redo}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_redo-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					Command="{Binding CutCommand}"
+					Header="{local:Localize Cut}"
+					InputGestureText="{local:KeyBindings Cut}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_cut-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding CopyCommand}"
+					Header="{local:Localize Copy}"
+					InputGestureText="{local:KeyBindings Copy}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding PasteCommand}"
+					Header="{local:Localize Paste}"
+					InputGestureText="{local:KeyBindings Paste}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_clipboard-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding StampObjectCommand}"
+					Header="{local:Localize StampObject}"
+					InputGestureText="{local:KeyBindings StampObject}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_rubber_stamp-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding DeleteCommand}"
+					Header="{local:Localize Delete}"
+					InputGestureText="{local:KeyBindings Delete}" />
+				<MenuItem
+					Command="{Binding SelectAllCommand}"
+					Header="{local:Localize SelectAll}"
+					InputGestureText="{local:KeyBindings SelectAll}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding BookmarkObjectCommand}"
+					Header="{local:Localize BookmarkObject}"
+					InputGestureText="{local:KeyBindings BookmarkObject}" />
+				<MenuItem
+					Command="{Binding SelectBookmarkedObject}"
+					Header="{local:Localize SelectBookmarkedObject}"
+					InputGestureText="{local:KeyBindings SelectBookmarkedObject}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding EditObjectCommand}"
+					Header="{local:Localize EditObject}"
+					InputGestureText="{local:KeyBindings EditObject}" />
+				<MenuItem
+					Command="{Binding EditVolumeEventSetsCommand}"
+					Header="{local:Localize EditVolumeEventSets}"
+					InputGestureText="{local:KeyBindings EditVolumeEventSets}" />
+				<MenuItem
+					Command="{Binding EditGlobalEventSetsCommand}"
+					Header="{local:Localize EditGlobalEventSets}"
+					InputGestureText="{local:KeyBindings EditGlobalEventSets}" />
+				<MenuItem
+					Command="{Binding SearchCommand}"
+					Header="{local:Localize Search}"
+					InputGestureText="{local:KeyBindings Search}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding SearchAndReplaceObjectsCommand}"
+					Header="{local:Localize SearchAndReplaceObjects}"
+					InputGestureText="{local:KeyBindings SearchAndReplaceObjects}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-and-replace-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+
+			<!--  View Menu  -->
+			<MenuItem Header="{local:Localize View}">
+				<MenuItem
+					Command="{Binding ResetCameraCommand}"
+					Header="{local:Localize ResetCamera}"
+					InputGestureText="{local:KeyBindings ResetCamera}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_center_direction-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding RelocateCameraCommand}"
+					Header="{local:Localize RelocateCamera}"
+					InputGestureText="{local:KeyBindings RelocateCamera}" />
+				<MenuItem
+					Command="{Binding ToggleFlyModeCommand}"
+					Header="{local:Localize ToggleFlyMode}"
+					InputGestureText="{local:KeyBindings ToggleFlyMode}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_airplane-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					Command="{Binding DrawWhiteTextureLightingOnlyCommand}"
+					Header="{local:Localize DrawWhiteTextureLightingOnly}"
+					InputGestureText="{local:KeyBindings DrawWhiteTextureLightingOnly}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawUntexturedLights-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding ShowRealTintForObjectsCommand}"
+					Header="{local:Localize ShowRealTintForObjects}"
+					InputGestureText="{local:KeyBindings ShowRealTintForObjects}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_StaticTint-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+
+			<!--  Rooms Menu  -->
+			<MenuItem Header="{local:Localize Rooms}">
+				<MenuItem Header="{local:Localize NewRoom}">
+					<MenuItem
+						Command="{Binding NewRoomUpCommand}"
+						Header="{local:Localize NewRoomUp}"
+						InputGestureText="{local:KeyBindings NewRoomUp}" />
+					<MenuItem
+						Command="{Binding NewRoomDownCommand}"
+						Header="{local:Localize NewRoomDown}"
+						InputGestureText="{local:KeyBindings NewRoomDown}" />
+					<MenuItem
+						Command="{Binding NewRoomLeftCommand}"
+						Header="{local:Localize NewRoomLeft}"
+						InputGestureText="{local:KeyBindings NewRoomLeft}" />
+					<MenuItem
+						Command="{Binding NewRoomRightCommand}"
+						Header="{local:Localize NewRoomRight}"
+						InputGestureText="{local:KeyBindings NewRoomRight}" />
+					<MenuItem
+						Command="{Binding NewRoomFrontCommand}"
+						Header="{local:Localize NewRoomFront}"
+						InputGestureText="{local:KeyBindings NewRoomFront}" />
+					<MenuItem
+						Command="{Binding NewRoomBackCommand}"
+						Header="{local:Localize NewRoomBack}"
+						InputGestureText="{local:KeyBindings NewRoomBack}" />
+				</MenuItem>
+				<MenuItem
+					Command="{Binding DuplicateRoomCommand}"
+					Header="{local:Localize DuplicateRoom}"
+					InputGestureText="{local:KeyBindings DuplicateRoom}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding CropRoomCommand}"
+					Header="{local:Localize CropRoom}"
+					InputGestureText="{local:KeyBindings CropRoom}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_crop-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding SplitRoomCommand}"
+					Header="{local:Localize SplitRoom}"
+					InputGestureText="{local:KeyBindings SplitRoom}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Split-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding MergeRoomsHorizontallyCommand}"
+					Header="{local:Localize MergeRoomsHorizontally}"
+					InputGestureText="{local:KeyBindings MergeRoomsHorizontally}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Merge-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding DeleteRoomsCommand}"
+					Header="{local:Localize DeleteRooms}"
+					InputGestureText="{local:KeyBindings DeleteRooms}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem Header="{local:Localize MoveRooms}">
+					<MenuItem
+						Command="{Binding MoveRoomUpCommand}"
+						Header="{local:Localize MoveRoomUp}"
+						InputGestureText="{local:KeyBindings MoveRoomUp}" />
+					<MenuItem
+						Command="{Binding MoveRoomUp4ClicksCommand}"
+						Header="{local:Localize MoveRoomUp4Clicks}"
+						InputGestureText="{local:KeyBindings MoveRoomUp4Clicks}" />
+					<MenuItem
+						Command="{Binding MoveRoomDownCommand}"
+						Header="{local:Localize MoveRoomDown}"
+						InputGestureText="{local:KeyBindings MoveRoomDown}" />
+					<MenuItem
+						Command="{Binding MoveRoomDown4ClicksCommand}"
+						Header="{local:Localize MoveRoomDown4Clicks}"
+						InputGestureText="{local:KeyBindings MoveRoomDown4Clicks}" />
+					<MenuItem
+						Command="{Binding MoveRoomLeftCommand}"
+						Header="{local:Localize MoveRoomLeft}"
+						InputGestureText="{local:KeyBindings MoveRoomLeft}" />
+					<MenuItem
+						Command="{Binding MoveRoomRightCommand}"
+						Header="{local:Localize MoveRoomRight}"
+						InputGestureText="{local:KeyBindings MoveRoomRight}" />
+					<MenuItem
+						Command="{Binding MoveRoomForwardCommand}"
+						Header="{local:Localize MoveRoomForward}"
+						InputGestureText="{local:KeyBindings MoveRoomForward}" />
+					<MenuItem
+						Command="{Binding MoveRoomBackCommand}"
+						Header="{local:Localize MoveRoomBack}"
+						InputGestureText="{local:KeyBindings MoveRoomBack}" />
+				</MenuItem>
+				<MenuItem Header="{local:Localize TransformRooms}">
+					<MenuItem
+						Command="{Binding RotateRoomsClockwiseCommand}"
+						Header="{local:Localize RotateRoomsClockwise}"
+						InputGestureText="{local:KeyBindings RotateRoomsClockwise}" />
+					<MenuItem
+						Command="{Binding RotateRoomsCounterClockwiseCommand}"
+						Header="{local:Localize RotateRoomsCounterClockwise}"
+						InputGestureText="{local:KeyBindings RotateRoomsCounterClockwise}" />
+					<MenuItem
+						Command="{Binding MirrorRoomsXCommand}"
+						Header="{local:Localize MirrorRoomsX}"
+						InputGestureText="{local:KeyBindings MirrorRoomsX}" />
+					<MenuItem
+						Command="{Binding MirrorRoomsZCommand}"
+						Header="{local:Localize MirrorRoomsZ}"
+						InputGestureText="{local:KeyBindings MirrorRoomsZ}" />
+				</MenuItem>
+				<MenuItem Header="{local:Localize SelectRooms}">
+					<MenuItem
+						Command="{Binding SelectWaterRoomsCommand}"
+						Header="{local:Localize SelectWaterRooms}"
+						InputGestureText="{local:KeyBindings SelectWaterRooms}" />
+					<MenuItem
+						Command="{Binding SelectSkyRoomsCommand}"
+						Header="{local:Localize SelectSkyRooms}"
+						InputGestureText="{local:KeyBindings SelectSkyRooms}" />
+					<MenuItem
+						Command="{Binding SelectOutsideRoomsCommand}"
+						Header="{local:Localize SelectOutsideRooms}"
+						InputGestureText="{local:KeyBindings SelectOutsideRooms}" />
+					<MenuItem
+						Command="{Binding SelectQuicksandRoomsCommand}"
+						Header="{local:Localize SelectQuicksandRooms}"
+						InputGestureText="{local:KeyBindings SelectQuicksandRooms}" />
+					<Separator />
+					<MenuItem
+						Command="{Binding SelectConnectedRoomsCommand}"
+						Header="{local:Localize SelectConnectedRooms}"
+						InputGestureText="{local:KeyBindings SelectConnectedRooms}" />
+					<MenuItem
+						Command="{Binding SelectRoomsByTagsCommand}"
+						Header="{local:Localize SelectRoomsByTags}"
+						InputGestureText="{local:KeyBindings SelectRoomsByTags}" />
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					Command="{Binding ExportRoomsCommand}"
+					Header="{local:Localize ExportRooms}"
+					InputGestureText="{local:KeyBindings ExportRooms}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Export-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding ImportRoomsCommand}"
+					Header="{local:Localize ImportRooms}"
+					InputGestureText="{local:KeyBindings ImportRooms}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding ApplyRoomPropertiesCommand}"
+					Header="{local:Localize ApplyRoomProperties}"
+					InputGestureText="{local:KeyBindings ApplyRoomProperties}" />
+			</MenuItem>
+
+			<!--  Items Menu  -->
+			<MenuItem Header="{local:Localize Items}">
+				<MenuItem
+					Command="{Binding AddWadCommand}"
+					Header="{local:Localize AddWad}"
+					InputGestureText="{local:KeyBindings AddWad}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding RemoveWadsCommand}"
+					Header="{local:Localize RemoveWads}"
+					InputGestureText="{local:KeyBindings RemoveWads}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding ReloadWadsCommand}"
+					Header="{local:Localize ReloadWads}"
+					InputGestureText="{local:KeyBindings ReloadWads}" />
+				<MenuItem
+					Command="{Binding ReloadSoundsCommand}"
+					Header="{local:Localize ReloadSounds}"
+					InputGestureText="{local:KeyBindings ReloadSounds}" />
+				<Separator />
+				<MenuItem Header="{local:Localize AddItem}">
+					<MenuItem
+						Command="{Binding AddCameraCommand}"
+						Header="{local:Localize AddCamera}"
+						InputGestureText="{local:KeyBindings AddCamera}">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Camera-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						Command="{Binding AddFlybyCameraCommand}"
+						Header="{local:Localize AddFlybyCamera}"
+						InputGestureText="{local:KeyBindings AddFlybyCamera}">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_movie_projector-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						Command="{Binding AddSpriteCommand}"
+						Header="{local:Localize AddSprite}"
+						InputGestureText="{local:KeyBindings AddSprite}">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Sprite-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						Command="{Binding AddSinkCommand}"
+						Header="{local:Localize AddSink}"
+						InputGestureText="{local:KeyBindings AddSink}">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_tornado-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						Command="{Binding AddSoundSourceCommand}"
+						Header="{local:Localize AddSoundSource}"
+						InputGestureText="{local:KeyBindings AddSoundSource}">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_speaker-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						Command="{Binding AddImportedGeometryCommand}"
+						Header="{local:Localize AddImportedGeometry}"
+						InputGestureText="{local:KeyBindings AddImportedGeometry}">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_custom-geometry.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						Command="{Binding AddGhostBlockCommand}"
+						Header="{local:Localize AddGhostBlock}"
+						InputGestureText="{local:KeyBindings AddGhostBlock}">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+					<MenuItem
+						Command="{Binding AddMemoCommand}"
+						Header="{local:Localize AddMemo}"
+						InputGestureText="{local:KeyBindings AddMemo}">
+						<MenuItem.Icon>
+							<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Memo-16.png" />
+						</MenuItem.Icon>
+					</MenuItem>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding AddPortalCommand}"
+					Header="{local:Localize AddPortal}"
+					InputGestureText="{local:KeyBindings AddPortal}" />
+				<MenuItem
+					Command="{Binding AddTriggerCommand}"
+					Header="{local:Localize AddTrigger}"
+					InputGestureText="{local:KeyBindings AddTrigger}" />
+				<MenuItem
+					Command="{Binding AddBoxVolumeCommand}"
+					Header="{local:Localize AddBoxVolume}"
+					InputGestureText="{local:KeyBindings AddBoxVolume}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_volume-box-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding AddSphereVolumeCommand}"
+					Header="{local:Localize AddSphereVolume}"
+					InputGestureText="{local:KeyBindings AddSphereVolume}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_volume-sphere-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem Header="{local:Localize Delete}">
+					<MenuItem
+						Command="{Binding DeleteAllLightsCommand}"
+						Header="{local:Localize DeleteAllLights}"
+						InputGestureText="{local:KeyBindings DeleteAllLights}" />
+					<MenuItem
+						Command="{Binding DeleteAllObjectsCommand}"
+						Header="{local:Localize DeleteAllObjects}"
+						InputGestureText="{local:KeyBindings DeleteAllObjects}" />
+					<MenuItem
+						Command="{Binding DeleteAllTriggersCommand}"
+						Header="{local:Localize DeleteAllTriggers}"
+						InputGestureText="{local:KeyBindings DeleteAllTriggers}" />
+					<MenuItem
+						Command="{Binding DeleteMissingObjectsCommand}"
+						Header="{local:Localize DeleteMissingObjects}"
+						InputGestureText="{local:KeyBindings DeleteMissingObjects}" />
+				</MenuItem>
+				<MenuItem
+					Command="{Binding LocateItemCommand}"
+					Header="{local:Localize LocateItem}"
+					InputGestureText="{local:KeyBindings LocateItem}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_target-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding MoveLaraCommand}"
+					Header="{local:Localize MoveLara}"
+					InputGestureText="{local:KeyBindings MoveLara}" />
+				<MenuItem
+					Command="{Binding SelectAllObjectsInAreaCommand}"
+					Header="{local:Localize SelectAllObjectsInArea}"
+					InputGestureText="{local:KeyBindings SelectAllObjectsInArea}" />
+				<MenuItem
+					Command="{Binding SelectFloorBelowObjectCommand}"
+					Header="{local:Localize SelectFloorBelowObject}"
+					InputGestureText="{local:KeyBindings SelectFloorBelowObject}" />
+				<MenuItem
+					Command="{Binding SplitSectorObjectOnSelectionCommand}"
+					Header="{local:Localize SplitSectorObjectOnSelection}"
+					InputGestureText="{local:KeyBindings SplitSectorObjectOnSelection}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding SetStaticMeshesColorToRoomLightCommand}"
+					Header="{local:Localize SetStaticMeshesColorToRoomLight}"
+					InputGestureText="{local:KeyBindings SetStaticMeshesColorToRoomLight}" />
+				<MenuItem
+					Command="{Binding SetStaticMeshesColorCommand}"
+					Header="{local:Localize SetStaticMeshesColor}"
+					InputGestureText="{local:KeyBindings SetStaticMeshesColor}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding MakeQuickItemGroupCommand}"
+					Header="{local:Localize MakeQuickItemGroup}"
+					InputGestureText="{local:KeyBindings MakeQuickItemGroup}" />
+				<MenuItem
+					Command="{Binding GetObjectStatisticsCommand}"
+					Header="{local:Localize GetObjectStatistics}"
+					InputGestureText="{local:KeyBindings GetObjectStatistics}" />
+				<MenuItem
+					Command="{Binding GenerateObjectNamesCommand}"
+					Header="{local:Localize GenerateObjectNames}"
+					InputGestureText="{local:KeyBindings GenerateObjectNames}" />
+			</MenuItem>
+
+			<!--  Textures Menu  -->
+			<MenuItem Header="{local:Localize Textures}">
+				<MenuItem
+					Command="{Binding AddTextureCommand}"
+					Header="{local:Localize AddTexture}"
+					InputGestureText="{local:KeyBindings AddTexture}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding RemoveTexturesCommand}"
+					Header="{local:Localize RemoveTextures}"
+					InputGestureText="{local:KeyBindings RemoveTextures}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding UnloadTexturesCommand}"
+					Header="{local:Localize UnloadTextures}"
+					InputGestureText="{local:KeyBindings UnloadTextures}" />
+				<MenuItem
+					Command="{Binding ReloadTexturesCommand}"
+					Header="{local:Localize ReloadTextures}"
+					InputGestureText="{local:KeyBindings ReloadTextures}" />
+				<MenuItem
+					Command="{Binding ConvertTexturesToPNGCommand}"
+					Header="{local:Localize ConvertTexturesToPNG}"
+					InputGestureText="{local:KeyBindings ConvertTexturesToPNG}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Import-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding RemapTextureCommand}"
+					Header="{local:Localize RemapTexture}"
+					InputGestureText="{local:KeyBindings RemapTexture}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_crop-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					Command="{Binding TextureFloorCommand}"
+					Header="{local:Localize TextureFloor}"
+					InputGestureText="{local:KeyBindings TextureFloor}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Floor2-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding TextureWallsCommand}"
+					Header="{local:Localize TextureWalls}"
+					InputGestureText="{local:KeyBindings TextureWalls}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Walls2-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding TextureCeilingCommand}"
+					Header="{local:Localize TextureCeiling}"
+					InputGestureText="{local:KeyBindings TextureCeiling}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Ceiling2-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem
+					Command="{Binding ClearAllTexturesInRoomCommand}"
+					Header="{local:Localize ClearAllTexturesInRoom}"
+					InputGestureText="{local:KeyBindings ClearAllTexturesInRoom}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_toolbox/toolbox_Eraser-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding ClearAllTexturesInLevelCommand}"
+					Header="{local:Localize ClearAllTexturesInLevel}"
+					InputGestureText="{local:KeyBindings ClearAllTexturesInLevel}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding SearchTexturesCommand}"
+					Header="{local:Localize SearchTextures}"
+					InputGestureText="{local:KeyBindings SearchTextures}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding EditAnimationRangesCommand}"
+					Header="{local:Localize EditAnimationRanges}"
+					InputGestureText="{local:KeyBindings EditAnimationRanges}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_anim_ranges-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+
+			<!--  Transform Menu  -->
+			<MenuItem Header="{local:Localize Transform}">
+				<MenuItem
+					Command="{Binding IncreaseStepHeightCommand}"
+					Header="{local:Localize IncreaseStepHeight}"
+					InputGestureText="{local:KeyBindings IncreaseStepHeight}" />
+				<MenuItem
+					Command="{Binding DecreaseStepHeightCommand}"
+					Header="{local:Localize DecreaseStepHeight}"
+					InputGestureText="{local:KeyBindings DecreaseStepHeight}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding SmoothRandomFloorUpCommand}"
+					Header="{local:Localize SmoothRandomFloorUp}"
+					InputGestureText="{local:KeyBindings SmoothRandomFloorUp}" />
+				<MenuItem
+					Command="{Binding SmoothRandomFloorDownCommand}"
+					Header="{local:Localize SmoothRandomFloorDown}"
+					InputGestureText="{local:KeyBindings SmoothRandomFloorDown}" />
+				<MenuItem
+					Command="{Binding SmoothRandomCeilingUpCommand}"
+					Header="{local:Localize SmoothRandomCeilingUp}"
+					InputGestureText="{local:KeyBindings SmoothRandomCeilingUp}" />
+				<MenuItem
+					Command="{Binding SmoothRandomCeilingDownCommand}"
+					Header="{local:Localize SmoothRandomCeilingDown}"
+					InputGestureText="{local:KeyBindings SmoothRandomCeilingDown}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding SharpRandomFloorUpCommand}"
+					Header="{local:Localize SharpRandomFloorUp}"
+					InputGestureText="{local:KeyBindings SharpRandomFloorUp}" />
+				<MenuItem
+					Command="{Binding SharpRandomFloorDownCommand}"
+					Header="{local:Localize SharpRandomFloorDown}"
+					InputGestureText="{local:KeyBindings SharpRandomFloorDown}" />
+				<MenuItem
+					Command="{Binding SharpRandomCeilingUpCommand}"
+					Header="{local:Localize SharpRandomCeilingUp}"
+					InputGestureText="{local:KeyBindings SharpRandomCeilingUp}" />
+				<MenuItem
+					Command="{Binding SharpRandomCeilingDownCommand}"
+					Header="{local:Localize SharpRandomCeilingDown}"
+					InputGestureText="{local:KeyBindings SharpRandomCeilingDown}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding AverageFloorCommand}"
+					Header="{local:Localize AverageFloor}"
+					InputGestureText="{local:KeyBindings AverageFloor}" />
+				<MenuItem
+					Command="{Binding AverageCeilingCommand}"
+					Header="{local:Localize AverageCeiling}"
+					InputGestureText="{local:KeyBindings AverageCeiling}" />
+				<MenuItem
+					Command="{Binding FlattenFloorCommand}"
+					Header="{local:Localize FlattenFloor}"
+					InputGestureText="{local:KeyBindings FlattenFloor}" />
+				<MenuItem
+					Command="{Binding FlattenCeilingCommand}"
+					Header="{local:Localize FlattenCeiling}"
+					InputGestureText="{local:KeyBindings FlattenCeiling}" />
+				<MenuItem
+					Command="{Binding ResetGeometryCommand}"
+					Header="{local:Localize ResetGeometry}"
+					InputGestureText="{local:KeyBindings ResetGeometry}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding GridWallsIn3Command}"
+					Header="{local:Localize GridWallsIn3}"
+					InputGestureText="{local:KeyBindings GridWallsIn3}" />
+				<MenuItem
+					Command="{Binding GridWallsIn5Command}"
+					Header="{local:Localize GridWallsIn5}"
+					InputGestureText="{local:KeyBindings GridWallsIn5}" />
+				<MenuItem
+					Command="{Binding GridWallsIn3SquaresCommand}"
+					Header="{local:Localize GridWallsIn3Squares}"
+					InputGestureText="{local:KeyBindings GridWallsIn3Squares}" />
+				<MenuItem
+					Command="{Binding GridWallsIn5SquaresCommand}"
+					Header="{local:Localize GridWallsIn5Squares}"
+					InputGestureText="{local:KeyBindings GridWallsIn5Squares}" />
+			</MenuItem>
+
+			<!--  Tools Menu  -->
+			<MenuItem Header="{local:Localize Tools}">
+				<MenuItem
+					Command="{Binding EditLevelSettingsCommand}"
+					Header="{local:Localize EditLevelSettings}"
+					InputGestureText="{local:KeyBindings EditLevelSettings}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_settings-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding EditOptionsCommand}"
+					Header="{local:Localize EditOptions}"
+					InputGestureText="{local:KeyBindings EditOptions}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_options-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem
+					Command="{Binding EditKeyboardLayoutCommand}"
+					Header="{local:Localize EditKeyboardLayout}"
+					InputGestureText="{local:KeyBindings EditKeyboardLayout}" />
+				<Separator />
+				<MenuItem
+					Command="{Binding StartWadToolCommand}"
+					Header="{local:Localize StartWadTool}"
+					InputGestureText="{local:KeyBindings StartWadTool}" />
+				<MenuItem
+					Command="{Binding StartSoundToolCommand}"
+					Header="{local:Localize StartSoundTool}"
+					InputGestureText="{local:KeyBindings StartSoundTool}" />
+			</MenuItem>
+
+			<!--  Window Menu  -->
+			<MenuItem Header="{local:Localize Window}">
+				<MenuItem
+					Command="{Binding RestoreDefaultLayoutCommand}"
+					Header="{local:Localize RestoreDefaultLayout}"
+					InputGestureText="{local:KeyBindings RestoreDefaultLayout}" />
+				<Separator />
+				<MenuItem
+					x:Name="sectorOptionsToolStripMenuItem"
+					Header="ShowSectorOptions"
+					IsCheckable="True"
+					Tag="ShowSectorOptions" />
+				<MenuItem
+					x:Name="roomOptionsToolStripMenuItem"
+					Header="ShowRoomOptions"
+					IsCheckable="True"
+					Tag="ShowRoomOptions" />
+				<MenuItem
+					x:Name="itemBrowserToolStripMenuItem"
+					Header="ShowItemBrowser"
+					IsCheckable="True"
+					Tag="ShowItemBrowser" />
+				<MenuItem
+					x:Name="importedGeometryBrowserToolstripMenuItem"
+					Header="ShowImportedGeometryBrowser"
+					IsCheckable="True"
+					Tag="ShowImportedGeometryBrowser" />
+				<MenuItem
+					x:Name="triggerListToolStripMenuItem"
+					Header="ShowTriggerList"
+					IsCheckable="True"
+					Tag="ShowTriggerList" />
+				<MenuItem
+					x:Name="lightingToolStripMenuItem"
+					Header="ShowLighting"
+					IsCheckable="True"
+					Tag="ShowLighting" />
+				<MenuItem
+					x:Name="paletteToolStripMenuItem"
+					Header="ShowPalette"
+					IsCheckable="True"
+					Tag="ShowPalette" />
+				<MenuItem
+					x:Name="texturePanelToolStripMenuItem"
+					Header="ShowTexturePanel"
+					IsCheckable="True"
+					Tag="ShowTexturePanel" />
+				<MenuItem
+					x:Name="objectListToolStripMenuItem"
+					Header="ShowObjectList"
+					IsCheckable="True"
+					Tag="ShowObjectList" />
+				<MenuItem
+					x:Name="statisticsToolStripMenuItem"
+					Header="ShowStatistics"
+					IsCheckable="True"
+					Tag="ShowStatistics" />
+				<MenuItem
+					x:Name="dockableToolStripMenuItem"
+					Header="ShowToolPalette"
+					IsCheckable="True"
+					Tag="ShowToolPalette" />
+				<MenuItem
+					x:Name="floatingToolStripMenuItem"
+					Header="Tool Palette (floating)"
+					IsCheckable="True" />
+			</MenuItem>
+
+			<!--  Help Menu  -->
+			<MenuItem Header="{local:Localize Help}">
+				<MenuItem
+					Command="{Binding AboutCommand}"
+					Header="{local:Localize About}"
+					InputGestureText="{local:KeyBindings About}">
+					<MenuItem.Icon>
+						<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_AboutIcon-16.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+
+		<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.TinyThickness}" HorizontalAlignment="Right">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="200" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<AdornerDecorator>
+				<TextBox x:Name="tbSearchMenu" Style="{DynamicResource FlatDarkTextBox}">
+					<darkUI:WatermarkService.Watermark>
+						<TextBlock Foreground="{DynamicResource Brush_Text}" Text="Search for menu entry..." />
+					</darkUI:WatermarkService.Watermark>
+				</TextBox>
+			</AdornerDecorator>
+			<Button
+				x:Name="butFindMenu"
+				Grid.Column="1"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="Search for menu entry">
+				<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_search-16.png" />
+			</Button>
+		</sg:SpacedGrid>
+
+		<DockingManager x:Name="dockManager" Grid.Row="1">
+			<LayoutRoot>
+				<LayoutPanel Orientation="Horizontal">
+					<LayoutAnchorablePaneGroup DockWidth="287" Orientation="Vertical">
+						<LayoutAnchorablePane
+							DockHeight="279"
+							DockMinHeight="279"
+							DockMinWidth="287">
+							<LayoutAnchorable Title="Sector Options" ContentId="SectorOptions">
+								<toolwindows:SectorOptions x:Name="SectorOptions" />
+							</LayoutAnchorable>
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane
+							DockHeight="223"
+							DockMinHeight="223"
+							DockMinWidth="287">
+							<LayoutAnchorable Title="Room Options" ContentId="RoomOptions">
+								<toolwindows:RoomOptions x:Name="RoomOptions" />
+							</LayoutAnchorable>
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane DockHeight="*" DockMinHeight="250">
+							<LayoutAnchorable Title="Items" ContentId="Items">
+								<toolwindows:ItemBrowser x:Name="Items" />
+							</LayoutAnchorable>
+							<LayoutAnchorable Title="Imported Geometry" ContentId="ImportedGeometry">
+								<toolwindows:ImportedGeometryBrowser x:Name="ImportedGeometry" />
+							</LayoutAnchorable>
+						</LayoutAnchorablePane>
+						<LayoutAnchorablePane DockHeight="*" DockMinHeight="250">
+							<LayoutAnchorable Title="Triggers" ContentId="Triggers">
+								<toolwindows:TriggerList x:Name="Triggers" />
+							</LayoutAnchorable>
+							<LayoutAnchorable Title="Objects in Room" ContentId="ObjectsInRoom">
+								<toolwindows:ObjectList x:Name="ObjectsInRoom" />
+							</LayoutAnchorable>
+						</LayoutAnchorablePane>
+					</LayoutAnchorablePaneGroup>
+
+					<LayoutPanel Orientation="Vertical">
+						<LayoutDocumentPane>
+							<LayoutDocument x:Name="MainView" Title="3D View">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="*" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<ToolBarTray>
+										<ToolBar>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_2DView-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_3DView-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_TextureMode-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_light_on-16.png" />
+											</ToggleButton>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_undo-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_redo-16.png" />
+											</Button>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_center_direction-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_airplane-16.png" />
+											</Button>
+										</ToolBar>
+										<ToolBar>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawPortals-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawAllRooms-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_horizon-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_generic_text-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawCardinalDirections-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Transparent_1-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_AlphaTest-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawUntexturedLights-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_StaticTint-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Warning-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Slide-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_HideCustomGeometry_1-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_HideHiddenRooms-16.png" />
+											</ToggleButton>
+											<xceed:DropDownButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_DrawObjects-16.png" />
+											</xceed:DropDownButton>
+										</ToolBar>
+										<ToolBar>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy_link-16.png" />
+											</ToggleButton>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_clipboard-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_rubber_stamp-16.png" />
+											</Button>
+										</ToolBar>
+										<ToolBar>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_Solid-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_ToggleOpacity-16.png" />
+											</ToggleButton>
+											<ToggleButton>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_texture/texture_ToggleOpacity2-16.png" />
+											</ToggleButton>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Camera-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_movie_projector-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_tornado-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_speaker-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_custom-geometry.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_geometry-override-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_objects/objects_Memo-16.png" />
+											</Button>
+										</ToolBar>
+										<ToolBar>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_compile-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play-16.png" />
+											</Button>
+											<Button>
+												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_play_fast-16.png" />
+											</Button>
+										</ToolBar>
+									</ToolBarTray>
+									<toolwindows:MainView Grid.Row="1" />
+									<TextBlock
+										Grid.Row="2"
+										Margin="4"
+										TextWrapping="Wrap">
+										Rooms: 1 Objects: 0 / 0 Statics: 0 / 0 Triggers: 0 / 0 Lights: 0 / 0 Cameras: 0 / 0 Flybys: 0 / 0<LineBreak />
+										Room vertices / faces: 0 / 0 Last level output: compile level</TextBlock>
+								</Grid>
+							</LayoutDocument>
+							<LayoutDocument Title="2D View">
+								<toolwindows:MainView2 />
+							</LayoutDocument>
+						</LayoutDocumentPane>
+
+						<LayoutAnchorablePaneGroup DockHeight="140" Orientation="Horizontal">
+							<LayoutAnchorablePane DockMinWidth="370" DockWidth="370">
+								<LayoutAnchorable Title="Lighting" ContentId="Lighting">
+									<toolwindows:Lighting x:Name="Lighting" />
+								</LayoutAnchorable>
+							</LayoutAnchorablePane>
+							<LayoutAnchorablePane DockWidth="*">
+								<LayoutAnchorable Title="Palette" ContentId="Palette">
+									<toolwindows:Palette x:Name="Palette" />
+								</LayoutAnchorable>
+							</LayoutAnchorablePane>
+						</LayoutAnchorablePaneGroup>
+					</LayoutPanel>
+
+					<LayoutAnchorablePane DockWidth="300">
+						<LayoutAnchorable Title="Texturing" ContentId="Texturing">
+							<toolwindows:TexturePanel x:Name="Texturing" />
+						</LayoutAnchorable>
+					</LayoutAnchorablePane>
+				</LayoutPanel>
+			</LayoutRoot>
+		</DockingManager>
+		<StatusBar Grid.Row="2">
+			<TextBlock Text="Selected room: Name = Room 0 | Size = 18 x 18 | Pos = (0,0,0) | Floor = 0 | Ceiling = 12" />
+		</StatusBar>
+	</Grid>
+</views:ViewWindow>

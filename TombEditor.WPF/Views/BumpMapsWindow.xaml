@@ -6,10 +6,10 @@
         xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
         xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
-        x:Class="TombEditor.WPF.Forms.FormBumpMaps"
+        x:Class="TombEditor.WPF.Forms.BumpMapsWindow"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Bumpmaps" Height="601" Width="440">
+        Title="Bumpmaps" Height="601" MinHeight="601" Width="440" MinWidth="440">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition Height="Auto"/>

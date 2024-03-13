@@ -26,6 +26,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Assets\i18n\en.json" />
     <None Remove="Resources\icons_actions\actions_2DView-16.png" />
     <None Remove="Resources\icons_actions\actions_3DView-16.png" />
     <None Remove="Resources\icons_actions\actions_AlphaTest-16.png" />
@@ -181,6 +182,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalPaths.cs" Link="GlobalPaths.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\i18n\en.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
     
   <ItemGroup>

@@ -1,11 +1,68 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using System.Windows;
+using System.Windows.Input;
 
 namespace TombEditor.WPF
 {
+	public sealed class DynamicKeyBinding : KeyBinding
+	{
+		public static readonly DependencyProperty InputGestureTextProperty = DependencyProperty.Register(nameof(InputGestureText), typeof(string), typeof(DynamicKeyBinding));
+
+		public string? InputGestureText
+		{
+			get => (string)GetValue(InputGestureTextProperty);
+			set => SetValue(InputGestureTextProperty, value);
+		}
+
+		private readonly KeyGestureValueSerializer _serializer = new();
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.Property == InputGestureTextProperty && e.NewValue is string text)
+			{
+				if (string.IsNullOrEmpty(text))
+					Gesture = new KeyGesture(Key.NoName);
+				else
+				{
+					try
+					{
+						Gesture = (KeyGesture)_serializer.ConvertFromString(text, null);
+					}
+					catch (NotSupportedException)
+					{
+						string[] keys = text.Split('+');
+
+						if (keys.Length == 1)
+							Key = (Key)Enum.Parse(typeof(Key), keys[0]);
+						else
+						{
+							ModifierKeys modifiers = ModifierKeys.None;
+							Key key = Key.NoName;
+
+							foreach (string keyString in keys)
+							{
+								if (Enum.TryParse(keyString, true, out ModifierKeys modifier))
+									modifiers |= modifier;
+								else
+									key = (Key)Enum.Parse(typeof(Key), keyString);
+							}
+
+							Modifiers = modifiers;
+							Key = key;
+						}
+					}
+				}
+			}
+
+			base.OnPropertyChanged(e);
+		}
+	}
+
 	public class Localizer : INotifyPropertyChanged
 	{
 		public static Localizer Instance { get; set; } = new Localizer();
@@ -23,7 +80,7 @@ namespace TombEditor.WPF
 			if (resource is not null)
 			{
 				using var reader = new StreamReader(resource);
-				Strings = JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd());
+				Strings = JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd(), new JsonSerializerOptions { ReadCommentHandling = JsonCommentHandling.Skip });
 
 				Invalidate();
 				return true;
@@ -38,7 +95,7 @@ namespace TombEditor.WPF
 		{
 			get
 			{
-				if (Strings != null && Strings.TryGetValue(key, out string? value))
+				if (Strings is not null && Strings.TryGetValue(key, out string? value))
 					return value.Replace("\\n", "\n");
 
 				return $"{Language}:{key}";

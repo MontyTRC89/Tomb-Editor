@@ -9,7 +9,6 @@ namespace TombEditor.WPF.ToolWindows;
 public partial class MainView : System.Windows.Controls.UserControl
 {
 	private Panel3D panel3D = new();
-	private Panel2DMap panel2DMap = new();
 
 	public MainView()
 	{

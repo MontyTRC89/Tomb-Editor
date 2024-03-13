@@ -1,12 +1,16 @@
 ﻿using DarkUI.Config;
 using DarkUI.Win32;
+using MvvmDialogs;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using TombEditor.WPF.Forms;
+using TombEditor.WPF.ViewModels;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Utils;
@@ -20,22 +24,20 @@ namespace TombEditor.WPF;
 /// </summary>
 public partial class App : Application
 {
-	private static Mutex mutex = new Mutex(true, "{84867F76-232B-442B-9B10-DC72C8288839}");
+	private static readonly Mutex mutex = new(true, "{84867F76-232B-442B-9B10-DC72C8288839}");
 
 	protected override void OnStartup(StartupEventArgs e)
 	{
 		Localizer.Instance.LoadLanguage("en");
-
 		Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 		string[] args = e.Args;
 
-		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-		string startFile = null;
-		string batchFile = null;
+		string? startFile = null;
+		string? batchFile = null;
 		bool doBatchCompile = false;
-		BatchCompileList batchList = null;
+		BatchCompileList? batchList = null;
 
 		if (args.Length >= 1)
 		{
@@ -55,7 +57,7 @@ public partial class App : Application
 
 		// Load configuration
 		var initialEvents = new List<LogEventInfo>();
-		var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
+		Configuration configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
 
 		// Update DarkUI configuration
 		Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
@@ -63,50 +65,89 @@ public partial class App : Application
 		if (configuration.Editor_AllowMultipleInstances || doBatchCompile || mutex.WaitOne(TimeSpan.Zero, true))
 		{
 			// Setup logging
-			using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
+			using var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents);
+
+			// Create configuration file
+			configuration.SaveTry();
+
+			// Setup application
+			WinFormsApp.EnableVisualStyles();
+			WinFormsApp.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+			WinFormsApp.SetHighDpiMode(System.Windows.Forms.HighDpiMode.SystemAware);
+			WinFormsApp.SetCompatibleTextRenderingDefault(false);
+			WinFormsApp.SetUnhandledExceptionMode(System.Windows.Forms.UnhandledExceptionMode.CatchException);
+
+			WinFormsApp.ThreadException += (sender, e) =>
 			{
-				// Create configuration file
-				configuration.SaveTry();
+				log.HandleException(e.Exception);
+				using var dialog = new System.Windows.Forms.ThreadExceptionDialog(e.Exception);
 
-				// Setup application
-				WinFormsApp.EnableVisualStyles();
-				WinFormsApp.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
-				WinFormsApp.SetHighDpiMode(System.Windows.Forms.HighDpiMode.SystemAware);
-				WinFormsApp.SetCompatibleTextRenderingDefault(false);
-				WinFormsApp.SetUnhandledExceptionMode(System.Windows.Forms.UnhandledExceptionMode.CatchException);
+				if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Abort)
+					Environment.Exit(1);
+			};
 
-				WinFormsApp.ThreadException += (sender, e) =>
+			WinFormsApp.AddMessageFilter(new ControlScrollFilter());
+			SynchronizationContext.SetSynchronizationContext(new System.Windows.Forms.WindowsFormsSynchronizationContext());
+
+			if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
+				Environment.Exit(1);
+
+			// Load catalogs
+			try
+			{
+				TrCatalog.LoadCatalog(WinFormsApp.StartupPath + "\\Catalogs\\TrCatalog.xml");
+				NgCatalog.LoadCatalog(WinFormsApp.StartupPath + "\\Catalogs\\NgCatalog.xml");
+			}
+			catch (Exception)
+			{
+				MessageBox.Show("An error occured while loading one of the catalog files.\nFile may be corrupted. Check the log file for details.");
+				Environment.Exit(1);
+			}
+
+			var editor = new Editor(SynchronizationContext.Current, configuration)
+			{
+				DialogService = new DialogService()
+			};
+
+			Editor.Instance = editor;
+
+			//TEST WINDOWS
+			//var mainWindow = new FindTexturesWindow { };
+			//Current.MainWindow = mainWindow;
+			//Current.MainWindow.Show();
+
+			// Run editor normally if no batch compile is pending.
+			// Otherwise, don't load main form and jump straight to batch-compiling levels.
+
+			if (!doBatchCompile)
+			{
+
+				var mainWindow = new MainWindow
 				{
-					log.HandleException(e.Exception);
-					using (var dialog = new System.Windows.Forms.ThreadExceptionDialog(e.Exception))
-						if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Abort)
-							Environment.Exit(1);
+					ViewModel = new MainWindowViewModel(editor)
 				};
 
-				WinFormsApp.AddMessageFilter(new ControlScrollFilter());
-				SynchronizationContext.SetSynchronizationContext(new System.Windows.Forms.WindowsFormsSynchronizationContext());
+				Current.MainWindow = mainWindow;
+				Current.MainWindow.Show();
 
-				if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
-					Environment.Exit(1);
-
-				// Load catalogs
-				try
+				if (!string.IsNullOrEmpty(startFile)) // Open files on start
 				{
-					TrCatalog.LoadCatalog(WinFormsApp.StartupPath + "\\Catalogs\\TrCatalog.xml");
-					NgCatalog.LoadCatalog(WinFormsApp.StartupPath + "\\Catalogs\\NgCatalog.xml");
+					if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+						EditorActions.OpenLevelPrj(mainWindow.ViewModel, startFile);
+					else
+						EditorActions.OpenLevel(mainWindow.ViewModel, startFile);
 				}
-				catch (Exception ex)
+				else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
 				{
-					MessageBox.Show("An error occured while loading one of the catalog files.\nFile may be corrupted. Check the log file for details.");
-					Environment.Exit(1);
+					if (TombEditor.Properties.Settings.Default.RecentProjects != null && TombEditor.Properties.Settings.Default.RecentProjects.Count > 0 &&
+						File.Exists(TombEditor.Properties.Settings.Default.RecentProjects[0]))
+						EditorActions.OpenLevel(mainWindow.ViewModel, TombEditor.Properties.Settings.Default.RecentProjects[0]);
 				}
-
-				// Run
-				var editor = new Editor(SynchronizationContext.Current, configuration);
-				Editor.Instance = editor;
 			}
+			else
+				EditorActions.BuildInBatch(editor, batchList, batchFile);
 		}
-		else if (startFile != null) // Send opening file to existing editor instance
+        else if (startFile != null) // Send opening file to existing editor instance
 			SingleInstanceManagement.Send(Process.GetCurrentProcess(), new List<string>() { ".prj2" }, startFile);
 		else // Just bring editor to top, if user tries to launch another copy
 			SingleInstanceManagement.Bump(Process.GetCurrentProcess());

@@ -20,6 +20,6 @@ public partial class ItemBrowser : System.Windows.Controls.UserControl
 		//panel.Controls.AddRange(WinFormsLayer.Controls.Cast<Control>().ToArray());
 		//panel.Dock = DockStyle.Fill;
 
-		ItemPreviewHost.Child = new PanelRenderingItem();
+		//ItemPreviewHost.Child = new PanelRenderingItem();
 	}
 }

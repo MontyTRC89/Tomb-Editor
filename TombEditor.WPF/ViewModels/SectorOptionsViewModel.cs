@@ -1,17 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NLog;
+using System.Numerics;
 using System.Windows.Input;
+using System.Windows.Media;
 using TombLib.Rendering;
 
 namespace TombEditor.WPF.ViewModels;
 
 public partial class SectorOptionsViewModel : ObservableObject
 {
-	private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-	private readonly Editor _editor;
-
-	public Configuration Configuration { get; }
+	[ObservableProperty] private Vector4 floorColor;
+	[ObservableProperty] private Vector4 boxColor;
+	[ObservableProperty] private Vector4 notWalkableColor;
+	[ObservableProperty] private Vector4 monkeyswingColor;
+	[ObservableProperty] private Vector4 deathColor;
+	[ObservableProperty] private Vector4 portalColor;
+	[ObservableProperty] private Vector4 wallColor;
 
 	public ICommand SetFloorCommand { get; }
 	public ICommand SetCeilingCommand { get; }
@@ -33,30 +37,51 @@ public partial class SectorOptionsViewModel : ObservableObject
 	public ICommand CeilingStepCommand { get; }
 	public ICommand DiagonalWallCommand { get; }
 
+	private readonly Editor _editor;
+
 	public SectorOptionsViewModel(Editor editor)
 	{
 		_editor = editor;
-		Configuration = _editor.Configuration;
+		_editor.EditorEventRaised += EditorEventRaised;
 
-		//SetFloorCommand = new SetSurfaceCommand(this, editor, false, _logger);
-		//SetCeilingCommand = new SetSurfaceCommand(this, editor, true, _logger);
-		//SetBoxCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.Box, _logger);
-		//SetNotWalkableCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.NotWalkableFloor, _logger);
-		//SetMonkeyswingCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.Monkey, _logger);
-		//SetDeathCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.DeathFire, _logger);
-		//AddPortalCommand = new AddPortalCommand(this, editor, _logger);
-		//SetWallCommand = new SetWallCommand(this, editor, _logger);
-		//SetTriggerTriggererCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.TriggerTriggerer, _logger);
-		//SetBeetleCheckpointCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.Beetle, _logger);
-		//SetClimbPositiveZCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.ClimbPositiveZ, _logger);
-		//SetClimbPositiveXCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.ClimbPositiveX, _logger);
-		//SetClimbNegativeZCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.ClimbNegativeZ, _logger);
-		//SetClimbNegativeXCommand = new SetSectorFlagsCommand(this, editor, BlockFlags.ClimbNegativeX, _logger);
-		//AddGhostBlocksToSelectionCommand = new AddGhostBlocksCommand(this, editor, _logger);
-		//ToggleForceFloorSolidCommand = new ToggleForceFloorSolidCommand(this, editor, _logger);
-		//FloorStepCommand = new SetDiagonalFloorStepCommand(this, editor, _logger);
-		//CeilingStepCommand = new SetDiagonalCeilingStepCommand(this, editor, _logger);
-		//DiagonalWallCommand = new SetDiagonalWallCommand(this, editor, _logger);
+		SetFloorCommand = CommandHandler.GetCommand("SetFloor", new CommandArgs(this, _editor));
+		SetCeilingCommand = CommandHandler.GetCommand("SetCeiling", new CommandArgs(this, _editor));
+		SetBoxCommand = CommandHandler.GetCommand("SetBox", new CommandArgs(this, _editor));
+		SetNotWalkableCommand = CommandHandler.GetCommand("SetNotWalkable", new CommandArgs(this, _editor));
+		SetMonkeyswingCommand = CommandHandler.GetCommand("SetMonkeyswing", new CommandArgs(this, _editor));
+		SetDeathCommand = CommandHandler.GetCommand("SetDeath", new CommandArgs(this, _editor));
+		AddPortalCommand = CommandHandler.GetCommand("AddPortal", new CommandArgs(this, _editor));
+		SetWallCommand = CommandHandler.GetCommand("SetWall", new CommandArgs(this, _editor));
+		SetTriggerTriggererCommand = CommandHandler.GetCommand("SetTriggerTriggerer", new CommandArgs(this, _editor));
+		SetBeetleCheckpointCommand = CommandHandler.GetCommand("SetBeetleCheckpoint", new CommandArgs(this, _editor));
+		SetClimbPositiveZCommand = CommandHandler.GetCommand("SetClimbPositiveZ", new CommandArgs(this, _editor));
+		SetClimbPositiveXCommand = CommandHandler.GetCommand("SetClimbPositiveX", new CommandArgs(this, _editor));
+		SetClimbNegativeZCommand = CommandHandler.GetCommand("SetClimbNegativeZ", new CommandArgs(this, _editor));
+		SetClimbNegativeXCommand = CommandHandler.GetCommand("SetClimbNegativeX", new CommandArgs(this, _editor));
+		AddGhostBlocksToSelectionCommand = CommandHandler.GetCommand("AddGhostBlocksToSelection", new CommandArgs(this, _editor));
+		ToggleForceFloorSolidCommand = CommandHandler.GetCommand("ToggleForceFloorSolid", new CommandArgs(this, _editor));
+		FloorStepCommand = CommandHandler.GetCommand("SetDiagonalFloorStep", new CommandArgs(this, _editor));
+		CeilingStepCommand = CommandHandler.GetCommand("SetDiagonalCeilingStep", new CommandArgs(this, _editor));
+		DiagonalWallCommand = CommandHandler.GetCommand("SetDiagonalWall", new CommandArgs(this, _editor));
+
+		SetButtonColors();
+	}
+
+	private void EditorEventRaised(IEditorEvent obj)
+	{
+		if (obj is Editor.ConfigurationChangedEvent)
+			SetButtonColors();
+	}
+
+	private void SetButtonColors()
+	{
+		FloorColor = _editor.Configuration.UI_ColorScheme.ColorFloor;
+		BoxColor = _editor.Configuration.UI_ColorScheme.ColorBox;
+		NotWalkableColor = _editor.Configuration.UI_ColorScheme.ColorNotWalkable;
+		MonkeyswingColor = _editor.Configuration.UI_ColorScheme.ColorMonkey;
+		DeathColor = _editor.Configuration.UI_ColorScheme.ColorDeath;
+		PortalColor = _editor.Configuration.UI_ColorScheme.ColorPortal;
+		WallColor = _editor.Configuration.UI_ColorScheme.ColorWall;
 	}
 
 	[RelayCommand]
