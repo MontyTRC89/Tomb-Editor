@@ -233,6 +233,21 @@
 	"ChooseRoomTitle": "Choose a room",
 	"ChooseRoomtitelLabel": "titelLabel",
 
+	//Components for 'Search textures' window
+	"FindTexturesTitle": "Search textures",
+	"FindTexturesGridColRoom": "Room",
+	"FindTexturesGridBlock": "Block",
+	"FindTexturesFind": "Find",
+	"UntexturedFaces": "Untextured faces",
+	"InvisibleFaces": "Invisible faces",
+	"TexturesMissing": "Textures missing or out of bounds",
+	"ExactMatch": "Exact match with selected texture",
+	"PartialMatch": "Partial match with selected texture",
+	"TextureSetOnly": "Texture set only",
+	"SelectedRooms": "Selected rooms only",
+	"NewSearch": "New search",
+
 	//Generic
-	"Cancel": "Cancel"
+	"Cancel": "Cancel",
+	"Close": "Close"
 }

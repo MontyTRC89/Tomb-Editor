@@ -114,7 +114,7 @@ public partial class App : Application
 			Editor.Instance = editor;
 
 			//TEST WINDOWS
-			var mainWindow = new ChooseRoomWindow { };
+			var mainWindow = new FindTexturesWindow { };
 			Current.MainWindow = mainWindow;
 			Current.MainWindow.Show();
 
