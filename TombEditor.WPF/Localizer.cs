@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace TombEditor.WPF
@@ -19,8 +20,6 @@ namespace TombEditor.WPF
 			set => SetValue(InputGestureTextProperty, value);
 		}
 
-		private readonly KeyGestureValueSerializer _serializer = new();
-
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			if (e.Property == InputGestureTextProperty && e.NewValue is string text)
@@ -29,33 +28,25 @@ namespace TombEditor.WPF
 					Gesture = new KeyGesture(Key.NoName);
 				else
 				{
-					try
-					{
-						Gesture = (KeyGesture)_serializer.ConvertFromString(text, null);
-					}
-					catch (NotSupportedException)
-					{
-						string[] keys = text.Split('+');
+					var hotkey = Hotkey.FromString(text);
 
-						if (keys.Length == 1)
-							Key = (Key)Enum.Parse(typeof(Key), keys[0]);
-						else
-						{
-							ModifierKeys modifiers = ModifierKeys.None;
-							Key key = Key.NoName;
+					ModifierKeys modifiers = ModifierKeys.None;
+					Key key = Key.NoName;
 
-							foreach (string keyString in keys)
-							{
-								if (Enum.TryParse(keyString, true, out ModifierKeys modifier))
-									modifiers |= modifier;
-								else
-									key = (Key)Enum.Parse(typeof(Key), keyString);
-							}
+					if ((hotkey.Keys & Keys.Control) != Keys.None)
+						modifiers |= ModifierKeys.Control;
 
-							Modifiers = modifiers;
-							Key = key;
-						}
-					}
+					if ((hotkey.Keys & Keys.Shift) != Keys.None)
+						modifiers |= ModifierKeys.Shift;
+
+					if ((hotkey.Keys & Keys.Alt) != Keys.None)
+						modifiers |= ModifierKeys.Alt;
+
+					if (hotkey.MainKey != Keys.None)
+						key = KeyInterop.KeyFromVirtualKey((int)hotkey.MainKey);
+
+					Modifiers = modifiers;
+					Key = key;
 				}
 			}
 
