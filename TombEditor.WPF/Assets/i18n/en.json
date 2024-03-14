@@ -160,6 +160,18 @@
 	// Window Menu
 	"Window": "Window",
 	"RestoreDefaultLayout": "Restore default layout",
+	"ShowSectorOptions": "Sector Options",
+	"ShowRoomOptions": "Room Options",
+	"ShowItemBrowser": "Item Browser",
+	"ShowImportedGeometryBrowser": "Imported Geometry Browser",
+	"ShowTriggerList": "Trigger List",
+	"ShowLighting": "Lighting",
+	"ShowPalette": "Palette",
+	"ShowTexturePanel": "Texture Panel",
+	"ShowObjectList": "Object List",
+	"ShowStatistics": "Statistics",
+	"ShowToolPalette": "Tool Palette",
+	"ShowToolPaletteFloating": "Tool Palette (floating)",
 
 	// Help Menu
 	"Help": "Help",

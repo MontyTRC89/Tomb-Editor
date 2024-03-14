@@ -138,6 +138,101 @@
 		<local:DynamicKeyBinding Command="{Binding EditAnimationRangesCommand}" InputGestureText="{local:KeyBindings EditAnimationRanges}" />
 
 		<!--  Transform Menu  -->
+		<local:DynamicKeyBinding Command="{Binding IncreaseStepHeightCommand}" InputGestureText="{local:KeyBindings IncreaseStepHeight}" />
+		<local:DynamicKeyBinding Command="{Binding DecreaseStepHeightCommand}" InputGestureText="{local:KeyBindings DecreaseStepHeight}" />
+		<local:DynamicKeyBinding Command="{Binding SmoothRandomFloorUpCommand}" InputGestureText="{local:KeyBindings SmoothRandomFloorUp}" />
+		<local:DynamicKeyBinding Command="{Binding SmoothRandomFloorDownCommand}" InputGestureText="{local:KeyBindings SmoothRandomFloorDown}" />
+		<local:DynamicKeyBinding Command="{Binding SmoothRandomCeilingUpCommand}" InputGestureText="{local:KeyBindings SmoothRandomCeilingUp}" />
+		<local:DynamicKeyBinding Command="{Binding SmoothRandomCeilingDownCommand}" InputGestureText="{local:KeyBindings SmoothRandomCeilingDown}" />
+		<local:DynamicKeyBinding Command="{Binding SharpRandomFloorUpCommand}" InputGestureText="{local:KeyBindings SharpRandomFloorUp}" />
+		<local:DynamicKeyBinding Command="{Binding SharpRandomFloorDownCommand}" InputGestureText="{local:KeyBindings SharpRandomFloorDown}" />
+		<local:DynamicKeyBinding Command="{Binding SharpRandomCeilingUpCommand}" InputGestureText="{local:KeyBindings SharpRandomCeilingUp}" />
+		<local:DynamicKeyBinding Command="{Binding SharpRandomCeilingDownCommand}" InputGestureText="{local:KeyBindings SharpRandomCeilingDown}" />
+		<local:DynamicKeyBinding Command="{Binding AverageFloorCommand}" InputGestureText="{local:KeyBindings AverageFloor}" />
+		<local:DynamicKeyBinding Command="{Binding AverageCeilingCommand}" InputGestureText="{local:KeyBindings AverageCeiling}" />
+		<local:DynamicKeyBinding Command="{Binding FlattenFloorCommand}" InputGestureText="{local:KeyBindings FlattenFloor}" />
+		<local:DynamicKeyBinding Command="{Binding FlattenCeilingCommand}" InputGestureText="{local:KeyBindings FlattenCeiling}" />
+		<local:DynamicKeyBinding Command="{Binding ResetGeometryCommand}" InputGestureText="{local:KeyBindings ResetGeometry}" />
+		<local:DynamicKeyBinding Command="{Binding GridWallsIn3Command}" InputGestureText="{local:KeyBindings GridWallsIn3}" />
+		<local:DynamicKeyBinding Command="{Binding GridWallsIn5Command}" InputGestureText="{local:KeyBindings GridWallsIn5}" />
+		<local:DynamicKeyBinding Command="{Binding GridWallsIn3SquaresCommand}" InputGestureText="{local:KeyBindings GridWallsIn3Squares}" />
+		<local:DynamicKeyBinding Command="{Binding GridWallsIn5SquaresCommand}" InputGestureText="{local:KeyBindings GridWallsIn5Squares}" />
+
+		<!--  Tools Menu  -->
+		<local:DynamicKeyBinding Command="{Binding EditLevelSettingsCommand}" InputGestureText="{local:KeyBindings EditLevelSettings}" />
+		<local:DynamicKeyBinding Command="{Binding EditOptionsCommand}" InputGestureText="{local:KeyBindings EditOptions}" />
+		<local:DynamicKeyBinding Command="{Binding EditKeyboardLayoutCommand}" InputGestureText="{local:KeyBindings EditKeyboardLayout}" />
+		<local:DynamicKeyBinding Command="{Binding StartWadToolCommand}" InputGestureText="{local:KeyBindings StartWadTool}" />
+		<local:DynamicKeyBinding Command="{Binding StartSoundToolCommand}" InputGestureText="{local:KeyBindings StartSoundTool}" />
+
+		<!--  Window Menu  -->
+		<local:DynamicKeyBinding Command="{Binding RestoreDefaultLayoutCommand}" InputGestureText="{local:KeyBindings RestoreDefaultLayout}" />
+		<local:DynamicKeyBinding Command="{Binding ShowSectorOptionsCommand}" InputGestureText="{local:KeyBindings ShowSectorOptions}" />
+		<local:DynamicKeyBinding Command="{Binding ShowRoomOptionsCommand}" InputGestureText="{local:KeyBindings ShowRoomOptions}" />
+		<local:DynamicKeyBinding Command="{Binding ShowItemBrowserCommand}" InputGestureText="{local:KeyBindings ShowItemBrowser}" />
+		<local:DynamicKeyBinding Command="{Binding ShowImportedGeometryBrowserCommand}" InputGestureText="{local:KeyBindings ShowImportedGeometryBrowser}" />
+		<local:DynamicKeyBinding Command="{Binding ShowTriggerListCommand}" InputGestureText="{local:KeyBindings ShowTriggerList}" />
+		<local:DynamicKeyBinding Command="{Binding ShowLightingCommand}" InputGestureText="{local:KeyBindings ShowLighting}" />
+		<local:DynamicKeyBinding Command="{Binding ShowPaletteCommand}" InputGestureText="{local:KeyBindings ShowPalette}" />
+		<local:DynamicKeyBinding Command="{Binding ShowTexturePanelCommand}" InputGestureText="{local:KeyBindings ShowTexturePanel}" />
+		<local:DynamicKeyBinding Command="{Binding ShowObjectListCommand}" InputGestureText="{local:KeyBindings ShowObjectList}" />
+		<local:DynamicKeyBinding Command="{Binding ShowStatisticsCommand}" InputGestureText="{local:KeyBindings ShowStatistics}" />
+		<local:DynamicKeyBinding Command="{Binding ShowToolPaletteCommand}" InputGestureText="{local:KeyBindings ShowToolPalette}" />
+		<local:DynamicKeyBinding Command="{Binding ShowToolPaletteFloatingCommand}" InputGestureText="{local:KeyBindings ShowToolPaletteFloating}" />
+
+		<!--  Help Menu  -->
+		<local:DynamicKeyBinding Command="{Binding AboutCommand}" InputGestureText="{local:KeyBindings About}" />
+
+		<!--  Non-menu Commands  -->
+		<local:DynamicKeyBinding Command="{Binding RaiseQA1ClickCommand}" InputGestureText="{local:KeyBindings RaiseQA1Click}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseQA4ClickCommand}" InputGestureText="{local:KeyBindings RaiseQA4Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerQA1ClickCommand}" InputGestureText="{local:KeyBindings LowerQA1Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerQA4ClickCommand}" InputGestureText="{local:KeyBindings LowerQA4Click}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseWS1ClickCommand}" InputGestureText="{local:KeyBindings RaiseWS1Click}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseWS4ClickCommand}" InputGestureText="{local:KeyBindings RaiseWS4Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerWS1ClickCommand}" InputGestureText="{local:KeyBindings LowerWS1Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerWS4ClickCommand}" InputGestureText="{local:KeyBindings LowerWS4Click}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseED1ClickCommand}" InputGestureText="{local:KeyBindings RaiseED1Click}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseED4ClickCommand}" InputGestureText="{local:KeyBindings RaiseED4Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerED1ClickCommand}" InputGestureText="{local:KeyBindings LowerED1Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerED4ClickCommand}" InputGestureText="{local:KeyBindings LowerED4Click}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseRF1ClickCommand}" InputGestureText="{local:KeyBindings RaiseRF1Click}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseRF4ClickCommand}" InputGestureText="{local:KeyBindings RaiseRF4Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerRF1ClickCommand}" InputGestureText="{local:KeyBindings LowerRF1Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerRF4ClickCommand}" InputGestureText="{local:KeyBindings LowerRF4Click}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseQA1ClickSmoothCommand}" InputGestureText="{local:KeyBindings RaiseQA1ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseQA4ClickSmoothCommand}" InputGestureText="{local:KeyBindings RaiseQA4ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding LowerQA1ClickSmoothCommand}" InputGestureText="{local:KeyBindings LowerQA1ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding LowerQA4ClickSmoothCommand}" InputGestureText="{local:KeyBindings LowerQA4ClickSmooth}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseWS1ClickSmoothCommand}" InputGestureText="{local:KeyBindings RaiseWS1ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseWS4ClickSmoothCommand}" InputGestureText="{local:KeyBindings RaiseWS4ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding LowerWS1ClickSmoothCommand}" InputGestureText="{local:KeyBindings LowerWS1ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding LowerWS4ClickSmoothCommand}" InputGestureText="{local:KeyBindings LowerWS4ClickSmooth}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseED1ClickSmoothCommand}" InputGestureText="{local:KeyBindings RaiseED1ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseED4ClickSmoothCommand}" InputGestureText="{local:KeyBindings RaiseED4ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding LowerED1ClickSmoothCommand}" InputGestureText="{local:KeyBindings LowerED1ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding LowerED4ClickSmoothCommand}" InputGestureText="{local:KeyBindings LowerED4ClickSmooth}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseRF1ClickSmoothCommand}" InputGestureText="{local:KeyBindings RaiseRF1ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseRF4ClickSmoothCommand}" InputGestureText="{local:KeyBindings RaiseRF4ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding LowerRF1ClickSmoothCommand}" InputGestureText="{local:KeyBindings LowerRF1ClickSmooth}" />
+		<local:DynamicKeyBinding Command="{Binding LowerRF4ClickSmoothCommand}" InputGestureText="{local:KeyBindings LowerRF4ClickSmooth}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseYH1ClickCommand}" InputGestureText="{local:KeyBindings RaiseYH1Click}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseYH4ClickCommand}" InputGestureText="{local:KeyBindings RaiseYH4Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerYH1ClickCommand}" InputGestureText="{local:KeyBindings LowerYH1Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerYH4ClickCommand}" InputGestureText="{local:KeyBindings LowerYH4Click}" />
+
+		<local:DynamicKeyBinding Command="{Binding RaiseUJ1ClickCommand}" InputGestureText="{local:KeyBindings RaiseUJ1Click}" />
+		<local:DynamicKeyBinding Command="{Binding RaiseUJ4ClickCommand}" InputGestureText="{local:KeyBindings RaiseUJ4Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerUJ1ClickCommand}" InputGestureText="{local:KeyBindings LowerUJ1Click}" />
+		<local:DynamicKeyBinding Command="{Binding LowerUJ4ClickCommand}" InputGestureText="{local:KeyBindings LowerUJ4Click}" />
 	</Window.InputBindings>
 
 	<Grid x:Name="layoutRoot">
@@ -942,64 +1037,77 @@
 					InputGestureText="{local:KeyBindings RestoreDefaultLayout}" />
 				<Separator />
 				<MenuItem
-					x:Name="sectorOptionsToolStripMenuItem"
-					Header="ShowSectorOptions"
+					Command="{Binding ShowSectorOptionsCommand}"
+					Header="{local:Localize ShowSectorOptions}"
+					InputGestureText="{local:KeyBindings ShowSectorOptions}"
 					IsCheckable="True"
-					Tag="ShowSectorOptions" />
+					IsChecked="{Binding IsSectorOptionsPanelVisible}" />
 				<MenuItem
-					x:Name="roomOptionsToolStripMenuItem"
-					Header="ShowRoomOptions"
+					Command="{Binding ShowRoomOptionsCommand}"
+					Header="{local:Localize ShowRoomOptions}"
+					InputGestureText="{local:KeyBindings ShowRoomOptions}"
 					IsCheckable="True"
-					Tag="ShowRoomOptions" />
+					IsChecked="{Binding IsRoomOptionsPanelVisible}" />
 				<MenuItem
-					x:Name="itemBrowserToolStripMenuItem"
-					Header="ShowItemBrowser"
+					Command="{Binding ShowItemBrowserCommand}"
+					Header="{local:Localize ShowItemBrowser}"
+					InputGestureText="{local:KeyBindings ShowItemBrowser}"
 					IsCheckable="True"
-					Tag="ShowItemBrowser" />
+					IsChecked="{Binding IsItemBrowserVisible}" />
 				<MenuItem
-					x:Name="importedGeometryBrowserToolstripMenuItem"
-					Header="ShowImportedGeometryBrowser"
+					Command="{Binding ShowImportedGeometryBrowserCommand}"
+					Header="{local:Localize ShowImportedGeometryBrowser}"
+					InputGestureText="{local:KeyBindings ShowImportedGeometryBrowser}"
 					IsCheckable="True"
-					Tag="ShowImportedGeometryBrowser" />
+					IsChecked="{Binding IsImportedGeometryBrowserVisible}" />
 				<MenuItem
-					x:Name="triggerListToolStripMenuItem"
-					Header="ShowTriggerList"
+					Command="{Binding ShowTriggerListCommand}"
+					Header="{local:Localize ShowTriggerList}"
+					InputGestureText="{local:KeyBindings ShowTriggerList}"
 					IsCheckable="True"
-					Tag="ShowTriggerList" />
+					IsChecked="{Binding IsTriggerListVisible}" />
 				<MenuItem
-					x:Name="lightingToolStripMenuItem"
-					Header="ShowLighting"
+					Command="{Binding ShowLightingCommand}"
+					Header="{local:Localize ShowLighting}"
+					InputGestureText="{local:KeyBindings ShowLighting}"
 					IsCheckable="True"
-					Tag="ShowLighting" />
+					IsChecked="{Binding IsLightingPanelVisible}" />
 				<MenuItem
-					x:Name="paletteToolStripMenuItem"
-					Header="ShowPalette"
+					Command="{Binding ShowPaletteCommand}"
+					Header="{local:Localize ShowPalette}"
+					InputGestureText="{local:KeyBindings ShowPalette}"
 					IsCheckable="True"
-					Tag="ShowPalette" />
+					IsChecked="{Binding IsPalettePanelVisible}" />
 				<MenuItem
-					x:Name="texturePanelToolStripMenuItem"
-					Header="ShowTexturePanel"
+					Command="{Binding ShowTexturePanelCommand}"
+					Header="{local:Localize ShowTexturePanel}"
+					InputGestureText="{local:KeyBindings ShowTexturePanel}"
 					IsCheckable="True"
-					Tag="ShowTexturePanel" />
+					IsChecked="{Binding IsTexturePanelVisible}" />
 				<MenuItem
-					x:Name="objectListToolStripMenuItem"
-					Header="ShowObjectList"
+					Command="{Binding ShowObjectListCommand}"
+					Header="{local:Localize ShowObjectList}"
+					InputGestureText="{local:KeyBindings ShowObjectList}"
 					IsCheckable="True"
-					Tag="ShowObjectList" />
+					IsChecked="{Binding IsObjectListVisible}" />
 				<MenuItem
-					x:Name="statisticsToolStripMenuItem"
-					Header="ShowStatistics"
+					Command="{Binding ShowStatisticsCommand}"
+					Header="{local:Localize ShowStatistics}"
+					InputGestureText="{local:KeyBindings ShowStatistics}"
 					IsCheckable="True"
-					Tag="ShowStatistics" />
+					IsChecked="{Binding IsStatisticsPanelVisible}" />
 				<MenuItem
-					x:Name="dockableToolStripMenuItem"
-					Header="ShowToolPalette"
+					Command="{Binding ShowToolPaletteCommand}"
+					Header="{local:Localize ShowToolPalette}"
+					InputGestureText="{local:KeyBindings ShowToolPalette}"
 					IsCheckable="True"
-					Tag="ShowToolPalette" />
+					IsChecked="{Binding IsToolPaletteVisible}" />
 				<MenuItem
-					x:Name="floatingToolStripMenuItem"
-					Header="Tool Palette (floating)"
-					IsCheckable="True" />
+					Command="{Binding ShowToolPaletteFloatingCommand}"
+					Header="{local:Localize ShowToolPaletteFloating}"
+					InputGestureText="{local:KeyBindings ShowToolPaletteFloating}"
+					IsCheckable="True"
+					IsChecked="{Binding IsToolPaletteFloating}" />
 			</MenuItem>
 
 			<!--  Help Menu  -->
