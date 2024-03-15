@@ -22,7 +22,7 @@ namespace TombEditor.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -683,7 +683,7 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap misc_AboutScreen_800 {
+        public static System.Drawing.Bitmap misc_AboutScreen_800 {
             get {
                 object obj = ResourceManager.GetObject("misc_AboutScreen_800", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

@@ -1,10 +1,26 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Windows.Input;
+using TombLib.Forms;
 
 namespace TombEditor.WPF.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
+	[ObservableProperty] private bool _isSectorOptionsPanelVisible;
+	[ObservableProperty] private bool _isRoomOptionsPanelVisible;
+	[ObservableProperty] private bool _isItemBrowserVisible;
+	[ObservableProperty] private bool _isImportedGeometryBrowserVisible;
+	[ObservableProperty] private bool _isTriggerListVisible;
+	[ObservableProperty] private bool _isLightingPanelVisible;
+	[ObservableProperty] private bool _isPalettePanelVisible;
+	[ObservableProperty] private bool _isTexturePanelVisible;
+	[ObservableProperty] private bool _isObjectListVisible;
+	[ObservableProperty] private bool _isStatisticsPanelVisible;
+	[ObservableProperty] private bool _isToolPaletteVisible;
+	[ObservableProperty] private bool _isToolPaletteFloating;
+
 	// File Menu
 
 	public ICommand NewLevelCommand { get; }
@@ -159,7 +175,6 @@ public partial class MainWindowViewModel : ObservableObject
 
 	// Window Menu
 
-	public ICommand RestoreDefaultLayoutCommand { get; }
 	public ICommand ShowSectorOptionsCommand { get; }
 	public ICommand ShowRoomOptionsCommand { get; }
 	public ICommand ShowItemBrowserCommand { get; }
@@ -172,10 +187,6 @@ public partial class MainWindowViewModel : ObservableObject
 	public ICommand ShowStatisticsCommand { get; }
 	public ICommand ShowToolPaletteCommand { get; }
 	public ICommand ShowToolPaletteFloatingCommand { get; }
-
-	// Help Menu
-
-	public ICommand AboutCommand { get; }
 
 	// Non-menu Commands
 
@@ -235,6 +246,8 @@ public partial class MainWindowViewModel : ObservableObject
 	{
 		_editor = editor;
 
+		// File Menu
+
 		NewLevelCommand = CommandHandler.GetCommand("NewLevel", new CommandArgs(this, _editor));
 		OpenLevelCommand = CommandHandler.GetCommand("OpenLevel", new CommandArgs(this, _editor));
 		SaveLevelCommand = CommandHandler.GetCommand("SaveLevel", new CommandArgs(this, _editor));
@@ -244,6 +257,8 @@ public partial class MainWindowViewModel : ObservableObject
 		BuildAndPlayCommand = CommandHandler.GetCommand("BuildAndPlay", new CommandArgs(this, _editor));
 		BuildLevelCommand = CommandHandler.GetCommand("BuildLevel", new CommandArgs(this, _editor));
 		QuitEditorCommand = CommandHandler.GetCommand("QuitEditor", new CommandArgs(this, _editor));
+
+		// Edit Menu
 
 		UndoCommand = CommandHandler.GetCommand("Undo", new CommandArgs(this, _editor));
 		RedoCommand = CommandHandler.GetCommand("Redo", new CommandArgs(this, _editor));
@@ -261,11 +276,15 @@ public partial class MainWindowViewModel : ObservableObject
 		SearchCommand = CommandHandler.GetCommand("Search", new CommandArgs(this, _editor));
 		SearchAndReplaceObjectsCommand = CommandHandler.GetCommand("SearchAndReplaceObjects", new CommandArgs(this, _editor));
 
+		// View Menu
+
 		ResetCameraCommand = CommandHandler.GetCommand("ResetCamera", new CommandArgs(this, _editor));
 		RelocateCameraCommand = CommandHandler.GetCommand("RelocateCamera", new CommandArgs(this, _editor));
 		ToggleFlyModeCommand = CommandHandler.GetCommand("ToggleFlyMode", new CommandArgs(this, _editor));
 		DrawWhiteTextureLightingOnlyCommand = CommandHandler.GetCommand("DrawWhiteTextureLightingOnly", new CommandArgs(this, _editor));
 		ShowRealTintForObjectsCommand = CommandHandler.GetCommand("ShowRealTintForObjects", new CommandArgs(this, _editor));
+
+		// Rooms Menu
 
 		NewRoomUpCommand = CommandHandler.GetCommand("NewRoomUp", new CommandArgs(this, _editor));
 		NewRoomDownCommand = CommandHandler.GetCommand("NewRoomDown", new CommandArgs(this, _editor));
@@ -300,6 +319,8 @@ public partial class MainWindowViewModel : ObservableObject
 		ImportRoomsCommand = CommandHandler.GetCommand("ImportRooms", new CommandArgs(this, _editor));
 		ApplyRoomPropertiesCommand = CommandHandler.GetCommand("ApplyRoomProperties", new CommandArgs(this, _editor));
 
+		// Items Menu
+
 		AddWadCommand = CommandHandler.GetCommand("AddWad", new CommandArgs(this, _editor));
 		RemoveWadsCommand = CommandHandler.GetCommand("RemoveWads", new CommandArgs(this, _editor));
 		ReloadWadsCommand = CommandHandler.GetCommand("ReloadWads", new CommandArgs(this, _editor));
@@ -331,6 +352,8 @@ public partial class MainWindowViewModel : ObservableObject
 		GetObjectStatisticsCommand = CommandHandler.GetCommand("GetObjectStatistics", new CommandArgs(this, _editor));
 		GenerateObjectNamesCommand = CommandHandler.GetCommand("GenerateObjectNames", new CommandArgs(this, _editor));
 
+		// Textures Menu
+
 		AddTextureCommand = CommandHandler.GetCommand("AddTexture", new CommandArgs(this, _editor));
 		RemoveTexturesCommand = CommandHandler.GetCommand("RemoveTextures", new CommandArgs(this, _editor));
 		UnloadTexturesCommand = CommandHandler.GetCommand("UnloadTextures", new CommandArgs(this, _editor));
@@ -344,6 +367,8 @@ public partial class MainWindowViewModel : ObservableObject
 		ClearAllTexturesInLevelCommand = CommandHandler.GetCommand("ClearAllTexturesInLevel", new CommandArgs(this, _editor));
 		SearchTexturesCommand = CommandHandler.GetCommand("SearchTextures", new CommandArgs(this, _editor));
 		EditAnimationRangesCommand = CommandHandler.GetCommand("EditAnimationRanges", new CommandArgs(this, _editor));
+
+		// Transform Menu
 
 		IncreaseStepHeightCommand = CommandHandler.GetCommand("IncreaseStepHeight", new CommandArgs(this, _editor));
 		DecreaseStepHeightCommand = CommandHandler.GetCommand("DecreaseStepHeight", new CommandArgs(this, _editor));
@@ -365,27 +390,15 @@ public partial class MainWindowViewModel : ObservableObject
 		GridWallsIn3SquaresCommand = CommandHandler.GetCommand("GridWallsIn3Squares", new CommandArgs(this, _editor));
 		GridWallsIn5SquaresCommand = CommandHandler.GetCommand("GridWallsIn5Squares", new CommandArgs(this, _editor));
 
+		// Tools Menu
+
 		EditLevelSettingsCommand = CommandHandler.GetCommand("EditLevelSettings", new CommandArgs(this, _editor));
 		EditOptionsCommand = CommandHandler.GetCommand("EditOptions", new CommandArgs(this, _editor));
 		EditKeyboardLayoutCommand = CommandHandler.GetCommand("EditKeyboardLayout", new CommandArgs(this, _editor));
 		StartWadToolCommand = CommandHandler.GetCommand("StartWadTool", new CommandArgs(this, _editor));
 		StartSoundToolCommand = CommandHandler.GetCommand("StartSoundTool", new CommandArgs(this, _editor));
 
-		//RestoreDefaultLayoutCommand = CommandHandler.GetCommand("RestoreDefaultLayout", new CommandArgs(this, _editor));
-		ShowSectorOptionsCommand = CommandHandler.GetCommand("ShowSectorOptions", new CommandArgs(this, _editor));
-		ShowRoomOptionsCommand = CommandHandler.GetCommand("ShowRoomOptions", new CommandArgs(this, _editor));
-		ShowItemBrowserCommand = CommandHandler.GetCommand("ShowItemBrowser", new CommandArgs(this, _editor));
-		ShowImportedGeometryBrowserCommand = CommandHandler.GetCommand("ShowImportedGeometryBrowser", new CommandArgs(this, _editor));
-		ShowTriggerListCommand = CommandHandler.GetCommand("ShowTriggerList", new CommandArgs(this, _editor));
-		ShowLightingCommand = CommandHandler.GetCommand("ShowLighting", new CommandArgs(this, _editor));
-		ShowPaletteCommand = CommandHandler.GetCommand("ShowPalette", new CommandArgs(this, _editor));
-		ShowTexturePanelCommand = CommandHandler.GetCommand("ShowTexturePanel", new CommandArgs(this, _editor));
-		ShowObjectListCommand = CommandHandler.GetCommand("ShowObjectList", new CommandArgs(this, _editor));
-		ShowStatisticsCommand = CommandHandler.GetCommand("ShowStatistics", new CommandArgs(this, _editor));
-		ShowToolPaletteCommand = CommandHandler.GetCommand("ShowToolPalette", new CommandArgs(this, _editor));
-		//ShowToolPaletteFloatingCommand = CommandHandler.GetCommand("ShowToolPaletteFloating", new CommandArgs(this, _editor));
-
-		//AboutCommand = CommandHandler.GetCommand("About", new CommandArgs(this, _editor));
+		// Non-menu Commands
 
 		RaiseQA1ClickCommand = CommandHandler.GetCommand("RaiseQA1Click", new CommandArgs(this, _editor));
 		RaiseQA4ClickCommand = CommandHandler.GetCommand("RaiseQA4Click", new CommandArgs(this, _editor));
@@ -436,5 +449,18 @@ public partial class MainWindowViewModel : ObservableObject
 		RaiseUJ4ClickCommand = CommandHandler.GetCommand("RaiseUJ4Click", new CommandArgs(this, _editor));
 		LowerUJ1ClickCommand = CommandHandler.GetCommand("LowerUJ1Click", new CommandArgs(this, _editor));
 		LowerUJ4ClickCommand = CommandHandler.GetCommand("LowerUJ4Click", new CommandArgs(this, _editor));
+	}
+
+	[RelayCommand]
+	public void About()
+	{
+		using var form = new FormAbout(Properties.Resources.misc_AboutScreen_800) { StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen };
+		form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(this));
+	}
+
+	[RelayCommand]
+	public void RestoreDefaultLayout()
+	{
+		Console.WriteLine("DEBUG");
 	}
 }
