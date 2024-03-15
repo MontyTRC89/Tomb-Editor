@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Windows;
+using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Media;
 using TombLib;
@@ -11,6 +12,11 @@ namespace TombEditor.WPF
 {
 	public static class WPFUtils
 	{
+		public static System.Windows.Forms.IWin32Window? GetWin32WindowFromCaller(INotifyPropertyChanged caller) => Application.Current.Windows
+			.Cast<TombEditor.WPF.Views.WindowEx>()
+			.FirstOrDefault(window => window.DataContext.GetType() == caller.GetType())?
+			.Win32Window;
+
 		public static Brush ToWPFColor(this Vector3 color) => new Vector4(color, 255.0f).ToWPFColor();
 		public static Vector3 ToFloat3Color(this Color color) => new Vector3(color.R, color.G, color.B) / 255.0f;
 		public static Vector4 ToFloat4Color(this Color color) => new Vector4(color.R, color.G, color.B, color.A) / 255.0f;

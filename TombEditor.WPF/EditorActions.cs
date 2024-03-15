@@ -43,7 +43,7 @@ namespace TombEditor.WPF
             if (!_editor.HasUnsavedChanges || _editor.Level.Settings.HasUnknownData)
                 return true;
 
-            switch (DarkMessageBox.Show(GetWin32WindowFromCaller(owner),
+            switch (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner),
                 "Your unsaved changes will be lost. Do you want to save?",
                 description,
                 WinForms.MessageBoxButtons.YesNoCancel,
@@ -385,7 +385,7 @@ namespace TombEditor.WPF
                 _editor.ToggleHiddenSelection(true);
 
                 // Rollback to previous color if dialog is canceled or push undo if confirmed
-                if (colorDialog.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                if (colorDialog.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                     colorDialog.Color = oldLightColor;
                 else if (obj is PositionBasedObjectInstance)
                 {
@@ -682,7 +682,7 @@ namespace TombEditor.WPF
             using (var formTrigger = GetObjectSetupWindow(trigger, _editor.Level, new Action<ObjectInstance>(obj => _editor.ShowObject(obj)),
                                                      new Action<Room>(r => _editor.SelectRoom(r))))
             {
-                if (formTrigger.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                if (formTrigger.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                     return;
             }
 
@@ -1011,10 +1011,10 @@ namespace TombEditor.WPF
 
             using (var form = new FormInputBox("Edit object name", "Enter new Lua name for this object:", luaInstance.LuaName))
             {
-                if (form.ShowDialog(GetWin32WindowFromCaller(owner)) == WinForms.DialogResult.Cancel)
+                if (form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) == WinForms.DialogResult.Cancel)
                     return;
 
-                if (!luaInstance.TrySetLuaName(form.Result, GetWin32WindowFromCaller(owner)))
+                if (!luaInstance.TrySetLuaName(form.Result, WPFUtils.GetWin32WindowFromCaller(owner)))
                     RenameObject(luaInstance, owner);
                 else
                     _editor.ObjectChange(luaInstance, ObjectChangeType.Change);
@@ -1030,7 +1030,7 @@ namespace TombEditor.WPF
                 else
                 {
                     using (var formMoveable = GetObjectSetupWindow((MoveableInstance)instance))
-                        if (formMoveable.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                        if (formMoveable.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                             return;
                 }
 
@@ -1046,7 +1046,7 @@ namespace TombEditor.WPF
                 else if (_editor.Level.IsNG)
                 {
                     using (var formStaticMesh = GetObjectSetupWindow((StaticInstance)instance))
-                        if (formStaticMesh.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                        if (formStaticMesh.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                             return;
                 }
                 else
@@ -1057,14 +1057,14 @@ namespace TombEditor.WPF
             else if (instance is FlybyCameraInstance)
             {
                 using (var formFlyby = GetObjectSetupWindow((FlybyCameraInstance)instance))
-                    if (formFlyby.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                    if (formFlyby.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is CameraInstance)
             {
                 using (var formCamera = GetObjectSetupWindow((CameraInstance)instance))
-                    if (formCamera.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                    if (formCamera.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
@@ -1074,21 +1074,21 @@ namespace TombEditor.WPF
                     return;
                     
                 using (var formSprite = GetObjectSetupWindow((SpriteInstance)instance))
-                    if (formSprite.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                    if (formSprite.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SinkInstance)
             {
                 using (var formSink = GetObjectSetupWindow((SinkInstance)instance))
-                    if (formSink.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                    if (formSink.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SoundSourceInstance)
             {
                 using (var formSoundSource = GetObjectSetupWindow((SoundSourceInstance)instance))
-                    if (formSoundSource.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                    if (formSoundSource.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
@@ -1096,7 +1096,7 @@ namespace TombEditor.WPF
             {
                 using (var formTrigger = GetObjectSetupWindow((TriggerInstance)instance, _editor.Level, new Action<ObjectInstance>(obj => _editor.ShowObject(obj)),
                                                          new Action<Room>(r => _editor.SelectRoom(r))))
-                    if (formTrigger.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                    if (formTrigger.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
@@ -1107,7 +1107,7 @@ namespace TombEditor.WPF
                 else
                     using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
                     {
-                        if (formImportedGeometry.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                        if (formImportedGeometry.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                             return;
                         _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
                     }
@@ -1127,7 +1127,7 @@ namespace TombEditor.WPF
             else if (instance is MemoInstance)
             {
                 using (var formMemo = new FormMemo((MemoInstance)instance))
-                    if (formMemo.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                    if (formMemo.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
@@ -1185,7 +1185,7 @@ namespace TombEditor.WPF
                 string prompt = "Do you really want to delete ";
                 prompt += (objects.Count() > 1 || objects.Any(o => o is ObjectGroup)) ? "specified objects?" : (objects.First() + "?");
 
-                if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), prompt, "Confirm delete", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) != WinForms.DialogResult.Yes)
+                if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), prompt, "Confirm delete", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) != WinForms.DialogResult.Yes)
                     return;
             }
 
@@ -1292,7 +1292,7 @@ namespace TombEditor.WPF
             if (existingWindow == null)
             {
                 var propForm = new FormEventSetEditor(global, targetVolume);
-                propForm.Show(GetWin32WindowFromCaller(owner));
+                propForm.Show(WPFUtils.GetWin32WindowFromCaller(owner));
             }
             else
                 existingWindow.Focus();
@@ -2450,7 +2450,7 @@ namespace TombEditor.WPF
             }
 
             // Ask for confirmation. No owner = silent mode!
-            if (owner != null && DarkMessageBox.Show(GetWin32WindowFromCaller(owner),
+            if (owner != null && DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner),
                     "All objects (including portals) inside rooms will be deleted and \n" +
                     "triggers pointing to them will be removed.",
                     "Delete rooms?", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Warning) != WinForms.DialogResult.Yes)
@@ -2507,7 +2507,7 @@ namespace TombEditor.WPF
             bool useFloor;
             using (FormResizeRoom form = new FormResizeRoom(_editor, room, newArea))
             {
-                if (form.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                if (form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                     return;
                 newArea = form.NewArea;
                 useFloor = form.UseFloor;
@@ -2517,7 +2517,7 @@ namespace TombEditor.WPF
             // Ask the user again if portals or triggers are being removed in process.
             if (room.Portals.Any(portal => portal.Direction != PortalDirection.Floor && portal.Direction != PortalDirection.Ceiling && !newArea.Inflate(-1).Contains(portal.Area)) ||
                 room.Triggers.Any(trigger => !newArea.Inflate(-1).Contains(trigger.Area)))
-                if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
+                if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
                     " Do you want to continue?", "Crop room", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) != WinForms.DialogResult.Yes)
                     return;
 
@@ -3008,7 +3008,7 @@ namespace TombEditor.WPF
                 using (var form = new FormChooseRoom("More than one possible room found that can be connected. " +
                     "Please choose one:", candidates.Select(candidate => candidate.Item2), selectedRoom => _editor.SelectedRoom = selectedRoom))
                 {
-                    if (form.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || form.SelectedRoom == null)
+                    if (form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || form.SelectedRoom == null)
                         return;
                     candidates.RemoveAll(candidate => candidate.Item2 != form.SelectedRoom);
                 }
@@ -3096,7 +3096,7 @@ namespace TombEditor.WPF
             room = room.AlternateBaseRoom ?? room;
 
             // Ask for confirmation
-            if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Do you really want to delete the flip room?",
+            if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Do you really want to delete the flip room?",
                 "Delete flipped room", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question, WinForms.MessageBoxDefaultButton.Button2) != WinForms.DialogResult.Yes)
             {
                 return;
@@ -3612,7 +3612,7 @@ namespace TombEditor.WPF
 
             // If there are overlaps, ask the user about it
             if (baseRoomOverlaps || alternateRoomOverlaps)
-                if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "The selected rooms overlap horizontally. To resolve the conflict manually, put down walls on the overlapped sectors. " +
+                if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "The selected rooms overlap horizontally. To resolve the conflict manually, put down walls on the overlapped sectors. " +
                     "You can continue anyway, the rooms are then taken in this priority: " + string.Join(", ", rooms.Select(room => room.Name)),
                     "Rooms are overlapping", WinForms.MessageBoxButtons.OKCancel, WinForms.MessageBoxIcon.Information) != WinForms.DialogResult.OK)
                     return;
@@ -3628,7 +3628,7 @@ namespace TombEditor.WPF
             VectorInt2 size = maxSectorPos - minSectorPos + new VectorInt2(2, 2);
             int maxSize = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.RoomDimensions);
             if (size.X >= maxSize || size.Y >= maxSize)
-                if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "After merging all rooms, the new room will have size " + size.X + " by " + size.Y + ". It is bigger than " +
+                if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "After merging all rooms, the new room will have size " + size.X + " by " + size.Y + ". It is bigger than " +
                     maxSize + " by " + maxSize + " which is maximum size for the engine. You can continue anyway," +
                     " but in game there will be issues with rendering. Are you sure?", "Room too big", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Exclamation, WinForms.MessageBoxDefaultButton.Button2) != WinForms.DialogResult.Yes)
                     return;
@@ -3972,7 +3972,7 @@ namespace TombEditor.WPF
             }
 
             // Inform user and offer an option to unlock the room position
-            if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Can't move rooms because some rooms are locked. Unlock and continue?\n" + lockedRoomList, "Locked rooms", WinForms.MessageBoxButtons.YesNo,
+            if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Can't move rooms because some rooms are locked. Unlock and continue?\n" + lockedRoomList, "Locked rooms", WinForms.MessageBoxButtons.YesNo,
 				WinForms.MessageBoxIcon.Warning, WinForms.MessageBoxDefaultButton.Button2) == WinForms.DialogResult.No)
                 return true;
 
@@ -4047,7 +4047,7 @@ namespace TombEditor.WPF
                         colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
 
                         var oldLightColor = colorDialog.Color;
-                        if (colorDialog.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                        if (colorDialog.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                             colorDialog.Color = oldLightColor;
 
                         _editor.Configuration.ColorDialog_Position = colorDialog.Position;
@@ -4153,7 +4153,7 @@ namespace TombEditor.WPF
                     form.ShowInTaskbar = true;
                 }
 
-                form.ShowDialog(GetWin32WindowFromCaller(owner));
+                form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner));
                 return form.DialogResult != WinForms.DialogResult.Cancel;
             }
         }
@@ -4166,7 +4166,7 @@ namespace TombEditor.WPF
                 _editor.Level.Settings.FastMode = fastMode;
 
                 if (BuildLevel(true, owner))
-                    TombLauncher.Launch(_editor.Level.Settings, GetWin32WindowFromCaller(owner));
+                    TombLauncher.Launch(_editor.Level.Settings, WPFUtils.GetWin32WindowFromCaller(owner));
 
                 // Set fast mode back off
                 _editor.Level.Settings.FastMode = false;
@@ -4245,7 +4245,7 @@ namespace TombEditor.WPF
 
         public static ImportedGeometry AddImportedGeometry(INotifyPropertyChanged owner, string predefinedPath = null)
         {
-            string path = (predefinedPath ?? LevelFileDialog.BrowseFile(GetWin32WindowFromCaller(owner), _editor.Level.Settings,
+            string path = (predefinedPath ?? LevelFileDialog.BrowseFile(WPFUtils.GetWin32WindowFromCaller(owner), _editor.Level.Settings,
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load imported geometry", BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory, false));
 
@@ -4259,7 +4259,7 @@ namespace TombEditor.WPF
                 settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
                 settingsDialog.SelectPreset("Normal scale to TR scale");
 
-                if (settingsDialog.ShowDialog(GetWin32WindowFromCaller(owner)) == WinForms.DialogResult.Cancel)
+                if (settingsDialog.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) == WinForms.DialogResult.Cancel)
                     return null;
 
                 var info = new ImportedGeometryInfo(path, settingsDialog.Settings);
@@ -4273,7 +4273,7 @@ namespace TombEditor.WPF
 
         public static IEnumerable<LevelTexture> AddTexture(INotifyPropertyChanged owner, IEnumerable<string> predefinedPaths = null)
         {
-            List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(GetWin32WindowFromCaller(owner), _editor.Level.Settings,
+            List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(WPFUtils.GetWin32WindowFromCaller(owner), _editor.Level.Settings,
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load texture files", ImageC.FileExtensions, VariableType.LevelDirectory)).ToList();
 
@@ -4287,7 +4287,7 @@ namespace TombEditor.WPF
             // Open GUI for texture that couldn't be loaded
             for (int i = 0; i < results.Length; ++i)
                 while (results[i]?.LoadException != null)
-                    switch (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "An error occurred while loading texture file '" + paths[i] + "'." +
+                    switch (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "An error occurred while loading texture file '" + paths[i] + "'." +
                         "\nError message: " + results[i].LoadException.GetType(), "Unable to load texture file.",
                         paths.Count == 1 ? WinForms.MessageBoxButtons.RetryCancel : WinForms.MessageBoxButtons.AbortRetryIgnore, WinForms.MessageBoxIcon.Error,
                         paths.Count == 1 ? WinForms.MessageBoxDefaultButton.Button2 : WinForms.MessageBoxDefaultButton.Button1))
@@ -4327,7 +4327,7 @@ namespace TombEditor.WPF
 
         public static void UnloadTextures(INotifyPropertyChanged owner)
         {
-            if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Are you sure to unload ALL " + _editor.Level.Settings.Textures.Count +
+            if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Are you sure to unload ALL " + _editor.Level.Settings.Textures.Count +
                 " texture files loaded?", "Are you sure?", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) != WinForms.DialogResult.Yes)
                 return;
             foreach (LevelTexture texture in _editor.Level.Settings.Textures)
@@ -4337,7 +4337,7 @@ namespace TombEditor.WPF
 
         public static void RemoveTextures(INotifyPropertyChanged owner)
         {
-            if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Are you sure to DELETE ALL " + _editor.Level.Settings.Textures.Count +
+            if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Are you sure to DELETE ALL " + _editor.Level.Settings.Textures.Count +
                 " texture files loaded? Everything will be untextured.", "Are you sure?", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) != WinForms.DialogResult.Yes)
                 return;
             _editor.SelectedTexture = TextureArea.None;
@@ -4349,7 +4349,7 @@ namespace TombEditor.WPF
 
         public static void RemoveTexture(INotifyPropertyChanged owner, LevelTexture textureToDelete)
         {
-            if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Are you sure to DELETE the texture " + textureToDelete +
+            if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Are you sure to DELETE the texture " + textureToDelete +
                 "? Everything using the texture will be untextured.", "Are you sure?", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) != WinForms.DialogResult.Yes)
                 return;
             if (_editor.SelectedTexture.Texture == textureToDelete)
@@ -4361,7 +4361,7 @@ namespace TombEditor.WPF
 
         public static IEnumerable<ReferencedWad> AddWad(INotifyPropertyChanged owner, IEnumerable<string> predefinedPaths = null)
         {
-            List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(GetWin32WindowFromCaller(owner), _editor.Level.Settings,
+            List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(WPFUtils.GetWin32WindowFromCaller(owner), _editor.Level.Settings,
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load object files (*.wad)", Wad2.FileExtensions, VariableType.LevelDirectory)).ToList();
 
@@ -4372,7 +4372,7 @@ namespace TombEditor.WPF
             ReferencedWad[] results = new ReferencedWad[paths.Count];
             ReferencedSoundCatalog[] soundsResults = new ReferencedSoundCatalog[paths.Count];
             
-            GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(GetWin32WindowFromCaller(owner)); // Have only one to synchronize the messages.
+            GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(WPFUtils.GetWin32WindowFromCaller(owner)); // Have only one to synchronize the messages.
             using (var loadingTask = Task.Run(() =>
                 Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler))))
                 while (!loadingTask.IsCompleted)
@@ -4384,7 +4384,7 @@ namespace TombEditor.WPF
             // Open GUI for objects (*.wad files) that couldn't be loaded
             for (int i = 0; i < results.Length; ++i)
                 while (results[i]?.LoadException != null)
-                    switch (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "An error occurred while loading object file '" + paths[i] + "'." +
+                    switch (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "An error occurred while loading object file '" + paths[i] + "'." +
                         "\nError message: " + results[i].LoadException.GetType(), "Unable to load object file.",
                         paths.Count == 1 ? WinForms.MessageBoxButtons.RetryCancel : WinForms.MessageBoxButtons.AbortRetryIgnore, WinForms.MessageBoxIcon.Error,
                         paths.Count == 1 ? WinForms.MessageBoxDefaultButton.Button2 : WinForms.MessageBoxDefaultButton.Button1))
@@ -4399,7 +4399,7 @@ namespace TombEditor.WPF
                             return new ReferencedWad[0];
                     }
 
-            synchronizedDialogHandler = new GraphicalDialogHandler(GetWin32WindowFromCaller(owner)); // Have only one to synchronize the messages.
+            synchronizedDialogHandler = new GraphicalDialogHandler(WPFUtils.GetWin32WindowFromCaller(owner)); // Have only one to synchronize the messages.
             using (var loadingTask = Task.Run(() =>
                 Parallel.For(0, paths.Count, i =>
                 {
@@ -4497,7 +4497,7 @@ namespace TombEditor.WPF
 
         public static void RemoveWads(INotifyPropertyChanged owner)
         {
-            if (DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Are you sure to delete ALL " + _editor.Level.Settings.Wads.Count +
+            if (DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Are you sure to delete ALL " + _editor.Level.Settings.Wads.Count +
                 " wad files loaded?", "Are you sure?", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) != WinForms.DialogResult.Yes)
                 return;
             _editor.Level.Settings.Wads.Clear();
@@ -4506,7 +4506,7 @@ namespace TombEditor.WPF
 
         public static void ReloadWads(INotifyPropertyChanged owner)
         {
-            var dialogHandler = new GraphicalDialogHandler(GetWin32WindowFromCaller(owner));
+            var dialogHandler = new GraphicalDialogHandler(WPFUtils.GetWin32WindowFromCaller(owner));
             foreach (var wad in _editor.Level.Settings.Wads)
                 wad.Reload(_editor.Level.Settings, dialogHandler);
             _editor.LoadedWadsChange();
@@ -4514,7 +4514,7 @@ namespace TombEditor.WPF
 
         public static bool ReloadResource(INotifyPropertyChanged owner, LevelSettings settings, IReloadableResource toReplace, bool sendEvent = true, bool searchForOthers = true)
         {
-            string path = LevelFileDialog.BrowseFile(GetWin32WindowFromCaller(owner), settings, toReplace.GetPath(),
+            string path = LevelFileDialog.BrowseFile(WPFUtils.GetWin32WindowFromCaller(owner), settings, toReplace.GetPath(),
                 "Select a new file for " + toReplace.ResourceType.ToString(), toReplace.FileExtensions, VariableType.LevelDirectory, false);
 
             if (string.IsNullOrEmpty(path) || (path == toReplace.GetPath() && toReplace?.LoadException == null))
@@ -4533,7 +4533,7 @@ namespace TombEditor.WPF
                     if (!File.Exists(newPath))
                         continue;
 
-                    if (searchForOthers && DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Other missing " + resourceTypeString + " was found. Reconnect other resources?",
+                    if (searchForOthers && DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Other missing " + resourceTypeString + " was found. Reconnect other resources?",
                                             "Reconnect offline media", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) == WinForms.DialogResult.No)
                         break;
                     else
@@ -4587,7 +4587,7 @@ namespace TombEditor.WPF
 
         public static void ReloadSounds(INotifyPropertyChanged owner)
         {
-            var dialogHandler = new GraphicalDialogHandler(GetWin32WindowFromCaller(owner));
+            var dialogHandler = new GraphicalDialogHandler(WPFUtils.GetWin32WindowFromCaller(owner));
             foreach (var catalog in _editor.Level.Settings.SoundCatalogs)
                 catalog.Reload(_editor.Level.Settings, dialogHandler);
             _editor.LoadedSoundsCatalogsChange();
@@ -4598,7 +4598,7 @@ namespace TombEditor.WPF
             return Room.RemoveOutsidePortals(_editor.Level, _editor.SelectedRooms, list =>
             {
                 StringBuilder portalsToRemoveList = list.Aggregate(new StringBuilder(), (str, room) => str.Append(room).Append("\n"), str => str.Remove(str.Length - 1, 1));
-                return DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "The rooms can't have portals to the outside. Do you want to continue by removing all portals to the outside? " +
+                return DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "The rooms can't have portals to the outside. Do you want to continue by removing all portals to the outside? " +
                     " Portals to remove: " + portalsToRemoveList.ToString(),
                     "Outside portals", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Warning, WinForms.MessageBoxDefaultButton.Button2) == WinForms.DialogResult.Yes;
             });
@@ -4837,7 +4837,7 @@ namespace TombEditor.WPF
 
             // Show save dialog if necessary
             if (askForPath || string.IsNullOrEmpty(fileName))
-                fileName = LevelFileDialog.BrowseFile(GetWin32WindowFromCaller(owner), null, fileName, "Save level", LevelSettings.FileFormatsLevel, null, true);
+                fileName = LevelFileDialog.BrowseFile(WPFUtils.GetWin32WindowFromCaller(owner), null, fileName, "Save level", LevelSettings.FileFormatsLevel, null, true);
             if (string.IsNullOrEmpty(fileName))
                 return false;
 
@@ -4923,7 +4923,7 @@ namespace TombEditor.WPF
             if (existingWindow == null)
             {
                 var searchAndReplaceForm = new FormReplaceObject(_editor, fromContext);
-                searchAndReplaceForm.Show(GetWin32WindowFromCaller(owner));
+                searchAndReplaceForm.Show(WPFUtils.GetWin32WindowFromCaller(owner));
             }
             else
                 existingWindow.Focus();
@@ -4944,10 +4944,10 @@ namespace TombEditor.WPF
                 saveFileDialog.DefaultExt = "dae";
                 saveFileDialog.FileName = _editor.SelectedRoom.Name;
 
-                if (saveFileDialog.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                if (saveFileDialog.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                     return;
 
-                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(GetWin32WindowFromCaller(owner)))
+                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(WPFUtils.GetWin32WindowFromCaller(owner)))
                 {
                     ExportRooms(rooms, owner);
                     return;
@@ -4958,7 +4958,7 @@ namespace TombEditor.WPF
                     settingsDialog.AddPreset(IOSettingsPresets.GeometryExportSettingsPresets);
                     settingsDialog.SelectPreset("Normal scale");
 
-                    if (settingsDialog.ShowDialog(GetWin32WindowFromCaller(owner)) == WinForms.DialogResult.OK)
+                    if (settingsDialog.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) == WinForms.DialogResult.OK)
                     {
                         BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
                         {
@@ -5014,7 +5014,7 @@ namespace TombEditor.WPF
                 openFileDialog.Title = "Import rooms";
                 openFileDialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
                 openFileDialog.FileName = _editor.SelectedRoom.Name;
-                if (openFileDialog.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                if (openFileDialog.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                     return;
                 importedGeometryPath = openFileDialog.FileName;
             }
@@ -5126,7 +5126,7 @@ namespace TombEditor.WPF
 
         public static bool ConvertLevelToTombEngine(INotifyPropertyChanged owner)
         {
-            var fileName = LevelFileDialog.BrowseFile(GetWin32WindowFromCaller(owner), "Select project to convert",
+            var fileName = LevelFileDialog.BrowseFile(WPFUtils.GetWin32WindowFromCaller(owner), "Select project to convert",
                 LevelSettings.FileFormatsLevelPrj.Concat(LevelSettings.FileFormatsLevel),
                 false);
 
@@ -5136,9 +5136,9 @@ namespace TombEditor.WPF
             var newLevel = string.Empty;
 
             using (var form = new FormOperationDialog("TombEngine level converter", false, true, (progressReporter, cancelToken) =>
-                newLevel = TombEngineConverter.Start(fileName, GetWin32WindowFromCaller(owner), progressReporter, cancelToken)))
+                newLevel = TombEngineConverter.Start(fileName, WPFUtils.GetWin32WindowFromCaller(owner), progressReporter, cancelToken)))
             {
-                if (form.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || string.IsNullOrEmpty(newLevel))
+                if (form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || string.IsNullOrEmpty(newLevel))
                     return false;
                 else
                 {
@@ -5154,7 +5154,7 @@ namespace TombEditor.WPF
                 return false;
 
             if (string.IsNullOrEmpty(fileName))
-                fileName = LevelFileDialog.BrowseFile(GetWin32WindowFromCaller(owner), null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, null, false);
+                fileName = LevelFileDialog.BrowseFile(WPFUtils.GetWin32WindowFromCaller(owner), null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, null, false);
             if (string.IsNullOrEmpty(fileName))
                 return false;
 
@@ -5171,7 +5171,7 @@ namespace TombEditor.WPF
                         form.ShowInTaskbar = true;
                     }
 
-                    if (form.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || newLevel == null)
+                    if (form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || newLevel == null)
                         return false;
 
                     bool hasUnsavedChanges = false;
@@ -5179,7 +5179,7 @@ namespace TombEditor.WPF
                     // Check if the level has legacy sound system and should be loaded in early versions of TE
                     if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
                     {
-                        DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "This project is not compatible with this Tomb Editor version.\nUse version 1.3.15 or earlier and re-save this project in it.", "Error", WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Error);
+                        DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "This project is not compatible with this Tomb Editor version.\nUse version 1.3.15 or earlier and re-save this project in it.", "Error", WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Error);
                         newLevel = null;
                         return false;
                     }
@@ -5245,7 +5245,7 @@ namespace TombEditor.WPF
 
             if (string.IsNullOrEmpty(fileName))
             {
-                fileName = LevelFileDialog.BrowseFile(GetWin32WindowFromCaller(owner), "Select PRJ to import",
+                fileName = LevelFileDialog.BrowseFile(WPFUtils.GetWin32WindowFromCaller(owner), "Select PRJ to import",
                                                       LevelSettings.FileFormatsLevelPrj,
                                                       false);
                 if (string.IsNullOrEmpty(fileName))
@@ -5254,7 +5254,7 @@ namespace TombEditor.WPF
 
             using (var formImport = new FormImportPrj(fileName, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrectionOnPrjImport))
             {
-                if (formImport.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                if (formImport.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                     return;
 
                 Level newLevel = null;
@@ -5264,7 +5264,7 @@ namespace TombEditor.WPF
                     formImport.UseHalfPixelCorrection,
                     progressReporter, cancelToken)))
                 {
-                    if (form.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || newLevel == null)
+                    if (form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || newLevel == null)
                         return;
 
                     foreach (Room r in newLevel.ExistingRooms)
@@ -5514,7 +5514,7 @@ namespace TombEditor.WPF
         {
             using (var formTags = new FormSelectRoomByTags(_editor))
             {
-                if (formTags.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
+                if (formTags.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK)
                     return;
 
                 string[] tags = formTags.tbTagSearch.Text.Split(' ');
@@ -5556,7 +5556,7 @@ namespace TombEditor.WPF
         {
             using (WinForms.ColorDialog colorDialog = new WinForms.ColorDialog())
             {
-                if(colorDialog.ShowDialog(GetWin32WindowFromCaller(owner)) == WinForms.DialogResult.OK)
+                if(colorDialog.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) == WinForms.DialogResult.OK)
                 {
                     IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
                     foreach (Room room in SelectedRooms)
@@ -5590,7 +5590,7 @@ namespace TombEditor.WPF
             {
                 using (var form = new FormQuickItemgroup(_editor))
                 {
-                    if (form.ShowDialog(GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || form.SelectedValue == null)
+                    if (form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(owner)) != WinForms.DialogResult.OK || form.SelectedValue == null)
                         return;
 
                     foreach (var item in _editor.Level.GetAllObjects().OfType<ItemInstance>())
@@ -5666,7 +5666,7 @@ namespace TombEditor.WPF
         public static void AutodetectAndAssignSounds(LevelSettings settings, INotifyPropertyChanged owner = null) // No owner - no confirmation
         {
             if (owner != null && settings.SelectedSounds.Count > 0 &&
-                DarkMessageBox.Show(GetWin32WindowFromCaller(owner), "Deselect all sounds before autodetection?", "Deselect sounds", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) == WinForms.DialogResult.Yes)
+                DarkMessageBox.Show(WPFUtils.GetWin32WindowFromCaller(owner), "Deselect all sounds before autodetection?", "Deselect sounds", WinForms.MessageBoxButtons.YesNo, WinForms.MessageBoxIcon.Question) == WinForms.DialogResult.Yes)
                 settings.SelectedSounds.Clear();
 
             AssignHardcodedSounds(settings);
@@ -5793,10 +5793,5 @@ namespace TombEditor.WPF
 
 			}
 		}
-
-		private static WinForms.IWin32Window? GetWin32WindowFromCaller(INotifyPropertyChanged caller) => Application.Current.Windows
-			.Cast<TombEditor.WPF.Views.WindowEx>()
-			.FirstOrDefault(window => window.DataContext.GetType() == caller.GetType())?
-			.Win32Window;
 	}
 }

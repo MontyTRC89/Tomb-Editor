@@ -865,7 +865,7 @@ namespace TombEditor.WPF
                 if (existingWindow == null)
                 {
                     var searchForm = new FormSearch(args.Editor);
-                    searchForm.Show(GetWin32WindowFromCaller(args.Caller));
+                    searchForm.Show(WPFUtils.GetWin32WindowFromCaller(args.Caller));
                 }
                 else
                     existingWindow.Focus();
@@ -1038,7 +1038,7 @@ namespace TombEditor.WPF
                     colorDialog.Color = (room.Properties.AmbientLight * 0.5f).ToWinFormsColor();
                     var oldLightColor = colorDialog.Color;
 
-                    if (colorDialog.ShowDialog(GetWin32WindowFromCaller(args.Caller)) != WinForms.DialogResult.OK)
+                    if (colorDialog.ShowDialog(WPFUtils.GetWin32WindowFromCaller(args.Caller)) != WinForms.DialogResult.OK)
                         colorDialog.Color = oldLightColor;
 
                     var newColor = colorDialog.Color.ToFloat3Color() * 2.0f;
@@ -1064,7 +1064,7 @@ namespace TombEditor.WPF
                 if (existingWindow == null)
                 {
                     var propForm = new FormRoomProperties(args.Editor);
-                    propForm.Show(GetWin32WindowFromCaller(args.Caller));
+                    propForm.Show(WPFUtils.GetWin32WindowFromCaller(args.Caller));
                 }
                 else
                     existingWindow.Focus();
@@ -1293,7 +1293,7 @@ namespace TombEditor.WPF
             AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate (CommandArgs args)
             {
                 using (var form = new FormTextureRemap(args.Editor))
-                    form.ShowDialog(GetWin32WindowFromCaller(args.Caller));
+                    form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(args.Caller));
             });
 
             AddCommand("SearchTextures", "Search textures...", CommandType.Textures, delegate (CommandArgs args)
@@ -1302,7 +1302,7 @@ namespace TombEditor.WPF
                 if (existingWindow == null)
                 {
                     var findUntexturedForm = new FormFindTextures(args.Editor);
-                    findUntexturedForm.Show(GetWin32WindowFromCaller(args.Caller));
+                    findUntexturedForm.Show(WPFUtils.GetWin32WindowFromCaller(args.Caller));
                 }
                 else
                     existingWindow.Focus();
@@ -1342,7 +1342,7 @@ namespace TombEditor.WPF
                 if (existingWindow == null)
                 {
                     var form = new FormAnimatedTextures(args.Editor);
-                    form.Show(GetWin32WindowFromCaller(args.Caller));
+                    form.Show(WPFUtils.GetWin32WindowFromCaller(args.Caller));
                 }
                 else
                     existingWindow.Focus();
@@ -1459,13 +1459,13 @@ namespace TombEditor.WPF
             AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate (CommandArgs args)
             {
                 using (var form = new FormLevelSettings(args.Editor))
-                    form.ShowDialog(GetWin32WindowFromCaller(args.Caller));
+                    form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(args.Caller));
             });
 
             AddCommand("EditOptions", "Editor options...", CommandType.Settings, delegate (CommandArgs args)
             {
                 using (var form = new TombEditor.Forms.FormOptions(args.Editor))
-                    form.ShowDialog(GetWin32WindowFromCaller(args.Caller));
+                    form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(args.Caller));
             });
 
             AddCommand("StartWadTool", "Start Wad Tool...", CommandType.Settings, delegate (CommandArgs args)
@@ -1503,7 +1503,7 @@ namespace TombEditor.WPF
             AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate (CommandArgs args)
             {
                 using (var f = new FormKeyboardLayout(args.Editor))
-                    f.ShowDialog(GetWin32WindowFromCaller(args.Caller));
+                    f.ShowDialog(WPFUtils.GetWin32WindowFromCaller(args.Caller));
             });
 
             AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate (CommandArgs args)
@@ -1801,7 +1801,7 @@ namespace TombEditor.WPF
             {
                 using (var form = new FormInputBox("Edit room's name", "Insert the name of this room:", args.Editor.SelectedRoom.Name))
                 {
-                    if (form.ShowDialog(GetWin32WindowFromCaller(args.Caller)) == WinForms.DialogResult.Cancel)
+                    if (form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(args.Caller)) == WinForms.DialogResult.Cancel)
                         return;
 
                     args.Editor.SelectedRoom.Name = form.Result;
@@ -2222,10 +2222,5 @@ namespace TombEditor.WPF
 
             _commands = _commands.OrderBy(o => o.Type).ToList();
         }
-
-        private static WinForms.IWin32Window? GetWin32WindowFromCaller(INotifyPropertyChanged caller) => Application.Current.Windows
-            .Cast<TombEditor.WPF.Views.WindowEx>()
-            .FirstOrDefault(window => window.DataContext.GetType() == caller.GetType())?
-            .Win32Window;
     }
 }
