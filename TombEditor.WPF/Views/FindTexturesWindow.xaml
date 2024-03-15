@@ -49,5 +49,8 @@
             <Button Grid.Column="1" Width="80" Content="{local:Localize NewSearch}"/>
             <Button Grid.Column="2" Width="80" Content="{local:Localize Close}" IsDefault="True"/>
         </sg:SpacedGrid>
+        <StatusBarItem Grid.Row="3">
+            <TextBlock/>
+        </StatusBarItem>
     </sg:SpacedGrid>
 </Window>
