@@ -18,6 +18,7 @@ using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Enums;
+using TombLib.Scripting.ClassicScript.NewCompiler;
 using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.ClassicScript.Resources;
@@ -58,6 +59,8 @@ namespace TombIDE.ScriptingStudio
 			EditorTabControl.CheckPreviousSession();
 
 			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Instance.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR4);
+
+			// var scriptFile = new ScriptFile(initialFilePath);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);

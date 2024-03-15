@@ -13,6 +13,20 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 		public static bool IsValidIncludeLine(string lineText)
 			=> lineText.TrimStart().StartsWith("#include ", StringComparison.OrdinalIgnoreCase) && Regex.IsMatch(lineText, "\".*\"");
 
+		/// <summary>
+		/// Correct formatting:<br/>
+		/// #first_id Command=1
+		/// </summary>
+		public static bool IsValidFirstIdLine(string lineText)
+			=> lineText.TrimStart().StartsWith("#first_id ", StringComparison.OrdinalIgnoreCase) && lineText.Contains('=');
+
+		/// <summary>
+		/// Correct formatting:<br/>
+		/// #define Name Value
+		/// </summary>
+		public static bool IsValidDefineLine(string lineText)
+			=> lineText.TrimStart().StartsWith("#define ", StringComparison.OrdinalIgnoreCase);
+
 		public static MatchCollection GetComments(string lineText)
 			=> Regex.Matches(lineText, @"\s*;.*$", RegexOptions.Multiline);
 
