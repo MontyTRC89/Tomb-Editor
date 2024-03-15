@@ -243,7 +243,7 @@
 
 	//Components for 'Choose a room' window
 	"ChooseRoomTitle": "Choose a room",
-	"ChooseRoomtitelLabel": "titelLabel",
+	"ChooseRoomtitleLabel": "titleLabel",
 
 	//Components for 'Search textures' window
 	"FindTexturesTitle": "Search textures",
