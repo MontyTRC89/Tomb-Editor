@@ -3,12 +3,13 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TombEditor.WPF"
 	xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
-	Title="Animated textures"
+	Title="{local:Localize AnimatedTexturesTitle}"
 	Width="810" MinWidth="810"
 	Height="630" MinHeight="630"
 	Style="{DynamicResource CustomWindowStyle}"
@@ -31,21 +32,21 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Animation set:"/>
+            <Label Grid.Column="0" Content="{local:Localize AnimationSet}"/>
             <darkCtrl:SearchableComboBox Grid.Column="1"/>
             <sg:SpacedGrid Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/> 
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Style="{DynamicResource ButtonWithIconOnly}">
+                <Button Grid.Column="0" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{local:Localize EditSetButton}">
                     <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_edit-16.png"/>
                 </Button>
-                <Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+                <Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{local:Localize AddSetButton}">
                     <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png"/>
                 </Button>
-                <Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}">
+                <Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{local:Localize DeleteSetButton}">
                     <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png"/>
                 </Button>
             </sg:SpacedGrid>
@@ -54,7 +55,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <GroupBox Header="Frame">
+            <GroupBox Header="{local:Localize Frames}">
                 <sg:SpacedGrid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -65,26 +66,26 @@
                     </Grid.RowDefinitions>
                     <DataGrid ScrollViewer.VerticalScrollBarVisibility="Visible">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Image">
+                            <DataGridTemplateColumn Header="{local:Localize Image}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Image Name="Image"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Texture">
+                            <DataGridTemplateColumn Header="{local:Localize Texture}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <darkCtrl:SearchableComboBox/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Repeat"/>
-                            <DataGridTextColumn Header="Area"/>
-                            <DataGridTextColumn Header="Edge 0"/>
-                            <DataGridTextColumn Header="Edge 1"/>
-                            <DataGridTextColumn Header="Edge 2"/>
-                            <DataGridTextColumn Header="Edge 3"/>
+                            <DataGridTextColumn Header="{local:Localize Repeat}"/>
+                            <DataGridTextColumn Header="{local:Localize Area}"/>
+                            <DataGridTextColumn Header="{local:Localize Edge0}"/>
+                            <DataGridTextColumn Header="{local:Localize Edge1}"/>
+                            <DataGridTextColumn Header="{local:Localize Edge2}"/>
+                            <DataGridTextColumn Header="{local:Localize Edge3}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <sg:SpacedGrid Grid.Column="1">
@@ -96,23 +97,23 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </sg:SpacedGrid.RowDefinitions>
-                        <Button Grid.Row="0" Style="{DynamicResource ButtonWithIconOnly}">
+                        <Button Grid.Row="0" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{local:Localize AddFrameButton}">
                             <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png"/>
                         </Button>
-                        <Button Grid.Row="1" Style="{DynamicResource ButtonWithIconOnly}">
+                        <Button Grid.Row="1" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{local:Localize DeleteFrameButton}">
                             <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png"/>
                         </Button>
-                        <Button Grid.Row="2" Style="{DynamicResource ButtonWithIconOnly}">
+                        <Button Grid.Row="2" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{local:Localize EditFrameButton}">
                             <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png"/>
                         </Button>
-                        <DockPanel Grid.Row="3" Width="25" VerticalAlignment="Stretch" Background="Firebrick">
+                        <DockPanel Grid.Row="3" Width="25" VerticalAlignment="Stretch" Background="Firebrick" Visibility="Hidden">
                             <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Warning-16.png"/>
                         </DockPanel>
-                        <Button Grid.Row="4" VerticalAlignment="Bottom" Style="{DynamicResource ButtonWithIconOnly}">
+                        <Button Grid.Row="4" VerticalAlignment="Bottom" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{local:Localize PrevFrame}">
                             <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowUp-16.png"/>
                         </Button>
                         <Button Grid.Row="5" Style="{DynamicResource ButtonWithIconOnly}">
-                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowDown-16.png"/>
+                            <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_ArrowDown-16.png" ToolTip="{local:Localize NextFrame}"/>
                         </Button>
                     </sg:SpacedGrid>
                 </sg:SpacedGrid>
@@ -124,7 +125,7 @@
                 <ColumnDefinition Width="133"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Row="0">
-                <GroupBox Header="Procedural animation tool">
+                <GroupBox Header="{local:Localize ProcAnimTool}">
                     <sg:SpacedGrid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -140,9 +141,9 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" HorizontalAlignment="Stretch" Content="Animator:"/>
-                            <Label Grid.Column="1" Width="63" Content="Progress %:" />
-                            <Label Grid.Column="2" Width="68" Content="Frames:" />
+                            <Label Grid.Column="0" HorizontalAlignment="Stretch" Content="{local:Localize Animator}"/>
+                            <Label Grid.Column="1" Width="63" Content="{local:Localize ProgressPerc}" />
+                            <Label Grid.Column="2" Width="68" Content="{local:Localize Frames}" />
                         </sg:SpacedGrid>
                         <sg:SpacedGrid Grid.Row="1">
                             <Grid.ColumnDefinitions>
@@ -150,21 +151,21 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch">
-                                <ComboBoxItem>Stretch horizontal</ComboBoxItem>
-                                <ComboBoxItem>Stretch vertical</ComboBoxItem>
-                                <ComboBoxItem>Scale</ComboBoxItem>
-                                <ComboBoxItem>Scale Skew horizontal ↖</ComboBoxItem>
-                                <ComboBoxItem>Skew horizontal ↗</ComboBoxItem>
-                                <ComboBoxItem>Skew vertical ↖</ComboBoxItem>
-                                <ComboBoxItem>Skew vertical ↗</ComboBoxItem>
-                                <ComboBoxItem>Spin</ComboBoxItem>
-                                <ComboBoxItem>Pan horizontal</ComboBoxItem>
-                                <ComboBoxItem>Pan vertical</ComboBoxItem>
-                                <ComboBoxItem>Shake</ComboBoxItem>
+                            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Animation type">
+                                <ComboBoxItem Content="{local:Localize StretchHorizontal}"/> 
+                                <ComboBoxItem Content="{local:Localize StretchVertical}"/>
+                                <ComboBoxItem Content="{local:Localize Scale}"/>
+                                <ComboBoxItem Content="{local:Localize SkewHorizontalRL}"/>
+                                <ComboBoxItem Content="{local:Localize SkewHorizontalLR}"/>
+                                <ComboBoxItem Content="{local:Localize SkewVerticalRL}"/>
+                                <ComboBoxItem Content="{local:Localize SkewVerticalLR}"/>
+                                <ComboBoxItem Content="{local:Localize Spin}"/>
+                                <ComboBoxItem Content="{local:Localize PanHorizontal}"/>
+                                <ComboBoxItem Content="{local:Localize Frames}"/>
+                                <ComboBoxItem Content="{local:Localize Shake}"/>
                             </ComboBox>
-                            <xceed:IntegerUpDown Grid.Column="1" Width="64"/>
-                            <xceed:IntegerUpDown Grid.Column="2" Width="68"/>
+                            <xceed:IntegerUpDown Grid.Column="1" Width="64" ToolTip="Effect progress or strength"/>
+                            <xceed:IntegerUpDown Grid.Column="2" Width="68" ToolTip="Amount of resulting animation frames"/>
                         </sg:SpacedGrid>
                         <sg:SpacedGrid Grid.Row="2">
                             <Grid.ColumnDefinitions>
@@ -172,8 +173,8 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <CheckBox Grid.Column="0" Content="Symmetric"/>
-                            <CheckBox Grid.Column="1" HorizontalAlignment="Stretch" Content="Smooth"/>
+                            <CheckBox Grid.Column="0" Content="{local:Localize Symmetric}"/>
+                            <CheckBox Grid.Column="1" HorizontalAlignment="Stretch" Content="{local:Localize Smooth}"/>
                             <sg:SpacedGrid Grid.Column="2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
@@ -182,26 +183,26 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Button Grid.Column="0" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Generate new animation">
                                     <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_create_new-16.png"/>
                                 </Button>
-                                <Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Generate and merge into copy of current animation">
                                     <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_copy-16.png"/>
                                 </Button>
-                                <Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Generate and merge into current animation">
                                     <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_Merge-16.png"/>
                                 </Button>
-                                <Button Grid.Column="3" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Button Grid.Column="3" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Generate and add frames after current sequence frame">
                                     <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png"/>
                                 </Button>
-                                <Button Grid.Column="4" Style="{DynamicResource ButtonWithIconOnly}">
+                                <Button Grid.Column="4" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Generate and replace current animation">
                                     <Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_refresh-16.png"/>
                                 </Button>
                             </sg:SpacedGrid>
                         </sg:SpacedGrid>
                     </sg:SpacedGrid>
                 </GroupBox>
-                <GroupBox Header="Setting" Height="84">
+                <GroupBox Header="{local:Localize Setting}" Height="84">
                     <sg:SpacedGrid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -212,186 +213,185 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </sg:SpacedGrid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="Type:" HorizontalAlignment="Stretch"/>
+                        <Label Grid.Row="0" Grid.Column="0" Content="{local:Localize Type}" HorizontalAlignment="Stretch"/>
                         <Label Grid.Row="0" Grid.Column="1" Content="FPS:" Width="71"/>
                         <Label Grid.Row="0" Grid.Column="2" Content="UvRotate"/>
                         <ComboBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch">
-                            <ComboBoxItem>Frames</ComboBoxItem>
-                            <ComboBoxItem>UVRotate</ComboBoxItem>
-                            <ComboBoxItem>PFrames</ComboBoxItem>
+                            <ComboBoxItem Content="{local:Localize Frames}"/>
+                            <ComboBoxItem Content="UVRotate"/>
+                            <ComboBoxItem Content="PFrames"/>
                         </ComboBox>
                         <xceed:IntegerUpDown Width="74" Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
                         <darkCtrl:SearchableComboBox Width="74" Grid.Row="1" Grid.Column="1" Visibility="Visible">
-                            <ComboBoxItem>1 FPS</ComboBoxItem>
-                            <ComboBoxItem>2 FPS</ComboBoxItem>
-                            <ComboBoxItem>3 FPS</ComboBoxItem>
-                            <ComboBoxItem>4 FPS</ComboBoxItem>
-                            <ComboBoxItem>4 FPS</ComboBoxItem>
-                            <ComboBoxItem>5 FPS</ComboBoxItem>
-                            <ComboBoxItem>6 FPS</ComboBoxItem>
-                            <ComboBoxItem>7 FPS</ComboBoxItem>
-                            <ComboBoxItem>8 FPS</ComboBoxItem>
-                            <ComboBoxItem>9 FPS</ComboBoxItem>
-                            <ComboBoxItem>10 FPS</ComboBoxItem>
-                            <ComboBoxItem>11 FPS</ComboBoxItem>
-                            <ComboBoxItem>12 FPS</ComboBoxItem>
-                            <ComboBoxItem>13 FPS</ComboBoxItem>
-                            <ComboBoxItem>14 FPS</ComboBoxItem>
-                            <ComboBoxItem>15 FPS</ComboBoxItem>
-                            <ComboBoxItem>16 FPS</ComboBoxItem>
-                            <ComboBoxItem>17 FPS</ComboBoxItem>
-                            <ComboBoxItem>18 FPS</ComboBoxItem>
-                            <ComboBoxItem>19 FPS</ComboBoxItem>
-                            <ComboBoxItem>20FPS</ComboBoxItem>
-                            <ComboBoxItem>21 FPS</ComboBoxItem>
-                            <ComboBoxItem>22 FPS</ComboBoxItem>
-                            <ComboBoxItem>23 FPS</ComboBoxItem>
-                            <ComboBoxItem>24 FPS</ComboBoxItem>
-                            <ComboBoxItem>25 FPS</ComboBoxItem>
-                            <ComboBoxItem>26 FPS</ComboBoxItem>
-                            <ComboBoxItem>27 FPS</ComboBoxItem>
-                            <ComboBoxItem>28 FPS</ComboBoxItem>
-                            <ComboBoxItem>29 FPS</ComboBoxItem>
-                            <ComboBoxItem>30 FPS</ComboBoxItem>
-                            <ComboBoxItem>31 FPS</ComboBoxItem>
-                            <ComboBoxItem>32 FPS</ComboBoxItem>
+                            <ComboBoxItem Content="1 FPS"/>
+                            <ComboBoxItem Content="2 FPS"/>
+                            <ComboBoxItem Content="3 FPS"/>
+                            <ComboBoxItem Content="4 FPS"/>
+                            <ComboBoxItem Content="5 FPS"/>
+                            <ComboBoxItem Content="6 FPS"/>
+                            <ComboBoxItem Content="7 FPS"/>
+                            <ComboBoxItem Content="8 FPS"/>
+                            <ComboBoxItem Content="9 FPS"/>
+                            <ComboBoxItem Content="10 FPS"/>
+                            <ComboBoxItem Content="11 FPS"/>
+                            <ComboBoxItem Content="12 FPS"/>
+                            <ComboBoxItem Content="13 FPS"/>
+                            <ComboBoxItem Content="14 FPS"/>
+                            <ComboBoxItem Content="15 FPS"/>
+                            <ComboBoxItem Content="16 FPS"/>
+                            <ComboBoxItem Content="17 FPS"/>
+                            <ComboBoxItem Content="18 FPS"/>
+                            <ComboBoxItem Content="19 FPS"/>
+                            <ComboBoxItem Content="20 FPS"/>
+                            <ComboBoxItem Content="21 FPS"/>
+                            <ComboBoxItem Content="22 FPS"/>
+                            <ComboBoxItem Content="23 FPS"/>
+                            <ComboBoxItem Content="24 FPS"/>
+                            <ComboBoxItem Content="25 FPS"/>
+                            <ComboBoxItem Content="26 FPS"/>
+                            <ComboBoxItem Content="27 FPS"/>
+                            <ComboBoxItem Content="28 FPS"/>
+                            <ComboBoxItem Content="29 FPS"/>
+                            <ComboBoxItem Content="30 FPS"/>
+                            <ComboBoxItem Content="31 FPS"/>
+                            <ComboBoxItem Content="32 FPS"/>
                         </darkCtrl:SearchableComboBox>
                         <darkCtrl:SearchableComboBox Width="140" Grid.Row="1" Grid.Column="2" SelectedIndex="64">
-                            <ComboBoxItem>UVRotate = -64</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -63</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -62</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -61</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -60</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -59</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -58</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -57</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -56</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -55</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -54</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -53</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -52</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -51</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -50</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -49</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -48</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -47</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -46</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -45</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -44</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -43</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -42</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -41</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -40</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -39</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -38</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -37</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -36</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -35</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -34</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -33</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -32</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -31</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -30</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -29</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -28</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -27</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -26</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -25</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -24</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -23</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -22</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -21</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -20</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -19</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -18</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -17</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -16</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -15</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -14</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -13</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -12</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -11</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -10</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -9</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -8</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -7</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -6</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -5</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -4</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -3</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -2</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = -1</ComboBoxItem>
-                            <ComboBoxItem>Default (from script)</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 1</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 2</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 3</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 4</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 5</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 6</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 7</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 8</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 9</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 10</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 11</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 12</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 13</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 14</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 15</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 16</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 17</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 18</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 19</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 20</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 21</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 22</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 23</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 24</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 25</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 26</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 27</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 28</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 29</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 30</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 31</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 32</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 33</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 34</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 35</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 36</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 37</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 38</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 39</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 40</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 41</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 42</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 43</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 44</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 45</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 46</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 47</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 48</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 49</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 50</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 51</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 52</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 53</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 54</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 55</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 56</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 57</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 58</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 59</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 60</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 61</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 62</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 63</ComboBoxItem>
-                            <ComboBoxItem>UVRotate = 64</ComboBoxItem>
+                            <ComboBoxItem Content="UVRotate = -64"/>
+                            <ComboBoxItem Content="UVRotate = -63"/>
+                            <ComboBoxItem Content="UVRotate = -62"/>
+                            <ComboBoxItem Content="UVRotate = -61"/>
+                            <ComboBoxItem Content="UVRotate = -60"/>
+                            <ComboBoxItem Content="UVRotate = -59"/>
+                            <ComboBoxItem Content="UVRotate = -58"/>
+                            <ComboBoxItem Content="UVRotate = -57"/>
+                            <ComboBoxItem Content="UVRotate = -56"/>
+                            <ComboBoxItem Content="UVRotate = -55"/>
+                            <ComboBoxItem Content="UVRotate = -54"/>
+                            <ComboBoxItem Content="UVRotate = -53"/>
+                            <ComboBoxItem Content="UVRotate = -52"/>
+                            <ComboBoxItem Content="UVRotate = -51"/>
+                            <ComboBoxItem Content="UVRotate = -50"/>
+                            <ComboBoxItem Content="UVRotate = -49"/>
+                            <ComboBoxItem Content="UVRotate = -48"/>
+                            <ComboBoxItem Content="UVRotate = -47"/>
+                            <ComboBoxItem Content="UVRotate = -46"/>
+                            <ComboBoxItem Content="UVRotate = -45"/>
+                            <ComboBoxItem Content="UVRotate = -44"/>
+                            <ComboBoxItem Content="UVRotate = -43"/>
+                            <ComboBoxItem Content="UVRotate = -42"/>
+                            <ComboBoxItem Content="UVRotate = -41"/>
+                            <ComboBoxItem Content="UVRotate = -40"/>
+                            <ComboBoxItem Content="UVRotate = -39"/>
+                            <ComboBoxItem Content="UVRotate = -38"/>
+                            <ComboBoxItem Content="UVRotate = -37"/>
+                            <ComboBoxItem Content="UVRotate = -36"/>
+                            <ComboBoxItem Content="UVRotate = -35"/>
+                            <ComboBoxItem Content="UVRotate = -34"/>
+                            <ComboBoxItem Content="UVRotate = -33"/>
+                            <ComboBoxItem Content="UVRotate = -32"/>
+                            <ComboBoxItem Content="UVRotate = -31"/>
+                            <ComboBoxItem Content="UVRotate = -30"/>
+                            <ComboBoxItem Content="UVRotate = -29"/>
+                            <ComboBoxItem Content="UVRotate = -28"/>
+                            <ComboBoxItem Content="UVRotate = -27"/>
+                            <ComboBoxItem Content="UVRotate = -26"/>
+                            <ComboBoxItem Content="UVRotate = -25"/>
+                            <ComboBoxItem Content="UVRotate = -24"/>
+                            <ComboBoxItem Content="UVRotate = -23"/>
+                            <ComboBoxItem Content="UVRotate = -22"/>
+                            <ComboBoxItem Content="UVRotate = -21"/>
+                            <ComboBoxItem Content="UVRotate = -20"/>
+                            <ComboBoxItem Content="UVRotate = -19"/>
+                            <ComboBoxItem Content="UVRotate = -18"/>
+                            <ComboBoxItem Content="UVRotate = -17"/>
+                            <ComboBoxItem Content="UVRotate = -16"/>
+                            <ComboBoxItem Content="UVRotate = -15"/>
+                            <ComboBoxItem Content="UVRotate = -14"/>
+                            <ComboBoxItem Content="UVRotate = -13"/>
+                            <ComboBoxItem Content="UVRotate = -12"/>
+                            <ComboBoxItem Content="UVRotate = -11"/>
+                            <ComboBoxItem Content="UVRotate = -10"/>
+                            <ComboBoxItem Content="UVRotate = -9"/>
+                            <ComboBoxItem Content="UVRotate = -8"/>
+                            <ComboBoxItem Content="UVRotate = -7"/>
+                            <ComboBoxItem Content="UVRotate = -6"/>
+                            <ComboBoxItem Content="UVRotate = -5"/>
+                            <ComboBoxItem Content="UVRotate = -4"/>
+                            <ComboBoxItem Content="UVRotate = -3"/>
+                            <ComboBoxItem Content="UVRotate = -2"/>
+                            <ComboBoxItem Content="UVRotate = -1"/>
+                            <ComboBoxItem Content="{local:Localize DefaultUVRotate}"/>
+                            <ComboBoxItem Content="UVRotate = 1"/>
+                            <ComboBoxItem Content="UVRotate = 2"/>
+                            <ComboBoxItem Content="UVRotate = 3"/>
+                            <ComboBoxItem Content="UVRotate = 4"/>
+                            <ComboBoxItem Content="UVRotate = 5"/>
+                            <ComboBoxItem Content="UVRotate = 6"/>
+                            <ComboBoxItem Content="UVRotate = 7"/>
+                            <ComboBoxItem Content="UVRotate = 8"/>
+                            <ComboBoxItem Content="UVRotate = 9"/>
+                            <ComboBoxItem Content="UVRotate = 10"/>
+                            <ComboBoxItem Content="UVRotate = 11"/>
+                            <ComboBoxItem Content="UVRotate = 12"/>
+                            <ComboBoxItem Content="UVRotate = 13"/>
+                            <ComboBoxItem Content="UVRotate = 14"/>
+                            <ComboBoxItem Content="UVRotate = 15"/>
+                            <ComboBoxItem Content="UVRotate = 16"/>
+                            <ComboBoxItem Content=">UVRotate = 17"/>
+                            <ComboBoxItem Content=">UVRotate = 18"/>
+                            <ComboBoxItem Content=">UVRotate = 19"/>
+                            <ComboBoxItem Content=">UVRotate = 20"/>
+                            <ComboBoxItem Content=">UVRotate = 21"/>
+                            <ComboBoxItem Content=">UVRotate = 22"/>
+                            <ComboBoxItem Content=">UVRotate = 23"/>
+                            <ComboBoxItem Content=">UVRotate = 24"/>
+                            <ComboBoxItem Content=">UVRotate = 25"/>
+                            <ComboBoxItem Content=">UVRotate = 26"/>
+                            <ComboBoxItem Content=">UVRotate = 27"/>
+                            <ComboBoxItem Content=">UVRotate = 28"/>
+                            <ComboBoxItem Content=">UVRotate = 29"/>
+                            <ComboBoxItem Content=">UVRotate = 30"/>
+                            <ComboBoxItem Content=">UVRotate = 31"/>
+                            <ComboBoxItem Content="UVRotate = 32"/>
+                            <ComboBoxItem Content="UVRotate = 33"/>
+                            <ComboBoxItem Content="UVRotate = 34"/>
+                            <ComboBoxItem Content="UVRotate = 35"/>
+                            <ComboBoxItem Content="UVRotate = 36"/>
+                            <ComboBoxItem Content="UVRotate = 37"/>
+                            <ComboBoxItem Content="UVRotate = 38"/>
+                            <ComboBoxItem Content="UVRotate = 39"/>
+                            <ComboBoxItem Content="UVRotate = 40"/>
+                            <ComboBoxItem Content="UVRotate = 41"/>
+                            <ComboBoxItem Content="UVRotate = 42"/>
+                            <ComboBoxItem Content="UVRotate = 43"/>
+                            <ComboBoxItem Content="UVRotate = 44"/>
+                            <ComboBoxItem Content="UVRotate = 45"/>
+                            <ComboBoxItem Content="UVRotate = 46"/>
+                            <ComboBoxItem Content="UVRotate = 47"/>
+                            <ComboBoxItem Content="UVRotate = 48"/>
+                            <ComboBoxItem Content="UVRotate = 49"/>
+                            <ComboBoxItem Content="UVRotate = 50"/>
+                            <ComboBoxItem Content="UVRotate = 51"/>
+                            <ComboBoxItem Content="UVRotate = 52"/>
+                            <ComboBoxItem Content="UVRotate = 53"/>
+                            <ComboBoxItem Content="UVRotate = 54"/>
+                            <ComboBoxItem Content="UVRotate = 55"/>
+                            <ComboBoxItem Content="UVRotate = 56"/>
+                            <ComboBoxItem Content="UVRotate = 57"/>
+                            <ComboBoxItem Content="UVRotate = 58"/>
+                            <ComboBoxItem Content="UVRotate = 59"/>
+                            <ComboBoxItem Content="UVRotate = 60"/>
+                            <ComboBoxItem Content="UVRotate = 61"/>
+                            <ComboBoxItem Content="UVRotate = 62"/>
+                            <ComboBoxItem Content="UVRotate = 63"/>
+                            <ComboBoxItem Content="UVRotate = 64"/>
                         </darkCtrl:SearchableComboBox>
                     </sg:SpacedGrid>
                 </GroupBox>
             </StackPanel>
             <StackPanel Grid.Column="1">
-                <GroupBox Height="188" Header="Preview">
+                <GroupBox Height="188" Header="{local:Localize Preview}">
                     <sg:SpacedGrid >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="120"/>
@@ -428,7 +428,7 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Width="90" Content="OK" IsDefault="True"/>
-            <Button Grid.Column="1" Width="90" Content="Cancel" DockPanel.Dock="Right"/>
+            <Button Grid.Column="1" Width="90" Content="{local:Localize Cancel}" DockPanel.Dock="Right"/>
         </sg:SpacedGrid>
     </sg:SpacedGrid>
 </Window>
