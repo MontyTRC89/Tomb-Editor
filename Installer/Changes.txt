@@ -10,6 +10,7 @@ Tomb Editor:
  * Fixed issue where slope indicator would mark diagonal steps as slopes if one side is taller than 2 clicks.
  * Fixed OnLoop TEN callback appearing in level script functions list.
  * Fixed AI pathfinding not recognizing ghost blocks.
+ * Fixed room rotation / mirroring causing textures to disappear at extra subdivisions level.
 
 WadTool:
  * Fixed incorrect annotation for set jump reference animcommand.
