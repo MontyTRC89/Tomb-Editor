@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl" 
-        xmlns:local="clr-namespace:TombEditor.WPF.Views"
+        xmlns:local="clr-namespace:TombEditor.WPF"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Search textures"
+        Title="{local:Localize FindTexturesTitle}"
         Height="400" MinHeight="400"
         Width="330" MinWidth="300">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
@@ -16,11 +16,12 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </sg:SpacedGrid.RowDefinitions>
         <DataGrid ScrollViewer.VerticalScrollBarVisibility="Visible">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Header="Room"/>
-                <DataGridTextColumn Width="70" Header="Block"/>
+                <DataGridTextColumn Width="*" Header="{local:Localize FindTexturesGridColRoom}"/>
+                <DataGridTextColumn Width="70" Header="{local:Localize FindTexturesGridBlock}"/>
             </DataGrid.Columns>
         </DataGrid>
         <sg:SpacedGrid Grid.Row="1">
@@ -28,14 +29,14 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label>Find</Label>
+            <Label Content="{local:Localize FindTexturesFind}"/>
             <ComboBox Grid.Column="1">
-                <ComboBoxItem>Untextured faces</ComboBoxItem>
-                <ComboBoxItem>Invisible faces</ComboBoxItem>
-                <ComboBoxItem>Textures missing or out of bounds</ComboBoxItem>
-                <ComboBoxItem>Exact match with selected texture</ComboBoxItem>
-                <ComboBoxItem>Partial match with selected texture</ComboBoxItem>
-                <ComboBoxItem>Texture set only</ComboBoxItem>
+                <ComboBoxItem Content="{local:Localize UntexturedFaces}"/>
+                <ComboBoxItem Content="{local:Localize InvisibleFaces}"/>
+                <ComboBoxItem Content="{local:Localize TexturesMissing}"/>
+                <ComboBoxItem Content="{local:Localize ExactMatch}"/>
+                <ComboBoxItem Content="{local:Localize PartialMatch}"/>
+                <ComboBoxItem Content="{local:Localize TextureSetOnly}"/>
             </ComboBox>
         </sg:SpacedGrid>
         <sg:SpacedGrid Grid.Row="2">
@@ -44,9 +45,12 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <CheckBox Content="Selected rooms only"/>
-            <Button Grid.Column="1" Width="80" Content="New search"/>
-            <Button Grid.Column="2" Width="80" Content="Close" IsDefault="True"/>
+            <CheckBox Content="{local:Localize SelectedRooms}"/>
+            <Button Grid.Column="1" Width="80" Content="{local:Localize NewSearch}"/>
+            <Button Grid.Column="2" Width="80" Content="{local:Localize Close}" IsDefault="True"/>
         </sg:SpacedGrid>
+        <StatusBarItem Grid.Row="3">
+            <TextBlock/>
+        </StatusBarItem>
     </sg:SpacedGrid>
 </Window>

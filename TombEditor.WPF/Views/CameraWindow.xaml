@@ -1,17 +1,17 @@
-﻿<Window x:Class="TombEditor.WPF.Forms.FormCamera"
+﻿<Window x:Class="TombEditor.WPF.Forms.CameraWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+        xmlns:local="clr-namespace:TombEditor.WPF"
         xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl" 
         xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Edit camera"
-        Height="120" MinHeight="120"
-        Width="243" MinWidth="243"
+        Title="{local:Localize CameraTitle}"
+        Height="120" MinHeight="120" MaxHeight="120"
+        Width="243" MinWidth="243" MaxWidth="243"
         WindowStyle="ToolWindow"
         ResizeMode="NoResize">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
@@ -26,20 +26,20 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label Content="Glide timer:"/>
+            <Label Content="{local:Localize CameraGlideTimer}"/>
             <xceed:IntegerUpDown Grid.Column="1"/>
-            <CheckBox Grid.Column="2" Content="Glide out"/>
+            <CheckBox Grid.Column="2" Content="{local:Localize CameraGlideOut}"/>
         </sg:SpacedGrid>
         <sg:SpacedGrid Grid.Row="1" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label Content="Camera mode:"/>
-            <darkCtrl:SearchableComboBox Grid.Column="1">
-                <ComboBoxItem>Default</ComboBoxItem>
-                <ComboBoxItem>Locked</ComboBoxItem>
-            </darkCtrl:SearchableComboBox>
+            <Label Content="{local:Localize CameraMode}"/>
+            <ComboBox Grid.Column="1">
+                <ComboBoxItem Content="{local:Localize CameraDefault}"/>
+                <ComboBoxItem Content="{local:Localize CameraLocked}"/> 
+            </ComboBox>
         </sg:SpacedGrid>
         <sg:SpacedGrid Grid.Row="2" HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
@@ -47,7 +47,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button Width="80" Content="OK"/>
-            <Button Grid.Column="1" Width="80" Content="Cancel" IsDefault="True"/>
+            <Button Grid.Column="1" Width="80" Content="{local:Localize Cancel}" IsDefault="True"/>
         </sg:SpacedGrid>
     </sg:SpacedGrid>
 </Window>

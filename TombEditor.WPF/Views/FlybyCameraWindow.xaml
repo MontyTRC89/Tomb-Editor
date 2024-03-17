@@ -6,10 +6,13 @@
         xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
         xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
         xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl" 
-        xmlns:local="clr-namespace:TombEditor.WPF.Views" xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:TombEditor.WPF" xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         Style="{DynamicResource CustomWindowStyle}"
         mc:Ignorable="d"
-        Title="Flyby Camera" Height="391" Width="450">
+        Title="{local:Localize FlybyCameraTitle}"
+        Height="373" Width="450"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow">
     <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
         <sg:SpacedGrid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -35,64 +38,64 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Sequence:" Width="55"/>
-                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+                <Label Content="{local:Localize Sequence}" Width="80"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="70" HorizontalAlignment="Left"/>
             </sg:SpacedGrid>
             <sg:SpacedGrid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Number:" Width="55"/>
-                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+                <Label Content="{local:Localize Number}" Width="80"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="70" HorizontalAlignment="Left"/>
             </sg:SpacedGrid>
             <sg:SpacedGrid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Timer:" Width="55"/>
-                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+                <Label Content="{local:Localize Timer}" Width="80"/>
+                <xceed:IntegerUpDown Grid.Column="1" Width="70" HorizontalAlignment="Left"/>
             </sg:SpacedGrid>
             <sg:SpacedGrid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Speed:" Width="55"/>
-                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+                <Label Content="{local:Localize Speed}" Width="80"/>
+                <xceed:DecimalUpDown Grid.Column="1" Width="70" HorizontalAlignment="Left" Increment="0.01" FormatString="F2"/>
             </sg:SpacedGrid>
             <sg:SpacedGrid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="FOV:" Width="55"/>
-                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+                <Label Content="{local:Localize FOV}" Width="80"/>
+                <xceed:DecimalUpDown Grid.Column="1" Width="70" HorizontalAlignment="Left" Increment="0.01" FormatString="F2"/>
             </sg:SpacedGrid>
             <sg:SpacedGrid Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Roll:"  Width="55"/>
-                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+                <Label Content="{local:Localize Roll}"  Width="80"/>
+                <xceed:DecimalUpDown Grid.Column="1" Width="70" HorizontalAlignment="Left" Increment="0.01" FormatString="F2"/>
             </sg:SpacedGrid>
             <sg:SpacedGrid Grid.Row="6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Rotation X:"/>
-                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+                <Label Content="{local:Localize RotationX}" Width="80"/>
+                <xceed:DecimalUpDown Grid.Column="1" Width="70" HorizontalAlignment="Left" Increment="0.01" FormatString="F2"/>
             </sg:SpacedGrid>
             <sg:SpacedGrid Grid.Row="7">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Rotation Y:"/>
-                <xceed:IntegerUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+                <Label Content="{local:Localize RotationY}" Width="80"/>
+                <xceed:DecimalUpDown Grid.Column="1" Width="70" HorizontalAlignment="Left" Increment="0.01" FormatString="F2"/>
             </sg:SpacedGrid>
 
 
@@ -117,23 +120,22 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </sg:SpacedGrid.RowDefinitions>
-            <CheckBox Content="Make a cut to flyby from Lara camera position"/>
-            <CheckBox Content="Track entity position" Grid.Row="1"/>
-            <CheckBox Content="Infinite loop" Grid.Row="2"/>
-            <CheckBox Content="Create tracking camera" Grid.Row="3"/>
-            <CheckBox Content="Focus on Lara's last head position" Grid.Row="4"/>
-            <CheckBox Content="Focus on Lara's head" Grid.Row="5"/>
-            <CheckBox Content="Snap back to Lara at the end of sequence" Grid.Row="6"/>
-            <CheckBox Content="Jump to another camera in sequence (Timer field)" Grid.Row="7"/>
-            <CheckBox Content="Freeze camera (Timer field)" Grid.Row="8"/>
-            <CheckBox Content="Freeze camera (Timer field)" Grid.Row="9"/>
-            <CheckBox Content='Disable exit from sequence with "Look At" key' Grid.Row="10"/>
-            <CheckBox Content="Cinematic mode" Grid.Row="11"/>
-            <CheckBox Content="Let Lara move in cinematic mode" Grid.Row="12"/>
-            <CheckBox Content="Unused" Grid.Row="13"/>
-            <CheckBox Content="Unused" Grid.Row="14"/>
-            <CheckBox Content="Activate heavy trigger" Grid.Row="15"/>
-            <CheckBox Content="Unused" Grid.Row="16"/>
+            <CheckBox Content="{local:Localize cbBit0}"/>
+            <CheckBox Content="{local:Localize cbBit1}" Grid.Row="1"/>
+            <CheckBox Content="{local:Localize cbBit2}" Grid.Row="2"/>
+            <CheckBox Content="{local:Localize cbBit3}" Grid.Row="3"/>
+            <CheckBox Content="{local:Localize cbBit4}" Grid.Row="4"/>
+            <CheckBox Content="{local:Localize cbBit5}" Grid.Row="5"/>
+            <CheckBox Content="{local:Localize cbBit6}" Grid.Row="6"/>
+            <CheckBox Content="{local:Localize cbBit7}" Grid.Row="7"/>
+            <CheckBox Content="{local:Localize cbBit8}" Grid.Row="8"/>
+            <CheckBox Content="{local:Localize cbBit9}" Grid.Row="9"/>
+            <CheckBox Content='{local:Localize cbBit10}' Grid.Row="10"/>
+            <CheckBox Content="{local:Localize cbBit11}" Grid.Row="11"/>
+            <CheckBox Content="{local:Localize Unused}" Grid.Row="12"/>
+            <CheckBox Content="{local:Localize Unused}" Grid.Row="13"/>
+            <CheckBox Content="{local:Localize cbBit14}" Grid.Row="14"/>
+            <CheckBox Content="{local:Localize Unused}" Grid.Row="15"/>
         </sg:SpacedGrid>
         <sg:SpacedGrid Grid.Row="1" HorizontalAlignment="Right" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
@@ -141,7 +143,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button Width="80" Content="OK"/>
-            <Button Grid.Column="1" Width="80" Content="Cancel" IsDefault="True"/>
+            <Button Grid.Column="1" Width="80" Content="{local:Localize Cancel}" IsDefault="True"/>
         </sg:SpacedGrid>
     </sg:SpacedGrid>
 </Window>
