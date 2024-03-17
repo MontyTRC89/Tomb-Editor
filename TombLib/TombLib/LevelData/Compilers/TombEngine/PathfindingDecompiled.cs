@@ -289,10 +289,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return false;
             }
 
-            dec_q0 = block.Floor.XnZp;
-            dec_q1 = block.Floor.XpZp;
-            dec_q2 = block.Floor.XpZn;
-            dec_q3 = block.Floor.XnZn;
+            dec_q0 = block.HasGhostBlock ? block.GhostBlock.Floor.XnZp : block.Floor.XnZp;
+            dec_q1 = block.HasGhostBlock ? block.GhostBlock.Floor.XpZp : block.Floor.XpZp;
+            dec_q2 = block.HasGhostBlock ? block.GhostBlock.Floor.XpZn : block.Floor.XpZn;
+            dec_q3 = block.HasGhostBlock ? block.GhostBlock.Floor.XnZn : block.Floor.XnZn;
 
             int currentX = room.Position.X + x;
             int currentZ = room.Position.Z + z;
@@ -822,13 +822,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return _noHeight;
 
-            int sumHeights = block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn;
+            int floorXnZp = block.HasGhostBlock ? block.GhostBlock.Floor.XnZp : block.Floor.XnZp,
+                floorXpZp = block.HasGhostBlock ? block.GhostBlock.Floor.XpZp : block.Floor.XpZp,
+                floorXpZn = block.HasGhostBlock ? block.GhostBlock.Floor.XpZn : block.Floor.XpZn,
+                floorXnZn = block.HasGhostBlock ? block.GhostBlock.Floor.XnZn : block.Floor.XnZn;
+
+            int sumHeights = floorXnZp + floorXpZp + floorXpZn + floorXnZn;
             int meanFloorCornerHeight = sumHeights / 4;
 
-            dec_q0 = block.Floor.XnZp;
-            dec_q1 = block.Floor.XpZp;
-            dec_q2 = block.Floor.XpZn;
-            dec_q3 = block.Floor.XnZn;
+            dec_q0 = floorXnZp;
+            dec_q1 = floorXpZp;
+            dec_q2 = floorXpZn;
+            dec_q3 = floorXnZn;
 
             int slope1 = Math.Abs(dec_q0 - dec_q1) >= Clicks.ToWorld(3) ? 1 : 0;
             int slope2 = Math.Abs(dec_q1 - dec_q2) >= Clicks.ToWorld(3) ? 1 : 0;
@@ -837,18 +842,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             bool someFlag = false;
 
-            if (block.Floor.XnZp == block.Floor.XpZn)
+            if (floorXnZp == floorXpZn)
             {
                 someFlag = false;
             }
             else
             {
-                if (block.Floor.XpZp != block.Floor.XnZn)
+                if (floorXpZp != floorXnZn)
                 {
-                    if (block.Floor.XnZp < block.Floor.XpZp && block.Floor.XnZp < block.Floor.XnZn ||
-                        block.Floor.XpZn < block.Floor.XpZp && block.Floor.XpZn < block.Floor.XnZn ||
-                        block.Floor.XnZp > block.Floor.XpZp && block.Floor.XnZp > block.Floor.XnZn ||
-                        block.Floor.XpZn > block.Floor.XpZp && block.Floor.XpZn > block.Floor.XnZn)
+                    if (floorXnZp < floorXpZp && floorXnZp < floorXnZn ||
+                        floorXpZn < floorXpZp && floorXpZn < floorXnZn ||
+                        floorXnZp > floorXpZp && floorXnZp > floorXnZn ||
+                        floorXpZn > floorXpZp && floorXpZn > floorXnZn)
                     {
                         someFlag = true;
                     }
@@ -864,7 +869,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             int floorHeight = meanFloorCornerHeight + room.Position.Y;
-            int ceiling = block.Ceiling.Max + room.Position.Y;
+
+            int ceiling = block.HasGhostBlock
+                ? block.GhostBlock.Ceiling.Max + room.Position.Y
+                : block.Ceiling.Max + room.Position.Y;
 
             if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= Clicks.ToWorld(1) && block.CeilingPortal != null)
             {

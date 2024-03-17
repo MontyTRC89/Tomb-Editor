@@ -9,6 +9,7 @@ Tomb Editor:
  * Fixed issue where creating portals manually would display phantom subdivisions.
  * Fixed issue where slope indicator would mark diagonal steps as slopes if one side is taller than 2 clicks.
  * Fixed OnLoop TEN callback appearing in level script functions list.
+ * Fixed AI pathfinding not recognizing ghost blocks.
 
 WadTool:
  * Fixed incorrect annotation for set jump reference animcommand.
