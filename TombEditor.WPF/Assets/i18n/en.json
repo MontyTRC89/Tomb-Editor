@@ -300,7 +300,6 @@
 	"cbBit12": "Make fade-in",
 	"cbBit13": "Make fade-out",
 	"cbBit14": "Activate heavy trigger",
-	"cbBit15": "Unused",
 
 	// Components for 'Texture sounds' window (FootStepSoundsWindow)
 	"TextureSoundsTitle": "Texture sounds",
