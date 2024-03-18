@@ -96,8 +96,8 @@
     <moveable id="110" name="Subway train" essential="false" ten="TRAIN" />
     <moveable id="111" name="Wall-mounted knife blade / Knife disk" essential="false" ten="WALL_MOUNTED_BLADE" />
     <moveable id="113" name="Detachable stalacites" essential="false" ten="FALLING_BLOCK" />
-    <moveable id="114" name="Spiky moveable wall" essential="false" />
-    <moveable id="116" name="Spiky moveable vertical wall / Tunnel borer" essential="false" ten="SPIKY_WALL" />
+    <moveable id="114" name="Spiky moveable wall" essential="false" ten="SPIKY_WALL" />
+    <moveable id="116" name="Spiky moveable vertical wall / Tunnel borer" essential="false" ten="SPIKY_CEILING" />
     <moveable id="117" name="Valve wheel / Pulley" essential="false" ten="SWITCH_TYPE1"/>
     <moveable id="118" name="Switch / Pullable book" essential="false" ten="SWITCH_TYPE2"/>
     <moveable id="119" name="Underwater propeller / Diver sitting on block / Underwater rotating knives / Meteorite" essential="false" /> 

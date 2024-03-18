@@ -17,98 +17,97 @@
 
 		private void InitializeComponent()
 		{
-			this.button_BuildArchive = new DarkUI.Controls.DarkButton();
-			this.button_DeleteLogs = new DarkUI.Controls.DarkButton();
-			this.button_RenameLauncher = new DarkUI.Controls.DarkButton();
-			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
-			this.textBox_LauncherName = new System.Windows.Forms.TextBox();
-			this.sectionPanel.SuspendLayout();
-			this.SuspendLayout();
+			button_BuildArchive = new DarkUI.Controls.DarkButton();
+			button_DeleteLogs = new DarkUI.Controls.DarkButton();
+			button_RenameLauncher = new DarkUI.Controls.DarkButton();
+			sectionPanel = new DarkUI.Controls.DarkSectionPanel();
+			textBox_LauncherName = new System.Windows.Forms.TextBox();
+			sectionPanel.SuspendLayout();
+			SuspendLayout();
 			// 
 			// button_BuildArchive
 			// 
-			this.button_BuildArchive.Checked = false;
-			this.button_BuildArchive.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button_BuildArchive.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_Open_16;
-			this.button_BuildArchive.Location = new System.Drawing.Point(7, 96);
-			this.button_BuildArchive.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
-			this.button_BuildArchive.Name = "button_BuildArchive";
-			this.button_BuildArchive.Size = new System.Drawing.Size(624, 25);
-			this.button_BuildArchive.TabIndex = 1;
-			this.button_BuildArchive.Text = "Create a \"Ready To Play\" game archive...";
-			this.button_BuildArchive.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.button_BuildArchive.Click += new System.EventHandler(this.button_BuildArchive_Click);
+			button_BuildArchive.Checked = false;
+			button_BuildArchive.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+			button_BuildArchive.Image = Properties.Resources.archive_folder_16;
+			button_BuildArchive.Location = new System.Drawing.Point(7, 96);
+			button_BuildArchive.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
+			button_BuildArchive.Name = "button_BuildArchive";
+			button_BuildArchive.Size = new System.Drawing.Size(624, 25);
+			button_BuildArchive.TabIndex = 1;
+			button_BuildArchive.Text = "Create a \"Ready To Publish\" game archive...";
+			button_BuildArchive.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			button_BuildArchive.Click += button_BuildArchive_Click;
 			// 
 			// button_DeleteLogs
 			// 
-			this.button_DeleteLogs.Checked = false;
-			this.button_DeleteLogs.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.button_DeleteLogs.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
-			this.button_DeleteLogs.Location = new System.Drawing.Point(7, 65);
-			this.button_DeleteLogs.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
-			this.button_DeleteLogs.Name = "button_DeleteLogs";
-			this.button_DeleteLogs.Size = new System.Drawing.Size(624, 25);
-			this.button_DeleteLogs.TabIndex = 0;
-			this.button_DeleteLogs.Text = "Delete all logs and error dumps from the engine folder";
-			this.button_DeleteLogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.button_DeleteLogs.Click += new System.EventHandler(this.button_DeleteLogs_Click);
+			button_DeleteLogs.Checked = false;
+			button_DeleteLogs.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+			button_DeleteLogs.Image = Properties.Resources.general_trash_16;
+			button_DeleteLogs.Location = new System.Drawing.Point(7, 65);
+			button_DeleteLogs.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
+			button_DeleteLogs.Name = "button_DeleteLogs";
+			button_DeleteLogs.Size = new System.Drawing.Size(624, 25);
+			button_DeleteLogs.TabIndex = 0;
+			button_DeleteLogs.Text = "Delete all logs and error dumps from the engine folder";
+			button_DeleteLogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			button_DeleteLogs.Click += button_DeleteLogs_Click;
 			// 
 			// button_RenameLauncher
 			// 
-			this.button_RenameLauncher.Checked = false;
-			this.button_RenameLauncher.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.button_RenameLauncher.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
-			this.button_RenameLauncher.Location = new System.Drawing.Point(7, 32);
-			this.button_RenameLauncher.Margin = new System.Windows.Forms.Padding(6, 9, 3, 3);
-			this.button_RenameLauncher.Name = "button_RenameLauncher";
-			this.button_RenameLauncher.Size = new System.Drawing.Size(192, 27);
-			this.button_RenameLauncher.TabIndex = 2;
-			this.button_RenameLauncher.Text = "Rename the launcher file...";
-			this.button_RenameLauncher.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.button_RenameLauncher.Click += new System.EventHandler(this.button_RenameLauncher_Click);
+			button_RenameLauncher.Checked = false;
+			button_RenameLauncher.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+			button_RenameLauncher.Image = Properties.Resources.general_edit_16;
+			button_RenameLauncher.Location = new System.Drawing.Point(7, 32);
+			button_RenameLauncher.Margin = new System.Windows.Forms.Padding(6, 9, 3, 3);
+			button_RenameLauncher.Name = "button_RenameLauncher";
+			button_RenameLauncher.Size = new System.Drawing.Size(192, 27);
+			button_RenameLauncher.TabIndex = 2;
+			button_RenameLauncher.Text = "Rename the launcher file...";
+			button_RenameLauncher.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			button_RenameLauncher.Click += button_RenameLauncher_Click;
 			// 
 			// sectionPanel
 			// 
-			this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.sectionPanel.Controls.Add(this.textBox_LauncherName);
-			this.sectionPanel.Controls.Add(this.button_RenameLauncher);
-			this.sectionPanel.Controls.Add(this.button_BuildArchive);
-			this.sectionPanel.Controls.Add(this.button_DeleteLogs);
-			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
-			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "Special Functions";
-			this.sectionPanel.Size = new System.Drawing.Size(640, 130);
-			this.sectionPanel.TabIndex = 0;
+			sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			sectionPanel.Controls.Add(textBox_LauncherName);
+			sectionPanel.Controls.Add(button_RenameLauncher);
+			sectionPanel.Controls.Add(button_BuildArchive);
+			sectionPanel.Controls.Add(button_DeleteLogs);
+			sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			sectionPanel.Location = new System.Drawing.Point(0, 0);
+			sectionPanel.Name = "sectionPanel";
+			sectionPanel.SectionHeader = "Special Functions";
+			sectionPanel.Size = new System.Drawing.Size(640, 130);
+			sectionPanel.TabIndex = 0;
 			// 
 			// textBox_LauncherName
 			// 
-			this.textBox_LauncherName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.textBox_LauncherName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox_LauncherName.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.textBox_LauncherName.ForeColor = System.Drawing.Color.Gainsboro;
-			this.textBox_LauncherName.Location = new System.Drawing.Point(205, 32);
-			this.textBox_LauncherName.Margin = new System.Windows.Forms.Padding(3, 8, 6, 3);
-			this.textBox_LauncherName.Name = "textBox_LauncherName";
-			this.textBox_LauncherName.ReadOnly = true;
-			this.textBox_LauncherName.Size = new System.Drawing.Size(426, 27);
-			this.textBox_LauncherName.TabIndex = 3;
+			textBox_LauncherName.BackColor = System.Drawing.Color.FromArgb(48, 48, 48);
+			textBox_LauncherName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			textBox_LauncherName.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			textBox_LauncherName.ForeColor = System.Drawing.Color.Gainsboro;
+			textBox_LauncherName.Location = new System.Drawing.Point(205, 32);
+			textBox_LauncherName.Margin = new System.Windows.Forms.Padding(3, 8, 6, 3);
+			textBox_LauncherName.Name = "textBox_LauncherName";
+			textBox_LauncherName.ReadOnly = true;
+			textBox_LauncherName.Size = new System.Drawing.Size(426, 27);
+			textBox_LauncherName.TabIndex = 3;
 			// 
 			// SettingsSpecialFunctions
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.Controls.Add(this.sectionPanel);
-			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MaximumSize = new System.Drawing.Size(640, 130);
-			this.MinimumSize = new System.Drawing.Size(640, 130);
-			this.Name = "SettingsSpecialFunctions";
-			this.Size = new System.Drawing.Size(640, 130);
-			this.sectionPanel.ResumeLayout(false);
-			this.sectionPanel.PerformLayout();
-			this.ResumeLayout(false);
-
+			AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			Controls.Add(sectionPanel);
+			Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			MaximumSize = new System.Drawing.Size(640, 130);
+			MinimumSize = new System.Drawing.Size(640, 130);
+			Name = "SettingsSpecialFunctions";
+			Size = new System.Drawing.Size(640, 130);
+			sectionPanel.ResumeLayout(false);
+			sectionPanel.PerformLayout();
+			ResumeLayout(false);
 		}
 
 		#endregion

@@ -130,7 +130,8 @@ namespace TombEditor.Forms
             // Disable version-specific controls
             if (obj is Editor.InitEvent ||
                 obj is Editor.GameVersionChangedEvent ||
-                obj is Editor.LevelChangedEvent)
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.ConfigurationChangedEvent)
             {
                 addSpriteToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
 
@@ -141,6 +142,10 @@ namespace TombEditor.Forms
                 generateObjectNamesToolStripMenuItem.Visible =
                 editEventSetsToolStripMenuItem.Visible =
                 editGlobalEventSetsToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+
+                increaseStepHeightToolStripMenuItem.Visible =
+                decreaseStepHeightToolStripMenuItem.Visible =
+				toolStripSeparator10.Visible = _editor.Level.IsTombEngine || _editor.Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
             }
 
             // Clear autosave information
