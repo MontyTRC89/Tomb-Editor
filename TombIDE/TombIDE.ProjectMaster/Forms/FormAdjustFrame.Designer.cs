@@ -100,7 +100,7 @@ partial class FormAdjustFrame
 		// comboBox_Top_GradientFlow
 		// 
 		comboBox_Top_GradientFlow.FormattingEnabled = true;
-		comboBox_Top_GradientFlow.Items.AddRange(new object[] { "Left to Right", "Top to Bottom", "Right to Left", "Bottom to Top" });
+		comboBox_Top_GradientFlow.Items.AddRange(new object[] { "Left to right", "Top to bottom", "Right to left", "Bottom to top" });
 		comboBox_Top_GradientFlow.Location = new System.Drawing.Point(12, 39);
 		comboBox_Top_GradientFlow.Name = "comboBox_Top_GradientFlow";
 		comboBox_Top_GradientFlow.Size = new System.Drawing.Size(156, 23);
@@ -320,7 +320,7 @@ partial class FormAdjustFrame
 		// comboBox_Bottom_GradientFlow
 		// 
 		comboBox_Bottom_GradientFlow.FormattingEnabled = true;
-		comboBox_Bottom_GradientFlow.Items.AddRange(new object[] { "Left to Right", "Top to Bottom", "Right to Left", "Bottom to Top" });
+		comboBox_Bottom_GradientFlow.Items.AddRange(new object[] { "Left to right", "Top to bottom", "Right to left", "Bottom to top" });
 		comboBox_Bottom_GradientFlow.Location = new System.Drawing.Point(12, 39);
 		comboBox_Bottom_GradientFlow.Name = "comboBox_Bottom_GradientFlow";
 		comboBox_Bottom_GradientFlow.Size = new System.Drawing.Size(156, 23);
@@ -377,7 +377,7 @@ partial class FormAdjustFrame
 		// comboBox_WindowAccent
 		// 
 		comboBox_WindowAccent.FormattingEnabled = true;
-		comboBox_WindowAccent.Items.AddRange(new object[] { "None", "Acrylic Glass" });
+		comboBox_WindowAccent.Items.AddRange(new object[] { "None", "Acrylic glass" });
 		comboBox_WindowAccent.Location = new System.Drawing.Point(12, 39);
 		comboBox_WindowAccent.Name = "comboBox_WindowAccent";
 		comboBox_WindowAccent.Size = new System.Drawing.Size(156, 23);
@@ -421,7 +421,7 @@ partial class FormAdjustFrame
 		darkGroupBox4.Size = new System.Drawing.Size(774, 582);
 		darkGroupBox4.TabIndex = 12;
 		darkGroupBox4.TabStop = false;
-		darkGroupBox4.Text = "Rough preview (does not represent final look)";
+		darkGroupBox4.Text = "Preview (may not be fully accurate)";
 		// 
 		// panel_Image
 		// 
@@ -486,7 +486,7 @@ partial class FormAdjustFrame
 		button_RestoreDefaults.Name = "button_RestoreDefaults";
 		button_RestoreDefaults.Size = new System.Drawing.Size(180, 24);
 		button_RestoreDefaults.TabIndex = 13;
-		button_RestoreDefaults.Text = "Restore default frames...";
+		button_RestoreDefaults.Text = "Restore default values...";
 		button_RestoreDefaults.Click += button_RestoreDefaults_Click;
 		// 
 		// FormAdjustFrame
@@ -503,7 +503,7 @@ partial class FormAdjustFrame
 		Name = "FormAdjustFrame";
 		ShowIcon = false;
 		StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-		Text = "Customize splash screen frames";
+		Text = "Customize splash screen properties...";
 		darkGroupBox1.ResumeLayout(false);
 		darkGroupBox1.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)numUpDown_Top_EndAlpha).EndInit();

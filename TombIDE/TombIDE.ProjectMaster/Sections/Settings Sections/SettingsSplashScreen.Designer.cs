@@ -146,7 +146,7 @@
 			button_AdjustFrame.Name = "button_AdjustFrame";
 			button_AdjustFrame.Size = new System.Drawing.Size(155, 26);
 			button_AdjustFrame.TabIndex = 5;
-			button_AdjustFrame.Text = "Customize frame...";
+			button_AdjustFrame.Text = "Customize...";
 			button_AdjustFrame.Click += button_AdjustFrame_Click;
 			// 
 			// SettingsSplashScreen

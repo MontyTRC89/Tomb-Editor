@@ -222,7 +222,7 @@ public partial class FormAdjustFrame : DarkForm
 	private void button_RestoreDefaults_Click(object sender, EventArgs e)
 	{
 		DialogResult result = DarkMessageBox.Show(this,
-			"Are you sure you want to restore default frames?", "Are you sure?",
+			"Are you sure you want to restore default values?", "Are you sure?",
 			MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 		if (result != DialogResult.Yes)
