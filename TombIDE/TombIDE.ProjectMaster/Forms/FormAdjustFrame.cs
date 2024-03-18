@@ -60,12 +60,25 @@ public partial class FormAdjustFrame : DarkForm
 		numUpDown_DisplayTime.Value = _config.DisplayTimeMilliseconds;
 
 		label_Message.ForeColor = ColorTranslator.FromHtml(_config.FontColor);
+
+		switch (_config.WindowAccent)
+		{
+			case ACCENT.ENABLE_ACRYLICBLURBEHIND:
+				panel_Top.BackColor = Color.Transparent;
+				panel_Bottom.BackColor = Color.Transparent;
+				break;
+
+			case ACCENT.DISABLED:
+				panel_Top.BackColor = Color.Black;
+				panel_Bottom.BackColor = Color.Black;
+				break;
+		}
 	}
 
-	private void panel_Top_Paint(object sender, PaintEventArgs e)
+	private void panel_Top_Gradient_Paint(object sender, PaintEventArgs e)
 	{
-		Point start = GetGradientStartPoint(_config.TopBar_GradientFlow, panel_Top.ClientRectangle.Size);
-		Point end = GetGradientEndPoint(_config.TopBar_GradientFlow, panel_Top.ClientRectangle.Size);
+		Point start = GetGradientStartPoint(_config.TopBar_GradientFlow, panel_Top_Gradient.ClientRectangle.Size);
+		Point end = GetGradientEndPoint(_config.TopBar_GradientFlow, panel_Top_Gradient.ClientRectangle.Size);
 
 		Color startColor = ColorTranslator.FromHtml(_config.TopBar_GradientStartColor);
 		Color endColor = ColorTranslator.FromHtml(_config.TopBar_GradientEndColor);
@@ -73,13 +86,13 @@ public partial class FormAdjustFrame : DarkForm
 		endColor = Color.FromArgb(_config.TopBar_GradientEndAlpha, endColor.R, endColor.G, endColor.B);
 
 		var brush = new LinearGradientBrush(start, end, startColor, endColor);
-		e.Graphics.FillRectangle(brush, 0, 0, panel_Top.Width, panel_Top.Height);
+		e.Graphics.FillRectangle(brush, 0, 0, panel_Top_Gradient.Width, panel_Top_Gradient.Height);
 	}
 
-	private void panel_Bottom_Paint(object sender, PaintEventArgs e)
+	private void panel_Bottom_Gradient_Paint(object sender, PaintEventArgs e)
 	{
-		Point start = GetGradientStartPoint(_config.BottomBar_GradientFlow, panel_Bottom.ClientRectangle.Size);
-		Point end = GetGradientEndPoint(_config.BottomBar_GradientFlow, panel_Bottom.ClientRectangle.Size);
+		Point start = GetGradientStartPoint(_config.BottomBar_GradientFlow, panel_Bottom_Gradient.ClientRectangle.Size);
+		Point end = GetGradientEndPoint(_config.BottomBar_GradientFlow, panel_Bottom_Gradient.ClientRectangle.Size);
 
 		Color startColor = ColorTranslator.FromHtml(_config.BottomBar_GradientStartColor);
 		Color endColor = ColorTranslator.FromHtml(_config.BottomBar_GradientEndColor);
@@ -87,7 +100,7 @@ public partial class FormAdjustFrame : DarkForm
 		endColor = Color.FromArgb(_config.BottomBar_GradientEndAlpha, endColor.R, endColor.G, endColor.B);
 
 		var brush = new LinearGradientBrush(start, end, startColor, endColor);
-		e.Graphics.FillRectangle(brush, 0, 0, panel_Bottom.Width, panel_Bottom.Height);
+		e.Graphics.FillRectangle(brush, 0, 0, panel_Bottom_Gradient.Width, panel_Bottom_Gradient.Height);
 	}
 
 	private Point GetGradientStartPoint(GradientFlow flow, Size rectSize) => flow switch
@@ -114,7 +127,7 @@ public partial class FormAdjustFrame : DarkForm
 			_config.TopBar_GradientStartColor = ColorTranslator.ToHtml(_colorDialog.Color);
 		}
 
-		panel_Top.Invalidate();
+		panel_Top_Gradient.Invalidate();
 	}
 
 	private void panel_Top_EndColor_Click(object sender, EventArgs e)
@@ -127,7 +140,7 @@ public partial class FormAdjustFrame : DarkForm
 			_config.TopBar_GradientEndColor = ColorTranslator.ToHtml(_colorDialog.Color);
 		}
 
-		panel_Top.Invalidate();
+		panel_Top_Gradient.Invalidate();
 	}
 
 	private void panel_Bottom_StartColor_Click(object sender, EventArgs e)
@@ -140,7 +153,7 @@ public partial class FormAdjustFrame : DarkForm
 			_config.BottomBar_GradientStartColor = ColorTranslator.ToHtml(_colorDialog.Color);
 		}
 
-		panel_Bottom.Invalidate();
+		panel_Bottom_Gradient.Invalidate();
 	}
 
 	private void panel_Bottom_EndColor_Click(object sender, EventArgs e)
@@ -153,43 +166,43 @@ public partial class FormAdjustFrame : DarkForm
 			_config.BottomBar_GradientEndColor = ColorTranslator.ToHtml(_colorDialog.Color);
 		}
 
-		panel_Bottom.Invalidate();
+		panel_Bottom_Gradient.Invalidate();
 	}
 
 	private void comboBox_Top_GradientFlow_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		_config.TopBar_GradientFlow = (GradientFlow)comboBox_Top_GradientFlow.SelectedIndex;
-		panel_Top.Invalidate();
+		panel_Top_Gradient.Invalidate();
 	}
 
 	private void comboBox_Bottom_GradientFlow_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		_config.BottomBar_GradientFlow = (GradientFlow)comboBox_Bottom_GradientFlow.SelectedIndex;
-		panel_Bottom.Invalidate();
+		panel_Bottom_Gradient.Invalidate();
 	}
 
 	private void numUpDown_Top_StartAlpha_ValueChanged(object sender, EventArgs e)
 	{
 		_config.TopBar_GradientStartAlpha = (int)numUpDown_Top_StartAlpha.Value;
-		panel_Top.Invalidate();
+		panel_Top_Gradient.Invalidate();
 	}
 
 	private void numUpDown_Top_EndAlpha_ValueChanged(object sender, EventArgs e)
 	{
 		_config.TopBar_GradientEndAlpha = (int)numUpDown_Top_EndAlpha.Value;
-		panel_Top.Invalidate();
+		panel_Top_Gradient.Invalidate();
 	}
 
 	private void numUpDown_Bottom_StartAlpha_ValueChanged(object sender, EventArgs e)
 	{
 		_config.BottomBar_GradientStartAlpha = (int)numUpDown_Bottom_StartAlpha.Value;
-		panel_Bottom.Invalidate();
+		panel_Bottom_Gradient.Invalidate();
 	}
 
 	private void numUpDown_Bottom_EndAlpha_ValueChanged(object sender, EventArgs e)
 	{
 		_config.BottomBar_GradientEndAlpha = (int)numUpDown_Bottom_EndAlpha.Value;
-		panel_Bottom.Invalidate();
+		panel_Bottom_Gradient.Invalidate();
 	}
 
 	private void panel_FontColor_Click(object sender, EventArgs e)
@@ -212,6 +225,19 @@ public partial class FormAdjustFrame : DarkForm
 			1 => ACCENT.ENABLE_ACRYLICBLURBEHIND,
 			_ => ACCENT.DISABLED
 		};
+
+		switch (_config.WindowAccent)
+		{
+			case ACCENT.ENABLE_ACRYLICBLURBEHIND:
+				panel_Top.BackColor = Color.Transparent;
+				panel_Bottom.BackColor = Color.Transparent;
+				break;
+
+			case ACCENT.DISABLED:
+				panel_Top.BackColor = Color.Black;
+				panel_Bottom.BackColor = Color.Black;
+				break;
+		}
 	}
 
 	private void numUpDown_DisplayTime_ValueChanged(object sender, EventArgs e)
@@ -248,8 +274,8 @@ public partial class FormAdjustFrame : DarkForm
 
 		LoadConfiguration();
 
-		panel_Top.Invalidate();
-		panel_Bottom.Invalidate();
+		panel_Top_Gradient.Invalidate();
+		panel_Bottom_Gradient.Invalidate();
 		label_Message.ForeColor = ColorTranslator.FromHtml(_config.FontColor);
 	}
 

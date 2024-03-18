@@ -61,8 +61,10 @@ partial class FormAdjustFrame
 		panel_Image = new System.Windows.Forms.Panel();
 		label_LivePreview = new DarkUI.Controls.DarkLabel();
 		panel_Bottom = new System.Windows.Forms.Panel();
+		panel_Bottom_Gradient = new System.Windows.Forms.Panel();
 		label_Message = new System.Windows.Forms.Label();
 		panel_Top = new System.Windows.Forms.Panel();
+		panel_Top_Gradient = new System.Windows.Forms.Panel();
 		button_RestoreDefaults = new DarkUI.Controls.DarkButton();
 		darkGroupBox1.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)numUpDown_Top_EndAlpha).BeginInit();
@@ -75,6 +77,8 @@ partial class FormAdjustFrame
 		darkGroupBox4.SuspendLayout();
 		panel_Image.SuspendLayout();
 		panel_Bottom.SuspendLayout();
+		panel_Bottom_Gradient.SuspendLayout();
+		panel_Top.SuspendLayout();
 		SuspendLayout();
 		// 
 		// panel_Top_StartColor
@@ -377,7 +381,7 @@ partial class FormAdjustFrame
 		// comboBox_WindowAccent
 		// 
 		comboBox_WindowAccent.FormattingEnabled = true;
-		comboBox_WindowAccent.Items.AddRange(new object[] { "None", "Acrylic glass" });
+		comboBox_WindowAccent.Items.AddRange(new object[] { "None", "Acrylic blur" });
 		comboBox_WindowAccent.Location = new System.Drawing.Point(12, 39);
 		comboBox_WindowAccent.Name = "comboBox_WindowAccent";
 		comboBox_WindowAccent.Size = new System.Drawing.Size(156, 23);
@@ -450,13 +454,22 @@ partial class FormAdjustFrame
 		// 
 		// panel_Bottom
 		// 
-		panel_Bottom.Controls.Add(label_Message);
+		panel_Bottom.Controls.Add(panel_Bottom_Gradient);
 		panel_Bottom.Dock = System.Windows.Forms.DockStyle.Bottom;
 		panel_Bottom.Location = new System.Drawing.Point(9, 498);
 		panel_Bottom.Name = "panel_Bottom";
 		panel_Bottom.Size = new System.Drawing.Size(756, 75);
 		panel_Bottom.TabIndex = 2;
-		panel_Bottom.Paint += panel_Bottom_Paint;
+		// 
+		// panel_Bottom_Gradient
+		// 
+		panel_Bottom_Gradient.Controls.Add(label_Message);
+		panel_Bottom_Gradient.Dock = System.Windows.Forms.DockStyle.Fill;
+		panel_Bottom_Gradient.Location = new System.Drawing.Point(0, 0);
+		panel_Bottom_Gradient.Name = "panel_Bottom_Gradient";
+		panel_Bottom_Gradient.Size = new System.Drawing.Size(756, 75);
+		panel_Bottom_Gradient.TabIndex = 3;
+		panel_Bottom_Gradient.Paint += panel_Bottom_Gradient_Paint;
 		// 
 		// label_Message
 		// 
@@ -472,12 +485,21 @@ partial class FormAdjustFrame
 		// 
 		// panel_Top
 		// 
+		panel_Top.Controls.Add(panel_Top_Gradient);
 		panel_Top.Dock = System.Windows.Forms.DockStyle.Top;
 		panel_Top.Location = new System.Drawing.Point(9, 18);
 		panel_Top.Name = "panel_Top";
 		panel_Top.Size = new System.Drawing.Size(756, 26);
 		panel_Top.TabIndex = 0;
-		panel_Top.Paint += panel_Top_Paint;
+		// 
+		// panel_Top_Gradient
+		// 
+		panel_Top_Gradient.Dock = System.Windows.Forms.DockStyle.Fill;
+		panel_Top_Gradient.Location = new System.Drawing.Point(0, 0);
+		panel_Top_Gradient.Name = "panel_Top_Gradient";
+		panel_Top_Gradient.Size = new System.Drawing.Size(756, 26);
+		panel_Top_Gradient.TabIndex = 1;
+		panel_Top_Gradient.Paint += panel_Top_Gradient_Paint;
 		// 
 		// button_RestoreDefaults
 		// 
@@ -503,7 +525,7 @@ partial class FormAdjustFrame
 		Name = "FormAdjustFrame";
 		ShowIcon = false;
 		StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-		Text = "Customize splash screen properties...";
+		Text = "Customize splash screen properties (splash.xml)";
 		darkGroupBox1.ResumeLayout(false);
 		darkGroupBox1.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)numUpDown_Top_EndAlpha).EndInit();
@@ -519,6 +541,8 @@ partial class FormAdjustFrame
 		panel_Image.ResumeLayout(false);
 		panel_Image.PerformLayout();
 		panel_Bottom.ResumeLayout(false);
+		panel_Bottom_Gradient.ResumeLayout(false);
+		panel_Top.ResumeLayout(false);
 		ResumeLayout(false);
 	}
 
@@ -560,4 +584,6 @@ partial class FormAdjustFrame
 	private System.Windows.Forms.Label label_Message;
 	private DarkUI.Controls.DarkLabel label_LivePreview;
 	private DarkUI.Controls.DarkButton button_RestoreDefaults;
+	private System.Windows.Forms.Panel panel_Bottom_Gradient;
+	private System.Windows.Forms.Panel panel_Top_Gradient;
 }
