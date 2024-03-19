@@ -9,16 +9,20 @@ Tomb Editor:
  * Fixed issue where creating portals manually would display phantom subdivisions.
  * Fixed issue where slope indicator would mark diagonal steps as slopes if one side is taller than 2 clicks.
  * Fixed OnLoop TEN callback appearing in level script functions list.
+ * Fixed AI pathfinding not recognizing ghost blocks.
+ * Fixed room rotation / mirroring causing textures to disappear at extra subdivisions level.
 
 WadTool:
  * Fixed incorrect annotation for set jump reference animcommand.
  * Fixed incorrect animation frame display after switching from null animation in animation editor.
 
 TombIDE:
+ * Added splash screen frame customization dialog.
  * Added Plugin_Video into default TRNG preset.
+ * Updated TR1X preset to 3.1.1.
+ * Removed real-time directory checking for *.prj2 file changes as it caused too many unpredictable issues and slowdowns.
  * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
  * Fixed a bug where '>' symbols inside comments were taken into consideration when error checking.
- * Removed real-time directory checking for *.prj2 file changes as it caused too many unpredictable issues and slowdowns.
 
 Version 1.7
 ===========

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
@@ -151,5 +152,11 @@ namespace TombIDE.ProjectMaster
 		}
 
 		#endregion Methods
+
+		private void button_AdjustFrame_Click(object sender, EventArgs e)
+		{
+			using var form = new FormAdjustFrame(_ide);
+			form.ShowDialog(this);
+		}
 	}
 }

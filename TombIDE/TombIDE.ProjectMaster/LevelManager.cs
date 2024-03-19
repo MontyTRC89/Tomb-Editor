@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
+using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.NewStructure.Implementations;
@@ -259,6 +260,12 @@ namespace TombIDE.ProjectMaster
 				else
 					entry.ExtractToFile(Path.Combine(targetProject.DirectoryPath, entry.FullName), true);
 			}
+		}
+
+		private void button_Publish_Click(object sender, EventArgs e)
+		{
+			using var form = new FormGameArchive(_ide);
+			form.ShowDialog();
 		}
 	}
 }
