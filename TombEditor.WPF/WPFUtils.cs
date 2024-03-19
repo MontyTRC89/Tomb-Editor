@@ -13,8 +13,8 @@ namespace TombEditor.WPF
 	public static class WPFUtils
 	{
 		public static System.Windows.Forms.IWin32Window? GetWin32WindowFromCaller(INotifyPropertyChanged caller) => Application.Current.Windows
-			.Cast<TombEditor.WPF.Views.WindowEx>()
-			.FirstOrDefault(window => window.DataContext.GetType() == caller.GetType())?
+			.Cast<Views.WindowEx>()
+			.FirstOrDefault(window => window.DataContext?.GetType() == caller.GetType())?
 			.Win32Window;
 
 		public static Brush ToWPFColor(this Vector3 color) => new Vector4(color, 255.0f).ToWPFColor();

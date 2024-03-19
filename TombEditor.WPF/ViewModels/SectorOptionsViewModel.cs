@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Numerics;
 using System.Windows.Input;
-using System.Windows.Media;
 using TombLib.Rendering;
 
 namespace TombEditor.WPF.ViewModels;
@@ -44,25 +43,25 @@ public partial class SectorOptionsViewModel : ObservableObject
 		_editor = editor;
 		_editor.EditorEventRaised += EditorEventRaised;
 
-		SetFloorCommand = CommandHandler.GetCommand("SetFloor", new CommandArgs(this, _editor));
-		SetCeilingCommand = CommandHandler.GetCommand("SetCeiling", new CommandArgs(this, _editor));
-		SetBoxCommand = CommandHandler.GetCommand("SetBox", new CommandArgs(this, _editor));
-		SetNotWalkableCommand = CommandHandler.GetCommand("SetNotWalkable", new CommandArgs(this, _editor));
-		SetMonkeyswingCommand = CommandHandler.GetCommand("SetMonkeyswing", new CommandArgs(this, _editor));
-		SetDeathCommand = CommandHandler.GetCommand("SetDeath", new CommandArgs(this, _editor));
-		AddPortalCommand = CommandHandler.GetCommand("AddPortal", new CommandArgs(this, _editor));
-		SetWallCommand = CommandHandler.GetCommand("SetWall", new CommandArgs(this, _editor));
-		SetTriggerTriggererCommand = CommandHandler.GetCommand("SetTriggerTriggerer", new CommandArgs(this, _editor));
-		SetBeetleCheckpointCommand = CommandHandler.GetCommand("SetBeetleCheckpoint", new CommandArgs(this, _editor));
-		SetClimbPositiveZCommand = CommandHandler.GetCommand("SetClimbPositiveZ", new CommandArgs(this, _editor));
-		SetClimbPositiveXCommand = CommandHandler.GetCommand("SetClimbPositiveX", new CommandArgs(this, _editor));
-		SetClimbNegativeZCommand = CommandHandler.GetCommand("SetClimbNegativeZ", new CommandArgs(this, _editor));
-		SetClimbNegativeXCommand = CommandHandler.GetCommand("SetClimbNegativeX", new CommandArgs(this, _editor));
-		AddGhostBlocksToSelectionCommand = CommandHandler.GetCommand("AddGhostBlocksToSelection", new CommandArgs(this, _editor));
-		ToggleForceFloorSolidCommand = CommandHandler.GetCommand("ToggleForceFloorSolid", new CommandArgs(this, _editor));
-		FloorStepCommand = CommandHandler.GetCommand("SetDiagonalFloorStep", new CommandArgs(this, _editor));
-		CeilingStepCommand = CommandHandler.GetCommand("SetDiagonalCeilingStep", new CommandArgs(this, _editor));
-		DiagonalWallCommand = CommandHandler.GetCommand("SetDiagonalWall", new CommandArgs(this, _editor));
+		SetFloorCommand = CommandHandler.GetCommand("SetFloor", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetCeilingCommand = CommandHandler.GetCommand("SetCeiling", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetBoxCommand = CommandHandler.GetCommand("SetBox", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetNotWalkableCommand = CommandHandler.GetCommand("SetNotWalkable", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetMonkeyswingCommand = CommandHandler.GetCommand("SetMonkeyswing", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetDeathCommand = CommandHandler.GetCommand("SetDeath", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		AddPortalCommand = CommandHandler.GetCommand("AddPortal", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetWallCommand = CommandHandler.GetCommand("SetWall", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetTriggerTriggererCommand = CommandHandler.GetCommand("SetTriggerTriggerer", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetBeetleCheckpointCommand = CommandHandler.GetCommand("SetBeetleCheckpoint", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetClimbPositiveZCommand = CommandHandler.GetCommand("SetClimbPositiveZ", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetClimbPositiveXCommand = CommandHandler.GetCommand("SetClimbPositiveX", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetClimbNegativeZCommand = CommandHandler.GetCommand("SetClimbNegativeZ", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SetClimbNegativeXCommand = CommandHandler.GetCommand("SetClimbNegativeX", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		AddGhostBlocksToSelectionCommand = CommandHandler.GetCommand("AddGhostBlocksToSelection", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		ToggleForceFloorSolidCommand = CommandHandler.GetCommand("ToggleForceFloorSolid", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		FloorStepCommand = CommandHandler.GetCommand("SetDiagonalFloorStep", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		CeilingStepCommand = CommandHandler.GetCommand("SetDiagonalCeilingStep", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		DiagonalWallCommand = CommandHandler.GetCommand("SetDiagonalWall", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
 
 		SetButtonColors();
 	}

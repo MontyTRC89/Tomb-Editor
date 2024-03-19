@@ -392,7 +392,7 @@ namespace TombEditor.Forms
                                 var command = CommandHandler.GetCommand(subMenu.Tag.ToString());
                                 if (command != null)
                                 {
-                                    subMenu.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
+                                    subMenu.Click += (sender, e) => { command.ExecuteAction?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
                                     subMenu.Text = command.Type == CommandType.Windows ? command.Name.Replace("Show", string.Empty).SplitCamelcase() : command.FriendlyName;
                                 }
                             }

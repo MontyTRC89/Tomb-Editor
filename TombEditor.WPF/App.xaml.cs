@@ -133,15 +133,15 @@ public partial class App : Application
 				if (!string.IsNullOrEmpty(startFile)) // Open files on start
 				{
 					if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-						EditorActions.OpenLevelPrj(mainWindow.ViewModel, startFile);
+						EditorActions.OpenLevelPrj(WPFUtils.GetWin32WindowFromCaller(mainWindow.ViewModel), startFile);
 					else
-						EditorActions.OpenLevel(mainWindow.ViewModel, startFile);
+						EditorActions.OpenLevel(WPFUtils.GetWin32WindowFromCaller(mainWindow.ViewModel), startFile);
 				}
 				else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
 				{
 					if (TombEditor.Properties.Settings.Default.RecentProjects != null && TombEditor.Properties.Settings.Default.RecentProjects.Count > 0 &&
 						File.Exists(TombEditor.Properties.Settings.Default.RecentProjects[0]))
-						EditorActions.OpenLevel(mainWindow.ViewModel, TombEditor.Properties.Settings.Default.RecentProjects[0]);
+						EditorActions.OpenLevel(WPFUtils.GetWin32WindowFromCaller(mainWindow.ViewModel), TombEditor.Properties.Settings.Default.RecentProjects[0]);
 				}
 			}
 			else
