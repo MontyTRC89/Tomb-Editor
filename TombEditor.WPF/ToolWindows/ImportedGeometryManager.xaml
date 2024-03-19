@@ -15,7 +15,7 @@
             <ColumnDefinition />
             <ColumnDefinition Width="25" />
         </Grid.ColumnDefinitions>
-        <DataGrid ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <DataGrid ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
                 <DataGridTextColumn MinWidth="75">
                     <DataGridTextColumn.Header>

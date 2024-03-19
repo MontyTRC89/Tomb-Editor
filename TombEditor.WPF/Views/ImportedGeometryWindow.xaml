@@ -25,10 +25,10 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </sg:SpacedGrid.RowDefinitions>
-        <Label Margin="0,0,0,-5" Content="{local:Localize IGDescription1}" />
+        <Label Margin="4,0,0,-5" Content="{local:Localize IGDescription1}" />
         <Label
             Grid.Row="1"
-            Margin="0,0,0,-5"
+            Margin="4,0,0,-5"
             Content="{local:Localize IGDescription2}" />
         <sg:SpacedGrid Grid.Row="2">
             <toolwindows:ImportedGeometryManager />
