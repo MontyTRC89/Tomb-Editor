@@ -339,9 +339,44 @@
 	"OneShot": "One Shot",
 	"RawMode": "Raw mode (show numeric values",
 
+	// Components for 'Imported Geometry Settings' window (ImportedGeometryWindow)
+	"ImportedGeometry": "Imported Geometry Settings",
+	"IGDescription1": "Select a model from the following list or add a new one by pressing plus button.",
+	"IGDescription2": "Double-click on entry or press 'Assign' to assign the loaded file to this imported geometry object.",
+
+
+	// Components for 'ImportedGeometryManager' UserControl
+	"IGName": "Name",
+	"IGNameToolTip": "Name...",
+	"IGPath": "Path",
+	"IGPathToolTip": "Path...",
+	"BrowseToolTip": "Browse...",
+	"ScaleToolTip": "Scale...",
+	"MessageToolTip": "Message...",
+	"SwapXY": "X↔Y",
+	"SwapXYToolTip": "Swap X-Y axis",
+	"SwapXZ": "X↔Z",
+	"SwapXZToolTip": "Swap X-Z axis",
+	"SwapYZ": "Y↔Z",
+	"SwapYZToolTip": "Swap Y-Z axis",
+	"FlipX": "-X",
+	"FlipXToolTip": "Invert X axis",
+	"FlipY": "-Y",
+	"FlipYToolTip": "Invert Y axis",
+	"FlipZ": "-Z",
+	"FlipZToolTip": "Invert Z axis",
+	"MappedUV": "UV Map",
+	"MappedUVToolTip": "Use UV mapping",
+	"FlipUV_V": "UV: -V",
+	"FlipUV_VToolTip": "Invert V texture coordinate",
+	"InvertFaces": "Inv. F.",
+	"InvertFacesToolTip": "Invert faces",
+
 	//Generic
 	"Cancel": "Cancel",
 	"Close": "Close",
 	"Unused": "Unused",
-	"Frames": "Frames"
+	"Frames": "Frames",
+	"Browse": "Browse",
+	"Message": "Message"
 }
