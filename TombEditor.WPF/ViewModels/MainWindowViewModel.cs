@@ -245,6 +245,7 @@ public partial class MainWindowViewModel : ObservableObject
 	public MainWindowViewModel(Editor editor)
 	{
 		_editor = editor;
+		_editor.EditorEventRaised += EditorEventRaised;
 
 		// File Menu
 
@@ -449,6 +450,12 @@ public partial class MainWindowViewModel : ObservableObject
 		RaiseUJ4ClickCommand = CommandHandler.GetCommand("RaiseUJ4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
 		LowerUJ1ClickCommand = CommandHandler.GetCommand("LowerUJ1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
 		LowerUJ4ClickCommand = CommandHandler.GetCommand("LowerUJ4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+	}
+
+	private void EditorEventRaised(IEditorEvent obj)
+	{
+		if (obj is Editor.ConfigurationChangedEvent)
+			KeyBindingsWrapper.Instance.Invalidate();
 	}
 
 	[RelayCommand]

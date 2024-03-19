@@ -121,7 +121,6 @@ public partial class App : Application
 
 			if (!doBatchCompile)
 			{
-
 				var mainWindow = new MainWindow
 				{
 					ViewModel = new MainWindowViewModel(editor)
@@ -147,7 +146,7 @@ public partial class App : Application
 			else
 				EditorActions.BuildInBatch(editor, batchList, batchFile);
 		}
-        else if (startFile != null) // Send opening file to existing editor instance
+		else if (startFile != null) // Send opening file to existing editor instance
 			SingleInstanceManagement.Send(Process.GetCurrentProcess(), new List<string>() { ".prj2" }, startFile);
 		else // Just bring editor to top, if user tries to launch another copy
 			SingleInstanceManagement.Bump(Process.GetCurrentProcess());
