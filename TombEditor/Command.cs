@@ -18,6 +18,7 @@ using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Utils;
+using System.Windows.Input;
 
 namespace TombEditor
 {
@@ -37,12 +38,18 @@ namespace TombEditor
         Settings
     }
 
-    public class CommandObj
+    public class CommandObj : ICommand
     {
-        public string Name { get; set; }
-        public string FriendlyName { get; set; }
-        public Action<CommandArgs> Execute { get; set; }
+        public string? Name { get; set; }
+        public string? FriendlyName { get; set; }
+        public Action<CommandArgs> ExecuteAction { get; set; }
+        public CommandArgs? Args { get; set; }
         public CommandType Type { get; set; }
+
+        public event EventHandler? CanExecuteChanged;
+
+        public bool CanExecute(object? parameter) => true;
+        public void Execute(object? parameter) => ExecuteAction(Args);
     }
 
     public class CommandArgs
@@ -50,6 +57,15 @@ namespace TombEditor
         public Editor Editor;
         public IWin32Window Window;
         public Keys KeyData = Keys.None;
+
+        public CommandArgs()
+        { }
+
+        public CommandArgs(IWin32Window window, Editor editor)
+        {
+            Window = window;
+            Editor = editor;
+        }
     }
 
     public static class CommandHandler
@@ -58,11 +74,12 @@ namespace TombEditor
         private static List<CommandObj> _commands = new List<CommandObj>();
         public static IEnumerable<CommandObj> Commands => _commands;
 
-        public static CommandObj GetCommand(string name)
+        public static CommandObj GetCommand(string name, CommandArgs args = null)
         {
-            CommandObj command = _commands.FirstOrDefault(cmd => cmd.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
-            if (command == null)
-                throw new KeyNotFoundException("Command with name '" + name + "' not found.");
+            CommandObj command = _commands.FirstOrDefault(cmd => cmd.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                ?? throw new KeyNotFoundException("Command with name '" + name + "' not found.");
+
+            command.Args = args;
             return command;
         }
 
@@ -70,7 +87,7 @@ namespace TombEditor
         {
             var hotkeyForCommands = args.Editor.Configuration.UI_Hotkeys.Where(set => set.Value.Contains(args.KeyData));
             foreach (var hotkeyForCommand in hotkeyForCommands)
-                GetCommand(hotkeyForCommand.Key).Execute?.Invoke(args);
+                GetCommand(hotkeyForCommand.Key).ExecuteAction?.Invoke(args);
         }
 
         public static void AssignCommandsToControls(Editor editor, Control parent, ToolTip toolTip = null, bool onlyToolTips = false)
@@ -88,7 +105,7 @@ namespace TombEditor
                         var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");
 
                         if(!onlyToolTips)
-                            control.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = editor, Window = parent.FindForm() }); };
+                            control.Click += (sender, e) => { command.ExecuteAction?.Invoke(new CommandArgs { Editor = editor, Window = parent.FindForm() }); };
 
                         if (toolTip != null && !string.IsNullOrEmpty(label))
                             toolTip.SetToolTip(control, label);
@@ -121,7 +138,7 @@ namespace TombEditor
                 throw new InvalidOperationException("You cannot add multiple commands with the same name.");
 
             command += delegate { logger.Info(commandName); };
-            _commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, Execute = command, Type = type });
+            _commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, ExecuteAction = command, Type = type });
         }
 
         static CommandHandler()
@@ -700,7 +717,7 @@ namespace TombEditor
 
             AddCommand("Cut", "Cut", CommandType.Edit, delegate (CommandArgs args)
             {
-                GetCommand("Copy").Execute.Invoke(args);
+                GetCommand("Copy").ExecuteAction.Invoke(args);
 
                 if (args.Editor.Mode == EditorMode.Map2D)
                 {

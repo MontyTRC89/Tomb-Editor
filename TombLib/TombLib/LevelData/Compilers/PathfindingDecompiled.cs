@@ -294,10 +294,10 @@ namespace TombLib.LevelData.Compilers
                 return false;
             }
 
-            dec_q0 = (short)Clicks.FromWorld(block.Floor.XnZp);
-            dec_q1 = (short)Clicks.FromWorld(block.Floor.XpZp);
-            dec_q2 = (short)Clicks.FromWorld(block.Floor.XpZn);
-            dec_q3 = (short)Clicks.FromWorld(block.Floor.XnZn);
+            dec_q0 = (short)Clicks.FromWorld(block.HasGhostBlock ? block.GhostBlock.Floor.XnZp : block.Floor.XnZp);
+            dec_q1 = (short)Clicks.FromWorld(block.HasGhostBlock ? block.GhostBlock.Floor.XpZp : block.Floor.XpZp);
+            dec_q2 = (short)Clicks.FromWorld(block.HasGhostBlock ? block.GhostBlock.Floor.XpZn : block.Floor.XpZn);
+            dec_q3 = (short)Clicks.FromWorld(block.HasGhostBlock ? block.GhostBlock.Floor.XnZn : block.Floor.XnZn);
 
             int currentX = room.Position.X + x;
             int currentZ = room.Position.Z + z;
@@ -838,10 +838,10 @@ namespace TombLib.LevelData.Compilers
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
-            int floorXnZp = (short)Clicks.FromWorld(block.Floor.XnZp),
-                floorXpZp = (short)Clicks.FromWorld(block.Floor.XpZp),
-                floorXpZn = (short)Clicks.FromWorld(block.Floor.XpZn),
-                floorXnZn = (short)Clicks.FromWorld(block.Floor.XnZn);
+            int floorXnZp = (short)Clicks.FromWorld(block.HasGhostBlock ? block.GhostBlock.Floor.XnZp : block.Floor.XnZp),
+                floorXpZp = (short)Clicks.FromWorld(block.HasGhostBlock ? block.GhostBlock.Floor.XpZp : block.Floor.XpZp),
+                floorXpZn = (short)Clicks.FromWorld(block.HasGhostBlock ? block.GhostBlock.Floor.XpZn : block.Floor.XpZn),
+                floorXnZn = (short)Clicks.FromWorld(block.HasGhostBlock ? block.GhostBlock.Floor.XnZn : block.Floor.XnZn);
 
             int sumHeights = floorXnZp + floorXpZp + floorXpZn + floorXnZn;
             int meanFloorCornerHeight = sumHeights >> 2;
@@ -885,7 +885,10 @@ namespace TombLib.LevelData.Compilers
             }
 
             int floorHeight = meanFloorCornerHeight + Clicks.FromWorld(room.Position.Y);
-            int ceiling = Clicks.FromWorld(block.Ceiling.Max) + Clicks.FromWorld(room.Position.Y);
+
+            int ceiling = block.HasGhostBlock
+                ? Clicks.FromWorld(block.GhostBlock.Ceiling.Max) + Clicks.FromWorld(room.Position.Y)
+                : Clicks.FromWorld(block.Ceiling.Max) + Clicks.FromWorld(room.Position.Y);
 
             if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {

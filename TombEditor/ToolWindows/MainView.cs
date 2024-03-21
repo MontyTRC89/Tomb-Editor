@@ -304,7 +304,7 @@ namespace TombEditor.ToolWindows
                         if (command != null)
                         {
                             if (!onlyLabels)
-                                control.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
+                                control.Click += (sender, e) => { command.ExecuteAction?.Invoke(new CommandArgs { Editor = _editor, Window = this }); };
 
                             var hotkeyLabel = string.Join(", ", _editor.Configuration.UI_Hotkeys[control.Tag.ToString()]);
                             var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");

@@ -121,7 +121,6 @@ public partial class App : Application
 
 			if (!doBatchCompile)
 			{
-
 				var mainWindow = new MainWindow
 				{
 					ViewModel = new MainWindowViewModel(editor)
@@ -133,21 +132,21 @@ public partial class App : Application
 				if (!string.IsNullOrEmpty(startFile)) // Open files on start
 				{
 					if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-						EditorActions.OpenLevelPrj(mainWindow.ViewModel, startFile);
+						EditorActions.OpenLevelPrj(WPFUtils.GetWin32WindowFromCaller(mainWindow.ViewModel), startFile);
 					else
-						EditorActions.OpenLevel(mainWindow.ViewModel, startFile);
+						EditorActions.OpenLevel(WPFUtils.GetWin32WindowFromCaller(mainWindow.ViewModel), startFile);
 				}
 				else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
 				{
 					if (TombEditor.Properties.Settings.Default.RecentProjects != null && TombEditor.Properties.Settings.Default.RecentProjects.Count > 0 &&
 						File.Exists(TombEditor.Properties.Settings.Default.RecentProjects[0]))
-						EditorActions.OpenLevel(mainWindow.ViewModel, TombEditor.Properties.Settings.Default.RecentProjects[0]);
+						EditorActions.OpenLevel(WPFUtils.GetWin32WindowFromCaller(mainWindow.ViewModel), TombEditor.Properties.Settings.Default.RecentProjects[0]);
 				}
 			}
 			else
 				EditorActions.BuildInBatch(editor, batchList, batchFile);
 		}
-        else if (startFile != null) // Send opening file to existing editor instance
+		else if (startFile != null) // Send opening file to existing editor instance
 			SingleInstanceManagement.Send(Process.GetCurrentProcess(), new List<string>() { ".prj2" }, startFile);
 		else // Just bring editor to top, if user tries to launch another copy
 			SingleInstanceManagement.Bump(Process.GetCurrentProcess());

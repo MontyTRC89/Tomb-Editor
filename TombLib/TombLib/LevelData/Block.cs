@@ -995,32 +995,26 @@ namespace TombLib.LevelData
                 // Fix lower wall textures
                 if (transformation.MirrorX)
                 {
-                    MirrorWallTexture(BlockFace.Wall_PositiveX_QA, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_PositiveZ_QA, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeX_QA, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeZ_QA, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_Diagonal_QA, oldFaceIsTriangle);
+                    var faces = _faceTextures.Where(pair => pair.Key.IsFloorWall()).Select(pair => pair.Key).ToList();
 
-                    for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
-                    {
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.Diagonal, i), oldFaceIsTriangle);
-                    }
+                    for (int i = 0; i < faces.Count; i++)
+                        MirrorWallTexture(faces[i], oldFaceIsTriangle);
                 }
 
                 transformation.TransformValueQuad(_faceTextures, BlockFace.Wall_PositiveX_QA, BlockFace.Wall_PositiveZ_QA, BlockFace.Wall_NegativeX_QA, BlockFace.Wall_NegativeZ_QA);
 
-                for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
+                var texturedSubdivisions = _faceTextures.Where(pair => pair.Key.IsExtraFloorSubdivision()).Select(pair => pair.Key).ToList();
+
+                for (int i = 0; i < texturedSubdivisions.Count; i++)
                 {
+                    int index = texturedSubdivisions[i].GetVertical().GetExtraSubdivisionIndex();
+
                     transformation.TransformValueQuad(_faceTextures,
-                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, i),
-                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, i),
-                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, i),
-                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, i));
-                }      
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, index),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, index),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, index),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, index));
+                }
 
                 // Fix floor textures
                 if (Floor.IsQuad)
@@ -1070,32 +1064,26 @@ namespace TombLib.LevelData
                 // Fix upper wall textures
                 if (transformation.MirrorX)
                 {
-                    MirrorWallTexture(BlockFace.Wall_PositiveX_WS, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_PositiveZ_WS, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeX_WS, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeZ_WS, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_Diagonal_WS, oldFaceIsTriangle);
+                    var faces = _faceTextures.Where(pair => pair.Key.IsCeilingWall()).Select(pair => pair.Key).ToList();
 
-                    for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
-                    {
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.Diagonal, i), oldFaceIsTriangle);
-                    }
+                    for (int i = 0; i < faces.Count; i++)
+                        MirrorWallTexture(faces[i], oldFaceIsTriangle);
                 }
 
                 transformation.TransformValueQuad(_faceTextures, BlockFace.Wall_PositiveX_WS, BlockFace.Wall_PositiveZ_WS, BlockFace.Wall_NegativeX_WS, BlockFace.Wall_NegativeZ_WS);
 
-                for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
+                var texturedSubdivisions = _faceTextures.Where(pair => pair.Key.IsExtraCeilingSubdivision()).Select(pair => pair.Key).ToList();
+
+                for (int i = 0; i < texturedSubdivisions.Count; i++)
                 {
+                    int index = texturedSubdivisions[i].GetVertical().GetExtraSubdivisionIndex();
+
                     transformation.TransformValueQuad(_faceTextures,
-                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, i),
-                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, i),
-                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, i),
-                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, i));
-                }   
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, index),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, index),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, index),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, index));
+                }
 
                 // Fix ceiling textures
                 if (Ceiling.IsQuad)
