@@ -341,15 +341,10 @@ end
 -- !Conditional "True"
 -- !Description "Check if the timer exists."
 -- !Section "Timer"
--- !Arguments "NewLine, String, 50, [ NoMultiline ], Timer name"
+-- !Arguments "NewLine, String, 100, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IfTimerExists = function(name)
     if name ~= '' then
         return (Timer.Get(name) ~= nil) and true or false
-        -- if Timer.Get(name) ~= nil then
-        --     return true
-        -- else
-        --     return false
-        -- end
     else
         TEN.Util.PrintLog('Error in the "If timer exists" node. No timer name provided', LogLevel.ERROR)
     end
