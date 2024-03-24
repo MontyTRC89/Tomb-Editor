@@ -372,6 +372,17 @@
 	"InvertFaces": "Inv. F.",
 	"InvertFacesToolTip": "Invert faces",
 
+	// Components for 'Import Prj' window (ImportPrjWindow)
+	"ImportPrjTitle": "Import Prj",
+	"ImportSettings": "Import settings",
+	"BaseSound": "Base sound catalog (optional)",
+	"T4Larson": "Respect T4Larson's mousepatch flyby handling",
+	"T4LarsonDescr": "If you've used a patch which increased maximum amount of flyby sequences in winroomedit, use this option, otherwise flyby indices will be corrupted.",
+	"UseHalfPixelCorrection": "Use half-pixel UV correction",
+	"UseHalfPixelCorrectionDescr": "Legacy texture cropping to prevent border bleeding. Use only if you are about to turn off advanced texture padding in Level settings.",
+	"BrowseP": "Browse...",
+	"SoundCatalog": "Specifiy sound catalog (sounds.txt or xml file). If not specified, legacy SFX/SAM files provided with specified WAD will be used.",
+
 	//Generic
 	"Cancel": "Cancel",
 	"Close": "Close",

@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows;
 using TombEditor.WPF.Forms;
 using TombEditor.WPF.ViewModels;
+//using TombEditor.WPF.Views;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Utils;
@@ -112,7 +113,7 @@ public partial class App : Application
 			Editor.Instance = editor;
 
 			//TEST WINDOWS
-			//var mainWindow = new FindTexturesWindow { };
+			//var mainWindow = new ImportPrjWindow { };
 			//Current.MainWindow = mainWindow;
 			//Current.MainWindow.Show();
 
