@@ -95,7 +95,7 @@ LevelFuncs.Engine.Node.MeshswapForAllMoveables = function(objectId, namePart, sl
 
     for i, moveable in pairs(moveables) do
         if noNameSearch or (string.find(moveable:GetName(), namePart)) then
-            for mesh = 0, (moveable:GetMeshNumber() - 1) do
+            for mesh = 0, (moveable:GetMeshCount() - 1) do
                 moveable:SwapMesh(mesh, slotID)
             end
         end
