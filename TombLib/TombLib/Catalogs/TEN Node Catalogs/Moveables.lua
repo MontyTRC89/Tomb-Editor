@@ -155,7 +155,7 @@ end
 -- !Arguments "Numerical, 30, [ 0 | 31 ], Mesh index to check"
 
 LevelFuncs.Engine.Node.TestMoveableMeshVisibility = function(moveableName, value)
-	return TEN.Objects.GetMoveableByName(moveableName):MeshIsVisible(value)
+	return TEN.Objects.GetMoveableByName(moveableName):GetMeshVisible(value)
 end
 
 -- !Name "If moveable is on the line of sight..."

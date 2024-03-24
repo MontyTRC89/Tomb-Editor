@@ -3,6 +3,7 @@ Version 1.7.1
 
 Tomb Editor:
  * Added adjustable step height for TEN levels (can also be enabled for unsupported engines, but the behavior is unpredictable).
+ * Added TEN batch action nodes to change properties for certain group of similar objects.
  * Copying room geometry will now include texture information with each face.
  * Fixed autosave file cleanup not working.
  * Fixed undo / redo not working on yellow walls (portals).
