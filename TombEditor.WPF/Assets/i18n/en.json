@@ -383,7 +383,18 @@
 	"BrowseP": "Browse...",
 	"SoundCatalog": "Specifiy sound catalog (sounds.txt or xml file). If not specified, legacy SFX/SAM files provided with specified WAD will be used.",
 
-	//Generic
+	// Components for 'Keyboard Layout' window (KeyboardLayoutWindow)
+	"KeyboardLayoutTitle": "Keyboard Layout",
+	"SearchCommand": "Search for command:",
+	"TypeCommand": "Type",
+	"Command": "Command",
+	"AddCommand": "Add Command",
+	"DeleteCommand": "Delete Command",
+	"Hotkeys": "Hotkeys",
+	"SetToDefault": "Set all to default",
+	"CancelPush": "Push keys! Click here to cancel!",
+
+	// Generic
 	"Cancel": "Cancel",
 	"Close": "Close",
 	"Unused": "Unused",

@@ -113,7 +113,7 @@ public partial class App : Application
 			Editor.Instance = editor;
 
 			//TEST WINDOWS
-			//var mainWindow = new ImportPrjWindow { };
+			//var mainWindow = new KeyboardLayoutWindow { };
 			//Current.MainWindow = mainWindow;
 			//Current.MainWindow.Show();
 

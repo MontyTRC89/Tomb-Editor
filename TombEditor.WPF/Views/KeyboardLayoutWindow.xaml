@@ -1,0 +1,94 @@
+﻿<Window
+    x:Class="TombEditor.WPF.Views.KeyboardLayoutWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+    xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+    xmlns:local="clr-namespace:TombEditor.WPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+    Title="{local:Localize KeyboardLayoutTitle}"
+    Width="624"
+    Height="450"
+    Style="{DynamicResource CustomWindowStyle}"
+    mc:Ignorable="d">
+    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+        <sg:SpacedGrid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </sg:SpacedGrid.RowDefinitions>
+        <sg:SpacedGrid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="{local:Localize SearchCommand}" />
+            <darkCtrl:SearchableComboBox Grid.Column="1" />
+        </sg:SpacedGrid>
+        <DataGrid
+            Grid.Row="1"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="{local:Localize TypeCommand}" />
+                <DataGridTextColumn Header="{local:Localize Command}" />
+                <DataGridTemplateColumn
+                    MinWidth="50"
+                    MaxWidth="50"
+                    Header="">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Width="50"
+                                Style="{DynamicResource ButtonWithIconOnly}"
+                                ToolTip="{local:Localize AddCommand}">
+                                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_plus_math-16.png" />
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn
+                    MinWidth="50"
+                    MaxWidth="50"
+                    Header="">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Width="50"
+                                Style="{DynamicResource ButtonWithIconOnly}"
+                                ToolTip="{local:Localize DeleteCommand}">
+                                <Image Source="/TombEditor.WPF;component/Resources/icons_general/general_trash-16.png" />
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="{local:Localize Hotkeys}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label Grid.Row="2" Content="Conflicts" />
+        <sg:SpacedGrid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Content="{local:Localize SetToDefault}" />
+            <Button
+                Grid.Column="1"
+                Content="{local:Localize CancelPush}" Background="DarkGreen" />
+            <Button
+                Grid.Column="2"
+                Width="90"
+                Content="OK" />
+            <Button
+                Grid.Column="3"
+                Width="90"
+                Content="{local:Localize Cancel}" />
+        </sg:SpacedGrid>
+    </sg:SpacedGrid>
+</Window>
