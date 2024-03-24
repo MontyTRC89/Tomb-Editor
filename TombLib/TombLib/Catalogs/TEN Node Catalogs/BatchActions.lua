@@ -84,7 +84,7 @@ LevelFuncs.Engine.Node.SetEffectForAllMoveables = function(objectId, namePart, e
 end
 
 -- !Name "Meshswap all moveables"
--- !Section "Moveable properties"
+-- !Section "Batch actions"
 -- !Description "Meshswap all moveables of a given type and optionally with a particular word in their name."
 -- !Arguments "NewLine, WadSlots, 65, Object ID to use"  "String, 35, Word to search in a moveable name"
 -- !Arguments "NewLine, WadSlots, Meshswap object ID to use"
