@@ -63,6 +63,19 @@ namespace TombLib.LevelData.VisualScripting
             return hash;
         }
 
+        public void FixArguments(NodeFunction reference)
+        {
+            if (reference.Arguments.Count < Arguments.Count)
+            {
+                Arguments.RemoveRange(reference.Arguments.Count, Arguments.Count - reference.Arguments.Count);
+            }
+            else if (reference.Arguments.Count > Arguments.Count)
+            {
+                for (int i = Arguments.Count; i < reference.Arguments.Count; i++)
+                    Arguments.Add(reference.Arguments[i].DefaultValue);
+            }
+        }
+
 		public static List<TriggerNode> LinearizeNodes(List<TriggerNode> list)
 		{
 			var result = new List<TriggerNode>();

@@ -1904,15 +1904,9 @@ namespace TombLib.LevelData.IO
                 return true;
             });
 
-            // Attempt to fill missing arguments
-
+            // Attempt to fix missing or excessive arguments in case node was changed
             if (ScriptingUtils.NodeFunctions.Any(f => f.Signature == node.Function))
-            {
-                var funcSetup = ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function);
-                if (funcSetup.Arguments.Count > node.Arguments.Count)
-                    for (int i = node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
-                        node.Arguments.Add(funcSetup.Arguments[i].DefaultValue);
-            }
+                node.FixArguments(ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function));
 
             node.Previous = previous;
             return node;

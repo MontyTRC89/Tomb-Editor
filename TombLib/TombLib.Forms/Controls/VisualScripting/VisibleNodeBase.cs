@@ -680,8 +680,7 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
-
-            TrimArguments();
+            Node.FixArguments(cbFunction.SelectedItem as NodeFunction);
             SpawnUIElements();
 
             toolTip.SetToolTip(sender as Control, TextExtensions.SingleLineToMultiLine((cbFunction.SelectedItem as NodeFunction)?.Description ?? string.Empty));
