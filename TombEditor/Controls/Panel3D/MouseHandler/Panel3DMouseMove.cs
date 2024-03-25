@@ -130,27 +130,21 @@ namespace TombEditor.Controls.Panel3D
 
                         if (_toolHandler.ReferencePicking.BelongsToFloor)
                         {
-                            if (_currentNumberKey is >= Keys.D2 and <= Keys.D9)
-                            {
-                                int index = (int)_currentNumberKey - (int)Keys.D0;
-                                subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(index - 2);
-                            }
-                            else if (ModifierKeys.HasFlag(Keys.Control))
+                            if (ModifierKeys.HasFlag(Keys.Control))
                                 subdivisionToEdit = BlockVertical.FloorSubdivision2;
-                            else
+                            else if (_editor.HighlightedSubdivision <= 1)
                                 subdivisionToEdit = BlockVertical.Floor;
+                            else
+                                subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(_editor.HighlightedSubdivision - 2);
                         }
                         else
                         {
-                            if (_currentNumberKey is >= Keys.D2 and <= Keys.D9)
-                            {
-                                int index = (int)_currentNumberKey - (int)Keys.D0;
-                                subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(index - 2);
-                            }
-                            else if (ModifierKeys.HasFlag(Keys.Control))
+                            if (ModifierKeys.HasFlag(Keys.Control))
                                 subdivisionToEdit = BlockVertical.CeilingSubdivision2;
-                            else
+                            else if (_editor.HighlightedSubdivision <= 1)
                                 subdivisionToEdit = BlockVertical.Ceiling;
+                            else
+                                subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(_editor.HighlightedSubdivision - 2);
                         }
 
                         switch (_editor.Tool.Tool)

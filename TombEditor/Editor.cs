@@ -125,6 +125,12 @@ namespace TombEditor
             public int Current { get; internal set; }
         }
 
+        public class HighlightedSubdivisionChangedEvent : IEditorEvent
+        {
+            public int Previous { get; internal set; }
+            public int Current { get; internal set; }
+        }
+
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
             public IEditorAction Previous { get; internal set; }
@@ -1415,6 +1421,26 @@ namespace TombEditor
         { }
 
         public static Editor Instance;
+
+        private int _highlightedSubdivision;
+
+        /// <summary>
+        /// 0 means that QA WS ED RF will behave as usual, while 1 - 9 will make them behave as if the corresponding number key was pressed.
+        /// </summary>
+        public int HighlightedSubdivision
+        {
+            get { return _highlightedSubdivision; }
+            set
+            {
+                if (_highlightedSubdivision == value)
+                    return;
+
+                int previous = _highlightedSubdivision;
+                _highlightedSubdivision = value;
+
+                RaiseEvent(new HighlightedSubdivisionChangedEvent { Previous = previous, Current = value });
+            }
+        }
 
         public bool IsPreciseGeometryAllowed
             => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
