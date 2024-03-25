@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using TombLib.LevelData.VisualScripting;
 
 namespace TombLib.Utils
@@ -191,6 +190,16 @@ namespace TombLib.Utils
             catch
             {
                 continue;
+            }
+
+            // Check for duplicate functions
+
+            var duplicates = result.GroupBy(f => f.Signature).Where(g => g.Count() > 1);
+            if (duplicates.Count() > 0)
+            {
+                var message = "Node catalogs contain a duplicate of function " + duplicates.First().First().Signature + ". " +
+                              "Review node catalogs and rename or remove duplicate.";
+                throw new Exception(message);
             }
 
             return result;
