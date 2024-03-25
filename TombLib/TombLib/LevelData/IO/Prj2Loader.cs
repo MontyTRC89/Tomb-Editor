@@ -487,7 +487,7 @@ namespace TombLib.LevelData.IO
                     var reportString = "Reading ";
                     if (id == Prj2Chunks.GlobalEventSets)
                         reportString += "global";
-                    else if (id == Prj2Chunks.VolumeEventSets)
+                    else
                         reportString += "volume";
 
                     progressReporter?.ReportInfo(reportString + " event sets...");
@@ -1903,6 +1903,16 @@ namespace TombLib.LevelData.IO
                     return false;
                 return true;
             });
+
+            // Attempt to fill missing arguments
+
+            if (ScriptingUtils.NodeFunctions.Any(f => f.Signature == node.Function))
+            {
+                var funcSetup = ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function);
+                if (funcSetup.Arguments.Count > node.Arguments.Count)
+                    for (int i = node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
+                        node.Arguments.Add(funcSetup.Arguments[i].DefaultValue);
+            }
 
             node.Previous = previous;
             return node;

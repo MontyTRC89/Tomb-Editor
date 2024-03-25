@@ -113,7 +113,6 @@ namespace TombLib.Controls.VisualScripting
 
         public void TrimArguments()
         {
-            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
             var funcSetup = cbFunction.SelectedItem as NodeFunction;
             if (funcSetup.Arguments.Count < Node.Arguments.Count)
                 Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
