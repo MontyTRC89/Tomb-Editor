@@ -300,7 +300,6 @@
 	"cbBit12": "Make fade-in",
 	"cbBit13": "Make fade-out",
 	"cbBit14": "Activate heavy trigger",
-	"cbBit15": "Unused",
 
 	// Components for 'Texture sounds' window (FootStepSoundsWindow)
 	"TextureSoundsTitle": "Texture sounds",
@@ -340,9 +339,66 @@
 	"OneShot": "One Shot",
 	"RawMode": "Raw mode (show numeric values",
 
-	//Generic
+	// Components for 'Imported Geometry Settings' window (ImportedGeometryWindow)
+	"ImportedGeometry": "Imported Geometry Settings",
+	"IGDescription1": "Select a model from the following list or add a new one by pressing plus button.",
+	"IGDescription2": "Double-click on entry or press 'Assign' to assign the loaded file to this imported geometry object.",
+
+
+	// Components for 'ImportedGeometryManager' UserControl
+	"IGName": "Name",
+	"IGNameToolTip": "Name...",
+	"IGPath": "Path",
+	"IGPathToolTip": "Path...",
+	"BrowseToolTip": "Browse...",
+	"ScaleToolTip": "Scale...",
+	"MessageToolTip": "Message...",
+	"SwapXY": "X↔Y",
+	"SwapXYToolTip": "Swap X-Y axis",
+	"SwapXZ": "X↔Z",
+	"SwapXZToolTip": "Swap X-Z axis",
+	"SwapYZ": "Y↔Z",
+	"SwapYZToolTip": "Swap Y-Z axis",
+	"FlipX": "-X",
+	"FlipXToolTip": "Invert X axis",
+	"FlipY": "-Y",
+	"FlipYToolTip": "Invert Y axis",
+	"FlipZ": "-Z",
+	"FlipZToolTip": "Invert Z axis",
+	"MappedUV": "UV Map",
+	"MappedUVToolTip": "Use UV mapping",
+	"FlipUV_V": "UV: -V",
+	"FlipUV_VToolTip": "Invert V texture coordinate",
+	"InvertFaces": "Inv. F.",
+	"InvertFacesToolTip": "Invert faces",
+
+	// Components for 'Import Prj' window (ImportPrjWindow)
+	"ImportPrjTitle": "Import Prj",
+	"ImportSettings": "Import settings",
+	"BaseSound": "Base sound catalog (optional)",
+	"T4Larson": "Respect T4Larson's mousepatch flyby handling",
+	"T4LarsonDescr": "If you've used a patch which increased maximum amount of flyby sequences in winroomedit, use this option, otherwise flyby indices will be corrupted.",
+	"UseHalfPixelCorrection": "Use half-pixel UV correction",
+	"UseHalfPixelCorrectionDescr": "Legacy texture cropping to prevent border bleeding. Use only if you are about to turn off advanced texture padding in Level settings.",
+	"BrowseP": "Browse...",
+	"SoundCatalog": "Specifiy sound catalog (sounds.txt or xml file). If not specified, legacy SFX/SAM files provided with specified WAD will be used.",
+
+	// Components for 'Keyboard Layout' window (KeyboardLayoutWindow)
+	"KeyboardLayoutTitle": "Keyboard Layout",
+	"SearchCommand": "Search for command:",
+	"TypeCommand": "Type",
+	"Command": "Command",
+	"AddCommand": "Add Command",
+	"DeleteCommand": "Delete Command",
+	"Hotkeys": "Hotkeys",
+	"SetToDefault": "Set all to default",
+	"CancelPush": "Push keys! Click here to cancel!",
+
+	// Generic
 	"Cancel": "Cancel",
 	"Close": "Close",
 	"Unused": "Unused",
-	"Frames": "Frames"
+	"Frames": "Frames",
+	"Browse": "Browse",
+	"Message": "Message"
 }
