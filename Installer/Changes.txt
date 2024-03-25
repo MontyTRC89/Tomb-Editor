@@ -13,6 +13,7 @@ Tomb Editor:
  * Fixed OnLoop TEN callback appearing in level script functions list.
  * Fixed AI pathfinding not recognizing ghost blocks.
  * Fixed room rotation / mirroring causing textures to disappear at extra subdivisions level.
+ * Fixed horizontal room merging yielding wrong results.
 
 WadTool:
  * Fixed incorrect annotation for set jump reference animcommand.
