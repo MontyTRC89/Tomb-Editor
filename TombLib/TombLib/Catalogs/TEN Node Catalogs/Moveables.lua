@@ -446,3 +446,36 @@ end
 LevelFuncs.Engine.Node.SetCustomMoveableEffect = function(primary, secondary, timeout, moveableName)
 	TEN.Objects.GetMoveableByName(moveableName):SetCustomEffect(primary, secondary, timeout)
 end
+
+
+-- !Name "Modify ItemFlag"
+-- !Section "Moveable parameters"
+-- !Description "Modify ItemFlag for moveable. Used for extended customisation of certain moveables."
+-- !Arguments "NewLine,Moveables, 50, Choose moveable"
+-- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value to store in moveable's ItemFlags
+-- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to change"
+
+LevelFuncs.Engine.Node.ModifyItemFlag = function (moveable, itemFlagValue, itemFlagLocation)
+	TEN.Objects.GetMoveableByName(moveable):SetItemFlags(itemFlagValue,itemFlagLocation)
+end
+
+
+-- !Name "If value stored in ItemFlag is..."
+-- !Section "Moveable parameters"
+-- !Description "Checks current value contained inside a given ItemFlag"
+-- !Conditional "True"
+-- !Arguments "NewLine,Moveables, 50, Choose moveable"
+-- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
+-- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to check"
+
+LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagValue, itemFlagLocation)
+    local itemFlag = TEN.Objects.GetMoveableByName(moveable):GetItemFlags(itemFlagLocation)
+    
+    if itemFlag == itemFlagValue then
+        return true
+    else
+        return false
+    end
+end
+
+
