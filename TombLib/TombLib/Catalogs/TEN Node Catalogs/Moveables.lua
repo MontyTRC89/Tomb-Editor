@@ -426,7 +426,7 @@ end
 -- !Section "Moveable state"
 -- !Description "Assigns specific effect to a moveable."
 -- !Arguments "Enumeration, 30, [ Fire | Sparks | Smoke | Electric ignite | Red ignite ], Effect type to set"
--- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
+-- !Arguments "Numerical, 13, [ -1 | 99 ], {-1}, Effect timeout (set to -1 for indefinite timeout)"
 -- !Arguments "NewLine, Moveables, Moveable to check"
 
 
