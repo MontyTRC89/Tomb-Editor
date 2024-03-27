@@ -287,7 +287,6 @@
 									AllowsTransparency="True"
 									IsOpen="{Binding IsOverflowOpen, RelativeSource={RelativeSource TemplatedParent}}"
 									Placement="Bottom"
-									PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}"
 									StaysOpen="False">
 									<Border
 										Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"

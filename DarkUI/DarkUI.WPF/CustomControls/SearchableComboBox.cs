@@ -82,7 +82,7 @@ namespace DarkUI.WPF.CustomControls
 			{
 				var textBox = Template.FindName("PART_SearchTextBox", this) as TextBox;
 
-				if (textBox is not null)
+				if (textBox is not null && !textBox.IsFocused)
 					Dispatcher.BeginInvoke(() => textBox.Focus(), DispatcherPriority.Loaded);
 			}
 

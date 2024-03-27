@@ -100,8 +100,7 @@
 							MaxHeight="{x:Static local:Defaults.ComboBox_Popup_MaxHeight}"
 							AllowsTransparency="True"
 							IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-							Placement="Bottom"
-							PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+							Placement="Bottom">
 							<Border
 								x:Name="dropDownBorder"
 								Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"

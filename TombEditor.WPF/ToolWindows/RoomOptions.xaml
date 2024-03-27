@@ -35,7 +35,7 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<ComboBox
+				<controls:SearchableComboBox
 					ItemsSource="{Binding Rooms, Mode=OneWay}"
 					SelectedItem="{Binding SelectedRoom}"
 					VirtualizingPanel.IsVirtualizing="True"
@@ -45,7 +45,7 @@
 							<VirtualizingStackPanel />
 						</ItemsPanelTemplate>
 					</ComboBox.ItemsPanel>
-				</ComboBox>
+				</controls:SearchableComboBox>
 
 				<sg:SpacedGrid Grid.Row="1">
 					<Grid.ColumnDefinitions>

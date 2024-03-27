@@ -219,8 +219,7 @@
 					x:Name="popup"
 					AllowsTransparency="True"
 					IsOpen="{TemplateBinding IsSubmenuOpen}"
-					Placement="Bottom"
-					PopupAnimation="Fade">
+					Placement="Bottom">
 					<Border
 						Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"
 						Background="{TemplateBinding Background}"
@@ -448,8 +447,7 @@
 					AllowsTransparency="True"
 					HorizontalOffset="{x:Static local:Defaults.SubMenuPopup_HorizontalOffset}"
 					IsOpen="{TemplateBinding IsSubmenuOpen}"
-					Placement="Right"
-					PopupAnimation="Fade">
+					Placement="Right">
 					<Border
 						x:Name="submenuBorder"
 						Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"
