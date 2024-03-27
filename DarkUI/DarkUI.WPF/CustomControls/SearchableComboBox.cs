@@ -12,11 +12,18 @@ namespace DarkUI.WPF.CustomControls
 	public class SearchableComboBox : ComboBox
 	{
 		public static readonly DependencyProperty SearchTextProperty;
+		public static readonly DependencyProperty FilterIgnoredStringProperty;
 
 		public string SearchText
 		{
 			get => (string)GetValue(SearchTextProperty);
 			set => SetValue(SearchTextProperty, value);
+		}
+
+		public string FilterIgnoredString
+		{
+			get => (string)GetValue(FilterIgnoredStringProperty);
+			set => SetValue(FilterIgnoredStringProperty, value);
 		}
 
 		/// <summary>
@@ -33,6 +40,11 @@ namespace DarkUI.WPF.CustomControls
 		public TextBox? SearchTextBox { get; set; }
 		public Button? SearchButton { get; set; }
 
+		/// <summary>
+		/// Used to restore the selected item after an unsuccessful search is cleared.
+		/// </summary>
+		private object? _cachedSelectedItem;
+
 		static SearchableComboBox()
 		{
 			SearchTextProperty = DependencyProperty.Register(
@@ -40,11 +52,19 @@ namespace DarkUI.WPF.CustomControls
 				typeof(string),
 				typeof(SearchableComboBox),
 				new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+			FilterIgnoredStringProperty = DependencyProperty.Register(
+				nameof(FilterIgnoredString),
+				typeof(string),
+				typeof(SearchableComboBox),
+				new FrameworkPropertyMetadata(string.Empty));
 		}
 
 		public override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
+
+			Items.IsLiveFiltering = true;
 
 			SearchTextBox = GetTemplateChild("PART_SearchTextBox") as TextBox;
 			SearchButton = GetTemplateChild("PART_SearchButton") as Button;
@@ -69,7 +89,7 @@ namespace DarkUI.WPF.CustomControls
 				PerformedSpecialAction = false;
 			}
 			else if (e.Property.Name == nameof(IsDropDownOpen) && !IsDropDownOpen && Items.Filter is not null)
-				ClearFilter();
+				ClearFilter(true);
 			else if (e.Property.Name == nameof(IsDropDownOpen) && !IsDropDownOpen)
 				SearchText = string.Empty;
 		}
@@ -103,6 +123,9 @@ namespace DarkUI.WPF.CustomControls
 
 		public void FindNext()
 		{
+			if (Items.Count > 0)
+				_cachedSelectedItem = SelectedItem;
+
 			if (string.IsNullOrWhiteSpace(SearchText))
 			{
 				if (IsPerformingSearch)
@@ -113,13 +136,16 @@ namespace DarkUI.WPF.CustomControls
 
 			bool containsExactMatches = Items.Cast<object>().Any(item =>
 			{
-				string itemString = item.ToString()!.Replace("System.Windows.Controls.ComboBoxItem: ", ""); // TODO: Change this
+				string itemString = item.ToString()!.Replace("System.Windows.Controls.ComboBoxItem: ", string.Empty); // TODO: Change this
+				itemString = itemString.Replace(FilterIgnoredString, string.Empty);
 				return itemString.Contains(SearchText, StringComparison.OrdinalIgnoreCase);
 			});
 
 			Items.Filter = item =>
 			{
-				string itemString = item.ToString()!.Replace("System.Windows.Controls.ComboBoxItem: ", ""); // TODO: Change this
+				string itemString = item.ToString()!.Replace("System.Windows.Controls.ComboBoxItem: ", string.Empty); // TODO: Change this
+				itemString = itemString.Replace(FilterIgnoredString, string.Empty);
+
 				bool exactlyMatches = itemString.Contains(SearchText, StringComparison.OrdinalIgnoreCase);
 
 				if (containsExactMatches)
@@ -141,12 +167,17 @@ namespace DarkUI.WPF.CustomControls
 
 		public void ClearFilter(bool clearSearchText = false)
 		{
+			bool wasUnsuccessfulSearch = Items.Count == 0;
+
 			Items.Filter = null;
 
 			if (clearSearchText)
 				SearchText = string.Empty;
 
 			IsPerformingSearch = false;
+
+			if (wasUnsuccessfulSearch)
+				SelectedItem = _cachedSelectedItem;
 		}
 	}
 }

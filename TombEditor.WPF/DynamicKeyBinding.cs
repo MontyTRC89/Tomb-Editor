@@ -1,5 +1,4 @@
-﻿using DarkUI.WPF.CustomControls;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;

@@ -9,7 +9,7 @@ namespace TombEditor.WPF.ViewModels;
 
 public partial class RoomOptionsViewModel : ObservableObject
 {
-	public IEnumerable<string> Rooms => _editor.Level.Rooms.Select((room, index) => $"{index}: {room?.Name ?? "--- EMPTY ---"}");
+	public IEnumerable<string> Rooms => _editor.Level.Rooms.Select((room, index) => $"{index}: {room?.Name ?? Localizer.Instance["EmptyRoom"]}");
 
 	public string SelectedRoom
 	{

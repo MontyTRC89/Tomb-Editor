@@ -344,7 +344,6 @@
 	"IGDescription1": "Select a model from the following list or add a new one by pressing plus button.",
 	"IGDescription2": "Double-click on entry or press 'Assign' to assign the loaded file to this imported geometry object.",
 
-
 	// Components for 'ImportedGeometryManager' UserControl
 	"IGName": "Name",
 	"IGNameToolTip": "Name...",
@@ -401,5 +400,8 @@
 	"Unused": "Unused",
 	"Frames": "Frames",
 	"Browse": "Browse",
-	"Message": "Message"
+	"Message": "Message",
+
+	// Room Options
+	"EmptyRoom": "--- Empty room ---"
 }

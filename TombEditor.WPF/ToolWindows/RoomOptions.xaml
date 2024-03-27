@@ -5,6 +5,7 @@
 	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:local="clr-namespace:TombEditor.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -36,6 +37,7 @@
 				</Grid.RowDefinitions>
 
 				<controls:SearchableComboBox
+					FilterIgnoredString="{local:Localize EmptyRoom}"
 					ItemsSource="{Binding Rooms, Mode=OneWay}"
 					SelectedItem="{Binding SelectedRoom}"
 					VirtualizingPanel.IsVirtualizing="True"
