@@ -155,7 +155,7 @@ end
 -- !Arguments "Numerical, 30, [ 0 | 31 ], Mesh index to check"
 
 LevelFuncs.Engine.Node.TestMoveableMeshVisibility = function(moveableName, value)
-	return TEN.Objects.GetMoveableByName(moveableName):MeshIsVisible(value)
+	return TEN.Objects.GetMoveableByName(moveableName):GetMeshVisible(value)
 end
 
 -- !Name "If moveable is on the line of sight..."
@@ -426,7 +426,7 @@ end
 -- !Section "Moveable state"
 -- !Description "Assigns specific effect to a moveable."
 -- !Arguments "Enumeration, 30, [ Fire | Sparks | Smoke | Electric ignite | Red ignite ], Effect type to set"
--- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
+-- !Arguments "Numerical, 13, [ -1 | 99 ], {-1}, Effect timeout (set to -1 for indefinite timeout)"
 -- !Arguments "NewLine, Moveables, Moveable to check"
 
 
@@ -446,3 +446,37 @@ end
 LevelFuncs.Engine.Node.SetCustomMoveableEffect = function(primary, secondary, timeout, moveableName)
 	TEN.Objects.GetMoveableByName(moveableName):SetCustomEffect(primary, secondary, timeout)
 end
+
+
+-- !Name "Modify ItemFlag"
+-- !Section "Moveable parameters"
+-- !Description "Modify ItemFlag for moveable. Used for extended customisation of certain moveables."
+-- !Arguments "NewLine,Moveables, 50, Choose moveable"
+-- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to change"
+-- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value to store in moveable's ItemFlags
+
+LevelFuncs.Engine.Node.ModifyItemFlag = function (moveable, itemFlagLocation, itemFlagValue)
+	TEN.Objects.GetMoveableByName(moveable):SetItemFlags(itemFlagValue,itemFlagLocation)
+end
+
+
+-- !Name "If value stored in ItemFlag is..."
+-- !Section "Moveable parameters"
+-- !Description "Checks current value contained inside a given ItemFlag"
+-- !Conditional "True"
+-- !Arguments "NewLine,Moveables, 50, Choose moveable"
+-- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to check"
+-- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
+
+
+LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, itemFlagValue)
+    local itemFlag = TEN.Objects.GetMoveableByName(moveable):GetItemFlags(itemFlagLocation)
+    
+    if itemFlag == itemFlagValue then
+        return true
+    else
+        return false
+    end
+end
+
+

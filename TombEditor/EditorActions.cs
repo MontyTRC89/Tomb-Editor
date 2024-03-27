@@ -3665,7 +3665,7 @@ namespace TombEditor
                         // Transform positions
                         foreach (BlockVertical vertical in oldBlock.GetVerticals().Union(newBlock.GetVerticals()))
                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                sector.Value.ChangeBlockHeight(newBlockVec.X, newBlockVec.Y, vertical, edge, sector.Value.Position.Y - newRoomToHandle.Position.Y);
+                                newBlock.SetHeight(vertical, edge, newBlock.GetHeight(vertical, edge) + (sector.Value.Position.Y - newRoomToHandle.Position.Y));
 
                         newRoomToHandle.SetBlock(sector.Key - newRoomToHandle.SectorPos, newBlock);
                     }

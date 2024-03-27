@@ -60,9 +60,9 @@
     <moveable id="63" name="MP with sighted gun and night sight" essential="false" ten="SAS_CAIRO" /> 
     <moveable id="64" name="Gun turret" essential="false" ten="TWIN_AUTO_GUN"/>
     <moveable id="65" name="Dam guard" essential="false" ten="MP_WITH_STICK" /> 
-    <moveable id="66" name="Tripwire" essential="false" />
+    <moveable id="66" name="Tripwire" essential="false" ten="LASER_BEAM" />
     <moveable id="67" name="Electrified wire" essential="false" ten="ELECTRIC_FENCE" /> 
-    <moveable id="68" name="Killer tripwire" essential="false" ten="TRIPWIRE"/> 
+    <moveable id="68" name="Killer tripwire" essential="false" ten="LASER_BEAM"/> 
     <moveable id="69" name="Cobra / Rattlesnake" essential="false" ten="COBRA" />
     <moveable id="70" name="Temple statue" essential="false" ten="SHIVA"/>
     <moveable id="71" name="Monkey" essential="false" ten="MONKEY"/> 

@@ -113,7 +113,6 @@ namespace TombLib.Controls.VisualScripting
 
         public void TrimArguments()
         {
-            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
             var funcSetup = cbFunction.SelectedItem as NodeFunction;
             if (funcSetup.Arguments.Count < Node.Arguments.Count)
                 Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
@@ -681,8 +680,7 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
-
-            TrimArguments();
+            Node.FixArguments(cbFunction.SelectedItem as NodeFunction);
             SpawnUIElements();
 
             toolTip.SetToolTip(sender as Control, TextExtensions.SingleLineToMultiLine((cbFunction.SelectedItem as NodeFunction)?.Description ?? string.Empty));
