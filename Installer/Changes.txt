@@ -13,7 +13,7 @@ Tomb Editor:
  * Fixed issue where creating portals manually would display phantom subdivisions.
  * Fixed issue where slope indicator would mark diagonal steps as slopes if one side is taller than 2 clicks.
  * Fixed TEN OnLoop callback appearing in level script functions list.
- * Fixed TEN nodes not using default values for new arguments, if node was not opened in a node editor.
+ * Fixed TEN nodes not using default values for new arguments, if node wasn't reopened in a node editor.
  * Fixed AI pathfinding not recognizing ghost blocks.
  * Fixed room rotation / mirroring causing textures to disappear at extra subdivisions level.
  * Fixed horizontal room merging yielding wrong results.
