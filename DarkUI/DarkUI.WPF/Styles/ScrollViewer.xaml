@@ -4,9 +4,6 @@
 	xmlns:local="clr-namespace:DarkUI.WPF">
 
 	<Style TargetType="{x:Type ScrollViewer}">
-		<!--  Control properties  -->
-		<Setter Property="CanContentScroll" Value="False" />
-
 		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
