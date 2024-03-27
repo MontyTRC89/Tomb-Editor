@@ -1,73 +1,73 @@
 ﻿<Window
-    x:Class="TombEditor.WPF.Views.FootStepSoundsWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
-    xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
-    xmlns:local="clr-namespace:TombEditor.WPF"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
-    Title="{local:Localize TextureSoundsTitle}"
-    Width="440"
-    Height="601"
-    MinWidth="440"
-    MinHeight="601"
-    Style="{DynamicResource CustomWindowStyle}"
-    mc:Ignorable="d">
-    <sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
-        <sg:SpacedGrid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </sg:SpacedGrid.RowDefinitions>
-        <darkCtrl:SearchableComboBox />
-        <Border
-            Grid.Row="1"
-            BorderBrush="#FF5C5C5C"
-            BorderThickness="1">
-            <WindowsFormsHost x:Name="ViewportHost" />
-        </Border>
+	x:Class="TombEditor.WPF.Views.FootStepSoundsWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkCtrl="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:local="clr-namespace:TombEditor.WPF"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+	Title="{local:Localize TextureSoundsTitle}"
+	Width="440"
+	Height="601"
+	MinWidth="440"
+	MinHeight="601"
+	Style="{DynamicResource CustomWindowStyle}"
+	mc:Ignorable="d">
+	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+		<sg:SpacedGrid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</sg:SpacedGrid.RowDefinitions>
+		<darkCtrl:SearchableComboBox />
+		<Border
+			Grid.Row="1"
+			BorderBrush="#FF5C5C5C"
+			BorderThickness="1">
+			<WindowsFormsHost x:Name="ViewportHost" />
+		</Border>
 
-        <sg:SpacedGrid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <darkCtrl:SearchableComboBox>
-                <ComboBoxItem Content="{local:Localize Mud}" />
-                <ComboBoxItem Content="{local:Localize Snow}" />
-                <ComboBoxItem Content="{local:Localize Sand}" />
-                <ComboBoxItem Content="{local:Localize Gravel}" />
-                <ComboBoxItem Content="{local:Localize Ice}" />
-                <ComboBoxItem Content="{local:Localize Water}" />
-                <ComboBoxItem Content="{local:Localize Stone}" />
-                <ComboBoxItem Content="{local:Localize Wood}" />
-                <ComboBoxItem Content="{local:Localize Metal}" />
-                <ComboBoxItem Content="{local:Localize Marble}" />
-                <ComboBoxItem Content="{local:Localize Grass}" />
-                <ComboBoxItem Content="{local:Localize Concrete}" />
-                <ComboBoxItem Content="{local:Localize OldWood}" />
-                <ComboBoxItem Content="{local:Localize OldMetal}" />
-                <ComboBoxItem Content="{local:Localize Custom1}" />
-                <ComboBoxItem Content="{local:Localize Custom2}" />
-                <ComboBoxItem Content="{local:Localize Custom3}" />
-                <ComboBoxItem Content="{local:Localize Custom4}" />
-                <ComboBoxItem Content="{local:Localize Custom5}" />
-                <ComboBoxItem Content="{local:Localize Custom6}" />
-                <ComboBoxItem Content="{local:Localize Custom7}" />
-                <ComboBoxItem Content="{local:Localize Custom8}" />
-            </darkCtrl:SearchableComboBox>
-            <Button
-                Grid.Column="1"
-                Width="113"
-                Content="{local:Localize AssignSound}" />
-            <Button
-                Grid.Column="2"
-                Width="80"
-                Content="OK"
-                IsDefault="True" />
-        </sg:SpacedGrid>
-    </sg:SpacedGrid>
+		<sg:SpacedGrid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<darkCtrl:SearchableComboBox>
+				<ComboBoxItem Content="{local:Localize Mud}" />
+				<ComboBoxItem Content="{local:Localize Snow}" />
+				<ComboBoxItem Content="{local:Localize Sand}" />
+				<ComboBoxItem Content="{local:Localize Gravel}" />
+				<ComboBoxItem Content="{local:Localize Ice}" />
+				<ComboBoxItem Content="{local:Localize Water}" />
+				<ComboBoxItem Content="{local:Localize Stone}" />
+				<ComboBoxItem Content="{local:Localize Wood}" />
+				<ComboBoxItem Content="{local:Localize Metal}" />
+				<ComboBoxItem Content="{local:Localize Marble}" />
+				<ComboBoxItem Content="{local:Localize Grass}" />
+				<ComboBoxItem Content="{local:Localize Concrete}" />
+				<ComboBoxItem Content="{local:Localize OldWood}" />
+				<ComboBoxItem Content="{local:Localize OldMetal}" />
+				<ComboBoxItem Content="{local:Localize Custom1}" />
+				<ComboBoxItem Content="{local:Localize Custom2}" />
+				<ComboBoxItem Content="{local:Localize Custom3}" />
+				<ComboBoxItem Content="{local:Localize Custom4}" />
+				<ComboBoxItem Content="{local:Localize Custom5}" />
+				<ComboBoxItem Content="{local:Localize Custom6}" />
+				<ComboBoxItem Content="{local:Localize Custom7}" />
+				<ComboBoxItem Content="{local:Localize Custom8}" />
+			</darkCtrl:SearchableComboBox>
+			<Button
+				Grid.Column="1"
+				Width="113"
+				Content="{local:Localize AssignSound}" />
+			<Button
+				Grid.Column="2"
+				Width="80"
+				Content="{local:Localize OK}"
+				IsDefault="True" />
+		</sg:SpacedGrid>
+	</sg:SpacedGrid>
 </Window>

@@ -395,6 +395,7 @@
 	"CancelPush": "Push keys! Click here to cancel!",
 
 	// Generic
+	"OK": "OK",
 	"Cancel": "Cancel",
 	"Close": "Close",
 	"Unused": "Unused",
