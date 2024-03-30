@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media;
 using TombLib.Forms;
 using TombLib.LevelData;
 
@@ -214,7 +215,7 @@ public partial class RoomOptionsViewModel : ObservableObject
 		}
 	}
 
-	public int FlipMap
+	public int SelectedFlipMap
 	{
 		get => _editor.SelectedRoom.Alternated ? _editor.SelectedRoom.AlternateGroup + 1 : 0;
 		set
@@ -257,7 +258,7 @@ public partial class RoomOptionsViewModel : ObservableObject
 		}
 	}
 
-	public int Reverb
+	public int SelectedReverb
 	{
 		get => _editor.SelectedRoom.Properties.Reverberation;
 		set
@@ -314,6 +315,8 @@ public partial class RoomOptionsViewModel : ObservableObject
 
 	public bool Hidden => _editor.SelectedRoom.Properties.Hidden;
 
+	public Color AmbientLightColor => _editor.SelectedRoom.Properties.AmbientLight.ToWPFColor();
+
 	[ObservableProperty] private bool supportsHorizon;
 	[ObservableProperty] private bool supportsFlagOutside;
 	[ObservableProperty] private bool supportsFlagCold;
@@ -337,6 +340,7 @@ public partial class RoomOptionsViewModel : ObservableObject
 	public ICommand SelectPreviousRoomCommand { get; }
 	public ICommand LockRoomCommand { get; }
 	public ICommand HideRoomCommand { get; }
+	public ICommand EditAmbientLightCommand { get; }
 
 	private readonly Editor _editor;
 
@@ -356,6 +360,7 @@ public partial class RoomOptionsViewModel : ObservableObject
 		SelectPreviousRoomCommand = CommandHandler.GetCommand("SelectPreviousRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
 		LockRoomCommand = CommandHandler.GetCommand("LockRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
 		HideRoomCommand = CommandHandler.GetCommand("HideRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		EditAmbientLightCommand = CommandHandler.GetCommand("EditAmbientLight", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
 	}
 
 	private void EditorEventRaised(IEditorEvent obj)
@@ -371,13 +376,14 @@ public partial class RoomOptionsViewModel : ObservableObject
 			OnPropertyChanged(nameof(NoPathfinding));
 			OnPropertyChanged(nameof(NoLensflare));
 			OnPropertyChanged(nameof(SelectedRoomType));
-			OnPropertyChanged(nameof(FlipMap));
-			OnPropertyChanged(nameof(Reverb));
+			OnPropertyChanged(nameof(SelectedFlipMap));
+			OnPropertyChanged(nameof(SelectedReverb));
 			OnPropertyChanged(nameof(SelectedPortalShade));
 			OnPropertyChanged(nameof(SelectedEffect));
 			OnPropertyChanged(nameof(EffectStrength));
 			OnPropertyChanged(nameof(Locked));
 			OnPropertyChanged(nameof(Hidden));
+			OnPropertyChanged(nameof(AmbientLightColor));
 		}
 
 		// Disable version-specific controls
@@ -424,6 +430,7 @@ public partial class RoomOptionsViewModel : ObservableObject
 			_editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
 		{
 			OnPropertyChanged(nameof(Hidden));
+			OnPropertyChanged(nameof(AmbientLightColor));
 
 			Room room = _editor.SelectedRoom;
 

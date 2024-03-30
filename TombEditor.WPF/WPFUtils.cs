@@ -17,11 +17,13 @@ namespace TombEditor.WPF
 			.FirstOrDefault(window => window.DataContext?.GetType() == caller.GetType())?
 			.Win32Window;
 
-		public static Brush ToWPFColor(this Vector3 color) => new Vector4(color, 255.0f).ToWPFColor();
+		public static Color ToWPFColor(this Vector3 color) => Color.FromRgb((byte)(color.X * 255.0f), (byte)(color.Y * 255.0f), (byte)(color.Z * 255.0f));
+
+		public static Brush ToWPFBrush(this Vector3 color) => new Vector4(color, 255.0f).ToWPFBrush();
 		public static Vector3 ToFloat3Color(this Color color) => new Vector3(color.R, color.G, color.B) / 255.0f;
 		public static Vector4 ToFloat4Color(this Color color) => new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
 
-		public static Brush ToWPFColor(this Vector4 color, float? alpha = null)
+		public static Brush ToWPFBrush(this Vector4 color, float? alpha = null)
 		{
 			return new SolidColorBrush(Color.FromArgb(
 				(byte)Math.Max(0, Math.Min(255, Math.Round((alpha.HasValue ? MathC.Clamp(alpha.Value, 0.0, 1.0) : color.W) * 255.0f))),
@@ -30,9 +32,9 @@ namespace TombEditor.WPF
 				(byte)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f)))));
 		}
 
-		public static Brush ToWPFColor(this Vector3 color, float alpha)
+		public static Brush ToWPFBrush(this Vector3 color, float alpha)
 		{
-			return ToWPFColor(new Vector4(color.X, color.Y, color.Z, alpha));
+			return ToWPFBrush(new Vector4(color.X, color.Y, color.Z, alpha));
 		}
 
 		public static float GetBrightness(this Brush b)

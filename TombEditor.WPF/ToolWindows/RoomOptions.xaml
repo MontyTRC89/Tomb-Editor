@@ -79,40 +79,38 @@
 					<ComboBox
 						Grid.Row="1"
 						ItemsSource="{Binding RoomTypes}"
-						SelectedValue="{Binding RoomType}" />
+						SelectedIndex="{Binding SelectedRoomType}" />
 
 					<Label Grid.Column="1" Content="Flipmap" />
 					<ComboBox
-						x:Name="comboFlipMap"
 						Grid.Row="1"
-						Grid.Column="1">
-						<ComboBoxItem>None</ComboBoxItem>
-						<ComboBoxItem>0</ComboBoxItem>
-						<ComboBoxItem>1</ComboBoxItem>
-						<ComboBoxItem>2</ComboBoxItem>
-						<ComboBoxItem>3</ComboBoxItem>
-						<ComboBoxItem>4</ComboBoxItem>
-						<ComboBoxItem>5</ComboBoxItem>
-						<ComboBoxItem>6</ComboBoxItem>
-						<ComboBoxItem>7</ComboBoxItem>
-						<ComboBoxItem>8</ComboBoxItem>
-						<ComboBoxItem>9</ComboBoxItem>
-						<ComboBoxItem>10</ComboBoxItem>
-						<ComboBoxItem>11</ComboBoxItem>
-						<ComboBoxItem>12</ComboBoxItem>
-						<ComboBoxItem>13</ComboBoxItem>
-						<ComboBoxItem>14</ComboBoxItem>
-						<ComboBoxItem>15</ComboBoxItem>
+						Grid.Column="1"
+						SelectedIndex="{Binding SelectedFlipMap}">
+						<ComboBoxItem Content="None" />
+						<ComboBoxItem Content="0" />
+						<ComboBoxItem Content="1" />
+						<ComboBoxItem Content="2" />
+						<ComboBoxItem Content="3" />
+						<ComboBoxItem Content="4" />
+						<ComboBoxItem Content="5" />
+						<ComboBoxItem Content="6" />
+						<ComboBoxItem Content="7" />
+						<ComboBoxItem Content="8" />
+						<ComboBoxItem Content="9" />
+						<ComboBoxItem Content="10" />
+						<ComboBoxItem Content="11" />
+						<ComboBoxItem Content="12" />
+						<ComboBoxItem Content="13" />
+						<ComboBoxItem Content="14" />
+						<ComboBoxItem Content="15" />
 					</ComboBox>
 
 					<Label Grid.Column="2" Content="Reverb" />
-					<ComboBox Grid.Row="1" Grid.Column="2">
-						<ComboBoxItem>None</ComboBoxItem>
-						<ComboBoxItem>Small</ComboBoxItem>
-						<ComboBoxItem>Medium</ComboBoxItem>
-						<ComboBoxItem>Large</ComboBoxItem>
-						<ComboBoxItem>Pipe</ComboBoxItem>
-					</ComboBox>
+					<ComboBox
+						Grid.Row="1"
+						Grid.Column="2"
+						ItemsSource="{Binding ReverbValues}"
+						SelectedIndex="{Binding SelectedReverb}" />
 				</sg:SpacedGrid>
 
 				<sg:SpacedGrid Grid.Row="3">
@@ -277,28 +275,23 @@
 				<ColumnDefinition Width="40" />
 			</Grid.ColumnDefinitions>
 
-			<controls:ColorPickerButton x:Name="panelRoomAmbientLight" Width="60" />
-			<ComboBox x:Name="comboPortalShade" Grid.Column="1">
-				<ComboBoxItem>Default</ComboBoxItem>
-				<ComboBoxItem>Smooth</ComboBoxItem>
-				<ComboBoxItem>Sharp</ComboBoxItem>
-			</ComboBox>
-			<ComboBox x:Name="comboLightEffect" Grid.Column="2">
-				<ComboBoxItem>None</ComboBoxItem>
-				<ComboBoxItem>Default</ComboBoxItem>
-				<ComboBoxItem>Reflection</ComboBoxItem>
-				<ComboBoxItem>Glow</ComboBoxItem>
-				<ComboBoxItem>Move</ComboBoxItem>
-				<ComboBoxItem>Glow &amp; Move</ComboBoxItem>
-				<ComboBoxItem>Mist</ComboBoxItem>
-			</ComboBox>
-			<xctk:IntegerUpDown
-				x:Name="numLightEffectStrength"
+			<controls:ColorPickerButton
+				Width="60"
+				Command="{Binding EditAmbientLightCommand}"
+				SelectedColor="{Binding AmbientLightColor, Mode=OneWay}" />
+			<ComboBox
+				Grid.Column="1"
+				ItemsSource="{Binding PortalShades}"
+				SelectedIndex="{Binding SelectedPortalShade}" />
+			<ComboBox
+				Grid.Column="2"
+				ItemsSource="{Binding Effects}"
+				SelectedIndex="{Binding SelectedEffect}" />
+			<xctk:ByteUpDown
 				Grid.Column="3"
-				DefaultValue="1"
 				Maximum="4"
 				Minimum="0"
-				Value="1" />
+				Value="{Binding EffectStrength}" />
 		</sg:SpacedGrid>
 	</Grid>
 </UserControl>
