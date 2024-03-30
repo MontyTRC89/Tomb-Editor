@@ -2,11 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Input;
 using TombLib.Forms;
 using TombLib.LevelData;
-using TombLib.Utils;
 
 namespace TombEditor.WPF.ViewModels;
 
@@ -67,19 +65,18 @@ public partial class RoomOptionsViewModel : ObservableObject
 		}
 	}
 
-	public string SelectedRoom
+	public int SelectedRoom
 	{
-		get => _editor.SelectedRoom is not null ? $"{Array.IndexOf(_editor.Level.Rooms, _editor.SelectedRoom)}: {_editor.SelectedRoom.Name}" : "";
+		get => Array.IndexOf(_editor.Level.Rooms, _editor.SelectedRoom);
 		set
 		{
-			if (string.IsNullOrEmpty(value))
+			if (value == -1)
 				return;
 
-			int index = int.Parse(value.Split(':')[0]);
-			Room selectedRoom = _editor.Level.Rooms[index];
+			Room selectedRoom = _editor.Level.Rooms[value];
 
 			if (selectedRoom is null)
-				EditorActions.MakeNewRoom(index);
+				EditorActions.MakeNewRoom(value);
 			else
 				_editor.SelectRoom(selectedRoom);
 		}
@@ -217,9 +214,9 @@ public partial class RoomOptionsViewModel : ObservableObject
 		}
 	}
 
-	public short FlipMap
+	public int FlipMap
 	{
-		get => _editor.SelectedRoom.AlternateGroup;
+		get => _editor.SelectedRoom.Alternated ? _editor.SelectedRoom.AlternateGroup + 1 : 0;
 		set
 		{
 			if (_editor.SelectedRoom is null)
@@ -315,6 +312,8 @@ public partial class RoomOptionsViewModel : ObservableObject
 		.Distinct()
 		.ToList();
 
+	public bool Hidden => _editor.SelectedRoom.Properties.Hidden;
+
 	[ObservableProperty] private bool supportsHorizon;
 	[ObservableProperty] private bool supportsFlagOutside;
 	[ObservableProperty] private bool supportsFlagCold;
@@ -323,18 +322,21 @@ public partial class RoomOptionsViewModel : ObservableObject
 	[ObservableProperty] private bool supportsReverb;
 	[ObservableProperty] private bool supportsLightEffect;
 	[ObservableProperty] private bool supportsLightEffectStrength;
+	[ObservableProperty] private bool canLockRoom = true;
+
+	[ObservableProperty] private bool locked;
 
 	public ICommand EditRoomNameCommand { get; }
-	public ICommand AddNewRoom { get; }
-	public ICommand DuplicateRoom { get; }
-	public ICommand DeleteRooms { get; }
-	public ICommand CropRoom { get; }
-	public ICommand MoveRoomUp { get; }
-	public ICommand SplitRoom { get; }
-	public ICommand MoveRoomDown { get; }
-	public ICommand SelectPreviousRoom { get; }
-	public ICommand LockRoom { get; }
-	public ICommand HideRoom { get; }
+	public ICommand AddNewRoomCommand { get; }
+	public ICommand DuplicateRoomCommand { get; }
+	public ICommand DeleteRoomsCommand { get; }
+	public ICommand CropRoomCommand { get; }
+	public ICommand MoveRoomUpCommand { get; }
+	public ICommand SplitRoomCommand { get; }
+	public ICommand MoveRoomDownCommand { get; }
+	public ICommand SelectPreviousRoomCommand { get; }
+	public ICommand LockRoomCommand { get; }
+	public ICommand HideRoomCommand { get; }
 
 	private readonly Editor _editor;
 
@@ -344,23 +346,21 @@ public partial class RoomOptionsViewModel : ObservableObject
 		_editor.EditorEventRaised += EditorEventRaised;
 
 		EditRoomNameCommand = CommandHandler.GetCommand("EditRoomName", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddNewRoom = CommandHandler.GetCommand("AddNewRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DuplicateRoom = CommandHandler.GetCommand("DuplicateRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DeleteRooms = CommandHandler.GetCommand("DeleteRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		CropRoom = CommandHandler.GetCommand("CropRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomUp = CommandHandler.GetCommand("MoveRoomUp", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SplitRoom = CommandHandler.GetCommand("SplitRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomDown = CommandHandler.GetCommand("MoveRoomDown", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectPreviousRoom = CommandHandler.GetCommand("SelectPreviousRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LockRoom = CommandHandler.GetCommand("LockRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		HideRoom = CommandHandler.GetCommand("HideRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		AddNewRoomCommand = CommandHandler.GetCommand("AddNewRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		DuplicateRoomCommand = CommandHandler.GetCommand("DuplicateRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		DeleteRoomsCommand = CommandHandler.GetCommand("DeleteRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		CropRoomCommand = CommandHandler.GetCommand("CropRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		MoveRoomUpCommand = CommandHandler.GetCommand("MoveRoomUp", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SplitRoomCommand = CommandHandler.GetCommand("SplitRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		MoveRoomDownCommand = CommandHandler.GetCommand("MoveRoomDown", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		SelectPreviousRoomCommand = CommandHandler.GetCommand("SelectPreviousRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		LockRoomCommand = CommandHandler.GetCommand("LockRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		HideRoomCommand = CommandHandler.GetCommand("HideRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
 	}
 
 	private void EditorEventRaised(IEditorEvent obj)
 	{
-		if (obj is Editor.RoomListChangedEvent)
-			OnPropertyChanged(nameof(Rooms));
-		else if (obj is Editor.SelectedRoomChangedEvent)
+		if (obj is Editor.SelectedRoomChangedEvent)
 		{
 			OnPropertyChanged(nameof(SelectedRoom));
 			OnPropertyChanged(nameof(Tags));
@@ -376,6 +376,8 @@ public partial class RoomOptionsViewModel : ObservableObject
 			OnPropertyChanged(nameof(SelectedPortalShade));
 			OnPropertyChanged(nameof(SelectedEffect));
 			OnPropertyChanged(nameof(EffectStrength));
+			OnPropertyChanged(nameof(Locked));
+			OnPropertyChanged(nameof(Hidden));
 		}
 
 		// Disable version-specific controls
@@ -383,7 +385,6 @@ public partial class RoomOptionsViewModel : ObservableObject
 			Editor.GameVersionChangedEvent or
 			Editor.LevelChangedEvent)
 		{
-			bool isTR4orNG = _editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4;
 			bool isNGorTEN = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
 			bool isTR4or5 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
 			bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
@@ -405,72 +406,37 @@ public partial class RoomOptionsViewModel : ObservableObject
 
 		// Update the room list
 		if (obj is Editor.InitEvent or Editor.RoomListChangedEvent)
+		{
+			int cachedRoomIndex = SelectedRoom;
+
 			OnPropertyChanged(nameof(Rooms));
+
+			SelectedRoom = cachedRoomIndex;
+			OnPropertyChanged(nameof(SelectedRoom));
+		}
 
 		// Update tag list
 		if (obj is Editor.LevelChangedEvent or Editor.SelectedRoomChangedEvent)
 			OnPropertyChanged(nameof(TagsAutoCompleteData));
 
-		//// Update the room property controls
-		//if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
-		//	_editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
-		//{
-		//	Room room = _editor.SelectedRoom;
-		//	if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent)
-		//		comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
+		// Update the room property controls
+		if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
+			_editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
+		{
+			OnPropertyChanged(nameof(Hidden));
 
-		//	// Update the state of other controls
-		//	ReadRoomType();
-		//	panelRoomAmbientLight.BackColor = (room.Properties.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
-		//	comboReverberation.SelectedIndex = room.Properties.Reverberation < comboReverberation.Items.Count ? room.Properties.Reverberation : -1;
-		//	comboPortalShade.SelectedIndex = (int)room.Properties.LightInterpolationMode;
-		//	comboLightEffect.SelectedIndex = (int)room.Properties.LightEffect;
-		//	numLightEffectStrength.Value = room.Properties.LightEffectStrength;
-		//	cbFlagCold.Checked = room.Properties.FlagCold;
-		//	cbFlagDamage.Checked = room.Properties.FlagDamage;
-		//	cbFlagOutside.Checked = room.Properties.FlagOutside;
-		//	cbHorizon.Checked = room.Properties.FlagHorizon;
-		//	cbNoLensflare.Checked = room.Properties.FlagNoLensflare;
-		//	cbNoPathfinding.Checked = room.Properties.FlagExcludeFromPathFinding;
-		//	butHidden.Checked = room.Properties.Hidden;
+			Room room = _editor.SelectedRoom;
 
-		//	if (!tbRoomTags.ReadOnly) // Only update tags field if we're not in the process of editing
-		//	{
-		//		if (room.Properties.Tags.Count > 0)
-		//			tbRoomTags.Text = string.Join(" ", room.Properties.Tags);
-		//		else
-		//			tbRoomTags.Text = "";
-		//	}
-
-		//	if (room.AlternateBaseRoom != null)
-		//	{
-		//		butLocked.Enabled = false;
-		//		butLocked.Checked = room.AlternateBaseRoom.Properties.Locked;
-		//	}
-		//	else
-		//	{
-		//		butLocked.Enabled = true;
-		//		butLocked.Checked = room.Properties.Locked;
-		//	}
-
-		//	comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
-		//}
-
-		//// Activate default control
-		//if (obj is Editor.DefaultControlActivationEvent)
-		//{
-		//	if (DockPanel != null && ((Editor.DefaultControlActivationEvent)obj).ContainerName == GetType().Name)
-		//	{
-		//		MakeActive();
-		//		comboRoom.Search();
-		//	}
-		//}
-
-		//// Update tooltip texts
-		//if (obj is Editor.ConfigurationChangedEvent)
-		//{
-		//	if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
-		//		CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
-		//}
+			if (room.AlternateBaseRoom != null)
+			{
+				CanLockRoom = false;
+				Locked = room.AlternateBaseRoom.Properties.Locked;
+			}
+			else
+			{
+				CanLockRoom = true;
+				Locked = room.Properties.Locked;
+			}
+		}
 	}
 }

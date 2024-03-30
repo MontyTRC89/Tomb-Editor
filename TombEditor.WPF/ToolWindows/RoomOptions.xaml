@@ -38,8 +38,9 @@
 
 				<controls:SearchableComboBox
 					FilterIgnoredString="{local:Localize EmptyRoom}"
-					ItemsSource="{Binding Rooms, Mode=OneWay}"
-					SelectedItem="{Binding SelectedRoom}"
+					IsSynchronizedWithCurrentItem="True"
+					ItemsSource="{Binding Rooms}"
+					SelectedIndex="{Binding SelectedRoom}"
 					VirtualizingPanel.IsVirtualizing="True"
 					VirtualizingPanel.VirtualizationMode="Recycling">
 					<ComboBox.ItemsPanel>
@@ -251,6 +252,8 @@
 					Grid.Row="4"
 					Grid.Column="1"
 					Command="{Binding LockRoomCommand}"
+					IsChecked="{Binding Locked, Mode=OneWay}"
+					IsEnabled="{Binding CanLockRoom}"
 					Style="{DynamicResource ToggleButtonWithIconOnly}">
 					<Image Source="/TombEditor.WPF;component/Resources/icons_general/general_Lock-16.png" />
 				</ToggleButton>
@@ -259,6 +262,7 @@
 					Grid.Row="5"
 					Grid.ColumnSpan="2"
 					Command="{Binding HideRoomCommand}"
+					IsChecked="{Binding Hidden, Mode=OneWay}"
 					Style="{DynamicResource ToggleButtonWithIconOnly}">
 					<Image Source="/TombEditor.WPF;component/Resources/icons_toolbox/toolbox_Invisible-16.png" />
 				</ToggleButton>
