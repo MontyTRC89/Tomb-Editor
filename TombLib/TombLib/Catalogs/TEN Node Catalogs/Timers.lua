@@ -130,7 +130,7 @@ end
 
 
 
--- !Name "Pause a timer"
+-- !Name "Pause timer"
 -- !Conditional "False"
 -- !Description "Pauses a timer.\n\nNot to be used inside the On Volume Inside or On Loop events."
 -- !Section "Timer"
