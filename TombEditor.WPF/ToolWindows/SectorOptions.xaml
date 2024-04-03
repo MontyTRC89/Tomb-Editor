@@ -8,14 +8,12 @@
 	xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
 	xmlns:local="clr-namespace:TombEditor.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
 	xmlns:rendering="clr-namespace:TombLib.Rendering;assembly=TombLib.Rendering"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	MinWidth="285"
 	MinHeight="256"
 	d:DesignHeight="256"
 	d:DesignWidth="285"
-	md:DialogServiceViews.IsRegistered="True"
 	mc:Ignorable="d">
 
 	<UserControl.Resources>

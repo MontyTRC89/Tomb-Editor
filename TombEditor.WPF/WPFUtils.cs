@@ -18,6 +18,7 @@ namespace TombEditor.WPF
 			.Win32Window;
 
 		public static Color ToWPFColor(this Vector3 color) => Color.FromRgb((byte)(color.X * 255.0f), (byte)(color.Y * 255.0f), (byte)(color.Z * 255.0f));
+		public static Color ToWPFColor(this Vector4 color) => Color.FromArgb((byte)(color.W * 255.0f), (byte)(color.X * 255.0f), (byte)(color.Y * 255.0f), (byte)(color.Z * 255.0f));
 
 		public static Brush ToWPFBrush(this Vector3 color) => new Vector4(color, 255.0f).ToWPFBrush();
 		public static Vector3 ToFloat3Color(this Color color) => new Vector3(color.R, color.G, color.B) / 255.0f;

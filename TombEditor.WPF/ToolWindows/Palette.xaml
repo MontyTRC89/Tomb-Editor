@@ -11,6 +11,10 @@
 	mc:Ignorable="d">
 
 	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+		<Grid.LayoutTransform>
+			<ScaleTransform x:Name="Scaler" ScaleX="1" ScaleY="1" />
+		</Grid.LayoutTransform>
+
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition />
@@ -43,6 +47,16 @@
 			</Button>
 		</StackPanel>
 
-		<WindowsFormsHost x:Name="PaletteGridHost" Grid.Column="1" />
+		<Border
+			x:Name="PaletteGridContainer"
+			Grid.Column="1"
+			LayoutTransform="{Binding LayoutTransform.Inverse, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}"
+			SizeChanged="PaletteGridContainer_SizeChanged">
+			<Image
+				x:Name="ImageControl"
+				MouseDown="ImageControl_MouseDown"
+				MouseMove="ImageControl_MouseMove"
+				MouseUp="ImageControl_MouseUp" />
+		</Border>
 	</sg:SpacedGrid>
 </UserControl>
