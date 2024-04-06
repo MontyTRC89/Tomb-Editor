@@ -1,10 +1,10 @@
-﻿-- !Name "Call global event for all moveables"
+﻿-- !Name "Run global event for all moveables"
 -- !Section "Batch actions"
--- !Description "Calls another global event for all moveables matching the criteria, passing every moveable as an activator to that event."
+-- !Description "Runs another global event for all moveables matching the criteria, passing every moveable as an activator to that event."
 -- !Arguments "NewLine, WadSlots, 65, Object ID to use" "String, 35, Word to search in a moveable name"
 -- !Arguments "NewLine, GlobalEventSets, 65, Target event set" "GlobalEvents, 35, Event to run"
 
-LevelFuncs.Engine.Node.CallGlobalEventForAllMoveables = function(objectId, namePart, setName, eventType)
+LevelFuncs.Engine.Node.RunGlobalEventForAllMoveables = function(objectId, namePart, setName, eventType)
 	local moveables = GetMoveablesBySlot(objectId)
     local noNameSearch = LevelFuncs.Engine.Node.StringIsEmpty(namePart)
 
@@ -15,13 +15,13 @@ LevelFuncs.Engine.Node.CallGlobalEventForAllMoveables = function(objectId, nameP
     end
 end
 
--- !Name "Call volume event for all moveables"
+-- !Name "Run volume event for all moveables"
 -- !Section "Batch actions"
--- !Description "Calls another volume event for all moveables matching the criteria, passing every moveable as an activator to that event."
+-- !Description "Runs another volume event for all moveables matching the criteria, passing every moveable as an activator to that event."
 -- !Arguments "NewLine, WadSlots, 65, Object ID to use" "String, 35, Word to search in a moveable name"
 -- !Arguments "NewLine, VolumeEventSets, 65, Target event set" "VolumeEvents, 35, Event to run"
 
-LevelFuncs.Engine.Node.CallVolumeEventForAllMoveables = function(objectId, namePart, setName, eventType)
+LevelFuncs.Engine.Node.RunVolumeEventForAllMoveables = function(objectId, namePart, setName, eventType)
 	local moveables = GetMoveablesBySlot(objectId)
     local noNameSearch = LevelFuncs.Engine.Node.StringIsEmpty(namePart)
 
