@@ -70,7 +70,7 @@
     <None Update="Catalogs\TEN Node Catalogs\Particles.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TEN Node Catalogs\BatchActions.lua">
+    <None Update="Catalogs\TEN Node Catalogs\Batch Actions.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">

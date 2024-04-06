@@ -2,12 +2,13 @@ Version 1.7.1
 =============
 
 Tomb Editor:
- * Added adjustable step height for TEN levels (can also be enabled for unsupported engines, but the behavior is unpredictable).
- * Added TEN batch action nodes to change properties for certain group of similar objects.
- * Added TEN nodes to check and modify ItemFlags.
+ * Added TEN adjustable step height (can also be enabled for classic engines, but the behavior is unpredictable).
+ * Added TEN batch action nodes to change properties or call other node functions for certain group of similar objects.
+ * Added TEN nodes to check and modify ItemFlags and to check if a flipmap is active.
  * Added the ability to remap subdivision highlight hotkeys (1-9).
  * Using subdivision highlighting should now allow the user to modify geometry using keyboard only.
  * Copying room geometry will now include texture information with each face.
+ * Double-clicking on empty space in node editor will now open node list.
  * Fixed autosave file cleanup not working.
  * Fixed undo / redo not working on yellow walls (portals).
  * Fixed issue where creating portals manually would display phantom subdivisions.
