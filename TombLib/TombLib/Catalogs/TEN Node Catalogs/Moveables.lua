@@ -12,7 +12,7 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Compares selected moveable health with given value."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, Object to check" "NewLine, CompareOperator, 70, Kind of check"
+-- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, CompareOperator, 70, Kind of check"
 -- !Arguments "Numerical, 30, Hit points value, [ 0 | 3000 | 0 | 1 | 5 ]"
 
 LevelFuncs.Engine.Node.TestHitPoints = function(moveableName, operator, value)
@@ -24,7 +24,7 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable belongs to a certain slot ID."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, Object to check" "NewLine, WadSlots, Object ID to compare to"
+-- !Arguments "NewLine, Moveables, Moveable to check" "NewLine, WadSlots, Object ID to compare to"
 
 LevelFuncs.Engine.Node.TestMoveableId = function(moveableName, objectId)
 	return TEN.Objects.GetMoveableByName(moveableName):GetObjectID() == objectId
@@ -34,11 +34,22 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's name is the one specified."
 -- !Conditional "True"
--- !Arguments "NewLine, Moveables, Object to check"
--- !Arguments "NewLine, String, Object name to compare to"
+-- !Arguments "NewLine, Moveables, Moveable to check"
+-- !Arguments "NewLine, String, Moveable name to compare to"
 
 LevelFuncs.Engine.Node.TestMoveableName = function(moveableName, name)
 	return TEN.Objects.GetMoveableByName(moveableName):GetName() == name
+end
+
+-- !Name "If name of a moveable contains..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable's name contains specified string."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables, Moveable to check"
+-- !Arguments "NewLine, String, String to search in moveable name"
+
+LevelFuncs.Engine.Node.TestMoveableNamePart = function(moveableName, namePart)
+	return (string.find(TEN.Objects.GetMoveableByName(moveableName):GetName(), namePart))
 end
 
 -- !Name "If animation of a moveable is..."
@@ -255,7 +266,7 @@ end
 
 -- !Name "Shatter moveable"
 -- !Section "Moveable state"
--- !Description "Shatters object in similar way to shatterable statics."
+-- !Description "Shatters moveable in similar way to shatterable statics."
 -- !Arguments "NewLine, Moveables"
 
 LevelFuncs.Engine.Node.ShatterMoveable = function(moveableName)
@@ -274,7 +285,7 @@ end
 
 -- !Name "Explode moveable"
 -- !Section "Moveable state"
--- !Description "Explodes object."
+-- !Description "Explodes moveable."
 -- !Arguments "NewLine, Moveables"
 
 LevelFuncs.Engine.Node.ExplodeMoveable = function(moveableName)
