@@ -379,6 +379,10 @@ namespace TombLib.LevelData
 
             // Clean up empty texture sets as well
             Settings.AnimatedTextureSets.RemoveAll(set => set.Frames.Count == 0);
+
+            // Clean up default texture
+            if (askIfTextureToRemove(Settings.DefaultTexture.Texture as LevelTexture))
+                Settings.DefaultTexture = TextureArea.None;
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)

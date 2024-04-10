@@ -240,6 +240,23 @@ namespace TombLib.LevelData.IO
                     }
                     chunkIO.WriteChunkEnd();
                 }
+                using (var chunkTextures = chunkIO.WriteChunk(Prj2Chunks.DefaultTexture, long.MaxValue))
+                {
+                    chunkIO.Raw.Write(settings.DefaultTexture.TexCoord0);
+                    chunkIO.Raw.Write(settings.DefaultTexture.TexCoord1);
+                    chunkIO.Raw.Write(settings.DefaultTexture.TexCoord2);
+                    chunkIO.Raw.Write(settings.DefaultTexture.TexCoord3);
+
+                    int textureIndex = -1;
+
+                    if (settings.DefaultTexture.Texture is LevelTexture t)
+                    {
+                        if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
+                            textureIndex = levelSettingIds.LevelTextures[t];
+                    }
+
+                    LEB128.Write(chunkIO.Raw, textureIndex);
+                }
                 using (var chunkImportedGeometries = chunkIO.WriteChunk(Prj2Chunks.ImportedGeometries, long.MaxValue))
                 {
                     int index = 0;

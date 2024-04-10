@@ -2427,6 +2427,14 @@ namespace TombEditor
             // Make border wall grids, as in dxtre3d
             if (_editor.Configuration.Editor_GridNewRoom)
                 GridWallsSquares(newRoom, newRoom.LocalArea, false, false);
+
+            // Texturize with default texture, if specified
+            if (_editor.Level.Settings.DefaultTexture != TextureArea.None)
+            {
+                TexturizeAll(newRoom, SectorSelection.None, _editor.Level.Settings.DefaultTexture, BlockFaceType.Floor);
+                TexturizeAll(newRoom, SectorSelection.None, _editor.Level.Settings.DefaultTexture, BlockFaceType.Wall);
+                TexturizeAll(newRoom, SectorSelection.None, _editor.Level.Settings.DefaultTexture, BlockFaceType.Ceiling);
+            }
         }
 
         public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner = null)
