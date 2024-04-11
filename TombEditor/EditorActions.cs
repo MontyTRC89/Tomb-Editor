@@ -1443,7 +1443,7 @@ namespace TombEditor
                             switch (type)
                             {
                                 case TextureSearchType.Empty:
-                                    if (tex == TextureArea.None)
+                                    if (tex == TextureArea.None || tex == _editor.Level.Settings.DefaultTexture)
                                         result.Add(entry);
                                     break;
 
