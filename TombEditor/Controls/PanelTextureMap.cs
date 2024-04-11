@@ -63,9 +63,6 @@ namespace TombEditor.Controls
                 if (!_startPos.HasValue)
                     return;
 
-                if (_editor.SelectedTexture.Texture != VisibleTexture)
-                    return;
-
                 var newPos = new Vector2(e.Location.X, e.Location.Y);
                 if ((newPos - _startPos.Value).Length() > 4.0f)
                     return;

@@ -18,11 +18,14 @@ namespace TombEditor.Controls.ContextMenus
                 }));
             }
 
-            Items.Add(new ToolStripMenuItem("Clear default room texture", null, (o, e) =>
+            if (editor.Level.Settings.DefaultTexture != TextureArea.None)
             {
-                editor.Level.Settings.DefaultTexture = TextureArea.None;
-                (owner as Control).Invalidate();
-            }));
+                Items.Add(new ToolStripMenuItem("Clear default room texture", null, (o, e) =>
+                {
+                    editor.Level.Settings.DefaultTexture = TextureArea.None;
+                    (owner as Control).Invalidate();
+                }));
+            }
         }
     }
 }
