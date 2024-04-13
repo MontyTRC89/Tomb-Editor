@@ -2,23 +2,34 @@ Version 1.7.1
 =============
 
 Tomb Editor:
- * Added adjustable step height for TEN levels (can also be enabled for unsupported engines, but the behavior is unpredictable).
+ * Added TEN adjustable step height (can also be enabled for classic engines, but the behavior is unpredictable).
+ * Added TEN batch action nodes to change properties or call other node functions for certain group of similar objects.
+ * Added TEN nodes to check and modify ItemFlags, to check if a flipmap is active and to do a partial check of a moveable name.
+ * Added the ability to remap subdivision highlight hotkeys (1-9).
+ * Using subdivision highlighting should now allow the user to modify geometry using keyboard only.
  * Copying room geometry will now include texture information with each face.
+ * Double-clicking on empty space in node editor will now open node list.
  * Fixed autosave file cleanup not working.
  * Fixed undo / redo not working on yellow walls (portals).
  * Fixed issue where creating portals manually would display phantom subdivisions.
  * Fixed issue where slope indicator would mark diagonal steps as slopes if one side is taller than 2 clicks.
- * Fixed OnLoop TEN callback appearing in level script functions list.
+ * Fixed TEN OnLoop callback appearing in level script functions list.
+ * Fixed TEN nodes not using default values for new arguments, if node wasn't reopened in a node editor.
+ * Fixed AI pathfinding not recognizing ghost blocks.
+ * Fixed room rotation / mirroring causing textures to disappear at extra subdivisions level.
+ * Fixed horizontal room merging yielding wrong results.
 
 WadTool:
  * Fixed incorrect annotation for set jump reference animcommand.
  * Fixed incorrect animation frame display after switching from null animation in animation editor.
 
 TombIDE:
+ * Added splash screen frame customization dialog.
  * Added Plugin_Video into default TRNG preset.
+ * Updated TR1X preset to 3.1.1.
+ * Removed real-time directory checking for *.prj2 file changes as it caused too many unpredictable issues and slowdowns.
  * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
  * Fixed a bug where '>' symbols inside comments were taken into consideration when error checking.
- * Removed real-time directory checking for *.prj2 file changes as it caused too many unpredictable issues and slowdowns.
 
 Version 1.7
 ===========

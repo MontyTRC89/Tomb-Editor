@@ -328,9 +328,9 @@
     <moveable id="421" name="SARCOPHAGUS" />
     <moveable id="422" name="ENEMY_PIECE" />
     <moveable id="423" name="EXPANDING_PLATFORM" />
-    <moveable id="424" name="SQUISHY_BLOCK1" />
-    <moveable id="425" name="SQUISHY_BLOCK2" />
-    <moveable id="426" name="TRIPWIRE" />
+    <moveable id="424" name="SQUISHY_BLOCK_HORIZONTAL" />
+    <moveable id="425" name="SQUISHY_BLOCK_VERTICAL" />
+	<moveable id="426" name="LASER_BEAM" freeRot="true" />
     <moveable id="427" name="MINE_DETECTOR" />
     <moveable id="428" name="MAP" />
     <moveable id="429" name="SECRET_MAP" />

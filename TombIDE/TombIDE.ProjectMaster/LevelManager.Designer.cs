@@ -21,6 +21,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			components = new System.ComponentModel.Container();
 			tableLayout_Main = new System.Windows.Forms.TableLayoutPanel();
 			label_OutdatedState = new DarkUI.Controls.DarkLabel();
 			label_EngineVersion = new DarkUI.Controls.DarkLabel();
@@ -33,6 +34,8 @@
 			section_LevelProperties = new SectionLevelProperties();
 			label_Title = new DarkUI.Controls.DarkLabel();
 			button_Update = new DarkUI.Controls.DarkButton();
+			button_Publish = new DarkUI.Controls.DarkButton();
+			toolTip = new System.Windows.Forms.ToolTip(components);
 			tableLayout_Main.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
 			splitContainer.Panel1.SuspendLayout();
@@ -43,13 +46,14 @@
 			// 
 			// tableLayout_Main
 			// 
-			tableLayout_Main.ColumnCount = 6;
+			tableLayout_Main.ColumnCount = 7;
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			tableLayout_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
 			tableLayout_Main.Controls.Add(label_OutdatedState, 4, 0);
 			tableLayout_Main.Controls.Add(label_EngineVersion, 3, 0);
 			tableLayout_Main.Controls.Add(panel_GameLabel, 2, 0);
@@ -57,6 +61,7 @@
 			tableLayout_Main.Controls.Add(splitContainer, 0, 1);
 			tableLayout_Main.Controls.Add(label_Title, 1, 0);
 			tableLayout_Main.Controls.Add(button_Update, 5, 0);
+			tableLayout_Main.Controls.Add(button_Publish, 6, 0);
 			tableLayout_Main.Dock = System.Windows.Forms.DockStyle.Fill;
 			tableLayout_Main.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			tableLayout_Main.Location = new System.Drawing.Point(0, 0);
@@ -119,7 +124,7 @@
 			// 
 			// splitContainer
 			// 
-			tableLayout_Main.SetColumnSpan(splitContainer, 6);
+			tableLayout_Main.SetColumnSpan(splitContainer, 7);
 			splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			splitContainer.Location = new System.Drawing.Point(0, 80);
 			splitContainer.Margin = new System.Windows.Forms.Padding(0);
@@ -220,6 +225,19 @@
 			button_Update.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			button_Update.Click += button_Update_Click;
 			// 
+			// button_Publish
+			// 
+			button_Publish.Checked = false;
+			button_Publish.Dock = System.Windows.Forms.DockStyle.Right;
+			button_Publish.Image = Properties.Resources.archive_folder_16;
+			button_Publish.Location = new System.Drawing.Point(954, 20);
+			button_Publish.Margin = new System.Windows.Forms.Padding(0, 20, 30, 20);
+			button_Publish.Name = "button_Publish";
+			button_Publish.Size = new System.Drawing.Size(40, 40);
+			button_Publish.TabIndex = 10;
+			toolTip.SetToolTip(button_Publish, "Create a \"Ready To Publish\" game archive...");
+			button_Publish.Click += button_Publish_Click;
+			// 
 			// LevelManager
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -253,5 +271,7 @@
 		private DarkUI.Controls.DarkLabel label_OutdatedState;
 		private DarkUI.Controls.DarkLabel label_EngineVersion;
 		private DarkUI.Controls.DarkButton button_Update;
+		private DarkUI.Controls.DarkButton button_Publish;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

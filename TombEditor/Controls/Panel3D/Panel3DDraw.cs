@@ -198,10 +198,10 @@ namespace TombEditor.Controls.Panel3D
 
         private void DrawSubdivisionHighlights(Effect effect)
         {
-            if (_currentNumberKey is Keys.None || _editor.SelectedSectors == SectorSelection.None)
+            if (_editor.HighlightedSubdivision == 0 || _editor.SelectedSectors == SectorSelection.None)
                 return;
 
-            int subdivisionIndex = (int)_currentNumberKey - (int)Keys.D0 - 2;
+            int subdivisionIndex = _editor.HighlightedSubdivision - 2;
             Room currentRoom = _editor.SelectedRoom;
 
             var vertices = new List<SolidVertex>();

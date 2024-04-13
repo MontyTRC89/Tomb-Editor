@@ -99,6 +99,24 @@ namespace TombEditor
 
         private static void GenericDirectionalControlCommand(CommandArgs args, BlockVertical surface, int increment, bool smooth, bool oppositeDiagonal)
         {
+            if (args.Editor.HighlightedSubdivision != 0)
+            {
+                if (surface.IsOnFloor())
+                {
+                    if (args.Editor.HighlightedSubdivision == 1)
+                        surface = BlockVertical.Floor;
+                    else
+                        surface = BlockVerticalExtensions.GetExtraFloorSubdivision(args.Editor.HighlightedSubdivision - 2);
+                }
+                else if (surface.IsOnCeiling())
+                {
+                    if (args.Editor.HighlightedSubdivision == 1)
+                        surface = BlockVertical.Ceiling;
+                    else
+                        surface = BlockVerticalExtensions.GetExtraCeilingSubdivision(args.Editor.HighlightedSubdivision - 2);
+                }
+            }
+
             if (args.Editor.LastSelection == LastSelectionType.Block && args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
             {
                 EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, surface, increment, smooth, oppositeDiagonal);
@@ -135,6 +153,7 @@ namespace TombEditor
                     args.Editor.SelectedSectors = SectorSelection.None;
                     args.Editor.SelectedObject = null;
                     args.Editor.SelectedRooms = new[] { args.Editor.SelectedRoom };
+                    args.Editor.HighlightedSubdivision = 0;
                 }
             });
 
@@ -2238,6 +2257,51 @@ namespace TombEditor
                 };
 
                 args.Editor.RaiseEvent(new Editor.StepHeightChangedEvent { Previous = previous, Current = args.Editor.Configuration.Editor_StepHeight });
+            });
+
+            AddCommand("HighlightSubdivision1", "Highlight subdivision 1", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 1;
+            });
+
+            AddCommand("HighlightSubdivision2", "Highlight subdivision 2", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 2;
+            });
+
+            AddCommand("HighlightSubdivision3", "Highlight subdivision 3", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 3;
+            });
+
+            AddCommand("HighlightSubdivision4", "Highlight subdivision 4", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 4;
+            });
+
+            AddCommand("HighlightSubdivision5", "Highlight subdivision 5", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 5;
+            });
+
+            AddCommand("HighlightSubdivision6", "Highlight subdivision 6", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 6;
+            });
+
+            AddCommand("HighlightSubdivision7", "Highlight subdivision 7", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 7;
+            });
+
+            AddCommand("HighlightSubdivision8", "Highlight subdivision 8", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 8;
+            });
+
+            AddCommand("HighlightSubdivision9", "Highlight subdivision 9", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.HighlightedSubdivision = 9;
             });
 
             _commands = _commands.OrderBy(o => o.Type).ToList();

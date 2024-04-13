@@ -154,8 +154,8 @@
     <moveable id="151" name="RAISING_BLOCK1" description="Raising Block1" ten="RAISING_BLOCK1" essential="false" />
     <moveable id="152" name="RAISING_BLOCK2" description="Raising Block2" ten="RAISING_BLOCK2" essential="false" />
     <moveable id="153" name="EXPANDING_PLATFORM" description="Expanding Platform" ten="EXPANDING_PLATFORM" essential="false" />
-    <moveable id="154" name="SQUISHY_BLOCK1" description="Squishy Block1" ten="SQUISHY_BLOCK1" essential="false" />
-    <moveable id="155" name="SQUISHY_BLOCK2" description="Squishy Block2" ten="SQUISHY_BLOCK2" essential="false" />
+    <moveable id="154" name="SQUISHY_BLOCK1" description="Squishy Block1" ten="SQUISHY_BLOCK_HORIZONTAL" essential="false" />
+    <moveable id="155" name="SQUISHY_BLOCK2" description="Squishy Block2" ten="SQUISHY_BLOCK_VERTICAL" essential="false" />
     <moveable id="156" name="PUSHABLE_OBJECT1" description="Pushable Object1" ten="PUSHABLE_OBJECT1" essential="false" />
     <moveable id="157" name="PUSHABLE_OBJECT2" description="Pushable Object2" ten="PUSHABLE_OBJECT2" essential="false" />
     <moveable id="158" name="PUSHABLE_OBJECT3" description="Pushable Object3" ten="PUSHABLE_OBJECT3" essential="false" />
