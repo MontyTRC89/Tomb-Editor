@@ -338,7 +338,7 @@ end
 
 -- !Name "If timer exists..."
 -- !Conditional "True"
--- !Description "Check if the timer exists."
+-- !Description "Checks if a specific timer exists."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IfTimerExists = function(name)
