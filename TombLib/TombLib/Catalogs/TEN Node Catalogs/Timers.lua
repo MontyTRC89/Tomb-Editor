@@ -97,7 +97,7 @@ end
 LevelFuncs.Engine.Node.StartTimer = function(name, reset)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
-            if reset then
+            if reset and not Timer.Get(name):IsPaused() then
                 Timer.Get(name):SetRemainingTime(LevelVars.TimerRemainingTime[name])
             end
             Timer.Get(name):Start()
