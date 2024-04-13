@@ -1836,9 +1836,9 @@ namespace TombLib.LevelData
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryRenderFloorWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
         {
-            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
-
-            if (texture == TextureArea.None && defaultTexture != TextureArea.None)
+            var texture = dto.Block.GetFaceTexture(dto.Face);
+            var applyDefaultTexture = (texture == TextureArea.None && defaultTexture != TextureArea.None);
+            if (applyDefaultTexture)
                 texture = defaultTexture;
 
             if (yStart.A > yEnd.A && yStart.B > yEnd.B) // Is quad
@@ -1863,15 +1863,18 @@ namespace TombLib.LevelData
             else
                 return false; // Not rendered - failed to meet any of the conditions
 
+            if (applyDefaultTexture)
+                dto.Block.SetFaceTexture(dto.Face, texture);
+
             return true; // Rendered successfully
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryRenderCeilingWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
         {
-            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
-
-            if (texture == TextureArea.None && defaultTexture != TextureArea.None)
+            var texture = dto.Block.GetFaceTexture(dto.Face);
+            var applyDefaultTexture = (texture == TextureArea.None && defaultTexture != TextureArea.None);
+            if (applyDefaultTexture)
                 texture = defaultTexture;
 
             if (yStart.A < yEnd.A && yStart.B < yEnd.B)
@@ -1896,15 +1899,18 @@ namespace TombLib.LevelData
             else
                 return false; // Not rendered - failed to meet any of the conditions
 
+            if (applyDefaultTexture)
+                dto.Block.SetFaceTexture(dto.Face, texture);
+
             return true; // Rendered successfully
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryRenderMiddleWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
         {
-            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
-
-            if (texture == TextureArea.None && defaultTexture != TextureArea.None)
+            var texture = dto.Block.GetFaceTexture(dto.Face);
+            var applyDefaultTexture = (texture == TextureArea.None && defaultTexture != TextureArea.None);
+            if (applyDefaultTexture)
                 texture = defaultTexture;
 
             if (yStart.A != yEnd.A && yStart.B != yEnd.B)
@@ -1928,6 +1934,9 @@ namespace TombLib.LevelData
                     texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
             else
                 return false; // Not rendered - failed to meet any of the conditions
+
+            if (applyDefaultTexture)
+                dto.Block.SetFaceTexture(dto.Face, texture);
 
             return true; // Rendered successfully
         }
