@@ -359,6 +359,11 @@ namespace TombLib.LevelData
 
         public void RemoveTextures(Predicate<LevelTexture> askIfTextureToRemove)
         {
+            // Clean up default texture first, in case removed texture set contains it
+            if (askIfTextureToRemove(Settings.DefaultTexture.Texture as LevelTexture))
+                Settings.DefaultTexture = TextureArea.None;
+
+            // Remove all texture occurences from room faces
             Parallel.ForEach(ExistingRooms, room =>
             {
                 foreach (Block sector in room.Blocks)
