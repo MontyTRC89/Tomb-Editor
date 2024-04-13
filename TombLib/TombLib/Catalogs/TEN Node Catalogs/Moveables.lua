@@ -491,3 +491,20 @@ LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, item
 end
 
 
+-- !Name "Create moveable"
+-- !Section "Moveable parameters"
+-- !Description "Create a new moveable object and activate it"
+-- !Arguments "NewLine, WadSlots, 50, Choose moveable slot to create"
+-- !Arguments "String, 50, Lua name for new moveable"
+-- !Arguments "NewLine, Vector3, 50, [ -1000000 | 1000000 | 0 | 1 | 32 ], Moveable position"
+-- !Arguments "Numerical, 50, [ -360 | 360 | 2 | 1 | 5 ], Rotation value to define"
+-- !Arguments "NewLine, Rooms, 20, Choose room for moveable to Create in. \nRequired for intelligent moveables such as enemies that use pathfinding"
+-- !Arguments "Numerical, 20, [ 0 | 1000 | 0 ], Starting animation (default 0)"
+-- !Arguments "Numerical, 20, [ 0 | 1000 | 0 ], Starting frame of animation (default 0)"
+-- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], Starting health of moveable (default 100)"
+-- !Arguments "Numerical, 20, [ -1000 | 1000 | 0 ], OCB of moveable (default 0)"
+LevelFuncs.Engine.Node.CreateMoveable = function(moveableSlot,moveableName,pos,rot,roomID,anim,frame,health,ocb)
+
+	local newMoveable = Moveable(moveableSlot,moveableName,pos,rot,roomID,anim,frame,health,ocb)
+	newMoveable:Enable()
+end
