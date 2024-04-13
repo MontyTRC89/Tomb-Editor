@@ -56,6 +56,10 @@ LevelFuncs.Engine.Node.SplitString = function(inputStr, delimiter)
 	return t
 end
 
+LevelFuncs.Engine.Node.StringIsEmpty = function(str)
+	return (str == nil or str == '')
+end
+
 -- Wrap angle value around 360
 LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 	if (value == 0) then
