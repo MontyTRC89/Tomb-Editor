@@ -385,13 +385,19 @@ namespace TombLib.LevelData
 
             Block block = room.Blocks[x, z];
 
-            TextureArea
-                textureFace1 = block.GetFaceTexture(face1),
-                textureFace2 = block.GetFaceTexture(face2),
-                defaultTexture = room.Level.Settings.DefaultTexture;
+            TextureArea defaultTexture = room.Level.Settings.DefaultTexture;
+            bool shouldApplyDefaultTexture1 = block.GetFaceTexture(face1) == TextureArea.None && defaultTexture != TextureArea.None,
+                 shouldApplyDefaultTexture2 = block.GetFaceTexture(face2) == TextureArea.None && defaultTexture != TextureArea.None;
 
-            bool applyDefaultTexture1 = textureFace1 == TextureArea.None && defaultTexture != TextureArea.None,
-                 applyDefaultTexture2 = textureFace2 == TextureArea.None && defaultTexture != TextureArea.None;
+            if (shouldApplyDefaultTexture1)
+                block.SetFaceTexture(face1, defaultTexture);
+
+            if (shouldApplyDefaultTexture2)
+                block.SetFaceTexture(face2, defaultTexture);
+
+            TextureArea
+                face1Texture = block.GetFaceTexture(face1),
+                face2Texture = block.GetFaceTexture(face2);
 
             // Build sector
             if (splitType != DiagonalSplit.None)
@@ -405,7 +411,7 @@ namespace TombLib.LevelData
                                 new Vector3(x * Level.BlockSizeUnit, h0, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                                applyDefaultTexture1 ? defaultTexture : textureFace1, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                                face1Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                         }
                         
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn && blockType != BlockType.Wall)
@@ -414,7 +420,7 @@ namespace TombLib.LevelData
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                                applyDefaultTexture2 ? defaultTexture : textureFace2, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
+                                face2Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         }
                             
                         break;
@@ -426,7 +432,7 @@ namespace TombLib.LevelData
                                 new Vector3(x * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1, z * Level.BlockSizeUnit),
-                                applyDefaultTexture1 ? defaultTexture : textureFace1, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
+                                face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         }
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn && blockType != BlockType.Wall)
@@ -435,7 +441,7 @@ namespace TombLib.LevelData
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                                applyDefaultTexture2 ? defaultTexture : textureFace2, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
+                                face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         }
 
                         break;
@@ -447,7 +453,7 @@ namespace TombLib.LevelData
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                                applyDefaultTexture2 ? defaultTexture : textureFace2, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
+                                face2Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         }
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp && blockType != BlockType.Wall)
@@ -456,7 +462,7 @@ namespace TombLib.LevelData
                                 new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                                applyDefaultTexture1 ? defaultTexture : textureFace1, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                                face1Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                         }
 
                         break;
@@ -468,7 +474,7 @@ namespace TombLib.LevelData
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                                 new Vector3(x * Level.BlockSizeUnit, h3, (z + 1) * Level.BlockSizeUnit),
-                                applyDefaultTexture2 ? defaultTexture : textureFace2, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
+                                face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         }
                             
 
@@ -478,7 +484,7 @@ namespace TombLib.LevelData
                                 new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                                 new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                                applyDefaultTexture1 ? defaultTexture : textureFace1, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
+                                face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         }
                             
                         break;
@@ -494,7 +500,7 @@ namespace TombLib.LevelData
                     new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                     new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                     new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                    applyDefaultTexture1 ? defaultTexture : textureFace1, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+                    face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             }
             else if (diagonalSplitXEqualsY || portalMode == Room.RoomConnectionType.TriangularPortalXnZp || portalMode == Room.RoomConnectionType.TriangularPortalXpZn)
             {
@@ -504,7 +510,7 @@ namespace TombLib.LevelData
                         new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                         new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
                         new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                        applyDefaultTexture2 ? defaultTexture : textureFace2, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                        face2Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                 }
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
@@ -513,7 +519,7 @@ namespace TombLib.LevelData
                         new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                         new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                         new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                        applyDefaultTexture1 ? defaultTexture : textureFace1, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
+                        face1Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                 } 
             }
             else
@@ -524,7 +530,7 @@ namespace TombLib.LevelData
                         new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
                         new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
                         new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                        applyDefaultTexture1 ? defaultTexture : textureFace1, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
+                        face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                 }
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
@@ -533,7 +539,7 @@ namespace TombLib.LevelData
                         new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
                         new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
                         new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                        applyDefaultTexture2 ? defaultTexture : textureFace2, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
+                        face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                 }
             }
         }
@@ -1846,10 +1852,12 @@ namespace TombLib.LevelData
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryRenderFloorWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
         {
-            var texture = dto.Block.GetFaceTexture(dto.Face);
-            var applyDefaultTexture = (texture == TextureArea.None && defaultTexture != TextureArea.None);
-            if (applyDefaultTexture)
-                texture = defaultTexture;
+            bool shouldApplyDefaultTexture = dto.Block.GetFaceTexture(dto.Face) == TextureArea.None && defaultTexture != TextureArea.None;
+
+            if (shouldApplyDefaultTexture)
+                dto.Block.SetFaceTexture(dto.Face, defaultTexture);
+
+            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
 
             if (yStart.A > yEnd.A && yStart.B > yEnd.B) // Is quad
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
@@ -1873,19 +1881,18 @@ namespace TombLib.LevelData
             else
                 return false; // Not rendered - failed to meet any of the conditions
 
-            if (applyDefaultTexture)
-                dto.Block.SetFaceTexture(dto.Face, texture);
-
             return true; // Rendered successfully
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryRenderCeilingWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
         {
-            var texture = dto.Block.GetFaceTexture(dto.Face);
-            var applyDefaultTexture = (texture == TextureArea.None && defaultTexture != TextureArea.None);
-            if (applyDefaultTexture)
-                texture = defaultTexture;
+            bool shouldApplyDefaultTexture = dto.Block.GetFaceTexture(dto.Face) == TextureArea.None && defaultTexture != TextureArea.None;
+
+            if (shouldApplyDefaultTexture)
+                dto.Block.SetFaceTexture(dto.Face, defaultTexture);
+
+            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
 
             if (yStart.A < yEnd.A && yStart.B < yEnd.B)
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
@@ -1909,19 +1916,18 @@ namespace TombLib.LevelData
             else
                 return false; // Not rendered - failed to meet any of the conditions
 
-            if (applyDefaultTexture)
-                dto.Block.SetFaceTexture(dto.Face, texture);
-
             return true; // Rendered successfully
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryRenderMiddleWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
         {
-            var texture = dto.Block.GetFaceTexture(dto.Face);
-            var applyDefaultTexture = (texture == TextureArea.None && defaultTexture != TextureArea.None);
-            if (applyDefaultTexture)
-                texture = defaultTexture;
+            bool shouldApplyDefaultTexture = dto.Block.GetFaceTexture(dto.Face) == TextureArea.None && defaultTexture != TextureArea.None;
+
+            if (shouldApplyDefaultTexture)
+                dto.Block.SetFaceTexture(dto.Face, defaultTexture);
+
+            TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
 
             if (yStart.A != yEnd.A && yStart.B != yEnd.B)
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
@@ -1944,9 +1950,6 @@ namespace TombLib.LevelData
                     texture, new Vector2(1, 1), new Vector2(0, 0), new Vector2(1, 0), false);
             else
                 return false; // Not rendered - failed to meet any of the conditions
-
-            if (applyDefaultTexture)
-                dto.Block.SetFaceTexture(dto.Face, texture);
 
             return true; // Rendered successfully
         }
