@@ -63,6 +63,9 @@ Section "Tomb Editor" Section1
 
   SectionIn RO ; Always install this section
   
+  ; Delete TEN node catalogs to avoid renaming clashes
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\*.*"
+  
   SetOutPath $INSTDIR
   File /r \
   /x "TombEditorLog*.txt" \
@@ -78,9 +81,6 @@ Section "Tomb Editor" Section1
   /x "SoundToolConfiguration.xml" \
   /x "WadToolConfiguration.xml" \
   *.* \
-  
-  ; Delete TEN node catalogs to avoid renaming clashes
-  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\*.*"
   
   ; Add readme from installer folder
   File "..\..\Installer\Changes.txt"
