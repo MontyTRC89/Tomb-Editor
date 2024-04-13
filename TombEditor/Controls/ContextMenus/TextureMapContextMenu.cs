@@ -11,7 +11,7 @@ namespace TombEditor.Controls.ContextMenus
         {
             if (editor.SelectedTexture != TextureArea.None)
             {
-                Items.Add(new ToolStripMenuItem("Set as default room texture", null, (o, e) =>
+                Items.Add(new ToolStripMenuItem("Set as default texture", null, (o, e) =>
                 {
                     editor.Level.Settings.DefaultTexture = editor.SelectedTexture;
                     (owner as Control).Invalidate();
@@ -20,7 +20,7 @@ namespace TombEditor.Controls.ContextMenus
 
             if (editor.Level.Settings.DefaultTexture != TextureArea.None)
             {
-                Items.Add(new ToolStripMenuItem("Clear default room texture", null, (o, e) =>
+                Items.Add(new ToolStripMenuItem("Clear default texture", null, (o, e) =>
                 {
                     editor.Level.Settings.DefaultTexture = TextureArea.None;
                     (owner as Control).Invalidate();
