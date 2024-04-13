@@ -108,7 +108,7 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.Controls.Add(this.panelTriggerList);
             this.Controls.Add(this.panelTriggerTools);
-            this.DockText = "Legacy Triggers";
+            this.DockText = "Classic Triggers";
             this.MinimumSize = new System.Drawing.Size(100, 100);
             this.Name = "TriggerList";
             this.SerializationKey = "TriggerList";
