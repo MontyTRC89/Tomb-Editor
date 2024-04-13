@@ -79,6 +79,9 @@ Section "Tomb Editor" Section1
   /x "WadToolConfiguration.xml" \
   *.* \
   
+  ; Delete TEN node catalogs to avoid renaming clashes
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\*.*"
+  
   ; Add readme from installer folder
   File "..\..\Installer\Changes.txt"
   
