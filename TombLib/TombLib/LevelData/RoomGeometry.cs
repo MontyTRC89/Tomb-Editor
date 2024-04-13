@@ -1547,12 +1547,12 @@ namespace TombLib.LevelData
                     }
 
                     dto.Face = qaFace;
-                    TryRenderFloorWallFace(dto, (yQaA, yQaB), (yA, yB), room.Level.Settings.DefaultTexture);
+                    TryRenderFloorWallFace(dto, (yQaA, yQaB), (yA, yB));
 
                     if (subdivide)
                     {
                         dto.Face = edFace;
-                        TryRenderFloorWallFace(dto, (yEdA, yEdB), (yFloorA, yFloorB), room.Level.Settings.DefaultTexture);
+                        TryRenderFloorWallFace(dto, (yEdA, yEdB), (yFloorA, yFloorB));
                     }
                 }
 
@@ -1572,12 +1572,12 @@ namespace TombLib.LevelData
                     }
 
                     dto.Face = wsFace;
-                    TryRenderCeilingWallFace(dto, (yWsA, yWsB), (yA, yB), room.Level.Settings.DefaultTexture);
+                    TryRenderCeilingWallFace(dto, (yWsA, yWsB), (yA, yB));
 
                     if (subdivide)
                     {
                         dto.Face = rfFace;
-                        TryRenderCeilingWallFace(dto, (yRfA, yRfB), (yCeilingA, yCeilingB), room.Level.Settings.DefaultTexture);
+                        TryRenderCeilingWallFace(dto, (yRfA, yRfB), (yCeilingA, yCeilingB));
                     }
                 }
 
@@ -1590,7 +1590,7 @@ namespace TombLib.LevelData
                 yC = yQaB <= yFloorB ? yFloorB : yQaB;
 
                 dto.Face = middleFace;
-                TryRenderMiddleWallFace(dto, (yC, yD), (yA, yB), room.Level.Settings.DefaultTexture);
+                TryRenderMiddleWallFace(dto, (yC, yD), (yA, yB));
 
                 #endregion LEGACY GEOMETRY CODE
                 return;
@@ -1657,7 +1657,7 @@ namespace TombLib.LevelData
                     if (yStartA <= yEndA && yStartB <= yEndB)
                         return GeometryRenderResult.Skip; // 0 or negative height subdivision, don't render it
 
-                    bool success = TryRenderFloorWallFace(dto, (yStartA, yStartB), (yEndA, yEndB), room.Level.Settings.DefaultTexture);
+                    bool success = TryRenderFloorWallFace(dto, (yStartA, yStartB), (yEndA, yEndB));
 
                     if (!success)
                     {
@@ -1671,7 +1671,7 @@ namespace TombLib.LevelData
 
                         // Find lowest point between subdivision and baseline, then try and create an overdraw face out of it
                         int lowest = Math.Min(Math.Min(yStartA, yStartB), Math.Min(yEndA, yEndB));
-                        success = TryRenderFloorWallFace(dto, (yStartA, yStartB), (lowest, lowest), room.Level.Settings.DefaultTexture);
+                        success = TryRenderFloorWallFace(dto, (yStartA, yStartB), (lowest, lowest));
                     }
 
                     return success ? GeometryRenderResult.Success : GeometryRenderResult.Skip;
@@ -1756,7 +1756,7 @@ namespace TombLib.LevelData
                     if (yStartA >= yEndA && yStartB >= yEndB)
                         return GeometryRenderResult.Skip; // 0 or negative height subdivision, don't render it
 
-                    bool success = TryRenderCeilingWallFace(dto, (yStartA, yStartB), (yEndA, yEndB), room.Level.Settings.DefaultTexture);
+                    bool success = TryRenderCeilingWallFace(dto, (yStartA, yStartB), (yEndA, yEndB));
 
                     if (!success)
                     {
@@ -1770,7 +1770,7 @@ namespace TombLib.LevelData
 
                         // Find highest point between subdivision and baseline, then try and create an overdraw face out of it
                         int highest = Math.Max(Math.Max(yStartA, yStartB), Math.Max(yEndA, yEndB));
-                        success = TryRenderCeilingWallFace(dto, (yStartA, yStartB), (highest, highest), room.Level.Settings.DefaultTexture);
+                        success = TryRenderCeilingWallFace(dto, (yStartA, yStartB), (highest, highest));
                     }
 
                     return success ? GeometryRenderResult.Success : GeometryRenderResult.Skip;
@@ -1815,7 +1815,7 @@ namespace TombLib.LevelData
             yC = yQaB <= yFloorB ? yFloorB : yQaB;
 
             dto.Face = middleFace;
-            TryRenderMiddleWallFace(dto, (yD, yC), (yEndA, yEndB), room.Level.Settings.DefaultTexture);
+            TryRenderMiddleWallFace(dto, (yD, yC), (yEndA, yEndB));
         }
 
         private struct BlockFaceDTO
@@ -1834,12 +1834,9 @@ namespace TombLib.LevelData
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryRenderFloorWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
+        private bool TryRenderFloorWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd)
         {
             TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
-
-            if (texture == TextureArea.None && defaultTexture != TextureArea.None)
-                texture = defaultTexture;
 
             if (yStart.A > yEnd.A && yStart.B > yEnd.B) // Is quad
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
@@ -1867,12 +1864,9 @@ namespace TombLib.LevelData
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryRenderCeilingWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
+        private bool TryRenderCeilingWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd)
         {
             TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
-
-            if (texture == TextureArea.None && defaultTexture != TextureArea.None)
-                texture = defaultTexture;
 
             if (yStart.A < yEnd.A && yStart.B < yEnd.B)
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
@@ -1900,12 +1894,9 @@ namespace TombLib.LevelData
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryRenderMiddleWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd, TextureArea defaultTexture)
+        private bool TryRenderMiddleWallFace(BlockFaceDTO dto, (int A, int B) yStart, (int A, int B) yEnd)
         {
             TextureArea texture = dto.Block.GetFaceTexture(dto.Face);
-
-            if (texture == TextureArea.None && defaultTexture != TextureArea.None)
-                texture = defaultTexture;
 
             if (yStart.A != yEnd.A && yStart.B != yEnd.B)
                 AddQuad(dto.BlockX, dto.BlockZ, dto.Face,
