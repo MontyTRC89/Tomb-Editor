@@ -346,6 +346,24 @@ LevelFuncs.Engine.Node.SetMoveablePosition = function(operation, value, moveable
 	end
 end
 
+-- !Name "Modify position of a moveable over a timespan"
+-- !Section "Moveable parameters"
+-- !Description "Gradually change position of a moveable over specified timespan."
+-- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 65, New position value to define"
+-- !Arguments "35, Boolean, Relative coordinates"
+-- !Arguments "NewLine, Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 65, Time (in seconds)" 
+-- !Arguments "35, Boolean, Smooth motion"
+
+LevelFuncs.Engine.Node.SetMoveablePositionOverTimespan = function(moveableName, newPosition, relative, time, smooth)
+	if (relative) then
+		newPosition = TEN.Objects.GetMoveableByName(moveableName):GetPosition() + newPosition
+	end
+	
+	-- Wrap another node function call into do/end to prevent wrong parsing
+	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, newPosition, time, smooth) end
+end
+
 -- !Name "Modify rotation of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Set given moveable rotation."
@@ -363,6 +381,26 @@ LevelFuncs.Engine.Node.SetMoveableRotation = function(operation, value, moveable
 	end
 
 	moveable:SetRotation(rotation)
+end
+
+-- !Name "Modify rotation of a moveable over a timespan"
+-- !Section "Moveable parameters"
+-- !Description "Gradually change rotation of a moveable over specified timespan."
+-- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Numerical, [ -360 | 360 | 2 | 1 | 5 ], 20, Rotation value to define" "30, Boolean, Relative angle"
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 20, Time (in seconds)"  "30, Boolean, Smooth motion"
+
+LevelFuncs.Engine.Node.SetMoveableRotationOverTimespan = function(moveableName, newRotation, relative, time, smooth)
+	local fullNewRotation = TEN.Objects.GetMoveableByName(moveableName):GetRotation()
+
+	if (relative) then
+		fullNewRotation.y = fullNewRotation.y + newRotation
+	else
+		fullNewRotation.y = newRotation
+	end
+	
+	-- Wrap another node function call into do/end to prevent wrong parsing
+	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, true, fullNewRotation, time, smooth) end
 end
 
 -- !Name "Move moveable to another moveable"

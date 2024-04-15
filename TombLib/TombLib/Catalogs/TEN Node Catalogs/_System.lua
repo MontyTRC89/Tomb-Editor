@@ -1,3 +1,5 @@
+local Timer = require("Engine.Timer")
+
 LevelFuncs.Engine.Node = {}
 
 -- Helper function for value comparisons. Any function which uses
@@ -73,6 +75,15 @@ LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 		rot = 360 + rot
 	end
 	return rot
+end
+
+LevelFuncs.Engine.Node.Smoothstep = function(source)
+	source = math.max(0, math.min(1, source))
+	return ((source ^ 3) * (source * (source * 6 - 15) + 10))
+end
+
+LevelFuncs.Engine.Node.Lerp = function(val1, val2, factor)
+	return val1 * (1 - factor) + val2 * factor
 end
 
 -- Convert UI enum to room flag ID enum
@@ -166,4 +177,61 @@ LevelFuncs.Engine.Node.SetPostProcessMode = function(index)
 		[3] = TEN.View.PostProcessMode.EXCLUSION,
 	}
 	return postProcessMode[index]
+end
+
+-- Construct timed transform data and start transform
+LevelFuncs.Engine.Node.ConstructTimedData = function(moveableName, rotation, newValue, time, smooth)
+
+	local dataName  = moveableName .. "_transform_data"
+	local timerName = moveableName .. "_transform_timer"
+	
+	if (LevelVars[dataName] ~= nil and LevelVars[dataName].Timer ~= nil) then
+		if (LevelVars[dataName].Timer:IsActive()) then
+			return
+		else
+			Timer.Delete(LevelVars[dataName].TimerName)
+			LevelVars[dataName] = nil
+		end
+	end
+
+	LevelVars[dataName] = {}
+	
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+
+	LevelVars[dataName].Progress     = 0
+	LevelVars[dataName].Interval     = 1 / (time * 30)
+	LevelVars[dataName].Smooth       = smooth
+	LevelVars[dataName].DataType     = rotation
+	LevelVars[dataName].OldValue     = rotation and moveable:GetRotation() or moveable:GetPosition()
+	LevelVars[dataName].NewValue     = newValue
+	LevelVars[dataName].MoveableName = moveableName
+	LevelVars[dataName].TimerName    = timerName
+	LevelVars[dataName].Timer        = Timer.Create(timerName, 1 / 30, true, nil, LevelFuncs.Engine.Node.TransformTimedData, dataName)
+
+	LevelVars[dataName].Timer:Start()
+end
+
+-- Transform moveable parameter using previously saved timed transform data
+LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
+
+	LevelVars[dataName].Progress = math.min(LevelVars[dataName].Progress + LevelVars[dataName].Interval, 1)
+	local factor = LevelVars[dataName].Smooth and LevelFuncs.Engine.Node.Smoothstep(LevelVars[dataName].Progress) or LevelVars[dataName].Progress
+	
+	local newValueX = LevelFuncs.Engine.Node.Lerp(LevelVars[dataName].OldValue.x, LevelVars[dataName].NewValue.x, factor)
+	local newValueY = LevelFuncs.Engine.Node.Lerp(LevelVars[dataName].OldValue.y, LevelVars[dataName].NewValue.y, factor)
+	local newValueZ = LevelFuncs.Engine.Node.Lerp(LevelVars[dataName].OldValue.z, LevelVars[dataName].NewValue.z, factor)
+	
+	local moveable = TEN.Objects.GetMoveableByName(LevelVars[dataName].MoveableName)
+
+	if (LevelVars[dataName].DataType) then
+		moveable:SetRotation(Rotation(newValueX, newValueY, newValueZ))
+	else
+		moveable:SetPosition(Vec3(newValueX, newValueY, newValueZ))
+	end
+
+	if (LevelVars[dataName].Progress >= 1) then
+		Timer.Delete(LevelVars[dataName].TimerName)
+		LevelVars[dataName] = nil
+	end
+
 end
