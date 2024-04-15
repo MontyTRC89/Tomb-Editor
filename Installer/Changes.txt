@@ -32,6 +32,7 @@ TombIDE:
  * Removed real-time directory checking for *.prj2 file changes as it caused too many unpredictable issues and slowdowns.
  * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
  * Fixed a bug where '>' symbols inside comments were taken into consideration when error checking.
+ * Fixed a randomly appearing "Out of memory" and "ArgumentException" error when working with TEN projects.
 
 Version 1.7
 ===========
