@@ -207,7 +207,7 @@ LevelFuncs.Engine.Node.ConstructTimedData = function(moveableName, rotation, new
 	LevelVars[dataName].NewValue     = newValue
 	LevelVars[dataName].MoveableName = moveableName
 	LevelVars[dataName].TimerName    = timerName
-	LevelVars[dataName].Timer        = Timer.Create(timerName, 1 / 30, true, nil, LevelFuncs.Engine.Node.TransformTimedData, dataName)
+	LevelVars[dataName].Timer        = Timer.Create(timerName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformTimedData, dataName)
 
 	LevelVars[dataName].Timer:Start()
 end
