@@ -182,8 +182,9 @@ end
 -- Construct timed transform data and start transform
 LevelFuncs.Engine.Node.ConstructTimedData = function(moveableName, rotation, newValue, time, smooth)
 
-	local dataName  = moveableName .. "_transform_data"
-	local timerName = moveableName .. "_transform_timer"
+	local prefix    = rotation and "_rotation" or "_translation"
+	local dataName  = moveableName .. prefix .. "_transform_data"
+	local timerName = moveableName .. prefix .. "_transform_timer"
 	
 	if (LevelVars[dataName] ~= nil and LevelVars[dataName].Timer ~= nil) then
 		if (LevelVars[dataName].Timer:IsActive()) then
