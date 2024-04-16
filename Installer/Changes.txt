@@ -5,7 +5,7 @@ Tomb Editor:
  * Added default texture for new rooms (right-click in texture panel to open context menu).
  * Added TEN adjustable step height (can also be enabled for classic engines, but the behavior is unpredictable).
  * Added TEN batch action nodes to change properties or call other node functions for certain group of similar objects.
- * Added TEN nodes to modify position or rotation of a given moveable over specified timespan.
+ * Added TEN timespan action nodes to transform various moveable and static parameters on a specified timespan.
  * Added TEN nodes to check and modify ItemFlags, to check if a flipmap is active and to do a partial check of a moveable name.
  * Added the ability to remap subdivision highlight hotkeys (1-9).
  * Using subdivision highlighting should now allow the user to modify geometry using keyboard only.
