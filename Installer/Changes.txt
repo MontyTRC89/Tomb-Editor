@@ -11,6 +11,7 @@ Tomb Editor:
  * Using subdivision highlighting should now allow the user to modify geometry using keyboard only.
  * Copying room geometry will now include texture information with each face.
  * Double-clicking on empty space in node editor will now open node list.
+ * Use native Windows dark theme setting for window titles.
  * Fixed autosave file cleanup not working.
  * Fixed undo / redo not working on yellow walls (portals).
  * Fixed issue where creating portals manually would display phantom subdivisions.
