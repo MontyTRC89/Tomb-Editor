@@ -1,5 +1,3 @@
-local Timer = require("Engine.Timer")
-
 LevelFuncs.Engine.Node = {}
 
 -- Helper function for value comparisons. Any function which uses

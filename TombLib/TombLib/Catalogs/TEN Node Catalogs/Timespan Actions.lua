@@ -1,3 +1,5 @@
+local Timer = require("Engine.Timer")
+
 -- !Ignore
 -- Construct timed transform data and start transform
 LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, isStatic, dataType, newValue, time, smooth)
