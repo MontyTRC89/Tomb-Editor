@@ -87,7 +87,7 @@ namespace DarkUI.Forms
                 int dark = 1;
                 DwmSetWindowAttribute(this.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref dark, sizeof(uint));
             }
-            catch (DllNotFoundException) { }
+            catch (Exception) { }
         }
 
         protected override void WndProc(ref Message m)
