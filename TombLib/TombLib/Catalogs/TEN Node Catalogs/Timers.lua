@@ -51,8 +51,8 @@ end
 -- !Arguments "NewLine, 66, VolumeEventSets, The event set to be called when the time is up"
 -- !Arguments "VolumeEvents, 34, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
-LevelFuncs.Engine.Node.CreateTimerWithVEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName,
-                                                           eventType, activator)
+LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName,
+                                                          eventType, activator)
     if name ~= '' then
         LevelVars[name] = Timer.Create(name, time, loop,
             { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, LevelFuncs.Engine.Node.RunEventSet,

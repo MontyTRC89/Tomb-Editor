@@ -449,6 +449,19 @@ namespace TombLib.Controls.VisualScripting
             Invalidate();
         }
 
+        public void LockNode(TriggerNode node, bool locked)
+        {
+            if (node == null)
+                return;
+
+            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == node);
+
+            if (control == null)
+                return;
+
+            node.Locked = control.Locked = locked;
+        }
+
         public void ShowNode(TriggerNode node)
         {
             if (node == null)
@@ -1288,16 +1301,8 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseDoubleClick(e);
 
-            if (e.Button != MouseButtons.Right)
-                return;
-
-            if (Nodes.Count == 0)
-                return;
-
-            if (SelectedNode != null)
-                ShowNode(SelectedNode);
-            else
-                ShowNode(Nodes.First());
+            if (e.Button == MouseButtons.Left)
+                OpenNodeContext(e.Location);
         }
 
         private void NodeEditor_DragEnter(object sender, DragEventArgs e)

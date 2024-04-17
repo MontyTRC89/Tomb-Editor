@@ -1,4 +1,5 @@
 ﻿using DarkUI.Controls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using TombIDE.ScriptingStudio.Properties;
@@ -10,41 +11,41 @@ namespace TombIDE.ScriptingStudio.Helpers
 		#region Public methods
 
 		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath)
-			=> CreateFullFileListNode(sourceDirectoryPath, string.Empty, false, null, false);
+			=> CreateFullFileListNode(sourceDirectoryPath, string.Empty, false, null, false, string.Empty);
 
 		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, string fileSearchPattern)
-			=> CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, null, false);
+			=> CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, null, false, string.Empty);
 
 		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, string fileSearchPattern, bool expandAllNodes)
-			=> CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, null, expandAllNodes);
+			=> CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, null, expandAllNodes, string.Empty);
 
 		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, string fileSearchPattern, DarkTreeView expandedSourceTreeView)
-			=> CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, expandedSourceTreeView, false);
+			=> CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, expandedSourceTreeView, false, string.Empty);
 
 		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, bool directoriesOnly)
-			=> CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, null, false);
+			=> CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, null, false, string.Empty);
 
 		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, bool directoriesOnly, bool expandAllNodes)
-			=> CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, null, expandAllNodes);
+			=> CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, null, expandAllNodes, string.Empty);
 
 		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, bool directoriesOnly, DarkTreeView expandedSourceTreeView)
-			=> CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, expandedSourceTreeView, false);
+			=> CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, expandedSourceTreeView, false, string.Empty);
 
 		#endregion Public methods
 
 		#region Private methods
 
-		private static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, string fileSearchPattern, bool directoriesOnly, DarkTreeView expandedSourceTreeView, bool expandAllNodes)
+		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, string fileSearchPattern, bool directoriesOnly, DarkTreeView expandedSourceTreeView, bool expandAllNodes, string excludedDirectoryFilter)
 		{
 			var sourceDirectory = new DirectoryInfo(sourceDirectoryPath);
 
 			var node = new DarkTreeNode(sourceDirectory.Name)
 			{
-				Icon = Resources.Folder.ToBitmap(),
+				Icon = Resources.Folder_16,
 				Tag = sourceDirectory
 			};
 
-			FillNodeWithItems(node, fileSearchPattern, directoriesOnly, expandedSourceTreeView, expandAllNodes);
+			FillNodeWithItems(node, fileSearchPattern, directoriesOnly, expandedSourceTreeView, expandAllNodes, excludedDirectoryFilter);
 
 			if (expandAllNodes)
 				node.Expanded = true;
@@ -52,7 +53,7 @@ namespace TombIDE.ScriptingStudio.Helpers
 			return node;
 		}
 
-		private static void FillNodeWithItems(DarkTreeNode node, string fileSearchPattern, bool directoriesOnly, DarkTreeView expandedSourceTreeView, bool expandAllNodes)
+		private static void FillNodeWithItems(DarkTreeNode node, string fileSearchPattern, bool directoriesOnly, DarkTreeView expandedSourceTreeView, bool expandAllNodes, string excludedDirectoryFilter)
 		{
 			var stack = new Stack<DarkTreeNode>();
 			stack.Push(node);
@@ -62,7 +63,7 @@ namespace TombIDE.ScriptingStudio.Helpers
 				DarkTreeNode currentNode = stack.Pop();
 				var info = currentNode.Tag as DirectoryInfo;
 
-				currentNode.Nodes.AddRange(GetDirectoryNodes(stack, info.GetDirectories(), expandedSourceTreeView, expandAllNodes));
+				currentNode.Nodes.AddRange(GetDirectoryNodes(stack, info.GetDirectories(), expandedSourceTreeView, expandAllNodes, excludedDirectoryFilter));
 
 				if (!directoriesOnly)
 					foreach (string filter in fileSearchPattern.Split('|'))
@@ -80,13 +81,16 @@ namespace TombIDE.ScriptingStudio.Helpers
 			}
 		}
 
-		private static IEnumerable<DarkTreeNode> GetDirectoryNodes(Stack<DarkTreeNode> loopStack, DirectoryInfo[] directories, DarkTreeView expandedSourceTreeView, bool expandAllNodes)
+		private static IEnumerable<DarkTreeNode> GetDirectoryNodes(Stack<DarkTreeNode> loopStack, DirectoryInfo[] directories, DarkTreeView expandedSourceTreeView, bool expandAllNodes, string excludedDirectoryFilter)
 		{
 			foreach (DirectoryInfo directory in directories)
 			{
+				if (!string.IsNullOrEmpty(excludedDirectoryFilter) && directory.FullName.EndsWith(excludedDirectoryFilter, StringComparison.OrdinalIgnoreCase))
+					continue;
+
 				var childDirectoryNode = new DarkTreeNode(directory.Name)
 				{
-					Icon = Resources.Folder.ToBitmap(),
+					Icon = Resources.Folder_16,
 					Tag = directory
 				};
 
@@ -110,7 +114,7 @@ namespace TombIDE.ScriptingStudio.Helpers
 			foreach (FileInfo file in files)
 				yield return new DarkTreeNode(file.Name)
 				{
-					Icon = Resources.File.ToBitmap(),
+					Icon = Resources.New_16,
 					Tag = file
 				};
 		}

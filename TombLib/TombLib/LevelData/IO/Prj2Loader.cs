@@ -265,6 +265,20 @@ namespace TombLib.LevelData.IO
                     SoundsCatalogsToLoad = toLoad;
                     settings.SoundCatalogs = list;
                 }
+                else if (id == Prj2Chunks.DefaultTexture)
+                {
+                    var textureArea = new TextureArea();
+                    textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
+                    textureArea.Texture   = levelSettingsIds.LevelTextures.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
+
+                    if (textureArea.Texture != null)
+                        settings.DefaultTexture = textureArea;
+                    else
+                        settings.DefaultTexture = TextureArea.None;
+                }
                 else if (id == Prj2Chunks.GameDirectory)
                     settings.GameDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameLevelFilePath)
@@ -487,7 +501,7 @@ namespace TombLib.LevelData.IO
                     var reportString = "Reading ";
                     if (id == Prj2Chunks.GlobalEventSets)
                         reportString += "global";
-                    else if (id == Prj2Chunks.VolumeEventSets)
+                    else
                         reportString += "volume";
 
                     progressReporter?.ReportInfo(reportString + " event sets...");
@@ -749,7 +763,9 @@ namespace TombLib.LevelData.IO
                         roomIndex = chunkIO.ReadChunkLong(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomName)
                         room.Name = chunkIO.ReadChunkString(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomPosition)
+                    else if (id2 == Prj2Chunks.RoomPosition) // DEPRECATED
+                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2) * new VectorInt3(1, Level.FullClickHeight, 1));
+                    else if (id2 == Prj2Chunks.RoomPosition2)
                         room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2));
                     else if (id2 == Prj2Chunks.RoomTags)
                     {
@@ -786,51 +802,56 @@ namespace TombLib.LevelData.IO
                                         block.Flags = (BlockFlags)(flag >> 2);
                                         block.ForceFloorSolid = (flag & 2) != 0;
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloor)
+
+                                    #region DEPRECATED
+
+                                    else if (id4 == Prj2Chunks.SectorFloor) // DEPRECATED
                                     {
                                         usesLegacyFloor = true;
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Floor.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeiling)
+                                    else if (id4 == Prj2Chunks.SectorCeiling) // DEPRECATED
                                     {
                                         usesLegacyCeiling = true;
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Ceiling.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorOnly)
+                                    else if (id4 == Prj2Chunks.SectorFloorOnly) // DEPRECATED
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
+
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Floor.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeilingOnly)
+                                    else if (id4 == Prj2Chunks.SectorCeilingOnly) // DEPRECATED
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
+
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Ceiling.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorSubdivisions)
+                                    else if (id4 == Prj2Chunks.SectorFloorSubdivisions) // DEPRECATED
                                     {
                                         byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
 
@@ -840,10 +861,10 @@ namespace TombLib.LevelData.IO
                                             block.ExtraFloorSubdivisions.Add(new Subdivision());
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+                                                block.SetHeight(subdivisionVertical, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         }
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeilingSubdivisions)
+                                    else if (id4 == Prj2Chunks.SectorCeilingSubdivisions) // DEPRECATED
                                     {
                                         byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
 
@@ -853,7 +874,56 @@ namespace TombLib.LevelData.IO
                                             block.ExtraCeilingSubdivisions.Add(new Subdivision());
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+                                                block.SetHeight(subdivisionVertical, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
+                                        }
+                                    }
+
+                                    #endregion DEPRECATED
+
+                                    else if (id4 == Prj2Chunks.SectorFloorOnly2)
+                                    {
+                                        long flag = LEB128.ReadLong(chunkIO.Raw);
+
+                                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                            block.Floor.SetHeight(edge, LEB128.ReadInt(chunkIO.Raw));
+
+                                        block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
+                                        block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
+                                    }
+                                    else if (id4 == Prj2Chunks.SectorCeilingOnly2)
+                                    {
+                                        long flag = LEB128.ReadLong(chunkIO.Raw);
+
+                                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                            block.Ceiling.SetHeight(edge, LEB128.ReadInt(chunkIO.Raw));
+
+                                        block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
+                                        block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
+                                    }
+                                    else if (id4 == Prj2Chunks.SectorFloorSubdivisions2)
+                                    {
+                                        byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
+
+                                        for (int i = 0; i < extraSubdivisionCount; i++)
+                                        {
+                                            BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+                                            block.ExtraFloorSubdivisions.Add(new Subdivision());
+
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadInt(chunkIO.Raw));
+                                        }
+                                    }
+                                    else if (id4 == Prj2Chunks.SectorCeilingSubdivisions2)
+                                    {
+                                        byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
+
+                                        for (int i = 0; i < extraSubdivisionCount; i++)
+                                        {
+                                            BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
+                                            block.ExtraCeilingSubdivisions.Add(new Subdivision());
+
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadInt(chunkIO.Raw));
                                         }
                                     }
                                     else if (id4 == Prj2Chunks.TextureLevelTexture ||
@@ -1085,25 +1155,7 @@ namespace TombLib.LevelData.IO
             if (usesLegacyFloor || usesLegacyCeiling)
             {
                 progressReporter?.ReportInfo("Re-adjusting face textures where needed (Legacy floor / ceiling chunks)");
-
-                foreach (Room room in newRooms.Values)
-                    for (int x = room.LocalArea.X0; x <= room.LocalArea.X1; x++)
-                        for (int z = room.LocalArea.Y0; z <= room.LocalArea.Y1; z++)
-                        {
-                            Block block = room.Blocks[x, z];
-
-                            if (usesLegacyFloor)
-                            {
-                                SwapFloor2FacesWhereApplicable(room, x, z);
-                                SwapDiagonalFloor2FacesWhereApplicable(room, x, z);
-                            }
-
-                            if (usesLegacyCeiling)
-                            {
-                                SwapCeiling2FacesWhereApplicable(room, x, z);
-                                SwapDiagonalCeiling2FacesWhereApplicable(room, x, z);
-                            }
-                        }
+                LegacyRepair.SwapFacesWhereApplicable(newRooms.Values, usesLegacyFloor, usesLegacyCeiling);
             }
 
             // Now build the real geometry and update geometry buffers
@@ -1573,7 +1625,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectGhostBlock)
+                else if (id3 == Prj2Chunks.ObjectGhostBlock) // DEPRECATED
                 {
                     int x = LEB128.ReadInt(chunkIO.Raw);
                     int y = LEB128.ReadInt(chunkIO.Raw);
@@ -1581,14 +1633,34 @@ namespace TombLib.LevelData.IO
                     var instance = new GhostBlockInstance();
                     instance.SectorPosition = new VectorInt2(x, y);
 
-                    instance.Floor.XnZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XnZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XpZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XpZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XnZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XpZp = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XnZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XnZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XpZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XpZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XnZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XnZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XpZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XpZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectGhostBlock2)
+                {
+                    int x = LEB128.ReadInt(chunkIO.Raw);
+                    int y = LEB128.ReadInt(chunkIO.Raw);
+
+                    var instance = new GhostBlockInstance();
+                    instance.SectorPosition = new VectorInt2(x, y);
+
+                    instance.Floor.XnZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XnZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XpZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XpZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XnZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XnZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XpZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XpZp = LEB128.ReadInt(chunkIO.Raw);
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
@@ -1831,6 +1903,8 @@ namespace TombLib.LevelData.IO
                     node.ScreenPosition = chunkIO.ReadChunkVector2(chunkSize);
                 else if (id == Prj2Chunks.NodeColor)
                     node.Color = chunkIO.ReadChunkVector3(chunkSize);
+                else if (id == Prj2Chunks.NodeLocked)
+                    node.Locked = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.NodeFunction)
                     node.Function = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.NodeArgument)
@@ -1843,6 +1917,10 @@ namespace TombLib.LevelData.IO
                     return false;
                 return true;
             });
+
+            // Attempt to fix missing or excessive arguments in case node was changed
+            if (ScriptingUtils.NodeFunctions.Any(f => f.Signature == node.Function))
+                node.FixArguments(ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function));
 
             node.Previous = previous;
             return node;
@@ -1863,210 +1941,6 @@ namespace TombLib.LevelData.IO
         {
             if (!this_.ContainsKey(key))
                 this_.Add(key, value);
-        }
-
-        /// <summary>
-        /// This method swaps vertical floor faces, which were affected by the legacy RoomEdit face priority bug, since it has been fixed with the new RoomGeometry code.
-        /// </summary>
-        private static void SwapFloor2FacesWhereApplicable(Room room, int x, int z)
-        {
-            Block block = room.Blocks[x, z];
-            Subdivision subdivision = block.ExtraFloorSubdivisions[0]; // This will definitely have an element at 0 in legacy prj2s
-
-            RoomBlockPair
-                xn = room.GetBlockTryThroughPortal(x - 1, z),
-                xp = room.GetBlockTryThroughPortal(x + 1, z),
-                zn = room.GetBlockTryThroughPortal(x, z - 1),
-                zp = room.GetBlockTryThroughPortal(x, z + 1);
-
-            if (xn.Block != null)
-            {
-                if (subdivision.Edges[(int)BlockEdge.XnZn] > xn.Block.Ceiling.XpZn || subdivision.Edges[(int)BlockEdge.XnZp] > xn.Block.Ceiling.XpZp)
-                    block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_QA));
-            }
-
-            if (xp.Block != null)
-            {
-                if (subdivision.Edges[(int)BlockEdge.XpZn] > xp.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] > xp.Block.Ceiling.XnZp)
-                    block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_QA));
-            }
-
-            if (zn.Block != null)
-            {
-                if (subdivision.Edges[(int)BlockEdge.XnZn] > zn.Block.Ceiling.XnZp || subdivision.Edges[(int)BlockEdge.XpZn] > zn.Block.Ceiling.XpZp)
-                    block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA));
-            }
-
-            if (zp.Block != null)
-            {
-                if (subdivision.Edges[(int)BlockEdge.XnZp] > zp.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] > zp.Block.Ceiling.XpZn)
-                    block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA));
-            }
-        }
-
-        /// <summary>
-        /// This method swaps vertical ceiling faces, which were affected by the legacy RoomEdit face priority bug, since it has been fixed with the new RoomGeometry code.
-        /// </summary>
-        private static void SwapCeiling2FacesWhereApplicable(Room room, int x, int z)
-        {
-            Block block = room.Blocks[x, z];
-            Subdivision subdivision = block.ExtraCeilingSubdivisions[0]; // This will definitely have an element at 0 in legacy prj2s
-
-            RoomBlockPair
-                xn = room.GetBlockTryThroughPortal(x - 1, z),
-                xp = room.GetBlockTryThroughPortal(x + 1, z),
-                zn = room.GetBlockTryThroughPortal(x, z - 1),
-                zp = room.GetBlockTryThroughPortal(x, z + 1);
-
-            if (xn.Block != null)
-            {
-                if (subdivision.Edges[(int)BlockEdge.XnZn] < xn.Block.Floor.XpZn || subdivision.Edges[(int)BlockEdge.XnZp] < xn.Block.Floor.XpZp)
-                    block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_WS));
-            }
-
-            if (xp.Block != null)
-            {
-                if (subdivision.Edges[(int)BlockEdge.XpZn] < xp.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] < xp.Block.Floor.XnZp)
-                    block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_WS));
-            }
-
-            if (zn.Block != null)
-            {
-                if (subdivision.Edges[(int)BlockEdge.XnZn] < zn.Block.Floor.XnZp || subdivision.Edges[(int)BlockEdge.XpZn] < zn.Block.Floor.XpZp)
-                    block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS));
-            }
-
-            if (zp.Block != null)
-            {
-                if (subdivision.Edges[(int)BlockEdge.XnZp] < zp.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] < zp.Block.Floor.XpZn)
-                    block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS));
-            }
-        }
-
-        private static void SwapDiagonalFloor2FacesWhereApplicable(Room room, int x, int z)
-        {
-            Block localBlock = room.Blocks[x, z],
-                probingBlock = localBlock;
-
-            if (localBlock.WallPortal != null)
-            {
-                RoomBlockPair pair = room.GetBlockTryThroughPortal(x, z);
-
-                if (pair.Room != room && pair.Block != null)
-                    probingBlock = pair.Block;
-            }
-
-            if (probingBlock.Floor.DiagonalSplit == DiagonalSplit.None)
-                return;
-
-            Subdivision subdivision = localBlock.ExtraFloorSubdivisions.ElementAtOrDefault(0);
-
-            if (subdivision is null)
-                return;
-
-            TextureArea
-                qaPositiveZ = localBlock.GetFaceTexture(BlockFace.Wall_PositiveZ_QA),
-                qaNegativeZ = localBlock.GetFaceTexture(BlockFace.Wall_NegativeZ_QA),
-                qaNegativeX = localBlock.GetFaceTexture(BlockFace.Wall_NegativeX_QA),
-                qaPositiveX = localBlock.GetFaceTexture(BlockFace.Wall_PositiveX_QA);
-
-            switch (probingBlock.Floor.DiagonalSplit)
-            {
-                case DiagonalSplit.XnZp:
-                    if (subdivision.Edges[(int)BlockEdge.XnZn] > localBlock.Floor.XpZn)
-                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
-
-                    if (subdivision.Edges[(int)BlockEdge.XpZp] > localBlock.Floor.XpZn)
-                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
-                    break;
-
-                case DiagonalSplit.XpZn:
-                    if (subdivision.Edges[(int)BlockEdge.XnZn] > localBlock.Floor.XnZp)
-                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
-
-                    if (subdivision.Edges[(int)BlockEdge.XpZp] > localBlock.Floor.XnZp)
-                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
-                    break;
-
-                case DiagonalSplit.XpZp:
-                    if (subdivision.Edges[(int)BlockEdge.XpZn] > localBlock.Floor.XnZn)
-                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
-
-                    if (subdivision.Edges[(int)BlockEdge.XnZp] > localBlock.Floor.XnZn)
-                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
-                    break;
-
-                case DiagonalSplit.XnZn:
-                    if (subdivision.Edges[(int)BlockEdge.XnZp] > localBlock.Floor.XpZp)
-                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
-
-                    if (subdivision.Edges[(int)BlockEdge.XpZn] > localBlock.Floor.XpZp)
-                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
-                    break;
-            }
-        }
-
-        private static void SwapDiagonalCeiling2FacesWhereApplicable(Room room, int x, int z)
-        {
-            Block localBlock = room.Blocks[x, z],
-                probingBlock = localBlock;
-
-            if (localBlock.WallPortal != null)
-            {
-                RoomBlockPair pair = room.GetBlockTryThroughPortal(x, z);
-
-                if (pair.Room != room && pair.Block != null)
-                    probingBlock = pair.Block;
-            }
-
-            if (probingBlock.Ceiling.DiagonalSplit == DiagonalSplit.None)
-                return;
-
-            Subdivision subdivision = localBlock.ExtraCeilingSubdivisions.ElementAtOrDefault(0);
-
-            if (subdivision is null)
-                return;
-
-            TextureArea
-                wsPositiveZ = localBlock.GetFaceTexture(BlockFace.Wall_PositiveZ_WS),
-                wsNegativeZ = localBlock.GetFaceTexture(BlockFace.Wall_NegativeZ_WS),
-                wsNegativeX = localBlock.GetFaceTexture(BlockFace.Wall_NegativeX_WS),
-                wsPositiveX = localBlock.GetFaceTexture(BlockFace.Wall_PositiveX_WS);
-
-            switch (probingBlock.Ceiling.DiagonalSplit)
-            {
-                case DiagonalSplit.XnZp:
-                    if (subdivision.Edges[(int)BlockEdge.XnZn] < localBlock.Ceiling.XpZn)
-                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
-
-                    if (subdivision.Edges[(int)BlockEdge.XpZp] < localBlock.Ceiling.XpZn)
-                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
-                    break;
-
-                case DiagonalSplit.XpZn:
-                    if (subdivision.Edges[(int)BlockEdge.XnZn] < localBlock.Ceiling.XnZp)
-                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
-
-                    if (subdivision.Edges[(int)BlockEdge.XpZp] < localBlock.Ceiling.XnZp)
-                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
-                    break;
-
-                case DiagonalSplit.XpZp:
-                    if (subdivision.Edges[(int)BlockEdge.XpZn] < localBlock.Ceiling.XnZn)
-                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
-
-                    if (subdivision.Edges[(int)BlockEdge.XnZp] < localBlock.Ceiling.XnZn)
-                        localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
-                    break;
-
-                case DiagonalSplit.XnZn:
-                    if (subdivision.Edges[(int)BlockEdge.XnZp] < localBlock.Ceiling.XpZp)
-                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
-
-                    if (subdivision.Edges[(int)BlockEdge.XpZn] < localBlock.Ceiling.XpZp)
-                        localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
-                    break;
-            }
         }
     }
 }

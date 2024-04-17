@@ -9,15 +9,10 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
-    // In future, we will allow not just to assign manually written Lua scripts from script file,
-    // but also automatically construct visual scripts from predefined Lua templates.
-
     public enum EventSetMode
     {
         LevelScript, NodeEditor
     }
-
-    // Possible event types.
     
     public enum EventType
     {
@@ -126,13 +121,13 @@ namespace TombLib.LevelData
                 Events.Add(eventType, new Event());
         }
 
-        public new string GetDescription()
+        public string GetDescription()
         {
-            string result = string.Empty;
+            string result = "Event set '" + Name;
 
             if (Activators != VolumeActivators.None)
             {
-                result = "Event set '" + Name + "', Activated by: " +
+                result += "', Activated by: " +
                          ((Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
                          ((Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
                          ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other objects, " : "") +
@@ -141,7 +136,7 @@ namespace TombLib.LevelData
                 result = result.Substring(0, result.Length - 2) + " \n";
             }
 
-            return result + base.GetDescription();
+            return result;
         }
 
         public bool Equals(VolumeEventSet other)
@@ -208,19 +203,6 @@ namespace TombLib.LevelData
                 set.Events.Add(evt.Key, evt.Value.Clone());
 
             return set;
-        }
-
-        public string GetDescription()
-        {
-            string result = string.Empty;
-
-            foreach (var evt in Events)
-            {
-                if (!string.IsNullOrEmpty(evt.Value.Function))
-                    result += evt.Key.ToString() + ":" + evt.Value.Function + "\n";
-            }
-
-            return result;
         }
 
         public void Write(BinaryWriterEx writer, List<EventSet> eventSets)

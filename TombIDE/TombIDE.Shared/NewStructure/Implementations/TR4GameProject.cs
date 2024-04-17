@@ -19,5 +19,8 @@ namespace TombIDE.Shared.NewStructure
 		public TR4GameProject(string name, string directoryPath, string levelsDirectoryPath, string scriptDirectoryPath, string pluginsDirectoryPath = null)
 			: base(name, directoryPath, levelsDirectoryPath, scriptDirectoryPath, pluginsDirectoryPath)
 		{ }
+
+		public override Version GetCurrentEngineVersion()
+			=> new(1, 0);
 	}
 }

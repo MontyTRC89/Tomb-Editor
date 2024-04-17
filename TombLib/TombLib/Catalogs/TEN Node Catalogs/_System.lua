@@ -56,6 +56,10 @@ LevelFuncs.Engine.Node.SplitString = function(inputStr, delimiter)
 	return t
 end
 
+LevelFuncs.Engine.Node.StringIsEmpty = function(str)
+	return (str == nil or str == '')
+end
+
 -- Wrap angle value around 360
 LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 	if (value == 0) then
@@ -71,9 +75,18 @@ LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 	return rot
 end
 
+LevelFuncs.Engine.Node.Smoothstep = function(source)
+	source = math.max(0, math.min(1, source))
+	return ((source ^ 3) * (source * (source * 6 - 15) + 10))
+end
+
+LevelFuncs.Engine.Node.Lerp = function(val1, val2, factor)
+	return val1 * (1 - factor) + val2 * factor
+end
+
 -- Convert UI enum to room flag ID enum
 LevelFuncs.Engine.Node.GetRoomFlag = function(value)
-	local RoomFlagID =
+	local roomFlagID =
 	{
 		[0] = Objects.RoomFlagID.WATER,
 		[1] = Objects.RoomFlagID.QUICKSAND,
@@ -83,7 +96,7 @@ LevelFuncs.Engine.Node.GetRoomFlag = function(value)
 		[5] = Objects.RoomFlagID.DAMAGE,
 		[6] = Objects.RoomFlagID.NOLENSFLARE,
 	}
-	return RoomFlagID[value]
+	return roomFlagID[value]
 end
 
 LevelFuncs.Engine.Node.GetSoundTrackType = function(value)
@@ -137,4 +150,29 @@ LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode = function(index)
 		[2] = TEN.View.ScaleMode.STRETCH
 	}
 	return displaySpriteScaleMode[index]
+end
+
+LevelFuncs.Engine.Node.GetGameStatus = function(index)
+	local gameStatus =
+	{
+		[0] = Flow.GameStatus.NORMAL,
+		[1] = Flow.GameStatus.NEW_GAME,
+		[2] = Flow.GameStatus.LOAD_GAME,
+		[3] = Flow.GameStatus.EXIT_GAME,
+		[4] = Flow.GameStatus.EXIT_TO_TITLE,
+		[5] = Flow.GameStatus.LARA_DEAD,
+		[6] = Flow.GameStatus.LEVEL_COMPLETE
+	}
+	return gameStatus[index]
+end
+
+LevelFuncs.Engine.Node.SetPostProcessMode = function(index)
+	local postProcessMode =
+	{
+		[0] = TEN.View.PostProcessMode.NONE,
+		[1] = TEN.View.PostProcessMode.MONOCHROME,
+		[2] = TEN.View.PostProcessMode.NEGATIVE,
+		[3] = TEN.View.PostProcessMode.EXCLUSION,
+	}
+	return postProcessMode[index]
 end

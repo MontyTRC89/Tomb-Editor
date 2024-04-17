@@ -119,6 +119,18 @@ namespace TombEditor
             }
         }
 
+        public class StepHeightChangedEvent : IEditorEvent
+        {
+            public int Previous { get; internal set; }
+            public int Current { get; internal set; }
+        }
+
+        public class HighlightedSubdivisionChangedEvent : IEditorEvent
+        {
+            public int Previous { get; internal set; }
+            public int Current { get; internal set; }
+        }
+
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
             public IEditorAction Previous { get; internal set; }
@@ -1340,7 +1352,7 @@ namespace TombEditor
                     {
                         // Get all compatible projects
                         var directory = new DirectoryInfo(path);
-                        var filesOrdered = directory.EnumerateFiles(configuration.AutoSave_NamePutDateFirst ? "*" + configuration.AutoSave_NameSeparator + fileNameBase + ".prj2" : fileNameBase + configuration.AutoSave_NameSeparator + "*.prj2")
+                        var filesOrdered = directory.EnumerateFiles(configuration.AutoSave_NamePutDateFirst ? "*" + configuration.AutoSave_NameSeparator + fileNameBase + ".backup.prj2" : fileNameBase + configuration.AutoSave_NameSeparator + "*.backup.prj2")
                                                     .OrderBy(d => d.Name)
                                                     .Select(d => d.Name)
                                                     .ToList();
@@ -1409,5 +1421,30 @@ namespace TombEditor
         { }
 
         public static Editor Instance;
+
+        private int _highlightedSubdivision;
+
+        /// <summary>
+        /// 0 means that QA WS ED RF will behave as usual, while 1 - 9 will make them behave as if the corresponding number key was pressed.
+        /// </summary>
+        public int HighlightedSubdivision
+        {
+            get { return _highlightedSubdivision; }
+            set
+            {
+                if (_highlightedSubdivision == value)
+                    return;
+
+                int previous = _highlightedSubdivision;
+                _highlightedSubdivision = value;
+
+                RaiseEvent(new HighlightedSubdivisionChangedEvent { Previous = previous, Current = value });
+            }
+        }
+
+        public bool IsPreciseGeometryAllowed
+            => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
+
+        public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
     }
 }

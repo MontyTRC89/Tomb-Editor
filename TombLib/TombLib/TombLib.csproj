@@ -70,7 +70,13 @@
     <None Update="Catalogs\TEN Node Catalogs\Particles.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Batch Actions.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Sound.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Sprites.lua">
@@ -79,19 +85,22 @@
     <None Update="Catalogs\TEN Node Catalogs\Timers.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Timespan Actions.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\View.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Volumes.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\_System.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TEN Node Catalogs\Controls.lua">
+    <None Update="Catalogs\TEN Node Catalogs\Input.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Creatures.lua">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Catalogs\TEN Node Catalogs\Effects.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Flow.lua">
@@ -290,7 +299,6 @@
     <PackageReference Include="BCnEncoder.Net" Version="2.1.0" />
     <PackageReference Include="CH.SipHash.Core" Version="1.0.2" />
     <PackageReference Include="ksemenenko.ColorThief" Version="1.1.1.4" />
-    <PackageReference Include="MiniZ.NET.Core" Version="1.0.0" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="NAudio.Flac.Unknown" Version="1.0.2" />
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />

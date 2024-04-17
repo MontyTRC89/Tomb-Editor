@@ -25,6 +25,7 @@ namespace TombLib.LevelData.VisualScripting
         public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
         public int Size { get; set; } = DefaultSize;
         public Vector3 Color { get; set; } = Vector3.Zero;
+        public bool Locked { get; set; } = false;
 
         public string Function { get; set; } = string.Empty;
         public List<string> Arguments { get; private set; } = new List<string>();
@@ -60,6 +61,19 @@ namespace TombLib.LevelData.VisualScripting
                 hash ^= Next.GetHashCode();
 
             return hash;
+        }
+
+        public void FixArguments(NodeFunction reference)
+        {
+            if (reference.Arguments.Count < Arguments.Count)
+            {
+                Arguments.RemoveRange(reference.Arguments.Count, Arguments.Count - reference.Arguments.Count);
+            }
+            else if (reference.Arguments.Count > Arguments.Count)
+            {
+                for (int i = Arguments.Count; i < reference.Arguments.Count; i++)
+                    Arguments.Add(reference.Arguments[i].DefaultValue);
+            }
         }
 
 		public static List<TriggerNode> LinearizeNodes(List<TriggerNode> list)

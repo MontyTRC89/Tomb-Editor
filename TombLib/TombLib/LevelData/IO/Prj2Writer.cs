@@ -240,6 +240,23 @@ namespace TombLib.LevelData.IO
                     }
                     chunkIO.WriteChunkEnd();
                 }
+                using (var chunkTextures = chunkIO.WriteChunk(Prj2Chunks.DefaultTexture, long.MaxValue))
+                {
+                    chunkIO.Raw.Write(settings.DefaultTexture.TexCoord0);
+                    chunkIO.Raw.Write(settings.DefaultTexture.TexCoord1);
+                    chunkIO.Raw.Write(settings.DefaultTexture.TexCoord2);
+                    chunkIO.Raw.Write(settings.DefaultTexture.TexCoord3);
+
+                    int textureIndex = -1;
+
+                    if (settings.DefaultTexture.Texture is LevelTexture t)
+                    {
+                        if (t != null && levelSettingIds.LevelTextures.ContainsKey(t))
+                            textureIndex = levelSettingIds.LevelTextures[t];
+                    }
+
+                    LEB128.Write(chunkIO.Raw, textureIndex);
+                }
                 using (var chunkImportedGeometries = chunkIO.WriteChunk(Prj2Chunks.ImportedGeometries, long.MaxValue))
                 {
                     int index = 0;
@@ -394,7 +411,7 @@ namespace TombLib.LevelData.IO
                         // Write basic properties
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomIndex, rooms.TryGetOrDefault(room, -1));
                         chunkIO.WriteChunkString(Prj2Chunks.RoomName, room.Name);
-                        chunkIO.WriteChunkVector3(Prj2Chunks.RoomPosition, room.Position);
+                        chunkIO.WriteChunkVector3(Prj2Chunks.RoomPosition2, room.Position);
                         chunkIO.WriteChunkArrayOfBytes(Prj2Chunks.RoomTags, System.Text.Encoding.UTF8.GetBytes(string.Join(" ", room.Properties.Tags)));
 
                         // Write sectors
@@ -409,14 +426,14 @@ namespace TombLib.LevelData.IO
 
                                         long combinedFlag = (b.IsAnyWall ? 1L : 0) | (b.ForceFloorSolid ? 2L : 0) | ((long)b.Flags << 2);
                                         chunkIO.WriteChunkInt(Prj2Chunks.SectorProperties, combinedFlag);
-                                        using (var chunkSectorFloor = chunkIO.WriteChunk(Prj2Chunks.SectorFloorOnly, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorFloor = chunkIO.WriteChunk(Prj2Chunks.SectorFloorOnly2, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Floor.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Floor.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
                                         }
-                                        using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingOnly, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingOnly2, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
@@ -427,7 +444,7 @@ namespace TombLib.LevelData.IO
                                         var validFloorSubdivisions = room.GetValidFloorSubdivisionsForBlock(x, z).ToArray();
                                         var validCeilingSubdivisions = room.GetValidCeilingSubdivisionsForBlock(x, z).ToArray();
 
-                                        using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions2, LEB128.MaximumSize2Byte))
                                         {
                                             LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
 
@@ -435,7 +452,7 @@ namespace TombLib.LevelData.IO
                                                 for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                     LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
                                         }
-                                        using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions, LEB128.MaximumSize1Byte))
+                                        using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions2, LEB128.MaximumSize2Byte))
                                         {
                                             LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
 
@@ -755,7 +772,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write((byte)instance.Opacity);
                         }
                     else if (o is GhostBlockInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectGhostBlock, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectGhostBlock2, LEB128.MaximumSize2Byte))
                         {
                             var instance = (GhostBlockInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -894,6 +911,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.NodeSize, node.Size);
                 chunkIO.WriteChunkVector2(Prj2Chunks.NodeScreenPosition, node.ScreenPosition);
                 chunkIO.WriteChunkVector3(Prj2Chunks.NodeColor, node.Color);
+                chunkIO.WriteChunkBool(Prj2Chunks.NodeLocked, node.Locked);
                 chunkIO.WriteChunkString(Prj2Chunks.NodeFunction, node.Function);
 
                 foreach (var arg in node.Arguments)

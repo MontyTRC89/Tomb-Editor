@@ -8,6 +8,7 @@ namespace TombIDE.ScriptingStudio.UI
 		public const Keys Save = Keys.Control | Keys.S;
 		public const Keys SaveAll = Keys.Control | Keys.Shift | Keys.S;
 		public const Keys Build = Keys.F9;
+		public const Keys Exit = Keys.Alt | Keys.F4;
 
 		public const Keys Undo = Keys.Control | Keys.Z;
 		public const Keys Redo = Keys.Control | Keys.Y;

@@ -34,7 +34,7 @@ namespace TombLib.Controls
         private Vector2 _viewPosition;
         private float _viewScale = 1.0f;
 
-        private Vector2? _startPos;
+        protected Vector2? _startPos;
         private int? _selectedTexCoordIndex;
         private Vector2? _viewMoveMouseTexCoord;
         private Point _lastMousePosition;
@@ -329,6 +329,7 @@ namespace TombLib.Controls
                     // Move view with mouse cursor
                     // Mouse cursor is a fixed point
                     _viewMoveMouseTexCoord = FromVisualCoord(e.Location);
+                    _startPos = new Vector2(e.Location.X, e.Location.Y);
                     break;
             }
         }
@@ -421,6 +422,8 @@ namespace TombLib.Controls
                             SetRectangularTextureWithMouse(_startPos.Value, FromVisualCoord(e.Location));
                     break;
             }
+
+            _startPos = null;
             _viewMoveMouseTexCoord = null;
             Capture = false;
         }

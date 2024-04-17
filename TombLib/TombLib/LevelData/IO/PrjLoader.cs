@@ -735,25 +735,25 @@ namespace TombLib.LevelData.IO
                                     break;
                             }
 
-                            block.Floor.XpZn = (short)(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XnZn = (short)(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XnZp = (short)(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XpZp = (short)(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XpZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XnZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XnZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XpZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
 
-                            block.Ceiling.XpZp = (short)(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XnZp = (short)(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XnZn = (short)(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XpZn = (short)(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XpZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XnZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XnZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XpZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
 
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZn, (short)(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZn, (short)(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZp, (short)(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZp, (short)(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
 
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZp, (short)(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZp, (short)(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZn, (short)(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZn, (short)(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
 
                             if ((blockFlags1 & 0x4000) != 0)
                                 block.Flags |= BlockFlags.Monkey;
@@ -1432,7 +1432,7 @@ namespace TombLib.LevelData.IO
                                 Invisible = currentObj.Invisible,
                                 ClearBody = currentObj.ClearBody,
                                 WadObjectId = new WadMoveableId(index.Value),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * Level.HeightUnit,
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y,
                                 Ocb = currentObj.Ocb,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color
@@ -1445,7 +1445,7 @@ namespace TombLib.LevelData.IO
                             {
                                 ScriptId = currentObj.ScriptId,
                                 WadObjectId = new WadStaticId(index.Value),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * Level.HeightUnit,
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color,
                                 Ocb = unchecked((short)currentObj.Ocb)
@@ -1670,7 +1670,7 @@ namespace TombLib.LevelData.IO
                 // Build geometry
                 progressReporter?.ReportProgress(80, "Building geometry");
                 foreach (var room in level.ExistingRooms)
-                    room.BuildGeometry();
+                    room.BuildGeometry(true);
 
                 // Build faces
                 progressReporter?.ReportProgress(85, "Texturize faces");
@@ -1965,6 +1965,9 @@ namespace TombLib.LevelData.IO
                         }
                 }
             }
+
+            progressReporter?.ReportInfo("Re-adjusting face textures where needed (Legacy floor / ceiling chunks)");
+            LegacyRepair.SwapFacesWhereApplicable(level.ExistingRooms, true, true);
 
             if (adjustUV)
                 progressReporter?.ReportWarn("WARNING: Textures were cropped with half-pixel correction!\nTo use uncropped textures, re-import project and turn off 'Half-pixel UV correction' in import settings.");

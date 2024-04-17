@@ -28,6 +28,8 @@ namespace TombEditor
         public bool Editor_GridNewRoom { get; set; } = false;
         public bool Editor_UseHalfPixelCorrectionOnPrjImport { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
+        public bool Editor_EnableStepHeightControlsForUnsupportedEngines { get; set; } = false;
+        public int Editor_StepHeight { get; set; } = 256;
 
         // Item preview options
 
@@ -140,6 +142,7 @@ namespace TombEditor
         public bool NodeEditor_ShowGrips { get; set; } = true;
         public int NodeEditor_DefaultEventMode { get; set; } = 1;
         public int NodeEditor_DefaultEventToEdit { get; set; } = 0;
+        public int NodeEditor_DefaultGlobalEventToEdit { get; set; } = 0;
 
         // Gizmo options
 
@@ -251,7 +254,7 @@ namespace TombEditor
         public Size Window_FormMemo_Size { get; set; } = new Size(350, 200);
         public bool Window_FormMemo_Maximized { get; set; } = false;
         public Point Window_FormEventSetEditor_Position { get; set; } = new Point(-1); // Center by default
-        public Size Window_FormEventSetEditor_Size { get; set; } = new Size(750, 460);
+        public Size Window_FormEventSetEditor_Size { get; set; } = new Size(780, 460);
         public bool Window_FormEventSetEditor_Maximized { get; set; } = false;
         public int Window_FormEventSetEditor_SplitterDistance { get; set; } = 250;
 

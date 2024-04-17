@@ -1,20 +1,72 @@
+Version 1.7.1
+=============
+
+Tomb Editor:
+ * Added default texture for new rooms (right-click in texture panel to open context menu).
+ * Added TEN adjustable step height (can also be enabled for classic engines, but the behavior is unpredictable).
+ * Added TEN batch action nodes to change properties or call other node functions for certain group of similar objects.
+ * Added TEN timespan action nodes to transform various moveable and static parameters on a specified timespan.
+ * Added TEN nodes to check and modify ItemFlags, to check if a flipmap is active and to do a partial check of a moveable name.
+ * Added the ability to remap subdivision highlight hotkeys (1-9).
+ * Using subdivision highlighting should now allow the user to modify geometry using keyboard only.
+ * Copying room geometry will now include texture information with each face.
+ * Double-clicking on empty space in node editor will now open node list.
+ * Use native Windows dark theme setting for window titles.
+ * Fixed autosave file cleanup not working.
+ * Fixed undo / redo not working on yellow walls (portals).
+ * Fixed issue where creating portals manually would display phantom subdivisions.
+ * Fixed issue where slope indicator would mark diagonal steps as slopes if one side is taller than 2 clicks.
+ * Fixed TEN OnLoop callback appearing in level script functions list.
+ * Fixed TEN nodes not using default values for new arguments, if node wasn't reopened in a node editor.
+ * Fixed AI pathfinding not recognizing ghost blocks.
+ * Fixed room rotation / mirroring causing textures to disappear at extra subdivisions level.
+ * Fixed horizontal room merging yielding wrong results.
+
+WadTool:
+ * Fixed incorrect annotation for set jump reference animcommand.
+ * Fixed incorrect animation frame display after switching from null animation in animation editor.
+
+TombIDE:
+ * Added splash screen frame customization dialog.
+ * Added Plugin_Video into default TRNG preset.
+ * Updated TR1X preset to 3.1.1.
+ * Removed real-time directory checking for *.prj2 file changes as it caused too many unpredictable issues and slowdowns.
+ * Fixed a rare bug where closing TE caused an infinite level list refresh loop.
+ * Fixed a bug where '>' symbols inside comments were taken into consideration when error checking.
+ * Fixed a randomly appearing "Out of memory" and "ArgumentException" error when working with TEN projects.
+
 Version 1.7
 ===========
 
 Tomb Editor:
- * Add options to disable volumes and activate them in adjacent rooms.
- * Add global event editor.
- * Add global events to a node editor and to legacy trigger editor.
+ * Added more wall subdivisions, which can be accessed by using Drag Tool while holding any numerical key on a keyboard.
+ * Side faces for slopes next to flat blocks, or 2 crossing slopes next to each other, will now be rendered and can be textured.
+ * Added options to disable volumes and activate them in adjacent rooms.
+ * Added global event editor.
+ * Added global events to a node editor and to legacy trigger editor.
+ * Added ability to lock nodes.
+ * Added node for end-of-level reason management.
  * Allow to move and sort event sets.
  * Support default values for Vector3 and Color value types in nodes.
  * Always link new nodes to "else" statement for conditional node, if "then" statement is already occupied.
  * Split TrCatalog.xml file into multiple catalogs for better usability.
- * Fix incorrect coordinates in tooltip for light objects.
- * Fix alignment option not working for display sprite node.
- * Fix displaying of meshes with more than 65535 vertices.
+ * Fixed original winroomedit bug where a wall texture would unexpectedly swap if ED / RF subdivisions were in the opposite void.
+ * Fixed incorrect coordinates in tooltip for light objects.
+ * Fixed audio track nodes not properly recognizing files in subfolders.
+ * Fixed alignment option not working for display sprite node.
+ * Fixed range for air value nodes.
+ * Fixed displaying of meshes with more than 65535 vertices.
+ * Fixed exception when attempting to load imported geometry with textures larger than 4096 pixels.
 
 TombIDE:
- * Fix issue where autocomplete popup wouldn't open after the first completion.
+ * Updated Tomb1Main to TR1X 3.0.5.
+ * Updated FLEP.
+ * Launch TEN in -debug mode from the sidebar by default.
+ * Added engine version display into Level Manager.
+ * Added engine up-to-date checks for TEN and TR1X.
+ * Added "Update" button for TEN versions 1.0.9+ and TR1X versions 3.0+.
+ * Added an "Exit" menu item into Scripting Studio.
+ * Fixed issue where autocomplete popup wouldn't open after the first completion.
 
 Version 1.6.9
 =============

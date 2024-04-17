@@ -63,6 +63,16 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				return false;
 			}
 
+			string targetPrj2FilePath = TargetPrj2FileName is not null
+				? Path.Combine(DirectoryPath, TargetPrj2FileName)
+				: Path.Combine(DirectoryPath, GetMostRecentlyModifiedPrj2FileName());
+
+			if (!File.Exists(targetPrj2FilePath))
+			{
+				errorMessage = "The target .prj2 file does not exist.";
+				return false;
+			}
+
 			errorMessage = string.Empty;
 			return true;
 		}

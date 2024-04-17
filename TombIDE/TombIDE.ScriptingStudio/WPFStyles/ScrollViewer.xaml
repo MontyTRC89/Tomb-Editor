@@ -9,9 +9,6 @@
 	<PathGeometry x:Key="WideArrowRight" Figures="M 5 5 L 0 10 L 0 0 Z" />
 
 	<Style TargetType="{x:Type ScrollViewer}">
-		<!--  Control properties  -->
-		<Setter Property="CanContentScroll" Value="False" />
-
 		<!--  Layout  -->
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
 		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />

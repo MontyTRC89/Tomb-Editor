@@ -10,6 +10,7 @@ using TombIDE.ProjectMaster;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
+using TombIDE.Shared.SharedClasses;
 using TombIDE.Shared.SharedForms;
 using TombLib.LevelData;
 
@@ -77,17 +78,12 @@ namespace TombIDE
 		{
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() == Handle)
 			{
-				levelManager.IsMainWindowFocued = true;
 				scriptingStudio.IsMainWindowFocued = true;
-
 				scriptingStudio.EditorTabControl.TryRunFileReloadQueue();
 			}
 
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() != Handle)
-			{
-				levelManager.IsMainWindowFocued = false;
 				scriptingStudio.IsMainWindowFocued = false;
-			}
 
 			if (IsDisposed)
 				NativeMethods.UnhookWinEvent(eventHook);
@@ -121,6 +117,20 @@ namespace TombIDE
 
 				// Drop the panel
 				panel_CoverLoading.Dispose();
+			}
+		}
+
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+
+			if (ModifierKeys == Keys.None)
+			{
+				if (e.KeyCode == Keys.F3)
+					SharedMethods.OpenInExplorer(_ide.Project.DirectoryPath);
+
+				if (e.KeyCode == Keys.F4)
+					sideBar.LaunchGame();
 			}
 		}
 
@@ -163,6 +173,8 @@ namespace TombIDE
 		{
 			if (obj is IDE.ProjectScriptPathChangedEvent or IDE.ProjectLevelsPathChangedEvent)
 				OnProjectPathsChanged(obj);
+			else if (obj is IDE.RequestProgramCloseEvent)
+				Close();
 		}
 
 		#endregion IDE events
@@ -196,7 +208,7 @@ namespace TombIDE
 				{
 					_ide.Project.KnownLevelProjectFilePaths.Clear();
 					_ide.Project.LevelsDirectoryPath = lpce.NewPath;
-				}	
+				}
 
 				RestartApplication();
 			}

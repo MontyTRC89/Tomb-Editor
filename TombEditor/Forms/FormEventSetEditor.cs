@@ -361,9 +361,7 @@ namespace TombEditor.Forms
         private void PopulateEventTypeList()
         {
             cbEvents.Items.Clear();
-
-            foreach (var eventType in (GlobalMode ? Event.GlobalEventTypes : Event.VolumeEventTypes))
-                cbEvents.Items.Add(eventType);
+            cbEvents.Items.AddRange((GlobalMode ? Event.GlobalEventTypes : Event.VolumeEventTypes).Cast<object>().ToArray());
         }
 
         private void PopulateEventSetList()
@@ -441,6 +439,7 @@ namespace TombEditor.Forms
                                             (cbActivatorOtherMoveables.Checked ? VolumeActivators.OtherMoveables : 0) |
                                             (cbActivatorStatics.Checked ? VolumeActivators.Statics : 0) |
                                             (cbActivatorFlyBy.Checked ? VolumeActivators.Flybys : 0);
+            UpdateVolume();
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -513,14 +512,18 @@ namespace TombEditor.Forms
 
             if (GlobalMode)
             {
-                newSet = new GlobalEventSet() { Name = name };
+                newSet = new GlobalEventSet() 
+                { 
+                    Name = name,
+                    LastUsedEvent = Event.GlobalEventTypes[_editor.Configuration.NodeEditor_DefaultGlobalEventToEdit]
+                };
             }
             else
             {
                 newSet = new VolumeEventSet()
                 {
                     Name = name,
-                    LastUsedEvent = (EventType)_editor.Configuration.NodeEditor_DefaultEventToEdit
+                    LastUsedEvent = Event.VolumeEventTypes[_editor.Configuration.NodeEditor_DefaultEventToEdit]
                 };
             }
 
@@ -550,18 +553,22 @@ namespace TombEditor.Forms
 
         private void butDeleteEventSet_Click(object sender, EventArgs e)
         {
-            EditorActions.DeleteEventSet(SelectedSet);
-            SelectedSet = null;
+            int index = dgvEvents.SelectedRows.Count == 0 ? 0 : dgvEvents.SelectedRows[0].Index;
+            if (index == dgvEvents.Rows.Count - 1)
+                index--;
 
+            EditorActions.DeleteEventSet(SelectedSet);
             PopulateEventSetList();
 
             if (dgvEvents.Rows.Count > 0)
             {
-                DataGridViewRow lastRow = dgvEvents.Rows[^1];
-                lastRow.Selected = true;
+                SelectedSet = dgvEvents.Rows[index].Tag as EventSet;
             }
             else
+            {
+                SelectedSet = null;
                 UpdateUI();
+            }
         }
 
         private void butUnassignEventSet_Click(object sender, EventArgs e)

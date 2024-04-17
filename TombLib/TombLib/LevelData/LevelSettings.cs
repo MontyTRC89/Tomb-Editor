@@ -121,6 +121,9 @@ namespace TombLib.LevelData
         // Last used room
         public int LastSelectedRoom { get; set; } = 0;
 
+        // Default texture to be used for new rooms
+        public TextureArea DefaultTexture { get; set; } = TextureArea.None;
+
         // Sound system
         public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public List<int> SelectedSounds { get; set; } = new List<int>();
@@ -305,7 +308,9 @@ namespace TombLib.LevelData
 
             return Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
                             .Where(s => extList.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant()))
-                            .Select(s => Path.GetFileNameWithoutExtension(s)).Distinct().ToList();
+                            .Select(s => TextExtensions.ToLinuxPath(Path.Combine(Path.GetDirectoryName(Path.GetRelativePath(path, s)), Path.GetFileNameWithoutExtension(s))))
+                            .Distinct()
+                            .ToList();
         }
 
         public string GetVariable(VariableType type)

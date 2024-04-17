@@ -238,15 +238,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
                 // Write event sets
-                writer.Write((uint)(_level.Settings.GlobalEventSets.Count + _level.Settings.VolumeEventSets.Count));
-                
-                writer.Write((uint)_level.Settings.GlobalEventSets.Count);
-                foreach (GlobalEventSet set in _level.Settings.GlobalEventSets)
-                    set.Write(writer, _level.Settings.GlobalEventSets);
+                int eventSetCount = _level.Settings.GlobalEventSets.Count + _level.Settings.VolumeEventSets.Count;
+                writer.Write((uint)eventSetCount);
 
-                writer.Write((uint)_level.Settings.VolumeEventSets.Count);
-                foreach (VolumeEventSet set in _level.Settings.VolumeEventSets)
-                    set.Write(writer, _level.Settings.VolumeEventSets);
+                if (eventSetCount > 0)
+                {
+                    writer.Write((uint)_level.Settings.GlobalEventSets.Count);
+                    foreach (GlobalEventSet set in _level.Settings.GlobalEventSets)
+                        set.Write(writer, _level.Settings.GlobalEventSets);
+
+                    writer.Write((uint)_level.Settings.VolumeEventSets.Count);
+                    foreach (VolumeEventSet set in _level.Settings.VolumeEventSets)
+                        set.Write(writer, _level.Settings.VolumeEventSets);
+                }
 
                 // Write sound meta data
                 PrepareSoundsData();
