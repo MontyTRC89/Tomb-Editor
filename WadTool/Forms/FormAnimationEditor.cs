@@ -495,6 +495,7 @@ namespace WadTool
                     if (!_timerPlayAnimation.Enabled)
                         timeline.Value = 0;
 
+                    SelectFrame();
                     timeline.ResetSelection();
                 }
             }

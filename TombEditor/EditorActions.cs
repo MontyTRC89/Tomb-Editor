@@ -73,7 +73,7 @@ namespace TombEditor
             Any
         }
 
-        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
+        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, int increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
         {
             if (!disableUndo)
             {
@@ -400,7 +400,7 @@ namespace TombEditor
             }
         }
 
-        public static void SmoothSector(Room room, int x, int z, BlockVertical vertical, bool disableUndo = false)
+        public static void SmoothSector(Room room, int x, int z, BlockVertical vertical, int increment, bool disableUndo = false)
         {
             var currBlock = room.GetBlockTryThroughPortal(x, z);
 
@@ -448,10 +448,10 @@ namespace TombEditor
                                    (lookupBlocks[6].Block?.GetHeight(vertical, BlockEdge.XpZp) ?? 0) + adj[1] +
                                    (lookupBlocks[7].Block?.GetHeight(vertical, BlockEdge.XpZn) ?? 0) + adj[2]) / validBlockCntXnZn;
 
-            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XnZp, Math.Sign(newXnZp - currBlock.Block.GetHeight(vertical, BlockEdge.XnZp)));
-            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XpZp, Math.Sign(newXpZp - currBlock.Block.GetHeight(vertical, BlockEdge.XpZp)));
-            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XpZn, Math.Sign(newXpZn - currBlock.Block.GetHeight(vertical, BlockEdge.XpZn)));
-            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XnZn, Math.Sign(newXnZn - currBlock.Block.GetHeight(vertical, BlockEdge.XnZn)));
+            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XnZp, Math.Sign(newXnZp - currBlock.Block.GetHeight(vertical, BlockEdge.XnZp)) * increment);
+            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XpZp, Math.Sign(newXpZp - currBlock.Block.GetHeight(vertical, BlockEdge.XpZp)) * increment);
+            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XpZn, Math.Sign(newXpZn - currBlock.Block.GetHeight(vertical, BlockEdge.XpZn)) * increment);
+            room.ChangeBlockHeight(x, z, vertical, BlockEdge.XnZn, Math.Sign(newXnZn - currBlock.Block.GetHeight(vertical, BlockEdge.XnZn)) * increment);
 
             currBlock.Block.FixHeights(vertical);
 
@@ -499,7 +499,7 @@ namespace TombEditor
                                 currentHeight = 1 - currentHeight;
                             break;
                     }
-                    currentHeight = Math.Round(currentHeight * heightScale);
+                    currentHeight = Math.Round(currentHeight * heightScale) * _editor.IncrementReference;
 
                     if (stepped)
                     {
@@ -533,7 +533,7 @@ namespace TombEditor
 
                     int currX = x * (heightmap.GetLength(0) / (area.Width + 2));
                     int currZ = z * (heightmap.GetLength(1) / (area.Height + 2));
-                    room.ModifyHeightThroughPortal(w, h, vertical, (int)Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale), area);
+                    room.ModifyHeightThroughPortal(w, h, vertical, (int)Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale) * _editor.IncrementReference, area);
                 }
             SmartBuildGeometry(room, area);
         }
@@ -1443,7 +1443,7 @@ namespace TombEditor
                             switch (type)
                             {
                                 case TextureSearchType.Empty:
-                                    if (tex == TextureArea.None)
+                                    if (tex == TextureArea.None || tex == _editor.Level.Settings.DefaultTexture)
                                         result.Add(entry);
                                     break;
 
@@ -2520,8 +2520,8 @@ namespace TombEditor
             // Resize room
             var relevantRooms = new HashSet<Room>(room.Portals.Select(p => p.AdjoiningRoom));
             if (room.Alternated)
-                room.AlternateOpposite.Resize(_editor.Level, newArea, (short)room.AlternateOpposite.GetLowestCorner(), (short)room.AlternateOpposite.GetHighestCorner(), useFloor);
-            room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), useFloor);
+                room.AlternateOpposite.Resize(_editor.Level, newArea, room.AlternateOpposite.GetLowestCorner(), room.AlternateOpposite.GetHighestCorner(), useFloor);
+            room.Resize(_editor.Level, newArea, room.GetLowestCorner(), room.GetHighestCorner(), useFloor);
             Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
             Parallel.ForEach(relevantRooms, relevantRoom =>
             {
@@ -2561,7 +2561,7 @@ namespace TombEditor
                     else
                     {
                         // Now try to guess the floor split
-                        short maxHeight = short.MinValue;
+                        int maxHeight = int.MinValue;
                         byte theCorner = 0;
 
                         if (room.Blocks[x, z].Floor.XnZp > maxHeight)
@@ -2637,7 +2637,7 @@ namespace TombEditor
                     else
                     {
                         // Now try to guess the floor split
-                        short minHeight = short.MaxValue;
+                        int minHeight = int.MaxValue;
                         byte theCorner = 0;
 
                         if (room.Blocks[x, z].Ceiling.XnZp < minHeight)
@@ -2715,7 +2715,7 @@ namespace TombEditor
                     else
                     {
                         // Now try to guess the floor split
-                        short maxHeight = short.MinValue;
+                        int maxHeight = int.MinValue;
                         byte theCorner = 0;
 
                         if (room.Blocks[x, z].Floor.XnZp > maxHeight)
@@ -3129,7 +3129,7 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         room.ChangeBlockHeight(area.X0 + x, area.Y0 + z, vertical, edge,
-                            (int)Math.Round(changes[x + edge.DirectionX(), z + edge.DirectionZ()]));
+                            (int)Math.Round(changes[x + edge.DirectionX(), z + edge.DirectionZ()]) * _editor.IncrementReference);
 
             SmartBuildGeometry(room, area);
         }
@@ -3143,12 +3143,12 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         room.ChangeBlockHeight(area.X0 + x, area.Y0 + z, vertical, edge,
-                            (int)Math.Round((float)rng.NextDouble() * strengthDirection));
+                            (int)Math.Round((float)rng.NextDouble() * strengthDirection) * _editor.IncrementReference);
 
             SmartBuildGeometry(room, area);
         }
 
-        public static void AverageSectors(Room room, RectangleInt2 area, BlockVertical vertical)
+        public static void AverageSectors(Room room, RectangleInt2 area, BlockVertical vertical, int increments)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
@@ -3157,10 +3157,14 @@ namespace TombEditor
                 {
                     Block b = room.Blocks[x, z];
                     int sum = 0;
+
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         sum += b.GetHeight(vertical, edge);
+
+                    sum /= increments;
+
                     for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                        b.SetHeight(vertical, edge, sum / 4);
+                        b.SetHeight(vertical, edge, sum / 4 * increments);
                 }
             SmartBuildGeometry(room, area);
         }
@@ -3183,6 +3187,9 @@ namespace TombEditor
                             int testX = x + edge.DirectionX(), testZ = z + edge.DirectionZ();
                             floorHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Floor).Cast<int?>().Max();
                             ceilingHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Ceiling).Cast<int?>().Min();
+
+                            floorHeights[(int)edge] /= _editor.IncrementReference;
+                            ceilingHeights[(int)edge] /= _editor.IncrementReference;
                         }
 
                         if (!floorHeights.Any(floorHeight => floorHeight.HasValue) || !ceilingHeights.Any(floorHeight => floorHeight.HasValue))
@@ -3220,10 +3227,20 @@ namespace TombEditor
 
                             // TODO: Add support for more subdivisions
 
-                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, (short)Math.Round(fiveDivisions ? (floor * 4.0f + ceiling * 1.0f) / 5.0f : floor));
-                            block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 3.0f + ceiling * 2.0f) / 5.0f : (floor * 2.0f + ceiling * 1.0f) / 3.0f));
-                            block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 2.0f + ceiling * 3.0f) / 5.0f : (floor * 1.0f + ceiling * 2.0f) / 3.0f));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, (short)Math.Round(fiveDivisions ? (floor * 1.0f + ceiling * 4.0f) / 5.0f : ceiling));
+                            int edHeight = (int)Math.Round(fiveDivisions ? (floor * 4.0f + ceiling * 1.0f) / 5.0f : floor),
+                                qaHeight = (int)Math.Round(fiveDivisions ? (floor * 3.0f + ceiling * 2.0f) / 5.0f : (floor * 2.0f + ceiling * 1.0f) / 3.0f),
+                                wsHeight = (int)Math.Round(fiveDivisions ? (floor * 2.0f + ceiling * 3.0f) / 5.0f : (floor * 1.0f + ceiling * 2.0f) / 3.0f),
+                                rfHeight = (int)Math.Round(fiveDivisions ? (floor * 1.0f + ceiling * 4.0f) / 5.0f : ceiling);
+
+                            edHeight *= _editor.IncrementReference;
+                            qaHeight *= _editor.IncrementReference;
+                            wsHeight *= _editor.IncrementReference;
+                            rfHeight *= _editor.IncrementReference;
+
+                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, edHeight);
+                            block.Floor.SetHeight(edge, qaHeight);
+                            block.Ceiling.SetHeight(edge, wsHeight);
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, rfHeight);
                         }
                     }
                 }
@@ -3254,6 +3271,9 @@ namespace TombEditor
                             int testX = x + edge.DirectionX(), testZ = z + edge.DirectionZ();
                             floorHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Floor).Cast<int?>().Max();
                             ceilingHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Ceiling).Cast<int?>().Min();
+
+                            floorHeights[(int)edge] /= _editor.IncrementReference;
+                            ceilingHeights[(int)edge] /= _editor.IncrementReference;
                         }
 
                         if (!floorHeights.Any(floorHeight => floorHeight.HasValue) || !ceilingHeights.Any(floorHeight => floorHeight.HasValue))
@@ -3323,10 +3343,20 @@ namespace TombEditor
 
                             // TODO: Add support for subdivisions
 
-                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, (short)Math.Round(fiveDivisions ? (minFloor * 4.0f + maxCeiling * 1.0f) / 5.0f : minFloor));
-                            block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 3.0f + maxCeiling * 2.0f) / 5.0f : (minFloor * 2.0f + maxCeiling * 1.0f) / 3.0f));
-                            block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (minFloor * 2.0f + maxCeiling * 3.0f) / 5.0f : (minFloor * 1.0f + maxCeiling * 2.0f) / 3.0f));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, (short)Math.Round(fiveDivisions ? (minFloor * 1.0f + maxCeiling * 4.0f) / 5.0f : maxCeiling));
+                            int edHeight = (int)Math.Round(fiveDivisions ? (minFloor * 4.0f + maxCeiling * 1.0f) / 5.0f : minFloor),
+                                qaHeight = (int)Math.Round(fiveDivisions ? (minFloor * 3.0f + maxCeiling * 2.0f) / 5.0f : (minFloor * 2.0f + maxCeiling * 1.0f) / 3.0f),
+                                wsHeight = (int)Math.Round(fiveDivisions ? (minFloor * 2.0f + maxCeiling * 3.0f) / 5.0f : (minFloor * 1.0f + maxCeiling * 2.0f) / 3.0f),
+                                rfHeight = (int)Math.Round(fiveDivisions ? (minFloor * 1.0f + maxCeiling * 4.0f) / 5.0f : maxCeiling);
+
+                            edHeight *= _editor.IncrementReference;
+                            qaHeight *= _editor.IncrementReference;
+                            wsHeight *= _editor.IncrementReference;
+                            rfHeight *= _editor.IncrementReference;
+
+                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, edHeight);
+                            block.Floor.SetHeight(edge, qaHeight);
+                            block.Ceiling.SetHeight(edge, wsHeight);
+                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, rfHeight);
                         }
                     }
                 }
@@ -3340,7 +3370,7 @@ namespace TombEditor
                 room.BuildGeometry();
         }
 
-        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, bool grid, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
+        public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, bool grid, int roomDepth, bool switchRoom = true, bool clearAdjoiningArea = false)
         {
             if (!selection.Empty && !selection.Valid)
             {
@@ -3467,7 +3497,7 @@ namespace TombEditor
 
             // Create room and attach portal
             var newRoom = new Room(_editor.Level, roomSizeX, roomSizeZ, _editor.Level.Settings.DefaultAmbientLight,
-                                   "", (short)roomSizeY);
+                                   "", roomSizeY);
             int roomNumber = _editor.Level.AssignRoomToFree(newRoom);
             newRoom.Position = roomPos;
             newRoom.AddObject(_editor.Level, new PortalInstance(portalArea, PortalInstance.GetOppositeDirection(direction), room));
@@ -3605,11 +3635,11 @@ namespace TombEditor
             var resizeParameter = RectangleInt2.FromLTRB(minSectorPos - newRoom.SectorPos - VectorInt2.One, size);
             if (alternated)
                 newRoom.AlternateOpposite.Resize(_editor.Level, resizeParameter,
-                    checked((short)rooms.Min(room => (room.AlternateOpposite ?? room).GetLowestCorner())),
-                    checked((short)rooms.Max(room => (room.AlternateOpposite ?? room).GetHighestCorner())));
+                    rooms.Min(room => (room.AlternateOpposite ?? room).GetLowestCorner()),
+                    rooms.Max(room => (room.AlternateOpposite ?? room).GetHighestCorner()));
             newRoom.Resize(_editor.Level, resizeParameter,
-                checked((short)rooms.Min(room => room.GetLowestCorner())),
-                checked((short)rooms.Max(room => room.GetHighestCorner())));
+                rooms.Min(room => room.GetLowestCorner()),
+                rooms.Max(room => room.GetHighestCorner()));
             IEnumerable<Room> mergeRooms = rooms.Where(room => room != newRoom);
 
             Action<Room, IEnumerable<Room>, Dictionary<VectorInt2, Room>, bool> performMergeAction =
@@ -3635,7 +3665,7 @@ namespace TombEditor
                         // Transform positions
                         foreach (BlockVertical vertical in oldBlock.GetVerticals().Union(newBlock.GetVerticals()))
                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                sector.Value.ChangeBlockHeight(newBlockVec.X, newBlockVec.Y, vertical, edge, sector.Value.Position.Y - newRoomToHandle.Position.Y);
+                                newBlock.SetHeight(vertical, edge, newBlock.GetHeight(vertical, edge) + (sector.Value.Position.Y - newRoomToHandle.Position.Y));
 
                         newRoomToHandle.SetBlock(sector.Key - newRoomToHandle.SectorPos, newBlock);
                     }

@@ -56,6 +56,10 @@ LevelFuncs.Engine.Node.SplitString = function(inputStr, delimiter)
 	return t
 end
 
+LevelFuncs.Engine.Node.StringIsEmpty = function(str)
+	return (str == nil or str == '')
+end
+
 -- Wrap angle value around 360
 LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 	if (value == 0) then
@@ -69,6 +73,15 @@ LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 		rot = 360 + rot
 	end
 	return rot
+end
+
+LevelFuncs.Engine.Node.Smoothstep = function(source)
+	source = math.max(0, math.min(1, source))
+	return ((source ^ 3) * (source * (source * 6 - 15) + 10))
+end
+
+LevelFuncs.Engine.Node.Lerp = function(val1, val2, factor)
+	return val1 * (1 - factor) + val2 * factor
 end
 
 -- Convert UI enum to room flag ID enum

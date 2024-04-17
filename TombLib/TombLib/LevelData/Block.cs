@@ -396,19 +396,28 @@ namespace TombLib.LevelData
     {
         public bool SplitDirectionToggled;
         public DiagonalSplit DiagonalSplit;
-        public short XnZp;
-        public short XpZp;
-        public short XpZn;
-        public short XnZn;
+        public int XnZp;
+        public int XpZp;
+        public int XpZn;
+        public int XnZn;
 
         public bool IsQuad => DiagonalSplit == DiagonalSplit.None && IsQuad2(XnZp, XpZp, XpZn, XnZn);
-        public bool HasSlope => Max - Min > 2;
+
+        public bool HasSlope => DiagonalSplit switch
+        {
+            DiagonalSplit.XnZp => Math.Abs(XnZp - Math.Min(XnZn, XpZp)) >= Clicks.ToWorld(3),
+            DiagonalSplit.XpZp => Math.Abs(XpZp - Math.Min(XnZp, XpZn)) >= Clicks.ToWorld(3),
+            DiagonalSplit.XpZn => Math.Abs(XpZn - Math.Min(XnZn, XpZp)) >= Clicks.ToWorld(3),
+            DiagonalSplit.XnZn => Math.Abs(XnZn - Math.Min(XnZp, XpZn)) >= Clicks.ToWorld(3),
+            _ => Max - Min >= Clicks.ToWorld(3),
+        };
+
         public int IfQuadSlopeX => IsQuad ? XpZp - XnZp : 0;
         public int IfQuadSlopeZ => IsQuad ? XpZp - XpZn : 0;
-        public short Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
-        public short Min => Math.Min(Math.Min(XnZp, XpZp), Math.Min(XpZn, XnZn));
+        public int Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
+        public int Min => Math.Min(Math.Min(XnZp, XpZp), Math.Min(XpZn, XnZn));
 
-        public short GetHeight(BlockEdge edge)
+        public int GetHeight(BlockEdge edge)
         {
             switch (edge)
             {
@@ -430,16 +439,16 @@ namespace TombLib.LevelData
             switch (edge)
             {
                 case BlockEdge.XnZp:
-                    XnZp = checked((short)value);
+                    XnZp = value;
                     return;
                 case BlockEdge.XpZp:
-                    XpZp = checked((short)value);
+                    XpZp = value;
                     return;
                 case BlockEdge.XpZn:
-                    XpZn = checked((short)value);
+                    XpZn = value;
                     return;
                 case BlockEdge.XnZn:
-                    XnZn = checked((short)value);
+                    XnZn = value;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -593,20 +602,20 @@ namespace TombLib.LevelData
         }
 
         public static BlockSurface operator +(BlockSurface first, BlockSurface second) 
-            => new BlockSurface() { XpZp = (short)(first.XpZp + second.XpZp), XpZn = (short)(first.XpZn + second.XpZn), XnZp = (short)(first.XnZp + second.XnZp), XnZn = (short)(first.XnZn + second.XnZn) };
+            => new BlockSurface() { XpZp = first.XpZp + second.XpZp, XpZn = first.XpZn + second.XpZn, XnZp = first.XnZp + second.XnZp, XnZn = first.XnZn + second.XnZn };
         public static BlockSurface operator -(BlockSurface first, BlockSurface second)
-            => new BlockSurface() { XpZp = (short)(first.XpZp - second.XpZp), XpZn = (short)(first.XpZn - second.XpZn), XnZp = (short)(first.XnZp - second.XnZp), XnZn = (short)(first.XnZn - second.XnZn) };
+            => new BlockSurface() { XpZp = first.XpZp - second.XpZp, XpZn = first.XpZn - second.XpZn, XnZp = first.XnZp - second.XnZp, XnZn = first.XnZn - second.XnZn };
 
     }
 
     public class Subdivision : ICloneable
     {
-        public short[] Edges { get; } = new short[4];
+        public int[] Edges { get; } = new int[4];
 
         public Subdivision()
         { }
 
-        public Subdivision(short uniformEdgeY)
+        public Subdivision(int uniformEdgeY)
             => Edges[0] = Edges[1] = Edges[2] = Edges[3] = uniformEdgeY;
 
         public object Clone()
@@ -648,8 +657,8 @@ namespace TombLib.LevelData
 
         public Block(int floor, int ceiling)
         {
-            Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = (short)floor;
-            Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = (short)ceiling;
+            Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = floor;
+            Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = ceiling;
         }
 
         public Block Clone()
@@ -762,7 +771,7 @@ namespace TombLib.LevelData
             ExtraCeilingSubdivisions.AddRange(replacement.ExtraCeilingSubdivisions);
         }
 
-        public short GetHeight(BlockVertical vertical, BlockEdge edge)
+        public int GetHeight(BlockVertical vertical, BlockEdge edge)
         {
             switch (vertical)
             {
@@ -778,7 +787,7 @@ namespace TombLib.LevelData
                 Subdivision subdivision = ExtraFloorSubdivisions.ElementAtOrDefault(index);
 
                 if (subdivision == null)
-                    return short.MinValue;
+                    return int.MinValue;
 
                 return subdivision.Edges[(int)edge];
             }
@@ -789,7 +798,7 @@ namespace TombLib.LevelData
                 Subdivision subdivision = ExtraCeilingSubdivisions.ElementAtOrDefault(index);
 
                 if (subdivision == null)
-                    return short.MaxValue;
+                    return int.MaxValue;
 
                 return subdivision.Edges[(int)edge];
             }
@@ -799,7 +808,7 @@ namespace TombLib.LevelData
 
         public void SetHeight(BlockVertical vertical, BlockEdge edge, int newValue)
         {
-            if (newValue is short.MinValue or short.MaxValue)
+            if (newValue is int.MinValue or int.MaxValue)
                 return;
 
             switch (vertical)
@@ -824,7 +833,7 @@ namespace TombLib.LevelData
                     existingSubdivision = ExtraFloorSubdivisions.AddAndReturn(new Subdivision(Floor.Min));
                 }
 
-                existingSubdivision.Edges[(int)edge] = checked((short)newValue);
+                existingSubdivision.Edges[(int)edge] = newValue;
             }
             else if (vertical.IsExtraCeilingSubdivision())
             {
@@ -838,7 +847,7 @@ namespace TombLib.LevelData
                     existingSubdivision = ExtraCeilingSubdivisions.AddAndReturn(new Subdivision(Ceiling.Max));
                 }
                 
-                existingSubdivision.Edges[(int)edge] = checked((short)newValue);
+                existingSubdivision.Edges[(int)edge] = newValue;
             }
         }
 
@@ -986,32 +995,26 @@ namespace TombLib.LevelData
                 // Fix lower wall textures
                 if (transformation.MirrorX)
                 {
-                    MirrorWallTexture(BlockFace.Wall_PositiveX_QA, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_PositiveZ_QA, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeX_QA, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeZ_QA, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_Diagonal_QA, oldFaceIsTriangle);
+                    var faces = _faceTextures.Where(pair => pair.Key.IsFloorWall()).Select(pair => pair.Key).ToList();
 
-                    for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
-                    {
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.Diagonal, i), oldFaceIsTriangle);
-                    }
+                    for (int i = 0; i < faces.Count; i++)
+                        MirrorWallTexture(faces[i], oldFaceIsTriangle);
                 }
 
                 transformation.TransformValueQuad(_faceTextures, BlockFace.Wall_PositiveX_QA, BlockFace.Wall_PositiveZ_QA, BlockFace.Wall_NegativeX_QA, BlockFace.Wall_NegativeZ_QA);
 
-                for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
+                var texturedSubdivisions = _faceTextures.Where(pair => pair.Key.IsExtraFloorSubdivision()).Select(pair => pair.Key).ToList();
+
+                for (int i = 0; i < texturedSubdivisions.Count; i++)
                 {
+                    int index = texturedSubdivisions[i].GetVertical().GetExtraSubdivisionIndex();
+
                     transformation.TransformValueQuad(_faceTextures,
-                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, i),
-                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, i),
-                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, i),
-                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, i));
-                }      
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, index),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveZ, index),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeX, index),
+                        BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.NegativeZ, index));
+                }
 
                 // Fix floor textures
                 if (Floor.IsQuad)
@@ -1061,32 +1064,26 @@ namespace TombLib.LevelData
                 // Fix upper wall textures
                 if (transformation.MirrorX)
                 {
-                    MirrorWallTexture(BlockFace.Wall_PositiveX_WS, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_PositiveZ_WS, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeX_WS, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_NegativeZ_WS, oldFaceIsTriangle);
-                    MirrorWallTexture(BlockFace.Wall_Diagonal_WS, oldFaceIsTriangle);
+                    var faces = _faceTextures.Where(pair => pair.Key.IsCeilingWall()).Select(pair => pair.Key).ToList();
 
-                    for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
-                    {
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, i), oldFaceIsTriangle);
-                        MirrorWallTexture(BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.Diagonal, i), oldFaceIsTriangle);
-                    }
+                    for (int i = 0; i < faces.Count; i++)
+                        MirrorWallTexture(faces[i], oldFaceIsTriangle);
                 }
 
                 transformation.TransformValueQuad(_faceTextures, BlockFace.Wall_PositiveX_WS, BlockFace.Wall_PositiveZ_WS, BlockFace.Wall_NegativeX_WS, BlockFace.Wall_NegativeZ_WS);
 
-                for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
+                var texturedSubdivisions = _faceTextures.Where(pair => pair.Key.IsExtraCeilingSubdivision()).Select(pair => pair.Key).ToList();
+
+                for (int i = 0; i < texturedSubdivisions.Count; i++)
                 {
+                    int index = texturedSubdivisions[i].GetVertical().GetExtraSubdivisionIndex();
+
                     transformation.TransformValueQuad(_faceTextures,
-                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, i),
-                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, i),
-                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, i),
-                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, i));
-                }   
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, index),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveZ, index),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeX, index),
+                        BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.NegativeZ, index));
+                }
 
                 // Fix ceiling textures
                 if (Ceiling.IsQuad)
@@ -1182,10 +1179,10 @@ namespace TombLib.LevelData
         {
             Plane[] tri = new Plane[2];
 
-            var p0 = new Vector3(0, Floor.XnZp, 0);
-            var p1 = new Vector3(4, Floor.XpZp, 0);
-            var p2 = new Vector3(4, Floor.XpZn, -4);
-            var p3 = new Vector3(0, Floor.XnZn, -4);
+            var p0 = new Vector3(0, Clicks.FromWorld(Floor.XnZp, RoundingMethod.Integer), 0);
+            var p1 = new Vector3(4, Clicks.FromWorld(Floor.XpZp, RoundingMethod.Integer), 0);
+            var p2 = new Vector3(4, Clicks.FromWorld(Floor.XpZn, RoundingMethod.Integer), -4);
+            var p3 = new Vector3(0, Clicks.FromWorld(Floor.XnZn, RoundingMethod.Integer), -4);
 
             // Create planes based on floor split direction
 
@@ -1203,7 +1200,7 @@ namespace TombLib.LevelData
             return new Vector3[2] { tri[0].Normal, tri[1].Normal };
         }
 
-        public short GetTriangleMinimumFloorPoint(int triangle)
+        public int GetTriangleMinimumFloorPoint(int triangle)
         {
             if (triangle != 0 && triangle != 1)
                 return 0;

@@ -21,7 +21,7 @@ namespace TombLib.Wad
                 case WadAnimCommandType.EmptyHands:
                     return "Remove guns from hands";
                 case WadAnimCommandType.SetJumpDistance:
-                    return "Set jump reference <V, H> = <" + Parameter1 + ", " + Parameter2 + ">";
+                    return "Set jump reference <H, V> = <" + Parameter1 + ", " + Parameter2 + ">";
                 case WadAnimCommandType.KillEntity:
                     return "Kill entity";
                 case WadAnimCommandType.SetPosition:

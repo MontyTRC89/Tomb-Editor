@@ -38,7 +38,7 @@
     <moveable id="36" name="Swinging blade" essential="false" ten="SWINGING_BLADE" />
     <moveable id="37" name="Spikes" essential="false" ten="TEETH_SPIKES" />
     <moveable id="38" name="Boulder" essential="false" ten="CLASSIC_ROLLINGBALL" />
-    <moveable id="39" name="Dart" hidden="true" />
+    <moveable id="39" name="Dart" hidden="true" ten="DARTS" />
     <moveable id="40" name="Wall-mounted dartgun" essential="false" ten="DART_EMMITER" />
     <moveable id="41" name="Door (opens upward)" essential="false" ten="DOOR_TYPE9" />
     <moveable id="42" name="Slamming doors" essential="false" ten="SLAMMING_DOORS" />
@@ -130,7 +130,7 @@
     <moveable id="170" name="Waterfall mist" essential="false" ten="WATERFALLMIST" />
     <moveable id="172" name="Mutant bullet" hidden="true" ten="PROJ_SHARD" />
     <moveable id="173" name="Mutant grenade" hidden="true" ten="PROJ_BOMB" />
-    <moveable id="177" name="Lava particle emitter" essential="false" />
+    <moveable id="177" name="Lava particle emitter" essential="false" ten="EMBER_EMITTER" />
     <moveable id="179" name="Flame emitter" essential="false" ten="FLAME_EMITTER1" />
     <moveable id="180" name="Flowing Atlantean lava" essential="false" />
     <moveable id="181" name="Mutant egg and holder (big)" essential="false" />

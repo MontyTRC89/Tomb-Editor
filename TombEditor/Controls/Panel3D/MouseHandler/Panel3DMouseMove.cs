@@ -68,9 +68,9 @@ namespace TombEditor.Controls.Panel3D
                         Point invertedDragValue = new Point(dragValue.Value.X, -dragValue.Value.Y);
                         var currRoom = _toolHandler.ReferenceRoom;
                         RectangleInt2 resizeArea = new RectangleInt2(currRoom.LocalArea.Start, currRoom.LocalArea.End);
-                        short[] resizeHeight = { (short)currRoom.GetLowestCorner(), (short)currRoom.GetHighestCorner() };
+                        int[] resizeHeight = { currRoom.GetLowestCorner(), currRoom.GetHighestCorner() };
                         PortalDirection portalDirection;
-                        int verticalPrecision = ModifierKeys.HasFlag(Keys.Shift) ? 1 : 4;
+                        int verticalPrecision = ModifierKeys.HasFlag(Keys.Shift) ? _editor.IncrementReference : _editor.IncrementReference * 4;
 
                         if (_toolHandler.ReferencePicking.IsVerticalPlane)
                             portalDirection = PortalInstance.GetOppositeDirection
@@ -90,8 +90,8 @@ namespace TombEditor.Controls.Panel3D
                                 if (resizeHeight[1] - resizeHeight[0] + (portalDirection == PortalDirection.Floor ? newHeight : -newHeight) <= 0)
                                     return false;  // Limit inward dragging
 
-                                resizeHeight[0] = (short)(portalDirection == PortalDirection.Floor ? 0 : newHeight);
-                                resizeHeight[1] = (short)(portalDirection == PortalDirection.Floor ? newHeight : 0);
+                                resizeHeight[0] = portalDirection == PortalDirection.Floor ? 0 : newHeight;
+                                resizeHeight[1] = portalDirection == PortalDirection.Floor ? newHeight : 0;
                                 break;
 
                             case PortalDirection.WallNegativeX:
@@ -130,27 +130,21 @@ namespace TombEditor.Controls.Panel3D
 
                         if (_toolHandler.ReferencePicking.BelongsToFloor)
                         {
-                            if (_currentNumberKey is >= Keys.D2 and <= Keys.D9)
-                            {
-                                int index = (int)_currentNumberKey - (int)Keys.D0;
-                                subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(index - 2);
-                            }
-                            else if (ModifierKeys.HasFlag(Keys.Control))
+                            if (ModifierKeys.HasFlag(Keys.Control))
                                 subdivisionToEdit = BlockVertical.FloorSubdivision2;
-                            else
+                            else if (_editor.HighlightedSubdivision <= 1)
                                 subdivisionToEdit = BlockVertical.Floor;
+                            else
+                                subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(_editor.HighlightedSubdivision - 2);
                         }
                         else
                         {
-                            if (_currentNumberKey is >= Keys.D2 and <= Keys.D9)
-                            {
-                                int index = (int)_currentNumberKey - (int)Keys.D0;
-                                subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(index - 2);
-                            }
-                            else if (ModifierKeys.HasFlag(Keys.Control))
+                            if (ModifierKeys.HasFlag(Keys.Control))
                                 subdivisionToEdit = BlockVertical.CeilingSubdivision2;
-                            else
+                            else if (_editor.HighlightedSubdivision <= 1)
                                 subdivisionToEdit = BlockVertical.Ceiling;
+                            else
+                                subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(_editor.HighlightedSubdivision - 2);
                         }
 
                         switch (_editor.Tool.Tool)
@@ -160,7 +154,7 @@ namespace TombEditor.Controls.Panel3D
                                     _editor.SelectedSectors.Area,
                                     _editor.SelectedSectors.Arrow,
                                     subdivisionToEdit,
-                                    (short)Math.Sign(dragValue.Value.Y),
+                                    Math.Sign(dragValue.Value.Y) * _editor.IncrementReference,
                                     ModifierKeys.HasFlag(Keys.Alt),
                                     _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true);
                                 break;
@@ -257,7 +251,7 @@ namespace TombEditor.Controls.Panel3D
                                         if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
                                             break;
 
-                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, true);
+                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, _editor.IncrementReference, true);
                                         break;
 
                                     case EditorToolType.Drag:
@@ -268,12 +262,16 @@ namespace TombEditor.Controls.Panel3D
                                         if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
                                             break;
 
+                                        int increment =
+                                            (_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor
+                                            ? _editor.IncrementReference : -_editor.IncrementReference;
+
                                         EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                             new RectangleInt2(pos, pos),
                                             ArrowType.EntireFace,
                                             belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
-                                            (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
-                                            _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
+                                            increment,
+                                            _editor.Tool.Tool is EditorToolType.Brush or EditorToolType.Shovel,
                                             false, false, true, true);
                                         break;
                                 }

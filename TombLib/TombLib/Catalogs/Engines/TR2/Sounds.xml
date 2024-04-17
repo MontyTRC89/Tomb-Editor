@@ -172,7 +172,7 @@
     <sound id="175" name="ENEMY_FLAMETHROWER_FIRE" ten="494" />
     <sound id="176" name="ENEMY_FLAMETHROWER_SCRAPE" ten="495" />
     <sound id="177" name="ENEMY_FLAMETHROWER_CLICK" ten="492" />
-    <sound id="178" name="ENEMY_FLAMETHROWER_DEATH" ten="493" />
+    <sound id="178" name="ENEMY_FLAMETHROWER_DEATH" ten="484" />
     <sound id="179" name="ENEMY_FLAMETHROWER_FALL" ten="493" />
     <sound id="180" name="ENEMY_BELT_JINGLE" ten="476" />
     <sound id="181" name="ENEMY_WRENCH" ten="506" />
@@ -319,7 +319,7 @@
     <sound id="338" name="UNKNOWN1" ten="338" />
     <sound id="339" name="UNKNOWN2" ten="339" />
     <sound id="340" name="UNKNOWN3" ten="340" />
-    <sound id="341" name="UNKNOWN4" ten="341" />
+    <sound id="341" name="MARCO_BARTOLLI_TRANSFORM" ten="1146" />
     <sound id="342" name="WINSTON_SHUFFLE" ten="608" />
     <sound id="343" name="WINSTON_FEET" ten="601" />
     <sound id="344" name="WINSTON_GRUNT1" ten="605" />

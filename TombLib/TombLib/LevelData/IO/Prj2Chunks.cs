@@ -13,6 +13,7 @@ namespace TombLib.LevelData.IO
 
         public static readonly ChunkId Settings = ChunkId.FromString("TeSettings");
         /**/public static readonly ChunkId LastRoom = ChunkId.FromString("TeLastRoom"); // UTF-8 string
+        /**/public static readonly ChunkId DefaultTexture = ChunkId.FromString("TeDefaultTextures");
         /**/public static readonly ChunkId SoundSystem = ChunkId.FromString("TeSoundSystem"); // UTF-8 string
         /**/public static readonly ChunkId ObsoleteWadFilePath = ChunkId.FromString("TeWadFilePath"); // UTF-8 string
         /**/public static readonly ChunkId FontTextureFilePath = ChunkId.FromString("TeFontTextureFilePath"); // UTF-8 string
@@ -116,16 +117,21 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId Room = ChunkId.FromString("TeRoom"); // Contains X, Y sectors, Name, Position directly
         /******/public static readonly ChunkId RoomIndex = ChunkId.FromString("TeI");
         /******/public static readonly ChunkId RoomName = ChunkId.FromString("TeName");
-        /******/public static readonly ChunkId RoomPosition = ChunkId.FromString("TePos");
+        /******/public static readonly ChunkId RoomPosition = ChunkId.FromString("TePos"); // DEPRECATED
+        /******/public static readonly ChunkId RoomPosition2 = ChunkId.FromString("TePos2");
         /******/public static readonly ChunkId RoomSectors = ChunkId.FromString("TeSecs");
         /**********/public static readonly ChunkId Sector = ChunkId.FromString("TeS");
         /**************/public static readonly ChunkId SectorProperties = new ChunkId(new byte[] { 0 }); // These chunks occur very often, this minimizes their size impact
         /**************/public static readonly ChunkId SectorFloor = new ChunkId(new byte[] { 1 }); // DEPRECATED
         /**************/public static readonly ChunkId SectorCeiling = new ChunkId(new byte[] { 2 }); // DEPRECATED
-        /**************/public static readonly ChunkId SectorFloorOnly = new ChunkId(new byte[] { 3 });
-        /**************/public static readonly ChunkId SectorCeilingOnly = new ChunkId(new byte[] { 4 });
-        /**************/public static readonly ChunkId SectorFloorSubdivisions = new ChunkId(new byte[] { 5 });
-        /**************/public static readonly ChunkId SectorCeilingSubdivisions = new ChunkId(new byte[] { 6 });
+        /**************/public static readonly ChunkId SectorFloorOnly = new ChunkId(new byte[] { 3 }); // DEPRECATED
+        /**************/public static readonly ChunkId SectorCeilingOnly = new ChunkId(new byte[] { 4 }); // DEPRECATED
+        /**************/public static readonly ChunkId SectorFloorSubdivisions = new ChunkId(new byte[] { 5 }); // DEPRECATED
+        /**************/public static readonly ChunkId SectorCeilingSubdivisions = new ChunkId(new byte[] { 6 }); // DEPRECATED
+        /**************/public static readonly ChunkId SectorFloorOnly2 = new ChunkId(new byte[] { 7 });
+        /**************/public static readonly ChunkId SectorCeilingOnly2 = new ChunkId(new byte[] { 8 });
+        /**************/public static readonly ChunkId SectorFloorSubdivisions2 = new ChunkId(new byte[] { 9 });
+        /**************/public static readonly ChunkId SectorCeilingSubdivisions2 = new ChunkId(new byte[] { 10 });
         /**************/public static readonly ChunkId TextureLevelTexture = new ChunkId(new byte[] { 16 });
         /**************/public static readonly ChunkId TextureLevelTexture2 = new ChunkId(new byte[] { 18 });
         /**************/public static readonly ChunkId TextureInvisible = new ChunkId(new byte[] { 17 });
@@ -207,7 +213,8 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
         /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri");
         /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2");
-        /**********/public static readonly ChunkId ObjectGhostBlock = ChunkId.FromString("TeGhost");
+        /**********/public static readonly ChunkId ObjectGhostBlock = ChunkId.FromString("TeGhost"); // DEPRECATED
+        /**********/public static readonly ChunkId ObjectGhostBlock2 = ChunkId.FromString("TeGhost2");
         /**********/public static readonly ChunkId ObjectTriggerVolumeTest = ChunkId.FromString("TeVolumeTest");
         /**********/public static readonly ChunkId ObjectTriggerVolume1 = ChunkId.FromString("TeVolume1");
         /**********/public static readonly ChunkId ObjectTriggerVolume2 = ChunkId.FromString("TeVolume2");

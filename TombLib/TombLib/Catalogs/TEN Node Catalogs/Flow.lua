@@ -56,7 +56,7 @@ end
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
 
 LevelFuncs.Engine.Node.RunEventSet = function(setName, eventType, activator)
-	if (setName == '' or setName == nil) then
+	if (LevelFuncs.Engine.Node.StringIsEmpty(setName)) then
 		print("There is no specified event set in level!")
 		return
 	end
@@ -71,7 +71,7 @@ end
 -- !Arguments "VolumeEvents, 35, Event to enable"
 
 LevelFuncs.Engine.Node.EnableEvent = function(setName, eventType)
-	if (setName == '' or setName == nil) then
+	if (LevelFuncs.Engine.Node.StringIsEmpty(setName)) then
 		print("There is no specified event set in level!")
 		return
 	end
@@ -86,7 +86,7 @@ end
 -- !Arguments "VolumeEvents, 35, Event to disable"
 
 LevelFuncs.Engine.Node.DisableEvent = function(setName, eventType)
-	if (setName == '' or setName == nil) then
+	if (LevelFuncs.Engine.Node.StringIsEmpty(setName)) then
 		print("There is no specified event set in level!")
 		return
 	end
@@ -103,7 +103,7 @@ end
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
 
 LevelFuncs.Engine.Node.RunGlobalEventSet = function(setName, eventType, activator)
-	if (setName == '' or setName == nil) then
+	if (LevelFuncs.Engine.Node.StringIsEmpty(setName)) then
 		print("There is no specified event set in level!")
 		return
 	end
@@ -118,7 +118,7 @@ end
 -- !Arguments "GlobalEvents, 35, Event to enable"
 
 LevelFuncs.Engine.Node.EnableGlobalEvent = function(setName, eventType)
-	if (setName == '' or setName == nil) then
+	if (LevelFuncs.Engine.Node.StringIsEmpty(setName)) then
 		print("There is no specified event set in level!")
 		return
 	end
@@ -133,7 +133,7 @@ end
 -- !Arguments "GlobalEvents, 35, Event to disable"
 
 LevelFuncs.Engine.Node.DisableGlobalEvent = function(setName, eventType)
-	if (setName == '' or setName == nil) then
+	if (LevelFuncs.Engine.Node.StringIsEmpty(setName)) then
 		print("There is no specified event set in level!")
 		return
 	end
@@ -149,7 +149,7 @@ end
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
 
 LevelFuncs.Engine.Node.RunLuaScript = function(funcName, args)
-	if (funcName == nil) then
+	if (LevelFuncs.Engine.Node.StringIsEmpty(funcName)) then
 		print("There is no specified function in level script!")
 		return
 	end
@@ -167,7 +167,7 @@ end
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
 
 LevelFuncs.Engine.Node.RunConditionalLuaScript = function(operator, result, funcName, args)
-	if (funcName == nil) then
+	if (LevelFuncs.Engine.Node.StringIsEmpty(funcName)) then
 		print("There is no specified function in level script!")
 		return 0
 	end

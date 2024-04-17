@@ -328,9 +328,9 @@
     <moveable id="421" name="SARCOPHAGUS" />
     <moveable id="422" name="ENEMY_PIECE" />
     <moveable id="423" name="EXPANDING_PLATFORM" />
-    <moveable id="424" name="SQUISHY_BLOCK1" />
-    <moveable id="425" name="SQUISHY_BLOCK2" />
-    <moveable id="426" name="TRIPWIRE" />
+    <moveable id="424" name="SQUISHY_BLOCK_HORIZONTAL" />
+    <moveable id="425" name="SQUISHY_BLOCK_VERTICAL" />
+	<moveable id="426" name="LASER_BEAM" freeRot="true" />
     <moveable id="427" name="MINE_DETECTOR" />
     <moveable id="428" name="MAP" />
     <moveable id="429" name="SECRET_MAP" />
@@ -757,8 +757,8 @@
     <moveable id="1053" name="FLOOR_LASERS" />
     <moveable id="1054" name="KILL_ALL_TRIGGERS" />
     <moveable id="1055" name="TRIGGER_TRIGGERER" />
-    <moveable id="1056" name="HIGH_OBJECT1" />
-    <moveable id="1057" name="HIGH_OBJECT2" />
+    <moveable id="1056" name="HIGH_OBJECT" />
+    <moveable id="1057" name="EMBER_EMITTER" />
     <moveable id="1058" name="SMASH_OBJECT1" />
     <moveable id="1059" name="SMASH_OBJECT2" />
     <moveable id="1060" name="SMASH_OBJECT3" />

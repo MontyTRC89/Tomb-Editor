@@ -48,6 +48,7 @@ namespace TombIDE.ScriptingStudio.Bases
 			{
 				EditorTabControl.ScriptRootDirectoryPath = value;
 				FileExplorer.RootDirectoryPath = value;
+				FileExplorer.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
 			}
 		}
 
