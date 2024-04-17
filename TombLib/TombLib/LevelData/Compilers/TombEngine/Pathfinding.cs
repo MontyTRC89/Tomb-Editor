@@ -52,7 +52,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Xmax = dec_boxes[i].Xmax,
                     Zmin = dec_boxes[i].Zmin,
                     Zmax = dec_boxes[i].Zmax,
-                    TrueFloor = -(dec_boxes[i].TrueFloor * (int)Level.HeightUnit),
+                    TrueFloor = -dec_boxes[i].TrueFloor,
                     OverlapIndex = dec_boxes[i].OverlapIndex,
                     Flags = dec_boxes[i].IsolatedBox ? 0x8000 : 0
                 };
@@ -150,18 +150,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         case ZoneType.Skeleton:
                             // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
-                            add = (step <= (int)Level.HeightUnit || canJump);
+                            add = (step <= Clicks.ToWorld(1) || canJump);
                             break;
 
                         case ZoneType.Basic:
                             // Enemies like scorpions, mummies, dogs, wild boars. They can go only on land, and climb 1 click step
-                            add = (step <= (int)Level.HeightUnit);
+                            add = (step <= Clicks.ToWorld(1));
                             break;
 
                         case ZoneType.Water:
                             // Enemies like crocodiles. They can go on land and inside water, and climb 1 click step.
                             // In water they act like flying enemies. Guide seems to belong to this zone.
-                            add = (step <= (int)Level.HeightUnit || water);
+                            add = (step <= Clicks.ToWorld(1) || water);
                             break;
 
                         case ZoneType.Human:

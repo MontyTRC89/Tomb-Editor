@@ -265,6 +265,20 @@ namespace TombLib.LevelData.IO
                     SoundsCatalogsToLoad = toLoad;
                     settings.SoundCatalogs = list;
                 }
+                else if (id == Prj2Chunks.DefaultTexture)
+                {
+                    var textureArea = new TextureArea();
+                    textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
+                    textureArea.Texture   = levelSettingsIds.LevelTextures.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
+
+                    if (textureArea.Texture != null)
+                        settings.DefaultTexture = textureArea;
+                    else
+                        settings.DefaultTexture = TextureArea.None;
+                }
                 else if (id == Prj2Chunks.GameDirectory)
                     settings.GameDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameLevelFilePath)
@@ -487,7 +501,7 @@ namespace TombLib.LevelData.IO
                     var reportString = "Reading ";
                     if (id == Prj2Chunks.GlobalEventSets)
                         reportString += "global";
-                    else if (id == Prj2Chunks.VolumeEventSets)
+                    else
                         reportString += "volume";
 
                     progressReporter?.ReportInfo(reportString + " event sets...");
@@ -749,7 +763,9 @@ namespace TombLib.LevelData.IO
                         roomIndex = chunkIO.ReadChunkLong(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomName)
                         room.Name = chunkIO.ReadChunkString(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomPosition)
+                    else if (id2 == Prj2Chunks.RoomPosition) // DEPRECATED
+                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2) * new VectorInt3(1, Level.FullClickHeight, 1));
+                    else if (id2 == Prj2Chunks.RoomPosition2)
                         room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2));
                     else if (id2 == Prj2Chunks.RoomTags)
                     {
@@ -786,15 +802,18 @@ namespace TombLib.LevelData.IO
                                         block.Flags = (BlockFlags)(flag >> 2);
                                         block.ForceFloorSolid = (flag & 2) != 0;
                                     }
+
+                                    #region DEPRECATED
+
                                     else if (id4 == Prj2Chunks.SectorFloor) // DEPRECATED
                                     {
                                         usesLegacyFloor = true;
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Floor.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.SetHeight(BlockVertical.FloorSubdivision2, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
@@ -805,32 +824,34 @@ namespace TombLib.LevelData.IO
 
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Ceiling.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.SetHeight(BlockVertical.CeilingSubdivision2, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorOnly)
+                                    else if (id4 == Prj2Chunks.SectorFloorOnly) // DEPRECATED
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
+
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Floor.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Floor.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeilingOnly)
+                                    else if (id4 == Prj2Chunks.SectorCeilingOnly) // DEPRECATED
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
+
                                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                            block.Ceiling.SetHeight(edge, LEB128.ReadShort(chunkIO.Raw));
+                                            block.Ceiling.SetHeight(edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
 
                                         block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
-                                    else if (id4 == Prj2Chunks.SectorFloorSubdivisions)
+                                    else if (id4 == Prj2Chunks.SectorFloorSubdivisions) // DEPRECATED
                                     {
                                         byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
 
@@ -840,10 +861,10 @@ namespace TombLib.LevelData.IO
                                             block.ExtraFloorSubdivisions.Add(new Subdivision());
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+                                                block.SetHeight(subdivisionVertical, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
                                         }
                                     }
-                                    else if (id4 == Prj2Chunks.SectorCeilingSubdivisions)
+                                    else if (id4 == Prj2Chunks.SectorCeilingSubdivisions) // DEPRECATED
                                     {
                                         byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
 
@@ -853,7 +874,56 @@ namespace TombLib.LevelData.IO
                                             block.ExtraCeilingSubdivisions.Add(new Subdivision());
 
                                             for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadShort(chunkIO.Raw));
+                                                block.SetHeight(subdivisionVertical, edge, Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw)));
+                                        }
+                                    }
+
+                                    #endregion DEPRECATED
+
+                                    else if (id4 == Prj2Chunks.SectorFloorOnly2)
+                                    {
+                                        long flag = LEB128.ReadLong(chunkIO.Raw);
+
+                                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                            block.Floor.SetHeight(edge, LEB128.ReadInt(chunkIO.Raw));
+
+                                        block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
+                                        block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
+                                    }
+                                    else if (id4 == Prj2Chunks.SectorCeilingOnly2)
+                                    {
+                                        long flag = LEB128.ReadLong(chunkIO.Raw);
+
+                                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                            block.Ceiling.SetHeight(edge, LEB128.ReadInt(chunkIO.Raw));
+
+                                        block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
+                                        block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
+                                    }
+                                    else if (id4 == Prj2Chunks.SectorFloorSubdivisions2)
+                                    {
+                                        byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
+
+                                        for (int i = 0; i < extraSubdivisionCount; i++)
+                                        {
+                                            BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraFloorSubdivision(i);
+                                            block.ExtraFloorSubdivisions.Add(new Subdivision());
+
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadInt(chunkIO.Raw));
+                                        }
+                                    }
+                                    else if (id4 == Prj2Chunks.SectorCeilingSubdivisions2)
+                                    {
+                                        byte extraSubdivisionCount = LEB128.ReadByte(chunkIO.Raw);
+
+                                        for (int i = 0; i < extraSubdivisionCount; i++)
+                                        {
+                                            BlockVertical subdivisionVertical = BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
+                                            block.ExtraCeilingSubdivisions.Add(new Subdivision());
+
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                block.SetHeight(subdivisionVertical, edge, LEB128.ReadInt(chunkIO.Raw));
                                         }
                                     }
                                     else if (id4 == Prj2Chunks.TextureLevelTexture ||
@@ -1555,7 +1625,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectGhostBlock)
+                else if (id3 == Prj2Chunks.ObjectGhostBlock) // DEPRECATED
                 {
                     int x = LEB128.ReadInt(chunkIO.Raw);
                     int y = LEB128.ReadInt(chunkIO.Raw);
@@ -1563,14 +1633,34 @@ namespace TombLib.LevelData.IO
                     var instance = new GhostBlockInstance();
                     instance.SectorPosition = new VectorInt2(x, y);
 
-                    instance.Floor.XnZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XnZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XpZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Floor.XpZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XnZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XnZp = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XpZn = LEB128.ReadShort(chunkIO.Raw);
-                    instance.Ceiling.XpZp = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Floor.XnZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XnZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XpZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Floor.XpZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XnZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XnZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XpZn = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+                    instance.Ceiling.XpZp = Clicks.ToWorld(LEB128.ReadShort(chunkIO.Raw));
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectGhostBlock2)
+                {
+                    int x = LEB128.ReadInt(chunkIO.Raw);
+                    int y = LEB128.ReadInt(chunkIO.Raw);
+
+                    var instance = new GhostBlockInstance();
+                    instance.SectorPosition = new VectorInt2(x, y);
+
+                    instance.Floor.XnZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XnZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XpZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Floor.XpZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XnZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XnZp = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XpZn = LEB128.ReadInt(chunkIO.Raw);
+                    instance.Ceiling.XpZp = LEB128.ReadInt(chunkIO.Raw);
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
@@ -1827,6 +1917,10 @@ namespace TombLib.LevelData.IO
                     return false;
                 return true;
             });
+
+            // Attempt to fix missing or excessive arguments in case node was changed
+            if (ScriptingUtils.NodeFunctions.Any(f => f.Signature == node.Function))
+                node.FixArguments(ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function));
 
             node.Previous = previous;
             return node;

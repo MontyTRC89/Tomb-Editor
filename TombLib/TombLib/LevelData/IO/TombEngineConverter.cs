@@ -172,7 +172,7 @@ namespace TombLib.LevelData.IO
                 case "ANIMATING15":
                 case "ANIMATING16":
                     {
-                        if (refWad.GameVersion.Native() != TRVersion.Game.TR4)
+                        if (sourceVersion != TRVersion.Game.TR4)
                             break;
 
                         progressReporter?.ReportInfo("    Removing collision for " + newSlotName);
@@ -182,6 +182,26 @@ namespace TombLib.LevelData.IO
                             foreach (var frame in anim.KeyFrames)
                             {
                                 frame.BoundingBox = new BoundingBox();
+                            }
+                        }
+                    }
+                    break;
+
+                // Add hardcoded TR4 collision box
+
+                case "TURN_SWITCH":
+                    {
+                        if (sourceVersion != TRVersion.Game.TR4)
+                            break;
+
+                        progressReporter?.ReportInfo("    Modifying collision for " + newSlotName);
+
+                        foreach (var anim in moveable.Animations)
+                        {
+                            foreach (var frame in anim.KeyFrames)
+                            {
+                                frame.BoundingBox = new BoundingBox(new Vector3(-256, frame.BoundingBox.Minimum.Y, -256),
+                                                                    new Vector3(256, frame.BoundingBox.Maximum.Y, 256));
                             }
                         }
                     }

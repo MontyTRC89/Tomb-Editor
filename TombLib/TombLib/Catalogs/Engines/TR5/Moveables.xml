@@ -395,8 +395,8 @@
     <moveable id="392" name="Floor laser" ten="FLOOR_LASERS" />
     <moveable id="393" name="Kill all triggers" ten="KILL_ALL_TRIGGERS" />
     <moveable id="394" name="Trigger triggerer" ten="TRIGGER_TRIGGERER" />
-    <moveable id="395" name="High object 1" ten="HIGH_OBJECT1" />
-    <moveable id="396" name="High object 2" ten="HIGH_OBJECT2" />
+    <moveable id="395" name="High object 1" ten="HIGH_OBJECT" />
+    <moveable id="396" name="High object 2" ten="EMBER_EMITTER" />
     <moveable id="397" name="Smash object 1" ten="SMASH_OBJECT1" />
     <moveable id="398" name="Smash object 2" ten="SMASH_OBJECT2" />
     <moveable id="399" name="Smash object 3" ten="SMASH_OBJECT3" />

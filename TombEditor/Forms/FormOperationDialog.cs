@@ -124,6 +124,10 @@ namespace TombEditor.Forms
 				logger.Error(ex, "Operation failed: " + Text);
 
 				string message = "There was an error. Message: " + ex.Message;
+
+				if (ex.InnerException != null)
+					message += " : " + ex.InnerException?.Message;
+
 				lstLog.SelectionBackColor = Color.Tomato;
 				lstLog.AppendText(message + "\n");
 				lstLog.ScrollToCaret();

@@ -117,9 +117,9 @@ namespace TombEditor.Controls.Panel3D
             _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
 
             float height = room.GetHighestCorner() - room.GetLowestCorner();
-            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(room.NumXSectors * 4.0f, height, room.NumZSectors * 4.0f);
+            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(room.NumXSectors * 4.0f, height / Level.FullClickHeight, room.NumZSectors * 4.0f);
             float boxX = room.WorldPos.X + room.NumXSectors * Level.BlockSizeUnit / 2.0f;
-            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) * Level.HeightUnit / 2.0f;
+            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) / 2.0f;
             float boxZ = room.WorldPos.Z + room.NumZSectors * Level.BlockSizeUnit / 2.0f;
             Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
             solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * _viewProjection).ToSharpDX());
@@ -198,10 +198,10 @@ namespace TombEditor.Controls.Panel3D
 
         private void DrawSubdivisionHighlights(Effect effect)
         {
-            if (_currentNumberKey is Keys.None || _editor.SelectedSectors == SectorSelection.None)
+            if (_editor.HighlightedSubdivision == 0 || _editor.SelectedSectors == SectorSelection.None)
                 return;
 
-            int subdivisionIndex = (int)_currentNumberKey - (int)Keys.D0 - 2;
+            int subdivisionIndex = _editor.HighlightedSubdivision - 2;
             Room currentRoom = _editor.SelectedRoom;
 
             var vertices = new List<SolidVertex>();
@@ -214,13 +214,13 @@ namespace TombEditor.Controls.Panel3D
             {
                 float halfHeight = height / 2.0f;
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) + halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y + halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, (p1.Y * Level.HeightUnit) - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, (p2.Y * Level.HeightUnit) - halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.BlockSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
+                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.BlockSizeUnit) + xOffset, p2.Y - halfHeight + yOffset, (p2.Z * Level.BlockSizeUnit) + zOffset)));
             }
 
             void HandlePositiveZ(int x, int z, BlockSurface surface, int yOffset)

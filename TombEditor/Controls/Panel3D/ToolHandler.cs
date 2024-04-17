@@ -12,7 +12,7 @@ namespace TombEditor.Controls.Panel3D
         {
             private class ReferenceCell
             {
-                public readonly short[,] Heights = new short[9, 4];
+                public readonly int[,] Heights = new int[9, 4];
                 public bool Processed = false;
             }
 

@@ -45,7 +45,7 @@ namespace TombEditor.Forms
             this.butOK.Select();
 
             if (_level.IsTombEngine)
-                Text = "Legacy trigger editor";
+                Text = "Classic trigger editor";
             else
                 Text = "Trigger editor";
 

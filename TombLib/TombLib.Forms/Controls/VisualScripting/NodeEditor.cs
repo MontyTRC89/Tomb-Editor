@@ -1301,16 +1301,8 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseDoubleClick(e);
 
-            if (e.Button != MouseButtons.Right)
-                return;
-
-            if (Nodes.Count == 0)
-                return;
-
-            if (SelectedNode != null)
-                ShowNode(SelectedNode);
-            else
-                ShowNode(Nodes.First());
+            if (e.Button == MouseButtons.Left)
+                OpenNodeContext(e.Location);
         }
 
         private void NodeEditor_DragEnter(object sender, DragEventArgs e)
