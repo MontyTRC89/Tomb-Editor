@@ -19,6 +19,7 @@ Tomb Editor:
  * Fixed TRNG trigger parameters showing up for other engine versions.
  * Fixed TEN OnLoop callback appearing in level script functions list.
  * Fixed TEN nodes not using default values for new arguments, if node wasn't reopened in a node editor.
+ * Fixed exception when trying to copy a volume without event set assigned to it.
  * Fixed AI pathfinding not recognizing ghost blocks.
  * Fixed room rotation / mirroring causing textures to disappear at extra subdivisions level.
  * Fixed horizontal room merging yielding wrong results.

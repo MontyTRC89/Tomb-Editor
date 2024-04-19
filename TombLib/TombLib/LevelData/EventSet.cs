@@ -220,6 +220,9 @@ namespace TombLib.LevelData
 
         public bool Equals(EventSet other)
         {
+            if (other == null || GetType() != other.GetType())
+                return false;
+
             bool setsAreEqual = true;
 
             foreach (var evt in Events)
