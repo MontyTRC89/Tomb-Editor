@@ -19,6 +19,16 @@ LevelFuncs.Engine.Node.IsCameraRoomFlagSet = function(flag)
 	return TEN.View.GetCameraRoom():GetFlag(flagIndex)
 end
 
+-- !Name "If current camera room tag is present..."
+-- !Section "View"
+-- !Conditional "True"
+-- !Description "Check if current camera room has a particular tag."
+-- !Arguments "String, Tag to search"
+
+LevelFuncs.Engine.Node.IsCameraRoomTagPresent = function(tag)
+	return TEN.View.GetCameraRoom():IsTagPresent(tag)
+end
+
 -- !Name "If fade out is complete..."
 -- !Section "View"
 -- !Conditional "True"
