@@ -23,7 +23,7 @@ end
 -- !Section "View"
 -- !Conditional "True"
 -- !Description "Check if current camera room has a particular tag."
--- !Arguments "String, Tag to search"
+-- !Arguments "NewLine, String, Tag to search"
 
 LevelFuncs.Engine.Node.IsCameraRoomTagPresent = function(tag)
 	return TEN.View.GetCameraRoom():IsTagPresent(tag)
