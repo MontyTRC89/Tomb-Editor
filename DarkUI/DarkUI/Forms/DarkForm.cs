@@ -82,6 +82,9 @@ namespace DarkUI.Forms
             if (Environment.OSVersion.Version.Major < 6)
                 return;
 
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
+                return;
+
             try
             {
                 int dark = 1;
