@@ -57,8 +57,6 @@
             darkLabel8 = new DarkUI.Controls.DarkLabel();
             linkLabel3 = new System.Windows.Forms.LinkLabel();
             darkLabel7 = new DarkUI.Controls.DarkLabel();
-            linkLabel2 = new System.Windows.Forms.LinkLabel();
-            darkLabel6 = new DarkUI.Controls.DarkLabel();
             darkLabel16 = new DarkUI.Controls.DarkLabel();
             linkLabel9 = new System.Windows.Forms.LinkLabel();
             darkLabel14 = new DarkUI.Controls.DarkLabel();
@@ -78,7 +76,7 @@
             tableLayoutPanel1.Controls.Add(butOk, 1, 0);
             tableLayoutPanel1.Controls.Add(darkLabel1, 0, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            tableLayoutPanel1.Location = new System.Drawing.Point(0, 390);
+            tableLayoutPanel1.Location = new System.Drawing.Point(0, 376);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -143,8 +141,6 @@
             panel1.Controls.Add(darkLabel8);
             panel1.Controls.Add(linkLabel3);
             panel1.Controls.Add(darkLabel7);
-            panel1.Controls.Add(linkLabel2);
-            panel1.Controls.Add(darkLabel6);
             panel1.Controls.Add(darkLabel16);
             panel1.Controls.Add(linkLabel9);
             panel1.Controls.Add(darkLabel14);
@@ -153,7 +149,7 @@
             panel1.Dock = System.Windows.Forms.DockStyle.Top;
             panel1.Location = new System.Drawing.Point(0, 64);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(614, 328);
+            panel1.Size = new System.Drawing.Size(614, 313);
             panel1.TabIndex = 8;
             // 
             // tableLayoutPanel2
@@ -199,9 +195,9 @@
             darkLabel22.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel22.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel22.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel22.Location = new System.Drawing.Point(12, 250);
+            darkLabel22.Location = new System.Drawing.Point(7, 235);
             darkLabel22.Name = "darkLabel22";
-            darkLabel22.Size = new System.Drawing.Size(267, 26);
+            darkLabel22.Size = new System.Drawing.Size(267, 18);
             darkLabel22.TabIndex = 53;
             darkLabel22.Text = "ColorThief for .NET is used under MIT license.";
             // 
@@ -211,9 +207,9 @@
             linkLabel16.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel16.AutoEllipsis = true;
             linkLabel16.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel16.Location = new System.Drawing.Point(324, 250);
+            linkLabel16.Location = new System.Drawing.Point(319, 235);
             linkLabel16.Name = "linkLabel16";
-            linkLabel16.Size = new System.Drawing.Size(279, 26);
+            linkLabel16.Size = new System.Drawing.Size(279, 19);
             linkLabel16.TabIndex = 52;
             linkLabel16.TabStop = true;
             linkLabel16.Text = "github.com/KSemenenko/ColorThief";
@@ -225,7 +221,7 @@
             darkLabel20.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel20.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel20.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel20.Location = new System.Drawing.Point(12, 237);
+            darkLabel20.Location = new System.Drawing.Point(7, 222);
             darkLabel20.Name = "darkLabel20";
             darkLabel20.Size = new System.Drawing.Size(267, 26);
             darkLabel20.TabIndex = 51;
@@ -236,7 +232,7 @@
             darkLabel5.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel5.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel5.Location = new System.Drawing.Point(12, 224);
+            darkLabel5.Location = new System.Drawing.Point(7, 209);
             darkLabel5.Name = "darkLabel5";
             darkLabel5.Size = new System.Drawing.Size(267, 13);
             darkLabel5.TabIndex = 50;
@@ -248,7 +244,7 @@
             linkLabel14.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel14.AutoEllipsis = true;
             linkLabel14.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel14.Location = new System.Drawing.Point(324, 237);
+            linkLabel14.Location = new System.Drawing.Point(319, 222);
             linkLabel14.Name = "linkLabel14";
             linkLabel14.Size = new System.Drawing.Size(279, 26);
             linkLabel14.TabIndex = 49;
@@ -263,7 +259,7 @@
             linkLabel13.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel13.AutoEllipsis = true;
             linkLabel13.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel13.Location = new System.Drawing.Point(324, 224);
+            linkLabel13.Location = new System.Drawing.Point(319, 209);
             linkLabel13.Name = "linkLabel13";
             linkLabel13.Size = new System.Drawing.Size(279, 13);
             linkLabel13.TabIndex = 48;
@@ -278,7 +274,7 @@
             linkLabel8.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel8.AutoEllipsis = true;
             linkLabel8.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel8.Location = new System.Drawing.Point(324, 211);
+            linkLabel8.Location = new System.Drawing.Point(319, 196);
             linkLabel8.Name = "linkLabel8";
             linkLabel8.Size = new System.Drawing.Size(279, 13);
             linkLabel8.TabIndex = 47;
@@ -292,7 +288,7 @@
             darkLabel13.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel13.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel13.Location = new System.Drawing.Point(12, 211);
+            darkLabel13.Location = new System.Drawing.Point(7, 196);
             darkLabel13.Name = "darkLabel13";
             darkLabel13.Size = new System.Drawing.Size(267, 13);
             darkLabel13.TabIndex = 46;
@@ -304,7 +300,7 @@
             linkLabel7.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel7.AutoEllipsis = true;
             linkLabel7.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel7.Location = new System.Drawing.Point(324, 198);
+            linkLabel7.Location = new System.Drawing.Point(319, 183);
             linkLabel7.Name = "linkLabel7";
             linkLabel7.Size = new System.Drawing.Size(279, 13);
             linkLabel7.TabIndex = 45;
@@ -318,7 +314,7 @@
             darkLabel12.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel12.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel12.Location = new System.Drawing.Point(12, 198);
+            darkLabel12.Location = new System.Drawing.Point(7, 183);
             darkLabel12.Name = "darkLabel12";
             darkLabel12.Size = new System.Drawing.Size(267, 13);
             darkLabel12.TabIndex = 44;
@@ -330,7 +326,7 @@
             linkLabel12.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel12.AutoEllipsis = true;
             linkLabel12.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel12.Location = new System.Drawing.Point(324, 185);
+            linkLabel12.Location = new System.Drawing.Point(319, 170);
             linkLabel12.Name = "linkLabel12";
             linkLabel12.Size = new System.Drawing.Size(279, 13);
             linkLabel12.TabIndex = 42;
@@ -345,7 +341,7 @@
             linkLabel6.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel6.AutoEllipsis = true;
             linkLabel6.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel6.Location = new System.Drawing.Point(324, 171);
+            linkLabel6.Location = new System.Drawing.Point(319, 156);
             linkLabel6.Name = "linkLabel6";
             linkLabel6.Size = new System.Drawing.Size(279, 13);
             linkLabel6.TabIndex = 43;
@@ -359,7 +355,7 @@
             darkLabel18.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel18.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel18.Location = new System.Drawing.Point(12, 185);
+            darkLabel18.Location = new System.Drawing.Point(7, 170);
             darkLabel18.Name = "darkLabel18";
             darkLabel18.Size = new System.Drawing.Size(267, 13);
             darkLabel18.TabIndex = 41;
@@ -370,7 +366,7 @@
             darkLabel10.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel10.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel10.Location = new System.Drawing.Point(12, 171);
+            darkLabel10.Location = new System.Drawing.Point(7, 156);
             darkLabel10.Name = "darkLabel10";
             darkLabel10.Size = new System.Drawing.Size(267, 13);
             darkLabel10.TabIndex = 40;
@@ -382,7 +378,7 @@
             linkLabel5.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel5.AutoEllipsis = true;
             linkLabel5.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel5.Location = new System.Drawing.Point(324, 158);
+            linkLabel5.Location = new System.Drawing.Point(319, 143);
             linkLabel5.Name = "linkLabel5";
             linkLabel5.Size = new System.Drawing.Size(279, 13);
             linkLabel5.TabIndex = 39;
@@ -396,7 +392,7 @@
             darkLabel9.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel9.Location = new System.Drawing.Point(12, 158);
+            darkLabel9.Location = new System.Drawing.Point(7, 143);
             darkLabel9.Name = "darkLabel9";
             darkLabel9.Size = new System.Drawing.Size(267, 13);
             darkLabel9.TabIndex = 38;
@@ -408,7 +404,7 @@
             linkLabel4.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel4.AutoEllipsis = true;
             linkLabel4.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel4.Location = new System.Drawing.Point(324, 145);
+            linkLabel4.Location = new System.Drawing.Point(319, 130);
             linkLabel4.Name = "linkLabel4";
             linkLabel4.Size = new System.Drawing.Size(279, 13);
             linkLabel4.TabIndex = 37;
@@ -422,7 +418,7 @@
             darkLabel8.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel8.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel8.Location = new System.Drawing.Point(12, 145);
+            darkLabel8.Location = new System.Drawing.Point(7, 130);
             darkLabel8.Name = "darkLabel8";
             darkLabel8.Size = new System.Drawing.Size(267, 13);
             darkLabel8.TabIndex = 36;
@@ -434,7 +430,7 @@
             linkLabel3.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             linkLabel3.AutoEllipsis = true;
             linkLabel3.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel3.Location = new System.Drawing.Point(324, 132);
+            linkLabel3.Location = new System.Drawing.Point(319, 117);
             linkLabel3.Name = "linkLabel3";
             linkLabel3.Size = new System.Drawing.Size(279, 13);
             linkLabel3.TabIndex = 35;
@@ -448,37 +444,11 @@
             darkLabel7.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel7.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel7.Location = new System.Drawing.Point(12, 132);
+            darkLabel7.Location = new System.Drawing.Point(7, 117);
             darkLabel7.Name = "darkLabel7";
             darkLabel7.Size = new System.Drawing.Size(267, 13);
             darkLabel7.TabIndex = 34;
             darkLabel7.Text = "NCalc is used under MIT license.";
-            // 
-            // linkLabel2
-            // 
-            linkLabel2.ActiveLinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel2.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            linkLabel2.AutoEllipsis = true;
-            linkLabel2.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel2.Location = new System.Drawing.Point(324, 119);
-            linkLabel2.Name = "linkLabel2";
-            linkLabel2.Size = new System.Drawing.Size(279, 13);
-            linkLabel2.TabIndex = 33;
-            linkLabel2.TabStop = true;
-            linkLabel2.Text = "github.com/richgel999/miniz";
-            linkLabel2.VisitedLinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel2.Click += btnLink_Click;
-            // 
-            // darkLabel6
-            // 
-            darkLabel6.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            darkLabel6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            darkLabel6.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel6.Location = new System.Drawing.Point(12, 119);
-            darkLabel6.Name = "darkLabel6";
-            darkLabel6.Size = new System.Drawing.Size(267, 13);
-            darkLabel6.TabIndex = 32;
-            darkLabel6.Text = "MiniZ is used under MIT license.";
             // 
             // darkLabel16
             // 
@@ -486,7 +456,7 @@
             darkLabel16.AutoSize = true;
             darkLabel16.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel16.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel16.Location = new System.Drawing.Point(7, 292);
+            darkLabel16.Location = new System.Drawing.Point(7, 277);
             darkLabel16.Name = "darkLabel16";
             darkLabel16.Size = new System.Drawing.Size(377, 24);
             darkLabel16.TabIndex = 28;
@@ -498,7 +468,7 @@
             linkLabel9.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             linkLabel9.AutoSize = true;
             linkLabel9.LinkColor = System.Drawing.Color.FromArgb(184, 163, 233);
-            linkLabel9.Location = new System.Drawing.Point(364, 276);
+            linkLabel9.Location = new System.Drawing.Point(364, 261);
             linkLabel9.Name = "linkLabel9";
             linkLabel9.Size = new System.Drawing.Size(64, 13);
             linkLabel9.TabIndex = 21;
@@ -513,7 +483,7 @@
             darkLabel14.AutoSize = true;
             darkLabel14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             darkLabel14.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel14.Location = new System.Drawing.Point(6, 276);
+            darkLabel14.Location = new System.Drawing.Point(6, 261);
             darkLabel14.Name = "darkLabel14";
             darkLabel14.Size = new System.Drawing.Size(360, 13);
             darkLabel14.TabIndex = 20;
@@ -535,7 +505,7 @@
             darkLabel4.AutoSize = true;
             darkLabel4.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             darkLabel4.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel4.Location = new System.Drawing.Point(7, 98);
+            darkLabel4.Location = new System.Drawing.Point(2, 99);
             darkLabel4.Name = "darkLabel4";
             darkLabel4.Size = new System.Drawing.Size(124, 15);
             darkLabel4.TabIndex = 2;
@@ -547,7 +517,7 @@
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             CancelButton = butOk;
-            ClientSize = new System.Drawing.Size(614, 422);
+            ClientSize = new System.Drawing.Size(614, 408);
             Controls.Add(panel1);
             Controls.Add(pictureBox);
             Controls.Add(tableLayoutPanel1);
@@ -600,8 +570,6 @@
         private DarkUI.Controls.DarkLabel darkLabel8;
         private System.Windows.Forms.LinkLabel linkLabel3;
         private DarkUI.Controls.DarkLabel darkLabel7;
-        private System.Windows.Forms.LinkLabel linkLabel2;
-        private DarkUI.Controls.DarkLabel darkLabel6;
         private DarkUI.Controls.DarkLabel darkLabel20;
         private System.Windows.Forms.LinkLabel linkLabel14;
         private DarkUI.Controls.DarkLabel darkLabel22;
