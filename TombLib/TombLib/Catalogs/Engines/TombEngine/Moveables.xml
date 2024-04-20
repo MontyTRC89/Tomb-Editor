@@ -263,7 +263,7 @@
     <moveable id="356" name="SCALES" />
     <moveable id="357" name="ROME_HAMMER" />
     <moveable id="358" name="FLAME" />
-    <moveable id="359" name="FLAME_EMITTER" />
+    <moveable id="359" name="FLAME_EMITTER" freeRot="true" />
     <moveable id="360" name="FLAME_EMITTER2" />
     <moveable id="361" name="FLAME_EMITTER3" />
     <moveable id="362" name="BURNING_ROOTS" />
