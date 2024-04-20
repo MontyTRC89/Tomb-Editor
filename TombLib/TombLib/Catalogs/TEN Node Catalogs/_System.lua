@@ -75,6 +75,15 @@ LevelFuncs.Engine.Node.WrapRotation = function(source, value)
 	return rot
 end
 
+LevelFuncs.Engine.Node.Smoothstep = function(source)
+	source = math.max(0, math.min(1, source))
+	return ((source ^ 3) * (source * (source * 6 - 15) + 10))
+end
+
+LevelFuncs.Engine.Node.Lerp = function(val1, val2, factor)
+	return val1 * (1 - factor) + val2 * factor
+end
+
 -- Convert UI enum to room flag ID enum
 LevelFuncs.Engine.Node.GetRoomFlag = function(value)
 	local roomFlagID =

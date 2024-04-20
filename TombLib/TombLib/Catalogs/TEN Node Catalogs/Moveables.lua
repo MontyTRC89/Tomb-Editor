@@ -231,10 +231,10 @@ end
 -- !Name "Enable moveable"
 -- !Section "Moveable state"
 -- !Description "Enables moveable."
--- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 256 | 2 | 0.1 | 1 ], {0}, Timer"
 
-LevelFuncs.Engine.Node.EnableMoveable = function(moveableName)
-	TEN.Objects.GetMoveableByName(moveableName):Enable()
+LevelFuncs.Engine.Node.EnableMoveable = function(moveableName, timer)
+	TEN.Objects.GetMoveableByName(moveableName):Enable(timer)
 end
 
 -- !Name "Disable moveable"

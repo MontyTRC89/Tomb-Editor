@@ -121,6 +121,9 @@ namespace TombLib.LevelData
         // Last used room
         public int LastSelectedRoom { get; set; } = 0;
 
+        // Default texture to be used for new rooms
+        public TextureArea DefaultTexture { get; set; } = TextureArea.None;
+
         // Sound system
         public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public List<int> SelectedSounds { get; set; } = new List<int>();

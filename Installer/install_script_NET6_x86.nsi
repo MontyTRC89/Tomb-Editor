@@ -63,6 +63,10 @@ Section "Tomb Editor" Section1
   SectionIn RO ; Always install this section
   
   SetOutPath $INSTDIR
+  
+  ; Delete TEN node catalogs to avoid renaming clashes
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\*.*"
+  
   File /r \
   /x "TombEditorLog*.txt" \
   /x "WadToolLog*.txt" \

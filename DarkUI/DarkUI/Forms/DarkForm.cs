@@ -2,12 +2,21 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace DarkUI.Forms
 {
     public class DarkForm : Form
     {
+        #region Import Region
+
+        private uint DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+        [DllImport("dwmapi.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+        private static extern void DwmSetWindowAttribute(IntPtr hwnd, uint attribute, ref int pvAttribute, uint cbAttribute);
+
+        #endregion
+
         #region Field Region
 
         private bool _flatBorder;
@@ -62,6 +71,26 @@ namespace DarkUI.Forms
             }
 
             base.Show(parent);
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            // Set window header according to a system's dark mode setting (only since Win10 build 1903)
+
+            if (Environment.OSVersion.Version.Major < 6)
+                return;
+
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
+                return;
+
+            try
+            {
+                int dark = 1;
+                DwmSetWindowAttribute(this.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref dark, sizeof(uint));
+            }
+            catch (Exception) { }
         }
 
         protected override void WndProc(ref Message m)
