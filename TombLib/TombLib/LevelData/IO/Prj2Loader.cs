@@ -265,6 +265,20 @@ namespace TombLib.LevelData.IO
                     SoundsCatalogsToLoad = toLoad;
                     settings.SoundCatalogs = list;
                 }
+                else if (id == Prj2Chunks.DefaultTexture)
+                {
+                    var textureArea = new TextureArea();
+                    textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
+                    textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
+                    textureArea.Texture   = levelSettingsIds.LevelTextures.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
+
+                    if (textureArea.Texture != null)
+                        settings.DefaultTexture = textureArea;
+                    else
+                        settings.DefaultTexture = TextureArea.None;
+                }
                 else if (id == Prj2Chunks.GameDirectory)
                     settings.GameDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameLevelFilePath)

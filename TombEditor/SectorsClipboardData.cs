@@ -67,6 +67,9 @@ namespace TombEditor
                                 writer.Write(texturePair.Value.Texture.Image.FileName);
                                 writer.Write(texturePair.Value.TextureIsInvisible);
 
+                                if (string.IsNullOrEmpty(texturePair.Value.Texture.Image.FileName))
+                                    continue;
+
                                 writer.Write(texturePair.Value.TexCoord0.X);
                                 writer.Write(texturePair.Value.TexCoord0.Y);
                                 writer.Write(texturePair.Value.TexCoord1.X);
