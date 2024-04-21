@@ -93,7 +93,7 @@ LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
 
 end
 
--- !Name "Transform position of a moveable"
+-- !Name "Change position of a moveable"
 -- !Section "Timespan actions"
 -- !Description "Gradually change position of a moveable over specified timespan."
 -- !Arguments "NewLine, Moveables"
@@ -102,7 +102,7 @@ end
 -- !Arguments "NewLine, Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 65, Time (in seconds)" 
 -- !Arguments "35, Boolean, Smooth motion"
 
-LevelFuncs.Engine.Node.SetMoveablePositionOverTimespan = function(moveableName, newPosition, relative, time, smooth)
+LevelFuncs.Engine.Node.ChangeMoveablePositionOverTimespan = function(moveableName, newPosition, relative, time, smooth)
 	if (relative) then
 		newPosition = TEN.Objects.GetMoveableByName(moveableName):GetPosition() + newPosition
 	end
@@ -111,14 +111,39 @@ LevelFuncs.Engine.Node.SetMoveablePositionOverTimespan = function(moveableName, 
 	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 0, newPosition, time, smooth) end
 end
 
--- !Name "Transform rotation of a moveable"
+-- !Name "Change position of a moveable towards its direction"
+-- !Section "Timespan actions"
+-- !Description "Gradually change position of a moveable in relation to direction it is facing over specified timespan."
+-- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Numerical, [ -65535 | 65535 ], {256}, 33, Distance"
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 33, Time (in seconds)" 
+-- !Arguments "34, Boolean, Smooth motion"
+
+LevelFuncs.Engine.Node.ShiftMoveableOverTimespan = function(moveableName, distance, time, smooth)
+
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+
+	local angle = math.rad(moveable:GetRotation().y)
+	local dx = distance * math.sin(angle)
+	local dz = distance * math.cos(angle)
+
+	local newPosition = moveable:GetPosition()
+
+	newPosition.x = newPosition.x + dx
+	newPosition.z = newPosition.z + dz
+	
+	-- Wrap another node function call into do/end to prevent wrong parsing
+	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 0, newPosition, time, smooth) end
+end
+
+-- !Name "Change rotation of a moveable"
 -- !Section "Timespan actions"
 -- !Description "Gradually change rotation of a moveable over specified timespan."
 -- !Arguments "NewLine, Moveables"
 -- !Arguments "NewLine, Numerical, [ -360 | 360 | 2 | 1 | 5 ], 20, Rotation value to define" "30, Boolean, Relative angle"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 20, Time (in seconds)"  "30, Boolean, Smooth motion"
 
-LevelFuncs.Engine.Node.SetMoveableRotationOverTimespan = function(moveableName, newRotation, relative, time, smooth)
+LevelFuncs.Engine.Node.ChangeMoveableRotationOverTimespan = function(moveableName, newRotation, relative, time, smooth)
 	local fullNewRotation = TEN.Objects.GetMoveableByName(moveableName):GetRotation()
 
 	if (relative) then
@@ -131,17 +156,17 @@ LevelFuncs.Engine.Node.SetMoveableRotationOverTimespan = function(moveableName, 
 	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 1, fullNewRotation, time, smooth) end
 end
 
--- !Name "Transform colour of a moveable"
+-- !Name "Change colour of a moveable"
 -- !Section "Timespan actions"
 -- !Description "Gradually change colour of a moveable over specified timespan."
 -- !Arguments "NewLine, Moveables, 70" "Color, 15, Moveable colour"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
-LevelFuncs.Engine.Node.SetMoveableColourOverTimespan = function(moveableName, newColour, time)
+LevelFuncs.Engine.Node.ChangeMoveableColourOverTimespan = function(moveableName, newColour, time)
 	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 3, newColour, time, true) end
 end
 
--- !Name "Transform position of a static mesh"
+-- !Name "Change position of a static mesh"
 -- !Section "Timespan actions"
 -- !Description "Gradually change position of a static mesh over specified timespan."
 -- !Arguments "NewLine, Statics"
@@ -150,7 +175,7 @@ end
 -- !Arguments "NewLine, Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 65, Time (in seconds)" 
 -- !Arguments "35, Boolean, Smooth motion"
 
-LevelFuncs.Engine.Node.SetStaticPositionOverTimespan = function(staticName, newPosition, relative, time, smooth)
+LevelFuncs.Engine.Node.ChangeStaticPositionOverTimespan = function(staticName, newPosition, relative, time, smooth)
 	if (relative) then
 		newPosition = TEN.Objects.GetStaticByName(staticName):GetPosition() + newPosition
 	end
@@ -159,14 +184,39 @@ LevelFuncs.Engine.Node.SetStaticPositionOverTimespan = function(staticName, newP
 	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 0, newPosition, time, smooth) end
 end
 
--- !Name "Transform rotation of a static mesh"
+-- !Name "Change position of a static mesh towards its direction"
+-- !Section "Timespan actions"
+-- !Description "Gradually change position of a static mesh in relation to direction it is facing over specified timespan."
+-- !Arguments "NewLine, Statics"
+-- !Arguments "NewLine, Numerical, [ -65535 | 65535 ], {256}, 33, Distance"
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 33, Time (in seconds)" 
+-- !Arguments "34, Boolean, Smooth motion"
+
+LevelFuncs.Engine.Node.ShiftStaticOverTimespan = function(staticName, distance, time, smooth)
+
+	local stat = TEN.Objects.GetStaticByName(staticName)
+
+	local angle = math.rad(stat:GetRotation().y)
+	local dx = distance * math.sin(angle)
+	local dz = distance * math.cos(angle)
+
+	local newPosition = stat:GetPosition()
+
+	newPosition.x = newPosition.x + dx
+	newPosition.z = newPosition.z + dz
+	
+	-- Wrap another node function call into do/end to prevent wrong parsing
+	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 0, newPosition, time, smooth) end
+end
+
+-- !Name "Change rotation of a static mesh"
 -- !Section "Timespan actions"
 -- !Description "Gradually change rotation of a static mesh over specified timespan."
 -- !Arguments "NewLine, Statics"
 -- !Arguments "NewLine, Numerical, [ -360 | 360 | 2 | 1 | 5 ], 20, Rotation value to define" "30, Boolean, Relative angle"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 20, Time (in seconds)"  "30, Boolean, Smooth motion"
 
-LevelFuncs.Engine.Node.SetStaticRotationOverTimespan = function(staticName, newRotation, relative, time, smooth)
+LevelFuncs.Engine.Node.ChangeStaticRotationOverTimespan = function(staticName, newRotation, relative, time, smooth)
 	local fullNewRotation = TEN.Objects.GetStaticByName(staticName):GetRotation()
 
 	if (relative) then
@@ -179,14 +229,14 @@ LevelFuncs.Engine.Node.SetStaticRotationOverTimespan = function(staticName, newR
 	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 1, fullNewRotation, time, smooth) end
 end
 
--- !Name "Transform scale of a static mesh"
+-- !Name "Change scale of a static mesh"
 -- !Section "Timespan actions"
 -- !Description "Gradually change scale of a static mesh over specified timespan."
 -- !Arguments "NewLine, Statics"
 -- !Arguments "NewLine, Numerical, [ 0 | 256 | 2 | 1 | 5 ], 20, {1}, Scale value to define" "30, Boolean, Relative scale"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 20, Time (in seconds)"  "30, Boolean, Smooth motion"
 
-LevelFuncs.Engine.Node.SetStaticScaleOverTimespan = function(staticName, newScale, relative, time, smooth)
+LevelFuncs.Engine.Node.ChangeStaticScaleOverTimespan = function(staticName, newScale, relative, time, smooth)
 
 	if (relative) then
 		newScale = TEN.Objects.GetStaticByName(staticName):GetScale() + newScale
@@ -196,12 +246,12 @@ LevelFuncs.Engine.Node.SetStaticScaleOverTimespan = function(staticName, newScal
 	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 2, newScale, time, smooth) end
 end
 
--- !Name "Transform colour of a static mesh"
+-- !Name "Change colour of a static mesh"
 -- !Section "Timespan actions"
 -- !Description "Gradually change colour of a static mesh over specified timespan."
 -- !Arguments "NewLine, Statics, 70" "Color, 15, Static mesh colour"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
-LevelFuncs.Engine.Node.SetStaticColourOverTimespan = function(staticName, newColour, time)
+LevelFuncs.Engine.Node.ChangeStaticColourOverTimespan = function(staticName, newColour, time)
 	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 3, newColour, time, true) end
 end
