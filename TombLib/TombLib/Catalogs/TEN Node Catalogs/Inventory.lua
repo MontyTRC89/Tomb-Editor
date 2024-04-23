@@ -26,6 +26,23 @@ LevelFuncs.Engine.Node.RemoveInventoryItem = function(item, count)
     end
 end
 
+-- !Name "Set last chosen item"
+-- !Section "Inventory"
+-- !Description "Sets last chosen inventory item. Valid only for one frame. If unused, 'No' sound will play."
+-- !Arguments "NewLine, 58, WadSlots, [ _ITEM ], Item to check"
+
+LevelFuncs.Engine.Node.SetChosenItem = function(item)
+    return TEN.Inventory.SetChosenItem(item)
+end
+
+-- !Name "Clear last chosen item"
+-- !Section "Inventory"
+-- !Description "Clears last chosen inventory item. Needed to avoid playing 'No' sound."
+
+LevelFuncs.Engine.Node.ClearChosenItem = function(item)
+    return TEN.Inventory.ClearChosenItem(item)
+end
+
 -- !Name "If item is present in inventory..."
 -- !Section "Inventory"
 -- !Description "Checks if specified inventory item is present."
@@ -46,4 +63,14 @@ end
 
 LevelFuncs.Engine.Node.TestInventoryItemCount = function(item, operator, count)
     return LevelFuncs.Engine.Node.CompareValue(TEN.Inventory.GetItemCount(item), count, operator)
+end
+
+-- !Name "If last chosen item is..."
+-- !Section "Inventory"
+-- !Description "Checks last chosen inventory item. Valid only for one frame after selecting it."
+-- !Conditional "True"
+-- !Arguments "NewLine, WadSlots, [ _ITEM ], Item to check"
+
+LevelFuncs.Engine.Node.GetChosenItem = function(item)
+    return (TEN.Inventory.GetChosenItem() == item)
 end
