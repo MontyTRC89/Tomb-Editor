@@ -116,3 +116,13 @@ LevelFuncs.Engine.Node.SetPostProcessDisplay = function(postProcessModeEnum, pow
     TEN.View.SetPostProcessStrength(power)
     TEN.View.SetPostProcessTint(tintColor)
 end
+
+-- !Name "Change distance fog colour"
+-- !Section "View"
+-- !Description "Change level distance fog and set a new minimum and maximum range.\nMinimum fog range is the distance from the camera that the fog starts.\nMaximum range is when the fog is at 100% density"
+-- !Arguments "NewLine,Color, 50, Choose fog colour" , "Numerical, 25, [ 0 | 256 | 0 ], Distance (in blocks) fog starts from", "Numerical, 25, [ 0 | 256 | 0 ], Distance (in blocks) fog is completely dense"
+
+LevelFuncs.Engine.Node.ChangeDistanceFog = function(fogColor, minFog, maxFog)
+    local level = TEN.Flow.GetCurrentLevel()
+    level.fog = Flow.Fog.new(fogColor,minFog,maxFog)
+end

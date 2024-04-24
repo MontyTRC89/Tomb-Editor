@@ -3,6 +3,7 @@ Version 1.7.2
 
 Tomb Editor:
  * Added TEN nodes for checking and modifying last chosen inventory object ID.
+ * Added TEN node to change the level distance fog colour parameters.
  * Added drag-n-drop support for Object ID controls in node editor.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
 
