@@ -140,7 +140,7 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Moveables:
-                    cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", LuaSyntax.ActivatorNamePrefix));
+                    cbList.Items.Add(new ComboBoxItem("[ Activator ]", LuaSyntax.ActivatorNamePrefix));
                     foreach (var item in editor.CachedMoveables.Where(s => layout.CustomEnumeration.Count == 0 || 
                                                                            layout.CustomEnumeration.Any(e => s
                                                                             .WadObjectId.ShortName(TRVersion.Game.TombEngine)
