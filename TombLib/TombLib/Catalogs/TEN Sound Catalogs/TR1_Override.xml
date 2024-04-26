@@ -73,7 +73,7 @@
 			<Volume>10</Volume>
 			<RangeInSectors>13</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>40</PitchFactor>
+			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
@@ -206,7 +206,7 @@
 			<Volume>60</Volume>
 			<RangeInSectors>13</RangeInSectors>
 			<Chance>50</Chance>
-			<PitchFactor>30</PitchFactor>
+			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>true</RandomizePitch>
 			<RandomizeVolume>true</RandomizeVolume>
@@ -244,7 +244,7 @@
 		<WadSoundInfo>
 			<Id>27</Id>
 			<Name>TR1_LARA_BODYSLAM</Name>
-			<Volume>100</Volume>
+			<Volume>50</Volume>
 			<RangeInSectors>16</RangeInSectors>
 			<Chance>100</Chance>
 			<PitchFactor>0</PitchFactor>
@@ -269,7 +269,7 @@
 			<Volume>18</Volume>
 			<RangeInSectors>13</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>40</PitchFactor>
+			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>true</RandomizePitch>
 			<RandomizeVolume>true</RandomizeVolume>
@@ -288,7 +288,7 @@
 		<WadSoundInfo>
 			<Id>29</Id>
 			<Name>TR1_LARA_JUMP</Name>
-			<Volume>30</Volume>
+			<Volume>65</Volume>
 			<RangeInSectors>13</RangeInSectors>
 			<Chance>50</Chance>
 			<PitchFactor>0</PitchFactor>
@@ -351,7 +351,7 @@
 			<Volume>35</Volume>
 			<RangeInSectors>13</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>15</PitchFactor>
+			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
@@ -408,7 +408,7 @@
 			<Volume>50</Volume>
 			<RangeInSectors>13</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>-15</PitchFactor>
+			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>true</RandomizePitch>
 			<RandomizeVolume>true</RandomizeVolume>
@@ -965,7 +965,7 @@
 			<Volume>100</Volume>
 			<RangeInSectors>16</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>-10</PitchFactor>
+			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
@@ -1136,14 +1136,14 @@
 			<Volume>50</Volume>
 			<RangeInSectors>5</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>50</PitchFactor>
+			<PitchFactor>0</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR1_LARA_USE_OBJECT.wav</FileName>
+					<FileName>TR1_LARA_USE_OBJECT_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>true</Global>
