@@ -2,8 +2,10 @@ Version 1.7.2
 =============
 
 Tomb Editor:
- * Added TEN nodes for checking and modifying last chosen inventory object ID.
+ * Added TEN nodes for checking and modifying last used inventory object.
+ * Added handling for OnUseItem event in node editor.
  * Added drag-n-drop support for Object ID controls in node editor.
+ * Fixed wrong mesh offsets for custom Lara outfits made for TR4 engine.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override files.
 
