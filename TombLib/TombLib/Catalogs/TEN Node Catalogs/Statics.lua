@@ -141,6 +141,27 @@ LevelFuncs.Engine.Node.SetStaticScale = function(operation, value, staticName)
 	end
 end
 
+-- !Name "Shift static mesh towards its direction"
+-- !Section "Static mesh parameters"
+-- !Description "Shifts static mesh to a relative distance, towards the direction it is facing."
+-- !Arguments "NewLine, Statics, Statics mesh to move, 85"
+-- !Arguments "Numerical, [ -65535 | 65535 ], {256}, 15, Distance"
+
+LevelFuncs.Engine.Node.ShiftStatic = function(staticName, distance)
+	local static = TEN.Objects.GetStaticByName(staticName)
+
+	local angle = math.rad(static:GetRotation().y)
+	local dx = distance * math.sin(angle)
+	local dz = distance * math.cos(angle)
+
+	local newPosition = static:GetPosition()
+
+	newPosition.x = newPosition.x + dx
+	newPosition.z = newPosition.z + dz
+
+	static:SetPosition(newPosition)
+end
+
 -- !Name "Set static mesh colour"
 -- !Section "Static mesh parameters"
 -- !Description "Sets static mesh tint to a given value."

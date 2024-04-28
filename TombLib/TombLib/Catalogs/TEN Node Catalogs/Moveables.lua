@@ -383,6 +383,27 @@ LevelFuncs.Engine.Node.SetMoveablePositionToAnotherMoveable = function(rotate, d
 	end
 end
 
+-- !Name "Shift moveable towards its direction"
+-- !Section "Moveable parameters"
+-- !Description "Shifts moveable to a relative distance, towards the direction it is facing."
+-- !Arguments "NewLine, Moveables, Moveable to move, 85"
+-- !Arguments "Numerical, [ -65535 | 65535 ], {256}, 15, Distance"
+
+LevelFuncs.Engine.Node.ShiftMoveable = function(moveableName, distance)
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+
+	local angle = math.rad(moveable:GetRotation().y)
+	local dx = distance * math.sin(angle)
+	local dz = distance * math.cos(angle)
+
+	local newPosition = moveable:GetPosition()
+
+	newPosition.x = newPosition.x + dx
+	newPosition.z = newPosition.z + dz
+
+	moveable:SetPosition(newPosition)
+end
+
 -- !Name "Set moveable colour"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable tint to a given value."
