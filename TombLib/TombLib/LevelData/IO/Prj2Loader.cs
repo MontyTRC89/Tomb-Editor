@@ -405,8 +405,8 @@ namespace TombLib.LevelData.IO
                                     for (int x = 0; x < levelTexture.FootStepSoundWidth; ++x)
                                     {
                                         byte textureSoundByte = chunkIO.Raw.ReadByte();
-                                        if (textureSoundByte > 21)
-                                            textureSoundByte = 21;
+                                        if (textureSoundByte > (byte)Enum.GetNames(typeof(TextureFootStep.Type)).Length)
+                                            textureSoundByte = (byte)Enum.GetNames(typeof(TextureFootStep.Type)).Length;
                                         levelTexture.SetFootStepSound(x, y, (TextureFootStep.Type)textureSoundByte);
                                     }
                             }
