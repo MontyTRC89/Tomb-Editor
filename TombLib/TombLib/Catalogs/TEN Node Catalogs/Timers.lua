@@ -29,10 +29,13 @@ end
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
 -- !Arguments "NewLine, LuaScript, The function to call when the time is up"
-LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction)
+-- !Arguments "NewLine, String, Arguments"
+LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction,
+                                                          args)
     if name ~= '' then
         LevelVars[name] = Timer.Create(name, time, loop,
-            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, luaFunction)
+            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, luaFunction,
+            table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")))
         LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
         TEN.Util.PrintLog('Timer with Function "' .. name .. '" created successfully!', LogLevel.INFO)
     else
