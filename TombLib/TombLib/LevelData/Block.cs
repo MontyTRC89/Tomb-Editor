@@ -104,36 +104,37 @@ namespace TombLib.LevelData
         public static bool IsOnCeiling(this BlockVertical vertical)
             => vertical is BlockVertical.Ceiling || vertical.IsExtraCeilingSubdivision();
 
-        public static bool IsExtraFloorSubdivision(this BlockVertical vertical)
-            => vertical.ToString().StartsWith("FloorSubdivision");
+        public static bool IsExtraFloorSubdivision(this BlockVertical vertical) => vertical
+            is BlockVertical.FloorSubdivision2
+            or BlockVertical.FloorSubdivision3
+            or BlockVertical.FloorSubdivision4
+            or BlockVertical.FloorSubdivision5
+            or BlockVertical.FloorSubdivision6
+            or BlockVertical.FloorSubdivision7
+            or BlockVertical.FloorSubdivision8
+            or BlockVertical.FloorSubdivision9;
 
-        public static bool IsExtraCeilingSubdivision(this BlockVertical vertical)
-            => vertical.ToString().StartsWith("CeilingSubdivision");
+        public static bool IsExtraCeilingSubdivision(this BlockVertical vertical) => vertical
+            is BlockVertical.CeilingSubdivision2
+            or BlockVertical.CeilingSubdivision3
+            or BlockVertical.CeilingSubdivision4
+            or BlockVertical.CeilingSubdivision5
+            or BlockVertical.CeilingSubdivision6
+            or BlockVertical.CeilingSubdivision7
+            or BlockVertical.CeilingSubdivision8
+            or BlockVertical.CeilingSubdivision9;
 
         public static bool IsExtraSubdivision(this BlockVertical vertical)
-           => vertical.ToString().Contains("Subdivision");
+            => vertical.IsExtraFloorSubdivision() || vertical.IsExtraCeilingSubdivision();
 
         public static BlockVertical GetExtraFloorSubdivision(int subdivisionIndex)
-        {
-            string enumName = $"FloorSubdivision{subdivisionIndex + 2}";
-            return Enum.Parse<BlockVertical>(enumName);
-        }
+            => (BlockVertical)((int)BlockVertical.FloorSubdivision2 + (subdivisionIndex * 2));
 
         public static BlockVertical GetExtraCeilingSubdivision(int subdivisionIndex)
-        {
-            string enumName = $"CeilingSubdivision{subdivisionIndex + 2}";
-            return Enum.Parse<BlockVertical>(enumName);
-        }
+            => (BlockVertical)((int)BlockVertical.CeilingSubdivision2 + (subdivisionIndex * 2));
 
         public static int GetExtraSubdivisionIndex(this BlockVertical vertical)
-        {
-            if (vertical.IsExtraFloorSubdivision())
-                return int.Parse(vertical.ToString()["FloorSubdivision".Length..]) - 2;
-            else if (vertical.IsExtraCeilingSubdivision())
-                return int.Parse(vertical.ToString()["CeilingSubdivision".Length..]) - 2;
-            else
-                return -1;
-        }
+            => ((int)vertical / 2) - 1;
     }
 
     public enum BlockFace : byte
@@ -272,21 +273,143 @@ namespace TombLib.LevelData
 
     public static class BlockFaceExtensions
     {
-        public static BlockVertical GetVertical(this BlockFace face)
+        public static BlockVertical? GetVertical(this BlockFace face)
         {
-            string enumName = face.ToString();
-            string verticalName = enumName.Split('_').ElementAtOrDefault(2);
+            switch (face)
+            {
+                // Floors
 
-            if (verticalName == "QA")
-                verticalName = "Floor";
+                case BlockFace.Wall_PositiveZ_QA:
+                case BlockFace.Wall_NegativeZ_QA:
+                case BlockFace.Wall_NegativeX_QA:
+                case BlockFace.Wall_PositiveX_QA:
+                case BlockFace.Wall_Diagonal_QA:
+                    return BlockVertical.Floor;
 
-            if (verticalName == "WS")
-                verticalName = "Ceiling";
+                case BlockFace.Wall_PositiveZ_FloorSubdivision2:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision2:
+                case BlockFace.Wall_NegativeX_FloorSubdivision2:
+                case BlockFace.Wall_PositiveX_FloorSubdivision2:
+                case BlockFace.Wall_Diagonal_FloorSubdivision2:
+                    return BlockVertical.FloorSubdivision2;
 
-            if (Enum.TryParse(verticalName, out BlockVertical vertical))
-                return vertical;
-            else
-                throw new ArgumentException();
+                case BlockFace.Wall_PositiveZ_FloorSubdivision3:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision3:
+                case BlockFace.Wall_NegativeX_FloorSubdivision3:
+                case BlockFace.Wall_PositiveX_FloorSubdivision3:
+                case BlockFace.Wall_Diagonal_FloorSubdivision3:
+                    return BlockVertical.FloorSubdivision3;
+
+                case BlockFace.Wall_PositiveZ_FloorSubdivision4:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision4:
+                case BlockFace.Wall_NegativeX_FloorSubdivision4:
+                case BlockFace.Wall_PositiveX_FloorSubdivision4:
+                case BlockFace.Wall_Diagonal_FloorSubdivision4:
+                    return BlockVertical.FloorSubdivision4;
+
+                case BlockFace.Wall_PositiveZ_FloorSubdivision5:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision5:
+                case BlockFace.Wall_NegativeX_FloorSubdivision5:
+                case BlockFace.Wall_PositiveX_FloorSubdivision5:
+                case BlockFace.Wall_Diagonal_FloorSubdivision5:
+                    return BlockVertical.FloorSubdivision5;
+
+                case BlockFace.Wall_PositiveZ_FloorSubdivision6:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision6:
+                case BlockFace.Wall_NegativeX_FloorSubdivision6:
+                case BlockFace.Wall_PositiveX_FloorSubdivision6:
+                case BlockFace.Wall_Diagonal_FloorSubdivision6:
+                    return BlockVertical.FloorSubdivision6;
+
+                case BlockFace.Wall_PositiveZ_FloorSubdivision7:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision7:
+                case BlockFace.Wall_NegativeX_FloorSubdivision7:
+                case BlockFace.Wall_PositiveX_FloorSubdivision7:
+                case BlockFace.Wall_Diagonal_FloorSubdivision7:
+                    return BlockVertical.FloorSubdivision7;
+
+                case BlockFace.Wall_PositiveZ_FloorSubdivision8:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision8:
+                case BlockFace.Wall_NegativeX_FloorSubdivision8:
+                case BlockFace.Wall_PositiveX_FloorSubdivision8:
+                case BlockFace.Wall_Diagonal_FloorSubdivision8:
+                    return BlockVertical.FloorSubdivision8;
+
+                case BlockFace.Wall_PositiveZ_FloorSubdivision9:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision9:
+                case BlockFace.Wall_NegativeX_FloorSubdivision9:
+                case BlockFace.Wall_PositiveX_FloorSubdivision9:
+                case BlockFace.Wall_Diagonal_FloorSubdivision9:
+                    return BlockVertical.FloorSubdivision9;
+
+                // Ceilings
+
+                case BlockFace.Wall_PositiveZ_WS:
+                case BlockFace.Wall_NegativeZ_WS:
+                case BlockFace.Wall_NegativeX_WS:
+                case BlockFace.Wall_PositiveX_WS:
+                case BlockFace.Wall_Diagonal_WS:
+                    return BlockVertical.Ceiling;
+
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision2:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision2:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision2:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision2:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision2:
+                    return BlockVertical.CeilingSubdivision2;
+
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision3:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision3:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision3:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision3:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision3:
+                    return BlockVertical.CeilingSubdivision3;
+
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision4:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision4:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision4:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision4:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision4:
+                    return BlockVertical.CeilingSubdivision4;
+
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision5:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision5:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision5:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision5:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision5:
+                    return BlockVertical.CeilingSubdivision5;
+
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision6:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision6:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision6:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision6:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision6:
+                    return BlockVertical.CeilingSubdivision6;
+
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision7:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision7:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision7:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision7:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision7:
+                    return BlockVertical.CeilingSubdivision7;
+
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision8:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision8:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision8:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision8:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision8:
+                    return BlockVertical.CeilingSubdivision8;
+
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision9:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision9:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision9:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision9:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision9:
+                    return BlockVertical.CeilingSubdivision9;
+
+                default:
+                    return null;
+            }
         }
 
         public static BlockFaceType GetFaceType(this BlockFace face)
@@ -303,41 +426,144 @@ namespace TombLib.LevelData
 
         public static Direction GetDirection(this BlockFace face)
         {
-            string enumName = face.ToString();
-            string directionName = enumName.Split('_').ElementAtOrDefault(1);
+            switch (face)
+            {
+                case BlockFace.Wall_PositiveZ_QA:
+                case BlockFace.Wall_PositiveZ_FloorSubdivision2:
+                case BlockFace.Wall_PositiveZ_Middle:
+                case BlockFace.Wall_PositiveZ_WS:
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision2:
+                case BlockFace.Wall_PositiveZ_FloorSubdivision3:
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision3:
+                case BlockFace.Wall_PositiveZ_FloorSubdivision4:
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision4:
+                case BlockFace.Wall_PositiveZ_FloorSubdivision5:
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision5:
+                case BlockFace.Wall_PositiveZ_FloorSubdivision6:
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision6:
+                case BlockFace.Wall_PositiveZ_FloorSubdivision7:
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision7:
+                case BlockFace.Wall_PositiveZ_FloorSubdivision8:
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision8:
+                case BlockFace.Wall_PositiveZ_FloorSubdivision9:
+                case BlockFace.Wall_PositiveZ_CeilingSubdivision9:
+                    return Direction.PositiveZ;
 
-            if (Enum.TryParse(directionName, out Direction direction))
-                return direction;
-            else
-                return Direction.None;
+                case BlockFace.Wall_NegativeZ_QA:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision2:
+                case BlockFace.Wall_NegativeZ_Middle:
+                case BlockFace.Wall_NegativeZ_WS:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision2:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision3:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision3:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision4:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision4:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision5:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision5:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision6:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision6:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision7:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision7:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision8:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision8:
+                case BlockFace.Wall_NegativeZ_FloorSubdivision9:
+                case BlockFace.Wall_NegativeZ_CeilingSubdivision9:
+                    return Direction.NegativeZ;
+
+                case BlockFace.Wall_NegativeX_QA:
+                case BlockFace.Wall_NegativeX_FloorSubdivision2:
+                case BlockFace.Wall_NegativeX_Middle:
+                case BlockFace.Wall_NegativeX_WS:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision2:
+                case BlockFace.Wall_NegativeX_FloorSubdivision3:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision3:
+                case BlockFace.Wall_NegativeX_FloorSubdivision4:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision4:
+                case BlockFace.Wall_NegativeX_FloorSubdivision5:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision5:
+                case BlockFace.Wall_NegativeX_FloorSubdivision6:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision6:
+                case BlockFace.Wall_NegativeX_FloorSubdivision7:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision7:
+                case BlockFace.Wall_NegativeX_FloorSubdivision8:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision8:
+                case BlockFace.Wall_NegativeX_FloorSubdivision9:
+                case BlockFace.Wall_NegativeX_CeilingSubdivision9:
+                    return Direction.NegativeX;
+
+                case BlockFace.Wall_PositiveX_QA:
+                case BlockFace.Wall_PositiveX_FloorSubdivision2:
+                case BlockFace.Wall_PositiveX_Middle:
+                case BlockFace.Wall_PositiveX_WS:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision2:
+                case BlockFace.Wall_PositiveX_FloorSubdivision3:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision3:
+                case BlockFace.Wall_PositiveX_FloorSubdivision4:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision4:
+                case BlockFace.Wall_PositiveX_FloorSubdivision5:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision5:
+                case BlockFace.Wall_PositiveX_FloorSubdivision6:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision6:
+                case BlockFace.Wall_PositiveX_FloorSubdivision7:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision7:
+                case BlockFace.Wall_PositiveX_FloorSubdivision8:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision8:
+                case BlockFace.Wall_PositiveX_FloorSubdivision9:
+                case BlockFace.Wall_PositiveX_CeilingSubdivision9:
+                    return Direction.PositiveX;
+
+                case BlockFace.Wall_Diagonal_QA:
+                case BlockFace.Wall_Diagonal_FloorSubdivision2:
+                case BlockFace.Wall_Diagonal_Middle:
+                case BlockFace.Wall_Diagonal_WS:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision2:
+                case BlockFace.Wall_Diagonal_FloorSubdivision3:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision3:
+                case BlockFace.Wall_Diagonal_FloorSubdivision4:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision4:
+                case BlockFace.Wall_Diagonal_FloorSubdivision5:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision5:
+                case BlockFace.Wall_Diagonal_FloorSubdivision6:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision6:
+                case BlockFace.Wall_Diagonal_FloorSubdivision7:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision7:
+                case BlockFace.Wall_Diagonal_FloorSubdivision8:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision8:
+                case BlockFace.Wall_Diagonal_FloorSubdivision9:
+                case BlockFace.Wall_Diagonal_CeilingSubdivision9:
+                    return Direction.Diagonal;
+
+                default:
+                    return Direction.None;
+            }
         }
 
         public static IEnumerable<BlockFace> GetWalls()
             => Enum.GetValues<BlockFace>().Where(face => face.IsWall());
 
         public static bool IsWall(this BlockFace face)
-            => face.ToString().StartsWith("Wall");
+            => face is not BlockFace.Floor and not BlockFace.Floor_Triangle2 and not BlockFace.Ceiling and not BlockFace.Ceiling_Triangle2;
 
         public static bool IsNonWall(this BlockFace face)
             => face is >= BlockFace.Floor and <= BlockFace.Ceiling_Triangle2;
 
         public static bool IsNonDiagonalWall(this BlockFace face)
-            => face.ToString().StartsWith("Wall") && !face.ToString().Contains("Diagonal");
+            => face.IsWall() && face.GetDirection() is not Direction.Diagonal;
 
         public static bool IsPositiveX(this BlockFace face)
-            => face.ToString().Contains("PositiveX");
+            => face.GetDirection() is Direction.PositiveX;
 
         public static bool IsNegativeX(this BlockFace face)
-            => face.ToString().Contains("NegativeX");
+            => face.GetDirection() is Direction.NegativeX;
 
         public static bool IsPositiveZ(this BlockFace face)
-            => face.ToString().Contains("PositiveZ");
+            => face.GetDirection() is Direction.PositiveZ;
 
         public static bool IsNegativeZ(this BlockFace face)
-            => face.ToString().Contains("NegativeZ");
+            => face.GetDirection() is Direction.NegativeZ;
 
         public static bool IsDiagonal(this BlockFace face)
-            => face.ToString().Contains("Diagonal");
+            => face.GetDirection() is Direction.Diagonal;
 
         public static bool IsFloorWall(this BlockFace face)
             => face <= BlockFace.Wall_Diagonal_FloorSubdivision2 || face.IsExtraFloorSubdivision();
@@ -355,27 +581,151 @@ namespace TombLib.LevelData
             => face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2;
 
         public static bool IsExtraFloorSubdivision(this BlockFace face)
-            => face.ToString().Contains("FloorSubdivision");
+            => face.GetVertical()?.IsExtraFloorSubdivision() == true;
 
         public static bool IsExtraCeilingSubdivision(this BlockFace face)
-            => face.ToString().Contains("CeilingSubdivision");
+            => face.GetVertical()?.IsExtraCeilingSubdivision() == true;
 
         public static bool IsSpecificFloorSubdivision(this BlockFace face, Direction direction)
-            => face.ToString().Contains($"{direction}_FloorSubdivision");
+            => face.IsExtraFloorSubdivision() && face.GetDirection() == direction;
 
         public static bool IsSpecificCeilingSubdivision(this BlockFace face, Direction direction)
-            => face.ToString().Contains($"{direction}_CeilingSubdivision");
+            => face.IsExtraCeilingSubdivision() && face.GetDirection() == direction;
 
         public static BlockFace GetExtraFloorSubdivisionFace(Direction direction, int subdivisionIndex)
         {
-            string enumName = $"Wall_{direction}_FloorSubdivision{subdivisionIndex + 2}";
-            return Enum.Parse<BlockFace>(enumName);
+            return direction switch
+            {
+                Direction.PositiveZ => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_PositiveZ_FloorSubdivision2,
+                    1 => BlockFace.Wall_PositiveZ_FloorSubdivision3,
+                    2 => BlockFace.Wall_PositiveZ_FloorSubdivision4,
+                    3 => BlockFace.Wall_PositiveZ_FloorSubdivision5,
+                    4 => BlockFace.Wall_PositiveZ_FloorSubdivision6,
+                    5 => BlockFace.Wall_PositiveZ_FloorSubdivision7,
+                    6 => BlockFace.Wall_PositiveZ_FloorSubdivision8,
+                    7 => BlockFace.Wall_PositiveZ_FloorSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                Direction.PositiveX => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_PositiveX_FloorSubdivision2,
+                    1 => BlockFace.Wall_PositiveX_FloorSubdivision3,
+                    2 => BlockFace.Wall_PositiveX_FloorSubdivision4,
+                    3 => BlockFace.Wall_PositiveX_FloorSubdivision5,
+                    4 => BlockFace.Wall_PositiveX_FloorSubdivision6,
+                    5 => BlockFace.Wall_PositiveX_FloorSubdivision7,
+                    6 => BlockFace.Wall_PositiveX_FloorSubdivision8,
+                    7 => BlockFace.Wall_PositiveX_FloorSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                Direction.NegativeZ => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_NegativeZ_FloorSubdivision2,
+                    1 => BlockFace.Wall_NegativeZ_FloorSubdivision3,
+                    2 => BlockFace.Wall_NegativeZ_FloorSubdivision4,
+                    3 => BlockFace.Wall_NegativeZ_FloorSubdivision5,
+                    4 => BlockFace.Wall_NegativeZ_FloorSubdivision6,
+                    5 => BlockFace.Wall_NegativeZ_FloorSubdivision7,
+                    6 => BlockFace.Wall_NegativeZ_FloorSubdivision8,
+                    7 => BlockFace.Wall_NegativeZ_FloorSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                Direction.NegativeX => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_NegativeX_FloorSubdivision2,
+                    1 => BlockFace.Wall_NegativeX_FloorSubdivision3,
+                    2 => BlockFace.Wall_NegativeX_FloorSubdivision4,
+                    3 => BlockFace.Wall_NegativeX_FloorSubdivision5,
+                    4 => BlockFace.Wall_NegativeX_FloorSubdivision6,
+                    5 => BlockFace.Wall_NegativeX_FloorSubdivision7,
+                    6 => BlockFace.Wall_NegativeX_FloorSubdivision8,
+                    7 => BlockFace.Wall_NegativeX_FloorSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                Direction.Diagonal => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_Diagonal_FloorSubdivision2,
+                    1 => BlockFace.Wall_Diagonal_FloorSubdivision3,
+                    2 => BlockFace.Wall_Diagonal_FloorSubdivision4,
+                    3 => BlockFace.Wall_Diagonal_FloorSubdivision5,
+                    4 => BlockFace.Wall_Diagonal_FloorSubdivision6,
+                    5 => BlockFace.Wall_Diagonal_FloorSubdivision7,
+                    6 => BlockFace.Wall_Diagonal_FloorSubdivision8,
+                    7 => BlockFace.Wall_Diagonal_FloorSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                _ => throw new ArgumentException(),
+            };
         }
 
         public static BlockFace GetExtraCeilingSubdivisionFace(Direction direction, int subdivisionIndex)
         {
-            string enumName = $"Wall_{direction}_CeilingSubdivision{subdivisionIndex + 2}";
-            return Enum.Parse<BlockFace>(enumName);
+            return direction switch
+            {
+                Direction.PositiveZ => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_PositiveZ_CeilingSubdivision2,
+                    1 => BlockFace.Wall_PositiveZ_CeilingSubdivision3,
+                    2 => BlockFace.Wall_PositiveZ_CeilingSubdivision4,
+                    3 => BlockFace.Wall_PositiveZ_CeilingSubdivision5,
+                    4 => BlockFace.Wall_PositiveZ_CeilingSubdivision6,
+                    5 => BlockFace.Wall_PositiveZ_CeilingSubdivision7,
+                    6 => BlockFace.Wall_PositiveZ_CeilingSubdivision8,
+                    7 => BlockFace.Wall_PositiveZ_CeilingSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                Direction.PositiveX => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_PositiveX_CeilingSubdivision2,
+                    1 => BlockFace.Wall_PositiveX_CeilingSubdivision3,
+                    2 => BlockFace.Wall_PositiveX_CeilingSubdivision4,
+                    3 => BlockFace.Wall_PositiveX_CeilingSubdivision5,
+                    4 => BlockFace.Wall_PositiveX_CeilingSubdivision6,
+                    5 => BlockFace.Wall_PositiveX_CeilingSubdivision7,
+                    6 => BlockFace.Wall_PositiveX_CeilingSubdivision8,
+                    7 => BlockFace.Wall_PositiveX_CeilingSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                Direction.NegativeZ => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_NegativeZ_CeilingSubdivision2,
+                    1 => BlockFace.Wall_NegativeZ_CeilingSubdivision3,
+                    2 => BlockFace.Wall_NegativeZ_CeilingSubdivision4,
+                    3 => BlockFace.Wall_NegativeZ_CeilingSubdivision5,
+                    4 => BlockFace.Wall_NegativeZ_CeilingSubdivision6,
+                    5 => BlockFace.Wall_NegativeZ_CeilingSubdivision7,
+                    6 => BlockFace.Wall_NegativeZ_CeilingSubdivision8,
+                    7 => BlockFace.Wall_NegativeZ_CeilingSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                Direction.NegativeX => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_NegativeX_CeilingSubdivision2,
+                    1 => BlockFace.Wall_NegativeX_CeilingSubdivision3,
+                    2 => BlockFace.Wall_NegativeX_CeilingSubdivision4,
+                    3 => BlockFace.Wall_NegativeX_CeilingSubdivision5,
+                    4 => BlockFace.Wall_NegativeX_CeilingSubdivision6,
+                    5 => BlockFace.Wall_NegativeX_CeilingSubdivision7,
+                    6 => BlockFace.Wall_NegativeX_CeilingSubdivision8,
+                    7 => BlockFace.Wall_NegativeX_CeilingSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                Direction.Diagonal => subdivisionIndex switch
+                {
+                    0 => BlockFace.Wall_Diagonal_CeilingSubdivision2,
+                    1 => BlockFace.Wall_Diagonal_CeilingSubdivision3,
+                    2 => BlockFace.Wall_Diagonal_CeilingSubdivision4,
+                    3 => BlockFace.Wall_Diagonal_CeilingSubdivision5,
+                    4 => BlockFace.Wall_Diagonal_CeilingSubdivision6,
+                    5 => BlockFace.Wall_Diagonal_CeilingSubdivision7,
+                    6 => BlockFace.Wall_Diagonal_CeilingSubdivision8,
+                    7 => BlockFace.Wall_Diagonal_CeilingSubdivision9,
+                    _ => throw new ArgumentException()
+                },
+                _ => throw new ArgumentException(),
+            };
         }
     }
 
@@ -1007,7 +1357,8 @@ namespace TombLib.LevelData
 
                 for (int i = 0; i < texturedSubdivisions.Count; i++)
                 {
-                    int index = texturedSubdivisions[i].GetVertical().GetExtraSubdivisionIndex();
+                    int index = texturedSubdivisions[i].GetVertical()?.GetExtraSubdivisionIndex()
+                        ?? throw new InvalidOperationException("Invalid floor subdivision face.");
 
                     transformation.TransformValueQuad(_faceTextures,
                         BlockFaceExtensions.GetExtraFloorSubdivisionFace(Direction.PositiveX, index),
@@ -1076,7 +1427,8 @@ namespace TombLib.LevelData
 
                 for (int i = 0; i < texturedSubdivisions.Count; i++)
                 {
-                    int index = texturedSubdivisions[i].GetVertical().GetExtraSubdivisionIndex();
+                    int index = texturedSubdivisions[i].GetVertical()?.GetExtraSubdivisionIndex()
+                        ?? throw new InvalidOperationException("Invalid ceiling subdivision face.");
 
                     transformation.TransformValueQuad(_faceTextures,
                         BlockFaceExtensions.GetExtraCeilingSubdivisionFace(Direction.PositiveX, index),

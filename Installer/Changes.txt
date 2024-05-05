@@ -2,6 +2,7 @@ Version 1.7.2
 =============
 
 Tomb Editor:
+ * Improved geometry manipulation and texturing performance.
  * Added TEN nodes for checking and modifying last used inventory object.
  * Added handling for OnUseItem event in node editor.
  * Added drag-n-drop support for Object ID controls in node editor.
