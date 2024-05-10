@@ -41,10 +41,10 @@ namespace TombLib.LevelData
         public Dictionary<Vector3, List<int>> SharedVertices { get; } = new Dictionary<Vector3, List<int>>();
         public SortedList<SectorInfo, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorInfo, VertexRange>();
 
-		// useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
-		public void Build(Room room, bool useLegacyCode = false)
+        // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
+        public void Build(Room room, bool useLegacyCode = false)
         {
-			VertexPositions.Clear();
+            VertexPositions.Clear();
             VertexEditorUVs.Clear();
             VertexColors.Clear();
             TriangleTextureAreas.Clear();
