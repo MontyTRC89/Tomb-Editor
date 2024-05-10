@@ -43,10 +43,21 @@ namespace TombLib.LevelData
 
         private readonly bool _legacy;
 
-        public RoomGeometry(Room room, bool legacy = false)
+        public RoomGeometry(bool legacy = false)
         {
             _legacy = legacy;
 
+        }
+        public void Build(Room room, bool legacy = false)
+        {
+            VertexPositions.Clear();
+            VertexEditorUVs.Clear();
+            VertexColors.Clear();
+            TriangleTextureAreas.Clear();
+            TriangleSectorInfo.Clear();
+            SharedVertices.Clear();
+            VertexRangeLookup.Clear();
+            DoubleSidedTriangleCount = 0;
             int xMin = 0;
             int zMin = 0;
             int xMax = room.NumXSectors - 1;
@@ -317,7 +328,6 @@ namespace TombLib.LevelData
             // Lighting
             Relight(room);
         }
-
         private enum FaceDirection
         {
             PositiveZ, NegativeZ, PositiveX, NegativeX, DiagonalFloor, DiagonalCeiling, DiagonalWall
