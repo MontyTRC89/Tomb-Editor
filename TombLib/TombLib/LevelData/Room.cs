@@ -917,7 +917,7 @@ namespace TombLib.LevelData
 
         public void BuildGeometry(bool legacy = false)
         {
-            RoomGeometry.Build(this);
+            RoomGeometry.Build(this, legacy);
         }
 
         public void RebuildLighting(bool highQualityLighting)
