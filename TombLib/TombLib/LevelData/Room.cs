@@ -313,8 +313,7 @@ namespace TombLib.LevelData
         public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy, bool fullCopy = false)
         {
             // Copy most variables
-            var result = (Room)MemberwiseClone();
-
+            var result = new Room(level,NumXSectors,NumZSectors,this.Properties.AmbientLight);
             if (!fullCopy)
             {
                 result.AlternateBaseRoom = null;
