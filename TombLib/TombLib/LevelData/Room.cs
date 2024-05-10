@@ -129,7 +129,7 @@ namespace TombLib.LevelData
         public short AlternateGroup { get; set; } = -1;
 
         // Internal data structures
-        public RoomGeometry RoomGeometry { get;} = new RoomGeometry();
+        public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
 
         public Room(Level level, int numXSectors, int numZSectors, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
         {
@@ -313,7 +313,7 @@ namespace TombLib.LevelData
         public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy, bool fullCopy = false)
         {
             // Copy most variables
-            var result = new Room(level,NumXSectors,NumZSectors,this.Properties.AmbientLight);
+            var result = new Room(level, NumXSectors, NumZSectors, Properties.AmbientLight);
             if (!fullCopy)
             {
                 result.AlternateBaseRoom = null;

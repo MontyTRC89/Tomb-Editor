@@ -41,16 +41,10 @@ namespace TombLib.LevelData
         public Dictionary<Vector3, List<int>> SharedVertices { get; } = new Dictionary<Vector3, List<int>>();
         public SortedList<SectorInfo, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorInfo, VertexRange>();
 
-        private readonly bool _legacy;
-
-        public RoomGeometry(bool legacy = false)
+		// useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
+		public void Build(Room room, bool useLegacyCode = false)
         {
-            _legacy = legacy;
-
-        }
-        public void Build(Room room, bool legacy = false)
-        {
-            VertexPositions.Clear();
+			VertexPositions.Clear();
             VertexEditorUVs.Clear();
             VertexColors.Clear();
             TriangleTextureAreas.Clear();
@@ -58,8 +52,9 @@ namespace TombLib.LevelData
             SharedVertices.Clear();
             VertexRangeLookup.Clear();
             DoubleSidedTriangleCount = 0;
-            int xMin = 0;
-            int zMin = 0;
+
+            const int xMin = 0;
+            const int zMin = 0;
             int xMax = room.NumXSectors - 1;
             int zMax = room.NumZSectors - 1;
             Block[,] Blocks = room.Blocks;
@@ -83,9 +78,9 @@ namespace TombLib.LevelData
                     {
                         if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
                             !(Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZn))
-                            AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, true, useLegacyCode);
                         else
-                            AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, false, useLegacyCode);
                     }
 
 
@@ -97,9 +92,9 @@ namespace TombLib.LevelData
                         if ((Blocks[x, z].Type == BlockType.Wall ||
                             (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
                             !(Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZp || Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZp))
-                            AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, true, useLegacyCode);
                         else
-                            AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, false, useLegacyCode);
                     }
 
                     // +X direction
@@ -109,9 +104,9 @@ namespace TombLib.LevelData
                     {
                         if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
                             !(Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZn || Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZp))
-                            AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, true, useLegacyCode);
                         else
-                            AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, false, useLegacyCode);
                     }
 
                     // -X direction
@@ -121,9 +116,9 @@ namespace TombLib.LevelData
                     {
                         if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
                             !(Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZp))
-                            AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, true, useLegacyCode);
                         else
-                            AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, false, useLegacyCode);
                     }
 
                     // Diagonal faces
@@ -131,11 +126,11 @@ namespace TombLib.LevelData
                     {
                         if (Blocks[x, z].Type == BlockType.Wall)
                         {
-                            AddVerticalFaces(room, x, z, FaceDirection.DiagonalFloor, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.DiagonalFloor, true, true, true, useLegacyCode);
                         }
                         else
                         {
-                            AddVerticalFaces(room, x, z, FaceDirection.DiagonalFloor, true, false, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.DiagonalFloor, true, false, false, useLegacyCode);
                         }
                     }
 
@@ -143,7 +138,7 @@ namespace TombLib.LevelData
                     {
                         if (Blocks[x, z].Type != BlockType.Wall)
                         {
-                            AddVerticalFaces(room, x, z, FaceDirection.DiagonalCeiling, false, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.DiagonalCeiling, false, true, false, useLegacyCode);
                         }
                     }
 
@@ -177,9 +172,9 @@ namespace TombLib.LevelData
 
 
                         if (addMiddle || Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
-                            AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, true, useLegacyCode);
                         else
-                            AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, false, useLegacyCode);
                     }
 
                     // -Z directed border wall
@@ -211,9 +206,9 @@ namespace TombLib.LevelData
                         }
 
                         if (addMiddle || Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
-                            AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, true, useLegacyCode);
                         else
-                            AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, false, useLegacyCode);
                     }
 
                     // -X directed border wall
@@ -245,9 +240,9 @@ namespace TombLib.LevelData
                         }
 
                         if (addMiddle || Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
-                            AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, true, useLegacyCode);
                         else
-                            AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, false, useLegacyCode);
                     }
 
                     // +X directed border wall
@@ -279,9 +274,9 @@ namespace TombLib.LevelData
                         }
 
                         if (addMiddle || Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
-                            AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, true);
+                            AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, true, useLegacyCode);
                         else
-                            AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, false);
+                            AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, false, useLegacyCode);
                     }
 
                     // Floor polygons
@@ -554,7 +549,7 @@ namespace TombLib.LevelData
             }
         }
 
-        private void AddVerticalFaces(Room room, int x, int z, FaceDirection faceDirection, bool hasFloorPart, bool hasCeilingPart, bool hasMiddlePart)
+        private void AddVerticalFaces(Room room, int x, int z, FaceDirection faceDirection, bool hasFloorPart, bool hasCeilingPart, bool hasMiddlePart, bool useLegacyCode)
         {
             //                                                 *Walkable floor*
             //                            yQaA (Start of QA)  0################0  yQaB (Start of QA)
@@ -1502,7 +1497,7 @@ namespace TombLib.LevelData
                 ZB = zB,
             };
 
-            if (_legacy)
+            if (useLegacyCode)
             {
                 #region LEGACY GEOMETRY CODE
 
