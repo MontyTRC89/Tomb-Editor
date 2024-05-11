@@ -107,6 +107,26 @@ namespace TombLib.LevelData
             => clicks * Level.FullClickHeight;
     }
 
+    public sealed class Blocks
+    {
+        public Memory<Block> Memory { get; }
+        public int Width { get; }
+        public int Height { get; }
+
+        public Blocks(int width, int height)
+        {
+            Width = width;
+            Height = height;
+            Memory = new Block[width * height];
+        }
+
+        public Block this[int x, int y]
+        {
+            get => Memory.Span[x * Height + y];
+            set => Memory.Span[x * Height + y] = value;
+        }
+    }
+
     public class Room : ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(Room instance);
@@ -120,7 +140,7 @@ namespace TombLib.LevelData
         public string Name { get; set; }
         public RoomProperties Properties { get; set; }
         public VectorInt3 Position { get; set; }
-        public Block[,] Blocks { get; private set; }
+        public Blocks Blocks { get; private set; }
 
         private List<PositionBasedObjectInstance> _objects = new List<PositionBasedObjectInstance>();
 
@@ -160,7 +180,7 @@ namespace TombLib.LevelData
                 RemoveObjectAndSingularPortalAndKeepAlive(level, instance);
 
             // Build new blocks
-            Block[,] newBlocks = new Block[numXSectors, numZSectors];
+            var newBlocks = new Blocks(numXSectors, numZSectors);
             for (int x = 0; x < numXSectors; x++)
                 for (int z = 0; z < numZSectors; z++)
                 {
@@ -325,7 +345,7 @@ namespace TombLib.LevelData
             result.Properties = Properties.Clone();
 
             // Copy blocks
-            result.Blocks = new Block[NumXSectors, NumZSectors];
+            result.Blocks = new Blocks(NumXSectors, NumZSectors);
             for (int z = 0; z < NumZSectors; ++z)
                 for (int x = 0; x < NumXSectors; ++x)
                     result.Blocks[x, z] = Blocks[x, z].Clone();
@@ -419,9 +439,10 @@ namespace TombLib.LevelData
             get
             { // No LINQ because it is really slow.
                 var portals = new HashSet<PortalInstance>();
-                foreach (var block in Blocks)
-                    foreach (var portal in block.Portals)
-                        portals.Add(portal);
+                for (int x = 0; x < NumXSectors; x++)
+                    for (int y = 0; y < NumZSectors; y++)
+                        foreach (var portal in Blocks[x, y].Portals)
+                            portals.Add(portal);
                 return portals;
             }
         }
@@ -431,9 +452,10 @@ namespace TombLib.LevelData
             get
             { // No LINQ because it is really slow.
                 var triggers = new HashSet<TriggerInstance>();
-                foreach (var block in Blocks)
-                    foreach (var trigger in block.Triggers)
-                        triggers.Add(trigger);
+                for (int x = 0; x < NumXSectors; x++)
+                    for (int y = 0; y < NumZSectors; y++)
+                        foreach (var trigger in Blocks[x, y].Triggers)
+                            triggers.Add(trigger);
                 return triggers;
             }
         }
@@ -443,9 +465,14 @@ namespace TombLib.LevelData
             get
             { // No LINQ because it is really slow.
                 var ghosts = new HashSet<GhostBlockInstance>();
-                foreach (var block in Blocks)
-                    if (block.HasGhostBlock)
-                        ghosts.Add(block.GhostBlock);
+                for (int x = 0; x < NumXSectors; x++)
+                    for (int y = 0; y < NumZSectors; y++)
+                    {
+                        Block block = Blocks[x, y];
+
+                        if (block.HasGhostBlock)
+                            ghosts.Add(block.GhostBlock);
+                    }
                 return ghosts;
             }
         }
@@ -1036,12 +1063,12 @@ namespace TombLib.LevelData
 
         public int NumXSectors
         {
-            get { return Blocks.GetLength(0); }
+            get { return Blocks.Width; }
         }
 
         public int NumZSectors
         {
-            get { return Blocks.GetLength(1); }
+            get { return Blocks.Height; }
         }
 
         public override string ToString()
@@ -1054,12 +1081,13 @@ namespace TombLib.LevelData
         {
             // Exclusive case: all blocks are walls
             bool allBlocksAreWalls = true;
-            foreach (var block in Blocks)
-                if (!block.IsAnyWall)
-                {
-                    allBlocksAreWalls = false;
-                    break;
-                }
+            for (int x = 0; x < NumXSectors; x++)
+                for (int y = 0; y < NumZSectors; y++)
+                    if (!Blocks[x, y].IsAnyWall)
+                    {
+                        allBlocksAreWalls = false;
+                        break;
+                    }
 
             // Determine lowest QAFace
             int lowest = int.MaxValue;
