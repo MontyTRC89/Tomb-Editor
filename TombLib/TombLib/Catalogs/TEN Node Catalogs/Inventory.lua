@@ -32,7 +32,7 @@ end
 -- !Arguments "NewLine, 58, WadSlots, [ _ITEM ], Item to check"
 
 LevelFuncs.Engine.Node.SetUsedItem = function(item)
-    return TEN.Inventory.SetUsedItem(item)
+    TEN.Inventory.SetUsedItem(item)
 end
 
 -- !Name "Clear last used item"
@@ -40,7 +40,7 @@ end
 -- !Description "Clears last used inventory item. Needed to avoid playing 'No' sound."
 
 LevelFuncs.Engine.Node.ClearUsedItem = function(item)
-    return TEN.Inventory.ClearUsedItem(item)
+    TEN.Inventory.ClearUsedItem(item)
 end
 
 -- !Name "If item is present in inventory..."
@@ -72,5 +72,11 @@ end
 -- !Arguments "NewLine, WadSlots, [ _ITEM ], Item to check"
 
 LevelFuncs.Engine.Node.TesttUsedItem = function(item)
-    return (TEN.Inventory.GetUsedItem() == item)
+    local itemWasUsed = (TEN.Inventory.GetUsedItem() == item)
+
+	if itemWasUsed then
+		TEN.Inventory.ClearUsedItem(item)
+	end
+
+	return itemWasUsed
 end
