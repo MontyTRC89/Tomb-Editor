@@ -28,7 +28,7 @@ end
 
 -- !Name "Set last used item"
 -- !Section "Inventory"
--- !Description "Sets last used inventory item. Valid only for one frame. If unused, 'No' sound will play."
+-- !Description "Sets last used inventory item. If item will not be handled by the engine, 'No' sound will play."
 -- !Arguments "NewLine, 58, WadSlots, [ _ITEM ], Item to check"
 
 LevelFuncs.Engine.Node.SetUsedItem = function(item)
@@ -37,7 +37,7 @@ end
 
 -- !Name "Clear last used item"
 -- !Section "Inventory"
--- !Description "Clears last used inventory item. Needed to avoid playing 'No' sound."
+-- !Description "Clears last used inventory item. Can be needed to avoid playing of 'No' sound."
 
 LevelFuncs.Engine.Node.ClearUsedItem = function(item)
     TEN.Inventory.ClearUsedItem(item)
@@ -67,9 +67,10 @@ end
 
 -- !Name "If last used item is..."
 -- !Section "Inventory"
--- !Description "Checks last used inventory item. Valid only for one frame after selecting it."
+-- !Description "Checks last used inventory item. If condition is met and item is recognized, it will be automatically cleared."
 -- !Conditional "True"
--- !Arguments "NewLine, WadSlots, [ _ITEM ], Item to check"
+-- !Arguments "NewLine, 75, WadSlots, [ _ITEM ], Item to check"
+-- !Arguments "25, Boolean, Don't say no'"
 
 LevelFuncs.Engine.Node.TesttUsedItem = function(item)
     local itemWasUsed = (TEN.Inventory.GetUsedItem() == item)
