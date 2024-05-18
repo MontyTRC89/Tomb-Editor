@@ -122,8 +122,8 @@ namespace TombLib.LevelData
 
         public Block this[int x, int y]
         {
-            get => Memory.Span[x * Height + y];
-            set => Memory.Span[x * Height + y] = value;
+            get => Memory.Span[(x * Height) + y];
+            set => Memory.Span[(x * Height) + y] = value;
         }
     }
 
