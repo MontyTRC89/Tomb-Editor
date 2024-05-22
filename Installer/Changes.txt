@@ -6,6 +6,7 @@ Tomb Editor:
  * Added TEN nodes for checking and modifying last used inventory object.
  * Added handling for OnUseItem event in node editor.
  * Added drag-n-drop support for object ID controls in node editor.
+ * Increased TEN flipmap count up to 255.
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
