@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -139,7 +140,7 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Moveables:
-                    cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", LuaSyntax.ActivatorNamePrefix));
+                    cbList.Items.Add(new ComboBoxItem("[ Activator ]", LuaSyntax.ActivatorNamePrefix));
                     foreach (var item in editor.CachedMoveables.Where(s => layout.CustomEnumeration.Count == 0 || 
                                                                            layout.CustomEnumeration.Any(e => s
                                                                             .WadObjectId.ShortName(TRVersion.Game.TombEngine)
@@ -570,9 +571,21 @@ namespace TombLib.Controls.VisualScripting
             if (string.IsNullOrEmpty(item.LuaName))
                 return;
 
-            var index = cbList.Items.OfType<ComboBoxItem>().IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
+            var list = cbList.Items.OfType<ComboBoxItem>();
+
+            var index = list.IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
+
+            if (index == -1 && item is MoveableInstance)
+            {
+                var name = TrCatalog.GetMoveableName(item.Room.Level.Settings.GameVersion, (item as MoveableInstance).WadObjectId.TypeId);
+                index = list.IndexOf(i => i.DisplayText == name);
+            }
+
             if (index != -1)
+            {
                 cbList.SelectedIndex = index;
+                return;
+            }
         }
 
         private void vector3Control_DragDrop(object sender, DragEventArgs e)
