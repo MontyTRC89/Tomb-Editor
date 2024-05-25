@@ -539,7 +539,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public struct TopDownWallPoint
+        public struct WallEnd
         {
 			/// <summary>
 			/// X coordinate of the wall point.
@@ -569,32 +569,32 @@ namespace TombLib.LevelData
 			/// <summary>
 			/// (X, Z) coordinates of where the wall starts from top-down view.
 			/// </summary>
-			public TopDownWallPoint Start;
+			public WallEnd Start;
 
 			/// <summary>
-			/// (X, X) coordinates of where the wall ends from top-down view.
+			/// (X, Z) coordinates of where the wall ends from top-down view.
 			/// </summary>
-			public TopDownWallPoint End;
+			public WallEnd End;
 
 			/// <summary>
 			/// Y coordinates of the QA part of the wall.
 			/// </summary>
-			public (int StartY, int EndY) QA;
+			public WallSplit QA;
 
 			/// <summary>
 			/// Y coordinates of the WS part of the wall.
 			/// </summary>
-			public (int StartY, int EndY) WS;
+			public WallSplit WS;
 
             /// <summary>
             /// Y coordinates of the wall's floor subdivisions
             /// </summary>
-            public List<(int StartY, int EndY)> FloorSubdivisions;
+            public List<WallSplit> FloorSubdivisions;
 
             /// <summary>
             /// Y coordinates of the wall's ceiling subdivisions
             /// </summary>
-            public List<(int StartY, int EndY)> CeilingSubdivisions;
+            public List<WallSplit> CeilingSubdivisions;
 
 			public BlockWallData() // TODO: Add a proper ctor!!!
 			{
@@ -641,6 +641,31 @@ namespace TombLib.LevelData
 					(diagonalCeilingSplitOfBlock is DiagonalSplit.XnZn && Direction is Direction.PositiveZ or Direction.PositiveX);
 			}
 
+			public bool CanFaceBeRendered(BlockVertical vertical) => vertical switch
+			{
+				BlockVertical.Floor or BlockVertical.Ceiling => true,
+
+				BlockVertical.FloorSubdivision2 => FloorSubdivisions.Count > 0,
+				BlockVertical.FloorSubdivision3 => FloorSubdivisions.Count > 1,
+				BlockVertical.FloorSubdivision4 => FloorSubdivisions.Count > 2,
+				BlockVertical.FloorSubdivision5 => FloorSubdivisions.Count > 3,
+				BlockVertical.FloorSubdivision6 => FloorSubdivisions.Count > 4,
+				BlockVertical.FloorSubdivision7 => FloorSubdivisions.Count > 5,
+				BlockVertical.FloorSubdivision8 => FloorSubdivisions.Count > 6,
+				BlockVertical.FloorSubdivision9 => FloorSubdivisions.Count > 7,
+
+				BlockVertical.CeilingSubdivision2 => CeilingSubdivisions.Count > 0,
+				BlockVertical.CeilingSubdivision3 => CeilingSubdivisions.Count > 1,
+				BlockVertical.CeilingSubdivision4 => CeilingSubdivisions.Count > 2,
+				BlockVertical.CeilingSubdivision5 => CeilingSubdivisions.Count > 3,
+				BlockVertical.CeilingSubdivision6 => CeilingSubdivisions.Count > 4,
+				BlockVertical.CeilingSubdivision7 => CeilingSubdivisions.Count > 5,
+				BlockVertical.CeilingSubdivision8 => CeilingSubdivisions.Count > 6,
+				BlockVertical.CeilingSubdivision9 => CeilingSubdivisions.Count > 7,
+
+				_ => false,
+			};
+
 			public static BlockWallData GetPositiveZWallData(Room room, int x, int z, bool normalize)
 			{
 				Block block = room.Blocks[x, z];
@@ -650,7 +675,7 @@ namespace TombLib.LevelData
 				{
 					Direction = Direction.PositiveZ,
 
-					Start = new TopDownWallPoint
+					Start = new WallEnd
 					{
 						X = x + 1,
 						Z = z + 1,
@@ -658,7 +683,7 @@ namespace TombLib.LevelData
 						MaxY = neighborBlock.Ceiling.XpZn
 					},
 
-					End = new TopDownWallPoint
+					End = new WallEnd
 					{
 						X = x,
 						Z = z + 1,
@@ -674,14 +699,14 @@ namespace TombLib.LevelData
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.FloorSubdivisions.Add((
+					wall.FloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.CeilingSubdivisions.Add((
+					wall.CeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 				}
@@ -749,11 +774,11 @@ namespace TombLib.LevelData
 					wall.WS.StartY = Math.Min(wall.WS.StartY, wAportal) - room.Position.Y;
 					wall.WS.EndY = Math.Min(wall.WS.EndY, wBportal) - room.Position.Y;
 
-					(int, int) newSubdivision;
+					WallSplit newSubdivision;
 
 					for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
 					{
-						newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
+						newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 							adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp));
 
 						if (i >= wall.FloorSubdivisions.Count)
@@ -764,7 +789,7 @@ namespace TombLib.LevelData
 
 					for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
 					{
-						newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
+						newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 							adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp));
 
 						if (i >= wall.CeilingSubdivisions.Count)
@@ -833,7 +858,7 @@ namespace TombLib.LevelData
 				{
 					Direction = Direction.NegativeZ,
 
-					Start = new TopDownWallPoint
+					Start = new WallEnd
 					{
 						X = x,
 						Z = z,
@@ -841,7 +866,7 @@ namespace TombLib.LevelData
 						MaxY = neighborBlock.Ceiling.XnZp
 					},
 
-					End = new TopDownWallPoint
+					End = new WallEnd
 					{
 						X = x + 1,
 						Z = z,
@@ -857,14 +882,14 @@ namespace TombLib.LevelData
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.FloorSubdivisions.Add((
+					wall.FloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.CeilingSubdivisions.Add((
+					wall.CeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 				}
@@ -932,11 +957,11 @@ namespace TombLib.LevelData
 					wall.WS.StartY = Math.Min(wall.WS.StartY, wAportal) - room.Position.Y;
 					wall.WS.EndY = Math.Min(wall.WS.EndY, wBportal) - room.Position.Y;
 
-					(int, int) newSubdivision;
+					WallSplit newSubdivision;
 
 					for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
 					{
-						newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
+						newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 							adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn));
 
 						if (i >= wall.FloorSubdivisions.Count)
@@ -947,7 +972,7 @@ namespace TombLib.LevelData
 
 					for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
 					{
-						newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
+						newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 						    adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn));
 
 						if (i >= wall.CeilingSubdivisions.Count)
@@ -1016,7 +1041,7 @@ namespace TombLib.LevelData
 				{
 					Direction = Direction.PositiveX,
 
-					Start = new TopDownWallPoint
+					Start = new WallEnd
 					{
 						X = x + 1,
 						Z = z,
@@ -1024,7 +1049,7 @@ namespace TombLib.LevelData
 						MaxY = neighborBlock.Ceiling.XnZn
 					},
 
-					End = new TopDownWallPoint
+					End = new WallEnd
 					{
 						X = x + 1,
 						Z = z + 1,
@@ -1040,14 +1065,14 @@ namespace TombLib.LevelData
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.FloorSubdivisions.Add((
+					wall.FloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 				        block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.CeilingSubdivisions.Add((
+					wall.CeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 					    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 				}
@@ -1115,11 +1140,11 @@ namespace TombLib.LevelData
 					wall.WS.StartY = Math.Min(wall.WS.StartY, wAportal) - room.Position.Y;
 					wall.WS.EndY = Math.Min(wall.WS.EndY, wBportal) - room.Position.Y;
 
-					(int, int) newSubdivision;
+					WallSplit newSubdivision;
 
 					for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
 					{
-						newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
+						newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 							adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp));
 
 						if (i >= wall.FloorSubdivisions.Count)
@@ -1130,7 +1155,7 @@ namespace TombLib.LevelData
 
 					for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
 					{
-						newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
+						newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 							adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp));
 
 						if (i >= wall.CeilingSubdivisions.Count)
@@ -1199,7 +1224,7 @@ namespace TombLib.LevelData
 				{
 					Direction = Direction.NegativeX,
 
-					Start = new TopDownWallPoint
+					Start = new WallEnd
 					{
 						X = x,
 						Z = z + 1,
@@ -1207,7 +1232,7 @@ namespace TombLib.LevelData
 						MaxY = neighborBlock.Ceiling.XpZp
 					},
 
-					End = new TopDownWallPoint
+					End = new WallEnd
 					{
 						X = x,
 						Z = z,
@@ -1223,14 +1248,14 @@ namespace TombLib.LevelData
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.FloorSubdivisions.Add((
+					wall.FloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.CeilingSubdivisions.Add((
+					wall.CeilingSubdivisions.Add(new WallSplit(
 					    block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 				}
@@ -1298,11 +1323,11 @@ namespace TombLib.LevelData
 					wall.WS.StartY = Math.Min(wall.WS.StartY, wAportal) - room.Position.Y;
 					wall.WS.EndY = Math.Min(wall.WS.EndY, wBportal) - room.Position.Y;
 
-					(int, int) newSubdivision;
+					WallSplit newSubdivision;
 
 					for (int i = 0; i < adjoiningBlock.ExtraFloorSubdivisions.Count; i++)
 					{
-						newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
+						newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 							adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn));
 
 						if (i >= wall.FloorSubdivisions.Count)
@@ -1313,7 +1338,7 @@ namespace TombLib.LevelData
 
 					for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
 					{
-						newSubdivision = (adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
+						newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 							adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn));
 
 						if (i >= wall.CeilingSubdivisions.Count)
@@ -1383,7 +1408,7 @@ namespace TombLib.LevelData
 					case DiagonalSplit.XpZn:
 						wall = new BlockWallData
 						{
-							Start = new TopDownWallPoint
+							Start = new WallEnd
 							{
 								X = x + 1,
 								Z = z + 1,
@@ -1397,7 +1422,7 @@ namespace TombLib.LevelData
 									: (block.IsAnyWall ? block.Ceiling.XnZp : block.Ceiling.XpZp) // DiagonalFloor
 							},
 
-							End = new TopDownWallPoint
+							End = new WallEnd
 							{
 								X = x,
 								Z = z,
@@ -1419,14 +1444,14 @@ namespace TombLib.LevelData
 
 						for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 						{
-							wall.FloorSubdivisions.Add((
+							wall.FloorSubdivisions.Add(new WallSplit(
 								block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 								block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 						}
 
 						for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 						{
-							wall.CeilingSubdivisions.Add((
+							wall.CeilingSubdivisions.Add(new WallSplit(
 								block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 								block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 						}
@@ -1436,7 +1461,7 @@ namespace TombLib.LevelData
 					case DiagonalSplit.XnZn:
 						wall = new BlockWallData
 						{
-							Start = new TopDownWallPoint
+							Start = new WallEnd
 							{
 								X = x + 1,
 								Z = z,
@@ -1450,7 +1475,7 @@ namespace TombLib.LevelData
 									: (block.IsAnyWall ? block.Ceiling.XpZp : block.Ceiling.XpZn) // DiagonalFloor
 							},
 
-							End = new TopDownWallPoint
+							End = new WallEnd
 							{
 								X = x,
 								Z = z + 1,
@@ -1472,14 +1497,14 @@ namespace TombLib.LevelData
 
 						for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 						{
-							wall.FloorSubdivisions.Add((
+							wall.FloorSubdivisions.Add(new WallSplit(
 								block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 								block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 						}
 
 						for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 						{
-							wall.CeilingSubdivisions.Add((
+							wall.CeilingSubdivisions.Add(new WallSplit(
 								block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 								block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 						}
@@ -1489,7 +1514,7 @@ namespace TombLib.LevelData
 					case DiagonalSplit.XnZp:
 						wall = new BlockWallData
 						{
-							Start = new TopDownWallPoint
+							Start = new WallEnd
 							{
 								X = x,
 								Z = z,
@@ -1503,7 +1528,7 @@ namespace TombLib.LevelData
 									: (block.IsAnyWall ? block.Ceiling.XpZn : block.Ceiling.XnZn) // DiagonalFloor
 							},
 
-							End = new TopDownWallPoint
+							End = new WallEnd
 							{
 								X = x + 1,
 								Z = z + 1,
@@ -1524,12 +1549,12 @@ namespace TombLib.LevelData
 						wall.WS.EndY = block.Ceiling.XpZp;
 
 						for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
-							wall.FloorSubdivisions.Add((
+							wall.FloorSubdivisions.Add(new WallSplit(
 								block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 								block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 
 						for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
-							wall.CeilingSubdivisions.Add((
+							wall.CeilingSubdivisions.Add(new WallSplit(
 								block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 								block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 
@@ -1538,7 +1563,7 @@ namespace TombLib.LevelData
 					default:
 						wall = new BlockWallData
 						{
-							Start = new TopDownWallPoint
+							Start = new WallEnd
 							{
 								X = x,
 								Z = z + 1,
@@ -1552,7 +1577,7 @@ namespace TombLib.LevelData
 									: (block.IsAnyWall ? block.Ceiling.XnZn : block.Ceiling.XnZp) // DiagonalFloor
 							},
 
-							End = new TopDownWallPoint
+							End = new WallEnd
 							{
 								X = x + 1,
 								Z = z,
@@ -1574,14 +1599,14 @@ namespace TombLib.LevelData
 
 						for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 						{
-							wall.FloorSubdivisions.Add((
+							wall.FloorSubdivisions.Add(new WallSplit(
 								block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 								block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 						}
 
 						for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 						{
-							wall.CeilingSubdivisions.Add((
+							wall.CeilingSubdivisions.Add(new WallSplit(
 								block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 								block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 						}
@@ -1606,7 +1631,7 @@ namespace TombLib.LevelData
 				{
 					for (int i = 0; i < FloorSubdivisions.Count; i++)
 					{
-						(int StartY, int EndY) normalizedSubdivision = NormalizeFloorSplit(FloorSubdivisions[i], diagonalFloorSplit, isAnyWall, out isFloorSplitInFloorVoid);
+						WallSplit normalizedSubdivision = NormalizeFloorSplit(FloorSubdivisions[i], diagonalFloorSplit, isAnyWall, out isFloorSplitInFloorVoid);
 
 						if (isFloorSplitInFloorVoid)
 						{
@@ -1623,7 +1648,7 @@ namespace TombLib.LevelData
 				{
 					for (int i = 0; i < CeilingSubdivisions.Count; i++)
 					{
-						(int StartY, int EndY) normalizedSubdivision = NormalizeCeilingSplit(CeilingSubdivisions[i], diagonalCeilingSplit, isAnyWall, out isCeilingSplitInCeilingVoid);
+						WallSplit normalizedSubdivision = NormalizeCeilingSplit(CeilingSubdivisions[i], diagonalCeilingSplit, isAnyWall, out isCeilingSplitInCeilingVoid);
 
 						if (isCeilingSplitInCeilingVoid)
 						{
@@ -1637,7 +1662,7 @@ namespace TombLib.LevelData
 				}
 			}
 
-            private (int StartY, int EndY) NormalizeFloorSplit((int StartY, int EndY) split, DiagonalSplit diagonalFloorSplit, bool isAnyWall, out bool isInFloorVoid)
+            private WallSplit NormalizeFloorSplit(WallSplit split, DiagonalSplit diagonalFloorSplit, bool isAnyWall, out bool isInFloorVoid)
             {
                 isInFloorVoid = true;
 
@@ -1674,7 +1699,7 @@ namespace TombLib.LevelData
 				return split;
 			}
 
-            private (int StartY, int EndY) NormalizeCeilingSplit((int StartY, int EndY) split, DiagonalSplit diagonalCeilingSplit, bool isAnyWall, out bool isInCeilingVoid)
+            private WallSplit NormalizeCeilingSplit(WallSplit split, DiagonalSplit diagonalCeilingSplit, bool isAnyWall, out bool isInCeilingVoid)
             {
 				isInCeilingVoid = true;
 
@@ -1776,62 +1801,129 @@ namespace TombLib.LevelData
 			}
 		}
 
-        public struct FaceData
+        public readonly struct FaceData
         {
-            public BlockFace BlockFace;
+			public readonly BlockFace BlockFace;
 
-			public Vector3 P0;
-			public Vector3 P1;
-			public Vector3 P2;
-			public Vector3? P3;
+			public readonly Vector3 P0;
+			public readonly Vector3 P1;
+			public readonly Vector3 P2;
+			public readonly Vector3? P3;
 
-            public Vector2 UV0;
-			public Vector2 UV1;
-			public Vector2 UV2;
-			public Vector2? UV3;
+			public readonly Vector2 UV0;
+			public readonly Vector2 UV1;
+			public readonly Vector2 UV2;
+			public readonly Vector2? UV3;
 
-            public bool? IsXEqualYDiagonal;
+			public readonly bool? IsXEqualYDiagonal;
 
-			public readonly bool IsQuad => P3.HasValue;
-			public readonly bool IsTriangle => !P3.HasValue;
+			public readonly bool IsQuad;
+			public readonly bool IsTriangle;
+
+			/// <summary>
+			/// Creates a triangle face data.
+			/// </summary>
+			public FaceData(BlockFace blockFace, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
+            {
+				BlockFace = blockFace;
+
+                P0 = p0;
+				P1 = p1;
+				P2 = p2;
+				P3 = null;
+
+				UV0 = uv0;
+				UV1 = uv1;
+				UV2 = uv2;
+				UV3 = null;
+
+				IsXEqualYDiagonal = isXEqualYDiagonal;
+
+                IsQuad = false;
+                IsTriangle = true;
+			}
+
+			/// <summary>
+			/// Creates a quad face data.
+			/// </summary>
+			public FaceData(BlockFace blockFace, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
+            {
+				BlockFace = blockFace;
+
+				P0 = p0;
+				P1 = p1;
+				P2 = p2;
+				P3 = p3;
+
+				UV0 = uv0;
+				UV1 = uv1;
+				UV2 = uv2;
+				UV3 = uv3;
+
+				IsXEqualYDiagonal = null;
+
+				IsQuad = true;
+				IsTriangle = false;
+			}
 		}
 
-        private IReadOnlyList<FaceData> GetVerticalFloorPartFaces(BlockWallData wall, DiagonalSplit diagonalFloorSplit, bool isAnyWall)
+		public struct WallSplit
+		{
+			public int StartY;
+			public int EndY;
+
+            public WallSplit(int startY, int endY)
+            {
+				StartY = startY;
+				EndY = endY;
+			}
+        }
+
+		public struct Room2DPoint
+		{
+			public int X;
+			public int Z;
+
+            public Room2DPoint(int x, int z)
+            {
+				X = x;
+				Z = z;
+			}
+        }
+
+		private IReadOnlyList<FaceData> GetVerticalFloorPartFaces(BlockWallData wall, DiagonalSplit diagonalFloorSplit, bool isAnyWall)
         {
 			static FaceData? CreateFaceData(BlockFace blockFace, (int X, int Z) wallStart, (int X, int Z) wallEnd, (int StartY, int EndY) faceStart, (int StartY, int EndY) faceEnd)
             {
-                if (faceStart.StartY > faceEnd.StartY && faceStart.EndY > faceEnd.EndY) // Is quad
-                    return new FaceData()
-                    {
-                        BlockFace = blockFace,
-                        P0 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceStart.StartY, wallStart.Z * Level.BlockSizeUnit),
-                        P1 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceStart.EndY, wallEnd.Z * Level.BlockSizeUnit),
-                        P2 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
-                        P3 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
-						UV0 = new Vector2(0, 0), UV1 = new Vector2(1, 0), UV2 = new Vector2(1, 1), UV3 = new Vector2(0, 1)
-					};
-                else if (faceStart.StartY == faceEnd.StartY && faceStart.EndY > faceEnd.EndY) // Is triangle (type 1)
-                    return new FaceData()
-					{
-						BlockFace = blockFace,
-						P0 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
-						P1 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceStart.EndY, wallEnd.Z * Level.BlockSizeUnit),
-						P2 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
-						UV0 = new Vector2(1, 1), UV1 = new Vector2(0, 0), UV2 = new Vector2(1, 0),
-                        IsXEqualYDiagonal = false
-					};
+				if (faceStart.StartY > faceEnd.StartY && faceStart.EndY > faceEnd.EndY) // Is quad
+				{
+					return new FaceData(blockFace,
+						p0: new Vector3(wallStart.X * Level.BlockSizeUnit, faceStart.StartY, wallStart.Z * Level.BlockSizeUnit),
+						p1: new Vector3(wallEnd.X * Level.BlockSizeUnit, faceStart.EndY, wallEnd.Z * Level.BlockSizeUnit),
+						p2: new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
+						p3: new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
+						uv0: new Vector2(0, 0), uv1: new Vector2(1, 0), uv2: new Vector2(1, 1), uv3: new Vector2(0, 1));
+				}
+				else if (faceStart.StartY == faceEnd.StartY && faceStart.EndY > faceEnd.EndY) // Is triangle (type 1)
+				{
+					return new FaceData(blockFace,
+						p0: new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
+						p1: new Vector3(wallEnd.X * Level.BlockSizeUnit, faceStart.EndY, wallEnd.Z * Level.BlockSizeUnit),
+						p2: new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
+						uv0: new Vector2(1, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: false);
+				}
 				else if (faceStart.StartY > faceEnd.StartY && faceStart.EndY == faceEnd.EndY) // Is triangle (type 2)
-                    return new FaceData()
-                    {
-						BlockFace = blockFace,
-						P0 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceStart.StartY, wallStart.Z * Level.BlockSizeUnit),
-						P1 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
-						P2 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
-						UV0 = new Vector2(0, 1), UV1 = new Vector2(0, 0), UV2 = new Vector2(1, 0),
-						IsXEqualYDiagonal = true
-					};
+				{
+					return new FaceData(blockFace,
+						p0: new Vector3(wallStart.X * Level.BlockSizeUnit, faceStart.StartY, wallStart.Z * Level.BlockSizeUnit),
+						p1: new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
+						p2: new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
+						uv0: new Vector2(0, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: true);
+				}
 				else
-                    return null; // Not rendered - failed to meet any of the conditions
+				{
+					return null; // Not rendered - failed to meet any of the conditions
+				}
 			}
 
 			bool isQaFullyAboveCeiling = wall.IsQaFullyAboveMaxY; // Technically should be classified as a wall if true
@@ -1898,40 +1990,37 @@ namespace TombLib.LevelData
 
         private IReadOnlyList<FaceData> GetVerticalCeilingPartFaces(BlockWallData wall, DiagonalSplit diagonalCeilingSplit, bool isAnyWall)
         {
-			static FaceData? CreateFaceData(BlockFace blockFace, (int X, int Z) wallStart, (int X, int Z) wallEnd, (int StartY, int EndY) faceStart, (int StartY, int EndY) faceEnd)
+			static FaceData? CreateFaceData(BlockFace blockFace, Room2DPoint wallStartPoint, Room2DPoint wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
 			{
-				if (faceStart.StartY < faceEnd.StartY && faceStart.EndY < faceEnd.EndY) // Is quad
-					return new FaceData()
-					{
-						BlockFace = blockFace,
-						P0 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
-						P1 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
-						P2 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceStart.EndY, wallEnd.Z * Level.BlockSizeUnit),
-						P3 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceStart.StartY, wallStart.Z * Level.BlockSizeUnit),
-						UV0 = new Vector2(0, 0), UV1 = new Vector2(1, 0), UV2 = new Vector2(1, 1), UV3 = new Vector2(0, 1)
-					};
-				else if (faceStart.StartY < faceEnd.StartY && faceStart.EndY == faceEnd.EndY) // Is triangle (type 1)
-					return new FaceData()
-					{
-						BlockFace = blockFace,
-						P0 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
-						P1 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
-						P2 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceStart.StartY, wallStart.Z * Level.BlockSizeUnit),
-						UV0 = new Vector2(0, 1), UV1 = new Vector2(0, 0), UV2 = new Vector2(1, 0),
-						IsXEqualYDiagonal = true
-					};
-				else if (faceStart.StartY == faceEnd.StartY && faceStart.EndY < faceEnd.EndY) // Is triangle (type 2)
-					return new FaceData()
-					{
-						BlockFace = blockFace,
-						P0 = new Vector3(wallStart.X * Level.BlockSizeUnit, faceEnd.StartY, wallStart.Z * Level.BlockSizeUnit),
-						P1 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceEnd.EndY, wallEnd.Z * Level.BlockSizeUnit),
-						P2 = new Vector3(wallEnd.X * Level.BlockSizeUnit, faceStart.EndY, wallEnd.Z * Level.BlockSizeUnit),
-						UV0 = new Vector2(1, 1), UV1 = new Vector2(0, 0), UV2 = new Vector2(1, 0),
-						IsXEqualYDiagonal = false
-					};
+				if (faceStartSplit.StartY < faceEndSplit.StartY && faceStartSplit.EndY < faceEndSplit.EndY) // Is quad
+				{
+					return new FaceData(blockFace,
+						p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+						p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
+						p2: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
+						p3: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+						uv0: new Vector2(0, 0), uv1: new Vector2(1, 0), uv2: new Vector2(1, 1), uv3: new Vector2(0, 1));
+				}
+				else if (faceStartSplit.StartY < faceEndSplit.StartY && faceStartSplit.EndY == faceEndSplit.EndY) // Is triangle (type 1)
+				{
+					return new FaceData(blockFace,
+						p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+						p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
+						p2: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+						uv0: new Vector2(0, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: true);
+				}
+				else if (faceStartSplit.StartY == faceEndSplit.StartY && faceStartSplit.EndY < faceEndSplit.EndY) // Is triangle (type 2)
+				{
+					return new FaceData(blockFace,
+						p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+						p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
+						p2: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
+						uv0: new Vector2(1, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: false);
+				}
 				else
+				{
 					return null; // Not rendered - failed to meet any of the conditions
+				}
 			}
 
 			bool isWsFullyBelowMinY = wall.IsWsFullyBelowMinY; // Technically should be classified as a wall if true
@@ -2018,38 +2107,35 @@ namespace TombLib.LevelData
 
             BlockFace blockFace = BlockFaceExtensions.GetMiddleFace(wall.Direction);
 
-            if (yStartA != yEndA && yStartB != yEndB) // Is quad
-				return new FaceData()
-                {
-					BlockFace = blockFace,
-					P0 = new Vector3(wall.Start.X * Level.BlockSizeUnit, yEndA, wall.Start.Z * Level.BlockSizeUnit),
-                    P1 = new Vector3(wall.End.X * Level.BlockSizeUnit, yEndB, wall.End.Z * Level.BlockSizeUnit),
-                    P2 = new Vector3(wall.End.X * Level.BlockSizeUnit, yStartB, wall.End.Z * Level.BlockSizeUnit),
-                    P3 = new Vector3(wall.Start.X * Level.BlockSizeUnit, yStartA, wall.Start.Z * Level.BlockSizeUnit),
-					UV0 = new Vector2(0, 0), UV1 = new Vector2(1, 0), UV2 = new Vector2(1, 1), UV3 = new Vector2(0, 1)
-				};
+			if (yStartA != yEndA && yStartB != yEndB) // Is quad
+			{
+				return new FaceData(blockFace,
+					p0: new Vector3(wall.Start.X * Level.BlockSizeUnit, yEndA, wall.Start.Z * Level.BlockSizeUnit),
+					p1: new Vector3(wall.End.X * Level.BlockSizeUnit, yEndB, wall.End.Z * Level.BlockSizeUnit),
+					p2: new Vector3(wall.End.X * Level.BlockSizeUnit, yStartB, wall.End.Z * Level.BlockSizeUnit),
+					p3: new Vector3(wall.Start.X * Level.BlockSizeUnit, yStartA, wall.Start.Z * Level.BlockSizeUnit),
+					uv0: new Vector2(0, 0), uv1: new Vector2(1, 0), uv2: new Vector2(1, 1), uv3: new Vector2(0, 1));
+			}
 			else if (yStartA != yEndA && yStartB == yEndB) // Is triangle (type 1)
-				return new FaceData()
-                {
-					BlockFace = blockFace,
-					P0 = new Vector3(wall.Start.X * Level.BlockSizeUnit, yEndA, wall.Start.Z * Level.BlockSizeUnit),
-					P1 = new Vector3(wall.End.X * Level.BlockSizeUnit, yEndB, wall.End.Z * Level.BlockSizeUnit),
-					P2 = new Vector3(wall.Start.X * Level.BlockSizeUnit, yStartB, wall.Start.Z * Level.BlockSizeUnit),
-					UV0 = new Vector2(0, 1), UV1 = new Vector2(0, 0), UV2 = new Vector2(1, 0),
-					IsXEqualYDiagonal = true
-				};
+			{
+				return new FaceData(blockFace,
+					p0: new Vector3(wall.Start.X * Level.BlockSizeUnit, yEndA, wall.Start.Z * Level.BlockSizeUnit),
+					p1: new Vector3(wall.End.X * Level.BlockSizeUnit, yEndB, wall.End.Z * Level.BlockSizeUnit),
+					p2: new Vector3(wall.Start.X * Level.BlockSizeUnit, yStartB, wall.Start.Z * Level.BlockSizeUnit),
+					uv0: new Vector2(0, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: true);
+			}
 			else if (yStartA == yEndA && yStartB != yEndB) // Is triangle (type 2)
-				return new FaceData()
-				{
-					BlockFace = blockFace,
-					P0 = new Vector3(wall.Start.X * Level.BlockSizeUnit, yEndA, wall.Start.Z * Level.BlockSizeUnit),
-					P1 = new Vector3(wall.End.X * Level.BlockSizeUnit, yEndB, wall.End.Z * Level.BlockSizeUnit),
-					P2 = new Vector3(wall.End.X * Level.BlockSizeUnit, yStartB, wall.End.Z * Level.BlockSizeUnit),
-					UV0 = new Vector2(1, 1), UV1 = new Vector2(0, 0), UV2 = new Vector2(1, 0),
-					IsXEqualYDiagonal = false
-				};
+			{
+				return new FaceData(blockFace,
+					p0: new Vector3(wall.Start.X * Level.BlockSizeUnit, yEndA, wall.Start.Z * Level.BlockSizeUnit),
+					p1: new Vector3(wall.End.X * Level.BlockSizeUnit, yEndB, wall.End.Z * Level.BlockSizeUnit),
+					p2: new Vector3(wall.End.X * Level.BlockSizeUnit, yStartB, wall.End.Z * Level.BlockSizeUnit),
+					uv0: new Vector2(1, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: false);
+			}
 			else
+			{
 				return null; // Not rendered - failed to meet any of the conditions
+			}
 		}
 
         private struct BlockFaceDTO
