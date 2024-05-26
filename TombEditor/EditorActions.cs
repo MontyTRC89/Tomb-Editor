@@ -57,12 +57,14 @@ namespace TombEditor
 
         public static void SmartBuildGeometry(Room room, RectangleInt2 area)
         {
+            _editor.RaiseEvent(new Editor.SuspendRenderingEvent());
             var watch = new Stopwatch();
             watch.Start();
             room.SmartBuildGeometry(area, _editor.Configuration.Rendering3D_HighQualityLightPreview);
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
             _editor.RoomGeometryChange(room);
+            _editor.RaiseEvent(new Editor.ResumeRenderingEvent());
         }
 
         private enum SmoothGeometryEditingType

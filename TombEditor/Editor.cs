@@ -1299,6 +1299,8 @@ namespace TombEditor
             public String InfoString { get;internal set; }
         }
 
+        public class SuspendRenderingEvent : IEditorEvent { }
+        public class ResumeRenderingEvent : IEditorEvent { }
         // Auto saving
         private readonly System.Windows.Forms.Timer _autoSavingTimer = new System.Windows.Forms.Timer();
         private volatile bool _currentlyAutoSaving;

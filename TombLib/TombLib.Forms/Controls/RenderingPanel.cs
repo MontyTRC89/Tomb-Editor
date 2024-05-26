@@ -15,6 +15,7 @@ namespace TombLib.Controls
         public RenderingSwapChain SwapChain { get; private set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RenderingDevice Device { get; private set; }
+        public bool AllowRendering { get; set; } = true;
 
         public RenderingPanel()
         {
@@ -120,5 +121,10 @@ namespace TombLib.Controls
         }
 
         protected virtual Vector4 ClearColor { get; } = new Vector4(0.392f, 0.584f, 0.929f, 1.0f); // "Cornflower blue" by default
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == 0x000F /* WM_PAINT */ && AllowRendering || m.Msg != 0x000F)
+                base.WndProc(ref m);
+        }
     }
 }
