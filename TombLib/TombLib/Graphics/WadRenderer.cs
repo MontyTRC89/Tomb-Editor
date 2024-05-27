@@ -15,11 +15,11 @@ namespace TombLib.Graphics
         public GraphicsDevice GraphicsDevice { get; }
         public Texture2D Texture { get; private set; } = null;
 
-        private Dictionary<WadMoveable, AnimatedModel> Moveables { get; } = new Dictionary<WadMoveable, AnimatedModel>();
-        private Dictionary<WadStatic, StaticModel> Statics { get; } = new Dictionary<WadStatic, StaticModel>();
+        private IDictionary<WadMoveable, AnimatedModel> Moveables { get; } = new Dictionary<WadMoveable, AnimatedModel>();
+        private IDictionary<WadStatic, StaticModel> Statics { get; } = new Dictionary<WadStatic, StaticModel>();
 
-        private RectPacker TexturePacker { get; set; }
-        private Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; }
+        private IList<RectPacker> TexturePackers { get;} = new List<RectPacker>();
+        private IDictionary<WadTexture, VectorInt3> PackedTextures { get; } = new Dictionary<WadTexture, VectorInt3>();
         private bool _compactTexture;
         private bool _correctTexture;
 
@@ -30,21 +30,21 @@ namespace TombLib.Graphics
             GraphicsDevice = graphicsDevice;
             _compactTexture = compactTexture;
             _correctTexture = correctTexture;
-            CreateTexturePacker();
+            AddPacker();
         }
 
-        private void CreateTexturePacker()
+        private void AddPacker()
         {
-            PackedTextures = new Dictionary<WadTexture, VectorInt2>();
-            if (_compactTexture)
-                TexturePacker = new RectPackerTree(new VectorInt2(TextureAtlasSize, TextureAtlasSize));
-            else
-                TexturePacker = new RectPackerSimpleStack(new VectorInt2(TextureAtlasSize, TextureAtlasSize));
+            var size = new VectorInt2(TextureAtlasSize, TextureAtlasSize);
+            TexturePackers.Add(_compactTexture ? new RectPackerTree(size) : new RectPackerSimpleStack(size));
         }
 
         // Size of the atlas
         // DX10 requires minimum 8K textures support for hardware certification so we should be safe with this
-        public const int TextureAtlasSize = 4096;
+        // Raildex 27/05/2024:
+        // Reduced Atlas Size to 1024, because dynamic array size allows more stuff to be packed.
+        // Reduces the average wastage of memory.
+        public const int TextureAtlasSize = 1024;
 
         public void Dispose()
         {
@@ -56,7 +56,6 @@ namespace TombLib.Graphics
 
             Texture?.Dispose();
             Texture = null;
-            CreateTexturePacker();
 
             foreach (var obj in Moveables.Values)
                 obj.Dispose();
@@ -152,104 +151,69 @@ namespace TombLib.Graphics
             return model;
         }
 
-        private VectorInt2 AllocateTexture(WadTexture texture)
+        private VectorInt3 AllocateTexture(WadTexture texture)
         {
             // Check if the texture is already loaded
             {
-                VectorInt2 position;
+                VectorInt3 position;
                 if (PackedTextures.TryGetValue(texture, out position))
                     return position;
             }
 
             // Allocate texture
             {
-                VectorInt2? position = TexturePacker.TryAdd(texture.Image.Size);
-                if (position == null)
-                    throw new TextureAtlasFullException();
+                VectorInt3? position = null;
+
+                for(int packerIndex = 0; position is null; packerIndex++)
+                {
+                    bool addedPacker = false;
+                    if(packerIndex == TexturePackers.Count)
+                    {
+                        AddPacker();
+                        addedPacker = true;
+                    }
+                        
+                    var sizeToPack = texture.Image.Size;
+                    var pos = TexturePackers[packerIndex].TryAdd(sizeToPack);
+                    if (pos is not null)
+                        position = new VectorInt3(pos.Value.X, pos.Value.Y, packerIndex);
+                    else if (pos is null && addedPacker) /* We added a new empty atlas and the texture did not fit at all*/
+                        throw new TextureAtlasFullException();
+                }
 
                 // Upload texture
                 InitializeTexture();
+                EnsureTextureCapacity();
                 TextureLoad.Update(GraphicsDevice, Texture, texture.Image, position.Value);
                 PackedTextures.Add(texture, position.Value);
                 return position.Value;
             }
         }
 
+        // At runtime we can't be sure how many textures the array contains,
+        // so we create a new texture array on demand and copy the old content over
+        private void EnsureTextureCapacity()
+        {
+            var arraySize = Texture.Description.ArraySize;
+            
+            if(TexturePackers.Count >= arraySize)
+            {
+                var newTexture = Texture2D.New(GraphicsDevice, TextureAtlasSize, TextureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
+                for(int i = 0; i < arraySize;i++)
+                {
+                    var fromSubresource = Texture.GetSubResourceIndex(i, 0);
+                    var toSubresource = newTexture.GetSubResourceIndex(i, 0);
+                    GraphicsDevice.Copy(Texture, fromSubresource, newTexture, toSubresource);
+                }
+                Texture = newTexture;
+            }
+        }
         private void InitializeTexture()
         {
-            if (Texture == null)
-                Texture = Texture2D.New(GraphicsDevice, TextureAtlasSize, TextureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, 1, SharpDX.Direct3D11.ResourceUsage.Default);
+            if (Texture is null)
+                Texture = Texture2D.New(GraphicsDevice, TextureAtlasSize, TextureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
         }
-
-        private void PreloadReplaceTextures(IEnumerable<WadMoveable> newMoveables, IEnumerable<WadStatic> newStatics)
-        {
-            Dispose();
-
-            // Collect textures
-            var textures = new HashSet<WadTexture>();
-            foreach (var moveable in newMoveables)
-                foreach (var mesh in moveable.Meshes)
-                    foreach (WadPolygon polygon in mesh.Polys)
-                        textures.Add((WadTexture)polygon.Texture.Texture);
-            foreach (var stat in newStatics)
-                foreach (WadPolygon polygon in stat.Mesh.Polys)
-                    textures.Add((WadTexture)polygon.Texture.Texture);
-
-            // Order textures for packing
-            var packedTextures = new List<WadTexture>(textures);
-            packedTextures.Sort(new ComparerWadTextures());
-
-            // Pack the textures in a single atlas
-            CreateTexturePacker();
-            foreach (var texture in packedTextures)
-            {
-                VectorInt2? positionInAtlas = TexturePacker.TryAdd(texture.Image.Size);
-                if (positionInAtlas == null)
-                    throw new TextureAtlasFullException();
-                PackedTextures.Add(texture, positionInAtlas.Value);
-            }
-
-            // Create texture atlas
-            var tempBitmap = ImageC.CreateNew(TextureAtlasSize, TextureAtlasSize);
-            foreach (var texture in PackedTextures)
-                tempBitmap.CopyFrom(texture.Value.X, texture.Value.Y, texture.Key.Image);
-            Texture = TextureLoad.Load(GraphicsDevice, tempBitmap, SharpDX.Direct3D11.ResourceUsage.Default);
-        }
-
-        // This method is optional. By sorting the wad textures it may result ahead of time
-        // we may have better texture space efficency.
-        public void PreloadReplaceWad(IEnumerable<WadMoveable> newMoveables, IEnumerable<WadStatic> newStatics)
-        {
-            Dispose();
-            try
-            {
-                PreloadReplaceTextures(newMoveables, newStatics);
-            }
-            catch (TextureAtlasFullException)
-            {
-                logger.Error("Unable to preload wad because the texture atlas became too full!");
-                return;
-            }
-
-            // Create moveable models
-            Parallel.ForEach(newMoveables, moveable =>
-            {
-                var model = AnimatedModel.FromWadMoveable(GraphicsDevice, moveable, AllocateTexture, _correctTexture);
-                model.UpdateBuffers();
-                lock (Moveables)
-                    Moveables.Add(moveable, model);
-            });
-
-            // Create static meshes
-            Parallel.ForEach(newStatics, @static =>
-            {
-                var model = new StaticModel(GraphicsDevice);
-                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice,  @static.Mesh, AllocateTexture, _correctTexture));
-                model.UpdateBuffers();
-                lock (Statics)
-                    Statics.Add(@static, model);
-            });
-        }
+        
 
         public class TextureAtlasFullException : Exception
         {
