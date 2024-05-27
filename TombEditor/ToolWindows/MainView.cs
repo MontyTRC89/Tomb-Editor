@@ -522,5 +522,15 @@ namespace TombEditor.ToolWindows
 
             toolTip.SetToolTip(tbStats, limitWarning);
         }
+
+        public void SuspendRendering()
+        {
+            panel3D.AllowRendering = false;
+        }
+
+        public void ResumeRendering()
+        {
+            panel3D.AllowRendering = true;
+        }
     }
 }
