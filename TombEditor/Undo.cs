@@ -395,6 +395,7 @@ namespace TombEditor
             UndoAction = () =>
             {
                 Parent.Editor.RaiseEvent(new Editor.SuspendRenderingEvent());
+
                 for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                     for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
                         Room.Blocks[x, z].ReplaceGeometry(Parent.Editor.Level, Blocks[i, j]);
@@ -408,6 +409,7 @@ namespace TombEditor
 
                 foreach (Room relevantRoom in relevantRooms)
                     Parent.Editor.RoomGeometryChange(relevantRoom);
+
                 Parent.Editor.RaiseEvent(new Editor.ResumeRenderingEvent());
             };
             RedoInstance = () => new GeometryUndoInstance(Parent, Room);

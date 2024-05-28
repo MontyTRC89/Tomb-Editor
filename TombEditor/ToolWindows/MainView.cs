@@ -54,7 +54,7 @@ namespace TombEditor.ToolWindows
 
         public void RemoveToolbox(DarkFloatingToolbox toolbox)
         {
-            if(panel3D.Controls.Contains(toolbox))
+            if (panel3D.Controls.Contains(toolbox))
                 panel3D.Controls.Remove(toolbox);
         }
 
@@ -207,6 +207,12 @@ namespace TombEditor.ToolWindows
                 butUndo.Image = state.UndoPossible && !state.UndoReversible ? Properties.Resources.general_undo_irreversible_16 : Properties.Resources.general_undo_16;
                 butRedo.Enabled = state.RedoPossible;
             }
+
+            // Suspend / resume rendering
+            if (obj is Editor.SuspendRenderingEvent)
+                panel3D.AllowRendering = false;
+            if (obj is Editor.ResumeRenderingEvent)
+                panel3D.AllowRendering = true;
         }
 
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
@@ -521,16 +527,6 @@ namespace TombEditor.ToolWindows
                 tbStats.AutoSize = false; // HACK: prevent further size updates
 
             toolTip.SetToolTip(tbStats, limitWarning);
-        }
-
-        public void SuspendRendering()
-        {
-            panel3D.AllowRendering = false;
-        }
-
-        public void ResumeRendering()
-        {
-            panel3D.AllowRendering = true;
         }
     }
 }

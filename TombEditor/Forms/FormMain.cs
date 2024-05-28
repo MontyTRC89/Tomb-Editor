@@ -318,10 +318,6 @@ namespace TombEditor.Forms
             // Quit editor
             if (obj is Editor.EditorQuitEvent)
                 Close();
-            if (obj is Editor.SuspendRenderingEvent)
-                GetWindow<MainView>().SuspendRendering();
-            if(obj is Editor.ResumeRenderingEvent)
-                GetWindow<MainView>().ResumeRendering();
         }
 
         private T GetWindow<T>() where T : DarkDockContent => toolWindows.FirstOrDefault(t => t.GetType().FullName == typeof(T).FullName) as T;
