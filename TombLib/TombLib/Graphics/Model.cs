@@ -33,21 +33,6 @@ namespace TombLib.Graphics
 
         public abstract void UpdateBuffers(Vector3? position = null);
 
-        protected static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
-                                                      Vector3 color, Vector3 positionInAtlas)
-        {
-            var newVertex = new ObjectVertex();
-
-            newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.UVW = new Vector3((positionInAtlas.X + uv.X) / WadRenderer.TextureAtlasSize,
-                                       (positionInAtlas.Y + uv.Y) / WadRenderer.TextureAtlasSize,
-                                       positionInAtlas.Z);
-            newVertex.Color = color;
-
-            mesh.Vertices.Add(newVertex);
-            submesh.Indices.Add(mesh.Vertices.Count - 1);
-        }
-
         public void Dispose()
         {
             

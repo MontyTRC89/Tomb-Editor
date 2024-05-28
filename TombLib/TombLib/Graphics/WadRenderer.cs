@@ -2,6 +2,7 @@
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -10,6 +11,8 @@ namespace TombLib.Graphics
 {
     public class WadRenderer : IDisposable
     {
+        public record struct AllocationResult(VectorInt3 Position, VectorInt2 OriginalSize, VectorInt2 AllocatedSize, VectorInt2 AtlasDimension);
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public GraphicsDevice GraphicsDevice { get; }
@@ -19,32 +22,28 @@ namespace TombLib.Graphics
         private IDictionary<WadStatic, StaticModel> Statics { get; } = new Dictionary<WadStatic, StaticModel>();
 
         private IList<RectPacker> TexturePackers { get;} = new List<RectPacker>();
-        private IDictionary<WadTexture, VectorInt3> PackedTextures { get; } = new Dictionary<WadTexture, VectorInt3>();
+        private IDictionary<WadTexture, AllocationResult> PackedTextures { get; } = new Dictionary<WadTexture, WadRenderer.AllocationResult>();
         private bool _compactTexture;
         private bool _correctTexture;
-
         private bool _disposing = false;
-
-        public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture, bool correctTexture)
+        private int _textureAtlasSize { get; }
+        private int _maxTextureAllocationSize { get; }
+        public int TextureAtlasSize { get =>  _textureAtlasSize; }
+        public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize)
         {
             GraphicsDevice = graphicsDevice;
             _compactTexture = compactTexture;
             _correctTexture = correctTexture;
+            _textureAtlasSize = atlasSize;
+            _maxTextureAllocationSize = maxAllocationSize;
             AddPacker();
         }
 
         private void AddPacker()
         {
-            var size = new VectorInt2(TextureAtlasSize, TextureAtlasSize);
+            var size = new VectorInt2(_textureAtlasSize, _textureAtlasSize);
             TexturePackers.Add(_compactTexture ? new RectPackerTree(size) : new RectPackerSimpleStack(size));
         }
-
-        // Size of the atlas
-        // DX10 requires minimum 8K textures support for hardware certification so we should be safe with this
-        // Raildex 27/05/2024:
-        // Reduced Atlas Size to 1024, because dynamic array size allows more stuff to be packed.
-        // Reduces the average wastage of memory.
-        public const int TextureAtlasSize = 1024;
 
         public void Dispose()
         {
@@ -151,17 +150,29 @@ namespace TombLib.Graphics
             return model;
         }
 
-        private VectorInt3 AllocateTexture(WadTexture texture)
+        private AllocationResult AllocateTexture(WadTexture texture)
         {
             // Check if the texture is already loaded
             {
-                VectorInt3 position;
+                AllocationResult position;
                 if (PackedTextures.TryGetValue(texture, out position))
                     return position;
             }
 
             // Allocate texture
             {
+                ImageC imageToPack = texture.Image;
+                var originalWidth = texture.Image.Width;
+                var originalHeight = texture.Image.Height;
+                int biggestDimension = Math.Max(imageToPack.Width, imageToPack.Height);
+                if(biggestDimension > _maxTextureAllocationSize)
+                {
+                    float scaleFactor = _maxTextureAllocationSize / (float)biggestDimension;
+                    int newWidth = (int)(imageToPack.Width * scaleFactor);
+                    int newHeight = (int)(imageToPack.Height * scaleFactor);
+                    imageToPack = ImageC.Resize(imageToPack, newWidth, newHeight);
+                }
+                var sizeToPack = imageToPack.Size;
                 VectorInt3? position = null;
 
                 for(int packerIndex = 0; position is null; packerIndex++)
@@ -173,10 +184,13 @@ namespace TombLib.Graphics
                         addedPacker = true;
                     }
                         
-                    var sizeToPack = texture.Image.Size;
+                    
                     var pos = TexturePackers[packerIndex].TryAdd(sizeToPack);
                     if (pos is not null)
+                    {
                         position = new VectorInt3(pos.Value.X, pos.Value.Y, packerIndex);
+                        break;
+                    }
                     else if (pos is null && addedPacker) /* We added a new empty atlas and the texture did not fit at all*/
                         throw new TextureAtlasFullException();
                 }
@@ -184,9 +198,10 @@ namespace TombLib.Graphics
                 // Upload texture
                 InitializeTexture();
                 EnsureTextureCapacity();
-                TextureLoad.Update(GraphicsDevice, Texture, texture.Image, position.Value);
-                PackedTextures.Add(texture, position.Value);
-                return position.Value;
+                TextureLoad.Update(GraphicsDevice, Texture, imageToPack, position.Value);
+                var result = new AllocationResult(position.Value,new VectorInt2(originalWidth,originalHeight), new VectorInt2(imageToPack.Width, imageToPack.Height),new VectorInt2(_textureAtlasSize,_textureAtlasSize));
+                PackedTextures.Add(texture, result);
+                return result;
             }
         }
 
@@ -198,7 +213,7 @@ namespace TombLib.Graphics
             
             if(TexturePackers.Count >= arraySize)
             {
-                var newTexture = Texture2D.New(GraphicsDevice, TextureAtlasSize, TextureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
+                var newTexture = Texture2D.New(GraphicsDevice, _textureAtlasSize, _textureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
                 for(int i = 0; i < arraySize;i++)
                 {
                     var fromSubresource = Texture.GetSubResourceIndex(i, 0);
@@ -211,7 +226,7 @@ namespace TombLib.Graphics
         private void InitializeTexture()
         {
             if (Texture is null)
-                Texture = Texture2D.New(GraphicsDevice, TextureAtlasSize, TextureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
+                Texture = Texture2D.New(GraphicsDevice, _textureAtlasSize, _textureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
         }
         
 

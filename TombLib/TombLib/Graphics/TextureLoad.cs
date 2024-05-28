@@ -42,11 +42,6 @@ namespace TombLib.Graphics
             }
             catch (Exception ex)
             {
-                var message = "Unable to load texture '" + Path.GetFileName(image.FileName) + "'.";
-                if (image.Width > WadRenderer.TextureAtlasSize || image.Height > WadRenderer.TextureAtlasSize)
-                    message += " Possible cause: texture too big? (" + image.Width + "x" + image.Height + ")";
-
-                logger.Warn(message);
                 return Load(graphicsDevice, ImageC.Red, usage);
             }
 
