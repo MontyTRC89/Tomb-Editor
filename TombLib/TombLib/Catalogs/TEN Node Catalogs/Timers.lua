@@ -30,8 +30,7 @@ end
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
 -- !Arguments "NewLine, LuaScript, The function to call when the time is up"
 -- !Arguments "NewLine, String, Arguments"
-LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction,
-                                                          args)
+LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction, args)
     if name ~= '' then
         local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         local argsTable = args ~= '' and table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")) or nil
@@ -54,12 +53,10 @@ end
 -- !Arguments "NewLine, 66, VolumeEventSets, The event set to be called when the time is up"
 -- !Arguments "VolumeEvents, 34, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
-LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName,
-                                                          eventType, activator)
+LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator)
     if name ~= '' then
         local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
-        LevelVars[name] = Timer.Create(name, time, loop, timerFormat, LevelFuncs.Engine.Node.RunEventSet,
-            setName, eventType, activator)
+        LevelVars[name] = Timer.Create(name, time, loop, timerFormat, LevelFuncs.Engine.Node.RunEventSet, setName, eventType, activator)
         LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
         TEN.Util.PrintLog('Timer with volume event set "' .. name .. '" created successfully', LogLevel.INFO)
     else
@@ -82,8 +79,7 @@ LevelFuncs.Engine.Node.CreateTimerWithGEventSet = function(name, time, loop, min
                                                            eventType, activator)
     if name ~= '' then
         local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
-        LevelVars[name] = Timer.Create(name, time, loop, timerFormat, LevelFuncs.Engine.Node.RunGlobalEventSet, setName,
-            eventType, activator)
+        LevelVars[name] = Timer.Create(name, time, loop, timerFormat, LevelFuncs.Engine.Node.RunGlobalEventSet, setName, eventType, activator)
         LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
         TEN.Util.PrintLog('Timer with global event set "' .. name .. '" created successfully', LogLevel.INFO)
     else
