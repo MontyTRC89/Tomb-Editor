@@ -314,6 +314,7 @@ namespace TombLib.LevelData
         {
             // Copy most variables
             var result = new Room(level, NumXSectors, NumZSectors, Properties.AmbientLight);
+            result.Position = Position;
             if (!fullCopy)
             {
                 result.AlternateBaseRoom = null;
