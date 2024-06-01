@@ -56,3 +56,13 @@ end
 LevelFuncs.Engine.Node.StopAudioTracks = function()
     TEN.Sound.StopAudioTracks()
 end
+
+-- !Name "If sound is playing..."
+-- !Section "Sound"
+-- !Conditional "True"
+-- !Description "Checks if specified sound is playing."
+-- !Arguments "NewLine, SoundEffects, Sound to check"
+
+LevelFuncs.Engine.Node.SoundIsPlaying = function(soundID)
+    return TEN.Sound.IsSoundPlaying(soundID)
+end
