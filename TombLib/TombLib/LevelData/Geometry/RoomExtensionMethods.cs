@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TombLib.LevelData;
+namespace TombLib.LevelData.Geometry;
 
 public static class RoomExtensionMethods
 {

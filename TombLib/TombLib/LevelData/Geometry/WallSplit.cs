@@ -1,4 +1,4 @@
-﻿namespace TombLib.LevelData;
+﻿namespace TombLib.LevelData.Geometry;
 
 /// <summary>
 /// Represents a wall split, such as QA, WS, ED, RF or any other extra subdivision of a wall.

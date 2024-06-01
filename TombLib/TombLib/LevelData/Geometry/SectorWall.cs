@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace TombLib.LevelData;
+namespace TombLib.LevelData.Geometry;
 
 /// <summary>
 /// Represents the wall of a single sector.

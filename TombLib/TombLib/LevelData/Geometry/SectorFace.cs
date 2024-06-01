@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace TombLib.LevelData;
+namespace TombLib.LevelData.Geometry;
 
 /// <summary>
 /// Represents a face of a sector, either a triangle or a quad.
