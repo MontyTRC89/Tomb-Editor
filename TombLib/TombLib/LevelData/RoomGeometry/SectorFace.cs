@@ -2,9 +2,15 @@
 
 namespace TombLib.LevelData;
 
+/// <summary>
+/// Represents a face of a sector, either a triangle or a quad.
+/// </summary>
 public readonly struct SectorFace
 {
-	public readonly BlockFace BlockFace;
+	/// <summary>
+	/// The exact hard-coded face type.
+	/// </summary>
+	public readonly BlockFace FaceType;
 
 	public readonly Vector3 P0;
 	public readonly Vector3 P1;
@@ -22,11 +28,11 @@ public readonly struct SectorFace
 	public readonly bool IsTriangle;
 
 	/// <summary>
-	/// Creates a triangle face data.
+	/// Constructor for a triangle face.
 	/// </summary>
-	public SectorFace(BlockFace blockFace, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
+	public SectorFace(BlockFace faceType, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
 	{
-		BlockFace = blockFace;
+		FaceType = faceType;
 
 		P0 = p0;
 		P1 = p1;
@@ -45,11 +51,11 @@ public readonly struct SectorFace
 	}
 
 	/// <summary>
-	/// Creates a quad face data.
+	/// Constructor for a quad face.
 	/// </summary>
-	public SectorFace(BlockFace blockFace, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
+	public SectorFace(BlockFace faceType, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
 	{
-		BlockFace = blockFace;
+		FaceType = faceType;
 
 		P0 = p0;
 		P1 = p1;

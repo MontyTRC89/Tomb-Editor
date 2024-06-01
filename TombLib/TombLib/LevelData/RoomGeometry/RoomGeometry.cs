@@ -5,7 +5,7 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
-	public partial class RoomGeometry
+	public class RoomGeometry
     {
         // EditorUV Map:
         //                      | +Y
@@ -560,12 +560,12 @@ namespace TombLib.LevelData
 				for (int i = 0; i < verticalFloorPartFaces.Count; i++)
 				{
 					SectorFace face = verticalFloorPartFaces[i];
-					TextureArea texture = block.GetFaceTexture(face.BlockFace);
+					TextureArea texture = block.GetFaceTexture(face.FaceType);
 
 					if (face.IsQuad)
-						AddQuad(x, z, face.BlockFace, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
+						AddQuad(x, z, face.FaceType, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
 					else
-						AddTriangle(x, z, face.BlockFace, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
+						AddTriangle(x, z, face.FaceType, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
 				}
 			}
 
@@ -576,12 +576,12 @@ namespace TombLib.LevelData
 				for (int i = 0; i < verticalCeilingPartFaces.Count; i++)
 				{
 					SectorFace face = verticalCeilingPartFaces[i];
-					TextureArea texture = block.GetFaceTexture(face.BlockFace);
+					TextureArea texture = block.GetFaceTexture(face.FaceType);
 
 					if (face.IsQuad)
-						AddQuad(x, z, face.BlockFace, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
+						AddQuad(x, z, face.FaceType, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
 					else
-						AddTriangle(x, z, face.BlockFace, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
+						AddTriangle(x, z, face.FaceType, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
 				}
 			}
 
@@ -592,12 +592,12 @@ namespace TombLib.LevelData
 				if (middleFace.HasValue)
 				{
 					SectorFace face = middleFace.Value;
-					TextureArea texture = block.GetFaceTexture(face.BlockFace);
+					TextureArea texture = block.GetFaceTexture(face.FaceType);
 
 					if (face.IsQuad)
-						AddQuad(x, z, face.BlockFace, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
+						AddQuad(x, z, face.FaceType, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
 					else
-						AddTriangle(x, z, face.BlockFace, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
+						AddTriangle(x, z, face.FaceType, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
 				}
 			}
 		}

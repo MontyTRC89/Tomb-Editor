@@ -4,18 +4,45 @@ using System.Numerics;
 
 namespace TombLib.LevelData;
 
+/// <summary>
+/// Represents the wall of a single sector.
+/// </summary>
 public struct SectorWall
 {
+	/// <summary>
+	/// The direction the wall is facing.
+	/// </summary>
 	public Direction Direction;
 
+	/// <summary>
+	/// The (X, Z) position and the minimum and maximum Y coordinate of the start corner of the wall.
+	/// </summary>
 	public WallEnd Start;
+
+	/// <summary>
+	/// The (X, Z) position and the minimum and maximum Y coordinate of the end corner of the wall.
+	/// </summary>
 	public WallEnd End;
 
+	/// <summary>
+	/// Main floor split of the wall.
+	/// </summary>
 	public WallSplit QA;
+
+	/// <summary>
+	/// Main ceiling split of the wall.
+	/// </summary>
 	public WallSplit WS;
 
-	public List<WallSplit> FloorSubdivisions;
-	public List<WallSplit> CeilingSubdivisions;
+	/// <summary>
+	/// Extra floor subdivisions of the wall.
+	/// </summary>
+	public List<WallSplit> ExtraFloorSubdivisions;
+
+	/// <summary>
+	/// Extra ceiling subdivisions of the wall.
+	/// </summary>
+	public List<WallSplit> ExtraCeilingSubdivisions;
 
 	public SectorWall() // TODO: Add a proper ctor!!!
 	{
@@ -24,19 +51,19 @@ public struct SectorWall
 		End = new();
 		QA = new();
 		WS = new();
-		FloorSubdivisions = new();
-		CeilingSubdivisions = new();
+		ExtraFloorSubdivisions = new();
+		ExtraCeilingSubdivisions = new();
 	}
 
 	/// <summary>
 	/// Returns true if the QA part of the wall is fully above the maximum Y coordinate of the wall.
 	/// </summary>
-	public readonly bool IsQaFullyAboveMaxY => QA.StartY >= Start.MaxY && QA.EndY >= End.MaxY; // Technically should be classified as a full wall if true
+	public readonly bool IsQaFullyAboveMaxY => QA.StartY >= Start.MaxY && QA.EndY >= End.MaxY;
 
 	/// <summary>
 	/// Returns true if the WS part of the wall is fully below the minimum Y coordinate of the wall.
 	/// </summary>
-	public readonly bool IsWsFullyBelowMinY => WS.StartY <= Start.MinY && WS.EndY <= End.MinY; // Technically should be classified as a full wall if true
+	public readonly bool IsWsFullyBelowMinY => WS.StartY <= Start.MinY && WS.EndY <= End.MinY;
 
 	/// <summary>
 	/// Returns true if the diagonal wall direction can have a non-diagonal (square from top-down) floor part.
@@ -103,11 +130,11 @@ public struct SectorWall
 		var faces = new List<SectorFace>();
 		SectorFace? faceData;
 
-		for (int extraSubdivisionIndex = -1; extraSubdivisionIndex < FloorSubdivisions.Count; extraSubdivisionIndex++)
+		for (int extraSubdivisionIndex = -1; extraSubdivisionIndex < ExtraFloorSubdivisions.Count; extraSubdivisionIndex++)
 		{
 			(int yStartA, int yStartB) = extraSubdivisionIndex == -1
 				? (QA.StartY, QA.EndY) // Render QA face
-				: FloorSubdivisions[extraSubdivisionIndex]; // Render subdivision face
+				: (ExtraFloorSubdivisions[extraSubdivisionIndex].StartY, ExtraFloorSubdivisions[extraSubdivisionIndex].EndY); // Render subdivision face
 
 			BlockFace blockFace = extraSubdivisionIndex == -1
 				? BlockFaceExtensions.GetQaFace(Direction) // QA face
@@ -116,10 +143,10 @@ public struct SectorWall
 			// Start with the floor as a baseline for the bottom end of the face
 			(int yEndA, int yEndB) = (Start.MinY, End.MinY);
 
-			if (extraSubdivisionIndex + 1 < FloorSubdivisions.Count) // If a next floor subdivision exists
+			if (extraSubdivisionIndex + 1 < ExtraFloorSubdivisions.Count) // If a next floor subdivision exists
 			{
-				int yNextSubdivStart = FloorSubdivisions[extraSubdivisionIndex + 1].StartY,
-					yNextSubdivEnd = FloorSubdivisions[extraSubdivisionIndex + 1].EndY;
+				int yNextSubdivStart = ExtraFloorSubdivisions[extraSubdivisionIndex + 1].StartY,
+					yNextSubdivEnd = ExtraFloorSubdivisions[extraSubdivisionIndex + 1].EndY;
 
 				if ((canHaveDiagonalWallFloorPart || isQaFullyAboveCeiling) && (yNextSubdivStart > QA.StartY || yNextSubdivEnd > QA.EndY))
 					continue; // Skip it, since it's above the flat, walkable triangle of a diagonal wall
@@ -161,7 +188,7 @@ public struct SectorWall
 
 	public readonly IReadOnlyList<SectorFace> GetVerticalCeilingPartFaces(DiagonalSplit diagonalCeilingSplit, bool isAnyWall)
 	{
-		static SectorFace? CreateFaceData(BlockFace blockFace, Room2DPoint wallStartPoint, Room2DPoint wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
+		static SectorFace? CreateFaceData(BlockFace blockFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
 		{
 			if (faceStartSplit.StartY < faceEndSplit.StartY && faceStartSplit.EndY < faceEndSplit.EndY) // Is quad
 			{
@@ -201,11 +228,11 @@ public struct SectorWall
 		SectorFace? faceData;
 
 		// Render subdivision faces
-		for (int extraSubdivisionIndex = -1; extraSubdivisionIndex < CeilingSubdivisions.Count; extraSubdivisionIndex++)
+		for (int extraSubdivisionIndex = -1; extraSubdivisionIndex < ExtraCeilingSubdivisions.Count; extraSubdivisionIndex++)
 		{
 			(int yStartA, int yStartB) = extraSubdivisionIndex == -1
 				? (WS.StartY, WS.EndY) // Render WS face
-				: CeilingSubdivisions[extraSubdivisionIndex]; // Render subdivision face
+				: (ExtraCeilingSubdivisions[extraSubdivisionIndex].StartY, ExtraCeilingSubdivisions[extraSubdivisionIndex].EndY); // Render subdivision face
 
 			BlockFace blockFace = extraSubdivisionIndex == -1
 				? BlockFaceExtensions.GetWsFace(Direction)
@@ -214,10 +241,10 @@ public struct SectorWall
 			// Start with the ceiling as a baseline for the top end of the face
 			(int yEndA, int yEndB) = (Start.MaxY, End.MaxY);
 
-			if (extraSubdivisionIndex + 1 < CeilingSubdivisions.Count) // If a next ceiling subdivision exists
+			if (extraSubdivisionIndex + 1 < ExtraCeilingSubdivisions.Count) // If a next ceiling subdivision exists
 			{
-				int yNextSubdivA = CeilingSubdivisions[extraSubdivisionIndex + 1].StartY,
-					yNextSubdivB = CeilingSubdivisions[extraSubdivisionIndex + 1].EndY;
+				int yNextSubdivA = ExtraCeilingSubdivisions[extraSubdivisionIndex + 1].StartY,
+					yNextSubdivB = ExtraCeilingSubdivisions[extraSubdivisionIndex + 1].EndY;
 
 				if ((canHaveNonDiagonalCeilingPart || isWsFullyBelowMinY) && (yNextSubdivA < WS.StartY || yNextSubdivB < WS.EndY))
 					continue; // Skip it, since it's below the flat ceiling triangle
@@ -233,7 +260,7 @@ public struct SectorWall
 			if (yStartA >= yEndA && yStartB >= yEndB)
 				continue; // 0 or negative height subdivision, don't render it
 
-			faceData = CreateFaceData(blockFace, (Start.X, Start.Z), (End.X, End.Z), (yStartA, yStartB), (yEndA, yEndB));
+			faceData = CreateFaceData(blockFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
 
 			if (faceData is null)
 			{
@@ -247,7 +274,7 @@ public struct SectorWall
 
 				// Find highest point between subdivision and baseline, then try and create an overdraw face out of it
 				int highest = Math.Max(Math.Max(yStartA, yStartB), Math.Max(yEndA, yEndB));
-				faceData = CreateFaceData(blockFace, (Start.X, Start.Z), (End.X, End.Z), (highest, highest), (yStartA, yStartB));
+				faceData = CreateFaceData(blockFace, (Start.X, Start.Z), (End.X, End.Z), new(highest, highest), new(yStartA, yStartB));
 			}
 
 			if (faceData.HasValue)
@@ -318,35 +345,35 @@ public struct SectorWall
 
 		if (!isFloorSplitInFloorVoid)
 		{
-			for (int i = 0; i < FloorSubdivisions.Count; i++)
+			for (int i = 0; i < ExtraFloorSubdivisions.Count; i++)
 			{
-				WallSplit normalizedSubdivision = NormalizeFloorSplit(FloorSubdivisions[i], diagonalFloorSplit, isAnyWall, out isFloorSplitInFloorVoid);
+				WallSplit normalizedSubdivision = NormalizeFloorSplit(ExtraFloorSubdivisions[i], diagonalFloorSplit, isAnyWall, out isFloorSplitInFloorVoid);
 
 				if (isFloorSplitInFloorVoid)
 				{
 					// Remove the rest as it will also be in the void, therefore not rendered
-					FloorSubdivisions.RemoveRange(i, FloorSubdivisions.Count - i);
+					ExtraFloorSubdivisions.RemoveRange(i, ExtraFloorSubdivisions.Count - i);
 					break;
 				}
 
-				FloorSubdivisions[i] = normalizedSubdivision;
+				ExtraFloorSubdivisions[i] = normalizedSubdivision;
 			}
 		}
 
 		if (!isCeilingSplitInCeilingVoid)
 		{
-			for (int i = 0; i < CeilingSubdivisions.Count; i++)
+			for (int i = 0; i < ExtraCeilingSubdivisions.Count; i++)
 			{
-				WallSplit normalizedSubdivision = NormalizeCeilingSplit(CeilingSubdivisions[i], diagonalCeilingSplit, isAnyWall, out isCeilingSplitInCeilingVoid);
+				WallSplit normalizedSubdivision = NormalizeCeilingSplit(ExtraCeilingSubdivisions[i], diagonalCeilingSplit, isAnyWall, out isCeilingSplitInCeilingVoid);
 
 				if (isCeilingSplitInCeilingVoid)
 				{
 					// Remove the rest as it will also be in the void, therefore not rendered
-					CeilingSubdivisions.RemoveRange(i, CeilingSubdivisions.Count - i);
+					ExtraCeilingSubdivisions.RemoveRange(i, ExtraCeilingSubdivisions.Count - i);
 					break;
 				}
 
-				CeilingSubdivisions[i] = normalizedSubdivision;
+				ExtraCeilingSubdivisions[i] = normalizedSubdivision;
 			}
 		}
 	}

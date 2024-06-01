@@ -1,5 +1,8 @@
 ﻿namespace TombLib.LevelData;
 
+/// <summary>
+/// Represents a wall start or end point from top-down view.
+/// </summary>
 public struct WallEnd
 {
 	/// <summary>

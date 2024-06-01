@@ -37,14 +37,14 @@ public static class RoomExtensionMethods
 
 		for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 		{
-			wall.FloorSubdivisions.Add(new WallSplit(
+			wall.ExtraFloorSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 		}
 
 		for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 		{
-			wall.CeilingSubdivisions.Add(new WallSplit(
+			wall.ExtraCeilingSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 		}
@@ -119,10 +119,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp));
 
-				if (i >= wall.FloorSubdivisions.Count)
-					wall.FloorSubdivisions.Add(newSubdivision);
+				if (i >= wall.ExtraFloorSubdivisions.Count)
+					wall.ExtraFloorSubdivisions.Add(newSubdivision);
 				else
-					wall.FloorSubdivisions[i] = newSubdivision;
+					wall.ExtraFloorSubdivisions[i] = newSubdivision;
 			}
 
 			for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
@@ -130,10 +130,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp));
 
-				if (i >= wall.CeilingSubdivisions.Count)
-					wall.CeilingSubdivisions.Add(newSubdivision);
+				if (i >= wall.ExtraCeilingSubdivisions.Count)
+					wall.ExtraCeilingSubdivisions.Add(newSubdivision);
 				else
-					wall.CeilingSubdivisions[i] = newSubdivision;
+					wall.ExtraCeilingSubdivisions[i] = newSubdivision;
 			}
 		}
 
@@ -220,14 +220,14 @@ public static class RoomExtensionMethods
 
 		for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 		{
-			wall.FloorSubdivisions.Add(new WallSplit(
+			wall.ExtraFloorSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 		}
 
 		for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 		{
-			wall.CeilingSubdivisions.Add(new WallSplit(
+			wall.ExtraCeilingSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 		}
@@ -302,10 +302,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn));
 
-				if (i >= wall.FloorSubdivisions.Count)
-					wall.FloorSubdivisions.Add(newSubdivision);
+				if (i >= wall.ExtraFloorSubdivisions.Count)
+					wall.ExtraFloorSubdivisions.Add(newSubdivision);
 				else
-					wall.FloorSubdivisions[i] = newSubdivision;
+					wall.ExtraFloorSubdivisions[i] = newSubdivision;
 			}
 
 			for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
@@ -313,10 +313,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn));
 
-				if (i >= wall.CeilingSubdivisions.Count)
-					wall.CeilingSubdivisions.Add(newSubdivision);
+				if (i >= wall.ExtraCeilingSubdivisions.Count)
+					wall.ExtraCeilingSubdivisions.Add(newSubdivision);
 				else
-					wall.CeilingSubdivisions[i] = newSubdivision;
+					wall.ExtraCeilingSubdivisions[i] = newSubdivision;
 			}
 		}
 
@@ -403,14 +403,14 @@ public static class RoomExtensionMethods
 
 		for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 		{
-			wall.FloorSubdivisions.Add(new WallSplit(
+			wall.ExtraFloorSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 		}
 
 		for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 		{
-			wall.CeilingSubdivisions.Add(new WallSplit(
+			wall.ExtraCeilingSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 		}
@@ -485,10 +485,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp));
 
-				if (i >= wall.FloorSubdivisions.Count)
-					wall.FloorSubdivisions.Add(newSubdivision);
+				if (i >= wall.ExtraFloorSubdivisions.Count)
+					wall.ExtraFloorSubdivisions.Add(newSubdivision);
 				else
-					wall.FloorSubdivisions[i] = newSubdivision;
+					wall.ExtraFloorSubdivisions[i] = newSubdivision;
 			}
 
 			for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
@@ -496,10 +496,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp));
 
-				if (i >= wall.CeilingSubdivisions.Count)
-					wall.CeilingSubdivisions.Add(newSubdivision);
+				if (i >= wall.ExtraCeilingSubdivisions.Count)
+					wall.ExtraCeilingSubdivisions.Add(newSubdivision);
 				else
-					wall.CeilingSubdivisions[i] = newSubdivision;
+					wall.ExtraCeilingSubdivisions[i] = newSubdivision;
 			}
 		}
 
@@ -586,14 +586,14 @@ public static class RoomExtensionMethods
 
 		for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 		{
-			wall.FloorSubdivisions.Add(new WallSplit(
+			wall.ExtraFloorSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 		}
 
 		for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 		{
-			wall.CeilingSubdivisions.Add(new WallSplit(
+			wall.ExtraCeilingSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 		}
@@ -668,10 +668,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn));
 
-				if (i >= wall.FloorSubdivisions.Count)
-					wall.FloorSubdivisions.Add(newSubdivision);
+				if (i >= wall.ExtraFloorSubdivisions.Count)
+					wall.ExtraFloorSubdivisions.Add(newSubdivision);
 				else
-					wall.FloorSubdivisions[i] = newSubdivision;
+					wall.ExtraFloorSubdivisions[i] = newSubdivision;
 			}
 
 			for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
@@ -679,10 +679,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn));
 
-				if (i >= wall.CeilingSubdivisions.Count)
-					wall.CeilingSubdivisions.Add(newSubdivision);
+				if (i >= wall.ExtraCeilingSubdivisions.Count)
+					wall.ExtraCeilingSubdivisions.Add(newSubdivision);
 				else
-					wall.CeilingSubdivisions[i] = newSubdivision;
+					wall.ExtraCeilingSubdivisions[i] = newSubdivision;
 			}
 		}
 
@@ -782,14 +782,14 @@ public static class RoomExtensionMethods
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.FloorSubdivisions.Add(new WallSplit(
+					wall.ExtraFloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.CeilingSubdivisions.Add(new WallSplit(
+					wall.ExtraCeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 				}
@@ -835,14 +835,14 @@ public static class RoomExtensionMethods
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.FloorSubdivisions.Add(new WallSplit(
+					wall.ExtraFloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.CeilingSubdivisions.Add(new WallSplit(
+					wall.ExtraCeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 				}
@@ -888,14 +888,14 @@ public static class RoomExtensionMethods
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.FloorSubdivisions.Add(new WallSplit(
+					wall.ExtraFloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.CeilingSubdivisions.Add(new WallSplit(
+					wall.ExtraCeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 				}
@@ -941,14 +941,14 @@ public static class RoomExtensionMethods
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.FloorSubdivisions.Add(new WallSplit(
+					wall.ExtraFloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.CeilingSubdivisions.Add(new WallSplit(
+					wall.ExtraCeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 				}
