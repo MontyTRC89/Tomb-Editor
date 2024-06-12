@@ -722,9 +722,9 @@
     <moveable id="1002" name="INVENTORY_KEYS" />
     <moveable id="1003" name="INVENTORY_HEADPHONES" />
     <moveable id="1004" name="INVENTORY_POLAROID" />
-    <moveable id="1020" name="SMOKE_EMITTER_WHITE" />
-    <moveable id="1021" name="SMOKE_EMITTER_BLACK" />
-    <moveable id="1022" name="SMOKE_EMITTER" />
+    <moveable id="1020" name="SMOKE_EMITTER_WHITE" freeRot="true" />
+    <moveable id="1021" name="SMOKE_EMITTER_BLACK" freeRot="true" />
+    <moveable id="1022" name="SMOKE_EMITTER" freeRot="true" />
     <moveable id="1024" name="EARTHQUAKE" />
     <moveable id="1025" name="BUBBLES" />
     <moveable id="1026" name="WATERFALLMIST" />
