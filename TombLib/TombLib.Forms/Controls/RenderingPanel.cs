@@ -16,6 +16,8 @@ namespace TombLib.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RenderingDevice Device { get; private set; }
 
+        public bool AllowRendering { get; set; } = true;
+
         public RenderingPanel()
         {
             BorderStyle = BorderStyle.None;
@@ -107,9 +109,14 @@ namespace TombLib.Controls
             SwapChain.Present();
         }
 
-        protected virtual void OnDraw()
+        protected override void WndProc(ref Message m)
         {
-            Draw?.Invoke(this, EventArgs.Empty);
+            const int WM_PAINT = 0x000F;
+
+            if (m.Msg == WM_PAINT && !AllowRendering)
+                return;
+
+            base.WndProc(ref m);
         }
 
         protected override void Dispose(bool disposing)
@@ -117,6 +124,11 @@ namespace TombLib.Controls
             base.Dispose(disposing);
             if (disposing)
                 SwapChain.Dispose();
+        }
+
+        protected virtual void OnDraw()
+        {
+            Draw?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual Vector4 ClearColor { get; } = new Vector4(0.392f, 0.584f, 0.929f, 1.0f); // "Cornflower blue" by default
