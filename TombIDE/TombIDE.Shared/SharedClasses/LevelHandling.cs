@@ -87,7 +87,7 @@ namespace TombIDE.Shared.SharedClasses
 			{
 				return new List<string>
 				{
-					$"\n{dataFileName} = TEN.Flow.Level()",
+					$"\n{dataFileName} = Level.new()",
 					"",
 					$"{dataFileName}.nameKey = \"{dataFileName}\"",
 					$"{dataFileName}.scriptFile = \"Scripts\\\\Levels\\\\{dataFileName}.lua\"",
@@ -96,7 +96,7 @@ namespace TombIDE.Shared.SharedClasses
 					$"{dataFileName}.levelFile = \"Data\\\\{dataFileName}.ten\"",
 					$"{dataFileName}.loadScreenFile = \"Screens\\\\rome.jpg\"",
 					"",
-					$"TEN.Flow.AddLevel({dataFileName})",
+					$"Flow.AddLevel({dataFileName})",
 					$"	{dataFileName} = {{ \"{levelName}\" }}"
 				};
 			}
