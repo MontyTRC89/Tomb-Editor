@@ -9,13 +9,17 @@ LevelVars.nodeTimers = {}
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
-LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds, deciseconds)
+-- !Arguments "NewLine, Boolean , 100, Show debug messages in console"
+LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds, deciseconds, debug)
     if name ~= '' then
         local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, timerFormat, nil)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer "' .. name .. '" created successfully!', LogLevel.INFO)
+        LevelVars.nodeTimers[name].debug = debug
+        if LevelVars.nodeTimers[name].debug then
+            TEN.Util.PrintLog('Timer "' .. name .. '" created successfully!', LogLevel.INFO)
+        end
     else
         TEN.Util.PrintLog('Error in the "Create Timer" node. No timer name provided', LogLevel.ERROR)
     end
@@ -31,14 +35,18 @@ end
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
 -- !Arguments "NewLine, LuaScript, The function to call when the time is up"
 -- !Arguments "NewLine, String, Arguments"
-LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction, args)
+-- !Arguments "NewLine, Boolean , 100, Show debug messages in console"
+LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction, args, debug)
     if name ~= '' then
         local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         local argsTable = args ~= '' and table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")) or nil
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, timerFormat, luaFunction, argsTable)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer with Function "' .. name .. '" created successfully!', LogLevel.INFO)
+        LevelVars.nodeTimers[name].debug = debug
+        if LevelVars.nodeTimers[name].debug then
+            TEN.Util.PrintLog('Timer with Function "' .. name .. '" created successfully!', LogLevel.INFO)
+        end
     else
         TEN.Util.PrintLog('Error in the "Create Timer with Function" node. No timer name provided', LogLevel.ERROR)
     end
@@ -55,13 +63,17 @@ end
 -- !Arguments "NewLine, 66, VolumeEventSets, The event set to be called when the time is up"
 -- !Arguments "VolumeEvents, 34, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
-LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator)
+-- !Arguments "NewLine, Boolean , 100, Show debug messages in console"
+LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator, debug)
     if name ~= '' then
         local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, timerFormat, LevelFuncs.Engine.Node.RunEventSet, setName, eventType, activator)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer with volume event set "' .. name .. '" created successfully', LogLevel.INFO)
+        LevelVars.nodeTimers[name].debug = debug
+        if LevelVars.nodeTimers[name].debug then
+            TEN.Util.PrintLog('Timer with volume event set "' .. name .. '" created successfully', LogLevel.INFO)
+        end
     else
         TEN.Util.PrintLog('Error in the "Create Timer with Function" node. No timer name provided', LogLevel.ERROR)
     end
@@ -78,13 +90,17 @@ end
 -- !Arguments "NewLine, 70, GlobalEventSets, The event set to be called when the time is up"
 -- !Arguments "GlobalEvents, 30, Event to run"
 -- !Arguments "NewLine, Moveables, Activator for the event (when necessary)"
-LevelFuncs.Engine.Node.CreateTimerWithGEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator)
+-- !Arguments "NewLine, Boolean , 100, Show debug messages in console"
+LevelFuncs.Engine.Node.CreateTimerWithGEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator, debug)
     if name ~= '' then
         local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, timerFormat, LevelFuncs.Engine.Node.RunGlobalEventSet, setName, eventType, activator)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer with global event set "' .. name .. '" created successfully', LogLevel.INFO)
+        LevelVars.nodeTimers[name].debug = debug
+        if LevelVars.nodeTimers[name].debug then
+            TEN.Util.PrintLog('Timer with global event set "' .. name .. '" created successfully', LogLevel.INFO)
+        end
     else
         TEN.Util.PrintLog('Error in the "Create Timer with Function" node. No timer name provided', LogLevel.ERROR)
     end
@@ -103,7 +119,9 @@ LevelFuncs.Engine.Node.StartTimer = function(name, reset)
                 Timer.Get(name):SetRemainingTime(LevelVars.nodeTimers[name].remainingTime)
             end
             Timer.Get(name):Start()
-            TEN.Util.PrintLog('Timer "' .. name .. '" has started', LogLevel.INFO)
+            if LevelVars.nodeTimers[name].debug then
+                TEN.Util.PrintLog('Timer "' .. name .. '" has started', LogLevel.INFO)
+            end
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
@@ -121,7 +139,9 @@ LevelFuncs.Engine.Node.StopTimer = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
             Timer.Get(name):Stop()
-            TEN.Util.PrintLog('Timer "' .. name .. '" has been stopped', LogLevel.INFO)
+            if LevelVars.nodeTimers[name].debug then
+                TEN.Util.PrintLog('Timer "' .. name .. '" has been stopped', LogLevel.INFO)
+            end
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
@@ -141,7 +161,9 @@ LevelFuncs.Engine.Node.SetPausedTimer = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
             Timer.Get(name):SetPaused(true)
-            TEN.Util.PrintLog('The "' .. name .. '" Timer has been paused', LogLevel.INFO)
+            if LevelVars.nodeTimers[name].debug then
+                TEN.Util.PrintLog('Timer "' .. name .. '" has been paused', LogLevel.INFO)
+            end
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
@@ -161,8 +183,9 @@ LevelFuncs.Engine.Node.SetRemainingTime = function(name, remainingTime)
         if Timer.Get(name) ~= nil then
             Timer.Get(name):SetRemainingTime(remainingTime)
             LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
-            TEN.Util.PrintLog('Timer "' .. name .. '" remaining time: ' .. remainingTime .. " seconds",
-                LogLevel.INFO)
+            if LevelVars.nodeTimers[name].debug then
+                TEN.Util.PrintLog('Timer "' .. name .. '" remaining time: ' .. remainingTime .. " seconds", LogLevel.INFO)
+            end
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
@@ -181,7 +204,9 @@ LevelFuncs.Engine.Node.SetTotalTime = function(name, totalTime)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
             Timer.Get(name):SetTotalTime(totalTime)
-            TEN.Util.PrintLog('Timer "' .. name .. '" total time: ' .. totalTime .. " seconds", LogLevel.INFO)
+            if LevelVars.nodeTimers[name].debug then
+                TEN.Util.PrintLog('Timer "' .. name .. '" total time: ' .. totalTime .. " seconds", LogLevel.INFO)
+            end
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
@@ -201,7 +226,9 @@ LevelFuncs.Engine.Node.SetLooping = function(name, looping)
         if Timer.Get(name) ~= nil then
             local state = (looping == 1) and true or false
             Timer.Get(name):SetLooping(state)
-            TEN.Util.PrintLog('Timer "' .. name .. '" Loop: ' .. tostring(state), LogLevel.INFO)
+            if LevelVars.nodeTimers[name].debug then
+                TEN.Util.PrintLog('Timer "' .. name .. '" Loop: ' .. tostring(state), LogLevel.INFO)
+            end
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
@@ -252,8 +279,10 @@ end
 LevelFuncs.Engine.Node.IsTimerActive = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
-            local mss = Timer.Get(name):IsActive() and 'Timer "' .. name .. '" is active' or 'Timer "' .. name .. '" is not active'
-            TEN.Util.PrintLog(mss, LogLevel.INFO)
+            if LevelVars.nodeTimers[name].debug then
+                local mss = Timer.Get(name):IsActive() and 'Timer "' .. name .. '" is active' or 'Timer "' .. name .. '" is not active'
+                TEN.Util.PrintLog(mss, LogLevel.INFO)
+            end
             return Timer.Get(name):IsActive()
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
