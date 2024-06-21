@@ -103,7 +103,7 @@ namespace TombIDE.Shared.SharedClasses
 					$"	{dataFileName} = {{ \"{levelName}\" }}",
 					"",
 					"--------------------------------------------------"
-                };
+				};
 			}
 
 			return new List<string>();
