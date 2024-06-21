@@ -87,8 +87,8 @@ namespace TombIDE.Shared.SharedClasses
 			{
 				return new List<string>
 				{
-					"",
-                    $"\n-- {dataFileName} level",
+					"\n",
+                    $"-- {dataFileName} level",
                     "",
                     $"{dataFileName} = TEN.Flow.Level()",
 					"",
@@ -111,7 +111,7 @@ namespace TombIDE.Shared.SharedClasses
 
 		public static string RemoveIllegalNameSymbols(string levelName)
 		{
-			char[] illegalNameChars = { ';', '[', ']', '=', ',', '.', '!' };
+			char[] illegalNameChars = { ';', '[', ']', '=', ',', '.', '!', 'à', 'è', 'ì', 'ò', 'ù'};
 			return illegalNameChars.Aggregate(levelName, (current, c) => current.Replace(c.ToString(), string.Empty));
 		}
 	}
