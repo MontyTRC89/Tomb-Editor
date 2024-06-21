@@ -88,9 +88,9 @@ namespace TombIDE.Shared.SharedClasses
 				return new List<string>
 				{
 					"\n",
-                    $"-- {dataFileName} level",
-                    "",
-                    $"{dataFileName} = TEN.Flow.Level()",
+					$"-- {dataFileName} level",
+					"",
+					$"{dataFileName} = TEN.Flow.Level()",
 					"",
 					$"{dataFileName}.nameKey = \"{dataFileName}\"",
 					$"{dataFileName}.scriptFile = \"Scripts\\\\Levels\\\\{dataFileName}.lua\"",
@@ -102,7 +102,7 @@ namespace TombIDE.Shared.SharedClasses
 					$"TEN.Flow.AddLevel({dataFileName})",
 					$"	{dataFileName} = {{ \"{levelName}\" }}",
 					"",
-                    "--------------------------------------------------"
+					"--------------------------------------------------"
                 };
 			}
 
