@@ -170,7 +170,7 @@ public readonly struct SectorWall
 
 			faceData = CreateFaceData(blockFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
 
-			if (!faceData.HasValue && isQA)
+			if (!faceData.HasValue)
 			{
 				// Try overdraw
 
@@ -271,7 +271,7 @@ public readonly struct SectorWall
 
 			faceData = CreateFaceData(blockFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
 
-			if (!faceData.HasValue && isWS)
+			if (!faceData.HasValue)
 			{
 				// Try overdraw
 
