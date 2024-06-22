@@ -916,9 +916,9 @@ namespace TombLib.LevelData
             }
         }
 
-        public void BuildGeometry(bool legacy = false)
+        public void BuildGeometry(bool highQualityLighting = false, bool useLegacyCode = false)
         {
-            RoomGeometry.Build(this, legacy);
+            RoomGeometry.Build(this, highQualityLighting, useLegacyCode);
         }
 
         public void RebuildLighting(bool highQualityLighting)
@@ -1566,7 +1566,7 @@ namespace TombLib.LevelData
             // Update the collected stuff now
             Parallel.For(0, roomsToProcess.Count, index =>
             {
-                roomsToProcess[index].BuildGeometry();
+                roomsToProcess[index].BuildGeometry(highQualityLighting);
             });
         }
 
