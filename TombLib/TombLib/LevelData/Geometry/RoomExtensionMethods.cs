@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TombLib.LevelData.Geometry;
 
@@ -9,42 +10,32 @@ public static class RoomExtensionMethods
 		Block block = room.Blocks[x, z];
 		Block neighborBlock = room.Blocks[x, z + 1];
 
-		var wall = new SectorWall
-		{
-			Direction = Direction.PositiveZ,
+		int startMinY = neighborBlock.Floor.XpZn,
+			startMaxY = neighborBlock.Ceiling.XpZn,
 
-			Start = new WallEnd
-			{
-				X = x + 1,
-				Z = z + 1,
-				MinY = neighborBlock.Floor.XpZn,
-				MaxY = neighborBlock.Ceiling.XpZn
-			},
+			endMinY = neighborBlock.Floor.XnZn,
+			endMaxY = neighborBlock.Ceiling.XnZn,
 
-			End = new WallEnd
-			{
-				X = x,
-				Z = z + 1,
-				MinY = neighborBlock.Floor.XnZn,
-				MaxY = neighborBlock.Ceiling.XnZn
-			}
-		};
+			qaStartY = block.Floor.XpZp,
+			qaEndY = block.Floor.XnZp,
 
-		wall.QA.StartY = block.Floor.XpZp;
-		wall.QA.EndY = block.Floor.XnZp;
-		wall.WS.StartY = block.Ceiling.XpZp;
-		wall.WS.EndY = block.Ceiling.XnZp;
+			wsStartY = block.Ceiling.XpZp,
+			wsEndY = block.Ceiling.XnZp;
+
+		List<WallSplit>
+			extraFloorSubdivisions = new(),
+			extraCeilingSubdivisions = new();
 
 		for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 		{
-			wall.ExtraFloorSubdivisions.Add(new WallSplit(
+			extraFloorSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 		}
 
 		for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 		{
-			wall.ExtraCeilingSubdivisions.Add(new WallSplit(
+			extraCeilingSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 		}
@@ -94,10 +85,10 @@ public static class RoomExtensionMethods
 			else if (adjoiningBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn)
 				qBportal = qAportal;
 
-			wall.QA.StartY = room.Position.Y + qaNearStart;
-			wall.QA.EndY = room.Position.Y + qaNearEnd;
-			wall.QA.StartY = Math.Max(wall.QA.StartY, qAportal) - room.Position.Y;
-			wall.QA.EndY = Math.Max(wall.QA.EndY, qBportal) - room.Position.Y;
+			qaStartY = room.Position.Y + qaNearStart;
+			qaEndY = room.Position.Y + qaNearEnd;
+			qaStartY = Math.Max(qaStartY, qAportal) - room.Position.Y;
+			qaEndY = Math.Max(qaEndY, qBportal) - room.Position.Y;
 
 			int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XpZp;
 			int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XnZp;
@@ -107,10 +98,10 @@ public static class RoomExtensionMethods
 			else if (adjoiningBlock.Ceiling.DiagonalSplit is DiagonalSplit.XnZn)
 				wBportal = wAportal;
 
-			wall.WS.StartY = room.Position.Y + wsNearStart;
-			wall.WS.EndY = room.Position.Y + wsNearEnd;
-			wall.WS.StartY = Math.Min(wall.WS.StartY, wAportal) - room.Position.Y;
-			wall.WS.EndY = Math.Min(wall.WS.EndY, wBportal) - room.Position.Y;
+			wsStartY = room.Position.Y + wsNearStart;
+			wsEndY = room.Position.Y + wsNearEnd;
+			wsStartY = Math.Min(wsStartY, wAportal) - room.Position.Y;
+			wsEndY = Math.Min(wsEndY, wBportal) - room.Position.Y;
 
 			WallSplit newSubdivision;
 
@@ -119,10 +110,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp));
 
-				if (i >= wall.ExtraFloorSubdivisions.Count)
-					wall.ExtraFloorSubdivisions.Add(newSubdivision);
+				if (i >= extraFloorSubdivisions.Count)
+					extraFloorSubdivisions.Add(newSubdivision);
 				else
-					wall.ExtraFloorSubdivisions[i] = newSubdivision;
+					extraFloorSubdivisions[i] = newSubdivision;
 			}
 
 			for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
@@ -130,61 +121,96 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp));
 
-				if (i >= wall.ExtraCeilingSubdivisions.Count)
-					wall.ExtraCeilingSubdivisions.Add(newSubdivision);
+				if (i >= extraCeilingSubdivisions.Count)
+					extraCeilingSubdivisions.Add(newSubdivision);
 				else
-					wall.ExtraCeilingSubdivisions[i] = newSubdivision;
+					extraCeilingSubdivisions[i] = newSubdivision;
 			}
 		}
 
 		if (block.Floor.DiagonalSplit is DiagonalSplit.XpZn)
 		{
-			wall.QA.StartY = block.Floor.XnZp;
-			wall.QA.EndY = block.Floor.XnZp;
+			qaStartY = block.Floor.XnZp;
+			qaEndY = block.Floor.XnZp;
 		}
 		else if (block.Floor.DiagonalSplit is DiagonalSplit.XnZn)
 		{
-			wall.QA.StartY = block.Floor.XpZp;
-			wall.QA.EndY = block.Floor.XpZp;
+			qaStartY = block.Floor.XpZp;
+			qaEndY = block.Floor.XpZp;
 		}
 
 		if (neighborBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp)
 		{
-			wall.Start.MinY = neighborBlock.Floor.XpZn;
-			wall.End.MinY = neighborBlock.Floor.XpZn;
+			startMinY = neighborBlock.Floor.XpZn;
+			endMinY = neighborBlock.Floor.XpZn;
 		}
 		else if (neighborBlock.Floor.DiagonalSplit is DiagonalSplit.XpZp)
 		{
-			wall.Start.MinY = neighborBlock.Floor.XnZn;
-			wall.End.MinY = neighborBlock.Floor.XnZn;
+			startMinY = neighborBlock.Floor.XnZn;
+			endMinY = neighborBlock.Floor.XnZn;
 		}
 
 		if (block.Ceiling.DiagonalSplit is DiagonalSplit.XpZn)
 		{
-			wall.WS.StartY = block.Ceiling.XnZp;
-			wall.WS.EndY = block.Ceiling.XnZp;
+			wsStartY = block.Ceiling.XnZp;
+			wsEndY = block.Ceiling.XnZp;
 		}
 		else if (block.Ceiling.DiagonalSplit is DiagonalSplit.XnZn)
 		{
-			wall.WS.StartY = block.Ceiling.XpZp;
-			wall.WS.EndY = block.Ceiling.XpZp;
+			wsStartY = block.Ceiling.XpZp;
+			wsEndY = block.Ceiling.XpZp;
 		}
 
 		if (neighborBlock.Ceiling.DiagonalSplit is DiagonalSplit.XnZp)
 		{
-			wall.Start.MaxY = neighborBlock.Ceiling.XpZn;
-			wall.End.MaxY = neighborBlock.Ceiling.XpZn;
+			startMaxY = neighborBlock.Ceiling.XpZn;
+			endMaxY = neighborBlock.Ceiling.XpZn;
 		}
 		else if (neighborBlock.Ceiling.DiagonalSplit is DiagonalSplit.XpZp)
 		{
-			wall.Start.MaxY = neighborBlock.Ceiling.XnZn;
-			wall.End.MaxY = neighborBlock.Ceiling.XnZn;
+			startMaxY = neighborBlock.Ceiling.XnZn;
+			endMaxY = neighborBlock.Ceiling.XnZn;
 		}
 
-		if (normalize)
-			wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall);
+		var wall = new SectorWall
+		(
+			direction: Direction.PositiveZ,
 
-		return wall;
+			start: new WallEnd
+			(
+				x: x + 1,
+				z: z + 1,
+				minY: startMinY,
+				maxY: startMaxY
+			),
+
+			end: new WallEnd
+			(
+				x: x,
+				z: z + 1,
+				minY: endMinY,
+				maxY: endMaxY
+			),
+
+			qa: new WallSplit
+			(
+				startY: qaStartY,
+				endY: qaEndY
+			),
+
+			ws: new WallSplit
+			(
+				startY: wsStartY,
+				endY: wsEndY
+			),
+
+			extraFloorSubdivisions: extraFloorSubdivisions,
+			extraCeilingSubdivisions: extraCeilingSubdivisions
+		);
+
+		return normalize
+			? wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall)
+			: wall;
 	}
 
 	public static SectorWall GetNegativeZWallData(this Room room, int x, int z, bool normalize)
@@ -192,42 +218,32 @@ public static class RoomExtensionMethods
 		Block block = room.Blocks[x, z];
 		Block neighborBlock = room.Blocks[x, z - 1];
 
-		var wall = new SectorWall
-		{
-			Direction = Direction.NegativeZ,
+		int startMinY = neighborBlock.Floor.XnZp,
+			startMaxY = neighborBlock.Ceiling.XnZp,
 
-			Start = new WallEnd
-			{
-				X = x,
-				Z = z,
-				MinY = neighborBlock.Floor.XnZp,
-				MaxY = neighborBlock.Ceiling.XnZp
-			},
+			endMinY = neighborBlock.Floor.XpZp,
+			endMaxY = neighborBlock.Ceiling.XpZp,
 
-			End = new WallEnd
-			{
-				X = x + 1,
-				Z = z,
-				MinY = neighborBlock.Floor.XpZp,
-				MaxY = neighborBlock.Ceiling.XpZp
-			}
-		};
+			qaStartY = block.Floor.XnZn,
+			qaEndY = block.Floor.XpZn,
 
-		wall.QA.StartY = block.Floor.XnZn;
-		wall.QA.EndY = block.Floor.XpZn;
-		wall.WS.StartY = block.Ceiling.XnZn;
-		wall.WS.EndY = block.Ceiling.XpZn;
+			wsStartY = block.Ceiling.XnZn,
+			wsEndY = block.Ceiling.XpZn;
+
+		List<WallSplit>
+			extraFloorSubdivisions = new(),
+			extraCeilingSubdivisions = new();
 
 		for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 		{
-			wall.ExtraFloorSubdivisions.Add(new WallSplit(
+			extraFloorSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 		}
 
 		for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 		{
-			wall.ExtraCeilingSubdivisions.Add(new WallSplit(
+			extraCeilingSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 		}
@@ -277,10 +293,10 @@ public static class RoomExtensionMethods
 			else if (adjoiningBlock.Floor.DiagonalSplit is DiagonalSplit.XpZp)
 				qBportal = qAportal;
 
-			wall.QA.StartY = room.Position.Y + qaNearStart;
-			wall.QA.EndY = room.Position.Y + qaNearEnd;
-			wall.QA.StartY = Math.Max(wall.QA.StartY, qAportal) - room.Position.Y;
-			wall.QA.EndY = Math.Max(wall.QA.EndY, qBportal) - room.Position.Y;
+			qaStartY = room.Position.Y + qaNearStart;
+			qaEndY = room.Position.Y + qaNearEnd;
+			qaStartY = Math.Max(qaStartY, qAportal) - room.Position.Y;
+			qaEndY = Math.Max(qaEndY, qBportal) - room.Position.Y;
 
 			int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XnZn;
 			int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XpZn;
@@ -290,10 +306,10 @@ public static class RoomExtensionMethods
 			else if (adjoiningBlock.Ceiling.DiagonalSplit is DiagonalSplit.XpZp)
 				wBportal = wAportal;
 
-			wall.WS.StartY = room.Position.Y + wsNearStart;
-			wall.WS.EndY = room.Position.Y + wsNearEnd;
-			wall.WS.StartY = Math.Min(wall.WS.StartY, wAportal) - room.Position.Y;
-			wall.WS.EndY = Math.Min(wall.WS.EndY, wBportal) - room.Position.Y;
+			wsStartY = room.Position.Y + wsNearStart;
+			wsEndY = room.Position.Y + wsNearEnd;
+			wsStartY = Math.Min(wsStartY, wAportal) - room.Position.Y;
+			wsEndY = Math.Min(wsEndY, wBportal) - room.Position.Y;
 
 			WallSplit newSubdivision;
 
@@ -302,10 +318,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn));
 
-				if (i >= wall.ExtraFloorSubdivisions.Count)
-					wall.ExtraFloorSubdivisions.Add(newSubdivision);
+				if (i >= extraFloorSubdivisions.Count)
+					extraFloorSubdivisions.Add(newSubdivision);
 				else
-					wall.ExtraFloorSubdivisions[i] = newSubdivision;
+					extraFloorSubdivisions[i] = newSubdivision;
 			}
 
 			for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
@@ -313,61 +329,96 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn));
 
-				if (i >= wall.ExtraCeilingSubdivisions.Count)
-					wall.ExtraCeilingSubdivisions.Add(newSubdivision);
+				if (i >= extraCeilingSubdivisions.Count)
+					extraCeilingSubdivisions.Add(newSubdivision);
 				else
-					wall.ExtraCeilingSubdivisions[i] = newSubdivision;
+					extraCeilingSubdivisions[i] = newSubdivision;
 			}
 		}
 
 		if (block.Floor.DiagonalSplit is DiagonalSplit.XpZp)
 		{
-			wall.QA.StartY = block.Floor.XnZn;
-			wall.QA.EndY = block.Floor.XnZn;
+			qaStartY = block.Floor.XnZn;
+			qaEndY = block.Floor.XnZn;
 		}
 		else if (block.Floor.DiagonalSplit is DiagonalSplit.XnZp)
 		{
-			wall.QA.StartY = block.Floor.XpZn;
-			wall.QA.EndY = block.Floor.XpZn;
+			qaStartY = block.Floor.XpZn;
+			qaEndY = block.Floor.XpZn;
 		}
 
 		if (neighborBlock.Floor.DiagonalSplit is DiagonalSplit.XpZn)
 		{
-			wall.Start.MinY = neighborBlock.Floor.XnZp;
-			wall.End.MinY = neighborBlock.Floor.XnZp;
+			startMinY = neighborBlock.Floor.XnZp;
+			endMinY = neighborBlock.Floor.XnZp;
 		}
 		else if (neighborBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn)
 		{
-			wall.Start.MinY = neighborBlock.Floor.XpZp;
-			wall.End.MinY = neighborBlock.Floor.XpZp;
+			startMinY = neighborBlock.Floor.XpZp;
+			endMinY = neighborBlock.Floor.XpZp;
 		}
 
 		if (block.Ceiling.DiagonalSplit is DiagonalSplit.XpZp)
 		{
-			wall.WS.StartY = block.Ceiling.XnZn;
-			wall.WS.EndY = block.Ceiling.XnZn;
+			wsStartY = block.Ceiling.XnZn;
+			wsEndY = block.Ceiling.XnZn;
 		}
 		else if (block.Ceiling.DiagonalSplit is DiagonalSplit.XnZp)
 		{
-			wall.WS.StartY = block.Ceiling.XpZn;
-			wall.WS.EndY = block.Ceiling.XpZn;
+			wsStartY = block.Ceiling.XpZn;
+			wsEndY = block.Ceiling.XpZn;
 		}
 
 		if (neighborBlock.Ceiling.DiagonalSplit is DiagonalSplit.XpZn)
 		{
-			wall.Start.MaxY = neighborBlock.Ceiling.XnZp;
-			wall.End.MaxY = neighborBlock.Ceiling.XnZp;
+			startMaxY = neighborBlock.Ceiling.XnZp;
+			endMaxY = neighborBlock.Ceiling.XnZp;
 		}
 		else if (neighborBlock.Ceiling.DiagonalSplit is DiagonalSplit.XnZn)
 		{
-			wall.Start.MaxY = neighborBlock.Ceiling.XpZp;
-			wall.End.MaxY = neighborBlock.Ceiling.XpZp;
+			startMaxY = neighborBlock.Ceiling.XpZp;
+			endMaxY = neighborBlock.Ceiling.XpZp;
 		}
 
-		if (normalize)
-			wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall);
+		var wall = new SectorWall
+		(
+			direction: Direction.NegativeZ,
 
-		return wall;
+			start: new WallEnd
+			(
+				x: x,
+				z: z,
+				minY: startMinY,
+				maxY: startMaxY
+			),
+
+			end: new WallEnd
+			(
+				x: x + 1,
+				z: z,
+				minY: endMinY,
+				maxY: endMaxY
+			),
+
+			qa: new WallSplit
+			(
+				startY: qaStartY,
+				endY: qaEndY
+			),
+
+			ws: new WallSplit
+			(
+				startY: wsStartY,
+				endY: wsEndY
+			),
+
+			extraFloorSubdivisions: extraFloorSubdivisions,
+			extraCeilingSubdivisions: extraCeilingSubdivisions
+		);
+
+		return normalize
+			? wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall)
+			: wall;
 	}
 
 	public static SectorWall GetPositiveXWallData(this Room room, int x, int z, bool normalize)
@@ -375,42 +426,32 @@ public static class RoomExtensionMethods
 		Block block = room.Blocks[x, z];
 		Block neighborBlock = room.Blocks[x + 1, z];
 
-		var wall = new SectorWall
-		{
-			Direction = Direction.PositiveX,
+		int startMinY = neighborBlock.Floor.XnZn,
+			startMaxY = neighborBlock.Ceiling.XnZn,
 
-			Start = new WallEnd
-			{
-				X = x + 1,
-				Z = z,
-				MinY = neighborBlock.Floor.XnZn,
-				MaxY = neighborBlock.Ceiling.XnZn
-			},
+			endMinY = neighborBlock.Floor.XnZp,
+			endMaxY = neighborBlock.Ceiling.XnZp,
 
-			End = new WallEnd
-			{
-				X = x + 1,
-				Z = z + 1,
-				MinY = neighborBlock.Floor.XnZp,
-				MaxY = neighborBlock.Ceiling.XnZp
-			}
-		};
+			qaStartY = block.Floor.XpZn,
+			qaEndY = block.Floor.XpZp,
 
-		wall.QA.StartY = block.Floor.XpZn;
-		wall.QA.EndY = block.Floor.XpZp;
-		wall.WS.StartY = block.Ceiling.XpZn;
-		wall.WS.EndY = block.Ceiling.XpZp;
+			wsStartY = block.Ceiling.XpZn,
+			wsEndY = block.Ceiling.XpZp;
+
+		List<WallSplit>
+			extraFloorSubdivisions = new(),
+			extraCeilingSubdivisions = new();
 
 		for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 		{
-			wall.ExtraFloorSubdivisions.Add(new WallSplit(
+			extraFloorSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 		}
 
 		for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 		{
-			wall.ExtraCeilingSubdivisions.Add(new WallSplit(
+			extraCeilingSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 		}
@@ -460,10 +501,10 @@ public static class RoomExtensionMethods
 			else if (adjoiningBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp)
 				qBportal = qAportal;
 
-			wall.QA.StartY = room.Position.Y + qaNearStart;
-			wall.QA.EndY = room.Position.Y + qaNearEnd;
-			wall.QA.StartY = Math.Max(wall.QA.StartY, qAportal) - room.Position.Y;
-			wall.QA.EndY = Math.Max(wall.QA.EndY, qBportal) - room.Position.Y;
+			qaStartY = room.Position.Y + qaNearStart;
+			qaEndY = room.Position.Y + qaNearEnd;
+			qaStartY = Math.Max(qaStartY, qAportal) - room.Position.Y;
+			qaEndY = Math.Max(qaEndY, qBportal) - room.Position.Y;
 
 			int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XpZn;
 			int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XpZp;
@@ -473,10 +514,10 @@ public static class RoomExtensionMethods
 			else if (adjoiningBlock.Ceiling.DiagonalSplit is DiagonalSplit.XnZp)
 				wBportal = wAportal;
 
-			wall.WS.StartY = room.Position.Y + wsNearStart;
-			wall.WS.EndY = room.Position.Y + wsNearEnd;
-			wall.WS.StartY = Math.Min(wall.WS.StartY, wAportal) - room.Position.Y;
-			wall.WS.EndY = Math.Min(wall.WS.EndY, wBportal) - room.Position.Y;
+			wsStartY = room.Position.Y + wsNearStart;
+			wsEndY = room.Position.Y + wsNearEnd;
+			wsStartY = Math.Min(wsStartY, wAportal) - room.Position.Y;
+			wsEndY = Math.Min(wsEndY, wBportal) - room.Position.Y;
 
 			WallSplit newSubdivision;
 
@@ -485,10 +526,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp));
 
-				if (i >= wall.ExtraFloorSubdivisions.Count)
-					wall.ExtraFloorSubdivisions.Add(newSubdivision);
+				if (i >= extraFloorSubdivisions.Count)
+					extraFloorSubdivisions.Add(newSubdivision);
 				else
-					wall.ExtraFloorSubdivisions[i] = newSubdivision;
+					extraFloorSubdivisions[i] = newSubdivision;
 			}
 
 			for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
@@ -496,61 +537,96 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp));
 
-				if (i >= wall.ExtraCeilingSubdivisions.Count)
-					wall.ExtraCeilingSubdivisions.Add(newSubdivision);
+				if (i >= extraCeilingSubdivisions.Count)
+					extraCeilingSubdivisions.Add(newSubdivision);
 				else
-					wall.ExtraCeilingSubdivisions[i] = newSubdivision;
+					extraCeilingSubdivisions[i] = newSubdivision;
 			}
 		}
 
 		if (block.Floor.DiagonalSplit is DiagonalSplit.XnZn)
 		{
-			wall.QA.StartY = block.Floor.XpZp;
-			wall.QA.EndY = block.Floor.XpZp;
+			qaStartY = block.Floor.XpZp;
+			qaEndY = block.Floor.XpZp;
 		}
 		else if (block.Floor.DiagonalSplit is DiagonalSplit.XnZp)
 		{
-			wall.QA.StartY = block.Floor.XpZn;
-			wall.QA.EndY = block.Floor.XpZn;
+			qaStartY = block.Floor.XpZn;
+			qaEndY = block.Floor.XpZn;
 		}
 
 		if (neighborBlock.Floor.DiagonalSplit is DiagonalSplit.XpZn)
 		{
-			wall.Start.MinY = neighborBlock.Floor.XnZp;
-			wall.End.MinY = neighborBlock.Floor.XnZp;
+			startMinY = neighborBlock.Floor.XnZp;
+			endMinY = neighborBlock.Floor.XnZp;
 		}
 		else if (neighborBlock.Floor.DiagonalSplit is DiagonalSplit.XpZp)
 		{
-			wall.Start.MinY = neighborBlock.Floor.XnZn;
-			wall.End.MinY = neighborBlock.Floor.XnZn;
+			startMinY = neighborBlock.Floor.XnZn;
+			endMinY = neighborBlock.Floor.XnZn;
 		}
 
 		if (block.Ceiling.DiagonalSplit is DiagonalSplit.XnZn)
 		{
-			wall.WS.StartY = block.Ceiling.XpZp;
-			wall.WS.EndY = block.Ceiling.XpZp;
+			wsStartY = block.Ceiling.XpZp;
+			wsEndY = block.Ceiling.XpZp;
 		}
 		else if (block.Ceiling.DiagonalSplit is DiagonalSplit.XnZp)
 		{
-			wall.WS.StartY = block.Ceiling.XpZn;
-			wall.WS.EndY = block.Ceiling.XpZn;
+			wsStartY = block.Ceiling.XpZn;
+			wsEndY = block.Ceiling.XpZn;
 		}
 
 		if (neighborBlock.Ceiling.DiagonalSplit is DiagonalSplit.XpZn)
 		{
-			wall.Start.MaxY = neighborBlock.Ceiling.XnZp;
-			wall.End.MaxY = neighborBlock.Ceiling.XnZp;
+			startMaxY = neighborBlock.Ceiling.XnZp;
+			endMaxY = neighborBlock.Ceiling.XnZp;
 		}
 		else if (neighborBlock.Ceiling.DiagonalSplit is DiagonalSplit.XpZp)
 		{
-			wall.Start.MaxY = neighborBlock.Ceiling.XnZn;
-			wall.End.MaxY = neighborBlock.Ceiling.XnZn;
+			startMaxY = neighborBlock.Ceiling.XnZn;
+			endMaxY = neighborBlock.Ceiling.XnZn;
 		}
 
-		if (normalize)
-			wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall);
+		var wall = new SectorWall
+		(
+			direction: Direction.PositiveX,
 
-		return wall;
+			start: new WallEnd
+			(
+				x: x + 1,
+				z: z,
+				minY: startMinY,
+				maxY: startMaxY
+			),
+
+			end: new WallEnd
+			(
+				x: x + 1,
+				z: z + 1,
+				minY: endMinY,
+				maxY: endMaxY
+			),
+
+			qa: new WallSplit
+			(
+				startY: qaStartY,
+				endY: qaEndY
+			),
+
+			ws: new WallSplit
+			(
+				startY: wsStartY,
+				endY: wsEndY
+			),
+
+			extraFloorSubdivisions: extraFloorSubdivisions,
+			extraCeilingSubdivisions: extraCeilingSubdivisions
+		);
+
+		return normalize
+			? wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall)
+			: wall;
 	}
 
 	public static SectorWall GetNegativeXWallData(this Room room, int x, int z, bool normalize)
@@ -558,42 +634,32 @@ public static class RoomExtensionMethods
 		Block block = room.Blocks[x, z];
 		Block neighborBlock = room.Blocks[x - 1, z];
 
-		var wall = new SectorWall
-		{
-			Direction = Direction.NegativeX,
+		int startMinY = neighborBlock.Floor.XpZp,
+			startMaxY = neighborBlock.Ceiling.XpZp,
 
-			Start = new WallEnd
-			{
-				X = x,
-				Z = z + 1,
-				MinY = neighborBlock.Floor.XpZp,
-				MaxY = neighborBlock.Ceiling.XpZp
-			},
+			endMinY = neighborBlock.Floor.XpZn,
+			endMaxY = neighborBlock.Ceiling.XpZn,
 
-			End = new WallEnd
-			{
-				X = x,
-				Z = z,
-				MinY = neighborBlock.Floor.XpZn,
-				MaxY = neighborBlock.Ceiling.XpZn
-			}
-		};
+			qaStartY = block.Floor.XnZp,
+			qaEndY = block.Floor.XpZp,
 
-		wall.QA.StartY = block.Floor.XnZp;
-		wall.QA.EndY = block.Floor.XpZp;
-		wall.WS.StartY = block.Ceiling.XnZp;
-		wall.WS.EndY = block.Ceiling.XpZp;
+			wsStartY = block.Ceiling.XnZp,
+			wsEndY = block.Ceiling.XpZp;
+
+		List<WallSplit>
+			extraFloorSubdivisions = new(),
+			extraCeilingSubdivisions = new();
 
 		for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 		{
-			wall.ExtraFloorSubdivisions.Add(new WallSplit(
+			extraFloorSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 				block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 		}
 
 		for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 		{
-			wall.ExtraCeilingSubdivisions.Add(new WallSplit(
+			extraCeilingSubdivisions.Add(new WallSplit(
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 				block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 		}
@@ -643,10 +709,10 @@ public static class RoomExtensionMethods
 			else if (adjoiningBlock.Floor.DiagonalSplit is DiagonalSplit.XpZn)
 				qBportal = qAportal;
 
-			wall.QA.StartY = room.Position.Y + qaNearStart;
-			wall.QA.EndY = room.Position.Y + qaNearEnd;
-			wall.QA.StartY = Math.Max(wall.QA.StartY, qAportal) - room.Position.Y;
-			wall.QA.EndY = Math.Max(wall.QA.EndY, qBportal) - room.Position.Y;
+			qaStartY = room.Position.Y + qaNearStart;
+			qaEndY = room.Position.Y + qaNearEnd;
+			qaStartY = Math.Max(qaStartY, qAportal) - room.Position.Y;
+			qaEndY = Math.Max(qaEndY, qBportal) - room.Position.Y;
 
 			int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XnZp;
 			int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.Ceiling.XnZn;
@@ -656,10 +722,10 @@ public static class RoomExtensionMethods
 			else if (adjoiningBlock.Ceiling.DiagonalSplit is DiagonalSplit.XpZn)
 				wBportal = wAportal;
 
-			wall.WS.StartY = room.Position.Y + wsNearStart;
-			wall.WS.EndY = room.Position.Y + wsNearEnd;
-			wall.WS.StartY = Math.Min(wall.WS.StartY, wAportal) - room.Position.Y;
-			wall.WS.EndY = Math.Min(wall.WS.EndY, wBportal) - room.Position.Y;
+			wsStartY = room.Position.Y + wsNearStart;
+			wsEndY = room.Position.Y + wsNearEnd;
+			wsStartY = Math.Min(wsStartY, wAportal) - room.Position.Y;
+			wsEndY = Math.Min(wsEndY, wBportal) - room.Position.Y;
 
 			WallSplit newSubdivision;
 
@@ -668,10 +734,10 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn));
 
-				if (i >= wall.ExtraFloorSubdivisions.Count)
-					wall.ExtraFloorSubdivisions.Add(newSubdivision);
+				if (i >= extraFloorSubdivisions.Count)
+					extraFloorSubdivisions.Add(newSubdivision);
 				else
-					wall.ExtraFloorSubdivisions[i] = newSubdivision;
+					extraFloorSubdivisions[i] = newSubdivision;
 			}
 
 			for (int i = 0; i < adjoiningBlock.ExtraCeilingSubdivisions.Count; i++)
@@ -679,117 +745,150 @@ public static class RoomExtensionMethods
 				newSubdivision = new WallSplit(adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 					adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn));
 
-				if (i >= wall.ExtraCeilingSubdivisions.Count)
-					wall.ExtraCeilingSubdivisions.Add(newSubdivision);
+				if (i >= extraCeilingSubdivisions.Count)
+					extraCeilingSubdivisions.Add(newSubdivision);
 				else
-					wall.ExtraCeilingSubdivisions[i] = newSubdivision;
+					extraCeilingSubdivisions[i] = newSubdivision;
 			}
 		}
 
 		if (block.Floor.DiagonalSplit is DiagonalSplit.XpZn)
 		{
-			wall.QA.StartY = block.Floor.XnZp;
-			wall.QA.EndY = block.Floor.XnZp;
+			qaStartY = block.Floor.XnZp;
+			qaEndY = block.Floor.XnZp;
 		}
 		else if (block.Floor.DiagonalSplit is DiagonalSplit.XpZp)
 		{
-			wall.QA.StartY = block.Floor.XnZn;
-			wall.QA.EndY = block.Floor.XnZn;
+			qaStartY = block.Floor.XnZn;
+			qaEndY = block.Floor.XnZn;
 		}
 
 		if (neighborBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn)
 		{
-			wall.Start.MinY = neighborBlock.Floor.XpZp;
-			wall.End.MinY = neighborBlock.Floor.XpZp;
+			startMinY = neighborBlock.Floor.XpZp;
+			endMinY = neighborBlock.Floor.XpZp;
 		}
 		else if (neighborBlock.Floor.DiagonalSplit is DiagonalSplit.XnZp)
 		{
-			wall.Start.MinY = neighborBlock.Floor.XpZn;
-			wall.End.MinY = neighborBlock.Floor.XpZn;
+			startMinY = neighborBlock.Floor.XpZn;
+			endMinY = neighborBlock.Floor.XpZn;
 		}
 
 		if (block.Ceiling.DiagonalSplit is DiagonalSplit.XpZn)
 		{
-			wall.WS.StartY = block.Ceiling.XnZp;
-			wall.WS.EndY = block.Ceiling.XnZp;
+			wsStartY = block.Ceiling.XnZp;
+			wsEndY = block.Ceiling.XnZp;
 		}
 		else if (block.Ceiling.DiagonalSplit is DiagonalSplit.XpZp)
 		{
-			wall.WS.StartY = block.Ceiling.XnZn;
-			wall.WS.EndY = block.Ceiling.XnZn;
+			wsStartY = block.Ceiling.XnZn;
+			wsEndY = block.Ceiling.XnZn;
 		}
 
 		if (neighborBlock.Ceiling.DiagonalSplit is DiagonalSplit.XnZn)
 		{
-			wall.Start.MaxY = neighborBlock.Ceiling.XpZp;
-			wall.End.MaxY = neighborBlock.Ceiling.XpZp;
+			startMaxY = neighborBlock.Ceiling.XpZp;
+			endMaxY = neighborBlock.Ceiling.XpZp;
 		}
 		else if (neighborBlock.Ceiling.DiagonalSplit is DiagonalSplit.XnZp)
 		{
-			wall.Start.MaxY = neighborBlock.Ceiling.XpZn;
-			wall.End.MaxY = neighborBlock.Ceiling.XpZn;
+			startMaxY = neighborBlock.Ceiling.XpZn;
+			endMaxY = neighborBlock.Ceiling.XpZn;
 		}
 
-		if (normalize)
-			wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall);
+		var wall = new SectorWall
+		(
+			direction: Direction.NegativeX,
 
-		return wall;
+			start: new WallEnd
+			(
+				x: x,
+				z: z + 1,
+				minY: startMinY,
+				maxY: startMaxY
+			),
+
+			end: new WallEnd
+			(
+				x: x,
+				z: z,
+				minY: endMinY,
+				maxY: endMaxY
+			),
+
+			qa: new WallSplit
+			(
+				startY: qaStartY,
+				endY: qaEndY
+			),
+
+			ws: new WallSplit
+			(
+				startY: wsStartY,
+				endY: wsEndY
+			),
+
+			extraFloorSubdivisions: extraFloorSubdivisions,
+			extraCeilingSubdivisions: extraCeilingSubdivisions
+		);
+
+		return normalize
+			? wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall)
+			: wall;
 	}
 
 	public static SectorWall GetDiagonalWallData(this Room room, int x, int z, bool isDiagonalCeiling, bool normalize)
 	{
 		Block block = room.Blocks[x, z];
-		SectorWall wall;
+
+		int startX, startZ, endX, endZ,
+			startMinY, startMaxY, endMinY, endMaxY,
+			qaStartY, qaEndY, wsStartY, wsEndY;
+
+		List<WallSplit>
+			extraFloorSubdivisions = new(),
+			extraCeilingSubdivisions = new();
 
 		switch (isDiagonalCeiling ? block.Ceiling.DiagonalSplit : block.Floor.DiagonalSplit)
 		{
 			case DiagonalSplit.XpZn:
-				wall = new SectorWall
-				{
-					Start = new WallEnd
-					{
-						X = x + 1,
-						Z = z + 1,
+				startX = x + 1;
+				startZ = z + 1;
 
-						MinY = isDiagonalCeiling
-							? (block.IsAnyWall ? block.Floor.XnZp : block.Floor.XpZp) // DiagonalCeiling
-							: block.Floor.XnZp, // DiagonalFloor
+				endX = x;
+				endZ = z;
 
-						MaxY = isDiagonalCeiling
-							? block.Ceiling.XnZp // DiagonalCeiling
-							: (block.IsAnyWall ? block.Ceiling.XnZp : block.Ceiling.XpZp) // DiagonalFloor
-					},
+				startMinY = isDiagonalCeiling
+					? (block.IsAnyWall ? block.Floor.XnZp : block.Floor.XpZp) // DiagonalCeiling
+					: block.Floor.XnZp; // DiagonalFloor
 
-					End = new WallEnd
-					{
-						X = x,
-						Z = z,
+				startMaxY = isDiagonalCeiling
+					? block.Ceiling.XnZp // DiagonalCeiling
+					: (block.IsAnyWall ? block.Ceiling.XnZp : block.Ceiling.XpZp); // DiagonalFloor
 
-						MinY = isDiagonalCeiling
-							? (block.IsAnyWall ? block.Floor.XnZp : block.Floor.XnZn) // DiagonalCeiling
-							: block.Floor.XnZp, // DiagonalFloor
+				endMinY = isDiagonalCeiling
+					? (block.IsAnyWall ? block.Floor.XnZp : block.Floor.XnZn) // DiagonalCeiling
+					: block.Floor.XnZp; // DiagonalFloor
 
-						MaxY = isDiagonalCeiling
-							? block.Ceiling.XnZp // DiagonalCeiling
-							: (block.IsAnyWall ? block.Ceiling.XnZp : block.Ceiling.XnZn) // DiagonalFloor
-					}
-				};
+				endMaxY = isDiagonalCeiling
+					? block.Ceiling.XnZp // DiagonalCeiling
+					: (block.IsAnyWall ? block.Ceiling.XnZp : block.Ceiling.XnZn); // DiagonalFloor
 
-				wall.QA.StartY = block.Floor.XpZp;
-				wall.QA.EndY = block.Floor.XnZn;
-				wall.WS.StartY = block.Ceiling.XpZp;
-				wall.WS.EndY = block.Ceiling.XnZn;
+				qaStartY = block.Floor.XpZp;
+				qaEndY = block.Floor.XnZn;
+				wsStartY = block.Ceiling.XpZp;
+				wsEndY = block.Ceiling.XnZn;
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.ExtraFloorSubdivisions.Add(new WallSplit(
+					extraFloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.ExtraCeilingSubdivisions.Add(new WallSplit(
+					extraCeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn)));
 				}
@@ -797,52 +896,43 @@ public static class RoomExtensionMethods
 				break;
 
 			case DiagonalSplit.XnZn:
-				wall = new SectorWall
-				{
-					Start = new WallEnd
-					{
-						X = x + 1,
-						Z = z,
+				startX = x + 1;
+				startZ = z;
 
-						MinY = isDiagonalCeiling
-							? (block.IsAnyWall ? block.Floor.XpZp : block.Floor.XpZn) // DiagonalCeiling
-							: block.Floor.XpZp, // DiagonalFloor
+				endX = x;
+				endZ = z + 1;
 
-						MaxY = isDiagonalCeiling
-							? block.Ceiling.XpZp // DiagonalCeiling
-							: (block.IsAnyWall ? block.Ceiling.XpZp : block.Ceiling.XpZn) // DiagonalFloor
-					},
+				startMinY = isDiagonalCeiling
+					? (block.IsAnyWall ? block.Floor.XpZp : block.Floor.XpZn) // DiagonalCeiling
+					: block.Floor.XpZp; // DiagonalFloor
 
-					End = new WallEnd
-					{
-						X = x,
-						Z = z + 1,
+				startMaxY = isDiagonalCeiling
+					? block.Ceiling.XpZp // DiagonalCeiling
+					: (block.IsAnyWall ? block.Ceiling.XpZp : block.Ceiling.XpZn); // DiagonalFloor
 
-						MinY = isDiagonalCeiling
-							? (block.IsAnyWall ? block.Floor.XpZp : block.Floor.XnZp) // DiagonalCeiling
-							: block.Floor.XpZp, // DiagonalFloor
+				endMinY = isDiagonalCeiling
+					? (block.IsAnyWall ? block.Floor.XpZp : block.Floor.XnZp) // DiagonalCeiling
+					: block.Floor.XpZp; // DiagonalFloor
 
-						MaxY = isDiagonalCeiling
-							? block.Ceiling.XpZp // DiagonalCeiling
-							: (block.IsAnyWall ? block.Ceiling.XpZp : block.Ceiling.XnZp) // DiagonalFloor
-					}
-				};
+				endMaxY = isDiagonalCeiling
+					? block.Ceiling.XpZp // DiagonalCeiling
+					: (block.IsAnyWall ? block.Ceiling.XpZp : block.Ceiling.XnZp); // DiagonalFloor
 
-				wall.QA.StartY = block.Floor.XpZn;
-				wall.QA.EndY = block.Floor.XnZp;
-				wall.WS.StartY = block.Ceiling.XpZn;
-				wall.WS.EndY = block.Ceiling.XnZp;
+				qaStartY = block.Floor.XpZn;
+				qaEndY = block.Floor.XnZp;
+				wsStartY = block.Ceiling.XpZn;
+				wsEndY = block.Ceiling.XnZp;
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.ExtraFloorSubdivisions.Add(new WallSplit(
+					extraFloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.ExtraCeilingSubdivisions.Add(new WallSplit(
+					extraCeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp)));
 				}
@@ -850,52 +940,43 @@ public static class RoomExtensionMethods
 				break;
 
 			case DiagonalSplit.XnZp:
-				wall = new SectorWall
-				{
-					Start = new WallEnd
-					{
-						X = x,
-						Z = z,
+				startX = x;
+				startZ = z;
 
-						MinY = isDiagonalCeiling
-							? (block.IsAnyWall ? block.Floor.XpZn : block.Floor.XnZn) // DiagonalCeiling
-							: block.Floor.XpZn, // DiagonalFloor
+				endX = x + 1;
+				endZ = z + 1;
 
-						MaxY = isDiagonalCeiling
-							? block.Ceiling.XpZn // DiagonalCeiling
-							: (block.IsAnyWall ? block.Ceiling.XpZn : block.Ceiling.XnZn) // DiagonalFloor
-					},
+				startMinY = isDiagonalCeiling
+					? (block.IsAnyWall ? block.Floor.XpZn : block.Floor.XnZn) // DiagonalCeiling
+					: block.Floor.XpZn; // DiagonalFloor
 
-					End = new WallEnd
-					{
-						X = x + 1,
-						Z = z + 1,
+				startMaxY = isDiagonalCeiling
+					? block.Ceiling.XpZn // DiagonalCeiling
+					: (block.IsAnyWall ? block.Ceiling.XpZn : block.Ceiling.XnZn); // DiagonalFloor
 
-						MinY = isDiagonalCeiling
-							? (block.IsAnyWall ? block.Floor.XpZn : block.Floor.XpZp) // DiagonalCeiling
-							: block.Floor.XpZn, // DiagonalFloor
+				endMinY = isDiagonalCeiling
+					? (block.IsAnyWall ? block.Floor.XpZn : block.Floor.XpZp) // DiagonalCeiling
+					: block.Floor.XpZn; // DiagonalFloor
 
-						MaxY = isDiagonalCeiling
-							? block.Ceiling.XpZn // DiagonalCeiling
-							: (block.IsAnyWall ? block.Ceiling.XpZn : block.Ceiling.XpZp) // DiagonalFloor
-					}
-				};
+				endMaxY = isDiagonalCeiling
+					? block.Ceiling.XpZn // DiagonalCeiling
+					: (block.IsAnyWall ? block.Ceiling.XpZn : block.Ceiling.XpZp); // DiagonalFloor
 
-				wall.QA.StartY = block.Floor.XnZn;
-				wall.QA.EndY = block.Floor.XpZp;
-				wall.WS.StartY = block.Ceiling.XnZn;
-				wall.WS.EndY = block.Ceiling.XpZp;
+				qaStartY = block.Floor.XnZn;
+				qaEndY = block.Floor.XpZp;
+				wsStartY = block.Ceiling.XnZn;
+				wsEndY = block.Ceiling.XpZp;
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.ExtraFloorSubdivisions.Add(new WallSplit(
+					extraFloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZp)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.ExtraCeilingSubdivisions.Add(new WallSplit(
+					extraCeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZn),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZp)));
 				}
@@ -903,52 +984,43 @@ public static class RoomExtensionMethods
 				break;
 
 			default:
-				wall = new SectorWall
-				{
-					Start = new WallEnd
-					{
-						X = x,
-						Z = z + 1,
+				startX = x;
+				startZ = z + 1;
 
-						MinY = isDiagonalCeiling
-							? (block.IsAnyWall ? block.Floor.XnZn : block.Floor.XnZp) // DiagonalCeiling
-							: block.Floor.XnZn, // DiagonalFloor
+				endX = x + 1;
+				endZ = z;
 
-						MaxY = isDiagonalCeiling
-							? block.Ceiling.XnZn // DiagonalCeiling
-							: (block.IsAnyWall ? block.Ceiling.XnZn : block.Ceiling.XnZp) // DiagonalFloor
-					},
+				startMinY = isDiagonalCeiling
+					? (block.IsAnyWall ? block.Floor.XnZn : block.Floor.XnZp) // DiagonalCeiling
+					: block.Floor.XnZn; // DiagonalFloor
 
-					End = new WallEnd
-					{
-						X = x + 1,
-						Z = z,
+				startMaxY = isDiagonalCeiling
+					? block.Ceiling.XnZn // DiagonalCeiling
+					: (block.IsAnyWall ? block.Ceiling.XnZn : block.Ceiling.XnZp); // DiagonalFloor
 
-						MinY = isDiagonalCeiling
-							? (block.IsAnyWall ? block.Floor.XnZn : block.Floor.XpZn) // DiagonalCeiling
-							: block.Floor.XnZn, // DiagonalFloor
+				endMinY = isDiagonalCeiling
+					? (block.IsAnyWall ? block.Floor.XnZn : block.Floor.XpZn) // DiagonalCeiling
+					: block.Floor.XnZn; // DiagonalFloor
 
-						MaxY = isDiagonalCeiling
-							? block.Ceiling.XnZn // DiagonalCeiling
-							: (block.IsAnyWall ? block.Ceiling.XnZn : block.Ceiling.XpZn) // DiagonalFloor
-					}
-				};
+				endMaxY = isDiagonalCeiling
+					? block.Ceiling.XnZn // DiagonalCeiling
+					: (block.IsAnyWall ? block.Ceiling.XnZn : block.Ceiling.XpZn); // DiagonalFloor
 
-				wall.QA.StartY = block.Floor.XnZp;
-				wall.QA.EndY = block.Floor.XpZn;
-				wall.WS.StartY = block.Ceiling.XnZp;
-				wall.WS.EndY = block.Ceiling.XpZn;
+				qaStartY = block.Floor.XnZp;
+				qaEndY = block.Floor.XpZn;
+				wsStartY = block.Ceiling.XnZp;
+				wsEndY = block.Ceiling.XpZn;
 
 				for (int i = 0; i < block.ExtraFloorSubdivisions.Count; i++)
 				{
-					wall.ExtraFloorSubdivisions.Add(new WallSplit(
+					extraFloorSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XnZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraFloorSubdivision(i), BlockEdge.XpZn)));
 				}
 
 				for (int i = 0; i < block.ExtraCeilingSubdivisions.Count; i++)
 				{
-					wall.ExtraCeilingSubdivisions.Add(new WallSplit(
+					extraCeilingSubdivisions.Add(new WallSplit(
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XnZp),
 						block.GetHeight(BlockVerticalExtensions.GetExtraCeilingSubdivision(i), BlockEdge.XpZn)));
 				}
@@ -956,11 +1028,44 @@ public static class RoomExtensionMethods
 				break;
 		}
 
-		wall.Direction = Direction.Diagonal;
+		var wall = new SectorWall
+		(
+			direction: Direction.Diagonal,
 
-		if (normalize)
-			wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall);
+			start: new WallEnd
+			(
+				x: startX,
+				z: startZ,
+				minY: startMinY,
+				maxY: startMaxY
+			),
 
-		return wall;
+			end: new WallEnd
+			(
+				x: endX,
+				z: endZ,
+				minY: endMinY,
+				maxY: endMaxY
+			),
+
+			qa: new WallSplit
+			(
+				startY: qaStartY,
+				endY: qaEndY
+			),
+
+			ws: new WallSplit
+			(
+				startY: wsStartY,
+				endY: wsEndY
+			),
+
+			extraFloorSubdivisions: extraFloorSubdivisions,
+			extraCeilingSubdivisions: extraCeilingSubdivisions
+		);
+
+		return normalize
+			? wall.Normalize(block.Floor.DiagonalSplit, block.Ceiling.DiagonalSplit, block.IsAnyWall)
+			: wall;
 	}
 }
