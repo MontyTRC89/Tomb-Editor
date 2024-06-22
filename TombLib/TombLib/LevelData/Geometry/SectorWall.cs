@@ -333,7 +333,7 @@ public readonly struct SectorWall
 			return new SectorFace(blockFace,
 				p0: new Vector3(Start.X * Level.BlockSizeUnit, yEndA, Start.Z * Level.BlockSizeUnit),
 				p1: new Vector3(End.X * Level.BlockSizeUnit, yEndB, End.Z * Level.BlockSizeUnit),
-				p2: new Vector3(Start.X * Level.BlockSizeUnit, yStartB, Start.Z * Level.BlockSizeUnit),
+				p2: new Vector3(Start.X * Level.BlockSizeUnit, yStartA, Start.Z * Level.BlockSizeUnit),
 				uv0: new Vector2(0, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: true);
 		}
 		else if (yStartA == yEndA && yStartB != yEndB) // Is triangle (type 2)
