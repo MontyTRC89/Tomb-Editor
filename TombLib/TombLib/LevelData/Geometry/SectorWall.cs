@@ -174,7 +174,9 @@ public readonly struct SectorWall
 			{
 				// Try overdraw
 
-				bool isValidOverdraw = !isAnyWall || canHaveDiagonalWallFloorPart;
+				bool isEvenWithQA = yStartA == QA.StartY && yStartB == QA.EndY; // Whether the subdivision has the same Y coordinates as QA
+																				// if so, then it covers the whole floor part of the wall
+				bool isValidOverdraw = isEvenWithQA && (!isAnyWall || canHaveDiagonalWallFloorPart);
 
 				if (!isValidOverdraw)
 					continue;
@@ -275,7 +277,9 @@ public readonly struct SectorWall
 			{
 				// Try overdraw
 
-				bool isValidOverdraw = !isAnyWall || canHaveNonDiagonalCeilingPart;
+				bool isEvenWithWS = yStartA == WS.StartY && yStartB == WS.EndY; // Whether the subdivision has the same Y coordinates as WS
+																				// if so, then it covers the whole ceiling part of the wall
+				bool isValidOverdraw = isEvenWithWS && (!isAnyWall || canHaveNonDiagonalCeilingPart);
 
 				if (!isValidOverdraw)
 					continue;
