@@ -326,50 +326,50 @@ namespace TombLib.LevelData
 
         public void UpdateFaceTexture(int x, int z, BlockFace face, TextureArea texture, bool wasDoubleSided)
         {
-			VertexRange range = VertexRangeLookup.GetValueOrDefault(new SectorInfo(x, z, face));
+            VertexRange range = VertexRangeLookup.GetValueOrDefault(new SectorInfo(x, z, face));
 
             if (range.Count == 3) // Triangle
             {
-				if (wasDoubleSided)
-					DoubleSidedTriangleCount--;
+                if (wasDoubleSided)
+                    DoubleSidedTriangleCount--;
 
-				if (texture.DoubleSided)
-					DoubleSidedTriangleCount++;
+                if (texture.DoubleSided)
+                    DoubleSidedTriangleCount++;
 
-				if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
-					Swap.Do(ref texture.TexCoord0, ref texture.TexCoord2);
+                if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
+                    Swap.Do(ref texture.TexCoord0, ref texture.TexCoord2);
 
-				TriangleTextureAreas[range.Start / 3] = texture;
-			}
-			else if (range.Count == 6) // Quad
+                TriangleTextureAreas[range.Start / 3] = texture;
+            }
+            else if (range.Count == 6) // Quad
             {
-				if (wasDoubleSided)
-					DoubleSidedTriangleCount -= 2;
+                if (wasDoubleSided)
+                    DoubleSidedTriangleCount -= 2;
 
-				if (texture.DoubleSided)
-					DoubleSidedTriangleCount += 2;
+                if (texture.DoubleSided)
+                    DoubleSidedTriangleCount += 2;
 
-				TextureArea texture0 = texture;
-				texture0.TexCoord0 = texture.TexCoord2;
-				texture0.TexCoord1 = texture.TexCoord3;
-				texture0.TexCoord2 = texture.TexCoord1;
+                TextureArea texture0 = texture;
+                texture0.TexCoord0 = texture.TexCoord2;
+                texture0.TexCoord1 = texture.TexCoord3;
+                texture0.TexCoord2 = texture.TexCoord1;
 
-				if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
-					Swap.Do(ref texture0.TexCoord0, ref texture0.TexCoord2);
+                if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
+                    Swap.Do(ref texture0.TexCoord0, ref texture0.TexCoord2);
 
-				TriangleTextureAreas[range.Start / 3] = texture0;
+                TriangleTextureAreas[range.Start / 3] = texture0;
 
-				TextureArea texture1 = texture;
-				texture1.TexCoord0 = texture.TexCoord0;
-				texture1.TexCoord1 = texture.TexCoord1;
-				texture1.TexCoord2 = texture.TexCoord3;
+                TextureArea texture1 = texture;
+                texture1.TexCoord0 = texture.TexCoord0;
+                texture1.TexCoord1 = texture.TexCoord1;
+                texture1.TexCoord2 = texture.TexCoord3;
 
-				if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
-					Swap.Do(ref texture1.TexCoord0, ref texture1.TexCoord2);
+                if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
+                    Swap.Do(ref texture1.TexCoord0, ref texture1.TexCoord2);
 
-				TriangleTextureAreas[(range.Start + 3) / 3] = texture1;
-			}
-		}
+                TriangleTextureAreas[(range.Start + 3) / 3] = texture1;
+            }
+        }
 
         private enum FaceDirection
         {
