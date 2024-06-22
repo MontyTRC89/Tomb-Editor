@@ -106,7 +106,7 @@ namespace TombIDE.Shared.SharedClasses
 
 		public static string RemoveIllegalNameSymbols(string levelName)
 		{
-			char[] illegalNameChars = { ';', '[', ']', '=', ',', '.', '!', 'à', 'è', 'ì', 'ò', 'ù'};
+			char[] illegalNameChars = { ';', '[', ']', '=', ',', '.', '!'};
 			return illegalNameChars.Aggregate(levelName, (current, c) => current.Replace(c.ToString(), string.Empty));
 		}
 	}
