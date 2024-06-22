@@ -641,10 +641,10 @@ public static class RoomExtensionMethods
 			endMaxY = neighborBlock.Ceiling.XpZn,
 
 			qaStartY = block.Floor.XnZp,
-			qaEndY = block.Floor.XpZp,
+			qaEndY = block.Floor.XnZn,
 
 			wsStartY = block.Ceiling.XnZp,
-			wsEndY = block.Ceiling.XpZp;
+			wsEndY = block.Ceiling.XnZn;
 
 		List<WallSplit>
 			extraFloorSubdivisions = new(),

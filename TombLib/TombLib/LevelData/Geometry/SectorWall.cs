@@ -430,9 +430,7 @@ public readonly struct SectorWall
 			startY = Start.MaxY;
 			endY = End.MaxY;
 		}
-
-		// If either split point is above QA
-		if (startY > QA.StartY || endY > QA.EndY)
+		else if (startY > QA.StartY || endY > QA.EndY) // If either split point is above QA
 		{
 			// Snap points to the heights of QA
 			startY = QA.StartY;
@@ -472,9 +470,7 @@ public readonly struct SectorWall
 			startY = Start.MinY;
 			endY = End.MinY;
 		}
-
-		// If either split point is below WS
-		if (startY < WS.StartY || endY < WS.EndY)
+		else if (startY < WS.StartY || endY < WS.EndY) // If either split point is below WS
 		{
 			// Snap points to the heights of WS
 			startY = WS.StartY;
