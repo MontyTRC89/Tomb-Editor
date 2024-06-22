@@ -98,7 +98,7 @@ namespace TombIDE.Shared.SharedClasses
 					$"TEN.Flow.AddLevel({dataFileName})\n",
 					"--------------------------------------------------",
 					$"	{dataFileName} = {{ \"{levelName}\" }}"
-                };
+				};
 			}
 
 			return new List<string>();
