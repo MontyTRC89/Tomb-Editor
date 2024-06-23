@@ -6,7 +6,7 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
-	public class RoomGeometry
+    public class RoomGeometry
     {
         // EditorUV Map:
         //                      | +Y
@@ -328,7 +328,7 @@ namespace TombLib.LevelData
             PositiveZ, NegativeZ, PositiveX, NegativeX, DiagonalFloor, DiagonalCeiling, DiagonalWall
         }
 
-		private void BuildFloorOrCeilingFace(Room room, int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY,
+        private void BuildFloorOrCeilingFace(Room room, int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY,
                                              BlockFace face1, BlockFace face2, Room.RoomConnectionType portalMode)
         {
             BlockType blockType = room.Blocks[x, z].Type;
@@ -540,68 +540,70 @@ namespace TombLib.LevelData
         }
 
         private void AddVerticalFaces(Room room, int x, int z, FaceDirection faceDirection, bool hasFloorPart, bool hasCeilingPart, bool hasMiddlePart, bool useLegacyCode = false)
-		{
-			SectorWall wallData = faceDirection switch
-			{
-				FaceDirection.PositiveZ => room.GetPositiveZWallData(x, z, normalize: true),
-				FaceDirection.NegativeZ => room.GetNegativeZWallData(x, z, normalize: true),
-				FaceDirection.PositiveX => room.GetPositiveXWallData(x, z, normalize: true),
-				FaceDirection.NegativeX => room.GetNegativeXWallData(x, z, normalize: true),
-                FaceDirection.DiagonalFloor => room.GetDiagonalWallData(x, z, isDiagonalCeiling: false, normalize: true),
-				FaceDirection.DiagonalCeiling => room.GetDiagonalWallData(x, z, isDiagonalCeiling: true, normalize: true),
-				_ => throw new NotSupportedException("Unsupported face direction.")
-			};
+        {
+            bool shouldNormalizeWallData = !useLegacyCode;
+
+            SectorWall wallData = faceDirection switch
+            {
+                FaceDirection.PositiveZ => room.GetPositiveZWallData(x, z, normalize: shouldNormalizeWallData),
+                FaceDirection.NegativeZ => room.GetNegativeZWallData(x, z, normalize: shouldNormalizeWallData),
+                FaceDirection.PositiveX => room.GetPositiveXWallData(x, z, normalize: shouldNormalizeWallData),
+                FaceDirection.NegativeX => room.GetNegativeXWallData(x, z, normalize: shouldNormalizeWallData),
+                FaceDirection.DiagonalFloor => room.GetDiagonalWallData(x, z, isDiagonalCeiling: false, normalize: shouldNormalizeWallData),
+                FaceDirection.DiagonalCeiling => room.GetDiagonalWallData(x, z, isDiagonalCeiling: true, normalize: shouldNormalizeWallData),
+                _ => throw new NotSupportedException("Unsupported face direction.")
+            };
 
             Block block = room.Blocks[x, z];
 
             if (hasFloorPart)
             {
-				IReadOnlyList<SectorFace> verticalFloorPartFaces = wallData.GetVerticalFloorPartFaces(block.Floor.DiagonalSplit, block.IsAnyWall);
+                IReadOnlyList<SectorFace> verticalFloorPartFaces = useLegacyCode
+                    ? LegacyWallGeometry.GetVerticalFloorPartFaces(wallData, block.IsAnyWall)
+                    : wallData.GetVerticalFloorPartFaces(block.Floor.DiagonalSplit, block.IsAnyWall);
 
-				for (int i = 0; i < verticalFloorPartFaces.Count; i++)
-				{
-					SectorFace face = verticalFloorPartFaces[i];
-					TextureArea texture = block.GetFaceTexture(face.FaceType);
-
-					if (face.IsQuad)
-						AddQuad(x, z, face.FaceType, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
-					else
-						AddTriangle(x, z, face.FaceType, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
-				}
-			}
+                for (int i = 0; i < verticalFloorPartFaces.Count; i++)
+                    AddFace(room, x, z, verticalFloorPartFaces[i]);
+            }
 
             if (hasCeilingPart)
             {
-				IReadOnlyList<SectorFace> verticalCeilingPartFaces = wallData.GetVerticalCeilingPartFaces(block.Ceiling.DiagonalSplit, block.IsAnyWall);
+                IReadOnlyList<SectorFace> verticalCeilingPartFaces = useLegacyCode
+                    ? LegacyWallGeometry.GetVerticalCeilingPartFaces(wallData, block.IsAnyWall)
+                    : wallData.GetVerticalCeilingPartFaces(block.Ceiling.DiagonalSplit, block.IsAnyWall);
 
-				for (int i = 0; i < verticalCeilingPartFaces.Count; i++)
-				{
-					SectorFace face = verticalCeilingPartFaces[i];
-					TextureArea texture = block.GetFaceTexture(face.FaceType);
-
-					if (face.IsQuad)
-						AddQuad(x, z, face.FaceType, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
-					else
-						AddTriangle(x, z, face.FaceType, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
-				}
-			}
+                for (int i = 0; i < verticalCeilingPartFaces.Count; i++)
+                    AddFace(room, x, z, verticalCeilingPartFaces[i]);
+            }
 
             if (hasMiddlePart)
             {
-				SectorFace? middleFace = wallData.GetVerticalMiddleFace();
+                SectorFace? middleFace = useLegacyCode
+                    ? LegacyWallGeometry.GetVerticalMiddlePartFace(wallData)
+                    : wallData.GetVerticalMiddleFace();
 
-				if (middleFace.HasValue)
-				{
-					SectorFace face = middleFace.Value;
-					TextureArea texture = block.GetFaceTexture(face.FaceType);
+                if (middleFace.HasValue)
+                    AddFace(room, x, z, middleFace.Value);
+            }
+        }
 
-					if (face.IsQuad)
-						AddQuad(x, z, face.FaceType, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
-					else
-						AddTriangle(x, z, face.FaceType, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
-				}
-			}
-		}
+        private void AddFace(Room room, int x, int z, SectorFace face)
+        {
+            Block block = room.Blocks[x, z];
+
+            bool shouldApplyDefaultTexture = block.GetFaceTexture(face.FaceType) == TextureArea.None
+                && room.Level.Settings.DefaultTexture != TextureArea.None;
+
+            if (shouldApplyDefaultTexture)
+                block.SetFaceTexture(face.FaceType, room.Level.Settings.DefaultTexture);
+
+            TextureArea texture = block.GetFaceTexture(face.FaceType);
+
+            if (face.IsQuad)
+                AddQuad(x, z, face.FaceType, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
+            else
+                AddTriangle(x, z, face.FaceType, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
+        }
 
         private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
                              TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
