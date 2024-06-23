@@ -42,6 +42,21 @@ namespace WadTool
             comboFlipeffectConditions.Enabled = _editor.Tool.DestinationWad.GameVersion != TRVersion.Game.TombEngine;
 
             ReloadSounds();
+
+            comboPlaySoundConditions.Items.Clear();
+            comboPlaySoundConditions.Items.AddRange(new object[] {
+                "Always",
+                "On land",
+                "In shallow water"
+            });
+
+            if (editor.Wad.GameVersion == TRVersion.Game.TombEngine)
+            {
+                comboPlaySoundConditions.Items.AddRange(new object[] {
+                    "In quicksand",
+                    "Underwater"
+                });
+            }
         }
 
         public void UpdateUI(WadAnimCommand cmd)
