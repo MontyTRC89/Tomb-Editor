@@ -117,6 +117,13 @@ namespace WadTool
             if (_editor.Animations.Count != 0)
                 lstAnimations.SelectItem(0);
 
+            bool isTEN = _editor.Wad.GameVersion == TRVersion.Game.TombEngine;
+            inQuicksandToolStripMenuItem.Visible = isTEN;
+            underwaterToolStripMenuItem.Visible = isTEN;
+
+            if (!isTEN && _editor.Tool.Configuration.AnimationEditor_SoundPreviewType > SoundPreviewType.Water)
+                _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
+
             // Update UI which is dependent on initial anim state
             UpdateTransformUI();
             PopulateMeshList();
@@ -274,13 +281,19 @@ namespace WadTool
             switch (_editor.Tool.Configuration.AnimationEditor_SoundPreviewType)
             {
                 case SoundPreviewType.Land:
-                    butTransportLandWater.Image = Properties.Resources.transport_on_nothing_24;
+                    butTransportLandWater.Image = Properties.Resources.transport_on_nothing_18;
                     break;
                 case SoundPreviewType.LandWithMaterial:
-                    butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
+                    butTransportLandWater.Image = Properties.Resources.transport_on_land_18;
                     break;
                 case SoundPreviewType.Water:
-                    butTransportLandWater.Image = Properties.Resources.transport_on_water_24;
+                    butTransportLandWater.Image = Properties.Resources.transport_on_water_18;
+                    break;
+                case SoundPreviewType.Quicksand:
+                    butTransportLandWater.Image = Properties.Resources.transport_sand_18;
+                    break;
+                case SoundPreviewType.Underwater:
+                    butTransportLandWater.Image = Properties.Resources.transport_underwater_18;
                     break;
             }
         }
@@ -2578,19 +2591,6 @@ namespace WadTool
             UpdateUIControls();
         }
 
-        private void butTransportLandWater_Click(object sender, EventArgs e)
-        {
-            if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, this)) return;
-
-            var previewType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
-
-            if (previewType == SoundPreviewType.Land) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.LandWithMaterial;
-            else if (previewType == SoundPreviewType.LandWithMaterial) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Water;
-            else if (previewType == SoundPreviewType.Water) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
-
-            UpdateUIControls();
-        }
-
         private void tbSearchByStateID_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return)
@@ -2774,6 +2774,30 @@ namespace WadTool
             // Hacks for textbox...
             tbStateId.AutoSize = false;
             tbStateId.Height = cmbStateID.Height;
+        }
+
+        private void alwaysToolStripMenuItem_Click(object sender, EventArgs e)
+            => SetCurrentTransportPreviewType(SoundPreviewType.Land);
+
+        private void onLandToolStripMenuItem_Click(object sender, EventArgs e)
+            => SetCurrentTransportPreviewType(SoundPreviewType.LandWithMaterial);
+
+        private void onShallowWaterToolStripMenuItem_Click(object sender, EventArgs e)
+            => SetCurrentTransportPreviewType(SoundPreviewType.Water);
+
+        private void inQuicksandToolStripMenuItem_Click(object sender, EventArgs e)
+            => SetCurrentTransportPreviewType(SoundPreviewType.Quicksand);
+
+        private void underwaterToolStripMenuItem_Click(object sender, EventArgs e)
+            => SetCurrentTransportPreviewType(SoundPreviewType.Underwater);
+
+        private void SetCurrentTransportPreviewType(SoundPreviewType previewType)
+        {
+            if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, this))
+                return;
+
+            _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = previewType;
+            UpdateUIControls();
         }
     }
 }
