@@ -89,6 +89,13 @@ namespace WadTool
 
             panelRendering.Configuration = _editor.Tool.Configuration;
 
+            bool isTEN = _editor.Wad.GameVersion == TRVersion.Game.TombEngine;
+            inQuicksandToolStripMenuItem.Visible = isTEN;
+            underwaterToolStripMenuItem.Visible = isTEN;
+
+            if (!isTEN && _editor.Tool.Configuration.AnimationEditor_SoundPreviewType > SoundPreviewType.Water)
+                _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
+
             // Update UI
             UpdateUIControls();
             UpdateReferenceLevelControls();
@@ -116,13 +123,6 @@ namespace WadTool
 
             if (_editor.Animations.Count != 0)
                 lstAnimations.SelectItem(0);
-
-            bool isTEN = _editor.Wad.GameVersion == TRVersion.Game.TombEngine;
-            inQuicksandToolStripMenuItem.Visible = isTEN;
-            underwaterToolStripMenuItem.Visible = isTEN;
-
-            if (!isTEN && _editor.Tool.Configuration.AnimationEditor_SoundPreviewType > SoundPreviewType.Water)
-                _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
 
             // Update UI which is dependent on initial anim state
             UpdateTransformUI();
