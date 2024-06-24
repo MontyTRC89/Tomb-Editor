@@ -2054,7 +2054,7 @@ namespace WadTool
 
                 if (ac.Type == WadAnimCommandType.PlaySound)
                 {
-                    idToPlay = ac.Parameter2 & 0x3FFF;
+                    idToPlay = ac.Parameter2 & 0xFFF;
                 }
                 else if (ac.Type == WadAnimCommandType.FlipEffect &&
                          previewType == SoundPreviewType.LandWithMaterial &&
