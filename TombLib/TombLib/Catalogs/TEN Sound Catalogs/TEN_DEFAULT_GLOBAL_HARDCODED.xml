@@ -5035,8 +5035,8 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1129</Id>
-			<Name>Custom_Footstep_Sounds_1</Name>
+			<Id>1150</Id>
+			<Name>TEN_Custom_Footstep_01</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -5050,8 +5050,8 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1130</Id>
-			<Name>Custom_Footstep_Sounds_2</Name>
+			<Id>1151</Id>
+			<Name>TEN_Custom_Footstep_02</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -5065,8 +5065,8 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1131</Id>
-			<Name>Custom_Footstep_Sounds_3</Name>
+			<Id>1152</Id>
+			<Name>TEN_Custom_Footstep_03</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -5080,8 +5080,8 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1132</Id>
-			<Name>Custom_Footstep_Sounds_4</Name>
+			<Id>1153</Id>
+			<Name>TEN_Custom_Footstep_04</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -5095,8 +5095,8 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1133</Id>
-			<Name>Custom_Footstep_Sounds_5</Name>
+			<Id>1154</Id>
+			<Name>TEN_Custom_Footstep_05</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -5110,8 +5110,8 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1134</Id>
-			<Name>Custom_Footstep_Sounds_6</Name>
+			<Id>1155</Id>
+			<Name>TEN_Custom_Footstep_06</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -5125,8 +5125,8 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1135</Id>
-			<Name>Custom_Footstep_Sounds_7</Name>
+			<Id>1156</Id>
+			<Name>TEN_Custom_Footstep_07</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -5140,8 +5140,8 @@
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>
-			<Id>1136</Id>
-			<Name>Custom_Footstep_Sounds_8</Name>
+			<Id>1157</Id>
+			<Name>TEN_Custom_Footstep_08</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -5150,6 +5150,21 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>true</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1158</Id>
+			<Name>TEN_Smoke_Emitter_Loop</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
 			<Samples />
 			<Global>true</Global>
 			<Indexed>false</Indexed>
