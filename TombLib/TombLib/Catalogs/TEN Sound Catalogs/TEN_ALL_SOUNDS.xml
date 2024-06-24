@@ -22338,7 +22338,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1143</Id>
-			<Name>TR1_SLAMDOOR_OPEN</Name>
+			<Name>TR1_Slamdoor_Open</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>8</RangeInSectors>
 			<Chance>100</Chance>
@@ -22357,7 +22357,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1144</Id>
-			<Name>TR1_SLAMDOOR_CLOSE</Name>
+			<Name>TR1_Slamdoor_Close</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>8</RangeInSectors>
 			<Chance>100</Chance>
@@ -22376,7 +22376,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1145</Id>
-			<Name>TR2_DRAGON_FALL</Name>
+			<Name>TR2_Dragon_Fall</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>20</RangeInSectors>
 			<Chance>100</Chance>
@@ -22395,7 +22395,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1146</Id>
-			<Name>TR2_MARCO_BARTOLLI_TRANSFORM</Name>
+			<Name>TR2_Marco_Bartolli_Transform</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22414,7 +22414,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1150</Id>
-			<Name>Custom_Footstep_1</Name>
+			<Name>TEN_Custom_Footstep_1</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22429,7 +22429,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1151</Id>
-			<Name>Custom_Footstep_2</Name>
+			<Name>TEN_Custom_Footstep_2</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22444,7 +22444,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1152</Id>
-			<Name>Custom_Footstep_3</Name>
+			<Name>TEN_Custom_Footstep_3</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22459,7 +22459,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1153</Id>
-			<Name>Custom_Footstep_4</Name>
+			<Name>TEN_Custom_Footstep_4</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22474,7 +22474,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1154</Id>
-			<Name>Custom_Footstep_5</Name>
+			<Name>TEN_Custom_Footstep_5</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22489,7 +22489,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1155</Id>
-			<Name>Custom_Footstep_6</Name>
+			<Name>TEN_Custom_Footstep_6</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22504,7 +22504,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1156</Id>
-			<Name>Custom_Footstep_7</Name>
+			<Name>TEN_Custom_Footstep_7</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22519,7 +22519,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1157</Id>
-			<Name>Custom_Footstep_8</Name>
+			<Name>TEN_Custom_Footstep_8</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -22529,6 +22529,565 @@
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples />
+			<Global>true</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1158</Id>
+			<Name>TEN_Pushables_Move_Mud</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1159</Id>
+			<Name>TEN_Pushables_Stop_Mud</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1160</Id>
+			<Name>TEN_Pushables_Collide_Mud</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1161</Id>
+			<Name>TEN_Pushables_Move_Snow</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1162</Id>
+			<Name>TEN_Pushables_Stop_Snow</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1163</Id>
+			<Name>TEN_Pushables_Collide_Snow</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1164</Id>
+			<Name>TEN_Pushables_Move_Sand</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1165</Id>
+			<Name>TEN_Pushables_Stop_Sand</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1166</Id>
+			<Name>TEN_Pushables_Collide_Sand</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1167</Id>
+			<Name>TEN_Pushables_Move_Gravel</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1168</Id>
+			<Name>TEN_Pushables_Stop_Gravel</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1169</Id>
+			<Name>TEN_Pushables_Collide_Gravel</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1170</Id>
+			<Name>TEN_Pushables_Move_Ice</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1171</Id>
+			<Name>TEN_Pushables_Stop_Ice</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1172</Id>
+			<Name>TEN_Pushables_Collide_Ice</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1173</Id>
+			<Name>TEN_Pushables_Move_Water</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1174</Id>
+			<Name>TEN_Pushables_Stop_Water</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1175</Id>
+			<Name>TEN_Pushables_Collide_Water</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1176</Id>
+			<Name>TEN_Pushables_Move_Stone</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1177</Id>
+			<Name>TEN_Pushables_Stop_Stone</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1178</Id>
+			<Name>TEN_Pushables_Collide_Stone</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1179</Id>
+			<Name>TEN_Pushables_Move_Wood</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1180</Id>
+			<Name>TEN_Pushables_Stop_Wood</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1181</Id>
+			<Name>TEN_Pushables_Collide_Wood</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1182</Id>
+			<Name>TEN_Pushables_Move_Metal</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1183</Id>
+			<Name>TEN_Pushables_Stop_Metal</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1184</Id>
+			<Name>TEN_Pushables_Collide_Metal</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1185</Id>
+			<Name>TEN_Pushables_Move_Marble</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1186</Id>
+			<Name>TEN_Pushables_Stop_Marble</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1187</Id>
+			<Name>TEN_Pushables_Collide_Marble</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1188</Id>
+			<Name>TEN_Pushables_Move_Grass</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1189</Id>
+			<Name>TEN_Pushables_Stop_Grass</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1190</Id>
+			<Name>TEN_Pushables_Collide_Grass</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1191</Id>
+			<Name>TEN_Pushables_Move_Concrete</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1192</Id>
+			<Name>TEN_Pushables_Stop_Concrete</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1193</Id>
+			<Name>TEN_Pushables_Collide_Concrete</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples />
+			<Global>false</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1194</Id>
+			<Name>TEN_Steam_Emitter_Loop</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>TEN_Steam_Emitter_Loop_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>

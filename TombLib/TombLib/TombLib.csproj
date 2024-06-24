@@ -266,9 +266,6 @@
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_ALL_SOUNDS.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Catalogs\TEN Sound Catalogs\TEN_DEFAULT_GLOBAL_HARDCODED.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Catalogs\TEN Sound Catalogs\TEN_TR1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
