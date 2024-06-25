@@ -23083,7 +23083,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>Looped</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>TEN_Steam_Emitter_Loop_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
