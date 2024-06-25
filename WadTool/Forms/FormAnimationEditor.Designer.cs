@@ -155,10 +155,10 @@ namespace WadTool
 			toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			butTransportChained = new System.Windows.Forms.ToolStripButton();
 			butTransportSound = new System.Windows.Forms.ToolStripButton();
-			butTransportLandWater = new System.Windows.Forms.ToolStripDropDownButton();
+			butTransportCondition = new System.Windows.Forms.ToolStripDropDownButton();
 			alwaysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			onLandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			onShallowWaterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			inShallowWaterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			inQuicksandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			underwaterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			darkSectionPanel4 = new DarkUI.Controls.DarkSectionPanel();
@@ -1610,7 +1610,7 @@ namespace WadTool
 			darkToolStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
 			darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			darkToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-			darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripSeparator6, butTransportStart, butTransportFrameBack, butTransportPlay, butTransportFrameForward, butTransportEnd, toolStripSeparator7, butTransportChained, butTransportSound, butTransportLandWater });
+			darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripSeparator6, butTransportStart, butTransportFrameBack, butTransportPlay, butTransportFrameForward, butTransportEnd, toolStripSeparator7, butTransportChained, butTransportSound, butTransportCondition });
 			darkToolStrip1.Location = new System.Drawing.Point(0, 0);
 			darkToolStrip1.Name = "darkToolStrip1";
 			darkToolStrip1.Padding = new System.Windows.Forms.Padding(3, 0, 1, 0);
@@ -1727,15 +1727,15 @@ namespace WadTool
 			// 
 			// butTransportLandWater
 			// 
-			butTransportLandWater.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			butTransportLandWater.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { alwaysToolStripMenuItem, onLandToolStripMenuItem, onShallowWaterToolStripMenuItem, inQuicksandToolStripMenuItem, underwaterToolStripMenuItem });
-			butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			butTransportLandWater.Image = Properties.Resources.transport_on_nothing_18;
-			butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
-			butTransportLandWater.Name = "butTransportLandWater";
-			butTransportLandWater.Size = new System.Drawing.Size(29, 33);
-			butTransportLandWater.ToolTipText = "Change sound conditions";
+			butTransportCondition.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			butTransportCondition.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			butTransportCondition.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { alwaysToolStripMenuItem, onLandToolStripMenuItem, inShallowWaterToolStripMenuItem, inQuicksandToolStripMenuItem, underwaterToolStripMenuItem });
+			butTransportCondition.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			butTransportCondition.Image = Properties.Resources.transport_on_nothing_18;
+			butTransportCondition.ImageTransparentColor = System.Drawing.Color.Magenta;
+			butTransportCondition.Name = "butTransportLandWater";
+			butTransportCondition.Size = new System.Drawing.Size(29, 33);
+			butTransportCondition.ToolTipText = "Change sound conditions";
 			// 
 			// alwaysToolStripMenuItem
 			// 
@@ -1757,15 +1757,15 @@ namespace WadTool
 			onLandToolStripMenuItem.Text = "On land";
 			onLandToolStripMenuItem.Click += onLandToolStripMenuItem_Click;
 			// 
-			// onShallowWaterToolStripMenuItem
+			// inShallowWaterToolStripMenuItem
 			// 
-			onShallowWaterToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			onShallowWaterToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			onShallowWaterToolStripMenuItem.Image = Properties.Resources.transport_on_water_18;
-			onShallowWaterToolStripMenuItem.Name = "onShallowWaterToolStripMenuItem";
-			onShallowWaterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			onShallowWaterToolStripMenuItem.Text = "On shallow water";
-			onShallowWaterToolStripMenuItem.Click += onShallowWaterToolStripMenuItem_Click;
+			inShallowWaterToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			inShallowWaterToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			inShallowWaterToolStripMenuItem.Image = Properties.Resources.transport_in_shallow_water_18;
+			inShallowWaterToolStripMenuItem.Name = "inShallowWaterToolStripMenuItem";
+			inShallowWaterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			inShallowWaterToolStripMenuItem.Text = "In shallow water";
+			inShallowWaterToolStripMenuItem.Click += inShallowWaterToolStripMenuItem_Click;
 			// 
 			// inQuicksandToolStripMenuItem
 			// 
@@ -2571,10 +2571,10 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem currentAnimationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectedAnimationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem allAnimationsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripDropDownButton butTransportLandWater;
+		private System.Windows.Forms.ToolStripDropDownButton butTransportCondition;
 		private System.Windows.Forms.ToolStripMenuItem alwaysToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem onLandToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem onShallowWaterToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem inShallowWaterToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem inQuicksandToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem underwaterToolStripMenuItem;
 	}

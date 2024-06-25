@@ -21,7 +21,7 @@ namespace WadTool
     {
         Land,
         LandWithMaterial,
-        Water,
+        ShallowWater,
         Quicksand,
         Underwater
     }
