@@ -104,15 +104,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write((uint)animation.KeyFrames.Count);
                         foreach (var keyFrame in animation.KeyFrames)
                         {
-                            writer.Write((int)keyFrame.BoundingBox.X1);
-                            writer.Write((int)keyFrame.BoundingBox.X2);
-                            writer.Write((int)keyFrame.BoundingBox.Y1);
-                            writer.Write((int)keyFrame.BoundingBox.Y2);
-                            writer.Write((int)keyFrame.BoundingBox.Z1);
-                            writer.Write((int)keyFrame.BoundingBox.Z2);
-                            writer.Write(keyFrame.Offset.X);
-                            writer.Write(keyFrame.Offset.Y);
-                            writer.Write(keyFrame.Offset.Z);
+                            var center = new Vector3(
+                                keyFrame.BoundingBox.X1 + keyFrame.BoundingBox.X2,
+                                keyFrame.BoundingBox.Y1 + keyFrame.BoundingBox.Y2,
+                                keyFrame.BoundingBox.Z1 + keyFrame.BoundingBox.Z2) / 2;
+                            var extents = new Vector3(
+                                keyFrame.BoundingBox.X2 - keyFrame.BoundingBox.X1,
+                                keyFrame.BoundingBox.Y2 - keyFrame.BoundingBox.Y1,
+                                keyFrame.BoundingBox.Z2 - keyFrame.BoundingBox.Z1) / 2;
+
+                            writer.Write(center);
+                            writer.Write(extents);
+                            writer.Write(keyFrame.Offset);
                             writer.Write((uint)keyFrame.Angles.Count);
 
                             foreach (var angle in keyFrame.Angles)
