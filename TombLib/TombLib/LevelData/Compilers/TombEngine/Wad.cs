@@ -314,10 +314,46 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                newAnimation.CommandData.Add(5);
+                                {
+                                    newAnimation.CommandData.Add(5);
 
-                                newAnimation.CommandData.Add((int)command.Parameter2);
-                                newAnimation.CommandData.Add((int)command.Parameter1);
+                                    int soundID = (int)command.Parameter2 & 0xFFF;
+                                    int frameNumber = (int)command.Parameter1;
+                                    int envCond = 0;
+
+                                    int soundEnvFlag = (int)command.Parameter2 & 0xF000;
+                                    switch (soundEnvFlag)
+                                    {
+                                        // Always
+                                        default:
+                                        case 0:
+                                            break;
+
+                                        // Land
+                                        case (1 << 14):
+                                            envCond = 1;
+                                            break;
+
+                                        // Shallow water
+                                        case (1 << 15):
+                                            envCond = 2;
+                                            break;
+
+                                        // Quicksand
+                                        case (1 << 12):
+                                            envCond = 3;
+                                            break;
+
+                                        // Underwater
+                                        case (1 << 13):
+                                            envCond = 4;
+                                            break;
+                                    }
+
+                                    newAnimation.CommandData.Add(soundID);
+                                    newAnimation.CommandData.Add(frameNumber);
+                                    newAnimation.CommandData.Add(envCond);
+                                }
 
                                 break;
 
