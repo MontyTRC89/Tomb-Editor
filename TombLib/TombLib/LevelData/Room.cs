@@ -129,7 +129,7 @@ namespace TombLib.LevelData
         public short AlternateGroup { get; set; } = -1;
 
         // Internal data structures
-        public RoomGeometry RoomGeometry { get; set; }
+        public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
 
         public Room(Level level, int numXSectors, int numZSectors, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
         {
@@ -193,7 +193,6 @@ namespace TombLib.LevelData
                 }
 
             // Update data structures
-            RoomGeometry = null;
             Blocks = newBlocks;
 
             // Move objects
@@ -314,16 +313,14 @@ namespace TombLib.LevelData
         public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy, bool fullCopy = false)
         {
             // Copy most variables
-            var result = (Room)MemberwiseClone();
-
+            var result = new Room(level, NumXSectors, NumZSectors, Properties.AmbientLight);
+            result.Position = Position;
             if (!fullCopy)
             {
                 result.AlternateBaseRoom = null;
                 result.AlternateRoom = null;
                 result.AlternateGroup = -1;
             }
-
-            result.RoomGeometry = null;
 
             // Copy properties
             result.Properties = Properties.Clone();
@@ -921,7 +918,7 @@ namespace TombLib.LevelData
 
         public void BuildGeometry(bool legacy = false)
         {
-            RoomGeometry = new RoomGeometry(this, legacy);
+            RoomGeometry.Build(this, legacy);
         }
 
         public void RebuildLighting(bool highQualityLighting)
@@ -1532,8 +1529,7 @@ namespace TombLib.LevelData
             // Update adjoining rooms
             var roomsToProcess = new List<Room> { this };
             var areaToProcess = new List<RectangleInt2> { area };
-            List<PortalInstance> listOfPortals = Portals.ToList();
-            foreach (var portal in listOfPortals)
+            foreach (var portal in Portals)
             {
                 if (!portal.Area.Intersects(area))
                     continue; // This portal is irrelavant since no changes happend in its area

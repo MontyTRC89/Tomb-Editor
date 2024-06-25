@@ -404,9 +404,10 @@ namespace TombLib.LevelData.IO
                                 for (int y = 0; y < levelTexture.FootStepSoundHeight; ++y)
                                     for (int x = 0; x < levelTexture.FootStepSoundWidth; ++x)
                                     {
+                                        byte maxSoundByte = (byte)(TextureFootStep.Type.Count - 1);
                                         byte textureSoundByte = chunkIO.Raw.ReadByte();
-                                        if (textureSoundByte > 15)
-                                            textureSoundByte = 15;
+                                        if (textureSoundByte > maxSoundByte)
+                                            textureSoundByte = maxSoundByte;
                                         levelTexture.SetFootStepSound(x, y, (TextureFootStep.Type)textureSoundByte);
                                     }
                             }

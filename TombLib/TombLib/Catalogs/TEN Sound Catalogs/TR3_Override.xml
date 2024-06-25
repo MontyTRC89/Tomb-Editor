@@ -381,7 +381,7 @@
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
-			<LoopBehaviour>OneShotRewound</LoopBehaviour>
+			<LoopBehaviour>OneShotWait</LoopBehaviour>
 			<Samples>
 				<WadSample>
 					<FileName>TR3_BLOCK_SOUND_01.wav</FileName>

@@ -173,6 +173,10 @@ namespace TombLib.NG
                         case TriggerTargetType.FlipEffect:
                             if (!(target is TriggerParameterUshort))
                                 return new NgParameterRange(NgParameterKind.Empty);
+
+                            if (levelSettings.GameVersion.Native() != TRVersion.Game.TR4)
+                                return new NgParameterRange(NgParameterKind.AnyNumber);
+
                             NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.FlipEffectTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)target).Key);
                             return flipEffectSubtriggerType?.Timer ?? new NgParameterRange(NgParameterKind.Empty);
 
@@ -196,6 +200,9 @@ namespace TombLib.NG
 
         public static NgParameterRange GetExtraRange(LevelSettings levelSettings, TriggerType triggerType, TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter timer)
         {
+            if (levelSettings.GameVersion != TRVersion.Game.TRNG)
+                return new NgParameterRange(NgParameterKind.Empty);
+
             switch (triggerType)
             {
                 case TriggerType.ConditionNg:
