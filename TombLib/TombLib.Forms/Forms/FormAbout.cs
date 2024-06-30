@@ -22,9 +22,9 @@ namespace TombLib.Forms
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         {
             var font = new Font(Font.FontFamily, 10.0f);
-			var bitness = Environment.Is64BitProcess ? "64-bit" : "32-bit";
+            var bitness = Environment.Is64BitProcess ? "64-bit" : "32-bit";
             using (var b = new SolidBrush(Colors.LightText))
-                e.Graphics.DrawString("Version " + Application.ProductVersion + " (.NET " + Logging.FrameworkVersion + ", " + bitness + ")", 
+                e.Graphics.DrawString("Version " + Application.ProductVersion + " (.NET " + Logging.FrameworkVersion + ", " + bitness + ")",
                 font, b, pictureBox.Width, pictureBox.Height,
                 new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far });
         }

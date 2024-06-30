@@ -263,7 +263,7 @@
     <moveable id="356" name="SCALES" />
     <moveable id="357" name="ROME_HAMMER" />
     <moveable id="358" name="FLAME" />
-    <moveable id="359" name="FLAME_EMITTER" />
+    <moveable id="359" name="FLAME_EMITTER" freeRot="true" />
     <moveable id="360" name="FLAME_EMITTER2" />
     <moveable id="361" name="FLAME_EMITTER3" />
     <moveable id="362" name="BURNING_ROOTS" />
@@ -722,9 +722,9 @@
     <moveable id="1002" name="INVENTORY_KEYS" />
     <moveable id="1003" name="INVENTORY_HEADPHONES" />
     <moveable id="1004" name="INVENTORY_POLAROID" />
-    <moveable id="1020" name="SMOKE_EMITTER_WHITE" />
-    <moveable id="1021" name="SMOKE_EMITTER_BLACK" />
-    <moveable id="1022" name="SMOKE_EMITTER" />
+    <moveable id="1020" name="SMOKE_EMITTER_WHITE" freeRot="true" />
+    <moveable id="1021" name="SMOKE_EMITTER_BLACK" freeRot="true" />
+    <moveable id="1022" name="SMOKE_EMITTER" freeRot="true" />
     <moveable id="1024" name="EARTHQUAKE" />
     <moveable id="1025" name="BUBBLES" />
     <moveable id="1026" name="WATERFALLMIST" />
@@ -789,6 +789,7 @@
     <moveable id="1085" name="DOPPLEGANGER_ORIGIN" hidden="true" use_body_from="0" />
     <moveable id="1086" name="CORPSE" />
     <moveable id="1087" name="WRAITH_TRAP" />
+	<moveable id="1088" name="WATERFALL_EMITTER" />
     <moveable id="1100" name="MESHSWAP1" />
     <moveable id="1101" name="MESHSWAP2" />
     <moveable id="1102" name="MESHSWAP3" />

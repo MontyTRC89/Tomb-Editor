@@ -336,6 +336,10 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.ObjectID = oldMoveable.Id.TypeId;
                 newMoveable.FrameOffset = 0;
 
+                // Determine possible skin object to shift bone offsets.
+                var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_level.Settings.GameVersion, oldMoveable.Id.TypeId));
+                var skin = _level.Settings.WadTryGetMoveable(skinId);
+
                 // Add animations
                 uint realFrameBase = 0;
                 for (int j = 0; j < oldMoveable.Animations.Count; ++j)
@@ -502,12 +506,16 @@ namespace TombLib.LevelData.Compilers
 
                 for (int b = 1; b < oldMoveable.Bones.Count; b++)
                 {
-                    tr_meshtree tree = new tr_meshtree();
+                    var tree = new tr_meshtree();
+                    var bone = oldMoveable.Bones[b];
+
+                    if (skin != null && skin.Bones.Count == oldMoveable.Bones.Count)
+                        bone = skin.Bones[b];
 
                     tree.Opcode = (int)oldMoveable.Bones[b].OpCode;
-                    tree.X = (int)oldMoveable.Bones[b].Translation.X;
-                    tree.Y = (int)-oldMoveable.Bones[b].Translation.Y;
-                    tree.Z = (int)oldMoveable.Bones[b].Translation.Z;
+                    tree.X = (int) bone.Translation.X;
+                    tree.Y = (int)-bone.Translation.Y;
+                    tree.Z = (int) bone.Translation.Z;
 
                     usedMeshes.Add(oldMoveable.Bones[b].Mesh);
                     meshTrees.Add(tree);

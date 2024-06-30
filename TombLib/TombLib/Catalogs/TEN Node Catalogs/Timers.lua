@@ -1,9 +1,9 @@
 local Timer = require("Engine.Timer")
 LevelVars.TimerRemainingTime = {}
 
--- !Name "Create timer"
+-- !Name "Create Basic timer"
 -- !Conditional "False"
--- !Description "Basic timer"
+-- !Description "Creates a simple countdown.\n\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -14,35 +14,38 @@ LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds
         LevelVars[name] = Timer.Create(name, time, loop,
             { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, nil)
         LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer "' .. name .. '" successfully created', LogLevel.INFO)
+        TEN.Util.PrintLog('Timer "' .. name .. '" created successfully!', LogLevel.INFO)
     else
-        TEN.Util.PrintLog('Error in the "Create Timer" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "Create Timer" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
 -- !Name "Create timer with function"
 -- !Conditional "False"
--- !Description "After a specified number of seconds, the specified thing happens"
+-- !Description "Creates a countdown which will execute a `LevelFuncs` lua function upon ending.\n\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
 -- !Arguments "Boolean , 13, Loop"
 -- !Arguments "NewLine, Boolean , 33, Show Minutes" "Boolean , 33, Show Seconds" "Boolean , 33, Show Deciseconds"
 -- !Arguments "NewLine, LuaScript, The function to call when the time is up"
-LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction)
+-- !Arguments "NewLine, String, Arguments"
+LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction,
+                                                          args)
     if name ~= '' then
         LevelVars[name] = Timer.Create(name, time, loop,
-            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, luaFunction)
+            { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, luaFunction,
+            table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")))
         LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer with Function "' .. name .. '" successfully created!', LogLevel.INFO)
+        TEN.Util.PrintLog('Timer with Function "' .. name .. '" created successfully!', LogLevel.INFO)
     else
-        TEN.Util.PrintLog('Error in the "Create Timer with Function" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "Create Timer with Function" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
 -- !Name "Create timer with volume event set"
 -- !Conditional "False"
--- !Description "After a specified number of seconds, an Event set is activated"
+-- !Description "Creates a countdown that triggers a volume event set upon ending.\n\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -58,15 +61,15 @@ LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minu
             { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, LevelFuncs.Engine.Node.RunEventSet,
             setName, eventType, activator)
         LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer with Function "' .. name .. '" successfully created', LogLevel.INFO)
+        TEN.Util.PrintLog('Timer with volume event set "' .. name .. '" created successfully', LogLevel.INFO)
     else
-        TEN.Util.PrintLog('Error in the "Create Timer with Function" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "Create Timer with Function" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
 -- !Name "Create timer with global event set"
 -- !Conditional "False"
--- !Description "After a specified number of seconds, an Event set is activated"
+-- !Description "Creates a countdown that triggers a global event set upon ending.\n\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -82,94 +85,189 @@ LevelFuncs.Engine.Node.CreateTimerWithGEventSet = function(name, time, loop, min
             { minutes = minutes, seconds = seconds, deciseconds = deciseconds }, LevelFuncs.Engine.Node.RunEventSet,
             setName, eventType, activator)
         LevelVars.TimerRemainingTime[name] = Timer.Get(name):GetRemainingTime()
-        TEN.Util.PrintLog('Timer with Function "' .. name .. '" successfully created', LogLevel.INFO)
+        TEN.Util.PrintLog('Timer with global event set "' .. name .. '" created successfully', LogLevel.INFO)
     else
-        TEN.Util.PrintLog('Error in the "Create Timer with Function" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "Create Timer with Function" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
 -- !Name "Start timer"
 -- !Conditional "False"
--- !Description "Begin or unpause one or more timers"
+-- !Description "Begins or resumes a timer.\n\nNot to be used inside the On Volume Inside or On Loop events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
--- !Arguments "NewLine, Boolean , Reset remaining time"
+-- !Arguments "NewLine, Boolean , Reset timer when expired"
 LevelFuncs.Engine.Node.StartTimer = function(name, reset)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
-            if reset then
+            if reset and not Timer.Get(name):IsPaused() then
                 Timer.Get(name):SetRemainingTime(LevelVars.TimerRemainingTime[name])
             end
             Timer.Get(name):Start()
-            TEN.Util.PrintLog('Timer "' .. name .. '" started', LogLevel.INFO)
+            TEN.Util.PrintLog('Timer "' .. name .. '" has started', LogLevel.INFO)
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog('Error in the "Start Timer" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "Start Timer" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
 -- !Name "Stop timer"
 -- !Conditional "False"
--- !Description "Stop the timer"
+-- !Description "Stops a timer.\n\nNot to be used inside the `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.StopTimer = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
             Timer.Get(name):Stop()
-            TEN.Util.PrintLog('Timer "' .. name .. '" is stopped', LogLevel.INFO)
+            TEN.Util.PrintLog('Timer "' .. name .. '" has been stopped', LogLevel.INFO)
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog('Error in the "Stop Timer" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "Stop Timer" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
--- !Name "Is the timer active?"
+
+
+-- !Name "Pause timer"
+-- !Conditional "False"
+-- !Description "Pauses a timer.\n\nNot to be used inside the On Volume Inside or On Loop events."
+-- !Section "Timer"
+-- !Arguments "NewLine, String, 100, [ NoMultiline ], Timer name"
+LevelFuncs.Engine.Node.SetPausedTimer = function(name)
+    if name ~= '' then
+        if Timer.Get(name) ~= nil then
+            Timer.Get(name):SetPaused(true)
+            TEN.Util.PrintLog('The "' .. name .. '" Timer has been paused', LogLevel.INFO)
+        else
+            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
+        end
+    else
+        TEN.Util.PrintLog('Error in the "Set Paused Timer" node. No timer name provided', LogLevel.ERROR)
+    end
+end
+
+-- !Name "Set remaining time"
+-- !Conditional "False"
+-- !Description "Changes the remaining time value (in seconds) of a specific timer.\n\nNot to be used inside the `On Volume Inside` or `On Loop` events."
+-- !Section "Timer"
+-- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
+-- !Arguments "Numerical, 33, [ 0 | 1000 | 1 | 0.1 | 1 ], the new time remaining for the timer"
+LevelFuncs.Engine.Node.SetRemainingTime = function(name, remainingTime)
+    if name ~= '' then
+        if Timer.Get(name) ~= nil then
+            Timer.Get(name):SetRemainingTime(remainingTime)
+            TEN.Util.PrintLog('Timer "' .. name .. '" remaining time: ' .. remainingTime .. " seconds",
+                LogLevel.INFO)
+        else
+            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
+        end
+    else
+        TEN.Util.PrintLog('Error in the "Set Remaining Time" node. No timer name provided', LogLevel.ERROR)
+    end
+end
+
+-- !Name "Set total time"
+-- !Conditional "False"
+-- !Description "Changes the total duration value (in seconds) of a specific timer.\n\nNot to be used inside the `On Volume Inside` or `On Loop` events."
+-- !Section "Timer"
+-- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
+-- !Arguments "Numerical, 33, [ 0 | 1000 | 1 | 0.1 | 1 ], timer's new total time"
+LevelFuncs.Engine.Node.SetTotalTime = function(name, totalTime)
+    if name ~= '' then
+        if Timer.Get(name) ~= nil then
+            Timer.Get(name):SetTotalTime(totalTime)
+            TEN.Util.PrintLog('Timer "' .. name .. '" total time: ' .. totalTime .. " seconds", LogLevel.INFO)
+        else
+            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
+        end
+    else
+        TEN.Util.PrintLog('Error in the "Set Total Time" node. No timer name provided', LogLevel.ERROR)
+    end
+end
+
+-- !Name "Set timer loop"
+-- !Conditional "False"
+-- !Description "Sets an existing timer as looped or one shot.\n\nNot to be used inside the `On Volume Inside` or `On Loop` events."
+-- !Section "Timer"
+-- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
+-- !Arguments "Enumeration, 33, [ One shot | Looped ], Set timer as"
+LevelFuncs.Engine.Node.SetLooping = function(name, looping)
+    if name ~= '' then
+        if Timer.Get(name) ~= nil then
+            local state = (looping == 1) and true or false
+            Timer.Get(name):SetLooping(state)
+            TEN.Util.PrintLog('Timer "' .. name .. '" Loop: ' .. tostring(state), LogLevel.INFO)
+        else
+            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
+        end
+    else
+        TEN.Util.PrintLog('Error in the "Set Timer Loop" node. No timer name provided', LogLevel.ERROR)
+    end
+end
+
+-- !Name "Get remaining time (in seconds) in console."
+-- !Conditional "False"
+-- !Description "Prints on console the remaining time value (in seconds) of a specific timer.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
+-- !Section "Timer"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
+LevelFuncs.Engine.Node.GetRemainingTime = function(name)
+    if name ~= '' then
+        if Timer.Get(name) ~= nil then
+            print("remaining time: " .. string.format("%.1f", Timer.Get(name):GetRemainingTime()))
+        else
+            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
+        end
+    else
+        TEN.Util.PrintLog('Error in the "Get Remaining Time" node. No timer name provided', LogLevel.ERROR)
+    end
+end
+
+-- !Name "Get total time (in seconds) in console."
+-- !Conditional "False"
+-- !Description "Prints on console the total time value (in seconds) of a specific timer.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
+-- !Section "Timer"
+-- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
+LevelFuncs.Engine.Node.GetTotalTime = function(name)
+    if name ~= '' then
+        if Timer.Get(name) ~= nil then
+            print("Total time: " .. Timer.Get(name):GetTotalTime())
+        else
+            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
+        end
+    else
+        TEN.Util.PrintLog('Error in the "Get Total Time" node. No timer name provided', LogLevel.ERROR)
+    end
+end
+
+-- !Name "If the timer active..."
 -- !Conditional "True"
--- !Description "Get whether or not the timer is active"
+-- !Description "Checks if a specific timer is active.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IsTimerActive = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
             local mss = Timer.Get(name):IsActive() and
-                'Timer "' .. name .. '"is active' or
-                'Timer "' .. name .. '"is not active'
+                'Timer "' .. name .. '" is active' or
+                'Timer "' .. name .. '" is not active'
             TEN.Util.PrintLog(mss, LogLevel.INFO)
             return Timer.Get(name):IsActive()
         else
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog('Error in the "Timer is Active" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "Timer is Active" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
--- !Name "Set paused timer"
--- !Conditional "False"
--- !Description "Pause or unpause the timer"
--- !Section "Timer"
--- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
--- !Arguments "Boolean , 33, Pause"
-LevelFuncs.Engine.Node.SetPausedTimer = function(name, isOnPause)
-    if name ~= '' then
-        if Timer.Get(name) ~= nil then
-            Timer.Get(name):SetPaused(isOnPause)
-        else
-            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
-        end
-    else
-        TEN.Util.PrintLog('Error in the "Set Paused Timer" node. The name of Timer is empty', LogLevel.ERROR)
-    end
-end
-
--- !Name "if the timer is paused..."
+-- !Name "If the timer is paused..."
 -- !Conditional "True"
--- !Description "Get whether or not the timer is paused"
+-- !Description "Checks if a specific timer is paused.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IsTimerPaused = function(name)
@@ -180,101 +278,13 @@ LevelFuncs.Engine.Node.IsTimerPaused = function(name)
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog('Error in the "Timer is Paused" node. The name of Timer is empty', LogLevel.ERROR)
-    end
-end
-
--- !Name "Get remaining time (in seconds) in console"
--- !Conditional "False"
--- !Description "Gets the remaining time (in seconds) of a timer"
--- !Section "Timer"
--- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
-LevelFuncs.Engine.Node.GetRemainingTime = function(name)
-    if name ~= '' then
-        if Timer.Get(name) ~= nil then
-            print(string.format("%.1f", Timer.Get(name):GetRemainingTime()))
-        else
-            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
-        end
-    else
-        TEN.Util.PrintLog('Error in the "Get Remaining Time" node. The name of Timer is empty', LogLevel.ERROR)
-    end
-end
-
--- !Name "Set remaining time"
--- !Conditional "False"
--- !Description "Set the remaining time (in seconds) of a timer"
--- !Section "Timer"
--- !Arguments "NewLine, String,67, [ NoMultiline ], Timer name"
--- !Arguments "Numerical, 33, [ 0 | 1000 | 1 | 0.1 | 1 ], the new time remaining for the timer"
-LevelFuncs.Engine.Node.SetRemainingTime = function(name, remainingTime)
-    if name ~= '' then
-        if Timer.Get(name) ~= nil then
-            Timer.Get(name):SetRemainingTime(remainingTime)
-        else
-            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
-        end
-    else
-        TEN.Util.PrintLog('Error in the "Set Remaining Time" node. The name of Timer is empty', LogLevel.ERROR)
-    end
-end
-
--- !Name "Get total time (in seconds) in console"
--- !Conditional "False"
--- !Description "This is the amount of time the timer will start with, as well as when starting a new loop"
--- !Section "Timer"
--- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
-LevelFuncs.Engine.Node.GetTotalTime = function(name)
-    if name ~= '' then
-        if Timer.Get(name) ~= nil then
-            print(Timer.Get(name):GetTotalTime())
-        else
-            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
-        end
-    else
-        TEN.Util.PrintLog('Error in the "Get Total Time" node. The name of Timer is empty', LogLevel.ERROR)
-    end
-end
-
--- !Name "Set total time"
--- !Conditional "False"
--- !Description "Set the total time (in seconds) for a timer"
--- !Section "Timer"
--- !Arguments "NewLine, String,67, [ NoMultiline ], Timer name"
--- !Arguments "Numerical, 33, [ 0 | 1000 | 1 | 0.1 | 1 ], timer's new total time"
-LevelFuncs.Engine.Node.SetTotalTime = function(name, totalTime)
-    if name ~= '' then
-        if Timer.Get(name) ~= nil then
-            Timer.Get(name):SetTotalTime(totalTime)
-        else
-            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
-        end
-    else
-        TEN.Util.PrintLog('Error in the "Set Total Time" node. The name of Timer is empty', LogLevel.ERROR)
-    end
-end
-
--- !Name "Set timer loop"
--- !Conditional "False"
--- !Description "Set whether or not the timer loops"
--- !Section "Timer"
--- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
--- !Arguments "Boolean , 33, Is it on a loop?"
-LevelFuncs.Engine.Node.SetLooping = function(name, looping)
-    if name ~= '' then
-        if Timer.Get(name) ~= nil then
-            Timer.Get(name):SetLooping(looping)
-        else
-            TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
-        end
-    else
-        TEN.Util.PrintLog('Error in the "Set Timer Loop" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "Timer is Paused" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
 -- !Name "If timer has expired..."
 -- !Conditional "True"
--- !Description "Check if the timer is expired"
+-- !Description "Checks if a specific timer is expired.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IfTimerExpired = function(name)
@@ -286,16 +296,17 @@ LevelFuncs.Engine.Node.IfTimerExpired = function(name)
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog('Error in the "If Timer has expired" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "If Timer has expired" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
 -- !Name "If remaining time is..."
 -- !Conditional "True"
--- !Description "Check if the remaining time is equal to, greater to, less to..."
+-- !Description "Checks if the remaining time is equal to, greater than, less than..\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"
--- !Arguments "NewLine, String,50, [ NoMultiline ], Timer name" "CompareOperator, 30"
--- !Arguments "Numerical, 20, [ 0 | 1000 | 1 | 0.1 | 1 ], remaining time (in seconds)"
+-- !Arguments "NewLine, String, 50, [ NoMultiline ], Timer name"
+-- !Arguments "CompareOperator, 30"
+-- !Arguments "Numerical, 20, [ 0 | 1000 | 1 | 0.1 | 1 ], Remaining time (in seconds)"
 LevelFuncs.Engine.Node.IfRemainingTimeIs = function(name, operator, time)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
@@ -305,15 +316,16 @@ LevelFuncs.Engine.Node.IfRemainingTimeIs = function(name, operator, time)
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog('Error in the "If remaining Time is" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "If remaining Time is" node. No timer name provided', LogLevel.ERROR)
     end
 end
 
 -- !Name "If total time is..."
 -- !Conditional "True"
--- !Description "Check if the Total Time is equal to ..."
+-- !Description "Checks if the Total Time is equal to, greater than, less than..\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"
--- !Arguments "NewLine, String,50, [ NoMultiline ], Timer name" "CompareOperator, 30"
+-- !Arguments "NewLine, String, 50, [ NoMultiline ], Timer name"
+-- !Arguments "CompareOperator, 30"
 -- !Arguments "Numerical, 20, [ 0 | 1000 | 1 | 0.1 | 1 ], Total Time (in seconds)"
 LevelFuncs.Engine.Node.IfTotalTimeIs = function(name, operator, time)
     if name ~= '' then
@@ -323,6 +335,19 @@ LevelFuncs.Engine.Node.IfTotalTimeIs = function(name, operator, time)
             TEN.Util.PrintLog('Timer "' .. name .. '" does not exist', LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog('Error in the "If Total Time is" node. The name of Timer is empty', LogLevel.ERROR)
+        TEN.Util.PrintLog('Error in the "If Total Time is" node. No timer name provided', LogLevel.ERROR)
+    end
+end
+
+-- !Name "If timer exists..."
+-- !Conditional "True"
+-- !Description "Checks if a specific timer exists."
+-- !Section "Timer"
+-- !Arguments "NewLine, String, 100, [ NoMultiline ], Timer name"
+LevelFuncs.Engine.Node.IfTimerExists = function(name)
+    if name ~= '' then
+        return (Timer.Get(name) ~= nil) and true or false
+    else
+        TEN.Util.PrintLog('Error in the "If timer exists" node. No timer name provided', LogLevel.ERROR)
     end
 end

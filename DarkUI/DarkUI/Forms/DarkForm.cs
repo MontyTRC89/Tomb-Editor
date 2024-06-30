@@ -1,4 +1,5 @@
 ﻿using DarkUI.Config;
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -82,12 +83,19 @@ namespace DarkUI.Forms
             if (Environment.OSVersion.Version.Major < 6)
                 return;
 
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
+                return;
+
             try
             {
+                int mode = (int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
+                if (mode != 0)
+                    return;
+
                 int dark = 1;
                 DwmSetWindowAttribute(this.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref dark, sizeof(uint));
             }
-            catch (DllNotFoundException) { }
+            catch (Exception) { }
         }
 
         protected override void WndProc(ref Message m)
