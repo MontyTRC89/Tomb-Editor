@@ -294,9 +294,9 @@ namespace TombLib.LevelData.IO
 
                     try
                     {
-                        uint soundId = (uint)(command.Parameter2 & 0x3FFF);
+                        uint soundId = (uint)(command.Parameter2 & 0xFFF);
                         uint newSoundId = TrCatalog.GetTombEngineSound(sourceVersion, soundId);
-                        command.Parameter2 = (short)((short)(command.Parameter2 & 0xC000) | (short)newSoundId);
+                        command.Parameter2 = (short)((short)(command.Parameter2 & 0xF000) | (short)newSoundId);
                     }
                     catch (Exception)
                     {
