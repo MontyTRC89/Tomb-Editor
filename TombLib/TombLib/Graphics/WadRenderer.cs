@@ -2,8 +2,6 @@
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -21,14 +19,15 @@ namespace TombLib.Graphics
         private IDictionary<WadMoveable, AnimatedModel> Moveables { get; } = new Dictionary<WadMoveable, AnimatedModel>();
         private IDictionary<WadStatic, StaticModel> Statics { get; } = new Dictionary<WadStatic, StaticModel>();
 
-        private IList<RectPacker> TexturePackers { get;} = new List<RectPacker>();
+        private IList<RectPacker> TexturePackers { get; } = new List<RectPacker>();
         private IDictionary<WadTexture, AllocationResult> PackedTextures { get; } = new Dictionary<WadTexture, WadRenderer.AllocationResult>();
         private bool _compactTexture;
         private bool _correctTexture;
         private bool _disposing = false;
         private int _textureAtlasSize { get; }
         private int _maxTextureAllocationSize { get; }
-        public int TextureAtlasSize { get =>  _textureAtlasSize; }
+        public int TextureAtlasSize { get => _textureAtlasSize; }
+
         public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize)
         {
             GraphicsDevice = graphicsDevice;
@@ -131,7 +130,7 @@ namespace TombLib.Graphics
             try
             {
                 model = new StaticModel(GraphicsDevice);
-                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice,  @static.Mesh, AllocateTexture, _correctTexture));
+                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice, @static.Mesh, AllocateTexture, _correctTexture));
                 model.UpdateBuffers();
             }
             catch (TextureAtlasFullException exc)
@@ -154,38 +153,39 @@ namespace TombLib.Graphics
         {
             // Check if the texture is already loaded
             {
-                AllocationResult position;
-                if (PackedTextures.TryGetValue(texture, out position))
+                if (PackedTextures.TryGetValue(texture, out AllocationResult position))
                     return position;
             }
 
             // Allocate texture
             {
                 ImageC imageToPack = texture.Image;
-                var originalWidth = texture.Image.Width;
-                var originalHeight = texture.Image.Height;
+                int originalWidth = texture.Image.Width;
+                int originalHeight = texture.Image.Height;
                 int biggestDimension = Math.Max(imageToPack.Width, imageToPack.Height);
-                if(biggestDimension > _maxTextureAllocationSize)
+
+                if (biggestDimension > _maxTextureAllocationSize)
                 {
                     float scaleFactor = _maxTextureAllocationSize / (float)biggestDimension;
                     int newWidth = (int)(imageToPack.Width * scaleFactor);
                     int newHeight = (int)(imageToPack.Height * scaleFactor);
                     imageToPack = ImageC.Resize(imageToPack, newWidth, newHeight);
                 }
-                var sizeToPack = imageToPack.Size;
+
+                VectorInt2 sizeToPack = imageToPack.Size;
                 VectorInt3? position = null;
 
-                for(int packerIndex = 0; position is null; packerIndex++)
+                for (int packerIndex = 0; position is null; packerIndex++)
                 {
                     bool addedPacker = false;
-                    if(packerIndex == TexturePackers.Count)
+                    if (packerIndex == TexturePackers.Count)
                     {
                         AddPacker();
                         addedPacker = true;
                     }
-                        
-                    
-                    var pos = TexturePackers[packerIndex].TryAdd(sizeToPack);
+
+                    VectorInt2? pos = TexturePackers[packerIndex].TryAdd(sizeToPack);
+
                     if (pos is not null)
                     {
                         position = new VectorInt3(pos.Value.X, pos.Value.Y, packerIndex);
@@ -199,7 +199,7 @@ namespace TombLib.Graphics
                 InitializeTexture();
                 EnsureTextureCapacity();
                 TextureLoad.Update(GraphicsDevice, Texture, imageToPack, position.Value);
-                var result = new AllocationResult(position.Value,new VectorInt2(originalWidth,originalHeight), new VectorInt2(imageToPack.Width, imageToPack.Height),new VectorInt2(_textureAtlasSize,_textureAtlasSize));
+                var result = new AllocationResult(position.Value, new VectorInt2(originalWidth, originalHeight), new VectorInt2(imageToPack.Width, imageToPack.Height), new VectorInt2(_textureAtlasSize, _textureAtlasSize));
                 PackedTextures.Add(texture, result);
                 return result;
             }
@@ -210,25 +210,27 @@ namespace TombLib.Graphics
         private void EnsureTextureCapacity()
         {
             var arraySize = Texture.Description.ArraySize;
-            
-            if(TexturePackers.Count >= arraySize)
+
+            if (TexturePackers.Count >= arraySize)
             {
                 var newTexture = Texture2D.New(GraphicsDevice, _textureAtlasSize, _textureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
-                for(int i = 0; i < arraySize;i++)
+
+                for (int i = 0; i < arraySize; i++)
                 {
                     var fromSubresource = Texture.GetSubResourceIndex(i, 0);
                     var toSubresource = newTexture.GetSubResourceIndex(i, 0);
                     GraphicsDevice.Copy(Texture, fromSubresource, newTexture, toSubresource);
                 }
+
                 Texture = newTexture;
             }
         }
+
         private void InitializeTexture()
         {
             if (Texture is null)
                 Texture = Texture2D.New(GraphicsDevice, _textureAtlasSize, _textureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
         }
-        
 
         public class TextureAtlasFullException : Exception
         {
