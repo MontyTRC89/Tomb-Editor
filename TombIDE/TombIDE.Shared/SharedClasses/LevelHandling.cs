@@ -109,5 +109,20 @@ namespace TombIDE.Shared.SharedClasses
 			char[] illegalNameChars = { ';', '[', ']', '=', ',', '.', '!' };
 			return illegalNameChars.Aggregate(levelName, (current, c) => current.Replace(c.ToString(), string.Empty));
 		}
+
+		public static string MakeValidVariableName(string levelName)
+		{
+			char[] illegalNameChars = { ' ', ';', ':', '(', ')', '[', ']', '{', '}', '<', '>', '=', ',', '.', '!', '-', '+', '*', '?', '/', '\\', '\"', '\'', '&', '%', '#', '@', '|', '^', '`', '~', '$' };
+			string result = illegalNameChars.Aggregate(levelName.Trim(), (current, c) => current.Replace(c.ToString(), "_"));
+
+			if (char.IsDigit(result.FirstOrDefault()))
+				result = "_" + result;
+
+			// Reduce the amount of '_' chars
+			while (result.Contains("__"))
+				result = result.Replace("__", "_");
+
+			return result;
+		}
 	}
 }
