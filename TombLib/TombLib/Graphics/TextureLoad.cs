@@ -42,11 +42,6 @@ namespace TombLib.Graphics
             }
             catch (Exception ex)
             {
-                var message = "Unable to load texture '" + Path.GetFileName(image.FileName) + "'.";
-                if (image.Width > WadRenderer.TextureAtlasSize || image.Height > WadRenderer.TextureAtlasSize)
-                    message += " Possible cause: texture too big? (" + image.Width + "x" + image.Height + ")";
-
-                logger.Warn(message);
                 return Load(graphicsDevice, ImageC.Red, usage);
             }
 
@@ -63,11 +58,11 @@ namespace TombLib.Graphics
             return Load(graphicsDevice, ImageC.FromFile(path));
         }
 
-        public static void Update(GraphicsDevice graphicsDevice, Texture2D texture, ImageC image, VectorInt2 position)
+        public static void Update(GraphicsDevice graphicsDevice, Texture2D texture, ImageC image, VectorInt3 position)
         {
             if (image.Width == 0 || image.Height == 0)
                 return;
-            var deviceContext = (DeviceContext)graphicsDevice;
+
             image.GetIntPtr((IntPtr data) =>
             {
                 ResourceRegion region;
@@ -77,7 +72,7 @@ namespace TombLib.Graphics
                 region.Bottom = position.Y + image.Height;
                 region.Front = 0;
                 region.Back = 1;
-                texture.SetData(graphicsDevice, new SharpDX.DataPointer(data, image.DataSize), 0, 0, region);
+                texture.SetData(graphicsDevice, new SharpDX.DataPointer(data, image.DataSize), position.Z, 0, region);
             });
         }
     }
