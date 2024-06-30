@@ -13,6 +13,9 @@ Tomb Editor:
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
 
+WadTool:
+ * Added "In quicksand" and "Underwater" sound conditions for TEN.
+
 Version 1.7.1
 =============
 
