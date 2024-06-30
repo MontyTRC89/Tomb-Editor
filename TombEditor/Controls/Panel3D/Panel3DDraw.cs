@@ -1577,6 +1577,9 @@ namespace TombEditor.Controls.Panel3D
 
                         foreach (var submesh in mesh.Submeshes)
                         {
+                            if (submesh.Value.NumIndices == 0)
+                                continue;
+
                             submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
@@ -1677,6 +1680,9 @@ namespace TombEditor.Controls.Panel3D
 
                         foreach (var submesh in mesh.Submeshes)
                         {
+                            if (submesh.Value.NumIndices == 0)
+                                continue;
+
                             var texture = submesh.Value.Material.Texture;
                             if (texture != null && texture is ImportedGeometryTexture)
                             {
@@ -1785,6 +1791,9 @@ namespace TombEditor.Controls.Panel3D
 
                         foreach (var submesh in mesh.Submeshes)
                         {
+                            if (submesh.Value.NumIndices == 0)
+                                continue;
+
                             submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
