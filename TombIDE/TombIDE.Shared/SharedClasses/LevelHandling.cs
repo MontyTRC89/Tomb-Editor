@@ -87,16 +87,16 @@ namespace TombIDE.Shared.SharedClasses
 			{
 				return new List<string>
 				{
-					$"\n{dataFileName} = Level.new()",
-					"",
+					$"\n-- {dataFileName} level\n",
+					$"{dataFileName} = TEN.Flow.Level()\n",
 					$"{dataFileName}.nameKey = \"{dataFileName}\"",
 					$"{dataFileName}.scriptFile = \"Scripts\\\\Levels\\\\{dataFileName}.lua\"",
 					$"{dataFileName}.ambientTrack = \"{ambientSoundID}\"",
 					$"{dataFileName}.horizon = " + (horizon ? "true" : "false"),
 					$"{dataFileName}.levelFile = \"Data\\\\{dataFileName}.ten\"",
-					$"{dataFileName}.loadScreenFile = \"Screens\\\\rome.jpg\"",
-					"",
-					$"Flow.AddLevel({dataFileName})",
+					$"{dataFileName}.loadScreenFile = \"Screens\\\\rome.jpg\"\n",
+					$"TEN.Flow.AddLevel({dataFileName})\n",
+					"--------------------------------------------------",
 					$"	{dataFileName} = {{ \"{levelName}\" }}"
 				};
 			}
