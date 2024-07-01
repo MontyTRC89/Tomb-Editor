@@ -97,8 +97,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write((uint)animation.FrameEnd);
                         writer.Write((uint)animation.NextAnimation);
                         writer.Write((uint)animation.NextFrame);
-                        writer.Write((uint)animation.BlendFrameDuration);
                         writer.Write((uint)animation.Interpolation);
+                        writer.Write((uint)animation.BlendFrameDuration);
+                        writer.Write((uint)animation.BlendType);
                         writer.Write(animation.VelocityStart);
                         writer.Write(animation.VelocityEnd);
 

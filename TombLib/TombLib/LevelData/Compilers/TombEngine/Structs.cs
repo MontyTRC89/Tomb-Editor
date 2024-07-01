@@ -9,6 +9,20 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
+    public enum TombEnginePolygonShape : int
+    {
+        Quad,
+        Triangle
+    }
+
+    public enum TombEngineAnimationBlendType
+    {
+        Linear,
+        Smooth,
+        EaseIn,
+        EaseOut
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineSpriteTexture
     {
@@ -21,12 +35,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public float Y3;
         public float X4;
         public float Y4;
-    }
-
-    public enum TombEnginePolygonShape : int
-    {
-        Quad,
-        Triangle
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -590,6 +598,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int NextAnimation;
         public int NextFrame;
         public int BlendFrameDuration;
+        public TombEngineAnimationBlendType BlendType;
         public int Low;
         public int High;
     }
@@ -601,8 +610,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int FrameEnd;
         public int NextAnimation;
         public int NextFrame;
-        public int BlendFrameDuration;
         public int Interpolation;
+        public int BlendFrameDuration;
+        public TombEngineAnimationBlendType BlendType;
         public Vector3 VelocityStart;
         public Vector3 VelocityEnd;
         public List<TombEngineKeyFrame> KeyFrames;
