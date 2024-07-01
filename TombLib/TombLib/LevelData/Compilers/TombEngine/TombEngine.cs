@@ -97,7 +97,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write((uint)animation.FrameEnd);
                         writer.Write((uint)animation.NextAnimation);
                         writer.Write((uint)animation.NextFrame);
-                        writer.Write((uint)animation.FrameRate);
+                        writer.Write((uint)animation.BlendFrameDuration);
+                        writer.Write((uint)animation.Interpolation);
                         writer.Write(animation.VelocityStart);
                         writer.Write(animation.VelocityEnd);
 
@@ -115,11 +116,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                             writer.Write(center);
                             writer.Write(extents);
-                            writer.Write(keyFrame.Offset);
-                            writer.Write((uint)keyFrame.Angles.Count);
+                            writer.Write(keyFrame.RootOffset);
+                            writer.Write((uint)keyFrame.BoneOrientations.Count);
 
-                            foreach (var angle in keyFrame.Angles)
-                                writer.Write(angle);
+                            writer.WriteBlockArray(keyFrame.BoneOrientations);
                         }
 
                         writer.Write((uint)animation.StateChanges.Count);

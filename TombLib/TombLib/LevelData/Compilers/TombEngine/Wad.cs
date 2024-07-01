@@ -247,7 +247,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     newAnimation.StateID = oldAnimation.StateId;
                     newAnimation.FrameEnd = frameCount == 0 ? 0 : frameCount - 1;
                     newAnimation.NextFrame = oldAnimation.NextFrame;
-                    newAnimation.FrameRate = oldAnimation.FrameRate;
+                    newAnimation.Interpolation = oldAnimation.FrameRate;
                     newAnimation.VelocityStart = new Vector3(oldAnimation.StartLateralVelocity, 0, oldAnimation.StartVelocity);
                     newAnimation.VelocityEnd = new Vector3(oldAnimation.EndLateralVelocity, 0, oldAnimation.EndVelocity);
                     newAnimation.KeyFrames = new List<TombEngineKeyFrame>();
@@ -269,7 +269,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         var newFrame = new TombEngineKeyFrame
                         {
-                            Angles = new List<Quaternion>()
+                            BoneOrientations = new List<Quaternion>()
                         };
 
                         newFrame.BoundingBox.X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.X));
@@ -278,11 +278,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newFrame.BoundingBox.X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.X));
                         newFrame.BoundingBox.Y2 = (short)-Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Y));
                         newFrame.BoundingBox.Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Z));
-                        newFrame.Offset = new Vector3(wadFrame.Offset.X, -wadFrame.Offset.Y, wadFrame.Offset.Z);
+                        newFrame.RootOffset = new Vector3(wadFrame.Offset.X, -wadFrame.Offset.Y, wadFrame.Offset.Z);
 
                         foreach (var oldRot in wadFrame.Angles)
                         {
-                            newFrame.Angles.Add(oldRot.Quaternion);
+                            newFrame.BoneOrientations.Add(oldRot.Quaternion);
                         }
 
                         newAnimation.KeyFrames.Add(newFrame);

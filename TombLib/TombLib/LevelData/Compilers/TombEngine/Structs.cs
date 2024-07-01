@@ -589,6 +589,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int StateID;
         public int NextAnimation;
         public int NextFrame;
+        public int BlendFrameDuration;
         public int Low;
         public int High;
     }
@@ -600,7 +601,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int FrameEnd;
         public int NextAnimation;
         public int NextFrame;
-        public int FrameRate;
+        public int BlendFrameDuration;
+        public int Interpolation;
         public Vector3 VelocityStart;
         public Vector3 VelocityEnd;
         public List<TombEngineKeyFrame> KeyFrames;
@@ -613,8 +615,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public class TombEngineKeyFrame
     {
         public TombEngineBoundingBox BoundingBox;
-        public Vector3 Offset;
-        public List<Quaternion> Angles;
+        public Vector3 RootOffset;
+        public List<Quaternion> BoneOrientations;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
