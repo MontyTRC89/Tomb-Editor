@@ -607,10 +607,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public struct TombEngineAnimation
     {
         public int StateID;
+        public int Interpolation;
         public int FrameEnd;
         public int NextAnimation;
         public int NextFrame;
-        public int Interpolation;
         public int BlendFrameDuration;
         public TombEngineAnimationBlendType BlendType;
         public Vector3 VelocityStart;
