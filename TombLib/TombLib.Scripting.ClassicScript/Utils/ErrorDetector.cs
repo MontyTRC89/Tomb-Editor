@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using Microsoft.Toolkit.HighPerformance;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -99,6 +100,17 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				return new ErrorLine("Command is placed in the wrong section. Please check the command syntax.",
 					line.LineNumber, LineParser.RemoveComments(lineText));
 
+			if (ContainsBrokenNextLines(document, line.Offset))
+			{
+				string errorSegmentText = Regex.Match(LineParser.RemoveComments(lineText), @"=\s*(\b.*)").Groups[1].Value;
+
+				if (errorSegmentText.Length == 0)
+					errorSegmentText = LineParser.RemoveComments(lineText);
+
+				return new ErrorLine("Misplaced \">\" symbols were found.\nYou can only use these symbols at the end of the line and there can only be one on each line.",
+					line.LineNumber, errorSegmentText);
+			}
+
 			if (!IsArgumentCountValid(document, line.Offset))
 			{
 				string errorSegmentText = Regex.Match(LineParser.RemoveComments(lineText), @"=\s*(\b.*)").Groups[1].Value;
@@ -163,7 +175,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				{
 					string entryValue = entry.Value.ToString();
 
-					if (entryValue.Contains("["))
+					if (entryValue.Contains('['))
 						correctSection = entry.Value.ToString().Split('[')[1].Split(']')[0].Trim();
 
 					break;
@@ -196,6 +208,36 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			return false;
 		}
 
+		private static bool ContainsBrokenNextLines(TextDocument document, int lineOffset)
+		{
+			DocumentLine startingLine = CommandParser.GetCommandStartLine(document, lineOffset);
+
+			if (startingLine == null)
+				return false;
+
+			DocumentLine nextLine;
+			string nextLineText;
+
+			int i = startingLine.LineNumber;
+
+			do
+			{
+				if (i > document.LineCount)
+					break;
+
+				nextLine = document.GetLineByNumber(i);
+				nextLineText = LineParser.EscapeComments(document.GetText(nextLine.Offset, nextLine.Length));
+
+				if ((nextLineText.Contains('>') && !Regex.IsMatch(nextLineText, Patterns.NextLineKey)) || nextLineText.Count('>') > 1)
+					return true;
+
+				i++;
+			}
+			while (Regex.IsMatch(nextLineText, Patterns.NextLineKey));
+
+			return false;
+		}
+
 		private static bool IsArgumentCountValid(TextDocument document, int lineOffset)
 		{
 			string lineText = CommandParser.GetWholeCommandLineText(document, lineOffset);
@@ -208,7 +250,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 			lineText = LineParser.EscapeComments(lineText);
 
-			if (!lineText.Contains("="))
+			if (!lineText.Contains('='))
 				return false;
 
 			string command = CommandParser.GetCommandKey(document, lineOffset);

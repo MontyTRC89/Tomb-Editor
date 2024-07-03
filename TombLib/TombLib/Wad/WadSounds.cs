@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
 using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -309,11 +308,20 @@ namespace TombLib.Wad
             return sounds;
         }
 
+		public enum SoundtrackFormat
+		{
+			Wav,
+			Mp3,
+			Ogg
+		}
+
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
             new FileFormat("TRLE Txt format", "txt"),
             new FileFormat("Tomb Editor Xml format", "xml"),
             new FileFormat("Compiled TRLE Sfx/Sam", "sfx")
         };
+
+        public static readonly string AudioFolder = "Audio";
     }
 }

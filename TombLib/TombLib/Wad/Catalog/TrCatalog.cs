@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using TombLib.LevelData;
@@ -455,10 +456,38 @@ namespace TombLib.Wad.Catalog
             }
         }
 
-        public static void LoadCatalog(string fileName)
+        private static XmlDocument CombineCatalogs(string rootFolder)
         {
-            XmlDocument document = new XmlDocument();
-            document.Load(fileName);
+			XmlDocument combinedCatalog = new XmlDocument();
+            combinedCatalog.AppendChild(combinedCatalog.CreateXmlDeclaration("1.0", "UTF-8",null));
+            combinedCatalog.AppendChild(combinedCatalog.CreateElement("trcatalog"));
+			foreach (var gameString in TRVersion.NativeVersions.Select(v => v.Native().ToString()))
+			{
+				var gameCatalogFolder = Path.Combine(rootFolder, gameString);
+                if (!Directory.Exists(gameCatalogFolder))
+                    continue;
+                var newGameNode = combinedCatalog.CreateElement("game");
+				newGameNode.SetAttribute("id", gameString);
+				var gameCatalogFragments = Directory.EnumerateFiles(gameCatalogFolder, "*.xml");
+				foreach (var catalog in gameCatalogFragments)
+				{
+					XmlDocument catalogFragment = new XmlDocument();
+					catalogFragment.Load(catalog);
+					foreach (XmlNode nodeToImport in catalogFragment.DocumentElement.SelectNodes("/*"))
+					{
+						var importedNode = combinedCatalog.ImportNode(nodeToImport, true);
+						newGameNode.AppendChild(importedNode);
+
+					}
+				}
+				combinedCatalog.DocumentElement.AppendChild(newGameNode);
+			}
+			return combinedCatalog;
+		}
+
+        public static void LoadCatalog(string rootFolder)
+        {
+            XmlDocument document = CombineCatalogs(rootFolder);
 
             XmlNodeList gamesNodes = document.DocumentElement.SelectNodes("/game");
             foreach (XmlNode gameNode in document.DocumentElement.ChildNodes)
@@ -466,24 +495,9 @@ namespace TombLib.Wad.Catalog
                 if (gameNode.Name != "game")
                     continue;
 
-                string stringVersion = gameNode.Attributes["id"].Value;
-                TRVersion.Game version;
-                if (stringVersion == "TR1")
-                    version = TRVersion.Game.TR1;
-                else if (stringVersion == "TR2")
-                    version = TRVersion.Game.TR2;
-                else if (stringVersion == "TR3")
-                    version = TRVersion.Game.TR3;
-                else if (stringVersion == "TR4")
-                    version = TRVersion.Game.TR4;
-                else if (stringVersion == "TR5")
-                    version = TRVersion.Game.TR5;
-                else if (stringVersion == "TombEngine")
-                    version = TRVersion.Game.TombEngine;
-                else
-                    continue;
-
-                Game game = new Game(version);
+                var stringVersion = gameNode.Attributes["id"].Value;
+                var version = Enum.GetValues(typeof(TRVersion.Game)).Cast<TRVersion.Game>().First(s => stringVersion == s.ToString());
+                var game = new Game(version);
 
                 // Parse limits
                 XmlNode limits = gameNode.SelectSingleNode("limits");
@@ -524,7 +538,7 @@ namespace TombLib.Wad.Catalog
                         bool isFreeRotation = bool.Parse(moveableNode.Attributes["freeRot"]?.Value ?? "false");
                         bool hidden = bool.Parse(moveableNode.Attributes["hidden"]?.Value ?? "false");
                         bool essential = bool.Parse(moveableNode.Attributes["essential"]?.Value ?? "true");
-                        string tombEngineSlot = moveableNode.Attributes["t5m"]?.Value ?? string.Empty;
+                        string tombEngineSlot = moveableNode.Attributes["ten"]?.Value ?? string.Empty;
 
                         game.Moveables.Add(id, new Item
                         {
@@ -568,7 +582,7 @@ namespace TombLib.Wad.Catalog
                         uint id = uint.Parse(soundNode.Attributes["id"].Value);
                         string name = soundNode.Attributes["name"]?.Value ?? "";
                         string description = soundNode.Attributes["description"]?.Value ?? "";
-                        int tombEngineSoundId = int.Parse(soundNode.Attributes["t5m"]?.Value ?? "-1");
+                        int tombEngineSoundId = int.Parse(soundNode.Attributes["ten"]?.Value ?? "-1");
                         bool fixedByDefault = bool.Parse(soundNode.Attributes["hardcoded"]?.Value ?? "false");
                         game.Sounds.Add(id, new ItemSound { Name = name, FixedByDefault = fixedByDefault, Description = description, TombEngineSlot = tombEngineSoundId });
                     }
@@ -583,7 +597,7 @@ namespace TombLib.Wad.Catalog
                         if (spriteSequenceNode.Name != "sprite_sequence")
                             continue;
 
-                        string tombEngineSlot = spriteSequenceNode.Attributes["t5m"]?.Value ?? string.Empty;
+                        string tombEngineSlot = spriteSequenceNode.Attributes["ten"]?.Value ?? string.Empty;
                         uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
                         string[] names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split('|');
                         game.SpriteSequences.Add(id, new Item { Names = new List<string>(names), TombEngineSlot = tombEngineSlot });

@@ -1,7 +1,7 @@
 ﻿struct VertexInputType
 {
     float3 Position : POSITION0;
-    float2 UV : TEXCOORD0;
+    float3 UVW : TEXCOORD0;
     float3 Normal : NORMAL0;
     float3 Color : COLOR0;
 };
@@ -9,7 +9,7 @@
 struct PixelInputType
 {
     float4 Position : SV_POSITION;
-    float2 UV : TEXCOORD0;
+    float3 UVW : TEXCOORD0;
     float4 Color : COLOR;
 };
 
@@ -19,14 +19,14 @@ bool AlphaTest;
 bool StaticLighting;
 bool ColoredVertices;
 
-Texture2D Texture;
+Texture2DArray Texture;
 sampler TextureSampler;
 
 PixelInputType VS(VertexInputType input)
 {
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
-    output.UV = input.UV;
+    output.UVW = input.UVW;
 	output.Color = float4(input.Color, 1.0f);
 	
 	if (!ColoredVertices) 
@@ -48,7 +48,7 @@ PixelInputType VS(VertexInputType input)
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS(PixelInputType input) : SV_TARGET
 {
-    float4 pixel = Texture.Sample(TextureSampler, input.UV);
+    float4 pixel = Texture.Sample(TextureSampler, input.UVW);
 	
     float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
     float3 colorMul = min(input.Color.xyz, 1.0f);

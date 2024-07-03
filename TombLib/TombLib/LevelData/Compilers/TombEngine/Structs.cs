@@ -82,13 +82,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public List<Vector2> TextureCoordinates = new List<Vector2>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<Vector3> Tangents = new List<Vector3>();
-        public List<Vector3> Bitangents = new List<Vector3>();
+        public List<Vector3> Binormals = new List<Vector3>();
         public int TextureId;
         public byte BlendMode;
         public bool Animated;
         public Vector3 Normal;
         public Vector3 Tangent;
-        public Vector3 Bitangent;
+        public Vector3 Binormal;
         public int AnimatedSequence;
         public int AnimatedFrame;
         public float ShineStrength;
@@ -140,7 +140,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public float Move;
         public bool  Locked;
 
-        public List<NormalHelper> Polygons = new List<NormalHelper>();
+        public List<NormalHelper> NormalHelpers = new List<NormalHelper>();
         public bool IsOnPortal;
 
         // Custom implementation of these because default implementation is *insanely* slow.
@@ -324,7 +324,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write(n);
                     foreach (var t in poly.Tangents)
                         writer.Write(t);
-                    foreach (var bt in poly.Bitangents)
+                    foreach (var bt in poly.Binormals)
                         writer.Write(bt);
                 }
             }
@@ -451,8 +451,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(new Vector3(sv.Size / 2.0f));
                 }
 
+                writer.Write(volume.Enabled);
+                writer.Write(volume.DetectInAdjacentRooms);
+
                 writer.Write(volume.LuaName);
-                writer.Write(OriginalRoom.Level.Settings.EventSets.IndexOf(volume.EventSet));
+                writer.Write(OriginalRoom.Level.Settings.VolumeEventSets.IndexOf(volume.EventSet));
             }
 
             // Write final data

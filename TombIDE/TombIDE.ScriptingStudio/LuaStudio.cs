@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -23,16 +24,17 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public LuaStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
+		public LuaStudio() : base(IDE.Instance.Project.GetScriptRootDirectory(), IDE.Instance.Project.GetEngineRootDirectoryPath())
 		{
-			DockPanelState = IDE.Global.IDEConfiguration.Lua_DockPanelState;
+			DockPanelState = IDE.Instance.IDEConfiguration.Lua_DockPanelState;
 
+			FileExplorer.ExcludedDirectoryFilter = "Engine\\Scripts\\Engine";
 			FileExplorer.Filter = "*.lua";
 			FileExplorer.CommentPrefix = "--";
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath, TombLib.LevelData.TRVersion.Game.TombEngine);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Instance.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TombEngine);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -50,8 +52,8 @@ namespace TombIDE.ScriptingStudio
 
 			if (obj is IDE.ProgramClosingEvent)
 			{
-				IDE.Global.IDEConfiguration.Lua_DockPanelState = DockPanel.GetDockPanelState();
-				IDE.Global.IDEConfiguration.Save();
+				IDE.Instance.IDEConfiguration.Lua_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Instance.IDEConfiguration.Save();
 			}
 		}
 
@@ -82,11 +84,11 @@ namespace TombIDE.ScriptingStudio
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
-					IDE.Global.ScriptDefined = true; // TEMP !!!
+					IDE.Instance.ScriptDefined = true; // TEMP !!!
 				}
 				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent strpce)
 				{
-					IDE.Global.StringDefined = IsLevelLanguageStringDefined(strpce.String);
+					IDE.Instance.StringDefined = IsLevelLanguageStringDefined(strpce.String);
 					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
@@ -182,15 +184,17 @@ namespace TombIDE.ScriptingStudio
 					}
 				}
 
-				string dataName = inputLines[0].Split('=')[0].Trim();
+				string dataName = inputLines[0].Trim().Remove(0, 3).Replace(" level", string.Empty);
+				string filePath = Path.Combine(ScriptRootDirectoryPath, "Levels", dataName + ".lua");
 
-				File.WriteAllText(Path.Combine(ScriptRootDirectoryPath, dataName + ".lua"),
-					$"---- FILE: \\{dataName}.lua\n\n" +
+				File.WriteAllText(filePath,
+					$"-- FILE: Levels\\{dataName}.lua\n\n" +
 					"LevelFuncs.OnLoad = function() end\n" +
 					"LevelFuncs.OnSave = function() end\n" +
 					"LevelFuncs.OnStart = function() end\n" +
-					"LevelFuncs.OnControlPhase = function() end\n" +
-					"LevelFuncs.OnEnd = function() end\n");
+					"LevelFuncs.OnLoop = function() end\n" +
+					"LevelFuncs.OnEnd = function() end\n" +
+					"LevelFuncs.OnUseItem = function() end\n");
 			}
 			catch
 			{
@@ -244,7 +248,7 @@ namespace TombIDE.ScriptingStudio
 			if (indicateChange)
 			{
 				CurrentEditor.LastModified = DateTime.Now;
-				IDE.Global.ScriptEditor_IndicateExternalChange();
+				IDE.Instance.ScriptEditor_IndicateExternalChange();
 			}
 
 			if (saveAffectedFile)
@@ -278,6 +282,28 @@ namespace TombIDE.ScriptingStudio
 		{
 			// Nothing.
 		}
+
+		protected override void HandleDocumentCommands(UICommand command)
+		{
+			switch (command)
+			{
+				case UICommand.LuaBasics:
+					string url = "https://github.com/MontyTRC89/TombEngine/wiki/Basics-of-Lua-Programming";
+
+					var process = new ProcessStartInfo
+					{
+						FileName = url,
+						UseShellExecute = true
+					};
+
+					Process.Start(process);
+					break;
+			}
+
+			base.HandleDocumentCommands(command);
+		}
+
+		protected override void ShowDocumentation() => throw new NotImplementedException();
 
 		#endregion Other methods
 	}

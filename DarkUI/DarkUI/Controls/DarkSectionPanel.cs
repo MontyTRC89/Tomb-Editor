@@ -93,7 +93,7 @@ namespace DarkUI.Controls
             }
 
             // Draw header
-            if(_sectionHeader != null)
+            if (!string.IsNullOrEmpty(_sectionHeader))
             {
                 var bgColor = ContainsFocus ? Colors.BlueBackground : Colors.HeaderBackground;
                 var darkColor = ContainsFocus ? Colors.DarkBlueBorder : Colors.DarkBorder;

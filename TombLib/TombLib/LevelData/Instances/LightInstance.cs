@@ -71,9 +71,9 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             return "Light " + Type +
-                ", X = " + Position.X +
-                ", Y = " + Position.Y +
-                ", Z = " + Position.Z;
+                ", X = " +  WorldPosition.X +
+                ", Y = " + -WorldPosition.Y +
+                ", Z = " +  WorldPosition.Z;
         }
 
         public override void AddToRoom(Level level, Room room)

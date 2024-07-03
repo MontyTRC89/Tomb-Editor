@@ -130,16 +130,22 @@ namespace TombEditor.Forms
             // Disable version-specific controls
             if (obj is Editor.InitEvent ||
                 obj is Editor.GameVersionChangedEvent ||
-                obj is Editor.LevelChangedEvent)
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.ConfigurationChangedEvent)
             {
                 addSpriteToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
 
                 makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.IsNG;
 
-                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                editEventSetsToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+                addBoxVolumeToolStripMenuItem.Visible =
+                addSphereVolumeToolStripMenuItem.Visible =
+                generateObjectNamesToolStripMenuItem.Visible =
+                editEventSetsToolStripMenuItem.Visible =
+                editGlobalEventSetsToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+
+                increaseStepHeightToolStripMenuItem.Visible =
+                decreaseStepHeightToolStripMenuItem.Visible =
+				toolStripSeparator10.Visible = _editor.Level.IsTombEngine || _editor.Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
             }
 
             // Clear autosave information
@@ -200,12 +206,19 @@ namespace TombEditor.Forms
                 if (room == null)
                     statusStripSelectedRoom.Text = "Selected room: None";
                 else
+                {
+                    float
+                        posY = room.Position.Y / (float)Level.FullClickHeight,
+                        lowestCorner = room.GetLowestCorner() / (float)Level.FullClickHeight,
+                        highestCorner = room.GetHighestCorner() / (float)Level.FullClickHeight;
+
                     statusStripSelectedRoom.Text = "Selected room: " +
                         "Name = " + room + " | " +
                         "Size = " + (room.NumXSectors - 2) + " x " + (room.NumZSectors - 2) + " | " +
-                        "Pos = (" + room.Position.X + ", " + room.Position.Y + ", " + room.Position.Z + ") | " +
-                        "Floor = " + (room.Position.Y + room.GetLowestCorner()) + " | " +
-                        "Ceiling = " + (room.Position.Y + room.GetHighestCorner());
+                        "Pos = (" + room.Position.X + ", " + posY + ", " + room.Position.Z + ") | " +
+                        "Floor = " + (posY + lowestCorner) + " | " +
+                        "Ceiling = " + (posY + highestCorner);
+                }
             }
 
             // Update selection information of the status strip
@@ -218,23 +231,23 @@ namespace TombEditor.Forms
                 var room = _editor.SelectedRoom;
                 if (room == null || !_editor.SelectedSectors.Valid)
                 {
-                    statusStripGlobalSelectionArea.Text = "Global area: None";
-                    statusStripLocalSelectionArea.Text = "Local area: None";
+                    statusStripGlobalSelectionArea.Text = "Area: None";
+                    statusStripLocalSelectionArea.Text = "Size: None";
                 }
                 else
                 {
-                    int minHeight = room.GetLowestCorner(_editor.SelectedSectors.Area);
-                    int maxHeight = room.GetHighestCorner(_editor.SelectedSectors.Area);
+                    float
+                        posY = room.Position.Y / (float)Level.FullClickHeight,
+                        minHeight = room.GetLowestCorner(_editor.SelectedSectors.Area) / (float)Level.FullClickHeight,
+                        maxHeight = room.GetHighestCorner(_editor.SelectedSectors.Area) / (float)Level.FullClickHeight;
 
-                    statusStripGlobalSelectionArea.Text = "Global area = " +
+                    statusStripGlobalSelectionArea.Text = "Area = " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.X0) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y0) + ") \u2192 " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.X1) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y1) + ")" +
-                        " | y = [" + (minHeight == int.MaxValue || maxHeight == int.MinValue ? "N/A" : room.Position.Y + minHeight + ", " + (room.Position.Y + maxHeight)) + "]";
+                        " | y = [" + (minHeight == int.MaxValue || maxHeight == int.MinValue ? "N/A" : posY + minHeight + ", " + (posY + maxHeight)) + "]";
 
-                    statusStripLocalSelectionArea.Text = "Local area = " +
-                        "(" + _editor.SelectedSectors.Area.X0 + ", " + _editor.SelectedSectors.Area.Y0 + ") \u2192 " +
-                        "(" + _editor.SelectedSectors.Area.X1 + ", " + _editor.SelectedSectors.Area.Y1 + ")" +
-                        " | y = [" + (minHeight == int.MaxValue || maxHeight == int.MinValue ? "N/A" : minHeight + ", " + maxHeight) + "]";
+                    statusStripLocalSelectionArea.Text = "Size = " + (1 + Math.Abs(_editor.SelectedSectors.Size.X)) + 
+                        " x " + (1 + Math.Abs(_editor.SelectedSectors.Size.Y));
                 }
             }
 

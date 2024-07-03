@@ -44,7 +44,7 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             return "Sound source " + SoundNameToDisplay +
-                ", Room = " + (Room?.ToString() ?? "NULL") +
+                " (" + (Room?.ToString() ?? "NULL") + ")" +
                 ", X = " + SectorPosition.X +
                 ", Z = " + SectorPosition.Y +
                 GetScriptIDOrName(false);
@@ -72,6 +72,6 @@ namespace TombLib.LevelData
                 return false;
         }
 
-        public string ShortName => "Sound source (ID = " + SoundId + ")" + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
+        public string ShortName => "Sound source (ID = " + SoundId + ")" + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";
     }
 }

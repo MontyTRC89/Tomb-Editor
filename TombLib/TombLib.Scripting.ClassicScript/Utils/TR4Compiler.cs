@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TombLib.Scripting.Objects;
 
 namespace TombLib.Scripting.ClassicScript.Utils
 {
@@ -10,9 +11,10 @@ namespace TombLib.Scripting.ClassicScript.Utils
 	{
 		public static string Compile(string projectScriptPath, string projectEnginePath)
 		{
-			CopyFilesToDOSScriptDirectory(projectScriptPath, DefaultPaths.TR4ScriptCompilerDirectory);
+			if (DefaultPaths.TR4ScriptCompilerDirectory.Contains('\''))
+				throw new Exception("The path to the TR4 script compiler contains an invalid character.\n' is not a valid path character for this operation.");
 
-			AdjustFormatting();
+			CopyFilesToDOSScriptDirectory(projectScriptPath, DefaultPaths.TR4ScriptCompilerDirectory);
 
 			var startInfo = new ProcessStartInfo
 			{
@@ -23,13 +25,14 @@ namespace TombLib.Scripting.ClassicScript.Utils
 					"-c \"C:\" " +
 					"-c \"script script.txt >> logs.txt\" " +
 					"-c \"exit\" " +
-					"-noconsole"
+					"-noconsole",
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo).WaitForExit();
 
 			string logFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "logs.txt");
-			string logFileContent = File.ReadAllText(logFilePath, Encoding.GetEncoding(1252));
+			string logFileContent = File.ReadAllText(logFilePath);
 
 			string compiledScriptFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "Script.dat");
 			string compiledEnglishFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "English.dat");
@@ -55,26 +58,29 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			return logFileContent;
 		}
 
-		private static void AdjustFormatting()
-		{
-			string dosScriptFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "Script.txt");
-
-			string fileContent = File.ReadAllText(dosScriptFilePath, Encoding.GetEncoding(1252));
-
-			while (fileContent.Contains(" ="))
-				fileContent = fileContent.Replace(" =", "=");
-
-			File.WriteAllText(dosScriptFilePath, fileContent, Encoding.GetEncoding(1252));
-		}
-
 		private static void CopyFilesToDOSScriptDirectory(string projectScriptPath, string dosScriptPath)
 		{
 			foreach (string dirPath in Directory.GetDirectories(projectScriptPath, "*", SearchOption.AllDirectories))
 				Directory.CreateDirectory(dirPath.Replace(projectScriptPath, dosScriptPath));
 
-			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
+			foreach (string file in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
 				.Where(x => !Path.GetExtension(x).Equals(".backup", StringComparison.OrdinalIgnoreCase)))
-				File.Copy(newPath, newPath.Replace(projectScriptPath, dosScriptPath), true);
+			{
+				string newPath = file.Replace(projectScriptPath, dosScriptPath);
+
+				if (file.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+				{
+					string fileContent = File.ReadAllText(file);
+
+					while (fileContent.Contains(" ="))
+						fileContent = fileContent.Replace(" =", "=");
+
+					fileContent = BasicCleaner.TrimEndingWhitespace(fileContent);
+					File.WriteAllText(newPath, fileContent, Encoding.GetEncoding(1252));
+				}
+				else
+					File.Copy(file, newPath);
+			}
 		}
 	}
 }

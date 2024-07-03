@@ -13,6 +13,7 @@ using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
@@ -24,7 +25,7 @@ namespace TombEditor.Controls
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public VolumeEvent Event
+        public Event Event
         {
             get
             {
@@ -40,7 +41,7 @@ namespace TombEditor.Controls
                 UpdateUI();
             }
         }
-        private VolumeEvent _event = null;
+        private Event _event = null;
 
         private Editor _editor;
         private bool _lockUI = false;
@@ -57,6 +58,7 @@ namespace TombEditor.Controls
 
             if (obj is Editor.RoomListChangedEvent ||
                 obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.EventSetsChangedEvent ||
                (obj is Editor.ObjectChangedEvent && 
                (obj as Editor.ObjectChangedEvent).ChangeType != ObjectChangeType.Change))
             {
@@ -69,11 +71,14 @@ namespace TombEditor.Controls
         {
             if (disposing)
             {
-                _editor.EditorEventRaised -= EditorEventRaised;
+                WadSoundPlayer.StopSample();
 
+                _editor.EditorEventRaised      -= EditorEventRaised;
                 nodeEditor.ViewPositionChanged -= NodeEditor_ViewPostionChanged;
-                nodeEditor.SelectionChanged -= NodeEditor_SelectionChanged;
-                nodeEditor.LocatedItemFound -= NodeEditor_LocatedItemFound;
+                nodeEditor.SelectionChanged    -= NodeEditor_SelectionChanged;
+                nodeEditor.LocatedItemFound    -= NodeEditor_LocatedItemFound;
+                nodeEditor.SoundEffectPlayed   -= NodeEditor_SoundEffectPlayed;
+                nodeEditor.SoundtrackPlayed    -= NodeEditor_SoundtrackPlayed;
 
                 if (components != null)
                     components.Dispose();
@@ -97,14 +102,31 @@ namespace TombEditor.Controls
             rbLevelScript.Checked = _editor.Configuration.NodeEditor_DefaultEventMode == 0;
 
             nodeEditor.ViewPositionChanged += NodeEditor_ViewPostionChanged;
-            nodeEditor.SelectionChanged += NodeEditor_SelectionChanged;
-            nodeEditor.LocatedItemFound += NodeEditor_LocatedItemFound;
+            nodeEditor.SelectionChanged  += NodeEditor_SelectionChanged;
+            nodeEditor.LocatedItemFound  += NodeEditor_LocatedItemFound;
+            nodeEditor.SoundEffectPlayed += NodeEditor_SoundEffectPlayed;
+            nodeEditor.SoundtrackPlayed  += NodeEditor_SoundtrackPlayed;
         }
 
         private void NodeEditor_LocatedItemFound(object sender, EventArgs e)
         {
             if (sender is PositionBasedObjectInstance)
                 _editor.ShowObject(sender as PositionBasedObjectInstance);
+        }
+
+        private void NodeEditor_SoundEffectPlayed(object sender, EventArgs e)
+        {
+            if (sender is string)
+                WadSoundPlayer.PlaySoundInfo(_editor.Level, _editor.Level.Settings.GlobalSoundMap.FirstOrDefault(s => s.Name == (string)sender));
+        }
+
+        private void NodeEditor_SoundtrackPlayed(object sender, EventArgs e)
+        {
+            if (sender is string)
+            {
+                WadSoundPlayer.StopSample();
+                WadSoundPlayer.PlaySoundtrack(_editor.Level, sender as string);
+            }
         }
 
         private void NodeEditor_SelectionChanged(object sender, EventArgs e)
@@ -137,7 +159,7 @@ namespace TombEditor.Controls
                 FindAndSelectFunction();
 
             if (!_lockUI && _event != null)
-                _event.Mode = rbLevelScript.Checked ? VolumeEventMode.LevelScript : VolumeEventMode.NodeEditor;
+                _event.Mode = rbLevelScript.Checked ? EventSetMode.LevelScript : EventSetMode.NodeEditor;
         }
 
         private void UpdateNodes()
@@ -170,8 +192,8 @@ namespace TombEditor.Controls
 
             _lockUI = true;
             {
-                rbLevelScript.Checked = _event.Mode == VolumeEventMode.LevelScript;
-                rbNodeEditor.Checked = _event.Mode == VolumeEventMode.NodeEditor;
+                rbLevelScript.Checked = _event.Mode == EventSetMode.LevelScript;
+                rbNodeEditor.Checked = _event.Mode == EventSetMode.NodeEditor;
                 tbArgument.Text = _event.Argument;
                 nudCallCount.Value = _event.CallCounter;
                 nudCallCount2.Value = _event.CallCounter;
@@ -185,13 +207,17 @@ namespace TombEditor.Controls
         {
             butChangeNodeColor.Enabled =
             butRenameNode.Enabled =
-            butDeleteNode.Enabled = nodeEditor.SelectedNodes.Count > 0;
+            butDeleteNode.Enabled = 
+            butLockNodes.Enabled = nodeEditor.SelectedNodes.Count > 0;
             butClearNodes.Enabled = nodeEditor.LinearizedNodes().Count > 0;
             butLinkSelectedNodes.Enabled = nodeEditor.SelectedNodes.Count > 1;
 
             butExport.Enabled = nodeEditor.Nodes.Count > 0;
 
             butUnassign.Visible = rbLevelScript.Checked;
+
+            // Stop any currently active sound previews on any UI update event
+            WadSoundPlayer.StopSample();
         }
 
         private void ReloadScriptFunctions(List<string> scriptFunctions = null)
@@ -252,8 +278,7 @@ namespace TombEditor.Controls
                 return;
             }
 
-            nodeEditor.NodeFunctions.AddRange(
-                ScriptingUtils.GetAllNodeFunctions(ScriptingUtils.NodeScriptPath));
+            nodeEditor.NodeFunctions.AddRange(ScriptingUtils.NodeFunctions);
         }
 
         private void FindAndSelectFunction()
@@ -433,7 +458,7 @@ namespace TombEditor.Controls
         {
             var result = new List<TriggerNode>();
 
-            if (_event == null || _event.Mode == VolumeEventMode.LevelScript)
+            if (_event == null || _event.Mode == EventSetMode.LevelScript)
                 return result;
 
             if (nodeEditor.SelectedNodes.Count == 0)
@@ -450,7 +475,7 @@ namespace TombEditor.Controls
 
         public void PasteNodes(List<TriggerNode> nodes)
         {
-            if (nodes == null || _event == null || _event.Mode == VolumeEventMode.LevelScript)
+            if (nodes == null || _event == null || _event.Mode == EventSetMode.LevelScript)
                 return;
 
             if (nodes.Count == 0)
@@ -542,6 +567,12 @@ namespace TombEditor.Controls
 
             Clipboard.SetText(exportedNodes);
             _editor.SendMessage("Node graph was successfully exported to Lua script\nand copied to clipboard.", PopupType.Info);
+        }
+
+        private void butLockNodes_Click(object sender, EventArgs e)
+        {
+            foreach (var node in nodeEditor.SelectedNodes)
+                nodeEditor.LockNode(node, !node.Locked);
         }
     }
 }

@@ -55,6 +55,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\GlobalPaths.cs" Link="GlobalPaths.cs" />
     <Compile Update="Controls\AnimCommandEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>

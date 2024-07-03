@@ -109,137 +109,95 @@ namespace TombLib.Rendering
             bool Dimmed = false;
 
             // Choose base color
-            switch (face)
+            if (face.IsFloorWall())
             {
-                case BlockFace.PositiveZ_QA:
-                case BlockFace.NegativeZ_QA:
-                case BlockFace.NegativeX_QA:
-                case BlockFace.PositiveX_QA:
-                case BlockFace.DiagonalQA:
-                case BlockFace.PositiveZ_ED:
-                case BlockFace.NegativeZ_ED:
-                case BlockFace.NegativeX_ED:
-                case BlockFace.PositiveX_ED:
-                case BlockFace.DiagonalED:
-                    Color = ColoringInfo.SectorColorScheme.ColorWallLower;
-                    if (room.Blocks[x, z].WallPortal != null)
-                        Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
-                    break;
+                Color = ColoringInfo.SectorColorScheme.ColorWallLower;
 
-                case BlockFace.PositiveZ_Middle:
-                case BlockFace.NegativeZ_Middle:
-                case BlockFace.NegativeX_Middle:
-                case BlockFace.PositiveX_Middle:
-                case BlockFace.DiagonalMiddle:
-                    Color = ColoringInfo.SectorColorScheme.ColorWall;
-                    if (room.Blocks[x, z].WallPortal != null)
-                        Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
-                    break;
-
-                case BlockFace.PositiveZ_WS:
-                case BlockFace.NegativeZ_WS:
-                case BlockFace.NegativeX_WS:
-                case BlockFace.PositiveX_WS:
-                case BlockFace.DiagonalWS:
-                case BlockFace.PositiveZ_RF:
-                case BlockFace.NegativeZ_RF:
-                case BlockFace.NegativeX_RF:
-                case BlockFace.PositiveX_RF:
-                case BlockFace.DiagonalRF:
-                    Color = ColoringInfo.SectorColorScheme.ColorWallUpper;
-                    if (room.Blocks[x, z].WallPortal != null)
-                        Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
-                    break;
-
-                case BlockFace.Floor:
-                case BlockFace.FloorTriangle2:
-                    // For now, we only render rectangular solid highlights, so use single rectangle solid shape in UsedShapes list, and use first and only entry in returned highlight list.
-                    var currentHighlights = ColoringInfo.GetColors(ColoringInfo.SectorColorScheme, room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForFloor, UsedShapes);
-                    if (currentHighlights != null)
-                        Color = currentHighlights[0].Color;
-                    else
-                        Color = ColoringInfo.SectorColorScheme.ColorFloor;
-
-                    if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
-                    {
-                        if ((room.Blocks[x, z].Floor.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Floor) ||
-                            (room.Blocks[x, z].Floor.DiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.FloorTriangle2))
-                            Dimmed = true;
-                    }
-                    break;
-
-                case BlockFace.Ceiling:
-                case BlockFace.CeilingTriangle2:
-                    // For now, we only render rectangular solid highlights, so use single rectangle solid shape in UsedShapes list, and use first and only entry in returned highlight list.
-                    var currentHighlights2 = ColoringInfo.GetColors(ColoringInfo.SectorColorScheme, room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForCeiling, UsedShapes);
-                    if (currentHighlights2 != null)
-                        Color = currentHighlights2[0].Color;
-                    else
-                        Color = ColoringInfo.SectorColorScheme.ColorFloor;
-
-                    if (room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
-                    {
-                        if ((room.Blocks[x, z].Ceiling.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Ceiling) ||
-                            (room.Blocks[x, z].Ceiling.DiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.CeilingTriangle2))
-                            Dimmed = true;
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("Unknown BlockFlag encountered.");
+                if (room.Blocks[x, z].WallPortal != null)
+                    Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
             }
+            else if (face.IsMiddleWall())
+            {
+                Color = ColoringInfo.SectorColorScheme.ColorWall;
+
+                if (room.Blocks[x, z].WallPortal != null)
+                    Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
+            }
+            else if (face.IsCeilingWall())
+            {
+                Color = ColoringInfo.SectorColorScheme.ColorWallUpper;
+
+                if (room.Blocks[x, z].WallPortal != null)
+                    Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
+            }
+            else if (face.IsFloor())
+            {
+                // For now, we only render rectangular solid highlights, so use single rectangle solid shape in UsedShapes list, and use first and only entry in returned highlight list.
+                var currentHighlights = ColoringInfo.GetColors(ColoringInfo.SectorColorScheme, room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForFloor, UsedShapes);
+
+                if (currentHighlights != null)
+                    Color = currentHighlights[0].Color;
+                else
+                    Color = ColoringInfo.SectorColorScheme.ColorFloor;
+
+                if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
+                {
+                    if ((room.Blocks[x, z].Floor.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Floor) ||
+                        (room.Blocks[x, z].Floor.DiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.Floor_Triangle2))
+                        Dimmed = true;
+                }
+            }
+            else if (face.IsCeiling())
+            {
+                // For now, we only render rectangular solid highlights, so use single rectangle solid shape in UsedShapes list, and use first and only entry in returned highlight list.
+                var currentHighlights2 = ColoringInfo.GetColors(ColoringInfo.SectorColorScheme, room, x, z, ProbeAttributesThroughPortals, IgnoredHighlightsForCeiling, UsedShapes);
+
+                if (currentHighlights2 != null)
+                    Color = currentHighlights2[0].Color;
+                else
+                    Color = ColoringInfo.SectorColorScheme.ColorFloor;
+
+                if (room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
+                {
+                    if ((room.Blocks[x, z].Ceiling.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Ceiling) ||
+                        (room.Blocks[x, z].Ceiling.DiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.Ceiling_Triangle2))
+                        Dimmed = true;
+                }
+            }
+            else
+                throw new ArgumentOutOfRangeException("Unknown BlockFlag encountered.");
 
             // Draw climbable walls
-            switch (face)
+            Direction direction = face.GetDirection();
+            RoomBlockPair lookupBlock;
+
+            switch (direction)
             {
-                case BlockFace.PositiveX_ED:
-                case BlockFace.PositiveX_Middle:
-                case BlockFace.PositiveX_QA:
-                case BlockFace.PositiveX_RF:
-                case BlockFace.PositiveX_WS:
-                    {
-                        var lookupBlock = room.ProbeLowestBlock(x + 1, z, ProbeAttributesThroughPortals);
-                        if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeX))
-                            Color = ColoringInfo.SectorColorScheme.ColorClimb;
-                        break;
-                    }
-                case BlockFace.NegativeX_ED:
-                case BlockFace.NegativeX_Middle:
-                case BlockFace.NegativeX_QA:
-                case BlockFace.NegativeX_RF:
-                case BlockFace.NegativeX_WS:
-                    {
-                        var lookupBlock = room.ProbeLowestBlock(x - 1, z, ProbeAttributesThroughPortals);
-                        if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveX))
-                            Color = ColoringInfo.SectorColorScheme.ColorClimb;
-                        break;
-                    }
-                case BlockFace.NegativeZ_ED:
-                case BlockFace.NegativeZ_Middle:
-                case BlockFace.NegativeZ_QA:
-                case BlockFace.NegativeZ_RF:
-                case BlockFace.NegativeZ_WS:
-                    {
-                        var lookupBlock = room.ProbeLowestBlock(x, z - 1, ProbeAttributesThroughPortals);
-                        if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveZ))
-                            Color = ColoringInfo.SectorColorScheme.ColorClimb;
-                        break;
-                    }
-                case BlockFace.PositiveZ_ED:
-                case BlockFace.PositiveZ_Middle:
-                case BlockFace.PositiveZ_QA:
-                case BlockFace.PositiveZ_RF:
-                case BlockFace.PositiveZ_WS:
-                    {
-                        var lookupBlock = room.ProbeLowestBlock(x, z + 1, ProbeAttributesThroughPortals);
-                        if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeZ))
-                            Color = ColoringInfo.SectorColorScheme.ColorClimb;
-                        break;
-                    }
+                case Direction.PositiveZ:
+                    lookupBlock = room.ProbeLowestBlock(x, z + 1, ProbeAttributesThroughPortals);
+                    if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeZ))
+                        Color = ColoringInfo.SectorColorScheme.ColorClimb;
+                    break;
+                case Direction.PositiveX:
+                    lookupBlock = room.ProbeLowestBlock(x + 1, z, ProbeAttributesThroughPortals);
+                    if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeX))
+                        Color = ColoringInfo.SectorColorScheme.ColorClimb;
+                    break;
+                case Direction.NegativeZ:
+                    lookupBlock = room.ProbeLowestBlock(x, z - 1, ProbeAttributesThroughPortals);
+                    if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveZ))
+                        Color = ColoringInfo.SectorColorScheme.ColorClimb;
+                    break;
+                case Direction.NegativeX:
+                    lookupBlock = room.ProbeLowestBlock(x - 1, z, ProbeAttributesThroughPortals);
+                    if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveX))
+                        Color = ColoringInfo.SectorColorScheme.ColorClimb;
+                    break;
             }
 
             // Draw slopes
             if (DrawSlideDirections)
-                if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
+                if (face == BlockFace.Floor || face == BlockFace.Floor_Triangle2)
                 {
                     var slopeDirection = room.Blocks[x, z].GetFloorTriangleSlopeDirections()[face == BlockFace.Floor ? 0 : 1];
                     bool flipped = room.Blocks[x, z].Floor.SplitDirectionIsXEqualsZ;
@@ -265,7 +223,7 @@ namespace TombLib.Rendering
 
             // Draw illegal slopes
             if (DrawIllegalSlopes)
-                if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
+                if (face == BlockFace.Floor || face == BlockFace.Floor_Triangle2)
                     if (room.IsIllegalSlope(x, z))
                     {
                         SectorTexture = SectorTexture.illegal_slope;
@@ -279,403 +237,416 @@ namespace TombLib.Rendering
                 Color = ColoringInfo.SectorColorScheme.ColorSelection; // Selection color
                 Overlay = Color; // Overlay is the same as color if sector is selected
 
-                switch (face)
+                if (face.IsFloor())
                 {
-                    case BlockFace.Floor:
-                    case BlockFace.FloorTriangle2:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_right; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_down; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_left; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_sw; break;
-                        }
-                        break;
+                    switch (SelectionArrow)
+                    {
+                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up; break;
+                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_right; break;
+                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_down; break;
+                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_left; break;
+                        case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw; break;
+                        case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne; break;
+                        case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_se; break;
+                        case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_sw; break;
+                    }
+                }
+                else if (face.IsCeiling())
+                {
+                    switch (SelectionArrow)
+                    {
+                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up; break;
+                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_right; break;
+                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_down; break;
+                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_left; break;
+                        case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw; break;
+                        case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne; break;
+                        case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_se; break;
+                        case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_sw; break;
+                    }
+                }
+                else
+                {
+                    BlockFaceType faceType = face.GetFaceType();
 
-                    case BlockFace.Ceiling:
-                    case BlockFace.CeilingTriangle2:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_right; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_down; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_left; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_sw; break;
-                        }
-                        break;
+                    switch (direction)
+                    {
+                        case Direction.PositiveZ:
+                            switch (faceType)
+                            {
+                                case BlockFaceType.Floor:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_ne; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_nw; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                    }
+                                    break;
 
-                    // South faces ------------------------------------------------------------------------------
-                    case BlockFace.NegativeZ_QA:
-                    case BlockFace.NegativeZ_ED:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_up; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_nw; break;
-                        }
-                        break;
+                                case BlockFaceType.Ceiling:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_down; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_sw; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_se; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_se; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_sw; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                    }
+                                    break;
 
-                    case BlockFace.NegativeZ_WS:
-                    case BlockFace.NegativeZ_RF:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_down; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_sw; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_sw; break;
-                        }
-                        break;
+                                case BlockFaceType.Wall:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up_down; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                    }
+                                    break;
+                            }
+                            break;
 
-                    case BlockFace.NegativeZ_Middle:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne_se; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_up_down; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_ne_se; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                        }
-                        break;
+                        case Direction.PositiveX:
+                            switch (faceType)
+                            {
+                                case BlockFaceType.Floor:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_up; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_nw; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_nw; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                    }
+                                    break;
 
-                    // East faces ------------------------------------------------------------------------------
-                    case BlockFace.NegativeX_QA:
-                    case BlockFace.NegativeX_ED:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_up; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_ne; break;
-                        }
-                        break;
+                                case BlockFaceType.Ceiling:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_se; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_down; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_sw; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_se; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_sw; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                    }
+                                    break;
 
-                    case BlockFace.NegativeX_WS:
-                    case BlockFace.NegativeX_RF:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_sw; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_down; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_sw; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_se; break;
-                        }
-                        break;
+                                case BlockFaceType.Wall:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_up_down; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                    }
+                                    break;
+                            }
+                            break;
 
-                    case BlockFace.NegativeX_Middle:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_ne_se; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_up_down; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_ne_se; break;
-                        }
-                        break;
+                        case Direction.NegativeZ:
+                            switch (faceType)
+                            {
+                                case BlockFaceType.Floor:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_up; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_ne; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_nw; break;
+                                    }
+                                    break;
 
-                    // North faces ------------------------------------------------------------------------------
-                    case BlockFace.PositiveZ_QA:
-                    case BlockFace.PositiveZ_ED:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                        }
-                        break;
+                                case BlockFaceType.Ceiling:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_se; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_down; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_sw; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_se; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_sw; break;
+                                    }
+                                    break;
 
-                    case BlockFace.PositiveZ_WS:
-                    case BlockFace.PositiveZ_RF:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_down; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_sw; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_sw; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                        }
-                        break;
+                                case BlockFaceType.Wall:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_up_down; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                    }
+                                    break;
+                            }
+                            break;
 
-                    case BlockFace.PositiveZ_Middle:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up_down; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne_se; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_ne_se; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                        }
-                        break;
+                        case Direction.NegativeX:
+                            switch (faceType)
+                            {
+                                case BlockFaceType.Floor:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_ne; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_up; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_ne; break;
+                                    }
+                                    break;
 
-                    // West faces ------------------------------------------------------------------------------
-                    case BlockFace.PositiveX_QA:
-                    case BlockFace.PositiveX_ED:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_up; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_nw; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                        }
-                        break;
+                                case BlockFaceType.Ceiling:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_sw; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_se; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_down; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_sw; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_se; break;
+                                    }
+                                    break;
 
-                    case BlockFace.PositiveX_WS:
-                    case BlockFace.PositiveX_RF:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_down; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_sw; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_se; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_sw; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                        }
-                        break;
+                                case BlockFaceType.Wall:
+                                    switch (SelectionArrow)
+                                    {
+                                        case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                        case ArrowType.EdgeE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                        case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_up_down; break;
+                                        case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                        case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                        case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                    }
+                                    break;
+                            }
+                            break;
 
-                    case BlockFace.PositiveX_Middle:
-                        switch (SelectionArrow)
-                        {
-                            case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne_se; break;
-                            case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_up_down; break;
-                            case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                            case ArrowType.EdgeW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                            case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne_se; break;
-                            case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                            case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                        }
-                        break;
+                        case Direction.Diagonal:
+                            switch (faceType)
+                            {
+                                case BlockFaceType.Floor:
+                                    switch (room.Blocks[x, z].Floor.DiagonalSplit)
+                                    {
+                                        case DiagonalSplit.XnZp: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN:
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne; break;
+                                                case ArrowType.EdgeS:
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_nw; break;
+                                            }
+                                            break;
 
-                    // Diagonal faces ------------------------------------------------------------------------------
-                    case BlockFace.DiagonalQA:
-                    case BlockFace.DiagonalED:
-                        switch (room.Blocks[x, z].Floor.DiagonalSplit)
-                        {
-                            case DiagonalSplit.XnZp: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN:
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne; break;
-                                    case ArrowType.EdgeS:
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_nw; break;
-                                }
-                                break;
+                                        case DiagonalSplit.XnZn: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeS:
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw; break;
+                                                case ArrowType.EdgeN:
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_ne; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_nw; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                            }
+                                            break;
 
-                            case DiagonalSplit.XnZn: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeS:
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw; break;
-                                    case ArrowType.EdgeN:
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_ne; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_nw; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                                }
-                                break;
+                                        case DiagonalSplit.XpZn: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN:
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw; break;
+                                                case ArrowType.EdgeS:
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_nw; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_ne; break;
+                                            }
+                                            break;
 
-                            case DiagonalSplit.XpZn: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN:
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw; break;
-                                    case ArrowType.EdgeS:
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_nw; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_ne; break;
-                                }
-                                break;
+                                        case DiagonalSplit.XpZp: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN:
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw; break;
+                                                case ArrowType.EdgeS:
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_ne; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                            }
+                                            break;
+                                    }
+                                    break;
 
-                            case DiagonalSplit.XpZp: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN:
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw; break;
-                                    case ArrowType.EdgeS:
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_ne; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                                }
-                                break;
-                        }
-                        break;
+                                case BlockFaceType.Ceiling:
+                                    switch (room.Blocks[x, z].Floor.DiagonalSplit)
+                                    {
+                                        case DiagonalSplit.XnZp: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN:
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_se; break;
+                                                case ArrowType.EdgeS:
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_sw; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_se; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_sw; break;
+                                            }
+                                            break;
 
-                    case BlockFace.DiagonalWS:
-                    case BlockFace.DiagonalRF:
-                        switch (room.Blocks[x, z].Floor.DiagonalSplit)
-                        {
-                            case DiagonalSplit.XnZp: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN:
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_se; break;
-                                    case ArrowType.EdgeS:
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_sw; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_se; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_sw; break;
-                                }
-                                break;
+                                        case DiagonalSplit.XnZn: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeS:
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_sw; break;
+                                                case ArrowType.EdgeN:
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_se; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_se; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_sw; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                            }
+                                            break;
 
-                            case DiagonalSplit.XnZn: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeS:
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_sw; break;
-                                    case ArrowType.EdgeN:
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_se; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_se; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_sw; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                                }
-                                break;
+                                        case DiagonalSplit.XpZn: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN:
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_sw; break;
+                                                case ArrowType.EdgeS:
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_se; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_sw; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_se; break;
+                                            }
+                                            break;
 
-                            case DiagonalSplit.XpZn: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN:
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_sw; break;
-                                    case ArrowType.EdgeS:
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_se; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_sw; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_se; break;
-                                }
-                                break;
+                                        case DiagonalSplit.XpZp: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN:
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_sw; break;
+                                                case ArrowType.EdgeS:
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_se; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_sw; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_se; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                            }
+                                            break;
+                                    }
+                                    break;
 
-                            case DiagonalSplit.XpZp: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN:
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_sw; break;
-                                    case ArrowType.EdgeS:
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_se; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_sw; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_se; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                                }
-                                break;
-                        }
-                        break;
+                                case BlockFaceType.Wall:
+                                    switch (room.Blocks[x, z].Floor.DiagonalSplit)
+                                    {
+                                        case DiagonalSplit.XnZp: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                            }
+                                            break;
 
-                    case BlockFace.DiagonalMiddle:
-                        switch (room.Blocks[x, z].Floor.DiagonalSplit)
-                        {
-                            case DiagonalSplit.XnZp: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                }
-                                break;
+                                        case DiagonalSplit.XnZn: //OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                            }
+                                            break;
 
-                            case DiagonalSplit.XnZn: //OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                                }
-                                break;
+                                        case DiagonalSplit.XpZn: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                            }
+                                            break;
 
-                            case DiagonalSplit.XpZn: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                }
-                                break;
-
-                            case DiagonalSplit.XpZp: // OK
-                                switch (SelectionArrow)
-                                {
-                                    case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw_sw; break;
-                                    case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
-                                    case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_ne_se; break;
-                                    case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
-                                }
-                                break;
-                        }
-                        break;
+                                        case DiagonalSplit.XpZp: // OK
+                                            switch (SelectionArrow)
+                                            {
+                                                case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.EdgeE: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.EdgeS: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.EdgeW: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.CornerNW: SectorTexture = SectorTexture.arrow_nw_sw; break;
+                                                case ArrowType.CornerNE: SectorTexture = SectorTexture.cross; break;
+                                                case ArrowType.CornerSE: SectorTexture = SectorTexture.arrow_ne_se; break;
+                                                case ArrowType.CornerSW: SectorTexture = SectorTexture.cross; break;
+                                            }
+                                            break;
+                                    }
+                                    break;
+                            }
+                            break;
+                    }
                 }
             }
 

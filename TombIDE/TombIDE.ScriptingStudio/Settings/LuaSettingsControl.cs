@@ -196,7 +196,8 @@ namespace TombIDE.ScriptingStudio.Settings
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "explorer.exe",
-				Arguments = DefaultPaths.LuaColorConfigsDirectory
+				Arguments = DefaultPaths.LuaColorConfigsDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

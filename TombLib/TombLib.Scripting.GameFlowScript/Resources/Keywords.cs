@@ -18,6 +18,7 @@ namespace TombLib.Scripting.GameFlowScript.Resources
 			"FRONTEND", // FMVs which play before the game starts
 			"GYM", // Lara's Home level definition
 			"LEVEL", // A level definition
+			"SEQUENCE", // Same as "LEVEL"
 			"DEMOLEVEL", // A demo level definition
 			"GAME_STRINGS",
 			"PC_STRINGS",
@@ -26,6 +27,11 @@ namespace TombLib.Scripting.GameFlowScript.Resources
 
 		public static readonly string[] Constants = new string[]
 		{
+			"EXIT_TO_TITLE",
+			"LAVA",
+			"RAPIDS",
+			"ELECTRIC",
+
 			"MEDI",
 			"BIGMEDI",
 			"PISTOLS",
@@ -80,6 +86,7 @@ namespace TombLib.Scripting.GameFlowScript.Resources
 			"SCREENSIZING_DISABLED",
 			"LOCKOUT_OPTIONRING",
 			"DOZY_CHEAT_ENABLED",
+			"CHEAT_ENABLE",
 			"SELECT_ANY_LEVEL",
 			"ENABLE_CHEAT_CODE",
 			"GYM_DISABLED",
@@ -92,6 +99,11 @@ namespace TombLib.Scripting.GameFlowScript.Resources
 			"SINGLELEVEL",
 			"CYPHER_CODE",
 			"SECRET_TRACK",
+			"SECURITYTAG",
+
+			"Map",
+			"Globe",
+			"Water",
 
 			// TITLE
 			"PCFILE", // PC title metadata file
@@ -115,6 +127,7 @@ namespace TombLib.Scripting.GameFlowScript.Resources
 			// LEVEL
 			"GAME", // Target level file name (.tr2)
 			"DEMO", // Target demo level file name (.tr2)
+			"PCDEMO", // Same as "DEMO"
 			"SECRETS", // Secrets count
 			"LOAD_PIC", // .raw (TR2) / .bmp (TR3) file
 			"TRACK", // The audio track which should be playing during the level
@@ -128,6 +141,15 @@ namespace TombLib.Scripting.GameFlowScript.Resources
 			"KILLTOCOMPLETE", // Requires Lara to kill all enemies in order to complete the level
 			"COMPLETE", // Set level finished
 			"GAMECOMPLETE", // Set game finished
+			"EXITGAME",
+
+			// tomb3 ONLY
+			"Rain",
+			"Snow",
+			"WaterParts",
+			"Cold",
+			"Death",
+			"WaterClr",
 
 			// ITEMS
 			"KEY1",

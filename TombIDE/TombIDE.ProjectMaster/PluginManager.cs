@@ -33,6 +33,9 @@ namespace TombIDE.ProjectMaster
 
 		public void Initialize(IDE ide)
 		{
+			if (!ide.Project.SupportsPlugins)
+				return;
+
 			_ide = ide;
 
 			switch (_ide.Project.GameVersion)
@@ -45,7 +48,7 @@ namespace TombIDE.ProjectMaster
 				case TRVersion.Game.TR1: panel_GameLabel.BackgroundImage = Properties.Resources.TR1_LVL; break;
 			}
 
-			string pluginsPath = Path.Combine(_ide.Project.ProjectPath, "Plugins");
+			string pluginsPath = _ide.Project.PluginsDirectoryPath;
 			_pluginsDirectory = new DirectoryInfo(pluginsPath);
 
 			if (!_pluginsDirectory.Exists || !_pluginsDirectory.EnumerateFiles("*", System.IO.SearchOption.AllDirectories).Any())
@@ -56,7 +59,7 @@ namespace TombIDE.ProjectMaster
 					_pluginsDirectory = new DirectoryInfo(_pluginsDirectory.FullName);
 				}
 
-				string parcPath = Path.Combine(_ide.Project.EnginePath, "plugins.parc");
+				string parcPath = Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "plugins.parc");
 
 				if (File.Exists(parcPath))
 					CopyPluginsFromPARCToProject(parcPath);
@@ -72,7 +75,7 @@ namespace TombIDE.ProjectMaster
 		{
 			string[] internalPluginDirs = Directory.GetDirectories(DefaultPaths.TRNGPluginsDirectory, "*", System.IO.SearchOption.TopDirectoryOnly);
 
-			foreach (string pluginFile in Directory.GetFiles(_ide.Project.EnginePath, "plugin_*.dll", System.IO.SearchOption.TopDirectoryOnly))
+			foreach (string pluginFile in Directory.GetFiles(_ide.Project.GetEngineRootDirectoryPath(), "plugin_*.dll", System.IO.SearchOption.TopDirectoryOnly))
 			{
 				string tidePluginDir = internalPluginDirs.FirstOrDefault(x =>
 					Path.GetFileName(x).Equals(Path.GetFileNameWithoutExtension(pluginFile)));
@@ -86,7 +89,7 @@ namespace TombIDE.ProjectMaster
 		{
 			using (ZipArchive parc = ZipFile.OpenRead(parcPath))
 			{
-				foreach (string pluginFile in Directory.GetFiles(_ide.Project.EnginePath, "plugin_*.dll", System.IO.SearchOption.TopDirectoryOnly))
+				foreach (string pluginFile in Directory.GetFiles(_ide.Project.GetEngineRootDirectoryPath(), "plugin_*.dll", System.IO.SearchOption.TopDirectoryOnly))
 				{
 					foreach (ZipArchiveEntry entry in parc.Entries)
 					{
@@ -154,7 +157,7 @@ namespace TombIDE.ProjectMaster
 			{
 				try
 				{
-					string engineDllFilePath = Path.Combine(_ide.Project.EnginePath, ((FileInfo)treeView.SelectedNodes[0].Tag).Name);
+					string engineDllFilePath = Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), ((FileInfo)treeView.SelectedNodes[0].Tag).Name);
 
 					if (File.Exists(engineDllFilePath))
 						FileSystem.DeleteFile(engineDllFilePath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
@@ -228,7 +231,7 @@ namespace TombIDE.ProjectMaster
 
 					if (File.Exists(btnFilePath))
 					{
-						string nameLine = File.ReadAllLines(btnFilePath, Encoding.GetEncoding(1252))
+						string nameLine = File.ReadAllLines(btnFilePath)
 							.FirstOrDefault(line => line.StartsWith("NAME#"));
 
 						if (nameLine != null)
@@ -431,7 +434,7 @@ namespace TombIDE.ProjectMaster
 					Path.GetFileNameWithoutExtension(selectedPluginFile.FullName) + ".txt");
 
 				if (File.Exists(descriptionFilePath))
-					richTextBox_Description.Text = File.ReadAllText(descriptionFilePath, Encoding.GetEncoding(1252));
+					richTextBox_Description.Text = File.ReadAllText(descriptionFilePath);
 				else
 					richTextBox_Description.Text = string.Empty;
 			}
@@ -458,7 +461,7 @@ namespace TombIDE.ProjectMaster
 		{
 			foreach (FileInfo dllFile in _pluginsDirectory.GetFiles("plugin_*.dll", System.IO.SearchOption.AllDirectories))
 			{
-				string destPath = Path.Combine(_ide.Project.EnginePath, dllFile.Name);
+				string destPath = Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), dllFile.Name);
 				dllFile.CopyTo(destPath, true);
 			}
 		}

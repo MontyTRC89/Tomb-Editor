@@ -60,6 +60,11 @@ namespace TombLib.Forms
                 var callbackList = (DarkListView)_callbackControl;
                 _searchItems = callbackList.Items.Select(n => n.Text).ToList();
             }
+            else if (_callbackControl is DarkDataGridView)
+            {
+                var callbackDataGrid = (DarkDataGridView)_callbackControl;
+                _searchItems = callbackDataGrid.Rows.Cast<DataGridViewRow>().Select(n => string.Join(' ', n.Cells.Cast<DataGridViewCell>().Select(c => c.Value))).ToList();
+            }
 
             // Set pop-up width to parent control width
             Size = new Size(_callbackControl.Size.Width, MinimumSize.Height);
@@ -175,7 +180,13 @@ namespace TombLib.Forms
                     list.SelectItem(_currentIndex);
                     list.EnsureVisible();
                 }
-                return;
+                else if (_callbackControl is DarkDataGridView)
+                {
+                    var dataGrid = (DarkDataGridView)_callbackControl;
+                    dataGrid.ClearSelection();
+                    dataGrid.Rows[_currentIndex].Selected = true;
+                }
+				return;
             }
 
             // Indicate failed search

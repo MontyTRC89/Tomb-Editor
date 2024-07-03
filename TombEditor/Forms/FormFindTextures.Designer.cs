@@ -137,7 +137,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSearchType.FormattingEnabled = true;
             this.cbSearchType.Items.AddRange(new object[] {
-            "Untextured faces",
+            "Untextured or default texture",
+            "Invisible faces",
             "Textures missing or out of bounds",
             "Exact match with selected texture",
             "Partial match with selected texture",

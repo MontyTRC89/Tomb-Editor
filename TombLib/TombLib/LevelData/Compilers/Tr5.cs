@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
@@ -190,23 +191,23 @@ namespace TombLib.LevelData.Compilers
                 byte[] geometryData = geometryDataBuffer;
                 int geometryDataUncompressedSize = geometryData.Length;
 
-                int ratio = _level.Settings.FastMode ? 1 : 10;
+                CompressionLevel compressionLevel = _level.Settings.FastMode ? CompressionLevel.NoCompression : CompressionLevel.SmallestSize;
 
                 using (Task Texture32task = Task.Factory.StartNew(() =>
                 {
-                    texture32 = ZLib.CompressData(_texture32Data, ratio);
+                    texture32 = ZLib.CompressData(_texture32Data, compressionLevel);
                     texture32UncompressedSize = _texture32Data.Length;
                 }))
                 using (Task Texture16task = Task.Factory.StartNew(() =>
                 {
                     byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings);
-                    texture16 = ZLib.CompressData(texture16Data, ratio);
+                    texture16 = ZLib.CompressData(texture16Data, compressionLevel);
                     texture16UncompressedSize = texture16Data.Length;
                 }))
                 using (Task textureMiscTask = Task.Factory.StartNew(() =>
                 {
                     Stream textureMiscData = PrepareFontAndSkyTexture();
-                    textureMisc = ZLib.CompressData(textureMiscData, ratio);
+                    textureMisc = ZLib.CompressData(textureMiscData, compressionLevel);
                     textureMiscUncompressedSize = (int)textureMiscData.Length;
                 }))
 

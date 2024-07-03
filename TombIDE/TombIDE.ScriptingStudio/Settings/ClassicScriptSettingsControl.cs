@@ -9,7 +9,6 @@ using System.Drawing.Text;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using TombLib.Scripting;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Resources;
@@ -219,7 +218,8 @@ namespace TombIDE.ScriptingStudio.Settings
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "explorer.exe",
-				Arguments = DefaultPaths.ClassicScriptColorConfigsDirectory
+				Arguments = DefaultPaths.ClassicScriptColorConfigsDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

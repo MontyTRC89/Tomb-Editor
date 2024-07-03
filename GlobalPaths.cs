@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 internal static class DefaultPaths
 {
@@ -10,6 +11,8 @@ internal static class DefaultPaths
 
 	#region Configs
 
+	public static string CatalogsDirectory => Path.Combine(ProgramDirectory, "Catalogs");
+	public static string EngineCatalogsDirectory => Path.Combine(CatalogsDirectory, "Engines");
 	public static string ConfigsDirectory => Path.Combine(ProgramDirectory, "Configs");
 	public static string TextEditorConfigsDirectory => Path.Combine(ConfigsDirectory, "TextEditors");
 	public static string ColorSchemesDirectory => Path.Combine(TextEditorConfigsDirectory, "ColorSchemes");
@@ -42,7 +45,8 @@ internal static class DefaultPaths
 	public static string DOSDirectory => Path.Combine(TIDEDirectory, "DOS");
 	public static string TR4ScriptCompilerDirectory => Path.Combine(DOSDirectory, "TR4");
 
-	public static string GameFlowDirectory => Path.Combine(TIDEDirectory, "GFL");
+	public static string GameFlow2Directory => Path.Combine(TIDEDirectory, "GFL");
+	public static string GameFlow3Directory => Path.Combine(TIDEDirectory, "GF3");
 
 	public static string InternalNGCDirectory => Path.Combine(TIDEDirectory, "NGC");
 	public static string VGEDirectory => Path.Combine(InternalNGCDirectory, "VGE");
@@ -67,7 +71,8 @@ internal static class DefaultPaths
 
 	public static string NGCExecutable => Path.Combine(InternalNGCDirectory, "NG_Center.exe");
 	public static string DOSBoxExecutable => Path.Combine(DOSDirectory, "DOSBox.exe");
-	public static string GameFlowExecutable => Path.Combine(GameFlowDirectory, "gameflow.exe");
+	public static string GameFlow2Executable => Path.Combine(GameFlow2Directory, "gameflow.exe");
+	public static string GameFlow3Executable => Path.Combine(GameFlow3Directory, "TRGameflow.exe");
 
 	#endregion .EXEs
 
@@ -99,5 +104,20 @@ internal static class DefaultPaths
 	[DllImport("shell32.dll")]
 	private static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner, [Out] StringBuilder lpszPath, int nFolder, bool fCreate);
 
-	#endregion Native methods
+    #endregion Native methods
+
+    #region Methods
+
+    public static bool CheckCatalog(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            MessageBox.Show("Directory " + path + " is missing. Make sure that Tomb Editor is installed correctly.");
+            return false;
+        }
+
+        return true;
+    }
+
+    #endregion Methods
 }

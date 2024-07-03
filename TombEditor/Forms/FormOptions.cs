@@ -8,6 +8,7 @@ using TombLib.Rendering;
 using TombLib.Forms;
 using TombLib.Utils;
 using static TombLib.LevelData.TRVersion;
+using TombLib.LevelData;
 
 namespace TombEditor.Forms
 {
@@ -43,6 +44,10 @@ namespace TombEditor.Forms
 
             // Populate versions
             cmbGameVersion.Items.AddRange(AllVersions.Cast<object>().ToArray());
+
+            // Populate events
+            cmbVolumeEvent.Items.AddRange(Event.VolumeEventTypes.Select(e => e.ToString().SplitCamelcase()).ToArray());
+            cmbGlobalEvent.Items.AddRange(Event.GlobalEventTypes.Select(e => e.ToString().SplitCamelcase()).ToArray());
 
             // Populate color scheme presets
             typeof(ColorScheme)

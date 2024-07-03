@@ -2,7 +2,6 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -36,9 +35,6 @@ namespace TombIDE.ScriptingStudio
 		#region Fields
 
 		private FormReferenceInfo FormReferenceInfo = new FormReferenceInfo();
-		private FormNGCompilingStatus FormCompiling = new FormNGCompilingStatus();
-
-		private BackgroundWorker NGCBackgroundWorker = new BackgroundWorker();
 
 		public ReferenceBrowser ReferenceBrowser = new ReferenceBrowser();
 
@@ -46,14 +42,11 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public ClassicScriptStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
+		public ClassicScriptStudio() : base(IDE.Instance.Project.GetScriptRootDirectory(), IDE.Instance.Project.GetEngineRootDirectoryPath())
 		{
-			DockPanelState = IDE.Global.IDEConfiguration.CS_DockPanelState;
+			DockPanelState = IDE.Instance.IDEConfiguration.CS_DockPanelState;
 
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
-
-			NGCBackgroundWorker.DoWork += NGCBackgroundWorker_DoWork;
-			NGCBackgroundWorker.RunWorkerCompleted += NGCBackgroundWorker_RunWorkerCompleted;
 
 			ReferenceBrowser.ReferenceDefinitionRequested += ReferenceBrowser_ReferenceDefinitionRequested;
 
@@ -64,7 +57,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath, TombLib.LevelData.TRVersion.Game.TR4);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Instance.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR4);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -126,12 +119,12 @@ namespace TombIDE.ScriptingStudio
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
-					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
+					IDE.Instance.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
 					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent strpce)
 				{
-					IDE.Global.StringDefined = IsLevelLanguageStringDefined(strpce.String);
+					IDE.Instance.StringDefined = IsLevelLanguageStringDefined(strpce.String);
 					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
@@ -151,8 +144,8 @@ namespace TombIDE.ScriptingStudio
 			}
 			else if (obj is IDE.ProgramClosingEvent)
 			{
-				IDE.Global.IDEConfiguration.CS_DockPanelState = DockPanel.GetDockPanelState();
-				IDE.Global.IDEConfiguration.Save();
+				IDE.Instance.IDEConfiguration.CS_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Instance.IDEConfiguration.Save();
 			}
 		}
 
@@ -236,7 +229,7 @@ namespace TombIDE.ScriptingStudio
 			if (indicateChange)
 			{
 				CurrentEditor.LastModified = DateTime.Now;
-				IDE.Global.ScriptEditor_IndicateExternalChange();
+				IDE.Instance.ScriptEditor_IndicateExternalChange();
 			}
 
 			if (saveAffectedFile)
@@ -335,20 +328,6 @@ namespace TombIDE.ScriptingStudio
 			FormReferenceInfo.Show(word, type);
 		}
 
-		private void NGCBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-		{
-			Process ngCenterProcess = Array.Find(Process.GetProcesses(), x => x.ProcessName.Contains("NG_Center"));
-
-			if (ngCenterProcess != null)
-				ngCenterProcess.WaitForExit();
-		}
-
-		private void NGCBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			if (FormCompiling.Visible)
-				FormCompiling.Close();
-		}
-
 		private void ReferenceBrowser_ReferenceDefinitionRequested(object sender, ReferenceDefinitionEventArgs e)
 			=> FormReferenceInfo.Show(e.Keyword, e.Type);
 
@@ -389,7 +368,7 @@ namespace TombIDE.ScriptingStudio
 			{
 				string logs = TR4Compiler.Compile(ScriptRootDirectoryPath, EngineDirectoryPath);
 
-				if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+				if (IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild)
 				{
 					if (!DockPanel.ContainsContent(CompilerLogs))
 					{
@@ -408,49 +387,33 @@ namespace TombIDE.ScriptingStudio
 			}
 		}
 
-		private async void CompileTRNGScript()
+		private void CompileTRNGScript()
 		{
 			try
 			{
-				FormCompiling.ShowCompilingMode();
-				FormCompiling.Show();
-
-				bool success = await NGCompiler.Compile(
+				bool success = NGCompiler.Compile(
 					ScriptRootDirectoryPath, EngineDirectoryPath,
-					IDE.Global.IDEConfiguration.UseNewIncludeMethod);
+					IDE.Instance.IDEConfiguration.UseNewIncludeMethod);
 
-				if (success)
+				string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
+				CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
+
+				if (!success)
+					DarkMessageBox.Show(this, "Script compilation yielded an error. Please check the logs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				if (IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild || !success)
 				{
-					string logFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "script_log.txt");
-					CompilerLogs.UpdateLogs(File.ReadAllText(logFilePath));
-
-					if (IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild)
+					if (!DockPanel.ContainsContent(CompilerLogs))
 					{
-						if (!DockPanel.ContainsContent(CompilerLogs))
-						{
-							CompilerLogs.DockArea = DarkDockArea.Bottom;
-							DockPanel.AddContent(CompilerLogs);
-						}
-
-						CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
+						CompilerLogs.DockArea = DarkDockArea.Bottom;
+						DockPanel.AddContent(CompilerLogs);
 					}
 
-					if (FormCompiling.Visible)
-						FormCompiling.Close();
-				}
-				else
-				{
-					FormCompiling.ShowDebugMode();
-
-					if (!NGCBackgroundWorker.IsBusy)
-						NGCBackgroundWorker.RunWorkerAsync();
+					CompilerLogs.DockGroup.SetVisibleContent(CompilerLogs);
 				}
 			}
 			catch (Exception ex)
 			{
-				if (FormCompiling.Visible)
-					FormCompiling.Close();
-
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
@@ -472,9 +435,9 @@ namespace TombIDE.ScriptingStudio
 		{
 			EditorTabControl.SaveAll();
 
-			if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR4)
+			if (IDE.Instance.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR4)
 				CompileTR4Script();
-			else if (IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
+			else if (IDE.Instance.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TRNG)
 				CompileTRNGScript();
 		}
 
@@ -503,6 +466,20 @@ namespace TombIDE.ScriptingStudio
 			}
 
 			base.HandleDocumentCommands(command);
+		}
+
+		protected override void ShowDocumentation()
+		{
+			string pdfPath = Path.Combine(DefaultPaths.ResourcesDirectory, "ClassicScript", "TRNG Script Reference Manual.pdf");
+
+			var process = new ProcessStartInfo
+			{
+				FileName = pdfPath,
+				UseShellExecute = true
+			};
+
+			if (File.Exists(pdfPath))
+				Process.Start(process);
 		}
 
 		#endregion Other methods

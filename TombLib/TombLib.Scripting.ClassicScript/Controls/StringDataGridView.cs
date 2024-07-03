@@ -69,7 +69,7 @@ namespace TombLib.Scripting.ClassicScript.Controls
 
 			string cellValue = cell.Value?.ToString() ?? "NULL";
 
-			if (string.IsNullOrWhiteSpace(cellValue))
+			if (string.IsNullOrWhiteSpace(cellValue) || cellValue.StartsWith('['))
 				cellValue = "NULL";
 
 			cell.Value = cellValue;

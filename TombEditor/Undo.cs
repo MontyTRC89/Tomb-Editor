@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 using TombLib;
 using TombLib.LevelData;
@@ -393,6 +394,8 @@ namespace TombEditor
 
             UndoAction = () =>
             {
+                Parent.Editor.RaiseEvent(new Editor.SuspendRenderingEvent());
+
                 for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                     for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
                         Room.Blocks[x, z].ReplaceGeometry(Parent.Editor.Level, Blocks[i, j]);
@@ -400,11 +403,14 @@ namespace TombEditor
                 Room.BuildGeometry();
                 Parent.Editor.RoomGeometryChange(Room);
                 Parent.Editor.RoomSectorPropertiesChange(Room);
-                var relevantRooms = room.Portals.Select(p => p.AdjoiningRoom);
-                Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+                var relevantRooms = room.Portals.Select(p => p.AdjoiningRoom).Distinct();
+                Parallel.ForEach(relevantRooms, r => r.BuildGeometry());
+                
 
                 foreach (Room relevantRoom in relevantRooms)
                     Parent.Editor.RoomGeometryChange(relevantRoom);
+
+                Parent.Editor.RaiseEvent(new Editor.ResumeRenderingEvent());
             };
             RedoInstance = () => new GeometryUndoInstance(Parent, Room);
         }
@@ -428,7 +434,7 @@ namespace TombEditor
         public void PushSectorObjectCreated(SectorBasedObjectInstance obj) => Push(new AddSectorBasedObjectUndoInstance(this, obj));
         public void PushSectorObjectCreated(List<SectorBasedObjectInstance> objs) => Push(objs.Select(obj => (new AddSectorBasedObjectUndoInstance(this, obj)) as UndoRedoInstance).ToList());
         public void PushGeometryChanged(Room room) => Push(new GeometryUndoInstance(this, room));
-        public void PushGeometryChanged(List<Room> rooms) => Push(rooms.Select(room => (new GeometryUndoInstance(this, room)) as UndoRedoInstance).ToList());
+        public void PushGeometryChanged(IEnumerable<Room> rooms) => Push(rooms.Select(room => (new GeometryUndoInstance(this, room)) as UndoRedoInstance).ToList());
         public void PushGhostBlockCreated(GhostBlockInstance obj) => Push(new AddRemoveGhostBlockUndoInstance(this, obj, true));
         public void PushGhostBlockCreated(List<GhostBlockInstance> objs) => Push(objs.Select(obj => (new AddRemoveGhostBlockUndoInstance(this, obj, true)) as UndoRedoInstance).ToList());
         public void PushGhostBlockDeleted(GhostBlockInstance obj) => Push(new AddRemoveGhostBlockUndoInstance(this, obj, false));

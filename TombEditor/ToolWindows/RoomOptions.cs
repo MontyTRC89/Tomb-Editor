@@ -35,6 +35,11 @@ namespace TombEditor.ToolWindows
             base.Dispose(disposing);
         }
 
+        private int GetFlipMapSelectedIndex(Room room)
+        {
+            return room.Alternated ? ((comboFlipMap.Items.Count - 1 <= room.AlternateGroup) ? -1 : room.AlternateGroup + 1) : 0;
+        }
+
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Disable version-specific controls
@@ -63,6 +68,9 @@ namespace TombEditor.ToolWindows
                 numLightEffectStrength.Enabled = !isTR1;
 
                 RepopulateRoomTypes();
+                RepopulateFlipmapList();
+
+                comboFlipMap.SelectedIndex = GetFlipMapSelectedIndex(_editor.SelectedRoom);
             }
 
             // Update the room list
@@ -133,7 +141,7 @@ namespace TombEditor.ToolWindows
                     butLocked.Checked = room.Properties.Locked;
                 }
 
-                comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
+                comboFlipMap.SelectedIndex = GetFlipMapSelectedIndex(room);
             }
 
             // Activate default control
@@ -152,6 +160,21 @@ namespace TombEditor.ToolWindows
                 if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
+        }
+
+        private void RepopulateFlipmapList()
+        {
+            var index = comboFlipMap.SelectedIndex;
+
+            comboFlipMap.Items.Clear();
+            comboFlipMap.Items.Add("None");
+
+            int flipmapCount = (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine) ? byte.MaxValue : 15;
+
+            for (int i = 0; i < flipmapCount; i++)
+                comboFlipMap.Items.Add(i.ToString());
+
+            comboFlipMap.SelectedIndex = (comboFlipMap.Items.Count - 1 <= index) ? -1 : index;
         }
 
         private void RepopulateRoomTypes()
@@ -288,7 +311,7 @@ namespace TombEditor.ToolWindows
 
         private void comboFlipMap_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom == null)
+            if (_editor.SelectedRoom == null || comboFlipMap.SelectedIndex == -1)
                 return;
 
             var room = _editor.SelectedRoom;

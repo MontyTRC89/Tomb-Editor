@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<limits>
+    <limit name="TexPages" value="16" />
+    <limit name="TexPageSize" value="256" />
+    <limit name="TexInfos" value="1800" />
+    <limit name="SoundBitsPerSample" value="8" />
+    <limit name="SoundSampleRate" value="22050" />
+    <limit name="SoundSampleSize" value="256" />
+    <limit name="SoundSampleCount" value="256" />
+    <limit name="SoundMapSize" value="256" />
+    <limit name="ItemMaxCount" value="256" />
+    <limit name="ItemSafeCount" value="256" />
+    <limit name="BoxLimit" value="32768" />
+    <limit name="BoxMinCount" value="2" />
+    <limit name="OverlapLimit" value="16384" />
+    <limit name="RoomVertexCount" value="65536" />
+    <limit name="RoomFaceCount" value="2800" />
+    <limit name="RoomLightCount" value="20" />
+    <limit name="RoomDimensions" value="32" />
+    <limit name="RoomMaxCount" value="1024" />
+    <limit name="RoomSafeCount" value="255" />
+    <limit name="FloorHeight" value="127" />
+    <limit name="WorldDimensions" value="100" />
+</limits>

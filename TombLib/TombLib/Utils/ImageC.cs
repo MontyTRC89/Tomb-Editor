@@ -534,6 +534,11 @@ namespace TombLib.Utils
             }
         }
 
+        public void Save(Stream stream, ImageFormat format)
+        {
+            GetTempSystemDrawingBitmap(bitmap => bitmap.Save(stream, format));
+        }
+
         // Try to use 'GetTempSystemDrawingBitmap' instead if possible to avoid unnecessary data allocation
         // The returned Bitmap must be Dispose()ed.
         public Bitmap ToBitmap()
@@ -811,6 +816,13 @@ namespace TombLib.Utils
             }
 
             return result;
+        }
+
+        public static ImageC Resize(in ImageC Original, int newWidth,int newHeight)
+        {
+            var bitmap = Original.ToBitmap();
+            var resizedBitmap = new Bitmap(bitmap, newWidth, newHeight);
+            return FromSystemDrawingBitmapMatchingPixelFormat(resizedBitmap);
         }
 
         public static ImageC GrayScaleFilter(ImageC source, bool invert, int posX, int posY, int w, int h)

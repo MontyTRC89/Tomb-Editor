@@ -21,7 +21,7 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			if (_ide.Project.ProjectPath.ToLower() == _ide.Project.EnginePath.ToLower())
+			if (_ide.Project.DirectoryPath.Equals(_ide.Project.GetEngineRootDirectoryPath(), StringComparison.OrdinalIgnoreCase))
 			{
 				button_RenameLauncher.Enabled = false;
 
@@ -29,14 +29,15 @@ namespace TombIDE.ProjectMaster
 				textBox_LauncherName.Text = "Unavailable for legacy projects";
 			}
 			else
-				textBox_LauncherName.Text = Path.GetFileName(_ide.Project.LaunchFilePath);
+				textBox_LauncherName.Text = Path.GetFileName(_ide.Project.GetLauncherFilePath());
 		}
 
 		private void button_DeleteLogs_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				string[] files = Directory.GetFiles(_ide.Project.EnginePath);
+				string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
+				string[] files = Directory.GetFiles(engineDirectory);
 
 				bool wereFilesDeleted = false;
 
@@ -56,7 +57,7 @@ namespace TombIDE.ProjectMaster
 					}
 				}
 
-				string logsDirectory = Path.Combine(_ide.Project.EnginePath, "logs");
+				string logsDirectory = Path.Combine(engineDirectory, "logs");
 
 				if (Directory.Exists(logsDirectory))
 				{
@@ -79,7 +80,9 @@ namespace TombIDE.ProjectMaster
 
 		private void button_RenameLauncher_Click(object sender, EventArgs e)
 		{
-			if (!File.Exists(_ide.Project.LaunchFilePath))
+			string launcherExecutable = _ide.Project.GetLauncherFilePath();
+
+			if (!File.Exists(launcherExecutable))
 			{
 				DarkMessageBox.Show(this, "Couldn't find the launcher executable of the project.\n" +
 					"Please restart TombIDE to resolve any issues.", "Error",
@@ -88,16 +91,16 @@ namespace TombIDE.ProjectMaster
 				return;
 			}
 
-			using (FormRenameLauncher form = new FormRenameLauncher(_ide))
+			using (var form = new FormRenameLauncher(_ide))
 				form.ShowDialog(this);
 
-			textBox_LauncherName.Text = Path.GetFileName(_ide.Project.LaunchFilePath);
+			textBox_LauncherName.Text = Path.GetFileName(launcherExecutable);
 		}
 
 		private void button_BuildArchive_Click(object sender, EventArgs e)
 		{
-			using (var form = new FormGameArchive(_ide))
-				form.ShowDialog();
+			using var form = new FormGameArchive(_ide);
+			form.ShowDialog();
 		}
 	}
 }

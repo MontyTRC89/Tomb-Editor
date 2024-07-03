@@ -2,7 +2,9 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
+using TombEditor.Controls.ContextMenus;
 using TombEditor.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -222,5 +224,54 @@ namespace TombEditor.ToolWindows
         }
 
         private void cmbTileSize_SelectionChangeCommitted(object sender, EventArgs e) => EditorActions.SetSelectionTileSize((float)cmbTileSize.SelectedItem);
+
+        public class PanelTextureMapMain : Controls.PanelTextureMap
+        {
+            private static readonly Pen _defaultTexturePen = new Pen(Color.FromArgb(230, 238, 150, 238), 2);
+
+            protected override void OnPaintSelection(PaintEventArgs e)
+            {
+                base.OnPaintSelection(e);
+
+                if (_editor == null || _editor.Level == null)
+                    return;
+
+                if (_editor.Level.Settings.DefaultTexture == TextureArea.None)
+                    return;
+
+                if (_editor.Level.Settings.DefaultTexture.Texture == null ||
+                    _editor.Level.Settings.DefaultTexture.Texture != VisibleTexture)
+                    return;
+
+                PointF[] edges = new[]
+                {
+                    ToVisualCoord(_editor.Level.Settings.DefaultTexture.TexCoord0),
+                    ToVisualCoord(_editor.Level.Settings.DefaultTexture.TexCoord1),
+                    ToVisualCoord(_editor.Level.Settings.DefaultTexture.TexCoord2),
+                    ToVisualCoord(_editor.Level.Settings.DefaultTexture.TexCoord3)
+                };
+
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                e.Graphics.DrawPolygon(_defaultTexturePen, edges);
+            }
+
+            protected override void OnMouseUp(MouseEventArgs e)
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    if (!_startPos.HasValue)
+                        return;
+
+                    var newPos = new Vector2(e.Location.X, e.Location.Y);
+                    if ((newPos - _startPos.Value).Length() > 4.0f)
+                        return;
+
+                    var menu = new TextureMapContextMenu(_editor, this, FromVisualCoord(e.Location));
+                    menu.Show(PointToScreen(e.Location));
+                }
+
+                base.OnMouseUp(e);
+            }
+        }
     }
 }

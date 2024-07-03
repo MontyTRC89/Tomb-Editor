@@ -79,6 +79,14 @@ namespace TombLib.Controls.VisualScripting
         private List<string> _cachedLuaFunctions = new List<string>();
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedVolumeEventSets { get { return _cachedVolumeEventSets; } }
+        private List<string> _cachedVolumeEventSets = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedGlobalEventSets { get { return _cachedGlobalEventSets; } }
+        private List<string> _cachedGlobalEventSets = new List<string>();
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IReadOnlyList<MoveableInstance> CachedMoveables { get { return _cachedMoveables; } }
         private List<MoveableInstance> _cachedMoveables = new List<MoveableInstance>();
         [Browsable(false)]
@@ -117,6 +125,9 @@ namespace TombLib.Controls.VisualScripting
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IReadOnlyList<string> CachedWadSlots { get { return _cachedWadSlots; } }
         private List<string> _cachedWadSlots = new List<string>();
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IReadOnlyList<string> CachedSpriteSlots { get { return _cachedSpriteSlots; } }
+        private List<string> _cachedSpriteSlots = new List<string>();
 
         public Color SelectionColor { get; set; } = Colors.BlueSelection;
         public float GridStep { get; set; } = 8.0f;
@@ -166,6 +177,14 @@ namespace TombLib.Controls.VisualScripting
         public void OnLocatedItemFound(IHasLuaName item)
             => LocatedItemFound?.Invoke(item, EventArgs.Empty);
 
+        public event EventHandler SoundtrackPlayed;
+        public void OnSoundtrackPlayed(string name)
+            => SoundtrackPlayed?.Invoke(name, EventArgs.Empty);
+
+        public event EventHandler SoundEffectPlayed;
+        public void OnSoundEffectPlayed(string sound)
+            => SoundEffectPlayed?.Invoke(sound, EventArgs.Empty);
+
         public NodeEditor()
         {
             SetStyle(ControlStyles.UserPaint | 
@@ -213,17 +232,20 @@ namespace TombLib.Controls.VisualScripting
         {
             var allObjects = level.GetAllObjects();
 
-            _cachedMoveables    = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName) && 
-                                    !TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, o.WadObjectId.TypeId)).ToList();
-            _cachedStatics      = allObjects.OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedCameras      = allObjects.OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedSinks        = allObjects.OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedFlybys       = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedVolumes      = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
-            _cachedWadSlots     = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
-            _cachedSoundTracks  = level.Settings.GetListOfSoundtracks();
-            _cachedSoundInfos   = level.Settings.GlobalSoundMap;
-            _cachedRooms        = level.ExistingRooms;
+            _cachedMoveables        = allObjects.OfType<MoveableInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName) && 
+                                        !TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, o.WadObjectId.TypeId)).ToList();
+            _cachedStatics          = allObjects.OfType<StaticInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedCameras          = allObjects.OfType<CameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedSinks            = allObjects.OfType<SinkInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedFlybys           = allObjects.OfType<FlybyCameraInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedVolumes          = allObjects.OfType<VolumeInstance>().Where(o => !string.IsNullOrEmpty(o.LuaName)).ToList();
+            _cachedWadSlots         = level.Settings.WadGetAllMoveables().Select(m => TrCatalog.GetMoveableName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSpriteSlots      = level.Settings.WadGetAllSpriteSequences().Select(m => TrCatalog.GetSpriteSequenceName(level.Settings.GameVersion, m.Key.TypeId)).ToList();
+            _cachedSoundTracks      = level.Settings.GetListOfSoundtracks();
+            _cachedSoundInfos       = level.Settings.GlobalSoundMap;
+            _cachedRooms            = level.ExistingRooms;
+            _cachedVolumeEventSets  = level.Settings.VolumeEventSets.Select(s => s.Name).ToList();
+            _cachedGlobalEventSets  = level.Settings.GlobalEventSets.Select(s => s.Name).ToList();
 
             if (scriptFunctions != null)
                 _cachedLuaFunctions = scriptFunctions;
@@ -292,10 +314,16 @@ namespace TombLib.Controls.VisualScripting
             if (SelectedNode == null || node == null || node.Previous != null)
                 return;
 
-            if (elseIfPossible && SelectedNode is TriggerNodeCondition && (SelectedNode as TriggerNodeCondition)?.Else == null)
+            if (SelectedNode is TriggerNodeCondition && 
+                ((elseIfPossible || (SelectedNode as TriggerNodeCondition)?.Next != null) && 
+                 (SelectedNode as TriggerNodeCondition)?.Else == null))
+            {
                 (SelectedNode as TriggerNodeCondition).Else = node;
+            }
             else if (SelectedNode.Next == null)
+            {
                 SelectedNode.Next = node;
+            }
             else
                 return;
 
@@ -419,6 +447,19 @@ namespace TombLib.Controls.VisualScripting
             SelectedNodes.Clear();
             OnSelectionChanged();
             Invalidate();
+        }
+
+        public void LockNode(TriggerNode node, bool locked)
+        {
+            if (node == null)
+                return;
+
+            var control = Controls.OfType<VisibleNodeBase>().FirstOrDefault(c => c.Node == node);
+
+            if (control == null)
+                return;
+
+            node.Locked = control.Locked = locked;
         }
 
         public void ShowNode(TriggerNode node)
@@ -671,24 +712,7 @@ namespace TombLib.Controls.VisualScripting
 
         public List<TriggerNode> LinearizedNodes()
         {
-            var result = new List<TriggerNode>();
-
-            foreach (var node in Nodes)
-                AddNodeToLinearizedList(node, result);
-
-            return result;
-        }
-
-        private void AddNodeToLinearizedList(TriggerNode node, List<TriggerNode> list)
-        {
-            if (!list.Contains(node))
-                list.Add(node);
-
-            if (node.Next != null)
-                AddNodeToLinearizedList(node.Next, list);
-
-            if (node is TriggerNodeCondition && (node as TriggerNodeCondition).Else != null)
-                AddNodeToLinearizedList((node as TriggerNodeCondition).Else, list);
+            return TriggerNode.LinearizeNodes(Nodes);
         }
 
         private void DisconnectPreviousNode(TriggerNode node)
@@ -813,7 +837,7 @@ namespace TombLib.Controls.VisualScripting
             if (_functionList != null)
                 _functionList.FormClosed -= MakeNodeByContext;
 
-            _functionList = new FormFunctionList(PointToScreen(location), this, NodeFunctions);
+            _functionList = new FormFunctionList(Cursor.Position, this, NodeFunctions);
             _functionList.FormClosed += MakeNodeByContext;
             _functionList.Show();
         }
@@ -829,11 +853,10 @@ namespace TombLib.Controls.VisualScripting
             node.ScreenPosition = FromVisualCoord(PointToClient((sender as Form).Location));
 
             Nodes.Add(node);
-            UpdateVisibleNodes();
 
-            var previousNode = SelectedNode;
+            LinkToSelectedNode(node, Control.ModifierKeys == Keys.Alt);
+            UpdateVisibleNodes();
             SelectNode(node, false, true);
-            LinkToSelectedNode(previousNode, Control.ModifierKeys == Keys.Alt);
         }
 
         private void DrawShadow(PaintEventArgs e, VisibleNodeBase node)
@@ -1258,6 +1281,8 @@ namespace TombLib.Controls.VisualScripting
             }))
                 return;
 
+            Capture = true; // Capture mouse for zoom and panning
+
             var delta = e.Delta * _mouseWheelScrollFactor;
 
             if (Control.ModifierKeys == Keys.Shift)
@@ -1276,16 +1301,8 @@ namespace TombLib.Controls.VisualScripting
         {
             base.OnMouseDoubleClick(e);
 
-            if (e.Button != MouseButtons.Right)
-                return;
-
-            if (Nodes.Count == 0)
-                return;
-
-            if (SelectedNode != null)
-                ShowNode(SelectedNode);
-            else
-                ShowNode(Nodes.First());
+            if (e.Button == MouseButtons.Left)
+                OpenNodeContext(e.Location);
         }
 
         private void NodeEditor_DragEnter(object sender, DragEventArgs e)

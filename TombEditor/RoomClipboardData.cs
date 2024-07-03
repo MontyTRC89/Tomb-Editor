@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using TombLib;
 using TombLib.IO;
 using TombLib.LevelData;
@@ -91,7 +92,7 @@ namespace TombEditor
         {
             using (var stream = new MemoryStream(_data, false))
             {
-                Level level = Prj2Loader.LoadFromPrj2(_levelPath, stream, new ProgressReporterSimple(),
+                Level level = Prj2Loader.LoadFromPrj2(_levelPath, stream, new ProgressReporterSimple(),new CancellationToken(false),
                     new Prj2Loader.Settings { IgnoreWads = true });
                 return level;
             }

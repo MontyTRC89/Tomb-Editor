@@ -309,7 +309,7 @@
             // 
             this.butNewRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butNewRoom.Checked = false;
-            this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_create_new_16;
+            this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butNewRoom.Location = new System.Drawing.Point(258, 28);
             this.butNewRoom.Name = "butNewRoom";
             this.butNewRoom.Size = new System.Drawing.Size(24, 23);

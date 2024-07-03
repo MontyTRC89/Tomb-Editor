@@ -58,6 +58,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting.GameFlowS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting.Tomb1Main", "TombLib\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj", "{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Test", "TombLib.Test\TombLib.Test.csproj", "{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -226,6 +228,14 @@ Global
 		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|x64.Build.0 = Release|x64
 		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|x86.ActiveCfg = Release|x86
 		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6}.Release|x86.Build.0 = Release|x86
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}.Debug|x64.ActiveCfg = Debug|x64
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}.Debug|x64.Build.0 = Debug|x64
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}.Debug|x86.ActiveCfg = Debug|x86
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}.Debug|x86.Build.0 = Debug|x86
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}.Release|x64.ActiveCfg = Release|x64
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}.Release|x64.Build.0 = Release|x64
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}.Release|x86.ActiveCfg = Release|x86
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -246,6 +256,7 @@ Global
 		{87D4149C-E716-49F6-848F-ACA345D11B30} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 		{98E13BC4-6196-4346-AB4F-92DE33D84589} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 		{7987FD7B-AAC9-4C7F-8188-C54FDE35C3D6} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
+		{B62453DE-C0A4-4F5D-A42E-8DAFA67CCA2E} = {642147AB-23FD-4715-AE26-90BE6C755FD0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1C98156-D4B8-411B-8A31-0EFC1D63BFBE}

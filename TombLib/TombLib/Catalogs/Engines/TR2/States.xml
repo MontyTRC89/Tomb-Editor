@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<states>
+    <state item="0" id="56" name="LADDER_IDLE" />
+    <state item="0" id="57" name="LADDER_UP" />
+    <state item="0" id="58" name="LADDER_LEFT" />
+    <state item="0" id="59" name="LADDER_STOP" />
+    <state item="0" id="60" name="LADDER_RIGHT" />
+    <state item="0" id="61" name="LADDER_DOWN" />
+    <state item="0" id="62" name="TEST_1" />
+    <state item="0" id="63" name="TEST_2" />
+    <state item="0" id="64" name="TEST_3" />
+    <state item="0" id="65" name="WADE_FORWARD" />
+    <state item="0" id="66" name="UNDERWATER_ROLL" />
+    <state item="0" id="67" name="FLARE_PICKUP" />
+    <state item="0" id="68" name="SWANDIVE_ROLL" />
+    <state item="0" id="69" name="KICK" />
+    <state item="0" id="70" name="ZIPLINE_RIDE" />
+	
+	<!-- DRAGON (FRONT) -->
+	
+	<state item="22" id="1" name="WALK" />
+	<state item="22" id="2" name="MOVE_LEFT" />
+	<state item="22" id="3" name="MOVE_RIGHT" />
+	<state item="22" id="4" name="AIM_1" />
+	<state item="22" id="5" name="FIRE_1" />
+	<state item="22" id="6" name="IDLE" />
+	<state item="22" id="7" name="TURN_LEFT" />
+	<state item="22" id="8" name="TURN_RIGHT" />
+	<state item="22" id="9" name="SWIPE_ATTACK_LEFT" />
+	<state item="22" id="10" name="SWIPE_ATTACK_RIGHT " />
+	<state item="22" id="11" name="DEFEAT" />
+	
+	<!-- DRAGON (BACK) -->
+	
+	<state item="23" id="1" name="WALK" />
+	<state item="23" id="2" name="MOVE_LEFT" />
+	<state item="23" id="3" name="MOVE_RIGHT" />
+	<state item="23" id="4" name="AIM_1" />
+	<state item="23" id="5" name="FIRE_1" />
+	<state item="23" id="6" name="IDLE" />
+	<state item="23" id="7" name="TURN_LEFT" />
+	<state item="23" id="8" name="TURN_RIGHT" />
+	<state item="23" id="9" name="SWIPE_ATTACK_LEFT" />
+	<state item="23" id="10" name="SWIPE_ATTACK_RIGHT " />
+	<state item="23" id="11" name="DEFEAT" /> 	
+	
+</states>

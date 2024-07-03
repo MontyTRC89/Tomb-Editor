@@ -1,6 +1,8 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
@@ -22,9 +24,9 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public GameFlowScriptStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
+		public GameFlowScriptStudio() : base(IDE.Instance.Project.GetScriptRootDirectory(), IDE.Instance.Project.GetEngineRootDirectoryPath())
 		{
-			DockPanelState = IDE.Global.IDEConfiguration.GFL_DockPanelState;
+			DockPanelState = IDE.Instance.IDEConfiguration.GFL_DockPanelState;
 
 			FileExplorer.Filter = "*.txt";
 			FileExplorer.CommentPrefix = "//";
@@ -33,7 +35,7 @@ namespace TombIDE.ScriptingStudio
 
 			EditorTabControl.CheckPreviousSession();
 
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath, TombLib.LevelData.TRVersion.Game.TR2);
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Instance.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TR2);
 
 			if (!string.IsNullOrWhiteSpace(initialFilePath))
 				EditorTabControl.OpenFile(initialFilePath);
@@ -72,7 +74,7 @@ namespace TombIDE.ScriptingStudio
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
-					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
+					IDE.Instance.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
 					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
@@ -86,8 +88,8 @@ namespace TombIDE.ScriptingStudio
 			}
 			else if (obj is IDE.ProgramClosingEvent)
 			{
-				IDE.Global.IDEConfiguration.GFL_DockPanelState = DockPanel.GetDockPanelState();
-				IDE.Global.IDEConfiguration.Save();
+				IDE.Instance.IDEConfiguration.GFL_DockPanelState = DockPanel.GetDockPanelState();
+				IDE.Instance.IDEConfiguration.Save();
 			}
 		}
 
@@ -125,7 +127,7 @@ namespace TombIDE.ScriptingStudio
 			if (indicateChange)
 			{
 				CurrentEditor.LastModified = DateTime.Now;
-				IDE.Global.ScriptEditor_IndicateExternalChange();
+				IDE.Instance.ScriptEditor_IndicateExternalChange();
 			}
 
 			if (saveAffectedFile)
@@ -161,10 +163,26 @@ namespace TombIDE.ScriptingStudio
 
 			try
 			{
-				bool success = ScriptCompiler.Compile(
-					ScriptRootDirectoryPath, EngineDirectoryPath,
-					IDE.Global.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3,
-					IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild);
+				string engineExecutable = IDE.Instance.Project.GetEngineExecutableFilePath();
+				var fileVersionInfo = FileVersionInfo.GetVersionInfo(engineExecutable);
+				var productVersion = new Version(fileVersionInfo.ProductVersion ?? "0.0");
+
+				bool success;
+
+				if (IDE.Instance.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3
+					&& productVersion >= new Version(2, 0, 0, 0))
+				{
+					success = ScriptCompiler.CompileTR3Version2Plus(
+						ScriptRootDirectoryPath, Path.Combine(EngineDirectoryPath, "data"),
+						IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild);
+				}
+				else
+				{
+					success = ScriptCompiler.ClassicCompile(
+						ScriptRootDirectoryPath, Path.Combine(EngineDirectoryPath, "data"),
+						IDE.Instance.Project.GameVersion == TombLib.LevelData.TRVersion.Game.TR3,
+						IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild);
+				}
 
 				if (success)
 					CompilerLogs.UpdateLogs("Script compiled successfully!");
@@ -183,6 +201,42 @@ namespace TombIDE.ScriptingStudio
 
 			DockPanel.RemoveContent();
 			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+		}
+
+		protected override void HandleDocumentCommands(UICommand command)
+		{
+			switch (command)
+			{
+				case UICommand.Tomb3ExtraCommands:
+					string pdfPath = Path.Combine(DefaultPaths.ResourcesDirectory, "GameFlow", "TRGameflow extra commands.pdf");
+
+					var process = new ProcessStartInfo
+					{
+						FileName = pdfPath,
+						UseShellExecute = true
+					};
+
+					if (File.Exists(pdfPath))
+						Process.Start(process);
+
+					break;
+			}
+
+			base.HandleDocumentCommands(command);
+		}
+
+		protected override void ShowDocumentation()
+		{
+			string pdfPath = Path.Combine(DefaultPaths.ResourcesDirectory, "GameFlow", "TRGameflow.pdf");
+
+			var process = new ProcessStartInfo
+			{
+				FileName = pdfPath,
+				UseShellExecute = true
+			};
+
+			if (File.Exists(pdfPath))
+				Process.Start(process);
 		}
 
 		#endregion Other methods

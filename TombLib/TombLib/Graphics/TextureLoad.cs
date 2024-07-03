@@ -18,7 +18,10 @@ namespace TombLib.Graphics
                 return null;
 
             Texture2D result = null;
-            image.GetIntPtr((IntPtr data) =>
+
+            try
+            {
+                image.GetIntPtr((IntPtr data) =>
                 {
                     Texture2DDescription description;
                     description.ArraySize = 1;
@@ -32,10 +35,16 @@ namespace TombLib.Graphics
                     description.Usage = usage;
                     description.Width = image.Width;
 
-                        //return Texture2D.New(graphicsDevice, description, new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }); //Only for the none toolkit version which unfortunately we cannot use currently.
-                        result = Texture2D.New(graphicsDevice, description.Width, description.Height, description.MipLevels, description.Format,
-                                new[] { new SharpDX.DataBox(data, image.Width * ImageC.PixelSize, 0) }, TextureFlags.ShaderResource, 1, description.Usage);
+                    //return Texture2D.New(graphicsDevice, description, new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }); //Only for the none toolkit version which unfortunately we cannot use currently.
+                    result = Texture2D.New(graphicsDevice, description.Width, description.Height, description.MipLevels, description.Format,
+                            new[] { new SharpDX.DataBox(data, image.Width * ImageC.PixelSize, 0) }, TextureFlags.ShaderResource, 1, description.Usage);
                 });
+            }
+            catch (Exception ex)
+            {
+                return Load(graphicsDevice, ImageC.Red, usage);
+            }
+
             return result;
         }
 
@@ -49,11 +58,11 @@ namespace TombLib.Graphics
             return Load(graphicsDevice, ImageC.FromFile(path));
         }
 
-        public static void Update(GraphicsDevice graphicsDevice, Texture2D texture, ImageC image, VectorInt2 position)
+        public static void Update(GraphicsDevice graphicsDevice, Texture2D texture, ImageC image, VectorInt3 position)
         {
             if (image.Width == 0 || image.Height == 0)
                 return;
-            var deviceContext = (DeviceContext)graphicsDevice;
+
             image.GetIntPtr((IntPtr data) =>
             {
                 ResourceRegion region;
@@ -63,7 +72,7 @@ namespace TombLib.Graphics
                 region.Bottom = position.Y + image.Height;
                 region.Front = 0;
                 region.Back = 1;
-                texture.SetData(graphicsDevice, new SharpDX.DataPointer(data, image.DataSize), 0, 0, region);
+                texture.SetData(graphicsDevice, new SharpDX.DataPointer(data, image.DataSize), position.Z, 0, region);
             });
         }
     }

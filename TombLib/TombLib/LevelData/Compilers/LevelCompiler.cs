@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
@@ -19,6 +20,7 @@ namespace TombLib.LevelData.Compilers
     {
         protected readonly Level _level;
         protected readonly string _dest;
+        protected readonly string _finalDest;
         protected readonly string _backup;
         protected readonly IProgressReporter _progressReporter;
 
@@ -28,6 +30,7 @@ namespace TombLib.LevelData.Compilers
         {
             _level = level;
             _backup = dest;
+            _finalDest = dest;
             _dest = Path.GetDirectoryName(dest) + "\\" + Path.GetFileNameWithoutExtension(dest) + ".tmp";
             _progressReporter = progressReporter;
 
@@ -61,6 +64,6 @@ namespace TombLib.LevelData.Compilers
             _progressReporter.ReportProgress(percentage, message);
         }
 
-        public abstract CompilerStatistics CompileLevel();
+        public abstract CompilerStatistics CompileLevel(CancellationToken cancelToken);
     }
 }

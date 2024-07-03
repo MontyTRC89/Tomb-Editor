@@ -79,7 +79,8 @@ namespace TombLib.NG
 
                 if (levelSettings.GameVersion == TRVersion.Game.TombEngine)
                 {
-                    yield return TriggerTargetType.EventSet;
+                    yield return TriggerTargetType.VolumeEvent;
+                    yield return TriggerTargetType.GlobalEvent;
                 }
             }
         }
@@ -141,10 +142,16 @@ namespace TombLib.NG
                         case TriggerTargetType.TimerfieldNg:
                             return NgCatalog.TimerFieldTrigger;
 
-                        case TriggerTargetType.EventSet:
+                        case TriggerTargetType.VolumeEvent:
                             if (levelSettings.GameVersion == TRVersion.Game.TombEngine)
-                                return new NgParameterRange(NgParameterKind.EventSets);
+                                return new NgParameterRange(NgParameterKind.VolumeEventSets);
                            else
+                                return new NgParameterRange(NgParameterKind.AnyNumber);
+
+                        case TriggerTargetType.GlobalEvent:
+                            if (levelSettings.GameVersion == TRVersion.Game.TombEngine)
+                                return new NgParameterRange(NgParameterKind.GlobalEventSets);
+                            else
                                 return new NgParameterRange(NgParameterKind.AnyNumber);
 
                         default:
@@ -166,6 +173,10 @@ namespace TombLib.NG
                         case TriggerTargetType.FlipEffect:
                             if (!(target is TriggerParameterUshort))
                                 return new NgParameterRange(NgParameterKind.Empty);
+
+                            if (levelSettings.GameVersion.Native() != TRVersion.Game.TR4)
+                                return new NgParameterRange(NgParameterKind.AnyNumber);
+
                             NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.FlipEffectTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)target).Key);
                             return flipEffectSubtriggerType?.Timer ?? new NgParameterRange(NgParameterKind.Empty);
 
@@ -175,8 +186,11 @@ namespace TombLib.NG
                         case TriggerTargetType.TimerfieldNg:
                             return new NgParameterRange(NgParameterKind.Empty);
 
-                        case TriggerTargetType.EventSet:
-                            return new NgParameterRange(NgParameterKind.EventTypes);
+                        case TriggerTargetType.VolumeEvent:
+                            return new NgParameterRange(NgParameterKind.VolumeEventTypes);
+
+                        case TriggerTargetType.GlobalEvent:
+                            return new NgParameterRange(NgParameterKind.GlobalEventTypes);
 
                         default:
                             return new NgParameterRange(NgParameterKind.AnyNumber);
@@ -186,6 +200,9 @@ namespace TombLib.NG
 
         public static NgParameterRange GetExtraRange(LevelSettings levelSettings, TriggerType triggerType, TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter timer)
         {
+            if (levelSettings.GameVersion != TRVersion.Game.TRNG)
+                return new NgParameterRange(NgParameterKind.Empty);
+
             switch (triggerType)
             {
                 case TriggerType.ConditionNg:

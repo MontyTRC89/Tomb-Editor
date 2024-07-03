@@ -14,7 +14,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
     {
         private static readonly bool _writeDbgWadTxt = false;
         private List<int> _finalSelectedSoundsList;
-        private List<int> _finalSoundIndicesList;
         private List<WadSoundInfo> _finalSoundInfosList;
         private List<WadSample> _finalSamplesList;
         private int _soundMapSize = 0;
@@ -96,11 +95,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     newMesh.Polygons.Add(newPoly);
 
-                    newMesh.Vertices[indices[0]].Polygons.Add(new NormalHelper(newPoly));
-                    newMesh.Vertices[indices[1]].Polygons.Add(new NormalHelper(newPoly));
-                    newMesh.Vertices[indices[2]].Polygons.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[indices[0]].NormalHelpers.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[indices[1]].NormalHelpers.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[indices[2]].NormalHelpers.Add(new NormalHelper(newPoly));
                     if (!poly.IsTriangle)
-                        newMesh.Vertices[indices[3]].Polygons.Add(new NormalHelper(newPoly));
+                        newMesh.Vertices[indices[3]].NormalHelpers.Add(new NormalHelper(newPoly));
 
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[0]].Normal);
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[1]].Normal);
@@ -141,7 +140,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
                         poly.Tangents.Add(Vector3.Zero);
-                        poly.Bitangents.Add(Vector3.Zero);
+                        poly.Binormals.Add(Vector3.Zero);
                     }
 
                     bucket.Polygons.Add(poly);
@@ -152,7 +151,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
                         poly.Tangents.Add(poly.Tangent);
-                        poly.Bitangents.Add(poly.Bitangent);
+                        poly.Binormals.Add(poly.Binormal);
                     }
 
                     bucket.Polygons.Add(poly);
@@ -163,21 +162,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int i = 0; i < mesh.Vertices.Count; i++)
             {
                 var vertex = mesh.Vertices[i];
-                var polygons = vertex.Polygons;
+                var normalHelpers = vertex.NormalHelpers;
 
-                for (int j = 0; j < polygons.Count; j++)
+                for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var poly = polygons[j];
+                    var normalHelper = normalHelpers[j];
 
-                    var e1 = mesh.Vertices[poly.Polygon.Indices[1]].Position - mesh.Vertices[poly.Polygon.Indices[0]].Position;
-                    var e2 = mesh.Vertices[poly.Polygon.Indices[2]].Position - mesh.Vertices[poly.Polygon.Indices[0]].Position;
+                    var e1 = mesh.Vertices[normalHelper.Polygon.Indices[1]].Position - mesh.Vertices[normalHelper.Polygon.Indices[0]].Position;
+                    var e2 = mesh.Vertices[normalHelper.Polygon.Indices[2]].Position - mesh.Vertices[normalHelper.Polygon.Indices[0]].Position;
 
-                    var uv1 = poly.Polygon.TextureCoordinates[1] - poly.Polygon.TextureCoordinates[0];
-                    var uv2 = poly.Polygon.TextureCoordinates[2] - poly.Polygon.TextureCoordinates[0];
+                    var uv1 = normalHelper.Polygon.TextureCoordinates[1] - normalHelper.Polygon.TextureCoordinates[0];
+                    var uv2 = normalHelper.Polygon.TextureCoordinates[2] - normalHelper.Polygon.TextureCoordinates[0];
 
                     float r = 1.0f / (uv1.X * uv2.Y - uv1.Y * uv2.X);
-                    poly.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
-                    poly.Polygon.Bitangent = Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
+                    normalHelper.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
+                    normalHelper.Polygon.Binormal = Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
                 }
             }
 
@@ -185,36 +184,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int i = 0; i < mesh.Vertices.Count; i++)
             {
                 var vertex = mesh.Vertices[i];
-                var polygons = vertex.Polygons;
+                var normalHelpers = vertex.NormalHelpers;
 
-                var tangent = Vector3.Zero;
-                var bitangent = Vector3.Zero;
-
-                for (int j = 0; j < polygons.Count; j++)
+                for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var poly = polygons[j];
-                    tangent += poly.Polygon.Tangent;
-                    bitangent += poly.Polygon.Bitangent;
-                }
+                    var normalHelper = normalHelpers[j];
 
-                if (polygons.Count > 0)
-                {
-                    tangent = Vector3.Normalize(tangent / (float)polygons.Count);
-                    bitangent = Vector3.Normalize(bitangent / (float)polygons.Count);
-                }
-
-                for (int j = 0; j < polygons.Count; j++)
-                {
-                    var poly = polygons[j];
-
-                    // TODO: for now we smooth all tangents and bitangents
-                    for (int k = 0; k < poly.Polygon.Indices.Count; k++)
+                    for (int k = 0; k < normalHelper.Polygon.Indices.Count; k++)
                     {
-                        int index = poly.Polygon.Indices[k];
+                        int index = normalHelper.Polygon.Indices[k];
                         if (index == i)
                         {
-                            poly.Polygon.Tangents[k] = tangent;
-                            poly.Polygon.Bitangents[k] = bitangent;
+                            normalHelper.Polygon.Tangents[k] = normalHelper.Polygon.Tangent;
+                            normalHelper.Polygon.Binormals[k] = normalHelper.Polygon.Binormal;
                             break;
                         }
                     }
@@ -276,6 +258,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newMoveable.NumMeshes = oldMoveable.Meshes.Count();
                 newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
                 newMoveable.FrameOffset = 0;
+
+                // Determine possible skin object to shift bone offsets.
+                var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_level.Settings.GameVersion, oldMoveable.Id.TypeId));
+                var skin = _level.Settings.WadTryGetMoveable(skinId);
 
                 // Add animations
                 int realFrameBase = 0;
@@ -426,12 +412,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 for (int b = 1; b < oldMoveable.Bones.Count; b++)
                 {
-                    tr_meshtree tree = new tr_meshtree();
+                    var tree = new tr_meshtree();
+                    var bone = oldMoveable.Bones[b];
+
+                    if (skin != null && skin.Bones.Count == oldMoveable.Bones.Count)
+                        bone = skin.Bones[b];
 
                     tree.Opcode = (int)oldMoveable.Bones[b].OpCode;
-                    tree.X = (int)oldMoveable.Bones[b].Translation.X;
-                    tree.Y = (int)-oldMoveable.Bones[b].Translation.Y;
-                    tree.Z = (int)oldMoveable.Bones[b].Translation.Z;
+                    tree.X = (int) bone.Translation.X;
+                    tree.Y = (int)-bone.Translation.Y;
+                    tree.Z = (int) bone.Translation.Z;
 
                     usedMeshes.Add(oldMoveable.Bones[b].Mesh);
                     meshTrees.Add(tree);
@@ -676,65 +666,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         _finalSoundInfosList.Add(soundInfo);
                 }
 
-            // Step 2: Prepare indices list to be written (needed only for TR2-3).
-            // For that, we iterate through ALL sound infos available and count how many samples
-            // each of them have. Then we build a list of needed sound IDs with appropriate 
-            // sample count, which is used later to store indices.
-            // Indices are not necessary for TR4-5, but are for TR2-3 cause main.sfx is used.
+            // Step 2: create the sound map
 
-            _finalSoundIndicesList = new List<int>();
-            int currentIndex = 0;
-            foreach (var sound in _level.Settings.GlobalSoundMap)
-            {
-                // Don't include indices for non-indexed sounds
-                if (_level.Settings.GameVersion.UsesMainSfx() && !sound.Indexed) continue;
-
-                if (_finalSoundInfosList.Contains(sound))
-                    foreach (var sample in sound.Samples)
-                    {
-                        _finalSoundIndicesList.Add(currentIndex);
-                        currentIndex++;
-                    }
-                else
-                    currentIndex += sound.Samples.Count;
-            }
-
-            // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
-            // There is no other way of guessing it except looking if there is a specific object in any of wads.
-
-            if (_level.IsNG)
-            {
-                Action<int, int, int> AddRemappedNGSound = delegate (int moveableTypeToCheck, int originalId, int remappedId)
-                {
-                    if (_level.Settings.Wads.Any(w => w.Wad.Moveables.Any(m => (m.Value.Id.TypeId == moveableTypeToCheck))))
-                    {
-                        if (!_finalSelectedSoundsList.Contains(remappedId) && _finalSelectedSoundsList.Contains(originalId))
-                        {
-                            _progressReporter.ReportWarn("TRNG object with ID " + moveableTypeToCheck + " was found which uses missing hardcoded sound ID " + remappedId + " in embedded soundmap. Trying to remap sound ID from legacy ID (" + originalId + ").");
-                            _finalSelectedSoundsList.Add(remappedId);
-
-                            var oldSound = _finalSoundInfosList.FirstOrDefault(snd => snd.Id == originalId);
-                            if (oldSound != null)
-                            {
-                                var newSound = new WadSoundInfo(oldSound);
-                                newSound.Id = remappedId;
-                                _finalSoundInfosList.Add(newSound);
-                            }
-                        }
-                    }
-                };
-
-                // Motorboat
-                AddRemappedNGSound(465, 308, 1053);
-                AddRemappedNGSound(465, 307, 1055);
-
-                // Rubber boat
-                AddRemappedNGSound(467, 308, 1423);
-                AddRemappedNGSound(467, 307, 1425);
-            }
-
-            // Step 3: create the sound map
-             _soundMapSize = 4096;
+             _soundMapSize = _limits[Limit.SoundMapSize];
             _finalSoundMap = Enumerable.Repeat((short)-1, _soundMapSize).ToArray<short>();
             foreach (var sound in _finalSoundInfosList)
             {
@@ -746,7 +680,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _finalSoundMap[sound.Id] = (short)_finalSoundInfosList.IndexOf(sound);
             }
 
-            // Step 4: load samples
+            // Step 3: load samples
             var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, _progressReporter);
             _finalSamplesList = loadedSamples.Values.ToList();
         }

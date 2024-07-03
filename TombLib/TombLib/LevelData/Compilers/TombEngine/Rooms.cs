@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -18,10 +19,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
 
-        private void BuildRooms()
+        private void BuildRooms(CancellationToken cancelToken)
         {
             ReportProgress(5, "Lighting Rooms");
-            Parallel.ForEach(_level.ExistingRooms, (room) =>
+
+			ParallelOptions parallelOptions = new ParallelOptions()
+			{
+				CancellationToken = cancelToken
+			};
+
+			Parallel.ForEach(_level.ExistingRooms, parallelOptions, (room) =>
             {
                 room.RebuildLighting(!_level.Settings.FastMode);
             });
@@ -37,12 +44,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
             _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
             foreach (var room in _roomRemapping.Keys)
-                _tempRooms.Add(room, BuildRoom(room));
+			{
+				cancelToken.ThrowIfCancellationRequested();
+				_tempRooms.Add(room, BuildRoom(room));
+			}
 
-            // Remove WaterScheme values for water rooms
-            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
+			// Remove WaterScheme values for water rooms
+			Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
-            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) =>
+            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
             {
                 for (int i = 0; i < trRoom.Polygons.Count; i++)
                 {
@@ -63,10 +73,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var rooms = _tempRooms.Values.ToList();
                 for (int flipped = 0; flipped <= 1; flipped++)
                     foreach (var room in rooms)
-                        MatchDoorShades(rooms, room, false, flipped == 1);
-            }
+					{
+						cancelToken.ThrowIfCancellationRequested();
+						MatchDoorShades(rooms, room, false, flipped == 1);
+					}
+			}
 
-            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) =>
+            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
             {
                 for (int i = 0; i < trRoom.Vertices.Count; i++)
                 {
@@ -136,8 +149,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     X = room.WorldPos.X,
                     Z = room.WorldPos.Z,
-                    YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner()   * Level.HeightUnit),
-                    YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * Level.HeightUnit)
+                    YTop = -(room.WorldPos.Y + room.GetHighestCorner()),
+                    YBottom = -(room.WorldPos.Y + room.GetLowestCorner())
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
@@ -279,7 +292,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
-                            for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                            foreach (BlockFace face in room.Blocks[x, z].GetFaceTextures().Keys)
                             {
                                 var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
                                 var shape = room.GetFaceShape(x, z, face);
@@ -336,10 +349,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                          (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
-                                        roomVertices[vertex0Index].Polygons.Add(new NormalHelper(poly));
-                                        roomVertices[vertex1Index].Polygons.Add(new NormalHelper(poly));
-                                        roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
-                                        roomVertices[vertex3Index].Polygons.Add(new NormalHelper(poly));
+                                        roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
@@ -347,16 +360,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
-                                            roomVertices[vertex0Index].Polygons.Add(new NormalHelper(poly));
-                                            roomVertices[vertex1Index].Polygons.Add(new NormalHelper(poly));
-                                            roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
-                                            roomVertices[vertex3Index].Polygons.Add(new NormalHelper(poly));
+                                            roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
                                         }
                                         i += 3;
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
+                                        if (face == BlockFace.Ceiling || face == BlockFace.Ceiling_Triangle2)
                                             texture.Mirror(true);
 
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);
@@ -367,9 +380,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
                                                         (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
-                                        roomVertices[vertex0Index].Polygons.Add(new NormalHelper(poly));
-                                        roomVertices[vertex1Index].Polygons.Add(new NormalHelper(poly));
-                                        roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
+                                        roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror(true);
@@ -377,9 +390,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
-                                            roomVertices[vertex0Index].Polygons.Add(new NormalHelper(poly));
-                                            roomVertices[vertex1Index].Polygons.Add(new NormalHelper(poly));
-                                            roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
+                                            roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
                                         }
                                     }
                                 }
@@ -400,7 +413,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         bool interpretShadesAsEffect = entry.InterpretShadesAsEffect;
                         bool clearShades = entry.ClearShades;
                         int meshVertexBase = roomVertices.Count;
-                        var worldTransform = staticMesh.RotationMatrix *
+                        var worldTransform = staticMesh.ScaleMatrix *
+                                             staticMesh.RotationMatrix *
                                              Matrix4x4.CreateTranslation(staticMesh.Position);
                         var normalTransform = staticMesh.RotationMatrix;
                         WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
@@ -488,7 +502,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     roomVertices.Add(trVertex);
                                 }
 
-                                int index0 = tempIndices[0];
+								// Avoid degenerate triangles
+								if (tempIndices.Distinct().Count() < 3)
+								{
+									continue;
+								}
+
+								int index0 = tempIndices[0];
                                 int index1 = tempIndices[1];
                                 int index2 = tempIndices[2];
                                 int index3 = tempIndices[3];
@@ -530,11 +550,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                     roomPolygons.Add(face);
                                     _mergedStaticMeshTextureInfos.Add(key, result);
-                                    roomVertices[index0].Polygons.Add(new NormalHelper(face));
-                                    roomVertices[index1].Polygons.Add(new NormalHelper(face));
-                                    roomVertices[index2].Polygons.Add(new NormalHelper(face));
+                                    roomVertices[index0].NormalHelpers.Add(new NormalHelper(face));
+                                    roomVertices[index1].NormalHelpers.Add(new NormalHelper(face));
+                                    roomVertices[index2].NormalHelpers.Add(new NormalHelper(face));
                                     if (doubleSided)
-                                        roomVertices[index3].Polygons.Add(new NormalHelper(face));
+                                        roomVertices[index3].NormalHelpers.Add(new NormalHelper(face));
                                 }
                             }
                         }
@@ -639,7 +659,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         currentMeshIndexCount++;
                                     }
 
-                                    int index0 = tempIndices[0];
+									// Avoid degenerate triangles
+									if (tempIndices.Distinct().Count() < 3)
+									{
+										continue;
+									}
+
+									int index0 = tempIndices[0];
                                     int index1 = tempIndices[1];
                                     int index2 = tempIndices[2];
 
@@ -680,9 +706,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices);
 
                                     roomPolygons.Add(tri);
-                                    roomVertices[index0].Polygons.Add(new NormalHelper(tri));
-                                    roomVertices[index1].Polygons.Add(new NormalHelper(tri));
-                                    roomVertices[index2].Polygons.Add(new NormalHelper(tri));
+                                    roomVertices[index0].NormalHelpers.Add(new NormalHelper(tri));
+                                    roomVertices[index1].NormalHelpers.Add(new NormalHelper(tri));
+                                    roomVertices[index2].NormalHelpers.Add(new NormalHelper(tri));
                                 }
                             }
                         }
@@ -907,7 +933,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
-                if (!light.Enabled || !light.IsDynamicallyUsed || light.Type == LightType.FogBulb)
+                if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
 
                 if (light.Intensity == 0 || light.Color.X == 0 && light.Color.Y == 0 && light.Color.Z == 0)
@@ -945,9 +971,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newLight.Length = light.InnerRange * Level.BlockSizeUnit;
                         newLight.CutOff = light.OuterRange * Level.BlockSizeUnit;
                         Vector3 spotDirection = light.GetDirection();
-                        newLight.Direction.X = -spotDirection.X;
-                        newLight.Direction.Y = spotDirection.Y;
-                        newLight.Direction.Z = -spotDirection.Z;
+                        newLight.Direction.X = spotDirection.X;
+                        newLight.Direction.Y = -spotDirection.Y;
+                        newLight.Direction.Z = spotDirection.Z;
                         newLight.CastDynamicShadows = light.CastDynamicShadows;
                         break;
                     case LightType.Sun:
@@ -957,9 +983,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newLight.Length = 0;
                         newLight.CutOff = 0;
                         Vector3 sunDirection = light.GetDirection();
-                        newLight.Direction.X = -sunDirection.X;
-                        newLight.Direction.Y = sunDirection.Y;
-                        newLight.Direction.Z = -sunDirection.Z;
+                        newLight.Direction.X = sunDirection.X;
+                        newLight.Direction.Y = -sunDirection.Y;
+                        newLight.Direction.Z = sunDirection.Z;
                         newLight.CastDynamicShadows = light.CastDynamicShadows;
                         break;
                     case LightType.FogBulb:
@@ -1038,35 +1064,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 2 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 2))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer)) > 2 || Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
 
-                    aux.LowestFloor = (sbyte)(-room.Position.Y - block.Floor.Min);
-                    var q0 = block.Floor.XnZp;
-                    var q1 = block.Floor.XpZp;
-                    var q2 = block.Floor.XpZn;
-                    var q3 = block.Floor.XnZn;
+                    // TODO: Is this LowestFloor field ever even used in TEN? Consider removing.
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Min));
+                    var q0 = Clicks.FromWorld(block.Floor.XnZp);
+                    var q1 = Clicks.FromWorld(block.Floor.XpZp);
+                    var q2 = Clicks.FromWorld(block.Floor.XpZn);
+                    var q3 = Clicks.FromWorld(block.Floor.XnZn);
 
-                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && block.Floor.IfQuadSlopeX == 0 &&
-                        block.Floor.IfQuadSlopeZ == 0)
+                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && Clicks.FromWorld(block.Floor.IfQuadSlopeX, RoundingMethod.Integer) == 0 &&
+                        Clicks.FromWorld(block.Floor.IfQuadSlopeZ, RoundingMethod.Integer) == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
-                        {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XnZp,
-                                                           block.Floor.XpZn));
-                        }
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XnZp, block.Floor.XpZn)));
                         else
-                        {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XpZp,
-                                                           block.Floor.XnZn));
-                        }
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XpZp, block.Floor.XnZn)));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
@@ -1203,11 +1224,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         var relevantDirection = relevantEdges[i];
                         var oppositeRelevantDirection = oppositeRelevantEdges[i];
 
-                        var floor   = Level.HeightUnit * block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
-                        var ceiling = Level.HeightUnit * block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var floor   = block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var ceiling = block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
 
-                        var floorOpposite   = Level.HeightUnit * oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
-                        var ceilingOpposite = Level.HeightUnit * oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var floorOpposite   = oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var ceilingOpposite = oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
 
                         floor = Math.Min(floor, floorOpposite);
                         ceiling = Math.Max(ceiling, ceilingOpposite);
@@ -1277,8 +1298,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
         private struct PortalPlane
         {
-            public readonly short SlopeX;
-            public readonly short SlopeZ;
+            public readonly int SlopeX;
+            public readonly int SlopeZ;
             public readonly int Height;
 
             public int EvaluateHeight(int x, int z)
@@ -1286,10 +1307,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return Height + x * SlopeX + z * SlopeZ;
             }
 
-            public PortalPlane(int ankerX, short ankerY, int ankerZ, int slopeX, int slopeZ)
+            public PortalPlane(int ankerX, int ankerY, int ankerZ, int slopeX, int slopeZ)
             {
-                SlopeX = (short)slopeX;
-                SlopeZ = (short)slopeZ;
+                SlopeX = slopeX;
+                SlopeZ = slopeZ;
                 Height = ankerY - ankerX * slopeX - ankerZ * slopeZ;
             }
 
@@ -1468,10 +1489,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 float zMin = portalArea.Y0 * Level.BlockSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.BlockSizeUnit;
 
-                float yAtXMinZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0)) * Level.HeightUnit;
-                float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0)) * Level.HeightUnit;
-                float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1)) * Level.HeightUnit;
-                float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1)) * Level.HeightUnit;
+                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
+                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
+                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
+                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
 
                 // Choose portal coordinates
                 VectorInt3[] portalVertices = new VectorInt3[4];
@@ -1523,10 +1544,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var p in room.Portals)
             {
                 if (_portalRemapping.ContainsKey(p))
-                {
-                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces)
-                        continue;
-                }
+				{
+					if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces &&
+						room.OriginalRoom.Properties.LightInterpolationMode != RoomLightInterpolationMode.Interpolate)
+					{
+						continue;
+					}
+				}
 
                 var otherRoom = roomList[p.AdjoiningRoom];
 
@@ -1777,9 +1801,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     for (int n = 0; n < 4; n++)
                     {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
-                        poly.Normals.Add(poly.Normal);
+                        poly.Normals.Add(Vector3.Zero);
                         poly.Tangents.Add(Vector3.Zero);
-                        poly.Bitangents.Add(Vector3.Zero);
+                        poly.Binormals.Add(Vector3.Zero);
                     }
 
                     bucket.Polygons.Add(poly);
@@ -1790,34 +1814,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     for (int n = 0; n < 3; n++)
                     {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
-                        poly.Normals.Add(poly.Normal);
+                        poly.Normals.Add(Vector3.Zero);
                         poly.Tangents.Add(Vector3.Zero);
-                        poly.Bitangents.Add(Vector3.Zero);
+                        poly.Binormals.Add(Vector3.Zero);
                     }
 
                     bucket.Polygons.Add(poly);
                 }
             }
 
-            // Calculate tangents and bitangents
+            // Calculate tangents and binormals
             for (int i = 0; i < room.Vertices.Count; i++)
             {
                 var vertex = room.Vertices[i];
-                var polygons = vertex.Polygons;
+                var normalHelpers = vertex.NormalHelpers;
 
-                for (int j = 0; j < polygons.Count; j++)
+                for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var poly = polygons[j];
+                    var normalHelper = normalHelpers[j];
 
-                    var e1 = room.Vertices[poly.Polygon.Indices[1]].Position - room.Vertices[poly.Polygon.Indices[0]].Position;
-                    var e2 = room.Vertices[poly.Polygon.Indices[2]].Position - room.Vertices[poly.Polygon.Indices[0]].Position;
+                    var e1 = room.Vertices[normalHelper.Polygon.Indices[1]].Position - room.Vertices[normalHelper.Polygon.Indices[0]].Position;
+                    var e2 = room.Vertices[normalHelper.Polygon.Indices[2]].Position - room.Vertices[normalHelper.Polygon.Indices[0]].Position;
 
-                    var uv1 = poly.Polygon.TextureCoordinates[1] - poly.Polygon.TextureCoordinates[0];
-                    var uv2 = poly.Polygon.TextureCoordinates[2] - poly.Polygon.TextureCoordinates[0];
+                    var uv1 = normalHelper.Polygon.TextureCoordinates[1] - normalHelper.Polygon.TextureCoordinates[0];
+                    var uv2 = normalHelper.Polygon.TextureCoordinates[2] - normalHelper.Polygon.TextureCoordinates[0];
 
                     float r = 1.0f / (uv1.X * uv2.Y - uv1.Y * uv2.X);
-                    poly.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
-                    poly.Polygon.Bitangent = Vector3.Cross(poly.Polygon.Normal, poly.Polygon.Tangent); // Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
+                    normalHelper.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
+                    normalHelper.Polygon.Binormal = Vector3.Cross(normalHelper.Polygon.Normal, normalHelper.Polygon.Tangent);
                 }
             }
 
@@ -1825,33 +1849,26 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int i = 0; i < room.Vertices.Count; i++)
             {
                 var vertex = room.Vertices[i];
-                var polygons = vertex.Polygons;
-
-                //TODO: tangents and bitangents must be averaged? It seems that no
+                var normalHelpers = vertex.NormalHelpers;
                 var normal = Vector3.Zero;
-                //var tangent = Vector3.Zero;
-                //var bitangent = Vector3.Zero;
 
-                for (int j = 0; j < polygons.Count; j++)
+                for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var poly = polygons[j];
-                    normal += poly.Polygon.Normal;
-                    //tangent += poly.Polygon.Tangent;
-                    //bitangent += poly.Polygon.Bitangent;
+                    var normalHelper = normalHelpers[j];
+
+                    // WARNING: we need to flip normal because it was calculated with Y negative up
+                    normal += -normalHelper.Polygon.Normal;
                 }
 
-                if (polygons.Count > 0)
+                if (normalHelpers.Count > 0)
                 {
-                    normal = Vector3.Normalize(normal / (float)polygons.Count);
-                    //tangent = Vector3.Normalize(tangent / (float)polygons.Count);
-                    //bitangent = Vector3.Normalize(bitangent / (float)polygons.Count);
+                    normal = Vector3.Normalize(normal / (float)normalHelpers.Count);
                 }
 
-                for (int j = 0; j < polygons.Count; j++)
+                for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var poly = polygons[j];
+                    var poly = normalHelpers[j];
 
-                    // TODO: for now we smooth all normals
                     for (int k = 0; k < poly.Polygon.Indices.Count; k++)
                     {
                         int index = poly.Polygon.Indices[k];
@@ -1859,7 +1876,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         {
                             poly.Polygon.Normals[k] = normal;
                             poly.Polygon.Tangents[k] = poly.Polygon.Tangent;
-                            poly.Polygon.Bitangents[k] = poly.Polygon.Bitangent;
+                            poly.Polygon.Binormals[k] = poly.Polygon.Binormal;
                             break;
                         }
                     }

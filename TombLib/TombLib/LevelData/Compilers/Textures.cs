@@ -75,7 +75,7 @@ namespace TombLib.LevelData.Compilers
             if (result0.HasValue)
                 return result0.Value;
 
-            TextureFootStep.Type? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.FloorTriangle2));
+            TextureFootStep.Type? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.Floor_Triangle2));
             if (result1.HasValue)
                 return result1.Value;
 

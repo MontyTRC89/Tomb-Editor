@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<states>
+    <!-- Lara -->
+    <state item="0" id="71" name="CROUCH_IDLE" />
+    <state item="0" id="72" name="CROUCH_ROLL" />
+    <state item="0" id="73" name="SPRINT" />
+    <state item="0" id="74" name="SPRINT_ROLL" />
+    <state item="0" id="75" name="MONKEY_IDLE" />
+    <state item="0" id="76" name="MONKEY_FORWARD" />
+    <state item="0" id="77" name="MONKEY_LEFT" />
+    <state item="0" id="78" name="MONKEY_RIGHT" />
+    <state item="0" id="79" name="MONKEY_ROLL" />
+    <state item="0" id="80" name="CRAWL_IDLE" />
+    <state item="0" id="81" name="CRAWL_FORWARD" />
+    <state item="0" id="82" name="MONKEY_TURN_LEFT" />
+    <state item="0" id="83" name="MONKEY_TURN_RIGHT" />
+    <state item="0" id="84" name="CRAWL_TURN_LEFT" />
+    <state item="0" id="85" name="CRAWL_TURN_RIGHT" />
+    <state item="0" id="86" name="CRAWL_BACK" />
+    <state item="0" id="87" name="CLIMB_TO_CRAWL" />
+    <state item="0" id="88" name="CRAWL_TO_CLIMB" />
+    <state item="0" id="89" name="MISC_CONTROL" />
+
+    <!-- Tribesman with spiked ax -->
+    <state item="20" id="0" name="EMPTY" />
+    <state item="20" id="1" name="CROUCH" />
+    <state item="20" id="2" name="WALK" />
+    <state item="20" id="3" name="RUN" />
+    <!-- <state item="20" id="4" name="" /> -->
+    <state item="20" id="5" name="LOW_HIT" />
+    <state item="20" id="6" name="HIGH_HIT" />
+    <state item="20" id="7" name="CROUCH_HIT" />
+    <state item="20" id="8" name="HIGH_HIT_PREPARE" />
+    <state item="20" id="9" name="DEATH" />
+    <state item="20" id="10" name="RUN_HIT_LOW" />
+    <state item="20" id="11" name="STAND" />
+    <state item="20" id="12" name="RUN_HIT_HIGH" />
+
+    <!-- Tribesman with poison-dart gun -->
+    <state item="21" id="0" name="EMPTY" />
+    <state item="21" id="1" name="CROUCH" />
+    <state item="21" id="2" name="WALK" />
+    <state item="21" id="3" name="RUN" />
+    <state item="21" id="4" name="SHOOT_DART" />
+    <!-- <state item="21" id="5" name="" /> -->
+    <state item="21" id="6" name="HIGH_HIT" />
+    <!-- <state item="21" id="7" name="" /> -->
+    <state item="21" id="8" name="HIGH_HIT_PREPARE" />
+    <state item="21" id="9" name="DEATH" />
+    <state item="21" id="10" name="RUN_HIT_LOW" />
+    <state item="21" id="11" name="STAND" />
+    <state item="21" id="12" name="RUN_HIT_HIGH" />
+
+    <!-- Dog -->
+    <state item="22" id="0" name="EMPTY" />
+    <state item="22" id="1" name="STOP" />
+    <state item="22" id="2" name="WALK" />
+    <state item="22" id="3" name="RUN" />
+    <state item="22" id="4" name="JUMP" />
+    <state item="22" id="5" name="STALK" />
+    <state item="22" id="6" name="RUN_ATTACK" />
+    <state item="22" id="7" name="HOWL" />
+    <state item="22" id="8" name="SLEEP" />
+    <state item="22" id="9" name="CROUCH" />
+    <state item="22" id="10" name="TURN" />
+    <state item="22" id="11" name="DEATH" />
+    <state item="22" id="12" name="CROUCH_ATTACK" />
+
+    <!-- Crocodile (in water) -->
+    <state item="32" id="0" name="EMPTY" />
+    <state item="32" id="1" name="SWIM" />
+    <state item="32" id="2" name="UNDERWATER_ATTACK" />
+    <state item="32" id="3" name="UNDERWATER_DEATH" />
+
+    <!-- RX-Tech guy in red jacket -->
+    <state item="39" id="0" name="EMPTY" />
+    <state item="39" id="1" name="STOP" />
+    <state item="39" id="2" name="WALK" />
+    <state item="39" id="3" name="RUN" />
+    <state item="39" id="4" name="SHOOT_1HAND_START" />
+    <state item="39" id="5" name="SHOOT_1HAND" />
+    <state item="39" id="6" name="SHOOT_2HANDS_START" />
+    <state item="39" id="7" name="SHOOT_2HANDS" />
+    <state item="39" id="8" name="SHOOT_HORIZONTAL_TO_RIGHT" />
+    <state item="39" id="9" name="SHOOT_HORIZONTAL_TO_LEFT" />
+    <state item="39" id="10" name="WALK_SHOOT_RIGHT" />
+    <state item="39" id="11" name="SHOOT_HORIZONTAL_START" />
+    <state item="39" id="12" name="WALK_SHOOT_START" />
+    <state item="39" id="13" name="DEATH" />
+    <state item="39" id="14" name="WALK_SHOOT_LEFT" />
+    <state item="39" id="15" name="STAND_TO_CROUCH" />
+    <state item="39" id="16" name="CROUCH" />
+    <state item="39" id="17" name="CROUCH_SHOOT_START" />
+    <state item="39" id="18" name="CROUCH_SHOOT" />
+    <state item="39" id="19" name="CROUCH_STEP" />
+    <state item="39" id="19" name="CROUCH_TO_STAND" />
+
+    <!-- Dog (Antactica) -->
+    <state item="41" id="0" name="EMPTY" />
+    <state item="41" id="1" name="STOP" />
+    <state item="41" id="2" name="WALK" />
+    <state item="41" id="3" name="RUN" />
+    <state item="41" id="4" name="JUMP" />
+    <state item="41" id="5" name="STALK" />
+    <state item="41" id="6" name="RUN_ATTACK" />
+    <state item="41" id="7" name="HOWL" />
+    <state item="41" id="8" name="SLEEP" />
+    <state item="41" id="9" name="CROUCH" />
+    <state item="41" id="10" name="TURN" />
+    <state item="41" id="11" name="DEATH" />
+    <state item="41" id="12" name="CROUCH_ATTACK" />
+    
+    <!--WILLARD-->
+    <state item="49" id="0" name= "STOP" />
+    <state item="49" id="1" name= "WALK" />
+    <state item="49" id="2" name= "ATTACK" />
+    <state item="49" id="3" name= "KILL_LARA" />
+    <state item="49" id="4" name= "STUN_START" />
+    <state item="49" id="5" name= "STUN" />
+    <state item="49" id="6" name= "STUN_END" />
+    <state item="49" id="7" name= "WALK_ATTACK_RIGHT" />
+    <state item="49" id="8" name= "WALK_ATTACK_LEFT" />
+    <state item="49" id="9" name= "JUMP_TURN_180" />
+    <state item="49" id="10" name= "SHOOT" />
+    
+    <!-- 'Damned' stick-wielding goon -->
+    <state item="53" id="0" name="EMPTY" />
+    <state item="53" id="1" name="STOP" />
+    <state item="53" id="2" name="WALK" />
+    <state item="53" id="3" name="WALK_PUNCH" />
+    <state item="53" id="4" name="WALK_PUNCH_PREPARE" />
+    <state item="53" id="5" name="WAIT" />
+    <state item="53" id="6" name="STEP_HIT_PREPARE" />
+    <state item="53" id="7" name="PUNCH_PREPARE" />
+    <state item="53" id="8" name="STEP_HIT" />
+    <state item="53" id="9" name="PUNCH" />
+    <state item="53" id="10" name="RUN" />
+    <state item="53" id="11" name="DEATH" />
+    <state item="53" id="12" name="CLIMB_2_CLICKS" />
+    <state item="53" id="13" name="CLIMB_3_CLICKS" />
+    <state item="53" id="14" name="CLIMB_4_CLICKS" />
+    <state item="53" id="15" name="JUMP_OFF_4_CLICKS" />
+
+    <!-- London guard -->
+    <state item="56" id="0" name="EMPTY" />
+    <state item="56" id="1" name="STOP" />
+    <state item="56" id="2" name="WALK" />
+    <state item="56" id="3" name="RUN" />
+    <state item="56" id="4" name="SHOOT_1HAND_START" />
+    <state item="56" id="5" name="SHOOT_1HAND" />
+    <state item="56" id="6" name="SHOOT_2HANDS_START" />
+    <state item="56" id="7" name="SHOOT_2HANDS" />
+    <state item="56" id="8" name="SHOOT_HORIZONTAL_TO_RIGHT" />
+    <state item="56" id="9" name="SHOOT_HORIZONTAL_TO_LEFT" />
+    <state item="56" id="10" name="WALK_SHOOT_RIGHT" />
+    <state item="56" id="11" name="SHOOT_HORIZONTAL_START" />
+    <state item="56" id="12" name="WALK_SHOOT_START" />
+    <state item="56" id="13" name="DEATH" />
+    <state item="56" id="14" name="WALK_SHOOT_LEFT" />
+    <state item="56" id="15" name="STAND_TO_CROUCH" />
+    <state item="56" id="16" name="CROUCH" />
+    <state item="56" id="17" name="CROUCH_SHOOT_START" />
+    <state item="56" id="18" name="CROUCH_SHOOT" />
+    <state item="56" id="19" name="CROUCH_STEP" />
+    <state item="56" id="19" name="CROUCH_TO_STAND" />
+
+    <!-- Sophia Leigh -->
+    <state item="57" id="0" name="EMPTY" />
+    <state item="57" id="1" name="STOP" />
+    <state item="57" id="2" name="WALK" />
+    <state item="57" id="3" name="RUN" />
+    <state item="57" id="4" name="SUMMON" />
+    <state item="57" id="5" name="SCEPTER_SHOOT" />
+    <state item="57" id="6" name="DEATH" />
+    <state item="57" id="7" name="LAUGH" />
+    <state item="57" id="8" name="SCEPTER_SMALL_SHOOT" />
+    <state item="57" id="9" name="CLIMB_2_CLICKS" />
+    <state item="57" id="10" name="CLIMB_3_CLICKS" />
+    <state item="57" id="11" name="CLIMB_4_CLICKS" />
+    <state item="57" id="12" name="JUMP_OFF_4_CLICKS" />
+
+    <!-- MP with stick -->
+    <state item="60" id="0" name="EMPTY" />
+    <state item="60" id="1" name="STOP" />
+    <state item="60" id="2" name="WALK" />
+    <state item="60" id="3" name="WALK_PUNCH" />
+    <state item="60" id="4" name="WALK_PUNCH_PREPARE" />
+    <state item="60" id="5" name="WAIT" />
+    <state item="60" id="6" name="STEP_HIT_PREPARE" />
+    <state item="60" id="7" name="PUNCH_PREPARE" />
+    <state item="60" id="8" name="STEP_HIT" />
+    <state item="60" id="9" name="PUNCH" />
+    <state item="60" id="10" name="RUN" />
+    <state item="60" id="11" name="DEATH" />
+    <state item="60" id="12" name="WALK_KICK" />
+    <state item="60" id="13" name="CLIMB_2_CLICKS" />
+    <state item="60" id="14" name="CLIMB_3_CLICKS" />
+    <state item="60" id="15" name="CLIMB_4_CLICKS" />
+    <state item="60" id="16" name="JUMP_OFF_4_CLICKS" />
+
+    <!-- Prisoner -->
+    <state item="62" id="0" name="EMPTY" />
+    <state item="62" id="1" name="STOP" />
+    <state item="62" id="2" name="WALK" />
+    <state item="62" id="3" name="WALK_PUNCH" />
+    <state item="62" id="4" name="WALK_PUNCH_PREPARE" />
+    <state item="62" id="5" name="WAIT" />
+    <state item="62" id="6" name="STEP_HIT_PREPARE" />
+    <state item="62" id="7" name="PUNCH_PREPARE" />
+    <state item="62" id="8" name="STEP_HIT" />
+    <state item="62" id="9" name="PUNCH" />
+    <state item="62" id="10" name="RUN" />
+    <state item="62" id="11" name="DEATH" />
+    <state item="62" id="12" name="CLIMB_2_CLICKS" />
+    <state item="62" id="13" name="CLIMB_3_CLICKS" />
+    <state item="62" id="14" name="CLIMB_4_CLICKS" />
+    <state item="62" id="15" name="JUMP_OFF_4_CLICKS" />
+
+    <!-- MP with sighted gun and night sight -->
+    <state item="63" id="0" name="EMPTY" />
+    <state item="63" id="1" name="STOP" />
+    <state item="63" id="2" name="WALK" />
+    <state item="63" id="3" name="RUN" />
+    <state item="63" id="4" name="WAIT" />
+    <state item="63" id="5" name="SIGHT_SHOOT" />
+    <state item="63" id="6" name="WALK_SHOOT" />
+    <state item="63" id="7" name="DEATH" />
+    <state item="63" id="8" name="SIGHT_AIM" />
+    <state item="63" id="9" name="WALK_AIM" />
+    <state item="63" id="10" name="HOLD_AIM" />
+    <state item="63" id="11" name="HOLD_SHOOT" />
+    <state item="63" id="12" name="KNEEL_AIM" />
+    <state item="63" id="13" name="KNEEL_SHOOT" />
+    <state item="63" id="14" name="KNEEL_STOP" />
+    
+    <!-- Temple Statue -->
+    <state item="70" id="0" name="IDLE "/>
+    <state item="70" id="1" name="WALK_FORWARD "/>
+    <state item="70" id="2" name="GUARD_IDLE "/>
+    <state item="70" id="3" name="WALK_FORWARD_GUARDING "/>
+    <state item="70" id="4" name="INACTIVE "/>
+    <state item="70" id="5" name="ATTACK_GRAB "/>
+    <state item="70" id="6" name="KILL "/>
+    <state item="70" id="7" name="ATTACK "/>
+    <state item="70" id="8" name="WALK_BACK "/>
+    <state item="70" id="9" name="DEATH "/>
+</states>

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Threading;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -64,7 +65,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _limits.Add(limit, TrCatalog.GetLimit(level.Settings.GameVersion, limit));
         }
 
-        public override CompilerStatistics CompileLevel()
+        public override CompilerStatistics CompileLevel(CancellationToken cancelToken)
         {
             ReportProgress(0, "Tomb Engine Level Compiler");
 
@@ -78,7 +79,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Prepare level data in parallel to the sounds
             ConvertWad2DataToTombEngine();
-            BuildRooms();
+
+            cancelToken.ThrowIfCancellationRequested();
+
+            BuildRooms(cancelToken);
+
+            cancelToken.ThrowIfCancellationRequested();
 
             // Compile textures
             ReportProgress(30, "Packing textures");
@@ -86,25 +92,39 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
-            
             GetAllReachableRooms();
+
+            cancelToken.ThrowIfCancellationRequested();
+
             BuildPathFindingData();
+
+            cancelToken.ThrowIfCancellationRequested();
+
             PrepareSoundSources();
             PrepareItems();
             BuildCamerasAndSinks();
+
+            cancelToken.ThrowIfCancellationRequested();
+
             BuildFloorData();
             BuildSprites();
-
             PrepareRoomsBuckets();
             PrepareMeshBuckets();
+
+            cancelToken.ThrowIfCancellationRequested();
 
             _progressReporter.ReportInfo("\nWriting level file...\n");
 
             WriteLevelTombEngine();
+
+            cancelToken.ThrowIfCancellationRequested();
+
             CopyNodeScripts();
             
             // Needed to make decision about backup (delete or restore)
-            _compiledSuccessfully = true;
+            _compiledSuccessfully = !cancelToken.IsCancellationRequested;
+
+            _progressReporter.ReportInfo("\nOutput file: " + _finalDest);
 
             // Return statistics
             return new CompilerStatistics
@@ -369,12 +389,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private short GetMostDownFloor(Room room, int x, int z)
-        {
-            FindBottomFloor(ref room, ref x, ref z);
-            return (short)(_tempRooms[room].AuxSectors[x, z].LowestFloor * (short)Level.HeightUnit);
-        }
-
         private bool FindMonkeyFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
@@ -458,7 +472,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void CopyNodeScripts()
         {
-            var scriptDirectory = Path.Combine(Path.GetDirectoryName(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)), 
+            var scriptDirectory = Path.Combine(_level.Settings.MakeAbsolute(_level.Settings.GameDirectory), 
                                                ScriptingUtils.GameNodeScriptPath);
 
             if (!Directory.Exists(ScriptingUtils.NodeScriptPath))
@@ -468,7 +482,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             if (!Directory.Exists(scriptDirectory))
+            {
                 Directory.CreateDirectory(scriptDirectory);
+            }
             else
             {
                 foreach (var file in Directory.GetFiles(scriptDirectory))
@@ -488,7 +504,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     File.SetAttributes(dest, FileAttributes.Normal);
 
                 File.Copy(src, dest, true);
-                File.SetAttributes(dest, FileAttributes.ReadOnly);
             });
         }
 

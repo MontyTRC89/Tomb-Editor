@@ -114,7 +114,7 @@ namespace TombLib.Graphics
                 BuildAnimationPose(child, AnimationTransforms[node.Index], frame1, frame2, k);
         }
 
-        public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, VectorInt2> allocateTexture, bool correctTexture)
+        public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correctTexture)
         {
             AnimatedModel model = new AnimatedModel(device);
             List<WadBone> bones = mov.Bones;  

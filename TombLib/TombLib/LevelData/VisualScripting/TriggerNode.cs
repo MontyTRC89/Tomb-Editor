@@ -25,6 +25,7 @@ namespace TombLib.LevelData.VisualScripting
         public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
         public int Size { get; set; } = DefaultSize;
         public Vector3 Color { get; set; } = Vector3.Zero;
+        public bool Locked { get; set; } = false;
 
         public string Function { get; set; } = string.Empty;
         public List<string> Arguments { get; private set; } = new List<string>();
@@ -61,7 +62,42 @@ namespace TombLib.LevelData.VisualScripting
 
             return hash;
         }
-    }
+
+        public void FixArguments(NodeFunction reference)
+        {
+            if (reference.Arguments.Count < Arguments.Count)
+            {
+                Arguments.RemoveRange(reference.Arguments.Count, Arguments.Count - reference.Arguments.Count);
+            }
+            else if (reference.Arguments.Count > Arguments.Count)
+            {
+                for (int i = Arguments.Count; i < reference.Arguments.Count; i++)
+                    Arguments.Add(reference.Arguments[i].DefaultValue);
+            }
+        }
+
+		public static List<TriggerNode> LinearizeNodes(List<TriggerNode> list)
+		{
+			var result = new List<TriggerNode>();
+
+			foreach (var node in list)
+				AddNodeToLinearizedList(node, result);
+
+			return result;
+		}
+
+		private static void AddNodeToLinearizedList(TriggerNode node, List<TriggerNode> list)
+		{
+			if (!list.Contains(node))
+				list.Add(node);
+
+			if (node.Next != null)
+				AddNodeToLinearizedList(node.Next, list);
+
+			if (node is TriggerNodeCondition && (node as TriggerNodeCondition).Else != null)
+				AddNodeToLinearizedList((node as TriggerNodeCondition).Else, list);
+		}
+	}
 
     // TriggerNodeAction implementation is similar to base one
 

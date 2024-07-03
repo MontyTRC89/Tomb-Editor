@@ -2,11 +2,13 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Controls.VisualScripting
 {
@@ -41,6 +43,14 @@ namespace TombLib.Controls.VisualScripting
         public event EventHandler LocatedItemFound;
         private void OnLocatedItemFound(IHasLuaName item)
             => LocatedItemFound?.Invoke(item, EventArgs.Empty);
+
+        public event EventHandler SoundtrackPlayed;
+        private void OnSoundtrackPlayed(string filename)
+            => SoundtrackPlayed?.Invoke(filename, EventArgs.Empty);
+
+        public event EventHandler SoundEffectPlayed;
+        private void OnSoundEffectPlayed(string sound)
+            => SoundEffectPlayed?.Invoke(sound, EventArgs.Empty);
 
         public new string Text 
         { 
@@ -77,12 +87,25 @@ namespace TombLib.Controls.VisualScripting
                     case ArgumentType.Volumes:
                     case ArgumentType.Cameras:
                     case ArgumentType.FlybyCameras:
-                        panelLocate.Size = new Size(cbList.Height, cbList.Height);
-                        panelLocate.Visible = true;
+                    case ArgumentType.SoundTracks:
+                    case ArgumentType.SoundEffects:
+                        panelAction.Size = new Size(cbList.Height, cbList.Height);
+                        panelAction.Visible = true;
+
+                        if (_argumentType == ArgumentType.SoundTracks ||
+                            _argumentType == ArgumentType.SoundEffects)
+                        {
+                            butAction.Image = Properties.Resources.actions_play_16;
+                        }
+                        else
+                        {
+                            butAction.Image = Properties.Resources.general_target_16;
+                        }
+
                         break;
 
                     default:
-                        panelLocate.Visible = false;
+                        panelAction.Visible = false;
                         break;
                 }
 
@@ -100,6 +123,14 @@ namespace TombLib.Controls.VisualScripting
                     foreach (var item in editor.CachedLuaFunctions)
                         cbList.Items.Add(new ComboBoxItem(item, "LevelFuncs." + item));
                     break;
+                case ArgumentType.VolumeEventSets:
+                    foreach (var item in editor.CachedVolumeEventSets)
+                        cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
+                    break;
+                case ArgumentType.GlobalEventSets:
+                    foreach (var item in editor.CachedGlobalEventSets)
+                        cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
+                    break;
                 case ArgumentType.Sinks:
                     foreach (var item in editor.CachedSinks)
                         cbList.Items.Add(new ComboBoxItem(item));
@@ -109,7 +140,7 @@ namespace TombLib.Controls.VisualScripting
                         cbList.Items.Add(new ComboBoxItem(item));
                     break;
                 case ArgumentType.Moveables:
-                    cbList.Items.Add(new ComboBoxItem("[ Volume activator ]", LuaSyntax.ActivatorNamePrefix));
+                    cbList.Items.Add(new ComboBoxItem("[ Activator ]", LuaSyntax.ActivatorNamePrefix));
                     foreach (var item in editor.CachedMoveables.Where(s => layout.CustomEnumeration.Count == 0 || 
                                                                            layout.CustomEnumeration.Any(e => s
                                                                             .WadObjectId.ShortName(TRVersion.Game.TombEngine)
@@ -139,11 +170,25 @@ namespace TombLib.Controls.VisualScripting
                     break;
                 case ArgumentType.SoundTracks:
                     foreach (var item in editor.CachedSoundTracks)
-                        cbList.Items.Add(new ComboBoxItem(item, TextExtensions.Quote(item)));
+                        cbList.Items.Add(new ComboBoxItem(Path.GetFileNameWithoutExtension(item), TextExtensions.Quote(item)));
                     break;
                 case ArgumentType.CompareOperator:
-                    foreach (var item in Enum.GetValues(typeof(ConditionType)).OfType<ConditionType>())
+                    foreach (var item in Enum.GetValues(typeof(ConditionType)))
                         cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
+                    break;
+                case ArgumentType.VolumeEvents:
+                    foreach (var item in Event.VolumeEventTypes)
+                        cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
+                    break;
+                case ArgumentType.GlobalEvents:
+                    foreach (var item in Event.GlobalEventTypes)
+                        cbList.Items.Add(new ComboBoxItem(item.ToString().SplitCamelcase(), cbList.Items.Count.ToString()));
+                    break;
+                case ArgumentType.SpriteSlots:
+                    foreach (var item in editor.CachedSpriteSlots.Where(s => layout.CustomEnumeration.Count == 0 ||
+                                                                             layout.CustomEnumeration.Any(e => s
+                                                                              .IndexOf(e, StringComparison.InvariantCultureIgnoreCase) != -1)))
+                        cbList.Items.Add(new ComboBoxItem(item, LuaSyntax.ObjectIDPrefix + LuaSyntax.Splitter + item));
                     break;
                 case ArgumentType.WadSlots:
                     foreach (var item in editor.CachedWadSlots.Where(s => layout.CustomEnumeration.Count == 0 || 
@@ -282,8 +327,11 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.Boolean:
                     {
                         bool result;
-                        if (!(bool.TryParse(source, out result)))
+                        if (float.TryParse(source, out float parsedInt))
+                            result = parsedInt == 0.0f ? false : true;
+                        else if (!bool.TryParse(source, out result))
                             result = false;
+
                         cbBool.Checked = result;
 
                         BoxBoolValue();
@@ -292,8 +340,11 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.Numerical:
                     {
                         float result;
-                        if (!(float.TryParse(source, out result)))
+                        if (bool.TryParse(source, out bool parsedBool))
+                            result = parsedBool ? 1.0f : 0.0f;
+                        else if (!(float.TryParse(source, out result)))
                             result = 0.0f;
+
                         try   { nudNumerical.Value = (decimal)Math.Round(result, nudNumerical.DecimalPlaces); }
                         catch { nudNumerical.Value = (decimal)result < nudNumerical.Minimum ? nudNumerical.Minimum : nudNumerical.Maximum; }
 
@@ -361,13 +412,29 @@ namespace TombLib.Controls.VisualScripting
                     }
                 default: // Lists
                     {
-                        var index = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
-                        if (index != null)
-                            cbList.SelectedItem = index;
-                        else if (cbList.Items.Count > 0)
-                            cbList.SelectedIndex = 0;
+                        float potentialIndex;
+                        if (bool.TryParse(source, out bool potentialValue))
+                            potentialIndex = potentialValue ? 1 : 0;
+                        else if (!float.TryParse(source, out potentialIndex))
+                            potentialIndex = -1;
+
+                        if (potentialIndex < 0 || potentialIndex >= cbList.Items.Count)
+                        {
+                            var item = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
+                            if (item != null)
+                                cbList.SelectedItem = item;
+                            else if (cbList.Items.Count > 0)
+                                cbList.SelectedIndex = 0;
+                            else
+                                cbList.SelectedIndex = -1;
+                        }
                         else
-                            cbList.SelectedIndex = -1;
+                        {
+                            if (cbList.Items.Count > 0)
+                                cbList.SelectedIndex = (int)potentialIndex;
+                            else
+                                cbList.SelectedIndex = -1;
+                        }
 
                         BoxListValue();
                         break;
@@ -465,16 +532,30 @@ namespace TombLib.Controls.VisualScripting
             }
         }
 
-        private void butLocate_Click(object sender, EventArgs e)
+        private void butAction_Click(object sender, EventArgs e)
         {
-            var item = LocateItem((Parent as VisibleNodeBase)?.Editor);
-            if (item == null)
+            if (cbList.Items.Count == 0 || cbList.SelectedIndex == -1)
                 return;
 
-            OnLocatedItemFound(item);
+            switch (_argumentType)
+            {
+                case ArgumentType.SoundEffects:
+                    OnSoundEffectPlayed(cbList.SelectedItem.ToString());
+                    break;
+
+                case ArgumentType.SoundTracks:
+                    OnSoundtrackPlayed(TextExtensions.Unquote((cbList.SelectedItem as ComboBoxItem).Value));
+                    break;
+
+                default:
+                    var item = LocateItem((Parent as VisibleNodeBase)?.Editor);
+                    if (item != null)
+                        OnLocatedItemFound(item);
+                    break;
+            }
         }
 
-        private void cbList_DragEnter(object sender, DragEventArgs e)
+        private void luaNameControl_DragEnter(object sender, DragEventArgs e)
         {
             if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) != null)
                 e.Effect = DragDropEffects.Copy;
@@ -490,10 +571,51 @@ namespace TombLib.Controls.VisualScripting
             if (string.IsNullOrEmpty(item.LuaName))
                 return;
 
-            var index = cbList.Items.OfType<ComboBoxItem>().IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
+            var list = cbList.Items.OfType<ComboBoxItem>();
+
+            var index = list.IndexOf(i => i.Value == TextExtensions.Quote(item.LuaName));
+
+            if (index == -1 && item is MoveableInstance)
+            {
+                var name = TrCatalog.GetMoveableName(item.Room.Level.Settings.GameVersion, (item as MoveableInstance).WadObjectId.TypeId);
+                index = list.IndexOf(i => i.DisplayText == name);
+            }
+
             if (index != -1)
+            {
                 cbList.SelectedIndex = index;
-            return;
+                return;
+            }
+        }
+
+        private void vector3Control_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
+
+            if (string.IsNullOrEmpty(item.LuaName))
+                return;
+
+            nudVector3X.Value = (decimal)item.WorldPosition.X;
+            nudVector3Y.Value = (decimal)-item.WorldPosition.Y;
+            nudVector3Z.Value = (decimal)item.WorldPosition.Z;
+        }
+
+        private void panelColor_DragEnter(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) != null)
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void panelColor_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) == null)
+                return;
+
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as IColorable;
+            panelColor.BackColor = (item.Color * 0.5f).ToWinFormsColor();
         }
 
         private void butMultiline_Click(object sender, EventArgs e)

@@ -10,6 +10,7 @@ using System.IO;
 using TombLib.LevelData.IO;
 using System.Collections.Generic;
 using TombLib.IO;
+using System.Threading;
 
 namespace SoundTool
 {
@@ -299,7 +300,7 @@ namespace SoundTool
             if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
                 return;
 
-            ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+            ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, CancellationToken.None, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
             _configuration.SoundTool_ReferenceProject = fileName;
             UpdateUI();
         }

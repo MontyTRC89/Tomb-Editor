@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -17,10 +18,10 @@ namespace TombLib.IO
 
         private readonly BinaryWriterFast _writer;
         private readonly Compression _compression;
-        private readonly int _compressionLevel;
+        private readonly CompressionLevel _compressionLevel;
         private readonly Stream _baseStream;
 
-        public ChunkWriter(byte[] magicNumber, Stream stream, Compression compression = Compression.None, int compressionLevel = ZLib.DefaultCompressionLevel)
+        public ChunkWriter(byte[] magicNumber, Stream stream, Compression compression = Compression.None, CompressionLevel compressionLevel = CompressionLevel.SmallestSize)
         {
             stream.Write(magicNumber, 0, magicNumber.Length);
             _compression = compression;

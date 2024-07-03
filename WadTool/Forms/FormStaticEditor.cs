@@ -302,7 +302,6 @@ namespace WadTool
             _static.VisibilityBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
             _static.CollisionBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
             _static.Version = DataVersion.GetNext();
-            _static.Mesh.CalculateNormals();
 
             panelRendering.Invalidate();
             UpdatePositionUI();

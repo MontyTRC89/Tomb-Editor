@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -231,11 +232,26 @@ namespace TombEditor.Controls.Panel3D
             base.Dispose(disposing);
         }
 
+        private IReadOnlyList<Keys> _subdivisionHighlightHotkeys;
+
         private void EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is Editor.InitEvent)
+            {
+                _subdivisionHighlightHotkeys = _editor.Configuration.UI_Hotkeys
+                    .Where(x => x.Key.StartsWith("HighlightSubdivision"))
+                        .SelectMany(kv => kv.Value.Select(hk => hk.Keys)).ToList();
+            }
+
             // Update FOV
             if (obj is Editor.ConfigurationChangedEvent)
+            {
                 Camera.FieldOfView = _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180);
+
+                _subdivisionHighlightHotkeys = _editor.Configuration.UI_Hotkeys
+                    .Where(x => x.Key.StartsWith("HighlightSubdivision"))
+                        .SelectMany(kv => kv.Value.Select(hk => hk.Keys)).ToList();
+            }
 
             // Move camera position with room movements
             if (obj is Editor.RoomPositionChangedEvent && _editor.Mode == EditorMode.Map2D && _currentRoomLastPos.HasValue)
@@ -352,6 +368,9 @@ namespace TombEditor.Controls.Panel3D
 
             if (obj is Editor.SelectedObjectChangedEvent)
                 _highlightedObjects = HighlightedObjects.Create(_editor.SelectedObject);
+
+            if (obj is Editor.HighlightedSubdivisionChangedEvent)
+                Invalidate(false);
         }
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
@@ -369,6 +388,9 @@ namespace TombEditor.Controls.Panel3D
 
             if (_editor.FlyMode && e.KeyCode == Keys.Menu)
                 e.Handled = true;
+
+            if (_editor.HighlightedSubdivision != 0 && _subdivisionHighlightHotkeys.Any(hk => hk.HasFlag(e.KeyCode)))
+                _editor.HighlightedSubdivision = 0;
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

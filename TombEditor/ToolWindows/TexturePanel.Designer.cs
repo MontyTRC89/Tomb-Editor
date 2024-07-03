@@ -33,7 +33,7 @@ namespace TombEditor.ToolWindows
             this.textureSelectionPanel = new System.Windows.Forms.Panel();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new TombLib.Controls.DarkSearchableComboBox();
-            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
+            this.panelTextureMap = new PanelTextureMapMain();
             this.panelTextureTools.SuspendLayout();
             this.textureSelectionPanel.SuspendLayout();
             this.SuspendLayout();
@@ -260,6 +260,6 @@ namespace TombEditor.ToolWindows
         private DarkUI.Controls.DarkButton butDeleteTexture;
         private DarkUI.Controls.DarkButton butBrowseTexture;
         private DarkUI.Controls.DarkButton butBumpMaps;
-        private PanelTextureMap panelTextureMap;
+        private PanelTextureMapMain panelTextureMap;
     }
 }

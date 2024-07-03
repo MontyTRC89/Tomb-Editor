@@ -1,0 +1,26 @@
+<sprite_sequences>
+    <sprite_sequence id="1353" name="SKY_GRAPHICS" />
+    <sprite_sequence id="1354" name="DEFAULT_SPRITES" />
+    <sprite_sequence id="1355" name="MISC_SPRITES" />
+    <sprite_sequence id="1356" name="CUSTOM_SPRITES" />
+    <sprite_sequence id="1360" name="FIRE_SPRITES" />
+    <sprite_sequence id="1361" name="SMOKE_SPRITES" />
+    <sprite_sequence id="1362" name="SPARK_SPRITE" />
+    <sprite_sequence id="1363" name="DRIP_SPRITE" />
+    <sprite_sequence id="1364" name="EXPLOSION_SPRITES" />
+    <sprite_sequence id="1365" name="MOTORBOAT_FOAM_SPRITES" />
+    <sprite_sequence id="1366" name="RUBBER_BOAT_WAVE_SPRITES" />
+    <sprite_sequence id="1367" name="SKIDOO_SNOW_TRAIL_SPRITES" />
+    <sprite_sequence id="1368" name="KAYAK_PADDLE_TRAIL_SPRITE" />
+    <sprite_sequence id="1369" name="KAYAK_WAKE_SPRTIES" />
+    <sprite_sequence id="1370" name="BINOCULAR_GRAPHIC" />
+    <sprite_sequence id="1371" name="LASER_SIGHT_GRAPHIC" />
+    <sprite_sequence id="1372" name="CAUSTICS_TEXTURES" />
+    <sprite_sequence id="1373" name="BAR_BORDER_GRAPHIC" />
+    <sprite_sequence id="1374" name="HEALTH_BAR_TEXTURE" />
+    <sprite_sequence id="1375" name="AIR_BAR_TEXTURE" />
+    <sprite_sequence id="1376" name="DASH_BAR_TEXTURE" />
+    <sprite_sequence id="1377" name="SFX_BAR_TEXTURE" />
+    <sprite_sequence id="1380" name="CROSSHAIR" />
+    <sprite_sequence id="1381" name="SPEEDOMETER" />
+</sprite_sequences>

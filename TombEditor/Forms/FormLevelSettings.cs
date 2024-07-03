@@ -651,6 +651,7 @@ namespace TombEditor.Forms
             // Update compiler options
             numPadding.Value = _levelSettings.TexturePadding;
             cbDither16BitTextures.Checked = _levelSettings.Dither16BitTextures;
+            cbCompressTextures.Checked = _levelSettings.CompressTextures;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
             cbUse32BitLighting.Checked = _levelSettings.Room32BitLighting;
@@ -688,7 +689,7 @@ namespace TombEditor.Forms
 
             // TR5 platform
             currentVersionToCheck = (_levelSettings.GameVersion == Game.TR5);
-            cbSampleRate.Visible = currentVersionToCheck;
+            panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
 
@@ -698,6 +699,7 @@ namespace TombEditor.Forms
             cbRemapAnimTextures.Enabled = !currentVersionToCheck; // TODO: This must be re-enabled on TEN side -- Lwmte, 29.01.23
             cbAgressiveTexturePacking.Enabled = !currentVersionToCheck;
             cbAgressiveFloordataPacking.Enabled = !currentVersionToCheck;
+            cbCompressTextures.Enabled = currentVersionToCheck;
             panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
             if (currentVersionToCheck)
             {
@@ -714,8 +716,8 @@ namespace TombEditor.Forms
 
             // TR4 and above
             currentVersionToCheck = (_levelSettings.GameVersion >= Game.TR4);
-            panelFont.Enabled = !currentVersionToCheck;
-            panelSky.Enabled = !currentVersionToCheck;
+            panelFont.Enabled = currentVersionToCheck;
+            panelSky.Enabled = currentVersionToCheck;
 
             // MAIN.SFX options
             currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
@@ -1738,6 +1740,12 @@ namespace TombEditor.Forms
             if (cmbSampleRate.SelectedIndex != -1 &&
                 int.TryParse(cmbSampleRate.SelectedItem.ToString(), out result))
                 _levelSettings.CustomSampleRate = result;
+            UpdateDialog();
+        }
+
+        private void cbCompressTextures_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.CompressTextures = cbCompressTextures.Checked;
             UpdateDialog();
         }
     }

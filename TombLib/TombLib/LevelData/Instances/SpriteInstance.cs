@@ -112,7 +112,7 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             return "Sprite '" + GetSequenceName() + "'" +
-                ", Room = " + (Room?.ToString() ?? "NULL") +
+                " (" + (Room?.ToString() ?? "NULL") + ")" +
                 ", X = " + SectorPosition.X +
                 ", Z = " + SectorPosition.Y;
         }

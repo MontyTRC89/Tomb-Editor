@@ -1,0 +1,211 @@
+<states>
+    <!-- Lara -->
+    <state item="0" id="139" name="SHIMMY_45_OUTER_LEFT" />
+    <state item="0" id="140" name="SHIMMY_45_OUTER_RIGHT" />
+    <state item="0" id="141" name="SHIMMY_45_INNER_LEFT" />
+    <state item="0" id="142" name="SHIMMY_45_INNER_RIGHT" />
+    <state item="0" id="143" name="SLOPE_CLIMB_IDLE" />
+    <state item="0" id="144" name="SLOPE_CLIMB_UP" />
+    <state item="0" id="145" name="SLOPE_CLIMB_DOWN " />
+    <state item="0" id="146" name="COGWHEEL_UNGRAB" />
+    <state item="0" id="147" name="STEP_UP" />
+    <state item="0" id="148" name="STEP_DOWN" />
+    <state item="0" id="149" name="STEP_BACK_DOWN" />
+    <state item="0" id="150" name="LADDER_DISMOUNT_LEFT" />
+    <state item="0" id="151" name="LADDER_DISMOUNT_RIGHT" />
+    <state item="0" id="152" name="TURN_LEFT_FAST" />
+    <state item="0" id="153" name="CRAWL_EXIT_DOWN_STEP" />
+    <state item="0" id="154" name="CRAWL_EXIT_JUMP" />
+    <state item="0" id="155" name="CRAWL_EXIT_FLIP" />
+    <state item="0" id="156" name="SLOPE_CLIMB_HANG" />
+    <state item="0" id="157" name="SLOPE_CLIMB_SHIMMY" />
+    <state item="0" id="158" name="SLOPE_CLIMB_START" />
+    <state item="0" id="159" name="SLOPE_CLIMB_STOP" />
+    <state item="0" id="160" name="SLOPE_CLIMB_END" />
+    <state item="0" id="161" name="CRAWL_STEP_UP" />
+    <state item="0" id="162" name="CRAWL_STEP_DOWN" />
+    <state item="0" id="163" name="MONKEY_BACK" />
+    <state item="0" id="164" name="VAULT" />
+    <state item="0" id="165" name="VAULT_2_STEPS" />
+    <state item="0" id="166" name="VAULT_3_STEPS" />
+    <state item="0" id="167" name="VAULT_1_STEP_CROUCH" />
+    <state item="0" id="168" name="VAULT_2_STEPS_CROUCH" />
+    <state item="0" id="169" name="VAULT_3_STEPS_CROUCH" />
+    <state item="0" id="170" name="SOFT_SPLAT" />
+    <state item="0" id="171" name="CROUCH_TURN_180" />
+    <state item="0" id="172" name="CRAWL_TURN_180" />
+    <state item="0" id="173" name="TURN_180" />
+    <state item="0" id="189" name="REMOVE_PUZZLE" />
+    <state item="0" id="190" name="PUSHABLE_EDGE_SLIP" />
+    <state item="0" id="191" name="SPRINT_SLIDE" />
+    
+    <!-- APE -->
+    <state item="102" id="1" name="IDLE" />
+    <state item="102" id="2" name="WALK_FORWARD" />
+    <state item="102" id="3" name="RUN_FORWARD" />
+    <state item="102" id="4" name="ATTACK" />
+    <state item="102" id="5" name="DEATH" />
+    <state item="102" id="6" name="POUND_CHEST" />
+    <state item="102" id="7" name="POUND_GROUND" />
+    <state item="102" id="8" name="RUN_LEFT" />
+    <state item="102" id="9" name="RUN_RIGHT" />
+    <state item="102" id="10" name="JUMP" />
+    <state item="102" id="11" name="VAULT" />
+    
+    <!-- COMPSOGNATHUS -->
+    <state item="113" id="0" name="IDLE" />
+    <state item="113" id="1" name="RUN" />
+    <state item="113" id="2" name="JUMP_ATTACK" />
+    <state item="113" id="3" name="ATTACK" />
+    
+    <!-- KNIFE THROWER -->
+    <state item="162" id="1" name= "IDLE" />
+    <state item="162" id="2" name= "WALK_FORWARD" />
+    <state item="162" id="3" name= "RUN_FORWARD" />
+    <state item="162" id="4" name= "WALK_KNIFE_ATTACK_LEFT_START" />
+    <state item="162" id="5" name= "WALK_KNIFE_ATTACK_LEFT_CONTINUE" />
+    <state item="162" id="6" name= "WALK_KNIFE_ATTACK_RIGHT_START" />
+    <state item="162" id="7" name= "WALK_KNIFE_ATTACK_RIGHT_CONTINUE" />
+    <state item="162" id="8" name= "IDLE_KNIFE_ATTACK_START" />
+    <state item="162" id="9" name= "IDLE_KNIFE_ATTACK_CONTINUE" />
+    <state item="162" id="10" name= "DEATH" />
+    
+    <!-- KOLD -->
+    <state item="219" id="0" name="DEATH" />
+    <state item="219" id="1" name="IDLE" />
+    <state item="219" id="2" name="WALK" />
+    <state item="219" id="3" name="RUN" />
+    <state item="219" id="4" name="AIM" />
+    <state item="219" id="6" name="SHOOT" />
+	
+	<!-- DRAGON_FRONT -->
+	
+	<state item="232" id="1" name="WALK" />
+	<state item="232" id="2" name="MOVE_LEFT" />
+	<state item="232" id="3" name="MOVE_RIGHT" />
+	<state item="232" id="4" name="AIM_1" />
+	<state item="232" id="5" name="FIRE_1" />
+	<state item="232" id="6" name="IDLE" />
+	<state item="232" id="7" name="TURN_LEFT" />
+	<state item="232" id="8" name="TURN_RIGHT" />
+	<state item="232" id="9" name="SWIPE_ATTACK_LEFT" />
+	<state item="232" id="10" name="SWIPE_ATTACK_RIGHT " />
+	<state item="232" id="11" name="DEFEAT" />
+	
+	<!-- DRAGON_BACK -->
+	
+	<state item="233" id="1" name="WALK" />
+	<state item="233" id="2" name="MOVE_LEFT" />
+	<state item="233" id="3" name="MOVE_RIGHT" />
+	<state item="233" id="4" name="AIM_1" />
+	<state item="233" id="5" name="FIRE_1" />
+	<state item="233" id="6" name="IDLE" />
+	<state item="233" id="7" name="TURN_LEFT" />
+	<state item="233" id="8" name="TURN_RIGHT" />
+	<state item="233" id="9" name="SWIPE_ATTACK_LEFT" />
+	<state item="233" id="10" name="SWIPE_ATTACK_RIGHT " />
+	<state item="233" id="11" name="DEFEAT" /> 	
+    
+    <!-- COWBOY -->
+    <state item="239" id="1" name="STOP" />
+    <state item="239" id="2" name="WALK" />
+    <state item="239" id="3" name="RUN" />
+    <state item="239" id="4" name="AIM" />
+    <state item="239" id="5" name="DEATH" />
+    <state item="239" id="6" name="SHOOT" />
+    
+    <!-- SHIVA -->
+    <state item="244" id="0" name="IDLE "/>
+    <state item="244" id="1" name="WALK_FORWARD "/>
+    <state item="244" id="2" name="GUARD_IDLE "/>
+    <state item="244" id="3" name="WALK_FORWARD_GUARDING "/>
+    <state item="244" id="4" name="INACTIVE "/>
+    <state item="244" id="5" name="ATTACK_GRAB "/>
+    <state item="244" id="6" name="KILL "/>
+    <state item="244" id="7" name="ATTACK "/>
+    <state item="244" id="8" name="WALK_BACK "/>
+    <state item="244" id="9" name="DEATH "/>
+    
+    <!-- WILLARD -->
+    <state item="246" id="0" name= "STOP" />
+    <state item="246" id="1" name= "WALK" />
+    <state item="246" id="2" name= "ATTACK" />
+    <state item="246" id="3" name= "KILL_LARA" />
+    <state item="246" id="4" name= "STUN_START" />
+    <state item="246" id="5" name= "STUN" />
+    <state item="246" id="6" name= "STUN_END" />
+    <state item="246" id="7" name= "WALK_ATTACK_RIGHT" />
+    <state item="246" id="8" name= "WALK_ATTACK_LEFT" />
+    <state item="246" id="9" name= "JUMP_TURN_180" />
+    <state item="246" id="10" name= "SHOOT" />
+    
+    <!-- CIVVY -->
+    <state item="247" id="1" name= "IDLE" />
+    <state item="247" id="2" name= "WALK" />
+    <state item="247" id="3" name= "ATTACK_WALKING_PUNCH" />
+    <state item="247" id="4" name= "AIM_WALKING_PUNCH" />
+    <state item="247" id="5" name= "WAIT" />
+    <state item="247" id="6" name= "AIM_FAR_PUNCH" />
+    <state item="247" id="7" name= "AIM_CLOSE_PUNCH" />
+    <state item="247" id="8" name= "ATTACK_FAR_PUNCH" />
+    <state item="247" id="9" name= "ATTACK_CLOSE_PUNCH" />
+    <state item="247" id="10" name= "RUN" />
+    <state item="247" id="11" name= "DEATH" />
+    <state item="247" id="12" name= "CLIMB_2CLICKS" />
+    <state item="247" id="13" name= "CLIMB_3CLICKS" />
+    <state item="247" id="14" name= "CLIMB_4CLICKS" />
+    <state item="247" id="15" name= "FALL_4CLICKS" />
+                    
+    <!-- IMP -->			
+    <state item="283" id="0" name= "WALK" />
+    <state item="283" id="1" name= "IDLE" />
+    <state item="283" id="2" name= "RUN" />
+    <state item="283" id="3" name= "SWIPE_ATTACK" />
+    <state item="283" id="5" name= "JUMP_ATTACK" />
+    <state item="283" id="6" name= "SCARED" />
+    <state item="283" id="7" name= "START_CLIMB" />
+    <state item="283" id="8" name= "START_ROLL" />
+    <state item="283" id="9" name= "DEATH" />
+    <state item="283" id="11" name= "THROW_STONES" />
+                
+    <!-- WASP_MUTANT -->
+    <state item="294" id="0" name= "FLY_IDLE" />
+    <state item="294" id="1" name= "FLY_IDLE_TO_IDLE" />
+    <state item="294" id="2" name= "IDLE" />
+    <state item="294" id="3" name= "IDLE_TO_FLY_IDLE" />
+    <state item="294" id="4" name= "ATTACK" />
+    <state item="294" id="5" name= "FALL" />
+    <state item="294" id="6" name= "DEATH" />
+    <state item="294" id="7" name= "FLY_FORWARD" />
+    
+    <!-- SKATEBOARD -->			
+    <state item="296" id="0" name="IDLE" />
+    <state item="296" id="1" name="SHOOT_IDLE" />
+    <state item="296" id="2" name="SKATE" />
+    <state item="296" id="3" name="SKATE_ACCELERATE" />
+    <state item="296" id="4" name="SKATE_SHOOT" />
+    <state item="296" id="5" name="DEATH" />
+    
+    <!-- SKATEBOARD_KID -->			
+    <state item="297" id="0" name="IDLE" />
+    <state item="297" id="1" name="SHOOT_IDLE" />
+    <state item="297" id="2" name="SKATE" />
+    <state item="297" id="3" name="SKATE_ACCELERATE" />
+    <state item="297" id="4" name="SKATE_SHOOT" />
+    <state item="297" id="5" name="DEATH" />
+    
+    <!-- WINSTON -->
+    <state item="298" id="1" name="IDLE" />
+    <state item="298" id="2" name="WALK_FORWARD" />
+    <state item="298" id="3" name="GUARD_1" />
+    <state item="298" id="4" name="GUARD_2" />
+    <state item="298" id="5" name="GUARD_3" />
+    <state item="298" id="6" name="RECOIL_1" />
+    <state item="298" id="7" name="RECOIL_2" />
+    <state item="298" id="8" name="RECOIL_3" />
+    <state item="298" id="9" name="DEFEAT_CONTINUE" />
+    <state item="298" id="10" name="DEFEAT_START" />
+    <state item="298" id="11" name="DEFEAT_RECOVER" />
+    <state item="298" id="12" name="BRUSH_OFF" />
+    <state item="298" id="13" name="DEFEAT_END" />
+</states>

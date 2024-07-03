@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -35,6 +36,11 @@ namespace TombLib.Utils
                 return true;
         }
 
+        public static string[] SplitParenthesis(this string source)
+        {
+            return Regex.Matches(source, @"[^{},]+|\{[^{}]*\}").Select(m => m.Value).ToArray();
+        }
+
         public static string SplitCamelcase(this string source)
         {
             return Regex.Replace(source, "([a-z](?=[A-Z])|[a-z](?=[0-9])|[A-Z](?=[A-Z][a-z]))", "$1 ");
@@ -65,6 +71,11 @@ namespace TombLib.Utils
                 source = string.Empty;
 
             return QuoteChar + source + QuoteChar;
+        }
+
+        public static string ToLinuxPath(string source)
+        {
+            return source.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 
         public static List<string> ExtractValues(string source)

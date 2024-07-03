@@ -17,14 +17,14 @@ namespace TombIDE.ScriptingStudio.Helpers
 			if (editorType == EditorType.Default)
 				editorType = GetDefaultEditorType(filePath);
 
-			if (IDE.Global.Project.GameVersion == TRVersion.Game.TR1)
+			if (IDE.Instance.Project.GameVersion == TRVersion.Game.TR1)
 			{
 				if (FileHelper.IsJson5File(filePath))
 					return typeof(Tomb1MainEditor);
 				else
 					return typeof(TextEditorBase);
 			}
-			else if (IDE.Global.Project.GameVersion == TRVersion.Game.TombEngine)
+			else if (IDE.Instance.Project.GameVersion == TRVersion.Game.TombEngine)
 			{
 				if (FileHelper.IsLuaFile(filePath))
 					return typeof(LuaEditor);
@@ -33,7 +33,7 @@ namespace TombIDE.ScriptingStudio.Helpers
 			}
 			else if (FileHelper.IsTextFile(filePath))
 			{
-				if (IDE.Global.Project.GameVersion == TRVersion.Game.TR2 || IDE.Global.Project.GameVersion == TRVersion.Game.TR3)
+				if (IDE.Instance.Project.GameVersion == TRVersion.Game.TR2 || IDE.Instance.Project.GameVersion == TRVersion.Game.TR3)
 				{
 					return typeof(GameFlowEditor);
 				}

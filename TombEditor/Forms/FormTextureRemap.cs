@@ -152,7 +152,7 @@ namespace TombEditor.Forms
             int roomTextureCount = 0;
             foreach (Room room in relevantRooms)
                 foreach (Block sector in room.Blocks)
-                    for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                    foreach (BlockFace face in sector.GetFaceTextures().Keys)
                     {
                         var currentTextureArea = sector.GetFaceTexture(face);
                         if (currentTextureArea.Texture == sourceTexture &&

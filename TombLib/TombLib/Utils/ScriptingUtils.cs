@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using TombLib.LevelData.VisualScripting;
 
 namespace TombLib.Utils
@@ -39,11 +39,14 @@ namespace TombLib.Utils
     {
         private const int _maxRecursionDepth = 32;
 
-        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase" };
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase", "OnLoop", "OnUseItem" };
 
         private const string _metadataPrefix = "!";
         private const string _enumSplitterStart = "[";
         private const string _enumSplitterEnd = "]";
+        private const string _defaultValueStart = "{";
+        private const string _defaultValueEnd = "}";
         private const char _tabChar = '\t';
 
         private const string _nodeIgnoreId = _metadataPrefix + "ignore";
@@ -54,10 +57,12 @@ namespace TombLib.Utils
         private const string _nodeDescriptionId = _metadataPrefix + "description";
         private const string _nodeLayoutNewLine = "newline";
 
-        public const string GameNodeScriptPath = "Scripts\\Engine\\NodeCatalogs\\";
-        public static string NodeScriptPath => Path.Combine(DefaultPaths.ProgramDirectory, "Catalogs\\TEN Node Catalogs\\");
+        public static string GameNodeScriptPath = Path.Combine("Scripts", "Engine", "NodeCatalogs");
+        public static string NodeScriptPath => Path.Combine(DefaultPaths.CatalogsDirectory, "TEN Node Catalogs");
 
-        public static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
+        public static readonly List<NodeFunction> NodeFunctions = GetAllNodeFunctions(NodeScriptPath);
+
+        private static List<NodeFunction> GetAllNodeFunctions(string path, List<NodeFunction> list = null, int depth = 0)
         {
             var result = list == null ? new List<NodeFunction>() : list;
 
@@ -66,7 +71,7 @@ namespace TombLib.Utils
 
             foreach (var file in Directory.GetFiles(path).Where(p => !p.StartsWith("_") && p.EndsWith(".lua"))) try
             {
-                var lines = File.ReadAllLines(file, Encoding.GetEncoding(1252));
+                var lines = File.ReadAllLines(file);
                 var nodeFunction = new NodeFunction();
                 bool ignore = false;
 
@@ -121,12 +126,13 @@ namespace TombLib.Utils
                                 {
                                     Type = ArgumentType.Numerical,
                                     CustomEnumeration = new List<string>(),
+                                    DefaultValue = string.Empty,
                                     Description = string.Empty,
                                     NewLine = false,
                                     Width = 100.0f
                                 };
 
-                                var parameters = s.Split(',').Select(st => st.Trim());
+                                var parameters = s.SplitParenthesis().Select(st => st.Trim());
                                 foreach (var p in parameters)
                                 {
                                     float width = 100.0f;
@@ -137,6 +143,8 @@ namespace TombLib.Utils
                                         argLayout.Width = width;
                                     else if (p.StartsWith(_enumSplitterStart) && p.EndsWith(_enumSplitterEnd))
                                         argLayout.CustomEnumeration.AddRange(p.Substring(1, p.Length - 2).Split('|').Select(st => st.Trim()));
+                                    else if (p.StartsWith(_defaultValueStart) && p.EndsWith(_defaultValueEnd))
+                                        argLayout.DefaultValue = p.Substring(1, p.Length - 2).Trim();
                                     else
                                         try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
                                         catch { argLayout.Description = p; }
@@ -186,6 +194,20 @@ namespace TombLib.Utils
                 continue;
             }
 
+            // Check for duplicate functions
+
+            var duplicates = result.GroupBy(f => f.Signature).Where(g => g.Count() > 1);
+            if (duplicates.Count() > 0)
+            {
+                var message = "Node catalogs contain a duplicate of function " + duplicates.First().First().Signature + ". " +
+                              "Review node catalogs and rename or remove duplicate.";
+#if DEBUG
+                throw new Exception(message);
+#else
+                logger.Warn(message);
+#endif
+            }
+
             return result;
         }
 
@@ -198,7 +220,7 @@ namespace TombLib.Utils
                 if (!File.Exists(path))
                     return result;
 
-                var lines = File.ReadAllLines(path, Encoding.GetEncoding(1252));
+                var lines = File.ReadAllLines(path);
 
                 foreach (string l in lines)
                 {

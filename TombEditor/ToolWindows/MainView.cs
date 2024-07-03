@@ -54,7 +54,7 @@ namespace TombEditor.ToolWindows
 
         public void RemoveToolbox(DarkFloatingToolbox toolbox)
         {
-            if(panel3D.Controls.Contains(toolbox))
+            if (panel3D.Controls.Contains(toolbox))
                 panel3D.Controls.Remove(toolbox);
         }
 
@@ -100,10 +100,16 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is Editor.StepHeightChangedEvent)
+                UpdateStepHeightCombo();
+
             if (obj is Editor.StatisticsChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
             {
                 UpdateStatistics();
+
+                if (obj is Editor.ConfigurationChangedEvent)
+                    panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
             }
 
             if (obj is Editor.ConfigurationChangedEvent)
@@ -183,6 +189,9 @@ namespace TombEditor.ToolWindows
                 butAddSphereVolume.Enabled = _editor.Level.IsTombEngine;
                 butDrawVolumes.Enabled     = _editor.Level.IsTombEngine; // We may safely hide it because it's not customizable
                 butAddSprite.Enabled       = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
+
+                panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
+                UpdateStepHeightCombo();
             }
 
             if (obj is Editor.MessageEvent)
@@ -198,6 +207,12 @@ namespace TombEditor.ToolWindows
                 butUndo.Image = state.UndoPossible && !state.UndoReversible ? Properties.Resources.general_undo_irreversible_16 : Properties.Resources.general_undo_16;
                 butRedo.Enabled = state.RedoPossible;
             }
+
+            // Suspend / resume rendering
+            if (obj is Editor.SuspendRenderingEvent)
+                panel3D.AllowRendering = false;
+            if (obj is Editor.ResumeRenderingEvent)
+                panel3D.AllowRendering = true;
         }
 
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
@@ -308,6 +323,29 @@ namespace TombEditor.ToolWindows
                     }
                 }
             }
+        }
+
+        private void UpdateStepHeightCombo()
+        {
+            comboStepHeight.SelectedIndex = _editor.Configuration.Editor_StepHeight switch
+            {
+                32 => 0,
+                64 => 1,
+                128 => 2,
+                256 => 3,
+                _ => -1
+            };
+        }
+
+        private void comboStepHeight_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _editor.Configuration.Editor_StepHeight = comboStepHeight.SelectedIndex switch
+            {
+                0 => 32,
+                1 => 64,
+                2 => 128,
+                _ => 256
+            };
         }
 
         private void toolStrip_MouseClick(object sender, MouseEventArgs e)

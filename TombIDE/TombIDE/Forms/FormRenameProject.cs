@@ -2,18 +2,18 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using TombIDE.Shared;
+using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE
 {
 	public partial class FormRenameProject : DarkForm
 	{
-		private Project _targetProject;
+		private IGameProject _targetProject;
 
 		#region Initialization
 
-		public FormRenameProject(Project targetProject)
+		public FormRenameProject(IGameProject targetProject)
 		{
 			_targetProject = targetProject;
 
@@ -46,17 +46,15 @@ namespace TombIDE
 				if (newName == _targetProject.Name)
 				{
 					// If the name hasn't changed, but the directory name is different and the user wants to rename it
-					if (Path.GetFileName(_targetProject.ProjectPath) != newName && renameDirectory)
+					if (Path.GetFileName(_targetProject.DirectoryPath) != newName && renameDirectory)
 					{
-						if (!Path.GetFileName(_targetProject.ProjectPath).Equals(newName, StringComparison.OrdinalIgnoreCase))
+						if (!Path.GetFileName(_targetProject.DirectoryPath).Equals(newName, StringComparison.OrdinalIgnoreCase))
 						{
-							string newDirectory = Path.Combine(Path.GetDirectoryName(_targetProject.ProjectPath), newName);
+							string newDirectory = Path.Combine(Path.GetDirectoryName(_targetProject.DirectoryPath), newName);
 
 							if (Directory.Exists(newDirectory))
-								throw new ArgumentException("A directory with the same name already exists in the root directory.");
+								throw new ArgumentException("A directory with the same name already exists in the parent directory.");
 						}
-
-						HandleDirectoryRenaming();
 
 						_targetProject.Rename(newName, true);
 						_targetProject.Save();
@@ -66,26 +64,10 @@ namespace TombIDE
 				}
 				else
 				{
-					// Check if a project with the same name already exists on the list
-					foreach (Project project in XmlHandling.GetProjectsFromXml())
-					{
-						if (project.Name.Equals(newName, StringComparison.OrdinalIgnoreCase))
-						{
-							// Check if the project we found IS the current _ide.Project
-							if (project.ProjectPath.Equals(_targetProject.ProjectPath, StringComparison.OrdinalIgnoreCase))
-							{
-								if (renameDirectory)
-									HandleDirectoryRenaming();
+					string newDirectory = Path.Combine(Path.GetDirectoryName(_targetProject.DirectoryPath), newName);
 
-								break;
-							}
-						}
-					}
-
-					string newDirectory = Path.Combine(Path.GetDirectoryName(_targetProject.ProjectPath), newName);
-
-					if (renameDirectory && Directory.Exists(newDirectory))
-						throw new ArgumentException("A directory with the same name already exists in the root directory.");
+					if (renameDirectory && Directory.Exists(newDirectory) && !newDirectory.Equals(_targetProject.DirectoryPath, StringComparison.OrdinalIgnoreCase))
+						throw new ArgumentException("A directory with the same name already exists in the parent directory.");
 
 					_targetProject.Rename(newName, renameDirectory);
 					_targetProject.Save();
@@ -94,25 +76,10 @@ namespace TombIDE
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
 				DialogResult = DialogResult.None;
 			}
 		}
 
 		#endregion Events
-
-		#region Methods
-
-		private void HandleDirectoryRenaming()
-		{
-			// Allow renaming directories to the same name, but with different letter cases
-			// To do that, we must add a "_TEMP" suffix at the end of the directory name
-			// _ide.Project.Rename() will then handle the rest
-
-			string tempPath = _targetProject.ProjectPath + "_TEMP";
-			Directory.Move(_targetProject.ProjectPath, tempPath);
-		}
-
-		#endregion Methods
 	}
 }

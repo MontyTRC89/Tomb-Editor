@@ -18,11 +18,11 @@ namespace TombEditor.Controls
         {
             this.components = new System.ComponentModel.Container();
             this.darkPanel3 = new DarkUI.Controls.DarkPanel();
+            this.rbLevelScript = new DarkUI.Controls.DarkRadioButton();
             this.lblNotify = new DarkUI.Controls.DarkLabel();
             this.butUnassign = new DarkUI.Controls.DarkButton();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.rbNodeEditor = new DarkUI.Controls.DarkRadioButton();
-            this.rbLevelScript = new DarkUI.Controls.DarkRadioButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.nudCallCount = new DarkUI.Controls.DarkNumericUpDown();
             this.tbArgument = new DarkUI.Controls.DarkTextBox();
@@ -35,6 +35,7 @@ namespace TombEditor.Controls
             this.butChangeNodeColor = new DarkUI.Controls.DarkButton();
             this.butLinkSelectedNodes = new DarkUI.Controls.DarkButton();
             this.butExport = new DarkUI.Controls.DarkButton();
+            this.butLockNodes = new DarkUI.Controls.DarkButton();
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabConstructor = new System.Windows.Forms.TabPage();
             this.panelNodeControls = new DarkUI.Controls.DarkPanel();
@@ -69,6 +70,17 @@ namespace TombEditor.Controls
             this.darkPanel3.Name = "darkPanel3";
             this.darkPanel3.Size = new System.Drawing.Size(758, 25);
             this.darkPanel3.TabIndex = 21;
+            // 
+            // rbLevelScript
+            // 
+            this.rbLevelScript.AutoSize = true;
+            this.rbLevelScript.Location = new System.Drawing.Point(103, 5);
+            this.rbLevelScript.Name = "rbLevelScript";
+            this.rbLevelScript.Size = new System.Drawing.Size(133, 17);
+            this.rbLevelScript.TabIndex = 0;
+            this.rbLevelScript.Text = "Level script functions";
+            this.toolTip.SetToolTip(this.rbLevelScript, "Select from functions in level script file");
+            this.rbLevelScript.CheckedChanged += new System.EventHandler(this.rbLevelScript_CheckedChanged);
             // 
             // lblNotify
             // 
@@ -122,17 +134,6 @@ namespace TombEditor.Controls
             this.rbNodeEditor.Text = "Node editor";
             this.toolTip.SetToolTip(this.rbNodeEditor, "Visually construct a trigger");
             this.rbNodeEditor.CheckedChanged += new System.EventHandler(this.rbNodeEditor_CheckedChanged);
-            // 
-            // rbLevelScript
-            // 
-            this.rbLevelScript.AutoSize = true;
-            this.rbLevelScript.Location = new System.Drawing.Point(103, 5);
-            this.rbLevelScript.Name = "rbLevelScript";
-            this.rbLevelScript.Size = new System.Drawing.Size(131, 17);
-            this.rbLevelScript.TabIndex = 0;
-            this.rbLevelScript.Text = "Level script functions";
-            this.toolTip.SetToolTip(this.rbLevelScript, "Select from functions in level script file");
-            this.rbLevelScript.CheckedChanged += new System.EventHandler(this.rbLevelScript_CheckedChanged);
             // 
             // nudCallCount
             // 
@@ -193,7 +194,7 @@ namespace TombEditor.Controls
             // 
             this.butDeleteNode.Checked = false;
             this.butDeleteNode.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.butDeleteNode.Location = new System.Drawing.Point(273, 1);
+            this.butDeleteNode.Location = new System.Drawing.Point(302, 1);
             this.butDeleteNode.Name = "butDeleteNode";
             this.butDeleteNode.Size = new System.Drawing.Size(23, 23);
             this.butDeleteNode.TabIndex = 7;
@@ -221,7 +222,7 @@ namespace TombEditor.Controls
             // 
             this.butClearNodes.Checked = false;
             this.butClearNodes.Image = global::TombEditor.Properties.Resources.actions_delete_16;
-            this.butClearNodes.Location = new System.Drawing.Point(302, 1);
+            this.butClearNodes.Location = new System.Drawing.Point(331, 1);
             this.butClearNodes.Name = "butClearNodes";
             this.butClearNodes.Size = new System.Drawing.Size(23, 23);
             this.butClearNodes.TabIndex = 8;
@@ -261,6 +262,28 @@ namespace TombEditor.Controls
             this.toolTip.SetToolTip(this.butLinkSelectedNodes, "Link selected nodes, if possible");
             this.butLinkSelectedNodes.Click += new System.EventHandler(this.butLinkSelectedNodes_Click);
             // 
+            // butExport
+            // 
+            this.butExport.Checked = false;
+            this.butExport.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.butExport.Location = new System.Drawing.Point(360, 1);
+            this.butExport.Name = "butExport";
+            this.butExport.Size = new System.Drawing.Size(23, 23);
+            this.butExport.TabIndex = 12;
+            this.toolTip.SetToolTip(this.butExport, "Export lua script to clipboard");
+            this.butExport.Click += new System.EventHandler(this.butExport_Click);
+            // 
+            // butLockNodes
+            // 
+            this.butLockNodes.Checked = false;
+            this.butLockNodes.Image = global::TombEditor.Properties.Resources.general_Lock_16;
+            this.butLockNodes.Location = new System.Drawing.Point(273, 1);
+            this.butLockNodes.Name = "butLockNodes";
+            this.butLockNodes.Size = new System.Drawing.Size(23, 23);
+            this.butLockNodes.TabIndex = 13;
+            this.toolTip.SetToolTip(this.butLockNodes, "Lock selected nodes from modifying");
+            this.butLockNodes.Click += new System.EventHandler(this.butLockNodes_Click);
+            // 
             // tabbedContainer
             // 
             this.tabbedContainer.Controls.Add(this.tabConstructor);
@@ -287,6 +310,7 @@ namespace TombEditor.Controls
             // 
             // panelNodeControls
             // 
+            this.panelNodeControls.Controls.Add(this.butLockNodes);
             this.panelNodeControls.Controls.Add(this.butExport);
             this.panelNodeControls.Controls.Add(this.butLinkSelectedNodes);
             this.panelNodeControls.Controls.Add(this.butChangeNodeColor);
@@ -310,7 +334,7 @@ namespace TombEditor.Controls
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(613, 4);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(62, 13);
             this.darkLabel1.TabIndex = 2;
             this.darkLabel1.Text = "Call count:";
             // 
@@ -327,6 +351,7 @@ namespace TombEditor.Controls
             this.nodeEditor.Location = new System.Drawing.Point(3, 5);
             this.nodeEditor.Name = "nodeEditor";
             this.nodeEditor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
+            this.nodeEditor.ShowGrips = false;
             this.nodeEditor.Size = new System.Drawing.Size(744, 310);
             this.nodeEditor.TabIndex = 0;
             // 
@@ -335,7 +360,7 @@ namespace TombEditor.Controls
             this.lblWait.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblWait.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblWait.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblWait.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblWait.Location = new System.Drawing.Point(3, 5);
             this.lblWait.Name = "lblWait";
@@ -349,10 +374,10 @@ namespace TombEditor.Controls
             this.tabLevelScript.Controls.Add(this.lstFunctions);
             this.tabLevelScript.Controls.Add(this.panelFunctionControls);
             this.tabLevelScript.Controls.Add(this.lblListNotify);
-            this.tabLevelScript.Location = new System.Drawing.Point(4, 22);
+            this.tabLevelScript.Location = new System.Drawing.Point(4, 24);
             this.tabLevelScript.Name = "tabLevelScript";
             this.tabLevelScript.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLevelScript.Size = new System.Drawing.Size(750, 349);
+            this.tabLevelScript.Size = new System.Drawing.Size(750, 347);
             this.tabLevelScript.TabIndex = 12;
             this.tabLevelScript.Text = "Level script functions";
             this.tabLevelScript.UseVisualStyleBackColor = true;
@@ -376,7 +401,7 @@ namespace TombEditor.Controls
             this.panelFunctionControls.Controls.Add(this.darkLabel2);
             this.panelFunctionControls.Controls.Add(this.tbArgument);
             this.panelFunctionControls.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelFunctionControls.Location = new System.Drawing.Point(3, 321);
+            this.panelFunctionControls.Location = new System.Drawing.Point(3, 319);
             this.panelFunctionControls.Name = "panelFunctionControls";
             this.panelFunctionControls.Size = new System.Drawing.Size(744, 25);
             this.panelFunctionControls.TabIndex = 1;
@@ -388,7 +413,7 @@ namespace TombEditor.Controls
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(613, 4);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel3.Size = new System.Drawing.Size(62, 13);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "Call count:";
             // 
@@ -398,7 +423,7 @@ namespace TombEditor.Controls
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(0, 4);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(61, 13);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Argument:";
             // 
@@ -408,23 +433,12 @@ namespace TombEditor.Controls
             this.lblListNotify.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblListNotify.Location = new System.Drawing.Point(3, 3);
             this.lblListNotify.Name = "lblListNotify";
-            this.lblListNotify.Size = new System.Drawing.Size(744, 343);
+            this.lblListNotify.Size = new System.Drawing.Size(744, 341);
             this.lblListNotify.TabIndex = 2;
             this.lblListNotify.Text = "Function list notify";
             this.lblListNotify.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblListNotify.EnabledChanged += new System.EventHandler(this.lblListNotify_EnabledChanged);
             this.lblListNotify.Click += new System.EventHandler(this.lblListNotify_Click);
-            // 
-            // butExport
-            // 
-            this.butExport.Checked = false;
-            this.butExport.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butExport.Location = new System.Drawing.Point(331, 1);
-            this.butExport.Name = "butExport";
-            this.butExport.Size = new System.Drawing.Size(23, 23);
-            this.butExport.TabIndex = 12;
-            this.toolTip.SetToolTip(this.butExport, "Export lua script to clipboard");
-            this.butExport.Click += new System.EventHandler(this.butExport_Click);
             // 
             // TriggerManager
             // 
@@ -432,7 +446,7 @@ namespace TombEditor.Controls
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabbedContainer);
             this.Controls.Add(this.darkPanel3);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Name = "TriggerManager";
             this.Size = new System.Drawing.Size(758, 400);
             this.darkPanel3.ResumeLayout(false);
@@ -481,5 +495,6 @@ namespace TombEditor.Controls
         private DarkUI.Controls.DarkButton butLinkSelectedNodes;
         private DarkUI.Controls.DarkLabel lblWait;
         private DarkUI.Controls.DarkButton butExport;
+        private DarkUI.Controls.DarkButton butLockNodes;
     }
 }

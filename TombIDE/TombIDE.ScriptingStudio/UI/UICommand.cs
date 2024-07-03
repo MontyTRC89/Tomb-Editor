@@ -11,6 +11,7 @@
 		SaveAs,
 		SaveAll,
 		Build,
+		Exit,
 
 		// Edit:
 
@@ -64,6 +65,9 @@
 
 		// Help:
 
+		ScriptingDocumentation,
+		Tomb3ExtraCommands,
+		LuaBasics,
 		About,
 
 		// Other:

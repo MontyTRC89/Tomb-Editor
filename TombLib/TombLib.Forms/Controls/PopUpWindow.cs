@@ -63,9 +63,9 @@ namespace TombLib.Forms
                 offset -= shift;
 
             // Clamp position
-            var bounds = Screen.FromControl(this).Bounds;
-            var x = Math.Min(_initialPosition.X + Width, bounds.Width) - Width;
-            var y = Math.Min(_initialPosition.Y + Height, bounds.Height) - Height;
+            var bounds = Screen.FromPoint(_initialPosition).Bounds;
+            var x = Math.Min(_initialPosition.X + Width, bounds.X + bounds.Width) - Width;
+            var y = Math.Min(_initialPosition.Y + Height, bounds.Y + bounds.Height) - Height;
             _initialPosition = new Point(x, y);
 
             // Smoothly descend pop-up window from parent control using sine function

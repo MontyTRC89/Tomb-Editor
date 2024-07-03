@@ -156,7 +156,7 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
-        xcopy /s /y /i /q "$(MSBuildProjectDirectory)\..\Libs\Native\" "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Native\"
+        xcopy /s /y /i /q "$(MSBuildProjectDirectory)\..\Libs\Native\$(Platform)" "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\"
         xcopy /s /y /i /q "$(MSBuildProjectDirectory)\Resources\assets\" "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\Assets\"
         rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\linux-x64\"
         rmdir /s /q "$(MSBuildProjectDirectory)\$(OutputPath)$(TargetFramework)\runtimes\linux-x86\"

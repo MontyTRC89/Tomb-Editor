@@ -19,12 +19,12 @@
         {
             return "Camera " +
                 (CameraMode == CameraInstanceMode.Locked ? "Locked" : (CameraMode == CameraInstanceMode.Sniper ? "Sniper" : "")) +
-                ", Room = " + (Room?.ToString() ?? "NULL") +
+                "(" + (Room?.ToString() ?? "NULL") + ")" +
                 ", X = " + SectorPosition.X +
                 ", Z = " + SectorPosition.Y +
                 GetScriptIDOrName(false);
         }
 
-        public string ShortName() => (CameraMode == CameraInstanceMode.Locked ? "Locked camera" : (CameraMode == CameraInstanceMode.Sniper ? "Sniper camera" : "Camera")) + ", Room = " + (Room?.ToString() ?? "NULL") + GetScriptIDOrName();
+        public string ShortName() => (CameraMode == CameraInstanceMode.Locked ? "Locked camera" : (CameraMode == CameraInstanceMode.Sniper ? "Sniper camera" : "Camera"))  + GetScriptIDOrName() + " (" + (Room?.ToString() ?? "NULL") + ")";
     }
 }

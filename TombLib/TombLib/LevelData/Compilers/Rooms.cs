@@ -105,9 +105,18 @@ namespace TombLib.LevelData.Compilers
                     {
                         if (_vertexColors.ContainsKey(sig))
                         {
-                            v.Lighting1 = (ushort)_vertexColors[sig];
-                            v.Lighting2 = (ushort)_vertexColors[sig];
-                            trRoom.Vertices[i] = v;
+                            if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
+                            {
+                                v.Lighting1 = PackTo24BitLow(_vertexColors[sig]);
+                                v.Lighting2 = PackTo24BitHigh(_vertexColors[sig]);
+                                trRoom.Vertices[i] = v;
+                            }
+                            else
+                            {
+                                v.Lighting1 = (ushort)_vertexColors[sig];
+                                v.Lighting2 = (ushort)_vertexColors[sig];
+                                trRoom.Vertices[i] = v;
+                            }
                         }
                     }
                     else
@@ -166,8 +175,8 @@ namespace TombLib.LevelData.Compilers
                 {
                     X = room.WorldPos.X,
                     Z = room.WorldPos.Z,
-                    YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner() * Level.HeightUnit),
-                    YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * Level.HeightUnit)
+                    YTop = -(room.WorldPos.Y + room.GetHighestCorner()),
+                    YBottom = -(room.WorldPos.Y + room.GetLowestCorner())
                 },
                 NumXSectors = checked((ushort)room.NumXSectors),
                 NumZSectors = checked((ushort)room.NumZSectors),
@@ -336,7 +345,7 @@ namespace TombLib.LevelData.Compilers
                 if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
-                            for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                            foreach (BlockFace face in room.Blocks[x, z].GetFaceTextures().Keys)
                             {
                                 var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
                                 var shape = room.GetFaceShape(x, z, face);
@@ -423,7 +432,7 @@ namespace TombLib.LevelData.Compilers
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
+                                        if (face == BlockFace.Ceiling || face == BlockFace.Ceiling_Triangle2)
                                             texture.Mirror(true);
 
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
@@ -565,7 +574,13 @@ namespace TombLib.LevelData.Compilers
                             ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
                             ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
 
-                            var texture = poly.Texture;
+							// Avoid degenerate triangles
+							if (new ushort[] { index0, index1, index2, index3 }.Distinct().Count() < 3)
+							{
+								continue;
+							}
+
+							var texture = poly.Texture;
                             texture.ClampToBounds();
 
                             var doubleSided = _level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
@@ -713,8 +728,14 @@ namespace TombLib.LevelData.Compilers
                                 ushort index1 = (ushort)(indexList[baseIndex + currentVertexIndex + 1]);
                                 ushort index2 = (ushort)(indexList[baseIndex + currentVertexIndex + 2]);
 
-                                // TODO Move texture area into the mesh
-                                TextureArea texture = new TextureArea();
+								// Avoid degenerate triangles
+								if (new ushort[] { index0, index1, index2 }.Distinct().Count() < 3)
+								{
+									continue;
+								}
+
+								// TODO Move texture area into the mesh
+								TextureArea texture = new TextureArea();
                                 texture.DoubleSided = submesh.Key.DoubleSided;
                                 texture.BlendMode = submesh.Key.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
                                 texture.Texture = submesh.Value.Material.Texture;
@@ -1280,12 +1301,12 @@ namespace TombLib.LevelData.Compilers
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
-                                                        Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) == 2 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) == 1 ||
+                                                        Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) == 2))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeX)) > 2 || Math.Abs(Clicks.FromWorld(block.Floor.IfQuadSlopeZ)) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
@@ -1294,35 +1315,29 @@ namespace TombLib.LevelData.Compilers
                     if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
                         block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
                     {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
+                        sector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Max));
+                        sector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Ceiling.Min));
                         if (sector.Floor < sector.Ceiling) sector.Floor = sector.Ceiling;
                     }
                     else
                     {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
+                        sector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Max));
+                        sector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Ceiling.Min));
                     }
 
-                    aux.LowestFloor = (sbyte)(-room.Position.Y - block.Floor.Min);
-                    var q0 = block.Floor.XnZp;
-                    var q1 = block.Floor.XpZp;
-                    var q2 = block.Floor.XpZn;
-                    var q3 = block.Floor.XnZn;
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(block.Floor.Min));
+                    var q0 = Clicks.FromWorld(block.Floor.XnZp);
+                    var q1 = Clicks.FromWorld(block.Floor.XpZp);
+                    var q2 = Clicks.FromWorld(block.Floor.XpZn);
+                    var q3 = Clicks.FromWorld(block.Floor.XnZn);
 
-                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && block.Floor.IfQuadSlopeX == 0 &&
-                        block.Floor.IfQuadSlopeZ == 0)
+                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && Clicks.FromWorld(block.Floor.IfQuadSlopeX) == 0 &&
+                        Clicks.FromWorld(block.Floor.IfQuadSlopeZ) == 0)
                     {
                         if (!block.Floor.SplitDirectionIsXEqualsZ)
-                        {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XnZp,
-                                                           block.Floor.XpZn));
-                        }
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XnZp, block.Floor.XpZn)));
                         else
-                        {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XpZp,
-                                                           block.Floor.XnZn));
-                        }
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(block.Floor.XpZp, block.Floor.XnZn)));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
@@ -1457,11 +1472,11 @@ namespace TombLib.LevelData.Compilers
                         var relevantDirection = relevantEdges[i];
                         var oppositeRelevantDirection = oppositeRelevantEdges[i];
 
-                        var floor   = Level.HeightUnit * block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
-                        var ceiling = Level.HeightUnit * block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var floor   = block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var ceiling = block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
 
-                        var floorOpposite   = Level.HeightUnit * oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
-                        var ceilingOpposite = Level.HeightUnit * oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var floorOpposite   = oppositeBlock.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var ceilingOpposite = oppositeBlock.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
 
                         floor = Math.Min(floor, floorOpposite);
                         ceiling = Math.Max(ceiling, ceilingOpposite);
@@ -1530,8 +1545,8 @@ namespace TombLib.LevelData.Compilers
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
         private struct PortalPlane
         {
-            public readonly short SlopeX;
-            public readonly short SlopeZ;
+            public readonly int SlopeX;
+            public readonly int SlopeZ;
             public readonly int Height;
 
             public int EvaluateHeight(int x, int z)
@@ -1539,10 +1554,10 @@ namespace TombLib.LevelData.Compilers
                 return Height + x * SlopeX + z * SlopeZ;
             }
 
-            public PortalPlane(int ankerX, short ankerY, int ankerZ, int slopeX, int slopeZ)
+            public PortalPlane(int ankerX, int ankerY, int ankerZ, int slopeX, int slopeZ)
             {
-                SlopeX = (short)slopeX;
-                SlopeZ = (short)slopeZ;
+                SlopeX = slopeX;
+                SlopeZ = slopeZ;
                 Height = ankerY - ankerX * slopeX - ankerZ * slopeZ;
             }
 
@@ -1643,10 +1658,10 @@ namespace TombLib.LevelData.Compilers
                 float zMin = portalArea.Y0 * Level.BlockSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.BlockSizeUnit;
 
-                float yAtXMinZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0)) * Level.HeightUnit;
-                float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0)) * Level.HeightUnit;
-                float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1)) * Level.HeightUnit;
-                float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1)) * Level.HeightUnit;
+                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
+                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
+                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
+                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
 
                 // Choose portal coordinates
                 tr_vertex[] portalVertices = new tr_vertex[4];
@@ -1698,8 +1713,11 @@ namespace TombLib.LevelData.Compilers
             {
                 if (_portalRemapping.ContainsKey(p))
                 {
-                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces)
-                        continue;
+                    if (_portalRemapping[p].Opacity == PortalOpacity.SolidFaces && 
+						room.OriginalRoom.Properties.LightInterpolationMode != RoomLightInterpolationMode.Interpolate)
+					{
+						continue;
+					}
                 }
 
                 var otherRoom = roomList[p.AdjoiningRoom];
@@ -1795,7 +1813,12 @@ namespace TombLib.LevelData.Compilers
                                         if (!isPresentInLookup)
                                         {
                                             if (_level.Settings.GameVersion != TRVersion.Game.TR5)
-                                                refColor = v1.Lighting2;
+                                            {
+                                                if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
+                                                    refColor = UnpackFrom24BitPair(v1.Lighting1, v1.Lighting2);
+                                                else
+                                                    refColor = v1.Lighting2;
+                                            }
                                             else
                                                 refColor = v1.Color;
                                         }
@@ -1817,7 +1840,12 @@ namespace TombLib.LevelData.Compilers
                                                 if (!_vertexColors.TryGetValue(baseSig, out newColor))
                                                 {
                                                     if (_level.Settings.GameVersion != TRVersion.Game.TR5)
-                                                        newColor = v2.Lighting2;
+                                                    {
+                                                        if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
+                                                            newColor = UnpackFrom24BitPair(v2.Lighting1, v2.Lighting2);
+                                                        else
+                                                            newColor = v2.Lighting2;
+                                                    }
                                                     else
                                                         newColor = v2.Color;
                                                 }
@@ -1827,9 +1855,19 @@ namespace TombLib.LevelData.Compilers
                                                 if (grayscale)
                                                     newColor = (ushort)(8160 - (((8160 - v2.Lighting2) / 2) + ((8160 - refColor) / 2)));
                                                 else if (_level.Settings.GameVersion != TRVersion.Game.TR5)
-                                                    newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
+                                                {
+                                                    if (_level.Settings.GameVersion == TRVersion.Game.TRNG && _level.Settings.Room32BitLighting)
+                                                    {
+                                                        var color = UnpackFrom24BitPair(v2.Lighting1, v2.Lighting2);
+                                                        newColor = (uint)(0xff000000 | (((((color & 0xff) + (refColor & 0xff)) >> 1) |
+                                                                            256 * (((((color >> 8) & 0xff) + ((refColor >> 8) & 0xff)) >> 1) |
+                                                                                256 * ((((color >> 16) & 0xff) + ((refColor >> 16) & 0xff)) >> 1)))));
+                                                    }
+                                                    else
+                                                        newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
                                                                         32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
                                                                             32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
+                                                }
                                                 else
                                                     newColor = (uint)(0xff000000 | (((((v2.Color & 0xff) + (refColor & 0xff)) >> 1) |
                                                                         256 * (((((v2.Color >> 8) & 0xff) + ((refColor >> 8) & 0xff)) >> 1) |
@@ -2010,6 +2048,21 @@ namespace TombLib.LevelData.Compilers
             low |= (ushort)((result.Green & 0x7) << 3);
             low |= (ushort)(result.Blue & 0x7);
             return low;
+        }
+
+        private static uint UnpackFrom24BitPair(ushort packed1, ushort packed2)
+        {
+            return (uint)(((packed1 & 0x1c0) << 10) | ((packed2 & 0x7c00) << 9) | ((packed1 & 0x38) << 5) | ((packed2 & 0x3e0) << 6) | (packed1 & 0x7) | ((packed2 & 0x1f) << 3));
+        }
+
+        private static ushort PackTo24BitHigh(uint packed)
+        {
+            return (ushort)(((packed & 0xf80000) >> 9) | ((packed & 0xf800) >> 6) | ((packed & 0xf8) >> 3));
+        }
+
+        private static ushort PackTo24BitLow(uint packed)
+        {
+            return (ushort)(((packed & 0x70000) >> 10) | ((packed & 0x700) >> 5) | (packed & 0x7));
         }
     }
 }

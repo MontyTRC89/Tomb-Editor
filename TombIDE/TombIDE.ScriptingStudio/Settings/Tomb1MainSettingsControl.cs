@@ -9,7 +9,6 @@ using System.Drawing.Text;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using TombLib.Scripting;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.Resources;
 using TombLib.Scripting.Tomb1Main;
@@ -181,7 +180,7 @@ namespace TombIDE.ScriptingStudio.Settings
 		{
 			using (var dialog = new OpenFileDialog())
 			{
-				dialog.Filter = "Tomb1Main Scheme|*.t1msch";
+				dialog.Filter = "T1M / TR1X Scheme|*.t1msch";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
@@ -198,7 +197,8 @@ namespace TombIDE.ScriptingStudio.Settings
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "explorer.exe",
-				Arguments = DefaultPaths.T1MColorConfigsDirectory
+				Arguments = DefaultPaths.T1MColorConfigsDirectory,
+				UseShellExecute = true
 			};
 
 			Process.Start(startInfo);

@@ -19,8 +19,8 @@ end
 LevelFuncs.Engine.Node.TestStaticPosition = function(staticName, pos1, pos2)
 	local pos = TEN.Objects.GetStaticByName(staticName):GetPosition()
 	return (pos.x >= pos1.x and pos.x <= pos2.x and
-			pos.y >= pos1.y and pos.y <= pos2.y and
-			pos.z >= pos1.z and pos.z <= pos2.z)
+		pos.y >= pos1.y and pos.y <= pos2.y and
+		pos.z >= pos1.z and pos.z <= pos2.z)
 end
 
 -- !Name "If rotation of a static mesh is within range..."
@@ -40,7 +40,7 @@ end
 -- !Description "Compares selected static mesh scale with given value."
 -- !Conditional "True"
 -- !Arguments "NewLine, Statics, Static mesh to check" "NewLine, CompareOperator, 70, Kind of check"
--- !Arguments "Numerical, 30, Scale value, [ 0 | 256 | 2 ]" 
+-- !Arguments "Numerical, 30, Scale value, [ 0 | 256 | 2 ]"
 
 LevelFuncs.Engine.Node.TestStaticScale = function(staticName, operator, value)
 	local scale = TEN.Objects.GetStaticByName(staticName):GetScale()
@@ -63,7 +63,7 @@ end
 -- !Arguments "NewLine, Statics"
 
 LevelFuncs.Engine.Node.EnableStatic = function(staticName)
-    TEN.Objects.GetStaticByName(staticName):Enable()
+	TEN.Objects.GetStaticByName(staticName):Enable()
 end
 
 -- !Name "Disable static mesh"
@@ -72,7 +72,7 @@ end
 -- !Arguments "NewLine, Statics"
 
 LevelFuncs.Engine.Node.DisableStatic = function(staticName)
-    TEN.Objects.GetStaticByName(staticName):Disable()
+	TEN.Objects.GetStaticByName(staticName):Disable()
 end
 
 -- !Name "Play sound near static mesh"
@@ -81,7 +81,7 @@ end
 -- !Arguments "NewLine, Statics, Static mesh to play sound around" "NewLine, SoundEffects, Sound to play"
 
 LevelFuncs.Engine.Node.PlaySoundAroundStatic = function(staticName, soundID)
-    TEN.Misc.PlaySound(soundID, TEN.Objects.GetStaticByName(staticName):GetPosition())
+	TEN.Sound.PlaySound(soundID, TEN.Objects.GetStaticByName(staticName):GetPosition())
 end
 
 -- !Name "Modify position of a static mesh"
@@ -92,7 +92,6 @@ end
 -- !Arguments "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticPosition = function(operation, value, staticName)
-
 	local stat = TEN.Objects.GetStaticByName(staticName)
 
 	if (operation == 0) then
@@ -113,7 +112,6 @@ end
 -- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 5 ], 15, Rotation value to define", "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticRotation = function(operation, value, staticName)
-
 	local stat = TEN.Objects.GetStaticByName(staticName)
 	local rotation = stat:GetRotation();
 
@@ -133,7 +131,6 @@ end
 -- !Arguments "Numerical, [ 0 | 256 | 2 | 1 | 5 ], 15, Scale value to define", "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticScale = function(operation, value, staticName)
-
 	local stat = TEN.Objects.GetStaticByName(staticName)
 
 	if (operation == 0) then
@@ -144,13 +141,34 @@ LevelFuncs.Engine.Node.SetStaticScale = function(operation, value, staticName)
 	end
 end
 
+-- !Name "Shift static mesh towards its direction"
+-- !Section "Static mesh parameters"
+-- !Description "Shifts static mesh to a relative distance, towards the direction it is facing."
+-- !Arguments "NewLine, Statics, Statics mesh to move, 85"
+-- !Arguments "Numerical, [ -65535 | 65535 ], {256}, 15, Distance"
+
+LevelFuncs.Engine.Node.ShiftStatic = function(staticName, distance)
+	local static = TEN.Objects.GetStaticByName(staticName)
+
+	local angle = math.rad(static:GetRotation().y)
+	local dx = distance * math.sin(angle)
+	local dz = distance * math.cos(angle)
+
+	local newPosition = static:GetPosition()
+
+	newPosition.x = newPosition.x + dx
+	newPosition.z = newPosition.z + dz
+
+	static:SetPosition(newPosition)
+end
+
 -- !Name "Set static mesh colour"
 -- !Section "Static mesh parameters"
 -- !Description "Sets static mesh tint to a given value."
--- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh colour" 
+-- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh colour"
 
 LevelFuncs.Engine.Node.SetStaticColor = function(staticName, color)
-    TEN.Objects.GetStaticByName(staticName):SetColor(color)
+	TEN.Objects.GetStaticByName(staticName):SetColor(color)
 end
 
 -- !Name "Set static mesh collision mode"
@@ -159,7 +177,7 @@ end
 -- !Arguments "Boolean, 15, Solid"  "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticCollisionMode = function(solid, staticName)
-    TEN.Objects.GetStaticByName(staticName):SetSolid(solid)
+	TEN.Objects.GetStaticByName(staticName):SetSolid(solid)
 end
 
 -- !Name "Shatter static mesh"
@@ -168,5 +186,5 @@ end
 -- !Arguments "NewLine, Statics"
 
 LevelFuncs.Engine.Node.ShatterStatic = function(staticName)
-    TEN.Objects.GetStaticByName(staticName):Shatter()
+	TEN.Objects.GetStaticByName(staticName):Shatter()
 end

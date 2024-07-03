@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using TombIDE.Shared.NewStructure;
 
 namespace TombIDE.Shared
 {
@@ -17,13 +18,13 @@ namespace TombIDE.Shared
 			SynchronizationContext.Current.Send(eventObj_ => IDEEventRaised?.Invoke((IIDEEvent)eventObj_), eventObj);
 
 		public IDEConfiguration IDEConfiguration { get; }
-		public List<Project> AvailableProjects { get; }
+		public List<IGameProject> AvailableProjects { get; }
 
 		/// <summary>
 		/// The currently opened TombIDE project.
 		/// <para>Note: Set this before the FormMain initialization is finished. DO NOT change it afterwards.</para>
 		/// </summary>
-		public Project Project { get; set; }
+		public IGameProject Project { get; set; }
 
 		/* Main IDE events */
 
@@ -44,6 +45,9 @@ namespace TombIDE.Shared
 			public bool CanClose { get; set; } // Result
 		}
 
+		public class RequestProgramCloseEvent : IIDEEvent
+		{ }
+
 		/// <summary>
 		/// Asks the Scripting Studio if all files are saved and if the application can be safely closed.
 		/// </summary>
@@ -56,6 +60,9 @@ namespace TombIDE.Shared
 			return closingEvent.CanClose;
 		}
 
+		public void RequestProgramClose()
+			=> RaiseEvent(new RequestProgramCloseEvent());
+
 		#endregion ProgramClosing
 
 		/* Project Master Events */
@@ -65,7 +72,7 @@ namespace TombIDE.Shared
 		/// <summary>
 		/// The currently selected level in the "Level List" section.
 		/// </summary>
-		public ProjectLevel SelectedLevel
+		public ILevelProject SelectedLevel
 		{
 			get { return _selectedLevel; }
 			set
@@ -78,7 +85,7 @@ namespace TombIDE.Shared
 			}
 		}
 
-		private ProjectLevel _selectedLevel;
+		private ILevelProject _selectedLevel;
 
 		public class SelectedLevelChangedEvent : IIDEEvent
 		{ }
@@ -105,7 +112,7 @@ namespace TombIDE.Shared
 
 		public void ChangeScriptFolder(string newPath)
 		{
-			string oldPath = Project.ScriptPath;
+			string oldPath = Project.GetScriptRootDirectory();
 
 			if (newPath != oldPath)
 				RaiseEvent(new ProjectScriptPathChangedEvent { OldPath = oldPath, NewPath = newPath });
@@ -123,7 +130,7 @@ namespace TombIDE.Shared
 
 		public void ChangeLevelsFolder(string newPath)
 		{
-			string oldPath = Project.LevelsPath;
+			string oldPath = Project.LevelsDirectoryPath;
 
 			if (newPath != oldPath)
 				RaiseEvent(new ProjectLevelsPathChangedEvent { OldPath = oldPath, NewPath = newPath });
@@ -255,7 +262,7 @@ namespace TombIDE.Shared
 		#endregion ScriptEditor_ReloadSyntaxHighlighting
 
 		// Construction and destruction
-		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects)
+		public IDE(IDEConfiguration ideConfiguration, List<IGameProject> availableProjects)
 		{
 			IDEConfiguration = ideConfiguration;
 			AvailableProjects = availableProjects;
@@ -264,6 +271,6 @@ namespace TombIDE.Shared
 		public void Dispose()
 		{ }
 
-		public static IDE Global;
+		public static IDE Instance;
 	}
 }
