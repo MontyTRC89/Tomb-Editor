@@ -56,6 +56,15 @@ LevelFuncs.Engine.Node.PlayFlyBy = function(index)
     TEN.View.PlayFlyBy(index)
 end
 
+-- !Name "Activate camera"
+-- !Section "View"
+-- !Description "Activate camera placed on the map.\nThis camera will be a fixed camera that allows weapons to be fired and the look key to be used."
+-- !Arguments "NewLine,Cameras"
+
+LevelFuncs.Engine.Node.ActivateCamera = function(camName)
+    local cam = TEN.Objects.GetCameraByName(camName):PlayCamera()
+end
+
 -- !Name "Set screen field of view"
 -- !Section "View"
 -- !Description "Change screen field of view."
