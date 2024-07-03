@@ -126,3 +126,23 @@ LevelFuncs.Engine.Node.SetPostProcessDisplay = function(postProcessModeEnum, pow
     TEN.View.SetPostProcessStrength(power)
     TEN.View.SetPostProcessTint(tintColor)
 end
+
+-- !Name "Attach camera to moveable"
+-- !Section "View"
+-- !Description "Attaches game camera to a specific moveable."
+-- !Arguments "NewLine, Moveables, 70, Source moveable" , "Number, 30 , [ 0 | 50 | 0 ] , Mesh number of source moveable to attach camera target to"
+-- !Arguments "NewLine, Moveables, 70, Target moveable" , "Number, 30 , [ 0 | 50 | 0 ] , Mesh number of target moveable to attach camera target to"
+
+LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, target , targetMesh)
+    local sourcePos = TEN.Objects.GetMoveableByName(source)
+    local targetPos = TEN.Objects.GetMoveableByName(target)
+    sourcePos:AttachObjCamera(sourceMesh, targetPos, targetMesh)
+end
+
+-- !Name "Reset game camera to default position"
+-- !Section "View"
+-- !Description "Reset camera if target has been modified."
+
+LevelFuncs.Engine.Node.ResetObjCam = function()
+	ResetObjCamera()
+end
