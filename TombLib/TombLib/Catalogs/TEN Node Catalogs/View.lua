@@ -59,10 +59,11 @@ end
 -- !Name "Activate camera"
 -- !Section "View"
 -- !Description "Activate camera placed on the map.\nThis camera will be a fixed camera that allows weapons to be fired and the look key to be used."
--- !Arguments "NewLine,Cameras"
+-- !Arguments "NewLine, Cameras, Choose camera to activate." "NewLine, Moveables, Choose moveable to target (default Lara)"
 
-LevelFuncs.Engine.Node.ActivateCamera = function(camName)
-    local cam = TEN.Objects.GetCameraByName(camName):PlayCamera()
+LevelFuncs.Engine.Node.ActivateCamera = function(camName, moveable)
+    local moveableTarget = TEN.Objects.GetMoveableByName(moveable)
+    local cam = TEN.Objects.GetCameraByName(camName):PlayCamera(moveableTarget)
 end
 
 -- !Name "Set screen field of view"
