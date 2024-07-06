@@ -420,11 +420,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 31 ], Mesh index to check" "Boolean, 15, Visible"
 
 LevelFuncs.Engine.Node.SetMoveableMeshVisibility = function(moveableName, value, state)
-	if (state == true) then
-		TEN.Objects.GetMoveableByName(moveableName):ShowMesh(value)
-	else
-		TEN.Objects.GetMoveableByName(moveableName):HideMesh(value)
-	end
+	TEN.Objects.GetMoveableByName(moveableName):SetMeshVisible(value,state)
 end
 
 -- !Name "Swap specified moveable mesh with another"
