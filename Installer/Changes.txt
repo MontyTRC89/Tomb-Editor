@@ -6,13 +6,15 @@ Tomb Editor:
  * 3D objects will now be previewed with lower resolution textures to allow drawing more rooms without graphical glitches.
  * Added TEN nodes for checking and modifying last used inventory object.
  * Added TEN node to check if a particular sound is playing
- * Added TEN node to generate particles from a static object
+ * Added TEN node to generate particles from a static object.
  * Added handling for OnUseItem event in node editor.
  * Added drag-n-drop support for object ID controls in node editor.
+ * Added optional offset to TEN nodes for adding dynamic lighting to movable or static objects.
  * Increased TEN flipmap count up to 255.
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
+ * Fixed "Set specified mesh visibility" TEN node.
 
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
