@@ -6,7 +6,9 @@ namespace TombLib.Types
 {
     public class BezierCurve2D
     {
-        private readonly List<Vector2> _controlPoints;
+        private const int CONTROL_POINT_COUNT = 4;
+
+        private readonly Vector2[] _controlPoints = new Vector2[CONTROL_POINT_COUNT];
 
         public Vector2 Start
         {
@@ -63,7 +65,10 @@ namespace TombLib.Types
 
         public BezierCurve2D(Vector2 start, Vector2 end, Vector2 startHandle, Vector2 endHandle)
         {
-            _controlPoints = new List<Vector2> { start, startHandle, endHandle, end };
+            _controlPoints[0] = start;
+            _controlPoints[1] = startHandle;
+            _controlPoints[2] = endHandle;
+            _controlPoints[3] = end;
         }
 
         public Vector2 GetPoint(float alpha)
@@ -72,9 +77,9 @@ namespace TombLib.Types
 
             // De Casteljau interpolation.
             var points = new List<Vector2>(_controlPoints);
-            for (int i = 1; i < _controlPoints.Count; i++)
+            for (int i = 1; i < _controlPoints.Length; i++)
             {
-                for (int j = 0; j < (_controlPoints.Count - i); j++)
+                for (int j = 0; j < (_controlPoints.Length - i); j++)
                     points[j] = Vector2.Lerp(points[j], points[j + 1], alpha);
             }
 
