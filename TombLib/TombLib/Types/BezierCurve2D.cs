@@ -86,11 +86,11 @@ namespace TombLib.Types
             // Directly return Y for exact endpoint.
             if (x <= float.Epsilon)
             {
-                return _controlPoints[0].Y;
+                return Start.Y;
             }
-            else if (x >= (_controlPoints[_controlPoints.Count - 1].X - float.Epsilon))
+            else if (x >= (End.X - float.Epsilon))
             {
-                return _controlPoints[_controlPoints.Count - 1].Y;
+                return End.Y;
             }
 
             float low = 0.0f;
