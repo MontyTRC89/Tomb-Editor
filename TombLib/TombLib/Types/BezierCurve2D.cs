@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
-using System.Collections.Generic;
 
 namespace TombLib.Types
 {
@@ -76,7 +76,7 @@ namespace TombLib.Types
             alpha = Math.Clamp(alpha, 0.0f, 1.0f);
 
             // De Casteljau interpolation.
-            var points = new List<Vector2>(_controlPoints);
+            var points = _controlPoints.ToArray();
             for (int i = 1; i < _controlPoints.Length; i++)
             {
                 for (int j = 0; j < (_controlPoints.Length - i); j++)
