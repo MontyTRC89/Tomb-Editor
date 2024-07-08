@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Numerics;
 
 namespace TombLib.Types
@@ -88,12 +89,14 @@ namespace TombLib.Types
 
         public float GetY(float x)
         {
+            const float TOLERANCE = 0.001f;
+
             // Directly return Y for exact endpoint.
-            if (x <= (Start.X + float.Epsilon))
+            if (x <= (Start.X + TOLERANCE))
             {
                 return Start.Y;
             }
-            else if (x >= (End.X - float.Epsilon))
+            else if (x >= (End.X - TOLERANCE))
             {
                 return End.Y;
             }
@@ -104,7 +107,7 @@ namespace TombLib.Types
 
             // Binary search for approximate Y.
             float alpha = 0.5f;
-            while ((high - low) > float.Epsilon)
+            while ((high - low) > TOLERANCE)
             {
                 alpha = (low + high) / 2;
                 point = GetPoint(alpha);
