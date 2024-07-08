@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.IO;
+using TombLib.Types;
 using TombLib.Utils;
 using TombLib.Wad;
 

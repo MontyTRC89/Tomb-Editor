@@ -99,7 +99,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write(animation.NextAnimation);
                         writer.Write(animation.NextFrame);
                         writer.Write(animation.BlendFrameCount);
-                        writer.WriteBlockArray(animation.BlendCurve.ControlPoints);
+                        writer.Write(animation.BlendCurve.Start);
+                        writer.Write(animation.BlendCurve.End);
+                        writer.Write(animation.BlendCurve.StartHandle);
+                        writer.Write(animation.BlendCurve.EndHandle);
                         writer.Write(animation.VelocityStart);
                         writer.Write(animation.VelocityEnd);
 
@@ -133,7 +136,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             writer.Write(stateChange.NextFrameLow);
                             writer.Write(stateChange.NextFrameHigh);
                             writer.Write(stateChange.BlendFrameCount);
-                            writer.WriteBlockArray(stateChange.BlendCurve.ControlPoints);
+                            writer.Write(stateChange.BlendCurve.Start);
+                            writer.Write(stateChange.BlendCurve.End);
+                            writer.Write(stateChange.BlendCurve.StartHandle);
+                            writer.Write(stateChange.BlendCurve.EndHandle);
                         }
 
                         writer.Write((uint)animation.NumAnimCommands);
