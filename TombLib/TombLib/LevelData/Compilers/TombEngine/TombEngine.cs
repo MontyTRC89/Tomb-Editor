@@ -93,17 +93,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     foreach (var animation in moveable.Animations)
                     {
-                        writer.Write((uint)animation.StateID);
-                        writer.Write((uint)animation.Interpolation);
-                        writer.Write((uint)animation.FrameEnd);
-                        writer.Write((uint)animation.NextAnimation);
-                        writer.Write((uint)animation.NextFrame);
-                        writer.Write((uint)animation.BlendFrameDuration);
-                        writer.Write((uint)animation.BlendType);
+                        writer.Write(animation.StateID);
+                        writer.Write(animation.Interpolation);
+                        writer.Write(animation.FrameEnd);
+                        writer.Write(animation.NextAnimation);
+                        writer.Write(animation.NextFrame);
+                        writer.Write(animation.BlendFrameCount);
+                        writer.WriteBlockArray(animation.BlendCurve.ControlPoints);
                         writer.Write(animation.VelocityStart);
                         writer.Write(animation.VelocityEnd);
 
-                        writer.Write((uint)animation.KeyFrames.Count);
+                        writer.Write(animation.KeyFrames.Count);
                         foreach (var keyFrame in animation.KeyFrames)
                         {
                             var center = new Vector3(
@@ -124,7 +124,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         }
 
                         writer.Write((uint)animation.StateChanges.Count);
-                        writer.WriteBlockArray(animation.StateChanges);
+                        foreach (var stateChange in animation.StateChanges)
+                        {
+                            writer.Write(stateChange.StateID);
+                            writer.Write(stateChange.FrameLow);
+                            writer.Write(stateChange.FrameHigh);
+                            writer.Write(stateChange.NextAnimation);
+                            writer.Write(stateChange.NextFrameLow);
+                            writer.Write(stateChange.NextFrameHigh);
+                            writer.Write(stateChange.BlendFrameCount);
+                            writer.WriteBlockArray(stateChange.BlendCurve.ControlPoints);
+                        }
 
                         writer.Write((uint)animation.NumAnimCommands);
                         foreach (var element in animation.CommandData)

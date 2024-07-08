@@ -219,7 +219,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             ReportProgress(1, "Building animations");
 
-            foreach (WadMoveable oldMoveable in moveables.Values)
+            foreach (var oldMoveable in moveables.Values)
             {
                 var newMoveable = new TombEngineMoveable();
                 newMoveable.NumMeshes = oldMoveable.Meshes.Count();
@@ -231,29 +231,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_level.Settings.GameVersion, oldMoveable.Id.TypeId));
                 var skin = _level.Settings.WadTryGetMoveable(skinId);
 
-                // Add animations
+                // Add animations.
                 for (int j = 0; j < oldMoveable.Animations.Count; ++j)
                 {
                     var oldAnimation = oldMoveable.Animations[j];
                     var newAnimation = new TombEngineAnimation();
+
+                    // Setup the final animation.
+                    newAnimation.StateID = oldAnimation.StateId;
+                    newAnimation.Interpolation = oldAnimation.FrameRate;
 
                     // Clamp EndFrame to max frame count as a last resort to prevent glitching animations.
                     var frameCount = oldAnimation.EndFrame + 1;
                     var maxFrame = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
                     if (frameCount > maxFrame)
                         frameCount = maxFrame;
-
-                    // Setup the final animation
-                    newAnimation.StateID = oldAnimation.StateId;
                     newAnimation.FrameEnd = frameCount == 0 ? 0 : frameCount - 1;
-                    newAnimation.NextFrame = oldAnimation.NextFrame;
-                    newAnimation.Interpolation = oldAnimation.FrameRate;
-                    newAnimation.VelocityStart = new Vector3(oldAnimation.StartLateralVelocity, 0, oldAnimation.StartVelocity);
-                    newAnimation.VelocityEnd = new Vector3(oldAnimation.EndLateralVelocity, 0, oldAnimation.EndVelocity);
-                    newAnimation.KeyFrames = new List<TombEngineKeyFrame>();
-                    newAnimation.StateChanges = new List<TombEngineStateChange>();
-                    newAnimation.NumAnimCommands = oldAnimation.AnimCommands.Count;
-                    newAnimation.CommandData = new List<object>();
 
                     // Check if next animation contains valid value. If not, set to zero and throw a warning.
                     if (oldAnimation.NextAnimation >= oldMoveable.Animations.Count)
@@ -263,8 +256,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newAnimation.NextAnimation = 0;
                     }
                     else
+                    {
                         newAnimation.NextAnimation = oldAnimation.NextAnimation;
+                    }
 
+                    newAnimation.NextFrame = oldAnimation.NextFrame;
+                    newAnimation.BlendFrameCount = 0; // TODO
+                    newAnimation.BlendCurve = new BezierCurve2D(Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero); // TODO
+                    newAnimation.VelocityStart = new Vector3(oldAnimation.StartLateralVelocity, 0, oldAnimation.StartVelocity);
+                    newAnimation.VelocityEnd = new Vector3(oldAnimation.EndLateralVelocity, 0, oldAnimation.EndVelocity);
+                    newAnimation.KeyFrames = new List<TombEngineKeyFrame>();
+                    newAnimation.StateChanges = new List<TombEngineStateChange>();
+                    newAnimation.NumAnimCommands = oldAnimation.AnimCommands.Count;
+                    newAnimation.CommandData = new List<object>();
+                    
                     foreach (var wadFrame in oldAnimation.KeyFrames)
                     {
                         var newFrame = new TombEngineKeyFrame
@@ -389,10 +394,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                             var newStateChange = new TombEngineStateChange();
                             newStateChange.StateID = stateID;
+                            newStateChange.FrameLow = unchecked((int)(dispatch.InFrame));
+                            newStateChange.FrameHigh = unchecked((int)(dispatch.OutFrame));
                             newStateChange.NextAnimation = checked((int)(dispatch.NextAnimation));
-                            newStateChange.NextFrame = (int)dispatch.NextFrame;
-                            newStateChange.Low = unchecked((int)(dispatch.InFrame));
-                            newStateChange.High = unchecked((int)(dispatch.OutFrame));
+                            newStateChange.NextFrameLow = (int)dispatch.NextFrame;
+                            newStateChange.NextFrameHigh = (int)dispatch.NextFrame; // TODO
+                            newStateChange.BlendFrameCount = 0; // TODO
+                            newStateChange.BlendCurve = new BezierCurve2D(Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero); // TODO
 
                             newAnimation.StateChanges.Add(newStateChange);
                         }

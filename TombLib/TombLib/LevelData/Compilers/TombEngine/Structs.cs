@@ -595,12 +595,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public struct TombEngineStateChange
     {
         public int StateID;
+        public int FrameLow;
+        public int FrameHigh;
         public int NextAnimation;
-        public int NextFrame;
-        public int BlendFrameDuration;
-        public TombEngineAnimationBlendType BlendType;
-        public int Low;
-        public int High;
+        public int NextFrameLow;
+        public int NextFrameHigh;
+        public int BlendFrameCount;
+        public BezierCurve2D BlendCurve;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -611,8 +612,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int FrameEnd;
         public int NextAnimation;
         public int NextFrame;
-        public int BlendFrameDuration;
-        public TombEngineAnimationBlendType BlendType;
+        public int BlendFrameCount;
+        public BezierCurve2D BlendCurve;
         public Vector3 VelocityStart;
         public Vector3 VelocityEnd;
         public List<TombEngineKeyFrame> KeyFrames;
