@@ -84,7 +84,7 @@ namespace TombLib.Types
         public float GetY(float x)
         {
             // Directly return Y for exact endpoint.
-            if (x <= float.Epsilon)
+            if (x <= (Start.X + float.Epsilon))
             {
                 return Start.Y;
             }
