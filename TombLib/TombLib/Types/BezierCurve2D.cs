@@ -6,7 +6,7 @@ namespace TombLib.Types
 {
     public class BezierCurve2D
     {
-        private List<Vector2> _controlPoints;
+        private readonly List<Vector2> _controlPoints;
 
         public Vector2 Start
         {
