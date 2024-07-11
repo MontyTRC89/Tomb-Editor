@@ -66,10 +66,10 @@ namespace TombLib.Types
 
         public BezierCurve2D(Vector2 start, Vector2 end, Vector2 startHandle, Vector2 endHandle)
         {
-            _controlPoints[0] = start;
-            _controlPoints[1] = startHandle;
-            _controlPoints[2] = endHandle;
-            _controlPoints[3] = end;
+            Start = start;
+            End = end;
+            StartHandle = startHandle;
+            EndHandle = endHandle;
         }
 
         public Vector2 GetPoint(float alpha)
