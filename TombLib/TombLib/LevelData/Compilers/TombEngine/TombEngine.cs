@@ -154,6 +154,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 writer.Write(vector3Component);
                             }
                         }
+
+                        writer.Write(animation.Flags);
                     }
                 }
 

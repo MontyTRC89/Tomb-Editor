@@ -621,6 +621,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public List<TombEngineStateChange> StateChanges;
         public int NumAnimCommands;
         public List<object> CommandData;
+        public int Flags;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
