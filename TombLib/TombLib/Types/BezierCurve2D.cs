@@ -89,7 +89,8 @@ namespace TombLib.Types
 
         public float GetY(float x)
         {
-            const float TOLERANCE = 0.001f;
+            const float TOLERANCE           = 0.001f;
+            const float ITERATION_COUNT_MAX = 100;
 
             // Directly return Y for exact endpoint.
             if (x <= (Start.X + TOLERANCE))
@@ -101,28 +102,42 @@ namespace TombLib.Types
                 return End.Y;
             }
 
-            float low = 0.0f;
-            float high = 1.0f;
-            var point = new Vector2();
-
-            // Binary search for approximate Y.
-            float alpha = 0.5f;
-            while ((high - low) > TOLERANCE)
+            // Newton-Raphson iteration for approximate Y alpha.
+            float alpha = x / End.X;
+            for (int i = 0; i < ITERATION_COUNT_MAX; i++)
             {
-                alpha = (low + high) / 2;
-                point = GetPoint(alpha);
+                var point = GetPoint(alpha);
+                var derivative = GetDerivative(alpha);
 
-                if (point.X < x)
-                {
-                    low = alpha;
-                }
-                else
-                {
-                    high = alpha;
-                }
+                float delta = (point.X - x) / derivative.X;
+                alpha -= delta;
+
+                if (Math.Abs(delta) <= TOLERANCE)
+                    break;
             }
 
-            return point.Y;
+            return GetPoint(alpha).Y;
         }
+
+        private Vector2 GetDerivative(float alpha)
+        {
+            alpha = Math.Clamp(alpha, 0.0f, 1.0f);
+
+            var points = _controlPoints.ToArray();
+            int count = _controlPoints.Length - 1;
+
+		    // Calculate derivative control points.
+		    for (int i = 0; i < count; i++)
+			    points[i] = (_controlPoints[i + 1] - _controlPoints[i]) * count;
+
+		    // Reduce points using De Casteljau interpolation.
+		    for (int i = 1; i < count; i++)
+		    {
+			    for (int j = 0; j < (count - i); j++)
+				    points[j] = Vector2.Lerp(points[j], points[j + 1], alpha);
+		    }
+
+		    return points[0];
+	    }
     }
 }
