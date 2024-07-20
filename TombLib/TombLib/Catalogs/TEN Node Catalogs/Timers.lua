@@ -38,7 +38,7 @@ end
 -- !Arguments "NewLine, Boolean , 100, Show debug messages in console"
 LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minutes, seconds, deciseconds, luaFunction, args, debug)
     if name ~= '' then
-        local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
+        local nodeTimerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         local argsTable = args ~= '' and table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")) or nil
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, timerFormat, luaFunction, argsTable)
@@ -66,7 +66,7 @@ end
 -- !Arguments "NewLine, Boolean , 100, Show debug messages in console"
 LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator, debug)
     if name ~= '' then
-        local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
+        local nodeTimerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, timerFormat, LevelFuncs.Engine.Node.RunEventSet, setName, eventType, activator)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
@@ -93,7 +93,7 @@ end
 -- !Arguments "NewLine, Boolean , 100, Show debug messages in console"
 LevelFuncs.Engine.Node.CreateTimerWithGEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator, debug)
     if name ~= '' then
-        local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
+        local nodeTimerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, timerFormat, LevelFuncs.Engine.Node.RunGlobalEventSet, setName, eventType, activator)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
