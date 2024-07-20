@@ -323,8 +323,7 @@ LevelFuncs.Engine.Node.IfTimerExpired = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
             local temp = tonumber(string.format("%.1f", Timer.Get(name):GetRemainingTime()))
-            local check = (temp == 0.0) and true or false
-            return check
+            return (temp == 0.0) and true or false
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", LogLevel.ERROR)
         end
