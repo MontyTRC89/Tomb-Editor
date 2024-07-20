@@ -12,7 +12,7 @@ LevelVars.nodeTimers = {}
 -- !Arguments "NewLine, Boolean , 100, Show debug messages in console"
 LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds, deciseconds, debug)
     if name ~= '' then
-        local timerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
+        local nodeTimerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, timerFormat, nil)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
