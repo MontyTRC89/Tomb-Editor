@@ -36,7 +36,7 @@ namespace TombEditor.Controls.Panel3D
             // Legacy
             {
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(_legacyDevice, true, true);
+                _wadRenderer = new WadRenderer(_legacyDevice, true, true, 512, 64);
 
                 // Initialize vertex buffers
                 _ghostBlockVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 84);

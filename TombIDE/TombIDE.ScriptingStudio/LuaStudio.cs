@@ -184,7 +184,7 @@ namespace TombIDE.ScriptingStudio
 					}
 				}
 
-				string dataName = inputLines[0].Split('=')[0].Trim();
+				string dataName = inputLines[0].Trim().Remove(0, 3).Replace(" level", string.Empty);
 				string filePath = Path.Combine(ScriptRootDirectoryPath, "Levels", dataName + ".lua");
 
 				File.WriteAllText(filePath,
