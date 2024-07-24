@@ -1804,7 +1804,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1143</Id>
-			<Name>TR1_SLAMDOOR_OPEN</Name>
+			<Name>TR1_Slamdoor_Open</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>8</RangeInSectors>
 			<Chance>100</Chance>
@@ -1823,7 +1823,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1144</Id>
-			<Name>TR1_SLAMDOOR_CLOSE</Name>
+			<Name>TR1_Slamdoor_Close</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>8</RangeInSectors>
 			<Chance>100</Chance>

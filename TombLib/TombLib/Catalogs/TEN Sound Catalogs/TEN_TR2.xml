@@ -3697,7 +3697,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1145</Id>
-			<Name>TR2_DRAGON_FALL</Name>
+			<Name>TR2_Dragon_Fall</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>20</RangeInSectors>
 			<Chance>100</Chance>
@@ -3716,7 +3716,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1146</Id>
-			<Name>TR2_MARCO_BARTOLLI_TRANSFORM</Name>
+			<Name>TR2_Marco_Bartolli_Transform</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -3727,7 +3727,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>tr2_marco_bartolli_transform_01.wav</FileName>
+					<FileName>TR2_Marco_Bartolli_Transform_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>true</Global>

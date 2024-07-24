@@ -818,6 +818,13 @@ namespace TombLib.Utils
             return result;
         }
 
+        public static ImageC Resize(in ImageC Original, int newWidth,int newHeight)
+        {
+            var bitmap = Original.ToBitmap();
+            var resizedBitmap = new Bitmap(bitmap, newWidth, newHeight);
+            return FromSystemDrawingBitmapMatchingPixelFormat(resizedBitmap);
+        }
+
         public static ImageC GrayScaleFilter(ImageC source, bool invert, int posX, int posY, int w, int h)
         {
             ImageC result = ImageC.CreateNew(w, h);
