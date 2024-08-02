@@ -133,7 +133,7 @@ end
 -- !Arguments "NewLine, Moveables, 70, Source moveable" , "Number, 30 , [ 0 | 50 | 0 ] , Mesh number of source moveable to attach camera target to"
 -- !Arguments "NewLine, Moveables, 70, Target moveable" , "Number, 30 , [ 0 | 50 | 0 ] , Mesh number of target moveable to attach camera target to"
 
-LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, target , targetMesh)
+LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, target, targetMesh)
     local sourcePos = TEN.Objects.GetMoveableByName(source)
     local targetPos = TEN.Objects.GetMoveableByName(target)
     sourcePos:AttachObjCamera(sourceMesh, targetPos, targetMesh)
