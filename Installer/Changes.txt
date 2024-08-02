@@ -10,12 +10,16 @@ Tomb Editor:
  * Added TEN node to activate a camera.
  * Added TEN node to attach the game camera to a moveable.
  * Added TEN node to reset game camera if it has been modified.
+ * Added TEN node to generate particles from a static object.
+ * Added TEN node to generate particles from a volume.
+ * Added optional offset to TEN nodes for adding dynamic lighting to movable or static objects.
  * Added handling for OnUseItem event in node editor.
  * Added drag-n-drop support for object ID controls in node editor.
  * Increased TEN flipmap count up to 255.
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
+ * Fixed "Set specified mesh visibility" TEN node.
 
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
