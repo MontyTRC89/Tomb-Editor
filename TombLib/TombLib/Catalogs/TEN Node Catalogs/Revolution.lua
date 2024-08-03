@@ -7,15 +7,13 @@ LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, objectcentre, d
 
     local dataName  = objectName .. "_revolve_data"
     
-    if (LevelVars[dataName] ~= nil and LevelVars[dataName].Timer ~= nil) then
-        if (LevelVars[dataName].Timer:IsActive()) then
-            return
-        else
-            Timer.Delete(LevelVars[dataName].Name)
-            LevelVars[dataName] = nil
-        end
-    end
-
+    	if LevelVars[dataName] and LevelVars[dataName].Timer then
+		if LevelVars[dataName].Timer:IsActive() then
+        return
+		end
+		Timer.Delete(LevelVars[dataName].Name)
+		LevelVars[dataName] = nil
+	end
 
 	LevelVars[dataName] = {}
     LevelVars[dataName].Progress   = 0
