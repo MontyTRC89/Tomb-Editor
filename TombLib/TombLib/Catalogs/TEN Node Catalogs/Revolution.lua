@@ -140,14 +140,10 @@ end
 LevelFuncs.Engine.Node.DeleteTimedData = function(objectName, endangle)
     local dataName = objectName .. "_revolve_data"
 
-    if LevelVars[dataName] ~= nil then
-        if LevelVars[dataName].Timer ~= nil then
-            if LevelVars[dataName].Timer:IsActive() then
-                LevelVars[dataName].EndAngle = endangle 
-                LevelVars[dataName].StopAtEnd = true
-            end
-        end
-    end
+	if LevelVars[dataName] and LevelVars[dataName].Timer and LevelVars[dataName].Timer:IsActive() then
+   	LevelVars[dataName].EndAngle = endangle
+    	LevelVars[dataName].StopAtEnd = true
+	end
 end
 
 
