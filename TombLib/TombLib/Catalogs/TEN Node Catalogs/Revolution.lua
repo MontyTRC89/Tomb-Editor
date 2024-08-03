@@ -9,7 +9,7 @@ LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, objectcentre, d
     
     	if LevelVars[dataName] and LevelVars[dataName].Timer then
 		if LevelVars[dataName].Timer:IsActive() then
-        return
+        	return
 		end
 		Timer.Delete(LevelVars[dataName].Name)
 		LevelVars[dataName] = nil
