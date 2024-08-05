@@ -592,46 +592,46 @@ namespace TombLib.LevelData
         public static bool IsSpecificCeilingSubdivision(this BlockFace face, Direction direction)
             => face.IsExtraCeilingSubdivision() && face.GetDirection() == direction;
 
-		public static BlockFace GetQaFace(Direction direction)
+        public static BlockFace GetQaFace(Direction direction)
         {
-			return direction switch
-			{
-				Direction.PositiveZ => BlockFace.Wall_PositiveZ_QA,
-				Direction.NegativeZ => BlockFace.Wall_NegativeZ_QA,
-				Direction.NegativeX => BlockFace.Wall_NegativeX_QA,
-				Direction.PositiveX => BlockFace.Wall_PositiveX_QA,
-				Direction.Diagonal => BlockFace.Wall_Diagonal_QA,
-				_ => throw new ArgumentException()
-			};
-		}
+            return direction switch
+            {
+                Direction.PositiveZ => BlockFace.Wall_PositiveZ_QA,
+                Direction.NegativeZ => BlockFace.Wall_NegativeZ_QA,
+                Direction.NegativeX => BlockFace.Wall_NegativeX_QA,
+                Direction.PositiveX => BlockFace.Wall_PositiveX_QA,
+                Direction.Diagonal => BlockFace.Wall_Diagonal_QA,
+                _ => throw new ArgumentException()
+            };
+        }
 
         public static BlockFace GetWsFace(Direction direction)
-		{
-			return direction switch
-			{
-				Direction.PositiveZ => BlockFace.Wall_PositiveZ_WS,
-				Direction.NegativeZ => BlockFace.Wall_NegativeZ_WS,
-				Direction.NegativeX => BlockFace.Wall_NegativeX_WS,
-				Direction.PositiveX => BlockFace.Wall_PositiveX_WS,
-				Direction.Diagonal => BlockFace.Wall_Diagonal_WS,
-				_ => throw new ArgumentException()
-			};
-		}
+        {
+            return direction switch
+            {
+                Direction.PositiveZ => BlockFace.Wall_PositiveZ_WS,
+                Direction.NegativeZ => BlockFace.Wall_NegativeZ_WS,
+                Direction.NegativeX => BlockFace.Wall_NegativeX_WS,
+                Direction.PositiveX => BlockFace.Wall_PositiveX_WS,
+                Direction.Diagonal => BlockFace.Wall_Diagonal_WS,
+                _ => throw new ArgumentException()
+            };
+        }
 
         public static BlockFace GetMiddleFace(Direction direction)
         {
-			return direction switch
-			{
-				Direction.PositiveZ => BlockFace.Wall_PositiveZ_Middle,
-				Direction.NegativeZ => BlockFace.Wall_NegativeZ_Middle,
-				Direction.NegativeX => BlockFace.Wall_NegativeX_Middle,
-				Direction.PositiveX => BlockFace.Wall_PositiveX_Middle,
-				Direction.Diagonal => BlockFace.Wall_Diagonal_Middle,
-				_ => throw new ArgumentException()
-			};
-		}
+            return direction switch
+            {
+                Direction.PositiveZ => BlockFace.Wall_PositiveZ_Middle,
+                Direction.NegativeZ => BlockFace.Wall_NegativeZ_Middle,
+                Direction.NegativeX => BlockFace.Wall_NegativeX_Middle,
+                Direction.PositiveX => BlockFace.Wall_PositiveX_Middle,
+                Direction.Diagonal => BlockFace.Wall_Diagonal_Middle,
+                _ => throw new ArgumentException()
+            };
+        }
 
-		public static BlockFace GetExtraFloorSubdivisionFace(Direction direction, int subdivisionIndex)
+        public static BlockFace GetExtraFloorSubdivisionFace(Direction direction, int subdivisionIndex)
         {
             return direction switch
             {
