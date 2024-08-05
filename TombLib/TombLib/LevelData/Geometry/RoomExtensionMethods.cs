@@ -688,8 +688,8 @@ public static class RoomExtensionMethods
 			else if (nearBlock.Floor.DiagonalSplit is DiagonalSplit.XnZn)
 				qaNearEnd = qaNearStart;
 
-			int wsNearStart = nearBlock.Ceiling.XpZn;
-			int wsNearEnd = nearBlock.Ceiling.XpZp;
+			int wsNearStart = nearBlock.Ceiling.XpZp;
+			int wsNearEnd = nearBlock.Ceiling.XpZn;
 
 			if (nearBlock.Ceiling.DiagonalSplit is DiagonalSplit.XnZp)
 				wsNearStart = wsNearEnd;
