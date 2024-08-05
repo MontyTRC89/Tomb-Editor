@@ -366,19 +366,14 @@ namespace TombLib.LevelData
             // Remove all texture occurences from room faces
             Parallel.ForEach(ExistingRooms, room =>
             {
-                for (int x = 0; x < room.NumXSectors; x++)
-                    for (int y = 0; y < room.NumZSectors; y++)
+                foreach (Block sector in room.Blocks)
+                    foreach (BlockFace face in sector.GetFaceTextures().Keys)
                     {
-                        Block sector = room.Blocks[x, y];
-
-                        foreach (BlockFace face in sector.GetFaceTextures().Keys)
+                        TextureArea currentTextureArea = sector.GetFaceTexture(face);
+                        LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;
+                        if (currentTexture != null && askIfTextureToRemove(currentTexture))
                         {
-                            TextureArea currentTextureArea = sector.GetFaceTexture(face);
-                            LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;
-                            if (currentTexture != null && askIfTextureToRemove(currentTexture))
-                            {
-                                sector.SetFaceTexture(face, TextureArea.None);
-                            }
+                            sector.SetFaceTexture(face, TextureArea.None);
                         }
                     }
                 room.BuildGeometry();

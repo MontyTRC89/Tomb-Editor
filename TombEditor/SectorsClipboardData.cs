@@ -28,7 +28,7 @@ namespace TombEditor
             {
                 using (var writer = new BinaryWriter(ms))
                 {
-                    var sectors = new Blocks(selection.Area.Width, selection.Area.Height);
+                    Block[,] sectors = new Block[selection.Area.Width, selection.Area.Height];
                     for (int x = 0; x < Width; x++)
                         for (int z = 0; z < Height; z++)
                         {
@@ -94,12 +94,12 @@ namespace TombEditor
             }
         }
 
-        public Blocks GetSectors()
+        public Block[,] GetSectors()
         {
             if (_data == null)
                 return null;
 
-            var sectors = new Blocks(Width, Height);
+            var sectors = new Block[Width, Height];
 
             using (var ms = new MemoryStream(_data))
             {

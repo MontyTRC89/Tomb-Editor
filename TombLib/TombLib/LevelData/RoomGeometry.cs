@@ -57,7 +57,7 @@ namespace TombLib.LevelData
             const int zMin = 0;
             int xMax = room.NumXSectors - 1;
             int zMax = room.NumZSectors - 1;
-            Blocks Blocks = room.Blocks;
+            Block[,] Blocks = room.Blocks;
 
             // Build face polygons
             for (int x = xMin; x <= xMax; x++) // This is in order to VertexRangeKey sorting.

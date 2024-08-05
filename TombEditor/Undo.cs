@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
 using System.Threading.Tasks;
 using TombLib;
 using TombLib.LevelData;
@@ -377,14 +376,14 @@ namespace TombEditor
     public class GeometryUndoInstance : EditorUndoRedoInstance
     {
         private RectangleInt2 Area;
-        private Blocks Blocks;
+        private Block[,] Blocks;
 
         public GeometryUndoInstance(EditorUndoManager parent, Room room) : base(parent, room)
         {
             Area.Start = VectorInt2.Zero;
             Area.End = new VectorInt2(room.NumXSectors, room.NumZSectors);
 
-            Blocks = new Blocks(Area.Size.X + 1, Area.Size.Y + 1);
+            Blocks = new Block[Area.Size.X + 1, Area.Size.Y + 1];
 
             for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                 for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)

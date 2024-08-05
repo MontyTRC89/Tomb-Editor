@@ -151,41 +151,36 @@ namespace TombEditor.Forms
             // Room textures
             int roomTextureCount = 0;
             foreach (Room room in relevantRooms)
-                for (int x = 0; x < room.NumXSectors; x++)
-                    for (int y = 0; y < room.NumZSectors; y++)
+                foreach (Block sector in room.Blocks)
+                    foreach (BlockFace face in sector.GetFaceTextures().Keys)
                     {
-                        Block sector = room.Blocks[x, y];
-
-                        foreach (BlockFace face in sector.GetFaceTextures().Keys)
+                        var currentTextureArea = sector.GetFaceTexture(face);
+                        if (currentTextureArea.Texture == sourceTexture &&
+                            SourceContains(currentTextureArea.TexCoord0) &&
+                            SourceContains(currentTextureArea.TexCoord1) &&
+                            SourceContains(currentTextureArea.TexCoord2) &&
+                            SourceContains(currentTextureArea.TexCoord3))
                         {
-                            var currentTextureArea = sector.GetFaceTexture(face);
-                            if (currentTextureArea.Texture == sourceTexture &&
-                                SourceContains(currentTextureArea.TexCoord0) &&
-                                SourceContains(currentTextureArea.TexCoord1) &&
-                                SourceContains(currentTextureArea.TexCoord2) &&
-                                SourceContains(currentTextureArea.TexCoord3))
-                            {
-                                // Add current room to undo if not already added
-                                if (!undoList.Any(item => ((EditorUndoRedoInstance)item).Room == room))
-                                    undoList.Add(new GeometryUndoInstance(_editor.UndoManager, room));
+                            // Add current room to undo if not already added
+                            if (!undoList.Any(item => ((EditorUndoRedoInstance)item).Room == room))
+                                undoList.Add(new GeometryUndoInstance(_editor.UndoManager, room));
 
-                                // Replace texture
-                                currentTextureArea = RemapTexture(currentTextureArea, destinationTextureMap.Scaling);
-                                currentTextureArea.Texture = destinationTexture;
+                            // Replace texture
+                            currentTextureArea = RemapTexture(currentTextureArea, destinationTextureMap.Scaling);
+                            currentTextureArea.Texture = destinationTexture;
 
-                                // Remove texture if untexture option is set
-                                if (untextureCompletely)
-                                    currentTextureArea.Texture = null;
+                            // Remove texture if untexture option is set
+                            if (untextureCompletely)
+                                currentTextureArea.Texture = null;
 
-                                // Replace parent area if equal
-                                if (SourceEquals(currentTextureArea.ParentArea))
-                                    currentTextureArea.ParentArea = new Rectangle2(destinationTextureMap.Start, destinationTextureMap.End);
-                                else
-                                    currentTextureArea.ParentArea = Rectangle2.Zero;
+                            // Replace parent area if equal
+                            if (SourceEquals(currentTextureArea.ParentArea))
+                                currentTextureArea.ParentArea = new Rectangle2(destinationTextureMap.Start, destinationTextureMap.End);
+                            else
+                                currentTextureArea.ParentArea = Rectangle2.Zero;
 
-                                sector.SetFaceTexture(face, currentTextureArea);
-                                ++roomTextureCount;
-                            }
+                            sector.SetFaceTexture(face, currentTextureArea);
+                            ++roomTextureCount;
                         }
                     }
 
