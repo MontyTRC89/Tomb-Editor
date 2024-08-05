@@ -24,6 +24,10 @@ Tomb Editor:
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
 
+TombIDE:
+ * Updated FLEP for new projects.
+ * Updated TR1X preset to 4.2.
+
 Version 1.7.1
 =============
 
