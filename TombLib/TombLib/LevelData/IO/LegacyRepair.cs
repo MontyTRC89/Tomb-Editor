@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.IO;
@@ -49,25 +51,25 @@ internal static class LegacyRepair
 
         if (xn.Block is not null)
         {
-            if (subdivision.Edges[(int)BlockEdge.XnZn] > xn.Block.Ceiling.XpZn || subdivision.Edges[(int)BlockEdge.XnZp] > xn.Block.Ceiling.XpZp)
+            if (subdivision.XnZn > xn.Block.Ceiling.XpZn || subdivision.XnZp > xn.Block.Ceiling.XpZp)
                 block.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_QA));
         }
 
         if (xp.Block is not null)
         {
-            if (subdivision.Edges[(int)BlockEdge.XpZn] > xp.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] > xp.Block.Ceiling.XnZp)
+            if (subdivision.XpZn > xp.Block.Ceiling.XnZn || subdivision.XpZp > xp.Block.Ceiling.XnZp)
                 block.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_QA));
         }
 
         if (zn.Block is not null)
         {
-            if (subdivision.Edges[(int)BlockEdge.XnZn] > zn.Block.Ceiling.XnZp || subdivision.Edges[(int)BlockEdge.XpZn] > zn.Block.Ceiling.XpZp)
+            if (subdivision.XnZn > zn.Block.Ceiling.XnZp || subdivision.XpZn > zn.Block.Ceiling.XpZp)
                 block.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_QA));
         }
 
         if (zp.Block is not null)
         {
-            if (subdivision.Edges[(int)BlockEdge.XnZp] > zp.Block.Ceiling.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] > zp.Block.Ceiling.XpZn)
+            if (subdivision.XnZp > zp.Block.Ceiling.XnZn || subdivision.XpZp > zp.Block.Ceiling.XpZn)
                 block.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_QA));
         }
     }
@@ -95,25 +97,25 @@ internal static class LegacyRepair
 
         if (xn.Block is not null)
         {
-            if (subdivision.Edges[(int)BlockEdge.XnZn] < xn.Block.Floor.XpZn || subdivision.Edges[(int)BlockEdge.XnZp] < xn.Block.Floor.XpZp)
+            if (subdivision.XnZn < xn.Block.Floor.XpZn || subdivision.XnZp < xn.Block.Floor.XpZp)
                 block.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeX_WS));
         }
 
         if (xp.Block is not null)
         {
-            if (subdivision.Edges[(int)BlockEdge.XpZn] < xp.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] < xp.Block.Floor.XnZp)
+            if (subdivision.XpZn < xp.Block.Floor.XnZn || subdivision.XpZp < xp.Block.Floor.XnZp)
                 block.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveX_WS));
         }
 
         if (zn.Block is not null)
         {
-            if (subdivision.Edges[(int)BlockEdge.XnZn] < zn.Block.Floor.XnZp || subdivision.Edges[(int)BlockEdge.XpZn] < zn.Block.Floor.XpZp)
+            if (subdivision.XnZn < zn.Block.Floor.XnZp || subdivision.XpZn < zn.Block.Floor.XpZp)
                 block.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_NegativeZ_WS));
         }
 
         if (zp.Block is not null)
         {
-            if (subdivision.Edges[(int)BlockEdge.XnZp] < zp.Block.Floor.XnZn || subdivision.Edges[(int)BlockEdge.XpZp] < zp.Block.Floor.XpZn)
+            if (subdivision.XnZp < zp.Block.Floor.XnZn || subdivision.XpZp < zp.Block.Floor.XpZn)
                 block.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, block.GetFaceTexture(BlockFace.Wall_PositiveZ_WS));
         }
     }
@@ -151,34 +153,34 @@ internal static class LegacyRepair
         switch (probingBlock.Floor.DiagonalSplit)
         {
             case DiagonalSplit.XnZp:
-                if (subdivision.Edges[(int)BlockEdge.XnZn] > localBlock.Floor.XpZn)
+                if (subdivision.XnZn > localBlock.Floor.XpZn)
                     localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
 
-                if (subdivision.Edges[(int)BlockEdge.XpZp] > localBlock.Floor.XpZn)
+                if (subdivision.XpZp > localBlock.Floor.XpZn)
                     localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
                 break;
 
             case DiagonalSplit.XpZn:
-                if (subdivision.Edges[(int)BlockEdge.XnZn] > localBlock.Floor.XnZp)
+                if (subdivision.XnZn > localBlock.Floor.XnZp)
                     localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
 
-                if (subdivision.Edges[(int)BlockEdge.XpZp] > localBlock.Floor.XnZp)
+                if (subdivision.XpZp > localBlock.Floor.XnZp)
                     localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
                 break;
 
             case DiagonalSplit.XpZp:
-                if (subdivision.Edges[(int)BlockEdge.XpZn] > localBlock.Floor.XnZn)
+                if (subdivision.XpZn > localBlock.Floor.XnZn)
                     localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_FloorSubdivision2, qaNegativeZ);
 
-                if (subdivision.Edges[(int)BlockEdge.XnZp] > localBlock.Floor.XnZn)
+                if (subdivision.XnZp > localBlock.Floor.XnZn)
                     localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_FloorSubdivision2, qaNegativeX);
                 break;
 
             case DiagonalSplit.XnZn:
-                if (subdivision.Edges[(int)BlockEdge.XnZp] > localBlock.Floor.XpZp)
+                if (subdivision.XnZp > localBlock.Floor.XpZp)
                     localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_FloorSubdivision2, qaPositiveZ);
 
-                if (subdivision.Edges[(int)BlockEdge.XpZn] > localBlock.Floor.XpZp)
+                if (subdivision.XpZn > localBlock.Floor.XpZp)
                     localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_FloorSubdivision2, qaPositiveX);
                 break;
         }
@@ -217,34 +219,34 @@ internal static class LegacyRepair
         switch (probingBlock.Ceiling.DiagonalSplit)
         {
             case DiagonalSplit.XnZp:
-                if (subdivision.Edges[(int)BlockEdge.XnZn] < localBlock.Ceiling.XpZn)
+                if (subdivision.XnZn < localBlock.Ceiling.XpZn)
                     localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
 
-                if (subdivision.Edges[(int)BlockEdge.XpZp] < localBlock.Ceiling.XpZn)
+                if (subdivision.XpZp < localBlock.Ceiling.XpZn)
                     localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
                 break;
 
             case DiagonalSplit.XpZn:
-                if (subdivision.Edges[(int)BlockEdge.XnZn] < localBlock.Ceiling.XnZp)
+                if (subdivision.XnZn < localBlock.Ceiling.XnZp)
                     localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
 
-                if (subdivision.Edges[(int)BlockEdge.XpZp] < localBlock.Ceiling.XnZp)
+                if (subdivision.XpZp < localBlock.Ceiling.XnZp)
                     localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
                 break;
 
             case DiagonalSplit.XpZp:
-                if (subdivision.Edges[(int)BlockEdge.XpZn] < localBlock.Ceiling.XnZn)
+                if (subdivision.XpZn < localBlock.Ceiling.XnZn)
                     localBlock.SetFaceTexture(BlockFace.Wall_NegativeZ_CeilingSubdivision2, wsNegativeZ);
 
-                if (subdivision.Edges[(int)BlockEdge.XnZp] < localBlock.Ceiling.XnZn)
+                if (subdivision.XnZp < localBlock.Ceiling.XnZn)
                     localBlock.SetFaceTexture(BlockFace.Wall_NegativeX_CeilingSubdivision2, wsNegativeX);
                 break;
 
             case DiagonalSplit.XnZn:
-                if (subdivision.Edges[(int)BlockEdge.XnZp] < localBlock.Ceiling.XpZp)
+                if (subdivision.XnZp < localBlock.Ceiling.XpZp)
                     localBlock.SetFaceTexture(BlockFace.Wall_PositiveZ_CeilingSubdivision2, wsPositiveZ);
 
-                if (subdivision.Edges[(int)BlockEdge.XpZn] < localBlock.Ceiling.XpZp)
+                if (subdivision.XpZn < localBlock.Ceiling.XpZp)
                     localBlock.SetFaceTexture(BlockFace.Wall_PositiveX_CeilingSubdivision2, wsPositiveX);
                 break;
         }

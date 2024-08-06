@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Linq;
 using TombLib.LevelData;
 using TombLib;
+using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorEnums;
 
 namespace TombEditor.Controls.Panel3D
 {

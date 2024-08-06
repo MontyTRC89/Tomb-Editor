@@ -5,6 +5,8 @@ using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
 
 namespace TombEditor.Controls.Panel3D
 {

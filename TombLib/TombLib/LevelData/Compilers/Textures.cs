@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Utils.ImageQuantizer;
 

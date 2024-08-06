@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using TombLib.LevelData.SectorEnums;
 using TombLib.NG;
 using TombLib.Wad.Catalog;
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
 
-namespace TombLib.LevelData.Geometry;
+namespace TombLib.LevelData.SectorGeometry;
 
 public static class RoomExtensionMethods
 {

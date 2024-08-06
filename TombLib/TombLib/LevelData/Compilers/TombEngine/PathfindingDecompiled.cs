@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TombLib.LevelData.SectorEnums;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {

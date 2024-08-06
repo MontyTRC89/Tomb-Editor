@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using TombLib.LevelData.Geometry;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorGeometry;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 
 namespace TombLib.LevelData

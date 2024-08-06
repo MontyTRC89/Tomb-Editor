@@ -1,4 +1,4 @@
-﻿namespace TombLib.LevelData.Geometry;
+﻿namespace TombLib.LevelData.SectorGeometry;
 
 /// <summary>
 /// Represents a wall start or end point from top-down view.

@@ -1,5 +1,6 @@
 ﻿using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Rendering;
 
 namespace TombEditor

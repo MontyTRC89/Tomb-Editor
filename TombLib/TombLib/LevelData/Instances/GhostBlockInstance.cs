@@ -1,4 +1,6 @@
 ﻿using System.Numerics;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 
 namespace TombLib.LevelData
 {

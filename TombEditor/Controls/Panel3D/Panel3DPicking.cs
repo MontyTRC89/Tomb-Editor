@@ -11,6 +11,8 @@ using TombLib.Rendering;
 using TombLib.Wad.Catalog;
 using TombLib.Wad;
 using TombLib.Utils;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
 
 namespace TombEditor.Controls.Panel3D
 {
