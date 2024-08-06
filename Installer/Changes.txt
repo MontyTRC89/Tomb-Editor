@@ -16,13 +16,16 @@ Tomb Editor:
  * Added handling for OnUseItem event in node editor.
  * Added drag-n-drop support for object ID controls in node editor.
  * Increased TEN flipmap count up to 255.
+ * Increased Particle Generator nodes to allow user to choose a sprite number to use up to 100.
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
  * Fixed "Set specified mesh visibility" TEN node.
 
+
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
+ * Fixed TR2 BIG_SPIDER sounds remapping incorrectly for TombEngine.
 
 TombIDE:
  * Updated FLEP for new projects.
