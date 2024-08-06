@@ -62,10 +62,8 @@ public static class LegacyWallGeometry
 
 		SectorFace? qaFaceData = SectorFace.CreateVerticalFloorFaceData(qaFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yQaA, yQaB), new(yA, yB));
 
-		if (!qaFaceData.HasValue)
-			return result; // Empty list
-
-		result.Add(qaFaceData.Value);
+		if (qaFaceData.HasValue)
+			result.Add(qaFaceData.Value);
 
 		if (subdivide)
 		{
@@ -136,10 +134,8 @@ public static class LegacyWallGeometry
 
 		SectorFace? wsFaceData = SectorFace.CreateVerticalCeilingFaceData(wsFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yWsA, yWsB), new(yA, yB));
 
-		if (!wsFaceData.HasValue)
-			return result; // Empty list
-
-		result.Add(wsFaceData.Value);
+		if (wsFaceData.HasValue)
+			result.Add(wsFaceData.Value);
 
 		if (subdivide)
 		{
