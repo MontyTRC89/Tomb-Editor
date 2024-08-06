@@ -14,7 +14,7 @@ LevelFuncs.Engine.Node.ParticleEmitter = function(entity, meshnum, spriteID, vel
 	local origin = TEN.Objects.GetMoveableByName(entity):GetJointPosition(meshnum)
 	local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
 
-	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize,endSize, life, damage, poison)
+	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize, endSize, life, damage, poison)
 end
 
 -- !Name "Particle generator (statics)"
@@ -56,7 +56,7 @@ LevelFuncs.Engine.Node.ParticleEmitterVolume = function(volume, spriteID, veloci
 	local origin = TEN.Objects.GetVolumeByName(volume):GetPosition()
 	local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
 
-	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize,endSize, life, damage, poison)
+	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize, endSize, life, damage, poison)
 end
 
 -- !Name "Emit lightning arc"
@@ -67,8 +67,7 @@ end
 -- !Arguments "Newline, Number, 25, [ 0 | 4.2 | 1 ], Lifetime in seconds." "Number, 25, [ 1 | 255 | 0 ], Effect strength." "Number, 25, [ 1 | 127 | 0 ], Beam width." "Number, 25, [ 1 | 127 | 0 ], Detail level."
 -- !Arguments "Newline, Boolean, 25, Smooth effect" "Boolean, 25, End drift" "Boolean, 25, Source light" "Boolean, 25, Destination light"
 
-LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, amplitude, beamWidth, detail, smooth,
-											   endDrift, sourcelight, destlight)
+LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, amplitude, beamWidth, detail, smooth, endDrift, sourcelight, destlight)
 	local randomiserX = (math.random(-64, 64))
 	local randomiserZ = (math.random(-256, 256))
 
@@ -97,8 +96,7 @@ LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, am
 		TEN.Effects.EmitLight(endingpoint, color, math.random(1, 10))
 	end
 
-	TEN.Effects.EmitLightningArc(startingpoint, endingpoint, color, lifetime, ampRandom, beamRandom, detail, smooth,
-		endDrift)
+	TEN.Effects.EmitLightningArc(startingpoint, endingpoint, color, lifetime, ampRandom, beamRandom, detail, smooth, endDrift)
 end
 
 -- !Name "Emit shockwave"
@@ -122,6 +120,6 @@ LevelFuncs.Engine.Node.Shockwave = function(pos, meshnum, innerRadius, outerRadi
 		TEN.Effects.EmitShockwave(origin, radiusInVar, radiusOutVar, color, lifetime, speed, angle, damage)
 	else
 		local origin = TEN.Objects.GetMoveableByName(pos):GetJointPosition(meshnum)
-		TEN.Effects.EmitShockwave(origin, radiusInnerVar, radiusOutVar, color, lifetime, speed, angle, damage)
+		TEN.Effects.EmitShockwave(origin, radiusInVar, radiusOutVar, color, lifetime, speed, angle, damage)
 	end
 end
