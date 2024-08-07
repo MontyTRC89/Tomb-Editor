@@ -17,9 +17,9 @@ LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, objectcentre, d
 
 	LevelVars[dataName] = {}
     LevelVars[dataName].Progress   = 0
-    LevelVars[dataName].Interval   = 1 / (time * 30)
-    LevelVars[dataName].DataType   = dataType
-    LevelVars[dataName].Radius     = radius
+	LevelVars[dataName].Interval   = 1 / (time * 30)
+	LevelVars[dataName].DataType   = dataType
+	LevelVars[dataName].Radius     = radius
     LevelVars[dataName].ObjectName = objectName
     LevelVars[dataName].CentreName = objectcentre
     LevelVars[dataName].Name       = dataName
@@ -34,9 +34,10 @@ LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, objectcentre, d
     LevelVars[dataName].Sfx        = SFX
     LevelVars[dataName].OldValue   = startangle
 	LevelVars[dataName].StopAtEnd  = false
-    
+
+	local rotationAngle = 360
 	LevelVars[dataName].NewValue = LevelVars[dataName].Loop
-    and (startangle + (LevelVars[dataName].CCW and -360 or 360))
+    and (startangle + (LevelVars[dataName].CCW and -rotationAngle or rotationAngle))
     or endangle
     
     LevelVars[dataName].Timer:Start()
@@ -77,36 +78,44 @@ LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
 
 			local ptx, pty = x + radius2 * math.sin(angle), y - radius2 * math.cos(angle)
 			object2:SetPosition(Vec3(ptx, pty, object2pos.z))
+			
 			if not IsSoundPlaying(LevelVars[dataName].Sfx) then
             TEN.Sound.PlaySound(LevelVars[dataName].Sfx, object2pos)
 			end
+			
 			if LevelVars[dataName].CRotate then    
             center2:SetRotation(Rotation(0, 0, newValue1))
 			end
 		elseif	(center2rot.y == 90) then
 			local ptz, pty = z + radius2 * math.sin(-angle), y - radius2 * math.cos(-angle)
 			object2:SetPosition(Vec3(object2pos.x, pty, ptz))
+			
 			if not IsSoundPlaying(LevelVars[dataName].Sfx) then
 			TEN.Sound.PlaySound(LevelVars[dataName].Sfx, object2pos)
 			end
+			
 			if LevelVars[dataName].CRotate then    
 			center2:SetRotation(Rotation(0, center2rot.y, newValue1))
 			end
 		elseif	(center2rot.y == -180) then
 			local ptx, pty = x + radius2 * math.sin(-angle), y - radius2 * math.cos(-angle)
 			object2:SetPosition(Vec3(ptx, pty, object2pos.z))
+			
 			if not IsSoundPlaying(LevelVars[dataName].Sfx) then
 			TEN.Sound.PlaySound(LevelVars[dataName].Sfx, object2pos)
 			end
+			
 			if LevelVars[dataName].CRotate then    
 			center2:SetRotation(Rotation(0, center2rot.y, newValue1))
 			end	
 		elseif	(center2rot.y == -90) then
 			local ptz, pty = z + radius2 * math.sin(angle), y - radius2 * math.cos(angle)
 			object2:SetPosition(Vec3(object2pos.x, pty, ptz))
+			
 			if not IsSoundPlaying(LevelVars[dataName].Sfx) then
 			TEN.Sound.PlaySound(LevelVars[dataName].Sfx, object2pos)
 			end
+			
 			if LevelVars[dataName].CRotate then    
 			center2:SetRotation(Rotation(0, center2rot.y, newValue1))
 			end
@@ -125,7 +134,8 @@ LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
         end
     end
 
-    if LevelVars[dataName].StopAtEnd and  math.abs(normalizedNewValue1 - normalizedEndAngle) < 5e-1 then
+	local toleranceTest = 5e-1
+    if LevelVars[dataName].StopAtEnd and  math.abs(normalizedNewValue1 - normalizedEndAngle) < toleranceTest then
         Timer.Delete(LevelVars[dataName].Name)
         LevelVars[dataName] = nil
     elseif not LevelVars[dataName].Loop and LevelVars[dataName].Progress >= 1 then
