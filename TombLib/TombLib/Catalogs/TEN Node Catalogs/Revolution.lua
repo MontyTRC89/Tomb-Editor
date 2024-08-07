@@ -3,42 +3,43 @@
 local Timer = require("Engine.Timer")
 
 -- Construct timed transform data and start transform
-LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, objectcentre, dataType, radius, time, startangle, endangle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
+LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, objectCentre, dataType, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
 
     local dataName  = objectName .. "_revolve_data"
+	local revolutionAngle = 360  --one full revolution is 360 degrees
     
-    	if LevelVars[dataName] and LevelVars[dataName].Timer then
+	if LevelVars[dataName] and LevelVars[dataName].Timer then
 		if LevelVars[dataName].Timer:IsActive() then
-        	return
+        return
 		end
 		Timer.Delete(LevelVars[dataName].Name)
 		LevelVars[dataName] = nil
 	end
 
+
 	LevelVars[dataName] = {}
     LevelVars[dataName].Progress   = 0
-	LevelVars[dataName].Interval   = 1 / (time * 30)
-	LevelVars[dataName].DataType   = dataType
-	LevelVars[dataName].Radius     = radius
+    LevelVars[dataName].Interval   = 1 / (time * 30)
+    LevelVars[dataName].DataType   = dataType
+    LevelVars[dataName].Radius     = radius
     LevelVars[dataName].ObjectName = objectName
-    LevelVars[dataName].CentreName = objectcentre
+    LevelVars[dataName].CentreName = objectCentre
     LevelVars[dataName].Name       = dataName
     LevelVars[dataName].Timer      = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformTimedData, dataName)
-    LevelVars[dataName].StartAngle = startangle
-    LevelVars[dataName].EndAngle   = endangle
-    LevelVars[dataName].CCW        = isCCW
-    LevelVars[dataName].Loop       = isLoop
-    LevelVars[dataName].Smooth     = isSmooth
-    LevelVars[dataName].Rotate     = isRotate
-    LevelVars[dataName].CRotate    = isCRotate
+    LevelVars[dataName].StartAngle = startAngle
+    LevelVars[dataName].EndAngle   = endAngle
+    LevelVars[dataName].CCW        = isCCW     -- Flips the direction of the loop if loop is ticked.
+    LevelVars[dataName].Loop       = isLoop    -- Loops the object continuously starting from start angle.
+    LevelVars[dataName].Smooth     = isSmooth  -- Used for smooth start and stop. If loop is used then the smooth start and stop is at the start angle.
+    LevelVars[dataName].Rotate     = isRotate  -- Rotate the object itself. Only used for Horizontal rotation
+    LevelVars[dataName].CRotate    = isCRotate -- to rotate the center object
     LevelVars[dataName].Sfx        = SFX
-    LevelVars[dataName].OldValue   = startangle
+    LevelVars[dataName].OldValue   = startAngle
 	LevelVars[dataName].StopAtEnd  = false
-
-	local rotationAngle = 360
+    
 	LevelVars[dataName].NewValue = LevelVars[dataName].Loop
-    and (startangle + (LevelVars[dataName].CCW and -rotationAngle or rotationAngle))
-    or endangle
+    and (startAngle + (LevelVars[dataName].CCW and -revolutionAngle or revolutionAngle))
+    or endAngle
     
     LevelVars[dataName].Timer:Start()
 end
@@ -46,31 +47,32 @@ end
 -- Transform object parameter using previously saved timed transform data
 LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
    
-        -- Smoothly loop the progress value
-        LevelVars[dataName].Progress = LevelVars[dataName].Loop
-		and (LevelVars[dataName].Progress + LevelVars[dataName].Interval) % 1
-		or math.min(LevelVars[dataName].Progress + LevelVars[dataName].Interval, 1)
-        -- Stop at 1
+    -- Smoothly loop the progress value
+    LevelVars[dataName].Progress = LevelVars[dataName].Loop
+	and (LevelVars[dataName].Progress + LevelVars[dataName].Interval) % 1
+	or math.min(LevelVars[dataName].Progress + LevelVars[dataName].Interval, 1)
+    -- Stop at 1
 	
-	--function to normalize the angles to 360
+	--function to normalize the angles to 360 degree
 	local function NormalizeAngle(angle)
     return (angle % 360 + 360) % 360
 	end
     	
-    local factor = LevelVars[dataName].Smooth and LevelFuncs.Engine.Node.Smoothstep(LevelVars[dataName].Progress) or LevelVars[dataName].Progress
-    local newValue1 = LevelFuncs.Engine.Node.Lerp(LevelVars[dataName].OldValue, LevelVars[dataName].NewValue, factor)
-    local object2 = TEN.Objects.GetMoveableByName(LevelVars[dataName].ObjectName)
-    local object2pos = object2:GetPosition()
-    local center2 = TEN.Objects.GetMoveableByName(LevelVars[dataName].CentreName)
-    local center2pos = center2:GetPosition()
+	local factor = LevelVars[dataName].Smooth and LevelFuncs.Engine.Node.Smoothstep(LevelVars[dataName].Progress) or LevelVars[dataName].Progress
+	local newValue1 = LevelFuncs.Engine.Node.Lerp(LevelVars[dataName].OldValue, LevelVars[dataName].NewValue, factor)
+	local object2 = TEN.Objects.GetMoveableByName(LevelVars[dataName].ObjectName)
+	local object2pos = object2:GetPosition()
+	local center2 = TEN.Objects.GetMoveableByName(LevelVars[dataName].CentreName)
+	local center2pos = center2:GetPosition()
 	local center2rot = center2:GetRotation()
-    local radius2 = LevelVars[dataName].Radius
-    local angle = newValue1 * math.pi / 180
-    local x = center2pos.x
-    local y = center2pos.y
-    local z = center2pos.z
+	local radius2 = LevelVars[dataName].Radius
+	local angle = newValue1 * math.pi / 180
+	local x = center2pos.x
+	local y = center2pos.y
+	local z = center2pos.z
 	local normalizedNewValue1 = NormalizeAngle(newValue1)
-    local normalizedEndAngle = NormalizeAngle(LevelVars[dataName].EndAngle)
+	local normalizedEndAngle = NormalizeAngle(LevelVars[dataName].EndAngle)
+	local tolerance = 5e-1 --0.5 tolerance. The tolerance to stop the object revolution. Its required incase of smooth rotation.
 	
 
     if (LevelVars[dataName].DataType == 0) then
@@ -86,6 +88,7 @@ LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
 			if LevelVars[dataName].CRotate then    
             center2:SetRotation(Rotation(0, 0, newValue1))
 			end
+			
 		elseif	(center2rot.y == 90) then
 			local ptz, pty = z + radius2 * math.sin(-angle), y - radius2 * math.cos(-angle)
 			object2:SetPosition(Vec3(object2pos.x, pty, ptz))
@@ -97,6 +100,7 @@ LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
 			if LevelVars[dataName].CRotate then    
 			center2:SetRotation(Rotation(0, center2rot.y, newValue1))
 			end
+			
 		elseif	(center2rot.y == -180) then
 			local ptx, pty = x + radius2 * math.sin(-angle), y - radius2 * math.cos(-angle)
 			object2:SetPosition(Vec3(ptx, pty, object2pos.z))
@@ -108,6 +112,7 @@ LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
 			if LevelVars[dataName].CRotate then    
 			center2:SetRotation(Rotation(0, center2rot.y, newValue1))
 			end	
+			
 		elseif	(center2rot.y == -90) then
 			local ptz, pty = z + radius2 * math.sin(angle), y - radius2 * math.cos(angle)
 			object2:SetPosition(Vec3(object2pos.x, pty, ptz))
@@ -119,23 +124,26 @@ LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
 			if LevelVars[dataName].CRotate then    
 			center2:SetRotation(Rotation(0, center2rot.y, newValue1))
 			end
+			
 		end
-    elseif (LevelVars[dataName].DataType == 1) then
-        local ptz, ptx = z + radius2 * math.sin(-angle), x + radius2 * math.cos(-angle)
-        object2:SetPosition(Vec3(ptx, object2pos.y, ptz))
-        if not IsSoundPlaying(LevelVars[dataName].Sfx) then
-            TEN.Sound.PlaySound(LevelVars[dataName].Sfx, object2pos)
-        end
-        if LevelVars[dataName].CRotate then    
+	elseif (LevelVars[dataName].DataType == 1) then
+			local ptz, ptx = z + radius2 * math.sin(-angle), x + radius2 * math.cos(-angle)
+			object2:SetPosition(Vec3(ptx, object2pos.y, ptz))
+		
+			if not IsSoundPlaying(LevelVars[dataName].Sfx) then
+			TEN.Sound.PlaySound(LevelVars[dataName].Sfx, object2pos)
+			end
+		
+			if LevelVars[dataName].CRotate then    
             center2:SetRotation(Rotation(0, newValue1, 0))
-        end
-        if LevelVars[dataName].Rotate then    
+			end
+		
+			if LevelVars[dataName].Rotate then    
             object2:SetRotation(Rotation(0, newValue1, 0))
-        end
-    end
+			end
+	end
 
-	local toleranceTest = 5e-1
-    if LevelVars[dataName].StopAtEnd and  math.abs(normalizedNewValue1 - normalizedEndAngle) < toleranceTest then
+    if LevelVars[dataName].StopAtEnd and  math.abs(normalizedNewValue1 - normalizedEndAngle) < tolerance then
         Timer.Delete(LevelVars[dataName].Name)
         LevelVars[dataName] = nil
     elseif not LevelVars[dataName].Loop and LevelVars[dataName].Progress >= 1 then
@@ -145,12 +153,12 @@ LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
 end
 
 --- Delete timed transform data
-LevelFuncs.Engine.Node.DeleteTimedData = function(objectName, endangle)
+LevelFuncs.Engine.Node.DeleteTimedData = function(objectName, endAngle)
     local dataName = objectName .. "_revolve_data"
 
 	if LevelVars[dataName] and LevelVars[dataName].Timer and LevelVars[dataName].Timer:IsActive() then
-   	LevelVars[dataName].EndAngle = endangle
-    	LevelVars[dataName].StopAtEnd = true
+	LevelVars[dataName].EndAngle = endAngle
+	LevelVars[dataName].StopAtEnd = true
 	end
 end
 
@@ -165,7 +173,7 @@ end
 -- !Arguments "Numerical, [ 1 | 65535 | 2 | 1 | 1 ], {1}, 20, Radius of Rotation"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 20, Time (in seconds)"
 -- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 1 ], {0}, 20, Start Angle"
--- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 1 ], {360}, 20, End Angle. If Loop is ticked this is the angle the object will stop."
+-- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 1 ], {360}, 20, End Angle. The angle the object will stop if loop is not ticked."
 -- !Arguments "NewLine, 33, Boolean, Loop"
 -- !Arguments "33, Boolean, Flip Loop"
 -- !Arguments "33, Boolean, Smooth"
@@ -173,18 +181,18 @@ end
 -- !Arguments "35, Boolean, Rotate Center Object"
 -- !Arguments "NewLine, SoundEffects,{635}",
 
-LevelFuncs.Engine.Node.ChangeMoveableRotationOverTimespan = function(moveableName, centrepoint, option, radius, time, startangle, endangle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
+LevelFuncs.Engine.Node.ChangeMoveableRotationOverTimespan = function(moveableName, centrepoint, option, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
     -- Wrap another node function call into do/end to prevent wrong parsing
-    do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, centrepoint, option, radius, time, startangle, endangle, isLoop, isCCW, isSmooth, isRotate,  isCRotate, SFX) end
+    do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, centrepoint, option, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate,  isCRotate, SFX) end
 end
 
 -- !Name "Stop the revolution of an object"
 -- !Section "Timespan actions"
 -- !Description "Stop an already active object rotation."
 -- !Arguments "NewLine, Moveables, Moveable to stop rotation"
--- !Arguments "NewLine, Numerical, [ -360 | 360 | 2 | 1 | 1 ], {360}, 20, End Angle. If Loop is ticked this is the angle the object will stop."
+-- !Arguments "NewLine, Numerical, [ -360 | 360 | 2 | 1 | 1 ], {360}, 20, End Angle. This is the angle the object will stop."
 
-LevelFuncs.Engine.Node.StopMoveableRotation = function(moveableName,endangle)
+LevelFuncs.Engine.Node.StopMoveableRotation = function(moveableName,endAngle)
     -- Wrap another node function call into do/end to prevent wrong parsing
-    do LevelFuncs.Engine.Node.DeleteTimedData(moveableName,endangle) end
+    do LevelFuncs.Engine.Node.DeleteTimedData(moveableName,endAngle) end
 end
