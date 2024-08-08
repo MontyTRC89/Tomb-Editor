@@ -31,7 +31,7 @@
     <moveable id="28" name="Tiger" essential="false" ten="TIGER"/>
     <moveable id="29" name="Vulture" essential="false" ten="EAGLE"/>
     <moveable id="30" name="Assault-course target" essential="false" ten="SHOOT_SWITCH1" />
-    <moveable id="31" name="Crawler mutant in closet" essential="false" ten="SEAL_MUTANT"/>
+    <moveable id="31" name="Crawler mutant in closet" essential="false" ten="ANIMATING108"/>
     <moveable id="32" name="Crocodile (in water)" essential="false" />
     <moveable id="34" name="Compsognathus" essential="false" ten="COMPSOGNATHUS"/>
     <moveable id="35" name="Lizard thing" essential="false" ten="LIZARD"/>
