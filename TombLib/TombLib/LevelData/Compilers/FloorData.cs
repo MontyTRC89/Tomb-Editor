@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TombLib.LevelData.SectorEnums;
 using TombLib.NG;
 using TombLib.Wad.Catalog;
 

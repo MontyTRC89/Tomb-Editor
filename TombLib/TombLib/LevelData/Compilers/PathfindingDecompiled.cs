@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers

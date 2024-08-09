@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;

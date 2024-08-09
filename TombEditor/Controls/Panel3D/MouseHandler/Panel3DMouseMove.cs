@@ -6,6 +6,9 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Rendering;
 
 namespace TombEditor.Controls.Panel3D
@@ -233,7 +236,7 @@ namespace TombEditor.Controls.Panel3D
                                                 _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Clear();
 
                                                 for (int i = 0; i < _toolHandler.ReferenceBlock.ExtraFloorSubdivisions.Count; i++)
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Add(new Subdivision(_toolHandler.ReferenceBlock.ExtraFloorSubdivisions[i].Edges.Min()));		
+                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Add(new Subdivision(_toolHandler.ReferenceBlock.ExtraFloorSubdivisions[i].Min));
                                             }
                                             else if (!belongsToFloor && !_toolHandler.ReferencePicking.BelongsToFloor)
                                             {
@@ -241,7 +244,7 @@ namespace TombEditor.Controls.Panel3D
                                                 _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Clear();
 
                                                 for (int i = 0; i < _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Count; i++)
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Add(new Subdivision(_toolHandler.ReferenceBlock.ExtraCeilingSubdivisions[i].Edges.Min()));
+                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Add(new Subdivision(_toolHandler.ReferenceBlock.ExtraCeilingSubdivisions[i].Min));
                                             }
                                         }
                                         EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new RectangleInt2(pos, pos));

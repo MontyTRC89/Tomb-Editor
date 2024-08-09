@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Vector2 = System.Numerics.Vector2;

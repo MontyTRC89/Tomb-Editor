@@ -10,6 +10,9 @@ using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -370,10 +373,10 @@ namespace TombEditor.Controls.Panel3D
                         {
                             var floorSurface = new BlockSurface
                             {
-                                XnZp = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZp],
-                                XpZp = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZp],
-                                XpZn = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZn],
-                                XnZn = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZn],
+                                XnZp = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].XnZp,
+                                XpZp = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].XpZp,
+                                XpZn = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].XpZn,
+                                XnZn = targetBlock.ExtraFloorSubdivisions[subdivisionIndex].XnZn,
                                 DiagonalSplit = targetBlock.Floor.DiagonalSplit
                             };
 
@@ -403,10 +406,10 @@ namespace TombEditor.Controls.Panel3D
                         {
                             var ceilingSurface = new BlockSurface
                             {
-                                XnZp = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZp],
-                                XpZp = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZp],
-                                XpZn = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XpZn],
-                                XnZn = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].Edges[(int)BlockEdge.XnZn],
+                                XnZp = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].XnZp,
+                                XpZp = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].XpZp,
+                                XpZn = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].XpZn,
+                                XnZn = targetBlock.ExtraCeilingSubdivisions[subdivisionIndex].XnZn,
                                 DiagonalSplit = targetBlock.Ceiling.DiagonalSplit
                             };
 

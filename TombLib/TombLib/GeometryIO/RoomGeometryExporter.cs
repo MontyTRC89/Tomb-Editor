@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 
 namespace TombLib.GeometryIO

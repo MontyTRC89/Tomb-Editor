@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;

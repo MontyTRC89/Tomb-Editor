@@ -10,6 +10,9 @@ using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.LevelData.VisualScripting;
 using System.Threading;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorStructs;
 
 namespace TombLib.LevelData.IO
 {

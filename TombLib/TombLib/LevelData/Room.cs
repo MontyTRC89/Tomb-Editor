@@ -6,6 +6,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TombLib.LevelData.Compilers;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -1372,18 +1375,6 @@ namespace TombLib.LevelData
             public RoomConnectionType VisualType => (Portal?.HasTexturedFaces ?? true) ? RoomConnectionType.NoPortal : AnyType;
             ///<summary>Gives how the block geometrically behaves regarding portals</summary>
             public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
-        
-            public DiagonalType DiagonalType
-            {
-                get
-                {
-                    if (TraversableType == RoomConnectionType.FullPortal || TraversableType == RoomConnectionType.NoPortal)
-                        return DiagonalType.None;
-                    if (TraversableType == RoomConnectionType.TriangularPortalXnZn || TraversableType == RoomConnectionType.TriangularPortalXpZp)
-                        return DiagonalType.XnZnToXpZp;
-                    return DiagonalType.XnZpToXpZn;
-                }
-            }
 
             public bool IsTriangularPortal => !(TraversableType == RoomConnectionType.FullPortal || TraversableType == RoomConnectionType.NoPortal); 
         }
@@ -1896,7 +1887,7 @@ namespace TombLib.LevelData
                 for (int i = 0; i < targetBlock.ExtraFloorSubdivisions.Count; i++)
                 {
                     Subdivision subdivision = targetBlock.ExtraFloorSubdivisions[i];
-                    bool isInVoid = subdivision.Edges.Max() + targetRoom.Position.Y <= lowestNeighborFloor;
+                    bool isInVoid = subdivision.Max + targetRoom.Position.Y <= lowestNeighborFloor;
 
                     if (!isInVoid)
                         yield return BlockVerticalExtensions.GetExtraFloorSubdivision(i);
@@ -1930,12 +1921,12 @@ namespace TombLib.LevelData
             }
             else
             {
-                Subdivision subdivision = targetBlock.ExtraFloorSubdivisions.ElementAtOrDefault(BlockVerticalExtensions.GetExtraSubdivisionIndex(vertical));
+                Subdivision subdivision = targetBlock.ExtraFloorSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex());
 
                 if (subdivision is null)
                     return true;
 
-                bool isInVoid = subdivision.Edges.Max() + targetRoom.Position.Y <= relativeLowestNeighborFloor;
+                bool isInVoid = subdivision.Max + targetRoom.Position.Y <= relativeLowestNeighborFloor;
                 return isInVoid;
             }
         }
@@ -1952,7 +1943,7 @@ namespace TombLib.LevelData
                 for (int i = 0; i < targetBlock.ExtraCeilingSubdivisions.Count; i++)
                 {
                     Subdivision subdivision = targetBlock.ExtraCeilingSubdivisions[i];
-                    bool isInVoid = subdivision.Edges.Min() + targetRoom.Position.Y >= highestNeighborCeiling;
+                    bool isInVoid = subdivision.Min + targetRoom.Position.Y >= highestNeighborCeiling;
 
                     if (!isInVoid)
                         yield return BlockVerticalExtensions.GetExtraCeilingSubdivision(i);
@@ -1986,12 +1977,12 @@ namespace TombLib.LevelData
             }
             else
             {
-                Subdivision subdivision = targetBlock.ExtraCeilingSubdivisions.ElementAtOrDefault(BlockVerticalExtensions.GetExtraSubdivisionIndex(vertical));
+                Subdivision subdivision = targetBlock.ExtraCeilingSubdivisions.ElementAtOrDefault(vertical.GetExtraSubdivisionIndex());
 
                 if (subdivision is null)
                     return true;
 
-                bool isInVoid = subdivision.Edges.Min() + targetRoom.Position.Y >= relativeHighestNeighborCeiling;
+                bool isInVoid = subdivision.Min + targetRoom.Position.Y >= relativeHighestNeighborCeiling;
                 return isInVoid;
             }
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 
 namespace TombLib.Utils
 {

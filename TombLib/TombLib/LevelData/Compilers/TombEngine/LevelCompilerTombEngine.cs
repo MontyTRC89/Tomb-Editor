@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Threading;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;

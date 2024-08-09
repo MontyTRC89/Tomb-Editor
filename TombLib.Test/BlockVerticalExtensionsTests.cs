@@ -1,4 +1,6 @@
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
 
 namespace TombLib.Test;
 

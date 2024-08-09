@@ -1,4 +1,5 @@
 ﻿using System;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -84,13 +85,13 @@ namespace TombLib.LevelData
         {
             switch (direction)
             {
-                case LevelData.Direction.NegativeX:
+                case SectorEnums.Direction.NegativeX:
                     return PortalDirection.WallNegativeX;
-                case LevelData.Direction.PositiveX:
+                case SectorEnums.Direction.PositiveX:
                     return PortalDirection.WallPositiveX;
-                case LevelData.Direction.NegativeZ:
+                case SectorEnums.Direction.NegativeZ:
                     return PortalDirection.WallNegativeZ;
-                case LevelData.Direction.PositiveZ:
+                case SectorEnums.Direction.PositiveZ:
                     return PortalDirection.WallPositiveZ;
                 default:
                     return PortalDirection.Floor;
@@ -102,13 +103,13 @@ namespace TombLib.LevelData
             switch (direction)
             {
                 case PortalDirection.WallNegativeX:
-                    return LevelData.Direction.NegativeX;
+                    return SectorEnums.Direction.NegativeX;
                 case PortalDirection.WallPositiveX:
-                    return LevelData.Direction.PositiveX;
+                    return SectorEnums.Direction.PositiveX;
                 case PortalDirection.WallNegativeZ:
-                    return LevelData.Direction.NegativeZ;
+                    return SectorEnums.Direction.NegativeZ;
                 case PortalDirection.WallPositiveZ:
-                    return LevelData.Direction.PositiveZ;
+                    return SectorEnums.Direction.PositiveZ;
                 default:
                     return null;
             }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 

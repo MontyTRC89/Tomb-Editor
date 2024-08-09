@@ -12,6 +12,7 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using Color = System.Drawing.Color;

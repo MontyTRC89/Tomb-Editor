@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 using TombLib.Wad;
 

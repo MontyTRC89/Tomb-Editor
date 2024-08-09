@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using TombLib.IO;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
