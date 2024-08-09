@@ -5,57 +5,56 @@ local Timer = require("Engine.Timer")
 -- Construct timed transform data and start transform
 LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, objectCentre, dataType, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
 
-    local dataName  = objectName .. "_revolve_data"
+	local dataName  = objectName .. "_revolve_data"
 	local revolutionAngle = 360  --one full revolution is 360 degrees
     
 	if LevelVars[dataName] and LevelVars[dataName].Timer then
 		if LevelVars[dataName].Timer:IsActive() then
-        return
+        	return
 		end
-		Timer.Delete(LevelVars[dataName].Name)
-		LevelVars[dataName] = nil
+	Timer.Delete(LevelVars[dataName].Name)
+	LevelVars[dataName] = nil
 	end
 
-
-	LevelVars[dataName] = {}
-    LevelVars[dataName].Progress   = 0
-    LevelVars[dataName].Interval   = 1 / (time * 30)
-    LevelVars[dataName].DataType   = dataType
-    LevelVars[dataName].Radius     = radius
-    LevelVars[dataName].ObjectName = objectName
-    LevelVars[dataName].CentreName = objectCentre
-    LevelVars[dataName].Name       = dataName
-    LevelVars[dataName].Timer      = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformTimedData, dataName)
-    LevelVars[dataName].StartAngle = startAngle
-    LevelVars[dataName].EndAngle   = endAngle
-    LevelVars[dataName].CCW        = isCCW     -- Flips the direction of the loop if loop is ticked.
-    LevelVars[dataName].Loop       = isLoop    -- Loops the object continuously starting from start angle.
-    LevelVars[dataName].Smooth     = isSmooth  -- Used for smooth start and stop. If loop is used then the smooth start and stop is at the start angle.
-    LevelVars[dataName].Rotate     = isRotate  -- Rotate the object itself. Only used for Horizontal rotation
-    LevelVars[dataName].CRotate    = isCRotate -- to rotate the center object
-    LevelVars[dataName].Sfx        = SFX
-    LevelVars[dataName].OldValue   = startAngle
-	LevelVars[dataName].StopAtEnd  = false
+LevelVars[dataName] = {}
+LevelVars[dataName].Progress   = 0
+LevelVars[dataName].Interval   = 1 / (time * 30)
+LevelVars[dataName].DataType   = dataType
+LevelVars[dataName].Radius     = radius
+LevelVars[dataName].ObjectName = objectName
+LevelVars[dataName].CentreName = objectCentre
+LevelVars[dataName].Name       = dataName
+LevelVars[dataName].Timer      = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformTimedData, dataName)
+LevelVars[dataName].StartAngle = startAngle
+LevelVars[dataName].EndAngle   = endAngle
+LevelVars[dataName].CCW        = isCCW     -- Flips the direction of the loop if loop is ticked.
+LevelVars[dataName].Loop       = isLoop    -- Loops the object continuously starting from start angle.
+LevelVars[dataName].Smooth     = isSmooth  -- Used for smooth start and stop. If loop is used then the smooth start and stop is at the start angle.
+LevelVars[dataName].Rotate     = isRotate  -- Rotate the object itself. Only used for Horizontal rotation
+LevelVars[dataName].CRotate    = isCRotate -- to rotate the center object
+LevelVars[dataName].Sfx        = SFX
+LevelVars[dataName].OldValue   = startAngle
+LevelVars[dataName].StopAtEnd  = false
     
-	LevelVars[dataName].NewValue = LevelVars[dataName].Loop
-    and (startAngle + (LevelVars[dataName].CCW and -revolutionAngle or revolutionAngle))
-    or endAngle
+LevelVars[dataName].NewValue = LevelVars[dataName].Loop
+and (startAngle + (LevelVars[dataName].CCW and -revolutionAngle or revolutionAngle))
+or endAngle
     
-    LevelVars[dataName].Timer:Start()
+LevelVars[dataName].Timer:Start()
 end
 
 -- Transform object parameter using previously saved timed transform data
 LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
    
-    -- Smoothly loop the progress value
-    LevelVars[dataName].Progress = LevelVars[dataName].Loop
-	and (LevelVars[dataName].Progress + LevelVars[dataName].Interval) % 1
-	or math.min(LevelVars[dataName].Progress + LevelVars[dataName].Interval, 1)
+-- Smoothly loop the progress value
+LevelVars[dataName].Progress = LevelVars[dataName].Loop
+and (LevelVars[dataName].Progress + LevelVars[dataName].Interval) % 1
+or math.min(LevelVars[dataName].Progress + LevelVars[dataName].Interval, 1)
     -- Stop at 1
 	
 	--function to normalize the angles to 360 degree
 	local function NormalizeAngle(angle)
-    return (angle % 360 + 360) % 360
+	return (angle % 360 + 360) % 360
 	end
     	
 	local factor = LevelVars[dataName].Smooth and LevelFuncs.Engine.Node.Smoothstep(LevelVars[dataName].Progress) or LevelVars[dataName].Progress
@@ -154,7 +153,7 @@ end
 
 --- Delete timed transform data
 LevelFuncs.Engine.Node.DeleteTimedData = function(objectName, endAngle)
-    local dataName = objectName .. "_revolve_data"
+local dataName = objectName .. "_revolve_data"
 
 	if LevelVars[dataName] and LevelVars[dataName].Timer and LevelVars[dataName].Timer:IsActive() then
 	LevelVars[dataName].EndAngle = endAngle
