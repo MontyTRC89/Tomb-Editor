@@ -8,7 +8,8 @@
 LevelFuncs.Engine.Node.MoveableLight = function(moveable, meshnumber, lightcolor, range, effectOffset)
 
 	local entityPos = TEN.Objects.GetMoveableByName(moveable):GetJointPosition(meshnumber)
-	local offset = entityPos + effectOffset
+	effectOffset = effectOffset or Vec3(0, 0, 0)  -- Set a default value if nil
+	offset = (entityPos) + (effectOffset)
 	TEN.Effects.EmitLight(offset, lightcolor, range)
 end
 

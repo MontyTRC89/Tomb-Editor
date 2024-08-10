@@ -39,7 +39,7 @@
     <moveable id="37" name="Spikes" essential="false" ten="TEETH_SPIKES" />
     <moveable id="38" name="Boulder" essential="false" ten="CLASSIC_ROLLINGBALL" />
     <moveable id="39" name="Dart" hidden="true" ten="DARTS" />
-    <moveable id="40" name="Wall-mounted dartgun" essential="false" ten="DART_EMMITER" />
+    <moveable id="40" name="Wall-mounted dartgun" essential="false" ten="DART_EMITTER" />
     <moveable id="41" name="Door (opens upward)" essential="false" ten="DOOR_TYPE9" />
     <moveable id="42" name="Slamming doors" essential="false" ten="SLAMMING_DOORS" />
     <moveable id="43" name="Sword of Damocles" essential="false" ten="DAMOCLES_SWORD" />
