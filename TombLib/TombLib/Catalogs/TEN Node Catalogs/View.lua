@@ -56,6 +56,16 @@ LevelFuncs.Engine.Node.PlayFlyBy = function(index)
     TEN.View.PlayFlyBy(index)
 end
 
+-- !Name "Activate camera"
+-- !Section "View"
+-- !Description "Activate camera placed on the map.\nThis camera will be a fixed camera that allows weapons to be fired and the look key to be used."
+-- !Arguments "NewLine, Cameras, Choose camera to activate." "NewLine, Moveables, Choose moveable to target (default Lara)"
+
+LevelFuncs.Engine.Node.ActivateCamera = function(camName, moveable)
+    local moveableTarget = TEN.Objects.GetMoveableByName(moveable)
+    local cam = TEN.Objects.GetCameraByName(camName):PlayCamera(moveableTarget)
+end
+
 -- !Name "Set screen field of view"
 -- !Section "View"
 -- !Description "Change screen field of view."
@@ -117,12 +127,22 @@ LevelFuncs.Engine.Node.SetPostProcessDisplay = function(postProcessModeEnum, pow
     TEN.View.SetPostProcessTint(tintColor)
 end
 
--- !Name "Change distance fog parameters"
+-- !Name "Attach camera to moveable"
 -- !Section "View"
--- !Description "Change level distance fog and set a new minimum and maximum range.\nMinimum fog range is the distance from the camera that the fog starts.\nMaximum range is when the fog is at 100% density"
--- !Arguments "NewLine,Color, 50, Choose fog colour" , "Numerical, 25, [ 0 | 256 | 0 ], Distance (in blocks) fog starts from", "Numerical, 25, [ 0 | 256 | 0 ], Distance (in blocks) fog is completely dense"
+-- !Description "Attaches game camera to a specific moveable."
+-- !Arguments "NewLine, Moveables, 70, Source moveable" , "Number, 30 , [ 0 | 50 | 0 ] , Mesh number of source moveable to attach camera target to"
+-- !Arguments "NewLine, Moveables, 70, Target moveable" , "Number, 30 , [ 0 | 50 | 0 ] , Mesh number of target moveable to attach camera target to"
 
-LevelFuncs.Engine.Node.ChangeDistanceFog = function(fogColor, minFog, maxFog)
-    local level = TEN.Flow.GetCurrentLevel()
-    level.fog = Flow.Fog.new(fogColor,minFog,maxFog)
+LevelFuncs.Engine.Node.AttachCameraToMoveable = function(source, sourceMesh, target, targetMesh)
+    local sourcePos = TEN.Objects.GetMoveableByName(source)
+    local targetPos = TEN.Objects.GetMoveableByName(target)
+    sourcePos:AttachObjCamera(sourceMesh, targetPos, targetMesh)
+end
+
+-- !Name "Reset game camera to default position"
+-- !Section "View"
+-- !Description "Reset camera if target has been modified."
+
+LevelFuncs.Engine.Node.ResetObjCam = function()
+	ResetObjCamera()
 end

@@ -224,6 +224,7 @@
     <moveable id="296" name="SKATEBOARD" />
     <moveable id="297" name="SKATEBOARD_KID" />
     <moveable id="298" name="WINSTON" />
+	<moveable id="299" name="SEAL_MUTANT" />
     <moveable id="320" name="SPRINGBOARD" />
     <moveable id="321" name="ROLLING_SPINDLE" />
     <moveable id="322" name="DISK_SHOOTER" />

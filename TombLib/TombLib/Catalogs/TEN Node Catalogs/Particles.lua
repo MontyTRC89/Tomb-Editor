@@ -2,7 +2,7 @@
 -- !Section "Particles"
 -- !Description "Emit particles from a moveable"
 -- !Arguments "NewLine, Moveables, 70, The moveable particles will spawn from." "Numerical, 15, [ 0 | 100], Mesh number"
--- !Arguments "Numerical, 15, [ 0 | 31 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
+-- !Arguments "Numerical, 15, [ 0 | 100 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
 -- !Arguments "NewLine, Vector3, 60, [ -32000 | 32000 ], Velocity X Y Z"
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
 -- !Arguments "NewLine, Color, 33, Start color", "Color, 34, End color"
@@ -10,20 +10,18 @@
 -- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 2 ], Lifetime (in seconds)"
 -- !Arguments "Boolean, 20, Poison" "Boolean, 20, Damage"
 
-LevelFuncs.Engine.Node.ParticleEmitter = function(entity, meshnum, spriteID, velocity, gravity, rotation, startColor,
-												  endColor, blendID, startSize, endSize, life, poison, damage)
+LevelFuncs.Engine.Node.ParticleEmitter = function(entity, meshnum, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, poison, damage)
 	local origin = TEN.Objects.GetMoveableByName(entity):GetJointPosition(meshnum)
 	local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
 
-	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize,
-		endSize, life, damage, poison)
+	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize, endSize, life, damage, poison)
 end
 
 -- !Name "Particle generator (statics)"
 -- !Section "Particles"
 -- !Description "Emit particles from a moveable"
 -- !Arguments "NewLine, Statics, 85, The moveable particles will spawn from."
--- !Arguments "Numerical, 15, [ 0 | 31 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
+-- !Arguments "Numerical, 15, [ 0 | 100 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
 -- !Arguments "NewLine, Vector3, 60, [ -32000 | 32000 ], Velocity X Y Z"
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
 -- !Arguments "NewLine, Color, 6, Start color", "Color, 6, End color"
@@ -32,9 +30,7 @@ end
 -- !Arguments "NewLine, Boolean, 15, Poison" "Boolean, 17, Damage"
 -- !Arguments "Boolean, 65, Show particle only if static mesh is visible"
 
-LevelFuncs.Engine.Node.ParticleEmitterStatics = function(entity, spriteID, velocity, gravity, rotation, startColor,
-														 endColor, blendID, startSize, endSize, life, poison, damage,
-														 visibility)
+LevelFuncs.Engine.Node.ParticleEmitterStatics = function(entity, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, poison, damage,visibility)
 	local origin = TEN.Objects.GetStaticByName(entity):GetPosition()
 	local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
 
@@ -45,6 +41,24 @@ LevelFuncs.Engine.Node.ParticleEmitterStatics = function(entity, spriteID, veloc
 	end
 end
 
+-- !Name "Particle generator (volume)"
+-- !Section "Particles"
+-- !Description "Emit particles from the centre of a volume"
+-- !Arguments "NewLine, Volumes, 70, The volume particles will spawn from." "Numerical, 30, [ 0 | 100 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
+-- !Arguments "NewLine, Vector3, 60, [ -32000 | 32000 ], Velocity X Y Z"
+-- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
+-- !Arguments "NewLine, Color, 33, Start color", "Color, 34, End color"
+-- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
+-- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 2 ], Lifetime (in seconds)"
+-- !Arguments "Boolean, 20, Poison" "Boolean, 20, Damage"
+
+LevelFuncs.Engine.Node.ParticleEmitterVolume = function(volume, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, poison, damage)
+	local origin = TEN.Objects.GetVolumeByName(volume):GetPosition()
+	local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
+
+	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize, endSize, life, damage, poison)
+end
+
 -- !Name "Emit lightning arc"
 -- !Section "Particles"
 -- !Description "Emit a lightning arc between two points in 3D space"
@@ -53,8 +67,7 @@ end
 -- !Arguments "Newline, Number, 25, [ 0 | 4.2 | 1 ], Lifetime in seconds." "Number, 25, [ 1 | 255 | 0 ], Effect strength." "Number, 25, [ 1 | 127 | 0 ], Beam width." "Number, 25, [ 1 | 127 | 0 ], Detail level."
 -- !Arguments "Newline, Boolean, 25, Smooth effect" "Boolean, 25, End drift" "Boolean, 25, Source light" "Boolean, 25, Destination light"
 
-LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, amplitude, beamWidth, detail, smooth,
-											   endDrift, sourcelight, destlight)
+LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, amplitude, beamWidth, detail, smooth, endDrift, sourcelight, destlight)
 	local randomiserX = (math.random(-64, 64))
 	local randomiserZ = (math.random(-256, 256))
 
@@ -83,8 +96,7 @@ LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, am
 		TEN.Effects.EmitLight(endingpoint, color, math.random(1, 10))
 	end
 
-	TEN.Effects.EmitLightningArc(startingpoint, endingpoint, color, lifetime, ampRandom, beamRandom, detail, smooth,
-		endDrift)
+	TEN.Effects.EmitLightningArc(startingpoint, endingpoint, color, lifetime, ampRandom, beamRandom, detail, smooth, endDrift)
 end
 
 -- !Name "Emit shockwave"
@@ -108,6 +120,6 @@ LevelFuncs.Engine.Node.Shockwave = function(pos, meshnum, innerRadius, outerRadi
 		TEN.Effects.EmitShockwave(origin, radiusInVar, radiusOutVar, color, lifetime, speed, angle, damage)
 	else
 		local origin = TEN.Objects.GetMoveableByName(pos):GetJointPosition(meshnum)
-		TEN.Effects.EmitShockwave(origin, radiusInnerVar, radiusOutVar, color, lifetime, speed, angle, damage)
+		TEN.Effects.EmitShockwave(origin, radiusInVar, radiusOutVar, color, lifetime, speed, angle, damage)
 	end
 end
