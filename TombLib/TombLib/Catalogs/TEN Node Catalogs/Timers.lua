@@ -353,7 +353,7 @@ LevelFuncs.Engine.Node.IfRemainingTimeIs = function(name, operator, value)
 			local remainingTime = LevelVars.nodeTimers[name].remainingTimeFormatted
 			local result = LevelFuncs.Engine.Node.CompareValue(remainingTime, tostring(value + 0.0) , operator)
 			if LevelVars.nodeTimers[name].debug then
-				print("If the remaining time is:"..  value .. ". Remaining time:" .. remainingTime .. ". Result: " .. tostring(result))
+				print("If the remaining time is:"..  tostring(value + 0.0) .. ". Remaining time:" .. remainingTime .. ". Result: " .. tostring(result))
 			end
 			return result
 		end
