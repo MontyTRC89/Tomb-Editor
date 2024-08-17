@@ -168,7 +168,7 @@ namespace TombLib.Rendering
                 }
             }
             else
-                throw new ArgumentOutOfRangeException("Unknown SectorFaceIdentity encountered.");
+                throw new ArgumentOutOfRangeException($"Unknown {nameof(SectorFaceIdentifier)} encountered.");
 
             // Draw climbable walls
             Direction direction = face.GetDirection();
