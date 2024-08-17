@@ -372,7 +372,7 @@ namespace TombLib.LevelData
                 else
                     RemoveObject(level, instance);
 
-                // Collect affected rooms in case 
+                // Collect affected rooms in case
                 result = result.Concat(level.DeleteTriggersForObject(instance)).ToList();
             }
 
@@ -629,12 +629,12 @@ namespace TombLib.LevelData
                     return true;
             }
 
-			// Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup sector
-			// and looks if they are higher than any slope's lower heights (heightsToCompare[0-1]). Also it checks if
-			// lookup sector's adjacent ceiling heights (heightsToCheck[2-3]) is lower than minimum passable height.
-			// If lookup sector contains floor or ceiling diagonal splits, resolve algorithm is diverted (look further).
+            // Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup sector
+            // and looks if they are higher than any slope's lower heights (heightsToCompare[0-1]). Also it checks if
+            // lookup sector's adjacent ceiling heights (heightsToCheck[2-3]) is lower than minimum passable height.
+            // If lookup sector contains floor or ceiling diagonal splits, resolve algorithm is diverted (look further).
 
-			bool slopeIsIllegal = false;
+            bool slopeIsIllegal = false;
 
             for (int i = 0; i < 2; i++)
             {
@@ -688,16 +688,16 @@ namespace TombLib.LevelData
                 }
                 else if (lookupSector.Sector.Floor.DiagonalSplit != DiagonalSplit.None)
                 {
-					// If lookup sector has diagonal splits...
-					// For floor diagonal steps and diagonal walls, only steps/walls that are facing away
-					// from split are always treated as potentially illegal, because steps facing towards
-					// split are resolved by engine position corrector nicely.
+                    // If lookup sector has diagonal splits...
+                    // For floor diagonal steps and diagonal walls, only steps/walls that are facing away
+                    // from split are always treated as potentially illegal, because steps facing towards
+                    // split are resolved by engine position corrector nicely.
 
-					// Since in Tomb Editor diagonal steps are made that way so only single corner height
-					// is used for setting step height, we copy one of lookup sector's heightsToCheck to
-					// another.
+                    // Since in Tomb Editor diagonal steps are made that way so only single corner height
+                    // is used for setting step height, we copy one of lookup sector's heightsToCheck to
+                    // another.
 
-					switch (slopeDirections[i])
+                    switch (slopeDirections[i])
                     {
                         case Direction.PositiveZ:
                             if (lookupSector.Sector.Floor.DiagonalSplit == DiagonalSplit.XnZn ||
@@ -1373,10 +1373,10 @@ namespace TombLib.LevelData
 
             ///<summary>Gives how the sector visually appears regarding portals</summary>
             public RoomConnectionType VisualType => (Portal?.HasTexturedFaces ?? true) ? RoomConnectionType.NoPortal : AnyType;
-			///<summary>Gives how the sector geometrically behaves regarding portals</summary>
-			public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
+            ///<summary>Gives how the sector geometrically behaves regarding portals</summary>
+            public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
 
-            public bool IsTriangularPortal => !(TraversableType == RoomConnectionType.FullPortal || TraversableType == RoomConnectionType.NoPortal); 
+            public bool IsTriangularPortal => !(TraversableType == RoomConnectionType.FullPortal || TraversableType == RoomConnectionType.NoPortal);
         }
 
         public static IEnumerable<KeyValuePair<Room, Room>> GetPossibleAlternateRoomPairs(Room firstRoom, Room secondRoom, bool lookingFromSecond = false)
@@ -1767,7 +1767,7 @@ namespace TombLib.LevelData
                 // This null check prevents TE from crashing in case if user deleted a wad or legacy wad
                 // is currently locked and saving by utils such as strpix.
 
-                if (wadStatic == null || wadStatic.Mesh == null) 
+                if (wadStatic == null || wadStatic.Mesh == null)
                     continue;
 
                 for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
