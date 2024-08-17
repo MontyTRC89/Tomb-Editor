@@ -103,10 +103,10 @@ namespace TombLib.GeometryIO
                     {
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
-                            var block = room.GetBlock(new VectorInt2(x, z));
-                            foreach (BlockFace face in block.GetFaceTextures().Keys)
+                            var sector = room.GetSector(new VectorInt2(x, z));
+                            foreach (SectorFaceIdentifier face in sector.GetFaceTextures().Keys)
                             {
-                                var faceTexture = block.GetFaceTexture(face);
+                                var faceTexture = sector.GetFaceTexture(face);
                                 if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable || faceTexture.Texture == null)
                                     continue;
                                 if (!usedTextures.Contains(faceTexture.Texture))
@@ -158,8 +158,8 @@ namespace TombLib.GeometryIO
                     {
                         // Make room center pivot if we're in single-room export mode
                         offset = -room.GetLocalCenter();
-                        int x = (int)-offset.X / (int)Level.BlockSizeUnit;
-                        int z = (int)-offset.Z / (int)Level.BlockSizeUnit;
+                        int x = (int)-offset.X / (int)Level.SectorSizeUnit;
+                        int z = (int)-offset.Z / (int)Level.SectorSizeUnit;
                         offset.Y = -room.GetLowestCorner(new RectangleInt2(x, z, x, z));
                     }
 
@@ -176,19 +176,19 @@ namespace TombLib.GeometryIO
                     for (int x = 0; x < room.NumXSectors; x++)
                     for (int z = 0; z < room.NumZSectors; z++)
                     {
-                        var block = room.GetBlock(new VectorInt2(x, z));
+                        var sector = room.GetSector(new VectorInt2(x, z));
 
-                        foreach (BlockFace face in block.GetFaceTextures().Keys)
+                        foreach (SectorFaceIdentifier face in sector.GetFaceTextures().Keys)
                         {
-                            var faceTexture = block.GetFaceTexture(face);
+                            var faceTexture = sector.GetFaceTexture(face);
 
                             if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable)
                                 continue;
 
-                            var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
+                            var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                             var shape = room.GetFaceShape(x, z, face);
 
-                            if (shape == BlockFaceShape.Quad)
+                            if (shape == FaceShape.Quad)
                             {
                                 int i = range.Start;
 
@@ -217,7 +217,7 @@ namespace TombLib.GeometryIO
                                 int textureWidth = textureArea1.Texture.Image.Width;
                                 int textureHeight = textureArea1.Texture.Image.Height;
 
-                                if (face != BlockFace.Ceiling)
+                                if (face != SectorFaceIdentifier.Ceiling)
                                 {
                                     mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 3] + offset);
                                     mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] + offset);
@@ -260,7 +260,7 @@ namespace TombLib.GeometryIO
                                 mesh.Submeshes[mat].Polygons.Add(poly);
                                 lastIndex += 4;
                             }
-                            else if (shape == BlockFaceShape.Triangle)
+                            else if (shape == FaceShape.Triangle)
                             {
                                 int i = range.Start;
 

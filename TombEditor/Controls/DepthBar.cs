@@ -100,7 +100,7 @@ namespace TombEditor.Controls
         private struct RelevantRoom
         {
             public Room Room;
-            public Block Block;
+            public Sector Sector;
             public float MinDepth;
             public float MaxDepth;
         }
@@ -501,7 +501,7 @@ namespace TombEditor.Controls
                             // Draw fill color for room
                             Brush colorBrush = _roomsNormalBrush;
                             RectangleF roomRect = new RectangleF(posX0, posY0, posX1 - posX0, posY1 - posY0);
-                            if (room.Block != null && room.Block.Type != BlockType.Floor)
+                            if (room.Sector != null && room.Sector.Type != SectorType.Floor)
                                 colorBrush = _roomsWallBrush;
                             using (var colorBrush2 = getRoomBrush(room.Room, colorBrush))
                                 e.Graphics.FillRectangle(colorBrush2, roomRect);
@@ -512,16 +512,16 @@ namespace TombEditor.Controls
 
                             // Find portals on the selected sector
                             Pen belowPen = _roomBoundsPen;
-                            if (room.Block != null && room.Block.FloorPortal != null)
+                            if (room.Sector != null && room.Sector.FloorPortal != null)
                             {
-                                Room portalRoom = room.Block.FloorPortal.AdjoiningRoom;
+                                Room portalRoom = room.Sector.FloorPortal.AdjoiningRoom;
                                 if (i - 1 >= 0 && roomSequence[i - 1].Room == portalRoom)
                                     belowPen = _portalPen;
                             }
                             Pen abovePen = _roomBoundsPen;
-                            if (room.Block != null && room.Block.CeilingPortal != null)
+                            if (room.Sector != null && room.Sector.CeilingPortal != null)
                             {
-                                Room portalRoom = room.Block.CeilingPortal.AdjoiningRoom;
+                                Room portalRoom = room.Sector.CeilingPortal.AdjoiningRoom;
                                 if (i + 1 < roomSequence.Count && roomSequence[i + 1].Room == portalRoom)
                                     abovePen = _portalPen;
                             }
@@ -606,19 +606,19 @@ namespace TombEditor.Controls
                 Vector2 roomLocal = probePos - room.SectorPos;
                 bool CollidesWithProbe = roomLocal.X >= 1 && roomLocal.Y >= 1 && roomLocal.X < room.NumXSectors - 1 && roomLocal.Y < room.NumZSectors - 1;
 
-                Block block = CollidesWithProbe ? room.Blocks[(int)roomLocal.X, (int)roomLocal.Y] : null;
+                Sector sector = CollidesWithProbe ? room.Sectors[(int)roomLocal.X, (int)roomLocal.Y] : null;
                 RelevantRoom relevantRoom = new RelevantRoom
                 {
                     Room = room,
-                    Block = block,
+                    Sector = sector,
                     MinDepth = Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetLowestCorner()),
                     MaxDepth = Clicks.FromWorld(room.Position.Y) + Clicks.FromWorld(room.GetHighestCorner())
                 };
 
                 // Search for a fit in the sequence for rooms it the current room is connected to on this sector
-                if (block != null && block.FloorPortal != null)
+                if (sector != null && sector.FloorPortal != null)
                 {
-                    var portal = block.FloorPortal;
+                    var portal = sector.FloorPortal;
                     var roomAbove = portal.AdjoiningRoom;
                     foreach (var roomSequence in roomSequences)
                         if (roomSequence.Last().Room == roomAbove)

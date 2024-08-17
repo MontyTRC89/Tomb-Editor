@@ -1,6 +1,6 @@
 ﻿namespace TombLib.LevelData.SectorEnums;
 
-public enum BlockEdge : byte
+public enum SectorEdge : byte
 {
 	/// <summary> Index of edges on the negative X and positive Z direction </summary>
 	XnZp,

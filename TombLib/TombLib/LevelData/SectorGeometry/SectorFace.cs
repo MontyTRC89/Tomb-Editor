@@ -4,14 +4,14 @@ using TombLib.LevelData.SectorEnums;
 namespace TombLib.LevelData.SectorGeometry;
 
 /// <summary>
-/// Represents a face of a sector, either a triangle or a quad.
+/// Represents a face of a sector, either a triangle or a quad (2 triangles).
 /// </summary>
 public readonly struct SectorFace
 {
 	/// <summary>
 	/// The exact hard-coded face type.
 	/// </summary>
-	public readonly BlockFace FaceType;
+	public readonly SectorFaceIdentifier Face;
 
 	public readonly Vector3 P0;
 	public readonly Vector3 P1;
@@ -31,9 +31,9 @@ public readonly struct SectorFace
 	/// <summary>
 	/// Constructor for a triangle face.
 	/// </summary>
-	public SectorFace(BlockFace faceType, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
+	public SectorFace(SectorFaceIdentifier face, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
 	{
-		FaceType = faceType;
+		Face = face;
 
 		P0 = p0;
 		P1 = p1;
@@ -54,9 +54,9 @@ public readonly struct SectorFace
 	/// <summary>
 	/// Constructor for a quad face.
 	/// </summary>
-	public SectorFace(BlockFace faceType, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
+	public SectorFace(SectorFaceIdentifier face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
 	{
-		FaceType = faceType;
+		Face = face;
 
 		P0 = p0;
 		P1 = p1;
@@ -74,31 +74,31 @@ public readonly struct SectorFace
 		IsTriangle = false;
 	}
 
-	public static SectorFace? CreateVerticalFloorFaceData(BlockFace blockFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
+	public static SectorFace? CreateVerticalFloorFaceData(SectorFaceIdentifier sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
 	{
 		if (faceStartSplit.StartY > faceEndSplit.StartY && faceStartSplit.EndY > faceEndSplit.EndY) // Is quad
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p3: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p3: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(0, 0), uv1: new Vector2(1, 0), uv2: new Vector2(1, 1), uv3: new Vector2(0, 1));
 		}
 		else if (faceStartSplit.StartY == faceEndSplit.StartY && faceStartSplit.EndY > faceEndSplit.EndY) // Is triangle (type 1)
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(1, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: false);
 		}
 		else if (faceStartSplit.StartY > faceEndSplit.StartY && faceStartSplit.EndY == faceEndSplit.EndY) // Is triangle (type 2)
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(0, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: true);
 		}
 		else
@@ -107,31 +107,31 @@ public readonly struct SectorFace
 		}
 	}
 
-	public static SectorFace? CreateVerticalCeilingFaceData(BlockFace blockFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
+	public static SectorFace? CreateVerticalCeilingFaceData(SectorFaceIdentifier sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
 	{
 		if (faceStartSplit.StartY < faceEndSplit.StartY && faceStartSplit.EndY < faceEndSplit.EndY) // Is quad
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p3: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p3: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(0, 0), uv1: new Vector2(1, 0), uv2: new Vector2(1, 1), uv3: new Vector2(0, 1));
 		}
 		else if (faceStartSplit.StartY < faceEndSplit.StartY && faceStartSplit.EndY == faceEndSplit.EndY) // Is triangle (type 1)
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(0, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: true);
 		}
 		else if (faceStartSplit.StartY == faceEndSplit.StartY && faceStartSplit.EndY < faceEndSplit.EndY) // Is triangle (type 2)
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(1, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: false);
 		}
 		else
@@ -140,31 +140,31 @@ public readonly struct SectorFace
 		}
 	}
 
-	public static SectorFace? CreateVerticalMiddleFaceData(BlockFace blockFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
+	public static SectorFace? CreateVerticalMiddleFaceData(SectorFaceIdentifier sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplit faceStartSplit, WallSplit faceEndSplit)
 	{
 		if (faceStartSplit.StartY != faceEndSplit.StartY && faceStartSplit.EndY != faceEndSplit.EndY) // Is quad
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p3: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p3: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(0, 0), uv1: new Vector2(1, 0), uv2: new Vector2(1, 1), uv3: new Vector2(0, 1));
 		}
 		else if (faceStartSplit.StartY != faceEndSplit.StartY && faceStartSplit.EndY == faceEndSplit.EndY) // Is triangle (type 1)
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceStartSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(0, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: true);
 		}
 		else if (faceStartSplit.StartY == faceEndSplit.StartY && faceStartSplit.EndY != faceEndSplit.EndY) // Is triangle (type 2)
 		{
-			return new SectorFace(blockFace,
-				p0: new Vector3(wallStartPoint.X * Level.BlockSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.BlockSizeUnit),
-				p1: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
-				p2: new Vector3(wallEndPoint.X * Level.BlockSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.BlockSizeUnit),
+			return new SectorFace(sectorFace,
+				p0: new Vector3(wallStartPoint.X * Level.SectorSizeUnit, faceEndSplit.StartY, wallStartPoint.Z * Level.SectorSizeUnit),
+				p1: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceEndSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
+				p2: new Vector3(wallEndPoint.X * Level.SectorSizeUnit, faceStartSplit.EndY, wallEndPoint.Z * Level.SectorSizeUnit),
 				uv0: new Vector2(1, 1), uv1: new Vector2(0, 0), uv2: new Vector2(1, 0), isXEqualYDiagonal: false);
 		}
 		else

@@ -31,17 +31,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     for (var z = 0; z < room.NumZSectors; z++)
                     {
-                        Block block = room.Blocks[x, z];
+                        Sector sector = room.Sectors[x, z];
 
                         // Build sector info
-                        var sector = GetSector(tempRoom, x, z);
-                        sector.TriggerIndex = -1;
+                        var compiledSector = GetSector(tempRoom, x, z);
+                        compiledSector.TriggerIndex = -1;
 
-                        if ((block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
+                        if ((sector.Type == SectorType.Wall && sector.Floor.DiagonalSplit == DiagonalSplit.None) || sector.Type == SectorType.BorderWall)
                         {
                             // Sector is a complete wall
 
-                            if (block.WallPortal == null || block.WallPortal.Opacity == PortalOpacity.SolidFaces)
+                            if (sector.WallPortal == null || sector.WallPortal.Opacity == PortalOpacity.SolidFaces)
                             {
                                 var floorPortalAssigned = false;
                                 var ceilingPortalAssigned = false;
@@ -55,17 +55,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                         if (!floorPortalAssigned)
                                         {
-                                            var floorPortal = room.Blocks[xAround, zAround].FloorPortal;
+                                            var floorPortal = room.Sectors[xAround, zAround].FloorPortal;
                                             if (floorPortal != null)
                                             {
                                                 var adjoiningRoom = floorPortal.AdjoiningRoom;
                                                 var pos = new VectorInt2(x, z);
-                                                var adjoiningBlock = adjoiningRoom.GetBlockTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
+                                                var adjoiningSector = adjoiningRoom.GetSectorTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
 
-                                                if (adjoiningBlock != null)
+                                                if (adjoiningSector != null)
                                                 {
-                                                    sector.FloorCollision.Portals[0] = _roomRemapping[adjoiningRoom];
-                                                    sector.FloorCollision.Portals[1] = sector.FloorCollision.Portals[0];
+                                                    compiledSector.FloorCollision.Portals[0] = _roomRemapping[adjoiningRoom];
+                                                    compiledSector.FloorCollision.Portals[1] = compiledSector.FloorCollision.Portals[0];
                                                     floorPortalAssigned = true;
                                                 }
                                             }
@@ -73,17 +73,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                         if (!ceilingPortalAssigned)
                                         {
-                                            var ceilingPortal = room.Blocks[xAround, zAround].CeilingPortal;
+                                            var ceilingPortal = room.Sectors[xAround, zAround].CeilingPortal;
                                             if (ceilingPortal != null)
                                             {
                                                 var adjoiningRoom = ceilingPortal.AdjoiningRoom;
                                                 var pos = new VectorInt2(x, z);
-                                                var adjoiningBlock = adjoiningRoom.GetBlockTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
+                                                var adjoiningSector = adjoiningRoom.GetSectorTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
 
-                                                if (adjoiningBlock != null)
+                                                if (adjoiningSector != null)
                                                 {
-                                                    sector.CeilingCollision.Portals[0] = _roomRemapping[adjoiningRoom];
-                                                    sector.CeilingCollision.Portals[1] = sector.CeilingCollision.Portals[0];
+                                                    compiledSector.CeilingCollision.Portals[0] = _roomRemapping[adjoiningRoom];
+                                                    compiledSector.CeilingCollision.Portals[1] = compiledSector.CeilingCollision.Portals[0];
                                                     ceilingPortalAssigned = true;
                                                 }
                                             }
@@ -97,17 +97,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     var z2 = z == 0 ? 1 : room.NumZSectors - 2;
                                     for (var b = 0; b < 2; ++b)
                                     {
-                                        var neighborBlock = b == 0 ? room.Blocks[x2, z] : room.Blocks[x, z2];
+                                        var neighborSector = b == 0 ? room.Sectors[x2, z] : room.Sectors[x, z2];
 
-                                        if (neighborBlock.WallPortal != null && neighborBlock.WallPortal.Opacity != PortalOpacity.SolidFaces)
+                                        if (neighborSector.WallPortal != null && neighborSector.WallPortal.Opacity != PortalOpacity.SolidFaces)
                                         {
-                                            var adjoiningRoom = neighborBlock.WallPortal.AdjoiningRoom;
+                                            var adjoiningRoom = neighborSector.WallPortal.AdjoiningRoom;
                                             var pos = new VectorInt2(x, z);
-                                            var adjoiningBlock = adjoiningRoom.GetBlockTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
+                                            var adjoiningSector = adjoiningRoom.GetSectorTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
 
-                                            if (adjoiningBlock != null && (adjoiningBlock.Type != BlockType.BorderWall || adjoiningBlock.WallPortal != null && adjoiningBlock.WallPortal.Opacity != PortalOpacity.SolidFaces))
+                                            if (adjoiningSector != null && (adjoiningSector.Type != SectorType.BorderWall || adjoiningSector.WallPortal != null && adjoiningSector.WallPortal.Opacity != PortalOpacity.SolidFaces))
                                             {
-                                                sector.WallPortal = _roomRemapping[adjoiningRoom];
+                                                compiledSector.WallPortal = _roomRemapping[adjoiningRoom];
                                                 break;
                                             }
                                         }
@@ -116,13 +116,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             }
                             else
                             {
-                                sector.WallPortal = _roomRemapping[block.WallPortal.AdjoiningRoom];
+                                compiledSector.WallPortal = _roomRemapping[sector.WallPortal.AdjoiningRoom];
                             }
 
-                            sector.FloorCollision.Planes[0].Z = -room.Position.Y;
-                            sector.FloorCollision.Planes[1].Z = -room.Position.Y;
-                            sector.CeilingCollision.Planes[0].Z = -room.Position.Y;
-                            sector.CeilingCollision.Planes[1].Z = -room.Position.Y;
+                            compiledSector.FloorCollision.Planes[0].Z = -room.Position.Y;
+                            compiledSector.FloorCollision.Planes[1].Z = -room.Position.Y;
+                            compiledSector.CeilingCollision.Planes[0].Z = -room.Position.Y;
+                            compiledSector.CeilingCollision.Planes[1].Z = -room.Position.Y;
                         }
                         else
                         {
@@ -130,8 +130,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                             Room.RoomConnectionType floorPortalType = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType;
                             Room.RoomConnectionType ceilingPortalType = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType;
-                            var floorShape = new RoomSectorShape(block, true, floorPortalType, block.IsAnyWall);
-                            var ceilingShape = new RoomSectorShape(block, false, ceilingPortalType, block.IsAnyWall);
+                            var floorShape = new RoomSectorShape(sector, true, floorPortalType, sector.IsAnyWall);
+                            var ceilingShape = new RoomSectorShape(sector, false, ceilingPortalType, sector.IsAnyWall);
 
                             // Floor collision
                             BuildFloorDataCollision(floorShape, false, room, new VectorInt2(x, z));
@@ -140,16 +140,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             BuildFloorDataCollision(ceilingShape, true, room, new VectorInt2(x, z));
 
                             // Triggers
-                            var triggers = BuildTriggers(room, block, new VectorInt2(x, z));
+                            var triggers = BuildTriggers(room, sector, new VectorInt2(x, z));
                             if (triggers.Count != 0)
                             {
-                                sector.TriggerIndex = checked((ushort)_floorData.Count);
+                                compiledSector.TriggerIndex = checked((ushort)_floorData.Count);
                                 _floorData.AddRange(triggers);
                             }
                         }
 
                         // Update the sector
-                        SaveSector(tempRoom, x, z, sector);
+                        SaveSector(tempRoom, x, z, compiledSector);
                     }
                 }
             }
@@ -157,13 +157,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(58, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
 
-        private List<ushort> BuildTriggers(Room room, Block block, VectorInt2 pos)
+        private List<ushort> BuildTriggers(Room room, Sector sector, VectorInt2 pos)
         {
             var result = new List<ushort>();
 
             // Collect all valid triggers
-            var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
-           
+            var triggers = sector.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
+
             // Filter out singular key/switch triggers, as they are technically invalid in engine
             if (triggers.Count == 1 && (triggers[0].TriggerType == TriggerType.Key ||
                                         triggers[0].TriggerType == TriggerType.Switch))
@@ -176,7 +176,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (triggers.Count > 1) TriggerInstance.SortTriggerList(ref triggers);
                 var setupTrigger = triggers[0];
 
-                // Trigger type and setup are coming from the found setup trigger. 
+                // Trigger type and setup are coming from the found setup trigger.
                 // Other triggers are needed only for action.
 
                 ushort trigger1 = 0;
@@ -232,7 +232,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         break;
                     case TriggerType.ConditionNg: // Not supported but still may be present in project
                     case TriggerType.Skeleton:
-                        _progressReporter.ReportWarn("Block (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses trigger type which is not supported in Tomb Engine.");
+                        _progressReporter.ReportWarn("Sector (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses trigger type which is not supported in Tomb Engine.");
                         break;
                     default:
                         throw new Exception("Unknown trigger type found '" + setupTrigger + "'");
@@ -244,7 +244,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     setupTrigger.TargetType == TriggerTargetType.ParameterNg ||
                     setupTrigger.TargetType == TriggerTargetType.TimerfieldNg ||
                     setupTrigger.TargetType == TriggerTargetType.FmvNg)
-                    _progressReporter.ReportWarn("Block (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses trigger target which is not supported in Tomb Engine.");
+                    _progressReporter.ReportWarn("Sector (" + pos.X + ", " + pos.Y + ") in room " + room.Name + " uses trigger target which is not supported in Tomb Engine.");
 
                 var triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, _fdTimerMask);
 
@@ -406,9 +406,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public readonly int HeightXpZp;
             public readonly int DiagonalStep;
 
-            public RoomSectorShape(Block block, bool floor, Room.RoomConnectionType portalType, bool wall)
+            public RoomSectorShape(Sector sector, bool floor, Room.RoomConnectionType portalType, bool wall)
             {
-                var surface = floor ? block.Floor : block.Ceiling;
+                var surface = floor ? sector.Floor : sector.Ceiling;
 
                 HeightXnZn = surface.XnZn;
                 HeightXpZn = surface.XpZn;
@@ -416,12 +416,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 HeightXpZp = surface.XpZp;
                 SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
 
-                if (block.HasGhostBlock && block.GhostBlock.Valid)
+                if (sector.HasGhostBlock && sector.GhostBlock.Valid)
                 {
-                    HeightXnZn += floor ? block.GhostBlock.Floor.XnZn : block.GhostBlock.Ceiling.XnZn;
-                    HeightXpZn += floor ? block.GhostBlock.Floor.XpZn : block.GhostBlock.Ceiling.XpZn;
-                    HeightXnZp += floor ? block.GhostBlock.Floor.XnZp : block.GhostBlock.Ceiling.XnZp;
-                    HeightXpZp += floor ? block.GhostBlock.Floor.XpZp : block.GhostBlock.Ceiling.XpZp;
+                    HeightXnZn += floor ? sector.GhostBlock.Floor.XnZn : sector.GhostBlock.Ceiling.XnZn;
+                    HeightXpZn += floor ? sector.GhostBlock.Floor.XpZn : sector.GhostBlock.Ceiling.XpZn;
+                    HeightXnZp += floor ? sector.GhostBlock.Floor.XnZp : sector.GhostBlock.Ceiling.XnZp;
+                    HeightXpZp += floor ? sector.GhostBlock.Floor.XpZp : sector.GhostBlock.Ceiling.XpZp;
                 }
 
                 switch (portalType)
@@ -511,7 +511,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             TombEngineRoom newRoom = _tempRooms[reportRoom];
             TombEngineRoomSector newSector = newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y];
-            Block sector = reportRoom.GetBlock(reportPos);
+            Sector sector = reportRoom.GetSector(reportPos);
             var newCollision = isCeiling ? newSector.CeilingCollision : newSector.FloorCollision;
             var portal = isCeiling ? sector.CeilingPortal : sector.FloorPortal;
 
@@ -534,9 +534,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[0] = GetPlane(
-                                new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfBlockSizeUnit),
-                                new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfBlockSizeUnit),
-                                new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn, -Level.HalfBlockSizeUnit)
+                                new Vector3(-Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfSectorSizeUnit),
+                                new Vector3(Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfSectorSizeUnit),
+                                new Vector3(-Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn, -Level.HalfSectorSizeUnit)
                             );
                     }
 
@@ -553,9 +553,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[1] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[1] = GetPlane(
-                            new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfBlockSizeUnit),
-                            new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn - shape.DiagonalStep, -Level.HalfBlockSizeUnit),
-                            new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp - shape.DiagonalStep, Level.HalfBlockSizeUnit)
+                            new Vector3(Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfSectorSizeUnit),
+                            new Vector3(-Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn - shape.DiagonalStep, -Level.HalfSectorSizeUnit),
+                            new Vector3(Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp - shape.DiagonalStep, Level.HalfSectorSizeUnit)
                         );
                     }
                 }
@@ -576,9 +576,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[0] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[0] = GetPlane(
-                            new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfBlockSizeUnit),
-                            new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn - shape.DiagonalStep, -Level.HalfBlockSizeUnit),
-                            new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp - shape.DiagonalStep, Level.HalfBlockSizeUnit)
+                            new Vector3(Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfSectorSizeUnit),
+                            new Vector3(Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn - shape.DiagonalStep, -Level.HalfSectorSizeUnit),
+                            new Vector3(-Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp - shape.DiagonalStep, Level.HalfSectorSizeUnit)
                         );
                     }
                     if (shape.SplitWallFirst)
@@ -594,9 +594,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newCollision.Portals[1] = _roomRemapping[portal.AdjoiningRoom];
 
                         newCollision.Planes[1] = GetPlane(
-                          new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn, -Level.HalfBlockSizeUnit),
-                          new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfBlockSizeUnit),
-                          new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfBlockSizeUnit)
+                          new Vector3(-Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXnZn, -Level.HalfSectorSizeUnit),
+                          new Vector3(-Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfSectorSizeUnit),
+                          new Vector3(Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfSectorSizeUnit)
                       );
                     }
                 }
@@ -610,9 +610,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
                 newCollision.Planes[0] = GetPlane(
-                        new Vector3(-Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfBlockSizeUnit),
-                        new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfBlockSizeUnit),
-                        new Vector3(Level.HalfBlockSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfBlockSizeUnit)
+                        new Vector3(-Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXnZp, Level.HalfSectorSizeUnit),
+                        new Vector3(Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXpZp, Level.HalfSectorSizeUnit),
+                        new Vector3(Level.HalfSectorSizeUnit, -reportRoom.Position.Y - shape.HeightXpZn, -Level.HalfSectorSizeUnit)
                     );
                 newCollision.Planes[1] = newCollision.Planes[0];
             }

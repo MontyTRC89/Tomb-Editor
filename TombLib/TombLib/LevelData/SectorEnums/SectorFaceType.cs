@@ -1,6 +1,6 @@
 ﻿namespace TombLib.LevelData.SectorEnums;
 
-public enum BlockFaceType
+public enum SectorFaceType
 {
 	Floor,
 	Ceiling,

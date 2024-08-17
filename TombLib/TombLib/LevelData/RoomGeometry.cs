@@ -38,10 +38,10 @@ namespace TombLib.LevelData
         public List<Vector3> VertexColors { get; } = new List<Vector3>(); // one for each vertex
 
         public List<TextureArea> TriangleTextureAreas { get; } = new List<TextureArea>(); // one for each triangle
-        public List<SectorInfo> TriangleSectorInfo { get; } = new List<SectorInfo>(); // one for each triangle
+        public List<SectorFaceIdentity> TriangleSectorInfo { get; } = new List<SectorFaceIdentity>(); // one for each triangle
 
         public Dictionary<Vector3, List<int>> SharedVertices { get; } = new Dictionary<Vector3, List<int>>();
-        public SortedList<SectorInfo, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorInfo, VertexRange>();
+        public SortedList<SectorFaceIdentity, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorFaceIdentity, VertexRange>();
 
         // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
         public void Build(Room room, bool useLegacyCode = false)
@@ -59,7 +59,7 @@ namespace TombLib.LevelData
             const int zMin = 0;
             int xMax = room.NumXSectors - 1;
             int zMax = room.NumZSectors - 1;
-            Block[,] Blocks = room.Blocks;
+            Sector[,] sectors = room.Sectors;
 
             // Build face polygons
             for (int x = xMin; x <= xMax; x++) // This is in order to VertexRangeKey sorting.
@@ -75,11 +75,11 @@ namespace TombLib.LevelData
 
                     // +Z direction
                     if (x > 0 && x < room.NumXSectors - 1 && z > 0 && z < room.NumZSectors - 2 &&
-                        !(Blocks[x, z + 1].Type == BlockType.Wall &&
-                         (Blocks[x, z + 1].Floor.DiagonalSplit == DiagonalSplit.None || Blocks[x, z + 1].Floor.DiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z + 1].Floor.DiagonalSplit == DiagonalSplit.XnZn)))
+                        !(sectors[x, z + 1].Type == SectorType.Wall &&
+                         (sectors[x, z + 1].Floor.DiagonalSplit == DiagonalSplit.None || sectors[x, z + 1].Floor.DiagonalSplit == DiagonalSplit.XpZn || sectors[x, z + 1].Floor.DiagonalSplit == DiagonalSplit.XnZn)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
-                            !(Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZn))
+                        if ((sectors[x, z].Type == SectorType.Wall || (sectors[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
+                            !(sectors[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || sectors[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZn))
                             AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, true, useLegacyCode);
                         else
                             AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, false, useLegacyCode);
@@ -88,12 +88,12 @@ namespace TombLib.LevelData
 
                     // -Z direction
                     if (x > 0 && x < room.NumXSectors - 1 && z > 1 && z < room.NumZSectors - 1 &&
-                        !(Blocks[x, z - 1].Type == BlockType.Wall &&
-                         (Blocks[x, z - 1].Floor.DiagonalSplit == DiagonalSplit.None || Blocks[x, z - 1].Floor.DiagonalSplit == DiagonalSplit.XpZp || Blocks[x, z - 1].Floor.DiagonalSplit == DiagonalSplit.XnZp)))
+                        !(sectors[x, z - 1].Type == SectorType.Wall &&
+                         (sectors[x, z - 1].Floor.DiagonalSplit == DiagonalSplit.None || sectors[x, z - 1].Floor.DiagonalSplit == DiagonalSplit.XpZp || sectors[x, z - 1].Floor.DiagonalSplit == DiagonalSplit.XnZp)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall ||
-                            (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
-                            !(Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZp || Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZp))
+                        if ((sectors[x, z].Type == SectorType.Wall ||
+                            (sectors[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
+                            !(sectors[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZp || sectors[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZp))
                             AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, true, useLegacyCode);
                         else
                             AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, false, useLegacyCode);
@@ -101,11 +101,11 @@ namespace TombLib.LevelData
 
                     // +X direction
                     if (z > 0 && z < room.NumZSectors - 1 && x > 0 && x < room.NumXSectors - 2 &&
-                        !(Blocks[x + 1, z].Type == BlockType.Wall &&
-                        (Blocks[x + 1, z].Floor.DiagonalSplit == DiagonalSplit.None || Blocks[x + 1, z].Floor.DiagonalSplit == DiagonalSplit.XnZn || Blocks[x + 1, z].Floor.DiagonalSplit == DiagonalSplit.XnZp)))
+                        !(sectors[x + 1, z].Type == SectorType.Wall &&
+                        (sectors[x + 1, z].Floor.DiagonalSplit == DiagonalSplit.None || sectors[x + 1, z].Floor.DiagonalSplit == DiagonalSplit.XnZn || sectors[x + 1, z].Floor.DiagonalSplit == DiagonalSplit.XnZp)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
-                            !(Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZn || Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZp))
+                        if ((sectors[x, z].Type == SectorType.Wall || (sectors[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
+                            !(sectors[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZn || sectors[x, z].Floor.DiagonalSplit == DiagonalSplit.XnZp))
                             AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, true, useLegacyCode);
                         else
                             AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, false, useLegacyCode);
@@ -113,20 +113,20 @@ namespace TombLib.LevelData
 
                     // -X direction
                     if (z > 0 && z < room.NumZSectors - 1 && x > 1 && x < room.NumXSectors - 1 &&
-                        !(Blocks[x - 1, z].Type == BlockType.Wall &&
-                        (Blocks[x - 1, z].Floor.DiagonalSplit == DiagonalSplit.None || Blocks[x - 1, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || Blocks[x - 1, z].Floor.DiagonalSplit == DiagonalSplit.XpZp)))
+                        !(sectors[x - 1, z].Type == SectorType.Wall &&
+                        (sectors[x - 1, z].Floor.DiagonalSplit == DiagonalSplit.None || sectors[x - 1, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || sectors[x - 1, z].Floor.DiagonalSplit == DiagonalSplit.XpZp)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
-                            !(Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZp))
+                        if ((sectors[x, z].Type == SectorType.Wall || (sectors[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
+                            !(sectors[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || sectors[x, z].Floor.DiagonalSplit == DiagonalSplit.XpZp))
                             AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, true, useLegacyCode);
                         else
                             AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, false, useLegacyCode);
                     }
 
                     // Diagonal faces
-                    if (Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
+                    if (sectors[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                     {
-                        if (Blocks[x, z].Type == BlockType.Wall)
+                        if (sectors[x, z].Type == SectorType.Wall)
                         {
                             AddVerticalFaces(room, x, z, FaceDirection.DiagonalFloor, true, true, true, useLegacyCode);
                         }
@@ -136,9 +136,9 @@ namespace TombLib.LevelData
                         }
                     }
 
-                    if (Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
+                    if (sectors[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                     {
-                        if (Blocks[x, z].Type != BlockType.Wall)
+                        if (sectors[x, z].Type != SectorType.Wall)
                         {
                             AddVerticalFaces(room, x, z, FaceDirection.DiagonalCeiling, false, true, false, useLegacyCode);
                         }
@@ -146,14 +146,14 @@ namespace TombLib.LevelData
 
                     // +Z directed border wall
                     if (z == 0 && x != 0 && x != room.NumXSectors - 1 &&
-                        !(Blocks[x, 1].Type == BlockType.Wall &&
-                         (Blocks[x, 1].Floor.DiagonalSplit == DiagonalSplit.None || Blocks[x, 1].Floor.DiagonalSplit == DiagonalSplit.XpZn || Blocks[x, 1].Floor.DiagonalSplit == DiagonalSplit.XnZn)))
+                        !(sectors[x, 1].Type == SectorType.Wall &&
+                         (sectors[x, 1].Floor.DiagonalSplit == DiagonalSplit.None || sectors[x, 1].Floor.DiagonalSplit == DiagonalSplit.XpZn || sectors[x, 1].Floor.DiagonalSplit == DiagonalSplit.XnZn)))
                     {
                         bool addMiddle = false;
 
-                        if (Blocks[x, z].WallPortal != null)
+                        if (sectors[x, z].WallPortal != null)
                         {
-                            var portal = Blocks[x, z].WallPortal;
+                            var portal = sectors[x, z].WallPortal;
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (room.Alternated && room.AlternateBaseRoom != null)
                             {
@@ -162,18 +162,18 @@ namespace TombLib.LevelData
                             }
 
                             int facingX = x + (room.Position.X - adjoiningRoom.Position.X);
-                            var block = adjoiningRoom.GetBlockTry(facingX, adjoiningRoom.NumZSectors - 2) ?? Block.Empty;
-                            if (block.Type == BlockType.Wall &&
-                                (block.Floor.DiagonalSplit == DiagonalSplit.None ||
-                                 block.Floor.DiagonalSplit == DiagonalSplit.XnZp ||
-                                 block.Floor.DiagonalSplit == DiagonalSplit.XpZp))
+                            var sector = adjoiningRoom.GetSectorTry(facingX, adjoiningRoom.NumZSectors - 2) ?? Sector.Empty;
+                            if (sector.Type == SectorType.Wall &&
+                                (sector.Floor.DiagonalSplit == DiagonalSplit.None ||
+                                 sector.Floor.DiagonalSplit == DiagonalSplit.XnZp ||
+                                 sector.Floor.DiagonalSplit == DiagonalSplit.XpZp))
                             {
                                 addMiddle = true;
                             }
                         }
 
 
-                        if (addMiddle || Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
+                        if (addMiddle || sectors[x, z].Type == SectorType.BorderWall && sectors[x, z].WallPortal == null || (sectors[x, z].WallPortal?.HasTexturedFaces ?? false))
                             AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, true, useLegacyCode);
                         else
                             AddVerticalFaces(room, x, z, FaceDirection.PositiveZ, true, true, false, useLegacyCode);
@@ -181,14 +181,14 @@ namespace TombLib.LevelData
 
                     // -Z directed border wall
                     if (z == room.NumZSectors - 1 && x != 0 && x != room.NumXSectors - 1 &&
-                        !(Blocks[x, room.NumZSectors - 2].Type == BlockType.Wall &&
-                         (Blocks[x, room.NumZSectors - 2].Floor.DiagonalSplit == DiagonalSplit.None || Blocks[x, room.NumZSectors - 2].Floor.DiagonalSplit == DiagonalSplit.XpZp || Blocks[x, room.NumZSectors - 2].Floor.DiagonalSplit == DiagonalSplit.XnZp)))
+                        !(sectors[x, room.NumZSectors - 2].Type == SectorType.Wall &&
+                         (sectors[x, room.NumZSectors - 2].Floor.DiagonalSplit == DiagonalSplit.None || sectors[x, room.NumZSectors - 2].Floor.DiagonalSplit == DiagonalSplit.XpZp || sectors[x, room.NumZSectors - 2].Floor.DiagonalSplit == DiagonalSplit.XnZp)))
                     {
                         bool addMiddle = false;
 
-                        if (Blocks[x, z].WallPortal != null)
+                        if (sectors[x, z].WallPortal != null)
                         {
-                            var portal = Blocks[x, z].WallPortal;
+                            var portal = sectors[x, z].WallPortal;
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (room.Alternated && room.AlternateBaseRoom != null)
                             {
@@ -197,17 +197,17 @@ namespace TombLib.LevelData
                             }
 
                             int facingX = x + (room.Position.X - adjoiningRoom.Position.X);
-                            var block = adjoiningRoom.GetBlockTry(facingX, 1) ?? Block.Empty;
-                            if (block.Type == BlockType.Wall &&
-                                (block.Floor.DiagonalSplit == DiagonalSplit.None ||
-                                 block.Floor.DiagonalSplit == DiagonalSplit.XnZn ||
-                                 block.Floor.DiagonalSplit == DiagonalSplit.XpZn))
+                            var sector = adjoiningRoom.GetSectorTry(facingX, 1) ?? Sector.Empty;
+                            if (sector.Type == SectorType.Wall &&
+                                (sector.Floor.DiagonalSplit == DiagonalSplit.None ||
+                                 sector.Floor.DiagonalSplit == DiagonalSplit.XnZn ||
+                                 sector.Floor.DiagonalSplit == DiagonalSplit.XpZn))
                             {
                                 addMiddle = true;
                             }
                         }
 
-                        if (addMiddle || Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
+                        if (addMiddle || sectors[x, z].Type == SectorType.BorderWall && sectors[x, z].WallPortal == null || (sectors[x, z].WallPortal?.HasTexturedFaces ?? false))
                             AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, true, useLegacyCode);
                         else
                             AddVerticalFaces(room, x, z, FaceDirection.NegativeZ, true, true, false, useLegacyCode);
@@ -215,14 +215,14 @@ namespace TombLib.LevelData
 
                     // -X directed border wall
                     if (x == 0 && z != 0 && z != room.NumZSectors - 1 &&
-                        !(Blocks[1, z].Type == BlockType.Wall &&
-                         (Blocks[1, z].Floor.DiagonalSplit == DiagonalSplit.None || Blocks[1, z].Floor.DiagonalSplit == DiagonalSplit.XnZn || Blocks[1, z].Floor.DiagonalSplit == DiagonalSplit.XnZp)))
+                        !(sectors[1, z].Type == SectorType.Wall &&
+                         (sectors[1, z].Floor.DiagonalSplit == DiagonalSplit.None || sectors[1, z].Floor.DiagonalSplit == DiagonalSplit.XnZn || sectors[1, z].Floor.DiagonalSplit == DiagonalSplit.XnZp)))
                     {
                         bool addMiddle = false;
 
-                        if (Blocks[x, z].WallPortal != null)
+                        if (sectors[x, z].WallPortal != null)
                         {
-                            var portal = Blocks[x, z].WallPortal;
+                            var portal = sectors[x, z].WallPortal;
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (room.Alternated && room.AlternateBaseRoom != null)
                             {
@@ -231,17 +231,17 @@ namespace TombLib.LevelData
                             }
 
                             int facingZ = z + (room.Position.Z - adjoiningRoom.Position.Z);
-                            var block = adjoiningRoom.GetBlockTry(adjoiningRoom.NumXSectors - 2, facingZ) ?? Block.Empty;
-                            if (block.Type == BlockType.Wall &&
-                                (block.Floor.DiagonalSplit == DiagonalSplit.None ||
-                                 block.Floor.DiagonalSplit == DiagonalSplit.XpZn ||
-                                 block.Floor.DiagonalSplit == DiagonalSplit.XpZp))
+                            var sector = adjoiningRoom.GetSectorTry(adjoiningRoom.NumXSectors - 2, facingZ) ?? Sector.Empty;
+                            if (sector.Type == SectorType.Wall &&
+                                (sector.Floor.DiagonalSplit == DiagonalSplit.None ||
+                                 sector.Floor.DiagonalSplit == DiagonalSplit.XpZn ||
+                                 sector.Floor.DiagonalSplit == DiagonalSplit.XpZp))
                             {
                                 addMiddle = true;
                             }
                         }
 
-                        if (addMiddle || Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
+                        if (addMiddle || sectors[x, z].Type == SectorType.BorderWall && sectors[x, z].WallPortal == null || (sectors[x, z].WallPortal?.HasTexturedFaces ?? false))
                             AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, true, useLegacyCode);
                         else
                             AddVerticalFaces(room, x, z, FaceDirection.PositiveX, true, true, false, useLegacyCode);
@@ -249,14 +249,14 @@ namespace TombLib.LevelData
 
                     // +X directed border wall
                     if (x == room.NumXSectors - 1 && z != 0 && z != room.NumZSectors - 1 &&
-                        !(Blocks[room.NumXSectors - 2, z].Type == BlockType.Wall &&
-                         (Blocks[room.NumXSectors - 2, z].Floor.DiagonalSplit == DiagonalSplit.None || Blocks[room.NumXSectors - 2, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || Blocks[room.NumXSectors - 2, z].Floor.DiagonalSplit == DiagonalSplit.XpZp)))
+                        !(sectors[room.NumXSectors - 2, z].Type == SectorType.Wall &&
+                         (sectors[room.NumXSectors - 2, z].Floor.DiagonalSplit == DiagonalSplit.None || sectors[room.NumXSectors - 2, z].Floor.DiagonalSplit == DiagonalSplit.XpZn || sectors[room.NumXSectors - 2, z].Floor.DiagonalSplit == DiagonalSplit.XpZp)))
                     {
                         bool addMiddle = false;
 
-                        if (Blocks[x, z].WallPortal != null)
+                        if (sectors[x, z].WallPortal != null)
                         {
-                            var portal = Blocks[x, z].WallPortal;
+                            var portal = sectors[x, z].WallPortal;
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (room.Alternated && room.AlternateBaseRoom != null)
                             {
@@ -265,17 +265,17 @@ namespace TombLib.LevelData
                             }
 
                             int facingZ = z + (room.Position.Z - adjoiningRoom.Position.Z);
-                            var block = adjoiningRoom.GetBlockTry(1, facingZ) ?? Block.Empty;
-                            if (block.Type == BlockType.Wall &&
-                                (block.Floor.DiagonalSplit == DiagonalSplit.None ||
-                                 block.Floor.DiagonalSplit == DiagonalSplit.XnZn ||
-                                 block.Floor.DiagonalSplit == DiagonalSplit.XnZp))
+                            var sector = adjoiningRoom.GetSectorTry(1, facingZ) ?? Sector.Empty;
+                            if (sector.Type == SectorType.Wall &&
+                                (sector.Floor.DiagonalSplit == DiagonalSplit.None ||
+                                 sector.Floor.DiagonalSplit == DiagonalSplit.XnZn ||
+                                 sector.Floor.DiagonalSplit == DiagonalSplit.XnZp))
                             {
                                 addMiddle = true;
                             }
                         }
 
-                        if (addMiddle || Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
+                        if (addMiddle || sectors[x, z].Type == SectorType.BorderWall && sectors[x, z].WallPortal == null || (sectors[x, z].WallPortal?.HasTexturedFaces ?? false))
                             AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, true, useLegacyCode);
                         else
                             AddVerticalFaces(room, x, z, FaceDirection.NegativeX, true, true, false, useLegacyCode);
@@ -283,15 +283,15 @@ namespace TombLib.LevelData
 
                     // Floor polygons
                     Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z));
-                    BuildFloorOrCeilingFace(room, x, z, Blocks[x, z].Floor.XnZp, Blocks[x, z].Floor.XpZp, Blocks[x, z].Floor.XpZn, Blocks[x, z].Floor.XnZn, Blocks[x, z].Floor.DiagonalSplit, Blocks[x, z].Floor.SplitDirectionIsXEqualsZ,
-                        BlockFace.Floor, BlockFace.Floor_Triangle2, floorPortalInfo.VisualType);
+                    BuildFloorOrCeilingFace(room, x, z, sectors[x, z].Floor.XnZp, sectors[x, z].Floor.XpZp, sectors[x, z].Floor.XpZn, sectors[x, z].Floor.XnZn, sectors[x, z].Floor.DiagonalSplit, sectors[x, z].Floor.SplitDirectionIsXEqualsZ,
+                        SectorFaceIdentifier.Floor, SectorFaceIdentifier.Floor_Triangle2, floorPortalInfo.VisualType);
 
                     // Ceiling polygons
                     int ceilingStartVertex = VertexPositions.Count;
 
                     Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
-                    BuildFloorOrCeilingFace(room, x, z, Blocks[x, z].Ceiling.XnZp, Blocks[x, z].Ceiling.XpZp, Blocks[x, z].Ceiling.XpZn, Blocks[x, z].Ceiling.XnZn, Blocks[x, z].Ceiling.DiagonalSplit, Blocks[x, z].Ceiling.SplitDirectionIsXEqualsZ,
-                        BlockFace.Ceiling, BlockFace.Ceiling_Triangle2, ceilingPortalInfo.VisualType);
+                    BuildFloorOrCeilingFace(room, x, z, sectors[x, z].Ceiling.XnZp, sectors[x, z].Ceiling.XpZp, sectors[x, z].Ceiling.XpZn, sectors[x, z].Ceiling.XnZn, sectors[x, z].Ceiling.DiagonalSplit, sectors[x, z].Ceiling.SplitDirectionIsXEqualsZ,
+                        SectorFaceIdentifier.Ceiling, SectorFaceIdentifier.Ceiling_Triangle2, ceilingPortalInfo.VisualType);
 
                     // Change vertices order for ceiling polygons
                     for (int i = ceilingStartVertex; i < VertexPositions.Count; i += 3)
@@ -331,19 +331,19 @@ namespace TombLib.LevelData
         }
 
         private void BuildFloorOrCeilingFace(Room room, int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY,
-                                             BlockFace face1, BlockFace face2, Room.RoomConnectionType portalMode)
+                                             SectorFaceIdentifier face1, SectorFaceIdentifier face2, Room.RoomConnectionType portalMode)
         {
-            BlockType blockType = room.Blocks[x, z].Type;
+            SectorType sectorType = room.Sectors[x, z].Type;
 
             // Exit function if the sector is a complete wall or portal
             if (portalMode == Room.RoomConnectionType.FullPortal)
                 return;
 
-            switch (blockType)
+            switch (sectorType)
             {
-                case BlockType.BorderWall:
+                case SectorType.BorderWall:
                     return;
-                case BlockType.Wall:
+                case SectorType.Wall:
                     if (splitType == DiagonalSplit.None)
                         return;
                     break;
@@ -356,12 +356,12 @@ namespace TombLib.LevelData
                     return;
                 case Room.RoomConnectionType.TriangularPortalXnZp:
                 case Room.RoomConnectionType.TriangularPortalXpZn:
-                    if (BlockSurface.IsQuad2(h0, h1, h2, h3))
+                    if (SectorSurface.IsQuad2(h0, h1, h2, h3))
                         diagonalSplitXEqualsY = true;
                     break;
                 case Room.RoomConnectionType.TriangularPortalXpZp:
                 case Room.RoomConnectionType.TriangularPortalXnZn:
-                    if (BlockSurface.IsQuad2(h0, h1, h2, h3))
+                    if (SectorSurface.IsQuad2(h0, h1, h2, h3))
                         diagonalSplitXEqualsY = false;
                     break;
             }
@@ -380,21 +380,21 @@ namespace TombLib.LevelData
             // 4----3
             //
 
-            Block block = room.Blocks[x, z];
+            Sector sector = room.Sectors[x, z];
 
             TextureArea defaultTexture = room.Level.Settings.DefaultTexture;
-            bool shouldApplyDefaultTexture1 = block.GetFaceTexture(face1) == TextureArea.None && defaultTexture != TextureArea.None,
-                 shouldApplyDefaultTexture2 = block.GetFaceTexture(face2) == TextureArea.None && defaultTexture != TextureArea.None;
+            bool shouldApplyDefaultTexture1 = sector.GetFaceTexture(face1) == TextureArea.None && defaultTexture != TextureArea.None,
+                 shouldApplyDefaultTexture2 = sector.GetFaceTexture(face2) == TextureArea.None && defaultTexture != TextureArea.None;
 
             if (shouldApplyDefaultTexture1)
-                block.SetFaceTexture(face1, defaultTexture);
+                sector.SetFaceTexture(face1, defaultTexture);
 
             if (shouldApplyDefaultTexture2)
-                block.SetFaceTexture(face2, defaultTexture);
+                sector.SetFaceTexture(face2, defaultTexture);
 
             TextureArea
-                face1Texture = block.GetFaceTexture(face1),
-                face2Texture = block.GetFaceTexture(face2);
+                face1Texture = sector.GetFaceTexture(face1),
+                face2Texture = sector.GetFaceTexture(face2);
 
             // Build sector
             if (splitType != DiagonalSplit.None)
@@ -405,39 +405,39 @@ namespace TombLib.LevelData
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
                         {
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.BlockSizeUnit, h0, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h0, z * Level.SectorSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                                 face1Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                         }
-                        
-                        if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn && blockType != BlockType.Wall)
+
+                        if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn && sectorType != SectorType.Wall)
                         {
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                                 face2Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         }
-                            
+
                         break;
 
                     case DiagonalSplit.XnZn:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
                         {
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h1, z * Level.SectorSizeUnit),
                                 face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         }
 
-                        if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn && blockType != BlockType.Wall)
+                        if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn && sectorType != SectorType.Wall)
                         {
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                                 face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         }
 
@@ -447,18 +447,18 @@ namespace TombLib.LevelData
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
                         {
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h2, (z + 1) * Level.SectorSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                                 face2Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         }
 
-                        if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp && blockType != BlockType.Wall)
+                        if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp && sectorType != SectorType.Wall)
                         {
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                                 face1Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                         }
 
@@ -468,35 +468,35 @@ namespace TombLib.LevelData
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
                         {
                             AddTriangle(x, z, face2,
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                                new Vector3(x * Level.BlockSizeUnit, h3, (z + 1) * Level.BlockSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h3, (z + 1) * Level.SectorSizeUnit),
                                 face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         }
-                            
 
-                        if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp && blockType != BlockType.Wall)
+
+                        if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp && sectorType != SectorType.Wall)
                         {
                             AddTriangle(x, z, face1,
-                                new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                                new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                                new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
+                                new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                                 face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         }
-                            
+
                         break;
 
                     default:
                         throw new NotSupportedException("Unknown FloorDiagonalSplit");
                 }
             }
-            else if (BlockSurface.IsQuad2(h0, h1, h2, h3) && portalMode == Room.RoomConnectionType.NoPortal)
+            else if (SectorSurface.IsQuad2(h0, h1, h2, h3) && portalMode == Room.RoomConnectionType.NoPortal)
             {
                 AddQuad(x, z, face1,
-                    new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                    new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                    new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                    new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                    new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
+                    new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
+                    new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
+                    new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                     face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             }
             else if (diagonalSplitXEqualsY || portalMode == Room.RoomConnectionType.TriangularPortalXnZp || portalMode == Room.RoomConnectionType.TriangularPortalXpZn)
@@ -504,38 +504,38 @@ namespace TombLib.LevelData
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
                 {
                     AddTriangle(x, z, face2,
-                        new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                        new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
+                        new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
+                        new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                         face2Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                 }
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
                 {
                     AddTriangle(x, z, face1,
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                        new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
+                        new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
+                        new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                         face1Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
-                } 
+                }
             }
             else
             {
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
                 {
                     AddTriangle(x, z, face1,
-                        new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h1, (z + 1) * Level.BlockSizeUnit),
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
+                        new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
+                        new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
+                        new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                         face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                 }
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
                 {
                     AddTriangle(x, z, face2,
-                        new Vector3((x + 1) * Level.BlockSizeUnit, h2, z * Level.BlockSizeUnit),
-                        new Vector3(x * Level.BlockSizeUnit, h3, z * Level.BlockSizeUnit),
-                        new Vector3(x * Level.BlockSizeUnit, h0, (z + 1) * Level.BlockSizeUnit),
+                        new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
+                        new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
+                        new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                         face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                 }
             }
@@ -556,13 +556,13 @@ namespace TombLib.LevelData
                 _ => throw new NotSupportedException("Unsupported face direction.")
             };
 
-            Block block = room.Blocks[x, z];
+            Sector sector = room.Sectors[x, z];
 
             if (hasFloorPart)
             {
                 IReadOnlyList<SectorFace> verticalFloorPartFaces = useLegacyCode
-                    ? LegacyWallGeometry.GetVerticalFloorPartFaces(wallData, block.IsAnyWall)
-                    : wallData.GetVerticalFloorPartFaces(block.Floor.DiagonalSplit, block.IsAnyWall);
+                    ? LegacyWallGeometry.GetVerticalFloorPartFaces(wallData, sector.IsAnyWall)
+                    : wallData.GetVerticalFloorPartFaces(sector.Floor.DiagonalSplit, sector.IsAnyWall);
 
                 for (int i = 0; i < verticalFloorPartFaces.Count; i++)
                     AddFace(room, x, z, verticalFloorPartFaces[i]);
@@ -571,8 +571,8 @@ namespace TombLib.LevelData
             if (hasCeilingPart)
             {
                 IReadOnlyList<SectorFace> verticalCeilingPartFaces = useLegacyCode
-                    ? LegacyWallGeometry.GetVerticalCeilingPartFaces(wallData, block.IsAnyWall)
-                    : wallData.GetVerticalCeilingPartFaces(block.Ceiling.DiagonalSplit, block.IsAnyWall);
+                    ? LegacyWallGeometry.GetVerticalCeilingPartFaces(wallData, sector.IsAnyWall)
+                    : wallData.GetVerticalCeilingPartFaces(sector.Ceiling.DiagonalSplit, sector.IsAnyWall);
 
                 for (int i = 0; i < verticalCeilingPartFaces.Count; i++)
                     AddFace(room, x, z, verticalCeilingPartFaces[i]);
@@ -591,28 +591,28 @@ namespace TombLib.LevelData
 
         private void AddFace(Room room, int x, int z, SectorFace face)
         {
-            Block block = room.Blocks[x, z];
+            Sector sector = room.Sectors[x, z];
 
-            bool shouldApplyDefaultTexture = block.GetFaceTexture(face.FaceType) == TextureArea.None
+            bool shouldApplyDefaultTexture = sector.GetFaceTexture(face.Face) == TextureArea.None
                 && room.Level.Settings.DefaultTexture != TextureArea.None;
 
             if (shouldApplyDefaultTexture)
-                block.SetFaceTexture(face.FaceType, room.Level.Settings.DefaultTexture);
+                sector.SetFaceTexture(face.Face, room.Level.Settings.DefaultTexture);
 
-            TextureArea texture = block.GetFaceTexture(face.FaceType);
+            TextureArea texture = sector.GetFaceTexture(face.Face);
 
             if (face.IsQuad)
-                AddQuad(x, z, face.FaceType, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
+                AddQuad(x, z, face.Face, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
             else
-                AddTriangle(x, z, face.FaceType, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
+                AddTriangle(x, z, face.Face, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
         }
 
-        private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
+        private void AddQuad(int x, int z, SectorFaceIdentifier face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
                              TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
         {
             if (texture.DoubleSided)
                 DoubleSidedTriangleCount += 2;
-            VertexRangeLookup.Add(new SectorInfo(x, z, face), new VertexRange(VertexPositions.Count, 6));
+            VertexRangeLookup.Add(new SectorFaceIdentity(x, z, face), new VertexRange(VertexPositions.Count, 6));
 
             VertexPositions.Add(p1);
             VertexPositions.Add(p2);
@@ -633,22 +633,22 @@ namespace TombLib.LevelData
             texture0.TexCoord1 = texture.TexCoord3;
             texture0.TexCoord2 = texture.TexCoord1;
             TriangleTextureAreas.Add(texture0);
-            TriangleSectorInfo.Add(new SectorInfo(x, z, face));
+            TriangleSectorInfo.Add(new SectorFaceIdentity(x, z, face));
 
             TextureArea texture1 = texture;
             texture1.TexCoord0 = texture.TexCoord0;
             texture1.TexCoord1 = texture.TexCoord1;
             texture1.TexCoord2 = texture.TexCoord3;
             TriangleTextureAreas.Add(texture1);
-            TriangleSectorInfo.Add(new SectorInfo(x, z, face));
+            TriangleSectorInfo.Add(new SectorFaceIdentity(x, z, face));
         }
 
-        private void AddTriangle(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool isXEqualYDiagonal)
+        private void AddTriangle(int x, int z, SectorFaceIdentifier face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool isXEqualYDiagonal)
         {
             if (texture.DoubleSided)
                 DoubleSidedTriangleCount += 1;
             Vector2 editorUvFactor = new Vector2(isXEqualYDiagonal ? -1.0f : 1.0f, -1.0f);
-            VertexRangeLookup.Add(new SectorInfo(x, z, face), new VertexRange(VertexPositions.Count, 3));
+            VertexRangeLookup.Add(new SectorFaceIdentity(x, z, face), new VertexRange(VertexPositions.Count, 3));
 
             VertexPositions.Add(p0);
             VertexPositions.Add(p1);
@@ -659,21 +659,21 @@ namespace TombLib.LevelData
             VertexEditorUVs.Add(editorUV2 * editorUvFactor);
 
             TriangleTextureAreas.Add(texture);
-            TriangleSectorInfo.Add(new SectorInfo(x, z, face));
+            TriangleSectorInfo.Add(new SectorFaceIdentity(x, z, face));
         }
 
         private static bool RayTraceCheckFloorCeiling(Room room, int x, int y, int z, int xLight, int zLight)
         {
-            int currentX = x / (int)Level.BlockSizeUnit - (x > xLight ? 1 : 0);
-            int currentZ = z / (int)Level.BlockSizeUnit - (z > zLight ? 1 : 0);
+            int currentX = x / (int)Level.SectorSizeUnit - (x > xLight ? 1 : 0);
+            int currentZ = z / (int)Level.SectorSizeUnit - (z > zLight ? 1 : 0);
 
             if (currentX < 0 || currentX >= room.NumXSectors ||
                 currentZ < 0 || currentZ >= room.NumZSectors)
                 return false;
 
-            Block block = room.Blocks[currentX, currentZ];
-            int floorMin = Clicks.FromWorld(block.Floor.Min);
-            int ceilingMax = Clicks.FromWorld(block.Ceiling.Max);
+            Sector sector = room.Sectors[currentX, currentZ];
+            int floorMin = Clicks.FromWorld(sector.Floor.Min);
+            int ceilingMax = Clicks.FromWorld(sector.Ceiling.Max);
             int yClicks = Clicks.FromWorld(y);
 
             return floorMin <= yClicks && ceilingMax >= yClicks;
@@ -729,10 +729,10 @@ namespace TombLib.LevelData
 
             do
             {
-                int currentXblock = currentX / (int)Level.BlockSizeUnit;
-                int currentZblock = currentZ / (int)Level.BlockSizeUnit;
+                int currentXsector = currentX / (int)Level.SectorSizeUnit;
+                int currentZsector = currentZ / (int)Level.SectorSizeUnit;
 
-                if (currentZblock < 0 || currentXblock >= room.NumXSectors || currentZblock >= room.NumZSectors)
+                if (currentZsector < 0 || currentXsector >= room.NumXSectors || currentZsector >= room.NumZSectors)
                 {
                     if (currentX == maxX)
                         return true;
@@ -741,13 +741,13 @@ namespace TombLib.LevelData
                 {
                     int currentYclick = -Clicks.FromWorld(currentY, RoundingMethod.Integer);
 
-                    if (currentXblock > 0)
+                    if (currentXsector > 0)
                     {
-                        Block currentBlock = room.Blocks[currentXblock - 1, currentZblock];
+                        Sector currentSector = room.Sectors[currentXsector - 1, currentZsector];
 
-                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
-                            currentBlock.Type == BlockType.Wall)
+                        if ((Clicks.FromWorld(currentSector.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentSector.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentSector.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentSector.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
+                            currentSector.Type == SectorType.Wall)
                         {
                             return false;
                         }
@@ -758,24 +758,24 @@ namespace TombLib.LevelData
                         return true;
                     }
 
-                    if (currentXblock > 0)
+                    if (currentXsector > 0)
                     {
-                        var currentBlock = room.Blocks[currentXblock - 1, currentZblock];
-                        var nextBlock = room.Blocks[currentXblock, currentZblock];
+                        var currentSector = room.Sectors[currentXsector - 1, currentZsector];
+                        var nextSector = room.Sectors[currentXsector, currentZsector];
 
-                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XpZp, RoundingMethod.Integer)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XpZp, RoundingMethod.Integer)) / 2 < currentYclick ||
-                            currentBlock.Type == BlockType.Wall ||
-                            (Clicks.FromWorld(nextBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(nextBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
-                            nextBlock.Type == BlockType.Wall)
+                        if ((Clicks.FromWorld(currentSector.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentSector.Floor.XpZp, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentSector.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentSector.Ceiling.XpZp, RoundingMethod.Integer)) / 2 < currentYclick ||
+                            currentSector.Type == SectorType.Wall ||
+                            (Clicks.FromWorld(nextSector.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(nextSector.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(nextSector.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(nextSector.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
+                            nextSector.Type == SectorType.Wall)
                         {
                             return false;
                         }
                     }
                 }
 
-                currentX += (int)Level.BlockSizeUnit;
+                currentX += (int)Level.SectorSizeUnit;
                 currentZ += (deltaZ << 10) / (deltaX + 1);
                 currentY += (deltaY << 10) / (deltaX + 1);
             }
@@ -834,10 +834,10 @@ namespace TombLib.LevelData
 
             do
             {
-                int currentXblock = currentX / (int)Level.BlockSizeUnit;
-                int currentZblock = currentZ / (int)Level.BlockSizeUnit;
+                int currentXsector = currentX / (int)Level.SectorSizeUnit;
+                int currentZsector = currentZ / (int)Level.SectorSizeUnit;
 
-                if (currentXblock < 0 || currentZblock >= room.NumZSectors || currentXblock >= room.NumXSectors)
+                if (currentXsector < 0 || currentZsector >= room.NumZSectors || currentXsector >= room.NumXSectors)
                 {
                     if (currentZ == maxZ)
                         return true;
@@ -846,13 +846,13 @@ namespace TombLib.LevelData
                 {
                     int currentYclick = -Clicks.FromWorld(currentY, RoundingMethod.Integer);
 
-                    if (currentZblock > 0)
+                    if (currentZsector > 0)
                     {
-                        var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
+                        var currentSector = room.Sectors[currentXsector, currentZsector - 1];
 
-                        if ((Clicks.FromWorld(currentBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(currentBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
-                            currentBlock.Type == BlockType.Wall)
+                        if ((Clicks.FromWorld(currentSector.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentSector.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentSector.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(currentSector.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
+                            currentSector.Type == SectorType.Wall)
                         {
                             return false;
                         }
@@ -863,24 +863,24 @@ namespace TombLib.LevelData
                         return true;
                     }
 
-                    if (currentZblock > 0)
+                    if (currentZsector > 0)
                     {
-                        var currentBlock = room.Blocks[currentXblock, currentZblock - 1];
-                        var nextBlock = room.Blocks[currentXblock, currentZblock];
+                        var currentSector = room.Sectors[currentXsector, currentZsector - 1];
+                        var nextSector = room.Sectors[currentXsector, currentZsector];
 
-                        if ((Clicks.FromWorld(currentBlock.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Floor.XpZp, RoundingMethod.Integer)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(currentBlock.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentBlock.Ceiling.XpZp, RoundingMethod.Integer)) / 2 < currentYclick ||
-                            currentBlock.Type == BlockType.Wall ||
-                            (Clicks.FromWorld(nextBlock.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
-                            (Clicks.FromWorld(nextBlock.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(nextBlock.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
-                            nextBlock.Type == BlockType.Wall)
+                        if ((Clicks.FromWorld(currentSector.Floor.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentSector.Floor.XpZp, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(currentSector.Ceiling.XnZp, RoundingMethod.Integer) + Clicks.FromWorld(currentSector.Ceiling.XpZp, RoundingMethod.Integer)) / 2 < currentYclick ||
+                            currentSector.Type == SectorType.Wall ||
+                            (Clicks.FromWorld(nextSector.Floor.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(nextSector.Floor.XnZn, RoundingMethod.Integer)) / 2 > currentYclick ||
+                            (Clicks.FromWorld(nextSector.Ceiling.XpZn, RoundingMethod.Integer) + Clicks.FromWorld(nextSector.Ceiling.XnZn, RoundingMethod.Integer)) / 2 < currentYclick ||
+                            nextSector.Type == SectorType.Wall)
                         {
                             return false;
                         }
                     }
                 }
 
-                currentZ += (int)Level.BlockSizeUnit;
+                currentZ += (int)Level.SectorSizeUnit;
                 currentX += (deltaX << 10) / (deltaZ + 1);
                 currentY += (deltaY << 10) / (deltaZ + 1);
             }
@@ -981,7 +981,7 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position, 
+        public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position,
                                                       Vector3 normal, bool legacyPointLightModel, bool highQuality)
         {
             if (!light.Enabled)
@@ -1005,17 +1005,17 @@ namespace TombLib.LevelData
                     // Normalize the light vector
                     lightVector = Vector3.Normalize(lightVector);
 
-                    if (distance + 64.0f <= light.OuterRange * Level.BlockSizeUnit)
-                    {     
+                    if (distance + 64.0f <= light.OuterRange * Level.SectorSizeUnit)
+                    {
                         // If distance is greater than light out radius, then skip this light
-                        if (distance > light.OuterRange * Level.BlockSizeUnit)
+                        if (distance > light.OuterRange * Level.SectorSizeUnit)
                             return Vector3.Zero;
 
                         // Calculate light diffuse value
                         int diffuse = (int)(light.Intensity * 8192);
 
                         // Calculate the attenuation
-                        float attenuaton = (light.OuterRange * Level.BlockSizeUnit - distance) / (light.OuterRange * Level.BlockSizeUnit - light.InnerRange * Level.BlockSizeUnit);
+                        float attenuaton = (light.OuterRange * Level.SectorSizeUnit - distance) / (light.OuterRange * Level.SectorSizeUnit - light.InnerRange * Level.SectorSizeUnit);
                         if (attenuaton > 1.0f)
                             attenuaton = 1.0f;
                         if (attenuaton <= 0.0f)
@@ -1038,12 +1038,12 @@ namespace TombLib.LevelData
                     break;
 
                 case LightType.Effect:
-                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * Level.BlockSizeUnit)
+                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * Level.SectorSizeUnit)
                     {
-                        int x1 = (int)(Math.Floor(light.Position.X / Level.BlockSizeUnit)   * Level.BlockSizeUnit);
-                        int z1 = (int)(Math.Floor(light.Position.Z / Level.BlockSizeUnit)   * Level.BlockSizeUnit);
-                        int x2 = (int)(Math.Ceiling(light.Position.X / Level.BlockSizeUnit) * Level.BlockSizeUnit);
-                        int z2 = (int)(Math.Ceiling(light.Position.Z / Level.BlockSizeUnit) * Level.BlockSizeUnit);
+                        int x1 = (int)(Math.Floor(light.Position.X / Level.SectorSizeUnit)   * Level.SectorSizeUnit);
+                        int z1 = (int)(Math.Floor(light.Position.Z / Level.SectorSizeUnit)   * Level.SectorSizeUnit);
+                        int x2 = (int)(Math.Ceiling(light.Position.X / Level.SectorSizeUnit) * Level.SectorSizeUnit);
+                        int z2 = (int)(Math.Ceiling(light.Position.Z / Level.SectorSizeUnit) * Level.SectorSizeUnit);
 
                         // TODO: winroomedit was supporting effect lights placed on vertical faces and effects light was applied to owning face
                         if ((position.X == x1 && position.Z == z1 || position.X == x1 && position.Z == z2 || position.X == x2 && position.Z == z1 ||
@@ -1078,7 +1078,7 @@ namespace TombLib.LevelData
                     }
 
                 case LightType.Spot:
-                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * Level.BlockSizeUnit)
+                    if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * Level.SectorSizeUnit)
                     {
                         // Calculate the ray from light to vertex
                         lightVector = Vector3.Normalize(position - light.Position);
@@ -1087,7 +1087,7 @@ namespace TombLib.LevelData
                         distance = Math.Abs((position - light.Position).Length());
 
                         // If distance is greater than light length, then skip this light
-                        if (distance > light.OuterRange * Level.BlockSizeUnit)
+                        if (distance > light.OuterRange * Level.SectorSizeUnit)
                             return Vector3.Zero;
 
                         // Calculate the light direction
@@ -1109,8 +1109,8 @@ namespace TombLib.LevelData
                             return Vector3.Zero;
 
                         float attenuation = 1.0f;
-                        if (distance >= light.InnerRange * Level.BlockSizeUnit)
-                            attenuation = 1.0f - (distance - light.InnerRange * Level.BlockSizeUnit) / (light.OuterRange * Level.BlockSizeUnit - light.InnerRange * Level.BlockSizeUnit);
+                        if (distance >= light.InnerRange * Level.SectorSizeUnit)
+                            attenuation = 1.0f - (distance - light.InnerRange * Level.SectorSizeUnit) / (light.OuterRange * Level.SectorSizeUnit - light.InnerRange * Level.SectorSizeUnit);
 
                         if (attenuation > 1.0f)
                             attenuation = 1.0f;
@@ -1185,7 +1185,7 @@ namespace TombLib.LevelData
         public struct IntersectionInfo
         {
             public VectorInt2 Pos;
-            public BlockFace Face;
+            public SectorFaceIdentifier Face;
             public float Distance;
             public float VerticalCoord;
         }
@@ -1207,7 +1207,7 @@ namespace TombLib.LevelData
                         var normal = Vector3.Cross(p1 - p0, p2 - p0);
                         if (Vector3.Dot(ray.Direction, normal) <= 0)
                             if (!(distance > result.Distance))
-                                result = new IntersectionInfo() { Distance = distance, Face = entry.Key.Face, Pos = entry.Key.Pos, VerticalCoord = position.Y };
+                                result = new IntersectionInfo() { Distance = distance, Face = entry.Key.Face, Pos = entry.Key.Position, VerticalCoord = position.Y };
                     }
                 }
 
@@ -1217,45 +1217,11 @@ namespace TombLib.LevelData
         }
     }
 
-    public struct SectorInfo : IEquatable<SectorInfo>, IComparable, IComparable<SectorInfo>
-    {
-        public VectorInt2 Pos;
-        public BlockFace Face;
-
-        public SectorInfo(int x, int z, BlockFace face)
-        {
-            Pos = new VectorInt2(x, z);
-            Face = face;
-        }
-
-        public override bool Equals(object other) => other is SectorInfo ? ((SectorInfo)other).Equals(other) : false;
-        public bool Equals(SectorInfo other) => Pos == other.Pos && Face == other.Face;
-        public override int GetHashCode() => Pos.GetHashCode() ^ (1200049507 * (int)Face); // Random prime
-        public int CompareTo(SectorInfo other)
-        {
-            if (Pos.X != other.Pos.X)
-                return Pos.X > other.Pos.X ? 1 : -1;
-            if (Pos.Y != other.Pos.Y)
-                return Pos.Y > other.Pos.Y ? 1 : -1;
-            if (Face != other.Face)
-                return Face > other.Face ? 1 : -1;
-            return 0;
-        }
-        int IComparable.CompareTo(object other) => CompareTo((SectorInfo)other);
-    }
-
     public struct VertexRange
     {
         public int Start;
         public int Count;
 
         public VertexRange(int start, int count) { Start = start; Count = count; }
-    }
-
-    public enum GeometryRenderResult
-    {
-        Success,
-        Skip,
-        Stop
     }
 }

@@ -236,8 +236,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var instance in _sinkTable.Keys)
             {
-                int xSector = (int)Math.Floor(instance.Position.X / Level.BlockSizeUnit);
-                int zSector = (int)Math.Floor(instance.Position.Z / Level.BlockSizeUnit);
+                int xSector = (int)Math.Floor(instance.Position.X / Level.SectorSizeUnit);
+                int zSector = (int)Math.Floor(instance.Position.Z / Level.SectorSizeUnit);
 
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
@@ -273,9 +273,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Sequence = (byte)instance.Sequence,
                     Index = (byte)instance.Number,
                     Flags = instance.Flags,
-                    DirectionX = (int) Math.Round(position.X + Level.BlockSizeUnit * direction.X),
-                    DirectionY = (int)-Math.Round(position.Y + Level.BlockSizeUnit * direction.Y),
-                    DirectionZ = (int) Math.Round(position.Z + Level.BlockSizeUnit * direction.Z),
+                    DirectionX = (int) Math.Round(position.X + Level.SectorSizeUnit * direction.X),
+                    DirectionY = (int)-Math.Round(position.Y + Level.SectorSizeUnit * direction.Y),
+                    DirectionZ = (int) Math.Round(position.Z + Level.SectorSizeUnit * direction.Z),
                 });
             }
             _flyByCameras.Sort(new tr4_flyby_camera.ComparerFlyBy());
@@ -383,7 +383,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             while (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
-                var sector = room.Blocks[x, z];
+                var sector = room.Sectors[x, z];
                 x += room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X;
                 z += room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z;
                 room = sector.FloorPortal.AdjoiningRoom;
@@ -393,7 +393,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private bool FindMonkeyFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
-            return room.Blocks[x, z].HasFlag(BlockFlags.Monkey);
+            return room.Sectors[x, z].HasFlag(SectorFlags.Monkey);
         }
 
         private void PrepareItems()
@@ -419,8 +419,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, wadMoveable.Id.TypeId))
                     {
                         // Box index data gets overwritten in runtime, but we write it for consistency
-                        int xSector  = (int)Math.Floor(instance.Position.X / Level.BlockSizeUnit);
-                        int zSector  = (int)Math.Floor(instance.Position.Z / Level.BlockSizeUnit);
+                        int xSector  = (int)Math.Floor(instance.Position.X / Level.SectorSizeUnit);
+                        int zSector  = (int)Math.Floor(instance.Position.Z / Level.SectorSizeUnit);
                         var tempRoom = _tempRooms[instance.Room];
                         int boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
 

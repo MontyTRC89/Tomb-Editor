@@ -29,22 +29,22 @@ namespace TombEditor
             {
                 using (var writer = new BinaryWriter(ms))
                 {
-                    Block[,] sectors = new Block[selection.Area.Width, selection.Area.Height];
+                    Sector[,] sectors = new Sector[selection.Area.Width, selection.Area.Height];
                     for (int x = 0; x < Width; x++)
                         for (int z = 0; z < Height; z++)
                         {
                             var currX = selection.Area.X0 + x;
                             var currZ = selection.Area.Y0 + z;
-                            var b = editor.SelectedRoom.Blocks[currX, currZ];
+                            var b = editor.SelectedRoom.Sectors[currX, currZ];
 
-                            BlockVertical[] verticals = b.GetVerticals().ToArray();
+                            SectorVerticalPart[] verticals = b.GetVerticals().ToArray();
                             writer.Write(verticals.Length);
 
-                            foreach (BlockVertical vertical in verticals)
+                            foreach (SectorVerticalPart vertical in verticals)
                             {
                                 writer.Write((byte)vertical);
 
-                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                for (SectorEdge edge = 0; edge < SectorEdge.Count; ++edge)
                                     writer.Write(b.GetHeight(vertical, edge));
                             }
 
@@ -58,10 +58,10 @@ namespace TombEditor
                             writer.Write((byte)b.Ceiling.DiagonalSplit);
                             writer.Write((short)b.Flags);
 
-                            Dictionary<BlockFace, TextureArea> textures = b.GetFaceTextures();
+                            Dictionary<SectorFaceIdentifier, TextureArea> textures = b.GetFaceTextures();
                             writer.Write(textures.Count);
 
-                            foreach (KeyValuePair<BlockFace, TextureArea> texturePair in textures)
+                            foreach (KeyValuePair<SectorFaceIdentifier, TextureArea> texturePair in textures)
                             {
                                 writer.Write((byte)texturePair.Key);
 
@@ -95,12 +95,12 @@ namespace TombEditor
             }
         }
 
-        public Block[,] GetSectors()
+        public Sector[,] GetSectors()
         {
             if (_data == null)
                 return null;
 
-            var sectors = new Block[Width, Height];
+            var sectors = new Sector[Width, Height];
 
             using (var ms = new MemoryStream(_data))
             {
@@ -109,19 +109,19 @@ namespace TombEditor
                     for (int x = 0; x < Width; x++)
                         for (int z = 0; z < Height; z++)
                         {
-                            var b = sectors[x, z] = new Block(0, Room.DefaultHeight);
+                            var b = sectors[x, z] = new Sector(0, Room.DefaultHeight);
 
                             int verticalsCount = reader.ReadInt32();
 
                             for (int i = 0; i < verticalsCount; i++)
                             {
-                                var vertical = (BlockVertical)reader.ReadByte();
+                                var vertical = (SectorVerticalPart)reader.ReadByte();
 
-                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                for (SectorEdge edge = 0; edge < SectorEdge.Count; ++edge)
                                     b.SetHeight(vertical, edge, reader.ReadInt32());
                             }
 
-                            b.Type = (BlockType)reader.ReadByte();
+                            b.Type = (SectorType)reader.ReadByte();
                             b.ForceFloorSolid = reader.ReadBoolean();
                             b.Floor.SplitDirectionToggled = reader.ReadBoolean();
                             b.Floor.SplitDirectionIsXEqualsZ = reader.ReadBoolean();
@@ -129,13 +129,13 @@ namespace TombEditor
                             b.Ceiling.SplitDirectionToggled = reader.ReadBoolean();
                             b.Ceiling.SplitDirectionIsXEqualsZ = reader.ReadBoolean();
                             b.Ceiling.DiagonalSplit = (DiagonalSplit)reader.ReadByte();
-                            b.Flags = (BlockFlags)reader.ReadInt16();
+                            b.Flags = (SectorFlags)reader.ReadInt16();
 
                             int texturesCount = reader.ReadInt32();
 
                             for (int i = 0; i < texturesCount; i++)
                             {
-                                var face = (BlockFace)reader.ReadByte();
+                                var face = (SectorFaceIdentifier)reader.ReadByte();
 
                                 string textureFileName = reader.ReadString();
                                 bool isInvisible = reader.ReadBoolean();

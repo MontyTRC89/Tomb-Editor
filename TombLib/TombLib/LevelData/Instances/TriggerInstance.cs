@@ -191,7 +191,7 @@ namespace TombLib.LevelData
 
             for (int x = Area.X0; x <= Area.X1; x++)
                 for (int z = Area.Y0; z <= Area.Y1; z++)
-                    room.Blocks[x, z].Triggers.Add(this);
+                    room.Sectors[x, z].Triggers.Add(this);
         }
 
         public override void RemoveFromRoom(Level level, Room room)
@@ -200,7 +200,7 @@ namespace TombLib.LevelData
 
             for (int x = Area.X0; x <= Area.X1; x++)
                 for (int z = Area.Y0; z <= Area.Y1; z++)
-                    room.Blocks[x, z].Triggers.Remove(this);
+                    room.Sectors[x, z].Triggers.Remove(this);
         }
 
         private void ParameterDeletedEvent(ITriggerParameter parameter)

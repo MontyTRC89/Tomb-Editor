@@ -21,10 +21,10 @@ namespace TombEditor.Controls.Panel3D
                     EditorActions.EditObject(pickedObject, Parent);
                 }
             }
-            else if (newPicking is PickingResultBlock)
+            else if (newPicking is PickingResultSector)
             {
-                var block = (PickingResultBlock)newPicking;
-                Room pickedRoom = block.Room;
+                var sector = (PickingResultSector)newPicking;
+                Room pickedRoom = sector.Room;
                 if (pickedRoom != _editor.SelectedRoom)
                 {
                     if (ModifierKeys == Keys.Shift)
@@ -43,8 +43,8 @@ namespace TombEditor.Controls.Panel3D
                         _editor.SelectedRoom = pickedRoom;
                         if (_editor.Configuration.Rendering3D_AnimateCameraOnDoubleClickRoomSwitch && ModifierKeys == Keys.None)
                         {
-                            Vector3 center = block.Room.GetLocalCenter();
-                            var nextPos = new Vector3(block.Pos.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, center.Y, block.Pos.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit) + block.Room.WorldPos;
+                            Vector3 center = sector.Room.GetLocalCenter();
+                            var nextPos = new Vector3(sector.Pos.X * Level.SectorSizeUnit + Level.HalfSectorSizeUnit, center.Y, sector.Pos.Y * Level.SectorSizeUnit + Level.HalfSectorSizeUnit) + sector.Room.WorldPos;
                             AnimateCamera(nextPos);
                         }
                     }

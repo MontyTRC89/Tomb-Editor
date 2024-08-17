@@ -1,6 +1,6 @@
 ﻿namespace TombLib.LevelData.SectorEnums;
 
-public enum BlockFaceShape
+public enum FaceShape
 {
 	Quad,
 	Triangle,

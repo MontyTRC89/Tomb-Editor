@@ -16,7 +16,7 @@ namespace TombLib.Rendering
             /// </summary>
             public bool HintOneTime = false;
 			public Vector3 Offset = new Vector3();
-            public SectorTextureGetDelegate SectorTextureGet = SectorTextureDefault.Default.Get; //(Room room, int x, int z, BlockFace face) => new SectorTextureResult();
+            public SectorTextureGetDelegate SectorTextureGet = SectorTextureDefault.Default.Get; //(Room room, int x, int z, SectorFaceIdentity face) => new SectorTextureResult();
         };
 
         public class RenderArgs

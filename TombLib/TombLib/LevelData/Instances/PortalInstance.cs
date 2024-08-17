@@ -161,7 +161,7 @@ namespace TombLib.LevelData
                 return null;
 
             // Check sectors
-            var sector = AdjoiningRoom.GetBlockTry(adjoiningRoomArea.Start);
+            var sector = AdjoiningRoom.GetSectorTry(adjoiningRoomArea.Start);
             switch (Direction)
             {
                 case PortalDirection.Floor:
@@ -175,7 +175,7 @@ namespace TombLib.LevelData
 
         public PortalInstance FindAlternatePortal(Room alternateRoom)
         {
-            var sector = alternateRoom?.GetBlockTry(Area.X0, Area.Y0);
+            var sector = alternateRoom?.GetSectorTry(Area.X0, Area.Y0);
             switch (Direction)
             {
                 case PortalDirection.Floor:
@@ -194,21 +194,21 @@ namespace TombLib.LevelData
                 case PortalDirection.Floor:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            if (room.Blocks[x, z].FloorPortal != null)
+                            if (room.Sectors[x, z].FloorPortal != null)
                                 return false;
                     break;
 
                 case PortalDirection.Ceiling:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            if (room.Blocks[x, z].CeilingPortal != null)
+                            if (room.Sectors[x, z].CeilingPortal != null)
                                 return false;
                     break;
 
                 default:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            if (room.Blocks[x, z].WallPortal != null)
+                            if (room.Sectors[x, z].WallPortal != null)
                                 return false;
                     break;
             }
@@ -254,10 +254,10 @@ namespace TombLib.LevelData
                     break;
             }
 
-            compX0 *= (int)Level.BlockSizeUnit;
-            compX1 *= (int)Level.BlockSizeUnit;
-            compY0 *= (int)Level.BlockSizeUnit;
-            compY1 *= (int)Level.BlockSizeUnit;
+            compX0 *= (int)Level.SectorSizeUnit;
+            compX1 *= (int)Level.SectorSizeUnit;
+            compY0 *= (int)Level.SectorSizeUnit;
+            compY1 *= (int)Level.SectorSizeUnit;
 
             if (((Direction == PortalDirection.Floor   && pos.Y == -(Room.GetLowestCorner()  + Room.WorldPos.Y))  ||
                  (Direction == PortalDirection.Ceiling && pos.Y == -(Room.GetHighestCorner() + Room.WorldPos.Y))) ||
@@ -288,19 +288,19 @@ namespace TombLib.LevelData
                 case PortalDirection.Floor:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            room.Blocks[x, z].FloorPortal = this;
+                            room.Sectors[x, z].FloorPortal = this;
                     break;
 
                 case PortalDirection.Ceiling:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            room.Blocks[x, z].CeilingPortal = this;
+                            room.Sectors[x, z].CeilingPortal = this;
                     break;
 
                 default:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            room.Blocks[x, z].WallPortal = this;
+                            room.Sectors[x, z].WallPortal = this;
                     break;
             }
         }
@@ -315,17 +315,17 @@ namespace TombLib.LevelData
                 case PortalDirection.Floor:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            room.Blocks[x, z].FloorPortal = null;
+                            room.Sectors[x, z].FloorPortal = null;
                     break;
                 case PortalDirection.Ceiling:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            room.Blocks[x, z].CeilingPortal = null;
+                            room.Sectors[x, z].CeilingPortal = null;
                     break;
                 default:
                     for (int z = Area.Y0; z <= Area.Y1; ++z)
                         for (int x = Area.X0; x <= Area.X1; ++x)
-                            room.Blocks[x, z].WallPortal = null;
+                            room.Sectors[x, z].WallPortal = null;
                     break;
             }
         }

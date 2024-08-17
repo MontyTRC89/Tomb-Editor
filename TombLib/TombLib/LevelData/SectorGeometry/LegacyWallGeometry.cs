@@ -9,7 +9,7 @@ public static class LegacyWallGeometry
 	public static IReadOnlyList<SectorFace> GetVerticalFloorPartFaces(SectorWall wallData, bool isAnyWall)
 	{
 		var result = new List<SectorFace>();
-		bool subdivide = false;
+		bool edVisible = false;
 
 		int yQaA = wallData.QA.StartY,
 			yQaB = wallData.QA.EndY,
@@ -17,13 +17,13 @@ public static class LegacyWallGeometry
 			yFloorB = wallData.End.MinY,
 			yCeilingA = wallData.Start.MaxY,
 			yCeilingB = wallData.End.MaxY,
-			yEdA = wallData.ExtraFloorSubdivisions[0].StartY,
-			yEdB = wallData.ExtraFloorSubdivisions[0].EndY,
+			yEdA = wallData.ExtraFloorSplits[0].StartY,
+			yEdB = wallData.ExtraFloorSplits[0].EndY,
 			yA, yB;
 
-		BlockFace
-			qaFace = BlockFaceExtensions.GetQaFace(wallData.Direction),
-			edFace = BlockFaceExtensions.GetExtraFloorSubdivisionFace(wallData.Direction, 0);
+		SectorFaceIdentifier
+			qaFace = SectorFaceExtensions.GetQaFace(wallData.Direction),
+			edFace = SectorFaceExtensions.GetExtraFloorSplitFace(wallData.Direction, 0);
 
 		// Always check these
 		if (yQaA >= yCeilingA && yQaB >= yCeilingB)
@@ -51,13 +51,13 @@ public static class LegacyWallGeometry
 		if (yQaA == yFloorA && yQaB == yFloorB)
 			return result; // Empty list
 
-		// Check for subdivision
+		// Check for extra ED split
 		yA = yFloorA;
 		yB = yFloorB;
 
 		if (yEdA >= yA && yEdB >= yB && yQaA >= yEdA && yQaB >= yEdB && !(yEdA == yA && yEdB == yB))
 		{
-			subdivide = true;
+			edVisible = true;
 			yA = yEdA;
 			yB = yEdB;
 		}
@@ -67,7 +67,7 @@ public static class LegacyWallGeometry
 		if (qaFaceData.HasValue)
 			result.Add(qaFaceData.Value);
 
-		if (subdivide)
+		if (edVisible)
 		{
 			SectorFace? edFaceData = SectorFace.CreateVerticalFloorFaceData(edFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yEdA, yEdB), new(yFloorA, yFloorB));
 
@@ -81,7 +81,7 @@ public static class LegacyWallGeometry
 	public static IReadOnlyList<SectorFace> GetVerticalCeilingPartFaces(SectorWall wallData, bool isAnyWall)
 	{
 		var result = new List<SectorFace>();
-		bool subdivide = false;
+		bool rfVisible = false;
 
 		int yWsA = wallData.WS.StartY,
 			yWsB = wallData.WS.EndY,
@@ -89,13 +89,13 @@ public static class LegacyWallGeometry
 			yFloorB = wallData.End.MinY,
 			yCeilingA = wallData.Start.MaxY,
 			yCeilingB = wallData.End.MaxY,
-			yRfA = wallData.ExtraCeilingSubdivisions[0].StartY,
-			yRfB = wallData.ExtraCeilingSubdivisions[0].EndY,
+			yRfA = wallData.ExtraCeilingSplits[0].StartY,
+			yRfB = wallData.ExtraCeilingSplits[0].EndY,
 			yA, yB;
 
-		BlockFace
-			wsFace = BlockFaceExtensions.GetWsFace(wallData.Direction),
-			rfFace = BlockFaceExtensions.GetExtraCeilingSubdivisionFace(wallData.Direction, 0);
+		SectorFaceIdentifier
+			wsFace = SectorFaceExtensions.GetWsFace(wallData.Direction),
+			rfFace = SectorFaceExtensions.GetExtraCeilingSplitFace(wallData.Direction, 0);
 
 		// Always check these
 		if (yWsA <= yFloorA && yWsB <= yFloorB)
@@ -123,13 +123,13 @@ public static class LegacyWallGeometry
 		if (yWsA == yCeilingA && yWsB == yCeilingB)
 			return result; // Empty list
 
-		// Check for subdivision
+		// Check for extra RF split
 		yA = yCeilingA;
 		yB = yCeilingB;
 
 		if (yRfA <= yA && yRfB <= yB && yWsA <= yRfA && yWsB <= yRfB && !(yRfA == yA && yRfB == yB))
 		{
-			subdivide = true;
+			rfVisible = true;
 			yA = yRfA;
 			yB = yRfB;
 		}
@@ -139,7 +139,7 @@ public static class LegacyWallGeometry
 		if (wsFaceData.HasValue)
 			result.Add(wsFaceData.Value);
 
-		if (subdivide)
+		if (rfVisible)
 		{
 			SectorFace? rfFaceData = SectorFace.CreateVerticalCeilingFaceData(rfFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yRfA, yRfB), new(yCeilingA, yCeilingB));
 
@@ -162,7 +162,7 @@ public static class LegacyWallGeometry
 			yCeilingB = wallData.End.MaxY,
 			yA, yB, yC, yD;
 
-		BlockFace middleFace = BlockFaceExtensions.GetMiddleFace(wallData.Direction);
+		SectorFaceIdentifier middleFace = SectorFaceExtensions.GetMiddleFace(wallData.Direction);
 
 		yA = yWsA >= yCeilingA ? yCeilingA : yWsA;
 		yB = yWsB >= yCeilingB ? yCeilingB : yWsB;

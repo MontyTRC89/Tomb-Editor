@@ -6,11 +6,11 @@ namespace TombLib.LevelData
 {
     public class GhostBlockInstance : SectorBasedObjectInstance, ISpatial, ICopyable
     {
-        public BlockSurface Floor;
-        public BlockSurface Ceiling;
+        public SectorSurface Floor;
+        public SectorSurface Ceiling;
 
         public bool SelectedFloor = true;
-        public BlockEdge? SelectedCorner { get; set; }
+        public SectorEdge? SelectedCorner { get; set; }
 
         public VectorInt2 SectorPosition
         {
@@ -18,13 +18,13 @@ namespace TombLib.LevelData
             set { Area = new RectangleInt2(value.X, value.Y, value.X, value.Y); }
         }
 
-        public Block Block => Room.Blocks[Area.X0, Area.Y0];
-        public bool FloorIsQuad => Block.Floor.IsQuad;
-        public bool CeilingIsQuad => Block.Ceiling.IsQuad;
-        public bool FloorSplitToggled => Block.Floor.SplitDirectionIsXEqualsZ;
-        public bool CeilingSplitToggled => Block.Ceiling.SplitDirectionIsXEqualsZ;
+        public Sector Sector => Room.Sectors[Area.X0, Area.Y0];
+        public bool FloorIsQuad => Sector.Floor.IsQuad;
+        public bool CeilingIsQuad => Sector.Ceiling.IsQuad;
+        public bool FloorSplitToggled => Sector.Floor.SplitDirectionIsXEqualsZ;
+        public bool CeilingSplitToggled => Sector.Ceiling.SplitDirectionIsXEqualsZ;
 
-        public bool Editable => !Block.IsAnyWall;
+        public bool Editable => !Sector.IsAnyWall;
         public bool Valid => Editable && (ValidFloor || ValidCeiling);
         public bool ValidFloor => Floor.XnZn != 0 || Floor.XpZn != 0 || Floor.XnZp != 0 || Floor.XpZp != 0;
         public bool ValidCeiling => Ceiling.XnZn != 0 || Ceiling.XpZn != 0 || Ceiling.XnZp != 0 || Ceiling.XpZp != 0;
@@ -60,26 +60,26 @@ namespace TombLib.LevelData
                 Move(SelectedCorner.Value, delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
             else
                 for (int i = 0; i < 4; i++)
-                    Move((BlockEdge)(i), delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
+                    Move((SectorEdge)(i), delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
         }
 
-        private void Move (BlockEdge edge, int delta, bool floor)
+        private void Move (SectorEdge edge, int delta, bool floor)
         {
             if (floor)
                 switch (edge)
                 {
-                    case BlockEdge.XnZn: Floor.XnZn += delta; break;
-                    case BlockEdge.XnZp: Floor.XnZp += delta; break;
-                    case BlockEdge.XpZn: Floor.XpZn += delta; break;
-                    case BlockEdge.XpZp: Floor.XpZp += delta; break;
+                    case SectorEdge.XnZn: Floor.XnZn += delta; break;
+                    case SectorEdge.XnZp: Floor.XnZp += delta; break;
+                    case SectorEdge.XpZn: Floor.XpZn += delta; break;
+                    case SectorEdge.XpZp: Floor.XpZp += delta; break;
                 }
             else
                 switch (edge)
                 {
-                    case BlockEdge.XnZn: Ceiling.XnZn += delta; break;
-                    case BlockEdge.XnZp: Ceiling.XnZp += delta; break;
-                    case BlockEdge.XpZn: Ceiling.XpZn += delta; break;
-                    case BlockEdge.XpZp: Ceiling.XpZp += delta; break;
+                    case SectorEdge.XnZn: Ceiling.XnZn += delta; break;
+                    case SectorEdge.XnZp: Ceiling.XnZp += delta; break;
+                    case SectorEdge.XpZn: Ceiling.XpZn += delta; break;
+                    case SectorEdge.XpZp: Ceiling.XpZp += delta; break;
                 }
         }
 
@@ -87,13 +87,13 @@ namespace TombLib.LevelData
         {
             var result = new Vector3[4];
 
-            var localCenter = new Vector3(SectorPosition.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, 0, SectorPosition.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit);
-            var type = floor ? BlockVertical.Floor : BlockVertical.Ceiling;
+            var localCenter = new Vector3(SectorPosition.X * Level.SectorSizeUnit + Level.HalfSectorSizeUnit, 0, SectorPosition.Y * Level.SectorSizeUnit + Level.HalfSectorSizeUnit);
+            var type = floor ? SectorVerticalPart.QA : SectorVerticalPart.WS;
 
-            var hXnZn = Block.GetHeight(type, BlockEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn) + (floor ? -margin : margin);
-            var hXpZp = Block.GetHeight(type, BlockEdge.XpZp) + (original ? 0 : (floor ? Floor : Ceiling).XpZp) + (floor ? -margin : margin);
-            var hXnZp = Block.GetHeight(type, BlockEdge.XnZp) + (original ? 0 : (floor ? Floor : Ceiling).XnZp) + (floor ? -margin : margin);
-            var hXpZn = Block.GetHeight(type, BlockEdge.XpZn) + (original ? 0 : (floor ? Floor : Ceiling).XpZn) + (floor ? -margin : margin);
+            var hXnZn = Sector.GetHeight(type, SectorEdge.XnZn) + (original ? 0 : (floor ? Floor : Ceiling).XnZn) + (floor ? -margin : margin);
+            var hXpZp = Sector.GetHeight(type, SectorEdge.XpZp) + (original ? 0 : (floor ? Floor : Ceiling).XpZp) + (floor ? -margin : margin);
+            var hXnZp = Sector.GetHeight(type, SectorEdge.XnZp) + (original ? 0 : (floor ? Floor : Ceiling).XnZp) + (floor ? -margin : margin);
+            var hXpZn = Sector.GetHeight(type, SectorEdge.XpZn) + (original ? 0 : (floor ? Floor : Ceiling).XpZn) + (floor ? -margin : margin);
 
             var shift = new Vector3();
 
@@ -101,10 +101,10 @@ namespace TombLib.LevelData
             {
                 switch (i)
                 {
-                    case 0: shift.X = -Level.HalfBlockSizeUnit - margin; shift.Y = hXnZp; shift.Z =  Level.HalfBlockSizeUnit + margin; break;
-                    case 1: shift.X =  Level.HalfBlockSizeUnit + margin; shift.Y = hXpZp; shift.Z =  Level.HalfBlockSizeUnit + margin; break;
-                    case 2: shift.X =  Level.HalfBlockSizeUnit + margin; shift.Y = hXpZn; shift.Z = -Level.HalfBlockSizeUnit - margin; break;
-                    case 3: shift.X = -Level.HalfBlockSizeUnit - margin; shift.Y = hXnZn; shift.Z = -Level.HalfBlockSizeUnit - margin; break;
+                    case 0: shift.X = -Level.HalfSectorSizeUnit - margin; shift.Y = hXnZp; shift.Z =  Level.HalfSectorSizeUnit + margin; break;
+                    case 1: shift.X =  Level.HalfSectorSizeUnit + margin; shift.Y = hXpZp; shift.Z =  Level.HalfSectorSizeUnit + margin; break;
+                    case 2: shift.X =  Level.HalfSectorSizeUnit + margin; shift.Y = hXpZn; shift.Z = -Level.HalfSectorSizeUnit - margin; break;
+                    case 3: shift.X = -Level.HalfSectorSizeUnit - margin; shift.Y = hXnZn; shift.Z = -Level.HalfSectorSizeUnit - margin; break;
                 }
                 result[i] = (Room?.WorldPos ?? new Vector3()) + (localCenter + shift);
             }

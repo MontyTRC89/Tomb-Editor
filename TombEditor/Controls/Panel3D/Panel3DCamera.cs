@@ -21,7 +21,7 @@ namespace TombEditor.Controls.Panel3D
             // Calculate camera distance
             Vector2 roomDiagonal = new Vector2(room?.NumXSectors ?? 0, room?.NumZSectors ?? 0);
 
-            var dist = (roomDiagonal.Length() * 0.8f + 2.1f) * Level.BlockSizeUnit;
+            var dist = (roomDiagonal.Length() * 0.8f + 2.1f) * Level.SectorSizeUnit;
             var rotX = 0.6f;
             var rotY = (float)Math.PI;
 

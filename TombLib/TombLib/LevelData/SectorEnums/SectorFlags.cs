@@ -3,7 +3,7 @@
 namespace TombLib.LevelData.SectorEnums;
 
 [Flags]
-public enum BlockFlags : short
+public enum SectorFlags : short
 {
 	None = 0,
 	Monkey = 1,

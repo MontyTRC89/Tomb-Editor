@@ -1,7 +1,7 @@
 ﻿namespace TombLib.LevelData.SectorGeometry;
 
 /// <summary>
-/// Represents a wall split, such as QA, WS, ED, RF or any other extra subdivision of a wall.
+/// Represents a wall split, such as QA, WS, ED, RF or any other extra splits of a wall.
 /// </summary>
 public readonly struct WallSplit
 {

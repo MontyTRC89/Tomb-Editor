@@ -25,7 +25,7 @@ namespace TombLib.Utils
             }
         }
 
-        public void TransformValueQuad(Dictionary<BlockFace, TextureArea> faceTextures, BlockFace rotation0, BlockFace rotation1, BlockFace rotation2, BlockFace rotation3)
+        public void TransformValueQuad(Dictionary<SectorFaceIdentifier, TextureArea> faceTextures, SectorFaceIdentifier rotation0, SectorFaceIdentifier rotation1, SectorFaceIdentifier rotation2, SectorFaceIdentifier rotation3)
         {
             if (MirrorX)
                 faceTextures.TrySwap(rotation0, rotation2);
