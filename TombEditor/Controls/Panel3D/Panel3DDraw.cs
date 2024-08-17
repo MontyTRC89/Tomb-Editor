@@ -401,8 +401,8 @@ namespace TombEditor.Controls.Panel3D
                                 HandleDiagonal(x, z, floorSurface, yOffset);
                         }
 
-						// Ceiling split
-						if (splitIndex < targetSector.ExtraCeilingSplits.Count)
+                        // Ceiling split
+                        if (splitIndex < targetSector.ExtraCeilingSplits.Count)
                         {
                             var ceilingSurface = new SectorSurface
                             {
