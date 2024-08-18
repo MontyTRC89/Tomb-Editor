@@ -189,17 +189,17 @@ public readonly struct SectorWall
 
 			if (extraSplitIndex + 1 < ExtraCeilingSplits.Count) // If a next ceiling split exists
 			{
-				int yNextSubdivA = ExtraCeilingSplits[extraSplitIndex + 1].StartY,
-					yNextSubdivB = ExtraCeilingSplits[extraSplitIndex + 1].EndY;
+				int yNextSplitStart = ExtraCeilingSplits[extraSplitIndex + 1].StartY,
+					yNextSplitEnd = ExtraCeilingSplits[extraSplitIndex + 1].EndY;
 
-				if ((canHaveNonDiagonalCeilingPart || isWsFullyBelowMinY) && (yNextSubdivA < WS.StartY || yNextSubdivB < WS.EndY))
+				if ((canHaveNonDiagonalCeilingPart || isWsFullyBelowMinY) && (yNextSplitStart < WS.StartY || yNextSplitEnd < WS.EndY))
 					continue; // Skip it, since it's below the flat ceiling triangle
 
-				if (yNextSubdivA <= Start.MaxY && yNextSubdivB <= End.MaxY) // If next split is NOT in void above ceiling
+				if (yNextSplitStart <= Start.MaxY && yNextSplitEnd <= End.MaxY) // If next split is NOT in void above ceiling
 				{
 					// Make the next split the top end of the face
-					yEndA = yNextSubdivA;
-					yEndB = yNextSubdivB;
+					yEndA = yNextSplitStart;
+					yEndB = yNextSplitEnd;
 				}
 			}
 
