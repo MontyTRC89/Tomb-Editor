@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
@@ -70,7 +71,7 @@ namespace TombLib.LevelData.IO
 
                 // Write settings
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
-               
+
                 // Write rooms
                 WriteRooms(chunkIO, rooms, levelSettingIds);
                 chunkIO.WriteChunkEnd();
@@ -130,7 +131,7 @@ namespace TombLib.LevelData.IO
             }
 
             public Dictionary<ImportedGeometry, int> ImportedGeometries { get; private set; }
-            public Dictionary<LevelTexture, int> LevelTextures { get; private set; } 
+            public Dictionary<LevelTexture, int> LevelTextures { get; private set; }
             public Dictionary<VolumeEventSet, int> VolumeEventSets { get; private set; }
         }
 
@@ -363,7 +364,7 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkEnd();
                     }
                 }
-                
+
                 using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes, UInt16.MaxValue))
                 {
                     foreach (var entry in settings.AutoStaticMeshMerges)
