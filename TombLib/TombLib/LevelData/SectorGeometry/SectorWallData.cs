@@ -91,7 +91,7 @@ public readonly struct SectorWallData
 	public readonly IReadOnlyList<SectorFaceData> GetVerticalFloorPartFaces(DiagonalSplit diagonalFloorSplit, bool isAnyWall)
 	{
 		bool isQaFullyAboveMaxY = IsQaFullyAboveMaxY; // Technically should be classified as a wall if true
-		bool canHaveDiagonalWallFloorPart = CanHaveNonDiagonalFloorPart(diagonalFloorSplit); // The wall bit under the flat floor triangle of a diagonal wall
+		bool canHaveNonDiagonalFloorPart = CanHaveNonDiagonalFloorPart(diagonalFloorSplit); // The wall bit under the flat floor triangle of a diagonal wall
 
 		var faces = new List<SectorFaceData>();
 		SectorFaceData? faceData;
@@ -116,7 +116,7 @@ public readonly struct SectorWallData
 				int yNextSplitStart = ExtraFloorSplits[extraSplitIndex + 1].StartY,
 					yNextSplitEnd = ExtraFloorSplits[extraSplitIndex + 1].EndY;
 
-				if ((canHaveDiagonalWallFloorPart || isQaFullyAboveMaxY) && (yNextSplitStart > QA.StartY || yNextSplitEnd > QA.EndY))
+				if ((canHaveNonDiagonalFloorPart || isQaFullyAboveMaxY) && (yNextSplitStart > QA.StartY || yNextSplitEnd > QA.EndY))
 					continue; // Skip it, since it's above the flat, walkable triangle of a diagonal wall
 
 				if (yNextSplitStart >= Start.MinY && yNextSplitEnd >= End.MinY) // If next split is NOT in void below floor
@@ -138,7 +138,7 @@ public readonly struct SectorWallData
 
 				bool isEvenWithQA = yStartA == QA.StartY && yStartB == QA.EndY; // Whether the split has the same Y coordinates as QA
 																				// if so, then it covers the whole floor part of the wall
-				bool isValidOverdraw = isEvenWithQA && (!isAnyWall || canHaveDiagonalWallFloorPart);
+				bool isValidOverdraw = isEvenWithQA && (!isAnyWall || canHaveNonDiagonalFloorPart);
 
 				if (!isValidOverdraw)
 					continue;
@@ -215,7 +215,7 @@ public readonly struct SectorWallData
 
 				// Find highest point between split and baseline, then try and create an overdraw face out of it
 				int highest = Math.Max(Math.Max(yStartA, yStartB), Math.Max(yEndA, yEndB));
-				faceData = SectorFaceData.CreateVerticalCeilingFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(highest, highest), new(yStartA, yStartB));
+				faceData = SectorFaceData.CreateVerticalCeilingFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(highest, highest));
 			}
 
 			if (faceData.HasValue)
@@ -321,14 +321,14 @@ public readonly struct SectorWallData
 
 		bool isQaFullyAboveMaxY = IsQaFullyAboveMaxY; // Technically should be classified as a wall if true
 
-		bool isEitherStartPointAboveCeiling = split.StartY > Start.MaxY || split.EndY > End.MaxY; // If either start or end point are in the void above ceiling
-		bool areBothStartPointsAboveCeiling = split.StartY >= Start.MaxY && split.EndY >= End.MaxY; // Are both start and end points in the void above ceiling
+		bool isEitherPointAboveCeiling = split.StartY > Start.MaxY || split.EndY > End.MaxY; // If either start or end point are in the void above ceiling
+		bool areBothPointsAboveCeiling = split.StartY >= Start.MaxY && split.EndY >= End.MaxY; // Are both start and end points in the void above ceiling
 
 		(int startY, int endY) = (split.StartY, split.EndY);
 
 		// Full walls can't have overdraw, so if either point is in void, then snap it to ceiling
 		// Diagonal walls are an exception, since, even though they are walls, they have a flat floor bit, so we can allow overdraw
-		if ((isEitherStartPointAboveCeiling && (isAnyWall || isQaFullyAboveMaxY) && !canHaveNonDiagonalFloorPart) || areBothStartPointsAboveCeiling)
+		if ((isEitherPointAboveCeiling && (isAnyWall || isQaFullyAboveMaxY) && !canHaveNonDiagonalFloorPart) || areBothPointsAboveCeiling)
 		{
 			// Snap points to ceiling
 			startY = Start.MaxY;
@@ -361,14 +361,14 @@ public readonly struct SectorWallData
 
 		bool isWsFullyBelowMinY = IsWsFullyBelowMinY; // Technically should be classified as a wall if true
 
-		bool isEitherStartPointBelowFloor = split.StartY < Start.MinY || split.EndY < End.MinY; // If either start or end point are in the void below floor
-		bool areBothStartPointsBelowFloor = split.StartY <= Start.MinY && split.EndY <= End.MinY; // Are both start and end points in the void below floor
+		bool isEitherPointBelowFloor = split.StartY < Start.MinY || split.EndY < End.MinY; // If either start or end point are in the void below floor
+		bool areBothPointsBelowFloor = split.StartY <= Start.MinY && split.EndY <= End.MinY; // Are both start and end points in the void below floor
 
 		(int startY, int endY) = (split.StartY, split.EndY);
 
 		// Full walls can't have overdraw, so if either point is in void, then snap it to floor
 		// Diagonal walls are an exception, since, even though they are walls, they have a flat ceiling bit, so we can allow overdraw
-		if ((isEitherStartPointBelowFloor && (isAnyWall || isWsFullyBelowMinY) && !canHaveNonDiagonalCeilingPart) || areBothStartPointsBelowFloor)
+		if ((isEitherPointBelowFloor && (isAnyWall || isWsFullyBelowMinY) && !canHaveNonDiagonalCeilingPart) || areBothPointsBelowFloor)
 		{
 			// Snap points to floor
 			startY = Start.MinY;
