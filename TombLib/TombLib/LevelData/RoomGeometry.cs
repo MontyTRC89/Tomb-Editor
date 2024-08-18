@@ -326,9 +326,9 @@ namespace TombLib.LevelData
             Relight(room, highQualityLighting);
         }
 
-        public void UpdateFaceTexture(int x, int z, BlockFace face, TextureArea texture, bool wasDoubleSided)
+        public void UpdateFaceTexture(int x, int z, SectorFace face, TextureArea texture, bool wasDoubleSided)
         {
-            VertexRange range = VertexRangeLookup.GetValueOrDefault(new SectorInfo(x, z, face));
+            VertexRange range = VertexRangeLookup.GetValueOrDefault(new SectorFaceIdentity(x, z, face));
 
             if (range.Count == 3) // Triangle
             {
@@ -338,7 +338,7 @@ namespace TombLib.LevelData
                 if (texture.DoubleSided)
                     DoubleSidedTriangleCount++;
 
-                if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
+                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                     Swap.Do(ref texture.TexCoord0, ref texture.TexCoord2);
 
                 TriangleTextureAreas[range.Start / 3] = texture;
@@ -356,7 +356,7 @@ namespace TombLib.LevelData
                 texture0.TexCoord1 = texture.TexCoord3;
                 texture0.TexCoord2 = texture.TexCoord1;
 
-                if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
+                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                     Swap.Do(ref texture0.TexCoord0, ref texture0.TexCoord2);
 
                 TriangleTextureAreas[range.Start / 3] = texture0;
@@ -366,7 +366,7 @@ namespace TombLib.LevelData
                 texture1.TexCoord1 = texture.TexCoord1;
                 texture1.TexCoord2 = texture.TexCoord3;
 
-                if (face is BlockFace.Ceiling or BlockFace.Ceiling_Triangle2)
+                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                     Swap.Do(ref texture1.TexCoord0, ref texture1.TexCoord2);
 
                 TriangleTextureAreas[(range.Start + 3) / 3] = texture1;

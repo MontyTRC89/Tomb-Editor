@@ -1556,7 +1556,7 @@ namespace TombEditor
 
             var sector = room.GetSector(pos);
             var shape = room.GetFaceShape(pos.X, pos.Y, face);
-            bool wasDoubleSided = block.GetFaceTexture(face).DoubleSided;
+            bool wasDoubleSided = sector.GetFaceTexture(face).DoubleSided;
 
             // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
             texture.ClampToBounds();
