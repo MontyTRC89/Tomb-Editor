@@ -42,16 +42,14 @@ namespace TombEditor.Controls.Panel3D
                 int atlasSize = objectQuality switch
                 {
                     ObjectRenderingQuality.High => 1024,
-                    ObjectRenderingQuality.Medium or ObjectRenderingQuality.Low => 512,
-                    _ => throw new ArgumentException()
+                    _ => 512
                 };
 
                 int maxAllocationSize = objectQuality switch
                 {
                     ObjectRenderingQuality.High => 256,
                     ObjectRenderingQuality.Medium => 128,
-                    ObjectRenderingQuality.Low => 64,
-                    _ => throw new ArgumentException()
+                    _ => 64
                 };
 
                 _wadRenderer = new WadRenderer(_legacyDevice, true, true, atlasSize, maxAllocationSize);
