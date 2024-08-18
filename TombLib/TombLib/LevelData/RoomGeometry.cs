@@ -44,7 +44,7 @@ namespace TombLib.LevelData
         public SortedList<SectorFaceIdentity, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorFaceIdentity, VertexRange>();
 
         // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
-        public void Build(Room room, bool useLegacyCode = false)
+        public void Build(Room room, bool highQualityLighting, bool useLegacyCode = false)
         {
             VertexPositions.Clear();
             VertexEditorUVs.Clear();
@@ -323,8 +323,56 @@ namespace TombLib.LevelData
             VertexColors.Resize(VertexPositions.Count, room.Properties.AmbientLight);
 
             // Lighting
-            Relight(room);
+            Relight(room, highQualityLighting);
         }
+
+        public void UpdateFaceTexture(int x, int z, SectorFace face, TextureArea texture, bool wasDoubleSided)
+        {
+            VertexRange range = VertexRangeLookup.GetValueOrDefault(new SectorFaceIdentity(x, z, face));
+
+            if (range.Count == 3) // Triangle
+            {
+                if (wasDoubleSided)
+                    DoubleSidedTriangleCount--;
+
+                if (texture.DoubleSided)
+                    DoubleSidedTriangleCount++;
+
+                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
+                    Swap.Do(ref texture.TexCoord0, ref texture.TexCoord2);
+
+                TriangleTextureAreas[range.Start / 3] = texture;
+            }
+            else if (range.Count == 6) // Quad
+            {
+                if (wasDoubleSided)
+                    DoubleSidedTriangleCount -= 2;
+
+                if (texture.DoubleSided)
+                    DoubleSidedTriangleCount += 2;
+
+                TextureArea texture0 = texture;
+                texture0.TexCoord0 = texture.TexCoord2;
+                texture0.TexCoord1 = texture.TexCoord3;
+                texture0.TexCoord2 = texture.TexCoord1;
+
+                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
+                    Swap.Do(ref texture0.TexCoord0, ref texture0.TexCoord2);
+
+                TriangleTextureAreas[range.Start / 3] = texture0;
+
+                TextureArea texture1 = texture;
+                texture1.TexCoord0 = texture.TexCoord0;
+                texture1.TexCoord1 = texture.TexCoord1;
+                texture1.TexCoord2 = texture.TexCoord3;
+
+                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
+                    Swap.Do(ref texture1.TexCoord0, ref texture1.TexCoord2);
+
+                TriangleTextureAreas[(range.Start + 3) / 3] = texture1;
+            }
+        }
+
         private enum FaceDirection
         {
             PositiveZ, NegativeZ, PositiveX, NegativeX, DiagonalFloor, DiagonalCeiling, DiagonalWall
