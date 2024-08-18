@@ -1258,25 +1258,21 @@ namespace TombEditor
 
             if (instance is PortalInstance)
             {
-                room.BuildGeometry();
-                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                room.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 if (adjoiningRoom != null)
                 {
-                    adjoiningRoom.BuildGeometry();
-                    adjoiningRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    adjoiningRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                     _editor.RoomSectorPropertiesChange(adjoiningRoom);
 
                     if (adjoiningRoom.AlternateOpposite != null)
                     {
-                        adjoiningRoom.AlternateOpposite.BuildGeometry();
-                        adjoiningRoom.AlternateOpposite.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        adjoiningRoom.AlternateOpposite.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _editor.RoomSectorPropertiesChange(adjoiningRoom.AlternateOpposite);
                     }
                 }
                 if (room.AlternateOpposite != null)
                 {
-                    room.AlternateOpposite.BuildGeometry();
-                    room.AlternateOpposite.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    room.AlternateOpposite.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                     _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
                 }
             }
@@ -1364,8 +1360,7 @@ namespace TombEditor
             sector.SetFaceTexture(face, newTexture);
 
             // Update state
-            room.BuildGeometry();
-            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
             _editor.RoomTextureChange(room);
         }
 
@@ -1380,8 +1375,7 @@ namespace TombEditor
             sector.SetFaceTexture(face, newTexture);
 
             // Update state
-            room.BuildGeometry();
-            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
             _editor.RoomTextureChange(room);
         }
 
@@ -1551,7 +1545,7 @@ namespace TombEditor
         private static bool _textureAtrributeMessageState = false;
         private static int  _textureAttributeMessageCount = 0;
 
-        private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, SectorFace face, TextureArea texture, bool autocorrectCeiling = true)
+        private static bool ApplyTextureToFace(Room room, VectorInt2 pos, SectorFace face, TextureArea texture, bool autocorrectCeiling = true)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&
                 !room.Properties.FlagHorizon && texture.TextureIsInvisible)
@@ -1562,6 +1556,7 @@ namespace TombEditor
 
             var sector = room.GetSector(pos);
             var shape = room.GetFaceShape(pos.X, pos.Y, face);
+            bool wasDoubleSided = block.GetFaceTexture(face).DoubleSided;
 
             // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
             texture.ClampToBounds();
@@ -1754,7 +1749,10 @@ namespace TombEditor
 
             // Check if texture attributes are correct
             if (textureApplied)
+            {
                 CheckTextureAttributes(room, pos, face, processedTexture);
+                room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, processedTexture, wasDoubleSided);
+            }
 
             return textureApplied;
         }
@@ -1766,13 +1764,11 @@ namespace TombEditor
 
             texture.ParentArea = new Rectangle2();
 
-            var textureApplied = ApplyTextureWithoutUpdate(room, pos, face, texture);
+            bool textureApplied = ApplyTextureToFace(room, pos, face, texture);
+
             if (textureApplied)
-            {
-                room.BuildGeometry();
-                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomTextureChange(room);
-            }
+
             return textureApplied;
         }
 
@@ -2093,7 +2089,7 @@ namespace TombEditor
                     }
                 }
 
-                ApplyTextureWithoutUpdate(room, pos, segment.Key, processedTexture);
+                ApplyTextureToFace(room, pos, segment.Key, processedTexture);
             }
         }
 
@@ -2174,22 +2170,20 @@ namespace TombEditor
                         {
                             case SectorFace.Floor:
                             case SectorFace.Floor_Triangle2:
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Floor, currentTexture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Floor_Triangle2, currentTexture);
+                                ApplyTextureToFace(room, new VectorInt2(x, z), SectorFace.Floor, currentTexture);
+                                ApplyTextureToFace(room, new VectorInt2(x, z), SectorFace.Floor_Triangle2, currentTexture);
                                 break;
 
                             case SectorFace.Ceiling:
                             case SectorFace.Ceiling_Triangle2:
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Ceiling, currentTexture, false);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Ceiling_Triangle2, currentTexture, false);
+                                ApplyTextureToFace(room, new VectorInt2(x, z), SectorFace.Ceiling, currentTexture, false);
+                                ApplyTextureToFace(room, new VectorInt2(x, z), SectorFace.Ceiling_Triangle2, currentTexture, false);
                                 break;
                         }
                     }
                 }
             }
 
-            room.BuildGeometry();
-            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -2210,30 +2204,28 @@ namespace TombEditor
                         case SectorFaceType.Floor:
                             if (!room.Sectors[x, z].IsFullWall)
                             {
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Floor, texture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Floor_Triangle2, texture);
+                                ApplyTextureToFace(room, new VectorInt2(x, z), SectorFace.Floor, texture);
+                                ApplyTextureToFace(room, new VectorInt2(x, z), SectorFace.Floor_Triangle2, texture);
                             }
                             break;
 
                         case SectorFaceType.Ceiling:
                             if (!room.Sectors[x, z].IsFullWall)
                             {
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Ceiling, texture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Ceiling_Triangle2, texture);
+                                ApplyTextureToFace(room, new VectorInt2(x, z), SectorFace.Ceiling, texture);
+                                ApplyTextureToFace(room, new VectorInt2(x, z), SectorFace.Ceiling_Triangle2, texture);
                             }
                             break;
 
                         case SectorFaceType.Wall:
                             foreach (SectorFace face in SectorFaceExtensions.GetWalls())
                                 if (room.IsFaceDefined(x, z, face))
-                                    ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), face, texture);
+                                    ApplyTextureToFace(room, new VectorInt2(x, z), face, texture);
                             break;
                     }
 
                 }
 
-            room.BuildGeometry();
-            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -2481,9 +2473,8 @@ namespace TombEditor
             // Update selection
             foreach (Room adjoiningRoom in adjoiningRooms)
             {
-                adjoiningRoom?.BuildGeometry();
-                adjoiningRoom?.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-                adjoiningRoom?.AlternateOpposite?.BuildGeometry();
+                adjoiningRoom?.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                adjoiningRoom?.AlternateOpposite?.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             }
 
             // Select last room, if available. Else select first existing room.
@@ -2532,8 +2523,7 @@ namespace TombEditor
             Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
             Parallel.ForEach(relevantRooms, relevantRoom =>
             {
-                relevantRoom.BuildGeometry();
-                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                relevantRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             });
 
             // Cleanup
@@ -3048,8 +3038,7 @@ namespace TombEditor
             // Update
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
             {
-                portalRoom.BuildGeometry();
-                portalRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                portalRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             }
 
             foreach (PortalInstance portal in portals)
@@ -3077,8 +3066,7 @@ namespace TombEditor
             newRoom.Properties.Locked = false;
 
             newRoom.Name = room + " (Flipped)";
-            newRoom.BuildGeometry();
-            newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            newRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
             // Assign room
             _editor.Level.AssignRoomToFree(newRoom);
@@ -3521,12 +3509,10 @@ namespace TombEditor
             // Build the geometry of the new room
             Parallel.Invoke(() =>
             {
-                newRoom.BuildGeometry();
-                newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                newRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             }, () =>
             {
-                room.BuildGeometry();
-                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                room.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             });
 
             if (switchRoom && (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite))
@@ -3837,8 +3823,7 @@ namespace TombEditor
             Room.FixupNeighborPortals(_editor.Level, new[] { newRoom }, new[] { newRoom }.Concat(mergeRooms), ref relevantRooms);
             Parallel.ForEach(relevantRooms, relevantRoom =>
             {
-                relevantRoom.BuildGeometry();
-                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                relevantRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             });
 
             // Add room and update the editor
@@ -3889,8 +3874,7 @@ namespace TombEditor
             Room.FixupNeighborPortals(_editor.Level, new[] { room, splitRoom }, new[] { room, splitRoom }, ref relevantRooms);
             Parallel.ForEach(relevantRooms, relevantRoom =>
             {
-                relevantRoom.BuildGeometry();
-                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                relevantRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             });
 
             // Cleanup
@@ -3937,8 +3921,7 @@ namespace TombEditor
 
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
             newRoom.Name = cutName + " (copy" + buffer + ")";
-            newRoom.BuildGeometry();
-            newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            newRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
             _editor.UndoManager.PushRoomCreated(newRoom);
@@ -4614,8 +4597,7 @@ namespace TombEditor
             var newRooms = _editor.Level.TransformRooms(_editor.SelectedRooms, transformation);
             foreach (Room room in newRooms)
             {
-                room.BuildGeometry();
-                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                room.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             }
 
             _editor.SelectRoomsAndResetCamera(newRooms);
@@ -4720,8 +4702,7 @@ namespace TombEditor
             // Redraw rooms in portals
             portals.Select(p => p.AdjoiningRoom).ToList().ForEach(room => { room.BuildGeometry(); _editor.RoomGeometryChange(room); });
 
-            _editor.SelectedRoom.BuildGeometry();
-            _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            _editor.SelectedRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -4821,8 +4802,7 @@ namespace TombEditor
             }
 
             portal.Opacity = opacity;
-            portal.Room.BuildGeometry();
-            portal.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            portal.Room.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomGeometryChange(portal.Room);
             _editor.ObjectChange(portal, ObjectChangeType.Change);
         }
@@ -5335,8 +5315,7 @@ namespace TombEditor
             // Update
             foreach (Room room in roomsToUpdate)
             {
-                room.BuildGeometry();
-                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                room.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomSectorPropertiesChange(room);
             }
 
@@ -5396,8 +5375,7 @@ namespace TombEditor
                 Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
                 Parallel.ForEach(relevantRooms, relevantRoom =>
                 {
-                    relevantRoom.BuildGeometry();
-                    relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    relevantRoom.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 });
                 foreach (Room relevantRoom in relevantRooms)
                     _editor.RoomPropertiesChange(relevantRoom);
