@@ -1126,7 +1126,7 @@
 			darkCheckBox15.Size = new System.Drawing.Size(257, 17);
 			darkCheckBox15.TabIndex = 23;
 			darkCheckBox15.Tag = "UI_AutoSwitchSectorColoringInfo";
-			darkCheckBox15.Text = "Autoswitch block coloring on property hover";
+			darkCheckBox15.Text = "Autoswitch sector coloring on property hover";
 			// 
 			// darkCheckBox14
 			// 
@@ -1811,7 +1811,7 @@
 			darkLabel14.Name = "darkLabel14";
 			darkLabel14.Size = new System.Drawing.Size(110, 13);
 			darkLabel14.TabIndex = 19;
-			darkLabel14.Text = "Block outline width:";
+			darkLabel14.Text = "Sector outline width:";
 			// 
 			// darkNumericUpDown12
 			// 

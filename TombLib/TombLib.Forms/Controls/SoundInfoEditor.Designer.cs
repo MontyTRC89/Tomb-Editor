@@ -202,7 +202,7 @@
             this.numericRange.Name = "numericRange";
             this.numericRange.Size = new System.Drawing.Size(68, 22);
             this.numericRange.TabIndex = 12;
-            this.toolTip.SetToolTip(this.numericRange, "Range in blocks from where the sample can be heard relative to where it was trigg" +
+            this.toolTip.SetToolTip(this.numericRange, "Range in sectors from where the sample can be heard relative to where it was trigg" +
         "ered.");
             this.numericRange.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
@@ -472,7 +472,7 @@
             this.numericRangeLabel.Name = "numericRangeLabel";
             this.numericRangeLabel.Size = new System.Drawing.Size(40, 13);
             this.numericRangeLabel.TabIndex = 9;
-            this.numericRangeLabel.Text = "blocks";
+            this.numericRangeLabel.Text = "sectors";
             // 
             // darkLabel4
             // 

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -260,8 +261,8 @@ namespace TombLib.LevelData.Compilers
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var instance in _sinkTable.Keys)
             {
-                int xSector = (int)Math.Floor(instance.Position.X / Level.BlockSizeUnit);
-                int zSector = (int)Math.Floor(instance.Position.Z / Level.BlockSizeUnit);
+                int xSector = (int)Math.Floor(instance.Position.X / Level.SectorSizeUnit);
+                int zSector = (int)Math.Floor(instance.Position.Z / Level.SectorSizeUnit);
 
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
@@ -300,9 +301,9 @@ namespace TombLib.LevelData.Compilers
                     Sequence = (byte)instance.Sequence,
                     Index = (byte)instance.Number,
                     Flags = instance.Flags,
-                    DirectionX = (int) Math.Round(position.X + Level.BlockSizeUnit * direction.X),
-                    DirectionY = (int)-Math.Round(position.Y + Level.BlockSizeUnit * direction.Y),
-                    DirectionZ = (int) Math.Round(position.Z + Level.BlockSizeUnit * direction.Z),
+                    DirectionX = (int) Math.Round(position.X + Level.SectorSizeUnit * direction.X),
+                    DirectionY = (int)-Math.Round(position.Y + Level.SectorSizeUnit * direction.Y),
+                    DirectionZ = (int) Math.Round(position.Z + Level.SectorSizeUnit * direction.Z),
                 });
             }
             _flyByCameras.Sort(new tr4_flyby_camera.ComparerFlyBy());
@@ -410,7 +411,7 @@ namespace TombLib.LevelData.Compilers
         {
             while (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
-                var sector = room.Blocks[x, z];
+                var sector = room.Sectors[x, z];
                 x += room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X;
                 z += room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z;
                 room = sector.FloorPortal.AdjoiningRoom;
@@ -420,7 +421,7 @@ namespace TombLib.LevelData.Compilers
         private bool FindMonkeyFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
-            return room.Blocks[x, z].HasFlag(BlockFlags.Monkey);
+            return room.Sectors[x, z].HasFlag(SectorFlags.Monkey);
         }
 
         private void PrepareItems()
@@ -596,7 +597,7 @@ namespace TombLib.LevelData.Compilers
                 var targets = flybys.Select(f =>
                 {
                     var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
-                    var mxT = Matrix4x4.CreateTranslation(0, 0, Level.BlockSizeUnit);
+                    var mxT = Matrix4x4.CreateTranslation(0, 0, Level.SectorSizeUnit);
                     var trans = f.WorldPosition + (mxT * mxR).Translation;
 
                     var distance = trans - laraItem.WorldPosition;

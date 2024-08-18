@@ -520,9 +520,9 @@ namespace TombLib.LevelData.Compilers
 
                     if (light.LightType == 0) // TR3 sun type
                     {
-                        writer.Write((ushort)(light.DirectionX * Level.BlockSizeUnit));
-                        writer.Write((ushort)(light.DirectionY * Level.BlockSizeUnit));
-                        writer.Write((ushort)(light.DirectionZ * Level.BlockSizeUnit));
+                        writer.Write((ushort)(light.DirectionX * Level.SectorSizeUnit));
+                        writer.Write((ushort)(light.DirectionY * Level.SectorSizeUnit));
+                        writer.Write((ushort)(light.DirectionZ * Level.SectorSizeUnit));
                         writer.Write((ushort)0x0000); // Padding
                     }
                     else
@@ -816,12 +816,12 @@ namespace TombLib.LevelData.Compilers
             writer.Write((ushort)0);
             writer.Write((ushort)0);
 
-            writer.Write(Level.BlockSizeUnit);
+            writer.Write(Level.SectorSizeUnit);
             writer.Write((float)Info.YBottom);
-            writer.Write(Level.BlockSizeUnit);
-            writer.Write((NumXSectors - 1) * Level.BlockSizeUnit);
+            writer.Write(Level.SectorSizeUnit);
+            writer.Write((NumXSectors - 1) * Level.SectorSizeUnit);
             writer.Write((float)Info.YTop);
-            writer.Write((NumZSectors - 1) * Level.BlockSizeUnit);
+            writer.Write((NumZSectors - 1) * Level.SectorSizeUnit);
 
             writer.Write((uint)0);
             var LayerVerticesOffset = writer.BaseStream.Position;
