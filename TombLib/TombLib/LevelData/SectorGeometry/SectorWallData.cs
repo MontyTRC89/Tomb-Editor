@@ -8,7 +8,7 @@ namespace TombLib.LevelData.SectorGeometry;
 /// <summary>
 /// Represents the wall of a single sector.
 /// </summary>
-public readonly struct SectorWall
+public readonly struct SectorWallData
 {
 	/// <summary>
 	/// The direction the wall is facing.
@@ -18,35 +18,35 @@ public readonly struct SectorWall
 	/// <summary>
 	/// The (X, Z) position and the minimum and maximum Y coordinate of the start corner of the wall.
 	/// </summary>
-	public readonly WallEnd Start;
+	public readonly WallEndData Start;
 
 	/// <summary>
 	/// The (X, Z) position and the minimum and maximum Y coordinate of the end corner of the wall.
 	/// </summary>
-	public readonly WallEnd End;
+	public readonly WallEndData End;
 
 	/// <summary>
 	/// Main floor split of the wall.
 	/// </summary>
-	public readonly WallSplit QA;
+	public readonly WallSplitData QA;
 
 	/// <summary>
 	/// Main ceiling split of the wall.
 	/// </summary>
-	public readonly WallSplit WS;
+	public readonly WallSplitData WS;
 
 	/// <summary>
 	/// Extra floor splits of the wall.
 	/// </summary>
-	public readonly IReadOnlyList<WallSplit> ExtraFloorSplits;
+	public readonly IReadOnlyList<WallSplitData> ExtraFloorSplits;
 
 	/// <summary>
 	/// Extra ceiling splits of the wall.
 	/// </summary>
-	public readonly IReadOnlyList<WallSplit> ExtraCeilingSplits;
+	public readonly IReadOnlyList<WallSplitData> ExtraCeilingSplits;
 
-	public SectorWall(Direction direction, WallEnd start, WallEnd end, WallSplit qa, WallSplit ws,
-		IReadOnlyList<WallSplit> extraFloorSplits, IReadOnlyList<WallSplit> extraCeilingSplits)
+	public SectorWallData(Direction direction, WallEndData start, WallEndData end, WallSplitData qa, WallSplitData ws,
+		IReadOnlyList<WallSplitData> extraFloorSplits, IReadOnlyList<WallSplitData> extraCeilingSplits)
 	{
 		Direction = direction;
 		Start = start;
@@ -71,36 +71,30 @@ public readonly struct SectorWall
 	/// Returns true if the diagonal wall direction can have a non-diagonal (square from top-down) floor part.
 	/// </summary>
 	public readonly bool CanHaveNonDiagonalFloorPart(DiagonalSplit diagonalFloorSplitOfSector)
-	{
-		return
-			(diagonalFloorSplitOfSector is DiagonalSplit.XnZp && Direction is Direction.NegativeZ or Direction.PositiveX) ||
-			(diagonalFloorSplitOfSector is DiagonalSplit.XpZn && Direction is Direction.NegativeX or Direction.PositiveZ) ||
-			(diagonalFloorSplitOfSector is DiagonalSplit.XpZp && Direction is Direction.NegativeZ or Direction.NegativeX) ||
-			(diagonalFloorSplitOfSector is DiagonalSplit.XnZn && Direction is Direction.PositiveZ or Direction.PositiveX);
-	}
+		=> (diagonalFloorSplitOfSector is DiagonalSplit.XnZp && Direction is Direction.NegativeZ or Direction.PositiveX)
+		|| (diagonalFloorSplitOfSector is DiagonalSplit.XpZn && Direction is Direction.NegativeX or Direction.PositiveZ)
+		|| (diagonalFloorSplitOfSector is DiagonalSplit.XpZp && Direction is Direction.NegativeZ or Direction.NegativeX)
+		|| (diagonalFloorSplitOfSector is DiagonalSplit.XnZn && Direction is Direction.PositiveZ or Direction.PositiveX);
 
 	/// <summary>
 	/// Returns true if the diagonal wall direction can have a non-diagonal (square from top-down) ceiling part.
 	/// </summary>
 	public readonly bool CanHaveNonDiagonalCeilingPart(DiagonalSplit diagonalCeilingSplitOfSector)
-	{
-		return
-			(diagonalCeilingSplitOfSector is DiagonalSplit.XnZp && Direction is Direction.NegativeZ or Direction.PositiveX) ||
-			(diagonalCeilingSplitOfSector is DiagonalSplit.XpZn && Direction is Direction.NegativeX or Direction.PositiveZ) ||
-			(diagonalCeilingSplitOfSector is DiagonalSplit.XpZp && Direction is Direction.NegativeZ or Direction.NegativeX) ||
-			(diagonalCeilingSplitOfSector is DiagonalSplit.XnZn && Direction is Direction.PositiveZ or Direction.PositiveX);
-	}
+		=> (diagonalCeilingSplitOfSector is DiagonalSplit.XnZp && Direction is Direction.NegativeZ or Direction.PositiveX)
+		|| (diagonalCeilingSplitOfSector is DiagonalSplit.XpZn && Direction is Direction.NegativeX or Direction.PositiveZ)
+		|| (diagonalCeilingSplitOfSector is DiagonalSplit.XpZp && Direction is Direction.NegativeZ or Direction.NegativeX)
+		|| (diagonalCeilingSplitOfSector is DiagonalSplit.XnZn && Direction is Direction.PositiveZ or Direction.PositiveX);
 
 	/// <summary>
 	/// Returns the vertical floor part of the wall (dark green), if it can be rendered.
 	/// </summary>
-	public readonly IReadOnlyList<SectorFace> GetVerticalFloorPartFaces(DiagonalSplit diagonalFloorSplit, bool isAnyWall)
+	public readonly IReadOnlyList<SectorFaceData> GetVerticalFloorPartFaces(DiagonalSplit diagonalFloorSplit, bool isAnyWall)
 	{
 		bool isQaFullyAboveMaxY = IsQaFullyAboveMaxY; // Technically should be classified as a wall if true
 		bool canHaveDiagonalWallFloorPart = CanHaveNonDiagonalFloorPart(diagonalFloorSplit); // The wall bit under the flat floor triangle of a diagonal wall
 
-		var faces = new List<SectorFace>();
-		SectorFace? faceData;
+		var faces = new List<SectorFaceData>();
+		SectorFaceData? faceData;
 
 		for (int extraSplitIndex = -1; extraSplitIndex < ExtraFloorSplits.Count; extraSplitIndex++)
 		{
@@ -110,7 +104,7 @@ public readonly struct SectorWall
 				? (QA.StartY, QA.EndY) // Render QA face
 				: (ExtraFloorSplits[extraSplitIndex].StartY, ExtraFloorSplits[extraSplitIndex].EndY); // Render extra split face
 
-			SectorFaceIdentifier sectorFace = isQA
+			SectorFace sectorFace = isQA
 				? SectorFaceExtensions.GetQaFace(Direction) // QA face
 				: SectorFaceExtensions.GetExtraFloorSplitFace(Direction, extraSplitIndex); // Extra split face
 
@@ -136,7 +130,7 @@ public readonly struct SectorWall
 			if (yStartA <= yEndA && yStartB <= yEndB)
 				continue; // 0 or negative height face, don't render it
 
-			faceData = SectorFace.CreateVerticalFloorFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
+			faceData = SectorFaceData.CreateVerticalFloorFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
 
 			if (!faceData.HasValue)
 			{
@@ -151,7 +145,7 @@ public readonly struct SectorWall
 
 				// Find lowest point between split and baseline, then try and create an overdraw face out of it
 				int lowest = Math.Min(Math.Min(yStartA, yStartB), Math.Min(yEndA, yEndB));
-				faceData = SectorFace.CreateVerticalFloorFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(lowest, lowest));
+				faceData = SectorFaceData.CreateVerticalFloorFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(lowest, lowest));
 			}
 
 			if (faceData.HasValue)
@@ -164,13 +158,13 @@ public readonly struct SectorWall
 	/// <summary>
 	/// Returns the vertical ceiling part of the wall (light green), if it can be rendered.
 	/// </summary>
-	public readonly IReadOnlyList<SectorFace> GetVerticalCeilingPartFaces(DiagonalSplit diagonalCeilingSplit, bool isAnyWall)
+	public readonly IReadOnlyList<SectorFaceData> GetVerticalCeilingPartFaces(DiagonalSplit diagonalCeilingSplit, bool isAnyWall)
 	{
 		bool isWsFullyBelowMinY = IsWsFullyBelowMinY; // Technically should be classified as a wall if true
 		bool canHaveNonDiagonalCeilingPart = CanHaveNonDiagonalCeilingPart(diagonalCeilingSplit); // The wall bit over the flat ceiling triangle of a diagonal wall
 
-		var faces = new List<SectorFace>();
-		SectorFace? faceData;
+		var faces = new List<SectorFaceData>();
+		SectorFaceData? faceData;
 
 		for (int extraSplitIndex = -1; extraSplitIndex < ExtraCeilingSplits.Count; extraSplitIndex++)
 		{
@@ -180,7 +174,7 @@ public readonly struct SectorWall
 				? (WS.StartY, WS.EndY) // Render WS face
 				: (ExtraCeilingSplits[extraSplitIndex].StartY, ExtraCeilingSplits[extraSplitIndex].EndY); // Render split face
 
-			SectorFaceIdentifier sectorFace = isWS
+			SectorFace sectorFace = isWS
 				? SectorFaceExtensions.GetWsFace(Direction)
 				: SectorFaceExtensions.GetExtraCeilingSplitFace(Direction, extraSplitIndex);
 
@@ -206,7 +200,7 @@ public readonly struct SectorWall
 			if (yStartA >= yEndA && yStartB >= yEndB)
 				continue; // 0 or negative height face, don't render it
 
-			faceData = SectorFace.CreateVerticalCeilingFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
+			faceData = SectorFaceData.CreateVerticalCeilingFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
 
 			if (!faceData.HasValue)
 			{
@@ -221,7 +215,7 @@ public readonly struct SectorWall
 
 				// Find highest point between split and baseline, then try and create an overdraw face out of it
 				int highest = Math.Max(Math.Max(yStartA, yStartB), Math.Max(yEndA, yEndB));
-				faceData = SectorFace.CreateVerticalCeilingFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(highest, highest), new(yStartA, yStartB));
+				faceData = SectorFaceData.CreateVerticalCeilingFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(highest, highest), new(yStartA, yStartB));
 			}
 
 			if (faceData.HasValue)
@@ -234,7 +228,7 @@ public readonly struct SectorWall
 	/// <summary>
 	/// Returns the vertical middle face of the wall, if it can be rendered.
 	/// </summary>
-	public readonly SectorFace? GetVerticalMiddleFace()
+	public readonly SectorFaceData? GetVerticalMiddleFace()
 	{
 		int qaStartY = QA.StartY, qaEndY = QA.EndY,
 			wsStartY = WS.StartY, wsEndY = WS.EndY;
@@ -256,20 +250,20 @@ public readonly struct SectorWall
 			yEndA = wsStartY >= Start.MaxY ? Start.MaxY : wsStartY,
 			yEndB = wsEndY >= End.MaxY ? End.MaxY : wsEndY;
 
-		SectorFaceIdentifier sectorFace = SectorFaceExtensions.GetMiddleFace(Direction);
-		return SectorFace.CreateVerticalMiddleFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
+		SectorFace sectorFace = SectorFaceExtensions.GetMiddleFace(Direction);
+		return SectorFaceData.CreateVerticalMiddleFaceData(sectorFace, (Start.X, Start.Z), (End.X, End.Z), new(yStartA, yStartB), new(yEndA, yEndB));
 	}
 
 	/// <summary>
 	/// Normalizes the wall splits to prevent overdraw and to make sure the wall is rendered correctly, then returns the normalized wall.
 	/// </summary>
-	public readonly SectorWall Normalize(DiagonalSplit diagonalFloorSplit, DiagonalSplit diagonalCeilingSplit, bool isAnyWall)
+	public readonly SectorWallData Normalize(DiagonalSplit diagonalFloorSplit, DiagonalSplit diagonalCeilingSplit, bool isAnyWall)
 	{
-		WallSplit
+		WallSplitData
 			qa = NormalizeFloorSplit(QA, diagonalFloorSplit, isAnyWall, out bool isFloorSplitInFloorVoid),
 			ws = NormalizeCeilingSplit(WS, diagonalCeilingSplit, isAnyWall, out bool isCeilingSplitInCeilingVoid);
 
-		List<WallSplit>
+		List<WallSplitData>
 			extraFloorSplits = new(ExtraFloorSplits),
 			extraCeilingSplits = new(ExtraCeilingSplits);
 
@@ -277,7 +271,7 @@ public readonly struct SectorWall
 		{
 			for (int i = 0; i < extraFloorSplits.Count; i++)
 			{
-				WallSplit normalizedSplit = NormalizeFloorSplit(extraFloorSplits[i], diagonalFloorSplit, isAnyWall, out isFloorSplitInFloorVoid);
+				WallSplitData normalizedSplit = NormalizeFloorSplit(extraFloorSplits[i], diagonalFloorSplit, isAnyWall, out isFloorSplitInFloorVoid);
 
 				if (isFloorSplitInFloorVoid)
 				{
@@ -294,7 +288,7 @@ public readonly struct SectorWall
 		{
 			for (int i = 0; i < extraCeilingSplits.Count; i++)
 			{
-				WallSplit normalizedSplit = NormalizeCeilingSplit(extraCeilingSplits[i], diagonalCeilingSplit, isAnyWall, out isCeilingSplitInCeilingVoid);
+				WallSplitData normalizedSplit = NormalizeCeilingSplit(extraCeilingSplits[i], diagonalCeilingSplit, isAnyWall, out isCeilingSplitInCeilingVoid);
 
 				if (isCeilingSplitInCeilingVoid)
 				{
@@ -307,13 +301,13 @@ public readonly struct SectorWall
 			}
 		}
 
-		return new SectorWall(Direction, Start, End, qa, ws, extraFloorSplits, extraCeilingSplits);
+		return new SectorWallData(Direction, Start, End, qa, ws, extraFloorSplits, extraCeilingSplits);
 	}
 
 	/// <summary>
 	/// Normalizes the floor split to prevent overdraw and to make sure the wall is rendered correctly, then returns the normalized floor split.
 	/// </summary>
-	private readonly WallSplit NormalizeFloorSplit(WallSplit split, DiagonalSplit diagonalFloorSplit, bool isAnyWall, out bool isInFloorVoid)
+	private readonly WallSplitData NormalizeFloorSplit(WallSplitData split, DiagonalSplit diagonalFloorSplit, bool isAnyWall, out bool isInFloorVoid)
 	{
 		isInFloorVoid = true;
 
@@ -321,14 +315,14 @@ public readonly struct SectorWall
 		bool isFaceInFloorVoid = split.StartY < Start.MinY || split.EndY < End.MinY || (split.StartY == Start.MinY && split.EndY == End.MinY);
 
 		if (isFaceInFloorVoid && isAnyWall && !canHaveNonDiagonalFloorPart) // Part of overdraw prevention
-			return split; // Stop the loop, since the rest of the splits will also be in the void
+			return split; // Return, since the rest of the splits will also be in the void
 
 		isInFloorVoid = false;
 
 		bool isQaFullyAboveMaxY = IsQaFullyAboveMaxY; // Technically should be classified as a wall if true
 
-		bool isEitherStartPointAboveCeiling = split.StartY > Start.MaxY || split.EndY > End.MaxY; // If either start point A or B is in the void above ceiling
-		bool areBothStartPointsAboveCeiling = split.StartY >= Start.MaxY && split.EndY >= End.MaxY; // Are both start points A and B in the void above ceiling
+		bool isEitherStartPointAboveCeiling = split.StartY > Start.MaxY || split.EndY > End.MaxY; // If either start or end point are in the void above ceiling
+		bool areBothStartPointsAboveCeiling = split.StartY >= Start.MaxY && split.EndY >= End.MaxY; // Are both start and end points in the void above ceiling
 
 		(int startY, int endY) = (split.StartY, split.EndY);
 
@@ -347,13 +341,13 @@ public readonly struct SectorWall
 			endY = QA.EndY;
 		}
 
-		return new WallSplit(startY, endY);
+		return new WallSplitData(startY, endY);
 	}
 
 	/// <summary>
 	/// Normalizes the ceiling split to prevent overdraw and to make sure the wall is rendered correctly, then returns the normalized ceiling split.
 	/// </summary>
-	private readonly WallSplit NormalizeCeilingSplit(WallSplit split, DiagonalSplit diagonalCeilingSplit, bool isAnyWall, out bool isInCeilingVoid)
+	private readonly WallSplitData NormalizeCeilingSplit(WallSplitData split, DiagonalSplit diagonalCeilingSplit, bool isAnyWall, out bool isInCeilingVoid)
 	{
 		isInCeilingVoid = true;
 
@@ -361,14 +355,14 @@ public readonly struct SectorWall
 		bool isFaceInCeilingVoid = split.StartY > Start.MaxY || split.EndY > End.MaxY || (split.StartY == Start.MaxY && split.EndY == End.MaxY);
 
 		if (isFaceInCeilingVoid && isAnyWall && !canHaveNonDiagonalCeilingPart) // Part of overdraw prevention
-			return split; // Stop the loop, since the rest of the splits will also be in the void
+			return split; // Return, since the rest of the splits will also be in the void
 
 		isInCeilingVoid = false;
 
 		bool isWsFullyBelowMinY = IsWsFullyBelowMinY; // Technically should be classified as a wall if true
 
-		bool isEitherStartPointBelowFloor = split.StartY < Start.MinY || split.EndY < End.MinY; // If either start point A or B is in the void below floor
-		bool areBothStartPointsBelowFloor = split.StartY <= Start.MinY && split.EndY <= End.MinY; // Are both start points A and B in the void below floor
+		bool isEitherStartPointBelowFloor = split.StartY < Start.MinY || split.EndY < End.MinY; // If either start or end point are in the void below floor
+		bool areBothStartPointsBelowFloor = split.StartY <= Start.MinY && split.EndY <= End.MinY; // Are both start and end points in the void below floor
 
 		(int startY, int endY) = (split.StartY, split.EndY);
 
@@ -387,6 +381,6 @@ public readonly struct SectorWall
 			endY = WS.EndY;
 		}
 
-		return new WallSplit(startY, endY);
+		return new WallSplitData(startY, endY);
 	}
 }

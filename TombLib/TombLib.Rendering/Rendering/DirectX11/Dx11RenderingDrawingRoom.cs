@@ -61,7 +61,7 @@ namespace TombLib.Rendering.DirectX11
                     editorUVAndSectorTexture[i] = editorUv;
                 }
                 {
-                    SectorFaceIdentity lastFaceIdentity = new SectorFaceIdentity(-1, -1, SectorFaceIdentifier.Floor);
+                    SectorFaceIdentity lastFaceIdentity = new SectorFaceIdentity(-1, -1, SectorFace.Floor);
                     uint lastSectorTexture = 0;
                     uint overlay = 0;
                     for (int i = 0, triangleCount = singleSidedVertexCount / 3; i < triangleCount; ++i)

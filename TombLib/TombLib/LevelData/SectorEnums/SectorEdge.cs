@@ -2,16 +2,28 @@
 
 public enum SectorEdge : byte
 {
-	/// <summary> Index of edges on the negative X and positive Z direction </summary>
+	/// <summary>
+	/// Top-left corner of the sector (when viewed on the sector mini-map).
+	/// <para>X Negative (left), Z Positive (top).</para>
+	/// </summary>
 	XnZp,
 
-	/// <summary> Index of edges on the positive X and positive Z direction </summary>
+	/// <summary>
+	/// Top-right corner of the sector (when viewed on the sector mini-map).
+	/// <para>X Positive (right), Z Positive (top).</para>
+	/// </summary>
 	XpZp,
 
-	/// <summary> Index of edges on the positive X and negative Z direction </summary>
+	/// <summary>
+	/// Bottom-right corner of the sector (when viewed on the sector mini-map).
+	/// <para>X Positive (right), Z Negative (bottom).</para>
+	/// </summary>
 	XpZn,
 
-	/// <summary> Index of edges on the negative X and negative Z direction </summary>
+	/// <summary>
+	/// Bottom-left corner of the sector (when viewed on the sector mini-map).
+	/// <para>X Negative (left), Z Negative (bottom).</para>
+	/// </summary>
 	XnZn,
 
 	Count

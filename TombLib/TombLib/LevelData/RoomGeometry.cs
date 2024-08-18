@@ -284,14 +284,14 @@ namespace TombLib.LevelData
                     // Floor polygons
                     Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z));
                     BuildFloorOrCeilingFace(room, x, z, sectors[x, z].Floor.XnZp, sectors[x, z].Floor.XpZp, sectors[x, z].Floor.XpZn, sectors[x, z].Floor.XnZn, sectors[x, z].Floor.DiagonalSplit, sectors[x, z].Floor.SplitDirectionIsXEqualsZ,
-                        SectorFaceIdentifier.Floor, SectorFaceIdentifier.Floor_Triangle2, floorPortalInfo.VisualType);
+                        SectorFace.Floor, SectorFace.Floor_Triangle2, floorPortalInfo.VisualType);
 
                     // Ceiling polygons
                     int ceilingStartVertex = VertexPositions.Count;
 
                     Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
                     BuildFloorOrCeilingFace(room, x, z, sectors[x, z].Ceiling.XnZp, sectors[x, z].Ceiling.XpZp, sectors[x, z].Ceiling.XpZn, sectors[x, z].Ceiling.XnZn, sectors[x, z].Ceiling.DiagonalSplit, sectors[x, z].Ceiling.SplitDirectionIsXEqualsZ,
-                        SectorFaceIdentifier.Ceiling, SectorFaceIdentifier.Ceiling_Triangle2, ceilingPortalInfo.VisualType);
+                        SectorFace.Ceiling, SectorFace.Ceiling_Triangle2, ceilingPortalInfo.VisualType);
 
                     // Change vertices order for ceiling polygons
                     for (int i = ceilingStartVertex; i < VertexPositions.Count; i += 3)
@@ -331,7 +331,7 @@ namespace TombLib.LevelData
         }
 
         private void BuildFloorOrCeilingFace(Room room, int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY,
-                                             SectorFaceIdentifier face1, SectorFaceIdentifier face2, Room.RoomConnectionType portalMode)
+                                             SectorFace face1, SectorFace face2, Room.RoomConnectionType portalMode)
         {
             SectorType sectorType = room.Sectors[x, z].Type;
 
@@ -545,7 +545,7 @@ namespace TombLib.LevelData
         {
             bool shouldNormalizeWallData = !useLegacyCode;
 
-            SectorWall wallData = faceDirection switch
+            SectorWallData wallData = faceDirection switch
             {
                 FaceDirection.PositiveZ => room.GetPositiveZWallData(x, z, normalize: shouldNormalizeWallData),
                 FaceDirection.NegativeZ => room.GetNegativeZWallData(x, z, normalize: shouldNormalizeWallData),
@@ -560,7 +560,7 @@ namespace TombLib.LevelData
 
             if (hasFloorPart)
             {
-                IReadOnlyList<SectorFace> verticalFloorPartFaces = useLegacyCode
+                IReadOnlyList<SectorFaceData> verticalFloorPartFaces = useLegacyCode
                     ? LegacyWallGeometry.GetVerticalFloorPartFaces(wallData, sector.IsAnyWall)
                     : wallData.GetVerticalFloorPartFaces(sector.Floor.DiagonalSplit, sector.IsAnyWall);
 
@@ -570,7 +570,7 @@ namespace TombLib.LevelData
 
             if (hasCeilingPart)
             {
-                IReadOnlyList<SectorFace> verticalCeilingPartFaces = useLegacyCode
+                IReadOnlyList<SectorFaceData> verticalCeilingPartFaces = useLegacyCode
                     ? LegacyWallGeometry.GetVerticalCeilingPartFaces(wallData, sector.IsAnyWall)
                     : wallData.GetVerticalCeilingPartFaces(sector.Ceiling.DiagonalSplit, sector.IsAnyWall);
 
@@ -580,7 +580,7 @@ namespace TombLib.LevelData
 
             if (hasMiddlePart)
             {
-                SectorFace? middleFace = useLegacyCode
+                SectorFaceData? middleFace = useLegacyCode
                     ? LegacyWallGeometry.GetVerticalMiddlePartFace(wallData)
                     : wallData.GetVerticalMiddleFace();
 
@@ -589,7 +589,7 @@ namespace TombLib.LevelData
             }
         }
 
-        private void AddFace(Room room, int x, int z, SectorFace face)
+        private void AddFace(Room room, int x, int z, SectorFaceData face)
         {
             Sector sector = room.Sectors[x, z];
 
@@ -607,7 +607,7 @@ namespace TombLib.LevelData
                 AddTriangle(x, z, face.Face, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
         }
 
-        private void AddQuad(int x, int z, SectorFaceIdentifier face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
+        private void AddQuad(int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
                              TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
         {
             if (texture.DoubleSided)
@@ -643,7 +643,7 @@ namespace TombLib.LevelData
             TriangleSectorInfo.Add(new SectorFaceIdentity(x, z, face));
         }
 
-        private void AddTriangle(int x, int z, SectorFaceIdentifier face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool isXEqualYDiagonal)
+        private void AddTriangle(int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool isXEqualYDiagonal)
         {
             if (texture.DoubleSided)
                 DoubleSidedTriangleCount += 1;
@@ -1185,7 +1185,7 @@ namespace TombLib.LevelData
         public struct IntersectionInfo
         {
             public VectorInt2 Pos;
-            public SectorFaceIdentifier Face;
+            public SectorFace Face;
             public float Distance;
             public float VerticalCoord;
         }

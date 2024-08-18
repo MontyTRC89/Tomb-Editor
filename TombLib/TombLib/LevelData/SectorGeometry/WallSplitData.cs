@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a wall split, such as QA, WS, ED, RF or any other extra splits of a wall.
 /// </summary>
-public readonly struct WallSplit
+public readonly struct WallSplitData
 {
 	/// <summary>
 	/// Y coordinate of the start of the wall split.
@@ -15,7 +15,7 @@ public readonly struct WallSplit
 	/// </summary>
 	public readonly int EndY;
 
-	public WallSplit(int startY, int endY)
+	public WallSplitData(int startY, int endY)
 	{
 		StartY = startY;
 		EndY = endY;

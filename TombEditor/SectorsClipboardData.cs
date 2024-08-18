@@ -58,10 +58,10 @@ namespace TombEditor
                             writer.Write((byte)b.Ceiling.DiagonalSplit);
                             writer.Write((short)b.Flags);
 
-                            Dictionary<SectorFaceIdentifier, TextureArea> textures = b.GetFaceTextures();
+                            Dictionary<SectorFace, TextureArea> textures = b.GetFaceTextures();
                             writer.Write(textures.Count);
 
-                            foreach (KeyValuePair<SectorFaceIdentifier, TextureArea> texturePair in textures)
+                            foreach (KeyValuePair<SectorFace, TextureArea> texturePair in textures)
                             {
                                 writer.Write((byte)texturePair.Key);
 
@@ -135,7 +135,7 @@ namespace TombEditor
 
                             for (int i = 0; i < texturesCount; i++)
                             {
-                                var face = (SectorFaceIdentifier)reader.ReadByte();
+                                var face = (SectorFace)reader.ReadByte();
 
                                 string textureFileName = reader.ReadString();
                                 bool isInvisible = reader.ReadBoolean();

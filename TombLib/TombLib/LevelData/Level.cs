@@ -368,7 +368,7 @@ namespace TombLib.LevelData
             Parallel.ForEach(ExistingRooms, room =>
             {
                 foreach (Sector sector in room.Sectors)
-                    foreach (SectorFaceIdentifier face in sector.GetFaceTextures().Keys)
+                    foreach (SectorFace face in sector.GetFaceTextures().Keys)
                     {
                         TextureArea currentTextureArea = sector.GetFaceTexture(face);
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;

@@ -13,25 +13,32 @@ public struct SectorSurface
 	public DiagonalSplit DiagonalSplit;
 
 	/// <summary>
-	/// Top-left corner of the split.
+	/// Top-left corner of the split (when viewed on the sector mini-map).
+	/// <para>X Negative (left), Z Positive (top).</para>
 	/// </summary>
 	public int XnZp;
 
 	/// <summary>
-	/// Top-right corner of the split.
+	/// Top-right corner of the split (when viewed on the sector mini-map).
+	/// <para>X Positive (right), Z Positive (top).</para>
 	/// </summary>
 	public int XpZp;
 
 	/// <summary>
-	/// Bottom-right corner of the split.
+	/// Bottom-right corner of the split (when viewed on the sector mini-map).
+	/// <para>X Positive (right), Z Negative (bottom).</para>
 	/// </summary>
 	public int XpZn;
 
 	/// <summary>
-	/// Bottom-left corner of the split.
+	/// Bottom-left corner of the split (when viewed on the sector mini-map).
+	/// <para>X Negative (left), Z Negative (bottom).</para>
 	/// </summary>
 	public int XnZn;
 
+	/// <summary>
+	/// Whether the surface is steep enough to be a slope (3 clicks or more).
+	/// </summary>
 	public readonly bool HasSlope => DiagonalSplit switch
 	{
 		DiagonalSplit.XnZp => Math.Abs(XnZp - Math.Min(XnZn, XpZp)) >= Clicks.ToWorld(3),
@@ -41,17 +48,26 @@ public struct SectorSurface
 		_ => Max - Min >= Clicks.ToWorld(3),
 	};
 
+	/// <summary>
+	/// Whether the surface is a quad that doesn't "fold" diagonally.
+	/// </summary>
 	public readonly bool IsQuad
 		=> DiagonalSplit == DiagonalSplit.None && IsQuad2(XnZp, XpZp, XpZn, XnZn);
 
 	public readonly int IfQuadSlopeX => IsQuad ? XpZp - XnZp : 0;
 	public readonly int IfQuadSlopeZ => IsQuad ? XpZp - XpZn : 0;
 
-	public readonly int Max
-		=> Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
-
+	/// <summary>
+	/// The minimum value of all edges (lowest edge).
+	/// </summary>
 	public readonly int Min
 		=> Math.Min(Math.Min(XnZp, XpZp), Math.Min(XpZn, XnZn));
+
+	/// <summary>
+	/// The maximum value of all edges (highest edge).
+	/// </summary>
+	public readonly int Max
+		=> Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
 
 	public bool SplitDirectionIsXEqualsZ
 	{

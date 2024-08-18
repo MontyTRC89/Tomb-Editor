@@ -6,9 +6,9 @@ namespace TombLib.LevelData.SectorGeometry;
 
 public static class LegacyWallGeometry
 {
-	public static IReadOnlyList<SectorFace> GetVerticalFloorPartFaces(SectorWall wallData, bool isAnyWall)
+	public static IReadOnlyList<SectorFaceData> GetVerticalFloorPartFaces(SectorWallData wallData, bool isAnyWall)
 	{
-		var result = new List<SectorFace>();
+		var result = new List<SectorFaceData>();
 		bool edVisible = false;
 
 		int yQaA = wallData.QA.StartY,
@@ -21,7 +21,7 @@ public static class LegacyWallGeometry
 			yEdB = wallData.ExtraFloorSplits[0].EndY,
 			yA, yB;
 
-		SectorFaceIdentifier
+		SectorFace
 			qaFace = SectorFaceExtensions.GetQaFace(wallData.Direction),
 			edFace = SectorFaceExtensions.GetExtraFloorSplitFace(wallData.Direction, 0);
 
@@ -62,14 +62,14 @@ public static class LegacyWallGeometry
 			yB = yEdB;
 		}
 
-		SectorFace? qaFaceData = SectorFace.CreateVerticalFloorFaceData(qaFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yQaA, yQaB), new(yA, yB));
+		SectorFaceData? qaFaceData = SectorFaceData.CreateVerticalFloorFaceData(qaFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yQaA, yQaB), new(yA, yB));
 
 		if (qaFaceData.HasValue)
 			result.Add(qaFaceData.Value);
 
 		if (edVisible)
 		{
-			SectorFace? edFaceData = SectorFace.CreateVerticalFloorFaceData(edFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yEdA, yEdB), new(yFloorA, yFloorB));
+			SectorFaceData? edFaceData = SectorFaceData.CreateVerticalFloorFaceData(edFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yEdA, yEdB), new(yFloorA, yFloorB));
 
 			if (edFaceData.HasValue)
 				result.Add(edFaceData.Value);
@@ -78,9 +78,9 @@ public static class LegacyWallGeometry
 		return result;
 	}
 
-	public static IReadOnlyList<SectorFace> GetVerticalCeilingPartFaces(SectorWall wallData, bool isAnyWall)
+	public static IReadOnlyList<SectorFaceData> GetVerticalCeilingPartFaces(SectorWallData wallData, bool isAnyWall)
 	{
-		var result = new List<SectorFace>();
+		var result = new List<SectorFaceData>();
 		bool rfVisible = false;
 
 		int yWsA = wallData.WS.StartY,
@@ -93,7 +93,7 @@ public static class LegacyWallGeometry
 			yRfB = wallData.ExtraCeilingSplits[0].EndY,
 			yA, yB;
 
-		SectorFaceIdentifier
+		SectorFace
 			wsFace = SectorFaceExtensions.GetWsFace(wallData.Direction),
 			rfFace = SectorFaceExtensions.GetExtraCeilingSplitFace(wallData.Direction, 0);
 
@@ -134,14 +134,14 @@ public static class LegacyWallGeometry
 			yB = yRfB;
 		}
 
-		SectorFace? wsFaceData = SectorFace.CreateVerticalCeilingFaceData(wsFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yWsA, yWsB), new(yA, yB));
+		SectorFaceData? wsFaceData = SectorFaceData.CreateVerticalCeilingFaceData(wsFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yWsA, yWsB), new(yA, yB));
 
 		if (wsFaceData.HasValue)
 			result.Add(wsFaceData.Value);
 
 		if (rfVisible)
 		{
-			SectorFace? rfFaceData = SectorFace.CreateVerticalCeilingFaceData(rfFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yRfA, yRfB), new(yCeilingA, yCeilingB));
+			SectorFaceData? rfFaceData = SectorFaceData.CreateVerticalCeilingFaceData(rfFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yRfA, yRfB), new(yCeilingA, yCeilingB));
 
 			if (rfFaceData.HasValue)
 				result.Add(rfFaceData.Value);
@@ -150,7 +150,7 @@ public static class LegacyWallGeometry
 		return result;
 	}
 
-	public static SectorFace? GetVerticalMiddlePartFace(SectorWall wallData)
+	public static SectorFaceData? GetVerticalMiddlePartFace(SectorWallData wallData)
 	{
 		int yQaA = wallData.QA.StartY,
 			yQaB = wallData.QA.EndY,
@@ -162,13 +162,13 @@ public static class LegacyWallGeometry
 			yCeilingB = wallData.End.MaxY,
 			yA, yB, yC, yD;
 
-		SectorFaceIdentifier middleFace = SectorFaceExtensions.GetMiddleFace(wallData.Direction);
+		SectorFace middleFace = SectorFaceExtensions.GetMiddleFace(wallData.Direction);
 
 		yA = yWsA >= yCeilingA ? yCeilingA : yWsA;
 		yB = yWsB >= yCeilingB ? yCeilingB : yWsB;
 		yD = yQaA <= yFloorA ? yFloorA : yQaA;
 		yC = yQaB <= yFloorB ? yFloorB : yQaB;
 
-		return SectorFace.CreateVerticalMiddleFaceData(middleFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yC, yD), new(yA, yB));
+		return SectorFaceData.CreateVerticalMiddleFaceData(middleFace, (wallData.Start.X, wallData.Start.Z), (wallData.End.X, wallData.End.Z), new(yC, yD), new(yA, yB));
 	}
 }

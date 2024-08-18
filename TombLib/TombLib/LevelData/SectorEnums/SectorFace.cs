@@ -1,6 +1,9 @@
 ﻿namespace TombLib.LevelData.SectorEnums;
 
-public enum SectorFaceIdentifier : byte
+/// <summary>
+/// Hard-coded sector face type.
+/// </summary>
+public enum SectorFace : byte
 {
 	Wall_PositiveZ_QA = 0, //
 	Wall_NegativeZ_QA = 1, //

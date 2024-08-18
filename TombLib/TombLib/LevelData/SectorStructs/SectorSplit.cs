@@ -9,22 +9,26 @@ namespace TombLib.LevelData.SectorStructs;
 public class SectorSplit : ICloneable
 {
 	/// <summary>
-	/// Top-left corner of the split.
+	/// Top-left corner of the split (when viewed on the sector mini-map).
+	/// <para>X Negative (left), Z Positive (top).</para>
 	/// </summary>
 	public int XnZp;
 
 	/// <summary>
-	/// Top-right corner of the split.
+	/// Top-right corner of the split (when viewed on the sector mini-map).
+	/// <para>X Positive (right), Z Positive (top).</para>
 	/// </summary>
 	public int XpZp;
 
 	/// <summary>
-	/// Bottom-right corner of the split.
+	/// Bottom-right corner of the split (when viewed on the sector mini-map).
+	/// <para>X Positive (right), Z Negative (bottom).</para>
 	/// </summary>
 	public int XpZn;
 
 	/// <summary>
-	/// Bottom-left corner of the split.
+	/// Bottom-left corner of the split (when viewed on the sector mini-map).
+	/// <para>X Negative (left), Z Negative (bottom).</para>
 	/// </summary>
 	public int XnZn;
 

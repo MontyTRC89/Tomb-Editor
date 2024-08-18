@@ -23,7 +23,7 @@ namespace TombEditor.Controls.Panel3D
             public float VerticalCoord { get; set; }
             public VectorInt2 Pos { get; set; }
             public Room Room { get; set; }
-            public SectorFaceIdentifier Face { get; set; }
+            public SectorFace Face { get; set; }
 
             public bool IsFloorHorizontalPlane => Face.IsFloor();
             public bool IsCeilingHorizontalPlane => Face.IsCeiling();
@@ -31,7 +31,7 @@ namespace TombEditor.Controls.Panel3D
             public bool BelongsToFloor => IsFloorHorizontalPlane || Face.IsFloorWall();
             public bool BelongsToCeiling => IsCeilingHorizontalPlane || Face.IsCeilingWall();
 
-            public PickingResultSector(float distance, float verticalCoord, VectorInt2 pos, Room room, SectorFaceIdentifier face)
+            public PickingResultSector(float distance, float verticalCoord, VectorInt2 pos, Room room, SectorFace face)
             {
                 Distance = distance;
                 VerticalCoord = verticalCoord;

@@ -933,7 +933,7 @@ namespace TombLib.LevelData.IO
                                     else if (id4 == Prj2Chunks.TextureLevelTexture ||
                                              id4 == Prj2Chunks.TextureLevelTexture2)
                                     {
-                                        SectorFaceIdentifier face = (SectorFaceIdentifier)LEB128.ReadLong(chunkIO.Raw);
+                                        SectorFace face = (SectorFace)LEB128.ReadLong(chunkIO.Raw);
 
                                         var textureArea = new TextureArea();
                                         textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
@@ -958,7 +958,7 @@ namespace TombLib.LevelData.IO
                                     }
                                     else if (id4 == Prj2Chunks.TextureInvisible)
                                     {
-                                        SectorFaceIdentifier face = (SectorFaceIdentifier)LEB128.ReadLong(chunkIO.Raw);
+                                        SectorFace face = (SectorFace)LEB128.ReadLong(chunkIO.Raw);
                                         sector.SetFaceTexture(face, TextureArea.Invisible);
                                     }
                                     else

@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a wall start or end point from top-down view.
 /// </summary>
-public readonly struct WallEnd
+public readonly struct WallEndData
 {
 	/// <summary>
 	/// X coordinate of the wall point.
@@ -25,7 +25,7 @@ public readonly struct WallEnd
 	/// </summary>
 	public readonly int MaxY;
 
-	public WallEnd(int x, int z, int minY, int maxY)
+	public WallEndData(int x, int z, int minY, int maxY)
 	{
 		X = x;
 		Z = z;

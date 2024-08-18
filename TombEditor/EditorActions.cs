@@ -1352,7 +1352,7 @@ namespace TombEditor
                         }
         }
 
-        public static void RotateTexture(Room room, VectorInt2 pos, SectorFaceIdentifier face)
+        public static void RotateTexture(Room room, VectorInt2 pos, SectorFace face)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
@@ -1369,7 +1369,7 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
-        public static void MirrorTexture(Room room, VectorInt2 pos, SectorFaceIdentifier face)
+        public static void MirrorTexture(Room room, VectorInt2 pos, SectorFace face)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
@@ -1385,7 +1385,7 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
-        public static void PickTexture(Room room, VectorInt2 pos, SectorFaceIdentifier face)
+        public static void PickTexture(Room room, VectorInt2 pos, SectorFace face)
         {
             var area = room.GetSector(pos).GetFaceTexture(face);
 
@@ -1413,7 +1413,7 @@ namespace TombEditor
                     area.DoubleSided = _editor.SelectedTexture.DoubleSided;
                 }
 
-                if (face is SectorFaceIdentifier.Ceiling or SectorFaceIdentifier.Ceiling_Triangle2)
+                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                     area.Mirror(area.TextureIsTriangle);
 
                 _editor.SelectTextureAndCenterView(area.RestoreQuad());
@@ -1434,12 +1434,12 @@ namespace TombEditor
                         var sector = room.GetSectorTry(x, z);
                         if (sector == null) continue;
 
-                        foreach (var face in Enum.GetValues(typeof(SectorFaceIdentifier)).Cast<SectorFaceIdentifier>())
+                        foreach (var face in Enum.GetValues(typeof(SectorFace)).Cast<SectorFace>())
                         {
                             // Filter out impossible combinations right away
                             if (face.IsNonWall() && sector.IsAnyWall) continue;
-                            if (face == SectorFaceIdentifier.Floor_Triangle2 && sector.Floor.IsQuad) continue;
-                            if (face == SectorFaceIdentifier.Ceiling_Triangle2 && sector.Ceiling.IsQuad) continue;
+                            if (face == SectorFace.Floor_Triangle2 && sector.Floor.IsQuad) continue;
+                            if (face == SectorFace.Ceiling_Triangle2 && sector.Ceiling.IsQuad) continue;
 
                             // Filter out undefined faces
                             if (!room.IsFaceDefined(x, z, face)) continue;
@@ -1506,7 +1506,7 @@ namespace TombEditor
             return result.Distinct().ToList();
         }
 
-        private static bool FaceIsPortal(Room room, VectorInt2 pos, SectorFaceIdentifier face)
+        private static bool FaceIsPortal(Room room, VectorInt2 pos, SectorFace face)
         {
             if (face.IsNonDiagonalWall())
                 return room.Sectors[pos.X, pos.Y].WallPortal != null;
@@ -1520,7 +1520,7 @@ namespace TombEditor
                 return false;
         }
 
-        private static void CheckTextureAttributes(Room room, VectorInt2 pos, SectorFaceIdentifier face, TextureArea texture)
+        private static void CheckTextureAttributes(Room room, VectorInt2 pos, SectorFace face, TextureArea texture)
         {
             if (!_editor.Configuration.TextureMap_WarnAboutIncorrectAttributes)
                 return;
@@ -1551,7 +1551,7 @@ namespace TombEditor
         private static bool _textureAtrributeMessageState = false;
         private static int  _textureAttributeMessageCount = 0;
 
-        private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, SectorFaceIdentifier face, TextureArea texture, bool autocorrectCeiling = true)
+        private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, SectorFace face, TextureArea texture, bool autocorrectCeiling = true)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&
                 !room.Properties.FlagHorizon && texture.TextureIsInvisible)
@@ -1585,9 +1585,9 @@ namespace TombEditor
             TextureArea processedTexture = texture;
             switch (face)
             {
-                case SectorFaceIdentifier.Floor:
-                case SectorFaceIdentifier.Ceiling:
-                    SectorSurface surface = face == SectorFaceIdentifier.Floor ? sector.Floor : sector.Ceiling;
+                case SectorFace.Floor:
+                case SectorFace.Ceiling:
+                    SectorSurface surface = face == SectorFace.Floor ? sector.Floor : sector.Ceiling;
                     if (shape == FaceShape.Quad)
                         break;
                     if (surface.DiagonalSplit != DiagonalSplit.XnZn &&
@@ -1609,9 +1609,9 @@ namespace TombEditor
                     processedTexture.TexCoord3 = processedTexture.TexCoord2;
                     break;
 
-                case SectorFaceIdentifier.Floor_Triangle2:
-                case SectorFaceIdentifier.Ceiling_Triangle2:
-                    SectorSurface surface2 = face == SectorFaceIdentifier.Floor_Triangle2 ? sector.Floor : sector.Ceiling;
+                case SectorFace.Floor_Triangle2:
+                case SectorFace.Ceiling_Triangle2:
+                    SectorSurface surface2 = face == SectorFace.Floor_Triangle2 ? sector.Floor : sector.Ceiling;
                     if (shape == FaceShape.Quad)
                         break;
                     if (surface2.DiagonalSplit == DiagonalSplit.XnZn ||
@@ -1759,7 +1759,7 @@ namespace TombEditor
             return textureApplied;
         }
 
-        public static bool ApplyTexture(Room room, VectorInt2 pos, SectorFaceIdentifier face, TextureArea texture, bool disableUndo = false)
+        public static bool ApplyTexture(Room room, VectorInt2 pos, SectorFace face, TextureArea texture, bool disableUndo = false)
         {
             if(!disableUndo)
                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
@@ -1776,7 +1776,7 @@ namespace TombEditor
             return textureApplied;
         }
 
-        public static Dictionary<SectorFaceIdentifier, float[]> GetFaces(Room room, VectorInt2 pos, Direction direction, SectorFaceType section)
+        public static Dictionary<SectorFace, float[]> GetFaces(Room room, VectorInt2 pos, Direction direction, SectorFaceType section)
         {
             var sector = room.GetSectorTry(pos.X, pos.Y);
             if (sector == null)
@@ -1784,14 +1784,14 @@ namespace TombEditor
 
             bool sectionIsWall = room.GetSectorTry(pos.X, pos.Y).IsAnyWall;
 
-            var segments = new Dictionary<SectorFaceIdentifier, float[]>();
+            var segments = new Dictionary<SectorFace, float[]>();
 
             switch (direction)
             {
                 case Direction.PositiveZ:
                     if (section == SectorFaceType.Ceiling || sectionIsWall)
                     {
-                        var positiveZ_WS = SectorFaceIdentifier.Wall_PositiveZ_WS;
+                        var positiveZ_WS = SectorFace.Wall_PositiveZ_WS;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_WS))
                             segments.Add(positiveZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_WS) });
@@ -1806,7 +1806,7 @@ namespace TombEditor
                     }
                     if (section == SectorFaceType.Floor || sectionIsWall)
                     {
-                        var positiveZ_QA = SectorFaceIdentifier.Wall_PositiveZ_QA;
+                        var positiveZ_QA = SectorFace.Wall_PositiveZ_QA;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_QA))
                             segments.Add(positiveZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_QA) });
@@ -1820,7 +1820,7 @@ namespace TombEditor
                         }
                     }
 
-                    var positiveZ_Middle = SectorFaceIdentifier.Wall_PositiveZ_Middle;
+                    var positiveZ_Middle = SectorFace.Wall_PositiveZ_Middle;
 
                     if (room.IsFaceDefined(pos.X, pos.Y, positiveZ_Middle))
                         segments.Add(positiveZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, positiveZ_Middle) });
@@ -1829,7 +1829,7 @@ namespace TombEditor
                 case Direction.NegativeZ:
                     if (section == SectorFaceType.Ceiling || sectionIsWall)
                     {
-                        var negativeZ_WS = SectorFaceIdentifier.Wall_NegativeZ_WS;
+                        var negativeZ_WS = SectorFace.Wall_NegativeZ_WS;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_WS))
                             segments.Add(negativeZ_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_WS), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_WS) });
@@ -1844,7 +1844,7 @@ namespace TombEditor
                     }
                     if (section == SectorFaceType.Floor || sectionIsWall)
                     {
-                        var negativeZ_QA = SectorFaceIdentifier.Wall_NegativeZ_QA;
+                        var negativeZ_QA = SectorFace.Wall_NegativeZ_QA;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_QA))
                             segments.Add(negativeZ_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_QA), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_QA) });
@@ -1858,7 +1858,7 @@ namespace TombEditor
                         }
                     }
 
-                    var negativeZ_Middle = SectorFaceIdentifier.Wall_NegativeZ_Middle;
+                    var negativeZ_Middle = SectorFace.Wall_NegativeZ_Middle;
 
                     if (room.IsFaceDefined(pos.X, pos.Y, negativeZ_Middle))
                         segments.Add(negativeZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, negativeZ_Middle) });
@@ -1867,7 +1867,7 @@ namespace TombEditor
                 case Direction.PositiveX:
                     if (section == SectorFaceType.Ceiling || sectionIsWall)
                     {
-                        var positiveX_WS = SectorFaceIdentifier.Wall_PositiveX_WS;
+                        var positiveX_WS = SectorFace.Wall_PositiveX_WS;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, positiveX_WS))
                             segments.Add(positiveX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_WS) });
@@ -1882,7 +1882,7 @@ namespace TombEditor
                     }
                     if (section == SectorFaceType.Floor || sectionIsWall)
                     {
-                        var positiveX_QA = SectorFaceIdentifier.Wall_PositiveX_QA;
+                        var positiveX_QA = SectorFace.Wall_PositiveX_QA;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, positiveX_QA))
                             segments.Add(positiveX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_QA) });
@@ -1896,7 +1896,7 @@ namespace TombEditor
                         }
                     }
 
-                    var positiveX_Middle = SectorFaceIdentifier.Wall_PositiveX_Middle;
+                    var positiveX_Middle = SectorFace.Wall_PositiveX_Middle;
 
                     if (room.IsFaceDefined(pos.X, pos.Y, positiveX_Middle))
                         segments.Add(positiveX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, positiveX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, positiveX_Middle) });
@@ -1905,7 +1905,7 @@ namespace TombEditor
                 case Direction.NegativeX:
                     if (section == SectorFaceType.Ceiling || sectionIsWall)
                     {
-                        var negativeX_WS = SectorFaceIdentifier.Wall_NegativeX_WS;
+                        var negativeX_WS = SectorFace.Wall_NegativeX_WS;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, negativeX_WS))
                             segments.Add(negativeX_WS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_WS), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_WS) });
@@ -1920,7 +1920,7 @@ namespace TombEditor
                     }
                     if (section == SectorFaceType.Floor || sectionIsWall)
                     {
-                        var negativeX_QA = SectorFaceIdentifier.Wall_NegativeX_QA;
+                        var negativeX_QA = SectorFace.Wall_NegativeX_QA;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, negativeX_QA))
                             segments.Add(negativeX_QA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_QA), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_QA) });
@@ -1934,7 +1934,7 @@ namespace TombEditor
                         }
                     }
 
-                    var negativeX_Middle = SectorFaceIdentifier.Wall_NegativeX_Middle;
+                    var negativeX_Middle = SectorFace.Wall_NegativeX_Middle;
 
                     if (room.IsFaceDefined(pos.X, pos.Y, negativeX_Middle))
                         segments.Add(negativeX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, negativeX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, negativeX_Middle) });
@@ -1943,7 +1943,7 @@ namespace TombEditor
                 case Direction.Diagonal:
                     if (section == SectorFaceType.Ceiling || sectionIsWall)
                     {
-                        var diagonalWS = SectorFaceIdentifier.Wall_Diagonal_WS;
+                        var diagonalWS = SectorFace.Wall_Diagonal_WS;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, diagonalWS))
                             segments.Add(diagonalWS, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalWS), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalWS) });
@@ -1958,7 +1958,7 @@ namespace TombEditor
                     }
                     if (section == SectorFaceType.Floor || sectionIsWall)
                     {
-                        var diagonalQA = SectorFaceIdentifier.Wall_Diagonal_QA;
+                        var diagonalQA = SectorFace.Wall_Diagonal_QA;
 
                         if (room.IsFaceDefined(pos.X, pos.Y, diagonalQA))
                             segments.Add(diagonalQA, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalQA), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalQA) });
@@ -1972,7 +1972,7 @@ namespace TombEditor
                         }
                     }
 
-                    var diagonalMiddle = SectorFaceIdentifier.Wall_Diagonal_Middle;
+                    var diagonalMiddle = SectorFace.Wall_Diagonal_Middle;
 
                     if (room.IsFaceDefined(pos.X, pos.Y, diagonalMiddle))
                         segments.Add(diagonalMiddle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, diagonalMiddle), room.GetFaceLowestPoint(pos.X, pos.Y, diagonalMiddle) });
@@ -2097,7 +2097,7 @@ namespace TombEditor
             }
         }
 
-        public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, SectorFaceIdentifier pickedFace, bool subdivideWalls, bool unifyHeight, bool disableUndo = false)
+        public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, SectorFace pickedFace, bool subdivideWalls, bool unifyHeight, bool disableUndo = false)
         {
             if (!disableUndo)
                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
@@ -2172,16 +2172,16 @@ namespace TombEditor
 
                         switch (pickedFace)
                         {
-                            case SectorFaceIdentifier.Floor:
-                            case SectorFaceIdentifier.Floor_Triangle2:
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFaceIdentifier.Floor, currentTexture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFaceIdentifier.Floor_Triangle2, currentTexture);
+                            case SectorFace.Floor:
+                            case SectorFace.Floor_Triangle2:
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Floor, currentTexture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Floor_Triangle2, currentTexture);
                                 break;
 
-                            case SectorFaceIdentifier.Ceiling:
-                            case SectorFaceIdentifier.Ceiling_Triangle2:
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFaceIdentifier.Ceiling, currentTexture, false);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFaceIdentifier.Ceiling_Triangle2, currentTexture, false);
+                            case SectorFace.Ceiling:
+                            case SectorFace.Ceiling_Triangle2:
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Ceiling, currentTexture, false);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Ceiling_Triangle2, currentTexture, false);
                                 break;
                         }
                     }
@@ -2210,21 +2210,21 @@ namespace TombEditor
                         case SectorFaceType.Floor:
                             if (!room.Sectors[x, z].IsFullWall)
                             {
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFaceIdentifier.Floor, texture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFaceIdentifier.Floor_Triangle2, texture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Floor, texture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Floor_Triangle2, texture);
                             }
                             break;
 
                         case SectorFaceType.Ceiling:
                             if (!room.Sectors[x, z].IsFullWall)
                             {
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFaceIdentifier.Ceiling, texture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFaceIdentifier.Ceiling_Triangle2, texture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Ceiling, texture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), SectorFace.Ceiling_Triangle2, texture);
                             }
                             break;
 
                         case SectorFaceType.Wall:
-                            foreach (SectorFaceIdentifier face in SectorFaceExtensions.GetWalls())
+                            foreach (SectorFace face in SectorFaceExtensions.GetWalls())
                                 if (room.IsFaceDefined(x, z, face))
                                     ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), face, texture);
                             break;
@@ -3662,7 +3662,7 @@ namespace TombEditor
                         Sector newSector = sector.Value.GetSector(newSectorVec).Clone();
 
                         // Preserve outer wall textures
-                        foreach (SectorFaceIdentifier face in oldSector.GetFaceTextures().Keys.Union(newSector.GetFaceTextures().Keys))
+                        foreach (SectorFace face in oldSector.GetFaceTextures().Keys.Union(newSector.GetFaceTextures().Keys))
                         {
                             var direction = face.GetDirection();
                             if (direction == Direction.NegativeX || direction == Direction.PositiveX || direction == Direction.NegativeZ || direction == Direction.PositiveZ)
@@ -3693,7 +3693,7 @@ namespace TombEditor
 
                         // Copy adjacent outer wall textures
                         // Unfortunately they are always on the adjacent sector, so they need extra handling
-                        for (SectorFaceIdentifier face = 0; face < SectorFaceIdentifier.Count; ++face)
+                        for (SectorFace face = 0; face < SectorFace.Count; ++face)
                         {
                             var direction = face.GetDirection();
                             switch (direction)

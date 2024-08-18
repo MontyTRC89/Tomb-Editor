@@ -45,7 +45,7 @@ namespace TombLib.Rendering
         Highlight
     }
 
-    public delegate SectorTextureResult SectorTextureGetDelegate(Room room, int x, int z, SectorFaceIdentifier face);
+    public delegate SectorTextureResult SectorTextureGetDelegate(Room room, int x, int z, SectorFace face);
 
     public struct SectorTextureResult
     {
@@ -104,7 +104,7 @@ namespace TombLib.Rendering
             SectorColoringShape.Rectangle
         };
 
-        public SectorTextureResult Get(Room room, int x, int z, SectorFaceIdentifier face)
+        public SectorTextureResult Get(Room room, int x, int z, SectorFace face)
         {
             SectorTexture SectorTexture = SectorTexture.None;
             Vector4 Color;
@@ -145,8 +145,8 @@ namespace TombLib.Rendering
 
                 if (room.Sectors[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                 {
-                    if ((room.Sectors[x, z].Floor.DiagonalSplit > DiagonalSplit.XpZp && face == SectorFaceIdentifier.Floor) ||
-                        (room.Sectors[x, z].Floor.DiagonalSplit <= DiagonalSplit.XpZp && face == SectorFaceIdentifier.Floor_Triangle2))
+                    if ((room.Sectors[x, z].Floor.DiagonalSplit > DiagonalSplit.XpZp && face == SectorFace.Floor) ||
+                        (room.Sectors[x, z].Floor.DiagonalSplit <= DiagonalSplit.XpZp && face == SectorFace.Floor_Triangle2))
                         Dimmed = true;
                 }
             }
@@ -162,13 +162,13 @@ namespace TombLib.Rendering
 
                 if (room.Sectors[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                 {
-                    if ((room.Sectors[x, z].Ceiling.DiagonalSplit > DiagonalSplit.XpZp && face == SectorFaceIdentifier.Ceiling) ||
-                        (room.Sectors[x, z].Ceiling.DiagonalSplit <= DiagonalSplit.XpZp && face == SectorFaceIdentifier.Ceiling_Triangle2))
+                    if ((room.Sectors[x, z].Ceiling.DiagonalSplit > DiagonalSplit.XpZp && face == SectorFace.Ceiling) ||
+                        (room.Sectors[x, z].Ceiling.DiagonalSplit <= DiagonalSplit.XpZp && face == SectorFace.Ceiling_Triangle2))
                         Dimmed = true;
                 }
             }
             else
-                throw new ArgumentOutOfRangeException($"Unknown {nameof(SectorFaceIdentifier)} encountered.");
+                throw new ArgumentOutOfRangeException($"Unknown {nameof(SectorFace)} encountered.");
 
             // Draw climbable walls
             Direction direction = face.GetDirection();
@@ -200,9 +200,9 @@ namespace TombLib.Rendering
 
             // Draw slopes
             if (DrawSlideDirections)
-                if (face == SectorFaceIdentifier.Floor || face == SectorFaceIdentifier.Floor_Triangle2)
+                if (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2)
                 {
-                    var slopeDirection = room.Sectors[x, z].GetFloorTriangleSlopeDirections()[face == SectorFaceIdentifier.Floor ? 0 : 1];
+                    var slopeDirection = room.Sectors[x, z].GetFloorTriangleSlopeDirections()[face == SectorFace.Floor ? 0 : 1];
                     bool flipped = room.Sectors[x, z].Floor.SplitDirectionIsXEqualsZ;
                     switch (slopeDirection)
                     {
@@ -226,7 +226,7 @@ namespace TombLib.Rendering
 
             // Draw illegal slopes
             if (DrawIllegalSlopes)
-                if (face == SectorFaceIdentifier.Floor || face == SectorFaceIdentifier.Floor_Triangle2)
+                if (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2)
                     if (room.IsIllegalSlope(x, z))
                     {
                         SectorTexture = SectorTexture.illegal_slope;

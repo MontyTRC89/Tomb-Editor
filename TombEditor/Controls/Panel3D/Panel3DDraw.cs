@@ -332,38 +332,38 @@ namespace TombEditor.Controls.Panel3D
                     if (splitIndex is < 0 or > 7) // QA or WS
                     {
                         // PositiveZ Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_PositiveZ_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_QA)))
                             HandlePositiveZ(x, z, targetSector.Floor, yOffset);
                         // PositiveZ Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_PositiveZ_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_WS)))
                             HandlePositiveZ(x, z, targetSector.Ceiling, yOffset);
 
                         // PositiveX Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_PositiveX_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveX_QA)))
                             HandlePositiveX(x, z, targetSector.Floor, yOffset);
                         // PositiveX Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_PositiveX_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveX_WS)))
                             HandlePositiveX(x, z, targetSector.Ceiling, yOffset);
 
                         // NegativeZ Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_NegativeZ_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeZ_QA)))
                             HandleNegativeZ(x, z, targetSector.Floor, yOffset);
                         // NegativeZ Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_NegativeZ_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeZ_WS)))
                             HandleNegativeZ(x, z, targetSector.Ceiling, yOffset);
 
                         // NegativeX Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_NegativeX_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeX_QA)))
                             HandleNegativeX(x, z, targetSector.Floor, yOffset);
                         // NegativeX Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_NegativeX_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeX_WS)))
                             HandleNegativeX(x, z, targetSector.Ceiling, yOffset);
 
                         // Diagonal Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_Diagonal_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_Diagonal_QA)))
                             HandleDiagonal(x, z, targetSector.Floor, yOffset);
                         // Diagonal Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceIdentifier.Wall_Diagonal_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_Diagonal_WS)))
                             HandleDiagonal(x, z, targetSector.Ceiling, yOffset);
                     }
                     else // Actual splits

@@ -9,9 +9,9 @@ namespace TombLib.LevelData.SectorStructs;
 public readonly struct SectorFaceIdentity : IEquatable<SectorFaceIdentity>, IComparable, IComparable<SectorFaceIdentity>
 {
 	public readonly VectorInt2 Position;
-	public readonly SectorFaceIdentifier Face;
+	public readonly SectorFace Face;
 
-	public SectorFaceIdentity(int x, int z, SectorFaceIdentifier face)
+	public SectorFaceIdentity(int x, int z, SectorFace face)
 	{
 		Position = new VectorInt2(x, z);
 		Face = face;

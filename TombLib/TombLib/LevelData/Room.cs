@@ -883,12 +883,12 @@ namespace TombLib.LevelData
             return cornerSelected;
         }
 
-        public bool IsFaceDefined(int x, int z, SectorFaceIdentifier face)
+        public bool IsFaceDefined(int x, int z, SectorFace face)
         {
             return RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count != 0;
         }
 
-        public float GetFaceHighestPoint(int x, int z, SectorFaceIdentifier face)
+        public float GetFaceHighestPoint(int x, int z, SectorFace face)
         {
             var range = RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
             float max = float.NegativeInfinity;
@@ -897,7 +897,7 @@ namespace TombLib.LevelData
             return max;
         }
 
-        public float GetFaceLowestPoint(int x, int z, SectorFaceIdentifier face)
+        public float GetFaceLowestPoint(int x, int z, SectorFace face)
         {
             var range = RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
             float max = float.PositiveInfinity;
@@ -906,7 +906,7 @@ namespace TombLib.LevelData
             return max;
         }
 
-        public FaceShape GetFaceShape(int x, int z, SectorFaceIdentifier face)
+        public FaceShape GetFaceShape(int x, int z, SectorFace face)
         {
             switch (RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count)
             {
@@ -1634,7 +1634,7 @@ namespace TombLib.LevelData
                     for (int x = 0; x < NumXSectors; ++x)
                     {
                         Sector sector = Sectors[x, z];
-                        foreach (SectorFaceIdentifier face in sector.GetFaceTextures().Keys)
+                        foreach (SectorFace face in sector.GetFaceTextures().Keys)
                         {
                             TextureArea textureArea = sector.GetFaceTexture(face);
                             var sourceTexture = textureArea.Texture as LevelTexture;
@@ -1668,7 +1668,7 @@ namespace TombLib.LevelData
                 for (int x = 0; x < NumXSectors; ++x)
                 {
                     Sector sector = Sectors[x, z];
-                    foreach (SectorFaceIdentifier face in sector.GetFaceTextures().Keys)
+                    foreach (SectorFace face in sector.GetFaceTextures().Keys)
                         result.Add(sector.GetFaceTexture(face).Texture);
                 }
             return result;
@@ -1695,7 +1695,7 @@ namespace TombLib.LevelData
             if (!Properties.Hidden)
                 for (int z = 0; z < NumZSectors; ++z)
                     for (int x = 0; x < NumXSectors; ++x)
-                        foreach (SectorFaceIdentifier face in Sectors[x, z].GetFaceTextures().Keys)
+                        foreach (SectorFace face in Sectors[x, z].GetFaceTextures().Keys)
                         {
                             var range = RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                             var shape = GetFaceShape(x, z, face);
@@ -1718,7 +1718,7 @@ namespace TombLib.LevelData
 
                                 if (shape == FaceShape.Quad)
                                 {
-                                    if (face == SectorFaceIdentifier.Ceiling)
+                                    if (face == SectorFace.Ceiling)
                                     {
                                         LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                         LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);

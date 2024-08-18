@@ -72,11 +72,11 @@ namespace TombLib.LevelData.Compilers
         {
             Sector sector = room.Sectors[x, z];
 
-            TextureFootStep.Type? result0 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(SectorFaceIdentifier.Floor));
+            TextureFootStep.Type? result0 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(SectorFace.Floor));
             if (result0.HasValue)
                 return result0.Value;
 
-            TextureFootStep.Type? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(SectorFaceIdentifier.Floor_Triangle2));
+            TextureFootStep.Type? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(SectorFace.Floor_Triangle2));
             if (result1.HasValue)
                 return result1.Value;
 
