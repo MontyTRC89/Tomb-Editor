@@ -29,6 +29,7 @@ WadTool:
 
 TombIDE:
  * Updated FLEP for new projects.
+ * FLEP widescreen patch will now be installed by default for new projects.
  * Updated TR1X preset to 4.2.
 
 Version 1.7.1
