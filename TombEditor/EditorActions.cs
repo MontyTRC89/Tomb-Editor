@@ -1554,9 +1554,10 @@ namespace TombEditor
                 _editor.RoomPropertiesChange(room);
             }
 
-            var sector = room.GetSector(pos);
-            var shape = room.GetFaceShape(pos.X, pos.Y, face);
+            Sector sector = room.GetSector(pos);
+            FaceShape shape = room.GetFaceShape(pos.X, pos.Y, face);
             bool wasDoubleSided = sector.GetFaceTexture(face).DoubleSided;
+            bool textureApplied = false;
 
             // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
             texture.ClampToBounds();
@@ -1574,7 +1575,16 @@ namespace TombEditor
                     texture.TexCoord3 = texture.TexCoord2;
                 }
 
-                return sector.SetFaceTexture(face, texture);
+                textureApplied = sector.SetFaceTexture(face, texture);
+
+                if (textureApplied)
+                {
+                    TextureArea currentTexture = sector.GetFaceTexture(face);
+                    CheckTextureAttributes(room, pos, face, currentTexture);
+                    room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
+                }
+
+                return textureApplied;
             }
 
             TextureArea processedTexture = texture;
@@ -1745,13 +1755,14 @@ namespace TombEditor
             processedTexture.ClampToBounds();
 
             // Try to apply texture (returns false if same texture is already applied)
-            var textureApplied = sector.SetFaceTexture(face, processedTexture);
+            textureApplied = sector.SetFaceTexture(face, processedTexture);
 
             // Check if texture attributes are correct
             if (textureApplied)
             {
-                CheckTextureAttributes(room, pos, face, processedTexture);
-                room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, processedTexture, wasDoubleSided);
+                TextureArea currentTexture = sector.GetFaceTexture(face);
+                CheckTextureAttributes(room, pos, face, currentTexture);
+                room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
             }
 
             return textureApplied;
