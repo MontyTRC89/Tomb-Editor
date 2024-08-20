@@ -3,7 +3,7 @@ Version 1.7.2
 
 Tomb Editor:
  * Improved geometry manipulation and texturing performance.
- * 3D objects will now be previewed with lower resolution textures to allow drawing more rooms without graphical glitches.
+ * Added adjustable quality settings for 3D objects.
  * Added TEN nodes for checking and modifying last used inventory object.
  * Added TEN node to check if a particular sound is playing
  * Added TEN node to generate particles from a static object
