@@ -7,6 +7,14 @@ using TombLib.Rendering;
 
 namespace TombLib.Controls
 {
+    public enum ObjectRenderingQuality
+    {
+        High,
+        Medium,
+        Low,
+        Undefined
+    }
+
     public class RenderingPanel : Panel
     {
         public event EventHandler Draw;
@@ -23,7 +31,7 @@ namespace TombLib.Controls
             BorderStyle = BorderStyle.None;
         }
 
-        public virtual void InitializeRendering(RenderingDevice device, bool antialias = false)
+        public virtual void InitializeRendering(RenderingDevice device, bool antialias = false, ObjectRenderingQuality objectQuality = ObjectRenderingQuality.Undefined)
         {
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {

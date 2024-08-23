@@ -48,9 +48,9 @@ namespace WadTool.Controls
 
         private void RebuildSpriteList() => _spriteList = _editor.Level.Settings.WadGetAllSprites();
 
-        public override void InitializeRendering(RenderingDevice device, bool antialias)
+        public override void InitializeRendering(RenderingDevice device, bool antialias, ObjectRenderingQuality objectQuality = ObjectRenderingQuality.Undefined)
         {
-            base.InitializeRendering(device, antialias);
+            base.InitializeRendering(device, antialias, objectQuality);
             _renderingTextures = device.CreateTextureAllocator(new RenderingTextureAllocator.Description());
         }
 

@@ -7,7 +7,7 @@
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
 -- !Arguments "NewLine, Color, 33, Start color", "Color, 34, End color"
 -- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
--- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 2 ], Lifetime (in seconds)"
+-- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 1 | .1 ], Lifetime (in seconds)"
 -- !Arguments "Boolean, 20, Poison" "Boolean, 20, Damage"
 
 LevelFuncs.Engine.Node.ParticleEmitter = function(entity, meshnum, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, poison, damage)
@@ -26,7 +26,7 @@ end
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
 -- !Arguments "NewLine, Color, 6, Start color", "Color, 6, End color"
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
--- !Arguments "Numerical, 18.2, [ -32000 | 32000 | 0 ], Start size" "Numerical, 18.2, [ -32000 | 32000 | 0 ], End size" "Numerical, 24, [ 0 | 32000 | 2 ], Lifetime (in seconds)"
+-- !Arguments "Numerical, 18.2, [ -32000 | 32000 | 0 ], Start size" "Numerical, 18.2, [ -32000 | 32000 | 0 ], End size" "Numerical, 24, [ 0 | 32000 | 1 | .1 ], Lifetime (in seconds)"
 -- !Arguments "NewLine, Boolean, 15, Poison" "Boolean, 17, Damage"
 -- !Arguments "Boolean, 65, Show particle only if static mesh is visible"
 
@@ -49,7 +49,7 @@ end
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
 -- !Arguments "NewLine, Color, 33, Start color", "Color, 34, End color"
 -- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
--- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 2 ], Lifetime (in seconds)"
+-- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 1 | .1 ], Lifetime (in seconds)"
 -- !Arguments "Boolean, 20, Poison" "Boolean, 20, Damage"
 
 LevelFuncs.Engine.Node.ParticleEmitterVolume = function(volume, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, poison, damage)

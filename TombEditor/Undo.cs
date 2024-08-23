@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -330,8 +331,8 @@ namespace TombEditor
     public class TransformGhostBlockUndoInstance : EditorUndoRedoInstance
     {
         private GhostBlockInstance UndoObject;
-        private BlockSurface Floor;
-        private BlockSurface Ceiling;
+        private SectorSurface Floor;
+        private SectorSurface Ceiling;
 
         public TransformGhostBlockUndoInstance(EditorUndoManager parent, GhostBlockInstance obj) : base(parent, obj.Room)
         {
@@ -377,18 +378,18 @@ namespace TombEditor
     public class GeometryUndoInstance : EditorUndoRedoInstance
     {
         private RectangleInt2 Area;
-        private Block[,] Blocks;
+        private Sector[,] Sectors;
 
         public GeometryUndoInstance(EditorUndoManager parent, Room room) : base(parent, room)
         {
             Area.Start = VectorInt2.Zero;
             Area.End = new VectorInt2(room.NumXSectors, room.NumZSectors);
 
-            Blocks = new Block[Area.Size.X + 1, Area.Size.Y + 1];
+            Sectors = new Sector[Area.Size.X + 1, Area.Size.Y + 1];
 
             for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                 for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
-                    Blocks[i, j] = Room.Blocks[x, z].Clone();
+                    Sectors[i, j] = Room.Sectors[x, z].Clone();
 
             Valid = () => (Room != null && Room.ExistsInLevel && Room.SectorSize == Area.Size);
 
@@ -398,7 +399,7 @@ namespace TombEditor
 
                 for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                     for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
-                        Room.Blocks[x, z].ReplaceGeometry(Parent.Editor.Level, Blocks[i, j]);
+                        Room.Sectors[x, z].ReplaceGeometry(Parent.Editor.Level, Sectors[i, j]);
 
                 Room.BuildGeometry();
                 Parent.Editor.RoomGeometryChange(Room);

@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 
@@ -69,7 +71,7 @@ namespace TombLib.LevelData.IO
 
                 // Write settings
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
-               
+
                 // Write rooms
                 WriteRooms(chunkIO, rooms, levelSettingIds);
                 chunkIO.WriteChunkEnd();
@@ -129,7 +131,7 @@ namespace TombLib.LevelData.IO
             }
 
             public Dictionary<ImportedGeometry, int> ImportedGeometries { get; private set; }
-            public Dictionary<LevelTexture, int> LevelTextures { get; private set; } 
+            public Dictionary<LevelTexture, int> LevelTextures { get; private set; }
             public Dictionary<VolumeEventSet, int> VolumeEventSets { get; private set; }
         }
 
@@ -362,7 +364,7 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkEnd();
                     }
                 }
-                
+
                 using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes, UInt16.MaxValue))
                 {
                     foreach (var entry in settings.AutoStaticMeshMerges)
@@ -422,7 +424,7 @@ namespace TombLib.LevelData.IO
                                     using (var chunkSector = chunkIO.WriteChunk(Prj2Chunks.Sector, LEB128.MaximumSize2Byte))
                                     {
                                         chunkIO.Raw.Write(x + z * room.NumXSectors);
-                                        var b = room.Blocks[x, z];
+                                        var b = room.Sectors[x, z];
 
                                         long combinedFlag = (b.IsAnyWall ? 1L : 0) | (b.ForceFloorSolid ? 2L : 0) | ((long)b.Flags << 2);
                                         chunkIO.WriteChunkInt(Prj2Chunks.SectorProperties, combinedFlag);
@@ -430,37 +432,37 @@ namespace TombLib.LevelData.IO
                                         {
                                             long flag = (b.Floor.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Floor.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
-                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                            for (SectorEdge edge = 0; edge < SectorEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
                                         }
                                         using (var chunkSectorCeiling = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingOnly2, LEB128.MaximumSize1Byte))
                                         {
                                             long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
-                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                            for (SectorEdge edge = 0; edge < SectorEdge.Count; ++edge)
                                                 LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(edge));
                                         }
 
-                                        var validFloorSubdivisions = room.GetValidFloorSubdivisionsForBlock(x, z).ToArray();
-                                        var validCeilingSubdivisions = room.GetValidCeilingSubdivisionsForBlock(x, z).ToArray();
+                                        var validFloorSplits = room.GetValidFloorSplitsForSector(x, z).ToArray();
+                                        var validCeilingSplits = room.GetValidCeilingSplitsForSector(x, z).ToArray();
 
-                                        using (var chunkSectorExtraFloorSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions2, LEB128.MaximumSize2Byte))
+                                        using (var chunkSectorExtraFloorSplits = chunkIO.WriteChunk(Prj2Chunks.SectorFloorSubdivisions2, LEB128.MaximumSize2Byte))
                                         {
-                                            LEB128.Write(chunkIO.Raw, validFloorSubdivisions.Length);
+                                            LEB128.Write(chunkIO.Raw, validFloorSplits.Length);
 
-                                            foreach (BlockVertical subdivisionVertical in validFloorSubdivisions)
-                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                            foreach (SectorVerticalPart splitVertical in validFloorSplits)
+                                                for (SectorEdge edge = 0; edge < SectorEdge.Count; ++edge)
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(splitVertical, edge));
                                         }
-                                        using (var chunkSectorExtraCeilingSubdivisions = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions2, LEB128.MaximumSize2Byte))
+                                        using (var chunkSectorExtraCeilingSplits = chunkIO.WriteChunk(Prj2Chunks.SectorCeilingSubdivisions2, LEB128.MaximumSize2Byte))
                                         {
-                                            LEB128.Write(chunkIO.Raw, validCeilingSubdivisions.Length);
+                                            LEB128.Write(chunkIO.Raw, validCeilingSplits.Length);
 
-                                            foreach (BlockVertical subdivisionVertical in validCeilingSubdivisions)
-                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
-                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(subdivisionVertical, edge));
+                                            foreach (SectorVerticalPart splitVertical in validCeilingSplits)
+                                                for (SectorEdge edge = 0; edge < SectorEdge.Count; ++edge)
+                                                    LEB128.Write(chunkIO.Raw, b.GetHeight(splitVertical, edge));
                                         }
-                                        foreach (BlockFace face in b.GetFaceTextures().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorInfo(x, z, texture.Key))).Select(x => x.Key))
+                                        foreach (SectorFace face in b.GetFaceTextures().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, texture.Key))).Select(x => x.Key))
                                         {
                                             TextureArea texture = b.GetFaceTexture(face);
 

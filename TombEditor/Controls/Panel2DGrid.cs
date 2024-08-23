@@ -203,7 +203,7 @@ namespace TombEditor.Controls
                     }
                 }
                 else
-                { // Do block selection
+                { // Do sector selection
                     _editor.SelectedSectors = new SectorSelection { Start = sectorPos, End = sectorPos };
 
                     if (selectedSectorObject != null) // Unselect previous object
