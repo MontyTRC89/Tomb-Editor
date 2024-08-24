@@ -33,7 +33,7 @@ namespace TombEditor.Forms
             AllocateNewScriptIds();
 
             // Setup events
-            foreach (var control in panelClassicTriggerControls.Controls.OfType<TriggerParameterControl>())
+            foreach (var control in tableLayoutPanel.Controls.OfType<TriggerParameterControl>())
             {
                 control.ViewObject += selectObject;
                 control.ViewRoom += selectRoom;
@@ -48,6 +48,12 @@ namespace TombEditor.Forms
                 Text = "Classic trigger editor";
             else
                 Text = "Trigger editor";
+
+            if (!_level.IsNG)
+            {
+                labelPlugin.Visible = paramPlugin.Visible = false;
+                tableLayoutPanel.SetColumnSpan(paramTriggerType, 7);
+            }
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
@@ -70,6 +76,7 @@ namespace TombEditor.Forms
 
             paramTriggerType.Parameter = new TriggerParameterUshort((ushort)trigger.TriggerType);
             paramTargetType.Parameter = new TriggerParameterUshort((ushort)trigger.TargetType);
+            paramPlugin.Parameter = new TriggerParameterUshort(trigger.PluginId);
 
             // HACK: Change order of population based on target type.
             if (trigger.TriggerType == TriggerType.ConditionNg)
@@ -102,14 +109,17 @@ namespace TombEditor.Forms
 
             // HACK: Change order of population based on target type.
 
+            if (_level.IsNG)
+                paramPlugin.ParameterRange = NgParameterInfo.GetPluginRange(_level.Settings);
+
             if (isConditionNg)
             {
                 paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter);
-                paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter);
+                paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter, paramPlugin.Parameter);
             }
             else
             {
-                paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter);
+                paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter, paramPlugin.Parameter);
                 paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter);
             }
 
@@ -169,6 +179,7 @@ namespace TombEditor.Forms
             // Store some values like we have not NG triggers
             _trigger.TriggerType = TriggerType;
             _trigger.TargetType = TargetType;
+            _trigger.PluginId = ((TriggerParameterUshort)paramPlugin.Parameter).Key;
             _trigger.Target = paramTarget.Parameter;
             _trigger.Timer = paramTimer.Parameter;
             _trigger.Extra = paramExtra.Parameter;
@@ -188,27 +199,7 @@ namespace TombEditor.Forms
 
         private const string _noScriptIdStr = "<NoScriptID>";
 
-        private void paramTriggerType_ParameterChanged(object sender, EventArgs e)
-        {
-            UpdateDialog();
-        }
-
-        private void paramTargetType_ParameterChanged(object sender, EventArgs e)
-        {
-            UpdateDialog();
-        }
-
-        private void paramTarget_ParameterChanged(object sender, EventArgs e)
-        {
-            UpdateDialog();
-        }
-
-        private void paramTimer_ParameterChanged(object sender, EventArgs e)
-        {
-            UpdateDialog();
-        }
-
-        private void paramExtra_ParameterChanged(object sender, EventArgs e)
+        private void OnParameterChanged(object sender, EventArgs e)
         {
             UpdateDialog();
         }
@@ -222,12 +213,12 @@ namespace TombEditor.Forms
             try
             {
                 tbScript.Text = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, null);
-                tbScript.Tag  = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, null, true);
+                tbScript.Tag = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, null, true);
                 tbScript.Enabled = true;
                 butCopyToClipboard.Enabled = true;
                 butCopyWithComments.Enabled = true;
 
-                // Disable animcommand export for action/condition triggers because only god and Paolone knows how it is encoded. 
+                // Disable animcommand export for action/condition triggers because only god and Paolone knows how it is encoded.
                 butCopyAsAnimcommand.Enabled = !(TargetType == TriggerTargetType.ParameterNg || TargetType == TriggerTargetType.ActionNg);
             }
             catch (NgParameterInfo.ExceptionScriptNotSupported)
@@ -264,7 +255,7 @@ namespace TombEditor.Forms
         {
             if (_level.Settings.GameVersion != TRVersion.Game.TRNG)
                 return;
-            
+
             if (paramTarget.Parameter is IHasScriptID && !(paramTarget.Parameter as IHasScriptID).ScriptId.HasValue)
                 (paramTarget.Parameter as IHasScriptID).AllocateNewScriptId();
 
@@ -277,7 +268,7 @@ namespace TombEditor.Forms
 
         private void butCopyToClipboard_Click(object sender, EventArgs e)
         {
-            if(!string.IsNullOrEmpty(tbScript.Text))
+            if (!string.IsNullOrEmpty(tbScript.Text))
                 Clipboard.SetText(tbScript.Text);
         }
 
@@ -290,7 +281,7 @@ namespace TombEditor.Forms
 
         private void butCopyAsAnimcommand_Click(object sender, EventArgs e)
         {
-            using (var form = new FormInputBox("Specify animcommand frame number", 
+            using (var form = new FormInputBox("Specify animcommand frame number",
                 "Enter value from -1 (any frame) to 254:", "-1"))
             {
                 if (form.ShowDialog(this) == DialogResult.OK)
@@ -305,7 +296,7 @@ namespace TombEditor.Forms
                     var result = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, frameNumber);
                     if (!string.IsNullOrEmpty(result))
                     {
-                        using (var form2 = new FormInputBox("Export as SetPosition animcommand", 
+                        using (var form2 = new FormInputBox("Export as SetPosition animcommand",
                             "Put these values into X, Y and Z fields in WadTool:", result))
                             form2.ShowDialog(this);
                     }
@@ -315,7 +306,7 @@ namespace TombEditor.Forms
 
         private void cbRawMode_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (var control in panelClassicTriggerControls.Controls.OfType<TriggerParameterControl>())
+            foreach (var control in tableLayoutPanel.Controls.OfType<TriggerParameterControl>())
                 control.RawMode = cbRawMode.Checked;
         }
 

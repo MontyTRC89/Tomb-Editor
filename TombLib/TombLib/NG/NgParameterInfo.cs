@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -93,7 +95,8 @@ namespace TombLib.NG
             return new NgParameterRange(sortedDictionary);
         }
 
-        public static NgParameterRange GetTargetRange(LevelSettings levelSettings, TriggerType triggerType, TriggerTargetType targetType, ITriggerParameter timer)
+        public static NgParameterRange GetTargetRange(LevelSettings levelSettings, TriggerType triggerType,
+            TriggerTargetType targetType, ITriggerParameter timer, ITriggerParameter plugin = null)
         {
             switch (triggerType)
             {
@@ -230,6 +233,62 @@ namespace TombLib.NG
                             return new NgParameterRange(NgParameterKind.Empty);
                     }
             }
+        }
+
+        public static NgParameterRange GetPluginRange(LevelSettings levelSettings)
+        {
+            var result = new Dictionary<ushort, TriggerParameterUshort>
+            {
+                { 0, new TriggerParameterUshort(0, "Tomb_NextGeneration") }
+            };
+
+            string gameDirectory = levelSettings.MakeAbsolute(levelSettings.GameDirectory);
+            string scriptDirectory = levelSettings.MakeAbsolute(levelSettings.ScriptDirectory);
+
+			string pluginDirectory = Path.Combine(gameDirectory, "Plugins");
+			string scriptFilePath = Path.Combine(scriptDirectory, "Script.txt");
+
+            if (!Directory.Exists(pluginDirectory))
+				pluginDirectory = Path.Combine(Path.GetDirectoryName(gameDirectory), "Plugins");
+
+			if (!File.Exists(scriptFilePath) || !Directory.Exists(pluginDirectory))
+                return new NgParameterRange(result);
+
+            string[] trgFiles = Directory.GetFiles(pluginDirectory, "Plugin_*.trg", SearchOption.AllDirectories);
+
+			string[] scriptFileLines = File.ReadAllLines(scriptFilePath);
+            string[] pluginCommands = scriptFileLines
+				.Where(line => Regex.IsMatch(line, @"^Plugin\s*=", RegexOptions.IgnoreCase))
+				.ToArray();
+
+            if (pluginCommands.Length == 0)
+				return new NgParameterRange(result);
+
+            foreach (string pluginCommand in pluginCommands)
+            {
+                string[] commandParts = pluginCommand.Split('=');
+
+                if (commandParts.Length != 2)
+                    continue;
+
+                commandParts = commandParts[1].Split(',');
+
+                if (commandParts.Length is not 2 and not 3)
+                    continue;
+
+                if (!ushort.TryParse(commandParts[0], out ushort id) || id < 1) // ID 0 is reserved for Tomb_NextGeneration
+                    continue;
+
+                string pluginName = commandParts[1].Trim();
+
+                if (string.IsNullOrEmpty(pluginName))
+					continue;
+
+                if (trgFiles.Any(file => Path.GetFileNameWithoutExtension(file).Equals(pluginName, StringComparison.OrdinalIgnoreCase)))
+                    result[id] = new TriggerParameterUshort(id, pluginName);
+			}
+
+			return new NgParameterRange(result);
         }
 
         public static bool TriggerIsValid(LevelSettings levelSettings, TriggerInstance trigger)
@@ -523,7 +582,7 @@ namespace TombLib.NG
                 {
                     case TriggerType.ConditionNg:
                         {
-                            // Condition triggers can't be exported as anim command because they use same 
+                            // Condition triggers can't be exported as anim command because they use same
                             // bit flag as animcommand exporter flag
 
                             if (!TriggerIsValid(level.Settings, trigger) || animCommandNumber.HasValue)

@@ -24,409 +24,483 @@ namespace TombEditor.Forms
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
-            this.components = new System.ComponentModel.Container();
-            this.label1 = new DarkUI.Controls.DarkLabel();
-            this.label2 = new DarkUI.Controls.DarkLabel();
-            this.labelTarget = new DarkUI.Controls.DarkLabel();
-            this.labelTimer = new DarkUI.Controls.DarkLabel();
-            this.cbBit4 = new DarkUI.Controls.DarkCheckBox();
-            this.cbBit3 = new DarkUI.Controls.DarkCheckBox();
-            this.cbBit2 = new DarkUI.Controls.DarkCheckBox();
-            this.cbBit1 = new DarkUI.Controls.DarkCheckBox();
-            this.cbBit5 = new DarkUI.Controls.DarkCheckBox();
-            this.cbOneShot = new DarkUI.Controls.DarkCheckBox();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.butOK = new DarkUI.Controls.DarkButton();
-            this.labelExtra = new DarkUI.Controls.DarkLabel();
-            this.tbScript = new DarkUI.Controls.DarkTextBox();
-            this.labelScript = new DarkUI.Controls.DarkLabel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.butCopyWithComments = new DarkUI.Controls.DarkButton();
-            this.butCopyToClipboard = new DarkUI.Controls.DarkButton();
-            this.butSearchTrigger = new DarkUI.Controls.DarkButton();
-            this.butCopyAsAnimcommand = new DarkUI.Controls.DarkButton();
-            this.scriptExportPanel = new System.Windows.Forms.Panel();
-            this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
-            this.panelMain = new System.Windows.Forms.Panel();
-            this.panelButtons = new System.Windows.Forms.Panel();
-            this.panelClassicTriggerControls = new System.Windows.Forms.Panel();
-            this.paramExtra = new TombLib.Controls.TriggerParameterControl();
-            this.paramTriggerType = new TombLib.Controls.TriggerParameterControl();
-            this.paramTargetType = new TombLib.Controls.TriggerParameterControl();
-            this.paramTimer = new TombLib.Controls.TriggerParameterControl();
-            this.paramTarget = new TombLib.Controls.TriggerParameterControl();
-            this.scriptExportPanel.SuspendLayout();
-            this.panelMain.SuspendLayout();
-            this.panelButtons.SuspendLayout();
-            this.panelClassicTriggerControls.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(1, 5);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Trigger Type:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label2.Location = new System.Drawing.Point(1, 31);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "What:";
-            // 
-            // labelTarget
-            // 
-            this.labelTarget.AutoSize = true;
-            this.labelTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelTarget.Location = new System.Drawing.Point(1, 57);
-            this.labelTarget.Name = "labelTarget";
-            this.labelTarget.Size = new System.Drawing.Size(57, 13);
-            this.labelTarget.TabIndex = 4;
-            this.labelTarget.Text = "(#) Param:";
-            // 
-            // labelTimer
-            // 
-            this.labelTimer.AutoSize = true;
-            this.labelTimer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelTimer.Location = new System.Drawing.Point(1, 83);
-            this.labelTimer.Name = "labelTimer";
-            this.labelTimer.Size = new System.Drawing.Size(55, 13);
-            this.labelTimer.TabIndex = 6;
-            this.labelTimer.Text = "(&&) Timer:";
-            // 
-            // cbBit4
-            // 
-            this.cbBit4.AutoSize = true;
-            this.cbBit4.Location = new System.Drawing.Point(233, 133);
-            this.cbBit4.Name = "cbBit4";
-            this.cbBit4.Size = new System.Drawing.Size(49, 17);
-            this.cbBit4.TabIndex = 9;
-            this.cbBit4.Text = "Bit 4";
-            // 
-            // cbBit3
-            // 
-            this.cbBit3.AutoSize = true;
-            this.cbBit3.Location = new System.Drawing.Point(180, 133);
-            this.cbBit3.Name = "cbBit3";
-            this.cbBit3.Size = new System.Drawing.Size(49, 17);
-            this.cbBit3.TabIndex = 8;
-            this.cbBit3.Text = "Bit 3";
-            // 
-            // cbBit2
-            // 
-            this.cbBit2.AutoSize = true;
-            this.cbBit2.Location = new System.Drawing.Point(127, 133);
-            this.cbBit2.Name = "cbBit2";
-            this.cbBit2.Size = new System.Drawing.Size(49, 17);
-            this.cbBit2.TabIndex = 7;
-            this.cbBit2.Text = "Bit 2";
-            // 
-            // cbBit1
-            // 
-            this.cbBit1.AutoSize = true;
-            this.cbBit1.Location = new System.Drawing.Point(74, 133);
-            this.cbBit1.Name = "cbBit1";
-            this.cbBit1.Size = new System.Drawing.Size(49, 17);
-            this.cbBit1.TabIndex = 6;
-            this.cbBit1.Text = "Bit 1";
-            // 
-            // cbBit5
-            // 
-            this.cbBit5.AutoSize = true;
-            this.cbBit5.Location = new System.Drawing.Point(286, 133);
-            this.cbBit5.Name = "cbBit5";
-            this.cbBit5.Size = new System.Drawing.Size(49, 17);
-            this.cbBit5.TabIndex = 10;
-            this.cbBit5.Text = "Bit 5";
-            // 
-            // cbOneShot
-            // 
-            this.cbOneShot.AutoSize = true;
-            this.cbOneShot.Location = new System.Drawing.Point(74, 156);
-            this.cbOneShot.Name = "cbOneShot";
-            this.cbOneShot.Size = new System.Drawing.Size(75, 17);
-            this.cbOneShot.TabIndex = 11;
-            this.cbOneShot.Text = "One Shot";
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Checked = false;
-            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(606, 4);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 16;
-            this.butCancel.Text = "Cancel";
-            this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
-            // 
-            // butOK
-            // 
-            this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Checked = false;
-            this.butOK.Location = new System.Drawing.Point(520, 4);
-            this.butOK.Name = "butOK";
-            this.butOK.Size = new System.Drawing.Size(80, 23);
-            this.butOK.TabIndex = 15;
-            this.butOK.Text = "OK";
-            this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butOK.Click += new System.EventHandler(this.butOK_Click);
-            // 
-            // labelExtra
-            // 
-            this.labelExtra.AutoSize = true;
-            this.labelExtra.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelExtra.Location = new System.Drawing.Point(1, 109);
-            this.labelExtra.Name = "labelExtra";
-            this.labelExtra.Size = new System.Drawing.Size(50, 13);
-            this.labelExtra.TabIndex = 71;
-            this.labelExtra.Text = "(E) Extra:";
-            // 
-            // tbScript
-            // 
-            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScript.Location = new System.Drawing.Point(45, 0);
-            this.tbScript.Name = "tbScript";
-            this.tbScript.ReadOnly = true;
-            this.tbScript.Size = new System.Drawing.Size(158, 22);
-            this.tbScript.TabIndex = 13;
-            // 
-            // labelScript
-            // 
-            this.labelScript.AutoSize = true;
-            this.labelScript.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelScript.Location = new System.Drawing.Point(3, 2);
-            this.labelScript.Name = "labelScript";
-            this.labelScript.Size = new System.Drawing.Size(39, 13);
-            this.labelScript.TabIndex = 75;
-            this.labelScript.Text = "Script:";
-            // 
-            // butCopyWithComments
-            // 
-            this.butCopyWithComments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCopyWithComments.Checked = false;
-            this.butCopyWithComments.Image = global::TombEditor.Properties.Resources.general_copy_comments_16;
-            this.butCopyWithComments.Location = new System.Drawing.Point(237, 0);
-            this.butCopyWithComments.Name = "butCopyWithComments";
-            this.butCopyWithComments.Size = new System.Drawing.Size(22, 22);
-            this.butCopyWithComments.TabIndex = 76;
-            this.toolTip.SetToolTip(this.butCopyWithComments, "Copy to clipboard with comments");
-            this.butCopyWithComments.Click += new System.EventHandler(this.butCopyWithComments_Click);
-            // 
-            // butCopyToClipboard
-            // 
-            this.butCopyToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCopyToClipboard.Checked = false;
-            this.butCopyToClipboard.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butCopyToClipboard.Location = new System.Drawing.Point(209, 0);
-            this.butCopyToClipboard.Name = "butCopyToClipboard";
-            this.butCopyToClipboard.Size = new System.Drawing.Size(22, 22);
-            this.butCopyToClipboard.TabIndex = 12;
-            this.toolTip.SetToolTip(this.butCopyToClipboard, "Copy to clipboard");
-            this.butCopyToClipboard.Click += new System.EventHandler(this.butCopyToClipboard_Click);
-            // 
-            // butSearchTrigger
-            // 
-            this.butSearchTrigger.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSearchTrigger.Checked = false;
-            this.butSearchTrigger.Image = global::TombEditor.Properties.Resources.general_Import_16;
-            this.butSearchTrigger.Location = new System.Drawing.Point(265, 0);
-            this.butSearchTrigger.Name = "butSearchTrigger";
-            this.butSearchTrigger.Size = new System.Drawing.Size(22, 22);
-            this.butSearchTrigger.TabIndex = 77;
-            this.toolTip.SetToolTip(this.butSearchTrigger, "Import trigger");
-            this.butSearchTrigger.Click += new System.EventHandler(this.butSearchTrigger_Click);
-            // 
-            // butCopyAsAnimcommand
-            // 
-            this.butCopyAsAnimcommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCopyAsAnimcommand.Checked = false;
-            this.butCopyAsAnimcommand.Image = global::TombEditor.Properties.Resources.general_animcommand_16;
-            this.butCopyAsAnimcommand.Location = new System.Drawing.Point(293, 0);
-            this.butCopyAsAnimcommand.Name = "butCopyAsAnimcommand";
-            this.butCopyAsAnimcommand.Size = new System.Drawing.Size(22, 22);
-            this.butCopyAsAnimcommand.TabIndex = 78;
-            this.toolTip.SetToolTip(this.butCopyAsAnimcommand, "Export as animcommand");
-            this.butCopyAsAnimcommand.Click += new System.EventHandler(this.butCopyAsAnimcommand_Click);
-            // 
-            // scriptExportPanel
-            // 
-            this.scriptExportPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.scriptExportPanel.Controls.Add(this.butCopyAsAnimcommand);
-            this.scriptExportPanel.Controls.Add(this.butSearchTrigger);
-            this.scriptExportPanel.Controls.Add(this.butCopyWithComments);
-            this.scriptExportPanel.Controls.Add(this.tbScript);
-            this.scriptExportPanel.Controls.Add(this.labelScript);
-            this.scriptExportPanel.Controls.Add(this.butCopyToClipboard);
-            this.scriptExportPanel.Location = new System.Drawing.Point(371, 133);
-            this.scriptExportPanel.Name = "scriptExportPanel";
-            this.scriptExportPanel.Size = new System.Drawing.Size(315, 23);
-            this.scriptExportPanel.TabIndex = 78;
-            // 
-            // cbRawMode
-            // 
-            this.cbRawMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbRawMode.AutoSize = true;
-            this.cbRawMode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbRawMode.Location = new System.Drawing.Point(491, 162);
-            this.cbRawMode.Name = "cbRawMode";
-            this.cbRawMode.Size = new System.Drawing.Size(196, 17);
-            this.cbRawMode.TabIndex = 14;
-            this.cbRawMode.Text = "Raw mode (show numeric values)";
-            this.cbRawMode.CheckedChanged += new System.EventHandler(this.cbRawMode_CheckedChanged);
-            // 
-            // panelMain
-            // 
-            this.panelMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panelMain.Controls.Add(this.panelButtons);
-            this.panelMain.Controls.Add(this.panelClassicTriggerControls);
-            this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMain.Location = new System.Drawing.Point(0, 0);
-            this.panelMain.MinimumSize = new System.Drawing.Size(600, 0);
-            this.panelMain.Name = "panelMain";
-            this.panelMain.Padding = new System.Windows.Forms.Padding(3, 5, 3, 3);
-            this.panelMain.Size = new System.Drawing.Size(695, 223);
-            this.panelMain.TabIndex = 82;
-            // 
-            // panelButtons
-            // 
-            this.panelButtons.Controls.Add(this.butOK);
-            this.panelButtons.Controls.Add(this.butCancel);
-            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(3, 189);
-            this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(689, 31);
-            this.panelButtons.TabIndex = 85;
-            // 
-            // panelClassicTriggerControls
-            // 
-            this.panelClassicTriggerControls.Controls.Add(this.scriptExportPanel);
-            this.panelClassicTriggerControls.Controls.Add(this.paramExtra);
-            this.panelClassicTriggerControls.Controls.Add(this.cbRawMode);
-            this.panelClassicTriggerControls.Controls.Add(this.paramTriggerType);
-            this.panelClassicTriggerControls.Controls.Add(this.cbOneShot);
-            this.panelClassicTriggerControls.Controls.Add(this.paramTargetType);
-            this.panelClassicTriggerControls.Controls.Add(this.cbBit4);
-            this.panelClassicTriggerControls.Controls.Add(this.paramTimer);
-            this.panelClassicTriggerControls.Controls.Add(this.cbBit3);
-            this.panelClassicTriggerControls.Controls.Add(this.paramTarget);
-            this.panelClassicTriggerControls.Controls.Add(this.cbBit2);
-            this.panelClassicTriggerControls.Controls.Add(this.labelExtra);
-            this.panelClassicTriggerControls.Controls.Add(this.cbBit1);
-            this.panelClassicTriggerControls.Controls.Add(this.cbBit5);
-            this.panelClassicTriggerControls.Controls.Add(this.labelTimer);
-            this.panelClassicTriggerControls.Controls.Add(this.labelTarget);
-            this.panelClassicTriggerControls.Controls.Add(this.label2);
-            this.panelClassicTriggerControls.Controls.Add(this.label1);
-            this.panelClassicTriggerControls.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelClassicTriggerControls.Location = new System.Drawing.Point(3, 5);
-            this.panelClassicTriggerControls.Name = "panelClassicTriggerControls";
-            this.panelClassicTriggerControls.Size = new System.Drawing.Size(689, 181);
-            this.panelClassicTriggerControls.TabIndex = 82;
-            // 
-            // paramExtra
-            // 
-            this.paramExtra.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.paramExtra.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.paramExtra.Level = null;
-            this.paramExtra.Location = new System.Drawing.Point(74, 105);
-            this.paramExtra.Name = "paramExtra";
-            this.paramExtra.Size = new System.Drawing.Size(612, 23);
-            this.paramExtra.TabIndex = 72;
-            this.paramExtra.ParameterChanged += new System.EventHandler(this.paramExtra_ParameterChanged);
-            // 
-            // paramTriggerType
-            // 
-            this.paramTriggerType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.paramTriggerType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.paramTriggerType.Level = null;
-            this.paramTriggerType.Location = new System.Drawing.Point(74, 1);
-            this.paramTriggerType.Name = "paramTriggerType";
-            this.paramTriggerType.Size = new System.Drawing.Size(612, 23);
-            this.paramTriggerType.TabIndex = 1;
-            this.paramTriggerType.ParameterChanged += new System.EventHandler(this.paramTriggerType_ParameterChanged);
-            // 
-            // paramTargetType
-            // 
-            this.paramTargetType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.paramTargetType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.paramTargetType.Level = null;
-            this.paramTargetType.Location = new System.Drawing.Point(74, 27);
-            this.paramTargetType.Name = "paramTargetType";
-            this.paramTargetType.Size = new System.Drawing.Size(612, 23);
-            this.paramTargetType.TabIndex = 2;
-            this.paramTargetType.ParameterChanged += new System.EventHandler(this.paramTargetType_ParameterChanged);
-            // 
-            // paramTimer
-            // 
-            this.paramTimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.paramTimer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.paramTimer.Level = null;
-            this.paramTimer.Location = new System.Drawing.Point(74, 79);
-            this.paramTimer.Name = "paramTimer";
-            this.paramTimer.Size = new System.Drawing.Size(612, 23);
-            this.paramTimer.TabIndex = 4;
-            this.paramTimer.ParameterChanged += new System.EventHandler(this.paramTimer_ParameterChanged);
-            // 
-            // paramTarget
-            // 
-            this.paramTarget.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.paramTarget.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.paramTarget.Level = null;
-            this.paramTarget.Location = new System.Drawing.Point(74, 53);
-            this.paramTarget.Name = "paramTarget";
-            this.paramTarget.Size = new System.Drawing.Size(612, 23);
-            this.paramTarget.TabIndex = 3;
-            this.paramTarget.ParameterChanged += new System.EventHandler(this.paramTarget_ParameterChanged);
-            // 
-            // FormTrigger
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(695, 223);
-            this.Controls.Add(this.panelMain);
-            this.DoubleBuffered = true;
-            this.MinimizeBox = false;
-            this.Name = "FormTrigger";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.scriptExportPanel.ResumeLayout(false);
-            this.scriptExportPanel.PerformLayout();
-            this.panelMain.ResumeLayout(false);
-            this.panelButtons.ResumeLayout(false);
-            this.panelClassicTriggerControls.ResumeLayout(false);
-            this.panelClassicTriggerControls.PerformLayout();
-            this.ResumeLayout(false);
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+			components = new System.ComponentModel.Container();
+			label1 = new DarkLabel();
+			label2 = new DarkLabel();
+			labelTarget = new DarkLabel();
+			labelTimer = new DarkLabel();
+			cbBit4 = new DarkCheckBox();
+			cbBit3 = new DarkCheckBox();
+			cbBit2 = new DarkCheckBox();
+			cbBit1 = new DarkCheckBox();
+			cbBit5 = new DarkCheckBox();
+			cbOneShot = new DarkCheckBox();
+			butCancel = new DarkButton();
+			butOK = new DarkButton();
+			labelExtra = new DarkLabel();
+			tbScript = new DarkTextBox();
+			labelScript = new DarkLabel();
+			toolTip = new ToolTip(components);
+			butCopyWithComments = new DarkButton();
+			butCopyToClipboard = new DarkButton();
+			butSearchTrigger = new DarkButton();
+			butCopyAsAnimcommand = new DarkButton();
+			scriptExportPanel = new Panel();
+			cbRawMode = new DarkCheckBox();
+			panelMain = new Panel();
+			panelButtons = new Panel();
+			panelClassicTriggerControls = new Panel();
+			tableLayoutPanel = new TableLayoutPanel();
+			paramPlugin = new TriggerParameterControl();
+			labelPlugin = new DarkLabel();
+			paramExtra = new TriggerParameterControl();
+			paramTriggerType = new TriggerParameterControl();
+			paramTargetType = new TriggerParameterControl();
+			paramTimer = new TriggerParameterControl();
+			paramTarget = new TriggerParameterControl();
+			scriptExportPanel.SuspendLayout();
+			panelMain.SuspendLayout();
+			panelButtons.SuspendLayout();
+			panelClassicTriggerControls.SuspendLayout();
+			tableLayoutPanel.SuspendLayout();
+			SuspendLayout();
+			// 
+			// label1
+			// 
+			label1.AutoSize = true;
+			label1.Dock = DockStyle.Fill;
+			label1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			label1.Location = new System.Drawing.Point(3, 0);
+			label1.Name = "label1";
+			label1.Size = new System.Drawing.Size(74, 26);
+			label1.TabIndex = 0;
+			label1.Text = "Trigger Type:";
+			label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label2
+			// 
+			label2.AutoSize = true;
+			label2.Dock = DockStyle.Fill;
+			label2.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			label2.Location = new System.Drawing.Point(3, 26);
+			label2.Name = "label2";
+			label2.Size = new System.Drawing.Size(74, 26);
+			label2.TabIndex = 2;
+			label2.Text = "What:";
+			label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// labelTarget
+			// 
+			labelTarget.AutoSize = true;
+			labelTarget.Dock = DockStyle.Fill;
+			labelTarget.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			labelTarget.Location = new System.Drawing.Point(3, 52);
+			labelTarget.Name = "labelTarget";
+			labelTarget.Size = new System.Drawing.Size(74, 26);
+			labelTarget.TabIndex = 4;
+			labelTarget.Text = "(#) Param:";
+			labelTarget.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// labelTimer
+			// 
+			labelTimer.AutoSize = true;
+			labelTimer.Dock = DockStyle.Fill;
+			labelTimer.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			labelTimer.Location = new System.Drawing.Point(3, 78);
+			labelTimer.Name = "labelTimer";
+			labelTimer.Size = new System.Drawing.Size(74, 26);
+			labelTimer.TabIndex = 6;
+			labelTimer.Text = "(&&) Timer:";
+			labelTimer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// cbBit4
+			// 
+			cbBit4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+			cbBit4.AutoSize = true;
+			cbBit4.Location = new System.Drawing.Point(233, 133);
+			cbBit4.Name = "cbBit4";
+			cbBit4.Size = new System.Drawing.Size(44, 22);
+			cbBit4.TabIndex = 9;
+			cbBit4.Text = "Bit 4";
+			// 
+			// cbBit3
+			// 
+			cbBit3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+			cbBit3.AutoSize = true;
+			cbBit3.Location = new System.Drawing.Point(183, 133);
+			cbBit3.Name = "cbBit3";
+			cbBit3.Size = new System.Drawing.Size(44, 22);
+			cbBit3.TabIndex = 8;
+			cbBit3.Text = "Bit 3";
+			// 
+			// cbBit2
+			// 
+			cbBit2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+			cbBit2.AutoSize = true;
+			cbBit2.Location = new System.Drawing.Point(133, 133);
+			cbBit2.Name = "cbBit2";
+			cbBit2.Size = new System.Drawing.Size(44, 22);
+			cbBit2.TabIndex = 7;
+			cbBit2.Text = "Bit 2";
+			// 
+			// cbBit1
+			// 
+			cbBit1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+			cbBit1.AutoSize = true;
+			cbBit1.Location = new System.Drawing.Point(83, 133);
+			cbBit1.Name = "cbBit1";
+			cbBit1.Size = new System.Drawing.Size(44, 22);
+			cbBit1.TabIndex = 6;
+			cbBit1.Text = "Bit 1";
+			// 
+			// cbBit5
+			// 
+			cbBit5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+			cbBit5.AutoSize = true;
+			cbBit5.Location = new System.Drawing.Point(283, 133);
+			cbBit5.Name = "cbBit5";
+			cbBit5.Size = new System.Drawing.Size(44, 22);
+			cbBit5.TabIndex = 10;
+			cbBit5.Text = "Bit 5";
+			// 
+			// cbOneShot
+			// 
+			cbOneShot.AutoSize = true;
+			tableLayoutPanel.SetColumnSpan(cbOneShot, 5);
+			cbOneShot.Location = new System.Drawing.Point(83, 161);
+			cbOneShot.Name = "cbOneShot";
+			cbOneShot.Size = new System.Drawing.Size(75, 17);
+			cbOneShot.TabIndex = 11;
+			cbOneShot.Text = "One Shot";
+			// 
+			// butCancel
+			// 
+			butCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			butCancel.Checked = false;
+			butCancel.DialogResult = DialogResult.Cancel;
+			butCancel.Location = new System.Drawing.Point(615, 4);
+			butCancel.Name = "butCancel";
+			butCancel.Size = new System.Drawing.Size(80, 23);
+			butCancel.TabIndex = 16;
+			butCancel.Text = "Cancel";
+			butCancel.TextImageRelation = TextImageRelation.ImageBeforeText;
+			butCancel.Click += butCancel_Click;
+			// 
+			// butOK
+			// 
+			butOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			butOK.Checked = false;
+			butOK.Location = new System.Drawing.Point(529, 4);
+			butOK.Name = "butOK";
+			butOK.Size = new System.Drawing.Size(80, 23);
+			butOK.TabIndex = 15;
+			butOK.Text = "OK";
+			butOK.TextImageRelation = TextImageRelation.ImageBeforeText;
+			butOK.Click += butOK_Click;
+			// 
+			// labelExtra
+			// 
+			labelExtra.AutoSize = true;
+			labelExtra.Dock = DockStyle.Fill;
+			labelExtra.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			labelExtra.Location = new System.Drawing.Point(3, 104);
+			labelExtra.Name = "labelExtra";
+			labelExtra.Size = new System.Drawing.Size(74, 26);
+			labelExtra.TabIndex = 71;
+			labelExtra.Text = "(E) Extra:";
+			labelExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// tbScript
+			// 
+			tbScript.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			tbScript.Location = new System.Drawing.Point(45, 0);
+			tbScript.Name = "tbScript";
+			tbScript.ReadOnly = true;
+			tbScript.Size = new System.Drawing.Size(158, 22);
+			tbScript.TabIndex = 13;
+			// 
+			// labelScript
+			// 
+			labelScript.AutoSize = true;
+			labelScript.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			labelScript.Location = new System.Drawing.Point(3, 2);
+			labelScript.Name = "labelScript";
+			labelScript.Size = new System.Drawing.Size(39, 13);
+			labelScript.TabIndex = 75;
+			labelScript.Text = "Script:";
+			// 
+			// butCopyWithComments
+			// 
+			butCopyWithComments.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			butCopyWithComments.Checked = false;
+			butCopyWithComments.Image = Properties.Resources.general_copy_comments_16;
+			butCopyWithComments.Location = new System.Drawing.Point(237, 0);
+			butCopyWithComments.Name = "butCopyWithComments";
+			butCopyWithComments.Size = new System.Drawing.Size(22, 22);
+			butCopyWithComments.TabIndex = 76;
+			toolTip.SetToolTip(butCopyWithComments, "Copy to clipboard with comments");
+			butCopyWithComments.Click += butCopyWithComments_Click;
+			// 
+			// butCopyToClipboard
+			// 
+			butCopyToClipboard.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			butCopyToClipboard.Checked = false;
+			butCopyToClipboard.Image = Properties.Resources.general_copy_16;
+			butCopyToClipboard.Location = new System.Drawing.Point(209, 0);
+			butCopyToClipboard.Name = "butCopyToClipboard";
+			butCopyToClipboard.Size = new System.Drawing.Size(22, 22);
+			butCopyToClipboard.TabIndex = 12;
+			toolTip.SetToolTip(butCopyToClipboard, "Copy to clipboard");
+			butCopyToClipboard.Click += butCopyToClipboard_Click;
+			// 
+			// butSearchTrigger
+			// 
+			butSearchTrigger.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			butSearchTrigger.Checked = false;
+			butSearchTrigger.Image = Properties.Resources.general_Import_16;
+			butSearchTrigger.Location = new System.Drawing.Point(265, 0);
+			butSearchTrigger.Name = "butSearchTrigger";
+			butSearchTrigger.Size = new System.Drawing.Size(22, 22);
+			butSearchTrigger.TabIndex = 77;
+			toolTip.SetToolTip(butSearchTrigger, "Import trigger");
+			butSearchTrigger.Click += butSearchTrigger_Click;
+			// 
+			// butCopyAsAnimcommand
+			// 
+			butCopyAsAnimcommand.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			butCopyAsAnimcommand.Checked = false;
+			butCopyAsAnimcommand.Image = Properties.Resources.general_animcommand_16;
+			butCopyAsAnimcommand.Location = new System.Drawing.Point(293, 0);
+			butCopyAsAnimcommand.Name = "butCopyAsAnimcommand";
+			butCopyAsAnimcommand.Size = new System.Drawing.Size(22, 22);
+			butCopyAsAnimcommand.TabIndex = 78;
+			toolTip.SetToolTip(butCopyAsAnimcommand, "Export as animcommand");
+			butCopyAsAnimcommand.Click += butCopyAsAnimcommand_Click;
+			// 
+			// scriptExportPanel
+			// 
+			scriptExportPanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			tableLayoutPanel.SetColumnSpan(scriptExportPanel, 2);
+			scriptExportPanel.Controls.Add(butCopyAsAnimcommand);
+			scriptExportPanel.Controls.Add(butSearchTrigger);
+			scriptExportPanel.Controls.Add(butCopyWithComments);
+			scriptExportPanel.Controls.Add(tbScript);
+			scriptExportPanel.Controls.Add(labelScript);
+			scriptExportPanel.Controls.Add(butCopyToClipboard);
+			scriptExportPanel.Location = new System.Drawing.Point(380, 133);
+			scriptExportPanel.Name = "scriptExportPanel";
+			scriptExportPanel.Size = new System.Drawing.Size(315, 22);
+			scriptExportPanel.TabIndex = 78;
+			// 
+			// cbRawMode
+			// 
+			cbRawMode.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			cbRawMode.AutoSize = true;
+			cbRawMode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+			cbRawMode.Location = new System.Drawing.Point(499, 161);
+			cbRawMode.Name = "cbRawMode";
+			cbRawMode.Size = new System.Drawing.Size(196, 17);
+			cbRawMode.TabIndex = 14;
+			cbRawMode.Text = "Raw mode (show numeric values)";
+			cbRawMode.CheckedChanged += cbRawMode_CheckedChanged;
+			// 
+			// panelMain
+			// 
+			panelMain.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+			panelMain.Controls.Add(panelButtons);
+			panelMain.Controls.Add(panelClassicTriggerControls);
+			panelMain.Dock = DockStyle.Fill;
+			panelMain.Location = new System.Drawing.Point(0, 0);
+			panelMain.MinimumSize = new System.Drawing.Size(600, 0);
+			panelMain.Name = "panelMain";
+			panelMain.Padding = new Padding(3, 5, 3, 3);
+			panelMain.Size = new System.Drawing.Size(704, 223);
+			panelMain.TabIndex = 82;
+			// 
+			// panelButtons
+			// 
+			panelButtons.Controls.Add(butOK);
+			panelButtons.Controls.Add(butCancel);
+			panelButtons.Dock = DockStyle.Bottom;
+			panelButtons.Location = new System.Drawing.Point(3, 189);
+			panelButtons.Name = "panelButtons";
+			panelButtons.Size = new System.Drawing.Size(698, 31);
+			panelButtons.TabIndex = 85;
+			// 
+			// panelClassicTriggerControls
+			// 
+			panelClassicTriggerControls.Controls.Add(tableLayoutPanel);
+			panelClassicTriggerControls.Dock = DockStyle.Top;
+			panelClassicTriggerControls.Location = new System.Drawing.Point(3, 5);
+			panelClassicTriggerControls.Name = "panelClassicTriggerControls";
+			panelClassicTriggerControls.Size = new System.Drawing.Size(698, 181);
+			panelClassicTriggerControls.TabIndex = 82;
+			// 
+			// tableLayoutPanel
+			// 
+			tableLayoutPanel.ColumnCount = 8;
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 95F));
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			tableLayoutPanel.Controls.Add(paramPlugin, 7, 0);
+			tableLayoutPanel.Controls.Add(labelPlugin, 6, 0);
+			tableLayoutPanel.Controls.Add(label1, 0, 0);
+			tableLayoutPanel.Controls.Add(cbRawMode, 7, 6);
+			tableLayoutPanel.Controls.Add(label2, 0, 1);
+			tableLayoutPanel.Controls.Add(paramExtra, 1, 4);
+			tableLayoutPanel.Controls.Add(cbOneShot, 1, 6);
+			tableLayoutPanel.Controls.Add(labelTarget, 0, 2);
+			tableLayoutPanel.Controls.Add(cbBit5, 5, 5);
+			tableLayoutPanel.Controls.Add(cbBit4, 4, 5);
+			tableLayoutPanel.Controls.Add(labelTimer, 0, 3);
+			tableLayoutPanel.Controls.Add(cbBit3, 3, 5);
+			tableLayoutPanel.Controls.Add(paramTriggerType, 1, 0);
+			tableLayoutPanel.Controls.Add(cbBit2, 2, 5);
+			tableLayoutPanel.Controls.Add(paramTargetType, 1, 1);
+			tableLayoutPanel.Controls.Add(cbBit1, 1, 5);
+			tableLayoutPanel.Controls.Add(paramTimer, 1, 3);
+			tableLayoutPanel.Controls.Add(labelExtra, 0, 4);
+			tableLayoutPanel.Controls.Add(paramTarget, 1, 2);
+			tableLayoutPanel.Controls.Add(scriptExportPanel, 6, 5);
+			tableLayoutPanel.Dock = DockStyle.Fill;
+			tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+			tableLayoutPanel.Margin = new Padding(0);
+			tableLayoutPanel.Name = "tableLayoutPanel";
+			tableLayoutPanel.RowCount = 8;
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			tableLayoutPanel.Size = new System.Drawing.Size(698, 181);
+			tableLayoutPanel.TabIndex = 79;
+			// 
+			// paramPlugin
+			// 
+			paramPlugin.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			paramPlugin.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			paramPlugin.Level = null;
+			paramPlugin.Location = new System.Drawing.Point(428, 3);
+			paramPlugin.Name = "paramPlugin";
+			paramPlugin.Size = new System.Drawing.Size(267, 23);
+			paramPlugin.TabIndex = 80;
+			paramPlugin.ParameterChanged += OnParameterChanged;
+			// 
+			// labelPlugin
+			// 
+			labelPlugin.AutoSize = true;
+			labelPlugin.Dock = DockStyle.Fill;
+			labelPlugin.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			labelPlugin.Location = new System.Drawing.Point(333, 0);
+			labelPlugin.Name = "labelPlugin";
+			labelPlugin.Size = new System.Drawing.Size(89, 26);
+			labelPlugin.TabIndex = 79;
+			labelPlugin.Text = "Plugin / Engine:";
+			labelPlugin.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// paramExtra
+			// 
+			paramExtra.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			tableLayoutPanel.SetColumnSpan(paramExtra, 7);
+			paramExtra.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			paramExtra.Level = null;
+			paramExtra.Location = new System.Drawing.Point(83, 107);
+			paramExtra.Name = "paramExtra";
+			paramExtra.Size = new System.Drawing.Size(612, 23);
+			paramExtra.TabIndex = 72;
+			paramExtra.ParameterChanged += OnParameterChanged;
+			// 
+			// paramTriggerType
+			// 
+			paramTriggerType.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			tableLayoutPanel.SetColumnSpan(paramTriggerType, 5);
+			paramTriggerType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			paramTriggerType.Level = null;
+			paramTriggerType.Location = new System.Drawing.Point(83, 3);
+			paramTriggerType.Name = "paramTriggerType";
+			paramTriggerType.Size = new System.Drawing.Size(244, 23);
+			paramTriggerType.TabIndex = 1;
+			paramTriggerType.ParameterChanged += OnParameterChanged;
+			// 
+			// paramTargetType
+			// 
+			paramTargetType.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			tableLayoutPanel.SetColumnSpan(paramTargetType, 7);
+			paramTargetType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			paramTargetType.Level = null;
+			paramTargetType.Location = new System.Drawing.Point(83, 29);
+			paramTargetType.Name = "paramTargetType";
+			paramTargetType.Size = new System.Drawing.Size(612, 23);
+			paramTargetType.TabIndex = 2;
+			paramTargetType.ParameterChanged += OnParameterChanged;
+			// 
+			// paramTimer
+			// 
+			paramTimer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			tableLayoutPanel.SetColumnSpan(paramTimer, 7);
+			paramTimer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			paramTimer.Level = null;
+			paramTimer.Location = new System.Drawing.Point(83, 81);
+			paramTimer.Name = "paramTimer";
+			paramTimer.Size = new System.Drawing.Size(612, 23);
+			paramTimer.TabIndex = 4;
+			paramTimer.ParameterChanged += OnParameterChanged;
+			// 
+			// paramTarget
+			// 
+			paramTarget.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			tableLayoutPanel.SetColumnSpan(paramTarget, 7);
+			paramTarget.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			paramTarget.Level = null;
+			paramTarget.Location = new System.Drawing.Point(83, 55);
+			paramTarget.Name = "paramTarget";
+			paramTarget.Size = new System.Drawing.Size(612, 23);
+			paramTarget.TabIndex = 3;
+			paramTarget.ParameterChanged += OnParameterChanged;
+			// 
+			// FormTrigger
+			// 
+			AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			AutoScaleMode = AutoScaleMode.Font;
+			CancelButton = butCancel;
+			ClientSize = new System.Drawing.Size(704, 223);
+			Controls.Add(panelMain);
+			DoubleBuffered = true;
+			MinimizeBox = false;
+			Name = "FormTrigger";
+			ShowIcon = false;
+			ShowInTaskbar = false;
+			SizeGripStyle = SizeGripStyle.Hide;
+			StartPosition = FormStartPosition.CenterParent;
+			scriptExportPanel.ResumeLayout(false);
+			scriptExportPanel.PerformLayout();
+			panelMain.ResumeLayout(false);
+			panelButtons.ResumeLayout(false);
+			panelClassicTriggerControls.ResumeLayout(false);
+			tableLayoutPanel.ResumeLayout(false);
+			tableLayoutPanel.PerformLayout();
+			ResumeLayout(false);
+		}
 
-        }
+		#endregion
 
-        #endregion
-
-        private DarkLabel label1;
+		private DarkLabel label1;
         private DarkLabel label2;
         private DarkLabel labelTarget;
         private DarkLabel labelTimer;
@@ -456,5 +530,8 @@ namespace TombEditor.Forms
         private TriggerParameterControl paramExtra;
         private DarkButton butSearchTrigger;
         private DarkButton butCopyAsAnimcommand;
-    }
+		private TableLayoutPanel tableLayoutPanel;
+		private DarkLabel labelPlugin;
+		private TriggerParameterControl paramPlugin;
+	}
 }
