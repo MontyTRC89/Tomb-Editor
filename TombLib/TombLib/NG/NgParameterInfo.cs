@@ -843,7 +843,18 @@ namespace TombLib.NG
             int sectionStartLineIndex = Array.FindIndex(Lines, line => line.StartsWith(startsWithString, StringComparison.OrdinalIgnoreCase));
 
             if (sectionStartLineIndex == -1)
-                return new Dictionary<ushort, TriggerParameterUshort>();
+            {
+                if (field is TriggerField.Extra)
+                {
+                    startsWithString = $"<START_{triggerField}_{id}_B";
+                    sectionStartLineIndex = Array.FindIndex(Lines, line => line.StartsWith(startsWithString, StringComparison.OrdinalIgnoreCase));
+
+                    if (sectionStartLineIndex == -1)
+                        return new Dictionary<ushort, TriggerParameterUshort>();
+                }
+                else
+                    return new Dictionary<ushort, TriggerParameterUshort>();
+            }
 
             int sectionEndLineIndex = Array.FindIndex(Lines, sectionStartLineIndex, line => line.StartsWith("<END", StringComparison.OrdinalIgnoreCase));
 
