@@ -1,0 +1,128 @@
+﻿  1:    1 seconds
+  2:    2 seconds
+  3:    3 seconds
+  4:    4 seconds
+  5:    5 seconds
+  6:    6 seconds
+  7:    7 seconds
+  8:    8 seconds
+  9:    9 seconds
+ 10:   10 seconds
+ 11:   11 seconds
+ 12:   12 seconds
+ 13:   13 seconds
+ 14:   14 seconds
+ 15:   15 seconds
+ 16:   16 seconds
+ 17:   17 seconds
+ 18:   18 seconds
+ 19:   19 seconds
+ 20:   20 seconds
+ 21:   21 seconds
+ 22:   22 seconds
+ 23:   23 seconds
+ 24:   24 seconds
+ 25:   25 seconds
+ 26:   26 seconds
+ 27:   27 seconds
+ 28:   28 seconds
+ 29:   29 seconds
+ 30:   30 seconds
+ 31:   31 seconds
+ 32:   32 seconds
+ 33:   33 seconds
+ 34:   34 seconds
+ 35:   35 seconds
+ 36:   36 seconds
+ 37:   37 seconds
+ 38:   38 seconds
+ 39:   39 seconds
+ 40:   40 seconds
+ 41:   41 seconds
+ 42:   42 seconds
+ 43:   43 seconds
+ 44:   44 seconds
+ 45:   45 seconds
+ 46:   46 seconds
+ 47:   47 seconds
+ 48:   48 seconds
+ 49:   49 seconds
+ 50:   50 seconds
+ 51:   51 seconds
+ 52:   52 seconds
+ 53:   53 seconds
+ 54:   54 seconds
+ 55:   55 seconds
+ 56:   56 seconds
+ 57:   57 seconds
+ 58:   58 seconds
+ 59:   59 seconds
+ 60:   60 seconds
+ 61:   61 seconds
+ 62:   62 seconds
+ 63:   63 seconds
+ 64:   64 seconds
+ 65:   65 seconds
+ 66:   66 seconds
+ 67:   67 seconds
+ 68:   68 seconds
+ 69:   69 seconds
+ 70:   70 seconds
+ 71:   71 seconds
+ 72:   72 seconds
+ 73:   73 seconds
+ 74:   74 seconds
+ 75:   75 seconds
+ 76:   76 seconds
+ 77:   77 seconds
+ 78:   78 seconds
+ 79:   79 seconds
+ 80:   80 seconds
+ 81:   81 seconds
+ 82:   82 seconds
+ 83:   83 seconds
+ 84:   84 seconds
+ 85:   85 seconds
+ 86:   86 seconds
+ 87:   87 seconds
+ 88:   88 seconds
+ 89:   89 seconds
+ 90:   90 seconds
+ 91:   91 seconds
+ 92:   92 seconds
+ 93:   93 seconds
+ 94:   94 seconds
+ 95:   95 seconds
+ 96:   96 seconds
+ 97:   97 seconds
+ 98:   98 seconds
+ 99:   99 seconds
+100:  100 seconds
+101:  101 seconds
+102:  102 seconds
+103:  103 seconds
+104:  104 seconds
+105:  105 seconds
+106:  106 seconds
+107:  107 seconds
+108:  108 seconds
+109:  109 seconds
+110:  110 seconds
+111:  111 seconds
+112:  112 seconds
+113:  113 seconds
+114:  114 seconds
+115:  115 seconds
+116:  116 seconds
+117:  117 seconds
+118:  118 seconds
+119:  119 seconds
+120:  120 seconds
+121:  121 seconds
+122:  122 seconds
+123:  123 seconds
+124:  124 seconds
+125:  125 seconds
+126:  126 seconds
+127:  127 seconds
+  0: Forever (use other action/effect to disable it)

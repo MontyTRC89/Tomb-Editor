@@ -465,6 +465,28 @@ namespace TombLib.LevelData
             }
         }
 
+        public string GetPluginsDirectory()
+        {
+            string gameDirectory = MakeAbsolute(GameDirectory);
+            string potentialDirectory = Path.Combine(gameDirectory, "Plugins");
+
+            if (Directory.Exists(potentialDirectory))
+                return potentialDirectory;
+
+            potentialDirectory = Path.Combine(Path.GetDirectoryName(gameDirectory), "Plugins");
+
+            return Directory.Exists(potentialDirectory) ? potentialDirectory : null;
+        }
+
+        public string[] TryGetTRGFiles()
+        {
+            string pluginsDirectory = GetPluginsDirectory();
+
+            return pluginsDirectory is null
+                ? Array.Empty<string>()
+                : Directory.GetFiles(pluginsDirectory, "Plugin_*.trg", SearchOption.AllDirectories);
+        }
+
         public ImageC LoadFontTexture(string path = null)
         {
             if (string.IsNullOrEmpty(path))
