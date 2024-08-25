@@ -85,8 +85,7 @@ namespace TombIDE.Shared.NewStructure
 		public virtual string GetLauncherFilePath()
 		{
 			string launcherFilePath = Directory.EnumerateFiles(DirectoryPath)
-				.Where(filePath => FileVersionInfo.GetVersionInfo(filePath).OriginalFilename == "launch.exe")
-				.FirstOrDefault();
+				.FirstOrDefault(filePath => FileVersionInfo.GetVersionInfo(filePath).OriginalFilename == "launch.exe");
 
 			if (string.IsNullOrEmpty(launcherFilePath))
 			{
