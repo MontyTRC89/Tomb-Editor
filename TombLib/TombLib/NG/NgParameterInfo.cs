@@ -96,7 +96,7 @@ namespace TombLib.NG
         }
 
         public static NgParameterRange GetTargetRange(LevelSettings levelSettings, TriggerType triggerType,
-            TriggerTargetType targetType, ITriggerParameter timer, ITriggerParameter plugin = null)
+            TriggerTargetType targetType, ITriggerParameter timer, ITriggerParameter plugin)
         {
             string trgFilePath = TryGetTRGFilePath(levelSettings, plugin, out bool isTombNextGeneration);
             TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
@@ -191,7 +191,7 @@ namespace TombLib.NG
         }
 
         public static NgParameterRange GetTimerRange(LevelSettings levelSettings, TriggerType triggerType,
-            TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter plugin = null)
+            TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter plugin)
         {
             string trgFilePath = TryGetTRGFilePath(levelSettings, plugin, out bool isTombNextGeneration);
             TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
@@ -251,7 +251,7 @@ namespace TombLib.NG
         }
 
         public static NgParameterRange GetExtraRange(LevelSettings levelSettings, TriggerType triggerType,
-            TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter timer, ITriggerParameter plugin = null)
+            TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter timer, ITriggerParameter plugin)
         {
             if (levelSettings.GameVersion != TRVersion.Game.TRNG)
                 return new NgParameterRange(NgParameterKind.Empty);
@@ -379,7 +379,7 @@ namespace TombLib.NG
                     result[id] = new TriggerParameterUshort(id, pluginName);
             }
 
-            return new NgParameterRange(result);
+            return new NgParameterRange(result, NgParameterKind.PluginEnumeration);
         }
 
         public static bool TriggerIsValid(LevelSettings levelSettings, TriggerInstance trigger)

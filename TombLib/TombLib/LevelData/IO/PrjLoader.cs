@@ -1474,11 +1474,11 @@ namespace TombLib.LevelData.IO
                             cancelToken.ThrowIfCancellationRequested();
 
                             instance.Target = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Target,
-                                NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer), objectLookup, progressReporter);
+                                NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer, instance.Plugin), objectLookup, progressReporter);
                             instance.Timer  = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Timer,
-                                NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target), objectLookup, progressReporter);
+                                NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Plugin), objectLookup, progressReporter);
                             instance.Extra = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Extra,
-                                NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer), objectLookup, progressReporter);
+                                NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer, instance.Plugin), objectLookup, progressReporter);
 
                             // Sinks and cameras are classified as 'object's most of time for some reason.
                             // We have to fix that.
