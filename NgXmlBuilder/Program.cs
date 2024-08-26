@@ -523,40 +523,26 @@ namespace NgXmlBuilder
                 string list = block.Items[0];
 
                 // Dynamic list?
-                if (list == "#ROOMS_255#")
-                    return new NgParameterRange(NgParameterKind.Rooms255);
-                else if (list == "#SOUND_EFFECT_A#")
-                    return new NgParameterRange(NgParameterKind.SoundEffectsA);
-                else if (list == "#SOUND_EFFECT_B#")
-                    return new NgParameterRange(NgParameterKind.SoundEffectsB);
-                else if (list == "#SFX_1024#")
-                    return new NgParameterRange(NgParameterKind.Sfx1024);
-                else if (list == "#NG_STRING_LIST_255#")
-                    return new NgParameterRange(NgParameterKind.NgStringsList255);
-                else if (list == "#NG_STRING_LIST_ALL#")
-                    return new NgParameterRange(NgParameterKind.NgStringsAll);
-                else if (list == "#PSX_STRING_LIST#")
-                    return new NgParameterRange(NgParameterKind.PsxStringsList);
-                else if (list == "#PC_STRING_LIST#")
-                    return new NgParameterRange(NgParameterKind.PcStringsList);
-                else if (list == "#STRING_LIST_255#")
-                    return new NgParameterRange(NgParameterKind.StringsList255);
-                else if (list == "#MOVEABLES#")
-                    return new NgParameterRange(NgParameterKind.MoveablesInLevel);
-                else if (list == "#SINK_LIST#")
-                    return new NgParameterRange(NgParameterKind.SinksInLevel);
-                else if (list == "#STATIC_LIST#")
-                    return new NgParameterRange(NgParameterKind.StaticsInLevel);
-                else if (list == "#FLYBY_LIST#")
-                    return new NgParameterRange(NgParameterKind.FlybyCamerasInLevel);
-                else if (list == "#CAMERA_EFFECTS#")
-                    return new NgParameterRange(NgParameterKind.CamerasInLevel);
-                else if (list is "#WAD-SLOTS#" or "#LARA_ANIM_SLOT#")
-                    return new NgParameterRange(NgParameterKind.WadSlots);
-                else if (list == "#STATIC_SLOTS#")
-                    return new NgParameterRange(NgParameterKind.StaticsSlots);
-                else if (list == "#LARA_POS_OCB#")
-                    return new NgParameterRange(NgParameterKind.LaraStartPosOcb);
+                switch (list)
+                {
+                    case "#ROOMS_255#": return new NgParameterRange(NgParameterKind.Rooms255);
+                    case "#SOUND_EFFECT_A#": return new NgParameterRange(NgParameterKind.SoundEffectsA);
+                    case "#SOUND_EFFECT_B#": return new NgParameterRange(NgParameterKind.SoundEffectsB);
+                    case "#SFX_1024#": return new NgParameterRange(NgParameterKind.Sfx1024);
+                    case "#NG_STRING_LIST_255#": return new NgParameterRange(NgParameterKind.NgStringsList255);
+                    case "#NG_STRING_LIST_ALL#": return new NgParameterRange(NgParameterKind.NgStringsAll);
+                    case "#PSX_STRING_LIST#": return new NgParameterRange(NgParameterKind.PsxStringsList);
+                    case "#PC_STRING_LIST#": return new NgParameterRange(NgParameterKind.PcStringsList);
+                    case "#STRING_LIST_255#": return new NgParameterRange(NgParameterKind.StringsList255);
+                    case "#MOVEABLES#": return new NgParameterRange(NgParameterKind.MoveablesInLevel);
+                    case "#SINK_LIST#": return new NgParameterRange(NgParameterKind.SinksInLevel);
+                    case "#STATIC_LIST#": return new NgParameterRange(NgParameterKind.StaticsInLevel);
+                    case "#FLYBY_LIST#": return new NgParameterRange(NgParameterKind.FlybyCamerasInLevel);
+                    case "#CAMERA_EFFECTS#": return new NgParameterRange(NgParameterKind.CamerasInLevel);
+                    case "#WAD-SLOTS#" or "#LARA_ANIM_SLOT#": return new NgParameterRange(NgParameterKind.WadSlots);
+                    case "#STATIC_SLOTS#": return new NgParameterRange(NgParameterKind.StaticsSlots);
+                    case "#LARA_POS_OCB#": return new NgParameterRange(NgParameterKind.LaraStartPosOcb);
+                }
 
                 // Repeated strings
                 if (list.StartsWith("#REPEAT#"))

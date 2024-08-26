@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -100,7 +99,7 @@ namespace TombLib.NG
             TriggerTargetType targetType, ITriggerParameter timer, ITriggerParameter plugin = null)
         {
             string trgFilePath = TryGetTRGFilePath(levelSettings, plugin, out bool isTombNextGeneration);
-            TRGParser parser = trgFilePath is not null ? new TRGParser(trgFilePath) : null;
+            TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
 
             switch (triggerType)
             {
@@ -113,8 +112,8 @@ namespace TombLib.NG
                         NgTriggerSubtype conditionSubtriggerType = NgCatalog.Instance.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
                         return conditionSubtriggerType?.Target ?? new NgParameterRange(NgParameterKind.Empty);
                     }
-                    else if (parser is not null)
-                        return parser.GetParameterRange(TRGBlock.ConditionNg, ((TriggerParameterUshort)timer).Key, TriggerField.Param);
+                    else if (trgFile is not null)
+                        return trgFile.GetParameterRange(TriggerField.ConditionNg, ((TriggerParameterUshort)timer).Key, ListPrefix.ObjectToTrigger);
                     break;
 
                 default:
@@ -142,8 +141,8 @@ namespace TombLib.NG
                             {
                                 if (isTombNextGeneration)
                                     return new NgParameterRange(NgCatalog.Instance.FlipEffectTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
-                                else if (parser is not null)
-                                    return parser.GetTriggerFieldRange(TRGBlock.FlipEffect);
+                                else if (trgFile is not null)
+                                    return trgFile.GetTriggerFieldSection(TriggerField.FlipEffect);
                             }
                             else if (levelSettings.GameVersion == TRVersion.Game.TR4)
                                 return new NgParameterRange(NgCatalog.Instance.FlipEffectTrigger.MainList
@@ -162,8 +161,8 @@ namespace TombLib.NG
                                 NgTriggerSubtype actionSubtriggerType = NgCatalog.Instance.ActionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
                                 return actionSubtriggerType?.Target ?? new NgParameterRange(NgParameterKind.Empty);
                             }
-                            else if (parser is not null)
-                                return parser.GetParameterRange(TRGBlock.ActionNG, ((TriggerParameterUshort)timer).Key, TriggerField.Param);
+                            else if (trgFile is not null)
+                                return trgFile.GetParameterRange(TriggerField.ActionNG, ((TriggerParameterUshort)timer).Key, ListPrefix.ObjectToTrigger);
                             break;
 
                         case TriggerTargetType.TimerfieldNg:
@@ -195,15 +194,15 @@ namespace TombLib.NG
             TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter plugin = null)
         {
             string trgFilePath = TryGetTRGFilePath(levelSettings, plugin, out bool isTombNextGeneration);
-            TRGParser parser = trgFilePath is not null ? new TRGParser(trgFilePath) : null;
+            TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
 
             switch (triggerType)
             {
                 case TriggerType.ConditionNg:
                     if (isTombNextGeneration)
                         return new NgParameterRange(NgCatalog.Instance.ConditionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
-                    else if (parser is not null)
-                        return parser.GetTriggerFieldRange(TRGBlock.ConditionNg);
+                    else if (trgFile is not null)
+                        return trgFile.GetTriggerFieldSection(TriggerField.ConditionNg);
                     break;
 
                 default:
@@ -221,15 +220,15 @@ namespace TombLib.NG
                                 NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.Instance.FlipEffectTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)target).Key);
                                 return flipEffectSubtriggerType?.Timer ?? new NgParameterRange(NgParameterKind.Empty);
                             }
-                            else if (parser is not null)
-                                return parser.GetParameterRange(TRGBlock.FlipEffect, ((TriggerParameterUshort)target).Key, TriggerField.Timer);
+                            else if (trgFile is not null)
+                                return trgFile.GetParameterRange(TriggerField.FlipEffect, ((TriggerParameterUshort)target).Key, ListPrefix.Timer);
                             break;
 
                         case TriggerTargetType.ActionNg:
                             if (isTombNextGeneration)
                                 return new NgParameterRange(NgCatalog.Instance.ActionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
-                            else if (parser is not null)
-                                return parser.GetTriggerFieldRange(TRGBlock.ActionNG);
+                            else if (trgFile is not null)
+                                return trgFile.GetTriggerFieldSection(TriggerField.ActionNG);
                             break;
 
                         case TriggerTargetType.TimerfieldNg:
@@ -258,7 +257,7 @@ namespace TombLib.NG
                 return new NgParameterRange(NgParameterKind.Empty);
 
             string trgFilePath = TryGetTRGFilePath(levelSettings, plugin, out bool isTombNextGeneration);
-            TRGParser parser = trgFilePath is not null ? new TRGParser(trgFilePath) : null;
+            TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
 
             switch (triggerType)
             {
@@ -271,8 +270,8 @@ namespace TombLib.NG
                         NgTriggerSubtype conditionSubtriggerType = NgCatalog.Instance.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
                         return conditionSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                     }
-                    else if (parser is not null)
-                        return parser.GetParameterRange(TRGBlock.ConditionNg, ((TriggerParameterUshort)timer).Key, TriggerField.Extra);
+                    else if (trgFile is not null)
+                        return trgFile.GetParameterRange(TriggerField.ConditionNg, ((TriggerParameterUshort)timer).Key, ListPrefix.Extra);
                     break;
 
                 default:
@@ -287,8 +286,8 @@ namespace TombLib.NG
                                 NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.Instance.FlipEffectTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)target).Key);
                                 return flipEffectSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                             }
-                            else if (parser is not null)
-                                return parser.GetParameterRange(TRGBlock.FlipEffect, ((TriggerParameterUshort)target).Key, TriggerField.Extra);
+                            else if (trgFile is not null)
+                                return trgFile.GetParameterRange(TriggerField.FlipEffect, ((TriggerParameterUshort)target).Key, ListPrefix.Extra);
                             break;
 
                         case TriggerTargetType.ActionNg:
@@ -300,8 +299,8 @@ namespace TombLib.NG
                                 NgTriggerSubtype actionSubtriggerType = NgCatalog.Instance.ActionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
                                 return actionSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                             }
-                            else if (parser is not null)
-                                return parser.GetParameterRange(TRGBlock.ActionNG, ((TriggerParameterUshort)timer).Key, TriggerField.Extra);
+                            else if (trgFile is not null)
+                                return trgFile.GetParameterRange(TriggerField.ActionNG, ((TriggerParameterUshort)timer).Key, ListPrefix.Extra);
                             break;
 
                         default:
@@ -749,215 +748,6 @@ namespace TombLib.NG
                         + result;
             }
             throw new ExceptionScriptNotSupported();
-        }
-    }
-
-    public enum TRGBlock
-    {
-        ConditionNg,
-        FlipEffect,
-        ActionNG,
-    }
-
-    public enum TriggerField
-    {
-        Unknown,
-        Param,
-        Timer,
-        Extra
-    }
-
-    public class TRGParser
-    {
-        public string[] Lines { get; }
-
-        public TRGParser(string trgFilePath)
-            => Lines = File.ReadAllLines(trgFilePath);
-
-        public NgParameterRange GetTriggerFieldRange(TRGBlock block)
-        {
-            var results = new Dictionary<ushort, TriggerParameterUshort>();
-
-            int sectionStartLineIndex = block switch
-            {
-                TRGBlock.ConditionNg => Array.FindIndex(Lines, line => line.StartsWith("<START_TRIGGERTYPE_12_T", StringComparison.OrdinalIgnoreCase)),
-                TRGBlock.ActionNG => Array.FindIndex(Lines, line => line.StartsWith("<START_TRIGGERWHAT_11_T", StringComparison.OrdinalIgnoreCase)),
-                _ => Array.FindIndex(Lines, line => line.StartsWith("<START_TRIGGERWHAT_9_O", StringComparison.OrdinalIgnoreCase)), // Flip Effect
-            };
-
-            if (sectionStartLineIndex == -1)
-                return new NgParameterRange(results);
-
-            int sectionEndLineIndex = Array.FindIndex(Lines, sectionStartLineIndex, line => line.StartsWith("<END", StringComparison.OrdinalIgnoreCase));
-
-            if (sectionEndLineIndex == -1)
-                sectionEndLineIndex = Lines.Length;
-
-            var keyValueRegex = new Regex(@"^(\d+):(.*)");
-
-            for (int i = sectionStartLineIndex + 1; i < sectionEndLineIndex; i++)
-            {
-                string line = Lines[i];
-                Match match = keyValueRegex.Match(line);
-
-                if (!match.Success)
-                    continue;
-
-                if (!ushort.TryParse(match.Groups[1].Value, out ushort id))
-                    continue;
-
-                string name = match.Groups[2].Value
-                    .Split("#END_DOC#")[0]
-                    .Split("#START_DOC#")[0]
-                    .Split("#REMARK#")[0]
-                    .Trim();
-
-                if (string.IsNullOrEmpty(name))
-                    continue;
-
-                results[id] = new TriggerParameterUshort(id, name);
-            }
-
-            return new NgParameterRange(results);
-        }
-
-        public NgParameterRange GetParameterRange(TRGBlock block, int id, TriggerField field)
-            => new(GetRangeKeyValues(block, id, field));
-
-        private IDictionary<ushort, TriggerParameterUshort> GetRangeKeyValues(TRGBlock block, int id, TriggerField field)
-        {
-            string triggerField = block switch
-            {
-                TRGBlock.ConditionNg => "CONDITION",
-                TRGBlock.ActionNG => "ACTION",
-                _ => "EFFECT"
-            };
-
-            string startsWithString = field switch
-            {
-                TriggerField.Param => $"<START_{triggerField}_{id}_O",
-                TriggerField.Timer => $"<START_{triggerField}_{id}_T",
-                _ => $"<START_{triggerField}_{id}_E"
-            };
-
-            int sectionStartLineIndex = Array.FindIndex(Lines, line => line.StartsWith(startsWithString, StringComparison.OrdinalIgnoreCase));
-
-            if (sectionStartLineIndex == -1)
-            {
-                if (field is TriggerField.Extra)
-                {
-                    startsWithString = $"<START_{triggerField}_{id}_B";
-                    sectionStartLineIndex = Array.FindIndex(Lines, line => line.StartsWith(startsWithString, StringComparison.OrdinalIgnoreCase));
-
-                    if (sectionStartLineIndex == -1)
-                        return new Dictionary<ushort, TriggerParameterUshort>();
-                }
-                else
-                    return new Dictionary<ushort, TriggerParameterUshort>();
-            }
-
-            int sectionEndLineIndex = Array.FindIndex(Lines, sectionStartLineIndex, line => line.StartsWith("<END", StringComparison.OrdinalIgnoreCase));
-
-            if (sectionEndLineIndex == -1)
-                sectionEndLineIndex = Lines.Length;
-
-            return GetKeyValues(Lines[sectionStartLineIndex..sectionEndLineIndex], true);
-        }
-
-        private IDictionary<ushort, TriggerParameterUshort> GetKeyValues(string[] lines, bool allowLists)
-        {
-            var results = new Dictionary<ushort, TriggerParameterUshort>();
-            var keyValueRegex = new Regex(@"^(\d+):(.*)");
-
-            foreach (string line in lines)
-            {
-                Match match = keyValueRegex.Match(line);
-
-                if (!match.Success)
-                {
-                    if (line.StartsWith('#') && allowLists)
-                    {
-                        foreach (KeyValuePair<ushort, TriggerParameterUshort> item in GetList(line))
-                            results.Add(item.Key, item.Value);
-                    }
-
-                    continue;
-                }
-
-                if (!ushort.TryParse(match.Groups[1].Value, out ushort id))
-                    continue;
-
-                string name = match.Groups[2].Value.Trim();
-
-                if (string.IsNullOrEmpty(name))
-                    continue;
-
-                results[id] = new TriggerParameterUshort(id, name);
-            }
-
-            return results;
-        }
-
-        private IDictionary<ushort, TriggerParameterUshort> GetList(string line)
-        {
-            var results = new Dictionary<ushort, TriggerParameterUshort>();
-
-            // Repeated strings
-            if (line.StartsWith("#REPEAT#"))
-            {
-                string[] tokens = line["#REPEAT#".Length..].Split('#');
-
-                if (tokens.Length != 3) // Invalid format
-                    return results;
-
-                string radix = tokens[0].Replace("\"", "");
-
-                if (!int.TryParse(tokens[1], out int start) ||
-                    !int.TryParse(tokens[2], out int end))
-                    return results;
-
-                for (int i = start; i < end; i++)
-                    results.Add(unchecked((ushort)checked((short)i)), new TriggerParameterUshort((ushort)i, radix + i));
-
-                return results;
-            }
-            else if (line.StartsWith("#SAME_OF#="))
-            {
-                string value = line["#SAME_OF#=".Length..].Trim();
-                string[] tokens = value.Split('_');
-
-                if (tokens.Length != 3) // Invalid format
-                    return results;
-
-                if (!int.TryParse(tokens[1], out int id))
-                    return results;
-
-                TRGBlock block = tokens[0] switch
-                {
-                    "CONDITION" => TRGBlock.ConditionNg,
-                    "ACTION" => TRGBlock.ActionNG,
-                    _ => TRGBlock.FlipEffect
-                };
-
-                TriggerField field = tokens[2] switch
-                {
-                    "O" => TriggerField.Param,
-                    "T" => TriggerField.Timer,
-                    _ => TriggerField.Extra
-                };
-
-                return GetRangeKeyValues(block, id, field);
-            }
-
-            string listName = line.Replace("#", "");
-            string executablePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string filePath = Path.Combine(executablePath, "Catalogs\\NG\\" + listName + ".txt");
-
-            if (!File.Exists(filePath))
-                return results;
-
-            string[] lines = File.ReadAllLines(filePath);
-            return GetKeyValues(lines, false);
         }
     }
 }
