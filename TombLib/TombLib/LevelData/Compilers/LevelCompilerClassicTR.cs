@@ -17,7 +17,7 @@ namespace TombLib.LevelData.Compilers
         private Room[] _sortedRooms;
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
 
-        private readonly Dictionary<string, ushort> _plugins = new();
+        private readonly Dictionary<ushort, string> _plugins = new();
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private byte[] _texture32Data;
         private readonly List<ushort> _floorData = new List<ushort>();
@@ -165,7 +165,7 @@ namespace TombLib.LevelData.Compilers
 
             foreach (KeyValuePair<ushort, TriggerParameterUshort> plugin in _level.Settings.GetPluginRange())
             {
-                _plugins.Add(plugin.Value.Name, plugin.Key);
+                _plugins.Add(plugin.Key, plugin.Value.Name);
                 _progressReporter.ReportInfo("Plugin: " + plugin.Value.Name + " with ID " + plugin.Key);
             }
         }

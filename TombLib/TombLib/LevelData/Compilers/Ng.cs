@@ -218,17 +218,15 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkPluginsNames(BinaryWriter writer)
         {
-            var buffer = new byte[] { 0x03, 0x00, 0x47, 0x80 };
-            writer.Write(buffer);
-
-            writer.Write((ushort)(_plugins.Count - 1));
+			writer.Write((ushort)(2 + _plugins.Count - 1));
+            writer.Write((ushort)0x8047);
 
             foreach (var plugin in _plugins.Skip(1)) // Skip Tomb_NextGeneration
             {
                 var record = new PluginRecord
                 {
-                    PluginId = plugin.Value,
-                    Name = plugin.Key,
+                    PluginId = plugin.Key,
+                    Name = plugin.Value,
                     Usages = 1 // Don't care
                 };
 
@@ -271,13 +269,10 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)
         {
-            var buffer = new byte[] { 0x03, 0x00, 0x48, 0x80 };
-            writer.Write(buffer);
+			writer.Write((ushort)(2 + _floorData.Count));
+            writer.Write(0x8048);
 
-            ushort numFloorData = (ushort)_floorData.Count;
-            writer.Write(numFloorData);
-
-            for (int i = 0; i < numFloorData; i++)
+            for (int i = 0; i < _floorData.Count; i++)
                 writer.Write((ushort)0);
         }
 
