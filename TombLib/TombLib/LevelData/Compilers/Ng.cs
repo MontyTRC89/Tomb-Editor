@@ -269,10 +269,12 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)
         {
-            writer.Write((ushort)(2 + _floorData.Count));
+            int floorDataCount = (_floorData.Count - 1) / 4;
+
+            writer.Write((ushort)(2 + floorDataCount));
             writer.Write((ushort)0x8048);
 
-            for (int i = 0; i < _floorData.Count; i++)
+            for (int i = 0; i < floorDataCount; i++)
                 writer.Write((ushort)3);
         }
 
