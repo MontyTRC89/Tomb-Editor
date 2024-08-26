@@ -218,7 +218,7 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkPluginsNames(BinaryWriter writer)
         {
-            writer.Write((ushort)(2 + _plugins.Count - 1));
+            writer.Write((ushort)(2 + ((_plugins.Count - 1) * 44)));
             writer.Write((ushort)0x8047);
 
             foreach (var plugin in _plugins.Skip(1)) // Skip Tomb_NextGeneration
@@ -270,10 +270,10 @@ namespace TombLib.LevelData.Compilers
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)
         {
             writer.Write((ushort)(2 + _floorData.Count));
-            writer.Write(0x8048);
+            writer.Write((ushort)0x8048);
 
             for (int i = 0; i < _floorData.Count; i++)
-                writer.Write((ushort)0);
+                writer.Write((ushort)3);
         }
 
         private void WriteNgChunkLevelFlags(BinaryWriter writer)
