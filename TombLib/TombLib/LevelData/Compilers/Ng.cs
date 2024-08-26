@@ -218,8 +218,9 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkPluginsNames(BinaryWriter writer)
         {
-            writer.Write((ushort)(2 + ((_plugins.Count - 1) * 44)));
+            writer.Write((ushort)(3 + ((_plugins.Count - 1) * 44)));
             writer.Write((ushort)0x8047);
+            writer.Write((ushort)(_plugins.Count - 1));
 
             foreach (var plugin in _plugins.Skip(1)) // Skip Tomb_NextGeneration
             {
@@ -271,11 +272,17 @@ namespace TombLib.LevelData.Compilers
         {
             int floorDataCount = (_floorData.Count - 1) / 4;
 
-            writer.Write((ushort)(2 + floorDataCount));
+            writer.Write((ushort)(3 + floorDataCount));
             writer.Write((ushort)0x8048);
+            writer.Write((ushort)floorDataCount * 2);
 
             for (int i = 0; i < floorDataCount; i++)
+            {
                 writer.Write((ushort)3);
+                writer.Write(_floorData[i]); // ???
+            }
+
+            writer.Write((ushort)0); // I don't know...
         }
 
         private void WriteNgChunkLevelFlags(BinaryWriter writer)
