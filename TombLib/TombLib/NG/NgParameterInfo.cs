@@ -113,9 +113,8 @@ namespace TombLib.NG
                         NgTriggerSubtype conditionSubtriggerType = NgCatalog.Instance.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
                         return conditionSubtriggerType?.Target ?? new NgParameterRange(NgParameterKind.Empty);
                     }
-                    else if (trgFile is not null)
+                    else
                         return trgFile.GetParameterRange(TriggerField.ConditionNg, ((TriggerParameterUshort)timer).Key, ListPrefix.ObjectToTrigger);
-                    break;
 
                 default:
                     switch (targetType)
@@ -142,7 +141,7 @@ namespace TombLib.NG
                             {
                                 if (isTombNextGeneration)
                                     return new NgParameterRange(NgCatalog.Instance.FlipEffectTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
-                                else if (trgFile is not null)
+                                else
                                     return trgFile.GetTriggerFieldSection(TriggerField.FlipEffect);
                             }
                             else if (levelSettings.GameVersion == TRVersion.Game.TR4)
@@ -151,7 +150,6 @@ namespace TombLib.NG
                                     .DicSelect(e => (TriggerParameterUshort)e.Value));
                             else
                                 return new NgParameterRange(NgParameterKind.AnyNumber);
-                            break;
 
                         case TriggerTargetType.ActionNg:
                             if (timer is not TriggerParameterUshort)
@@ -162,9 +160,8 @@ namespace TombLib.NG
                                 NgTriggerSubtype actionSubtriggerType = NgCatalog.Instance.ActionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
                                 return actionSubtriggerType?.Target ?? new NgParameterRange(NgParameterKind.Empty);
                             }
-                            else if (trgFile is not null)
+                            else
                                 return trgFile.GetParameterRange(TriggerField.ActionNG, ((TriggerParameterUshort)timer).Key, ListPrefix.ObjectToTrigger);
-                            break;
 
                         case TriggerTargetType.TimerfieldNg:
                             return NgCatalog.Instance.TimerFieldTrigger;
@@ -184,11 +181,7 @@ namespace TombLib.NG
                         default:
                             return new NgParameterRange(NgParameterKind.AnyNumber);
                     }
-
-                    break;
             }
-
-            return new NgParameterRange(NgParameterKind.Empty);
         }
 
         public static NgParameterRange GetTimerRange(LevelSettings levelSettings, TriggerType triggerType,
@@ -203,9 +196,8 @@ namespace TombLib.NG
                 case TriggerType.ConditionNg:
                     if (isTombNextGeneration)
                         return new NgParameterRange(NgCatalog.Instance.ConditionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
-                    else if (trgFile is not null)
+                    else
                         return trgFile.GetTriggerFieldSection(TriggerField.ConditionNg);
-                    break;
 
                 default:
                     switch (targetType)
@@ -222,16 +214,14 @@ namespace TombLib.NG
                                 NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.Instance.FlipEffectTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)target).Key);
                                 return flipEffectSubtriggerType?.Timer ?? new NgParameterRange(NgParameterKind.Empty);
                             }
-                            else if (trgFile is not null)
+                            else
                                 return trgFile.GetParameterRange(TriggerField.FlipEffect, ((TriggerParameterUshort)target).Key, ListPrefix.Timer);
-                            break;
 
                         case TriggerTargetType.ActionNg:
                             if (isTombNextGeneration)
                                 return new NgParameterRange(NgCatalog.Instance.ActionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
-                            else if (trgFile is not null)
+                            else
                                 return trgFile.GetTriggerFieldSection(TriggerField.ActionNG);
-                            break;
 
                         case TriggerTargetType.TimerfieldNg:
                             return new NgParameterRange(NgParameterKind.Empty);
@@ -245,11 +235,7 @@ namespace TombLib.NG
                         default:
                             return new NgParameterRange(NgParameterKind.AnyNumber);
                     }
-
-                    break;
             }
-
-            return new NgParameterRange(NgParameterKind.Empty);
         }
 
         public static NgParameterRange GetExtraRange(LevelSettings levelSettings, TriggerType triggerType,
@@ -273,9 +259,8 @@ namespace TombLib.NG
                         NgTriggerSubtype conditionSubtriggerType = NgCatalog.Instance.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
                         return conditionSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                     }
-                    else if (trgFile is not null)
+                    else
                         return trgFile.GetParameterRange(TriggerField.ConditionNg, ((TriggerParameterUshort)timer).Key, ListPrefix.Extra);
-                    break;
 
                 default:
                     switch (targetType)
@@ -289,9 +274,8 @@ namespace TombLib.NG
                                 NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.Instance.FlipEffectTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)target).Key);
                                 return flipEffectSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                             }
-                            else if (trgFile is not null)
+                            else
                                 return trgFile.GetParameterRange(TriggerField.FlipEffect, ((TriggerParameterUshort)target).Key, ListPrefix.Extra);
-                            break;
 
                         case TriggerTargetType.ActionNg:
                             if (timer is not TriggerParameterUshort)
@@ -302,18 +286,13 @@ namespace TombLib.NG
                                 NgTriggerSubtype actionSubtriggerType = NgCatalog.Instance.ActionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
                                 return actionSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                             }
-                            else if (trgFile is not null)
+                            else
                                 return trgFile.GetParameterRange(TriggerField.ActionNG, ((TriggerParameterUshort)timer).Key, ListPrefix.Extra);
-                            break;
 
                         default:
                             return new NgParameterRange(NgParameterKind.Empty);
                     }
-
-                    break;
             }
-
-            return new NgParameterRange(NgParameterKind.Empty);
         }
 
         private static string TryGetTRGFilePath(LevelSettings levelSettings, ITriggerParameter plugin)
@@ -406,10 +385,17 @@ namespace TombLib.NG
 
         public delegate ushort BoundedValueCallback(ushort upperBound);
 
-        public static ushort EncodeNGRealTimer(TriggerTargetType targetType, TriggerType triggerType, ushort target, ushort upperBound, BoundedValueCallback timer, BoundedValueCallback extra)
+        public static ushort EncodeNGRealTimer(LevelSettings levelSettings,
+            TriggerTargetType targetType, TriggerType triggerType, ITriggerParameter plugin,
+            ushort target, ushort upperBound, BoundedValueCallback timer, BoundedValueCallback extra)
         {
+            string trgFilePath = TryGetTRGFilePath(levelSettings, plugin);
+            TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
+            bool isTombNextGeneration = trgFile is null;
+
             ushort timerUpperBound = (ushort)(upperBound & 255);
             ushort extraUpperBound = (ushort)(upperBound >> 8);
+
             switch (triggerType)
             {
                 case TriggerType.ConditionNg:
@@ -426,8 +412,11 @@ namespace TombLib.NG
                             return timer(upperBound);
 
                         case TriggerTargetType.FlipEffect:
-                            NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.Instance.FlipEffectTrigger.MainList.TryGetOrDefault(target);
-                            if (flipEffectSubtriggerType != null && flipEffectSubtriggerType.Extra.IsEmpty)
+                            bool isEmpty = isTombNextGeneration
+                                ? NgCatalog.Instance.FlipEffectTrigger.MainList.TryGetOrDefault(target)?.Extra.IsEmpty == true
+                                : trgFile.GetParameterRange(TriggerField.FlipEffect, target, ListPrefix.Extra).IsEmpty;
+
+                            if (isEmpty)
                                 return timer(upperBound);
                             else
                                 return (ushort)(timer(timerUpperBound) | (extra(extraUpperBound) << 8));
@@ -438,7 +427,9 @@ namespace TombLib.NG
             }
         }
 
-        public static void DecodeNGRealTimer(TriggerTargetType targetType, TriggerType triggerType, ushort target, ushort realTimer, short triggerFlags, out ushort? timer, out ushort? extra)
+        // Note: Method doesn't support plugin triggers. Not sure if it's needed.
+        public static void DecodeNGRealTimer(TriggerTargetType targetType, TriggerType triggerType,
+            ushort target, ushort realTimer, short triggerFlags, out ushort? timer, out ushort? extra)
         {
             switch (triggerType)
             {
@@ -571,13 +562,18 @@ namespace TombLib.NG
                 return parameter;
         }
 
-        public static TriggerInstance ImportFromScriptTrigger(Level level, string script)
+        public static TriggerInstance ImportFromScriptTrigger(Level level, ITriggerParameter plugin, string script)
         {
+            string trgFilePath = TryGetTRGFilePath(level.Settings, plugin);
+            TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
+            bool isTombNextGeneration = trgFile is null;
+
             // Build object lookup table
             var objectLookup = level.ExistingRooms
-                                          .SelectMany(room => room.Objects)
-                                          .Where(instance => instance is IHasScriptID && ((IHasScriptID)instance).ScriptId.HasValue)
-                                          .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
+                .SelectMany(room => room.Objects)
+                .Where(instance => instance is IHasScriptID && ((IHasScriptID)instance).ScriptId.HasValue)
+                .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
+
             // Make dummy trigger
             var result = new TriggerInstance(RectangleInt2.Zero) { TriggerType = TriggerType.Trigger };
 
@@ -611,18 +607,24 @@ namespace TombLib.NG
                     case 0x9000:
                         result.TriggerType = TriggerType.ConditionNg;
                         result.TargetType = TriggerTargetType.ParameterNg;
-                        decode = !NgCatalog.Instance.ConditionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty;
+                        decode = isTombNextGeneration
+                            ? !NgCatalog.Instance.ConditionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty
+                            : !trgFile.GetParameterRange(TriggerField.ConditionNg, (ushort)(operands[2] & 0xFF), ListPrefix.Extra).IsEmpty;
                         break;
 
                     case 0x2000:
                         result.TargetType = TriggerTargetType.FlipEffect;
-                        decode = !NgCatalog.Instance.FlipEffectTrigger.MainList[operands[1]].Extra.IsEmpty;
+                        decode = isTombNextGeneration
+                            ? !NgCatalog.Instance.FlipEffectTrigger.MainList[operands[1]].Extra.IsEmpty
+                            : !trgFile.GetParameterRange(TriggerField.FlipEffect, operands[1], ListPrefix.Extra).IsEmpty;
                         break;
 
                     case 0x4000:
                     case 0x5000:
                         result.TargetType = TriggerTargetType.ActionNg;
-                        decode = !NgCatalog.Instance.ActionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty;
+                        decode = isTombNextGeneration
+                            ? !NgCatalog.Instance.ActionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty
+                            : !trgFile.GetParameterRange(TriggerField.ActionNG, (ushort)(operands[2] & 0xFF), ListPrefix.Extra).IsEmpty;
                         break;
 
                     default:
