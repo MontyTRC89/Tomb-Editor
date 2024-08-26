@@ -39,7 +39,7 @@ namespace NgXmlBuilder
 
     internal static class Program
     {
-        private const string outPath = "..\\TombLib\\Catalogs\\NgCatalog.xml";
+        private const string outPath = "..\\..\\TombLib\\TombLib\\Catalogs\\NgCatalog.xml";
 
         private static void Main()
         {
