@@ -388,11 +388,11 @@ namespace TombLib.NG
                 return false;
             if (!GetTargetTypeRange(levelSettings, trigger.TriggerType).Contains(trigger.TargetType))
                 return false;
-            if (!GetTargetRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Timer).ParameterMatches(trigger.Target, false))
+            if (!GetTargetRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Timer, trigger.Plugin).ParameterMatches(trigger.Target, false))
                 return false;
-            if (!GetTimerRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Target).ParameterMatches(trigger.Timer, false))
+            if (!GetTimerRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Target, trigger.Plugin).ParameterMatches(trigger.Timer, false))
                 return false;
-            if (!GetExtraRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Target, trigger.Timer).ParameterMatches(trigger.Extra, false))
+            if (!GetExtraRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Target, trigger.Timer, trigger.Plugin).ParameterMatches(trigger.Extra, false))
                 return false;
             return true;
         }
@@ -641,17 +641,20 @@ namespace TombLib.NG
 
             // Link actual objects
             result.Target = FixTriggerParameter(level, result, result.Target,
-                GetTargetRange(level.Settings, result.TriggerType, result.TargetType, result.Timer), objectLookup);
+                GetTargetRange(level.Settings, result.TriggerType, result.TargetType, result.Timer, result.Plugin), objectLookup);
             result.Timer = FixTriggerParameter(level, result, result.Timer,
-                GetTimerRange(level.Settings, result.TriggerType, result.TargetType, result.Target), objectLookup);
+                GetTimerRange(level.Settings, result.TriggerType, result.TargetType, result.Target, result.Plugin), objectLookup);
             result.Extra = FixTriggerParameter(level, result, result.Extra,
-                GetExtraRange(level.Settings, result.TriggerType, result.TargetType, result.Target, result.Timer), objectLookup);
+                GetExtraRange(level.Settings, result.TriggerType, result.TargetType, result.Target, result.Timer, result.Plugin), objectLookup);
 
             return result;
         }
 
         public static string ExportToScriptTrigger(Level level, TriggerInstance trigger, int? animCommandNumber, bool withComment = false)
         {
+            string trgFilePath = TryGetTRGFilePath(level.Settings, trigger.Plugin, out bool isTombNextGeneration);
+            TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
+
             checked
             {
                 string result = null;
@@ -682,14 +685,18 @@ namespace TombLib.NG
                                 throw new Exception("Trigger is invalid.");
 
                             ushort conditionId = GetValue(level, trigger.Timer);
-                            NgTriggerSubtype conditionTrigger = NgCatalog.Instance.ConditionTrigger.MainList[conditionId];
 
                             mask |= (ushort)(trigger.Target is ObjectInstance ? 0x9000 : 0x8000);
                             firstValue = GetValue(level, trigger.Target);
                             secondValue = conditionId;
 
-                            if (!conditionTrigger.Extra.IsEmpty)
+                            bool isEmpty = isTombNextGeneration
+                                ? NgCatalog.Instance.ConditionTrigger.MainList[conditionId].Extra.IsEmpty
+                                : trgFile.GetParameterRange(TriggerField.ConditionNg, conditionId, ListPrefix.Extra).IsEmpty;
+
+                            if (!isEmpty)
                                 secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
+
                             break;
                         }
                     default:
@@ -701,14 +708,18 @@ namespace TombLib.NG
                                         throw new Exception("Trigger is invalid.");
 
                                     ushort flipeffectId = GetValue(level, trigger.Target);
-                                    NgTriggerSubtype flipeffectTrigger = NgCatalog.Instance.FlipEffectTrigger.MainList[flipeffectId];
 
                                     mask |= 0x2000;
                                     firstValue = flipeffectId;
                                     secondValue = GetValue(level, trigger.Timer);
 
-                                    if (!flipeffectTrigger.Extra.IsEmpty)
+                                    bool isEmpty = isTombNextGeneration
+                                        ? NgCatalog.Instance.FlipEffectTrigger.MainList[flipeffectId].Extra.IsEmpty
+                                        : trgFile.GetParameterRange(TriggerField.FlipEffect, flipeffectId, ListPrefix.Extra).IsEmpty;
+
+                                    if (!isEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
+
                                     break;
                                 }
 
@@ -718,14 +729,18 @@ namespace TombLib.NG
                                         throw new Exception("Trigger is invalid.");
 
                                     ushort actionId = GetValue(level, trigger.Timer);
-                                    NgTriggerSubtype actionTrigger = NgCatalog.Instance.ActionTrigger.MainList[actionId];
 
                                     mask |= (ushort)(trigger.Target is StaticInstance ? 0x4000 : 0x5000);
                                     firstValue = GetValue(level, trigger.Target);
                                     secondValue = actionId;
 
-                                    if (!actionTrigger.Extra.IsEmpty)
+                                    bool isEmpty = isTombNextGeneration
+                                        ? NgCatalog.Instance.ActionTrigger.MainList[actionId].Extra.IsEmpty
+                                        : trgFile.GetParameterRange(TriggerField.ActionNG, actionId, ListPrefix.Extra).IsEmpty;
+
+                                    if (!isEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
+
                                     break;
                                 }
                         }

@@ -76,7 +76,6 @@ namespace TombEditor.Forms
 
             paramTriggerType.Parameter = new TriggerParameterUshort((ushort)trigger.TriggerType);
             paramTargetType.Parameter = new TriggerParameterUshort((ushort)trigger.TargetType);
-            paramPlugin.Parameter = new TriggerParameterUshort(trigger.PluginId);
 
             // HACK: Change order of population based on target type.
             if (trigger.TriggerType == TriggerType.ConditionNg)
@@ -161,6 +160,7 @@ namespace TombEditor.Forms
             {
                 TriggerType = TriggerType,
                 TargetType = TargetType,
+                Plugin = paramPlugin.Parameter,
                 Target = paramTarget.Parameter,
                 Timer = paramTimer.Parameter,
                 Extra = paramExtra.Parameter,
@@ -179,7 +179,7 @@ namespace TombEditor.Forms
             // Store some values like we have not NG triggers
             _trigger.TriggerType = TriggerType;
             _trigger.TargetType = TargetType;
-            _trigger.PluginId = ((TriggerParameterUshort)paramPlugin.Parameter).Key;
+            _trigger.Plugin = paramPlugin.Parameter;
             _trigger.Target = paramTarget.Parameter;
             _trigger.Timer = paramTimer.Parameter;
             _trigger.Extra = paramExtra.Parameter;
