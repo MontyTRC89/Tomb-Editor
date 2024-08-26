@@ -214,7 +214,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((ushort)_remappedTiles[textureId]);
                 writer.Write((ushort)textureId);
             }
-            
+
             var endOfChunk = writer.BaseStream.Position;
             var numWords = (endOfChunk - startOfChunk) / 2;
             writer.Seek((int)startOfChunk, SeekOrigin.Begin);

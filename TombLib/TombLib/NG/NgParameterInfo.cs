@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -316,57 +315,7 @@ namespace TombLib.NG
         }
 
         public static NgParameterRange GetPluginRange(LevelSettings levelSettings)
-        {
-            var result = new Dictionary<ushort, TriggerParameterUshort>
-            {
-                { 0, new TriggerParameterUshort(0, "Tomb_NextGeneration") }
-            };
-
-            string scriptDirectory = levelSettings.MakeAbsolute(levelSettings.ScriptDirectory);
-            string scriptFilePath = Path.Combine(scriptDirectory, "Script.txt");
-
-            if (!File.Exists(scriptFilePath))
-                return new NgParameterRange(result);
-
-            string[] trgFiles = levelSettings.TryGetTRGFiles();
-
-            if (trgFiles.Length == 0)
-                return new NgParameterRange(result);
-
-            string[] scriptFileLines = File.ReadAllLines(scriptFilePath);
-            string[] pluginCommands = scriptFileLines
-                .Where(line => Regex.IsMatch(line, @"^Plugin\s*=", RegexOptions.IgnoreCase))
-                .ToArray();
-
-            if (pluginCommands.Length == 0)
-                return new NgParameterRange(result);
-
-            foreach (string pluginCommand in pluginCommands)
-            {
-                string[] commandParts = pluginCommand.Split('=');
-
-                if (commandParts.Length != 2)
-                    continue;
-
-                commandParts = commandParts[1].Split(',');
-
-                if (commandParts.Length is not 2 and not 3)
-                    continue;
-
-                if (!ushort.TryParse(commandParts[0], out ushort id) || id < 1) // ID 0 is reserved for Tomb_NextGeneration
-                    continue;
-
-                string pluginName = commandParts[1].Trim();
-
-                if (string.IsNullOrEmpty(pluginName))
-                    continue;
-
-                if (trgFiles.Any(file => Path.GetFileNameWithoutExtension(file).Equals(pluginName, StringComparison.OrdinalIgnoreCase)))
-                    result[id] = new TriggerParameterUshort(id, pluginName);
-            }
-
-            return new NgParameterRange(result, NgParameterKind.PluginEnumeration);
-        }
+            => new(levelSettings.GetPluginRange(), NgParameterKind.PluginEnumeration);
 
         public static bool TriggerIsValid(LevelSettings levelSettings, TriggerInstance trigger)
         {
