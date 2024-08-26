@@ -76,6 +76,7 @@ namespace TombEditor.Forms
 
             paramTriggerType.Parameter = new TriggerParameterUshort((ushort)trigger.TriggerType);
             paramTargetType.Parameter = new TriggerParameterUshort((ushort)trigger.TargetType);
+            paramPlugin.Parameter = trigger.Plugin;
 
             // HACK: Change order of population based on target type.
             if (trigger.TriggerType == TriggerType.ConditionNg)

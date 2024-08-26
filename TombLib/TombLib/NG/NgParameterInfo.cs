@@ -98,8 +98,9 @@ namespace TombLib.NG
         public static NgParameterRange GetTargetRange(LevelSettings levelSettings, TriggerType triggerType,
             TriggerTargetType targetType, ITriggerParameter timer, ITriggerParameter plugin)
         {
-            string trgFilePath = TryGetTRGFilePath(levelSettings, plugin, out bool isTombNextGeneration);
+            string trgFilePath = TryGetTRGFilePath(levelSettings, plugin);
             TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
+            bool isTombNextGeneration = trgFile is null;
 
             switch (triggerType)
             {
@@ -193,8 +194,9 @@ namespace TombLib.NG
         public static NgParameterRange GetTimerRange(LevelSettings levelSettings, TriggerType triggerType,
             TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter plugin)
         {
-            string trgFilePath = TryGetTRGFilePath(levelSettings, plugin, out bool isTombNextGeneration);
+            string trgFilePath = TryGetTRGFilePath(levelSettings, plugin);
             TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
+            bool isTombNextGeneration = trgFile is null;
 
             switch (triggerType)
             {
@@ -256,8 +258,9 @@ namespace TombLib.NG
             if (levelSettings.GameVersion != TRVersion.Game.TRNG)
                 return new NgParameterRange(NgParameterKind.Empty);
 
-            string trgFilePath = TryGetTRGFilePath(levelSettings, plugin, out bool isTombNextGeneration);
+            string trgFilePath = TryGetTRGFilePath(levelSettings, plugin);
             TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
+            bool isTombNextGeneration = trgFile is null;
 
             switch (triggerType)
             {
@@ -313,14 +316,18 @@ namespace TombLib.NG
             return new NgParameterRange(NgParameterKind.Empty);
         }
 
-        private static string TryGetTRGFilePath(LevelSettings levelSettings, ITriggerParameter plugin, out bool isTombNextGeneration)
+        private static string TryGetTRGFilePath(LevelSettings levelSettings, ITriggerParameter plugin)
         {
-            isTombNextGeneration = false;
-
             if (plugin is not TriggerParameterUshort pluginParam || pluginParam.Key == 0) // Is null or Tomb_NextGeneration
-            {
-                isTombNextGeneration = true;
                 return null;
+
+            if (string.IsNullOrEmpty(pluginParam.Name)) // Only key was given
+            {
+                NgParameterRange pluginRange = GetPluginRange(levelSettings);
+                pluginRange.FixedEnumeration.TryGetValue(pluginParam.Key, out pluginParam);
+
+                if (pluginParam is null)
+                    return null;
             }
 
             string[] trgFiles = levelSettings.TryGetTRGFiles();
@@ -652,8 +659,9 @@ namespace TombLib.NG
 
         public static string ExportToScriptTrigger(Level level, TriggerInstance trigger, int? animCommandNumber, bool withComment = false)
         {
-            string trgFilePath = TryGetTRGFilePath(level.Settings, trigger.Plugin, out bool isTombNextGeneration);
+            string trgFilePath = TryGetTRGFilePath(level.Settings, trigger.Plugin);
             TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
+            bool isTombNextGeneration = trgFile is null;
 
             checked
             {
