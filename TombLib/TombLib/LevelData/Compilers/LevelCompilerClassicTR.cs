@@ -84,7 +84,7 @@ namespace TombLib.LevelData.Compilers
 
             // Write plugins if TRNG is detected
             if (supportsTRNGPlugins)
-				WritePlugins();
+                WritePlugins();
 
             // Prepare level data
             ConvertWad2DataToTrData(_level);
