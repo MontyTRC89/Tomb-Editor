@@ -131,6 +131,7 @@ namespace TombIDE.ProjectMaster
 
 				level.Settings.GameDirectory = level.Settings.MakeRelative(engineDirectory, VariableType.LevelDirectory);
 				level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
+				level.Settings.ScriptDirectory = level.Settings.MakeRelative(_targetProject.GetScriptRootDirectory(), VariableType.LevelDirectory);
 				level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
 				level.Settings.GameVersion = _targetProject.GameVersion;
 
