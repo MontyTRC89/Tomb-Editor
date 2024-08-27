@@ -508,7 +508,9 @@ namespace TombLib.LevelData
 
             foreach (string pluginCommand in pluginCommands)
             {
-                string[] commandParts = pluginCommand.Split('=');
+                string[] commandParts = pluginCommand
+                    .Split(';')[0] // Part before the comment
+                    .Split('=');
 
                 if (commandParts.Length != 2)
                     continue;

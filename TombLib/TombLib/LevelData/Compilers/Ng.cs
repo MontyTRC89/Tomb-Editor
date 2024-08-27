@@ -2,48 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
+using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {
-    public struct PluginRecord
-    {
-        public int PluginId;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-        public string Name;
-
-        public uint Usages;
-
-        public readonly byte[] GetBytes()
-        {
-            int size = Marshal.SizeOf(this);
-            byte[] array = new byte[size];
-
-            IntPtr pointer = IntPtr.Zero;
-
-            try
-            {
-                pointer = Marshal.AllocHGlobal(size);
-                Marshal.StructureToPtr(this, pointer, true);
-                Marshal.Copy(pointer, array, 0, size);
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(pointer);
-            }
-
-            return array;
-        }
-    }
-
     public sealed partial class LevelCompilerClassicTR
     {
         private Dictionary<ushort, ushort> _remappedTiles;
 
-        private void WriteNgHeader(BinaryWriter writer, string ngVersion)
+        private void WriteNgHeader(BinaryWriterEx writer, string ngVersion)
         {
             CollectNgRemappedTiles();
 
@@ -216,13 +185,13 @@ namespace TombLib.LevelData.Compilers
             WriteNgVersion(writer, version);
         }
 
-        private void WriteNgChunkPluginsNames(BinaryWriter writer)
+        private void WriteNgChunkPluginsNames(BinaryWriterEx writer)
         {
             writer.Write((ushort)(3 + ((_plugins.Count - 1) * 44)));
             writer.Write((ushort)0x8047);
             writer.Write((ushort)(_plugins.Count - 1));
 
-            foreach (var plugin in _plugins.Skip(1)) // Skip Tomb_NextGeneration
+            foreach (KeyValuePair<ushort, string> plugin in _plugins.Skip(1)) // Skip Tomb_NextGeneration
             {
                 var record = new PluginRecord
                 {
@@ -231,7 +200,7 @@ namespace TombLib.LevelData.Compilers
                     Usages = (uint)_pluginFloorData.Count(x => x == plugin.Key)
                 };
 
-                writer.Write(record.GetBytes());
+                writer.WriteBlock(record);
             }
         }
 

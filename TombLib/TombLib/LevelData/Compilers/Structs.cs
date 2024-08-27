@@ -176,7 +176,7 @@ namespace TombLib.LevelData.Compilers
         public ushort Lighting1;
         public ushort Attributes;
         public ushort Lighting2;
-        
+
         // For TR5 only
         public Vector3 Normal;
         public uint Color;
@@ -698,7 +698,7 @@ namespace TombLib.LevelData.Compilers
 
             writer.Write((uint)Triangles.Count);
             writer.Write((uint)Quads.Count);
-            
+
             var LightPointerOffsetPosition = writer.BaseStream.Position;
             writer.Write((uint)0);
             writer.Write((uint)0);
@@ -1308,5 +1308,16 @@ namespace TombLib.LevelData.Compilers
                 return x.Index > y.Index ? 1 : -1;
             }
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct PluginRecord
+    {
+        public int PluginId;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+        public string Name;
+
+        public uint Usages;
     }
 }
