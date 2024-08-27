@@ -514,11 +514,12 @@ namespace TombLib.LevelData.Compilers
 
                 if (_level.IsNG)
                 {
+                    outPluginFloorData.Add(0);
+
                     if (setupTrigger.TriggerType == TriggerType.ConditionNg)
                         outPluginFloorData.Add((byte)GetTriggerParameter(setupTrigger.Plugin, setupTrigger, 0xff));
                     else
                         outPluginFloorData.Add(0);
-                    outPluginFloorData.Add(0);
                 }
 
                 foreach (var trigger in triggers)
@@ -592,8 +593,8 @@ namespace TombLib.LevelData.Compilers
                                 trigger3 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger3);
 
-                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
                                 outPluginFloorData.Add(0);
+                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
                             }
 
                             break;
@@ -612,8 +613,8 @@ namespace TombLib.LevelData.Compilers
                                 trigger2 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger2);
 
-                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
                                 outPluginFloorData.Add(0);
+                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
                             }
                             else
                                 _progressReporter.ReportWarn("Level uses action trigger '" + trigger + "' which is not supported in this game engine.");

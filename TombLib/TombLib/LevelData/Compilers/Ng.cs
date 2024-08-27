@@ -228,7 +228,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     PluginId = plugin.Key,
                     Name = plugin.Value,
-                    Usages = 1 // Don't care
+                    Usages = (uint)_pluginFloorData.Count(x => x == plugin.Key)
                 };
 
                 writer.Write(record.GetBytes());
@@ -271,10 +271,7 @@ namespace TombLib.LevelData.Compilers
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)
         {
             int lastIndex = _pluginFloorData.FindLastIndex(entry => entry != 0);
-            List<byte> pluginTable = new List<byte>(_pluginFloorData.Take(lastIndex + 1));
-
-            if (pluginTable.Count % 2 == 1)
-                pluginTable.Add(0);
+            var pluginTable = new List<byte>(_pluginFloorData.Take(lastIndex + 1));
 
             writer.Write((ushort)(3 + pluginTable.Count / 2));
             writer.Write((ushort)0x8048);
