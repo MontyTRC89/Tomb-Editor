@@ -21,6 +21,7 @@ namespace TombLib.LevelData.Compilers
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private byte[] _texture32Data;
         private readonly List<ushort> _floorData = new List<ushort>();
+        private readonly List<byte> _pluginFloorData = new List<byte>();
         private readonly List<tr_mesh> _meshes = new List<tr_mesh>();
         private readonly List<uint> _meshPointers = new List<uint>();
         private readonly List<tr_animation> _animations = new List<tr_animation>();

@@ -270,19 +270,16 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)
         {
-            int floorDataCount = (_floorData.Count - 1) / 4;
+            int lastIndex = _pluginFloorData.FindLastIndex(entry => entry != 0);
+            List<byte> pluginTable = new List<byte>(_pluginFloorData.Take(lastIndex + 1));
 
-            writer.Write((ushort)(3 + floorDataCount));
+            if (pluginTable.Count % 2 == 1)
+                pluginTable.Add(0);
+
+            writer.Write((ushort)(3 + pluginTable.Count / 2));
             writer.Write((ushort)0x8048);
-            writer.Write((ushort)floorDataCount * 2);
-
-            for (int i = 0; i < floorDataCount; i++)
-            {
-                writer.Write((ushort)3);
-                writer.Write(_floorData[i]); // ???
-            }
-
-            writer.Write((ushort)0); // I don't know...
+            writer.Write((ushort)pluginTable.Count);
+            writer.Write(pluginTable.ToArray<byte>());
         }
 
         private void WriteNgChunkLevelFlags(BinaryWriter writer)
