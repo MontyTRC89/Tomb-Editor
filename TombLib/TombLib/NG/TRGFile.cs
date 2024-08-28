@@ -80,11 +80,18 @@ public sealed class TRGFile
 	}
 
 	public NgParameterRange GetParameterRange(TriggerField field, int internalNumber, ListPrefix prefix)
-		=> new(GetRangeKeyValues(field, internalNumber, prefix, out NgParameterKind kind), kind);
+		=> GetParameterRange(field, internalNumber, prefix, out _);
 
-	private IDictionary<ushort, TriggerParameterUshort> GetRangeKeyValues(TriggerField field, int internalNumber, ListPrefix prefix, out NgParameterKind kind)
+	public NgParameterRange GetParameterRange(TriggerField field, int internalNumber, ListPrefix prefix, out bool isButtons)
+		=> new(GetRangeKeyValues(field, internalNumber, prefix, out NgParameterKind kind, out isButtons), kind);
+
+	private IDictionary<ushort, TriggerParameterUshort> GetRangeKeyValues(
+		TriggerField field, int internalNumber, ListPrefix prefix,
+		out NgParameterKind kind,
+		out bool isButtons)
 	{
 		kind = NgParameterKind.PluginEnumeration;
+		isButtons = false;
 
 		// Get the trigger field name
 		string triggerField = field switch
@@ -114,6 +121,8 @@ public sealed class TRGFile
 
 				if (sectionStartLineIndex == -1)
 					return new Dictionary<ushort, TriggerParameterUshort>();
+
+				isButtons = true;
 			}
 			else
 				return new Dictionary<ushort, TriggerParameterUshort>();
@@ -214,7 +223,7 @@ public sealed class TRGFile
 				_ => ListPrefix.Extra
 			};
 
-			return GetRangeKeyValues(field, internalNumber, prefix, out kind);
+			return GetRangeKeyValues(field, internalNumber, prefix, out kind, out _);
 		}
 
 		kind = line switch

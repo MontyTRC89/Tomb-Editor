@@ -123,16 +123,27 @@ namespace TombEditor.Forms
                 paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramPlugin.Parameter);
             }
 
-            paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter, paramPlugin.Parameter);
+            paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(
+                _level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter, paramPlugin.Parameter,
+                out bool isButtons);
 
             _dialogIsUpdating = false;
-
-            cbBit1.Enabled = !isConditionNg;
-            cbBit2.Enabled = !isConditionNg;
-            cbBit3.Enabled = !isConditionNg;
-            cbBit4.Enabled = !isConditionNg;
-            cbBit5.Enabled = !isConditionNg;
             cbOneShot.Enabled = !isEvent;
+
+            if (isButtons)
+            {
+                ushort selectedExtraKey = paramExtra.Parameter is TriggerParameterUshort extraParam
+                    ? extraParam.Key
+                    : (ushort)0;
+
+                // Select all 6 check boxes in binary order
+                cbBit1.Checked = (selectedExtraKey & 1) != 0;
+                cbBit2.Checked = (selectedExtraKey & 2) != 0;
+                cbBit3.Checked = (selectedExtraKey & 4) != 0;
+                cbBit4.Checked = (selectedExtraKey & 8) != 0;
+                cbBit5.Checked = (selectedExtraKey & 16) != 0;
+                cbOneShot.Checked = (selectedExtraKey & 32) != 0;
+            }
 
             UpdateExportToTrigger();
         }

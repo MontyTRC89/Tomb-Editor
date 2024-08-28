@@ -238,8 +238,11 @@ namespace TombLib.NG
         }
 
         public static NgParameterRange GetExtraRange(LevelSettings levelSettings, TriggerType triggerType,
-            TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter timer, ITriggerParameter plugin)
+            TriggerTargetType targetType, ITriggerParameter target, ITriggerParameter timer, ITriggerParameter plugin,
+            out bool isButtons)
         {
+            isButtons = false;
+
             if (levelSettings.GameVersion != TRVersion.Game.TRNG)
                 return new NgParameterRange(NgParameterKind.Empty);
 
@@ -259,7 +262,7 @@ namespace TombLib.NG
                         return conditionSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                     }
                     else
-                        return trgFile.GetParameterRange(TriggerField.ConditionNg, ((TriggerParameterUshort)timer).Key, ListPrefix.Extra);
+                        return trgFile.GetParameterRange(TriggerField.ConditionNg, ((TriggerParameterUshort)timer).Key, ListPrefix.Extra, out isButtons);
 
                 default:
                     switch (targetType)
@@ -274,7 +277,7 @@ namespace TombLib.NG
                                 return flipEffectSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                             }
                             else
-                                return trgFile.GetParameterRange(TriggerField.FlipEffect, ((TriggerParameterUshort)target).Key, ListPrefix.Extra);
+                                return trgFile.GetParameterRange(TriggerField.FlipEffect, ((TriggerParameterUshort)target).Key, ListPrefix.Extra, out isButtons);
 
                         case TriggerTargetType.ActionNg:
                             if (timer is not TriggerParameterUshort)
@@ -286,7 +289,7 @@ namespace TombLib.NG
                                 return actionSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
                             }
                             else
-                                return trgFile.GetParameterRange(TriggerField.ActionNG, ((TriggerParameterUshort)timer).Key, ListPrefix.Extra);
+                                return trgFile.GetParameterRange(TriggerField.ActionNG, ((TriggerParameterUshort)timer).Key, ListPrefix.Extra, out isButtons);
 
                         default:
                             return new NgParameterRange(NgParameterKind.Empty);
@@ -327,7 +330,7 @@ namespace TombLib.NG
                 return false;
             if (!GetTimerRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Target, trigger.Plugin).ParameterMatches(trigger.Timer, false))
                 return false;
-            if (!GetExtraRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Target, trigger.Timer, trigger.Plugin).ParameterMatches(trigger.Extra, false))
+            if (!GetExtraRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Target, trigger.Timer, trigger.Plugin, out _).ParameterMatches(trigger.Extra, false))
                 return false;
             return true;
         }
@@ -603,7 +606,7 @@ namespace TombLib.NG
             result.Timer = FixTriggerParameter(level, result, result.Timer,
                 GetTimerRange(level.Settings, result.TriggerType, result.TargetType, result.Target, result.Plugin), objectLookup);
             result.Extra = FixTriggerParameter(level, result, result.Extra,
-                GetExtraRange(level.Settings, result.TriggerType, result.TargetType, result.Target, result.Timer, result.Plugin), objectLookup);
+                GetExtraRange(level.Settings, result.TriggerType, result.TargetType, result.Target, result.Timer, result.Plugin, out _), objectLookup);
 
             return result;
         }
@@ -707,8 +710,15 @@ namespace TombLib.NG
                 }
 
                 if (mask != 0)
-                    result = animCommandNumber.HasValue ? unchecked((short)mask) + " ," + firstValue + " ," + secondValue :
-                        "$" + mask.ToString("X4") + "," + firstValue + ",$" + secondValue.ToString("X4");
+                {
+                    result = animCommandNumber.HasValue
+                        ? unchecked((short)mask) + " ," + firstValue + " ," + secondValue
+                        : mask.ToString("X4") + "," + firstValue + ",$" + secondValue.ToString("X4");
+
+                    result = trigger.Plugin is TriggerParameterUshort plugin && plugin.Key > 0
+                        ? "$" + plugin.Key.ToString("X2") + result
+                        : "$" + result;
+                }
 
                 if (!string.IsNullOrEmpty(result))
                     return (withComment ?
