@@ -3,7 +3,8 @@ Version 1.7.2
 
 Tomb Editor:
  * Improved geometry manipulation and texturing performance.
- * Added adjustable quality settings for 3D objects.
+ * Added native support for TRNG plugin triggers.
+ * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
  * Added TEN nodes for checking and modifying last used inventory object.
  * Added TEN node to check if a particular sound is playing
  * Added TEN node to generate particles from a static object
@@ -21,7 +22,6 @@ Tomb Editor:
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
  * Fixed "Set specified mesh visibility" TEN node.
-
 
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.

@@ -17,9 +17,11 @@ namespace TombLib.LevelData.Compilers
         private Room[] _sortedRooms;
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
 
+        private readonly Dictionary<ushort, string> _plugins = new();
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private byte[] _texture32Data;
         private readonly List<ushort> _floorData = new List<ushort>();
+        private readonly List<byte> _pluginFloorData = new List<byte>();
         private readonly List<tr_mesh> _meshes = new List<tr_mesh>();
         private readonly List<uint> _meshPointers = new List<uint>();
         private readonly List<tr_animation> _animations = new List<tr_animation>();
@@ -69,6 +71,8 @@ namespace TombLib.LevelData.Compilers
 
         public override CompilerStatistics CompileLevel(CancellationToken cancelToken)
         {
+            bool supportsTRNGPlugins = _level.IsNG && new Version(DetectTRNGVersion()) >= new Version(1, 3, 0, 0);
+
             ReportProgress(0, "Tomb Raider Level Compiler");
 
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
@@ -78,6 +82,10 @@ namespace TombLib.LevelData.Compilers
             cancelToken.ThrowIfCancellationRequested();
             // Try to shuffle rooms to accomodate for more vertically connected ones
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
+
+            // Write plugins if TRNG is detected
+            if (supportsTRNGPlugins)
+                WritePlugins();
 
             // Prepare level data
             ConvertWad2DataToTrData(_level);
@@ -137,7 +145,7 @@ namespace TombLib.LevelData.Compilers
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");
             }
-            
+
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = !cancelToken.IsCancellationRequested;
 
@@ -150,6 +158,17 @@ namespace TombLib.LevelData.Compilers
                 OverlapCount = _overlaps.Length,
                 ObjectTextureCount = _textureInfoManager.TexInfoCount,
             };
+        }
+
+        private void WritePlugins()
+        {
+            ReportProgress(1, "Writing plugins");
+
+            foreach (KeyValuePair<ushort, TriggerParameterUshort> plugin in _level.Settings.GetPluginRange())
+            {
+                _plugins.Add(plugin.Key, plugin.Value.Name);
+                _progressReporter.ReportInfo("Plugin: " + plugin.Value.Name + " with ID " + plugin.Key);
+            }
         }
 
         private void PrepareSoundSources()
@@ -566,7 +585,7 @@ namespace TombLib.LevelData.Compilers
             if (lara == null)
                 return result;
 
-            var laraItem = allObjects.FirstOrDefault(obj => obj is ItemInstance && 
+            var laraItem = allObjects.FirstOrDefault(obj => obj is ItemInstance &&
                                     ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
             if (laraItem == null)
                 return result;
@@ -583,7 +602,7 @@ namespace TombLib.LevelData.Compilers
             foreach (var flybys in groups)
             {
                 var settings = flybys.Select(f => new Vector3(f.Roll, f.Fov, f.Speed)).ToList();
-                
+
                 var positions = flybys.Select(f =>
                 {
                     var distance = f.WorldPosition - laraItem.WorldPosition;

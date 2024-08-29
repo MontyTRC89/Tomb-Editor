@@ -1139,7 +1139,7 @@ namespace TombLib.LevelData.IO
                     logger.Error(exc, "An exception was raised while trying to perform room link action.");
                 }
             }
-                
+
 
             // Link objects
             foreach (var objectLinkAction in objectLinkActions)
@@ -1695,7 +1695,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectTrigger2)
+                else if (id3 == Prj2Chunks.ObjectTrigger2 || id3 == Prj2Chunks.ObjectTrigger3)
                 {
                     var area = new RectangleInt2(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
                     var instance = new TriggerInstance(area);
@@ -1744,6 +1744,8 @@ namespace TombLib.LevelData.IO
                             instance.CodeBits = unchecked((byte)chunkIO.ReadChunkLong(chunkSize4));
                         else if (id4 == Prj2Chunks.ObjectTrigger2OneShot)
                             instance.OneShot = chunkIO.ReadChunkBool(chunkSize4);
+                        else if (id4 == Prj2Chunks.ObjectTrigger3Plugin) // ObjectTrigger3 only
+                            readParameter(parameter => instance.Plugin = parameter);
                         else
                             return false;
                         return true;
@@ -1762,7 +1764,7 @@ namespace TombLib.LevelData.IO
                     instance.Roll = chunkIO.Raw.ReadSingle();
                     instance.Scale = chunkIO.Raw.ReadSingle();
 
-                    // For some time we accidentally emitted MeshFilter but still emitted the old ObjectImportedGeometry 
+                    // For some time we accidentally emitted MeshFilter but still emitted the old ObjectImportedGeometry
                     // chunk name unfortunately. Thus we need to check chunk size too.
                     if (!(id3 == Prj2Chunks.ObjectImportedGeometry && chunkSize3 == 30))
                         chunkIO.Raw.ReadStringUTF8(); // DEPRECATED: MeshFilter
@@ -1891,7 +1893,7 @@ namespace TombLib.LevelData.IO
         private static TriggerNode LoadNode(ChunkReader chunkIO, TriggerNode previous = null)
         {
             TriggerNode node = new TriggerNodeAction();
-            
+
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (id == Prj2Chunks.NodeType)

@@ -1,0 +1,46 @@
+﻿255: Current Value
+  0: Global Byte Alfa1
+  1: Global Byte Alfa2
+  2: Global Byte Alfa3
+  3: Global Byte Alfa4
+  4: Global Byte Beta1
+  5: Global Byte Beta2
+  6: Global Byte Beta3
+  7: Global Byte Beta4
+  8: Global Byte Delta1
+  9: Global Byte Delta2
+ 10: Global Byte Delta3
+ 11: Global Byte Delta4
+ 48: Global Long Alfa
+ 49: Global Long Beta
+ 50: Global Long Delta
+ 51: Global Long Timer
+ 16: Global Short Alfa1
+ 17: Global Short Alfa2
+ 18: Global Short Beta1
+ 19: Global Short Beta2
+ 20: Global Short Delta1
+ 21: Global Short Delta2
+ 53: Last Input Number
+ 64: Local Byte Alfa1
+ 65: Local Byte Alfa2
+ 66: Local Byte Alfa3
+ 67: Local Byte Alfa4
+ 68: Local Byte Beta1
+ 69: Local Byte Beta2
+ 70: Local Byte Beta3
+ 71: Local Byte Beta4
+ 72: Local Byte Delta1
+ 73: Local Byte Delta2
+ 74: Local Byte Delta3
+ 75: Local Byte Delta4
+112: Local Long Alfa
+113: Local Long Beta
+114: Local Long Delta
+115: Local Long Timer
+ 80: Local Short Alfa1
+ 81: Local Short Alfa2
+ 82: Local Short Beta1
+ 83: Local Short Beta2
+ 84: Local Short Delta1
+ 85: Local Short Delta2
