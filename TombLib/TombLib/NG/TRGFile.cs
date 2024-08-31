@@ -251,7 +251,7 @@ public sealed class TRGFile
 		// Read the list from a file
 		string listName = line.Replace("#", "");
 		string executablePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-		string filePath = Path.Combine(executablePath, "Catalogs\\NG\\" + listName + ".txt");
+		string filePath = Path.Combine(executablePath, "Catalogs\\Engines\\TRNG\\" + listName + ".txt");
 
 		if (!File.Exists(filePath))
 			return results; // File not found

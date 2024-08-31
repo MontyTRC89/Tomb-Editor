@@ -61,172 +61,172 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Catalogs\NG\ADD_EFFECT_255.txt">
+    <None Update="Catalogs\Engines\TRNG\ADD_EFFECT_255.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\ANIMATION_LIST_255.txt">
+    <None Update="Catalogs\Engines\TRNG\ANIMATION_LIST_255.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\ANIMATION_LIST_32A.txt">
+    <None Update="Catalogs\Engines\TRNG\ANIMATION_LIST_32A.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\ANIMATION_LIST_32B.txt">
+    <None Update="Catalogs\Engines\TRNG\ANIMATION_LIST_32B.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\ANIMATION_LIST_32C.txt">
+    <None Update="Catalogs\Engines\TRNG\ANIMATION_LIST_32C.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\ANIMATION_LIST_B.txt">
+    <None Update="Catalogs\Engines\TRNG\ANIMATION_LIST_B.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\ANIMATION_RANGE.txt">
+    <None Update="Catalogs\Engines\TRNG\ANIMATION_RANGE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\BACKUP_LIST.txt">
+    <None Update="Catalogs\Engines\TRNG\BACKUP_LIST.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\BIT_LIST.txt">
+    <None Update="Catalogs\Engines\TRNG\BIT_LIST.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\BUTTONS_LIST.txt">
+    <None Update="Catalogs\Engines\TRNG\BUTTONS_LIST.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\CAMERA_EFFECTS.txt">
+    <None Update="Catalogs\Engines\TRNG\CAMERA_EFFECTS.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\CD_TRACK_LIST.txt">
+    <None Update="Catalogs\Engines\TRNG\CD_TRACK_LIST.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\COLLISION_CEILING.txt">
+    <None Update="Catalogs\Engines\TRNG\COLLISION_CEILING.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\COLLISION_FLOOR.txt">
+    <None Update="Catalogs\Engines\TRNG\COLLISION_FLOOR.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\COLORS.txt">
+    <None Update="Catalogs\Engines\TRNG\COLORS.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\DEGREES.txt">
+    <None Update="Catalogs\Engines\TRNG\DEGREES.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\FMV_LIST.txt">
+    <None Update="Catalogs\Engines\TRNG\FMV_LIST.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\FOG_DISTANCES.txt">
+    <None Update="Catalogs\Engines\TRNG\FOG_DISTANCES.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\FRAG_2x2.txt">
+    <None Update="Catalogs\Engines\TRNG\FRAG_2x2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\FRAG_3x3.txt">
+    <None Update="Catalogs\Engines\TRNG\FRAG_3x3.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\FRAG_4x4.txt">
+    <None Update="Catalogs\Engines\TRNG\FRAG_4x4.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\HALF_CLICKS.txt">
+    <None Update="Catalogs\Engines\TRNG\HALF_CLICKS.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\HALF_CLICKS_32.txt">
+    <None Update="Catalogs\Engines\TRNG\HALF_CLICKS_32.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\INVENTORY-ITEM-INDEX.txt">
+    <None Update="Catalogs\Engines\TRNG\INVENTORY-ITEM-INDEX.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\INVENTORY-ITEMS.txt">
+    <None Update="Catalogs\Engines\TRNG\INVENTORY-ITEMS.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\KEYBOARD_MODE.txt">
+    <None Update="Catalogs\Engines\TRNG\KEYBOARD_MODE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\LARA_ANIM_SLOT.txt">
+    <None Update="Catalogs\Engines\TRNG\LARA_ANIM_SLOT.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\LARA_OTHER_SLOTS.txt">
+    <None Update="Catalogs\Engines\TRNG\LARA_OTHER_SLOTS.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\MEMORY_ANIMATION.txt">
+    <None Update="Catalogs\Engines\TRNG\MEMORY_ANIMATION.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\MEMORY_CODE.txt">
+    <None Update="Catalogs\Engines\TRNG\MEMORY_CODE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\MEMORY_INVENTORY.txt">
+    <None Update="Catalogs\Engines\TRNG\MEMORY_INVENTORY.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\MEMORY_ITEM.txt">
+    <None Update="Catalogs\Engines\TRNG\MEMORY_ITEM.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\MEMORY_SAVE.txt">
+    <None Update="Catalogs\Engines\TRNG\MEMORY_SAVE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\MEMORY_SLOT.txt">
+    <None Update="Catalogs\Engines\TRNG\MEMORY_SLOT.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\MEM_INVENTORY_INDICES.txt">
+    <None Update="Catalogs\Engines\TRNG\MEM_INVENTORY_INDICES.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\MICRO_CLICKS.txt">
+    <None Update="Catalogs\Engines\TRNG\MICRO_CLICKS.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\NEGATIVE_NUMBERS.txt">
+    <None Update="Catalogs\Engines\TRNG\NEGATIVE_NUMBERS.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\NG_Constants.txt">
+    <None Update="Catalogs\Engines\TRNG\NG_Constants.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\PERCENTAGE.txt">
+    <None Update="Catalogs\Engines\TRNG\PERCENTAGE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\RECHARGE_256.txt">
+    <None Update="Catalogs\Engines\TRNG\RECHARGE_256.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\SEQUENCE_128.txt">
+    <None Update="Catalogs\Engines\TRNG\SEQUENCE_128.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\SEQUENCE_32.txt">
+    <None Update="Catalogs\Engines\TRNG\SEQUENCE_32.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\SET_STANDARD_MESH.txt">
+    <None Update="Catalogs\Engines\TRNG\SET_STANDARD_MESH.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\SLOT_MESH_MOVEABLES.txt">
+    <None Update="Catalogs\Engines\TRNG\SLOT_MESH_MOVEABLES.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\STATE_ID_LIST.txt">
+    <None Update="Catalogs\Engines\TRNG\STATE_ID_LIST.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\SWAP_MESH_SLOT.txt">
+    <None Update="Catalogs\Engines\TRNG\SWAP_MESH_SLOT.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\TEX_SEQUENCE.txt">
+    <None Update="Catalogs\Engines\TRNG\TEX_SEQUENCE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\TIMER_SIGNED.txt">
+    <None Update="Catalogs\Engines\TRNG\TIMER_SIGNED.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\TIMER_SIGNED_LONG.txt">
+    <None Update="Catalogs\Engines\TRNG\TIMER_SIGNED_LONG.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\TIME_LIST_128.txt">
+    <None Update="Catalogs\Engines\TRNG\TIME_LIST_128.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\TIME_LIST_32.txt">
+    <None Update="Catalogs\Engines\TRNG\TIME_LIST_32.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\TRANSPARENCY32.txt">
+    <None Update="Catalogs\Engines\TRNG\TRANSPARENCY32.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\VAR_LONG_STORE.txt">
+    <None Update="Catalogs\Engines\TRNG\VAR_LONG_STORE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\VAR_NORMALS.txt">
+    <None Update="Catalogs\Engines\TRNG\VAR_NORMALS.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\VAR_STORES.txt">
+    <None Update="Catalogs\Engines\TRNG\VAR_STORES.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\NG\VAR_TEXT.txt">
+    <None Update="Catalogs\Engines\TRNG\VAR_TEXT.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Dynamic Lights.lua">
@@ -410,7 +410,7 @@
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Catalogs\NG\CLICK_DISTANCE_32.txt">
+    <Content Include="Catalogs\Engines\TRNG\CLICK_DISTANCE_32.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Catalogs\Sounds.tr1.xml">
@@ -480,6 +480,6 @@
     <Compile Remove="Script\ScriptCompilerTr4OrTr5.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Catalogs\NG\CLICK_DISTANCE_32.txt" />
+    <None Remove="Catalogs\Engines\TRNG\CLICK_DISTANCE_32.txt" />
   </ItemGroup>
 </Project>
