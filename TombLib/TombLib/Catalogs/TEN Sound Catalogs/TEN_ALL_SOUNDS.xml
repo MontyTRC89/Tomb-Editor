@@ -7004,7 +7004,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>359</Id>
-			<Name>TR4_Empty8</Name>
+			<Name>TR4_Envioronment_Rumble</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -7014,7 +7014,7 @@
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples />
-			<Global>false</Global>
+			<Global>true</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
 		<WadSoundInfo>

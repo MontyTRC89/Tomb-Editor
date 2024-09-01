@@ -18,6 +18,7 @@ namespace TombLib.LevelData.Compilers
         private class FloordataSequence
         {
             public List<ushort> FDList { get; private set; } = new List<ushort>();
+            public List<byte> PluginList { get; private set; } = new List<byte>();
             private int _hash;
 
             public void Add(ushort entry)
@@ -29,6 +30,12 @@ namespace TombLib.LevelData.Compilers
             public void AddRange(List<ushort> entry)
             {
                 FDList.AddRange(entry);
+                RecalculateHash();
+            }
+
+            public void AddRange(List<byte> entry)
+            {
+                PluginList.AddRange(entry);
                 RecalculateHash();
             }
 
@@ -99,6 +106,7 @@ namespace TombLib.LevelData.Compilers
                     }
 
                 var tempFloorData = new List<ushort>();
+                var tempPluginFloorData = new List<byte>();
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
                     for (var z = 0; z < room.NumZSectors; z++)
@@ -283,9 +291,13 @@ namespace TombLib.LevelData.Compilers
 
                             // Calculate the floordata now
                             tempFloorData.Clear();
-                            BuildFloorDataForSector(room, sector, new VectorInt2(x, z), floorShape, ceilingShape, tempFloorData);
+                            tempPluginFloorData.Clear();
+                            BuildFloorDataForSector(room, sector, new VectorInt2(x, z), floorShape, ceilingShape, tempFloorData, tempPluginFloorData);
                             if (tempFloorData.Count != 0)
+                            {
                                 newEntry.AddRange(tempFloorData);
+                                newEntry.AddRange(tempPluginFloorData);
+                            }
                         }
 
                         // Try to find similar floordata sequence and use it (ONLY if agressive FD packing is enabled)
@@ -303,6 +315,7 @@ namespace TombLib.LevelData.Compilers
                         {
                             compiledSector.FloorDataIndex = checked((ushort)_floorData.Count);
                             _floorData.AddRange(newEntry.FDList);
+                            _pluginFloorData.AddRange(newEntry.PluginList);
                         }
 
                         // Update the sector
@@ -318,7 +331,7 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(58, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
 
-        private void BuildFloorDataForSector(Room room, Sector sector, VectorInt2 pos, RoomSectorShape floorShape, RoomSectorShape ceilingShape, List<ushort> outFloorData)
+        private void BuildFloorDataForSector(Room room, Sector sector, VectorInt2 pos, RoomSectorShape floorShape, RoomSectorShape ceilingShape, List<ushort> outFloorData, List<byte> outPluginFloorData)
         {
             int lastFloorDataFunction = -1;
 
@@ -376,6 +389,12 @@ namespace TombLib.LevelData.Compilers
                 (sector.Flags & SectorFlags.Beetle) != SectorFlags.None) {
                 lastFloorDataFunction = outFloorData.Count;
                 outFloorData.Add(0x15);
+            }
+
+            if (_level.IsNG)
+            {
+                for (var i = 0; i < outFloorData.Count; i++)
+                    outPluginFloorData.Add(0);
             }
 
             // Collect all valid triggers
@@ -493,6 +512,16 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(trigger1);
                 outFloorData.Add(triggerSetup);
 
+                if (_level.IsNG)
+                {
+                    outPluginFloorData.Add(0);
+
+                    if (setupTrigger.TriggerType == TriggerType.ConditionNg)
+                        outPluginFloorData.Add((byte)GetTriggerParameter(setupTrigger.Plugin, setupTrigger, 0xff));
+                    else
+                        outPluginFloorData.Add(0);
+                }
+
                 foreach (var trigger in triggers)
                 {
                     ushort trigger2 = 0;
@@ -563,6 +592,9 @@ namespace TombLib.LevelData.Compilers
                             {
                                 trigger3 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger3);
+
+                                outPluginFloorData.Add(0);
+                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
                             }
 
                             break;
@@ -580,6 +612,9 @@ namespace TombLib.LevelData.Compilers
 
                                 trigger2 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger2);
+
+                                outPluginFloorData.Add(0);
+                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
                             }
                             else
                                 _progressReporter.ReportWarn("Level uses action trigger '" + trigger + "' which is not supported in this game engine.");
@@ -623,7 +658,8 @@ namespace TombLib.LevelData.Compilers
 
         private ushort GetTriggerRealTimer(TriggerInstance trigger, ushort upperBound)
         {
-            return NgParameterInfo.EncodeNGRealTimer(trigger.TargetType, trigger.TriggerType,
+            return NgParameterInfo.EncodeNGRealTimer(_level.Settings,
+                trigger.TargetType, trigger.TriggerType, trigger.Plugin,
                 (trigger.Target as TriggerParameterUshort)?.Key ?? ushort.MaxValue, ushort.MaxValue,
                 upperBoundInner => GetTriggerParameter(trigger.Timer, trigger, upperBoundInner),
                 upperBoundInner => GetTriggerParameter(trigger.Extra, trigger, upperBoundInner));

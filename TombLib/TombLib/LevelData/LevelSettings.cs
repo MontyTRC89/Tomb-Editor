@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using TombLib.LevelData.IO;
+using TombLib.NG;
 using TombLib.Utils;
 using TombLib.Wad;
 using ImportedGeometryUpdateInfo = System.Collections.Generic.KeyValuePair<TombLib.LevelData.ImportedGeometry, TombLib.LevelData.ImportedGeometryInfo>;
@@ -463,6 +465,83 @@ namespace TombLib.LevelData
             {
                 return path;
             }
+        }
+
+        public string GetPluginsDirectory()
+        {
+            string gameDirectory = MakeAbsolute(GameDirectory);
+            string potentialDirectory = Path.Combine(gameDirectory, "Plugins");
+
+            if (Directory.Exists(potentialDirectory))
+                return potentialDirectory;
+
+            potentialDirectory = Path.Combine(Path.GetDirectoryName(gameDirectory), "Plugins");
+
+            return Directory.Exists(potentialDirectory) ? potentialDirectory : null;
+        }
+
+        public IDictionary<ushort, TriggerParameterUshort> GetPluginRange()
+        {
+            var result = new SortedDictionary<ushort, TriggerParameterUshort>
+            {
+                { 0, new TriggerParameterUshort(0, "Tomb_NextGeneration") }
+            };
+
+            string scriptDirectory = MakeAbsolute(ScriptDirectory);
+            string scriptFilePath = Path.Combine(scriptDirectory, "Script.txt");
+
+            if (!File.Exists(scriptFilePath))
+                return result;
+
+            string[] trgFiles = TryGetTRGFiles();
+
+            if (trgFiles.Length == 0)
+                return result;
+
+            string[] scriptFileLines = File.ReadAllLines(scriptFilePath);
+            string[] pluginCommands = scriptFileLines
+                .Where(line => Regex.IsMatch(line, @"^Plugin\s*=", RegexOptions.IgnoreCase))
+                .ToArray();
+
+            if (pluginCommands.Length == 0)
+                return result;
+
+            foreach (string pluginCommand in pluginCommands)
+            {
+                string[] commandParts = pluginCommand
+                    .Split(';')[0] // Part before the comment
+                    .Split('=');
+
+                if (commandParts.Length != 2)
+                    continue;
+
+                commandParts = commandParts[1].Split(',');
+
+                if (commandParts.Length is not 2 and not 3)
+                    continue;
+
+                if (!ushort.TryParse(commandParts[0], out ushort id) || id < 1) // ID 0 is reserved for Tomb_NextGeneration
+                    continue;
+
+                string pluginName = commandParts[1].Trim();
+
+                if (string.IsNullOrEmpty(pluginName))
+                    continue;
+
+                if (trgFiles.Any(file => Path.GetFileNameWithoutExtension(file).Equals(pluginName, StringComparison.OrdinalIgnoreCase)))
+                    result[id] = new TriggerParameterUshort(id, pluginName);
+            }
+
+            return result;
+        }
+
+        public string[] TryGetTRGFiles()
+        {
+            string pluginsDirectory = GetPluginsDirectory();
+
+            return pluginsDirectory is null
+                ? Array.Empty<string>()
+                : Directory.GetFiles(pluginsDirectory, "Plugin_*.trg", SearchOption.AllDirectories);
         }
 
         public ImageC LoadFontTexture(string path = null)

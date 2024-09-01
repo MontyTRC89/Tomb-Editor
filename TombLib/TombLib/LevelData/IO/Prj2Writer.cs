@@ -166,7 +166,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.TexturePadding, (long)settings.TexturePadding);
                 chunkIO.WriteChunkBool(Prj2Chunks.RemapAnimatedTextures, settings.RemapAnimatedTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.RearrangeRooms, settings.RearrangeVerticalRooms);
-				chunkIO.WriteChunkBool(Prj2Chunks.RemoveUnusedObjects, settings.RemoveUnusedObjects);
+                chunkIO.WriteChunkBool(Prj2Chunks.RemoveUnusedObjects, settings.RemoveUnusedObjects);
                 chunkIO.WriteChunkBool(Prj2Chunks.EnableCustomSampleRate, settings.EnableCustomSampleRate);
                 chunkIO.WriteChunkInt(Prj2Chunks.CustomSampleRate, settings.CustomSampleRate);
                 chunkIO.WriteChunkBool(Prj2Chunks.Room32BitLighting, settings.Room32BitLighting);
@@ -826,7 +826,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                         }
                     else if (o is TriggerInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger3, LEB128.MaximumSize2Byte))
                         {
                             Action<ITriggerParameter> writeTriggerParameter = (ITriggerParameter parameter) =>
                             {
@@ -869,6 +869,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2Extra, () => writeTriggerParameter(instance.Extra), 32);
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectTrigger2CodeBits, instance.CodeBits);
                             chunkIO.WriteChunkBool(Prj2Chunks.ObjectTrigger2OneShot, instance.OneShot);
+                            chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger3Plugin, () => writeTriggerParameter(instance.Plugin), 32);
                             chunkIO.WriteChunkEnd();
                         }
                     else if (o is ImportedGeometryInstance)

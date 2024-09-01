@@ -1,0 +1,24 @@
+﻿128: Diagonal bottom-up passing at point (1,1)
+129: Diagonal bottom-up passing at point (1,2)
+132: Diagonal bottom-up passing at point (2,1)
+133: Diagonal bottom-up passing at point (2,2)
+144: Diagonal top-down passing at point (1,1)
+145: Diagonal top-down passing at point (1,2)
+148: Diagonal top-down passing at point (2,1)
+149: Diagonal top-down passing at point (2,2)
+  0: Square fragment (1,1)
+  1: Square fragment (1,2)
+  4: Square fragment (2,1)
+  5: Square fragment (2,2)
+ 32: Strip fragment 1th horizontal strip
+ 48: Strip fragment 1th vertical strip
+ 33: Strip fragment 2th horizontal strip
+ 49: Strip fragment 2th vertical strip
+192: Two crossed diagonals passing at point (1,1)
+193: Two crossed diagonals passing at point (1,2)
+196: Two crossed diagonals passing at point (2,1)
+197: Two crossed diagonals passing at point (2,2)
+ 96: Two crossed stripes at point (1,1)
+ 97: Two crossed stripes at point (1,2)
+100: Two crossed stripes at point (2,1)
+101: Two crossed stripes at point (2,2)

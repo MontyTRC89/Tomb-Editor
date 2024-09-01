@@ -125,6 +125,13 @@ namespace TombLib.LevelData
         public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
         public TriggerTargetType TargetType { get; set; } = TriggerTargetType.FlipEffect;
 
+        private ITriggerParameter _plugin = new TriggerParameterUshort(0);
+        public ITriggerParameter Plugin
+        {
+            get { return _plugin; }
+            set { UpdateEvents(ref _plugin, value); }
+        }
+
         private ITriggerParameter _target;
         public ITriggerParameter Target
         {
