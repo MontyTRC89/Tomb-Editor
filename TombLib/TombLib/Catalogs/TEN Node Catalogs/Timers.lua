@@ -252,7 +252,7 @@ LevelFuncs.Engine.Node.GetRemainingTime = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
 		    if LevelVars.nodeTimers[name].test then
-			    print("Timer '" .. name .. "' remaining time: " .. LevelVars.nodeTimers[name].remainingTimeFormatted)
+			    TEN.Util.PrintLog("Timer '" .. name .. "' remaining time: " .. LevelVars.nodeTimers[name].remainingTimeFormatted, LogLevel.INFO)
 		    end
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", LogLevel.ERROR)
@@ -270,7 +270,7 @@ end
 LevelFuncs.Engine.Node.GetTotalTime = function(name)
     if name ~= '' then
         if Timer.Get(name) ~= nil then
-            print("Timer '" .. name .. "' total time: " .. Timer.Get(name):GetTotalTime())
+            TEN.Util.PrintLog("Timer '" .. name .. "' total time: " .. Timer.Get(name):GetTotalTime(), LogLevel.INFO)
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", LogLevel.ERROR)
         end
@@ -353,7 +353,7 @@ LevelFuncs.Engine.Node.IfRemainingTimeIs = function(name, operator, value)
 			    local remainingTime = LevelVars.nodeTimers[name].remainingTimeFormatted
 			    local result = LevelFuncs.Engine.Node.CompareValue(remainingTime, tostring(value + 0.0) , operator)
                 if LevelVars.nodeTimers[name].debug then
-                    print("If the remaining time is:"..  tostring(value + 0.0) .. ". Remaining time:" .. remainingTime .. ". Result: " .. tostring(result))
+                    TEN.Util.PrintLog("If the remaining time is:"..  tostring(value + 0.0) .. ". Remaining time:" .. remainingTime .. ". Result: " .. tostring(result), LogLevel.INFO)
                 end
 			    return result
 		    end
