@@ -46,6 +46,7 @@ LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minu
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, nodeTimerFormat, luaFunction, argsTable)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
         LevelVars.nodeTimers[name].remainingTimeFormatted = tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10)
+        LevelVars.nodeTimers[name].test = false
         LevelVars.nodeTimers[name].debug = debug
         if LevelVars.nodeTimers[name].debug then
             TEN.Util.PrintLog("Timer with Function '" .. name .. "' created successfully!", LogLevel.INFO)
