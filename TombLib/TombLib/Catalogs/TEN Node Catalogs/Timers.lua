@@ -398,13 +398,13 @@ LevelFuncs.Engine.Node.IfTimerExists = function(name)
 end
 
 LevelFuncs.Engine.Timer.FormatRemainingTime = function(dt)
-    for name, t in pairs(LevelVars.nodeTimers) do
+    for name, timer in pairs(LevelVars.nodeTimers) do
         if Timer.Get(name):IsActive() then
-            if t.remainingTimeFormatted ~= tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10) then
-                t.remainingTimeFormatted = tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10)
-                t.test = true
+            if timer.remainingTimeFormatted ~= tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10) then
+                timer.remainingTimeFormatted = tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10)
+                timer.test = true
             else
-                t.test = false
+                timer.test = false
             end
         end
     end
