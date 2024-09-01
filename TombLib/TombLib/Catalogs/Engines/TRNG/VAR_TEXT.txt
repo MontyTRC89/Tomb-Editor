@@ -1,0 +1,6 @@
+﻿ 55: BigText (319 characters)
+ 54: Last Input Text  (79 characters)
+ 32: Text1 (79 characters)
+ 33: Text2 (79 characters)
+ 34: Text3 (79 characters)
+ 35: Text4 (79 characters)

@@ -102,8 +102,9 @@ namespace TombEditor
         public bool Rendering3D_HighQualityLightPreview { get; set; } = false;
         public bool Rendering3D_ShowRealTintForObjects { get; set; } = true;
         public bool Rendering3D_UseSpritesForServiceObjects { get; set; } = true;
+        public int Rendering3D_ObjectQuality { get; set; } = 1; // 0 = High, 1 = Medium, 2 = Low
 
-        // 2D Map options 
+        // 2D Map options
 
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;

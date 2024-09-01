@@ -11,17 +11,19 @@ using TombLib.Rendering;
 using TombLib.Wad.Catalog;
 using TombLib.Wad;
 using TombLib.Utils;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
 
 namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D
     {
-        private class PickingResultBlock : PickingResult
+        private class PickingResultSector : PickingResult
         {
             public float VerticalCoord { get; set; }
             public VectorInt2 Pos { get; set; }
             public Room Room { get; set; }
-            public BlockFace Face { get; set; }
+            public SectorFace Face { get; set; }
 
             public bool IsFloorHorizontalPlane => Face.IsFloor();
             public bool IsCeilingHorizontalPlane => Face.IsCeiling();
@@ -29,7 +31,7 @@ namespace TombEditor.Controls.Panel3D
             public bool BelongsToFloor => IsFloorHorizontalPlane || Face.IsFloorWall();
             public bool BelongsToCeiling => IsCeilingHorizontalPlane || Face.IsCeilingWall();
 
-            public PickingResultBlock(float distance, float verticalCoord, VectorInt2 pos, Room room, BlockFace face)
+            public PickingResultSector(float distance, float verticalCoord, VectorInt2 pos, Room room, SectorFace face)
             {
                 Distance = distance;
                 VerticalCoord = verticalCoord;
@@ -209,10 +211,10 @@ namespace TombEditor.Controls.Panel3D
                                         ghost.SelectedFloor = floor;
                                         switch (i)
                                         {
-                                            case 0: ghost.SelectedCorner = BlockEdge.XnZp; break;
-                                            case 1: ghost.SelectedCorner = BlockEdge.XpZp; break;
-                                            case 2: ghost.SelectedCorner = BlockEdge.XpZn; break;
-                                            case 3: ghost.SelectedCorner = BlockEdge.XnZn; break;
+                                            case 0: ghost.SelectedCorner = SectorEdge.XnZp; break;
+                                            case 1: ghost.SelectedCorner = SectorEdge.XpZp; break;
+                                            case 2: ghost.SelectedCorner = SectorEdge.XpZn; break;
+                                            case 3: ghost.SelectedCorner = SectorEdge.XnZn; break;
                                         }
 
                                         result = new PickingResultObject(distance, ghost);
@@ -245,7 +247,7 @@ namespace TombEditor.Controls.Panel3D
                     // Check room geometry
                     var roomIntersectInfo = room.RoomGeometry?.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
                     if (roomIntersectInfo != null && (result == null || roomIntersectInfo.Value.Distance < result.Distance))
-                        result = new PickingResultBlock(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.VerticalCoord, roomIntersectInfo.Value.Pos, room, roomIntersectInfo.Value.Face);
+                        result = new PickingResultSector(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.VerticalCoord, roomIntersectInfo.Value.Pos, room, roomIntersectInfo.Value.Face);
                 }
             }
 

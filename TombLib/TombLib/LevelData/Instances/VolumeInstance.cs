@@ -33,7 +33,7 @@ namespace TombLib.LevelData
 
         public float Size => Scale * _minSize;
 
-        public float DefaultScale => Level.BlockSizeUnit;
+        public float DefaultScale => Level.SectorSizeUnit;
         public float Scale
         {
             get { return _scale; }
@@ -60,7 +60,7 @@ namespace TombLib.LevelData
         protected const float _maxSize = ushort.MaxValue;
         protected const float _minSize = 32.0f;
 
-        public Vector3 DefaultSize => new Vector3(Level.BlockSizeUnit);
+        public Vector3 DefaultSize => new Vector3(Level.SectorSizeUnit);
 
         public Vector3 Size
         {
@@ -72,7 +72,7 @@ namespace TombLib.LevelData
                                     MathC.Clamp(value.Z, _minSize, _maxSize));
             }
         }
-        private Vector3 _size = new Vector3(Level.BlockSizeUnit);
+        private Vector3 _size = new Vector3(Level.SectorSizeUnit);
 
         public float RotationY
         {

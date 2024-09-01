@@ -166,13 +166,13 @@ namespace TombEditor.Controls.Panel3D
             Point loc = PointToClient(new Point(e.X, e.Y));
             PickingResult newPicking = DoPicking(GetRay(loc.X, loc.Y), _editor.Configuration.Rendering3D_AutoswitchCurrentRoom);
 
-            if (newPicking is PickingResultBlock)
+            if (newPicking is PickingResultSector)
             {
-                var newBlockPicking = (PickingResultBlock)newPicking;
+                var newSectorPicking = (PickingResultSector)newPicking;
 
                 // Switch room if needed
-                if (newBlockPicking.Room != _editor.SelectedRoom)
-                    _editor.SelectedRoom = newBlockPicking.Room;
+                if (newSectorPicking.Room != _editor.SelectedRoom)
+                    _editor.SelectedRoom = newSectorPicking.Room;
 
                 var obj = e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject;
                 if (obj != null)
@@ -188,7 +188,7 @@ namespace TombEditor.Controls.Panel3D
 
                     // Put item from object browser
                     if (instance != null)
-                        EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos, instance);
+                        EditorActions.PlaceObject(_editor.SelectedRoom, newSectorPicking.Pos, instance);
                 }
                 else if (filesToProcess != -1)
                 {
@@ -203,7 +203,7 @@ namespace TombEditor.Controls.Panel3D
                         if (!file.CheckAndWarnIfNotANSI(this))
                             continue;
 
-                        EditorActions.AddAndPlaceImportedGeometry(this, newBlockPicking.Pos, file);
+                        EditorActions.AddAndPlaceImportedGeometry(this, newSectorPicking.Pos, file);
                     }
                 }
             }
