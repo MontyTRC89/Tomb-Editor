@@ -176,7 +176,7 @@ end
 -- !Arguments "NewLine, 33, Boolean, Loop"
 -- !Arguments "33, Boolean, Flip Loop"
 -- !Arguments "33, Boolean, Smooth"
--- !Arguments "NewLine, 65, Boolean, Rotate Object (Y axis when XZ selected)"
+-- !Arguments "NewLine, 65, Boolean, Rotate Object (Y axis when Horizontal selected)"
 -- !Arguments "35, Boolean, Rotate Center Object"
 -- !Arguments "NewLine, SoundEffects,{635}",
 
