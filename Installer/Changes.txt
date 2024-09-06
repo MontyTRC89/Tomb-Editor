@@ -2,12 +2,10 @@ Version 1.7.2
 =============
 
 Tomb Editor:
- * Improved geometry manipulation and texturing performance.
  * Added native support for TRNG plugin triggers.
  * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
  * Added TEN nodes for checking and modifying last used inventory object.
- * Added TEN node to check if a particular sound is playing
- * Added TEN node to generate particles from a static object
+ * Added TEN node to check if a particular sound is playing.
  * Added TEN node to activate a camera.
  * Added TEN node to attach the game camera to a moveable.
  * Added TEN node to reset game camera if it has been modified.
@@ -17,7 +15,8 @@ Tomb Editor:
  * Added handling for OnUseItem event in node editor.
  * Added drag-n-drop support for object ID controls in node editor.
  * Increased TEN flipmap count up to 255.
- * Increased Particle Generator nodes to allow user to choose a sprite number to use up to 100.
+ * Improved geometry manipulation and texturing performance.
+ * Improved Particle Generator nodes to allow user to choose a sprite number to use up to 100.
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
@@ -25,7 +24,7 @@ Tomb Editor:
 
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
- * Fixed TR2 BIG_SPIDER sounds remapping incorrectly for TombEngine.
+ * Fixed TR2 BIG_SPIDER sounds remapping incorrectly for TEN.
 
 TombIDE:
  * Updated FLEP for new projects.
