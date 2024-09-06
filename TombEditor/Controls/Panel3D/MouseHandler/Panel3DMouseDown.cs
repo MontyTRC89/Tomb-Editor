@@ -5,6 +5,8 @@ using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
 
 namespace TombEditor.Controls.Panel3D
 {
@@ -15,26 +17,26 @@ namespace TombEditor.Controls.Panel3D
             // Do picking on the scene
             PickingResult newPicking = DoPicking(GetRay(location.X, location.Y), _editor.Configuration.Rendering3D_SelectObjectsInAnyRoom);
 
-            if (newPicking is PickingResultBlock)
+            if (newPicking is PickingResultSector)
             {
-                var newBlockPicking = (PickingResultBlock)newPicking;
+                var newSectorPicking = (PickingResultSector)newPicking;
 
                 // Move camera to selected sector
                 if (_editor.Action is EditorActionRelocateCamera)
                 {
-                    if (newBlockPicking.Room != _editor.SelectedRoom)
-                        _editor.SelectedRoom = newBlockPicking.Room;
-                    _editor.MoveCameraToSector(newBlockPicking.Pos);
+                    if (newSectorPicking.Room != _editor.SelectedRoom)
+                        _editor.SelectedRoom = newSectorPicking.Room;
+                    _editor.MoveCameraToSector(newSectorPicking.Pos);
                     return;
                 }
 
-                // Ignore block picking if it's not from current room.
+                // Ignore sector picking if it's not from current room.
                 // Alternately, if room autoswitch is active, switch and select it.
 
-                if (newBlockPicking.Room != _editor.SelectedRoom)
+                if (newSectorPicking.Room != _editor.SelectedRoom)
                 {
                     if (_editor.Configuration.Rendering3D_AutoswitchCurrentRoom)
-                        _editor.SelectedRoom = newBlockPicking.Room;
+                        _editor.SelectedRoom = newSectorPicking.Room;
                     else
                         return;
                 }
@@ -43,14 +45,14 @@ namespace TombEditor.Controls.Panel3D
                 if (_editor.Action is IEditorActionPlace)
                 {
                     var action = (IEditorActionPlace)_editor.Action;
-                    EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos, action.CreateInstance(_editor.Level, _editor.SelectedRoom));
+                    EditorActions.PlaceObject(_editor.SelectedRoom, newSectorPicking.Pos, action.CreateInstance(_editor.Level, _editor.SelectedRoom));
                     _objectPlaced = true;
                     if (!action.ShouldBeActive)
                         _editor.Action = null;
                     return;
                 }
 
-                VectorInt2 pos = newBlockPicking.Pos;
+                VectorInt2 pos = newSectorPicking.Pos;
 
                 // Handle face selection
                 if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag) &&
@@ -62,7 +64,7 @@ namespace TombEditor.Controls.Panel3D
                         if (_editor.Tool.Tool == EditorToolType.Selection && ModifierKeys.HasFlag(Keys.Control))
                         {
                             // Multiple object selection
-                            _toolHandler.Engage(location.X, location.Y, newBlockPicking);
+                            _toolHandler.Engage(location.X, location.Y, newSectorPicking);
                             _editor.HighlightedSectors = new SectorSelection { Start = pos, End = pos };
                         }
                         else
@@ -76,28 +78,28 @@ namespace TombEditor.Controls.Panel3D
                 }
 
                 // Act based on editor mode
-                bool belongsToFloor = newBlockPicking.BelongsToFloor;
+                bool belongsToFloor = newSectorPicking.BelongsToFloor;
 
                 switch (_editor.Mode)
                 {
                     case EditorMode.Geometry:
                         if (_editor.Tool.Tool != EditorToolType.Selection && _editor.Tool.Tool != EditorToolType.PortalDigger)
                         {
-                            _toolHandler.Engage(location.X, location.Y, newBlockPicking);
+                            _toolHandler.Engage(location.X, location.Y, newSectorPicking);
 
                             if (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel)
                                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom.AndAdjoiningRooms);
                             else if (_editor.Tool.Tool < EditorToolType.Drag)
                                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
-                            // HACK: Clear bulldozer's initial block heights
+                            // HACK: Clear bulldozer's initial sector heights
                             if (_editor.Tool.Tool == EditorToolType.Flatten)
                                 OnMouseMovedLeft(location);
 
                             if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                             {
                                 if (_editor.Tool.Tool == EditorToolType.Smooth)
-                                    EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, _editor.IncrementReference);
+                                    EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? SectorVerticalPart.QA : SectorVerticalPart.WS, _editor.IncrementReference);
                                 else if (_editor.Tool.Tool < EditorToolType.Flatten)
                                 {
                                     int increment =
@@ -107,7 +109,7 @@ namespace TombEditor.Controls.Panel3D
                                     EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                         new RectangleInt2(pos, pos),
                                         ArrowType.EntireFace,
-                                        belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
+                                        belongsToFloor ? SectorVerticalPart.QA : SectorVerticalPart.WS,
                                         increment,
                                         _editor.Tool.Tool is EditorToolType.Brush or EditorToolType.Shovel,
                                         false, false, true, true);
@@ -118,18 +120,18 @@ namespace TombEditor.Controls.Panel3D
                         {
                             Room newRoom = null;
 
-                            if (newBlockPicking.IsVerticalPlane)
+                            if (newSectorPicking.IsVerticalPlane)
                             {
                                 newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                     _editor.SelectedSectors,
-                                    PortalInstance.GetOppositeDirection(PortalInstance.GetDirection(newBlockPicking.Face.GetDirection())), false,
+                                    PortalInstance.GetOppositeDirection(PortalInstance.GetDirection(newSectorPicking.Face.GetDirection())), false,
                                     1, !ModifierKeys.HasFlag(Keys.Control));
                             }
                             else
                             {
                                 newRoom = EditorActions.CreateAdjoiningRoom(_editor.SelectedRoom,
                                     _editor.SelectedSectors,
-                                    newBlockPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling, false,
+                                    newSectorPicking.BelongsToFloor ? PortalDirection.Floor : PortalDirection.Ceiling, false,
                                     ModifierKeys.HasFlag(Keys.Shift) ? _editor.IncrementReference : _editor.IncrementReference * 4, !ModifierKeys.HasFlag(Keys.Control),
                                     ModifierKeys.HasFlag(Keys.Alt));
                             }
@@ -138,7 +140,7 @@ namespace TombEditor.Controls.Panel3D
                             {
                                 if (!ModifierKeys.HasFlag(Keys.Control))
                                     _editor.HighlightedSectors = new SectorSelection() { Area = newRoom.LocalArea };
-                                _toolHandler.Engage(location.X, location.Y, newBlockPicking, false, newRoom);
+                                _toolHandler.Engage(location.X, location.Y, newSectorPicking, false, newRoom);
 
                                 if (!ShowPortals && !ShowAllRooms)
                                     _editor.SendMessage("Parent is invisible. Turn on Draw Portals mode.", TombLib.Forms.PopupType.Info);
@@ -159,19 +161,19 @@ namespace TombEditor.Controls.Panel3D
                         {
                             if (ModifierKeys.HasFlag(Keys.Shift))
                             {
-                                EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                EditorActions.RotateTexture(_editor.SelectedRoom, pos, newSectorPicking.Face);
                                 break;
                             }
                             else if (ModifierKeys.HasFlag(Keys.Control))
                             {
-                                EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newSectorPicking.Face);
                                 break;
                             }
                         }
 
                         if (ModifierKeys.HasFlag(Keys.Alt))
                         {
-                            EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                            EditorActions.PickTexture(_editor.SelectedRoom, pos, newSectorPicking.Face);
                         }
                         else if (_editor.Tool.Tool == EditorToolType.GridPaint && !_editor.HighlightedSectors.Empty)
                         {
@@ -179,22 +181,22 @@ namespace TombEditor.Controls.Panel3D
                                 _editor.HighlightedSectors,
                                 _editor.SelectedSectors,
                                 _editor.SelectedTexture,
-                                newBlockPicking.Face,
+                                newSectorPicking.Face,
                                 ModifierKeys.HasFlag(Keys.Control),
                                 !ModifierKeys.HasFlag(Keys.Shift));
-                            _toolHandler.Engage(location.X, location.Y, newBlockPicking, false);
+                            _toolHandler.Engage(location.X, location.Y, newSectorPicking, false);
                         }
                         else if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors.Empty)
                         {
                             switch (_editor.Tool.Tool)
                             {
                                 case EditorToolType.Fill:
-                                    if (newBlockPicking.IsFloorHorizontalPlane)
-                                        EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
-                                    else if (newBlockPicking.IsCeilingHorizontalPlane)
-                                        EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
-                                    else if (newBlockPicking.IsVerticalPlane)
-                                        EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
+                                    if (newSectorPicking.IsFloorHorizontalPlane)
+                                        EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, SectorFaceType.Floor);
+                                    else if (newSectorPicking.IsCeilingHorizontalPlane)
+                                        EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, SectorFaceType.Ceiling);
+                                    else if (newSectorPicking.IsVerticalPlane)
+                                        EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, SectorFaceType.Wall);
                                     break;
 
                                 case EditorToolType.Group:
@@ -203,15 +205,15 @@ namespace TombEditor.Controls.Panel3D
                                             _editor.SelectedSectors,
                                             _editor.SelectedSectors,
                                             _editor.SelectedTexture,
-                                            newBlockPicking.Face,
+                                            newSectorPicking.Face,
                                             ModifierKeys.HasFlag(Keys.Control),
                                             !ModifierKeys.HasFlag(Keys.Shift));
                                     break;
 
                                 case EditorToolType.Brush:
                                 case EditorToolType.Pencil:
-                                    EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
-                                    _toolHandler.Engage(location.X, location.Y, newBlockPicking, false);
+                                    EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newSectorPicking.Face, _editor.SelectedTexture);
+                                    _toolHandler.Engage(location.X, location.Y, newSectorPicking, false);
                                     break;
 
                                 default:

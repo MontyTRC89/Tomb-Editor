@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 
 namespace TombLib.Utils
 {
@@ -25,7 +25,7 @@ namespace TombLib.Utils
             }
         }
 
-        public void TransformValueQuad(Dictionary<BlockFace, TextureArea> faceTextures, BlockFace rotation0, BlockFace rotation1, BlockFace rotation2, BlockFace rotation3)
+        public void TransformValueQuad(Dictionary<SectorFace, TextureArea> faceTextures, SectorFace rotation0, SectorFace rotation1, SectorFace rotation2, SectorFace rotation3)
         {
             if (MirrorX)
                 faceTextures.TrySwap(rotation0, rotation2);

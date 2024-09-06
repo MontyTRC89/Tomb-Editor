@@ -104,43 +104,53 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private void UpdateIcons() // This method is trash I know, but I couldn't find a better one
+		private void UpdateIcons()
 		{
-			// Create the temporary .exe file
-			string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".exe");
-			File.Copy(_ide.Project.GetLauncherFilePath(), tempFilePath);
+			string launcherFilePath = _ide.Project.GetLauncherFilePath();
+			string launcherDirectoryPath = Path.GetDirectoryName(launcherFilePath);
 
-			Bitmap ico_256 = IconUtilities.ExtractIcon(tempFilePath, IconSize.Jumbo).ToBitmap();
+			// Create a temporary .exe file to make sure the icon cache is up to date
+			string tempFilePath = Path.Combine(launcherDirectoryPath, Path.GetRandomFileName() + ".exe");
 
-			// Windows doesn't seem to have a name for 128x128 px icons, therefore we must resize the Jumbo one
-			Bitmap ico_128 = ImageHandling.ResizeImage(ico_256, 128, 128) as Bitmap;
-
-			Bitmap ico_48 = IconUtilities.ExtractIcon(tempFilePath, IconSize.ExtraLarge).ToBitmap();
-			Bitmap ico_16 = IconUtilities.ExtractIcon(tempFilePath, IconSize.Small).ToBitmap();
-
-			if (ico_256.Width == ico_48.Width && ico_256.Height == ico_48.Height)
+			try
 			{
-				panel_256.BorderStyle = BorderStyle.FixedSingle;
-				panel_128.BorderStyle = BorderStyle.FixedSingle;
+				File.Copy(launcherFilePath, tempFilePath);
 
-				panel_256.BackgroundImage = ico_48;
-				panel_128.BackgroundImage = ico_48;
-				panel_48.BackgroundImage = ico_48;
-				panel_16.BackgroundImage = ico_16;
+				var ico_256 = IconUtilities.ExtractIcon(tempFilePath, IconSize.Jumbo).ToBitmap();
+
+				// Windows doesn't seem to have a name for 128x128 px icons, therefore we must resize the Jumbo one
+				var ico_128 = ImageHandling.ResizeImage(ico_256, 128, 128) as Bitmap;
+
+				var ico_48 = IconUtilities.ExtractIcon(tempFilePath, IconSize.ExtraLarge).ToBitmap();
+				var ico_16 = IconUtilities.ExtractIcon(tempFilePath, IconSize.Small).ToBitmap();
+
+				if (ico_256.Width == ico_48.Width && ico_256.Height == ico_48.Height)
+				{
+					panel_256.BorderStyle = BorderStyle.FixedSingle;
+					panel_128.BorderStyle = BorderStyle.FixedSingle;
+
+					panel_256.BackgroundImage = ico_48;
+					panel_128.BackgroundImage = ico_48;
+					panel_48.BackgroundImage = ico_48;
+					panel_16.BackgroundImage = ico_16;
+				}
+				else
+				{
+					panel_256.BorderStyle = BorderStyle.None;
+					panel_128.BorderStyle = BorderStyle.None;
+
+					panel_256.BackgroundImage = ico_256;
+					panel_128.BackgroundImage = ico_128;
+					panel_48.BackgroundImage = ico_48;
+					panel_16.BackgroundImage = ico_16;
+				}
 			}
-			else
+			finally
 			{
-				panel_256.BorderStyle = BorderStyle.None;
-				panel_128.BorderStyle = BorderStyle.None;
-
-				panel_256.BackgroundImage = ico_256;
-				panel_128.BackgroundImage = ico_128;
-				panel_48.BackgroundImage = ico_48;
-				panel_16.BackgroundImage = ico_16;
+				// Now delete the temporary .exe file
+				if (File.Exists(tempFilePath))
+					File.Delete(tempFilePath);
 			}
-
-			// Now delete the temporary .exe file
-			File.Delete(tempFilePath);
 		}
 
 		#endregion Methods

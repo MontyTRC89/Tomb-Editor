@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -12,8 +13,8 @@ namespace TombLib.LevelData
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public const float BlockSizeUnit = 1024.0f;
-        public const float HalfBlockSizeUnit = BlockSizeUnit / 2.0f;
+        public const float SectorSizeUnit = 1024.0f;
+        public const float HalfSectorSizeUnit = SectorSizeUnit / 2.0f;
         public const int FullClickHeight = 256;
 
         public const short MaxNumberOfRooms = 1024;
@@ -246,7 +247,7 @@ namespace TombLib.LevelData
         {
             roomsToRotate = roomsToRotate.SelectMany(room => room.Versions).Distinct();
             Room[] oldRooms = roomsToRotate.ToArray();
-            var worldCenter = new VectorInt3(center.X, 0, center.Y) * (int)BlockSizeUnit;
+            var worldCenter = new VectorInt3(center.X, 0, center.Y) * (int)SectorSizeUnit;
 
             // Copy rooms and sectors
             var newRooms = new Room[oldRooms.Length];
@@ -271,8 +272,8 @@ namespace TombLib.LevelData
                     for (int x = 0; x < oldRoom.NumXSectors; ++x)
                     {
                         VectorInt2 newSectorPosition = transformation.Transform(new VectorInt2(x, z), oldRoom.SectorSize);
-                        newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Blocks[x, z].Clone();
-                        newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y].Transform(transformation, null,
+                        newRoom.Sectors[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Sectors[x, z].Clone();
+                        newRoom.Sectors[newSectorPosition.X, newSectorPosition.Y].Transform(transformation, null,
                             oldFace => oldRoom.GetFaceShape(x, z, oldFace));
                     }
                 newRooms[i] = newRoom;
@@ -360,14 +361,14 @@ namespace TombLib.LevelData
         public void RemoveTextures(Predicate<LevelTexture> askIfTextureToRemove)
         {
             // Clean up default texture first, in case removed texture set contains it
-            if (askIfTextureToRemove(Settings.DefaultTexture.Texture as LevelTexture))
+            if (Settings.DefaultTexture.Texture != null && askIfTextureToRemove(Settings.DefaultTexture.Texture as LevelTexture))
                 Settings.DefaultTexture = TextureArea.None;
 
             // Remove all texture occurences from room faces
             Parallel.ForEach(ExistingRooms, room =>
             {
-                foreach (Block sector in room.Blocks)
-                    foreach (BlockFace face in sector.GetFaceTextures().Keys)
+                foreach (Sector sector in room.Sectors)
+                    foreach (SectorFace face in sector.GetFaceTextures().Keys)
                     {
                         TextureArea currentTextureArea = sector.GetFaceTexture(face);
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;

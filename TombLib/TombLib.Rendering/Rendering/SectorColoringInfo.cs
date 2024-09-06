@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 
 namespace TombLib.Rendering
 {
@@ -74,7 +75,7 @@ namespace TombLib.Rendering
         public Vector4 Color2DRoomsBelow;
         public Vector4 Color2DRoomsMoved;
         public Vector4[] CustomColors = new Vector4[16];
-        
+
         public static readonly ColorScheme Default = new ColorScheme()
         {
             ColorSelection        = new Vector4(255, 0, 0, 255) / 255.0f,
@@ -132,7 +133,7 @@ namespace TombLib.Rendering
             Color2DRoomsBelow     =  new Vector4(86, 86, 88, 255) / 255.0f,
             Color2DRoomsMoved     =  new Vector4(216, 216, 216, 255) / 255.0f
         };
-        
+
         public static readonly ColorScheme Pastel = new ColorScheme()
         {
             ColorSelection         =  new Vector4(255, 120, 120, 255) / 255.0f,
@@ -210,13 +211,13 @@ namespace TombLib.Rendering
 
         private Vector4? GetSectorColoringInfoColor(ColorScheme colorScheme, List<SectorColoringType> priorityList, Room room, int x, int z, bool probeThroughPortals, SectorColoringShape shape, HashSet<SectorColoringType> typesToIgnore = null)
         {
-            Block block = room.GetBlockTry(x, z);
-            if (block == null)
+            Sector sector = room.GetSectorTry(x, z);
+            if (sector == null)
                 return null;
 
             bool checkIgnored = typesToIgnore != null;
 
-            Block bottomBlock = room.ProbeLowestBlock(x, z, probeThroughPortals).Block ?? Block.Empty;
+            Sector bottomSector = room.ProbeLowestSector(x, z, probeThroughPortals).Sector ?? Sector.Empty;
             for (int i = 0; i < priorityList.Count; i++)
             {
                 if (checkIgnored && typesToIgnore.Contains(priorityList[i]))
@@ -228,56 +229,56 @@ namespace TombLib.Rendering
                         switch (priorityList[i])
                         {
                             case SectorColoringType.Trigger:
-                                if (bottomBlock.Triggers.Count != 0)
+                                if (bottomSector.Triggers.Count != 0)
                                     return colorScheme.ColorTrigger;
                                 break;
                             case SectorColoringType.NotWalkableFloor:
-                                if (bottomBlock.HasFlag(BlockFlags.NotWalkableFloor))
+                                if (bottomSector.HasFlag(SectorFlags.NotWalkableFloor))
                                     return colorScheme.ColorNotWalkable;
                                 break;
                             case SectorColoringType.Box:
-                                if (bottomBlock.HasFlag(BlockFlags.Box))
+                                if (bottomSector.HasFlag(SectorFlags.Box))
                                     return colorScheme.ColorBox;
                                 break;
                             case SectorColoringType.Monkey:
-                                if (bottomBlock.HasFlag(BlockFlags.Monkey))
+                                if (bottomSector.HasFlag(SectorFlags.Monkey))
                                     return colorScheme.ColorMonkey;
                                 break;
                             case SectorColoringType.Death:
-                                if (bottomBlock.HasFlag(BlockFlags.DeathFire) ||
-                                    bottomBlock.HasFlag(BlockFlags.DeathElectricity) ||
-                                    bottomBlock.HasFlag(BlockFlags.DeathLava))
+                                if (bottomSector.HasFlag(SectorFlags.DeathFire) ||
+                                    bottomSector.HasFlag(SectorFlags.DeathElectricity) ||
+                                    bottomSector.HasFlag(SectorFlags.DeathLava))
                                     return colorScheme.ColorDeath;
                                 break;
                             case SectorColoringType.BorderWall:
-                                if (block.Type == BlockType.BorderWall)
+                                if (sector.Type == SectorType.BorderWall)
                                     return colorScheme.ColorBorderWall;
                                 break;
                             case SectorColoringType.Wall:
-                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None)
+                                if (sector.Type == SectorType.Wall && sector.Floor.DiagonalSplit == DiagonalSplit.None)
                                     return colorScheme.ColorWall;
                                 break;
                             case SectorColoringType.Floor:
-                                if (!(block.Floor.DiagonalSplit == DiagonalSplit.None && block.IsAnyWall))
+                                if (!(sector.Floor.DiagonalSplit == DiagonalSplit.None && sector.IsAnyWall))
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.Ceiling:
-                                if (!(block.Ceiling.DiagonalSplit == DiagonalSplit.None && block.IsAnyWall))
+                                if (!(sector.Ceiling.DiagonalSplit == DiagonalSplit.None && sector.IsAnyWall))
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.Portal:
                                 if((room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal) ||
                                    (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal) ||
-                                   (block.WallPortal != null && block.WallPortal.IsTraversable))
+                                   (sector.WallPortal != null && sector.WallPortal.IsTraversable))
                                     return colorScheme.ColorPortal;
                                 break;
                             case SectorColoringType.FloorPortal:
-                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                if (sector.FloorPortal != null && sector.FloorPortal.IsTraversable &&
                                     room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.FullPortal)
                                     return colorScheme.ColorPortalFace;
                                 break;
                             case SectorColoringType.CeilingPortal:
-                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                if (sector.CeilingPortal != null && sector.CeilingPortal.IsTraversable &&
                                     room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.FullPortal)
                                     return colorScheme.ColorPortalFace;
                                 break;
@@ -287,15 +288,15 @@ namespace TombLib.Rendering
                         switch (priorityList[i])
                         {
                             case SectorColoringType.Climb:
-                                if (bottomBlock.HasFlag(BlockFlags.ClimbAny))
+                                if (bottomSector.HasFlag(SectorFlags.ClimbAny))
                                     return colorScheme.ColorClimb;
                                 break;
                             case SectorColoringType.Beetle:
-                                if (bottomBlock.HasFlag(BlockFlags.Beetle))
+                                if (bottomSector.HasFlag(SectorFlags.Beetle))
                                     return colorScheme.ColorBeetle;
                                 break;
                             case SectorColoringType.TriggerTriggerer:
-                                if (bottomBlock.HasFlag(BlockFlags.TriggerTriggerer))
+                                if (bottomSector.HasFlag(SectorFlags.TriggerTriggerer))
                                     return colorScheme.ColorTriggerTriggerer;
                                 break;
                         }
@@ -304,7 +305,7 @@ namespace TombLib.Rendering
                         switch (priorityList[i])
                         {
                             case SectorColoringType.ForceFloorSolid:
-                                if (block.ForceFloorSolid)
+                                if (sector.ForceFloorSolid)
                                     return colorScheme.ColorForceSolidFloor;
                                 break;
 
@@ -315,7 +316,7 @@ namespace TombLib.Rendering
 
                                     if ((floorInfo.Portal   != null && floorInfo.VisualType   == Room.RoomConnectionType.NoPortal) ||
                                         (ceilingInfo.Portal != null && ceilingInfo.VisualType == Room.RoomConnectionType.NoPortal) ||
-                                        (block.WallPortal != null && !block.WallPortal.IsTraversable))
+                                        (sector.WallPortal != null && !sector.WallPortal.IsTraversable))
                                         return colorScheme.ColorPortal;
                                 }
                                 break;
@@ -325,16 +326,16 @@ namespace TombLib.Rendering
                         switch (priorityList[i])
                         {
                             case SectorColoringType.Wall:
-                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
+                                if (sector.Type == SectorType.Wall && sector.Floor.DiagonalSplit == DiagonalSplit.XnZn)
                                     return colorScheme.ColorWall;
                                 break;
                             case SectorColoringType.FloorPortal:
-                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                if (sector.FloorPortal != null && sector.FloorPortal.IsTraversable &&
                                     room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXpZp)
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.CeilingPortal:
-                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                if (sector.CeilingPortal != null && sector.CeilingPortal.IsTraversable &&
                                     room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXpZp)
                                     return colorScheme.ColorFloor;
                                 break;
@@ -344,16 +345,16 @@ namespace TombLib.Rendering
                         switch (priorityList[i])
                         {
                             case SectorColoringType.Wall:
-                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
+                                if (sector.Type == SectorType.Wall && sector.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                                     return colorScheme.ColorWall;
                                 break;
                             case SectorColoringType.FloorPortal:
-                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                if (sector.FloorPortal != null && sector.FloorPortal.IsTraversable &&
                                     room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXpZn)
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.CeilingPortal:
-                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                if (sector.CeilingPortal != null && sector.CeilingPortal.IsTraversable &&
                                     room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXpZn)
                                     return colorScheme.ColorFloor;
                                 break;
@@ -363,16 +364,16 @@ namespace TombLib.Rendering
                         switch (priorityList[i])
                         {
                             case SectorColoringType.Wall:
-                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
+                                if (sector.Type == SectorType.Wall && sector.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                                     return colorScheme.ColorWall;
                                 break;
                             case SectorColoringType.FloorPortal:
-                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                if (sector.FloorPortal != null && sector.FloorPortal.IsTraversable &&
                                     room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXnZp)
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.CeilingPortal:
-                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                if (sector.CeilingPortal != null && sector.CeilingPortal.IsTraversable &&
                                     room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXnZp)
                                     return colorScheme.ColorFloor;
                                 break;
@@ -382,16 +383,16 @@ namespace TombLib.Rendering
                         switch (priorityList[i])
                         {
                             case SectorColoringType.Wall:
-                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XpZp)
+                                if (sector.Type == SectorType.Wall && sector.Floor.DiagonalSplit == DiagonalSplit.XpZp)
                                     return colorScheme.ColorWall;
                                 break;
                             case SectorColoringType.FloorPortal:
-                                if (block.FloorPortal != null && block.FloorPortal.IsTraversable &&
+                                if (sector.FloorPortal != null && sector.FloorPortal.IsTraversable &&
                                     room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXnZn)
                                     return colorScheme.ColorFloor;
                                 break;
                             case SectorColoringType.CeilingPortal:
-                                if (block.CeilingPortal != null && block.CeilingPortal.IsTraversable &&
+                                if (sector.CeilingPortal != null && sector.CeilingPortal.IsTraversable &&
                                     room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType == Room.RoomConnectionType.TriangularPortalXnZn)
                                     return colorScheme.ColorFloor;
                                 break;
@@ -401,11 +402,11 @@ namespace TombLib.Rendering
                     case SectorColoringShape.EdgeXp:
                     case SectorColoringShape.EdgeZp:
                     case SectorColoringShape.EdgeZn:
-                        if (!bottomBlock.HasFlag(BlockFlags.ClimbAny))
-                            if (shape == SectorColoringShape.EdgeXn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeX) ||
-                                shape == SectorColoringShape.EdgeXp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveX) ||
-                                shape == SectorColoringShape.EdgeZp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveZ) ||
-                                shape == SectorColoringShape.EdgeZn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeZ))
+                        if (!bottomSector.HasFlag(SectorFlags.ClimbAny))
+                            if (shape == SectorColoringShape.EdgeXn && bottomSector.HasFlag(SectorFlags.ClimbNegativeX) ||
+                                shape == SectorColoringShape.EdgeXp && bottomSector.HasFlag(SectorFlags.ClimbPositiveX) ||
+                                shape == SectorColoringShape.EdgeZp && bottomSector.HasFlag(SectorFlags.ClimbPositiveZ) ||
+                                shape == SectorColoringShape.EdgeZn && bottomSector.HasFlag(SectorFlags.ClimbNegativeZ))
                                 return colorScheme.ColorClimb;
                         break;
                     default:

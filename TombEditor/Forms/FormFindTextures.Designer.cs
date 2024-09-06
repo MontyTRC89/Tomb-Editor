@@ -84,7 +84,7 @@
             // 
             this.colCoordinates.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colCoordinates.FillWeight = 25F;
-            this.colCoordinates.HeaderText = "Block";
+            this.colCoordinates.HeaderText = "Sector";
             this.colCoordinates.Name = "colCoordinates";
             this.colCoordinates.ReadOnly = true;
             this.colCoordinates.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;

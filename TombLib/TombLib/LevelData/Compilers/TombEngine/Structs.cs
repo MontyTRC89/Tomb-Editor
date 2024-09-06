@@ -468,7 +468,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // TODO: Store points as absolute positions natively.
                 foreach (var point in attractor.Points)
                 {
-                    var absPoint = ((point + OriginalRoom.Position) * new Vector3(Level.BlockSizeUnit, Level.HeightUnit, Level.BlockSizeUnit)) * new Vector3(1, -1, 1);
+                    var absPoint = ((point + OriginalRoom.Position) * new Vector3(Level.SectorSizeUnit, Level.FullClickHeight, Level.SectorSizeUnit)) * new Vector3(1, -1, 1);
                     writer.Write(absPoint);
                 }
             }

@@ -256,13 +256,13 @@ namespace TombLib.LevelData.Compilers
 
                     var add = false;
 
-                    // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
+                    // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 sectors.
                     if (zoneType == 1)
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         var canJump = dec_boxes[boxIndex].Jump;
-                        
+
                         if (!dec_boxes[boxIndex].Slope && water == isWater && (canJump || step <= Clicks.ToWorld(1)) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
@@ -290,11 +290,11 @@ namespace TombLib.LevelData.Compilers
 
                         if (!dec_boxes[boxIndex].Slope && (water == isWater && step <= Clicks.ToWorld(1) || water) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
-                            flipped && dec_boxes[boxIndex].Flag0x02)) 
+                            flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
                     }
 
-                    // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 blocks and monkey.
+                    // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 sectors and monkey.
                     if (zoneType == 4)
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
@@ -304,7 +304,7 @@ namespace TombLib.LevelData.Compilers
                         var canJump = dec_boxes[boxIndex].Jump;
                         var canMonkey = dec_boxes[boxIndex].Monkey;
 
-                        if (!dec_boxes[boxIndex].Slope && water == isWater && (canJump || step <= (int)Level.BlockSizeUnit || canMonkey) &&
+                        if (!dec_boxes[boxIndex].Slope && water == isWater && (canJump || step <= (int)Level.SectorSizeUnit || canMonkey) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;

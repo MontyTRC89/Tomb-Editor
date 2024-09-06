@@ -54,14 +54,17 @@ namespace TombLib.Graphics
         }
 
         private static void PutObjectVertexAndIndex(Vector3 v, Vector3 n,
-                                                    ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
-                                                    Vector3 color, Vector2 positionInAtlas)
+                                                    ObjectMesh mesh, Submesh submesh, Vector2 pixelCoord, int submeshIndex,
+                                                    Vector3 color, in WadRenderer.AllocationResult allocation)
         {
+            var uFactor = allocation.AllocatedSize.X / (float)allocation.OriginalSize.X;
+            var vFactor = allocation.AllocatedSize.Y / (float)allocation.OriginalSize.Y;
             var newVertex = new ObjectVertex();
 
             newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / WadRenderer.TextureAtlasSize,
-                                       (positionInAtlas.Y + uv.Y) / WadRenderer.TextureAtlasSize);
+            newVertex.UVW = new Vector3(((allocation.Position.X + (pixelCoord.X * uFactor)) ) / allocation.AtlasDimension.X ,
+                                       ((allocation.Position.Y + (pixelCoord.Y * vFactor)) ) / allocation.AtlasDimension.Y ,
+                                       allocation.Position.Z);
             newVertex.Normal = n / n.Length();
             newVertex.Color = color;
 
@@ -69,7 +72,7 @@ namespace TombLib.Graphics
             submesh.Indices.Add(mesh.Vertices.Count - 1);
         }
 
-        public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture, bool correct)
+        public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correct)
         {
             // Initialize the mesh
             var mesh = new ObjectMesh(device, msh.Name);
@@ -100,7 +103,7 @@ namespace TombLib.Graphics
             for (int j = 0; j < msh.Polys.Count; j++)
             {
                 WadPolygon poly = msh.Polys[j];
-                Vector2 positionInPackedTexture = allocateTexture((WadTexture)poly.Texture.Texture);
+                WadRenderer.AllocationResult positionInPackedTexture = allocateTexture((WadTexture)poly.Texture.Texture);
 
                 // Get the right submesh
                 var submesh = mesh.Submeshes[materialOpaque];

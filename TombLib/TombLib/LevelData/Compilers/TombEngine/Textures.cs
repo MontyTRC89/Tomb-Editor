@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using TombLib.IO;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -32,13 +33,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private TextureFootStep.Type GetTextureSound(Room room, int x, int z)
         {
-            Block sector = room.Blocks[x, z];
+            Sector sector = room.Sectors[x, z];
 
-            TextureFootStep.Type? result0 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.Floor));
+            TextureFootStep.Type? result0 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(SectorFace.Floor));
             if (result0.HasValue)
                 return result0.Value;
 
-            TextureFootStep.Type? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.Floor_Triangle2));
+            TextureFootStep.Type? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(SectorFace.Floor_Triangle2));
             if (result1.HasValue)
                 return result1.Value;
 

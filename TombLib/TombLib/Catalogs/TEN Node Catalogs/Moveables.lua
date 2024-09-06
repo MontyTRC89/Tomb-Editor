@@ -231,10 +231,10 @@ end
 -- !Name "Enable moveable"
 -- !Section "Moveable state"
 -- !Description "Enables moveable."
--- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 256 | 2 | 0.1 | 1 ], {0}, Timer"
 
-LevelFuncs.Engine.Node.EnableMoveable = function(moveableName)
-	TEN.Objects.GetMoveableByName(moveableName):Enable()
+LevelFuncs.Engine.Node.EnableMoveable = function(moveableName, timer)
+	TEN.Objects.GetMoveableByName(moveableName):Enable(timer)
 end
 
 -- !Name "Disable moveable"
@@ -383,6 +383,27 @@ LevelFuncs.Engine.Node.SetMoveablePositionToAnotherMoveable = function(rotate, d
 	end
 end
 
+-- !Name "Shift moveable towards its direction"
+-- !Section "Moveable parameters"
+-- !Description "Shifts moveable to a relative distance, towards the direction it is facing."
+-- !Arguments "NewLine, Moveables, Moveable to move, 85"
+-- !Arguments "Numerical, [ -65535 | 65535 ], {256}, 15, Distance"
+
+LevelFuncs.Engine.Node.ShiftMoveable = function(moveableName, distance)
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+
+	local angle = math.rad(moveable:GetRotation().y)
+	local dx = distance * math.sin(angle)
+	local dz = distance * math.cos(angle)
+
+	local newPosition = moveable:GetPosition()
+
+	newPosition.x = newPosition.x + dx
+	newPosition.z = newPosition.z + dz
+
+	moveable:SetPosition(newPosition)
+end
+
 -- !Name "Set moveable colour"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable tint to a given value."
@@ -399,11 +420,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 31 ], Mesh index to check" "Boolean, 15, Visible"
 
 LevelFuncs.Engine.Node.SetMoveableMeshVisibility = function(moveableName, value, state)
-	if (state == true) then
-		TEN.Objects.GetMoveableByName(moveableName):ShowMesh(value)
-	else
-		TEN.Objects.GetMoveableByName(moveableName):HideMesh(value)
-	end
+	TEN.Objects.GetMoveableByName(moveableName):SetMeshVisible(value,state)
 end
 
 -- !Name "Swap specified moveable mesh with another"

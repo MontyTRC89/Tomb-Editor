@@ -6,6 +6,9 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Rendering;
 
 namespace TombEditor.Controls.Panel3D
@@ -126,25 +129,25 @@ namespace TombEditor.Controls.Panel3D
                     }
                     else if (_editor.SelectedSectors.Valid)
                     {
-                        BlockVertical subdivisionToEdit;
+                        SectorVerticalPart splitToEdit;
 
                         if (_toolHandler.ReferencePicking.BelongsToFloor)
                         {
                             if (ModifierKeys.HasFlag(Keys.Control))
-                                subdivisionToEdit = BlockVertical.FloorSubdivision2;
-                            else if (_editor.HighlightedSubdivision <= 1)
-                                subdivisionToEdit = BlockVertical.Floor;
+                                splitToEdit = SectorVerticalPart.Floor2;
+                            else if (_editor.HighlightedSplit <= 1)
+                                splitToEdit = SectorVerticalPart.QA;
                             else
-                                subdivisionToEdit = BlockVerticalExtensions.GetExtraFloorSubdivision(_editor.HighlightedSubdivision - 2);
+                                splitToEdit = SectorVerticalPartExtensions.GetExtraFloorSplit(_editor.HighlightedSplit - 2);
                         }
                         else
                         {
                             if (ModifierKeys.HasFlag(Keys.Control))
-                                subdivisionToEdit = BlockVertical.CeilingSubdivision2;
-                            else if (_editor.HighlightedSubdivision <= 1)
-                                subdivisionToEdit = BlockVertical.Ceiling;
+                                splitToEdit = SectorVerticalPart.Ceiling2;
+                            else if (_editor.HighlightedSplit <= 1)
+                                splitToEdit = SectorVerticalPart.WS;
                             else
-                                subdivisionToEdit = BlockVerticalExtensions.GetExtraCeilingSubdivision(_editor.HighlightedSubdivision - 2);
+                                splitToEdit = SectorVerticalPartExtensions.GetExtraCeilingSplit(_editor.HighlightedSplit - 2);
                         }
 
                         switch (_editor.Tool.Tool)
@@ -153,7 +156,7 @@ namespace TombEditor.Controls.Panel3D
                                 EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                     _editor.SelectedSectors.Area,
                                     _editor.SelectedSectors.Arrow,
-                                    subdivisionToEdit,
+                                    splitToEdit,
                                     Math.Sign(dragValue.Value.Y) * _editor.IncrementReference,
                                     ModifierKeys.HasFlag(Keys.Alt),
                                     _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true);
@@ -163,7 +166,7 @@ namespace TombEditor.Controls.Panel3D
                                 EditorActions.ApplyHeightmap(_editor.SelectedRoom,
                                     _editor.SelectedSectors.Area,
                                     _editor.SelectedSectors.Arrow,
-                                    subdivisionToEdit,
+                                    splitToEdit,
                                     _toolHandler.RandomHeightMap,
                                     dragValue.Value.Y,
                                     ModifierKeys.HasFlag(Keys.Shift),
@@ -175,7 +178,7 @@ namespace TombEditor.Controls.Panel3D
                                     _editor.SelectedSectors.Area,
                                     _editor.SelectedSectors.Arrow,
                                     _editor.Tool.Tool,
-                                    subdivisionToEdit,
+                                    splitToEdit,
                                     dragValue.Value.Y,
                                     ModifierKeys.HasFlag(Keys.Shift),
                                     ModifierKeys.HasFlag(Keys.Alt));
@@ -188,12 +191,12 @@ namespace TombEditor.Controls.Panel3D
             }
             else
             {
-                var newBlockPicking = DoPicking(GetRay(location.X, location.Y)) as PickingResultBlock;
+                var newSectorPicking = DoPicking(GetRay(location.X, location.Y)) as PickingResultSector;
 
-                if (newBlockPicking != null)
+                if (newSectorPicking != null)
                 {
-                    VectorInt2 pos = newBlockPicking.Pos;
-                    bool belongsToFloor = newBlockPicking.BelongsToFloor;
+                    VectorInt2 pos = newSectorPicking.Pos;
+                    bool belongsToFloor = newSectorPicking.BelongsToFloor;
 
                     if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag) && _doSectorSelection)
                     {
@@ -220,28 +223,28 @@ namespace TombEditor.Controls.Panel3D
                     {
                         if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                         {
-                            if (_editor.SelectedRoom.Blocks[pos.X, pos.Y].IsAnyWall == _toolHandler.ReferenceBlock.IsAnyWall)
+                            if (_editor.SelectedRoom.Sectors[pos.X, pos.Y].IsAnyWall == _toolHandler.ReferenceSector.IsAnyWall)
                             {
                                 switch (_editor.Tool.Tool)
                                 {
                                     case EditorToolType.Flatten:
-                                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                        for (SectorEdge edge = 0; edge < SectorEdge.Count; ++edge)
                                         {
                                             if (belongsToFloor && _toolHandler.ReferencePicking.BelongsToFloor)
                                             {
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].Floor.SetHeight(edge, _toolHandler.ReferenceBlock.Floor.Min);
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Clear();
+                                                _editor.SelectedRoom.Sectors[pos.X, pos.Y].Floor.SetHeight(edge, _toolHandler.ReferenceSector.Floor.Min);
+                                                _editor.SelectedRoom.Sectors[pos.X, pos.Y].ExtraFloorSplits.Clear();
 
-                                                for (int i = 0; i < _toolHandler.ReferenceBlock.ExtraFloorSubdivisions.Count; i++)
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraFloorSubdivisions.Add(new Subdivision(_toolHandler.ReferenceBlock.ExtraFloorSubdivisions[i].Edges.Min()));		
+                                                for (int i = 0; i < _toolHandler.ReferenceSector.ExtraFloorSplits.Count; i++)
+                                                    _editor.SelectedRoom.Sectors[pos.X, pos.Y].ExtraFloorSplits.Add(new SectorSplit(_toolHandler.ReferenceSector.ExtraFloorSplits[i].Min));
                                             }
                                             else if (!belongsToFloor && !_toolHandler.ReferencePicking.BelongsToFloor)
                                             {
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].Ceiling.SetHeight(edge, _toolHandler.ReferenceBlock.Ceiling.Min);
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Clear();
+                                                _editor.SelectedRoom.Sectors[pos.X, pos.Y].Ceiling.SetHeight(edge, _toolHandler.ReferenceSector.Ceiling.Min);
+                                                _editor.SelectedRoom.Sectors[pos.X, pos.Y].ExtraCeilingSplits.Clear();
 
-                                                for (int i = 0; i < _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Count; i++)
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].ExtraCeilingSubdivisions.Add(new Subdivision(_toolHandler.ReferenceBlock.ExtraCeilingSubdivisions[i].Edges.Min()));
+                                                for (int i = 0; i < _editor.SelectedRoom.Sectors[pos.X, pos.Y].ExtraCeilingSplits.Count; i++)
+                                                    _editor.SelectedRoom.Sectors[pos.X, pos.Y].ExtraCeilingSplits.Add(new SectorSplit(_toolHandler.ReferenceSector.ExtraCeilingSplits[i].Min));
                                             }
                                         }
                                         EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new RectangleInt2(pos, pos));
@@ -251,7 +254,7 @@ namespace TombEditor.Controls.Panel3D
                                         if (belongsToFloor != _toolHandler.ReferencePicking.BelongsToFloor)
                                             break;
 
-                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling, _editor.IncrementReference, true);
+                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? SectorVerticalPart.QA : SectorVerticalPart.WS, _editor.IncrementReference, true);
                                         break;
 
                                     case EditorToolType.Drag:
@@ -269,7 +272,7 @@ namespace TombEditor.Controls.Panel3D
                                         EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                             new RectangleInt2(pos, pos),
                                             ArrowType.EntireFace,
-                                            belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
+                                            belongsToFloor ? SectorVerticalPart.QA : SectorVerticalPart.WS,
                                             increment,
                                             _editor.Tool.Tool is EditorToolType.Brush or EditorToolType.Shovel,
                                             false, false, true, true);
@@ -293,7 +296,7 @@ namespace TombEditor.Controls.Panel3D
                             {
                                 if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                     _editor.SelectedSectors.Empty)
-                                    return EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture, true);
+                                    return EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newSectorPicking.Face, _editor.SelectedTexture, true);
                             }
                             else if (_editor.Tool.Tool == EditorToolType.GridPaint && _toolHandler.Engaged)
                             {
@@ -352,10 +355,10 @@ namespace TombEditor.Controls.Panel3D
             if (_editor.Tool.GridSize == PaintGridSize.Grid3x3) addToSelection = 2;
             if (_editor.Tool.GridSize == PaintGridSize.Grid4x4) addToSelection = 3;
 
-            PickingResultBlock newBlockPicking = DoPicking(GetRay(location.X, location.Y)) as PickingResultBlock;
-            if (newBlockPicking != null)
+            PickingResultSector newSectorPicking = DoPicking(GetRay(location.X, location.Y)) as PickingResultSector;
+            if (newSectorPicking != null)
             {
-                VectorInt2 pos = newBlockPicking.Pos;
+                VectorInt2 pos = newSectorPicking.Pos;
                 var newSelection = new SectorSelection
                 {
                     Start = new VectorInt2(pos.X, pos.Y),

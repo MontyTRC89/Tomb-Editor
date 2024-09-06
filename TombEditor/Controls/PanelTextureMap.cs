@@ -13,7 +13,7 @@ namespace TombEditor.Controls
 {
     public class PanelTextureMap : TextureMapBase
     {
-        private readonly Editor _editor;
+        protected readonly Editor _editor;
 
         public new LevelTexture VisibleTexture
         {
@@ -31,8 +31,6 @@ namespace TombEditor.Controls
         protected override float NavigationMaxZoom => _editor.Configuration.TextureMap_NavigationMaxZoom;
         protected override float NavigationMinZoom => _editor.Configuration.TextureMap_NavigationMinZoom;
         protected override bool DrawSelectionDirectionIndicators => _editor.Configuration.TextureMap_DrawSelectionDirectionIndicators;
-
-        private static readonly Pen _defaultTexturePen = new Pen(Color.FromArgb(230, 238, 150, 238), 2);
 
         public PanelTextureMap() : base()
         {
@@ -54,24 +52,6 @@ namespace TombEditor.Controls
         {
             if (obj is Editor.ConfigurationChangedEvent)
                 Invalidate();
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                if (!_startPos.HasValue)
-                    return;
-
-                var newPos = new Vector2(e.Location.X, e.Location.Y);
-                if ((newPos - _startPos.Value).Length() > 4.0f)
-                    return;
-
-                var menu = new TextureMapContextMenu(_editor, this, FromVisualCoord(e.Location));
-                menu.Show(PointToScreen(e.Location));
-            }
-
-            base.OnMouseUp(e);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -116,29 +96,6 @@ namespace TombEditor.Controls
             }
 
             base.OnPaint(e);
-        }
-
-        protected override void OnPaintSelection(PaintEventArgs e)
-        {
-            base.OnPaintSelection(e);
-
-            if (_editor.Level.Settings.DefaultTexture == TextureArea.None)
-                return;
-
-            if (_editor.Level.Settings.DefaultTexture.Texture == null ||
-                _editor.Level.Settings.DefaultTexture.Texture != VisibleTexture)
-                return;
-
-            PointF[] edges = new[]
-            {
-                ToVisualCoord(_editor.Level.Settings.DefaultTexture.TexCoord0),
-                ToVisualCoord(_editor.Level.Settings.DefaultTexture.TexCoord1),
-                ToVisualCoord(_editor.Level.Settings.DefaultTexture.TexCoord2),
-                ToVisualCoord(_editor.Level.Settings.DefaultTexture.TexCoord3)
-            };
-
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            e.Graphics.DrawPolygon(_defaultTexturePen, edges);
         }
     }
 }

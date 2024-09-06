@@ -2,7 +2,7 @@
 <moveables>
     <moveable id="0" name="Lara" use_body_from="315" ten="LARA"/>
     <moveable id="1" name="Lara pistol animation" use_body_from="315" hidden="true" ten="PISTOLS_ANIM"/>
-    <moveable id="2" name="Lara's ponytail" hidden="true" ten="HAIR"/>
+    <moveable id="2" name="Lara's ponytail" hidden="true" ten="SINGLE_BRAID_HAIR"/>
     <moveable id="3" name="Lara shotgun animation" use_body_from="315" hidden="true" ten="SHOTGUN_ANIM"/>
     <moveable id="4" name="Lara Desert-Eagle animation" use_body_from="315" hidden="true" ten="REVOLVER_ANIM" />
     <moveable id="5" name="Lara Uzi animation" use_body_from="315" hidden="true" ten="UZI_ANIM"/>
@@ -41,7 +41,7 @@
     <moveable id="39" name="RX-Tech guy in red jacket" essential="false" ten="MP_WITH_GUN" /> 
     <moveable id="40" name="RX-Tech guy with gun" essential="false"  ten="SAS_CAIRO" /> 
     <moveable id="41" name="Dog (Antarctica)" essential="false" ten="HUSKIE"/>
-    <moveable id="42" name="Crawler mutant" essential="false" /> 
+    <moveable id="42" name="Crawler mutant" essential="false" ten="SEAL_MUTANT" /> 
     <moveable id="44" name="Tinnos wasp" essential="false" ten="WASP_MUTANT" /> 
     <moveable id="45" name="Tinnos monster" essential="false" ten="CLAW_MUTANT" />
     <moveable id="46" name="Brute mutant (with claw)" essential="false" /> 

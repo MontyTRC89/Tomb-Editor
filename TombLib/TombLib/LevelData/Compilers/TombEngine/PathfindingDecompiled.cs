@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TombLib.LevelData.SectorEnums;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
@@ -136,7 +137,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             do
             {
                 var box1 = dec_boxes[i];
-                dec_boxes[i].OverlapIndex = -1;  
+                dec_boxes[i].OverlapIndex = -1;
 
                 int numOverlapsAdded = 0;
 
@@ -202,7 +203,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 {
                                     if (Dec_BoxesOverlap(box1, box2))
                                     {
-                                        if (dec_boxes[i].OverlapIndex == -1) 
+                                        if (dec_boxes[i].OverlapIndex == -1)
                                             dec_boxes[i].OverlapIndex = dec_overlaps.Count;
 
                                         var overlap = new TombEngineOverlap
@@ -277,22 +278,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
             bool monkey = false;
 
             Room room = theRoom;
-            Block block = room.Blocks[x, z];
+            Sector sector = room.Sectors[x, z];
 
-            // Check if current block is a not walkable sector
-            if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return false;
+            // Check if current sector is not walkable
+            if ((sector.Flags & SectorFlags.NotWalkableFloor) != 0) return false;
 
-            if (block.Type == BlockType.Wall ||
-                block.Type == BlockType.BorderWall ||
-                block.WallPortal != null && block.WallPortal.Opacity == PortalOpacity.SolidFaces)
+            if (sector.Type == SectorType.Wall ||
+                sector.Type == SectorType.BorderWall ||
+                sector.WallPortal != null && sector.WallPortal.Opacity == PortalOpacity.SolidFaces)
             {
                 return false;
             }
 
-            dec_q0 = block.HasGhostBlock ? block.GhostBlock.Floor.XnZp : block.Floor.XnZp;
-            dec_q1 = block.HasGhostBlock ? block.GhostBlock.Floor.XpZp : block.Floor.XpZp;
-            dec_q2 = block.HasGhostBlock ? block.GhostBlock.Floor.XpZn : block.Floor.XpZn;
-            dec_q3 = block.HasGhostBlock ? block.GhostBlock.Floor.XnZn : block.Floor.XnZn;
+            dec_q0 = sector.HasGhostBlock ? sector.GhostBlock.Floor.XnZp : sector.Floor.XnZp;
+            dec_q1 = sector.HasGhostBlock ? sector.GhostBlock.Floor.XpZp : sector.Floor.XpZp;
+            dec_q2 = sector.HasGhostBlock ? sector.GhostBlock.Floor.XpZn : sector.Floor.XpZn;
+            dec_q3 = sector.HasGhostBlock ? sector.GhostBlock.Floor.XnZn : sector.Floor.XnZn;
 
             int currentX = room.Position.X + x;
             int currentZ = room.Position.Z + z;
@@ -399,7 +400,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     // Reset current room index to start room index
                                     dec_currentRoom = currentRoom;
 
-                                    // If floor of starting block is != floor of block (X, Z - 1) exit loop
+                                    // If floor of starting sector is != floor of sector (X, Z - 1) exit loop
                                     if (floor != Dec_GetBoxFloorHeight(searchX, zMin - 1)) break;
 
                                     // Reset flag of box extended in another room
@@ -453,7 +454,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     // Reset current room index to start room index
                                     dec_currentRoom = currentRoom;
 
-                                    // If floor of starting block is != floor of block (X, Z - 1) exit loop
+                                    // If floor of starting sector is != floor of sector (X, Z - 1) exit loop
                                     if (floor != Dec_GetBoxFloorHeight(xMax + 1, searchZ)) break;
 
                                     // Reset flag of box extended in another room
@@ -507,7 +508,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     // Reset current room index to start room index
                                     dec_currentRoom = currentRoom;
 
-                                    // If floor of starting block is != floor of block (X, Z + 1) exit loop
+                                    // If floor of starting sector is != floor of sector (X, Z + 1) exit loop
                                     if (floor != Dec_GetBoxFloorHeight(searchX, zMax + 1)) break;
 
                                     // Reset flag of box extended in another room
@@ -561,7 +562,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     // Reset current room index to start room index
                                     dec_currentRoom = currentRoom;
 
-                                    // If floor of starting block is != floor of block (X, Z - 1) exit loop
+                                    // If floor of starting sector is != floor of sector (X, Z - 1) exit loop
                                     if (floor != Dec_GetBoxFloorHeight(xMin - 1, searchZ)) break;
 
                                     // Reset flag of box extended in another room
@@ -609,7 +610,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             int zInRoom = 0;
 
             Room room;
-            Block block;
+            Sector sector;
 
             if (borderOrOutside)
             {
@@ -640,7 +641,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         zInRoom = 0;
                     }
 
-                    block = room.Blocks[xInRoom, zInRoom];
+                    sector = room.Sectors[xInRoom, zInRoom];
 
                     // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 corners.
                     // This happen for example when there are 3 room connected together and the corner is inside the box.
@@ -649,21 +650,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (xInRoom == 0 && zInRoom == 0 ||
                         xInRoom == 0 && zInRoom == room.NumZSectors - 1 ||
                         xInRoom == room.NumXSectors - 1 && zInRoom == 0 ||
-                        xInRoom == room.NumXSectors - 1 && zInRoom == room.NumZSectors - 1) 
+                        xInRoom == room.NumXSectors - 1 && zInRoom == room.NumZSectors - 1)
                         return false;
 
-                    if (block.WallPortal == null) 
+                    if (sector.WallPortal == null)
                         break;
 
-                    Room adjoiningRoom = block.WallPortal.AdjoiningRoom;
-                    
+                    Room adjoiningRoom = sector.WallPortal.AdjoiningRoom;
+
                     dec_currentRoom = adjoiningRoom;
                     theRoom = adjoiningRoom;
 
-                    if (block.WallPortal.Opacity == PortalOpacity.SolidFaces)
+                    if (sector.WallPortal.Opacity == PortalOpacity.SolidFaces)
                         return false;
 
-                    if (!Dec_ClampRoom(x, z)) 
+                    if (!Dec_ClampRoom(x, z))
                         break;
                 }
 
@@ -676,12 +677,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (xInRoom < 0 || zInRoom < 0 || xInRoom >= room.NumXSectors || zInRoom >= room.NumZSectors)
                     return false;
 
-                block = room.Blocks[xInRoom, zInRoom];
+                sector = room.Sectors[xInRoom, zInRoom];
 
                 // After having probed that we can reach X, Z from the original room, do the following
                 while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom), true).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
-                    Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
+                    Room adjoiningRoom = sector.FloorPortal.AdjoiningRoom;
                     if (room.Properties.Type == RoomType.Water != (adjoiningRoom.Properties.Type == RoomType.Water))
                         break;
 
@@ -692,7 +693,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     xInRoom = x - room.Position.X;
                     zInRoom = z - room.Position.Z;
 
-                    block = room.Blocks[xInRoom, zInRoom];
+                    sector = room.Sectors[xInRoom, zInRoom];
                 }
             }
 
@@ -722,11 +723,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Ignore pathfinding for current room?
             if (dec_currentRoom.Properties.FlagExcludeFromPathFinding) return _noHeight;
 
-            int posXblocks = room.Position.X;
-            int posZblocks = room.Position.Z;
+            int posXsectors = room.Position.X;
+            int posZsectors = room.Position.Z;
 
-            int xInRoom = x - posXblocks;
-            int zInRoom = z - posZblocks;
+            int xInRoom = x - posXsectors;
+            int zInRoom = z - posZsectors;
 
             if (xInRoom < 0 ||
                 xInRoom > room.NumXSectors - 1 ||
@@ -736,14 +737,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return _noHeight;
             }
 
-            Block block = room.Blocks[xInRoom, zInRoom];
+            Sector sector = room.Sectors[xInRoom, zInRoom];
 
-            // If block is a wall or is a vertical toggle opacity 1
-            // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
-            if ((block.Type == BlockType.Wall ||
-                 block.Type == BlockType.BorderWall) && (block.WallPortal == null ||
-                block.WallPortal != null && block.WallPortal.Opacity == PortalOpacity.SolidFaces) ||
-                (block.Flags & BlockFlags.NotWalkableFloor) != 0)
+            // If sector is a wall or is a vertical toggle opacity 1
+            // Note that is & 8 because wall and border wall are the only sectors with bit 4 (0x08) set
+            if ((sector.Type == SectorType.Wall ||
+                 sector.Type == SectorType.BorderWall) && (sector.WallPortal == null ||
+                sector.WallPortal != null && sector.WallPortal.Opacity == PortalOpacity.SolidFaces) ||
+                (sector.Flags & SectorFlags.NotWalkableFloor) != 0)
             {
                 dec_q0 = Clicks.ToWorld(-1);
                 dec_q1 = Clicks.ToWorld(-1);
@@ -754,32 +755,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             // If it's not a wall portal or is vertical toggle opacity 1
-            if (block.WallPortal == null || block.WallPortal.Opacity == PortalOpacity.SolidFaces)
+            if (sector.WallPortal == null || sector.WallPortal.Opacity == PortalOpacity.SolidFaces)
             {
 
             }
             else
             {
-                adjoiningRoom = block.WallPortal.AdjoiningRoom;
+                adjoiningRoom = sector.WallPortal.AdjoiningRoom;
                 dec_currentRoom = adjoiningRoom;
                 dec_boxExtendsInAnotherRoom = true;
 
                 room = dec_currentRoom;
 
-                posXblocks = room.Position.X;
-                posZblocks = room.Position.Z;
+                posXsectors = room.Position.X;
+                posZsectors = room.Position.Z;
 
-                xInRoom = x - posXblocks;
-                zInRoom = z - posZblocks;
+                xInRoom = x - posXsectors;
+                zInRoom = z - posZsectors;
 
-                block = room.Blocks[xInRoom, zInRoom];
+                sector = room.Sectors[xInRoom, zInRoom];
             }
 
             Room oldRoom = adjoiningRoom;
 
             /*while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
-                Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
+                Room adjoiningRoom2 = sector.FloorPortal.AdjoiningRoom;
 
                 if (!((room.Type == RoomType.Water) ^ (adjoiningRoom2.Type == RoomType.Water)))
                     break;
@@ -787,21 +788,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 dec_currentRoom = adjoiningRoom2;
                 room = dec_currentRoom;
 
-                posXblocks = room.Position.X;
-                posZblocks = room.Position.Z;
+                posXsectors = room.Position.X;
+                posZsectors = room.Position.Z;
 
-                xInRoom = x - posXblocks;
-                zInRoom = z - posZblocks;
+                xInRoom = x - posXsectors;
+                zInRoom = z - posZsectors;
 
-                block = room.Blocks[xInRoom, zInRoom];
+                sector = room.Sectors[xInRoom, zInRoom];
             }*/
 
             var connInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom));
-            while (block.FloorPortal != null && connInfo.TraversableType != Room.RoomConnectionType.NoPortal)
+            while (sector.FloorPortal != null && connInfo.TraversableType != Room.RoomConnectionType.NoPortal)
             {
-                Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
+                Room adjoiningRoom2 = sector.FloorPortal.AdjoiningRoom;
 
-                if (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)
+                if (sector.FloorPortal.Opacity == PortalOpacity.SolidFaces)
                 {
                     if (!((room.Properties.Type == RoomType.Water) ^ (adjoiningRoom2.Properties.Type == RoomType.Water)))
                         break;
@@ -810,22 +811,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 dec_currentRoom = adjoiningRoom2;
                 room = dec_currentRoom;
 
-                posXblocks = room.Position.X;
-                posZblocks = room.Position.Z;
+                posXsectors = room.Position.X;
+                posZsectors = room.Position.Z;
 
-                xInRoom = x - posXblocks;
-                zInRoom = z - posZblocks;
+                xInRoom = x - posXsectors;
+                zInRoom = z - posZsectors;
 
-                block = room.Blocks[xInRoom, zInRoom];
+                sector = room.Sectors[xInRoom, zInRoom];
                 connInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom));
             }
 
-            if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return _noHeight;
+            if ((sector.Flags & SectorFlags.NotWalkableFloor) != 0) return _noHeight;
 
-            int floorXnZp = block.HasGhostBlock ? block.GhostBlock.Floor.XnZp : block.Floor.XnZp,
-                floorXpZp = block.HasGhostBlock ? block.GhostBlock.Floor.XpZp : block.Floor.XpZp,
-                floorXpZn = block.HasGhostBlock ? block.GhostBlock.Floor.XpZn : block.Floor.XpZn,
-                floorXnZn = block.HasGhostBlock ? block.GhostBlock.Floor.XnZn : block.Floor.XnZn;
+            int floorXnZp = sector.HasGhostBlock ? sector.GhostBlock.Floor.XnZp : sector.Floor.XnZp,
+                floorXpZp = sector.HasGhostBlock ? sector.GhostBlock.Floor.XpZp : sector.Floor.XpZp,
+                floorXpZn = sector.HasGhostBlock ? sector.GhostBlock.Floor.XpZn : sector.Floor.XpZn,
+                floorXnZn = sector.HasGhostBlock ? sector.GhostBlock.Floor.XnZn : sector.Floor.XnZn;
 
             int sumHeights = floorXnZp + floorXpZp + floorXpZn + floorXnZn;
             int meanFloorCornerHeight = sumHeights / 4;
@@ -870,13 +871,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             int floorHeight = meanFloorCornerHeight + room.Position.Y;
 
-            int ceiling = block.HasGhostBlock
-                ? block.GhostBlock.Ceiling.Max + room.Position.Y
-                : block.Ceiling.Max + room.Position.Y;
+            int ceiling = sector.HasGhostBlock
+                ? sector.GhostBlock.Ceiling.Max + room.Position.Y
+                : sector.Ceiling.Max + room.Position.Y;
 
-            if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= Clicks.ToWorld(1) && block.CeilingPortal != null)
+            if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= Clicks.ToWorld(1) && sector.CeilingPortal != null)
             {
-                Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
+                Room adjoiningRoom3 = sector.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
 
                 if (adjoiningRoom3.Properties.Type != RoomType.Water)
@@ -910,15 +911,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     if (slope1 + slope4 == 2 || slope2 + slope3 == 2)
                     {
-                        if (dec_water && room.Properties.Type != RoomType.Water) 
+                        if (dec_water && room.Properties.Type != RoomType.Water)
                             slope = true;
                     }
                 }
             }
 
-            if ((block.Flags & BlockFlags.Box) == 0)
+            if ((sector.Flags & SectorFlags.Box) == 0)
             {
-                dec_monkey = (block.Flags & BlockFlags.Monkey) != 0;
+                dec_monkey = (sector.Flags & SectorFlags.Monkey) != 0;
                 return floorHeight;
             }
             else
@@ -926,7 +927,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (!dec_graybox)
                 {
                     dec_graybox = true;
-                    dec_monkey = (block.Flags & BlockFlags.Monkey) != 0;
+                    dec_monkey = (sector.Flags & SectorFlags.Monkey) != 0;
                     return floorHeight;
                 }
                 else
@@ -956,7 +957,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             int floor = 0;
 
-            // 1 block jump
+            // 1 sector jump
             if (zMax == zMin - 1)
             {
                 dec_currentRoom = b.Room;
@@ -974,7 +975,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return false;
             }
 
-            // 2 blocks jump
+            // 2 sectors jump
             if (zMax == zMin - 2)
             {
                 dec_currentRoom = b.Room;
@@ -998,13 +999,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 return false;
             }
-            
+
             // Swap cases
 
             zMin = b.Zmin;
             zMax = a.Zmax;
 
-            // 1 block jump
+            // 1 sector jump
             if (zMax == zMin - 1)
             {
                 dec_currentRoom = b.Room;
@@ -1022,7 +1023,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return false;
             }
 
-            // 2 blocks jump
+            // 2 sectors jump
             if (zMax == zMin - 2)
             {
                 dec_currentRoom = b.Room;
@@ -1070,7 +1071,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             int floor = 0;
 
-            // 1 block jump
+            // 1 sector jump
             if (xMax == xMin - 1)
             {
                 dec_currentRoom = b.Room;
@@ -1088,7 +1089,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return false;
             }
 
-            // 2 blocks jump
+            // 2 sectors jump
             if (xMax == xMin - 2)
             {
                 dec_currentRoom = b.Room;
@@ -1117,7 +1118,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             xMin = b.Xmin;
             xMax = a.Xmax;
 
-            // 1 block jump
+            // 1 sector jump
             if (xMax == xMin - 1)
             {
                 dec_currentRoom = b.Room;
@@ -1135,7 +1136,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return false;
             }
 
-            // 2 blocks jump
+            // 2 sectors jump
             if (xMax == xMin - 2)
             {
                 dec_currentRoom = b.Room;
