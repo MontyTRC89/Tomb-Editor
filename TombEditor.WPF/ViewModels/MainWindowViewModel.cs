@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+using System.Windows.Forms;
 using System.Windows.Input;
 using TombLib.Forms;
 
@@ -188,7 +189,16 @@ public partial class MainWindowViewModel : ObservableObject
 	public ICommand ShowToolPaletteCommand { get; }
 	public ICommand ShowToolPaletteFloatingCommand { get; }
 
+	// Tool Bar Commands
+
+	public ICommand Switch2DModeCommand { get; }
+	public ICommand SwitchGeometryModeCommand { get; }
+	public ICommand SwitchTextureModeCommand { get; }
+	public ICommand SwitchLightingModeCommand { get; }
+
 	// Non-menu Commands
+
+	public ICommand CancelAnyActionCommand { get; }
 
 	public ICommand RaiseQA1ClickCommand { get; }
 	public ICommand RaiseQA4ClickCommand { get; }
@@ -240,6 +250,146 @@ public partial class MainWindowViewModel : ObservableObject
 	public ICommand LowerUJ1ClickCommand { get; }
 	public ICommand LowerUJ4ClickCommand { get; }
 
+	// Blend Mode Commands
+
+	public ICommand SwitchBlendModeCommand { get; }
+	public ICommand SetBlendModeNormalCommand { get; }
+	public ICommand SetBlendModeAddCommand { get; }
+	public ICommand SetBlendModeSubtractCommand { get; }
+	public ICommand SetBlendModeExcludeCommand { get; }
+	public ICommand SetBlendModeScreenCommand { get; }
+	public ICommand SetBlendModeLightenCommand { get; }
+
+	// Uncategorized Commands
+
+	public ICommand AddTriggerWithBookmarkCommand { get; }
+	public ICommand RenameObjectCommand { get; }
+	public ICommand EditObjectColorCommand { get; }
+
+	public ICommand SetTextureDoubleSidedCommand { get; }
+	public ICommand SetTextureInvisibleCommand { get; }
+	public ICommand ChangeTextureSelectionTileSizeCommand { get; }
+
+	public ICommand RotateObjectLeftCommand { get; }
+	public ICommand RotateObjectRightCommand { get; }
+	public ICommand RotateObjectUpCommand { get; }
+	public ICommand RotateObjectDownCommand { get; }
+	public ICommand MoveObjectLeftCommand { get; }
+	public ICommand MoveObjectRightCommand { get; }
+	public ICommand MoveObjectForwardCommand { get; }
+	public ICommand MoveObjectBackCommand { get; }
+	public ICommand MoveObjectUpCommand { get; }
+	public ICommand MoveObjectDownCommand { get; }
+
+	public ICommand SelectPreviousRoomCommand { get; }
+	public ICommand RotateObject5Command { get; }
+	public ICommand RotateObject45Command { get; }
+	public ICommand MoveObjectToCurrentRoomCommand { get; }
+	public ICommand RotateTextureCommand { get; }
+	public ICommand MirrorTextureCommand { get; }
+	public ICommand BuildAndPlayPreviewCommand { get; }
+	public ICommand SelectBookmarkedObjectCommand { get; }
+	public ICommand AddNewRoomCommand { get; }
+	public ICommand LockRoomCommand { get; }
+	public ICommand HideRoomCommand { get; }
+	public ICommand EditAmbientLightCommand { get; }
+	public ICommand AddBoxVolumeInSelectedAreaCommand { get; }
+	public ICommand AddItemCommand { get; }
+	public ICommand AssignAndClipboardScriptIdCommand { get; }
+	public ICommand FlipFloorSplitCommand { get; }
+	public ICommand FlipCeilingSplitCommand { get; }
+	public ICommand SwitchTool1Command { get; }
+	public ICommand SwitchTool2Command { get; }
+	public ICommand SwitchTool3Command { get; }
+	public ICommand SwitchTool4Command { get; }
+	public ICommand SwitchTool5Command { get; }
+	public ICommand SwitchTool6Command { get; }
+	public ICommand SwitchTool7Command { get; }
+	public ICommand SwitchTool8Command { get; }
+	public ICommand SwitchTool9Command { get; }
+	public ICommand SwitchTool10Command { get; }
+	public ICommand SwitchTool11Command { get; }
+	public ICommand SwitchTool12Command { get; }
+	public ICommand SwitchTool13Command { get; }
+	public ICommand SwitchTool14Command { get; }
+	public ICommand DrawPortalsCommand { get; }
+	public ICommand DrawHorizonCommand { get; }
+	public ICommand DrawRoomNamesCommand { get; }
+	public ICommand DrawIllegalSlopesCommand { get; }
+	public ICommand DrawMoveablesCommand { get; }
+	public ICommand DrawStaticsCommand { get; }
+	public ICommand DrawImportedGeometryCommand { get; }
+	public ICommand DrawGhostBlocksCommand { get; }
+	public ICommand DrawVolumesCommand { get; }
+	public ICommand DrawBoundingBoxesCommand { get; }
+	public ICommand DrawOtherObjectsCommand { get; }
+	public ICommand DrawLightRadiusCommand { get; }
+	public ICommand DrawSlideDirectionsCommand { get; }
+	public ICommand DrawExtraBlendingModesCommand { get; }
+	public ICommand HideTransparentFacesCommand { get; }
+	public ICommand BilinearFilterCommand { get; }
+	public ICommand DisableGeometryPickingCommand { get; }
+	public ICommand DisableHiddenRoomPickingCommand { get; }
+	public ICommand DrawAllRoomsCommand { get; }
+	public ICommand DrawCardinalDirectionsCommand { get; }
+	public ICommand SamplePaletteFromTexturesCommand { get; }
+	public ICommand ResetPaletteCommand { get; }
+	public ICommand ToggleFlipMapCommand { get; }
+	public ICommand ToggleNoOpacityCommand { get; }
+	public ICommand ToggleOpacityCommand { get; }
+	public ICommand ToggleOpacity2Command { get; }
+	public ICommand AddPointLightCommand { get; }
+	public ICommand AddShadowCommand { get; }
+	public ICommand AddSunLightCommand { get; }
+	public ICommand AddSpotLightCommand { get; }
+	public ICommand AddEffectLightCommand { get; }
+	public ICommand AddFogBulbCommand { get; }
+	public ICommand EditRoomNameCommand { get; }
+	public ICommand SetFloorCommand { get; }
+	public ICommand SetCeilingCommand { get; }
+	public ICommand SetWallCommand { get; }
+	public ICommand SetBoxCommand { get; }
+	public ICommand SetDeathCommand { get; }
+	public ICommand SetMonkeyswingCommand { get; }
+	public ICommand SetClimbPositiveZCommand { get; }
+	public ICommand SetClimbPositiveXCommand { get; }
+	public ICommand SetClimbNegativeZCommand { get; }
+	public ICommand SetClimbNegativeXCommand { get; }
+	public ICommand SetNotWalkableCommand { get; }
+	public ICommand SetDiagonalFloorStepCommand { get; }
+	public ICommand SetDiagonalCeilingStepCommand { get; }
+	public ICommand SetDiagonalWallCommand { get; }
+	public ICommand SetBeetleCheckpointCommand { get; }
+	public ICommand SetTriggerTriggererCommand { get; }
+	public ICommand ToggleForceFloorSolidCommand { get; }
+	public ICommand AddGhostBlocksToSelectionCommand { get; }
+	public ICommand SetRoomOutsideCommand { get; }
+	public ICommand SetRoomSkyboxCommand { get; }
+	public ICommand SetRoomNoLensflareCommand { get; }
+	public ICommand SetRoomNoPathfindingCommand { get; }
+	public ICommand SetRoomColdCommand { get; }
+	public ICommand SetRoomDamageCommand { get; }
+	public ICommand InPlaceSearchRoomsCommand { get; }
+	public ICommand InPlaceSearchItemsCommand { get; }
+	public ICommand InPlaceSearchTexturesCommand { get; }
+	public ICommand InPlaceSearchImportedGeometryCommand { get; }
+	public ICommand SearchMenusCommand { get; }
+	public ICommand MoveObjectLeftPreciseCommand { get; }
+	public ICommand MoveObjectRightPreciseCommand { get; }
+	public ICommand MoveObjectForwardPreciseCommand { get; }
+	public ICommand MoveObjectBackPreciseCommand { get; }
+	public ICommand MoveObjectUpPreciseCommand { get; }
+	public ICommand MoveObjectDownPreciseCommand { get; }
+	public ICommand HighlightSplit1Command { get; }
+	public ICommand HighlightSplit2Command { get; }
+	public ICommand HighlightSplit3Command { get; }
+	public ICommand HighlightSplit4Command { get; }
+	public ICommand HighlightSplit5Command { get; }
+	public ICommand HighlightSplit6Command { get; }
+	public ICommand HighlightSplit7Command { get; }
+	public ICommand HighlightSplit8Command { get; }
+	public ICommand HighlightSplit9Command { get; }
+
 	private readonly Editor _editor;
 
 	public MainWindowViewModel(Editor editor)
@@ -247,209 +397,360 @@ public partial class MainWindowViewModel : ObservableObject
 		_editor = editor;
 		_editor.EditorEventRaised += EditorEventRaised;
 
+		var commandArgs = new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor);
+
 		// File Menu
 
-		NewLevelCommand = CommandHandler.GetCommand("NewLevel", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		OpenLevelCommand = CommandHandler.GetCommand("OpenLevel", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SaveLevelCommand = CommandHandler.GetCommand("SaveLevel", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SaveLevelAsCommand = CommandHandler.GetCommand("SaveLevelAs", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ImportPrjCommand = CommandHandler.GetCommand("ImportPrj", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ConvertLevelToTombEngineCommand = CommandHandler.GetCommand("ConvertLevelToTombEngine", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		BuildAndPlayCommand = CommandHandler.GetCommand("BuildAndPlay", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		BuildLevelCommand = CommandHandler.GetCommand("BuildLevel", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		QuitEditorCommand = CommandHandler.GetCommand("QuitEditor", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		NewLevelCommand = CommandHandler.GetCommand("NewLevel", commandArgs);
+		OpenLevelCommand = CommandHandler.GetCommand("OpenLevel", commandArgs);
+		SaveLevelCommand = CommandHandler.GetCommand("SaveLevel", commandArgs);
+		SaveLevelAsCommand = CommandHandler.GetCommand("SaveLevelAs", commandArgs);
+		ImportPrjCommand = CommandHandler.GetCommand("ImportPrj", commandArgs);
+		ConvertLevelToTombEngineCommand = CommandHandler.GetCommand("ConvertLevelToTombEngine", commandArgs);
+		BuildAndPlayCommand = CommandHandler.GetCommand("BuildAndPlay", commandArgs);
+		BuildLevelCommand = CommandHandler.GetCommand("BuildLevel", commandArgs);
+		QuitEditorCommand = CommandHandler.GetCommand("QuitEditor", commandArgs);
 
 		// Edit Menu
 
-		UndoCommand = CommandHandler.GetCommand("Undo", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RedoCommand = CommandHandler.GetCommand("Redo", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		CutCommand = CommandHandler.GetCommand("Cut", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		CopyCommand = CommandHandler.GetCommand("Copy", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		PasteCommand = CommandHandler.GetCommand("Paste", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		StampObjectCommand = CommandHandler.GetCommand("StampObject", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DeleteCommand = CommandHandler.GetCommand("Delete", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectAllCommand = CommandHandler.GetCommand("SelectAll", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		BookmarkObjectCommand = CommandHandler.GetCommand("BookmarkObject", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectBookmarkedObject = CommandHandler.GetCommand("SelectBookmarkedObject", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		EditObjectCommand = CommandHandler.GetCommand("EditObject", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		EditVolumeEventSetsCommand = CommandHandler.GetCommand("EditVolumeEventSets", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		EditGlobalEventSetsCommand = CommandHandler.GetCommand("EditGlobalEventSets", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SearchCommand = CommandHandler.GetCommand("Search", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SearchAndReplaceObjectsCommand = CommandHandler.GetCommand("SearchAndReplaceObjects", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		UndoCommand = CommandHandler.GetCommand("Undo", commandArgs);
+		RedoCommand = CommandHandler.GetCommand("Redo", commandArgs);
+		CutCommand = CommandHandler.GetCommand("Cut", commandArgs);
+		CopyCommand = CommandHandler.GetCommand("Copy", commandArgs);
+		PasteCommand = CommandHandler.GetCommand("Paste", commandArgs);
+		StampObjectCommand = CommandHandler.GetCommand("StampObject", commandArgs);
+		DeleteCommand = CommandHandler.GetCommand("Delete", commandArgs);
+		SelectAllCommand = CommandHandler.GetCommand("SelectAll", commandArgs);
+		BookmarkObjectCommand = CommandHandler.GetCommand("BookmarkObject", commandArgs);
+		SelectBookmarkedObject = CommandHandler.GetCommand("SelectBookmarkedObject", commandArgs);
+		EditObjectCommand = CommandHandler.GetCommand("EditObject", commandArgs);
+		EditVolumeEventSetsCommand = CommandHandler.GetCommand("EditVolumeEventSets", commandArgs);
+		EditGlobalEventSetsCommand = CommandHandler.GetCommand("EditGlobalEventSets", commandArgs);
+		SearchCommand = CommandHandler.GetCommand("Search", commandArgs);
+		SearchAndReplaceObjectsCommand = CommandHandler.GetCommand("SearchAndReplaceObjects", commandArgs);
 
 		// View Menu
 
-		ResetCameraCommand = CommandHandler.GetCommand("ResetCamera", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RelocateCameraCommand = CommandHandler.GetCommand("RelocateCamera", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ToggleFlyModeCommand = CommandHandler.GetCommand("ToggleFlyMode", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DrawWhiteTextureLightingOnlyCommand = CommandHandler.GetCommand("DrawWhiteTextureLightingOnly", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ShowRealTintForObjectsCommand = CommandHandler.GetCommand("ShowRealTintForObjects", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		ResetCameraCommand = CommandHandler.GetCommand("ResetCamera", commandArgs);
+		RelocateCameraCommand = CommandHandler.GetCommand("RelocateCamera", commandArgs);
+		ToggleFlyModeCommand = CommandHandler.GetCommand("ToggleFlyMode", commandArgs);
+		DrawWhiteTextureLightingOnlyCommand = CommandHandler.GetCommand("DrawWhiteTextureLightingOnly", commandArgs);
+		ShowRealTintForObjectsCommand = CommandHandler.GetCommand("ShowRealTintForObjects", commandArgs);
 
 		// Rooms Menu
 
-		NewRoomUpCommand = CommandHandler.GetCommand("NewRoomUp", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		NewRoomDownCommand = CommandHandler.GetCommand("NewRoomDown", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		NewRoomLeftCommand = CommandHandler.GetCommand("NewRoomLeft", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		NewRoomRightCommand = CommandHandler.GetCommand("NewRoomRight", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		NewRoomFrontCommand = CommandHandler.GetCommand("NewRoomFront", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		NewRoomBackCommand = CommandHandler.GetCommand("NewRoomBack", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DuplicateRoomCommand = CommandHandler.GetCommand("DuplicateRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		CropRoomCommand = CommandHandler.GetCommand("CropRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SplitRoomCommand = CommandHandler.GetCommand("SplitRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MergeRoomsHorizontallyCommand = CommandHandler.GetCommand("MergeRoomsHorizontally", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DeleteRoomsCommand = CommandHandler.GetCommand("DeleteRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomUpCommand = CommandHandler.GetCommand("MoveRoomUp", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomUp4ClicksCommand = CommandHandler.GetCommand("MoveRoomUp4Clicks", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomDownCommand = CommandHandler.GetCommand("MoveRoomDown", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomDown4ClicksCommand = CommandHandler.GetCommand("MoveRoomDown4Clicks", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomLeftCommand = CommandHandler.GetCommand("MoveRoomLeft", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomRightCommand = CommandHandler.GetCommand("MoveRoomRight", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomForwardCommand = CommandHandler.GetCommand("MoveRoomForward", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveRoomBackCommand = CommandHandler.GetCommand("MoveRoomBack", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RotateRoomsClockwiseCommand = CommandHandler.GetCommand("RotateRoomsClockwise", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RotateRoomsCounterClockwiseCommand = CommandHandler.GetCommand("RotateRoomsCounterClockwise", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MirrorRoomsXCommand = CommandHandler.GetCommand("MirrorRoomsX", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MirrorRoomsZCommand = CommandHandler.GetCommand("MirrorRoomsZ", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectWaterRoomsCommand = CommandHandler.GetCommand("SelectWaterRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectSkyRoomsCommand = CommandHandler.GetCommand("SelectSkyRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectOutsideRoomsCommand = CommandHandler.GetCommand("SelectOutsideRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectQuicksandRoomsCommand = CommandHandler.GetCommand("SelectQuicksandRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectConnectedRoomsCommand = CommandHandler.GetCommand("SelectConnectedRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectRoomsByTagsCommand = CommandHandler.GetCommand("SelectRoomsByTags", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ExportRoomsCommand = CommandHandler.GetCommand("ExportRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ImportRoomsCommand = CommandHandler.GetCommand("ImportRooms", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ApplyRoomPropertiesCommand = CommandHandler.GetCommand("ApplyRoomProperties", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		NewRoomUpCommand = CommandHandler.GetCommand("NewRoomUp", commandArgs);
+		NewRoomDownCommand = CommandHandler.GetCommand("NewRoomDown", commandArgs);
+		NewRoomLeftCommand = CommandHandler.GetCommand("NewRoomLeft", commandArgs);
+		NewRoomRightCommand = CommandHandler.GetCommand("NewRoomRight", commandArgs);
+		NewRoomFrontCommand = CommandHandler.GetCommand("NewRoomFront", commandArgs);
+		NewRoomBackCommand = CommandHandler.GetCommand("NewRoomBack", commandArgs);
+		DuplicateRoomCommand = CommandHandler.GetCommand("DuplicateRoom", commandArgs);
+		CropRoomCommand = CommandHandler.GetCommand("CropRoom", commandArgs);
+		SplitRoomCommand = CommandHandler.GetCommand("SplitRoom", commandArgs);
+		MergeRoomsHorizontallyCommand = CommandHandler.GetCommand("MergeRoomsHorizontally", commandArgs);
+		DeleteRoomsCommand = CommandHandler.GetCommand("DeleteRooms", commandArgs);
+		MoveRoomUpCommand = CommandHandler.GetCommand("MoveRoomUp", commandArgs);
+		MoveRoomUp4ClicksCommand = CommandHandler.GetCommand("MoveRoomUp4Clicks", commandArgs);
+		MoveRoomDownCommand = CommandHandler.GetCommand("MoveRoomDown", commandArgs);
+		MoveRoomDown4ClicksCommand = CommandHandler.GetCommand("MoveRoomDown4Clicks", commandArgs);
+		MoveRoomLeftCommand = CommandHandler.GetCommand("MoveRoomLeft", commandArgs);
+		MoveRoomRightCommand = CommandHandler.GetCommand("MoveRoomRight", commandArgs);
+		MoveRoomForwardCommand = CommandHandler.GetCommand("MoveRoomForward", commandArgs);
+		MoveRoomBackCommand = CommandHandler.GetCommand("MoveRoomBack", commandArgs);
+		RotateRoomsClockwiseCommand = CommandHandler.GetCommand("RotateRoomsClockwise", commandArgs);
+		RotateRoomsCounterClockwiseCommand = CommandHandler.GetCommand("RotateRoomsCounterClockwise", commandArgs);
+		MirrorRoomsXCommand = CommandHandler.GetCommand("MirrorRoomsX", commandArgs);
+		MirrorRoomsZCommand = CommandHandler.GetCommand("MirrorRoomsZ", commandArgs);
+		SelectWaterRoomsCommand = CommandHandler.GetCommand("SelectWaterRooms", commandArgs);
+		SelectSkyRoomsCommand = CommandHandler.GetCommand("SelectSkyRooms", commandArgs);
+		SelectOutsideRoomsCommand = CommandHandler.GetCommand("SelectOutsideRooms", commandArgs);
+		SelectQuicksandRoomsCommand = CommandHandler.GetCommand("SelectQuicksandRooms", commandArgs);
+		SelectConnectedRoomsCommand = CommandHandler.GetCommand("SelectConnectedRooms", commandArgs);
+		SelectRoomsByTagsCommand = CommandHandler.GetCommand("SelectRoomsByTags", commandArgs);
+		ExportRoomsCommand = CommandHandler.GetCommand("ExportRooms", commandArgs);
+		ImportRoomsCommand = CommandHandler.GetCommand("ImportRooms", commandArgs);
+		ApplyRoomPropertiesCommand = CommandHandler.GetCommand("ApplyRoomProperties", commandArgs);
 
 		// Items Menu
 
-		AddWadCommand = CommandHandler.GetCommand("AddWad", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RemoveWadsCommand = CommandHandler.GetCommand("RemoveWads", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ReloadWadsCommand = CommandHandler.GetCommand("ReloadWads", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ReloadSoundsCommand = CommandHandler.GetCommand("ReloadSounds", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddCameraCommand = CommandHandler.GetCommand("AddCamera", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddFlybyCameraCommand = CommandHandler.GetCommand("AddFlybyCamera", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddSpriteCommand = CommandHandler.GetCommand("AddSprite", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddSinkCommand = CommandHandler.GetCommand("AddSink", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddSoundSourceCommand = CommandHandler.GetCommand("AddSoundSource", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddImportedGeometryCommand = CommandHandler.GetCommand("AddImportedGeometry", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddGhostBlockCommand = CommandHandler.GetCommand("AddGhostBlock", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddMemoCommand = CommandHandler.GetCommand("AddMemo", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddPortalCommand = CommandHandler.GetCommand("AddPortal", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddTriggerCommand = CommandHandler.GetCommand("AddTrigger", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddBoxVolumeCommand = CommandHandler.GetCommand("AddBoxVolume", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddSphereVolumeCommand = CommandHandler.GetCommand("AddSphereVolume", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DeleteAllLightsCommand = CommandHandler.GetCommand("DeleteAllLights", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DeleteAllObjectsCommand = CommandHandler.GetCommand("DeleteAllObjects", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DeleteAllTriggersCommand = CommandHandler.GetCommand("DeleteAllTriggers", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DeleteMissingObjectsCommand = CommandHandler.GetCommand("DeleteMissingObjects", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LocateItemCommand = CommandHandler.GetCommand("LocateItem", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MoveLaraCommand = CommandHandler.GetCommand("MoveLara", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectAllObjectsInAreaCommand = CommandHandler.GetCommand("SelectAllObjectsInArea", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SelectFloorBelowObjectCommand = CommandHandler.GetCommand("SelectFloorBelowObject", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SplitSectorObjectOnSelectionCommand = CommandHandler.GetCommand("SplitSectorObjectOnSelection", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetStaticMeshesColorToRoomLightCommand = CommandHandler.GetCommand("SetStaticMeshesColorToRoomLight", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetStaticMeshesColorCommand = CommandHandler.GetCommand("SetStaticMeshesColor", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		MakeQuickItemGroupCommand = CommandHandler.GetCommand("MakeQuickItemGroup", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		GetObjectStatisticsCommand = CommandHandler.GetCommand("GetObjectStatistics", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		GenerateObjectNamesCommand = CommandHandler.GetCommand("GenerateObjectNames", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		AddWadCommand = CommandHandler.GetCommand("AddWad", commandArgs);
+		RemoveWadsCommand = CommandHandler.GetCommand("RemoveWads", commandArgs);
+		ReloadWadsCommand = CommandHandler.GetCommand("ReloadWads", commandArgs);
+		ReloadSoundsCommand = CommandHandler.GetCommand("ReloadSounds", commandArgs);
+		AddCameraCommand = CommandHandler.GetCommand("AddCamera", commandArgs);
+		AddFlybyCameraCommand = CommandHandler.GetCommand("AddFlybyCamera", commandArgs);
+		AddSpriteCommand = CommandHandler.GetCommand("AddSprite", commandArgs);
+		AddSinkCommand = CommandHandler.GetCommand("AddSink", commandArgs);
+		AddSoundSourceCommand = CommandHandler.GetCommand("AddSoundSource", commandArgs);
+		AddImportedGeometryCommand = CommandHandler.GetCommand("AddImportedGeometry", commandArgs);
+		AddGhostBlockCommand = CommandHandler.GetCommand("AddGhostBlock", commandArgs);
+		AddMemoCommand = CommandHandler.GetCommand("AddMemo", commandArgs);
+		AddPortalCommand = CommandHandler.GetCommand("AddPortal", commandArgs);
+		AddTriggerCommand = CommandHandler.GetCommand("AddTrigger", commandArgs);
+		AddBoxVolumeCommand = CommandHandler.GetCommand("AddBoxVolume", commandArgs);
+		AddSphereVolumeCommand = CommandHandler.GetCommand("AddSphereVolume", commandArgs);
+		DeleteAllLightsCommand = CommandHandler.GetCommand("DeleteAllLights", commandArgs);
+		DeleteAllObjectsCommand = CommandHandler.GetCommand("DeleteAllObjects", commandArgs);
+		DeleteAllTriggersCommand = CommandHandler.GetCommand("DeleteAllTriggers", commandArgs);
+		DeleteMissingObjectsCommand = CommandHandler.GetCommand("DeleteMissingObjects", commandArgs);
+		LocateItemCommand = CommandHandler.GetCommand("LocateItem", commandArgs);
+		MoveLaraCommand = CommandHandler.GetCommand("MoveLara", commandArgs);
+		SelectAllObjectsInAreaCommand = CommandHandler.GetCommand("SelectAllObjectsInArea", commandArgs);
+		SelectFloorBelowObjectCommand = CommandHandler.GetCommand("SelectFloorBelowObject", commandArgs);
+		SplitSectorObjectOnSelectionCommand = CommandHandler.GetCommand("SplitSectorObjectOnSelection", commandArgs);
+		SetStaticMeshesColorToRoomLightCommand = CommandHandler.GetCommand("SetStaticMeshesColorToRoomLight", commandArgs);
+		SetStaticMeshesColorCommand = CommandHandler.GetCommand("SetStaticMeshesColor", commandArgs);
+		MakeQuickItemGroupCommand = CommandHandler.GetCommand("MakeQuickItemGroup", commandArgs);
+		GetObjectStatisticsCommand = CommandHandler.GetCommand("GetObjectStatistics", commandArgs);
+		GenerateObjectNamesCommand = CommandHandler.GetCommand("GenerateObjectNames", commandArgs);
 
 		// Textures Menu
 
-		AddTextureCommand = CommandHandler.GetCommand("AddTexture", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RemoveTexturesCommand = CommandHandler.GetCommand("RemoveTextures", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		UnloadTexturesCommand = CommandHandler.GetCommand("UnloadTextures", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ReloadTexturesCommand = CommandHandler.GetCommand("ReloadTextures", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ConvertTexturesToPNGCommand = CommandHandler.GetCommand("ConvertTexturesToPNG", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RemapTextureCommand = CommandHandler.GetCommand("RemapTexture", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		TextureFloorCommand = CommandHandler.GetCommand("TextureFloor", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		TextureWallsCommand = CommandHandler.GetCommand("TextureWalls", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		TextureCeilingCommand = CommandHandler.GetCommand("TextureCeiling", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ClearAllTexturesInRoomCommand = CommandHandler.GetCommand("ClearAllTexturesInRoom", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ClearAllTexturesInLevelCommand = CommandHandler.GetCommand("ClearAllTexturesInLevel", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SearchTexturesCommand = CommandHandler.GetCommand("SearchTextures", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		EditAnimationRangesCommand = CommandHandler.GetCommand("EditAnimationRanges", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		AddTextureCommand = CommandHandler.GetCommand("AddTexture", commandArgs);
+		RemoveTexturesCommand = CommandHandler.GetCommand("RemoveTextures", commandArgs);
+		UnloadTexturesCommand = CommandHandler.GetCommand("UnloadTextures", commandArgs);
+		ReloadTexturesCommand = CommandHandler.GetCommand("ReloadTextures", commandArgs);
+		ConvertTexturesToPNGCommand = CommandHandler.GetCommand("ConvertTexturesToPNG", commandArgs);
+		RemapTextureCommand = CommandHandler.GetCommand("RemapTexture", commandArgs);
+		TextureFloorCommand = CommandHandler.GetCommand("TextureFloor", commandArgs);
+		TextureWallsCommand = CommandHandler.GetCommand("TextureWalls", commandArgs);
+		TextureCeilingCommand = CommandHandler.GetCommand("TextureCeiling", commandArgs);
+		ClearAllTexturesInRoomCommand = CommandHandler.GetCommand("ClearAllTexturesInRoom", commandArgs);
+		ClearAllTexturesInLevelCommand = CommandHandler.GetCommand("ClearAllTexturesInLevel", commandArgs);
+		SearchTexturesCommand = CommandHandler.GetCommand("SearchTextures", commandArgs);
+		EditAnimationRangesCommand = CommandHandler.GetCommand("EditAnimationRanges", commandArgs);
 
 		// Transform Menu
 
-		IncreaseStepHeightCommand = CommandHandler.GetCommand("IncreaseStepHeight", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DecreaseStepHeightCommand = CommandHandler.GetCommand("DecreaseStepHeight", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SmoothRandomFloorUpCommand = CommandHandler.GetCommand("SmoothRandomFloorUp", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SmoothRandomFloorDownCommand = CommandHandler.GetCommand("SmoothRandomFloorDown", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SmoothRandomCeilingUpCommand = CommandHandler.GetCommand("SmoothRandomCeilingUp", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SmoothRandomCeilingDownCommand = CommandHandler.GetCommand("SmoothRandomCeilingDown", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SharpRandomFloorUpCommand = CommandHandler.GetCommand("SharpRandomFloorUp", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SharpRandomFloorDownCommand = CommandHandler.GetCommand("SharpRandomFloorDown", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SharpRandomCeilingUpCommand = CommandHandler.GetCommand("SharpRandomCeilingUp", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SharpRandomCeilingDownCommand = CommandHandler.GetCommand("SharpRandomCeilingDown", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AverageFloorCommand = CommandHandler.GetCommand("AverageFloor", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AverageCeilingCommand = CommandHandler.GetCommand("AverageCeiling", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		FlattenFloorCommand = CommandHandler.GetCommand("FlattenFloor", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		FlattenCeilingCommand = CommandHandler.GetCommand("FlattenCeiling", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ResetGeometryCommand = CommandHandler.GetCommand("ResetGeometry", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		GridWallsIn3Command = CommandHandler.GetCommand("GridWallsIn3", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		GridWallsIn5Command = CommandHandler.GetCommand("GridWallsIn5", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		GridWallsIn3SquaresCommand = CommandHandler.GetCommand("GridWallsIn3Squares", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		GridWallsIn5SquaresCommand = CommandHandler.GetCommand("GridWallsIn5Squares", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		IncreaseStepHeightCommand = CommandHandler.GetCommand("IncreaseStepHeight", commandArgs);
+		DecreaseStepHeightCommand = CommandHandler.GetCommand("DecreaseStepHeight", commandArgs);
+		SmoothRandomFloorUpCommand = CommandHandler.GetCommand("SmoothRandomFloorUp", commandArgs);
+		SmoothRandomFloorDownCommand = CommandHandler.GetCommand("SmoothRandomFloorDown", commandArgs);
+		SmoothRandomCeilingUpCommand = CommandHandler.GetCommand("SmoothRandomCeilingUp", commandArgs);
+		SmoothRandomCeilingDownCommand = CommandHandler.GetCommand("SmoothRandomCeilingDown", commandArgs);
+		SharpRandomFloorUpCommand = CommandHandler.GetCommand("SharpRandomFloorUp", commandArgs);
+		SharpRandomFloorDownCommand = CommandHandler.GetCommand("SharpRandomFloorDown", commandArgs);
+		SharpRandomCeilingUpCommand = CommandHandler.GetCommand("SharpRandomCeilingUp", commandArgs);
+		SharpRandomCeilingDownCommand = CommandHandler.GetCommand("SharpRandomCeilingDown", commandArgs);
+		AverageFloorCommand = CommandHandler.GetCommand("AverageFloor", commandArgs);
+		AverageCeilingCommand = CommandHandler.GetCommand("AverageCeiling", commandArgs);
+		FlattenFloorCommand = CommandHandler.GetCommand("FlattenFloor", commandArgs);
+		FlattenCeilingCommand = CommandHandler.GetCommand("FlattenCeiling", commandArgs);
+		ResetGeometryCommand = CommandHandler.GetCommand("ResetGeometry", commandArgs);
+		GridWallsIn3Command = CommandHandler.GetCommand("GridWallsIn3", commandArgs);
+		GridWallsIn5Command = CommandHandler.GetCommand("GridWallsIn5", commandArgs);
+		GridWallsIn3SquaresCommand = CommandHandler.GetCommand("GridWallsIn3Squares", commandArgs);
+		GridWallsIn5SquaresCommand = CommandHandler.GetCommand("GridWallsIn5Squares", commandArgs);
 
 		// Tools Menu
 
-		EditLevelSettingsCommand = CommandHandler.GetCommand("EditLevelSettings", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		EditOptionsCommand = CommandHandler.GetCommand("EditOptions", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		EditKeyboardLayoutCommand = CommandHandler.GetCommand("EditKeyboardLayout", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		StartWadToolCommand = CommandHandler.GetCommand("StartWadTool", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		StartSoundToolCommand = CommandHandler.GetCommand("StartSoundTool", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		EditLevelSettingsCommand = CommandHandler.GetCommand("EditLevelSettings", commandArgs);
+		EditOptionsCommand = CommandHandler.GetCommand("EditOptions", commandArgs);
+		EditKeyboardLayoutCommand = CommandHandler.GetCommand("EditKeyboardLayout", commandArgs);
+		StartWadToolCommand = CommandHandler.GetCommand("StartWadTool", commandArgs);
+		StartSoundToolCommand = CommandHandler.GetCommand("StartSoundTool", commandArgs);
+
+		// Tool Bar Commands
+
+		Switch2DModeCommand = CommandHandler.GetCommand("Switch2DMode", commandArgs);
+		SwitchGeometryModeCommand = CommandHandler.GetCommand("SwitchGeometryMode", commandArgs);
+		SwitchTextureModeCommand = CommandHandler.GetCommand("SwitchTextureMode", commandArgs);
+		SwitchLightingModeCommand = CommandHandler.GetCommand("SwitchLightingMode", commandArgs);
 
 		// Non-menu Commands
 
-		RaiseQA1ClickCommand = CommandHandler.GetCommand("RaiseQA1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseQA4ClickCommand = CommandHandler.GetCommand("RaiseQA4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerQA1ClickCommand = CommandHandler.GetCommand("LowerQA1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerQA4ClickCommand = CommandHandler.GetCommand("LowerQA4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		CancelAnyActionCommand = CommandHandler.GetCommand("CancelAnyAction", commandArgs);
 
-		RaiseWS1ClickCommand = CommandHandler.GetCommand("RaiseWS1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseWS4ClickCommand = CommandHandler.GetCommand("RaiseWS4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerWS1ClickCommand = CommandHandler.GetCommand("LowerWS1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerWS4ClickCommand = CommandHandler.GetCommand("LowerWS4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseQA1ClickCommand = CommandHandler.GetCommand("RaiseQA1Click", commandArgs);
+		RaiseQA4ClickCommand = CommandHandler.GetCommand("RaiseQA4Click", commandArgs);
+		LowerQA1ClickCommand = CommandHandler.GetCommand("LowerQA1Click", commandArgs);
+		LowerQA4ClickCommand = CommandHandler.GetCommand("LowerQA4Click", commandArgs);
 
-		RaiseED1ClickCommand = CommandHandler.GetCommand("RaiseED1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseED4ClickCommand = CommandHandler.GetCommand("RaiseED4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerED1ClickCommand = CommandHandler.GetCommand("LowerED1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerED4ClickCommand = CommandHandler.GetCommand("LowerED4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseWS1ClickCommand = CommandHandler.GetCommand("RaiseWS1Click", commandArgs);
+		RaiseWS4ClickCommand = CommandHandler.GetCommand("RaiseWS4Click", commandArgs);
+		LowerWS1ClickCommand = CommandHandler.GetCommand("LowerWS1Click", commandArgs);
+		LowerWS4ClickCommand = CommandHandler.GetCommand("LowerWS4Click", commandArgs);
 
-		RaiseRF1ClickCommand = CommandHandler.GetCommand("RaiseRF1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseRF4ClickCommand = CommandHandler.GetCommand("RaiseRF4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerRF1ClickCommand = CommandHandler.GetCommand("LowerRF1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerRF4ClickCommand = CommandHandler.GetCommand("LowerRF4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseED1ClickCommand = CommandHandler.GetCommand("RaiseED1Click", commandArgs);
+		RaiseED4ClickCommand = CommandHandler.GetCommand("RaiseED4Click", commandArgs);
+		LowerED1ClickCommand = CommandHandler.GetCommand("LowerED1Click", commandArgs);
+		LowerED4ClickCommand = CommandHandler.GetCommand("LowerED4Click", commandArgs);
 
-		RaiseQA1ClickSmoothCommand = CommandHandler.GetCommand("RaiseQA1ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseQA4ClickSmoothCommand = CommandHandler.GetCommand("RaiseQA4ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerQA1ClickSmoothCommand = CommandHandler.GetCommand("LowerQA1ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerQA4ClickSmoothCommand = CommandHandler.GetCommand("LowerQA4ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseRF1ClickCommand = CommandHandler.GetCommand("RaiseRF1Click", commandArgs);
+		RaiseRF4ClickCommand = CommandHandler.GetCommand("RaiseRF4Click", commandArgs);
+		LowerRF1ClickCommand = CommandHandler.GetCommand("LowerRF1Click", commandArgs);
+		LowerRF4ClickCommand = CommandHandler.GetCommand("LowerRF4Click", commandArgs);
 
-		RaiseWS1ClickSmoothCommand = CommandHandler.GetCommand("RaiseWS1ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseWS4ClickSmoothCommand = CommandHandler.GetCommand("RaiseWS4ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerWS1ClickSmoothCommand = CommandHandler.GetCommand("LowerWS1ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerWS4ClickSmoothCommand = CommandHandler.GetCommand("LowerWS4ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseQA1ClickSmoothCommand = CommandHandler.GetCommand("RaiseQA1ClickSmooth", commandArgs);
+		RaiseQA4ClickSmoothCommand = CommandHandler.GetCommand("RaiseQA4ClickSmooth", commandArgs);
+		LowerQA1ClickSmoothCommand = CommandHandler.GetCommand("LowerQA1ClickSmooth", commandArgs);
+		LowerQA4ClickSmoothCommand = CommandHandler.GetCommand("LowerQA4ClickSmooth", commandArgs);
 
-		RaiseED1ClickSmoothCommand = CommandHandler.GetCommand("RaiseED1ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseED4ClickSmoothCommand = CommandHandler.GetCommand("RaiseED4ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerED1ClickSmoothCommand = CommandHandler.GetCommand("LowerED1ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerED4ClickSmoothCommand = CommandHandler.GetCommand("LowerED4ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseWS1ClickSmoothCommand = CommandHandler.GetCommand("RaiseWS1ClickSmooth", commandArgs);
+		RaiseWS4ClickSmoothCommand = CommandHandler.GetCommand("RaiseWS4ClickSmooth", commandArgs);
+		LowerWS1ClickSmoothCommand = CommandHandler.GetCommand("LowerWS1ClickSmooth", commandArgs);
+		LowerWS4ClickSmoothCommand = CommandHandler.GetCommand("LowerWS4ClickSmooth", commandArgs);
 
-		RaiseRF1ClickSmoothCommand = CommandHandler.GetCommand("RaiseRF1ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseRF4ClickSmoothCommand = CommandHandler.GetCommand("RaiseRF4ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerRF1ClickSmoothCommand = CommandHandler.GetCommand("LowerRF1ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerRF4ClickSmoothCommand = CommandHandler.GetCommand("LowerRF4ClickSmooth", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseED1ClickSmoothCommand = CommandHandler.GetCommand("RaiseED1ClickSmooth", commandArgs);
+		RaiseED4ClickSmoothCommand = CommandHandler.GetCommand("RaiseED4ClickSmooth", commandArgs);
+		LowerED1ClickSmoothCommand = CommandHandler.GetCommand("LowerED1ClickSmooth", commandArgs);
+		LowerED4ClickSmoothCommand = CommandHandler.GetCommand("LowerED4ClickSmooth", commandArgs);
 
-		RaiseYH1ClickCommand = CommandHandler.GetCommand("RaiseYH1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseYH4ClickCommand = CommandHandler.GetCommand("RaiseYH4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerYH1ClickCommand = CommandHandler.GetCommand("LowerYH1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerYH4ClickCommand = CommandHandler.GetCommand("LowerYH4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseRF1ClickSmoothCommand = CommandHandler.GetCommand("RaiseRF1ClickSmooth", commandArgs);
+		RaiseRF4ClickSmoothCommand = CommandHandler.GetCommand("RaiseRF4ClickSmooth", commandArgs);
+		LowerRF1ClickSmoothCommand = CommandHandler.GetCommand("LowerRF1ClickSmooth", commandArgs);
+		LowerRF4ClickSmoothCommand = CommandHandler.GetCommand("LowerRF4ClickSmooth", commandArgs);
 
-		RaiseUJ1ClickCommand = CommandHandler.GetCommand("RaiseUJ1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		RaiseUJ4ClickCommand = CommandHandler.GetCommand("RaiseUJ4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerUJ1ClickCommand = CommandHandler.GetCommand("LowerUJ1Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		LowerUJ4ClickCommand = CommandHandler.GetCommand("LowerUJ4Click", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		RaiseYH1ClickCommand = CommandHandler.GetCommand("RaiseYH1Click", commandArgs);
+		RaiseYH4ClickCommand = CommandHandler.GetCommand("RaiseYH4Click", commandArgs);
+		LowerYH1ClickCommand = CommandHandler.GetCommand("LowerYH1Click", commandArgs);
+		LowerYH4ClickCommand = CommandHandler.GetCommand("LowerYH4Click", commandArgs);
+
+		RaiseUJ1ClickCommand = CommandHandler.GetCommand("RaiseUJ1Click", commandArgs);
+		RaiseUJ4ClickCommand = CommandHandler.GetCommand("RaiseUJ4Click", commandArgs);
+		LowerUJ1ClickCommand = CommandHandler.GetCommand("LowerUJ1Click", commandArgs);
+		LowerUJ4ClickCommand = CommandHandler.GetCommand("LowerUJ4Click", commandArgs);
+
+		// Blend Mode Commands
+
+		SwitchBlendModeCommand = CommandHandler.GetCommand("SwitchBlendMode", commandArgs);
+		SetBlendModeNormalCommand = CommandHandler.GetCommand("SetBlendModeNormal", commandArgs);
+		SetBlendModeAddCommand = CommandHandler.GetCommand("SetBlendModeAdd", commandArgs);
+		SetBlendModeSubtractCommand = CommandHandler.GetCommand("SetBlendModeSubtract", commandArgs);
+		SetBlendModeExcludeCommand = CommandHandler.GetCommand("SetBlendModeExclude", commandArgs);
+		SetBlendModeScreenCommand = CommandHandler.GetCommand("SetBlendModeScreen", commandArgs);
+		SetBlendModeLightenCommand = CommandHandler.GetCommand("SetBlendModeLighten", commandArgs);
+
+		// Uncategorized Commands
+
+		AddTriggerWithBookmarkCommand = CommandHandler.GetCommand("AddTriggerWithBookmark", commandArgs);
+		RenameObjectCommand = CommandHandler.GetCommand("RenameObject", commandArgs);
+		EditObjectColorCommand = CommandHandler.GetCommand("EditObjectColor", commandArgs);
+
+		SetTextureDoubleSidedCommand = CommandHandler.GetCommand("SetTextureDoubleSided", commandArgs);
+		SetTextureInvisibleCommand = CommandHandler.GetCommand("SetTextureInvisible", commandArgs);
+		ChangeTextureSelectionTileSizeCommand = CommandHandler.GetCommand("ChangeTextureSelectionTileSize", commandArgs);
+
+		RotateObjectLeftCommand = CommandHandler.GetCommand("RotateObjectLeft", commandArgs);
+		RotateObjectRightCommand = CommandHandler.GetCommand("RotateObjectRight", commandArgs);
+		RotateObjectUpCommand = CommandHandler.GetCommand("RotateObjectUp", commandArgs);
+		RotateObjectDownCommand = CommandHandler.GetCommand("RotateObjectDown", commandArgs);
+		MoveObjectLeftCommand = CommandHandler.GetCommand("MoveObjectLeft", commandArgs);
+		MoveObjectRightCommand = CommandHandler.GetCommand("MoveObjectRight", commandArgs);
+		MoveObjectForwardCommand = CommandHandler.GetCommand("MoveObjectForward", commandArgs);
+		MoveObjectBackCommand = CommandHandler.GetCommand("MoveObjectBack", commandArgs);
+		MoveObjectUpCommand = CommandHandler.GetCommand("MoveObjectUp", commandArgs);
+		MoveObjectDownCommand = CommandHandler.GetCommand("MoveObjectDown", commandArgs);
+
+		SelectPreviousRoomCommand = CommandHandler.GetCommand("SelectPreviousRoom", commandArgs);
+		RotateObject5Command = CommandHandler.GetCommand("RotateObject5", commandArgs);
+		RotateObject45Command = CommandHandler.GetCommand("RotateObject45", commandArgs);
+		MoveObjectToCurrentRoomCommand = CommandHandler.GetCommand("MoveObjectToCurrentRoom", commandArgs);
+		RotateTextureCommand = CommandHandler.GetCommand("RotateTexture", commandArgs);
+		MirrorTextureCommand = CommandHandler.GetCommand("MirrorTexture", commandArgs);
+		BuildAndPlayPreviewCommand = CommandHandler.GetCommand("BuildAndPlayPreview", commandArgs);
+		SelectBookmarkedObjectCommand = CommandHandler.GetCommand("SelectBookmarkedObject", commandArgs);
+		AddNewRoomCommand = CommandHandler.GetCommand("AddNewRoom", commandArgs);
+		LockRoomCommand = CommandHandler.GetCommand("LockRoom", commandArgs);
+		HideRoomCommand = CommandHandler.GetCommand("HideRoom", commandArgs);
+		EditAmbientLightCommand = CommandHandler.GetCommand("EditAmbientLight", commandArgs);
+		AddBoxVolumeInSelectedAreaCommand = CommandHandler.GetCommand("AddBoxVolumeInSelectedArea", commandArgs);
+		AddItemCommand = CommandHandler.GetCommand("AddItem", commandArgs);
+		AssignAndClipboardScriptIdCommand = CommandHandler.GetCommand("AssignAndClipboardScriptId", commandArgs);
+		FlipFloorSplitCommand = CommandHandler.GetCommand("FlipFloorSplit", commandArgs);
+		FlipCeilingSplitCommand = CommandHandler.GetCommand("FlipCeilingSplit", commandArgs);
+		SwitchTool1Command = CommandHandler.GetCommand("SwitchTool1", commandArgs);
+		SwitchTool2Command = CommandHandler.GetCommand("SwitchTool2", commandArgs);
+		SwitchTool3Command = CommandHandler.GetCommand("SwitchTool3", commandArgs);
+		SwitchTool4Command = CommandHandler.GetCommand("SwitchTool4", commandArgs);
+		SwitchTool5Command = CommandHandler.GetCommand("SwitchTool5", commandArgs);
+		SwitchTool6Command = CommandHandler.GetCommand("SwitchTool6", commandArgs);
+		SwitchTool7Command = CommandHandler.GetCommand("SwitchTool7", commandArgs);
+		SwitchTool8Command = CommandHandler.GetCommand("SwitchTool8", commandArgs);
+		SwitchTool9Command = CommandHandler.GetCommand("SwitchTool9", commandArgs);
+		SwitchTool10Command = CommandHandler.GetCommand("SwitchTool10", commandArgs);
+		SwitchTool11Command = CommandHandler.GetCommand("SwitchTool11", commandArgs);
+		SwitchTool12Command = CommandHandler.GetCommand("SwitchTool12", commandArgs);
+		SwitchTool13Command = CommandHandler.GetCommand("SwitchTool13", commandArgs);
+		SwitchTool14Command = CommandHandler.GetCommand("SwitchTool14", commandArgs);
+		DrawPortalsCommand = CommandHandler.GetCommand("DrawPortals", commandArgs);
+		DrawHorizonCommand = CommandHandler.GetCommand("DrawHorizon", commandArgs);
+		DrawRoomNamesCommand = CommandHandler.GetCommand("DrawRoomNames", commandArgs);
+		DrawIllegalSlopesCommand = CommandHandler.GetCommand("DrawIllegalSlopes", commandArgs);
+		DrawMoveablesCommand = CommandHandler.GetCommand("DrawMoveables", commandArgs);
+		DrawStaticsCommand = CommandHandler.GetCommand("DrawStatics", commandArgs);
+		DrawImportedGeometryCommand = CommandHandler.GetCommand("DrawImportedGeometry", commandArgs);
+		DrawGhostBlocksCommand = CommandHandler.GetCommand("DrawGhostBlocks", commandArgs);
+		DrawVolumesCommand = CommandHandler.GetCommand("DrawVolumes", commandArgs);
+		DrawBoundingBoxesCommand = CommandHandler.GetCommand("DrawBoundingBoxes", commandArgs);
+		DrawOtherObjectsCommand = CommandHandler.GetCommand("DrawOtherObjects", commandArgs);
+		DrawLightRadiusCommand = CommandHandler.GetCommand("DrawLightRadius", commandArgs);
+		DrawSlideDirectionsCommand = CommandHandler.GetCommand("DrawSlideDirections", commandArgs);
+		DrawExtraBlendingModesCommand = CommandHandler.GetCommand("DrawExtraBlendingModes", commandArgs);
+		HideTransparentFacesCommand = CommandHandler.GetCommand("HideTransparentFaces", commandArgs);
+		BilinearFilterCommand = CommandHandler.GetCommand("BilinearFilter", commandArgs);
+		DisableGeometryPickingCommand = CommandHandler.GetCommand("DisableGeometryPicking", commandArgs);
+		DisableHiddenRoomPickingCommand = CommandHandler.GetCommand("DisableHiddenRoomPicking", commandArgs);
+		DrawAllRoomsCommand = CommandHandler.GetCommand("DrawAllRooms", commandArgs);
+		DrawCardinalDirectionsCommand = CommandHandler.GetCommand("DrawCardinalDirections", commandArgs);
+		SamplePaletteFromTexturesCommand = CommandHandler.GetCommand("SamplePaletteFromTextures", commandArgs);
+		ResetPaletteCommand = CommandHandler.GetCommand("ResetPalette", commandArgs);
+		ToggleFlipMapCommand = CommandHandler.GetCommand("ToggleFlipMap", commandArgs);
+		ToggleNoOpacityCommand = CommandHandler.GetCommand("ToggleNoOpacity", commandArgs);
+		ToggleOpacityCommand = CommandHandler.GetCommand("ToggleOpacity", commandArgs);
+		ToggleOpacity2Command = CommandHandler.GetCommand("ToggleOpacity2", commandArgs);
+		AddPointLightCommand = CommandHandler.GetCommand("AddPointLight", commandArgs);
+		AddShadowCommand = CommandHandler.GetCommand("AddShadow", commandArgs);
+		AddSunLightCommand = CommandHandler.GetCommand("AddSunLight", commandArgs);
+		AddSpotLightCommand = CommandHandler.GetCommand("AddSpotLight", commandArgs);
+		AddEffectLightCommand = CommandHandler.GetCommand("AddEffectLight", commandArgs);
+		AddFogBulbCommand = CommandHandler.GetCommand("AddFogBulb", commandArgs);
+		EditRoomNameCommand = CommandHandler.GetCommand("EditRoomName", commandArgs);
+		SetFloorCommand = CommandHandler.GetCommand("SetFloor", commandArgs);
+		SetCeilingCommand = CommandHandler.GetCommand("SetCeiling", commandArgs);
+		SetWallCommand = CommandHandler.GetCommand("SetWall", commandArgs);
+		SetBoxCommand = CommandHandler.GetCommand("SetBox", commandArgs);
+		SetDeathCommand = CommandHandler.GetCommand("SetDeath", commandArgs);
+		SetMonkeyswingCommand = CommandHandler.GetCommand("SetMonkeyswing", commandArgs);
+		SetClimbPositiveZCommand = CommandHandler.GetCommand("SetClimbPositiveZ", commandArgs);
+		SetClimbPositiveXCommand = CommandHandler.GetCommand("SetClimbPositiveX", commandArgs);
+		SetClimbNegativeZCommand = CommandHandler.GetCommand("SetClimbNegativeZ", commandArgs);
+		SetClimbNegativeXCommand = CommandHandler.GetCommand("SetClimbNegativeX", commandArgs);
+		SetNotWalkableCommand = CommandHandler.GetCommand("SetNotWalkable", commandArgs);
+		SetDiagonalFloorStepCommand = CommandHandler.GetCommand("SetDiagonalFloorStep", commandArgs);
+		SetDiagonalCeilingStepCommand = CommandHandler.GetCommand("SetDiagonalCeilingStep", commandArgs);
+		SetDiagonalWallCommand = CommandHandler.GetCommand("SetDiagonalWall", commandArgs);
+		SetBeetleCheckpointCommand = CommandHandler.GetCommand("SetBeetleCheckpoint", commandArgs);
+		SetTriggerTriggererCommand = CommandHandler.GetCommand("SetTriggerTriggerer", commandArgs);
+		ToggleForceFloorSolidCommand = CommandHandler.GetCommand("ToggleForceFloorSolid", commandArgs);
+		AddGhostBlocksToSelectionCommand = CommandHandler.GetCommand("AddGhostBlocksToSelection", commandArgs);
+		SetRoomOutsideCommand = CommandHandler.GetCommand("SetRoomOutside", commandArgs);
+		SetRoomSkyboxCommand = CommandHandler.GetCommand("SetRoomSkybox", commandArgs);
+		SetRoomNoLensflareCommand = CommandHandler.GetCommand("SetRoomNoLensflare", commandArgs);
+		SetRoomNoPathfindingCommand = CommandHandler.GetCommand("SetRoomNoPathfinding", commandArgs);
+		SetRoomColdCommand = CommandHandler.GetCommand("SetRoomCold", commandArgs);
+		SetRoomDamageCommand = CommandHandler.GetCommand("SetRoomDamage", commandArgs);
+		InPlaceSearchRoomsCommand = CommandHandler.GetCommand("InPlaceSearchRooms", commandArgs);
+		InPlaceSearchItemsCommand = CommandHandler.GetCommand("InPlaceSearchItems", commandArgs);
+		InPlaceSearchTexturesCommand = CommandHandler.GetCommand("InPlaceSearchTextures", commandArgs);
+		InPlaceSearchImportedGeometryCommand = CommandHandler.GetCommand("InPlaceSearchImportedGeometry", commandArgs);
+		SearchMenusCommand = CommandHandler.GetCommand("SearchMenus", commandArgs);
+		MoveObjectLeftPreciseCommand = CommandHandler.GetCommand("MoveObjectLeftPrecise", commandArgs);
+		MoveObjectRightPreciseCommand = CommandHandler.GetCommand("MoveObjectRightPrecise", commandArgs);
+		MoveObjectForwardPreciseCommand = CommandHandler.GetCommand("MoveObjectForwardPrecise", commandArgs);
+		MoveObjectBackPreciseCommand = CommandHandler.GetCommand("MoveObjectBackPrecise", commandArgs);
+		MoveObjectUpPreciseCommand = CommandHandler.GetCommand("MoveObjectUpPrecise", commandArgs);
+		MoveObjectDownPreciseCommand = CommandHandler.GetCommand("MoveObjectDownPrecise", commandArgs);
+		HighlightSplit1Command = CommandHandler.GetCommand("HighlightSplit1", commandArgs);
+		HighlightSplit2Command = CommandHandler.GetCommand("HighlightSplit2", commandArgs);
+		HighlightSplit3Command = CommandHandler.GetCommand("HighlightSplit3", commandArgs);
+		HighlightSplit4Command = CommandHandler.GetCommand("HighlightSplit4", commandArgs);
+		HighlightSplit5Command = CommandHandler.GetCommand("HighlightSplit5", commandArgs);
+		HighlightSplit6Command = CommandHandler.GetCommand("HighlightSplit6", commandArgs);
+		HighlightSplit7Command = CommandHandler.GetCommand("HighlightSplit7", commandArgs);
+		HighlightSplit8Command = CommandHandler.GetCommand("HighlightSplit8", commandArgs);
+		HighlightSplit9Command = CommandHandler.GetCommand("HighlightSplit9", commandArgs);
 	}
 
 	private void EditorEventRaised(IEditorEvent obj)
@@ -461,7 +762,7 @@ public partial class MainWindowViewModel : ObservableObject
 	[RelayCommand]
 	public void About()
 	{
-		using var form = new FormAbout(Properties.Resources.misc_AboutScreen_800) { StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen };
+		using var form = new FormAbout(Properties.Resources.misc_AboutScreen_800) { StartPosition = FormStartPosition.CenterScreen };
 		form.ShowDialog(WPFUtils.GetWin32WindowFromCaller(this));
 	}
 

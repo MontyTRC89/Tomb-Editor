@@ -183,7 +183,16 @@
 		<!--  Help Menu  -->
 		<local:DynamicKeyBinding Command="{Binding AboutCommand}" InputGestureText="{local:KeyBindings About}" />
 
+		<!--  Tool Bar Commands  -->
+
+		<local:DynamicKeyBinding Command="{Binding Switch2DModeCommand}" InputGestureText="{local:KeyBindings Switch2DMode}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchGeometryModeCommand}" InputGestureText="{local:KeyBindings SwitchGeometryMode}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTextureModeCommand}" InputGestureText="{local:KeyBindings SwitchTextureMode}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchLightingModeCommand}" InputGestureText="{local:KeyBindings SwitchLightingMode}" />
+
 		<!--  Non-menu Commands  -->
+		<local:DynamicKeyBinding Command="{Binding CancelAnyActionCommand}" InputGestureText="{local:KeyBindings CancelAnyAction}" />
+
 		<local:DynamicKeyBinding Command="{Binding RaiseQA1ClickCommand}" InputGestureText="{local:KeyBindings RaiseQA1Click}" />
 		<local:DynamicKeyBinding Command="{Binding RaiseQA4ClickCommand}" InputGestureText="{local:KeyBindings RaiseQA4Click}" />
 		<local:DynamicKeyBinding Command="{Binding LowerQA1ClickCommand}" InputGestureText="{local:KeyBindings LowerQA1Click}" />
@@ -233,6 +242,146 @@
 		<local:DynamicKeyBinding Command="{Binding RaiseUJ4ClickCommand}" InputGestureText="{local:KeyBindings RaiseUJ4Click}" />
 		<local:DynamicKeyBinding Command="{Binding LowerUJ1ClickCommand}" InputGestureText="{local:KeyBindings LowerUJ1Click}" />
 		<local:DynamicKeyBinding Command="{Binding LowerUJ4ClickCommand}" InputGestureText="{local:KeyBindings LowerUJ4Click}" />
+
+		<!--  Blend Mode Commands  -->
+
+		<local:DynamicKeyBinding Command="{Binding SwitchBlendModeCommand}" InputGestureText="{local:KeyBindings SwitchBlendMode}" />
+		<local:DynamicKeyBinding Command="{Binding SetBlendModeNormalCommand}" InputGestureText="{local:KeyBindings SetBlendModeNormal}" />
+		<local:DynamicKeyBinding Command="{Binding SetBlendModeAddCommand}" InputGestureText="{local:KeyBindings SetBlendModeAdd}" />
+		<local:DynamicKeyBinding Command="{Binding SetBlendModeSubtractCommand}" InputGestureText="{local:KeyBindings SetBlendModeSubtract}" />
+		<local:DynamicKeyBinding Command="{Binding SetBlendModeExcludeCommand}" InputGestureText="{local:KeyBindings SetBlendModeExclude}" />
+		<local:DynamicKeyBinding Command="{Binding SetBlendModeScreenCommand}" InputGestureText="{local:KeyBindings SetBlendModeScreen}" />
+		<local:DynamicKeyBinding Command="{Binding SetBlendModeLightenCommand}" InputGestureText="{local:KeyBindings SetBlendModeLighten}" />
+
+		<!--  Uncategorized Commands  -->
+
+		<local:DynamicKeyBinding Command="{Binding AddTriggerWithBookmarkCommand}" InputGestureText="{local:KeyBindings AddTriggerWithBookmark}" />
+		<local:DynamicKeyBinding Command="{Binding RenameObjectCommand}" InputGestureText="{local:KeyBindings RenameObject}" />
+		<local:DynamicKeyBinding Command="{Binding EditObjectColorCommand}" InputGestureText="{local:KeyBindings EditObjectColor}" />
+
+		<local:DynamicKeyBinding Command="{Binding SetTextureDoubleSidedCommand}" InputGestureText="{local:KeyBindings SetTextureDoubleSided}" />
+		<local:DynamicKeyBinding Command="{Binding SetTextureInvisibleCommand}" InputGestureText="{local:KeyBindings SetTextureInvisible}" />
+		<local:DynamicKeyBinding Command="{Binding ChangeTextureSelectionTileSizeCommand}" InputGestureText="{local:KeyBindings ChangeTextureSelectionTileSize}" />
+
+		<local:DynamicKeyBinding Command="{Binding RotateObjectLeftCommand}" InputGestureText="{local:KeyBindings RotateObjectLeft}" />
+		<local:DynamicKeyBinding Command="{Binding RotateObjectRightCommand}" InputGestureText="{local:KeyBindings RotateObjectRight}" />
+		<local:DynamicKeyBinding Command="{Binding RotateObjectUpCommand}" InputGestureText="{local:KeyBindings RotateObjectUp}" />
+		<local:DynamicKeyBinding Command="{Binding RotateObjectDownCommand}" InputGestureText="{local:KeyBindings RotateObjectDown}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectLeftCommand}" InputGestureText="{local:KeyBindings MoveObjectLeft}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectRightCommand}" InputGestureText="{local:KeyBindings MoveObjectRight}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectForwardCommand}" InputGestureText="{local:KeyBindings MoveObjectForward}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectBackCommand}" InputGestureText="{local:KeyBindings MoveObjectBack}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectUpCommand}" InputGestureText="{local:KeyBindings MoveObjectUp}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectDownCommand}" InputGestureText="{local:KeyBindings MoveObjectDown}" />
+
+		<local:DynamicKeyBinding Command="{Binding SelectPreviousRoomCommand}" InputGestureText="{local:KeyBindings SelectPreviousRoom}" />
+		<local:DynamicKeyBinding Command="{Binding RotateObject5Command}" InputGestureText="{local:KeyBindings RotateObject5}" />
+		<local:DynamicKeyBinding Command="{Binding RotateObject45Command}" InputGestureText="{local:KeyBindings RotateObject45}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectToCurrentRoomCommand}" InputGestureText="{local:KeyBindings MoveObjectToCurrentRoom}" />
+		<local:DynamicKeyBinding Command="{Binding RotateTextureCommand}" InputGestureText="{local:KeyBindings RotateTexture}" />
+		<local:DynamicKeyBinding Command="{Binding MirrorTextureCommand}" InputGestureText="{local:KeyBindings MirrorTexture}" />
+		<local:DynamicKeyBinding Command="{Binding BuildAndPlayPreviewCommand}" InputGestureText="{local:KeyBindings BuildAndPlayPreview}" />
+		<local:DynamicKeyBinding Command="{Binding SelectBookmarkedObjectCommand}" InputGestureText="{local:KeyBindings SelectBookmarkedObject}" />
+		<local:DynamicKeyBinding Command="{Binding AddNewRoomCommand}" InputGestureText="{local:KeyBindings AddNewRoom}" />
+		<local:DynamicKeyBinding Command="{Binding LockRoomCommand}" InputGestureText="{local:KeyBindings LockRoom}" />
+		<local:DynamicKeyBinding Command="{Binding HideRoomCommand}" InputGestureText="{local:KeyBindings HideRoom}" />
+		<local:DynamicKeyBinding Command="{Binding EditAmbientLightCommand}" InputGestureText="{local:KeyBindings EditAmbientLight}" />
+		<local:DynamicKeyBinding Command="{Binding AddBoxVolumeInSelectedAreaCommand}" InputGestureText="{local:KeyBindings AddBoxVolumeInSelectedArea}" />
+		<local:DynamicKeyBinding Command="{Binding AddItemCommand}" InputGestureText="{local:KeyBindings AddItem}" />
+		<local:DynamicKeyBinding Command="{Binding AssignAndClipboardScriptIdCommand}" InputGestureText="{local:KeyBindings AssignAndClipboardScriptId}" />
+		<local:DynamicKeyBinding Command="{Binding FlipFloorSplitCommand}" InputGestureText="{local:KeyBindings FlipFloorSplit}" />
+		<local:DynamicKeyBinding Command="{Binding FlipCeilingSplitCommand}" InputGestureText="{local:KeyBindings FlipCeilingSplit}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool1Command}" InputGestureText="{local:KeyBindings SwitchTool1}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool2Command}" InputGestureText="{local:KeyBindings SwitchTool2}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool3Command}" InputGestureText="{local:KeyBindings SwitchTool3}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool4Command}" InputGestureText="{local:KeyBindings SwitchTool4}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool5Command}" InputGestureText="{local:KeyBindings SwitchTool5}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool6Command}" InputGestureText="{local:KeyBindings SwitchTool6}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool7Command}" InputGestureText="{local:KeyBindings SwitchTool7}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool8Command}" InputGestureText="{local:KeyBindings SwitchTool8}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool9Command}" InputGestureText="{local:KeyBindings SwitchTool9}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool10Command}" InputGestureText="{local:KeyBindings SwitchTool10}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool11Command}" InputGestureText="{local:KeyBindings SwitchTool11}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool12Command}" InputGestureText="{local:KeyBindings SwitchTool12}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool13Command}" InputGestureText="{local:KeyBindings SwitchTool13}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchTool14Command}" InputGestureText="{local:KeyBindings SwitchTool14}" />
+		<local:DynamicKeyBinding Command="{Binding DrawPortalsCommand}" InputGestureText="{local:KeyBindings DrawPortals}" />
+		<local:DynamicKeyBinding Command="{Binding DrawHorizonCommand}" InputGestureText="{local:KeyBindings DrawHorizon}" />
+		<local:DynamicKeyBinding Command="{Binding DrawRoomNamesCommand}" InputGestureText="{local:KeyBindings DrawRoomNames}" />
+		<local:DynamicKeyBinding Command="{Binding DrawIllegalSlopesCommand}" InputGestureText="{local:KeyBindings DrawIllegalSlopes}" />
+		<local:DynamicKeyBinding Command="{Binding DrawMoveablesCommand}" InputGestureText="{local:KeyBindings DrawMoveables}" />
+		<local:DynamicKeyBinding Command="{Binding DrawStaticsCommand}" InputGestureText="{local:KeyBindings DrawStatics}" />
+		<local:DynamicKeyBinding Command="{Binding DrawImportedGeometryCommand}" InputGestureText="{local:KeyBindings DrawImportedGeometry}" />
+		<local:DynamicKeyBinding Command="{Binding DrawGhostBlocksCommand}" InputGestureText="{local:KeyBindings DrawGhostBlocks}" />
+		<local:DynamicKeyBinding Command="{Binding DrawVolumesCommand}" InputGestureText="{local:KeyBindings DrawVolumes}" />
+		<local:DynamicKeyBinding Command="{Binding DrawBoundingBoxesCommand}" InputGestureText="{local:KeyBindings DrawBoundingBoxes}" />
+		<local:DynamicKeyBinding Command="{Binding DrawOtherObjectsCommand}" InputGestureText="{local:KeyBindings DrawOtherObjects}" />
+		<local:DynamicKeyBinding Command="{Binding DrawLightRadiusCommand}" InputGestureText="{local:KeyBindings DrawLightRadius}" />
+		<local:DynamicKeyBinding Command="{Binding DrawSlideDirectionsCommand}" InputGestureText="{local:KeyBindings DrawSlideDirections}" />
+		<local:DynamicKeyBinding Command="{Binding DrawExtraBlendingModesCommand}" InputGestureText="{local:KeyBindings DrawExtraBlendingModes}" />
+		<local:DynamicKeyBinding Command="{Binding HideTransparentFacesCommand}" InputGestureText="{local:KeyBindings HideTransparentFaces}" />
+		<local:DynamicKeyBinding Command="{Binding BilinearFilterCommand}" InputGestureText="{local:KeyBindings BilinearFilter}" />
+		<local:DynamicKeyBinding Command="{Binding DisableGeometryPickingCommand}" InputGestureText="{local:KeyBindings DisableGeometryPicking}" />
+		<local:DynamicKeyBinding Command="{Binding DisableHiddenRoomPickingCommand}" InputGestureText="{local:KeyBindings DisableHiddenRoomPicking}" />
+		<local:DynamicKeyBinding Command="{Binding DrawAllRoomsCommand}" InputGestureText="{local:KeyBindings DrawAllRooms}" />
+		<local:DynamicKeyBinding Command="{Binding DrawCardinalDirectionsCommand}" InputGestureText="{local:KeyBindings DrawCardinalDirections}" />
+		<local:DynamicKeyBinding Command="{Binding SamplePaletteFromTexturesCommand}" InputGestureText="{local:KeyBindings SamplePaletteFromTextures}" />
+		<local:DynamicKeyBinding Command="{Binding ResetPaletteCommand}" InputGestureText="{local:KeyBindings ResetPalette}" />
+		<local:DynamicKeyBinding Command="{Binding ToggleFlipMapCommand}" InputGestureText="{local:KeyBindings ToggleFlipMap}" />
+		<local:DynamicKeyBinding Command="{Binding ToggleNoOpacityCommand}" InputGestureText="{local:KeyBindings ToggleNoOpacity}" />
+		<local:DynamicKeyBinding Command="{Binding ToggleOpacityCommand}" InputGestureText="{local:KeyBindings ToggleOpacity}" />
+		<local:DynamicKeyBinding Command="{Binding ToggleOpacity2Command}" InputGestureText="{local:KeyBindings ToggleOpacity2}" />
+		<local:DynamicKeyBinding Command="{Binding AddPointLightCommand}" InputGestureText="{local:KeyBindings AddPointLight}" />
+		<local:DynamicKeyBinding Command="{Binding AddShadowCommand}" InputGestureText="{local:KeyBindings AddShadow}" />
+		<local:DynamicKeyBinding Command="{Binding AddSunLightCommand}" InputGestureText="{local:KeyBindings AddSunLight}" />
+		<local:DynamicKeyBinding Command="{Binding AddSpotLightCommand}" InputGestureText="{local:KeyBindings AddSpotLight}" />
+		<local:DynamicKeyBinding Command="{Binding AddEffectLightCommand}" InputGestureText="{local:KeyBindings AddEffectLight}" />
+		<local:DynamicKeyBinding Command="{Binding AddFogBulbCommand}" InputGestureText="{local:KeyBindings AddFogBulb}" />
+		<local:DynamicKeyBinding Command="{Binding EditRoomNameCommand}" InputGestureText="{local:KeyBindings EditRoomName}" />
+		<local:DynamicKeyBinding Command="{Binding SetFloorCommand}" InputGestureText="{local:KeyBindings SetFloor}" />
+		<local:DynamicKeyBinding Command="{Binding SetCeilingCommand}" InputGestureText="{local:KeyBindings SetCeiling}" />
+		<local:DynamicKeyBinding Command="{Binding SetWallCommand}" InputGestureText="{local:KeyBindings SetWall}" />
+		<local:DynamicKeyBinding Command="{Binding SetBoxCommand}" InputGestureText="{local:KeyBindings SetBox}" />
+		<local:DynamicKeyBinding Command="{Binding SetDeathCommand}" InputGestureText="{local:KeyBindings SetDeath}" />
+		<local:DynamicKeyBinding Command="{Binding SetMonkeyswingCommand}" InputGestureText="{local:KeyBindings SetMonkeyswing}" />
+		<local:DynamicKeyBinding Command="{Binding SetClimbPositiveZCommand}" InputGestureText="{local:KeyBindings SetClimbPositiveZ}" />
+		<local:DynamicKeyBinding Command="{Binding SetClimbPositiveXCommand}" InputGestureText="{local:KeyBindings SetClimbPositiveX}" />
+		<local:DynamicKeyBinding Command="{Binding SetClimbNegativeZCommand}" InputGestureText="{local:KeyBindings SetClimbNegativeZ}" />
+		<local:DynamicKeyBinding Command="{Binding SetClimbNegativeXCommand}" InputGestureText="{local:KeyBindings SetClimbNegativeX}" />
+		<local:DynamicKeyBinding Command="{Binding SetNotWalkableCommand}" InputGestureText="{local:KeyBindings SetNotWalkable}" />
+		<local:DynamicKeyBinding Command="{Binding SetDiagonalFloorStepCommand}" InputGestureText="{local:KeyBindings SetDiagonalFloorStep}" />
+		<local:DynamicKeyBinding Command="{Binding SetDiagonalCeilingStepCommand}" InputGestureText="{local:KeyBindings SetDiagonalCeilingStep}" />
+		<local:DynamicKeyBinding Command="{Binding SetDiagonalWallCommand}" InputGestureText="{local:KeyBindings SetDiagonalWall}" />
+		<local:DynamicKeyBinding Command="{Binding SetBeetleCheckpointCommand}" InputGestureText="{local:KeyBindings SetBeetleCheckpoint}" />
+		<local:DynamicKeyBinding Command="{Binding SetTriggerTriggererCommand}" InputGestureText="{local:KeyBindings SetTriggerTriggerer}" />
+		<local:DynamicKeyBinding Command="{Binding ToggleForceFloorSolidCommand}" InputGestureText="{local:KeyBindings ToggleForceFloorSolid}" />
+		<local:DynamicKeyBinding Command="{Binding AddGhostBlocksToSelectionCommand}" InputGestureText="{local:KeyBindings AddGhostBlocksToSelection}" />
+		<local:DynamicKeyBinding Command="{Binding SetRoomOutsideCommand}" InputGestureText="{local:KeyBindings SetRoomOutside}" />
+		<local:DynamicKeyBinding Command="{Binding SetRoomSkyboxCommand}" InputGestureText="{local:KeyBindings SetRoomSkybox}" />
+		<local:DynamicKeyBinding Command="{Binding SetRoomNoLensflareCommand}" InputGestureText="{local:KeyBindings SetRoomNoLensflare}" />
+		<local:DynamicKeyBinding Command="{Binding SetRoomNoPathfindingCommand}" InputGestureText="{local:KeyBindings SetRoomNoPathfinding}" />
+		<local:DynamicKeyBinding Command="{Binding SetRoomColdCommand}" InputGestureText="{local:KeyBindings SetRoomCold}" />
+		<local:DynamicKeyBinding Command="{Binding SetRoomDamageCommand}" InputGestureText="{local:KeyBindings SetRoomDamage}" />
+		<local:DynamicKeyBinding Command="{Binding InPlaceSearchRoomsCommand}" InputGestureText="{local:KeyBindings InPlaceSearchRooms}" />
+		<local:DynamicKeyBinding Command="{Binding InPlaceSearchItemsCommand}" InputGestureText="{local:KeyBindings InPlaceSearchItems}" />
+		<local:DynamicKeyBinding Command="{Binding InPlaceSearchTexturesCommand}" InputGestureText="{local:KeyBindings InPlaceSearchTextures}" />
+		<local:DynamicKeyBinding Command="{Binding InPlaceSearchImportedGeometryCommand}" InputGestureText="{local:KeyBindings InPlaceSearchImportedGeometry}" />
+		<local:DynamicKeyBinding Command="{Binding SearchMenusCommand}" InputGestureText="{local:KeyBindings SearchMenus}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectLeftPreciseCommand}" InputGestureText="{local:KeyBindings MoveObjectLeftPrecise}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectRightPreciseCommand}" InputGestureText="{local:KeyBindings MoveObjectRightPrecise}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectForwardPreciseCommand}" InputGestureText="{local:KeyBindings MoveObjectForwardPrecise}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectBackPreciseCommand}" InputGestureText="{local:KeyBindings MoveObjectBackPrecise}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectUpPreciseCommand}" InputGestureText="{local:KeyBindings MoveObjectUpPrecise}" />
+		<local:DynamicKeyBinding Command="{Binding MoveObjectDownPreciseCommand}" InputGestureText="{local:KeyBindings MoveObjectDownPrecise}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit1Command}" InputGestureText="{local:KeyBindings HighlightSplit1}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit2Command}" InputGestureText="{local:KeyBindings HighlightSplit2}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit3Command}" InputGestureText="{local:KeyBindings HighlightSplit3}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit4Command}" InputGestureText="{local:KeyBindings HighlightSplit4}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit5Command}" InputGestureText="{local:KeyBindings HighlightSplit5}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit6Command}" InputGestureText="{local:KeyBindings HighlightSplit6}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit7Command}" InputGestureText="{local:KeyBindings HighlightSplit7}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit8Command}" InputGestureText="{local:KeyBindings HighlightSplit8}" />
+		<local:DynamicKeyBinding Command="{Binding HighlightSplit9Command}" InputGestureText="{local:KeyBindings HighlightSplit9}" />
 	</Window.InputBindings>
 
 	<Grid x:Name="layoutRoot">
