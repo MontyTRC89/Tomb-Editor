@@ -171,7 +171,7 @@ namespace TombIDE.ProjectMaster
 				"- Engine/Scripts/Engine/\n" +
 				"- Engine/Scripts/SystemStrings.lua\n\n" +
 
-				"If any of these directories / files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
+				"If any of these directories or files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
 
 				"Are you sure you want to continue?\n" +
 				"This action cannot be reverted.",
@@ -190,6 +190,12 @@ namespace TombIDE.ProjectMaster
 
 				var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/Shaders")).ToList();
 				ExtractEntries(shaders, _ide.Project);
+
+				// Delete the "Engine/Scripts/Engine" directory before extracting new scripts
+				string engineScriptsPath = Path.Combine(_ide.Project.DirectoryPath, "Engine/Scripts/Engine");
+
+				if (Directory.Exists(engineScriptsPath))
+					Directory.Delete(engineScriptsPath, true);
 
 				var scriptsEngine = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/Scripts/Engine")).ToList();
 				ExtractEntries(scriptsEngine, _ide.Project);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -119,7 +120,6 @@ namespace TombEditor.Controls.Panel3D
         private bool _dragObjectPicked = false;
         private bool _dragObjectMoved = false;
         private HighlightedObjects _highlightedObjects = HighlightedObjects.Create(null);
-        private Keys _currentNumberKey = Keys.None;
 
         // Legacy rendering state
         private WadRenderer _wadRenderer;
@@ -232,11 +232,26 @@ namespace TombEditor.Controls.Panel3D
             base.Dispose(disposing);
         }
 
+        private IReadOnlyList<Keys> _splitHighlightHotkeys;
+
         private void EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is Editor.InitEvent)
+            {
+                _splitHighlightHotkeys = _editor.Configuration.UI_Hotkeys
+                    .Where(x => x.Key.StartsWith("HighlightSplit"))
+                        .SelectMany(kv => kv.Value.Select(hk => hk.Keys)).ToList();
+            }
+
             // Update FOV
             if (obj is Editor.ConfigurationChangedEvent)
+            {
                 Camera.FieldOfView = _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180);
+
+                _splitHighlightHotkeys = _editor.Configuration.UI_Hotkeys
+                    .Where(x => x.Key.StartsWith("HighlightSplit"))
+                        .SelectMany(kv => kv.Value.Select(hk => hk.Keys)).ToList();
+            }
 
             // Move camera position with room movements
             if (obj is Editor.RoomPositionChangedEvent && _editor.Mode == EditorMode.Map2D && _currentRoomLastPos.HasValue)
@@ -340,7 +355,7 @@ namespace TombEditor.Controls.Panel3D
                 var e = (Editor.MoveCameraToSectorEvent)obj;
 
                 Vector3 center = _editor.SelectedRoom.GetLocalCenter();
-                var nextPos = new Vector3(e.Sector.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, center.Y, e.Sector.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit) + _editor.SelectedRoom.WorldPos;
+                var nextPos = new Vector3(e.Sector.X * Level.SectorSizeUnit + Level.HalfSectorSizeUnit, center.Y, e.Sector.Y * Level.SectorSizeUnit + Level.HalfSectorSizeUnit) + _editor.SelectedRoom.WorldPos;
 
                 if (_editor.Configuration.Rendering3D_AnimateCameraOnRelocation)
                     AnimateCamera(nextPos);
@@ -353,6 +368,9 @@ namespace TombEditor.Controls.Panel3D
 
             if (obj is Editor.SelectedObjectChangedEvent)
                 _highlightedObjects = HighlightedObjects.Create(_editor.SelectedObject);
+
+            if (obj is Editor.HighlightedSplitChangedEvent)
+                Invalidate(false);
         }
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
@@ -361,12 +379,6 @@ namespace TombEditor.Controls.Panel3D
 
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
                 _movementTimer.Engage(e.KeyCode);
-
-            if (_currentNumberKey == Keys.None && e.KeyCode is >= Keys.D0 and <= Keys.D9)
-            {
-                _currentNumberKey = e.KeyCode;
-                Invalidate(false);
-            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -377,11 +389,8 @@ namespace TombEditor.Controls.Panel3D
             if (_editor.FlyMode && e.KeyCode == Keys.Menu)
                 e.Handled = true;
 
-            if (_currentNumberKey != Keys.None)
-            {
-                _currentNumberKey = Keys.None;
-                Invalidate(false);
-            }
+            if (_editor.HighlightedSplit != 0 && _splitHighlightHotkeys.Any(hk => hk.HasFlag(e.KeyCode)))
+                _editor.HighlightedSplit = 0;
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

@@ -50,6 +50,8 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		public string CommentPrefix { get; set; }
 
+		public string ExcludedDirectoryFilter { get; set; }
+
 		#endregion Properties
 
 		#region Construction
@@ -85,15 +87,28 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		public event FileOpenedEventHandler FileOpened;
 		protected virtual void OnFileOpened(FileOpenedEventArgs e)
-			=> FileOpened?.Invoke(this, e);
+		{
+			if (!string.IsNullOrEmpty(ExcludedDirectoryFilter) && e.FilePath.Contains(ExcludedDirectoryFilter, StringComparison.OrdinalIgnoreCase))
+				return;
+
+			FileOpened?.Invoke(this, e);
+		}
 
 		public event FileSystemEventHandler FileChanged;
 		protected virtual void OnFileChanged(object sender, FileSystemEventArgs e)
-			=> FileChanged?.Invoke(sender, e);
+		{
+			if (!string.IsNullOrEmpty(ExcludedDirectoryFilter) && e.FullPath.Contains(ExcludedDirectoryFilter, StringComparison.OrdinalIgnoreCase))
+				return;
+
+			FileChanged?.Invoke(sender, e);
+		}
 
 		public event FileSystemEventHandler FileCreated;
 		protected virtual void OnFileCreated(object sender, FileSystemEventArgs e)
 		{
+			if (!string.IsNullOrEmpty(ExcludedDirectoryFilter) && e.FullPath.Contains(ExcludedDirectoryFilter, StringComparison.OrdinalIgnoreCase))
+				return;
+
 			UpdateFileList();
 			FileCreated?.Invoke(sender, e);
 		}
@@ -101,6 +116,9 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 		public event FileSystemEventHandler FileDeleted;
 		protected virtual void OnFileDeleted(object sender, FileSystemEventArgs e)
 		{
+			if (!string.IsNullOrEmpty(ExcludedDirectoryFilter) && e.FullPath.Contains(ExcludedDirectoryFilter, StringComparison.OrdinalIgnoreCase))
+				return;
+
 			UpdateFileList();
 			FileDeleted?.Invoke(sender, e);
 		}
@@ -108,6 +126,9 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 		public event RenamedEventHandler FileRenamed;
 		protected virtual void OnFileRenamed(object sender, RenamedEventArgs e)
 		{
+			if (!string.IsNullOrEmpty(ExcludedDirectoryFilter) && e.FullPath.Contains(ExcludedDirectoryFilter, StringComparison.OrdinalIgnoreCase))
+				return;
+
 			UpdateFileList();
 			FileRenamed?.Invoke(sender, e);
 		}
@@ -261,7 +282,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 				selectedNodeFullPath = treeView.SelectedNodes[0].FullPath;
 
 			// Create a node with the full /Script/ folder file list of the project
-			DarkTreeNode fullFileListNode = FileTreeViewHelper.CreateFullFileListNode(RootDirectoryPath, Filter, treeView);
+			DarkTreeNode fullFileListNode = FileTreeViewHelper.CreateFullFileListNode(RootDirectoryPath, Filter, false, treeView, false, ExcludedDirectoryFilter);
 			fullFileListNode.Expanded = true;
 
 			// Remove all nodes from the treeView

@@ -384,6 +384,15 @@ namespace TombEditor
             this["ShowTexturePanel"] = new SortedSet<Hotkey> { Keys.Alt | Keys.T };
             this["IncreaseStepHeight"] = new SortedSet<Hotkey> { Keys.OemCloseBrackets };
             this["DecreaseStepHeight"] = new SortedSet<Hotkey> { Keys.OemOpenBrackets };
+            this["HighlightSplit1"] = new SortedSet<Hotkey> { Keys.D1 };
+            this["HighlightSplit2"] = new SortedSet<Hotkey> { Keys.D2 };
+            this["HighlightSplit3"] = new SortedSet<Hotkey> { Keys.D3 };
+            this["HighlightSplit4"] = new SortedSet<Hotkey> { Keys.D4 };
+            this["HighlightSplit5"] = new SortedSet<Hotkey> { Keys.D5 };
+            this["HighlightSplit6"] = new SortedSet<Hotkey> { Keys.D6 };
+            this["HighlightSplit7"] = new SortedSet<Hotkey> { Keys.D7 };
+            this["HighlightSplit8"] = new SortedSet<Hotkey> { Keys.D8 };
+            this["HighlightSplit9"] = new SortedSet<Hotkey> { Keys.D9 };
 
             // Check for conflicts
             var hotkeyList = _list

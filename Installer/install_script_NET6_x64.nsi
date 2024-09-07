@@ -63,6 +63,9 @@ Section "Tomb Editor" Section1
 
   SectionIn RO ; Always install this section
   
+  ; Delete TEN node catalogs to avoid renaming clashes
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\*.*"
+  
   SetOutPath $INSTDIR
   File /r \
   /x "TombEditorLog*.txt" \
@@ -279,6 +282,7 @@ Section "Uninstall"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Volumes.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\View.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Variables.lua"
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Timespan Actions.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Timers.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Text.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Statics.lua"
@@ -293,6 +297,7 @@ Section "Uninstall"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Flow.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Dynamic Lights.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Creatures.lua"
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Batch Actions.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\_System.lua"
   Delete "$INSTDIR\Catalogs\Engines\TR5\States.xml"
   Delete "$INSTDIR\Catalogs\Engines\TR5\SpriteSequences.xml"

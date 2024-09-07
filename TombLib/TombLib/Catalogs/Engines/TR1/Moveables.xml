@@ -38,8 +38,8 @@
     <moveable id="36" name="Swinging blade" essential="false" ten="SWINGING_BLADE" />
     <moveable id="37" name="Spikes" essential="false" ten="TEETH_SPIKES" />
     <moveable id="38" name="Boulder" essential="false" ten="CLASSIC_ROLLINGBALL" />
-    <moveable id="39" name="Dart" hidden="true" />
-    <moveable id="40" name="Wall-mounted dartgun" essential="false" ten="DART_EMMITER" />
+    <moveable id="39" name="Dart" hidden="true" ten="DARTS" />
+    <moveable id="40" name="Wall-mounted dartgun" essential="false" ten="DART_EMITTER" />
     <moveable id="41" name="Door (opens upward)" essential="false" ten="DOOR_TYPE9" />
     <moveable id="42" name="Slamming doors" essential="false" ten="SLAMMING_DOORS" />
     <moveable id="43" name="Sword of Damocles" essential="false" ten="DAMOCLES_SWORD" />
@@ -86,12 +86,12 @@
     <moveable id="96" name="Cassette player and headphones" hidden="true" ten="INVENTORY_HEADPHONES" />
     <moveable id="97" name="Direction keys" hidden="true" ten="ANIMATING83" />
     <moveable id="98" name="Flashlight" hidden="true" ten="ANIMATING84" />
-    <moveable id="99" name="Pistol" id2="84" ten="PISTOL_ITEM" />
+    <moveable id="99" name="Pistol" id2="84" ten="PISTOLS_ITEM" />
     <moveable id="100" name="Shotgun" id2="85" ten="SHOTGUN_ITEM" />
     <moveable id="101" name="Magnum" id2="86" />
     <moveable id="102" name="Uzi" id2="87" ten="UZI_ITEM" />
-    <moveable id="103" name="Pistol ammo" ten="PISTOL_AMMO_ITEM" />
-    <moveable id="104" name="Shotgun ammo" id2="89" ten="SHOTGUN_AMMO_ITEM" />
+    <moveable id="103" name="Pistol ammo" ten="PISTOLS_AMMO_ITEM" />
+    <moveable id="104" name="Shotgun ammo" id2="89" ten="SHOTGUN_AMMO1_ITEM" />
     <moveable id="105" name="Magnum ammo" id2="90" />
     <moveable id="106" name="Uzi ammo" id2="91" ten="UZI_AMMO_ITEM" />
     <moveable id="108" name="Small medipack" id2="93" ten="SMALLMEDI_ITEM" />

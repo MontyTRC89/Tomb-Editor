@@ -1,3 +1,13 @@
+-- !Name "If flipmap is active..."
+-- !Section "Rooms"
+-- !Description "Checks if specified flipmap is active or not. If flipmap is set to -1, checks if any flipmap is active."
+-- !Conditional "True"
+-- !Arguments "Numerical, 15, [ -1 | 16 | 0 ]"
+
+LevelFuncs.Engine.Node.GetFlipMapStatus = function(flipmapNumber)
+	return TEN.Flow.GetFlipMapStatus(flipmapNumber)
+end
+
 -- !Name "If room is enabled..."
 -- !Section "Rooms"
 -- !Description "Checks if room is enabled (disabled means it's in flipped state)."

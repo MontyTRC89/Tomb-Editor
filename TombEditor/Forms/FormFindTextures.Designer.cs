@@ -84,7 +84,7 @@
             // 
             this.colCoordinates.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colCoordinates.FillWeight = 25F;
-            this.colCoordinates.HeaderText = "Block";
+            this.colCoordinates.HeaderText = "Sector";
             this.colCoordinates.Name = "colCoordinates";
             this.colCoordinates.ReadOnly = true;
             this.colCoordinates.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -137,7 +137,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSearchType.FormattingEnabled = true;
             this.cbSearchType.Items.AddRange(new object[] {
-            "Untextured faces",
+            "Untextured or default texture",
             "Invisible faces",
             "Textures missing or out of bounds",
             "Exact match with selected texture",

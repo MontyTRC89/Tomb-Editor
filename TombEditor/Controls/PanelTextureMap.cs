@@ -1,7 +1,9 @@
 ﻿using DarkUI.Config;
 using System.ComponentModel;
 using System.Drawing;
+using System.Numerics;
 using System.Windows.Forms;
+using TombEditor.Controls.ContextMenus;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -11,7 +13,7 @@ namespace TombEditor.Controls
 {
     public class PanelTextureMap : TextureMapBase
     {
-        private readonly Editor _editor;
+        protected readonly Editor _editor;
 
         public new LevelTexture VisibleTexture
         {

@@ -89,7 +89,9 @@ namespace TombLib.LevelData
             Custom5 = 18,
             Custom6 = 19,
             Custom7 = 20,
-            Custom8 = 21
+            Custom8 = 21,
+
+            Count
         }
 
         // Helper UI function which gets the names of all available footstep sounds
@@ -109,7 +111,7 @@ namespace TombLib.LevelData
             if (settings.GameVersion != TRVersion.Game.TombEngine)
                 result = result.Where(e => !e.Contains("Custom") || e == "Custom 1" || e == "Custom 2").ToList();
 
-            return result;
+            return result.Where(e => e != "Count").ToList();
         }
     }
 

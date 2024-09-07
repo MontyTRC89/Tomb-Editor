@@ -39,7 +39,7 @@ namespace TombEditor
     public enum LastSelectionType
     {
         None,
-        Block,
+        Sector,
         SpatialObject
     }
 
@@ -124,6 +124,12 @@ namespace TombEditor
         {
             public int Previous { get; set; }
             public int Current { get; set; }
+        }
+
+        public class HighlightedSplitChangedEvent : IEditorEvent
+        {
+            public int Previous { get; internal set; }
+            public int Current { get; internal set; }
         }
 
         public class ActionChangedEvent : IEditorPropertyChangedEvent
@@ -361,7 +367,7 @@ namespace TombEditor
             set
             {
                 if (value != SectorSelection.None)
-                    LastSelection = LastSelectionType.Block;
+                    LastSelection = LastSelectionType.Sector;
 
                 if (value == _selectedSectors)
                     return;
@@ -1294,6 +1300,9 @@ namespace TombEditor
             public String InfoString { get;set; }
         }
 
+        public class SuspendRenderingEvent : IEditorEvent { }
+        public class ResumeRenderingEvent : IEditorEvent { }
+
         // Auto saving
         private readonly System.Windows.Forms.Timer _autoSavingTimer = new System.Windows.Forms.Timer();
         private volatile bool _currentlyAutoSaving;
@@ -1416,6 +1425,26 @@ namespace TombEditor
         { }
 
         public static Editor Instance;
+
+        private int _highlightedSplit;
+
+        /// <summary>
+        /// 0 means that QA WS ED RF will behave as usual, while 1 - 9 will make them behave as if the corresponding number key was pressed.
+        /// </summary>
+        public int HighlightedSplit
+        {
+            get { return _highlightedSplit; }
+            set
+            {
+                if (_highlightedSplit == value)
+                    return;
+
+                int previous = _highlightedSplit;
+                _highlightedSplit = value;
+
+                RaiseEvent(new HighlightedSplitChangedEvent { Previous = previous, Current = value });
+            }
+        }
 
         public bool IsPreciseGeometryAllowed
             => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;

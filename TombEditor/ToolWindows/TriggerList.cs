@@ -42,7 +42,7 @@ namespace TombEditor.ToolWindows
                 obj is Editor.GameVersionChangedEvent)
             {
                 if (_editor.Level.IsTombEngine)
-                    DockText = "Legacy triggers";
+                    DockText = "Classic Triggers";
                 else
                     DockText = "Triggers";
             }
@@ -89,7 +89,7 @@ namespace TombEditor.ToolWindows
             foreach (var obj in lstTriggers.SelectedIndices)
             {
                 var trigger = lstTriggers.Items[obj].Tag as ObjectInstance;
-                if (trigger != null) 
+                if (trigger != null)
                     triggersToRemove.Add(trigger);
             }
 
@@ -110,10 +110,10 @@ namespace TombEditor.ToolWindows
 
                 for (int x = area.X0; x <= area.X1; x++)
                     for (int z = area.Y0; z <= area.Y1; z++)
-                        foreach (var trigger in _editor.SelectedRoom.GetBlockTry(x, z)?.Triggers ?? new List<TriggerInstance>())
+                        foreach (var trigger in _editor.SelectedRoom.GetSectorTry(x, z)?.Triggers ?? new List<TriggerInstance>())
                             if (!triggers.Contains(trigger))
                             {
-                                // Look if incoming trigger doesn't belong to first block in area.
+                                // Look if incoming trigger doesn't belong to first sector in area.
                                 // If that's the case, we're dealing with overlapping triggers and
                                 // can't predict proper order for them, so we don't sort.
 

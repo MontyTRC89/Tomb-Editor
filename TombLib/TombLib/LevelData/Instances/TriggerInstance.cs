@@ -125,6 +125,13 @@ namespace TombLib.LevelData
         public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
         public TriggerTargetType TargetType { get; set; } = TriggerTargetType.FlipEffect;
 
+        private ITriggerParameter _plugin = new TriggerParameterUshort(0);
+        public ITriggerParameter Plugin
+        {
+            get { return _plugin; }
+            set { UpdateEvents(ref _plugin, value); }
+        }
+
         private ITriggerParameter _target;
         public ITriggerParameter Target
         {
@@ -191,7 +198,7 @@ namespace TombLib.LevelData
 
             for (int x = Area.X0; x <= Area.X1; x++)
                 for (int z = Area.Y0; z <= Area.Y1; z++)
-                    room.Blocks[x, z].Triggers.Add(this);
+                    room.Sectors[x, z].Triggers.Add(this);
         }
 
         public override void RemoveFromRoom(Level level, Room room)
@@ -200,7 +207,7 @@ namespace TombLib.LevelData
 
             for (int x = Area.X0; x <= Area.X1; x++)
                 for (int z = Area.Y0; z <= Area.Y1; z++)
-                    room.Blocks[x, z].Triggers.Remove(this);
+                    room.Sectors[x, z].Triggers.Remove(this);
         }
 
         private void ParameterDeletedEvent(ITriggerParameter parameter)

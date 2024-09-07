@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using TombLib.LevelData.VisualScripting;
 
 namespace TombLib.Utils
@@ -39,7 +39,8 @@ namespace TombLib.Utils
     {
         private const int _maxRecursionDepth = 32;
 
-        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase", "OnLoop" };
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase", "OnLoop", "OnUseItem" };
 
         private const string _metadataPrefix = "!";
         private const string _enumSplitterStart = "[";
@@ -191,6 +192,20 @@ namespace TombLib.Utils
             catch
             {
                 continue;
+            }
+
+            // Check for duplicate functions
+
+            var duplicates = result.GroupBy(f => f.Signature).Where(g => g.Count() > 1);
+            if (duplicates.Count() > 0)
+            {
+                var message = "Node catalogs contain a duplicate of function " + duplicates.First().First().Signature + ". " +
+                              "Review node catalogs and rename or remove duplicate.";
+#if DEBUG
+                throw new Exception(message);
+#else
+                logger.Warn(message);
+#endif
             }
 
             return result;

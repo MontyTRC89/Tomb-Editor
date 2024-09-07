@@ -304,6 +304,10 @@ namespace TombEditor.Forms
                 case EventType.OnLoop:
                     toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus. \nThis event performs continuously.");
                     break;
+
+                case EventType.OnUseItem:
+                    toolTip.SetToolTip(cbEvents, "Occurs when an item was selected and used in inventory.");
+                    break;
             }
         }
 

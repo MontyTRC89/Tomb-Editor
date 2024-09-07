@@ -13,7 +13,7 @@ end
 -- !Conditional "True"
 -- !Description "Checks specified audio track loudness."
 -- !Arguments "NewLine, CompareOperator, 33, Compare operation" "Numerical, 33, [ 0 | 1 | 2 | 0.05 | 0.1 ], Loudness"
--- !Arguments "Enumeration, 34, [ One shot | Looped | Voice ]"
+-- !Arguments "Enumeration, 34, [ One shot | Looped | Voice ], Audiotrack type to check"
 
 LevelFuncs.Engine.Node.CheckAudioTrackLoudness = function(operator, value, mode)
     return LevelFuncs.Engine.Node.CompareValue(
@@ -24,7 +24,7 @@ end
 -- !Section "Sound"
 -- !Description "Plays specified audio track."
 -- !Arguments "NewLine, 75, SoundTracks, Name of the audiotrack to play"
--- !Arguments "Enumeration, 25, [ One shot | Looped | Voice ]"
+-- !Arguments "Enumeration, 25, [ One shot | Looped | Voice ], Audiotrack type to set"
 
 LevelFuncs.Engine.Node.PlayAudioTrack = function(name, type)
     -- LEGACY: Make pre-1.1.0 nodes compatible with updated audio track enumeration.
@@ -42,8 +42,8 @@ end
 
 -- !Name "Stop audio track"
 -- !Section "Sound"
--- !Description "Stops audio track of the specified mode."
--- !Arguments "Enumeration, 25, [ One shot | Looped | Voice ]"
+-- !Description "Stops audio track of the specified type."
+-- !Arguments "Enumeration, 25, [ One shot | Looped | Voice ], Audiotrack type to stop"
 
 LevelFuncs.Engine.Node.StopAudioTrack = function(looped)
     TEN.Sound.StopAudioTrack(looped)
@@ -55,4 +55,14 @@ end
 
 LevelFuncs.Engine.Node.StopAudioTracks = function()
     TEN.Sound.StopAudioTracks()
+end
+
+-- !Name "If sound is playing..."
+-- !Section "Sound"
+-- !Conditional "True"
+-- !Description "Checks if specified sound is playing."
+-- !Arguments "NewLine, SoundEffects, Sound to check"
+
+LevelFuncs.Engine.Node.SoundIsPlaying = function(soundID)
+    return TEN.Sound.IsSoundPlaying(soundID)
 end
