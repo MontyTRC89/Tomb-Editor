@@ -468,11 +468,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(attractor.Points.Count);
                 foreach (var point in attractor.Points)
                 {
-                    var absPoint = (point * new Vector3(Level.SectorSizeUnit, -1, Level.SectorSizeUnit)) - new Vector3(0, OriginalRoom.Position.Y, 0);
+                    var absPoint = (point + OriginalRoom.Position) * new Vector3(Level.SectorSizeUnit, -1, Level.SectorSizeUnit);
                     writer.Write(absPoint);
                 }
             }
-            
+
             // Write final data
             writer.Write(AlternateRoom);
             writer.Write(Flags);
