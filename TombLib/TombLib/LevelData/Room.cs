@@ -110,7 +110,7 @@ namespace TombLib.LevelData
             => clicks * Level.FullClickHeight;
     }
 
-    public class Room : IRoom, ITriggerParameter
+    public class Room : ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(Room instance);
         public event RemovedFromRoomDelegate DeletedEvent;

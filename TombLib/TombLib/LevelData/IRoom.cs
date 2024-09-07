@@ -27,7 +27,7 @@ public interface IRoom
 	/// <summary>
 	/// The sectors which form the room's geometry.
 	/// </summary>
-	Block[,] Blocks { get; }
+	Sector[,] Sectors { get; }
 
 	/// <summary>
 	/// The base room of the flipped room.
@@ -47,7 +47,7 @@ public interface IRoom
 	/// <summary>
 	/// All the information about the room's finalized geometry.
 	/// </summary>
-	RoomGeometry RoomGeometry { get; set; }
+	RoomGeometry RoomGeometry { get; }
 
 	/// <summary>
 	/// Gets a list which contains the room and all the rooms which are connected to it.

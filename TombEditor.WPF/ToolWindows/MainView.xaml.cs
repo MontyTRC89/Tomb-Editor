@@ -14,7 +14,7 @@ public partial class MainView : System.Windows.Controls.UserControl
 	{
 		InitializeComponent();
 
-		panel3D.InitializeRendering(Editor.Instance.RenderingDevice, true);
+		panel3D.InitializeRendering(Editor.Instance.RenderingDevice, true, TombLib.Controls.ObjectRenderingQuality.Medium);
 		Content = new WindowsFormsHost { Child = panel3D };
 	}
 }
