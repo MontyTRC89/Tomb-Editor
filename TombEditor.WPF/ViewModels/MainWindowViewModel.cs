@@ -193,7 +193,7 @@ public partial class MainWindowViewModel : ObservableObject
 
 	public ICommand Switch2DModeCommand { get; }
 	public ICommand SwitchGeometryModeCommand { get; }
-	public ICommand SwitchTextureModeCommand { get; }
+	public ICommand SwitchFaceEditModeCommand { get; }
 	public ICommand SwitchLightingModeCommand { get; }
 
 	// Non-menu Commands
@@ -555,7 +555,7 @@ public partial class MainWindowViewModel : ObservableObject
 
 		Switch2DModeCommand = CommandHandler.GetCommand("Switch2DMode", commandArgs);
 		SwitchGeometryModeCommand = CommandHandler.GetCommand("SwitchGeometryMode", commandArgs);
-		SwitchTextureModeCommand = CommandHandler.GetCommand("SwitchTextureMode", commandArgs);
+		SwitchFaceEditModeCommand = CommandHandler.GetCommand("SwitchFaceEditMode", commandArgs);
 		SwitchLightingModeCommand = CommandHandler.GetCommand("SwitchLightingMode", commandArgs);
 
 		// Non-menu Commands

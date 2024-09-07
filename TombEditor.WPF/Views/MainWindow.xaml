@@ -187,7 +187,7 @@
 
 		<local:DynamicKeyBinding Command="{Binding Switch2DModeCommand}" InputGestureText="{local:KeyBindings Switch2DMode}" />
 		<local:DynamicKeyBinding Command="{Binding SwitchGeometryModeCommand}" InputGestureText="{local:KeyBindings SwitchGeometryMode}" />
-		<local:DynamicKeyBinding Command="{Binding SwitchTextureModeCommand}" InputGestureText="{local:KeyBindings SwitchTextureMode}" />
+		<local:DynamicKeyBinding Command="{Binding SwitchFaceEditModeCommand}" InputGestureText="{local:KeyBindings SwitchFaceEditMode}" />
 		<local:DynamicKeyBinding Command="{Binding SwitchLightingModeCommand}" InputGestureText="{local:KeyBindings SwitchLightingMode}" />
 
 		<!--  Non-menu Commands  -->
@@ -1298,22 +1298,26 @@
 				<LayoutPanel Orientation="Horizontal">
 					<LayoutAnchorablePaneGroup DockWidth="287" Orientation="Vertical">
 						<LayoutAnchorablePane
-							DockHeight="279"
+							DockHeight="0.001*"
 							DockMinHeight="279"
 							DockMinWidth="287">
-							<LayoutAnchorable Title="Sector Options" ContentId="SectorOptions">
+							<LayoutAnchorable
+								Title="Sector Options"
+								AutoHideMinWidth="287"
+								ContentId="SectorOptions"
+								FloatingWidth="287">
 								<toolwindows:SectorOptions x:Name="SectorOptions" />
 							</LayoutAnchorable>
 						</LayoutAnchorablePane>
 						<LayoutAnchorablePane
-							DockHeight="223"
+							DockHeight="0.001*"
 							DockMinHeight="223"
 							DockMinWidth="287">
 							<LayoutAnchorable Title="Room Options" ContentId="RoomOptions">
 								<toolwindows:RoomOptions x:Name="RoomOptions" />
 							</LayoutAnchorable>
 						</LayoutAnchorablePane>
-						<LayoutAnchorablePane DockHeight="*" DockMinHeight="250">
+						<LayoutAnchorablePane DockHeight="0.001*" DockMinHeight="250">
 							<LayoutAnchorable Title="Items" ContentId="Items">
 								<toolwindows:ItemBrowser x:Name="Items" />
 							</LayoutAnchorable>
@@ -1332,7 +1336,7 @@
 					</LayoutAnchorablePaneGroup>
 
 					<LayoutPanel Orientation="Vertical">
-						<LayoutDocumentPane>
+						<LayoutDocumentPane ShowHeader="False">
 							<LayoutDocument x:Name="MainView" Title="3D View">
 								<Grid>
 									<Grid.RowDefinitions>
@@ -1486,13 +1490,13 @@
 										Room vertices / faces: 0 / 0 Last level output: compile level</TextBlock>
 								</Grid>
 							</LayoutDocument>
-							<LayoutDocument Title="2D View">
-								<toolwindows:MainView2 />
-							</LayoutDocument>
 						</LayoutDocumentPane>
 
 						<LayoutAnchorablePaneGroup DockHeight="140" Orientation="Horizontal">
-							<LayoutAnchorablePane DockMinWidth="370" DockWidth="370">
+							<LayoutAnchorablePane
+								DockMinHeight="140"
+								DockMinWidth="370"
+								DockWidth="0.001*">
 								<LayoutAnchorable Title="Lighting" ContentId="Lighting">
 									<toolwindows:Lighting x:Name="Lighting" />
 								</LayoutAnchorable>
@@ -1505,7 +1509,7 @@
 						</LayoutAnchorablePaneGroup>
 					</LayoutPanel>
 
-					<LayoutAnchorablePane DockWidth="300">
+					<LayoutAnchorablePane DockMinWidth="300" DockWidth="300">
 						<LayoutAnchorable Title="Texturing" ContentId="Texturing">
 							<toolwindows:TexturePanel x:Name="Texturing" />
 						</LayoutAnchorable>
