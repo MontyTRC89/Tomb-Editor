@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -463,12 +464,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var attractor in OriginalRoom.Attractors)
             {
                 writer.Write((int)attractor.Type);
-                writer.Write(attractor.Points.Count);
 
-                // TODO: Store points as absolute positions natively.
+                writer.Write(attractor.Points.Count);
                 foreach (var point in attractor.Points)
                 {
-                    var absPoint = ((point + OriginalRoom.Position) * new Vector3(Level.SectorSizeUnit, Level.FullClickHeight, Level.SectorSizeUnit)) * new Vector3(1, -1, 1);
+                    var absPoint = (point * new Vector3(Level.SectorSizeUnit, -1, Level.SectorSizeUnit)) + new Vector3(0, OriginalRoom.Position.Y, 0);
                     writer.Write(absPoint);
                 }
             }
