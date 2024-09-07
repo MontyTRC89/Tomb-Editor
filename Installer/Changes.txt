@@ -27,8 +27,9 @@ WadTool:
  * Fixed TR2 BIG_SPIDER sounds remapping incorrectly for TEN.
 
 TombIDE:
- * Updated FLEP for new projects.
+ * Updated FLEP for new TRNG projects.
  * FLEP widescreen patch will now be installed by default for new projects.
+ * Updated Plugin_Video for new TRNG projects - now makes the game DPI-aware.
  * Updated TR1X preset to 4.2.
 
 Version 1.7.1
