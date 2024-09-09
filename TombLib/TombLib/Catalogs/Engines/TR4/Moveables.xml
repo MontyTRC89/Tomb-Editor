@@ -417,9 +417,9 @@
     <moveable id="414" name="SMASH_OBJECT6" description="Smash Object6" ten="SMASH_OBJECT6" essential="false" />
     <moveable id="415" name="SMASH_OBJECT7" description="Smash Object7" ten="SMASH_OBJECT7" essential="false" />
     <moveable id="416" name="SMASH_OBJECT8" description="Smash Object8" ten="SMASH_OBJECT8" essential="false" />
-    <moveable id="417" name="MESHSWAP1" description="Meshswap1" hidden="true" />
-    <moveable id="418" name="MESHSWAP2" description="Meshswap2" hidden="true" />
-    <moveable id="419" name="MESHSWAP3" description="Meshswap3" hidden="true" />
+    <moveable id="417" name="MESHSWAP1" description="Meshswap1" hidden="true" ten="MESHSWAP1" />
+    <moveable id="418" name="MESHSWAP2" description="Meshswap2" hidden="true" ten="MESHSWAP2" />
+    <moveable id="419" name="MESHSWAP3" description="Meshswap3" hidden="true" ten="MESHSWAP3" />
     <moveable id="420" name="DEATH_SLIDE" description="Death Slide" ten="ZIPLINE_HANDLE" essential="false" />
     <moveable id="421" name="BODY_PART" description="Body Part" ten="BODY_PART" essential="false" />
     <moveable id="422" name="CAMERA_TARGET" description="Camera Target" ten="CAMERA_TARGET" essential="false" />
