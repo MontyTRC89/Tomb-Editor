@@ -337,20 +337,20 @@ public class SectorFaceExtensionsTests
 	[TestMethod]
 	public void IsExtraFloorSplit()
 	{
-		foreach (SectorFace face in Enum.GetValues<SectorFace>().Where(f => f.ToString().Contains("FloorSplit")))
+		foreach (SectorFace face in Enum.GetValues<SectorFace>().Where(f => f.ToString().Contains("_Floor")))
 			Assert.IsTrue(face.IsExtraFloorSplit());
 
-		foreach (SectorFace face in Enum.GetValues<SectorFace>().Where(f => !f.ToString().Contains("FloorSplit")))
+		foreach (SectorFace face in Enum.GetValues<SectorFace>().Where(f => !f.ToString().Contains("_Floor")))
 			Assert.IsFalse(face.IsExtraFloorSplit());
 	}
 
 	[TestMethod]
 	public void IsExtraCeilingSplit()
 	{
-		foreach (SectorFace face in Enum.GetValues<SectorFace>().Where(f => f.ToString().Contains("CeilingSplit")))
+		foreach (SectorFace face in Enum.GetValues<SectorFace>().Where(f => f.ToString().Contains("_Ceiling")))
 			Assert.IsTrue(face.IsExtraCeilingSplit());
 
-		foreach (SectorFace face in Enum.GetValues<SectorFace>().Where(f => !f.ToString().Contains("CeilingSplit")))
+		foreach (SectorFace face in Enum.GetValues<SectorFace>().Where(f => !f.ToString().Contains("_Ceiling")))
 			Assert.IsFalse(face.IsExtraCeilingSplit());
 	}
 
