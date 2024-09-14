@@ -520,8 +520,8 @@ end
 -- !Arguments "Numerical, 20, [ 0 | 1000 | 0 ], Starting frame of animation (default 0)"
 -- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], Starting health of moveable (default 100)"
 -- !Arguments "Numerical, 20, [ -1000 | 1000 | 0 ], OCB of moveable (default 0)"
-LevelFuncs.Engine.Node.CreateMoveable = function(moveableSlot,moveableName,pos,rot,roomID,anim,frame,health,ocb)
-
-	local newMoveable = Moveable(moveableSlot,moveableName,pos,rot,roomID,anim,frame,health,ocb)
-	newMoveable:Enable()
+LevelFuncs.Engine.Node.CreateMoveable = function(moveableSlot, moveableName, pos, rot, roomName, anim, frame, health, ocb)
+    local roomNumber = GetRoomByName(roomName):GetRoomNumber()
+    local newMoveable = Moveable(moveableSlot, moveableName, pos, rot, roomNumber, anim, frame, health, ocb)
+    newMoveable:Enable()
 end
