@@ -77,7 +77,7 @@ public partial class Palette : UserControl
 				Colors.Black);
 
 			// Draw selection rectangle
-			if (_selectedIndex >= 0)
+			if (_selectedIndex >= 0 && columnCount > 0)
 			{
 				int x = _selectedIndex % columnCount,
 					y = _selectedIndex / columnCount;
