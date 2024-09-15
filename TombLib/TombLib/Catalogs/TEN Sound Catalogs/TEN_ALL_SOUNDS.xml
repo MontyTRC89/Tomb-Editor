@@ -22813,7 +22813,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>Looped</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_move_stone_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22873,7 +22877,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_stop_wood_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22903,7 +22911,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>Looped</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_move_metal_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22918,7 +22930,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_stop_metal_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22933,7 +22949,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_collide_metal_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22993,7 +23013,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>Looped</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_move_grass_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
