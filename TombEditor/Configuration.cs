@@ -102,7 +102,7 @@ namespace TombEditor
         public bool Rendering3D_HighQualityLightPreview { get; set; } = false;
         public bool Rendering3D_ShowRealTintForObjects { get; set; } = true;
         public bool Rendering3D_UseSpritesForServiceObjects { get; set; } = true;
-        public int Rendering3D_ObjectQuality { get; set; } = 1; // 0 = High, 1 = Medium, 2 = Low
+        public int Rendering3D_ObjectQuality { get; set; } = 0; // 0 = High, 1 = Medium, 2 = Low
 
         // 2D Map options
 
@@ -187,9 +187,9 @@ namespace TombEditor
             "2D", "3D", "FaceEdit", "LightingMode", "DrawWhiteLighting", "|",
             "Undo", "Redo", "|",
             "CenterCamera", "ToggleFlyMode", "|",
-            "DrawPortals", "DrawAllRooms", "DrawHorizon", 
-            "DrawRoomNames", "DrawCardinalDirections", 
-            "DrawExtraBlendingModes", "HideTransparentFaces", "BilinearFilter", "DrawStaticTint", 
+            "DrawPortals", "DrawAllRooms", "DrawHorizon",
+            "DrawRoomNames", "DrawCardinalDirections",
+            "DrawExtraBlendingModes", "HideTransparentFaces", "BilinearFilter", "DrawStaticTint",
             "DrawIllegalSlopes", "DrawSlideDirections", "DisableHiddenRoomPicking", "DisableGeometryPicking", "DrawObjects", "|",
             "FlipMap", "|",
             "Copy", "Paste", "Stamp", "|",
