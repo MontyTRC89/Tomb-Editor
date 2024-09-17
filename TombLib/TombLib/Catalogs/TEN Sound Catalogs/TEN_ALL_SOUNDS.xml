@@ -22543,7 +22543,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>Looped</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_move_mud_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22558,7 +22562,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_stop_mud_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22568,12 +22576,16 @@
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>0</PitchFactor>
+			<PitchFactor>-20</PitchFactor>
 			<DisablePanning>false</DisablePanning>
-			<RandomizePitch>false</RandomizePitch>
-			<RandomizeVolume>false</RandomizeVolume>
+			<RandomizePitch>true</RandomizePitch>
+			<RandomizeVolume>true</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_collide_mud_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22678,7 +22690,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>Looped</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_move_gravel_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22693,7 +22709,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_stop_gravel_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22862,7 +22882,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>Looped</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>ten_pushables_move_wood_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22896,7 +22920,11 @@
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>tr5_smash_wood_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
@@ -22906,7 +22934,7 @@
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>0</PitchFactor>
+			<PitchFactor>-30</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
@@ -22925,7 +22953,7 @@
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>0</PitchFactor>
+			<PitchFactor>-30</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
@@ -23042,12 +23070,16 @@
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
-			<PitchFactor>0</PitchFactor>
+			<PitchFactor>30</PitchFactor>
 			<DisablePanning>false</DisablePanning>
 			<RandomizePitch>false</RandomizePitch>
 			<RandomizeVolume>false</RandomizeVolume>
 			<LoopBehaviour>None</LoopBehaviour>
-			<Samples />
+			<Samples>
+				<WadSample>
+					<FileName>tr4_generic_body_slam_01.wav</FileName>
+				</WadSample>
+			</Samples>
 			<Global>false</Global>
 			<Indexed>false</Indexed>
 		</WadSoundInfo>
