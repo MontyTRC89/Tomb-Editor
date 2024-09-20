@@ -328,7 +328,7 @@ namespace TombEditor.Forms
             {
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    var result = NgParameterInfo.ImportFromScriptTrigger(_level, paramPlugin.Parameter, form.Result);
+                    var result = NgParameterInfo.ImportFromScriptTrigger(_level, form.Result);
                     if (result == null)
                     {
                         DarkMessageBox.Show(this, "Script entry is invalid. Trigger can't be imported.", "Error", MessageBoxIcon.Error);

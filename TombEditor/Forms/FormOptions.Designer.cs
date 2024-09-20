@@ -1640,7 +1640,7 @@
 			// cmbRendering3DObjQuality
 			// 
 			cmbRendering3DObjQuality.FormattingEnabled = true;
-			cmbRendering3DObjQuality.Items.AddRange(new object[] { "High (unstable)", "Medium", "Low" });
+			cmbRendering3DObjQuality.Items.AddRange(new object[] { "High", "Medium", "Low" });
 			cmbRendering3DObjQuality.Location = new System.Drawing.Point(232, 407);
 			cmbRendering3DObjQuality.Name = "cmbRendering3DObjQuality";
 			cmbRendering3DObjQuality.Size = new System.Drawing.Size(125, 23);
