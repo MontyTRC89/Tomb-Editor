@@ -756,7 +756,16 @@ public partial class MainWindowViewModel : ObservableObject
 	private void EditorEventRaised(IEditorEvent obj)
 	{
 		if (obj is Editor.ConfigurationChangedEvent)
+		{
 			KeyBindingsWrapper.Instance.Invalidate();
+		}
+		else if (obj is Editor.ModeChangedEvent modeChanged)
+		{
+			OnPropertyChanged(nameof(IsMap2DMode));
+			OnPropertyChanged(nameof(IsGeometryMode));
+			OnPropertyChanged(nameof(IsFaceEditMode));
+			OnPropertyChanged(nameof(IsLightingMode));
+		}
 	}
 
 	[RelayCommand]
@@ -771,4 +780,15 @@ public partial class MainWindowViewModel : ObservableObject
 	{
 		Console.WriteLine("DEBUG");
 	}
+
+	[RelayCommand]
+	public void SetEditorMode(EditorMode mode)
+	{
+		_editor.Mode = mode;
+	}
+
+	public bool IsMap2DMode => _editor.Mode == EditorMode.Map2D;
+	public bool IsGeometryMode => _editor.Mode == EditorMode.Geometry;
+	public bool IsFaceEditMode => _editor.Mode == EditorMode.FaceEdit;
+	public bool IsLightingMode => _editor.Mode == EditorMode.Lighting;
 }

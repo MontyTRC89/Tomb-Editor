@@ -5,6 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.WPF"
+	xmlns:mainTE="clr-namespace:TombEditor;assembly=TombEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:toolwindows="clr-namespace:TombEditor.WPF.ToolWindows"
@@ -1346,16 +1347,28 @@
 									</Grid.RowDefinitions>
 									<ToolBarTray>
 										<ToolBar>
-											<ToggleButton>
+											<ToggleButton
+												Command="{Binding SetEditorModeCommand}"
+												CommandParameter="{x:Static mainTE:EditorMode.Map2D}"
+												IsChecked="{Binding IsMap2DMode, Mode=OneWay}">
 												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_2DView-16.png" />
 											</ToggleButton>
-											<ToggleButton>
+											<ToggleButton
+												Command="{Binding SetEditorModeCommand}"
+												CommandParameter="{x:Static mainTE:EditorMode.Geometry}"
+												IsChecked="{Binding IsGeometryMode, Mode=OneWay}">
 												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_3DView-16.png" />
 											</ToggleButton>
-											<ToggleButton>
+											<ToggleButton
+												Command="{Binding SetEditorModeCommand}"
+												CommandParameter="{x:Static mainTE:EditorMode.FaceEdit}"
+												IsChecked="{Binding IsFaceEditMode, Mode=OneWay}">
 												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_TextureMode-16.png" />
 											</ToggleButton>
-											<ToggleButton>
+											<ToggleButton
+												Command="{Binding SetEditorModeCommand}"
+												CommandParameter="{x:Static mainTE:EditorMode.Lighting}"
+												IsChecked="{Binding IsLightingMode, Mode=OneWay}">
 												<Image Source="/TombEditor.WPF;component/Resources/icons_actions/actions_light_on-16.png" />
 											</ToggleButton>
 										</ToolBar>
