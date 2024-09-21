@@ -314,7 +314,7 @@ namespace TombLib.NG
                     return LoadStringsFromTxt(level, "PSXStrings");
 
                 case NgParameterKind.NgStringsList255:
-                    return LoadStringsFromTxt(level, "ExtraNG", 256, 1);
+                    return LoadStringsFromTxt(level, "ExtraNG", 256);
 
                 case NgParameterKind.NgStringsAll:
                     return LoadStringsFromTxt(level, "ExtraNG", 1);
