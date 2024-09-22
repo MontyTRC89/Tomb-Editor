@@ -39,7 +39,7 @@ LevelFuncs.Engine.Node.GenerateString = function(text, x, y, scale, alignment, e
 	if (alignment == 1) then table.insert(options, TEN.Strings.DisplayStringOption.CENTER) end
 	if (alignment == 2) then table.insert(options, TEN.Strings.DisplayStringOption.RIGHT) end
 	local rX, rY = TEN.Util.PercentToScreen(x, y)
-	return TEN.Strings.DisplayString(text, TEN.Vec2(rX, rY), scale, color, false, options)
+	return TEN.Strings.DisplayString(text, TEN.Vec2(rX, rY), scale, color, true, options)
 end
 
 -- Helper function to split string using specified delimiter.
