@@ -36,8 +36,8 @@
     <moveable id="34" name="LARA_DIRT_MESH" use_body_from="12" />
     <moveable id="35" name="LARA_CROWBAR_ANIM" use_body_from="12" />
     <moveable id="36" name="LARA_TORCH_ANIM" use_body_from="12" />
-    <moveable id="37" name="SINGLE_BRAID_HAIR" />
-	<moveable id="38" name="DUAL_PIGTAIL_HAIR" />
+    <moveable id="37" name="HAIR_PRIMARY" />
+	<moveable id="38" name="HAIR_SECONDARY" />
     <moveable id="50" name="SNOWMOBILE_LARA_ANIMS" use_body_from="12" />
     <moveable id="51" name="SNOWMOBILE" />
     <moveable id="52" name="QUAD_LARA_ANIMS" use_body_from="12" />
