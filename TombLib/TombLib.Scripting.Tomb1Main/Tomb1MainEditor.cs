@@ -14,6 +14,8 @@ namespace TombLib.Scripting.Tomb1Main
 {
 	public sealed class Tomb1MainEditor : TextEditorBase
 	{
+		public override string DefaultFileExtension => ".json5";
+
 		private bool _suppressBracketAutospacing;
 		private DocumentLine _cachedLine;
 

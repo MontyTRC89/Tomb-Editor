@@ -183,7 +183,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		public string CreateNewFile()
 		{
-			using (var form = new FormFileCreation(RootDirectoryPath, FileCreationMode.New, GetInitialNodePath()))
+			using (var form = new FormFileCreation(RootDirectoryPath, FileCreationMode.New, Filter.TrimStart('*'), GetInitialNodePath(), null, ExcludedDirectoryFilter))
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
 					File.WriteAllText(form.NewFilePath, $"{CommentPrefix} FILE: {form.NewFilePath.Replace(RootDirectoryPath, string.Empty)}\n");
@@ -197,7 +197,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		public void CreateNewFolder()
 		{
-			using (var form = new FormFolderCreation(RootDirectoryPath, GetInitialNodePath()))
+			using (var form = new FormFolderCreation(RootDirectoryPath, GetInitialNodePath(), ExcludedDirectoryFilter))
 				if (form.ShowDialog(this) == DialogResult.OK)
 					Directory.CreateDirectory(form.NewFolderPath);
 		}

@@ -45,6 +45,8 @@ namespace TombLib.Scripting.Interfaces
 		int MaxZoom { get; set; }
 		int ZoomStepSize { get; set; }
 
+		string DefaultFileExtension { get; }
+
 		#endregion Properties
 
 		#region Methods
