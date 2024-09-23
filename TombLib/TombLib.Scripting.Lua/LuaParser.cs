@@ -32,46 +32,42 @@ public sealed class LuaParser
 {
 	private const string ScopeDelimiter = "::";
 
-	private static readonly List<string> SegmentationKeywords = new()
-	{
-		"if", "elseif", "else", "end", "for", "while", "repeat", "until", "do", "then"
-	};
-
 	/// <summary>
 	/// Gets the list of functions parsed from the Lua code.
 	/// </summary>
 	public IReadOnlyList<LuaElement> Functions => _functions.AsReadOnly();
 
 	/// <summary>
-	/// Gets the list of variables parsed from the Lua code.
+	/// Gets the list of local variables parsed from the Lua code.
 	/// </summary>
-	public IReadOnlyList<LuaElement> Variables => _variables.AsReadOnly();
+	public IReadOnlyList<LuaElement> LocalVariables => _localVariables.AsReadOnly();
+
+	/// <summary>
+	/// Gets the set of global variables parsed from the Lua code.
+	/// </summary>
+	public IReadOnlySet<LuaElement> GlobalVariables => _globalVariables;
 
 	private readonly List<LuaElement> _functions;
-	private readonly List<LuaElement> _variables;
+	private readonly List<LuaElement> _localVariables;
+	private readonly HashSet<LuaElement> _globalVariables;
 	private readonly Dictionary<string, ScopeInfo> _scopes;
 	private int _conditionalScopeCounter;
 	private int _loopScopeCounter;
 	private int _blockScopeCounter;
 
-	private static readonly Regex SingleLineCommentRegex = new(@"--.*", RegexOptions.Compiled);
-	private static readonly Regex FunctionRegex = new(@"function\s+([\w_]+)", RegexOptions.Compiled);
-	private static readonly Regex GlobalVarRegex = new(@"^([\w_]+)\s*=\s*(.+)$", RegexOptions.Compiled);
-	private static readonly Regex LocalVarDeclRegex = new(@"local\s+([\w_]+)\s*(?:=\s*(.+))?", RegexOptions.Compiled);
-	private static readonly Regex IfRegex = new(@"\bif\b", RegexOptions.Compiled);
-	private static readonly Regex ElseIfRegex = new(@"\belseif\b", RegexOptions.Compiled);
-	private static readonly Regex ElseRegex = new(@"\belse\b", RegexOptions.Compiled);
-	private static readonly Regex EndRegex = new(@"\bend\b", RegexOptions.Compiled);
-	private static readonly Regex ForRegex = new(@"\bfor\b", RegexOptions.Compiled);
-	private static readonly Regex WhileRegex = new(@"\bwhile\b", RegexOptions.Compiled);
-	private static readonly Regex RepeatRegex = new(@"\brepeat\b", RegexOptions.Compiled);
-	private static readonly Regex UntilRegex = new(@"\buntil\b", RegexOptions.Compiled);
+	private static readonly Regex FunctionRegex = new(@"\bfunction\b\s+([\w_]+)", RegexOptions.Compiled);
+	private static readonly Regex GlobalVarRegex = new(@"\b(?<!\.)([\w_]+)\s*=[^=]", RegexOptions.Compiled);
+	private static readonly Regex LocalVarDeclRegex = new(@"\blocal\s+([a-zA-Z_]\w*)\s*=[^=]", RegexOptions.Compiled);
+	private static readonly Regex ConditionalRegex = new(@"\b(if|elseif|else)\b", RegexOptions.Compiled);
+	private static readonly Regex LoopRegex = new(@"\b(for|while|repeat)\b", RegexOptions.Compiled);
 	private static readonly Regex DoRegex = new(@"\bdo\b", RegexOptions.Compiled);
+	private static readonly Regex EndOrUntilRegex = new(@"\b(end|until)\b", RegexOptions.Compiled);
 
 	public LuaParser()
 	{
 		_functions = new List<LuaElement>();
-		_variables = new List<LuaElement>();
+		_localVariables = new List<LuaElement>();
+		_globalVariables = new HashSet<LuaElement>();
 		_scopes = new Dictionary<string, ScopeInfo>();
 		_conditionalScopeCounter = 0;
 		_loopScopeCounter = 0;
@@ -84,78 +80,119 @@ public sealed class LuaParser
 	/// <param name="content">The Lua content to parse.</param>
 	public void ParseLuaContent(string content)
 	{
-		// Clear previous results
 		ClearPreviousResults();
 
-		// Stack to keep track of scopes
 		Stack<string> scopeStack = new();
 		scopeStack.Push("global");
 
-		// Replace multi-line comments with spaces
-		MatchCollection multiLineCommentMatches = Regex.Matches(content, @"--\[\[(.|[\r\n])*?\]\]");
+		bool insideMultiLineComment = false;
+		bool insideString = false;
+		char stringDelimiter = '\0';
 
-		foreach (Match match in multiLineCommentMatches)
-			content = content.Replace(match.Value, " ".PadRight(match.Length));
+		for (int i = 0; i < content.Length; i++)
+		{
+			char currentChar = content[i];
 
-		string[] lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+			// Check if inside a multi-line comment
+			if (insideMultiLineComment)
+			{
+				// Check if the multi-line comment ends
+				if (content[i..].StartsWith("]]"))
+				{
+					insideMultiLineComment = false;
+					i++;
+				}
 
-		int currentOffset = 0;
+				continue;
+			}
 
-		foreach (string line in lines)
-			ProcessLine(line, ref currentOffset, scopeStack);
+			// Check if inside a string
+			if (insideString)
+			{
+				// Check if the string ends
+				if (currentChar == stringDelimiter)
+				{
+					insideString = false;
+				}
+
+				continue;
+			}
+
+			// Check if it is a single-line comment
+			if (currentChar == '-' && i + 1 < content.Length && content[i + 1] == '-')
+			{
+				// Check if it is a multi-line comment
+				if (i + 2 < content.Length && content[i + 2] == '[' && content[i + 3] == '[')
+				{
+					insideMultiLineComment = true;
+					i += 3;
+				}
+				else
+				{
+					// Skip until the end of the line
+					while (i < content.Length && content[i] != '\n')
+					{
+						i++;
+					}
+				}
+
+				continue;
+			}
+
+			// Check if it is a string delimiter
+			if (currentChar is '"' or '\'')
+			{
+				insideString = true;
+				stringDelimiter = currentChar;
+				continue;
+			}
+
+			// Skip whitespace characters
+			if (char.IsWhiteSpace(currentChar))
+			{
+				continue;
+			}
+
+			// Try to process different elements of the Lua code
+			if (TryProcessFunctionDefinition(content, i, scopeStack)) continue;
+			if (TryProcessEndOrUntil(content, i, scopeStack)) continue;
+			if (TryProcessLocalVariableDeclaration(content, ref i, scopeStack)) continue;
+			if (TryProcessGlobalVariableAssignment(content, ref i)) continue;
+			if (TryProcessConditionalStatement(content, i, scopeStack)) continue;
+			if (TryProcessLoopStatement(content, i, scopeStack)) continue;
+			if (TryProcessDoBlock(content, i, scopeStack)) continue;
+		}
 	}
 
 	private void ClearPreviousResults()
 	{
 		_functions.Clear();
-		_variables.Clear();
+		_localVariables.Clear();
+		_globalVariables.Clear();
 		_scopes.Clear();
 		_conditionalScopeCounter = 0;
 		_loopScopeCounter = 0;
 		_blockScopeCounter = 0;
 	}
 
-	private void ProcessLine(string line, ref int currentOffset, Stack<string> scopeStack)
+	private bool TryProcessFunctionDefinition(string content, int currentIndex, Stack<string> scopeStack)
 	{
-		// Replace single-line comments with spaces
-		line = SingleLineCommentRegex.Replace(line, " ".PadRight(line.Length));
+		Match functionMatch = FunctionRegex.Match(content, currentIndex);
 
-		int lineStartOffset = currentOffset;
-		currentOffset += line.Length + 2;
-
-		// Split the line into segments based on Lua keywords
-		string[] segments = Regex.Split(line, $@"\b({string.Join("|", SegmentationKeywords)})\b");
-
-		foreach (string segment in segments)
+		if (functionMatch.Success && functionMatch.Index == currentIndex)
 		{
-			string trimmedSegment = segment.Trim();
+			// Check if the previous character is definitely a word border
+			if (currentIndex > 0 && !char.IsWhiteSpace(content[currentIndex - 1]))
+			{
+				return false;
+			}
 
-			if (string.IsNullOrEmpty(trimmedSegment))
-				continue;
-
-			if (TryProcessFunctionDefinition(trimmedSegment, scopeStack, lineStartOffset)) continue;
-			if (TryProcessEndOfScope(trimmedSegment, scopeStack, currentOffset)) continue;
-			if (TryProcessLocalVariableDeclaration(trimmedSegment, scopeStack)) continue;
-			if (TryProcessGlobalVariableAssignment(trimmedSegment, scopeStack)) continue;
-			if (TryProcessConditionalStatement(trimmedSegment, scopeStack, lineStartOffset)) continue;
-			if (TryProcessLoopStatement(trimmedSegment, scopeStack, lineStartOffset)) continue;
-			if (TryProcessDoBlock(trimmedSegment, scopeStack, lineStartOffset)) continue;
-			if (TryProcessUntilStatement(trimmedSegment, scopeStack, currentOffset)) continue;
-		}
-	}
-
-	private bool TryProcessFunctionDefinition(string line, Stack<string> scopeStack, int currentOffset)
-	{
-		Match functionMatch = FunctionRegex.Match(line);
-
-		if (functionMatch.Success)
-		{
 			string functionName = functionMatch.Groups[1].Value;
 			scopeStack.Push(functionName);
 
 			string currentScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
 			_functions.Add(new LuaElement(functionName, LuaElementType.Function, currentScope));
-			_scopes[currentScope] = new ScopeInfo(currentOffset, 0);
+			_scopes[currentScope] = new ScopeInfo(currentIndex, 0);
 
 			return true;
 		}
@@ -163,16 +200,37 @@ public sealed class LuaParser
 		return false;
 	}
 
-	private bool TryProcessEndOfScope(string line, Stack<string> scopeStack, int currentOffset)
+	private bool TryProcessEndOrUntil(string content, int currentIndex, Stack<string> scopeStack)
 	{
-		if (EndRegex.IsMatch(line))
+		Match endOrUntilMatch = EndOrUntilRegex.Match(content, currentIndex);
+
+		if (endOrUntilMatch.Success && endOrUntilMatch.Index == currentIndex)
 		{
+			// Check if the previous character is definitely a word border
+			if (currentIndex > 0 && !char.IsWhiteSpace(content[currentIndex - 1]))
+			{
+				return false;
+			}
+
+			string keyword = endOrUntilMatch.Groups[1].Value;
+
 			if (scopeStack.Count > 1)
 			{
 				string scope = string.Join(ScopeDelimiter, scopeStack.Reverse());
 				scopeStack.Pop();
 
-				_scopes[scope] = new ScopeInfo(_scopes[scope].Offset, currentOffset - _scopes[scope].Offset);
+				int endIndex = currentIndex;
+
+				if (keyword == "until")
+				{
+					// Find the end of the condition following "until"
+					while (endIndex < content.Length && content[endIndex] != '\n' && content[endIndex] != ';')
+					{
+						endIndex++;
+					}
+				}
+
+				_scopes[scope] = new ScopeInfo(_scopes[scope].Offset, endIndex - _scopes[scope].Offset);
 			}
 
 			return true;
@@ -181,15 +239,23 @@ public sealed class LuaParser
 		return false;
 	}
 
-	private bool TryProcessLocalVariableDeclaration(string line, Stack<string> scopeStack)
+	private bool TryProcessLocalVariableDeclaration(string content, ref int currentIndex, Stack<string> scopeStack)
 	{
-		Match localVarDeclMatch = LocalVarDeclRegex.Match(line);
+		Match localVarDeclMatch = LocalVarDeclRegex.Match(content, currentIndex);
 
-		if (localVarDeclMatch.Success)
+		if (localVarDeclMatch.Success && localVarDeclMatch.Index == currentIndex)
 		{
+			// Check if the previous character is definitely a word border
+			if (currentIndex > 0 && !char.IsWhiteSpace(content[currentIndex - 1]))
+			{
+				return false;
+			}
+
 			string varName = localVarDeclMatch.Groups[1].Value;
 			string currentScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-			_variables.Add(new LuaElement(varName, LuaElementType.LocalVariable, currentScope));
+			_localVariables.Add(new LuaElement(varName, LuaElementType.LocalVariable, currentScope));
+
+			currentIndex = localVarDeclMatch.Index + localVarDeclMatch.Length;
 
 			return true;
 		}
@@ -197,19 +263,49 @@ public sealed class LuaParser
 		return false;
 	}
 
-	private bool TryProcessGlobalVariableAssignment(string line, Stack<string> scopeStack)
+	private bool TryProcessGlobalVariableAssignment(string content, ref int currentIndex)
 	{
-		Match globalVarMatch = GlobalVarRegex.Match(line);
+		Match globalVarMatch = GlobalVarRegex.Match(content, currentIndex);
 
-		if (globalVarMatch.Success)
+		if (globalVarMatch.Success && globalVarMatch.Index == currentIndex)
 		{
 			string varName = globalVarMatch.Groups[1].Value;
+			_globalVariables.Add(new LuaElement(varName, LuaElementType.GlobalVariable, "global"));
 
-			if (varName.Contains('.'))
+			currentIndex = globalVarMatch.Index + globalVarMatch.Length;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool TryProcessConditionalStatement(string content, int currentIndex, Stack<string> scopeStack)
+	{
+		Match conditionalMatch = ConditionalRegex.Match(content, currentIndex);
+
+		if (conditionalMatch.Success && conditionalMatch.Index == currentIndex)
+		{
+			// Check if the previous character is definitely a word border
+			if (currentIndex > 0 && !char.IsWhiteSpace(content[currentIndex - 1]))
+			{
 				return false;
+			}
 
-			string currentScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-			_variables.Add(new LuaElement(varName, LuaElementType.GlobalVariable, currentScope));
+			string keyword = conditionalMatch.Groups[1].Value;
+
+			if (keyword != "if" && scopeStack.Count > 1)
+			{
+				string scope = string.Join(ScopeDelimiter, scopeStack.Reverse());
+				scopeStack.Pop();
+
+				_scopes[scope] = new ScopeInfo(_scopes[scope].Offset, currentIndex - _scopes[scope].Offset);
+			}
+
+			scopeStack.Push($"{keyword}_{_conditionalScopeCounter++}");
+
+			string conditionalScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
+			_scopes[conditionalScope] = new ScopeInfo(currentIndex, 0);
 
 			return true;
 		}
@@ -217,65 +313,22 @@ public sealed class LuaParser
 		return false;
 	}
 
-	private bool TryProcessConditionalStatement(string line, Stack<string> scopeStack, int startOffset)
+	private bool TryProcessLoopStatement(string content, int currentIndex, Stack<string> scopeStack)
 	{
-		if (IfRegex.IsMatch(line))
+		Match loopMatch = LoopRegex.Match(content, currentIndex);
+
+		if (loopMatch.Success && loopMatch.Index == currentIndex)
 		{
-			scopeStack.Push($"if_{_conditionalScopeCounter++}");
-
-			string conditionalScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-			_scopes[conditionalScope] = new ScopeInfo(startOffset, 0);
-
-			return true;
-		}
-
-		if (ElseIfRegex.IsMatch(line))
-		{
-			if (scopeStack.Count > 1)
+			// Check if the previous character is definitely a word border
+			if (currentIndex > 0 && !char.IsWhiteSpace(content[currentIndex - 1]))
 			{
-				string scope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-				scopeStack.Pop();
-
-				_scopes[scope] = new ScopeInfo(_scopes[scope].Offset, startOffset - _scopes[scope].Offset);
+				return false;
 			}
 
-			scopeStack.Push($"elseif_{_conditionalScopeCounter++}");
-
-			string conditionalScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-			_scopes[conditionalScope] = new ScopeInfo(startOffset, 0);
-
-			return true;
-		}
-
-		if (ElseRegex.IsMatch(line))
-		{
-			if (scopeStack.Count > 1)
-			{
-				string scope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-				scopeStack.Pop();
-
-				_scopes[scope] = new ScopeInfo(_scopes[scope].Offset, startOffset - _scopes[scope].Offset);
-			}
-
-			scopeStack.Push($"else_{_conditionalScopeCounter++}");
-
-			string conditionalScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-			_scopes[conditionalScope] = new ScopeInfo(startOffset, 0);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool TryProcessLoopStatement(string line, Stack<string> scopeStack, int startOffset)
-	{
-		if (ForRegex.IsMatch(line) || WhileRegex.IsMatch(line) || RepeatRegex.IsMatch(line))
-		{
 			scopeStack.Push($"loop_{_loopScopeCounter++}");
 
 			string loopScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-			_scopes[loopScope] = new ScopeInfo(startOffset, 0);
+			_scopes[loopScope] = new ScopeInfo(currentIndex, 0);
 
 			return true;
 		}
@@ -283,32 +336,22 @@ public sealed class LuaParser
 		return false;
 	}
 
-	private bool TryProcessDoBlock(string line, Stack<string> scopeStack, int startOffset)
+	private bool TryProcessDoBlock(string content, int currentIndex, Stack<string> scopeStack)
 	{
-		if (DoRegex.IsMatch(line))
+		Match doMatch = DoRegex.Match(content, currentIndex);
+
+		if (doMatch.Success && doMatch.Index == currentIndex)
 		{
+			// Check if the previous character is definitely a word border
+			if (currentIndex > 0 && !char.IsWhiteSpace(content[currentIndex - 1]))
+			{
+				return false;
+			}
+
 			scopeStack.Push($"block_{_blockScopeCounter++}");
 
 			string blockScope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-			_scopes[blockScope] = new ScopeInfo(startOffset, 0);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool TryProcessUntilStatement(string line, Stack<string> scopeStack, int endOffset)
-	{
-		if (UntilRegex.IsMatch(line))
-		{
-			if (scopeStack.Count > 1)
-			{
-				string scope = string.Join(ScopeDelimiter, scopeStack.Reverse());
-				scopeStack.Pop();
-
-				_scopes[scope] = new ScopeInfo(_scopes[scope].Offset, endOffset - _scopes[scope].Offset);
-			}
+			_scopes[blockScope] = new ScopeInfo(currentIndex, 0);
 
 			return true;
 		}
@@ -322,7 +365,7 @@ public sealed class LuaParser
 	public string GetScopeFromOffset(int offset) => _scopes
 		.Where(x => x.Value.Offset <= offset)
 		.OrderByDescending(x => x.Value.Offset)
-		.FirstOrDefault(x => offset <= x.Value.Offset + x.Value.Length).Key;
+		.FirstOrDefault(x => offset <= x.Value.Offset + x.Value.Length).Key ?? "global";
 
 	/// <summary>
 	/// Gets the autocomplete items within the specified scope.
@@ -334,7 +377,7 @@ public sealed class LuaParser
 		List<LuaElement> autocompleteItems = new();
 
 		// Fetch all items within the range of the given scope
-		foreach (LuaElement element in _functions.Concat(_variables))
+		foreach (LuaElement element in _functions.Concat(_localVariables).Concat(_globalVariables))
 		{
 			if (scope.StartsWith(element.Scope))
 			{
