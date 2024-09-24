@@ -617,7 +617,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public Direction[] GetFloorTriangleSlopeDirections(bool useWorldUnits = true)
+        public Direction[] GetFloorTriangleSlopeDirections(bool isUsingWorldUnits = true)
         {
             const float CriticalSlantYComponent = 0.8f;
 
@@ -627,7 +627,7 @@ namespace TombLib.LevelData
 
             Direction[] slopeDirections = new Direction[2] { Direction.None, Direction.None };
 
-            if (Floor.HasSlope(useWorldUnits))
+            if (Floor.HasSlope(isUsingWorldUnits))
             {
                 for (int i = 0; i < (Floor.IsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
                 {

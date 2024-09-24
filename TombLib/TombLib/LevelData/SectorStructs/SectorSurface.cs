@@ -39,13 +39,13 @@ public struct SectorSurface
 	/// <summary>
 	/// Whether the surface is steep enough to be a slope (3 clicks or more).
 	/// </summary>
-	public readonly bool HasSlope(bool useWorldUnits = true) => DiagonalSplit switch
+	public readonly bool HasSlope(bool isUsingWorldUnits = true) => DiagonalSplit switch
 	{
-		DiagonalSplit.XnZp => Math.Abs(XnZp - Math.Min(XnZn, XpZp)) >= (useWorldUnits ? Clicks.ToWorld(3) : 3),
-		DiagonalSplit.XpZp => Math.Abs(XpZp - Math.Min(XnZp, XpZn)) >= (useWorldUnits ? Clicks.ToWorld(3) : 3),
-		DiagonalSplit.XpZn => Math.Abs(XpZn - Math.Min(XnZn, XpZp)) >= (useWorldUnits ? Clicks.ToWorld(3) : 3),
-		DiagonalSplit.XnZn => Math.Abs(XnZn - Math.Min(XnZp, XpZn)) >= (useWorldUnits ? Clicks.ToWorld(3) : 3),
-		_ => Max - Min >= (useWorldUnits ? Clicks.ToWorld(3) : 3),
+		DiagonalSplit.XnZp => Math.Abs(XnZp - Math.Min(XnZn, XpZp)) >= (isUsingWorldUnits ? Clicks.ToWorld(3) : 3),
+		DiagonalSplit.XpZp => Math.Abs(XpZp - Math.Min(XnZp, XpZn)) >= (isUsingWorldUnits ? Clicks.ToWorld(3) : 3),
+		DiagonalSplit.XpZn => Math.Abs(XpZn - Math.Min(XnZn, XpZp)) >= (isUsingWorldUnits ? Clicks.ToWorld(3) : 3),
+		DiagonalSplit.XnZn => Math.Abs(XnZn - Math.Min(XnZp, XpZn)) >= (isUsingWorldUnits ? Clicks.ToWorld(3) : 3),
+		_ => Max - Min >= (isUsingWorldUnits ? Clicks.ToWorld(3) : 3),
 	};
 
 	/// <summary>
