@@ -259,6 +259,8 @@ public struct SectorSurface
 
 	public readonly SectorSurface WorldToClicks() => new()
 	{
+		SplitDirectionToggled = SplitDirectionToggled,
+		DiagonalSplit = DiagonalSplit,
 		XnZp = Clicks.FromWorld(XnZp),
 		XpZp = Clicks.FromWorld(XpZp),
 		XpZn = Clicks.FromWorld(XpZn),
