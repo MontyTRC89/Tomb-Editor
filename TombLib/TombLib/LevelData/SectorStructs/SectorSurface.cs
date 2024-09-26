@@ -39,13 +39,13 @@ public struct SectorSurface
 	/// <summary>
 	/// Whether the surface is steep enough to be a slope (3 clicks or more).
 	/// </summary>
-	public readonly bool HasSlope => DiagonalSplit switch
+	public readonly bool HasSlope(bool isUsingClicks = false) => DiagonalSplit switch
 	{
-		DiagonalSplit.XnZp => Math.Abs(XnZp - Math.Min(XnZn, XpZp)) >= Clicks.ToWorld(3),
-		DiagonalSplit.XpZp => Math.Abs(XpZp - Math.Min(XnZp, XpZn)) >= Clicks.ToWorld(3),
-		DiagonalSplit.XpZn => Math.Abs(XpZn - Math.Min(XnZn, XpZp)) >= Clicks.ToWorld(3),
-		DiagonalSplit.XnZn => Math.Abs(XnZn - Math.Min(XnZp, XpZn)) >= Clicks.ToWorld(3),
-		_ => Max - Min >= Clicks.ToWorld(3),
+		DiagonalSplit.XnZp => Math.Abs(XnZp - Math.Min(XnZn, XpZp)) >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
+		DiagonalSplit.XpZp => Math.Abs(XpZp - Math.Min(XnZp, XpZn)) >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
+		DiagonalSplit.XpZn => Math.Abs(XpZn - Math.Min(XnZn, XpZp)) >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
+		DiagonalSplit.XnZn => Math.Abs(XnZn - Math.Min(XnZp, XpZn)) >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
+		_ => Max - Min >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
 	};
 
 	/// <summary>
@@ -256,4 +256,19 @@ public struct SectorSurface
 
 	public static SectorSurface operator -(SectorSurface first, SectorSurface second)
 		=> new() { XpZp = first.XpZp - second.XpZp, XpZn = first.XpZn - second.XpZn, XnZp = first.XnZp - second.XnZp, XnZn = first.XnZn - second.XnZn };
+
+	/// <summary>
+	/// Converts the coordinates of the sector from world units to click units.
+	/// </summary>
+	/// <returns>A new <see cref="SectorSurface"/> instance with the coordinates converted to click units.</returns>
+	public readonly SectorSurface WorldToClicks() => new()
+	{
+		SplitDirectionToggled = SplitDirectionToggled,
+		DiagonalSplit = DiagonalSplit,
+
+		XnZp = Clicks.FromWorld(XnZp),
+		XpZp = Clicks.FromWorld(XpZp),
+		XpZn = Clicks.FromWorld(XpZn),
+		XnZn = Clicks.FromWorld(XnZn),
+	};
 }

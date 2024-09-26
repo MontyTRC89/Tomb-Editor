@@ -612,7 +612,7 @@ namespace TombLib.LevelData
         {
             Sector sector = GetSectorTry(x, z);
 
-            if (Properties.Type == RoomType.Water || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
+            if (Properties.Type == RoomType.Water || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope())
                 return false;
 
             const int lowestPassableHeight = 4 * Level.FullClickHeight;
