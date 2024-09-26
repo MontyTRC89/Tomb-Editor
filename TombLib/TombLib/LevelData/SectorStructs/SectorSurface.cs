@@ -257,6 +257,10 @@ public struct SectorSurface
 	public static SectorSurface operator -(SectorSurface first, SectorSurface second)
 		=> new() { XpZp = first.XpZp - second.XpZp, XpZn = first.XpZn - second.XpZn, XnZp = first.XnZp - second.XnZp, XnZn = first.XnZn - second.XnZn };
 
+	/// <summary>
+	/// Converts the coordinates of the sector from world units to click units.
+	/// </summary>
+	/// <returns>A new <see cref="SectorSurface"/> instance with the coordinates converted to click units.</returns>
 	public readonly SectorSurface WorldToClicks() => new()
 	{
 		SplitDirectionToggled = SplitDirectionToggled,
