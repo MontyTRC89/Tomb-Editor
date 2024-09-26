@@ -17,6 +17,8 @@ Tomb Editor:
  * Increased TEN flipmap count up to 255.
  * Improved geometry manipulation and texturing performance.
  * Improved Particle Generator nodes to allow user to choose a sprite number to use up to 100.
+ * Improved slope detection for more precise steps.
+ * Restored original behaviour of illegal slanted portals (regression from 1.7).
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
