@@ -1057,6 +1057,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     else
                         aux.WallPortal = null;
 
+                    // TODO: We are using clicks here, but should we really? Please review.
                     SectorSurface floor = sector.Floor.WorldToClicks();
 
                     // Setup some flags for box generation
