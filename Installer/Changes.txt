@@ -25,6 +25,7 @@ Tomb Editor:
  * Fixed "Set specified mesh visibility" TEN node.
  * Fixed text nodes to allow usage of string keys in external script files.
  * Fixed Trigger Window assigning wrong ExtraNG String IDs when path to Script directory is set up.
+ * Fixed UI for Emit Particle Node as previously hidden the source and destination point when the name was too long.
 
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
