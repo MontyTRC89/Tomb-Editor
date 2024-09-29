@@ -16,6 +16,7 @@ Tomb Editor:
  * Added drag-n-drop support for object ID controls in node editor.
  * Increased TEN flipmap count up to 255.
  * Improved geometry manipulation and texturing performance.
+ * Improved "Edit volume" window's initial opening time.
  * Improved Particle Generator nodes to allow user to choose a sprite number to use up to 100.
  * Improved slope detection for more precise steps.
  * Restored original behaviour of illegal slanted portals (regression from 1.7.1).
