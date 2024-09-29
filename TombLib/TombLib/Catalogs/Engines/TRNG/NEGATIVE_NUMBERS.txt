@@ -1,0 +1,128 @@
+﻿127: Value  -1
+126: Value  -2
+125: Value  -3
+124: Value  -4
+123: Value  -5
+122: Value  -6
+121: Value  -7
+120: Value  -8
+119: Value  -9
+118: Value -10
+ 28: Value -100
+ 27: Value -101
+ 26: Value -102
+ 25: Value -103
+ 24: Value -104
+ 23: Value -105
+ 22: Value -106
+ 21: Value -107
+ 20: Value -108
+ 19: Value -109
+117: Value -11
+ 18: Value -110
+ 17: Value -111
+ 16: Value -112
+ 15: Value -113
+ 14: Value -114
+ 13: Value -115
+ 12: Value -116
+ 11: Value -117
+ 10: Value -118
+  9: Value -119
+116: Value -12
+  8: Value -120
+  7: Value -121
+  6: Value -122
+  5: Value -123
+  4: Value -124
+  3: Value -125
+  2: Value -126
+  1: Value -127
+  0: Value -128
+115: Value -13
+114: Value -14
+113: Value -15
+112: Value -16
+111: Value -17
+110: Value -18
+109: Value -19
+108: Value -20
+107: Value -21
+106: Value -22
+105: Value -23
+104: Value -24
+103: Value -25
+102: Value -26
+101: Value -27
+100: Value -28
+ 99: Value -29
+ 98: Value -30
+ 97: Value -31
+ 96: Value -32
+ 95: Value -33
+ 94: Value -34
+ 93: Value -35
+ 92: Value -36
+ 91: Value -37
+ 90: Value -38
+ 89: Value -39
+ 88: Value -40
+ 87: Value -41
+ 86: Value -42
+ 85: Value -43
+ 84: Value -44
+ 83: Value -45
+ 82: Value -46
+ 81: Value -47
+ 80: Value -48
+ 79: Value -49
+ 78: Value -50
+ 77: Value -51
+ 76: Value -52
+ 75: Value -53
+ 74: Value -54
+ 73: Value -55
+ 72: Value -56
+ 71: Value -57
+ 70: Value -58
+ 69: Value -59
+ 68: Value -60
+ 67: Value -61
+ 66: Value -62
+ 65: Value -63
+ 64: Value -64
+ 63: Value -65
+ 62: Value -66
+ 61: Value -67
+ 60: Value -68
+ 59: Value -69
+ 58: Value -70
+ 57: Value -71
+ 56: Value -72
+ 55: Value -73
+ 54: Value -74
+ 53: Value -75
+ 52: Value -76
+ 51: Value -77
+ 50: Value -78
+ 49: Value -79
+ 48: Value -80
+ 47: Value -81
+ 46: Value -82
+ 45: Value -83
+ 44: Value -84
+ 43: Value -85
+ 42: Value -86
+ 41: Value -87
+ 40: Value -88
+ 39: Value -89
+ 38: Value -90
+ 37: Value -91
+ 36: Value -92
+ 35: Value -93
+ 34: Value -94
+ 33: Value -95
+ 32: Value -96
+ 31: Value -97
+ 30: Value -98
+ 29: Value -99

@@ -232,14 +232,14 @@ namespace TombEditor.Controls.Panel3D
             base.Dispose(disposing);
         }
 
-        private IReadOnlyList<Keys> _subdivisionHighlightHotkeys;
+        private IReadOnlyList<Keys> _splitHighlightHotkeys;
 
         private void EditorEventRaised(IEditorEvent obj)
         {
             if (obj is Editor.InitEvent)
             {
-                _subdivisionHighlightHotkeys = _editor.Configuration.UI_Hotkeys
-                    .Where(x => x.Key.StartsWith("HighlightSubdivision"))
+                _splitHighlightHotkeys = _editor.Configuration.UI_Hotkeys
+                    .Where(x => x.Key.StartsWith("HighlightSplit"))
                         .SelectMany(kv => kv.Value.Select(hk => hk.Keys)).ToList();
             }
 
@@ -248,8 +248,8 @@ namespace TombEditor.Controls.Panel3D
             {
                 Camera.FieldOfView = _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180);
 
-                _subdivisionHighlightHotkeys = _editor.Configuration.UI_Hotkeys
-                    .Where(x => x.Key.StartsWith("HighlightSubdivision"))
+                _splitHighlightHotkeys = _editor.Configuration.UI_Hotkeys
+                    .Where(x => x.Key.StartsWith("HighlightSplit"))
                         .SelectMany(kv => kv.Value.Select(hk => hk.Keys)).ToList();
             }
 
@@ -355,7 +355,7 @@ namespace TombEditor.Controls.Panel3D
                 var e = (Editor.MoveCameraToSectorEvent)obj;
 
                 Vector3 center = _editor.SelectedRoom.GetLocalCenter();
-                var nextPos = new Vector3(e.Sector.X * Level.BlockSizeUnit + Level.HalfBlockSizeUnit, center.Y, e.Sector.Y * Level.BlockSizeUnit + Level.HalfBlockSizeUnit) + _editor.SelectedRoom.WorldPos;
+                var nextPos = new Vector3(e.Sector.X * Level.SectorSizeUnit + Level.HalfSectorSizeUnit, center.Y, e.Sector.Y * Level.SectorSizeUnit + Level.HalfSectorSizeUnit) + _editor.SelectedRoom.WorldPos;
 
                 if (_editor.Configuration.Rendering3D_AnimateCameraOnRelocation)
                     AnimateCamera(nextPos);
@@ -369,7 +369,7 @@ namespace TombEditor.Controls.Panel3D
             if (obj is Editor.SelectedObjectChangedEvent)
                 _highlightedObjects = HighlightedObjects.Create(_editor.SelectedObject);
 
-            if (obj is Editor.HighlightedSubdivisionChangedEvent)
+            if (obj is Editor.HighlightedSplitChangedEvent)
                 Invalidate(false);
         }
 
@@ -389,8 +389,8 @@ namespace TombEditor.Controls.Panel3D
             if (_editor.FlyMode && e.KeyCode == Keys.Menu)
                 e.Handled = true;
 
-            if (_editor.HighlightedSubdivision != 0 && _subdivisionHighlightHotkeys.Any(hk => hk.HasFlag(e.KeyCode)))
-                _editor.HighlightedSubdivision = 0;
+            if (_editor.HighlightedSplit != 0 && _splitHighlightHotkeys.Any(hk => hk.HasFlag(e.KeyCode)))
+                _editor.HighlightedSplit = 0;
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

@@ -1,0 +1,16 @@
+﻿  0: Store Long A
+  1: Store Long B
+  2: Store Long C
+  3: Store Long D
+  4: Store Long E
+  5: Store Long F
+  6: Store Long G
+  7: Store Long H
+  8: Store Long I
+  9: Store Long J
+ 10: Store Long K
+ 11: Store Long L
+ 12: Store Long M
+ 13: Store Long N
+ 14: Store Long O
+ 15: Store Long P

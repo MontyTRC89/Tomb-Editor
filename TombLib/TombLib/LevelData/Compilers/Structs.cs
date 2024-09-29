@@ -176,7 +176,7 @@ namespace TombLib.LevelData.Compilers
         public ushort Lighting1;
         public ushort Attributes;
         public ushort Lighting2;
-        
+
         // For TR5 only
         public Vector3 Normal;
         public uint Color;
@@ -520,9 +520,9 @@ namespace TombLib.LevelData.Compilers
 
                     if (light.LightType == 0) // TR3 sun type
                     {
-                        writer.Write((ushort)(light.DirectionX * Level.BlockSizeUnit));
-                        writer.Write((ushort)(light.DirectionY * Level.BlockSizeUnit));
-                        writer.Write((ushort)(light.DirectionZ * Level.BlockSizeUnit));
+                        writer.Write((ushort)(light.DirectionX * Level.SectorSizeUnit));
+                        writer.Write((ushort)(light.DirectionY * Level.SectorSizeUnit));
+                        writer.Write((ushort)(light.DirectionZ * Level.SectorSizeUnit));
                         writer.Write((ushort)0x0000); // Padding
                     }
                     else
@@ -698,7 +698,7 @@ namespace TombLib.LevelData.Compilers
 
             writer.Write((uint)Triangles.Count);
             writer.Write((uint)Quads.Count);
-            
+
             var LightPointerOffsetPosition = writer.BaseStream.Position;
             writer.Write((uint)0);
             writer.Write((uint)0);
@@ -816,12 +816,12 @@ namespace TombLib.LevelData.Compilers
             writer.Write((ushort)0);
             writer.Write((ushort)0);
 
-            writer.Write(Level.BlockSizeUnit);
+            writer.Write(Level.SectorSizeUnit);
             writer.Write((float)Info.YBottom);
-            writer.Write(Level.BlockSizeUnit);
-            writer.Write((NumXSectors - 1) * Level.BlockSizeUnit);
+            writer.Write(Level.SectorSizeUnit);
+            writer.Write((NumXSectors - 1) * Level.SectorSizeUnit);
             writer.Write((float)Info.YTop);
-            writer.Write((NumZSectors - 1) * Level.BlockSizeUnit);
+            writer.Write((NumZSectors - 1) * Level.SectorSizeUnit);
 
             writer.Write((uint)0);
             var LayerVerticesOffset = writer.BaseStream.Position;
@@ -1308,5 +1308,16 @@ namespace TombLib.LevelData.Compilers
                 return x.Index > y.Index ? 1 : -1;
             }
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct PluginRecord
+    {
+        public int PluginId;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+        public string Name;
+
+        public uint Usages;
     }
 }

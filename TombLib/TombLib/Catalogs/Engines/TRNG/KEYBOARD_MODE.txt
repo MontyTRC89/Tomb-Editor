@@ -1,0 +1,4 @@
+﻿  3: ACTIVE (Multi shot for positive condition)
+  1: ACTIVE (Single shot for positive condition)
+  2: INACTIVE (Multi shot for positive condition)
+  0: INACTIVE (Single shot for positive condition)

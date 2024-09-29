@@ -121,9 +121,9 @@ namespace TombLib.Controls
             clientRectangle.Inflate(new Size(-5, -5));
         }
 
-        public override void InitializeRendering(RenderingDevice device, bool antialias = false)
+        public override void InitializeRendering(RenderingDevice device, bool antialias = false, ObjectRenderingQuality objectQuality = ObjectRenderingQuality.Undefined)
         {
-            base.InitializeRendering(device, antialias);
+            base.InitializeRendering(device, antialias, objectQuality);
 
             _textureAllocator = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(1024, 1024, 1) });
 

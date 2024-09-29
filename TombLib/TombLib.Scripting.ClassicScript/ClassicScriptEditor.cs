@@ -26,6 +26,8 @@ namespace TombLib.Scripting.ClassicScript
 {
 	public sealed class ClassicScriptEditor : TextEditorBase
 	{
+		public override string DefaultFileExtension => ".txt";
+
 		#region Properties
 
 		public CodeCleaner Cleaner { get; set; } = new CodeCleaner();

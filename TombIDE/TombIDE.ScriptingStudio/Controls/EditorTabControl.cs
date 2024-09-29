@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using TombIDE.ScriptingStudio.Forms;
@@ -359,7 +358,12 @@ namespace TombIDE.ScriptingStudio.Controls
 		{
 			IEditorControl editor = GetEditorOfTab(tab);
 
-			using (var form = new FormFileCreation(ScriptRootDirectoryPath, FileCreationMode.SavingAs))
+			string[] ignoredPaths = Array.Empty<string>();
+
+			if (editor.DefaultFileExtension == ".lua") // Dirty hack to ignore /Engine/ directory for TEN scripts
+				ignoredPaths = new string[] { @"Scripts\Engine" };
+
+			using (var form = new FormFileCreation(ScriptRootDirectoryPath, FileCreationMode.SavingAs, editor.DefaultFileExtension, null, null, ignoredPaths))
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
 					editor.FilePath = form.NewFilePath;

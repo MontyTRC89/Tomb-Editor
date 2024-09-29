@@ -2,11 +2,10 @@ Version 1.7.2
 =============
 
 Tomb Editor:
- * Improved geometry manipulation and texturing performance.
- * 3D objects will now be previewed with lower resolution textures to allow drawing more rooms without graphical glitches.
+ * Added native support for TRNG plugin triggers.
+ * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
  * Added TEN nodes for checking and modifying last used inventory object.
- * Added TEN node to check if a particular sound is playing
- * Added TEN node to generate particles from a static object
+ * Added TEN node to check if a particular sound is playing.
  * Added TEN node to activate a camera.
  * Added TEN node to attach the game camera to a moveable.
  * Added TEN node to reset game camera if it has been modified.
@@ -16,13 +15,33 @@ Tomb Editor:
  * Added handling for OnUseItem event in node editor.
  * Added drag-n-drop support for object ID controls in node editor.
  * Increased TEN flipmap count up to 255.
+ * Improved geometry manipulation and texturing performance.
+ * Improved "Edit volume" window's initial opening time.
+ * Improved Particle Generator nodes to allow user to choose a sprite number to use up to 100.
+ * Improved slope detection for more precise steps.
+ * Restored original behaviour of illegal slanted portals (regression from 1.7.1).
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
  * Fixed "Set specified mesh visibility" TEN node.
+ * Fixed text nodes to allow usage of string keys in external script files.
+ * Fixed Trigger Window assigning wrong ExtraNG String IDs when path to Script directory is set up.
+ * Fixed UI for Emit Particle Node as previously hidden the source and destination point when the name was too long.
 
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
+ * Fixed TR2 BIG_SPIDER sounds remapping incorrectly for TEN.
+
+TombIDE:
+ * Updated FLEP for new TRNG projects.
+ * FLEP widescreen patch will now be installed by default for new projects.
+ * Updated Plugin_Video for new TRNG projects - now makes the game DPI-aware.
+ * Updated TR1X preset to 4.4.
+ * When creating a new script file, the correct file format will now be automatically selected, depending on the current engine.
+ 
+TEN Base WAD:
+ * Changed stateID for animation 440 of LARA to 37 to fix errors when pulling the draggable body.
+ * Removed ANIMATING2 as it has been superseded by MINECART_SWITCH 
 
 Version 1.7.1
 =============

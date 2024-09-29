@@ -63,6 +63,10 @@ namespace TombLib.Graphics
                 obj.Dispose();
             Statics.Clear();
 
+            PackedTextures.Clear();
+            TexturePackers.Clear();
+            AddPacker();
+
             _disposing = false;
         }
 

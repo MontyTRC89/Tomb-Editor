@@ -4,11 +4,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombLib.Controls;
-using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript.Controls;
 using TombLib.Scripting.ClassicScript.Utils;
 using TombLib.Scripting.Controls;
@@ -23,6 +21,7 @@ namespace TombLib.Scripting.ClassicScript
 	public class StringEditor : DarkTabbedContainer, IEditorControl
 	{
 		public EditorType EditorType => EditorType.Strings;
+		public string DefaultFileExtension => ".txt";
 
 		#region Properties
 

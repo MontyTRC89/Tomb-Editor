@@ -15,6 +15,8 @@ namespace TombLib.Scripting.GameFlowScript
 {
 	public sealed class GameFlowEditor : TextEditorBase
 	{
+		public override string DefaultFileExtension => ".txt";
+
 		public GameFlowEditor()
 		{
 			BindEventMethods();

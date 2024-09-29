@@ -300,9 +300,9 @@
     <sound id="318" name="CRUNCH2" ten="642" />
     <sound id="319" name="DOOR_CREAK" ten="319" />
     <sound id="320" name="BREAKING3" ten="508" />
-    <sound id="321" name="BIG_SPIDER_SNARL" ten="507" />
-    <sound id="322" name="BIG_SPIDER_FEET" ten="509" />
-    <sound id="323" name="BIG_SPIDER_DEATH" ten="323" />
+    <sound id="321" name="BIG_SPIDER_SNARL" ten="508" />
+    <sound id="322" name="BIG_SPIDER_FEET" ten="507" />
+    <sound id="323" name="BIG_SPIDER_DEATH" ten="509" />
     <sound id="324" name="T_REX_ROAR" ten="324" />
     <sound id="325" name="T_REX_FEET" ten="325" />
     <sound id="326" name="T_REX_GROWL1" ten="326" />

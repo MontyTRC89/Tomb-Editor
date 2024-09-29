@@ -1,5 +1,6 @@
 ﻿using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Rendering;
 
 namespace TombEditor
@@ -58,7 +59,7 @@ namespace TombEditor
         public ArrowType Arrow { get; set; }
 
         public static readonly SectorSelection None = new SectorSelection { Start = new VectorInt2(-1, -1), End = new VectorInt2(-1, -1) };
-        
+
         public static bool operator ==(SectorSelection first, SectorSelection second)
         {
             return first.Start == second.Start && first.End == second.End && first.Arrow == second.Arrow;
@@ -111,9 +112,9 @@ namespace TombEditor
 
         public SectorSelection? ClampToRoom(Room r, Direction? excludeBorderWallsDirection = Direction.None)
         {
-            int[] c = new int[2] { 0, 0 }; // How many blocks to cut from compared area zone perimeter
+            int[] c = new int[2] { 0, 0 }; // How many sectors to cut from compared area zone perimeter
             bool excludeAll = !excludeBorderWallsDirection.HasValue;
-            
+
             if(excludeAll || excludeBorderWallsDirection.Value == Direction.NegativeX || excludeBorderWallsDirection.Value == Direction.PositiveX)
             {
                 if ((Start.Y == 0 || Start.Y == r.NumZSectors - 1) && Area.Size.Y == 0)
