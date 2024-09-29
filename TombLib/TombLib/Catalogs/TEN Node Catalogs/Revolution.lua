@@ -3,7 +3,7 @@
 local Timer = require("Engine.Timer")
 
 -- Construct timed transform data and start transform
-LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, objectCentre, dataType, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
+LevelFuncs.Engine.Node.ConstructRevolveData = function(objectName, objectCentre, dataType, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
 
 	local dataName  = objectName .. "_revolve_data"
 	local revolutionAngle = 360  --one full revolution is 360 degrees
@@ -24,7 +24,7 @@ LevelVars[dataName].Radius     = radius
 LevelVars[dataName].ObjectName = objectName
 LevelVars[dataName].CentreName = objectCentre
 LevelVars[dataName].Name       = dataName
-LevelVars[dataName].Timer      = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformTimedData, dataName)
+LevelVars[dataName].Timer      = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformRevolveData, dataName)
 LevelVars[dataName].StartAngle = startAngle
 LevelVars[dataName].EndAngle   = endAngle
 LevelVars[dataName].CCW        = isCCW     -- Flips the direction of the loop if loop is ticked.
@@ -44,7 +44,7 @@ LevelVars[dataName].Timer:Start()
 end
 
 -- Transform object parameter using previously saved timed transform data
-LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
+LevelFuncs.Engine.Node.TransformRevolveData = function(dataName)
    
 -- Smoothly loop the progress value
 LevelVars[dataName].Progress = LevelVars[dataName].Loop
@@ -180,9 +180,9 @@ end
 -- !Arguments "35, Boolean, Rotate Center Object"
 -- !Arguments "NewLine, SoundEffects,{635}",
 
-LevelFuncs.Engine.Node.ChangeMoveableRotationOverTimespan = function(moveableName, centrepoint, option, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
+LevelFuncs.Engine.Node.ChangeMoveableRevolutionOverTimespan = function(moveableName, centrepoint, option, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
     -- Wrap another node function call into do/end to prevent wrong parsing
-    do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, centrepoint, option, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate,  isCRotate, SFX) end
+    do LevelFuncs.Engine.Node.ConstructRevolveData(moveableName, centrepoint, option, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate,  isCRotate, SFX) end
 end
 
 -- !Name "Stop the revolution of an object"
