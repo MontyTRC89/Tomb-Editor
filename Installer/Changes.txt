@@ -28,6 +28,7 @@ Tomb Editor:
  * Fixed Trigger Window assigning wrong ExtraNG String IDs when path to Script directory is set up.
  * Fixed UI for Emit Particle Node as previously hidden the source and destination point when the name was too long.
  * Fixed ghost blocks not rotating when transforming rooms.
+ * Fixed textures at extra split level not rotating when transforming rooms.
 
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
