@@ -357,6 +357,8 @@
     <moveable id="448" name="ELECTRIC_CLEANER" />
     <moveable id="449" name="SLAMMING_DOORS" />
     <moveable id="450" name="SWINGING_BLADE" />
+	<moveable id="451" name="ELECTRIC_BALL" />
+	<moveable id="452" name="ELECTRIC_BALL_IMPACT_POINT" />	
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
     <moveable id="502" name="PUZZLE_ITEM3" />
