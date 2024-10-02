@@ -212,7 +212,7 @@ namespace WadTool
             if (_editor.SelectionIsEmpty || gridViewCommands.SelectedRows.Count == 0)
                 return;
 
-            for (int i = _editor.Selection.Y; i >= _editor.Selection.X; i--)
+            for (int i = (_editor.Selection.Y * _animation.WadAnimation.FrameRate); i >= (_editor.Selection.X * _animation.WadAnimation.FrameRate); i--)
             {
                 foreach (DataGridViewRow row in gridViewCommands.SelectedRows)
                 {
