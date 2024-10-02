@@ -206,6 +206,20 @@ namespace TombLib.LevelData.IO
                         }
                     }
                     break;
+
+                // Remove hardcoded TR5 sphere
+
+                case "LASERHEAD":
+                    {
+                        if (sourceVersion != TRVersion.Game.TR5)
+                            break;
+
+                        progressReporter?.ReportInfo("    Removing collision for " + newSlotName);
+
+                        if (moveable.Meshes.Count > 0)
+                            moveable.Meshes[0].BoundingSphere = new BoundingSphere(new Vector3(0, 100, -70), 340);
+                    }
+                    break;
             }
 
             // Detect flipped switch states

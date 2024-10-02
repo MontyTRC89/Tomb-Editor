@@ -25,9 +25,10 @@ using TombLib.Scripting.Workers;
 
 namespace TombLib.Scripting.Bases
 {
-	public class TextEditorBase : TextEditor, IEditorControl, ISupportsFindReplace
+	public abstract class TextEditorBase : TextEditor, IEditorControl, ISupportsFindReplace
 	{
 		public EditorType EditorType => EditorType.Text;
+		public abstract string DefaultFileExtension { get; }
 
 		#region Properties
 

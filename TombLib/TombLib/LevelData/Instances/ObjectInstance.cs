@@ -116,14 +116,18 @@ namespace TombLib.LevelData
 
         public virtual void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
-            IRotateableY rotateableObject = this as IRotateableY;
-            if (rotateableObject != null)
+            if (this is IRotateableY rotateableObject)
             {
                 float newRotation = rotateableObject.RotationY;
                 if (transformation.MirrorX)
                     newRotation = -newRotation;
                 newRotation -= transformation.QuadrantRotation * 90;
                 rotateableObject.RotationY = newRotation;
+            }
+            else if (this is GhostBlockInstance ghostBlock) // TODO: Replace this with an interface
+            {
+                transformation.TransformValueDiagonalQuad(ref ghostBlock.Floor.XpZp, ref ghostBlock.Floor.XnZp, ref ghostBlock.Floor.XnZn, ref ghostBlock.Floor.XpZn);
+                transformation.TransformValueDiagonalQuad(ref ghostBlock.Ceiling.XpZp, ref ghostBlock.Ceiling.XnZp, ref ghostBlock.Ceiling.XnZn, ref ghostBlock.Ceiling.XpZn);
             }
         }
 

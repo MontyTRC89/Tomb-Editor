@@ -16,11 +16,19 @@ Tomb Editor:
  * Added drag-n-drop support for object ID controls in node editor.
  * Increased TEN flipmap count up to 255.
  * Improved geometry manipulation and texturing performance.
+ * Improved "Edit volume" window's initial opening time.
  * Improved Particle Generator nodes to allow user to choose a sprite number to use up to 100.
+ * Improved slope detection for more precise steps.
+ * Restored original behaviour of illegal slanted portals (regression from 1.7.1).
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
  * Fixed "Set specified mesh visibility" TEN node.
+ * Fixed text nodes to allow usage of string keys in external script files.
+ * Fixed Trigger Window assigning wrong ExtraNG String IDs when path to Script directory is set up.
+ * Fixed UI for Emit Particle Node as previously hidden the source and destination point when the name was too long.
+ * Fixed ghost blocks not rotating when transforming rooms.
+ * Fixed textures at extra split level not rotating when transforming rooms.
 
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
@@ -30,7 +38,12 @@ TombIDE:
  * Updated FLEP for new TRNG projects.
  * FLEP widescreen patch will now be installed by default for new projects.
  * Updated Plugin_Video for new TRNG projects - now makes the game DPI-aware.
- * Updated TR1X preset to 4.2.
+ * Updated TR1X preset to 4.4.
+ * When creating a new script file, the correct file format will now be automatically selected, depending on the current engine.
+ 
+TEN Base WAD:
+ * Changed stateID for animation 440 of LARA to 37 to fix errors when pulling the draggable body.
+ * Removed ANIMATING2 as it has been superseded by MINECART_SWITCH 
 
 Version 1.7.1
 =============

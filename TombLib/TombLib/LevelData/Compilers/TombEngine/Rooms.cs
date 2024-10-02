@@ -1057,6 +1057,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     else
                         aux.WallPortal = null;
 
+                    // TODO: We are using clicks here, but should we really? Please review.
+                    SectorSurface floor = sector.Floor.WorldToClicks();
+
                     // Setup some flags for box generation
                     if (sector.Type == SectorType.BorderWall)
                         aux.BorderWall = true;
@@ -1066,30 +1069,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         aux.Box = true;
                     if ((sector.Flags & SectorFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 1 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 2 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 1 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) == 1 ||
+                                                        Math.Abs(floor.IfQuadSlopeX) == 2 ||
+                                                        Math.Abs(floor.IfQuadSlopeZ) == 1 ||
+                                                        Math.Abs(floor.IfQuadSlopeZ) == 2))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX, RoundingMethod.Integer)) > 2 || Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) > 2 || Math.Abs(floor.IfQuadSlopeZ) > 2))
                         aux.HardSlope = true;
                     if (sector.Type == SectorType.Wall)
                         aux.Wall = true;
 
                     // TODO: Is this LowestFloor field ever even used in TEN? Consider removing.
-                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(sector.Floor.Min));
-                    var q0 = Clicks.FromWorld(sector.Floor.XnZp);
-                    var q1 = Clicks.FromWorld(sector.Floor.XpZp);
-                    var q2 = Clicks.FromWorld(sector.Floor.XpZn);
-                    var q3 = Clicks.FromWorld(sector.Floor.XnZn);
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - floor.Min);
+                    var q0 = floor.XnZp;
+                    var q1 = floor.XpZp;
+                    var q2 = floor.XpZn;
+                    var q3 = floor.XnZn;
 
-                    if (!SectorSurface.IsQuad2(q0, q1, q2, q3) && Clicks.FromWorld(sector.Floor.IfQuadSlopeX, RoundingMethod.Integer) == 0 &&
-                        Clicks.FromWorld(sector.Floor.IfQuadSlopeZ, RoundingMethod.Integer) == 0)
+                    if (!SectorSurface.IsQuad2(q0, q1, q2, q3) && floor.IfQuadSlopeX == 0 &&
+                        floor.IfQuadSlopeZ == 0)
                     {
-                        if (!sector.Floor.SplitDirectionIsXEqualsZ)
-                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(sector.Floor.XnZp, sector.Floor.XpZn)));
+                        if (!floor.SplitDirectionIsXEqualsZ)
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XnZp, floor.XpZn));
                         else
-                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(sector.Floor.XpZp, sector.Floor.XnZn)));
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XpZp, floor.XnZn));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
@@ -1304,6 +1307,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public readonly int SlopeZ;
             public readonly int Height;
 
+            // TODO: This method yields odd results when SlopeX and SlopeZ are in world units. Please review, but until then, we use clicks here.
             public int EvaluateHeight(int x, int z)
             {
                 return Height + x * SlopeX + z * SlopeZ;
@@ -1435,7 +1439,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
-                        SectorSurface s = isCeiling ? sector.Ceiling : sector.Floor;
+                        // TODO: Please review. Should we really use clicks here?
+                        SectorSurface s = isCeiling ? sector.Ceiling.WorldToClicks() : sector.Floor.WorldToClicks();
 
                         if (s.DiagonalSplit != DiagonalSplit.None || SectorSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
                         {
@@ -1491,10 +1496,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 float zMin = portalArea.Y0 * Level.SectorSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.SectorSizeUnit;
 
-                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
-                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
-                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
-                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
+                // TODO: We are using clicks here, but shouldn't we use world coordinates instead? Please review EvaluateHeight().
+                float yAtXMinZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0));
+                float yAtXMaxZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0));
+                float yAtXMinZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1));
+                float yAtXMaxZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1));
 
                 // Choose portal coordinates
                 VectorInt3[] portalVertices = new VectorInt3[4];

@@ -30,7 +30,7 @@
     <moveable id="27" name="LARA_DIRT_MESH" description="Lara Dirt Mesh" use_body_from="8" ten="LARA_DIRT_MESH" hidden="true" />
     <moveable id="28" name="CROWBAR_ANIM" description="Crowbar Anim" use_body_from="8" ten="LARA_CROWBAR_ANIM" hidden="true" />
     <moveable id="29" name="TORCH_ANIM" description="Torch Anim" use_body_from="8" ten="LARA_TORCH_ANIM" hidden="true" />
-    <moveable id="30" name="HAIR" description="Hair" ten="SINGLE_BRAID_HAIR" hidden="true" />
+    <moveable id="30" name="HAIR" description="Hair" ten="HAIR_PRIMARY" hidden="true" />
     <moveable id="31" name="MOTORBIKE" description="Motorbike" ten="MOTORBIKE" essential="false" />
     <moveable id="32" name="JEEP" description="Jeep" ten="JEEP" essential="false" />
     <moveable id="33" name="VEHICLE_EXTRA" description="Vehicle Extra" use_body_from="8" />
