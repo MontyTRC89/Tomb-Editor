@@ -27,14 +27,16 @@ namespace TombLib.Graphics
         private int _textureAtlasSize { get; }
         private int _maxTextureAllocationSize { get; }
         public int TextureAtlasSize { get => _textureAtlasSize; }
+        private bool _loadAnimations { get; }
 
-        public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize)
+        public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize, bool loadAnimations)
         {
             GraphicsDevice = graphicsDevice;
             _compactTexture = compactTexture;
             _correctTexture = correctTexture;
             _textureAtlasSize = atlasSize;
             _maxTextureAllocationSize = maxAllocationSize;
+            _loadAnimations = loadAnimations;
             AddPacker();
         }
 
@@ -99,7 +101,7 @@ namespace TombLib.Graphics
             // The data is either new or has changed, unfortunately we need to reload it
             try
             {
-                model = AnimatedModel.FromWadMoveable(GraphicsDevice, moveable, AllocateTexture, _correctTexture);
+                model = AnimatedModel.FromWadMoveable(GraphicsDevice, moveable, AllocateTexture, _correctTexture, _loadAnimations);
             }
             catch (TextureAtlasFullException exc)
             {

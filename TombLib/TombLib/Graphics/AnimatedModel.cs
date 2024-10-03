@@ -114,7 +114,7 @@ namespace TombLib.Graphics
                 BuildAnimationPose(child, AnimationTransforms[node.Index], frame1, frame2, k);
         }
 
-        public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correctTexture)
+        public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correctTexture, bool loadAnimations)
         {
             AnimatedModel model = new AnimatedModel(device);
             List<WadBone> bones = mov.Bones;  
@@ -133,16 +133,27 @@ namespace TombLib.Graphics
 
             // Build the skeleton
             model.Root = BuildSkeleton(model, null, bones);
+            if(loadAnimations)
+            {
+                // Prepare animations
+                for (int j = 0; j < mov.Animations.Count; j++)
+                    model.Animations.Add(Animation.FromWad2(bones, mov.Animations[j]));
 
-            // Prepare animations
-            for (int j = 0; j < mov.Animations.Count; j++)
-                model.Animations.Add(Animation.FromWad2(bones, mov.Animations[j]));
+                // Prepare data by loading the first valid animation and uploading data to the GPU
+                model.BuildHierarchy();
 
-            // Prepare data by loading the first valid animation and uploading data to the GPU
-            model.BuildHierarchy();
+                if (model.Animations.Count > 0 && model.Animations.Any(a => a.KeyFrames.Count > 0))
+                    model.BuildAnimationPose(model.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0)?.KeyFrames[0]);
+            }
+            else // we do not need animations, just load the first animation and keyframe
+            {
+                var anim = mov.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0);
+                if(anim is not null)
+                    model.BuildAnimationPose(Animation.FromWad2(bones,anim).KeyFrames[0]);
+                // Prepare data by loading the first valid animation and uploading data to the GPU
+                model.BuildHierarchy();
+            }
             
-            if (model.Animations.Count > 0 && model.Animations.Any(a => a.KeyFrames.Count > 0))
-                model.BuildAnimationPose(model.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0)?.KeyFrames[0]);
             model.UpdateBuffers();
 
             return model;
