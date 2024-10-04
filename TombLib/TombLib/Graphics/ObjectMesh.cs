@@ -10,7 +10,7 @@ using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
-    public class ObjectMesh : Mesh<ObjectVertex>, IDisposable
+    public class ObjectMesh : Mesh<ObjectVertex>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -40,17 +40,6 @@ namespace TombLib.Graphics
                 logger.Error("Input Layout of Mesh " + Name + " could not be created!");
             if (IndexBuffer == null)
                 logger.Error("Index Buffer of Mesh " + Name + " could not be created!");
-        }
-
-        protected override void Dispose(bool disposeManagedResources)
-        {
-            VertexBuffer?.Dispose();
-            IndexBuffer?.Dispose();
-        }
-
-        ~ObjectMesh()
-        {
-            Dispose(true);
         }
 
         private static void PutObjectVertexAndIndex(Vector3 v, Vector3 n,

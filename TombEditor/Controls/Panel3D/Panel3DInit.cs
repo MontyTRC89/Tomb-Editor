@@ -53,7 +53,6 @@ namespace TombEditor.Controls.Panel3D
                 };
 
                 _wadRenderer = new WadRenderer(_legacyDevice, true, true, atlasSize, maxAllocationSize, false);
-
                 // Initialize vertex buffers
                 _ghostBlockVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 84);
                 _boxVertexBuffer = new BoundingBox(new Vector3(-_littleCubeRadius), new Vector3(_littleCubeRadius)).GetVertexBuffer(_legacyDevice);

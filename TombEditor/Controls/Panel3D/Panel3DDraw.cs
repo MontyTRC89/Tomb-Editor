@@ -1505,13 +1505,7 @@ namespace TombEditor.Controls.Panel3D
         {
             if (moveablesToDraw.Count == 0)
                 return;
-
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-            skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
-            skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-            skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
-
             var camPos = Camera.GetPosition();
 
             var groups = moveablesToDraw.GroupBy(m => m.WadObjectId);
@@ -1576,6 +1570,10 @@ namespace TombEditor.Controls.Panel3D
 
                         var world = model.AnimationTransforms[i] * instance.ObjectMatrix;
                         skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * _viewProjection).ToSharpDX());
+                        skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
+                        skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
+                        skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+                        skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
                         skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
                         foreach (var submesh in mesh.Submeshes)
@@ -1735,10 +1733,6 @@ namespace TombEditor.Controls.Panel3D
                 return;
 
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-            staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-            staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
-            staticMeshEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
-            staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
             var camPos = Camera.GetPosition();
 
@@ -1790,6 +1784,10 @@ namespace TombEditor.Controls.Panel3D
                         }
 
                         staticMeshEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * _viewProjection).ToSharpDX());
+                        staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
+                        staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
+                        staticMeshEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
+                        staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                         staticMeshEffect.Techniques[0].Passes[0].Apply();
 
                         foreach (var submesh in mesh.Submeshes)

@@ -53,7 +53,6 @@ namespace TombLib.Graphics
                 return;
 
             _disposing = true;
-
             Texture?.Dispose();
             Texture = null;
 
@@ -78,7 +77,7 @@ namespace TombLib.Graphics
             InitializeTexture();
         }
 
-        private void ReclaimTextureSpace<T, U>(Model<T, U> model) where U : struct
+        private void ReclaimTextureSpace<T, U>(Model<T, U> model) where U : unmanaged where T: IDisposable
         {
             // TODO Some mechanism to reclaim texture space without rebuilding the atlas would be good.
             // Currently texture space is only freed when the atlas fills up completely and must be rebuilt.
@@ -227,7 +226,7 @@ namespace TombLib.Graphics
                     var toSubresource = newTexture.GetSubResourceIndex(i, 0);
                     GraphicsDevice.Copy(Texture, fromSubresource, newTexture, toSubresource);
                 }
-
+                Texture?.Dispose();
                 Texture = newTexture;
             }
         }
