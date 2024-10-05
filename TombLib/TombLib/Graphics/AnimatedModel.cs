@@ -149,9 +149,13 @@ namespace TombLib.Graphics
             {
                 var anim = mov.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0);
                 if(anim is not null)
-                    model.BuildAnimationPose(Animation.FromWad2(bones,anim).KeyFrames[0]);
-                // Prepare data by loading the first valid animation and uploading data to the GPU
-                model.BuildHierarchy();
+                {
+                    var modelAnim = Animation.FromWad2(bones, anim);
+                    modelAnim.KeyFrames.RemoveAll(f => f != modelAnim.KeyFrames.First());
+                    model.Animations.Add(modelAnim);
+                    model.BuildHierarchy();
+                    model.BuildAnimationPose(Animation.FromWad2(bones, anim).KeyFrames[0]);
+                }
             }
             
             model.UpdateBuffers();
