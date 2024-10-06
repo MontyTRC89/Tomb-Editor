@@ -50,5 +50,9 @@ namespace TombLib.Wad
 
             return hint;
         }
+
+        public void Dispose()
+        {
+        }
     }
 }
