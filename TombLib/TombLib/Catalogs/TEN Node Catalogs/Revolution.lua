@@ -9,7 +9,7 @@ LevelFuncs.Engine.Node.ConstructRevolveData = function(objectName, objectCentre,
     local revolutionAngle = 360  --one full revolution is 360 degrees
     
     if LevelVars[dataName] and LevelVars[dataName].Timer then
-        if LevelVars[dataName].Timer:IsActive() then
+        if Timer.Get(dataName):IsActive() then
             return
         end
         Timer.Delete(LevelVars[dataName].Name)
@@ -151,7 +151,7 @@ end
 LevelFuncs.Engine.Node.DeleteTimedData = function(objectName, endAngle)
     local dataName = objectName .. "_revolve_data"
 
-    if LevelVars[dataName] and LevelVars[dataName].Timer and LevelVars[dataName].Timer:IsActive() then
+    if LevelVars[dataName] and LevelVars[dataName].Timer and Timer.Get(dataName):IsActive() then
         LevelVars[dataName].EndAngle = endAngle
         LevelVars[dataName].StopAtEnd = true
     end
