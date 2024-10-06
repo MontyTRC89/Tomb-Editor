@@ -133,7 +133,8 @@ namespace TombLib.Graphics
 
             // Build the skeleton
             model.Root = BuildSkeleton(model, null, bones);
-            if(loadAnimations)
+
+            if (loadAnimations)
             {
                 // Prepare animations
                 for (int j = 0; j < mov.Animations.Count; j++)
@@ -145,16 +146,19 @@ namespace TombLib.Graphics
                 if (model.Animations.Count > 0 && model.Animations.Any(a => a.KeyFrames.Count > 0))
                     model.BuildAnimationPose(model.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0)?.KeyFrames[0]);
             }
-            else // we do not need animations, just load the first animation and keyframe
+            else 
             {
+                // We do not need whole animation, just load the first valid animation and first keyframe
                 var anim = mov.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0);
-                if(anim is not null)
+                if (anim is not null)
                 {
                     var modelAnim = Animation.FromWad2(bones, anim);
-                    modelAnim.KeyFrames.RemoveAll(f => f != modelAnim.KeyFrames.First());
+                    if (modelAnim.KeyFrames.Count > 1)
+                        modelAnim.KeyFrames.RemoveRange(1, modelAnim.KeyFrames.Count - 1);
+
                     model.Animations.Add(modelAnim);
                     model.BuildHierarchy();
-                    model.BuildAnimationPose(Animation.FromWad2(bones, anim).KeyFrames[0]);
+                    model.BuildAnimationPose(modelAnim.KeyFrames[0]);
                 }
             }
             
