@@ -35,7 +35,7 @@ namespace TombLib.Graphics
 
         public void Dispose()
         {
-            foreach(var m in Meshes)
+            foreach (var m in Meshes)
                 m.Dispose();
         }
     }
