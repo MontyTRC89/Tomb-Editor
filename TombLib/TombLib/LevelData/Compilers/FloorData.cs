@@ -27,15 +27,21 @@ namespace TombLib.LevelData.Compilers
                 RecalculateHash();
             }
 
+            public void AddPlugin(byte pluginEntry)
+            {
+                PluginList.Add(pluginEntry);
+                RecalculateHash();
+            }
+
             public void AddRange(List<ushort> entry)
             {
                 FDList.AddRange(entry);
                 RecalculateHash();
             }
 
-            public void AddRange(List<byte> entry)
+            public void AddRangePlugin(List<byte> pluginEntry)
             {
-                PluginList.AddRange(entry);
+                PluginList.AddRange(pluginEntry);
                 RecalculateHash();
             }
 
@@ -43,6 +49,7 @@ namespace TombLib.LevelData.Compilers
             {
                 string hash = "";
                 FDList.ForEach(entry => hash += entry.ToString() + " ");
+                PluginList.ForEach(entry => hash += entry.ToString() + " ");
                 _hash = hash.GetHashCode();
             }
 
@@ -82,11 +89,20 @@ namespace TombLib.LevelData.Compilers
                 {
                     var dummy = new FloordataSequence();
                     dummy.Add(0x0000);
+
+                    if (_supportsTRNGPlugins)
+                        dummy.AddPlugin(0);
+
                     floorDataDictionary.Add(dummy, 0);
                 }
             }
             else
+            {
                 _floorData.Add(0x0000);
+
+                if (_supportsTRNGPlugins)
+                    _pluginFloorData.Add(0);
+            }
 
             for (var i = 0; i < _sortedRooms.Length; i++)
             {
@@ -232,6 +248,11 @@ namespace TombLib.LevelData.Compilers
                                 { // Only if the portal is not a Toggle Opacity 1
                                     newEntry.Add(0x8001);
                                     newEntry.Add((ushort)_roomRemapping[sector.WallPortal.AdjoiningRoom]);
+                                    if (_supportsTRNGPlugins)
+                                    {
+                                        newEntry.AddPlugin(0);
+                                        newEntry.AddPlugin(0);
+                                    }
                                 }
                             }
                             else if (isWallWithCeilingPortal != null)
@@ -244,6 +265,11 @@ namespace TombLib.LevelData.Compilers
 
                                 newEntry.Add(0x8001);
                                 newEntry.Add((ushort)_roomRemapping[isWallWithCeilingPortal]);
+                                if (_supportsTRNGPlugins)
+                                {
+                                    newEntry.AddPlugin(0);
+                                    newEntry.AddPlugin(0);
+                                }
                             }
                         }
                         else
@@ -296,7 +322,8 @@ namespace TombLib.LevelData.Compilers
                             if (tempFloorData.Count != 0)
                             {
                                 newEntry.AddRange(tempFloorData);
-                                newEntry.AddRange(tempPluginFloorData);
+                                if (_supportsTRNGPlugins)
+                                    newEntry.AddRangePlugin(tempPluginFloorData);
                             }
                         }
 
@@ -315,7 +342,8 @@ namespace TombLib.LevelData.Compilers
                         {
                             compiledSector.FloorDataIndex = checked((ushort)_floorData.Count);
                             _floorData.AddRange(newEntry.FDList);
-                            _pluginFloorData.AddRange(newEntry.PluginList);
+                            if (_supportsTRNGPlugins)
+                                _pluginFloorData.AddRange(newEntry.PluginList);
                         }
 
                         // Update the sector
@@ -326,7 +354,13 @@ namespace TombLib.LevelData.Compilers
 
             // Build final floordata block
             if (_level.Settings.AgressiveFloordataPacking)
-                floorDataDictionary.ToList().ForEach(entry => _floorData.AddRange(entry.Key.FDList));
+            {
+                floorDataDictionary.Keys.ToList().ForEach(entry => {
+                    _floorData.AddRange(entry.FDList);
+                    if (_supportsTRNGPlugins)
+                        _pluginFloorData.AddRange(entry.PluginList);
+                });
+            }
 
             ReportProgress(58, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
@@ -391,7 +425,7 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(0x15);
             }
 
-            if (_level.IsNG)
+            if (_supportsTRNGPlugins)
             {
                 for (var i = 0; i < outFloorData.Count; i++)
                     outPluginFloorData.Add(0);
@@ -512,14 +546,14 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(trigger1);
                 outFloorData.Add(triggerSetup);
 
-                if (_level.IsNG)
+                if (_supportsTRNGPlugins)
                 {
-                    outPluginFloorData.Add(0);
-
                     if (setupTrigger.TriggerType == TriggerType.ConditionNg)
                         outPluginFloorData.Add((byte)GetTriggerParameter(setupTrigger.Plugin, setupTrigger, 0xff));
                     else
                         outPluginFloorData.Add(0);
+
+                    outPluginFloorData.Add(0);
                 }
 
                 foreach (var trigger in triggers)
@@ -593,8 +627,11 @@ namespace TombLib.LevelData.Compilers
                                 trigger3 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger3);
 
-                                outPluginFloorData.Add(0);
-                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
+                                if (_supportsTRNGPlugins)
+                                {
+                                    outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
+                                    outPluginFloorData.Add(0);
+                                }
                             }
 
                             break;
@@ -613,8 +650,11 @@ namespace TombLib.LevelData.Compilers
                                 trigger2 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger2);
 
-                                outPluginFloorData.Add(0);
-                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
+                                if (_supportsTRNGPlugins)
+                                {
+                                    outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
+                                    outPluginFloorData.Add(0);
+                                }
                             }
                             else
                                 _progressReporter.ReportWarn("Level uses action trigger '" + trigger + "' which is not supported in this game engine.");
