@@ -145,9 +145,10 @@ namespace TombLib.Utils
                                         argLayout.CustomEnumeration.AddRange(p.Substring(1, p.Length - 2).Split('|').Select(st => st.Trim()));
                                     else if (p.StartsWith(_defaultValueStart) && p.EndsWith(_defaultValueEnd))
                                         argLayout.DefaultValue = p.Substring(1, p.Length - 2).Trim();
+                                    else if (Enum.TryParse(p, out ArgumentType argType))
+                                        argLayout.Type = argType;
                                     else
-                                        try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
-                                        catch { argLayout.Description = p; }
+                                        argLayout.Description = p;
                                 }
 
                                  nodeFunction.Arguments.Add(argLayout);

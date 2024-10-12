@@ -14,7 +14,7 @@ namespace TombLib.Graphics
         Room
     }
 
-    public abstract class Model<T, U> : IRenderableObject, IDisposable where U : struct
+    public abstract class Model<T, U> : IRenderableObject, IDisposable where U : unmanaged where T : IDisposable
     {
         public BoundingBox BoundingBox { get; set; }
         public List<T> Meshes { get; set; }
@@ -35,7 +35,8 @@ namespace TombLib.Graphics
 
         public void Dispose()
         {
-            
+            foreach (var m in Meshes)
+                m.Dispose();
         }
     }
 }

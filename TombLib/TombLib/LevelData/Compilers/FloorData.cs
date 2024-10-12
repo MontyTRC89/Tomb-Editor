@@ -733,20 +733,22 @@ namespace TombLib.LevelData.Compilers
 
             public RoomSectorShape(Sector sector, bool floor, Room.RoomConnectionType portalType, bool wall)
             {
-                var surface = floor ? sector.Floor : sector.Ceiling;
+                var surface = floor ? sector.Floor.WorldToClicks() : sector.Ceiling.WorldToClicks();
 
-                HeightXnZn = Clicks.FromWorld(surface.XnZn);
-                HeightXpZn = Clicks.FromWorld(surface.XpZn);
-                HeightXnZp = Clicks.FromWorld(surface.XnZp);
-                HeightXpZp = Clicks.FromWorld(surface.XpZp);
+                HeightXnZn = surface.XnZn;
+                HeightXpZn = surface.XpZn;
+                HeightXnZp = surface.XnZp;
+                HeightXpZp = surface.XpZp;
                 SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
 
                 if (sector.HasGhostBlock && sector.GhostBlock.Valid)
                 {
-                    HeightXnZn += Clicks.FromWorld(floor ? sector.GhostBlock.Floor.XnZn : sector.GhostBlock.Ceiling.XnZn);
-                    HeightXpZn += Clicks.FromWorld(floor ? sector.GhostBlock.Floor.XpZn : sector.GhostBlock.Ceiling.XpZn);
-                    HeightXnZp += Clicks.FromWorld(floor ? sector.GhostBlock.Floor.XnZp : sector.GhostBlock.Ceiling.XnZp);
-                    HeightXpZp += Clicks.FromWorld(floor ? sector.GhostBlock.Floor.XpZp : sector.GhostBlock.Ceiling.XpZp);
+                    var ghostBlockSurface = floor ? sector.GhostBlock.Floor.WorldToClicks() : sector.GhostBlock.Ceiling.WorldToClicks();
+
+                    HeightXnZn += ghostBlockSurface.XnZn;
+                    HeightXpZn += ghostBlockSurface.XpZn;
+                    HeightXnZp += ghostBlockSurface.XnZp;
+                    HeightXpZp += ghostBlockSurface.XpZp;
                 }
 
                 switch (portalType)
@@ -791,18 +793,18 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XnZn:
-                        DiagonalStep = Clicks.FromWorld(surface.XpZp) - Clicks.FromWorld(surface.XnZp);
+                        DiagonalStep = surface.XpZp - surface.XnZp;
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XnZp:
-                        DiagonalStep = Clicks.FromWorld(surface.XpZn) - Clicks.FromWorld(surface.XpZp);
+                        DiagonalStep = surface.XpZn - surface.XpZp;
 
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XpZn:
-                        DiagonalStep = Clicks.FromWorld(surface.XnZp) - Clicks.FromWorld(surface.XnZn);
+                        DiagonalStep = surface.XnZp - surface.XnZn;
                         HeightXnZn += DiagonalStep;
                         HeightXpZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;
@@ -811,7 +813,7 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XpZp:
-                        DiagonalStep = Clicks.FromWorld(surface.XnZn) - Clicks.FromWorld(surface.XpZn);
+                        DiagonalStep = surface.XnZn - surface.XpZn;
                         HeightXpZn += DiagonalStep;
                         HeightXnZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;

@@ -9,6 +9,8 @@ namespace TombLib.Scripting.Lua
 {
 	public sealed class LuaEditor : TextEditorBase
 	{
+		public override string DefaultFileExtension => ".lua";
+
 		public LuaEditor()
 		{
 			CommentPrefix = "--";

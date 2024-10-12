@@ -514,12 +514,8 @@ namespace TombLib.NG
                 return parameter;
         }
 
-        public static TriggerInstance ImportFromScriptTrigger(Level level, ITriggerParameter plugin, string script)
+        public static TriggerInstance ImportFromScriptTrigger(Level level, string script)
         {
-            string trgFilePath = TryGetTRGFilePath(level.Settings, plugin);
-            TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
-            bool isTombNextGeneration = trgFile is null;
-
             // Build object lookup table
             var objectLookup = level.ExistingRooms
                 .SelectMany(room => room.Objects)
@@ -534,6 +530,20 @@ namespace TombLib.NG
 
             if (tokens.Count != 3)
                 return null; // Incorrect amount of operands!
+
+            // Check if plugin is specified
+            if (tokens[0].TrimStart('$').Length == 6)
+            {
+                if (!ushort.TryParse(tokens[0].TrimStart('$')[..2], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort pluginId))
+                    return null; // Incorrect plugin ID!
+
+                tokens[0] = "$" + tokens[0].TrimStart('$')[2..];
+                result.Plugin = new TriggerParameterUshort(pluginId);
+            }
+
+            string trgFilePath = TryGetTRGFilePath(level.Settings, result.Plugin);
+            TRGFile trgFile = trgFilePath is not null ? new TRGFile(trgFilePath) : null;
+            bool isTombNextGeneration = trgFile is null;
 
             ushort[] operands = new ushort[tokens.Count];
 

@@ -28,7 +28,7 @@ namespace TombIDE.ScriptingStudio
 		{
 			DockPanelState = IDE.Instance.IDEConfiguration.Lua_DockPanelState;
 
-			FileExplorer.ExcludedDirectoryFilter = "Engine\\Scripts\\Engine";
+			FileExplorer.ExcludedDirectoryFilter = "Scripts\\Engine";
 			FileExplorer.Filter = "*.lua";
 			FileExplorer.CommentPrefix = "--";
 

@@ -30,7 +30,7 @@
     <moveable id="27" name="Lara X-Ray 2" ten="LARA_EXTRA_MESH3" hidden="true" />
     <moveable id="28" name="Crowbar animation" use_body_from="8" ten="LARA_CROWBAR_ANIM" hidden="true" />
     <moveable id="29" name="Torch animation" use_body_from="8" ten="LARA_TORCH_ANIM" hidden="true" />
-    <moveable id="30" name="Lara's hair" ten="SINGLE_BRAID_HAIR" hidden="true" />
+    <moveable id="30" name="Lara's hair" ten="HAIR_PRIMARY" hidden="true" />
     <moveable id="31" name="Guard 1" ten="SAS" />
     <moveable id="32" name="Guard 1_mip" ten="SAS_MIP" hidden="true" />
     <moveable id="33" name="Guard 2" ten="SWAT" />

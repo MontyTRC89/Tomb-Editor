@@ -397,18 +397,13 @@ namespace TombLib.LevelData
 
                 transformation.TransformValueQuad(_faceTextures, SectorFace.Wall_PositiveX_QA, SectorFace.Wall_PositiveZ_QA, SectorFace.Wall_NegativeX_QA, SectorFace.Wall_NegativeZ_QA);
 
-                var texturedSplits = _faceTextures.Where(pair => pair.Key.IsExtraFloorSplit()).Select(pair => pair.Key).ToList();
-
-                for (int i = 0; i < texturedSplits.Count; i++)
+                for (int i = 0; i < ExtraFloorSplits.Count; i++)
                 {
-                    int index = texturedSplits[i].GetVertical()?.GetExtraSplitIndex()
-                        ?? throw new InvalidOperationException("Invalid floor split face.");
-
                     transformation.TransformValueQuad(_faceTextures,
-                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveX, index),
-                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveZ, index),
-                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeX, index),
-                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, index));
+                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveX, i),
+                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveZ, i),
+                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeX, i),
+                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, i));
                 }
 
                 // Fix floor textures
@@ -467,18 +462,13 @@ namespace TombLib.LevelData
 
                 transformation.TransformValueQuad(_faceTextures, SectorFace.Wall_PositiveX_WS, SectorFace.Wall_PositiveZ_WS, SectorFace.Wall_NegativeX_WS, SectorFace.Wall_NegativeZ_WS);
 
-                var texturedSplits = _faceTextures.Where(pair => pair.Key.IsExtraCeilingSplit()).Select(pair => pair.Key).ToList();
-
-                for (int i = 0; i < texturedSplits.Count; i++)
+                for (int i = 0; i < ExtraCeilingSplits.Count; i++)
                 {
-                    int index = texturedSplits[i].GetVertical()?.GetExtraSplitIndex()
-                        ?? throw new InvalidOperationException("Invalid ceiling split face.");
-
                     transformation.TransformValueQuad(_faceTextures,
-                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveX, index),
-                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveZ, index),
-                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeX, index),
-                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, index));
+                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveX, i),
+                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveZ, i),
+                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeX, i),
+                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, i));
                 }
 
                 // Fix ceiling textures
@@ -575,10 +565,10 @@ namespace TombLib.LevelData
         {
             Plane[] tri = new Plane[2];
 
-            var p0 = new Vector3(0, Clicks.FromWorld(Floor.XnZp, RoundingMethod.Integer), 0);
-            var p1 = new Vector3(4, Clicks.FromWorld(Floor.XpZp, RoundingMethod.Integer), 0);
-            var p2 = new Vector3(4, Clicks.FromWorld(Floor.XpZn, RoundingMethod.Integer), -4);
-            var p3 = new Vector3(0, Clicks.FromWorld(Floor.XnZn, RoundingMethod.Integer), -4);
+            var p0 = new Vector3(0, Floor.XnZp, 0);
+            var p1 = new Vector3(4, Floor.XpZp, 0);
+            var p2 = new Vector3(4, Floor.XpZn, -4);
+            var p3 = new Vector3(0, Floor.XnZn, -4);
 
             // Create planes based on floor split direction
 
@@ -627,7 +617,7 @@ namespace TombLib.LevelData
 
             Direction[] slopeDirections = new Direction[2] { Direction.None, Direction.None };
 
-            if (Floor.HasSlope)
+            if (Floor.HasSlope())
             {
                 for (int i = 0; i < (Floor.IsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
                 {

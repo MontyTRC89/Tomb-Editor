@@ -147,7 +147,7 @@ namespace WadTool.Controls
                     return;
 
                 _wadRenderer.Dispose();
-                _wadRenderer = new WadRenderer(_device, false, value, 4096, 2048);
+                _wadRenderer = new WadRenderer(_device, false, value, 4096, 2048, false);
                 _bilinear = value;
                 Invalidate();
             }
@@ -293,7 +293,7 @@ namespace WadTool.Controls
             // Legacy rendering
             {
                 _device = deviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice, false, false, 1024, 512);
+                _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice, false, false, 4096, 2048, false);
 
                 _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
                 _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description

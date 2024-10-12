@@ -45,7 +45,7 @@
     <moveable id="43" name="Sword of Damocles" essential="false" ten="DAMOCLES_SWORD" />
     <moveable id="44" name="Thor's hammer's handle" essential="false" />
     <moveable id="45" name="Thor's hammer's block" essential="false" />
-    <moveable id="46" name="Lightning ball / Some kind of box?" essential="false" ten="ANIMATING34" />
+    <moveable id="46" name="Lightning ball / Some kind of box?" essential="false" ten="ELECTRIC_BALL" />
     <moveable id="47" name="Metal rod / Powered mining cart" essential="false" />
     <moveable id="48" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1" />
     <moveable id="49" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE2" />

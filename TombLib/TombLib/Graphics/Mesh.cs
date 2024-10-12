@@ -1,4 +1,5 @@
 ﻿using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -8,7 +9,7 @@ namespace TombLib.Graphics
     public abstract class Mesh<T> : GraphicsResource, IRenderableObject where T : struct, IVertex
     {
         public Buffer<T> VertexBuffer { get; protected set; }
-        public Buffer IndexBuffer { get; protected set; }
+        public SharpDX.Toolkit.Graphics.Buffer IndexBuffer { get; protected set; }
         public VertexInputLayout InputLayout { get; protected set; }
         public List<Material> Materials { get; protected set; }
         public List<T> Vertices { get; protected set; } = new List<T>();
@@ -68,6 +69,13 @@ namespace TombLib.Graphics
                 }
                 lastBaseIndex += submesh.Value.NumIndices;
             }
+        }
+
+        public void Dispose()
+        {
+            base.Dispose();
+            VertexBuffer?.Dispose();
+            IndexBuffer?.Dispose();
         }
     }
 }
