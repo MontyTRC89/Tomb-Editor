@@ -33,6 +33,7 @@ Tomb Editor:
 WadTool:
  * Added "In quicksand" and "Underwater" sound conditions for TEN.
  * Fixed TR2 BIG_SPIDER sounds remapping incorrectly for TEN.
+ * Fixed animcommand editor incorrectly pasting selected command to selected frames if framerate is bigger than 1.
 
 TombIDE:
  * Updated FLEP for new TRNG projects.
