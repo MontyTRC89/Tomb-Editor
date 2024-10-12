@@ -25,7 +25,7 @@ LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, isStatic, dataT
 	local dataName  = objectName .. prefix .. "_transform_data"
 	
 	if (LevelVars[dataName] ~= nil and LevelVars[dataName].Timer ~= nil) then
-		if (LevelVars[dataName].Timer:IsActive()) then
+		if (Timer.Get(dataName):IsActive()) then
 			return
 		else
 			Timer.Delete(LevelVars[dataName].Name)
