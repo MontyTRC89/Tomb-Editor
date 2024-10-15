@@ -3,7 +3,7 @@ LevelVars.nodeTimers = {}
 
 -- !Name "Create basic timer"
 -- !Conditional "False"
--- !Description "Creates a simple countdown.\n\nBe careful when creating a timer in the events “On Volume Inside” and “On Loop”."
+-- !Description "Creates a simple countdown.\n\nBe careful when creating a timer in the events 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
