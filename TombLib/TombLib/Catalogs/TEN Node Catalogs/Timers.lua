@@ -29,7 +29,7 @@ end
 
 -- !Name "Create timer with function"
 -- !Conditional "False"
--- !Description "Creates a countdown which will execute a `LevelFuncs` lua function upon ending.\n\nBe careful when creating a timer in the events “On Volume Inside” and “On Loop”."
+-- !Description "Creates a countdown which will execute a `LevelFuncs` lua function upon ending.\n\nBe careful when creating a timer in the events 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -58,7 +58,7 @@ end
 
 -- !Name "Create timer with volume event set"
 -- !Conditional "False"
--- !Description "Creates a countdown that triggers a volume event set upon ending.\n\nBe careful when creating a timer in the events “On Volume Inside” and “On Loop”."
+-- !Description "Creates a countdown that triggers a volume event set upon ending.\n\nBe careful when creating a timer in the events 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -87,7 +87,7 @@ end
 
 -- !Name "Create timer with global event set"
 -- !Conditional "False"
--- !Description "Creates a countdown that triggers a global event set upon ending.\n\nBe careful when creating a timer in the events “On Volume Inside” and “On Loop”."
+-- !Description "Creates a countdown that triggers a global event set upon ending.\n\nBe careful when creating a timer in the events 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -116,7 +116,7 @@ end
 
 -- !Name "Start timer"
 -- !Conditional "False"
--- !Description "Begins or resumes a timer.\n\nBe careful when starting of a timer in the events “On Volume Inside” and “On Loop”."
+-- !Description "Begins or resumes a timer.\n\nBe careful when starting of a timer in the events 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 -- !Arguments "NewLine, Boolean , Reset timer when expired"
@@ -160,7 +160,7 @@ end
 
 -- !Name "Pause timer"
 -- !Conditional "False"
--- !Description "Pauses a timer.\n\nBe careful when pausing a timer in the events “On Volume Inside” and “On Loop”."
+-- !Description "Pauses a timer.\n\nBe careful when pausing a timer in the events 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.SetPausedTimer = function(name)
@@ -180,7 +180,7 @@ end
 
 -- !Name "Set or modify remaining time"
 -- !Conditional "False"
--- !Description "Changes the remaining time value (in seconds) of a specific timer.\n\nBe careful when changing the remaining timer time in the events “On Volume Inside” and “On Loop”."
+-- !Description "Changes the remaining time value (in seconds) of a specific timer.\n\nBe careful when changing the remaining timer time in the events 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Timer name"
 -- !Arguments "Enumeration, 15, [ + | - | * | / | = ], Mathematical operation to perform"
@@ -205,7 +205,7 @@ end
 
 -- !Name "Set or modify total time"
 -- !Conditional "False"
--- !Description "Changes the total duration value (in seconds) of a specific timer.\n\nBe careful when changing the total timer time in the events “On Volume Inside” and “On Loop”."
+-- !Description "Changes the total duration value (in seconds) of a specific timer.\n\nBe careful when changing the total timer time in the events 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
 -- !Arguments "Enumeration, 15, [ + | - | * | / | = ], Mathematical operation to perform"
@@ -229,7 +229,7 @@ end
 
 -- !Name "Set the timer mode"
 -- !Conditional "False"
--- !Description "Sets the timer as looped or one shot. If the timer is one shot, you can reactivate it when it expires.\n\nBe careful when setting a timer loop in the events: “On Volume Inside” and “On Loop”."
+-- !Description "Sets the timer as looped or one shot. If the timer is one shot, you can reactivate it when it expires.\n\nBe careful when setting a timer loop in the events: 'On Volume Inside' and 'On Loop'."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
 -- !Arguments "Enumeration, 33, [ One shot | Looped ], Set timer as"
@@ -251,7 +251,7 @@ end
 
 -- !Name "Print remaining time (in seconds) in console."
 -- !Conditional "False"
--- !Description "Prints on console the remaining time value (in seconds) of a specific timer.\n\nIt`s recommended for use within `On Volume Inside` or `On Loop` events."
+-- !Description "Prints on console the remaining time value (in seconds) of a specific timer.\n\nIt`s recommended for use within 'On Volume Inside' or 'On Loop' events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.GetRemainingTime = function(name)
@@ -270,7 +270,7 @@ end
 
 -- !Name "Print total time (in seconds) in console."
 -- !Conditional "False"
--- !Description "Prints on console the total time value (in seconds) of a specific timer.\n\nIt`s recommended for use within `On Volume Inside` or `On Loop` events."
+-- !Description "Prints on console the total time value (in seconds) of a specific timer.\n\nIt`s recommended for use within 'On Volume Inside' or 'On Loop' events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.GetTotalTime = function(name)
@@ -287,7 +287,7 @@ end
 
 -- !Name "If the timer is active..."
 -- !Conditional "True"
--- !Description "Checks if a specific timer is active.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
+-- !Description "Checks if a specific timer is active.\n\nTo be used inside the 'On Volume Inside' or 'On Loop' events only."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IsTimerActive = function(name)
@@ -308,7 +308,7 @@ end
 
 -- !Name "If the timer is paused..."
 -- !Conditional "True"
--- !Description "Checks if a specific timer is paused.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
+-- !Description "Checks if a specific timer is paused.\n\nTo be used inside the 'On Volume Inside' or 'On Loop' events only."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IsTimerPaused = function(name)
@@ -329,7 +329,7 @@ end
 
 -- !Name "If the timer has expired..."
 -- !Conditional "True"
--- !Description "Checks if a specific timer is expired.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
+-- !Description "Checks if a specific timer is expired.\n\nTo be used inside the 'On Volume Inside' or 'On Loop' events only."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.IfTimerExpired = function(name)
@@ -347,7 +347,7 @@ end
 
 -- !Name "If remaining time is..."
 -- !Conditional "True"
--- !Description "Checks if the remaining time is equal to, greater than, less than..\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
+-- !Description "Checks if the remaining time is equal to, greater than, less than..\n\nTo be used inside the 'On Volume Inside' or 'On Loop' events only."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Timer name"
 -- !Arguments "CompareOperator, 30"
@@ -373,7 +373,7 @@ end
 
 -- !Name "If total time is..."
 -- !Conditional "True"
--- !Description "Checks if the Total Time is equal to, greater than, less than..\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
+-- !Description "Checks if the Total Time is equal to, greater than, less than..\n\nTo be used inside the 'On Volume Inside' or 'On Loop' events only."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Timer name"
 -- !Arguments "CompareOperator, 30"
