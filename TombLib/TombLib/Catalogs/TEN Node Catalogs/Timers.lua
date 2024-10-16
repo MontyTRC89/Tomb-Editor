@@ -13,6 +13,9 @@ LevelVars.nodeTimers = {}
 LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds, deciseconds, debug)
     if name ~= '' then
         local nodeTimerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
+        if LevelVars.nodeTimers[name] ~= nil and Timer.Get(name) ~= nil then
+            Timer.Delete(name)
+        end
         LevelVars.nodeTimers[name] = {}
         LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, nodeTimerFormat, nil)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
