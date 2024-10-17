@@ -583,7 +583,12 @@ namespace TombLib.LevelData.Compilers
                 if (_level.Settings.GameVersion > TRVersion.Game.TR3)
                     newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 else
-                    newStaticMesh.Flags = 2; // bit 0: no collision, bit 1: visibility
+                {
+                    if (oldStaticMesh.CollisionBox.Minimum == Vector3.Zero && oldStaticMesh.CollisionBox.Maximum == Vector3.Zero)
+                        newStaticMesh.Flags |= 1;
+                    if (oldStaticMesh.VisibilityBox.Minimum != Vector3.Zero || oldStaticMesh.VisibilityBox.Maximum != Vector3.Zero)
+                        newStaticMesh.Flags |= 2;
+                }
 
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
