@@ -112,7 +112,7 @@ namespace WadTool.Controls
             {
                 _device = deviceManager.___LegacyDevice;
                 _deviceManager = deviceManager;
-                _wadRenderer = new WadRenderer(_device, false, true, 4096, 2048);
+                _wadRenderer = new WadRenderer(_device, false, true, 4096, 2048, false);
                 new BasicEffect(_device); // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
                 _rasterizerWireframe = RasterizerState.New(_device, new SharpDX.Direct3D11.RasterizerStateDescription
                 {

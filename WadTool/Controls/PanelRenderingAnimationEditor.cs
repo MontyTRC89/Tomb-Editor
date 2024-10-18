@@ -85,7 +85,7 @@ namespace WadTool.Controls
             ResetCamera();
 
             _editor = editor;
-            _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice, false, true, 1024, 512);
+            _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice, false, true, 4096, 2048, true);
             _model = _wadRenderer.GetMoveable(editor.Moveable);
 
             Configuration = _editor.Tool.Configuration;

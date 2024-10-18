@@ -26,6 +26,8 @@ Comment metadata signature reference (metadata block is indicated by a keyword w
 
  - **!Description "DESC"** - DESC will be a tooltip for a given function. You can use `\n` symbol to begin from a 
    new line.
+   
+ - **!Section "SECTION"** - this will define where the node will be found inside Tomb Editor.
 
  - **!Arguments "ARGDESC1" "ARGDESC2" "ARGDESC..."** - infinite amount of args, with **ARGDESC** parameters
    separated by commas as follows:

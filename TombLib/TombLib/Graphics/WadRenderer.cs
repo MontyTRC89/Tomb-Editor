@@ -27,14 +27,16 @@ namespace TombLib.Graphics
         private int _textureAtlasSize { get; }
         private int _maxTextureAllocationSize { get; }
         public int TextureAtlasSize { get => _textureAtlasSize; }
+        private bool _loadAnimations { get; }
 
-        public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize)
+        public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize, bool loadAnimations)
         {
             GraphicsDevice = graphicsDevice;
             _compactTexture = compactTexture;
             _correctTexture = correctTexture;
             _textureAtlasSize = atlasSize;
             _maxTextureAllocationSize = maxAllocationSize;
+            _loadAnimations = loadAnimations;
             AddPacker();
         }
 
@@ -51,7 +53,6 @@ namespace TombLib.Graphics
                 return;
 
             _disposing = true;
-
             Texture?.Dispose();
             Texture = null;
 
@@ -76,7 +77,7 @@ namespace TombLib.Graphics
             InitializeTexture();
         }
 
-        private void ReclaimTextureSpace<T, U>(Model<T, U> model) where U : struct
+        private void ReclaimTextureSpace<T, U>(Model<T, U> model) where U : unmanaged where T: IDisposable
         {
             // TODO Some mechanism to reclaim texture space without rebuilding the atlas would be good.
             // Currently texture space is only freed when the atlas fills up completely and must be rebuilt.
@@ -99,7 +100,7 @@ namespace TombLib.Graphics
             // The data is either new or has changed, unfortunately we need to reload it
             try
             {
-                model = AnimatedModel.FromWadMoveable(GraphicsDevice, moveable, AllocateTexture, _correctTexture);
+                model = AnimatedModel.FromWadMoveable(GraphicsDevice, moveable, AllocateTexture, _correctTexture, _loadAnimations);
             }
             catch (TextureAtlasFullException exc)
             {
@@ -225,7 +226,7 @@ namespace TombLib.Graphics
                     var toSubresource = newTexture.GetSubResourceIndex(i, 0);
                     GraphicsDevice.Copy(Texture, fromSubresource, newTexture, toSubresource);
                 }
-
+                Texture?.Dispose();
                 Texture = newTexture;
             }
         }
