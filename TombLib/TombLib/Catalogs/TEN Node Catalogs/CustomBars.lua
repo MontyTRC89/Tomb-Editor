@@ -10,9 +10,9 @@ LevelFuncs.Engine.Node.ConstructCustomBar = function(barName, startvalue, object
 		return
 	end
 
-	LevelVars.CustomBars[dataName]					= {}
-	LevelVars.CustomBars[dataName].Name				= dataName
-	LevelVars.CustomBars[dataName].FixedInterval	= 1/30
+	LevelVars.CustomBars[dataName]				= {}
+	LevelVars.CustomBars[dataName].Name			= dataName
+	LevelVars.CustomBars[dataName].FixedInterval		= 1/30
 	LevelVars.CustomBars[dataName].Progress			= startvalue / 1000 -- Set initial progress from start value (clamped to 0-1000)
 	LevelVars.CustomBars[dataName].Interval			= 1 / (30)	-- assuming 30 updates per second
 	LevelVars.CustomBars[dataName].ObjectIDbg		= objectIDbg
@@ -21,11 +21,11 @@ LevelFuncs.Engine.Node.ConstructCustomBar = function(barName, startvalue, object
 	LevelVars.CustomBars[dataName].ObjectIDbar		= objectIDbar
 	LevelVars.CustomBars[dataName].SpriteIDbar		= spriteIDbar
 	LevelVars.CustomBars[dataName].ColorBar			= colorbar
-	LevelVars.CustomBars[dataName].PosX				= posX
-	LevelVars.CustomBars[dataName].PosY				= posY
+	LevelVars.CustomBars[dataName].PosX			= posX
+	LevelVars.CustomBars[dataName].PosY			= posY
 	LevelVars.CustomBars[dataName].ScaleX			= scaleX
 	LevelVars.CustomBars[dataName].ScaleY			= scaleY
-	LevelVars.CustomBars[dataName].Rot				= rot
+	LevelVars.CustomBars[dataName].Rot			= rot
 	LevelVars.CustomBars[dataName].Visible			= true
 	LevelVars.CustomBars[dataName].CurrentAlpha		= 1
 	LevelVars.CustomBars[dataName].TargetAlpha		= 255
