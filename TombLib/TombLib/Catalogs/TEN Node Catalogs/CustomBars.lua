@@ -234,3 +234,5 @@ LevelFuncs.Engine.Node.TestBarValue = function(barName, operator, value)
 	end
 	
 end
+
+TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateCustomBars)
