@@ -1,4 +1,4 @@
---Custom Bar Nodes by TrainWreck and DaviDMRR ; Code references by Lwmte and TEN Nodes.
+--Custom Bar Nodes by TrainWreck and DaviDMRR and Adngel; Code references by Lwmte and TEN Nodes.
 
 LevelVars.CustomBars = {}
 -- Construct custom bar
@@ -27,6 +27,8 @@ LevelFuncs.Engine.Node.ConstructCustomBar = function(barName, startvalue, object
 	LevelVars.CustomBars[dataName].ScaleY			= scaleY
 	LevelVars.CustomBars[dataName].Rot				= rot
 	LevelVars.CustomBars[dataName].Visible			= true
+	LevelVars.CustomBars[dataName].CurrentAlpha		= 1
+	LevelVars.CustomBars[dataName].TargetAlpha		= 255
 	LevelVars.CustomBars[dataName].AlignMode		= alignMode
 	LevelVars.CustomBars[dataName].ScaleMode		= scaleMode
 	LevelVars.CustomBars[dataName].BlendMode		= blendMode
@@ -60,7 +62,15 @@ LevelFuncs.Engine.UpdateCustomBars = function()
 				CustomBar.OldValue = currentValue
 				CustomBar.Progress = currentValue / 1000
 			end
-
+			-- Smoothly transition alpha
+			if CustomBar.CurrentAlpha ~= CustomBar.TargetAlpha then
+				local alphaDelta = 50 -- Adjust speed of alpha transition
+				if CustomBar.CurrentAlpha < CustomBar.TargetAlpha then
+					CustomBar.CurrentAlpha = math.floor(math.min(CustomBar.CurrentAlpha + alphaDelta, CustomBar.TargetAlpha))
+				else
+					CustomBar.CurrentAlpha = math.floor(math.max(CustomBar.CurrentAlpha - alphaDelta, CustomBar.TargetAlpha))
+				end
+			end
 			-- Set up parameters for drawing
 			local pos = TEN.Vec2(CustomBar.PosX, CustomBar.PosY)
 			local scale = TEN.Vec2(CustomBar.ScaleX, CustomBar.ScaleY)
@@ -68,15 +78,23 @@ LevelFuncs.Engine.UpdateCustomBars = function()
 			local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(CustomBar.AlignMode)
 			local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(CustomBar.ScaleMode)
 			local blendID = LevelFuncs.Engine.Node.GetBlendMode(CustomBar.BlendMode)
-
-			if CustomBar.Visible then
+			
+			-- Adjust color with alpha blending
+			local bgColor =Color(CustomBar.ColorBG.r,CustomBar.ColorBG.g,CustomBar.ColorBG.b,CustomBar.CurrentAlpha)
+			local barColor = Color(CustomBar.ColorBar.r,CustomBar.ColorBar.g,CustomBar.ColorBar.b,CustomBar.CurrentAlpha)
+			
+			if CustomBar.CurrentAlpha == 0 then
+				LevelVars.CustomBars[dataName].Visible = false
+			end
+			
+			if CustomBar.Visible and CustomBar.CurrentAlpha > 0 then
 				-- Draw background sprite
-				local bgSprite = TEN.DisplaySprite(CustomBar.ObjectIDbg, CustomBar.SpriteIDbg, pos, rot, scale, CustomBar.ColorBG)
+				local bgSprite = TEN.DisplaySprite(CustomBar.ObjectIDbg, CustomBar.SpriteIDbg, pos, rot, scale, bgColor)
 				bgSprite:Draw(0, alignM, scaleM, blendID)
 
 				-- Draw foreground sprite (the bar itself) proportional to Progress
 				local barScale = TEN.Vec2(CustomBar.ScaleX * CustomBar.Progress, CustomBar.ScaleY)
-				local barSprite = TEN.DisplaySprite(CustomBar.ObjectIDbar, CustomBar.SpriteIDbar, pos, rot, barScale, CustomBar.ColorBar)
+				local barSprite = TEN.DisplaySprite(CustomBar.ObjectIDbar, CustomBar.SpriteIDbar, pos, rot, barScale, barColor)
 				barSprite:Draw(1, alignM, scaleM, blendID)
 				
 				--- Debugging code
@@ -108,7 +126,7 @@ end
 -- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
 -- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {3}, Align mode"
 -- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
--- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], Blend mode"
+-- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
 
 LevelFuncs.Engine.Node.DisplayBars = function(barName, startvalue, objectIDbg, spriteIDbg, colorbg, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
 -- Wrap another node function call into do/end to prevent wrong parsing
@@ -172,8 +190,9 @@ LevelFuncs.Engine.Node.BarVisibility = function(barName, value)
 
 	if LevelVars.CustomBars[dataName] then
 		if value == 0 then
-			LevelVars.CustomBars[dataName].Visible = false
+			LevelVars.CustomBars[dataName].TargetAlpha = 0
 		elseif value == 1 then
+			LevelVars.CustomBars[dataName].TargetAlpha = 255
 			LevelVars.CustomBars[dataName].Visible = true
 		end
 	end
@@ -215,5 +234,3 @@ LevelFuncs.Engine.Node.TestBarValue = function(barName, operator, value)
 	end
 	
 end
-
-TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateCustomBars)
