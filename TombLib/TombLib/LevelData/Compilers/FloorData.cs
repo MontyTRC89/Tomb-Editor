@@ -572,6 +572,7 @@ namespace TombLib.LevelData.Compilers
                             outFloorData.Add(trigger2);
                             addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.Camera:
                             // Trigger for camera
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (1 << 10));
@@ -589,6 +590,7 @@ namespace TombLib.LevelData.Compilers
                             outFloorData.Add(trigger3);
                             addPluginFloorData(0, 2);
                             break;
+
                         case TriggerTargetType.Sink:
                             // Trigger for sink
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (2 << 10));
@@ -689,8 +691,7 @@ namespace TombLib.LevelData.Compilers
 
                             trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
                             outFloorData.Add(trigger2);
-                            addPluginFloorData(0, 1);
-
+                            addPluginFloorData(0, 2);
                             break;
 
                         case TriggerTargetType.ParameterNg:
