@@ -1643,7 +1643,7 @@
 			cmbRendering3DObjQuality.Items.AddRange(new object[] { "High", "Medium", "Low" });
 			cmbRendering3DObjQuality.Location = new System.Drawing.Point(232, 407);
 			cmbRendering3DObjQuality.Name = "cmbRendering3DObjQuality";
-			cmbRendering3DObjQuality.Size = new System.Drawing.Size(125, 23);
+			cmbRendering3DObjQuality.Size = new System.Drawing.Size(123, 23);
 			cmbRendering3DObjQuality.TabIndex = 46;
 			cmbRendering3DObjQuality.Tag = "Rendering3D_ObjectQuality";
 			// 
@@ -1655,7 +1655,7 @@
 			darkLabel80.Name = "darkLabel80";
 			darkLabel80.Size = new System.Drawing.Size(223, 13);
 			darkLabel80.TabIndex = 44;
-			darkLabel80.Text = "Object rendering quality: (requires restart)\r\n";
+			darkLabel80.Text = "Object rendering quality (requires restart):";
 			// 
 			// darkCheckBox39
 			// 
