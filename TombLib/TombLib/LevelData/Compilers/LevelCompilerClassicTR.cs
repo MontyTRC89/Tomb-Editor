@@ -17,6 +17,7 @@ namespace TombLib.LevelData.Compilers
         private Room[] _sortedRooms;
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
 
+        private bool _supportsTRNGPlugins = false;
         private readonly Dictionary<ushort, string> _plugins = new();
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private byte[] _texture32Data;
@@ -71,7 +72,13 @@ namespace TombLib.LevelData.Compilers
 
         public override CompilerStatistics CompileLevel(CancellationToken cancelToken)
         {
-            bool supportsTRNGPlugins = _level.IsNG && new Version(DetectTRNGVersion()) >= new Version(1, 3, 0, 0);
+            string ngVersion = null;
+
+            if (_level.IsNG)
+            {
+                ngVersion = DetectTRNGVersion();
+                _supportsTRNGPlugins = new Version(ngVersion) >= new Version(1, 3, 0, 0);
+            }
 
             ReportProgress(0, "Tomb Raider Level Compiler");
 
@@ -84,7 +91,7 @@ namespace TombLib.LevelData.Compilers
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
 
             // Write plugins if TRNG is detected
-            if (supportsTRNGPlugins)
+            if (_supportsTRNGPlugins)
                 WritePlugins();
 
             // Prepare level data
@@ -100,8 +107,10 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
 
             int texInfoLimit = _limits[Limit.TexInfos];
+
             if (_textureInfoManager.TexInfoCount > texInfoLimit)
                 _progressReporter.ReportWarn("TexInfo number overflow, maximum is " + texInfoLimit + ". Please reduce level complexity.");
+
             cancelToken.ThrowIfCancellationRequested();
 
             GetAllReachableRooms();
@@ -116,6 +125,7 @@ namespace TombLib.LevelData.Compilers
             var pageCount = PrepareTextures();
 
             int texPageLimit = _limits[Limit.TexPages];
+
             if (pageCount > texPageLimit)
                 _progressReporter.ReportWarn("Level has " + pageCount + " texture pages, while limit is " + texPageLimit + ". Use less textures, reduce padding or turn on aggressive texture packing in level settings.");
 
@@ -137,7 +147,7 @@ namespace TombLib.LevelData.Compilers
                     WriteLevelTr4();
                     break;
                 case TRVersion.Game.TRNG:
-                    WriteLevelTr4(DetectTRNGVersion());
+                    WriteLevelTr4(ngVersion);
                     break;
                 case TRVersion.Game.TR5:
                     WriteLevelTr5();
