@@ -44,6 +44,7 @@ TombIDE:
  * Updated TR1X preset to 4.5.1.
  * When creating a new script file, the correct file format will now be automatically selected, depending on the current engine.
  * Fixed infinite loop when trying to switch projects after opening a .trproj file.
+ * Fixed Gameflow.lua not automatically saving when creating new levels in a TEN project.
  
 TEN Base WAD:
  * Changed stateID for animation 440 of LARA to 37 to fix errors when pulling the draggable body.
