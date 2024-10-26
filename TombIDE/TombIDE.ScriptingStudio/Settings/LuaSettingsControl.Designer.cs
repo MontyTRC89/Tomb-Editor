@@ -17,626 +17,601 @@
 
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.button_ImportScheme = new DarkUI.Controls.DarkButton();
-			this.buttonContextMenu = new DarkUI.Controls.DarkContextMenu();
-			this.menuItem_Bold = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuItem_Italic = new System.Windows.Forms.ToolStripMenuItem();
-			this.checkBox_Autocomplete = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_HighlightCurrentLine = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_LineNumbers = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_VisibleSpaces = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_VisibleTabs = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_WordWrapping = new DarkUI.Controls.DarkCheckBox();
-			this.colorButton_Background = new DarkUI.Controls.DarkButton();
-			this.colorButton_Foreground = new DarkUI.Controls.DarkButton();
-			this.colorButton_Comments = new DarkUI.Controls.DarkButton();
-			this.colorButton_SpecialOperators = new DarkUI.Controls.DarkButton();
-			this.colorButton_Values = new DarkUI.Controls.DarkButton();
-			this.colorButton_Statements = new DarkUI.Controls.DarkButton();
-			this.colorButton_Operators = new DarkUI.Controls.DarkButton();
-			this.colorDialog = new System.Windows.Forms.ColorDialog();
-			this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel10 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel11 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel12 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel6 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel7 = new DarkUI.Controls.DarkLabel();
-			this.darkLabel8 = new DarkUI.Controls.DarkLabel();
-			this.elementHost = new System.Windows.Forms.Integration.ElementHost();
-			this.groupBox_Colors = new DarkUI.Controls.DarkGroupBox();
-			this.button_SaveScheme = new DarkUI.Controls.DarkButton();
-			this.button_DeleteScheme = new DarkUI.Controls.DarkButton();
-			this.button_OpenSchemesFolder = new DarkUI.Controls.DarkButton();
-			this.comboBox_ColorSchemes = new DarkUI.Controls.DarkComboBox();
-			this.groupBox_Preview = new DarkUI.Controls.DarkGroupBox();
-			this.numeric_FontSize = new DarkUI.Controls.DarkNumericUpDown();
-			this.numeric_UndoStackSize = new DarkUI.Controls.DarkNumericUpDown();
-			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
-			this.checkBox_CloseBraces = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_CloseQuotes = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_CloseBrackets = new DarkUI.Controls.DarkCheckBox();
-			this.comboBox_FontFamily = new DarkUI.Controls.DarkComboBox();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.buttonContextMenu.SuspendLayout();
-			this.groupBox_Colors.SuspendLayout();
-			this.groupBox_Preview.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numeric_FontSize)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numeric_UndoStackSize)).BeginInit();
-			this.sectionPanel.SuspendLayout();
-			this.SuspendLayout();
+			components = new System.ComponentModel.Container();
+			button_ImportScheme = new DarkUI.Controls.DarkButton();
+			buttonContextMenu = new DarkUI.Controls.DarkContextMenu();
+			menuItem_Bold = new System.Windows.Forms.ToolStripMenuItem();
+			menuItem_Italic = new System.Windows.Forms.ToolStripMenuItem();
+			checkBox_Autocomplete = new DarkUI.Controls.DarkCheckBox();
+			checkBox_HighlightCurrentLine = new DarkUI.Controls.DarkCheckBox();
+			checkBox_LineNumbers = new DarkUI.Controls.DarkCheckBox();
+			checkBox_VisibleSpaces = new DarkUI.Controls.DarkCheckBox();
+			checkBox_VisibleTabs = new DarkUI.Controls.DarkCheckBox();
+			checkBox_WordWrapping = new DarkUI.Controls.DarkCheckBox();
+			colorButton_Background = new DarkUI.Controls.DarkButton();
+			colorButton_Foreground = new DarkUI.Controls.DarkButton();
+			colorButton_Comments = new DarkUI.Controls.DarkButton();
+			colorButton_SpecialOperators = new DarkUI.Controls.DarkButton();
+			colorButton_Values = new DarkUI.Controls.DarkButton();
+			colorButton_Statements = new DarkUI.Controls.DarkButton();
+			colorButton_Operators = new DarkUI.Controls.DarkButton();
+			colorDialog = new System.Windows.Forms.ColorDialog();
+			darkLabel1 = new DarkUI.Controls.DarkLabel();
+			darkLabel10 = new DarkUI.Controls.DarkLabel();
+			darkLabel11 = new DarkUI.Controls.DarkLabel();
+			darkLabel12 = new DarkUI.Controls.DarkLabel();
+			darkLabel2 = new DarkUI.Controls.DarkLabel();
+			darkLabel3 = new DarkUI.Controls.DarkLabel();
+			darkLabel4 = new DarkUI.Controls.DarkLabel();
+			darkLabel5 = new DarkUI.Controls.DarkLabel();
+			darkLabel6 = new DarkUI.Controls.DarkLabel();
+			darkLabel7 = new DarkUI.Controls.DarkLabel();
+			darkLabel8 = new DarkUI.Controls.DarkLabel();
+			elementHost = new System.Windows.Forms.Integration.ElementHost();
+			groupBox_Colors = new DarkUI.Controls.DarkGroupBox();
+			button_SaveScheme = new DarkUI.Controls.DarkButton();
+			button_DeleteScheme = new DarkUI.Controls.DarkButton();
+			button_OpenSchemesFolder = new DarkUI.Controls.DarkButton();
+			comboBox_ColorSchemes = new DarkUI.Controls.DarkComboBox();
+			groupBox_Preview = new DarkUI.Controls.DarkGroupBox();
+			numeric_FontSize = new DarkUI.Controls.DarkNumericUpDown();
+			numeric_UndoStackSize = new DarkUI.Controls.DarkNumericUpDown();
+			sectionPanel = new DarkUI.Controls.DarkSectionPanel();
+			checkBox_CloseParentheses = new DarkUI.Controls.DarkCheckBox();
+			checkBox_CloseBraces = new DarkUI.Controls.DarkCheckBox();
+			checkBox_CloseQuotes = new DarkUI.Controls.DarkCheckBox();
+			checkBox_CloseBrackets = new DarkUI.Controls.DarkCheckBox();
+			comboBox_FontFamily = new DarkUI.Controls.DarkComboBox();
+			toolTip = new System.Windows.Forms.ToolTip(components);
+			buttonContextMenu.SuspendLayout();
+			groupBox_Colors.SuspendLayout();
+			groupBox_Preview.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)numeric_FontSize).BeginInit();
+			((System.ComponentModel.ISupportInitialize)numeric_UndoStackSize).BeginInit();
+			sectionPanel.SuspendLayout();
+			SuspendLayout();
 			// 
 			// button_ImportScheme
 			// 
-			this.button_ImportScheme.Checked = false;
-			this.button_ImportScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Import_16;
-			this.button_ImportScheme.Location = new System.Drawing.Point(483, 16);
-			this.button_ImportScheme.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.button_ImportScheme.Name = "button_ImportScheme";
-			this.button_ImportScheme.Size = new System.Drawing.Size(25, 25);
-			this.button_ImportScheme.TabIndex = 21;
-			this.toolTip.SetToolTip(this.button_ImportScheme, "Import Scheme...");
-			this.button_ImportScheme.Click += new System.EventHandler(this.button_ImportScheme_Click);
+			button_ImportScheme.Checked = false;
+			button_ImportScheme.Image = Properties.Resources.Import_16;
+			button_ImportScheme.Location = new System.Drawing.Point(483, 16);
+			button_ImportScheme.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			button_ImportScheme.Name = "button_ImportScheme";
+			button_ImportScheme.Size = new System.Drawing.Size(25, 25);
+			button_ImportScheme.TabIndex = 21;
+			toolTip.SetToolTip(button_ImportScheme, "Import Scheme...");
+			button_ImportScheme.Click += button_ImportScheme_Click;
 			// 
 			// buttonContextMenu
 			// 
-			this.buttonContextMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.buttonContextMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.buttonContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItem_Bold,
-            this.menuItem_Italic});
-			this.buttonContextMenu.Name = "buttonContextMenu";
-			this.buttonContextMenu.Size = new System.Drawing.Size(100, 48);
-			this.buttonContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.buttonContextMenu_Opening);
+			buttonContextMenu.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			buttonContextMenu.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			buttonContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { menuItem_Bold, menuItem_Italic });
+			buttonContextMenu.Name = "buttonContextMenu";
+			buttonContextMenu.Size = new System.Drawing.Size(100, 48);
+			buttonContextMenu.Opening += buttonContextMenu_Opening;
 			// 
 			// menuItem_Bold
 			// 
-			this.menuItem_Bold.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_Bold.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.menuItem_Bold.Name = "menuItem_Bold";
-			this.menuItem_Bold.Size = new System.Drawing.Size(99, 22);
-			this.menuItem_Bold.Text = "Bold";
-			this.menuItem_Bold.Click += new System.EventHandler(this.menuItem_Bold_Click);
+			menuItem_Bold.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			menuItem_Bold.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			menuItem_Bold.Name = "menuItem_Bold";
+			menuItem_Bold.Size = new System.Drawing.Size(99, 22);
+			menuItem_Bold.Text = "Bold";
+			menuItem_Bold.Click += menuItem_Bold_Click;
 			// 
 			// menuItem_Italic
 			// 
-			this.menuItem_Italic.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_Italic.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.menuItem_Italic.Name = "menuItem_Italic";
-			this.menuItem_Italic.Size = new System.Drawing.Size(99, 22);
-			this.menuItem_Italic.Text = "Italic";
-			this.menuItem_Italic.Click += new System.EventHandler(this.menuItem_Italic_Click);
+			menuItem_Italic.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			menuItem_Italic.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			menuItem_Italic.Name = "menuItem_Italic";
+			menuItem_Italic.Size = new System.Drawing.Size(99, 22);
+			menuItem_Italic.Text = "Italic";
+			menuItem_Italic.Click += menuItem_Italic_Click;
 			// 
 			// checkBox_Autocomplete
 			// 
-			this.checkBox_Autocomplete.AutoSize = true;
-			this.checkBox_Autocomplete.Enabled = false;
-			this.checkBox_Autocomplete.Location = new System.Drawing.Point(6, 166);
-			this.checkBox_Autocomplete.Margin = new System.Windows.Forms.Padding(6, 6, 3, 0);
-			this.checkBox_Autocomplete.Name = "checkBox_Autocomplete";
-			this.checkBox_Autocomplete.Size = new System.Drawing.Size(30, 17);
-			this.checkBox_Autocomplete.TabIndex = 6;
-			this.checkBox_Autocomplete.Text = "-";
+			checkBox_Autocomplete.AutoSize = true;
+			checkBox_Autocomplete.Enabled = false;
+			checkBox_Autocomplete.Location = new System.Drawing.Point(6, 166);
+			checkBox_Autocomplete.Margin = new System.Windows.Forms.Padding(6, 6, 3, 0);
+			checkBox_Autocomplete.Name = "checkBox_Autocomplete";
+			checkBox_Autocomplete.Size = new System.Drawing.Size(30, 17);
+			checkBox_Autocomplete.TabIndex = 6;
+			checkBox_Autocomplete.Text = "-";
 			// 
 			// checkBox_HighlightCurrentLine
 			// 
-			this.checkBox_HighlightCurrentLine.AutoSize = true;
-			this.checkBox_HighlightCurrentLine.Location = new System.Drawing.Point(6, 291);
-			this.checkBox_HighlightCurrentLine.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
-			this.checkBox_HighlightCurrentLine.Name = "checkBox_HighlightCurrentLine";
-			this.checkBox_HighlightCurrentLine.Size = new System.Drawing.Size(137, 17);
-			this.checkBox_HighlightCurrentLine.TabIndex = 11;
-			this.checkBox_HighlightCurrentLine.Text = "Highlight current line";
-			this.checkBox_HighlightCurrentLine.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
+			checkBox_HighlightCurrentLine.AutoSize = true;
+			checkBox_HighlightCurrentLine.Location = new System.Drawing.Point(6, 298);
+			checkBox_HighlightCurrentLine.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
+			checkBox_HighlightCurrentLine.Name = "checkBox_HighlightCurrentLine";
+			checkBox_HighlightCurrentLine.Size = new System.Drawing.Size(137, 17);
+			checkBox_HighlightCurrentLine.TabIndex = 11;
+			checkBox_HighlightCurrentLine.Text = "Highlight current line";
+			checkBox_HighlightCurrentLine.CheckedChanged += VisiblePreviewSetting_Changed;
 			// 
 			// checkBox_LineNumbers
 			// 
-			this.checkBox_LineNumbers.AutoSize = true;
-			this.checkBox_LineNumbers.Location = new System.Drawing.Point(6, 316);
-			this.checkBox_LineNumbers.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
-			this.checkBox_LineNumbers.Name = "checkBox_LineNumbers";
-			this.checkBox_LineNumbers.Size = new System.Drawing.Size(125, 17);
-			this.checkBox_LineNumbers.TabIndex = 12;
-			this.checkBox_LineNumbers.Text = "Show line numbers";
-			this.checkBox_LineNumbers.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
+			checkBox_LineNumbers.AutoSize = true;
+			checkBox_LineNumbers.Location = new System.Drawing.Point(6, 320);
+			checkBox_LineNumbers.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
+			checkBox_LineNumbers.Name = "checkBox_LineNumbers";
+			checkBox_LineNumbers.Size = new System.Drawing.Size(125, 17);
+			checkBox_LineNumbers.TabIndex = 12;
+			checkBox_LineNumbers.Text = "Show line numbers";
+			checkBox_LineNumbers.CheckedChanged += VisiblePreviewSetting_Changed;
 			// 
 			// checkBox_VisibleSpaces
 			// 
-			this.checkBox_VisibleSpaces.AutoSize = true;
-			this.checkBox_VisibleSpaces.Location = new System.Drawing.Point(6, 341);
-			this.checkBox_VisibleSpaces.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
-			this.checkBox_VisibleSpaces.Name = "checkBox_VisibleSpaces";
-			this.checkBox_VisibleSpaces.Size = new System.Drawing.Size(127, 17);
-			this.checkBox_VisibleSpaces.TabIndex = 14;
-			this.checkBox_VisibleSpaces.Text = "Show visible spaces";
-			this.checkBox_VisibleSpaces.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
+			checkBox_VisibleSpaces.AutoSize = true;
+			checkBox_VisibleSpaces.Location = new System.Drawing.Point(6, 342);
+			checkBox_VisibleSpaces.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
+			checkBox_VisibleSpaces.Name = "checkBox_VisibleSpaces";
+			checkBox_VisibleSpaces.Size = new System.Drawing.Size(127, 17);
+			checkBox_VisibleSpaces.TabIndex = 14;
+			checkBox_VisibleSpaces.Text = "Show visible spaces";
+			checkBox_VisibleSpaces.CheckedChanged += VisiblePreviewSetting_Changed;
 			// 
 			// checkBox_VisibleTabs
 			// 
-			this.checkBox_VisibleTabs.AutoSize = true;
-			this.checkBox_VisibleTabs.Location = new System.Drawing.Point(6, 366);
-			this.checkBox_VisibleTabs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.checkBox_VisibleTabs.Name = "checkBox_VisibleTabs";
-			this.checkBox_VisibleTabs.Size = new System.Drawing.Size(115, 17);
-			this.checkBox_VisibleTabs.TabIndex = 15;
-			this.checkBox_VisibleTabs.Text = "Show visible tabs";
-			this.checkBox_VisibleTabs.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
+			checkBox_VisibleTabs.AutoSize = true;
+			checkBox_VisibleTabs.Location = new System.Drawing.Point(6, 364);
+			checkBox_VisibleTabs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			checkBox_VisibleTabs.Name = "checkBox_VisibleTabs";
+			checkBox_VisibleTabs.Size = new System.Drawing.Size(115, 17);
+			checkBox_VisibleTabs.TabIndex = 15;
+			checkBox_VisibleTabs.Text = "Show visible tabs";
+			checkBox_VisibleTabs.CheckedChanged += VisiblePreviewSetting_Changed;
 			// 
 			// checkBox_WordWrapping
 			// 
-			this.checkBox_WordWrapping.AutoSize = true;
-			this.checkBox_WordWrapping.Location = new System.Drawing.Point(6, 191);
-			this.checkBox_WordWrapping.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
-			this.checkBox_WordWrapping.Name = "checkBox_WordWrapping";
-			this.checkBox_WordWrapping.Size = new System.Drawing.Size(108, 17);
-			this.checkBox_WordWrapping.TabIndex = 10;
-			this.checkBox_WordWrapping.Text = "Word wrapping";
-			this.checkBox_WordWrapping.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
+			checkBox_WordWrapping.AutoSize = true;
+			checkBox_WordWrapping.Location = new System.Drawing.Point(6, 188);
+			checkBox_WordWrapping.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
+			checkBox_WordWrapping.Name = "checkBox_WordWrapping";
+			checkBox_WordWrapping.Size = new System.Drawing.Size(108, 17);
+			checkBox_WordWrapping.TabIndex = 10;
+			checkBox_WordWrapping.Text = "Word wrapping";
+			checkBox_WordWrapping.CheckedChanged += VisiblePreviewSetting_Changed;
 			// 
 			// colorButton_Background
 			// 
-			this.colorButton_Background.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-			this.colorButton_Background.BackColorUseGeneric = false;
-			this.colorButton_Background.Checked = false;
-			this.colorButton_Background.Location = new System.Drawing.Point(370, 59);
-			this.colorButton_Background.Margin = new System.Windows.Forms.Padding(6, 0, 9, 3);
-			this.colorButton_Background.Name = "colorButton_Background";
-			this.colorButton_Background.Size = new System.Drawing.Size(169, 25);
-			this.colorButton_Background.TabIndex = 14;
-			this.colorButton_Background.Click += new System.EventHandler(this.button_Color_Click);
+			colorButton_Background.BackColor = System.Drawing.Color.FromArgb(32, 32, 32);
+			colorButton_Background.BackColorUseGeneric = false;
+			colorButton_Background.Checked = false;
+			colorButton_Background.Location = new System.Drawing.Point(370, 59);
+			colorButton_Background.Margin = new System.Windows.Forms.Padding(6, 0, 9, 3);
+			colorButton_Background.Name = "colorButton_Background";
+			colorButton_Background.Size = new System.Drawing.Size(169, 25);
+			colorButton_Background.TabIndex = 14;
+			colorButton_Background.Click += button_Color_Click;
 			// 
 			// colorButton_Foreground
 			// 
-			this.colorButton_Foreground.BackColor = System.Drawing.Color.Gainsboro;
-			this.colorButton_Foreground.BackColorUseGeneric = false;
-			this.colorButton_Foreground.Checked = false;
-			this.colorButton_Foreground.Location = new System.Drawing.Point(370, 100);
-			this.colorButton_Foreground.Margin = new System.Windows.Forms.Padding(6, 0, 9, 3);
-			this.colorButton_Foreground.Name = "colorButton_Foreground";
-			this.colorButton_Foreground.Size = new System.Drawing.Size(169, 25);
-			this.colorButton_Foreground.TabIndex = 16;
-			this.colorButton_Foreground.Click += new System.EventHandler(this.button_Color_Click);
+			colorButton_Foreground.BackColor = System.Drawing.Color.Gainsboro;
+			colorButton_Foreground.BackColorUseGeneric = false;
+			colorButton_Foreground.Checked = false;
+			colorButton_Foreground.Location = new System.Drawing.Point(370, 100);
+			colorButton_Foreground.Margin = new System.Windows.Forms.Padding(6, 0, 9, 3);
+			colorButton_Foreground.Name = "colorButton_Foreground";
+			colorButton_Foreground.Size = new System.Drawing.Size(169, 25);
+			colorButton_Foreground.TabIndex = 16;
+			colorButton_Foreground.Click += button_Color_Click;
 			// 
 			// colorButton_Comments
 			// 
-			this.colorButton_Comments.BackColor = System.Drawing.Color.Green;
-			this.colorButton_Comments.BackColorUseGeneric = false;
-			this.colorButton_Comments.Checked = false;
-			this.colorButton_Comments.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_Comments.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.colorButton_Comments.Location = new System.Drawing.Point(191, 100);
-			this.colorButton_Comments.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.colorButton_Comments.Name = "colorButton_Comments";
-			this.colorButton_Comments.Size = new System.Drawing.Size(170, 25);
-			this.colorButton_Comments.TabIndex = 9;
-			this.colorButton_Comments.UseForeColor = true;
-			this.colorButton_Comments.Click += new System.EventHandler(this.button_Color_Click);
+			colorButton_Comments.BackColor = System.Drawing.Color.Green;
+			colorButton_Comments.BackColorUseGeneric = false;
+			colorButton_Comments.Checked = false;
+			colorButton_Comments.ContextMenuStrip = buttonContextMenu;
+			colorButton_Comments.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			colorButton_Comments.Location = new System.Drawing.Point(191, 100);
+			colorButton_Comments.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			colorButton_Comments.Name = "colorButton_Comments";
+			colorButton_Comments.Size = new System.Drawing.Size(170, 25);
+			colorButton_Comments.TabIndex = 9;
+			colorButton_Comments.UseForeColor = true;
+			colorButton_Comments.Click += button_Color_Click;
 			// 
 			// colorButton_SpecialOperators
 			// 
-			this.colorButton_SpecialOperators.BackColor = System.Drawing.Color.Orchid;
-			this.colorButton_SpecialOperators.BackColorUseGeneric = false;
-			this.colorButton_SpecialOperators.Checked = false;
-			this.colorButton_SpecialOperators.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_SpecialOperators.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.colorButton_SpecialOperators.Location = new System.Drawing.Point(12, 141);
-			this.colorButton_SpecialOperators.Margin = new System.Windows.Forms.Padding(9, 0, 3, 8);
-			this.colorButton_SpecialOperators.Name = "colorButton_SpecialOperators";
-			this.colorButton_SpecialOperators.Size = new System.Drawing.Size(170, 25);
-			this.colorButton_SpecialOperators.TabIndex = 5;
-			this.colorButton_SpecialOperators.UseForeColor = true;
-			this.colorButton_SpecialOperators.Click += new System.EventHandler(this.button_Color_Click);
+			colorButton_SpecialOperators.BackColor = System.Drawing.Color.Orchid;
+			colorButton_SpecialOperators.BackColorUseGeneric = false;
+			colorButton_SpecialOperators.Checked = false;
+			colorButton_SpecialOperators.ContextMenuStrip = buttonContextMenu;
+			colorButton_SpecialOperators.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			colorButton_SpecialOperators.Location = new System.Drawing.Point(12, 141);
+			colorButton_SpecialOperators.Margin = new System.Windows.Forms.Padding(9, 0, 3, 8);
+			colorButton_SpecialOperators.Name = "colorButton_SpecialOperators";
+			colorButton_SpecialOperators.Size = new System.Drawing.Size(170, 25);
+			colorButton_SpecialOperators.TabIndex = 5;
+			colorButton_SpecialOperators.UseForeColor = true;
+			colorButton_SpecialOperators.Click += button_Color_Click;
 			// 
 			// colorButton_Values
 			// 
-			this.colorButton_Values.BackColor = System.Drawing.Color.SteelBlue;
-			this.colorButton_Values.BackColorUseGeneric = false;
-			this.colorButton_Values.Checked = false;
-			this.colorButton_Values.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_Values.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.colorButton_Values.Location = new System.Drawing.Point(12, 59);
-			this.colorButton_Values.Margin = new System.Windows.Forms.Padding(9, 0, 3, 3);
-			this.colorButton_Values.Name = "colorButton_Values";
-			this.colorButton_Values.Size = new System.Drawing.Size(170, 25);
-			this.colorButton_Values.TabIndex = 1;
-			this.colorButton_Values.UseForeColor = true;
-			this.colorButton_Values.Click += new System.EventHandler(this.button_Color_Click);
+			colorButton_Values.BackColor = System.Drawing.Color.SteelBlue;
+			colorButton_Values.BackColorUseGeneric = false;
+			colorButton_Values.Checked = false;
+			colorButton_Values.ContextMenuStrip = buttonContextMenu;
+			colorButton_Values.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			colorButton_Values.Location = new System.Drawing.Point(12, 59);
+			colorButton_Values.Margin = new System.Windows.Forms.Padding(9, 0, 3, 3);
+			colorButton_Values.Name = "colorButton_Values";
+			colorButton_Values.Size = new System.Drawing.Size(170, 25);
+			colorButton_Values.TabIndex = 1;
+			colorButton_Values.UseForeColor = true;
+			colorButton_Values.Click += button_Color_Click;
 			// 
 			// colorButton_Statements
 			// 
-			this.colorButton_Statements.BackColor = System.Drawing.Color.MediumAquamarine;
-			this.colorButton_Statements.BackColorUseGeneric = false;
-			this.colorButton_Statements.Checked = false;
-			this.colorButton_Statements.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_Statements.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.colorButton_Statements.Location = new System.Drawing.Point(191, 59);
-			this.colorButton_Statements.Margin = new System.Windows.Forms.Padding(6, 0, 3, 3);
-			this.colorButton_Statements.Name = "colorButton_Statements";
-			this.colorButton_Statements.Size = new System.Drawing.Size(170, 25);
-			this.colorButton_Statements.TabIndex = 7;
-			this.colorButton_Statements.UseForeColor = true;
-			this.colorButton_Statements.Click += new System.EventHandler(this.button_Color_Click);
+			colorButton_Statements.BackColor = System.Drawing.Color.MediumAquamarine;
+			colorButton_Statements.BackColorUseGeneric = false;
+			colorButton_Statements.Checked = false;
+			colorButton_Statements.ContextMenuStrip = buttonContextMenu;
+			colorButton_Statements.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			colorButton_Statements.Location = new System.Drawing.Point(191, 59);
+			colorButton_Statements.Margin = new System.Windows.Forms.Padding(6, 0, 3, 3);
+			colorButton_Statements.Name = "colorButton_Statements";
+			colorButton_Statements.Size = new System.Drawing.Size(170, 25);
+			colorButton_Statements.TabIndex = 7;
+			colorButton_Statements.UseForeColor = true;
+			colorButton_Statements.Click += button_Color_Click;
 			// 
 			// colorButton_Operators
 			// 
-			this.colorButton_Operators.BackColor = System.Drawing.Color.LightSalmon;
-			this.colorButton_Operators.BackColorUseGeneric = false;
-			this.colorButton_Operators.Checked = false;
-			this.colorButton_Operators.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_Operators.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.colorButton_Operators.Location = new System.Drawing.Point(12, 100);
-			this.colorButton_Operators.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.colorButton_Operators.Name = "colorButton_Operators";
-			this.colorButton_Operators.Size = new System.Drawing.Size(170, 25);
-			this.colorButton_Operators.TabIndex = 3;
-			this.colorButton_Operators.UseForeColor = true;
-			this.colorButton_Operators.Click += new System.EventHandler(this.button_Color_Click);
+			colorButton_Operators.BackColor = System.Drawing.Color.LightSalmon;
+			colorButton_Operators.BackColorUseGeneric = false;
+			colorButton_Operators.Checked = false;
+			colorButton_Operators.ContextMenuStrip = buttonContextMenu;
+			colorButton_Operators.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			colorButton_Operators.Location = new System.Drawing.Point(12, 100);
+			colorButton_Operators.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			colorButton_Operators.Name = "colorButton_Operators";
+			colorButton_Operators.Size = new System.Drawing.Size(170, 25);
+			colorButton_Operators.TabIndex = 3;
+			colorButton_Operators.UseForeColor = true;
+			colorButton_Operators.Click += button_Color_Click;
 			// 
 			// colorDialog
 			// 
-			this.colorDialog.AnyColor = true;
-			this.colorDialog.FullOpen = true;
+			colorDialog.AnyColor = true;
+			colorDialog.FullOpen = true;
 			// 
 			// darkLabel1
 			// 
-			this.darkLabel1.AutoSize = true;
-			this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel1.Location = new System.Drawing.Point(7, 34);
-			this.darkLabel1.Margin = new System.Windows.Forms.Padding(6, 9, 3, 0);
-			this.darkLabel1.Name = "darkLabel1";
-			this.darkLabel1.Size = new System.Drawing.Size(56, 13);
-			this.darkLabel1.TabIndex = 0;
-			this.darkLabel1.Text = "Font size:";
+			darkLabel1.AutoSize = true;
+			darkLabel1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel1.Location = new System.Drawing.Point(7, 34);
+			darkLabel1.Margin = new System.Windows.Forms.Padding(6, 9, 3, 0);
+			darkLabel1.Name = "darkLabel1";
+			darkLabel1.Size = new System.Drawing.Size(56, 13);
+			darkLabel1.TabIndex = 0;
+			darkLabel1.Text = "Font size:";
 			// 
 			// darkLabel10
 			// 
-			this.darkLabel10.AutoSize = true;
-			this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel10.Location = new System.Drawing.Point(370, 46);
-			this.darkLabel10.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-			this.darkLabel10.Name = "darkLabel10";
-			this.darkLabel10.Size = new System.Drawing.Size(72, 13);
-			this.darkLabel10.TabIndex = 13;
-			this.darkLabel10.Text = "Background:";
+			darkLabel10.AutoSize = true;
+			darkLabel10.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel10.Location = new System.Drawing.Point(370, 46);
+			darkLabel10.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+			darkLabel10.Name = "darkLabel10";
+			darkLabel10.Size = new System.Drawing.Size(72, 13);
+			darkLabel10.TabIndex = 13;
+			darkLabel10.Text = "Background:";
 			// 
 			// darkLabel11
 			// 
-			this.darkLabel11.AutoSize = true;
-			this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel11.Location = new System.Drawing.Point(370, 87);
-			this.darkLabel11.Name = "darkLabel11";
-			this.darkLabel11.Size = new System.Drawing.Size(98, 13);
-			this.darkLabel11.TabIndex = 15;
-			this.darkLabel11.Text = "Normal text color:";
+			darkLabel11.AutoSize = true;
+			darkLabel11.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel11.Location = new System.Drawing.Point(370, 87);
+			darkLabel11.Name = "darkLabel11";
+			darkLabel11.Size = new System.Drawing.Size(98, 13);
+			darkLabel11.TabIndex = 15;
+			darkLabel11.Text = "Normal text color:";
 			// 
 			// darkLabel12
 			// 
-			this.darkLabel12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel12.Location = new System.Drawing.Point(475, 17);
-			this.darkLabel12.Name = "darkLabel12";
-			this.darkLabel12.Size = new System.Drawing.Size(2, 23);
-			this.darkLabel12.TabIndex = 20;
+			darkLabel12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			darkLabel12.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel12.Location = new System.Drawing.Point(475, 17);
+			darkLabel12.Name = "darkLabel12";
+			darkLabel12.Size = new System.Drawing.Size(2, 23);
+			darkLabel12.TabIndex = 20;
 			// 
 			// darkLabel2
 			// 
-			this.darkLabel2.AutoSize = true;
-			this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel2.Location = new System.Drawing.Point(7, 76);
-			this.darkLabel2.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
-			this.darkLabel2.Name = "darkLabel2";
-			this.darkLabel2.Size = new System.Drawing.Size(67, 13);
-			this.darkLabel2.TabIndex = 2;
-			this.darkLabel2.Text = "Font family:";
+			darkLabel2.AutoSize = true;
+			darkLabel2.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel2.Location = new System.Drawing.Point(7, 76);
+			darkLabel2.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
+			darkLabel2.Name = "darkLabel2";
+			darkLabel2.Size = new System.Drawing.Size(67, 13);
+			darkLabel2.TabIndex = 2;
+			darkLabel2.Text = "Font family:";
 			// 
 			// darkLabel3
 			// 
-			this.darkLabel3.AutoSize = true;
-			this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel3.Location = new System.Drawing.Point(7, 119);
-			this.darkLabel3.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
-			this.darkLabel3.Name = "darkLabel3";
-			this.darkLabel3.Size = new System.Drawing.Size(90, 13);
-			this.darkLabel3.TabIndex = 4;
-			this.darkLabel3.Text = "Undo stack size:";
+			darkLabel3.AutoSize = true;
+			darkLabel3.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel3.Location = new System.Drawing.Point(7, 119);
+			darkLabel3.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
+			darkLabel3.Name = "darkLabel3";
+			darkLabel3.Size = new System.Drawing.Size(90, 13);
+			darkLabel3.TabIndex = 4;
+			darkLabel3.Text = "Undo stack size:";
 			// 
 			// darkLabel4
 			// 
-			this.darkLabel4.AutoSize = true;
-			this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel4.Location = new System.Drawing.Point(12, 46);
-			this.darkLabel4.Margin = new System.Windows.Forms.Padding(9, 3, 3, 0);
-			this.darkLabel4.Name = "darkLabel4";
-			this.darkLabel4.Size = new System.Drawing.Size(40, 13);
-			this.darkLabel4.TabIndex = 0;
-			this.darkLabel4.Text = "Values";
+			darkLabel4.AutoSize = true;
+			darkLabel4.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel4.Location = new System.Drawing.Point(12, 46);
+			darkLabel4.Margin = new System.Windows.Forms.Padding(9, 3, 3, 0);
+			darkLabel4.Name = "darkLabel4";
+			darkLabel4.Size = new System.Drawing.Size(40, 13);
+			darkLabel4.TabIndex = 0;
+			darkLabel4.Text = "Values";
 			// 
 			// darkLabel5
 			// 
-			this.darkLabel5.AutoSize = true;
-			this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel5.Location = new System.Drawing.Point(12, 87);
-			this.darkLabel5.Name = "darkLabel5";
-			this.darkLabel5.Size = new System.Drawing.Size(62, 13);
-			this.darkLabel5.TabIndex = 2;
-			this.darkLabel5.Text = "Operators:";
+			darkLabel5.AutoSize = true;
+			darkLabel5.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel5.Location = new System.Drawing.Point(12, 87);
+			darkLabel5.Name = "darkLabel5";
+			darkLabel5.Size = new System.Drawing.Size(62, 13);
+			darkLabel5.TabIndex = 2;
+			darkLabel5.Text = "Operators:";
 			// 
 			// darkLabel6
 			// 
-			this.darkLabel6.AutoSize = true;
-			this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel6.Location = new System.Drawing.Point(12, 128);
-			this.darkLabel6.Name = "darkLabel6";
-			this.darkLabel6.Size = new System.Drawing.Size(98, 13);
-			this.darkLabel6.TabIndex = 4;
-			this.darkLabel6.Text = "Special Operators";
+			darkLabel6.AutoSize = true;
+			darkLabel6.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel6.Location = new System.Drawing.Point(12, 128);
+			darkLabel6.Name = "darkLabel6";
+			darkLabel6.Size = new System.Drawing.Size(98, 13);
+			darkLabel6.TabIndex = 4;
+			darkLabel6.Text = "Special Operators";
 			// 
 			// darkLabel7
 			// 
-			this.darkLabel7.AutoSize = true;
-			this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel7.Location = new System.Drawing.Point(190, 46);
-			this.darkLabel7.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-			this.darkLabel7.Name = "darkLabel7";
-			this.darkLabel7.Size = new System.Drawing.Size(67, 13);
-			this.darkLabel7.TabIndex = 6;
-			this.darkLabel7.Text = "Statements:";
+			darkLabel7.AutoSize = true;
+			darkLabel7.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel7.Location = new System.Drawing.Point(190, 46);
+			darkLabel7.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+			darkLabel7.Name = "darkLabel7";
+			darkLabel7.Size = new System.Drawing.Size(67, 13);
+			darkLabel7.TabIndex = 6;
+			darkLabel7.Text = "Statements:";
 			// 
 			// darkLabel8
 			// 
-			this.darkLabel8.AutoSize = true;
-			this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel8.Location = new System.Drawing.Point(190, 87);
-			this.darkLabel8.Name = "darkLabel8";
-			this.darkLabel8.Size = new System.Drawing.Size(61, 13);
-			this.darkLabel8.TabIndex = 8;
-			this.darkLabel8.Text = "Comments";
+			darkLabel8.AutoSize = true;
+			darkLabel8.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel8.Location = new System.Drawing.Point(190, 87);
+			darkLabel8.Name = "darkLabel8";
+			darkLabel8.Size = new System.Drawing.Size(61, 13);
+			darkLabel8.TabIndex = 8;
+			darkLabel8.Text = "Comments";
 			// 
 			// elementHost
 			// 
-			this.elementHost.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.elementHost.Location = new System.Drawing.Point(3, 18);
-			this.elementHost.Name = "elementHost";
-			this.elementHost.Size = new System.Drawing.Size(545, 170);
-			this.elementHost.TabIndex = 0;
-			this.elementHost.Child = null;
+			elementHost.Dock = System.Windows.Forms.DockStyle.Fill;
+			elementHost.Location = new System.Drawing.Point(3, 18);
+			elementHost.Name = "elementHost";
+			elementHost.Size = new System.Drawing.Size(545, 170);
+			elementHost.TabIndex = 0;
 			// 
 			// groupBox_Colors
 			// 
-			this.groupBox_Colors.Controls.Add(this.button_ImportScheme);
-			this.groupBox_Colors.Controls.Add(this.darkLabel12);
-			this.groupBox_Colors.Controls.Add(this.button_SaveScheme);
-			this.groupBox_Colors.Controls.Add(this.button_DeleteScheme);
-			this.groupBox_Colors.Controls.Add(this.button_OpenSchemesFolder);
-			this.groupBox_Colors.Controls.Add(this.darkLabel11);
-			this.groupBox_Colors.Controls.Add(this.colorButton_Foreground);
-			this.groupBox_Colors.Controls.Add(this.darkLabel10);
-			this.groupBox_Colors.Controls.Add(this.colorButton_Background);
-			this.groupBox_Colors.Controls.Add(this.comboBox_ColorSchemes);
-			this.groupBox_Colors.Controls.Add(this.darkLabel8);
-			this.groupBox_Colors.Controls.Add(this.darkLabel7);
-			this.groupBox_Colors.Controls.Add(this.darkLabel6);
-			this.groupBox_Colors.Controls.Add(this.darkLabel5);
-			this.groupBox_Colors.Controls.Add(this.darkLabel4);
-			this.groupBox_Colors.Controls.Add(this.colorButton_Statements);
-			this.groupBox_Colors.Controls.Add(this.colorButton_Comments);
-			this.groupBox_Colors.Controls.Add(this.colorButton_Values);
-			this.groupBox_Colors.Controls.Add(this.colorButton_Operators);
-			this.groupBox_Colors.Controls.Add(this.colorButton_SpecialOperators);
-			this.groupBox_Colors.Enabled = false;
-			this.groupBox_Colors.Location = new System.Drawing.Point(162, 28);
-			this.groupBox_Colors.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
-			this.groupBox_Colors.Name = "groupBox_Colors";
-			this.groupBox_Colors.Size = new System.Drawing.Size(551, 177);
-			this.groupBox_Colors.TabIndex = 17;
-			this.groupBox_Colors.TabStop = false;
-			this.groupBox_Colors.Text = "Color schemes (Not implemented yet)";
+			groupBox_Colors.Controls.Add(button_ImportScheme);
+			groupBox_Colors.Controls.Add(darkLabel12);
+			groupBox_Colors.Controls.Add(button_SaveScheme);
+			groupBox_Colors.Controls.Add(button_DeleteScheme);
+			groupBox_Colors.Controls.Add(button_OpenSchemesFolder);
+			groupBox_Colors.Controls.Add(darkLabel11);
+			groupBox_Colors.Controls.Add(colorButton_Foreground);
+			groupBox_Colors.Controls.Add(darkLabel10);
+			groupBox_Colors.Controls.Add(colorButton_Background);
+			groupBox_Colors.Controls.Add(comboBox_ColorSchemes);
+			groupBox_Colors.Controls.Add(darkLabel8);
+			groupBox_Colors.Controls.Add(darkLabel7);
+			groupBox_Colors.Controls.Add(darkLabel6);
+			groupBox_Colors.Controls.Add(darkLabel5);
+			groupBox_Colors.Controls.Add(darkLabel4);
+			groupBox_Colors.Controls.Add(colorButton_Statements);
+			groupBox_Colors.Controls.Add(colorButton_Comments);
+			groupBox_Colors.Controls.Add(colorButton_Values);
+			groupBox_Colors.Controls.Add(colorButton_Operators);
+			groupBox_Colors.Controls.Add(colorButton_SpecialOperators);
+			groupBox_Colors.Enabled = false;
+			groupBox_Colors.Location = new System.Drawing.Point(162, 28);
+			groupBox_Colors.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
+			groupBox_Colors.Name = "groupBox_Colors";
+			groupBox_Colors.Size = new System.Drawing.Size(551, 177);
+			groupBox_Colors.TabIndex = 17;
+			groupBox_Colors.TabStop = false;
+			groupBox_Colors.Text = "Color schemes (Not implemented yet)";
 			// 
 			// button_SaveScheme
 			// 
-			this.button_SaveScheme.Checked = false;
-			this.button_SaveScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Save_16;
-			this.button_SaveScheme.Location = new System.Drawing.Point(413, 16);
-			this.button_SaveScheme.Name = "button_SaveScheme";
-			this.button_SaveScheme.Size = new System.Drawing.Size(25, 25);
-			this.button_SaveScheme.TabIndex = 19;
-			this.toolTip.SetToolTip(this.button_SaveScheme, "Save Scheme As...");
-			this.button_SaveScheme.Click += new System.EventHandler(this.button_SaveScheme_Click);
+			button_SaveScheme.Checked = false;
+			button_SaveScheme.Image = Properties.Resources.Save_16;
+			button_SaveScheme.Location = new System.Drawing.Point(413, 16);
+			button_SaveScheme.Name = "button_SaveScheme";
+			button_SaveScheme.Size = new System.Drawing.Size(25, 25);
+			button_SaveScheme.TabIndex = 19;
+			toolTip.SetToolTip(button_SaveScheme, "Save Scheme As...");
+			button_SaveScheme.Click += button_SaveScheme_Click;
 			// 
 			// button_DeleteScheme
 			// 
-			this.button_DeleteScheme.Checked = false;
-			this.button_DeleteScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Trash_16;
-			this.button_DeleteScheme.Location = new System.Drawing.Point(444, 16);
-			this.button_DeleteScheme.Name = "button_DeleteScheme";
-			this.button_DeleteScheme.Size = new System.Drawing.Size(25, 25);
-			this.button_DeleteScheme.TabIndex = 18;
-			this.toolTip.SetToolTip(this.button_DeleteScheme, "Delete Scheme");
-			this.button_DeleteScheme.Click += new System.EventHandler(this.button_DeleteScheme_Click);
+			button_DeleteScheme.Checked = false;
+			button_DeleteScheme.Image = Properties.Resources.Trash_16;
+			button_DeleteScheme.Location = new System.Drawing.Point(444, 16);
+			button_DeleteScheme.Name = "button_DeleteScheme";
+			button_DeleteScheme.Size = new System.Drawing.Size(25, 25);
+			button_DeleteScheme.TabIndex = 18;
+			toolTip.SetToolTip(button_DeleteScheme, "Delete Scheme");
+			button_DeleteScheme.Click += button_DeleteScheme_Click;
 			// 
 			// button_OpenSchemesFolder
 			// 
-			this.button_OpenSchemesFolder.Checked = false;
-			this.button_OpenSchemesFolder.Image = global::TombIDE.ScriptingStudio.Properties.Resources.ForwardArrow_16;
-			this.button_OpenSchemesFolder.Location = new System.Drawing.Point(514, 16);
-			this.button_OpenSchemesFolder.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			this.button_OpenSchemesFolder.Name = "button_OpenSchemesFolder";
-			this.button_OpenSchemesFolder.Size = new System.Drawing.Size(25, 25);
-			this.button_OpenSchemesFolder.TabIndex = 17;
-			this.toolTip.SetToolTip(this.button_OpenSchemesFolder, "Open Schemes Folder");
-			this.button_OpenSchemesFolder.Click += new System.EventHandler(this.button_OpenSchemesFolder_Click);
+			button_OpenSchemesFolder.Checked = false;
+			button_OpenSchemesFolder.Image = Properties.Resources.ForwardArrow_16;
+			button_OpenSchemesFolder.Location = new System.Drawing.Point(514, 16);
+			button_OpenSchemesFolder.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			button_OpenSchemesFolder.Name = "button_OpenSchemesFolder";
+			button_OpenSchemesFolder.Size = new System.Drawing.Size(25, 25);
+			button_OpenSchemesFolder.TabIndex = 17;
+			toolTip.SetToolTip(button_OpenSchemesFolder, "Open Schemes Folder");
+			button_OpenSchemesFolder.Click += button_OpenSchemesFolder_Click;
 			// 
 			// comboBox_ColorSchemes
 			// 
-			this.comboBox_ColorSchemes.FormattingEnabled = true;
-			this.comboBox_ColorSchemes.Location = new System.Drawing.Point(12, 19);
-			this.comboBox_ColorSchemes.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
-			this.comboBox_ColorSchemes.Name = "comboBox_ColorSchemes";
-			this.comboBox_ColorSchemes.Size = new System.Drawing.Size(395, 23);
-			this.comboBox_ColorSchemes.TabIndex = 12;
-			this.comboBox_ColorSchemes.SelectedIndexChanged += new System.EventHandler(this.comboBox_ColorSchemes_SelectedIndexChanged);
+			comboBox_ColorSchemes.FormattingEnabled = true;
+			comboBox_ColorSchemes.Location = new System.Drawing.Point(12, 19);
+			comboBox_ColorSchemes.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
+			comboBox_ColorSchemes.Name = "comboBox_ColorSchemes";
+			comboBox_ColorSchemes.Size = new System.Drawing.Size(395, 23);
+			comboBox_ColorSchemes.TabIndex = 12;
+			comboBox_ColorSchemes.SelectedIndexChanged += comboBox_ColorSchemes_SelectedIndexChanged;
 			// 
 			// groupBox_Preview
 			// 
-			this.groupBox_Preview.Controls.Add(this.elementHost);
-			this.groupBox_Preview.Location = new System.Drawing.Point(162, 214);
-			this.groupBox_Preview.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
-			this.groupBox_Preview.Name = "groupBox_Preview";
-			this.groupBox_Preview.Size = new System.Drawing.Size(551, 191);
-			this.groupBox_Preview.TabIndex = 2;
-			this.groupBox_Preview.TabStop = false;
-			this.groupBox_Preview.Text = "Preview";
+			groupBox_Preview.Controls.Add(elementHost);
+			groupBox_Preview.Location = new System.Drawing.Point(162, 214);
+			groupBox_Preview.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
+			groupBox_Preview.Name = "groupBox_Preview";
+			groupBox_Preview.Size = new System.Drawing.Size(551, 191);
+			groupBox_Preview.TabIndex = 2;
+			groupBox_Preview.TabStop = false;
+			groupBox_Preview.Text = "Preview";
 			// 
 			// numeric_FontSize
 			// 
-			this.numeric_FontSize.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-			this.numeric_FontSize.Location = new System.Drawing.Point(6, 50);
-			this.numeric_FontSize.LoopValues = false;
-			this.numeric_FontSize.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-			this.numeric_FontSize.Maximum = new decimal(new int[] {
-            32,
-            0,
-            0,
-            0});
-			this.numeric_FontSize.Minimum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-			this.numeric_FontSize.Name = "numeric_FontSize";
-			this.numeric_FontSize.Size = new System.Drawing.Size(150, 22);
-			this.numeric_FontSize.TabIndex = 1;
-			this.numeric_FontSize.Value = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-			this.numeric_FontSize.ValueChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
+			numeric_FontSize.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+			numeric_FontSize.Location = new System.Drawing.Point(6, 50);
+			numeric_FontSize.LoopValues = false;
+			numeric_FontSize.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+			numeric_FontSize.Maximum = new decimal(new int[] { 32, 0, 0, 0 });
+			numeric_FontSize.Minimum = new decimal(new int[] { 4, 0, 0, 0 });
+			numeric_FontSize.Name = "numeric_FontSize";
+			numeric_FontSize.Size = new System.Drawing.Size(150, 22);
+			numeric_FontSize.TabIndex = 1;
+			numeric_FontSize.Value = new decimal(new int[] { 12, 0, 0, 0 });
+			numeric_FontSize.ValueChanged += VisiblePreviewSetting_Changed;
 			// 
 			// numeric_UndoStackSize
 			// 
-			this.numeric_UndoStackSize.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-			this.numeric_UndoStackSize.Location = new System.Drawing.Point(6, 135);
-			this.numeric_UndoStackSize.LoopValues = false;
-			this.numeric_UndoStackSize.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-			this.numeric_UndoStackSize.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
-			this.numeric_UndoStackSize.Minimum = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
-			this.numeric_UndoStackSize.Name = "numeric_UndoStackSize";
-			this.numeric_UndoStackSize.Size = new System.Drawing.Size(150, 22);
-			this.numeric_UndoStackSize.TabIndex = 5;
-			this.numeric_UndoStackSize.Value = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
+			numeric_UndoStackSize.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+			numeric_UndoStackSize.Location = new System.Drawing.Point(6, 135);
+			numeric_UndoStackSize.LoopValues = false;
+			numeric_UndoStackSize.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+			numeric_UndoStackSize.Maximum = new decimal(new int[] { 1024, 0, 0, 0 });
+			numeric_UndoStackSize.Minimum = new decimal(new int[] { 16, 0, 0, 0 });
+			numeric_UndoStackSize.Name = "numeric_UndoStackSize";
+			numeric_UndoStackSize.Size = new System.Drawing.Size(150, 22);
+			numeric_UndoStackSize.TabIndex = 5;
+			numeric_UndoStackSize.Value = new decimal(new int[] { 256, 0, 0, 0 });
 			// 
 			// sectionPanel
 			// 
-			this.sectionPanel.Controls.Add(this.checkBox_CloseBraces);
-			this.sectionPanel.Controls.Add(this.checkBox_CloseQuotes);
-			this.sectionPanel.Controls.Add(this.checkBox_CloseBrackets);
-			this.sectionPanel.Controls.Add(this.groupBox_Preview);
-			this.sectionPanel.Controls.Add(this.checkBox_HighlightCurrentLine);
-			this.sectionPanel.Controls.Add(this.checkBox_VisibleTabs);
-			this.sectionPanel.Controls.Add(this.checkBox_VisibleSpaces);
-			this.sectionPanel.Controls.Add(this.checkBox_LineNumbers);
-			this.sectionPanel.Controls.Add(this.darkLabel3);
-			this.sectionPanel.Controls.Add(this.darkLabel2);
-			this.sectionPanel.Controls.Add(this.darkLabel1);
-			this.sectionPanel.Controls.Add(this.numeric_UndoStackSize);
-			this.sectionPanel.Controls.Add(this.checkBox_Autocomplete);
-			this.sectionPanel.Controls.Add(this.checkBox_WordWrapping);
-			this.sectionPanel.Controls.Add(this.groupBox_Colors);
-			this.sectionPanel.Controls.Add(this.comboBox_FontFamily);
-			this.sectionPanel.Controls.Add(this.numeric_FontSize);
-			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
-			this.sectionPanel.Name = "sectionPanel";
-			this.sectionPanel.SectionHeader = "Lua";
-			this.sectionPanel.Size = new System.Drawing.Size(720, 412);
-			this.sectionPanel.TabIndex = 0;
+			sectionPanel.Controls.Add(checkBox_CloseParentheses);
+			sectionPanel.Controls.Add(checkBox_CloseBraces);
+			sectionPanel.Controls.Add(checkBox_CloseQuotes);
+			sectionPanel.Controls.Add(checkBox_CloseBrackets);
+			sectionPanel.Controls.Add(groupBox_Preview);
+			sectionPanel.Controls.Add(checkBox_HighlightCurrentLine);
+			sectionPanel.Controls.Add(checkBox_VisibleTabs);
+			sectionPanel.Controls.Add(checkBox_VisibleSpaces);
+			sectionPanel.Controls.Add(checkBox_LineNumbers);
+			sectionPanel.Controls.Add(darkLabel3);
+			sectionPanel.Controls.Add(darkLabel2);
+			sectionPanel.Controls.Add(darkLabel1);
+			sectionPanel.Controls.Add(numeric_UndoStackSize);
+			sectionPanel.Controls.Add(checkBox_Autocomplete);
+			sectionPanel.Controls.Add(checkBox_WordWrapping);
+			sectionPanel.Controls.Add(groupBox_Colors);
+			sectionPanel.Controls.Add(comboBox_FontFamily);
+			sectionPanel.Controls.Add(numeric_FontSize);
+			sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			sectionPanel.Location = new System.Drawing.Point(0, 0);
+			sectionPanel.Name = "sectionPanel";
+			sectionPanel.SectionHeader = "Lua";
+			sectionPanel.Size = new System.Drawing.Size(720, 412);
+			sectionPanel.TabIndex = 0;
+			// 
+			// checkBox_CloseParentheses
+			// 
+			checkBox_CloseParentheses.Location = new System.Drawing.Point(6, 210);
+			checkBox_CloseParentheses.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
+			checkBox_CloseParentheses.Name = "checkBox_CloseParentheses";
+			checkBox_CloseParentheses.Size = new System.Drawing.Size(150, 17);
+			checkBox_CloseParentheses.TabIndex = 21;
+			checkBox_CloseParentheses.Text = "Auto close parentheses ( )";
 			// 
 			// checkBox_CloseBraces
 			// 
-			this.checkBox_CloseBraces.AutoSize = true;
-			this.checkBox_CloseBraces.Location = new System.Drawing.Point(6, 266);
-			this.checkBox_CloseBraces.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.checkBox_CloseBraces.Name = "checkBox_CloseBraces";
-			this.checkBox_CloseBraces.Size = new System.Drawing.Size(128, 17);
-			this.checkBox_CloseBraces.TabIndex = 20;
-			this.checkBox_CloseBraces.Text = "Auto close braces { }";
+			checkBox_CloseBraces.AutoSize = true;
+			checkBox_CloseBraces.Location = new System.Drawing.Point(6, 254);
+			checkBox_CloseBraces.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			checkBox_CloseBraces.Name = "checkBox_CloseBraces";
+			checkBox_CloseBraces.Size = new System.Drawing.Size(128, 17);
+			checkBox_CloseBraces.TabIndex = 20;
+			checkBox_CloseBraces.Text = "Auto close braces { }";
 			// 
 			// checkBox_CloseQuotes
 			// 
-			this.checkBox_CloseQuotes.AutoSize = true;
-			this.checkBox_CloseQuotes.Location = new System.Drawing.Point(6, 241);
-			this.checkBox_CloseQuotes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.checkBox_CloseQuotes.Name = "checkBox_CloseQuotes";
-			this.checkBox_CloseQuotes.Size = new System.Drawing.Size(133, 17);
-			this.checkBox_CloseQuotes.TabIndex = 19;
-			this.checkBox_CloseQuotes.Text = "Auto close quotes \" \"";
+			checkBox_CloseQuotes.AutoSize = true;
+			checkBox_CloseQuotes.Location = new System.Drawing.Point(6, 276);
+			checkBox_CloseQuotes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			checkBox_CloseQuotes.Name = "checkBox_CloseQuotes";
+			checkBox_CloseQuotes.Size = new System.Drawing.Size(133, 17);
+			checkBox_CloseQuotes.TabIndex = 19;
+			checkBox_CloseQuotes.Text = "Auto close quotes \" \"";
 			// 
 			// checkBox_CloseBrackets
 			// 
-			this.checkBox_CloseBrackets.AutoSize = true;
-			this.checkBox_CloseBrackets.Location = new System.Drawing.Point(6, 216);
-			this.checkBox_CloseBrackets.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
-			this.checkBox_CloseBrackets.Name = "checkBox_CloseBrackets";
-			this.checkBox_CloseBrackets.Size = new System.Drawing.Size(138, 17);
-			this.checkBox_CloseBrackets.TabIndex = 18;
-			this.checkBox_CloseBrackets.Text = "Auto close brackets [ ]";
+			checkBox_CloseBrackets.AutoSize = true;
+			checkBox_CloseBrackets.Location = new System.Drawing.Point(6, 232);
+			checkBox_CloseBrackets.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
+			checkBox_CloseBrackets.Name = "checkBox_CloseBrackets";
+			checkBox_CloseBrackets.Size = new System.Drawing.Size(138, 17);
+			checkBox_CloseBrackets.TabIndex = 18;
+			checkBox_CloseBrackets.Text = "Auto close brackets [ ]";
 			// 
 			// comboBox_FontFamily
 			// 
-			this.comboBox_FontFamily.FormattingEnabled = true;
-			this.comboBox_FontFamily.Location = new System.Drawing.Point(6, 92);
-			this.comboBox_FontFamily.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-			this.comboBox_FontFamily.Name = "comboBox_FontFamily";
-			this.comboBox_FontFamily.Size = new System.Drawing.Size(150, 23);
-			this.comboBox_FontFamily.TabIndex = 3;
-			this.comboBox_FontFamily.SelectedIndexChanged += new System.EventHandler(this.comboBox_FontFamily_SelectedIndexChanged);
+			comboBox_FontFamily.FormattingEnabled = true;
+			comboBox_FontFamily.Location = new System.Drawing.Point(6, 92);
+			comboBox_FontFamily.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+			comboBox_FontFamily.Name = "comboBox_FontFamily";
+			comboBox_FontFamily.Size = new System.Drawing.Size(150, 23);
+			comboBox_FontFamily.TabIndex = 3;
+			comboBox_FontFamily.SelectedIndexChanged += comboBox_FontFamily_SelectedIndexChanged;
 			// 
 			// LuaSettingsControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
-			this.Controls.Add(this.sectionPanel);
-			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MaximumSize = new System.Drawing.Size(720, 412);
-			this.MinimumSize = new System.Drawing.Size(720, 412);
-			this.Name = "LuaSettingsControl";
-			this.Size = new System.Drawing.Size(720, 412);
-			this.buttonContextMenu.ResumeLayout(false);
-			this.groupBox_Colors.ResumeLayout(false);
-			this.groupBox_Colors.PerformLayout();
-			this.groupBox_Preview.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.numeric_FontSize)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numeric_UndoStackSize)).EndInit();
-			this.sectionPanel.ResumeLayout(false);
-			this.sectionPanel.PerformLayout();
-			this.ResumeLayout(false);
-
+			AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			BackColor = System.Drawing.Color.FromArgb(63, 65, 69);
+			Controls.Add(sectionPanel);
+			Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			MaximumSize = new System.Drawing.Size(720, 412);
+			MinimumSize = new System.Drawing.Size(720, 412);
+			Name = "LuaSettingsControl";
+			Size = new System.Drawing.Size(720, 412);
+			buttonContextMenu.ResumeLayout(false);
+			groupBox_Colors.ResumeLayout(false);
+			groupBox_Colors.PerformLayout();
+			groupBox_Preview.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)numeric_FontSize).EndInit();
+			((System.ComponentModel.ISupportInitialize)numeric_UndoStackSize).EndInit();
+			sectionPanel.ResumeLayout(false);
+			sectionPanel.PerformLayout();
+			ResumeLayout(false);
 		}
 
 		#endregion
@@ -685,5 +660,6 @@
 		private DarkUI.Controls.DarkCheckBox checkBox_CloseBraces;
 		private DarkUI.Controls.DarkCheckBox checkBox_CloseQuotes;
 		private DarkUI.Controls.DarkCheckBox checkBox_CloseBrackets;
+		private DarkUI.Controls.DarkCheckBox checkBox_CloseParentheses;
 	}
 }

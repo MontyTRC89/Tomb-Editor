@@ -566,9 +566,9 @@ namespace TombLib.LevelData
             Plane[] tri = new Plane[2];
 
             var p0 = new Vector3(0, Floor.XnZp, 0);
-            var p1 = new Vector3(4, Floor.XpZp, 0);
-            var p2 = new Vector3(4, Floor.XpZn, -4);
-            var p3 = new Vector3(0, Floor.XnZn, -4);
+            var p1 = new Vector3(1024, Floor.XpZp, 0);
+            var p2 = new Vector3(1024, Floor.XpZn, -1024);
+            var p3 = new Vector3(0, Floor.XnZn, -1024);
 
             // Create planes based on floor split direction
 

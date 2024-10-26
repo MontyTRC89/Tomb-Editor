@@ -3,6 +3,7 @@ Version 1.7.2
 
 Tomb Editor:
  * Added native support for TRNG plugin triggers.
+ * Added smaller texture selection sizes into the Texturing Panel.
  * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
  * Added TEN nodes for revolving / stopping the revolution of an object around other object (Vertically and Horizontally).
  * Added TEN nodes for checking and modifying last used inventory object.
@@ -42,6 +43,7 @@ TombIDE:
  * Updated Plugin_Video for new TRNG projects - now makes the game DPI-aware.
  * Updated TR1X preset to 4.4.
  * When creating a new script file, the correct file format will now be automatically selected, depending on the current engine.
+ * Fixed infinite loop when trying to switch projects after opening a .trproj file.
  
 TEN Base WAD:
  * Changed stateID for animation 440 of LARA to 37 to fix errors when pulling the draggable body.
