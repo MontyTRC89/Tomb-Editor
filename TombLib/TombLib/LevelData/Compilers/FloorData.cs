@@ -39,7 +39,7 @@ namespace TombLib.LevelData.Compilers
                 RecalculateHash();
             }
 
-            public void AddRangePlugin(List<byte> pluginEntry)
+            public void AddPluginRange(List<byte> pluginEntry)
             {
                 PluginList.AddRange(pluginEntry);
                 RecalculateHash();
@@ -326,7 +326,7 @@ namespace TombLib.LevelData.Compilers
                                 newEntry.AddRange(tempFloorData);
 
                                 if (_supportsTRNGPlugins)
-                                    newEntry.AddRangePlugin(tempPluginFloorData);
+                                    newEntry.AddPluginRange(tempPluginFloorData);
                             }
                         }
 
