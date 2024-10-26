@@ -6,10 +6,10 @@ local Timer = require("Engine.Timer")
 LevelFuncs.Engine.Node.ConstructRevolveData = function(objectName, objectCentre, dataType, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
 
     local dataName  = objectName .. "_revolve_data"
-    local revolutionAngle = 360  --one full revolution is 360 degrees
+    local revolutionAngle = 360  -- One full revolution is 360 degrees.
     
-    if LevelVars[dataName] and LevelVars[dataName].Timer then
-        if Timer.Get(dataName):IsActive() then
+    if LevelVars[dataName] ~= nil and Timer.Get(LevelVars[dataName].Name) ~= nil then
+        if Timer.Get(LevelVars[dataName].Name):IsActive() then
             return
         end
         Timer.Delete(LevelVars[dataName].Name)
@@ -24,7 +24,6 @@ LevelFuncs.Engine.Node.ConstructRevolveData = function(objectName, objectCentre,
     LevelVars[dataName].ObjectName = objectName
     LevelVars[dataName].CentreName = objectCentre
     LevelVars[dataName].Name       = dataName
-    LevelVars[dataName].Timer      = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformRevolveData, dataName)
     LevelVars[dataName].StartAngle = startAngle
     LevelVars[dataName].EndAngle   = endAngle
     LevelVars[dataName].CCW        = isCCW     -- Flips the direction of the loop if loop is ticked.
@@ -40,7 +39,8 @@ LevelFuncs.Engine.Node.ConstructRevolveData = function(objectName, objectCentre,
     and (startAngle + (LevelVars[dataName].CCW and -revolutionAngle or revolutionAngle))
     or endAngle
     
-    LevelVars[dataName].Timer:Start()
+    local timer = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformRevolveData, dataName)
+    timer:Start()
 end
 
 -- Transform object parameter using previously saved timed transform data
@@ -51,7 +51,7 @@ LevelFuncs.Engine.Node.TransformRevolveData = function(dataName)
     and (LevelVars[dataName].Progress + LevelVars[dataName].Interval) % 1
     or math.min(LevelVars[dataName].Progress + LevelVars[dataName].Interval, 1)
     
-    --function to normalize the angles to 360 degree
+    -- Function to normalize the angles to 360 degree.
     local function NormalizeAngle(angle)
         return (angle % 360 + 360) % 360
     end
@@ -70,7 +70,7 @@ LevelFuncs.Engine.Node.TransformRevolveData = function(dataName)
     local z = center2pos.z
     local normalizedNewValue1 = NormalizeAngle(newValue1)
     local normalizedEndAngle = NormalizeAngle(LevelVars[dataName].EndAngle)
-    local tolerance = 5e-1 --0.5 tolerance. The tolerance to stop the object revolution. Its required incase of smooth rotation.
+    local tolerance = 5e-1 -- 0.5 tolerance. The tolerance to stop the object revolution. It is required in case of smooth rotation.
     
     if (LevelVars[dataName].DataType == 0) then
         if (center2rot.y == 0) then
@@ -151,7 +151,7 @@ end
 LevelFuncs.Engine.Node.DeleteTimedData = function(objectName, endAngle)
     local dataName = objectName .. "_revolve_data"
 
-    if LevelVars[dataName] and LevelVars[dataName].Timer and Timer.Get(dataName):IsActive() then
+    if LevelVars[dataName] ~= nil and Timer.Get(LevelVars[dataName].Name):IsActive() then
         LevelVars[dataName].EndAngle = endAngle
         LevelVars[dataName].StopAtEnd = true
     end
