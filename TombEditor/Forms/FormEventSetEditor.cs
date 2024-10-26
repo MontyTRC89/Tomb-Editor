@@ -257,7 +257,8 @@ namespace TombEditor.Forms
             cbEvents.Enabled =
             butUnassignEventSet.Enabled =
             butCloneEventSet.Enabled =
-            butDeleteEventSet.Enabled = eventSetSelected;
+            butDeleteEventSet.Enabled = 
+            cbEnableEvent.Enabled = eventSetSelected;
 
             cbActivatorLara.Enabled =
             cbActivatorNPC.Enabled =
@@ -394,7 +395,8 @@ namespace TombEditor.Forms
             cbActivatorNPC.Checked =
             cbActivatorOtherMoveables.Checked =
             cbActivatorStatics.Checked =
-            cbActivatorFlyBy.Checked = false;
+            cbActivatorFlyBy.Checked = 
+            cbEnableEvent.Checked = false;
 
             cbEvents.SelectedItem = null;
             triggerManager.Event = null;
@@ -713,6 +715,9 @@ namespace TombEditor.Forms
 
         private void cbEnableEvent_CheckedChanged(object sender, EventArgs e)
         {
+            if (SelectedSet == null)
+                return;
+
             SelectedSet.Events[SelectedSet.LastUsedEvent].Enabled = cbEnableEvent.Checked;
         }
     }
