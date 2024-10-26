@@ -79,8 +79,11 @@ namespace TombIDE.ScriptingStudio
 
 				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent asle && asle.Lines.Count > 0)
 				{
-					AppendScriptLines(asle.Lines);
-					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
+					AppendScriptLines(asle.Lines,
+						wasScriptFileAlreadyOpened, wasScriptFileFileChanged,
+						wasLanguageFileAlreadyOpened, wasLanguageFileFileChanged);
+
+					EndSilentScriptAction(cachedTab, true, false, false);
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
@@ -103,7 +106,9 @@ namespace TombIDE.ScriptingStudio
 			}
 		}
 
-		private void AppendScriptLines(List<string> inputLines)
+		private void AppendScriptLines(List<string> inputLines,
+			bool wasScriptFileAlreadyOpened, bool wasScriptFileFileChanged,
+			bool wasLanguageFileAlreadyOpened, bool wasLanguageFileFileChanged)
 		{
 			try // !!! This needs some heavy refactoring !!!
 			{
@@ -113,6 +118,12 @@ namespace TombIDE.ScriptingStudio
 				{
 					editor.AppendText(string.Join(Environment.NewLine, inputLines.Take(10)) + Environment.NewLine);
 					editor.ScrollToLine(editor.LineCount);
+
+					if (!wasScriptFileFileChanged)
+						EditorTabControl.SaveFile(EditorTabControl.SelectedTab);
+
+					if (!wasScriptFileAlreadyOpened)
+						EditorTabControl.TabPages.Remove(EditorTabControl.SelectedTab);
 				}
 
 				EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine), EditorType.Text);
@@ -182,6 +193,12 @@ namespace TombIDE.ScriptingStudio
 							break;
 						}
 					}
+
+					if (!wasLanguageFileFileChanged)
+						EditorTabControl.SaveFile(EditorTabControl.SelectedTab);
+
+					if (!wasLanguageFileAlreadyOpened)
+						EditorTabControl.TabPages.Remove(EditorTabControl.SelectedTab);
 				}
 
 				string dataName = inputLines[0].Trim().Remove(0, 3).Replace(" level", string.Empty);
