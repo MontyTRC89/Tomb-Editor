@@ -3,6 +3,7 @@ Version 1.7.2
 
 Tomb Editor:
  * Added native support for TRNG plugin triggers.
+ * Added smaller texture selection sizes into the Texturing Panel.
  * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
  * Added TEN nodes for checking and modifying last used inventory object.
  * Added TEN node to check if a particular sound is playing.
