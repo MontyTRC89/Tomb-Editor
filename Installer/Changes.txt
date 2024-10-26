@@ -41,7 +41,7 @@ TombIDE:
  * Updated FLEP for new TRNG projects.
  * FLEP widescreen patch will now be installed by default for new projects.
  * Updated Plugin_Video for new TRNG projects - now makes the game DPI-aware.
- * Updated TR1X preset to 4.4.
+ * Updated TR1X preset to 4.5.1.
  * When creating a new script file, the correct file format will now be automatically selected, depending on the current engine.
  * Fixed infinite loop when trying to switch projects after opening a .trproj file.
  
