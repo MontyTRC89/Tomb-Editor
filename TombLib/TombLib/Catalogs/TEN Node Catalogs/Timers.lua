@@ -16,8 +16,8 @@ LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, minutes, seconds
         if LevelVars.nodeTimers[name] ~= nil and Timer.Get(name) ~= nil then
             Timer.Delete(name)
         end
+        Timer.Create(name, time, loop, nodeTimerFormat, nil)
         LevelVars.nodeTimers[name] = {}
-        LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, nodeTimerFormat, nil)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
         LevelVars.nodeTimers[name].remainingTimeFormatted = tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10)
         LevelVars.nodeTimers[name].test = false
@@ -45,8 +45,8 @@ LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, minu
     if name ~= '' then
         local nodeTimerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
         local argsTable = args ~= '' and table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")) or nil
+        Timer.Create(name, time, loop, nodeTimerFormat, luaFunction, argsTable)
         LevelVars.nodeTimers[name] = {}
-        LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, nodeTimerFormat, luaFunction, argsTable)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
         LevelVars.nodeTimers[name].remainingTimeFormatted = tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10)
         LevelVars.nodeTimers[name].test = false
@@ -74,8 +74,8 @@ end
 LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator, debug)
     if name ~= '' then
         local nodeTimerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
+        Timer.Create(name, time, loop, nodeTimerFormat, LevelFuncs.Engine.Node.RunEventSet, setName, eventType, activator)
         LevelVars.nodeTimers[name] = {}
-        LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, nodeTimerFormat, LevelFuncs.Engine.Node.RunEventSet, setName, eventType, activator)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
         LevelVars.nodeTimers[name].remainingTimeFormatted = tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10)
         LevelVars.nodeTimers[name].test = false
@@ -103,8 +103,8 @@ end
 LevelFuncs.Engine.Node.CreateTimerWithGEventSet = function(name, time, loop, minutes, seconds, deciseconds, setName, eventType, activator, debug)
     if name ~= '' then
         local nodeTimerFormat = { minutes = minutes, seconds = seconds, deciseconds = deciseconds }
+        Timer.Create(name, time, loop, nodeTimerFormat, LevelFuncs.Engine.Node.RunGlobalEventSet, setName, eventType, activator)
         LevelVars.nodeTimers[name] = {}
-        LevelVars.nodeTimers[name].timer = Timer.Create(name, time, loop, nodeTimerFormat, LevelFuncs.Engine.Node.RunGlobalEventSet, setName, eventType, activator)
         LevelVars.nodeTimers[name].remainingTime = Timer.Get(name):GetRemainingTime()
         LevelVars.nodeTimers[name].remainingTimeFormatted = tostring(math.floor(Timer.Get(name):GetRemainingTime() * 10) / 10)
         LevelVars.nodeTimers[name].test = false
