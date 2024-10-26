@@ -345,6 +345,7 @@ namespace TombLib.LevelData.IO
                                         chunkIO.WriteChunkString(Prj2Chunks.EventFunction, evt.Value.Function ?? string.Empty);
                                         chunkIO.WriteChunkString(Prj2Chunks.EventArgument, evt.Value.Argument ?? string.Empty);
                                         chunkIO.WriteChunkInt(Prj2Chunks.EventCallCounter, evt.Value.CallCounter);
+                                        chunkIO.WriteChunkBool(Prj2Chunks.EventEnabled, evt.Value.Enabled);
                                         chunkIO.WriteChunkVector2(Prj2Chunks.EventNodePosition, evt.Value.NodePosition);
                                         evt.Value.Nodes.ForEach(n => WriteNode(chunkIO, n, Prj2Chunks.EventNodeNext));
 

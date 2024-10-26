@@ -3,25 +3,25 @@ Version 1.7.2
 
 Tomb Editor:
  * Added native support for TRNG plugin triggers.
- * Added smaller texture selection sizes into the Texturing Panel.
+ * Added smaller texture selection sizes into the texturing panel.
  * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
- * Added TEN nodes for revolving / stopping the revolution of an object around other object (Vertically and Horizontally).
+ * Added TEN nodes for revolving / stopping the revolution of an object around other object (vertically and horizontally).
  * Added TEN nodes for checking and modifying last used inventory object.
+ * Added TEN nodes to generate particles from a static object or from a volume.
  * Added TEN node to check if a particular sound is playing.
  * Added TEN node to activate a camera.
  * Added TEN node to attach the game camera to a moveable.
  * Added TEN node to reset game camera if it has been modified.
- * Added TEN node to generate particles from a static object.
- * Added TEN node to generate particles from a volume.
- * Added optional offset to TEN nodes for adding dynamic lighting to movable or static objects.
+ * Added optional offset to TEN nodes for adding dynamic lighting to moveable or static objects.
  * Added handling for OnUseItem event in node editor.
+ * Added ability to enable or disable particular event.
  * Added drag-n-drop support for object ID controls in node editor.
  * Increased TEN flipmap count up to 255.
  * Improved geometry manipulation and texturing performance.
  * Improved "Edit volume" window's initial opening time.
  * Improved Particle Generator nodes to allow user to choose a sprite number to use up to 100.
  * Improved slope detection for more precise steps.
- * Restored original behaviour of illegal slanted portals (regression from 1.7.1).
+ * Fixed illegal generation of slanted portals.
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
