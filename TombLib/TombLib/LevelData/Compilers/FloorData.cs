@@ -248,6 +248,7 @@ namespace TombLib.LevelData.Compilers
                                 { // Only if the portal is not a Toggle Opacity 1
                                     newEntry.Add(0x8001);
                                     newEntry.Add((ushort)_roomRemapping[sector.WallPortal.AdjoiningRoom]);
+
                                     if (_supportsTRNGPlugins)
                                     {
                                         newEntry.AddPlugin(0);
@@ -265,6 +266,7 @@ namespace TombLib.LevelData.Compilers
 
                                 newEntry.Add(0x8001);
                                 newEntry.Add((ushort)_roomRemapping[isWallWithCeilingPortal]);
+
                                 if (_supportsTRNGPlugins)
                                 {
                                     newEntry.AddPlugin(0);
@@ -322,6 +324,7 @@ namespace TombLib.LevelData.Compilers
                             if (tempFloorData.Count != 0)
                             {
                                 newEntry.AddRange(tempFloorData);
+
                                 if (_supportsTRNGPlugins)
                                     newEntry.AddRangePlugin(tempPluginFloorData);
                             }
@@ -342,6 +345,7 @@ namespace TombLib.LevelData.Compilers
                         {
                             compiledSector.FloorDataIndex = checked((ushort)_floorData.Count);
                             _floorData.AddRange(newEntry.FDList);
+
                             if (_supportsTRNGPlugins)
                                 _pluginFloorData.AddRange(newEntry.PluginList);
                         }
@@ -357,6 +361,7 @@ namespace TombLib.LevelData.Compilers
             {
                 floorDataDictionary.Keys.ToList().ForEach(entry => {
                     _floorData.AddRange(entry.FDList);
+
                     if (_supportsTRNGPlugins)
                         _pluginFloorData.AddRange(entry.PluginList);
                 });
@@ -563,8 +568,10 @@ namespace TombLib.LevelData.Compilers
                             // Trigger for object
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (0 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.Camera:
                             // Trigger for camera
@@ -574,64 +581,83 @@ namespace TombLib.LevelData.Compilers
                             // Additional short
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
+
                             CameraInstance camera = trigger.Target as CameraInstance;
+
                             if (camera != null && camera.CameraMode != CameraInstanceMode.Sniper)
                                 trigger3 |= (ushort)(camera.MoveTimer << 9);
+
                             outFloorData.Add(trigger3);
+
                             if (_supportsTRNGPlugins)
                             {
                                 outPluginFloorData.Add(0);
                                 outPluginFloorData.Add(0);
                             }
+
                             break;
                         case TriggerTargetType.Sink:
                             // Trigger for sink
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (2 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.FlipMap:
                             // Trigger for flip map
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (3 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.FlipOn:
                             // Trigger for flip map on
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (4 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.FlipOff:
                             // Trigger for flip map off
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (5 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.Target:
                             // Trigger for look at item
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (6 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.FinishLevel:
                             // Trigger for finish level
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (7 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.PlayAudio:
                             // Trigger for play soundtrack
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (8 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.FlipEffect:
                             // Trigger for flip effect
@@ -650,13 +676,16 @@ namespace TombLib.LevelData.Compilers
                                 outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
                                 outPluginFloorData.Add(0);
                             }
+
                             break;
                         case TriggerTargetType.Secret:
                             // Trigger for secret found
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (10 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.ActionNg:
                             // Trigger for action
@@ -676,41 +705,51 @@ namespace TombLib.LevelData.Compilers
                                 outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
                                 outPluginFloorData.Add(0);
                             }
+
                             break;
                         case TriggerTargetType.FlyByCamera:
                             // Trigger for fly by
                             if (!(trigger.Target is FlybyCameraInstance))
                                 throw new Exception("A Flyby trigger must point to a flyby camera! ('" + trigger + "')");
+
                             var flyByCamera = (FlybyCameraInstance)trigger.Target;
                             trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
                             outFloorData.Add(trigger2);
 
                             trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                             {
                                 outPluginFloorData.Add(0);
                                 outPluginFloorData.Add(0);
                             }
+
                             break;
                         case TriggerTargetType.ParameterNg:
                             ushort targetTypeBits = trigger.Target is ObjectInstance ? (ushort)(0 << 10) : (ushort)(13 << 10);
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | targetTypeBits);
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
+
                             break;
                         case TriggerTargetType.FmvNg:
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         case TriggerTargetType.TimerfieldNg:
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (15 << 10));
                             outFloorData.Add(trigger2);
+
                             if (_supportsTRNGPlugins)
                                 outPluginFloorData.Add(0);
+
                             break;
                         default:
                             throw new Exception("Unknown trigger target found '" + trigger + "'");

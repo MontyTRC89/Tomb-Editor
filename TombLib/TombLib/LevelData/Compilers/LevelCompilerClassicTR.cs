@@ -73,6 +73,7 @@ namespace TombLib.LevelData.Compilers
         public override CompilerStatistics CompileLevel(CancellationToken cancelToken)
         {
             string ngVersion = null;
+
             if (_level.IsNG)
             {
                 ngVersion = DetectTRNGVersion();
@@ -106,8 +107,10 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
 
             int texInfoLimit = _limits[Limit.TexInfos];
+
             if (_textureInfoManager.TexInfoCount > texInfoLimit)
                 _progressReporter.ReportWarn("TexInfo number overflow, maximum is " + texInfoLimit + ". Please reduce level complexity.");
+
             cancelToken.ThrowIfCancellationRequested();
 
             GetAllReachableRooms();
@@ -122,6 +125,7 @@ namespace TombLib.LevelData.Compilers
             var pageCount = PrepareTextures();
 
             int texPageLimit = _limits[Limit.TexPages];
+
             if (pageCount > texPageLimit)
                 _progressReporter.ReportWarn("Level has " + pageCount + " texture pages, while limit is " + texPageLimit + ". Use less textures, reduce padding or turn on aggressive texture packing in level settings.");
 

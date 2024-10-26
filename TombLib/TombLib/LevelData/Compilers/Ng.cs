@@ -29,11 +29,13 @@ namespace TombLib.LevelData.Compilers
             WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
             WriteNgChunkTexPartial(writer);
+
             if (_supportsTRNGPlugins)
             {
                 WriteNgChunkPluginsNames(writer);
                 WriteNgChunkIdFloorTable(writer);
             }
+
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkRemapRooms(writer);
             WriteNgChunkTomVersion(writer, ngVersion);
