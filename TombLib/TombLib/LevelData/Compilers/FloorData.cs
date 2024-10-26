@@ -9,7 +9,7 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR
     {
-        // Floordata sequence class is used OPTIONALLY, if agressive floordata
+        // Floordata sequence class is used OPTIONALLY, if aggressive floordata
         // packing is enabled in level settings. In this case, similar floordata
         // sequences will be hashed and compared on compiling, which allows several
         // sectors to reference same floordata entry, which in turn DRASTICALLY
