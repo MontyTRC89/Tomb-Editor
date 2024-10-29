@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprite_sequences>
-    <sprite_sequence id="89" name="Boat wake (Venice, Bartoli)" />
-    <sprite_sequence id="90" name="Snowmobile wake (Tibetan Foothills)" />
-    <sprite_sequence id="100" name="Frame (for indicator bars) " zoom="1.714" />
-    <sprite_sequence id="135" name="Pistols" />
-    <sprite_sequence id="136" name="Shotgun" />
-    <sprite_sequence id="137" name="Auto pistols" />
-    <sprite_sequence id="138" name="Uzis" />
-    <sprite_sequence id="139" name="Harpoon gun" />
-    <sprite_sequence id="140" name="M16" />
-    <sprite_sequence id="141" name="Grenade launcher" />
-    <sprite_sequence id="143" name="Shotgun shells" />
-    <sprite_sequence id="144" name="Auto-pistol clips" />
-    <sprite_sequence id="145" name="Uzi clips" />
-    <sprite_sequence id="146" name="Harpoons" />
-    <sprite_sequence id="147" name="M16 clips" />
-    <sprite_sequence id="148" name="Grenades" />
-    <sprite_sequence id="149" name="Small medipack" />
-    <sprite_sequence id="150" name="Large medipack" />
-    <sprite_sequence id="151" name="Flares" />
-    <sprite_sequence id="174" name="Puzzle 1" />
-    <sprite_sequence id="175" name="Puzzle 2" />
-    <sprite_sequence id="176" name="Puzzle 3 ?" />
-    <sprite_sequence id="177" name="Puzzle 4" />
-    <sprite_sequence id="190" name="Secret 1" />
-    <sprite_sequence id="191" name="Secret 2" />
-    <sprite_sequence id="192" name="Secret 3" />
-    <sprite_sequence id="193" name="Key 1" />
-    <sprite_sequence id="194" name="Key 2" />
-    <sprite_sequence id="195" name="Key 3" />
-    <sprite_sequence id="196" name="Key 4" />
-    <sprite_sequence id="205" name="Pickup 5" />
-    <sprite_sequence id="206" name="Pickup 6" />
-    <sprite_sequence id="220" name="Extra Fire (Ice Palace)" />
-    <sprite_sequence id="224" name="Gray disk" />
-    <sprite_sequence id="229" name="Grenade blast" zoom="-2.4" />
-    <sprite_sequence id="230" name="Splash" />
-    <sprite_sequence id="231" name="Bubbles" />
-    <sprite_sequence id="233" name="Blood splatter" />
-    <sprite_sequence id="234" name="Green-white thing (Great Wall)" />
-    <sprite_sequence id="236" name="Flash (looks like distant light)" />
-    <sprite_sequence id="238" name="Bullet hit" />
-    <sprite_sequence id="239" name="Sparkles (Floating Islands, Dragon's Lair)" />
-    <sprite_sequence id="246" name="Flamethrower (repeat of grenade blast)" zoom="-2.4" />
-    <sprite_sequence id="250" name="Sprayed particles" />
-    <sprite_sequence id="252" name="Fire" />
-    <sprite_sequence id="255" name="Standard symbols" zoom="1.3712" />
-    <sprite_sequence id="261" name="Assault-course numerals and punctuation" zoom="1.3712" />
-    <sprite_sequence id="289" name="Cellar artifact 1 (gold mask)" />
-    <sprite_sequence id="290" name="Cellar artifact 2 (rounded statue)" />
-    <sprite_sequence id="291" name="Cellar artifact 3 (flattened statue)" />
+    <sprite_sequence id="89" name="Boat wake (Venice, Bartoli) (sprites)" />
+    <sprite_sequence id="90" name="Snowmobile wake (Tibetan Foothills) (sprites)" />
+    <sprite_sequence id="100" name="Frame (for indicator bars) (sprites)" zoom="1.714" />
+    <sprite_sequence id="135" name="Pistols (sprites)" />
+    <sprite_sequence id="136" name="Shotgun (sprites)" />
+    <sprite_sequence id="137" name="Auto pistols (sprites)" />
+    <sprite_sequence id="138" name="Uzis (sprites)" />
+    <sprite_sequence id="139" name="Harpoon gun (sprites)" />
+    <sprite_sequence id="140" name="M16 (sprites)" />
+    <sprite_sequence id="141" name="Grenade launcher (sprites)" />
+    <sprite_sequence id="143" name="Shotgun shells (sprites)" />
+    <sprite_sequence id="144" name="Auto-pistol clips (sprites)" />
+    <sprite_sequence id="145" name="Uzi clips (sprites)" />
+    <sprite_sequence id="146" name="Harpoons (sprites)" />
+    <sprite_sequence id="147" name="M16 clips (sprites)" />
+    <sprite_sequence id="148" name="Grenades (sprites)" />
+    <sprite_sequence id="149" name="Small medipack (sprites)" />
+    <sprite_sequence id="150" name="Large medipack (sprites)" />
+    <sprite_sequence id="151" name="Flares (sprites)" />
+    <sprite_sequence id="174" name="Puzzle 1 (sprites)" />
+    <sprite_sequence id="175" name="Puzzle 2 (sprites)" />
+    <sprite_sequence id="176" name="Puzzle 3 (sprites)" />
+    <sprite_sequence id="177" name="Puzzle 4 (sprites)" />
+    <sprite_sequence id="190" name="Secret 1 (sprites)" />
+    <sprite_sequence id="191" name="Secret 2 (sprites)" />
+    <sprite_sequence id="192" name="Secret 3 (sprites)" />
+    <sprite_sequence id="193" name="Key 1 (sprites)" />
+    <sprite_sequence id="194" name="Key 2 (sprites)" />
+    <sprite_sequence id="195" name="Key 3 (sprites)" />
+    <sprite_sequence id="196" name="Key 4 (sprites)" />
+    <sprite_sequence id="205" name="Pickup 1 (sprites)" />
+    <sprite_sequence id="206" name="Pickup 2 (sprites)" />
+    <sprite_sequence id="220" name="Extra Fire (Ice Palace) (sprites)" />
+    <sprite_sequence id="224" name="Gray disk (sprites)" />
+    <sprite_sequence id="229" name="Grenade blast (sprites)" zoom="-2.4" />
+    <sprite_sequence id="230" name="Splash (sprites)" />
+    <sprite_sequence id="231" name="Bubbles (sprites)" />
+    <sprite_sequence id="233" name="Blood splatter (sprites)" />
+    <sprite_sequence id="234" name="Green-white thing (Great Wall) (sprites)" />
+    <sprite_sequence id="236" name="Flash (looks like distant light) (sprites)" />
+    <sprite_sequence id="238" name="Bullet hit (sprites)" />
+    <sprite_sequence id="239" name="Sparkles (Floating Islands, Dragon's Lair) (sprites)" />
+    <sprite_sequence id="246" name="Flamethrower (repeat of grenade blast) (sprites)" zoom="-2.4" />
+    <sprite_sequence id="250" name="Sprayed particles (sprites)" />
+    <sprite_sequence id="252" name="Fire (sprites)" />
+    <sprite_sequence id="255" name="Standard symbols (sprites)" zoom="1.3712" />
+    <sprite_sequence id="261" name="Assault-course numerals and punctuation (sprites)" zoom="1.3712" />
+    <sprite_sequence id="289" name="Cellar artifact 1 (gold mask) (sprites)" />
+    <sprite_sequence id="290" name="Cellar artifact 2 (rounded statue) (sprites)" />
+    <sprite_sequence id="291" name="Cellar artifact 3 (flattened statue) (sprites)" />
 </sprite_sequences>
