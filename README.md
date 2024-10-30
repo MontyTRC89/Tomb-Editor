@@ -1,4 +1,7 @@
 # Tomb Editor
+
+![Logo](https://github.com/MontyTRC89/Tomb-Editor/blob/1a951cc8cd7d2a1b2891125f9cec7bd3a26b5649/Icons/PNG/TE.png)
+
 ## Introduction
 Tomb Editor (TE) is a level editor designed for the full range of classic Tomb Raider game series (1-5), as well as for contemporary engine reimplementation projects and game engines designed for community modding and level building.
 
