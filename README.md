@@ -2,7 +2,7 @@
 ## Introduction
 Tomb Editor (TE) is a level editor designed for the full range of classic Tomb Raider game series (1-5), as well as for contemporary engine reimplementation projects and game engines designed for community modding and level building.
 
-## The Toolchain.
+## The Toolchain
 The Tomb Editor is part of a wider set of tools:
 
 - Tomb Editor : The editor itself.
