@@ -257,8 +257,7 @@ namespace TombEditor.Forms
             cbEvents.Enabled =
             butUnassignEventSet.Enabled =
             butCloneEventSet.Enabled =
-            butDeleteEventSet.Enabled = 
-            cbEnableEvent.Enabled = eventSetSelected;
+            butDeleteEventSet.Enabled = eventSetSelected;
 
             cbActivatorLara.Enabled =
             cbActivatorNPC.Enabled =
@@ -395,8 +394,7 @@ namespace TombEditor.Forms
             cbActivatorNPC.Checked =
             cbActivatorOtherMoveables.Checked =
             cbActivatorStatics.Checked =
-            cbActivatorFlyBy.Checked = 
-            cbEnableEvent.Checked = false;
+            cbActivatorFlyBy.Checked = false;
 
             cbEvents.SelectedItem = null;
             triggerManager.Event = null;
@@ -428,7 +426,6 @@ namespace TombEditor.Forms
 
             cbEvents.SelectedItem = newEventSet.LastUsedEvent;
             triggerManager.Event = newEventSet.Events[newEventSet.LastUsedEvent];
-            cbEnableEvent.Checked = newEventSet.Events[newEventSet.LastUsedEvent].Enabled;
 
             tbName.Text = newEventSet.Name;
 
@@ -646,7 +643,6 @@ namespace TombEditor.Forms
             {
                 SelectedSet.LastUsedEvent = (EventType)cbEvents.SelectedItem;
                 triggerManager.Event = SelectedSet.Events[SelectedSet.LastUsedEvent];
-                cbEnableEvent.Checked = SelectedSet.Events[SelectedSet.LastUsedEvent].Enabled;
             }
         }
 
@@ -711,14 +707,6 @@ namespace TombEditor.Forms
         {
             _instance.DetectInAdjacentRooms = cbAdjacentRooms.Checked;
             UpdateVolume();
-        }
-
-        private void cbEnableEvent_CheckedChanged(object sender, EventArgs e)
-        {
-            if (SelectedSet == null)
-                return;
-
-            SelectedSet.Events[SelectedSet.LastUsedEvent].Enabled = cbEnableEvent.Checked;
         }
     }
 }
