@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprite_sequences>
-	<sprite_sequence id="125" name="Bar (sprites)" zoom="1.714" />
-	<sprite_sequence id="294" name="Shadow (sprites)" />
-	<sprite_sequence id="296" name="Default (sprites)" zoom="-1.3712" />
-	<sprite_sequence id="297" name="Bubble (sprites)" />
-	<sprite_sequence id="298" name="Bubble 2 (sprites) [unused]" />
-	<sprite_sequence id="299" name="Glow (sprites)" />
-	<sprite_sequence id="356" name="Font (sprites)" zoom="1.3712" />
-	<sprite_sequence id="362" name="Assault number (sprites)" zoom="1.3712" />
+	<sprite_sequence id="125" name="Bar" zoom="1.714" />
+	<sprite_sequence id="294" name="Shadow" />
+	<sprite_sequence id="296" name="Default" zoom="-1.3712" />
+	<sprite_sequence id="297" name="Bubble" />
+	<sprite_sequence id="298" name="Bubble 2 [unused]" />
+	<sprite_sequence id="299" name="Glow" />
+	<sprite_sequence id="356" name="Font" zoom="1.3712" />
+	<sprite_sequence id="362" name="Assault number" zoom="1.3712" />
 </sprite_sequences>
