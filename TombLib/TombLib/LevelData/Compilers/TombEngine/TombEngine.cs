@@ -244,9 +244,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 
-            using (var avStream = new MemoryStream())
+            using (var mediaStream = new MemoryStream())
             {
-                using (var writer = new BinaryWriterEx(avStream, true))
+                using (var writer = new BinaryWriterEx(mediaStream, true))
                 {
                     WriteTextureData(writer);
 
@@ -258,11 +258,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 ReportProgress(95, "Compressing level...");
 
-                avStream.Seek(0, SeekOrigin.Begin);
+                mediaStream.Seek(0, SeekOrigin.Begin);
 
-                var avBlock = ZLib.CompressData(avStream, System.IO.Compression.CompressionLevel.SmallestSize);
+                var mediaBlock    = ZLib.CompressData(mediaStream, System.IO.Compression.CompressionLevel.SmallestSize);
                 var geometryBlock = ZLib.CompressData(geometryDataBuffer, System.IO.Compression.CompressionLevel.SmallestSize);
-                var dynamicBlock = ZLib.CompressData(dynamicDataBuffer, System.IO.Compression.CompressionLevel.Optimal);
+                var dynamicBlock  = ZLib.CompressData(dynamicDataBuffer, System.IO.Compression.CompressionLevel.Optimal);
 
                 using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
@@ -278,11 +278,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         // Hashed system name (reserved for quick start feature)
                         writer.Write(Math.Abs(Environment.MachineName.GetHashCode()));
 
+                        // Checksum to detect incorrect level version on rapid reload
+                        int checksum = Checksum.Calculate(mediaBlock) ^ Checksum.Calculate(geometryBlock);
+                        writer.Write(checksum);
+
                         // Audiovisual data (textures and sounds)
-                        writer.Write((int)avStream.Length);
-                        writer.Write((int)avBlock.Length);
-                        writer.Write(avBlock, 0, avBlock.Length);
-                        ReportProgress(96, $"    Audiovisual data size: {avBlock.Length / (1024.0 * 1024.0):F3} MB");
+                        writer.Write((int)mediaStream.Length);
+                        writer.Write((int)mediaBlock.Length);
+                        writer.Write(mediaBlock, 0, mediaBlock.Length);
+                        ReportProgress(96, $"    Media data size: {mediaBlock.Length / (1024.0 * 1024.0):F3} MB");
 
                         // Geometry data
                         writer.Write((int)geometryDataBuffer.Length);
