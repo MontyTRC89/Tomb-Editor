@@ -282,16 +282,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write((int)avStream.Length);
                         writer.Write((int)avBlock.Length);
                         writer.Write(avBlock, 0, avBlock.Length);
+                        ReportProgress(96, $"    Audiovisual data size: {avBlock.Length / (1024.0 * 1024.0):F3} MB");
 
                         // Geometry data
                         writer.Write((int)geometryDataBuffer.Length);
                         writer.Write((int)geometryBlock.Length);
                         writer.Write(geometryBlock, 0, geometryBlock.Length);
+                        ReportProgress(96, $"    Geometry data size: {geometryBlock.Length / (1024.0 * 1024.0):F3} MB");
 
                         // Dynamic data
                         writer.Write((int)dynamicDataBuffer.Length);
                         writer.Write((int)dynamicBlock.Length);
                         writer.Write(dynamicBlock, 0, dynamicBlock.Length);
+                        ReportProgress(96, $"    Dynamic data size: {dynamicBlock.Length / (1024.0 * 1024.0):F3} MB");
                     }
                 }
             }
