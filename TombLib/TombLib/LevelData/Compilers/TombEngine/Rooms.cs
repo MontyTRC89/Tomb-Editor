@@ -1307,7 +1307,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public readonly int SlopeZ;
             public readonly int Height;
 
-            // TODO: This method yields odd results when SlopeX and SlopeZ are in world units. Please review, but until then, we use clicks here.
             public int EvaluateHeight(int x, int z)
             {
                 return Height + x * SlopeX + z * SlopeZ;
@@ -1439,8 +1438,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
-                        // TODO: Please review. Should we really use clicks here?
-                        SectorSurface s = isCeiling ? sector.Ceiling.WorldToClicks() : sector.Floor.WorldToClicks();
+                        SectorSurface s = isCeiling ? sector.Ceiling : sector.Floor;
 
                         if (s.DiagonalSplit != DiagonalSplit.None || SectorSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
                         {
@@ -1496,11 +1494,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 float zMin = portalArea.Y0 * Level.SectorSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.SectorSizeUnit;
 
-                // TODO: We are using clicks here, but shouldn't we use world coordinates instead? Please review EvaluateHeight().
-                float yAtXMinZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0));
-                float yAtXMaxZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0));
-                float yAtXMinZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1));
-                float yAtXMaxZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1));
+                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
+                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
+                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
+                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
 
                 // Choose portal coordinates
                 VectorInt3[] portalVertices = new VectorInt3[4];
