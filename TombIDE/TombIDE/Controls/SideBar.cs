@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
@@ -41,6 +42,9 @@ namespace TombIDE.Controls
 
 			InitializeFLEP();
 			AddPinnedPrograms();
+
+			if (_ide.Project.GameVersion is not TRVersion.Game.TR1 and not TRVersion.Game.TombEngine)
+				button_Update.Enabled = false;
 		}
 
 		private void InitializeFLEP()
@@ -289,6 +293,24 @@ namespace TombIDE.Controls
 		#endregion Program buttons
 
 		#region Events
+
+		private void button_ExitProject_MouseUp(object sender, MouseEventArgs e)
+			=> contextMenu_TIDE.Show(Cursor.Position);
+
+		private void button_BackToStart_Click(object sender, EventArgs e)
+			=> FindForm().DialogResult = DialogResult.OK;
+
+		private void button_Publish_Click(object sender, EventArgs e)
+		{
+			using var form = new FormGameArchive(_ide);
+			form.ShowDialog();
+		}
+
+		private void button_Update_Click(object sender, EventArgs e)
+			=> _ide.BeginEngineUpdate();
+
+		private void button_Exit_Click(object sender, EventArgs e)
+			=> FindForm().DialogResult = DialogResult.Cancel;
 
 		private void panelButton_LevelManager_Click(object sender, EventArgs e) => SelectIDETab(IDETab.LevelManager);
 		private void panelButton_ScriptingStudio_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptingStudio);
