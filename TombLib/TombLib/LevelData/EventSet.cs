@@ -30,6 +30,7 @@ namespace TombLib.LevelData
     public class Event : ICloneable, IEquatable<Event>
     {
         private const int _noCallCounter = -1;
+        private const int _callStateMask = short.MaxValue;
 
         public EventSetMode Mode = EventSetMode.NodeEditor;
         public string Function { get; set; } = string.Empty;
@@ -40,6 +41,7 @@ namespace TombLib.LevelData
         public bool Empty => (Mode == EventSetMode.NodeEditor && Nodes.Count == 0) || (Mode == EventSetMode.LevelScript && string.IsNullOrEmpty(Function));
 
         public int CallCounter { get; set; } = 0; // How many times event can be called
+        public bool Enabled { get; set; } = true; // Is event enabled or not
 
         public static List<EventType> GlobalEventTypes => Enum.GetValues(typeof(EventType)).Cast<EventType>().Where(t => t > EventType.OnVolumeLeave).ToList();
         public static List<EventType> VolumeEventTypes => Enum.GetValues(typeof(EventType)).Cast<EventType>().Where(t => t <= EventType.OnVolumeLeave).ToList();
@@ -105,7 +107,8 @@ namespace TombLib.LevelData
                 writer.Write(Argument.Replace("\\n", "\n")); // Unconvert newline shortcut
             }
 
-            writer.Write(CallCounter != 0 ? CallCounter : _noCallCounter);
+            int callCount = (CallCounter != 0 ? CallCounter : _noCallCounter);
+            writer.Write(Enabled ? callCount : callCount - _callStateMask);
         }
     }
 

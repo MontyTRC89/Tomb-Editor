@@ -553,6 +553,8 @@ namespace TombLib.LevelData.IO
                                         evt.Argument = chunkIO.ReadChunkString(chunkSize4);
                                     else if (id4 == Prj2Chunks.EventCallCounter)
                                         evt.CallCounter = chunkIO.ReadChunkInt(chunkSize4);
+                                    else if (id4 == Prj2Chunks.EventEnabled)
+                                        evt.Enabled = chunkIO.ReadChunkBool(chunkSize4);
                                     else if (id4 == Prj2Chunks.EventNodePosition)
                                         evt.NodePosition = chunkIO.ReadChunkVector2(chunkSize4);
                                     else if (id4 == Prj2Chunks.EventNodeNext)

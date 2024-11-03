@@ -32,8 +32,8 @@ namespace TombEditor.ToolWindows
             panelTextureMap.SelectedTextureChanged += delegate
             { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
-            // Populate selection tile size 
-            for (int i = 5; i <= 8; i++)
+            // Populate selection tile size
+            for (int i = 0; i <= 8; i++)
                 cmbTileSize.Items.Add((float)(Math.Pow(2, i)));
 
             RepopulateBlendingModes();
