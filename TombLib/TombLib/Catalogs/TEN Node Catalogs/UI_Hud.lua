@@ -10,30 +10,30 @@ LevelFuncs.Engine.Node.ConstructCustomBar = function(barName, startvalue, object
 		return
 	end
 
-	LevelVars.CustomBars[dataName]					= {}
-	LevelVars.CustomBars[dataName].Name				= dataName
+	LevelVars.CustomBars[dataName]			= {}
+	LevelVars.CustomBars[dataName].Name		= dataName
 	LevelVars.CustomBars[dataName].FixedInterval	= 1/30
-	LevelVars.CustomBars[dataName].Progress			= startvalue / 1000 -- Set initial progress from start value (clamped to 0-1000)
-	LevelVars.CustomBars[dataName].Interval			= 1 / (30)	-- assuming 30 updates per second
-	LevelVars.CustomBars[dataName].ObjectIDbg		= objectIDbg
-	LevelVars.CustomBars[dataName].SpriteIDbg		= spriteIDbg
-	LevelVars.CustomBars[dataName].ColorBG			= colorbg
-	LevelVars.CustomBars[dataName].ObjectIDbar		= objectIDbar
-	LevelVars.CustomBars[dataName].SpriteIDbar		= spriteIDbar
-	LevelVars.CustomBars[dataName].ColorBar			= colorbar
-	LevelVars.CustomBars[dataName].PosX				= posX
-	LevelVars.CustomBars[dataName].PosY				= posY
-	LevelVars.CustomBars[dataName].ScaleX			= scaleX
-	LevelVars.CustomBars[dataName].ScaleY			= scaleY
-	LevelVars.CustomBars[dataName].Rot				= rot
-	LevelVars.CustomBars[dataName].Visible			= true
-	LevelVars.CustomBars[dataName].CurrentAlpha		= 1
-	LevelVars.CustomBars[dataName].TargetAlpha		= 255
-	LevelVars.CustomBars[dataName].AlignMode		= alignMode
-	LevelVars.CustomBars[dataName].ScaleMode		= scaleMode
-	LevelVars.CustomBars[dataName].BlendMode		= blendMode
-	LevelVars.CustomBars[dataName].OldValue			= startvalue  -- stores the current bar value
-	LevelVars.CustomBars[dataName].TargetValue		= startvalue  -- target value to reach
+	LevelVars.CustomBars[dataName].Progress		= startvalue / 1000 -- Set initial progress from start value (clamped to 0-1000)
+	LevelVars.CustomBars[dataName].Interval		= 1 / (30)	-- assuming 30 updates per second
+	LevelVars.CustomBars[dataName].ObjectIDbg	= objectIDbg
+	LevelVars.CustomBars[dataName].SpriteIDbg	= spriteIDbg
+	LevelVars.CustomBars[dataName].ColorBG		= colorbg
+	LevelVars.CustomBars[dataName].ObjectIDbar	= objectIDbar
+	LevelVars.CustomBars[dataName].SpriteIDbar	= spriteIDbar
+	LevelVars.CustomBars[dataName].ColorBar		= colorbar
+	LevelVars.CustomBars[dataName].PosX		= posX
+	LevelVars.CustomBars[dataName].PosY		= posY
+	LevelVars.CustomBars[dataName].ScaleX		= scaleX
+	LevelVars.CustomBars[dataName].ScaleY		= scaleY
+	LevelVars.CustomBars[dataName].Rot		= rot
+	LevelVars.CustomBars[dataName].Visible		= true
+	LevelVars.CustomBars[dataName].CurrentAlpha	= 1
+	LevelVars.CustomBars[dataName].TargetAlpha	= 255
+	LevelVars.CustomBars[dataName].AlignMode	= alignMode
+	LevelVars.CustomBars[dataName].ScaleMode	= scaleMode
+	LevelVars.CustomBars[dataName].BlendMode	= blendMode
+	LevelVars.CustomBars[dataName].OldValue		= startvalue  -- stores the current bar value
+	LevelVars.CustomBars[dataName].TargetValue	= startvalue  -- target value to reach
 	
 end
 
@@ -237,11 +237,6 @@ LevelFuncs.Engine.Node.TestBarValue = function(barName, operator, value)
 	
 end
 
-
-
-TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateCustomBars)
-
-
 LevelVars.CustomEnemyBars = {}
 
 -- !Name "Draw enemy health bar"
@@ -276,34 +271,37 @@ LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, 
 	if LevelVars.CustomEnemyBars[dataName] then
 		return
 	end
-
-	LevelVars.CustomEnemyBars[dataName]					= {}
-	LevelVars.CustomEnemyBars[dataName].Name			= dataName
-	LevelVars.CustomEnemyBars[dataName].Object			= GetMoveableByName(object)
+	
+	local enemy = GetMoveableByName(object)
+	local enemyHP = enemy:GetHP()
+	
+	LevelVars.CustomEnemyBars[dataName]			= {}
+	LevelVars.CustomEnemyBars[dataName].Name		= dataName
+	LevelVars.CustomEnemyBars[dataName].Object		= object
 	LevelVars.CustomEnemyBars[dataName].FixedInterval	= 1/3
 	LevelVars.CustomEnemyBars[dataName].ObjectIDbg		= objectIDbg
 	LevelVars.CustomEnemyBars[dataName].SpriteIDbg		= spriteIDbg
-	LevelVars.CustomEnemyBars[dataName].ColorBG			= colorbg
+	LevelVars.CustomEnemyBars[dataName].ColorBG		= colorbg
 	LevelVars.CustomEnemyBars[dataName].ObjectIDbar		= objectIDbar
 	LevelVars.CustomEnemyBars[dataName].SpriteIDbar		= spriteIDbar
 	LevelVars.CustomEnemyBars[dataName].ColorBar		= colorbar
-	LevelVars.CustomEnemyBars[dataName].PosX			= posX
-	LevelVars.CustomEnemyBars[dataName].PosY			= posY
-	LevelVars.CustomEnemyBars[dataName].ScaleX			= scaleX
-	LevelVars.CustomEnemyBars[dataName].ScaleY			= scaleY
-	LevelVars.CustomEnemyBars[dataName].Rot				= rot
-	LevelVars.CustomEnemyBars[dataName].Visible			= true
+	LevelVars.CustomEnemyBars[dataName].PosX		= posX
+	LevelVars.CustomEnemyBars[dataName].PosY		= posY
+	LevelVars.CustomEnemyBars[dataName].ScaleX		= scaleX
+	LevelVars.CustomEnemyBars[dataName].ScaleY		= scaleY
+	LevelVars.CustomEnemyBars[dataName].Rot			= rot
+	LevelVars.CustomEnemyBars[dataName].Visible		= true
 	LevelVars.CustomEnemyBars[dataName].CurrentAlpha	= 1
 	LevelVars.CustomEnemyBars[dataName].TargetAlpha		= 255
 	LevelVars.CustomEnemyBars[dataName].AlignMode		= alignMode
 	LevelVars.CustomEnemyBars[dataName].ScaleMode		= scaleMode
 	LevelVars.CustomEnemyBars[dataName].BlendMode		= blendMode
-	LevelVars.CustomEnemyBars[dataName].OldValue		= LevelVars.CustomEnemyBars[dataName].Object:GetHP()  -- start value as the current HP
-	LevelVars.CustomEnemyBars[dataName].TargetValue		= LevelVars.CustomEnemyBars[dataName].Object:GetHP() -- target value as the current HP
-	LevelVars.CustomEnemyBars[dataName].TotalHP			= LevelVars.CustomEnemyBars[dataName].Object:GetHP() -- total health (Changed from Slot HP to allow user to set any health using node when activating the enemy)
-	LevelVars.CustomEnemyBars[dataName].Text			= text
-	LevelVars.CustomEnemyBars[dataName].TextX			= textX
-	LevelVars.CustomEnemyBars[dataName].TextY			= textY
+	LevelVars.CustomEnemyBars[dataName].OldValue		= enemyHP  -- start value as the current HP
+	LevelVars.CustomEnemyBars[dataName].TargetValue		= enemyHP -- target value as the current HP
+	LevelVars.CustomEnemyBars[dataName].TotalHP		= enemyHP -- total health (Changed from Slot HP to allow user to set any health using node when activating the enemy)
+	LevelVars.CustomEnemyBars[dataName].Text		= text
+	LevelVars.CustomEnemyBars[dataName].TextX		= textX
+	LevelVars.CustomEnemyBars[dataName].TextY		= textY
 	LevelVars.CustomEnemyBars[dataName].TextAlignment	= textAlignment
 	LevelVars.CustomEnemyBars[dataName].TextEffects		= textEffects
 	LevelVars.CustomEnemyBars[dataName].TextScale		= textScale
@@ -313,70 +311,72 @@ end
 -- Update enemy bars
 LevelFuncs.Engine.UpdateEnemyBars = function()
 
-	for _, CustomBar in pairs(LevelVars.CustomEnemyBars) do
+	for _, CustomEBar in pairs(LevelVars.CustomEnemyBars) do
 
-		if CustomBar ~= nil then
+		if CustomEBar ~= nil then
 			-- Smoothly transition to target value
-			local currentHP = (CustomBar.Object):GetHP()
-			local totalHP = CustomBar.TotalHP
-			local delta = CustomBar.FixedInterval
+			local enemy = GetMoveableByName(CustomEBar.Object)
+			local currentHP = enemy:GetHP()
+			local totalHP = CustomEBar.TotalHP
+			local delta = CustomEBar.FixedInterval
 
 			-- Update the bar's progress (0-1 scale) based on current health and total health
-			CustomBar.Progress = math.max(0, math.min(currentHP / totalHP, 1))
+			CustomEBar.Progress = math.max(0, math.min(currentHP / totalHP, 1))
 			
 			-- Smoothly transition alpha
-			if CustomBar.CurrentAlpha ~= CustomBar.TargetAlpha then
+			if CustomEBar.CurrentAlpha ~= CustomEBar.TargetAlpha then
 				local alphaDelta = 50 -- Adjust speed of alpha transition
-				if CustomBar.CurrentAlpha < CustomBar.TargetAlpha then
-					CustomBar.CurrentAlpha = math.floor(math.min(CustomBar.CurrentAlpha + alphaDelta, CustomBar.TargetAlpha))
+				if CustomEBar.CurrentAlpha < CustomEBar.TargetAlpha then
+					CustomEBar.CurrentAlpha = math.floor(math.min(CustomEBar.CurrentAlpha + alphaDelta, CustomEBar.TargetAlpha))
 				else
-					CustomBar.CurrentAlpha = math.floor(math.max(CustomBar.CurrentAlpha - alphaDelta, CustomBar.TargetAlpha))
+					CustomEBar.CurrentAlpha = math.floor(math.max(CustomEBar.CurrentAlpha - alphaDelta, CustomEBar.TargetAlpha))
 				end
 			end
 
 			-- Set up parameters for drawing
-			local pos = TEN.Vec2(CustomBar.PosX, CustomBar.PosY)
-			local scale = TEN.Vec2(CustomBar.ScaleX, CustomBar.ScaleY)
-			local rot = CustomBar.Rot
-			local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(CustomBar.AlignMode)
-			local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(CustomBar.ScaleMode)
-			local blendID = LevelFuncs.Engine.Node.GetBlendMode(CustomBar.BlendMode)
+			local pos = TEN.Vec2(CustomEBar.PosX, CustomEBar.PosY)
+			local scale = TEN.Vec2(CustomEBar.ScaleX, CustomEBar.ScaleY)
+			local rot = CustomEBar.Rot
+			local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(CustomEBar.AlignMode)
+			local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(CustomEBar.ScaleMode)
+			local blendID = LevelFuncs.Engine.Node.GetBlendMode(CustomEBar.BlendMode)
 			
 			-- Adjust color with alpha blending
-			local bgColor = Color(CustomBar.ColorBG.r, CustomBar.ColorBG.g, CustomBar.ColorBG.b, CustomBar.CurrentAlpha)
-			local barColor = Color(CustomBar.ColorBar.r, CustomBar.ColorBar.g, CustomBar.ColorBar.b, CustomBar.CurrentAlpha)
+			local bgColor = Color(CustomEBar.ColorBG.r, CustomEBar.ColorBG.g, CustomEBar.ColorBG.b, CustomEBar.CurrentAlpha)
+			local barColor = Color(CustomEBar.ColorBar.r, CustomEBar.ColorBar.g, CustomEBar.ColorBar.b, CustomEBar.CurrentAlpha)
 			
 			-- When HP reaches 0 then set target alpha = 0
 			if currentHP <= 0 then
-				CustomBar.TargetAlpha = 0
+				CustomEBar.TargetAlpha = 0
 			end
 			
 			-- When Alpha reaches 0 set visibility to false
-			if CustomBar.CurrentAlpha == 0 then
-				CustomBar.Visible = false
-				LevelVars.CustomEnemyBars[CustomBar.Name] = nil
+			if CustomEBar.CurrentAlpha == 0 then
+				CustomEBar.Visible = false
+				LevelVars.CustomEnemyBars[CustomEBar.Name] = nil
 			end
 
 			-- Draw bar if alpha is greater than 1 and visibility is true
-			if CustomBar.Visible and CustomBar.CurrentAlpha > 0 then
+			if CustomEBar.Visible and CustomEBar.CurrentAlpha > 0 then
 				-- Draw background sprite
-				local bgSprite = TEN.DisplaySprite(CustomBar.ObjectIDbg, CustomBar.SpriteIDbg, pos, rot, scale, bgColor)
+				local bgSprite = TEN.DisplaySprite(CustomEBar.ObjectIDbg, CustomEBar.SpriteIDbg, pos, rot, scale, bgColor)
 				bgSprite:Draw(0, alignM, scaleM, blendID)
 
 				-- Draw foreground sprite (the bar itself) proportional to Progress
-				local barScale = TEN.Vec2(CustomBar.ScaleX * CustomBar.Progress, CustomBar.ScaleY)
-				local barSprite = TEN.DisplaySprite(CustomBar.ObjectIDbar, CustomBar.SpriteIDbar, pos, rot, barScale, barColor)
+				local barScale = TEN.Vec2(CustomEBar.ScaleX * CustomEBar.Progress, CustomEBar.ScaleY)
+				local barSprite = TEN.DisplaySprite(CustomEBar.ObjectIDbar, CustomEBar.SpriteIDbar, pos, rot, barScale, barColor)
 				barSprite:Draw(1, alignM, scaleM, blendID)
 
 				-- Draw text (enemy name and health)
-				local enemyText = tostring(CustomBar.Text) --debug text	 .. " (" .. currentHP .. " / " .. totalHP .. ")"
-				local myText = LevelFuncs.Engine.Node.GenerateString(enemyText, CustomBar.TextX, CustomBar.TextY, CustomBar.TextScale, CustomBar.TextAlignment, CustomBar.TextEffects, CustomBar.TextColor)
+				local enemyText = tostring(CustomEBar.Text) --debug text	 .. " (" .. currentHP .. " / " .. totalHP .. ")"
+				local myText = LevelFuncs.Engine.Node.GenerateString(enemyText, CustomEBar.TextX, CustomEBar.TextY, CustomEBar.TextScale, CustomEBar.TextAlignment, CustomEBar.TextEffects, CustomEBar.TextColor)
 				ShowString(myText, 1/30)
 			end
 		end
 	end
 end
 
+TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateCustomBars)
 TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateEnemyBars)
 
 --Code for Ammo Counter
@@ -414,22 +414,22 @@ LevelVars.AC.AmmoName = {
 
 LevelFuncs.Engine.Node.ShowAmmoCounter = function(displayType, color, alignment, posX, posY, scale, effect, unlimited, swap, sprite, objectIDammo, colorbar, spritePosX, spritePosY, rot, spriteScaleX, spriteScaleY, alignMode, scaleMode, blendMode)
 	LevelVars.AC.DisplayType	= displayType
-	LevelVars.AC.Color			= color
+	LevelVars.AC.Color		= color
 	LevelVars.AC.Alignment		= alignment
-	LevelVars.AC.PosX			= posX
-	LevelVars.AC.PosY			= posY
-	LevelVars.AC.Scale			= scale
-	LevelVars.AC.Effect			= effect
+	LevelVars.AC.PosX		= posX
+	LevelVars.AC.PosY		= posY
+	LevelVars.AC.Scale		= scale
+	LevelVars.AC.Effect		= effect
 	LevelVars.AC.Unlimited		= unlimited
-	LevelVars.AC.Swap			= swap
-	LevelVars.AC.sprite			= sprite
+	LevelVars.AC.Swap		= swap
+	LevelVars.AC.sprite		= sprite
 	LevelVars.AC.spriteObj		= objectIDammo
 	LevelVars.AC.spriteColor	= spriteColor
 	LevelVars.AC.spritePosX		= spritePosX
 	LevelVars.AC.spritePosY		= spritePosY
 	LevelVars.AC.SpriteScaleX	= spriteScaleX
 	LevelVars.AC.SpriteScaleY	= spriteScaleY
-	LevelVars.AC.Rot			= rot
+	LevelVars.AC.Rot		= rot
 	LevelVars.AC.AlignMode		= alignMode
 	LevelVars.AC.ScaleMode		= scaleMode
 	LevelVars.AC.BlendMode		= blendMode
