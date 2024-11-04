@@ -440,6 +440,7 @@ LevelFuncs.Engine.UpdateEnemyBars = function()
 			-- Adjust color with alpha blending
 			local bgColor = Color(CustomEBar.ColorBG.r, CustomEBar.ColorBG.g, CustomEBar.ColorBG.b, CustomEBar.CurrentAlpha)
 			local barColor = Color(CustomEBar.ColorBar.r, CustomEBar.ColorBar.g, CustomEBar.ColorBar.b, CustomEBar.CurrentAlpha)
+			local textColor = Color(CustomEBar.TextColor.r, CustomEBar.TextColor.g, CustomEBar.TextColor.b, CustomEBar.CurrentAlpha)
 			
 			-- When HP reaches 0 then set target alpha = 0
 			if currentHP <= 0 then
@@ -466,7 +467,7 @@ LevelFuncs.Engine.UpdateEnemyBars = function()
 				if CustomEBar.HideText == false then
 					-- Draw text (enemy name and health)
 					local enemyText = tostring(CustomEBar.Text) --debug text	 .. " (" .. currentHP .. " / " .. totalHP .. ")"
-					local myText = LevelFuncs.Engine.Node.GenerateString(enemyText, CustomEBar.TextX, CustomEBar.TextY, CustomEBar.TextScale, CustomEBar.TextAlignment, CustomEBar.TextEffects, CustomEBar.TextColor)
+					local myText = LevelFuncs.Engine.Node.GenerateString(enemyText, CustomEBar.TextX, CustomEBar.TextY, CustomEBar.TextScale, CustomEBar.TextAlignment, CustomEBar.TextEffects, textColor)
 					ShowString(myText, 1/30)
 				end
 			end
@@ -478,8 +479,8 @@ TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateC
 TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateEnemyBars)
 
 --Code for Ammo Counter
-LevelVars.AC = {}
-LevelVars.AC.AmmoName = {
+LevelVars.AmmoCounter = {}
+LevelVars.AmmoCounter.AmmoName = {
 	'pistol_ammo', 'revolver_ammo', 'uzi_ammo', 'shotgun_normal_ammo', 'shotgun_wideshot_ammo', 'hk_ammo',
 	'crossbow_normal_ammo', 'crossbow_poison_ammo', 'crossbow_explosive_ammo', 'grenade_launcher_normal_ammo', 
 	'grenade_launcher_super_ammo', 'grenade_launcher_flash_ammo', 'harpoon_gun_ammo', 'rocket_launcher_ammo'
@@ -511,26 +512,26 @@ LevelVars.AC.AmmoName = {
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
 
 LevelFuncs.Engine.Node.ShowAmmoCounter = function(displayType, color, alignment, posX, posY, scale, effect, unlimited, swap, sprite, objectIDammo, colorbar, spritePosX, spritePosY, rot, spriteScaleX, spriteScaleY, alignMode, scaleMode, blendMode)
-	LevelVars.AC.DisplayType	= displayType
-	LevelVars.AC.Color			= color
-	LevelVars.AC.Alignment		= alignment
-	LevelVars.AC.PosX			= posX
-	LevelVars.AC.PosY			= posY
-	LevelVars.AC.Scale			= scale
-	LevelVars.AC.Effect			= effect
-	LevelVars.AC.Unlimited		= unlimited
-	LevelVars.AC.Swap			= swap
-	LevelVars.AC.sprite			= sprite
-	LevelVars.AC.spriteObj		= objectIDammo
-	LevelVars.AC.spriteColor	= spriteColor
-	LevelVars.AC.spritePosX		= spritePosX
-	LevelVars.AC.spritePosY		= spritePosY
-	LevelVars.AC.SpriteScaleX	= spriteScaleX
-	LevelVars.AC.SpriteScaleY	= spriteScaleY
-	LevelVars.AC.Rot			= rot
-	LevelVars.AC.AlignMode		= alignMode
-	LevelVars.AC.ScaleMode		= scaleMode
-	LevelVars.AC.BlendMode		= blendMode
+	LevelVars.AmmoCounter.DisplayType	= displayType
+	LevelVars.AmmoCounter.Color			= color
+	LevelVars.AmmoCounter.Alignment		= alignment
+	LevelVars.AmmoCounter.PosX			= posX
+	LevelVars.AmmoCounter.PosY			= posY
+	LevelVars.AmmoCounter.Scale			= scale
+	LevelVars.AmmoCounter.Effect		= effect
+	LevelVars.AmmoCounter.Unlimited		= unlimited
+	LevelVars.AmmoCounter.Swap			= swap
+	LevelVars.AmmoCounter.sprite		= sprite
+	LevelVars.AmmoCounter.spriteObj		= objectIDammo
+	LevelVars.AmmoCounter.spriteColor	= spriteColor
+	LevelVars.AmmoCounter.spritePosX	= spritePosX
+	LevelVars.AmmoCounter.spritePosY	= spritePosY
+	LevelVars.AmmoCounter.SpriteScaleX	= spriteScaleX
+	LevelVars.AmmoCounter.SpriteScaleY	= spriteScaleY
+	LevelVars.AmmoCounter.Rot			= rot
+	LevelVars.AmmoCounter.AlignMode		= alignMode
+	LevelVars.AmmoCounter.ScaleMode		= scaleMode
+	LevelVars.AmmoCounter.BlendMode		= blendMode
 	
 	AddCallback(TEN.Logic.CallbackPoint.POSTCONTROLPHASE, LevelFuncs.__ShowAmmoCounter)
 	PrintLog('Ammo counter initialized correctly', LogLevel.INFO)
@@ -546,20 +547,20 @@ end
 
 LevelFuncs.__ShowAmmoCounter = function()
 
-	local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(LevelVars.AC.AlignMode)
-	local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(LevelVars.AC.ScaleMode)
-	local blendID = LevelFuncs.Engine.Node.GetBlendMode(LevelVars.AC.BlendMode)
+	local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(LevelVars.AmmoCounter.AlignMode)
+	local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(LevelVars.AmmoCounter.ScaleMode)
+	local blendID = LevelFuncs.Engine.Node.GetBlendMode(LevelVars.AmmoCounter.BlendMode)
 			
 	if ((Lara:GetHandStatus() == 2 or Lara:GetHandStatus() == 4) and (Lara:GetWeaponType() ~= 7 and Lara:GetWeaponType() ~= 8)) then
-		local number = (Lara:GetAmmoCount() >= 0) and Lara:GetAmmoCount() or (LevelVars.AC.Unlimited and (GetString("unlimited"):gsub(" ", "")):gsub("%%s", "") or "")
-		local ammoName = (LevelVars.AC.DisplayType == 0) and ((not LevelVars.AC.Unlimited and Lara:GetAmmoCount() < 0) and "" or GetString(LevelVars.AC.AmmoName[Lara:GetAmmoType()])) or ""
-		local ammoText = (ammoName == "") and tostring(number) or ((LevelVars.AC.Swap) and ammoName .. " " .. number or number .. " " .. ammoName)
+		local number = (Lara:GetAmmoCount() >= 0) and Lara:GetAmmoCount() or (LevelVars.AmmoCounter.Unlimited and (GetString("unlimited"):gsub(" ", "")):gsub("%%s", "") or "")
+		local ammoName = (LevelVars.AmmoCounter.DisplayType == 0) and ((not LevelVars.AmmoCounter.Unlimited and Lara:GetAmmoCount() < 0) and "" or GetString(LevelVars.AmmoCounter.AmmoName[Lara:GetAmmoType()])) or ""
+		local ammoText = (ammoName == "") and tostring(number) or ((LevelVars.AmmoCounter.Swap) and ammoName .. " " .. number or number .. " " .. ammoName)
 		if Lara:GetHP() > 0 and ammoText ~= "" then
-			local myText = LevelFuncs.Engine.Node.GenerateString(ammoText, LevelVars.AC.PosX, LevelVars.AC.PosY, LevelVars.AC.Scale, LevelVars.AC.Alignment, LevelVars.AC.Effect, LevelVars.AC.Color)
+			local myText = LevelFuncs.Engine.Node.GenerateString(ammoText, LevelVars.AmmoCounter.PosX, LevelVars.AmmoCounter.PosY, LevelVars.AmmoCounter.Scale, LevelVars.AmmoCounter.Alignment, LevelVars.AmmoCounter.Effect, LevelVars.AmmoCounter.Color)
 			ShowString(myText, 1/30)
 			
-			if LevelVars.AC.sprite then
-				local ammoSprite = DisplaySprite(LevelVars.AC.spriteObj, Lara:GetAmmoType(), Vec2(LevelVars.AC.spritePosX,LevelVars.AC.spritePosY),0, Vec2(LevelVars.AC.SpriteScaleX,LevelVars.AC.SpriteScaleY))
+			if LevelVars.AmmoCounter.sprite then
+				local ammoSprite = DisplaySprite(LevelVars.AmmoCounter.spriteObj, Lara:GetAmmoType(), Vec2(LevelVars.AmmoCounter.spritePosX,LevelVars.AmmoCounter.spritePosY),0, Vec2(LevelVars.AmmoCounter.SpriteScaleX,LevelVars.AmmoCounter.SpriteScaleY))
 				ammoSprite:Draw(0,alignM, scaleM, blendID)
 			end
 		end
