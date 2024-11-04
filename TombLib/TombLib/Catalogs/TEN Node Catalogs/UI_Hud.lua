@@ -239,7 +239,7 @@ LevelFuncs.Engine.Node.TestBarValue = function(barName, operator, value)
 end
 
 LevelVars.CustomEnemyBars = {}
-LevelVarsEnemyBars = {}
+LevelVars.EnemyBars = {}
 
 -- !Name "Draw health bar for all enemies"
 -- !Section "UI/Hud"
@@ -269,28 +269,29 @@ LevelVarsEnemyBars = {}
 LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(textX, textY, textAlignment, textEffects, textScale, textColor, objectIDbg, spriteIDbg, colorbg, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode, hideText)
 	
 
-	LevelVarsEnemyBars.TextX			= textX
-	LevelVarsEnemyBars.TextY			= textY
-	LevelVarsEnemyBars.TextAlignment	= textAlignment
-	LevelVarsEnemyBars.TextEffects		= textEffects
-	LevelVarsEnemyBars.TextScale		= textScale
-	LevelVarsEnemyBars.TextColor		= textColor
-	LevelVarsEnemyBars.ObjectIDbg		= objectIDbg
-	LevelVarsEnemyBars.SpriteIDbg		= spriteIDbg
-	LevelVarsEnemyBars.ColorBG			= colorbg
-	LevelVarsEnemyBars.ObjectIDbar		= objectIDbar
-	LevelVarsEnemyBars.SpriteIDbar		= spriteIDbar
-	LevelVarsEnemyBars.ColorBar		= colorbar
-	LevelVarsEnemyBars.PosX			= posX
-	LevelVarsEnemyBars.PosY			= posY
-	LevelVarsEnemyBars.Rot				= rot
-	LevelVarsEnemyBars.ScaleX			= scaleX
-	LevelVarsEnemyBars.ScaleY			= scaleY
-	LevelVarsEnemyBars.AlignMode		= alignMode
-	LevelVarsEnemyBars.ScaleMode		= scaleMode
-	LevelVarsEnemyBars.BlendMode		= blendMode
-	LevelVarsEnemyBars.HideBar			= true
-	LevelVarsEnemyBars.HideText		= hideText
+	LevelVars.EnemyBars.TextX			= textX
+	LevelVars.EnemyBars.TextY			= textY
+	LevelVars.EnemyBars.TextAlignment	= textAlignment
+	LevelVars.EnemyBars.TextEffects		= textEffects
+	LevelVars.EnemyBars.TextScale		= textScale
+	LevelVars.EnemyBars.TextColor		= textColor
+	LevelVars.EnemyBars.ObjectIDbg		= objectIDbg
+	LevelVars.EnemyBars.SpriteIDbg		= spriteIDbg
+	LevelVars.EnemyBars.ColorBG			= colorbg
+	LevelVars.EnemyBars.ObjectIDbar		= objectIDbar
+	LevelVars.EnemyBars.SpriteIDbar		= spriteIDbar
+	LevelVars.EnemyBars.ColorBar			= colorbar
+	LevelVars.EnemyBars.PosX				= posX
+	LevelVars.EnemyBars.PosY				= posY
+	LevelVars.EnemyBars.Rot				= rot
+	LevelVars.EnemyBars.ScaleX			= scaleX
+	LevelVars.EnemyBars.ScaleY			= scaleY
+	LevelVars.EnemyBars.AlignMode		= alignMode
+	LevelVars.EnemyBars.ScaleMode		= scaleMode
+	LevelVars.EnemyBars.BlendMode		= blendMode
+	LevelVars.EnemyBars.HideBar			= true
+	LevelVars.EnemyBars.HideText			= hideText
+	LevelVars.EnemyBars.Status			= true
 end
 
 -- !Name "Draw health bar for specific enemy"
@@ -365,14 +366,31 @@ LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, 
 	LevelVars.CustomEnemyBars[dataName].HideText		= hideText
 end
 
+-- !Name "Start/Stop enemy health bars."
+-- !Section "UI/Hud"
+-- !Description "Starts or Stops the enemy health bars."
+-- !Arguments "Enumeration, 30, [ Stop | Start ], Status"
+
+LevelFuncs.Engine.Node.EnemyHealthBarStatus = function(value)
+
+	if LevelVars.EnemyBars then
+		if value == 0 then
+			LevelVars.EnemyBars.Status = false
+		elseif value == 1 then
+			LevelVars.EnemyBars.Status = true
+		end
+	end
+end
+
 -- Update enemy bars
 LevelFuncs.Engine.UpdateEnemyBars = function()
 	--add dynamic bar to the table based on target
 	
 	local playerTarget = Lara:GetTarget()
-	if playerTarget ~= nil then
+	if playerTarget ~= nil and LevelVars.EnemyBars.Status==true then
 		local playerTargetName = playerTarget:GetName()
-		do LevelFuncs.Engine.Node.ConstructEnemyBar(playerTargetName, playerTargetName, LevelVarsEnemyBars.TextX, LevelVarsEnemyBars.TextY, LevelVarsEnemyBars.TextAlignment, LevelVarsEnemyBars.TextEffects, LevelVarsEnemyBars.TextScale, LevelVarsEnemyBars.TextColor, LevelVarsEnemyBars.ObjectIDbg, LevelVarsEnemyBars.SpriteIDbg, LevelVarsEnemyBars.ColorBG, LevelVarsEnemyBars.ObjectIDbar, LevelVarsEnemyBars.SpriteIDbar, LevelVarsEnemyBars.ColorBar, LevelVarsEnemyBars.PosX, LevelVarsEnemyBars.PosY, LevelVarsEnemyBars.Rot, LevelVarsEnemyBars.ScaleX, LevelVarsEnemyBars.ScaleY, LevelVarsEnemyBars.AlignMode, LevelVarsEnemyBars.ScaleMode, LevelVarsEnemyBars.BlendMode, LevelVarsEnemyBars.HideBar, LevelVarsEnemyBars.HideText)
+		local displayName = LevelFuncs.Engine.Node.SplitString(playerTargetName, "_")
+		do LevelFuncs.Engine.Node.ConstructEnemyBar(playerTargetName, displayName[1], LevelVars.EnemyBars.TextX, LevelVars.EnemyBars.TextY, LevelVars.EnemyBars.TextAlignment, LevelVars.EnemyBars.TextEffects, LevelVars.EnemyBars.TextScale, LevelVars.EnemyBars.TextColor, LevelVars.EnemyBars.ObjectIDbg, LevelVars.EnemyBars.SpriteIDbg, LevelVars.EnemyBars.ColorBG, LevelVars.EnemyBars.ObjectIDbar, LevelVars.EnemyBars.SpriteIDbar, LevelVars.EnemyBars.ColorBar, LevelVars.EnemyBars.PosX, LevelVars.EnemyBars.PosY, LevelVars.EnemyBars.Rot, LevelVars.EnemyBars.ScaleX, LevelVars.EnemyBars.ScaleY, LevelVars.EnemyBars.AlignMode, LevelVars.EnemyBars.ScaleMode, LevelVars.EnemyBars.BlendMode, LevelVars.EnemyBars.HideBar, LevelVars.EnemyBars.HideText)
 		end
 	end
 	
@@ -422,7 +440,6 @@ LevelFuncs.Engine.UpdateEnemyBars = function()
 			-- Adjust color with alpha blending
 			local bgColor = Color(CustomEBar.ColorBG.r, CustomEBar.ColorBG.g, CustomEBar.ColorBG.b, CustomEBar.CurrentAlpha)
 			local barColor = Color(CustomEBar.ColorBar.r, CustomEBar.ColorBar.g, CustomEBar.ColorBar.b, CustomEBar.CurrentAlpha)
-			
 			
 			-- When HP reaches 0 then set target alpha = 0
 			if currentHP <= 0 then
