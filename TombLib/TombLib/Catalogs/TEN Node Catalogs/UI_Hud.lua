@@ -1,6 +1,5 @@
 --UI/Hud Nodes by Adngel,DaviDMRR and TrainWreck ; Code references by Lwmte and TEN Nodes.
 
-
 LevelVars.CustomBars = {}
 -- Construct custom bar
 LevelFuncs.Engine.Node.ConstructCustomBar = function(barName, startvalue, objectIDbg, spriteIDbg, colorbg, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
@@ -101,10 +100,10 @@ LevelFuncs.Engine.Node.__UpdateCustomBars = function()
 				barSprite:Draw(1, alignM, scaleM, blendID)
 				
 				--- Debugging code
-				local barValue = math.floor(CustomBar.OldValue)
-				local myTextString = "Bar Value: " .. barValue
-				local myText = DisplayString(myTextString, CustomBar.PosX, CustomBar.PosY-10, CustomBar.ColorBar)
-				ShowString(myText,1/30)
+				--local barValue = math.floor(CustomBar.OldValue)
+				--local myTextString = "Bar Value: " .. barValue
+				--local myText = DisplayString(myTextString, CustomBar.PosX, CustomBar.PosY-10, CustomBar.ColorBar)
+				--ShowString(myText,1/30)
 			end
 		end
 	end
