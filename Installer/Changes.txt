@@ -7,7 +7,8 @@ Tomb Editor:
  * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
  * Added TEN nodes for revolving / stopping the revolution of an object around other object (vertically and horizontally).
  * Added TEN nodes for custom bars.
- * Added TEN node for showing enemy health bar.
+ * Added TEN node for showing enemy health bars.
+ * Added TEN node for customizing health bars for specific enemies.
  * Added TEN node for showing ammo counter.
  * Added TEN nodes for checking and modifying last used inventory object.
  * Added TEN nodes to generate particles from a static object or from a volume.
