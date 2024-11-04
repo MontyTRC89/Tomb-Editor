@@ -1,5 +1,5 @@
 --UI/Hud Nodes by Adngel,DaviDMRR and TrainWreck ; Code references by Lwmte and TEN Nodes.
-
+--Awesomesauce
 
 LevelVars.CustomBars = {}
 -- Construct custom bar
@@ -41,7 +41,7 @@ end
 
 
 -- Transform object parameter using previously saved timed transform data
-LevelFuncs.Engine.UpdateCustomBars = function()
+LevelFuncs.Engine.Node.__UpdateCustomBars = function()
 
 	for _, CustomBar in pairs (LevelVars.CustomBars) do
 
@@ -383,7 +383,7 @@ LevelFuncs.Engine.Node.EnemyHealthBarStatus = function(value)
 end
 
 -- Update enemy bars
-LevelFuncs.Engine.UpdateEnemyBars = function()
+LevelFuncs.Engine.Node.__UpdateEnemyBars = function()
 	--add dynamic bar to the table based on target
 	
 	local playerTarget = Lara:GetTarget()
@@ -475,8 +475,8 @@ LevelFuncs.Engine.UpdateEnemyBars = function()
 	end
 end
 
-TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateCustomBars)
-TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.UpdateEnemyBars)
+TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.Node.__UpdateCustomBars)
+TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.Node.__UpdateEnemyBars)
 
 --Code for Ammo Counter
 LevelVars.AmmoCounter = {}
@@ -533,7 +533,7 @@ LevelFuncs.Engine.Node.ShowAmmoCounter = function(displayType, color, alignment,
 	LevelVars.AmmoCounter.ScaleMode		= scaleMode
 	LevelVars.AmmoCounter.BlendMode		= blendMode
 	
-	AddCallback(TEN.Logic.CallbackPoint.POSTCONTROLPHASE, LevelFuncs.__ShowAmmoCounter)
+	AddCallback(TEN.Logic.CallbackPoint.POSTCONTROLPHASE,LevelFuncs.Engine.Node.__ShowAmmoCounter)
 	PrintLog('Ammo counter initialized correctly', LogLevel.INFO)
 end
 
@@ -542,10 +542,10 @@ end
 -- !Description "Remove the number of available ammo"
 -- !Section "UI/Hud"
 LevelFuncs.Engine.Node.RemoveAmmoCounter = function()
-	RemoveCallback(TEN.Logic.CallbackPoint.POSTCONTROLPHASE, LevelFuncs.__ShowAmmoCounter)
+	RemoveCallback(TEN.Logic.CallbackPoint.POSTCONTROLPHASE, LevelFuncs.Engine.Node.__ShowAmmoCounter)
 end
 
-LevelFuncs.__ShowAmmoCounter = function()
+LevelFuncs.Engine.Node.__ShowAmmoCounter = function()
 
 	local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(LevelVars.AmmoCounter.AlignMode)
 	local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(LevelVars.AmmoCounter.ScaleMode)
