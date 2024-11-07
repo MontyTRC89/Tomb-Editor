@@ -216,7 +216,7 @@ namespace TombLib.Graphics
         {
             var arraySize = Texture.Description.ArraySize;
 
-            if (TexturePackers.Count >= arraySize)
+            if (TexturePackers.Count > arraySize)
             {
                 var newTexture = Texture2D.New(GraphicsDevice, _textureAtlasSize, _textureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
 
