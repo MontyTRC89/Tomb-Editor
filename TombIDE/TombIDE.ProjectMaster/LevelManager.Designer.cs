@@ -235,7 +235,7 @@
 			button_Publish.Name = "button_Publish";
 			button_Publish.Size = new System.Drawing.Size(40, 40);
 			button_Publish.TabIndex = 10;
-			toolTip.SetToolTip(button_Publish, "Create a \"Ready To Publish\" game archive...");
+			toolTip.SetToolTip(button_Publish, "Create a \"Ready To Publish\" Game Archive...");
 			button_Publish.Click += button_Publish_Click;
 			// 
 			// LevelManager

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
@@ -33,14 +34,22 @@ namespace TombIDE.Controls
 
 			if (_ide.Project.GameVersion != TRVersion.Game.TRNG)
 			{
-				panelButton_PluginManager.BackgroundImage = Properties.Resources.ide_plugin_30_disabled;
-				toolTip.SetToolTip(panelButton_PluginManager, "Plugins are not supported by the current game engine.");
+				panel_Icon_Plugins.BackgroundImage = Properties.Resources.ide_plugin_30_disabled;
+				label_Plugins.ForeColor = Color.FromArgb(128, 128, 128);
+
+				const string tip = "Plugins are not supported by the current game engine.";
+
+				toolTip.SetToolTip(panel_Icon_Plugins, tip);
+				toolTip.SetToolTip(label_Plugins, tip);
 			}
 
 			button_LaunchGame.Image = Icon.ExtractAssociatedIcon(_ide.Project.GetLauncherFilePath()).ToBitmap();
 
 			InitializeFLEP();
 			AddPinnedPrograms();
+
+			if (_ide.Project.GameVersion is not TRVersion.Game.TR1 and not TRVersion.Game.TombEngine)
+				button_Update.Enabled = false;
 		}
 
 		private void InitializeFLEP()
@@ -227,7 +236,7 @@ namespace TombIDE.Controls
 			{
 				Name = filePath,
 				Image = image,
-				Size = new Size(40, 40)
+				Size = new Size(42, 42)
 			};
 
 			button.Click += ProgramButton_Click;
@@ -289,6 +298,24 @@ namespace TombIDE.Controls
 		#endregion Program buttons
 
 		#region Events
+
+		private void button_ExitProject_MouseUp(object sender, MouseEventArgs e)
+			=> contextMenu_TIDE.Show(Cursor.Position);
+
+		private void button_BackToStart_Click(object sender, EventArgs e)
+			=> FindForm().DialogResult = DialogResult.OK;
+
+		private void button_Publish_Click(object sender, EventArgs e)
+		{
+			using var form = new FormGameArchive(_ide);
+			form.ShowDialog();
+		}
+
+		private void button_Update_Click(object sender, EventArgs e)
+			=> _ide.BeginEngineUpdate();
+
+		private void button_Exit_Click(object sender, EventArgs e)
+			=> FindForm().DialogResult = DialogResult.Cancel;
 
 		private void panelButton_LevelManager_Click(object sender, EventArgs e) => SelectIDETab(IDETab.LevelManager);
 		private void panelButton_ScriptingStudio_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptingStudio);
@@ -393,7 +420,7 @@ namespace TombIDE.Controls
 
 		public void SelectIDETab(IDETab tab)
 		{
-			var selectionColor = Color.FromArgb(135, 135, 135);
+			var selectionColor = Color.FromArgb(128, 128, 128);
 			var neutralColor = Color.FromArgb(48, 48, 48);
 
 			switch (tab)
