@@ -1,6 +1,9 @@
 Version 1.7.3
 =============
 
+WadTool:
+ * Added missing "Disable Interpolation" animcommand type.
+
 TombIDE:
  * Added new "More Actions..." menu in place of "Exit Project" button.
  * Added the ability to re-apply an engine update.

@@ -9,11 +9,12 @@
     public enum WadAnimCommandType : short
     {
         SetPosition = 1,
-        SetJumpDistance = 2,
+        SetJumpVelocity = 2,
         EmptyHands = 3,
         KillEntity = 4,
         PlaySound = 5,
-        FlipEffect = 6
+        Flipeffect = 6,
+        DisableInterpolation = 7 // TEN specific
     }
 
     public enum WadMeshLightingType : ushort
