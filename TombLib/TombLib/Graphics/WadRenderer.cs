@@ -174,6 +174,8 @@ namespace TombLib.Graphics
                     float scaleFactor = _maxTextureAllocationSize / (float)biggestDimension;
                     int newWidth = (int)(imageToPack.Width * scaleFactor);
                     int newHeight = (int)(imageToPack.Height * scaleFactor);
+                    newWidth = Math.Max(newWidth, 4);
+                    newHeight = Math.Max(newHeight, 4);
                     imageToPack = ImageC.Resize(imageToPack, newWidth, newHeight);
                 }
 
@@ -216,7 +218,7 @@ namespace TombLib.Graphics
         {
             var arraySize = Texture.Description.ArraySize;
 
-            if (TexturePackers.Count >= arraySize)
+            if (TexturePackers.Count > arraySize)
             {
                 var newTexture = Texture2D.New(GraphicsDevice, _textureAtlasSize, _textureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, TexturePackers.Count, SharpDX.Direct3D11.ResourceUsage.Default);
 
