@@ -220,3 +220,20 @@ end
 LevelFuncs.Engine.Node.GetEndLevelReason = function(reason)
 	return LevelFuncs.Engine.Node.GetGameStatus(reason) == Flow.GetGameStatus()
 end
+
+-- !Name "If break mode is..."
+-- !Conditional "True"
+-- !Description "Check if the game is in specific break mode."
+-- !Section "Game flow"
+-- !Arguments "Enumeration, 25, [ None | Full | Spectator | Player ], Break mode"
+LevelFuncs.Engine.Node.TestBreakMode = function(mode)
+	return LevelFuncs.Engine.Node.GetBreakMode(mode) == Flow.GetBreakMode()
+end
+
+-- !Name "Set break mode"
+-- !Section "Game flow"
+-- !Description "Set current break mode. Any values except 'None' will pause the game in different ways."
+-- !Arguments "Enumeration, 25, [ None | Full | Spectator | Player ], Break mode"
+LevelFuncs.Engine.Node.SetBreakMode = function(mode)
+	TEN.Flow.SetBreakMode(LevelFuncs.Engine.Node.GetBreakMode(mode))
+end

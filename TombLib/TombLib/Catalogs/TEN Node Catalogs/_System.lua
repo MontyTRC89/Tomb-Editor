@@ -166,6 +166,17 @@ LevelFuncs.Engine.Node.GetGameStatus = function(index)
 	return gameStatus[index]
 end
 
+LevelFuncs.Engine.Node.GetBreakMode = function(index)
+	local breakMode =
+	{
+		[0] = Flow.BreakMode.NONE,
+		[1] = Flow.BreakMode.FULL,
+		[2] = Flow.BreakMode.SPECTATOR,
+		[3] = Flow.BreakMode.PLAYER
+	}
+	return breakMode[index]
+end
+
 LevelFuncs.Engine.Node.SetPostProcessMode = function(index)
 	local postProcessMode =
 	{

@@ -308,6 +308,10 @@ namespace TombEditor.Forms
                 case EventType.OnUseItem:
                     toolTip.SetToolTip(cbEvents, "Occurs when an item was selected and used in inventory.");
                     break;
+
+                case EventType.OnBreak:
+                    toolTip.SetToolTip(cbEvents, "Occurs when game is running in a break mode.");
+                    break;
             }
         }
 
