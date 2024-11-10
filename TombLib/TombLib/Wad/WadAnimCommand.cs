@@ -11,7 +11,7 @@ namespace TombLib.Wad
 
         public bool FrameBased => Type >= WadAnimCommandType.PlaySound;
         public bool PositionBased => Type == WadAnimCommandType.SetPosition;
-        public bool VelocityBased => Type == WadAnimCommandType.SetJumpDistance;
+        public bool VelocityBased => Type == WadAnimCommandType.SetJumpVelocity;
 
         public string Description => ToString();
         public override string ToString()
@@ -20,7 +20,7 @@ namespace TombLib.Wad
             {
                 case WadAnimCommandType.EmptyHands:
                     return "Remove guns from hands";
-                case WadAnimCommandType.SetJumpDistance:
+                case WadAnimCommandType.SetJumpVelocity:
                     return "Set jump reference <H, V> = <" + Parameter1 + ", " + Parameter2 + ">";
                 case WadAnimCommandType.KillEntity:
                     return "Kill entity";
@@ -48,7 +48,7 @@ namespace TombLib.Wad
                             return "Play Sound ID = " + soundId + " (underwater) on Frame = " + Parameter1;
                     }
 
-                case WadAnimCommandType.FlipEffect:
+                case WadAnimCommandType.Flipeffect:
                     int flipeffectId = Parameter2 & 0x3FFF;
                     if ((Parameter2 & 0x8000) != 0)
                         return "Play FlipEffect ID = " + flipeffectId + " (right foot) on Frame = " + Parameter1;
@@ -56,6 +56,9 @@ namespace TombLib.Wad
                         return "Play FlipEffect ID = " + flipeffectId + " (left foot) on Frame = " + Parameter1;
                     else
                         return "Play FlipEffect ID = " + flipeffectId + " on Frame = " + Parameter1;
+
+                case WadAnimCommandType.DisableInterpolation:
+                    return "Disable interpolation on Frame = " + Parameter1;
             }
 
             return "";

@@ -6,6 +6,8 @@ using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.ComponentModel;
 using DarkUI.Config;
+using System.Collections.Generic;
+using TombLib.Utils;
 
 namespace WadTool
 {
@@ -23,7 +25,8 @@ namespace WadTool
                 _command = value;
                 UpdateUI(_command);
             }
-        } private WadAnimCommand _command;
+        }
+        private WadAnimCommand _command;
 
         public class AnimCommandEventArgs : EventArgs { public WadAnimCommand Command { get; set; } }
         public event EventHandler<AnimCommandEventArgs> AnimCommandChanged;
@@ -33,6 +36,17 @@ namespace WadTool
         public void Initialize(AnimationEditor editor, bool disableFrameControls = false)
         {
             _editor = editor;
+
+            comboCommandType.Items.Clear();
+
+            foreach (WadAnimCommandType type in Enum.GetValues(typeof(WadAnimCommandType)))
+            {
+                if (editor.Wad.GameVersion != TRVersion.Game.TombEngine && type >= WadAnimCommandType.DisableInterpolation)
+                    continue;
+
+                comboCommandType.Items.Add(type.ToString().SplitCamelcase());
+            }
+
             tbPlaySoundFrame.Enabled = !disableFrameControls;
             tbFlipEffectFrame.Enabled = !disableFrameControls;
 
@@ -80,7 +94,7 @@ namespace WadTool
             {
                 _currentlyDoingCommandSelection = true;
 
-                comboCommandType.SelectedIndex = (int)(cmd.Type) - 1;
+                comboCommandType.SelectedIndex = comboCommandType.Items.Count < (int)cmd.Type ? -1 : (int)(cmd.Type) - 1;
 
                 switch (cmd.Type)
                 {
@@ -93,9 +107,9 @@ namespace WadTool
                         tbPosZ.Value = cmd.Parameter3;
                         break;
 
-                    case WadAnimCommandType.SetJumpDistance:
+                    case WadAnimCommandType.SetJumpVelocity:
                         commandControls.Visible = true;
-                        commandControls.SelectedTab = tabSetJumpDistance;
+                        commandControls.SelectedTab = tabSetJumpVelocity;
 
                         tbHorizontal.Value = cmd.Parameter1;
                         tbVertical.Value = cmd.Parameter2;
@@ -104,6 +118,14 @@ namespace WadTool
                     case WadAnimCommandType.EmptyHands:
                     case WadAnimCommandType.KillEntity:
                         commandControls.Visible = false;
+                        break;
+
+                    case WadAnimCommandType.DisableInterpolation:
+                        commandControls.Visible = true;
+                        commandControls.SelectedTab = tabDisableInterpolation;
+
+                        tbFrameDisableInterpolation.Value = cmd.Parameter1;
+
                         break;
 
                     case WadAnimCommandType.PlaySound:
@@ -143,7 +165,7 @@ namespace WadTool
                         }
                         break;
 
-                    case WadAnimCommandType.FlipEffect:
+                    case WadAnimCommandType.Flipeffect:
                         commandControls.Visible = true;
                         commandControls.SelectedTab = tabFlipeffect;
 
@@ -242,7 +264,7 @@ namespace WadTool
 
         private void tbHorizontal_ValueChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.SetJumpDistance)
+            if (_command == null || _command.Type != WadAnimCommandType.SetJumpVelocity)
                 return;
             _command.Parameter1 = (short)tbHorizontal.Value;
             InvokeChanged();
@@ -250,7 +272,7 @@ namespace WadTool
 
         private void tbVertical_ValueChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.SetJumpDistance)
+            if (_command == null || _command.Type != WadAnimCommandType.SetJumpVelocity)
                 return;
             _command.Parameter2 = (short)tbVertical.Value;
             InvokeChanged();
@@ -258,7 +280,7 @@ namespace WadTool
 
         private void tbFlipEffectFrame_ValueChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.FlipEffect)
+            if (_command == null || _command.Type != WadAnimCommandType.Flipeffect)
                 return;
             _command.Parameter1 = (short)tbFlipEffectFrame.Value;
             InvokeChanged();
@@ -266,7 +288,7 @@ namespace WadTool
 
         private void tbFlipEffect_ValueChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.FlipEffect)
+            if (_command == null || _command.Type != WadAnimCommandType.Flipeffect)
                 return;
 
             _command.Parameter2 &= unchecked((short)~0x3FFF);
@@ -334,6 +356,15 @@ namespace WadTool
             else
                 comboSound.SelectedIndex = comboSound.Items.Count - 1;
 
+            InvokeChanged();
+        }
+
+        private void tbFrameDisableInterpolation_ValueChanged(object sender, EventArgs e)
+        {
+            if (_command == null || _command.Type != WadAnimCommandType.DisableInterpolation)
+                return;
+
+            _command.Parameter1 = (short)tbFrameDisableInterpolation.Value;
             InvokeChanged();
         }
     }

@@ -2056,7 +2056,7 @@ namespace WadTool
                 {
                     idToPlay = ac.Parameter2 & 0xFFF;
                 }
-                else if (ac.Type == WadAnimCommandType.FlipEffect &&
+                else if (ac.Type == WadAnimCommandType.Flipeffect &&
                          previewSoundType == SoundPreviewType.LandWithMaterial &&
                          _editor.Wad.GameVersion >= TRVersion.Game.TR3)
                 {
@@ -2067,10 +2067,10 @@ namespace WadTool
 
                 if (idToPlay != -1 && ac.Parameter1 == _frameCount)
                 {
-                    int soundType = ac.Type == WadAnimCommandType.FlipEffect ? 0x4000 : ac.Parameter2 & 0xF000;
+                    int soundType = ac.Type == WadAnimCommandType.Flipeffect ? 0x4000 : ac.Parameter2 & 0xF000;
 
                     // Mute sound in substance.
-                    if (ac.Type == WadAnimCommandType.FlipEffect &&
+                    if (ac.Type == WadAnimCommandType.Flipeffect &&
                         (previewSoundType == SoundPreviewType.ShallowWater || previewSoundType == SoundPreviewType.Quicksand || previewSoundType == SoundPreviewType.Underwater))
                         continue;
 
