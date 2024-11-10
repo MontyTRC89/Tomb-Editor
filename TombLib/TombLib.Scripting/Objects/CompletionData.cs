@@ -18,7 +18,7 @@ namespace TombLib.Scripting.Objects
 
 		public string Text { get; }
 		public object Content => Text;
-		public object Description => "";
+		public object Description => null;
 		public double Priority => 0;
 
 		public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
