@@ -10,6 +10,7 @@ WadTool:
 TombIDE:
  * Added new "More Actions..." menu in place of "Exit Project" button.
  * Added the ability to re-apply an engine update.
+ * Improved autocomplete popup visuals for TRNG scripting.
 
 Version 1.7.2
 =============
