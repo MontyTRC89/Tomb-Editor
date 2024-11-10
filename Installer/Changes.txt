@@ -1,6 +1,9 @@
 Version 1.7.3
 =============
 
+Tomb Editor:
+ * Added transparency field to draw text nodes.
+
 WadTool:
  * Added missing "Disable Interpolation" animcommand type.
 
