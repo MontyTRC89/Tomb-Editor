@@ -221,19 +221,19 @@ LevelFuncs.Engine.Node.GetEndLevelReason = function(reason)
 	return LevelFuncs.Engine.Node.GetGameStatus(reason) == Flow.GetGameStatus()
 end
 
--- !Name "If break mode is..."
+-- !Name "If freeze mode is..."
 -- !Conditional "True"
--- !Description "Check if the game is in specific break mode."
+-- !Description "Check if the game is in specific freeze mode."
 -- !Section "Game flow"
--- !Arguments "Enumeration, 25, [ None | Full | Spectator | Player ], Break mode"
-LevelFuncs.Engine.Node.TestBreakMode = function(mode)
-	return LevelFuncs.Engine.Node.GetBreakMode(mode) == Flow.GetBreakMode()
+-- !Arguments "Enumeration, 25, [ None | Full | Spectator | Player ], Freeze mode"
+LevelFuncs.Engine.Node.TestFreezeMode = function(mode)
+	return LevelFuncs.Engine.Node.GetFreezeMode(mode) == Flow.GetFreezeMode()
 end
 
--- !Name "Set break mode"
+-- !Name "Set freeze mode"
 -- !Section "Game flow"
--- !Description "Set current break mode. Any values except 'None' will pause the game in different ways."
--- !Arguments "Enumeration, 25, [ None | Full | Spectator | Player ], Break mode"
-LevelFuncs.Engine.Node.SetBreakMode = function(mode)
-	TEN.Flow.SetBreakMode(LevelFuncs.Engine.Node.GetBreakMode(mode))
+-- !Description "Set current freeze mode. Any values except 'None' will freeze the game in different ways."
+-- !Arguments "Enumeration, 25, [ None | Full | Spectator | Player ], Freeze mode"
+LevelFuncs.Engine.Node.SetFreezeMode = function(mode)
+	TEN.Flow.SetFreezeMode(LevelFuncs.Engine.Node.GetFreezeMode(mode))
 end

@@ -212,7 +212,7 @@ namespace TombIDE.ScriptingStudio
 					"LevelFuncs.OnLoop = function() end\n" +
 					"LevelFuncs.OnEnd = function() end\n" +
 					"LevelFuncs.OnUseItem = function() end\n" +
-					"LevelFuncs.OnBreak = function() end\n");
+					"LevelFuncs.OnFreeze = function() end\n");
 			}
 			catch
 			{
