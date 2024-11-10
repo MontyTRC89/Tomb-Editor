@@ -346,7 +346,11 @@ namespace TombLib.Controls.VisualScripting
 
         public void StorePosition()
         {
-            Node.ScreenPosition = Editor.FromVisualCoord(Location);
+            var result = Editor.FromVisualCoord(Location);
+            var newX   = MathC.Clamp(result.X, 0, Editor.GridSize);
+            var newY   = MathC.Clamp(result.Y, 0, Editor.GridSize);
+
+            Node.ScreenPosition = new Vector2(newX, newY);
         }
 
         public PointF[] GetNodeScreenPosition(ConnectionMode mode, bool force = false)
