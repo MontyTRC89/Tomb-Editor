@@ -132,7 +132,7 @@ namespace TombLib.LevelData
         public short AlternateGroup { get; set; } = -1;
 
         // Internal data structures
-        public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
+        public RoomGeometry RoomGeometry { get; set; } = new RoomGeometry();
 
         public Room(Level level, int numXSectors, int numZSectors, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
         {

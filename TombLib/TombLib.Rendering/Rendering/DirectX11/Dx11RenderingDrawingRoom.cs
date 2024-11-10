@@ -32,6 +32,9 @@ namespace TombLib.Rendering.DirectX11
 
             RoomGeometry roomGeometry = description.Room.RoomGeometry;
 
+            if (roomGeometry is null)
+                return;
+
             // Create buffer
             Vector3 worldPos = description.Room.WorldPos + description.Offset;
             int singleSidedVertexCount = roomGeometry.VertexPositions.Count;

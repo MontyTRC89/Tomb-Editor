@@ -267,6 +267,13 @@ namespace TombEditor
 
                 var previous = _selectedRooms;
                 _selectedRooms = value.ToArray();
+
+                foreach (var room in value)
+                {
+                    room.RoomGeometry = new RoomGeometry();
+                    room.BuildGeometry();
+                }
+
                 if (previous == null || previous[0] != _selectedRooms[0])
                     RaiseEvent(new SelectedRoomChangedEvent(previous, value));
                 else
@@ -277,6 +284,10 @@ namespace TombEditor
 
                 // Keep last selected room index in level settings
                 Level.Settings.LastSelectedRoom = Array.FindIndex(Level.Rooms, item => item == _selectedRooms[0]);
+
+                if (previous is not null)
+                    foreach (var room in previous)
+                        room.RoomGeometry = null;
             }
         }
         public bool SelectedRoomsContains(Room room) => Array.IndexOf(_selectedRooms, room) != -1;
