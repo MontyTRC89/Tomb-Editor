@@ -288,12 +288,79 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public Room BaseRoom;
         public Room OriginalRoom;
 
-        public void Write(BinaryWriterEx writer)
+        public void WriteDynamicData(BinaryWriterEx writer)
         {
             writer.Write(OriginalRoom.Name);
+
             writer.Write(OriginalRoom.Properties.Tags.Count);
             OriginalRoom.Properties.Tags.ForEach(s => writer.Write(s));
 
+            // Write room color
+            writer.Write(AmbientLight.X);
+            writer.Write(AmbientLight.Y);
+            writer.Write(AmbientLight.Z);
+
+            // Write properties
+            writer.Write(AlternateRoom);
+            writer.Write(Flags);
+            writer.Write(WaterScheme);
+            writer.Write(ReverbInfo);
+            writer.Write(AlternateGroup);
+
+            // Write static meshes
+            writer.WriteBlock(StaticMeshes.Count);
+            foreach (var sm in StaticMeshes)
+            {
+                writer.Write(sm.X);
+                writer.Write(sm.Y);
+                writer.Write(sm.Z);
+                writer.Write(sm.Yaw);
+                writer.Write(sm.Pitch);
+                writer.Write(sm.Roll);
+                writer.Write(sm.Scale);
+                writer.Write(sm.Flags);
+                writer.Write(sm.Color);
+                writer.Write(sm.ObjectID);
+                writer.Write(sm.HitPoints);
+                writer.Write(sm.LuaName);
+            }
+
+            // Write volumes
+            writer.Write(OriginalRoom.Volumes.Count());
+            foreach (var volume in OriginalRoom.Volumes)
+            {
+                var bvPos = volume.Room.WorldPos + volume.Position;
+                bvPos.Y = -bvPos.Y; // Invert Y coordinate to comply with TR coord system
+
+                if (volume is BoxVolumeInstance)
+                {
+                    writer.Write(0);
+                    var bv = volume as BoxVolumeInstance;
+
+                    writer.Write(bvPos);
+                    writer.Write(Quaternion.CreateFromYawPitchRoll(MathC.DegToRad(bv.RotationY), MathC.DegToRad(bv.RotationX), MathC.DegToRad(bv.Roll)));
+                    writer.Write(bv.Size / 2.0f);
+                }
+                else if (volume is SphereVolumeInstance)
+                {
+                    writer.Write(1);
+                    var sv = volume as SphereVolumeInstance;
+
+                    writer.Write(bvPos);
+                    writer.Write(Quaternion.Identity);
+                    writer.Write(new Vector3(sv.Size / 2.0f));
+                }
+
+                writer.Write(volume.Enabled);
+                writer.Write(volume.DetectInAdjacentRooms);
+
+                writer.Write(volume.LuaName);
+                writer.Write(OriginalRoom.Level.Settings.VolumeEventSets.IndexOf(volume.EventSet));
+            }
+        }
+
+        public void WriteStaticData(BinaryWriterEx writer)
+        {
             writer.WriteBlock(Info);
 
             writer.Write(Vertices.Count);
@@ -380,11 +447,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(s.Flags.MarkBeetle);
             }
 
-            // Write room color
-            writer.Write(AmbientLight.X);
-            writer.Write(AmbientLight.Y);
-            writer.Write(AmbientLight.Z);
-
             // Write lights
             writer.WriteBlock(Lights.Count);
             foreach (var light in Lights)
@@ -406,64 +468,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(light.LightType);
                 writer.Write(light.CastDynamicShadows);
             }
-
-            // Write static meshes
-            writer.WriteBlock(StaticMeshes.Count);
-            foreach (var sm in StaticMeshes)
-            {
-                writer.Write(sm.X);
-                writer.Write(sm.Y);
-                writer.Write(sm.Z);
-                writer.Write(sm.Yaw);
-                writer.Write(sm.Pitch);
-                writer.Write(sm.Roll);
-                writer.Write(sm.Scale);
-                writer.Write(sm.Flags);
-                writer.Write(sm.Color);
-                writer.Write(sm.ObjectID);
-                writer.Write(sm.HitPoints);
-                writer.Write(sm.LuaName);
-            }
-
-            // Write volumes
-            writer.Write(OriginalRoom.Volumes.Count());
-            foreach (var volume in OriginalRoom.Volumes)
-            {
-                var bvPos = volume.Room.WorldPos + volume.Position;
-                bvPos.Y = -bvPos.Y; // Invert Y coordinate to comply with TR coord system
-
-                if (volume is BoxVolumeInstance)
-                {
-                    writer.Write(0);
-                    var bv = volume as BoxVolumeInstance;
-
-                    writer.Write(bvPos);
-                    writer.Write(Quaternion.CreateFromYawPitchRoll(MathC.DegToRad(bv.RotationY), MathC.DegToRad(bv.RotationX), MathC.DegToRad(bv.Roll)));
-                    writer.Write(bv.Size / 2.0f);
-                }
-                else if (volume is SphereVolumeInstance)
-                {
-                    writer.Write(1);
-                    var sv = volume as SphereVolumeInstance;
-
-                    writer.Write(bvPos);
-                    writer.Write(Quaternion.Identity);
-                    writer.Write(new Vector3(sv.Size / 2.0f));
-                }
-
-                writer.Write(volume.Enabled);
-                writer.Write(volume.DetectInAdjacentRooms);
-
-                writer.Write(volume.LuaName);
-                writer.Write(OriginalRoom.Level.Settings.VolumeEventSets.IndexOf(volume.EventSet));
-            }
-
-            // Write final data
-            writer.Write(AlternateRoom);
-            writer.Write(Flags);
-            writer.Write(WaterScheme);
-            writer.Write(ReverbInfo);
-            writer.Write(AlternateGroup);
         }
     }
 
