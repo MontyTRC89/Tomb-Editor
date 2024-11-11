@@ -2,9 +2,9 @@ Version 1.7.3
 =============
 
 Tomb Editor:
- * Fixed nodes randomly going out of bounds.
+ * Fixed nodes randomly moving out of bounds.
  * Fixed lists in nodes sometimes incorrectly saving selected value.
- * Added transparency field to draw text nodes.
+ * Added transparency field in text drawing nodes.
  * Added a node to check Lara's airborne status.
 
 WadTool:
