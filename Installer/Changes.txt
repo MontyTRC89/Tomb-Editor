@@ -5,7 +5,10 @@ Tomb Editor:
  * Fixed nodes randomly moving out of bounds.
  * Fixed lists in nodes sometimes incorrectly saving selected value.
  * Added transparency field in text drawing nodes.
- * Added a node to check Lara's airborne status.
+ * Added TEN node to check Lara's airborne status.
+ * Added TEN node to check set hit points for a shatterable static mesh.
+ * Added TEN node to check if hit points of a shatterable static mesh.
+ 
 
 WadTool:
  * Added missing "Disable Interpolation" animcommand type.
