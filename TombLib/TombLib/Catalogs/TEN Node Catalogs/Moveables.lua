@@ -506,8 +506,7 @@ LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, item
         return false
     end
 end
-
-
+			   
 -- !Name "Create moveable"
 -- !Section "Moveable parameters"
 -- !Description "Create a new moveable object and activate it"
@@ -520,8 +519,22 @@ end
 -- !Arguments "Numerical, 20, [ 0 | 1000 | 0 ], Starting frame of animation (default 0)"
 -- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], Starting health of moveable (default 100)"
 -- !Arguments "Numerical, 20, [ -1000 | 1000 | 0 ], OCB of moveable (default 0)"
+
+
 LevelFuncs.Engine.Node.CreateMoveable = function(moveableSlot, moveableName, pos, rot, roomName, anim, frame, health, ocb)
     local roomNumber = GetRoomByName(roomName):GetRoomNumber()
     local newMoveable = Moveable(moveableSlot, moveableName, pos, rot, roomNumber, anim, frame, health, ocb)
     newMoveable:Enable()
 end
+
+-- !Name "Remove moveable effect"
+-- !Section "Moveable parameters"
+-- !Description "Remove effect from moveable"
+-- !Arguments "NewLine, Moveables, Select moveable to remove effect from."
+
+LevelFuncs.Engine.Node.RemoveMoveableEffect = function(moveable)
+
+	TEN.Objects.GetMoveableByName(moveable):SetEffect(TEN.Effects.EffectID.NONE)
+	
+end
+	

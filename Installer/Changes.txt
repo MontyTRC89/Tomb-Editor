@@ -8,6 +8,7 @@ Tomb Editor:
  * Added TEN node to check Lara's airborne status.
  * Added TEN node to set hit points for a shatterable static mesh.
  * Added TEN node to check hit points of a shatterable static mesh.
+ * Added TEN node to remove moveable effect.
  
 
 WadTool:
