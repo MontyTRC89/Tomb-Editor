@@ -134,10 +134,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             var ceilingShape = new RoomSectorShape(sector, false, ceilingPortalType, sector.IsAnyWall);
 
                             // Floor collision
-                            BuildFloorDataCollision(floorShape, false, room, new VectorInt2(x, z));
+                            BuildFloorDataCollision(floorShape, floorPortalType, false, room, new VectorInt2(x, z));
 
                             // Ceiling collision
-                            BuildFloorDataCollision(ceilingShape, true, room, new VectorInt2(x, z));
+                            BuildFloorDataCollision(ceilingShape, ceilingPortalType, true, room, new VectorInt2(x, z));
 
                             // Triggers
                             var triggers = BuildTriggers(room, sector, new VectorInt2(x, z));
@@ -507,13 +507,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 DiagonalStep != 0 || SplitPortalSecond != SplitPortalFirst || SplitWallFirst != SplitWallSecond;
         }
 
-        private void BuildFloorDataCollision(RoomSectorShape shape, bool isCeiling, Room reportRoom, VectorInt2 reportPos)
+        private void BuildFloorDataCollision(RoomSectorShape shape, Room.RoomConnectionType portalType, bool isCeiling, Room reportRoom, VectorInt2 reportPos)
         {
             TombEngineRoom newRoom = _tempRooms[reportRoom];
             TombEngineRoomSector newSector = newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y];
             Sector sector = reportRoom.GetSector(reportPos);
             var newCollision = isCeiling ? newSector.CeilingCollision : newSector.FloorCollision;
             var portal = isCeiling ? sector.CeilingPortal : sector.FloorPortal;
+
+            if (portalType == Room.RoomConnectionType.NoPortal)
+                portal = null;
 
             if (shape.IsSplit)
             {
