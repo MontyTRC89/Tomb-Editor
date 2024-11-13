@@ -1,12 +1,24 @@
 Version 1.7.3
 =============
 
+Tomb Editor:
+ * Fixed nodes randomly moving out of bounds.
+ * Fixed lists in nodes sometimes incorrectly saving selected value.
+ * Fixed incorrect diagonal wall collision calculations below blocked sectors.
+ * Added transparency field in text drawing nodes.
+ * Added TEN node to check Lara's airborne status.
+ * Added TEN node to set hit points for a shatterable static mesh.
+ * Added TEN node to check hit points of a shatterable static mesh.
+ * Added TEN node to remove moveable effect.
+ 
+
 WadTool:
  * Added missing "Disable Interpolation" animcommand type.
 
 TombIDE:
  * Added new "More Actions..." menu in place of "Exit Project" button.
  * Added the ability to re-apply an engine update.
+ * Improved autocomplete popup visuals for TRNG scripting.
 
 Version 1.7.2
 =============

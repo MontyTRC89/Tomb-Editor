@@ -418,23 +418,13 @@ namespace TombLib.Controls.VisualScripting
                         else if (!float.TryParse(source, out potentialIndex))
                             potentialIndex = -1;
 
-                        if (potentialIndex < 0 || potentialIndex >= cbList.Items.Count)
-                        {
-                            var item = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
-                            if (item != null)
-                                cbList.SelectedItem = item;
-                            else if (cbList.Items.Count > 0)
-                                cbList.SelectedIndex = 0;
-                            else
-                                cbList.SelectedIndex = -1;
-                        }
+                        var item = cbList.Items.Cast<ComboBoxItem>().FirstOrDefault(i => i.Value == source);
+                        if (item != null)
+                            cbList.SelectedItem = item;
+                        else if (cbList.Items.Count > potentialIndex && potentialIndex >= 0)
+                            cbList.SelectedIndex = (int)potentialIndex;
                         else
-                        {
-                            if (cbList.Items.Count > 0)
-                                cbList.SelectedIndex = (int)potentialIndex;
-                            else
-                                cbList.SelectedIndex = -1;
-                        }
+                            cbList.SelectedIndex = 0;
 
                         BoxListValue();
                         break;

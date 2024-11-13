@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using TombLib.IO;
@@ -12,18 +11,118 @@ namespace TombLib.LevelData.Compilers.TombEngine
     {
         private void WriteLevelTombEngine()
         {
+            byte[] dynamicDataBuffer;
+            using (var dynamicDataStream = new MemoryStream())
+            {
+                var writer = new BinaryWriterEx(dynamicDataStream); // Don't dispose
+                ReportProgress(80, "Writing dynamic data to memory buffer");
+
+                // Write room dynamic data
+                writer.Write(_level.ExistingRooms.Count);
+                foreach (var r in _level.ExistingRooms)
+                    _tempRooms[r].WriteDynamicData(writer);
+
+                // Write items and AI objects
+                writer.Write((uint)_items.Count);
+                foreach (var item in _items)
+                {
+                    writer.Write(item.ObjectID);
+                    writer.Write(item.Room);
+                    writer.Write(item.X);
+                    writer.Write(item.Y);
+                    writer.Write(item.Z);
+                    writer.Write(item.Yaw);
+                    writer.Write(item.Pitch);
+                    writer.Write(item.Roll);
+                    writer.Write(item.Color);
+                    writer.Write(item.OCB);
+                    writer.Write(item.Flags);
+                    writer.Write(item.LuaName);
+                }
+
+                writer.Write((uint)_aiItems.Count);
+                foreach (var item in _aiItems)
+                {
+                    writer.Write(item.ObjectID);
+                    writer.Write(item.Room);
+                    writer.Write(item.X);
+                    writer.Write(item.Y);
+                    writer.Write(item.Z);
+                    writer.Write(item.Yaw);
+                    writer.Write(item.Pitch);
+                    writer.Write(item.Roll);
+                    writer.Write(item.OCB);
+                    writer.Write(item.Flags);
+                    writer.Write(item.BoxIndex);
+                    writer.Write(item.LuaName);
+                }
+
+                // Write camera, flyby and sound sources
+                writer.Write((uint)_cameras.Count);
+                foreach (var camera in _cameras)
+                {
+                    writer.Write(camera.X);
+                    writer.Write(camera.Y);
+                    writer.Write(camera.Z);
+                    writer.Write(camera.Room);
+                    writer.Write(camera.Flags);
+                    writer.Write(camera.Speed);
+                    writer.Write(camera.LuaName);
+                }
+
+                writer.Write((uint)_flyByCameras.Count);
+                writer.WriteBlockArray(_flyByCameras);
+
+                writer.Write((uint)_sinks.Count);
+                foreach (var sink in _sinks)
+                {
+                    writer.Write(sink.X);
+                    writer.Write(sink.Y);
+                    writer.Write(sink.Z);
+                    writer.Write(sink.Strength);
+                    writer.Write(sink.BoxIndex);
+                    writer.Write(sink.LuaName);
+                }
+
+                writer.Write((uint)_soundSources.Count);
+                foreach (var source in _soundSources)
+                {
+                    writer.Write(source.X);
+                    writer.Write(source.Y);
+                    writer.Write(source.Z);
+                    writer.Write(source.SoundID);
+                    writer.Write(source.Flags);
+                    writer.Write(source.LuaName);
+                }
+
+                // Write event sets
+                int eventSetCount = _level.Settings.GlobalEventSets.Count + _level.Settings.VolumeEventSets.Count;
+                writer.Write((uint)eventSetCount);
+
+                if (eventSetCount > 0)
+                {
+                    writer.Write((uint)_level.Settings.GlobalEventSets.Count);
+                    foreach (GlobalEventSet set in _level.Settings.GlobalEventSets)
+                        set.Write(writer, _level.Settings.GlobalEventSets);
+
+                    writer.Write((uint)_level.Settings.VolumeEventSets.Count);
+                    foreach (VolumeEventSet set in _level.Settings.VolumeEventSets)
+                        set.Write(writer, _level.Settings.VolumeEventSets);
+                }
+
+                dynamicDataBuffer = dynamicDataStream.ToArray();
+            }
+
             // Now begin to compile the geometry block in a MemoryStream
             byte[] geometryDataBuffer;
             using (var geometryDataStream = new MemoryStream())
             {
                 var writer = new BinaryWriterEx(geometryDataStream); // Don't dispose
-                ReportProgress(80, "Writing geometry data to memory buffer");
+                ReportProgress(85, "Writing geometry data to memory buffer");
 
-                var numRooms = (uint)_level.Rooms.Count(r => r != null);
-                writer.Write(numRooms);
-
+                writer.Write(_level.ExistingRooms.Count);
                 foreach (var r in _level.ExistingRooms)
-                    _tempRooms[r].Write(writer);
+                    _tempRooms[r].WriteStaticData(writer);
 
                 // Write floordata
                 var numFloorData = (uint)_floorData.Count;
@@ -125,44 +224,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write((uint)_spriteSequences.Count);
                 writer.WriteBlockArray(_spriteSequences);
 
-                // Write camera, flyby and sound sources
-                writer.Write((uint)_cameras.Count);
-                foreach (var camera in _cameras)
-                {
-                    writer.Write(camera.X);
-                    writer.Write(camera.Y);
-                    writer.Write(camera.Z);
-                    writer.Write(camera.Room);
-                    writer.Write(camera.Flags);
-                    writer.Write(camera.Speed);
-                    writer.Write(camera.LuaName);
-                }
-
-                writer.Write((uint)_flyByCameras.Count);
-                writer.WriteBlockArray(_flyByCameras);
-
-                writer.Write((uint)_sinks.Count);
-                foreach (var sink in _sinks)
-                {
-                    writer.Write(sink.X);
-                    writer.Write(sink.Y);
-                    writer.Write(sink.Z);
-                    writer.Write(sink.Strength);
-                    writer.Write(sink.BoxIndex);
-                    writer.Write(sink.LuaName);
-                }
-
-                writer.Write((uint)_soundSources.Count);
-                foreach (var source in _soundSources)
-                {
-                    writer.Write(source.X);
-                    writer.Write(source.Y);
-                    writer.Write(source.Z);
-                    writer.Write(source.SoundID);
-                    writer.Write(source.Flags);
-                    writer.Write(source.LuaName);
-                }
-
                 // Write pathfinding data
                 writer.Write((uint)_boxes.Count);
                 writer.WriteBlockArray(_boxes);
@@ -180,82 +241,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
 
-                // Write items and AI objects
-                writer.Write((uint)_items.Count);
-                foreach (var item in _items)
-                {
-                    writer.Write(item.ObjectID);
-                    writer.Write(item.Room);
-                    writer.Write(item.X);
-                    writer.Write(item.Y);
-                    writer.Write(item.Z);
-                    writer.Write(item.Yaw);
-                    writer.Write(item.Pitch);
-                    writer.Write(item.Roll);
-                    writer.Write(item.Color);
-                    writer.Write(item.OCB);
-                    writer.Write(item.Flags);
-                    writer.Write(item.LuaName);
-                }
-
-                writer.Write((uint)_aiItems.Count);
-                foreach (var item in _aiItems)
-                {
-                    writer.Write(item.ObjectID);
-                    writer.Write(item.Room);
-                    writer.Write(item.X);
-                    writer.Write(item.Y);
-                    writer.Write(item.Z);
-                    writer.Write(item.Yaw);
-                    writer.Write(item.Pitch);
-                    writer.Write(item.Roll);
-                    writer.Write(item.OCB);
-                    writer.Write(item.Flags);
-                    writer.Write(item.BoxIndex);
-                    writer.Write(item.LuaName);
-                }
-
-                // Write event sets
-                int eventSetCount = _level.Settings.GlobalEventSets.Count + _level.Settings.VolumeEventSets.Count;
-                writer.Write((uint)eventSetCount);
-
-                if (eventSetCount > 0)
-                {
-                    writer.Write((uint)_level.Settings.GlobalEventSets.Count);
-                    foreach (GlobalEventSet set in _level.Settings.GlobalEventSets)
-                        set.Write(writer, _level.Settings.GlobalEventSets);
-
-                    writer.Write((uint)_level.Settings.VolumeEventSets.Count);
-                    foreach (VolumeEventSet set in _level.Settings.VolumeEventSets)
-                        set.Write(writer, _level.Settings.VolumeEventSets);
-                }
-
-                // Write sound meta data
-                PrepareSoundsData();
-                WriteSoundMetadata(writer);
-
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 
-            using (var inStream = new MemoryStream())
+            using (var mediaStream = new MemoryStream())
             {
-                using (var writer = new BinaryWriterEx(inStream, true))
+                using (var writer = new BinaryWriterEx(mediaStream, true))
                 {
                     WriteTextureData(writer);
 
-                    ReportProgress(97, "Writing geometry data...");
-                    byte[] geometryData = geometryDataBuffer;
-                    writer.Write(geometryData);
-
-                    ReportProgress(98, "Writing sound data...");
+                    // Write sound meta data
+                    PrepareSoundsData();
+                    WriteSoundMetadata(writer);
                     WriteSoundData(writer);
                 }
 
-                ReportProgress(99, "Compressing level...");
+                ReportProgress(95, "Compressing level...");
 
-                inStream.Seek(0, SeekOrigin.Begin);
+                mediaStream.Seek(0, SeekOrigin.Begin);
 
-                var data = ZLib.CompressData(inStream);
+                var mediaBlock    = ZLib.CompressData(mediaStream, System.IO.Compression.CompressionLevel.SmallestSize);
+                var geometryBlock = ZLib.CompressData(geometryDataBuffer, System.IO.Compression.CompressionLevel.SmallestSize);
+                var dynamicBlock  = ZLib.CompressData(dynamicDataBuffer, System.IO.Compression.CompressionLevel.Optimal);
+
                 using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     using (var writer = new BinaryWriter(fs))
@@ -270,10 +278,27 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         // Hashed system name (reserved for quick start feature)
                         writer.Write(Math.Abs(Environment.MachineName.GetHashCode()));
 
+                        // Checksum to detect incorrect level version on rapid reload
+                        int checksum = Checksum.Calculate(mediaBlock) ^ Checksum.Calculate(geometryBlock);
+                        writer.Write(checksum);
+
+                        // Audiovisual data (textures and sounds)
+                        writer.Write((int)mediaStream.Length);
+                        writer.Write((int)mediaBlock.Length);
+                        writer.Write(mediaBlock, 0, mediaBlock.Length);
+                        ReportProgress(96, $"    Media data size: " + TextExtensions.ToDataSize(mediaBlock.Length));
+
                         // Geometry data
-                        writer.Write((int)inStream.Length);
-                        writer.Write((int)data.Length);
-                        writer.Write(data, 0, data.Length);
+                        writer.Write((int)geometryDataBuffer.Length);
+                        writer.Write((int)geometryBlock.Length);
+                        writer.Write(geometryBlock, 0, geometryBlock.Length);
+                        ReportProgress(96, $"    Geometry data size: " + TextExtensions.ToDataSize(geometryBlock.Length));
+
+                        // Dynamic data
+                        writer.Write((int)dynamicDataBuffer.Length);
+                        writer.Write((int)dynamicBlock.Length);
+                        writer.Write(dynamicBlock, 0, dynamicBlock.Length);
+                        ReportProgress(96, $"    Dynamic data size: " + TextExtensions.ToDataSize(dynamicBlock.Length));
                     }
                 }
             }

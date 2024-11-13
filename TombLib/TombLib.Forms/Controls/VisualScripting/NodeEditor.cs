@@ -674,11 +674,7 @@ namespace TombLib.Controls.VisualScripting
                 }
             }
 
-            var result = FromVisualCoord(new PointF((int)pos.X, (int)pos.Y));
-            var newX   = MathC.Clamp(result.X, 0, GridSize);
-            var newY   = MathC.Clamp(result.Y, 0, GridSize);
-
-            return new Vector2(newX, newY);
+            return FromVisualCoord(new PointF((int)pos.X, (int)pos.Y));
         }
 
         private void AddNodeControl(TriggerNode node, List<VisibleNodeBase> collectedControls)

@@ -101,5 +101,10 @@ namespace TombLib.Utils
 
             return source.Replace("\\n", Environment.NewLine);
         }
+
+        public static string ToDataSize(int dataSize)
+        {
+            return dataSize >= 1024 * 1024 ? $"{dataSize / (1024 * 1024)} MB" : $"{dataSize / 1024} KB";
+        }
     }
 }
