@@ -406,12 +406,12 @@ namespace TombLib.Wad.TrLevels
                         if (lastCommand >= oldLevel.AnimCommands.Count)
                             continue;
 
-                        short commandType = oldLevel.AnimCommands[lastCommand + 0];
+                        var commandType = (WadAnimCommandType)oldLevel.AnimCommands[lastCommand + 0];
 
                         WadAnimCommand command = new WadAnimCommand { Type = (WadAnimCommandType)commandType };
                         switch (commandType)
                         {
-                            case 1:
+                            case WadAnimCommandType.SetPosition:
                                 command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 command.Parameter3 = (short)oldLevel.AnimCommands[lastCommand + 3];
@@ -419,29 +419,29 @@ namespace TombLib.Wad.TrLevels
                                 lastCommand += 4;
                                 break;
 
-                            case 2:
+                            case WadAnimCommandType.SetJumpVelocity:
                                 command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
 
                                 lastCommand += 3;
                                 break;
 
-                            case 3:
+                            case WadAnimCommandType.EmptyHands:
                                 lastCommand += 1;
                                 break;
 
-                            case 4:
+                            case WadAnimCommandType.KillEntity:
                                 lastCommand += 1;
                                 break;
 
-                            case 5:
+                            case WadAnimCommandType.PlaySound:
                                 command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 command.ConvertEnvironmentType(); // Convert sound environment type to a separate field.
                                 lastCommand += 3;
                                 break;
 
-                            case 6:
+                            case WadAnimCommandType.Flipeffect:
                                 command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 lastCommand += 3;
