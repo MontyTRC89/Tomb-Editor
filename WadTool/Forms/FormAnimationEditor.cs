@@ -90,9 +90,6 @@ namespace WadTool
             panelRendering.Configuration = _editor.Tool.Configuration;
 
             bool isTEN = _editor.Wad.GameVersion == TRVersion.Game.TombEngine;
-            inQuicksandToolStripMenuItem.Visible = isTEN;
-            underwaterToolStripMenuItem.Visible = isTEN;
-
             if (!isTEN && _editor.Tool.Configuration.AnimationEditor_SoundPreviewType > SoundPreviewType.Water)
                 _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
 
@@ -281,21 +278,23 @@ namespace WadTool
             switch (_editor.Tool.Configuration.AnimationEditor_SoundPreviewType)
             {
                 case SoundPreviewType.Land:
-                    butTransportCondition.Image = Properties.Resources.transport_on_nothing_18;
+                    butTransportLandWater.Image = Properties.Resources.transport_on_nothing_24;
                     break;
                 case SoundPreviewType.LandWithMaterial:
-                    butTransportCondition.Image = Properties.Resources.transport_on_land_18;
+                    butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
                     break;
                 case SoundPreviewType.Water:
-                    butTransportCondition.Image = Properties.Resources.transport_in_shallow_water_18;
+                    butTransportLandWater.Image = Properties.Resources.transport_in_shallow_water_18;
                     break;
                 case SoundPreviewType.Quicksand:
-                    butTransportCondition.Image = Properties.Resources.transport_sand_18;
+                    butTransportLandWater.Image = Properties.Resources.transport_sand_18;
                     break;
                 case SoundPreviewType.Underwater:
-                    butTransportCondition.Image = Properties.Resources.transport_underwater_18;
+                    butTransportLandWater.Image = Properties.Resources.transport_underwater_18;
                     break;
             }
+
+            butTransportLandWater.ToolTipText = "Sound preview type: " + _editor.Tool.Configuration.AnimationEditor_SoundPreviewType.ToString();
         }
 
         private void UpdateReferenceLevelControls()
@@ -317,7 +316,7 @@ namespace WadTool
 
                 // Enable sound transport
                 butTransportSound.Enabled = true;
-                butTransportCondition.Enabled = true;
+                butTransportLandWater.Enabled = true;
             }
             else
             {
@@ -325,7 +324,7 @@ namespace WadTool
 
                 // Disable sound transport
                 butTransportSound.Enabled = false;
-                butTransportCondition.Enabled = false;
+                butTransportLandWater.Enabled = false;
             }
         }
 
@@ -2050,14 +2049,14 @@ namespace WadTool
             foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
             {
                 int idToPlay = -1;
-                var previewSoundType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
+                var previewType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
 
                 if (ac.Type == WadAnimCommandType.PlaySound)
                 {
                     idToPlay = ac.Parameter2;
                 }
                 else if (ac.Type == WadAnimCommandType.Flipeffect &&
-                         previewSoundType == SoundPreviewType.LandWithMaterial &&
+                         previewType == SoundPreviewType.LandWithMaterial &&
                          _editor.Wad.GameVersion >= TRVersion.Game.TR3)
                 {
                     var flipID = (ac.Parameter2 & 0x3FFF);
@@ -2071,17 +2070,17 @@ namespace WadTool
 
                     // Mute sound in substance.
                     if (ac.Type == WadAnimCommandType.Flipeffect &&
-                        (previewSoundType == SoundPreviewType.Water || previewSoundType == SoundPreviewType.Quicksand || previewSoundType == SoundPreviewType.Underwater))
+                        (previewType == SoundPreviewType.Water || previewType == SoundPreviewType.Quicksand || previewType == SoundPreviewType.Underwater))
                         continue;
 
                     // Mute if sound type doesn't match preview sound type.
-                    if (soundType == WadSoundEnvironmentType.Land && !(previewSoundType == SoundPreviewType.Land || previewSoundType == SoundPreviewType.LandWithMaterial))
+                    if (soundType == WadSoundEnvironmentType.Land && !(previewType == SoundPreviewType.Land || previewType == SoundPreviewType.LandWithMaterial))
                         continue;
-                    if (soundType == WadSoundEnvironmentType.Water && previewSoundType != SoundPreviewType.Water)
+                    if (soundType == WadSoundEnvironmentType.Water && previewType != SoundPreviewType.Water)
                         continue;
-                    if (soundType == WadSoundEnvironmentType.Quicksand && previewSoundType != SoundPreviewType.Quicksand)
+                    if (soundType == WadSoundEnvironmentType.Quicksand && previewType != SoundPreviewType.Quicksand)
                         continue;
-                    if (soundType == WadSoundEnvironmentType.Underwater && previewSoundType != SoundPreviewType.Underwater)
+                    if (soundType == WadSoundEnvironmentType.Underwater && previewType != SoundPreviewType.Underwater)
                         continue;
 
                     var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
@@ -2599,6 +2598,22 @@ namespace WadTool
             UpdateUIControls();
         }
 
+        private void butTransportLandWater_Click(object sender, EventArgs e)
+        {
+            if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, this)) return;
+
+            var previewType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
+            bool isTEN = _editor.Wad.GameVersion == TRVersion.Game.TombEngine;
+
+            if (previewType == SoundPreviewType.Land) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.LandWithMaterial;
+            else if (previewType == SoundPreviewType.LandWithMaterial) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Water;
+            else if (previewType == SoundPreviewType.Water) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = isTEN ? SoundPreviewType.Quicksand : SoundPreviewType.Land;
+            else if (isTEN && previewType == SoundPreviewType.Quicksand) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Underwater;
+            else if (isTEN && previewType == SoundPreviewType.Underwater) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
+
+            UpdateUIControls();
+        }
+
         private void tbSearchByStateID_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return)
@@ -2783,21 +2798,6 @@ namespace WadTool
             tbStateId.AutoSize = false;
             tbStateId.Height = cmbStateID.Height;
         }
-
-        private void alwaysToolStripMenuItem_Click(object sender, EventArgs e)
-            => SetCurrentTransportPreviewType(SoundPreviewType.Land);
-
-        private void onLandToolStripMenuItem_Click(object sender, EventArgs e)
-            => SetCurrentTransportPreviewType(SoundPreviewType.LandWithMaterial);
-
-        private void inShallowWaterToolStripMenuItem_Click(object sender, EventArgs e)
-            => SetCurrentTransportPreviewType(SoundPreviewType.Water);
-
-        private void inQuicksandToolStripMenuItem_Click(object sender, EventArgs e)
-            => SetCurrentTransportPreviewType(SoundPreviewType.Quicksand);
-
-        private void underwaterToolStripMenuItem_Click(object sender, EventArgs e)
-            => SetCurrentTransportPreviewType(SoundPreviewType.Underwater);
 
         private void SetCurrentTransportPreviewType(SoundPreviewType previewType)
         {
