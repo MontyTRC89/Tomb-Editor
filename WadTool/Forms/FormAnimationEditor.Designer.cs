@@ -162,7 +162,7 @@ namespace WadTool
             this.butTransportEnd = new System.Windows.Forms.ToolStripButton();
             this.butTransportChained = new System.Windows.Forms.ToolStripButton();
             this.butTransportSound = new System.Windows.Forms.ToolStripButton();
-            this.butTransportLandWater = new System.Windows.Forms.ToolStripButton();
+            this.butTransportCondition = new System.Windows.Forms.ToolStripButton();
             this.butTbSaveAllChanges = new System.Windows.Forms.ToolStripButton();
             this.butTbUndo = new System.Windows.Forms.ToolStripButton();
             this.butTbRedo = new System.Windows.Forms.ToolStripButton();
@@ -1321,7 +1321,7 @@ namespace WadTool
             this.toolStripSeparator7,
             this.butTransportChained,
             this.butTransportSound,
-            this.butTransportLandWater});
+            this.butTransportCondition});
             this.darkToolStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkToolStrip1.Name = "darkToolStrip1";
             this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(3, 0, 1, 0);
@@ -2165,18 +2165,18 @@ namespace WadTool
             this.butTransportSound.ToolTipText = "Toggle sound preview";
             this.butTransportSound.Click += new System.EventHandler(this.butTransportSound_Click);
             // 
-            // butTransportLandWater
+            // butTransportCondition
             // 
-            this.butTransportLandWater.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTransportLandWater.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransportLandWater.DoubleClickEnabled = true;
-            this.butTransportLandWater.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransportLandWater.Image = global::WadTool.Properties.Resources.transport_on_nothing_24;
-            this.butTransportLandWater.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butTransportLandWater.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransportLandWater.Name = "butTransportLandWater";
-            this.butTransportLandWater.Size = new System.Drawing.Size(28, 33);
-            this.butTransportLandWater.Click += new System.EventHandler(this.butTransportLandWater_Click);
+            this.butTransportCondition.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTransportCondition.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTransportCondition.DoubleClickEnabled = true;
+            this.butTransportCondition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTransportCondition.Image = global::WadTool.Properties.Resources.transport_on_nothing_24;
+            this.butTransportCondition.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butTransportCondition.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTransportCondition.Name = "butTransportCondition";
+            this.butTransportCondition.Size = new System.Drawing.Size(28, 33);
+            this.butTransportCondition.Click += new System.EventHandler(this.butTransportCondition_Click);
             // 
             // butTbSaveAllChanges
             // 
@@ -2787,7 +2787,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripButton butTbSaveAllChanges;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripButton butTransportLandWater;
+        private System.Windows.Forms.ToolStripButton butTransportCondition;
         private System.Windows.Forms.ToolStripButton butTbUndo;
         private System.Windows.Forms.ToolStripButton butTbRedo;
         private System.Windows.Forms.ToolStripMenuItem resampleAnimationToolStripMenuItem;

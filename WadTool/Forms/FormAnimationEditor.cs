@@ -278,23 +278,23 @@ namespace WadTool
             switch (_editor.Tool.Configuration.AnimationEditor_SoundPreviewType)
             {
                 case SoundPreviewType.Land:
-                    butTransportLandWater.Image = Properties.Resources.transport_on_nothing_24;
+                    butTransportCondition.Image = Properties.Resources.transport_on_nothing_24;
                     break;
                 case SoundPreviewType.LandWithMaterial:
-                    butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
+                    butTransportCondition.Image = Properties.Resources.transport_on_land_24;
                     break;
                 case SoundPreviewType.Water:
-                    butTransportLandWater.Image = Properties.Resources.transport_in_shallow_water_18;
+                    butTransportCondition.Image = Properties.Resources.transport_in_shallow_water_18;
                     break;
                 case SoundPreviewType.Quicksand:
-                    butTransportLandWater.Image = Properties.Resources.transport_sand_18;
+                    butTransportCondition.Image = Properties.Resources.transport_sand_18;
                     break;
                 case SoundPreviewType.Underwater:
-                    butTransportLandWater.Image = Properties.Resources.transport_underwater_18;
+                    butTransportCondition.Image = Properties.Resources.transport_underwater_18;
                     break;
             }
 
-            butTransportLandWater.ToolTipText = "Sound preview type: " + _editor.Tool.Configuration.AnimationEditor_SoundPreviewType.ToString().SplitCamelcase();
+            butTransportCondition.ToolTipText = "Sound preview type: " + _editor.Tool.Configuration.AnimationEditor_SoundPreviewType.ToString().SplitCamelcase();
         }
 
         private void UpdateReferenceLevelControls()
@@ -316,7 +316,7 @@ namespace WadTool
 
                 // Enable sound transport
                 butTransportSound.Enabled = true;
-                butTransportLandWater.Enabled = true;
+                butTransportCondition.Enabled = true;
             }
             else
             {
@@ -324,7 +324,7 @@ namespace WadTool
 
                 // Disable sound transport
                 butTransportSound.Enabled = false;
-                butTransportLandWater.Enabled = false;
+                butTransportCondition.Enabled = false;
             }
         }
 
@@ -2598,7 +2598,7 @@ namespace WadTool
             UpdateUIControls();
         }
 
-        private void butTransportLandWater_Click(object sender, EventArgs e)
+        private void butTransportCondition_Click(object sender, EventArgs e)
         {
             if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, this)) return;
 
