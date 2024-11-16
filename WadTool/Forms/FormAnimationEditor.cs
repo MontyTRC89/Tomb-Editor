@@ -294,7 +294,7 @@ namespace WadTool
                     break;
             }
 
-            butTransportLandWater.ToolTipText = "Sound preview type: " + _editor.Tool.Configuration.AnimationEditor_SoundPreviewType.ToString();
+            butTransportLandWater.ToolTipText = "Sound preview type: " + _editor.Tool.Configuration.AnimationEditor_SoundPreviewType.ToString().SplitCamelcase();
         }
 
         private void UpdateReferenceLevelControls()
