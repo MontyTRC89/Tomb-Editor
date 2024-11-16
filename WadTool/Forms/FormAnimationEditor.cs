@@ -2049,14 +2049,14 @@ namespace WadTool
             foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
             {
                 int idToPlay = -1;
-                var previewType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
+                var previewSoundType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
 
                 if (ac.Type == WadAnimCommandType.PlaySound)
                 {
                     idToPlay = ac.Parameter2;
                 }
                 else if (ac.Type == WadAnimCommandType.Flipeffect &&
-                         previewType == SoundPreviewType.LandWithMaterial &&
+                         previewSoundType == SoundPreviewType.LandWithMaterial &&
                          _editor.Wad.GameVersion >= TRVersion.Game.TR3)
                 {
                     var flipID = (ac.Parameter2 & 0x3FFF);
@@ -2070,17 +2070,17 @@ namespace WadTool
 
                     // Mute sound in substance.
                     if (ac.Type == WadAnimCommandType.Flipeffect &&
-                        (previewType == SoundPreviewType.Water || previewType == SoundPreviewType.Quicksand || previewType == SoundPreviewType.Underwater))
+                        (previewSoundType == SoundPreviewType.Water || previewSoundType == SoundPreviewType.Quicksand || previewSoundType == SoundPreviewType.Underwater))
                         continue;
 
                     // Mute if sound type doesn't match preview sound type.
-                    if (soundType == WadSoundEnvironmentType.Land && !(previewType == SoundPreviewType.Land || previewType == SoundPreviewType.LandWithMaterial))
+                    if (soundType == WadSoundEnvironmentType.Land && !(previewSoundType == SoundPreviewType.Land || previewSoundType == SoundPreviewType.LandWithMaterial))
                         continue;
-                    if (soundType == WadSoundEnvironmentType.Water && previewType != SoundPreviewType.Water)
+                    if (soundType == WadSoundEnvironmentType.Water && previewSoundType != SoundPreviewType.Water)
                         continue;
-                    if (soundType == WadSoundEnvironmentType.Quicksand && previewType != SoundPreviewType.Quicksand)
+                    if (soundType == WadSoundEnvironmentType.Quicksand && previewSoundType != SoundPreviewType.Quicksand)
                         continue;
-                    if (soundType == WadSoundEnvironmentType.Underwater && previewType != SoundPreviewType.Underwater)
+                    if (soundType == WadSoundEnvironmentType.Underwater && previewSoundType != SoundPreviewType.Underwater)
                         continue;
 
                     var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
