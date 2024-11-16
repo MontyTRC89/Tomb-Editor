@@ -93,7 +93,7 @@ namespace WadTool
             inQuicksandToolStripMenuItem.Visible = isTEN;
             underwaterToolStripMenuItem.Visible = isTEN;
 
-            if (!isTEN && _editor.Tool.Configuration.AnimationEditor_SoundPreviewType > SoundPreviewType.ShallowWater)
+            if (!isTEN && _editor.Tool.Configuration.AnimationEditor_SoundPreviewType > SoundPreviewType.Water)
                 _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
 
             // Update UI
@@ -286,7 +286,7 @@ namespace WadTool
                 case SoundPreviewType.LandWithMaterial:
                     butTransportCondition.Image = Properties.Resources.transport_on_land_18;
                     break;
-                case SoundPreviewType.ShallowWater:
+                case SoundPreviewType.Water:
                     butTransportCondition.Image = Properties.Resources.transport_in_shallow_water_18;
                     break;
                 case SoundPreviewType.Quicksand:
@@ -2054,7 +2054,7 @@ namespace WadTool
 
                 if (ac.Type == WadAnimCommandType.PlaySound)
                 {
-                    idToPlay = ac.Parameter2 & 0xFFF;
+                    idToPlay = ac.Parameter2;
                 }
                 else if (ac.Type == WadAnimCommandType.Flipeffect &&
                          previewSoundType == SoundPreviewType.LandWithMaterial &&
@@ -2067,21 +2067,21 @@ namespace WadTool
 
                 if (idToPlay != -1 && ac.Parameter1 == _frameCount)
                 {
-                    int soundType = ac.Type == WadAnimCommandType.Flipeffect ? 0x4000 : ac.Parameter2 & 0xF000;
+                    var soundType = ac.Type == WadAnimCommandType.Flipeffect ? WadSoundEnvironmentType.Land : (WadSoundEnvironmentType)ac.Parameter3;
 
                     // Mute sound in substance.
                     if (ac.Type == WadAnimCommandType.Flipeffect &&
-                        (previewSoundType == SoundPreviewType.ShallowWater || previewSoundType == SoundPreviewType.Quicksand || previewSoundType == SoundPreviewType.Underwater))
+                        (previewSoundType == SoundPreviewType.Water || previewSoundType == SoundPreviewType.Quicksand || previewSoundType == SoundPreviewType.Underwater))
                         continue;
 
                     // Mute if sound type doesn't match preview sound type.
-                    if (soundType == 0x4000 && !(previewSoundType == SoundPreviewType.Land || previewSoundType == SoundPreviewType.LandWithMaterial))
+                    if (soundType == WadSoundEnvironmentType.Land && !(previewSoundType == SoundPreviewType.Land || previewSoundType == SoundPreviewType.LandWithMaterial))
                         continue;
-                    if (soundType == 0x8000 && previewSoundType != SoundPreviewType.ShallowWater)
+                    if (soundType == WadSoundEnvironmentType.Water && previewSoundType != SoundPreviewType.Water)
                         continue;
-                    if (soundType == 0x1000 && previewSoundType != SoundPreviewType.Quicksand)
+                    if (soundType == WadSoundEnvironmentType.Quicksand && previewSoundType != SoundPreviewType.Quicksand)
                         continue;
-                    if (soundType == 0x2000 && previewSoundType != SoundPreviewType.Underwater)
+                    if (soundType == WadSoundEnvironmentType.Underwater && previewSoundType != SoundPreviewType.Underwater)
                         continue;
 
                     var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
@@ -2791,7 +2791,7 @@ namespace WadTool
             => SetCurrentTransportPreviewType(SoundPreviewType.LandWithMaterial);
 
         private void inShallowWaterToolStripMenuItem_Click(object sender, EventArgs e)
-            => SetCurrentTransportPreviewType(SoundPreviewType.ShallowWater);
+            => SetCurrentTransportPreviewType(SoundPreviewType.Water);
 
         private void inQuicksandToolStripMenuItem_Click(object sender, EventArgs e)
             => SetCurrentTransportPreviewType(SoundPreviewType.Quicksand);

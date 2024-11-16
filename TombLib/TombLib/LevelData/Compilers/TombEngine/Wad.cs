@@ -338,7 +338,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 _animCommands.Add(0x05);
 
                                 _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(command.Parameter2)));
+                                _animCommands.Add(command.Parameter2);
+                                _animCommands.Add(command.Parameter3);
 
                                 break;
 

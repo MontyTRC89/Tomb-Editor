@@ -17,6 +17,15 @@
         DisableInterpolation = 7 // TEN specific
     }
 
+    public enum WadSoundEnvironmentType
+    {
+        Always,
+        Land,
+        Water,
+        Quicksand, // TEN specific
+        Underwater // TEN specific
+    }
+
     public enum WadMeshLightingType : ushort
     {
         Normals,

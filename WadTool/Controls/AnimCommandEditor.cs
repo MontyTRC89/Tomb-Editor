@@ -57,20 +57,15 @@ namespace WadTool
 
             ReloadSounds();
 
-            comboPlaySoundConditions.Items.Clear();
-            comboPlaySoundConditions.Items.AddRange(new object[] {
-                "Always",
-                "On land",
-                "In shallow water"
-            });
+            // Populate sound conditions. For non-TEN engines, only first 3 conditions are supported.
 
-            if (editor.Wad.GameVersion == TRVersion.Game.TombEngine)
-            {
-                comboPlaySoundConditions.Items.AddRange(new object[] {
-                    "In quicksand",
-                    "Underwater"
-                });
-            }
+            comboPlaySoundConditions.Items.Clear();
+
+            var soundConditions = Enum.GetValues(typeof(WadSoundEnvironmentType)).Cast<object>().ToArray();
+            if (editor.Wad.GameVersion != TRVersion.Game.TombEngine)
+                Array.Resize(ref soundConditions, 3);
+
+            comboPlaySoundConditions.Items.AddRange(soundConditions);
         }
 
         public void UpdateUI(WadAnimCommand cmd)
@@ -133,36 +128,9 @@ namespace WadTool
                         commandControls.SelectedTab = tabPlaySound;
 
                         tbPlaySoundFrame.Value = cmd.Parameter1;
-                        nudSoundId.Value = cmd.Parameter2 & 0xFFF;
+                        nudSoundId.Value = cmd.Parameter2;
 
-                        // Check sound conditions stored in last 4 bits.
-                        switch (cmd.Parameter2 & 0xF000)
-                        {
-                            default:
-                            case 0:
-                                comboPlaySoundConditions.SelectedIndex = 0;
-                                break;
-
-                            // On dry land.
-                            case (1 << 14):
-                                comboPlaySoundConditions.SelectedIndex = 1;
-                                break;
-
-                            // In shallow water.
-                            case (1 << 15):
-                                comboPlaySoundConditions.SelectedIndex = 2;
-                                break;
-
-                            // In quicksand (TEN).
-                            case (1 << 12):
-                                comboPlaySoundConditions.SelectedIndex = 3;
-                                break;
-
-                            // Underwater (TEN).
-                            case (1 << 13):
-                                comboPlaySoundConditions.SelectedIndex = 4;
-                                break;
-                        }
+                        comboPlaySoundConditions.SelectedItem = (WadSoundEnvironmentType)cmd.Parameter3;
                         break;
 
                     case WadAnimCommandType.Flipeffect:
@@ -309,12 +277,7 @@ namespace WadTool
             if (_command == null || _command.Type != WadAnimCommandType.PlaySound)
                 return;
 
-            // Due to arrangemet of TEN-exclusive sound condition flags, must determine special shift value.
-            _command.Parameter2 &= unchecked((short)~0xF000);
-            _command.Parameter2 |= (comboPlaySoundConditions.SelectedIndex <= 2) ?
-                (short)(comboPlaySoundConditions.SelectedIndex << 14) :
-                (short)((comboPlaySoundConditions.SelectedIndex - 2) << 12);
-
+            comboPlaySoundConditions.SelectedItem = (WadSoundEnvironmentType)_command.Parameter3;
             InvokeChanged();
         }
 
@@ -348,8 +311,7 @@ namespace WadTool
 
         private void nudSoundId_ValueChanged(object sender, EventArgs e)
         {
-            _command.Parameter2 &= unchecked((short)~0xFFF);
-            _command.Parameter2 |= (short)nudSoundId.Value;
+            _command.Parameter2 = (short)nudSoundId.Value;
 
             if (nudSoundId.Value < comboSound.Items.Count - 1)
                 comboSound.SelectedIndex = (int)nudSoundId.Value;

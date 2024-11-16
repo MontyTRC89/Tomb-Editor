@@ -416,6 +416,10 @@ namespace TombLib.Wad.Tr4Wad
                                 if (newAnimation.EndFrame == 0 && command.Parameter1 > 0)
                                     command.Parameter1 = 0;
 
+                                // Convert sound environment type to a separate field.
+                                if (command.Type == WadAnimCommandType.PlaySound)
+                                    command.ConvertEnvironmentType();
+
                                 lastCommand += 3;
                                 break;
 

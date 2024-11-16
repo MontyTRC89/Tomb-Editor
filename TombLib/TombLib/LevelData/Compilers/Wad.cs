@@ -435,8 +435,26 @@ namespace TombLib.LevelData.Compilers
                             case WadAnimCommandType.PlaySound:
                                 _animCommands.Add(0x05);
 
+                                short mask = 0;
+
+                                // New sound conditions are ignored for classic engines.
+                                switch ((WadSoundEnvironmentType)command.Parameter3)
+                                {
+                                    default:
+                                        mask = 0;
+                                        break;
+
+                                    case WadSoundEnvironmentType.Land:
+                                        mask = unchecked((short)(1 << 14));
+                                        break;
+
+                                    case WadSoundEnvironmentType.Water:
+                                        mask = unchecked((short)(1 << 15));
+                                        break;
+                                }
+
                                 _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(command.Parameter2 & 0xCFFF))); // Clear TEN-exclusive sound condition flags.
+                                _animCommands.Add(unchecked((short)(command.Parameter2 | mask)));
 
                                 break;
 

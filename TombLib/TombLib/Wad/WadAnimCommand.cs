@@ -26,27 +26,8 @@ namespace TombLib.Wad
                     return "Kill entity";
                 case WadAnimCommandType.SetPosition:
                     return "Set position reference <X, Y, Z> = <" + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
-
                 case WadAnimCommandType.PlaySound:
-                    int soundId = Parameter2 & 0xFFF;
-                    switch (Parameter2 & 0xF000)
-                    {
-                        default:
-                        case 0:
-                            return "Play Sound ID = " + soundId + " on Frame = " + Parameter1;
-
-                        case (1 << 14):
-                            return "Play Sound ID = " + soundId + " (land) on Frame = " + Parameter1;
-
-                        case (1 << 15):
-                            return "Play Sound ID = " + soundId + " (shallow water) on Frame = " + Parameter1;
-
-                        case (1 << 12):
-                            return "Play Sound ID = " + soundId + " (quicksand) on Frame = " + Parameter1;
-
-                        case (1 << 13):
-                            return "Play Sound ID = " + soundId + " (underwater) on Frame = " + Parameter1;
-                    }
+                    return "Play Sound ID = " + Parameter2 + " (" + ((WadSoundEnvironmentType)Parameter3).ToString() + ") on Frame = " + Parameter1;
 
                 case WadAnimCommandType.Flipeffect:
                     int flipeffectId = Parameter2 & 0x3FFF;
@@ -79,7 +60,8 @@ namespace TombLib.Wad
             if (first.FrameBased)
             {
                 return ((!considerFrames || first.Parameter1 == second.Parameter1) &&
-                                            first.Parameter2 == second.Parameter2);
+                                            first.Parameter2 == second.Parameter2 &&
+                                            first.Parameter3 == second.Parameter3);
             }
             else if (first.VelocityBased)
             {
@@ -94,6 +76,38 @@ namespace TombLib.Wad
             }
             else
                 return true; // Equal or unknown command
+        }
+
+        public void ConvertEnvironmentType()
+        {
+            if (Type != WadAnimCommandType.PlaySound)
+                throw new Exception("Attempt to convert sound environment type on a non-PlaySound animcommand");
+
+            switch (Parameter2 & 0xF000)
+            {
+                default:
+                case 0:
+                    Parameter3 = (short)WadSoundEnvironmentType.Always;
+                    break;
+
+                case (1 << 14):
+                    Parameter3 = (short)WadSoundEnvironmentType.Land;
+                    break;
+
+                case (1 << 15):
+                    Parameter3 = (short)WadSoundEnvironmentType.Water;
+                    break;
+
+                case (1 << 12):
+                    Parameter3 = (short)WadSoundEnvironmentType.Quicksand;
+                    break;
+
+                case (1 << 13):
+                    Parameter3 = (short)WadSoundEnvironmentType.Underwater;
+                    break;
+            }
+
+            Parameter2 = (short)(Parameter2 & 0x0FFF);
         }
 
         public static bool operator ==(WadAnimCommand first, WadAnimCommand second) => DistinctiveEquals(first, second, true);

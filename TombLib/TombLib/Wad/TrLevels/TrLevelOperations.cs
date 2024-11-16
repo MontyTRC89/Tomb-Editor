@@ -437,6 +437,7 @@ namespace TombLib.Wad.TrLevels
                             case 5:
                                 command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
+                                command.ConvertEnvironmentType(); // Convert sound environment type to a separate field.
                                 lastCommand += 3;
                                 break;
 

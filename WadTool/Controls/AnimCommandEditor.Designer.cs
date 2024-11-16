@@ -440,7 +440,6 @@
 			// 
 			comboPlaySoundConditions.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 			comboPlaySoundConditions.FormattingEnabled = true;
-			comboPlaySoundConditions.Items.AddRange(new object[] { "Always", "On land", "In shallow water", "In quicksand", "Underwater" });
 			comboPlaySoundConditions.Location = new System.Drawing.Point(88, 24);
 			comboPlaySoundConditions.Name = "comboPlaySoundConditions";
 			comboPlaySoundConditions.Size = new System.Drawing.Size(268, 23);
