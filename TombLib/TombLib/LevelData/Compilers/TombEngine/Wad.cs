@@ -305,7 +305,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
                     {
-                        _animCommands.Add((short)command.Type);
+                        _animCommands.Add((int)command.Type);
 
                         switch (command.Type)
                         {
@@ -313,7 +313,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
                                 _animCommands.Add(command.Parameter3);
-
                                 break;
 
                             case WadAnimCommandType.SetJumpVelocity:
@@ -328,15 +327,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                            case WadAnimCommandType.Flipeffect:
-
-                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
                                 _animCommands.Add(command.Parameter2);
                                 _animCommands.Add(command.Parameter3);
                                 break;
 
+                            case WadAnimCommandType.Flipeffect:
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
+                                _animCommands.Add(command.Parameter2);
+                                break;
+
                             case WadAnimCommandType.DisableInterpolation:
-                                _animCommands.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
                                 break;
                         }
                     }
