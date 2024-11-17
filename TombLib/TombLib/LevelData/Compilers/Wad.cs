@@ -403,67 +403,35 @@ namespace TombLib.LevelData.Compilers
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
                     {
+                        // Ignore TEN animcommands for legacy engines.
+                        if (command.Type > WadAnimCommandType.Flipeffect)
+                            continue;
+
+                        _animCommands.Add((short)command.Type);
+
                         switch (command.Type)
                         {
                             case WadAnimCommandType.SetPosition:
-                                _animCommands.Add(0x01);
-
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
                                 _animCommands.Add(command.Parameter3);
-
                                 break;
 
                             case WadAnimCommandType.SetJumpVelocity:
-                                _animCommands.Add(0x02);
-
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
-
                                 break;
 
                             case WadAnimCommandType.EmptyHands:
-                                _animCommands.Add(0x03);
-
                                 break;
 
                             case WadAnimCommandType.KillEntity:
-                                _animCommands.Add(0x04);
-
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                _animCommands.Add(0x05);
-
-                                short mask = 0;
-
-                                // New sound conditions are ignored for classic engines.
-                                switch ((WadSoundEnvironmentType)command.Parameter3)
-                                {
-                                    default:
-                                        mask = 0;
-                                        break;
-
-                                    case WadSoundEnvironmentType.Land:
-                                        mask = unchecked((short)(1 << 14));
-                                        break;
-
-                                    case WadSoundEnvironmentType.Water:
-                                        mask = unchecked((short)(1 << 15));
-                                        break;
-                                }
-
-                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(command.Parameter2 | mask)));
-
-                                break;
-
                             case WadAnimCommandType.Flipeffect:
-                                _animCommands.Add(0x06);
-
-                                _animCommands.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(command.Parameter2);
-
+                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(unchecked((short)(command.Parameter2 | command.GetLegacyBitmask())));
                                 break;
                         }
                     }

@@ -66,6 +66,12 @@ namespace WadTool
                 Array.Resize(ref soundConditions, 3);
 
             comboPlaySoundConditions.Items.AddRange(soundConditions);
+
+            // Populate flipeffect conditions.
+
+            comboFlipeffectConditions.Items.Clear();
+            var flipeffectConditions = Enum.GetValues(typeof(WadFootstepFlipeffectCondition)).Cast<object>().Select(o => o.ToString().SplitCamelcase()).ToArray();
+            comboFlipeffectConditions.Items.AddRange(flipeffectConditions);
         }
 
         public void UpdateUI(WadAnimCommand cmd)
@@ -138,20 +144,9 @@ namespace WadTool
                         commandControls.SelectedTab = tabFlipeffect;
 
                         tbFlipEffectFrame.Value = cmd.Parameter1;
-                        tbFlipEffect.Value = cmd.Parameter2 & 0x3FFF;
+                        tbFlipEffect.Value = cmd.Parameter2;
 
-                        switch (cmd.Parameter2 & 0xC000)
-                        {
-                            default:
-                                comboFlipeffectConditions.SelectedIndex = 0;
-                                break;
-                            case 0x4000:
-                                comboFlipeffectConditions.SelectedIndex = 1;
-                                break;
-                            case 0x8000:
-                                comboFlipeffectConditions.SelectedIndex = 2;
-                                break;
-                        }
+                        comboFlipeffectConditions.SelectedIndex = cmd.Parameter3;
                         break;
                 }
             }
@@ -258,9 +253,7 @@ namespace WadTool
         {
             if (_command == null || _command.Type != WadAnimCommandType.Flipeffect)
                 return;
-
-            _command.Parameter2 &= unchecked((short)~0x3FFF);
-            _command.Parameter2 |= (short)tbFlipEffect.Value;
+            _command.Parameter2 = (short)tbFlipEffect.Value;
             InvokeChanged();
         }
 
@@ -276,8 +269,7 @@ namespace WadTool
         {
             if (_command == null || _command.Type != WadAnimCommandType.PlaySound)
                 return;
-
-            comboPlaySoundConditions.SelectedItem = (WadSoundEnvironmentType)_command.Parameter3;
+            _command.Parameter3 = (short)((WadSoundEnvironmentType)comboPlaySoundConditions.SelectedItem);
             InvokeChanged();
         }
 
@@ -285,15 +277,15 @@ namespace WadTool
         {
             if (_command == null || _command.Type != WadAnimCommandType.PlaySound)
                 return;
-
             if (comboSound.SelectedIndex < comboSound.Items.Count - 1)
                 nudSoundId.Value = comboSound.SelectedIndex;
         }
 
         private void comboFlipeffectConditions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _command.Parameter2 &= unchecked((short)~0xC000);
-            _command.Parameter2 |= (short)(comboFlipeffectConditions.SelectedIndex << 14);
+            if (_command == null || _command.Type != WadAnimCommandType.Flipeffect)
+                return;
+            _command.Parameter3 = (short)((WadFootstepFlipeffectCondition)comboFlipeffectConditions.SelectedIndex);
             InvokeChanged();
         }
 
@@ -311,6 +303,9 @@ namespace WadTool
 
         private void nudSoundId_ValueChanged(object sender, EventArgs e)
         {
+            if (_command == null || _command.Type != WadAnimCommandType.PlaySound)
+                return;
+
             _command.Parameter2 = (short)nudSoundId.Value;
 
             if (nudSoundId.Value < comboSound.Items.Count - 1)
@@ -325,7 +320,6 @@ namespace WadTool
         {
             if (_command == null || _command.Type != WadAnimCommandType.DisableInterpolation)
                 return;
-
             _command.Parameter1 = (short)tbFrameDisableInterpolation.Value;
             InvokeChanged();
         }

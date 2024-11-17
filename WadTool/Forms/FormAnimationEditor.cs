@@ -2059,7 +2059,7 @@ namespace WadTool
                          previewSoundType == SoundPreviewType.LandWithMaterial &&
                          _editor.Wad.GameVersion >= TRVersion.Game.TR3)
                 {
-                    var flipID = (ac.Parameter2 & 0x3FFF);
+                    var flipID = ac.Parameter2;
                     if (flipID == 32 || flipID == 33)
                         idToPlay = _currentMaterialIndex;
                 }

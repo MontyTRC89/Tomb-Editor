@@ -26,6 +26,13 @@
         Underwater // TEN specific
     }
 
+    public enum WadFootstepFlipeffectCondition
+    {
+        Always,
+        LeftFoot,
+        RightFoot
+    }
+
     public enum WadMeshLightingType : ushort
     {
         Normals,

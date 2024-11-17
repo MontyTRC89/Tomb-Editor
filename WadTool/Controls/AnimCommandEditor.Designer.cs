@@ -291,7 +291,6 @@
 			// 
 			comboFlipeffectConditions.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 			comboFlipeffectConditions.FormattingEnabled = true;
-			comboFlipeffectConditions.Items.AddRange(new object[] { "Always", "Lara's left foot", "Lara's right foot" });
 			comboFlipeffectConditions.Location = new System.Drawing.Point(167, 24);
 			comboFlipeffectConditions.Name = "comboFlipeffectConditions";
 			comboFlipeffectConditions.Size = new System.Drawing.Size(189, 23);

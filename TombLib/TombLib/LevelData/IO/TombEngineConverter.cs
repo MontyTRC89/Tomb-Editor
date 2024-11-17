@@ -308,7 +308,7 @@ namespace TombLib.LevelData.IO
 
                     try
                     {
-                        command.ConvertEnvironmentType();
+                        command.ConvertLegacyConditions();
                         uint soundId = (uint)command.Parameter2;
                         command.Parameter2 = (short)TrCatalog.GetTombEngineSound(sourceVersion, soundId);
                     }

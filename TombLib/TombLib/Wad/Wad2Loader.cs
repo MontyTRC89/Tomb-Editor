@@ -655,7 +655,7 @@ namespace TombLib.Wad
                                 // Convert legacy sound condition bitpacking to separate field to free up space
                                 // and account for TEN's new sound condition types.
                                 if (id3 == Wad2Chunks.AnimCommand && command.Type == WadAnimCommandType.PlaySound)
-                                    command.ConvertEnvironmentType();
+                                    command.ConvertLegacyConditions();
 
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
