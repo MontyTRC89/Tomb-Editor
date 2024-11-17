@@ -284,13 +284,13 @@ namespace WadTool
                     butTransportCondition.Image = Properties.Resources.transport_on_land_24;
                     break;
                 case SoundPreviewType.Water:
-                    butTransportCondition.Image = Properties.Resources.transport_in_shallow_water_18;
+                    butTransportCondition.Image = Properties.Resources.transport_in_shallow_water_24;
                     break;
                 case SoundPreviewType.Quicksand:
-                    butTransportCondition.Image = Properties.Resources.transport_sand_18;
+                    butTransportCondition.Image = Properties.Resources.transport_sand_24;
                     break;
                 case SoundPreviewType.Underwater:
-                    butTransportCondition.Image = Properties.Resources.transport_underwater_18;
+                    butTransportCondition.Image = Properties.Resources.transport_underwater_24;
                     break;
             }
 
