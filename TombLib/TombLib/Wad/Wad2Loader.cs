@@ -652,10 +652,13 @@ namespace TombLib.Wad
                                 command.Parameter2 = LEB128.ReadShort(chunkIO.Raw);
                                 command.Parameter3 = LEB128.ReadShort(chunkIO.Raw);
 
-                                // Convert legacy sound condition bitpacking to separate field to free up space
+                                // Convert legacy sound and flipeffect condition bitpacking to separate field to free up space
                                 // and account for TEN's new sound condition types.
-                                if (id3 == Wad2Chunks.AnimCommand && command.Type == WadAnimCommandType.PlaySound)
+                                if (id3 == Wad2Chunks.AnimCommand &&
+                                    (command.Type == WadAnimCommandType.Flipeffect || command.Type == WadAnimCommandType.PlaySound))
+                                {
                                     command.ConvertLegacyConditions();
+                                }
 
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
