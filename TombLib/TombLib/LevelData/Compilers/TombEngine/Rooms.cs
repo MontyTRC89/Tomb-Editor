@@ -1855,20 +1855,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var vertex = room.Vertices[i];
                 var normalHelpers = vertex.NormalHelpers;
+
+                if (normalHelpers.Count == 0)
+                    continue;
+
                 var normal = Vector3.Zero;
+                var referenceNormal = normalHelpers[0].Polygon.Normal; // Use the first polygon's normal as a reference
 
                 for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var normalHelper = normalHelpers[j];
+                    var currentNormal = normalHelpers[j].Polygon.Normal;
 
-                    // WARNING: we need to flip normal because it was calculated with Y negative up
-                    normal += -normalHelper.Polygon.Normal;
+                    // Check the angle (dot product) between the current normal and the reference normal
+                    if (Vector3.Dot(referenceNormal, currentNormal) < 0)
+                    {
+                        // Flip the normal if it's in the opposite direction
+                        currentNormal = -currentNormal;
+                    }
+
+                    normal += currentNormal;
                 }
 
-                if (normalHelpers.Count > 0)
-                {
-                    normal = Vector3.Normalize(normal / (float)normalHelpers.Count);
-                }
+                // Normalize the final averaged normal
+                normal = -Vector3.Normalize(normal);
 
                 for (int j = 0; j < normalHelpers.Count; j++)
                 {

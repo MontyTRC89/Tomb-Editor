@@ -5,7 +5,8 @@ Tomb Editor:
  * Fixed nodes randomly moving out of bounds.
  * Fixed lists in nodes sometimes incorrectly saving selected value.
  * Fixed lists in nodes giving an exception if no objects of specified type exist.
- * Fixed incorrect diagonal wall collision calculations below blocked sectors.
+ * Fixed incorrect diagonal wall collision calculations below blocked sectors in TEN levels.
+ * Fixed incorrect normal calculations for opposite faces sharing same vertices in TEN levels.
  * Added transparency field in text drawing nodes.
  * Added TEN node to check Lara's airborne status.
  * Added TEN node to set hit points for a shatterable static mesh.
