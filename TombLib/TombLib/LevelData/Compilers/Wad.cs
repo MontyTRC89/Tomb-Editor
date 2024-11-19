@@ -414,7 +414,7 @@ namespace TombLib.LevelData.Compilers
 
                                 break;
 
-                            case WadAnimCommandType.SetJumpVelocity:
+                            case WadAnimCommandType.SetJumpDistance:
                                 _animCommands.Add(0x02);
 
                                 _animCommands.Add(command.Parameter1);
@@ -440,7 +440,7 @@ namespace TombLib.LevelData.Compilers
 
                                 break;
 
-                            case WadAnimCommandType.Flipeffect:
+                            case WadAnimCommandType.FlipEffect:
                                 _animCommands.Add(0x06);
 
                                 _animCommands.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
