@@ -655,7 +655,7 @@ namespace TombLib.Wad
                                 // Convert legacy sound and flipeffect condition bitpacking to separate field to free up space
                                 // and account for TEN's new sound condition types.
                                 if (id3 == Wad2Chunks.AnimCommand &&
-                                    (command.Type == WadAnimCommandType.Flipeffect || command.Type == WadAnimCommandType.PlaySound))
+                                    (command.Type == WadAnimCommandType.FlipEffect || command.Type == WadAnimCommandType.PlaySound))
                                 {
                                     command.ConvertLegacyConditions();
                                 }

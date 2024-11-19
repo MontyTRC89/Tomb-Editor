@@ -32,7 +32,7 @@ namespace TombLib.Wad
                     return "Set position reference <X, Y, Z> = <" + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
                 case WadAnimCommandType.PlaySound:
                     return "Play Sound ID = " + Parameter2 + " (" + ((WadSoundEnvironmentType)Parameter3).ToString() + ") on Frame = " + Parameter1;
-                case WadAnimCommandType.Flipeffect:
+                case WadAnimCommandType.FlipEffect:
                     return "Play FlipEffect ID = " + Parameter2 + 
                         (Parameter3 == 0 ? string.Empty : (" (" + ((WadFootstepFlipeffectCondition)Parameter3).ToString().SplitCamelcase() + ")")) +
                         " on Frame = " + Parameter1;
@@ -84,7 +84,7 @@ namespace TombLib.Wad
                 return;
             }
 
-            if (Type == WadAnimCommandType.Flipeffect)
+            if (Type == WadAnimCommandType.FlipEffect)
             {
                 switch (Parameter2 & 0xC000)
                 {
@@ -141,7 +141,7 @@ namespace TombLib.Wad
         {
             short result = 0;
 
-            if (Type == WadAnimCommandType.Flipeffect)
+            if (Type == WadAnimCommandType.FlipEffect)
             {
                 switch ((WadFootstepFlipeffectCondition)Parameter3)
                 {

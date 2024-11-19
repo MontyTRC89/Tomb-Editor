@@ -404,7 +404,7 @@ namespace TombLib.LevelData.Compilers
                     foreach (var command in oldAnimation.AnimCommands)
                     {
                         // Ignore TEN animcommands for legacy engines.
-                        if (command.Type > WadAnimCommandType.Flipeffect)
+                        if (command.Type > WadAnimCommandType.FlipEffect)
                             continue;
 
                         _animCommands.Add((short)command.Type);

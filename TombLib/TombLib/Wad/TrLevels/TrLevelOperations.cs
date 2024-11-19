@@ -419,7 +419,7 @@ namespace TombLib.Wad.TrLevels
                                 lastCommand += 4;
                                 break;
 
-                            case WadAnimCommandType.SetJumpVelocity:
+                            case WadAnimCommandType.SetJumpDistance:
                                 command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
 
@@ -435,7 +435,7 @@ namespace TombLib.Wad.TrLevels
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                            case WadAnimCommandType.Flipeffect:
+                            case WadAnimCommandType.FlipEffect:
                                 command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 command.ConvertLegacyConditions();
