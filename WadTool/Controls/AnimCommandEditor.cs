@@ -107,7 +107,7 @@ namespace WadTool
                         tbPosZ.Value = cmd.Parameter3;
                         break;
 
-                    case WadAnimCommandType.SetJumpVelocity:
+                    case WadAnimCommandType.SetJumpDistance:
                         commandControls.Visible = true;
                         commandControls.SelectedTab = tabSetJumpVelocity;
 
@@ -165,7 +165,7 @@ namespace WadTool
                         }
                         break;
 
-                    case WadAnimCommandType.Flipeffect:
+                    case WadAnimCommandType.FlipEffect:
                         commandControls.Visible = true;
                         commandControls.SelectedTab = tabFlipeffect;
 
@@ -264,7 +264,7 @@ namespace WadTool
 
         private void tbHorizontal_ValueChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.SetJumpVelocity)
+            if (_command == null || _command.Type != WadAnimCommandType.SetJumpDistance)
                 return;
             _command.Parameter1 = (short)tbHorizontal.Value;
             InvokeChanged();
@@ -272,7 +272,7 @@ namespace WadTool
 
         private void tbVertical_ValueChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.SetJumpVelocity)
+            if (_command == null || _command.Type != WadAnimCommandType.SetJumpDistance)
                 return;
             _command.Parameter2 = (short)tbVertical.Value;
             InvokeChanged();
@@ -280,7 +280,7 @@ namespace WadTool
 
         private void tbFlipEffectFrame_ValueChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.Flipeffect)
+            if (_command == null || _command.Type != WadAnimCommandType.FlipEffect)
                 return;
             _command.Parameter1 = (short)tbFlipEffectFrame.Value;
             InvokeChanged();
@@ -288,7 +288,7 @@ namespace WadTool
 
         private void tbFlipEffect_ValueChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.Flipeffect)
+            if (_command == null || _command.Type != WadAnimCommandType.FlipEffect)
                 return;
 
             _command.Parameter2 &= unchecked((short)~0x3FFF);
