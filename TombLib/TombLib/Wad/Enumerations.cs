@@ -13,7 +13,7 @@
         EmptyHands = 3,
         KillEntity = 4,
         PlaySound = 5,
-        Flipeffect = 6,
+        FlipEffect = 6,
         DisableInterpolation = 7 // TEN specific
     }
 
