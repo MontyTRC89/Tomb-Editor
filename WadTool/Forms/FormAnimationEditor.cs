@@ -2066,10 +2066,10 @@ namespace WadTool
 
                 if (idToPlay != -1 && ac.Parameter1 == _frameCount)
                 {
-                    var soundType = ac.Type == WadAnimCommandType.Flipeffect ? WadSoundEnvironmentType.Land : (WadSoundEnvironmentType)ac.Parameter3;
+                    var soundType = ac.Type == WadAnimCommandType.FlipEffect ? WadSoundEnvironmentType.Land : (WadSoundEnvironmentType)ac.Parameter3;
 
                     // Mute sound in substance.
-                    if (ac.Type == WadAnimCommandType.Flipeffect &&
+                    if (ac.Type == WadAnimCommandType.FlipEffect &&
                         (previewSoundType == SoundPreviewType.Water || previewSoundType == SoundPreviewType.Quicksand || previewSoundType == SoundPreviewType.Underwater))
                         continue;
                     // Mute if sound type doesn't match preview sound type.

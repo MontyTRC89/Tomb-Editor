@@ -283,7 +283,7 @@ namespace WadTool
 
         private void comboFlipeffectConditions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_command == null || _command.Type != WadAnimCommandType.Flipeffect)
+            if (_command == null || _command.Type != WadAnimCommandType.FlipEffect)
                 return;
             _command.Parameter3 = (short)((WadFootstepFlipeffectCondition)comboFlipeffectConditions.SelectedIndex);
             InvokeChanged();
