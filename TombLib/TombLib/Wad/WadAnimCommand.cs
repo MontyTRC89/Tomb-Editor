@@ -15,7 +15,7 @@ namespace TombLib.Wad
 
         public bool FrameBased => Type >= WadAnimCommandType.PlaySound;
         public bool PositionBased => Type == WadAnimCommandType.SetPosition;
-        public bool VelocityBased => Type == WadAnimCommandType.SetJumpVelocity;
+        public bool VelocityBased => Type == WadAnimCommandType.SetJumpDistance;
 
         public string Description => ToString();
         public override string ToString()
@@ -24,7 +24,7 @@ namespace TombLib.Wad
             {
                 case WadAnimCommandType.EmptyHands:
                     return "Remove guns from hands";
-                case WadAnimCommandType.SetJumpVelocity:
+                case WadAnimCommandType.SetJumpDistance:
                     return "Set jump reference <H, V> = <" + Parameter1 + ", " + Parameter2 + ">";
                 case WadAnimCommandType.KillEntity:
                     return "Kill entity";

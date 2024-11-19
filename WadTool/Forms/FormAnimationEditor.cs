@@ -2055,7 +2055,7 @@ namespace WadTool
                 {
                     idToPlay = ac.Parameter2;
                 }
-                else if (ac.Type == WadAnimCommandType.Flipeffect &&
+                else if (ac.Type == WadAnimCommandType.FlipEffect &&
                          previewSoundType == SoundPreviewType.LandWithMaterial &&
                          _editor.Wad.GameVersion >= TRVersion.Game.TR3)
                 {
@@ -2072,7 +2072,6 @@ namespace WadTool
                     if (ac.Type == WadAnimCommandType.Flipeffect &&
                         (previewSoundType == SoundPreviewType.Water || previewSoundType == SoundPreviewType.Quicksand || previewSoundType == SoundPreviewType.Underwater))
                         continue;
-
                     // Mute if sound type doesn't match preview sound type.
                     if (soundType == WadSoundEnvironmentType.Land && !(previewSoundType == SoundPreviewType.Land || previewSoundType == SoundPreviewType.LandWithMaterial))
                         continue;

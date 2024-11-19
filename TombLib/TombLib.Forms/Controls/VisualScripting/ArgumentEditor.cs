@@ -424,7 +424,7 @@ namespace TombLib.Controls.VisualScripting
                         else if (cbList.Items.Count > potentialIndex && potentialIndex >= 0)
                             cbList.SelectedIndex = (int)potentialIndex;
                         else
-                            cbList.SelectedIndex = 0;
+                            cbList.SelectedIndex = cbList.Items.Count > 0 ? 0 : -1;
 
                         BoxListValue();
                         break;
