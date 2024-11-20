@@ -291,7 +291,6 @@
 			// 
 			comboFlipeffectConditions.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 			comboFlipeffectConditions.FormattingEnabled = true;
-			comboFlipeffectConditions.Items.AddRange(new object[] { "Always", "Lara's left foot", "Lara's right foot" });
 			comboFlipeffectConditions.Location = new System.Drawing.Point(167, 24);
 			comboFlipeffectConditions.Name = "comboFlipeffectConditions";
 			comboFlipeffectConditions.Size = new System.Drawing.Size(189, 23);
@@ -440,7 +439,6 @@
 			// 
 			comboPlaySoundConditions.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 			comboPlaySoundConditions.FormattingEnabled = true;
-			comboPlaySoundConditions.Items.AddRange(new object[] { "Always", "On land", "In shallow water", "In quicksand", "Underwater" });
 			comboPlaySoundConditions.Location = new System.Drawing.Point(88, 24);
 			comboPlaySoundConditions.Name = "comboPlaySoundConditions";
 			comboPlaySoundConditions.Size = new System.Drawing.Size(268, 23);

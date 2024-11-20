@@ -1148,6 +1148,9 @@ namespace WadTool
                 var animation = (WadAnimation)obj;
                 reader.Close();
 
+                foreach (var cmd in animation.AnimCommands)
+                    cmd.ConvertLegacyConditions();
+
                 return animation;
             }
             catch (Exception exc)
