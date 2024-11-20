@@ -158,6 +158,16 @@ LevelFuncs.Engine.Node.TestMoveableOCB = function(moveableName, value)
 	return (ocb == value)
 end
 
+-- !Name "If moveable is collidable..."
+-- !Section "Moveable state"
+-- !Description "Checks if moveable is collidable."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableCollidability = function(moveableName)
+	return TEN.Objects.GetMoveableByName(moveableName):GetCollidable()
+end
+
 -- !Name "If mesh number of a moveable is visible..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's mesh index is visible."
@@ -244,6 +254,15 @@ end
 
 LevelFuncs.Engine.Node.DisableMoveable = function(moveableName)
 	TEN.Objects.GetMoveableByName(moveableName):Disable()
+end
+
+-- !Name "Set moveable collision state"
+-- !Section "Moveable state"
+-- !Description "Sets collision state of a moveable."
+-- !Arguments "NewLine, Moveables, 70" "Boolean, 30, Collision state"
+
+LevelFuncs.Engine.Node.SetMoveableCollidability = function(moveableName, state)
+	return TEN.Objects.GetMoveableByName(moveableName):SetCollidable(state)
 end
 
 -- !Name "Set moveable's animation"
