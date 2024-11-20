@@ -167,6 +167,17 @@ LevelFuncs.Engine.Node.GetGameStatus = function(index)
 	return gameStatus[index]
 end
 
+LevelFuncs.Engine.Node.GetFreezeMode = function(index)
+	local freezeMode =
+	{
+		[0] = Flow.FreezeMode.NONE,
+		[1] = Flow.FreezeMode.FULL,
+		[2] = Flow.FreezeMode.SPECTATOR,
+		[3] = Flow.FreezeMode.PLAYER
+	}
+	return freezeMode[index]
+end
+
 LevelFuncs.Engine.Node.SetPostProcessMode = function(index)
 	local postProcessMode =
 	{

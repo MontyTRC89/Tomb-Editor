@@ -302,11 +302,15 @@ namespace TombEditor.Forms
                     break;
 
                 case EventType.OnLoop:
-                    toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus. \nThis event performs continuously.");
+                    toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus and freeze mode. \nThis event performs continuously.");
                     break;
 
                 case EventType.OnUseItem:
                     toolTip.SetToolTip(cbEvents, "Occurs when an item was selected and used in inventory.");
+                    break;
+
+                case EventType.OnFreeze:
+                    toolTip.SetToolTip(cbEvents, "Occurs when game is running in a freeze mode. \nThis event performs continuously.");
                     break;
             }
         }
