@@ -259,7 +259,7 @@ end
 -- !Name "Set moveable collision state"
 -- !Section "Moveable state"
 -- !Description "Sets collision state of a moveable."
--- !Arguments "NewLine, Moveables, 70" "Boolean, 30, Collision state"
+-- !Arguments "NewLine, Moveables, 80" "Boolean, 20, Collidable"
 
 LevelFuncs.Engine.Node.SetMoveableCollidability = function(moveableName, state)
 	return TEN.Objects.GetMoveableByName(moveableName):SetCollidable(state)
@@ -495,7 +495,7 @@ LevelFuncs.Engine.Node.SetCustomMoveableEffect = function(primary, secondary, ti
 end
 
 
--- !Name "Modify ItemFlag"
+-- !Name "Modify ItemFlag of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Modify ItemFlag for moveable. Used for extended customisation of certain moveables."
 -- !Arguments "NewLine,Moveables, 50, Choose moveable"
@@ -507,7 +507,7 @@ LevelFuncs.Engine.Node.ModifyItemFlag = function (moveable, itemFlagLocation, it
 end
 
 
--- !Name "If value stored in ItemFlag is..."
+-- !Name "If value stored in moveable's ItemFlag is..."
 -- !Section "Moveable parameters"
 -- !Description "Checks current value contained inside a given ItemFlag"
 -- !Conditional "True"
@@ -527,7 +527,7 @@ LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, item
 end
 			   
 -- !Name "Create moveable"
--- !Section "Moveable parameters"
+-- !Section "Moveable state"
 -- !Description "Create a new moveable object and activate it"
 -- !Arguments "NewLine, WadSlots, 50, Choose moveable slot to create"
 -- !Arguments "String, 50, Lua name for new moveable"
@@ -547,7 +547,7 @@ LevelFuncs.Engine.Node.CreateMoveable = function(moveableSlot, moveableName, pos
 end
 
 -- !Name "Remove moveable effect"
--- !Section "Moveable parameters"
+-- !Section "Moveable state"
 -- !Description "Remove effect from moveable"
 -- !Arguments "NewLine, Moveables, Select moveable to remove effect from."
 
