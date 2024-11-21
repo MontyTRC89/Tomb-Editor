@@ -157,7 +157,7 @@ LevelFuncs.Engine.Node.DeleteTimedData = function(objectName, endAngle)
     end
 end
 
--- !Name "Revolve an object"
+-- !Name "Revolve a moveable"
 -- !Section "Timespan actions"
 -- !Description "Rotate an object around another a moveable over specified timespan."
 -- !Arguments "NewLine, Moveables, Moveable to rotate"
@@ -179,7 +179,7 @@ LevelFuncs.Engine.Node.ChangeMoveableRevolutionOverTimespan = function(moveableN
     do LevelFuncs.Engine.Node.ConstructRevolveData(moveableName, centrepoint, option, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate,  isCRotate, SFX) end
 end
 
--- !Name "Stop the revolution of an object"
+-- !Name "Stop the revolution of a moveable"
 -- !Section "Timespan actions"
 -- !Description "Stop an already active object rotation."
 -- !Arguments "NewLine, Moveables, Moveable to stop rotation"
