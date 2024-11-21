@@ -9,10 +9,10 @@ Tomb Editor:
  * Fixed incorrect normal calculations for opposite polygons sharing same vertices in TEN levels.
  * Fixed garbage vertices in extremely large rooms in TEN levels.
  * Added transparency field in text drawing nodes.
+ * Added OnFreeze global event handling and TEN nodes to get and set freeze mode.
  * Added TEN node to check Lara's airborne status.
- * Added TEN node to set hit points for a shatterable static mesh.
- * Added TEN node to check hit points of a shatterable static mesh.
  * Added TEN node to remove moveable effect.
+ * Added TEN nodes to get and set hit points for a shatterable static mesh.
  
 WadTool:
  * Added missing "Disable Interpolation" animcommand type.
