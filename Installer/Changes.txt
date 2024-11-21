@@ -2,6 +2,7 @@ Version 1.7.3
 =============
 
 Tomb Editor:
+ * Fixed memory leaks while rendering wad objects.
  * Fixed nodes randomly moving out of bounds.
  * Fixed lists in nodes sometimes incorrectly saving selected value.
  * Fixed lists in nodes giving an exception if no objects of specified type exist.
