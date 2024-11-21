@@ -169,7 +169,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         public override int GetHashCode()
         {
-            return unchecked((int)Position.X + (int)Position.Y * 695504311 + (int)Position.Z * 550048883);
+            return HashCode.Combine(Position.X, Position.Y, Position.Z);
         }
     }
 
