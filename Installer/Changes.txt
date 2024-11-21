@@ -5,7 +5,7 @@ Tomb Editor:
  * Fixed nodes randomly moving out of bounds.
  * Fixed lists in nodes sometimes incorrectly saving selected value.
  * Fixed lists in nodes giving an exception if no objects of specified type exist.
- * Fixed incorrect diagonal wall collision calculations below blocked sectors in TEN levels.
+ * Fixed incorrect diagonal wall collision calculations below blocked portal sectors in TEN levels.
  * Fixed incorrect normal calculations for opposite polygons sharing same vertices in TEN levels.
  * Fixed garbage vertices in extremely large rooms in TEN levels.
  * Added transparency field in text drawing nodes.
@@ -16,7 +16,7 @@ Tomb Editor:
  * Added TEN nodes to get and set hit points for a shatterable static mesh.
  
 WadTool:
- * Added missing "Disable Interpolation" animcommand type.
+ * Added "Disable Interpolation" animcommand type.
 
 TombIDE:
  * Added new "More Actions..." menu in place of "Exit Project" button.
