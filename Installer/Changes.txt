@@ -14,7 +14,6 @@ Tomb Editor:
  * Added TEN node to check hit points of a shatterable static mesh.
  * Added TEN node to remove moveable effect.
  
-
 WadTool:
  * Added missing "Disable Interpolation" animcommand type.
 
