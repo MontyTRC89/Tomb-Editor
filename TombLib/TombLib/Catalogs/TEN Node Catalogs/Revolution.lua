@@ -159,19 +159,19 @@ end
 
 -- !Name "Revolve a moveable"
 -- !Section "Timespan actions"
--- !Description "Rotate an object around another a moveable over specified timespan."
+-- !Description "Rotate a moveable around another moveable over specified timespan."
 -- !Arguments "NewLine, Moveables, Moveable to rotate"
--- !Arguments "NewLine, Moveables, CentrePoint"
+-- !Arguments "NewLine, Moveables, Centerpoint moveable"
 -- !Arguments "NewLine, Enumeration, [ Vertical | Horizontal], 20, Select Axis of Rotation."
 -- !Arguments "Numerical, [ 1 | 65535 | 2 | 1 | 1 ], {1}, 20, Radius of Rotation"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 20, Time (in seconds)"
 -- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 1 ], {0}, 20, Start Angle"
--- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 1 ], {360}, 20, End Angle. The angle the object will stop if loop is not ticked."
+-- !Arguments "Numerical, [ -360 | 360 | 2 | 1 | 1 ], {360}, 20, End Angle. The angle the moveable will stop if loop is not ticked."
 -- !Arguments "NewLine, 33, Boolean, Loop"
 -- !Arguments "33, Boolean, Flip Loop"
 -- !Arguments "33, Boolean, Smooth"
--- !Arguments "NewLine, 65, Boolean, Rotate Object (Y axis when Horizontal selected)"
--- !Arguments "35, Boolean, Rotate Center Object"
+-- !Arguments "NewLine, 65, Boolean, Rotate (Y axis when Horizontal selected)"
+-- !Arguments "35, Boolean, Rotate centerpoint"
 -- !Arguments "NewLine, SoundEffects,{635}"
 
 LevelFuncs.Engine.Node.ChangeMoveableRevolutionOverTimespan = function(moveableName, centrepoint, option, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
@@ -181,9 +181,9 @@ end
 
 -- !Name "Stop the revolution of a moveable"
 -- !Section "Timespan actions"
--- !Description "Stop an already active object rotation."
+-- !Description "Stop an already active moveable rotation."
 -- !Arguments "NewLine, Moveables, Moveable to stop rotation"
--- !Arguments "NewLine, Numerical, [ -360 | 360 | 2 | 1 | 1 ], {360}, 20, End Angle. This is the angle the object will stop."
+-- !Arguments "NewLine, Numerical, [ -360 | 360 | 2 | 1 | 1 ], {360}, 20, End Angle. This is the angle the moveable will stop."
 
 LevelFuncs.Engine.Node.StopMoveableRotation = function(moveableName, endAngle)
     -- Wrap another node function call into do/end to prevent wrong parsing
