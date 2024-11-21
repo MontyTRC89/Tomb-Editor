@@ -14,11 +14,13 @@
     <sprite_sequence id="111" name="Puzzle 2" />
     <sprite_sequence id="112" name="Puzzle 3" />
     <sprite_sequence id="113" name="Puzzle 4" />
-    <sprite_sequence id="126" name="Pickup 1" />
+    <sprite_sequence id="126" name="Lead bar" />
     <sprite_sequence id="129" name="Key 1" />
     <sprite_sequence id="130" name="Key 2" />
     <sprite_sequence id="131" name="Key 3" />
     <sprite_sequence id="132" name="Key 4" />
+    <sprite_sequence id="141" name="Pickup 1" />
+    <sprite_sequence id="142" name="Pickup 2" />
     <sprite_sequence id="143" name="Scion Piece" />
     <sprite_sequence id="144" name="Scion Piece" />
     <sprite_sequence id="151" name="Flare(?) / Explosion " zoom="-1.71" />
