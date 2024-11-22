@@ -181,7 +181,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             if (room.Properties.FlagOutside)
                 newRoom.Flags |= 0x0020;
 
-            // Not-near-outside flag (set automatically)
+            // Not-near-horizon flag (set automatically)
             if (!room.Properties.FlagHorizon && !room.Portals.Any(p => p.Room.Properties.FlagHorizon))
                 newRoom.Flags |= 0x0040;
 
