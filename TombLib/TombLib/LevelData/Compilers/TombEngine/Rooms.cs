@@ -162,7 +162,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
                 ReverbInfo = room.Properties.Reverberation,
-                Flags = 0x40
+                Flags = 0
             };
 
             if (!room.Alternated)
@@ -180,6 +180,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newRoom.Flags |= 0x0008;
             if (room.Properties.FlagOutside)
                 newRoom.Flags |= 0x0020;
+
+            // Not-near-outside flag (set automatically)
+            if (!room.Properties.FlagHorizon && !room.Portals.Any(p => p.Room.Properties.FlagHorizon))
+                newRoom.Flags |= 0x0040;
 
             // TRNG-specific flags
             if (room.Properties.FlagDamage)
