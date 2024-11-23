@@ -185,7 +185,7 @@ namespace TombLib.LevelData.Compilers.Util
             public List<ChildTextureArea> Children;
 
             // Generates new ParentTextureArea from raw texture coordinates.
-            public ParentTextureArea(in TextureArea texture, bool isForRoom)
+            public ParentTextureArea(TextureArea texture, bool isForRoom)
             {
                 // Round area to nearest pixel to prevent rounding errors further down the line.
                 // Use ParentArea to create a parent for textures which were applied with group texturing tools.
@@ -194,7 +194,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Generates new ParentTextureArea from given area in texture.
-            public ParentTextureArea(in Rectangle2 area, Texture texture, bool isForRoom)
+            public ParentTextureArea(Rectangle2 area, Texture texture, bool isForRoom)
             {
                 _area = area;
                 Initialize(texture, isForRoom);
@@ -210,7 +210,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Compare parent's properties with incoming texture properties.
-            public bool ParametersSimilar(in TextureArea incomingTexture, bool isForRoom)
+            public bool ParametersSimilar(TextureArea incomingTexture, bool isForRoom)
             {
                 if (IsForRoom != isForRoom)
                     return false;
@@ -230,7 +230,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Compare raw bitmap data of given area with incoming texture
-            public TextureArea? TextureSimilar(in TextureArea texture)
+            public TextureArea? TextureSimilar(TextureArea texture)
             {
                 // Only scan if:
                 //  - Parent is room texture
@@ -336,7 +336,7 @@ namespace TombLib.LevelData.Compilers.Util
                 => (ParametersSimilar(texture, isForRoom) && texture.GetRect().Round().Contains(_area));
 
             // Adds texture as a child to existing parent, with recalculating coordinates to relative.
-            public void AddChild(in TextureArea texture, int newTextureID, bool isForTriangle, bool topmostAndUnpadded)
+            public void AddChild(TextureArea texture, int newTextureID, bool isForTriangle, bool topmostAndUnpadded)
             {
                 var relative = new Vector2[isForTriangle ? 3 : 4];
                 var absolute = new Vector2[isForTriangle ? 3 : 4];
@@ -629,13 +629,13 @@ namespace TombLib.LevelData.Compilers.Util
             // degenerate quad. It's needed to fake UVRotate application to triangular areas.
             public bool ConvertToQuad;
 
-            public tr_face3 CreateFace3(Span<ushort> indices, bool doubleSided, ushort lightingEffect)
+            public tr_face3 CreateFace3(ushort[] indices, bool doubleSided, ushort lightingEffect)
             {
                 if (indices.Length != 3)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
                 ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
-                Span<ushort> transformedIndices = stackalloc ushort[3] { indices[0], indices[1], indices[2] };
+                ushort[] transformedIndices = new ushort[3] { indices[0], indices[1], indices[2] };
 
                 if (Rotation > 0)
                 {
@@ -651,13 +651,13 @@ namespace TombLib.LevelData.Compilers.Util
                 return new tr_face3 { Vertices = new ushort[3] { transformedIndices[0], transformedIndices[1], transformedIndices[2] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
             }
 
-            public tr_face4 CreateFace4(Span<ushort> indices, bool doubleSided, ushort lightingEffect)
+            public tr_face4 CreateFace4(ushort[] indices, bool doubleSided, ushort lightingEffect)
             {
                 if (indices.Length != 4)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
                 ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
-                Span<ushort> transformedIndices = stackalloc ushort[4] { indices[0], indices[1], indices[2], indices[3] };
+                ushort[] transformedIndices = new ushort[4] { indices[0], indices[1], indices[2], indices[3] };
 
                 if (Rotation > 0)
                 {
@@ -677,11 +677,11 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Gets existing TexInfo child index if there is similar one in parent textures list.
 
-        private Result? GetTexInfo(in TextureArea areaToLook, List<ParentTextureArea> parentList, 
+        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, 
                                    bool isForRoom, bool isForTriangle, bool topmostAndUnpadded,
                                    bool checkParameters = true, bool scanOtherSets = false, float lookupMargin = 0.0f)
         {
-            Span<Vector2> lookupCoordinates = stackalloc Vector2[isForTriangle ? 3 : 4];
+            var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
             for (int i = 0; i < lookupCoordinates.Length; i++)
                 lookupCoordinates[i] = areaToLook.GetTexCoord(i);
 
@@ -733,7 +733,7 @@ namespace TombLib.LevelData.Compilers.Util
         // If all coordinates are equal for one of the rotation factors, rotation factor is returned,
         // otherwise NoTexInfo is returned (not similar). If coordinates are 100% equal, 0 is returned.
 
-        private int TestUVSimilarity(Span<Vector2> first, Span<Vector2> second, float lookupMargin)
+        private int TestUVSimilarity(Vector2[] first, Vector2[] second, float lookupMargin)
         {
             // If first/second coordinates are not mutually quads/tris, quickly return NoTexInfo.
             // Also discard out of bounds cases without exception.
@@ -758,7 +758,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Generate new parent with incoming texture and immediately add incoming texture as a child
 
-        private void AddParent(in TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, int frameIndex = -1)
+        private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, int frameIndex = -1)
         {
             var newParent = new ParentTextureArea(texture, isForRoom);
             parentList.Add(newParent);
@@ -840,7 +840,7 @@ namespace TombLib.LevelData.Compilers.Util
         // texture frame is being processed. If so, frame index is saved into TexInfoIndex field of resulting child.
         // Later on, on real anim texture creation, this index is used to sort frames in proper order.
 
-        private Result AddTexture(in TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1, bool makeCanonical = true)
+        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1, bool makeCanonical = true)
         {
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
             // frames can be duplicated with Repeat function or simply because of complex animator functions applied.
@@ -1458,8 +1458,9 @@ namespace TombLib.LevelData.Compilers.Util
         public void WriteTextureInfos(BinaryWriterEx writer, Level level)
         {
             writer.Write((int)_objectTextures.Count);
-            foreach (var (idx,texture) in _objectTextures)
+            for (int i = 0; i < _objectTextures.Count; i++)
             {
+                var texture = _objectTextures.ElementAt(i).Value;
 
                 // Tile and flags
                 ushort tile = (ushort)texture.Tile;
@@ -1524,9 +1525,9 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void UpdateTiles(int numSpritesPages)
         {
-            Parallel.ForEach(_objectTextures, kv =>
+            Parallel.For(0, _objectTextures.Count, i =>
             {
-                var texture = kv.Value;
+                var texture = _objectTextures.ElementAt(i).Value;
                 if (texture.IsForRoom && texture.BumpLevel == BumpMappingLevel.None)
                 {
                     // Tile is OK
