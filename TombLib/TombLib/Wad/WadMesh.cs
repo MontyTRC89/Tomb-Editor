@@ -66,7 +66,7 @@ namespace TombLib.Wad
         {
             using (var ms = new MemoryStream())
             {
-                var writer = new BinaryWriterEx(ms);
+                var writer = new BinaryWriter(ms);
                 writer.Write(BoundingSphere.Center.X);
                 writer.Write(BoundingSphere.Center.Y);
                 writer.Write(BoundingSphere.Center.Z);

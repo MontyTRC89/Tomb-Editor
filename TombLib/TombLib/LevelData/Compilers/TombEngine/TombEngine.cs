@@ -14,7 +14,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             byte[] dynamicDataBuffer;
             using (var dynamicDataStream = new MemoryStream())
             {
-                var writer = new BinaryWriterEx(dynamicDataStream); // Don't dispose
+                var writer = new BinaryWriter(dynamicDataStream); // Don't dispose
                 ReportProgress(80, "Writing dynamic data to memory buffer");
 
                 // Write room dynamic data
@@ -117,7 +117,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             byte[] geometryDataBuffer;
             using (var geometryDataStream = new MemoryStream())
             {
-                var writer = new BinaryWriterEx(geometryDataStream); // Don't dispose
+                var writer = new BinaryWriter(geometryDataStream); // Don't dispose
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
                 writer.Write(_level.ExistingRooms.Count);
@@ -246,7 +246,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             using (var mediaStream = new MemoryStream())
             {
-                using (var writer = new BinaryWriterEx(mediaStream, true))
+                using (var writer = new BinaryWriter(mediaStream,System.Text.Encoding.ASCII, true))
                 {
                     WriteTextureData(writer);
 
