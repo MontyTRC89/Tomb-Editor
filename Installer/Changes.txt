@@ -17,7 +17,8 @@ Tomb Editor:
  * Added TEN nodes to get and set hit points for a shatterable static mesh.
  
 WadTool:
- * Added "Disable Interpolation" animcommand type.
+ * Added ability to customize static mesh shatter attributes for TEN wads.
+ * Added "Disable Interpolation" animcommand type for TEN wads.
 
 TombIDE:
  * Added new "More Actions..." menu in place of "Exit Project" button.

@@ -160,32 +160,10 @@ namespace WadTool
         {
             comboSound.Items.Clear();
 
-            var defaultSoundList = TrCatalog.GetAllSounds(_editor.Tool.DestinationWad.GameVersion);
-            var soundCatalogPresent = _editor.Tool.ReferenceLevel != null && _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.Count > 0;
+            if (_editor.Tool.ReferenceLevel == null)
+                return;
 
-            var maxKnownSound = -1;
-
-            foreach (var sound in defaultSoundList)
-                if (sound.Key > maxKnownSound) maxKnownSound = (int)sound.Key;
-
-            if (soundCatalogPresent)
-                foreach (var sound in _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap)
-                    if (sound.Id > maxKnownSound) maxKnownSound = sound.Id;
-
-            for (int i = 0; i <= maxKnownSound; i++)
-            {
-                var lbl = i.ToString().PadLeft(4, '0') + ": ";
-
-                if (soundCatalogPresent && _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.Any(item => item.Id == i))
-                    lbl += _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.First(item => item.Id == i).Name;
-                else if (defaultSoundList.Any(item => item.Key == i))
-                    lbl += defaultSoundList.First(item => item.Key == i).Value;
-                else
-                    lbl += "Unknown sound";
-
-                comboSound.Items.Add(lbl);
-            }
-
+            comboSound.Items.AddRange(_editor.Tool.ReferenceLevel.GetFormattedSoundList(_editor.Wad.GameVersion).ToArray());
             comboSound.Items.Add("Custom sound ID");
             comboSound.SelectedIndex = 0;
         }

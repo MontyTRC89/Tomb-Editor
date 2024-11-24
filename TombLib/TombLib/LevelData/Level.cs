@@ -453,6 +453,39 @@ namespace TombLib.LevelData
             return result;
         }
 
+        public List<string> GetFormattedSoundList(TRVersion.Game version)
+        {
+            var result = new List<string>();
+
+            var defaultSoundList = TrCatalog.GetAllSounds(version);
+            var soundCatalogPresent = Settings.GlobalSoundMap.Count > 0;
+
+            var maxKnownSound = -1;
+
+            foreach (var sound in defaultSoundList)
+                if (sound.Key > maxKnownSound) maxKnownSound = (int)sound.Key;
+
+            if (soundCatalogPresent)
+                foreach (var sound in Settings.GlobalSoundMap)
+                    if (sound.Id > maxKnownSound) maxKnownSound = sound.Id;
+
+            for (int i = 0; i <= maxKnownSound; i++)
+            {
+                var lbl = i.ToString().PadLeft(4, '0') + ": ";
+
+                if (soundCatalogPresent && Settings.GlobalSoundMap.Any(item => item.Id == i))
+                    lbl += Settings.GlobalSoundMap.First(item => item.Id == i).Name;
+                else if (defaultSoundList.Any(item => item.Key == i))
+                    lbl += defaultSoundList.First(item => item.Key == i).Value;
+                else
+                    lbl += "Unknown sound";
+
+                result.Add(lbl);
+            }
+
+            return result;
+        }
+
         public bool IsNG => Settings?.GameVersion == TRVersion.Game.TRNG;
 
         public bool IsTombEngine => Settings?.GameVersion == TRVersion.Game.TombEngine;

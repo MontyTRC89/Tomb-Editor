@@ -52,6 +52,9 @@ namespace TombLib.Wad
         public BoundingBox CollisionBox { get; set; } = new BoundingBox();
         public List<WadLight> Lights { get; set; } = new List<WadLight>();
         public short AmbientLight { get; set; } = 128;
+        
+        public bool Shatter { get; set; } = false;
+        public int ShatterSoundID { get; set; } = -1;
 
         public string ToString(TRVersion.Game gameVersion) => Id.ToString(gameVersion.Native());
         public override string ToString() => Id.ToString();
