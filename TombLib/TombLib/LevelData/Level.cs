@@ -377,7 +377,7 @@ namespace TombLib.LevelData
                             sector.SetFaceTexture(face, TextureArea.None);
                         }
                     }
-                room.BuildGeometry();
+                room.Rebuild(relight: true, highQualityLighting: true);
             });
 
             foreach (AnimatedTextureSet set in Settings.AnimatedTextureSets)
