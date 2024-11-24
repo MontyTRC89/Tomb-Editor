@@ -580,7 +580,7 @@ namespace TombLib.Utils
                 intPtrAction(new IntPtr(dataPtr));
         }
 
-        public unsafe void CopyFrom(int toX, int toY,in ImageC fromImage, int fromX, int fromY, int width, int height)
+        public unsafe void CopyFrom(int toX, int toY, in ImageC fromImage, int fromX, int fromY, int width, int height)
         {
             // Check coordinates
             if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
@@ -624,10 +624,11 @@ namespace TombLib.Utils
             return *(uint*)byteArray;
         }
 
-        public unsafe void ReplaceColor(in ColorC from,in ColorC to)
+        public unsafe void ReplaceColor(in ColorC from, in ColorC to)
         {
             uint fromUint = ColorToUint(from);
             uint toUint = ColorToUint(to);
+
             fixed (void* ptr = _data)
             {
                 uint* ptrUint = (uint*)ptr;
@@ -695,12 +696,12 @@ namespace TombLib.Utils
             return HasAlpha(version, 0, 0, Width, Height);
         }
 
-        public BlendMode HasAlpha(TRVersion.Game version,in Rectangle2 rect)
+        public BlendMode HasAlpha(TRVersion.Game version, in Rectangle2 rect)
         {
             return HasAlpha(version, (int)rect.Start.X, (int)rect.Start.Y, (int)rect.Width, (int)rect.Height);
         }
 
-        public void CopyFrom(int toX, int toY,in ImageC fromImage)
+        public void CopyFrom(int toX, int toY, in ImageC fromImage)
         {
             CopyFrom(toX, toY, fromImage, 0, 0, fromImage.Width, fromImage.Height);
         }

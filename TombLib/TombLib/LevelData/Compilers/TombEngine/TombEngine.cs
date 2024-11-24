@@ -246,7 +246,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             using (var mediaStream = new MemoryStream())
             {
-                using (var writer = new BinaryWriter(mediaStream,System.Text.Encoding.ASCII, true))
+                using (var writer = new BinaryWriter(mediaStream, System.Text.Encoding.ASCII, true))
                 {
                     WriteTextureData(writer);
 

@@ -52,6 +52,7 @@ namespace TombLib.IO
         {
             var sizeOfT = Marshal.SizeOf(typeof(T));
             var unmanaged = Marshal.AllocHGlobal(sizeOfT);
+
             try
             {
                 var buffer = new byte[sizeOfT];
@@ -69,6 +70,7 @@ namespace TombLib.IO
         {
             var sizeOfT = Marshal.SizeOf(typeof(T));
             var unmanaged = Marshal.AllocHGlobal(sizeOfT);
+
             try
             {
                 var buffer = new byte[sizeOfT];
