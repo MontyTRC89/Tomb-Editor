@@ -46,8 +46,16 @@ namespace TombLib.Controls
         private static readonly Brush textureSelectionBrushTriangle = new SolidBrush(Color.FromArgb(33, textureSelectionPenTriangle.Color.R, textureSelectionPenTriangle.Color.G, textureSelectionPenTriangle.Color.B));
         private static readonly Brush textureSelectionBrushSelection = Brushes.DeepSkyBlue;
         private const float textureSelectionPointWidth = 6.0f;
-        private const float textureSelectionPointSelectionRadius = 13.0f;
         private const float viewMargin = 10;
+
+        private float TextureSelectionPointSelectionRadius => TileSelectionSize switch
+        {
+            <= 2.0f => 1.0f,
+            <= 4.0f => 2.0f,
+            <= 8.0f => 4.0f,
+            <= 16.0f => 8.0f,
+            _ => 12.0f
+        };
 
         private readonly DarkScrollBarC _hScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Horizontal };
         private readonly DarkScrollBarC _vScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Vertical };
@@ -166,13 +174,13 @@ namespace TombLib.Controls
             }
         }
 
-        protected virtual SelectionPrecisionType GetSelectionPrecision(bool rectangularSelection)
+        protected virtual SelectionPrecisionType GetSelectionPrecision()
         {
             if (ModifierKeys.HasFlag(Keys.Alt))
                 return new SelectionPrecisionType(0.0f, false);
             else if (ModifierKeys.HasFlag(Keys.Control))
                 return new SelectionPrecisionType(1.0f, false);
-            else if (ModifierKeys.HasFlag(Keys.Shift) == rectangularSelection)
+            else if (ModifierKeys.HasFlag(Keys.Shift))
                 return new SelectionPrecisionType(16.0f, false);
             else
                 return new SelectionPrecisionType(TileSelectionSize, true);
@@ -182,12 +190,12 @@ namespace TombLib.Controls
 
         private Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool rectangularSelection)
         {
-            var selectionPrecision = GetSelectionPrecision(rectangularSelection);
+            var selectionPrecision = GetSelectionPrecision();
             if (selectionPrecision.Precision == 0.0f)
                 return texCoord;
 
             texCoord /= selectionPrecision.Precision;
-            if (selectionPrecision.Precision >= 8.0f && rectangularSelection)
+            if (rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
@@ -302,7 +310,7 @@ namespace TombLib.Controls
                             var coords = SelectedTexture.TexCoords;
 
                             var sortedCoords = coords
-                                .Where(coord => Vector2.Distance(coord, mousePos) < textureSelectionPointSelectionRadius)
+                                .Where(coord => Vector2.Distance(coord, mousePos) < TextureSelectionPointSelectionRadius)
                                 .OrderBy(coord => Vector2.Distance(coord, mousePos))
                                 .ToList();
 
@@ -418,7 +426,7 @@ namespace TombLib.Controls
             {
                 case MouseButtons.Left:
                     if (_startPos.HasValue)
-                        if (GetSelectionPrecision(true).SelectFullTileAutomatically)
+                        if (GetSelectionPrecision().SelectFullTileAutomatically)
                             SetRectangularTextureWithMouse(_startPos.Value, FromVisualCoord(e.Location));
                     break;
             }

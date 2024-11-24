@@ -340,7 +340,7 @@ namespace TombEditor.Forms
 
             private Vector2 Quantize2(Vector2 texCoord, bool end)
             {
-                var selectionPrecision = GetSelectionPrecision(true);
+                var selectionPrecision = GetSelectionPrecision();
                 if (selectionPrecision.Precision == 0.0f)
                     return texCoord;
                 texCoord /= selectionPrecision.Precision;

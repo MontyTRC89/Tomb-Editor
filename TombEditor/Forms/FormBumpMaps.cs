@@ -143,7 +143,7 @@ namespace TombEditor.Forms
 
         public class PanelTextureMapForBumpmaps : Controls.PanelTextureMap
         {
-            protected override SelectionPrecisionType GetSelectionPrecision(bool rectangularSelection)
+            protected override SelectionPrecisionType GetSelectionPrecision()
             {
                 return new SelectionPrecisionType(LevelTexture.BumpMappingGranularity, true);
             }

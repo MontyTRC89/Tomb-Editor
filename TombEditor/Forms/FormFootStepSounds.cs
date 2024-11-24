@@ -111,7 +111,7 @@ namespace TombEditor.Forms
                 _allowFreeCornerEdit = false;
             }
 
-            protected override SelectionPrecisionType GetSelectionPrecision(bool rectangularSelection)
+            protected override SelectionPrecisionType GetSelectionPrecision()
             {
                 return new SelectionPrecisionType(LevelTexture.FootStepSoundGranularity, true);
             }
