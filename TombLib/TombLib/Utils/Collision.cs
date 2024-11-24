@@ -664,7 +664,7 @@ namespace TombLib.Utils
         /// <param name="point">When the method completes, contains the point of intersection,
         /// or <see cref="Vector3.Zero"/> if there was no intersection.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool RayIntersectsTriangle(in Ray ray,in Vector3 vertex1, in Vector3 vertex2,in Vector3 vertex3, bool bothSides, out Vector3 point)
+        public static bool RayIntersectsTriangle(in Ray ray, in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3, bool bothSides, out Vector3 point)
         {
             float distance;
             if (!RayIntersectsTriangle(ray, vertex1, vertex2, vertex3, bothSides, out distance))
@@ -966,7 +966,7 @@ namespace TombLib.Utils
         /// <param name="vertex2">The second vertex of the triangle to test.</param>
         /// <param name="vertex3">The third vertex of the triangle to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static PlaneIntersectionType PlaneIntersectsTriangle(in Plane plane, in Vector3 vertex1, in Vector3 vertex2,in Vector3 vertex3)
+        public static PlaneIntersectionType PlaneIntersectsTriangle(in Plane plane, in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 207
