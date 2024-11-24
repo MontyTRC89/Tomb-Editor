@@ -39,9 +39,7 @@ namespace WadTool
             panelRendering.InitializeRendering(tool, deviceManager);
 
             cmbSoundID.Items.Add("Default");
-
-            if (_tool.ReferenceLevel != null)
-                cmbSoundID.Items.AddRange(_tool.ReferenceLevel.GetFormattedSoundList(_wad.GameVersion).ToArray());
+            cmbSoundID.Items.AddRange(WadSounds.GetFormattedList(_tool.ReferenceLevel, _wad.GameVersion).ToArray());
 
             panelRendering.Configuration = _tool.Configuration;
             panelRendering.Static = _static;
@@ -264,7 +262,8 @@ namespace WadTool
             {
                 cbShatterable.Enabled =
                 butResetShatterAttribs.Enabled = true;
-                cmbSoundID.Enabled = butPlay.Enabled = (_tool.ReferenceLevel != null) && cbShatterable.Checked;
+                cmbSoundID.Enabled = cbShatterable.Checked;
+                butPlay.Enabled = (_tool.ReferenceLevel != null) && cbShatterable.Checked;
             }
 
             cbShatterable.Checked = _static.Shatter;

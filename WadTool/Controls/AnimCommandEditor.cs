@@ -163,7 +163,7 @@ namespace WadTool
             if (_editor.Tool.ReferenceLevel == null)
                 return;
 
-            comboSound.Items.AddRange(_editor.Tool.ReferenceLevel.GetFormattedSoundList(_editor.Wad.GameVersion).ToArray());
+            comboSound.Items.AddRange(WadSounds.GetFormattedList(_editor.Tool.ReferenceLevel, _editor.Wad.GameVersion).ToArray());
             comboSound.Items.Add("Custom sound ID");
             comboSound.SelectedIndex = 0;
         }
