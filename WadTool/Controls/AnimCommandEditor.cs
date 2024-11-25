@@ -159,10 +159,6 @@ namespace WadTool
         private void ReloadSounds()
         {
             comboSound.Items.Clear();
-
-            if (_editor.Tool.ReferenceLevel == null)
-                return;
-
             comboSound.Items.AddRange(WadSounds.GetFormattedList(_editor.Tool.ReferenceLevel, _editor.Wad.GameVersion).ToArray());
             comboSound.Items.Add("Custom sound ID");
             comboSound.SelectedIndex = 0;
