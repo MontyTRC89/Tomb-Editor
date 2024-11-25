@@ -328,46 +328,48 @@ namespace TombEditor.Controls.Panel3D
                             yOffset = pair.Room.Position.Y - currentRoom.Position.Y;
                         }
                     }
-
+                    var geo = currentRoom.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(x, z)));
                     if (splitIndex is < 0 or > 7) // QA or WS
                     {
+                        
                         // PositiveZ Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_QA)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_QA)))
                             HandlePositiveZ(x, z, targetSector.Floor, yOffset);
                         // PositiveZ Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_WS)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_WS)))
                             HandlePositiveZ(x, z, targetSector.Ceiling, yOffset);
 
                         // PositiveX Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveX_QA)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveX_QA)))
                             HandlePositiveX(x, z, targetSector.Floor, yOffset);
                         // PositiveX Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveX_WS)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveX_WS)))
                             HandlePositiveX(x, z, targetSector.Ceiling, yOffset);
 
                         // NegativeZ Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeZ_QA)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeZ_QA)))
                             HandleNegativeZ(x, z, targetSector.Floor, yOffset);
                         // NegativeZ Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeZ_WS)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeZ_WS)))
                             HandleNegativeZ(x, z, targetSector.Ceiling, yOffset);
 
                         // NegativeX Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeX_QA)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeX_QA)))
                             HandleNegativeX(x, z, targetSector.Floor, yOffset);
                         // NegativeX Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeX_WS)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeX_WS)))
                             HandleNegativeX(x, z, targetSector.Ceiling, yOffset);
 
                         // Diagonal Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_Diagonal_QA)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_Diagonal_QA)))
                             HandleDiagonal(x, z, targetSector.Floor, yOffset);
                         // Diagonal Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_Diagonal_WS)))
+                        if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_Diagonal_WS)))
                             HandleDiagonal(x, z, targetSector.Ceiling, yOffset);
                     }
                     else // Actual splits
                     {
+
                         // Floor split
                         if (splitIndex < targetSector.ExtraFloorSplits.Count)
                         {
@@ -381,23 +383,23 @@ namespace TombEditor.Controls.Panel3D
                             };
 
                             // PositiveZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveZ, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveZ, splitIndex))))
                                 HandlePositiveZ(x, z, floorSurface, yOffset);
 
                             // PositiveX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveX, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveX, splitIndex))))
                                 HandlePositiveX(x, z, floorSurface, yOffset);
 
                             // NegativeZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, splitIndex))))
                                 HandleNegativeZ(x, z, floorSurface, yOffset);
 
                             // NegativeX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeX, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeX, splitIndex))))
                                 HandleNegativeX(x, z, floorSurface, yOffset);
 
                             // Diagonal
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.Diagonal, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.Diagonal, splitIndex))))
                                 HandleDiagonal(x, z, floorSurface, yOffset);
                         }
 
@@ -414,23 +416,23 @@ namespace TombEditor.Controls.Panel3D
                             };
 
                             // PositiveZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveZ, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveZ, splitIndex))))
                                 HandlePositiveZ(x, z, ceilingSurface, yOffset);
 
                             // PositiveX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveX, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveX, splitIndex))))
                                 HandlePositiveX(x, z, ceilingSurface, yOffset);
 
                             // NegativeZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, splitIndex))))
                                 HandleNegativeZ(x, z, ceilingSurface, yOffset);
 
                             // NegativeX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeX, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeX, splitIndex))))
                                 HandleNegativeX(x, z, ceilingSurface, yOffset);
 
                             // Diagonal
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.Diagonal, splitIndex))))
+                            if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.Diagonal, splitIndex))))
                                 HandleDiagonal(x, z, ceilingSurface, yOffset);
                         }
                     }
@@ -1906,7 +1908,8 @@ namespace TombEditor.Controls.Panel3D
             // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
             foreach (Room room in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden))
-                _renderingCachedRooms[room].Render(renderArgs);
+                foreach(var renderProxy in _renderingCachedRooms[room])
+                    renderProxy.Render(renderArgs);
 
             // Determine if selection should be visible or not.
             var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
@@ -1982,7 +1985,8 @@ namespace TombEditor.Controls.Panel3D
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
                 foreach (Room room in hiddenRooms)
-                    _renderingCachedRooms[room].Render(renderArgs);
+                    foreach(var renderProxy in _renderingCachedRooms[room])
+                        renderProxy.Render(renderArgs);
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             }
 

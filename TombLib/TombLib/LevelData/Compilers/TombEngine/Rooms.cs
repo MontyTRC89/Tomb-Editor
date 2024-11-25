@@ -286,8 +286,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 // Add room geometry
 
-                var vertexPositions = room.RoomGeometry.VertexPositions;
-                var vertexColors = room.RoomGeometry.VertexColors;
+                var vertexPositions = room.RoomGeometry.SelectMany(g => g.VertexPositions).ToList();
+                var vertexColors = room.RoomGeometry.SelectMany(g => g.VertexColors).ToList();
 
                 var roomVerticesDictionary = new Dictionary<int, int>();
                 var roomVertices = new List<TombEngineVertex>();
@@ -300,7 +300,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         for (int x = 0; x < room.NumXSectors; ++x)
                             foreach (SectorFace face in room.Sectors[x, z].GetFaceTextures().Keys)
                             {
-                                var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
+                                var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(x, z)));
+                                var range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                                 var shape = room.GetFaceShape(x, z, face);
 
                                 if (range.Count == 0)

@@ -172,7 +172,7 @@ namespace TombEditor.Controls.Panel3D
         private RenderingTextureAllocator _renderingTextures;
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
-        private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
+        private readonly Cache<Room, IList<RenderingDrawingRoom>> _renderingCachedRooms;
 
         // Render stats
         private readonly Stopwatch _watch = new Stopwatch();
@@ -201,7 +201,7 @@ namespace TombEditor.Controls.Panel3D
                 _flyModeTimer = new Timer { Interval = 1 };
                 _flyModeTimer.Tick += FlyModeTimer_Tick;
 
-                _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024, CacheRoom);
+                _renderingCachedRooms = new Cache<Room, IList<RenderingDrawingRoom>>(1024, CacheRoom, DisposeRoom);
             }
 
         }

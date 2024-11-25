@@ -32,6 +32,7 @@ namespace TombLib.LevelData
         //                      |
 
         // Quads are reformed by 2 triangles.
+        public RectangleInt2 Area { get; set; }
         public int DoubleSidedTriangleCount { get; private set; } = 0;
         public List<Vector3> VertexPositions { get; } = new List<Vector3>(); // one for each vertex
         public List<Vector2> VertexEditorUVs { get; } = new List<Vector2>(); // one for each vertex (ushort to save (GPU) memory and bandwidth)
@@ -44,6 +45,10 @@ namespace TombLib.LevelData
         public SortedList<SectorFaceIdentity, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorFaceIdentity, VertexRange>();
 
         // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
+        public RoomGeometry(in RectangleInt2 area)
+        {
+            this.Area = area;
+        }
         public void Build(Room room, bool useLegacyCode = false)
         {
             VertexPositions.Clear();
@@ -55,16 +60,16 @@ namespace TombLib.LevelData
             VertexRangeLookup.Clear();
             DoubleSidedTriangleCount = 0;
 
-            const int xMin = 0;
-            const int zMin = 0;
-            int xMax = room.NumXSectors - 1;
-            int zMax = room.NumZSectors - 1;
+            int xMin = Area.X0;
+            int zMin = Area.Y0;
+            int xMax = Area.X1;
+            int zMax = Area.Y1;
             Sector[,] sectors = room.Sectors;
 
             // Build face polygons
-            for (int x = xMin; x <= xMax; x++) // This is in order to VertexRangeKey sorting.
+            for (int x = xMin; x < xMax; x++) // This is in order to VertexRangeKey sorting.
             {
-                for (int z = zMin; z <= zMax; z++)
+                for (int z = zMin; z < zMax; z++)
                 {
                     // If x, z is one of the four corner then nothing has to be done
                     if (x == 0 && z == 0 || x == 0 && z == room.NumZSectors - 1 ||

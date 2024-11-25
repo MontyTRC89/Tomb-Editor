@@ -245,9 +245,13 @@ namespace TombEditor.Controls.Panel3D
                     !room.Properties.Hidden || room != _editor.SelectedRoom || _editor.Action is IEditorActionPlace)
                 {
                     // Check room geometry
-                    var roomIntersectInfo = room.RoomGeometry?.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
-                    if (roomIntersectInfo != null && (result == null || roomIntersectInfo.Value.Distance < result.Distance))
-                        result = new PickingResultSector(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.VerticalCoord, roomIntersectInfo.Value.Pos, room, roomIntersectInfo.Value.Face);
+                    foreach(var geo in room.RoomGeometry)
+                    {
+                        var roomIntersectInfo = geo.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
+                        if (roomIntersectInfo != null && (result == null || roomIntersectInfo.Value.Distance < result.Distance))
+                            result = new PickingResultSector(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.VerticalCoord, roomIntersectInfo.Value.Pos, room, roomIntersectInfo.Value.Face);
+                    }
+
                 }
             }
 

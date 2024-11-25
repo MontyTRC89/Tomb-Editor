@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TombLib.LevelData.Compilers;
 using TombLib.LevelData.SectorEnums;
@@ -131,8 +131,12 @@ namespace TombLib.LevelData
         public Room AlternateRoom { get; set; }
         public short AlternateGroup { get; set; } = -1;
 
+
         // Internal data structures
-        public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
+        private const int ChunkSize = 16;
+        private int ChunkCountX => (int)Math.Max((int)Math.Ceiling(NumXSectors / (float)ChunkSize), 1);
+        private int ChunkCountZ => (int)Math.Max((int)Math.Ceiling(NumZSectors / (float)ChunkSize), 1);
+        public RoomGeometry[] RoomGeometry { get; private set; }
         public bool PendingRelight { get; private set; } = true;
 
         public Room(Level level, int numXSectors, int numZSectors, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
@@ -207,6 +211,8 @@ namespace TombLib.LevelData
             // Add sector based objects again
             foreach (var instance in sectorObjects)
                 AddObjectAndSingularPortalCutSectors(level, area, instance);
+
+            RoomGeometry = new RoomGeometry[ChunkCountX * ChunkCountZ];
         }
 
         // Usually it's highly recommended to call FixupNeighborPortals on both rooms afterwards, to fix neighboring portals.
@@ -886,47 +892,78 @@ namespace TombLib.LevelData
 
         public bool IsFaceDefined(int x, int z, SectorFace face)
         {
-            return RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count != 0;
+            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+            return geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count != 0;
         }
 
         public float GetFaceHighestPoint(int x, int z, SectorFace face)
         {
-            var range = RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
+            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+            var range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
             float max = float.NegativeInfinity;
             for (int i = 0; i < range.Count; ++i)
-                max = Math.Max(RoomGeometry.VertexPositions[i + range.Start].Y, max);
+                max = Math.Max(geo.VertexPositions[i + range.Start].Y, max);
             return max;
         }
 
         public float GetFaceLowestPoint(int x, int z, SectorFace face)
         {
-            var range = RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
+            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+            var range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
             float max = float.PositiveInfinity;
             for (int i = 0; i < range.Count; ++i)
-                max = Math.Min(RoomGeometry.VertexPositions[i + range.Start].Y, max);
+                max = Math.Min(geo.VertexPositions[i + range.Start].Y, max);
             return max;
         }
 
         public FaceShape GetFaceShape(int x, int z, SectorFace face)
         {
-            switch (RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count)
+            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+            if(geo.Area.Contains(new VectorInt2(x,z)))
             {
-                case 3:
-                    return FaceShape.Triangle;
-                case 6:
-                    return FaceShape.Quad;
-                default:
-                    return FaceShape.Unknown;
+                switch (geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count)
+                {
+                    case 3:
+                        return FaceShape.Triangle;
+                    case 6:
+                        return FaceShape.Quad;
+                    default:
+                        return FaceShape.Unknown;
+                }
             }
+            return FaceShape.Unknown;
         }
 
         public void Rebuild(bool relight, bool highQualityLighting)
         {
-            RoomGeometry.Build(this);
+
+            for (int x = 0; x < ChunkCountX; ++x)
+            {
+                for (int y = 0; y < ChunkCountZ; ++y)
+                {
+                    int idx = x + (y * ChunkCountX);
+                    var chunkX = (ushort)(x * ChunkSize);
+                    var chunkZ = (ushort)(y * ChunkSize);
+                    var chunkWidth = (ushort)ChunkSize;
+                    var chunkHeight = (ushort)ChunkSize;
+
+                    chunkWidth = (ushort)(Math.Min(chunkX + chunkWidth, (int)NumXSectors) - chunkX);
+                    chunkHeight = (ushort)(Math.Min(chunkZ + chunkHeight, (int)NumZSectors) - chunkZ);
+
+                    Debug.Assert(chunkWidth > 0);
+                    Debug.Assert(chunkHeight > 0);
+                    RoomGeometry[idx] = new RoomGeometry(new RectangleInt2(chunkX,chunkZ,chunkX + chunkWidth, chunkZ + chunkHeight));
+                    RoomGeometry[idx].Build(this);
+                }
+            }
+            
 
             if (relight)
             {
-                RoomGeometry.Relight(this, highQualityLighting);
+                foreach(var geo in RoomGeometry)
+                {
+                    geo.Relight(this, highQualityLighting);
+                }
                 PendingRelight = false;
             }
             else
@@ -937,13 +974,15 @@ namespace TombLib.LevelData
 
         public void BuildGeometry(bool useLegacyCode = false)
         {
-            RoomGeometry.Build(this, useLegacyCode);
+            foreach(var geo in RoomGeometry)
+                geo.Build(this, useLegacyCode);
+            
         }
 
         public void RebuildLighting(bool highQualityLighting)
         {
-            RoomGeometry.Relight(this, highQualityLighting);
-            PendingRelight = false;
+            foreach (var geo in RoomGeometry)
+                geo.Relight(this,highQualityLighting);
         }
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
@@ -1698,8 +1737,8 @@ namespace TombLib.LevelData
         {
             // Add room geometry
 
-            var vertexPositions = RoomGeometry.VertexPositions;
-            var vertexColors = RoomGeometry.VertexColors;
+            var vertexPositions = RoomGeometry.SelectMany(geo => geo.VertexPositions).ToArray();
+            var vertexColors = RoomGeometry.SelectMany(geo => geo.VertexColors).ToArray();
 
             var roomVerticesDictionary = new Dictionary<int, ushort>();
             var roomVertices  = new List<tr_room_vertex>();
@@ -1714,7 +1753,8 @@ namespace TombLib.LevelData
                     for (int x = 0; x < NumXSectors; ++x)
                         foreach (SectorFace face in Sectors[x, z].GetFaceTextures().Keys)
                         {
-                            var range = RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
+                            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+                            var range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                             var shape = GetFaceShape(x, z, face);
 
                             if (range.Count == 0)

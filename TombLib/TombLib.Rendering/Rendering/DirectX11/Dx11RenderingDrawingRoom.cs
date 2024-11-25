@@ -30,7 +30,7 @@ namespace TombLib.Rendering.DirectX11
             TextureAllocator = description.TextureAllocator;
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
 
-            RoomGeometry roomGeometry = description.Room.RoomGeometry;
+            RoomGeometry roomGeometry = description.Geometry;
 
             // Create buffer
             Vector3 worldPos = description.Room.WorldPos + description.Offset;

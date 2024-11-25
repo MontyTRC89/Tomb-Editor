@@ -1364,7 +1364,8 @@ namespace TombEditor
             sector.SetFaceTexture(face, newTexture);
 
             // Update state
-            room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
+            var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+            geo.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
             _editor.RoomTextureChange(room);
         }
 
@@ -1379,7 +1380,8 @@ namespace TombEditor
             sector.SetFaceTexture(face, newTexture);
 
             // Update state
-            room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
+            var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+            geo.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
             _editor.RoomTextureChange(room);
         }
 
@@ -1585,7 +1587,8 @@ namespace TombEditor
                 {
                     TextureArea currentTexture = sector.GetFaceTexture(face);
                     CheckTextureAttributes(room, pos, face, currentTexture);
-                    room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
+                    var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+                    geo.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
                 }
 
                 return textureApplied;
@@ -1647,15 +1650,16 @@ namespace TombEditor
                     {
                         // Get current face
                         VertexRange vertexRange = new VertexRange(0, 0);
-                        if (!room.RoomGeometry.VertexRangeLookup.TryGetValue(new SectorFaceIdentity(pos.X, pos.Y, face), out vertexRange))
+                        var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+                        if (!geo.VertexRangeLookup.TryGetValue(new SectorFaceIdentity(pos.X, pos.Y, face), out vertexRange))
                             return false;
 
                         if (vertexRange.Count == 6)
                         {
-                            Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
-                            Vector3 p1 = room.RoomGeometry.VertexPositions[vertexRange.Start + 0];
-                            Vector3 p2 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
-                            Vector3 p3 = room.RoomGeometry.VertexPositions[vertexRange.Start + 3];
+                            Vector3 p0 = geo.VertexPositions[vertexRange.Start + 2];
+                            Vector3 p1 = geo.VertexPositions[vertexRange.Start + 0];
+                            Vector3 p2 = geo.VertexPositions[vertexRange.Start + 1];
+                            Vector3 p3 = geo.VertexPositions[vertexRange.Start + 3];
 
                             float maxUp = Math.Max(p0.Y, p1.Y);
                             float minDown = Math.Min(p2.Y, p3.Y);
@@ -1684,9 +1688,9 @@ namespace TombEditor
                         }
                         else
                         {
-                            Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 0];
-                            Vector3 p1 = room.RoomGeometry.VertexPositions[vertexRange.Start + 1];
-                            Vector3 p2 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
+                            Vector3 p0 = geo.VertexPositions[vertexRange.Start + 0];
+                            Vector3 p1 = geo.VertexPositions[vertexRange.Start + 1];
+                            Vector3 p2 = geo.VertexPositions[vertexRange.Start + 2];
 
                             float maxUp = Math.Max(Math.Max(p0.Y, p1.Y), p2.Y);
                             float minDown = Math.Min(Math.Min(p0.Y, p1.Y), p2.Y);
@@ -1766,7 +1770,8 @@ namespace TombEditor
             {
                 TextureArea currentTexture = sector.GetFaceTexture(face);
                 CheckTextureAttributes(room, pos, face, currentTexture);
-                room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
+                var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+                geo.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
             }
 
             return textureApplied;

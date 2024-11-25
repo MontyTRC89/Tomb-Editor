@@ -7,6 +7,8 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Controls;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TombEditor.Controls.Panel3D
 {
@@ -104,7 +106,7 @@ namespace TombEditor.Controls.Panel3D
             }
         }
 
-        RenderingDrawingRoom CacheRoom(Room room)
+        List<RenderingDrawingRoom> CacheRoom(Room room)
         {
             var sectorTextures = new SectorTextureDefault
             {
@@ -122,13 +124,18 @@ namespace TombEditor.Controls.Panel3D
                 sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
             }
 
-            return Device.CreateDrawingRoom(
-                    new RenderingDrawingRoom.Description
-                    {
-                        Room = room,
-                        TextureAllocator = _renderingTextures,
-                        SectorTextureGet = sectorTextures.Get
-                    });
+            return room.RoomGeometry.Select(geo => Device.CreateDrawingRoom(new RenderingDrawingRoom.Description() {
+                Room = room,
+                TextureAllocator = _renderingTextures,
+                Geometry = geo,
+                SectorTextureGet = sectorTextures.Get
+            })).ToList();
+        }
+
+        void DisposeRoom(IList<RenderingDrawingRoom> cached)
+        {
+            foreach(var proxy in cached)
+                proxy.Dispose();
         }
     }
 }
