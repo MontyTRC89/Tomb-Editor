@@ -216,7 +216,7 @@ namespace TombLib.LevelData
             RoomGeometry = new RoomGeometry[ChunkCountX * ChunkCountZ];
             for (int x = 0; x < ChunkCountX; ++x)
             {
-                for (int y = 0; y < ChunkCountX; ++y)
+                for (int y = 0; y < ChunkCountZ; ++y)
                 {
                     int idx = x + (y * ChunkCountX);
                     var chunkX = (ushort)(x * ChunkSize);
@@ -229,7 +229,7 @@ namespace TombLib.LevelData
 
                     Debug.Assert(chunkWidth > 0);
                     Debug.Assert(chunkHeight > 0);
-                    RoomGeometry[idx] = new RoomGeometry(new RectangleInt2(chunkX, chunkZ, chunkX + chunkWidth, chunkZ + chunkHeight));
+                    RoomGeometry[idx] = new RoomGeometry(new RectangleInt2(chunkX, chunkZ, chunkX + chunkWidth-1, chunkZ + chunkHeight-1));
                 }
             }
         }

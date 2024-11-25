@@ -67,9 +67,9 @@ namespace TombLib.LevelData
             Sector[,] sectors = room.Sectors;
 
             // Build face polygons
-            for (int x = xMin; x < xMax; x++) // This is in order to VertexRangeKey sorting.
+            for (int x = xMin; x <= xMax; x++) // This is in order to VertexRangeKey sorting.
             {
-                for (int z = zMin; z < zMax; z++)
+                for (int z = zMin; z <= zMax; z++)
                 {
                     // If x, z is one of the four corner then nothing has to be done
                     if (x == 0 && z == 0 || x == 0 && z == room.NumZSectors - 1 ||
