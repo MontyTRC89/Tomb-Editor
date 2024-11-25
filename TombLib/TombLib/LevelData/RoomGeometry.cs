@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorGeometry;
@@ -1189,11 +1190,30 @@ namespace TombLib.LevelData
         {
             // Collect lights
             List<LightInstance> lights = new List<LightInstance>();
-            foreach (var instance in room.Objects)
+            var areaWorld = Area/* + new VectorInt2(room.WorldPos.X,room.WorldPos.Z)*/;
+
+            var bbMin = new Vector3(areaWorld.X0,0,areaWorld.Y0) * Level.SectorSizeUnit;
+            var bbMax = new Vector3(areaWorld.X1, 1, areaWorld.Y1) * Level.SectorSizeUnit;
+            foreach (var instance in room.Objects.OfType<LightInstance>())
             {
-                LightInstance light = instance as LightInstance;
-                if (light != null)
-                    lights.Add(light);
+                // always add suns
+                if (instance.Type == LightType.Sun)
+                {
+                    lights.Add(instance);
+                    continue;
+                }
+                if (instance.Type == LightType.Effect)
+                {
+                    // treat effects as point lights with small radius
+                    if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(instance.Position, 1024)))
+                    {
+                        lights.Add(instance);
+                    }
+                    continue;
+                }
+                //treat spot lights and point lights the same
+                if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(instance.Position, instance.OuterRange * 1024)))
+                    lights.Add(instance);
             }
 
             // Calculate lighting
