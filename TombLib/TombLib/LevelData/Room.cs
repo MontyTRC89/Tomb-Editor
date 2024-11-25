@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -213,6 +214,24 @@ namespace TombLib.LevelData
                 AddObjectAndSingularPortalCutSectors(level, area, instance);
 
             RoomGeometry = new RoomGeometry[ChunkCountX * ChunkCountZ];
+            for (int x = 0; x < ChunkCountX; ++x)
+            {
+                for (int y = 0; y < ChunkCountX; ++y)
+                {
+                    int idx = x + (y * ChunkCountX);
+                    var chunkX = (ushort)(x * ChunkSize);
+                    var chunkZ = (ushort)(y * ChunkSize);
+                    var chunkWidth = (ushort)ChunkSize;
+                    var chunkHeight = (ushort)ChunkSize;
+
+                    chunkWidth = (ushort)(Math.Min(chunkX + chunkWidth, (int)NumXSectors) - chunkX);
+                    chunkHeight = (ushort)(Math.Min(chunkZ + chunkHeight, (int)NumZSectors) - chunkZ);
+
+                    Debug.Assert(chunkWidth > 0);
+                    Debug.Assert(chunkHeight > 0);
+                    RoomGeometry[idx] = new RoomGeometry(new RectangleInt2(chunkX, chunkZ, chunkX + chunkWidth, chunkZ + chunkHeight));
+                }
+            }
         }
 
         // Usually it's highly recommended to call FixupNeighborPortals on both rooms afterwards, to fix neighboring portals.
@@ -937,39 +956,19 @@ namespace TombLib.LevelData
         public void Rebuild(bool relight, bool highQualityLighting)
         {
 
-            for (int x = 0; x < ChunkCountX; ++x)
+            Parallel.ForEach(Partitioner.Create<RoomGeometry>(RoomGeometry, true), geo =>
             {
-                for (int y = 0; y < ChunkCountZ; ++y)
-                {
-                    int idx = x + (y * ChunkCountX);
-                    var chunkX = (ushort)(x * ChunkSize);
-                    var chunkZ = (ushort)(y * ChunkSize);
-                    var chunkWidth = (ushort)ChunkSize;
-                    var chunkHeight = (ushort)ChunkSize;
-
-                    chunkWidth = (ushort)(Math.Min(chunkX + chunkWidth, (int)NumXSectors) - chunkX);
-                    chunkHeight = (ushort)(Math.Min(chunkZ + chunkHeight, (int)NumZSectors) - chunkZ);
-
-                    Debug.Assert(chunkWidth > 0);
-                    Debug.Assert(chunkHeight > 0);
-                    RoomGeometry[idx] = new RoomGeometry(new RectangleInt2(chunkX,chunkZ,chunkX + chunkWidth, chunkZ + chunkHeight));
-                    RoomGeometry[idx].Build(this);
-                }
-            }
-            
-
-            if (relight)
-            {
-                foreach(var geo in RoomGeometry)
+                geo.Build(this);
+                if(relight)
                 {
                     geo.Relight(this, highQualityLighting);
                 }
+            });
+
+            if (relight)
                 PendingRelight = false;
-            }
             else
-            {
                 PendingRelight = true;
-            }
         }
 
         public void BuildGeometry(bool useLegacyCode = false)
