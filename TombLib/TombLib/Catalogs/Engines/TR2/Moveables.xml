@@ -106,23 +106,23 @@
     <moveable id="103" name="Above-water switch" essential="false" ten="SWITCH_TYPE3" />
     <moveable id="104" name="Above-water/underwater switch" essential="false" ten="SWITCH_TYPE4" />
     <moveable id="105" name="Underwater switch" essential="false" ten="UNDERWATER_WALL_SWITCH1" />
-    <moveable id="106" name="Door 1" essential="false" ten="DOOR_TYPE1" />
-    <moveable id="107" name="Door 2" essential="false" ten="DOOR_TYPE2" />
-    <moveable id="108" name="Door 3" essential="false" ten="DOOR_TYPE3" />
-    <moveable id="109" name="Door 4" essential="false" ten="DOOR_TYPE4" />
-    <moveable id="110" name="Door 5" essential="false" ten="DOOR_TYPE5" />
-    <moveable id="111" name="Door 6 (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE6" />
-    <moveable id="112" name="Door 7 (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE7" />
-    <moveable id="113" name="Door 8 (pulled upward)" essential="false" ten="DOOR_TYPE8" />
-    <moveable id="114" name="Trapdoor 1 (opens downward)" essential="false" ten="TRAPDOOR1" />
-    <moveable id="115" name="Trapdoor 2 (opens downward)" essential="false" ten="TRAPDOOR2" />
-    <moveable id="116" name="Trapdoor 3 (opens downward)" essential="false" ten="TRAPDOOR3" />
+    <moveable id="106" name="Door" essential="false" ten="DOOR_TYPE1" />
+    <moveable id="107" name="Door" essential="false" ten="DOOR_TYPE2" />
+    <moveable id="108" name="Door" essential="false" ten="DOOR_TYPE3" />
+    <moveable id="109" name="Door" essential="false" ten="DOOR_TYPE4" />
+    <moveable id="110" name="Door" essential="false" ten="DOOR_TYPE5" />
+    <moveable id="111" name="Door (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE6" />
+    <moveable id="112" name="Door (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE7" />
+    <moveable id="113" name="Door (pulled upward)" essential="false" ten="DOOR_TYPE8" />
+    <moveable id="114" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR1" />
+    <moveable id="115" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR2" />
+    <moveable id="116" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR3" />
     <moveable id="117" name="Bridge (flat)" essential="false" ten="BRIDGE_FLAT" />
     <moveable id="118" name="Bridge (tilt = 1)" essential="false" ten="BRIDGE_TILT1" />
     <moveable id="119" name="Bridge (tilt = 2)" essential="false" ten="BRIDGE_TILT2" />
-    <moveable id="120" name="Secret #1 (Pickup) / Passport" id2="190" hidden="true" ten="INVENTORY_PASSPORT" />
-    <moveable id="121" name="Secret #2 (Pickup) / Compass" id2="191" hidden="true" />
-    <moveable id="122" name="Lara and butler picture" hidden="true" ten="INVENTORY_POLAROID" />
+    <moveable id="120" name="Secret #3 (Pickup) / Passport (Inv)" id2="190" hidden="true" ten="INVENTORY_PASSPORT" />
+    <moveable id="121" name="Secret #2 (Pickup) / Compass (Inv)" id2="191" hidden="true" />
+    <moveable id="122" name="Polaroid (Inv)" hidden="true" ten="INVENTORY_POLAROID" />
     <moveable id="123" name="Cutscene_Object 1" ten="ANIMATING105" />
     <moveable id="124" name="Cutscene Object 2" ten="ANIMATING106" />
     <moveable id="125" name="Cutscene Object 3" ten="ANIMATING107" />
@@ -133,7 +133,7 @@
     <moveable id="130" name="Cutscene Object 8" ten="ANIMATING112" />
     <moveable id="131" name="Cutscene Object 9" ten="ANIMATING113" />
     <moveable id="132" name="Cutscene Object 10" ten="ANIMATING114" />
-    <moveable id="133" name="Secret #3 (Pickup) / Passport closed" id2="192" />
+    <moveable id="133" name="Secret #1 (Pickup) / Passport closed (Inv)" id2="192" hidden="true" />
     <moveable id="134" name="Natla's logo" hidden="true" />
     <!--<moveable id="135" name="Pistols (Pickup)" id2="135" hidden="true" />-->
     <!--<moveable id="136" name="Shotgun (Pickup)" id2="136" hidden="true" />-->
@@ -163,7 +163,7 @@
     <moveable id="161" name="Harpoon gun" id2="139" ten="HARPOON_ITEM"/>
     <moveable id="162" name="M16" id2="140" ten="HK_ITEM"/>
     <moveable id="163" name="Grenade launcher" id2="141" ten="GRENADE_GUN_ITEM"/>
-    <moveable id="164" name="Pistol ammo" id2="142" ten="PISTOL_AMMO_ITEM"/>
+    <moveable id="164" name="Pistol ammo"  ten="PISTOL_AMMO_ITEM"/>
     <moveable id="165" name="Shotgun ammo" id2="143" ten="SHOTGUN_AMMO1_ITEM"/>
     <moveable id="166" name="Auto-pistol ammo" id2="144" ten="PISTOLS_AMMO_ITEM"/>
     <moveable id="167" name="Uzi ammo" id2="145" ten="UZI_AMMO_ITEM"/>
@@ -212,7 +212,7 @@
     <moveable id="214" name="Tyrannosaur" essential="false" ten="TYRANNOSAUR" />
     <moveable id="215" name="Singing birds" essential="false" ten="ANIMATING1" />
     <moveable id="216" name="Bartoli's Hideout clock" essential="false" ten="ANIMATING2" />
-    <moveable id="217" name="Dragon bones [unused]" essential="false" />
+    <moveable id="217" name="Candle flame emitter" essential="false" />
     <moveable id="218" name="Dragon bones (front)" show_with="219" ten="DRAGON_BONE_FRONT" />
     <moveable id="219" name="Dragon bones (back)" show_with="218" ten="DRAGON_BONE_BACK" />
     <!--<moveable id="220" name="Hot liquid" id2="220" hidden="true" />-->
