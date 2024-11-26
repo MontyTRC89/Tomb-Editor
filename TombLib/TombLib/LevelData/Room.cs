@@ -973,15 +973,12 @@ namespace TombLib.LevelData
 
         public void BuildGeometry(bool useLegacyCode = false)
         {
-            foreach(var geo in RoomGeometry)
-                geo.Build(this, useLegacyCode);
-            
+            RoomGeometry.AsParallel().ForAll(geo => geo.Build(this));
         }
 
         public void RebuildLighting(bool highQualityLighting)
         {
-            foreach (var geo in RoomGeometry)
-                geo.Relight(this,highQualityLighting);
+            RoomGeometry.AsParallel().ForAll(geo => geo.Relight(this, highQualityLighting));
         }
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
