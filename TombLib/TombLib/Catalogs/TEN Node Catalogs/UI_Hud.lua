@@ -1,142 +1,68 @@
 --UI/Hud Nodes by Adngel,DaviDMRR and TrainWreck ; Code references by Lwmte and TEN Nodes.
+local CustomBar = require("Engine.CustomBar")
 
-
-LevelVars.CustomBars = {}
--- Construct custom bar
-LevelFuncs.Engine.Node.ConstructCustomBar = function(barName, startvalue, objectIDbg, spriteIDbg, colorbg, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
-
-	local dataName	= barName .. "_bar_data"
-
-	if LevelVars.CustomBars[dataName] then
-		return
-	end
-
-	LevelVars.CustomBars[dataName]					= {}
-	LevelVars.CustomBars[dataName].Name				= dataName
-	LevelVars.CustomBars[dataName].FixedInterval	= 1/30
-	LevelVars.CustomBars[dataName].Progress			= startvalue / 1000 -- Set initial progress from start value (clamped to 0-1000)
-	LevelVars.CustomBars[dataName].Interval			= 1 / (30)	-- assuming 30 updates per second
-	LevelVars.CustomBars[dataName].ObjectIDbg		= objectIDbg
-	LevelVars.CustomBars[dataName].SpriteIDbg		= spriteIDbg
-	LevelVars.CustomBars[dataName].ColorBG			= colorbg
-	LevelVars.CustomBars[dataName].ObjectIDbar		= objectIDbar
-	LevelVars.CustomBars[dataName].SpriteIDbar		= spriteIDbar
-	LevelVars.CustomBars[dataName].ColorBar			= colorbar
-	LevelVars.CustomBars[dataName].PosX				= posX
-	LevelVars.CustomBars[dataName].PosY				= posY
-	LevelVars.CustomBars[dataName].ScaleX			= scaleX
-	LevelVars.CustomBars[dataName].ScaleY			= scaleY
-	LevelVars.CustomBars[dataName].Rot				= rot
-	LevelVars.CustomBars[dataName].Visible			= true
-	LevelVars.CustomBars[dataName].CurrentAlpha		= 1
-	LevelVars.CustomBars[dataName].TargetAlpha		= 255
-	LevelVars.CustomBars[dataName].AlignMode		= alignMode
-	LevelVars.CustomBars[dataName].ScaleMode		= scaleMode
-	LevelVars.CustomBars[dataName].BlendMode		= blendMode
-	LevelVars.CustomBars[dataName].OldValue			= startvalue  -- stores the current bar value
-	LevelVars.CustomBars[dataName].TargetValue		= startvalue  -- target value to reach
-	
-end
-
-
-
--- Transform object parameter using previously saved timed transform data
-LevelFuncs.Engine.Node.__UpdateCustomBars = function()
-
-	for _, CustomBar in pairs (LevelVars.CustomBars) do
-
-		if CustomBar ~= nil then
-			-- Smoothly transition to target value
-			local currentValue = CustomBar.OldValue or 0
-			local targetValue = CustomBar.TargetValue or 0
-			local delta = CustomBar.FixedInterval
-
-			if currentValue ~= targetValue then
-				-- Update current value by delta (increment or decrement)
-				if currentValue < targetValue then
-					currentValue = math.min(currentValue + delta, targetValue)
-				else
-					currentValue = math.max(currentValue + delta, targetValue)
-				end
-
-				-- Update the bar's progress (0-1 scale)
-				CustomBar.OldValue = currentValue
-				CustomBar.Progress = currentValue / 1000
-			end
-			-- Smoothly transition alpha
-			if CustomBar.CurrentAlpha ~= CustomBar.TargetAlpha then
-				local alphaDelta = 50 -- Adjust speed of alpha transition
-				if CustomBar.CurrentAlpha < CustomBar.TargetAlpha then
-					CustomBar.CurrentAlpha = math.floor(math.min(CustomBar.CurrentAlpha + alphaDelta, CustomBar.TargetAlpha))
-				else
-					CustomBar.CurrentAlpha = math.floor(math.max(CustomBar.CurrentAlpha - alphaDelta, CustomBar.TargetAlpha))
-				end
-			end
-			-- Set up parameters for drawing
-			local pos = TEN.Vec2(CustomBar.PosX, CustomBar.PosY)
-			local scale = TEN.Vec2(CustomBar.ScaleX, CustomBar.ScaleY)
-			local rot = CustomBar.Rot
-			local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(CustomBar.AlignMode)
-			local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(CustomBar.ScaleMode)
-			local blendID = LevelFuncs.Engine.Node.GetBlendMode(CustomBar.BlendMode)
-			
-			-- Adjust color with alpha blending
-			local bgColor =Color(CustomBar.ColorBG.r,CustomBar.ColorBG.g,CustomBar.ColorBG.b,CustomBar.CurrentAlpha)
-			local barColor = Color(CustomBar.ColorBar.r,CustomBar.ColorBar.g,CustomBar.ColorBar.b,CustomBar.CurrentAlpha)
-			
-			-- when Alpha reaches 0 set visibility to false
-			if CustomBar.CurrentAlpha == 0 then
-				CustomBar.Visible = false
-			end
-			
-			--draw bar if alpha is greater than 1 and visibility is true
-			if CustomBar.Visible and CustomBar.CurrentAlpha > 0 then
-				-- Draw background sprite
-				local bgSprite = TEN.DisplaySprite(CustomBar.ObjectIDbg, CustomBar.SpriteIDbg, pos, rot, scale, bgColor)
-				bgSprite:Draw(0, alignM, scaleM, blendID)
-
-				-- Draw foreground sprite (the bar itself) proportional to Progress
-				local barScale = TEN.Vec2(CustomBar.ScaleX * CustomBar.Progress, CustomBar.ScaleY)
-				local barSprite = TEN.DisplaySprite(CustomBar.ObjectIDbar, CustomBar.SpriteIDbar, pos, rot, barScale, barColor)
-				barSprite:Draw(1, alignM, scaleM, blendID)
-				
-				--- Debugging code
-				--local barValue = math.floor(CustomBar.OldValue)
-				--local myTextString = "Bar Value: " .. barValue
-				--local myText = DisplayString(myTextString, CustomBar.PosX, CustomBar.PosY-10, CustomBar.ColorBar)
-				--ShowString(myText,1/30)
-			end
-		end
-	end
-end
-
--- !Name "Draw custom bar"
+-- !Name "Create basic custom bar"
 -- !Section "UI/Hud"
 -- !Conditional "False"
--- !Description "Draw a custom bar."
+-- !Description "Creates a bar with max value 1000."
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
--- !Arguments "Number, 20, {0}, [ 0 | 1000 | 2 ], Start value of bar"
--- !Arguments "Newline, SpriteSlots, 61, Background sprite sequence object ID,, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
--- !Arguments "Number, 19, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
--- !Arguments "Color, 20, Color of background sprite"
--- !Arguments "Newline, SpriteSlots, 61, Bar sprite sequence object ID,, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
--- !Arguments "Number, 19, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{3}"
--- !Arguments "Color, 20, Color of bar sprite"
--- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
--- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
--- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
--- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
--- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
--- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {3}, Align mode"
--- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
--- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
+-- !Arguments "Number, [ 0 | 65535 | 2 ], {0}, 25, Start value of bar"
+-- !Arguments "Number, [ 0 | 65535 | 2 ], {1000}, 25, Max value of bar"
+-- !Arguments "Newline, Number, 33, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 33, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Color, 34, {TEN.Color(255,255,255)}, Color of bar sprite"
 
-LevelFuncs.Engine.Node.DisplayBars = function(barName, startvalue, objectIDbg, spriteIDbg, colorbg, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
--- Wrap another node function call into do/end to prevent wrong parsing
-	do LevelFuncs.Engine.Node.ConstructCustomBar(barName, startvalue, objectIDbg, spriteIDbg, colorbg, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
+LevelFuncs.Engine.Node.BasicBars = function(barName, startvalue, maxValue, posX, posY, colorbar)
+	if barName == "" then
+        TEN.Util.PrintLog("Error in the 'Create basic custom bar' node. No bar name provided", LogLevel.ERROR)
+    else
+		local alignMode = TEN.View.AlignMode.CENTER_LEFT
+		local scaleMode = TEN.View.ScaleMode.FIT
+		local blendMode = TEN.Effects.BlendID.ALPHATEST
+		CustomBar.Create(barName, startvalue, maxValue, 
+		TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC, 0, Color(255,255,255), TEN.Vec2(posX, posY), 0, TEN.Vec2(19.05, 19.1), alignMode, scaleMode, blendMode, 
+		TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC, 1, colorbar, TEN.Vec2(posX+0.15, posY), 0, TEN.Vec2(18.7, 18.48), alignMode, scaleMode, blendMode,
+								barName, TEN.Vec2(posX, posY), {}, 1, colorbar, true, 50, false, 0.25)
 	end
 end
 
+-- !Name "Create advanced custom bar"
+-- !Section "UI/Hud"
+-- !Conditional "False"
+-- !Description "Creates a custom bar."
+-- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
+-- !Arguments "Number, [ 0 | 65535 | 2 ], {0}, 25, Start value of bar"
+-- !Arguments "Number, [ 0 | 65535 | 2 ], {1000}, 25, Max value of bar"
+-- !Arguments "Newline, SpriteSlots, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}, 61, Background sprite sequence object ID"
+-- !Arguments "Number, [ 0 | 9999 | 0 ], {0}, 19, Sprite ID for background in sprite sequence\nRange[0 to 9999]"
+-- !Arguments "Color, {TEN.Color(255,255,255)}, 20, Color of background sprite"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, [ -1000 | 1000 | 2 ], 20, Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, [ 0 | 360 | 2 ], 20, Rotation\nRange [0 to 360]"
+-- !Arguments "Number, [ 0 | 1000 | 2 ], {20}, 20, Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, [ 0 | 1000 | 2 ], {20}, 20, Scale Y (%)\nRange [0 to 1000]"
+-- !Arguments "Newline, SpriteSlots, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}, 61, Bar sprite sequence object ID"
+-- !Arguments "Number, [ 0 | 9999 | 0 ], {1}, 19, Sprite ID for bar in sprite sequence\nRange[0 to 9999]"
+-- !Arguments "Color, {TEN.Color(255,255,255)}, 20, Color of bar sprite"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, [ -1000 | 1000 | 2 ], 20, Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, [ 0 | 360 | 2 ], 20, Rotation\nRange [0 to 360]"
+-- !Arguments "Number, [ 0 | 1000 | 2 ], {20}, 20, Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, [ 0 | 1000 | 2 ], {20}, 20, Scale Y (%)\nRange [0 to 1000]"
+-- !Arguments "NewLine, Enumeration, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {3}, 35, Align mode"
+-- !Arguments "Enumeration, [ Fit | Fill | Stretch ], 22, Scale mode"
+-- !Arguments "Enumeration, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, 28, Blend mode"
+
+LevelFuncs.Engine.Node.DisplayBars = function(barName, startvalue, maxValue, objectIDbg, spriteIDbg, colorbg, posXBG, posYBG, rotBG, scaleXBG, scaleYBG, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
+	if barName == "" then
+        TEN.Util.PrintLog("Error in the 'Create advanced custom bar' node. No bar name provided", LogLevel.ERROR)
+    else
+		CustomBar.Create(barName, startvalue, maxValue,
+					objectIDbg, spriteIDbg, colorbg, TEN.Vec2(posXBG, posYBG), rotBG, TEN.Vec2(scaleXBG, scaleYBG), alignMode, scaleMode, blendMode, 
+					objectIDbar, spriteIDbar, colorbar, TEN.Vec2(posX, posY), rot, TEN.Vec2(scaleX, scaleY), alignMode, scaleMode, blendMode,
+					barName, TEN.Vec2(posX, posY), {}, 1, colorbar, true, 50, false, 0.25)
+	end
+end
 -- !Name "Change custom bar value over time"
 -- !Section "UI/Hud"
 -- !Description "Change bar value over time."
@@ -145,27 +71,33 @@ end
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)"
 
 LevelFuncs.Engine.Node.ChangeBarValueOverTimespan = function(barName, value, time)
+	if barName == "" then
+        TEN.Util.PrintLog("Error in the 'Change custom bar value over time' node. No bar name provided", LogLevel.ERROR)
+    else
+		local dataName	= barName .. "_bar_data"
+		if LevelVars.Engine.CustomBars.bars[dataName] then
+			local bar = CustomBar.Get(barName)
+			bar:ChangeBarValueOverTimespan(value, time)
+		end
+	end
+end
 
-	local dataName = barName .. "_bar_data"
+-- !Name "Set custom bar value over time"
+-- !Section "UI/Hud"
+-- !Description "Set bar value over time."
+-- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
+-- !Arguments "Numerical, [ -1000 | 1000 | 2 | 1 | 1 ], {1}, 25, Value"
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)"
 
-	-- Check if bar data and timer exist
-	if LevelVars.CustomBars[dataName] then
-
-		-- Get the current target value or old value if no target value exists
-		local currentValue = LevelVars.CustomBars[dataName].OldValue
-		local currentTarget = LevelVars.CustomBars[dataName].TargetValue or currentValue
-
-		-- Calculate new target value by adding the relative 'value' and clamp between 0 and 1000
-		local newTargetValue = math.max(0, math.min(1000, currentTarget + value))
-
-		-- Set the new target value
-		LevelVars.CustomBars[dataName].TargetValue = newTargetValue
-
-		-- Calculate total frames based on time and FPS (30 FPS)
-		local totalFrames = time * 30
-
-		-- Calculate the fixed interval for the entire transition
-		LevelVars.CustomBars[dataName].FixedInterval = (newTargetValue - currentValue) / totalFrames
+LevelFuncs.Engine.Node.SetBarValueOverTimespan = function(barName, value, time)
+	if barName == "" then
+        TEN.Util.PrintLog("Error in the 'Set custom bar value over time' node. No bar name provided", LogLevel.ERROR)
+    else
+		local dataName	= barName .. "_bar_data"
+		if LevelVars.Engine.CustomBars.bars[dataName] then
+			local bar = CustomBar.Get(barName)
+			bar:SetBarValue(value, time)
+		end
 	end
 end
 
@@ -175,10 +107,13 @@ end
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Bar name"
 
 LevelFuncs.Engine.Node.DeleteCustomBar = function(barName)
-	local dataName = barName .. "_bar_data"
-
-	if LevelVars.CustomBars[dataName] then
-		LevelVars.CustomBars[dataName] = nil
+	if barName == "" then
+        TEN.Util.PrintLog("Error in the 'Delete custom bar' node. No bar name provided", LogLevel.ERROR)
+    else
+		local dataName	= barName .. "_bar_data"
+		if LevelVars.Engine.CustomBars.bars[dataName] then
+			CustomBar.Delete(barName)
+		end
 	end
 end
 
@@ -189,14 +124,18 @@ end
 -- !Arguments "Enumeration, 30, [ Not visible | Visible ], Visibility"
 
 LevelFuncs.Engine.Node.BarVisibility = function(barName, value)
-	local dataName = barName .. "_bar_data"
-
-	if LevelVars.CustomBars[dataName] then
-		if value == 0 then
-			LevelVars.CustomBars[dataName].TargetAlpha = 0
-		elseif value == 1 then
-			LevelVars.CustomBars[dataName].TargetAlpha = 255
-			LevelVars.CustomBars[dataName].Visible = true
+	if barName == "" then
+        TEN.Util.PrintLog("Error in the 'Show/Hide custom bar' node. No bar name provided", LogLevel.ERROR)
+    else
+		local dataName	= barName .. "_bar_data"
+		if LevelVars.Engine.CustomBars.bars[dataName] then
+			local bar = CustomBar.Get(barName)
+			
+			if value == 0 then
+				bar:SetVisibility(false)
+			elseif value == 1 then
+				bar:SetVisibility(true)
+			end
 		end
 	end
 end
@@ -208,13 +147,17 @@ end
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Bar name"
 
 LevelFuncs.Engine.Node.TestBarVisibility = function(barName)
-	
-	local dataName = barName .. "_bar_data"
-	if LevelVars.CustomBars[dataName] then
-		if LevelVars.CustomBars[dataName].Visible then
-			return true
-		else
-			return false
+	if barName == "" then
+        TEN.Util.PrintLog("Error in the 'If custom bar is visible...' node. No bar name provided", LogLevel.ERROR)
+    else
+		local dataName	= barName .. "_bar_data"
+		if LevelVars.Engine.CustomBars.bars[dataName] then
+			local bar = CustomBar.Get(barName)
+			if bar:IsVisible() then
+				return true
+			else
+				return false
+			end
 		end
 	end
 end
@@ -227,19 +170,17 @@ end
 -- !Arguments "CompareOperator, 25" "Numerical, 25, [ 0 | 1000 | 2 ], Bar value"
 
 LevelFuncs.Engine.Node.TestBarValue = function(barName, operator, value)
-	
-	local dataName = barName .. "_bar_data"
-	
-	if (LevelVars.CustomBars[dataName] == nil) then
-		return LevelFuncs.Engine.Node.CompareValue(0, value, operator)
-	else
-		return LevelFuncs.Engine.Node.CompareValue(LevelVars.CustomBars[dataName].OldValue, value, operator)
+	if barName == "" then
+        TEN.Util.PrintLog("Error in the 'If custom bar value is...' node. No bar name provided", LogLevel.ERROR)
+    else
+		local dataName	= barName .. "_bar_data"
+		if LevelVars.Engine.CustomBars.bars[dataName] then
+			local bar = CustomBar.Get(barName)
+				
+			return LevelFuncs.Engine.Node.CompareValue(bar:GetValue(), value, operator)
+		end
 	end
-	
 end
-
-LevelVars.CustomEnemyBars = {}
-LevelVars.EnemyBars = {}
 
 -- !Name "Draw health bar for all enemies"
 -- !Section "UI/Hud"
@@ -251,10 +192,15 @@ LevelVars.EnemyBars = {}
 -- !Arguments "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Scale" "Color, 20, {TEN.Color(255,255,255)}, Text color"
 -- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
 -- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
--- !Arguments "Color, 20, Color of background sprite"
+-- !Arguments "Color, 20, {TEN.Color(255,255,255)}, Color of background sprite"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
 -- !Arguments "Newline, SpriteSlots, 60, Bar sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
--- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{3}"
--- !Arguments "Color, 20, Color of bar sprite"
+-- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{1}"
+-- !Arguments "Color, 20, {TEN.Color(255,0,0)}, Color of bar sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
@@ -266,32 +212,12 @@ LevelVars.EnemyBars = {}
 -- !Arguments "NewLine, Boolean, 20, Hide text.
 
 -- Construct custom bar for all enemies
-LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(textX, textY, textAlignment, textEffects, textScale, textColor, objectIDbg, spriteIDbg, colorbg, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode, hideText)
-	
+LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(textX, textY, textAlignment, textEffects, textScale, textColor, objectIDbg, spriteIDbg, colorbg, posXBG, posYBG, rotBG, scaleXBG, scaleYBG, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode, hideText)
 
-	LevelVars.EnemyBars.TextX			= textX
-	LevelVars.EnemyBars.TextY			= textY
-	LevelVars.EnemyBars.TextAlignment	= textAlignment
-	LevelVars.EnemyBars.TextEffects		= textEffects
-	LevelVars.EnemyBars.TextScale		= textScale
-	LevelVars.EnemyBars.TextColor		= textColor
-	LevelVars.EnemyBars.ObjectIDbg		= objectIDbg
-	LevelVars.EnemyBars.SpriteIDbg		= spriteIDbg
-	LevelVars.EnemyBars.ColorBG			= colorbg
-	LevelVars.EnemyBars.ObjectIDbar		= objectIDbar
-	LevelVars.EnemyBars.SpriteIDbar		= spriteIDbar
-	LevelVars.EnemyBars.ColorBar		= colorbar
-	LevelVars.EnemyBars.PosX			= posX
-	LevelVars.EnemyBars.PosY			= posY
-	LevelVars.EnemyBars.Rot				= rot
-	LevelVars.EnemyBars.ScaleX			= scaleX
-	LevelVars.EnemyBars.ScaleY			= scaleY
-	LevelVars.EnemyBars.AlignMode		= alignMode
-	LevelVars.EnemyBars.ScaleMode		= scaleMode
-	LevelVars.EnemyBars.BlendMode		= blendMode
-	LevelVars.EnemyBars.HideBar			= true
-	LevelVars.EnemyBars.HideText		= hideText
-	LevelVars.EnemyBars.Status			= true
+	CustomBar.SetEnemiesHpGenericBar(objectIDbg, spriteIDbg, colorbg, TEN.Vec2(posXBG, posYBG), rotBG, TEN.Vec2(scaleXBG, scaleYBG), alignMode, scaleMode, blendMode, 
+								objectIDbar, spriteIDbar, colorbar, TEN.Vec2(posX, posY), rot, TEN.Vec2(scaleX, scaleY), alignMode, scaleMode, blendMode,
+								TEN.Vec2(textX, textY), LevelFuncs.Engine.CustomBar.GenerateStringOption(textAlignment, textEffects),
+								textScale, textColor, hideText, 50, true, 0.25)
 end
 
 -- !Name "Draw health bar for specific enemy"
@@ -305,10 +231,15 @@ end
 -- !Arguments "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Scale" "Color, 20, {TEN.Color(255,255,255)}, Text color"
 -- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
 -- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
--- !Arguments "Color, 20, Color of background sprite"
+-- !Arguments "Color, 20, {TEN.Color(255,255,255)}, olor of background sprite"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
 -- !Arguments "Newline, SpriteSlots, 60, Bar sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
--- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{3}"
--- !Arguments "Color, 20, Color of bar sprite"
+-- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{1}"
+-- !Arguments "Color, 20, {TEN.Color(255,0,0)}, Color of bar sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
@@ -317,166 +248,71 @@ end
 -- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {3}, Align mode"
 -- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
--- !Arguments "Newline, Boolean, 80, Hide health bar when enemy is not targeted."
+-- !Arguments "Newline, Boolean, 80, Show health bar when enemy is not targeted."
 -- !Arguments "Boolean, 20, Hide text.
+LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, textAlignment, textEffects, textScale, textColor, objectIDbg, spriteIDbg, colorbg, posXBG, posYBG, rotBG, scaleXBG, scaleYBG, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode, showBar, hideText)
 
--- Construct custom bar
-LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, textAlignment, textEffects, textScale, textColor, objectIDbg, spriteIDbg, colorbg, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode, hideBar, hideText)
-	local dataName = object .. "_enemybar_data"
+CustomBar.CreateEnemyHpBar(object,
+							objectIDbg, spriteIDbg, colorbg, TEN.Vec2(posXBG, posYBG), rotBG, TEN.Vec2(scaleXBG, scaleYBG), alignMode, scaleMode, blendMode, 
+							objectIDbar, spriteIDbar, colorbar, TEN.Vec2(posX, posY), rot, TEN.Vec2(scaleX, scaleY), alignMode, scaleMode, blendMode,
+							text, TEN.Vec2(textX, textY), LevelFuncs.Engine.CustomBar.GenerateStringOption(textAlignment, textEffects),
+							textScale, textColor,
+							hideText, 50, object, showBar, true, 0.25)
+end
 
-	if LevelVars.CustomEnemyBars[dataName] then
-		return
-	end
-	
-	local enemy = GetMoveableByName(object)
-	local enemyHP = enemy:GetHP()
-	
-	LevelVars.CustomEnemyBars[dataName]					= {}
-	LevelVars.CustomEnemyBars[dataName].Name			= dataName
-	LevelVars.CustomEnemyBars[dataName].Object			= object
-	LevelVars.CustomEnemyBars[dataName].FixedInterval	= 1/3
-	LevelVars.CustomEnemyBars[dataName].ObjectIDbg		= objectIDbg
-	LevelVars.CustomEnemyBars[dataName].SpriteIDbg		= spriteIDbg
-	LevelVars.CustomEnemyBars[dataName].ColorBG			= colorbg
-	LevelVars.CustomEnemyBars[dataName].ObjectIDbar		= objectIDbar
-	LevelVars.CustomEnemyBars[dataName].SpriteIDbar		= spriteIDbar
-	LevelVars.CustomEnemyBars[dataName].ColorBar		= colorbar
-	LevelVars.CustomEnemyBars[dataName].PosX			= posX
-	LevelVars.CustomEnemyBars[dataName].PosY			= posY
-	LevelVars.CustomEnemyBars[dataName].ScaleX			= scaleX
-	LevelVars.CustomEnemyBars[dataName].ScaleY			= scaleY
-	LevelVars.CustomEnemyBars[dataName].Rot				= rot
-	LevelVars.CustomEnemyBars[dataName].Visible			= true
-	LevelVars.CustomEnemyBars[dataName].CurrentAlpha	= 1
-	LevelVars.CustomEnemyBars[dataName].TargetAlpha		= 255
-	LevelVars.CustomEnemyBars[dataName].AlignMode		= alignMode
-	LevelVars.CustomEnemyBars[dataName].ScaleMode		= scaleMode
-	LevelVars.CustomEnemyBars[dataName].BlendMode		= blendMode
-	LevelVars.CustomEnemyBars[dataName].OldValue		= enemyHP  -- start value as the current HP
-	LevelVars.CustomEnemyBars[dataName].TargetValue		= enemyHP -- target value as the current HP
-	LevelVars.CustomEnemyBars[dataName].TotalHP			= enemyHP -- total health (Changed from Slot HP to allow user to set any health using node when activating the enemy)
-	LevelVars.CustomEnemyBars[dataName].Text			= text
-	LevelVars.CustomEnemyBars[dataName].TextX			= textX
-	LevelVars.CustomEnemyBars[dataName].TextY			= textY
-	LevelVars.CustomEnemyBars[dataName].TextAlignment	= textAlignment
-	LevelVars.CustomEnemyBars[dataName].TextEffects		= textEffects
-	LevelVars.CustomEnemyBars[dataName].TextScale		= textScale
-	LevelVars.CustomEnemyBars[dataName].TextColor		= textColor
-	LevelVars.CustomEnemyBars[dataName].HideBar			= hideBar
-	LevelVars.CustomEnemyBars[dataName].HideText		= hideText
+-- !Name "Create bars for Lara stats."
+-- !Section "UI/Hud"
+-- !Conditional "False"
+-- !Description "Draw bar for Lara stats."
+-- !Arguments "NewLine, Enumeration, 100, [ Health | Air | Sprint ], {0}, Bar Type"
+-- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
+-- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
+-- !Arguments "Color, 20, {TEN.Color(255,255,255)}, Color of background sprite"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
+-- !Arguments "Newline, SpriteSlots, 60, Bar sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
+-- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{1}"
+-- !Arguments "Color, {TEN.Color(255,0,0)}, 20, Color of bar sprite"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
+-- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {3}, Align mode"
+-- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
+-- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
+-- !Arguments "Newline, Boolean, 50, Show stat bar always."
+-- !Arguments "Boolean, 50, Blink."
+LevelFuncs.Engine.Node.ConstructLaraBar = function(bartype, objectIDbg, spriteIDbg, colorbg, posXBG, posYBG, rotBG, scaleXBG, scaleYBG, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode, showBar,blink)
+
+local operand = bartype+1
+
+CustomBar.CreateLaraBar(objectIDbg, spriteIDbg, colorbg, TEN.Vec2(posXBG, posYBG), rotBG, TEN.Vec2(scaleXBG, scaleYBG), alignMode, scaleMode, blendMode, 
+					objectIDbar, spriteIDbar, colorbar, TEN.Vec2(posX, posY), rot, TEN.Vec2(scaleX, scaleY),alignMode, scaleMode, blendMode,
+					50, operand, showBar, blink, 0.25)
+
 end
 
 -- !Name "Start/Stop enemy health bars."
 -- !Section "UI/Hud"
 -- !Description "Starts or Stops the enemy health bars."
 -- !Arguments "Enumeration, 30, [ Stop | Start ], Status"
+-- !Arguments "NewLine, Boolean , Hide existing bars"
 
-LevelFuncs.Engine.Node.EnemyHealthBarStatus = function(value)
-
-	if LevelVars.EnemyBars then
-		if value == 0 then
-			LevelVars.EnemyBars.Status = false
-		elseif value == 1 then
-			LevelVars.EnemyBars.Status = true
-		end
+LevelFuncs.Engine.Node.EnemyHealthBarStatus = function(value, hideBars)
+	if value == 0 then
+		CustomBar.ShowEnemiesHpGenericBar(false)
+	elseif value == 1 then
+		CustomBar.ShowEnemiesHpGenericBar(true)
+	end
+	if hideBars then
+		CustomBar.DeleteExistingHpGenericBars()
 	end
 end
 
--- Update enemy bars
-LevelFuncs.Engine.Node.__UpdateEnemyBars = function()
-	--add dynamic bar to the table based on target
-	
-	local playerTarget = Lara:GetTarget()
-	if playerTarget ~= nil and LevelVars.EnemyBars.Status==true then
-		local playerTargetName = playerTarget:GetName()
-		local displayName = LevelFuncs.Engine.Node.SplitString(playerTargetName, "_")
-		do LevelFuncs.Engine.Node.ConstructEnemyBar(playerTargetName, displayName[1], LevelVars.EnemyBars.TextX, LevelVars.EnemyBars.TextY, LevelVars.EnemyBars.TextAlignment, LevelVars.EnemyBars.TextEffects, LevelVars.EnemyBars.TextScale, LevelVars.EnemyBars.TextColor, LevelVars.EnemyBars.ObjectIDbg, LevelVars.EnemyBars.SpriteIDbg, LevelVars.EnemyBars.ColorBG, LevelVars.EnemyBars.ObjectIDbar, LevelVars.EnemyBars.SpriteIDbar, LevelVars.EnemyBars.ColorBar, LevelVars.EnemyBars.PosX, LevelVars.EnemyBars.PosY, LevelVars.EnemyBars.Rot, LevelVars.EnemyBars.ScaleX, LevelVars.EnemyBars.ScaleY, LevelVars.EnemyBars.AlignMode, LevelVars.EnemyBars.ScaleMode, LevelVars.EnemyBars.BlendMode, LevelVars.EnemyBars.HideBar, LevelVars.EnemyBars.HideText)
-		end
-	end
-	
-	for _, CustomEBar in pairs(LevelVars.CustomEnemyBars) do
-		
-		if CustomEBar ~= nil then
-			
-			-- Smoothly transition to target value
-			local enemy = GetMoveableByName(CustomEBar.Object)
-			local currentHP = enemy:GetHP()
-			local totalHP = CustomEBar.TotalHP
-			local delta = CustomEBar.FixedInterval
-
-			-- Update the bar's progress (0-1 scale) based on current health and total health
-			CustomEBar.Progress = math.max(0, math.min(currentHP / totalHP, 1))
-			
-			-- Check if the player is targeting this enemy
-			if CustomEBar.HideBar == true then
-				
-				if playerTarget == nil or playerTarget ~= enemy then
-				-- Set TargetAlpha to 0 if this enemy is not the player's current target
-					CustomEBar.TargetAlpha = 1
-				else
-				-- Restore TargetAlpha to full if this enemy is the player's current target
-					CustomEBar.TargetAlpha = 255
-				end
-			end
-			
-			-- Smoothly transition alpha
-			if CustomEBar.CurrentAlpha ~= CustomEBar.TargetAlpha then
-				local alphaDelta = 50 -- Adjust speed of alpha transition
-				if CustomEBar.CurrentAlpha < CustomEBar.TargetAlpha then
-					CustomEBar.CurrentAlpha = math.floor(math.min(CustomEBar.CurrentAlpha + alphaDelta, CustomEBar.TargetAlpha))
-				else
-					CustomEBar.CurrentAlpha = math.floor(math.max(CustomEBar.CurrentAlpha - alphaDelta, CustomEBar.TargetAlpha))
-				end
-			end
-
-			-- Set up parameters for drawing
-			local pos = TEN.Vec2(CustomEBar.PosX, CustomEBar.PosY)
-			local scale = TEN.Vec2(CustomEBar.ScaleX, CustomEBar.ScaleY)
-			local rot = CustomEBar.Rot
-			local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(CustomEBar.AlignMode)
-			local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(CustomEBar.ScaleMode)
-			local blendID = LevelFuncs.Engine.Node.GetBlendMode(CustomEBar.BlendMode)
-			
-			-- Adjust color with alpha blending
-			local bgColor = Color(CustomEBar.ColorBG.r, CustomEBar.ColorBG.g, CustomEBar.ColorBG.b, CustomEBar.CurrentAlpha)
-			local barColor = Color(CustomEBar.ColorBar.r, CustomEBar.ColorBar.g, CustomEBar.ColorBar.b, CustomEBar.CurrentAlpha)
-			local textColor = Color(CustomEBar.TextColor.r, CustomEBar.TextColor.g, CustomEBar.TextColor.b, CustomEBar.CurrentAlpha)
-			
-			-- When HP reaches 0 then set target alpha = 0
-			if currentHP <= 0 then
-				CustomEBar.TargetAlpha = 0
-			end
-			
-			-- When Alpha reaches 0 set visibility to false
-			if CustomEBar.CurrentAlpha == 0 then
-				CustomEBar.Visible = false
-				LevelVars.CustomEnemyBars[CustomEBar.Name] = nil
-			end
-
-			-- Draw bar if alpha is greater than 1 and visibility is true
-			if CustomEBar.Visible and CustomEBar.CurrentAlpha > 1 then
-				-- Draw background sprite
-				local bgSprite = TEN.DisplaySprite(CustomEBar.ObjectIDbg, CustomEBar.SpriteIDbg, pos, rot, scale, bgColor)
-				bgSprite:Draw(0, alignM, scaleM, blendID)
-
-				-- Draw foreground sprite (the bar itself) proportional to Progress
-				local barScale = TEN.Vec2(CustomEBar.ScaleX * CustomEBar.Progress, CustomEBar.ScaleY)
-				local barSprite = TEN.DisplaySprite(CustomEBar.ObjectIDbar, CustomEBar.SpriteIDbar, pos, rot, barScale, barColor)
-				barSprite:Draw(1, alignM, scaleM, blendID)
-				
-				if CustomEBar.HideText == false then
-					-- Draw text (enemy name and health)
-					local enemyText = tostring(CustomEBar.Text) --debug text	 .. " (" .. currentHP .. " / " .. totalHP .. ")"
-					local myText = LevelFuncs.Engine.Node.GenerateString(enemyText, CustomEBar.TextX, CustomEBar.TextY, CustomEBar.TextScale, CustomEBar.TextAlignment, CustomEBar.TextEffects, textColor)
-					ShowString(myText, 1/30)
-				end
-			end
-		end
-	end
-end
-
-TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.Node.__UpdateCustomBars)
-TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRELOOP, LevelFuncs.Engine.Node.__UpdateEnemyBars)
 
 --Code for Ammo Counter
 LevelVars.AmmoCounter = {}
@@ -511,7 +347,7 @@ LevelVars.AmmoCounter.AmmoName = {
 -- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
 
-LevelFuncs.Engine.Node.ShowAmmoCounter = function(displayType, color, alignment, posX, posY, scale, effect, unlimited, swap, sprite, objectIDammo, colorbar, spritePosX, spritePosY, rot, spriteScaleX, spriteScaleY, alignMode, scaleMode, blendMode)
+LevelFuncs.Engine.Node.ShowAmmoCounter = function(displayType, color, alignment, posX, posY, scale, effect, unlimited, swap, sprite, objectIDammo, spriteColor, spritePosX, spritePosY, rot, spriteScaleX, spriteScaleY, alignMode, scaleMode, blendMode)
 	LevelVars.AmmoCounter.DisplayType	= displayType
 	LevelVars.AmmoCounter.Color			= color
 	LevelVars.AmmoCounter.Alignment		= alignment
@@ -566,4 +402,3 @@ LevelFuncs.Engine.Node.__ShowAmmoCounter = function()
 		end
 	end
 end
--- This is a test
