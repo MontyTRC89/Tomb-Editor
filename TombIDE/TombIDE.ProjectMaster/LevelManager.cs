@@ -27,6 +27,7 @@ namespace TombIDE.ProjectMaster
 		public void Initialize(IDE ide)
 		{
 			_ide = ide;
+			_ide.IDEEventRaised += IDE_IDEEventRaised;
 
 			switch (_ide.Project.GameVersion)
 			{
@@ -42,6 +43,12 @@ namespace TombIDE.ProjectMaster
 
 			section_LevelList.Initialize(ide);
 			section_LevelProperties.Initialize(ide);
+		}
+
+		private void IDE_IDEEventRaised(IIDEEvent obj)
+		{
+			if (obj is IDE.BeginEngineUpdateEvent)
+				BeginEngineUpdate();
 		}
 
 		private void UpdateVersionLabel()
@@ -148,6 +155,9 @@ namespace TombIDE.ProjectMaster
 		}
 
 		private void button_Update_Click(object sender, EventArgs e)
+			=> BeginEngineUpdate();
+
+		private void BeginEngineUpdate()
 		{
 			switch (_ide.Project.GameVersion)
 			{
@@ -179,6 +189,14 @@ namespace TombIDE.ProjectMaster
 
 			if (result is not DialogResult.Yes)
 				return;
+
+			string engineDirectoryPath = Path.Combine(_ide.Project.DirectoryPath, "Engine");
+
+			if (!Directory.Exists(engineDirectoryPath))
+			{
+				DarkMessageBox.Show(this, "Couldn't locate \"Engine\" directory. Updating is not supported for your project structure.", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 
 			try
 			{
@@ -230,6 +248,14 @@ namespace TombIDE.ProjectMaster
 
 			if (result is not DialogResult.Yes)
 				return;
+
+			string engineDirectoryPath = Path.Combine(_ide.Project.DirectoryPath, "Engine");
+
+			if (!Directory.Exists(engineDirectoryPath))
+			{
+				DarkMessageBox.Show(this, "Couldn't locate \"Engine\" directory. Updating is not supported for your project structure.", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 
 			try
 			{

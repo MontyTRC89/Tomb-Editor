@@ -24,13 +24,13 @@ namespace TombLib.LevelData
         OnSaveGame,
         OnLevelStart,
         OnLevelEnd,
-        OnUseItem
+        OnUseItem,
+        OnFreeze
     }
 
     public class Event : ICloneable, IEquatable<Event>
     {
         private const int _noCallCounter = -1;
-        private const int _callStateMask = short.MaxValue;
 
         public EventSetMode Mode = EventSetMode.NodeEditor;
         public string Function { get; set; } = string.Empty;
@@ -57,6 +57,7 @@ namespace TombLib.LevelData
 
             evt.Argument = Argument;
             evt.Function = Function;
+            evt.Enabled = Enabled;
             evt.CallCounter = CallCounter;
             evt.Mode = Mode;
             evt.NodePosition = NodePosition;
@@ -72,6 +73,7 @@ namespace TombLib.LevelData
                 Mode == other.Mode &&
                 Function == other.Function &&
                 Argument == other.Argument &&
+                Enabled == other.Enabled &&
                 CallCounter == other.CallCounter &&
                 NodePosition == other.NodePosition &&
                 Nodes.Count == other.Nodes.Count &&
@@ -108,7 +110,8 @@ namespace TombLib.LevelData
             }
 
             int callCount = (CallCounter != 0 ? CallCounter : _noCallCounter);
-            writer.Write(Enabled ? callCount : callCount - _callStateMask);
+            writer.Write(callCount);
+            writer.Write(Enabled);
         }
     }
 

@@ -438,7 +438,7 @@
             "Tomb Raider 3 (tomb3)",
             "Tomb Raider 4 (Original TRLE)",
             "Tomb Raider Next-Generation",
-            "Tomb Engine (Beta)"});
+            "Tomb Engine"});
 			this.comboBox_EngineType.Location = new System.Drawing.Point(0, 210);
 			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBox_EngineType.Name = "comboBox_EngineType";

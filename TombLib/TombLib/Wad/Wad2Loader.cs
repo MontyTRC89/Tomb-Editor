@@ -642,7 +642,8 @@ namespace TombLib.Wad
                                 });
                                 animation.StateChanges.Add(stateChange);
                             }
-                            else if (id3 == Wad2Chunks.AnimCommand)
+                            else if (id3 == Wad2Chunks.AnimCommand ||
+                                     id3 == Wad2Chunks.AnimCommand2)
                             {
                                 var command = new WadAnimCommand();
                                 long offset = chunkIO.Raw.BaseStream.Position;
@@ -650,6 +651,14 @@ namespace TombLib.Wad
                                 command.Parameter1 = LEB128.ReadShort(chunkIO.Raw);
                                 command.Parameter2 = LEB128.ReadShort(chunkIO.Raw);
                                 command.Parameter3 = LEB128.ReadShort(chunkIO.Raw);
+
+                                // Convert legacy sound and flipeffect condition bitpacking to separate field to free up space
+                                // and account for TEN's new sound condition types.
+                                if (id3 == Wad2Chunks.AnimCommand &&
+                                    (command.Type == WadAnimCommandType.FlipEffect || command.Type == WadAnimCommandType.PlaySound))
+                                {
+                                    command.ConvertLegacyConditions();
+                                }
 
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {

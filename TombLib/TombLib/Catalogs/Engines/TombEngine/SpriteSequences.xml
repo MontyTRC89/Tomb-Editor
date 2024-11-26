@@ -23,8 +23,6 @@
     <sprite_sequence id="1377" name="SFX_BAR_TEXTURE" />
     <sprite_sequence id="1380" name="CROSSHAIR" />
     <sprite_sequence id="1381" name="SPEEDOMETER" />
-	<sprite_sequence id="1382" name="BLOOD_SPLASH_SPRITES_1" />
-	<sprite_sequence id="1383" name="BLOOD_SPLASH_SPRITE_2" />
-	<sprite_sequence id="1384" name="BLOOD_SPLASH_SPRITE_3" />
-	<sprite_sequence id="1385" name="BLOOD_DRIP_SPRITE" />
+	<sprite_sequence id="1382" name="CUSTOM_BAR_GRAPHIC" />
+	<sprite_sequence id="1383" name="CUSTOM_AMMO_GRAPHIC" />
 </sprite_sequences>

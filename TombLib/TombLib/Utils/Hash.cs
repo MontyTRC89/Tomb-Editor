@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 
 namespace TombLib.Utils
 {
@@ -26,5 +27,28 @@ namespace TombLib.Utils
         }
 
         public static Hash Zero => new Hash() { HashHigh = 0, HashLow = 0 };
+    }
+
+    public class Checksum
+    {
+        public static int Calculate(byte[] data)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                // Compute the SHA-256 hash
+                byte[] hash = sha256.ComputeHash(data);
+
+                // Reduce the 256-bit hash to a 32-bit integer by XORing 4-byte chunks
+                int checksum = 0;
+                for (int i = 0; i < hash.Length; i += 4)
+                {
+                    // Combine each 4-byte segment into an integer and XOR it with checksum
+                    int segment = BitConverter.ToInt32(hash, i);
+                    checksum ^= segment;
+                }
+
+                return checksum;
+            }
+        }
     }
 }

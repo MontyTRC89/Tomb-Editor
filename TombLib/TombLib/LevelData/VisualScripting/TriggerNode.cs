@@ -22,7 +22,6 @@ namespace TombLib.LevelData.VisualScripting
         public static int DefaultSize = 400;
 
         public string Name { get; set; } = string.Empty;
-        public Vector2 ScreenPosition { get; set; } = Vector2.Zero;
         public int Size { get; set; } = DefaultSize;
         public Vector3 Color { get; set; } = Vector3.Zero;
         public bool Locked { get; set; } = false;
@@ -32,6 +31,21 @@ namespace TombLib.LevelData.VisualScripting
 
         public TriggerNode Previous { get; set; }
         public TriggerNode Next { get; set; }
+
+
+        public Vector2 ScreenPosition 
+        { 
+            get {  return _screenPosition; }
+            set
+            {
+                // Don't update value if it went out of bounds (happens on layout update).
+                if (value.X < 0 || value.X > 256 || value.Y < 0 || value.Y > 256)
+                    return;
+
+                _screenPosition = value;
+            }
+        }
+        private Vector2 _screenPosition = Vector2.Zero;
 
         public virtual TriggerNode Clone()
         {

@@ -255,7 +255,7 @@ namespace TombEditor
         public Size Window_FormMemo_Size { get; set; } = new Size(350, 200);
         public bool Window_FormMemo_Maximized { get; set; } = false;
         public Point Window_FormEventSetEditor_Position { get; set; } = new Point(-1); // Center by default
-        public Size Window_FormEventSetEditor_Size { get; set; } = new Size(780, 460);
+        public Size Window_FormEventSetEditor_Size { get; set; } = new Size(930, 460);
         public bool Window_FormEventSetEditor_Maximized { get; set; } = false;
         public int Window_FormEventSetEditor_SplitterDistance { get; set; } = 250;
 

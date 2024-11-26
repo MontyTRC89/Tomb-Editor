@@ -305,49 +305,40 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
                     {
+                        _animCommands.Add((int)command.Type);
+
                         switch (command.Type)
                         {
                             case WadAnimCommandType.SetPosition:
-                                _animCommands.Add(0x01);
-
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
                                 _animCommands.Add(command.Parameter3);
-
                                 break;
-
+								
                             case WadAnimCommandType.SetJumpDistance:
-                                _animCommands.Add(0x02);
-
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
-
                                 break;
 
                             case WadAnimCommandType.EmptyHands:
-                                _animCommands.Add(0x03);
-
                                 break;
 
                             case WadAnimCommandType.KillEntity:
-                                _animCommands.Add(0x04);
-
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                _animCommands.Add(0x05);
-
-                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(command.Parameter2)));
-
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
+                                _animCommands.Add(command.Parameter2);
+                                _animCommands.Add(command.Parameter3);
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
-                                _animCommands.Add(0x06);
-
-                                _animCommands.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
                                 _animCommands.Add(command.Parameter2);
+                                break;
 
+                            case WadAnimCommandType.DisableInterpolation:
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
                                 break;
                         }
                     }
