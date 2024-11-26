@@ -315,7 +315,7 @@ namespace TombLib.Wad
 
                                 foreach (var command in animation.AnimCommands)
                                 {
-                                    chunkIO.WriteChunkWithChildren(Wad2Chunks.AnimCommand, () =>
+                                    chunkIO.WriteChunkWithChildren(Wad2Chunks.AnimCommand2, () =>
                                     {
                                         LEB128.Write(chunkIO.Raw, (ushort)command.Type);
                                         LEB128.Write(chunkIO.Raw, command.Parameter1);

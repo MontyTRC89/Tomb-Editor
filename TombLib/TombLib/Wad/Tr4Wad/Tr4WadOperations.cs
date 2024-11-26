@@ -416,6 +416,9 @@ namespace TombLib.Wad.Tr4Wad
                                 if (newAnimation.EndFrame == 0 && command.Parameter1 > 0)
                                     command.Parameter1 = 0;
 
+                                // Convert animcommand conditions to a separate field.
+                                command.ConvertLegacyConditions();
+
                                 lastCommand += 3;
                                 break;
 

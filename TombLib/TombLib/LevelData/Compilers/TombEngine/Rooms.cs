@@ -162,7 +162,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
                 ReverbInfo = room.Properties.Reverberation,
-                Flags = 0x40
+                Flags = 0
             };
 
             if (!room.Alternated)
@@ -180,6 +180,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newRoom.Flags |= 0x0008;
             if (room.Properties.FlagOutside)
                 newRoom.Flags |= 0x0020;
+
+            // Not-near-horizon flag (set automatically)
+            if (!room.Properties.FlagHorizon && !room.Portals.Any(p => p.Room.Properties.FlagHorizon))
+                newRoom.Flags |= 0x0040;
 
             // TRNG-specific flags
             if (room.Properties.FlagDamage)
@@ -1307,7 +1311,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public readonly int SlopeZ;
             public readonly int Height;
 
-            // TODO: This method yields odd results when SlopeX and SlopeZ are in world units. Please review, but until then, we use clicks here.
             public int EvaluateHeight(int x, int z)
             {
                 return Height + x * SlopeX + z * SlopeZ;
@@ -1439,8 +1442,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
-                        // TODO: Please review. Should we really use clicks here?
-                        SectorSurface s = isCeiling ? sector.Ceiling.WorldToClicks() : sector.Floor.WorldToClicks();
+                        SectorSurface s = isCeiling ? sector.Ceiling : sector.Floor;
 
                         if (s.DiagonalSplit != DiagonalSplit.None || SectorSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
                         {
@@ -1496,11 +1498,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 float zMin = portalArea.Y0 * Level.SectorSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.SectorSizeUnit;
 
-                // TODO: We are using clicks here, but shouldn't we use world coordinates instead? Please review EvaluateHeight().
-                float yAtXMinZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0));
-                float yAtXMaxZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0));
-                float yAtXMinZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1));
-                float yAtXMaxZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1));
+                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
+                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
+                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
+                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
 
                 // Choose portal coordinates
                 VectorInt3[] portalVertices = new VectorInt3[4];
@@ -1858,20 +1859,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var vertex = room.Vertices[i];
                 var normalHelpers = vertex.NormalHelpers;
+
+                if (normalHelpers.Count == 0)
+                    continue;
+
                 var normal = Vector3.Zero;
+                var referenceNormal = normalHelpers[0].Polygon.Normal; // Use the first polygon's normal as a reference
 
                 for (int j = 0; j < normalHelpers.Count; j++)
                 {
-                    var normalHelper = normalHelpers[j];
+                    var currentNormal = normalHelpers[j].Polygon.Normal;
 
-                    // WARNING: we need to flip normal because it was calculated with Y negative up
-                    normal += -normalHelper.Polygon.Normal;
+                    // Check the angle (dot product) between the current normal and the reference normal
+                    if (Vector3.Dot(referenceNormal, currentNormal) < 0)
+                    {
+                        // Flip the normal if it's in the opposite direction
+                        currentNormal = -currentNormal;
+                    }
+
+                    normal += currentNormal;
                 }
 
-                if (normalHelpers.Count > 0)
-                {
-                    normal = Vector3.Normalize(normal / (float)normalHelpers.Count);
-                }
+                // Normalize the final averaged normal
+                normal = -Vector3.Normalize(normal);
 
                 for (int j = 0; j < normalHelpers.Count; j++)
                 {

@@ -5711,8 +5711,8 @@ namespace TombEditor
                     foreach (var anim in item.Value.Animations)
                         foreach (var cmd in anim.AnimCommands)
                             if (cmd.Type == WadAnimCommandType.PlaySound)
-                                if (!settings.SelectedSounds.Contains(cmd.Parameter2 & 0xFFF))
-                                    settings.SelectedSounds.Add(cmd.Parameter2 & 0xFFF);
+                                if (!settings.SelectedSounds.Contains(cmd.Parameter2))
+                                    settings.SelectedSounds.Add(cmd.Parameter2);
         }
 
         public static void AssignTriggerSounds(LevelSettings settings)

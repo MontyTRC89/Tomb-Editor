@@ -39,7 +39,6 @@ namespace TombEditor.Forms
             toolTip = new ToolTip(components);
             cbEnableVolume = new DarkCheckBox();
             cbAdjacentRooms = new DarkCheckBox();
-            cbEnableEvent = new DarkCheckBox();
             darkLabel1 = new DarkLabel();
             tbName = new DarkTextBox();
             darkLabel2 = new DarkLabel();
@@ -63,7 +62,7 @@ namespace TombEditor.Forms
             butCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             butCancel.Checked = false;
             butCancel.DialogResult = DialogResult.Cancel;
-            butCancel.Location = new System.Drawing.Point(678, 391);
+            butCancel.Location = new System.Drawing.Point(828, 391);
             butCancel.Name = "butCancel";
             butCancel.Size = new System.Drawing.Size(80, 23);
             butCancel.TabIndex = 2;
@@ -75,7 +74,7 @@ namespace TombEditor.Forms
             // 
             butOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             butOk.Checked = false;
-            butOk.Location = new System.Drawing.Point(592, 391);
+            butOk.Location = new System.Drawing.Point(742, 391);
             butOk.Name = "butOk";
             butOk.Size = new System.Drawing.Size(80, 23);
             butOk.TabIndex = 1;
@@ -145,7 +144,7 @@ namespace TombEditor.Forms
             panelList.Location = new System.Drawing.Point(3, 3);
             panelList.Name = "panelList";
             panelList.SectionHeader = null;
-            panelList.Size = new System.Drawing.Size(215, 377);
+            panelList.Size = new System.Drawing.Size(258, 377);
             panelList.TabIndex = 22;
             // 
             // dgvEvents
@@ -163,7 +162,7 @@ namespace TombEditor.Forms
             dgvEvents.Name = "dgvEvents";
             dgvEvents.ReadOnly = true;
             dgvEvents.RowHeadersWidth = 41;
-            dgvEvents.Size = new System.Drawing.Size(207, 341);
+            dgvEvents.Size = new System.Drawing.Size(250, 341);
             dgvEvents.TabIndex = 0;
             dgvEvents.UseAlternativeDragDropMethod = true;
             dgvEvents.ColumnHeaderMouseClick += dgvEvents_ColumnHeaderMouseClick;
@@ -180,7 +179,7 @@ namespace TombEditor.Forms
             darkPanel1.Dock = DockStyle.Top;
             darkPanel1.Location = new System.Drawing.Point(1, 1);
             darkPanel1.Name = "darkPanel1";
-            darkPanel1.Size = new System.Drawing.Size(213, 30);
+            darkPanel1.Size = new System.Drawing.Size(256, 30);
             darkPanel1.TabIndex = 1;
             // 
             // butSearch
@@ -188,7 +187,7 @@ namespace TombEditor.Forms
             butSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             butSearch.Checked = false;
             butSearch.Image = Properties.Resources.general_search_16;
-            butSearch.Location = new System.Drawing.Point(157, 3);
+            butSearch.Location = new System.Drawing.Point(200, 3);
             butSearch.Name = "butSearch";
             butSearch.Size = new System.Drawing.Size(23, 23);
             butSearch.TabIndex = 26;
@@ -200,7 +199,7 @@ namespace TombEditor.Forms
             butUnassignEventSet.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             butUnassignEventSet.Checked = false;
             butUnassignEventSet.Image = Properties.Resources.actions_delete_16;
-            butUnassignEventSet.Location = new System.Drawing.Point(186, 3);
+            butUnassignEventSet.Location = new System.Drawing.Point(229, 3);
             butUnassignEventSet.Name = "butUnassignEventSet";
             butUnassignEventSet.Size = new System.Drawing.Size(23, 23);
             butUnassignEventSet.TabIndex = 25;
@@ -251,7 +250,7 @@ namespace TombEditor.Forms
             triggerManager.Location = new System.Drawing.Point(1, 1);
             triggerManager.Name = "triggerManager";
             triggerManager.Padding = new Padding(2, 2, 2, 1);
-            triggerManager.Size = new System.Drawing.Size(531, 310);
+            triggerManager.Size = new System.Drawing.Size(638, 310);
             triggerManager.TabIndex = 0;
             // 
             // lblActivators
@@ -286,17 +285,6 @@ namespace TombEditor.Forms
             toolTip.SetToolTip(cbAdjacentRooms, "Detects volume interaction if activator resides in adjacent rooms");
             cbAdjacentRooms.CheckedChanged += cbAdjacentRooms_CheckedChanged;
             // 
-            // cbEnableEvent
-            // 
-            cbEnableEvent.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            cbEnableEvent.Location = new System.Drawing.Point(471, 10);
-            cbEnableEvent.Name = "cbEnableEvent";
-            cbEnableEvent.Size = new System.Drawing.Size(63, 17);
-            cbEnableEvent.TabIndex = 36;
-            cbEnableEvent.Text = "Enabled";
-            toolTip.SetToolTip(cbEnableEvent, "Indicates if selected event is enabled by default");
-            cbEnableEvent.CheckedChanged += cbEnableEvent_CheckedChanged;
-            // 
             // darkLabel1
             // 
             darkLabel1.AutoSize = true;
@@ -313,7 +301,7 @@ namespace TombEditor.Forms
             tbName.Location = new System.Drawing.Point(89, 7);
             tbName.Name = "tbName";
             tbName.SelectOnClick = true;
-            tbName.Size = new System.Drawing.Size(167, 22);
+            tbName.Size = new System.Drawing.Size(349, 22);
             tbName.TabIndex = 28;
             tbName.Validated += tbName_Validated;
             // 
@@ -322,7 +310,7 @@ namespace TombEditor.Forms
             darkLabel2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             darkLabel2.AutoSize = true;
             darkLabel2.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel2.Location = new System.Drawing.Point(262, 11);
+            darkLabel2.Location = new System.Drawing.Point(442, 10);
             darkLabel2.Name = "darkLabel2";
             darkLabel2.Size = new System.Drawing.Size(38, 13);
             darkLabel2.TabIndex = 29;
@@ -332,7 +320,7 @@ namespace TombEditor.Forms
             // 
             cbEvents.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cbEvents.FormattingEnabled = true;
-            cbEvents.Location = new System.Drawing.Point(300, 7);
+            cbEvents.Location = new System.Drawing.Point(480, 6);
             cbEvents.Name = "cbEvents";
             cbEvents.Size = new System.Drawing.Size(161, 23);
             cbEvents.TabIndex = 30;
@@ -346,7 +334,7 @@ namespace TombEditor.Forms
             panelEditor.Location = new System.Drawing.Point(1, 35);
             panelEditor.Name = "panelEditor";
             panelEditor.SectionHeader = null;
-            panelEditor.Size = new System.Drawing.Size(533, 312);
+            panelEditor.Size = new System.Drawing.Size(640, 312);
             panelEditor.TabIndex = 31;
             // 
             // splitContainer
@@ -362,7 +350,6 @@ namespace TombEditor.Forms
             // 
             // splitContainer.Panel2
             // 
-            splitContainer.Panel2.Controls.Add(cbEnableEvent);
             splitContainer.Panel2.Controls.Add(panelActivators);
             splitContainer.Panel2.Controls.Add(darkLabel1);
             splitContainer.Panel2.Controls.Add(panelEditor);
@@ -370,8 +357,8 @@ namespace TombEditor.Forms
             splitContainer.Panel2.Controls.Add(tbName);
             splitContainer.Panel2.Controls.Add(darkLabel2);
             splitContainer.Panel2MinSize = 512;
-            splitContainer.Size = new System.Drawing.Size(762, 387);
-            splitContainer.SplitterDistance = 219;
+            splitContainer.Size = new System.Drawing.Size(912, 387);
+            splitContainer.SplitterDistance = 262;
             splitContainer.TabIndex = 32;
             splitContainer.SplitterMoved += splitContainer_SplitterMoved;
             // 
@@ -387,14 +374,14 @@ namespace TombEditor.Forms
             panelActivators.Location = new System.Drawing.Point(1, 350);
             panelActivators.Name = "panelActivators";
             panelActivators.SectionHeader = null;
-            panelActivators.Size = new System.Drawing.Size(533, 30);
+            panelActivators.Size = new System.Drawing.Size(640, 30);
             panelActivators.TabIndex = 35;
             // 
             // FormEventSetEditor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(764, 421);
+            ClientSize = new System.Drawing.Size(914, 421);
             Controls.Add(cbAdjacentRooms);
             Controls.Add(cbEnableVolume);
             Controls.Add(splitContainer);
@@ -402,7 +389,7 @@ namespace TombEditor.Forms
             Controls.Add(butOk);
             KeyPreview = true;
             MinimizeBox = false;
-            MinimumSize = new System.Drawing.Size(780, 460);
+            MinimumSize = new System.Drawing.Size(930, 460);
             Name = "FormEventSetEditor";
             ShowIcon = false;
             ShowInTaskbar = false;
@@ -450,6 +437,5 @@ namespace TombEditor.Forms
         private DarkCheckBox cbEnableVolume;
         private DarkCheckBox cbAdjacentRooms;
         private DarkSectionPanel panelActivators;
-        private DarkCheckBox cbEnableEvent;
     }
 }
