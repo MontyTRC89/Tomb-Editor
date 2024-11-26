@@ -949,9 +949,8 @@ namespace TombEditor
 
         public static void RebuildLightsForObject(ObjectInstance instance)
         {
-            if (instance is LightInstance ||
-               (instance is ObjectGroup && ((ObjectGroup)instance).Any(o => o is LightInstance)))
-                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            instance.Room.DetermineChunksForRelight(instance); // wonky
+            instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
         }
 
         public static DarkForm GetObjectSetupWindow(params object[] args)
