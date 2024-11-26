@@ -47,13 +47,15 @@ namespace TombLib.LevelData
         public SortedList<SectorFaceIdentity, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorFaceIdentity, VertexRange>();
         public bool GeometryDirty { get; set; } = true;
         public bool LightingDirty { get; set; } = true;
+        public Room Room { get; private set; }
 
         // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
-        public RoomGeometry(in RectangleInt2 area)
+        public RoomGeometry(Room r, in RectangleInt2 area)
         {
             this.Area = area;
+            this.Room = r;
         }
-        public void Build(Room room, bool useLegacyCode = false)
+        public void Build(bool useLegacyCode = false)
         {
             VertexPositions.Clear();
             VertexEditorUVs.Clear();
@@ -68,6 +70,7 @@ namespace TombLib.LevelData
             int zMin = Area.Y0;
             int xMax = Area.X1;
             int zMax = Area.Y1;
+            Room room = Room;
             Sector[,] sectors = room.Sectors;
 
             // Build face polygons
@@ -1196,12 +1199,12 @@ namespace TombLib.LevelData
             return Vector3.Zero;
         }
 
-        public void Relight(Room room, bool highQuality = false)
+        public void Relight(bool highQuality = false)
         {
             // Collect lights
             // check against all lights is negligible, since we already set LightingDirty Flag with a intersectin test
             // So just collect all lights
-            var lights = room.Objects.OfType<LightInstance>().ToArray();
+            var lights = Room.Objects.OfType<LightInstance>().ToArray();
 
             // Calculate lighting
             for (int i = 0; i < VertexPositions.Count; i += 3)
@@ -1214,12 +1217,12 @@ namespace TombLib.LevelData
                 for (int j = 0; j < 3; ++j)
                 {
                     var position = VertexPositions[i + j];
-                    Vector3 color = room.Properties.AmbientLight * 128;
+                    Vector3 color = Room.Properties.AmbientLight * 128;
 
                     foreach (var light in lights) // No Linq here because it's slow
                     {
                         if (light.IsStaticallyUsed)
-                            color += CalculateLightForVertex(room, light, position, normal, true, highQuality);
+                            color += CalculateLightForVertex(Room, light, position, normal, true, highQuality);
                     }
 
                     // Apply color

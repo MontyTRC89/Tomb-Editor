@@ -349,7 +349,8 @@ namespace TombEditor.Controls.Panel3D
                     Engaged = false;
                     Dragged = false;
                     _parent._editor.HighlightedSectors = SectorSelection.None;
-                    _parent._renderingCachedRooms.Remove(ReferenceRoom); // To update highlight state
+                        foreach(var geo in ReferenceRoom.RoomGeometry)
+                            _parent._renderingCachedRooms.Remove(geo); // To update highlight state
                 }
             }
 
@@ -379,7 +380,8 @@ namespace TombEditor.Controls.Panel3D
                     Dragged = true;
                     if (highlightSelection)
                         _parent._editor.HighlightedSectors = _parent._editor.SelectedSectors;
-                    _parent._renderingCachedRooms.Remove(ReferenceRoom); // To update highlight state
+                    foreach(var geo in ReferenceRoom.RoomGeometry.Where(g => g.Area.Intersects(_parent._editor.SelectedSectors.Area)))
+                        _parent._renderingCachedRooms.Remove(geo); // To update highlight state
                     return delta;
                 }
                 else

@@ -106,7 +106,7 @@ namespace TombEditor.Controls.Panel3D
             }
         }
 
-        List<RenderingDrawingRoom> CacheRoom(Room room)
+        RenderingDrawingRoom CacheRoom(RoomGeometry geometry)
         {
             var sectorTextures = new SectorTextureDefault
             {
@@ -117,25 +117,25 @@ namespace TombEditor.Controls.Panel3D
                 HideHiddenRooms = DisablePickingForHiddenRooms
             };
 
-            if (_editor.SelectedRoom == room)
+            if (_editor.SelectedRoom == geometry.Room)
             {
                 sectorTextures.HighlightArea = _editor.HighlightedSectors.Area;
                 sectorTextures.SelectionArea = _editor.SelectedSectors.Area;
                 sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
             }
 
-            return room.RoomGeometry.Select(geo => Device.CreateDrawingRoom(new RenderingDrawingRoom.Description() {
-                Room = room,
+            return Device.CreateDrawingRoom( new RenderingDrawingRoom.Description()
+            {
+                Room = geometry.Room,
                 TextureAllocator = _renderingTextures,
-                Geometry = geo,
+                Geometry = geometry,
                 SectorTextureGet = sectorTextures.Get
-            })).ToList();
+            });
         }
 
-        void DisposeRoom(IList<RenderingDrawingRoom> cached)
+        void DisposeRoom(RenderingDrawingRoom cached)
         {
-            foreach(var proxy in cached)
-                proxy.Dispose();
+            cached.Dispose();
         }
     }
 }

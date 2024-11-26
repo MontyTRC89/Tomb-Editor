@@ -1907,9 +1907,8 @@ namespace TombEditor.Controls.Panel3D
 
             // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
-            foreach (Room room in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden))
-                foreach(var renderProxy in _renderingCachedRooms[room])
-                    renderProxy.Render(renderArgs);
+            foreach (var geo in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden).SelectMany(r => r.RoomGeometry))
+                    _renderingCachedRooms[geo].Render(renderArgs);
 
             // Determine if selection should be visible or not.
             var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
@@ -1984,9 +1983,8 @@ namespace TombEditor.Controls.Panel3D
             {
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
-                foreach (Room room in hiddenRooms)
-                    foreach(var renderProxy in _renderingCachedRooms[room])
-                        renderProxy.Render(renderArgs);
+                foreach (var geo in hiddenRooms.SelectMany(r => r.RoomGeometry))
+                    _renderingCachedRooms[geo].Render(renderArgs);
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             }
 

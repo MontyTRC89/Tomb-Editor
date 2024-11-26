@@ -233,7 +233,7 @@ namespace TombLib.LevelData
                     Debug.Assert(chunkWidth > 0);
                     Debug.Assert(chunkHeight > 0);
                     var chunkArea = new RectangleInt2(chunkX, chunkZ, chunkX + chunkWidth - 1, chunkZ + chunkHeight - 1);
-                    var chunkGeo = new RoomGeometry(chunkArea);
+                    var chunkGeo = new RoomGeometry(this, chunkArea);
                     RoomGeometry[idx] = chunkGeo;
                     for (int sectorX = chunkX; sectorX < chunkX + chunkWidth; ++sectorX)
                         for (int sectorZ = chunkZ; sectorZ < chunkZ + chunkHeight; ++sectorZ)
@@ -965,10 +965,10 @@ namespace TombLib.LevelData
         public void Rebuild(bool relight, bool highQualityLighting)
         {
             RoomGeometry.AsParallel().Where(geo => geo.LightingDirty || geo.GeometryDirty).ForAll(geo => {
-                geo.Build(this);
+                geo.Build();
                 if (relight)
                 {
-                    geo.Relight(this, highQualityLighting);
+                    geo.Relight(highQualityLighting);
                 }
             });
 
@@ -980,12 +980,12 @@ namespace TombLib.LevelData
 
         public void BuildGeometry(bool useLegacyCode = false)
         {
-            RoomGeometry.AsParallel().Where(geo => geo.GeometryDirty).ForAll(geo => geo.Build(this));
+            RoomGeometry.AsParallel().Where(geo => geo.GeometryDirty).ForAll(geo => geo.Build(useLegacyCode));
         }
 
         public void RebuildLighting(bool highQualityLighting)
         {
-            RoomGeometry.AsParallel().Where(geo => geo.LightingDirty).ForAll(geo => geo.Relight(this, highQualityLighting));
+            RoomGeometry.AsParallel().Where(geo => geo.LightingDirty).ForAll(geo => geo.Relight(highQualityLighting));
         }
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
