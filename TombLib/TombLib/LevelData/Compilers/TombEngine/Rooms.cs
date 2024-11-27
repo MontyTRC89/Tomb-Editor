@@ -1864,24 +1864,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     continue;
 
                 var normal = Vector3.Zero;
-                var referenceNormal = normalHelpers[0].Polygon.Normal; // Use the first polygon's normal as a reference
 
+                // WARNING: we need to flip normal because it was calculated with Y negative up
                 for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var currentNormal = normalHelpers[j].Polygon.Normal;
+                    normal += normalHelpers[j].Polygon.Normal;
 
-                    // Check the angle (dot product) between the current normal and the reference normal
-                    if (Vector3.Dot(referenceNormal, currentNormal) < 0)
+                normal = -Vector3.Normalize(normal);
+
+                // FAILSAFE: In case normal is NaN, average again with reference normal
+                if (float.IsNaN(normal.X) || float.IsNaN(normal.Y) || float.IsNaN(normal.Z))
+                {
+                    normal = Vector3.Zero;
+
+                    // Use the first polygon's normal as a reference
+                    var referenceNormal = normalHelpers[0].Polygon.Normal;
+
+                    for (int j = 0; j < normalHelpers.Count; j++)
                     {
-                        // Flip the normal if it's in the opposite direction
-                        currentNormal = -currentNormal;
+                        var currentNormal = normalHelpers[j].Polygon.Normal;
+                        if (Vector3.Dot(referenceNormal, currentNormal) < 0)
+                            currentNormal = -currentNormal;
+
+                        normal += currentNormal;
                     }
 
-                    normal += currentNormal;
+                    normal = -Vector3.Normalize(normal);
                 }
-
-                // Normalize the final averaged normal
-                normal = -Vector3.Normalize(normal);
 
                 for (int j = 0; j < normalHelpers.Count; j++)
                 {
