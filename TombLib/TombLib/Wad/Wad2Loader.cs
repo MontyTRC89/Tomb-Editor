@@ -6,6 +6,7 @@ using System.Numerics;
 using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -730,6 +731,9 @@ namespace TombLib.Wad
                 if (id == Wad2Chunks.Static)
                     legacyLightingType = LEB128.ReadShort(chunkIO.Raw);
 
+                // HACK: shatter options (pre-1.7.3)
+                bool shatterSoundSet = false;
+
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     if (id2 == Wad2Chunks.StaticVisibilityBox)
@@ -768,6 +772,13 @@ namespace TombLib.Wad
                         s.Mesh = LoadMesh(chunkIO, chunkSize2, textures);
                     else if (id2 == Wad2Chunks.StaticAmbientLight)
                         s.AmbientLight = chunkIO.ReadChunkShort(chunkSize2);
+                    else if (id2 == Wad2Chunks.StaticShatterSound)
+                        s.ShatterSoundID = chunkIO.ReadChunkInt(chunkSize2);
+                    else if (id2 == Wad2Chunks.StaticShatter)
+                    {
+                        s.Shatter = chunkIO.ReadChunkBool(chunkSize2);
+                        shatterSoundSet = true;
+                    }
                     else if (id2 == Wad2Chunks.StaticLight)
                     {
                         var light = new WadLight();
@@ -795,6 +806,10 @@ namespace TombLib.Wad
                 // HACK: Restore legacy pre-1.3.12 lighting type if needed
                 if (legacyLightingType != -1)
                     s.Mesh.LightingType = (WadMeshLightingType)legacyLightingType;
+
+                // HACK: Set default shatter parameters, if they were not set
+                if (!shatterSoundSet)
+                    s.Shatter = TrCatalog.IsStaticShatterable(wad.GameVersion, s.Id.TypeId);
 
                 wad.Statics.Add(s.Id, s);
                 return true;

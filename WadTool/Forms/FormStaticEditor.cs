@@ -9,6 +9,8 @@ using TombLib.Graphics;
 using TombLib.Wad;
 using WadTool.Controls;
 using TombLib.Utils;
+using System.Linq;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -36,6 +38,9 @@ namespace WadTool
             _static = staticMesh.Clone();
             panelRendering.InitializeRendering(tool, deviceManager);
 
+            cmbSoundID.Items.Add("Default");
+            cmbSoundID.Items.AddRange(WadSounds.GetFormattedList(_tool.ReferenceLevel, _wad.GameVersion).ToArray());
+
             panelRendering.Configuration = _tool.Configuration;
             panelRendering.Static = _static;
             panelRendering.DrawGrid = true;
@@ -46,6 +51,7 @@ namespace WadTool
             UpdatePositionUI();
             UpdateLightsList();
             UpdateLightUI();
+            UpdateShatterUI();
 
             numAmbient.Value = (decimal)_static.AmbientLight;
 
@@ -241,6 +247,27 @@ namespace WadTool
             }
 
             comboLightType.SelectedIndex = (int)_static.Mesh.LightingType;
+        }
+
+        public void UpdateShatterUI()
+        {
+            if (_wad.GameVersion != TombLib.LevelData.TRVersion.Game.TombEngine)
+            {
+                cmbSoundID.Enabled = 
+                butPlay.Enabled = 
+                cbShatterable.Enabled = 
+                butResetShatterAttribs.Enabled = false;
+            }
+            else
+            {
+                cbShatterable.Enabled =
+                butResetShatterAttribs.Enabled = true;
+                cmbSoundID.Enabled = cbShatterable.Checked;
+                butPlay.Enabled = (_tool.ReferenceLevel != null) && cbShatterable.Checked;
+            }
+
+            cbShatterable.Checked = _static.Shatter;
+            cmbSoundID.SelectedIndex = cmbSoundID.Items.Count - 1 > _static.ShatterSoundID ? _static.ShatterSoundID + 1 : -1;
         }
 
         private void numIntensity_ValueChanged(object sender, EventArgs e)
@@ -505,7 +532,7 @@ namespace WadTool
 
         private void comboLightType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboLightType.SelectedIndex==(int)WadMeshLightingType.Normals)
+            if (comboLightType.SelectedIndex == (int)WadMeshLightingType.Normals)
             {
                 _static.Mesh.LightingType = WadMeshLightingType.Normals;
                 _static.Lights.Clear();
@@ -535,14 +562,12 @@ namespace WadTool
 
         private void nudPosX_ValueChanged(object sender, EventArgs e)
         {
-
             panelRendering.StaticPosition = new Vector3((float)nudPosX.Value, panelRendering.StaticPosition.Y, panelRendering.StaticPosition.Z);
             panelRendering.Invalidate();
         }
 
         private void nudPosY_ValueChanged(object sender, EventArgs e)
         {
-
             panelRendering.StaticPosition = new Vector3(panelRendering.StaticPosition.X, (float)nudPosY.Value, panelRendering.StaticPosition.Z);
             panelRendering.Invalidate();
         }
@@ -569,7 +594,6 @@ namespace WadTool
 
         private void butClearCollisionBox_Click(object sender, EventArgs e)
         {
-
             _static.CollisionBox = new BoundingBox();
             UpdateCollisionBoxUI();
             panelRendering.Invalidate();
@@ -593,6 +617,41 @@ namespace WadTool
         {
             if (e.Button == MouseButtons.Left)
                 EditMesh();
+        }
+
+        private void cbShatterable_CheckedChanged(object sender, EventArgs e)
+        {
+            _static.Shatter = cbShatterable.Checked;
+            UpdateShatterUI();
+        }
+
+        private void cmbSoundID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbSoundID.SelectedIndex == -1)
+                return;
+
+            _static.ShatterSoundID = cmbSoundID.SelectedIndex - 1;
+        }
+
+        private void butPlay_Click(object sender, EventArgs e)
+        {
+            if (_tool.ReferenceLevel == null || _tool.ReferenceLevel.Settings.GlobalSoundMap.Count == 0)
+                return;
+
+            // HACK: Old shatter sound is hardcoded in both original engines and TEN.
+            int soundID = cmbSoundID.SelectedIndex > 0 ? cmbSoundID.SelectedIndex - 1 : 347;
+
+            var soundInfo = _tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == soundID);
+            if (soundInfo != null)
+                try { WadSoundPlayer.PlaySoundInfo(_tool.ReferenceLevel, soundInfo); }
+                catch (Exception) { }
+        }
+
+        private void butResetShatterAttribs_Click(object sender, EventArgs e)
+        {
+            _static.Shatter = TrCatalog.IsStaticShatterable(_wad.GameVersion, _static.Id.TypeId);
+            _static.ShatterSoundID = -1;
+            UpdateShatterUI();
         }
     }
 }
