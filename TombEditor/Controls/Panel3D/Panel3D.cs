@@ -288,8 +288,12 @@ namespace TombEditor.Controls.Panel3D
                 var value = (Editor.ObjectChangedEvent)obj;
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
                 {
-                    foreach (var geo in value.Object.Room.RoomGeometry)
+                    value.Object.Room.DetermineChunksForRelight(value.Object);
+                    foreach (var geo in value.Object.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
+                    {
+                        geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _renderingCachedRooms.Remove(geo);
+                    }
                 }
             }
 
