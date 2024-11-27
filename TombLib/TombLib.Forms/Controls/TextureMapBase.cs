@@ -174,13 +174,13 @@ namespace TombLib.Controls
             }
         }
 
-        protected virtual SelectionPrecisionType GetSelectionPrecision()
+        protected virtual SelectionPrecisionType GetSelectionPrecision(bool singleVertexMovement = false)
         {
             if (ModifierKeys.HasFlag(Keys.Alt))
                 return new SelectionPrecisionType(0.0f, false);
             else if (ModifierKeys.HasFlag(Keys.Control))
                 return new SelectionPrecisionType(1.0f, false);
-            else if (ModifierKeys.HasFlag(Keys.Shift))
+            else if (ModifierKeys.HasFlag(Keys.Shift) || (singleVertexMovement && TileSelectionSize >= 16.0f))
                 return new SelectionPrecisionType(16.0f, false);
             else
                 return new SelectionPrecisionType(TileSelectionSize, true);
@@ -188,21 +188,24 @@ namespace TombLib.Controls
 
         protected virtual float MaxTextureSize { get; } = 256;
 
-        private Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool rectangularSelection)
+        private Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool singleVertexMovement = false)
         {
-            var selectionPrecision = GetSelectionPrecision();
+            var selectionPrecision = GetSelectionPrecision(singleVertexMovement);
+
             if (selectionPrecision.Precision == 0.0f)
                 return texCoord;
 
             texCoord /= selectionPrecision.Precision;
-            if (rectangularSelection)
+
+            if (singleVertexMovement)
+                texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
+            else
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
                     endY ? (float)Math.Ceiling(texCoord.Y) : (float)Math.Floor(texCoord.Y));
             }
-            else
-                texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
+
             texCoord *= selectionPrecision.Precision;
 
             // Clamp texture coordinate to image bounds
@@ -213,8 +216,8 @@ namespace TombLib.Controls
 
         private void SetRectangularTextureWithMouse(Vector2 texCoordStart, Vector2 texCoordEnd)
         {
-            Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y, true);
-            Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y), true);
+            Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y);
+            Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y));
 
             texCoordEndQuantized = Vector2.Min(texCoordStartQuantized + new Vector2(MaxTextureSize),
                 Vector2.Max(texCoordStartQuantized - new Vector2(MaxTextureSize), texCoordEndQuantized));
@@ -378,7 +381,7 @@ namespace TombLib.Controls
                         {
                             currentTexture.SetTexCoord(_selectedTexCoordIndex.Value,
                                 Vector2.Min(texCoordMaxBounds, Vector2.Max(texCoordMinBounds,
-                                    Quantize(newTextureCoord, (i & 1) != 0, (i & 2) != 0, false))));
+                                    Quantize(newTextureCoord, (i & 1) != 0, (i & 2) != 0, true))));
 
                             float area = Math.Abs(currentTexture.QuadArea);
                             if (area < minArea)
@@ -697,7 +700,7 @@ namespace TombLib.Controls
             {
                 if (!(VisibleTexture?.IsAvailable ?? false))
                     return;
-                
+
                 if (_selectedTexture == value)
                     return;
                 _selectedTexture = value;
