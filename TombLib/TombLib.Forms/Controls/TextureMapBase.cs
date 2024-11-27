@@ -46,8 +46,16 @@ namespace TombLib.Controls
         private static readonly Brush textureSelectionBrushTriangle = new SolidBrush(Color.FromArgb(33, textureSelectionPenTriangle.Color.R, textureSelectionPenTriangle.Color.G, textureSelectionPenTriangle.Color.B));
         private static readonly Brush textureSelectionBrushSelection = Brushes.DeepSkyBlue;
         private const float textureSelectionPointWidth = 6.0f;
-        private const float textureSelectionPointSelectionRadius = 13.0f;
         private const float viewMargin = 10;
+
+        private float TextureSelectionPointSelectionRadius => TileSelectionSize switch
+        {
+            <= 2.0f => 1.0f,
+            <= 4.0f => 2.0f,
+            <= 8.0f => 4.0f,
+            <= 16.0f => 8.0f,
+            _ => 12.0f
+        };
 
         private readonly DarkScrollBarC _hScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Horizontal };
         private readonly DarkScrollBarC _vScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Vertical };
@@ -166,13 +174,13 @@ namespace TombLib.Controls
             }
         }
 
-        protected virtual SelectionPrecisionType GetSelectionPrecision(bool rectangularSelection)
+        protected virtual SelectionPrecisionType GetSelectionPrecision(bool singleVertexMovement = false)
         {
             if (ModifierKeys.HasFlag(Keys.Alt))
                 return new SelectionPrecisionType(0.0f, false);
             else if (ModifierKeys.HasFlag(Keys.Control))
                 return new SelectionPrecisionType(1.0f, false);
-            else if (ModifierKeys.HasFlag(Keys.Shift) == rectangularSelection)
+            else if (ModifierKeys.HasFlag(Keys.Shift) || (singleVertexMovement && TileSelectionSize >= 16.0f))
                 return new SelectionPrecisionType(16.0f, false);
             else
                 return new SelectionPrecisionType(TileSelectionSize, true);
@@ -180,21 +188,24 @@ namespace TombLib.Controls
 
         protected virtual float MaxTextureSize { get; } = 256;
 
-        private Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool rectangularSelection)
+        private Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool singleVertexMovement = false)
         {
-            var selectionPrecision = GetSelectionPrecision(rectangularSelection);
+            var selectionPrecision = GetSelectionPrecision(singleVertexMovement);
+
             if (selectionPrecision.Precision == 0.0f)
                 return texCoord;
 
             texCoord /= selectionPrecision.Precision;
-            if (selectionPrecision.Precision >= 8.0f && rectangularSelection)
+
+            if (singleVertexMovement)
+                texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
+            else
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
                     endY ? (float)Math.Ceiling(texCoord.Y) : (float)Math.Floor(texCoord.Y));
             }
-            else
-                texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
+
             texCoord *= selectionPrecision.Precision;
 
             // Clamp texture coordinate to image bounds
@@ -205,8 +216,8 @@ namespace TombLib.Controls
 
         private void SetRectangularTextureWithMouse(Vector2 texCoordStart, Vector2 texCoordEnd)
         {
-            Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y, true);
-            Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y), true);
+            Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y);
+            Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y));
 
             texCoordEndQuantized = Vector2.Min(texCoordStartQuantized + new Vector2(MaxTextureSize),
                 Vector2.Max(texCoordStartQuantized - new Vector2(MaxTextureSize), texCoordEndQuantized));
@@ -302,7 +313,7 @@ namespace TombLib.Controls
                             var coords = SelectedTexture.TexCoords;
 
                             var sortedCoords = coords
-                                .Where(coord => Vector2.Distance(coord, mousePos) < textureSelectionPointSelectionRadius)
+                                .Where(coord => Vector2.Distance(coord, mousePos) < TextureSelectionPointSelectionRadius)
                                 .OrderBy(coord => Vector2.Distance(coord, mousePos))
                                 .ToList();
 
@@ -370,7 +381,7 @@ namespace TombLib.Controls
                         {
                             currentTexture.SetTexCoord(_selectedTexCoordIndex.Value,
                                 Vector2.Min(texCoordMaxBounds, Vector2.Max(texCoordMinBounds,
-                                    Quantize(newTextureCoord, (i & 1) != 0, (i & 2) != 0, false))));
+                                    Quantize(newTextureCoord, (i & 1) != 0, (i & 2) != 0, true))));
 
                             float area = Math.Abs(currentTexture.QuadArea);
                             if (area < minArea)
@@ -418,7 +429,7 @@ namespace TombLib.Controls
             {
                 case MouseButtons.Left:
                     if (_startPos.HasValue)
-                        if (GetSelectionPrecision(true).SelectFullTileAutomatically)
+                        if (GetSelectionPrecision().SelectFullTileAutomatically)
                             SetRectangularTextureWithMouse(_startPos.Value, FromVisualCoord(e.Location));
                     break;
             }
@@ -689,7 +700,7 @@ namespace TombLib.Controls
             {
                 if (!(VisibleTexture?.IsAvailable ?? false))
                     return;
-                
+
                 if (_selectedTexture == value)
                     return;
                 _selectedTexture = value;
