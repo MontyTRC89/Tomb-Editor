@@ -186,38 +186,17 @@ end
 -- !Section "UI/Hud"
 -- !Conditional "False"
 -- !Description "Draw health bar for all enemies."
--- !Arguments "NewLine, Numerical, 15, X position, [ 0 | 100 ]" "Numerical, 15, Y position, [ 0 | 100 ]"
--- !Arguments "NewLine, Enumeration, 20, [ Left | Center | Right ], Horizontal alignment of text"
--- !Arguments "Enumeration, 40, [ Flat | Shadow | Blinking | Shadow + Blinking ], Text Effects"
--- !Arguments "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Scale" "Color, 20, {TEN.Color(255,255,255)}, Text color"
--- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
--- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
--- !Arguments "Color, 20, {TEN.Color(255,255,255)}, Color of background sprite"
--- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
--- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
--- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
--- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
--- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
--- !Arguments "Newline, SpriteSlots, 60, Bar sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
--- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{1}"
--- !Arguments "Color, 20, {TEN.Color(255,0,0)}, Color of bar sprite"
--- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
--- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
--- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
--- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
--- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
--- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {3}, Align mode"
--- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
--- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
--- !Arguments "NewLine, Boolean, 20, Hide text.
+-- !Arguments "Newline, Number, 25, {78.6}, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 25,{12}, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Color, 25, {TEN.Color(255,0,0)}, Color of bar"
 
 -- Construct custom bar for all enemies
-LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(textX, textY, textAlignment, textEffects, textScale, textColor, objectIDbg, spriteIDbg, colorbg, posXBG, posYBG, rotBG, scaleXBG, scaleYBG, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode, hideText)
+LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(posX, posY, colorbar)
 
-	CustomBar.SetEnemiesHpGenericBar(objectIDbg, spriteIDbg, colorbg, TEN.Vec2(posXBG, posYBG), rotBG, TEN.Vec2(scaleXBG, scaleYBG), alignMode, scaleMode, blendMode, 
-								objectIDbar, spriteIDbar, colorbar, TEN.Vec2(posX, posY), rot, TEN.Vec2(scaleX, scaleY), alignMode, scaleMode, blendMode,
-								TEN.Vec2(textX, textY), LevelFuncs.Engine.CustomBar.GenerateStringOption(textAlignment, textEffects),
-								textScale, textColor, hideText, 50, true, 0.25)
+	CustomBar.SetEnemiesHpGenericBar(TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC, 0, TEN.Color(255,255,255), TEN.Vec2(posX, posY), 0, TEN.Vec2(19.05, 19.1), 3, 0, 9, 
+	TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC, 1, colorbar, TEN.Vec2(posX+.15, posY), 0, TEN.Vec2(18.7, 18.48), 3, 0, 9,
+								TEN.Vec2(0, 0), {},
+								1, Color(0,0,0), true, 50, true, 0.25)
 end
 
 -- !Name "Create bars for Lara stats."
