@@ -18,7 +18,7 @@ LevelFuncs.Engine.Node.MoveableLight = function(moveable, meshnumber, lightcolor
 	TEN.Effects.EmitLight(offset,lightcolor, range, shadow, name)
 end
 
--- !Name "Add dynamic light to static"
+-- !Name "Add point light to static"
 -- !Section "Dynamic lights"
 -- !Description "Add a dynamic light to a static object."
 -- !Description "Updated for TombEngine Version 1.6 and above."
