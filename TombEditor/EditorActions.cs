@@ -840,6 +840,8 @@ namespace TombEditor
             if (instance == null)
                 return;
 
+            var oldPosition = instance.Position;
+            var oldSectorPosition = instance.SectorPosition;
             // Limit movement precision
             if (precision.X > 0.0f && pos.X != instance.Position.X)
                 pos.X = (float)Math.Round(pos.X / precision.X) * precision.X;
@@ -865,10 +867,10 @@ namespace TombEditor
 
             // Update position
             instance.Position = pos;
-
             // Update state
             RebuildLightsForObject(instance);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
+            _editor.MoveObject(instance, instance.Room, oldPosition, pos, oldSectorPosition, instance.SectorPosition);
         }
 
         public static void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)

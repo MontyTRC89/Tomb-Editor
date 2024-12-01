@@ -283,13 +283,26 @@ namespace TombEditor.Controls.Panel3D
                             _renderingCachedRooms.Remove(geo);
             }
 
-            if (obj is Editor.ObjectChangedEvent)
+            if (obj is IEditorObjectChangedEvent)
             {
-                var value = (Editor.ObjectChangedEvent)obj;
+                var value = (IEditorObjectChangedEvent)obj;
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
                 {
                     value.Object.Room.DetermineChunksForRelight(value.Object);
                     foreach (var geo in value.Object.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
+                    {
+                        geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        _renderingCachedRooms.Remove(geo);
+                    }
+                }
+            }
+
+            if (obj is IEditorObjectMovedEvent movedEvent)
+            {
+                if (movedEvent.Object is LightInstance light)
+                {
+                    movedEvent.Room.DetermineChunksForMovedLight(light,movedEvent.OldPosition,movedEvent.NewPosition);
+                    foreach (var geo in movedEvent.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
                     {
                         geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _renderingCachedRooms.Remove(geo);

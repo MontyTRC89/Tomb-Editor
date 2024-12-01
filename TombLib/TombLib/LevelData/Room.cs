@@ -234,6 +234,7 @@ namespace TombLib.LevelData
                     Debug.Assert(chunkHeight > 0);
                     var chunkArea = new RectangleInt2(chunkX, chunkZ, chunkX + chunkWidth - 1, chunkZ + chunkHeight - 1);
                     var chunkGeo = new RoomGeometry(this, chunkArea);
+                    chunkGeo.Build();
                     RoomGeometry[idx] = chunkGeo;
                     for (int sectorX = chunkX; sectorX < chunkX + chunkWidth; ++sectorX)
                         for (int sectorZ = chunkZ; sectorZ < chunkZ + chunkHeight; ++sectorZ)
@@ -2210,7 +2211,7 @@ namespace TombLib.LevelData
         {
             List<RoomGeometry> affectedChunks = new List<RoomGeometry>(8);
             IEnumerable<LightInstance> lights = GetLightsFromObject(instance);
-            
+
             foreach (var light in lights)
                 if (light.Type == LightType.Sun)
                     affectedChunks.AddRange(RoomGeometry);
@@ -2230,6 +2231,39 @@ namespace TombLib.LevelData
                         }
                         if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(light.Position, light.OuterRange * 1024)))
                             affectedChunks.Add(geo);
+                    }
+
+            foreach (var chunk in affectedChunks)
+                chunk.LightingDirty = true;
+        }
+
+        public void DetermineChunksForMovedLight(LightInstance instance, in Vector3 oldPosition, in Vector3 newPosition)
+        {
+            List<RoomGeometry> affectedChunks = new List<RoomGeometry>(8);
+            IEnumerable<LightInstance> lights = GetLightsFromObject(instance);
+
+            foreach (var light in lights)
+                if (light.Type == LightType.Sun)
+                    affectedChunks.AddRange(RoomGeometry);
+                else
+                    foreach (var geo in RoomGeometry)
+                    {
+                        var areaWorld = geo.Area;
+                        var bbMin = new Vector3(areaWorld.X0, 0, areaWorld.Y0) * Level.SectorSizeUnit;
+                        var bbMax = new Vector3(areaWorld.X1, 1, areaWorld.Y1) * Level.SectorSizeUnit;
+                        if (light.Type == LightType.Effect)
+                        {
+                            // treat effects as point lights with small radius
+                            if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(oldPosition.X, 0.5f, oldPosition.Z), 1024)))
+                                affectedChunks.Add(geo);
+                            if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(newPosition.X,0.5f,newPosition.Z), 1024)))
+                                affectedChunks.Add(geo);
+
+                        }
+                        if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(oldPosition.X, 0.5f, oldPosition.Z), light.OuterRange * 1024)))
+                            { affectedChunks.Add(geo); }
+                        if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(newPosition.X, 0.5f, newPosition.Z), light.OuterRange * 1024)))
+                            { affectedChunks.Add(geo); }
                     }
 
             foreach (var chunk in affectedChunks)
