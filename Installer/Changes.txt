@@ -16,6 +16,7 @@ Tomb Editor:
  * Added TEN node to remove moveable effect.
  * Added TEN nodes to get and set moveable collision state.
  * Added TEN nodes to get and set hit points for a shatterable static mesh.
+ * Split flyby sequence path in case cut camera flag is present.
  
 WadTool:
  * Added ability to customize static mesh shatter attributes for TEN wads.

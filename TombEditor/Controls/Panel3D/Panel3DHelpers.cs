@@ -91,7 +91,7 @@ namespace TombEditor.Controls.Panel3D
         private bool AddFlybyPath(int sequence)
         {
             // Collect all flyby cameras
-            List<FlybyCameraInstance> flybyCameras = new List<FlybyCameraInstance>();
+            var flybyCameras = new List<FlybyCameraInstance>();
 
             foreach (var room in _editor.Level.ExistingRooms)
                 foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
@@ -107,43 +107,63 @@ namespace TombEditor.Controls.Panel3D
             // Sort cameras
             flybyCameras.Sort((x, y) => x.Number.CompareTo(y.Number));
 
-            // Calculate spline path
-            var camList = flybyCameras.Select(cam => cam.Position + cam.Room.WorldPos).ToList();
-            var pointList = Spline.Calculate(camList, flybyCameras.Count * _flybyPathSmoothness);
-
-            // Construct vertex array
-            List<SolidVertex> vertices = new List<SolidVertex>();
-
+            // Initialize variables for vertex buffer preparation
+            var vertices = new List<SolidVertex>();
             var startColor = new Vector4(0.8f, 1.0f, 0.8f, 1.0f);
             var endColor = new Vector4(1.0f, 0.8f, 0.8f, 1.0f);
-
             float th = _flybyPathThickness;
-            for (int i = 0; i < pointList.Count - 1; i++)
+
+            // Process flyby cameras to calculate paths
+            var camList = new List<Vector3>();
+            for (int i = 0; i < flybyCameras.Count; i++)
             {
-                var color = Vector4.Lerp(startColor, endColor, i / (float)pointList.Count);
+                var cam = flybyCameras[i];
+                camList.Add(cam.Position + cam.Room.WorldPos);
 
-                var points = new List<Vector3[]>()
+                // Check for a sequence cut or the end of the list
+                bool isCut = (cam.Flags & (1 << 7)) != 0 && i + 1 < flybyCameras.Count && flybyCameras[i + 1].Number == cam.Timer;
+                bool isLast = i == flybyCameras.Count - 1;
+
+                if (isCut || isLast)
                 {
-                    new Vector3[]
+                    // Calculate the spline path for the current segment
+                    var pointList = Spline.Calculate(camList, camList.Count * _flybyPathSmoothness);
+
+                    // Add vertices for the current path segment
+                    for (int j = 0; j < pointList.Count - 1; j++)
                     {
-                        pointList[i],
-                        new Vector3(pointList[i].X + th, pointList[i].Y + th, pointList[i].Z + th),
-                        new Vector3(pointList[i].X - th, pointList[i].Y + th, pointList[i].Z + th)
-                    },
-                    new Vector3[]
-                    {
-                        pointList[i],
-                        new Vector3(pointList[i + 1].X + th, pointList[i + 1].Y + th, pointList[i + 1].Z + th),
-                        new Vector3(pointList[i + 1].X - th, pointList[i + 1].Y + th, pointList[i + 1].Z + th)
+                        var color = Vector4.Lerp(startColor, endColor, j / (float)pointList.Count);
+                        var points = new List<Vector3[]>()
+                        {
+                            new Vector3[]
+                            {
+                                pointList[j],
+                                new Vector3(pointList[j].X + th, pointList[j].Y + th, pointList[j].Z + th),
+                                new Vector3(pointList[j].X - th, pointList[j].Y + th, pointList[j].Z + th)
+                            },
+                            new Vector3[]
+                            {
+                                pointList[j + 1],
+                                new Vector3(pointList[j + 1].X + th, pointList[j + 1].Y + th, pointList[j + 1].Z + th),
+                                new Vector3(pointList[j + 1].X - th, pointList[j + 1].Y + th, pointList[j + 1].Z + th)
+                            }
+                        };
+
+                        for (int k = 0; k < _flybyPathIndices.Count; k++)
+                        {
+                            var v = new SolidVertex();
+                            v.Position = points[_flybyPathIndices[k].Y][_flybyPathIndices[k].X];
+                            v.Color = color;
+                            vertices.Add(v);
+                        }
                     }
-                };
 
-                for (int j = 0; j < _flybyPathIndices.Count; j++)
-                {
-                    var v = new SolidVertex();
-                    v.Position = points[_flybyPathIndices[j].Y][_flybyPathIndices[j].X];
-                    v.Color = color;
-                    vertices.Add(v);
+                    // Reset camList for the next segment
+                    camList.Clear();
+
+                    // If it's not the last camera, add the current camera as the start of the next segment
+                    if (!isCut && !isLast)
+                        camList.Add(cam.Position + cam.Room.WorldPos);
                 }
             }
 
