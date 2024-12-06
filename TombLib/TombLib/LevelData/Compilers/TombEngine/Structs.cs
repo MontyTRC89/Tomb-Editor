@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -288,7 +289,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public Room BaseRoom;
         public Room OriginalRoom;
 
-        public void WriteDynamicData(BinaryWriterEx writer)
+        public void WriteDynamicData(BinaryWriter writer)
         {
             writer.Write(OriginalRoom.Name);
 
@@ -359,7 +360,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        public void WriteStaticData(BinaryWriterEx writer)
+        public void WriteStaticData(BinaryWriter writer)
         {
             writer.WriteBlock(Info);
 

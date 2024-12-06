@@ -1934,7 +1934,7 @@ namespace TombLib.LevelData.IO
             return node;
         }
 
-        private static uint? ReadOptionalLEB128Int(BinaryReaderEx reader)
+        private static uint? ReadOptionalLEB128Int(BinaryReader reader)
         {
             long read = LEB128.ReadLong(reader);
             if (read < 0)
