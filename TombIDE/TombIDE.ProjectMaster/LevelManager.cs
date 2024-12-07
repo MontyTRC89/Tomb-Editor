@@ -12,6 +12,7 @@ using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
 {
@@ -173,18 +174,30 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTEN()
 		{
-			DialogResult result = MessageBox.Show(this,
-				"This update will replace the following directories and files:\n\n" +
+			var newVersion  = _ide.Project.GetLatestEngineVersion();
+			var prevVersion = _ide.Project.GetCurrentEngineVersion();
 
-				"- Engine/Bin/\n" +
-				"- Engine/Shaders/\n" +
-				"- Engine/Scripts/Engine/\n" +
-				"- Engine/Scripts/SystemStrings.lua\n\n" +
+			// In 1.6 onwards we need to upgrade settings file.
+			var settingsUpdate16 = (newVersion.Major == 1 && newVersion.Minor >= 6 && prevVersion.Major == 1 && prevVersion.Minor <= 6 && prevVersion <= newVersion);
 
-				"If any of these directories or files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
+			var message =
+				@"This update will replace the following directories and files:
 
-				"Are you sure you want to continue?\n" +
-				"This action cannot be reverted.",
+				- Engine/Bin/
+				- Engine/Shaders/
+				- Engine/Scripts/Engine/
+				- Engine/Scripts/SystemStrings.lua" +
+
+				(settingsUpdate16 ? "\n- Engine/Scripts/Settings.lua" : "") +
+
+				"\n\n" +
+				@"If any of these directories or files are important to you, please update the engine manually or create a copy of these files before performing this update.
+
+				Are you sure you want to continue?
+				This action cannot be reverted.";
+
+			DialogResult result = MessageBox.Show(this, message.TrimIndentation(),
+
 				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
 			if (result is not DialogResult.Yes)
@@ -221,7 +234,14 @@ namespace TombIDE.ProjectMaster
 				ZipArchiveEntry systemStrings = engineArchive.Entries.FirstOrDefault(entry => entry.Name.Equals("SystemStrings.lua"));
 				systemStrings?.ExtractToFile(Path.Combine(_ide.Project.DirectoryPath, systemStrings.FullName), true);
 
-				UpdateVersionLabel();
+				// Version-specific file updates.
+                if (settingsUpdate16)
+                {
+                    ZipArchiveEntry settings = engineArchive.Entries.FirstOrDefault(entry => entry.Name.Equals("Settings.lua"));
+					settings?.ExtractToFile(Path.Combine(_ide.Project.DirectoryPath, settings.FullName), true);
+                }
+
+                UpdateVersionLabel();
 
 				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
