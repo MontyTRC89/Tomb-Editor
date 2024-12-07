@@ -7,8 +7,8 @@
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
-!define MUI_WELCOMEFINISHPAGE_BITMAP "..\..\TombEditor\Resources\misc\misc_InstallerSplashTEN.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\..\TombEditor\Resources\misc\misc_InstallerSplashTEN.bmp" 
+!define MUI_WELCOMEFINISHPAGE_BITMAP "..\..\TombEditor\Resources\misc\misc_InstallerSplashTENC.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\..\TombEditor\Resources\misc\misc_InstallerSplashTENC.bmp" 
 !define MUI_ICON "..\..\Icons\ICO\TE.ico"
 !define MUI_FINISHPAGE_SHOWREADME "Changes.txt"
 
