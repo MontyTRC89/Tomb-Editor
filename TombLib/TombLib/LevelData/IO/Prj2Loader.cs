@@ -1628,7 +1628,7 @@ namespace TombLib.LevelData.IO
                     instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
 
                     if (id3 == Prj2Chunks.ObjectPortal2)
-                        instance.Surface = (PortalSurfaceType)chunkIO.Raw.ReadByte();
+                        instance.Surface = (PortalEffectType)chunkIO.Raw.ReadByte();
 
                     roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, adjoiningRoom => instance.AdjoiningRoom = adjoiningRoom ?? room));
 

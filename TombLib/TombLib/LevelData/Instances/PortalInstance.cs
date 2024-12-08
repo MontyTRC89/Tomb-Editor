@@ -16,7 +16,7 @@ namespace TombLib.LevelData
         TraversableFaces // Called 'Opacity 2' in the old editor
     }
 
-	public enum PortalSurfaceType : byte
+	public enum PortalEffectType : byte
 	{
 		None,
 		Mirror,
@@ -48,7 +48,7 @@ namespace TombLib.LevelData
             }
         }
         public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
-        public PortalSurfaceType Surface { get; set; } = PortalSurfaceType.None;
+        public PortalEffectType Surface { get; set; } = PortalEffectType.None;
 
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
@@ -64,7 +64,7 @@ namespace TombLib.LevelData
         {
             string text = "Portal ";
 
-			if (Surface == PortalSurfaceType.Mirror)
+			if (Surface == PortalEffectType.Mirror)
 				text += "with mirror ";
 
             switch (Direction)

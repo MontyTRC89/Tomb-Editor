@@ -174,7 +174,7 @@ namespace TombEditor.ToolWindows
                 butOpacitySolidFaces.Checked = portal != null && portal.Opacity == PortalOpacity.SolidFaces;
                 butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
 
-				butMirror.Checked = portal != null && portal.Surface == PortalSurfaceType.Mirror;
+				butMirror.Checked = portal != null && portal.Surface == PortalEffectType.Mirror;
             }
 
             // Dismiss any messages
