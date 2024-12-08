@@ -1810,9 +1810,9 @@ namespace TombEditor
                 EditorActions.SetPortalOpacity(PortalOpacity.TraversableFaces, args.Window);
             });
 
-			AddCommand("TogglePortalMirror", "Generate mirror", CommandType.Rooms, delegate (CommandArgs args)
+			AddCommand("TogglePortalMirror", "Toggle portal mirror effect", CommandType.Rooms, delegate (CommandArgs args)
 			{
-				EditorActions.SetPortalOpacity(PortalOpacity.TraversableFaces, args.Window);
+				EditorActions.TogglePortalMirror(args.Window);
 			});
 
 			AddCommand("AddPointLight", "Add point light", CommandType.Lighting, delegate (CommandArgs args)

@@ -63,6 +63,10 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             string text = "Portal ";
+
+			if (Surface == PortalSurfaceType.Mirror)
+				text += "with mirror ";
+
             switch (Direction)
             {
                 case PortalDirection.Ceiling:
