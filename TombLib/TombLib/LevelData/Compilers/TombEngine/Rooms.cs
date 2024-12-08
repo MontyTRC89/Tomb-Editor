@@ -1303,10 +1303,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             _portalRemapping.TryAdd(portalToAdd, portal);
             outPortals.Add(portalToAdd);
 
-            if (portal.IsMirror)
+            if (portal.Surface == PortalSurfaceType.Mirror)
             {
                 var room2DPosition = new Vector3(
-                    room.Position.X * 1024, 0, room.Position.Z * 1024);
+                    room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
                 
                 var mirror = new TombEngineMirror();
                 mirror.Room = (short)_roomRemapping[room];
@@ -1563,7 +1563,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _portalRemapping.TryAdd(portalToAdd, portal);
                 outPortals.Add(portalToAdd);
 
-				if (portal.IsMirror)
+				if (portal.Surface == PortalSurfaceType.Mirror)
 				{
 					var mirror = new TombEngineMirror();
 					mirror.Room = (short)_roomRemapping[room];

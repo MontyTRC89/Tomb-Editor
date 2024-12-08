@@ -193,7 +193,7 @@ namespace TombEditor
             "DrawIllegalSlopes", "DrawSlideDirections", "DisableHiddenRoomPicking", "DisableGeometryPicking", "DrawObjects", "|",
             "FlipMap", "|",
             "Copy", "Paste", "Stamp", "|",
-            "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "|",
+            "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "Mirror","|",
             "AddCamera", "AddFlybyCamera", "AddSink", "AddSoundSource", "AddImportedGeometry", "AddGhostBlock", "AddMemo", "|",
             "CompileLevel", "CompileLevelAndPlay", "CompileAndPlayPreview"
         };

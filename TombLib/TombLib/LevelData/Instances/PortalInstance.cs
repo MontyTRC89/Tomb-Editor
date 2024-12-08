@@ -16,6 +16,13 @@ namespace TombLib.LevelData
         TraversableFaces // Called 'Opacity 2' in the old editor
     }
 
+	public enum PortalSurfaceType : byte
+	{
+		None,
+		Mirror,
+		Water // For future shader water surfaces
+	}
+
     public class PortalInstance : SectorBasedObjectInstance
     {
         private Room _adjoiningRoom;
@@ -41,9 +48,10 @@ namespace TombLib.LevelData
             }
         }
         public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
+        public PortalSurfaceType Surface { get; set; } = PortalSurfaceType.None;
+
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
-        public bool IsMirror { get; set; }
 
         public PortalInstance(RectangleInt2 area, PortalDirection direction, Room adjoiningRoom = null)
             : base(area)

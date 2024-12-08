@@ -4816,9 +4816,23 @@ namespace TombEditor
             portal.Room.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomGeometryChange(portal.Room);
             _editor.ObjectChange(portal, ObjectChangeType.Change);
-        }
+		}
 
-        public static bool SaveLevel(IWin32Window owner, bool askForPath)
+		public static void TogglePortalMirror(IWin32Window owner)
+		{
+			var portal = _editor.SelectedObject as PortalInstance;
+			if (portal == null)
+			{
+				_editor.SendMessage("No portal selected.", PopupType.Error);
+				return;
+			}
+
+			portal.Surface = portal.Surface == PortalSurfaceType.Mirror ? PortalSurfaceType.None : PortalSurfaceType.Mirror;
+			_editor.RoomGeometryChange(portal.Room);
+			_editor.ObjectChange(portal, ObjectChangeType.Change);
+		}
+
+		public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
             // Disable saving if level has unknown data (i.e. new prj2 version opened in old editor version)
             if (_editor.Level.Settings.HasUnknownData)
