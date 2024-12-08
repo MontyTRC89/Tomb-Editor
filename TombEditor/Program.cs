@@ -49,6 +49,7 @@ namespace TombEditor
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
             var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
+            configuration.EnsureDefaults();
 
             // Update DarkUI configuration
             Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;

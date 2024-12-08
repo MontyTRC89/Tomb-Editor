@@ -4827,7 +4827,7 @@ namespace TombEditor
 				return;
 			}
 
-			portal.Surface = portal.Surface == PortalSurfaceType.Mirror ? PortalSurfaceType.None : PortalSurfaceType.Mirror;
+			portal.Effect = (portal.Effect == PortalEffectType.Mirror) ? PortalEffectType.None : PortalEffectType.Mirror;
 			_editor.RoomGeometryChange(portal.Room);
 			_editor.ObjectChange(portal, ObjectChangeType.Change);
 		}

@@ -773,7 +773,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, rooms[instance.AdjoiningRoom]);
                             chunkIO.Raw.Write((byte)instance.Direction);
                             chunkIO.Raw.Write((byte)instance.Opacity);
-                            chunkIO.Raw.Write((byte)instance.Surface);
+                            chunkIO.Raw.Write((byte)instance.Effect);
                         }
                     else if (o is GhostBlockInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectGhostBlock2, LEB128.MaximumSize2Byte))
