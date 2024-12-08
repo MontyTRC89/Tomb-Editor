@@ -185,16 +185,16 @@ namespace TombLib.GeometryIO
 
                             if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable)
                                 continue;
-
-                            var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
+                            var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(x, z)));
+                            var range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                             var shape = room.GetFaceShape(x, z, face);
 
                             if (shape == FaceShape.Quad)
                             {
                                 int i = range.Start;
 
-                                var textureArea1 = room.RoomGeometry.TriangleTextureAreas[i / 3];
-                                var textureArea2 = room.RoomGeometry.TriangleTextureAreas[(i + 3) / 3];
+                                var textureArea1 = geo.TriangleTextureAreas[i / 3];
+                                var textureArea2 = geo.TriangleTextureAreas[(i + 3) / 3];
 
                                 if (textureArea1.TextureIsUnavailable || textureArea1.TextureIsInvisible)
                                     continue;
@@ -220,33 +220,33 @@ namespace TombLib.GeometryIO
 
                                 if (face != SectorFace.Ceiling)
                                 {
-                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 3] + offset);
-                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] + offset);
-                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 0] + offset);
-                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 1] + offset);
+                                    mesh.Positions.Add(geo.VertexPositions[i + 3] + offset);
+                                    mesh.Positions.Add(geo.VertexPositions[i + 2] + offset);
+                                    mesh.Positions.Add(geo.VertexPositions[i + 0] + offset);
+                                    mesh.Positions.Add(geo.VertexPositions[i + 1] + offset);
                                     mesh.UV.Add(GetNormalizedPageUVs(textureArea2.TexCoord0, textureWidth, textureHeight, textureAreaPage));
                                     mesh.UV.Add(GetNormalizedPageUVs(textureArea1.TexCoord2, textureWidth, textureHeight, textureAreaPage));
                                     mesh.UV.Add(GetNormalizedPageUVs(textureArea1.TexCoord0, textureWidth, textureHeight, textureAreaPage));
                                     mesh.UV.Add(GetNormalizedPageUVs(textureArea1.TexCoord1, textureWidth, textureHeight, textureAreaPage));
-                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 3], 1.0f));
-                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
-                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 0], 1.0f));
-                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
+                                    mesh.Colors.Add(new Vector4(geo.VertexColors[i + 3], 1.0f));
+                                    mesh.Colors.Add(new Vector4(geo.VertexColors[i + 2], 1.0f));
+                                    mesh.Colors.Add(new Vector4(geo.VertexColors[i + 0], 1.0f));
+                                    mesh.Colors.Add(new Vector4(geo.VertexColors[i + 1], 1.0f));
                                 }
                                 else
                                 {
-                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 1] + offset);
-                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] + offset);
-                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 0] + offset);
-                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 5] + offset);
+                                    mesh.Positions.Add(geo.VertexPositions[i + 1] + offset);
+                                    mesh.Positions.Add(geo.VertexPositions[i + 2] + offset);
+                                    mesh.Positions.Add(geo.VertexPositions[i + 0] + offset);
+                                    mesh.Positions.Add(geo.VertexPositions[i + 5] + offset);
                                     mesh.UV.Add(GetNormalizedPageUVs(textureArea1.TexCoord1, textureWidth, textureHeight, textureAreaPage));
                                     mesh.UV.Add(GetNormalizedPageUVs(textureArea1.TexCoord2, textureWidth, textureHeight, textureAreaPage));
                                     mesh.UV.Add(GetNormalizedPageUVs(textureArea1.TexCoord0, textureWidth, textureHeight, textureAreaPage));
                                     mesh.UV.Add(GetNormalizedPageUVs(textureArea2.TexCoord2, textureWidth, textureHeight, textureAreaPage));
-                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
-                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
-                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 0], 1.0f));
-                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 5], 1.0f));
+                                    mesh.Colors.Add(new Vector4(geo.VertexColors[i + 1], 1.0f));
+                                    mesh.Colors.Add(new Vector4(geo.VertexColors[i + 2], 1.0f));
+                                    mesh.Colors.Add(new Vector4(geo.VertexColors[i + 0], 1.0f));
+                                    mesh.Colors.Add(new Vector4(geo.VertexColors[i + 5], 1.0f));
                                 }
 
                                 var mat = model.GetMaterial(textureArea1.Texture,
@@ -265,7 +265,7 @@ namespace TombLib.GeometryIO
                             {
                                 int i = range.Start;
 
-                                var textureArea = room.RoomGeometry.TriangleTextureAreas[i / 3];
+                                var textureArea = geo.TriangleTextureAreas[i / 3];
                                 if (textureArea.TextureIsUnavailable || textureArea.TextureIsInvisible || textureArea.Texture == null)
                                     continue;
                                 int textureAreaPage = GetTextureAreaPage(textureArea, null);
@@ -279,9 +279,9 @@ namespace TombLib.GeometryIO
                                 poly.Indices.Add(lastIndex + 1);
                                 poly.Indices.Add(lastIndex + 2);
 
-                                mesh.Positions.Add(room.RoomGeometry.VertexPositions[i]     + offset);
-                                mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 1] + offset);
-                                mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] + offset);
+                                mesh.Positions.Add(geo.VertexPositions[i]     + offset);
+                                mesh.Positions.Add(geo.VertexPositions[i + 1] + offset);
+                                mesh.Positions.Add(geo.VertexPositions[i + 2] + offset);
 
                                 var uvFactor = new Vector2(0.5f / (float)textureArea.Texture.Image.Width, 0.5f / (float)textureArea.Texture.Image.Height);
                                 int textureWidth = textureArea.Texture.Image.Width;
@@ -290,9 +290,9 @@ namespace TombLib.GeometryIO
                                 mesh.UV.Add(GetNormalizedPageUVs(textureArea.TexCoord1, textureWidth, textureHeight, textureAreaPage));
                                 mesh.UV.Add(GetNormalizedPageUVs(textureArea.TexCoord2, textureWidth, textureHeight, textureAreaPage));
 
-                                mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i], 1.0f));
-                                mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
-                                mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
+                                mesh.Colors.Add(new Vector4(geo.VertexColors[i], 1.0f));
+                                mesh.Colors.Add(new Vector4(geo.VertexColors[i + 1], 1.0f));
+                                mesh.Colors.Add(new Vector4(geo.VertexColors[i + 2], 1.0f));
 
                                 var mat = model.GetMaterial(textureArea.Texture,
                                                             textureArea.BlendMode >= BlendMode.Additive,
