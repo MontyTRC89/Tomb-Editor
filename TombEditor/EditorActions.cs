@@ -4820,6 +4820,9 @@ namespace TombEditor
 
 		public static void TogglePortalMirror(IWin32Window owner)
 		{
+			if (!VersionCheck(_editor.Level.IsTombEngine, "Mirror effect"))
+				return;
+
 			var portal = _editor.SelectedObject as PortalInstance;
 			if (portal == null)
 			{

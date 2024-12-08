@@ -329,6 +329,8 @@ namespace TombLib.Rendering
                                 break;
 
                             case SectorColoringType.PortalEffect:
+                                if (!room.Level.IsTombEngine)
+                                    break;
                                 if ((sector.WallPortal != null && sector.WallPortal.Effect == PortalEffectType.Mirror) ||
                                     (sector.FloorPortal != null && sector.FloorPortal.Effect == PortalEffectType.Mirror) ||
                                     (sector.CeilingPortal != null && sector.CeilingPortal.Effect == PortalEffectType.Mirror))

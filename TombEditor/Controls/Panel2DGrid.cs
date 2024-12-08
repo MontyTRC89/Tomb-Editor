@@ -61,6 +61,7 @@ namespace TombEditor.Controls
         {
             // Update drawing
             if (obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
+                obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent ||
                 obj is Editor.RoomGeometryChangedEvent ||
