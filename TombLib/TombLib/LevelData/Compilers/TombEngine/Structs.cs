@@ -678,7 +678,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct  TombEngineMirror
     {
-        public short Room;
+        public short RealRoom;
+        public short VirtualRoom;
         public Vector4 Plane;
     }
 }

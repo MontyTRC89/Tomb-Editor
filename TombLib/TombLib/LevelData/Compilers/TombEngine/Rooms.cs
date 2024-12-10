@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -1309,16 +1310,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
                 
                 var mirror = new TombEngineMirror();
-                mirror.Room = (short)_roomRemapping[room];
-                mirror.Plane.X = normal.X;
+                mirror.RealRoom = (short)_roomRemapping[room];
+                mirror.VirtualRoom = (short)_roomRemapping[portal.AdjoiningRoom];
+
+				mirror.Plane.X = normal.X;
                 mirror.Plane.Y = normal.Y;
                 mirror.Plane.Z = normal.Z;
-                mirror.Plane.W = (
+                mirror.Plane.W = -(
                     normal.X * (portalVertices[0].X + room2DPosition.X) +
                     normal.Y * (portalVertices[0].Y) +
                     normal.Z * (portalVertices[0].Z + room2DPosition.Z));
 
-				if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+				if (!_mirrors.Any(m => m.RealRoom == mirror.RealRoom && m.Plane == mirror.Plane))
                 {
                     _mirrors.Add(mirror);
                 }
@@ -1566,13 +1569,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				if (portal.Effect == PortalEffectType.Mirror)
 				{
 					var mirror = new TombEngineMirror();
-					mirror.Room = (short)_roomRemapping[room];
-					mirror.Plane.X = normal.X;
+					mirror.RealRoom = (short)_roomRemapping[room];
+					mirror.VirtualRoom = (short)_roomRemapping[portal.AdjoiningRoom];
+
+                    mirror.Plane.X = normal.X;
 					mirror.Plane.Y = normal.Y;
 					mirror.Plane.Z = normal.Z;
-                    mirror.Plane.W = normal.Y * portalVertices[0].Y;
+                    mirror.Plane.W = -normal.Y * portalVertices[0].Y;
 
-					if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+					if (!_mirrors.Any(m => m.RealRoom == mirror.RealRoom && m.Plane == mirror.Plane))
 					{
 						_mirrors.Add(mirror);
 					}
