@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Runtime.InteropServices;
     using IO;
 
@@ -76,7 +77,7 @@
         public ushort Texture;
         public ushort LightingEffect;
 
-        public void Write(BinaryWriterEx writer)
+        public void Write(BinaryWriter writer)
         {
             writer.Write(Index0);
             writer.Write(Index1);
@@ -95,7 +96,7 @@
         public ushort Texture;
         public ushort LightingEffect;
 
-        public void Write(BinaryWriterEx writer)
+        public void Write(BinaryWriter writer)
         {
             writer.Write(Index0);
             writer.Write(Index1);
@@ -246,7 +247,7 @@
         public int MeshPointer;
         public int TotalBytesReadUntilThisMesh;
 
-        public long WriteTr4(BinaryWriterEx writer)
+        public long WriteTr4(BinaryWriter writer)
         {
             long meshOffset1 = writer.BaseStream.Position;
 
@@ -284,7 +285,7 @@
             return meshSize;
         }
 
-        public long WriteTr3(BinaryWriterEx writer)
+        public long WriteTr3(BinaryWriter writer)
         {
             var meshOffset1 = writer.BaseStream.Position;
 
@@ -448,7 +449,7 @@
         public ushort NumAnimCommands;
         public ushort AnimCommand;
 
-        public void Write(BinaryWriterEx writer)
+        public void Write(BinaryWriter writer)
         {
             writer.Write(FrameOffset);
             writer.Write(FrameRate);

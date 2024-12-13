@@ -1,46 +1,45 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TombLib.IO
 {
-    public class BinaryReaderEx : BinaryReader
+    public static class BinaryReaderExtensions
     {
-        public BinaryReaderEx(Stream input)
-            : base(input)
-        { }
-
-        public Vector2 ReadVector2()
+        public static Vector2 ReadVector2(this BinaryReader reader)
         {
-            return new Vector2(ReadSingle(), ReadSingle());
+            return new Vector2(reader.ReadSingle(),reader.ReadSingle());
         }
 
-        public Vector3 ReadVector3()
+        public static Vector3 ReadVector3(this BinaryReader reader)
         {
-            return new Vector3(ReadSingle(), ReadSingle(), ReadSingle());
+            return new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
         }
 
-        public Vector4 ReadVector4()
+        public static Vector4 ReadVector4(this BinaryReader reader)
         {
-            return new Vector4(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
+            return new Vector4(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
         }
 
-        public void ReadBlock<T>(out T output)
+        public static void ReadBlock<T>(this BinaryReader reader, out T output)
         {
             int sizeOfT = Marshal.SizeOf(typeof(T));
             IntPtr unmanaged = Marshal.AllocHGlobal(sizeOfT);
             byte[] buffer = new byte[sizeOfT];
 
-            Read(buffer, 0, sizeOfT);
+            reader.Read(buffer, 0, sizeOfT);
             Marshal.Copy(buffer, 0, unmanaged, sizeOfT);
 
             output = (T)Marshal.PtrToStructure(unmanaged, typeof(T));
             Marshal.FreeHGlobal(unmanaged);
         }
 
-        public void ReadBlockArray<T>(out T[] output, uint count)
+        public static void ReadBlockArray<T>(this BinaryReader reader, out T[] output, uint count)
         {
             int sizeOfT = Marshal.SizeOf(typeof(T));
             IntPtr unmanaged = Marshal.AllocHGlobal(sizeOfT * (int)count);
@@ -50,34 +49,34 @@ namespace TombLib.IO
 
             for (int i = 0; i < count; i++)
             {
-                Read(buffer, 0, sizeOfT);
+                reader.Read(buffer, 0, sizeOfT);
                 Marshal.Copy(buffer, 0, unmanaged, sizeOfT);
                 output[i] = (T)Marshal.PtrToStructure(unmanaged, typeof(T));
             }
             Marshal.FreeHGlobal(unmanaged);
         }
 
-        public void ReadBlockArray<T>(out T[] output, int count)
+        public static void ReadBlockArray<T>(this BinaryReader reader, out T[] output, int count)
         {
             int sizeOfT = Marshal.SizeOf(typeof(T));
             IntPtr unmanaged = Marshal.AllocHGlobal(sizeOfT * count);
-            byte[]  buffer = new byte[sizeOfT];
+            byte[] buffer = new byte[sizeOfT];
 
             output = new T[count];
 
             for (int i = 0; i < count; i++)
             {
-                Read(buffer, 0, sizeOfT);
+                reader.Read(buffer, 0, sizeOfT);
                 Marshal.Copy(buffer, 0, unmanaged, sizeOfT);
                 output[i] = (T)Marshal.PtrToStructure(unmanaged, typeof(T));
             }
             Marshal.FreeHGlobal(unmanaged);
         }
 
-        public string ReadStringUTF8()
+        public static string ReadStringUTF8(this BinaryReader reader)
         {
-            int stringLength = ReadInt32();
-            byte[] stringData = ReadBytes(stringLength);
+            int stringLength = reader.ReadInt32();
+            byte[] stringData = reader.ReadBytes(stringLength);
             string result = Encoding.UTF8.GetString(stringData);
             return result;
         }
