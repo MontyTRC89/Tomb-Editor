@@ -16,12 +16,20 @@ namespace TombLib.LevelData
         TraversableFaces // Called 'Opacity 2' in the old editor
     }
 
-	public enum PortalEffectType : byte
-	{
-		None,
-		Mirror,
-		Water // For future shader water surfaces
-	}
+    public enum PortalEffectType : byte
+    {
+       None,
+       Mirror,
+       Water // For future shader water surfaces
+    }
+
+    public class PortalProperties
+    {
+        public bool MirrorLara { get; set; } = true;
+        public bool MirrorStatics { get; set; } = true;
+        public bool MirrorMoveables { get; set; } = true;
+        public bool MirrorLights { get; set; } = true;
+    }
 
     public class PortalInstance : SectorBasedObjectInstance
     {
@@ -47,8 +55,10 @@ namespace TombLib.LevelData
                 _direction = value;
             }
         }
+
         public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
         public PortalEffectType Effect { get; set; } = PortalEffectType.None;
+        public PortalProperties Properties { get; set; } = new PortalProperties();
 
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;

@@ -762,7 +762,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.CastDynamicShadows);
                         }
                     else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortal2, LEB128.MaximumSize2Byte))
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectPortal2, () =>
                         {
                             var instance = (PortalInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -774,7 +774,15 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write((byte)instance.Direction);
                             chunkIO.Raw.Write((byte)instance.Opacity);
                             chunkIO.Raw.Write((byte)instance.Effect);
-                        }
+
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortalMirrorProperties, LEB128.MaximumSize1Byte))
+                            {
+                                chunkIO.Raw.Write(instance.Properties.MirrorLara);
+                                chunkIO.Raw.Write(instance.Properties.MirrorMoveables);
+                                chunkIO.Raw.Write(instance.Properties.MirrorStatics);
+                                chunkIO.Raw.Write(instance.Properties.MirrorLights);
+                            }
+                        });
                     else if (o is GhostBlockInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectGhostBlock2, LEB128.MaximumSize2Byte))
                         {

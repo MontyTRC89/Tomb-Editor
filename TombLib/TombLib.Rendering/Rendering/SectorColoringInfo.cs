@@ -89,7 +89,7 @@ namespace TombLib.Rendering
             ColorFlipRoom         = new Vector4(35, 35, 35, 255) / 255.0f,
             ColorPortal           = new Vector4(0, 0, 0, 255) / 255.0f,
             ColorPortalFace       = new Vector4(255, 255, 0, 255) / 255.0f,
-            ColorPortalEffect     = new Vector4(120, 50, 140, 255) / 255.0f,
+            ColorPortalEffect     = new Vector4(100, 170, 255, 255) / 255.0f,
             ColorFloor            = new Vector4(0, 190, 190, 255) / 255.0f,
             ColorBorderWall       = new Vector4(128, 128, 128, 255) / 255.0f,
             ColorWall             = new Vector4(0, 160, 0, 255) / 255.0f,
@@ -119,7 +119,7 @@ namespace TombLib.Rendering
             ColorFlipRoom         = new Vector4(35, 35, 35, 255) / 255.0f,
             ColorPortal           = new Vector4(0, 0, 0, 255) / 255.0f,
             ColorPortalFace       = new Vector4(172, 172, 172, 255) / 255.0f,
-            ColorPortalEffect     = new Vector4(90, 90, 90, 255) / 255.0f,
+            ColorPortalEffect     = new Vector4(180, 180, 180, 255) / 255.0f,
             ColorFloor            = new Vector4(144, 144, 144, 255) / 255.0f,
             ColorBorderWall       = new Vector4(128, 128, 128, 255) / 255.0f,
             ColorWall             = new Vector4(105, 105, 105, 255) / 255.0f,
@@ -149,7 +149,7 @@ namespace TombLib.Rendering
             ColorFlipRoom          = new Vector4(35, 35, 35, 255) / 255.0f,
             ColorPortal            = new Vector4(0, 0, 0, 255) / 255.0f,
             ColorPortalFace        = new Vector4(247, 236, 98, 255) / 255.0f,
-            ColorPortalEffect      = new Vector4(170, 140, 170, 255) / 255.0f,
+            ColorPortalEffect      = new Vector4(170, 200, 255, 255) / 255.0f,
             ColorFloor             = new Vector4(121, 185, 219, 255) / 255.0f,
             ColorBorderWall        = new Vector4(128, 128, 128, 255) / 255.0f,
             ColorWall              = new Vector4(137, 189, 125, 255) / 255.0f,
@@ -179,7 +179,7 @@ namespace TombLib.Rendering
             ColorFlipRoom          = new Vector4(31, 31, 31, 255) / 255.0f,
             ColorPortal            = new Vector4(0, 0, 0, 255) / 255.0f,
             ColorPortalFace        = new Vector4(125, 115, 72, 255) / 255.0f,
-            ColorPortalEffect      = new Vector4(80, 50, 80, 255) / 255.0f,
+            ColorPortalEffect      = new Vector4(10, 100, 200, 255) / 255.0f,
             ColorFloor             = new Vector4(0, 66, 66, 255) / 255.0f,
             ColorBorderWall        = new Vector4(78, 78, 78, 255) / 255.0f,
             ColorWall              = new Vector4(52, 88, 37, 255) / 255.0f,
@@ -306,6 +306,14 @@ namespace TombLib.Rendering
                                 if (bottomSector.HasFlag(SectorFlags.TriggerTriggerer))
                                     return colorScheme.ColorTriggerTriggerer;
                                 break;
+                            case SectorColoringType.PortalEffect:
+                                if (!room.Level.IsTombEngine)
+                                    break;
+                                if ((sector.WallPortal != null && sector.WallPortal.Effect == PortalEffectType.Mirror) ||
+                                    (sector.FloorPortal != null && sector.FloorPortal.Effect == PortalEffectType.Mirror) ||
+                                    (sector.CeilingPortal != null && sector.CeilingPortal.Effect == PortalEffectType.Mirror))
+                                    return colorScheme.ColorPortalEffect;
+                                break;
                         }
                         break;
                     case SectorColoringShape.Hatch:
@@ -326,15 +334,6 @@ namespace TombLib.Rendering
                                         (sector.WallPortal != null && !sector.WallPortal.IsTraversable))
                                         return colorScheme.ColorPortal;
                                 }
-                                break;
-
-                            case SectorColoringType.PortalEffect:
-                                if (!room.Level.IsTombEngine)
-                                    break;
-                                if ((sector.WallPortal != null && sector.WallPortal.Effect == PortalEffectType.Mirror) ||
-                                    (sector.FloorPortal != null && sector.FloorPortal.Effect == PortalEffectType.Mirror) ||
-                                    (sector.CeilingPortal != null && sector.CeilingPortal.Effect == PortalEffectType.Mirror))
-                                    return colorScheme.ColorPortalEffect;
                                 break;
                         }
                         break;

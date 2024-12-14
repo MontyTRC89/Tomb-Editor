@@ -1628,7 +1628,22 @@ namespace TombLib.LevelData.IO
                     instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
 
                     if (id3 == Prj2Chunks.ObjectPortal2)
+                    {
                         instance.Effect = (PortalEffectType)chunkIO.Raw.ReadByte();
+
+                        chunkIO.ReadChunks((id4, chunkSize4) =>
+                        {
+                            if (id4 == Prj2Chunks.ObjectPortalMirrorProperties)
+                            {
+                                instance.Properties.MirrorLara = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.MirrorMoveables = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.MirrorStatics = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.MirrorLights = chunkIO.Raw.ReadBoolean();
+                                return true;
+                            }
+                            return false;
+                        });
+                    }
 
                     roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, adjoiningRoom => instance.AdjoiningRoom = adjoiningRoom ?? room));
 
