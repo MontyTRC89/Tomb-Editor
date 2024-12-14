@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -108,6 +109,8 @@ namespace TombEditor.Controls
                 toolEraser.Visible = !geometryMode;
                 toolInvisibility.Visible = !geometryMode;
                 toolUVFixer.Visible = !geometryMode;
+                toolSeparator3.Visible = !geometryMode;
+                toolDecalsMode.Visible = !geometryMode;
                 toolFlatten.Visible = geometryMode;
                 toolShovel.Visible = geometryMode;
                 toolSmooth.Visible = geometryMode;
@@ -251,6 +254,17 @@ namespace TombEditor.Controls
                 _contextMenuTimer.Start();
             else
                 ContextMenuTimer_Tick(sender, e);
+        }
+
+        private void toolDecalsMode_Click(object sender, EventArgs e)
+        {
+            _editor.ActiveTextureLayer = _editor.ActiveTextureLayer switch
+            {
+                FaceLayer.Base => FaceLayer.Decal,
+                _ => FaceLayer.Base
+            };
+
+            toolDecalsMode.Checked = _editor.ActiveTextureLayer == FaceLayer.Decal;
         }
     }
 }

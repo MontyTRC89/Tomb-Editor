@@ -120,4 +120,16 @@
   <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toolDecalsMode.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAE5SURBVDhPtZKxSsNgFIVjXBwtuDmIUAWhk86dxGAXQUER
+        dajgJBQ3hwzuFcTBF3BxqJ2Lk6uDYkVd7GZtXVR8Akn8bnqI1LTBwR74uNxzz3/zN6kzEIVhOBoEwQ4c
+        w7jsv4kDe/AJVfiCZ5jWOF0Ej+AWptS/wz60YCYK9ROBZXiy68syrwYrsAWvkNMoKYaPMK82EstW8a6o
+        LnUdbEnyJphZeFEbSwcvoWw9dRPa0P1OMApQU9sllowxu4YKTNIXqU2YUCRasAgXahPi0AjzA7CXegcf
+        UNc4/gktgkOyeor5MMyRtWU3sjvCeABPbapYckrWV9sRxhI0GMafsZfILECbXEbWjxgcQh2iP9Jv4a/B
+        G+RlJcVw10I84Zxagg3wwb7EPcwq2l92PYLbcAJnUAYP31Xkv+Q43wTrT7Q6A1OTAAAAAElFTkSuQmCC
+</value>
+  </data>
 </root>

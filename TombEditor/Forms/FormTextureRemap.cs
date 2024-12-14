@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 
 namespace TombEditor.Forms
@@ -153,7 +154,7 @@ namespace TombEditor.Forms
             int roomTextureCount = 0;
             foreach (Room room in relevantRooms)
                 foreach (Sector sector in room.Sectors)
-                    foreach (SectorFace face in sector.GetFaceTextures().Keys)
+                    foreach (FaceLayerInfo face in sector.GetFaceTexturesAll().Keys)
                     {
                         var currentTextureArea = sector.GetFaceTexture(face);
                         if (currentTextureArea.Texture == sourceTexture &&

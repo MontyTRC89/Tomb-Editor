@@ -9,6 +9,7 @@ using TombLib;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
@@ -1449,5 +1450,7 @@ namespace TombEditor
             => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
 
         public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
+
+        public FaceLayer ActiveTextureLayer { get; set; }
     }
 }

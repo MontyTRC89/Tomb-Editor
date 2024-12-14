@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 
 namespace TombLib.LevelData.SectorGeometry;
 
@@ -11,7 +11,7 @@ public readonly struct SectorFaceData
 	/// <summary>
 	/// The exact hard-coded face type.
 	/// </summary>
-	public readonly SectorFace Face;
+	public readonly FaceLayerInfo Face;
 
 	public readonly Vector3 P0;
 	public readonly Vector3 P1;
@@ -31,7 +31,7 @@ public readonly struct SectorFaceData
 	/// <summary>
 	/// Constructor for a triangle face.
 	/// </summary>
-	public SectorFaceData(SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
+	public SectorFaceData(FaceLayerInfo face, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
 	{
 		Face = face;
 
@@ -54,7 +54,7 @@ public readonly struct SectorFaceData
 	/// <summary>
 	/// Constructor for a quad face.
 	/// </summary>
-	public SectorFaceData(SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
+	public SectorFaceData(FaceLayerInfo face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
 	{
 		Face = face;
 
@@ -74,7 +74,7 @@ public readonly struct SectorFaceData
 		IsTriangle = false;
 	}
 
-	public static SectorFaceData? CreateVerticalFloorFaceData(SectorFace sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplitData faceStartSplit, WallSplitData faceEndSplit)
+	public static SectorFaceData? CreateVerticalFloorFaceData(FaceLayerInfo sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplitData faceStartSplit, WallSplitData faceEndSplit)
 	{
 		if (faceStartSplit.StartY > faceEndSplit.StartY && faceStartSplit.EndY > faceEndSplit.EndY) // Is quad
 		{
@@ -107,7 +107,7 @@ public readonly struct SectorFaceData
 		}
 	}
 
-	public static SectorFaceData? CreateVerticalCeilingFaceData(SectorFace sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplitData faceStartSplit, WallSplitData faceEndSplit)
+	public static SectorFaceData? CreateVerticalCeilingFaceData(FaceLayerInfo sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplitData faceStartSplit, WallSplitData faceEndSplit)
 	{
 		if (faceStartSplit.StartY < faceEndSplit.StartY && faceStartSplit.EndY < faceEndSplit.EndY) // Is quad
 		{
@@ -140,7 +140,7 @@ public readonly struct SectorFaceData
 		}
 	}
 
-	public static SectorFaceData? CreateVerticalMiddleFaceData(SectorFace sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplitData faceStartSplit, WallSplitData faceEndSplit)
+	public static SectorFaceData? CreateVerticalMiddleFaceData(FaceLayerInfo sectorFace, (int X, int Z) wallStartPoint, (int X, int Z) wallEndPoint, WallSplitData faceStartSplit, WallSplitData faceEndSplit)
 	{
 		if (faceStartSplit.StartY != faceEndSplit.StartY && faceStartSplit.EndY != faceEndSplit.EndY) // Is quad
 		{

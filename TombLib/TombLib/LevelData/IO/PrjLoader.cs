@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -2075,10 +2076,10 @@ namespace TombLib.LevelData.IO
             {
                 case 0x0000: // TYPE_TEXTURE_NONE
                 default:
-                    sector.SetFaceTexture(face, new TextureArea());
+                    sector.SetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base), new TextureArea());
                     return;
                 case 0x0003: // TYPE_TEXTURE_COLOR
-                    sector.SetFaceTexture(face, TextureArea.Invisible);
+                    sector.SetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base), TextureArea.Invisible);
                     return;
                 case 0x0007: // TYPE_TEXTURE_TILE
                     int texIndex = ((prjFace._txtFlags & 0x03) << 8) | prjFace._txtIndex;
@@ -2151,7 +2152,7 @@ namespace TombLib.LevelData.IO
                                 break;
                             default:
                                 logger.Warn("Unknown texture triangle selection " + prjFace._txtTriangle);
-                                sector.SetFaceTexture(face, new TextureArea());
+                                sector.SetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base), new TextureArea());
                                 return;
                         }
 
@@ -2225,7 +2226,7 @@ namespace TombLib.LevelData.IO
                         }
                     }
 
-                    sector.SetFaceTexture(face, texture);
+                    sector.SetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base), texture);
                     return;
             }
         }

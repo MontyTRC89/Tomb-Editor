@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -18,6 +19,8 @@ namespace TombLib.LevelData
         public const int FullClickHeight = 256;
 
         public const short MaxNumberOfRooms = 1024;
+
+        public const float DecalOffset = 8.0f;
 
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; // Rooms in level
         public LevelSettings Settings { get; private set; } = new LevelSettings();
@@ -274,7 +277,7 @@ namespace TombLib.LevelData
                         VectorInt2 newSectorPosition = transformation.Transform(new VectorInt2(x, z), oldRoom.SectorSize);
                         newRoom.Sectors[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Sectors[x, z].Clone();
                         newRoom.Sectors[newSectorPosition.X, newSectorPosition.Y].Transform(transformation, null,
-                            oldFace => oldRoom.GetFaceShape(x, z, oldFace));
+                            oldFace => oldRoom.GetFaceShape(x, z, oldFace.Face));
                     }
                 newRooms[i] = newRoom;
             }
@@ -368,7 +371,7 @@ namespace TombLib.LevelData
             Parallel.ForEach(ExistingRooms, room =>
             {
                 foreach (Sector sector in room.Sectors)
-                    foreach (SectorFace face in sector.GetFaceTextures().Keys)
+                    foreach (FaceLayerInfo face in sector.GetFaceTexturesAll().Keys)
                     {
                         TextureArea currentTextureArea = sector.GetFaceTexture(face);
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;

@@ -933,9 +933,14 @@ namespace TombLib.LevelData.IO
                                         }
                                     }
                                     else if (id4 == Prj2Chunks.TextureLevelTexture ||
-                                             id4 == Prj2Chunks.TextureLevelTexture2)
+                                             id4 == Prj2Chunks.TextureLevelTexture2 ||
+                                             id4 == Prj2Chunks.TextureLevelTexture3)
                                     {
                                         SectorFace face = (SectorFace)LEB128.ReadLong(chunkIO.Raw);
+                                        FaceLayer layer = FaceLayer.Base;
+
+                                        if (id4 == Prj2Chunks.TextureLevelTexture3)
+                                            layer = (FaceLayer)LEB128.ReadLong(chunkIO.Raw);
 
                                         var textureArea = new TextureArea();
                                         textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
@@ -943,7 +948,7 @@ namespace TombLib.LevelData.IO
                                         textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
                                         textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
 
-                                        if(id4 == Prj2Chunks.TextureLevelTexture2)
+                                        if(id4 == Prj2Chunks.TextureLevelTexture2 || id4 == Prj2Chunks.TextureLevelTexture3)
                                         {
                                             textureArea.ParentArea.Start = chunkIO.Raw.ReadVector2();
                                             textureArea.ParentArea.End = chunkIO.Raw.ReadVector2();
@@ -956,12 +961,18 @@ namespace TombLib.LevelData.IO
                                         textureArea.DoubleSided = (blendFlag & 1) != 0;
                                         textureArea.Texture = levelSettingsIds.LevelTextures.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
 
-                                        sector.SetFaceTexture(face, textureArea);
+                                        sector.SetFaceTexture(new FaceLayerInfo(face, layer), textureArea);
                                     }
                                     else if (id4 == Prj2Chunks.TextureInvisible)
                                     {
                                         SectorFace face = (SectorFace)LEB128.ReadLong(chunkIO.Raw);
-                                        sector.SetFaceTexture(face, TextureArea.Invisible);
+                                        sector.SetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base), TextureArea.Invisible);
+                                    }
+                                    else if (id4 == Prj2Chunks.TextureInvisible2)
+                                    {
+                                        SectorFace face = (SectorFace)LEB128.ReadLong(chunkIO.Raw);
+                                        FaceLayer layer = (FaceLayer)LEB128.ReadLong(chunkIO.Raw);
+                                        sector.SetFaceTexture(new FaceLayerInfo(face, layer), TextureArea.Invisible);
                                     }
                                     else
                                         return false;

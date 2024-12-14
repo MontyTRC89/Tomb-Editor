@@ -1,5 +1,4 @@
 ﻿using System;
-using TombLib.LevelData.SectorEnums;
 
 namespace TombLib.LevelData.SectorStructs;
 
@@ -9,17 +8,17 @@ namespace TombLib.LevelData.SectorStructs;
 public readonly struct SectorFaceIdentity : IEquatable<SectorFaceIdentity>, IComparable, IComparable<SectorFaceIdentity>
 {
 	public readonly VectorInt2 Position;
-	public readonly SectorFace Face;
+	public readonly FaceLayerInfo Face;
 
-	public SectorFaceIdentity(int x, int z, SectorFace face)
+	public SectorFaceIdentity(int x, int z, FaceLayerInfo face)
 	{
 		Position = new VectorInt2(x, z);
 		Face = face;
 	}
 
 	public override readonly bool Equals(object other) => other is SectorFaceIdentity identity && identity.Equals(other);
-	public readonly bool Equals(SectorFaceIdentity other) => Position == other.Position && Face == other.Face;
-	public override int GetHashCode() => Position.GetHashCode() ^ (1200049507 * (int)Face); // Random prime
+	public readonly bool Equals(SectorFaceIdentity other) => Position == other.Position && Face.Face == other.Face.Face && Face.Layer == other.Face.Layer;
+	public override int GetHashCode() => Position.GetHashCode() ^ Face.GetHashCode();
 
 	readonly int IComparable.CompareTo(object other) => CompareTo((SectorFaceIdentity)other);
 	public readonly int CompareTo(SectorFaceIdentity other)
@@ -30,8 +29,11 @@ public readonly struct SectorFaceIdentity : IEquatable<SectorFaceIdentity>, ICom
 		if (Position.Y != other.Position.Y)
 			return Position.Y > other.Position.Y ? 1 : -1;
 
-		if (Face != other.Face)
-			return Face > other.Face ? 1 : -1;
+		if (Face.Face != other.Face.Face)
+			return Face.Face > other.Face.Face ? 1 : -1;
+
+		if (Face.Layer != other.Face.Layer)
+			return Face.Layer > other.Face.Layer ? 1 : -1;
 
 		return 0;
 	}
