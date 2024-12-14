@@ -19,16 +19,15 @@ namespace TombLib.LevelData
     public enum PortalEffectType : byte
     {
        None,
-       Mirror,
-       Water // For future shader water surfaces
+       Mirror
     }
 
     public class PortalProperties
     {
-        public bool MirrorLara { get; set; } = true;
-        public bool MirrorStatics { get; set; } = true;
-        public bool MirrorMoveables { get; set; } = true;
-        public bool MirrorLights { get; set; } = true;
+        public bool ReflectLara { get; set; } = true;
+        public bool ReflectStatics { get; set; } = true;
+        public bool ReflectMoveables { get; set; } = true;
+        public bool ReflectLights { get; set; } = true;
     }
 
     public class PortalInstance : SectorBasedObjectInstance

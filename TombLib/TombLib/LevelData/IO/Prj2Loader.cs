@@ -1635,10 +1635,10 @@ namespace TombLib.LevelData.IO
                         {
                             if (id4 == Prj2Chunks.ObjectPortalMirrorProperties)
                             {
-                                instance.Properties.MirrorLara = chunkIO.Raw.ReadBoolean();
-                                instance.Properties.MirrorMoveables = chunkIO.Raw.ReadBoolean();
-                                instance.Properties.MirrorStatics = chunkIO.Raw.ReadBoolean();
-                                instance.Properties.MirrorLights = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectLara = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectMoveables = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectStatics = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectLights = chunkIO.Raw.ReadBoolean();
                                 return true;
                             }
                             return false;

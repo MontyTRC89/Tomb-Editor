@@ -1134,6 +1134,15 @@ namespace TombEditor
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
+            else if (instance is PortalInstance)
+            {
+                if (!VersionCheck(_editor.Level.IsTombEngine, "Portal properties"))
+                    return;
+                using (var formPortal = new FormPortal((PortalInstance)instance))
+                    if (formPortal.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }
         }
 
         public static void PasteObject(VectorInt2 pos, Room room)
@@ -4831,7 +4840,6 @@ namespace TombEditor
 			}
 
 			portal.Effect = (portal.Effect == PortalEffectType.Mirror) ? PortalEffectType.None : PortalEffectType.Mirror;
-			_editor.RoomGeometryChange(portal.Room);
 			_editor.ObjectChange(portal, ObjectChangeType.Change);
 		}
 

@@ -777,10 +777,10 @@ namespace TombLib.LevelData.IO
 
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortalMirrorProperties, LEB128.MaximumSize1Byte))
                             {
-                                chunkIO.Raw.Write(instance.Properties.MirrorLara);
-                                chunkIO.Raw.Write(instance.Properties.MirrorMoveables);
-                                chunkIO.Raw.Write(instance.Properties.MirrorStatics);
-                                chunkIO.Raw.Write(instance.Properties.MirrorLights);
+                                chunkIO.Raw.Write(instance.Properties.ReflectLara);
+                                chunkIO.Raw.Write(instance.Properties.ReflectMoveables);
+                                chunkIO.Raw.Write(instance.Properties.ReflectStatics);
+                                chunkIO.Raw.Write(instance.Properties.ReflectLights);
                             }
                         });
                     else if (o is GhostBlockInstance)

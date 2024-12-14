@@ -1321,10 +1321,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     normal.Y * (portalVertices[0].Y) +
                     normal.Z * (portalVertices[0].Z + room2DPosition.Z));
 
-                mirror.MirrorLara = true;
-                mirror.MirrorMoveables = true;
-                mirror.MirrorStatics = true;
-                mirror.MirrorLights = true;
+                mirror.ReflectLara = portal.Properties.ReflectLara;
+                mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                mirror.ReflectLights = portal.Properties.ReflectLights;
 
 				if (!_mirrors.Any(m => m.RealRoom == mirror.RealRoom && m.Plane == mirror.Plane))
                 {
@@ -1582,12 +1582,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					mirror.Plane.Z = normal.Z;
                     mirror.Plane.W = -normal.Y * portalVertices[0].Y;
 
-					mirror.MirrorLara = true;
-					mirror.MirrorMoveables = true;
-					mirror.MirrorStatics = true;
-					mirror.MirrorLights = true;
+                    mirror.ReflectLara = portal.Properties.ReflectLara;
+                    mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                    mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                    mirror.ReflectLights = portal.Properties.ReflectLights;
 
-					if (!_mirrors.Any(m => m.RealRoom == mirror.RealRoom && m.Plane == mirror.Plane))
+                    if (!_mirrors.Any(m => m.RealRoom == mirror.RealRoom && m.Plane == mirror.Plane))
 					{
 						_mirrors.Add(mirror);
 					}

@@ -676,14 +676,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct  TombEngineMirror
+    public struct TombEngineMirror
     {
         public short RealRoom;
         public short VirtualRoom;
         public Vector4 Plane;
-        public bool MirrorLara;
-        public bool MirrorMoveables;
-        public bool MirrorStatics;
-		public bool MirrorLights;
+        public bool ReflectLara;
+        public bool ReflectMoveables;
+        public bool ReflectStatics;
+        public bool ReflectLights;
 	}
 }
