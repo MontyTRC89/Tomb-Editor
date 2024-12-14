@@ -681,5 +681,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public short RealRoom;
         public short VirtualRoom;
         public Vector4 Plane;
-    }
+        public bool MirrorLara;
+        public bool MirrorMoveables;
+        public bool MirrorStatics;
+		public bool MirrorLights;
+	}
 }
