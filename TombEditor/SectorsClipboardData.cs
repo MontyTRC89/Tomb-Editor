@@ -6,6 +6,7 @@ using System.Numerics;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 
 namespace TombEditor
@@ -58,12 +59,13 @@ namespace TombEditor
                             writer.Write((byte)b.Ceiling.DiagonalSplit);
                             writer.Write((short)b.Flags);
 
-                            Dictionary<SectorFace, TextureArea> textures = b.GetFaceTextures();
+                            Dictionary<FaceLayerInfo, TextureArea> textures = b.GetFaceTexturesAll();
                             writer.Write(textures.Count);
 
-                            foreach (KeyValuePair<SectorFace, TextureArea> texturePair in textures)
+                            foreach (KeyValuePair<FaceLayerInfo, TextureArea> texturePair in textures)
                             {
-                                writer.Write((byte)texturePair.Key);
+                                writer.Write((byte)texturePair.Key.Face);
+                                writer.Write((byte)texturePair.Key.Layer);
 
                                 writer.Write(texturePair.Value.Texture.Image.FileName);
                                 writer.Write(texturePair.Value.TextureIsInvisible);
@@ -136,13 +138,15 @@ namespace TombEditor
                             for (int i = 0; i < texturesCount; i++)
                             {
                                 var face = (SectorFace)reader.ReadByte();
+                                var layer = (FaceLayer)reader.ReadByte();
+                                var layerInfo = new FaceLayerInfo(face, layer);
 
                                 string textureFileName = reader.ReadString();
                                 bool isInvisible = reader.ReadBoolean();
 
                                 if (string.IsNullOrEmpty(textureFileName))
                                 {
-                                    b.SetFaceTexture(face, isInvisible ? TextureArea.Invisible : TextureArea.None);
+                                    b.SetFaceTexture(layerInfo, isInvisible ? TextureArea.Invisible : TextureArea.None);
                                     continue;
                                 }
 
@@ -165,7 +169,7 @@ namespace TombEditor
                                     DoubleSided = reader.ReadBoolean()
                                 };
 
-                                b.SetFaceTexture(face, texture);
+                                b.SetFaceTexture(layerInfo, texture);
                             }
 
                             sectors[x, z] = b;

@@ -1360,8 +1360,16 @@ namespace TombEditor
             sector.SetFaceTexture(face, newTexture);
 
             // Update state
-            room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
-            _editor.RoomTextureChange(room);
+            bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
+
+            if (!updated && face.Layer is FaceLayer.Decal)
+            {
+                room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                updated = true;
+            }
+
+            if (updated)
+                _editor.RoomTextureChange(room);
         }
 
         public static void MirrorTexture(Room room, VectorInt2 pos, FaceLayerInfo face)
@@ -1375,8 +1383,16 @@ namespace TombEditor
             sector.SetFaceTexture(face, newTexture);
 
             // Update state
-            room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
-            _editor.RoomTextureChange(room);
+            bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
+
+            if (!updated && face.Layer is FaceLayer.Decal)
+            {
+                room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                updated = true;
+            }
+
+            if (updated)
+                _editor.RoomTextureChange(room);
         }
 
         public static void PickTexture(Room room, VectorInt2 pos, FaceLayerInfo face)
@@ -1582,7 +1598,17 @@ namespace TombEditor
                 {
                     TextureArea currentTexture = sector.GetFaceTexture(face);
                     CheckTextureAttributes(room, pos, face.Face, currentTexture);
-                    room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
+
+                    bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
+
+                    if (!updated && face.Layer is FaceLayer.Decal)
+                    {
+                        room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        updated = true;
+                    }
+
+                    if (updated)
+                        _editor.RoomTextureChange(room);
                 }
 
                 return textureApplied;
@@ -1644,7 +1670,7 @@ namespace TombEditor
                     {
                         // Get current face
                         VertexRange vertexRange = new VertexRange(0, 0);
-                        if (!room.RoomGeometry.VertexRangeLookup.TryGetValue(new SectorFaceIdentity(pos.X, pos.Y, face), out vertexRange))
+                        if (!room.RoomGeometry.VertexRangeLookup.TryGetValue(new SectorFaceIdentity(pos.X, pos.Y, new(face.Face, FaceLayer.Base)), out vertexRange))
                             return false;
 
                         if (vertexRange.Count == 6)
@@ -1763,7 +1789,17 @@ namespace TombEditor
             {
                 TextureArea currentTexture = sector.GetFaceTexture(face);
                 CheckTextureAttributes(room, pos, face.Face, currentTexture);
-                room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
+
+                bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
+
+                if (!updated && face.Layer is FaceLayer.Decal)
+                {
+                    room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    updated = true;
+                }
+
+                if (updated)
+                    _editor.RoomTextureChange(room);
             }
 
             return textureApplied;

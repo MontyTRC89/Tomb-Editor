@@ -70,7 +70,7 @@
             toolStrip.Location = new System.Drawing.Point(0, 0);
             toolStrip.Name = "toolStrip";
             toolStrip.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            toolStrip.Size = new System.Drawing.Size(33, 523);
+            toolStrip.Size = new System.Drawing.Size(28, 523);
             toolStrip.TabIndex = 3;
             // 
             // toolSelection
@@ -82,7 +82,7 @@
             toolSelection.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolSelection.Margin = new System.Windows.Forms.Padding(1);
             toolSelection.Name = "toolSelection";
-            toolSelection.Size = new System.Drawing.Size(28, 20);
+            toolSelection.Size = new System.Drawing.Size(23, 20);
             toolSelection.ToolTipText = "Selection";
             toolSelection.Click += toolSelection_Click;
             // 
@@ -95,7 +95,7 @@
             toolBrush.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolBrush.Margin = new System.Windows.Forms.Padding(1);
             toolBrush.Name = "toolBrush";
-            toolBrush.Size = new System.Drawing.Size(28, 20);
+            toolBrush.Size = new System.Drawing.Size(23, 20);
             toolBrush.ToolTipText = "Brush";
             toolBrush.Click += toolBrush_Click;
             // 
@@ -108,7 +108,7 @@
             toolShovel.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolShovel.Margin = new System.Windows.Forms.Padding(1);
             toolShovel.Name = "toolShovel";
-            toolShovel.Size = new System.Drawing.Size(28, 20);
+            toolShovel.Size = new System.Drawing.Size(23, 20);
             toolShovel.ToolTipText = "Shovel";
             toolShovel.Click += toolShovel_Click;
             // 
@@ -121,7 +121,7 @@
             toolPencil.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolPencil.Margin = new System.Windows.Forms.Padding(1);
             toolPencil.Name = "toolPencil";
-            toolPencil.Size = new System.Drawing.Size(28, 20);
+            toolPencil.Size = new System.Drawing.Size(23, 20);
             toolPencil.ToolTipText = "Pencil";
             toolPencil.Click += toolPencil_Click;
             // 
@@ -134,7 +134,7 @@
             toolFlatten.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolFlatten.Margin = new System.Windows.Forms.Padding(1);
             toolFlatten.Name = "toolFlatten";
-            toolFlatten.Size = new System.Drawing.Size(28, 20);
+            toolFlatten.Size = new System.Drawing.Size(23, 20);
             toolFlatten.ToolTipText = "Bulldozer";
             toolFlatten.Click += toolFlatten_Click;
             // 
@@ -147,7 +147,7 @@
             toolSmooth.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolSmooth.Margin = new System.Windows.Forms.Padding(1);
             toolSmooth.Name = "toolSmooth";
-            toolSmooth.Size = new System.Drawing.Size(28, 20);
+            toolSmooth.Size = new System.Drawing.Size(23, 20);
             toolSmooth.ToolTipText = "Smooth";
             toolSmooth.Click += toolSmooth_Click;
             // 
@@ -160,7 +160,7 @@
             toolFill.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolFill.Margin = new System.Windows.Forms.Padding(1);
             toolFill.Name = "toolFill";
-            toolFill.Size = new System.Drawing.Size(28, 20);
+            toolFill.Size = new System.Drawing.Size(23, 20);
             toolFill.ToolTipText = "Fill";
             toolFill.Click += toolFill_Click;
             // 
@@ -173,7 +173,7 @@
             toolGridPaint.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolGridPaint.Margin = new System.Windows.Forms.Padding(1);
             toolGridPaint.Name = "toolGridPaint";
-            toolGridPaint.Size = new System.Drawing.Size(28, 20);
+            toolGridPaint.Size = new System.Drawing.Size(23, 20);
             toolGridPaint.ToolTipText = "Grid Paint (2x2)";
             toolGridPaint.Click += tooPaint2x2_Click;
             toolGridPaint.MouseDown += toolGridPaint_MouseDown;
@@ -188,7 +188,7 @@
             toolGroup.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolGroup.Margin = new System.Windows.Forms.Padding(1);
             toolGroup.Name = "toolGroup";
-            toolGroup.Size = new System.Drawing.Size(28, 20);
+            toolGroup.Size = new System.Drawing.Size(23, 20);
             toolGroup.ToolTipText = "Group Texturing";
             toolGroup.Click += toolGroup_Click;
             // 
@@ -198,7 +198,7 @@
             toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             toolSeparator1.Name = "toolSeparator1";
-            toolSeparator1.Size = new System.Drawing.Size(28, 6);
+            toolSeparator1.Size = new System.Drawing.Size(23, 6);
             // 
             // toolDrag
             // 
@@ -209,7 +209,7 @@
             toolDrag.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolDrag.Margin = new System.Windows.Forms.Padding(1);
             toolDrag.Name = "toolDrag";
-            toolDrag.Size = new System.Drawing.Size(28, 20);
+            toolDrag.Size = new System.Drawing.Size(23, 20);
             toolDrag.ToolTipText = "Drag";
             toolDrag.Click += toolDrag_Click;
             // 
@@ -222,7 +222,7 @@
             toolRamp.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolRamp.Margin = new System.Windows.Forms.Padding(1);
             toolRamp.Name = "toolRamp";
-            toolRamp.Size = new System.Drawing.Size(28, 20);
+            toolRamp.Size = new System.Drawing.Size(23, 20);
             toolRamp.ToolTipText = "Ramp";
             toolRamp.Click += toolRamp_Click;
             // 
@@ -235,7 +235,7 @@
             toolQuarterPipe.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolQuarterPipe.Margin = new System.Windows.Forms.Padding(1);
             toolQuarterPipe.Name = "toolQuarterPipe";
-            toolQuarterPipe.Size = new System.Drawing.Size(28, 20);
+            toolQuarterPipe.Size = new System.Drawing.Size(23, 20);
             toolQuarterPipe.ToolTipText = "Quarter Pipe";
             toolQuarterPipe.Click += toolQuarterPipe_Click;
             // 
@@ -248,7 +248,7 @@
             toolHalfPipe.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolHalfPipe.Margin = new System.Windows.Forms.Padding(1);
             toolHalfPipe.Name = "toolHalfPipe";
-            toolHalfPipe.Size = new System.Drawing.Size(28, 20);
+            toolHalfPipe.Size = new System.Drawing.Size(23, 20);
             toolHalfPipe.ToolTipText = "Half Pipe";
             toolHalfPipe.Click += toolHalfPipe_Click;
             // 
@@ -261,7 +261,7 @@
             toolBowl.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolBowl.Margin = new System.Windows.Forms.Padding(1);
             toolBowl.Name = "toolBowl";
-            toolBowl.Size = new System.Drawing.Size(28, 20);
+            toolBowl.Size = new System.Drawing.Size(23, 20);
             toolBowl.ToolTipText = "Bowl";
             toolBowl.Click += toolBowl_Click;
             // 
@@ -274,7 +274,7 @@
             toolPyramid.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolPyramid.Margin = new System.Windows.Forms.Padding(1);
             toolPyramid.Name = "toolPyramid";
-            toolPyramid.Size = new System.Drawing.Size(28, 20);
+            toolPyramid.Size = new System.Drawing.Size(23, 20);
             toolPyramid.ToolTipText = "Pyramid";
             toolPyramid.Click += toolPyramid_Click;
             // 
@@ -287,7 +287,7 @@
             toolTerrain.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolTerrain.Margin = new System.Windows.Forms.Padding(1);
             toolTerrain.Name = "toolTerrain";
-            toolTerrain.Size = new System.Drawing.Size(28, 20);
+            toolTerrain.Size = new System.Drawing.Size(23, 20);
             toolTerrain.ToolTipText = "Terrain";
             toolTerrain.Click += toolTerrain_Click;
             // 
@@ -300,7 +300,7 @@
             toolEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolEraser.Margin = new System.Windows.Forms.Padding(1);
             toolEraser.Name = "toolEraser";
-            toolEraser.Size = new System.Drawing.Size(28, 20);
+            toolEraser.Size = new System.Drawing.Size(23, 20);
             toolEraser.ToolTipText = "Eraser";
             toolEraser.Click += toolEraser_Click;
             // 
@@ -313,7 +313,7 @@
             toolInvisibility.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolInvisibility.Margin = new System.Windows.Forms.Padding(1);
             toolInvisibility.Name = "toolInvisibility";
-            toolInvisibility.Size = new System.Drawing.Size(28, 20);
+            toolInvisibility.Size = new System.Drawing.Size(23, 20);
             toolInvisibility.ToolTipText = "Invisibility";
             toolInvisibility.Click += toolInvisibility_Click;
             // 
@@ -323,7 +323,7 @@
             toolSeparator2.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             toolSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             toolSeparator2.Name = "toolSeparator2";
-            toolSeparator2.Size = new System.Drawing.Size(28, 6);
+            toolSeparator2.Size = new System.Drawing.Size(23, 6);
             // 
             // toolPortalDigger
             // 
@@ -334,7 +334,7 @@
             toolPortalDigger.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolPortalDigger.Margin = new System.Windows.Forms.Padding(1);
             toolPortalDigger.Name = "toolPortalDigger";
-            toolPortalDigger.Size = new System.Drawing.Size(28, 20);
+            toolPortalDigger.Size = new System.Drawing.Size(23, 20);
             toolPortalDigger.ToolTipText = "Portal Digger";
             toolPortalDigger.Click += toolPortalDigger_Click;
             // 
@@ -347,7 +347,7 @@
             toolUVFixer.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolUVFixer.Margin = new System.Windows.Forms.Padding(1);
             toolUVFixer.Name = "toolUVFixer";
-            toolUVFixer.Size = new System.Drawing.Size(28, 20);
+            toolUVFixer.Size = new System.Drawing.Size(23, 20);
             toolUVFixer.ToolTipText = "Fix texture coordinates";
             toolUVFixer.Click += toolUVFixer_Click;
             // 
@@ -357,7 +357,7 @@
             toolSeparator3.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             toolSeparator3.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             toolSeparator3.Name = "toolSeparator3";
-            toolSeparator3.Size = new System.Drawing.Size(28, 6);
+            toolSeparator3.Size = new System.Drawing.Size(23, 6);
             // 
             // toolDecalsMode
             // 
@@ -368,7 +368,7 @@
             toolDecalsMode.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolDecalsMode.Margin = new System.Windows.Forms.Padding(1);
             toolDecalsMode.Name = "toolDecalsMode";
-            toolDecalsMode.Size = new System.Drawing.Size(28, 20);
+            toolDecalsMode.Size = new System.Drawing.Size(23, 20);
             toolDecalsMode.ToolTipText = "Toggle decals mode";
             toolDecalsMode.Click += toolDecalsMode_Click;
             // 
@@ -380,7 +380,7 @@
             Controls.Add(toolStrip);
             Margin = new System.Windows.Forms.Padding(0);
             Name = "ToolBox";
-            Size = new System.Drawing.Size(33, 523);
+            Size = new System.Drawing.Size(28, 523);
             toolStrip.ResumeLayout(false);
             toolStrip.PerformLayout();
             ResumeLayout(false);
