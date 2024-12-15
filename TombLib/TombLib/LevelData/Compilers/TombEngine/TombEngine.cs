@@ -240,7 +240,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Write mirrors
                 writer.Write((uint)_mirrors.Count);
-                writer.WriteBlockArray(_mirrors);
+                foreach (var mirror in _mirrors)
+                {
+                    writer.Write(mirror.RealRoom);
+					writer.Write(mirror.VirtualRoom);
+					writer.Write(mirror.Plane.X);
+					writer.Write(mirror.Plane.Y);
+					writer.Write(mirror.Plane.Z);
+					writer.Write(mirror.ReflectLara);
+					writer.Write(mirror.ReflectMoveables);
+					writer.Write(mirror.ReflectStatics);
+                    writer.Write(mirror.ReflectLights);
+				}
+				writer.WriteBlockArray(_mirrors);
 
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
