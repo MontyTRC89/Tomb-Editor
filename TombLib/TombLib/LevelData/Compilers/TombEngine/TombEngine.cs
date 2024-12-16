@@ -247,12 +247,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					writer.Write(mirror.Plane.X);
 					writer.Write(mirror.Plane.Y);
 					writer.Write(mirror.Plane.Z);
+					writer.Write(mirror.Plane.W);
 					writer.Write(mirror.ReflectLara);
 					writer.Write(mirror.ReflectMoveables);
 					writer.Write(mirror.ReflectStatics);
                     writer.Write(mirror.ReflectLights);
 				}
-				writer.WriteBlockArray(_mirrors);
 
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
