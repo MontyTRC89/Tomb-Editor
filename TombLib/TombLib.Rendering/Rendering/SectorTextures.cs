@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Numerics;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorStructs;
 
 namespace TombLib.Rendering
 {
@@ -42,7 +45,7 @@ namespace TombLib.Rendering
         Highlight
     }
 
-    public delegate SectorTextureResult SectorTextureGetDelegate(Room room, int x, int z, BlockFace face);
+    public delegate SectorTextureResult SectorTextureGetDelegate(Room room, int x, int z, SectorFace face);
 
     public struct SectorTextureResult
     {
@@ -101,7 +104,7 @@ namespace TombLib.Rendering
             SectorColoringShape.Rectangle
         };
 
-        public SectorTextureResult Get(Room room, int x, int z, BlockFace face)
+        public SectorTextureResult Get(Room room, int x, int z, SectorFace face)
         {
             SectorTexture SectorTexture = SectorTexture.None;
             Vector4 Color;
@@ -113,21 +116,21 @@ namespace TombLib.Rendering
             {
                 Color = ColoringInfo.SectorColorScheme.ColorWallLower;
 
-                if (room.Blocks[x, z].WallPortal != null)
+                if (room.Sectors[x, z].WallPortal != null)
                     Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
             }
             else if (face.IsMiddleWall())
             {
                 Color = ColoringInfo.SectorColorScheme.ColorWall;
 
-                if (room.Blocks[x, z].WallPortal != null)
+                if (room.Sectors[x, z].WallPortal != null)
                     Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
             }
             else if (face.IsCeilingWall())
             {
                 Color = ColoringInfo.SectorColorScheme.ColorWallUpper;
 
-                if (room.Blocks[x, z].WallPortal != null)
+                if (room.Sectors[x, z].WallPortal != null)
                     Color = ColoringInfo.SectorColorScheme.ColorPortalFace;
             }
             else if (face.IsFloor())
@@ -140,10 +143,10 @@ namespace TombLib.Rendering
                 else
                     Color = ColoringInfo.SectorColorScheme.ColorFloor;
 
-                if (room.Blocks[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
+                if (room.Sectors[x, z].Floor.DiagonalSplit != DiagonalSplit.None)
                 {
-                    if ((room.Blocks[x, z].Floor.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Floor) ||
-                        (room.Blocks[x, z].Floor.DiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.Floor_Triangle2))
+                    if ((room.Sectors[x, z].Floor.DiagonalSplit > DiagonalSplit.XpZp && face == SectorFace.Floor) ||
+                        (room.Sectors[x, z].Floor.DiagonalSplit <= DiagonalSplit.XpZp && face == SectorFace.Floor_Triangle2))
                         Dimmed = true;
                 }
             }
@@ -157,50 +160,50 @@ namespace TombLib.Rendering
                 else
                     Color = ColoringInfo.SectorColorScheme.ColorFloor;
 
-                if (room.Blocks[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
+                if (room.Sectors[x, z].Ceiling.DiagonalSplit != DiagonalSplit.None)
                 {
-                    if ((room.Blocks[x, z].Ceiling.DiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Ceiling) ||
-                        (room.Blocks[x, z].Ceiling.DiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.Ceiling_Triangle2))
+                    if ((room.Sectors[x, z].Ceiling.DiagonalSplit > DiagonalSplit.XpZp && face == SectorFace.Ceiling) ||
+                        (room.Sectors[x, z].Ceiling.DiagonalSplit <= DiagonalSplit.XpZp && face == SectorFace.Ceiling_Triangle2))
                         Dimmed = true;
                 }
             }
             else
-                throw new ArgumentOutOfRangeException("Unknown BlockFlag encountered.");
+                throw new ArgumentOutOfRangeException($"Unknown {nameof(SectorFace)} encountered.");
 
             // Draw climbable walls
             Direction direction = face.GetDirection();
-            RoomBlockPair lookupBlock;
+            RoomSectorPair lookupSector;
 
             switch (direction)
             {
                 case Direction.PositiveZ:
-                    lookupBlock = room.ProbeLowestBlock(x, z + 1, ProbeAttributesThroughPortals);
-                    if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeZ))
+                    lookupSector = room.ProbeLowestSector(x, z + 1, ProbeAttributesThroughPortals);
+                    if (lookupSector.Sector != null && lookupSector.Sector.HasFlag(SectorFlags.ClimbNegativeZ))
                         Color = ColoringInfo.SectorColorScheme.ColorClimb;
                     break;
                 case Direction.PositiveX:
-                    lookupBlock = room.ProbeLowestBlock(x + 1, z, ProbeAttributesThroughPortals);
-                    if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbNegativeX))
+                    lookupSector = room.ProbeLowestSector(x + 1, z, ProbeAttributesThroughPortals);
+                    if (lookupSector.Sector != null && lookupSector.Sector.HasFlag(SectorFlags.ClimbNegativeX))
                         Color = ColoringInfo.SectorColorScheme.ColorClimb;
                     break;
                 case Direction.NegativeZ:
-                    lookupBlock = room.ProbeLowestBlock(x, z - 1, ProbeAttributesThroughPortals);
-                    if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveZ))
+                    lookupSector = room.ProbeLowestSector(x, z - 1, ProbeAttributesThroughPortals);
+                    if (lookupSector.Sector != null && lookupSector.Sector.HasFlag(SectorFlags.ClimbPositiveZ))
                         Color = ColoringInfo.SectorColorScheme.ColorClimb;
                     break;
                 case Direction.NegativeX:
-                    lookupBlock = room.ProbeLowestBlock(x - 1, z, ProbeAttributesThroughPortals);
-                    if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(BlockFlags.ClimbPositiveX))
+                    lookupSector = room.ProbeLowestSector(x - 1, z, ProbeAttributesThroughPortals);
+                    if (lookupSector.Sector != null && lookupSector.Sector.HasFlag(SectorFlags.ClimbPositiveX))
                         Color = ColoringInfo.SectorColorScheme.ColorClimb;
                     break;
             }
 
             // Draw slopes
             if (DrawSlideDirections)
-                if (face == BlockFace.Floor || face == BlockFace.Floor_Triangle2)
+                if (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2)
                 {
-                    var slopeDirection = room.Blocks[x, z].GetFloorTriangleSlopeDirections()[face == BlockFace.Floor ? 0 : 1];
-                    bool flipped = room.Blocks[x, z].Floor.SplitDirectionIsXEqualsZ;
+                    var slopeDirection = room.Sectors[x, z].GetFloorTriangleSlopeDirections(Sector.SlopeCalculationMode.Legacy)[face == SectorFace.Floor ? 0 : 1];
+                    bool flipped = room.Sectors[x, z].Floor.SplitDirectionIsXEqualsZ;
                     switch (slopeDirection)
                     {
                         case Direction.PositiveX:
@@ -223,7 +226,7 @@ namespace TombLib.Rendering
 
             // Draw illegal slopes
             if (DrawIllegalSlopes)
-                if (face == BlockFace.Floor || face == BlockFace.Floor_Triangle2)
+                if (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2)
                     if (room.IsIllegalSlope(x, z))
                     {
                         SectorTexture = SectorTexture.illegal_slope;
@@ -267,14 +270,14 @@ namespace TombLib.Rendering
                 }
                 else
                 {
-                    BlockFaceType faceType = face.GetFaceType();
+                    SectorFaceType faceType = face.GetFaceType();
 
                     switch (direction)
                     {
                         case Direction.PositiveZ:
                             switch (faceType)
                             {
-                                case BlockFaceType.Floor:
+                                case SectorFaceType.Floor:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up; break;
@@ -288,7 +291,7 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Ceiling:
+                                case SectorFaceType.Ceiling:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_down; break;
@@ -302,7 +305,7 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Wall:
+                                case SectorFaceType.Wall:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_up_down; break;
@@ -321,7 +324,7 @@ namespace TombLib.Rendering
                         case Direction.PositiveX:
                             switch (faceType)
                             {
-                                case BlockFaceType.Floor:
+                                case SectorFaceType.Floor:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne; break;
@@ -335,7 +338,7 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Ceiling:
+                                case SectorFaceType.Ceiling:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_se; break;
@@ -349,7 +352,7 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Wall:
+                                case SectorFaceType.Wall:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_ne_se; break;
@@ -368,7 +371,7 @@ namespace TombLib.Rendering
                         case Direction.NegativeZ:
                             switch (faceType)
                             {
-                                case BlockFaceType.Floor:
+                                case SectorFaceType.Floor:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
@@ -382,7 +385,7 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Ceiling:
+                                case SectorFaceType.Ceiling:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
@@ -396,7 +399,7 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Wall:
+                                case SectorFaceType.Wall:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.cross; break;
@@ -415,7 +418,7 @@ namespace TombLib.Rendering
                         case Direction.NegativeX:
                             switch (faceType)
                             {
-                                case BlockFaceType.Floor:
+                                case SectorFaceType.Floor:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw; break;
@@ -429,7 +432,7 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Ceiling:
+                                case SectorFaceType.Ceiling:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_sw; break;
@@ -443,7 +446,7 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Wall:
+                                case SectorFaceType.Wall:
                                     switch (SelectionArrow)
                                     {
                                         case ArrowType.EdgeN: SectorTexture = SectorTexture.arrow_nw_sw; break;
@@ -462,8 +465,8 @@ namespace TombLib.Rendering
                         case Direction.Diagonal:
                             switch (faceType)
                             {
-                                case BlockFaceType.Floor:
-                                    switch (room.Blocks[x, z].Floor.DiagonalSplit)
+                                case SectorFaceType.Floor:
+                                    switch (room.Sectors[x, z].Floor.DiagonalSplit)
                                     {
                                         case DiagonalSplit.XnZp: // OK
                                             switch (SelectionArrow)
@@ -523,8 +526,8 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Ceiling:
-                                    switch (room.Blocks[x, z].Floor.DiagonalSplit)
+                                case SectorFaceType.Ceiling:
+                                    switch (room.Sectors[x, z].Floor.DiagonalSplit)
                                     {
                                         case DiagonalSplit.XnZp: // OK
                                             switch (SelectionArrow)
@@ -584,8 +587,8 @@ namespace TombLib.Rendering
                                     }
                                     break;
 
-                                case BlockFaceType.Wall:
-                                    switch (room.Blocks[x, z].Floor.DiagonalSplit)
+                                case SectorFaceType.Wall:
+                                    switch (room.Sectors[x, z].Floor.DiagonalSplit)
                                     {
                                         case DiagonalSplit.XnZp: // OK
                                             switch (SelectionArrow)

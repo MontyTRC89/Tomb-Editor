@@ -363,11 +363,15 @@ namespace TombIDE
 				_ide.IDEConfiguration.RememberedProject = string.Empty;
 				_ide.IDEConfiguration.Save();
 
-				// Restart the application (without any arguments)
-				Application.Restart();
+				// Restart the application (without any arguments) and reset the working directory
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = Application.ExecutablePath,
+					WorkingDirectory = Path.GetDirectoryName(Application.ExecutablePath)
+				});
 			}
-			else if (result == DialogResult.Cancel) // Cancel means the user closed the program
-				Application.Exit();
+
+			Application.Exit();
 		}
 
 		#endregion Event methods

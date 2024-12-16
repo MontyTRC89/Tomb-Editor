@@ -6,7 +6,7 @@ namespace TombLib.LevelData.IO
 {
     // TODO Add documentation for binary offsets of the chunks
     internal static class Prj2Chunks
-    {        
+    {
         public static HashSet<ChunkId> ChunkList => new HashSet<ChunkId>(typeof(Prj2Chunks).GetFields().Where(f => f.FieldType == typeof(ChunkId)).Select(v => v.GetValue(v)).Cast<ChunkId>());
 
         public static readonly byte[] MagicNumber = new byte[] { 0x50, 0x52, 0x4A, 0x32 };
@@ -101,6 +101,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId EventFunction = ChunkId.FromString("TeEventFunction");
         /**********/public static readonly ChunkId EventArgument = ChunkId.FromString("TeEventArgument");
         /**********/public static readonly ChunkId EventCallCounter = ChunkId.FromString("TeEventCallCounter");
+        /**********/public static readonly ChunkId EventEnabled = ChunkId.FromString("TeEventEnabled");
         /**********/public static readonly ChunkId EventNodePosition = ChunkId.FromString("TeEventNodePos");
         /**********/public static readonly ChunkId EventNodeNext = ChunkId.FromString("TeEventNodeNext");
         /**********/public static readonly ChunkId EventNodeElse = ChunkId.FromString("TeEventNodeElse");
@@ -211,8 +212,9 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectLight4 = ChunkId.FromString("TeLig4");
         /**********/public static readonly ChunkId ObjectLight5 = ChunkId.FromString("TeLig5");
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
-        /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri");
-        /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2");
+        /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri"); // DEPRECATED
+        /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2"); // DEPRECATED
+        /**********/public static readonly ChunkId ObjectTrigger3 = ChunkId.FromString("TeTri3");
         /**********/public static readonly ChunkId ObjectGhostBlock = ChunkId.FromString("TeGhost"); // DEPRECATED
         /**********/public static readonly ChunkId ObjectGhostBlock2 = ChunkId.FromString("TeGhost2");
         /**********/public static readonly ChunkId ObjectTriggerVolumeTest = ChunkId.FromString("TeVolumeTest");
@@ -228,6 +230,7 @@ namespace TombLib.LevelData.IO
         /************/public static readonly ChunkId ObjectTrigger2CodeBits = ChunkId.FromString("TeCo");
         /************/public static readonly ChunkId ObjectTrigger2OneShot = ChunkId.FromString("TeOS");
         /************/public static readonly ChunkId ObjectTrigger2LuaScript = ChunkId.FromString("TeTrLua"); // DEPRECATED
+        /************/public static readonly ChunkId ObjectTrigger3Plugin = ChunkId.FromString("TePl");
         /****/public static readonly ChunkId AutoMergeStaticMeshes = ChunkId.FromString("TeMergeStatics");
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry = ChunkId.FromString("TeMergeStaticsEntry");
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry2 = ChunkId.FromString("TeMergeStaticsEntry2");

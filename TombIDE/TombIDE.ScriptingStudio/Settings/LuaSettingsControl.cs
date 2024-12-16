@@ -223,6 +223,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			checkBox_Autocomplete.Checked = config.AutocompleteEnabled;
 			checkBox_WordWrapping.Checked = config.WordWrapping;
 
+			checkBox_CloseParentheses.Checked = config.AutoCloseParentheses;
 			checkBox_CloseBrackets.Checked = config.AutoCloseBrackets;
 			checkBox_CloseQuotes.Checked = config.AutoCloseQuotes;
 			checkBox_CloseBraces.Checked = config.AutoCloseBraces;
@@ -256,6 +257,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			config.AutocompleteEnabled = checkBox_Autocomplete.Checked;
 			config.WordWrapping = checkBox_WordWrapping.Checked;
 
+			config.AutoCloseParentheses = checkBox_CloseParentheses.Checked;
 			config.AutoCloseBrackets = checkBox_CloseBrackets.Checked;
 			config.AutoCloseQuotes = checkBox_CloseQuotes.Checked;
 			config.AutoCloseBraces = checkBox_CloseBraces.Checked;
@@ -285,6 +287,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			checkBox_Autocomplete.Checked = TextEditorBaseDefaults.AutocompleteEnabled;
 			checkBox_WordWrapping.Checked = TextEditorBaseDefaults.WordWrapping;
 
+			checkBox_CloseParentheses.Checked = TextEditorBaseDefaults.AutoCloseParentheses;
 			checkBox_CloseBrackets.Checked = TextEditorBaseDefaults.AutoCloseBrackets;
 			checkBox_CloseQuotes.Checked = TextEditorBaseDefaults.AutoCloseQuotes;
 			checkBox_CloseBraces.Checked = TextEditorBaseDefaults.AutoCloseBraces;

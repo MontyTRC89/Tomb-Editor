@@ -297,6 +297,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
                     {
+                        _animCommands.Add((int)command.Type);
+
                         switch (command.Type)
                         {
                             case WadAnimCommandType.SetPosition:
@@ -305,7 +307,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 newAnimation.CommandData.Add(new Vector3(command.Parameter1, command.Parameter2, command.Parameter3));
 
                                 break;
-
+								
                             case WadAnimCommandType.SetJumpDistance:
                                 newAnimation.CommandData.Add(2);
 
@@ -324,47 +326,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                {
-                                    newAnimation.CommandData.Add(5);
-
-                                    int soundID = (int)command.Parameter2 & 0xFFF;
-                                    int frameNumber = (int)command.Parameter1;
-                                    int envCond = 0;
-
-                                    int soundEnvFlag = (int)command.Parameter2 & 0xF000;
-                                    switch (soundEnvFlag)
-                                    {
-                                        // Always
-                                        default:
-                                        case 0:
-                                            break;
-
-                                        // Land
-                                        case (1 << 14):
-                                            envCond = 1;
-                                            break;
-
-                                        // Shallow water
-                                        case (1 << 15):
-                                            envCond = 2;
-                                            break;
-
-                                        // Quicksand
-                                        case (1 << 12):
-                                            envCond = 3;
-                                            break;
-
-                                        // Underwater
-                                        case (1 << 13):
-                                            envCond = 4;
-                                            break;
-                                    }
-
-                                    newAnimation.CommandData.Add(soundID);
-                                    newAnimation.CommandData.Add(frameNumber);
-                                    newAnimation.CommandData.Add(envCond);
-                                }
-
+                                newAnimation.CommandData.Add(5);
+                                newAnimation.CommandData.Add(command.Parameter2); // Sound ID
+                                newAnimation.CommandData.Add(command.Parameter1); // Frame number
+                                newAnimation.CommandData.Add(command.Parameter3); // Environment condition.
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
@@ -373,6 +338,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 newAnimation.CommandData.Add((int)command.Parameter2);
                                 newAnimation.CommandData.Add((int)command.Parameter1);
 
+                            case WadAnimCommandType.DisableInterpolation:
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
                                 break;
                         }
                     }
@@ -488,13 +455,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (short)_meshes.Count;
 
-                // TODO! replace with customizable data from trcatalog, properties, etc?
-                if (TrCatalog.IsStaticShatterable(TRVersion.Game.TombEngine, oldStaticMesh.Id.TypeId))
-                    newStaticMesh.ShatterType = (short)ShatterType.Fragment;
-                else
-                    newStaticMesh.ShatterType = (short)ShatterType.None;
-
-                newStaticMesh.ShatterSound = -1; // Default sound
+                newStaticMesh.ShatterType = oldStaticMesh.Shatter ? (short)ShatterType.Fragment : (short)ShatterType.None;
+                newStaticMesh.ShatterSound = (short)oldStaticMesh.ShatterSoundID;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))

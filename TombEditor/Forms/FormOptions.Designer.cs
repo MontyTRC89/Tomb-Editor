@@ -143,6 +143,8 @@
 			darkLabel16 = new DarkUI.Controls.DarkLabel();
 			panel3 = new DarkUI.Controls.DarkPanel();
 			darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
+			cmbRendering3DObjQuality = new DarkUI.Controls.DarkComboBox();
+			darkLabel80 = new DarkUI.Controls.DarkLabel();
 			darkCheckBox39 = new DarkUI.Controls.DarkCheckBox();
 			darkCheckBox36 = new DarkUI.Controls.DarkCheckBox();
 			cbGeometryLightPreview = new DarkUI.Controls.DarkCheckBox();
@@ -352,7 +354,7 @@
 			tabPage6.Location = new System.Drawing.Point(4, 22);
 			tabPage6.Name = "tabPage6";
 			tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			tabPage6.Size = new System.Drawing.Size(386, 511);
+			tabPage6.Size = new System.Drawing.Size(386, 484);
 			tabPage6.TabIndex = 16;
 			tabPage6.Text = "User interface";
 			// 
@@ -363,7 +365,7 @@
 			tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
 			tabSubPanel3.Location = new System.Drawing.Point(3, 3);
 			tabSubPanel3.Name = "tabSubPanel3";
-			tabSubPanel3.Size = new System.Drawing.Size(380, 505);
+			tabSubPanel3.Size = new System.Drawing.Size(380, 478);
 			tabSubPanel3.TabIndex = 0;
 			// 
 			// panel2
@@ -1123,10 +1125,10 @@
 			darkCheckBox15.AutoSize = true;
 			darkCheckBox15.Location = new System.Drawing.Point(6, 90);
 			darkCheckBox15.Name = "darkCheckBox15";
-			darkCheckBox15.Size = new System.Drawing.Size(257, 17);
+			darkCheckBox15.Size = new System.Drawing.Size(260, 17);
 			darkCheckBox15.TabIndex = 23;
 			darkCheckBox15.Tag = "UI_AutoSwitchSectorColoringInfo";
-			darkCheckBox15.Text = "Autoswitch block coloring on property hover";
+			darkCheckBox15.Text = "Autoswitch sector coloring on property hover";
 			// 
 			// darkCheckBox14
 			// 
@@ -1499,7 +1501,7 @@
 			tabPage1.Location = new System.Drawing.Point(4, 22);
 			tabPage1.Name = "tabPage1";
 			tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			tabPage1.Size = new System.Drawing.Size(386, 484);
+			tabPage1.Size = new System.Drawing.Size(386, 511);
 			tabPage1.TabIndex = 18;
 			tabPage1.Text = "3D window";
 			// 
@@ -1511,7 +1513,7 @@
 			tabSubPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			tabSubPanel1.Location = new System.Drawing.Point(3, 3);
 			tabSubPanel1.Name = "tabSubPanel1";
-			tabSubPanel1.Size = new System.Drawing.Size(380, 478);
+			tabSubPanel1.Size = new System.Drawing.Size(380, 505);
 			tabSubPanel1.TabIndex = 11;
 			// 
 			// darkGroupBox8
@@ -1523,7 +1525,7 @@
 			darkGroupBox8.Controls.Add(cmbRendering3DFont);
 			darkGroupBox8.Controls.Add(darkLabel16);
 			darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
-			darkGroupBox8.Location = new System.Drawing.Point(0, 410);
+			darkGroupBox8.Location = new System.Drawing.Point(0, 439);
 			darkGroupBox8.Name = "darkGroupBox8";
 			darkGroupBox8.Size = new System.Drawing.Size(363, 94);
 			darkGroupBox8.TabIndex = 22;
@@ -1598,11 +1600,13 @@
 			panel3.Location = new System.Drawing.Point(0, 0);
 			panel3.Name = "panel3";
 			panel3.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-			panel3.Size = new System.Drawing.Size(363, 410);
+			panel3.Size = new System.Drawing.Size(363, 439);
 			panel3.TabIndex = 21;
 			// 
 			// darkGroupBox4
 			// 
+			darkGroupBox4.Controls.Add(cmbRendering3DObjQuality);
+			darkGroupBox4.Controls.Add(darkLabel80);
 			darkGroupBox4.Controls.Add(darkCheckBox39);
 			darkGroupBox4.Controls.Add(darkCheckBox36);
 			darkGroupBox4.Controls.Add(cbGeometryLightPreview);
@@ -1628,10 +1632,30 @@
 			darkGroupBox4.Dock = System.Windows.Forms.DockStyle.Top;
 			darkGroupBox4.Location = new System.Drawing.Point(3, 0);
 			darkGroupBox4.Name = "darkGroupBox4";
-			darkGroupBox4.Size = new System.Drawing.Size(357, 407);
+			darkGroupBox4.Size = new System.Drawing.Size(357, 436);
 			darkGroupBox4.TabIndex = 19;
 			darkGroupBox4.TabStop = false;
 			darkGroupBox4.Text = "Rendering";
+			// 
+			// cmbRendering3DObjQuality
+			// 
+			cmbRendering3DObjQuality.FormattingEnabled = true;
+			cmbRendering3DObjQuality.Items.AddRange(new object[] { "High", "Medium", "Low" });
+			cmbRendering3DObjQuality.Location = new System.Drawing.Point(232, 407);
+			cmbRendering3DObjQuality.Name = "cmbRendering3DObjQuality";
+			cmbRendering3DObjQuality.Size = new System.Drawing.Size(123, 23);
+			cmbRendering3DObjQuality.TabIndex = 46;
+			cmbRendering3DObjQuality.Tag = "Rendering3D_ObjectQuality";
+			// 
+			// darkLabel80
+			// 
+			darkLabel80.AutoSize = true;
+			darkLabel80.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel80.Location = new System.Drawing.Point(3, 410);
+			darkLabel80.Name = "darkLabel80";
+			darkLabel80.Size = new System.Drawing.Size(223, 13);
+			darkLabel80.TabIndex = 44;
+			darkLabel80.Text = "Object rendering quality (requires restart):";
 			// 
 			// darkCheckBox39
 			// 
@@ -1809,9 +1833,9 @@
 			darkLabel14.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			darkLabel14.Location = new System.Drawing.Point(3, 381);
 			darkLabel14.Name = "darkLabel14";
-			darkLabel14.Size = new System.Drawing.Size(110, 13);
+			darkLabel14.Size = new System.Drawing.Size(115, 13);
 			darkLabel14.TabIndex = 19;
-			darkLabel14.Text = "Block outline width:";
+			darkLabel14.Text = "Sector outline width:";
 			// 
 			// darkNumericUpDown12
 			// 
@@ -2799,7 +2823,7 @@
 			tabPage9.Controls.Add(darkNumericUpDown43);
 			tabPage9.Location = new System.Drawing.Point(4, 22);
 			tabPage9.Name = "tabPage9";
-			tabPage9.Size = new System.Drawing.Size(386, 511);
+			tabPage9.Size = new System.Drawing.Size(386, 484);
 			tabPage9.TabIndex = 24;
 			tabPage9.Text = "Node editor";
 			// 
@@ -3285,5 +3309,7 @@
 		private DarkUI.Controls.DarkCheckBox cbPreciseGeometryControls;
 		private DarkUI.Controls.DarkLabel darkLabel79;
 		private DarkUI.Controls.DarkComboBox cmbGlobalEvent;
+		private DarkUI.Controls.DarkComboBox cmbRendering3DObjQuality;
+		private DarkUI.Controls.DarkLabel darkLabel80;
 	}
 }

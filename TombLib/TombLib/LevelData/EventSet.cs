@@ -24,7 +24,8 @@ namespace TombLib.LevelData
         OnSaveGame,
         OnLevelStart,
         OnLevelEnd,
-        OnUseItem
+        OnUseItem,
+        OnFreeze
     }
 
     public class Event : ICloneable, IEquatable<Event>
@@ -40,6 +41,7 @@ namespace TombLib.LevelData
         public bool Empty => (Mode == EventSetMode.NodeEditor && Nodes.Count == 0) || (Mode == EventSetMode.LevelScript && string.IsNullOrEmpty(Function));
 
         public int CallCounter { get; set; } = 0; // How many times event can be called
+        public bool Enabled { get; set; } = true; // Is event enabled or not
 
         public static List<EventType> GlobalEventTypes => Enum.GetValues(typeof(EventType)).Cast<EventType>().Where(t => t > EventType.OnVolumeLeave).ToList();
         public static List<EventType> VolumeEventTypes => Enum.GetValues(typeof(EventType)).Cast<EventType>().Where(t => t <= EventType.OnVolumeLeave).ToList();
@@ -55,6 +57,7 @@ namespace TombLib.LevelData
 
             evt.Argument = Argument;
             evt.Function = Function;
+            evt.Enabled = Enabled;
             evt.CallCounter = CallCounter;
             evt.Mode = Mode;
             evt.NodePosition = NodePosition;
@@ -70,6 +73,7 @@ namespace TombLib.LevelData
                 Mode == other.Mode &&
                 Function == other.Function &&
                 Argument == other.Argument &&
+                Enabled == other.Enabled &&
                 CallCounter == other.CallCounter &&
                 NodePosition == other.NodePosition &&
                 Nodes.Count == other.Nodes.Count &&
@@ -105,7 +109,9 @@ namespace TombLib.LevelData
                 writer.Write(Argument.Replace("\\n", "\n")); // Unconvert newline shortcut
             }
 
-            writer.Write(CallCounter != 0 ? CallCounter : _noCallCounter);
+            int callCount = (CallCounter != 0 ? CallCounter : _noCallCounter);
+            writer.Write(callCount);
+            writer.Write(Enabled);
         }
     }
 

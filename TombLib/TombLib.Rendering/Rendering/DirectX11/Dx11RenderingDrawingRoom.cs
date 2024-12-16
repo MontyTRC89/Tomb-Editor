@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Vector2 = System.Numerics.Vector2;
@@ -59,17 +61,17 @@ namespace TombLib.Rendering.DirectX11
                     editorUVAndSectorTexture[i] = editorUv;
                 }
                 {
-                    SectorInfo lastSectorInfo = new SectorInfo(-1, -1, BlockFace.Floor);
+                    SectorFaceIdentity lastFaceIdentity = new SectorFaceIdentity(-1, -1, SectorFace.Floor);
                     uint lastSectorTexture = 0;
                     uint overlay = 0;
                     for (int i = 0, triangleCount = singleSidedVertexCount / 3; i < triangleCount; ++i)
                     {
-                        SectorInfo currentSectorInfo = roomGeometry.TriangleSectorInfo[i];
-                        if (!lastSectorInfo.Equals(currentSectorInfo))
+                        SectorFaceIdentity currentFaceIdentity = roomGeometry.TriangleSectorInfo[i];
+                        if (!lastFaceIdentity.Equals(currentFaceIdentity))
                         {
-                            SectorTextureResult result = description.SectorTextureGet(description.Room, currentSectorInfo.Pos.X, currentSectorInfo.Pos.Y, currentSectorInfo.Face);
+                            SectorTextureResult result = description.SectorTextureGet(description.Room, currentFaceIdentity.Position.X, currentFaceIdentity.Position.Y, currentFaceIdentity.Face);
 
-                            lastSectorInfo = currentSectorInfo;
+                            lastFaceIdentity = currentFaceIdentity;
                             lastSectorTexture = 0;
                             if (result.SectorTexture != SectorTexture.None)
                             { // Use sector texture

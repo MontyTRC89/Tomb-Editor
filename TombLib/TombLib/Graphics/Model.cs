@@ -14,7 +14,7 @@ namespace TombLib.Graphics
         Room
     }
 
-    public abstract class Model<T, U> : IRenderableObject, IDisposable where U : struct
+    public abstract class Model<T, U> : IRenderableObject, IDisposable where U : unmanaged where T : IDisposable
     {
         public BoundingBox BoundingBox { get; set; }
         public List<T> Meshes { get; set; }
@@ -33,23 +33,10 @@ namespace TombLib.Graphics
 
         public abstract void UpdateBuffers(Vector3? position = null);
 
-        protected static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
-                                                      Vector3 color, Vector2 positionInAtlas)
-        {
-            var newVertex = new ObjectVertex();
-
-            newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / WadRenderer.TextureAtlasSize,
-                                       (positionInAtlas.Y + uv.Y) / WadRenderer.TextureAtlasSize);
-            newVertex.Color = color;
-
-            mesh.Vertices.Add(newVertex);
-            submesh.Indices.Add(mesh.Vertices.Count - 1);
-        }
-
         public void Dispose()
         {
-            
+            foreach (var m in Meshes)
+                m.Dispose();
         }
     }
 }

@@ -32,14 +32,15 @@ LevelFuncs.Engine.Node.ModifyValue = function(operand, reference, operator)
 end
 
 -- Helper function for easy generation of a display string with all parameters set.
-LevelFuncs.Engine.Node.GenerateString = function(text, x, y, scale, alignment, effects, color)
+LevelFuncs.Engine.Node.GenerateString = function(textOrKey, x, y, scale, alignment, effects, color, alpha)
 	local options = {}
 	if (effects == 1 or effects == 3) then table.insert(options, TEN.Strings.DisplayStringOption.SHADOW) end
 	if (effects == 2 or effects == 3) then table.insert(options, TEN.Strings.DisplayStringOption.BLINK) end
 	if (alignment == 1) then table.insert(options, TEN.Strings.DisplayStringOption.CENTER) end
 	if (alignment == 2) then table.insert(options, TEN.Strings.DisplayStringOption.RIGHT) end
+	if (alpha ~= nil) then color.a = alpha * 255 end
 	local rX, rY = TEN.Util.PercentToScreen(x, y)
-	return TEN.Strings.DisplayString(text, TEN.Vec2(rX, rY), scale, color, false, options)
+	return TEN.Strings.DisplayString(textOrKey, TEN.Vec2(rX, rY), scale, color, TEN.Flow.IsStringPresent(textOrKey), options)
 end
 
 -- Helper function to split string using specified delimiter.
@@ -164,6 +165,17 @@ LevelFuncs.Engine.Node.GetGameStatus = function(index)
 		[6] = Flow.GameStatus.LEVEL_COMPLETE
 	}
 	return gameStatus[index]
+end
+
+LevelFuncs.Engine.Node.GetFreezeMode = function(index)
+	local freezeMode =
+	{
+		[0] = Flow.FreezeMode.NONE,
+		[1] = Flow.FreezeMode.FULL,
+		[2] = Flow.FreezeMode.SPECTATOR,
+		[3] = Flow.FreezeMode.PLAYER
+	}
+	return freezeMode[index]
 end
 
 LevelFuncs.Engine.Node.SetPostProcessMode = function(index)

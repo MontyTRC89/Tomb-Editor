@@ -416,6 +416,9 @@ namespace TombLib.Wad.Tr4Wad
                                 if (newAnimation.EndFrame == 0 && command.Parameter1 > 0)
                                     command.Parameter1 = 0;
 
+                                // Convert animcommand conditions to a separate field.
+                                command.ConvertLegacyConditions();
+
                                 lastCommand += 3;
                                 break;
 
@@ -612,6 +615,7 @@ namespace TombLib.Wad.Tr4Wad
                                                       oldWad.Meshes[(int)oldWad.RealPointers[oldStaticMesh.PointersIndex]],
                                                       (int)oldStaticMesh.ObjectId);
 
+            staticMesh.Shatter = TrCatalog.IsStaticShatterable(wad.GameVersion, staticMesh.Id.TypeId);
             wad.Statics.Add(staticMesh.Id, staticMesh);
 
             return staticMesh;

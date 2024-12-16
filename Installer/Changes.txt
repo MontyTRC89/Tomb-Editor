@@ -1,17 +1,85 @@
+Version 1.7.3
+=============
+
+Tomb Editor:
+ * Fixed memory leaks while rendering wad objects.
+ * Fixed nodes randomly moving out of bounds.
+ * Fixed lists in nodes sometimes incorrectly saving selected value.
+ * Fixed lists in nodes giving an exception if no objects of specified type exist.
+ * Fixed incorrect slide direction calculations for sub-click heights.
+ * Fixed incorrect diagonal wall collision calculations below blocked portal sectors in TEN levels.
+ * Fixed incorrect normal calculations for opposite polygons sharing same vertices in TEN levels.
+ * Fixed garbage vertices in extremely large rooms in TEN levels.
+ * Added transparency field in text drawing nodes.
+ * Added OnFreeze global event handling and TEN nodes to get and set freeze mode.
+ * Added TEN node to check Lara's airborne status.
+ * Added TEN node to remove moveable effect.
+ * Added TEN nodes to get and set moveable collision state.
+ * Added TEN nodes to get and set hit points for a shatterable static mesh.
+ * Split flyby sequence path preview in case cut camera flag is present.
+ 
+WadTool:
+ * Added ability to customize static mesh shatter attributes for TEN wads.
+ * Added "Disable Interpolation" animcommand type for TEN wads.
+
+TombIDE:
+ * Added new "More Actions..." menu in place of "Exit Project" button.
+ * Added the ability to re-apply an engine update.
+ * Improved autocomplete popup visuals for TRNG scripting.
+ * TombEngine.wad2 will now be added into a dedicated "Assets" folder when creating a new TEN project.
+
 Version 1.7.2
 =============
 
 Tomb Editor:
- * Improved geometry manipulation and texturing performance.
+ * Added native support for TRNG plugin triggers.
+ * Added smaller texture selection sizes into the texturing panel.
+ * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
+ * Added TEN nodes for revolving / stopping the revolution of an object around other object (vertically and horizontally).
  * Added TEN nodes for checking and modifying last used inventory object.
- * Added TEN node to check if a particular sound is playing
- * Added TEN node to generate particles from a static object
+ * Added TEN nodes to generate particles from a static object or from a volume.
+ * Added TEN node to check if a particular sound is playing.
+ * Added TEN node to activate a camera.
+ * Added TEN node to attach the game camera to a moveable.
+ * Added TEN node to reset game camera if it has been modified.
+ * Added optional offset to TEN nodes for adding dynamic lighting to moveable or static objects.
  * Added handling for OnUseItem event in node editor.
+ * Added ability to enable or disable particular event.
  * Added drag-n-drop support for object ID controls in node editor.
  * Increased TEN flipmap count up to 255.
+ * Improved geometry manipulation and texturing performance.
+ * Improved "Edit volume" window's initial opening time.
+ * Improved Particle Generator nodes to allow user to choose a sprite number to use up to 100.
+ * Improved slope detection for more precise steps.
+ * Fixed illegal generation of slanted portals.
  * Fixed wrong bone offsets for custom Lara outfits.
  * Fixed title bar using dark mode even if Windows theme is not set to dark.
  * Fixed incorrect sounds for all classic override TEN sound catalogs.
+ * Fixed "Set specified mesh visibility" TEN node.
+ * Fixed text nodes to allow usage of string keys in external script files.
+ * Fixed Trigger Window assigning wrong ExtraNG String IDs when path to Script directory is set up.
+ * Fixed UI for Emit Particle Node as previously hidden the source and destination point when the name was too long.
+ * Fixed ghost blocks not rotating when transforming rooms.
+ * Fixed textures at extra split level not rotating when transforming rooms.
+
+WadTool:
+ * Added "In quicksand" and "Underwater" sound conditions for TEN.
+ * Fixed TR2 BIG_SPIDER sounds remapping incorrectly for TEN.
+ * Fixed animcommand editor incorrectly pasting selected command to selected frames if framerate is bigger than 1.
+
+TombIDE:
+ * Updated FLEP for new TRNG projects.
+ * FLEP widescreen patch will now be installed by default for new projects.
+ * Updated Plugin_Video for new TRNG projects - now makes the game DPI-aware.
+ * Updated TR1X preset to 4.5.1.
+ * When creating a new script file, the correct file format will now be automatically selected, depending on the current engine.
+ * Added the option to turn off auto closing of parentheses when working with .lua files.
+ * Fixed infinite loop when trying to switch projects after opening a .trproj file.
+ * Fixed Gameflow.lua not automatically saving when creating new levels in a TEN project.
+ 
+TEN Base WAD:
+ * Changed stateID for animation 440 of LARA to 37 to fix errors when pulling the draggable body.
+ * Removed ANIMATING2 as it has been superseded by MINECART_SWITCH 
 
 Version 1.7.1
 =============

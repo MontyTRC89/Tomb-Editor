@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -31,7 +32,7 @@ namespace TombLib.LevelData.IO
             public byte _txtTriangle;
         }
 
-        private struct PrjBlock
+        private struct PrjSector
         {
             public PrjFace[] _faces;
             public PortalOpacity _floorOpacity;
@@ -64,7 +65,7 @@ namespace TombLib.LevelData.IO
 
         private struct PrjRoom
         {
-            public PrjBlock[,] _blocks;
+            public PrjSector[,] _sectors;
             public HashSet<int> _portals;
             public short _flipRoom;
             public short _flipGroup;
@@ -93,7 +94,7 @@ namespace TombLib.LevelData.IO
             public bool Invisible;
         }
 
-        public static Level LoadFromPrj(string filename, string soundsPath, 
+        public static Level LoadFromPrj(string filename, string soundsPath,
                                         bool remapFlybyBitmask, bool adjustUV,
                                         IProgressReporter progressReporter, CancellationToken cancelToken)
         {
@@ -178,16 +179,16 @@ namespace TombLib.LevelData.IO
 
                     reader.ReadBytes(6);
 
-                    short numZBlocks = reader.ReadInt16();
-                    short numXBlocks = reader.ReadInt16();
-                    short posZBlocks = reader.ReadInt16();
-                    short posXBlocks = reader.ReadInt16();
+                    short numZSectors = reader.ReadInt16();
+                    short numXSectors = reader.ReadInt16();
+                    short posZSectors = reader.ReadInt16();
+                    short posXSectors = reader.ReadInt16();
 
                     reader.ReadBytes(2);
 
                     // Create room
-                    var room = new Room(level, numXBlocks, numZBlocks, Vector3.One, roomName);
-                    room.Position = new VectorInt3(posXBlocks, yPos / -256, posZBlocks);
+                    var room = new Room(level, numXSectors, numZSectors, Vector3.One, roomName);
+                    room.Position = new VectorInt3(posXSectors, yPos / -256, posZSectors);
                     var tempRoom = new PrjRoom();
 
                     // Read portals
@@ -208,8 +209,8 @@ namespace TombLib.LevelData.IO
                         ushort direction = reader.ReadUInt16();
                         short portalZ = reader.ReadInt16();
                         short portalX = reader.ReadInt16();
-                        short portalZBlocks = reader.ReadInt16();
-                        short portalXBlocks = reader.ReadInt16();
+                        short portalZSectors = reader.ReadInt16();
+                        short portalXSectors = reader.ReadInt16();
                         reader.ReadInt16();
                         short thisRoomIndex = reader.ReadInt16();
                         short portalOppositeSlot = reader.ReadInt16();
@@ -253,7 +254,7 @@ namespace TombLib.LevelData.IO
 
                         tempPortals.Add(portalThings[j], new PrjPortal
                         {
-                            _area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
+                            _area = GetArea(room, 0, portalX, portalZ, portalXSectors, portalZSectors),
                             _direction = directionEnum,
                             _thisRoomIndex = thisRoomIndex,
                             _oppositePortalId = portalOppositeSlot,
@@ -453,7 +454,7 @@ namespace TombLib.LevelData.IO
 
                                 ushort? triggerTimer, triggerExtra;
                                 NG.NgParameterInfo.DecodeNGRealTimer(triggerTargetTypeEnum, triggerTypeEnum, triggerItemNumber, triggerRealTimer, triggerFlags, out triggerTimer, out triggerExtra);
-                                
+
                                 // Identify NG fake collision triggers and ditch them
                                 if (isNg && triggerTargetTypeEnum == TriggerTargetType.FlipEffect &&
                                     triggerItemNumber >= 310 && triggerItemNumber <= 330)
@@ -577,8 +578,8 @@ namespace TombLib.LevelData.IO
                                 {
                                     Position = position,
                                     Color = new Vector3(lightR / 128.0f, lightG / 128.0f, lightB / 128.0f),
-                                    InnerRange = lightIn  / Level.BlockSizeUnit,
-                                    OuterRange = lightOut / Level.BlockSizeUnit,
+                                    InnerRange = lightIn  / Level.SectorSizeUnit,
+                                    OuterRange = lightOut / Level.SectorSizeUnit,
                                     Intensity = lightIntensity / 8192.0f
                                 };
 
@@ -593,8 +594,8 @@ namespace TombLib.LevelData.IO
                                 // Spot light's have the inner and outer range swapped with angle in winroomedit
                                 if (lightType == LightType.Spot)
                                 {
-                                    light.InnerRange = lightLen / Level.BlockSizeUnit;
-                                    light.OuterRange = lightCut / Level.BlockSizeUnit;
+                                    light.InnerRange = lightLen / Level.SectorSizeUnit;
+                                    light.OuterRange = lightCut / Level.SectorSizeUnit;
                                     light.OuterAngle = lightOut;
                                     light.InnerAngle = lightIn;
                                 }
@@ -700,81 +701,81 @@ namespace TombLib.LevelData.IO
                     room.Properties.FlagOutside = (flags1 & 0x0020) != 0;
                     room.Properties.FlagNoLensflare = (flags1 & 0x0080) != 0;
 
-                    // Read blocks
-                    tempRoom._blocks = new PrjBlock[numXBlocks, numZBlocks];
+                    // Read sectors
+                    tempRoom._sectors = new PrjSector[numXSectors, numZSectors];
                     for (int x = 0; x < room.NumXSectors; x++)
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
                             cancelToken.ThrowIfCancellationRequested();
 
-                            short blockType = reader.ReadInt16();
-                            short blockFlags1 = reader.ReadInt16();
-                            short blockYfloor = reader.ReadInt16();
-                            short blockYceiling = reader.ReadInt16();
+                            short sectorType = reader.ReadInt16();
+                            short sectorFlags1 = reader.ReadInt16();
+                            short sectorYfloor = reader.ReadInt16();
+                            short sectorYceiling = reader.ReadInt16();
 
-                            var block = room.Blocks[x, z];
-                            switch (blockType)
+                            var sector = room.Sectors[x, z];
+                            switch (sectorType)
                             {
                                 case 0x01:
                                 case 0x05:
                                 case 0x07:
                                 case 0x03:
-                                    block.Type = BlockType.Floor;
+                                    sector.Type = SectorType.Floor;
                                     break;
                                 case 0x1e:
-                                    block.Type = BlockType.BorderWall;
+                                    sector.Type = SectorType.BorderWall;
                                     break;
                                 case 0x0e:
-                                    block.Type = BlockType.Wall;
+                                    sector.Type = SectorType.Wall;
                                     break;
                                 case 0x06:
-                                    block.Type = BlockType.BorderWall;
+                                    sector.Type = SectorType.BorderWall;
                                     break;
                                 default:
-                                    block.Type = BlockType.Floor;
+                                    sector.Type = SectorType.Floor;
                                     break;
                             }
 
-                            block.Floor.XpZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XnZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XnZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
-                            block.Floor.XpZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor);
+                            sector.Floor.XpZn = (short)Clicks.ToWorld(reader.ReadSByte() + sectorYfloor);
+                            sector.Floor.XnZn = (short)Clicks.ToWorld(reader.ReadSByte() + sectorYfloor);
+                            sector.Floor.XnZp = (short)Clicks.ToWorld(reader.ReadSByte() + sectorYfloor);
+                            sector.Floor.XpZp = (short)Clicks.ToWorld(reader.ReadSByte() + sectorYfloor);
 
-                            block.Ceiling.XpZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XnZp = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XnZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
-                            block.Ceiling.XpZn = (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling);
+                            sector.Ceiling.XpZp = (short)Clicks.ToWorld(reader.ReadSByte() + sectorYceiling);
+                            sector.Ceiling.XnZp = (short)Clicks.ToWorld(reader.ReadSByte() + sectorYceiling);
+                            sector.Ceiling.XnZn = (short)Clicks.ToWorld(reader.ReadSByte() + sectorYceiling);
+                            sector.Ceiling.XpZn = (short)Clicks.ToWorld(reader.ReadSByte() + sectorYceiling);
 
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
-                            block.SetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYfloor));
+                            sector.SetHeight(SectorVerticalPart.Floor2, SectorEdge.XpZn, (short)Clicks.ToWorld(reader.ReadSByte() + sectorYfloor));
+                            sector.SetHeight(SectorVerticalPart.Floor2, SectorEdge.XnZn, (short)Clicks.ToWorld(reader.ReadSByte() + sectorYfloor));
+                            sector.SetHeight(SectorVerticalPart.Floor2, SectorEdge.XnZp, (short)Clicks.ToWorld(reader.ReadSByte() + sectorYfloor));
+                            sector.SetHeight(SectorVerticalPart.Floor2, SectorEdge.XpZp, (short)Clicks.ToWorld(reader.ReadSByte() + sectorYfloor));
 
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZp, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XnZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
-                            block.SetHeight(BlockVertical.CeilingSubdivision2, BlockEdge.XpZn, (short)Clicks.ToWorld(reader.ReadSByte() + blockYceiling));
+                            sector.SetHeight(SectorVerticalPart.Ceiling2, SectorEdge.XpZp, (short)Clicks.ToWorld(reader.ReadSByte() + sectorYceiling));
+                            sector.SetHeight(SectorVerticalPart.Ceiling2, SectorEdge.XnZp, (short)Clicks.ToWorld(reader.ReadSByte() + sectorYceiling));
+                            sector.SetHeight(SectorVerticalPart.Ceiling2, SectorEdge.XnZn, (short)Clicks.ToWorld(reader.ReadSByte() + sectorYceiling));
+                            sector.SetHeight(SectorVerticalPart.Ceiling2, SectorEdge.XpZn, (short)Clicks.ToWorld(reader.ReadSByte() + sectorYceiling));
 
-                            if ((blockFlags1 & 0x4000) != 0)
-                                block.Flags |= BlockFlags.Monkey;
-                            if ((blockFlags1 & 0x0020) != 0)
-                                block.Flags |= BlockFlags.Box;
-                            if ((blockFlags1 & 0x0010) != 0)
-                                block.Flags |= BlockFlags.DeathFire;
-                            if ((blockFlags1 & 0x0200) != 0)
-                                block.Flags |= BlockFlags.ClimbNegativeX;
-                            if ((blockFlags1 & 0x0100) != 0)
-                                block.Flags |= BlockFlags.ClimbNegativeZ;
-                            if ((blockFlags1 & 0x0080) != 0)
-                                block.Flags |= BlockFlags.ClimbPositiveX;
-                            if ((blockFlags1 & 0x0040) != 0)
-                                block.Flags |= BlockFlags.ClimbPositiveZ;
+                            if ((sectorFlags1 & 0x4000) != 0)
+                                sector.Flags |= SectorFlags.Monkey;
+                            if ((sectorFlags1 & 0x0020) != 0)
+                                sector.Flags |= SectorFlags.Box;
+                            if ((sectorFlags1 & 0x0010) != 0)
+                                sector.Flags |= SectorFlags.DeathFire;
+                            if ((sectorFlags1 & 0x0200) != 0)
+                                sector.Flags |= SectorFlags.ClimbNegativeX;
+                            if ((sectorFlags1 & 0x0100) != 0)
+                                sector.Flags |= SectorFlags.ClimbNegativeZ;
+                            if ((sectorFlags1 & 0x0080) != 0)
+                                sector.Flags |= SectorFlags.ClimbPositiveX;
+                            if ((sectorFlags1 & 0x0040) != 0)
+                                sector.Flags |= SectorFlags.ClimbPositiveZ;
 
-                            // Read temp blocks that contain texturing informations that will be needed later
-                            var tempBlock = new PrjBlock { _faces = new PrjFace[14] };
+                            // Read temp sectors that contain texturing information that will be needed later
+                            var tempSector = new PrjSector { _faces = new PrjFace[14] };
                             for (int j = 0; j < 14; j++)
                             {
-                                tempBlock._faces[j] = new PrjFace
+                                tempSector._faces[j] = new PrjFace
                                 {
                                     _txtType = reader.ReadInt16(),
                                     _txtIndex = reader.ReadByte(),
@@ -787,32 +788,32 @@ namespace TombLib.LevelData.IO
 
                             if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1)
                             {
-                                if ((blockFlags1 & 0x0008) != 0)
-                                    tempBlock._wallOpacity = (blockFlags1 & 0x1000) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
+                                if ((sectorFlags1 & 0x0008) != 0)
+                                    tempSector._wallOpacity = (sectorFlags1 & 0x1000) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
                             }
                             else
                             {
-                                if ((blockFlags1 & 0x0002) != 0)
-                                    tempBlock._floorOpacity = (blockFlags1 & 0x0800) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
+                                if ((sectorFlags1 & 0x0002) != 0)
+                                    tempSector._floorOpacity = (sectorFlags1 & 0x0800) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
 
-                                if ((blockFlags1 & 0x0004) != 0)
-                                    tempBlock._ceilingOpacity = (blockFlags1 & 0x0400) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
+                                if ((sectorFlags1 & 0x0004) != 0)
+                                    tempSector._ceilingOpacity = (sectorFlags1 & 0x0400) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
                             }
 
                             // Read more flags
-                            short blockFlags2 = reader.ReadInt16();
-                            short blockFlags3 = reader.ReadInt16();
+                            short sectorFlags2 = reader.ReadInt16();
+                            short sectorFlags3 = reader.ReadInt16();
 
-                            tempBlock._hasNoCollisionFloor = (blockFlags2 & 0x06) != 0;
-                            tempBlock._hasNoCollisionCeiling = (blockFlags2 & 0x18) != 0;
+                            tempSector._hasNoCollisionFloor = (sectorFlags2 & 0x06) != 0;
+                            tempSector._hasNoCollisionCeiling = (sectorFlags2 & 0x18) != 0;
 
-                            if ((blockFlags2 & 0x0040) != 0)
-                                block.Flags |= BlockFlags.Beetle;
-                            if ((blockFlags2 & 0x0020) != 0)
-                                block.Flags |= BlockFlags.TriggerTriggerer;
-                            block.Floor.SplitDirectionToggled = (blockFlags3 & 0x1) != 0;
+                            if ((sectorFlags2 & 0x0040) != 0)
+                                sector.Flags |= SectorFlags.Beetle;
+                            if ((sectorFlags2 & 0x0020) != 0)
+                                sector.Flags |= SectorFlags.TriggerTriggerer;
+                            sector.Floor.SplitDirectionToggled = (sectorFlags3 & 0x1) != 0;
 
-                            tempRoom._blocks[x, z] = tempBlock;
+                            tempRoom._sectors[x, z] = tempSector;
                         }
 
                     room.NormalizeRoomY();
@@ -943,7 +944,7 @@ namespace TombLib.LevelData.IO
                                             // In this case we can extend the scope of the alternate room portal
                                             // to the base room and set 'ForceFloorSolid' in the base room.
                                             basePortalLinks[x, z] = alternatePortalLinks[x, z];
-                                            room.Blocks[x, z].ForceFloorSolid = true;
+                                            room.Sectors[x, z].ForceFloorSolid = true;
                                         }
                                     }
                                     else
@@ -952,7 +953,7 @@ namespace TombLib.LevelData.IO
                                         {
                                             // Portal in the base room.  But we need to make sure that there won't be
                                             // a portal in the alternate room by setting it's 'ForceFloorSolid'.
-                                            room.AlternateRoom.Blocks[x, z].ForceFloorSolid = true;
+                                            room.AlternateRoom.Sectors[x, z].ForceFloorSolid = true;
                                         }
                                         else if (basePortalLinks[x, z].Key == alternatePortalLinks[x, z].Key &&
                                             basePortalLinks[x, z].Value == alternatePortalLinks[x, z].Value)
@@ -1096,8 +1097,8 @@ namespace TombLib.LevelData.IO
                             portal.Opacity = PortalOpacity.None;
                             for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
                                 for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
-                                    if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) > portal.Opacity)
-                                        portal.Opacity = tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction);
+                                    if (tempRoom.Value._sectors[x, z].GetOpacity(portal.Direction) > portal.Opacity)
+                                        portal.Opacity = tempRoom.Value._sectors[x, z].GetOpacity(portal.Direction);
 
                             // Fixup inconsistent opacity
                             // If a portal needs to have a higher type of opacity than indivual sectors
@@ -1105,38 +1106,38 @@ namespace TombLib.LevelData.IO
                             if (portal.Opacity != PortalOpacity.None)
                                 for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
                                     for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
-                                        if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) <= PortalOpacity.None)
+                                        if (tempRoom.Value._sectors[x, z].GetOpacity(portal.Direction) <= PortalOpacity.None)
                                             switch (portal.Direction)
                                             {
                                                 case PortalDirection.Floor:
                                                     if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).AnyType == Room.RoomConnectionType.FullPortal)
                                                     {
-                                                        tempRoom.Value._blocks[x, z]._faces[0]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                        tempRoom.Value._blocks[x, z]._faces[8]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                        tempRoom.Value._sectors[x, z]._faces[0]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                        tempRoom.Value._sectors[x, z]._faces[8]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                     }
                                                     break;
                                                 case PortalDirection.Ceiling:
                                                     if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)).AnyType == Room.RoomConnectionType.FullPortal)
                                                     {
-                                                        tempRoom.Value._blocks[x, z]._faces[1]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                        tempRoom.Value._blocks[x, z]._faces[9]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                        tempRoom.Value._sectors[x, z]._faces[1]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                        tempRoom.Value._sectors[x, z]._faces[9]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                     }
                                                     break;
                                                 case PortalDirection.WallNegativeX:
                                                 case PortalDirection.WallPositiveX:
-                                                    tempRoom.Value._blocks[x, z]._faces[4]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                    tempRoom.Value._sectors[x, z]._faces[4]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                     break;
                                                 case PortalDirection.WallNegativeZ:
                                                 case PortalDirection.WallPositiveZ:
-                                                    tempRoom.Value._blocks[x, z]._faces[7]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                    tempRoom.Value._sectors[x, z]._faces[7]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                     break;
                                             }
 
                             if (portal.Opacity != PortalOpacity.SolidFaces && portal.Direction != PortalDirection.Ceiling)
                                 for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
                                     for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
-                                        if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) == PortalOpacity.SolidFaces)
-                                            room.Blocks[x, z].ForceFloorSolid = true;
+                                        if (tempRoom.Value._sectors[x, z].GetOpacity(portal.Direction) == PortalOpacity.SolidFaces)
+                                            room.Sectors[x, z].ForceFloorSolid = true;
 
                             // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
                             // the water flag differs.
@@ -1155,12 +1156,12 @@ namespace TombLib.LevelData.IO
                                 switch (portal.Direction)
                                 {
                                     case PortalDirection.Ceiling:
-                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, 1, 9, prjBlock => prjBlock._hasNoCollisionCeiling,
+                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, 1, 9, prjSector => prjSector._hasNoCollisionCeiling,
                                             (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r0, r1, b0, b1));
                                         break;
 
                                     case PortalDirection.Floor:
-                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, 0, 8, prjBlock => prjBlock._hasNoCollisionFloor,
+                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, 0, 8, prjSector => prjSector._hasNoCollisionFloor,
                                             (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r1, r0, b1, b0));
                                         break;
                                 }
@@ -1190,8 +1191,8 @@ namespace TombLib.LevelData.IO
                                     case Room.RoomConnectionType.TriangularPortalXpZn:
                                     case Room.RoomConnectionType.TriangularPortalXnZp:
                                     case Room.RoomConnectionType.TriangularPortalXpZp:
-                                        if (!tempRoom.Value._blocks[x, z]._hasNoCollisionFloor)
-                                            room.Blocks[x, z].ForceFloorSolid = true;
+                                        if (!tempRoom.Value._sectors[x, z]._hasNoCollisionFloor)
+                                            room.Sectors[x, z].ForceFloorSolid = true;
                                         break;
                                 }
                             }
@@ -1220,7 +1221,7 @@ namespace TombLib.LevelData.IO
 
                             for (int x = portal.Area.X0; x <= portal.Area.X1; ++x)
                                 for (int z = portal.Area.Y0; z <= portal.Area.Y1; ++z)
-                                    room.Blocks[x, z].ForceFloorSolid = false;
+                                    room.Sectors[x, z].ForceFloorSolid = false;
                         }
                     }
 
@@ -1473,11 +1474,11 @@ namespace TombLib.LevelData.IO
                             cancelToken.ThrowIfCancellationRequested();
 
                             instance.Target = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Target,
-                                NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer), objectLookup, progressReporter);
+                                NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer, instance.Plugin), objectLookup, progressReporter);
                             instance.Timer  = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Timer,
-                                NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target), objectLookup, progressReporter);
+                                NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Plugin), objectLookup, progressReporter);
                             instance.Extra = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Extra,
-                                NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer), objectLookup, progressReporter);
+                                NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer, instance.Plugin, out _), objectLookup, progressReporter);
 
                             // Sinks and cameras are classified as 'object's most of time for some reason.
                             // We have to fix that.
@@ -1573,7 +1574,7 @@ namespace TombLib.LevelData.IO
                         texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
                     }
                 }
-                
+
 
                 // Try to parse bump mapping and recognize *.prj TRNG's
                 if (reader.BaseStream.Length - reader.BaseStream.Position < 256)
@@ -1670,7 +1671,7 @@ namespace TombLib.LevelData.IO
                 // Build geometry
                 progressReporter?.ReportProgress(80, "Building geometry");
                 foreach (var room in level.ExistingRooms)
-                    room.BuildGeometry(true);
+                    room.BuildGeometry(useLegacyCode: true);
 
                 // Build faces
                 progressReporter?.ReportProgress(85, "Texturize faces");
@@ -1686,280 +1687,280 @@ namespace TombLib.LevelData.IO
                         {
                             cancelToken.ThrowIfCancellationRequested();
 
-                            var prjBlock = tempRooms[i]._blocks[x, z];
+                            var prjSector = tempRooms[i]._sectors[x, z];
 
                             // 0: BLOCK_TEX_FLOOR
-                            LoadTextureArea(room, x, z, BlockFace.Floor, texture, tempTextures, prjBlock._faces[0], progressReporter);
+                            LoadTextureArea(room, x, z, SectorFace.Floor, texture, tempTextures, prjSector._faces[0], progressReporter);
 
                             // 1: BLOCK_TEX_CEILING
-                            LoadTextureArea(room, x, z, BlockFace.Ceiling, texture, tempTextures, prjBlock._faces[1], progressReporter);
+                            LoadTextureArea(room, x, z, SectorFace.Ceiling, texture, tempTextures, prjSector._faces[1], progressReporter);
 
                             // 2: BLOCK_TEX_N4 (North QA)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_QA) ||
-                                room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_FloorSubdivision2))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_QA) ||
+                                room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Floor2))
                             {
-                                if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_QA) &&
-                                    room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_FloorSubdivision2) ||
-                                    !IsUndefinedButHasArea(room, x, z, BlockFace.Wall_NegativeX_QA))
+                                if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_QA) &&
+                                    room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Floor2) ||
+                                    !IsUndefinedButHasArea(room, x, z, SectorFace.Wall_NegativeX_QA))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_FloorSubdivision2, texture, tempTextures, prjBlock._faces[10], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_Floor2, texture, tempTextures, prjSector._faces[10], progressReporter);
                                 }
                             }
                             else
                             {
                                 if (x > 0)
-                                    if (room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_QA) &&
-                                        room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_FloorSubdivision2) ||
-                                        !IsUndefinedButHasArea(room, x - 1, z, BlockFace.Wall_PositiveX_QA))
+                                    if (room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_QA) &&
+                                        room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_Floor2) ||
+                                        !IsUndefinedButHasArea(room, x - 1, z, SectorFace.Wall_PositiveX_QA))
                                     {
-                                        LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_FloorSubdivision2, texture, tempTextures, prjBlock._faces[10], progressReporter);
+                                        LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_Floor2, texture, tempTextures, prjSector._faces[10], progressReporter);
                                     }
                             }
 
 
                             // 3: BLOCK_TEX_N1 (North RF)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_CeilingSubdivision2) ||
-                                room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_WS))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Ceiling2) ||
+                                room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_WS))
                             {
-                                if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_CeilingSubdivision2) &&
-                                    !room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_WS))
+                                if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Ceiling2) &&
+                                    !room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_WS))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_CeilingSubdivision2, texture, tempTextures, prjBlock._faces[3], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_Ceiling2, texture, tempTextures, prjSector._faces[3], progressReporter);
                                 }
-                                else if (!room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_CeilingSubdivision2) &&
-                                    room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_WS))
+                                else if (!room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Ceiling2) &&
+                                    room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_WS))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_WS, texture, tempTextures, prjBlock._faces[3], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_WS, texture, tempTextures, prjSector._faces[3], progressReporter);
                                 }
                                 else
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_CeilingSubdivision2, texture, tempTextures, prjBlock._faces[3], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_Ceiling2, texture, tempTextures, prjSector._faces[3], progressReporter);
                                 }
                             }
                             else
                             {
                                 if (x > 0)
-                                    if (room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_CeilingSubdivision2) &&
-                                        !room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_WS))
+                                    if (room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_Ceiling2) &&
+                                        !room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_WS))
                                     {
-                                        LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_CeilingSubdivision2, texture, tempTextures, prjBlock._faces[3], progressReporter);
+                                        LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_Ceiling2, texture, tempTextures, prjSector._faces[3], progressReporter);
                                     }
-                                    else if (!room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_CeilingSubdivision2) &&
-                                        room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_WS))
+                                    else if (!room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_Ceiling2) &&
+                                        room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_WS))
                                     {
-                                        LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_WS, texture, tempTextures, prjBlock._faces[3], progressReporter);
+                                        LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_WS, texture, tempTextures, prjSector._faces[3], progressReporter);
                                     }
                                     else
                                     {
-                                        LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_CeilingSubdivision2, texture, tempTextures, prjBlock._faces[3], progressReporter);
+                                        LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_Ceiling2, texture, tempTextures, prjSector._faces[3], progressReporter);
                                     }
                             }
 
                             // 4: BLOCK_TEX_N3 (North middle)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_Middle))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Middle))
                             {
-                                LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_Middle, texture, tempTextures, prjBlock._faces[4], progressReporter);
+                                LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_Middle, texture, tempTextures, prjSector._faces[4], progressReporter);
                             }
                             else
                             {
                                 if (x > 0)
-                                    LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_Middle, texture, tempTextures, prjBlock._faces[4], progressReporter);
+                                    LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_Middle, texture, tempTextures, prjSector._faces[4], progressReporter);
                             }
 
                             // 5: BLOCK_TEX_W4 (West QA)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_QA) ||
-                                room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_FloorSubdivision2))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_QA) ||
+                                room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Floor2))
                             {
-                                if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_QA) &&
-                                    room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_FloorSubdivision2) ||
-                                    !IsUndefinedButHasArea(room, x, z, BlockFace.Wall_NegativeZ_QA))
+                                if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_QA) &&
+                                    room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Floor2) ||
+                                    !IsUndefinedButHasArea(room, x, z, SectorFace.Wall_NegativeZ_QA))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_FloorSubdivision2, texture, tempTextures, prjBlock._faces[12], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_Floor2, texture, tempTextures, prjSector._faces[12], progressReporter);
                                 }
                             }
                             else
                             {
                                 if (z > 0)
-                                    if (room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_QA) &&
-                                        room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_FloorSubdivision2) ||
-                                        !IsUndefinedButHasArea(room, x, z - 1, BlockFace.Wall_PositiveZ_QA))
+                                    if (room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_QA) &&
+                                        room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_Floor2) ||
+                                        !IsUndefinedButHasArea(room, x, z - 1, SectorFace.Wall_PositiveZ_QA))
                                     {
-                                        LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_FloorSubdivision2, texture, tempTextures, prjBlock._faces[12], progressReporter);
+                                        LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_Floor2, texture, tempTextures, prjSector._faces[12], progressReporter);
                                     }
                             }
 
                             // 6: BLOCK_TEX_W1 (West RF)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_CeilingSubdivision2) ||
-                                room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_WS))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Ceiling2) ||
+                                room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_WS))
                             {
-                                if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_CeilingSubdivision2) &&
-                                    !room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_WS))
+                                if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Ceiling2) &&
+                                    !room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_WS))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_CeilingSubdivision2, texture, tempTextures, prjBlock._faces[6], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_Ceiling2, texture, tempTextures, prjSector._faces[6], progressReporter);
                                 }
-                                else if (!room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_CeilingSubdivision2) &&
-                                     room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_WS))
+                                else if (!room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Ceiling2) &&
+                                     room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_WS))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_WS, texture, tempTextures, prjBlock._faces[6], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_WS, texture, tempTextures, prjSector._faces[6], progressReporter);
                                 }
                                 else
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_CeilingSubdivision2, texture, tempTextures, prjBlock._faces[6], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_Ceiling2, texture, tempTextures, prjSector._faces[6], progressReporter);
                                 }
                             }
                             else
                             {
                                 if (z > 0)
-                                    if (room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_CeilingSubdivision2) &&
-                                        !room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_WS))
+                                    if (room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_Ceiling2) &&
+                                        !room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_WS))
                                     {
-                                        LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_CeilingSubdivision2, texture, tempTextures, prjBlock._faces[6], progressReporter);
+                                        LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_Ceiling2, texture, tempTextures, prjSector._faces[6], progressReporter);
                                     }
-                                    else if (!room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_CeilingSubdivision2) &&
-                                         room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_WS))
+                                    else if (!room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_Ceiling2) &&
+                                         room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_WS))
                                     {
-                                        LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_WS, texture, tempTextures, prjBlock._faces[6], progressReporter);
+                                        LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_WS, texture, tempTextures, prjSector._faces[6], progressReporter);
                                     }
                                     else
                                     {
-                                        LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_CeilingSubdivision2, texture, tempTextures, prjBlock._faces[6], progressReporter);
+                                        LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_Ceiling2, texture, tempTextures, prjSector._faces[6], progressReporter);
                                     }
                             }
 
                             // 7: BLOCK_TEX_W3 (West middle)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_Middle))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Middle))
                             {
-                                LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_Middle, texture, tempTextures, prjBlock._faces[7], progressReporter);
+                                LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_Middle, texture, tempTextures, prjSector._faces[7], progressReporter);
                             }
                             else
                             {
                                 if (z > 0)
-                                    LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_Middle, texture, tempTextures, prjBlock._faces[7], progressReporter);
+                                    LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_Middle, texture, tempTextures, prjSector._faces[7], progressReporter);
                             }
 
                             // 8: BLOCK_TEX_F_NENW (Floor Triangle 2)
-                            LoadTextureArea(room, x, z, BlockFace.Floor_Triangle2, texture, tempTextures, prjBlock._faces[8], progressReporter);
+                            LoadTextureArea(room, x, z, SectorFace.Floor_Triangle2, texture, tempTextures, prjSector._faces[8], progressReporter);
 
                             // 9: BLOCK_TEX_C_NENW (Ceiling Triangle 2)
-                            LoadTextureArea(room, x, z, BlockFace.Ceiling_Triangle2, texture, tempTextures, prjBlock._faces[9], progressReporter);
+                            LoadTextureArea(room, x, z, SectorFace.Ceiling_Triangle2, texture, tempTextures, prjSector._faces[9], progressReporter);
 
                             // 10: BLOCK_TEX_N5 (North ED)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_QA) ||
-                               room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_FloorSubdivision2))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_QA) ||
+                               room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Floor2))
                             {
-                                if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_QA) &&
-                                    !room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_FloorSubdivision2))
+                                if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_QA) &&
+                                    !room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Floor2))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_QA, texture, tempTextures, prjBlock._faces[2], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_QA, texture, tempTextures, prjSector._faces[2], progressReporter);
                                 }
-                                else if (!room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_QA) &&
-                                         room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_FloorSubdivision2) &&
-                                         IsUndefinedButHasArea(room, x, z, BlockFace.Wall_NegativeX_QA))
+                                else if (!room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_QA) &&
+                                         room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Floor2) &&
+                                         IsUndefinedButHasArea(room, x, z, SectorFace.Wall_NegativeX_QA))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_FloorSubdivision2, texture, tempTextures, prjBlock._faces[2], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_Floor2, texture, tempTextures, prjSector._faces[2], progressReporter);
                                 }
                                 else
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_QA, texture, tempTextures, prjBlock._faces[2], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_QA, texture, tempTextures, prjSector._faces[2], progressReporter);
                                 }
                             }
                             else
                             {
                                 if (x > 0)
-                                    if (room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_QA) &&
-                                        !room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_FloorSubdivision2))
+                                    if (room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_QA) &&
+                                        !room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_Floor2))
                                     {
-                                        LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_QA, texture, tempTextures, prjBlock._faces[2], progressReporter);
+                                        LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_QA, texture, tempTextures, prjSector._faces[2], progressReporter);
                                     }
-                                    else if (!room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_QA) &&
-                                             room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_FloorSubdivision2) &&
-                                             IsUndefinedButHasArea(room, x - 1, z, BlockFace.Wall_PositiveX_QA))
+                                    else if (!room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_QA) &&
+                                             room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_Floor2) &&
+                                             IsUndefinedButHasArea(room, x - 1, z, SectorFace.Wall_PositiveX_QA))
                                     {
-                                        LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_FloorSubdivision2, texture, tempTextures, prjBlock._faces[2], progressReporter);
+                                        LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_Floor2, texture, tempTextures, prjSector._faces[2], progressReporter);
                                     }
                                     else
                                     {
-                                        LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_QA, texture, tempTextures, prjBlock._faces[2], progressReporter);
+                                        LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_QA, texture, tempTextures, prjSector._faces[2], progressReporter);
                                     }
                             }
 
                             // 11: BLOCK_TEX_N2 (North WS)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_CeilingSubdivision2) ||
-                                room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_WS))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Ceiling2) ||
+                                room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_WS))
                             {
-                                if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_CeilingSubdivision2) &&
-                                    room.IsFaceDefined(x, z, BlockFace.Wall_NegativeX_WS))
+                                if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_Ceiling2) &&
+                                    room.IsFaceDefined(x, z, SectorFace.Wall_NegativeX_WS))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeX_WS, texture, tempTextures, prjBlock._faces[11], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeX_WS, texture, tempTextures, prjSector._faces[11], progressReporter);
                                 }
                             }
                             else
                             {
                                 if (x > 0)
-                                    if (room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_CeilingSubdivision2) &&
-                                        room.IsFaceDefined(x - 1, z, BlockFace.Wall_PositiveX_WS))
+                                    if (room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_Ceiling2) &&
+                                        room.IsFaceDefined(x - 1, z, SectorFace.Wall_PositiveX_WS))
                                     {
-                                        LoadTextureArea(room, x - 1, z, BlockFace.Wall_PositiveX_WS, texture, tempTextures, prjBlock._faces[11], progressReporter);
+                                        LoadTextureArea(room, x - 1, z, SectorFace.Wall_PositiveX_WS, texture, tempTextures, prjSector._faces[11], progressReporter);
                                     }
                             }
 
                             // 12: BLOCK_TEX_W5
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_QA) ||
-                               room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_FloorSubdivision2))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_QA) ||
+                               room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Floor2))
                             {
-                                if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_QA) &&
-                                    !room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_FloorSubdivision2))
+                                if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_QA) &&
+                                    !room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Floor2))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_QA, texture, tempTextures, prjBlock._faces[5], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_QA, texture, tempTextures, prjSector._faces[5], progressReporter);
                                 }
-                                else if (!room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_QA) &&
-                                         room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_FloorSubdivision2) &&
-                                         IsUndefinedButHasArea(room, x, z, BlockFace.Wall_NegativeZ_QA))
+                                else if (!room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_QA) &&
+                                         room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Floor2) &&
+                                         IsUndefinedButHasArea(room, x, z, SectorFace.Wall_NegativeZ_QA))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_FloorSubdivision2, texture, tempTextures, prjBlock._faces[5], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_Floor2, texture, tempTextures, prjSector._faces[5], progressReporter);
                                 }
                                 else
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_QA, texture, tempTextures, prjBlock._faces[5], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_QA, texture, tempTextures, prjSector._faces[5], progressReporter);
                                 }
                             }
                             else
                             {
                                 if (z > 0)
-                                    if (room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_QA) &&
-                                        !room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_FloorSubdivision2))
+                                    if (room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_QA) &&
+                                        !room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_Floor2))
                                     {
-                                        LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_QA, texture, tempTextures, prjBlock._faces[5], progressReporter);
+                                        LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_QA, texture, tempTextures, prjSector._faces[5], progressReporter);
                                     }
-                                    else if (!room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_QA) &&
-                                             room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_FloorSubdivision2) &&
-                                             IsUndefinedButHasArea(room, x, z - 1, BlockFace.Wall_PositiveZ_QA))
+                                    else if (!room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_QA) &&
+                                             room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_Floor2) &&
+                                             IsUndefinedButHasArea(room, x, z - 1, SectorFace.Wall_PositiveZ_QA))
                                     {
-                                        LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_FloorSubdivision2, texture, tempTextures, prjBlock._faces[5], progressReporter);
+                                        LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_Floor2, texture, tempTextures, prjSector._faces[5], progressReporter);
                                     }
                                     else
                                     {
-                                        LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_QA, texture, tempTextures, prjBlock._faces[5], progressReporter);
+                                        LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_QA, texture, tempTextures, prjSector._faces[5], progressReporter);
                                     }
                             }
 
                             // 13: BLOCK_TEX_W2 (West WS)
-                            if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_CeilingSubdivision2) ||
-                                room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_WS))
+                            if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Ceiling2) ||
+                                room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_WS))
                             {
-                                if (room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_CeilingSubdivision2) &&
-                                    room.IsFaceDefined(x, z, BlockFace.Wall_NegativeZ_WS))
+                                if (room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_Ceiling2) &&
+                                    room.IsFaceDefined(x, z, SectorFace.Wall_NegativeZ_WS))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.Wall_NegativeZ_WS, texture, tempTextures, prjBlock._faces[13], progressReporter);
+                                    LoadTextureArea(room, x, z, SectorFace.Wall_NegativeZ_WS, texture, tempTextures, prjSector._faces[13], progressReporter);
                                 }
                             }
                             else
                             {
                                 if (z > 0)
-                                    if (room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_CeilingSubdivision2) &&
-                                        room.IsFaceDefined(x, z - 1, BlockFace.Wall_PositiveZ_WS))
+                                    if (room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_Ceiling2) &&
+                                        room.IsFaceDefined(x, z - 1, SectorFace.Wall_PositiveZ_WS))
                                     {
-                                        LoadTextureArea(room, x, z - 1, BlockFace.Wall_PositiveZ_WS, texture, tempTextures, prjBlock._faces[13], progressReporter);
+                                        LoadTextureArea(room, x, z - 1, SectorFace.Wall_PositiveZ_WS, texture, tempTextures, prjSector._faces[13], progressReporter);
                                     }
                             }
                         }
@@ -1984,32 +1985,32 @@ namespace TombLib.LevelData.IO
             return level;
         }
 
-        private static bool IsUndefinedButHasArea(Room room, int x, int z, BlockFace face)
+        private static bool IsUndefinedButHasArea(Room room, int x, int z, SectorFace face)
         {
-            Block block = room.Blocks[x, z];
-            int edXnZp = block.GetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZp);
-            int edXpZp = block.GetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZp);
-            int edXpZn = block.GetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XpZn);
-            int edXnZn = block.GetHeight(BlockVertical.FloorSubdivision2, BlockEdge.XnZn);
+            Sector sector = room.Sectors[x, z];
+            int edXnZp = sector.GetHeight(SectorVerticalPart.Floor2, SectorEdge.XnZp);
+            int edXpZp = sector.GetHeight(SectorVerticalPart.Floor2, SectorEdge.XpZp);
+            int edXpZn = sector.GetHeight(SectorVerticalPart.Floor2, SectorEdge.XpZn);
+            int edXnZn = sector.GetHeight(SectorVerticalPart.Floor2, SectorEdge.XnZn);
 
             switch (face)
             {
-                case BlockFace.Wall_PositiveZ_QA:
+                case SectorFace.Wall_PositiveZ_QA:
                     return !room.IsFaceDefined(x, z, face) &&
-                        (block.Floor.XnZp >= edXnZp && block.Floor.XpZp >= edXpZp) &&
-                        !(block.Floor.XnZp == edXnZp && block.Floor.XpZp == edXpZp);
-                case BlockFace.Wall_NegativeZ_QA:
+                        (sector.Floor.XnZp >= edXnZp && sector.Floor.XpZp >= edXpZp) &&
+                        !(sector.Floor.XnZp == edXnZp && sector.Floor.XpZp == edXpZp);
+                case SectorFace.Wall_NegativeZ_QA:
                     return !room.IsFaceDefined(x, z, face) &&
-                        (block.Floor.XnZn >= edXnZn && block.Floor.XpZn >= edXpZn) &&
-                        !(block.Floor.XnZn == edXnZn && block.Floor.XpZn == edXpZn);
-                case BlockFace.Wall_NegativeX_QA:
+                        (sector.Floor.XnZn >= edXnZn && sector.Floor.XpZn >= edXpZn) &&
+                        !(sector.Floor.XnZn == edXnZn && sector.Floor.XpZn == edXpZn);
+                case SectorFace.Wall_NegativeX_QA:
                     return !room.IsFaceDefined(x, z, face) &&
-                        (block.Floor.XnZn >= edXnZn && block.Floor.XnZp >= edXnZp) &&
-                        !(block.Floor.XnZn == edXnZn && block.Floor.XnZp == edXnZp);
-                case BlockFace.Wall_PositiveX_QA:
+                        (sector.Floor.XnZn >= edXnZn && sector.Floor.XnZp >= edXnZp) &&
+                        !(sector.Floor.XnZn == edXnZn && sector.Floor.XnZp == edXnZp);
+                case SectorFace.Wall_PositiveX_QA:
                     return !room.IsFaceDefined(x, z, face) &&
-                        (block.Floor.XpZp >= edXpZp && block.Floor.XpZn >= edXpZn) &&
-                        !(block.Floor.XpZp == edXpZp && block.Floor.XpZn == edXpZn);
+                        (sector.Floor.XpZp >= edXpZp && sector.Floor.XpZn >= edXpZn) &&
+                        !(sector.Floor.XpZp == edXpZp && sector.Floor.XpZn == edXpZn);
                 default:
                     return false;
             }
@@ -2017,29 +2018,29 @@ namespace TombLib.LevelData.IO
         }
 
         private static void ProcessTexturedNoCollisions(PortalInstance portal, Room room, PrjRoom tempRoom, int triangle1FaceTexIndex,
-            int triangle2FaceTexIndex, Predicate<PrjBlock> isNoCollision, Func<Room, Room, Block, Block, Room.RoomConnectionType> getRoomConnectionType)
+            int triangle2FaceTexIndex, Predicate<PrjSector> isNoCollision, Func<Room, Room, Sector, Sector, Room.RoomConnectionType> getRoomConnectionType)
         {
             for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
                 for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
                 {
-                    PrjBlock prjBlock = tempRoom._blocks[x, z];
-                    if (!isNoCollision(prjBlock)) // If the tile is isn't no collision, then a triangle face will be available anyway due to 'ForceFloorSolid'
+                    PrjSector prjSector = tempRoom._sectors[x, z];
+                    if (!isNoCollision(prjSector)) // If the tile is isn't no collision, then a triangle face will be available anyway due to 'ForceFloorSolid'
                         continue;
 
                     var pos = new VectorInt2(x, z);
                     var connectionType = getRoomConnectionType(room, portal.AdjoiningRoom,
-                        room.GetBlock(pos), portal.AdjoiningRoom.GetBlock(pos + (room.SectorPos - portal.AdjoiningRoom.SectorPos)));
+                        room.GetSector(pos), portal.AdjoiningRoom.GetSector(pos + (room.SectorPos - portal.AdjoiningRoom.SectorPos)));
 
                     switch (connectionType)
                     {
                         case Room.RoomConnectionType.TriangularPortalXpZp:
                         case Room.RoomConnectionType.TriangularPortalXpZn:
-                            if (prjBlock._faces[triangle1FaceTexIndex]._txtType == 0x0007) // TYPE_TEXTURE_TILE
+                            if (prjSector._faces[triangle1FaceTexIndex]._txtType == 0x0007) // TYPE_TEXTURE_TILE
                                 goto foundTexturedTriangle;
                             break;
                         case Room.RoomConnectionType.TriangularPortalXnZn:
                         case Room.RoomConnectionType.TriangularPortalXnZp:
-                            if (prjBlock._faces[triangle2FaceTexIndex]._txtType == 0x0007) // TYPE_TEXTURE_TILE
+                            if (prjSector._faces[triangle2FaceTexIndex]._txtType == 0x0007) // TYPE_TEXTURE_TILE
                                 goto foundTexturedTriangle;
                             break;
                     }
@@ -2056,28 +2057,28 @@ namespace TombLib.LevelData.IO
                 {
                     var pos = new VectorInt2(x, z);
                     var connectionType = getRoomConnectionType(room, portal.AdjoiningRoom,
-                        room.GetBlock(pos), portal.AdjoiningRoom.GetBlock(pos + (room.SectorPos - portal.AdjoiningRoom.SectorPos)));
+                        room.GetSector(pos), portal.AdjoiningRoom.GetSector(pos + (room.SectorPos - portal.AdjoiningRoom.SectorPos)));
                     if (connectionType == Room.RoomConnectionType.FullPortal)
                     {
-                        tempRoom._blocks[x, z]._faces[triangle1FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                        tempRoom._blocks[x, z]._faces[triangle2FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                        tempRoom._sectors[x, z]._faces[triangle1FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                        tempRoom._sectors[x, z]._faces[triangle2FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                     }
                 }
         }
 
 #pragma warning disable 0675 // Disable warning about bitwise or
-        private static void LoadTextureArea(Room room, int x, int z, BlockFace face, LevelTexture levelTexture, List<PrjTexInfo> tempTextures, PrjFace prjFace, IProgressReporter progressReporter)
+        private static void LoadTextureArea(Room room, int x, int z, SectorFace face, LevelTexture levelTexture, List<PrjTexInfo> tempTextures, PrjFace prjFace, IProgressReporter progressReporter)
         {
-            Block block = room.Blocks[x, z];
+            Sector sector = room.Sectors[x, z];
 
             switch (levelTexture == null ? 0 : prjFace._txtType)
             {
                 case 0x0000: // TYPE_TEXTURE_NONE
                 default:
-                    block.SetFaceTexture(face, new TextureArea());
+                    sector.SetFaceTexture(face, new TextureArea());
                     return;
                 case 0x0003: // TYPE_TEXTURE_COLOR
-                    block.SetFaceTexture(face, TextureArea.Invisible);
+                    sector.SetFaceTexture(face, TextureArea.Invisible);
                     return;
                 case 0x0007: // TYPE_TEXTURE_TILE
                     int texIndex = ((prjFace._txtFlags & 0x03) << 8) | prjFace._txtIndex;
@@ -2123,7 +2124,7 @@ namespace TombLib.LevelData.IO
                     }
 
                     ushort rotation = prjFace._txtRotation;
-                    if (room.GetFaceShape(x, z, face) == BlockFaceShape.Triangle)
+                    if (room.GetFaceShape(x, z, face) == FaceShape.Triangle)
                     {
                         // Get UV coordinates for polygon
                         switch (prjFace._txtTriangle)
@@ -2150,25 +2151,25 @@ namespace TombLib.LevelData.IO
                                 break;
                             default:
                                 logger.Warn("Unknown texture triangle selection " + prjFace._txtTriangle);
-                                block.SetFaceTexture(face, new TextureArea());
+                                sector.SetFaceTexture(face, new TextureArea());
                                 return;
                         }
 
                         // Fix floor and ceiling texturing in our coordinate system
-                        if (face == BlockFace.Floor)
+                        if (face == SectorFace.Floor)
                         {
-                            rotation += block.Floor.SplitDirectionIsXEqualsZ ? (byte)1 : (byte)2;
+                            rotation += sector.Floor.SplitDirectionIsXEqualsZ ? (byte)1 : (byte)2;
                         }
-                        else if (face == BlockFace.Ceiling)
+                        else if (face == SectorFace.Ceiling)
                         {
                             var temp = texture.TexCoord2;
                             texture.TexCoord2 = texture.TexCoord0;
                             texture.TexCoord0 = temp;
 
-                            rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? (byte)2 : (byte)1;
+                            rotation += sector.Ceiling.SplitDirectionIsXEqualsZ ? (byte)2 : (byte)1;
                             rotation = (ushort)(3000 - rotation); // Change of rotation direction
                         }
-                        else if (face == BlockFace.Ceiling_Triangle2)
+                        else if (face == SectorFace.Ceiling_Triangle2)
                         {
                             var temp = texture.TexCoord2;
                             texture.TexCoord2 = texture.TexCoord0;
@@ -2193,7 +2194,7 @@ namespace TombLib.LevelData.IO
                     else
                     {
                         // Fix floor and ceiling texturing in our coordinate system
-                        if (face == BlockFace.Floor || face == BlockFace.Floor_Triangle2)
+                        if (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2)
                             rotation += 2;
 
                         // Apply rotation
@@ -2208,7 +2209,7 @@ namespace TombLib.LevelData.IO
                         }
 
                         // Assign texture coordinates
-                        if (face == BlockFace.Ceiling || face == BlockFace.Ceiling_Triangle2)
+                        if (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
                         {
                             texture.TexCoord0 = uv[2];
                             texture.TexCoord1 = uv[1];
@@ -2224,7 +2225,7 @@ namespace TombLib.LevelData.IO
                         }
                     }
 
-                    block.SetFaceTexture(face, texture);
+                    sector.SetFaceTexture(face, texture);
                     return;
             }
         }

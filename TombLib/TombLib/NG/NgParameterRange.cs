@@ -35,7 +35,8 @@ namespace TombLib.NG
         VolumeEventSets,
         VolumeEventTypes,
         GlobalEventSets,
-        GlobalEventTypes
+        GlobalEventTypes,
+        PluginEnumeration
     }
 
     public struct NgLinearParameter
@@ -81,17 +82,21 @@ namespace TombLib.NG
         }
 
         public NgParameterRange(IDictionary<ushort, TriggerParameterUshort> fixedEnumeration)
+            : this(fixedEnumeration, NgParameterKind.FixedEnumeration)
+        { }
+
+        public NgParameterRange(IDictionary<ushort, TriggerParameterUshort> fixedEnumeration, NgParameterKind kind)
         {
             LinearModel = null;
             Choices = null;
             if (fixedEnumeration == null || fixedEnumeration.Count == 0)
             {
-                Kind = NgParameterKind.Empty;
+                Kind = kind is NgParameterKind.PluginEnumeration or NgParameterKind.FixedEnumeration ? NgParameterKind.Empty : kind;
                 FixedEnumeration = null;
             }
             else
             {
-                Kind = NgParameterKind.FixedEnumeration;
+                Kind = kind;
                 FixedEnumeration = fixedEnumeration;
             }
         }
@@ -262,7 +267,7 @@ namespace TombLib.NG
                 case NgParameterKind.AnyNumber:
                     return null;
 
-                case NgParameterKind.FixedEnumeration:
+                case NgParameterKind.FixedEnumeration or NgParameterKind.PluginEnumeration:
                     return FixedEnumeration.Values;
 
                 case NgParameterKind.LinearModel:
@@ -309,7 +314,7 @@ namespace TombLib.NG
                     return LoadStringsFromTxt(level, "PSXStrings");
 
                 case NgParameterKind.NgStringsList255:
-                    return LoadStringsFromTxt(level, "ExtraNG", 256, 1);
+                    return LoadStringsFromTxt(level, "ExtraNG", 256);
 
                 case NgParameterKind.NgStringsAll:
                     return LoadStringsFromTxt(level, "ExtraNG", 1);

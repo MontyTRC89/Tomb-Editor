@@ -158,6 +158,16 @@ LevelFuncs.Engine.Node.TestMoveableOCB = function(moveableName, value)
 	return (ocb == value)
 end
 
+-- !Name "If moveable is collidable..."
+-- !Section "Moveable state"
+-- !Description "Checks if moveable is collidable."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableCollidability = function(moveableName)
+	return TEN.Objects.GetMoveableByName(moveableName):GetCollidable()
+end
+
 -- !Name "If mesh number of a moveable is visible..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's mesh index is visible."
@@ -227,6 +237,26 @@ LevelFuncs.Engine.Node.TestMoveableDistanceWithStatic = function(operator, value
 
 	return LevelFuncs.Engine.Node.CompareValue(distance, value, operator)
 end
+			   
+-- !Name "Create moveable"
+-- !Section "Moveable state"
+-- !Description "Create a new moveable object and activate it"
+-- !Arguments "NewLine, WadSlots, 50, Choose moveable slot to create"
+-- !Arguments "String, 50, Lua name for new moveable"
+-- !Arguments "NewLine, Vector3, 50, [ -1000000 | 1000000 | 0 | 1 | 32 ], Moveable position"
+-- !Arguments "Numerical, 50, [ -360 | 360 | 2 | 1 | 5 ], Rotation value to define"
+-- !Arguments "NewLine, Rooms, 20, Choose room for moveable to Create in. \nRequired for intelligent moveables such as enemies that use pathfinding"
+-- !Arguments "Numerical, 20, [ 0 | 1000 | 0 ], Starting animation (default 0)"
+-- !Arguments "Numerical, 20, [ 0 | 1000 | 0 ], Starting frame of animation (default 0)"
+-- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], Starting health of moveable (default 100)"
+-- !Arguments "Numerical, 20, [ -1000 | 1000 | 0 ], OCB of moveable (default 0)"
+
+
+LevelFuncs.Engine.Node.CreateMoveable = function(moveableSlot, moveableName, pos, rot, roomName, anim, frame, health, ocb)
+    local roomNumber = GetRoomByName(roomName):GetRoomNumber()
+    local newMoveable = Moveable(moveableSlot, moveableName, pos, rot, roomNumber, anim, frame, health, ocb)
+    newMoveable:Enable()
+end
 
 -- !Name "Enable moveable"
 -- !Section "Moveable state"
@@ -244,6 +274,15 @@ end
 
 LevelFuncs.Engine.Node.DisableMoveable = function(moveableName)
 	TEN.Objects.GetMoveableByName(moveableName):Disable()
+end
+
+-- !Name "Set moveable collision state"
+-- !Section "Moveable state"
+-- !Description "Sets collision state of a moveable."
+-- !Arguments "NewLine, Moveables, 80" "Boolean, 20, Collidable"
+
+LevelFuncs.Engine.Node.SetMoveableCollidability = function(moveableName, state)
+	return TEN.Objects.GetMoveableByName(moveableName):SetCollidable(state)
 end
 
 -- !Name "Set moveable's animation"
@@ -420,11 +459,7 @@ end
 -- !Arguments "Numerical, 15, [ 0 | 31 ], Mesh index to check" "Boolean, 15, Visible"
 
 LevelFuncs.Engine.Node.SetMoveableMeshVisibility = function(moveableName, value, state)
-	if (state == true) then
-		TEN.Objects.GetMoveableByName(moveableName):ShowMesh(value)
-	else
-		TEN.Objects.GetMoveableByName(moveableName):HideMesh(value)
-	end
+	TEN.Objects.GetMoveableByName(moveableName):SetMeshVisible(value,state)
 end
 
 -- !Name "Swap specified moveable mesh with another"
@@ -461,7 +496,6 @@ end
 -- !Arguments "Numerical, 13, [ -1 | 99 ], {-1}, Effect timeout (set to -1 for indefinite timeout)"
 -- !Arguments "NewLine, Moveables, Moveable to check"
 
-
 LevelFuncs.Engine.Node.SetMoveableEffect = function(effectID, timeout, moveableName)
 	TEN.Objects.GetMoveableByName(moveableName):SetEffect(effectID + 1, timeout)
 end
@@ -474,13 +508,20 @@ end
 -- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
 -- !Arguments "NewLine, Moveables, Moveable to check"
 
-
 LevelFuncs.Engine.Node.SetCustomMoveableEffect = function(primary, secondary, timeout, moveableName)
 	TEN.Objects.GetMoveableByName(moveableName):SetCustomEffect(primary, secondary, timeout)
 end
 
+-- !Name "Remove moveable effect"
+-- !Section "Moveable state"
+-- !Description "Remove effect from moveable"
+-- !Arguments "NewLine, Moveables, Select moveable to remove effect from."
 
--- !Name "Modify ItemFlag"
+LevelFuncs.Engine.Node.RemoveMoveableEffect = function(moveable)
+	TEN.Objects.GetMoveableByName(moveable):SetEffect(TEN.Effects.EffectID.NONE)
+end
+
+-- !Name "Modify ItemFlag of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Modify ItemFlag for moveable. Used for extended customisation of certain moveables."
 -- !Arguments "NewLine,Moveables, 50, Choose moveable"
@@ -491,15 +532,13 @@ LevelFuncs.Engine.Node.ModifyItemFlag = function (moveable, itemFlagLocation, it
 	TEN.Objects.GetMoveableByName(moveable):SetItemFlags(itemFlagValue,itemFlagLocation)
 end
 
-
--- !Name "If value stored in ItemFlag is..."
+-- !Name "If value stored in moveable's ItemFlag is..."
 -- !Section "Moveable parameters"
 -- !Description "Checks current value contained inside a given ItemFlag"
 -- !Conditional "True"
 -- !Arguments "NewLine,Moveables, 50, Choose moveable"
 -- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to check"
 -- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
-
 
 LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, itemFlagValue)
     local itemFlag = TEN.Objects.GetMoveableByName(moveable):GetItemFlags(itemFlagLocation)
@@ -510,22 +549,4 @@ LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, item
         return false
     end
 end
-
-
--- !Name "Create moveable"
--- !Section "Moveable parameters"
--- !Description "Create a new moveable object and activate it"
--- !Arguments "NewLine, WadSlots, 50, Choose moveable slot to create"
--- !Arguments "String, 50, Lua name for new moveable"
--- !Arguments "NewLine, Vector3, 50, [ -1000000 | 1000000 | 0 | 1 | 32 ], Moveable position"
--- !Arguments "Numerical, 50, [ -360 | 360 | 2 | 1 | 5 ], Rotation value to define"
--- !Arguments "NewLine, Rooms, 20, Choose room for moveable to Create in. \nRequired for intelligent moveables such as enemies that use pathfinding"
--- !Arguments "Numerical, 20, [ 0 | 1000 | 0 ], Starting animation (default 0)"
--- !Arguments "Numerical, 20, [ 0 | 1000 | 0 ], Starting frame of animation (default 0)"
--- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], Starting health of moveable (default 100)"
--- !Arguments "Numerical, 20, [ -1000 | 1000 | 0 ], OCB of moveable (default 0)"
-LevelFuncs.Engine.Node.CreateMoveable = function(moveableSlot,moveableName,pos,rot,roomID,anim,frame,health,ocb)
-
-	local newMoveable = Moveable(moveableSlot,moveableName,pos,rot,roomID,anim,frame,health,ocb)
-	newMoveable:Enable()
-end
+	

@@ -88,6 +88,9 @@ namespace TombLib.Controls
             if (!AnimatePreview && !(CurrentObject is WadSpriteSequence))
                 return;
 
+            if (Form.ActiveForm != this.FindForm())
+                return;
+
             if (CurrentObject is WadSpriteSequence)
             {
                 _frameTimeout++;
@@ -121,9 +124,9 @@ namespace TombLib.Controls
             clientRectangle.Inflate(new Size(-5, -5));
         }
 
-        public override void InitializeRendering(RenderingDevice device, bool antialias = false)
+        public override void InitializeRendering(RenderingDevice device, bool antialias = false, ObjectRenderingQuality objectQuality = ObjectRenderingQuality.Undefined)
         {
-            base.InitializeRendering(device, antialias);
+            base.InitializeRendering(device, antialias, objectQuality);
 
             _textureAllocator = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(1024, 1024, 1) });
 
@@ -131,7 +134,7 @@ namespace TombLib.Controls
             {
                 // Reset scrollbar
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true, true);
+                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true, true, 1024, 512, false);
 
                 ResetCamera();
 

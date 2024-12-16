@@ -116,14 +116,18 @@ namespace TombLib.LevelData
 
         public virtual void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
-            IRotateableY rotateableObject = this as IRotateableY;
-            if (rotateableObject != null)
+            if (this is IRotateableY rotateableObject)
             {
                 float newRotation = rotateableObject.RotationY;
                 if (transformation.MirrorX)
                     newRotation = -newRotation;
                 newRotation -= transformation.QuadrantRotation * 90;
                 rotateableObject.RotationY = newRotation;
+            }
+            else if (this is GhostBlockInstance ghostBlock) // TODO: Replace this with an interface
+            {
+                transformation.TransformValueDiagonalQuad(ref ghostBlock.Floor.XpZp, ref ghostBlock.Floor.XnZp, ref ghostBlock.Floor.XnZn, ref ghostBlock.Floor.XpZn);
+                transformation.TransformValueDiagonalQuad(ref ghostBlock.Ceiling.XpZp, ref ghostBlock.Ceiling.XnZp, ref ghostBlock.Ceiling.XnZn, ref ghostBlock.Ceiling.XpZn);
             }
         }
 
@@ -248,8 +252,8 @@ namespace TombLib.LevelData
 
         public VectorInt2 SectorPosition
         {
-            get { return new VectorInt2((int)(Position.X / Level.BlockSizeUnit), (int)(Position.Z / Level.BlockSizeUnit)); }
-            set { Position = new Vector3(value.X * Level.BlockSizeUnit, Position.Y, value.Y * Level.BlockSizeUnit); }
+            get { return new VectorInt2((int)(Position.X / Level.SectorSizeUnit), (int)(Position.Z / Level.SectorSizeUnit)); }
+            set { Position = new Vector3(value.X * Level.SectorSizeUnit, Position.Y, value.Y * Level.SectorSizeUnit); }
         }
 
         public Vector3 WorldPosition => Room != null ? Room.WorldPos + Position : Position;
@@ -348,13 +352,13 @@ namespace TombLib.LevelData
 
         public Rectangle2 GetViewportRect(RectangleInt2 bounds, Vector3 camPos, Matrix4x4 camViewProjection, Size viewportSize, out float depth)
         {
-            var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * Level.BlockSizeUnit;
+            var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * Level.SectorSizeUnit;
             var distance = Vector3.Distance(Position + Room.WorldPos, camPos);
-            var scale = (Level.BlockSizeUnit * 2.0f) / (distance != 0 ? distance : 1.0f);
+            var scale = (Level.SectorSizeUnit * 2.0f) / (distance != 0 ? distance : 1.0f);
             var pos = (WorldPositionMatrix * camViewProjection).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
-            var start = scale * new Vector2(bounds.Start.X / heightRatio, bounds.Start.Y / Level.BlockSizeUnit);
-            var end = scale * new Vector2(bounds.End.X / heightRatio, bounds.End.Y / Level.BlockSizeUnit);
+            var start = scale * new Vector2(bounds.Start.X / heightRatio, bounds.Start.Y / Level.SectorSizeUnit);
+            var end = scale * new Vector2(bounds.End.X / heightRatio, bounds.End.Y / Level.SectorSizeUnit);
 
             depth = pos.Z;
             return new Rectangle2(screenPos - end, screenPos - start);
@@ -363,7 +367,7 @@ namespace TombLib.LevelData
         public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
             base.Transform(transformation, oldRoomSize);
-            Position = transformation.TransformVec3(Position, oldRoomSize.X * Level.BlockSizeUnit, oldRoomSize.Y * Level.BlockSizeUnit);
+            Position = transformation.TransformVec3(Position, oldRoomSize.X * Level.SectorSizeUnit, oldRoomSize.Y * Level.SectorSizeUnit);
         }
     }
 

@@ -160,13 +160,13 @@ namespace TombEditor.Controls.Panel3D
                 var d = Camera.GetDirection();
                 var t = Camera.GetTarget();
 
-                t = p + d * Level.BlockSizeUnit;
+                t = p + d * Level.SectorSizeUnit;
 
                 _oldCamera.RotationX = Camera.RotationX;
                 _oldCamera.RotationY = Camera.RotationY - (float)Math.PI;
 
                 Camera = _oldCamera;
-                Camera.Distance = Level.BlockSizeUnit;
+                Camera.Distance = Level.SectorSizeUnit;
                 Camera.Position = p;
                 Camera.Target = t;
 

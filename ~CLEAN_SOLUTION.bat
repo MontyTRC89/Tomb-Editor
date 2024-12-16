@@ -26,5 +26,6 @@ FOR /d %%F IN (packages?) DO (
 )
 
 RMDIR /S /Q ".vs"
+RMDIR /S /Q "TestResults"
 
 @pause

@@ -47,9 +47,9 @@ namespace TombEditor.Forms
 
         public EventSet SelectedSet
         {
-            get 
-            { 
-                return _selectedSet; 
+            get
+            {
+                return _selectedSet;
             }
 
             set
@@ -302,11 +302,15 @@ namespace TombEditor.Forms
                     break;
 
                 case EventType.OnLoop:
-                    toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus. \nThis event performs continuously.");
+                    toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus and freeze mode. \nThis event performs continuously.");
                     break;
 
                 case EventType.OnUseItem:
                     toolTip.SetToolTip(cbEvents, "Occurs when an item was selected and used in inventory.");
+                    break;
+
+                case EventType.OnFreeze:
+                    toolTip.SetToolTip(cbEvents, "Occurs when game is running in a freeze mode. \nThis event performs continuously.");
                     break;
             }
         }
@@ -516,8 +520,8 @@ namespace TombEditor.Forms
 
             if (GlobalMode)
             {
-                newSet = new GlobalEventSet() 
-                { 
+                newSet = new GlobalEventSet()
+                {
                     Name = name,
                     LastUsedEvent = Event.GlobalEventTypes[_editor.Configuration.NodeEditor_DefaultGlobalEventToEdit]
                 };
@@ -653,12 +657,12 @@ namespace TombEditor.Forms
         }
 
         private void tbName_Validated(object sender, EventArgs e)
-		{
-			if (SelectedSet == null || _lockUI)
-				return;
+        {
+            if (SelectedSet == null || _lockUI)
+                return;
 
-			if (SelectedSet.Name == tbName.Text)
-				return;
+            if (SelectedSet.Name == tbName.Text)
+                return;
 
             if (string.IsNullOrEmpty(tbName.Text))
             {
@@ -674,9 +678,9 @@ namespace TombEditor.Forms
                 return;
             }
 
-			EditorActions.ReplaceEventSetNames(_usedList, SelectedSet.Name, tbName.Text);
-			dgvEvents.SelectedCells[0].Value = SelectedSet.Name = tbName.Text;
-		}
+            EditorActions.ReplaceEventSetNames(_usedList, SelectedSet.Name, tbName.Text);
+            dgvEvents.SelectedCells[0].Value = SelectedSet.Name = tbName.Text;
+        }
 
         private void dgvEvents_DragDrop(object sender, DragEventArgs e)
         {

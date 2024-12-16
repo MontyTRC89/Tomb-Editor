@@ -9,6 +9,7 @@ using TombIDE.Shared.NewStructure.Implementations;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
+using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
 {
@@ -78,7 +79,7 @@ namespace TombIDE.ProjectMaster
 		{
 			int cachedCaretPosition = textBox_CustomFileName.SelectionStart;
 
-			textBox_CustomFileName.Text = textBox_CustomFileName.Text.Replace(' ', '_');
+			textBox_CustomFileName.Text = LevelHandling.MakeValidVariableName(textBox_CustomFileName.Text);
 			textBox_CustomFileName.SelectionStart = cachedCaretPosition;
 		}
 
@@ -91,10 +92,16 @@ namespace TombIDE.ProjectMaster
 				string levelName = PathHelper.RemoveIllegalPathSymbols(textBox_LevelName.Text.Trim());
 				levelName = LevelHandling.RemoveIllegalNameSymbols(levelName);
 
+				if (!levelName.IsANSI())
+					throw new ArgumentException("The level name contains illegal characters. Please use only English characters and numbers.");
+
 				if (string.IsNullOrWhiteSpace(levelName))
 					throw new ArgumentException("You must enter a valid name for your level.");
 
-				string dataFileName = textBox_CustomFileName.Text.Trim();
+				string dataFileName = LevelHandling.MakeValidVariableName(textBox_CustomFileName.Text.Trim());
+
+				if (!dataFileName.IsANSI())
+					throw new ArgumentException("The data file name contains illegal characters. Please use only English characters and numbers.");
 
 				if (string.IsNullOrWhiteSpace(dataFileName))
 					throw new ArgumentException("You must specify the custom PRJ2 / DATA file name.");
@@ -124,6 +131,7 @@ namespace TombIDE.ProjectMaster
 
 				level.Settings.GameDirectory = level.Settings.MakeRelative(engineDirectory, VariableType.LevelDirectory);
 				level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
+				level.Settings.ScriptDirectory = level.Settings.MakeRelative(_targetProject.GetScriptRootDirectory(), VariableType.LevelDirectory);
 				level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
 				level.Settings.GameVersion = _targetProject.GameVersion;
 
@@ -140,7 +148,15 @@ namespace TombIDE.ProjectMaster
 					level.Settings.TenLuaScriptFile = Path.Combine(LevelSettings.VariableCreate(VariableType.ScriptDirectory), "Levels", LevelSettings.VariableCreate(VariableType.LevelName) + ".lua");
 
 				level.Settings.LoadDefaultSoundCatalog();
-				level.Settings.LoadDefaultWad();
+
+				string defaultWadPath = _targetProject.GameVersion switch
+				{
+					TRVersion.Game.TombEngine => Path.Combine(_targetProject.DirectoryPath, "Assets", "Wads", "TombEngine.wad2"),
+					_ => null
+				};
+
+				if (defaultWadPath is not null)
+					level.Settings.LoadWad(defaultWadPath);
 
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 

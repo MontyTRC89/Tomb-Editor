@@ -12,6 +12,7 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using Color = System.Drawing.Color;
@@ -123,7 +124,7 @@ namespace TombEditor.Controls
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            _movementTimer.Dispose();
+            _movementTimer?.Dispose();
             _insertionContourLineData = null;
             _currentContextMenu?.Dispose();
             base.Dispose(disposing);
@@ -741,12 +742,12 @@ namespace TombEditor.Controls
                 {
                     int previousRectangleCount = rectangles.Count;
                     for (int x = 1; x < width - 1; ++x)
-                        if (room.Blocks[x, z].Type == BlockType.Floor)
+                        if (room.Sectors[x, z].Type == SectorType.Floor)
                         {
                             int xBegin = x;
                             // Search for the next sector without a wall
                             for (; x < width - 1; ++x)
-                                if (room.Blocks[x, z].Type != BlockType.Floor)
+                                if (room.Sectors[x, z].Type != SectorType.Floor)
                                     break;
                             rectangles.Add(new RectangleF(xBegin, z, x - xBegin, 1));
                         }
@@ -795,15 +796,15 @@ namespace TombEditor.Controls
                 for (int z = 1; z < height; ++z)
                     for (int x = 1; x < width; ++x)
                     {
-                        Block thisBlock = room.Blocks[x, z];
-                        Block aboveBlock = room.Blocks[x, z - 1];
-                        Block leftBlock = room.Blocks[x - 1, z];
-                        if (aboveBlock.IsAnyWall != thisBlock.IsAnyWall)
-                            e.Graphics.DrawLine(aboveBlock.WallPortal != null || thisBlock.WallPortal != null ? _roomPortalPen : _roomBorderPen,
+                        Sector thisSector = room.Sectors[x, z];
+                        Sector aboveSector = room.Sectors[x, z - 1];
+                        Sector leftSector = room.Sectors[x - 1, z];
+                        if (aboveSector.IsAnyWall != thisSector.IsAnyWall)
+                            e.Graphics.DrawLine(aboveSector.WallPortal != null || thisSector.WallPortal != null ? _roomPortalPen : _roomBorderPen,
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
                                 ToVisualCoord(new Vector2(x + 1 + room.SectorPos.X, z + room.SectorPos.Y)));
-                        if (leftBlock.IsAnyWall != thisBlock.IsAnyWall)
-                            e.Graphics.DrawLine(leftBlock.WallPortal != null || thisBlock.WallPortal != null ? _roomPortalPen : _roomBorderPen,
+                        if (leftSector.IsAnyWall != thisSector.IsAnyWall)
+                            e.Graphics.DrawLine(leftSector.WallPortal != null || thisSector.WallPortal != null ? _roomPortalPen : _roomBorderPen,
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + 1 + room.SectorPos.Y)));
                     }
@@ -872,7 +873,7 @@ namespace TombEditor.Controls
                 if (roomLocalX < 1 || roomLocalZ < 1 || roomLocalX >= room.NumXSectors - 1 || roomLocalZ >= room.NumZSectors - 1)
                     return false;
 
-                if (room.Blocks[roomLocalX, roomLocalZ].IsAnyWall)
+                if (room.Sectors[roomLocalX, roomLocalZ].IsAnyWall)
                     return false;
 
                 // Check if the room fits the depth bar criterion

@@ -15,12 +15,12 @@ namespace TombEditor.Controls.Panel3D
         {
             if (_editor.Mode == EditorMode.Geometry && !_gizmoEnabled && !_objectPlaced)
             {
-                var newBlockPicking = DoPicking(GetRay(location.X, location.Y)) as PickingResultBlock;
-                if (newBlockPicking != null && !_toolHandler.Dragged)
+                var newSectorPicking = DoPicking(GetRay(location.X, location.Y)) as PickingResultSector;
+                if (newSectorPicking != null && !_toolHandler.Dragged)
                 {
-                    var pos = newBlockPicking.Pos;
+                    var pos = newSectorPicking.Pos;
                     var zone = _editor.SelectedSectors.Empty ? new RectangleInt2(pos, pos) : _editor.SelectedSectors.Area;
-                    bool belongsToFloor = newBlockPicking.BelongsToFloor;
+                    bool belongsToFloor = newSectorPicking.BelongsToFloor;
 
                     if (ModifierKeys.HasFlag(Keys.Alt) && zone.Contains(pos))
                     {
@@ -98,13 +98,13 @@ namespace TombEditor.Controls.Panel3D
                     if (target is ISpatial)
                         _currentContextMenu = new MaterialObjectContextMenu(_editor, this, target);
                 }
-                else if (newPicking is PickingResultBlock)
+                else if (newPicking is PickingResultSector)
                 {
-                    var pickedBlock = newPicking as PickingResultBlock;
-                    if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pickedBlock.Pos))
-                        _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, pickedBlock.Room, _editor.SelectedSectors.Area, pickedBlock.Pos);
+                    var pickedSector = newPicking as PickingResultSector;
+                    if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pickedSector.Pos))
+                        _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, pickedSector.Room, _editor.SelectedSectors.Area, pickedSector.Pos);
                     else
-                        _currentContextMenu = new BlockContextMenu(_editor, this, pickedBlock.Room, pickedBlock.Pos);
+                        _currentContextMenu = new SectorContextMenu(_editor, this, pickedSector.Room, pickedSector.Pos);
                 }
                 _currentContextMenu?.Show(PointToScreen(location));
             }

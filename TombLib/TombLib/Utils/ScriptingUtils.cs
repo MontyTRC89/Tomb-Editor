@@ -40,7 +40,7 @@ namespace TombLib.Utils
         private const int _maxRecursionDepth = 32;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase", "OnLoop", "OnUseItem" };
+        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase", "OnLoop", "OnUseItem", "OnFreeze" };
 
         private const string _metadataPrefix = "!";
         private const string _enumSplitterStart = "[";
@@ -145,9 +145,10 @@ namespace TombLib.Utils
                                         argLayout.CustomEnumeration.AddRange(p.Substring(1, p.Length - 2).Split('|').Select(st => st.Trim()));
                                     else if (p.StartsWith(_defaultValueStart) && p.EndsWith(_defaultValueEnd))
                                         argLayout.DefaultValue = p.Substring(1, p.Length - 2).Trim();
+                                    else if (Enum.TryParse(p, out ArgumentType argType))
+                                        argLayout.Type = argType;
                                     else
-                                        try   { argLayout.Type = (ArgumentType)Enum.Parse(typeof(ArgumentType), p); }
-                                        catch { argLayout.Description = p; }
+                                        argLayout.Description = p;
                                 }
 
                                  nodeFunction.Arguments.Add(argLayout);

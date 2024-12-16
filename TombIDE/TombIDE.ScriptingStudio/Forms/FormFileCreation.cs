@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.Shared;
@@ -13,15 +14,20 @@ namespace TombIDE.ScriptingStudio.Forms
 		public string NewFilePath { get; private set; }
 
 		private string _scriptRootFolderPath;
+		private string _defaultFileExtension;
+		private string[] _ignoredNodePaths;
 
 		#region Construction
 
-		public FormFileCreation(string scriptRootFolderPath, FileCreationMode mode, string initialNodePath = null, string initialFileName = null)
+		public FormFileCreation(string scriptRootFolderPath, FileCreationMode mode, string defaultFileExtension,
+			string initialNodePath = null, string initialFileName = null, params string[] ignoredNodePaths)
 		{
 			InitializeComponent();
 			SwitchMode(mode);
 
 			_scriptRootFolderPath = scriptRootFolderPath;
+			_defaultFileExtension = defaultFileExtension;
+			_ignoredNodePaths = ignoredNodePaths;
 
 			FillFolderList();
 
@@ -37,7 +43,12 @@ namespace TombIDE.ScriptingStudio.Forms
 		{
 			base.OnShown(e);
 
-			comboBox_FileFormat.SelectedIndex = 0;
+			comboBox_FileFormat.SelectedIndex = _defaultFileExtension.ToLower() switch
+			{
+				".json5" => 1,
+				".lua" => 2,
+				_ => 0
+			};
 
 			textBox_NewFileName.SelectAll();
 		}
@@ -98,6 +109,10 @@ namespace TombIDE.ScriptingStudio.Forms
 		{
 			treeView.Nodes.Clear();
 			treeView.Nodes.Add(FileTreeViewHelper.CreateFullFileListNode(_scriptRootFolderPath, true, true));
+
+			// Remove ignored nodes
+			foreach (string ignoredNodePath in _ignoredNodePaths.Where(path => !string.IsNullOrWhiteSpace(path)))
+				treeView.FindNode(ignoredNodePath)?.Remove();
 		}
 
 		private void SetInitialNodePath(string initialNodePath)

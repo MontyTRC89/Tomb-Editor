@@ -149,7 +149,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     switch (zoneType)
                     {
                         case ZoneType.Skeleton:
-                            // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
+                            // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 sectors.
                             add = (step <= Clicks.ToWorld(1) || canJump);
                             break;
 
@@ -165,8 +165,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             break;
 
                         case ZoneType.Human:
-                            // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 blocks and monkey.
-                            add = (step <= (int)Level.BlockSizeUnit || canJump || canMonkey);
+                            // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 sectors and monkey.
+                            add = (step <= (int)Level.SectorSizeUnit || canJump || canMonkey);
                             break;
 
                         case ZoneType.Flyer:

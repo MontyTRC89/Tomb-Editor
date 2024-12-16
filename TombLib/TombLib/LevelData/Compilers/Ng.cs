@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
@@ -10,12 +12,12 @@ namespace TombLib.LevelData.Compilers
     {
         private Dictionary<ushort, ushort> _remappedTiles;
 
-        private void WriteNgHeader(BinaryWriter writer, string ngVersion)
+        private void WriteNgHeader(BinaryWriterEx writer, string ngVersion)
         {
             CollectNgRemappedTiles();
 
-            var ngleStartSignature = System.Text.Encoding.ASCII.GetBytes("NG");
-            var endSignature = System.Text.Encoding.ASCII.GetBytes("NGLE");
+            var ngleStartSignature = Encoding.ASCII.GetBytes("NG");
+            var endSignature = Encoding.ASCII.GetBytes("NGLE");
             var startOffset = writer.BaseStream.Position;
 
             // Write start signature
@@ -26,9 +28,14 @@ namespace TombLib.LevelData.Compilers
             WriteNgChunkStaticsTable(writer);
             WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
-            WriteNgChunkPluginsNames(writer);
             WriteNgChunkTexPartial(writer);
-            WriteNgChunkIdFloorTable(writer);
+
+            if (_supportsTRNGPlugins)
+            {
+                WriteNgChunkPluginsNames(writer);
+                WriteNgChunkIdFloorTable(writer);
+            }
+
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkRemapRooms(writer);
             WriteNgChunkTomVersion(writer, ngVersion);
@@ -183,10 +190,23 @@ namespace TombLib.LevelData.Compilers
             WriteNgVersion(writer, version);
         }
 
-        private void WriteNgChunkPluginsNames(BinaryWriter writer)
+        private void WriteNgChunkPluginsNames(BinaryWriterEx writer)
         {
-            var buffer = new byte[] { 0x03, 0x00, 0x47, 0x80, 0x00, 0x00 };
-            writer.Write(buffer);
+            writer.Write((ushort)(3 + ((_plugins.Count - 1) * 44)));
+            writer.Write((ushort)0x8047);
+            writer.Write((ushort)(_plugins.Count - 1));
+
+            foreach (KeyValuePair<ushort, string> plugin in _plugins.Skip(1)) // Skip Tomb_NextGeneration
+            {
+                var record = new PluginRecord
+                {
+                    PluginId = plugin.Key,
+                    Name = plugin.Value,
+                    Usages = (uint)_pluginFloorData.Count(x => x == plugin.Key)
+                };
+
+                writer.WriteBlock(record);
+            }
         }
 
         private void WriteNgChunkTexPartial(BinaryWriter writer)
@@ -214,7 +234,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((ushort)_remappedTiles[textureId]);
                 writer.Write((ushort)textureId);
             }
-            
+
             var endOfChunk = writer.BaseStream.Position;
             var numWords = (endOfChunk - startOfChunk) / 2;
             writer.Seek((int)startOfChunk, SeekOrigin.Begin);
@@ -224,8 +244,16 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkIdFloorTable(BinaryWriter writer)
         {
-            var buffer = new byte[] { 0x03, 0x00, 0x48, 0x80, 0x00, 0x00 };
-            writer.Write(buffer);
+            int lastIndex = _pluginFloorData.FindLastIndex(entry => entry != 0);
+            var pluginTable = new List<byte>(_pluginFloorData.Take(lastIndex + 1));
+
+            if (pluginTable.Count % 2 == 1)
+                pluginTable.Add(0);
+
+            writer.Write((ushort)(3 + pluginTable.Count / 2));
+            writer.Write((ushort)0x8048);
+            writer.Write((ushort)pluginTable.Count);
+            writer.Write(pluginTable.ToArray<byte>());
         }
 
         private void WriteNgChunkLevelFlags(BinaryWriter writer)

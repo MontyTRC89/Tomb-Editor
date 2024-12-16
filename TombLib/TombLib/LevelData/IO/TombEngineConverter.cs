@@ -206,6 +206,20 @@ namespace TombLib.LevelData.IO
                         }
                     }
                     break;
+
+                // Remove hardcoded TR5 sphere
+
+                case "LASERHEAD":
+                    {
+                        if (sourceVersion != TRVersion.Game.TR5)
+                            break;
+
+                        progressReporter?.ReportInfo("    Removing collision for " + newSlotName);
+
+                        if (moveable.Meshes.Count > 0)
+                            moveable.Meshes[0].BoundingSphere = new BoundingSphere(new Vector3(0, 100, -70), 340);
+                    }
+                    break;
             }
 
             // Detect flipped switch states
@@ -294,9 +308,9 @@ namespace TombLib.LevelData.IO
 
                     try
                     {
-                        uint soundId = (uint)(command.Parameter2 & 0x3FFF);
-                        uint newSoundId = TrCatalog.GetTombEngineSound(sourceVersion, soundId);
-                        command.Parameter2 = (short)((short)(command.Parameter2 & 0xC000) | (short)newSoundId);
+                        command.ConvertLegacyConditions();
+                        uint soundId = (uint)command.Parameter2;
+                        command.Parameter2 = (short)TrCatalog.GetTombEngineSound(sourceVersion, soundId);
                     }
                     catch (Exception)
                     {

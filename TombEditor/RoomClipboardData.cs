@@ -47,16 +47,16 @@ namespace TombEditor
                 for (int z = 1; z < room.NumZSectors; ++z)
                     for (int x = 1; x < room.NumXSectors; ++x)
                     {
-                        Block thisBlock = room.Blocks[x, z];
-                        Block aboveBlock = room.Blocks[x, z - 1];
-                        Block leftBlock = room.Blocks[x - 1, z];
-                        if (aboveBlock.IsAnyWall != thisBlock.IsAnyWall)
+                        Sector thisSector = room.Sectors[x, z];
+                        Sector aboveSector = room.Sectors[x, z - 1];
+                        Sector leftSector = room.Sectors[x - 1, z];
+                        if (aboveSector.IsAnyWall != thisSector.IsAnyWall)
                             _contourLines.Add(new ContourLine
                             {
                                 StartX = x + room.Position.X, StartY = z + room.Position.Z,
                                 EndX = x + room.Position.X + 1, EndY = z + room.Position.Z
                             });
-                        if (leftBlock.IsAnyWall != thisBlock.IsAnyWall)
+                        if (leftSector.IsAnyWall != thisSector.IsAnyWall)
                             _contourLines.Add(new ContourLine
                             {
                                 StartX = x + room.Position.X, StartY = z + room.Position.Z,

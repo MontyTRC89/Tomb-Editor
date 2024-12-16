@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -16,9 +17,12 @@ namespace TombLib.LevelData.Compilers
         private Room[] _sortedRooms;
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
 
+        private bool _supportsTRNGPlugins = false;
+        private readonly Dictionary<ushort, string> _plugins = new();
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private byte[] _texture32Data;
         private readonly List<ushort> _floorData = new List<ushort>();
+        private readonly List<byte> _pluginFloorData = new List<byte>();
         private readonly List<tr_mesh> _meshes = new List<tr_mesh>();
         private readonly List<uint> _meshPointers = new List<uint>();
         private readonly List<tr_animation> _animations = new List<tr_animation>();
@@ -68,6 +72,14 @@ namespace TombLib.LevelData.Compilers
 
         public override CompilerStatistics CompileLevel(CancellationToken cancelToken)
         {
+            string ngVersion = null;
+
+            if (_level.IsNG)
+            {
+                ngVersion = DetectTRNGVersion();
+                _supportsTRNGPlugins = new Version(ngVersion) >= new Version(1, 3, 0, 0);
+            }
+
             ReportProgress(0, "Tomb Raider Level Compiler");
 
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
@@ -77,6 +89,10 @@ namespace TombLib.LevelData.Compilers
             cancelToken.ThrowIfCancellationRequested();
             // Try to shuffle rooms to accomodate for more vertically connected ones
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
+
+            // Write plugins if TRNG is detected
+            if (_supportsTRNGPlugins)
+                WritePlugins();
 
             // Prepare level data
             ConvertWad2DataToTrData(_level);
@@ -91,8 +107,10 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
 
             int texInfoLimit = _limits[Limit.TexInfos];
+
             if (_textureInfoManager.TexInfoCount > texInfoLimit)
                 _progressReporter.ReportWarn("TexInfo number overflow, maximum is " + texInfoLimit + ". Please reduce level complexity.");
+
             cancelToken.ThrowIfCancellationRequested();
 
             GetAllReachableRooms();
@@ -107,6 +125,7 @@ namespace TombLib.LevelData.Compilers
             var pageCount = PrepareTextures();
 
             int texPageLimit = _limits[Limit.TexPages];
+
             if (pageCount > texPageLimit)
                 _progressReporter.ReportWarn("Level has " + pageCount + " texture pages, while limit is " + texPageLimit + ". Use less textures, reduce padding or turn on aggressive texture packing in level settings.");
 
@@ -128,7 +147,7 @@ namespace TombLib.LevelData.Compilers
                     WriteLevelTr4();
                     break;
                 case TRVersion.Game.TRNG:
-                    WriteLevelTr4(DetectTRNGVersion());
+                    WriteLevelTr4(ngVersion);
                     break;
                 case TRVersion.Game.TR5:
                     WriteLevelTr5();
@@ -136,7 +155,7 @@ namespace TombLib.LevelData.Compilers
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");
             }
-            
+
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = !cancelToken.IsCancellationRequested;
 
@@ -149,6 +168,17 @@ namespace TombLib.LevelData.Compilers
                 OverlapCount = _overlaps.Length,
                 ObjectTextureCount = _textureInfoManager.TexInfoCount,
             };
+        }
+
+        private void WritePlugins()
+        {
+            ReportProgress(1, "Writing plugins");
+
+            foreach (KeyValuePair<ushort, TriggerParameterUshort> plugin in _level.Settings.GetPluginRange())
+            {
+                _plugins.Add(plugin.Key, plugin.Value.Name);
+                _progressReporter.ReportInfo("Plugin: " + plugin.Value.Name + " with ID " + plugin.Key);
+            }
         }
 
         private void PrepareSoundSources()
@@ -260,8 +290,8 @@ namespace TombLib.LevelData.Compilers
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var instance in _sinkTable.Keys)
             {
-                int xSector = (int)Math.Floor(instance.Position.X / Level.BlockSizeUnit);
-                int zSector = (int)Math.Floor(instance.Position.Z / Level.BlockSizeUnit);
+                int xSector = (int)Math.Floor(instance.Position.X / Level.SectorSizeUnit);
+                int zSector = (int)Math.Floor(instance.Position.Z / Level.SectorSizeUnit);
 
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
@@ -300,9 +330,9 @@ namespace TombLib.LevelData.Compilers
                     Sequence = (byte)instance.Sequence,
                     Index = (byte)instance.Number,
                     Flags = instance.Flags,
-                    DirectionX = (int) Math.Round(position.X + Level.BlockSizeUnit * direction.X),
-                    DirectionY = (int)-Math.Round(position.Y + Level.BlockSizeUnit * direction.Y),
-                    DirectionZ = (int) Math.Round(position.Z + Level.BlockSizeUnit * direction.Z),
+                    DirectionX = (int) Math.Round(position.X + Level.SectorSizeUnit * direction.X),
+                    DirectionY = (int)-Math.Round(position.Y + Level.SectorSizeUnit * direction.Y),
+                    DirectionZ = (int) Math.Round(position.Z + Level.SectorSizeUnit * direction.Z),
                 });
             }
             _flyByCameras.Sort(new tr4_flyby_camera.ComparerFlyBy());
@@ -410,7 +440,7 @@ namespace TombLib.LevelData.Compilers
         {
             while (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
-                var sector = room.Blocks[x, z];
+                var sector = room.Sectors[x, z];
                 x += room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X;
                 z += room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z;
                 room = sector.FloorPortal.AdjoiningRoom;
@@ -420,7 +450,7 @@ namespace TombLib.LevelData.Compilers
         private bool FindMonkeyFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
-            return room.Blocks[x, z].HasFlag(BlockFlags.Monkey);
+            return room.Sectors[x, z].HasFlag(SectorFlags.Monkey);
         }
 
         private void PrepareItems()
@@ -565,7 +595,7 @@ namespace TombLib.LevelData.Compilers
             if (lara == null)
                 return result;
 
-            var laraItem = allObjects.FirstOrDefault(obj => obj is ItemInstance && 
+            var laraItem = allObjects.FirstOrDefault(obj => obj is ItemInstance &&
                                     ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
             if (laraItem == null)
                 return result;
@@ -582,7 +612,7 @@ namespace TombLib.LevelData.Compilers
             foreach (var flybys in groups)
             {
                 var settings = flybys.Select(f => new Vector3(f.Roll, f.Fov, f.Speed)).ToList();
-                
+
                 var positions = flybys.Select(f =>
                 {
                     var distance = f.WorldPosition - laraItem.WorldPosition;
@@ -596,7 +626,7 @@ namespace TombLib.LevelData.Compilers
                 var targets = flybys.Select(f =>
                 {
                     var mxR = Matrix4x4.CreateFromYawPitchRoll(f.GetRotationYRadians(), -f.GetRotationXRadians(), f.GetRotationRollRadians());
-                    var mxT = Matrix4x4.CreateTranslation(0, 0, Level.BlockSizeUnit);
+                    var mxT = Matrix4x4.CreateTranslation(0, 0, Level.SectorSizeUnit);
                     var trans = f.WorldPosition + (mxT * mxR).Translation;
 
                     var distance = trans - laraItem.WorldPosition;

@@ -98,6 +98,15 @@ LevelFuncs.Engine.Node.ModifyLaraWet = function(operation, value)
 	end
 end
 
+-- !Name "If Lara is currently airborne..."
+-- !Section "Lara state"
+-- !Conditional "True"
+-- !Description "Check Lara's airborne status (whether Lara is jumping/falling/etc or on the ground)."
+
+LevelFuncs.Engine.Node.TestAirborne = function()
+	return TEN.Objects.Lara:GetAirborne()
+end
+
 -- !Name "Undraw weapon"
 -- !Section "Lara state"
 -- !Description "Undraws any currently selected weapon."

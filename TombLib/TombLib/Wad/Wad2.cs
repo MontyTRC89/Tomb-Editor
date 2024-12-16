@@ -133,7 +133,7 @@ namespace TombLib.Wad
                 foreach (var animation in moveable.Value.Animations)
                     foreach (var command in animation.AnimCommands)
                         if (command.Type == WadAnimCommandType.PlaySound)
-                            if ((command.Parameter2 & 0x3FFF) == id)
+                            if ((command.Parameter2) == id)
                                 if (!moveables.Contains(moveable.Value))
                                     moveables.Add(moveable.Value);
             return moveables;

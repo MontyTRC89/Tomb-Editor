@@ -5,14 +5,16 @@ using TombLib.Graphics;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
+using TombLib.Controls;
+using System;
 
 namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D
     {
-        public override void InitializeRendering(RenderingDevice device, bool antialias)
+        public override void InitializeRendering(RenderingDevice device, bool antialias, ObjectRenderingQuality objectQuality)
         {
-            base.InitializeRendering(device, antialias);
+            base.InitializeRendering(device, antialias, objectQuality);
 
             // Fall back to half of the max. page count for texture allocation, if editor is in safe mode.
             // This workaround is needed for very old PCs which have troubles with providing D3D device caps.
@@ -36,8 +38,22 @@ namespace TombEditor.Controls.Panel3D
             // Legacy
             {
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(_legacyDevice, true, true);
 
+                int atlasSize = objectQuality switch
+                {
+                    ObjectRenderingQuality.High => 4096,
+					ObjectRenderingQuality.Medium => 1024,
+					_ => 512
+                };
+
+                int maxAllocationSize = objectQuality switch
+                {
+                    ObjectRenderingQuality.High => 2048,
+                    ObjectRenderingQuality.Medium => 256,
+                    _ => 128
+                };
+
+                _wadRenderer = new WadRenderer(_legacyDevice, true, true, atlasSize, maxAllocationSize, false);
                 // Initialize vertex buffers
                 _ghostBlockVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 84);
                 _boxVertexBuffer = new BoundingBox(new Vector3(-_littleCubeRadius), new Vector3(_littleCubeRadius)).GetVertexBuffer(_legacyDevice);
