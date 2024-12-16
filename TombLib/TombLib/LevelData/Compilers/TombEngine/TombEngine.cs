@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Flac;
+using System;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
@@ -177,42 +178,85 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                // Write animations' data
-                writer.Write((uint)_animations.Count);
-                writer.WriteBlockArray(_animations);
-
-                writer.Write((uint)_stateChanges.Count);
-                writer.WriteBlockArray(_stateChanges);
-
-                writer.Write((uint)_animDispatches.Count);
-                writer.WriteBlockArray(_animDispatches);
-
-                writer.Write((uint)_animCommands.Count);
-                writer.WriteBlockArray(_animCommands);
-
                 writer.Write((uint)_meshTrees.Count);
                 writer.WriteBlockArray(_meshTrees);
 
-                writer.Write((uint)_frames.Count);
-                foreach (var frame in _frames)
-                {
-                    writer.Write((short)frame.BoundingBox.X1);
-                    writer.Write((short)frame.BoundingBox.X2);
-                    writer.Write((short)frame.BoundingBox.Y1);
-                    writer.Write((short)frame.BoundingBox.Y2);
-                    writer.Write((short)frame.BoundingBox.Z1);
-                    writer.Write((short)frame.BoundingBox.Z2);
-                    writer.Write((short)frame.Offset.X);
-                    writer.Write((short)frame.Offset.Y);
-                    writer.Write((short)frame.Offset.Z);
-                    writer.Write((short)frame.Angles.Count);
-                    foreach (var angle in frame.Angles)
-                        writer.Write(angle);
-                }
-
                 writer.Write((uint)_moveables.Count);
-                for (var k = 0; k < _moveables.Count; k++)
-                    writer.WriteBlock(_moveables[k]);
+                foreach (var moveable in _moveables)
+                {
+                    writer.Write(moveable.ObjectID);
+                    writer.Write(moveable.NumMeshes);
+                    writer.Write(moveable.StartingMesh);
+                    writer.Write(moveable.MeshTree);
+                    writer.Write(moveable.NumAnimations);
+
+                    foreach (var animation in moveable.Animations)
+                    {
+                        writer.Write(animation.StateID);
+                        writer.Write(animation.Interpolation);
+                        writer.Write(animation.FrameEnd);
+                        writer.Write(animation.NextAnimation);
+                        writer.Write(animation.NextFrame);
+                        writer.Write(animation.BlendFrameCount);
+                        writer.Write(animation.BlendCurve.Start);
+                        writer.Write(animation.BlendCurve.End);
+                        writer.Write(animation.BlendCurve.StartHandle);
+                        writer.Write(animation.BlendCurve.EndHandle);
+                        writer.Write(animation.VelocityStart);
+                        writer.Write(animation.VelocityEnd);
+
+                        writer.Write(animation.KeyFrames.Count);
+                        foreach (var keyFrame in animation.KeyFrames)
+                        {
+                            var center = new Vector3(
+                                keyFrame.BoundingBox.X1 + keyFrame.BoundingBox.X2,
+                                keyFrame.BoundingBox.Y1 + keyFrame.BoundingBox.Y2,
+                                keyFrame.BoundingBox.Z1 + keyFrame.BoundingBox.Z2) / 2;
+                            var extents = new Vector3(
+                                keyFrame.BoundingBox.X2 - keyFrame.BoundingBox.X1,
+                                keyFrame.BoundingBox.Y2 - keyFrame.BoundingBox.Y1,
+                                keyFrame.BoundingBox.Z2 - keyFrame.BoundingBox.Z1) / 2;
+
+                            writer.Write(center);
+                            writer.Write(extents);
+                            writer.Write(keyFrame.RootOffset);
+                            writer.Write((uint)keyFrame.BoneOrientations.Count);
+
+                            writer.WriteBlockArray(keyFrame.BoneOrientations);
+                        }
+
+                        writer.Write((uint)animation.StateChanges.Count);
+                        foreach (var stateChange in animation.StateChanges)
+                        {
+                            writer.Write(stateChange.StateID);
+                            writer.Write(stateChange.FrameLow);
+                            writer.Write(stateChange.FrameHigh);
+                            writer.Write(stateChange.NextAnimation);
+                            writer.Write(stateChange.NextFrameLow);
+                            writer.Write(stateChange.NextFrameHigh);
+                            writer.Write(stateChange.BlendFrameCount);
+                            writer.Write(stateChange.BlendCurve.Start);
+                            writer.Write(stateChange.BlendCurve.End);
+                            writer.Write(stateChange.BlendCurve.StartHandle);
+                            writer.Write(stateChange.BlendCurve.EndHandle);
+                        }
+
+                        writer.Write((uint)animation.NumAnimCommands);
+                        foreach (var element in animation.CommandData)
+                        {
+                            if (element is int intComponent)
+                            {
+                                writer.Write(intComponent);
+                            }
+                            else if (element is Vector3 vector3Component)
+                            {
+                                writer.Write(vector3Component);
+                            }
+                        }
+
+                        writer.Write(animation.Flags);
+                    }
+                }
 
                 writer.Write((uint)_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
