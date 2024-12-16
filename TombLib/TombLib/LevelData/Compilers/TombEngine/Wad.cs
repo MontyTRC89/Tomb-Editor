@@ -297,8 +297,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
                     {
-                        _animCommands.Add((int)command.Type);
-
                         switch (command.Type)
                         {
                             case WadAnimCommandType.SetPosition:
@@ -327,9 +325,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                             case WadAnimCommandType.PlaySound:
                                 newAnimation.CommandData.Add(5);
+
                                 newAnimation.CommandData.Add(command.Parameter2); // Sound ID
                                 newAnimation.CommandData.Add(command.Parameter1); // Frame number
-                                newAnimation.CommandData.Add(command.Parameter3); // Environment condition.
+                                newAnimation.CommandData.Add(command.Parameter3); // Environment condition
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
@@ -337,9 +336,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                 newAnimation.CommandData.Add((int)command.Parameter2);
                                 newAnimation.CommandData.Add((int)command.Parameter1);
+                                break;
 
                             case WadAnimCommandType.DisableInterpolation:
-                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
+                                newAnimation.CommandData.Add(command.Parameter1); // Frame number
                                 break;
                         }
                     }
