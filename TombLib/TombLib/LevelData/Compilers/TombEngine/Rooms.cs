@@ -1310,8 +1310,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
                 
                 var mirror = new TombEngineMirror();
-                mirror.RealRoom = (short)_roomRemapping[room];
-                mirror.VirtualRoom = (short)_roomRemapping[portal.AdjoiningRoom];
+                mirror.Room = (short)_roomRemapping[room];
 
 				mirror.Plane.X = normal.X;
                 mirror.Plane.Y = normal.Y;
@@ -1326,7 +1325,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 mirror.ReflectStatics = portal.Properties.ReflectStatics;
                 mirror.ReflectLights = portal.Properties.ReflectLights;
 
-				if (!_mirrors.Any(m => m.RealRoom == mirror.RealRoom && m.Plane == mirror.Plane))
+				if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
                 {
                     _mirrors.Add(mirror);
                 }
@@ -1574,8 +1573,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				if (portal.Effect == PortalEffectType.Mirror)
 				{
 					var mirror = new TombEngineMirror();
-					mirror.RealRoom = (short)_roomRemapping[room];
-					mirror.VirtualRoom = (short)_roomRemapping[portal.AdjoiningRoom];
+					mirror.Room = (short)_roomRemapping[room];
 
                     mirror.Plane.X = normal.X;
 					mirror.Plane.Y = normal.Y;
@@ -1587,7 +1585,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     mirror.ReflectStatics = portal.Properties.ReflectStatics;
                     mirror.ReflectLights = portal.Properties.ReflectLights;
 
-                    if (!_mirrors.Any(m => m.RealRoom == mirror.RealRoom && m.Plane == mirror.Plane))
+                    if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
 					{
 						_mirrors.Add(mirror);
 					}

@@ -242,8 +242,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write((uint)_mirrors.Count);
                 foreach (var mirror in _mirrors)
                 {
-                    writer.Write(mirror.RealRoom);
-					writer.Write(mirror.VirtualRoom);
+                    writer.Write(mirror.Room);
 					writer.Write(mirror.Plane.X);
 					writer.Write(mirror.Plane.Y);
 					writer.Write(mirror.Plane.Z);
