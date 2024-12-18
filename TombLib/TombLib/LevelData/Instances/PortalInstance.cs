@@ -27,6 +27,7 @@ namespace TombLib.LevelData
         public bool ReflectLara { get; set; } = true;
         public bool ReflectStatics { get; set; } = true;
         public bool ReflectMoveables { get; set; } = true;
+        public bool ReflectSprites { get; set; } = true;
         public bool ReflectLights { get; set; } = true;
     }
 

@@ -1638,6 +1638,7 @@ namespace TombLib.LevelData.IO
                                 instance.Properties.ReflectLara = chunkIO.Raw.ReadBoolean();
                                 instance.Properties.ReflectMoveables = chunkIO.Raw.ReadBoolean();
                                 instance.Properties.ReflectStatics = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectSprites = chunkIO.Raw.ReadBoolean();
                                 instance.Properties.ReflectLights = chunkIO.Raw.ReadBoolean();
                                 return true;
                             }

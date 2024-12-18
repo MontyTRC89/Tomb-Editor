@@ -20,12 +20,16 @@ namespace TombEditor.Forms
             comboPortalEffect.SelectedItem = _instance.Effect;
             cbReflectMoveables.Checked = _instance.Properties.ReflectMoveables;
             cbReflectStatics.Checked = _instance.Properties.ReflectStatics;
+            cbReflectSprites.Checked = _instance.Properties.ReflectSprites;
+            cbReflectLights.Checked = _instance.Properties.ReflectLights;
         }
 
         private void UpdateUI()
         {
             cbReflectMoveables.Enabled =
-            cbReflectStatics.Enabled = (PortalEffectType)comboPortalEffect.SelectedItem == PortalEffectType.Mirror;
+            cbReflectStatics.Enabled =
+            cbReflectSprites.Enabled =
+            cbReflectLights.Enabled = (PortalEffectType)comboPortalEffect.SelectedItem == PortalEffectType.Mirror;
         }
 
         private void butOk_Click(object sender, EventArgs e)
@@ -33,6 +37,8 @@ namespace TombEditor.Forms
             _instance.Effect = (PortalEffectType)comboPortalEffect.SelectedItem;
             _instance.Properties.ReflectMoveables = cbReflectMoveables.Checked;
             _instance.Properties.ReflectStatics = cbReflectStatics.Checked;
+            _instance.Properties.ReflectSprites = cbReflectSprites.Checked;
+            _instance.Properties.ReflectLights = cbReflectLights.Checked;
 
             DialogResult = DialogResult.OK;
             Close();

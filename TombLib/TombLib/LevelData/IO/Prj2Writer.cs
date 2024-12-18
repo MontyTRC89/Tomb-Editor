@@ -780,6 +780,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(instance.Properties.ReflectLara);
                                 chunkIO.Raw.Write(instance.Properties.ReflectMoveables);
                                 chunkIO.Raw.Write(instance.Properties.ReflectStatics);
+                                chunkIO.Raw.Write(instance.Properties.ReflectSprites);
                                 chunkIO.Raw.Write(instance.Properties.ReflectLights);
                             }
                         });

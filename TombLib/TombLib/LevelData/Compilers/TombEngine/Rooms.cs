@@ -1323,6 +1323,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 mirror.ReflectLara = portal.Properties.ReflectLara;
                 mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
                 mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                mirror.ReflectSprites = portal.Properties.ReflectSprites;
                 mirror.ReflectLights = portal.Properties.ReflectLights;
 
 				if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
@@ -1583,8 +1584,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     mirror.ReflectLara = portal.Properties.ReflectLara;
                     mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
                     mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                    mirror.ReflectSprites = portal.Properties.ReflectSprites;
                     mirror.ReflectLights = portal.Properties.ReflectLights;
-
+                    
                     if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
 					{
 						_mirrors.Add(mirror);

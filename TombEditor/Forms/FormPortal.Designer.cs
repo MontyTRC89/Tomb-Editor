@@ -33,8 +33,10 @@
             comboPortalEffect = new DarkUI.Controls.DarkComboBox();
             darkLabel2 = new DarkUI.Controls.DarkLabel();
             darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            cbReflectLights = new DarkUI.Controls.DarkCheckBox();
             cbReflectStatics = new DarkUI.Controls.DarkCheckBox();
             cbReflectMoveables = new DarkUI.Controls.DarkCheckBox();
+            cbReflectSprites = new DarkUI.Controls.DarkCheckBox();
             darkGroupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -43,7 +45,7 @@
             butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butCancel.Checked = false;
             butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            butCancel.Location = new System.Drawing.Point(161, 116);
+            butCancel.Location = new System.Drawing.Point(161, 163);
             butCancel.Name = "butCancel";
             butCancel.Size = new System.Drawing.Size(80, 23);
             butCancel.TabIndex = 2;
@@ -55,7 +57,7 @@
             // 
             butOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butOk.Checked = false;
-            butOk.Location = new System.Drawing.Point(75, 116);
+            butOk.Location = new System.Drawing.Point(75, 163);
             butOk.Name = "butOk";
             butOk.Size = new System.Drawing.Size(80, 23);
             butOk.TabIndex = 1;
@@ -86,14 +88,25 @@
             // darkGroupBox1
             // 
             darkGroupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            darkGroupBox1.Controls.Add(cbReflectSprites);
+            darkGroupBox1.Controls.Add(cbReflectLights);
             darkGroupBox1.Controls.Add(cbReflectStatics);
             darkGroupBox1.Controls.Add(cbReflectMoveables);
             darkGroupBox1.Location = new System.Drawing.Point(7, 40);
             darkGroupBox1.Name = "darkGroupBox1";
-            darkGroupBox1.Size = new System.Drawing.Size(234, 67);
+            darkGroupBox1.Size = new System.Drawing.Size(234, 114);
             darkGroupBox1.TabIndex = 12;
             darkGroupBox1.TabStop = false;
             darkGroupBox1.Text = "Mirror options";
+            // 
+            // cbReflectLights
+            // 
+            cbReflectLights.AutoSize = true;
+            cbReflectLights.Location = new System.Drawing.Point(7, 91);
+            cbReflectLights.Name = "cbReflectLights";
+            cbReflectLights.Size = new System.Drawing.Size(138, 17);
+            cbReflectLights.TabIndex = 2;
+            cbReflectLights.Text = "Reflect dynamic lights";
             // 
             // cbReflectStatics
             // 
@@ -113,13 +126,22 @@
             cbReflectMoveables.TabIndex = 0;
             cbReflectMoveables.Text = "Reflect moveables";
             // 
+            // cbReflectSprites
+            // 
+            cbReflectSprites.AutoSize = true;
+            cbReflectSprites.Location = new System.Drawing.Point(7, 68);
+            cbReflectSprites.Name = "cbReflectSprites";
+            cbReflectSprites.Size = new System.Drawing.Size(107, 17);
+            cbReflectSprites.TabIndex = 3;
+            cbReflectSprites.Text = "Reflect sprites";
+            // 
             // FormPortal
             // 
             AcceptButton = butOk;
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             CancelButton = butCancel;
-            ClientSize = new System.Drawing.Size(249, 147);
+            ClientSize = new System.Drawing.Size(249, 194);
             Controls.Add(darkGroupBox1);
             Controls.Add(darkLabel2);
             Controls.Add(comboPortalEffect);
@@ -147,5 +169,7 @@
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkCheckBox cbReflectStatics;
         private DarkUI.Controls.DarkCheckBox cbReflectMoveables;
+        private DarkUI.Controls.DarkCheckBox cbReflectLights;
+        private DarkUI.Controls.DarkCheckBox cbReflectSprites;
     }
 }

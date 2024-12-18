@@ -683,6 +683,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public bool ReflectLara;
         public bool ReflectMoveables;
         public bool ReflectStatics;
+        public bool ReflectSprites;
         public bool ReflectLights;
 	}
 }
