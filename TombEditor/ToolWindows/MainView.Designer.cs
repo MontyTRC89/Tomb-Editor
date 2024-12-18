@@ -864,7 +864,7 @@ namespace TombEditor.ToolWindows
 			butMirror.ImageTransparentColor = System.Drawing.Color.Magenta;
 			butMirror.Name = "butMirror";
 			butMirror.Size = new System.Drawing.Size(23, 29);
-			butMirror.Tag = "TogglePortalMirror";
+			butMirror.Tag = "ToggleClassicPortalMirror";
 			// 
 			// MainView
 			// 

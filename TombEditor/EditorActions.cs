@@ -4827,9 +4827,9 @@ namespace TombEditor
             _editor.ObjectChange(portal, ObjectChangeType.Change);
 		}
 
-		public static void TogglePortalMirror(IWin32Window owner)
+		public static void ToggleClassicPortalMirror(IWin32Window owner)
 		{
-			if (!VersionCheck(_editor.Level.IsTombEngine, "Mirror effect"))
+			if (!VersionCheck(_editor.Level.IsTombEngine, "Classic mirror effect"))
 				return;
 
 			var portal = _editor.SelectedObject as PortalInstance;
@@ -4839,7 +4839,7 @@ namespace TombEditor
 				return;
 			}
 
-			portal.Effect = (portal.Effect == PortalEffectType.Mirror) ? PortalEffectType.None : PortalEffectType.Mirror;
+			portal.Effect = (portal.Effect == PortalEffectType.ClassicMirror) ? PortalEffectType.None : PortalEffectType.ClassicMirror;
 			_editor.ObjectChange(portal, ObjectChangeType.Change);
 		}
 

@@ -19,7 +19,7 @@ namespace TombLib.LevelData
     public enum PortalEffectType : byte
     {
        None,
-       Mirror
+       ClassicMirror
     }
 
     public class PortalProperties
@@ -74,7 +74,7 @@ namespace TombLib.LevelData
         {
             string text = "Portal ";
 
-			if (Effect == PortalEffectType.Mirror)
+			if (Effect == PortalEffectType.ClassicMirror)
 				text += "with mirror ";
 
             switch (Direction)

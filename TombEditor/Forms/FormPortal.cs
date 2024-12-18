@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
@@ -14,10 +15,12 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             foreach (PortalEffectType effect in Enum.GetValues(typeof(PortalEffectType)))
-                comboPortalEffect.Items.Add(effect);
+                comboPortalEffect.Items.Add(effect.ToString().SplitCamelcase());
 
             _instance = instance;
-            comboPortalEffect.SelectedItem = _instance.Effect;
+
+            int effectID = (int)_instance.Effect;
+            comboPortalEffect.SelectedIndex = effectID < comboPortalEffect.Items.Count ? effectID : -1;
             cbReflectMoveables.Checked = _instance.Properties.ReflectMoveables;
             cbReflectStatics.Checked = _instance.Properties.ReflectStatics;
             cbReflectSprites.Checked = _instance.Properties.ReflectSprites;
@@ -29,12 +32,12 @@ namespace TombEditor.Forms
             cbReflectMoveables.Enabled =
             cbReflectStatics.Enabled =
             cbReflectSprites.Enabled =
-            cbReflectLights.Enabled = (PortalEffectType)comboPortalEffect.SelectedItem == PortalEffectType.Mirror;
+            cbReflectLights.Enabled = (PortalEffectType)comboPortalEffect.SelectedIndex == PortalEffectType.ClassicMirror;
         }
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            _instance.Effect = (PortalEffectType)comboPortalEffect.SelectedItem;
+            _instance.Effect = (PortalEffectType)comboPortalEffect.SelectedIndex;
             _instance.Properties.ReflectMoveables = cbReflectMoveables.Checked;
             _instance.Properties.ReflectStatics = cbReflectStatics.Checked;
             _instance.Properties.ReflectSprites = cbReflectSprites.Checked;
