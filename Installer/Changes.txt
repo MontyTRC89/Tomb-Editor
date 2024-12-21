@@ -14,6 +14,7 @@ Tomb Editor:
  * Added OnFreeze global event handling and TEN nodes to get and set freeze mode.
  * Added TEN node to check Lara's airborne status.
  * Added TEN node to remove moveable effect.
+ * Added TEN nodes to get and set moveable animations from other slots.
  * Added TEN nodes to get and set moveable collision state.
  * Added TEN nodes to get and set hit points for a shatterable static mesh.
  * Split flyby sequence path preview in case cut camera flag is present.
