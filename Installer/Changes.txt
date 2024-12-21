@@ -21,6 +21,7 @@ Tomb Editor:
 WadTool:
  * Added ability to customize static mesh shatter attributes for TEN wads.
  * Added "Disable Interpolation" animcommand type for TEN wads.
+ * Fixed exception in skeleton editor while replacing existing mesh if no new mesh was selected.
 
 TombIDE:
  * Added new "More Actions..." menu in place of "Exit Project" button.
