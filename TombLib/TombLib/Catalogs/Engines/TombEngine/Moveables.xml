@@ -28,9 +28,9 @@
     <moveable id="26" name="ACTOR1_SPEECH_HEAD2" />
     <moveable id="27" name="ACTOR2_SPEECH_HEAD1" />
     <moveable id="28" name="ACTOR2_SPEECH_HEAD2" />
-    <moveable id="29" name="LARA_EXTRA_MESH1" />
-    <moveable id="30" name="LARA_EXTRA_MESH2" />
-    <moveable id="31" name="LARA_EXTRA_MESH3" />
+    <moveable id="29" name="LARA_BINOCULARS_MESH" />
+    <moveable id="30" name="LARA_EXTRA_MESH1" />
+    <moveable id="31" name="LARA_EXTRA_MESH2" />
     <moveable id="32" name="LARA_WATER_MESH" use_body_from="12" />
     <moveable id="33" name="LARA_PETROL_MESH" use_body_from="12" />
     <moveable id="34" name="LARA_DIRT_MESH" use_body_from="12" />

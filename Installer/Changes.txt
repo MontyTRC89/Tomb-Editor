@@ -28,6 +28,12 @@ TombIDE:
  * Added the ability to re-apply an engine update.
  * Improved autocomplete popup visuals for TRNG scripting.
  * TombEngine.wad2 will now be added into a dedicated "Assets" folder when creating a new TEN project.
+ 
+TEN Base WAD:
+ * Added LARA_BINOCULARS_MESH (ID 29), used for seeing player using the binoculars in a mirrored room.
+ * Removed LARA_EXTRA_MESH2 as unused.
+ * Changed default braid to the one used in TR4.
+ 
 
 Version 1.7.2
 =============
