@@ -58,8 +58,8 @@ namespace TombLib.LevelData.VisualScripting
 
     public class ArgumentLayout
     {
-        public ArgumentType Type = ArgumentType.Numerical;
         public string Name = string.Empty;
+        public ArgumentType Type = ArgumentType.Numerical;
         public List<string> CustomEnumeration = new List<string>();
         public string DefaultValue = string.Empty;
         public string Description = string.Empty;
