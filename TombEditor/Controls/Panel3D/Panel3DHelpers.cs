@@ -120,8 +120,15 @@ namespace TombEditor.Controls.Panel3D
                 var cam = flybyCameras[i];
                 camList.Add(cam.Position + cam.Room.WorldPos);
 
-                // Check for a sequence cut or the end of the list
-                bool isCut = (cam.Flags & (1 << 7)) != 0 && i + 1 < flybyCameras.Count && flybyCameras[i + 1].Number == cam.Timer;
+                // Check for a sequence cut and jump to appropriate camera, if setup is correct
+                bool isCut = false;
+                if ((cam.Flags & (1 << 7)) != 0 && cam.Timer < flybyCameras.Count && cam.Timer > i)
+                {
+                    isCut = true;
+                    i = cam.Timer - 1;
+                }
+
+                // Check for the end of the list
                 bool isLast = i == flybyCameras.Count - 1;
 
                 if (isCut || isLast)
