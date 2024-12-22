@@ -11,13 +11,25 @@ on level start-up, given that level contains any volumes. Therefore, NodeFunctio
 
 ### Format
 
-Lua node scripts should follow this convention: several metadata signatures should be followed by actual function
-body which should start with conventional **LevelFuncs.Engine.Node.** prefix. Amount of argument metadata
-signatures should be the same as actual function arguments, and should be listed in the same order.
+Lua node scripts should follow this convention: several metadata entries should be followed by actual function
+signature which should start with conventional **LevelFuncs.Engine.Node.** prefix, and should be strictly
+single-line. Function signature should be followed by function body in arbitrary format. Amount of argument metadata
+entries should be the same as actual function arguments, and should be listed in the same order.
 
-### Metadata signature reference
+### Argument naming and order
 
-Comment metadata signature reference (metadata block is indicated by a keyword which starts with !):
+Actual function arguments (e.g. `arg1`, `arg2` and `arg3` in `LevelFuncs.Engine.Node.MyFunction(arg1, arg2, arg3)`)
+should not be renamed after node went into production with official TE release - otherwise TE will not be able to
+identify arguments on project file reloading. However, since TE version 1.7.3, it is allowed to rearrange node
+arguments, if argument names were left untouched. You still need to preserve metadata entry order to correspond to
+function order though.
+
+Builders must be advised that they should migrate to version 1.7.3 as soon as possible, because skipping version 
+1.7.3, together with possible node argument reorderings in the future, may lead to data loss in existing node setups.
+
+### Metadata entry reference
+
+Comment metadata entry reference (metadata block is indicated by a keyword which starts with !):
 
  - **!Name "NAME"** - NAME will be visible name for this function in node editor.
 
@@ -128,7 +140,7 @@ LevelFuncs.CheckEntityHealth = function(moveableName, operator, value)
 end
 ```
 
-Here, **!Arguments** signature lists 3 parameters, which will be called "Moveable to check", "Kind of check"
+Here, **!Arguments** entry lists 3 parameters, which will be called "Moveable to check", "Kind of check"
 and "Hit points value" respectively. First argument, "Moveable to check", will occupy whole second line of a
 node UI, because width is not explicitly stated for it. Next two arguments, "Kind of check" and "Hit points
 value", both will occupy same next line, because **NewLine** keyword is not specified for third argument.
@@ -142,5 +154,5 @@ only define values between 0 and 1000. All other values will be clamped. Decimal
 show, as third parameter in square brackets is set to 0.
 
 **LevelFuncs.CheckEntityHealth** function declaration should contain same amount of arguments and in the same
-order as metadata argument signature. Therefore, **moveableName** will be read from "Moveable to check"
-UI argument, **operator** will be read from "Kind of check", and so on.
+order as metadata argument entry. Therefore, **moveableName** will be read from "Moveable to check" UI argument,
+**operator** will be read from "Kind of check", and so on.

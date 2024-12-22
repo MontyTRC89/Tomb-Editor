@@ -74,6 +74,7 @@ namespace TombLib.Utils
                 var lines = File.ReadAllLines(file);
                 var nodeFunction = new NodeFunction();
                 bool ignore = false;
+                bool ignoreUntilNextMetadata = false;
 
                 foreach (string l in lines)
                 {
@@ -100,6 +101,7 @@ namespace TombLib.Utils
                         else if (comment.StartsWith(_nodeNameId, StringComparison.InvariantCultureIgnoreCase))
                         {
                             nodeFunction.Name = TextExtensions.ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length)).LastOrDefault();
+                            ignoreUntilNextMetadata = false;
                             continue;
                         }
                         else if (comment.StartsWith(_nodeDescriptionId, StringComparison.InvariantCultureIgnoreCase))
@@ -153,8 +155,10 @@ namespace TombLib.Utils
                     else if (cPoint == 0)
                         line = string.Empty;
 
-                    if (line.StartsWith(LuaSyntax.NodeCatalogPrefix))
+                    if (line.StartsWith(LuaSyntax.NodeCatalogPrefix) && !ignoreUntilNextMetadata)
                     {
+                        ignoreUntilNextMetadata = true;
+
                         if (ignore)
                         {
                             ignore = false;
