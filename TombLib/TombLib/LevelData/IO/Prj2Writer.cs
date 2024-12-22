@@ -919,7 +919,13 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.NodeFunction, node.Function);
 
                 foreach (var arg in node.Arguments)
-                    chunkIO.WriteChunkString(Prj2Chunks.NodeArgument, arg);
+                {
+                    chunkIO.WriteChunkWithChildren(Prj2Chunks.NodeArgument2, () =>
+                    {
+                        chunkIO.WriteChunkString(Prj2Chunks.NodeArgumentName, arg.Key);
+                        chunkIO.WriteChunkString(Prj2Chunks.NodeArgumentValue, arg.Value);
+                    });
+                }
 
                 if (node.Next != null)
                     WriteNode(chunkIO, node.Next, Prj2Chunks.EventNodeNext);

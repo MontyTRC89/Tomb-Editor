@@ -122,16 +122,7 @@ namespace TombLib.Utils
 
                             foreach (var s in settings)
                             {
-                                var argLayout = new ArgumentLayout()
-                                {
-                                    Type = ArgumentType.Numerical,
-                                    CustomEnumeration = new List<string>(),
-                                    DefaultValue = string.Empty,
-                                    Description = string.Empty,
-                                    NewLine = false,
-                                    Width = 100.0f
-                                };
-
+                                var argLayout = new ArgumentLayout();
                                 var parameters = s.SplitParenthesis().Select(st => st.Trim());
                                 foreach (var p in parameters)
                                 {
@@ -173,6 +164,40 @@ namespace TombLib.Utils
                         int indexStart = line.LastIndexOf(LuaSyntax.Splitter) + 1;
                         int indexEnd = line.IndexOf(LuaSyntax.Is) - indexStart;
                         nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
+
+                        indexStart = line.IndexOf(LuaSyntax.BracketOpen) + 1;
+                        indexEnd = line.IndexOf(LuaSyntax.BracketClose);
+
+                        string argumentList = line.Substring(indexStart, indexEnd - indexStart).Trim();
+
+                        if (!string.IsNullOrWhiteSpace(argumentList))
+                        {
+                            var argNameList = argumentList.Split(',').Select(arg => arg.Trim()).ToList();
+
+                            if (argNameList.Count == nodeFunction.Arguments.Count)
+                            {
+                                for (int i = 0; i < argNameList.Count; i++)
+                                    nodeFunction.Arguments[i].Name = argNameList[i];
+                            }
+                            else
+                            {
+                                var message = "Argument list for function " + nodeFunction.Signature + " does not match the number of arguments in the catalog.";
+#if DEBUG
+                                throw new Exception(message);
+#else
+                                logger.Warn(message);
+#endif
+                            }
+                        }
+                        else if (nodeFunction.Arguments.Count > 0)
+                            {
+                                var message = "Function " + nodeFunction.Signature + " has no arguments, although metadata was provided.";
+#if DEBUG
+                                throw new Exception(message);
+#else
+                                logger.Warn(message);
+#endif
+                        }
                     }
                     else
                         continue;
@@ -296,13 +321,13 @@ namespace TombLib.Utils
             return result;
         }
 
-        private static string ParseFunctionString(string function, List<string> arguments)
+        private static string ParseFunctionString(string function, List<KeyValuePair<string, string>> arguments)
         {
             string joined = LuaSyntax.NodeCatalogPrefix + function + LuaSyntax.BracketOpen;
 
             for (int i = 0; i < arguments.Count; i++)
             {
-                joined += (string.IsNullOrEmpty(arguments[i]) ? LuaSyntax.Null : arguments[i]);
+                joined += (string.IsNullOrEmpty(arguments[i].Value) ? LuaSyntax.Null : arguments[i]);
                 if (arguments.Count > 1 && i < arguments.Count - 1)
                     joined += (LuaSyntax.Separator + LuaSyntax.Space);
             }

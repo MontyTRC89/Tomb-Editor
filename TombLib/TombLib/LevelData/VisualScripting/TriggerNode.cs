@@ -27,7 +27,7 @@ namespace TombLib.LevelData.VisualScripting
         public bool Locked { get; set; } = false;
 
         public string Function { get; set; } = string.Empty;
-        public List<string> Arguments { get; private set; } = new List<string>();
+        public List<KeyValuePair<string, string>> Arguments { get; private set; } = new List<KeyValuePair<string, string>>();
 
         public TriggerNode Previous { get; set; }
         public TriggerNode Next { get; set; }
@@ -51,7 +51,7 @@ namespace TombLib.LevelData.VisualScripting
         {
             var node = (TriggerNode)MemberwiseClone();
 
-            node.Arguments = new List<string>(Arguments);
+            node.Arguments = new List<KeyValuePair<string, string>>(Arguments);
 
             if (Next != null)
             {
@@ -70,7 +70,7 @@ namespace TombLib.LevelData.VisualScripting
             if (Function != null)
                 hash ^= Function.GetHashCode();
 
-            Arguments.ForEach(a => { if (a != null) hash ^= a.GetHashCode(); });
+            Arguments.ForEach(a => { if (!string.IsNullOrEmpty(a.Value)) hash ^= a.Value.GetHashCode(); });
             if (Next != null)
                 hash ^= Next.GetHashCode();
 
@@ -79,15 +79,25 @@ namespace TombLib.LevelData.VisualScripting
 
         public void FixArguments(NodeFunction reference)
         {
-            if (reference.Arguments.Count < Arguments.Count)
+            var argumentOrder = new List<int>();
+            var newArguments  = new List<KeyValuePair<string, string>>();
+
+            foreach (var arg in Arguments)
             {
-                Arguments.RemoveRange(reference.Arguments.Count, Arguments.Count - reference.Arguments.Count);
+                int index = reference.Arguments.FindIndex(a => a.Name == arg.Key);
+                if (index >= 0)
+                    argumentOrder.Add(index);
             }
-            else if (reference.Arguments.Count > Arguments.Count)
+
+            for (int i = 0; i < reference.Arguments.Count; i++)
             {
-                for (int i = Arguments.Count; i < reference.Arguments.Count; i++)
-                    Arguments.Add(reference.Arguments[i].DefaultValue);
+                if (argumentOrder.Contains(i))
+                    newArguments.Add(Arguments[argumentOrder.IndexOf(i)]);
+                else
+                    newArguments.Add(new KeyValuePair<string, string>(reference.Arguments[i].Name, reference.Arguments[i].DefaultValue));
             }
+
+            Arguments = newArguments;
         }
 
 		public static List<TriggerNode> LinearizeNodes(List<TriggerNode> list)

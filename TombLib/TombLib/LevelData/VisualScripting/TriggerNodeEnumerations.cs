@@ -56,14 +56,15 @@ namespace TombLib.LevelData.VisualScripting
         CompareOperator
     }
 
-    public struct ArgumentLayout
+    public class ArgumentLayout
     {
-        public ArgumentType Type;
-        public List<string> CustomEnumeration;
-        public string DefaultValue;
-        public string Description;
-        public bool NewLine;
-        public float Width;
+        public ArgumentType Type = ArgumentType.Numerical;
+        public string Name = string.Empty;
+        public List<string> CustomEnumeration = new List<string>();
+        public string DefaultValue = string.Empty;
+        public string Description = string.Empty;
+        public bool NewLine = false;
+        public float Width = 100.0f;
     }
 
     public class NodeFunction
