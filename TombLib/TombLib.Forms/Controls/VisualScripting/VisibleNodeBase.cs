@@ -118,7 +118,7 @@ namespace TombLib.Controls.VisualScripting
                 Node.Arguments.RemoveRange(funcSetup.Arguments.Count, Node.Arguments.Count - funcSetup.Arguments.Count);
             else if (funcSetup.Arguments.Count > Node.Arguments.Count)
                 for (int i = Node.Arguments.Count; i < funcSetup.Arguments.Count; i++)
-                    Node.Arguments.Add(new KeyValuePair<string, string>(funcSetup.Arguments[i].Name, funcSetup.Arguments[i].DefaultValue));
+                    Node.Arguments.Add(new TriggerNodeArgument() { Name = funcSetup.Arguments[i].Name, Value = funcSetup.Arguments[i].DefaultValue });
         }
 
         public void SpawnFunctionList(List<NodeFunction> functions)
@@ -306,7 +306,7 @@ namespace TombLib.Controls.VisualScripting
             int index = _argControls.IndexOf(ctrl);
 
             if (index != -1 && Node.Arguments.Count > index)
-                Node.Arguments[index] = new KeyValuePair<string, string>(Node.Arguments[index].Key, ctrl.Text);
+                Node.Arguments[index].Value = ctrl.Text;
         }
 
         private void Ctrl_RightClick(object sender, MouseEventArgs e)

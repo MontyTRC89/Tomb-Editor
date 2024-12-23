@@ -1919,25 +1919,25 @@ namespace TombLib.LevelData.IO
                 else if (id == Prj2Chunks.NodeArgument)
                 {
                     restoreArgumentNames = true;
-                    node.Arguments.Add(new KeyValuePair<string, string>(string.Empty, chunkIO.ReadChunkString(chunkSize)));
+                    node.Arguments.Add(new TriggerNodeArgument() { Name = string.Empty, Value = chunkIO.ReadChunkString(chunkSize) });
                 }
                 else if (id == Prj2Chunks.NodeArgument2)
                 {
                     var name  = string.Empty;
-                    var value = string.Empty;
+                    var val = string.Empty;
 
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
                         if (id2 == Prj2Chunks.NodeArgumentName)
                             name = chunkIO.ReadChunkString(chunkSize2);
                         else if (id2 == Prj2Chunks.NodeArgumentValue)
-                            value = chunkIO.ReadChunkString(chunkSize2);
+                            val = chunkIO.ReadChunkString(chunkSize2);
                         else
                             return false;
                         return true;
                     });
 
-                    node.Arguments.Add(new KeyValuePair<string, string>(name, value));
+                    node.Arguments.Add(new TriggerNodeArgument() { Name = name, Value = val });
                 }
                 else if (id == Prj2Chunks.EventNodeNext)
                     node.Next = LoadNode(chunkIO, node);
@@ -1956,7 +1956,7 @@ namespace TombLib.LevelData.IO
                     // Restore argument names for old chunk version.
                     var function = ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function);
                     for (int i = 0; i < node.Arguments.Count; i++)
-                        node.Arguments[i] = new KeyValuePair<string, string>(function.Arguments[i].Name, node.Arguments[i].Value);
+                        node.Arguments[i] = new TriggerNodeArgument() { Name = function.Arguments[i].Name, Value = node.Arguments[i].Value };
                 }
                 else
                 {

@@ -4,6 +4,12 @@ using System.Numerics;
 
 namespace TombLib.LevelData.VisualScripting
 {
+    public class TriggerNodeArgument
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+
     // Every node in visual trigger has this set of parameters. Name and color are
     // merely UI properties, while Previous/Next and ScreenPosition determines the
     // order of compilation. Every node may have or may have no any previous or
@@ -27,7 +33,7 @@ namespace TombLib.LevelData.VisualScripting
         public bool Locked { get; set; } = false;
 
         public string Function { get; set; } = string.Empty;
-        public List<KeyValuePair<string, string>> Arguments { get; private set; } = new List<KeyValuePair<string, string>>();
+        public List<TriggerNodeArgument> Arguments { get; private set; } = new List<TriggerNodeArgument>();
 
         public TriggerNode Previous { get; set; }
         public TriggerNode Next { get; set; }
@@ -50,8 +56,7 @@ namespace TombLib.LevelData.VisualScripting
         public virtual TriggerNode Clone()
         {
             var node = (TriggerNode)MemberwiseClone();
-
-            node.Arguments = new List<KeyValuePair<string, string>>(Arguments);
+            node.Arguments = new List<TriggerNodeArgument>(Arguments);
 
             if (Next != null)
             {
@@ -80,11 +85,11 @@ namespace TombLib.LevelData.VisualScripting
         public void FixArguments(NodeFunction reference)
         {
             var argumentOrder = new List<int>();
-            var newArguments  = new List<KeyValuePair<string, string>>();
+            var newArguments  = new List<TriggerNodeArgument>();
 
             foreach (var arg in Arguments)
             {
-                int index = reference.Arguments.FindIndex(a => a.Name == arg.Key);
+                int index = reference.Arguments.FindIndex(a => a.Name == arg.Name);
                 if (index >= 0)
                     argumentOrder.Add(index);
             }
@@ -94,7 +99,7 @@ namespace TombLib.LevelData.VisualScripting
                 if (argumentOrder.Contains(i))
                     newArguments.Add(Arguments[argumentOrder.IndexOf(i)]);
                 else
-                    newArguments.Add(new KeyValuePair<string, string>(reference.Arguments[i].Name, reference.Arguments[i].DefaultValue));
+                    newArguments.Add(new TriggerNodeArgument() { Name = reference.Arguments[i].Name, Value = reference.Arguments[i].DefaultValue });
             }
 
             Arguments = newArguments;

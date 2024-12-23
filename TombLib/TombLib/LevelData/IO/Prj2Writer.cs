@@ -922,7 +922,7 @@ namespace TombLib.LevelData.IO
                 {
                     chunkIO.WriteChunkWithChildren(Prj2Chunks.NodeArgument2, () =>
                     {
-                        chunkIO.WriteChunkString(Prj2Chunks.NodeArgumentName, arg.Key);
+                        chunkIO.WriteChunkString(Prj2Chunks.NodeArgumentName, arg.Name);
                         chunkIO.WriteChunkString(Prj2Chunks.NodeArgumentValue, arg.Value);
                     });
                 }

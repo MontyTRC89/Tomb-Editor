@@ -72,9 +72,12 @@ namespace TombLib.Utils
             foreach (var file in Directory.GetFiles(path).Where(p => !p.StartsWith("_") && p.EndsWith(".lua"))) try
             {
                 var lines = File.ReadAllLines(file);
+
                 var nodeFunction = new NodeFunction();
+
                 bool ignore = false;
                 bool ignoreUntilNextMetadata = false;
+                var functionDeclaration = string.Empty;
 
                 foreach (string l in lines)
                 {
@@ -155,24 +158,31 @@ namespace TombLib.Utils
                     else if (cPoint == 0)
                         line = string.Empty;
 
-                    if (line.StartsWith(LuaSyntax.NodeCatalogPrefix) && !ignoreUntilNextMetadata)
+                    if ((line.StartsWith(LuaSyntax.NodeCatalogPrefix) && !ignoreUntilNextMetadata) || !string.IsNullOrEmpty(functionDeclaration))
                     {
                         ignoreUntilNextMetadata = true;
 
                         if (ignore)
                         {
                             ignore = false;
+                            functionDeclaration = string.Empty;
                             continue;
                         }
 
-                        int indexStart = line.LastIndexOf(LuaSyntax.Splitter) + 1;
-                        int indexEnd = line.IndexOf(LuaSyntax.Is) - indexStart;
-                        nodeFunction.Signature = line.Substring(indexStart, indexEnd).Trim();
+                        functionDeclaration = (functionDeclaration ?? string.Empty) + line;
+                    }
 
-                        indexStart = line.IndexOf(LuaSyntax.BracketOpen) + 1;
-                        indexEnd = line.IndexOf(LuaSyntax.BracketClose);
+                    if (!string.IsNullOrEmpty(functionDeclaration) && functionDeclaration.Contains(LuaSyntax.BracketClose))
+                    {
+                        int indexStart = functionDeclaration.LastIndexOf(LuaSyntax.Splitter) + 1;
+                        int indexEnd = functionDeclaration.IndexOf(LuaSyntax.Is) - indexStart;
+                        nodeFunction.Signature = functionDeclaration.Substring(indexStart, indexEnd).Trim();
 
-                        string argumentList = line.Substring(indexStart, indexEnd - indexStart).Trim();
+                        indexStart = functionDeclaration.IndexOf(LuaSyntax.BracketOpen) + 1;
+                        indexEnd = functionDeclaration.IndexOf(LuaSyntax.BracketClose);
+
+                        string argumentList = functionDeclaration.Substring(indexStart, indexEnd - indexStart).Trim();
+                        functionDeclaration = string.Empty;
 
                         if (!string.IsNullOrWhiteSpace(argumentList))
                         {
@@ -194,20 +204,19 @@ namespace TombLib.Utils
                             }
                         }
                         else if (nodeFunction.Arguments.Count > 0)
-                            {
-                                var message = "Function " + nodeFunction.Signature + " has no arguments, although metadata was provided.";
+                        {
+                            var message = "Function " + nodeFunction.Signature + " has no arguments, although metadata was provided.";
 #if DEBUG
-                                throw new Exception(message);
+                            throw new Exception(message);
 #else
-                                logger.Warn(message);
+                            logger.Warn(message);
 #endif
                         }
                     }
                     else
                         continue;
 
-                    if (string.IsNullOrEmpty(nodeFunction.Name) ||
-                        string.IsNullOrEmpty(nodeFunction.Signature))
+                    if (string.IsNullOrEmpty(nodeFunction.Name) || string.IsNullOrEmpty(nodeFunction.Signature))
                         continue;
 
                     if (nodeFunction.Signature.StartsWith(LuaSyntax.ReservedFunctionPrefix))
@@ -325,7 +334,7 @@ namespace TombLib.Utils
             return result;
         }
 
-        private static string ParseFunctionString(string function, List<KeyValuePair<string, string>> arguments)
+        private static string ParseFunctionString(string function, List<TriggerNodeArgument> arguments)
         {
             string joined = LuaSyntax.NodeCatalogPrefix + function + LuaSyntax.BracketOpen;
 

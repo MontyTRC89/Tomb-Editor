@@ -12,9 +12,9 @@ on level start-up, given that level contains any volumes. Therefore, NodeFunctio
 ### Format
 
 Lua node scripts should follow this convention: several metadata entries should be followed by actual function
-signature which should start with conventional **LevelFuncs.Engine.Node.** prefix, and should be strictly
-single-line. Function signature should be followed by function body in arbitrary format. Amount of argument metadata
-entries should be the same as actual function arguments, and should be listed in the same order.
+signature which should start with conventional **LevelFuncs.Engine.Node.** prefix. Function signature should be
+followed by function body in arbitrary format. Amount of argument metadata entries should be the same as actual
+function arguments, and should be listed in the same order.
 
 ### Argument naming and order
 

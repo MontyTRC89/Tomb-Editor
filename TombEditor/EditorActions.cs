@@ -1341,7 +1341,7 @@ namespace TombEditor
                                     node.Arguments.Count > i &&
                                     TextExtensions.Unquote(node.Arguments[i].Value) == oldName)
                                 {
-                                    node.Arguments[i] = new KeyValuePair<string, string>(node.Arguments[i].Key, TextExtensions.Quote(newName));
+                                    node.Arguments[i].Value = TextExtensions.Quote(newName);
                                 }
                             }
 
