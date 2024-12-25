@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -1302,6 +1303,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _portalRemapping.TryAdd(portalToAdd, portal);
             outPortals.Add(portalToAdd);
+
+            if (portal.Effect == PortalEffectType.ClassicMirror)
+            {
+                var room2DPosition = new Vector3(
+                    room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
+                
+                var mirror = new TombEngineMirror();
+                mirror.Room = (short)_roomRemapping[room];
+
+				mirror.Plane.X = normal.X;
+                mirror.Plane.Y = normal.Y;
+                mirror.Plane.Z = normal.Z;
+                mirror.Plane.W = -(
+                    normal.X * (portalVertices[0].X + room2DPosition.X) +
+                    normal.Y * (portalVertices[0].Y) +
+                    normal.Z * (portalVertices[0].Z + room2DPosition.Z));
+
+                mirror.ReflectLara = portal.Properties.ReflectLara;
+                mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                mirror.ReflectLights = portal.Properties.ReflectLights;
+
+				if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+                {
+                    _mirrors.Add(mirror);
+                }
+            }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -1541,7 +1570,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 _portalRemapping.TryAdd(portalToAdd, portal);
                 outPortals.Add(portalToAdd);
-            }
+
+				if (portal.Effect == PortalEffectType.ClassicMirror)
+				{
+					var mirror = new TombEngineMirror();
+					mirror.Room = (short)_roomRemapping[room];
+
+                    mirror.Plane.X = normal.X;
+					mirror.Plane.Y = normal.Y;
+					mirror.Plane.Z = normal.Z;
+                    mirror.Plane.W = -normal.Y * portalVertices[0].Y;
+
+                    mirror.ReflectLara = portal.Properties.ReflectLara;
+                    mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                    mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                    mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                    mirror.ReflectLights = portal.Properties.ReflectLights;
+                    
+                    if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+					{
+						_mirrors.Add(mirror);
+					}
+				}
+			}
         }
 
         private void MatchDoorShades(List<TombEngineRoom> roomList, TombEngineRoom room, bool grayscale, bool flipped)

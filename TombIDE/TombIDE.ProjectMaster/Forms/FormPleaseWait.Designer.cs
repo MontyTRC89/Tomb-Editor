@@ -29,7 +29,7 @@
 			this.label.Name = "label";
 			this.label.Size = new System.Drawing.Size(404, 101);
 			this.label.TabIndex = 0;
-			this.label.Text = "Please wait...\r\n\r\nCreating the archive may even take a few minutes...";
+			this.label.Text = "Please wait...\r\n\r\nCreating the archive may take a few minutes...";
 			this.label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// FormPleaseWait

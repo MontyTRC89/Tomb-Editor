@@ -674,4 +674,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public ushort Flags;
         public string LuaName;
     }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineMirror
+    {
+        public short Room;
+        public Vector4 Plane;
+        public bool ReflectLara;
+        public bool ReflectMoveables;
+        public bool ReflectStatics;
+        public bool ReflectSprites;
+        public bool ReflectLights;
+	}
 }
