@@ -630,8 +630,7 @@ namespace TombLib.LevelData
                 {
                     // Use legacy tilt mode calculation from TEN, as it's more consistent.
 
-                    float scaleFactor = 1.0f / normals[i].Y;
-                    var scaledNormal = normals[i] * -scaleFactor;
+                    var scaledNormal = -normals[i];
 
                     var tilt = new Vector2(
                         (float)(Math.Round(scaledNormal.X, MidpointRounding.AwayFromZero) * 4.0f),
