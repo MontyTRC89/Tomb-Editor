@@ -340,7 +340,7 @@ namespace TombLib.Utils
 
             for (int i = 0; i < arguments.Count; i++)
             {
-                joined += (string.IsNullOrEmpty(arguments[i].Value) ? LuaSyntax.Null : arguments[i]);
+                joined += (string.IsNullOrEmpty(arguments[i].Value) ? LuaSyntax.Null : arguments[i].Value);
                 if (arguments.Count > 1 && i < arguments.Count - 1)
                     joined += (LuaSyntax.Separator + LuaSyntax.Space);
             }
