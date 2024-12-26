@@ -1,3 +1,9 @@
+Version 1.7.4
+=============
+
+Tomb Editor:
+ * Fixed occasional incorrect slide directions for flat slopes.
+
 Version 1.7.3
 =============
 
