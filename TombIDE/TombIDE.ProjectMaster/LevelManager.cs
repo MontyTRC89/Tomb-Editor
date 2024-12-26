@@ -219,6 +219,12 @@ namespace TombIDE.ProjectMaster
 				var bin = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/Bin")).ToList();
 				ExtractEntries(bin, _ide.Project);
 
+				// Delete the "Engine/Shaders/Bin" directory before extracting new shaders
+				string compiledShadersPath = Path.Combine(_ide.Project.DirectoryPath, "Engine/Shaders/Bin");
+
+				if (Directory.Exists(compiledShadersPath))
+					Directory.Delete(compiledShadersPath, true);
+
 				var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/Shaders")).ToList();
 				ExtractEntries(shaders, _ide.Project);
 
