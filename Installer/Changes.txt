@@ -3,6 +3,7 @@ Version 1.7.4
 
 Tomb Editor:
  * Fixed occasional incorrect slide directions for flat slopes.
+ * Fixed incorrect wall collision generation near vertical portals in TEN.
 
 Version 1.7.3
 =============
