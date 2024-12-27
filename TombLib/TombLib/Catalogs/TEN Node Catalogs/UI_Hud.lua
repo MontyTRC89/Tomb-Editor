@@ -12,17 +12,44 @@ local CustomBar = require("Engine.CustomBar")
 -- !Arguments "Number, 33, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Color, 34, {TEN.Color(255,255,255)}, Color of bar sprite"
 
-LevelFuncs.Engine.Node.BasicBars = function(barName, startvalue, maxValue, posX, posY, colorbar)
+LevelFuncs.Engine.Node.BasicBars = function(barName, startvalue, maxValue, posX, posY, colorBar)
 	if barName == "" then
         TEN.Util.PrintLog("Error in the 'Create basic custom bar' node. No bar name provided", LogLevel.ERROR)
     else
-		local alignMode = TEN.View.AlignMode.CENTER_LEFT
-		local scaleMode = TEN.View.ScaleMode.FIT
-		local blendMode = TEN.Effects.BlendID.ALPHATEST
-		CustomBar.Create(barName, startvalue, maxValue, 
-		TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC, 0, Color(255,255,255), TEN.Vec2(posX, posY), 0, TEN.Vec2(19.05, 19.1), alignMode, scaleMode, blendMode, 
-		TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC, 1, colorbar, TEN.Vec2(posX+0.15, posY), 0, TEN.Vec2(18.7, 18.48), alignMode, scaleMode, blendMode,
-								barName, TEN.Vec2(posX, posY), {}, 1, colorbar, true, 50, false, 0.25)
+		local bar = {}
+		bar.barName			= barName
+		bar.startValue		= startvalue
+		bar.maxValue		= maxValue
+		bar.objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC
+		bar.spriteIdBg		= 0
+		bar.colorBg			= Color(255,255,255)
+		bar.posBg			= TEN.Vec2(posX, posY)
+		bar.rotBg			= 0
+		bar.scaleBg			= TEN.Vec2(19.05, 19.1)
+		bar.alignModeBg		= TEN.View.AlignMode.CENTER_LEFT
+		bar.scaleModeBg		= TEN.View.ScaleMode.FIT
+		bar.blendModeBg		= TEN.Effects.BlendID.ALPHABLEND
+		bar.objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC
+		bar.spriteIdBar		= 1
+		bar.colorBar		= colorBar
+		bar.posBar			= TEN.Vec2(posX+0.15, posY)
+		bar.rot				= 0
+		bar.scaleBar		= TEN.Vec2(18.7, 18.48)
+		bar.alignMode		= TEN.View.AlignMode.CENTER_LEFT
+		bar.scaleMode		= TEN.View.ScaleMode.FIT
+		bar.blendMode		= TEN.Effects.BlendID.ALPHABLEND
+		bar.text			= barName
+		bar.textPos			= TEN.Vec2(posX, posY)
+		bar.textOptions		= {}
+		bar.textScale		= 1
+		bar.textColor		= colorBar
+		bar.hideText		= true
+		bar.alphaBlendSpeed	= 50
+		bar.blink			= false
+		bar.blinkLimit		= 0.25
+
+		CustomBar.Create(bar)
+
 	end
 end
 
@@ -53,17 +80,47 @@ end
 -- !Arguments "Enumeration, [ Fit | Fill | Stretch ], 22, Scale mode"
 -- !Arguments "Enumeration, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, 28, Blend mode"
 
-LevelFuncs.Engine.Node.DisplayBars = function(barName, startvalue, maxValue, objectIDbg, spriteIDbg, colorbg, posXBG, posYBG, rotBG, scaleXBG, scaleYBG, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
+LevelFuncs.Engine.Node.DisplayBars = function(barName, startValue, maxValue, objectIdBg, spriteIdBg, colorBg, posXBg, posYBg, rotBg, scaleXBg, scaleYBg, objectIdBar, spriteIdBar, colorBar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
 	if barName == "" then
         TEN.Util.PrintLog("Error in the 'Create advanced custom bar' node. No bar name provided", LogLevel.ERROR)
     else
 		local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(alignMode)
     	local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(scaleMode)
     	local blendM = LevelFuncs.Engine.Node.GetBlendMode(blendMode)
-		CustomBar.Create(barName, startvalue, maxValue,
-					objectIDbg, spriteIDbg, colorbg, TEN.Vec2(posXBG, posYBG), rotBG, TEN.Vec2(scaleXBG, scaleYBG), alignM, scaleM, blendM, 
-					objectIDbar, spriteIDbar, colorbar, TEN.Vec2(posX, posY), rot, TEN.Vec2(scaleX, scaleY), alignMode, scaleMode, blendM,
-					barName, TEN.Vec2(posX, posY), {}, 1, colorbar, true, 50, false, 0.25)
+
+		local bar = {}
+		bar.barName			= barName
+		bar.startValue		= startValue
+		bar.maxValue		= maxValue
+		bar.objectIdBg		= objectIdBg
+		bar.spriteIdBg		= spriteIdBg
+		bar.colorBg			= colorBg
+		bar.posBg			= TEN.Vec2(posXBg, posYBg)
+		bar.rotBg			= rotBg
+		bar.scaleBg			= TEN.Vec2(scaleXBg, scaleYBg)
+		bar.alignModeBg		= alignM
+		bar.scaleModeBg		= scaleM
+		bar.blendModeBg		= blendM
+		bar.objectIdBar		= objectIdBar
+		bar.spriteIdBar		= spriteIdBar
+		bar.colorBar		= colorBar
+		bar.posBar			= TEN.Vec2(posX, posY)
+		bar.rot				= rot
+		bar.scaleBar		= TEN.Vec2(scaleX, scaleY)
+		bar.alignMode		= alignM
+		bar.scaleMode		= scaleM
+		bar.blendMode		= blendM
+		bar.text			= barName
+		bar.textPos			= TEN.Vec2(posX, posY)
+		bar.textOptions		= {}
+		bar.textScale		= 1
+		bar.textColor		= colorBar
+		bar.hideText		= true
+		bar.alphaBlendSpeed	= 50
+		bar.blink			= false
+		bar.blinkLimit		= 0.25
+
+		CustomBar.Create(bar)
 	end
 end
 -- !Name "Change custom bar value over time"
@@ -196,16 +253,42 @@ end
 -- Construct custom bar for all enemies
 LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(posX, posY, colorbar)
 
-	CustomBar.SetEnemiesHpGenericBar(TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC, 0, TEN.Color(255,255,255), TEN.Vec2(posX, posY), 0, TEN.Vec2(19.05, 19.1), TEN.View.AlignMode.CENTER_LEFT, TEN.View.ScaleMode.FIT, TEN.Effects.BlendID.ALPHABLEND, 
-	TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC, 1, colorbar, TEN.Vec2(posX+.15, posY), 0, TEN.Vec2(18.7, 18.48), TEN.View.AlignMode.CENTER_LEFT, TEN.View.ScaleMode.FIT, TEN.Effects.BlendID.ALPHABLEND,
-								TEN.Vec2(0, 0), {},
-								1, Color(0,0,0), true, 50, true, 0.25)
+	local enemyBars = {}
+
+	enemyBars.objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC
+	enemyBars.spriteIdBg 		= 0
+	enemyBars.colorBg			= TEN.Color(255,255,255)
+	enemyBars.posBg				= TEN.Vec2(posX, posY)
+	enemyBars.scaleBg			= TEN.Vec2(19.05, 19.1)
+	enemyBars.rotBg				= 0
+	enemyBars.alignModeBg		= TEN.View.AlignMode.CENTER_LEFT
+	enemyBars.scaleModeBg		= TEN.View.ScaleMode.FIT
+	enemyBars.blendModeBg		= TEN.Effects.BlendID.ALPHABLEND
+	enemyBars.objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC
+	enemyBars.spriteIdBar		= 1
+	enemyBars.colorBar			= colorbar
+	enemyBars.posBar			= TEN.Vec2(posX+.15, posY)
+	enemyBars.scaleBar			= TEN.Vec2(18.7, 18.48)
+	enemyBars.rot				= 0
+	enemyBars.alignMode			= TEN.View.AlignMode.CENTER_LEFT
+	enemyBars.scaleMode			= TEN.View.ScaleMode.FIT
+	enemyBars.blendMode			= TEN.Effects.BlendID.ALPHABLEND
+	enemyBars.textPos			= TEN.Vec2(0, 0)
+	enemyBars.textOptions		= {}
+	enemyBars.textScale			= 1
+	enemyBars.textColor			= colorbar
+	enemyBars.hideText			= true
+	enemyBars.alphaBlendSpeed	= 50
+	enemyBars.blink				= true
+	enemyBars.blinkLimit		= 0.25
+
+	CustomBar.SetEnemiesHpGenericBar(enemyBars)
 end
 
--- !Name "Create bars for Lara stats."
+-- !Name "Create bars for Player stats."
 -- !Section "UI/Hud"
 -- !Conditional "False"
--- !Description "Draw bar for Lara stats."
+-- !Description "Draw bar for player stats."
 -- !Arguments "NewLine, Enumeration, 100, [ Health | Air | Sprint ], {0}, Bar Type"
 -- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
 -- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
@@ -235,9 +318,33 @@ LevelFuncs.Engine.Node.ConstructLaraBar = function(bartype, objectIDbg, spriteID
 	local scaleM = LevelFuncs.Engine.Node.GetDisplaySpriteScaleMode(scaleMode)
     local blendM = LevelFuncs.Engine.Node.GetBlendMode(blendMode)
 
-	CustomBar.CreateLaraBar(objectIDbg, spriteIDbg, colorbg, TEN.Vec2(posXBG, posYBG), rotBG, TEN.Vec2(scaleXBG, scaleYBG), alignM, scaleM, blendM, 
-					objectIDbar, spriteIDbar, colorbar, TEN.Vec2(posX, posY), rot, TEN.Vec2(scaleX, scaleY), alignM, scaleM, blendM,
-					50, operand, showBar, blink, 0.25)
+	local playerBar = {}
+
+	playerBar.getActionType		= operand
+	playerBar.objectIdBg		= objectIDbg
+	playerBar.spriteIdBg		= spriteIDbg
+	playerBar.colorBg			= colorbg
+	playerBar.posBg				= TEN.Vec2(posXBG, posYBG)
+	playerBar.rotBg				= rotBG
+	playerBar.scaleBg			= TEN.Vec2(scaleXBG, scaleYBG)
+	playerBar.alignModeBg		= alignM
+	playerBar.scaleModeBg		= scaleM
+	playerBar.blendModeBg		= blendM
+	playerBar.objectIdBar		= objectIDbar
+	playerBar.spriteIdBar		= spriteIDbar
+	playerBar.colorBar			= colorbar
+	playerBar.posBar			= TEN.Vec2(posX, posY)
+	playerBar.rot				= rot
+	playerBar.scaleBar			= TEN.Vec2(scaleX, scaleY)
+	playerBar.alignMode			= alignM
+	playerBar.scaleMode			= scaleM
+	playerBar.blendMode			= blendM
+	playerBar.alphaBlendSpeed	= 50
+	playerBar.showBar			= showBar
+	playerBar.blink				= blink
+	playerBar.blinkLimit		= 0.25
+
+	CustomBar.CreatePlayerBar(playerBar)
 
 end
 
@@ -273,9 +380,9 @@ LevelVars.AmmoCounter = {}
 -- !Arguments "Numerical, 17, [ 0 | 100 | 1 | 0.1 ], Counter position y"
 -- !Arguments "Numerical, 17, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
 -- !Arguments "Enumeration, 49, [ Flat | Shadow | Blinking | Shadow + Blinking ], Effects"
--- !Arguments "NewLine, Boolean , 33, Show unlimited ammo"
--- !Arguments "Boolean , 33, Swap ammo name & counter position"
--- !Arguments "Boolean , 33, Show sprite"
+-- !Arguments "NewLine, Boolean , 40, Show unlimited ammo"
+-- !Arguments "Boolean , 60, Swap ammo name & counter position"
+-- !Arguments "Newline, Boolean , 33, Show sprite"
 -- !Arguments "Newline, SpriteSlots, 80, Bar sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_AMMO_GRAPHIC}"
 -- !Arguments "Color, 20, Color of Ammo Counter"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
