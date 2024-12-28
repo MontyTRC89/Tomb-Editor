@@ -1350,7 +1350,7 @@ namespace TombEditor
                                     node.Arguments.Count > i &&
                                     TextExtensions.Unquote(node.Arguments[i].Value) == oldName)
                                 {
-                                    node.Arguments[i].Value = TextExtensions.Quote(newName);
+                                    node.Arguments[i] = new TriggerNodeArgument() { Name = node.Arguments[i].Name, Value = TextExtensions.Quote(newName) };
                                 }
                             }
 

@@ -306,7 +306,7 @@ namespace TombLib.Controls.VisualScripting
             int index = _argControls.IndexOf(ctrl);
 
             if (index != -1 && Node.Arguments.Count > index)
-                Node.Arguments[index].Value = ctrl.Text;
+                Node.Arguments[index] = new TriggerNodeArgument() { Name = Node.Arguments[index].Name, Value = ctrl.Text };
         }
 
         private void Ctrl_RightClick(object sender, MouseEventArgs e)

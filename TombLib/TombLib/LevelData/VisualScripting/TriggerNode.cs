@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace TombLib.LevelData.VisualScripting
 {
-    public class TriggerNodeArgument
+    public struct TriggerNodeArgument
     {
         public string Name { get; set; }
         public string Value { get; set; }
