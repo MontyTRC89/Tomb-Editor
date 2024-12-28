@@ -715,7 +715,7 @@
     <moveable id="984" name="FLARE_INV_ITEM" />
     <moveable id="985" name="COMPASS_ITEM" />
     <moveable id="986" name="DIARY_ITEM" />
-    <moveable id="987" name="TIMEX_ITEM" />
+    <moveable id="987" name="STOPWATCH_ITEM" />
     <moveable id="988" name="MEMCARD_LOAD_INV_ITEM" />
     <moveable id="989" name="MEMCARD_SAVE_INV_ITEM" />
     <moveable id="990" name="PC_LOAD_INV_ITEM" />
