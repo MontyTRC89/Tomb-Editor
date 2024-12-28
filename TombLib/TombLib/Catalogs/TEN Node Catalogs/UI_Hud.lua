@@ -70,7 +70,7 @@ end
 -- !Arguments "Number, [ 0 | 1000 | 2 ], {20}, 20, Scale Y (%)\nRange [0 to 1000]"
 -- !Arguments "Newline, SpriteSlots, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}, 61, Bar sprite sequence object ID"
 -- !Arguments "Number, [ 0 | 9999 | 0 ], {1}, 19, Sprite ID for bar in sprite sequence\nRange[0 to 9999]"
--- !Arguments "Color, {TEN.Color(255,255,255)}, 20, Color of bar sprite"
+-- !Arguments "Color, {TEN.Color(255,0,0)}, 20, Color of bar sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, [ -1000 | 1000 | 2 ], 20, Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, [ 0 | 360 | 2 ], 20, Rotation\nRange [0 to 360]"
@@ -127,7 +127,7 @@ end
 -- !Section "UI/Hud"
 -- !Description "Change bar value over time."
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
--- !Arguments "Numerical, [ -1000 | 1000 | 2 | 1 | 1 ], {1}, 25, Value"
+-- !Arguments "Numerical, [ -65535 | 65535 | 2 | 1 | 1 ], {1}, 25, Value"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)"
 
 LevelFuncs.Engine.Node.ChangeBarValueOverTimespan = function(barName, value, time)
@@ -146,7 +146,7 @@ end
 -- !Section "UI/Hud"
 -- !Description "Set bar value over time."
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
--- !Arguments "Numerical, [ -1000 | 1000 | 2 | 1 | 1 ], {1}, 25, Value"
+-- !Arguments "Numerical, [ -65535 | 65535 | 2 | 1 | 1 ], {1}, 25, Value"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)"
 
 LevelFuncs.Engine.Node.SetBarValueOverTimespan = function(barName, value, time)
@@ -283,6 +283,85 @@ LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(posX, posY, colorbar)
 	enemyBars.blinkLimit		= 0.25
 
 	CustomBar.SetEnemiesHpGenericBar(enemyBars)
+end
+
+-- !Name "Draw health bar for specific enemy"
+-- !Section "UI/Hud"
+-- !Conditional "False"
+-- !Description "Draw health bar for an enemy."
+-- !Arguments "NewLine, Moveables, Enemy to show health bar for"
+-- !Arguments "NewLine, String, 70, [ NoMultiline ], Enemy name" "Numerical, 15, X position, [ 0 | 100 ]" "Numerical, 15, Y position, [ 0 | 100 ]"
+-- !Arguments "NewLine, Enumeration, 20, [ Left | Center | Right ], Horizontal alignment"
+-- !Arguments "Enumeration, 40, [ Flat | Shadow | Blinking | Shadow + Blinking ], Effects"
+-- !Arguments "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Scale" "Color, 20, {TEN.Color(255,255,255)}, Text color"
+-- !Arguments "NewLine, Number, 25, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
+-- !Arguments "Color, 25, {TEN.Color(255,255,255)}, Color of background sprite"
+-- !Arguments "Number, 25, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{1}"
+-- !Arguments "Color, 25, {TEN.Color(255,0,0)}, Color of bar sprite"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
+-- !Arguments "Newline, Boolean, 80, Show health bar when enemy is not targeted."
+-- !Arguments "Boolean, 20, Hide text.
+
+LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, textAlignment, textEffects, textScale, textColor, spriteIdBg, colorBg, spriteIdBar, colorBar,posXBg, posYBg, rotBg, scaleXBg, scaleYBg, posX, posY, rot, scaleX, scaleY, showBar, hideText)
+	
+	local dataName = object .. "_bar_data"
+
+	if LevelVars.Engine.CustomBars.bars[dataName] then
+		return
+		print("Bar already exists for the specified enemy.")
+	end
+
+	local options = {}
+	if (textEffects == 1 or textEffects == 3) then table.insert(options, TEN.Strings.DisplayStringOption.SHADOW) end
+	if (textEffects == 2 or textEffects == 3) then table.insert(options, TEN.Strings.DisplayStringOption.BLINK) end
+	if (textAlignment == 1) then table.insert(options, TEN.Strings.DisplayStringOption.CENTER) end
+	if (textAlignment == 2) then table.insert(options, TEN.Strings.DisplayStringOption.RIGHT) end
+
+
+	local enemyBar = {
+		barName			= object,
+		objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC,
+		spriteIdBg		= spriteIdBg,
+		colorBg			= colorBg,
+		posBg			= TEN.Vec2(posXBg, posYBg),
+		rotBg			= rotBg,
+		scaleBg			= TEN.Vec2(scaleXBg, scaleYBg),
+		alignModeBg		= TEN.View.AlignMode.CENTER_LEFT,
+		scaleModeBg		= TEN.View.ScaleMode.FIT,
+		blendModeBg		= TEN.Effects.BlendID.ALPHABLEND,
+		objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC,
+		spriteIdBar		= spriteIdBar,
+		colorBar		= colorBar,
+		posBar			= TEN.Vec2(posX, posY),
+		rot				= rot,
+		scaleBar		= TEN.Vec2(scaleX, scaleY),
+		alignMode		= TEN.View.AlignMode.CENTER_LEFT,
+		scaleMode		= TEN.View.ScaleMode.FIT,
+		blendMode		= TEN.Effects.BlendID.ALPHABLEND,
+		text			= text,
+		textPos			= TEN.Vec2(textX, textY),
+		textOptions		= options,
+		textScale		= textScale,
+		textColor		= textColor,
+		hideText		= hideText,
+		alphaBlendSpeed	= 50,
+		blink			= true,
+		blinkLimit		= 0.25,
+		showBar 		= showBar,
+		object			= object
+	}
+
+	CustomBar.CreateEnemyHpBar(enemyBar)
+
 end
 
 -- !Name "Create bars for Player stats."
