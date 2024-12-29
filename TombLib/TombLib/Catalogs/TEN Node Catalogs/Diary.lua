@@ -56,8 +56,8 @@ end
 -- !Section "Diary"
 -- !Description "Add a new entry with to a diary."
 -- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], Diary Object to add an entry., {TEN.Objects.ObjID.DIARY_ITEM}" "Numerical, 20, Diary Page, [ 1 | 65535 ], {1}"
--- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
--- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
+-- !Arguments "Newline, SpriteSlots, 60, Sprite sequence object ID, {TEN.Objects.ObjID.DIARY_ENTRY_SPRITES}"
+-- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID in sprite sequence\nRange[0 to 9999],{0}"
 -- !Arguments "Color, 20, Color of background sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
@@ -82,6 +82,20 @@ LevelFuncs.Engine.Node.DiaryAddImageEntry = function(object, pageIndex, objectID
 		diary:addImageEntry(pageIndex, objectIDbg, spriteIDbg, colorbg, pos, rot, scale, alignM, scaleM, blendID)
 	end
 
+end
+
+-- !Name "Add/Update narration to a diary page."
+-- !Section "Diary"
+-- !Description "Add narration soundtrack to specified page number."
+-- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], Diary Object to unlock pages., {TEN.Objects.ObjID.DIARY_ITEM}" "Numerical, 20, Page Number to add narration, [ 1 | 65535 ], {1}"
+-- !Arguments "NewLine, SoundTracks, Name of the audiotrack to check"
+
+LevelFuncs.Engine.Node.DiaryNarrationPages = function(object, pageIndex, trackName)
+	local dataName = object .. "_diarydata"
+	if GameVars.Engine.Diaries[dataName] then
+		local diary = CustomDiary.Get(object)
+		diary:addNarration(pageIndex, trackName)
+	end
 end
 
 -- !Name "Unlock diary pages till..."
@@ -115,17 +129,17 @@ LevelFuncs.Engine.Node.DiaryClearPage = function(object, index)
 
 end
 
--- !Name "Show Diary"
+-- !Name "Show Diary at specified page"
 -- !Section "Diary"
--- !Description "This function displays the diary. To be used to display the diary via volume or triggers."
--- !Arguments "NewLine, WadSlots, [ _ITEM ], Diary to display., {TEN.Objects.ObjID.DIARY_ITEM}" 
-
-LevelFuncs.Engine.Node.ShowDiary = function(object)
+-- !Description "This function displays the diary at the specified page."
+-- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], Diary to display., {TEN.Objects.ObjID.DIARY_ITEM}" 
+-- !Arguments "Numerical, 20, Page Number to display, [ 1 | 65535 ], {1}"
+LevelFuncs.Engine.Node.ShowDiary = function(object, pageIndex)
 	
 	local dataName = object .. "_diarydata"
 	if GameVars.Engine.Diaries[dataName] then
 		local diary = CustomDiary.Get(object)
-		diary:showDiary()
+		diary:showDiary(pageIndex)
 	end
 end
 
