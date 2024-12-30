@@ -31,7 +31,6 @@ We would like to thank all the following people that contributed to the developm
 * leveldesigner1
 * Lore
 * Lwmte
-* Monsieur Z
 * Nickelony
 * Raildex
 * Remrem
@@ -42,6 +41,7 @@ We would like to thank all the following people that contributed to the developm
 * Titak
 * TRTombLevBauer
 * XProger
+* zdimension
 
 ## External libraries
 [A list can be found here.](ExternalResources.md)
