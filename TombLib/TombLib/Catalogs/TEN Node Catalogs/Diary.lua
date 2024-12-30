@@ -16,7 +16,7 @@ end
 
 LevelFuncs.Engine.Node.DiaryStatus = function(value)
 
-	if GameVars.Diaries then
+	if GameVars.Engine.Diaries then
 		if value == 0 then
 			CustomDiary.Status(true)
 		elseif value == 1 then
@@ -37,7 +37,7 @@ end
 LevelFuncs.Engine.Node.DiaryAddTextEntry = function(object, pageIndex, text, textX, textY, textAlignment, textEffects, textScale, textColor)
 	
 	local dataName = object .. "_diarydata"
-	if GameVars.Diaries[dataName] then
+	if GameVars.Engine.Diaries[dataName] then
 
 		local pos = TEN.Vec2(textX, textY)
 		local options = {}
@@ -77,7 +77,7 @@ LevelFuncs.Engine.Node.DiaryAddImageEntry = function(object, pageIndex, objectID
 	local pos = TEN.Vec2(posX, posY)
 	local scale = TEN.Vec2(scaleX, scaleY)
 
-	if GameVars.Diaries[dataName] then
+	if GameVars.Engine.Diaries[dataName] then
 		local diary = CustomDiary.Get(object)
 		diary:addImageEntry(pageIndex, objectIDbg, spriteIDbg, colorbg, pos, rot, scale, alignM, scaleM, blendID)
 	end
@@ -92,7 +92,7 @@ end
 
 LevelFuncs.Engine.Node.DiaryNarrationPages = function(object, pageIndex, trackName)
 	local dataName = object .. "_diarydata"
-	if GameVars.Diaries[dataName] then
+	if GameVars.Engine.Diaries[dataName] then
 		local diary = CustomDiary.Get(object)
 		diary:addNarration(pageIndex, trackName)
 	end
@@ -107,7 +107,7 @@ end
 LevelFuncs.Engine.Node.DiaryUnlockPages = function(object, index, notification)
 	
 	local dataName = object .. "_diarydata"
-	if GameVars.Diaries[dataName] then
+	if GameVars.Engine.Diaries[dataName] then
 		local diary = CustomDiary.Get(object)
 		diary:unlockPages(index, notification)
 	end
@@ -122,7 +122,7 @@ end
 LevelFuncs.Engine.Node.DiaryClearPage = function(object, index)
 	
 	local dataName = object .. "_diarydata"
-	if GameVars.Diaries[dataName] then
+	if GameVars.Engine.Diaries[dataName] then
 		local diary = CustomDiary.Get(object)
 		diary:clearPage(index)
 	end
@@ -137,7 +137,7 @@ end
 LevelFuncs.Engine.Node.ShowDiary = function(object, pageIndex)
 	
 	local dataName = object .. "_diarydata"
-	if GameVars.Diaries[dataName] then
+	if GameVars.Engine.Diaries[dataName] then
 		local diary = CustomDiary.Get(object)
 		diary:showDiary(pageIndex)
 	end
