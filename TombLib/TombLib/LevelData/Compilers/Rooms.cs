@@ -135,7 +135,7 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(25, "    Vertex colors on portals matched.");
         }
 
-        private Vector3 CalculateLightForCustomVertex(Room room, Vector3 position, Vector3 normal, bool forImportedGeometry, Vector3 ambientColor)
+        private Vector3 CalculateLightForCustomVertex(Room room, in Vector3 position, in Vector3 normal, bool forImportedGeometry, in Vector3 ambientColor)
         {
             Vector3 output = ambientColor;
 

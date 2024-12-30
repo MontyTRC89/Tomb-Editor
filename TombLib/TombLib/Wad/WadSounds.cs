@@ -119,7 +119,7 @@ namespace TombLib.Wad
 
             // Read version
             int version = 129;
-            using (var readerVersion = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var readerVersion = new BinaryReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
                 version = readerVersion.ReadInt32();
 
             // Read samples
@@ -135,7 +135,7 @@ namespace TombLib.Wad
             var soundInfos = new List<WadSoundInfo>();
 
             var sfxPath = Path.GetDirectoryName(filename) + "\\" + Path.GetFileNameWithoutExtension(filename) + ".sfx";
-            using (var readerSfx = new BinaryReaderEx(new FileStream(sfxPath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var readerSfx = new BinaryReader(new FileStream(sfxPath, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 // Try to guess the WAD version
                 readerSfx.BaseStream.Seek(740, SeekOrigin.Begin);
@@ -206,7 +206,7 @@ namespace TombLib.Wad
         {
             if (System.IO.Path.GetExtension(path).Equals(".sfx", StringComparison.InvariantCultureIgnoreCase))
             {
-                using (var reader = new BinaryReaderEx(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                using (var reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     var riffSignature = reader.ReadUInt32();
                     if (riffSignature == 0x46464952)
