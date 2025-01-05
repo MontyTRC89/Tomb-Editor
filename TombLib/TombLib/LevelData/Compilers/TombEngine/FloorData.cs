@@ -43,50 +43,31 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                             if (sector.WallPortal == null || sector.WallPortal.Opacity == PortalOpacity.SolidFaces)
                             {
-                                var floorPortalAssigned = false;
                                 var ceilingPortalAssigned = false;
 
-                                for (var xAround = Math.Max(0, x - 1); (!floorPortalAssigned || !ceilingPortalAssigned) && xAround <= Math.Min(room.NumXSectors - 1, x + 1); ++xAround)
+                                for (var xAround = Math.Max(0, x - 1); !ceilingPortalAssigned && xAround <= Math.Min(room.NumXSectors - 1, x + 1); ++xAround)
                                 {
-                                    for (var zAround = Math.Max(0, z - 1); (!floorPortalAssigned || !ceilingPortalAssigned) && zAround <= Math.Min(room.NumZSectors - 1, z + 1); ++zAround)
+                                    for (var zAround = Math.Max(0, z - 1); !ceilingPortalAssigned && zAround <= Math.Min(room.NumZSectors - 1, z + 1); ++zAround)
                                     {
                                         if (xAround == x && zAround == z)
                                             continue;
 
-                                        if (!floorPortalAssigned)
+                                        if (ceilingPortalAssigned)
+                                            continue;
+
+                                        var ceilingPortal = room.Sectors[xAround, zAround].CeilingPortal;
+                                        if (ceilingPortal == null)
+                                            continue;
+
+                                        var adjoiningRoom = ceilingPortal.AdjoiningRoom;
+                                        var pos = new VectorInt2(x, z);
+                                        var adjoiningSector = adjoiningRoom.GetSectorTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
+
+                                        if (adjoiningSector != null)
                                         {
-                                            var floorPortal = room.Sectors[xAround, zAround].FloorPortal;
-                                            if (floorPortal != null)
-                                            {
-                                                var adjoiningRoom = floorPortal.AdjoiningRoom;
-                                                var pos = new VectorInt2(x, z);
-                                                var adjoiningSector = adjoiningRoom.GetSectorTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
-
-                                                if (adjoiningSector != null)
-                                                {
-                                                    compiledSector.FloorCollision.Portals[0] = _roomRemapping[adjoiningRoom];
-                                                    compiledSector.FloorCollision.Portals[1] = compiledSector.FloorCollision.Portals[0];
-                                                    floorPortalAssigned = true;
-                                                }
-                                            }
-                                        }
-
-                                        if (!ceilingPortalAssigned)
-                                        {
-                                            var ceilingPortal = room.Sectors[xAround, zAround].CeilingPortal;
-                                            if (ceilingPortal != null)
-                                            {
-                                                var adjoiningRoom = ceilingPortal.AdjoiningRoom;
-                                                var pos = new VectorInt2(x, z);
-                                                var adjoiningSector = adjoiningRoom.GetSectorTry(pos + room.SectorPos - adjoiningRoom.SectorPos);
-
-                                                if (adjoiningSector != null)
-                                                {
-                                                    compiledSector.CeilingCollision.Portals[0] = _roomRemapping[adjoiningRoom];
-                                                    compiledSector.CeilingCollision.Portals[1] = compiledSector.CeilingCollision.Portals[0];
-                                                    ceilingPortalAssigned = true;
-                                                }
-                                            }
+                                            compiledSector.CeilingCollision.Portals[0] = _roomRemapping[adjoiningRoom];
+                                            compiledSector.CeilingCollision.Portals[1] = compiledSector.CeilingCollision.Portals[0];
+                                            ceilingPortalAssigned = true;
                                         }
                                     }
                                 }
@@ -134,10 +115,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             var ceilingShape = new RoomSectorShape(sector, false, ceilingPortalType, sector.IsAnyWall);
 
                             // Floor collision
-                            BuildFloorDataCollision(floorShape, false, room, new VectorInt2(x, z));
+                            BuildFloorDataCollision(floorShape, floorPortalType, false, room, new VectorInt2(x, z));
 
                             // Ceiling collision
-                            BuildFloorDataCollision(ceilingShape, true, room, new VectorInt2(x, z));
+                            BuildFloorDataCollision(ceilingShape, ceilingPortalType, true, room, new VectorInt2(x, z));
 
                             // Triggers
                             var triggers = BuildTriggers(room, sector, new VectorInt2(x, z));
@@ -507,13 +488,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 DiagonalStep != 0 || SplitPortalSecond != SplitPortalFirst || SplitWallFirst != SplitWallSecond;
         }
 
-        private void BuildFloorDataCollision(RoomSectorShape shape, bool isCeiling, Room reportRoom, VectorInt2 reportPos)
+        private void BuildFloorDataCollision(RoomSectorShape shape, Room.RoomConnectionType portalType, bool isCeiling, Room reportRoom, VectorInt2 reportPos)
         {
             TombEngineRoom newRoom = _tempRooms[reportRoom];
             TombEngineRoomSector newSector = newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y];
             Sector sector = reportRoom.GetSector(reportPos);
             var newCollision = isCeiling ? newSector.CeilingCollision : newSector.FloorCollision;
             var portal = isCeiling ? sector.CeilingPortal : sector.FloorPortal;
+
+            if (portalType == Room.RoomConnectionType.NoPortal)
+                portal = null;
 
             if (shape.IsSplit)
             {

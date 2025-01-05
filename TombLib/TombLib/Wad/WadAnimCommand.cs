@@ -1,9 +1,13 @@
-﻿using System;
+﻿using NLog;
+using System;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
     public class WadAnimCommand : ICloneable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public WadAnimCommandType Type { get; set; }
         public short Parameter1 { get; set; }
         public short Parameter2 { get; set; }
@@ -26,39 +30,17 @@ namespace TombLib.Wad
                     return "Kill entity";
                 case WadAnimCommandType.SetPosition:
                     return "Set position reference <X, Y, Z> = <" + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
-
                 case WadAnimCommandType.PlaySound:
-                    int soundId = Parameter2 & 0xFFF;
-                    switch (Parameter2 & 0xF000)
-                    {
-                        default:
-                        case 0:
-                            return "Play Sound ID = " + soundId + " on Frame = " + Parameter1;
-
-                        case (1 << 14):
-                            return "Play Sound ID = " + soundId + " (land) on Frame = " + Parameter1;
-
-                        case (1 << 15):
-                            return "Play Sound ID = " + soundId + " (shallow water) on Frame = " + Parameter1;
-
-                        case (1 << 12):
-                            return "Play Sound ID = " + soundId + " (quicksand) on Frame = " + Parameter1;
-
-                        case (1 << 13):
-                            return "Play Sound ID = " + soundId + " (underwater) on Frame = " + Parameter1;
-                    }
-
+                    return "Play Sound ID = " + Parameter2 + " (" + ((WadSoundEnvironmentType)Parameter3).ToString() + ") on Frame = " + Parameter1;
                 case WadAnimCommandType.FlipEffect:
-                    int flipeffectId = Parameter2 & 0x3FFF;
-                    if ((Parameter2 & 0x8000) != 0)
-                        return "Play FlipEffect ID = " + flipeffectId + " (right foot) on Frame = " + Parameter1;
-                    else if ((Parameter2 & 0x4000) != 0)
-                        return "Play FlipEffect ID = " + flipeffectId + " (left foot) on Frame = " + Parameter1;
-                    else
-                        return "Play FlipEffect ID = " + flipeffectId + " on Frame = " + Parameter1;
+                    return "Play FlipEffect ID = " + Parameter2 + 
+                        (Parameter3 == 0 ? string.Empty : (" (" + ((WadFootstepFlipeffectCondition)Parameter3).ToString().SplitCamelcase() + ")")) +
+                        " on Frame = " + Parameter1;
+                case WadAnimCommandType.DisableInterpolation:
+                    return "Disable interpolation on Frame = " + Parameter1;
+                default:
+                    return Type.ToString().SplitCamelcase();
             }
-
-            return "";
         }
 
         public WadAnimCommand Clone() => (WadAnimCommand)MemberwiseClone();
@@ -76,7 +58,8 @@ namespace TombLib.Wad
             if (first.FrameBased)
             {
                 return ((!considerFrames || first.Parameter1 == second.Parameter1) &&
-                                            first.Parameter2 == second.Parameter2);
+                                            first.Parameter2 == second.Parameter2 &&
+                                            first.Parameter3 == second.Parameter3);
             }
             else if (first.VelocityBased)
             {
@@ -91,6 +74,110 @@ namespace TombLib.Wad
             }
             else
                 return true; // Equal or unknown command
+        }
+
+        public void ConvertLegacyConditions()
+        {
+            if (Parameter3 != 0)
+            {
+                logger.Warn("Attempt to convert legacy conditions for animcommand which were already converted.");
+                return;
+            }
+
+            if (Type == WadAnimCommandType.FlipEffect)
+            {
+                switch (Parameter2 & 0xC000)
+                {
+                    case (1 << 14):
+                        Parameter3 = (short)WadFootstepFlipeffectCondition.LeftFoot;
+                        break;
+
+                    case (1 << 15):
+                        Parameter3 = (short)WadFootstepFlipeffectCondition.RightFoot;
+                        break;
+
+                    default:
+                        Parameter3 = (short)WadFootstepFlipeffectCondition.Always;
+                        break;
+                }
+
+                Parameter2 = (short)(Parameter2 & 0x3FFF);
+            }
+            else if (Type == WadAnimCommandType.PlaySound)
+            {
+                switch (Parameter2 & 0xF000)
+                {
+                    case 0:
+                    default:
+                        Parameter3 = (short)WadSoundEnvironmentType.Always;
+                        break;
+
+                    case (1 << 14):
+                        Parameter3 = (short)WadSoundEnvironmentType.Land;
+                        break;
+
+                    case (1 << 15):
+                        Parameter3 = (short)WadSoundEnvironmentType.Water;
+                        break;
+
+                    case (1 << 12):
+                        Parameter3 = (short)WadSoundEnvironmentType.Quicksand;
+                        break;
+
+                    case (1 << 13):
+                        Parameter3 = (short)WadSoundEnvironmentType.Underwater;
+                        break;
+                }
+
+                Parameter2 = (short)(Parameter2 & 0x0FFF);
+            }
+            else
+            {
+                throw new Exception("Attempt to convert sound environment type on a non-PlaySound animcommand");
+            }
+        }
+
+        public short GetLegacyBitmask()
+        {
+            short result = 0;
+
+            if (Type == WadAnimCommandType.FlipEffect)
+            {
+                switch ((WadFootstepFlipeffectCondition)Parameter3)
+                {
+                    case WadFootstepFlipeffectCondition.LeftFoot:
+                        result = unchecked((short)(1 << 14));
+                        break;
+
+                    case WadFootstepFlipeffectCondition.RightFoot:
+                        result = unchecked((short)(1 << 15));
+                        break;
+
+                    default:
+                        result = 0;
+                        break;
+                }
+            }
+            else if (Type == WadAnimCommandType.PlaySound)
+            {
+                switch ((WadSoundEnvironmentType)Parameter3)
+                {
+                    case WadSoundEnvironmentType.Land:
+                        result = unchecked((short)(1 << 14));
+                        break;
+
+                    case WadSoundEnvironmentType.Water:
+                        result = unchecked((short)(1 << 15));
+                        break;
+
+                    // New sound conditions are ignored for classic engines.
+                    default:
+                        result = 0;
+                        break;
+                }
+            }
+
+            return result;
         }
 
         public static bool operator ==(WadAnimCommand first, WadAnimCommand second) => DistinctiveEquals(first, second, true);

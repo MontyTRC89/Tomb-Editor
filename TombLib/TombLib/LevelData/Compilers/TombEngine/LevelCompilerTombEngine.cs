@@ -23,7 +23,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private readonly List<TombEngineAnimation> _animations = new List<TombEngineAnimation>();
         private readonly List<TombEngineStateChange> _stateChanges = new List<TombEngineStateChange>();
         private readonly List<TombEngineAnimDispatch> _animDispatches = new List<TombEngineAnimDispatch>();
-        private readonly List<short> _animCommands = new List<short>();
+        private readonly List<int> _animCommands = new List<int>();
         private readonly List<int> _meshTrees = new List<int>();
         private readonly List<TombEngineKeyFrame> _frames = new List<TombEngineKeyFrame>();
         private List<TombEngineMoveable> _moveables = new List<TombEngineMoveable>();
@@ -38,6 +38,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private List<TombEngineBox> _boxes = new List<TombEngineBox>();
         private List<TombEngineOverlap> _overlaps = new List<TombEngineOverlap>();
         private List<TombEngineZoneGroup> _zones = new List<TombEngineZoneGroup>();
+        private List<TombEngineMirror> _mirrors = new List<TombEngineMirror>();
 
         private readonly List<TombEngineItem> _items = new List<TombEngineItem>();
         private List<TombEngineAiItem> _aiItems = new List<TombEngineAiItem>();

@@ -484,6 +484,9 @@ namespace WadTool
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;
 
+                if (form.SelectedMesh == null)
+                    return;
+
                 ReplaceExistingBone(form.SelectedMesh.Clone(), theNode);
             }
         }

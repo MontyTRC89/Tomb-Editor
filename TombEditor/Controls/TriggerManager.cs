@@ -182,8 +182,10 @@ namespace TombEditor.Controls
             nudCallCount2.Enabled =
             lstFunctions.Enabled = 
             nodeEditor.Enabled =
-            rbLevelScript.Enabled = 
-            rbNodeEditor.Enabled = _event != null;
+            rbLevelScript.Enabled =
+            rbNodeEditor.Enabled =
+            cbEnableEvent.Enabled =
+            cbEnableEvent2.Enabled = _event != null;
 
             FindAndSelectFunction();
 
@@ -197,6 +199,8 @@ namespace TombEditor.Controls
                 tbArgument.Text = _event.Argument;
                 nudCallCount.Value = _event.CallCounter;
                 nudCallCount2.Value = _event.CallCounter;
+                cbEnableEvent.Checked = _event.Enabled;
+                cbEnableEvent2.Checked = _event.Enabled;
 
                 UpdateNodeEditorControls();
             }
@@ -350,6 +354,10 @@ namespace TombEditor.Controls
                 return;
 
             _event.CallCounter = (int)(sender as DarkNumericUpDown).Value;
+
+            _lockUI = true;
+            nudCallCount.Value = nudCallCount2.Value = _event.CallCounter;
+            _lockUI = false;
         }
 
         private void tbArgument_Validated(object sender, EventArgs e)
@@ -573,6 +581,18 @@ namespace TombEditor.Controls
         {
             foreach (var node in nodeEditor.SelectedNodes)
                 nodeEditor.LockNode(node, !node.Locked);
+        }
+
+        private void cbEnableEvent_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_event == null || _lockUI)
+                return;
+
+            _event.Enabled = (sender as DarkCheckBox).Checked;
+
+            _lockUI = true;
+            cbEnableEvent.Checked = cbEnableEvent2.Checked = _event.Enabled;
+            _lockUI = false;
         }
     }
 }

@@ -47,6 +47,26 @@ LevelFuncs.Engine.Node.TestStaticScale = function(staticName, operator, value)
 	return LevelFuncs.Engine.Node.CompareValue(scale, value, operator)
 end
 
+-- !Name "If hit points of a shatterable static mesh is..."
+-- !Section "Static mesh parameters"
+-- !Description "Compares selected static mesh hit points with given value.\nThis node is only applicable to static meshes in SHATTER slots (50-59)"
+-- !Conditional "True"
+-- !Arguments "NewLine, Statics, Static mesh to check" "NewLine, CompareOperator, 70, Kind of check"
+-- !Arguments "Numerical, 30, Scale value, [ 0 | 1024 | 0 ]"
+
+LevelFuncs.Engine.Node.TestStaticHP = function(staticName, operator, value)
+	
+	local slotCheck = GetStaticByName(staticName):GetSlot()
+
+    if slotCheck < 50 or slotCheck > 59 then
+        print("Non-shatter object '" .. tostring(staticName) .. "' selected. Hit point comparison ignored.")      
+    return
+    end
+	
+	local hp = TEN.Objects.GetStaticByName(staticName):GetHP()
+	return LevelFuncs.Engine.Node.CompareValue(hp, value, operator)
+end
+
 -- !Name "If collision of a static mesh is solid..."
 -- !Section "Static mesh parameters"
 -- !Description "Checks if given static mesh's collision mode is solid."
@@ -55,7 +75,7 @@ end
 
 LevelFuncs.Engine.Node.TestStaticCollisionMode = function(staticName)
 	return TEN.Objects.GetStaticByName(staticName):GetSolid()
-end
+end                                 
 
 -- !Name "Enable static mesh"
 -- !Section "Static mesh state"
@@ -188,3 +208,21 @@ end
 LevelFuncs.Engine.Node.ShatterStatic = function(staticName)
 	TEN.Objects.GetStaticByName(staticName):Shatter()
 end
+
+-- !Name "Set hit points for a shatterable static mesh"
+-- !Section "Static mesh parameters"
+-- !Description "Sets hit points for shatter objects.\nThis node is only applicable to static meshes in SHATTER slots (50-59)"
+-- !Arguments "Newline,Statics, 70, Static object."
+-- !Arguments "Numerical, 30, [ 0 | 1024 ], Hit Points"
+
+LevelFuncs.Engine.Node.SetShatterHP = function(staticName, HP)
+    local slotCheck = GetStaticByName(staticName):GetSlot()
+
+    if slotCheck < 50 or slotCheck > 59 then
+        print("Non-shatter object '" .. tostring(staticName) .. "' selected. Hit point change ignored.")      
+    return
+    end
+
+    TEN.Objects.GetStaticByName(staticName):SetHP(HP)
+end
+

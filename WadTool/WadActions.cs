@@ -1148,6 +1148,12 @@ namespace WadTool
                 var animation = (WadAnimation)obj;
                 reader.Close();
 
+                foreach (var cmd in animation.AnimCommands)
+                {
+                    if (cmd.Type == WadAnimCommandType.FlipEffect || cmd.Type == WadAnimCommandType.PlaySound)
+                        cmd.ConvertLegacyConditions();
+                }
+
                 return animation;
             }
             catch (Exception exc)
