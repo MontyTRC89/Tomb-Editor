@@ -1602,7 +1602,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        public void WriteAnimatedTextures(BinaryWriterEx writer)
+        public void WriteAnimatedTextures(BinaryWriter writer)
         {
             writer.Write((int)_actualAnimTextures.Count);
             for (int i = 0; i < _actualAnimTextures.Count; i++)
