@@ -498,13 +498,87 @@ namespace TombEditor.Controls.Panel3D
             return vector;
         }
 
+        private bool IsOddRotation(Vector2[] first, Vector2[] second)
+        {
+            // Check if first is going clockwise
+            float firstArea = 0.0f;
+
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2 p1 = first[i];
+                Vector2 p2 = first[(i + 1) % 4];
+                firstArea += (p2.X - p1.X) * (p2.Y + p1.Y);
+            }
+
+            bool isFirstClockwise = firstArea < 0.0f;
+            bool isFirst0, isFirst90, isFirst180, isFirst270;
+
+            if (isFirstClockwise)
+            {
+                isFirst0 = first[0].X < first[1].X && first[0].Y < first[3].Y;
+                isFirst90 = first[0].X > first[3].X && first[0].Y < first[1].Y;
+                isFirst180 = first[0].X > first[1].X && first[0].Y > first[3].Y;
+                isFirst270 = first[0].X < first[3].X && first[0].Y > first[1].Y;
+            }
+            else
+            {
+                isFirst0 = first[0].X < first[3].X && first[0].Y < first[1].Y;
+                isFirst90 = first[0].X < first[1].X && first[0].Y > first[3].Y;
+                isFirst180 = first[0].X > first[3].X && first[0].Y > first[1].Y;
+                isFirst270 = first[0].X > first[1].X && first[0].Y < first[3].Y;
+            }
+
+            // Check if second is going clockwise
+            float secondArea = 0.0f;
+
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2 p1 = second[i];
+                Vector2 p2 = second[(i + 1) % 4];
+                secondArea += (p2.X - p1.X) * (p2.Y + p1.Y);
+            }
+
+            bool isSecondClockwise = secondArea < 0.0f;
+            bool isSecond0, isSecond90, isSecond180, isSecond270;
+
+            if (isSecondClockwise)
+            {
+                isSecond0 = second[0].X < second[1].X && second[0].Y < second[3].Y;
+                isSecond90 = second[0].X > second[3].X && second[0].Y < second[1].Y;
+                isSecond180 = second[0].X > second[1].X && second[0].Y > second[3].Y;
+                isSecond270 = second[0].X < second[3].X && second[0].Y > second[1].Y;
+            }
+            else
+            {
+                isSecond0 = second[0].X < second[3].X && second[0].Y < second[1].Y;
+                isSecond90 = second[0].X < second[1].X && second[0].Y > second[3].Y;
+                isSecond180 = second[0].X > second[3].X && second[0].Y > second[1].Y;
+                isSecond270 = second[0].X > second[1].X && second[0].Y < second[3].Y;
+            }
+
+            int firstRotation = isFirst0 ? 0 : isFirst90 ? 1 : isFirst180 ? 2 : 3;
+            int secondRotation = isSecond0 ? 0 : isSecond90 ? 1 : isSecond180 ? 2 : 3;
+
+            if (isFirstClockwise == isSecondClockwise)
+            {
+                return (secondRotation - firstRotation) % 2 != 0;
+            }
+            else
+            {
+                return (secondRotation - firstRotation) % 2 == 0;
+            }
+        }
+
         private void DrawDecalOutlines(Effect effect)
         {
+            const float DecalOutlineOffset = 8.0f;
+
             if (_editor.Mode is not EditorMode.FaceEdit)
                 return;
 
             Room currentRoom = _editor.SelectedRoom;
             var vertices = new List<SolidVertex>();
+            var badVertices = new List<SolidVertex>();
 
             for (int x = currentRoom.LocalArea.X0; x <= currentRoom.LocalArea.X1; x++)
                 for (int z = currentRoom.LocalArea.Y0; z <= currentRoom.LocalArea.Y1; z++)
@@ -519,64 +593,88 @@ namespace TombEditor.Controls.Panel3D
                             VertexRange range = currentRoom.RoomGeometry.VertexRangeLookup[key];
                             DiagonalSplit diagonalSplit = face.IsFloorWall() ? sector.Floor.DiagonalSplit : sector.Ceiling.DiagonalSplit;
 
+                            TextureArea baseTexture = sector.GetFaceTexture(new(face, FaceLayer.Base));
+                            TextureArea decalTexture = sector.GetFaceTexture(new(face, FaceLayer.Decal));
+
+                            if (range.Count == 6 && IsOddRotation(baseTexture.TexCoords, decalTexture.TexCoords))
+                            {
+                                // Add the entire face into badVertices
+                                for (int i = range.Start; i < range.Start + range.Count; i++)
+                                    badVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[i] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                            }
+
                             if (range.Count == 3)
                             {
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
 
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
 
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
                             }
                             else if (range.Count == 6)
                             {
                                 if (face.IsCeiling())
                                 {
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
                                 }
                                 else
                                 {
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, Level.DecalOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
                                 }
                             }
                         }
                     }
                 }
 
-            if (vertices.Count == 0)
-                return;
+            if (vertices.Count > 0)
+            {
+                using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
-            using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.Default);
+                _legacyDevice.SetVertexBuffer(buffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
+                effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
+                effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.CurrentTechnique.Passes[0].Apply();
+                _legacyDevice.Draw(PrimitiveType.LineList, buffer.ElementCount);
+            }
 
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.Default);
-            _legacyDevice.SetVertexBuffer(buffer);
-            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
-            effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
-            effect.Parameters["Color"].SetValue(Vector4.One);
-            effect.CurrentTechnique.Passes[0].Apply();
-            _legacyDevice.Draw(PrimitiveType.LineList, buffer.ElementCount);
+            if (badVertices.Count > 0)
+            {
+                using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, badVertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.Default);
+                _legacyDevice.SetVertexBuffer(buffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
+                effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
+                effect.Parameters["Color"].SetValue(new[] { 1.0f, 0.1f, 0.1f, 0.5f });
+                effect.CurrentTechnique.Passes[0].Apply();
+                _legacyDevice.Draw(PrimitiveType.TriangleList, buffer.ElementCount);
+            }
         }
 
         private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)

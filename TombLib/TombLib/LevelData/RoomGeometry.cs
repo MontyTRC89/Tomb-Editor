@@ -666,16 +666,7 @@ namespace TombLib.LevelData
             AddQuad(x, z, new FaceLayerInfo(face, FaceLayer.Base), p0, p1, p2, p3, texture, uv0, uv1, uv2, uv3);
 
             if (decal != TextureArea.None)
-            {
-                DiagonalSplit diagonalSplit = face.IsFloorWall() ? sector.Floor.DiagonalSplit : sector.Ceiling.DiagonalSplit;
-
-                ShiftVector3(ref p0, face, diagonalSplit, Level.DecalOffset);
-                ShiftVector3(ref p1, face, diagonalSplit, Level.DecalOffset);
-                ShiftVector3(ref p2, face, diagonalSplit, Level.DecalOffset);
-                ShiftVector3(ref p3, face, diagonalSplit, Level.DecalOffset);
-
                 AddQuad(x, z, new FaceLayerInfo(face, FaceLayer.Decal), p0, p1, p2, p3, decal, uv0, uv1, uv2, uv3);
-            }
         }
 
         private void TryRenderTriangleFace(Sector sector, int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
@@ -687,62 +678,7 @@ namespace TombLib.LevelData
             AddTriangle(x, z, new FaceLayerInfo(face, FaceLayer.Base), p0, p1, p2, texture, uv0, uv1, uv2, isXEqualYDiagonal);
 
             if (decal != TextureArea.None)
-            {
-                DiagonalSplit diagonalSplit = face.IsFloorWall() ? sector.Floor.DiagonalSplit : sector.Ceiling.DiagonalSplit;
-
-                ShiftVector3(ref p0, face, diagonalSplit, Level.DecalOffset);
-                ShiftVector3(ref p1, face, diagonalSplit, Level.DecalOffset);
-                ShiftVector3(ref p2, face, diagonalSplit, Level.DecalOffset);
-
                 AddTriangle(x, z, new FaceLayerInfo(face, FaceLayer.Decal), p0, p1, p2, decal, uv0, uv1, uv2, isXEqualYDiagonal);
-            }
-        }
-
-        private static void ShiftVector3(ref Vector3 vector, SectorFace face, DiagonalSplit diagonalSplit, float shift)
-        {
-            switch (face.GetDirection())
-            {
-                case Direction.PositiveX:
-                    vector.X += shift;
-                    break;
-                case Direction.NegativeX:
-                    vector.X -= shift;
-                    break;
-                case Direction.PositiveZ:
-                    vector.Z += shift;
-                    break;
-                case Direction.NegativeZ:
-                    vector.Z -= shift;
-                    break;
-                case Direction.Diagonal:
-                    switch (diagonalSplit)
-                    {
-                        case DiagonalSplit.XpZn:
-                            vector.X -= shift;
-                            vector.Z += shift;
-                            break;
-                        case DiagonalSplit.XnZn:
-                            vector.X += shift;
-                            vector.Z += shift;
-                            break;
-                        case DiagonalSplit.XnZp:
-                            vector.X += shift;
-                            vector.Z -= shift;
-                            break;
-                        case DiagonalSplit.XpZp:
-                            vector.X -= shift;
-                            vector.Z -= shift;
-                            break;
-                    }
-
-                    break;
-                default: // Either Floor or Ceiling
-                    if (face.IsFloor())
-                        vector.Y += shift;
-                    else
-                        vector.Y -= shift;
-                    break;
-            }
         }
 
         private void AddQuad(int x, int z, FaceLayerInfo face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,

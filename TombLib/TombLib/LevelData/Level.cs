@@ -20,8 +20,6 @@ namespace TombLib.LevelData
 
         public const short MaxNumberOfRooms = 1024;
 
-        public const float DecalOffset = 8.0f;
-
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; // Rooms in level
         public LevelSettings Settings { get; private set; } = new LevelSettings();
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
