@@ -190,7 +190,6 @@ namespace TombLib.Wad
                 var sp = ((WadSpriteSequence)wadObject).Clone();
                 SpriteSequences[(WadSpriteSequenceId)newId] = sp;
             }
-                
             else
                 throw new ArgumentException("Argument not of a valid type.");
         }
