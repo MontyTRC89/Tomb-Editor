@@ -48,6 +48,15 @@ namespace TombLib.Wad
 
         public string ToString(TRVersion.Game gameVersion) => Id.ToString(gameVersion.Native());
         public override string ToString() => Id.ToString();
+
+        public WadSpriteSequence Clone()
+        {
+            var clone = new WadSpriteSequence(Id);
+            clone.Version = DataVersion.GetNext();
+            clone.Sprites.AddRange(Sprites);
+            return clone;
+        }
+
         IWadObjectId IWadObject.Id => Id;
     }
 }
