@@ -326,22 +326,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             case WadAnimCommandType.PlaySound:
                                 newAnimation.CommandData.Add(5);
 
-                                newAnimation.CommandData.Add(command.Parameter2); // Sound ID
-                                newAnimation.CommandData.Add(command.Parameter1); // Frame number
-                                newAnimation.CommandData.Add(command.Parameter3); // Environment condition
+                                newAnimation.CommandData.Add((int)command.Parameter2); // Sound ID
+                                newAnimation.CommandData.Add((int)command.Parameter1); // Frame number
+                                newAnimation.CommandData.Add((int)command.Parameter3); // Environment condition
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
                                 newAnimation.CommandData.Add(6);
 
-                                newAnimation.CommandData.Add(command.Parameter2);
-                                newAnimation.CommandData.Add(command.Parameter1);
+                                newAnimation.CommandData.Add((int)command.Parameter2);
+                                newAnimation.CommandData.Add((int)command.Parameter1);
                                 break;
 
                             case WadAnimCommandType.DisableInterpolation:
                                 newAnimation.CommandData.Add(7);
 
-                                newAnimation.CommandData.Add(command.Parameter1); // Frame number
+                                newAnimation.CommandData.Add((int)command.Parameter1); // Frame number
                                 break;
                         }
                     }
