@@ -21,6 +21,7 @@
     <sprite_sequence id="1375" name="AIR_BAR_TEXTURE" />
     <sprite_sequence id="1376" name="DASH_BAR_TEXTURE" />
     <sprite_sequence id="1377" name="SFX_BAR_TEXTURE" />
+	<sprite_sequence id="1378" name="WATERFALL_SPRITES" />
     <sprite_sequence id="1380" name="CROSSHAIR" />
     <sprite_sequence id="1381" name="SPEEDOMETER" />
 	<sprite_sequence id="1382" name="CUSTOM_BAR_GRAPHIC" />
