@@ -4,6 +4,7 @@ using System.IO;
 using System.Numerics;
 using System.Reflection;
 using TombLib.IO;
+using TombLib.Types;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.TombEngine
@@ -202,8 +203,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write(animation.BlendCurve.End);
                         writer.Write(animation.BlendCurve.StartHandle);
                         writer.Write(animation.BlendCurve.EndHandle);
-                        writer.Write(animation.VelocityStart);
-                        writer.Write(animation.VelocityEnd);
+
+                        var startX = new Vector2(0.0f, animation.VelocityStart.X);
+                        var endX = new Vector2(1.0f, animation.VelocityEnd.X);
+                        var fixedMotionCurveX = new BezierCurve2D(startX, endX, startX, endX);
+                        writer.Write(fixedMotionCurveX.Start);
+                        writer.Write(fixedMotionCurveX.End);
+                        writer.Write(fixedMotionCurveX.StartHandle);
+                        writer.Write(fixedMotionCurveX.EndHandle);
+
+                        var startY = new Vector2(0.0f, animation.VelocityStart.Y);
+                        var endY = new Vector2(1.0f, animation.VelocityEnd.Y);
+                        var fixedMotionCurveY = new BezierCurve2D(startY, endY, startY, endY);
+                        writer.Write(fixedMotionCurveY.Start);
+                        writer.Write(fixedMotionCurveY.End);
+                        writer.Write(fixedMotionCurveY.StartHandle);
+                        writer.Write(fixedMotionCurveY.EndHandle);
+                        
+                        var startZ = new Vector2(0.0f, animation.VelocityStart.Z);
+                        var endZ = new Vector2(1.0f, animation.VelocityEnd.Z);
+                        var fixedMotionCurveZ = new BezierCurve2D(startZ, endZ, startZ, endZ);
+                        writer.Write(fixedMotionCurveZ.Start);
+                        writer.Write(fixedMotionCurveZ.End);
+                        writer.Write(fixedMotionCurveZ.StartHandle);
+                        writer.Write(fixedMotionCurveZ.EndHandle);
 
                         writer.Write(animation.KeyFrames.Count);
                         foreach (var keyFrame in animation.KeyFrames)
