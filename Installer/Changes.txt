@@ -1,7 +1,8 @@
-Version 1.7.x
+Version 1.7.5
 =============
 
 Tomb Editor:
+ * Fixed exception on copying memo or imported geometry position to clipboard.
 
 WadTool:
 
