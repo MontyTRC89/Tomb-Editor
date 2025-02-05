@@ -10,6 +10,7 @@ WadTool:
 TombIDE:
  
 TEN Base WAD:
+ * Fixed incorrect sound effect playing during the Lara's sprite jump animation. 
  
 Version 1.7.4
 =============
