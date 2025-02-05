@@ -5,6 +5,7 @@ Tomb Editor:
  * Fixed exception on copying memo or imported geometry position to clipboard.
 
 WadTool:
+ * Fixed incorrect copying of sprite sequences from one wad to another.
 
 TombIDE:
  
