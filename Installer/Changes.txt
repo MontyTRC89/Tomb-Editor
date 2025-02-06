@@ -7,8 +7,6 @@ Tomb Editor:
 WadTool:
  * Fixed incorrect copying of sprite sequences from one wad to another.
  * Fixed TR3 -> TEN remapping of puzzle objects.
-
-TombIDE:
  
 TEN Base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
