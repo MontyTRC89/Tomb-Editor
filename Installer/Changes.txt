@@ -11,6 +11,8 @@ WadTool:
 TombIDE:
  
 TEN Base WAD:
+ * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
+ * Replaced stopwatch with a generic model due to legal reasons.
  * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
  
 Version 1.7.4
@@ -19,10 +21,6 @@ Version 1.7.4
 Tomb Editor:
  * Fixed occasional incorrect slide directions for flat slopes.
  * Fixed incorrect wall collision generation near vertical portals in TEN.
- 
-TEN Base WAD:
- * Added WATERFALL_SPRITES (1378) for use with the waterfall emitter in TombEngine.
- * Replaced TIMEX object with a generic stopwatch due to copyright issues.
 
 Version 1.7.3
 =============
