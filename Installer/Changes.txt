@@ -21,6 +21,7 @@ Tomb Editor:
  
 TEN Base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the waterfall emitter in TombEngine.
+ * Replaced TIMEX object with a generic stopwatch due to copyright issues.
 
 Version 1.7.3
 =============
