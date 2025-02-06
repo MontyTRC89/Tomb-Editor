@@ -2,6 +2,7 @@ Version 1.7.5
 =============
 
 Tomb Editor:
+ * Added TEN nodes for using keypads.
  * Fixed exception on copying memo or imported geometry position to clipboard.
 
 WadTool:
