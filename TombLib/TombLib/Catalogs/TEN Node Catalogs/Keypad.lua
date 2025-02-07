@@ -61,7 +61,7 @@ LevelFuncs.Engine.Node.KeypadTrigger = function(object, triggerer)
         if KeyIsHit(ActionID.ACTION) then
             Lara:SetAnim(197)
         end
-    elseif (targetRot.y == -90 and laraRot.y >= -120 and laraRot.y <= -90) then
+    elseif (targetRot.y == -90 and laraRot.y >= -120 and laraRot.y <= -60) then
         if KeyIsHit(ActionID.ACTION) then
             Lara:SetAnim(197)
         end
