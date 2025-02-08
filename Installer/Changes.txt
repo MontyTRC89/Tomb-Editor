@@ -10,6 +10,7 @@ WadTool:
  
 TEN Base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
+ * Added DIARY_ITEM (986) and associated sprites slots (1384,1385)
  * Replaced stopwatch with a generic model due to legal reasons.
  * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
  
