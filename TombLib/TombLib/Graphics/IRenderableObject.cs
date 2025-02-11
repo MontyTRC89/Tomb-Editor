@@ -1,6 +1,8 @@
-﻿namespace TombLib.Graphics
+﻿using System;
+
+namespace TombLib.Graphics
 {
-    public interface IRenderableObject
+    public interface IRenderableObject: IDisposable
     {
     }
 }

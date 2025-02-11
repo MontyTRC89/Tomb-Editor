@@ -101,6 +101,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId EventFunction = ChunkId.FromString("TeEventFunction");
         /**********/public static readonly ChunkId EventArgument = ChunkId.FromString("TeEventArgument");
         /**********/public static readonly ChunkId EventCallCounter = ChunkId.FromString("TeEventCallCounter");
+        /**********/public static readonly ChunkId EventEnabled = ChunkId.FromString("TeEventEnabled");
         /**********/public static readonly ChunkId EventNodePosition = ChunkId.FromString("TeEventNodePos");
         /**********/public static readonly ChunkId EventNodeNext = ChunkId.FromString("TeEventNodeNext");
         /**********/public static readonly ChunkId EventNodeElse = ChunkId.FromString("TeEventNodeElse");
@@ -211,6 +212,8 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectLight4 = ChunkId.FromString("TeLig4");
         /**********/public static readonly ChunkId ObjectLight5 = ChunkId.FromString("TeLig5");
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
+        /**********/public static readonly ChunkId ObjectPortal2 = ChunkId.FromString("TePor2");
+        /**********/public static readonly ChunkId ObjectPortalMirrorProperties = ChunkId.FromString("TePorMirror");
         /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri"); // DEPRECATED
         /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2"); // DEPRECATED
         /**********/public static readonly ChunkId ObjectTrigger3 = ChunkId.FromString("TeTri3");

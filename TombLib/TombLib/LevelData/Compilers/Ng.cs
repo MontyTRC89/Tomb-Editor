@@ -28,9 +28,14 @@ namespace TombLib.LevelData.Compilers
             WriteNgChunkStaticsTable(writer);
             WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
-            WriteNgChunkPluginsNames(writer);
             WriteNgChunkTexPartial(writer);
-            WriteNgChunkIdFloorTable(writer);
+
+            if (_supportsTRNGPlugins)
+            {
+                WriteNgChunkPluginsNames(writer);
+                WriteNgChunkIdFloorTable(writer);
+            }
+
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkRemapRooms(writer);
             WriteNgChunkTomVersion(writer, ngVersion);
@@ -241,6 +246,9 @@ namespace TombLib.LevelData.Compilers
         {
             int lastIndex = _pluginFloorData.FindLastIndex(entry => entry != 0);
             var pluginTable = new List<byte>(_pluginFloorData.Take(lastIndex + 1));
+
+            if (pluginTable.Count % 2 == 1)
+                pluginTable.Add(0);
 
             writer.Write((ushort)(3 + pluginTable.Count / 2));
             writer.Write((ushort)0x8048);

@@ -88,6 +88,9 @@ namespace TombLib.Controls
             if (!AnimatePreview && !(CurrentObject is WadSpriteSequence))
                 return;
 
+            if (Form.ActiveForm != this.FindForm())
+                return;
+
             if (CurrentObject is WadSpriteSequence)
             {
                 _frameTimeout++;
@@ -131,7 +134,7 @@ namespace TombLib.Controls
             {
                 // Reset scrollbar
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true, true, 256, 128);
+                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true, true, 1024, 512, false);
 
                 ResetCamera();
 

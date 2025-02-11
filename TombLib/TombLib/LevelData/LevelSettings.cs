@@ -643,28 +643,16 @@ namespace TombLib.LevelData
             }
         }
 
-        public bool LoadDefaultWad()
+        public bool LoadWad(string wadFilePath, VariableType variableType = VariableType.GameDirectory)
         {
-            string wadName = string.Empty;
-
-            switch (GameVersion.Native())
+            try
             {
-                case TRVersion.Game.TombEngine:
-                    wadName = TombEngineConverter.ReferenceWadPath;
-                    break;
+                Wads.Add(new ReferencedWad(this, MakeRelative(wadFilePath, variableType)));
+                return true;
             }
-
-            if (!string.IsNullOrEmpty(wadName) && File.Exists(wadName))
+            catch (Exception ex)
             {
-                try
-                {
-                    Wads.Add(new ReferencedWad(this, MakeRelative(wadName, VariableType.EditorDirectory)));
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("Unable to load default wad! Exception: " + ex);
-                }
+                logger.Error("Unable to load wad! Exception: " + ex);
             }
 
             return false;

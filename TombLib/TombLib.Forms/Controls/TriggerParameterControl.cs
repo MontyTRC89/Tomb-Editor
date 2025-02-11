@@ -177,7 +177,7 @@ namespace TombLib.Controls
                         {
                             // Sort
                             // For some reason the sorted property of the combo box does not work.
-                            if (ParameterRange.Kind == NgParameterKind.FixedEnumeration)
+                            if (ParameterRange.Kind is NgParameterKind.FixedEnumeration or NgParameterKind.PluginEnumeration)
                             {
                                 string[] cachedNames = listOfThings.Select(obj => obj?.ToString()).ToArray();
                                 Array.Sort(cachedNames, listOfThings);

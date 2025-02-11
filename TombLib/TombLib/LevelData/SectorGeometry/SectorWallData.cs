@@ -264,40 +264,32 @@ public readonly struct SectorWallData
 			ws = NormalizeCeilingSplit(WS, diagonalCeilingSplit, isAnyWall, out bool isCeilingSplitInCeilingVoid);
 
 		List<WallSplitData>
-			extraFloorSplits = new(ExtraFloorSplits),
-			extraCeilingSplits = new(ExtraCeilingSplits);
+			extraFloorSplits = new(),
+			extraCeilingSplits = new();
 
 		if (!isFloorSplitInFloorVoid)
 		{
-			for (int i = 0; i < extraFloorSplits.Count; i++)
+			for (int i = 0; i < ExtraFloorSplits.Count; i++)
 			{
-				WallSplitData normalizedSplit = NormalizeFloorSplit(extraFloorSplits[i], diagonalFloorSplit, isAnyWall, out isFloorSplitInFloorVoid);
+				WallSplitData normalizedSplit = NormalizeFloorSplit(ExtraFloorSplits[i], diagonalFloorSplit, isAnyWall, out isFloorSplitInFloorVoid);
 
 				if (isFloorSplitInFloorVoid)
-				{
-					// Remove the rest as it will also be in the void, therefore not rendered
-					extraFloorSplits.RemoveRange(i, extraFloorSplits.Count - i);
-					break;
-				}
+					break; // Stop the loop, since the rest of the splits will also be in the void, therefore not rendered
 
-				extraFloorSplits[i] = normalizedSplit;
+				extraFloorSplits.Add(normalizedSplit);
 			}
 		}
 
 		if (!isCeilingSplitInCeilingVoid)
 		{
-			for (int i = 0; i < extraCeilingSplits.Count; i++)
+			for (int i = 0; i < ExtraCeilingSplits.Count; i++)
 			{
-				WallSplitData normalizedSplit = NormalizeCeilingSplit(extraCeilingSplits[i], diagonalCeilingSplit, isAnyWall, out isCeilingSplitInCeilingVoid);
+				WallSplitData normalizedSplit = NormalizeCeilingSplit(ExtraCeilingSplits[i], diagonalCeilingSplit, isAnyWall, out isCeilingSplitInCeilingVoid);
 
 				if (isCeilingSplitInCeilingVoid)
-				{
-					// Remove the rest as it will also be in the void, therefore not rendered
-					extraCeilingSplits.RemoveRange(i, extraCeilingSplits.Count - i);
-					break;
-				}
+					break; // Stop the loop, since the rest of the splits will also be in the void, therefore not rendered
 
-				extraCeilingSplits[i] = normalizedSplit;
+				extraCeilingSplits.Add(normalizedSplit);
 			}
 		}
 

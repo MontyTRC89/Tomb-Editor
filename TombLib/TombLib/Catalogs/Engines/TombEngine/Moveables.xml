@@ -28,16 +28,16 @@
     <moveable id="26" name="ACTOR1_SPEECH_HEAD2" />
     <moveable id="27" name="ACTOR2_SPEECH_HEAD1" />
     <moveable id="28" name="ACTOR2_SPEECH_HEAD2" />
-    <moveable id="29" name="LARA_EXTRA_MESH1" />
-    <moveable id="30" name="LARA_EXTRA_MESH2" />
-    <moveable id="31" name="LARA_EXTRA_MESH3" />
+    <moveable id="29" name="LARA_BINOCULARS_MESH" />
+    <moveable id="30" name="LARA_EXTRA_MESH1" />
+    <moveable id="31" name="LARA_EXTRA_MESH2" />
     <moveable id="32" name="LARA_WATER_MESH" use_body_from="12" />
     <moveable id="33" name="LARA_PETROL_MESH" use_body_from="12" />
     <moveable id="34" name="LARA_DIRT_MESH" use_body_from="12" />
     <moveable id="35" name="LARA_CROWBAR_ANIM" use_body_from="12" />
     <moveable id="36" name="LARA_TORCH_ANIM" use_body_from="12" />
-    <moveable id="37" name="SINGLE_BRAID_HAIR" />
-	<moveable id="38" name="DUAL_PIGTAIL_HAIR" />
+    <moveable id="37" name="HAIR_PRIMARY" />
+	<moveable id="38" name="HAIR_SECONDARY" />
     <moveable id="50" name="SNOWMOBILE_LARA_ANIMS" use_body_from="12" />
     <moveable id="51" name="SNOWMOBILE" />
     <moveable id="52" name="QUAD_LARA_ANIMS" use_body_from="12" />
@@ -357,6 +357,8 @@
     <moveable id="448" name="ELECTRIC_CLEANER" />
     <moveable id="449" name="SLAMMING_DOORS" />
     <moveable id="450" name="SWINGING_BLADE" />
+	<moveable id="451" name="ELECTRIC_BALL" />
+	<moveable id="452" name="ELECTRIC_BALL_IMPACT_POINT" />	
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
     <moveable id="502" name="PUZZLE_ITEM3" />
@@ -713,7 +715,7 @@
     <moveable id="984" name="FLARE_INV_ITEM" />
     <moveable id="985" name="COMPASS_ITEM" />
     <moveable id="986" name="DIARY_ITEM" />
-    <moveable id="987" name="TIMEX_ITEM" />
+    <moveable id="987" name="STOPWATCH_ITEM" />
     <moveable id="988" name="MEMCARD_LOAD_INV_ITEM" />
     <moveable id="989" name="MEMCARD_SAVE_INV_ITEM" />
     <moveable id="990" name="PC_LOAD_INV_ITEM" />

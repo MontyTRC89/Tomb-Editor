@@ -148,7 +148,7 @@ namespace WadTool
                     try
                     {
                         fileDialog.InitialDirectory = Path.GetDirectoryName(_currentPath);
-                        fileDialog.FileName = Path.GetFileName(_currentPath);
+                        fileDialog.FileName = "Untitled";
                     }
                     catch { }
                 fileDialog.Title = "Choose a sprite file name.";

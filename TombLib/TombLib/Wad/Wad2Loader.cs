@@ -6,6 +6,7 @@ using System.Numerics;
 using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -642,7 +643,8 @@ namespace TombLib.Wad
                                 });
                                 animation.StateChanges.Add(stateChange);
                             }
-                            else if (id3 == Wad2Chunks.AnimCommand)
+                            else if (id3 == Wad2Chunks.AnimCommand ||
+                                     id3 == Wad2Chunks.AnimCommand2)
                             {
                                 var command = new WadAnimCommand();
                                 long offset = chunkIO.Raw.BaseStream.Position;
@@ -650,6 +652,14 @@ namespace TombLib.Wad
                                 command.Parameter1 = LEB128.ReadShort(chunkIO.Raw);
                                 command.Parameter2 = LEB128.ReadShort(chunkIO.Raw);
                                 command.Parameter3 = LEB128.ReadShort(chunkIO.Raw);
+
+                                // Convert legacy sound and flipeffect condition bitpacking to separate field to free up space
+                                // and account for TEN's new sound condition types.
+                                if (id3 == Wad2Chunks.AnimCommand &&
+                                    (command.Type == WadAnimCommandType.FlipEffect || command.Type == WadAnimCommandType.PlaySound))
+                                {
+                                    command.ConvertLegacyConditions();
+                                }
 
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
@@ -721,6 +731,9 @@ namespace TombLib.Wad
                 if (id == Wad2Chunks.Static)
                     legacyLightingType = LEB128.ReadShort(chunkIO.Raw);
 
+                // HACK: shatter options (pre-1.7.3)
+                bool shatterSoundSet = false;
+
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     if (id2 == Wad2Chunks.StaticVisibilityBox)
@@ -759,6 +772,13 @@ namespace TombLib.Wad
                         s.Mesh = LoadMesh(chunkIO, chunkSize2, textures);
                     else if (id2 == Wad2Chunks.StaticAmbientLight)
                         s.AmbientLight = chunkIO.ReadChunkShort(chunkSize2);
+                    else if (id2 == Wad2Chunks.StaticShatterSound)
+                        s.ShatterSoundID = chunkIO.ReadChunkInt(chunkSize2);
+                    else if (id2 == Wad2Chunks.StaticShatter)
+                    {
+                        s.Shatter = chunkIO.ReadChunkBool(chunkSize2);
+                        shatterSoundSet = true;
+                    }
                     else if (id2 == Wad2Chunks.StaticLight)
                     {
                         var light = new WadLight();
@@ -786,6 +806,10 @@ namespace TombLib.Wad
                 // HACK: Restore legacy pre-1.3.12 lighting type if needed
                 if (legacyLightingType != -1)
                     s.Mesh.LightingType = (WadMeshLightingType)legacyLightingType;
+
+                // HACK: Set default shatter parameters, if they were not set
+                if (!shatterSoundSet)
+                    s.Shatter = TrCatalog.IsStaticShatterable(wad.GameVersion, s.Id.TypeId);
 
                 wad.Statics.Add(s.Id, s);
                 return true;

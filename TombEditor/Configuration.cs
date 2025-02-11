@@ -1,6 +1,8 @@
 ﻿using DarkUI.Docking;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
+using System.Reflection;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
@@ -102,7 +104,7 @@ namespace TombEditor
         public bool Rendering3D_HighQualityLightPreview { get; set; } = false;
         public bool Rendering3D_ShowRealTintForObjects { get; set; } = true;
         public bool Rendering3D_UseSpritesForServiceObjects { get; set; } = true;
-        public int Rendering3D_ObjectQuality { get; set; } = 1; // 0 = High, 1 = Medium, 2 = Low
+        public int Rendering3D_ObjectQuality { get; set; } = 0; // 0 = High, 1 = Medium, 2 = Low
 
         // 2D Map options
 
@@ -187,13 +189,13 @@ namespace TombEditor
             "2D", "3D", "FaceEdit", "LightingMode", "DrawWhiteLighting", "|",
             "Undo", "Redo", "|",
             "CenterCamera", "ToggleFlyMode", "|",
-            "DrawPortals", "DrawAllRooms", "DrawHorizon", 
-            "DrawRoomNames", "DrawCardinalDirections", 
-            "DrawExtraBlendingModes", "HideTransparentFaces", "BilinearFilter", "DrawStaticTint", 
+            "DrawPortals", "DrawAllRooms", "DrawHorizon",
+            "DrawRoomNames", "DrawCardinalDirections",
+            "DrawExtraBlendingModes", "HideTransparentFaces", "BilinearFilter", "DrawStaticTint",
             "DrawIllegalSlopes", "DrawSlideDirections", "DisableHiddenRoomPicking", "DisableGeometryPicking", "DrawObjects", "|",
             "FlipMap", "|",
             "Copy", "Paste", "Stamp", "|",
-            "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "|",
+            "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "Mirror","|",
             "AddCamera", "AddFlybyCamera", "AddSink", "AddSoundSource", "AddImportedGeometry", "AddGhostBlock", "AddMemo", "|",
             "CompileLevel", "CompileLevelAndPlay", "CompileAndPlayPreview"
         };
@@ -255,11 +257,27 @@ namespace TombEditor
         public Size Window_FormMemo_Size { get; set; } = new Size(350, 200);
         public bool Window_FormMemo_Maximized { get; set; } = false;
         public Point Window_FormEventSetEditor_Position { get; set; } = new Point(-1); // Center by default
-        public Size Window_FormEventSetEditor_Size { get; set; } = new Size(780, 460);
+        public Size Window_FormEventSetEditor_Size { get; set; } = new Size(930, 460);
         public bool Window_FormEventSetEditor_Maximized { get; set; } = false;
         public int Window_FormEventSetEditor_SplitterDistance { get; set; } = 250;
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
+
+        public void EnsureDefaults()
+        {
+            foreach (var field in UI_ColorScheme.GetType().GetFields())
+            {
+                if (field.FieldType != typeof(Vector4))
+                    continue;
+
+                var value = (Vector4)field.GetValue(UI_ColorScheme);
+                if (value.W != 0)
+                    continue;
+
+                var defaultValue = (Vector4)field.GetValue(ColorScheme.Default);
+                field.SetValue(UI_ColorScheme, defaultValue);
+            }
+        }
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState

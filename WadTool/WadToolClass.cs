@@ -21,10 +21,11 @@ namespace WadTool
     {
         Land,
         LandWithMaterial,
-        ShallowWater,
+        Water,
         Quicksand,
         Underwater
     }
+
     public enum MeshEditingMode
     {
         None,

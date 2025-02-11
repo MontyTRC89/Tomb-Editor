@@ -1294,6 +1294,9 @@ namespace TombLib.LevelData.Compilers
                     else
                         aux.WallPortal = null;
 
+                    SectorSurface floor = sector.Floor.WorldToClicks();
+                    SectorSurface ceiling = sector.Ceiling.WorldToClicks();
+
                     // Setup some flags for box generation
                     if (sector.Type == SectorType.BorderWall)
                         aux.BorderWall = true;
@@ -1303,12 +1306,12 @@ namespace TombLib.LevelData.Compilers
                         aux.Box = true;
                     if ((sector.Flags & SectorFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX)) == 1 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX)) == 2 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ)) == 1 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ)) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) == 1 ||
+                                                        Math.Abs(floor.IfQuadSlopeX) == 2 ||
+                                                        Math.Abs(floor.IfQuadSlopeZ) == 1 ||
+                                                        Math.Abs(floor.IfQuadSlopeZ) == 2))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX)) > 2 || Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ)) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) > 2 || Math.Abs(floor.IfQuadSlopeZ) > 2))
                         aux.HardSlope = true;
                     if (sector.Type == SectorType.Wall)
                         aux.Wall = true;
@@ -1317,29 +1320,29 @@ namespace TombLib.LevelData.Compilers
                     if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
                         sector.Type == SectorType.BorderWall || sector.Type == SectorType.Wall)
                     {
-                        compiledSector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(sector.Floor.Max));
-                        compiledSector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(sector.Ceiling.Min));
+                        compiledSector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - floor.Max);
+                        compiledSector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - ceiling.Min);
                         if (compiledSector.Floor < compiledSector.Ceiling) compiledSector.Floor = compiledSector.Ceiling;
                     }
                     else
                     {
-                        compiledSector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(sector.Floor.Max));
-                        compiledSector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(sector.Ceiling.Min));
+                        compiledSector.Floor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - floor.Max);
+                        compiledSector.Ceiling = (sbyte)(-Clicks.FromWorld(room.Position.Y) - ceiling.Min);
                     }
 
-                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(sector.Floor.Min));
-                    var q0 = Clicks.FromWorld(sector.Floor.XnZp);
-                    var q1 = Clicks.FromWorld(sector.Floor.XpZp);
-                    var q2 = Clicks.FromWorld(sector.Floor.XpZn);
-                    var q3 = Clicks.FromWorld(sector.Floor.XnZn);
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - floor.Min);
+                    var q0 = floor.XnZp;
+                    var q1 = floor.XpZp;
+                    var q2 = floor.XpZn;
+                    var q3 = floor.XnZn;
 
-                    if (!SectorSurface.IsQuad2(q0, q1, q2, q3) && Clicks.FromWorld(sector.Floor.IfQuadSlopeX) == 0 &&
-                        Clicks.FromWorld(sector.Floor.IfQuadSlopeZ) == 0)
+                    if (!SectorSurface.IsQuad2(q0, q1, q2, q3) && floor.IfQuadSlopeX == 0 &&
+                        floor.IfQuadSlopeZ == 0)
                     {
-                        if (!sector.Floor.SplitDirectionIsXEqualsZ)
-                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(sector.Floor.XnZp, sector.Floor.XpZn)));
+                        if (!floor.SplitDirectionIsXEqualsZ)
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XnZp, floor.XpZn));
                         else
-                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(sector.Floor.XpZp, sector.Floor.XnZn)));
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XpZp, floor.XnZn));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
@@ -1604,7 +1607,7 @@ namespace TombLib.LevelData.Compilers
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
-                        SectorSurface s = isCeiling ? sector.Ceiling : sector.Floor;
+                        SectorSurface s = isCeiling ? sector.Ceiling.WorldToClicks() : sector.Floor.WorldToClicks();
 
                         if (s.DiagonalSplit != DiagonalSplit.None || SectorSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
                         {
@@ -1660,10 +1663,10 @@ namespace TombLib.LevelData.Compilers
                 float zMin = portalArea.Y0 * Level.SectorSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.SectorSizeUnit;
 
-                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
-                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
-                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
-                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
+                float yAtXMinZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0));
+                float yAtXMaxZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0));
+                float yAtXMinZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1));
+                float yAtXMaxZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1));
 
                 // Choose portal coordinates
                 tr_vertex[] portalVertices = new tr_vertex[4];

@@ -9,7 +9,7 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR
     {
-        // Floordata sequence class is used OPTIONALLY, if agressive floordata
+        // Floordata sequence class is used OPTIONALLY, if aggressive floordata
         // packing is enabled in level settings. In this case, similar floordata
         // sequences will be hashed and compared on compiling, which allows several
         // sectors to reference same floordata entry, which in turn DRASTICALLY
@@ -27,15 +27,21 @@ namespace TombLib.LevelData.Compilers
                 RecalculateHash();
             }
 
+            public void AddPlugin(byte pluginEntry)
+            {
+                PluginList.Add(pluginEntry);
+                RecalculateHash();
+            }
+
             public void AddRange(List<ushort> entry)
             {
                 FDList.AddRange(entry);
                 RecalculateHash();
             }
 
-            public void AddRange(List<byte> entry)
+            public void AddPluginRange(List<byte> pluginEntry)
             {
-                PluginList.AddRange(entry);
+                PluginList.AddRange(pluginEntry);
                 RecalculateHash();
             }
 
@@ -43,6 +49,7 @@ namespace TombLib.LevelData.Compilers
             {
                 string hash = "";
                 FDList.ForEach(entry => hash += entry.ToString() + " ");
+                PluginList.ForEach(entry => hash += entry.ToString() + " ");
                 _hash = hash.GetHashCode();
             }
 
@@ -82,11 +89,20 @@ namespace TombLib.LevelData.Compilers
                 {
                     var dummy = new FloordataSequence();
                     dummy.Add(0x0000);
+
+                    if (_supportsTRNGPlugins)
+                        dummy.AddPlugin(0);
+
                     floorDataDictionary.Add(dummy, 0);
                 }
             }
             else
+            {
                 _floorData.Add(0x0000);
+
+                if (_supportsTRNGPlugins)
+                    _pluginFloorData.Add(0);
+            }
 
             for (var i = 0; i < _sortedRooms.Length; i++)
             {
@@ -232,6 +248,12 @@ namespace TombLib.LevelData.Compilers
                                 { // Only if the portal is not a Toggle Opacity 1
                                     newEntry.Add(0x8001);
                                     newEntry.Add((ushort)_roomRemapping[sector.WallPortal.AdjoiningRoom]);
+
+                                    if (_supportsTRNGPlugins)
+                                    {
+                                        newEntry.AddPlugin(0);
+                                        newEntry.AddPlugin(0);
+                                    }
                                 }
                             }
                             else if (isWallWithCeilingPortal != null)
@@ -244,6 +266,12 @@ namespace TombLib.LevelData.Compilers
 
                                 newEntry.Add(0x8001);
                                 newEntry.Add((ushort)_roomRemapping[isWallWithCeilingPortal]);
+
+                                if (_supportsTRNGPlugins)
+                                {
+                                    newEntry.AddPlugin(0);
+                                    newEntry.AddPlugin(0);
+                                }
                             }
                         }
                         else
@@ -296,7 +324,9 @@ namespace TombLib.LevelData.Compilers
                             if (tempFloorData.Count != 0)
                             {
                                 newEntry.AddRange(tempFloorData);
-                                newEntry.AddRange(tempPluginFloorData);
+
+                                if (_supportsTRNGPlugins)
+                                    newEntry.AddPluginRange(tempPluginFloorData);
                             }
                         }
 
@@ -315,7 +345,9 @@ namespace TombLib.LevelData.Compilers
                         {
                             compiledSector.FloorDataIndex = checked((ushort)_floorData.Count);
                             _floorData.AddRange(newEntry.FDList);
-                            _pluginFloorData.AddRange(newEntry.PluginList);
+
+                            if (_supportsTRNGPlugins)
+                                _pluginFloorData.AddRange(newEntry.PluginList);
                         }
 
                         // Update the sector
@@ -326,7 +358,14 @@ namespace TombLib.LevelData.Compilers
 
             // Build final floordata block
             if (_level.Settings.AgressiveFloordataPacking)
-                floorDataDictionary.ToList().ForEach(entry => _floorData.AddRange(entry.Key.FDList));
+            {
+                floorDataDictionary.Keys.ToList().ForEach(entry => {
+                    _floorData.AddRange(entry.FDList);
+
+                    if (_supportsTRNGPlugins)
+                        _pluginFloorData.AddRange(entry.PluginList);
+                });
+            }
 
             ReportProgress(58, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
@@ -374,8 +413,6 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(0x13);
             }
 
-
-
             // If sector is Trigger triggerer
             if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
                 (sector.Flags & SectorFlags.TriggerTriggerer) != SectorFlags.None)
@@ -391,7 +428,7 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(0x15);
             }
 
-            if (_level.IsNG)
+            if (_supportsTRNGPlugins)
             {
                 for (var i = 0; i < outFloorData.Count; i++)
                     outPluginFloorData.Add(0);
@@ -488,6 +525,7 @@ namespace TombLib.LevelData.Compilers
                     _progressReporter.ReportWarn("Level uses trigger type '" + setupTrigger.TriggerType + "', which is not supported in this game engine.");
 
                 ushort triggerSetup;
+
                 if (_level.IsNG)
                 {
                     // NG flipeffects store timer and extra in additional ushort
@@ -512,15 +550,14 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(trigger1);
                 outFloorData.Add(triggerSetup);
 
-                if (_level.IsNG)
+                Action<byte, int> addPluginFloorData = (byte value, int count) =>
                 {
-                    outPluginFloorData.Add(0);
+                    if (_supportsTRNGPlugins)
+                        for (int i = 0; i < count; i++)
+                            outPluginFloorData.Add(value);
+                };
 
-                    if (setupTrigger.TriggerType == TriggerType.ConditionNg)
-                        outPluginFloorData.Add((byte)GetTriggerParameter(setupTrigger.Plugin, setupTrigger, 0xff));
-                    else
-                        outPluginFloorData.Add(0);
-                }
+                addPluginFloorData(0, 2);
 
                 foreach (var trigger in triggers)
                 {
@@ -533,7 +570,9 @@ namespace TombLib.LevelData.Compilers
                             // Trigger for object
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (0 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.Camera:
                             // Trigger for camera
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (1 << 10));
@@ -542,46 +581,65 @@ namespace TombLib.LevelData.Compilers
                             // Additional short
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
+
                             CameraInstance camera = trigger.Target as CameraInstance;
+
                             if (camera != null && camera.CameraMode != CameraInstanceMode.Sniper)
                                 trigger3 |= (ushort)(camera.MoveTimer << 9);
+
                             outFloorData.Add(trigger3);
+                            addPluginFloorData(0, 2);
                             break;
+
                         case TriggerTargetType.Sink:
                             // Trigger for sink
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (2 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.FlipMap:
                             // Trigger for flip map
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (3 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.FlipOn:
                             // Trigger for flip map on
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (4 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.FlipOff:
                             // Trigger for flip map off
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (5 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.Target:
                             // Trigger for look at item
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (6 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.FinishLevel:
                             // Trigger for finish level
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (7 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.PlayAudio:
                             // Trigger for play soundtrack
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (8 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.FlipEffect:
                             // Trigger for flip effect
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (9 << 10));
@@ -593,16 +651,18 @@ namespace TombLib.LevelData.Compilers
                                 trigger3 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger3);
 
-                                outPluginFloorData.Add(0);
-                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
+                                addPluginFloorData((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff), 1);
+                                addPluginFloorData(0, 1);
                             }
-
                             break;
+
                         case TriggerTargetType.Secret:
                             // Trigger for secret found
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (10 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.ActionNg:
                             // Trigger for action
                             if (_level.IsNG)
@@ -613,36 +673,46 @@ namespace TombLib.LevelData.Compilers
                                 trigger2 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger2);
 
-                                outPluginFloorData.Add(0);
-                                outPluginFloorData.Add((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff));
+                                addPluginFloorData((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff), 1);
+                                addPluginFloorData(0, 1);
                             }
                             else
                                 _progressReporter.ReportWarn("Level uses action trigger '" + trigger + "' which is not supported in this game engine.");
                             break;
+
                         case TriggerTargetType.FlyByCamera:
                             // Trigger for fly by
                             if (!(trigger.Target is FlybyCameraInstance))
                                 throw new Exception("A Flyby trigger must point to a flyby camera! ('" + trigger + "')");
+
                             var flyByCamera = (FlybyCameraInstance)trigger.Target;
                             trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
                             outFloorData.Add(trigger2);
 
                             trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 2);
                             break;
+
                         case TriggerTargetType.ParameterNg:
                             ushort targetTypeBits = trigger.Target is ObjectInstance ? (ushort)(0 << 10) : (ushort)(13 << 10);
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | targetTypeBits);
                             outFloorData.Add(trigger2);
+                            addPluginFloorData((byte)GetTriggerParameter(trigger.Plugin, trigger, 0xff), 1);
                             break;
+
                         case TriggerTargetType.FmvNg:
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         case TriggerTargetType.TimerfieldNg:
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (15 << 10));
                             outFloorData.Add(trigger2);
+                            addPluginFloorData(0, 1);
                             break;
+
                         default:
                             throw new Exception("Unknown trigger target found '" + trigger + "'");
                     }
@@ -733,20 +803,22 @@ namespace TombLib.LevelData.Compilers
 
             public RoomSectorShape(Sector sector, bool floor, Room.RoomConnectionType portalType, bool wall)
             {
-                var surface = floor ? sector.Floor : sector.Ceiling;
+                var surface = floor ? sector.Floor.WorldToClicks() : sector.Ceiling.WorldToClicks();
 
-                HeightXnZn = Clicks.FromWorld(surface.XnZn);
-                HeightXpZn = Clicks.FromWorld(surface.XpZn);
-                HeightXnZp = Clicks.FromWorld(surface.XnZp);
-                HeightXpZp = Clicks.FromWorld(surface.XpZp);
+                HeightXnZn = surface.XnZn;
+                HeightXpZn = surface.XpZn;
+                HeightXnZp = surface.XnZp;
+                HeightXpZp = surface.XpZp;
                 SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
 
                 if (sector.HasGhostBlock && sector.GhostBlock.Valid)
                 {
-                    HeightXnZn += Clicks.FromWorld(floor ? sector.GhostBlock.Floor.XnZn : sector.GhostBlock.Ceiling.XnZn);
-                    HeightXpZn += Clicks.FromWorld(floor ? sector.GhostBlock.Floor.XpZn : sector.GhostBlock.Ceiling.XpZn);
-                    HeightXnZp += Clicks.FromWorld(floor ? sector.GhostBlock.Floor.XnZp : sector.GhostBlock.Ceiling.XnZp);
-                    HeightXpZp += Clicks.FromWorld(floor ? sector.GhostBlock.Floor.XpZp : sector.GhostBlock.Ceiling.XpZp);
+                    var ghostBlockSurface = floor ? sector.GhostBlock.Floor.WorldToClicks() : sector.GhostBlock.Ceiling.WorldToClicks();
+
+                    HeightXnZn += ghostBlockSurface.XnZn;
+                    HeightXpZn += ghostBlockSurface.XpZn;
+                    HeightXnZp += ghostBlockSurface.XnZp;
+                    HeightXpZp += ghostBlockSurface.XpZp;
                 }
 
                 switch (portalType)
@@ -791,18 +863,18 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XnZn:
-                        DiagonalStep = Clicks.FromWorld(surface.XpZp) - Clicks.FromWorld(surface.XnZp);
+                        DiagonalStep = surface.XpZp - surface.XnZp;
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XnZp:
-                        DiagonalStep = Clicks.FromWorld(surface.XpZn) - Clicks.FromWorld(surface.XpZp);
+                        DiagonalStep = surface.XpZn - surface.XpZp;
 
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XpZn:
-                        DiagonalStep = Clicks.FromWorld(surface.XnZp) - Clicks.FromWorld(surface.XnZn);
+                        DiagonalStep = surface.XnZp - surface.XnZn;
                         HeightXnZn += DiagonalStep;
                         HeightXpZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;
@@ -811,7 +883,7 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XpZp:
-                        DiagonalStep = Clicks.FromWorld(surface.XnZn) - Clicks.FromWorld(surface.XpZn);
+                        DiagonalStep = surface.XnZn - surface.XpZn;
                         HeightXpZn += DiagonalStep;
                         HeightXnZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;

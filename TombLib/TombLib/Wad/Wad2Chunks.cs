@@ -126,6 +126,7 @@ namespace TombLib.Wad
         /****************/public static readonly ChunkId KeyFrameAngle = ChunkId.FromString("W2KfA");
         /**********/public static readonly ChunkId AnimCommands = ChunkId.FromString("W2Cmds");
         /************/public static readonly ChunkId AnimCommand = ChunkId.FromString("W2Cmd");
+        /************/public static readonly ChunkId AnimCommand2 = ChunkId.FromString("W2Cmd2");
         /**************/public static readonly ChunkId AnimCommandSoundInfo = ChunkId.FromString("W2CmdSnd"); // DEPRECATED
         public static readonly ChunkId Statics = ChunkId.FromString("W2Statics");
         /**/public static readonly ChunkId Static = ChunkId.FromString("W2Static");
@@ -137,5 +138,7 @@ namespace TombLib.Wad
         /******/public static readonly ChunkId StaticLightPosition = ChunkId.FromString("W2StaticLightPos");
         /******/public static readonly ChunkId StaticLightRadius = ChunkId.FromString("W2StaticLightR");
         /******/public static readonly ChunkId StaticLightIntensity = ChunkId.FromString("W2StaticLightI");
+        /******/public static readonly ChunkId StaticShatter = ChunkId.FromString("W2StaticShatter");
+        /******/public static readonly ChunkId StaticShatterSound = ChunkId.FromString("W2StaticShatterSound");
     }
 }

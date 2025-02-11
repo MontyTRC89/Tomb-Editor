@@ -13,6 +13,12 @@ namespace TombLib.LevelData
     [Serializable]
     public class Sector : ICloneable
     {
+        public enum SlopeCalculationMode
+        {
+            Legacy,
+            FreeAngles
+        }
+
         public const int MAX_EXTRA_SPLITS = 8;
         public static Sector Empty { get; } = new Sector();
 
@@ -397,18 +403,13 @@ namespace TombLib.LevelData
 
                 transformation.TransformValueQuad(_faceTextures, SectorFace.Wall_PositiveX_QA, SectorFace.Wall_PositiveZ_QA, SectorFace.Wall_NegativeX_QA, SectorFace.Wall_NegativeZ_QA);
 
-                var texturedSplits = _faceTextures.Where(pair => pair.Key.IsExtraFloorSplit()).Select(pair => pair.Key).ToList();
-
-                for (int i = 0; i < texturedSplits.Count; i++)
+                for (int i = 0; i < ExtraFloorSplits.Count; i++)
                 {
-                    int index = texturedSplits[i].GetVertical()?.GetExtraSplitIndex()
-                        ?? throw new InvalidOperationException("Invalid floor split face.");
-
                     transformation.TransformValueQuad(_faceTextures,
-                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveX, index),
-                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveZ, index),
-                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeX, index),
-                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, index));
+                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveX, i),
+                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveZ, i),
+                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeX, i),
+                        SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, i));
                 }
 
                 // Fix floor textures
@@ -467,18 +468,13 @@ namespace TombLib.LevelData
 
                 transformation.TransformValueQuad(_faceTextures, SectorFace.Wall_PositiveX_WS, SectorFace.Wall_PositiveZ_WS, SectorFace.Wall_NegativeX_WS, SectorFace.Wall_NegativeZ_WS);
 
-                var texturedSplits = _faceTextures.Where(pair => pair.Key.IsExtraCeilingSplit()).Select(pair => pair.Key).ToList();
-
-                for (int i = 0; i < texturedSplits.Count; i++)
+                for (int i = 0; i < ExtraCeilingSplits.Count; i++)
                 {
-                    int index = texturedSplits[i].GetVertical()?.GetExtraSplitIndex()
-                        ?? throw new InvalidOperationException("Invalid ceiling split face.");
-
                     transformation.TransformValueQuad(_faceTextures,
-                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveX, index),
-                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveZ, index),
-                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeX, index),
-                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, index));
+                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveX, i),
+                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveZ, i),
+                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeX, i),
+                        SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, i));
                 }
 
                 // Fix ceiling textures
@@ -575,10 +571,10 @@ namespace TombLib.LevelData
         {
             Plane[] tri = new Plane[2];
 
-            var p0 = new Vector3(0, Clicks.FromWorld(Floor.XnZp, RoundingMethod.Integer), 0);
-            var p1 = new Vector3(4, Clicks.FromWorld(Floor.XpZp, RoundingMethod.Integer), 0);
-            var p2 = new Vector3(4, Clicks.FromWorld(Floor.XpZn, RoundingMethod.Integer), -4);
-            var p3 = new Vector3(0, Clicks.FromWorld(Floor.XnZn, RoundingMethod.Integer), -4);
+            var p0 = new Vector3(0, Floor.XnZp, 0);
+            var p1 = new Vector3(1024, Floor.XpZp, 0);
+            var p2 = new Vector3(1024, Floor.XpZn, -1024);
+            var p3 = new Vector3(0, Floor.XnZn, -1024);
 
             // Create planes based on floor split direction
 
@@ -617,100 +613,77 @@ namespace TombLib.LevelData
             }
         }
 
-        public Direction[] GetFloorTriangleSlopeDirections()
+        public Direction[] GetFloorTriangleSlopeDirections(SlopeCalculationMode mode)
         {
-            const float CriticalSlantYComponent = 0.8f;
-
             var normals = GetFloorTriangleNormals();
 
             // Initialize slope directions as unslidable by default (EntireFace means unslidable in our case).
 
-            Direction[] slopeDirections = new Direction[2] { Direction.None, Direction.None };
+            var slopeDirections = new Direction[2] { Direction.None, Direction.None };
 
-            if (Floor.HasSlope)
+            if (!Floor.HasSlope())
+                return slopeDirections;
+
+            for (int i = 0; i < (Floor.IsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
             {
-                for (int i = 0; i < (Floor.IsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
+                if (mode == SlopeCalculationMode.Legacy)
                 {
-                    if (Math.Abs(normals[i].Y) <= CriticalSlantYComponent) // Triangle is slidable
-                    {
-                        bool angleNotDefined = true;
-                        var angle = (float)(Math.Atan2(normals[i].X, normals[i].Z) * (180 / Math.PI));
-                        angle = angle < 0 ? angle + 360.0f : angle;
+                    // Use legacy tilt mode calculation from TEN, as it's more consistent.
 
-                        // Note about 45, 135, 225 and 315 degree steps:
-                        // Core Design has used override instead of rounding for triangular slopes angled under
-                        // 45-degree stride, to produce either east or west-oriented slide.
+                    var scaledNormal = -normals[i];
 
-                        while (angleNotDefined)
-                        {
-                            switch ((int)angle)
-                            {
-                                case 0:
-                                case 360:
-                                    slopeDirections[i] = Direction.PositiveZ;
-                                    angleNotDefined = false;
-                                    break;
-                                case 45:
-                                case 90:
-                                case 135:
-                                    slopeDirections[i] = Direction.PositiveX;
-                                    angleNotDefined = false;
-                                    break;
-                                case 180:
-                                    slopeDirections[i] = Direction.NegativeZ;
-                                    angleNotDefined = false;
-                                    break;
-                                case 225:
-                                case 270:
-                                case 315:
-                                    slopeDirections[i] = Direction.NegativeX;
-                                    angleNotDefined = false;
-                                    break;
-                                default:
-                                    angle = (int)Math.Round(angle / 90.0f, MidpointRounding.AwayFromZero) * 90;
-                                    break;
-                            }
-                        }
-                    }
+                    var tilt = new Vector2(
+                        (float)(Math.Round(scaledNormal.X, MidpointRounding.AwayFromZero) * 4.0f),
+                        (float)(Math.Round(scaledNormal.Z, MidpointRounding.AwayFromZero) * 4.0f));
+
+                    if (tilt.X > 2)
+                        slopeDirections[i] = Direction.NegativeX;
+                    else if (tilt.X < -2)
+                        slopeDirections[i] = Direction.PositiveX;
+
+                    if (tilt.Y > 2 && tilt.Y > Math.Abs(tilt.X))
+                        slopeDirections[i] = Direction.NegativeZ;
+                    else if (tilt.Y < -2 && -tilt.Y > Math.Abs(tilt.X))
+                        slopeDirections[i] = Direction.PositiveZ;
                 }
+            }
 
-                // We swap triangle directions for XpZn and XnZp cases, because in these cases
-                // triangle indices are inverted.
-                // For other cases, we move slide direction triangle to proper one accordingly to
-                // step slant value encoded in corner heights.
+            // We swap triangle directions for XpZn and XnZp cases, because in these cases
+            // triangle indices are inverted.
+            // For other cases, we move slide direction triangle to proper one accordingly to
+            // step slant value encoded in corner heights.
 
-                if (Floor.DiagonalSplit != DiagonalSplit.None)
+            if (Floor.DiagonalSplit != DiagonalSplit.None)
+            {
+                switch (Floor.DiagonalSplit)
                 {
-                    switch (Floor.DiagonalSplit)
-                    {
-                        case DiagonalSplit.XpZn:
+                    case DiagonalSplit.XpZn:
+                        slopeDirections[1] = slopeDirections[0];
+                        slopeDirections[0] = Direction.None;
+                        break;
+
+                    case DiagonalSplit.XnZp:
+                        if (!Floor.IsQuad)
+                        {
+                            slopeDirections[0] = slopeDirections[1];
+                            slopeDirections[1] = Direction.None;
+                        }
+                        break;
+
+                    case DiagonalSplit.XnZn:
+                        if (Floor.IsQuad)
+                        {
                             slopeDirections[1] = slopeDirections[0];
                             slopeDirections[0] = Direction.None;
-                            break;
+                        }
+                        else
+                            slopeDirections[0] = Direction.None;
+                        break;
 
-                        case DiagonalSplit.XnZp:
-                            if (!Floor.IsQuad)
-                            {
-                                slopeDirections[0] = slopeDirections[1];
-                                slopeDirections[1] = Direction.None;
-                            }
-                            break;
-
-                        case DiagonalSplit.XnZn:
-                            if (Floor.IsQuad)
-                            {
-                                slopeDirections[1] = slopeDirections[0];
-                                slopeDirections[0] = Direction.None;
-                            }
-                            else
-                                slopeDirections[0] = Direction.None;
-                            break;
-
-                        case DiagonalSplit.XpZp:
-                            if (!Floor.IsQuad)
-                                slopeDirections[1] = Direction.None;
-                            break;
-                    }
+                    case DiagonalSplit.XpZp:
+                        if (!Floor.IsQuad)
+                            slopeDirections[1] = Direction.None;
+                        break;
                 }
             }
 

@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.Shared.SharedClasses;
@@ -12,14 +13,16 @@ namespace TombIDE.ScriptingStudio.Forms
 		public string NewFolderPath { get; private set; }
 
 		private string _scriptRootDirectoryPath;
+		private string[] _ignoredNodePaths;
 
 		#region Construction
 
-		public FormFolderCreation(string scriptRootDirectoryPath, string initialNodePath)
+		public FormFolderCreation(string scriptRootDirectoryPath, string initialNodePath, params string[] ignoredNodePaths)
 		{
 			InitializeComponent();
 
 			_scriptRootDirectoryPath = scriptRootDirectoryPath;
+			_ignoredNodePaths = ignoredNodePaths;
 
 			FillFolderList();
 
@@ -72,6 +75,10 @@ namespace TombIDE.ScriptingStudio.Forms
 		{
 			treeView.Nodes.Clear();
 			treeView.Nodes.Add(FileTreeViewHelper.CreateFullFileListNode(_scriptRootDirectoryPath, true, true));
+
+			// Remove ignored nodes
+			foreach (string ignoredNodePath in _ignoredNodePaths.Where(path => !string.IsNullOrWhiteSpace(path)))
+				treeView.FindNode(ignoredNodePath)?.Remove();
 		}
 
 		private void SetInitialNodePath(string initialNodePath)

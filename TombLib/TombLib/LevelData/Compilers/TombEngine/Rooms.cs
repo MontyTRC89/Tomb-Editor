@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -162,7 +163,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
                 ReverbInfo = room.Properties.Reverberation,
-                Flags = 0x40
+                Flags = 0
             };
 
             if (!room.Alternated)
@@ -180,6 +181,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newRoom.Flags |= 0x0008;
             if (room.Properties.FlagOutside)
                 newRoom.Flags |= 0x0020;
+
+            // Not-near-horizon flag (set automatically)
+            if (!room.Properties.FlagHorizon && !room.Portals.Any(p => p.Room.Properties.FlagHorizon))
+                newRoom.Flags |= 0x0040;
 
             // TRNG-specific flags
             if (room.Properties.FlagDamage)
@@ -1057,6 +1062,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     else
                         aux.WallPortal = null;
 
+                    // TODO: We are using clicks here, but should we really? Please review.
+                    SectorSurface floor = sector.Floor.WorldToClicks();
+
                     // Setup some flags for box generation
                     if (sector.Type == SectorType.BorderWall)
                         aux.BorderWall = true;
@@ -1066,30 +1074,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         aux.Box = true;
                     if ((sector.Flags & SectorFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 1 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX, RoundingMethod.Integer)) == 2 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 1 ||
-                                                        Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) == 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) == 1 ||
+                                                        Math.Abs(floor.IfQuadSlopeX) == 2 ||
+                                                        Math.Abs(floor.IfQuadSlopeZ) == 1 ||
+                                                        Math.Abs(floor.IfQuadSlopeZ) == 2))
                         aux.SoftSlope = true;
-                    if (room.Properties.Type != RoomType.Water && (Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeX, RoundingMethod.Integer)) > 2 || Math.Abs(Clicks.FromWorld(sector.Floor.IfQuadSlopeZ, RoundingMethod.Integer)) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) > 2 || Math.Abs(floor.IfQuadSlopeZ) > 2))
                         aux.HardSlope = true;
                     if (sector.Type == SectorType.Wall)
                         aux.Wall = true;
 
                     // TODO: Is this LowestFloor field ever even used in TEN? Consider removing.
-                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(sector.Floor.Min));
-                    var q0 = Clicks.FromWorld(sector.Floor.XnZp);
-                    var q1 = Clicks.FromWorld(sector.Floor.XpZp);
-                    var q2 = Clicks.FromWorld(sector.Floor.XpZn);
-                    var q3 = Clicks.FromWorld(sector.Floor.XnZn);
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - floor.Min);
+                    var q0 = floor.XnZp;
+                    var q1 = floor.XpZp;
+                    var q2 = floor.XpZn;
+                    var q3 = floor.XnZn;
 
-                    if (!SectorSurface.IsQuad2(q0, q1, q2, q3) && Clicks.FromWorld(sector.Floor.IfQuadSlopeX, RoundingMethod.Integer) == 0 &&
-                        Clicks.FromWorld(sector.Floor.IfQuadSlopeZ, RoundingMethod.Integer) == 0)
+                    if (!SectorSurface.IsQuad2(q0, q1, q2, q3) && floor.IfQuadSlopeX == 0 &&
+                        floor.IfQuadSlopeZ == 0)
                     {
-                        if (!sector.Floor.SplitDirectionIsXEqualsZ)
-                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(sector.Floor.XnZp, sector.Floor.XpZn)));
+                        if (!floor.SplitDirectionIsXEqualsZ)
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XnZp, floor.XpZn));
                         else
-                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Clicks.FromWorld(Math.Min(sector.Floor.XpZp, sector.Floor.XnZn)));
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XpZp, floor.XnZn));
                     }
 
                     newRoom.AuxSectors[x, z] = aux;
@@ -1295,6 +1303,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _portalRemapping.TryAdd(portalToAdd, portal);
             outPortals.Add(portalToAdd);
+
+            if (portal.Effect == PortalEffectType.ClassicMirror)
+            {
+                var room2DPosition = new Vector3(
+                    room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
+                
+                var mirror = new TombEngineMirror();
+                mirror.Room = (short)_roomRemapping[room];
+
+				mirror.Plane.X = normal.X;
+                mirror.Plane.Y = normal.Y;
+                mirror.Plane.Z = normal.Z;
+                mirror.Plane.W = -(
+                    normal.X * (portalVertices[0].X + room2DPosition.X) +
+                    normal.Y * (portalVertices[0].Y) +
+                    normal.Z * (portalVertices[0].Z + room2DPosition.Z));
+
+                mirror.ReflectLara = portal.Properties.ReflectLara;
+                mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                mirror.ReflectLights = portal.Properties.ReflectLights;
+
+				if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+                {
+                    _mirrors.Add(mirror);
+                }
+            }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -1534,7 +1570,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 _portalRemapping.TryAdd(portalToAdd, portal);
                 outPortals.Add(portalToAdd);
-            }
+
+				if (portal.Effect == PortalEffectType.ClassicMirror)
+				{
+					var mirror = new TombEngineMirror();
+					mirror.Room = (short)_roomRemapping[room];
+
+                    mirror.Plane.X = normal.X;
+					mirror.Plane.Y = normal.Y;
+					mirror.Plane.Z = normal.Z;
+                    mirror.Plane.W = -normal.Y * portalVertices[0].Y;
+
+                    mirror.ReflectLara = portal.Properties.ReflectLara;
+                    mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                    mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                    mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                    mirror.ReflectLights = portal.Properties.ReflectLights;
+                    
+                    if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+					{
+						_mirrors.Add(mirror);
+					}
+				}
+			}
         }
 
         private void MatchDoorShades(List<TombEngineRoom> roomList, TombEngineRoom room, bool grayscale, bool flipped)
@@ -1852,19 +1910,36 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var vertex = room.Vertices[i];
                 var normalHelpers = vertex.NormalHelpers;
+
+                if (normalHelpers.Count == 0)
+                    continue;
+
                 var normal = Vector3.Zero;
 
+                // WARNING: we need to flip normal because it was calculated with Y negative up
                 for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var normalHelper = normalHelpers[j];
+                    normal += normalHelpers[j].Polygon.Normal;
 
-                    // WARNING: we need to flip normal because it was calculated with Y negative up
-                    normal += -normalHelper.Polygon.Normal;
-                }
+                normal = -Vector3.Normalize(normal);
 
-                if (normalHelpers.Count > 0)
+                // FAILSAFE: In case normal is NaN, average again with reference normal
+                if (float.IsNaN(normal.X) || float.IsNaN(normal.Y) || float.IsNaN(normal.Z))
                 {
-                    normal = Vector3.Normalize(normal / (float)normalHelpers.Count);
+                    normal = Vector3.Zero;
+
+                    // Use the first polygon's normal as a reference
+                    var referenceNormal = normalHelpers[0].Polygon.Normal;
+
+                    for (int j = 0; j < normalHelpers.Count; j++)
+                    {
+                        var currentNormal = normalHelpers[j].Polygon.Normal;
+                        if (Vector3.Dot(referenceNormal, currentNormal) < 0)
+                            currentNormal = -currentNormal;
+
+                        normal += currentNormal;
+                    }
+
+                    normal = -Vector3.Normalize(normal);
                 }
 
                 for (int j = 0; j < normalHelpers.Count; j++)

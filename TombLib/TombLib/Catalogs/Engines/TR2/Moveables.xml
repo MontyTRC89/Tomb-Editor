@@ -2,7 +2,7 @@
 <moveables>
     <moveable id="0" name="Lara" ten="LARA_SKIN" />
     <moveable id="1" name="Lara pistol animation" use_body_from="0" hidden="true" ten="PISTOLS_ANIM" />
-    <moveable id="2" name="Lara's ponytail" hidden="true" ten="SINGLE_BRAID_HAIR" />
+    <moveable id="2" name="Lara's ponytail" hidden="true" ten="HAIR_PRIMARY" />
     <moveable id="3" name="Lara shotgun animation" use_body_from="0" hidden="true" ten="SHOTGUN_ANIM" />
     <moveable id="4" name="Lara auto-pistol animation" use_body_from="0" hidden="true" ten="PISTOLS_ANIM" />
     <moveable id="5" name="Lara Uzi animation" use_body_from="0" hidden="true" ten="UZI_ANIM" />
