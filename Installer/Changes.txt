@@ -1,3 +1,19 @@
+Version 1.7.5
+=============
+
+Tomb Editor:
+ * Fixed exception on copying memo or imported geometry position to clipboard.
+
+WadTool:
+ * Fixed incorrect copying of sprite sequences from one wad to another.
+ * Fixed TR3 -> TEN remapping of puzzle objects.
+ 
+TEN Base WAD:
+ * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
+ * Added DIARY_ITEM (986) and associated sprites slots (1384,1385)
+ * Replaced stopwatch with a generic model due to legal reasons.
+ * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
+ 
 Version 1.7.4
 =============
 
@@ -42,8 +58,7 @@ TombIDE:
 TEN Base WAD:
  * Added LARA_BINOCULARS_MESH (ID 29), used for seeing player using the binoculars in a mirrored room.
  * Removed LARA_EXTRA_MESH2 as unused.
- * Changed default braid to the one used in TR4.
- 
+ * Changed default braid to the one used in TR4. 
 
 Version 1.7.2
 =============
