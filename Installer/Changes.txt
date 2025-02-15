@@ -1,3 +1,9 @@
+Version 1.8
+===========
+
+Tomb Editor:
+ * Fixed tigger export returning wrong ConditionNg mask for non-Moveable objects.
+
 Version 1.7.4
 =============
 
