@@ -88,7 +88,7 @@ namespace TombIDE.ProjectMaster
 						if (engineVersion.Major <= 1 && engineVersion.Minor <= 0 && engineVersion.Build <= 8)
 						{
 							button_Update.Enabled = false;
-							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
+							button_Update.Text = "Cannot Auto-Update engine. Current version is too old.";
 							button_Update.Width = 300;
 						}
 					}
@@ -97,11 +97,14 @@ namespace TombIDE.ProjectMaster
 					{
 						button_Update.Visible = true;
 
-						// 3.0 is the first version that supports auto-updating
-						if (engineVersion.Major <= 2)
+						// 3.0 is the first version that supports auto-updating - 4.8 introduced breaking changes
+						if (engineVersion.Major <= 4 && engineVersion.Minor <= 7)
 						{
+							button_Update.Text = engineVersion.Major <= 2
+								? "Cannot Auto-Update engine. Current version is too old."
+								: "Cannot Auto-Update engine. TR1X 4.8 introduced breaking changes, which require manual migration.";
+
 							button_Update.Enabled = false;
-							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
 							button_Update.Width = 300;
 						}
 					}

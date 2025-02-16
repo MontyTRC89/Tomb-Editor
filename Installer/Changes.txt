@@ -10,6 +10,7 @@ WadTool:
  * Fixed TR3 -> TEN remapping of puzzle objects.
 
 TombIDE:
+ * Updated TR1X preset to 4.8.2 - No Auto-Update available due to breaking changes in the engine.
  * Fixed archive creator not including `patches.fpd` for TRNG projects.
 
 TEN Base WAD:
