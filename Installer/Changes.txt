@@ -4,6 +4,7 @@ Version 1.7.5
 Tomb Editor:
  * Fixed exception on copying memo or imported geometry position to clipboard.
  * Fixed tigger export returning wrong ConditionNg mask for non-Moveable objects.
+ * Imported Geometry object tag now also shows Rotation and Scale.
 
 WadTool:
  * Fixed incorrect copying of sprite sequences from one wad to another.
