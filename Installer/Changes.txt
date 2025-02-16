@@ -11,6 +11,7 @@ WadTool:
 
 TombIDE:
  * Updated TR1X preset to 4.8.2 - No Auto-Update available due to breaking changes in the engine.
+ * Updated PLAY.exe to 2.0.2.5 - Fixed non-ASCII executable paths not working.
  * Fixed archive creator not including `patches.fpd` for TRNG projects.
 
 TEN Base WAD:
