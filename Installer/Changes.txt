@@ -3,16 +3,17 @@ Version 1.7.5
 
 Tomb Editor:
  * Fixed exception on copying memo or imported geometry position to clipboard.
- * Fixed tigger export returning wrong ConditionNg mask for non-Moveable objects.
- * Imported Geometry object tag now also shows Rotation and Scale.
+ * Fixed tigger export returning wrong ConditionNg mask for non-moveable objects.
+ * Imported geometry object tag now also shows rotation and scale.
 
 WadTool:
+ * Added option to cancel skeleton editor closing if a warning about unbalanced meshtree is thrown.
  * Fixed incorrect copying of sprite sequences from one wad to another.
  * Fixed TR3 -> TEN remapping of puzzle objects.
 
 TombIDE:
- * Updated TR1X preset to 4.8.2 - No Auto-Update available due to breaking changes in the engine.
- * Updated PLAY.exe to 2.0.2.5 - Fixed non-ASCII executable paths not working.
+ * Updated TR1X preset to 4.8.2 - no auto-update available due to breaking changes in the engine.
+ * Updated PLAY.exe to 2.0.2.5 - fixed non-ASCII executable paths not working.
  * Fixed archive creator not including `patches.fpd` for TRNG projects.
 
 TEN Base WAD:
