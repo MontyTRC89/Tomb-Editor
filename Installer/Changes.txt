@@ -3,17 +3,24 @@ Version 1.7.5
 
 Tomb Editor:
  * Fixed exception on copying memo or imported geometry position to clipboard.
+ * Fixed tigger export returning wrong ConditionNg mask for non-Moveable objects.
+ * Imported Geometry object tag now also shows Rotation and Scale.
 
 WadTool:
  * Fixed incorrect copying of sprite sequences from one wad to another.
  * Fixed TR3 -> TEN remapping of puzzle objects.
- 
+
+TombIDE:
+ * Updated TR1X preset to 4.8.2 - No Auto-Update available due to breaking changes in the engine.
+ * Updated PLAY.exe to 2.0.2.5 - Fixed non-ASCII executable paths not working.
+ * Fixed archive creator not including `patches.fpd` for TRNG projects.
+
 TEN Base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
  * Added DIARY_ITEM (986) and associated sprites slots (1384,1385)
  * Replaced stopwatch with a generic model due to legal reasons.
  * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
- 
+
 Version 1.7.4
 =============
 

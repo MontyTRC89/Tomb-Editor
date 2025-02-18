@@ -1711,7 +1711,9 @@ namespace TombEditor.Controls.Panel3D
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" +
-                                "Triangles: " + instance.Model.DirectXModel.TotalTriangles));
+                                GetObjectRotationString(_editor.SelectedRoom, instance) + "\n" +
+								"Scale: " + instance.Scale + "\n" +
+								"Triangles: " + instance.Model.DirectXModel.TotalTriangles));
 
                             // Add the line height of the object
                             AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
