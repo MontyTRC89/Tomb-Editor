@@ -1,3 +1,12 @@
+Version 1.8
+===========
+
+Tomb Editor:
+ * Fixed tigger export returning wrong ConditionNg mask for non-Moveable objects.
+
+TombIDE:
+* Fixed archive creator not including `patches.fpd` for TRNG projects.
+
 Version 1.7.4
 =============
 
