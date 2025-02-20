@@ -365,6 +365,9 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "FormTransform";
+            ShowIcon = false;
+            ShowInTaskbar = false;
+            SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "Transform Edit";
             ((System.ComponentModel.ISupportInitialize)nudTransX).EndInit();
