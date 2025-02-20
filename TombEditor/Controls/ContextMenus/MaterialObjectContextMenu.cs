@@ -124,6 +124,11 @@ namespace TombEditor.Controls.ContextMenus
                     }));
                 }
 
+                Items.Add(new ToolStripMenuItem("Edit object transform", null, (o, e) =>
+                {
+                    CommandHandler.GetCommand("EditObjectTransform").Execute(new CommandArgs { Editor = editor, Window = owner });
+                }));
+
                 Items.Add(new ToolStripMenuItem("Copy position to clipboard", null, (o, e) =>
                 {
                     var pos = (targetObject as PositionBasedObjectInstance).WorldPosition;
