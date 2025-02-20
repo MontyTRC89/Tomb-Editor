@@ -254,8 +254,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(mirror.ReflectLights);
                 }
 
-                // Write animated textures
-                _textureInfoManager.WriteAnimatedTextures(writer);
+				// Write water planes
+				writer.Write((uint)_waterPlanes.Count);
+				foreach (var waterPlane in _waterPlanes)
+				{
+					writer.Write(waterPlane.Y);
+					writer.Write(waterPlane.XMin);
+					writer.Write(waterPlane.XMax);
+					writer.Write(waterPlane.ZMin);
+					writer.Write(waterPlane.ZMax);
+				}
+
+				// Write animated textures
+				_textureInfoManager.WriteAnimatedTextures(writer);
 
                 geometryDataBuffer = geometryDataStream.ToArray();
             }

@@ -211,7 +211,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public bool Equals(TombEngineMaterial x, TombEngineMaterial y)
             {
                 return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated && x.NormalMapping == y.NormalMapping && 
-                    x.AnimatedSequence == y.AnimatedSequence);
+                    x.AnimatedSequence == y.AnimatedSequence && x.WaterPlaneIndex == y.WaterPlaneIndex);
             }
 
             public int GetHashCode(TombEngineMaterial obj)
@@ -224,7 +224,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     hash = hash * 23 + obj.Animated.GetHashCode();
                     hash = hash * 23 + obj.NormalMapping.GetHashCode();
                     hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
-                    return hash;
+					hash = hash * 23 + obj.WaterPlaneIndex.GetHashCode();
+					return hash;
                 }
             }
         }
@@ -234,6 +235,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public bool Animated;
         public bool NormalMapping;
         public int AnimatedSequence;
+        public int WaterPlaneIndex;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -377,7 +379,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
                 writer.Write(bucket.Material.Animated);
-                writer.Write(bucket.Polygons.Count);
+				writer.Write(bucket.Material.WaterPlaneIndex);
+				writer.Write(bucket.Polygons.Count);
                 foreach (var poly in bucket.Polygons)
                 {
                     writer.Write((int)poly.Shape);
@@ -685,5 +688,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public bool ReflectStatics;
         public bool ReflectSprites;
         public bool ReflectLights;
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public struct TombEngineWaterPlane
+	{
+		public int Y;
+        public int XMin;
+        public int XMax;
+        public int ZMin;
+        public int ZMax;
 	}
 }

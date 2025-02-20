@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;

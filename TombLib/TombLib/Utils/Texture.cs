@@ -55,7 +55,8 @@ namespace TombLib.Utils
         Exclude = 8,
         Screen = 9,
         Lighten = 10,
-        AlphaBlend = 11
+        AlphaBlend = 11,
+        DynamicWaterSurface = 13
     }
 
     public enum BumpMappingLevel

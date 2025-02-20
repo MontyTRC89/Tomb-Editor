@@ -39,8 +39,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private List<TombEngineOverlap> _overlaps = new List<TombEngineOverlap>();
         private List<TombEngineZoneGroup> _zones = new List<TombEngineZoneGroup>();
         private List<TombEngineMirror> _mirrors = new List<TombEngineMirror>();
+		private List<TombEngineWaterPlane> _waterPlanes = new List<TombEngineWaterPlane>();
 
-        private readonly List<TombEngineItem> _items = new List<TombEngineItem>();
+		private readonly List<TombEngineItem> _items = new List<TombEngineItem>();
         private List<TombEngineAiItem> _aiItems = new List<TombEngineAiItem>();
 
         private TombEngineTexInfoManager _textureInfoManager;
@@ -111,6 +112,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             BuildFloorData();
             BuildSprites();
             PrepareRoomsBuckets();
+            PrepareWaterPlanesAndAssignToBuckets();
             PrepareMeshBuckets();
 
             cancelToken.ThrowIfCancellationRequested();

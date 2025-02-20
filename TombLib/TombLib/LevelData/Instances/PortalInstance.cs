@@ -19,7 +19,8 @@ namespace TombLib.LevelData
     public enum PortalEffectType : byte
     {
        None,
-       ClassicMirror
+       ClassicMirror,
+       DynamicWaterSurface
     }
 
     public class PortalProperties
