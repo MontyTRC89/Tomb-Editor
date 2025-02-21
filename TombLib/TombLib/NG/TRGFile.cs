@@ -184,7 +184,7 @@ public sealed class TRGFile
 		{
 			string[] tokens = line["#REPEAT#".Length..].Split('#');
 
-			if (tokens.Length != 3) // Invalid format
+			if (tokens.Length is not 3 and not 4) // Invalid format
 				return results;
 
 			string radix = tokens[0].Replace("\"", "");
@@ -193,8 +193,16 @@ public sealed class TRGFile
 				!int.TryParse(tokens[2], out int end))
 				return results;
 
+			int key = start;
+
+			if (tokens.Length == 4 && !int.TryParse(tokens[3], out key)) // #REPEAT#Move up of clicks #1#4#0
+				return results;
+
 			for (int i = start; i <= end; i++)
-				results.Add(unchecked((ushort)checked((short)i)), new TriggerParameterUshort((ushort)i, radix + i));
+			{
+				results.Add(unchecked((ushort)checked((short)i)), new TriggerParameterUshort((ushort)key, radix + i));
+				key++;
+			}
 
 			return results;
 		}

@@ -21,6 +21,10 @@ namespace TombEditor.Forms
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
+
+            // Clear body flag in TEN is repurposed for reflection canceling.
+            if (_editor.Level.IsTombEngine)
+                cbClearBody.Text = "No reflection";
         }
 
         private void butCancel_Click(object sender, EventArgs e)

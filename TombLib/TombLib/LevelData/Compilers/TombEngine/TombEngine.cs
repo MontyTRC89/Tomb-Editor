@@ -238,6 +238,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     for (int i = 0; i < zoneCount; i++)
                         _zones.ForEach(z => writer.Write(z.Zones[flipped][i]));
 
+                // Write mirrors
+                writer.Write((uint)_mirrors.Count);
+                foreach (var mirror in _mirrors)
+                {
+                    writer.Write(mirror.Room);
+                    writer.Write(mirror.Plane.X);
+                    writer.Write(mirror.Plane.Y);
+                    writer.Write(mirror.Plane.Z);
+                    writer.Write(mirror.Plane.W);
+                    writer.Write(mirror.ReflectLara);
+                    writer.Write(mirror.ReflectMoveables);
+                    writer.Write(mirror.ReflectStatics);
+                    writer.Write(mirror.ReflectSprites);
+                    writer.Write(mirror.ReflectLights);
+                }
+
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
 

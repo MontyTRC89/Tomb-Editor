@@ -477,13 +477,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (short)_meshes.Count;
 
-                // TODO! replace with customizable data from trcatalog, properties, etc?
-                if (TrCatalog.IsStaticShatterable(TRVersion.Game.TombEngine, oldStaticMesh.Id.TypeId))
-                    newStaticMesh.ShatterType = (short)ShatterType.Fragment;
-                else
-                    newStaticMesh.ShatterType = (short)ShatterType.None;
-
-                newStaticMesh.ShatterSound = -1; // Default sound
+                newStaticMesh.ShatterType = oldStaticMesh.Shatter ? (short)ShatterType.Fragment : (short)ShatterType.None;
+                newStaticMesh.ShatterSound = (short)oldStaticMesh.ShatterSoundID;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))

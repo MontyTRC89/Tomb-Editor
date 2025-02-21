@@ -59,6 +59,39 @@ namespace TombLib.Wad
             return true;
         }
 
+        public static List<string> GetFormattedList(Level level, TRVersion.Game version)
+        {
+            var result = new List<string>();
+
+            var defaultSoundList = TrCatalog.GetAllSounds(version);
+            var soundCatalogPresent = level != null && level.Settings.GlobalSoundMap.Count > 0;
+
+            var maxKnownSound = -1;
+
+            foreach (var sound in defaultSoundList)
+                if (sound.Key > maxKnownSound) maxKnownSound = (int)sound.Key;
+
+            if (soundCatalogPresent)
+                foreach (var sound in level.Settings.GlobalSoundMap)
+                    if (sound.Id > maxKnownSound) maxKnownSound = sound.Id;
+
+            for (int i = 0; i <= maxKnownSound; i++)
+            {
+                var lbl = i.ToString().PadLeft(4, '0') + ": ";
+
+                if (soundCatalogPresent && level.Settings.GlobalSoundMap.Any(item => item.Id == i))
+                    lbl += level.Settings.GlobalSoundMap.First(item => item.Id == i).Name;
+                else if (defaultSoundList.Any(item => item.Key == i))
+                    lbl += defaultSoundList.First(item => item.Key == i).Value;
+                else
+                    lbl += "Unknown sound";
+
+                result.Add(lbl);
+            }
+
+            return result;
+        }
+
         public WadSoundInfo TryGetSoundInfo(int id)
         {
             foreach (var soundInfo in SoundInfos)

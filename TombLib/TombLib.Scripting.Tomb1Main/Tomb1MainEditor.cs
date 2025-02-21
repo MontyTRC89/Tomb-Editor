@@ -1,5 +1,9 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Rendering;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -9,6 +13,7 @@ using TombLib.Scripting.Objects;
 using TombLib.Scripting.Tomb1Main.Objects;
 using TombLib.Scripting.Tomb1Main.Parsers;
 using TombLib.Scripting.Tomb1Main.Utils;
+using TombLib.Scripting.Workers;
 
 namespace TombLib.Scripting.Tomb1Main
 {
@@ -18,18 +23,33 @@ namespace TombLib.Scripting.Tomb1Main
 
 		private bool _suppressBracketAutospacing;
 		private DocumentLine _cachedLine;
+		private ErrorDetectionWorker _errorDetectionWorker;
 
 		public Tomb1MainEditor()
 		{
 			BindEventMethods();
-
 			CommentPrefix = "//";
+
+			_errorDetectionWorker = new ErrorDetectionWorker(new ErrorDetector(), new TimeSpan(500));
+			_errorDetectionWorker.RunWorkerCompleted += ErrorWorker_RunWorkerCompleted;
+		}
+
+		private void ErrorWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			if (e.Result == null)
+				return;
+
+			ResetAllErrors();
+			ApplyErrorsToLines(e.Result as List<ErrorLine>);
+
+			TextArea.TextView.InvalidateLayer(KnownLayer.Caret);
 		}
 
 		private void BindEventMethods()
 		{
 			TextArea.TextEntering += TextArea_TextEntering;
 			TextArea.TextEntered += TextEditor_TextEntered;
+			TextChanged += TextEditor_TextChanged;
 		}
 
 		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
@@ -96,6 +116,12 @@ namespace TombLib.Scripting.Tomb1Main
 				_cachedLine = null;
 				_suppressBracketAutospacing = false;
 			}
+		}
+
+		private void TextEditor_TextChanged(object sender, EventArgs e)
+		{
+			if (LiveErrorUnderlining)
+				_errorDetectionWorker.RunErrorCheckOnIdle(Text);
 		}
 
 		private void HandleAutocomplete()

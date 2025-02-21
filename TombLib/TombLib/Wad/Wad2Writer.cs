@@ -354,6 +354,8 @@ namespace TombLib.Wad
                         WriteMesh(chunkIO, s.Mesh, textureTable);
 
                         chunkIO.WriteChunkInt(Wad2Chunks.StaticAmbientLight, s.AmbientLight);
+                        chunkIO.WriteChunkBool(Wad2Chunks.StaticShatter, s.Shatter);
+                        chunkIO.WriteChunkInt(Wad2Chunks.StaticShatterSound, s.ShatterSoundID);
 
                         foreach (var light in s.Lights)
                         {

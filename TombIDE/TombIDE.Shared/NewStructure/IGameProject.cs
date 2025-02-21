@@ -97,7 +97,14 @@ namespace TombIDE.Shared.NewStructure
 		/// </summary>
 		void SetScriptRootDirectory(string newDirectoryPath);
 
+		/// <summary>
+		/// Gets the current engine version number from the project's engine files.
+		/// </summary>
 		Version GetCurrentEngineVersion();
+
+		/// <summary>
+		/// Gets the latest engine version number that's available for the project's GameVersion.
+		/// </summary>
 		Version GetLatestEngineVersion();
 	}
 }
