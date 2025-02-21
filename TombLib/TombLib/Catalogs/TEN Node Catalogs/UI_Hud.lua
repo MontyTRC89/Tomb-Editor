@@ -517,7 +517,12 @@ end
 
 -- !Ignore
 LevelFuncs.Engine.Node.__ShowAmmoCounter = function()
-
+	
+	local cameraType = View.GetCameraType()
+	if (cameraType == CameraType.FLYBY or cameraType == CameraType.BINOCULARS or cameraType == CameraType.LASERSIGHT) then
+		return
+	end
+	
 	local alphaDelta = LevelVars.AmmoCounter.AlphaBlendSpeed
 
 	if LevelVars.AmmoCounter.CurrentAlpha ~= LevelVars.AmmoCounter.TargetAlpha then
