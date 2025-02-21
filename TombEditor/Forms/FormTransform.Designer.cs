@@ -114,6 +114,8 @@
             nudTransX.Name = "nudTransX";
             nudTransX.Size = new System.Drawing.Size(64, 22);
             nudTransX.TabIndex = 108;
+            nudTransX.ValueChanged += ValidateInstance;
+            nudTransX.Validated += ValidateInstance;
             // 
             // darkLabel27
             // 
@@ -137,6 +139,8 @@
             nudTransY.Name = "nudTransY";
             nudTransY.Size = new System.Drawing.Size(64, 22);
             nudTransY.TabIndex = 109;
+            nudTransY.ValueChanged += ValidateInstance;
+            nudTransY.Validated += ValidateInstance;
             // 
             // nudTransZ
             // 
@@ -148,6 +152,8 @@
             nudTransZ.Name = "nudTransZ";
             nudTransZ.Size = new System.Drawing.Size(65, 22);
             nudTransZ.TabIndex = 110;
+            nudTransZ.ValueChanged += ValidateInstance;
+            nudTransZ.Validated += ValidateInstance;
             // 
             // darkLabel1
             // 
@@ -184,6 +190,8 @@
             nudRotX.Name = "nudRotX";
             nudRotX.Size = new System.Drawing.Size(64, 22);
             nudRotX.TabIndex = 103;
+            nudRotX.ValueChanged += ValidateInstance;
+            nudRotX.Validated += ValidateInstance;
             // 
             // darkLabel19
             // 
@@ -208,6 +216,8 @@
             nudRotY.Name = "nudRotY";
             nudRotY.Size = new System.Drawing.Size(64, 22);
             nudRotY.TabIndex = 105;
+            nudRotY.ValueChanged += ValidateInstance;
+            nudRotY.Validated += ValidateInstance;
             // 
             // nudRotZ
             // 
@@ -220,6 +230,8 @@
             nudRotZ.Name = "nudRotZ";
             nudRotZ.Size = new System.Drawing.Size(64, 22);
             nudRotZ.TabIndex = 107;
+            nudRotZ.ValueChanged += ValidateInstance;
+            nudRotZ.Validated += ValidateInstance;
             // 
             // darkLabel2
             // 
@@ -261,11 +273,12 @@
             nudScaleX.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             nudScaleX.IncrementAlternate = new decimal(new int[] { 1, 0, 0, 0 });
             nudScaleX.Location = new System.Drawing.Point(87, 66);
-            nudScaleX.LoopValues = true;
+            nudScaleX.LoopValues = false;
             nudScaleX.Maximum = new decimal(new int[] { int.MaxValue, 0, 0, 0 });
             nudScaleX.Name = "nudScaleX";
             nudScaleX.Size = new System.Drawing.Size(64, 22);
             nudScaleX.TabIndex = 116;
+            nudScaleX.ValueChanged += ValidateInstance;
             nudScaleX.Validated += nudScaleX_Validated;
             // 
             // darkLabel5
@@ -287,11 +300,12 @@
             nudScaleY.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             nudScaleY.IncrementAlternate = new decimal(new int[] { 1, 0, 0, 0 });
             nudScaleY.Location = new System.Drawing.Point(170, 66);
-            nudScaleY.LoopValues = true;
+            nudScaleY.LoopValues = false;
             nudScaleY.Maximum = new decimal(new int[] { int.MaxValue, 0, 0, 0 });
             nudScaleY.Name = "nudScaleY";
             nudScaleY.Size = new System.Drawing.Size(64, 22);
             nudScaleY.TabIndex = 117;
+            nudScaleY.ValueChanged += ValidateInstance;
             // 
             // nudScaleZ
             // 
@@ -300,11 +314,12 @@
             nudScaleZ.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             nudScaleZ.IncrementAlternate = new decimal(new int[] { 1, 0, 0, 0 });
             nudScaleZ.Location = new System.Drawing.Point(254, 66);
-            nudScaleZ.LoopValues = true;
+            nudScaleZ.LoopValues = false;
             nudScaleZ.Maximum = new decimal(new int[] { int.MaxValue, 0, 0, 0 });
             nudScaleZ.Name = "nudScaleZ";
             nudScaleZ.Size = new System.Drawing.Size(64, 22);
             nudScaleZ.TabIndex = 118;
+            nudScaleZ.ValueChanged += ValidateInstance;
             // 
             // butCancel
             // 
