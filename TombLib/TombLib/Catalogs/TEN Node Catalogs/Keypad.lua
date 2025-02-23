@@ -82,7 +82,7 @@ LevelFuncs.Engine.Node.KeypadTrigger = function(object, triggerer)
 end
 -- !Name "Run a keypad (Volume Event)"
 -- !Section "UI/Hud"
--- !Description "Create a keypad to ."
+-- !Description "Create a keypad to run a volume event."
 -- !Arguments "NewLine, Moveables, Keypad Object"
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
 -- !Arguments "VolumeEvents, 35, Event to run"
@@ -141,7 +141,7 @@ end
 
 -- !Name "Run a keypad (Script function)"
 -- !Section "UI/Hud"
--- !Description "Create diary from template file."
+-- !Description "Create a keypad to run a script function."
 -- !Arguments "NewLine, Moveables, Keypad Object"
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
 
