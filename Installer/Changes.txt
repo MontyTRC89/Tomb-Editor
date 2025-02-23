@@ -7,6 +7,7 @@ Tomb Editor:
  * Fixed exception on copying memo or imported geometry position to clipboard.
  * Fixed tigger export returning wrong ConditionNg mask for non-moveable objects.
  * Imported geometry object tag now also shows rotation and scale.
+ * Added TEN nodes for using keypads.
 
 WadTool:
  * Added option to cancel skeleton editor closing if a warning about unbalanced meshtree is thrown.
