@@ -110,6 +110,7 @@ namespace TombLib.Utils
         public static ImageC Red { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0xFF, 0xFF });
         public static ImageC Transparent { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0 });
         public static ImageC Black { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0xFF }) { FileName = "Black colour" };
+        public static uint AlphaBits = ColorToUint(new ColorC(0, 0, 0, 255));
         public const int PixelSize = 4;
 
         public string FileName { get; set; }
@@ -650,8 +651,6 @@ namespace TombLib.Utils
                 X + width > Width || Y + height > Height)
                 return result;
 
-            uint alphaBits = ColorToUint(new ColorC(0, 0, 0, 255));
-
             // Check for alpha
 
             fixed (void* ptr = _data)
@@ -665,8 +664,8 @@ namespace TombLib.Utils
                         uint* linePtr = toPtrOffseted + y * Width;
                         for (int x = 0; x < width; ++x)
                         {
-                            var alpha = (linePtr[x] & alphaBits);
-                            if (alpha == alphaBits)
+                            var alpha = (linePtr[x] & AlphaBits);
+                            if (alpha == AlphaBits)
                                 continue;
 
                             if (alpha > 0)
@@ -682,7 +681,7 @@ namespace TombLib.Utils
                     {
                         uint* linePtr = toPtrOffseted + y * Width;
                         for (int x = 0; x < width; ++x)
-                            if ((linePtr[x] & alphaBits) != alphaBits)
+                            if ((linePtr[x] & AlphaBits) != AlphaBits)
                                 return BlendMode.AlphaTest;
                     }
                 }

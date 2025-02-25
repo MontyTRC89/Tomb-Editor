@@ -983,9 +983,9 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap transport_in_shallow_water_18 {
+        internal static System.Drawing.Bitmap transport_in_shallow_water_24 {
             get {
-                object obj = ResourceManager.GetObject("transport_in_shallow_water_18", resourceCulture);
+                object obj = ResourceManager.GetObject("transport_in_shallow_water_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1003,29 +1003,9 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap transport_on_land_18 {
-            get {
-                object obj = ResourceManager.GetObject("transport_on_land_18", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap transport_on_land_24 {
             get {
                 object obj = ResourceManager.GetObject("transport_on_land_24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap transport_on_nothing_18 {
-            get {
-                object obj = ResourceManager.GetObject("transport_on_nothing_18", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1043,16 +1023,6 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap transport_in_shallow_water_24 {
-            get {
-                object obj = ResourceManager.GetObject("transport_in_shallow_water_24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap transport_play_24 {
             get {
                 object obj = ResourceManager.GetObject("transport_play_24", resourceCulture);
@@ -1063,9 +1033,9 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap transport_sand_18 {
+        internal static System.Drawing.Bitmap transport_sand_24 {
             get {
-                object obj = ResourceManager.GetObject("transport_sand_18", resourceCulture);
+                object obj = ResourceManager.GetObject("transport_sand_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1093,9 +1063,9 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap transport_underwater_18 {
+        internal static System.Drawing.Bitmap transport_underwater_24 {
             get {
-                object obj = ResourceManager.GetObject("transport_underwater_18", resourceCulture);
+                object obj = ResourceManager.GetObject("transport_underwater_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

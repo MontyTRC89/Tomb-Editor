@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -162,7 +163,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
                 ReverbInfo = room.Properties.Reverberation,
-                Flags = 0x40
+                Flags = 0
             };
 
             if (!room.Alternated)
@@ -180,6 +181,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newRoom.Flags |= 0x0008;
             if (room.Properties.FlagOutside)
                 newRoom.Flags |= 0x0020;
+
+            // Not-near-horizon flag (set automatically)
+            if (!room.Properties.FlagHorizon && !room.Portals.Any(p => p.Room.Properties.FlagHorizon))
+                newRoom.Flags |= 0x0040;
 
             // TRNG-specific flags
             if (room.Properties.FlagDamage)
@@ -1298,6 +1303,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _portalRemapping.TryAdd(portalToAdd, portal);
             outPortals.Add(portalToAdd);
+
+            if (portal.Effect == PortalEffectType.ClassicMirror)
+            {
+                var room2DPosition = new Vector3(
+                    room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
+                
+                var mirror = new TombEngineMirror();
+                mirror.Room = (short)_roomRemapping[room];
+
+				mirror.Plane.X = normal.X;
+                mirror.Plane.Y = normal.Y;
+                mirror.Plane.Z = normal.Z;
+                mirror.Plane.W = -(
+                    normal.X * (portalVertices[0].X + room2DPosition.X) +
+                    normal.Y * (portalVertices[0].Y) +
+                    normal.Z * (portalVertices[0].Z + room2DPosition.Z));
+
+                mirror.ReflectLara = portal.Properties.ReflectLara;
+                mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                mirror.ReflectLights = portal.Properties.ReflectLights;
+
+				if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+                {
+                    _mirrors.Add(mirror);
+                }
+            }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -1307,7 +1340,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public readonly int SlopeZ;
             public readonly int Height;
 
-            // TODO: This method yields odd results when SlopeX and SlopeZ are in world units. Please review, but until then, we use clicks here.
             public int EvaluateHeight(int x, int z)
             {
                 return Height + x * SlopeX + z * SlopeZ;
@@ -1439,8 +1471,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
-                        // TODO: Please review. Should we really use clicks here?
-                        SectorSurface s = isCeiling ? sector.Ceiling.WorldToClicks() : sector.Floor.WorldToClicks();
+                        SectorSurface s = isCeiling ? sector.Ceiling : sector.Floor;
 
                         if (s.DiagonalSplit != DiagonalSplit.None || SectorSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
                         {
@@ -1496,11 +1527,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 float zMin = portalArea.Y0 * Level.SectorSizeUnit;
                 float zMax = (portalArea.Y1 + 1) * Level.SectorSizeUnit;
 
-                // TODO: We are using clicks here, but shouldn't we use world coordinates instead? Please review EvaluateHeight().
-                float yAtXMinZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0));
-                float yAtXMaxZMin = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0));
-                float yAtXMinZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1));
-                float yAtXMaxZMax = Clicks.ToWorld(Clicks.FromWorld(room.Position.Y) + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1));
+                float yAtXMinZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0);
+                float yAtXMaxZMin = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0);
+                float yAtXMinZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1);
+                float yAtXMaxZMax = room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1);
 
                 // Choose portal coordinates
                 VectorInt3[] portalVertices = new VectorInt3[4];
@@ -1540,7 +1570,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 _portalRemapping.TryAdd(portalToAdd, portal);
                 outPortals.Add(portalToAdd);
-            }
+
+				if (portal.Effect == PortalEffectType.ClassicMirror)
+				{
+					var mirror = new TombEngineMirror();
+					mirror.Room = (short)_roomRemapping[room];
+
+                    mirror.Plane.X = normal.X;
+					mirror.Plane.Y = normal.Y;
+					mirror.Plane.Z = normal.Z;
+                    mirror.Plane.W = -normal.Y * portalVertices[0].Y;
+
+                    mirror.ReflectLara = portal.Properties.ReflectLara;
+                    mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                    mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                    mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                    mirror.ReflectLights = portal.Properties.ReflectLights;
+                    
+                    if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+					{
+						_mirrors.Add(mirror);
+					}
+				}
+			}
         }
 
         private void MatchDoorShades(List<TombEngineRoom> roomList, TombEngineRoom room, bool grayscale, bool flipped)
@@ -1858,19 +1910,36 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 var vertex = room.Vertices[i];
                 var normalHelpers = vertex.NormalHelpers;
+
+                if (normalHelpers.Count == 0)
+                    continue;
+
                 var normal = Vector3.Zero;
 
+                // WARNING: we need to flip normal because it was calculated with Y negative up
                 for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var normalHelper = normalHelpers[j];
+                    normal += normalHelpers[j].Polygon.Normal;
 
-                    // WARNING: we need to flip normal because it was calculated with Y negative up
-                    normal += -normalHelper.Polygon.Normal;
-                }
+                normal = -Vector3.Normalize(normal);
 
-                if (normalHelpers.Count > 0)
+                // FAILSAFE: In case normal is NaN, average again with reference normal
+                if (float.IsNaN(normal.X) || float.IsNaN(normal.Y) || float.IsNaN(normal.Z))
                 {
-                    normal = Vector3.Normalize(normal / (float)normalHelpers.Count);
+                    normal = Vector3.Zero;
+
+                    // Use the first polygon's normal as a reference
+                    var referenceNormal = normalHelpers[0].Polygon.Normal;
+
+                    for (int j = 0; j < normalHelpers.Count; j++)
+                    {
+                        var currentNormal = normalHelpers[j].Polygon.Normal;
+                        if (Vector3.Dot(referenceNormal, currentNormal) < 0)
+                            currentNormal = -currentNormal;
+
+                        normal += currentNormal;
+                    }
+
+                    normal = -Vector3.Normalize(normal);
                 }
 
                 for (int j = 0; j < normalHelpers.Count; j++)

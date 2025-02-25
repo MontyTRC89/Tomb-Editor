@@ -17,123 +17,123 @@
 
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormGameArchive));
-			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-			this.button_Generate = new DarkUI.Controls.DarkButton();
-			this.label_Info = new DarkUI.Controls.DarkLabel();
-			this.panel_TextBox = new System.Windows.Forms.Panel();
-			this.richTextBox = new System.Windows.Forms.RichTextBox();
-			this.label_Enter = new DarkUI.Controls.DarkLabel();
-			this.timer = new System.Windows.Forms.Timer(this.components);
-			this.tableLayoutPanel.SuspendLayout();
-			this.panel_TextBox.SuspendLayout();
-			this.SuspendLayout();
+			components = new System.ComponentModel.Container();
+			tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+			panel_TextBox = new System.Windows.Forms.Panel();
+			richTextBox = new System.Windows.Forms.RichTextBox();
+			label_Enter = new DarkUI.Controls.DarkLabel();
+			button_Generate = new DarkUI.Controls.DarkButton();
+			label_Info = new DarkUI.Controls.DarkLabel();
+			timer = new System.Windows.Forms.Timer(components);
+			tableLayoutPanel.SuspendLayout();
+			panel_TextBox.SuspendLayout();
+			SuspendLayout();
 			// 
 			// tableLayoutPanel
 			// 
-			this.tableLayoutPanel.ColumnCount = 1;
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.Controls.Add(this.button_Generate, 0, 3);
-			this.tableLayoutPanel.Controls.Add(this.label_Info, 0, 0);
-			this.tableLayoutPanel.Controls.Add(this.panel_TextBox, 0, 2);
-			this.tableLayoutPanel.Controls.Add(this.label_Enter, 0, 1);
-			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel.Name = "tableLayoutPanel";
-			this.tableLayoutPanel.RowCount = 4;
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(784, 561);
-			this.tableLayoutPanel.TabIndex = 0;
-			// 
-			// button_Generate
-			// 
-			this.button_Generate.Checked = false;
-			this.button_Generate.Dock = System.Windows.Forms.DockStyle.Right;
-			this.button_Generate.Location = new System.Drawing.Point(644, 511);
-			this.button_Generate.Margin = new System.Windows.Forms.Padding(0, 20, 20, 20);
-			this.button_Generate.Name = "button_Generate";
-			this.button_Generate.Size = new System.Drawing.Size(120, 30);
-			this.button_Generate.TabIndex = 5;
-			this.button_Generate.Text = "Generate archive...";
-			this.button_Generate.Click += new System.EventHandler(this.button_Generate_Click);
-			// 
-			// label_Info
-			// 
-			this.label_Info.AutoSize = true;
-			this.label_Info.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_Info.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_Info.Location = new System.Drawing.Point(20, 20);
-			this.label_Info.Margin = new System.Windows.Forms.Padding(20, 20, 20, 0);
-			this.label_Info.Name = "label_Info";
-			this.label_Info.Size = new System.Drawing.Size(744, 100);
-			this.label_Info.TabIndex = 3;
-			this.label_Info.Text = resources.GetString("label_Info.Text");
+			tableLayoutPanel.ColumnCount = 2;
+			tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			tableLayoutPanel.Controls.Add(panel_TextBox, 0, 1);
+			tableLayoutPanel.Controls.Add(label_Enter, 0, 0);
+			tableLayoutPanel.Controls.Add(button_Generate, 1, 2);
+			tableLayoutPanel.Controls.Add(label_Info, 0, 2);
+			tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+			tableLayoutPanel.Name = "tableLayoutPanel";
+			tableLayoutPanel.RowCount = 3;
+			tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+			tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+			tableLayoutPanel.Size = new System.Drawing.Size(784, 561);
+			tableLayoutPanel.TabIndex = 0;
 			// 
 			// panel_TextBox
 			// 
-			this.panel_TextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.panel_TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel_TextBox.Controls.Add(this.richTextBox);
-			this.panel_TextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel_TextBox.Location = new System.Drawing.Point(20, 150);
-			this.panel_TextBox.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
-			this.panel_TextBox.Name = "panel_TextBox";
-			this.panel_TextBox.Padding = new System.Windows.Forms.Padding(3);
-			this.panel_TextBox.Size = new System.Drawing.Size(744, 341);
-			this.panel_TextBox.TabIndex = 1;
+			panel_TextBox.BackColor = System.Drawing.Color.FromArgb(48, 48, 48);
+			panel_TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			tableLayoutPanel.SetColumnSpan(panel_TextBox, 2);
+			panel_TextBox.Controls.Add(richTextBox);
+			panel_TextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			panel_TextBox.Location = new System.Drawing.Point(0, 40);
+			panel_TextBox.Margin = new System.Windows.Forms.Padding(0);
+			panel_TextBox.Name = "panel_TextBox";
+			panel_TextBox.Padding = new System.Windows.Forms.Padding(3);
+			panel_TextBox.Size = new System.Drawing.Size(784, 451);
+			panel_TextBox.TabIndex = 1;
 			// 
 			// richTextBox
 			// 
-			this.richTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.richTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.richTextBox.ForeColor = System.Drawing.Color.Gainsboro;
-			this.richTextBox.Location = new System.Drawing.Point(3, 3);
-			this.richTextBox.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
-			this.richTextBox.Name = "richTextBox";
-			this.richTextBox.Size = new System.Drawing.Size(736, 333);
-			this.richTextBox.TabIndex = 0;
-			this.richTextBox.Text = "";
+			richTextBox.BackColor = System.Drawing.Color.FromArgb(48, 48, 48);
+			richTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			richTextBox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			richTextBox.ForeColor = System.Drawing.Color.Gainsboro;
+			richTextBox.Location = new System.Drawing.Point(3, 3);
+			richTextBox.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
+			richTextBox.Name = "richTextBox";
+			richTextBox.Size = new System.Drawing.Size(776, 443);
+			richTextBox.TabIndex = 0;
+			richTextBox.Text = "";
 			// 
 			// label_Enter
 			// 
-			this.label_Enter.AutoSize = true;
-			this.label_Enter.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_Enter.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_Enter.Location = new System.Drawing.Point(20, 120);
-			this.label_Enter.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
-			this.label_Enter.Name = "label_Enter";
-			this.label_Enter.Size = new System.Drawing.Size(744, 30);
-			this.label_Enter.TabIndex = 2;
-			this.label_Enter.Text = "Enter README.txt text: (Optional)";
-			this.label_Enter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			label_Enter.AutoSize = true;
+			label_Enter.Dock = System.Windows.Forms.DockStyle.Fill;
+			label_Enter.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			label_Enter.Location = new System.Drawing.Point(20, 0);
+			label_Enter.Margin = new System.Windows.Forms.Padding(20, 0, 20, 5);
+			label_Enter.Name = "label_Enter";
+			label_Enter.Size = new System.Drawing.Size(604, 35);
+			label_Enter.TabIndex = 2;
+			label_Enter.Text = "README.txt text: (Optional)";
+			label_Enter.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
+			// button_Generate
+			// 
+			button_Generate.Checked = false;
+			button_Generate.Dock = System.Windows.Forms.DockStyle.Right;
+			button_Generate.Location = new System.Drawing.Point(644, 511);
+			button_Generate.Margin = new System.Windows.Forms.Padding(0, 20, 20, 20);
+			button_Generate.Name = "button_Generate";
+			button_Generate.Size = new System.Drawing.Size(120, 30);
+			button_Generate.TabIndex = 5;
+			button_Generate.Text = "Generate Archive...";
+			button_Generate.Click += button_Generate_Click;
+			// 
+			// label_Info
+			// 
+			label_Info.Dock = System.Windows.Forms.DockStyle.Fill;
+			label_Info.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			label_Info.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			label_Info.Location = new System.Drawing.Point(20, 491);
+			label_Info.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
+			label_Info.Name = "label_Info";
+			label_Info.Size = new System.Drawing.Size(624, 70);
+			label_Info.TabIndex = 3;
+			label_Info.Text = "IMPORTANT: Please manually verify the files in the archive after it's been created.";
+			label_Info.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// timer
 			// 
-			this.timer.Interval = 300;
-			this.timer.Tick += new System.EventHandler(this.timer_Tick);
+			timer.Interval = 300;
+			timer.Tick += timer_Tick;
 			// 
 			// FormGameArchive
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(784, 561);
-			this.Controls.Add(this.tableLayoutPanel);
-			this.MinimumSize = new System.Drawing.Size(740, 480);
-			this.Name = "FormGameArchive";
-			this.ShowIcon = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Create an archive";
-			this.tableLayoutPanel.ResumeLayout(false);
-			this.tableLayoutPanel.PerformLayout();
-			this.panel_TextBox.ResumeLayout(false);
-			this.ResumeLayout(false);
-
+			AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			ClientSize = new System.Drawing.Size(784, 561);
+			Controls.Add(tableLayoutPanel);
+			MinimumSize = new System.Drawing.Size(740, 480);
+			Name = "FormGameArchive";
+			ShowIcon = false;
+			StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			Text = "Create an archive";
+			tableLayoutPanel.ResumeLayout(false);
+			tableLayoutPanel.PerformLayout();
+			panel_TextBox.ResumeLayout(false);
+			ResumeLayout(false);
 		}
 
 		#endregion

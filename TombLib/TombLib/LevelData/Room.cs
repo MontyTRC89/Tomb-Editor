@@ -619,7 +619,7 @@ namespace TombLib.LevelData
             const int lowestPassableStep = 2 * Level.FullClickHeight;  // Lara still can bug out of 2-click step heights
 
             var normals = sector.GetFloorTriangleNormals();
-            var slopeDirections = sector.GetFloorTriangleSlopeDirections();
+            var slopeDirections = sector.GetFloorTriangleSlopeDirections(Sector.SlopeCalculationMode.Legacy);
 
             if (slopeDirections[0] != Direction.None && slopeDirections[1] != Direction.None &&
                 slopeDirections[0] != slopeDirections[1])
@@ -775,7 +775,7 @@ namespace TombLib.LevelData
                         slopeIsIllegal = true;
                     else
                     {
-                        var lookupSectorSlopeDirections = lookupSector.Sector.GetFloorTriangleSlopeDirections();
+                        var lookupSectorSlopeDirections = lookupSector.Sector.GetFloorTriangleSlopeDirections(Sector.SlopeCalculationMode.Legacy);
 
                         for (int j = 0; j < 2; j++)
                         {
