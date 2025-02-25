@@ -29,6 +29,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
         Triangle
     }
 
+    public enum TombEngineMaterialType : byte
+    {
+        Opaque,
+        Water
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineAtlas
     {
@@ -92,7 +98,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int AnimatedSequence;
         public int AnimatedFrame;
         public float ShineStrength;
-    }
+
+        public byte MaterialType;
+	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineRoomStaticMesh
@@ -225,6 +233,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     hash = hash * 23 + obj.NormalMapping.GetHashCode();
                     hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
 					hash = hash * 23 + obj.WaterPlaneIndex.GetHashCode();
+					hash = hash * 23 + obj.MaterialType.GetHashCode();
 					return hash;
                 }
             }
@@ -232,7 +241,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         public int Texture;
         public byte BlendMode;
-        public bool Animated;
+        public byte MaterialType;
+		public bool Animated;
         public bool NormalMapping;
         public int AnimatedSequence;
         public int WaterPlaneIndex;
@@ -378,7 +388,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
-                writer.Write(bucket.Material.Animated);
+				writer.Write(bucket.Material.MaterialType);
+				writer.Write(bucket.Material.Animated);
 				writer.Write(bucket.Material.WaterPlaneIndex);
 				writer.Write(bucket.Polygons.Count);
                 foreach (var poly in bucket.Polygons)

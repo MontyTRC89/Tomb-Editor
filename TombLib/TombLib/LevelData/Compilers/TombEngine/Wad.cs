@@ -87,9 +87,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
-                        newPoly = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, null);
+                        newPoly = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, 0, null);
                     else
-                        newPoly = result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, null);
+                        newPoly = result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, 0, null);
 
                     newPoly.ShineStrength = (float)poly.ShineStrength / 63.0f;
 
@@ -126,7 +126,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             mesh.Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
             foreach (var poly in mesh.Polygons)
             {
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, 0, mesh.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.MaterialType, poly.Animated, 0, mesh.Buckets);
 
                 var texture = textures[poly.TextureId];
 

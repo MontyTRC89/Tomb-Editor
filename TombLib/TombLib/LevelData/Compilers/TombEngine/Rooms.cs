@@ -334,12 +334,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 									if (shape == FaceShape.Quad)
 									{
+										var materialType = TombEngineMaterialType.Opaque;
+
 										if (room.Properties.Type == RoomType.Normal &&
 											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
 	room.Sectors[x, z].FloorPortal != null &&
 	room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
 										{
-											realBlendMode = BlendMode.DynamicWaterSurface;
+											materialType = TombEngineMaterialType.Water;
 										}
 
 										int vertex3Index;
@@ -362,7 +364,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 										var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
 										var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
-														 (byte)realBlendMode, roomVertices);
+														 (byte)realBlendMode, (byte)materialType, roomVertices);
 										roomPolygons.Add(poly);
 										roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
 										roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
@@ -373,7 +375,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											texture.Mirror();
 											result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
 											poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
-															(byte)realBlendMode, roomVertices);
+															(byte)realBlendMode, (byte)materialType, roomVertices);
 											roomPolygons.Add(poly);
 											roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
 											roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
@@ -387,21 +389,25 @@ namespace TombLib.LevelData.Compilers.TombEngine
 										if (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
 											texture.Mirror(true);
 
+										var materialType = TombEngineMaterialType.Opaque;
+
+										if (room.Properties.Type == RoomType.Normal &&
+											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
+											vertexPositions[i+0].Y == vertexPositions[i+1].Y && 
+											vertexPositions[i+1].Y == vertexPositions[i+2].Y &&
+											room.Sectors[x, z].FloorPortal != null &&
+											room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
+										{
+											materialType = TombEngineMaterialType.Water;
+										}
+
 										vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);
 										vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 1);
 										vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
 
 										var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
 										var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
-														(byte)realBlendMode, roomVertices);
-
-										if (room.Properties.Type == RoomType.Normal &&
-											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
-											room.Sectors[x, z].FloorPortal != null &&
-											room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
-										{
-											poly.BlendMode = (byte)BlendMode.DynamicWaterSurface;
-										}
+														(byte)realBlendMode, (byte)materialType, roomVertices);
 
 										roomPolygons.Add(poly);
 										roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
@@ -412,7 +418,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											texture.Mirror(true);
 											result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
 											poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
-															(byte)realBlendMode, roomVertices);
+															(byte)realBlendMode, (byte)materialType, roomVertices);
 											roomPolygons.Add(poly);
 											roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
 											roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
@@ -560,8 +566,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 								{
 									var result = _mergedStaticMeshTextureInfos[key];
 									var face = poly.IsTriangle ?
-										result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
-										result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
+										result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, 0, roomVertices) :
+										result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, 0, roomVertices);
 
 									roomPolygons.Add(face);
 								}
@@ -569,8 +575,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 								{
 									var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
 									var face = poly.IsTriangle ?
-										result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
-										result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
+										result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, 0, roomVertices) :
+										result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, 0, roomVertices);
 
 									roomPolygons.Add(face);
 									_mergedStaticMeshTextureInfos.Add(key, result);
@@ -727,7 +733,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 									}
 
 									var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-									var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices);
+									var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, 0, roomVertices);
 
 									roomPolygons.Add(tri);
 									roomVertices[index0].NormalHelpers.Add(new NormalHelper(tri));
@@ -1650,7 +1656,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				{
 					foreach (var bucket in room.Buckets)
 					{
-						if (bucket.Key.BlendMode == (byte)BlendMode.DynamicWaterSurface)
+						if (bucket.Key.MaterialType == (byte)TombEngineMaterialType.Water)
 						{
 							// Let's assume that all polygons share the same Y
 							int y = room.Info.YBottom + (int)room.Vertices[bucket.Value.Polygons[0].Indices[0]].Position.Y;
@@ -1877,12 +1883,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 			return tmp;
 		}
 
-		private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
+		private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, byte materialType, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
 		{
 			var material = new TombEngineMaterial
 			{
 				Texture = texture,
 				BlendMode = blendMode,
+				MaterialType = materialType,
 				Animated = animated,
 				AnimatedSequence = sequence
 			};
@@ -1920,7 +1927,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					}
 				}
 
-				var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, room.Buckets);
+				var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.MaterialType, poly.Animated, poly.AnimatedSequence, room.Buckets);
 
 				var texture = textures[poly.TextureId];
 
