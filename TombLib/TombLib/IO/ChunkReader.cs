@@ -12,7 +12,7 @@ namespace TombLib.IO
     public class ChunkReader : IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly BinaryReaderEx _reader;
+        private readonly BinaryReader _reader;
         private HashSet<ChunkId> _knownChunkList;
 
         public bool UnknownChunksFound { get; private set; }
@@ -39,18 +39,18 @@ namespace TombLib.IO
                 stream.Read(compressedBuffer, 0, compressedSize);
                 byte[] decompressedBuffer = ZLib.DecompressData(compressedBuffer);
 
-                _reader = new BinaryReaderEx(new MemoryStream(decompressedBuffer));
+                _reader = new BinaryReader(new MemoryStream(decompressedBuffer));
             }
             else
             {
-                _reader = new BinaryReaderEx(stream);
+                _reader = new BinaryReader(stream);
             }
         }
 
         public void Dispose()
         {}
 
-        public BinaryReaderEx Raw => _reader;
+        public BinaryReader Raw => _reader;
 
         // Raise exceptions if there were any problems
         private static string GetLocoationStr(long chunkStart, long chunkSize, ChunkId chunkID)

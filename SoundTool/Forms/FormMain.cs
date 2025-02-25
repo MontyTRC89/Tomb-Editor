@@ -374,7 +374,7 @@ namespace SoundTool
 
             try
             {
-                using (var writer = new BinaryWriterEx(new FileStream(mainSFXPath, FileMode.Create, FileAccess.Write, FileShare.None)))
+                using (var writer = new BinaryWriter(new FileStream(mainSFXPath, FileMode.Create, FileAccess.Write, FileShare.None)))
                 {
                     foreach (var sample in samples.Values)
                         writer.Write(sample.Data, 0, sample.Data.Length);
@@ -412,7 +412,7 @@ namespace SoundTool
             var sampleCount = 0;
             var soundCount  = 0;
 
-            using (var reader = new BinaryReaderEx(new FileStream(mainSFXPath, FileMode.Open, FileAccess.Read)))
+            using (var reader = new BinaryReader(new FileStream(mainSFXPath, FileMode.Open, FileAccess.Read)))
             {
                 try
                 {
@@ -438,7 +438,7 @@ namespace SoundTool
                                 reader.BaseStream.Position -= 8;
                                 var data = reader.ReadBytes(size + 8);
 
-                                using (var writer = new BinaryWriterEx(new FileStream(Path.Combine(samplePath, sample.FileName), FileMode.OpenOrCreate)))
+                                using (var writer = new BinaryWriter(new FileStream(Path.Combine(samplePath, sample.FileName), FileMode.OpenOrCreate)))
                                 {
                                     writer.WriteBlockArray(data);
                                     writer.Close();

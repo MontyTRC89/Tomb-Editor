@@ -15,7 +15,7 @@ namespace TombLib.LevelData.Compilers
             byte[] geometryDataBuffer;
             using (var geometryDataStream = new MemoryStream())
             {
-                var writer = new BinaryWriterEx(geometryDataStream); // Don't dispose
+                var writer = new BinaryWriter(geometryDataStream); // Don't dispose
                 ReportProgress(80, "Writing geometry data to memory buffer");
 
                 const int filler = 0;
@@ -159,7 +159,7 @@ namespace TombLib.LevelData.Compilers
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 
-            using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
+            using (var writer = new BinaryWriter(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
                 ReportProgress(90, "Writing final level");
                 writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });

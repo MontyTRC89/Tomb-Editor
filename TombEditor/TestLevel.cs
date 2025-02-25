@@ -443,7 +443,7 @@ namespace TombEditor
             this.fileName = fileName;
 
             FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BinaryReaderEx reader = new BinaryReaderEx(fileStream);
+            BinaryReader reader = new BinaryReader(fileStream);
             byte[] buffer;
 
             reader.ReadBlock(out Version);
@@ -461,7 +461,7 @@ namespace TombEditor
             ImageC img = ImageC.FromByteArray(Texture32, 256, (int)Texture32UncompressedSize / 262144 * 256);
             //img.Save("H:\\karnak.png");
 
-            BinaryWriterEx wrttext = new BinaryWriterEx(new FileStream("textures.raw", FileMode.Create, FileAccess.Write, FileShare.None));
+            BinaryWriter wrttext = new BinaryWriter(new FileStream("textures.raw", FileMode.Create, FileAccess.Write, FileShare.None));
             wrttext.WriteBlockArray(Texture32);
             wrttext.Flush();
             wrttext.Close();
@@ -488,12 +488,12 @@ namespace TombEditor
             stream.Write(buffer, 0, (int)LevelUncompressedSize);
             stream.Seek(0, SeekOrigin.Begin);
 
-            BinaryWriterEx wrt = new BinaryWriterEx(new FileStream("coastal.bin", FileMode.Create, FileAccess.Write, FileShare.None));
+            BinaryWriter wrt = new BinaryWriter(new FileStream("coastal.bin", FileMode.Create, FileAccess.Write, FileShare.None));
             wrt.Write(buffer, 0, (int)LevelUncompressedSize);
             wrt.Flush();
             wrt.Close();
 
-            BinaryWriterEx wrs = new BinaryWriterEx(new FileStream("samples." + outFileName + ".bin", FileMode.Create, FileAccess.Write, FileShare.None));
+            BinaryWriter wrs = new BinaryWriter(new FileStream("samples." + outFileName + ".bin", FileMode.Create, FileAccess.Write, FileShare.None));
             byte[] samples = reader.ReadBytes((int)(reader.BaseStream.Length - reader.BaseStream.Position));
             wrs.Write(samples);
             wrs.Flush();
@@ -501,7 +501,7 @@ namespace TombEditor
 
             reader.Close();
 
-            reader = new BinaryReaderEx(stream);
+            reader = new BinaryReader(stream);
             reader.ReadBlock(out Unused);
             reader.ReadBlock(out NumRooms);
 
@@ -640,7 +640,7 @@ namespace TombEditor
 
                 if (l == 209)
                 {
-                    BinaryWriterEx tmpwriter = new BinaryWriterEx(new FileStream("cleopal.msh", FileMode.Create, FileAccess.Write, FileShare.None));
+                    BinaryWriter tmpwriter = new BinaryWriter(new FileStream("cleopal.msh", FileMode.Create, FileAccess.Write, FileShare.None));
                     tmpwriter.WriteBlock(Meshes[l].Center);
                     tmpwriter.WriteBlock(Meshes[l].Radius);
                     tmpwriter.WriteBlock(Meshes[l].NumVertices);
@@ -798,7 +798,7 @@ namespace TombEditor
                         " (" + ObjectTextures[ii].Vertices[jj].Xpixel + ", " + ObjectTextures[ii].Vertices[jj].Ypixel + ")");
                 }
 
-                /* BinaryWriterEx tmpwriter2 = new BinaryWriterEx(new FileStream("test\\cleopal_" + ii + ".text", FileMode.Create, FileAccess.Write, FileShare.None));
+                /* BinaryWriter tmpwriter2 = new BinaryWriter(new FileStream("test\\cleopal_" + ii + ".text", FileMode.Create, FileAccess.Write, FileShare.None));
                  tmpwriter2.WriteBlock(ObjectTextures[ii]);
                  tmpwriter2.Flush();
                  tmpwriter2.Close();*/
@@ -829,7 +829,7 @@ namespace TombEditor
             aiw.Flush();
             aiw.Close();
 
-            BinaryWriterEx bwex = new BinaryWriterEx(new FileStream("sounds" + outFileName + ".sfx", FileMode.Create, FileAccess.Write, FileShare.None));
+            BinaryWriter bwex = new BinaryWriter(new FileStream("sounds" + outFileName + ".sfx", FileMode.Create, FileAccess.Write, FileShare.None));
 
             var numDemo = reader.ReadInt16();
             byte[] soundmap = reader.ReadBytes((numDemo != 0 ? numDemo * 2 : 740));
