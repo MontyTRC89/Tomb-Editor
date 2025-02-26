@@ -161,7 +161,7 @@ end
 -- !Description "Gradually change colour of a moveable over specified timespan."
 -- !Arguments "NewLine, Moveables, 70" "Color, 15, Moveable colour"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
--- !Arguments "NewLine, Numerical, [ 0 | 255 | 2 | 1 | 1 ], {1}, 15, Alpha"
+-- !Arguments "NewLine, Numerical, [ 0 | 255 | 2 | 1 | 1 ], {255}, 15, Alpha"
 
 LevelFuncs.Engine.Node.ChangeMoveableColourOverTimespan = function(moveableName, newColour, time, alpha)
 	newColour.a = alpha
@@ -279,7 +279,7 @@ end
 -- !Name "Change alpha of a static mesh"
 -- !Section "Timespan actions"
 -- !Description "Gradually change alpha of a static mesh over specified timespan."
--- !Arguments "NewLine, Statics, 70" "Numerical, [ 0 | 255 | 2 | 1 | 1 ], {0}, 15, Alpha"
+-- !Arguments "NewLine, Statics, 70" "Numerical, [ 0 | 255 | 2 | 1 | 1 ], {255}, 15, Alpha"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
 LevelFuncs.Engine.Node.ChangeStaticAlphaOverTimespan = function(staticName, alpha, time)
