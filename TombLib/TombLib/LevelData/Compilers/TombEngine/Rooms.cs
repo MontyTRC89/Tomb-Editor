@@ -393,8 +393,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 										if (room.Properties.Type == RoomType.Normal &&
 											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
-											vertexPositions[i+0].Y == vertexPositions[i+1].Y && 
-											vertexPositions[i+1].Y == vertexPositions[i+2].Y &&
+											vertexPositions[i + 0].Y == vertexPositions[i + 1].Y &&
+											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y &&
 											room.Sectors[x, z].FloorPortal != null &&
 											room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
 										{
@@ -1659,7 +1659,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 						if (bucket.Key.MaterialType == (byte)TombEngineMaterialType.Water)
 						{
 							// Let's assume that all polygons share the same Y
-							int y = room.Info.YBottom + (int)room.Vertices[bucket.Value.Polygons[0].Indices[0]].Position.Y;
+							int y = (int)room.Vertices[bucket.Value.Polygons[0].Indices[0]].Position.Y;
 							if (_waterPlanes.Any(p => p.Y == y))
 							{
 								bucket.Key.WaterPlaneIndex = _waterPlanes.IndexOf(p => p.Y == y);
