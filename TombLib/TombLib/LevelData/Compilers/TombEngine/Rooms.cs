@@ -338,8 +338,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 										if (room.Properties.Type == RoomType.Normal &&
 											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
-	room.Sectors[x, z].FloorPortal != null &&
-	room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
+											room.Sectors[x, z].FloorPortal != null &&
+											room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
+										{
+											materialType = TombEngineMaterialType.Water;
+										}
+
+										if (room.Properties.Type == RoomType.Water &&
+											(face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2) &&
+											room.Sectors[x, z].CeilingPortal != null &&
+											room.Sectors[x, z].CeilingPortal.AdjoiningRoom.Properties.Type == RoomType.Normal)
 										{
 											materialType = TombEngineMaterialType.Water;
 										}
@@ -397,6 +405,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y &&
 											room.Sectors[x, z].FloorPortal != null &&
 											room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
+										{
+											materialType = TombEngineMaterialType.Water;
+										}
+
+										if (room.Properties.Type == RoomType.Water &&
+											(face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2) &&
+											vertexPositions[i + 0].Y == vertexPositions[i + 1].Y &&
+											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y &&
+											room.Sectors[x, z].CeilingPortal != null &&
+											room.Sectors[x, z].CeilingPortal.AdjoiningRoom.Properties.Type == RoomType.Normal)
 										{
 											materialType = TombEngineMaterialType.Water;
 										}
