@@ -8,6 +8,7 @@ Tomb Editor:
  * Fixed exception on copying memo or imported geometry position to clipboard.
  * Fixed tigger export returning wrong ConditionNg mask for non-moveable objects.
  * Fixed texture errors with high texinfo count in TEN levels.
+ * Fixed few cases of new nodes spawning in the bottom left corner of a node graph.
  * Imported geometry object tag now also shows rotation and scale.
 
 WadTool:
