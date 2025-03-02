@@ -161,17 +161,15 @@ end
 -- !Description "Gradually change colour of a moveable over specified timespan."
 -- !Arguments "NewLine, Moveables, 70" "Color, 15, Moveable colour"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
--- !Arguments "NewLine, Numerical, [ 0 | 255 | 2 | 1 | 1 ], {255}, 15, Alpha"
 
 LevelFuncs.Engine.Node.ChangeMoveableColourOverTimespan = function(moveableName, newColour, time, alpha)
-	newColour.a = alpha
 	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 3, newColour, time, true) end
 end
 
--- !Name "Change alpha of a moveable"
+-- !Name "Change transparency of a moveable"
 -- !Section "Timespan actions"
--- !Description "Gradually change alpha of a moveable over specified timespan."
--- !Arguments "NewLine, Moveables, 70" "Numerical, [ 0 | 255 | 2 | 1 | 1 ], {255}, 15, Alpha"
+-- !Description "Gradually change transparency of a moveable over specified timespan."
+-- !Arguments "NewLine, Moveables, 70" "Numerical, [ 0 | 255 | 2 | 1 | 1 ], {255}, 15, Transparency"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
 LevelFuncs.Engine.Node.ChangeMoveableAlphaOverTimespan = function(moveableName, alpha, time)
@@ -269,17 +267,15 @@ end
 -- !Description "Gradually change colour of a static mesh over specified timespan."
 -- !Arguments "NewLine, Statics, 70" "Color, 15, Static mesh colour"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
--- !Arguments "NewLine, Numerical, [ 0 | 255 | 2 | 1 | 1 ], {255}, 15, Alpha"
 
 LevelFuncs.Engine.Node.ChangeStaticColourOverTimespan = function(staticName, newColour, time, alpha)
-	newColour.a = alpha
 	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 3, newColour, time, true) end
 end
 
--- !Name "Change alpha of a static mesh"
+-- !Name "Change transparency of a static mesh"
 -- !Section "Timespan actions"
--- !Description "Gradually change alpha of a static mesh over specified timespan."
--- !Arguments "NewLine, Statics, 70" "Numerical, [ 0 | 255 | 2 | 1 | 1 ], {255}, 15, Alpha"
+-- !Description "Gradually change transparency of a static mesh over specified timespan."
+-- !Arguments "NewLine, Statics, 70" "Numerical, [ 0 | 255 | 2 | 1 | 1 ], {255}, 15, Transparency"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
 LevelFuncs.Engine.Node.ChangeStaticAlphaOverTimespan = function(staticName, alpha, time)
