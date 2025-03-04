@@ -471,6 +471,16 @@ LevelFuncs.Engine.Node.SetMoveableColor = function(moveableName, color)
 	TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
 end
 
+-- !Name "Set moveable visibility"
+-- !Description "Sets moveable visibility"
+-- !Section "Moveable parameters"
+-- !Arguments "NewLine, Moveables, 80"
+-- !Arguments "Enumeration, [ Visible  | Invisible ], 20, Visibility"
+LevelFuncs.Engine.Node.SetMoveableVisibility = function(moveableName, state)
+	local visibility = (state == 0) and true or false
+	TEN.Objects.GetMoveableByName(moveableName):SetVisible(visibility)
+end
+
 -- !Name "Set specified moveable mesh visibility"
 -- !Section "Moveable parameters"
 -- !Description "Sets specified moveable mesh visibility."
