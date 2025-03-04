@@ -10,6 +10,7 @@ Tomb Editor:
  * Fixed texture errors with high texinfo count in TEN levels.
  * Fixed few cases of new nodes spawning in the bottom left corner of a node graph.
  * Imported geometry object tag now also shows rotation and scale.
+ * Added TEN nodes to change transparency of mvoeables and statics over time.
 
 WadTool:
  * Added option to cancel skeleton editor closing if a warning about unbalanced meshtree is thrown.
