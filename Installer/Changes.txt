@@ -4,6 +4,7 @@ Version 1.7.5
 Tomb Editor:
  * Added object transform window for precise editing of object position, rotation, and scale.
  * Added TEN nodes for using keypads.
+ * Added node to hide or show a moveable
  * Allow to move camera up and down with E and Q keys in fly mode.
  * Fixed exception on copying memo or imported geometry position to clipboard.
  * Fixed tigger export returning wrong ConditionNg mask for non-moveable objects.
