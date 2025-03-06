@@ -163,7 +163,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				FlippedRoom = room.AlternateRoom,
 				BaseRoom = room.AlternateBaseRoom,
 				ReverbInfo = room.Properties.Reverberation,
-				Flags = 0
+				Flags = 0,
+				FloorWaterPlaneIndex = -1,
+				CeilingWaterPlaneIndex = -1
 			};
 
 			if (!room.Alternated)
@@ -336,18 +338,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
 									{
 										var materialType = TombEngineMaterialType.Opaque;
 
-										if (room.Properties.Type == RoomType.Normal &&
-											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
+										if (/* TEST CONDITIONS
+										     * room.Properties.Type == RoomType.Normal &&
+											 * (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
+											 * room.Sectors[x, z].FloorPortal != null &&
+											 * room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water*/
+
 											room.Sectors[x, z].FloorPortal != null &&
-											room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
+											room.Sectors[x,z].FloorPortal.Effect == PortalEffectType.DynamicWaterSurface &&
+											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2)
+											)
 										{
 											materialType = TombEngineMaterialType.Water;
 										}
 
-										if (room.Properties.Type == RoomType.Water &&
-											(face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2) &&
+										if (/* room.Properties.Type == RoomType.Water &&
+											 * (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2) &&
+											 * room.Sectors[x, z].CeilingPortal != null &&
+											 * room.Sectors[x, z].CeilingPortal.AdjoiningRoom.Properties.Type == RoomType.Normal*/
+
 											room.Sectors[x, z].CeilingPortal != null &&
-											room.Sectors[x, z].CeilingPortal.AdjoiningRoom.Properties.Type == RoomType.Normal)
+											room.Sectors[x, z].CeilingPortal.Effect == PortalEffectType.DynamicWaterSurface &&
+											(face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
+											)
 										{
 											materialType = TombEngineMaterialType.Water;
 										}
@@ -399,22 +412,38 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 										var materialType = TombEngineMaterialType.Opaque;
 
-										if (room.Properties.Type == RoomType.Normal &&
+										if (/* TEST CONDITIONS
+										     * room.Properties.Type == RoomType.Normal &&
+											 * (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
+											 * vertexPositions[i + 0].Y == vertexPositions[i + 1].Y &&
+											 * vertexPositions[i + 1].Y == vertexPositions[i + 2].Y &&
+											 * room.Sectors[x, z].FloorPortal != null &&
+											 * room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water */
+
+											room.Sectors[x, z].FloorPortal != null &&
+											room.Sectors[x, z].FloorPortal.Effect == PortalEffectType.DynamicWaterSurface &&
 											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
 											vertexPositions[i + 0].Y == vertexPositions[i + 1].Y &&
-											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y &&
-											room.Sectors[x, z].FloorPortal != null &&
-											room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water)
+											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y
+											)
 										{
 											materialType = TombEngineMaterialType.Water;
 										}
 
-										if (room.Properties.Type == RoomType.Water &&
+										if (/* TEST CONDITIONS
+										     * room.Properties.Type == RoomType.Water &&
+											 * (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2) &&
+											 * vertexPositions[i + 0].Y == vertexPositions[i + 1].Y &&
+											 * vertexPositions[i + 1].Y == vertexPositions[i + 2].Y &&
+											 * room.Sectors[x, z].CeilingPortal != null &&
+											 * room.Sectors[x, z].CeilingPortal.AdjoiningRoom.Properties.Type == RoomType.Normal) */
+
+											room.Sectors[x, z].CeilingPortal != null &&
+											room.Sectors[x, z].CeilingPortal.Effect == PortalEffectType.DynamicWaterSurface &&
 											(face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2) &&
 											vertexPositions[i + 0].Y == vertexPositions[i + 1].Y &&
-											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y &&
-											room.Sectors[x, z].CeilingPortal != null &&
-											room.Sectors[x, z].CeilingPortal.AdjoiningRoom.Properties.Type == RoomType.Normal)
+											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y
+											)
 										{
 											materialType = TombEngineMaterialType.Water;
 										}
@@ -1633,10 +1662,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 						_mirrors.Add(mirror);
 					}
 				}
-				else if (
-					/* portal.Effect == PortalEffectType.DynamicWaterSurface */
-					room.Properties.Type == RoomType.Normal &&
-					portal.AdjoiningRoom.Properties.Type == RoomType.Water)
+				else if (portal.Effect == PortalEffectType.DynamicWaterSurface				
+					/*
+					 * TEST CODE condition
+					 * room.Properties.Type == RoomType.Normal &&
+					 * portal.AdjoiningRoom.Properties.Type == RoomType.Water
+					*/)
 				{
 					var waterPlane = new TombEngineWaterPlane();
 
@@ -1646,19 +1677,24 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					waterPlane.ZMin = portalVertices.Min(v => v.Z);
 					waterPlane.ZMax = portalVertices.Max(v => v.Z);
 
+					int waterPlaneIndex = 0;
+
 					if (_waterPlanes.Any(p => p.Y == waterPlane.Y))
 					{
 						var existingWaterPlane = _waterPlanes.FirstOrDefault(p => p.Y == waterPlane.Y);
+						waterPlaneIndex = _waterPlanes.IndexOf(p => p.Y == waterPlane.Y);
 
 						existingWaterPlane.XMin = Math.Min(existingWaterPlane.XMin, waterPlane.XMin);
 						existingWaterPlane.XMax = Math.Max(existingWaterPlane.XMax, waterPlane.XMax);
 						existingWaterPlane.ZMin = Math.Min(existingWaterPlane.ZMin, waterPlane.ZMin);
 						existingWaterPlane.ZMax = Math.Max(existingWaterPlane.ZMax, waterPlane.ZMax);
-
-						_waterPlanes[_waterPlanes.IndexOf(p => p.Y == waterPlane.Y)] = existingWaterPlane;
+		
+						_waterPlanes[waterPlaneIndex] = existingWaterPlane;
 					}
 					else
 					{
+						waterPlane.IsFloor = !isCeiling;
+
 						_waterPlanes.Add(waterPlane);
 					}
 				}
@@ -1680,7 +1716,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 							int y = (int)room.Vertices[bucket.Value.Polygons[0].Indices[0]].Position.Y;
 							if (_waterPlanes.Any(p => p.Y == y))
 							{
-								bucket.Key.WaterPlaneIndex = _waterPlanes.IndexOf(p => p.Y == y);
+								int waterPlaneIndex = _waterPlanes.IndexOf(p => p.Y == y);
+								bucket.Key.WaterPlaneIndex = waterPlaneIndex;
+								if (_waterPlanes[waterPlaneIndex].IsFloor)
+									room.FloorWaterPlaneIndex = waterPlaneIndex;
+								else
+									room.CeilingWaterPlaneIndex = waterPlaneIndex;
 							}
 						}
 					}

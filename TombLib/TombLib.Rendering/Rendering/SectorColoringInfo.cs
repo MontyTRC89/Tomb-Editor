@@ -313,7 +313,10 @@ namespace TombLib.Rendering
                                     (sector.FloorPortal != null && sector.FloorPortal.Effect == PortalEffectType.ClassicMirror) ||
                                     (sector.CeilingPortal != null && sector.CeilingPortal.Effect == PortalEffectType.ClassicMirror))
                                     return colorScheme.ColorPortalEffect;
-                                break;
+								if ((sector.FloorPortal != null && sector.FloorPortal.Effect == PortalEffectType.DynamicWaterSurface) ||
+								   (sector.CeilingPortal != null && sector.CeilingPortal.Effect == PortalEffectType.DynamicWaterSurface))
+									return colorScheme.ColorPortalEffect;
+								break;
                         }
                         break;
                     case SectorColoringShape.Hatch:

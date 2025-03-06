@@ -288,6 +288,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int WaterScheme;
         public int ReverbInfo;
         public int AlternateGroup;
+        public int FloorWaterPlaneIndex;
+        public int CeilingWaterPlaneIndex;
 
         // Helper data
         public List<TombEnginePolygon> Polygons;
@@ -318,9 +320,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
             writer.Write(WaterScheme);
             writer.Write(ReverbInfo);
             writer.Write(AlternateGroup);
+			writer.Write(FloorWaterPlaneIndex);
+			writer.Write(CeilingWaterPlaneIndex);
 
-            // Write static meshes
-            writer.WriteBlock(StaticMeshes.Count);
+			// Write static meshes
+			writer.WriteBlock(StaticMeshes.Count);
             foreach (var sm in StaticMeshes)
             {
                 writer.Write(sm.X);
@@ -709,5 +713,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int XMax;
         public int ZMin;
         public int ZMax;
+        public bool IsFloor;
 	}
 }
