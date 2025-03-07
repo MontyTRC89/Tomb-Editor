@@ -1,5 +1,4 @@
-﻿using ICSharpCode.AvalonEdit.Document;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Threading;
@@ -19,11 +18,13 @@ namespace TombLib.Scripting.Workers
 			set => _errorUpdateTimer.Interval = value;
 		}
 
+		public Version EngineVersion { get; set; }
+
 		#endregion Properties
 
 		#region Fields
 
-		private DispatcherTimer _errorUpdateTimer = new DispatcherTimer();
+		private DispatcherTimer _errorUpdateTimer = new();
 
 		private string _editorContent = string.Empty;
 
@@ -31,14 +32,15 @@ namespace TombLib.Scripting.Workers
 
 		#region Construction
 
-		public ErrorDetectionWorker() : this(null)
+		public ErrorDetectionWorker() : this(null, new Version(0, 0))
 		{ }
-		public ErrorDetectionWorker(IErrorDetector errorDetector) : this(errorDetector, new TimeSpan(500))
+		public ErrorDetectionWorker(IErrorDetector errorDetector, Version engineVersion) : this(errorDetector, engineVersion, new TimeSpan(500))
 		{ }
-		public ErrorDetectionWorker(IErrorDetector errorDetector, TimeSpan idleDelayInterval)
+		public ErrorDetectionWorker(IErrorDetector errorDetector, Version engineVersion, TimeSpan idleDelayInterval)
 		{
 			ErrorDetector = errorDetector;
 			IdleDelayInterval = idleDelayInterval;
+			EngineVersion = engineVersion;
 
 			_errorUpdateTimer.Tick += ErrorUpdateTimer_Tick;
 		}
@@ -54,7 +56,7 @@ namespace TombLib.Scripting.Workers
 			var errorDetector = (e.Argument as List<object>)[0] as IErrorDetector;
 			string editorContent = (e.Argument as List<object>)[1].ToString();
 
-			e.Result = errorDetector.FindErrors(new TextDocument(editorContent));
+			e.Result = errorDetector.FindErrors(editorContent, EngineVersion);
 		}
 
 		#endregion Override methods

@@ -39,6 +39,11 @@ namespace TombIDE.ProjectMaster
 				panel_ScriptSettings.Height -= 35;
 			}
 
+			if (targetProject.GameVersion is TRVersion.Game.TombEngine)
+			{
+				checkBox_GenerateSection.Text = "Generate Lua script";
+			}
+
 			if (_targetProject.GameVersion == TRVersion.Game.TR2)
 				numeric_SoundID.Value = 33;
 			else if (_targetProject.GameVersion == TRVersion.Game.TR3)

@@ -1,5 +1,6 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
+using System;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -17,7 +18,7 @@ namespace TombLib.Scripting.GameFlowScript
 	{
 		public override string DefaultFileExtension => ".txt";
 
-		public GameFlowEditor()
+		public GameFlowEditor(Version engineVersion) : base(engineVersion)
 		{
 			BindEventMethods();
 

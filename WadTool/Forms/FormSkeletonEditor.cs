@@ -592,7 +592,7 @@ namespace WadTool
             InsertNewBone(mesh, theNode);
         }
 
-        private void SaveChanges()
+        private bool SaveChanges()
         {
             // First check if skeleton is valid
             int numPop = 0;
@@ -607,16 +607,14 @@ namespace WadTool
             // inside the previous moveables in the list
             if (numPop > numPush)
             {
-                DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you have added more POP than PUSH.",
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you have added more POP than PUSH.",
+                                           "Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK;
             }
 
             if (treeSkeleton.Nodes.Count > 1)
             {
-                DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you must have a single bone as root.",
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you must have a single bone as root.",
+                                           "Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK;
             }
 
             // Insert new bones in moveable
@@ -631,6 +629,7 @@ namespace WadTool
             _moveable.Version = DataVersion.GetNext();
 
             _tool.ToggleUnsavedChanges();
+            return true;
         }
 
         private void treeSkeleton_MouseDown(object sender, MouseEventArgs e)
@@ -732,7 +731,9 @@ namespace WadTool
 
         private void butSaveChanges_Click(object sender, EventArgs e)
         {
-            SaveChanges();
+            if (!SaveChanges())
+                return;
+
             DialogResult = DialogResult.OK;
             Close();
         }

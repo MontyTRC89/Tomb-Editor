@@ -191,14 +191,14 @@
     <moveable id="210" name="Puzzle 2 (menu item)" hidden="true" />
     <moveable id="211" name="Puzzle 3 (menu item)" hidden="true" />
     <moveable id="212" name="Puzzle 4 (menu item)" hidden="true" />
-    <moveable id="213" name="Slot 1 empty" essential="false" /> 
-    <moveable id="214" name="Slot 2 empty" essential="false" /> 
-    <moveable id="215" name="Slot 3 empty" essential="false" /> 
-    <moveable id="216" name="Slot 4 empty" essential="false" /> 
-    <moveable id="217" name="Slot 1 full" /> 
-    <moveable id="218" name="Slot 2 full" /> 
-    <moveable id="219" name="Slot 3 full" /> 
-    <moveable id="220" name="Slot 4 full" /> 
+    <moveable id="213" name="Slot 1 empty" essential="false" ten="PUZZLE_HOLE1"/> 
+    <moveable id="214" name="Slot 2 empty" essential="false" ten="PUZZLE_HOLE2"/> 
+    <moveable id="215" name="Slot 3 empty" essential="false" ten="PUZZLE_HOLE3"/> 
+    <moveable id="216" name="Slot 4 empty" essential="false" ten="PUZZLE_HOLE4"/> 
+    <moveable id="217" name="Slot 1 full" ten="PUZZLE_DONE1" /> 
+    <moveable id="218" name="Slot 2 full" ten="PUZZLE_DONE2" /> 
+    <moveable id="219" name="Slot 3 full" ten="PUZZLE_DONE3" /> 
+    <moveable id="220" name="Slot 4 full" ten="PUZZLE_DONE4" /> 
     <moveable id="224" name="Key 1 (pickup)" essential="false" ten="KEY_ITEM1" />
     <moveable id="225" name="Key 2 (pickup)" essential="false" ten="KEY_ITEM2" />
     <moveable id="226" name="Key 3 (pickup)" essential="false" ten="KEY_ITEM3" />

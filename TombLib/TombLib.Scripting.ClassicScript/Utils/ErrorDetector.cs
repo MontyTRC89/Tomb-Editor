@@ -14,10 +14,8 @@ namespace TombLib.Scripting.ClassicScript.Utils
 	{
 		#region Public methods
 
-		/// <param name="content">TextDocument</param>
-		/// <returns>List&lt;ErrorLine&gt;</returns>
-		public object FindErrors(object content)
-			=> DetectErrorLines(content as TextDocument);
+		public object FindErrors(string editorContent, Version engineVersion)
+			=> DetectErrorLines(new TextDocument(editorContent));
 
 		#endregion Public methods
 

@@ -39,6 +39,7 @@ namespace TombLib.Graphics
 
             Position -= movementVec.Z * look;
             Position -= movementVec.X * right;
+            Position -= movementVec.Y * up;
         }
 
         public override void MoveCameraLinear(Vector3 movementVec)

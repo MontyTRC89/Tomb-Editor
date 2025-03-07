@@ -1,5 +1,8 @@
 <animations>
     <!--LARA  -->
+	<anim item="0" id="46" name="UNDERWATER_USE_PUZZLE" />
+	<anim item="0" id="99" name="UNDERWATER_USE_KEY" />
+	<anim item="0" id="280" name="TAKE_PUZZLE_UNDERWATER" />
     <anim item="0" id="343" name="PUSHABLE_OBJECT_PULL" />
     <anim item="0" id="345" name="PUSHABLE_OBJECT_PUSH" />
     <anim item="0" id="364" name="PUSHABLE_OBJECT_PUSH_EDGE_SLIP" />

@@ -41,7 +41,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void InitializePreview()
 		{
-			editorPreview = new GameFlowEditor
+			editorPreview = new GameFlowEditor(new Version(0, 0))
 			{
 				Text = "DESCRIPTION: Tomb Raider 2 Script File\n" +
 					   "\n" +

@@ -70,7 +70,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Construction
 
-		public ClassicScriptEditor()
+		public ClassicScriptEditor(Version engineVersion) : base(engineVersion)
 		{
 			InitializeBackgroundWorkers();
 			InitializeRenderers();
@@ -86,7 +86,7 @@ namespace TombLib.Scripting.ClassicScript
 			_autocompleteWorker.DoWork += AutocompleteWorker_DoWork;
 			_autocompleteWorker.RunWorkerCompleted += AutocompleteWorker_RunWorkerCompleted;
 
-			_errorDetectionWorker = new ErrorDetectionWorker(new ErrorDetector(), new TimeSpan(500));
+			_errorDetectionWorker = new ErrorDetectionWorker(new ErrorDetector(), new Version(1, 3, 0, 7), new TimeSpan(500));
 			_errorDetectionWorker.RunWorkerCompleted += ErrorWorker_RunWorkerCompleted;
 		}
 

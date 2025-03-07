@@ -100,6 +100,12 @@ namespace TombEditor.Controls.Panel3D
             if (filter.IsKeyPressed(Keys.D))
                 newCameraPos.X -= cameraMoveSpeed;
 
+            if (filter.IsKeyPressed(Keys.E))
+                newCameraPos.Y += cameraMoveSpeed;
+
+            if (filter.IsKeyPressed(Keys.Q))
+                newCameraPos.Y -= cameraMoveSpeed;
+
             Camera.MoveCameraPlane(newCameraPos);
 
             var room = GetCurrentRoom();

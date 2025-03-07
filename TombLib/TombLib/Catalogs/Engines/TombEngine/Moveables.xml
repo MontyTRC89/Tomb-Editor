@@ -794,6 +794,7 @@
     <moveable id="1086" name="CORPSE" />
     <moveable id="1087" name="WRAITH_TRAP" />
 	<moveable id="1088" name="WATERFALL_EMITTER" />
+	<moveable id="1089" name="FIREFLY_EMITTER" />
     <moveable id="1100" name="MESHSWAP1" />
     <moveable id="1101" name="MESHSWAP2" />
     <moveable id="1102" name="MESHSWAP3" />

@@ -82,6 +82,8 @@ namespace TombLib.Scripting.Bases
 		public string BracketsClosingString { get; set; } = "]";
 		public string QuotesClosingString { get; set; } = "\"";
 
+		public Version EngineVersion { get; set; } = new Version(0, 0);
+
 		#endregion Properties
 
 		#region Configuration
@@ -117,7 +119,7 @@ namespace TombLib.Scripting.Bases
 
 		#region Construction
 
-		public TextEditorBase()
+		public TextEditorBase(Version engineVersion)
 		{
 			SetNewDefaultSettings();
 
@@ -126,6 +128,8 @@ namespace TombLib.Scripting.Bases
 			InitializeRenderers();
 
 			BindEventMethods();
+
+			EngineVersion = engineVersion;
 		}
 
 		private void SetNewDefaultSettings()

@@ -47,6 +47,8 @@ namespace TombLib.Scripting.Interfaces
 
 		string DefaultFileExtension { get; }
 
+		Version EngineVersion { get; set; }
+
 		#endregion Properties
 
 		#region Methods

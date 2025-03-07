@@ -64,7 +64,7 @@ namespace TombIDE.ProjectMaster
 			}
 
 			Version engineVersion = _ide.Project.GetCurrentEngineVersion();
-			string engineVersionString = engineVersion is null ? "Unknown" : engineVersion.ToString();
+			string engineVersionString = engineVersion == new Version(0, 0) ? "Unknown" : engineVersion.ToString();
 			label_EngineVersion.Text = $"Engine Version: {engineVersionString}";
 
 			Version latestVersion = _ide.Project.GetLatestEngineVersion();
@@ -88,7 +88,7 @@ namespace TombIDE.ProjectMaster
 						if (engineVersion.Major <= 1 && engineVersion.Minor <= 0 && engineVersion.Build <= 8)
 						{
 							button_Update.Enabled = false;
-							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
+							button_Update.Text = "Cannot Auto-Update engine. Current version is too old.";
 							button_Update.Width = 300;
 						}
 					}
@@ -97,11 +97,14 @@ namespace TombIDE.ProjectMaster
 					{
 						button_Update.Visible = true;
 
-						// 3.0 is the first version that supports auto-updating
-						if (engineVersion.Major <= 2)
+						// 3.0 is the first version that supports auto-updating - 4.8 introduced breaking changes
+						if (engineVersion.Major <= 4 && engineVersion.Minor <= 7)
 						{
+							button_Update.Text = engineVersion.Major <= 2
+								? "Cannot Auto-Update engine. Current version is too old."
+								: "Cannot Auto-Update engine. TR1X 4.8 introduced breaking changes, which require manual migration.";
+
 							button_Update.Enabled = false;
-							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
 							button_Update.Width = 300;
 						}
 					}
@@ -177,6 +180,15 @@ namespace TombIDE.ProjectMaster
 			var newVersion  = _ide.Project.GetLatestEngineVersion();
 			var prevVersion = _ide.Project.GetCurrentEngineVersion();
 
+			// 1.0.9 is the first version that supports auto-updating
+			if (prevVersion.Major <= 1 && prevVersion.Minor <= 0 && prevVersion.Build <= 8)
+			{
+				MessageBox.Show(this, "Cannot Auto-Update engine. Current version is too old.",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				return;
+			}
+
 			// In 1.6 onwards we need to upgrade settings file.
 			var settingsUpdate16 = (newVersion.Major == 1 && newVersion.Minor >= 6 && prevVersion.Major == 1 && prevVersion.Minor <= 6 && prevVersion <= newVersion);
 
@@ -197,7 +209,6 @@ namespace TombIDE.ProjectMaster
 				This action cannot be reverted.";
 
 			DialogResult result = MessageBox.Show(this, message.TrimIndentation(),
-
 				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
 			if (result is not DialogResult.Yes)
@@ -259,6 +270,17 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTR1X()
 		{
+			var prevVersion = _ide.Project.GetCurrentEngineVersion();
+
+			// 4.8 had breaking changes
+			if (prevVersion.Major <= 4 && prevVersion.Minor <= 7)
+			{
+				MessageBox.Show(this, "Cannot Auto-Update engine. TR1X 4.8 introduced breaking changes, which require manual migration.",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				return;
+			}
+
 			DialogResult result = MessageBox.Show(this,
 				"This update will replace the following directories and files:\n\n" +
 

@@ -2,10 +2,8 @@
 using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.Bases;
-using TombLib.Scripting.Extensions;
 using TombLib.Scripting.Tomb1Main.Parsers;
 using TombLib.Scripting.Tomb1Main.Resources;
 
@@ -38,6 +36,17 @@ namespace TombLib.Scripting.Tomb1Main.Workers
 			{
 				lineText = LineParser.RemoveComments(lineText);
 				string levelName = regex.Replace(lineText, string.Empty).Trim().TrimEnd(',').Trim('"'); // Removes "title":
+
+				if (!string.IsNullOrWhiteSpace(levelName) && levelName.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+					return new DarkTreeNode(levelName);
+			}
+
+			regex = new Regex(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
+			Match regexMatch = regex.Match(lineText);
+
+			if (regexMatch.Success)
+			{
+				string levelName = regexMatch.Groups[1].Value.Trim(); // Extracts the level name from the comment
 
 				if (!string.IsNullOrWhiteSpace(levelName) && levelName.Contains(Filter, StringComparison.OrdinalIgnoreCase))
 					return new DarkTreeNode(levelName);

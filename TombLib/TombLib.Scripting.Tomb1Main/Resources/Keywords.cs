@@ -2,6 +2,19 @@ namespace TombLib.Scripting.Tomb1Main.Resources
 {
 	public static class Keywords
 	{
+		public static readonly string[] Collections = new string[]
+		{
+			"cutscenes",
+			"demos",
+			"fmvs",
+			"injections",
+			"item_drops", // TR1 only
+			"levels",
+			"object_ids",
+			"sequence",
+			"strings"
+		};
+
 		public static readonly string[] Values = new string[]
 		{
 			"true",
@@ -11,228 +24,134 @@ namespace TombLib.Scripting.Tomb1Main.Resources
 
 		public static readonly string[] Constants = new string[]
 		{
-			// TR1X.json5
-			"always",
-			"blue",
-			"blue2",
-			"bottom-center",
-			"bottom-left",
-			"bottom-right",
-			"default",
-			"flashing-only",
-			"flashing-or-default",
-			"gold",
-			"gold2",
-			"green",
-			"grey",
-			"jpg",
-			"never",
-			"pc",
-			"pink",
-			"png",
-			"ps1",
-			"psx",
-			"red",
-			"silver",
-			"top-center",
-			"top-left",
-			"top-right",
+			// Game flow commands
+			"exit_game",
+			"exit_to_title",
+			"level_complete",
+			"load_saved_game",
+			"noop",
+			"play_cutscene",
+			"play_demo",
+			"play_fmv",
+			"play_level",
+			"restart_level", // TR1 only
+			"select_level",
+			"story_so_far", // TR1 only
 
-			// Gameflow
+			// Level property values
+			"bonus",
+			"current",
+			"dummy",
 			"gym",
 			"normal",
-			"cutscene",
-			"current",
-			"play_fmv",
-			"start_game",
-			"loop_game",
-			"stop_game",
-			"level_stats",
-			"exit_to_level",
-			"exit_to_title",
-			"exit_to_cine",
-			"remove_scions",
-			"remove_guns",
-			"give_item",
-			"fix_pyramid_secret",
-			"play_synced_audio",
+
+			// Sequence types
 			"display_picture",
+			"flip_map", // TR1 only
+			"give_item",
+			"level_stats",
+			"loading_screen", // TR1 only
+			"loop_game",
+			"mesh_swap", // TR1 only
+			"play_cutscene",
+			"play_music",
+			"remove_ammo",
+			"remove_medipacks",
+			"remove_scions", // TR1 only
+			"remove_weapons",
+			"set_cutscene_angle",
+			"set_cutscene_pos", // TR1 only
+			"setup_bacon_lara", // TR1 only
 			"total_stats",
-			"start_cine",
+
+			// Unknown - Were removed at some point?
+			"fix_pyramid_secret",
+			"loop_cine",
+			"play_synced_audio",
+			"remove_guns",
+			"set_cam_angle",
 			"set_cam_x",
 			"set_cam_z",
-			"set_cam_angle",
-			"loop_cine",
+			"start_cine",
 			"stop_cine",
-			"mesh_swap",
-			"flip_map"
-		};
-
-		public static readonly string[] Collections = new string[]
-		{
-			"injections",
-			"item_drops",
-			"levels",
-			"sequence",
-			"strings"
+			"stop_game",
 		};
 
 		public static readonly string[] Properties = new string[]
 		{
-			// TR1X.json5
-			"airbar_color",
-			"airbar_location",
-			"airbar_showing_mode",
-			"anisotropy_filter",
-			"bar_scale",
-			"brightness",
-			"camera_speed",
-			"change_pierre_spawn",
-			"cntlr_layout",
-			"cntlr_layout_1",
-			"cntlr_layout_2",
-			"cntlr_layout_3",
-			"disable_cine",
-			"disable_demo",
-			"disable_fmv",
-			"disable_healing_between_levels",
-			"disable_magnums",
-			"disable_medpacks",
-			"disable_music_in_inventory",
-			"disable_music_in_menu",
-			"disable_shotgun",
-			"disable_trex_collision",
-			"disable_uzis",
-			"enable_3d_pickups",
-			"enable_bilinear_filter",
-			"enable_braid",
-			"enable_buffering",
-			"enable_cheats",
-			"enable_cine",
-			"enable_compass_stats",
-			"enable_console",
-			"enable_deaths_counter",
-			"enable_demo",
-			"enable_detailed_stats",
-			"enable_eidos_logo",
-			"enable_enemy_healthbar",
-			"enable_enhanced_look",
-			"enable_enhanced_saves",
-			"enable_fade_effects",
-			"enable_fmv",
-			"enable_fullscreen",
-			"enable_jump_twists",
-			"enable_lean_jumping",
-			"enable_maximized",
-			"enable_music_in_inventory",
-			"enable_music_in_menu",
-			"enable_numeric_keys",
-			"enable_perspective_filter",
-			"enable_pitched_sounds",
-			"enable_ps_uzi_sfx",
-			"enable_round_shadow",
-			"enable_shotgun_flash",
-			"enable_smooth_bars",
-			"enable_swing_cancel",
-			"enable_timer_in_inventory",
-			"enable_total_stats",
-			"enable_tr2_jumping",
-			"enable_tr3_sidesteps",
-			"enable_uw_roll",
-			"enable_vsync",
-			"enable_xbox_one_controller",
-			"enabled_inverted_look",
-			"enemy_healthbar_color",
-			"enemy_healthbar_location",
-			"fbo_filter",
-			"fix_alligator_ai",
-			"fix_bear_ai",
-			"fix_bridge_collision",
-			"fix_descending_glitch",
-			"fix_floor_data_issues",
-			"fix_item_rots",
-			"fix_pyramid_secret_trigger",
-			"fix_qwop_glitch",
-			"fix_secrets_killing_music",
-			"fix_shotgun_targeting",
-			"fix_speeches_killing_music",
-			"fix_texture_issues",
-			"fix_tihocan_secret_sound",
-			"fix_wall_jump_glitch",
-			"fov_value",
-			"fov_vertical",
-			"healthbar_color",
-			"healthbar_location",
-			"healthbar_showing_mode",
-			"hi_res",
-			"layout",
-			"layout_1",
-			"layout_2",
-			"layout_3",
-			"load_current_music",
-			"load_music_triggers",
-			"maximum_save_slots",
-			"menu_style",
-			"music_volume",
-			"new_game_plus_unlock",
-			"render_mode",
-			"resolution_height",
-			"resolution_width",
-			"restore_ps1_enemies",
-			"revert_to_pistols",
-			"screenshot_format",
-			"sound_volume",
-			"start_lara_hitpoints",
-			"text_scale",
-			"texture_filter",
-			"walk_to_items",
-			"window_height",
-			"window_width",
-			"window_x",
-			"window_y",
-
-			// Gameflow
-			"audio_id",
+			// Global properties
 			"convert_dropped_guns",
-			"demo",
 			"demo_delay",
-			"display_time",
-			"draw_distance_fade",
-			"draw_distance_max",
-			"enable_game_modes",
-			"enable_save_crystals",
-			"enemy_num",
-			"file",
-			"fmv_path",
-			"force_disable_game_modes",
-			"force_enable_save_crystals",
-			"inherit_injections",
-			"key1",
-			"key2",
-			"key3",
-			"key4",
-			"lara_type",
-			"level_id",
+			"draw_distance_fade", // TR1 only
+			"draw_distance_max", // TR1 only
+			"enable_killer_pushblocks",
+			"enable_tr2_item_drops",
+			"enforced_config",
 			"main_menu_picture",
-			"mesh_id",
-			"music",
-			"object_id",
-			"object_ids",
-			"object1_id",
-			"object2_id",
-			"picture_path",
-			"puzzle1",
-			"puzzle2",
-			"puzzle3",
-			"puzzle4",
-			"quantity",
 			"savegame_fmt_bson",
 			"savegame_fmt_legacy",
-			"title",
+			"water_color", // TR1 only
+
+			// Level properties
+			"enemy_num",
+			"inherit_injections",
+			"lara_type", // TR1 only
+			"music_track",
+			"path",
 			"type",
-			"unobtainable_pickups",
+			"unobtainable_kills", // TR1 only
+			"unobtainable_pickups", // TR1 only
+			"unobtainable_secrets", // TR1 only
+
+			// Sequence properties
+			"anchor_room",
+			"cutscene_id",
+			"display_time",
+			"fade_in_time",
+			"fade_out_time",
+			"fmv_id",
+			"mesh_id",
+			"object_id",
+			"object1_id",
+			"object2_id",
+			"quantity",
 			"value",
-			"water_color"
+			"x",
+			"y",
+			"z",
+
+			// Other properties
+			"game_strings",
+			"name",
+			"objects",
+
+			// Unknown - Were removed at some point?
+			"audio_id",
+			"demo",
+			"enable_game_modes",
+			"enable_save_crystals",
+			"force_disable_game_modes",
+			"force_enable_save_crystals",
+			"title",
+		};
+
+		public static readonly RemovedKeyword[] RemovedConstants = new RemovedKeyword[]
+		{
+			new("cutscene", "Instead, the cutscenes need to be placed in the top-level \"cutscenes\" array."),
+			new("exit_to_cine"),
+			new("exit_to_level", "Instead, use \"level_complete\". No parameter needed."),
+			new("start_game"),
+		};
+
+		public static readonly RemovedKeyword[] RemovedProperties = new RemovedKeyword[]
+		{
+			new("file", "Instead, use the \"path\" property for every level."),
+			new("fmv_path", "Instead, use the \"fmv_id\" property."),
+			new("level_id"),
+			new("music", "Instead, use the \"music_track\" property for every level."),
+			new("picture_path", "Instead, use the \"background_path\" property for \"total_stats\", or the \"path\" property for everything else."),
 		};
 	}
+
+	public record struct RemovedKeyword(string Keyword, string Message = "");
 }
