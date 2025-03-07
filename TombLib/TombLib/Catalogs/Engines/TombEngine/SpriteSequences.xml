@@ -3,6 +3,7 @@
     <sprite_sequence id="1354" name="DEFAULT_SPRITES" />
     <sprite_sequence id="1355" name="MISC_SPRITES" />
     <sprite_sequence id="1356" name="CUSTOM_SPRITES" />
+	<sprite_sequence id="1357" name="SNOW_SPRITE" />
     <sprite_sequence id="1360" name="FIRE_SPRITES" />
     <sprite_sequence id="1361" name="SMOKE_SPRITES" />
     <sprite_sequence id="1362" name="SPARK_SPRITE" />
@@ -29,4 +30,5 @@
 	<sprite_sequence id="1383" name="CUSTOM_AMMO_GRAPHIC" />
 	<sprite_sequence id="1384" name="DIARY_SPRITES" />
 	<sprite_sequence id="1385" name="DIARY_ENTRY_SPRITES" />
+	
 </sprite_sequences>
