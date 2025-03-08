@@ -133,7 +133,7 @@ namespace TombLib.Wad
                 foreach (var animation in moveable.Value.Animations)
                     foreach (var command in animation.AnimCommands)
                         if (command.Type == WadAnimCommandType.PlaySound)
-                            if ((command.Parameter2 & 0x3FFF) == id)
+                            if ((command.Parameter2) == id)
                                 if (!moveables.Contains(moveable.Value))
                                     moveables.Add(moveable.Value);
             return moveables;
@@ -186,7 +186,10 @@ namespace TombLib.Wad
                 Statics[(WadStaticId)newId] = st;
             }
             else if (newId is WadSpriteSequenceId)
-                SpriteSequences[(WadSpriteSequenceId)newId] = (WadSpriteSequence)wadObject;
+            {
+                var sp = ((WadSpriteSequence)wadObject).Clone();
+                SpriteSequences[(WadSpriteSequenceId)newId] = sp;
+            }
             else
                 throw new ArgumentException("Argument not of a valid type.");
         }

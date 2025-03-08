@@ -216,10 +216,10 @@
 			button_Update.Checked = false;
 			button_Update.Dock = System.Windows.Forms.DockStyle.Left;
 			button_Update.Image = Properties.Resources.actions_refresh_16;
-			button_Update.Location = new System.Drawing.Point(453, 25);
-			button_Update.Margin = new System.Windows.Forms.Padding(6, 25, 0, 25);
+			button_Update.Location = new System.Drawing.Point(453, 20);
+			button_Update.Margin = new System.Windows.Forms.Padding(6, 20, 0, 20);
 			button_Update.Name = "button_Update";
-			button_Update.Size = new System.Drawing.Size(80, 30);
+			button_Update.Size = new System.Drawing.Size(80, 40);
 			button_Update.TabIndex = 9;
 			button_Update.Text = "Update...";
 			button_Update.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -235,7 +235,7 @@
 			button_Publish.Name = "button_Publish";
 			button_Publish.Size = new System.Drawing.Size(40, 40);
 			button_Publish.TabIndex = 10;
-			toolTip.SetToolTip(button_Publish, "Create a \"Ready To Publish\" game archive...");
+			toolTip.SetToolTip(button_Publish, "Create a \"Ready To Publish\" Game Archive...");
 			button_Publish.Click += button_Publish_Click;
 			// 
 			// LevelManager

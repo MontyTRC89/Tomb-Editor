@@ -87,6 +87,8 @@ namespace TombLib.Scripting.ClassicScript
 		public bool CanUndo => _undoStack.Count > 0;
 		public bool CanRedo => _redoStack.Count > 0;
 
+		public Version EngineVersion { get; set; } = new Version(0, 0);
+
 		#endregion Properties
 
 		#region Configuration

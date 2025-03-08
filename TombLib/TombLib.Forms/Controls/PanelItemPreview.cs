@@ -88,6 +88,9 @@ namespace TombLib.Controls
             if (!AnimatePreview && !(CurrentObject is WadSpriteSequence))
                 return;
 
+            if (Form.ActiveForm != this.FindForm())
+                return;
+
             if (CurrentObject is WadSpriteSequence)
             {
                 _frameTimeout++;

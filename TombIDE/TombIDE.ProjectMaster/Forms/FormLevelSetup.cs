@@ -39,6 +39,11 @@ namespace TombIDE.ProjectMaster
 				panel_ScriptSettings.Height -= 35;
 			}
 
+			if (targetProject.GameVersion is TRVersion.Game.TombEngine)
+			{
+				checkBox_GenerateSection.Text = "Generate Lua script";
+			}
+
 			if (_targetProject.GameVersion == TRVersion.Game.TR2)
 				numeric_SoundID.Value = 33;
 			else if (_targetProject.GameVersion == TRVersion.Game.TR3)
@@ -148,7 +153,15 @@ namespace TombIDE.ProjectMaster
 					level.Settings.TenLuaScriptFile = Path.Combine(LevelSettings.VariableCreate(VariableType.ScriptDirectory), "Levels", LevelSettings.VariableCreate(VariableType.LevelName) + ".lua");
 
 				level.Settings.LoadDefaultSoundCatalog();
-				level.Settings.LoadDefaultWad();
+
+				string defaultWadPath = _targetProject.GameVersion switch
+				{
+					TRVersion.Game.TombEngine => Path.Combine(_targetProject.DirectoryPath, "Assets", "Wads", "TombEngine.wad2"),
+					_ => null
+				};
+
+				if (defaultWadPath is not null)
+					level.Settings.LoadWad(defaultWadPath);
 
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 

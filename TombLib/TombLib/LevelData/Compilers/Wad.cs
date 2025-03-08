@@ -403,49 +403,35 @@ namespace TombLib.LevelData.Compilers
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
                     {
+                        // Ignore TEN animcommands for legacy engines.
+                        if (command.Type > WadAnimCommandType.FlipEffect)
+                            continue;
+
+                        _animCommands.Add((short)command.Type);
+
                         switch (command.Type)
                         {
                             case WadAnimCommandType.SetPosition:
-                                _animCommands.Add(0x01);
-
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
                                 _animCommands.Add(command.Parameter3);
-
                                 break;
 
                             case WadAnimCommandType.SetJumpDistance:
-                                _animCommands.Add(0x02);
-
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
-
                                 break;
 
                             case WadAnimCommandType.EmptyHands:
-                                _animCommands.Add(0x03);
-
                                 break;
 
                             case WadAnimCommandType.KillEntity:
-                                _animCommands.Add(0x04);
-
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                _animCommands.Add(0x05);
-
-                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(command.Parameter2 & 0xCFFF))); // Clear TEN-exclusive sound condition flags.
-
-                                break;
-
                             case WadAnimCommandType.FlipEffect:
-                                _animCommands.Add(0x06);
-
-                                _animCommands.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(command.Parameter2);
-
+                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(unchecked((short)(command.Parameter2 | command.GetLegacyBitmask())));
                                 break;
                         }
                     }
@@ -872,7 +858,7 @@ namespace TombLib.LevelData.Compilers
 
             using (var ms = new MemoryStream())
             {
-                using (var bw = new BinaryWriterEx(ms))
+                using (var bw = new BinaryWriter(ms))
                 {
                     // Write soundmap to level file
                     for (int i = 0; i < _finalSoundMap.Length; i++)

@@ -12,7 +12,7 @@ namespace TombLib.LevelData.Compilers
     {
         private Dictionary<ushort, ushort> _remappedTiles;
 
-        private void WriteNgHeader(BinaryWriterEx writer, string ngVersion)
+        private void WriteNgHeader(BinaryWriter writer, string ngVersion)
         {
             CollectNgRemappedTiles();
 
@@ -190,7 +190,7 @@ namespace TombLib.LevelData.Compilers
             WriteNgVersion(writer, version);
         }
 
-        private void WriteNgChunkPluginsNames(BinaryWriterEx writer)
+        private void WriteNgChunkPluginsNames(BinaryWriter writer)
         {
             writer.Write((ushort)(3 + ((_plugins.Count - 1) * 44)));
             writer.Write((ushort)0x8047);

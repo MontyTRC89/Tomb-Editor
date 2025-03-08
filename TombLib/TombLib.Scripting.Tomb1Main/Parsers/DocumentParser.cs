@@ -33,6 +33,17 @@ namespace TombLib.Scripting.Tomb1Main.Parsers
 
 				if (Regex.Replace(lineText, Patterns.LevelProperty, string.Empty, RegexOptions.IgnoreCase).Trim().TrimEnd(',').Trim('"').StartsWith(levelName))
 					return line;
+
+				var regex = new Regex(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
+				Match regexMatch = regex.Match(lineText);
+
+				if (regexMatch.Success)
+				{
+					string matchedLevelName = regexMatch.Groups[1].Value.Trim(); // Extracts the level name from the comment
+
+					if (matchedLevelName.Equals(levelName))
+						return line;
+				}
 			}
 
 			return null;

@@ -167,6 +167,7 @@ namespace TombIDE.ProjectMaster.Forms
 				Path.Combine(engineDirectory, "load.bmp"),
 				Path.Combine(engineDirectory, "splash.bmp"),
 				Path.Combine(engineDirectory, "patches.bin"),
+				Path.Combine(engineDirectory, "patches.fpd"),
 				Path.Combine(engineDirectory, "tomb4.exe"),
 				Path.Combine(engineDirectory, "splash.xml")
 			};

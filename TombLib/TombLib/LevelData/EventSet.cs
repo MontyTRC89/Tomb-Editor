@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
@@ -24,13 +25,13 @@ namespace TombLib.LevelData
         OnSaveGame,
         OnLevelStart,
         OnLevelEnd,
-        OnUseItem
+        OnUseItem,
+        OnFreeze
     }
 
     public class Event : ICloneable, IEquatable<Event>
     {
         private const int _noCallCounter = -1;
-        private const int _callStateMask = short.MaxValue;
 
         public EventSetMode Mode = EventSetMode.NodeEditor;
         public string Function { get; set; } = string.Empty;
@@ -57,6 +58,7 @@ namespace TombLib.LevelData
 
             evt.Argument = Argument;
             evt.Function = Function;
+            evt.Enabled = Enabled;
             evt.CallCounter = CallCounter;
             evt.Mode = Mode;
             evt.NodePosition = NodePosition;
@@ -72,6 +74,7 @@ namespace TombLib.LevelData
                 Mode == other.Mode &&
                 Function == other.Function &&
                 Argument == other.Argument &&
+                Enabled == other.Enabled &&
                 CallCounter == other.CallCounter &&
                 NodePosition == other.NodePosition &&
                 Nodes.Count == other.Nodes.Count &&
@@ -91,7 +94,7 @@ namespace TombLib.LevelData
             return trimmedName + "_" + belongedSet.Events.First(e => e.Value == this).Key.ToString();
         }
 
-        public void Write(BinaryWriterEx writer, List<EventSet> eventSets)
+        public void Write(BinaryWriter writer, List<EventSet> eventSets)
         {
             writer.Write((int)Mode);
 
@@ -108,7 +111,8 @@ namespace TombLib.LevelData
             }
 
             int callCount = (CallCounter != 0 ? CallCounter : _noCallCounter);
-            writer.Write(Enabled ? callCount : callCount - _callStateMask);
+            writer.Write(callCount);
+            writer.Write(Enabled);
         }
     }
 
@@ -148,7 +152,7 @@ namespace TombLib.LevelData
             return base.Equals(other) && (Activators == other.Activators);
         }
 
-        public new void Write(BinaryWriterEx writer, List<EventSet> eventSets)
+        public new void Write(BinaryWriter writer, List<EventSet> eventSets)
         {
             writer.Write(Name);
             writer.Write((int)Activators);
@@ -166,7 +170,7 @@ namespace TombLib.LevelData
                 Events.Add(eventType, new Event());
         }
 
-        public new void Write(BinaryWriterEx writer, List<EventSet> eventSets)
+        public new void Write(BinaryWriter writer, List<EventSet> eventSets)
         {
             writer.Write(Name);
             base.Write(writer, eventSets);
@@ -209,7 +213,7 @@ namespace TombLib.LevelData
             return set;
         }
 
-        public void Write(BinaryWriterEx writer, List<EventSet> eventSets)
+        public void Write(BinaryWriter writer, List<EventSet> eventSets)
         {
             var nonEmptyEvents = Events.Where(e => !e.Value.Empty).ToList();
 

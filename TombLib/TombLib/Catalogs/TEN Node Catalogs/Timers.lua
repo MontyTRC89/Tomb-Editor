@@ -243,7 +243,7 @@ LevelFuncs.Engine.Node.SetLooping = function(name, looping)
     end
 end
 
--- !Name "Get remaining time (in seconds) in console."
+-- !Name "Get remaining time (in seconds) in console"
 -- !Conditional "False"
 -- !Description "Prints on console the remaining time value (in seconds) of a specific timer.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"
@@ -262,7 +262,7 @@ LevelFuncs.Engine.Node.GetRemainingTime = function(name)
     end
 end
 
--- !Name "Get total time (in seconds) in console."
+-- !Name "Get total time (in seconds) in console"
 -- !Conditional "False"
 -- !Description "Prints on console the total time value (in seconds) of a specific timer.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"

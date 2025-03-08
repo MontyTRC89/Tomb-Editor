@@ -59,6 +59,39 @@ namespace TombLib.Wad
             return true;
         }
 
+        public static List<string> GetFormattedList(Level level, TRVersion.Game version)
+        {
+            var result = new List<string>();
+
+            var defaultSoundList = TrCatalog.GetAllSounds(version);
+            var soundCatalogPresent = level != null && level.Settings.GlobalSoundMap.Count > 0;
+
+            var maxKnownSound = -1;
+
+            foreach (var sound in defaultSoundList)
+                if (sound.Key > maxKnownSound) maxKnownSound = (int)sound.Key;
+
+            if (soundCatalogPresent)
+                foreach (var sound in level.Settings.GlobalSoundMap)
+                    if (sound.Id > maxKnownSound) maxKnownSound = sound.Id;
+
+            for (int i = 0; i <= maxKnownSound; i++)
+            {
+                var lbl = i.ToString().PadLeft(4, '0') + ": ";
+
+                if (soundCatalogPresent && level.Settings.GlobalSoundMap.Any(item => item.Id == i))
+                    lbl += level.Settings.GlobalSoundMap.First(item => item.Id == i).Name;
+                else if (defaultSoundList.Any(item => item.Key == i))
+                    lbl += defaultSoundList.First(item => item.Key == i).Value;
+                else
+                    lbl += "Unknown sound";
+
+                result.Add(lbl);
+            }
+
+            return result;
+        }
+
         public WadSoundInfo TryGetSoundInfo(int id)
         {
             foreach (var soundInfo in SoundInfos)
@@ -86,7 +119,7 @@ namespace TombLib.Wad
 
             // Read version
             int version = 129;
-            using (var readerVersion = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var readerVersion = new BinaryReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
                 version = readerVersion.ReadInt32();
 
             // Read samples
@@ -102,7 +135,7 @@ namespace TombLib.Wad
             var soundInfos = new List<WadSoundInfo>();
 
             var sfxPath = Path.GetDirectoryName(filename) + "\\" + Path.GetFileNameWithoutExtension(filename) + ".sfx";
-            using (var readerSfx = new BinaryReaderEx(new FileStream(sfxPath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var readerSfx = new BinaryReader(new FileStream(sfxPath, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 // Try to guess the WAD version
                 readerSfx.BaseStream.Seek(740, SeekOrigin.Begin);
@@ -173,7 +206,7 @@ namespace TombLib.Wad
         {
             if (System.IO.Path.GetExtension(path).Equals(".sfx", StringComparison.InvariantCultureIgnoreCase))
             {
-                using (var reader = new BinaryReaderEx(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                using (var reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     var riffSignature = reader.ReadUInt32();
                     if (riffSignature == 0x46464952)

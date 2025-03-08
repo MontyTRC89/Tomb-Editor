@@ -3,9 +3,9 @@ using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.ClassicScript.Resources;
-using TombLib.Scripting.Objects;
 
 namespace TombLib.Scripting.ClassicScript.Utils
 {
@@ -16,17 +16,17 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			var data = new List<ICompletionData>();
 
 			foreach (string keyword in Keywords.OldCommands)
-				data.Add(new CompletionData(keyword + "="));
+				data.Add(new CSCompletionData(keyword + "=", CompletionType.OldCommand));
 
 			foreach (string keyword in Keywords.NewCommands)
-				data.Add(new CompletionData(keyword + "="));
+				data.Add(new CSCompletionData(keyword + "=", CompletionType.NewCommand));
 
 			foreach (string keyword in Keywords.Sections)
-				data.Add(new CompletionData("[" + keyword + "]"));
+				data.Add(new CSCompletionData("[" + keyword + "]", CompletionType.Section));
 
-			data.Add(new CompletionData("#INCLUDE "));
-			data.Add(new CompletionData("#DEFINE "));
-			data.Add(new CompletionData("#FIRST_ID "));
+			data.Add(new CSCompletionData("#INCLUDE ", CompletionType.Directive));
+			data.Add(new CSCompletionData("#DEFINE ", CompletionType.Directive));
+			data.Add(new CSCompletionData("#FIRST_ID ", CompletionType.Directive));
 
 			return data;
 		}
@@ -61,12 +61,12 @@ namespace TombLib.Scripting.ClassicScript.Utils
 
 				foreach (string mnemonicConstant in MnemonicData.AllConstantFlags)
 					if (mnemonicConstant.StartsWith(mnemonicPrefix, StringComparison.OrdinalIgnoreCase))
-						completionData.Add(new CompletionData(mnemonicConstant));
+						completionData.Add(new CSCompletionData(mnemonicConstant, CompletionType.Constant));
 			}
 			else if (currentArgument.ToUpper().Contains("ENABLED") || currentArgument.ToUpper().Contains("DISABLED"))
 			{
-				completionData.Add(new CompletionData("ENABLED"));
-				completionData.Add(new CompletionData("DISABLED"));
+				completionData.Add(new CSCompletionData("ENABLED", CompletionType.Constant));
+				completionData.Add(new CSCompletionData("DISABLED", CompletionType.Constant));
 			}
 
 			return completionData;

@@ -24,6 +24,13 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\Icons\Constant.png" />
+    <None Remove="Resources\Icons\Directive.png" />
+    <None Remove="Resources\Icons\NewCommand.png" />
+    <None Remove="Resources\Icons\OldCommand.png" />
+    <None Remove="Resources\Icons\Section.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -107,5 +114,12 @@
   <ItemGroup>
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.101" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Constant.png" />
+    <Resource Include="Resources\Icons\Directive.png" />
+    <Resource Include="Resources\Icons\NewCommand.png" />
+    <Resource Include="Resources\Icons\OldCommand.png" />
+    <Resource Include="Resources\Icons\Section.png" />
   </ItemGroup>
 </Project>

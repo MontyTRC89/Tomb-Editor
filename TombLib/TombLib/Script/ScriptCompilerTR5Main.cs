@@ -331,7 +331,7 @@ namespace TombLib.Script
 
             using (var stream = File.OpenWrite(scriptPath))
             {
-                var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(stream));
+                var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriter(stream));
 
                 // Main flags
                 chunkIO.WriteChunk(TombEngineFlags, () =>

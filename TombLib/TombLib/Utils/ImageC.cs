@@ -110,6 +110,7 @@ namespace TombLib.Utils
         public static ImageC Red { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0xFF, 0xFF });
         public static ImageC Transparent { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0 });
         public static ImageC Black { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0xFF }) { FileName = "Black colour" };
+        public static uint AlphaBits = ColorToUint(new ColorC(0, 0, 0, 255));
         public const int PixelSize = 4;
 
         public string FileName { get; set; }
@@ -295,23 +296,23 @@ namespace TombLib.Utils
 
         public int DataSize => Width * Height * PixelSize;
 
-        private static readonly byte[] Tga2_Signature = new byte[18] { 84, 82, 85, 69, 86, 73, 83, 73, 79, 78, 45, 88, 70, 73, 76, 69, 46, 0 };
+        private static readonly Memory<byte> Tga2_Signature = new byte[18] { 84, 82, 85, 69, 86, 73, 83, 73, 79, 78, 45, 88, 70, 73, 76, 69, 46, 0 };
 
-        private static bool IsTga(byte[] startBytes)
+        private static bool IsTga(Span<byte> startBytes)
         {
             // Inspired by the FreeType tga image validation routine
             // "Validate" in PluginTARGE.cpp
 
-            if (startBytes.SequenceEqual(Tga2_Signature))
+            if (startBytes.SequenceEqual(Tga2_Signature.Span))
                 return true;
 
             byte colorMapType = startBytes[1];
             byte imageType = startBytes[2];
-            ushort colorMapFirstEntry = BitConverter.ToUInt16(startBytes, 3);
-            ushort colorMapLength = BitConverter.ToUInt16(startBytes, 5);
+            ushort colorMapFirstEntry = BitConverter.ToUInt16(startBytes.Slice(3));
+            ushort colorMapLength = BitConverter.ToUInt16(startBytes.Slice(5));
             byte colorMapSize = startBytes[7];
-            ushort width = BitConverter.ToUInt16(startBytes, 12);
-            ushort height = BitConverter.ToUInt16(startBytes, 14);
+            ushort width = BitConverter.ToUInt16(startBytes.Slice(12));
+            ushort height = BitConverter.ToUInt16(startBytes.Slice(14));
             byte pixelDepth = startBytes[16];
 
             if (colorMapType != 0 && colorMapType != 1)
@@ -391,8 +392,8 @@ namespace TombLib.Utils
 
             // Read some start bytes
             long startPos = stream.Position;
-            byte[] startBytes = new byte[18];
-            stream.Read(startBytes, 0, 18);
+            Span<byte> startBytes = stackalloc byte[18];
+            stream.Read(startBytes);
             stream.Position = startPos;
 
             // Detect special image types
@@ -486,10 +487,10 @@ namespace TombLib.Utils
             return result;
         }
 
-        public static ImageC FromByteArray(byte[] data, int width, int height)
+        public static ImageC FromByteArray(Span<byte> data, int width, int height)
         {
             ImageC result = CreateNew(width, height);
-            Array.Copy(data, result._data, data.Length);
+            data.CopyTo(result._data);
             return result;
         }
 
@@ -579,7 +580,7 @@ namespace TombLib.Utils
                 intPtrAction(new IntPtr(dataPtr));
         }
 
-        public unsafe void CopyFrom(int toX, int toY, ImageC fromImage, int fromX, int fromY, int width, int height)
+        public unsafe void CopyFrom(int toX, int toY, in ImageC fromImage, int fromX, int fromY, int width, int height)
         {
             // Check coordinates
             if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
@@ -613,7 +614,7 @@ namespace TombLib.Utils
         /// uint's are platform dependet representation of the color.
         /// They should stay private inside ImageC to prevent abuse.
         /// </summary>
-        private static unsafe uint ColorToUint(ColorC color)
+        private static unsafe uint ColorToUint(in ColorC color)
         {
             byte* byteArray = stackalloc byte[4];
             byteArray[0] = color.B;
@@ -623,7 +624,7 @@ namespace TombLib.Utils
             return *(uint*)byteArray;
         }
 
-        public unsafe void ReplaceColor(ColorC from, ColorC to)
+        public unsafe void ReplaceColor(in ColorC from, in ColorC to)
         {
             uint fromUint = ColorToUint(from);
             uint toUint = ColorToUint(to);
@@ -650,8 +651,6 @@ namespace TombLib.Utils
                 X + width > Width || Y + height > Height)
                 return result;
 
-            uint alphaBits = ColorToUint(new ColorC(0, 0, 0, 255));
-
             // Check for alpha
 
             fixed (void* ptr = _data)
@@ -665,8 +664,8 @@ namespace TombLib.Utils
                         uint* linePtr = toPtrOffseted + y * Width;
                         for (int x = 0; x < width; ++x)
                         {
-                            var alpha = (linePtr[x] & alphaBits);
-                            if (alpha == alphaBits)
+                            var alpha = (linePtr[x] & AlphaBits);
+                            if (alpha == AlphaBits)
                                 continue;
 
                             if (alpha > 0)
@@ -682,7 +681,7 @@ namespace TombLib.Utils
                     {
                         uint* linePtr = toPtrOffseted + y * Width;
                         for (int x = 0; x < width; ++x)
-                            if ((linePtr[x] & alphaBits) != alphaBits)
+                            if ((linePtr[x] & AlphaBits) != AlphaBits)
                                 return BlendMode.AlphaTest;
                     }
                 }
@@ -697,12 +696,12 @@ namespace TombLib.Utils
             return HasAlpha(version, 0, 0, Width, Height);
         }
 
-        public BlendMode HasAlpha(TRVersion.Game version, Rectangle2 rect)
+        public BlendMode HasAlpha(TRVersion.Game version, in Rectangle2 rect)
         {
             return HasAlpha(version, (int)rect.Start.X, (int)rect.Start.Y, (int)rect.Width, (int)rect.Height);
         }
 
-        public void CopyFrom(int toX, int toY, ImageC fromImage)
+        public void CopyFrom(int toX, int toY, in ImageC fromImage)
         {
             CopyFrom(toX, toY, fromImage, 0, 0, fromImage.Width, fromImage.Height);
         }
@@ -717,7 +716,7 @@ namespace TombLib.Utils
             return _data;
         }
 
-        public unsafe byte[] ToByteArray(Rectangle2 rect) =>
+        public unsafe byte[] ToByteArray(in Rectangle2 rect) =>
             ToByteArray((int)rect.X0, (int)rect.Y0, (int)rect.Width, (int)rect.Height);
 
         public unsafe byte[] ToByteArray(int fromX, int fromY, int width, int height)
@@ -771,7 +770,7 @@ namespace TombLib.Utils
             Array.Copy(_data, 0, destination, offset, _data.GetLength(0));
         }
 
-        public static ImageC SobelFilter(ImageC source, double strength, double level, SobelFilterType type, int posX, int posY, int w, int h)
+        public static ImageC SobelFilter(in ImageC source, double strength, double level, SobelFilterType type, int posX, int posY, int w, int h)
         {
             ImageC result = ImageC.CreateNew(w, h);
 
@@ -825,7 +824,7 @@ namespace TombLib.Utils
             return FromSystemDrawingBitmapMatchingPixelFormat(resizedBitmap);
         }
 
-        public static ImageC GrayScaleFilter(ImageC source, bool invert, int posX, int posY, int w, int h)
+        public static ImageC GrayScaleFilter(in ImageC source, bool invert, int posX, int posY, int w, int h)
         {
             ImageC result = ImageC.CreateNew(w, h);
 
