@@ -220,3 +220,20 @@ end
 LevelFuncs.Engine.Node.GetEndLevelReason = function(reason)
 	return LevelFuncs.Engine.Node.GetGameStatus(reason) == Flow.GetGameStatus()
 end
+
+-- !Name "If freeze mode is..."
+-- !Conditional "True"
+-- !Description "Check if the game is in specific freeze mode."
+-- !Section "Game flow"
+-- !Arguments "Enumeration, 25, [ None | Full | Spectator | Player ], Freeze mode"
+LevelFuncs.Engine.Node.TestFreezeMode = function(mode)
+	return LevelFuncs.Engine.Node.GetFreezeMode(mode) == Flow.GetFreezeMode()
+end
+
+-- !Name "Set freeze mode"
+-- !Section "Game flow"
+-- !Description "Set current freeze mode. Any values except 'None' will freeze the game in different ways."
+-- !Arguments "Enumeration, 25, [ None | Full | Spectator | Player ], Freeze mode"
+LevelFuncs.Engine.Node.SetFreezeMode = function(mode)
+	TEN.Flow.SetFreezeMode(LevelFuncs.Engine.Node.GetFreezeMode(mode))
+end

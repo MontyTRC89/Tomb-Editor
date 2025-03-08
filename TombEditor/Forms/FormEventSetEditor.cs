@@ -302,11 +302,15 @@ namespace TombEditor.Forms
                     break;
 
                 case EventType.OnLoop:
-                    toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus. \nThis event performs continuously.");
+                    toolTip.SetToolTip(cbEvents, "Occurs every game frame, except menus and freeze mode. \nThis event performs continuously.");
                     break;
 
                 case EventType.OnUseItem:
                     toolTip.SetToolTip(cbEvents, "Occurs when an item was selected and used in inventory.");
+                    break;
+
+                case EventType.OnFreeze:
+                    toolTip.SetToolTip(cbEvents, "Occurs when game is running in a freeze mode. \nThis event performs continuously.");
                     break;
             }
         }
@@ -426,7 +430,6 @@ namespace TombEditor.Forms
 
             cbEvents.SelectedItem = newEventSet.LastUsedEvent;
             triggerManager.Event = newEventSet.Events[newEventSet.LastUsedEvent];
-            cbEnableEvent.Checked = newEventSet.Events[newEventSet.LastUsedEvent].Enabled;
 
             tbName.Text = newEventSet.Name;
 
@@ -644,7 +647,6 @@ namespace TombEditor.Forms
             {
                 SelectedSet.LastUsedEvent = (EventType)cbEvents.SelectedItem;
                 triggerManager.Event = SelectedSet.Events[SelectedSet.LastUsedEvent];
-                cbEnableEvent.Checked = SelectedSet.Events[SelectedSet.LastUsedEvent].Enabled;
             }
         }
 
@@ -709,11 +711,6 @@ namespace TombEditor.Forms
         {
             _instance.DetectInAdjacentRooms = cbAdjacentRooms.Checked;
             UpdateVolume();
-        }
-
-        private void cbEnableEvent_CheckedChanged(object sender, EventArgs e)
-        {
-            SelectedSet.Events[SelectedSet.LastUsedEvent].Enabled = cbEnableEvent.Checked;
         }
     }
 }

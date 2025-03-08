@@ -124,7 +124,7 @@ namespace TombEditor.Controls
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            _movementTimer.Dispose();
+            _movementTimer?.Dispose();
             _insertionContourLineData = null;
             _currentContextMenu?.Dispose();
             base.Dispose(disposing);

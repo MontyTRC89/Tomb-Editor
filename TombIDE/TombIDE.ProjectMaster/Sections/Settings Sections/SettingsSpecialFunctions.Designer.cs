@@ -35,7 +35,7 @@
 			button_BuildArchive.Name = "button_BuildArchive";
 			button_BuildArchive.Size = new System.Drawing.Size(624, 25);
 			button_BuildArchive.TabIndex = 1;
-			button_BuildArchive.Text = "Create a \"Ready To Publish\" game archive...";
+			button_BuildArchive.Text = "Create a \"Ready To Publish\" Game Archive...";
 			button_BuildArchive.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			button_BuildArchive.Click += button_BuildArchive_Click;
 			// 

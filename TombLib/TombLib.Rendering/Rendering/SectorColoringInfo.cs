@@ -23,6 +23,7 @@ namespace TombLib.Rendering
         Floor,
         Ceiling,
         ForceFloorSolid,
+        PortalEffect,
         Beetle,
         TriggerTriggerer
     }
@@ -47,6 +48,7 @@ namespace TombLib.Rendering
         public SectorColoringShape Shape;
         public Vector4 Color;
     }
+
     public class ColorScheme
     {
         public Vector4 ColorSelection;
@@ -57,6 +59,7 @@ namespace TombLib.Rendering
         public Vector4 ColorFlipRoom;
         public Vector4 ColorPortal;
         public Vector4 ColorPortalFace;
+        public Vector4 ColorPortalEffect;
         public Vector4 ColorFloor;
         public Vector4 ColorBorderWall;
         public Vector4 ColorWall;
@@ -86,6 +89,7 @@ namespace TombLib.Rendering
             ColorFlipRoom         = new Vector4(35, 35, 35, 255) / 255.0f,
             ColorPortal           = new Vector4(0, 0, 0, 255) / 255.0f,
             ColorPortalFace       = new Vector4(255, 255, 0, 255) / 255.0f,
+            ColorPortalEffect     = new Vector4(100, 170, 255, 255) / 255.0f,
             ColorFloor            = new Vector4(0, 190, 190, 255) / 255.0f,
             ColorBorderWall       = new Vector4(128, 128, 128, 255) / 255.0f,
             ColorWall             = new Vector4(0, 160, 0, 255) / 255.0f,
@@ -107,60 +111,62 @@ namespace TombLib.Rendering
 
         public static readonly ColorScheme Gray = new ColorScheme()
         {
-            ColorSelection        =  new Vector4(201, 173, 173, 255) / 255.0f,
-            ColorIllegalSlope     =  new Vector4(157, 150, 145, 255) / 255.0f,
-            ColorSlideDirection   =  new Vector4(185, 187, 196, 255) / 255.0f,
-            Color3DBackground     =  new Vector4(82, 82, 82, 255) / 255.0f,
-            Color2DBackground     =  new Vector4(120, 120, 120, 255) / 255.0f,
-            ColorFlipRoom         =  new Vector4(35, 35, 35, 255) / 255.0f,
-            ColorPortal           =  new Vector4(0, 0, 0, 255) / 255.0f,
-            ColorPortalFace       =  new Vector4(172, 172, 172, 255) / 255.0f,
-            ColorFloor            =  new Vector4(144, 144, 144, 255) / 255.0f,
-            ColorBorderWall       =  new Vector4(128, 128, 128, 255) / 255.0f,
-            ColorWall             =  new Vector4(105, 105, 105, 255) / 255.0f,
-            ColorWallLower        =  new Vector4(77, 77, 77, 255) / 255.0f,
-            ColorWallUpper        =  new Vector4(78, 78, 78, 255) / 255.0f,
-            ColorTrigger          =  new Vector4(124, 101, 122, 255) / 255.0f,
-            ColorMonkey           =  new Vector4(209, 201, 197, 255) / 255.0f,
-            ColorClimb            =  new Vector4(205, 194, 194, 255) / 255.0f,
-            ColorBox              =  new Vector4(100, 100, 100, 255) / 255.0f,
-            ColorDeath            =  new Vector4(136, 123, 123, 255) / 255.0f,
-            ColorNotWalkable      =  new Vector4(169, 168, 179, 255) / 255.0f,
-            ColorBeetle           =  new Vector4(100, 100, 100, 255) / 255.0f,
-            ColorTriggerTriggerer =  new Vector4(217, 220, 221, 255) / 255.0f,
-            ColorForceSolidFloor  =  new Vector4(134, 145, 145, 255) / 255.0f,
-            Color2DRoomsAbove     =  new Vector4(122, 120, 131, 255) / 255.0f,
-            Color2DRoomsBelow     =  new Vector4(86, 86, 88, 255) / 255.0f,
-            Color2DRoomsMoved     =  new Vector4(216, 216, 216, 255) / 255.0f
+            ColorSelection        = new Vector4(201, 173, 173, 255) / 255.0f,
+            ColorIllegalSlope     = new Vector4(157, 150, 145, 255) / 255.0f,
+            ColorSlideDirection   = new Vector4(185, 187, 196, 255) / 255.0f,
+            Color3DBackground     = new Vector4(82, 82, 82, 255) / 255.0f,
+            Color2DBackground     = new Vector4(120, 120, 120, 255) / 255.0f,
+            ColorFlipRoom         = new Vector4(35, 35, 35, 255) / 255.0f,
+            ColorPortal           = new Vector4(0, 0, 0, 255) / 255.0f,
+            ColorPortalFace       = new Vector4(172, 172, 172, 255) / 255.0f,
+            ColorPortalEffect     = new Vector4(180, 180, 180, 255) / 255.0f,
+            ColorFloor            = new Vector4(144, 144, 144, 255) / 255.0f,
+            ColorBorderWall       = new Vector4(128, 128, 128, 255) / 255.0f,
+            ColorWall             = new Vector4(105, 105, 105, 255) / 255.0f,
+            ColorWallLower        = new Vector4(77, 77, 77, 255) / 255.0f,
+            ColorWallUpper        = new Vector4(78, 78, 78, 255) / 255.0f,
+            ColorTrigger          = new Vector4(124, 101, 122, 255) / 255.0f,
+            ColorMonkey           = new Vector4(209, 201, 197, 255) / 255.0f,
+            ColorClimb            = new Vector4(205, 194, 194, 255) / 255.0f,
+            ColorBox              = new Vector4(100, 100, 100, 255) / 255.0f,
+            ColorDeath            = new Vector4(136, 123, 123, 255) / 255.0f,
+            ColorNotWalkable      = new Vector4(169, 168, 179, 255) / 255.0f,
+            ColorBeetle           = new Vector4(100, 100, 100, 255) / 255.0f,
+            ColorTriggerTriggerer = new Vector4(217, 220, 221, 255) / 255.0f,
+            ColorForceSolidFloor  = new Vector4(134, 145, 145, 255) / 255.0f,
+            Color2DRoomsAbove     = new Vector4(122, 120, 131, 255) / 255.0f,
+            Color2DRoomsBelow     = new Vector4(86, 86, 88, 255) / 255.0f,
+            Color2DRoomsMoved     = new Vector4(216, 216, 216, 255) / 255.0f
         };
 
         public static readonly ColorScheme Pastel = new ColorScheme()
         {
-            ColorSelection         =  new Vector4(255, 120, 120, 255) / 255.0f,
-            ColorIllegalSlope      =  new Vector4(255, 171, 79, 255) / 255.0f,
-            ColorSlideDirection    =  new Vector4(206, 158, 222, 255) / 255.0f,
-            Color3DBackground      =  new Vector4(120, 120, 120, 255) / 255.0f,
-            Color2DBackground      =  new Vector4(172, 172, 172, 255) / 255.0f,
-            ColorFlipRoom          =  new Vector4(35, 35, 35, 255) / 255.0f,
-            ColorPortal            =  new Vector4(0, 0, 0, 255) / 255.0f,
-            ColorPortalFace        =  new Vector4(247, 236, 98, 255) / 255.0f,
-            ColorFloor             =  new Vector4(121, 185, 219, 255) / 255.0f,
-            ColorBorderWall        =  new Vector4(128, 128, 128, 255) / 255.0f,
-            ColorWall              =  new Vector4(137, 189, 125, 255) / 255.0f,
-            ColorWallLower         =  new Vector4(91, 164, 81, 255) / 255.0f,
-            ColorWallUpper         =  new Vector4(158, 219, 155, 255) / 255.0f,
-            ColorTrigger           =  new Vector4(216, 175, 210, 255) / 255.0f,
-            ColorMonkey            =  new Vector4(255, 187, 151, 255) / 255.0f,
-            ColorClimb             =  new Vector4(255, 153, 145, 255) / 255.0f,
-            ColorBox               =  new Vector4(100, 100, 100, 255) / 255.0f,
-            ColorDeath             =  new Vector4(209, 50, 54, 255) / 255.0f,
-            ColorNotWalkable       =  new Vector4(91, 91, 255, 255) / 255.0f,
-            ColorBeetle            =  new Vector4(100, 100, 100, 255) / 255.0f,
-            ColorTriggerTriggerer  =  new Vector4(186, 228, 252, 255) / 255.0f,
-            ColorForceSolidFloor   =  new Vector4(0, 170, 170, 255) / 255.0f,
-            Color2DRoomsAbove      =  new Vector4(50, 50, 200, 255) / 255.0f,
-            Color2DRoomsBelow      =  new Vector4(85, 85, 85, 255) / 255.0f,
-            Color2DRoomsMoved      =  new Vector4(230, 230, 20, 255) / 255.0f
+            ColorSelection         = new Vector4(255, 120, 120, 255) / 255.0f,
+            ColorIllegalSlope      = new Vector4(255, 171, 79, 255) / 255.0f,
+            ColorSlideDirection    = new Vector4(206, 158, 222, 255) / 255.0f,
+            Color3DBackground      = new Vector4(120, 120, 120, 255) / 255.0f,
+            Color2DBackground      = new Vector4(172, 172, 172, 255) / 255.0f,
+            ColorFlipRoom          = new Vector4(35, 35, 35, 255) / 255.0f,
+            ColorPortal            = new Vector4(0, 0, 0, 255) / 255.0f,
+            ColorPortalFace        = new Vector4(247, 236, 98, 255) / 255.0f,
+            ColorPortalEffect      = new Vector4(170, 200, 255, 255) / 255.0f,
+            ColorFloor             = new Vector4(121, 185, 219, 255) / 255.0f,
+            ColorBorderWall        = new Vector4(128, 128, 128, 255) / 255.0f,
+            ColorWall              = new Vector4(137, 189, 125, 255) / 255.0f,
+            ColorWallLower         = new Vector4(91, 164, 81, 255) / 255.0f,
+            ColorWallUpper         = new Vector4(158, 219, 155, 255) / 255.0f,
+            ColorTrigger           = new Vector4(216, 175, 210, 255) / 255.0f,
+            ColorMonkey            = new Vector4(255, 187, 151, 255) / 255.0f,
+            ColorClimb             = new Vector4(255, 153, 145, 255) / 255.0f,
+            ColorBox               = new Vector4(100, 100, 100, 255) / 255.0f,
+            ColorDeath             = new Vector4(209, 50, 54, 255) / 255.0f,
+            ColorNotWalkable       = new Vector4(91, 91, 255, 255) / 255.0f,
+            ColorBeetle            = new Vector4(100, 100, 100, 255) / 255.0f,
+            ColorTriggerTriggerer  = new Vector4(186, 228, 252, 255) / 255.0f,
+            ColorForceSolidFloor   = new Vector4(0, 170, 170, 255) / 255.0f,
+            Color2DRoomsAbove      = new Vector4(50, 50, 200, 255) / 255.0f,
+            Color2DRoomsBelow      = new Vector4(85, 85, 85, 255) / 255.0f,
+            Color2DRoomsMoved      = new Vector4(230, 230, 20, 255) / 255.0f
         };
 
         public static readonly ColorScheme Dark = new ColorScheme()
@@ -173,6 +179,7 @@ namespace TombLib.Rendering
             ColorFlipRoom          = new Vector4(31, 31, 31, 255) / 255.0f,
             ColorPortal            = new Vector4(0, 0, 0, 255) / 255.0f,
             ColorPortalFace        = new Vector4(125, 115, 72, 255) / 255.0f,
+            ColorPortalEffect      = new Vector4(10, 100, 200, 255) / 255.0f,
             ColorFloor             = new Vector4(0, 66, 66, 255) / 255.0f,
             ColorBorderWall        = new Vector4(78, 78, 78, 255) / 255.0f,
             ColorWall              = new Vector4(52, 88, 37, 255) / 255.0f,
@@ -298,6 +305,14 @@ namespace TombLib.Rendering
                             case SectorColoringType.TriggerTriggerer:
                                 if (bottomSector.HasFlag(SectorFlags.TriggerTriggerer))
                                     return colorScheme.ColorTriggerTriggerer;
+                                break;
+                            case SectorColoringType.PortalEffect:
+                                if (!room.Level.IsTombEngine)
+                                    break;
+                                if ((sector.WallPortal != null && sector.WallPortal.Effect == PortalEffectType.ClassicMirror) ||
+                                    (sector.FloorPortal != null && sector.FloorPortal.Effect == PortalEffectType.ClassicMirror) ||
+                                    (sector.CeilingPortal != null && sector.CeilingPortal.Effect == PortalEffectType.ClassicMirror))
+                                    return colorScheme.ColorPortalEffect;
                                 break;
                         }
                         break;

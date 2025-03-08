@@ -108,7 +108,7 @@
     <moveable id="123" name="Slot 2 full" ten="PUZZLE_DONE_2" />
     <moveable id="124" name="Slot 3 full" ten="PUZZLE_DONE_3" />
     <moveable id="125" name="Slot 4 full" ten="PUZZLE_DONE_4" />
-    <moveable id="127" name="Pickup 1" id2="126" ten="PICKUP_ITEM1" />
+    <moveable id="127" name="Lead bar" id2="126" ten="PICKUP_ITEM1" />
     <moveable id="128" name="Midas gold touch" essential="false" />
     <moveable id="133" name="Key 1" id2="129" essential="false" ten="KEY_ITEM1" />
     <moveable id="134" name="Key 2" id2="130" essential="false" ten="KEY_ITEM2" />
@@ -118,9 +118,11 @@
     <moveable id="138" name="Lock 2" essential="false" ten="KEY_HOLE2" />
     <moveable id="139" name="Lock 3" essential="false" ten="KEY_HOLE3" />
     <moveable id="140" name="Lock 4" essential="false" ten="KEY_HOLE4" />
-    <moveable id="145" name="Complete Scion" id2="141" ten="KEY_ITEM1" />
-    <moveable id="146" name="Complete Scion" id2="142" ten="KEY_ITEM2" />
+    <moveable id="145" name="Complete Scion" ten="KEY_ITEM1" />
+    <moveable id="146" name="Complete Scion" ten="KEY_ITEM2" />
     <moveable id="147" name="Scion Holder" essential="false" ten="ANIMATING103" />
+    <moveable id="148" name="Pickup 1" id2="141" essential="false" ten="PICKUP_ITEM1" />
+    <moveable id="149" name="Pickup 2" id2="142" essential="false" ten="PICKUP_ITEM2" />
     <moveable id="150" name="Scion Piece" id2="143" id3="144" ten="KEY_ITEM_COMBO1" />
     <moveable id="161" name="Centaur statue" essential="false" ten="ANIMATING106" />
     <moveable id="162" name="Shack suspended from wire rope" essential="false" ten="ANIMATING104" />

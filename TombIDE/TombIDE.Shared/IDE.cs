@@ -28,6 +28,16 @@ namespace TombIDE.Shared
 
 		/* Main IDE events */
 
+		#region BeginEngineUpdate
+
+		public class BeginEngineUpdateEvent : IIDEEvent
+		{ }
+
+		public void BeginEngineUpdate() =>
+			RaiseEvent(new BeginEngineUpdateEvent());
+
+		#endregion BeginEngineUpdate
+
 		#region ProgramButtonsModified
 
 		public class ProgramButtonsModifiedEvent : IIDEEvent

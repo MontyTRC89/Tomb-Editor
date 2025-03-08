@@ -305,49 +305,40 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
                     {
+                        _animCommands.Add((int)command.Type);
+
                         switch (command.Type)
                         {
                             case WadAnimCommandType.SetPosition:
-                                _animCommands.Add(0x01);
-
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
                                 _animCommands.Add(command.Parameter3);
-
                                 break;
-
+								
                             case WadAnimCommandType.SetJumpDistance:
-                                _animCommands.Add(0x02);
-
                                 _animCommands.Add(command.Parameter1);
                                 _animCommands.Add(command.Parameter2);
-
                                 break;
 
                             case WadAnimCommandType.EmptyHands:
-                                _animCommands.Add(0x03);
-
                                 break;
 
                             case WadAnimCommandType.KillEntity:
-                                _animCommands.Add(0x04);
-
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                _animCommands.Add(0x05);
-
-                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(unchecked((short)(command.Parameter2)));
-
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
+                                _animCommands.Add(command.Parameter2);
+                                _animCommands.Add(command.Parameter3);
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
-                                _animCommands.Add(0x06);
-
-                                _animCommands.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
                                 _animCommands.Add(command.Parameter2);
+                                break;
 
+                            case WadAnimCommandType.DisableInterpolation:
+                                _animCommands.Add(command.Parameter1 + newAnimation.FrameStart);
                                 break;
                         }
                     }
@@ -486,13 +477,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (short)_meshes.Count;
 
-                // TODO! replace with customizable data from trcatalog, properties, etc?
-                if (TrCatalog.IsStaticShatterable(TRVersion.Game.TombEngine, oldStaticMesh.Id.TypeId))
-                    newStaticMesh.ShatterType = (short)ShatterType.Fragment;
-                else
-                    newStaticMesh.ShatterType = (short)ShatterType.None;
-
-                newStaticMesh.ShatterSound = -1; // Default sound
+                newStaticMesh.ShatterType = oldStaticMesh.Shatter ? (short)ShatterType.Fragment : (short)ShatterType.None;
+                newStaticMesh.ShatterSound = (short)oldStaticMesh.ShatterSoundID;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
