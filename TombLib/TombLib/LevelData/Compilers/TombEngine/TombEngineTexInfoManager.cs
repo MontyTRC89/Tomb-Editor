@@ -96,16 +96,16 @@ namespace TombLib.LevelData.Compilers
 
         // Precompiled anim texture indices are kept separately to avoid
         // messing up after texture page cleanup.
-        private List<List<ushort>> _animTextureIndices;
+        private List<List<int>> _animTextureIndices;
 
         // Expose the latter publicly, because TRNG compiler needs it
-        public ReadOnlyCollection<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>> AnimatedTextures
+        public ReadOnlyCollection<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<int>>> AnimatedTextures
         {
             get
             {
-                var result = new List<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>>();
+                var result = new List<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<int>>>();
                 for (int i = 0; i < _animTextureIndices.Count; i++)
-                    result.Add(new KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>
+                    result.Add(new KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<int>>
                         (_actualAnimTextures[i].Origin, _animTextureIndices[i].AsReadOnly()));
                 return result.AsReadOnly();
             }
@@ -1590,13 +1590,13 @@ namespace TombLib.LevelData.Compilers
             _actualAnimTextures = _actualAnimTextures.OrderBy(item => !item.Origin.IsUvRotate).ToList();
 
             // Build index table
-            _animTextureIndices = new List<List<ushort>>();
+            _animTextureIndices = new List<List<int>>();
             foreach (var compiledAnimatedTexture in _actualAnimTextures)
             {
-                var list = new List<ushort>();
+                var list = new List<int>();
                 var orderedFrameList = compiledAnimatedTexture.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
                 foreach (var frame in orderedFrameList)
-                    list.Add((ushort)frame.TexInfoIndex);
+                    list.Add(frame.TexInfoIndex);
 
                 _animTextureIndices.Add(list);
             }
@@ -1614,7 +1614,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(_animTextureIndices[i].Count); // Number of frames
                 foreach (var frame in _animTextureIndices[i])
                 {
-                    var texture = _objectTextures[frame];
+                    var texture = _objectTextures[(int)frame];
 
                     // Coordinates of each frame
                     writer.Write(texture.TexCoordFloat[0].X);

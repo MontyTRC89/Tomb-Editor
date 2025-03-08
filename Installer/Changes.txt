@@ -2,10 +2,16 @@ Version 1.7.5
 =============
 
 Tomb Editor:
- * Added object transform window for precise editing of object position, rotation, and scale.
- * Allow to move camera up and down with E and Q keys in fly mode.
+
  * Fixed exception on copying memo or imported geometry position to clipboard.
- * Fixed tigger export returning wrong ConditionNg mask for non-moveable objects.
+ * Fixed trigger export returning wrong ConditionNg mask for non-moveable objects.
+ * Fixed texture errors with high texinfo count in TEN levels.
+ * Fixed few cases of new nodes spawning in the bottom left corner of a node graph.
+ * Added object transform window for precise editing of object position, rotation, and scale.
+ * Added TEN nodes for using keypads.
+ * Added TEN node to hide or show a moveable.
+ * Added TEN nodes to create and customize the diary feature.
+ * Allow to move camera up and down with E and Q keys in fly mode.
  * Imported geometry object tag now also shows rotation and scale.
 
 WadTool:
@@ -14,13 +20,13 @@ WadTool:
  * Fixed TR3 -> TEN remapping of puzzle objects.
 
 TombIDE:
- * Updated TR1X preset to 4.8.2 - no auto-update available due to breaking changes in the engine.
+ * Updated TR1X preset to 4.8.3 - no auto-update available due to breaking changes in the engine.
  * Updated PLAY.exe to 2.0.2.5 - fixed non-ASCII executable paths not working.
  * Fixed archive creator not including `patches.fpd` for TRNG projects.
 
 TEN Base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
- * Added DIARY_ITEM (986) and associated sprites slots (1384,1385)
+ * Added DIARY_ITEM (986) and associated sprites slots (1384, 1385)
  * Replaced stopwatch with a generic model due to legal reasons.
  * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
 

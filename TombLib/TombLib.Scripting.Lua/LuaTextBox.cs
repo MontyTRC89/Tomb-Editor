@@ -23,7 +23,7 @@ namespace TombLib.Scripting.Lua
 		{
 			if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
 			{
-				TextEditor = new LuaEditor();
+				TextEditor = new LuaEditor(new Version(0, 0));
 				TextEditor.AllowDrop = true;
 				TextEditor.WordWrap = true;
 				TextEditor.DragEnter += textEditor_DragEnter;
