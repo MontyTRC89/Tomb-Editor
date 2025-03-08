@@ -1213,6 +1213,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap texture_MirrorPortal_16 {
+            get {
+                object obj = ResourceManager.GetObject("texture_MirrorPortal-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap texture_NoTexture_1_16 {
             get {
                 object obj = ResourceManager.GetObject("texture_NoTexture_1_16", resourceCulture);

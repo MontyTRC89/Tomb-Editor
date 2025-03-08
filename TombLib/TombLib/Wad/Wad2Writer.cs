@@ -50,7 +50,7 @@ namespace TombLib.Wad
                 WriteWad2(chunkIO, wad);
         }
 
-        public static void SaveToBinaryWriterFast(Wad2 wad, BinaryWriterFast fastWriter)
+        public static void SaveToBinaryWriterFast(Wad2 wad, BinaryWriter fastWriter)
         {
             using (var chunkIO = new ChunkWriter(Wad2Chunks.MagicNumber, fastWriter))
                 WriteWad2(chunkIO, wad);
@@ -354,6 +354,8 @@ namespace TombLib.Wad
                         WriteMesh(chunkIO, s.Mesh, textureTable);
 
                         chunkIO.WriteChunkInt(Wad2Chunks.StaticAmbientLight, s.AmbientLight);
+                        chunkIO.WriteChunkBool(Wad2Chunks.StaticShatter, s.Shatter);
+                        chunkIO.WriteChunkInt(Wad2Chunks.StaticShatterSound, s.ShatterSoundID);
 
                         foreach (var light in s.Lights)
                         {

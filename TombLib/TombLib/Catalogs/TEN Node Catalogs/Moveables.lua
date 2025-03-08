@@ -62,6 +62,16 @@ LevelFuncs.Engine.Node.TestMoveableAnimation = function(moveableName, animationI
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
 end
 
+-- !Name "If animation slot of a moveable is..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable is currently playing animation from a specified object slot."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables" "NewLine, WadSlots, Moveable slot ID to check"
+
+LevelFuncs.Engine.Node.TestMoveableAnimationSlot = function(moveableName, slotId)
+	return TEN.Objects.GetMoveableByName(moveableName):GetAnimSlot() == slotId
+end
+
 -- !Name "If animation of a moveable is complete..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current animation has reached end frame."
@@ -294,6 +304,15 @@ LevelFuncs.Engine.Node.SetMoveableAnimation = function(moveableName, animationId
 	TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId)
 end
 
+-- !Name "Set moveable's animation from another slot"
+-- !Section "Moveable parameters"
+-- !Description "Sets moveable's animation from another slot."
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 ], Animation ID"  "NewLine, WadSlots, Moveable slot ID"
+
+LevelFuncs.Engine.Node.SetMoveableAnimationFromAnotherSlot = function(moveableName, animationId, slotId)
+	TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId, slotId)
+end
+
 -- !Name "Set moveable's state"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable's next state."
@@ -450,6 +469,16 @@ end
 
 LevelFuncs.Engine.Node.SetMoveableColor = function(moveableName, color)
 	TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
+end
+
+-- !Name "Set moveable visibility"
+-- !Description "Sets moveable visibility"
+-- !Section "Moveable parameters"
+-- !Arguments "NewLine, Moveables, 80"
+-- !Arguments "Enumeration, [ Visible  | Invisible ], 20, Visibility"
+LevelFuncs.Engine.Node.SetMoveableVisibility = function(moveableName, state)
+	local visibility = (state == 0) and true or false
+	TEN.Objects.GetMoveableByName(moveableName):SetVisible(visibility)
 end
 
 -- !Name "Set specified moveable mesh visibility"

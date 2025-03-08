@@ -1626,7 +1626,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectPortal)
+                else if (id3 == Prj2Chunks.ObjectPortal || id3 == Prj2Chunks.ObjectPortal2)
                 {
                     var area = new RectangleInt2(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
                     var adjoiningRoomIndex = LEB128.ReadLong(chunkIO.Raw);
@@ -1636,6 +1636,26 @@ namespace TombLib.LevelData.IO
                     // If an issue comes up that prevents loading the second room, this placeholder will be used permanently.
                     var instance = new PortalInstance(area, direction, room);
                     instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
+
+                    if (id3 == Prj2Chunks.ObjectPortal2)
+                    {
+                        instance.Effect = (PortalEffectType)chunkIO.Raw.ReadByte();
+
+                        chunkIO.ReadChunks((id4, chunkSize4) =>
+                        {
+                            if (id4 == Prj2Chunks.ObjectPortalMirrorProperties)
+                            {
+                                instance.Properties.ReflectLara = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectMoveables = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectStatics = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectSprites = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectLights = chunkIO.Raw.ReadBoolean();
+                                return true;
+                            }
+                            return false;
+                        });
+                    }
+
                     roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, adjoiningRoom => instance.AdjoiningRoom = adjoiningRoom ?? room));
 
                     addObject(instance);
@@ -1944,7 +1964,7 @@ namespace TombLib.LevelData.IO
             return node;
         }
 
-        private static uint? ReadOptionalLEB128Int(BinaryReaderEx reader)
+        private static uint? ReadOptionalLEB128Int(BinaryReader reader)
         {
             long read = LEB128.ReadLong(reader);
             if (read < 0)

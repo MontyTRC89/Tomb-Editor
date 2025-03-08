@@ -42,7 +42,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void InitializePreview()
 		{
-			editorPreview = new ClassicScriptEditor
+			editorPreview = new ClassicScriptEditor(new Version(0, 0))
 			{
 				Text = "[Level]\nRain=ENABLED,12   ; Has error\nLayer1=128,128,>\n\t\t128,-8\nMirror=69,$2137\n[Level]",
 				IsReadOnly = true,

@@ -653,7 +653,7 @@ namespace TombLib.LevelData
             }
         }
 
-        private void AddFace(Room room, int x, int z, SectorFaceData face)
+        private void AddFace(Room room, int x, int z, in SectorFaceData face)
         {
             Sector sector = room.Sectors[x, z];
 
@@ -671,8 +671,8 @@ namespace TombLib.LevelData
                 AddTriangle(x, z, face.Face, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
         }
 
-        private void AddQuad(int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
-                             TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
+        private void AddQuad(int x, int z, SectorFace face, in Vector3 p0, in Vector3 p1, in Vector3 p2, in Vector3 p3,
+                             in TextureArea texture, in Vector2 editorUV0, in Vector2 editorUV1, in Vector2 editorUV2, in Vector2 editorUV3)
         {
             if (texture.DoubleSided)
                 DoubleSidedTriangleCount += 2;
@@ -707,7 +707,7 @@ namespace TombLib.LevelData
             TriangleSectorInfo.Add(new SectorFaceIdentity(x, z, face));
         }
 
-        private void AddTriangle(int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool isXEqualYDiagonal)
+        private void AddTriangle(int x, int z, SectorFace face, in Vector3 p0, in Vector3 p1, in Vector3 p2, in TextureArea texture, in Vector2 editorUV0, in Vector2 editorUV1, in Vector2 editorUV2, bool isXEqualYDiagonal)
         {
             if (texture.DoubleSided)
                 DoubleSidedTriangleCount += 1;
@@ -953,7 +953,7 @@ namespace TombLib.LevelData
             return true;
         }
 
-        private static bool LightRayTrace(Room room, Vector3 position, Vector3 lightPosition)
+        private static bool LightRayTrace(Room room, in Vector3 position, in Vector3 lightPosition)
         {
             return !(
             RayTraceCheckFloorCeiling(room, (int)position.X, (int)position.Y, (int)position.Z, (int)lightPosition.X, (int)lightPosition.Z) &&
@@ -981,7 +981,7 @@ namespace TombLib.LevelData
             return numSamples;
         }
 
-        private static float GetSampleSumFromLightTracing(int numSamples, Room room, Vector3 position, LightInstance light)
+        private static float GetSampleSumFromLightTracing(int numSamples, Room room, in Vector3 position, LightInstance light)
         {
 //             object lockingObject = new object();
 //             float sampleSum = 0;
@@ -1027,7 +1027,7 @@ namespace TombLib.LevelData
             return sampleSum;
         }
 
-        public static float GetRaytraceResult(Room room, LightInstance light, Vector3 position, bool highQuality)
+        public static float GetRaytraceResult(Room room, LightInstance light, in Vector3 position, bool highQuality)
         {
             float result = 1.0f;
             if (light.Type != LightType.Effect && light.Type != LightType.FogBulb)
@@ -1045,8 +1045,8 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position,
-                                                      Vector3 normal, bool legacyPointLightModel, bool highQuality)
+        public static Vector3 CalculateLightForVertex(Room room, LightInstance light, in Vector3 position,
+                                                      in Vector3 normal, bool legacyPointLightModel, bool highQuality)
         {
             if (!light.Enabled)
                 return Vector3.Zero;
@@ -1251,7 +1251,7 @@ namespace TombLib.LevelData
             public float VerticalCoord;
         }
 
-        public IntersectionInfo? RayIntersectsGeometry(Ray ray)
+        public IntersectionInfo? RayIntersectsGeometry(in Ray ray)
         {
             
             IntersectionInfo result = new IntersectionInfo { Distance = float.NaN };

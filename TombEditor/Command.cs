@@ -1810,7 +1810,12 @@ namespace TombEditor
                 EditorActions.SetPortalOpacity(PortalOpacity.TraversableFaces, args.Window);
             });
 
-            AddCommand("AddPointLight", "Add point light", CommandType.Lighting, delegate (CommandArgs args)
+			AddCommand("ToggleClassicPortalMirror", "Toggle classic portal mirror effect", CommandType.Rooms, delegate (CommandArgs args)
+			{
+				EditorActions.ToggleClassicPortalMirror(args.Window);
+			});
+
+			AddCommand("AddPointLight", "Add point light", CommandType.Lighting, delegate (CommandArgs args)
             {
                 EditorActions.PlaceLight(LightType.Point);
             });
@@ -1838,6 +1843,23 @@ namespace TombEditor
             AddCommand("AddFogBulb", "Add fog bulb", CommandType.Lighting, delegate (CommandArgs args)
             {
                 EditorActions.PlaceLight(LightType.FogBulb);
+            });
+
+            AddCommand("EditObjectTransform", "Edit object transform", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is not PositionBasedObjectInstance)
+                {
+                    args.Editor.SendMessage("Select a position-based object first.", PopupType.Warning);
+                    return;
+                }
+
+                using (var form = new FormTransform(args.Editor.SelectedObject as PositionBasedObjectInstance))
+                {
+                    if (form.ShowDialog(args.Window) == DialogResult.Cancel)
+                        return;
+
+                    args.Editor.ObjectChange(args.Editor.SelectedObject, ObjectChangeType.Change);
+                }
             });
 
             AddCommand("EditRoomName", "Edit room name", CommandType.Rooms, delegate (CommandArgs args)

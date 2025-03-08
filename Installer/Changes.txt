@@ -1,3 +1,42 @@
+Version 1.7.5
+=============
+
+Tomb Editor:
+
+ * Fixed exception on copying memo or imported geometry position to clipboard.
+ * Fixed trigger export returning wrong ConditionNg mask for non-moveable objects.
+ * Fixed texture errors with high texinfo count in TEN levels.
+ * Fixed few cases of new nodes spawning in the bottom left corner of a node graph.
+ * Added object transform window for precise editing of object position, rotation, and scale.
+ * Added TEN nodes for using keypads.
+ * Added TEN node to hide or show a moveable.
+ * Added TEN nodes to create and customize the diary feature.
+ * Allow to move camera up and down with E and Q keys in fly mode.
+ * Imported geometry object tag now also shows rotation and scale.
+
+WadTool:
+ * Added option to cancel skeleton editor closing if a warning about unbalanced meshtree is thrown.
+ * Fixed incorrect copying of sprite sequences from one wad to another.
+ * Fixed TR3 -> TEN remapping of puzzle objects.
+
+TombIDE:
+ * Updated TR1X preset to 4.8.3 - no auto-update available due to breaking changes in the engine.
+ * Updated PLAY.exe to 2.0.2.5 - fixed non-ASCII executable paths not working.
+ * Fixed archive creator not including `patches.fpd` for TRNG projects.
+
+TEN Base WAD:
+ * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
+ * Added DIARY_ITEM (986) and associated sprites slots (1384, 1385)
+ * Replaced stopwatch with a generic model due to legal reasons.
+ * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
+
+Version 1.7.4
+=============
+
+Tomb Editor:
+ * Fixed occasional incorrect slide directions for flat slopes.
+ * Fixed incorrect wall collision generation near vertical portals in TEN.
+
 Version 1.7.3
 =============
 
@@ -6,24 +45,36 @@ Tomb Editor:
  * Fixed nodes randomly moving out of bounds.
  * Fixed lists in nodes sometimes incorrectly saving selected value.
  * Fixed lists in nodes giving an exception if no objects of specified type exist.
+ * Fixed incorrect slide direction calculations for sub-click heights.
  * Fixed incorrect diagonal wall collision calculations below blocked portal sectors in TEN levels.
  * Fixed incorrect normal calculations for opposite polygons sharing same vertices in TEN levels.
  * Fixed garbage vertices in extremely large rooms in TEN levels.
+ * Added classic mirror workflow for TEN and edit portal dialog (use O hotkey or "Edit object" menu entry).
+ * Fixed .trg file's #REPEAT# key not being read correctly for TRNG plugin triggers.
  * Added transparency field in text drawing nodes.
  * Added OnFreeze global event handling and TEN nodes to get and set freeze mode.
  * Added TEN node to check Lara's airborne status.
  * Added TEN node to remove moveable effect.
+ * Added TEN nodes to get and set moveable animations from other slots.
  * Added TEN nodes to get and set moveable collision state.
  * Added TEN nodes to get and set hit points for a shatterable static mesh.
+ * Split flyby sequence path preview in case cut camera flag is present.
  
 WadTool:
- * Added "Disable Interpolation" animcommand type.
+ * Added ability to customize static mesh shatter attributes for TEN wads.
+ * Added "Disable Interpolation" animcommand type for TEN wads.
+ * Fixed exception in skeleton editor while replacing existing mesh if no new mesh was selected.
 
 TombIDE:
  * Added new "More Actions..." menu in place of "Exit Project" button.
  * Added the ability to re-apply an engine update.
  * Improved autocomplete popup visuals for TRNG scripting.
  * TombEngine.wad2 will now be added into a dedicated "Assets" folder when creating a new TEN project.
+ 
+TEN Base WAD:
+ * Added LARA_BINOCULARS_MESH (ID 29), used for seeing player using the binoculars in a mirrored room.
+ * Removed LARA_EXTRA_MESH2 as unused.
+ * Changed default braid to the one used in TR4. 
 
 Version 1.7.2
 =============

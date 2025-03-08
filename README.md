@@ -14,7 +14,7 @@ The Tomb Editor is part of a wider set of tools:
 - TombIDE : A development environment tool for level setup, scripting and deploying ready game packages.
 
 ## Disclaimer
-This is a community project which is not affiliated with Core Design, Eidos Interactive, or Square Enix. Tomb Raider is a registered trademark of Square Enix; Tomb Editor is not be sold. The code is open-source to encourage contributions and to be used for study purposes. We are not responsible for illegal uses of this source code. This source code is released as-is and continues to be maintained by non-paid contributors in their free time.
+This is a community project which is not affiliated with Core Design, Eidos Interactive, or Embracer Group AB. Tomb Raider is a registered trademark of Embracer Group AB. Tomb Editor is not be sold. The code is open-source to encourage contributions and to be used for study purposes. We are not responsible for illegal uses of this source code. This source code is released as-is and continues to be maintained by non-paid contributors in their free time.
 
 ## Thanks to
 We would like to thank all the following people that contributed to the development of Tomb Editor.
@@ -31,7 +31,6 @@ We would like to thank all the following people that contributed to the developm
 * leveldesigner1
 * Lore
 * Lwmte
-* Monsieur Z
 * Nickelony
 * Raildex
 * Remrem
@@ -42,6 +41,7 @@ We would like to thank all the following people that contributed to the developm
 * Titak
 * TRTombLevBauer
 * XProger
+* zdimension
 
 ## External libraries
 [A list can be found here.](ExternalResources.md)

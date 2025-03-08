@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -1303,6 +1304,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _portalRemapping.TryAdd(portalToAdd, portal);
             outPortals.Add(portalToAdd);
+
+            if (portal.Effect == PortalEffectType.ClassicMirror)
+            {
+                var room2DPosition = new Vector3(
+                    room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
+                
+                var mirror = new TombEngineMirror();
+                mirror.Room = (short)_roomRemapping[room];
+
+				mirror.Plane.X = normal.X;
+                mirror.Plane.Y = normal.Y;
+                mirror.Plane.Z = normal.Z;
+                mirror.Plane.W = -(
+                    normal.X * (portalVertices[0].X + room2DPosition.X) +
+                    normal.Y * (portalVertices[0].Y) +
+                    normal.Z * (portalVertices[0].Z + room2DPosition.Z));
+
+                mirror.ReflectLara = portal.Properties.ReflectLara;
+                mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                mirror.ReflectLights = portal.Properties.ReflectLights;
+
+				if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+                {
+                    _mirrors.Add(mirror);
+                }
+            }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -1542,7 +1571,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 _portalRemapping.TryAdd(portalToAdd, portal);
                 outPortals.Add(portalToAdd);
-            }
+
+				if (portal.Effect == PortalEffectType.ClassicMirror)
+				{
+					var mirror = new TombEngineMirror();
+					mirror.Room = (short)_roomRemapping[room];
+
+                    mirror.Plane.X = normal.X;
+					mirror.Plane.Y = normal.Y;
+					mirror.Plane.Z = normal.Z;
+                    mirror.Plane.W = -normal.Y * portalVertices[0].Y;
+
+                    mirror.ReflectLara = portal.Properties.ReflectLara;
+                    mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                    mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                    mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                    mirror.ReflectLights = portal.Properties.ReflectLights;
+                    
+                    if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+					{
+						_mirrors.Add(mirror);
+					}
+				}
+			}
         }
 
         private void MatchDoorShades(List<TombEngineRoom> roomList, TombEngineRoom room, bool grayscale, bool flipped)
@@ -1865,24 +1916,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     continue;
 
                 var normal = Vector3.Zero;
-                var referenceNormal = normalHelpers[0].Polygon.Normal; // Use the first polygon's normal as a reference
 
+                // WARNING: we need to flip normal because it was calculated with Y negative up
                 for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var currentNormal = normalHelpers[j].Polygon.Normal;
+                    normal += normalHelpers[j].Polygon.Normal;
 
-                    // Check the angle (dot product) between the current normal and the reference normal
-                    if (Vector3.Dot(referenceNormal, currentNormal) < 0)
+                normal = -Vector3.Normalize(normal);
+
+                // FAILSAFE: In case normal is NaN, average again with reference normal
+                if (float.IsNaN(normal.X) || float.IsNaN(normal.Y) || float.IsNaN(normal.Z))
+                {
+                    normal = Vector3.Zero;
+
+                    // Use the first polygon's normal as a reference
+                    var referenceNormal = normalHelpers[0].Polygon.Normal;
+
+                    for (int j = 0; j < normalHelpers.Count; j++)
                     {
-                        // Flip the normal if it's in the opposite direction
-                        currentNormal = -currentNormal;
+                        var currentNormal = normalHelpers[j].Polygon.Normal;
+                        if (Vector3.Dot(referenceNormal, currentNormal) < 0)
+                            currentNormal = -currentNormal;
+
+                        normal += currentNormal;
                     }
 
-                    normal += currentNormal;
+                    normal = -Vector3.Normalize(normal);
                 }
-
-                // Normalize the final averaged normal
-                normal = -Vector3.Normalize(normal);
 
                 for (int j = 0; j < normalHelpers.Count; j++)
                 {
