@@ -162,7 +162,7 @@ end
 -- !Arguments "NewLine, Moveables, 70" "Color, 15, Moveable colour"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
-LevelFuncs.Engine.Node.ChangeMoveableColourOverTimespan = function(moveableName, newColour, time, alpha)
+LevelFuncs.Engine.Node.ChangeMoveableColourOverTimespan = function(moveableName, newColour, time)
 	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 3, newColour, time, true) end
 end
 
@@ -268,7 +268,7 @@ end
 -- !Arguments "NewLine, Statics, 70" "Color, 15, Static mesh colour"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
-LevelFuncs.Engine.Node.ChangeStaticColourOverTimespan = function(staticName, newColour, time, alpha)
+LevelFuncs.Engine.Node.ChangeStaticColourOverTimespan = function(staticName, newColour, time)
 	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 3, newColour, time, true) end
 end
 
