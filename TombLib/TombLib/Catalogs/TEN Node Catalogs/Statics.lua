@@ -182,12 +182,24 @@ LevelFuncs.Engine.Node.ShiftStatic = function(staticName, distance)
 	static:SetPosition(newPosition)
 end
 
--- !Name "Set static mesh colour"
+-- !Name "Set static mesh color"
 -- !Section "Static mesh parameters"
 -- !Description "Sets static mesh tint to a given value."
--- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh colour"
+-- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh color"
 
 LevelFuncs.Engine.Node.SetStaticColor = function(staticName, color)
+	color.a = TEN.Objects.GetStaticByName(staticName):GetColor().a
+	TEN.Objects.GetStaticByName(staticName):SetColor(color)
+end
+
+-- !Name "Set static mesh transparency"
+-- !Section "Static mesh parameters"
+-- !Description "Sets static mesh transparency to a given value."
+-- !Arguments "NewLine, Statics, 80" "Numerical, 20, [ 0 | 255 | 0 | 1 | 5 ], {255}, Static mesh transparency"
+
+LevelFuncs.Engine.Node.SetStaticTransparency = function(staticName, transparency)
+	local color = TEN.Objects.GetStaticByName(staticName):GetColor()
+	color.a = transparency
 	TEN.Objects.GetStaticByName(staticName):SetColor(color)
 end
 
