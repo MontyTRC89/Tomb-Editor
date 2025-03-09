@@ -64,7 +64,7 @@ namespace TombIDE.ProjectMaster
 			}
 
 			Version engineVersion = _ide.Project.GetCurrentEngineVersion();
-			string engineVersionString = engineVersion is null ? "Unknown" : engineVersion.ToString();
+			string engineVersionString = engineVersion == new Version(0, 0) ? "Unknown" : engineVersion.ToString();
 			label_EngineVersion.Text = $"Engine Version: {engineVersionString}";
 
 			Version latestVersion = _ide.Project.GetLatestEngineVersion();

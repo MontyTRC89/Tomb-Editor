@@ -25,12 +25,12 @@ namespace TombLib.Scripting.Tomb1Main
 		private DocumentLine _cachedLine;
 		private ErrorDetectionWorker _errorDetectionWorker;
 
-		public Tomb1MainEditor()
+		public Tomb1MainEditor(Version engineVersion) : base(engineVersion)
 		{
 			BindEventMethods();
 			CommentPrefix = "//";
 
-			_errorDetectionWorker = new ErrorDetectionWorker(new ErrorDetector(), new TimeSpan(500));
+			_errorDetectionWorker = new ErrorDetectionWorker(new ErrorDetector(), EngineVersion, new TimeSpan(500));
 			_errorDetectionWorker.RunWorkerCompleted += ErrorWorker_RunWorkerCompleted;
 		}
 
