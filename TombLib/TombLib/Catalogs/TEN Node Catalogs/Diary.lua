@@ -9,7 +9,7 @@ LevelFuncs.Engine.Node.DiaryImport = function(fileName)
 	CustomDiary.ImportDiary(fileName)
 end
 
--- !Name "Start / Stop the diary feature"
+-- !Name "Start / stop the diary feature"
 -- !Section "Diary"
 -- !Description "Starts or stops the diary feature. To be used at start of a new level to enable the diary."
 -- !Arguments "Enumeration, 30, [ Start | Stop ], Status"
@@ -119,7 +119,7 @@ LevelFuncs.Engine.Node.DiaryCustomizeNotifications = function(object, notificati
 
 end
 
--- !Name "Customize Page Numbers for the diary"
+-- !Name "Customize page numbers for the diary"
 -- !Section "Diary"
 -- !Description "Add a new entry with to a diary."
 -- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], {TEN.Objects.ObjID.DIARY_ITEM}, Diary Object to customize page numbers." "Numerical, 20, Entry Type, [ 1 | 2 ], {2}, Type 1 is just page number\nType 2 is formatted as\n (prefix page number separator total page numbers)"
@@ -145,7 +145,7 @@ LevelFuncs.Engine.Node.DiaryCustomizePageNumbers = function(object, type, prefix
 	
 end
 
--- !Name "Customize Controls for the diary"
+-- !Name "Customize controls for the diary"
 -- !Section "Diary"
 -- !Description "Add a new entry with to a diary."
 -- !Arguments "NewLine, WadSlots, [ _ITEM ], {TEN.Objects.ObjID.DIARY_ITEM}, Diary Object to customize controls for."
@@ -230,7 +230,7 @@ LevelFuncs.Engine.Node.DiaryAddImageEntry = function(object, pageIndex, objectID
 
 end
 
--- !Name "Add/Update narration to a diary page."
+-- !Name "Add or update narration to a diary page"
 -- !Section "Diary"
 -- !Description "Add narration soundtrack to specified page number."
 -- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], {TEN.Objects.ObjID.DIARY_ITEM}, Diary Object to add narration to." "Numerical, 20, [ 1 | 65535 ], {1}, Page Number to add narration."
@@ -275,7 +275,7 @@ LevelFuncs.Engine.Node.DiaryClearPage = function(object, index)
 
 end
 
--- !Name "Show Diary at specified page"
+-- !Name "Show diary at specified page"
 -- !Section "Diary"
 -- !Description "This function displays the diary at the specified page."
 -- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], {TEN.Objects.ObjID.DIARY_ITEM}, Diary to display." 
@@ -291,7 +291,7 @@ end
 
 -- !Name "Clear a diary"
 -- !Section "Diary"
--- !Description "Clear a diary. Please do this once a diary has served its purpose. \n It helps reduce the savegame size."
+-- !Description "Clear a diary. Do this once a diary has served its purpose to conserve savegame memory."
 -- !Arguments "NewLine, WadSlots, [ _ITEM ], {TEN.Objects.ObjID.DIARY_ITEM}, Diary to clear."
 
 LevelFuncs.Engine.Node.ClearDiary = function(object)

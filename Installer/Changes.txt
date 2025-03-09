@@ -23,8 +23,10 @@ TombIDE:
 TEN nodes:
  * Added nodes for using keypads.
  * Added nodes to create and customize the diary feature.
- * Added nodes to change transparency of moveables and statics.
+ * Added nodes for custom bars and enemy health bars.
+ * Added a node for showing ammo counter.
  * Added a node to hide or show a moveable.
+ * Added nodes to change transparency of moveables and statics.
 
 TEN base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
