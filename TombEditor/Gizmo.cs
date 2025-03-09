@@ -1,5 +1,6 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
@@ -66,7 +67,8 @@ namespace TombEditor
                 return false;
         }
 
-        private bool DisableCustomScale => (_editor.SelectedObject is StaticInstance) && !_editor.Level.IsTombEngine;
+        private bool DisableCustomScale => (_editor.SelectedObject is StaticInstance || (_editor.SelectedObject is ObjectGroup grp && grp.Any(o => o is StaticInstance))) &&
+                                           !_editor.Level.IsTombEngine;
 
         private bool SmoothRotationPreference => !(_editor.SelectedObject is ObjectGroup || 
                                                    _editor.SelectedObject is MoveableInstance || 
@@ -99,6 +101,11 @@ namespace TombEditor
                 var obj = _editor.SelectedObject as ISizeable;
                 EditorActions.ResizeObject(obj, new Vector3(scale, obj.Size.Y, obj.Size.Z), SizeQuantization());
             }
+            else if (_editor.SelectedObject is ObjectGroup grp)
+            {
+                foreach (IScaleable obj in grp.Where(o => o is IScaleable))
+                    EditorActions.ScaleObject(obj, scale, ScaleQuantization());
+            }
         }
 
         protected override void GizmoScaleY(float scale)
@@ -112,6 +119,11 @@ namespace TombEditor
                 var obj = _editor.SelectedObject as ISizeable;
                 EditorActions.ResizeObject(obj, new Vector3(obj.Size.X, scale, obj.Size.Z), SizeQuantization());
             }
+            else if (_editor.SelectedObject is ObjectGroup grp)
+            {
+                foreach (IScaleable obj in grp.Where(o => o is IScaleable))
+                    EditorActions.ScaleObject(obj, scale, ScaleQuantization());
+            }
         }
 
         protected override void GizmoScaleZ(float scale)
@@ -124,6 +136,11 @@ namespace TombEditor
             {
                 var obj = _editor.SelectedObject as ISizeable;
                 EditorActions.ResizeObject(obj, new Vector3(obj.Size.X, obj.Size.Y, scale), SizeQuantization());
+            }
+            else if (_editor.SelectedObject is ObjectGroup grp)
+            {
+                foreach (IScaleable obj in grp.Where(o => o is IScaleable))
+                    EditorActions.ScaleObject(obj, scale, ScaleQuantization());
             }
         }
 
@@ -189,7 +206,8 @@ namespace TombEditor
         protected override bool SupportTranslateY => _editor.SelectedObject is PositionBasedObjectInstance || 
                                                     (_editor.SelectedObject is GhostBlockInstance && ((GhostBlockInstance)_editor.SelectedObject).SelectedCorner.HasValue);
 
-        protected override bool SupportScale => (_editor.SelectedObject is IScaleable || _editor.SelectedObject is ISizeable) && !DisableCustomScale;
+        protected override bool SupportScale => (_editor.SelectedObject is IScaleable || _editor.SelectedObject is ISizeable ||
+                                                 (_editor.SelectedObject is ObjectGroup grp && grp.Any(o => o is IScaleable))) && !DisableCustomScale;
 
         protected override bool SupportRotationY => _editor.SelectedObject is IRotateableY;
         protected override bool SupportRotationX => _editor.SelectedObject is IRotateableYX && !DisableCustomRotation();
