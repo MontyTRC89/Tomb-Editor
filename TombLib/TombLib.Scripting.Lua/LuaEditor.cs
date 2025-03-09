@@ -1,5 +1,6 @@
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System;
 using System.IO;
 using System.Windows.Media;
 using System.Xml;
@@ -11,7 +12,7 @@ namespace TombLib.Scripting.Lua
 	{
 		public override string DefaultFileExtension => ".lua";
 
-		public LuaEditor()
+		public LuaEditor(Version engineVersion) : base(engineVersion)
 		{
 			CommentPrefix = "--";
 		}

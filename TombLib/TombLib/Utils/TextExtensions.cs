@@ -46,6 +46,16 @@ namespace TombLib.Utils
             return Regex.Replace(source, "([a-z](?=[A-Z])|[a-z](?=[0-9])|[A-Z](?=[A-Z][a-z]))", "$1 ");
         }
 
+        public static string TrimIndentation(this string source)
+        {
+            var lines = source.Split('\n').Select(line => line.TrimEnd());
+
+            lines = lines.Select(line => line.Replace("\t", "    "));
+            lines = lines.Select(line => line.TrimStart());
+
+            return string.Join("\n", lines);
+        }
+
         public static string Capitalize(this string source)
         {
             if (string.IsNullOrEmpty(source))

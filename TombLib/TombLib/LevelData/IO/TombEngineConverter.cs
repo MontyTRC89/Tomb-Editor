@@ -411,9 +411,9 @@ namespace TombLib.LevelData.IO
                             (newSlotName == "MEMCARD_LOAD_INV_ITEM" || newSlotName == "MEMCARD_SAVE_INV_ITEM" ||
                              newSlotName == "PC_LOAD_INV_ITEM" || newSlotName == "PC_SAVE_INV_ITEM"))
                         {
-                            progressReporter.ReportInfo("    Adding TIMEX from reference Wad2");
+                            progressReporter.ReportInfo("    Adding STOPWATCH from reference Wad2");
 
-                            uint timexIndex = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, "TIMEX_ITEM", out isMoveable).Value;
+                            uint timexIndex = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, "STOPWATCH_ITEM", out isMoveable).Value;
                             newWad.Add(new WadMoveableId(timexIndex), referenceWad.Moveables[new WadMoveableId(timexIndex)]);
                             addedTimex = true;
                         }
@@ -443,7 +443,7 @@ namespace TombLib.LevelData.IO
                         else
                         {
                             newWad.Add(new WadMoveableId(newSlot), moveable.Value);
-                            if (!addedTimex && newSlotName == "TIMEX_ITEM")
+                            if (!addedTimex && newSlotName == "STOPWATCH_ITEM")
                             {
                                 addedTimex = true;
                             }

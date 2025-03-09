@@ -244,6 +244,9 @@
     <None Update="Catalogs\TEN Node Catalogs\Revolution.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Diary.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -16,6 +16,21 @@ namespace TombLib.LevelData
         TraversableFaces // Called 'Opacity 2' in the old editor
     }
 
+    public enum PortalEffectType : byte
+    {
+       None,
+       ClassicMirror
+    }
+
+    public class PortalProperties
+    {
+        public bool ReflectLara { get; set; } = true;
+        public bool ReflectStatics { get; set; } = true;
+        public bool ReflectMoveables { get; set; } = true;
+        public bool ReflectSprites { get; set; } = true;
+        public bool ReflectLights { get; set; } = true;
+    }
+
     public class PortalInstance : SectorBasedObjectInstance
     {
         private Room _adjoiningRoom;
@@ -40,7 +55,11 @@ namespace TombLib.LevelData
                 _direction = value;
             }
         }
+
         public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
+        public PortalEffectType Effect { get; set; } = PortalEffectType.None;
+        public PortalProperties Properties { get; set; } = new PortalProperties();
+
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
 
@@ -54,6 +73,10 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             string text = "Portal ";
+
+			if (Effect == PortalEffectType.ClassicMirror)
+				text += "with mirror ";
+
             switch (Direction)
             {
                 case PortalDirection.Ceiling:

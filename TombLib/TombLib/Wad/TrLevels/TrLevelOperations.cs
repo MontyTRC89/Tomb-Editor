@@ -594,6 +594,8 @@ namespace TombLib.Wad.TrLevels
                                                       oldLevel,
                                                       oldLevel.GetMeshFromPointer(oldStatic.Mesh),
                                                       objectTextures, coloredTextures);
+
+            newStatic.Shatter = TrCatalog.IsStaticShatterable(wad.GameVersion, newStatic.Id.TypeId);
             return newStatic;
         }
     }

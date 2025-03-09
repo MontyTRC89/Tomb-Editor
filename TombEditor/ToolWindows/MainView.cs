@@ -165,13 +165,16 @@ namespace TombEditor.ToolWindows
                 obj is Editor.SelectedObjectChangedEvent)
             {
                 var portal = _editor.SelectedObject as PortalInstance;
-                butOpacityNone.Enabled = portal != null;
-                butOpacitySolidFaces.Enabled = portal != null;
+                butOpacityNone.Enabled =
+                butOpacitySolidFaces.Enabled =
                 butOpacityTraversableFaces.Enabled = portal != null;
+				butMirror.Enabled = portal != null && _editor.Level.IsTombEngine;
 
                 butOpacityNone.Checked = portal != null && portal.Opacity == PortalOpacity.None;
                 butOpacitySolidFaces.Checked = portal != null && portal.Opacity == PortalOpacity.SolidFaces;
                 butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
+
+				butMirror.Checked = portal != null && portal.Effect == PortalEffectType.ClassicMirror;
             }
 
             // Dismiss any messages

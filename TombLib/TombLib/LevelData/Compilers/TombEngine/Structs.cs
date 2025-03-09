@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -288,7 +289,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public Room BaseRoom;
         public Room OriginalRoom;
 
-        public void WriteDynamicData(BinaryWriterEx writer)
+        public void WriteDynamicData(BinaryWriter writer)
         {
             writer.Write(OriginalRoom.Name);
 
@@ -359,7 +360,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        public void WriteStaticData(BinaryWriterEx writer)
+        public void WriteStaticData(BinaryWriter writer)
         {
             writer.WriteBlock(Info);
 
@@ -674,4 +675,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public ushort Flags;
         public string LuaName;
     }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineMirror
+    {
+        public short Room;
+        public Vector4 Plane;
+        public bool ReflectLara;
+        public bool ReflectMoveables;
+        public bool ReflectStatics;
+        public bool ReflectSprites;
+        public bool ReflectLights;
+	}
 }

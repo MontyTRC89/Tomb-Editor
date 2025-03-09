@@ -615,6 +615,7 @@ namespace TombLib.Wad.Tr4Wad
                                                       oldWad.Meshes[(int)oldWad.RealPointers[oldStaticMesh.PointersIndex]],
                                                       (int)oldStaticMesh.ObjectId);
 
+            staticMesh.Shatter = TrCatalog.IsStaticShatterable(wad.GameVersion, staticMesh.Id.TypeId);
             wad.Statics.Add(staticMesh.Id, staticMesh);
 
             return staticMesh;

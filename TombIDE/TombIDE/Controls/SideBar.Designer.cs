@@ -443,7 +443,7 @@
 			button_Update.Image = (System.Drawing.Image)resources.GetObject("button_Update.Image");
 			button_Update.Name = "button_Update";
 			button_Update.Size = new System.Drawing.Size(304, 22);
-			button_Update.Text = "(Re)Apply Engine Update...";
+			button_Update.Text = "Reapply Engine Update...";
 			button_Update.Click += button_Update_Click;
 			// 
 			// toolStripSeparator2

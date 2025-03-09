@@ -41,11 +41,11 @@ public struct SectorSurface
 	/// </summary>
 	public readonly bool HasSlope(bool isUsingClicks = false) => DiagonalSplit switch
 	{
-		DiagonalSplit.XnZp => Math.Abs(XnZp - Math.Min(XnZn, XpZp)) >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
-		DiagonalSplit.XpZp => Math.Abs(XpZp - Math.Min(XnZp, XpZn)) >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
-		DiagonalSplit.XpZn => Math.Abs(XpZn - Math.Min(XnZn, XpZp)) >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
-		DiagonalSplit.XnZn => Math.Abs(XnZn - Math.Min(XnZp, XpZn)) >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
-		_ => Max - Min >= (isUsingClicks ? 3 : Clicks.ToWorld(3)),
+		DiagonalSplit.XnZp => Math.Abs(XnZp - Math.Min(XnZn, XpZp)) > (isUsingClicks ? 2 : Clicks.ToWorld(2)),
+		DiagonalSplit.XpZp => Math.Abs(XpZp - Math.Min(XnZp, XpZn)) > (isUsingClicks ? 2 : Clicks.ToWorld(2)),
+		DiagonalSplit.XpZn => Math.Abs(XpZn - Math.Min(XnZn, XpZp)) > (isUsingClicks ? 2 : Clicks.ToWorld(2)),
+		DiagonalSplit.XnZn => Math.Abs(XnZn - Math.Min(XnZp, XpZn)) > (isUsingClicks ? 2 : Clicks.ToWorld(2)),
+		_ => Max - Min > (isUsingClicks ? 2 : Clicks.ToWorld(2)),
 	};
 
 	/// <summary>
