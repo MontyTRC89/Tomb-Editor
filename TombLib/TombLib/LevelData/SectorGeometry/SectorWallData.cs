@@ -290,7 +290,7 @@ public readonly struct SectorWallData
 		{
 			for (int i = 0; i < ExtraFloorSplits.Count; i++)
 			{
-				WallSplitData normalizedSplit = NormalizeFloorSplit(extraFloorSplits[i], diagonalFloorSplit, out isFloorSplitInFloorVoid);
+				WallSplitData normalizedSplit = NormalizeFloorSplit(ExtraFloorSplits[i], diagonalFloorSplit, out isFloorSplitInFloorVoid);
 
 				if (isFloorSplitInFloorVoid)
 					break; // Stop the loop, since the rest of the splits will also be in the void, therefore not rendered
@@ -303,7 +303,7 @@ public readonly struct SectorWallData
 		{
 			for (int i = 0; i < ExtraCeilingSplits.Count; i++)
 			{
-				WallSplitData normalizedSplit = NormalizeCeilingSplit(extraCeilingSplits[i], diagonalCeilingSplit, out isCeilingSplitInCeilingVoid);
+				WallSplitData normalizedSplit = NormalizeCeilingSplit(ExtraCeilingSplits[i], diagonalCeilingSplit, out isCeilingSplitInCeilingVoid);
 
 				if (isCeilingSplitInCeilingVoid)
 					break; // Stop the loop, since the rest of the splits will also be in the void, therefore not rendered
