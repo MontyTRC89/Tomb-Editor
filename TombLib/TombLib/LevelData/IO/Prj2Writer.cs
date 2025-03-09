@@ -35,7 +35,6 @@ namespace TombLib.LevelData.IO
                 var tempName = filename + ".tmp";
                 if (File.Exists(tempName)) File.Delete(tempName);
 
-                stream.Seek(0, SeekOrigin.Begin);
                 using (var writer = new BinaryWriter(new FileStream(tempName, FileMode.Create, FileAccess.Write, FileShare.None)))
                 {
                     var buffer = stream.ToArray();

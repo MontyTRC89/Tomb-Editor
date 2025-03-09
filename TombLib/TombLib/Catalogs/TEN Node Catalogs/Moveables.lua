@@ -462,13 +462,35 @@ LevelFuncs.Engine.Node.ShiftMoveable = function(moveableName, distance)
 	moveable:SetPosition(newPosition)
 end
 
--- !Name "Set moveable colour"
+-- !Name "Set moveable color"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable tint to a given value."
--- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour"
+-- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable color"
 
 LevelFuncs.Engine.Node.SetMoveableColor = function(moveableName, color)
+	color.a = TEN.Objects.GetMoveableByName(moveableName):GetColor().a
 	TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
+end
+
+-- !Name "Set moveable transparency"
+-- !Section "Moveable parameters"
+-- !Description "Sets moveable transparency to a given value."
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 255 | 0 | 1 | 5 ], {255}, Moveable transparency"
+
+LevelFuncs.Engine.Node.SetMoveableTransparency = function(moveableName, transparency)
+	local color = TEN.Objects.GetMoveableByName(moveableName):GetColor()
+	color.a = transparency
+	TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
+end
+
+-- !Name "Set moveable visibility"
+-- !Description "Sets moveable visibility"
+-- !Section "Moveable parameters"
+-- !Arguments "NewLine, Moveables, 80"
+-- !Arguments "Enumeration, [ Visible  | Invisible ], 20, Visibility"
+LevelFuncs.Engine.Node.SetMoveableVisibility = function(moveableName, state)
+	local visibility = (state == 0) and true or false
+	TEN.Objects.GetMoveableByName(moveableName):SetVisible(visibility)
 end
 
 -- !Name "Set specified moveable mesh visibility"
@@ -522,8 +544,8 @@ end
 -- !Name "Set custom moveable effect"
 -- !Section "Moveable state"
 -- !Description "Assigns custom colored burn effect to a moveable."
--- !Arguments "Color, 10, Effect primary colour"
--- !Arguments "Color, 10, Effect secondary colour"
+-- !Arguments "Color, 10, Effect primary color"
+-- !Arguments "Color, 10, Effect secondary color"
 -- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
 -- !Arguments "NewLine, Moveables, Moveable to check"
 

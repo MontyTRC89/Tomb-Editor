@@ -1439,7 +1439,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public void WriteAnimatedTextures(BinaryWriterEx writer)
+        public void WriteAnimatedTextures(BinaryWriter writer)
         {
             int numAnimatedTextures = 1;
             foreach (var list in _animTextureIndices)
@@ -1455,7 +1455,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public void WriteTextureInfos(BinaryWriterEx writer, Level level)
+        public void WriteTextureInfos(BinaryWriter writer, Level level)
         {
             writer.Write((int)_objectTextures.Count);
             for (int i = 0; i < _objectTextures.Count; i++)

@@ -5,6 +5,7 @@ local CustomDiary = require("Engine.CustomDiary")
 -- !Description "Create a diary from template file stored in scripts folder."
 -- !Arguments "NewLine, String, [ NoMultiline ], {DiarySetup}, Name of the file to import diary entries"
 
+
 LevelFuncs.Engine.Node.DiaryImport = function(fileName)
 	CustomDiary.ImportDiary(fileName)
 end
