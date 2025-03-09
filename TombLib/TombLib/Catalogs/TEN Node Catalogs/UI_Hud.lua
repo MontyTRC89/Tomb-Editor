@@ -364,7 +364,7 @@ LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, 
 
 end
 
--- !Name "Create bars for Player stats"
+-- !Name "Create bars for player stats"
 -- !Section "User interface"
 -- !Conditional "False"
 -- !Description "Draw bar for player stats"
