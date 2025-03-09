@@ -23,8 +23,10 @@ TombIDE:
 TEN nodes:
  * Added nodes for using keypads.
  * Added nodes to create and customize the diary feature.
- * Added nodes to change transparency of moveables and statics.
+ * Added nodes for custom bars and enemy health bars.
+ * Added a node for showing ammo counter.
  * Added a node to hide or show a moveable.
+ * Added nodes to change transparency of moveables and statics.
 
 TEN base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
@@ -86,10 +88,6 @@ Tomb Editor:
  * Added smaller texture selection sizes into the texturing panel.
  * Added adjustable quality settings for 3D objects (potentially fixes 3D view texture corruption).
  * Added TEN nodes for revolving / stopping the revolution of an object around other object (vertically and horizontally).
- * Added TEN nodes for custom bars.
- * Added TEN node for showing enemy health bars.
- * Added TEN node for customizing health bars for specific enemies.
- * Added TEN node for showing ammo counter.
  * Added TEN nodes for checking and modifying last used inventory object.
  * Added TEN nodes to generate particles from a static object or from a volume.
  * Added TEN node to check if a particular sound is playing.
