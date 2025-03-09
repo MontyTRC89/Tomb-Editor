@@ -176,7 +176,7 @@ LevelFuncs.Engine.Node.DeleteCustomBar = function(barName)
 	end
 end
 
--- !Name "Show or hide custom bar"
+-- !Name "Show or hide the custom bar"
 -- !Section "User interface"
 -- !Description "Hides or Shows the custom bar."
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Bar name"
@@ -426,7 +426,7 @@ LevelFuncs.Engine.Node.ConstructLaraBar = function(bartype, showBar, blink, obje
 
 end
 
--- !Name "Start or stops enemy health bars"
+-- !Name "Start or stop enemy health bars"
 -- !Section "User interface"
 -- !Description "Starts or Stops the enemy health bars."
 -- !Arguments "Enumeration, 30, [ Stop | Start ], Status"
