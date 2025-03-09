@@ -2,7 +2,7 @@ LevelVars.Engine.Keypad = LevelVars.Engine.Keypad or {}
 LevelVars.Engine.ActivatedKeypad = nil
 
 -- !Name "Create a keypad"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Create a keypad."
 -- !Arguments "NewLine, 80, Moveables, Keypad Object"
 -- !Arguments "Numerical, 20, [ 1000 | 9999 ], PassCode"
@@ -27,7 +27,7 @@ LevelFuncs.Engine.Node.KeypadCreate = function(object, code, camera, volume)
 end
 
 -- !Name "Run a keypad (Triggers)"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Create keypad to activate the triggers using Trigger_Triggerer."
 -- !Arguments "NewLine, Moveables, Keypad Object"
 -- !Arguments "NewLine, Moveables, Trigger_Triggerer object to activate."
@@ -81,7 +81,7 @@ LevelFuncs.Engine.Node.KeypadTrigger = function(object, triggerer)
 
 end
 -- !Name "Run a keypad (Volume Event)"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Create a keypad to run a volume event."
 -- !Arguments "NewLine, Moveables, Keypad Object"
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
@@ -140,7 +140,7 @@ LevelFuncs.Engine.Node.KeypadVolume = function(object, volumeEvent, eventType)
 end
 
 -- !Name "Run a keypad (Script function)"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Create a keypad to run a script function."
 -- !Arguments "NewLine, Moveables, Keypad Object"
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"

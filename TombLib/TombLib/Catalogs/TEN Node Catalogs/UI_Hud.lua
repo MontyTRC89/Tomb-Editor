@@ -1,8 +1,8 @@
---UI/Hud Nodes by Adngel,DaviDMRR and TrainWreck ; Code references by Lwmte and TEN Nodes.
+--User interface Nodes by Adngel,DaviDMRR and TrainWreck ; Code references by Lwmte and TEN Nodes.
 local CustomBar = require("Engine.CustomBar")
 
 -- !Name "Create basic custom bar"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Conditional "False"
 -- !Description "Creates a bar with max value 1000"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
@@ -54,7 +54,7 @@ LevelFuncs.Engine.Node.BasicBars = function(barName, startvalue, maxValue, posX,
 end
 
 -- !Name "Create advanced custom bar"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Conditional "False"
 -- !Description "Creates a custom bar"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
@@ -124,7 +124,7 @@ LevelFuncs.Engine.Node.DisplayBars = function(barName, startValue, maxValue, obj
 	end
 end
 -- !Name "Change custom bar value over time"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Change bar value over time"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "Numerical, [ -65535 | 65535 | 2 | 1 | 1 ], {1}, 25, Value"
@@ -143,7 +143,7 @@ LevelFuncs.Engine.Node.ChangeBarValueOverTimespan = function(barName, value, tim
 end
 
 -- !Name "Set custom bar value over time"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Set bar value over time"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "Numerical, [ -65535 | 65535 | 2 | 1 | 1 ], {1}, 25, Value"
@@ -162,7 +162,7 @@ LevelFuncs.Engine.Node.SetBarValueOverTimespan = function(barName, value, time)
 end
 
 -- !Name "Delete custom bar"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Delete a custom bar"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Bar name"
 
@@ -178,7 +178,7 @@ LevelFuncs.Engine.Node.DeleteCustomBar = function(barName)
 end
 
 -- !Name "Show/Hide custom bar"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Hides or Shows the custom bar"
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Bar name"
 -- !Arguments "Enumeration, 30, [ Not visible | Visible ], Visibility"
@@ -201,7 +201,7 @@ LevelFuncs.Engine.Node.BarVisibility = function(barName, value)
 end
 
 -- !Name "If custom bar is visible..."
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Checks if specified custom bar is visible"
 -- !Conditional "True"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Bar name"
@@ -223,7 +223,7 @@ LevelFuncs.Engine.Node.TestBarVisibility = function(barName)
 end
 
 -- !Name "If custom bar value is..."
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Checks if specified bar value complies to specified compare function"
 -- !Conditional "True"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
@@ -243,7 +243,7 @@ LevelFuncs.Engine.Node.TestBarValue = function(barName, operator, value)
 end
 
 -- !Name "Draw health bar for all enemies"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Conditional "False"
 -- !Description "Draw health bar for all enemies"
 -- !Arguments "Newline, Number, 25, {78.6}, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
@@ -286,7 +286,7 @@ LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(posX, posY, colorbar)
 end
 
 -- !Name "Draw health bar for specific enemy"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Conditional "False"
 -- !Description "Draw health bar for an enemy"
 -- !Arguments "NewLine, Moveables, Enemy to show health bar for"
@@ -365,7 +365,7 @@ LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, 
 end
 
 -- !Name "Create bars for Player stats"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Conditional "False"
 -- !Description "Draw bar for player stats"
 -- !Arguments "NewLine, Enumeration, 20, [ Health | Air | Sprint ], {0}, Bar Type"
@@ -428,7 +428,7 @@ LevelFuncs.Engine.Node.ConstructLaraBar = function(bartype, showBar, blink, obje
 end
 
 -- !Name "Start/Stop enemy health bars"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Description "Starts or Stops the enemy health bars"
 -- !Arguments "Enumeration, 30, [ Stop | Start ], Status"
 -- !Arguments "NewLine, Boolean , Hide existing bars"
@@ -451,7 +451,7 @@ LevelVars.AmmoCounter = {}
 -- !Name "Show ammo counter"
 -- !Conditional "False"
 -- !Description "Displays the number of available ammo of the weapon in hand"
--- !Section "UI/Hud"
+-- !Section "User interface"
 -- !Arguments "NewLine, Enumeration , 65,[ Counter + ammo name | Use only counter], {1}, Display type"
 -- !Arguments "Color, 17, {TEN.Color(255,255,255)}, Counter text color"
 -- !Arguments "Enumeration , 19,[ Left	| Center | Right ], Text alignment"
@@ -510,7 +510,7 @@ end
 -- !Name "Remove ammo counter"
 -- !Conditional "False"
 -- !Description "Remove the number of available ammo"
--- !Section "UI/Hud"
+-- !Section "User interface"
 LevelFuncs.Engine.Node.RemoveAmmoCounter = function()
 	RemoveCallback(TEN.Logic.CallbackPoint.POSTCONTROLPHASE, LevelFuncs.Engine.Node.__ShowAmmoCounter)
 end
