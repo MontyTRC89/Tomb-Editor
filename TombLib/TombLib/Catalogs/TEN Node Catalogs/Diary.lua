@@ -292,7 +292,7 @@ end
 
 -- !Name "Clear a diary"
 -- !Section "Diary"
--- !Description "Clears a diary. Please do this once a diary has served its purpose. \n It helps reduce the savegame size."
+-- !Description "Clears a diary. Do this once a diary has served its purpose to conserve savegame memory."
 -- !Arguments "NewLine, WadSlots, [ _ITEM ], {TEN.Objects.ObjID.DIARY_ITEM}, Diary to clear."
 
 LevelFuncs.Engine.Node.ClearDiary = function(object)
