@@ -1,8 +1,7 @@
-Version 1.7.5
-=============
+Version 1.8
+===========
 
 Tomb Editor:
-
  * Fixed exception on copying memo or imported geometry position to clipboard.
  * Fixed trigger export returning wrong ConditionNg mask for non-moveable objects.
  * Fixed texture errors with high texinfo count in TEN levels.
