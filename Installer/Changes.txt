@@ -11,9 +11,9 @@ Tomb Editor:
  * Added TEN nodes for using keypads.
  * Added TEN node to hide or show a moveable.
  * Added TEN nodes to create and customize the diary feature.
+ * Added TEN nodes to change transparency of moveables and statics.
  * Allow to move camera up and down with E and Q keys in fly mode.
  * Imported geometry object tag now also shows rotation and scale.
- * Added TEN nodes to change transparency of mvoeables and statics over time.
 
 WadTool:
  * Added option to cancel skeleton editor closing if a warning about unbalanced meshtree is thrown.
