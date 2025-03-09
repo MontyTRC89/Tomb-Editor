@@ -4,7 +4,7 @@ local CustomBar = require("Engine.CustomBar")
 -- !Name "Create basic custom bar"
 -- !Section "UI/Hud"
 -- !Conditional "False"
--- !Description "Creates a bar with max value 1000."
+-- !Description "Creates a bar with max value 1000"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "Number, [ 0 | 65535 | 2 ], {0}, 25, Start value of bar"
 -- !Arguments "Number, [ 0 | 65535 | 2 ], {1000}, 25, Max value of bar"
@@ -56,7 +56,7 @@ end
 -- !Name "Create advanced custom bar"
 -- !Section "UI/Hud"
 -- !Conditional "False"
--- !Description "Creates a custom bar."
+-- !Description "Creates a custom bar"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "Number, [ 0 | 65535 | 2 ], {0}, 25, Start value of bar"
 -- !Arguments "Number, [ 0 | 65535 | 2 ], {1000}, 25, Max value of bar"
@@ -125,7 +125,7 @@ LevelFuncs.Engine.Node.DisplayBars = function(barName, startValue, maxValue, obj
 end
 -- !Name "Change custom bar value over time"
 -- !Section "UI/Hud"
--- !Description "Change bar value over time."
+-- !Description "Change bar value over time"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "Numerical, [ -65535 | 65535 | 2 | 1 | 1 ], {1}, 25, Value"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)"
@@ -144,7 +144,7 @@ end
 
 -- !Name "Set custom bar value over time"
 -- !Section "UI/Hud"
--- !Description "Set bar value over time."
+-- !Description "Set bar value over time"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "Numerical, [ -65535 | 65535 | 2 | 1 | 1 ], {1}, 25, Value"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)"
@@ -163,7 +163,7 @@ end
 
 -- !Name "Delete custom bar"
 -- !Section "UI/Hud"
--- !Description "Delete a custom bar."
+-- !Description "Delete a custom bar"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Bar name"
 
 LevelFuncs.Engine.Node.DeleteCustomBar = function(barName)
@@ -179,7 +179,7 @@ end
 
 -- !Name "Show/Hide custom bar"
 -- !Section "UI/Hud"
--- !Description "Hides or Shows the custom bar."
+-- !Description "Hides or Shows the custom bar"
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Bar name"
 -- !Arguments "Enumeration, 30, [ Not visible | Visible ], Visibility"
 
@@ -202,7 +202,7 @@ end
 
 -- !Name "If custom bar is visible..."
 -- !Section "UI/Hud"
--- !Description "Checks if specified custom bar is visible."
+-- !Description "Checks if specified custom bar is visible"
 -- !Conditional "True"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Bar name"
 
@@ -224,7 +224,7 @@ end
 
 -- !Name "If custom bar value is..."
 -- !Section "UI/Hud"
--- !Description "Checks if specified bar value complies to specified compare function."
+-- !Description "Checks if specified bar value complies to specified compare function"
 -- !Conditional "True"
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "CompareOperator, 25" "Numerical, 25, [ 0 | 1000 | 2 ], Bar value"
@@ -245,7 +245,7 @@ end
 -- !Name "Draw health bar for all enemies"
 -- !Section "UI/Hud"
 -- !Conditional "False"
--- !Description "Draw health bar for all enemies."
+-- !Description "Draw health bar for all enemies"
 -- !Arguments "Newline, Number, 25, {78.6}, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, 25,{12}, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Color, 25, {TEN.Color(255,0,0)}, Color of bar"
@@ -288,7 +288,7 @@ end
 -- !Name "Draw health bar for specific enemy"
 -- !Section "UI/Hud"
 -- !Conditional "False"
--- !Description "Draw health bar for an enemy."
+-- !Description "Draw health bar for an enemy"
 -- !Arguments "NewLine, Moveables, Enemy to show health bar for"
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Enemy name" "Numerical, 15, X position, [ 0 | 100 ]" "Numerical, 15, Y position, [ 0 | 100 ]"
 -- !Arguments "NewLine, Enumeration, 20, [ Left | Center | Right ], Horizontal alignment"
@@ -308,8 +308,8 @@ end
 -- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
 -- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
 -- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
--- !Arguments "Newline, Boolean, 80, Show health bar when enemy is not targeted."
--- !Arguments "Boolean, 20, Hide text.
+-- !Arguments "Newline, Boolean, 80, Show health bar when enemy is not targeted"
+-- !Arguments "Boolean, 20, Hide text"
 
 LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, textAlignment, textEffects, textScale, textColor, spriteIdBg, colorBg, spriteIdBar, colorBar,posXBg, posYBg, rotBg, scaleXBg, scaleYBg, posX, posY, rot, scaleX, scaleY, showBar, hideText)
 	
@@ -364,11 +364,13 @@ LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, 
 
 end
 
--- !Name "Create bars for Player stats."
+-- !Name "Create bars for Player stats"
 -- !Section "UI/Hud"
 -- !Conditional "False"
--- !Description "Draw bar for player stats."
--- !Arguments "NewLine, Enumeration, 100, [ Health | Air | Sprint ], {0}, Bar Type"
+-- !Description "Draw bar for player stats"
+-- !Arguments "NewLine, Enumeration, 20, [ Health | Air | Sprint ], {0}, Bar Type"
+-- !Arguments "Boolean, 40, Show stat bar always"
+-- !Arguments "Boolean, 40, Blink"
 -- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
 -- !Arguments "Number, 20, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
 -- !Arguments "Color, 20, {TEN.Color(255,255,255)}, Color of background sprite"
@@ -388,9 +390,7 @@ end
 -- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {3}, Align mode"
 -- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
--- !Arguments "Newline, Boolean, 50, Show stat bar always."
--- !Arguments "Boolean, 50, Blink."
-LevelFuncs.Engine.Node.ConstructLaraBar = function(bartype, objectIDbg, spriteIDbg, colorbg, posXBG, posYBG, rotBG, scaleXBG, scaleYBG, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode, showBar, blink)
+LevelFuncs.Engine.Node.ConstructLaraBar = function(bartype, showBar, blink, objectIDbg, spriteIDbg, colorbg, posXBG, posYBG, rotBG, scaleXBG, scaleYBG, objectIDbar, spriteIDbar, colorbar, posX, posY, rot, scaleX, scaleY, alignMode, scaleMode, blendMode)
 
 	local operand = bartype+1
 	local alignM = LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode(alignMode)
@@ -427,9 +427,9 @@ LevelFuncs.Engine.Node.ConstructLaraBar = function(bartype, objectIDbg, spriteID
 
 end
 
--- !Name "Start/Stop enemy health bars."
+-- !Name "Start/Stop enemy health bars"
 -- !Section "UI/Hud"
--- !Description "Starts or Stops the enemy health bars."
+-- !Description "Starts or Stops the enemy health bars"
 -- !Arguments "Enumeration, 30, [ Stop | Start ], Status"
 -- !Arguments "NewLine, Boolean , Hide existing bars"
 
@@ -452,28 +452,28 @@ LevelVars.AmmoCounter = {}
 -- !Conditional "False"
 -- !Description "Displays the number of available ammo of the weapon in hand"
 -- !Section "UI/Hud"
--- !Arguments "NewLine, Enumeration , 65,[ Counter + ammo name | Use only counter], Display type"
--- !Arguments "Color, 17, Counter text color"
+-- !Arguments "NewLine, Enumeration , 65,[ Counter + ammo name | Use only counter], {1}, Display type"
+-- !Arguments "Color, 17, {TEN.Color(255,255,255)}, Counter text color"
 -- !Arguments "Enumeration , 19,[ Left	| Center | Right ], Text alignment"
--- !Arguments "NewLine, Numerical, 17, [ 0 | 100 | 1 | 0.1 ], Counter position x"
--- !Arguments "Numerical, 17, [ 0 | 100 | 1 | 0.1 ], Counter position y"
+-- !Arguments "NewLine, Numerical, 17, [ 0 | 100 | 1 | 0.1 ], {95}, Counter position x"
+-- !Arguments "Numerical, 17, [ 0 | 100 | 1 | 0.1 ], {5}, Counter position y"
 -- !Arguments "Numerical, 17, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
--- !Arguments "Enumeration, 49, [ Flat | Shadow | Blinking | Shadow + Blinking ], Effects"
--- !Arguments "NewLine, Boolean , 40, Show unlimited ammo"
--- !Arguments "Boolean , 60, Swap ammo name & counter position"
--- !Arguments "Newline, Boolean , 33, Show sprite"
--- !Arguments "Newline, SpriteSlots, 80, Bar sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_AMMO_GRAPHIC}"
--- !Arguments "Color, 20, Color of Ammo Counter"
--- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
--- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Enumeration, 49, [ Flat | Shadow | Blinking | Shadow + Blinking ], {1}, Effects"
+-- !Arguments "Newline, SpriteSlots, 80, {TEN.Objects.ObjID.CUSTOM_AMMO_GRAPHIC}, Bar sprite sequence object ID"
+-- !Arguments "Color, 20, {TEN.Color(255,255,255)}, Color of ammo counter sprite"
+-- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], {94}, Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
+-- !Arguments "Number, 20, [ -1000 | 1000 | 2 ], {5}, Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Number, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
--- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
--- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
--- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {3}, Align mode"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], {5}, Scale X (%)\nRange [0 to 1000]"
+-- !Arguments "Number, 20, {100}, [ 0 | 1000 | 2 ], {5}, Scale Y (%)\nRange [0 to 1000]"
+-- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {6}, Align mode"
 -- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
+-- !Arguments "NewLine, Boolean , 40, Show unlimited ammo"
+-- !Arguments "Boolean , 60, Swap ammo name & counter position"
+-- !Arguments "Newline, Boolean , 33, {true}, Show sprite"
 
-LevelFuncs.Engine.Node.ShowAmmoCounter = function(displayType, color, alignment, posX, posY, scale, effect, unlimited, swap, sprite, objectIDammo, spriteColor, spritePosX, spritePosY, rot, spriteScaleX, spriteScaleY, alignMode, scaleMode, blendMode)
+LevelFuncs.Engine.Node.ShowAmmoCounter = function(displayType, color, alignment, posX, posY, scale, effect, objectIDammo, spriteColor, spritePosX, spritePosY, rot, spriteScaleX, spriteScaleY, alignMode, scaleMode, blendMode, unlimited, swap, sprite)
 	LevelVars.AmmoCounter.DisplayType	= displayType
 	LevelVars.AmmoCounter.Color			= color
 	LevelVars.AmmoCounter.Alignment		= alignment
@@ -543,7 +543,7 @@ LevelFuncs.Engine.Node.__ShowAmmoCounter = function()
 		LevelVars.AmmoCounter.TargetAlpha = 0
 	end
 	
-	if LevelVars.AmmoCounter.CurrentAlpha > 0 and Lara:GetHP() > 0 then
+	if LevelVars.AmmoCounter.CurrentAlpha > 0 and Lara:GetHP() > 0 and Lara:GetHandStatus() ~= 0 then
 		local number = (Lara:GetAmmoCount() >= 0) and Lara:GetAmmoCount() or (LevelVars.AmmoCounter.Unlimited and (GetString("unlimited"):gsub(" ", "")):gsub("%%s", "") or "")
 		local ammoName = (LevelVars.AmmoCounter.DisplayType == 0) and ((not LevelVars.AmmoCounter.Unlimited and Lara:GetAmmoCount() < 0) and "" or GetString(LevelVars.AmmoCounter.AmmoName[Lara:GetAmmoType()])) or ""
 		local ammoText = (ammoName == "") and tostring(number) or ((LevelVars.AmmoCounter.Swap) and ammoName .. " " .. number or number .. " " .. ammoName)
