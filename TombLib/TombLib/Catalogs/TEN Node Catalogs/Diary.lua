@@ -148,7 +148,7 @@ end
 
 -- !Name "Customize controls for a diary"
 -- !Section "Diary"
--- !Description "Customize Controls for a diary."
+-- !Description "Customize controls for a diary."
 -- !Arguments "NewLine, WadSlots, [ _ITEM ], {TEN.Objects.ObjID.DIARY_ITEM}, Diary object to customize controls for"
 -- !Arguments "NewLine, Numerical, 33, [ 0 | 100 ], {5}, X position" "Numerical, 33, [ 0 | 100 ] {95}, Y position"
 -- !Arguments "NewLine, Enumeration, 20, [ Left | Center | Right ], Horizontal alignment"
@@ -233,7 +233,7 @@ end
 
 -- !Name "Add or update narration to a diary page"
 -- !Section "Diary"
--- !Description "Add or update narration soundtrack to specified page number"
+-- !Description "Add or update narration soundtrack to specified page number."
 -- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], {TEN.Objects.ObjID.DIARY_ITEM}, Diary object to add narration to" "Numerical, 20, [ 1 | 65535 ], {1}, Page number to add narration to"
 -- !Arguments "NewLine, SoundTracks, Name of the audiotrack to add as narration to the page"
 
