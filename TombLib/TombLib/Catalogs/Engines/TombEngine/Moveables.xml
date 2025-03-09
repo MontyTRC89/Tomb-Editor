@@ -359,6 +359,8 @@
     <moveable id="450" name="SWINGING_BLADE" />
 	<moveable id="451" name="ELECTRIC_BALL" />
 	<moveable id="452" name="ELECTRIC_BALL_IMPACT_POINT" />
+	<moveable id="453" name="THOR_HAMMER_HANDLE" />
+	<moveable id="454" name="THOR_HAMMER_HEAD" />
 	<moveable id="455" name="MOVING_LASER" freeRot="true" />
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
