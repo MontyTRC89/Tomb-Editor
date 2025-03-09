@@ -262,7 +262,7 @@
     <None Update="Catalogs\TEN Node Catalogs\Timespan Actions.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Catalogs\TEN Node Catalogs\UI_Hud.lua">
+    <None Update="Catalogs\TEN Node Catalogs\UI.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\View.lua">
