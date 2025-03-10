@@ -163,9 +163,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				FlippedRoom = room.AlternateRoom,
 				BaseRoom = room.AlternateBaseRoom,
 				ReverbInfo = room.Properties.Reverberation,
-				Flags = 0,
-				FloorWaterPlaneIndex = -1,
-				CeilingWaterPlaneIndex = -1
+				Flags = 0
 			};
 
 			if (!room.Alternated)
@@ -1718,10 +1716,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 							{
 								int waterPlaneIndex = _waterPlanes.IndexOf(p => p.Y == y);
 								bucket.Key.WaterPlaneIndex = waterPlaneIndex;
-								if (_waterPlanes[waterPlaneIndex].IsFloor)
-									room.FloorWaterPlaneIndex = waterPlaneIndex;
-								else
-									room.CeilingWaterPlaneIndex = waterPlaneIndex;
 							}
 						}
 					}
