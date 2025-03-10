@@ -439,9 +439,10 @@ namespace TombLib.LevelData.Compilers
 
             // Filter out singular key/switch triggers, as they are technically invalid in engine
             if (triggers.Count == 1 && (triggers[0].TriggerType == TriggerType.Key ||
-                                        triggers[0].TriggerType == TriggerType.Switch))
+                                        triggers[0].TriggerType == TriggerType.Switch ||
+                                        triggers[0].TriggerType == TriggerType.Pickup))
             {
-                _progressReporter.ReportWarn("Key or switch trigger in room " + room + " at sector (" + pos.X + "," + pos.Y +
+                _progressReporter.ReportWarn("Key, switch or pickup trigger in room " + room + " at sector (" + pos.X + "," + pos.Y +
                                              ") has no additional actions and will be ignored.");
             }
             else if (triggers.Count > 0)
