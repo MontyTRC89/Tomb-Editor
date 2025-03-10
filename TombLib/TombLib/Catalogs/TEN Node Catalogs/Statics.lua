@@ -55,14 +55,6 @@ end
 -- !Arguments "Numerical, 30, Scale value, [ 0 | 1024 | 0 ]"
 
 LevelFuncs.Engine.Node.TestStaticHP = function(staticName, operator, value)
-	
-	local slotCheck = GetStaticByName(staticName):GetSlot()
-
-    if slotCheck < 50 or slotCheck > 59 then
-        print("Non-shatter object '" .. tostring(staticName) .. "' selected. Hit point comparison ignored.")      
-    return
-    end
-	
 	local hp = TEN.Objects.GetStaticByName(staticName):GetHP()
 	return LevelFuncs.Engine.Node.CompareValue(hp, value, operator)
 end
@@ -228,13 +220,6 @@ end
 -- !Arguments "Numerical, 30, [ 0 | 1024 ], Hit Points"
 
 LevelFuncs.Engine.Node.SetShatterHP = function(staticName, HP)
-    local slotCheck = GetStaticByName(staticName):GetSlot()
-
-    if slotCheck < 50 or slotCheck > 59 then
-        print("Non-shatter object '" .. tostring(staticName) .. "' selected. Hit point change ignored.")      
-    return
-    end
-
     TEN.Objects.GetStaticByName(staticName):SetHP(HP)
 end
 
