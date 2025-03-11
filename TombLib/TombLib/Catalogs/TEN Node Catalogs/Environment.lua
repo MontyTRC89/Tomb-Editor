@@ -459,7 +459,7 @@ end
 -- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
 -- !Arguments "Numerical, 15, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency"
 
-LevelFuncs.Engine.Node.SetHorizonRotation = function(type, transparency)
+LevelFuncs.Engine.Node.SetHorizonTransparency = function(type, transparency)
 	
 	if (type == 0) then
 		TEN.Flow.GetCurrentLevel().horizon1.transparency = transparency
