@@ -80,13 +80,13 @@ LevelFuncs.Engine.Node.ConstructWeatherTimedData = function(dataType, operand, n
 	LevelVars.Engine.WeatherData[dataName].NewValue   = newValue
 	LevelVars.Engine.WeatherData[dataName].OldValue   = value
 
-	local timer = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformTimedData, dataName)
+	local timer = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformWeatherTimedData, dataName)
 	timer:Start()
 end
 
 -- !Ignore
 -- Transform object parameter using previously saved timed transform data
-LevelFuncs.Engine.Node.TransformTimedData = function(dataName)
+LevelFuncs.Engine.Node.TransformWeatherTimedData = function(dataName)
 
 	LevelVars.Engine.WeatherData[dataName].Progress = math.min(LevelVars.Engine.WeatherData[dataName].Progress + LevelVars.Engine.WeatherData[dataName].Interval, 1)
 	local factor = LevelVars.Engine.WeatherData[dataName].Smooth and LevelFuncs.Engine.Node.Smoothstep(LevelVars.Engine.WeatherData[dataName].Progress) or LevelVars.Engine.WeatherData[dataName].Progress
