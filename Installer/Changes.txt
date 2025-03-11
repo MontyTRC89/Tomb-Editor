@@ -32,6 +32,7 @@ TEN nodes:
 TEN base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
  * Added DIARY_ITEM (986) and associated sprites slots (1384, 1385)
+ * Replaced LARA animation 368 with UNDERWATER_FLOOR_TRAPDOOR_OPEN.
  * Replaced stopwatch with a generic model due to legal reasons.
  * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
 
