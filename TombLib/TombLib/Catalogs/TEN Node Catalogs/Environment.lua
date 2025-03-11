@@ -31,7 +31,7 @@ LevelFuncs.Engine.Node.ConstructWeatherTimedData = function(dataType, operand, n
 		local meteorVelocity = TEN.Flow.GetCurrentLevel().starField.meteorVelocity
 		value = {x1 = starCount, x2 = meteorCount, x3 = meteorDensity, x4 = meteorVelocity}
 	elseif (dataType == 5) then
-		prefix = "_weaterStrength"
+		prefix = "_weatherStrength"
         value = TEN.Flow.GetCurrentLevel().weatherStrength
 	elseif (dataType == 6) then
 		prefix = "_horizon1Position"
