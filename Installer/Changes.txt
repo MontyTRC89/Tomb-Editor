@@ -6,7 +6,7 @@ Tomb Editor:
  * Fixed trigger export returning wrong ConditionNg mask for non-moveable objects.
  * Fixed texture errors with high texinfo count in TEN levels.
  * Fixed few cases of new nodes spawning in the bottom left corner of a node graph.
- * Added object transform window for precise editing of object position, rotation, and scale.
+ * Added object transform window and Ctrl+T shortcut for precise editing of object position, rotation, and scale.
  * Added ability to scale a group of static meshes in TEN levels.
  * Allow to move camera up and down with E and Q keys in fly mode.
  * Imported geometry object tag now also shows rotation and scale.
