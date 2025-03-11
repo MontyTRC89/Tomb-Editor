@@ -564,7 +564,7 @@ namespace TombLib.Utils
         /// the ray, no intersection is assumed to have happened. In both cases of assumptions,
         /// this method returns false.
         /// </remarks>
-        public static bool RayIntersectsTriangle(in Ray ray, in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3, bool bothSides, out float distance)
+        public static bool RayIntersectsTriangle(Ray ray, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3, bool bothSides, out float distance)
         {
             //Source: Fast Minimum Storage Ray / Triangle Intersection
             //Reference: http://www.cs.virginia.edu/~gfx/Courses/2003/ImageSynthesis/papers/Acceleration/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
@@ -664,7 +664,7 @@ namespace TombLib.Utils
         /// <param name="point">When the method completes, contains the point of intersection,
         /// or <see cref="Vector3.Zero"/> if there was no intersection.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool RayIntersectsTriangle(in Ray ray, in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3, bool bothSides, out Vector3 point)
+        public static bool RayIntersectsTriangle(Ray ray, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3, bool bothSides, out Vector3 point)
         {
             float distance;
             if (!RayIntersectsTriangle(ray, vertex1, vertex2, vertex3, bothSides, out distance))
@@ -685,7 +685,7 @@ namespace TombLib.Utils
         /// <param name="distance">When the method completes, contains the distance of the intersection,
         /// or 0 if there was no intersection.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool RayIntersectsBox(in Ray ray, in BoundingBox box, out float distance)
+        public static bool RayIntersectsBox(Ray ray, BoundingBox box, out float distance)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 179
@@ -797,7 +797,7 @@ namespace TombLib.Utils
         /// <param name="point">When the method completes, contains the point of intersection,
         /// or <see cref="Vector3.Zero"/> if there was no intersection.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool RayIntersectsBox(in Ray ray, in BoundingBox box, out Vector3 point)
+        public static bool RayIntersectsBox(Ray ray, BoundingBox box, out Vector3 point)
         {
             float distance;
             if (!RayIntersectsBox(ray, box, out distance))
@@ -818,7 +818,7 @@ namespace TombLib.Utils
         /// <param name="distance">When the method completes, contains the distance of the intersection,
         /// or 0 if there was no intersection.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool RayIntersectsSphere(in Ray ray, in BoundingSphere sphere, out float distance)
+        public static bool RayIntersectsSphere(Ray ray, BoundingSphere sphere, out float distance)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 177
@@ -857,7 +857,7 @@ namespace TombLib.Utils
         /// <param name="point">When the method completes, contains the point of intersection,
         /// or <see cref="Vector3.Zero"/> if there was no intersection.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool RayIntersectsSphere(in Ray ray, in BoundingSphere sphere, out Vector3 point)
+        public static bool RayIntersectsSphere(Ray ray, BoundingSphere sphere, out Vector3 point)
         {
             float distance;
             if (!RayIntersectsSphere(ray, sphere, out distance))
@@ -876,7 +876,7 @@ namespace TombLib.Utils
         /// <param name="plane">The plane to test.</param>
         /// <param name="point">The point to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static PlaneIntersectionType PlaneIntersectsPoint(in Plane plane, in Vector3 point)
+        public static PlaneIntersectionType PlaneIntersectsPoint(Plane plane, Vector3 point)
         {
             float distance = Vector3.Dot(plane.Normal, point);
             distance += plane.D;
@@ -896,7 +896,7 @@ namespace TombLib.Utils
         /// <param name="plane1">The first plane to test.</param>
         /// <param name="plane2">The second plane to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool PlaneIntersectsPlane(in Plane plane1, in Plane plane2)
+        public static bool PlaneIntersectsPlane(Plane plane1, Plane plane2)
         {
             Vector3 direction = Vector3.Cross(plane1.Normal, plane2.Normal);
 
@@ -923,7 +923,7 @@ namespace TombLib.Utils
         /// a line in three dimensions which has no real origin. The ray is considered valid when
         /// both the positive direction is used and when the negative direction is used.
         /// </remarks>
-        public static bool PlaneIntersectsPlane(in Plane plane1, in Plane plane2, out Ray line)
+        public static bool PlaneIntersectsPlane(Plane plane1, Plane plane2, out Ray line)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 207
@@ -966,7 +966,7 @@ namespace TombLib.Utils
         /// <param name="vertex2">The second vertex of the triangle to test.</param>
         /// <param name="vertex3">The third vertex of the triangle to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static PlaneIntersectionType PlaneIntersectsTriangle(in Plane plane, in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3)
+        public static PlaneIntersectionType PlaneIntersectsTriangle(Plane plane, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 207
@@ -990,7 +990,7 @@ namespace TombLib.Utils
         /// <param name="plane">The plane to test.</param>
         /// <param name="box">The box to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static PlaneIntersectionType PlaneIntersectsBox(in Plane plane, in BoundingBox box)
+        public static PlaneIntersectionType PlaneIntersectsBox(Plane plane, BoundingBox box)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 161
@@ -1024,7 +1024,7 @@ namespace TombLib.Utils
         /// <param name="plane">The plane to test.</param>
         /// <param name="sphere">The sphere to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static PlaneIntersectionType PlaneIntersectsSphere(in Plane plane, in BoundingSphere sphere)
+        public static PlaneIntersectionType PlaneIntersectsSphere(Plane plane, BoundingSphere sphere)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 160
@@ -1071,7 +1071,7 @@ namespace TombLib.Utils
         /// <param name="box1">The first box to test.</param>
         /// <param name="box2">The second box to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool BoxIntersectsBox(in BoundingBox box1, in BoundingBox box2)
+        public static bool BoxIntersectsBox(BoundingBox box1, BoundingBox box2)
         {
             if (box1.Minimum.X > box2.Maximum.X || box2.Minimum.X > box1.Maximum.X)
                 return false;
@@ -1091,7 +1091,7 @@ namespace TombLib.Utils
         /// <param name="box">The box to test.</param>
         /// <param name="sphere">The sphere to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool BoxIntersectsSphere(in BoundingBox box, in BoundingSphere sphere)
+        public static bool BoxIntersectsSphere(BoundingBox box, BoundingSphere sphere)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 166
@@ -1110,7 +1110,7 @@ namespace TombLib.Utils
         /// <param name="vertex2">The second vertex of the triangle to test.</param>
         /// <param name="vertex3">The third vertex of the triangle to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool SphereIntersectsTriangle(in BoundingSphere sphere, in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3)
+        public static bool SphereIntersectsTriangle(BoundingSphere sphere, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3)
         {
             //Source: Real-Time Collision Detection by Christer Ericson
             //Reference: Page 167
@@ -1129,7 +1129,7 @@ namespace TombLib.Utils
         /// <param name="sphere1">First sphere to test.</param>
         /// <param name="sphere2">Second sphere to test.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool SphereIntersectsSphere(in BoundingSphere sphere1, in BoundingSphere sphere2)
+        public static bool SphereIntersectsSphere(BoundingSphere sphere1, BoundingSphere sphere2)
         {
             float radiisum = sphere1.Radius + sphere2.Radius;
             return Vector3.DistanceSquared(sphere1.Center, sphere2.Center) <= radiisum * radiisum;
@@ -1141,7 +1141,7 @@ namespace TombLib.Utils
         /// <param name="box">The box to test.</param>
         /// <param name="point">The point to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
-        public static ContainmentType BoxContainsPoint(in BoundingBox box, in Vector3 point)
+        public static ContainmentType BoxContainsPoint(BoundingBox box, Vector3 point)
         {
             if (box.Minimum.X <= point.X && box.Maximum.X >= point.X &&
                 box.Minimum.Y <= point.Y && box.Maximum.Y >= point.Y &&
@@ -1184,7 +1184,7 @@ namespace TombLib.Utils
         /// <param name="box1">The first box to test.</param>
         /// <param name="box2">The second box to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
-        public static ContainmentType BoxContainsBox(in BoundingBox box1, in BoundingBox box2)
+        public static ContainmentType BoxContainsBox(BoundingBox box1, BoundingBox box2)
         {
             if (box1.Maximum.X < box2.Minimum.X || box1.Minimum.X > box2.Maximum.X)
                 return ContainmentType.Disjoint;
@@ -1209,7 +1209,7 @@ namespace TombLib.Utils
         /// <param name="box">The box to test.</param>
         /// <param name="sphere">The sphere to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
-        public static ContainmentType BoxContainsSphere(in BoundingBox box, in BoundingSphere sphere)
+        public static ContainmentType BoxContainsSphere(BoundingBox box, BoundingSphere sphere)
         {
             Vector3 vector = Vector3.Clamp(sphere.Center, box.Minimum, box.Maximum);
             float distance = Vector3.DistanceSquared(sphere.Center, vector);
@@ -1231,7 +1231,7 @@ namespace TombLib.Utils
         /// <param name="sphere">The sphere to test.</param>
         /// <param name="point">The point to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
-        public static ContainmentType SphereContainsPoint(in BoundingSphere sphere, in Vector3 point)
+        public static ContainmentType SphereContainsPoint(BoundingSphere sphere, Vector3 point)
         {
             if (Vector3.DistanceSquared(point, sphere.Center) <= sphere.Radius * sphere.Radius)
                 return ContainmentType.Contains;
@@ -1247,7 +1247,7 @@ namespace TombLib.Utils
         /// <param name="vertex2">The second vertex of the triangle to test.</param>
         /// <param name="vertex3">The third vertex of the triangle to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
-        public static ContainmentType SphereContainsTriangle(in BoundingSphere sphere, in Vector3 vertex1, in Vector3 vertex2, in Vector3 vertex3)
+        public static ContainmentType SphereContainsTriangle(BoundingSphere sphere, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3)
         {
             //Source: Jorgy343
             //Reference: None
@@ -1278,7 +1278,7 @@ namespace TombLib.Utils
         /// <param name="sphere">The sphere to test.</param>
         /// <param name="box">The box to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
-        public static ContainmentType SphereContainsBox(in BoundingSphere sphere, in BoundingBox box)
+        public static ContainmentType SphereContainsBox(BoundingSphere sphere, BoundingBox box)
         {
             Vector3 vector;
 
@@ -1351,7 +1351,7 @@ namespace TombLib.Utils
         /// <param name="sphere1">The first sphere to test.</param>
         /// <param name="sphere2">The second sphere to test.</param>
         /// <returns>The type of containment the two objects have.</returns>
-        public static ContainmentType SphereContainsSphere(in BoundingSphere sphere1, in BoundingSphere sphere2)
+        public static ContainmentType SphereContainsSphere(BoundingSphere sphere1, BoundingSphere sphere2)
         {
             float distance = Vector3.Distance(sphere1.Center, sphere2.Center);
 

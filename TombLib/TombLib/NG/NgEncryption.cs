@@ -57,8 +57,8 @@ namespace TombLib.NG
 
             var iStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var oStream = new FileStream(target, FileMode.Open, FileAccess.Write, FileShare.Read);
-            var sr = new BinaryReader(iStream);
-            var sw = new BinaryWriter(oStream);
+            var sr = new BinaryReaderEx(iStream);
+            var sw = new BinaryWriterEx(oStream);
 
             try
             {

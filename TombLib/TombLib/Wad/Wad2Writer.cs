@@ -50,7 +50,7 @@ namespace TombLib.Wad
                 WriteWad2(chunkIO, wad);
         }
 
-        public static void SaveToBinaryWriterFast(Wad2 wad, BinaryWriter fastWriter)
+        public static void SaveToBinaryWriterFast(Wad2 wad, BinaryWriterFast fastWriter)
         {
             using (var chunkIO = new ChunkWriter(Wad2Chunks.MagicNumber, fastWriter))
                 WriteWad2(chunkIO, wad);

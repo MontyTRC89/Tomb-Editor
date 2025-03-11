@@ -16,7 +16,7 @@ namespace TombLib.IO
             Zlib = 1
         }
 
-        private readonly BinaryWriter _writer;
+        private readonly BinaryWriterFast _writer;
         private readonly Compression _compression;
         private readonly CompressionLevel _compressionLevel;
         private readonly Stream _baseStream;
@@ -32,18 +32,18 @@ namespace TombLib.IO
             {
                 case Compression.None:
                     new BinaryWriter(stream).Write((uint)0);
-                    _writer = new BinaryWriter(stream);
+                    _writer = new BinaryWriterFast(stream);
                     break;
                 case Compression.Zlib:
                     new BinaryWriter(stream).Write((uint)0x80000000);
-                    _writer = new BinaryWriter(new MemoryStream());
+                    _writer = new BinaryWriterFast(new MemoryStream());
                     break;
                 default:
                     throw new ArgumentException("compression");
             }
         }
 
-        public ChunkWriter(byte[] magicNumber, BinaryWriter fastWriter)
+        public ChunkWriter(byte[] magicNumber, BinaryWriterFast fastWriter)
         {
             fastWriter.Write(magicNumber, 0, magicNumber.Length);
             fastWriter.Write(BitConverter.GetBytes(0), 0, 4);    // @FIXME: where is the compression handling, as above?
@@ -72,7 +72,7 @@ namespace TombLib.IO
             }
         }
 
-        public BinaryWriter Raw => _writer;
+        public BinaryWriterFast Raw => _writer;
 
         public struct ChunkWritingState : IDisposable
         {
@@ -89,11 +89,11 @@ namespace TombLib.IO
                 chunkID.ToStream(chunkWriter._writer);
 
                 // Write chunk size
-                _chunkSizePosition = chunkWriter._writer.BaseStream.Position;
+                _chunkSizePosition = chunkWriter._writer.Position;
                 LEB128.Write(chunkWriter._writer, 0, maximumSize);
 
                 // Prepare for writeing chunk content
-                _previousPosition = chunkWriter._writer.BaseStream.Position;
+                _previousPosition = chunkWriter._writer.Position;
                 _maximumSize = maximumSize;
             }
 
@@ -101,11 +101,11 @@ namespace TombLib.IO
             public void Dispose()
             {
                 // Update chunk size
-                long newPosition = _chunkWriter._writer.BaseStream.Position;
+                long newPosition = _chunkWriter._writer.Position;
                 long chunkSize = newPosition - _previousPosition;
-                _chunkWriter._writer.BaseStream.Position = _chunkSizePosition;
+                _chunkWriter._writer.Position = _chunkSizePosition;
                 LEB128.Write(_chunkWriter._writer, chunkSize, _maximumSize);
-                _chunkWriter._writer.BaseStream.Position = newPosition;
+                _chunkWriter._writer.Position = newPosition;
             }
         }
 

@@ -20,7 +20,7 @@ namespace TombEditor
             _levelPath = editor.Level.Settings.LevelFilePath ?? "";
             using (var stream = new MemoryStream())
             {
-                var writer = new BinaryWriter(stream);
+                var writer = new BinaryWriterEx(stream);
                 var objectInstances = new List<ObjectInstance>();
 
                 if (editor.SelectedObject is ObjectGroup)

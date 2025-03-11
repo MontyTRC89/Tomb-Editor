@@ -1168,7 +1168,7 @@ namespace WadTool
         {
             WadAnimation result = new WadAnimation();
 
-            using (var reader = new BinaryReader(File.OpenRead(fileName)))
+            using (var reader = new BinaryReaderEx(File.OpenRead(fileName)))
             {
                 int wmVersion = reader.ReadInt32();
                 int fileType = reader.ReadInt32();

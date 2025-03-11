@@ -245,7 +245,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return output.ToArray();    
         }
 
-        void WriteTextureData(BinaryWriter writer)
+        void WriteTextureData(BinaryWriterEx writer)
         {
             ReportProgress(90, "Writing texture data...");
 
@@ -286,7 +286,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        void WriteAtlas(BinaryWriter writer, List<TombEngineAtlas> atlasList)
+        void WriteAtlas(BinaryWriterEx writer, List<TombEngineAtlas> atlasList)
         {
             writer.Write(atlasList.Count);
             foreach (var atlas in atlasList)

@@ -186,7 +186,7 @@ namespace TombLib.Utils
             { new Vector2(-0.5f, 0.5f), new Vector2( 0.5f, 0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f, -0.5f) }
         };
 
-        public static TextureShapeType GetTextureShapeType(Span<Vector2> texCoords, bool isForTriangle)
+        public static TextureShapeType GetTextureShapeType(Vector2[] texCoords, bool isForTriangle)
         {
             bool isClockwise = !(MathC.CalculateArea(texCoords) > 0.0f);
 
@@ -383,13 +383,13 @@ namespace TombLib.Utils
             var area = GetRect(true);
             var restoredTexture = this;
 
-            Span<Vector2> restoredCoords = stackalloc Vector2[4];
+            Vector2[] restoredCoords = new Vector2[4];
             restoredCoords[0] = new Vector2(area.X0, area.Y0);
             restoredCoords[1] = new Vector2(area.X1, area.Y0);
             restoredCoords[2] = new Vector2(area.X1, area.Y1);
             restoredCoords[3] = new Vector2(area.X0, area.Y1);
 
-            Span<Vector2> originalCoords = stackalloc Vector2[4];
+            Vector2[] originalCoords = new Vector2[4];
             originalCoords[0] = TexCoord0;
             originalCoords[1] = TexCoord1;
             originalCoords[2] = TexCoord2;
@@ -491,7 +491,7 @@ namespace TombLib.Utils
             }
         }
 
-        public void SetTexCoord(int index, in Vector2 value)
+        public void SetTexCoord(int index, Vector2 value)
         {
             switch (index)
             {
@@ -549,7 +549,7 @@ namespace TombLib.Utils
             }
         }
 
-        public TextureArea Transform(in RectTransformation transformation)
+        public TextureArea Transform(RectTransformation transformation)
         {
             TextureArea result = this;
             transformation.TransformValueDiagonalQuad(ref result.TexCoord0, ref result.TexCoord1, ref result.TexCoord2, ref result.TexCoord3);
