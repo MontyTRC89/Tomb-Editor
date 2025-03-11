@@ -116,7 +116,7 @@ LevelFuncs.Engine.Node.TransformWeatherTimedData = function(dataName)
 		newValue2 = LevelFuncs.Engine.Node.Lerp(LevelVars.Engine.WeatherData[dataName].OldValue.x2, LevelVars.Engine.WeatherData[dataName].NewValue.x2, factor)
 	    newValue3 = LevelFuncs.Engine.Node.Lerp(LevelVars.Engine.WeatherData[dataName].OldValue.x3, LevelVars.Engine.WeatherData[dataName].NewValue.x3, factor)
         newValue4 = LevelFuncs.Engine.Node.Lerp(LevelVars.Engine.WeatherData[dataName].OldValue.x4, LevelVars.Engine.WeatherData[dataName].NewValue.x4, factor)
-	else
+	elseif
 	(LevelVars.Engine.WeatherData[dataName].Operand == 4) then
         newValue1 = LevelFuncs.Engine.Node.Lerp(LevelVars.Engine.WeatherData[dataName].OldValue, LevelVars.Engine.WeatherData[dataName].NewValue, factor)   
 	end
