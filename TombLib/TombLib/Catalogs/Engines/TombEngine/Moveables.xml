@@ -212,7 +212,7 @@
     <moveable id="283" name="IMP" />
     <moveable id="284" name="IMP_ROCK" />
     <moveable id="285" name="GUNSHIP" />
-    <moveable id="286" name="AUTO_GUN" />
+    <moveable id="286" name="AUTO_GUN_VCI" />
     <moveable id="287" name="ROMAN_GOD1" />
     <moveable id="288" name="ROMAN_GOD2" />
     <moveable id="289" name="LAGOON_WITCH" />
@@ -956,14 +956,4 @@
     <moveable id="1344" name="BRIDGE_TILT4" />
     <moveable id="1345" name="BRIDGE_CUSTOM" />
     <moveable id="1350" name="HORIZON" />
-    <moveable id="1351" name="BINOCULAR_GRAPHICS" />
-    <moveable id="1352" name="TARGET_GRAPHICS" />
-    <moveable id="1400" name="PANEL_BORDER" />
-    <moveable id="1401" name="PANEL_MIDDLE" />
-    <moveable id="1402" name="PANEL_CORNER" />
-    <moveable id="1403" name="PANEL_DIAGONAL" />
-    <moveable id="1404" name="PANEL_STRIP" />
-    <moveable id="1405" name="PANEL_HALF_BORDER1" />
-    <moveable id="1406" name="PANEL_HALF_BORDER2" />
-    <moveable id="1407" name="PANEL_MIDDLE_CORNER" />
 </moveables>
