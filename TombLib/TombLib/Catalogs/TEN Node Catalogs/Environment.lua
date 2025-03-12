@@ -520,49 +520,27 @@ LevelFuncs.Engine.Node.ChangeHorizonTransparencyOverTimespan = function(type, ne
 	
 end
 
--- !Name "Fade horizons over time"
--- !Section "Environment"
--- !Description "Gradually fade horizons over specified timespan."
--- !Arguments "Numerical, 20, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency" 
--- !Arguments "Numerical, 20, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time (in seconds)"
-LevelFuncs.Engine.Node.FadeHorizonsOverTimespan = function(transparency, time)
-	
-	if (TEN.Flow.GetCurrentLevel().horizon2.transparency < TEN.Flow.GetCurrentLevel().horizon1.transparency) then
-		local newTransparency1 = TEN.Flow.GetCurrentLevel().horizon1.transparency - transparency
-		local newTransparency2 = TEN.Flow.GetCurrentLevel().horizon2.transparency + transparency
-		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, newTransparency1, time, true) end
-		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, newTransparency2, time, true) end	
-	elseif (TEN.Flow.GetCurrentLevel().horizon1.transparency < TEN.Flow.GetCurrentLevel().horizon2.transparency) then
-		local newTransparency1 = TEN.Flow.GetCurrentLevel().horizon1.transparency + transparency
-		local newTransparency2 = TEN.Flow.GetCurrentLevel().horizon2.transparency - transparency
-		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, newTransparency1, time, true) end
-		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, newTransparency2, time, true) end
-	end
-	
-end
-
--- !Name "Fade in a new horizon object over time"
+-- !Name "Fade in a new horizon over time"
 -- !Section "Environment"
 -- !Description "Gradually fade in a horizon in the other slot over specified timespan."
--- !Arguments "Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Fade out which horizon"
 -- !Arguments "NewLine, WadSlots, 75, {TEN.Objects.ObjID.HORIZON}, Fade in which horizon"
 -- !Arguments "Numerical, 25 [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time (in seconds)"
-LevelFuncs.Engine.Node.FadeHorizonFromSlotOverTimespan = function(type, slot, time)
-	
-	if (type == 0) then
-		TEN.Flow.GetCurrentLevel().horizon2.enabled = true
+LevelFuncs.Engine.Node.FadeHorizonFromSlotOverTimespan = function(slot, time)
+
+	if (TEN.Flow.GetCurrentLevel().horizon1.transparency == 1 ) then
 		TEN.Flow.GetCurrentLevel().horizon2.transparency = 0
+		TEN.Flow.GetCurrentLevel().horizon2.enabled = true
 		TEN.Flow.GetCurrentLevel().horizon2.objectID = slot
 		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, 0, time, true) end
-		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, 1, time, true) end	
-	elseif (type == 1) then
-		TEN.Flow.GetCurrentLevel().horizon1.enabled = true
+		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, 1, time, true) end
+	elseif (TEN.Flow.GetCurrentLevel().horizon2.transparency == 1) then
 		TEN.Flow.GetCurrentLevel().horizon1.transparency = 0
+		TEN.Flow.GetCurrentLevel().horizon1.enabled = true
 		TEN.Flow.GetCurrentLevel().horizon1.objectID = slot
 		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, 1, time, true) end
-		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, 0, time, true) end	
+		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, 0, time, true) end
 	end
-	
+
 end
 
 -- !Name "Set rotation speed of horizon"
