@@ -365,28 +365,19 @@ LevelFuncs.Engine.Node.ChangeSkyLayerOverTime = function(type, color, speed, tim
 
 end
 
--- !Name "Add or remove horizon"
+-- !Name "Add a horizon"
 -- !Section "Environment"
--- !Description "Add or remove horizon of current level."
--- !Arguments "NewLine, Enumeration, 33, [ Horizon 1 | Horizon 2 ], {0}, Horizon" "WadSlots, 67, {TEN.Objects.ObjID.HORIZON}, Choose moveable slot to create horizon"
--- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 100, Position value to define"
--- !Arguments "NewLine, Vector3, [ -360 | 360 | 0 | 1 | 32 ], 100, Rotation value to define"
--- !Arguments "NewLine, Numerical, 34, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency" "35, Boolean, {true}, Enable"
-LevelFuncs.Engine.Node.AddHorizon = function(type, slot, position, rotation, transparency, status)
+-- !Description "Add a horizon to the current level."
+-- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon" "WadSlots, 75, {TEN.Objects.ObjID.HORIZON}, Choose moveable slot to create horizon"
+LevelFuncs.Engine.Node.AddHorizon = function(type, slot)
 	
 	if (type == 0) then
-		TEN.Flow.GetCurrentLevel().horizon1.enabled = status
+		TEN.Flow.GetCurrentLevel().horizon1.enabled = true
 		TEN.Flow.GetCurrentLevel().horizon1.objectID = slot
-		TEN.Flow.GetCurrentLevel().horizon1.position = position
-		TEN.Flow.GetCurrentLevel().horizon1.rotation = Rotation(rotation.x, rotation.y, rotation.z)
-		TEN.Flow.GetCurrentLevel().horizon1.transparency = transparency
 		
 	elseif (type == 1) then
-		TEN.Flow.GetCurrentLevel().horizon2.enabled = status
+		TEN.Flow.GetCurrentLevel().horizon2.enabled = true
 		TEN.Flow.GetCurrentLevel().horizon2.objectID = slot
-		TEN.Flow.GetCurrentLevel().horizon2.position = position
-		TEN.Flow.GetCurrentLevel().horizon2.rotation = Rotation(rotation.x, rotation.y, rotation.z)
-		TEN.Flow.GetCurrentLevel().horizon2.transparency = transparency
 	end
 	
 end
