@@ -541,7 +541,7 @@ LevelFuncs.Engine.Node.FadeHorizonsOverTimespan = function(transparency, time)
 	
 end
 
--- !Name "Fade in a new horizon over time"
+-- !Name "Fade in a new horizon object over time"
 -- !Section "Environment"
 -- !Description "Gradually fade in a horizon in the other slot over specified timespan."
 -- !Arguments "Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Fade out which horizon"
