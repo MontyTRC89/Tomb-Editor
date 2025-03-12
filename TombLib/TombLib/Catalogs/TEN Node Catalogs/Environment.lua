@@ -2,6 +2,8 @@ local Timer = require("Engine.Timer")
 
 -- !Ignore
 -- Construct timed transform data and start transform
+
+LevelVars.Engine.WeatherData = {}
 LevelFuncs.Engine.Node.ConstructWeatherTimedData = function(dataType, operand, newValue, time, smooth)
 
 	local prefix = nil
@@ -32,7 +34,7 @@ LevelFuncs.Engine.Node.ConstructWeatherTimedData = function(dataType, operand, n
 		value = {x1 = starCount, x2 = meteorCount, x3 = meteorDensity, x4 = meteorVelocity}
 	elseif (dataType == 5) then
 		prefix = "_weatherStrength"
-        value = TEN.Flow.GetCurrentLevel().weatherStrength
+        value = 0 --TEN.Flow.GetCurrentLevel().weatherStrength
 	elseif (dataType == 6) then
 		prefix = "_horizon1Position"
         value = TEN.Flow.GetCurrentLevel().horizon1.position
@@ -82,6 +84,7 @@ LevelFuncs.Engine.Node.ConstructWeatherTimedData = function(dataType, operand, n
 
 	local timer = Timer.Create(dataName, 1 / 30, true, false, LevelFuncs.Engine.Node.TransformWeatherTimedData, dataName)
 	timer:Start()
+
 end
 
 -- !Ignore
@@ -162,13 +165,11 @@ LevelFuncs.Engine.Node.TransformWeatherTimedData = function(dataName)
 
 end
 
-
 -- !Name "If minimum fog distance is..."
 -- !Section "Environment"
 -- !Description "Checks current minimum (near) fog distance value in sectors."
 -- !Conditional "True"
 -- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 256 ], Minimum fog distance to check"
-
 LevelFuncs.Engine.Node.TestFogMinDistance = function(operator, number)
 	return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetCurrentLevel().fog.minDistance, number, operator)
 end
@@ -178,7 +179,6 @@ end
 -- !Description "Checks current maximum (far) fog distance value in sectors."
 -- !Conditional "True"
 -- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 256 ], Maximum fog distance to check"
-
 LevelFuncs.Engine.Node.TestFogMaxDistance = function(operator, number)
 	return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetCurrentLevel().fog.maxDistance, number, operator)
 end
@@ -188,7 +188,6 @@ end
 -- !Description "Checks current fog color."
 -- !Conditional "True"
 -- !Arguments "Color, 20, Fog color"
-
 LevelFuncs.Engine.Node.TestFogColor = function(color)
 	local fog = TEN.Flow.GetCurrentLevel().fog
 	return (color.r == fog.color.r and color.g == fog.color.g and color.b == fog.color.b)
@@ -198,7 +197,6 @@ end
 -- !Section "Environment"
 -- !Description "Sets fog minimum (near) distance to specified value in sectors."
 -- !Arguments "Numerical, 15, [ 0 | 256 ], Minimum fog distance"
-
 LevelFuncs.Engine.Node.SetFogMinDistance = function(distance)
 	TEN.Flow.GetCurrentLevel().fog.minDistance = distance
 end
@@ -207,7 +205,6 @@ end
 -- !Section "Environment"
 -- !Description "Sets fog maximum (far) distance to specified value in sectors."
 -- !Arguments "Numerical, 15, [ 0 | 256 ], Maximum fog distance"
-
 LevelFuncs.Engine.Node.SetFogMaxDistance = function(distance)
 	TEN.Flow.GetCurrentLevel().fog.maxDistance = distance
 end
@@ -216,7 +213,6 @@ end
 -- !Section "Environment"
 -- !Description "Sets fog color to specified."
 -- !Arguments "Color, 20, Fog color"
-
 LevelFuncs.Engine.Node.SetFogColor = function(color)
 	TEN.Flow.GetCurrentLevel().fog.color = color
 end
@@ -224,8 +220,7 @@ end
 -- !Name "Change fog color over time"
 -- !Section "Environment"
 -- !Description "Changes fog color over specified time."
--- !Arguments "NewLine, Color, 20, Fog color" "Numerical, 15, [ 0 | 65535 ], Time in seconds" "35, Boolean, Smooth motion"
-
+-- !Arguments "NewLine, Color, 20, Fog color" "Numerical, 20, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time in seconds" "35, Boolean, Smooth motion"
 LevelFuncs.Engine.Node.ChangeFogColorOverTime = function(color, time, smooth)
 	
 	do LevelFuncs.Engine.Node.ConstructWeatherTimedData(0, 0, color, time, smooth) end
@@ -236,7 +231,6 @@ end
 -- !Section "Environment"
 -- !Description "Sets draw distance to specified value in sectors."
 -- !Arguments "Numerical, 15, [ 4 | 256 | 0 |  1 ], {20}, Maximum draw distance in sectors"
-
 LevelFuncs.Engine.Node.SetDrawDistance = function(distance)
 	TEN.Flow.GetCurrentLevel().farView = distance
 end
@@ -244,8 +238,7 @@ end
 -- !Name "Add lens flare"
 -- !Section "Environment"
 -- !Description "Add a lens flare."
--- !Arguments "NewLine, Numerical, 15, [ 0 | 360 ], Pitch" "Numerical, 15, [ 0 | 360 ], Yaw" "Color, 20, Lens flare color"
-
+-- !Arguments "Numerical, 15, [ 0 | 360 ], Pitch" "Numerical, 15, [ 0 | 360 ], Yaw" "Color, 20, Lens flare color"
 LevelFuncs.Engine.Node.AddLensFlare = function(pitch, yaw, color)
 	
     TEN.Flow.GetCurrentLevel().lensFlare = Flow.LensFlare(pitch, yaw, color)
@@ -255,8 +248,7 @@ end
 -- !Name "Change lens flare position over time"
 -- !Section "Environment"
 -- !Description "Changes lens flare position over specified time."
--- !Arguments "NewLine, Numerical, 15, [ 0 | 360 ], Pitch" "Numerical, 15, [ 0 | 360 ], Yaw" "Numerical, 15, [ 0 | 65535 ], Time in seconds" "35, Boolean, Smooth motion"
-
+-- !Arguments "NewLine, Numerical, 20, [ 0 | 360 ], Pitch" "Numerical, 20, [ 0 | 360 ], Yaw" "Numerical, 20, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time in seconds" "40, Boolean, Smooth motion"
 LevelFuncs.Engine.Node.ChangeLensFlarePosOverTime = function(pitch, yaw, time, smooth)
 	
     if TEN.Flow.GetCurrentLevel().lensFlare:GetEnabled() == true then
@@ -270,8 +262,7 @@ end
 -- !Name "Change lens flare color over time"
 -- !Section "Environment"
 -- !Description "Changes lens flare color over specified time."
--- !Arguments "NewLine, Color, 20, Lens flare color" "Numerical, 15, [ 0 | 65535 ], Time in seconds"
-
+-- !Arguments "Color, 15, Lens flare color" "Numerical, 15, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time in seconds"
 LevelFuncs.Engine.Node.ChangeLensFlareColorOverTime = function(color, time)
 	
     if TEN.Flow.GetCurrentLevel().lensFlare:GetEnabled() == true then
@@ -286,7 +277,6 @@ end
 -- !Section "Environment"
 -- !Description "Add a lightning storm to current level."
 -- !Arguments "Boolean, 15, Storm"
-
 LevelFuncs.Engine.Node.SetStorm = function(storm)
 	
     TEN.Flow.GetCurrentLevel().storm = storm
@@ -296,8 +286,7 @@ end
 -- !Name "Set weather"
 -- !Section "Environment"
 -- !Description "Add a weather to current level."
--- !Arguments "NewLine, Enumeration, 25, [ None | Rain | Snow], {0}" "Numerical, 15, [ 0 | 1 | 2 | .1 ], Strength"
-
+-- !Arguments "Enumeration, 25, [ None | Rain | Snow], {0}" "Numerical, 15, [ 0 | 1 | 2 | .1 ], Strength"
 LevelFuncs.Engine.Node.SetWeather = function(weather, strength)
 	
     TEN.Flow.GetCurrentLevel().weather = weather
@@ -308,10 +297,9 @@ end
 -- !Name "Change weather strength over time"
 -- !Section "Environment"
 -- !Description "Change weather strength over specified time."
--- !Arguments "Numerical, 15, [ 0 | 1 | 1 | .1 ], Strength"
--- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 65, Time (in seconds)" 
+-- !Arguments "NewLine, Numerical, 20, [ 0 | 1 | 2 | .1 ], Strength"
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 20, Time (in seconds)" 
 -- !Arguments "30, Boolean, Relative"
-
 LevelFuncs.Engine.Node.ChangeWeatherOverTime = function(newStrength, time, relative)
 	
 	if (relative) then
@@ -325,8 +313,7 @@ end
 -- !Name "Add starfield and meteors"
 -- !Section "Environment"
 -- !Description "Add a starfield to current level."
--- !Arguments "NewLine, Numerical, 15, [ 0 | 6000 ], Stars count" "Numerical, 15, [ 0 | 100 ], Meteors count" "Numerical, 15, [ 0 | 10 ], Meteors spawn density" "Numerical, 15, [ 0 | 40 ], Meteors velocity"
-
+-- !Arguments "NewLine, Numerical, 25, [ 0 | 6000 ], Stars count" "Numerical, 25, [ 0 | 100 ], Meteors count" "Numerical, 25, [ 0 | 10 ], Meteors spawn density" "Numerical, 25, [ 0 | 40 ], Meteors velocity"
 LevelFuncs.Engine.Node.AddStarfield = function(stars, meteors, meteorSpawnDensity, meteorVel)
 	
 	TEN.Flow.GetCurrentLevel().starField.starCount = stars
@@ -339,7 +326,7 @@ end
 -- !Name "Change starfield over time"
 -- !Section "Environment"
 -- !Description "Changes stars and meteors over specified time."
--- !Arguments "NewLine, Numerical, 15, [ 0 | 6000 ], Stars count" "Numerical, 15, [ 0 | 100 ], Meteors count" "Numerical, 15, [ 0 | 10 ], Meteors spawn density" "Numerical, 15, [ 0 | 40 ], Meteors velocity"  "Numerical, 15, [ 0 | 65535 ], Time in seconds"
+-- !Arguments "NewLine, Numerical, 20, [ 0 | 6000 ], Stars count" "Numerical, 20, [ 0 | 100 ], Meteors count" "Numerical, 20, [ 0 | 10 ], Meteors spawn density" "Numerical, 20, [ 0 | 40 ], Meteors velocity"  "Numerical, 20, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time in seconds"
 
 LevelFuncs.Engine.Node.ChangeStarfieldDensityOverTime = function(starCount, meteorCount, meteorDensity, meteorVelocity,  time)
 	
@@ -351,8 +338,7 @@ end
 -- !Name "Add sky layer"
 -- !Section "Environment"
 -- !Description "Add or change sky layer of current level."
--- !Arguments "NewLine, Enumeration, 20, [ Layer 1 | Layer 2 ], {0}, Skylayer" "Color, 20, Sky layer color" "Numerical, 15, [ -64 | 64 ], Speed" 
-
+-- !Arguments "Enumeration, 20, [ Layer 1 | Layer 2 ], {0}, Skylayer" "Color, 15, Sky layer color" "Numerical, 15, [ -64 | 64 ], Speed" 
 LevelFuncs.Engine.Node.AddSkyLayer = function(type, color, speed)
 	
 	if (type == 0) then
@@ -363,11 +349,10 @@ LevelFuncs.Engine.Node.AddSkyLayer = function(type, color, speed)
     
 end
 
--- !Name "Change sky layer over specified time"
+-- !Name "Change sky layer over time"
 -- !Section "Environment"
 -- !Description "Add or change sky layer 1 of current level."
--- !Arguments "NewLine, Enumeration, 20, [ Layer 1 | Layer 2 ], {0}, Skylayer" "Color, 20, Sky layer color" "Numerical, 15, [ -64 | 64 ], Speed" "Numerical, 15, [ 0 | 65535 ], Time in seconds" "35, Boolean, Smooth transition"
-
+-- !Arguments "NewLine, Enumeration, 20, [ Layer 1 | Layer 2 ], {0}, Skylayer" "Color, 15, Sky layer color" "Numerical, 15, [ -64 | 64 ], Speed" "Numerical, 15, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time in seconds" "35, Boolean, Smooth transition"
 LevelFuncs.Engine.Node.ChangeSkyLayerOverTime = function(type, color, speed, time, smooth)
 
 	local structure = {x1 = color.r, x2 = color.g, x3 = color.b, x4 = speed}
@@ -383,10 +368,10 @@ end
 -- !Name "Add or remove horizon"
 -- !Section "Environment"
 -- !Description "Add or remove horizon of current level."
--- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon" "WadSlots, 75, {TEN.Objects.ObjID.HORIZON}, Choose moveable slot to create horizon"
+-- !Arguments "NewLine, Enumeration, 33, [ Horizon 1 | Horizon 2 ], {0}, Horizon" "WadSlots, 67, {TEN.Objects.ObjID.HORIZON}, Choose moveable slot to create horizon"
 -- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 100, Position value to define"
 -- !Arguments "NewLine, Vector3, [ -360 | 360 | 0 | 1 | 32 ], 100, Rotation value to define"
--- !Arguments "NewLine, Numerical, 15, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency" "35, Boolean, {true}, Enable"
+-- !Arguments "NewLine, Numerical, 34, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency" "35, Boolean, {true}, Enable"
 LevelFuncs.Engine.Node.AddHorizon = function(type, slot, position, rotation, transparency, status)
 	
 	if (type == 0) then
@@ -409,7 +394,7 @@ end
 -- !Name "Set position of horizon"
 -- !Section "Environment"
 -- !Description "Set position of horizon."
--- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
+-- !Arguments "NewLine, Enumeration, 34, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
 -- !Arguments "35, Boolean, Relative coordinates"
 -- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 100, New position value to define"
 LevelFuncs.Engine.Node.SetHorizonPosition = function(type, relative, newPosition)
@@ -431,10 +416,9 @@ end
 -- !Name "Set rotation of horizon"
 -- !Section "Environment"
 -- !Description "Set position of horizon."
--- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
+-- !Arguments "NewLine, Enumeration, 34, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
 -- !Arguments "35, Boolean, Relative coordinates"
 -- !Arguments "NewLine, Vector3, [ -360 | 360 | 0 | 1 | 1 ], 100, New rotation value to define"
-
 LevelFuncs.Engine.Node.SetHorizonRotation = function(type, relative, newRotation)
 	
 	if (type == 0) then
@@ -456,9 +440,8 @@ end
 -- !Name "Set transparency of horizon"
 -- !Section "Environment"
 -- !Description "Set transparency of horizon."
--- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
+-- !Arguments "Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
 -- !Arguments "Numerical, 15, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency"
-
 LevelFuncs.Engine.Node.SetHorizonTransparency = function(type, transparency)
 	
 	if (type == 0) then
@@ -469,15 +452,13 @@ LevelFuncs.Engine.Node.SetHorizonTransparency = function(type, transparency)
 	
 end
 
--- !Name "Change position of a horizon over specified time"
+-- !Name "Change position of a horizon over time"
 -- !Section "Environment"
 -- !Description "Gradually change position of horizon over specified timespan."
--- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon" "Boolean, 35, Relative coordinates" "Boolean, 35, Smooth motion"
--- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 65, New position value to define"
--- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 35, Time (in seconds)" 
-
-
-LevelFuncs.Engine.Node.ChangeHorizonPositionOverTimespan = function(type, relative, smooth, newPosition, time)
+-- !Arguments "Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
+-- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 100, New position value to define"
+-- !Arguments "NewLine, Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 34, Time (in seconds)" "Boolean, 35, Relative coordinates" "Boolean, 31, Smooth motion"
+LevelFuncs.Engine.Node.ChangeHorizonPositionOverTimespan = function(type, newPosition, time, relative, smooth)
 		
 	if (type == 0) then
 		if (relative) then
@@ -493,14 +474,13 @@ LevelFuncs.Engine.Node.ChangeHorizonPositionOverTimespan = function(type, relati
 	
 end
 
--- !Name "Change rotation of horizon over specified time"
+-- !Name "Change rotation of horizon over time"
 -- !Section "Environment"
 -- !Description "Gradually change rotation of a moveable over specified timespan."
--- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon" "Boolean, 35, Relative coordinates" "Boolean, 35, Smooth motion"
--- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 65, New rotation value to define"
--- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 35, Time (in seconds)" 
-
-LevelFuncs.Engine.Node.ChangeHorizonRotationOverTimespan = function(type, relative, smooth, newRotation, time)
+-- !Arguments "Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
+-- !Arguments "NewLine, Vector3, [ -1000000 | 1000000 | 0 | 1 | 32 ], 100, New rotation value to define"
+-- !Arguments "NewLine, Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 34, Time (in seconds)" "Boolean, 35, Relative coordinates" "Boolean, 31, Smooth motion"
+LevelFuncs.Engine.Node.ChangeHorizonRotationOverTimespan = function(type, newRotation, time, relative, smooth)
 	
 	if (type == 0) then
 		if (relative) then
@@ -517,27 +497,48 @@ LevelFuncs.Engine.Node.ChangeHorizonRotationOverTimespan = function(type, relati
 	end
 end
 
--- !Name "Change transparency of horizon over specified time"
+-- !Name "Change transparency of horizon over time"
 -- !Section "Environment"
 -- !Description "Gradually change transparency over specified timespan."
 -- !Arguments "NewLine, Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
--- !Arguments "Numerical, 15, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency" 
--- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)"
+-- !Arguments "Numerical, 20, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency" 
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 20, Time (in seconds)"
 -- !Arguments "Boolean, 35, Relative coordinates"
- 
-
 LevelFuncs.Engine.Node.ChangeHorizonTransparencyOverTimespan = function(type, newTransparency, time, relative)
 	
 	if (type == 0) then
 		if (relative) then
 			newTransparency = TEN.Flow.GetCurrentLevel().horizon1.transparency + newTransparency
 		end
-		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, newTransparency, time, smooth) end	
+		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, newTransparency, time, true) end	
 	elseif (type == 1) then
 		if (relative) then
 			newTransparency = TEN.Flow.GetCurrentLevel().horizon2.transparency + newTransparency
 		end
-		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, newTransparency, time, smooth) end
+		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, newTransparency, time, true) end
+	end
+	
+end
+
+-- !Name "Fade in a new horizon over time"
+-- !Section "Environment"
+-- !Description "Gradually fade in a horizon in the other slot over specified timespan."
+-- !Arguments "Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Fade out which horizon"
+-- !Arguments "NewLine, WadSlots, 75, {TEN.Objects.ObjID.HORIZON}, Fade in which horizon"
+-- !Arguments "Numerical, 25 [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time (in seconds)"
+LevelFuncs.Engine.Node.FadeHorizonTransparencyOverTimespan = function(type, slot, time)
+	
+	if (type == 0) then
+		TEN.Flow.GetCurrentLevel().horizon2.enabled = true
+		TEN.Flow.GetCurrentLevel().horizon2.transparency = 0
+		TEN.Flow.GetCurrentLevel().horizon2.objectID = slot
+		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, 0, time, true) end
+		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, 1, time, true) end	
+	elseif (type == 1) then
+		TEN.Flow.GetCurrentLevel().horizon1.transparency = 0
+		TEN.Flow.GetCurrentLevel().horizon1.objectID = slot
+		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, 1, time, true) end
+		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, 0, time, true) end	
 	end
 	
 end
@@ -545,7 +546,7 @@ end
 -- !Name "Set rotation speed of horizon"
 -- !Section "Environment"
 -- !Description "Stop rotation of horizon."
--- !Arguments "Enumeration, 25, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
+-- !Arguments "Enumeration, 33, [ Horizon 1 | Horizon 2 ], {0}, Horizon"
 -- !Arguments "NewLine, Vector3, [ -360 | 360 | 2 ], 100, Rotation speed per second"
 LevelFuncs.Engine.Node.SetHorizonRotationSpeed = function(type, speed)
 
