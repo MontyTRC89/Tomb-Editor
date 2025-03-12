@@ -524,7 +524,7 @@ end
 -- !Section "Environment"
 -- !Description "Gradually fade horizons over specified timespan."
 -- !Arguments "Numerical, 20, [ 0 | 1 | 2 | 0.1 | 1 ], {1} Transparency" 
--- !Arguments "Numerical, 20 [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time (in seconds)"
+-- !Arguments "Numerical, 20, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, Time (in seconds)"
 LevelFuncs.Engine.Node.FadeHorizonsOverTimespan = function(transparency, time)
 	
 	if (TEN.Flow.GetCurrentLevel().horizon2.transparency < TEN.Flow.GetCurrentLevel().horizon1.transparency) then
