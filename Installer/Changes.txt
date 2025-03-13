@@ -4,7 +4,7 @@ Version 1.8
 Tomb Editor:
  * Fixed exception on copying memo or imported geometry position to clipboard.
  * Fixed trigger export returning wrong ConditionNg mask for non-moveable objects.
- * Fixed texture errors with high texinfo count in TEN levels.
+ * Fixed animated texture errors with high texinfo count in TEN levels.
  * Fixed merged static meshes in TEN levels.
  * Fixed double-sided room faces generating incorrect normals in TEN levels.
  * Fixed few cases of new nodes spawning in the bottom left corner of a node graph.
@@ -23,6 +23,7 @@ TombIDE:
  * Updated TR1X preset to 4.8.3 - no auto-update available due to breaking changes in the engine.
  * Updated PLAY.exe to 2.0.2.5 - fixed non-ASCII executable paths not working.
  * Fixed archive creator not including `patches.fpd` for TRNG projects.
+ * Fixed incorrect assignment of secret audio track for TEN projects.
  
 TEN nodes:
  * Added nodes for weather and environmental conditions, such as horizon, starfield, or fog.
