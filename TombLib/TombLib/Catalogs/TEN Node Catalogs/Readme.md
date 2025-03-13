@@ -20,12 +20,12 @@ function arguments, and should be listed in the same order.
 
 Actual function arguments (e.g. `arg1`, `arg2` and `arg3` in `LevelFuncs.Engine.Node.MyFunction(arg1, arg2, arg3)`)
 should not be renamed after node went into production with official TE release - otherwise TE will not be able to
-identify arguments on project file reloading. However, since TE version 1.7.3, it is allowed to rearrange node
+identify arguments on project file reloading. However, since TE version 1.8, it is allowed to rearrange node
 arguments, if argument names were left untouched. You still need to preserve metadata entry order to correspond to
 function order though.
 
-Builders must be advised that they should migrate to version 1.7.3 as soon as possible, because skipping version 
-1.7.3, together with possible node argument reorderings in the future, may lead to data loss in existing node setups.
+Builders must be advised that they should migrate to version 1.8 as soon as possible, because skipping version 
+1.8, together with possible node argument reorderings in the future, may lead to data loss in existing node setups.
 
 ### Metadata entry reference
 
@@ -75,7 +75,7 @@ Comment metadata entry reference (metadata block is indicated by a keyword which
  - **!Ignore** - if this keyword is used, nearest encountered function declaration will be ignored. Useful if you
    need to place helper functions which must be ignored by parser (however, it is recommended to use `_System.lua`
    file for those).
- 
+
 
 Metadata blocks can appear in any order.
 
