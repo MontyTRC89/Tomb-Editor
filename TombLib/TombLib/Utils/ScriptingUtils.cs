@@ -69,7 +69,7 @@ namespace TombLib.Utils
             if (!Directory.Exists(path))
                 return result;
 
-            foreach (var file in Directory.GetFiles(path).Where(p => !p.StartsWith("_") && p.EndsWith(".lua"))) try
+            foreach (var file in Directory.GetFiles(path).Where(p => !Path.GetFileName(p).StartsWith("_") && p.EndsWith(".lua"))) try
             {
                 var lines = File.ReadAllLines(file);
 
@@ -105,6 +105,7 @@ namespace TombLib.Utils
                         {
                             nodeFunction.Name = TextExtensions.ExtractValues(comment.Substring(_nodeNameId.Length, comment.Length - _nodeNameId.Length)).LastOrDefault();
                             ignoreUntilNextMetadata = false;
+                            ignore = false;
                             continue;
                         }
                         else if (comment.StartsWith(_nodeDescriptionId, StringComparison.InvariantCultureIgnoreCase))
@@ -196,20 +197,18 @@ namespace TombLib.Utils
                             else
                             {
                                 var message = "Argument list for function " + nodeFunction.Signature + " does not match the number of arguments in the catalog.";
+                                logger.Warn(message);
 #if DEBUG
                                 throw new Exception(message);
-#else
-                                logger.Warn(message);
 #endif
                             }
                         }
                         else if (nodeFunction.Arguments.Count > 0)
                         {
                             var message = "Function " + nodeFunction.Signature + " has no arguments, although metadata was provided.";
+                            logger.Warn(message);
 #if DEBUG
                             throw new Exception(message);
-#else
-                            logger.Warn(message);
 #endif
                         }
                     }
@@ -230,7 +229,11 @@ namespace TombLib.Utils
             }
             catch
             {
+#if DEBUG
+                throw;
+#else
                 continue;
+#endif
             }
 
             // Check for duplicate functions
