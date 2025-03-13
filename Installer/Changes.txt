@@ -23,6 +23,7 @@ TombIDE:
  * Updated TR1X preset to 4.8.3 - no auto-update available due to breaking changes in the engine.
  * Updated PLAY.exe to 2.0.2.5 - fixed non-ASCII executable paths not working.
  * Fixed archive creator not including `patches.fpd` for TRNG projects.
+ * Fixed incorrect assignment of secret audio track for TEN projects.
  
 TEN nodes:
  * Added nodes for using keypads.
