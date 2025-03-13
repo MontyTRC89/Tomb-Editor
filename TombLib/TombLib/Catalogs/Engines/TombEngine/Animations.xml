@@ -7,10 +7,9 @@
     <anim item="0" id="345" name="PUSHABLE_OBJECT_PUSH" />
     <anim item="0" id="364" name="PUSHABLE_OBJECT_PUSH_EDGE_SLIP" />
     <anim item="0" id="366" name="PUSHABLE_BLOCK_PUSH_EDGE_SLIP" />
-	<anim item="0" id="368" name="UNDERWATER_FLOOR_TRAPDOOR_OPEN" />
     <anim item="0" id="417" name="PUSHABLE_OBJECT_PUSH_TO_STAND" />
     <anim item="0" id="418" name="PUSHABLE_OBJECT_PULL_TO_STAND" />
-    <anim item="0" id="442" name="UNUSED_FREE_SLOT" />
+    <anim item="0" id="442" name="UNDERWATER_FLOOR_TRAPDOOR_OPEN" />
 
     <!--LARA EXTRA ANIMATIONS -->
     <anim item="1" id="0" name="PULL_DAGGER_FROM_DRAGON" />
