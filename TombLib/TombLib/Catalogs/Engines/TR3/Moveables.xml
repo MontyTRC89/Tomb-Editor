@@ -233,7 +233,7 @@
     <moveable id="285" name="Unknown visible #285" />
     <moveable id="287" name="Tyrannosaur" essential="false" ten="TYRANNOSAUR"/>
     <moveable id="288" name="Raptor" essential="false" ten="RAPTOR"/>
-    <moveable id="291" name="Laser sweeper" essential="false" ten="GEN_SLOT1" />
+    <moveable id="291" name="Laser sweeper" essential="false" ten="MOVING_LASER" />
     <moveable id="292" name="Electrified Field" essential="false" /> 
     <moveable id="295" name="Detonator switch box" essential="false"  />
     <moveable id="300" name="Gunflare / Gunflare (spiky)" hidden="true" ten="GUN_FLASH" />

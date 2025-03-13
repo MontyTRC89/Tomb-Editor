@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using System;
 using System.Collections.Generic;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Tomb1Main.Parsers;
@@ -8,8 +9,14 @@ namespace TombLib.Scripting.Tomb1Main.Utils;
 
 public class ErrorDetector : IErrorDetector
 {
-	public object FindErrors(object content)
-		=> DetectErrorLines(content as TextDocument);
+	public object FindErrors(string editorContent, Version engineVersion)
+	{
+		// Anything before 4.8 should not have errors checked
+		if (engineVersion < new Version(4, 8))
+			return null;
+
+		return DetectErrorLines(new TextDocument(editorContent));
+	}
 
 	private static List<ErrorLine> DetectErrorLines(TextDocument document)
 	{

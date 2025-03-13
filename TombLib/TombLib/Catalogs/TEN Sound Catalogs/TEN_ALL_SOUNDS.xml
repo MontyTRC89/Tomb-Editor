@@ -23074,7 +23074,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1194</Id>
-			<Name>TEN_Steam_Emitter_Loop</Name>
+			<Name>TR4_Steam_Emitter_Loop</Name>
 			<Volume>100</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
@@ -23086,6 +23086,25 @@
 			<Samples>
 				<WadSample>
 					<FileName>TEN_Steam_Emitter_Loop_01.wav</FileName>
+				</WadSample>
+			</Samples>
+			<Global>true</Global>
+			<Indexed>false</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1195</Id>
+			<Name>TR5_Moving_Laser_Loop</Name>
+			<Volume>60</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>10</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>Tr4_Binoculars_Zoom_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>true</Global>

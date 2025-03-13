@@ -55,14 +55,6 @@ end
 -- !Arguments "Numerical, 30, Scale value, [ 0 | 1024 | 0 ]"
 
 LevelFuncs.Engine.Node.TestStaticHP = function(staticName, operator, value)
-	
-	local slotCheck = GetStaticByName(staticName):GetSlot()
-
-    if slotCheck < 50 or slotCheck > 59 then
-        print("Non-shatter object '" .. tostring(staticName) .. "' selected. Hit point comparison ignored.")      
-    return
-    end
-	
 	local hp = TEN.Objects.GetStaticByName(staticName):GetHP()
 	return LevelFuncs.Engine.Node.CompareValue(hp, value, operator)
 end
@@ -182,12 +174,24 @@ LevelFuncs.Engine.Node.ShiftStatic = function(staticName, distance)
 	static:SetPosition(newPosition)
 end
 
--- !Name "Set static mesh colour"
+-- !Name "Set static mesh color"
 -- !Section "Static mesh parameters"
 -- !Description "Sets static mesh tint to a given value."
--- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh colour"
+-- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh color"
 
 LevelFuncs.Engine.Node.SetStaticColor = function(staticName, color)
+	color.a = TEN.Objects.GetStaticByName(staticName):GetColor().a
+	TEN.Objects.GetStaticByName(staticName):SetColor(color)
+end
+
+-- !Name "Set static mesh transparency"
+-- !Section "Static mesh parameters"
+-- !Description "Sets static mesh transparency to a given value."
+-- !Arguments "NewLine, Statics, 80" "Numerical, 20, [ 0 | 255 | 0 | 1 | 5 ], {255}, Static mesh transparency"
+
+LevelFuncs.Engine.Node.SetStaticTransparency = function(staticName, transparency)
+	local color = TEN.Objects.GetStaticByName(staticName):GetColor()
+	color.a = transparency
 	TEN.Objects.GetStaticByName(staticName):SetColor(color)
 end
 
@@ -216,13 +220,6 @@ end
 -- !Arguments "Numerical, 30, [ 0 | 1024 ], Hit Points"
 
 LevelFuncs.Engine.Node.SetShatterHP = function(staticName, HP)
-    local slotCheck = GetStaticByName(staticName):GetSlot()
-
-    if slotCheck < 50 or slotCheck > 59 then
-        print("Non-shatter object '" .. tostring(staticName) .. "' selected. Hit point change ignored.")      
-    return
-    end
-
     TEN.Objects.GetStaticByName(staticName):SetHP(HP)
 end
 
