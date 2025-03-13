@@ -7,6 +7,7 @@
     <anim item="0" id="345" name="PUSHABLE_OBJECT_PUSH" />
     <anim item="0" id="364" name="PUSHABLE_OBJECT_PUSH_EDGE_SLIP" />
     <anim item="0" id="366" name="PUSHABLE_BLOCK_PUSH_EDGE_SLIP" />
+	<anim item="0" id="368" name="UNUSED" />
     <anim item="0" id="417" name="PUSHABLE_OBJECT_PUSH_TO_STAND" />
     <anim item="0" id="418" name="PUSHABLE_OBJECT_PULL_TO_STAND" />
     <anim item="0" id="442" name="UNDERWATER_FLOOR_TRAPDOOR_OPEN" />
@@ -58,7 +59,7 @@
     <anim item="113" id="2" name="JUMP_ATTACK" />
     <anim item="113" id="3" name="ATTACK" />
     
-        <!-- KNIFE THROWER -->	
+    <!-- KNIFE THROWER -->	
     <anim item="162" id="0" name="IDLE" />
     <anim item="162" id="1" name="WALK_KNIFE_ATTACK_LEFT_START" />
     <anim item="162" id="2" name="WALK_KNIFE_ATTACK_LEFT_CANCEL" />
@@ -231,8 +232,7 @@
     <anim item="219" id="13" name="WALK_TO_IDLE" />
     <anim item="219" id="14" name="DEATH" />
 	
-	<!-- DRAGON_FRONT -->
-	
+	<!-- DRAGON_FRONT -->	
 	<anim item="232" id="0" name="WALK" />
 	<anim item="232" id="1" name="WALK_TO_MOVE_LEFT" />
 	<anim item="232" id="2" name="MOVE_LEFT" />
@@ -258,8 +258,7 @@
 	<anim item="232" id="22" name="DEFEATED" />
 	<anim item="232" id="23" name="RECOVER" />
 	
-	<!-- DRAGON_BACK -->
-	
+	<!-- DRAGON_BACK -->	
 	<anim item="233" id="0" name="WALK" />
 	<anim item="233" id="1" name="WALK_TO_MOVE_LEFT" />
 	<anim item="233" id="2" name="MOVE_LEFT" />
@@ -461,6 +460,4 @@
     <anim item="298" id="18" name="DEFEAT_TO_IDLE" />
     <anim item="298" id="19" name="BRUSH_OFF" />
     <anim item="298" id="20" name="DEFEAT_END" />
-    
-
 </animations>
