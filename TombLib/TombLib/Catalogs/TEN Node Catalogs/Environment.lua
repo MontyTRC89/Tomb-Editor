@@ -347,7 +347,7 @@ end
 -- !Description "Checks if any stars or meteors are currently visible."
 -- !Conditional "True"
 LevelFuncs.Engine.Node.TestStarField = function()
-	return TEN.Flow.GetCurrentLevel().starField.starCount > 0 or TEN.Flow.GetCurrentLevel().starField.starCount > 0
+	return TEN.Flow.GetCurrentLevel().starField.starCount > 0 or TEN.Flow.GetCurrentLevel().starField.meteorCount > 0
 end
 
 -- !Name "Set starfield"
@@ -381,7 +381,7 @@ end
 -- !Section "Environment"
 -- !Conditional "True"
 -- !Description "Checks if specified sky layer is set to a specified color."
--- !Arguments "Enumeration, 20, [ Layer 1 | Layer 2 ], {0}, Sky layer" "Color, 15, Sky layer color" "Numerical, 15, [ -64 | 64 ], Speed" 
+-- !Arguments "Enumeration, 20, [ Layer 1 | Layer 2 ], {0}, Sky layer" "Color, 15, Sky layer color"
 LevelFuncs.Engine.Node.TestSkyLayer = function(type, color)
 	
 	if (type == 0) then
