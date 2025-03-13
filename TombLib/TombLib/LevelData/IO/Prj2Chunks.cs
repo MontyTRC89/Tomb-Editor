@@ -114,6 +114,9 @@ namespace TombLib.LevelData.IO
         /***********/public static readonly ChunkId NodeLocked = ChunkId.FromString("TeNodeLocked");
         /***********/public static readonly ChunkId NodeFunction = ChunkId.FromString("TeNodeFunc");
         /***********/public static readonly ChunkId NodeArgument = ChunkId.FromString("TeNodeArg");
+        /***********/public static readonly ChunkId NodeArgument2 = ChunkId.FromString("TeNodeArg2");
+        /***********/public static readonly ChunkId NodeArgumentName = ChunkId.FromString("TeNodeArgName");
+        /***********/public static readonly ChunkId NodeArgumentValue = ChunkId.FromString("TeNodeArgValue");
         public static readonly ChunkId Rooms = ChunkId.FromString("TeRooms");
         /**/public static readonly ChunkId Room = ChunkId.FromString("TeRoom"); // Contains X, Y sectors, Name, Position directly
         /******/public static readonly ChunkId RoomIndex = ChunkId.FromString("TeI");
