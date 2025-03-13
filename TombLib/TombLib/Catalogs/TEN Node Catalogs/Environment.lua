@@ -263,7 +263,7 @@ end
 -- !Name "Disable lens flare"
 -- !Section "Environment"
 -- !Description "Disables a lens flare."
-LevelFuncs.Engine.Node.DisableLensFlare = function(pitch, yaw, color)
+LevelFuncs.Engine.Node.DisableLensFlare = function()
     TEN.Flow.GetCurrentLevel().lensFlare.enabled = false
 end
 
@@ -346,7 +346,7 @@ end
 -- !Section "Environment"
 -- !Description "Checks if any stars or meteors are currently visible."
 -- !Conditional "True"
-LevelFuncs.Engine.Node.TestStarField = function(weather)
+LevelFuncs.Engine.Node.TestStarField = function()
 	return TEN.Flow.GetCurrentLevel().starField.starCount > 0 or TEN.Flow.GetCurrentLevel().starField.starCount > 0
 end
 
