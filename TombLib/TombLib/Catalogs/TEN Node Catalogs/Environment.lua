@@ -637,17 +637,25 @@ end
 LevelFuncs.Engine.Node.FadeHorizonFromSlotOverTimespan = function(slot, time)
 
 	if (TEN.Flow.GetCurrentLevel().horizon1.transparency == 1) then
+
+		if (TEN.Flow.GetCurrentLevel().horizon1.objectID == slot) then return end
+
 		TEN.Flow.GetCurrentLevel().horizon2.transparency = 0
 		TEN.Flow.GetCurrentLevel().horizon2.enabled = true
 		TEN.Flow.GetCurrentLevel().horizon2.objectID = slot
 		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, 0, time, true) end
 		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, 1, time, true) end
+
 	elseif (TEN.Flow.GetCurrentLevel().horizon2.transparency == 1) then
+
+		if (TEN.Flow.GetCurrentLevel().horizon2.objectID == slot) then return end
+
 		TEN.Flow.GetCurrentLevel().horizon1.transparency = 0
 		TEN.Flow.GetCurrentLevel().horizon1.enabled = true
 		TEN.Flow.GetCurrentLevel().horizon1.objectID = slot
 		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(8, 4, 1, time, true) end
 		do LevelFuncs.Engine.Node.ConstructWeatherTimedData(11, 4, 0, time, true) end
+
 	end
 
 end
