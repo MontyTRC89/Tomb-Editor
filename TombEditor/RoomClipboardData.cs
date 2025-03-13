@@ -68,7 +68,7 @@ namespace TombEditor
             _levelPath = editor.Level.Settings.LevelFilePath ?? "";
             using (var stream = new MemoryStream())
             {
-                var writer = new BinaryWriter(stream);
+                var writer = new BinaryWriterEx(stream);
                 Prj2Writer.SaveToPrj2(stream, editor.Level, new Prj2Writer.Filter
                 {
                     RoomPredicate = room => editor.SelectedRoomsContains(room)

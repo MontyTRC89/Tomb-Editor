@@ -69,7 +69,7 @@ namespace TombLib.IO
             return new ChunkId(stream.ReadBytes(idLength), idLength); // If this turns out to be slow, we might want to kind of caching to reuse an array.
         }
 
-        public void ToStream(BinaryWriter stream)
+        public void ToStream(BinaryWriterFast stream)
         {
             LEB128.Write(stream, _idLength);
             stream.Write(_idBytes, 0, _idLength);

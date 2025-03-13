@@ -10,7 +10,7 @@ namespace TombLib.LevelData.Compilers
         private void WriteLevelTr3()
         {
             // Now begin to compile the geometry block in a MemoryStream
-            using (var writer = new BinaryWriter(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
+            using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
                 ReportProgress(80, "Writing texture data");
 

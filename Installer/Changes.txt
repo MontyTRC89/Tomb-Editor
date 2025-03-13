@@ -5,8 +5,11 @@ Tomb Editor:
  * Fixed exception on copying memo or imported geometry position to clipboard.
  * Fixed trigger export returning wrong ConditionNg mask for non-moveable objects.
  * Fixed texture errors with high texinfo count in TEN levels.
+ * Fixed merged static meshes in TEN levels.
+ * Fixed double-sided room faces generating incorrect normals in TEN levels.
  * Fixed few cases of new nodes spawning in the bottom left corner of a node graph.
  * Added object transform window and Ctrl+T shortcut for precise editing of object position, rotation, and scale.
+ * Added a button to expand all nodes in the node selection window.
  * Added ability to scale a group of static meshes in TEN levels.
  * Allow to move camera up and down with E and Q keys in fly mode.
  * Imported geometry object tag now also shows rotation and scale.
@@ -31,7 +34,8 @@ TEN nodes:
 
 TEN base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
- * Added DIARY_ITEM (986) and associated sprites slots (1384, 1385)
+ * Added DIARY_ITEM (986) and associated sprites slots (1384, 1385).
+ * Added Lara underwater floor trapdoor animation (368).
  * Replaced stopwatch with a generic model due to legal reasons.
  * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
 

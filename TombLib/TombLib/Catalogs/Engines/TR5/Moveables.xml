@@ -97,7 +97,7 @@
     <moveable id="94" name="Little rat" ten="RATS_EMITTER" />
     <moveable id="95" name="Spider" ten="SPIDER" />
     <moveable id="96" name="Spider generator" ten="SPIDERS_EMITTER" />
-    <moveable id="97" name="Auto guns" ten="AUTO_GUN" />
+    <moveable id="97" name="Auto guns" ten="AUTO_GUN_VCI" />
     <moveable id="98" name="Electricity wires" ten="ELECTRICAL_CABLES" />
     <moveable id="99" name="Dart" ten="DARTS" />
     <moveable id="100" name="Dart emitter" ten="DART_EMITTER" />
@@ -455,6 +455,6 @@
     <moveable id="452" name="Bridge 1 tilt 2" ten="BRIDGE_TILT2" />
     <moveable id="453" name="Bridge 2 tilt 2" />
     <moveable id="454" name="Horizon" ten="HORIZON" hidden="true" />
-    <moveable id="456" name="Binoculars graphics" ten="BINOCULAR_GRAPHICS" hidden="true" />
-    <moveable id="457" name="Target graphics" ten="TARGET_GRAPHICS" hidden="true" />
+    <moveable id="456" name="Binocular graphics" hidden="true" />
+    <moveable id="457" name="Target graphics" hidden="true" />
 </moveables>

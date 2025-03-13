@@ -677,7 +677,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             using (var ms = new MemoryStream())
             {
-                using (var bw = new BinaryWriter(ms))
+                using (var bw = new BinaryWriterEx(ms))
                 {
                     // Write soundmap to level file
                     for (int i = 0; i < _finalSoundMap.Length; i++)

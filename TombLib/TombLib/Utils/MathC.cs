@@ -456,20 +456,20 @@ namespace TombLib
             return Hash.FromByteArray(buffer);
         }
 
-        public static float CalculateArea(in Vector2 coord0, in Vector2 coord1)
+        public static float CalculateArea(Vector2 coord0, Vector2 coord1)
         {
             return (coord1.X - coord0.X) * (coord1.Y + coord0.Y);
         }
 
-        public static float CalculateArea(in Vector2 coord0, in Vector2 coord1, in Vector2 coord2, in Vector2? coord3 = null)
+        public static float CalculateArea(Vector2 coord0, Vector2 coord1, Vector2 coord2, Vector2? coord3 = null)
         {
             if (!coord3.HasValue)
-                return CalculateArea(stackalloc Vector2[3] { coord0, coord1, coord2 });
+                return CalculateArea(new Vector2[3] { coord0, coord1, coord2 });
             else
-                return CalculateArea(stackalloc Vector2[4] { coord0, coord1, coord2, coord3.Value });
+                return CalculateArea(new Vector2[4] { coord0, coord1, coord2, coord3.Value });
         }
 
-        public static float CalculateArea(Span<Vector2> coords)
+        public static float CalculateArea(Vector2[] coords)
         {
             if (coords.Length == 3)
             {
@@ -508,7 +508,7 @@ namespace TombLib
             return coords;
         }
 
-        public static Vector3 Screen(in Vector3 ambient, in Vector3 tint)
+        public static Vector3 Screen(Vector3 ambient, Vector3 tint)
         {
             var luma = Clamp(tint.GetLuma(), 0.0f, 1.0f);
 

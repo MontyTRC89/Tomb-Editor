@@ -203,7 +203,7 @@ namespace TombLib.Wad.Tr4Wad
             logger.Info("Reading wad file: " + fileName);
 
             // Initialize stream
-            using (BinaryReader reader = new BinaryReader(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (BinaryReaderEx reader = new BinaryReaderEx(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 // Read wad version
                 Version = reader.ReadInt32();
@@ -467,7 +467,7 @@ namespace TombLib.Wad.Tr4Wad
             logger.Info("Reading sprites (swd file) associated with wad.");
             var swdName = BasePath + Path.DirectorySeparatorChar + BaseName + ".swd";
             if (File.Exists(swdName))
-                using (var readerSprites = new BinaryReader(new FileStream(BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
+                using (var readerSprites = new BinaryReaderEx(new FileStream(BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
                                                                              FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     // Version

@@ -21,7 +21,7 @@ namespace TombLib.IO
         public const int MaxLEB128Length = 10;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Write(BinaryWriter stream, long value, long maximumSize)
+        public static void Write(BinaryWriterFast stream, long value, long maximumSize)
         {
             do
             {
@@ -45,10 +45,10 @@ namespace TombLib.IO
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Write(BinaryWriter stream, long value) => Write(stream, value, value);
+        public static void Write(BinaryWriterFast stream, long value) => Write(stream, value, value);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static sbyte GetLength(BinaryWriter stream, long value)
+        public static sbyte GetLength(BinaryWriterFast stream, long value)
         {
             sbyte length = 1;
             value >>= 6;
