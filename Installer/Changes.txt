@@ -6,6 +6,7 @@ Tomb Editor:
  * Fixed trigger export returning wrong ConditionNg mask for non-moveable objects.
  * Fixed texture errors with high texinfo count in TEN levels.
  * Fixed merged static meshes in TEN levels.
+ * Fixed double-sided room faces generating incorrect normals in TEN levels.
  * Fixed few cases of new nodes spawning in the bottom left corner of a node graph.
  * Added object transform window and Ctrl+T shortcut for precise editing of object position, rotation, and scale.
  * Added a button to expand all nodes in the node selection window.
