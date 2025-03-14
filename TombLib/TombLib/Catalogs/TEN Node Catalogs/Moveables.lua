@@ -565,9 +565,9 @@ end
 -- !Name "Modify ItemFlag of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Modify ItemFlag for moveable. Used for extended customisation of certain moveables."
--- !Arguments "NewLine,Moveables, 50, Choose moveable"
--- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to change"
--- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value to store in moveable's ItemFlags
+-- !Arguments "NewLine,Moveables, 70, Choose moveable"
+-- !Arguments "Numerical, 13, [ 0 | 7 ], ItemFlag index to change"
+-- !Arguments "Numerical, 17, [ -32768 | 32767 | 0 ], Value to store in moveable's ItemFlags
 
 LevelFuncs.Engine.Node.ModifyItemFlag = function (moveable, itemFlagLocation, itemFlagValue)
 	TEN.Objects.GetMoveableByName(moveable):SetItemFlags(itemFlagValue,itemFlagLocation)
@@ -577,9 +577,9 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks current value contained inside a given ItemFlag"
 -- !Conditional "True"
--- !Arguments "NewLine,Moveables, 50, Choose moveable"
--- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to check"
--- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
+-- !Arguments "NewLine,Moveables, 70, Choose moveable"
+-- !Arguments "Numerical, 13, [ 0 | 7 ], ItemFlag index to check"
+-- !Arguments "Numerical, 17, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
 
 LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, itemFlagValue)
     local itemFlag = TEN.Objects.GetMoveableByName(moveable):GetItemFlags(itemFlagLocation)
