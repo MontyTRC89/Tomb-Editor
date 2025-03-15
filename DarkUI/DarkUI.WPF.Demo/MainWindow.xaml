@@ -8,7 +8,6 @@
 	xmlns:local="clr-namespace:DarkUI.WPF.Demo"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
-	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	Title="DarkUI WPF - Demo"
 	Width="680"
 	Height="1800"
@@ -449,20 +448,20 @@
 								<ColumnDefinition />
 							</Grid.ColumnDefinitions>
 
-							<xctk:DoubleUpDown
+							<controls:NumericUpDown
 								FormatString="F2"
 								Increment="0.01"
 								Value="2.50" />
-							<xctk:DoubleUpDown
+							<controls:NumericUpDown
 								Grid.Column="1"
 								FormatString="F2"
 								Increment="0.01"
 								IsEnabled="False"
 								Value="2.50">
-								<xctk:DoubleUpDown.Margin>
+								<controls:NumericUpDown.Margin>
 									<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
-								</xctk:DoubleUpDown.Margin>
-							</xctk:DoubleUpDown>
+								</controls:NumericUpDown.Margin>
+							</controls:NumericUpDown>
 						</Grid>
 					</StackPanel>
 
@@ -770,42 +769,42 @@
 									</ToggleButton>
 								</ToolBar>
 								<ToolBar>
-									<xctk:DropDownButton>
+									<controls:DropDownButton>
 										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
 
-										<xctk:DropDownButton.DropDownContent>
+										<controls:DropDownButton.DropDownContent>
 											<StackPanel>
 												<MenuItem Header="Item 1" />
 												<MenuItem Header="Item 2" />
 												<Separator />
 												<MenuItem Header="Item 3" />
 											</StackPanel>
-										</xctk:DropDownButton.DropDownContent>
-									</xctk:DropDownButton>
-									<xctk:DropDownButton>
+										</controls:DropDownButton.DropDownContent>
+									</controls:DropDownButton>
+									<controls:DropDownButton>
 										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
 
-										<xctk:DropDownButton.DropDownContent>
+										<controls:DropDownButton.DropDownContent>
 											<StackPanel>
 												<MenuItem Header="Item 1" />
 												<MenuItem Header="Item 2" />
 												<Separator />
 												<MenuItem Header="Item 3" />
 											</StackPanel>
-										</xctk:DropDownButton.DropDownContent>
-									</xctk:DropDownButton>
-									<xctk:DropDownButton>
+										</controls:DropDownButton.DropDownContent>
+									</controls:DropDownButton>
+									<controls:DropDownButton>
 										<Image Source="/DarkUI.WPF;component/Resources/search-16.png" />
 
-										<xctk:DropDownButton.DropDownContent>
+										<controls:DropDownButton.DropDownContent>
 											<StackPanel>
 												<MenuItem Header="Item 1" />
 												<MenuItem Header="Item 2" />
 												<Separator />
 												<MenuItem Header="Item 3" />
 											</StackPanel>
-										</xctk:DropDownButton.DropDownContent>
-									</xctk:DropDownButton>
+										</controls:DropDownButton.DropDownContent>
+									</controls:DropDownButton>
 								</ToolBar>
 							</ToolBarTray>
 						</Border>
