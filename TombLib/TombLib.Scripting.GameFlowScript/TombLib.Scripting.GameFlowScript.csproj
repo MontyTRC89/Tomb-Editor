@@ -31,24 +31,24 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Content Include="Configs\TextEditors\ColorSchemes\GameFlowScript\Monokai.gflsch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\TextEditors\ColorSchemes\GameFlowScript\NG_Center.gflsch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\TextEditors\ColorSchemes\GameFlowScript\Obsidian.gflsch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\TextEditors\ColorSchemes\GameFlowScript\VS15.gflsch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <Compile Update="Workers\GameFlowNodesProvider.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\Monokai.gflsch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\Obsidian.gflsch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\NG_Center.gflsch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\VS15.gflsch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Resources\GameFlow\TRGameflow extra commands.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -33,6 +33,9 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <Content Include="Configs\TextEditors\ColorSchemes\Lua\Default.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <Compile Update="LuaTextBox.cs">
       <SubType>UserControl</SubType>
@@ -41,10 +44,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
     <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Configs\TextEditors\ColorSchemes\Lua\Default.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
