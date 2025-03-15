@@ -160,7 +160,8 @@ LevelFuncs.Engine.Node.TransformWeatherTimedData = function(dataName)
 	elseif (LevelVars.Engine.WeatherData[dataName].DataType == 12) then
 		TEN.Flow.GetCurrentLevel().lensFlare.color = Color(newValue1, newValue2, newValue3)
 	elseif (LevelVars.Engine.WeatherData[dataName].DataType == 13) then
-		TEN.Flow.GetCurrentLevel().lensFlare.color = Color(newValue1, newValue2, newValue3)
+		TEN.Flow.GetCurrentLevel().fog.minDistance = newValue1
+		TEN.Flow.GetCurrentLevel().fog.maxDistance = newValue2
 	end
 		
 	if (LevelVars.Engine.WeatherData[dataName].Progress >= 1) then
@@ -229,6 +230,24 @@ end
 LevelFuncs.Engine.Node.ChangeFogColorOverTime = function(color, time, smooth)
 	
 	do LevelFuncs.Engine.Node.ConstructWeatherTimedData(0, 0, color, time, smooth) end
+
+end
+
+-- !Name "Change fog distance over time"
+-- !Section "Environment"
+-- !Description "Change fog distance over specified time."
+-- !Arguments "Newline, Numerical, 25, [ -1024 | 1024 | 0 | 1 ], {1}, Minimum distance"
+-- !Arguments "Numerical, 25, [ -1024 | 1024 | 0 | 1 ], {1}, Maximum distnace"
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)" 
+-- !Arguments "25, Boolean, Relative"
+LevelFuncs.Engine.Node.ChangeFogDistanceOverTime = function(minDistance, maxDistance, time, relative)
+	
+	if (relative) then
+		minDistance = TEN.Flow.GetCurrentLevel().fog.minDistance + minDistance
+		maxDistance = TEN.Flow.GetCurrentLevel().fog.maxDistance + maxDistance
+	end
+		
+	do LevelFuncs.Engine.Node.ConstructWeatherTimedData(13, 1, TEN.Vec2(minDistance, maxDistance), time, true) end
 
 end
 
