@@ -890,6 +890,20 @@
 
 						<Slider Maximum="100" Value="{Binding ElementName=ProgressBar, Path=Value}" />
 					</StackPanel>
+
+					<StackPanel>
+						<StackPanel.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+						</StackPanel.Margin>
+
+						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="AutoCompleteBox">
+							<TextBlock.Margin>
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+							</TextBlock.Margin>
+						</TextBlock>
+
+						<controls:AutoCompleteBox x:Name="autoCompleteBox" />
+					</StackPanel>
 				</StackPanel>
 
 				<WindowsFormsHost

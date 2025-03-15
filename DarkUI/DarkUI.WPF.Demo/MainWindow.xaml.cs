@@ -39,6 +39,20 @@ public partial class MainWindow : Window
 		}
 
 		dataGrid.ItemsSource = people;
+
+		autoCompleteBox.ItemsSource = new[]
+		{
+			"Lorem",
+			"Ipsum",
+			"Dolor",
+			"Sit",
+			"Amet",
+			"Consectetur",
+			"Adipiscing",
+			"Elit",
+			"Sed",
+			"Do",
+		};
 	}
 
 	private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
