@@ -2,24 +2,23 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace DarkUI.WPF.Converters
+namespace DarkUI.WPF.Converters;
+
+public class AddValueConverter : IValueConverter
 {
-	public class AddValueConverter : IValueConverter
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		object result = value;
+
+		if (value != null && targetType == typeof(double) &&
+			double.TryParse(parameter.ToString(), NumberStyles.Integer, culture, out double parameterValue))
 		{
-			object result = value;
-
-			if (value != null && targetType == typeof(double) &&
-				double.TryParse(parameter.ToString(), NumberStyles.Integer, culture, out double parameterValue))
-			{
-				result = (double)value + parameterValue;
-			}
-
-			return result;
+			result = (double)value + parameterValue;
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-			=> throw new NotSupportedException();
+		return result;
 	}
+
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		=> throw new NotSupportedException();
 }

@@ -1,7 +1,6 @@
-﻿namespace DarkUI.WPF.Demo
+﻿namespace DarkUI.WPF.Demo;
+
+internal static class LocalDefaults
 {
-	internal static class LocalDefaults
-	{
-		public static readonly double LargeFontSize = 20;
-	}
+	public static readonly double LargeFontSize = 20;
 }

@@ -42,9 +42,9 @@ public class AutoCompleteBox : Control
 		set => SetValue(SelectItemProperty, value);
 	}
 
-	public TextBox InputTextBox { get; set; } = null!;
-	public Popup Popup { get; set; } = null!;
-	public ListBox SuggestionBox { get; set; } = null!;
+	public TextBox? InputTextBox { get; set; }
+	public Popup? Popup { get; set; }
+	public ListBox? SuggestionBox { get; set; }
 
 	static AutoCompleteBox()
 	{
@@ -77,21 +77,32 @@ public class AutoCompleteBox : Control
 	{
 		base.OnApplyTemplate();
 
-		InputTextBox = (TextBox)GetTemplateChild("PART_InputTextBox");
-		InputTextBox.TextChanged += UpdateSuggestion;
-		InputTextBox.PreviewKeyDown += InputTextBox_PreviewKeyDown;
-		InputTextBox.LostFocus += OnLostFocus;
+		InputTextBox = GetTemplateChild("PART_InputTextBox") as TextBox;
+		Popup = GetTemplateChild("PART_Popup") as Popup;
+		SuggestionBox = GetTemplateChild("PART_SuggestionBox") as ListBox;
 
-		Popup = (Popup)GetTemplateChild("PART_Popup");
-		Popup.Closed += (sender, e) => IsSuggestionVisible = false;
+		if (InputTextBox is not null)
+		{
+			InputTextBox.TextChanged += UpdateSuggestion;
+			InputTextBox.PreviewKeyDown += InputTextBox_PreviewKeyDown;
+			InputTextBox.LostFocus += OnLostFocus;
+		}
 
-		SuggestionBox = (ListBox)GetTemplateChild("PART_SuggestionBox");
-		SuggestionBox.PreviewKeyDown += SuggestionBox_PreviewKeyDown;
-		SuggestionBox.MouseDoubleClick += (sender, e) => SelectItem.Execute(SuggestionBox.SelectedItem);
-		SuggestionBox.LostFocus += OnLostFocus;
+		if (Popup is not null)
+			Popup.Closed += (sender, e) => IsSuggestionVisible = false;
+
+		if (SuggestionBox is not null)
+		{
+			SuggestionBox.PreviewKeyDown += SuggestionBox_PreviewKeyDown;
+			SuggestionBox.MouseDoubleClick += (sender, e) => SelectItem.Execute(SuggestionBox.SelectedItem);
+			SuggestionBox.LostFocus += OnLostFocus;
+		}
 
 		SelectItem = new RelayCommand(obj =>
 		{
+			if (InputTextBox is null)
+				return;
+
 			string? text = obj?.ToString();
 
 			if (string.IsNullOrEmpty(text))
@@ -110,7 +121,7 @@ public class AutoCompleteBox : Control
 
 	protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 	{
-		if (e.Property == TextProperty)
+		if (e.Property == TextProperty && InputTextBox is not null)
 			InputTextBox.Text = (string)e.NewValue;
 
 		base.OnPropertyChanged(e);
@@ -118,15 +129,17 @@ public class AutoCompleteBox : Control
 
 	private void OnLostFocus(object sender, RoutedEventArgs e)
 	{
-		if (!IsSuggestionVisible)
+		if (!IsSuggestionVisible && InputTextBox is not null)
 			Text = InputTextBox.Text;
 	}
 
 	private void InputTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
 	{
-		if (e.Key == Key.Down && IsSuggestionVisible && InputTextBox.IsFocused)
+		if (e.Key == Key.Down &&
+			IsSuggestionVisible &&
+			InputTextBox?.IsFocused == true &&
+			SuggestionBox?.ItemContainerGenerator.ContainerFromIndex(0) is ListBoxItem container)
 		{
-			var container = (ListBoxItem)SuggestionBox.ItemContainerGenerator.ContainerFromIndex(0);
 			Dispatcher.BeginInvoke(() => container.Focus(), DispatcherPriority.Normal);
 			SuggestionBox.SelectedIndex = 0;
 		}
@@ -134,7 +147,7 @@ public class AutoCompleteBox : Control
 
 	private void SuggestionBox_PreviewKeyDown(object sender, KeyEventArgs e)
 	{
-		if (e.Key == Key.Up && SuggestionBox.SelectedIndex == 0 && !InputTextBox.IsFocused)
+		if (e.Key == Key.Up && SuggestionBox?.SelectedIndex == 0 && InputTextBox?.IsFocused == false)
 		{
 			InputTextBox.Focus();
 			InputTextBox.CaretIndex = InputTextBox.Text.Length;
@@ -145,6 +158,9 @@ public class AutoCompleteBox : Control
 
 	private void UpdateSuggestion(object sender, TextChangedEventArgs e)
 	{
+		if (SuggestionBox is null || InputTextBox is null)
+			return;
+
 		SuggestionBox.SelectedIndex = -1;
 
 		string lastItem = InputTextBox.Text.Split(' ').Last();
@@ -159,10 +175,8 @@ public class AutoCompleteBox : Control
 		{
 			string? text = obj?.ToString();
 
-			if (string.IsNullOrEmpty(text))
-				return false;
-
-			return text.Contains(lastItem, StringComparison.OrdinalIgnoreCase);
+			return !string.IsNullOrEmpty(text)
+				&& text.Contains(lastItem, StringComparison.OrdinalIgnoreCase);
 		};
 
 		IsSuggestionVisible = InputTextBox.IsKeyboardFocusWithin && !string.IsNullOrWhiteSpace(InputTextBox.Text);

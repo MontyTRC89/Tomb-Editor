@@ -1,8 +1,7 @@
-﻿namespace DarkUI.WPF
+﻿namespace DarkUI.WPF;
+
+public enum Theme
 {
-	public enum Theme
-	{
-		Dark,
-		Light
-	}
+	Dark,
+	Light
 }
