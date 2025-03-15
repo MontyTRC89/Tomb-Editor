@@ -19,7 +19,7 @@ LevelFuncs.Engine.Node.BasicBars = function(barName, startvalue, maxValue, posX,
 		bar.barName			= barName
 		bar.startValue		= startvalue
 		bar.maxValue		= maxValue
-		bar.objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC
+		bar.objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS
 		bar.spriteIdBg		= 0
 		bar.colorBg			= Color(255,255,255)
 		bar.posBg			= TEN.Vec2(posX, posY)
@@ -28,7 +28,7 @@ LevelFuncs.Engine.Node.BasicBars = function(barName, startvalue, maxValue, posX,
 		bar.alignModeBg		= TEN.View.AlignMode.CENTER_LEFT
 		bar.scaleModeBg		= TEN.View.ScaleMode.FIT
 		bar.blendModeBg		= TEN.Effects.BlendID.ALPHABLEND
-		bar.objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC
+		bar.objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS
 		bar.spriteIdBar		= 1
 		bar.colorBar		= colorBar
 		bar.posBar			= TEN.Vec2(posX+0.15, posY)
@@ -59,7 +59,7 @@ end
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "Numerical, [ 0 | 65535 | 2 ], {0}, 25, Start value of bar"
 -- !Arguments "Numerical, [ 0 | 65535 | 2 ], {1000}, 25, Max value of bar"
--- !Arguments "Newline, SpriteSlots, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}, 61, Background sprite sequence object ID"
+-- !Arguments "Newline, SpriteSlots, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS}, 61, Background sprite sequence object ID"
 -- !Arguments "Numerical, [ 0 | 9999 | 0 ], {0}, 19, Sprite ID for background in sprite sequence\nRange[0 to 9999]"
 -- !Arguments "Color, {TEN.Color(255,255,255)}, 20, Color of background sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
@@ -67,7 +67,7 @@ end
 -- !Arguments "Numerical, [ 0 | 360 | 2 ], 20, Rotation\nRange [0 to 360]"
 -- !Arguments "Numerical, [ 0 | 1000 | 2 ], {20}, 20, Scale X (%)\nRange [0 to 1000]"
 -- !Arguments "Numerical, [ 0 | 1000 | 2 ], {20}, 20, Scale Y (%)\nRange [0 to 1000]"
--- !Arguments "Newline, SpriteSlots, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}, 61, Bar sprite sequence object ID"
+-- !Arguments "Newline, SpriteSlots, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS}, 61, Bar sprite sequence object ID"
 -- !Arguments "Numerical, [ 0 | 9999 | 0 ], {1}, 19, Sprite ID for bar in sprite sequence\nRange[0 to 9999]"
 -- !Arguments "Color, {TEN.Color(255,0,0)}, 20, Color of bar sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
@@ -254,7 +254,7 @@ LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(posX, posY, colorbar)
 
 	local enemyBars = {}
 
-	enemyBars.objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC
+	enemyBars.objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS
 	enemyBars.spriteIdBg 		= 0
 	enemyBars.colorBg			= TEN.Color(255,255,255)
 	enemyBars.posBg				= TEN.Vec2(posX, posY)
@@ -263,7 +263,7 @@ LevelFuncs.Engine.Node.ConstructEnemiesHPBar = function(posX, posY, colorbar)
 	enemyBars.alignModeBg		= TEN.View.AlignMode.CENTER_LEFT
 	enemyBars.scaleModeBg		= TEN.View.ScaleMode.FIT
 	enemyBars.blendModeBg		= TEN.Effects.BlendID.ALPHABLEND
-	enemyBars.objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC
+	enemyBars.objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS
 	enemyBars.spriteIdBar		= 1
 	enemyBars.colorBar			= colorbar
 	enemyBars.posBar			= TEN.Vec2(posX+.15, posY)
@@ -328,7 +328,7 @@ LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, 
 
 	local enemyBar = {
 		barName			= object,
-		objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC,
+		objectIdBg		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS,
 		spriteIdBg		= spriteIdBg,
 		colorBg			= colorBg,
 		posBg			= TEN.Vec2(posXBg, posYBg),
@@ -337,7 +337,7 @@ LevelFuncs.Engine.Node.ConstructEnemyBar = function(object, text, textX, textY, 
 		alignModeBg		= TEN.View.AlignMode.CENTER_LEFT,
 		scaleModeBg		= TEN.View.ScaleMode.FIT,
 		blendModeBg		= TEN.Effects.BlendID.ALPHABLEND,
-		objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC,
+		objectIdBar		= TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS,
 		spriteIdBar		= spriteIdBar,
 		colorBar		= colorBar,
 		posBar			= TEN.Vec2(posX, posY),
@@ -370,7 +370,7 @@ end
 -- !Arguments "NewLine, Enumeration, 20, [ Health | Air | Sprint ], {0}, Bar Type"
 -- !Arguments "Boolean, 40, Show stat bar always"
 -- !Arguments "Boolean, 40, Blink"
--- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
+-- !Arguments "Newline, SpriteSlots, 60, Background sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS}"
 -- !Arguments "Numerical, 20, [ 0 | 9999 | 0 ], Sprite ID for background in sprite sequence\nRange[0 to 9999],{0}"
 -- !Arguments "Color, 20, {TEN.Color(255,255,255)}, Color of background sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
@@ -378,7 +378,7 @@ end
 -- !Arguments "Numerical, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
 -- !Arguments "Numerical, 20, {100}, [ 0 | 1000 | 2 ], Scale X (%)\nRange [0 to 1000]"
 -- !Arguments "Numerical, 20, {100}, [ 0 | 1000 | 2 ], Scale Y (%)\nRange [0 to 1000]"
--- !Arguments "Newline, SpriteSlots, 60, Bar sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHIC}"
+-- !Arguments "Newline, SpriteSlots, 60, Bar sprite sequence object ID, {TEN.Objects.ObjID.CUSTOM_BAR_GRAPHICS}"
 -- !Arguments "Numerical, 20, [ 0 | 9999 | 0 ], Sprite ID for bar in sprite sequence\nRange[0 to 9999],{1}"
 -- !Arguments "Color, {TEN.Color(255,0,0)}, 20, Color of bar sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
@@ -451,26 +451,26 @@ LevelVars.AmmoCounter = {}
 -- !Conditional "False"
 -- !Description "Displays the ammo counter for the weapon in hand."
 -- !Section "User interface"
--- !Arguments "NewLine, Enumeration , 65,[ Counter + ammo name | Use only counter], {1}, Display type"
--- !Arguments "Color, 17, {TEN.Color(255,255,255)}, Counter text color"
--- !Arguments "Enumeration , 19,[ Left	| Center | Right ], Text alignment"
--- !Arguments "NewLine, Numerical, 17, [ 0 | 100 | 1 | 0.1 ], {95}, Counter position x"
--- !Arguments "Numerical, 17, [ 0 | 100 | 1 | 0.1 ], {5}, Counter position y"
--- !Arguments "Numerical, 17, {1}, [ 0 | 9 | 2 | 0.1 ], Scale"
--- !Arguments "Enumeration, 49, [ Flat | Shadow | Blinking | Shadow + Blinking ], {1}, Effects"
--- !Arguments "Newline, SpriteSlots, 80, {TEN.Objects.ObjID.CUSTOM_AMMO_GRAPHIC}, Bar sprite sequence object ID"
+-- !Arguments "NewLine, Enumeration , 60, [ Counter + ammo name | Use only counter ], {1}, Display type"
+-- !Arguments "Color, 20, {TEN.Color(255,255,255)}, Text color"
+-- !Arguments "Enumeration , 20,[ Left	| Center | Right ], Text alignment"
+-- !Arguments "NewLine, Numerical, 20, [ 0 | 100 | 1 | 0.1 ], {95}, Text position x"
+-- !Arguments "Numerical, 20, [ 0 | 100 | 1 | 0.1 ], {5}, Text position y"
+-- !Arguments "Numerical, 20, {1}, [ 0 | 9 | 2 | 0.1 ], Text scale"
+-- !Arguments "Enumeration, 40, [ Flat | Shadow | Blinking | Shadow + Blinking ], {1}, Text effects"
+-- !Arguments "Newline, SpriteSlots, 80, {TEN.Objects.ObjID.CUSTOM_AMMO_GRAPHICS}, Ammo counter sprite sequence object ID"
 -- !Arguments "Color, 20, {TEN.Color(255,255,255)}, Color of ammo counter sprite"
 -- !Arguments "Newline, Number, 20, [ -1000 | 1000 | 2 ], {94}, Position X (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Numerical, 20, [ -1000 | 1000 | 2 ], {5}, Position Y (%)\nRange [-1000 to 1000]\nVisible range [0 to 100]"
 -- !Arguments "Numerical, 20, [ 0 | 360 | 2 ], Rotation\nRange [0 to 360]"
 -- !Arguments "Numerical, 20, {100}, [ 0 | 1000 | 2 ], {5}, Scale X (%)\nRange [0 to 1000]"
 -- !Arguments "Numerical, 20, {100}, [ 0 | 1000 | 2 ], {5}, Scale Y (%)\nRange [0 to 1000]"
--- !Arguments "NewLine, Enumeration, 35, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {6}, Align mode"
--- !Arguments "Enumeration, 22, [ Fit | Fill | Stretch ], Scale mode"
--- !Arguments "Enumeration, 28, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
+-- !Arguments "NewLine, Enumeration, 34, [ Center | Center Top | Center Bottom | Center Left | Center Right | Top Left | Top Right | Bottom Left | Bottom Right ], {6}, Align mode"
+-- !Arguments "Enumeration, 33, [ Fit | Fill | Stretch ], Scale mode"
+-- !Arguments "Enumeration, 33, [ Opaque | Alpha Test | Additive | No Z Test | Subtractive | Wireframe | Exclude | Screen | Lighten | Alphablend ], {9}, Blend mode"
 -- !Arguments "NewLine, Boolean , 40, Show unlimited ammo"
 -- !Arguments "Boolean , 60, Swap ammo name & counter position"
--- !Arguments "Newline, Boolean , 33, {true}, Show sprite"
+-- !Arguments "Newline, Boolean , 100, {true}, Show ammo sprites"
 
 LevelFuncs.Engine.Node.ShowAmmoCounter = function(displayType, color, alignment, posX, posY, scale, effect, objectIDammo, spriteColor, spritePosX, spritePosY, rot, spriteScaleX, spriteScaleY, alignMode, scaleMode, blendMode, unlimited, swap, sprite)
 	LevelVars.AmmoCounter.DisplayType	= displayType
