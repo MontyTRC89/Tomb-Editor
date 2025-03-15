@@ -24,7 +24,7 @@
   <PropertyGroup Condition="'$(Platform)'=='x86'">
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
-    
+
   <ItemGroup>
     <None Remove="Resources\search-16.png" />
     <None Remove="Resources\TE.png" />
@@ -33,7 +33,7 @@
   <ItemGroup>
     <PackageReference Include="SpacedGrid-WPF" Version="1.0.2" />
   </ItemGroup>
-    
+
   <ItemGroup>
     <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\DarkUI.WPF\DarkUI.WPF.csproj" />
@@ -49,6 +49,12 @@
   <ItemGroup>
     <Resource Include="Resources\search-16.png" />
     <Resource Include="Resources\TE.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="OriginalComparison.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

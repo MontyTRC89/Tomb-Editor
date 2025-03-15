@@ -29,69 +29,69 @@
 		private void InitializeComponent()
 		{
 			components = new System.ComponentModel.Container();
-			darkButton1 = new Controls.DarkButton();
-			darkButton2 = new Controls.DarkButton();
-			darkButton3 = new Controls.DarkButton();
-			darkLabel2 = new Controls.DarkLabel();
-			darkButton4 = new Controls.DarkButton();
-			darkButton5 = new Controls.DarkButton();
-			darkButton6 = new Controls.DarkButton();
-			darkButton7 = new Controls.DarkButton();
-			darkLabel1 = new Controls.DarkLabel();
-			darkLabel3 = new Controls.DarkLabel();
-			darkLabel4 = new Controls.DarkLabel();
-			darkPanel1 = new Controls.DarkPanel();
-			darkLabel5 = new Controls.DarkLabel();
-			darkPanel2 = new Controls.DarkPanel();
-			darkLabel6 = new Controls.DarkLabel();
-			darkCheckBox1 = new Controls.DarkCheckBox();
-			darkCheckBox2 = new Controls.DarkCheckBox();
-			darkCheckBox3 = new Controls.DarkCheckBox();
-			darkCheckBox4 = new Controls.DarkCheckBox();
-			darkCheckBox5 = new Controls.DarkCheckBox();
-			darkCheckBox6 = new Controls.DarkCheckBox();
-			darkCheckBox8 = new Controls.DarkRadioButton();
-			darkCheckBox9 = new Controls.DarkRadioButton();
-			darkCheckBox11 = new Controls.DarkRadioButton();
-			darkCheckBox12 = new Controls.DarkRadioButton();
-			darkLabel7 = new Controls.DarkLabel();
-			darkLabel8 = new Controls.DarkLabel();
-			darkTextBox1 = new Controls.DarkTextBox();
-			darkTextBox2 = new Controls.DarkTextBox();
-			darkTextBox3 = new Controls.DarkTextBox();
-			darkLabel9 = new Controls.DarkLabel();
-			darkComboBox1 = new Controls.DarkComboBox();
-			darkComboBox2 = new Controls.DarkComboBox();
-			darkLabel10 = new Controls.DarkLabel();
+			darkButton1 = new DarkUI.Controls.DarkButton();
+			darkButton2 = new DarkUI.Controls.DarkButton();
+			darkButton3 = new DarkUI.Controls.DarkButton();
+			darkLabel2 = new DarkUI.Controls.DarkLabel();
+			darkButton4 = new DarkUI.Controls.DarkButton();
+			darkButton5 = new DarkUI.Controls.DarkButton();
+			darkButton6 = new DarkUI.Controls.DarkButton();
+			darkButton7 = new DarkUI.Controls.DarkButton();
+			darkLabel1 = new DarkUI.Controls.DarkLabel();
+			darkLabel3 = new DarkUI.Controls.DarkLabel();
+			darkLabel4 = new DarkUI.Controls.DarkLabel();
+			darkPanel1 = new DarkUI.Controls.DarkPanel();
+			darkLabel5 = new DarkUI.Controls.DarkLabel();
+			darkPanel2 = new DarkUI.Controls.DarkPanel();
+			darkLabel6 = new DarkUI.Controls.DarkLabel();
+			darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
+			darkCheckBox2 = new DarkUI.Controls.DarkCheckBox();
+			darkCheckBox3 = new DarkUI.Controls.DarkCheckBox();
+			darkCheckBox4 = new DarkUI.Controls.DarkCheckBox();
+			darkCheckBox5 = new DarkUI.Controls.DarkCheckBox();
+			darkCheckBox6 = new DarkUI.Controls.DarkCheckBox();
+			darkCheckBox8 = new DarkUI.Controls.DarkRadioButton();
+			darkCheckBox9 = new DarkUI.Controls.DarkRadioButton();
+			darkCheckBox11 = new DarkUI.Controls.DarkRadioButton();
+			darkCheckBox12 = new DarkUI.Controls.DarkRadioButton();
+			darkLabel7 = new DarkUI.Controls.DarkLabel();
+			darkLabel8 = new DarkUI.Controls.DarkLabel();
+			darkTextBox1 = new DarkUI.Controls.DarkTextBox();
+			darkTextBox2 = new DarkUI.Controls.DarkTextBox();
+			darkTextBox3 = new DarkUI.Controls.DarkTextBox();
+			darkLabel9 = new DarkUI.Controls.DarkLabel();
+			darkComboBox1 = new DarkUI.Controls.DarkComboBox();
+			darkComboBox2 = new DarkUI.Controls.DarkComboBox();
+			darkLabel10 = new DarkUI.Controls.DarkLabel();
 			darkSearchableComboBox1 = new TombLib.Controls.DarkSearchableComboBox();
 			darkSearchableComboBox2 = new TombLib.Controls.DarkSearchableComboBox();
-			darkLabel11 = new Controls.DarkLabel();
-			darkNumericUpDown1 = new Controls.DarkNumericUpDown();
-			darkLabel12 = new Controls.DarkLabel();
-			darkLabel13 = new Controls.DarkLabel();
-			darkNumericUpDown2 = new Controls.DarkNumericUpDown();
-			darkLabel14 = new Controls.DarkLabel();
-			darkGroupBox1 = new Controls.DarkGroupBox();
-			darkButton11 = new Controls.DarkButton();
-			darkButton10 = new Controls.DarkButton();
-			darkButton9 = new Controls.DarkButton();
-			darkButton8 = new Controls.DarkButton();
-			darkLabel15 = new Controls.DarkLabel();
-			darkListBox1 = new Controls.DarkListBox(components);
-			darkLabel16 = new Controls.DarkLabel();
-			darkTreeView1 = new Controls.DarkTreeView();
-			darkLabel17 = new Controls.DarkLabel();
-			darkDataGridView1 = new Controls.DarkDataGridView();
-			darkButton12 = new Controls.DarkButton();
+			darkLabel11 = new DarkUI.Controls.DarkLabel();
+			darkNumericUpDown1 = new DarkUI.Controls.DarkNumericUpDown();
+			darkLabel12 = new DarkUI.Controls.DarkLabel();
+			darkLabel13 = new DarkUI.Controls.DarkLabel();
+			darkNumericUpDown2 = new DarkUI.Controls.DarkNumericUpDown();
+			darkLabel14 = new DarkUI.Controls.DarkLabel();
+			darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+			darkButton11 = new DarkUI.Controls.DarkButton();
+			darkButton10 = new DarkUI.Controls.DarkButton();
+			darkButton9 = new DarkUI.Controls.DarkButton();
+			darkButton8 = new DarkUI.Controls.DarkButton();
+			darkLabel15 = new DarkUI.Controls.DarkLabel();
+			darkListBox1 = new DarkUI.Controls.DarkListBox(components);
+			darkLabel16 = new DarkUI.Controls.DarkLabel();
+			darkTreeView1 = new DarkUI.Controls.DarkTreeView();
+			darkLabel17 = new DarkUI.Controls.DarkLabel();
+			darkDataGridView1 = new DarkUI.Controls.DarkDataGridView();
+			darkButton12 = new DarkUI.Controls.DarkButton();
 			tabControl1 = new System.Windows.Forms.CustomTabControl();
 			tabPage1 = new System.Windows.Forms.TabPage();
 			tabPage2 = new System.Windows.Forms.TabPage();
 			tabPage3 = new System.Windows.Forms.TabPage();
 			tabPage4 = new System.Windows.Forms.TabPage();
-			darkButton13 = new Controls.DarkButton();
-			darkLabel18 = new Controls.DarkLabel();
-			darkLabel19 = new Controls.DarkLabel();
-			darkProgressBar1 = new Controls.DarkProgressBar();
+			darkButton13 = new DarkUI.Controls.DarkButton();
+			darkLabel18 = new DarkUI.Controls.DarkLabel();
+			darkLabel19 = new DarkUI.Controls.DarkLabel();
+			darkProgressBar1 = new DarkUI.Controls.DarkProgressBar();
 			((System.ComponentModel.ISupportInitialize)darkNumericUpDown1).BeginInit();
 			((System.ComponentModel.ISupportInitialize)darkNumericUpDown2).BeginInit();
 			darkGroupBox1.SuspendLayout();
@@ -103,7 +103,7 @@
 			// darkButton1
 			// 
 			darkButton1.Checked = false;
-			darkButton1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton1.Location = new System.Drawing.Point(0, 32);
 			darkButton1.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkButton1.Name = "darkButton1";
@@ -114,7 +114,7 @@
 			// darkButton2
 			// 
 			darkButton2.Checked = false;
-			darkButton2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton2.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton2.Image = Properties.Resources.search_16;
 			darkButton2.Location = new System.Drawing.Point(56, 32);
 			darkButton2.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
@@ -128,7 +128,7 @@
 			// 
 			darkButton3.Checked = false;
 			darkButton3.Enabled = false;
-			darkButton3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton3.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton3.Location = new System.Drawing.Point(207, 32);
 			darkButton3.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkButton3.Name = "darkButton3";
@@ -140,10 +140,10 @@
 			// 
 			darkLabel2.AutoSize = true;
 			darkLabel2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel2.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel2.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel2.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel2.Location = new System.Drawing.Point(0, 68);
-			darkLabel2.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
+			darkLabel2.Location = new System.Drawing.Point(0, 70);
+			darkLabel2.Margin = new System.Windows.Forms.Padding(0, 16, 0, 5);
 			darkLabel2.Name = "darkLabel2";
 			darkLabel2.Size = new System.Drawing.Size(130, 28);
 			darkLabel2.TabIndex = 4;
@@ -153,8 +153,8 @@
 			// 
 			darkButton4.Checked = false;
 			darkButton4.Enabled = false;
-			darkButton4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkButton4.Location = new System.Drawing.Point(201, 101);
+			darkButton4.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkButton4.Location = new System.Drawing.Point(201, 103);
 			darkButton4.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkButton4.Name = "darkButton4";
 			darkButton4.Size = new System.Drawing.Size(57, 22);
@@ -164,9 +164,9 @@
 			// darkButton5
 			// 
 			darkButton5.Checked = false;
-			darkButton5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton5.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton5.Image = Properties.Resources.search_16;
-			darkButton5.Location = new System.Drawing.Point(56, 101);
+			darkButton5.Location = new System.Drawing.Point(56, 103);
 			darkButton5.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkButton5.Name = "darkButton5";
 			darkButton5.Size = new System.Drawing.Size(78, 22);
@@ -177,8 +177,8 @@
 			// darkButton6
 			// 
 			darkButton6.Checked = false;
-			darkButton6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkButton6.Location = new System.Drawing.Point(0, 101);
+			darkButton6.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkButton6.Location = new System.Drawing.Point(0, 103);
 			darkButton6.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkButton6.Name = "darkButton6";
 			darkButton6.Size = new System.Drawing.Size(51, 22);
@@ -188,8 +188,8 @@
 			// darkButton7
 			// 
 			darkButton7.Checked = true;
-			darkButton7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkButton7.Location = new System.Drawing.Point(139, 101);
+			darkButton7.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkButton7.Location = new System.Drawing.Point(139, 103);
 			darkButton7.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkButton7.Name = "darkButton7";
 			darkButton7.Size = new System.Drawing.Size(57, 22);
@@ -200,7 +200,7 @@
 			// 
 			darkLabel1.AutoSize = true;
 			darkLabel1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel1.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel1.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			darkLabel1.Location = new System.Drawing.Point(0, -1);
 			darkLabel1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
@@ -213,10 +213,10 @@
 			// 
 			darkLabel3.AutoSize = true;
 			darkLabel3.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel3.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel3.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel3.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel3.Location = new System.Drawing.Point(0, 137);
-			darkLabel3.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
+			darkLabel3.Location = new System.Drawing.Point(0, 141);
+			darkLabel3.Margin = new System.Windows.Forms.Padding(0, 16, 0, 5);
 			darkLabel3.Name = "darkLabel3";
 			darkLabel3.Size = new System.Drawing.Size(171, 28);
 			darkLabel3.TabIndex = 10;
@@ -226,9 +226,9 @@
 			// 
 			darkLabel4.AutoSize = true;
 			darkLabel4.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel4.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkLabel4.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel4.Location = new System.Drawing.Point(0, 173);
+			darkLabel4.Location = new System.Drawing.Point(0, 177);
 			darkLabel4.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
 			darkLabel4.Name = "darkLabel4";
 			darkLabel4.Size = new System.Drawing.Size(47, 13);
@@ -239,7 +239,7 @@
 			// 
 			darkPanel1.BackColor = System.Drawing.Color.Gainsboro;
 			darkPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			darkPanel1.Location = new System.Drawing.Point(47, 170);
+			darkPanel1.Location = new System.Drawing.Point(47, 174);
 			darkPanel1.Margin = new System.Windows.Forms.Padding(0);
 			darkPanel1.Name = "darkPanel1";
 			darkPanel1.Size = new System.Drawing.Size(60, 20);
@@ -249,9 +249,9 @@
 			// 
 			darkLabel5.AutoSize = true;
 			darkLabel5.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel5.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkLabel5.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel5.Location = new System.Drawing.Point(122, 173);
+			darkLabel5.Location = new System.Drawing.Point(122, 177);
 			darkLabel5.Margin = new System.Windows.Forms.Padding(15, 3, 0, 0);
 			darkLabel5.Name = "darkLabel5";
 			darkLabel5.Size = new System.Drawing.Size(55, 13);
@@ -262,7 +262,7 @@
 			// 
 			darkPanel2.BackColor = System.Drawing.Color.Gainsboro;
 			darkPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			darkPanel2.Location = new System.Drawing.Point(177, 170);
+			darkPanel2.Location = new System.Drawing.Point(177, 174);
 			darkPanel2.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkPanel2.Name = "darkPanel2";
 			darkPanel2.Size = new System.Drawing.Size(60, 20);
@@ -272,10 +272,10 @@
 			// 
 			darkLabel6.AutoSize = true;
 			darkLabel6.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel6.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel6.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel6.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel6.Location = new System.Drawing.Point(0, 204);
-			darkLabel6.Margin = new System.Windows.Forms.Padding(0, 14, 0, 1);
+			darkLabel6.Location = new System.Drawing.Point(0, 212);
+			darkLabel6.Margin = new System.Windows.Forms.Padding(0, 18, 0, 1);
 			darkLabel6.Name = "darkLabel6";
 			darkLabel6.Size = new System.Drawing.Size(96, 28);
 			darkLabel6.TabIndex = 14;
@@ -284,8 +284,8 @@
 			// darkCheckBox1
 			// 
 			darkCheckBox1.AutoSize = true;
-			darkCheckBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox1.Location = new System.Drawing.Point(0, 233);
+			darkCheckBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox1.Location = new System.Drawing.Point(0, 241);
 			darkCheckBox1.Margin = new System.Windows.Forms.Padding(0, 0, 10, 3);
 			darkCheckBox1.Name = "darkCheckBox1";
 			darkCheckBox1.Size = new System.Drawing.Size(63, 17);
@@ -297,8 +297,8 @@
 			darkCheckBox2.AutoSize = true;
 			darkCheckBox2.Checked = true;
 			darkCheckBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-			darkCheckBox2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox2.Location = new System.Drawing.Point(76, 233);
+			darkCheckBox2.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox2.Location = new System.Drawing.Point(76, 241);
 			darkCheckBox2.Margin = new System.Windows.Forms.Padding(0, 0, 10, 3);
 			darkCheckBox2.Name = "darkCheckBox2";
 			darkCheckBox2.Size = new System.Drawing.Size(70, 17);
@@ -310,8 +310,8 @@
 			darkCheckBox3.AutoSize = true;
 			darkCheckBox3.Checked = true;
 			darkCheckBox3.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-			darkCheckBox3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox3.Location = new System.Drawing.Point(156, 233);
+			darkCheckBox3.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox3.Location = new System.Drawing.Point(156, 241);
 			darkCheckBox3.Margin = new System.Windows.Forms.Padding(0, 0, 10, 3);
 			darkCheckBox3.Name = "darkCheckBox3";
 			darkCheckBox3.Size = new System.Drawing.Size(91, 17);
@@ -322,8 +322,8 @@
 			// 
 			darkCheckBox4.AutoSize = true;
 			darkCheckBox4.Enabled = false;
-			darkCheckBox4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox4.Location = new System.Drawing.Point(0, 253);
+			darkCheckBox4.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox4.Location = new System.Drawing.Point(0, 261);
 			darkCheckBox4.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
 			darkCheckBox4.Name = "darkCheckBox4";
 			darkCheckBox4.Size = new System.Drawing.Size(71, 17);
@@ -336,8 +336,8 @@
 			darkCheckBox5.Checked = true;
 			darkCheckBox5.CheckState = System.Windows.Forms.CheckState.Indeterminate;
 			darkCheckBox5.Enabled = false;
-			darkCheckBox5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox5.Location = new System.Drawing.Point(156, 253);
+			darkCheckBox5.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox5.Location = new System.Drawing.Point(156, 261);
 			darkCheckBox5.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
 			darkCheckBox5.Name = "darkCheckBox5";
 			darkCheckBox5.Size = new System.Drawing.Size(91, 17);
@@ -350,8 +350,8 @@
 			darkCheckBox6.Checked = true;
 			darkCheckBox6.CheckState = System.Windows.Forms.CheckState.Checked;
 			darkCheckBox6.Enabled = false;
-			darkCheckBox6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox6.Location = new System.Drawing.Point(76, 253);
+			darkCheckBox6.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox6.Location = new System.Drawing.Point(76, 261);
 			darkCheckBox6.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
 			darkCheckBox6.Name = "darkCheckBox6";
 			darkCheckBox6.Size = new System.Drawing.Size(70, 17);
@@ -363,8 +363,8 @@
 			darkCheckBox8.AutoSize = true;
 			darkCheckBox8.Checked = true;
 			darkCheckBox8.Enabled = false;
-			darkCheckBox8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox8.Location = new System.Drawing.Point(76, 334);
+			darkCheckBox8.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox8.Location = new System.Drawing.Point(76, 342);
 			darkCheckBox8.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
 			darkCheckBox8.Name = "darkCheckBox8";
 			darkCheckBox8.Size = new System.Drawing.Size(69, 17);
@@ -376,8 +376,8 @@
 			// 
 			darkCheckBox9.AutoSize = true;
 			darkCheckBox9.Enabled = false;
-			darkCheckBox9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox9.Location = new System.Drawing.Point(0, 334);
+			darkCheckBox9.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox9.Location = new System.Drawing.Point(0, 342);
 			darkCheckBox9.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
 			darkCheckBox9.Name = "darkCheckBox9";
 			darkCheckBox9.Size = new System.Drawing.Size(70, 17);
@@ -388,8 +388,8 @@
 			// 
 			darkCheckBox11.AutoSize = true;
 			darkCheckBox11.Checked = true;
-			darkCheckBox11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox11.Location = new System.Drawing.Point(76, 314);
+			darkCheckBox11.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox11.Location = new System.Drawing.Point(76, 322);
 			darkCheckBox11.Margin = new System.Windows.Forms.Padding(0, 0, 10, 3);
 			darkCheckBox11.Name = "darkCheckBox11";
 			darkCheckBox11.Size = new System.Drawing.Size(69, 17);
@@ -400,8 +400,8 @@
 			// darkCheckBox12
 			// 
 			darkCheckBox12.AutoSize = true;
-			darkCheckBox12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkCheckBox12.Location = new System.Drawing.Point(0, 314);
+			darkCheckBox12.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkCheckBox12.Location = new System.Drawing.Point(0, 322);
 			darkCheckBox12.Margin = new System.Windows.Forms.Padding(0, 0, 10, 3);
 			darkCheckBox12.Name = "darkCheckBox12";
 			darkCheckBox12.Size = new System.Drawing.Size(62, 17);
@@ -412,9 +412,9 @@
 			// 
 			darkLabel7.AutoSize = true;
 			darkLabel7.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel7.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel7.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel7.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel7.Location = new System.Drawing.Point(0, 285);
+			darkLabel7.Location = new System.Drawing.Point(0, 293);
 			darkLabel7.Margin = new System.Windows.Forms.Padding(0, 15, 0, 1);
 			darkLabel7.Name = "darkLabel7";
 			darkLabel7.Size = new System.Drawing.Size(122, 28);
@@ -425,9 +425,9 @@
 			// 
 			darkLabel8.AutoSize = true;
 			darkLabel8.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel8.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel8.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel8.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel8.Location = new System.Drawing.Point(0, 365);
+			darkLabel8.Location = new System.Drawing.Point(0, 373);
 			darkLabel8.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
 			darkLabel8.Name = "darkLabel8";
 			darkLabel8.Size = new System.Drawing.Size(78, 28);
@@ -436,8 +436,8 @@
 			// 
 			// darkTextBox1
 			// 
-			darkTextBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkTextBox1.Location = new System.Drawing.Point(0, 398);
+			darkTextBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkTextBox1.Location = new System.Drawing.Point(0, 406);
 			darkTextBox1.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkTextBox1.Name = "darkTextBox1";
 			darkTextBox1.Size = new System.Drawing.Size(80, 22);
@@ -447,8 +447,8 @@
 			// darkTextBox2
 			// 
 			darkTextBox2.Enabled = false;
-			darkTextBox2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkTextBox2.Location = new System.Drawing.Point(85, 398);
+			darkTextBox2.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkTextBox2.Location = new System.Drawing.Point(85, 406);
 			darkTextBox2.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkTextBox2.Name = "darkTextBox2";
 			darkTextBox2.Size = new System.Drawing.Size(80, 22);
@@ -457,8 +457,8 @@
 			// 
 			// darkTextBox3
 			// 
-			darkTextBox3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkTextBox3.Location = new System.Drawing.Point(170, 398);
+			darkTextBox3.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkTextBox3.Location = new System.Drawing.Point(170, 406);
 			darkTextBox3.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkTextBox3.Name = "darkTextBox3";
 			darkTextBox3.Size = new System.Drawing.Size(80, 22);
@@ -469,10 +469,10 @@
 			// 
 			darkLabel9.AutoSize = true;
 			darkLabel9.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel9.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel9.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel9.Location = new System.Drawing.Point(0, 434);
-			darkLabel9.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
+			darkLabel9.Location = new System.Drawing.Point(0, 444);
+			darkLabel9.Margin = new System.Windows.Forms.Padding(0, 16, 0, 5);
 			darkLabel9.Name = "darkLabel9";
 			darkLabel9.Size = new System.Drawing.Size(109, 28);
 			darkLabel9.TabIndex = 31;
@@ -480,34 +480,34 @@
 			// 
 			// darkComboBox1
 			// 
-			darkComboBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkComboBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkComboBox1.FormattingEnabled = true;
 			darkComboBox1.Items.AddRange(new object[] { "Item 1", "Item 2", "Item 3" });
-			darkComboBox1.Location = new System.Drawing.Point(0, 467);
+			darkComboBox1.Location = new System.Drawing.Point(0, 477);
 			darkComboBox1.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkComboBox1.Name = "darkComboBox1";
-			darkComboBox1.Size = new System.Drawing.Size(100, 23);
+			darkComboBox1.Size = new System.Drawing.Size(145, 23);
 			darkComboBox1.TabIndex = 32;
 			// 
 			// darkComboBox2
 			// 
 			darkComboBox2.Enabled = false;
-			darkComboBox2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkComboBox2.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkComboBox2.FormattingEnabled = true;
 			darkComboBox2.Items.AddRange(new object[] { "Disabled" });
-			darkComboBox2.Location = new System.Drawing.Point(105, 467);
+			darkComboBox2.Location = new System.Drawing.Point(150, 477);
 			darkComboBox2.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkComboBox2.Name = "darkComboBox2";
-			darkComboBox2.Size = new System.Drawing.Size(100, 23);
+			darkComboBox2.Size = new System.Drawing.Size(145, 23);
 			darkComboBox2.TabIndex = 33;
 			// 
 			// darkLabel10
 			// 
 			darkLabel10.AutoSize = true;
 			darkLabel10.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel10.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel10.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel10.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel10.Location = new System.Drawing.Point(0, 505);
+			darkLabel10.Location = new System.Drawing.Point(0, 515);
 			darkLabel10.Margin = new System.Windows.Forms.Padding(0, 15, 0, 5);
 			darkLabel10.Name = "darkLabel10";
 			darkLabel10.Size = new System.Drawing.Size(204, 28);
@@ -516,31 +516,31 @@
 			// 
 			// darkSearchableComboBox1
 			// 
-			darkSearchableComboBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkSearchableComboBox1.Location = new System.Drawing.Point(0, 538);
-			darkSearchableComboBox1.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
+			darkSearchableComboBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkSearchableComboBox1.Location = new System.Drawing.Point(0, 548);
+			darkSearchableComboBox1.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkSearchableComboBox1.Name = "darkSearchableComboBox1";
-			darkSearchableComboBox1.Size = new System.Drawing.Size(100, 23);
+			darkSearchableComboBox1.Size = new System.Drawing.Size(145, 23);
 			darkSearchableComboBox1.TabIndex = 35;
 			// 
 			// darkSearchableComboBox2
 			// 
 			darkSearchableComboBox2.Enabled = false;
-			darkSearchableComboBox2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkSearchableComboBox2.Location = new System.Drawing.Point(105, 538);
-			darkSearchableComboBox2.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
+			darkSearchableComboBox2.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkSearchableComboBox2.Location = new System.Drawing.Point(150, 548);
+			darkSearchableComboBox2.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkSearchableComboBox2.Name = "darkSearchableComboBox2";
-			darkSearchableComboBox2.Size = new System.Drawing.Size(100, 23);
+			darkSearchableComboBox2.Size = new System.Drawing.Size(145, 23);
 			darkSearchableComboBox2.TabIndex = 36;
 			// 
 			// darkLabel11
 			// 
 			darkLabel11.AutoSize = true;
 			darkLabel11.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel11.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel11.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel11.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel11.Location = new System.Drawing.Point(0, 575);
-			darkLabel11.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
+			darkLabel11.Location = new System.Drawing.Point(0, 586);
+			darkLabel11.Margin = new System.Windows.Forms.Padding(0, 15, 0, 5);
 			darkLabel11.Name = "darkLabel11";
 			darkLabel11.Size = new System.Drawing.Size(163, 28);
 			darkLabel11.TabIndex = 37;
@@ -549,24 +549,25 @@
 			// darkNumericUpDown1
 			// 
 			darkNumericUpDown1.DecimalPlaces = 2;
-			darkNumericUpDown1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkNumericUpDown1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkNumericUpDown1.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
 			darkNumericUpDown1.IncrementAlternate = new decimal(new int[] { 1, 0, 0, 65536 });
-			darkNumericUpDown1.Location = new System.Drawing.Point(47, 608);
+			darkNumericUpDown1.Location = new System.Drawing.Point(47, 619);
 			darkNumericUpDown1.LoopValues = false;
 			darkNumericUpDown1.Margin = new System.Windows.Forms.Padding(0);
 			darkNumericUpDown1.Name = "darkNumericUpDown1";
 			darkNumericUpDown1.Size = new System.Drawing.Size(60, 22);
 			darkNumericUpDown1.TabIndex = 38;
+			darkNumericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			darkNumericUpDown1.Value = new decimal(new int[] { 25, 0, 0, 65536 });
 			// 
 			// darkLabel12
 			// 
 			darkLabel12.AutoSize = true;
 			darkLabel12.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel12.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkLabel12.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel12.Location = new System.Drawing.Point(122, 611);
+			darkLabel12.Location = new System.Drawing.Point(122, 622);
 			darkLabel12.Margin = new System.Windows.Forms.Padding(15, 3, 0, 0);
 			darkLabel12.Name = "darkLabel12";
 			darkLabel12.Size = new System.Drawing.Size(55, 13);
@@ -577,9 +578,9 @@
 			// 
 			darkLabel13.AutoSize = true;
 			darkLabel13.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel13.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkLabel13.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel13.Location = new System.Drawing.Point(0, 611);
+			darkLabel13.Location = new System.Drawing.Point(0, 622);
 			darkLabel13.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
 			darkLabel13.Name = "darkLabel13";
 			darkLabel13.Size = new System.Drawing.Size(47, 13);
@@ -590,25 +591,26 @@
 			// 
 			darkNumericUpDown2.DecimalPlaces = 2;
 			darkNumericUpDown2.Enabled = false;
-			darkNumericUpDown2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkNumericUpDown2.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkNumericUpDown2.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
 			darkNumericUpDown2.IncrementAlternate = new decimal(new int[] { 1, 0, 0, 65536 });
-			darkNumericUpDown2.Location = new System.Drawing.Point(177, 609);
+			darkNumericUpDown2.Location = new System.Drawing.Point(177, 620);
 			darkNumericUpDown2.LoopValues = false;
 			darkNumericUpDown2.Margin = new System.Windows.Forms.Padding(0);
 			darkNumericUpDown2.Name = "darkNumericUpDown2";
 			darkNumericUpDown2.Size = new System.Drawing.Size(60, 22);
 			darkNumericUpDown2.TabIndex = 41;
+			darkNumericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			darkNumericUpDown2.Value = new decimal(new int[] { 25, 0, 0, 65536 });
 			// 
 			// darkLabel14
 			// 
 			darkLabel14.AutoSize = true;
 			darkLabel14.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel14.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel14.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel14.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel14.Location = new System.Drawing.Point(0, 643);
-			darkLabel14.Margin = new System.Windows.Forms.Padding(0, 13, 0, 6);
+			darkLabel14.Location = new System.Drawing.Point(0, 657);
+			darkLabel14.Margin = new System.Windows.Forms.Padding(0, 16, 0, 6);
 			darkLabel14.Name = "darkLabel14";
 			darkLabel14.Size = new System.Drawing.Size(100, 28);
 			darkLabel14.TabIndex = 42;
@@ -620,11 +622,11 @@
 			darkGroupBox1.Controls.Add(darkButton10);
 			darkGroupBox1.Controls.Add(darkButton9);
 			darkGroupBox1.Controls.Add(darkButton8);
-			darkGroupBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkGroupBox1.Location = new System.Drawing.Point(0, 677);
+			darkGroupBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkGroupBox1.Location = new System.Drawing.Point(0, 691);
 			darkGroupBox1.Margin = new System.Windows.Forms.Padding(0);
 			darkGroupBox1.Name = "darkGroupBox1";
-			darkGroupBox1.Size = new System.Drawing.Size(224, 52);
+			darkGroupBox1.Size = new System.Drawing.Size(300, 52);
 			darkGroupBox1.TabIndex = 43;
 			darkGroupBox1.TabStop = false;
 			darkGroupBox1.Text = "Testing GroupBox";
@@ -632,7 +634,7 @@
 			// darkButton11
 			// 
 			darkButton11.Checked = false;
-			darkButton11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton11.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton11.Location = new System.Drawing.Point(167, 19);
 			darkButton11.Margin = new System.Windows.Forms.Padding(0, 1, 5, 5);
 			darkButton11.Name = "darkButton11";
@@ -643,7 +645,7 @@
 			// darkButton10
 			// 
 			darkButton10.Checked = false;
-			darkButton10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton10.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton10.Location = new System.Drawing.Point(114, 19);
 			darkButton10.Margin = new System.Windows.Forms.Padding(0, 1, 5, 5);
 			darkButton10.Name = "darkButton10";
@@ -654,7 +656,7 @@
 			// darkButton9
 			// 
 			darkButton9.Checked = false;
-			darkButton9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton9.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton9.Location = new System.Drawing.Point(61, 19);
 			darkButton9.Margin = new System.Windows.Forms.Padding(0, 1, 5, 5);
 			darkButton9.Name = "darkButton9";
@@ -665,7 +667,7 @@
 			// darkButton8
 			// 
 			darkButton8.Checked = false;
-			darkButton8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton8.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton8.Location = new System.Drawing.Point(8, 19);
 			darkButton8.Margin = new System.Windows.Forms.Padding(5, 1, 5, 5);
 			darkButton8.Name = "darkButton8";
@@ -677,9 +679,9 @@
 			// 
 			darkLabel15.AutoSize = true;
 			darkLabel15.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel15.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel15.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel15.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel15.Location = new System.Drawing.Point(0, 743);
+			darkLabel15.Location = new System.Drawing.Point(0, 757);
 			darkLabel15.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
 			darkLabel15.Name = "darkLabel15";
 			darkLabel15.Size = new System.Drawing.Size(73, 28);
@@ -691,25 +693,25 @@
 			darkListBox1.BackColor = System.Drawing.Color.FromArgb(69, 73, 74);
 			darkListBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			darkListBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-			darkListBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkListBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkListBox1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			darkListBox1.FormattingEnabled = true;
 			darkListBox1.ItemHeight = 18;
 			darkListBox1.Items.AddRange(new object[] { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9", "Very long item name which exceeds the width of the ListBox" });
-			darkListBox1.Location = new System.Drawing.Point(0, 776);
+			darkListBox1.Location = new System.Drawing.Point(0, 790);
 			darkListBox1.Margin = new System.Windows.Forms.Padding(0);
 			darkListBox1.Name = "darkListBox1";
-			darkListBox1.Size = new System.Drawing.Size(200, 100);
+			darkListBox1.Size = new System.Drawing.Size(300, 160);
 			darkListBox1.TabIndex = 45;
 			// 
 			// darkLabel16
 			// 
 			darkLabel16.AutoSize = true;
 			darkLabel16.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel16.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel16.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel16.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel16.Location = new System.Drawing.Point(0, 889);
-			darkLabel16.Margin = new System.Windows.Forms.Padding(0, 13, 0, 5);
+			darkLabel16.Location = new System.Drawing.Point(0, 964);
+			darkLabel16.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
 			darkLabel16.Name = "darkLabel16";
 			darkLabel16.Size = new System.Drawing.Size(88, 28);
 			darkLabel16.TabIndex = 46;
@@ -718,12 +720,12 @@
 			// darkTreeView1
 			// 
 			darkTreeView1.ExpandOnDoubleClick = false;
-			darkTreeView1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkTreeView1.Location = new System.Drawing.Point(0, 922);
+			darkTreeView1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkTreeView1.Location = new System.Drawing.Point(0, 997);
 			darkTreeView1.Margin = new System.Windows.Forms.Padding(0);
 			darkTreeView1.MaxDragChange = 20;
 			darkTreeView1.Name = "darkTreeView1";
-			darkTreeView1.Size = new System.Drawing.Size(200, 100);
+			darkTreeView1.Size = new System.Drawing.Size(300, 160);
 			darkTreeView1.TabIndex = 47;
 			darkTreeView1.Text = "darkTreeView1";
 			// 
@@ -731,9 +733,9 @@
 			// 
 			darkLabel17.AutoSize = true;
 			darkLabel17.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel17.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel17.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel17.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel17.Location = new System.Drawing.Point(0, 1036);
+			darkLabel17.Location = new System.Drawing.Point(0, 1171);
 			darkLabel17.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
 			darkLabel17.Name = "darkLabel17";
 			darkLabel17.Size = new System.Drawing.Size(91, 28);
@@ -748,12 +750,11 @@
 			darkDataGridView1.AllowUserToPasteCells = false;
 			darkDataGridView1.ColumnHeadersHeight = 4;
 			darkDataGridView1.ForegroundColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkDataGridView1.Location = new System.Drawing.Point(0, 1069);
+			darkDataGridView1.Location = new System.Drawing.Point(0, 1204);
 			darkDataGridView1.Margin = new System.Windows.Forms.Padding(0);
 			darkDataGridView1.Name = "darkDataGridView1";
 			darkDataGridView1.RowHeadersWidth = 41;
-			darkDataGridView1.RowTemplate.Height = 25;
-			darkDataGridView1.Size = new System.Drawing.Size(300, 100);
+			darkDataGridView1.Size = new System.Drawing.Size(300, 160);
 			darkDataGridView1.TabIndex = 49;
 			// 
 			// darkButton12
@@ -761,7 +762,7 @@
 			darkButton12.BackColor = System.Drawing.Color.FromArgb(52, 57, 66);
 			darkButton12.BackColorUseGeneric = false;
 			darkButton12.Checked = false;
-			darkButton12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton12.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton12.Location = new System.Drawing.Point(139, 32);
 			darkButton12.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkButton12.Name = "darkButton12";
@@ -792,12 +793,12 @@
 			tabControl1.DisplayStyleProvider.TextColor = System.Drawing.Color.FromArgb(153, 153, 153);
 			tabControl1.DisplayStyleProvider.TextColorDisabled = System.Drawing.Color.FromArgb(96, 96, 96);
 			tabControl1.DisplayStyleProvider.TextColorSelected = System.Drawing.Color.FromArgb(152, 196, 232);
-			tabControl1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			tabControl1.Location = new System.Drawing.Point(0, 1216);
+			tabControl1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			tabControl1.Location = new System.Drawing.Point(0, 1409);
 			tabControl1.Margin = new System.Windows.Forms.Padding(0);
 			tabControl1.Name = "tabControl1";
 			tabControl1.SelectedIndex = 0;
-			tabControl1.Size = new System.Drawing.Size(300, 100);
+			tabControl1.Size = new System.Drawing.Size(300, 74);
 			tabControl1.TabIndex = 51;
 			// 
 			// tabPage1
@@ -806,7 +807,7 @@
 			tabPage1.Location = new System.Drawing.Point(4, 23);
 			tabPage1.Name = "tabPage1";
 			tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			tabPage1.Size = new System.Drawing.Size(292, 73);
+			tabPage1.Size = new System.Drawing.Size(292, 47);
 			tabPage1.TabIndex = 0;
 			tabPage1.Text = "tabPage1";
 			// 
@@ -845,7 +846,7 @@
 			// darkButton13
 			// 
 			darkButton13.Checked = false;
-			darkButton13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkButton13.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			darkButton13.Location = new System.Drawing.Point(5, 5);
 			darkButton13.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
 			darkButton13.Name = "darkButton13";
@@ -857,10 +858,10 @@
 			// 
 			darkLabel18.AutoSize = true;
 			darkLabel18.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel18.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel18.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel18.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel18.Location = new System.Drawing.Point(0, 1183);
-			darkLabel18.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
+			darkLabel18.Location = new System.Drawing.Point(0, 1376);
+			darkLabel18.Margin = new System.Windows.Forms.Padding(0, 12, 0, 5);
 			darkLabel18.Name = "darkLabel18";
 			darkLabel18.Size = new System.Drawing.Size(108, 28);
 			darkLabel18.TabIndex = 52;
@@ -870,9 +871,9 @@
 			// 
 			darkLabel19.AutoSize = true;
 			darkLabel19.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			darkLabel19.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			darkLabel19.Font = new System.Drawing.Font("Segoe UI", 15F);
 			darkLabel19.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel19.Location = new System.Drawing.Point(0, 1329);
+			darkLabel19.Location = new System.Drawing.Point(0, 1497);
 			darkLabel19.Margin = new System.Windows.Forms.Padding(0, 14, 0, 5);
 			darkLabel19.Name = "darkLabel19";
 			darkLabel19.Size = new System.Drawing.Size(115, 28);
@@ -881,8 +882,8 @@
 			// 
 			// darkProgressBar1
 			// 
-			darkProgressBar1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			darkProgressBar1.Location = new System.Drawing.Point(0, 1362);
+			darkProgressBar1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			darkProgressBar1.Location = new System.Drawing.Point(0, 1530);
 			darkProgressBar1.Margin = new System.Windows.Forms.Padding(0);
 			darkProgressBar1.Name = "darkProgressBar1";
 			darkProgressBar1.Size = new System.Drawing.Size(296, 23);
