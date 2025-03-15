@@ -33,6 +33,7 @@ TEN nodes:
  * Added nodes to change transparency of moveables and statics.
  * Added a node for showing ammo counter.
  * Added a node to hide or show a moveable.
+ * Added a node to add or remove collision from a static mesh.
 
 TEN base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
