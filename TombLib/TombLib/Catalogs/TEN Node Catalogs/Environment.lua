@@ -175,7 +175,7 @@ end
 -- !Section "Environment"
 -- !Description "Checks current minimum (near) fog distance value in sectors."
 -- !Conditional "True"
--- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 1024 ], Minimum fog distance to check"
+-- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 1024 | 2 | 1 ], Minimum fog distance to check"
 LevelFuncs.Engine.Node.TestFogMinDistance = function(operator, number)
 	return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetCurrentLevel().fog.minDistance, number, operator)
 end
@@ -184,7 +184,7 @@ end
 -- !Section "Environment"
 -- !Description "Checks current maximum (far) fog distance value in sectors."
 -- !Conditional "True"
--- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 1024 ], Maximum fog distance to check"
+-- !Arguments "CompareOperator, 25, Compare operation" "Numerical, 15, [ 0 | 1024 | 2 | 1 ], Maximum fog distance to check"
 LevelFuncs.Engine.Node.TestFogMaxDistance = function(operator, number)
 	return LevelFuncs.Engine.Node.CompareValue(TEN.Flow.GetCurrentLevel().fog.maxDistance, number, operator)
 end
@@ -202,7 +202,7 @@ end
 -- !Name "Set fog minimum distance"
 -- !Section "Environment"
 -- !Description "Sets fog minimum (near) distance to specified value in sectors."
--- !Arguments "Numerical, 15, [ 0 | 1024 ], Minimum fog distance"
+-- !Arguments "Numerical, 15, [ 0 | 1024 | 2 | 1  ], Minimum fog distance"
 LevelFuncs.Engine.Node.SetFogMinDistance = function(distance)
 	TEN.Flow.GetCurrentLevel().fog.minDistance = distance
 end
@@ -210,7 +210,7 @@ end
 -- !Name "Set fog maximum distance"
 -- !Section "Environment"
 -- !Description "Sets fog maximum (far) distance to specified value in sectors."
--- !Arguments "Numerical, 15, [ 0 | 1024 ], Maximum fog distance"
+-- !Arguments "Numerical, 15, [ 0 | 1024 | 2 | 1  ], Maximum fog distance"
 LevelFuncs.Engine.Node.SetFogMaxDistance = function(distance)
 	TEN.Flow.GetCurrentLevel().fog.maxDistance = distance
 end
@@ -236,8 +236,8 @@ end
 -- !Name "Change fog distance over time"
 -- !Section "Environment"
 -- !Description "Change fog distance over specified time."
--- !Arguments "Newline, Numerical, 25, [ -1024 | 1024 | 0 | 1 ], {1}, Minimum distance"
--- !Arguments "Numerical, 25, [ -1024 | 1024 | 0 | 1 ], {1}, Maximum distnace"
+-- !Arguments "Newline, Numerical, 25, [ -1024 | 1024 | 2 | 1 ], {1}, Minimum distance"
+-- !Arguments "Numerical, 25, [ -1024 | 1024 | 2 | 1 ], {1}, Maximum distnace"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 25, Time (in seconds)" 
 -- !Arguments "25, Boolean, Relative"
 LevelFuncs.Engine.Node.ChangeFogDistanceOverTime = function(minDistance, maxDistance, time, relative)
