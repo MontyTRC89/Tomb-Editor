@@ -56,6 +56,9 @@ LevelFuncs.Engine.Node.ConstructWeatherTimedData = function(dataType, operand, n
 	elseif (dataType == 12) then
 		prefix = "_lensflareColor"
 		value = TEN.Flow.GetCurrentLevel().lensFlare.color
+	elseif (dataType == 13) then
+		prefix = "_fogDistance"
+		value = Vec2(TEN.Flow.GetCurrentLevel().fog.minDistance, TEN.Flow.GetCurrentLevel().fog.maxDistance)
 	end
 
 	local dataName  = "Weather" .. prefix .. "_transform_data"
@@ -155,6 +158,8 @@ LevelFuncs.Engine.Node.TransformWeatherTimedData = function(dataName)
 	elseif (LevelVars.Engine.WeatherData[dataName].DataType == 11) then
 		TEN.Flow.GetCurrentLevel().horizon2.transparency = newValue1
 	elseif (LevelVars.Engine.WeatherData[dataName].DataType == 12) then
+		TEN.Flow.GetCurrentLevel().lensFlare.color = Color(newValue1, newValue2, newValue3)
+	elseif (LevelVars.Engine.WeatherData[dataName].DataType == 13) then
 		TEN.Flow.GetCurrentLevel().lensFlare.color = Color(newValue1, newValue2, newValue3)
 	end
 		
