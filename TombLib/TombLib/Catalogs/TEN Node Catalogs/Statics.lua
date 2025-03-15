@@ -1,5 +1,5 @@
 ﻿-- !Name "If static mesh is visible..."
--- !Section "Static mesh state"
+-- !Section "Static mesh parameters"
 -- !Description "Checks if static mesh is visible."
 -- !Conditional "True"
 -- !Arguments "NewLine, Statics"
@@ -59,6 +59,16 @@ LevelFuncs.Engine.Node.TestStaticHP = function(staticName, operator, value)
 	return LevelFuncs.Engine.Node.CompareValue(hp, value, operator)
 end
 
+-- !Name "If static mesh is collidable..."
+-- !Section "Static mesh parameters"
+-- !Description "Checks if given static mesh is collidable."
+-- !Conditional "True"
+-- !Arguments "NewLine, Statics, Static mesh to check"
+
+LevelFuncs.Engine.Node.TestStaticCollision = function(staticName)
+	return TEN.Objects.GetStaticByName(staticName):GetCollidable()
+end
+
 -- !Name "If collision of a static mesh is solid..."
 -- !Section "Static mesh parameters"
 -- !Description "Checks if given static mesh's collision mode is solid."
@@ -67,7 +77,7 @@ end
 
 LevelFuncs.Engine.Node.TestStaticCollisionMode = function(staticName)
 	return TEN.Objects.GetStaticByName(staticName):GetSolid()
-end                                 
+end
 
 -- !Name "Enable static mesh"
 -- !Section "Static mesh state"
@@ -140,7 +150,7 @@ end
 -- !Section "Static mesh parameters"
 -- !Description "Set given static mesh scale."
 -- !Arguments "Enumeration, [ Change | Set ], 20, Change adds/subtracts given value while Set forces it."
--- !Arguments "Numerical, [ 0 | 256 | 2 | 1 | 5 ], 15, Scale value to define", "NewLine, Statics"
+-- !Arguments "Numerical, [ 0 | 256 | 2 | 1 | 5 ], {1}, 15, Scale value to define", "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticScale = function(operation, value, staticName)
 	local stat = TEN.Objects.GetStaticByName(staticName)
@@ -195,10 +205,19 @@ LevelFuncs.Engine.Node.SetStaticTransparency = function(staticName, transparency
 	TEN.Objects.GetStaticByName(staticName):SetColor(color)
 end
 
+-- !Name "Set static mesh collision state"
+-- !Section "Static mesh parameters"
+-- !Description "If set, static will be collidable, if not set, it will be traversable."
+-- !Arguments "Boolean, 20, {true}, Collidable"  "NewLine, Statics"
+
+LevelFuncs.Engine.Node.SetStaticCollisionStatus = function(solid, staticName)
+	TEN.Objects.GetStaticByName(staticName):SetCollidable(solid)
+end
+
 -- !Name "Set static mesh collision mode"
 -- !Section "Static mesh parameters"
 -- !Description "If solid flag is unset, collision will be soft."
--- !Arguments "Boolean, 15, Solid"  "NewLine, Statics"
+-- !Arguments "Boolean, 15, {true}, Solid"  "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticCollisionMode = function(solid, staticName)
 	TEN.Objects.GetStaticByName(staticName):SetSolid(solid)
