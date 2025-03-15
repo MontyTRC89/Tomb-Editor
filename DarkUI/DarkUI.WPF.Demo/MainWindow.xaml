@@ -904,6 +904,46 @@
 
 						<controls:AutoCompleteBox x:Name="autoCompleteBox" />
 					</StackPanel>
+
+					<StackPanel>
+						<StackPanel.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+						</StackPanel.Margin>
+
+						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="Section GroupBox">
+							<TextBlock.Margin>
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+							</TextBlock.Margin>
+						</TextBlock>
+
+						<GroupBox
+							Width="300"
+							Margin="0,0,0,5"
+							HorizontalAlignment="Left"
+							BorderThickness="{x:Static darkUI:Defaults.BorderThickness}"
+							Header="Section with Border"
+							Style="{StaticResource SectionGroupBox}">
+							<StackPanel Orientation="Horizontal">
+								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+								<Button Width="Auto">Button</Button>
+							</StackPanel>
+						</GroupBox>
+
+						<GroupBox
+							Width="300"
+							HorizontalAlignment="Left"
+							Header="Section without Border"
+							Style="{StaticResource SectionGroupBox}">
+							<StackPanel Orientation="Horizontal">
+								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+								<Button Width="Auto" Margin="0,0,5,0">Button</Button>
+								<Button Width="Auto">Button</Button>
+							</StackPanel>
+						</GroupBox>
+					</StackPanel>
 				</StackPanel>
 
 				<WindowsFormsHost
