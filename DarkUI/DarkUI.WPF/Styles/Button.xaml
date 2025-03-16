@@ -130,6 +130,10 @@
 		<Setter Property="BorderBrush" Value="Transparent" />
 
 		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Background" Value="Transparent" />
+			</Trigger>
+
 			<Trigger Property="IsFocused" Value="True">
 				<Setter Property="BorderBrush" Value="Transparent" />
 			</Trigger>

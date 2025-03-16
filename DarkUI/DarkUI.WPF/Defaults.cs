@@ -28,7 +28,9 @@ public static class Defaults
 	public const bool SnapsToDevicePixels = true;
 	public const bool UseLayoutRounding = true;
 
-	public const double FontSize = 11;
+	public const double DefaultFontSize = 11;
+	public const double H1FontSize = 20;
+	public const double H2FontSize = 16;
 
 	public const double BorderThicknessWidth = 1;
 	public const double TinyThicknessWidth = 2;

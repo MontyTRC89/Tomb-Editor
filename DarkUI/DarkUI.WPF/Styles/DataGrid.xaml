@@ -10,7 +10,7 @@
 		<!--  Control properties  -->
 		<Setter Property="AlternationCount" Value="2" />
 		<Setter Property="CanUserReorderColumns" Value="False" />
-		<Setter Property="FontSize" Value="{x:Static local:Defaults.FontSize}" />
+		<Setter Property="FontSize" Value="{x:Static local:Defaults.DefaultFontSize}" />
 		<Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected" />
 
 		<!--  Layout  -->

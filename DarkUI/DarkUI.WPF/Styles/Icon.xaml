@@ -5,6 +5,16 @@
 
 	<local:InvertEffect x:Key="InvertEffect" />
 
+	<Style x:Key="ImageIcon" TargetType="{x:Type Image}">
+		<Setter Property="FlowDirection" Value="LeftToRight" />
+
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding Path=(local:Defaults.ShouldIconsInvert)}" Value="True">
+				<Setter Property="Effect" Value="{StaticResource InvertEffect}" />
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
+
 	<Style x:Key="SmallImageIcon" TargetType="{x:Type Image}">
 		<Setter Property="MaxWidth" Value="{x:Static local:Defaults.Image_MaxIconWidth}" />
 		<Setter Property="MaxHeight" Value="{x:Static local:Defaults.Image_MaxIconHeight}" />
