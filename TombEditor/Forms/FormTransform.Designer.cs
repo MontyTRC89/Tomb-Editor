@@ -187,6 +187,7 @@
             nudRotX.Location = new System.Drawing.Point(87, 38);
             nudRotX.LoopValues = true;
             nudRotX.Maximum = new decimal(new int[] { 360, 0, 0, 0 });
+            nudRotX.Minimum = new decimal(new int[] { 360, 0, 0, int.MinValue });
             nudRotX.Name = "nudRotX";
             nudRotX.Size = new System.Drawing.Size(64, 22);
             nudRotX.TabIndex = 103;
@@ -213,6 +214,7 @@
             nudRotY.Location = new System.Drawing.Point(170, 38);
             nudRotY.LoopValues = true;
             nudRotY.Maximum = new decimal(new int[] { 360, 0, 0, 0 });
+            nudRotY.Minimum = new decimal(new int[] { 360, 0, 0, int.MinValue });
             nudRotY.Name = "nudRotY";
             nudRotY.Size = new System.Drawing.Size(64, 22);
             nudRotY.TabIndex = 105;
@@ -227,6 +229,7 @@
             nudRotZ.Location = new System.Drawing.Point(254, 38);
             nudRotZ.LoopValues = true;
             nudRotZ.Maximum = new decimal(new int[] { 360, 0, 0, 0 });
+            nudRotZ.Minimum = new decimal(new int[] { 360, 0, 0, int.MinValue });
             nudRotZ.Name = "nudRotZ";
             nudRotZ.Size = new System.Drawing.Size(64, 22);
             nudRotZ.TabIndex = 107;
