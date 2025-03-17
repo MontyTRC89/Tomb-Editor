@@ -3,9 +3,12 @@ Version 1.8.1
 
 Tomb Editor:
  * Save transform window position after closing it.
- 
+
 TombIDE:
  * Fixed string editor throwing exception with TRNG scripts.
+
+TEN nodes:
+ * Added a node for changing scale of a moveable (visual only).
 
 Version 1.8
 ===========

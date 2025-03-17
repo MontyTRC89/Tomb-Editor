@@ -423,6 +423,26 @@ LevelFuncs.Engine.Node.SetMoveableRotation = function(operation, value, moveable
 	moveable:SetRotation(rotation)
 end
 
+-- !Name "Modify scale of a moveable"
+-- !Section "Moveable parameters"
+-- !Description "Set given moveable scale separately for every axis. For vsual effect only."
+-- !Arguments "NewLine, Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Vector3, [ 0 | 256 | 2 | 0.1 | 1 ], 75, { TEN.Vec3(1,1,1) }, Scale value to define"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.SetMoveableScale = function(operation, value, moveableName)
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+	local scale = moveable:GetScale();
+
+	if (operation == 0) then
+		scale = scale + value
+	else
+		scale = value
+	end
+
+	moveable:SetScale(scale)
+end
+
 -- !Name "Move moveable to another moveable"
 -- !Section "Moveable parameters"
 -- !Description "Moves moveable to a position of another moveable."
