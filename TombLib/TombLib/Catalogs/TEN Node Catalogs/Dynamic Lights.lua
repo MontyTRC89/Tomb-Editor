@@ -42,19 +42,18 @@ end
 -- !Description "Adds a spotlight to a moveable."
 -- !Arguments "NewLine, Moveables, 50, Select moveable to attach light to."
 -- !Arguments "Numerical, 25, [ 0 | 100 | 0 ] , Select mesh number of moveable. \nThis can be found in the Animation Editor within Wadtool."
--- !Arguments "String, 25, [ NoMultiline ], (Optional) A unique name for the light.\nTo enable interpolation in high framerate mode the light must have a unique name.\nIf the source moveable does not move significantly this field is not required." 
+-- !Arguments "String, 25, [ NoMultiline ], A unique name for the light.\nTo enable interpolation in high framerate mode the light must have a unique name.\nIf the source moveable does not move significantly this field is not required." 
 -- !Arguments "NewLine, Color, 20, { TEN.Color(128,128,128) }, Light color." 
--- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], { 5 }, (Optional) Light falloff (in clicks of 256 world units)."
--- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], { 20 }, (Optional) Light distance (in clicks of 256 world units)."
--- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], { 10 }, (Optional) Light radius (in clicks of 256 world units)."
+-- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], { 5 }, Light falloff (in clicks of 256 world units)."
+-- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], { 20 }, Light distance (in clicks of 256 world units)."
+-- !Arguments "Numerical, 20, [ 0 | 100 | 0 ], { 10 }, Light radius (in clicks of 256 world units)."
 -- !Arguments "Boolean, 50, Shadow"
 -- !Arguments "NewLine, Vector3 , [ -1000000 | 1000000 |  | 1 | 32 ], { TEN.Vec3(.1,.1,.1) }, Offset"
 
-LevelFuncs.Engine.Node.MoveableSpotLight = function(moveable, meshnumber, name, color, radius, falloff, distance, shadow, direction, effectOffset)
+LevelFuncs.Engine.Node.MoveableSpotLight = function(moveable, meshnumber, name, color, falloff, distance, radius, shadow, effectOffset)
 
 	local entityPos = TEN.Objects.GetMoveableByName(moveable):GetJointPosition(meshnumber)
-	local effectOffset = effectOffset or Vec3(0, 0, 0)
-	local offset = entityPos + effectOffset
+	local offset = entityPos + (effectOffset or Vec3(0, 0, 0))
 	local direction = TEN.Objects.GetMoveableByName(moveable):GetJointRotation(meshnumber):Direction()
 
 	EmitSpotLight(offset, direction, color, radius, falloff, distance, shadow, name)

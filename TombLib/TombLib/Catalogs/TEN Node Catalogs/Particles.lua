@@ -26,7 +26,7 @@ end
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
 -- !Arguments "NewLine, Color, 6, Start color", "Color, 6, End color"
 -- !Arguments "Enumeration, 28, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
--- !Arguments "Numerical, 18.2, [ -32000 | 32000 | 0 ], Start size" "Numerical, 18.2, [ -32000 | 32000 | 0 ], End size" "Numerical, 24, [ 0 | 32000 | 1 | .1 ], Lifetime (in seconds)"
+-- !Arguments "Numerical, 18.2, [ -32000 | 32000 | 0 ], Start size" "Numerical, 18.2, [ -32000 | 32000 | 0 ], End size" "Numerical, 24, [ 0 | 32000 | 1 | 0.1 ], Lifetime (in seconds)"
 -- !Arguments "NewLine, Boolean, 15, Poison" "Boolean, 17, Damage"
 -- !Arguments "Boolean, 65, Show particle only if static mesh is visible"
 
@@ -62,11 +62,12 @@ end
 -- !Name "Emit lightning arc"
 -- !Section "Particles"
 -- !Description "Emit a lightning arc between two points in 3D space"
--- !Arguments "Newline, Moveables, 100, Source position." 
--- !Arguments "Newline, Moveables, 100, Destination position"
--- !Arguments "NewLine, Color, 100, Color of lightning Effect"
--- !Arguments "Newline, Number, 25, [ 0 | 4.2 | 1 ], Lifetime in seconds." "Number, 25, [ 1 | 255 | 0 ], Effect strength." "Number, 25, [ 1 | 127 | 0 ], Beam width." "Number, 25, [ 1 | 127 | 0 ], Detail level."
--- !Arguments "Newline, Boolean, 25, Smooth effect" "Boolean, 25, End drift" "Boolean, 25, Source light" "Boolean, 25, Destination light"
+-- !Arguments "NewLine, Moveables, 100, Source position" 
+-- !Arguments "NewLine, Moveables, 100, Destination position"
+-- !Arguments "NewLine, Color, 20, Color of lightning Effect"
+-- !Arguments "Numerical, 20, [ 0 | 4.2 | 1 ], Lifetime in seconds" "Numerical, 20, [ 1 | 255 | 0 ], Effect strength"
+-- !Arguments "Numerical, 20, [ 1 | 127 | 0 ], Beam width" "Numerical, 20, [ 1 | 127 | 0 ], Detail level"
+-- !Arguments "NewLine, Boolean, 22, Smooth" "Boolean, 22, End drift" "Boolean, 26, Source light" "Boolean, 30, Destination light"
 
 LevelFuncs.Engine.Node.LightningArc = function(source, dest, color, lifetime, amplitude, beamWidth, detail, smooth, endDrift, sourcelight, destlight)
 	local randomiserX = (math.random(-64, 64))
@@ -103,11 +104,11 @@ end
 -- !Name "Emit shockwave"
 -- !Section "Particles"
 -- !Description "Emit a shockwave effect."
--- !Arguments "NewLine, Moveables, 70, Shockwave position." "Numerical, 30, [0 | 100], Mesh number (optional)."
--- !Arguments "NewLine, Number, 50, [ 1 | 10400 | 0 ], Inner radius" "Number, 50, [ 1| 10400 |0 ], Outer radius"
--- !Arguments "NewLine, Color, 100, Color of shockwave"
--- !Arguments "NewLine, Numerical, 33, [ 0 | 8.5 | 1 ], Lifetime of effect (in seconds)." "Number, 33, [ 0 | 500 | 0 ], Speed" "Number, 33, [ -360 | 360 |0 ], X axis rotation"
--- !Arguments "NewLine, Boolean, 50, Damage." "Boolean, 50, Randomize spawn point"
+-- !Arguments "NewLine, Moveables, 70, Shockwave position." "Numerical, 30, [ 0 | 100 ], Mesh number (optional)"
+-- !Arguments "NewLine, Numerical, 33, [ 1 | 10400 | 0 ], Inner radius" "Numerical, 33, [ 1 | 10400 | 0 ], Outer radius"
+-- !Arguments "Color, 34, Color of shockwave"
+-- !Arguments "NewLine, Numerical, 33, [ 0 | 8.5 | 1 ], Lifetime of effect (in seconds)" "Numerical, 33, [ 0 | 500 | 0 ], Speed" "Numerical, 33, [ -360 | 360 | 0 ], X axis rotation"
+-- !Arguments "NewLine, Boolean, 50, Damage" "Boolean, 50, Randomize spawn point"
 
 LevelFuncs.Engine.Node.Shockwave = function(pos, meshnum, innerRadius, outerRadius, color, lifetime, speed, angle, damage,
 											randomSpawn)

@@ -531,6 +531,8 @@ namespace TombIDE
 			progressBar.Increment(1);
 
 			Directory.Move(Path.Combine(engineRootDirectory, "audio_temp"), Path.Combine(engineRootDirectory, "Audio"));
+			File.Move(Path.Combine(engineRootDirectory, "Audio", "005.wav"), Path.Combine(engineRootDirectory, "Audio", "999.wav"));
+
 			progressBar.Increment(1);
 
 			string assetsDirectoryToCopy = Path.Combine(DefaultPaths.ProgramDirectory, "Assets");

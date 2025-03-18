@@ -90,6 +90,9 @@ namespace TombLib.IO
                 catch (Exception exc)
                 {
                     chunkException = exc;
+#if DEBUG
+                    throw;
+#endif
                 }
                 long readDataCount = _reader.BaseStream.Position - chunkStart;
 

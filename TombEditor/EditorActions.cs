@@ -1348,9 +1348,9 @@ namespace TombEditor
                             {
                                 if (func.Arguments[i].Type == type &&
                                     node.Arguments.Count > i &&
-                                    TextExtensions.Unquote(node.Arguments[i]) == oldName)
+                                    TextExtensions.Unquote(node.Arguments[i].Value) == oldName)
                                 {
-                                    node.Arguments[i] = TextExtensions.Quote(newName);
+                                    node.Arguments[i] = new TriggerNodeArgument() { Name = node.Arguments[i].Name, Value = TextExtensions.Quote(newName) };
                                 }
                             }
 

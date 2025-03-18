@@ -8,8 +8,8 @@
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
-!define MUI_WELCOMEFINISHPAGE_BITMAP "..\..\TombEditor\Resources\misc\misc_InstallerSplashTENC.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\..\TombEditor\Resources\misc\misc_InstallerSplashTENC.bmp" 
+!define MUI_WELCOMEFINISHPAGE_BITMAP "..\..\TombEditor\Resources\misc\misc_InstallerSplashTEN.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\..\TombEditor\Resources\misc\misc_InstallerSplashTEN.bmp" 
 !define MUI_ICON "..\..\Icons\ICO\TE.ico"
 !define MUI_FINISHPAGE_SHOWREADME "Changes.txt"
 
@@ -281,6 +281,7 @@ Section "Uninstall"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Volumes.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\View.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Variables.lua"
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\UI.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Timespan Actions.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Timers.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Text.lua"
@@ -295,7 +296,9 @@ Section "Uninstall"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Inventory.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Input.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Flow.lua"
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Environment.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Dynamic Lights.lua"
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Diary.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Creatures.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Batch Actions.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\_System.lua"

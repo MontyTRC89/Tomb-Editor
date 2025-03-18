@@ -1,7 +1,9 @@
-﻿namespace TombLib.Scripting.Interfaces
+﻿using System;
+
+namespace TombLib.Scripting.Interfaces
 {
 	public interface IErrorDetector
 	{
-		object FindErrors(object content);
+		object FindErrors(string editorContent, Version engineVersion);
 	}
 }

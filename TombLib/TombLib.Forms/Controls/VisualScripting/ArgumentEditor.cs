@@ -327,8 +327,8 @@ namespace TombLib.Controls.VisualScripting
                 case ArgumentType.Boolean:
                     {
                         bool result;
-                        if (float.TryParse(source, out float parsedInt))
-                            result = parsedInt == 0.0f ? false : true;
+                        if (float.TryParse(source, out float parsedFloat))
+                            result = parsedFloat == 0.0f ? false : true;
                         else if (!bool.TryParse(source, out result))
                             result = false;
 

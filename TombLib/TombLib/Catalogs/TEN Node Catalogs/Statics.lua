@@ -1,5 +1,5 @@
 ﻿-- !Name "If static mesh is visible..."
--- !Section "Static mesh state"
+-- !Section "Static mesh parameters"
 -- !Description "Checks if static mesh is visible."
 -- !Conditional "True"
 -- !Arguments "NewLine, Statics"
@@ -55,16 +55,18 @@ end
 -- !Arguments "Numerical, 30, Scale value, [ 0 | 1024 | 0 ]"
 
 LevelFuncs.Engine.Node.TestStaticHP = function(staticName, operator, value)
-	
-	local slotCheck = GetStaticByName(staticName):GetSlot()
-
-    if slotCheck < 50 or slotCheck > 59 then
-        print("Non-shatter object '" .. tostring(staticName) .. "' selected. Hit point comparison ignored.")      
-    return
-    end
-	
 	local hp = TEN.Objects.GetStaticByName(staticName):GetHP()
 	return LevelFuncs.Engine.Node.CompareValue(hp, value, operator)
+end
+
+-- !Name "If static mesh is collidable..."
+-- !Section "Static mesh parameters"
+-- !Description "Checks if given static mesh is collidable."
+-- !Conditional "True"
+-- !Arguments "NewLine, Statics, Static mesh to check"
+
+LevelFuncs.Engine.Node.TestStaticCollision = function(staticName)
+	return TEN.Objects.GetStaticByName(staticName):GetCollidable()
 end
 
 -- !Name "If collision of a static mesh is solid..."
@@ -75,7 +77,7 @@ end
 
 LevelFuncs.Engine.Node.TestStaticCollisionMode = function(staticName)
 	return TEN.Objects.GetStaticByName(staticName):GetSolid()
-end                                 
+end
 
 -- !Name "Enable static mesh"
 -- !Section "Static mesh state"
@@ -148,7 +150,7 @@ end
 -- !Section "Static mesh parameters"
 -- !Description "Set given static mesh scale."
 -- !Arguments "Enumeration, [ Change | Set ], 20, Change adds/subtracts given value while Set forces it."
--- !Arguments "Numerical, [ 0 | 256 | 2 | 1 | 5 ], 15, Scale value to define", "NewLine, Statics"
+-- !Arguments "Numerical, [ 0 | 256 | 2 | 1 | 5 ], {1}, 15, Scale value to define", "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticScale = function(operation, value, staticName)
 	local stat = TEN.Objects.GetStaticByName(staticName)
@@ -182,19 +184,40 @@ LevelFuncs.Engine.Node.ShiftStatic = function(staticName, distance)
 	static:SetPosition(newPosition)
 end
 
--- !Name "Set static mesh colour"
+-- !Name "Set static mesh color"
 -- !Section "Static mesh parameters"
 -- !Description "Sets static mesh tint to a given value."
--- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh colour"
+-- !Arguments "NewLine, Statics, 80" "Color, 20, Static mesh color"
 
 LevelFuncs.Engine.Node.SetStaticColor = function(staticName, color)
+	color.a = TEN.Objects.GetStaticByName(staticName):GetColor().a
 	TEN.Objects.GetStaticByName(staticName):SetColor(color)
+end
+
+-- !Name "Set static mesh transparency"
+-- !Section "Static mesh parameters"
+-- !Description "Sets static mesh transparency to a given value."
+-- !Arguments "NewLine, Statics, 80" "Numerical, 20, [ 0 | 255 | 0 | 1 | 5 ], {255}, Static mesh transparency"
+
+LevelFuncs.Engine.Node.SetStaticTransparency = function(staticName, transparency)
+	local color = TEN.Objects.GetStaticByName(staticName):GetColor()
+	color.a = transparency
+	TEN.Objects.GetStaticByName(staticName):SetColor(color)
+end
+
+-- !Name "Set static mesh collision state"
+-- !Section "Static mesh parameters"
+-- !Description "If set, static will be collidable, if not set, it will be traversable."
+-- !Arguments "Boolean, 20, {true}, Collidable"  "NewLine, Statics"
+
+LevelFuncs.Engine.Node.SetStaticCollisionStatus = function(solid, staticName)
+	TEN.Objects.GetStaticByName(staticName):SetCollidable(solid)
 end
 
 -- !Name "Set static mesh collision mode"
 -- !Section "Static mesh parameters"
 -- !Description "If solid flag is unset, collision will be soft."
--- !Arguments "Boolean, 15, Solid"  "NewLine, Statics"
+-- !Arguments "Boolean, 15, {true}, Solid"  "NewLine, Statics"
 
 LevelFuncs.Engine.Node.SetStaticCollisionMode = function(solid, staticName)
 	TEN.Objects.GetStaticByName(staticName):SetSolid(solid)
@@ -216,13 +239,6 @@ end
 -- !Arguments "Numerical, 30, [ 0 | 1024 ], Hit Points"
 
 LevelFuncs.Engine.Node.SetShatterHP = function(staticName, HP)
-    local slotCheck = GetStaticByName(staticName):GetSlot()
-
-    if slotCheck < 50 or slotCheck > 59 then
-        print("Non-shatter object '" .. tostring(staticName) .. "' selected. Hit point change ignored.")      
-    return
-    end
-
     TEN.Objects.GetStaticByName(staticName):SetHP(HP)
 end
 
