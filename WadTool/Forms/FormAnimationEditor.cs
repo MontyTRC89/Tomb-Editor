@@ -458,10 +458,10 @@ namespace WadTool
             // Try to restore selection, if failed, select first visible one
             if (_editor.Moveable.Animations.Count > 0)
             {
-                if (_editor.CurrentAnim == null || 
+                if (_editor.CurrentAnim == null ||
                     (lstAnimations.Items.Count > 0 && UpdateAnimListSelection(_editor.CurrentAnim.Index) < 0))
                 {
-                    lstAnimations.SelectItem(0); 
+                    lstAnimations.SelectItem(0);
                     lstAnimations.EnsureVisible();
                 }
             }
@@ -492,6 +492,8 @@ namespace WadTool
                     nudEndVertVel.Value = (decimal)node.WadAnimation.EndVelocity;
                     nudStartHorVel.Value = (decimal)node.WadAnimation.StartLateralVelocity;
                     nudEndHorVel.Value = (decimal)node.WadAnimation.EndLateralVelocity;
+                    nudAnimTransDuration.Value = (decimal)node.WadAnimation.BlendFrameCount;
+                    bezierCurveEditor.Value = node.WadAnimation.BlendCurve;
 
                     tbStateId.Text = node.WadAnimation.StateId.ToString();
                     UpdateStateChange();
@@ -1265,6 +1267,9 @@ namespace WadTool
                 case nameof(nudBBoxMaxZ):
                     oldValue = bb.Maximum.Z;
                     break;
+                case nameof(nudAnimTransDuration):
+                    oldValue = _editor.CurrentAnim.WadAnimation.BlendFrameCount;
+                    break;
             }
 
             // Clamp if necessary
@@ -1297,7 +1302,7 @@ namespace WadTool
                     _editor.CurrentAnim.WadAnimation.NextFrame = (ushort)result;
                     break;
                 case nameof(nudFramerate):
-                    nudEndFrame.Value = (decimal)Math.Round(_editor.CurrentAnim.WadAnimation.EndFrame  / 
+                    nudEndFrame.Value = (decimal)Math.Round(_editor.CurrentAnim.WadAnimation.EndFrame /
                                                            (_editor.CurrentAnim.WadAnimation.FrameRate / (float)result));
                     _editor.CurrentAnim.WadAnimation.FrameRate = (byte)result;
                     break;
@@ -1666,14 +1671,14 @@ namespace WadTool
         private void FixAnimations(int mode)
         {
             var anims = new List<AnimationNode>();
-            
+
             switch (mode)
             {
                 case 0: anims.Add(_editor.CurrentAnim); break;
                 case 1: anims.AddRange(lstAnimations.SelectedItems.Select(i => (AnimationNode)i.Tag)); break;
                 case 2: anims.AddRange(_editor.Animations); break;
             }
-            
+
             using (var form = new FormAnimationFixer(_editor, anims))
             {
                 var result = form.ShowDialog();
@@ -1739,7 +1744,7 @@ namespace WadTool
 
             _editor.CheckAnimationIntegrity(animation);
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
-            
+
             if (containsMetadata)
             {
                 _editor.CurrentAnim.WadAnimation = animation;
@@ -2222,6 +2227,7 @@ namespace WadTool
         private void nudEndVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndVertVel);
         private void nudStartHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudStartHorVel);
         private void nudEndHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndHorVel);
+        private void nudAnimTransDuration_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudAnimTransDuration);
 
         private void tbStateId_Validated(object sender, EventArgs e) => UpdateStateChange();
         private void animParameter_Validated(object sender, EventArgs e) => ValidateAnimationParameter();

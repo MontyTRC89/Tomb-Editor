@@ -180,9 +180,6 @@ namespace WadTool
             panelMain = new System.Windows.Forms.Panel();
             panelView = new DarkUI.Controls.DarkSectionPanel();
             panelRight = new System.Windows.Forms.Panel();
-            darkSectionPanel5 = new DarkUI.Controls.DarkSectionPanel();
-            darkLabel10 = new DarkUI.Controls.DarkLabel();
-            darkLabel9 = new DarkUI.Controls.DarkLabel();
             panelTransform = new DarkUI.Controls.DarkSectionPanel();
             darkLabel8 = new DarkUI.Controls.DarkLabel();
             picTransformPreview = new System.Windows.Forms.PictureBox();
@@ -201,6 +198,9 @@ namespace WadTool
             darkLabel19 = new DarkUI.Controls.DarkLabel();
             nudRotY = new DarkUI.Controls.DarkNumericUpDown();
             nudRotZ = new DarkUI.Controls.DarkNumericUpDown();
+            darkSectionPanel5 = new DarkUI.Controls.DarkSectionPanel();
+            darkLabel10 = new DarkUI.Controls.DarkLabel();
+            darkLabel9 = new DarkUI.Controls.DarkLabel();
             panelLeft = new System.Windows.Forms.Panel();
             darkSectionPanel3 = new DarkUI.Controls.DarkSectionPanel();
             bezierCurveEditor = new Controls.BezierCurveEditor();
@@ -256,7 +256,6 @@ namespace WadTool
             panelMain.SuspendLayout();
             panelView.SuspendLayout();
             panelRight.SuspendLayout();
-            darkSectionPanel5.SuspendLayout();
             panelTransform.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picTransformPreview).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudTransX).BeginInit();
@@ -265,6 +264,7 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)nudRotX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudRotY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudRotZ).BeginInit();
+            darkSectionPanel5.SuspendLayout();
             panelLeft.SuspendLayout();
             darkSectionPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudAnimTransDuration).BeginInit();
@@ -2037,61 +2037,6 @@ namespace WadTool
             panelRight.Size = new System.Drawing.Size(280, 672);
             panelRight.TabIndex = 12;
             // 
-            // darkSectionPanel5
-            // 
-            darkSectionPanel5.Controls.Add(darkLabel10);
-            darkSectionPanel5.Controls.Add(nudGrowX);
-            darkSectionPanel5.Controls.Add(darkLabel9);
-            darkSectionPanel5.Controls.Add(nudGrowZ);
-            darkSectionPanel5.Controls.Add(darkLabel33);
-            darkSectionPanel5.Controls.Add(butShrinkBBox);
-            darkSectionPanel5.Controls.Add(darkLabel30);
-            darkSectionPanel5.Controls.Add(darkLabel34);
-            darkSectionPanel5.Controls.Add(darkLabel15);
-            darkSectionPanel5.Controls.Add(darkLabel35);
-            darkSectionPanel5.Controls.Add(darkLabel14);
-            darkSectionPanel5.Controls.Add(darkLabel31);
-            darkSectionPanel5.Controls.Add(butGrowBBox);
-            darkSectionPanel5.Controls.Add(butResetBBoxAnim);
-            darkSectionPanel5.Controls.Add(nudGrowY);
-            darkSectionPanel5.Controls.Add(darkLabel32);
-            darkSectionPanel5.Controls.Add(butCalcBBoxAnim);
-            darkSectionPanel5.Controls.Add(darkLabel17);
-            darkSectionPanel5.Controls.Add(darkLabel20);
-            darkSectionPanel5.Controls.Add(nudBBoxMinX);
-            darkSectionPanel5.Controls.Add(nudBBoxMinZ);
-            darkSectionPanel5.Controls.Add(nudBBoxMinY);
-            darkSectionPanel5.Controls.Add(nudBBoxMaxX);
-            darkSectionPanel5.Controls.Add(nudBBoxMaxZ);
-            darkSectionPanel5.Controls.Add(nudBBoxMaxY);
-            darkSectionPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            darkSectionPanel5.Location = new System.Drawing.Point(0, 498);
-            darkSectionPanel5.Name = "darkSectionPanel5";
-            darkSectionPanel5.SectionHeader = "Bounding Box";
-            darkSectionPanel5.Size = new System.Drawing.Size(280, 174);
-            darkSectionPanel5.TabIndex = 131;
-            // 
-            // darkLabel10
-            // 
-            darkLabel10.AutoSize = true;
-            darkLabel10.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-            darkLabel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            darkLabel10.ForeColor = System.Drawing.Color.FromArgb(211, 211, 211);
-            darkLabel10.Location = new System.Drawing.Point(31, 121);
-            darkLabel10.Name = "darkLabel10";
-            darkLabel10.Size = new System.Drawing.Size(14, 13);
-            darkLabel10.TabIndex = 102;
-            darkLabel10.Text = "X";
-            // 
-            // darkLabel9
-            // 
-            darkLabel9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel9.Location = new System.Drawing.Point(2, 121);
-            darkLabel9.Name = "darkLabel9";
-            darkLabel9.Size = new System.Drawing.Size(43, 13);
-            darkLabel9.TabIndex = 101;
-            darkLabel9.Text = "Scale";
-            // 
             // panelTransform
             // 
             panelTransform.Controls.Add(darkLabel8);
@@ -2314,6 +2259,61 @@ namespace WadTool
             nudRotZ.TabIndex = 20;
             nudRotZ.ValueChanged += nudRotZ_ValueChanged;
             // 
+            // darkSectionPanel5
+            // 
+            darkSectionPanel5.Controls.Add(darkLabel10);
+            darkSectionPanel5.Controls.Add(nudGrowX);
+            darkSectionPanel5.Controls.Add(darkLabel9);
+            darkSectionPanel5.Controls.Add(nudGrowZ);
+            darkSectionPanel5.Controls.Add(darkLabel33);
+            darkSectionPanel5.Controls.Add(butShrinkBBox);
+            darkSectionPanel5.Controls.Add(darkLabel30);
+            darkSectionPanel5.Controls.Add(darkLabel34);
+            darkSectionPanel5.Controls.Add(darkLabel15);
+            darkSectionPanel5.Controls.Add(darkLabel35);
+            darkSectionPanel5.Controls.Add(darkLabel14);
+            darkSectionPanel5.Controls.Add(darkLabel31);
+            darkSectionPanel5.Controls.Add(butGrowBBox);
+            darkSectionPanel5.Controls.Add(butResetBBoxAnim);
+            darkSectionPanel5.Controls.Add(nudGrowY);
+            darkSectionPanel5.Controls.Add(darkLabel32);
+            darkSectionPanel5.Controls.Add(butCalcBBoxAnim);
+            darkSectionPanel5.Controls.Add(darkLabel17);
+            darkSectionPanel5.Controls.Add(darkLabel20);
+            darkSectionPanel5.Controls.Add(nudBBoxMinX);
+            darkSectionPanel5.Controls.Add(nudBBoxMinZ);
+            darkSectionPanel5.Controls.Add(nudBBoxMinY);
+            darkSectionPanel5.Controls.Add(nudBBoxMaxX);
+            darkSectionPanel5.Controls.Add(nudBBoxMaxZ);
+            darkSectionPanel5.Controls.Add(nudBBoxMaxY);
+            darkSectionPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
+            darkSectionPanel5.Location = new System.Drawing.Point(0, 498);
+            darkSectionPanel5.Name = "darkSectionPanel5";
+            darkSectionPanel5.SectionHeader = "Bounding Box";
+            darkSectionPanel5.Size = new System.Drawing.Size(280, 174);
+            darkSectionPanel5.TabIndex = 131;
+            // 
+            // darkLabel10
+            // 
+            darkLabel10.AutoSize = true;
+            darkLabel10.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            darkLabel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            darkLabel10.ForeColor = System.Drawing.Color.FromArgb(211, 211, 211);
+            darkLabel10.Location = new System.Drawing.Point(31, 121);
+            darkLabel10.Name = "darkLabel10";
+            darkLabel10.Size = new System.Drawing.Size(14, 13);
+            darkLabel10.TabIndex = 102;
+            darkLabel10.Text = "X";
+            // 
+            // darkLabel9
+            // 
+            darkLabel9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            darkLabel9.Location = new System.Drawing.Point(2, 121);
+            darkLabel9.Name = "darkLabel9";
+            darkLabel9.Size = new System.Drawing.Size(43, 13);
+            darkLabel9.TabIndex = 101;
+            darkLabel9.Text = "Scale";
+            // 
             // panelLeft
             // 
             panelLeft.Controls.Add(darkSectionPanel1);
@@ -2412,6 +2412,7 @@ namespace WadTool
             nudAnimTransDuration.Size = new System.Drawing.Size(61, 22);
             nudAnimTransDuration.TabIndex = 97;
             toolTip1.SetToolTip(nudAnimTransDuration, "Blending duration to the next animation in frames");
+            nudAnimTransDuration.ValueChanged += nudAnimTransDuration_ValueChanged;
             // 
             // cbRootPosX
             // 
@@ -2604,8 +2605,6 @@ namespace WadTool
             panelMain.ResumeLayout(false);
             panelView.ResumeLayout(false);
             panelRight.ResumeLayout(false);
-            darkSectionPanel5.ResumeLayout(false);
-            darkSectionPanel5.PerformLayout();
             panelTransform.ResumeLayout(false);
             panelTransform.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picTransformPreview).EndInit();
@@ -2615,6 +2614,8 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)nudRotX).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudRotY).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudRotZ).EndInit();
+            darkSectionPanel5.ResumeLayout(false);
+            darkSectionPanel5.PerformLayout();
             panelLeft.ResumeLayout(false);
             darkSectionPanel3.ResumeLayout(false);
             darkSectionPanel3.PerformLayout();

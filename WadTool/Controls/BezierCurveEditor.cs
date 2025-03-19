@@ -22,7 +22,7 @@ namespace WadTool.Controls
             get => _bezierCurve;
             set
             {
-                _bezierCurve = value ?? BezierCurve2D.Linear;
+                _bezierCurve = value ?? BezierCurve2D.Linear.Clone();
 
                 if (!DesignMode)
                     UpdateControlPointsFromBezier();
@@ -202,7 +202,7 @@ namespace WadTool.Controls
 
             if (_selectedPoint == -1)
             {
-                Value = BezierCurve2D.Linear;
+                Value.Set(BezierCurve2D.Linear);
                 InitializeControlPoints();
                 Invalidate();
             }

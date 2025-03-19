@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Numerics;
 
 namespace TombLib.Types
 {
-    public class BezierCurve2D
+    public sealed class BezierCurve2D : ICloneable
     {
         private const int CONTROL_POINT_COUNT = 4;
 
@@ -59,10 +58,10 @@ namespace TombLib.Types
             }
         }
 
-        public static BezierCurve2D Linear { get; } = new BezierCurve2D(Vector2.Zero, Vector2.One, Vector2.Zero, Vector2.One);
-        public static BezierCurve2D EaseIn { get; } = new BezierCurve2D(Vector2.Zero, Vector2.One, new Vector2(0.25f, 0.0f), Vector2.One);
-        public static BezierCurve2D EaseOut { get; } = new BezierCurve2D(Vector2.Zero, Vector2.One, Vector2.Zero, new Vector2(0.75f, 1.0f));
-        public static BezierCurve2D EaseInOut { get; } = new BezierCurve2D(Vector2.Zero, Vector2.One, new Vector2(0.25f, 0.0f), new Vector2(0.75f, 1.0f));
+        public static readonly BezierCurve2D Linear = new BezierCurve2D(Vector2.Zero, Vector2.One, Vector2.Zero, Vector2.One);
+        public static readonly BezierCurve2D EaseIn = new BezierCurve2D(Vector2.Zero, Vector2.One, new Vector2(0.25f, 0.0f), Vector2.One);
+        public static readonly BezierCurve2D EaseOut = new BezierCurve2D(Vector2.Zero, Vector2.One, Vector2.Zero, new Vector2(0.75f, 1.0f));
+        public static readonly BezierCurve2D EaseInOut = new BezierCurve2D(Vector2.Zero, Vector2.One, new Vector2(0.25f, 0.0f), new Vector2(0.75f, 1.0f));
 
         public BezierCurve2D(Vector2 start, Vector2 end, Vector2 startHandle, Vector2 endHandle)
         {
@@ -70,6 +69,14 @@ namespace TombLib.Types
             End = end;
             StartHandle = startHandle;
             EndHandle = endHandle;
+        }
+
+        public void Set(BezierCurve2D other)
+        {
+            Start = other.Start;
+            End = other.End;
+            StartHandle = other.StartHandle;
+            EndHandle = other.EndHandle;
         }
 
         public Vector2 GetPoint(float alpha)
@@ -138,7 +145,34 @@ namespace TombLib.Types
 		    }
 
 		    return points[0];
-	    }
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
+
+        public BezierCurve2D Clone()
+        {
+            return new BezierCurve2D(Start, End, StartHandle, EndHandle);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is BezierCurve2D other)
+            {
+                return Start == other.Start &&
+                       End == other.End &&
+                       StartHandle == other.StartHandle &&
+                       EndHandle == other.EndHandle;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Start, End, StartHandle, EndHandle);
+        }
 
         public static bool operator ==(BezierCurve2D first, BezierCurve2D second)
         {
