@@ -4,11 +4,26 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.IO;
+using TombLib.Types;
 using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
+    public enum TombEnginePolygonShape : int
+    {
+        Quad,
+        Triangle
+    }
+
+    public enum TombEngineAnimationBlendType
+    {
+        Linear,
+        Smooth,
+        EaseIn,
+        EaseOut
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineSpriteTexture
     {
@@ -21,12 +36,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public float Y3;
         public float X4;
         public float Y4;
-    }
-
-    public enum TombEnginePolygonShape : int
-    {
-        Quad,
-        Triangle
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -583,51 +592,48 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int NumMeshes;
         public int StartingMesh;
         public int MeshTree;
-        public int FrameOffset;
-        public int Animation;
+        public int NumAnimations;
+        public List<TombEngineAnimation> Animations;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineStateChange
     {
         public int StateID;
-        public int NumAnimDispatches;
-        public int AnimDispatch;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngineAnimDispatch
-    {
-        public int Low;
-        public int High;
+        public int FrameLow;
+        public int FrameHigh;
         public int NextAnimation;
-        public int NextFrame;
+        public int NextFrameLow;
+        public int NextFrameHigh;
+        public int BlendFrameCount;
+        public BezierCurve2D BlendCurve;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineAnimation
     {
-        public int FrameOffset;
-        public int FrameRate;
         public int StateID;
-        public Vector3 VelocityStart;
-        public Vector3 VelocityEnd;
-        public int FrameStart;
+        public int Interpolation;
         public int FrameEnd;
         public int NextAnimation;
         public int NextFrame;
-        public int NumStateChanges;
-        public int StateChangeOffset;
+        public int BlendFrameCount;
+        public BezierCurve2D BlendCurve;
+        public Vector3 VelocityStart;
+        public Vector3 VelocityEnd;
+        public List<TombEngineKeyFrame> KeyFrames;
+        public List<TombEngineStateChange> StateChanges;
         public int NumAnimCommands;
-        public int AnimCommand;
+        public List<object> CommandData;
+        public int Flags;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineKeyFrame
     {
         public TombEngineBoundingBox BoundingBox;
-        public Vector3 Offset;
-        public List<Quaternion> Angles;
+        public Vector3 RootOffset;
+        public List<Quaternion> BoneOrientations;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

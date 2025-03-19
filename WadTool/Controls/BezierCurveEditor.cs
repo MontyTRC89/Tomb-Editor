@@ -1,0 +1,183 @@
+﻿using DarkUI.Config;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Numerics;
+using System.Windows.Forms;
+using TombLib.Types;
+
+namespace WadTool.Controls
+{
+    public partial class BezierCurveEditor : UserControl
+    {
+        private const float HandleRadius = 6.0f;
+        private const float HandleOutlineRadius = 9.0f;
+
+        private Vector2[] _controlPoints;
+        private int _selectedPoint = -1;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public BezierCurve2D Value
+        {
+            get => _bezierCurve;
+            set
+            {
+                _bezierCurve = value;
+                UpdateControlPointsFromBezier();
+                Invalidate();
+            }
+        }
+        private BezierCurve2D _bezierCurve = BezierCurve2D.Linear;
+
+        public BezierCurveEditor()
+        {
+            DoubleBuffered = true;
+            ResizeRedraw = true;
+            InitializeComponent();
+            InitializeControlPoints();
+        }
+
+        private void InitializeControlPoints()
+        {
+            _controlPoints    = new Vector2[4];
+            _controlPoints[0] = new Vector2(0, Height); // Bottom-left
+            _controlPoints[1] = new Vector2(Width / 3.0f, Height * 2.0f / 3.0f);
+            _controlPoints[2] = new Vector2(2 * Width / 3.0f, Height / 3.0f);
+            _controlPoints[3] = new Vector2(Width, 0); // Top-right
+        }
+
+        private void UpdateControlPointsFromBezier()
+        {
+            _controlPoints[0] = TransformToScreen(_bezierCurve.Start);
+            _controlPoints[1] = TransformToScreen(_bezierCurve.StartHandle);
+            _controlPoints[2] = TransformToScreen(_bezierCurve.EndHandle);
+            _controlPoints[3] = TransformToScreen(_bezierCurve.End);
+        }
+
+        private Vector2 TransformToBezier(Vector2 point)
+        {
+            return new Vector2(point.X / Width, 1.0f - (point.Y / Height));
+        }
+
+        private Vector2 TransformToScreen(Vector2 point)
+        {
+            return new Vector2(point.X * Width, (1.0f - point.Y) * Height);
+        }
+
+        private bool IsPointNear(Vector2 p1, Vector2 p2)
+        {
+            return Math.Abs(p1.X - p2.X) < HandleOutlineRadius * 2 && Math.Abs(p1.Y - p2.Y) < HandleOutlineRadius * 2;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            var g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            // Draw Bézier curve
+            using (var pen = new Pen(Colors.LightestBackground, 2))
+            {
+                g.DrawBezier(pen, new PointF(_controlPoints[0]), new PointF(_controlPoints[1]), new PointF(_controlPoints[2]), new PointF(_controlPoints[3]));
+            }
+
+            // Draw control point connectors
+            using (var handlePen = new Pen(Colors.GreyHighlight, 1))
+            {
+                g.DrawLine(handlePen, new PointF(_controlPoints[0]), new PointF(_controlPoints[1]));
+                g.DrawLine(handlePen, new PointF(_controlPoints[3]), new PointF(_controlPoints[2]));
+            }
+
+            // Draw control points
+            for (int i = 1; i < 3; i++) // Only draw draggable points
+            {
+                using (var brush = new SolidBrush(Colors.GreyBackground))
+                {
+                    g.FillEllipse(brush, _controlPoints[i].X - HandleOutlineRadius, _controlPoints[i].Y - HandleOutlineRadius, HandleOutlineRadius * 2, HandleOutlineRadius * 2);
+                }
+
+                using (var brush = new SolidBrush(i == _selectedPoint ? Colors.LightestBackground : Colors.GreyHighlight))
+                {
+                    g.FillEllipse(brush, _controlPoints[i].X - HandleRadius, _controlPoints[i].Y - HandleRadius, HandleRadius * 2, HandleRadius * 2);
+                }
+            }
+
+            // Draw border
+            using (var borderPen = new Pen(Colors.GreyBackground, 3))
+            {
+                g.DrawRectangle(borderPen, 0, 0, Width - 1, Height - 1);
+            }
+
+            using (var borderPen = new Pen(Colors.LightBorder, 1))
+            {
+                g.DrawRectangle(borderPen, 0, 0, Width - 1, Height - 1);
+            }
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            for (int i = 1; i < 3; i++) // Only check middle points
+            {
+                if (IsPointNear(new Vector2(e.Location.X, e.Location.Y), _controlPoints[i]))
+                {
+                    _selectedPoint = i;
+                    break;
+                }
+            }
+
+            Invalidate();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (_selectedPoint != -1 && e.Button == MouseButtons.Left)
+            {
+                _controlPoints[_selectedPoint] = new Vector2(
+                    Math.Max(HandleRadius / 2, Math.Min(e.X, Width  - HandleRadius / 2 - 1)),
+                    Math.Max(HandleRadius / 2, Math.Min(e.Y, Height - HandleRadius / 2 - 1))
+                );
+                Invalidate(); // Redraw the control
+            }
+
+            // Update the Bezier curve object
+            if (_bezierCurve != null)
+            {
+                if (_selectedPoint == 1)
+                    _bezierCurve.StartHandle = TransformToBezier(_controlPoints[1]);
+                else if (_selectedPoint == 2)
+                    _bezierCurve.EndHandle = TransformToBezier(_controlPoints[2]);
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            _selectedPoint = -1;
+            Invalidate();
+        }
+
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            base.OnMouseDoubleClick(e);
+            if (_selectedPoint == -1)
+            {
+                Value = BezierCurve2D.Linear;
+                InitializeControlPoints();
+                Invalidate();
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            UpdateControlPointsFromBezier(); // Preserve the current curve instead of resetting
+            Invalidate();
+        }
+    }
+}
