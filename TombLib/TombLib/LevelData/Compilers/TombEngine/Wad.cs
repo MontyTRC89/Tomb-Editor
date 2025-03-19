@@ -262,8 +262,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
 
                     newAnimation.NextFrame = oldAnimation.NextFrame;
-                    newAnimation.BlendFrameCount = 0; // TODO
-                    newAnimation.BlendCurve = new BezierCurve2D(Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero); // TODO
+                    newAnimation.BlendFrameCount = oldAnimation.BlendFrameCount;
+                    newAnimation.BlendCurve = oldAnimation.BlendCurve.Clone();
                     newAnimation.VelocityStart = new Vector3(oldAnimation.StartLateralVelocity, 0, oldAnimation.StartVelocity);
                     newAnimation.VelocityEnd = new Vector3(oldAnimation.EndLateralVelocity, 0, oldAnimation.EndVelocity);
                     newAnimation.KeyFrames = new List<TombEngineKeyFrame>();
@@ -368,9 +368,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newStateChange.FrameHigh = unchecked((int)(dispatch.OutFrame));
                             newStateChange.NextAnimation = checked((int)(dispatch.NextAnimation));
                             newStateChange.NextFrameLow = (int)dispatch.NextFrame;
-                            newStateChange.BlendFrameCount = 0; // TODO
-                            newStateChange.BlendEndFrame = (int)dispatch.NextFrame; // TODO
-                            newStateChange.BlendCurve = new BezierCurve2D(Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero); // TODO
+                            newStateChange.BlendFrameCount = (int)dispatch.BlendFrameCount;
+                            newStateChange.BlendEndFrame = (int)dispatch.BlendEndFrame;
+                            newStateChange.BlendCurve = dispatch.BlendCurve.Clone();
 
                             newAnimation.StateChanges.Add(newStateChange);
                         }
