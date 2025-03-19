@@ -16,6 +16,8 @@ namespace WadTool.Controls
         private Vector2[] _controlPoints = new Vector2[4];
         private int _selectedPoint = -1;
 
+        public event EventHandler ValueChanged;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public BezierCurve2D Value
         {
@@ -25,9 +27,7 @@ namespace WadTool.Controls
                 _bezierCurve = value ?? BezierCurve2D.Linear.Clone();
 
                 if (!DesignMode)
-                    UpdateControlPointsFromBezier();
-
-                Invalidate();
+                    UpdateUI();
             }
         }
 
@@ -55,7 +55,7 @@ namespace WadTool.Controls
             _controlPoints[3] = new Vector2(Width, 0);
         }
 
-        private void UpdateControlPointsFromBezier()
+        public void UpdateUI()
         {
             if (DesignMode || _bezierCurve == null)
                 return;
@@ -64,6 +64,25 @@ namespace WadTool.Controls
             _controlPoints[1] = TransformToScreen(_bezierCurve.StartHandle);
             _controlPoints[2] = TransformToScreen(_bezierCurve.EndHandle);
             _controlPoints[3] = TransformToScreen(_bezierCurve.End);
+
+            AdjustHandlesForLinearCurve();
+            Invalidate();
+        }
+
+        private void AdjustHandlesForLinearCurve()
+        {
+            if (_bezierCurve.StartHandle == _bezierCurve.Start)
+            {
+
+                _controlPoints[0] = new Vector2(0, Height);
+                _controlPoints[1] = new Vector2(Width / 3.0f, Height * 2.0f / 3.0f);
+            }
+
+            if (_bezierCurve.EndHandle == _bezierCurve.End)
+            {
+                _controlPoints[2] = new Vector2(2 * Width / 3.0f, Height / 3.0f);
+                _controlPoints[3] = new Vector2(Width, 0);
+            }
         }
 
         private Vector2 TransformToBezier(Vector2 point)
@@ -79,6 +98,11 @@ namespace WadTool.Controls
         private bool IsPointNear(Vector2 p1, Vector2 p2)
         {
             return Math.Abs(p1.X - p2.X) < HandleOutlineRadius * 2 && Math.Abs(p1.Y - p2.Y) < HandleOutlineRadius * 2;
+        }
+
+        protected virtual void OnValueChanged(EventArgs e)
+        {
+            ValueChanged?.Invoke(this, e);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -177,6 +201,8 @@ namespace WadTool.Controls
                     _bezierCurve.StartHandle = TransformToBezier(_controlPoints[1]);
                 else if (_selectedPoint == 2)
                     _bezierCurve.EndHandle = TransformToBezier(_controlPoints[2]);
+
+                OnValueChanged(EventArgs.Empty);
             }
 
             Invalidate();
@@ -215,8 +241,7 @@ namespace WadTool.Controls
             if (DesignMode)
                 return;
 
-            UpdateControlPointsFromBezier();
-            Invalidate();
+            UpdateUI();
         }
     }
 }

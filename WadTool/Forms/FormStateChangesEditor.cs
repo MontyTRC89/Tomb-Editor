@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.Graphics;
+using TombLib.Types;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -28,8 +29,12 @@ namespace WadTool
             public ushort HighFrame { get; set; }
             public ushort NextAnimation { get; set; }
             public ushort NextFrame { get; set; }
+            public ushort BlendFrameCount { get; set; }
+            public ushort BlendEndFrame { get; set; }
+            public BezierCurve2D BlendCurve { get; set; }
 
-            public WadStateChangeRow(string stateName, ushort stateId, ushort lowFrame, ushort highFrame, ushort nextAnimation, ushort nextFrame)
+            public WadStateChangeRow(string stateName, ushort stateId, ushort lowFrame, ushort highFrame, ushort nextAnimation,
+                                     ushort nextFrame, ushort blendFrameCount, ushort blendEndFrame, BezierCurve2D blendCurve)
             {
                 StateName = stateName;
                 StateId = stateId;
@@ -37,6 +42,9 @@ namespace WadTool
                 HighFrame = highFrame;
                 NextAnimation = nextAnimation;
                 NextFrame = nextFrame;
+                BlendFrameCount = blendFrameCount;
+                BlendEndFrame = blendEndFrame;
+                BlendCurve = blendCurve.Clone();
             }
 
             public WadStateChangeRow() { }
@@ -50,7 +58,7 @@ namespace WadTool
 
             _editor = editor;
 
-            dgvControls.CreateNewRow =()=> new WadStateChangeRow() { StateName = TrCatalog.GetStateName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, 0) };
+            dgvControls.CreateNewRow = () => new WadStateChangeRow() { StateName = TrCatalog.GetStateName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, 0) };
             dgvControls.DataGridView = dgvStateChanges;
             dgvControls.Enabled = true;
 
@@ -78,7 +86,8 @@ namespace WadTool
             var rows = new List<WadStateChangeRow>();
             foreach (var sc in _animation.WadAnimation.StateChanges)
                 foreach (var d in sc.Dispatches)
-                    rows.Add(new WadStateChangeRow(TrCatalog.GetStateName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, sc.StateId), sc.StateId, d.InFrame, d.OutFrame, d.NextAnimation, d.NextFrame));
+                    rows.Add(new WadStateChangeRow(TrCatalog.GetStateName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, sc.StateId),
+                                                sc.StateId, d.InFrame, d.OutFrame, d.NextAnimation, d.NextFrame, d.BlendFrameCount, d.BlendEndFrame, d.BlendCurve));
 
             if (newStateChange != null && newStateChange.Dispatches.Count == 1)
             {
@@ -87,7 +96,10 @@ namespace WadTool
                                                newStateChange.Dispatches[0].InFrame,
                                                newStateChange.Dispatches[0].OutFrame,
                                                newStateChange.Dispatches[0].NextAnimation,
-                                               newStateChange.Dispatches[0].NextFrame));
+                                               newStateChange.Dispatches[0].NextFrame,
+                                               newStateChange.Dispatches[0].BlendFrameCount,
+                                               newStateChange.Dispatches[0].BlendEndFrame,
+                                               newStateChange.Dispatches[0].BlendCurve));
                 _createdNew = true;
             }
 
@@ -168,7 +180,13 @@ namespace WadTool
                     tempDictionary.Add(row.StateId, new WadStateChange());
                 var sc = tempDictionary[row.StateId];
                 sc.StateId = row.StateId;
-                sc.Dispatches.Add(new WadAnimDispatch(row.LowFrame, row.HighFrame, row.NextAnimation, row.NextFrame));
+
+                var newDispatch = new WadAnimDispatch(row.LowFrame, row.HighFrame, row.NextAnimation, row.NextFrame);
+                newDispatch.BlendFrameCount = row.BlendFrameCount;
+                newDispatch.BlendEndFrame = row.BlendEndFrame;
+                newDispatch.BlendCurve = row.BlendCurve;
+
+                sc.Dispatches.Add(newDispatch);
                 tempDictionary[row.StateId] = sc;
             }
             StateChanges.AddRange(tempDictionary.Values.ToList());
@@ -299,5 +317,65 @@ namespace WadTool
         private void butPlayStateChange_Click(object sender, EventArgs e) => ChangeState();
         private void dgvStateChanges_CellEndEdit(object sender, System.Windows.Forms.DataGridViewCellEventArgs e) => SaveChanges();
         private void dgvStateChanges_UserDeletedRow(object sender, System.Windows.Forms.DataGridViewRowEventArgs e) => SaveChanges();
+
+        private void dgvStateChanges_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvStateChanges.SelectedRows.Count <= 0)
+                return;
+
+            var item = ((IEnumerable<WadStateChangeRow>)dgvStateChanges.DataSource).ElementAt(dgvStateChanges.SelectedRows[0].Index);
+
+            nudBlendFrameCount.Value = (decimal)item.BlendFrameCount;
+            nudBlendEndFrame.Value = (decimal)item.BlendEndFrame;
+            bezierCurveEditor.Value = item.BlendCurve;
+            cbBlendPreset.SelectedIndex = -1;
+        }
+
+        private void nudBlendFrameCount_ValueChanged(object sender, EventArgs e)
+        {
+            if (dgvStateChanges.SelectedRows.Count <= 0)
+                return;
+
+            var item = ((IEnumerable<WadStateChangeRow>)dgvStateChanges.DataSource).ElementAt(dgvStateChanges.SelectedRows[0].Index);
+            item.BlendFrameCount = (ushort)nudBlendFrameCount.Value;
+        }
+
+        private void nudBlendEndFrame_ValueChanged(object sender, EventArgs e)
+        {
+            if (dgvStateChanges.SelectedRows.Count <= 0)
+                return;
+
+            var item = ((IEnumerable<WadStateChangeRow>)dgvStateChanges.DataSource).ElementAt(dgvStateChanges.SelectedRows[0].Index);
+            item.BlendEndFrame = (ushort)nudBlendEndFrame.Value;
+        }
+
+        private void cbBlendPreset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (cbBlendPreset.SelectedIndex)
+            {
+                case 0:
+                    bezierCurveEditor.Value.Set(BezierCurve2D.Linear);
+                    break;
+
+                case 1:
+                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseIn);
+                    break;
+
+                case 2:
+                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseOut);
+                    break;
+
+                case 3:
+                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseInOut);
+                    break;
+            }
+
+            bezierCurveEditor.Update();
+        }
+
+        private void bezierCurveEditor_ValueChanged(object sender, EventArgs e)
+        {
+            cbBlendPreset.SelectedIndex = -1;
+        }
     }
 }

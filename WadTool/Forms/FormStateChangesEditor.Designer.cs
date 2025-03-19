@@ -29,8 +29,8 @@
             dgvControls = new TombLib.Controls.DarkDataGridViewControls();
             lblStateChangeAnnouncement = new DarkUI.Controls.DarkLabel();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
-            nudStateChangeEndFrame = new DarkUI.Controls.DarkNumericUpDown();
-            nudStateChangeTransDuration = new DarkUI.Controls.DarkNumericUpDown();
+            nudBlendEndFrame = new DarkUI.Controls.DarkNumericUpDown();
+            nudBlendFrameCount = new DarkUI.Controls.DarkNumericUpDown();
             butApply = new DarkUI.Controls.DarkButton();
             darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
@@ -40,8 +40,8 @@
             darkLabel2 = new DarkUI.Controls.DarkLabel();
             bezierCurveEditor = new Controls.BezierCurveEditor();
             ((System.ComponentModel.ISupportInitialize)dgvStateChanges).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudStateChangeEndFrame).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudStateChangeTransDuration).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudBlendEndFrame).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudBlendFrameCount).BeginInit();
             darkGroupBox1.SuspendLayout();
             darkGroupBox2.SuspendLayout();
             SuspendLayout();
@@ -67,6 +67,7 @@
             dgvStateChanges.CellEndEdit += dgvStateChanges_CellEndEdit;
             dgvStateChanges.CellMouseDoubleClick += dgvStateChanges_CellMouseDoubleClick;
             dgvStateChanges.CellValidating += dgvStateChanges_CellValidating;
+            dgvStateChanges.SelectionChanged += dgvStateChanges_SelectionChanged;
             dgvStateChanges.UserDeletedRow += dgvStateChanges_UserDeletedRow;
             // 
             // columnStateName
@@ -175,29 +176,31 @@
             lblStateChangeAnnouncement.Text = "Pending state change...";
             lblStateChangeAnnouncement.Visible = false;
             // 
-            // nudStateChangeEndFrame
+            // nudBlendEndFrame
             // 
-            nudStateChangeEndFrame.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            nudStateChangeEndFrame.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudStateChangeEndFrame.Location = new System.Drawing.Point(190, 46);
-            nudStateChangeEndFrame.LoopValues = false;
-            nudStateChangeEndFrame.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
-            nudStateChangeEndFrame.Name = "nudStateChangeEndFrame";
-            nudStateChangeEndFrame.Size = new System.Drawing.Size(57, 22);
-            nudStateChangeEndFrame.TabIndex = 103;
-            toolTip1.SetToolTip(nudStateChangeEndFrame, "Ending frame in the transition to the next animation");
+            nudBlendEndFrame.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            nudBlendEndFrame.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudBlendEndFrame.Location = new System.Drawing.Point(190, 46);
+            nudBlendEndFrame.LoopValues = false;
+            nudBlendEndFrame.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            nudBlendEndFrame.Name = "nudBlendEndFrame";
+            nudBlendEndFrame.Size = new System.Drawing.Size(57, 22);
+            nudBlendEndFrame.TabIndex = 103;
+            toolTip1.SetToolTip(nudBlendEndFrame, "Ending frame in the transition to the next animation");
+            nudBlendEndFrame.ValueChanged += nudBlendEndFrame_ValueChanged;
             // 
-            // nudStateChangeTransDuration
+            // nudBlendFrameCount
             // 
-            nudStateChangeTransDuration.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            nudStateChangeTransDuration.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudStateChangeTransDuration.Location = new System.Drawing.Point(190, 19);
-            nudStateChangeTransDuration.LoopValues = false;
-            nudStateChangeTransDuration.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
-            nudStateChangeTransDuration.Name = "nudStateChangeTransDuration";
-            nudStateChangeTransDuration.Size = new System.Drawing.Size(57, 22);
-            nudStateChangeTransDuration.TabIndex = 100;
-            toolTip1.SetToolTip(nudStateChangeTransDuration, "Blending duration to the next animation in frames");
+            nudBlendFrameCount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            nudBlendFrameCount.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudBlendFrameCount.Location = new System.Drawing.Point(190, 19);
+            nudBlendFrameCount.LoopValues = false;
+            nudBlendFrameCount.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            nudBlendFrameCount.Name = "nudBlendFrameCount";
+            nudBlendFrameCount.Size = new System.Drawing.Size(57, 22);
+            nudBlendFrameCount.TabIndex = 100;
+            toolTip1.SetToolTip(nudBlendFrameCount, "Blending duration to the next animation in frames");
+            nudBlendFrameCount.ValueChanged += nudBlendFrameCount_ValueChanged;
             // 
             // butApply
             // 
@@ -228,8 +231,8 @@
             darkGroupBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             darkGroupBox2.Controls.Add(darkLabel1);
             darkGroupBox2.Controls.Add(cbBlendPreset);
-            darkGroupBox2.Controls.Add(nudStateChangeEndFrame);
-            darkGroupBox2.Controls.Add(nudStateChangeTransDuration);
+            darkGroupBox2.Controls.Add(nudBlendEndFrame);
+            darkGroupBox2.Controls.Add(nudBlendFrameCount);
             darkGroupBox2.Controls.Add(darkLabel3);
             darkGroupBox2.Controls.Add(darkLabel2);
             darkGroupBox2.Controls.Add(bezierCurveEditor);
@@ -255,10 +258,12 @@
             // 
             cbBlendPreset.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cbBlendPreset.FormattingEnabled = true;
+            cbBlendPreset.Items.AddRange(new object[] { "Linear", "Ease In", "Ease Out", "Ease In and Out" });
             cbBlendPreset.Location = new System.Drawing.Point(53, 291);
             cbBlendPreset.Name = "cbBlendPreset";
             cbBlendPreset.Size = new System.Drawing.Size(194, 23);
             cbBlendPreset.TabIndex = 105;
+            cbBlendPreset.SelectedIndexChanged += cbBlendPreset_SelectedIndexChanged;
             // 
             // darkLabel3
             // 
@@ -286,6 +291,7 @@
             bezierCurveEditor.Name = "bezierCurveEditor";
             bezierCurveEditor.Size = new System.Drawing.Size(241, 211);
             bezierCurveEditor.TabIndex = 102;
+            bezierCurveEditor.ValueChanged += bezierCurveEditor_ValueChanged;
             // 
             // FormStateChangesEditor
             // 
@@ -309,8 +315,8 @@
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "State changes";
             ((System.ComponentModel.ISupportInitialize)dgvStateChanges).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudStateChangeEndFrame).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudStateChangeTransDuration).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudBlendEndFrame).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudBlendFrameCount).EndInit();
             darkGroupBox1.ResumeLayout(false);
             darkGroupBox2.ResumeLayout(false);
             darkGroupBox2.PerformLayout();
@@ -341,9 +347,9 @@
         private DarkUI.Controls.DarkCheckBox cbPosY;
         private DarkUI.Controls.DarkCheckBox cbRotY;
         private Controls.BezierCurveEditor bezierCurveEditor;
-        private DarkUI.Controls.DarkNumericUpDown nudStateChangeTransDuration;
+        private DarkUI.Controls.DarkNumericUpDown nudBlendFrameCount;
         private DarkUI.Controls.DarkLabel darkLabel2;
-        private DarkUI.Controls.DarkNumericUpDown nudStateChangeEndFrame;
+        private DarkUI.Controls.DarkNumericUpDown nudBlendEndFrame;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkComboBox cbBlendPreset;

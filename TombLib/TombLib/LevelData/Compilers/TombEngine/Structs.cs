@@ -604,8 +604,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int FrameHigh;
         public int NextAnimation;
         public int NextFrameLow;
-        public int NextFrameHigh;
         public int BlendFrameCount;
+        public int BlendEndFrame;
         public BezierCurve2D BlendCurve;
     }
 

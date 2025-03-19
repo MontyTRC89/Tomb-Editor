@@ -368,8 +368,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newStateChange.FrameHigh = unchecked((int)(dispatch.OutFrame));
                             newStateChange.NextAnimation = checked((int)(dispatch.NextAnimation));
                             newStateChange.NextFrameLow = (int)dispatch.NextFrame;
-                            newStateChange.NextFrameHigh = (int)dispatch.NextFrame; // TODO
                             newStateChange.BlendFrameCount = 0; // TODO
+                            newStateChange.BlendEndFrame = (int)dispatch.NextFrame; // TODO
                             newStateChange.BlendCurve = new BezierCurve2D(Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero); // TODO
 
                             newAnimation.StateChanges.Add(newStateChange);

@@ -209,7 +209,7 @@ namespace WadTool
             darkLabel13 = new DarkUI.Controls.DarkLabel();
             darkLabel11 = new DarkUI.Controls.DarkLabel();
             cbRootPosZ = new DarkUI.Controls.DarkCheckBox();
-            nudAnimTransDuration = new DarkUI.Controls.DarkNumericUpDown();
+            nudBlendFrameCount = new DarkUI.Controls.DarkNumericUpDown();
             cbRootPosX = new DarkUI.Controls.DarkCheckBox();
             darkLabel12 = new DarkUI.Controls.DarkLabel();
             cbRootPosY = new DarkUI.Controls.DarkCheckBox();
@@ -267,7 +267,7 @@ namespace WadTool
             darkSectionPanel5.SuspendLayout();
             panelLeft.SuspendLayout();
             darkSectionPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)nudAnimTransDuration).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudBlendFrameCount).BeginInit();
             cmTimelineContextMenu.SuspendLayout();
             SuspendLayout();
             // 
@@ -2333,7 +2333,7 @@ namespace WadTool
             darkSectionPanel3.Controls.Add(darkLabel13);
             darkSectionPanel3.Controls.Add(darkLabel11);
             darkSectionPanel3.Controls.Add(cbRootPosZ);
-            darkSectionPanel3.Controls.Add(nudAnimTransDuration);
+            darkSectionPanel3.Controls.Add(nudBlendFrameCount);
             darkSectionPanel3.Controls.Add(cbRootPosX);
             darkSectionPanel3.Controls.Add(darkLabel12);
             darkSectionPanel3.Controls.Add(cbRootPosY);
@@ -2352,6 +2352,7 @@ namespace WadTool
             bezierCurveEditor.Name = "bezierCurveEditor";
             bezierCurveEditor.Size = new System.Drawing.Size(269, 85);
             bezierCurveEditor.TabIndex = 110;
+            bezierCurveEditor.ValueChanged += bezierCurveEditor_ValueChanged;
             // 
             // darkLabel36
             // 
@@ -2368,10 +2369,12 @@ namespace WadTool
             // 
             cbBlendPreset.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cbBlendPreset.FormattingEnabled = true;
+            cbBlendPreset.Items.AddRange(new object[] { "Linear", "Ease In", "Ease Out", "Ease In and Out" });
             cbBlendPreset.Location = new System.Drawing.Point(50, 147);
             cbBlendPreset.Name = "cbBlendPreset";
             cbBlendPreset.Size = new System.Drawing.Size(225, 23);
             cbBlendPreset.TabIndex = 108;
+            cbBlendPreset.SelectedIndexChanged += cbBlendPreset_SelectedIndexChanged;
             // 
             // darkLabel13
             // 
@@ -2401,18 +2404,18 @@ namespace WadTool
             cbRootPosZ.TabIndex = 101;
             cbRootPosZ.Text = "Z";
             // 
-            // nudAnimTransDuration
+            // nudBlendFrameCount
             // 
-            nudAnimTransDuration.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            nudAnimTransDuration.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudAnimTransDuration.Location = new System.Drawing.Point(170, 29);
-            nudAnimTransDuration.LoopValues = false;
-            nudAnimTransDuration.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
-            nudAnimTransDuration.Name = "nudAnimTransDuration";
-            nudAnimTransDuration.Size = new System.Drawing.Size(61, 22);
-            nudAnimTransDuration.TabIndex = 97;
-            toolTip1.SetToolTip(nudAnimTransDuration, "Blending duration to the next animation in frames");
-            nudAnimTransDuration.ValueChanged += nudAnimTransDuration_ValueChanged;
+            nudBlendFrameCount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            nudBlendFrameCount.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudBlendFrameCount.Location = new System.Drawing.Point(170, 29);
+            nudBlendFrameCount.LoopValues = false;
+            nudBlendFrameCount.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            nudBlendFrameCount.Name = "nudBlendFrameCount";
+            nudBlendFrameCount.Size = new System.Drawing.Size(61, 22);
+            nudBlendFrameCount.TabIndex = 97;
+            toolTip1.SetToolTip(nudBlendFrameCount, "Blending duration to the next animation in frames");
+            nudBlendFrameCount.ValueChanged += nudBlendFrameCount_ValueChanged;
             // 
             // cbRootPosX
             // 
@@ -2423,6 +2426,7 @@ namespace WadTool
             cbRootPosX.Size = new System.Drawing.Size(32, 17);
             cbRootPosX.TabIndex = 99;
             cbRootPosX.Text = "X";
+            cbRootPosX.CheckedChanged += cbRootPosX_CheckedChanged;
             // 
             // darkLabel12
             // 
@@ -2619,7 +2623,7 @@ namespace WadTool
             panelLeft.ResumeLayout(false);
             darkSectionPanel3.ResumeLayout(false);
             darkSectionPanel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)nudAnimTransDuration).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudBlendFrameCount).EndInit();
             cmTimelineContextMenu.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -2810,7 +2814,7 @@ namespace WadTool
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel3;
         private DarkUI.Controls.DarkLabel darkLabel11;
         private DarkUI.Controls.DarkCheckBox cbRootPosZ;
-        private DarkUI.Controls.DarkNumericUpDown nudAnimTransDuration;
+        private DarkUI.Controls.DarkNumericUpDown nudBlendFrameCount;
         private DarkUI.Controls.DarkCheckBox cbRootPosX;
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkCheckBox cbRootPosY;

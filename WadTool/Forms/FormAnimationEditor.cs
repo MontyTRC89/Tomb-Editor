@@ -15,6 +15,7 @@ using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Types;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -492,8 +493,9 @@ namespace WadTool
                     nudEndVertVel.Value = (decimal)node.WadAnimation.EndVelocity;
                     nudStartHorVel.Value = (decimal)node.WadAnimation.StartLateralVelocity;
                     nudEndHorVel.Value = (decimal)node.WadAnimation.EndLateralVelocity;
-                    nudAnimTransDuration.Value = (decimal)node.WadAnimation.BlendFrameCount;
+                    nudBlendFrameCount.Value = (decimal)node.WadAnimation.BlendFrameCount;
                     bezierCurveEditor.Value = node.WadAnimation.BlendCurve;
+                    cbBlendPreset.SelectedIndex = -1;
 
                     tbStateId.Text = node.WadAnimation.StateId.ToString();
                     UpdateStateChange();
@@ -1267,7 +1269,7 @@ namespace WadTool
                 case nameof(nudBBoxMaxZ):
                     oldValue = bb.Maximum.Z;
                     break;
-                case nameof(nudAnimTransDuration):
+                case nameof(nudBlendFrameCount):
                     oldValue = _editor.CurrentAnim.WadAnimation.BlendFrameCount;
                     break;
             }
@@ -1320,6 +1322,9 @@ namespace WadTool
                     break;
                 case nameof(nudEndHorVel):
                     _editor.CurrentAnim.WadAnimation.EndLateralVelocity = result;
+                    break;
+                case nameof(nudBlendFrameCount):
+                    _editor.CurrentAnim.WadAnimation.BlendFrameCount = (ushort)result;
                     break;
                 case nameof(nudBBoxMinX):
                     EditBoundingBox(new Vector3(result, bb.Minimum.Y, bb.Minimum.Z), bb.Maximum);
@@ -2227,7 +2232,7 @@ namespace WadTool
         private void nudEndVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndVertVel);
         private void nudStartHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudStartHorVel);
         private void nudEndHorVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndHorVel);
-        private void nudAnimTransDuration_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudAnimTransDuration);
+        private void nudBlendFrameCount_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudBlendFrameCount);
 
         private void tbStateId_Validated(object sender, EventArgs e) => UpdateStateChange();
         private void animParameter_Validated(object sender, EventArgs e) => ValidateAnimationParameter();
@@ -2291,6 +2296,12 @@ namespace WadTool
             }
 
             EditStateChanges(sch);
+        }
+
+        private void bezierCurveEditor_ValueChanged(object sender, EventArgs e)
+        {
+            cbBlendPreset.SelectedIndex = -1;
+            Saved = false;
         }
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)
@@ -2811,6 +2822,35 @@ namespace WadTool
 
             _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = previewType;
             UpdateUIControls();
+        }
+
+        private void cbRootPosX_CheckedChanged(object sender, EventArgs e)
+        {
+            // TODO: Where to put these flags?
+        }
+
+        private void cbBlendPreset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (cbBlendPreset.SelectedIndex)
+            {
+                case 0:
+                    bezierCurveEditor.Value.Set(BezierCurve2D.Linear);
+                    break;
+
+                case 1:
+                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseIn);
+                    break;
+
+                case 2:
+                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseOut);
+                    break;
+
+                case 3:
+                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseInOut);
+                    break;
+            }
+
+            bezierCurveEditor.UpdateUI();
         }
     }
 }

@@ -256,7 +256,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             writer.Write(stateChange.FrameHigh);
                             writer.Write(stateChange.NextAnimation);
                             writer.Write(stateChange.NextFrameLow);
-                            writer.Write(stateChange.NextFrameHigh);
+                            writer.Write(stateChange.BlendEndFrame);
                             writer.Write(stateChange.BlendFrameCount);
                             writer.Write(stateChange.BlendCurve.Start);
                             writer.Write(stateChange.BlendCurve.End);
