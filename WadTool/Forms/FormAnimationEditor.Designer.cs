@@ -122,6 +122,11 @@ namespace WadTool
             butAddNewAnimation = new DarkUI.Controls.DarkButton();
             panelRendering = new Controls.PanelRenderingAnimationEditor();
             darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            butSelectNoMeshes = new DarkUI.Controls.DarkButton();
+            butSelectAllMeshes = new DarkUI.Controls.DarkButton();
+            dgvBoundingMeshList = new DarkUI.Controls.DarkDataGridView();
+            dgvBoundingMeshListCheckboxes = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            dgvBoundingMeshListMeshes = new System.Windows.Forms.DataGridViewTextBoxColumn();
             darkLabel33 = new DarkUI.Controls.DarkLabel();
             darkLabel30 = new DarkUI.Controls.DarkLabel();
             darkLabel34 = new DarkUI.Controls.DarkLabel();
@@ -132,8 +137,6 @@ namespace WadTool
             darkLabel20 = new DarkUI.Controls.DarkLabel();
             darkLabel14 = new DarkUI.Controls.DarkLabel();
             darkLabel15 = new DarkUI.Controls.DarkLabel();
-            butSelectNoMeshes = new DarkUI.Controls.DarkButton();
-            butSelectAllMeshes = new DarkUI.Controls.DarkButton();
             nudBBoxMaxY = new DarkUI.Controls.DarkNumericUpDown();
             nudBBoxMaxZ = new DarkUI.Controls.DarkNumericUpDown();
             nudBBoxMaxX = new DarkUI.Controls.DarkNumericUpDown();
@@ -144,9 +147,6 @@ namespace WadTool
             butResetBBoxAnim = new DarkUI.Controls.DarkButton();
             butCalcBBoxAnim = new DarkUI.Controls.DarkButton();
             nudGrowY = new DarkUI.Controls.DarkNumericUpDown();
-            dgvBoundingMeshList = new DarkUI.Controls.DarkDataGridView();
-            dgvBoundingMeshListCheckboxes = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            dgvBoundingMeshListMeshes = new System.Windows.Forms.DataGridViewTextBoxColumn();
             nudGrowX = new DarkUI.Controls.DarkNumericUpDown();
             butGrowBBox = new DarkUI.Controls.DarkButton();
             nudGrowZ = new DarkUI.Controls.DarkNumericUpDown();
@@ -180,6 +180,9 @@ namespace WadTool
             panelMain = new System.Windows.Forms.Panel();
             panelView = new DarkUI.Controls.DarkSectionPanel();
             panelRight = new System.Windows.Forms.Panel();
+            darkSectionPanel5 = new DarkUI.Controls.DarkSectionPanel();
+            darkLabel10 = new DarkUI.Controls.DarkLabel();
+            darkLabel9 = new DarkUI.Controls.DarkLabel();
             panelTransform = new DarkUI.Controls.DarkSectionPanel();
             darkLabel8 = new DarkUI.Controls.DarkLabel();
             picTransformPreview = new System.Windows.Forms.PictureBox();
@@ -200,6 +203,9 @@ namespace WadTool
             nudRotZ = new DarkUI.Controls.DarkNumericUpDown();
             panelLeft = new System.Windows.Forms.Panel();
             darkSectionPanel3 = new DarkUI.Controls.DarkSectionPanel();
+            bezierCurveEditor = new Controls.BezierCurveEditor();
+            darkLabel36 = new DarkUI.Controls.DarkLabel();
+            cbBlendPreset = new DarkUI.Controls.DarkComboBox();
             darkLabel13 = new DarkUI.Controls.DarkLabel();
             darkLabel11 = new DarkUI.Controls.DarkLabel();
             cbRootPosZ = new DarkUI.Controls.DarkCheckBox();
@@ -220,16 +226,12 @@ namespace WadTool
             cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripButton6 = new System.Windows.Forms.ToolStripButton();
-            darkLabel36 = new DarkUI.Controls.DarkLabel();
-            cbBlendPreset = new DarkUI.Controls.DarkComboBox();
-            darkSectionPanel5 = new DarkUI.Controls.DarkSectionPanel();
-            darkLabel9 = new DarkUI.Controls.DarkLabel();
-            darkLabel10 = new DarkUI.Controls.DarkLabel();
             topMenu.SuspendLayout();
             statusStrip.SuspendLayout();
             topBar.SuspendLayout();
             darkSectionPanel1.SuspendLayout();
             darkSectionPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvBoundingMeshList).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudBBoxMaxY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudBBoxMaxZ).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudBBoxMaxX).BeginInit();
@@ -237,7 +239,6 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)nudBBoxMinZ).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudBBoxMinX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudGrowY).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvBoundingMeshList).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudGrowX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudGrowZ).BeginInit();
             panelTimeline.SuspendLayout();
@@ -255,6 +256,7 @@ namespace WadTool
             panelMain.SuspendLayout();
             panelView.SuspendLayout();
             panelRight.SuspendLayout();
+            darkSectionPanel5.SuspendLayout();
             panelTransform.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picTransformPreview).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudTransX).BeginInit();
@@ -267,7 +269,6 @@ namespace WadTool
             darkSectionPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudAnimTransDuration).BeginInit();
             cmTimelineContextMenu.SuspendLayout();
-            darkSectionPanel5.SuspendLayout();
             SuspendLayout();
             // 
             // topMenu
@@ -1321,9 +1322,68 @@ namespace WadTool
             darkSectionPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             darkSectionPanel2.Location = new System.Drawing.Point(0, 0);
             darkSectionPanel2.Name = "darkSectionPanel2";
-            darkSectionPanel2.SectionHeader = "Bounding box";
-            darkSectionPanel2.Size = new System.Drawing.Size(280, 386);
+            darkSectionPanel2.SectionHeader = "Skeleton";
+            darkSectionPanel2.Size = new System.Drawing.Size(280, 498);
             darkSectionPanel2.TabIndex = 6;
+            // 
+            // butSelectNoMeshes
+            // 
+            butSelectNoMeshes.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            butSelectNoMeshes.Checked = false;
+            butSelectNoMeshes.Location = new System.Drawing.Point(143, 472);
+            butSelectNoMeshes.Name = "butSelectNoMeshes";
+            butSelectNoMeshes.Size = new System.Drawing.Size(132, 22);
+            butSelectNoMeshes.TabIndex = 27;
+            butSelectNoMeshes.Text = "Select none";
+            toolTip1.SetToolTip(butSelectNoMeshes, "Select no meshes");
+            butSelectNoMeshes.Click += butSelectNoMeshes_Click;
+            // 
+            // butSelectAllMeshes
+            // 
+            butSelectAllMeshes.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            butSelectAllMeshes.Checked = false;
+            butSelectAllMeshes.Location = new System.Drawing.Point(5, 472);
+            butSelectAllMeshes.Name = "butSelectAllMeshes";
+            butSelectAllMeshes.Size = new System.Drawing.Size(132, 22);
+            butSelectAllMeshes.TabIndex = 26;
+            butSelectAllMeshes.Text = "Select all";
+            toolTip1.SetToolTip(butSelectAllMeshes, "Select all meshes");
+            butSelectAllMeshes.Click += butSelectAllMeshes_Click;
+            // 
+            // dgvBoundingMeshList
+            // 
+            dgvBoundingMeshList.AllowUserToAddRows = false;
+            dgvBoundingMeshList.AllowUserToDeleteRows = false;
+            dgvBoundingMeshList.AllowUserToDragDropRows = false;
+            dgvBoundingMeshList.AllowUserToPasteCells = false;
+            dgvBoundingMeshList.AllowUserToResizeColumns = false;
+            dgvBoundingMeshList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            dgvBoundingMeshList.ColumnHeadersHeight = 17;
+            dgvBoundingMeshList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dgvBoundingMeshListCheckboxes, dgvBoundingMeshListMeshes });
+            dgvBoundingMeshList.ForegroundColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            dgvBoundingMeshList.Location = new System.Drawing.Point(5, 28);
+            dgvBoundingMeshList.MultiSelect = false;
+            dgvBoundingMeshList.Name = "dgvBoundingMeshList";
+            dgvBoundingMeshList.RowHeadersWidth = 41;
+            dgvBoundingMeshList.Size = new System.Drawing.Size(270, 439);
+            dgvBoundingMeshList.TabIndex = 25;
+            dgvBoundingMeshList.CellMouseDoubleClick += dgvBoundingMeshList_CellMouseDoubleClick;
+            dgvBoundingMeshList.SelectionChanged += dgvBoundingMeshList_SelectionChanged;
+            // 
+            // dgvBoundingMeshListCheckboxes
+            // 
+            dgvBoundingMeshListCheckboxes.HeaderText = "Use";
+            dgvBoundingMeshListCheckboxes.Name = "dgvBoundingMeshListCheckboxes";
+            dgvBoundingMeshListCheckboxes.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            dgvBoundingMeshListCheckboxes.Width = 40;
+            // 
+            // dgvBoundingMeshListMeshes
+            // 
+            dgvBoundingMeshListMeshes.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dgvBoundingMeshListMeshes.HeaderText = "Mesh";
+            dgvBoundingMeshListMeshes.Name = "dgvBoundingMeshListMeshes";
+            dgvBoundingMeshListMeshes.ReadOnly = true;
+            dgvBoundingMeshListMeshes.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // darkLabel33
             // 
@@ -1438,30 +1498,6 @@ namespace WadTool
             darkLabel15.Size = new System.Drawing.Size(14, 13);
             darkLabel15.TabIndex = 42;
             darkLabel15.Text = "Y";
-            // 
-            // butSelectNoMeshes
-            // 
-            butSelectNoMeshes.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            butSelectNoMeshes.Checked = false;
-            butSelectNoMeshes.Location = new System.Drawing.Point(143, 360);
-            butSelectNoMeshes.Name = "butSelectNoMeshes";
-            butSelectNoMeshes.Size = new System.Drawing.Size(132, 22);
-            butSelectNoMeshes.TabIndex = 27;
-            butSelectNoMeshes.Text = "Select none";
-            toolTip1.SetToolTip(butSelectNoMeshes, "Select no meshes");
-            butSelectNoMeshes.Click += butSelectNoMeshes_Click;
-            // 
-            // butSelectAllMeshes
-            // 
-            butSelectAllMeshes.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            butSelectAllMeshes.Checked = false;
-            butSelectAllMeshes.Location = new System.Drawing.Point(5, 360);
-            butSelectAllMeshes.Name = "butSelectAllMeshes";
-            butSelectAllMeshes.Size = new System.Drawing.Size(132, 22);
-            butSelectAllMeshes.TabIndex = 26;
-            butSelectAllMeshes.Text = "Select all";
-            toolTip1.SetToolTip(butSelectAllMeshes, "Select all meshes");
-            butSelectAllMeshes.Click += butSelectAllMeshes_Click;
             // 
             // nudBBoxMaxY
             // 
@@ -1583,41 +1619,6 @@ namespace WadTool
             nudGrowY.Name = "nudGrowY";
             nudGrowY.Size = new System.Drawing.Size(64, 22);
             nudGrowY.TabIndex = 31;
-            // 
-            // dgvBoundingMeshList
-            // 
-            dgvBoundingMeshList.AllowUserToAddRows = false;
-            dgvBoundingMeshList.AllowUserToDeleteRows = false;
-            dgvBoundingMeshList.AllowUserToDragDropRows = false;
-            dgvBoundingMeshList.AllowUserToPasteCells = false;
-            dgvBoundingMeshList.AllowUserToResizeColumns = false;
-            dgvBoundingMeshList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            dgvBoundingMeshList.ColumnHeadersHeight = 17;
-            dgvBoundingMeshList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dgvBoundingMeshListCheckboxes, dgvBoundingMeshListMeshes });
-            dgvBoundingMeshList.ForegroundColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            dgvBoundingMeshList.Location = new System.Drawing.Point(5, 28);
-            dgvBoundingMeshList.MultiSelect = false;
-            dgvBoundingMeshList.Name = "dgvBoundingMeshList";
-            dgvBoundingMeshList.RowHeadersWidth = 41;
-            dgvBoundingMeshList.Size = new System.Drawing.Size(270, 327);
-            dgvBoundingMeshList.TabIndex = 25;
-            dgvBoundingMeshList.CellMouseDoubleClick += dgvBoundingMeshList_CellMouseDoubleClick;
-            dgvBoundingMeshList.SelectionChanged += dgvBoundingMeshList_SelectionChanged;
-            // 
-            // dgvBoundingMeshListCheckboxes
-            // 
-            dgvBoundingMeshListCheckboxes.HeaderText = "Use";
-            dgvBoundingMeshListCheckboxes.Name = "dgvBoundingMeshListCheckboxes";
-            dgvBoundingMeshListCheckboxes.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            dgvBoundingMeshListCheckboxes.Width = 40;
-            // 
-            // dgvBoundingMeshListMeshes
-            // 
-            dgvBoundingMeshListMeshes.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dgvBoundingMeshListMeshes.HeaderText = "Mesh";
-            dgvBoundingMeshListMeshes.Name = "dgvBoundingMeshListMeshes";
-            dgvBoundingMeshListMeshes.ReadOnly = true;
-            dgvBoundingMeshListMeshes.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // nudGrowX
             // 
@@ -2027,14 +2028,69 @@ namespace WadTool
             // 
             // panelRight
             // 
+            panelRight.Controls.Add(panelTransform);
             panelRight.Controls.Add(darkSectionPanel2);
             panelRight.Controls.Add(darkSectionPanel5);
-            panelRight.Controls.Add(panelTransform);
             panelRight.Dock = System.Windows.Forms.DockStyle.Right;
             panelRight.Location = new System.Drawing.Point(755, 4);
             panelRight.Name = "panelRight";
             panelRight.Size = new System.Drawing.Size(280, 672);
             panelRight.TabIndex = 12;
+            // 
+            // darkSectionPanel5
+            // 
+            darkSectionPanel5.Controls.Add(darkLabel10);
+            darkSectionPanel5.Controls.Add(nudGrowX);
+            darkSectionPanel5.Controls.Add(darkLabel9);
+            darkSectionPanel5.Controls.Add(nudGrowZ);
+            darkSectionPanel5.Controls.Add(darkLabel33);
+            darkSectionPanel5.Controls.Add(butShrinkBBox);
+            darkSectionPanel5.Controls.Add(darkLabel30);
+            darkSectionPanel5.Controls.Add(darkLabel34);
+            darkSectionPanel5.Controls.Add(darkLabel15);
+            darkSectionPanel5.Controls.Add(darkLabel35);
+            darkSectionPanel5.Controls.Add(darkLabel14);
+            darkSectionPanel5.Controls.Add(darkLabel31);
+            darkSectionPanel5.Controls.Add(butGrowBBox);
+            darkSectionPanel5.Controls.Add(butResetBBoxAnim);
+            darkSectionPanel5.Controls.Add(nudGrowY);
+            darkSectionPanel5.Controls.Add(darkLabel32);
+            darkSectionPanel5.Controls.Add(butCalcBBoxAnim);
+            darkSectionPanel5.Controls.Add(darkLabel17);
+            darkSectionPanel5.Controls.Add(darkLabel20);
+            darkSectionPanel5.Controls.Add(nudBBoxMinX);
+            darkSectionPanel5.Controls.Add(nudBBoxMinZ);
+            darkSectionPanel5.Controls.Add(nudBBoxMinY);
+            darkSectionPanel5.Controls.Add(nudBBoxMaxX);
+            darkSectionPanel5.Controls.Add(nudBBoxMaxZ);
+            darkSectionPanel5.Controls.Add(nudBBoxMaxY);
+            darkSectionPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
+            darkSectionPanel5.Location = new System.Drawing.Point(0, 498);
+            darkSectionPanel5.Name = "darkSectionPanel5";
+            darkSectionPanel5.SectionHeader = "Bounding Box";
+            darkSectionPanel5.Size = new System.Drawing.Size(280, 174);
+            darkSectionPanel5.TabIndex = 131;
+            // 
+            // darkLabel10
+            // 
+            darkLabel10.AutoSize = true;
+            darkLabel10.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            darkLabel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            darkLabel10.ForeColor = System.Drawing.Color.FromArgb(211, 211, 211);
+            darkLabel10.Location = new System.Drawing.Point(31, 121);
+            darkLabel10.Name = "darkLabel10";
+            darkLabel10.Size = new System.Drawing.Size(14, 13);
+            darkLabel10.TabIndex = 102;
+            darkLabel10.Text = "X";
+            // 
+            // darkLabel9
+            // 
+            darkLabel9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            darkLabel9.Location = new System.Drawing.Point(2, 121);
+            darkLabel9.Name = "darkLabel9";
+            darkLabel9.Size = new System.Drawing.Size(43, 13);
+            darkLabel9.TabIndex = 101;
+            darkLabel9.Text = "Scale";
             // 
             // panelTransform
             // 
@@ -2056,7 +2112,7 @@ namespace WadTool
             panelTransform.Controls.Add(nudRotY);
             panelTransform.Controls.Add(nudRotZ);
             panelTransform.Dock = System.Windows.Forms.DockStyle.Bottom;
-            panelTransform.Location = new System.Drawing.Point(0, 560);
+            panelTransform.Location = new System.Drawing.Point(0, 386);
             panelTransform.Name = "panelTransform";
             panelTransform.SectionHeader = "Transform";
             panelTransform.Size = new System.Drawing.Size(280, 112);
@@ -2271,6 +2327,7 @@ namespace WadTool
             // 
             // darkSectionPanel3
             // 
+            darkSectionPanel3.Controls.Add(bezierCurveEditor);
             darkSectionPanel3.Controls.Add(darkLabel36);
             darkSectionPanel3.Controls.Add(cbBlendPreset);
             darkSectionPanel3.Controls.Add(darkLabel13);
@@ -2288,6 +2345,33 @@ namespace WadTool
             darkSectionPanel3.SectionHeader = "Animation Blending";
             darkSectionPanel3.Size = new System.Drawing.Size(280, 203);
             darkSectionPanel3.TabIndex = 128;
+            // 
+            // bezierCurveEditor
+            // 
+            bezierCurveEditor.Location = new System.Drawing.Point(6, 57);
+            bezierCurveEditor.Name = "bezierCurveEditor";
+            bezierCurveEditor.Size = new System.Drawing.Size(269, 85);
+            bezierCurveEditor.TabIndex = 110;
+            // 
+            // darkLabel36
+            // 
+            darkLabel36.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            darkLabel36.AutoSize = true;
+            darkLabel36.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            darkLabel36.Location = new System.Drawing.Point(4, 151);
+            darkLabel36.Name = "darkLabel36";
+            darkLabel36.Size = new System.Drawing.Size(41, 13);
+            darkLabel36.TabIndex = 109;
+            darkLabel36.Text = "Preset:";
+            // 
+            // cbBlendPreset
+            // 
+            cbBlendPreset.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            cbBlendPreset.FormattingEnabled = true;
+            cbBlendPreset.Location = new System.Drawing.Point(50, 147);
+            cbBlendPreset.Name = "cbBlendPreset";
+            cbBlendPreset.Size = new System.Drawing.Size(225, 23);
+            cbBlendPreset.TabIndex = 108;
             // 
             // darkLabel13
             // 
@@ -2465,81 +2549,6 @@ namespace WadTool
             toolStripButton6.Name = "toolStripButton6";
             toolStripButton6.Size = new System.Drawing.Size(28, 35);
             // 
-            // darkLabel36
-            // 
-            darkLabel36.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            darkLabel36.AutoSize = true;
-            darkLabel36.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel36.Location = new System.Drawing.Point(4, 151);
-            darkLabel36.Name = "darkLabel36";
-            darkLabel36.Size = new System.Drawing.Size(41, 13);
-            darkLabel36.TabIndex = 109;
-            darkLabel36.Text = "Preset:";
-            // 
-            // cbBlendPreset
-            // 
-            cbBlendPreset.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            cbBlendPreset.FormattingEnabled = true;
-            cbBlendPreset.Location = new System.Drawing.Point(50, 147);
-            cbBlendPreset.Name = "cbBlendPreset";
-            cbBlendPreset.Size = new System.Drawing.Size(222, 23);
-            cbBlendPreset.TabIndex = 108;
-            // 
-            // darkSectionPanel5
-            // 
-            darkSectionPanel5.Controls.Add(darkLabel10);
-            darkSectionPanel5.Controls.Add(nudGrowX);
-            darkSectionPanel5.Controls.Add(darkLabel9);
-            darkSectionPanel5.Controls.Add(nudGrowZ);
-            darkSectionPanel5.Controls.Add(darkLabel33);
-            darkSectionPanel5.Controls.Add(butShrinkBBox);
-            darkSectionPanel5.Controls.Add(darkLabel30);
-            darkSectionPanel5.Controls.Add(darkLabel34);
-            darkSectionPanel5.Controls.Add(darkLabel15);
-            darkSectionPanel5.Controls.Add(darkLabel35);
-            darkSectionPanel5.Controls.Add(darkLabel14);
-            darkSectionPanel5.Controls.Add(darkLabel31);
-            darkSectionPanel5.Controls.Add(butGrowBBox);
-            darkSectionPanel5.Controls.Add(butResetBBoxAnim);
-            darkSectionPanel5.Controls.Add(nudGrowY);
-            darkSectionPanel5.Controls.Add(darkLabel32);
-            darkSectionPanel5.Controls.Add(butCalcBBoxAnim);
-            darkSectionPanel5.Controls.Add(darkLabel17);
-            darkSectionPanel5.Controls.Add(darkLabel20);
-            darkSectionPanel5.Controls.Add(nudBBoxMinX);
-            darkSectionPanel5.Controls.Add(nudBBoxMinZ);
-            darkSectionPanel5.Controls.Add(nudBBoxMinY);
-            darkSectionPanel5.Controls.Add(nudBBoxMaxX);
-            darkSectionPanel5.Controls.Add(nudBBoxMaxZ);
-            darkSectionPanel5.Controls.Add(nudBBoxMaxY);
-            darkSectionPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            darkSectionPanel5.Location = new System.Drawing.Point(0, 386);
-            darkSectionPanel5.Name = "darkSectionPanel5";
-            darkSectionPanel5.SectionHeader = "Bounding Box";
-            darkSectionPanel5.Size = new System.Drawing.Size(280, 174);
-            darkSectionPanel5.TabIndex = 131;
-            // 
-            // darkLabel9
-            // 
-            darkLabel9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel9.Location = new System.Drawing.Point(2, 121);
-            darkLabel9.Name = "darkLabel9";
-            darkLabel9.Size = new System.Drawing.Size(43, 13);
-            darkLabel9.TabIndex = 101;
-            darkLabel9.Text = "Scale";
-            // 
-            // darkLabel10
-            // 
-            darkLabel10.AutoSize = true;
-            darkLabel10.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-            darkLabel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            darkLabel10.ForeColor = System.Drawing.Color.FromArgb(211, 211, 211);
-            darkLabel10.Location = new System.Drawing.Point(31, 121);
-            darkLabel10.Name = "darkLabel10";
-            darkLabel10.Size = new System.Drawing.Size(14, 13);
-            darkLabel10.TabIndex = 102;
-            darkLabel10.Text = "X";
-            // 
             // FormAnimationEditor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2568,6 +2577,7 @@ namespace WadTool
             darkSectionPanel1.ResumeLayout(false);
             darkSectionPanel1.PerformLayout();
             darkSectionPanel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvBoundingMeshList).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudBBoxMaxY).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudBBoxMaxZ).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudBBoxMaxX).EndInit();
@@ -2575,7 +2585,6 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)nudBBoxMinZ).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudBBoxMinX).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudGrowY).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvBoundingMeshList).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudGrowX).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudGrowZ).EndInit();
             panelTimeline.ResumeLayout(false);
@@ -2595,6 +2604,8 @@ namespace WadTool
             panelMain.ResumeLayout(false);
             panelView.ResumeLayout(false);
             panelRight.ResumeLayout(false);
+            darkSectionPanel5.ResumeLayout(false);
+            darkSectionPanel5.PerformLayout();
             panelTransform.ResumeLayout(false);
             panelTransform.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picTransformPreview).EndInit();
@@ -2609,8 +2620,6 @@ namespace WadTool
             darkSectionPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudAnimTransDuration).EndInit();
             cmTimelineContextMenu.ResumeLayout(false);
-            darkSectionPanel5.ResumeLayout(false);
-            darkSectionPanel5.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -2822,5 +2831,6 @@ namespace WadTool
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel5;
         private DarkUI.Controls.DarkLabel darkLabel9;
         private DarkUI.Controls.DarkLabel darkLabel10;
+        private Controls.BezierCurveEditor bezierCurveEditor;
     }
 }

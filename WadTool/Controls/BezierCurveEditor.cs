@@ -22,15 +22,22 @@ namespace WadTool.Controls
             get => _bezierCurve;
             set
             {
-                _bezierCurve = value;
-                UpdateControlPointsFromBezier();
+                _bezierCurve = value ?? BezierCurve2D.Linear;
+
+                if (!DesignMode)
+                    UpdateControlPointsFromBezier();
+
                 Invalidate();
             }
         }
+
         private BezierCurve2D _bezierCurve = BezierCurve2D.Linear;
 
         public BezierCurveEditor()
         {
+            if (DesignMode)
+                return;
+
             DoubleBuffered = true;
             ResizeRedraw = true;
             InitializeComponent();
@@ -39,14 +46,20 @@ namespace WadTool.Controls
 
         private void InitializeControlPoints()
         {
-            _controlPoints[0] = new Vector2(0, Height); // Bottom-left
+            if (DesignMode)
+                return;
+
+            _controlPoints[0] = new Vector2(0, Height);
             _controlPoints[1] = new Vector2(Width / 3.0f, Height * 2.0f / 3.0f);
             _controlPoints[2] = new Vector2(2 * Width / 3.0f, Height / 3.0f);
-            _controlPoints[3] = new Vector2(Width, 0); // Top-right
+            _controlPoints[3] = new Vector2(Width, 0);
         }
 
         private void UpdateControlPointsFromBezier()
         {
+            if (DesignMode || _bezierCurve == null)
+                return;
+
             _controlPoints[0] = TransformToScreen(_bezierCurve.Start);
             _controlPoints[1] = TransformToScreen(_bezierCurve.StartHandle);
             _controlPoints[2] = TransformToScreen(_bezierCurve.EndHandle);
@@ -71,37 +84,51 @@ namespace WadTool.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            var g = e.Graphics;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            // Draw Bézier curve
-            using (var pen = new Pen(Colors.LightestBackground, 2))
+            var g = e.Graphics;
+
+            if (DesignMode)
             {
-                g.DrawBezier(pen, new PointF(_controlPoints[0]), new PointF(_controlPoints[1]), new PointF(_controlPoints[2]), new PointF(_controlPoints[3]));
+                using (var borderPen = new Pen(Colors.LightBorder, 1))
+                {
+                    g.DrawRectangle(borderPen, 0, 0, Width - 1, Height - 1);
+                }
+
+                g.DrawString("Rendering: Not Available in form designer!", Font, Brushes.DarkGray, ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+
+                return;
             }
 
-            // Draw control point connectors
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            using (var pen = new Pen(Colors.LightestBackground, 2))
+            {
+                g.DrawBezier(pen, new PointF(_controlPoints[0]), new PointF(_controlPoints[1]), 
+                                  new PointF(_controlPoints[2]), new PointF(_controlPoints[3]));
+            }
+
             using (var handlePen = new Pen(Colors.GreyHighlight, 1))
             {
                 g.DrawLine(handlePen, new PointF(_controlPoints[0]), new PointF(_controlPoints[1]));
                 g.DrawLine(handlePen, new PointF(_controlPoints[3]), new PointF(_controlPoints[2]));
             }
 
-            // Draw control points
-            for (int i = 1; i < 3; i++) // Only draw draggable points
+            for (int i = 1; i < 3; i++)
             {
                 using (var brush = new SolidBrush(Colors.GreyBackground))
                 {
-                    g.FillEllipse(brush, _controlPoints[i].X - HandleOutlineRadius, _controlPoints[i].Y - HandleOutlineRadius, HandleOutlineRadius * 2, HandleOutlineRadius * 2);
+                    g.FillEllipse(brush, _controlPoints[i].X - HandleOutlineRadius, _controlPoints[i].Y - HandleOutlineRadius,
+                                  HandleOutlineRadius * 2, HandleOutlineRadius * 2);
                 }
 
                 using (var brush = new SolidBrush(i == _selectedPoint ? Colors.LightestBackground : Colors.GreyHighlight))
                 {
-                    g.FillEllipse(brush, _controlPoints[i].X - HandleRadius, _controlPoints[i].Y - HandleRadius, HandleRadius * 2, HandleRadius * 2);
+                    g.FillEllipse(brush, _controlPoints[i].X - HandleRadius, _controlPoints[i].Y - HandleRadius,
+                                  HandleRadius * 2, HandleRadius * 2);
                 }
             }
 
-            // Draw border
             using (var borderPen = new Pen(Colors.GreyBackground, 3))
             {
                 g.DrawRectangle(borderPen, 0, 0, Width - 1, Height - 1);
@@ -117,7 +144,10 @@ namespace WadTool.Controls
         {
             base.OnMouseDown(e);
 
-            for (int i = 1; i < 3; i++) // Only check middle points
+            if (DesignMode)
+                return;
+
+            for (int i = 1; i < 3; i++)
             {
                 if (IsPointNear(new Vector2(e.Location.X, e.Location.Y), _controlPoints[i]))
                 {
@@ -133,16 +163,14 @@ namespace WadTool.Controls
         {
             base.OnMouseMove(e);
 
-            if (_selectedPoint != -1 && e.Button == MouseButtons.Left)
-            {
-                _controlPoints[_selectedPoint] = new Vector2(
-                    Math.Max(HandleRadius / 2, Math.Min(e.X, Width  - HandleRadius / 2 - 1)),
-                    Math.Max(HandleRadius / 2, Math.Min(e.Y, Height - HandleRadius / 2 - 1))
-                );
-                Invalidate(); // Redraw the control
-            }
+            if (DesignMode || _selectedPoint == -1 || e.Button != MouseButtons.Left)
+                return;
 
-            // Update the Bezier curve object
+            _controlPoints[_selectedPoint] = new Vector2(
+                Math.Max(HandleRadius / 2, Math.Min(e.X, Width - HandleRadius / 2 - 1)),
+                Math.Max(HandleRadius / 2, Math.Min(e.Y, Height - HandleRadius / 2 - 1))
+            );
+
             if (_bezierCurve != null)
             {
                 if (_selectedPoint == 1)
@@ -150,11 +178,16 @@ namespace WadTool.Controls
                 else if (_selectedPoint == 2)
                     _bezierCurve.EndHandle = TransformToBezier(_controlPoints[2]);
             }
+
+            Invalidate();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
+            if (DesignMode)
+                return;
 
             _selectedPoint = -1;
             Invalidate();
@@ -163,6 +196,10 @@ namespace WadTool.Controls
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
+
+            if (DesignMode)
+                return;
+
             if (_selectedPoint == -1)
             {
                 Value = BezierCurve2D.Linear;
@@ -175,7 +212,10 @@ namespace WadTool.Controls
         {
             base.OnResize(e);
 
-            UpdateControlPointsFromBezier(); // Preserve the current curve instead of resetting
+            if (DesignMode)
+                return;
+
+            UpdateControlPointsFromBezier();
             Invalidate();
         }
     }

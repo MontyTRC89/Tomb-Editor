@@ -34,11 +34,11 @@
             butApply = new DarkUI.Controls.DarkButton();
             darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
+            darkLabel1 = new DarkUI.Controls.DarkLabel();
+            cbBlendPreset = new DarkUI.Controls.DarkComboBox();
             darkLabel3 = new DarkUI.Controls.DarkLabel();
             darkLabel2 = new DarkUI.Controls.DarkLabel();
-            bcStateChange = new Controls.BezierCurveEditor();
-            cbBlendPreset = new DarkUI.Controls.DarkComboBox();
-            darkLabel1 = new DarkUI.Controls.DarkLabel();
+            bezierCurveEditor = new Controls.BezierCurveEditor();
             ((System.ComponentModel.ISupportInitialize)dgvStateChanges).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudStateChangeEndFrame).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudStateChangeTransDuration).BeginInit();
@@ -61,7 +61,7 @@
             dgvStateChanges.RowHeadersWidth = 40;
             dgvStateChanges.RowTemplate.Height = 16;
             dgvStateChanges.ShowCellErrors = false;
-            dgvStateChanges.Size = new System.Drawing.Size(502, 223);
+            dgvStateChanges.Size = new System.Drawing.Size(489, 292);
             dgvStateChanges.TabIndex = 48;
             dgvStateChanges.CellFormattingSafe += dgvStateChanges_CellFormattingSafe;
             dgvStateChanges.CellEndEdit += dgvStateChanges_CellEndEdit;
@@ -122,7 +122,7 @@
             btCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             btCancel.Checked = false;
             btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            btCancel.Location = new System.Drawing.Point(734, 267);
+            btCancel.Location = new System.Drawing.Point(721, 336);
             btCancel.Name = "btCancel";
             btCancel.Size = new System.Drawing.Size(81, 23);
             btCancel.TabIndex = 50;
@@ -133,7 +133,7 @@
             // 
             btOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             btOk.Checked = false;
-            btOk.Location = new System.Drawing.Point(647, 267);
+            btOk.Location = new System.Drawing.Point(634, 336);
             btOk.Name = "btOk";
             btOk.Size = new System.Drawing.Size(81, 23);
             btOk.TabIndex = 51;
@@ -145,7 +145,7 @@
             butPlayStateChange.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butPlayStateChange.Checked = false;
             butPlayStateChange.Image = Properties.Resources.actions_play_16;
-            butPlayStateChange.Location = new System.Drawing.Point(515, 221);
+            butPlayStateChange.Location = new System.Drawing.Point(502, 290);
             butPlayStateChange.Name = "butPlayStateChange";
             butPlayStateChange.Size = new System.Drawing.Size(28, 24);
             butPlayStateChange.TabIndex = 50;
@@ -157,20 +157,20 @@
             dgvControls.AlwaysInsertAtZero = false;
             dgvControls.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             dgvControls.Enabled = false;
-            dgvControls.Location = new System.Drawing.Point(515, 22);
+            dgvControls.Location = new System.Drawing.Point(502, 22);
             dgvControls.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
             dgvControls.MinimumSize = new System.Drawing.Size(33, 32);
             dgvControls.Name = "dgvControls";
-            dgvControls.Size = new System.Drawing.Size(33, 193);
+            dgvControls.Size = new System.Drawing.Size(33, 262);
             dgvControls.TabIndex = 49;
             // 
             // lblStateChangeAnnouncement
             // 
             lblStateChangeAnnouncement.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
-            lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 272);
+            lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 341);
             lblStateChangeAnnouncement.Name = "lblStateChangeAnnouncement";
-            lblStateChangeAnnouncement.Size = new System.Drawing.Size(547, 13);
+            lblStateChangeAnnouncement.Size = new System.Drawing.Size(534, 13);
             lblStateChangeAnnouncement.TabIndex = 53;
             lblStateChangeAnnouncement.Text = "Pending state change...";
             lblStateChangeAnnouncement.Visible = false;
@@ -203,7 +203,7 @@
             // 
             butApply.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butApply.Checked = false;
-            butApply.Location = new System.Drawing.Point(561, 267);
+            butApply.Location = new System.Drawing.Point(548, 336);
             butApply.Name = "butApply";
             butApply.Size = new System.Drawing.Size(80, 23);
             butApply.TabIndex = 102;
@@ -218,7 +218,7 @@
             darkGroupBox1.Controls.Add(dgvControls);
             darkGroupBox1.Location = new System.Drawing.Point(5, 9);
             darkGroupBox1.Name = "darkGroupBox1";
-            darkGroupBox1.Size = new System.Drawing.Size(550, 252);
+            darkGroupBox1.Size = new System.Drawing.Size(537, 321);
             darkGroupBox1.TabIndex = 104;
             darkGroupBox1.TabStop = false;
             darkGroupBox1.Text = "State change editor";
@@ -232,13 +232,33 @@
             darkGroupBox2.Controls.Add(nudStateChangeTransDuration);
             darkGroupBox2.Controls.Add(darkLabel3);
             darkGroupBox2.Controls.Add(darkLabel2);
-            darkGroupBox2.Controls.Add(bcStateChange);
-            darkGroupBox2.Location = new System.Drawing.Point(561, 9);
+            darkGroupBox2.Controls.Add(bezierCurveEditor);
+            darkGroupBox2.Location = new System.Drawing.Point(548, 9);
             darkGroupBox2.Name = "darkGroupBox2";
-            darkGroupBox2.Size = new System.Drawing.Size(254, 252);
+            darkGroupBox2.Size = new System.Drawing.Size(254, 321);
             darkGroupBox2.TabIndex = 105;
             darkGroupBox2.TabStop = false;
             darkGroupBox2.Text = "Animation blending";
+            // 
+            // darkLabel1
+            // 
+            darkLabel1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            darkLabel1.AutoSize = true;
+            darkLabel1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            darkLabel1.Location = new System.Drawing.Point(6, 295);
+            darkLabel1.Name = "darkLabel1";
+            darkLabel1.Size = new System.Drawing.Size(41, 13);
+            darkLabel1.TabIndex = 106;
+            darkLabel1.Text = "Preset:";
+            // 
+            // cbBlendPreset
+            // 
+            cbBlendPreset.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            cbBlendPreset.FormattingEnabled = true;
+            cbBlendPreset.Location = new System.Drawing.Point(53, 291);
+            cbBlendPreset.Name = "cbBlendPreset";
+            cbBlendPreset.Size = new System.Drawing.Size(194, 23);
+            cbBlendPreset.TabIndex = 105;
             // 
             // darkLabel3
             // 
@@ -258,34 +278,14 @@
             darkLabel2.TabIndex = 101;
             darkLabel2.Text = "Next anim transition duration:";
             // 
-            // bcStateChange
+            // bezierCurveEditor
             // 
-            bcStateChange.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            bcStateChange.Location = new System.Drawing.Point(6, 74);
-            bcStateChange.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
-            bcStateChange.Name = "bcStateChange";
-            bcStateChange.Size = new System.Drawing.Size(241, 142);
-            bcStateChange.TabIndex = 102;
-            // 
-            // cbBlendPreset
-            // 
-            cbBlendPreset.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            cbBlendPreset.FormattingEnabled = true;
-            cbBlendPreset.Location = new System.Drawing.Point(53, 222);
-            cbBlendPreset.Name = "cbBlendPreset";
-            cbBlendPreset.Size = new System.Drawing.Size(194, 23);
-            cbBlendPreset.TabIndex = 105;
-            // 
-            // darkLabel1
-            // 
-            darkLabel1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            darkLabel1.AutoSize = true;
-            darkLabel1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel1.Location = new System.Drawing.Point(6, 226);
-            darkLabel1.Name = "darkLabel1";
-            darkLabel1.Size = new System.Drawing.Size(41, 13);
-            darkLabel1.TabIndex = 106;
-            darkLabel1.Text = "Preset:";
+            bezierCurveEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            bezierCurveEditor.Location = new System.Drawing.Point(6, 74);
+            bezierCurveEditor.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            bezierCurveEditor.Name = "bezierCurveEditor";
+            bezierCurveEditor.Size = new System.Drawing.Size(241, 211);
+            bezierCurveEditor.TabIndex = 102;
             // 
             // FormStateChangesEditor
             // 
@@ -293,7 +293,7 @@
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             CancelButton = btCancel;
-            ClientSize = new System.Drawing.Size(820, 295);
+            ClientSize = new System.Drawing.Size(807, 364);
             Controls.Add(darkGroupBox2);
             Controls.Add(darkGroupBox1);
             Controls.Add(butApply);
@@ -340,7 +340,7 @@
         private DarkUI.Controls.DarkCheckBox cbRotP;
         private DarkUI.Controls.DarkCheckBox cbPosY;
         private DarkUI.Controls.DarkCheckBox cbRotY;
-        private Controls.BezierCurveEditor bcStateChange;
+        private Controls.BezierCurveEditor bezierCurveEditor;
         private DarkUI.Controls.DarkNumericUpDown nudStateChangeTransDuration;
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkNumericUpDown nudStateChangeEndFrame;
