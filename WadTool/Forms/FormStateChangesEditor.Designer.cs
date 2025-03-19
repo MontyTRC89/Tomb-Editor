@@ -31,37 +31,19 @@
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             nudStateChangeEndFrame = new DarkUI.Controls.DarkNumericUpDown();
             nudStateChangeTransDuration = new DarkUI.Controls.DarkNumericUpDown();
-            cbLooped = new DarkUI.Controls.DarkCheckBox();
-            nudAnimTransDuration = new DarkUI.Controls.DarkNumericUpDown();
             butApply = new DarkUI.Controls.DarkButton();
             darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
-            darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             darkLabel3 = new DarkUI.Controls.DarkLabel();
-            bcStateChange = new Controls.BezierCurveEditor();
             darkLabel2 = new DarkUI.Controls.DarkLabel();
-            darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
+            bcStateChange = new Controls.BezierCurveEditor();
+            cbBlendPreset = new DarkUI.Controls.DarkComboBox();
             darkLabel1 = new DarkUI.Controls.DarkLabel();
-            darkLabel29 = new DarkUI.Controls.DarkLabel();
-            darkLabel28 = new DarkUI.Controls.DarkLabel();
-            cbRotR = new DarkUI.Controls.DarkCheckBox();
-            cbPosZ = new DarkUI.Controls.DarkCheckBox();
-            cbPosX = new DarkUI.Controls.DarkCheckBox();
-            cbRotY = new DarkUI.Controls.DarkCheckBox();
-            cbRotP = new DarkUI.Controls.DarkCheckBox();
-            cbPosY = new DarkUI.Controls.DarkCheckBox();
-            darkLabel4 = new DarkUI.Controls.DarkLabel();
-            bcAnimation = new Controls.BezierCurveEditor();
             ((System.ComponentModel.ISupportInitialize)dgvStateChanges).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudStateChangeEndFrame).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudStateChangeTransDuration).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudAnimTransDuration).BeginInit();
             darkGroupBox1.SuspendLayout();
             darkGroupBox2.SuspendLayout();
-            darkSectionPanel1.SuspendLayout();
-            darkSectionPanel2.SuspendLayout();
-            darkGroupBox3.SuspendLayout();
             SuspendLayout();
             // 
             // dgvStateChanges
@@ -79,7 +61,7 @@
             dgvStateChanges.RowHeadersWidth = 40;
             dgvStateChanges.RowTemplate.Height = 16;
             dgvStateChanges.ShowCellErrors = false;
-            dgvStateChanges.Size = new System.Drawing.Size(638, 216);
+            dgvStateChanges.Size = new System.Drawing.Size(502, 223);
             dgvStateChanges.TabIndex = 48;
             dgvStateChanges.CellFormattingSafe += dgvStateChanges_CellFormattingSafe;
             dgvStateChanges.CellEndEdit += dgvStateChanges_CellEndEdit;
@@ -140,7 +122,7 @@
             btCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             btCancel.Checked = false;
             btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            btCancel.Location = new System.Drawing.Point(610, 445);
+            btCancel.Location = new System.Drawing.Point(734, 267);
             btCancel.Name = "btCancel";
             btCancel.Size = new System.Drawing.Size(81, 23);
             btCancel.TabIndex = 50;
@@ -151,7 +133,7 @@
             // 
             btOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             btOk.Checked = false;
-            btOk.Location = new System.Drawing.Point(523, 445);
+            btOk.Location = new System.Drawing.Point(647, 267);
             btOk.Name = "btOk";
             btOk.Size = new System.Drawing.Size(81, 23);
             btOk.TabIndex = 51;
@@ -163,7 +145,7 @@
             butPlayStateChange.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butPlayStateChange.Checked = false;
             butPlayStateChange.Image = Properties.Resources.actions_play_16;
-            butPlayStateChange.Location = new System.Drawing.Point(651, 214);
+            butPlayStateChange.Location = new System.Drawing.Point(515, 221);
             butPlayStateChange.Name = "butPlayStateChange";
             butPlayStateChange.Size = new System.Drawing.Size(28, 24);
             butPlayStateChange.TabIndex = 50;
@@ -175,20 +157,20 @@
             dgvControls.AlwaysInsertAtZero = false;
             dgvControls.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             dgvControls.Enabled = false;
-            dgvControls.Location = new System.Drawing.Point(651, 22);
-            dgvControls.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
-            dgvControls.MinimumSize = new System.Drawing.Size(28, 28);
+            dgvControls.Location = new System.Drawing.Point(515, 22);
+            dgvControls.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
+            dgvControls.MinimumSize = new System.Drawing.Size(33, 32);
             dgvControls.Name = "dgvControls";
-            dgvControls.Size = new System.Drawing.Size(28, 186);
+            dgvControls.Size = new System.Drawing.Size(33, 193);
             dgvControls.TabIndex = 49;
             // 
             // lblStateChangeAnnouncement
             // 
             lblStateChangeAnnouncement.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             lblStateChangeAnnouncement.ForeColor = System.Drawing.Color.Gray;
-            lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 450);
+            lblStateChangeAnnouncement.Location = new System.Drawing.Point(8, 272);
             lblStateChangeAnnouncement.Name = "lblStateChangeAnnouncement";
-            lblStateChangeAnnouncement.Size = new System.Drawing.Size(423, 13);
+            lblStateChangeAnnouncement.Size = new System.Drawing.Size(547, 13);
             lblStateChangeAnnouncement.TabIndex = 53;
             lblStateChangeAnnouncement.Text = "Pending state change...";
             lblStateChangeAnnouncement.Visible = false;
@@ -197,7 +179,7 @@
             // 
             nudStateChangeEndFrame.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             nudStateChangeEndFrame.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudStateChangeEndFrame.Location = new System.Drawing.Point(185, 57);
+            nudStateChangeEndFrame.Location = new System.Drawing.Point(190, 46);
             nudStateChangeEndFrame.LoopValues = false;
             nudStateChangeEndFrame.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             nudStateChangeEndFrame.Name = "nudStateChangeEndFrame";
@@ -209,7 +191,7 @@
             // 
             nudStateChangeTransDuration.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             nudStateChangeTransDuration.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudStateChangeTransDuration.Location = new System.Drawing.Point(185, 30);
+            nudStateChangeTransDuration.Location = new System.Drawing.Point(190, 19);
             nudStateChangeTransDuration.LoopValues = false;
             nudStateChangeTransDuration.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             nudStateChangeTransDuration.Name = "nudStateChangeTransDuration";
@@ -217,33 +199,11 @@
             nudStateChangeTransDuration.TabIndex = 100;
             toolTip1.SetToolTip(nudStateChangeTransDuration, "Blending duration to the next animation in frames");
             // 
-            // cbLooped
-            // 
-            cbLooped.AutoSize = true;
-            cbLooped.Location = new System.Drawing.Point(71, 27);
-            cbLooped.Name = "cbLooped";
-            cbLooped.Size = new System.Drawing.Size(65, 17);
-            cbLooped.TabIndex = 105;
-            cbLooped.Text = "Looped";
-            toolTip1.SetToolTip(cbLooped, "To be used when animation is looped on itself");
-            // 
-            // nudAnimTransDuration
-            // 
-            nudAnimTransDuration.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            nudAnimTransDuration.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudAnimTransDuration.Location = new System.Drawing.Point(170, 30);
-            nudAnimTransDuration.LoopValues = false;
-            nudAnimTransDuration.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
-            nudAnimTransDuration.Name = "nudAnimTransDuration";
-            nudAnimTransDuration.Size = new System.Drawing.Size(57, 22);
-            nudAnimTransDuration.TabIndex = 97;
-            toolTip1.SetToolTip(nudAnimTransDuration, "Blending duration to the next animation in frames");
-            // 
             // butApply
             // 
             butApply.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butApply.Checked = false;
-            butApply.Location = new System.Drawing.Point(437, 445);
+            butApply.Location = new System.Drawing.Point(561, 267);
             butApply.Name = "butApply";
             butApply.Size = new System.Drawing.Size(80, 23);
             butApply.TabIndex = 102;
@@ -258,194 +218,74 @@
             darkGroupBox1.Controls.Add(dgvControls);
             darkGroupBox1.Location = new System.Drawing.Point(5, 9);
             darkGroupBox1.Name = "darkGroupBox1";
-            darkGroupBox1.Size = new System.Drawing.Size(686, 245);
+            darkGroupBox1.Size = new System.Drawing.Size(550, 252);
             darkGroupBox1.TabIndex = 104;
             darkGroupBox1.TabStop = false;
             darkGroupBox1.Text = "State change editor";
             // 
             // darkGroupBox2
             // 
-            darkGroupBox2.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            darkGroupBox2.Controls.Add(darkSectionPanel1);
-            darkGroupBox2.Controls.Add(darkSectionPanel2);
-            darkGroupBox2.Location = new System.Drawing.Point(6, 261);
+            darkGroupBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            darkGroupBox2.Controls.Add(darkLabel1);
+            darkGroupBox2.Controls.Add(cbBlendPreset);
+            darkGroupBox2.Controls.Add(nudStateChangeEndFrame);
+            darkGroupBox2.Controls.Add(nudStateChangeTransDuration);
+            darkGroupBox2.Controls.Add(darkLabel3);
+            darkGroupBox2.Controls.Add(darkLabel2);
+            darkGroupBox2.Controls.Add(bcStateChange);
+            darkGroupBox2.Location = new System.Drawing.Point(561, 9);
             darkGroupBox2.Name = "darkGroupBox2";
-            darkGroupBox2.Size = new System.Drawing.Size(685, 178);
+            darkGroupBox2.Size = new System.Drawing.Size(254, 252);
             darkGroupBox2.TabIndex = 105;
             darkGroupBox2.TabStop = false;
             darkGroupBox2.Text = "Animation blending";
             // 
-            // darkSectionPanel1
-            // 
-            darkSectionPanel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            darkSectionPanel1.Controls.Add(nudStateChangeEndFrame);
-            darkSectionPanel1.Controls.Add(darkLabel3);
-            darkSectionPanel1.Controls.Add(bcStateChange);
-            darkSectionPanel1.Controls.Add(nudStateChangeTransDuration);
-            darkSectionPanel1.Controls.Add(darkLabel2);
-            darkSectionPanel1.Location = new System.Drawing.Point(428, 21);
-            darkSectionPanel1.Name = "darkSectionPanel1";
-            darkSectionPanel1.SectionHeader = "Selected state change";
-            darkSectionPanel1.Size = new System.Drawing.Size(250, 149);
-            darkSectionPanel1.TabIndex = 104;
-            // 
             // darkLabel3
             // 
             darkLabel3.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel3.Location = new System.Drawing.Point(5, 59);
+            darkLabel3.Location = new System.Drawing.Point(6, 48);
             darkLabel3.Name = "darkLabel3";
             darkLabel3.Size = new System.Drawing.Size(201, 13);
             darkLabel3.TabIndex = 104;
             darkLabel3.Text = "Next anim transition end frame:";
             // 
-            // bcStateChange
-            // 
-            bcStateChange.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            bcStateChange.Location = new System.Drawing.Point(6, 85);
-            bcStateChange.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            bcStateChange.Name = "bcStateChange";
-            bcStateChange.Size = new System.Drawing.Size(236, 57);
-            bcStateChange.TabIndex = 102;
-            // 
             // darkLabel2
             // 
             darkLabel2.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel2.Location = new System.Drawing.Point(5, 32);
+            darkLabel2.Location = new System.Drawing.Point(6, 21);
             darkLabel2.Name = "darkLabel2";
             darkLabel2.Size = new System.Drawing.Size(210, 13);
             darkLabel2.TabIndex = 101;
             darkLabel2.Text = "Next anim transition duration:";
             // 
-            // darkSectionPanel2
+            // bcStateChange
             // 
-            darkSectionPanel2.Controls.Add(darkGroupBox3);
-            darkSectionPanel2.Controls.Add(nudAnimTransDuration);
-            darkSectionPanel2.Controls.Add(darkLabel4);
-            darkSectionPanel2.Controls.Add(bcAnimation);
-            darkSectionPanel2.Location = new System.Drawing.Point(7, 21);
-            darkSectionPanel2.Name = "darkSectionPanel2";
-            darkSectionPanel2.SectionHeader = "Current animation";
-            darkSectionPanel2.Size = new System.Drawing.Size(415, 149);
-            darkSectionPanel2.TabIndex = 103;
+            bcStateChange.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            bcStateChange.Location = new System.Drawing.Point(6, 74);
+            bcStateChange.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            bcStateChange.Name = "bcStateChange";
+            bcStateChange.Size = new System.Drawing.Size(241, 142);
+            bcStateChange.TabIndex = 102;
             // 
-            // darkGroupBox3
+            // cbBlendPreset
             // 
-            darkGroupBox3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            darkGroupBox3.Controls.Add(darkLabel1);
-            darkGroupBox3.Controls.Add(cbLooped);
-            darkGroupBox3.Controls.Add(darkLabel29);
-            darkGroupBox3.Controls.Add(darkLabel28);
-            darkGroupBox3.Controls.Add(cbRotR);
-            darkGroupBox3.Controls.Add(cbPosZ);
-            darkGroupBox3.Controls.Add(cbPosX);
-            darkGroupBox3.Controls.Add(cbRotY);
-            darkGroupBox3.Controls.Add(cbRotP);
-            darkGroupBox3.Controls.Add(cbPosY);
-            darkGroupBox3.Location = new System.Drawing.Point(234, 34);
-            darkGroupBox3.Name = "darkGroupBox3";
-            darkGroupBox3.Size = new System.Drawing.Size(175, 108);
-            darkGroupBox3.TabIndex = 99;
-            darkGroupBox3.TabStop = false;
-            darkGroupBox3.Text = "Root motion";
+            cbBlendPreset.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            cbBlendPreset.FormattingEnabled = true;
+            cbBlendPreset.Location = new System.Drawing.Point(53, 222);
+            cbBlendPreset.Name = "cbBlendPreset";
+            cbBlendPreset.Size = new System.Drawing.Size(194, 23);
+            cbBlendPreset.TabIndex = 105;
             // 
             // darkLabel1
             // 
+            darkLabel1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            darkLabel1.AutoSize = true;
             darkLabel1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel1.Location = new System.Drawing.Point(8, 28);
+            darkLabel1.Location = new System.Drawing.Point(6, 226);
             darkLabel1.Name = "darkLabel1";
-            darkLabel1.Size = new System.Drawing.Size(62, 13);
-            darkLabel1.TabIndex = 108;
-            darkLabel1.Text = "Mode:";
-            // 
-            // darkLabel29
-            // 
-            darkLabel29.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel29.Location = new System.Drawing.Point(8, 83);
-            darkLabel29.Name = "darkLabel29";
-            darkLabel29.Size = new System.Drawing.Size(57, 13);
-            darkLabel29.TabIndex = 107;
-            darkLabel29.Text = "Position:";
-            // 
-            // darkLabel28
-            // 
-            darkLabel28.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel28.Location = new System.Drawing.Point(8, 55);
-            darkLabel28.Name = "darkLabel28";
-            darkLabel28.Size = new System.Drawing.Size(62, 13);
-            darkLabel28.TabIndex = 106;
-            darkLabel28.Text = "Rotation:";
-            // 
-            // cbRotR
-            // 
-            cbRotR.AutoSize = true;
-            cbRotR.Location = new System.Drawing.Point(137, 54);
-            cbRotR.Name = "cbRotR";
-            cbRotR.Size = new System.Drawing.Size(33, 17);
-            cbRotR.TabIndex = 104;
-            cbRotR.Text = "R";
-            // 
-            // cbPosZ
-            // 
-            cbPosZ.AutoSize = true;
-            cbPosZ.Location = new System.Drawing.Point(137, 82);
-            cbPosZ.Name = "cbPosZ";
-            cbPosZ.Size = new System.Drawing.Size(32, 17);
-            cbPosZ.TabIndex = 101;
-            cbPosZ.Text = "Z";
-            // 
-            // cbPosX
-            // 
-            cbPosX.AutoSize = true;
-            cbPosX.Location = new System.Drawing.Point(70, 82);
-            cbPosX.Name = "cbPosX";
-            cbPosX.Size = new System.Drawing.Size(32, 17);
-            cbPosX.TabIndex = 99;
-            cbPosX.Text = "X";
-            // 
-            // cbRotY
-            // 
-            cbRotY.AutoSize = true;
-            cbRotY.Location = new System.Drawing.Point(71, 54);
-            cbRotY.Name = "cbRotY";
-            cbRotY.Size = new System.Drawing.Size(31, 17);
-            cbRotY.TabIndex = 102;
-            cbRotY.Text = "Y";
-            // 
-            // cbRotP
-            // 
-            cbRotP.AutoSize = true;
-            cbRotP.Location = new System.Drawing.Point(104, 54);
-            cbRotP.Name = "cbRotP";
-            cbRotP.Size = new System.Drawing.Size(32, 17);
-            cbRotP.TabIndex = 103;
-            cbRotP.Text = "P";
-            // 
-            // cbPosY
-            // 
-            cbPosY.AutoSize = true;
-            cbPosY.Location = new System.Drawing.Point(104, 82);
-            cbPosY.Name = "cbPosY";
-            cbPosY.Size = new System.Drawing.Size(31, 17);
-            cbPosY.TabIndex = 100;
-            cbPosY.Text = "Y";
-            // 
-            // darkLabel4
-            // 
-            darkLabel4.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel4.Location = new System.Drawing.Point(6, 32);
-            darkLabel4.Name = "darkLabel4";
-            darkLabel4.Size = new System.Drawing.Size(177, 13);
-            darkLabel4.TabIndex = 98;
-            darkLabel4.Text = "Next anim transition duration:";
-            // 
-            // bcAnimation
-            // 
-            bcAnimation.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            bcAnimation.Location = new System.Drawing.Point(6, 57);
-            bcAnimation.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            bcAnimation.Name = "bcAnimation";
-            bcAnimation.Size = new System.Drawing.Size(221, 85);
-            bcAnimation.TabIndex = 0;
+            darkLabel1.Size = new System.Drawing.Size(41, 13);
+            darkLabel1.TabIndex = 106;
+            darkLabel1.Text = "Preset:";
             // 
             // FormStateChangesEditor
             // 
@@ -453,7 +293,7 @@
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             CancelButton = btCancel;
-            ClientSize = new System.Drawing.Size(696, 473);
+            ClientSize = new System.Drawing.Size(820, 295);
             Controls.Add(darkGroupBox2);
             Controls.Add(darkGroupBox1);
             Controls.Add(butApply);
@@ -471,13 +311,9 @@
             ((System.ComponentModel.ISupportInitialize)dgvStateChanges).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudStateChangeEndFrame).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudStateChangeTransDuration).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudAnimTransDuration).EndInit();
             darkGroupBox1.ResumeLayout(false);
             darkGroupBox2.ResumeLayout(false);
-            darkSectionPanel1.ResumeLayout(false);
-            darkSectionPanel2.ResumeLayout(false);
-            darkGroupBox3.ResumeLayout(false);
-            darkGroupBox3.PerformLayout();
+            darkGroupBox2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -499,26 +335,17 @@
         private DarkUI.Controls.DarkButton butApply;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkGroupBox darkGroupBox2;
-        private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
-        private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
-        private Controls.BezierCurveEditor bcAnimation;
-        private DarkUI.Controls.DarkNumericUpDown nudAnimTransDuration;
-        private DarkUI.Controls.DarkLabel darkLabel4;
-        private DarkUI.Controls.DarkCheckBox cbLooped;
         private DarkUI.Controls.DarkCheckBox cbRotR;
         private DarkUI.Controls.DarkCheckBox cbPosX;
         private DarkUI.Controls.DarkCheckBox cbRotP;
         private DarkUI.Controls.DarkCheckBox cbPosY;
         private DarkUI.Controls.DarkCheckBox cbRotY;
-        private DarkUI.Controls.DarkCheckBox cbPosZ;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox3;
-        private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkLabel darkLabel29;
-        private DarkUI.Controls.DarkLabel darkLabel28;
         private Controls.BezierCurveEditor bcStateChange;
         private DarkUI.Controls.DarkNumericUpDown nudStateChangeTransDuration;
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkNumericUpDown nudStateChangeEndFrame;
         private DarkUI.Controls.DarkLabel darkLabel3;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkComboBox cbBlendPreset;
     }
 }

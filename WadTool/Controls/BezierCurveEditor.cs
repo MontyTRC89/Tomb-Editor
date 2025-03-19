@@ -13,7 +13,7 @@ namespace WadTool.Controls
         private const float HandleRadius = 6.0f;
         private const float HandleOutlineRadius = 9.0f;
 
-        private Vector2[] _controlPoints;
+        private Vector2[] _controlPoints = new Vector2[4];
         private int _selectedPoint = -1;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -39,7 +39,6 @@ namespace WadTool.Controls
 
         private void InitializeControlPoints()
         {
-            _controlPoints    = new Vector2[4];
             _controlPoints[0] = new Vector2(0, Height); // Bottom-left
             _controlPoints[1] = new Vector2(Width / 3.0f, Height * 2.0f / 3.0f);
             _controlPoints[2] = new Vector2(2 * Width / 3.0f, Height / 3.0f);

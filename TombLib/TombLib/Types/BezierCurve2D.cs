@@ -140,10 +140,21 @@ namespace TombLib.Types
 		    return points[0];
 	    }
 
-        public static bool operator ==(BezierCurve2D first, BezierCurve2D second) => (first.Start == second.Start &&
-                                                                                      first.End == second.End &&
-                                                                                      first.StartHandle == second.StartHandle &&
-                                                                                      first.EndHandle == second.EndHandle);
+        public static bool operator ==(BezierCurve2D first, BezierCurve2D second)
+        {
+            if (ReferenceEquals(first, second))
+                return true;
+
+            if (first is null || second is null)
+                return false;
+
+            return first.Start == second.Start &&
+                   first.End == second.End &&
+                   first.StartHandle == second.StartHandle &&
+                   first.EndHandle == second.EndHandle;
+        }
+
+
         public static bool operator !=(BezierCurve2D first, BezierCurve2D second) => !(first == second);
     }
 }
