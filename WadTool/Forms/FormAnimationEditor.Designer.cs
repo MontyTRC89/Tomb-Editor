@@ -202,7 +202,7 @@ namespace WadTool
             darkLabel10 = new DarkUI.Controls.DarkLabel();
             darkLabel9 = new DarkUI.Controls.DarkLabel();
             panelLeft = new System.Windows.Forms.Panel();
-            darkSectionPanel3 = new DarkUI.Controls.DarkSectionPanel();
+            sectionBlending = new DarkUI.Controls.DarkSectionPanel();
             bezierCurveEditor = new Controls.BezierCurveEditor();
             darkLabel36 = new DarkUI.Controls.DarkLabel();
             cbBlendPreset = new DarkUI.Controls.DarkComboBox();
@@ -266,7 +266,7 @@ namespace WadTool
             ((System.ComponentModel.ISupportInitialize)nudRotZ).BeginInit();
             darkSectionPanel5.SuspendLayout();
             panelLeft.SuspendLayout();
-            darkSectionPanel3.SuspendLayout();
+            sectionBlending.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudBlendFrameCount).BeginInit();
             cmTimelineContextMenu.SuspendLayout();
             SuspendLayout();
@@ -1309,7 +1309,6 @@ namespace WadTool
             panelRendering.Name = "panelRendering";
             panelRendering.Size = new System.Drawing.Size(469, 670);
             panelRendering.TabIndex = 9;
-            toolTip1.SetToolTip(panelRendering, "S");
             panelRendering.MouseDoubleClick += panelRendering_MouseDoubleClick;
             panelRendering.MouseEnter += panelRendering_MouseEnter;
             panelRendering.MouseMove += panelRendering_MouseMove;
@@ -2318,33 +2317,33 @@ namespace WadTool
             // 
             panelLeft.Controls.Add(darkSectionPanel1);
             panelLeft.Controls.Add(darkSectionPanel4);
-            panelLeft.Controls.Add(darkSectionPanel3);
+            panelLeft.Controls.Add(sectionBlending);
             panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
             panelLeft.Location = new System.Drawing.Point(4, 4);
             panelLeft.Name = "panelLeft";
             panelLeft.Size = new System.Drawing.Size(280, 672);
             panelLeft.TabIndex = 11;
             // 
-            // darkSectionPanel3
+            // sectionBlending
             // 
-            darkSectionPanel3.Controls.Add(bezierCurveEditor);
-            darkSectionPanel3.Controls.Add(darkLabel36);
-            darkSectionPanel3.Controls.Add(cbBlendPreset);
-            darkSectionPanel3.Controls.Add(darkLabel13);
-            darkSectionPanel3.Controls.Add(darkLabel11);
-            darkSectionPanel3.Controls.Add(cbRootPosZ);
-            darkSectionPanel3.Controls.Add(nudBlendFrameCount);
-            darkSectionPanel3.Controls.Add(cbRootPosX);
-            darkSectionPanel3.Controls.Add(darkLabel12);
-            darkSectionPanel3.Controls.Add(cbRootPosY);
-            darkSectionPanel3.Controls.Add(cbRootRotation);
-            darkSectionPanel3.Controls.Add(bcAnimation);
-            darkSectionPanel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            darkSectionPanel3.Location = new System.Drawing.Point(0, 469);
-            darkSectionPanel3.Name = "darkSectionPanel3";
-            darkSectionPanel3.SectionHeader = "Animation Blending";
-            darkSectionPanel3.Size = new System.Drawing.Size(280, 203);
-            darkSectionPanel3.TabIndex = 128;
+            sectionBlending.Controls.Add(bezierCurveEditor);
+            sectionBlending.Controls.Add(darkLabel36);
+            sectionBlending.Controls.Add(cbBlendPreset);
+            sectionBlending.Controls.Add(darkLabel13);
+            sectionBlending.Controls.Add(darkLabel11);
+            sectionBlending.Controls.Add(cbRootPosZ);
+            sectionBlending.Controls.Add(nudBlendFrameCount);
+            sectionBlending.Controls.Add(cbRootPosX);
+            sectionBlending.Controls.Add(darkLabel12);
+            sectionBlending.Controls.Add(cbRootPosY);
+            sectionBlending.Controls.Add(cbRootRotation);
+            sectionBlending.Controls.Add(bcAnimation);
+            sectionBlending.Dock = System.Windows.Forms.DockStyle.Bottom;
+            sectionBlending.Location = new System.Drawing.Point(0, 469);
+            sectionBlending.Name = "sectionBlending";
+            sectionBlending.SectionHeader = "Animation Blending";
+            sectionBlending.Size = new System.Drawing.Size(280, 203);
+            sectionBlending.TabIndex = 128;
             // 
             // bezierCurveEditor
             // 
@@ -2352,6 +2351,7 @@ namespace WadTool
             bezierCurveEditor.Name = "bezierCurveEditor";
             bezierCurveEditor.Size = new System.Drawing.Size(269, 85);
             bezierCurveEditor.TabIndex = 110;
+            toolTip1.SetToolTip(bezierCurveEditor, "Specify blending curve by dragging handles");
             bezierCurveEditor.ValueChanged += bezierCurveEditor_ValueChanged;
             // 
             // darkLabel36
@@ -2374,6 +2374,7 @@ namespace WadTool
             cbBlendPreset.Name = "cbBlendPreset";
             cbBlendPreset.Size = new System.Drawing.Size(225, 23);
             cbBlendPreset.TabIndex = 108;
+            toolTip1.SetToolTip(cbBlendPreset, "Predefined curve preset");
             cbBlendPreset.SelectedIndexChanged += cbBlendPreset_SelectedIndexChanged;
             // 
             // darkLabel13
@@ -2433,9 +2434,9 @@ namespace WadTool
             darkLabel12.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             darkLabel12.Location = new System.Drawing.Point(6, 32);
             darkLabel12.Name = "darkLabel12";
-            darkLabel12.Size = new System.Drawing.Size(177, 13);
+            darkLabel12.Size = new System.Drawing.Size(162, 13);
             darkLabel12.TabIndex = 98;
-            darkLabel12.Text = "Next anim transition duration:";
+            darkLabel12.Text = "Next anim blending duration:";
             // 
             // cbRootPosY
             // 
@@ -2621,8 +2622,8 @@ namespace WadTool
             darkSectionPanel5.ResumeLayout(false);
             darkSectionPanel5.PerformLayout();
             panelLeft.ResumeLayout(false);
-            darkSectionPanel3.ResumeLayout(false);
-            darkSectionPanel3.PerformLayout();
+            sectionBlending.ResumeLayout(false);
+            sectionBlending.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudBlendFrameCount).EndInit();
             cmTimelineContextMenu.ResumeLayout(false);
             ResumeLayout(false);
@@ -2811,7 +2812,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem currentAnimationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectedAnimationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem allAnimationsToolStripMenuItem;
-        private DarkUI.Controls.DarkSectionPanel darkSectionPanel3;
+        private DarkUI.Controls.DarkSectionPanel sectionBlending;
         private DarkUI.Controls.DarkLabel darkLabel11;
         private DarkUI.Controls.DarkCheckBox cbRootPosZ;
         private DarkUI.Controls.DarkNumericUpDown nudBlendFrameCount;

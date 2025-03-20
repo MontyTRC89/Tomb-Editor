@@ -126,13 +126,13 @@ namespace WadTool.Controls
 
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            using (var pen = new Pen(Colors.LightestBackground, 2))
+            using (var pen = new Pen(!Enabled ? Colors.DarkGreySelection : Colors.LightestBackground, 2))
             {
                 g.DrawBezier(pen, new PointF(_controlPoints[0]), new PointF(_controlPoints[1]), 
                                   new PointF(_controlPoints[2]), new PointF(_controlPoints[3]));
             }
 
-            using (var handlePen = new Pen(Colors.GreyHighlight, 1))
+            using (var handlePen = new Pen(!Enabled ? Colors.DarkGreySelection : Colors.GreyHighlight, 1))
             {
                 g.DrawLine(handlePen, new PointF(_controlPoints[0]), new PointF(_controlPoints[1]));
                 g.DrawLine(handlePen, new PointF(_controlPoints[3]), new PointF(_controlPoints[2]));
@@ -146,7 +146,7 @@ namespace WadTool.Controls
                                   HandleOutlineRadius * 2, HandleOutlineRadius * 2);
                 }
 
-                using (var brush = new SolidBrush(i == _selectedPoint ? Colors.LightestBackground : Colors.GreyHighlight))
+                using (var brush = new SolidBrush(!Enabled ? Colors.DarkGreySelection : (i == _selectedPoint ? Colors.LightestBackground : Colors.GreyHighlight)))
                 {
                     g.FillEllipse(brush, _controlPoints[i].X - HandleRadius, _controlPoints[i].Y - HandleRadius,
                                   HandleRadius * 2, HandleRadius * 2);

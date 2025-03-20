@@ -62,6 +62,13 @@ namespace WadTool
             dgvControls.DataGridView = dgvStateChanges;
             dgvControls.Enabled = true;
 
+            // Hide TEN controls
+            if (editor.Wad.GameVersion != TombLib.LevelData.TRVersion.Game.TombEngine)
+            {
+                blendingGroup.Visible = false;
+                stateChangeGroup.Width = blendingGroup.Left + blendingGroup.Width - stateChangeGroup.Left;
+            }
+
             Initialize(animation, newStateChange);
             _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
 
@@ -320,7 +327,14 @@ namespace WadTool
 
         private void dgvStateChanges_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvStateChanges.SelectedRows.Count <= 0)
+            bool selection = (dgvStateChanges.SelectedRows.Count > 0) && _editor.Wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
+
+            nudBlendEndFrame.Enabled   = selection;
+            nudBlendFrameCount.Enabled = selection;
+            bezierCurveEditor.Enabled  = selection;
+            cbBlendPreset.Enabled      = selection;
+
+            if (!selection)
                 return;
 
             var item = ((IEnumerable<WadStateChangeRow>)dgvStateChanges.DataSource).ElementAt(dgvStateChanges.SelectedRows[0].Index);
@@ -370,7 +384,7 @@ namespace WadTool
                     break;
             }
 
-            bezierCurveEditor.Update();
+            bezierCurveEditor.UpdateUI();
         }
 
         private void bezierCurveEditor_ValueChanged(object sender, EventArgs e)

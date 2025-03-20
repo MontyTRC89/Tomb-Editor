@@ -94,6 +94,9 @@ namespace WadTool
             if (!isTEN && _editor.Tool.Configuration.AnimationEditor_SoundPreviewType > SoundPreviewType.Water)
                 _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
 
+            // Lock TEN-specific controls
+            sectionBlending.Visible = isTEN;
+
             // Update UI
             UpdateUIControls();
             UpdateReferenceLevelControls();
