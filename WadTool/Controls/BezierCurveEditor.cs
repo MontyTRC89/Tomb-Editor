@@ -230,6 +230,7 @@ namespace WadTool.Controls
             {
                 Value.Set(BezierCurve2D.Linear);
                 InitializeControlPoints();
+                ValueChanged?.Invoke(this, e);
                 Invalidate();
             }
         }
