@@ -270,36 +270,36 @@ namespace TombLib.Controls.VisualScripting
                     Color = Colors.GreyBackground.ToFloat3Color() * _defaultActionNodeTint
                 };
 
-            result.ScreenPosition = new Vector2(float.MaxValue);
             result.Size = DefaultNodeWidth;
 
             return result;
         }
 
-        public void AddConditionNode(bool linkToPrevious, bool linkToElse)
+        public void AddNode(bool linkToPrevious, bool linkToElse, bool condition)
         {
-            var node = MakeNode(true);
+            var node = MakeNode(condition);
 
             Nodes.Add(node);
             if (linkToPrevious)
                 LinkToSelectedNode(node, linkToElse);
 
             UpdateVisibleNodes();
+            node.ScreenPosition = GetBestPosition(node);
+
             SelectNode(node, false, true);
             ShowNode(SelectedNode);
+
+            LayoutVisibleNodes();
+        }
+
+        public void AddConditionNode(bool linkToPrevious, bool linkToElse)
+        {
+            AddNode(linkToPrevious, linkToElse, true);
         }
 
         public void AddActionNode(bool linkToPrevious, bool linkToElse)
         {
-            var node = MakeNode(false);
-
-            Nodes.Add(node);
-            if (linkToPrevious)
-                LinkToSelectedNode(node, linkToElse);
-
-            UpdateVisibleNodes();
-            SelectNode(node, false, true);
-            ShowNode(SelectedNode);
+            AddNode(linkToPrevious, linkToElse, false);
         }
 
         public void ClearNodes()
@@ -628,6 +628,12 @@ namespace TombLib.Controls.VisualScripting
             foreach (var control in Controls.OfType<VisibleNodeBase>())
                 control.RefreshPosition();
             Lock(false);
+        }
+
+        public Vector2 GetBestPosition(TriggerNode node)
+        {
+            var selectedVisibleNode = Controls.OfType<VisibleNodeBase>().FirstOrDefault(n => n.Node == node);
+            return GetBestPosition(selectedVisibleNode);
         }
 
         public Vector2 GetBestPosition(VisibleNodeBase newNode)

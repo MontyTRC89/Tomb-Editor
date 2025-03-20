@@ -14,327 +14,327 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
-	public sealed partial class LevelCompilerTombEngine
-	{
-		private readonly Dictionary<Room, int> _roomRemapping = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
-		private readonly Dictionary<TombEnginePortal, PortalInstance> _portalRemapping = new Dictionary<TombEnginePortal, PortalInstance>();
-		private readonly List<Room> _roomUnmapping = new List<Room>();
-		private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
-		private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
+    public sealed partial class LevelCompilerTombEngine
+    {
+        private readonly Dictionary<Room, int> _roomRemapping = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
+        private readonly Dictionary<TombEnginePortal, PortalInstance> _portalRemapping = new Dictionary<TombEnginePortal, PortalInstance>();
+        private readonly List<Room> _roomUnmapping = new List<Room>();
+        private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
+        private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
 
-		private void BuildRooms(CancellationToken cancelToken)
-		{
-			ReportProgress(5, "Lighting Rooms");
+        private void BuildRooms(CancellationToken cancelToken)
+        {
+            ReportProgress(5, "Lighting Rooms");
 
-			ParallelOptions parallelOptions = new ParallelOptions()
-			{
-				CancellationToken = cancelToken
-			};
+            ParallelOptions parallelOptions = new ParallelOptions()
+            {
+                CancellationToken = cancelToken
+            };
 
-			Parallel.ForEach(_level.ExistingRooms, parallelOptions, (room) =>
-			{
-				room.RebuildLighting(!_level.Settings.FastMode);
-			});
+            Parallel.ForEach(_level.ExistingRooms, parallelOptions, (room) =>
+            {
+                room.RebuildLighting(!_level.Settings.FastMode);
+            });
 
-			ReportProgress(15, "Building rooms");
+            ReportProgress(15, "Building rooms");
 
-			foreach (var room in _level.ExistingRooms)
-			{
-				_roomRemapping.Add(room, _roomUnmapping.Count);
-				_roomUnmapping.Add(room);
-			}
+            foreach (var room in _level.ExistingRooms)
+            {
+                _roomRemapping.Add(room, _roomUnmapping.Count);
+                _roomUnmapping.Add(room);
+            }
 
-			_staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
+            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
-			foreach (var room in _roomRemapping.Keys)
-			{
-				cancelToken.ThrowIfCancellationRequested();
-				_tempRooms.Add(room, BuildRoom(room));
-			}
+            foreach (var room in _roomRemapping.Keys)
+            {
+                cancelToken.ThrowIfCancellationRequested();
+                _tempRooms.Add(room, BuildRoom(room));
+            }
 
-			// Remove WaterScheme values for water rooms
-			Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
+            // Remove WaterScheme values for water rooms
+            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
-			Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
-			{
-				for (int i = 0; i < trRoom.Polygons.Count; i++)
-				{
-					if (trRoom.Polygons[i].Animated)
-					{
-						//trRoom.Polygons[i].AnimatedSequence = _textureInfoManager.AnimatedTextures[0].Value.
-					}
-				}
-			});
+            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
+            {
+                for (int i = 0; i < trRoom.Polygons.Count; i++)
+                {
+                    if (trRoom.Polygons[i].Animated)
+                    {
+                        //trRoom.Polygons[i].AnimatedSequence = _textureInfoManager.AnimatedTextures[0].Value.
+                    }
+                }
+            });
 
-			ReportProgress(20, "    Number of rooms: " + _roomUnmapping.Count);
+            ReportProgress(20, "    Number of rooms: " + _roomUnmapping.Count);
 
-			if (!_level.Settings.FastMode)
-			{
-				ReportProgress(23, "    Matching vertex colors on portals...");
+            if (!_level.Settings.FastMode)
+            {
+                ReportProgress(23, "    Matching vertex colors on portals...");
 
-				_vertexColors = new Dictionary<ShadeMatchSignature, Vector3>();
-				var rooms = _tempRooms.Values.ToList();
-				for (int flipped = 0; flipped <= 1; flipped++)
-					foreach (var room in rooms)
-					{
-						cancelToken.ThrowIfCancellationRequested();
-						MatchDoorShades(rooms, room, false, flipped == 1);
-					}
-			}
+                _vertexColors = new Dictionary<ShadeMatchSignature, Vector3>();
+                var rooms = _tempRooms.Values.ToList();
+                for (int flipped = 0; flipped <= 1; flipped++)
+                    foreach (var room in rooms)
+                    {
+                        cancelToken.ThrowIfCancellationRequested();
+                        MatchDoorShades(rooms, room, false, flipped == 1);
+                    }
+            }
 
-			Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
-			{
-				for (int i = 0; i < trRoom.Vertices.Count; i++)
-				{
-					var v = trRoom.Vertices[i];
-					if (!v.IsOnPortal)
-						continue;
+            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
+            {
+                for (int i = 0; i < trRoom.Vertices.Count; i++)
+                {
+                    var v = trRoom.Vertices[i];
+                    if (!v.IsOnPortal)
+                        continue;
 
-					var sig = new ShadeMatchSignature()
-					{
-						IsWater = ((trRoom.Flags & 1) == 1),
-						AlternateGroup = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1,
-						Position = new VectorInt3(trRoom.Info.X + (int)v.Position.X, (int)v.Position.Y, trRoom.Info.Z + (int)v.Position.Z)
-					};
+                    var sig = new ShadeMatchSignature()
+                    {
+                        IsWater = ((trRoom.Flags & 1) == 1),
+                        AlternateGroup = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1,
+                        Position = new VectorInt3(trRoom.Info.X + (int)v.Position.X, (int)v.Position.Y, trRoom.Info.Z + (int)v.Position.Z)
+                    };
 
-					if (_vertexColors.ContainsKey(sig))
-					{
-						v.Color = _vertexColors[sig];
-						v.Color = _vertexColors[sig];
-						trRoom.Vertices[i] = v;
-					}
-				}
-			});
+                    if (_vertexColors.ContainsKey(sig))
+                    {
+                        v.Color = _vertexColors[sig];
+                        v.Color = _vertexColors[sig];
+                        trRoom.Vertices[i] = v;
+                    }
+                }
+            });
 
-			ReportProgress(25, "    Vertex colors on portals matched.");
-		}
+            ReportProgress(25, "    Vertex colors on portals matched.");
+        }
 
-		private Vector3 CalculateLightForCustomVertex(Room room, Vector3 position, Vector3 normal, bool forImportedGeometry, Vector3 ambientColor)
-		{
-			Vector3 output = ambientColor;
+        private Vector3 CalculateLightForCustomVertex(Room room, Vector3 position, Vector3 normal, bool forImportedGeometry, Vector3 ambientColor)
+        {
+            Vector3 output = ambientColor;
 
-			if (position.X >= 0 && position.Z >= 0 &&
-				position.X < room.NumXSectors * Level.SectorSizeUnit && position.Z < room.NumZSectors * Level.SectorSizeUnit)
-				foreach (var obj in room.Objects)
-					if (obj is LightInstance)
-					{
-						var light = obj as LightInstance;
+            if (position.X >= 0 && position.Z >= 0 &&
+                position.X < room.NumXSectors * Level.SectorSizeUnit && position.Z < room.NumZSectors * Level.SectorSizeUnit)
+                foreach (var obj in room.Objects)
+                    if (obj is LightInstance)
+                    {
+                        var light = obj as LightInstance;
 
-						// Disable this light for imported geometry, if IsUsedForImportedGeometry flag is not set,
-						// or for static meshes, if IsStaticallyUsed is not set
+                        // Disable this light for imported geometry, if IsUsedForImportedGeometry flag is not set,
+                        // or for static meshes, if IsStaticallyUsed is not set
 
-						if ((!light.IsUsedForImportedGeometry && forImportedGeometry) ||
-							(!light.IsStaticallyUsed && !forImportedGeometry))
-							continue;
+                        if ((!light.IsUsedForImportedGeometry && forImportedGeometry) ||
+                            (!light.IsStaticallyUsed && !forImportedGeometry))
+                            continue;
 
-						output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
-					}
+                        output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
+                    }
 
-			return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
-		}
+            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
+        }
 
-		private TombEngineRoom BuildRoom(Room room)
-		{
-			int maxDimensions = _limits[Limit.RoomDimensions];
-			if (room.NumXSectors >= maxDimensions || room.NumZSectors >= maxDimensions)
-				_progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + maxDimensions + " sectors per side may cause trouble with rendering.");
+        private TombEngineRoom BuildRoom(Room room)
+        {
+            int maxDimensions = _limits[Limit.RoomDimensions];
+            if (room.NumXSectors >= maxDimensions || room.NumZSectors >= maxDimensions)
+                _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + maxDimensions + " sectors per side may cause trouble with rendering.");
 
-			if (room.Position.X <= -1 || room.Position.Z <= -1)
-				_progressReporter.ReportWarn("Room '" + room + "' is out of map bounds. Collision and AI errors may occur. Move room back into the map if it's reachable.");
+            if (room.Position.X <= -1 || room.Position.Z <= -1)
+                _progressReporter.ReportWarn("Room '" + room + "' is out of map bounds. Collision and AI errors may occur. Move room back into the map if it's reachable.");
 
-			var newRoom = new TombEngineRoom
-			{
-				OriginalRoom = room,
-				Lights = new List<TombEngineRoomLight>(),
-				StaticMeshes = new List<TombEngineRoomStaticMesh>(),
-				Portals = new List<TombEnginePortal>(),
-				Info = new tr_room_info
-				{
-					X = room.WorldPos.X,
-					Z = room.WorldPos.Z,
-					YTop = -(room.WorldPos.Y + room.GetHighestCorner()),
-					YBottom = -(room.WorldPos.Y + room.GetLowestCorner())
-				},
-				NumXSectors = checked((ushort)room.NumXSectors),
-				NumZSectors = checked((ushort)room.NumZSectors),
-				AlternateRoom = room.Alternated && room.AlternateRoom != null ? _roomRemapping[room.AlternateRoom] : -1,
-				AlternateGroup = room.Alternated ? room.AlternateGroup : -1,
-				Flipped = room.Alternated,
-				FlippedRoom = room.AlternateRoom,
-				BaseRoom = room.AlternateBaseRoom,
-				ReverbInfo = room.Properties.Reverberation,
-				Flags = 0
-			};
+            var newRoom = new TombEngineRoom
+            {
+                OriginalRoom = room,
+                Lights = new List<TombEngineRoomLight>(),
+                StaticMeshes = new List<TombEngineRoomStaticMesh>(),
+                Portals = new List<TombEnginePortal>(),
+                Info = new tr_room_info
+                {
+                    X = room.WorldPos.X,
+                    Z = room.WorldPos.Z,
+                    YTop = -(room.WorldPos.Y + room.GetHighestCorner()),
+                    YBottom = -(room.WorldPos.Y + room.GetLowestCorner())
+                },
+                NumXSectors = checked((ushort)room.NumXSectors),
+                NumZSectors = checked((ushort)room.NumZSectors),
+                AlternateRoom = room.Alternated && room.AlternateRoom != null ? _roomRemapping[room.AlternateRoom] : -1,
+                AlternateGroup = room.Alternated ? room.AlternateGroup : -1,
+                Flipped = room.Alternated,
+                FlippedRoom = room.AlternateRoom,
+                BaseRoom = room.AlternateBaseRoom,
+                ReverbInfo = room.Properties.Reverberation,
+                Flags = 0
+            };
 
-			if (!room.Alternated)
-				newRoom.AlternateKind = AlternateKind.NotAlternated;
-			else if (room.AlternateBaseRoom != null)
-				newRoom.AlternateKind = AlternateKind.AlternateRoom;
-			else if (room.AlternateRoom != null)
-				newRoom.AlternateKind = AlternateKind.BaseRoom;
+            if (!room.Alternated)
+                newRoom.AlternateKind = AlternateKind.NotAlternated;
+            else if (room.AlternateBaseRoom != null)
+                newRoom.AlternateKind = AlternateKind.AlternateRoom;
+            else if (room.AlternateRoom != null)
+                newRoom.AlternateKind = AlternateKind.BaseRoom;
 
-			// Store ambient intensity
-			newRoom.AmbientLight = room.Properties.AmbientLight;
+            // Store ambient intensity
+            newRoom.AmbientLight = room.Properties.AmbientLight;
 
-			// Room flags
-			if (room.Properties.FlagHorizon)
-				newRoom.Flags |= 0x0008;
-			if (room.Properties.FlagOutside)
-				newRoom.Flags |= 0x0020;
+            // Room flags
+            if (room.Properties.FlagHorizon)
+                newRoom.Flags |= 0x0008;
+            if (room.Properties.FlagOutside)
+                newRoom.Flags |= 0x0020;
 
-			// Not-near-horizon flag (set automatically)
-			if (!room.Properties.FlagHorizon && !room.Portals.Any(p => p.Room.Properties.FlagHorizon))
-				newRoom.Flags |= 0x0040;
+            // Not-near-horizon flag (set automatically)
+            if (!room.Properties.FlagHorizon && !room.Portals.Any(p => p.Room.Properties.FlagHorizon))
+                newRoom.Flags |= 0x0040;
 
-			// TRNG-specific flags
-			if (room.Properties.FlagDamage)
-				newRoom.Flags |= 0x0800;
-			if (room.Properties.FlagCold)
-				newRoom.Flags |= 0x1000;
-			if (room.Properties.FlagNoLensflare)
-				newRoom.Flags |= 0x0080;
+            // TRNG-specific flags
+            if (room.Properties.FlagDamage)
+                newRoom.Flags |= 0x0800;
+            if (room.Properties.FlagCold)
+                newRoom.Flags |= 0x1000;
+            if (room.Properties.FlagNoLensflare)
+                newRoom.Flags |= 0x0080;
 
-			// Room type
-			switch (room.Properties.Type)
-			{
-				case RoomType.Water:
-					newRoom.Flags |= 0x0001;
-					break;
-				case RoomType.Quicksand:
-					newRoom.Flags |= 0x0004;
-					break;
-			}
+            // Room type
+            switch (room.Properties.Type)
+            {
+                case RoomType.Water:
+                    newRoom.Flags |= 0x0001;
+                    break;
+                case RoomType.Quicksand:
+                    newRoom.Flags |= 0x0004;
+                    break;
+            }
 
-			var lightEffect = room.Properties.LightEffect;
-			var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Properties.Type >= RoomType.Water).ToList();
+            var lightEffect = room.Properties.LightEffect;
+            var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Properties.Type >= RoomType.Water).ToList();
 
-			bool waterSchemeSet = false;
+            bool waterSchemeSet = false;
 
-			// Calculate bottom room-based water scheme in advance, if mode is default, mist or reflection
-			if (waterPortals.Count > 0 && room.Properties.Type < RoomType.Water &&
-				(lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection || lightEffect == RoomLightEffect.Mist))
-			{
-				var waterRoom = waterPortals.First().AdjoiningRoom;
-				newRoom.WaterScheme = (byte)((waterRoom.Properties.LightEffectStrength * 4) + room.Properties.LightEffectStrength);
-				waterSchemeSet = true;
-			}
+            // Calculate bottom room-based water scheme in advance, if mode is default, mist or reflection
+            if (waterPortals.Count > 0 && room.Properties.Type < RoomType.Water &&
+                (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection || lightEffect == RoomLightEffect.Mist))
+            {
+                var waterRoom = waterPortals.First().AdjoiningRoom;
+                newRoom.WaterScheme = (byte)((waterRoom.Properties.LightEffectStrength * 4) + room.Properties.LightEffectStrength);
+                waterSchemeSet = true;
+            }
 
-			// Force different effect type
-			if (lightEffect == RoomLightEffect.Default)
-			{
-				switch (room.Properties.Type)
-				{
-					case RoomType.Water:
-						lightEffect = RoomLightEffect.Glow;
-						break;
-					case RoomType.Quicksand:
-						lightEffect = RoomLightEffect.Movement;
-						break;
-					default:
-						lightEffect = RoomLightEffect.None;
-						break;
-				}
-			}
+            // Force different effect type
+            if (lightEffect == RoomLightEffect.Default)
+            {
+                switch (room.Properties.Type)
+                {
+                    case RoomType.Water:
+                        lightEffect = RoomLightEffect.Glow;
+                        break;
+                    case RoomType.Quicksand:
+                        lightEffect = RoomLightEffect.Movement;
+                        break;
+                    default:
+                        lightEffect = RoomLightEffect.None;
+                        break;
+                }
+            }
 
-			// Light effect
-			// WARNING: DO NOT use raw value of 1 in WaterScheme ever with classic tomb engines,
-			// it will result in broken effect.
+            // Light effect
+            // WARNING: DO NOT use raw value of 1 in WaterScheme ever with classic tomb engines,
+            // it will result in broken effect.
 
-			switch (lightEffect)
-			{
-				case RoomLightEffect.GlowAndMovement:
-					if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
-					newRoom.Flags |= 0x0100;
-					break;
+            switch (lightEffect)
+            {
+                case RoomLightEffect.GlowAndMovement:
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
+                    newRoom.Flags |= 0x0100;
+                    break;
 
-				case RoomLightEffect.Movement:
-					if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
-					break;
+                case RoomLightEffect.Movement:
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
+                    break;
 
-				case RoomLightEffect.Glow:
-				case RoomLightEffect.Mist:
-					if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength == 0 ? 0 : room.Properties.LightEffectStrength + 1);
-					newRoom.Flags |= 0x0100;
-					break;
+                case RoomLightEffect.Glow:
+                case RoomLightEffect.Mist:
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength == 0 ? 0 : room.Properties.LightEffectStrength + 1);
+                    newRoom.Flags |= 0x0100;
+                    break;
 
-				case RoomLightEffect.Reflection:
-					newRoom.Flags |= 0x0200;
-					break;
+                case RoomLightEffect.Reflection:
+                    newRoom.Flags |= 0x0200;
+                    break;
 
-				case RoomLightEffect.None:
-					if (!waterSchemeSet)
-						newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
-					break;
-			}
+                case RoomLightEffect.None:
+                    if (!waterSchemeSet)
+                        newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
+                    break;
+            }
 
-			// Light interpolation mode
-			var interpMode = room.Properties.LightInterpolationMode;
-			if (interpMode == RoomLightInterpolationMode.Default)
-			{
-				switch (room.Properties.Type)
-				{
-					case RoomType.Water:
-						interpMode = RoomLightInterpolationMode.NoInterpolate;
-						break;
+            // Light interpolation mode
+            var interpMode = room.Properties.LightInterpolationMode;
+            if (interpMode == RoomLightInterpolationMode.Default)
+            {
+                switch (room.Properties.Type)
+                {
+                    case RoomType.Water:
+                        interpMode = RoomLightInterpolationMode.NoInterpolate;
+                        break;
 
-					default:
-						interpMode = RoomLightInterpolationMode.Interpolate;
-						break;
-				}
-			}
+                    default:
+                        interpMode = RoomLightInterpolationMode.Interpolate;
+                        break;
+                }
+            }
 
-			// Generate geometry
-			{
-				// Add room geometry
+            // Generate geometry
+            {
+                // Add room geometry
 
-				var vertexPositions = room.RoomGeometry.VertexPositions;
-				var vertexColors = room.RoomGeometry.VertexColors;
+                var vertexPositions = room.RoomGeometry.VertexPositions;
+                var vertexColors = room.RoomGeometry.VertexColors;
 
-				var roomVerticesDictionary = new Dictionary<int, int>();
-				var roomVertices = new List<TombEngineVertex>();
-				var roomPolygons = new List<TombEnginePolygon>();
+                var roomVerticesDictionary = new Dictionary<int, int>();
+                var roomVertices = new List<TombEngineVertex>();
+                var roomPolygons = new List<TombEnginePolygon>();
 
-				// Add room's own geometry
+                // Add room's own geometry
 
-				if (!room.Properties.Hidden)
-					for (int z = 0; z < room.NumZSectors; ++z)
-						for (int x = 0; x < room.NumXSectors; ++x)
-							foreach (SectorFace face in room.Sectors[x, z].GetFaceTextures().Keys)
-							{
-								var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
-								var shape = room.GetFaceShape(x, z, face);
+                if (!room.Properties.Hidden)
+                    for (int z = 0; z < room.NumZSectors; ++z)
+                        for (int x = 0; x < room.NumXSectors; ++x)
+                            foreach (SectorFace face in room.Sectors[x, z].GetFaceTextures().Keys)
+                            {
+                                var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
+                                var shape = room.GetFaceShape(x, z, face);
 
-								if (range.Count == 0)
-									continue;
+                                if (range.Count == 0)
+                                    continue;
 
-								TextureArea texture = room.Sectors[x, z].GetFaceTexture(face);
-								if (texture.TextureIsInvisible)
-									continue;
+                                TextureArea texture = room.Sectors[x, z].GetFaceTexture(face);
+                                if (texture.TextureIsInvisible)
+                                    continue;
 
-								if (texture.TextureIsUnavailable)
-								{
-									_progressReporter.ReportWarn("Missing texture at sector (" + x + "," + z + ") in room " + room.Name + ". Check texture file location.");
-									continue;
-								}
+                                if (texture.TextureIsUnavailable)
+                                {
+                                    _progressReporter.ReportWarn("Missing texture at sector (" + x + "," + z + ") in room " + room.Name + ". Check texture file location.");
+                                    continue;
+                                }
 
-								if ((shape == FaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == FaceShape.Quad && texture.QuadCoordsOutOfBounds))
-								{
-									_progressReporter.ReportWarn("Texture is out of bounds at sector (" + x + "," + z + ") in room " + room.Name + ". Wrong or resized texture file?");
-									continue;
-								}
+                                if ((shape == FaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == FaceShape.Quad && texture.QuadCoordsOutOfBounds))
+                                {
+                                    _progressReporter.ReportWarn("Texture is out of bounds at sector (" + x + "," + z + ") in room " + room.Name + ". Wrong or resized texture file?");
+                                    continue;
+                                }
 
-								var realBlendMode = texture.BlendMode;
-								if (texture.BlendMode == BlendMode.Normal)
-									realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
+                                var realBlendMode = texture.BlendMode;
+                                if (texture.BlendMode == BlendMode.Normal)
+                                    realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
-								int rangeEnd = range.Start + range.Count;
-								for (int i = range.Start; i < rangeEnd; i += 3)
-								{
-									int vertex0Index, vertex1Index, vertex2Index;
+                                int rangeEnd = range.Start + range.Count;
+                                for (int i = range.Start; i < rangeEnd; i += 3)
+                                {
+                                    int vertex0Index, vertex1Index, vertex2Index;
 
-									if (shape == FaceShape.Quad)
-									{
-										var materialType = TombEngineMaterialType.Opaque;
+                                    if (shape == FaceShape.Quad)
+                                    {
+									var materialType = TombEngineMaterialType.Opaque;
 
 										if (/* TEST CONDITIONS
 										     * room.Properties.Type == RoomType.Normal &&
@@ -363,52 +363,54 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											materialType = TombEngineMaterialType.Water;
 										}
 
-										int vertex3Index;
+                                        int vertex3Index;
 
-										if (face == SectorFace.Ceiling)
-										{
-											texture.Mirror();
-											vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 0);
-											vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 1);
-											vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 2);
-											vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 5], vertexColors[i + 5], 3);
-										}
-										else
-										{
-											vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 3], vertexColors[i + 3], 0);
-											vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 1);
-											vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 2);
-											vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 3);
-										}
+                                        if (face == SectorFace.Ceiling)
+                                        {
+                                            texture.Mirror();
+                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 0);
+                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 1);
+                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 2);
+                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 5], vertexColors[i + 5], 3);
+                                        }
+                                        else
+                                        {
+                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 3], vertexColors[i + 3], 0);
+                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 1);
+                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 2);
+                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 3);
+                                        }
 
-										var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
-										var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
-														 (byte)realBlendMode, (byte)materialType, roomVertices);
-										roomPolygons.Add(poly);
-										roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
-										roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
-										roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
-										roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
-										if (texture.DoubleSided)
-										{
-											texture.Mirror();
-											result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
-											poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
-															(byte)realBlendMode, (byte)materialType, roomVertices);
-											roomPolygons.Add(poly);
-											roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
-											roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
-											roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
-											roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
-										}
-										i += 3;
-									}
-									else
-									{
-										if (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
-											texture.Mirror(true);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
+                                        var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
+                                                         (byte)realBlendMode, (byte)materialType, roomVertices);
+                                        roomPolygons.Add(poly);
+                                        roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        if (texture.DoubleSided)
+                                        {
+                                            texture.Mirror();
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
+                                            poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
+                                                            (byte)realBlendMode, (byte)materialType, roomVertices);
+                                            roomPolygons.Add(poly);
 
-										var materialType = TombEngineMaterialType.Opaque;
+                                            // TODO: Solve problems with averaging normals on double-sided triangles
+                                            // roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        }
+                                        i += 3;
+                                    }
+                                    else
+                                    {
+                                        if (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
+                                            texture.Mirror(true);
+
+											var materialType = TombEngineMaterialType.Opaque;
 
 										if (/* TEST CONDITIONS
 										     * room.Properties.Type == RoomType.Normal &&
@@ -446,940 +448,923 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											materialType = TombEngineMaterialType.Water;
 										}
 
-										vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);
-										vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 1);
-										vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
-
-										var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-										var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
-														(byte)realBlendMode, (byte)materialType, roomVertices);
-
-										roomPolygons.Add(poly);
-										roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
-										roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
-										roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
-										if (texture.DoubleSided)
-										{
-											texture.Mirror(true);
-											result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-											poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
-															(byte)realBlendMode, (byte)materialType, roomVertices);
-											roomPolygons.Add(poly);
-											roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
-											roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
-											roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
-										}
-									}
-								}
-							}
-
-				// Merge static meshes
-
-				if (!_level.Settings.FastMode)
-					foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
-					{
-						// Сheck if static Mesh is in the Auto Merge list
-						var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
-							mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
-
-						if (entry == null)
-							continue;
-
-						bool interpretShadesAsEffect = entry.InterpretShadesAsEffect;
-						bool clearShades = entry.ClearShades;
-						int meshVertexBase = roomVertices.Count;
-						var worldTransform = staticMesh.ScaleMatrix *
-											 staticMesh.RotationMatrix *
-											 Matrix4x4.CreateTranslation(staticMesh.Position);
-						var normalTransform = staticMesh.RotationMatrix;
-						WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
-
-						if (wadStatic == null || wadStatic.Mesh == null)
-							continue;
-
-						foreach (bool doubleSided in new[] { false, true })
-						{
-							for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
-							{
-								WadPolygon poly = wadStatic.Mesh.Polys[i];
-
-								// Create vertices
-								int[] oldIndices = new int[] { poly.Index0, poly.Index1, poly.Index2, poly.Index3 };
-								int[] tempIndices = new int[4];
-
-								for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 4 : 3); j++)
-								{
-									// Apply the transform to the vertex
-									Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[oldIndices[j]], worldTransform);
-									Vector3 normal = Vector3.Normalize(MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[oldIndices[j]], normalTransform));
-									Vector3 shade = Vector3.One;
-
-									if (doubleSided)
-									{
-										normal = -normal;
-									}
-
-									var glow = 0f;
-									var move = 0f;
-
-									if (interpretShadesAsEffect)
-									{
-										if (j < wadStatic.Mesh.VertexColors.Count)
-										{
-											var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
-											if (luma < 0.5f) move = luma * 2.0f;   // Movement
-											else if (luma < 1.0f) glow = (luma - 0.5f) * 2.0f; // Glow
-										}
-									}
-									else
-									{
-										// If we have vertex colors, use them as a luma factor for the resulting vertex color
-										if (!clearShades && wadStatic.Mesh.HasColors)
-											shade = wadStatic.Mesh.VertexColors[j];
-
-										if (wadStatic.Mesh.HasAttributes)
-										{
-											if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
-												move = (float)wadStatic.Mesh.VertexAttributes[j].Move / 64.0f; // Movement
-
-											if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
-												glow = (float)wadStatic.Mesh.VertexAttributes[j].Glow / 64.0f; // Glow
-										}
-									}
-
-									Vector3 color;
-									if (!entry.TintAsAmbient)
-									{
-										color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
-										// Apply Shade factor
-										color *= shade;
-										// Apply Instance Color
-										color *= staticMesh.Color;
-									}
-									else
-									{
-										color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
-										//Apply Shade factor
-										color *= shade;
-									}
-
-									var trVertex = new TombEngineVertex
-									{
-										Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
-										Color = color,
-										Normal = normal,
-										Glow = glow,
-										Move = move,
-										DoubleSided = doubleSided
-									};
-
-									tempIndices[j] = roomVertices.Count;
-									roomVertices.Add(trVertex);
-								}
-
-								// Avoid degenerate triangles
-								if (tempIndices.Distinct().Count() < 3)
-								{
-									continue;
-								}
-
-								int index0 = tempIndices[0];
-								int index1 = tempIndices[1];
-								int index2 = tempIndices[2];
-								int index3 = tempIndices[3];
-
-								var texture = poly.Texture;
-								texture.ClampToBounds();
-
-								int[] indices = poly.IsTriangle ? new int[] { index0, index1, index2 } :
-																  new int[] { index0, index1, index2, index3 };
-								var key = poly;
-
-								if (doubleSided)
-								{
-									Array.Reverse(indices);
-									texture.Mirror(poly.IsTriangle);
-									key.Index0 = indices[0]; key.Index1 = indices[1]; key.Index2 = indices[2];
-									if (!poly.IsTriangle) key.Index3 = indices[3];
-								}
-
-								var realBlendMode = texture.BlendMode;
-								if (texture.BlendMode == BlendMode.Normal)
-									realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
-
-								if (_mergedStaticMeshTextureInfos.ContainsKey(key))
-								{
-									var result = _mergedStaticMeshTextureInfos[key];
-									var face = poly.IsTriangle ?
-										result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, 0, roomVertices) :
-										result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, 0, roomVertices);
-
-									roomPolygons.Add(face);
-								}
-								else
-								{
-									var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
-									var face = poly.IsTriangle ?
-										result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, 0, roomVertices) :
-										result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, 0, roomVertices);
-
-									roomPolygons.Add(face);
-									_mergedStaticMeshTextureInfos.Add(key, result);
-									roomVertices[index0].NormalHelpers.Add(new NormalHelper(face));
-									roomVertices[index1].NormalHelpers.Add(new NormalHelper(face));
-									roomVertices[index2].NormalHelpers.Add(new NormalHelper(face));
-									if (doubleSided)
-										roomVertices[index3].NormalHelpers.Add(new NormalHelper(face));
-								}
-							}
-						}
-					}
-
-				// Add geometry imported objects
-
-				foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
-				{
-					if (geometry.Model?.DirectXModel == null)
-						continue;
-
-					var meshes = geometry.Model.DirectXModel.Meshes;
-					var worldTransform = geometry.RotationMatrix *
-										 Matrix4x4.CreateScale(geometry.Scale) *
-										 Matrix4x4.CreateTranslation(geometry.Position);
-					var normalTransform = geometry.RotationMatrix;
-					var indexList = new List<int>();
-					int baseIndex = 0;
-
-					foreach (var mesh in meshes)
-					{
-						int currentMeshIndexCount = 0;
-
-						foreach (var submesh in mesh.Submeshes)
-						{
-							foreach (bool doubleSided in (submesh.Key.DoubleSided ? new[] { false, true } : new[] { false }))
-							{
-								for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
-								{
-									int[] tempIndices = new int[3];
-
-									// We need to add vertices here
-									for (int k = 0; k < 3; k++)
-									{
-										var vertex = mesh.Vertices[submesh.Value.Indices[j + k]];
-
-										// Since imported geometry can be used as reimported room mesh, we need to make sure
-										// coordinates are integer to comply with portal positions, so MatchDoorShades function
-										// will later work correctly. While technically rounding vertex positions is incorrect,
-										// thankfully TR engines use large-scale coordinate system, so we can ignore such precision loss.
-
-										vertex.Position = MathC.Round(vertex.Position);
-
-										// Apply the transform to the vertex
-										Vector3 position = MathC.HomogenousTransform(vertex.Position, worldTransform);
-										Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
-										normal = Vector3.Normalize(normal);
-
-										if (doubleSided)
-											normal = -normal;
-
-										var trVertex = new TombEngineVertex
-										{
-											Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), position.Z),
-											Normal = normal,
-											DoubleSided = doubleSided
-										};
-
-										// Pack the light according to chosen lighting model
-										if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
-										{
-											trVertex.Color = vertex.Color;
-										}
-										else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
-										{
-											var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 128);
-											trVertex.Color = color;
-										}
-										else
-										{
-											var color = room.Properties.AmbientLight;
-											trVertex.Color = color;
-										}
-
-										// HACK: Find a vertex with same coordinates and merge with it.
-										// This is needed to overcome disjointed vertices bug buried deep in geometry importer AND assimp's own
-										// strange behaviour which splits imported geometry based on materials.
-										// We still preserve sharp edges if explicitly specified by flag though.
-
-										int existingIndex;
-										if (geometry.SharpEdges)
-										{
-											existingIndex = roomVertices.Count;
-											roomVertices.Add(trVertex);
-										}
-										else
-										{
-											existingIndex = roomVertices.IndexOf(
-												v => v.Position == trVertex.Position
-													&& v.Color == trVertex.Color
-													&& v.DoubleSided == trVertex.DoubleSided);
-											if (existingIndex == -1)
-											{
-												existingIndex = roomVertices.Count;
-												roomVertices.Add(trVertex);
-											}
-										}
-
-										indexList.Add(existingIndex);
-										tempIndices[k] = existingIndex;
-										currentMeshIndexCount++;
-									}
-
-									// Avoid degenerate triangles
-									if (tempIndices.Distinct().Count() < 3)
-									{
-										continue;
-									}
-
-									int index0 = tempIndices[0];
-									int index1 = tempIndices[1];
-									int index2 = tempIndices[2];
-
-									int[] indices = new int[] { index0, index1, index2 };
-									if (doubleSided)
-									{
-										Array.Reverse(indices);
-									}
-
-									// TODO Move texture area into the mesh
-									TextureArea texture = new TextureArea();
-									texture.DoubleSided = submesh.Key.DoubleSided;
-									texture.BlendMode = submesh.Key.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
-									texture.Texture = submesh.Value.Material.Texture;
-									texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
-									texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
-									texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
-									texture.TexCoord3 = texture.TexCoord2;
-
-									if (geometry.Model.Info.MappedUV)
-										texture.SetParentArea(_limits[Limit.TexPageSize]);
-
-									texture.ClampToBounds();
-
-									var realBlendMode = texture.BlendMode;
-									if (texture.BlendMode == BlendMode.Normal)
-										realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
-
-									if (realBlendMode == BlendMode.AlphaBlend && geometry.UseAlphaTestInsteadOfAlphaBlend)
-										realBlendMode = BlendMode.AlphaTest;
-
-									if (doubleSided)
-									{
-										texture.Mirror(true);
-									}
-
-									var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-									var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, 0, roomVertices);
-
-									roomPolygons.Add(tri);
-									roomVertices[index0].NormalHelpers.Add(new NormalHelper(tri));
-									roomVertices[index1].NormalHelpers.Add(new NormalHelper(tri));
-									roomVertices[index2].NormalHelpers.Add(new NormalHelper(tri));
-								}
-							}
-						}
-
-						baseIndex += currentMeshIndexCount;
-					}
-				}
-
-				newRoom.Vertices = roomVertices;
-				newRoom.Polygons = roomPolygons;
-
-				// Now we need to build final normals, tangents, bitangents
-			}
-
-			// Assign vertex effects
-
-			for (int i = 0; i < newRoom.Vertices.Count; ++i)
-			{
-				var trVertex = newRoom.Vertices[i];
-				bool allowGlow = true;
-
-				var xv = (int)(trVertex.Position.X / Level.SectorSizeUnit);
-				var zv = (int)(trVertex.Position.Z / Level.SectorSizeUnit);
-
-				// Check for vertex out of room bounds
-				if (xv <= 0 || zv <= 0 || xv >= room.NumXSectors || zv >= room.NumZSectors)
-					continue;
-
-				foreach (var portal in room.Portals)
-				{
-					var otherRoomLightEffect = portal.AdjoiningRoom.Properties.LightEffect;
-					if (otherRoomLightEffect == RoomLightEffect.Default)
-					{
-						switch (portal.AdjoiningRoom.Properties.Type)
-						{
-							case RoomType.Water:
-								otherRoomLightEffect = RoomLightEffect.Glow;
-								break;
-							case RoomType.Quicksand:
-								otherRoomLightEffect = RoomLightEffect.Movement;
-								break;
-							default:
-								otherRoomLightEffect = RoomLightEffect.None;
-								break;
-						}
-					}
-
-					var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
-					var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
-					var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
-					var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
-
-					bool isTraversablePortal = connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
-											   connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
-											   connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
-											   connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal;
-
-					bool isOppositeCorner = connectionInfo1.TraversableType == Room.RoomConnectionType.TriangularPortalXnZn &&
-											!connectionInfo2.IsTriangularPortal &&
-											!connectionInfo3.IsTriangularPortal &&
-											!connectionInfo4.IsTriangularPortal
-											||
-											!connectionInfo1.IsTriangularPortal &&
-											connectionInfo2.TraversableType == Room.RoomConnectionType.TriangularPortalXpZn &&
-											!connectionInfo3.IsTriangularPortal &&
-											!connectionInfo4.IsTriangularPortal
-											||
-											!connectionInfo1.IsTriangularPortal &&
-											!connectionInfo2.IsTriangularPortal &&
-											connectionInfo3.TraversableType == Room.RoomConnectionType.TriangularPortalXnZp &&
-											!connectionInfo4.IsTriangularPortal
-											||
-											!connectionInfo1.IsTriangularPortal &&
-											!connectionInfo2.IsTriangularPortal &&
-											!connectionInfo3.IsTriangularPortal &&
-											connectionInfo4.TraversableType == Room.RoomConnectionType.TriangularPortalXpZp;
-
-					var pos = new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z);
-
-					// Preemptively disable movement for all portal faces
-					if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
-						trVertex.Locked = true;
-
-					// A bit complex but working code for water surface movement.
-					// Works better than winroomedit as it takes adjacent portals into account.
-					if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(pos, false, true)))
-					{
-						// A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
-						if ((isTraversablePortal || isOppositeCorner) &&
-							connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
-							!room.Sectors[xv, zv].IsAnyWall &&
-							connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal &&
-							!room.Sectors[xv - 1, zv].IsAnyWall &&
-							connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal &&
-							!room.Sectors[xv, zv - 1].IsAnyWall &&
-							connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal &&
-							!room.Sectors[xv - 1, zv - 1].IsAnyWall)
-						{
-							trVertex.Locked = false;
-							trVertex = trVertex.SetEffects(room, RoomLightEffect.Movement);
-						}
-					}
-
-					if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor && isTraversablePortal)
-					{
-						// Assign mist, if set, for vertices inside portal
-						if (portal.PositionOnPortal(pos, true, false))
-						{
-							trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
-							break;
-						}
-					}
-					else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor &&
-						((room.Properties.Type == RoomType.Water || room.Properties.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Properties.Type == RoomType.Water || portal.AdjoiningRoom.Properties.Type == RoomType.Quicksand)))
-					{
-						// Assign reflection, if set, for all enclosed portal faces
-						if (portal.PositionOnPortal(pos, false, false) ||
-							portal.PositionOnPortal(pos, true, false))
-						{
-							trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
-							break;
-						}
-					}
-
-					if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
-					{
-						if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
-						{
-							// Disable glow for portal faces, if room light interp mode is not sharp-cut
-							if (interpMode != RoomLightInterpolationMode.NoInterpolate)
-								allowGlow = false;
-
-							// Disable effect if adjoining room effect strength is different
-							if ((otherRoomLightEffect == RoomLightEffect.Glow || otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
-								portal.AdjoiningRoom.Properties.LightEffectStrength != room.Properties.LightEffectStrength)
-								allowGlow = false;
-						}
-					}
-				}
-
-				if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
-					trVertex = trVertex.SetEffects(room, RoomLightEffect.Movement);
-				if (allowGlow && (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement))
-					trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
-
-				newRoom.Vertices[i] = trVertex;
-			}
-
-			// Build portals
-
-			var tempIdPortals = new List<PortalInstance>();
-
-			for (var z = 0; z < room.NumZSectors; z++)
-			{
-				for (var x = 0; x < room.NumXSectors; x++)
-				{
-					if (room.Sectors[x, z].WallPortal != null && !tempIdPortals.Contains(room.Sectors[x, z].WallPortal))
-						tempIdPortals.Add(room.Sectors[x, z].WallPortal);
-
-					if (room.Sectors[x, z].FloorPortal != null &&
-						!tempIdPortals.Contains(room.Sectors[x, z].FloorPortal))
-						tempIdPortals.Add(room.Sectors[x, z].FloorPortal);
-
-					if (room.Sectors[x, z].CeilingPortal != null &&
-						!tempIdPortals.Contains(room.Sectors[x, z].CeilingPortal))
-						tempIdPortals.Add(room.Sectors[x, z].CeilingPortal);
-				}
-			}
-
-			ConvertPortals(room, tempIdPortals, newRoom);
-			ConvertSectors(room, newRoom);
-
-			foreach (var instance in room.Objects.OfType<StaticInstance>())
-			{
-				// For TRNG statics chunk
-				_staticsTable.Add(instance, newRoom.StaticMeshes.Count);
-
-				var sm = _level.Settings?.WadTryGetStatic(instance.WadObjectId);
-				newRoom.StaticMeshes.Add(new TombEngineRoomStaticMesh
-				{
-					X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
-					Y = (int)-Math.Round(room.WorldPos.Y + instance.Position.Y),
-					Z = (int)Math.Round(newRoom.Info.Z + instance.Position.Z),
-					Yaw = ToTrAngle(instance.RotationY),
-					Scale = instance.Scale,
-					ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-					Flags = (ushort)(0x0003), // FIXME: later let user choose if solid (0x0003) or soft (0x0001)!
-					Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
-					HitPoints = 0,
-					LuaName = instance.LuaName ?? string.Empty
-				});
-			}
-
-			ConvertLights(room, newRoom);
-
-			return newRoom;
-		}
-
-		private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices,
-			Vector3 Position, Vector3 color, int index)
-		{
-			var trVertex = new TombEngineVertex();
-
-			trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
-			trVertex.Color = color;
-			trVertex.IsOnPortal = false;
-			trVertex.IndexInPoly = index;
-
-			int vertexIndex;
-			if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
-				return vertexIndex;
-
-			vertexIndex = roomVertices.Count;
-			roomVertices.Add(trVertex);
-			roomVerticesDictionary.Add(trVertex.GetHashCode(), vertexIndex);
-			return vertexIndex;
-		}
-
-		private void ConvertLights(Room room, TombEngineRoom newRoom)
-		{
-			int lightCount = 0;
-
-			foreach (var light in room.Objects.OfType<LightInstance>())
-			{
-				if (!light.Enabled || !light.IsDynamicallyUsed)
-					continue;
-
-				if (light.Intensity == 0 || light.Color.X == 0 && light.Color.Y == 0 && light.Color.Z == 0)
-					continue;
-
-				lightCount += 1;
-
-				var newLight = new TombEngineRoomLight
-				{
-					Position = new VectorInt3(
-						(int)Math.Round(newRoom.Info.X + light.Position.X),
-						(int)-Math.Round(light.Position.Y + room.WorldPos.Y),
-						(int)Math.Round(newRoom.Info.Z + light.Position.Z)),
-					Color = light.Color,
-					Intensity = light.Intensity
-				};
-
-				switch (light.Type)
-				{
-					case LightType.Point:
-						newLight.LightType = 1;
-						newLight.In = light.InnerRange * Level.SectorSizeUnit;
-						newLight.Out = light.OuterRange * Level.SectorSizeUnit;
-						newLight.CastDynamicShadows = light.CastDynamicShadows;
-						break;
-					case LightType.Shadow:
-						newLight.LightType = 3;
-						newLight.In = light.InnerRange * Level.SectorSizeUnit;
-						newLight.Out = light.OuterRange * Level.SectorSizeUnit;
-						break;
-					case LightType.Spot:
-						newLight.LightType = 2;
-						newLight.In = light.InnerAngle;
-						newLight.Out = light.OuterAngle;
-						newLight.Length = light.InnerRange * Level.SectorSizeUnit;
-						newLight.CutOff = light.OuterRange * Level.SectorSizeUnit;
-						Vector3 spotDirection = light.GetDirection();
-						newLight.Direction.X = spotDirection.X;
-						newLight.Direction.Y = -spotDirection.Y;
-						newLight.Direction.Z = spotDirection.Z;
-						newLight.CastDynamicShadows = light.CastDynamicShadows;
-						break;
-					case LightType.Sun:
-						newLight.LightType = 0;
-						newLight.In = 0;
-						newLight.Out = 0;
-						newLight.Length = 0;
-						newLight.CutOff = 0;
-						Vector3 sunDirection = light.GetDirection();
-						newLight.Direction.X = sunDirection.X;
-						newLight.Direction.Y = -sunDirection.Y;
-						newLight.Direction.Z = sunDirection.Z;
-						newLight.CastDynamicShadows = light.CastDynamicShadows;
-						break;
-					case LightType.FogBulb:
-						newLight.LightType = 4;
-						newLight.In = light.InnerRange * Level.SectorSizeUnit;
-						newLight.Out = light.OuterRange * Level.SectorSizeUnit;
-						break;
-					case LightType.Effect:
-						continue;
-					default:
-						throw new Exception("Unknown light type '" + light.Type + "' encountered.");
-				}
-
-				newRoom.Lights.Add(newLight);
-			}
-		}
-
-		private void ConvertSectors(Room room, TombEngineRoom newRoom)
-		{
-			newRoom.Sectors = new TombEngineRoomSector[room.NumXSectors * room.NumZSectors];
-			newRoom.AuxSectors = new TrSectorAux[room.NumXSectors, room.NumZSectors];
-
-			for (var z = 0; z < room.NumZSectors; z++)
-			{
-				for (var x = 0; x < room.NumXSectors; x++)
-				{
-					var sector = room.Sectors[x, z];
-					var compiledSector = new TombEngineRoomSector();
-					var aux = new TrSectorAux();
-
-					compiledSector.FloorCollision = new TombEngineCollisionInfo();
-					compiledSector.FloorCollision.Portals = new int[2] { -1, -1 };
-					compiledSector.FloorCollision.Planes = new Vector3[2];
-					compiledSector.CeilingCollision = new TombEngineCollisionInfo();
-					compiledSector.CeilingCollision.Portals = new int[2] { -1, -1 };
-					compiledSector.CeilingCollision.Planes = new Vector3[2];
-					compiledSector.WallPortal = -1;
-					compiledSector.StepSound = (int)GetTextureSound(room, x, z);
-					compiledSector.BoxIndex = -1;
-					compiledSector.TriggerIndex = -1;
-
-					compiledSector.Flags = new TombEngineSectorFlags()
-					{
-						ClimbEast = (sector.Flags & SectorFlags.ClimbPositiveX) != 0,
-						ClimbNorth = (sector.Flags & SectorFlags.ClimbPositiveZ) != 0,
-						ClimbSouth = (sector.Flags & SectorFlags.ClimbNegativeZ) != 0,
-						ClimbWest = (sector.Flags & SectorFlags.ClimbNegativeX) != 0,
-						Death = (sector.Flags & SectorFlags.DeathFire) != 0,
-						MarkBeetle = (sector.Flags & SectorFlags.Beetle) != 0,
-						Monkeyswing = (sector.Flags & SectorFlags.Monkey) != 0,
-						MarkTriggerer = (sector.Flags & SectorFlags.TriggerTriggerer) != 0
-					};
-
-					// Setup portals
-					if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
-					{
-						aux.Portal = true;
-						aux.FloorPortal = sector.FloorPortal;
-					}
-					else
-					{
-						aux.FloorPortal = null;
-					}
-
-					if (sector.WallPortal != null && sector.WallPortal.Opacity != PortalOpacity.SolidFaces)
-						aux.WallPortal = sector.WallPortal.AdjoiningRoom;
-					else
-						aux.WallPortal = null;
-
-					// TODO: We are using clicks here, but should we really? Please review.
-					SectorSurface floor = sector.Floor.WorldToClicks();
-
-					// Setup some flags for box generation
-					if (sector.Type == SectorType.BorderWall)
-						aux.BorderWall = true;
-					if ((sector.Flags & SectorFlags.Monkey) != 0)
-						aux.Monkey = true;
-					if ((sector.Flags & SectorFlags.Box) != 0)
-						aux.Box = true;
-					if ((sector.Flags & SectorFlags.NotWalkableFloor) != 0)
-						aux.NotWalkableFloor = true;
-					if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) == 1 ||
-														Math.Abs(floor.IfQuadSlopeX) == 2 ||
-														Math.Abs(floor.IfQuadSlopeZ) == 1 ||
-														Math.Abs(floor.IfQuadSlopeZ) == 2))
-						aux.SoftSlope = true;
-					if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) > 2 || Math.Abs(floor.IfQuadSlopeZ) > 2))
-						aux.HardSlope = true;
-					if (sector.Type == SectorType.Wall)
-						aux.Wall = true;
-
-					// TODO: Is this LowestFloor field ever even used in TEN? Consider removing.
-					aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - floor.Min);
-					var q0 = floor.XnZp;
-					var q1 = floor.XpZp;
-					var q2 = floor.XpZn;
-					var q3 = floor.XnZn;
-
-					if (!SectorSurface.IsQuad2(q0, q1, q2, q3) && floor.IfQuadSlopeX == 0 &&
-						floor.IfQuadSlopeZ == 0)
-					{
-						if (!floor.SplitDirectionIsXEqualsZ)
-							aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XnZp, floor.XpZn));
-						else
-							aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XpZp, floor.XnZn));
-					}
-
-					newRoom.AuxSectors[x, z] = aux;
-					newRoom.Sectors[room.NumZSectors * x + z] = compiledSector;
-				}
-			}
-		}
-
-		private void ConvertPortals(Room room, IEnumerable<PortalInstance> portals, TombEngineRoom newRoom)
-		{
-			foreach (var portal in portals)
-			{
-				switch (portal.Direction)
-				{
-					case PortalDirection.WallNegativeZ:
-						ConvertWallPortal(room, portal, newRoom.Portals, new SectorEdge[] { SectorEdge.XnZn, SectorEdge.XpZn },
-							new SectorEdge[] { SectorEdge.XnZp, SectorEdge.XpZp });
-						break;
-					case PortalDirection.WallNegativeX:
-						ConvertWallPortal(room, portal, newRoom.Portals, new SectorEdge[] { SectorEdge.XnZn, SectorEdge.XnZp },
-							 new SectorEdge[] { SectorEdge.XpZn, SectorEdge.XpZp });
-						break;
-					case PortalDirection.WallPositiveZ:
-						ConvertWallPortal(room, portal, newRoom.Portals, new SectorEdge[] { SectorEdge.XpZp, SectorEdge.XnZp },
-							new SectorEdge[] { SectorEdge.XpZn, SectorEdge.XnZn });
-						break;
-					case PortalDirection.WallPositiveX:
-						ConvertWallPortal(room, portal, newRoom.Portals, new SectorEdge[] { SectorEdge.XpZp, SectorEdge.XpZn },
-							new SectorEdge[] { SectorEdge.XnZp, SectorEdge.XnZn });
-						break;
-					case PortalDirection.Floor:
-						ConvertFloorCeilingPortal(room, portal, newRoom.Portals, false);
-						break;
-					case PortalDirection.Ceiling:
-						ConvertFloorCeilingPortal(room, portal, newRoom.Portals, true);
-						break;
-					default:
-						throw new ApplicationException("Unknown PortalDirection");
-				}
-			}
-
-			MergePortals(newRoom);
-		}
-
-		private void ConvertWallPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, SectorEdge[] relevantEdges, SectorEdge[] oppositeRelevantEdges)
-		{
-			// Calculate dimensions of portal
-			var yMin = float.MaxValue;
-			var yMax = float.MinValue;
-
-			var startX = 0;
-			var endX = 0;
-			var startZ = 0;
-			var endZ = 0;
-
-			var oppositeStartX = 0;
-			var oppositeEndX = 0;
-			var oppositeStartZ = 0;
-			var oppositeEndZ = 0;
-
-			switch (portal.Direction)
-			{
-				case PortalDirection.WallNegativeX:
-					startX = 1;
-					endX = 1;
-					startZ = Math.Min(portal.Area.Y0, portal.Area.Y1);
-					endZ = Math.Max(portal.Area.Y0, portal.Area.Y1);
-
-					oppositeStartX = portal.AdjoiningRoom.NumXSectors - 2;
-					oppositeEndX = portal.AdjoiningRoom.NumXSectors - 2;
-					oppositeStartZ = Math.Min(portal.Area.Y0, portal.Area.Y1) +
-						portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
-					oppositeEndZ = Math.Max(portal.Area.Y0, portal.Area.Y1) +
-						portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
-
-					break;
-
-				case PortalDirection.WallPositiveX:
-					startX = room.NumXSectors - 2;
-					endX = room.NumXSectors - 2;
-					startZ = Math.Min(portal.Area.Y0, portal.Area.Y1);
-					endZ = Math.Max(portal.Area.Y0, portal.Area.Y1);
-
-					oppositeStartX = 1;
-					oppositeEndX = 1;
-					oppositeStartZ = Math.Min(portal.Area.Y0, portal.Area.Y1) +
-						portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
-					oppositeEndZ = Math.Max(portal.Area.Y0, portal.Area.Y1) +
-						portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
-
-					break;
-
-				case PortalDirection.WallNegativeZ:
-					startX = Math.Min(portal.Area.X0, portal.Area.X1);
-					endX = Math.Max(portal.Area.X0, portal.Area.X1);
-					startZ = 1;
-					endZ = 1;
-
-					oppositeStartX = Math.Min(portal.Area.X0, portal.Area.X1) +
-						portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
-					oppositeEndX = Math.Max(portal.Area.X0, portal.Area.X1) +
-						portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
-					oppositeStartZ = portal.AdjoiningRoom.NumZSectors - 2;
-					oppositeEndZ = portal.AdjoiningRoom.NumZSectors - 2;
-
-					break;
-
-				case PortalDirection.WallPositiveZ:
-					startX = Math.Min(portal.Area.X0, portal.Area.X1);
-					endX = Math.Max(portal.Area.X0, portal.Area.X1);
-					startZ = room.NumZSectors - 2;
-					endZ = room.NumZSectors - 2;
-
-					oppositeStartX = Math.Min(portal.Area.X0, portal.Area.X1) +
-					   portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
-					oppositeEndX = Math.Max(portal.Area.X0, portal.Area.X1) +
-						portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
-					oppositeStartZ = 1;
-					oppositeEndZ = 1;
-
-					break;
-			}
-
-			for (var z = 0; z <= endZ - startZ; ++z)
-				for (var x = 0; x <= endX - startX; ++x)
-				{
-					Sector sector = room.Sectors[x + startX, z + startZ];
-					Sector oppositeSector = portal.AdjoiningRoom.Sectors[x + oppositeStartX, z + oppositeStartZ];
-
-					for (int i = 0; i < relevantEdges.Length; i++)
-					{
-						// We need to check both the current sector and the opposite sector and choose
-						// the largest area possible for avoiding strange rendering bugs
-						var relevantDirection = relevantEdges[i];
-						var oppositeRelevantDirection = oppositeRelevantEdges[i];
-
-						var floor = sector.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
-						var ceiling = sector.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
-
-						var floorOpposite = oppositeSector.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
-						var ceilingOpposite = oppositeSector.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
-
-						floor = Math.Min(floor, floorOpposite);
-						ceiling = Math.Max(ceiling, ceilingOpposite);
-
-						yMin = Math.Min(yMin, Math.Min(floor, ceiling));
-						yMax = Math.Max(yMax, Math.Max(floor, ceiling));
-					}
-				}
-			yMin = (float)Math.Floor(yMin);
-			yMax = (float)Math.Ceiling(yMax);
-
-			var xMin = portal.Area.X0 * Level.SectorSizeUnit;
-			var xMax = (portal.Area.X1 + 1) * Level.SectorSizeUnit;
-			var zMin = portal.Area.Y0 * Level.SectorSizeUnit;
-			var zMax = (portal.Area.Y1 + 1) * Level.SectorSizeUnit;
-
-			// Determine normal and portal vertices
-			VectorInt3[] portalVertices = new VectorInt3[4];
-			VectorInt3 normal;
-			switch (portal.Direction)
-			{
-				case PortalDirection.WallPositiveZ:
-					normal = new VectorInt3(0, 0, -1);
-					portalVertices[0] = new VectorInt3((int)xMin, (int)-yMax, (int)(zMax - Level.SectorSizeUnit));
-					portalVertices[1] = new VectorInt3((int)xMax, (int)-yMax, (int)(zMax - Level.SectorSizeUnit));
-					portalVertices[2] = new VectorInt3((int)xMax, (int)-yMin, (int)(zMax - Level.SectorSizeUnit));
-					portalVertices[3] = new VectorInt3((int)xMin, (int)-yMin, (int)(zMax - Level.SectorSizeUnit));
-					break;
-				case PortalDirection.WallPositiveX:
-					normal = new VectorInt3(-1, 0, 0);
-					portalVertices[0] = new VectorInt3((int)(xMax - Level.SectorSizeUnit), (int)-yMin, (int)zMax);
-					portalVertices[1] = new VectorInt3((int)(xMax - Level.SectorSizeUnit), (int)-yMax, (int)zMax);
-					portalVertices[2] = new VectorInt3((int)(xMax - Level.SectorSizeUnit), (int)-yMax, (int)zMin);
-					portalVertices[3] = new VectorInt3((int)(xMax - Level.SectorSizeUnit), (int)-yMin, (int)zMin);
-					break;
-				case PortalDirection.WallNegativeZ:
-					normal = new VectorInt3(0, 0, 1);
-					portalVertices[0] = new VectorInt3((int)xMax, (int)-yMax, (int)(zMin + Level.SectorSizeUnit - 1));
-					portalVertices[1] = new VectorInt3((int)xMin, (int)-yMax, (int)(zMin + Level.SectorSizeUnit - 1));
-					portalVertices[2] = new VectorInt3((int)xMin, (int)-yMin, (int)(zMin + Level.SectorSizeUnit - 1));
-					portalVertices[3] = new VectorInt3((int)xMax, (int)-yMin, (int)(zMin + Level.SectorSizeUnit - 1));
-					break;
-				case PortalDirection.WallNegativeX:
-					normal = new VectorInt3(1, 0, 0);
-					portalVertices[0] = new VectorInt3((int)(xMin + Level.SectorSizeUnit - 1), (int)-yMin, (int)zMin);
-					portalVertices[1] = new VectorInt3((int)(xMin + Level.SectorSizeUnit - 1), (int)-yMax, (int)zMin);
-					portalVertices[2] = new VectorInt3((int)(xMin + Level.SectorSizeUnit - 1), (int)-yMax, (int)zMax);
-					portalVertices[3] = new VectorInt3((int)(xMin + Level.SectorSizeUnit - 1), (int)-yMin, (int)zMax);
-					break;
-				default:
-					throw new ApplicationException("Unknown PortalDirection");
-			}
-
-			// Create portal
-			var portalToAdd = new TombEnginePortal
-			{
-				AdjoiningRoom = (ushort)_roomRemapping[portal.AdjoiningRoom],
-				Vertices = portalVertices,
-				Normal = normal,
-				Direction = portal.Direction
-			};
-
-			_portalRemapping.TryAdd(portalToAdd, portal);
-			outPortals.Add(portalToAdd);
-
-			if (portal.Effect == PortalEffectType.ClassicMirror)
-			{
-				var room2DPosition = new Vector3(
-					room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
-
-				var mirror = new TombEngineMirror();
-				mirror.Room = (short)_roomRemapping[room];
-
+                                        vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);
+                                        vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 1);
+                                        vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
+
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
+                                        var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
+                                                        (byte)realBlendMode, (byte)materialType, roomVertices);
+                                        roomPolygons.Add(poly);
+                                        roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        if (texture.DoubleSided)
+                                        {
+                                            texture.Mirror(true);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
+                                            poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
+                                                            (byte)realBlendMode, (byte)materialType, roomVertices);
+                                            roomPolygons.Add(poly);
+
+                                            // TODO: Solve problems with averaging normals on double-sided triangles
+                                            // roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
+                                        }
+                                    }
+                                }
+                            }
+
+                // Merge static meshes
+
+                if (!_level.Settings.FastMode)
+                    foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
+                    {
+                        // Сheck if static Mesh is in the Auto Merge list
+                        var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
+                            mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
+
+                        if (entry == null)
+                            continue;
+
+                        bool interpretShadesAsEffect = entry.InterpretShadesAsEffect;
+                        bool clearShades = entry.ClearShades;
+                        int meshVertexBase = roomVertices.Count;
+                        var worldTransform = staticMesh.ScaleMatrix *
+                                             staticMesh.RotationMatrix *
+                                             Matrix4x4.CreateTranslation(staticMesh.Position);
+                        var normalTransform = staticMesh.RotationMatrix;
+                        WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
+
+                        if (wadStatic == null || wadStatic.Mesh == null)
+                            continue;
+
+                        for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
+                        {
+                            // Apply the transform to the vertex
+                            Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
+                            Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform);
+                            Vector3 shade = Vector3.One;
+
+                            var glow = 0f;
+                            var move = 0f;
+
+                            if (interpretShadesAsEffect)
+                            {
+                                if (j < wadStatic.Mesh.VertexColors.Count)
+                                {
+                                    var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
+                                    if (luma < 0.5f) move = luma * 2.0f;   // Movement
+                                    else if (luma < 1.0f) glow = (luma - 0.5f) * 2.0f; // Glow
+                                }
+                            }
+                            else
+                            {
+                                // If we have vertex colors, use them as a luma factor for the resulting vertex color
+                                if (!clearShades && wadStatic.Mesh.HasColors)
+                                    shade = wadStatic.Mesh.VertexColors[j];
+
+                                if (wadStatic.Mesh.HasAttributes)
+                                {
+                                    if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
+                                        move = (float)wadStatic.Mesh.VertexAttributes[j].Move / 64.0f; // Movement
+
+                                    if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
+                                        glow = (float)wadStatic.Mesh.VertexAttributes[j].Glow / 64.0f; // Glow
+                                }
+                            }
+
+                            Vector3 color;
+                            if (!entry.TintAsAmbient)
+                            {
+                                color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
+                                // Apply Shade factor
+                                color *= shade;
+                                // Apply Instance Color
+                                color *= staticMesh.Color;
+                            }
+                            else
+                            {
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
+                                //Apply Shade factor
+                                color *= shade;
+                            }
+
+                            var trVertex = new TombEngineVertex
+                            {
+                                Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
+                                Color = color,
+                                Normal = normal,
+                                Glow = glow,
+                                Move = move
+                            };
+
+                            roomVertices.Add(trVertex);
+                        }
+
+                        foreach (bool doubleSided in new[] { false, true })
+                        {
+                            for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
+                            {
+                                WadPolygon poly = wadStatic.Mesh.Polys[i];
+
+                                if (!poly.Texture.DoubleSided && doubleSided)
+                                    continue;
+
+                                ushort index0 = (ushort)(poly.Index0 + meshVertexBase);
+                                ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
+                                ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
+                                ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
+
+                                var texture = poly.Texture;
+                                texture.ClampToBounds();
+
+                                int[] indices = poly.IsTriangle ? new int[] { index0, index1, index2 } :
+                                                                  new int[] { index0, index1, index2, index3 };
+                                var key = poly;
+
+                                if (doubleSided)
+                                {
+                                    Array.Reverse(indices);
+                                    texture.Mirror(poly.IsTriangle);
+                                    key.Index0 = indices[0]; key.Index1 = indices[1]; key.Index2 = indices[2];
+                                    if (!poly.IsTriangle) key.Index3 = indices[3];
+                                }
+
+                                var realBlendMode = texture.BlendMode;
+                                if (texture.BlendMode == BlendMode.Normal)
+                                    realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
+
+                                bool texInfoExists = _mergedStaticMeshTextureInfos.ContainsKey(key);
+                                var result = texInfoExists ? _mergedStaticMeshTextureInfos[key] :
+                                            _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
+
+                                var face = poly.IsTriangle ?
+                                    result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, (byte)TombEngineMaterialType.Opaque, roomVertices) :
+                                    result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, (byte)TombEngineMaterialType.Opaque, roomVertices);
+
+                                if (!texInfoExists)
+                                    _mergedStaticMeshTextureInfos.Add(key, result);
+
+                                roomPolygons.Add(face);
+
+                                if (!doubleSided)
+                                {
+                                    roomVertices[index0].NormalHelpers.Add(new NormalHelper(face));
+                                    roomVertices[index1].NormalHelpers.Add(new NormalHelper(face));
+                                    roomVertices[index2].NormalHelpers.Add(new NormalHelper(face));
+                                    if (!poly.IsTriangle)
+                                        roomVertices[index3].NormalHelpers.Add(new NormalHelper(face));
+                                }
+                            }
+                        }
+                    }
+
+                // Add geometry imported objects
+
+                foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
+                {
+                    if (geometry.Model?.DirectXModel == null)
+                        continue;
+
+                    var meshes = geometry.Model.DirectXModel.Meshes;
+                    var worldTransform = geometry.RotationMatrix *
+                                         Matrix4x4.CreateScale(geometry.Scale) *
+                                         Matrix4x4.CreateTranslation(geometry.Position);
+                    var normalTransform = geometry.RotationMatrix;
+                    var indexList = new List<int>();
+                    int baseIndex = 0;
+
+                    foreach (var mesh in meshes)
+                    {
+                        int currentMeshIndexCount = 0;
+
+                        foreach (var submesh in mesh.Submeshes)
+                        {
+                            foreach (bool doubleSided in (submesh.Key.DoubleSided ? new[] { false, true } : new[] { false }))
+                            {
+                                for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
+                                {
+                                    int[] tempIndices = new int[3];
+
+                                    // We need to add vertices here
+                                    for (int k = 0; k < 3; k++)
+                                    {
+                                        var vertex = mesh.Vertices[submesh.Value.Indices[j + k]];
+
+                                        // Since imported geometry can be used as reimported room mesh, we need to make sure
+                                        // coordinates are integer to comply with portal positions, so MatchDoorShades function
+                                        // will later work correctly. While technically rounding vertex positions is incorrect,
+                                        // thankfully TR engines use large-scale coordinate system, so we can ignore such precision loss.
+
+                                        vertex.Position = MathC.Round(vertex.Position);
+
+                                        // Apply the transform to the vertex
+                                        Vector3 position = MathC.HomogenousTransform(vertex.Position, worldTransform);
+                                        Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
+                                        normal = Vector3.Normalize(normal);
+
+                                        if (doubleSided)
+                                            normal = -normal;
+
+                                        var trVertex = new TombEngineVertex
+                                        {
+                                            Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), position.Z),
+                                            Normal = normal,
+                                            DoubleSided = doubleSided
+                                        };
+
+                                        // Pack the light according to chosen lighting model
+                                        if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
+                                        {
+                                            trVertex.Color = vertex.Color;
+                                        }
+                                        else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
+                                        {
+                                            var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 128);
+                                            trVertex.Color = color;
+                                        }
+                                        else
+                                        {
+                                            var color = room.Properties.AmbientLight;
+                                            trVertex.Color = color;
+                                        }
+
+                                        // HACK: Find a vertex with same coordinates and merge with it.
+                                        // This is needed to overcome disjointed vertices bug buried deep in geometry importer AND assimp's own
+                                        // strange behaviour which splits imported geometry based on materials.
+                                        // We still preserve sharp edges if explicitly specified by flag though.
+
+                                        int existingIndex;
+                                        if (geometry.SharpEdges)
+                                        {
+                                            existingIndex = roomVertices.Count;
+                                            roomVertices.Add(trVertex);
+                                        }
+                                        else
+                                        {
+                                            existingIndex = roomVertices.IndexOf(
+                                                v => v.Position == trVertex.Position
+                                                    && v.Color == trVertex.Color
+                                                    && v.DoubleSided == trVertex.DoubleSided);
+                                            if (existingIndex == -1)
+                                            {
+                                                existingIndex = roomVertices.Count;
+                                                roomVertices.Add(trVertex);
+                                            }
+                                        }
+
+                                        indexList.Add(existingIndex);
+                                        tempIndices[k] = existingIndex;
+                                        currentMeshIndexCount++;
+                                    }
+
+                                    // Avoid degenerate triangles
+                                    if (tempIndices.Distinct().Count() < 3)
+                                    {
+                                        continue;
+                                    }
+
+                                    int index0 = tempIndices[0];
+                                    int index1 = tempIndices[1];
+                                    int index2 = tempIndices[2];
+
+                                    int[] indices = new int[] { index0, index1, index2 };
+                                    if (doubleSided)
+                                    {
+                                        Array.Reverse(indices);
+                                    }
+
+                                    // TODO Move texture area into the mesh
+                                    TextureArea texture = new TextureArea();
+                                    texture.DoubleSided = submesh.Key.DoubleSided;
+                                    texture.BlendMode = submesh.Key.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
+                                    texture.Texture = submesh.Value.Material.Texture;
+                                    texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
+                                    texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
+                                    texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
+                                    texture.TexCoord3 = texture.TexCoord2;
+
+                                    if (geometry.Model.Info.MappedUV)
+                                        texture.SetParentArea(_limits[Limit.TexPageSize]);
+
+                                    texture.ClampToBounds();
+
+                                    var realBlendMode = texture.BlendMode;
+                                    if (texture.BlendMode == BlendMode.Normal)
+                                        realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
+
+                                    if (realBlendMode == BlendMode.AlphaBlend && geometry.UseAlphaTestInsteadOfAlphaBlend)
+                                        realBlendMode = BlendMode.AlphaTest;
+
+                                    if (doubleSided)
+                                    {
+                                        texture.Mirror(true);
+                                    }
+
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
+                                    var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, (byte)TombEngineMaterialType.Opaque, roomVertices);
+
+                                    roomPolygons.Add(tri);
+                                    roomVertices[index0].NormalHelpers.Add(new NormalHelper(tri));
+                                    roomVertices[index1].NormalHelpers.Add(new NormalHelper(tri));
+                                    roomVertices[index2].NormalHelpers.Add(new NormalHelper(tri));
+                                }
+                            }
+                        }
+
+                        baseIndex += currentMeshIndexCount;
+                    }
+                }
+
+                newRoom.Vertices = roomVertices;
+                newRoom.Polygons = roomPolygons;
+
+                // Now we need to build final normals, tangents, bitangents
+            }
+
+            // Assign vertex effects
+
+            for (int i = 0; i < newRoom.Vertices.Count; ++i)
+            {
+                var trVertex = newRoom.Vertices[i];
+                bool allowGlow = true;
+
+                var xv = (int)(trVertex.Position.X / Level.SectorSizeUnit);
+                var zv = (int)(trVertex.Position.Z / Level.SectorSizeUnit);
+
+                // Check for vertex out of room bounds
+                if (xv <= 0 || zv <= 0 || xv >= room.NumXSectors || zv >= room.NumZSectors)
+                    continue;
+
+                foreach (var portal in room.Portals)
+                {
+                    var otherRoomLightEffect = portal.AdjoiningRoom.Properties.LightEffect;
+                    if (otherRoomLightEffect == RoomLightEffect.Default)
+                    {
+                        switch (portal.AdjoiningRoom.Properties.Type)
+                        {
+                            case RoomType.Water:
+                                otherRoomLightEffect = RoomLightEffect.Glow;
+                                break;
+                            case RoomType.Quicksand:
+                                otherRoomLightEffect = RoomLightEffect.Movement;
+                                break;
+                            default:
+                                otherRoomLightEffect = RoomLightEffect.None;
+                                break;
+                        }
+                    }
+
+                    var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
+                    var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
+                    var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
+                    var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
+
+                    bool isTraversablePortal = connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                               connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                               connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                               connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal;
+
+                    bool isOppositeCorner = connectionInfo1.TraversableType == Room.RoomConnectionType.TriangularPortalXnZn &&
+                                            !connectionInfo2.IsTriangularPortal &&
+                                            !connectionInfo3.IsTriangularPortal &&
+                                            !connectionInfo4.IsTriangularPortal
+                                            ||
+                                            !connectionInfo1.IsTriangularPortal &&
+                                            connectionInfo2.TraversableType == Room.RoomConnectionType.TriangularPortalXpZn &&
+                                            !connectionInfo3.IsTriangularPortal &&
+                                            !connectionInfo4.IsTriangularPortal
+                                            ||
+                                            !connectionInfo1.IsTriangularPortal &&
+                                            !connectionInfo2.IsTriangularPortal &&
+                                            connectionInfo3.TraversableType == Room.RoomConnectionType.TriangularPortalXnZp &&
+                                            !connectionInfo4.IsTriangularPortal
+                                            ||
+                                            !connectionInfo1.IsTriangularPortal &&
+                                            !connectionInfo2.IsTriangularPortal &&
+                                            !connectionInfo3.IsTriangularPortal &&
+                                            connectionInfo4.TraversableType == Room.RoomConnectionType.TriangularPortalXpZp;
+
+                    var pos = new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z);
+
+                    // Preemptively disable movement for all portal faces
+                    if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
+                        trVertex.Locked = true;
+
+                    // A bit complex but working code for water surface movement.
+                    // Works better than winroomedit as it takes adjacent portals into account.
+                    if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(pos, false, true)))
+                    {
+                        // A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
+                        if ((isTraversablePortal || isOppositeCorner) &&
+                            connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
+                            !room.Sectors[xv, zv].IsAnyWall &&
+                            connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal &&
+                            !room.Sectors[xv - 1, zv].IsAnyWall &&
+                            connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal &&
+                            !room.Sectors[xv, zv - 1].IsAnyWall &&
+                            connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal &&
+                            !room.Sectors[xv - 1, zv - 1].IsAnyWall)
+                        {
+                            trVertex.Locked = false;
+                            trVertex = trVertex.SetEffects(room, RoomLightEffect.Movement);
+                        }
+                    }
+
+                    if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor && isTraversablePortal)
+                    {
+                        // Assign mist, if set, for vertices inside portal
+                        if (portal.PositionOnPortal(pos, true, false))
+                        {
+                            trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
+                            break;
+                        }
+                    }
+                    else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor &&
+                        ((room.Properties.Type == RoomType.Water || room.Properties.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Properties.Type == RoomType.Water || portal.AdjoiningRoom.Properties.Type == RoomType.Quicksand)))
+                    {
+                        // Assign reflection, if set, for all enclosed portal faces
+                        if (portal.PositionOnPortal(pos, false, false) ||
+                            portal.PositionOnPortal(pos, true, false))
+                        {
+                            trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
+                            break;
+                        }
+                    }
+
+                    if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
+                    {
+                        if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
+                        {
+                            // Disable glow for portal faces, if room light interp mode is not sharp-cut
+                            if (interpMode != RoomLightInterpolationMode.NoInterpolate)
+                                allowGlow = false;
+
+                            // Disable effect if adjoining room effect strength is different
+                            if ((otherRoomLightEffect == RoomLightEffect.Glow || otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
+                                portal.AdjoiningRoom.Properties.LightEffectStrength != room.Properties.LightEffectStrength)
+                                allowGlow = false;
+                        }
+                    }
+                }
+
+                if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
+                    trVertex = trVertex.SetEffects(room, RoomLightEffect.Movement);
+                if (allowGlow && (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement))
+                    trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
+
+                newRoom.Vertices[i] = trVertex;
+            }
+
+            // Build portals
+
+            var tempIdPortals = new List<PortalInstance>();
+
+            for (var z = 0; z < room.NumZSectors; z++)
+            {
+                for (var x = 0; x < room.NumXSectors; x++)
+                {
+                    if (room.Sectors[x, z].WallPortal != null && !tempIdPortals.Contains(room.Sectors[x, z].WallPortal))
+                        tempIdPortals.Add(room.Sectors[x, z].WallPortal);
+
+                    if (room.Sectors[x, z].FloorPortal != null &&
+                        !tempIdPortals.Contains(room.Sectors[x, z].FloorPortal))
+                        tempIdPortals.Add(room.Sectors[x, z].FloorPortal);
+
+                    if (room.Sectors[x, z].CeilingPortal != null &&
+                        !tempIdPortals.Contains(room.Sectors[x, z].CeilingPortal))
+                        tempIdPortals.Add(room.Sectors[x, z].CeilingPortal);
+                }
+            }
+
+            ConvertPortals(room, tempIdPortals, newRoom);
+            ConvertSectors(room, newRoom);
+
+            foreach (var instance in room.Objects.OfType<StaticInstance>())
+            {
+                // For TRNG statics chunk
+                _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
+
+                var sm = _level.Settings?.WadTryGetStatic(instance.WadObjectId);
+                newRoom.StaticMeshes.Add(new TombEngineRoomStaticMesh
+                {
+                    X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
+                    Y = (int)-Math.Round(room.WorldPos.Y + instance.Position.Y),
+                    Z = (int)Math.Round(newRoom.Info.Z + instance.Position.Z),
+                    Yaw = ToTrAngle(instance.RotationY),
+                    Scale = instance.Scale,
+                    ObjectID = checked((ushort)instance.WadObjectId.TypeId),
+                    Flags = (ushort)(0x0007), // FIXME: later let user choose if solid (0x0007) or soft (0x0005)!
+                    Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
+                    HitPoints = 0,
+                    LuaName = instance.LuaName ?? string.Empty
+                }) ;
+            }
+
+            ConvertLights(room, newRoom);
+
+            return newRoom;
+        }
+
+        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices,
+            Vector3 Position, Vector3 color, int index)
+        {
+            var trVertex = new TombEngineVertex();
+
+            trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
+            trVertex.Color = color;
+            trVertex.IsOnPortal = false;
+            trVertex.IndexInPoly = index;
+
+            int vertexIndex;
+            if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
+                return vertexIndex;
+
+            vertexIndex = roomVertices.Count;
+            roomVertices.Add(trVertex);
+            roomVerticesDictionary.Add(trVertex.GetHashCode(), vertexIndex);
+            return vertexIndex;
+        }
+
+        private void ConvertLights(Room room, TombEngineRoom newRoom)
+        {
+            int lightCount = 0;
+
+            foreach (var light in room.Objects.OfType<LightInstance>())
+            {
+                if (!light.Enabled || !light.IsDynamicallyUsed)
+                    continue;
+
+                if (light.Intensity == 0 || light.Color.X == 0 && light.Color.Y == 0 && light.Color.Z == 0)
+                    continue;
+
+                lightCount += 1;
+
+                var newLight = new TombEngineRoomLight
+                {
+                    Position = new VectorInt3(
+                        (int)Math.Round(newRoom.Info.X + light.Position.X),
+                        (int)-Math.Round(light.Position.Y + room.WorldPos.Y),
+                        (int)Math.Round(newRoom.Info.Z + light.Position.Z)),
+                    Color = light.Color,
+                    Intensity = light.Intensity
+                };
+
+                switch (light.Type)
+                {
+                    case LightType.Point:
+                        newLight.LightType = 1;
+                        newLight.In  = light.InnerRange * Level.SectorSizeUnit;
+                        newLight.Out = light.OuterRange * Level.SectorSizeUnit;
+                        newLight.CastDynamicShadows = light.CastDynamicShadows;
+                        break;
+                    case LightType.Shadow:
+                        newLight.LightType = 3;
+                        newLight.In  = light.InnerRange * Level.SectorSizeUnit;
+                        newLight.Out = light.OuterRange * Level.SectorSizeUnit;
+                        break;
+                    case LightType.Spot:
+                        newLight.LightType = 2;
+                        newLight.In = light.InnerAngle;
+                        newLight.Out = light.OuterAngle;
+                        newLight.Length = light.InnerRange * Level.SectorSizeUnit;
+                        newLight.CutOff = light.OuterRange * Level.SectorSizeUnit;
+                        Vector3 spotDirection = light.GetDirection();
+                        newLight.Direction.X = spotDirection.X;
+                        newLight.Direction.Y = -spotDirection.Y;
+                        newLight.Direction.Z = spotDirection.Z;
+                        newLight.CastDynamicShadows = light.CastDynamicShadows;
+                        break;
+                    case LightType.Sun:
+                        newLight.LightType = 0;
+                        newLight.In = 0;
+                        newLight.Out = 0;
+                        newLight.Length = 0;
+                        newLight.CutOff = 0;
+                        Vector3 sunDirection = light.GetDirection();
+                        newLight.Direction.X = sunDirection.X;
+                        newLight.Direction.Y = -sunDirection.Y;
+                        newLight.Direction.Z = sunDirection.Z;
+                        newLight.CastDynamicShadows = light.CastDynamicShadows;
+                        break;
+                    case LightType.FogBulb:
+                        newLight.LightType = 4;
+                        newLight.In  = light.InnerRange * Level.SectorSizeUnit;
+                        newLight.Out = light.OuterRange * Level.SectorSizeUnit;
+                        break;
+                    case LightType.Effect:
+                        continue;
+                    default:
+                        throw new Exception("Unknown light type '" + light.Type + "' encountered.");
+                }
+
+                newRoom.Lights.Add(newLight);
+            }
+        }
+
+        private void ConvertSectors(Room room, TombEngineRoom newRoom)
+        {
+            newRoom.Sectors = new TombEngineRoomSector[room.NumXSectors * room.NumZSectors];
+            newRoom.AuxSectors = new TrSectorAux[room.NumXSectors, room.NumZSectors];
+
+            for (var z = 0; z < room.NumZSectors; z++)
+            {
+                for (var x = 0; x < room.NumXSectors; x++)
+                {
+                    var sector = room.Sectors[x, z];
+                    var compiledSector = new TombEngineRoomSector();
+                    var aux = new TrSectorAux();
+
+                    compiledSector.FloorCollision = new TombEngineCollisionInfo();
+                    compiledSector.FloorCollision.Portals = new int[2] {-1, -1};
+                    compiledSector.FloorCollision.Planes = new Vector3[2];
+                    compiledSector.CeilingCollision = new TombEngineCollisionInfo();
+                    compiledSector.CeilingCollision.Portals = new int[2] {-1, -1};
+                    compiledSector.CeilingCollision.Planes = new Vector3[2];
+                    compiledSector.WallPortal = -1;
+                    compiledSector.StepSound = (int)GetTextureSound(room, x, z);
+                    compiledSector.BoxIndex = -1;
+                    compiledSector.TriggerIndex = -1;
+
+                    compiledSector.Flags = new TombEngineSectorFlags()
+                    {
+                        ClimbEast     = (sector.Flags & SectorFlags.ClimbPositiveX) != 0,
+                        ClimbNorth    = (sector.Flags & SectorFlags.ClimbPositiveZ) != 0,
+                        ClimbSouth    = (sector.Flags & SectorFlags.ClimbNegativeZ) != 0,
+                        ClimbWest     = (sector.Flags & SectorFlags.ClimbNegativeX) != 0,
+                        Death         = (sector.Flags & SectorFlags.DeathFire) != 0,
+                        MarkBeetle    = (sector.Flags & SectorFlags.Beetle) != 0,
+                        Monkeyswing   = (sector.Flags & SectorFlags.Monkey) != 0,
+                        MarkTriggerer = (sector.Flags & SectorFlags.TriggerTriggerer) != 0
+                    };
+
+                    // Setup portals
+                    if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
+                    {
+                        aux.Portal = true;
+                        aux.FloorPortal = sector.FloorPortal;
+                    }
+                    else
+                    {
+                        aux.FloorPortal = null;
+                    }
+
+                    if (sector.WallPortal != null && sector.WallPortal.Opacity != PortalOpacity.SolidFaces)
+                        aux.WallPortal = sector.WallPortal.AdjoiningRoom;
+                    else
+                        aux.WallPortal = null;
+
+                    // TODO: We are using clicks here, but should we really? Please review.
+                    SectorSurface floor = sector.Floor.WorldToClicks();
+
+                    // Setup some flags for box generation
+                    if (sector.Type == SectorType.BorderWall)
+                        aux.BorderWall = true;
+                    if ((sector.Flags & SectorFlags.Monkey) != 0)
+                        aux.Monkey = true;
+                    if ((sector.Flags & SectorFlags.Box) != 0)
+                        aux.Box = true;
+                    if ((sector.Flags & SectorFlags.NotWalkableFloor) != 0)
+                        aux.NotWalkableFloor = true;
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) == 1 ||
+                                                        Math.Abs(floor.IfQuadSlopeX) == 2 ||
+                                                        Math.Abs(floor.IfQuadSlopeZ) == 1 ||
+                                                        Math.Abs(floor.IfQuadSlopeZ) == 2))
+                        aux.SoftSlope = true;
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(floor.IfQuadSlopeX) > 2 || Math.Abs(floor.IfQuadSlopeZ) > 2))
+                        aux.HardSlope = true;
+                    if (sector.Type == SectorType.Wall)
+                        aux.Wall = true;
+
+                    // TODO: Is this LowestFloor field ever even used in TEN? Consider removing.
+                    aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - floor.Min);
+                    var q0 = floor.XnZp;
+                    var q1 = floor.XpZp;
+                    var q2 = floor.XpZn;
+                    var q3 = floor.XnZn;
+
+                    if (!SectorSurface.IsQuad2(q0, q1, q2, q3) && floor.IfQuadSlopeX == 0 &&
+                        floor.IfQuadSlopeZ == 0)
+                    {
+                        if (!floor.SplitDirectionIsXEqualsZ)
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XnZp, floor.XpZn));
+                        else
+                            aux.LowestFloor = (sbyte)(-Clicks.FromWorld(room.Position.Y) - Math.Min(floor.XpZp, floor.XnZn));
+                    }
+
+                    newRoom.AuxSectors[x, z] = aux;
+                    newRoom.Sectors[room.NumZSectors * x + z] = compiledSector;
+                }
+            }
+        }
+
+        private void ConvertPortals(Room room, IEnumerable<PortalInstance> portals, TombEngineRoom newRoom)
+        {
+            foreach (var portal in portals)
+            {
+                switch (portal.Direction)
+                {
+                    case PortalDirection.WallNegativeZ:
+                        ConvertWallPortal(room, portal, newRoom.Portals, new SectorEdge[] { SectorEdge.XnZn, SectorEdge.XpZn },
+                            new SectorEdge[] { SectorEdge.XnZp, SectorEdge.XpZp });
+                        break;
+                    case PortalDirection.WallNegativeX:
+                        ConvertWallPortal(room, portal, newRoom.Portals, new SectorEdge[] { SectorEdge.XnZn, SectorEdge.XnZp },
+                             new SectorEdge[] { SectorEdge.XpZn, SectorEdge.XpZp });
+                        break;
+                    case PortalDirection.WallPositiveZ:
+                        ConvertWallPortal(room, portal, newRoom.Portals, new SectorEdge[] { SectorEdge.XpZp, SectorEdge.XnZp },
+                            new SectorEdge[] { SectorEdge.XpZn, SectorEdge.XnZn });
+                        break;
+                    case PortalDirection.WallPositiveX:
+                        ConvertWallPortal(room, portal, newRoom.Portals, new SectorEdge[] { SectorEdge.XpZp, SectorEdge.XpZn },
+                            new SectorEdge[] { SectorEdge.XnZp, SectorEdge.XnZn });
+                        break;
+                    case PortalDirection.Floor:
+                        ConvertFloorCeilingPortal(room, portal, newRoom.Portals, false);
+                        break;
+                    case PortalDirection.Ceiling:
+                        ConvertFloorCeilingPortal(room, portal, newRoom.Portals, true);
+                        break;
+                    default:
+                        throw new ApplicationException("Unknown PortalDirection");
+                }
+            }
+
+            MergePortals(newRoom);
+        }
+
+        private void ConvertWallPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, SectorEdge[] relevantEdges, SectorEdge[] oppositeRelevantEdges)
+        {
+            // Calculate dimensions of portal
+            var yMin = float.MaxValue;
+            var yMax = float.MinValue;
+
+            var startX = 0;
+            var endX = 0;
+            var startZ = 0;
+            var endZ = 0;
+
+            var oppositeStartX = 0;
+            var oppositeEndX = 0;
+            var oppositeStartZ = 0;
+            var oppositeEndZ = 0;
+
+            switch (portal.Direction)
+            {
+                case PortalDirection.WallNegativeX:
+                    startX = 1;
+                    endX = 1;
+                    startZ = Math.Min(portal.Area.Y0, portal.Area.Y1);
+                    endZ = Math.Max(portal.Area.Y0, portal.Area.Y1);
+
+                    oppositeStartX = portal.AdjoiningRoom.NumXSectors - 2;
+                    oppositeEndX = portal.AdjoiningRoom.NumXSectors - 2;
+                    oppositeStartZ = Math.Min(portal.Area.Y0, portal.Area.Y1) +
+                        portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
+                    oppositeEndZ = Math.Max(portal.Area.Y0, portal.Area.Y1) +
+                        portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
+
+                    break;
+
+                case PortalDirection.WallPositiveX:
+                    startX = room.NumXSectors - 2;
+                    endX = room.NumXSectors - 2;
+                    startZ = Math.Min(portal.Area.Y0, portal.Area.Y1);
+                    endZ = Math.Max(portal.Area.Y0, portal.Area.Y1);
+
+                    oppositeStartX = 1;
+                    oppositeEndX = 1;
+                    oppositeStartZ = Math.Min(portal.Area.Y0, portal.Area.Y1) +
+                        portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
+                    oppositeEndZ = Math.Max(portal.Area.Y0, portal.Area.Y1) +
+                        portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
+
+                    break;
+
+                case PortalDirection.WallNegativeZ:
+                    startX = Math.Min(portal.Area.X0, portal.Area.X1);
+                    endX = Math.Max(portal.Area.X0, portal.Area.X1);
+                    startZ = 1;
+                    endZ = 1;
+
+                    oppositeStartX = Math.Min(portal.Area.X0, portal.Area.X1) +
+                        portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
+                    oppositeEndX = Math.Max(portal.Area.X0, portal.Area.X1) +
+                        portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
+                    oppositeStartZ = portal.AdjoiningRoom.NumZSectors - 2;
+                    oppositeEndZ = portal.AdjoiningRoom.NumZSectors - 2;
+
+                    break;
+
+                case PortalDirection.WallPositiveZ:
+                    startX = Math.Min(portal.Area.X0, portal.Area.X1);
+                    endX = Math.Max(portal.Area.X0, portal.Area.X1);
+                    startZ = room.NumZSectors - 2;
+                    endZ = room.NumZSectors - 2;
+
+                    oppositeStartX = Math.Min(portal.Area.X0, portal.Area.X1) +
+                       portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
+                    oppositeEndX = Math.Max(portal.Area.X0, portal.Area.X1) +
+                        portal.Room.Position.X - portal.AdjoiningRoom.Position.X;
+                    oppositeStartZ = 1;
+                    oppositeEndZ = 1;
+
+                    break;
+            }
+
+            for (var z = 0; z <= endZ - startZ; ++z)
+                for (var x = 0; x <= endX - startX; ++x)
+                {
+                    Sector sector = room.Sectors[x + startX, z + startZ];
+                    Sector oppositeSector = portal.AdjoiningRoom.Sectors[x + oppositeStartX, z + oppositeStartZ];
+
+                    for (int i = 0; i < relevantEdges.Length; i++)
+                    {
+                        // We need to check both the current sector and the opposite sector and choose
+                        // the largest area possible for avoiding strange rendering bugs
+                        var relevantDirection = relevantEdges[i];
+                        var oppositeRelevantDirection = oppositeRelevantEdges[i];
+
+                        var floor   = sector.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var ceiling = sector.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
+
+                        var floorOpposite   = oppositeSector.Floor.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+                        var ceilingOpposite = oppositeSector.Ceiling.GetHeight(oppositeRelevantDirection) + portal.AdjoiningRoom.WorldPos.Y;
+
+                        floor = Math.Min(floor, floorOpposite);
+                        ceiling = Math.Max(ceiling, ceilingOpposite);
+
+                        yMin = Math.Min(yMin, Math.Min(floor, ceiling));
+                        yMax = Math.Max(yMax, Math.Max(floor, ceiling));
+                    }
+                }
+            yMin = (float)Math.Floor(yMin);
+            yMax = (float)Math.Ceiling(yMax);
+
+            var xMin = portal.Area.X0 * Level.SectorSizeUnit;
+            var xMax = (portal.Area.X1 + 1) * Level.SectorSizeUnit;
+            var zMin = portal.Area.Y0 * Level.SectorSizeUnit;
+            var zMax = (portal.Area.Y1 + 1) * Level.SectorSizeUnit;
+
+            // Determine normal and portal vertices
+            VectorInt3[] portalVertices = new VectorInt3[4];
+            VectorInt3 normal;
+            switch (portal.Direction)
+            {
+                case PortalDirection.WallPositiveZ:
+                    normal = new VectorInt3(0, 0, -1);
+                    portalVertices[0] = new VectorInt3((int)xMin, (int)-yMax, (int)(zMax - Level.SectorSizeUnit));
+                    portalVertices[1] = new VectorInt3((int)xMax, (int)-yMax, (int)(zMax - Level.SectorSizeUnit));
+                    portalVertices[2] = new VectorInt3((int)xMax, (int)-yMin, (int)(zMax - Level.SectorSizeUnit));
+                    portalVertices[3] = new VectorInt3((int)xMin, (int)-yMin, (int)(zMax - Level.SectorSizeUnit));
+                    break;
+                case PortalDirection.WallPositiveX:
+                    normal = new VectorInt3(-1, 0, 0);
+                    portalVertices[0] = new VectorInt3((int)(xMax - Level.SectorSizeUnit), (int)-yMin, (int)zMax);
+                    portalVertices[1] = new VectorInt3((int)(xMax - Level.SectorSizeUnit), (int)-yMax, (int)zMax);
+                    portalVertices[2] = new VectorInt3((int)(xMax - Level.SectorSizeUnit), (int)-yMax, (int)zMin);
+                    portalVertices[3] = new VectorInt3((int)(xMax - Level.SectorSizeUnit), (int)-yMin, (int)zMin);
+                    break;
+                case PortalDirection.WallNegativeZ:
+                    normal = new VectorInt3(0, 0, 1);
+                    portalVertices[0] = new VectorInt3((int)xMax, (int)-yMax, (int)(zMin + Level.SectorSizeUnit - 1));
+                    portalVertices[1] = new VectorInt3((int)xMin, (int)-yMax, (int)(zMin + Level.SectorSizeUnit - 1));
+                    portalVertices[2] = new VectorInt3((int)xMin, (int)-yMin, (int)(zMin + Level.SectorSizeUnit - 1));
+                    portalVertices[3] = new VectorInt3((int)xMax, (int)-yMin, (int)(zMin + Level.SectorSizeUnit - 1));
+                    break;
+                case PortalDirection.WallNegativeX:
+                    normal = new VectorInt3(1, 0, 0);
+                    portalVertices[0] = new VectorInt3((int)(xMin + Level.SectorSizeUnit - 1), (int)-yMin, (int)zMin);
+                    portalVertices[1] = new VectorInt3((int)(xMin + Level.SectorSizeUnit - 1), (int)-yMax, (int)zMin);
+                    portalVertices[2] = new VectorInt3((int)(xMin + Level.SectorSizeUnit - 1), (int)-yMax, (int)zMax);
+                    portalVertices[3] = new VectorInt3((int)(xMin + Level.SectorSizeUnit - 1), (int)-yMin, (int)zMax);
+                    break;
+                default:
+                    throw new ApplicationException("Unknown PortalDirection");
+            }
+
+            // Create portal
+            var portalToAdd = new TombEnginePortal
+            {
+                AdjoiningRoom = (ushort)_roomRemapping[portal.AdjoiningRoom],
+                Vertices = portalVertices,
+                Normal = normal,
+                Direction = portal.Direction
+            };
+
+            _portalRemapping.TryAdd(portalToAdd, portal);
+            outPortals.Add(portalToAdd);
+
+            if (portal.Effect == PortalEffectType.ClassicMirror)
+            {
+                var room2DPosition = new Vector3(
+                    room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
+                
+                var mirror = new TombEngineMirror();
+                mirror.Room = (short)_roomRemapping[room];
 				mirror.Plane.X = normal.X;
 				mirror.Plane.Y = normal.Y;
 				mirror.Plane.Z = normal.Z;

@@ -87,6 +87,8 @@ namespace TombLib.Scripting.ClassicScript
 		public bool CanUndo => _undoStack.Count > 0;
 		public bool CanRedo => _redoStack.Count > 0;
 
+		public Version EngineVersion { get; set; } = new Version(0, 0);
+
 		#endregion Properties
 
 		#region Configuration
@@ -157,7 +159,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Construction
 
-		public StringEditor()
+		public StringEditor(Version engineVersion)
 		{
 			Dock = DockStyle.Fill;
 
@@ -166,6 +168,8 @@ namespace TombLib.Scripting.ClassicScript
 
 			_contentChangedWorker = new ContentChangedWorker();
 			_contentChangedWorker.RunWorkerCompleted += ContentChangedWorker_RunWorkerCompleted;
+
+			EngineVersion = engineVersion;
 		}
 
 		#endregion Construction

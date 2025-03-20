@@ -59,6 +59,8 @@ namespace TombIDE.ScriptingStudio.Controls
 		/// </summary>
 		private List<string> _pendingFileReloads = new List<string>();
 
+		private Version _currentEngineVersion = new(0, 0);
+
 		#endregion Fields
 
 		#region Construction
@@ -72,6 +74,8 @@ namespace TombIDE.ScriptingStudio.Controls
 			ScriptRootDirectoryPath = scriptRootDirectoryPath;
 
 			InitializeContextMenu();
+
+			_currentEngineVersion = IDE.Instance.Project.GetCurrentEngineVersion();
 		}
 
 		private void SetNewDefaultSettings()
@@ -179,7 +183,7 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		private IEditorControl InitializeEditor(Type editorClassType, string filePath, bool silentSession)
 		{
-			var newEditor = Activator.CreateInstance(editorClassType) as IEditorControl;
+			var newEditor = Activator.CreateInstance(editorClassType, _currentEngineVersion) as IEditorControl;
 			newEditor.ContentChangedWorkerRunCompleted += Editor_ContentChangedWorkerRunCompleted;
 
 			if (File.Exists(filePath))

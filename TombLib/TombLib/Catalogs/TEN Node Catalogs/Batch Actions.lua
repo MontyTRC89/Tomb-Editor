@@ -140,7 +140,7 @@ end
 -- !Section "Batch actions"
 -- !Description "Set collision type (soft or hard) for static meshes matching the criteria."
 -- !Arguments "NewLine, Numerical, 34, [ 0 | 1000 | 0 ], Static mesh ID to use" "String, 33, Word to search in a moveable name"
--- !Arguments "Boolean, 33, {True}, Hard collision"
+-- !Arguments "Boolean, 33, {true}, Hard collision"
 
 LevelFuncs.Engine.Node.SetCollisionModeForSpecifiedStatics = function(slotId, namePart, softCollision)
 	local statics = GetStaticsBySlot(slotId)

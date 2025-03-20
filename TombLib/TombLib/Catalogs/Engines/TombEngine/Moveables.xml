@@ -212,7 +212,7 @@
     <moveable id="283" name="IMP" />
     <moveable id="284" name="IMP_ROCK" />
     <moveable id="285" name="GUNSHIP" />
-    <moveable id="286" name="AUTO_GUN" />
+    <moveable id="286" name="AUTO_GUN_VCI" />
     <moveable id="287" name="ROMAN_GOD1" />
     <moveable id="288" name="ROMAN_GOD2" />
     <moveable id="289" name="LAGOON_WITCH" />
@@ -358,7 +358,10 @@
     <moveable id="449" name="SLAMMING_DOORS" />
     <moveable id="450" name="SWINGING_BLADE" />
 	<moveable id="451" name="ELECTRIC_BALL" />
-	<moveable id="452" name="ELECTRIC_BALL_IMPACT_POINT" />	
+	<moveable id="452" name="ELECTRIC_BALL_IMPACT_POINT" />
+	<moveable id="453" name="THOR_HAMMER_HANDLE" />
+	<moveable id="454" name="THOR_HAMMER_HEAD" />
+	<moveable id="455" name="MOVING_LASER" freeRot="true" />
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
     <moveable id="502" name="PUZZLE_ITEM3" />
@@ -794,6 +797,7 @@
     <moveable id="1086" name="CORPSE" />
     <moveable id="1087" name="WRAITH_TRAP" />
 	<moveable id="1088" name="WATERFALL_EMITTER" />
+	<moveable id="1089" name="FIREFLY_EMITTER" />
     <moveable id="1100" name="MESHSWAP1" />
     <moveable id="1101" name="MESHSWAP2" />
     <moveable id="1102" name="MESHSWAP3" />
@@ -952,14 +956,4 @@
     <moveable id="1344" name="BRIDGE_TILT4" />
     <moveable id="1345" name="BRIDGE_CUSTOM" />
     <moveable id="1350" name="HORIZON" />
-    <moveable id="1351" name="BINOCULAR_GRAPHICS" />
-    <moveable id="1352" name="TARGET_GRAPHICS" />
-    <moveable id="1400" name="PANEL_BORDER" />
-    <moveable id="1401" name="PANEL_MIDDLE" />
-    <moveable id="1402" name="PANEL_CORNER" />
-    <moveable id="1403" name="PANEL_DIAGONAL" />
-    <moveable id="1404" name="PANEL_STRIP" />
-    <moveable id="1405" name="PANEL_HALF_BORDER1" />
-    <moveable id="1406" name="PANEL_HALF_BORDER2" />
-    <moveable id="1407" name="PANEL_MIDDLE_CORNER" />
 </moveables>

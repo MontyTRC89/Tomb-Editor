@@ -39,7 +39,7 @@ end
 -- !Description "Delete level variable, if it exists."
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Variable name"
 
-LevelFuncs.Engine.Node.DeleteLevelVariable = function(varName, operator, operand)
+LevelFuncs.Engine.Node.DeleteLevelVariable = function(varName)
     if (LevelVars[varName] ~= nil) then
         LevelVars[varName] = nil
     else
@@ -88,7 +88,7 @@ end
 -- !Description "Delete game variable, if it exists."
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Variable name"
 
-LevelFuncs.Engine.Node.DeleteGameVariable = function(varName, operator, operand)
+LevelFuncs.Engine.Node.DeleteGameVariable = function(varName)
     if (GameVars[varName] ~= nil) then
         GameVars[varName] = nil
     else
