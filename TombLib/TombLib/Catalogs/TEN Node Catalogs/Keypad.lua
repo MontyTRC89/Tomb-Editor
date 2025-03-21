@@ -3,11 +3,11 @@ LevelVars.Engine.ActivatedKeypad = nil
 
 -- !Name "Create a keypad"
 -- !Section "User interface"
--- !Description "Create a keypad."
+-- !Description "Creates a keypad."
 -- !Arguments "NewLine, 80, Moveables, Keypad Object"
--- !Arguments "Numerical, 20, [ 1000 | 9999 ], PassCode"
--- !Arguments "NewLine, Cameras, Choose camera to activate."
--- !Arguments "NewLine, Volumes, Volume to use for Keypad"
+-- !Arguments "Numerical, 20, [ 1000 | 9999 ], Pass code"
+-- !Arguments "NewLine, Cameras, Camera to activate"
+-- !Arguments "NewLine, Volumes, Volume to use for the keypad"
 
 LevelFuncs.Engine.Node.KeypadCreate = function(object, code, camera, volume)
 
@@ -26,11 +26,11 @@ LevelFuncs.Engine.Node.KeypadCreate = function(object, code, camera, volume)
 
 end
 
--- !Name "Run a keypad (Triggers)"
+-- !Name "Run a keypad (triggers)"
 -- !Section "User interface"
--- !Description "Create keypad to activate the triggers using Trigger_Triggerer."
--- !Arguments "NewLine, Moveables, Keypad Object"
--- !Arguments "NewLine, Moveables, Trigger_Triggerer object to activate."
+-- !Description "Creates a keypad to activate the triggers using Trigger Triggerer."
+-- !Arguments "NewLine, Moveables, Keypad object"
+-- !Arguments "NewLine, Moveables, Trigger Triggerer object to activate"
 
 LevelFuncs.Engine.Node.KeypadTrigger = function(object, triggerer)
 
@@ -58,10 +58,10 @@ LevelFuncs.Engine.Node.KeypadTrigger = function(object, triggerer)
     end
 
 end
--- !Name "Run a keypad (Volume Event)"
+-- !Name "Run a keypad (volume event)"
 -- !Section "User interface"
--- !Description "Create a keypad to run a volume event."
--- !Arguments "NewLine, Moveables, Keypad Object"
+-- !Description "Creates a keypad to run a volume event."
+-- !Arguments "NewLine, Moveables, Keypad object"
 -- !Arguments "NewLine, 65, VolumeEventSets, Target event set"
 -- !Arguments "VolumeEvents, 35, Event to run"
 
@@ -91,10 +91,10 @@ LevelFuncs.Engine.Node.KeypadVolume = function(object, volumeEvent, eventType)
 
 end
 
--- !Name "Run a keypad (Script function)"
+-- !Name "Run a keypad (script function)"
 -- !Section "User interface"
--- !Description "Create a keypad to run a script function."
--- !Arguments "NewLine, Moveables, Keypad Object"
+-- !Description "Creates a keypad to run a script function."
+-- !Arguments "NewLine, Moveables, Keypad object"
 -- !Arguments "NewLine, LuaScript, Target Lua script function" "NewLine, String, Arguments"
 
 LevelFuncs.Engine.Node.KeypadScript = function(object, funcName, args)

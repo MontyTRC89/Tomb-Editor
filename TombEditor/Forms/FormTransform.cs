@@ -27,6 +27,9 @@ namespace TombEditor.Forms
             _instance = instance;
             BackupData();
             UpdateUI();
+
+            // Set window property handlers
+            Configuration.ConfigureWindow(this, _editor.Configuration);
         }
 
         private void BackupData()

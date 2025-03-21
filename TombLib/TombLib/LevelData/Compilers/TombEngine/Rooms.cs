@@ -889,7 +889,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Yaw = ToTrAngle(instance.RotationY),
                     Scale = instance.Scale,
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Flags = (ushort)(0x0003), // FIXME: later let user choose if solid (0x0003) or soft (0x0001)!
+                    Flags = (ushort)(0x0007), // FIXME: later let user choose if solid (0x0007) or soft (0x0005)!
                     Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
                     HitPoints = 0,
                     LuaName = instance.LuaName ?? string.Empty

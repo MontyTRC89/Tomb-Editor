@@ -3,7 +3,7 @@ local CustomBar = require("Engine.CustomBar")
 -- !Name "Create basic custom bar"
 -- !Section "User interface"
 -- !Conditional "False"
--- !Description "Creates a bar with maximum value of 1000."
+-- !Description "Creates a basic custom bar."
 -- !Arguments "NewLine, String, 50, [ NoMultiline ], Bar name"
 -- !Arguments "Numerical, [ 0 | 65535 | 2 ], {0}, 25, Start value of bar"
 -- !Arguments "Numerical, [ 0 | 65535 | 2 ], {1000}, 25, Max value of bar"

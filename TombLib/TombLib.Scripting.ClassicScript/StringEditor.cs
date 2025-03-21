@@ -159,7 +159,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Construction
 
-		public StringEditor()
+		public StringEditor(Version engineVersion)
 		{
 			Dock = DockStyle.Fill;
 
@@ -168,6 +168,8 @@ namespace TombLib.Scripting.ClassicScript
 
 			_contentChangedWorker = new ContentChangedWorker();
 			_contentChangedWorker.RunWorkerCompleted += ContentChangedWorker_RunWorkerCompleted;
+
+			EngineVersion = engineVersion;
 		}
 
 		#endregion Construction

@@ -235,6 +235,9 @@
     <None Update="Catalogs\TEN Node Catalogs\Environment.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Keypad.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Lara.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

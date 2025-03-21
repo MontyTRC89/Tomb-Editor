@@ -1,3 +1,15 @@
+Version 1.8.1
+=============
+
+Tomb Editor:
+ * Save transform window position after closing it.
+
+TombIDE:
+ * Fixed string editor throwing exception with TRNG scripts.
+
+TEN nodes:
+ * Added a node for changing scale of a moveable (visual only).
+
 Version 1.8
 ===========
 
@@ -33,11 +45,12 @@ TEN nodes:
  * Added nodes to change transparency of moveables and statics.
  * Added a node for showing ammo counter.
  * Added a node to hide or show a moveable.
+ * Added a node to add or remove collision from a static mesh.
 
 TEN base WAD:
  * Added WATERFALL_SPRITES (1378) for use with the Waterfall Emitter object.
  * Added DIARY_ITEM (986) and associated sprites slots (1384, 1385).
- * Added Lara underwater floor trapdoor animation (368).
+ * Added Lara underwater floor trapdoor animation (442).
  * Replaced stopwatch with a generic model due to legal reasons.
  * Fixed incorrect sound effect playing during the Lara's sprint jump animation. 
 

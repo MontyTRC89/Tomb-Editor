@@ -423,6 +423,26 @@ LevelFuncs.Engine.Node.SetMoveableRotation = function(operation, value, moveable
 	moveable:SetRotation(rotation)
 end
 
+-- !Name "Modify scale of a moveable"
+-- !Section "Moveable parameters"
+-- !Description "Set given moveable scale separately for every axis. For vsual effect only."
+-- !Arguments "NewLine, Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Vector3, [ 0 | 256 | 2 | 0.1 | 1 ], 75, { TEN.Vec3(1,1,1) }, Scale value to define"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.SetMoveableScale = function(operation, value, moveableName)
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+	local scale = moveable:GetScale();
+
+	if (operation == 0) then
+		scale = scale + value
+	else
+		scale = value
+	end
+
+	moveable:SetScale(scale)
+end
+
 -- !Name "Move moveable to another moveable"
 -- !Section "Moveable parameters"
 -- !Description "Moves moveable to a position of another moveable."
@@ -565,9 +585,9 @@ end
 -- !Name "Modify ItemFlag of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Modify ItemFlag for moveable. Used for extended customisation of certain moveables."
--- !Arguments "NewLine,Moveables, 50, Choose moveable"
--- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to change"
--- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value to store in moveable's ItemFlags
+-- !Arguments "NewLine,Moveables, 70, Choose moveable"
+-- !Arguments "Numerical, 13, [ 0 | 7 ], ItemFlag index to change"
+-- !Arguments "Numerical, 17, [ -32768 | 32767 | 0 ], Value to store in moveable's ItemFlags
 
 LevelFuncs.Engine.Node.ModifyItemFlag = function (moveable, itemFlagLocation, itemFlagValue)
 	TEN.Objects.GetMoveableByName(moveable):SetItemFlags(itemFlagValue,itemFlagLocation)
@@ -577,9 +597,9 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks current value contained inside a given ItemFlag"
 -- !Conditional "True"
--- !Arguments "NewLine,Moveables, 50, Choose moveable"
--- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to check"
--- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
+-- !Arguments "NewLine,Moveables, 70, Choose moveable"
+-- !Arguments "Numerical, 13, [ 0 | 7 ], ItemFlag index to check"
+-- !Arguments "Numerical, 17, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
 
 LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, itemFlagValue)
     local itemFlag = TEN.Objects.GetMoveableByName(moveable):GetItemFlags(itemFlagLocation)
