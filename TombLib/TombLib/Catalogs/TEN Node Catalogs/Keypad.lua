@@ -46,30 +46,8 @@ LevelFuncs.Engine.Node.KeypadTrigger = function(object, triggerer)
     end
 
     local target = GetMoveableByName(object)
-    local targetRot = target:GetRotation()
-    local laraRot = Lara:GetRotation()
 
-    if (targetRot.y == 0 and laraRot.y >= -30 and laraRot.y <= 30) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == 90 and laraRot.y >= 60 and laraRot.y <= 120) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == -180 and laraRot.y >= -150 and laraRot.y <= 150) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == -90 and laraRot.y >= -120 and laraRot.y <= -60) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    end
-
-    if Lara:GetAnim() == 197 then
-        KeyClear(ActionID.ACTION)
-    end
+    Lara:AlignToMoveable(target)
 
     if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
         Lara:SetVisible(false)
@@ -100,34 +78,8 @@ LevelFuncs.Engine.Node.KeypadVolume = function(object, volumeEvent, eventType)
     end
 
     local target = GetMoveableByName(object)
-    local targetRot = target:GetRotation()
-    local laraRot = Lara:GetRotation()
 
-    if (targetRot.y == 0 and laraRot.y >= -30 and laraRot.y <= 30) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == 90 and laraRot.y >= 60 and laraRot.y <= 120) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == -180 and laraRot.y >= -150 and laraRot.y <= 150) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == -90 and laraRot.y >= -120 and laraRot.y <= -90) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    end
-
-    if KeyIsHit(ActionID.ACTION) then
-        Lara:SetAnim(197)
-    end
-
-    if Lara:GetAnim() == 197 then
-        KeyClear(ActionID.ACTION)
-    end
+    Lara:AlignToMoveable(target)
 
     if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
         Lara:SetVisible(false)
@@ -158,30 +110,8 @@ LevelFuncs.Engine.Node.KeypadScript = function(object, funcName, args)
     end
 
     local target = GetMoveableByName(object)
-    local targetRot = target:GetRotation()
-    local laraRot = Lara:GetRotation()
 
-    if (targetRot.y == 0 and laraRot.y >= -30 and laraRot.y <= 30) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == 90 and laraRot.y >= 60 and laraRot.y <= 120) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == -180 and laraRot.y >= -150 and laraRot.y <= 150) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    elseif (targetRot.y == -90 and laraRot.y >= -120 and laraRot.y <= -90) then
-        if KeyIsHit(ActionID.ACTION) then
-            Lara:SetAnim(197)
-        end
-    end
-
-    if Lara:GetAnim() == 197 then
-        KeyClear(ActionID.ACTION)
-    end
+    Lara:AlignToMoveable(target)
 
     if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
         Lara:SetVisible(false)
