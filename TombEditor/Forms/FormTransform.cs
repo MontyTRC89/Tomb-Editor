@@ -68,7 +68,7 @@ namespace TombEditor.Forms
                 return;
 
             _instance.Position = new Vector3((float)nudTransX.Value - _instance.Room.Position.X * (int)Level.SectorSizeUnit,
-                                             (float)nudTransY.Value - _instance.Room.Position.Y,
+                                             (float)-nudTransY.Value - _instance.Room.Position.Y,
                                              (float)nudTransZ.Value - _instance.Room.Position.Z * (int)Level.SectorSizeUnit);
 
             if (_instance is IRotateableY rotateableY)
@@ -107,7 +107,7 @@ namespace TombEditor.Forms
             nudScaleX.Enabled = (_instance is IScaleable) && !(_instance is StaticInstance && !_editor.Level.IsTombEngine);
 
             nudTransX.Value = (decimal)_instance.Position.X + _instance.Room.Position.X * (int)Level.SectorSizeUnit;
-            nudTransY.Value = (decimal)_instance.Position.Y + _instance.Room.Position.Y;
+            nudTransY.Value = (decimal)-(_instance.Position.Y + _instance.Room.Position.Y);
             nudTransZ.Value = (decimal)_instance.Position.Z + _instance.Room.Position.Z * (int)Level.SectorSizeUnit;
 
             if (_instance is IRotateableY rotateableY)
