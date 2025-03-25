@@ -31,6 +31,7 @@ WadTool:
  * Added option to cancel skeleton editor closing if a warning about unbalanced meshtree is thrown.
  * Fixed incorrect copying of sprite sequences from one wad to another.
  * Fixed TR3-TEN remapping of puzzle objects.
+* Fixed TR4 UNDERWATER_SWITCH2 remapping incorrectly for TEN.
 
 TombIDE:
  * Updated TR1X preset to 4.8.3 - no auto-update available due to breaking changes in the engine.
