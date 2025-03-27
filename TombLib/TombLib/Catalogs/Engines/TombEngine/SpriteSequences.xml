@@ -29,4 +29,5 @@
 	<sprite_sequence id="1383" name="CUSTOM_AMMO_GRAPHICS" />
 	<sprite_sequence id="1384" name="DIARY_SPRITES" />
 	<sprite_sequence id="1385" name="DIARY_ENTRY_SPRITES" />
+  <sprite_sequence id="1386" name="DYNAMIC_WATER_SPRITES" />
 </sprite_sequences>

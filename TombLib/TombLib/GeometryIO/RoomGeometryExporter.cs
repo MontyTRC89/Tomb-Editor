@@ -133,16 +133,18 @@ namespace TombLib.GeometryIO
                             var page = new SplitPageReference(tex, y * numXPages + x, x, y, Path.Combine(Path.GetDirectoryName(filePath), textureFileName));
                             splitPages.Add(page);
 
-                            var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + page.Index, tex, page.Path, false, false, 0, page.Index);
-                            var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + page.Index, tex, page.Path, false, true, 0, page.Index);
-                            var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + page.Index, tex, page.Path, true, false, 0, page.Index);
-                            var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + page.Index, tex, page.Path, true, true, 0, page.Index);
+                            var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + page.Index, tex, page.Path, false, false, 0, page.Index, false);
+                            var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + page.Index, tex, page.Path, false, true, 0, page.Index, false);
+                            var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + page.Index, tex, page.Path, true, false, 0, page.Index, false);
+                            var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + page.Index, tex, page.Path, true, true, 0, page.Index, false);
+							var matDynamicWaterSurface = new IOMaterial(Material.Material_DynamicWaterSurface + "_" + j + "_" + page.Index, tex, page.Path, true, true, 0, page.Index, true);
 
-                            model.Materials.Add(matOpaque);
+							model.Materials.Add(matOpaque);
                             model.Materials.Add(matOpaqueDoubleSided);
                             model.Materials.Add(matAdditiveBlending);
                             model.Materials.Add(matAdditiveBlendingDoubleSided);
-                        }
+							model.Materials.Add(matDynamicWaterSurface);
+						}
                     }
                 }
 

@@ -285,6 +285,7 @@ namespace TombLib.LevelData
                 material.Texture = tmpMaterial.Texture;
                 material.AdditiveBlending = tmpMaterial.AdditiveBlending;
                 material.DoubleSided = tmpMaterial.DoubleSided;
+                material.DynamicWaterSurface = tmpMaterial.DynamicWaterSurface;
                 DirectXModel.Materials.Add(material);
             }
 

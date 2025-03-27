@@ -1164,8 +1164,28 @@ namespace TombLib.LevelData.IO
                 LegacyRepair.SwapFacesWhereApplicable(newRooms.Values, usesLegacyFloor, usesLegacyCeiling);
             }
 
-            // Now build the real geometry and update geometry buffers
-            ParallelOptions parallelOptions = new ParallelOptions()
+			progressReporter?.ReportInfo("Applying dynamic water surface");
+
+			// Link rooms
+			foreach (var room in newRooms)
+			{
+				cancelToken.ThrowIfCancellationRequested();
+
+				foreach (var portal in room.Value.Portals)
+                {
+                    if (portal.Direction == PortalDirection.Floor && 
+                        portal.AdjoiningRoom?.Properties.Type == RoomType.Water)
+                    {
+                        portal.Effect = PortalEffectType.DynamicWaterSurface;
+                        portal.Properties.WaterRefractionStrength = WaterRefractionStrength.Medium;
+                        portal.Properties.WaterDirection = WaterDirection.North;
+                        portal.Properties.WaterSpeed = 32;
+                    }
+                }
+			}
+
+			// Now build the real geometry and update geometry buffers
+			ParallelOptions parallelOptions = new ParallelOptions()
             {
                 CancellationToken = cancelToken,
             };
@@ -1642,7 +1662,14 @@ namespace TombLib.LevelData.IO
                                 instance.Properties.ReflectLights = chunkIO.Raw.ReadBoolean();
                                 return true;
                             }
-                            return false;
+                            else if (id4 == Prj2Chunks.ObjectPortalWaterProperties)
+							{
+								instance.Properties.WaterRefractionStrength = (WaterRefractionStrength) chunkIO.Raw.ReadByte();
+								instance.Properties.WaterDirection = (WaterDirection)chunkIO.Raw.ReadByte();
+								instance.Properties.WaterSpeed = chunkIO.Raw.ReadInt32();
+								return true;
+							}
+							return false;
                         });
                     }
 

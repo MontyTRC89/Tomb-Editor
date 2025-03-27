@@ -763,8 +763,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         texture.Mirror(true);
                                     }
 
+                                    var materialType = TombEngineMaterialType.Opaque;
+                                    if (submesh.Value.Material.DynamicWaterSurface)
+                                        materialType = TombEngineMaterialType.Water;
+
                                     var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-                                    var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, (byte)TombEngineMaterialType.Opaque, roomVertices);
+                                    var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, (byte)materialType, roomVertices);
 
                                     roomPolygons.Add(tri);
                                     roomVertices[index0].NormalHelpers.Add(new NormalHelper(tri));

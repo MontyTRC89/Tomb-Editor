@@ -21,27 +21,40 @@ namespace TombEditor.Forms
 
             int effectID = (int)_instance.Effect;
             comboPortalEffect.SelectedIndex = effectID < comboPortalEffect.Items.Count ? effectID : -1;
+          
             cbReflectMoveables.Checked = _instance.Properties.ReflectMoveables;
             cbReflectStatics.Checked = _instance.Properties.ReflectStatics;
             cbReflectSprites.Checked = _instance.Properties.ReflectSprites;
             cbReflectLights.Checked = _instance.Properties.ReflectLights;
+
+            comboWaterDirection.SelectedIndex = (int)_instance.Properties.WaterDirection;
+            comboRefractionStrength.SelectedIndex = (int)_instance.Properties.WaterRefractionStrength;
+            numWaterSpeed.Value = _instance.Properties.WaterSpeed;
         }
 
         private void UpdateUI()
         {
-            cbReflectMoveables.Enabled =
-            cbReflectStatics.Enabled =
-            cbReflectSprites.Enabled =
-            cbReflectLights.Enabled = (PortalEffectType)comboPortalEffect.SelectedIndex == PortalEffectType.ClassicMirror;
+            if (comboPortalEffect.SelectedIndex <= 0)
+                darkTabbedContainer1.Visible = false;
+            else
+			{
+                darkTabbedContainer1.Visible = true;
+				darkTabbedContainer1.SelectedIndex = comboPortalEffect.SelectedIndex - 1;
+			}
         }
 
         private void butOk_Click(object sender, EventArgs e)
         {
             _instance.Effect = (PortalEffectType)comboPortalEffect.SelectedIndex;
+
             _instance.Properties.ReflectMoveables = cbReflectMoveables.Checked;
             _instance.Properties.ReflectStatics = cbReflectStatics.Checked;
             _instance.Properties.ReflectSprites = cbReflectSprites.Checked;
             _instance.Properties.ReflectLights = cbReflectLights.Checked;
+
+            _instance.Properties.WaterDirection = (WaterDirection)comboWaterDirection.SelectedIndex;
+            _instance.Properties.WaterRefractionStrength = (WaterRefractionStrength)comboRefractionStrength.SelectedIndex;
+            _instance.Properties.WaterSpeed = (int)numWaterSpeed.Value;
 
             DialogResult = DialogResult.OK;
             Close();

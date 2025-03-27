@@ -23,6 +23,21 @@ namespace TombLib.LevelData
        DynamicWaterSurface
     }
 
+    public enum WaterRefractionStrength : byte
+    {
+        Low,
+        Medium,
+        High
+    }
+
+    public enum WaterDirection : byte
+	{
+        North,
+        East,
+        South,
+        West
+    }
+
     public class PortalProperties
     {
         public bool ReflectLara { get; set; } = true;
@@ -30,7 +45,11 @@ namespace TombLib.LevelData
         public bool ReflectMoveables { get; set; } = true;
         public bool ReflectSprites { get; set; } = true;
         public bool ReflectLights { get; set; } = true;
-    }
+
+        public WaterRefractionStrength WaterRefractionStrength { get; set; } = WaterRefractionStrength.Medium;
+		public WaterDirection WaterDirection { get; set; } = WaterDirection.North;
+        public int WaterSpeed { get; set; } = 32;
+	}
 
     public class PortalInstance : SectorBasedObjectInstance
     {

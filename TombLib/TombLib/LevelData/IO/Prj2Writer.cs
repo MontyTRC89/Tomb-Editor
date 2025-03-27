@@ -783,7 +783,14 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(instance.Properties.ReflectSprites);
                                 chunkIO.Raw.Write(instance.Properties.ReflectLights);
                             }
-                        });
+
+							using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortalWaterProperties, LEB128.MaximumSize1Byte))
+							{
+								chunkIO.Raw.Write((byte)instance.Properties.WaterRefractionStrength);
+								chunkIO.Raw.Write((byte)instance.Properties.WaterDirection);
+								chunkIO.Raw.Write(instance.Properties.WaterSpeed);
+							}
+						});
                     else if (o is GhostBlockInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectGhostBlock2, LEB128.MaximumSize2Byte))
                         {

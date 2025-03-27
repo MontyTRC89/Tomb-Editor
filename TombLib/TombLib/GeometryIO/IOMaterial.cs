@@ -9,10 +9,11 @@ namespace TombLib.GeometryIO
         public bool AdditiveBlending { get; set; }
         public bool DoubleSided { get; set; }
         public int Shininess { get; set; }
+		public bool DynamicWaterSurface { get; set; }
 
-        // These 2 fields are used for exporting material texture to split texture pages.
+		// These 2 fields are used for exporting material texture to split texture pages.
 
-        public string Path { get; set; }
+		public string Path { get; set; }
         public int Page { get; set; }
 
         public IOMaterial(string name)
@@ -20,7 +21,7 @@ namespace TombLib.GeometryIO
             Name = name;
         }
 
-        public IOMaterial(string name, Texture texture, string texturePath,bool additiveBlending, bool doubleSided, int shininess, int page)
+        public IOMaterial(string name, Texture texture, string texturePath,bool additiveBlending, bool doubleSided, int shininess, int page, bool dynamicWaterSurface)
         {
             Name = name;
             Texture = texture;
@@ -29,6 +30,8 @@ namespace TombLib.GeometryIO
             Shininess = shininess;
             Path = texturePath;
             Page = page;
-        }
+            DynamicWaterSurface = dynamicWaterSurface;
+
+		}
     }
 }

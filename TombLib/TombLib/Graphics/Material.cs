@@ -8,12 +8,14 @@ namespace TombLib.Graphics
         public const string Material_OpaqueDoubleSided = "TeOpDS";
         public const string Material_AdditiveBlending = "TeBl";
         public const string Material_AdditiveBlendingDoubleSided = "TeBlDS";
+		public const string Material_DynamicWaterSurface = "TeDynWaterS";
 
-        public string Name { get; private set; }
+		public string Name { get; private set; }
         public Texture Texture { get; set; }
         public bool AdditiveBlending { get; set; }
         public bool DoubleSided { get; set; }
         public int Shininess { get; set; }
+        public bool DynamicWaterSurface { get; set; }
 
         public Material(string name)
         {
