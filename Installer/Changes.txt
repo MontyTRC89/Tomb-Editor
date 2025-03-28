@@ -11,6 +11,7 @@ TombIDE:
  * Fixed string editor throwing exception with TRNG scripts.
 
 TEN nodes:
+ * Added nodes for moving moveables and statics along flyby paths.
  * Added a node for changing scale of a moveable (visual only).
 
 Version 1.8
