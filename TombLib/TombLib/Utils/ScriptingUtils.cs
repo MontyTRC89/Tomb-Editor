@@ -250,7 +250,7 @@ namespace TombLib.Utils
 #endif
             }
 
-            return result;
+            return result.OrderBy(n => n.Section).ToList();
         }
 
         public static List<string> GetAllFunctionNames(string path, List<string> list = null, int depth = 0)

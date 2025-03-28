@@ -4,6 +4,7 @@ Version 1.8.1
 Tomb Editor:
  * Save transform window position after closing it.
  * Invert vertical position value in a transform window.
+ * Order nodes in a list by category.
  * Fixed exception when a classic trigger was created with a volume selected.
 
 TombIDE:
