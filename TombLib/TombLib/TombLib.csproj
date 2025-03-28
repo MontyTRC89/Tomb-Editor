@@ -256,6 +256,9 @@
     <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Flyby Paths.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Sound.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
