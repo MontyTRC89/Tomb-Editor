@@ -25,10 +25,10 @@ LevelFuncs.Engine.Node.ConstructPathTimedData = function(objectName, isStatic, f
 	LevelVars.Engine.TransformTimeData[dataName].IsStatic   	= isStatic
 	LevelVars.Engine.TransformTimeData[dataName].ObjectName 	= objectName
 	LevelVars.Engine.TransformTimeData[dataName].Name       	= dataName
-	LevelVars.Engine.TransformTimeData[dataName].Flyby			= flyby
+	LevelVars.Engine.TransformTimeData[dataName].Flyby		= flyby
 	LevelVars.Engine.TransformTimeData[dataName].MotionType		= motionType
 	LevelVars.Engine.TransformTimeData[dataName].Rotation   	= rotation
-	LevelVars.Engine.TransformTimeData[dataName].Smooth			= smooth
+	LevelVars.Engine.TransformTimeData[dataName].Smooth		= smooth
 	LevelVars.Engine.TransformTimeData[dataName].NewValue   	= endPosition
 	LevelVars.Engine.TransformTimeData[dataName].EndPosition	= endPosition
 	LevelVars.Engine.TransformTimeData[dataName].OldValue   	= startPosition
@@ -79,23 +79,23 @@ LevelFuncs.Engine.Node.TransformPathTimedData = function(dataName)
 
 	local object = LevelVars.Engine.TransformTimeData[dataName].IsStatic and TEN.Objects.GetStaticByName(LevelVars.Engine.TransformTimeData[dataName].ObjectName) or TEN.Objects.GetMoveableByName(LevelVars.Engine.TransformTimeData[dataName].ObjectName)
 
-	local flybyPos = View.GetFlybyPosition(LevelVars.Engine.TransformTimeData[dataName].Flyby, newValue1)
+	local flybyPos = View.GetFlybyPosition(LevelVars.Engine.TransformTimeData[dataName].Flyby, newValue1, true)
 	object:SetPosition(flybyPos)
 
 	if LevelVars.Engine.TransformTimeData[dataName].Rotation == true then
 		
-		local flybyRot = View.GetFlybyRotation(LevelVars.Engine.TransformTimeData[dataName].Flyby, newValue1)
+		local flybyRot = View.GetFlybyRotation(LevelVars.Engine.TransformTimeData[dataName].Flyby, newValue1, true)
 		object:SetRotation(flybyRot)
 	
 	end
 
 	if LevelVars.Engine.TransformTimeData[dataName].StopAtEnd and  math.abs(newValue1 - LevelVars.Engine.TransformTimeData[dataName].EndPosition) < tolerance then
-        Timer.Delete(LevelVars.Engine.TransformTimeData[dataName].Name)
-        LevelVars.Engine.TransformTimeData[dataName] = nil
-    elseif LevelVars.Engine.TransformTimeData[dataName].MotionType == 0 and LevelVars.Engine.TransformTimeData[dataName].Progress >= 1 then
-        Timer.Delete(LevelVars.Engine.TransformTimeData[dataName].Name)
-        LevelVars.Engine.TransformTimeData[dataName] = nil
-    end
+        	Timer.Delete(LevelVars.Engine.TransformTimeData[dataName].Name)
+        	LevelVars.Engine.TransformTimeData[dataName] = nil
+    	elseif LevelVars.Engine.TransformTimeData[dataName].MotionType == 0 and LevelVars.Engine.TransformTimeData[dataName].Progress >= 1 then
+        	Timer.Delete(LevelVars.Engine.TransformTimeData[dataName].Name)
+        	LevelVars.Engine.TransformTimeData[dataName] = nil
+    	end
 
 end
 
