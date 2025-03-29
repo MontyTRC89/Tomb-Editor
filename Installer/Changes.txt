@@ -8,6 +8,7 @@ Tomb Editor:
  * Fixed exception when a classic trigger was created with a volume selected.
 
 TombIDE:
+ * Added default placeholder texture for newly created projects.
  * Fixed string editor throwing exception with TRNG scripts.
 
 TEN nodes:
