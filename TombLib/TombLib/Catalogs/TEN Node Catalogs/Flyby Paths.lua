@@ -111,13 +111,30 @@ LevelFuncs.Engine.Node.DeletePathTimedData = function(objectName, endPosition)
     end
 end
 
+-- !Name "Set moveable position on a flyby path"
+-- !Section "Flyby paths"
+-- !Description "Sets moveable position to a specific point in a flyby path."
+-- !Arguments "NewLine, Moveables"
+-- !Arguments "NewLine, Numerical, 25, [ 0 | 256 ], Flyby sequence index"
+-- !Arguments "Numerical, 25, [ 0 | 100 | 2 | 1 ], {0}, Position percentage (0 to 100)"
+-- !Arguments "Boolean, 50, Set Rotation"
+
+LevelFuncs.Engine.Node.SetMoveablePositionOnFlybyPath = function(moveableName, flyby, percentage, rotation)
+	
+	local object = TEN.Objects.GetMoveableByName(moveableName)
+	object:SetPosition(View.GetFlybyPosition(flyby, percentage, false))
+	if rotation then
+		object:SetRotation(View.GetFlybyRotation(flyby, percentage, false))
+	end
+end
+
 -- !Name "Translate moveable over flyby path"
 -- !Section "Flyby paths"
--- !Description "Gradually translate a moveable over flyby path over specified timespan."
+-- !Description "Gradually translates a moveable over flyby path over specified timespan."
 -- !Arguments "NewLine, Moveables, 67" "Numerical, 33, [ 0 | 256 ], Flyby sequence index"
 -- !Arguments "NewLine, Enumeration, 34, [ One Shot | Loop | Back and Forth], {0}, Motion Type"
--- !Arguments "Numerical, 33, [ 0 | 100 | 2 | 1 ], {0}, Start position (0 to 100)"
--- !Arguments "Numerical, 33, [ 0 | 100 | 2 | 1 ], {100}, End position (0 to 100)"
+-- !Arguments "Numerical, 33, [ 0 | 100 | 2 | 1 ], {0}, Start position percentage (0 to 100)"
+-- !Arguments "Numerical, 33, [ 0 | 100 | 2 | 1 ], {100}, End position percentage (0 to 100)"
 -- !Arguments "NewLine, Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 34, Time (in seconds)" 
 -- !Arguments "Boolean, 33, Set Rotation"
 -- !Arguments "33, Boolean, Smooth motion"
@@ -130,7 +147,7 @@ end
 
 -- !Name "Stop the translation of a moveable"
 -- !Section "Flyby paths"
--- !Description "Stop an already active moveable translation loop."
+-- !Description "Stops an already active moveable translation loop."
 -- !Arguments "NewLine, Moveables, Moveable to stop translation"
 -- !Arguments "NewLine, Numerical, [ 0 | 100 | 2 | 1 ], {0}, 20, End Position. This is the position the moveable will stop."
 
@@ -139,13 +156,30 @@ LevelFuncs.Engine.Node.StopMoveableOverFlybyPath = function(moveableName, endPos
     do LevelFuncs.Engine.Node.DeletePathTimedData(moveableName, endPosition) end
 end
 
--- !Name "Translate static over flyby path"
+-- !Name "Set static mesh position on a flyby path"
 -- !Section "Flyby paths"
--- !Description "Gradually translate a static over flyby path over specified timespan."
+-- !Description "Sets static mesh position to a specific point in a flyby path."
+-- !Arguments "NewLine, Statics"
+-- !Arguments "NewLine, Numerical, 25, [ 0 | 256 ], Flyby sequence index"
+-- !Arguments "Numerical, 25, [ 0 | 100 | 2 | 1 ], {0}, Position percentage (0 to 100)"
+-- !Arguments "Boolean, 50, Set Rotation"
+
+LevelFuncs.Engine.Node.SetStaticPositionOnFlybyPath = function(staticName, flyby, percentage, rotation)
+	
+	local object = TEN.Objects.GetStaticByName(staticName)
+	object:SetPosition(View.GetFlybyPosition(flyby, percentage, false))
+	if rotation then
+		object:SetRotation(View.GetFlybyRotation(flyby, percentage, false))
+	end
+end
+
+-- !Name "Translate static mesh over flyby path"
+-- !Section "Flyby paths"
+-- !Description "Gradually translates a static mesh over flyby path over specified timespan."
 -- !Arguments "NewLine, Statics, 67" "Numerical, 33, [ 0 | 256 ], Flyby sequence index"
 -- !Arguments "NewLine, Enumeration, 34, [ One Shot | Loop | Back and Forth], {0}, Motion Type"
--- !Arguments "Numerical, 33, [ 0 | 100 | 2 | 1 ], {0}, Start position (0 to 100)"
--- !Arguments "Numerical, 33, [ 0 | 100 | 2 | 1 ], {100}, End position (0 to 100)"
+-- !Arguments "Numerical, 33, [ 0 | 100 | 2 | 1 ], {0}, Start position percentage (0 to 100)"
+-- !Arguments "Numerical, 33, [ 0 | 100 | 2 | 1 ], {100}, End position percentage (0 to 100)"
 -- !Arguments "NewLine, Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 34, Time (in seconds)" 
 -- !Arguments "Boolean, 33, Set Rotation"
 -- !Arguments "33, Boolean, Smooth motion"
@@ -156,10 +190,10 @@ LevelFuncs.Engine.Node.TranslatStaticOverFlybyTimespan = function(moveableName, 
 	do LevelFuncs.Engine.Node.ConstructPathTimedData(moveableName, true, flyby, motionType, startPosition, endPosition, time, rotation, smooth) end
 end
 
--- !Name "Stop the translation of a static"
+-- !Name "Stop the translation of a static mesh"
 -- !Section "Flyby paths"
--- !Description "Stop an already active static."
--- !Arguments "NewLine, Statics, Static to stop translation"
+-- !Description "Stops an already active static mesh translation loop."
+-- !Arguments "NewLine, Statics, Static mesh to stop translation"
 -- !Arguments "NewLine, Numerical, [ 0 | 100 | 2 | 1 ], {0}, 20, End Position. This is the position the moveable will stop."
 
 LevelFuncs.Engine.Node.StopStaticOverFlybyPath = function(moveableName, endPosition)
