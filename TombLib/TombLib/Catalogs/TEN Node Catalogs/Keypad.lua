@@ -47,7 +47,7 @@ LevelFuncs.Engine.Node.KeypadTrigger = function(object, triggerer)
 
     local target = GetMoveableByName(object)
 
-    Lara:AlignToMoveable(target)
+    Lara:Interact(target)
 
     if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
         Lara:SetVisible(false)
@@ -79,7 +79,7 @@ LevelFuncs.Engine.Node.KeypadVolume = function(object, volumeEvent, eventType)
 
     local target = GetMoveableByName(object)
 
-    Lara:AlignToMoveable(target)
+    Lara:Interact(target)
 
     if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
         Lara:SetVisible(false)
@@ -111,7 +111,7 @@ LevelFuncs.Engine.Node.KeypadScript = function(object, funcName, args)
 
     local target = GetMoveableByName(object)
 
-    Lara:AlignToMoveable(target)
+    Lara:Interact(target)
 
     if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
         Lara:SetVisible(false)
