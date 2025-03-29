@@ -38,7 +38,7 @@ Tomb Editor dev team."
 SetCompressor lzma
 Unicode true
 Name "Tomb Editor"
-OutFile "TombEditorInstall.exe"
+OutFile "TombEditor${Version_1}${Version_2}${Version_3}_Install.exe"
 InstallDir "C:\Tomb Editor"
   
 ;--------------------------------
