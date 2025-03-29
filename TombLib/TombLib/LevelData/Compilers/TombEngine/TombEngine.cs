@@ -1,8 +1,10 @@
-﻿using System;
+﻿using NAudio.Flac;
+using System;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
 using TombLib.IO;
+using TombLib.Types;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.TombEngine
@@ -177,58 +179,123 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                // Write animations' data
-                writer.Write((uint)_animations.Count);
-                writer.WriteBlockArray(_animations);
-
-                writer.Write((uint)_stateChanges.Count);
-                writer.WriteBlockArray(_stateChanges);
-
-                writer.Write((uint)_animDispatches.Count);
-                writer.WriteBlockArray(_animDispatches);
-
-                writer.Write((uint)_animCommands.Count);
-                writer.WriteBlockArray(_animCommands);
-
-                writer.Write((uint)_meshTrees.Count);
+                writer.Write(_meshTrees.Count);
                 writer.WriteBlockArray(_meshTrees);
 
-                writer.Write((uint)_frames.Count);
-                foreach (var frame in _frames)
+                writer.Write(_moveables.Count);
+                foreach (var moveable in _moveables)
                 {
-                    writer.Write((short)frame.BoundingBox.X1);
-                    writer.Write((short)frame.BoundingBox.X2);
-                    writer.Write((short)frame.BoundingBox.Y1);
-                    writer.Write((short)frame.BoundingBox.Y2);
-                    writer.Write((short)frame.BoundingBox.Z1);
-                    writer.Write((short)frame.BoundingBox.Z2);
-                    writer.Write((short)frame.Offset.X);
-                    writer.Write((short)frame.Offset.Y);
-                    writer.Write((short)frame.Offset.Z);
-                    writer.Write((short)frame.Angles.Count);
-                    foreach (var angle in frame.Angles)
-                        writer.Write(angle);
+                    writer.Write(moveable.ObjectID);
+                    writer.Write(moveable.NumMeshes);
+                    writer.Write(moveable.StartingMesh);
+                    writer.Write(moveable.MeshTree);
+
+                    writer.Write(moveable.NumAnimations);
+                    foreach (var animation in moveable.Animations)
+                    {
+                        writer.Write(animation.StateID);
+                        writer.Write(animation.Interpolation);
+                        writer.Write(animation.FrameEnd);
+                        writer.Write(animation.NextAnimation);
+                        writer.Write(animation.NextFrame);
+                        writer.Write(animation.BlendFrameCount);
+                        writer.Write(animation.BlendCurve.Start);
+                        writer.Write(animation.BlendCurve.End);
+                        writer.Write(animation.BlendCurve.StartHandle);
+                        writer.Write(animation.BlendCurve.EndHandle);
+
+                        var startX = new Vector2(0.0f, animation.VelocityStart.X);
+                        var endX = new Vector2(1.0f, animation.VelocityEnd.X);
+                        var fixedMotionCurveX = new BezierCurve2D(startX, endX, startX, endX);
+                        writer.Write(fixedMotionCurveX.Start);
+                        writer.Write(fixedMotionCurveX.End);
+                        writer.Write(fixedMotionCurveX.StartHandle);
+                        writer.Write(fixedMotionCurveX.EndHandle);
+
+                        var startY = new Vector2(0.0f, animation.VelocityStart.Y);
+                        var endY = new Vector2(1.0f, animation.VelocityEnd.Y);
+                        var fixedMotionCurveY = new BezierCurve2D(startY, endY, startY, endY);
+                        writer.Write(fixedMotionCurveY.Start);
+                        writer.Write(fixedMotionCurveY.End);
+                        writer.Write(fixedMotionCurveY.StartHandle);
+                        writer.Write(fixedMotionCurveY.EndHandle);
+                        
+                        var startZ = new Vector2(0.0f, animation.VelocityStart.Z);
+                        var endZ = new Vector2(1.0f, animation.VelocityEnd.Z);
+                        var fixedMotionCurveZ = new BezierCurve2D(startZ, endZ, startZ, endZ);
+                        writer.Write(fixedMotionCurveZ.Start);
+                        writer.Write(fixedMotionCurveZ.End);
+                        writer.Write(fixedMotionCurveZ.StartHandle);
+                        writer.Write(fixedMotionCurveZ.EndHandle);
+
+                        writer.Write(animation.KeyFrames.Count);
+                        foreach (var keyFrame in animation.KeyFrames)
+                        {
+                            var center = new Vector3(
+                                keyFrame.BoundingBox.X1 + keyFrame.BoundingBox.X2,
+                                keyFrame.BoundingBox.Y1 + keyFrame.BoundingBox.Y2,
+                                keyFrame.BoundingBox.Z1 + keyFrame.BoundingBox.Z2) / 2;
+                            var extents = new Vector3(
+                                keyFrame.BoundingBox.X2 - keyFrame.BoundingBox.X1,
+                                keyFrame.BoundingBox.Y2 - keyFrame.BoundingBox.Y1,
+                                keyFrame.BoundingBox.Z2 - keyFrame.BoundingBox.Z1) / 2;
+
+                            writer.Write(center);
+                            writer.Write(extents);
+                            writer.Write(keyFrame.RootOffset);
+                            
+                            writer.Write(keyFrame.BoneOrientations.Count);
+                            writer.WriteBlockArray(keyFrame.BoneOrientations);
+                        }
+
+                        writer.Write(animation.StateChanges.Count);
+                        foreach (var stateChange in animation.StateChanges)
+                        {
+                            writer.Write(stateChange.StateID);
+                            writer.Write(stateChange.FrameLow);
+                            writer.Write(stateChange.FrameHigh);
+                            writer.Write(stateChange.NextAnimation);
+                            writer.Write(stateChange.NextFrame);
+                            writer.Write(stateChange.BlendEndFrame);
+                            writer.Write(stateChange.BlendFrameCount);
+                            writer.Write(stateChange.BlendCurve.Start);
+                            writer.Write(stateChange.BlendCurve.End);
+                            writer.Write(stateChange.BlendCurve.StartHandle);
+                            writer.Write(stateChange.BlendCurve.EndHandle);
+                        }
+
+                        writer.Write(animation.NumAnimCommands);
+                        foreach (var element in animation.CommandData)
+                        {
+                            if (element is int intComponent)
+                            {
+                                writer.Write(intComponent);
+                            }
+                            else if (element is Vector3 vector3Component)
+                            {
+                                writer.Write(vector3Component);
+                            }
+                        }
+
+                        writer.Write(animation.Flags);
+                    }
                 }
 
-                writer.Write((uint)_moveables.Count);
-                for (var k = 0; k < _moveables.Count; k++)
-                    writer.WriteBlock(_moveables[k]);
-
-                writer.Write((uint)_staticMeshes.Count);
+                writer.Write(_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
-                writer.Write((uint)_spriteTextures.Count);
+                writer.Write(_spriteTextures.Count);
                 writer.WriteBlockArray(_spriteTextures);
 
-                writer.Write((uint)_spriteSequences.Count);
+                writer.Write(_spriteSequences.Count);
                 writer.WriteBlockArray(_spriteSequences);
 
                 // Write pathfinding data
-                writer.Write((uint)_boxes.Count);
+                writer.Write(_boxes.Count);
                 writer.WriteBlockArray(_boxes);
 
-                writer.Write((uint)_overlaps.Count);
+                writer.Write(_overlaps.Count);
                 writer.WriteBlockArray(_overlaps);
 
                 int zoneCount = Enum.GetValues(typeof(ZoneType)).Length;
@@ -239,7 +306,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         _zones.ForEach(z => writer.Write(z.Zones[flipped][i]));
 
                 // Write mirrors
-                writer.Write((uint)_mirrors.Count);
+                writer.Write(_mirrors.Count);
                 foreach (var mirror in _mirrors)
                 {
                     writer.Write(mirror.Room);
