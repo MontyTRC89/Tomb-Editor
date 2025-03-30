@@ -1,3 +1,9 @@
+Version 1.8.2
+=============
+
+Tomb Editor:
+ * Fixed PRJ converter to accept projects with inconsistent animated texture data.
+ 
 Version 1.8.1
 =============
 
