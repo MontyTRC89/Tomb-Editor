@@ -208,4 +208,11 @@
     <state item="298" id="11" name="DEFEAT_RECOVER" />
     <state item="298" id="12" name="BRUSH_OFF" />
     <state item="298" id="13" name="DEFEAT_END" />
+
+	<!-- PULLEY-->
+	<state item="830" id="0" name="OFF" />
+	<state item="830" id="1" name="ON" />
+	<state item="830" id="2" name="WAIT" />
+	<state item="830" id="3" name="ANIMATE" />
+	<state item="830" id="4" name="ANIMATE_UNDERWATER" />
 </states>
