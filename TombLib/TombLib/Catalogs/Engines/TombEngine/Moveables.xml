@@ -617,8 +617,8 @@
     <moveable id="820" name="AIRLOCK_SWITCH" />
     <moveable id="821" name="WALL_SWITCH1" />
     <moveable id="822" name="WALL_SWITCH2" />
-    <moveable id="823" name="UNDERWATER_CEILING_SWITCH1" />
-    <moveable id="824" name="UNDERWATER_CEILING_SWITCH2" />
+    <moveable id="823" name="CEILING_SWITCH1" />
+    <moveable id="824" name="CEILING_SWITCH2" />
     <moveable id="825" name="TURN_SWITCH" />
     <moveable id="826" name="COG_SWITCH" />
     <moveable id="827" name="LEVER_SWITCH" />
