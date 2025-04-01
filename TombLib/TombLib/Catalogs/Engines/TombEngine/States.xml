@@ -38,8 +38,9 @@
     <state item="0" id="189" name="REMOVE_PUZZLE" />
     <state item="0" id="190" name="PUSHABLE_EDGE_SLIP" />
     <state item="0" id="191" name="SPRINT_SLIDE" />
-    
-    <!-- APE -->
+	<state item="0" id="198" name="PULLEY_UNGRAB" />
+
+	<!-- APE -->
     <state item="102" id="1" name="IDLE" />
     <state item="102" id="2" name="WALK_FORWARD" />
     <state item="102" id="3" name="RUN_FORWARD" />
