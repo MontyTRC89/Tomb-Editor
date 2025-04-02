@@ -310,6 +310,7 @@ namespace TombLib.Utils
                         pos1 = subfile.IndexOf(LuaSyntax.BracketOpen) + 1;
                         pos2 = subfile.IndexOf(LuaSyntax.BracketClose);
                         subfile = subfile.Substring(pos1, pos2 - pos1).Replace('"', ' ').Trim();
+                        subfile = subfile.Replace('.', '/').Trim();
                         subfile = Path.Combine(Path.GetDirectoryName(path), subfile + ".lua");
 
                         depth++;
