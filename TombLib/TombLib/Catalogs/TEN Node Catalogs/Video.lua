@@ -1,7 +1,7 @@
 -- !Name "If background video is playing..."
 -- !Section "Video"
 -- !Conditional "True"
--- !Description "Check if any video is currently playing in background mode."
+-- !Description "Checks if any video is currently playing in background mode."
 
 LevelFuncs.Engine.Node.IsVideoPlaying = function()
     return TEN.View.IsVideoPlaying()
@@ -11,7 +11,7 @@ end
 -- !Section "Video"
 -- !Conditional "True"
 -- !Arguments "NewLine, Videos, Video file to check"
--- !Description "Check if specified video is currently playing in background mode."
+-- !Description "Checks if specified video is currently playing in background mode."
 
 LevelFuncs.Engine.Node.IsSpecifiedVideoPlaying = function(fileName)
     return TEN.View.IsVideoPlaying(fileName)
@@ -27,10 +27,19 @@ LevelFuncs.Engine.Node.PlayVideo = function(fileName, background, mute, loop)
     TEN.View.PlayVideo(fileName, background, mute, loop)
 end
 
--- !Name "Stop video"
+-- !Name "Stop background video"
 -- !Section "Video"
 -- !Description "Stops any background video file that is currently playing."
 
 LevelFuncs.Engine.Node.StopVideo = function()
     TEN.View.StopVideo()
+end
+
+-- !Name "Set background video position"
+-- !Section "Video"
+-- !Arguments "NewLine, Time, New position"
+-- !Description "Sets background video timestamp to a specified one. If time exceeds video's duration, it will be trimmed to the end."
+
+LevelFuncs.Engine.Node.SetVideoPosition = function(time)
+    TEN.View.SetVideoPosition(time)
 end
