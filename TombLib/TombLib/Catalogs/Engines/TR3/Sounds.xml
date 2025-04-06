@@ -75,6 +75,7 @@
     <sound id="82" name="PORTCULLIS_UP" ten="857" />
     <sound id="83" name="PORTCULLIS_DOWN" ten="856" />
     <sound id="84" name="T_REX_ATTACK" ten="392" />
+	<sound id="85" name="BODY_SLAM" ten="143" />
     <sound id="86" name="POWER_HUM_LOOP" ten="858" />
     <sound id="87" name="T-REX_ROAR" ten="394" />
     <sound id="88" name="T-REX_FOOTSTOMP" ten="393" />
