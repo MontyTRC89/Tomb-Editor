@@ -28,373 +28,513 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.container = new TombLib.Controls.DarkTabbedContainer();
-            this.tabBoolean = new System.Windows.Forms.TabPage();
-            this.cbBool = new DarkUI.Controls.DarkCheckBox();
-            this.tabNumerical = new System.Windows.Forms.TabPage();
-            this.nudNumerical = new DarkUI.Controls.DarkNumericUpDown();
-            this.tabVector3 = new System.Windows.Forms.TabPage();
-            this.tableVector3 = new System.Windows.Forms.TableLayoutPanel();
-            this.nudVector3Z = new DarkUI.Controls.DarkNumericUpDown();
-            this.nudVector3Y = new DarkUI.Controls.DarkNumericUpDown();
-            this.nudVector3X = new DarkUI.Controls.DarkNumericUpDown();
-            this.tabString = new System.Windows.Forms.TabPage();
-            this.tbString = new DarkUI.Controls.DarkTextBox();
-            this.panelMultiline = new DarkUI.Controls.DarkPanel();
-            this.butMultiline = new DarkUI.Controls.DarkButton();
-            this.tabColor = new System.Windows.Forms.TabPage();
-            this.panelColor = new DarkUI.Controls.DarkPanel();
-            this.tabList = new System.Windows.Forms.TabPage();
-            this.cbList = new TombLib.Controls.DarkSearchableComboBox();
-            this.panelAction = new DarkUI.Controls.DarkPanel();
-            this.butAction = new DarkUI.Controls.DarkButton();
-            this.container.SuspendLayout();
-            this.tabBoolean.SuspendLayout();
-            this.tabNumerical.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNumerical)).BeginInit();
-            this.tabVector3.SuspendLayout();
-            this.tableVector3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVector3Z)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVector3Y)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVector3X)).BeginInit();
-            this.tabString.SuspendLayout();
-            this.panelMultiline.SuspendLayout();
-            this.tabColor.SuspendLayout();
-            this.tabList.SuspendLayout();
-            this.panelAction.SuspendLayout();
-            this.SuspendLayout();
+            container = new DarkTabbedContainer();
+            tabBoolean = new System.Windows.Forms.TabPage();
+            cbBool = new DarkUI.Controls.DarkCheckBox();
+            tabNumerical = new System.Windows.Forms.TabPage();
+            nudNumerical = new DarkUI.Controls.DarkNumericUpDown();
+            tabVector2 = new System.Windows.Forms.TabPage();
+            tableVector2 = new System.Windows.Forms.TableLayoutPanel();
+            nudVector2Y = new DarkUI.Controls.DarkNumericUpDown();
+            nudVector2X = new DarkUI.Controls.DarkNumericUpDown();
+            tabVector3 = new System.Windows.Forms.TabPage();
+            tableVector3 = new System.Windows.Forms.TableLayoutPanel();
+            nudVector3Z = new DarkUI.Controls.DarkNumericUpDown();
+            nudVector3Y = new DarkUI.Controls.DarkNumericUpDown();
+            nudVector3X = new DarkUI.Controls.DarkNumericUpDown();
+            tabString = new System.Windows.Forms.TabPage();
+            tbString = new DarkUI.Controls.DarkTextBox();
+            panelMultiline = new DarkUI.Controls.DarkPanel();
+            butMultiline = new DarkUI.Controls.DarkButton();
+            tabColor = new System.Windows.Forms.TabPage();
+            panelColor = new DarkUI.Controls.DarkPanel();
+            tabTime = new System.Windows.Forms.TabPage();
+            tableTime = new System.Windows.Forms.TableLayoutPanel();
+            nudTimeCents = new DarkUI.Controls.DarkNumericUpDown();
+            nudTimeSeconds = new DarkUI.Controls.DarkNumericUpDown();
+            nudTimeMinutes = new DarkUI.Controls.DarkNumericUpDown();
+            nudTimeHours = new DarkUI.Controls.DarkNumericUpDown();
+            tabList = new System.Windows.Forms.TabPage();
+            cbList = new DarkSearchableComboBox();
+            panelAction = new DarkUI.Controls.DarkPanel();
+            butAction = new DarkUI.Controls.DarkButton();
+            container.SuspendLayout();
+            tabBoolean.SuspendLayout();
+            tabNumerical.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudNumerical).BeginInit();
+            tabVector2.SuspendLayout();
+            tableVector2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudVector2Y).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudVector2X).BeginInit();
+            tabVector3.SuspendLayout();
+            tableVector3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudVector3Z).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudVector3Y).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudVector3X).BeginInit();
+            tabString.SuspendLayout();
+            panelMultiline.SuspendLayout();
+            tabColor.SuspendLayout();
+            tabTime.SuspendLayout();
+            tableTime.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudTimeCents).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudTimeSeconds).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudTimeMinutes).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudTimeHours).BeginInit();
+            tabList.SuspendLayout();
+            panelAction.SuspendLayout();
+            SuspendLayout();
             // 
             // container
             // 
-            this.container.Controls.Add(this.tabBoolean);
-            this.container.Controls.Add(this.tabNumerical);
-            this.container.Controls.Add(this.tabVector3);
-            this.container.Controls.Add(this.tabString);
-            this.container.Controls.Add(this.tabColor);
-            this.container.Controls.Add(this.tabList);
-            this.container.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.container.Location = new System.Drawing.Point(0, 0);
-            this.container.Name = "container";
-            this.container.SelectedIndex = 0;
-            this.container.Size = new System.Drawing.Size(438, 49);
-            this.container.TabIndex = 0;
+            container.Controls.Add(tabBoolean);
+            container.Controls.Add(tabNumerical);
+            container.Controls.Add(tabVector2);
+            container.Controls.Add(tabVector3);
+            container.Controls.Add(tabString);
+            container.Controls.Add(tabColor);
+            container.Controls.Add(tabTime);
+            container.Controls.Add(tabList);
+            container.Dock = System.Windows.Forms.DockStyle.Fill;
+            container.Location = new System.Drawing.Point(0, 0);
+            container.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            container.Name = "container";
+            container.SelectedIndex = 0;
+            container.Size = new System.Drawing.Size(511, 57);
+            container.TabIndex = 0;
             // 
             // tabBoolean
             // 
-            this.tabBoolean.Controls.Add(this.cbBool);
-            this.tabBoolean.Location = new System.Drawing.Point(4, 22);
-            this.tabBoolean.Margin = new System.Windows.Forms.Padding(0);
-            this.tabBoolean.Name = "tabBoolean";
-            this.tabBoolean.Size = new System.Drawing.Size(430, 23);
-            this.tabBoolean.TabIndex = 0;
-            this.tabBoolean.Text = "Boolean";
-            this.tabBoolean.UseVisualStyleBackColor = true;
+            tabBoolean.Controls.Add(cbBool);
+            tabBoolean.Location = new System.Drawing.Point(4, 24);
+            tabBoolean.Margin = new System.Windows.Forms.Padding(0);
+            tabBoolean.Name = "tabBoolean";
+            tabBoolean.Size = new System.Drawing.Size(503, 29);
+            tabBoolean.TabIndex = 0;
+            tabBoolean.Text = "Boolean";
+            tabBoolean.UseVisualStyleBackColor = true;
             // 
             // cbBool
             // 
-            this.cbBool.AutoSize = true;
-            this.cbBool.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cbBool.Location = new System.Drawing.Point(0, 0);
-            this.cbBool.Name = "cbBool";
-            this.cbBool.Size = new System.Drawing.Size(430, 23);
-            this.cbBool.TabIndex = 0;
-            this.cbBool.Text = "None";
-            this.cbBool.CheckedChanged += new System.EventHandler(this.rb_CheckedChanged);
+            cbBool.AutoSize = true;
+            cbBool.Dock = System.Windows.Forms.DockStyle.Fill;
+            cbBool.Location = new System.Drawing.Point(0, 0);
+            cbBool.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBool.Name = "cbBool";
+            cbBool.Size = new System.Drawing.Size(503, 29);
+            cbBool.TabIndex = 0;
+            cbBool.Text = "None";
+            cbBool.CheckedChanged += rb_CheckedChanged;
             // 
             // tabNumerical
             // 
-            this.tabNumerical.Controls.Add(this.nudNumerical);
-            this.tabNumerical.Location = new System.Drawing.Point(4, 22);
-            this.tabNumerical.Margin = new System.Windows.Forms.Padding(1);
-            this.tabNumerical.Name = "tabNumerical";
-            this.tabNumerical.Size = new System.Drawing.Size(430, 23);
-            this.tabNumerical.TabIndex = 1;
-            this.tabNumerical.Text = "Numerical";
-            this.tabNumerical.UseVisualStyleBackColor = true;
+            tabNumerical.Controls.Add(nudNumerical);
+            tabNumerical.Location = new System.Drawing.Point(4, 24);
+            tabNumerical.Margin = new System.Windows.Forms.Padding(1);
+            tabNumerical.Name = "tabNumerical";
+            tabNumerical.Size = new System.Drawing.Size(503, 29);
+            tabNumerical.TabIndex = 1;
+            tabNumerical.Text = "Numerical";
+            tabNumerical.UseVisualStyleBackColor = true;
             // 
             // nudNumerical
             // 
-            this.nudNumerical.DecimalPlaces = 2;
-            this.nudNumerical.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudNumerical.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.nudNumerical.Location = new System.Drawing.Point(0, 0);
-            this.nudNumerical.LoopValues = false;
-            this.nudNumerical.Margin = new System.Windows.Forms.Padding(0);
-            this.nudNumerical.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudNumerical.Minimum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            -2147483648});
-            this.nudNumerical.Name = "nudNumerical";
-            this.nudNumerical.Size = new System.Drawing.Size(430, 20);
-            this.nudNumerical.TabIndex = 0;
-            this.nudNumerical.ValueChanged += new System.EventHandler(this.nudNumerical_ValueChanged);
+            nudNumerical.DecimalPlaces = 2;
+            nudNumerical.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudNumerical.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudNumerical.Location = new System.Drawing.Point(0, 0);
+            nudNumerical.LoopValues = false;
+            nudNumerical.Margin = new System.Windows.Forms.Padding(0);
+            nudNumerical.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            nudNumerical.Minimum = new decimal(new int[] { 1000000, 0, 0, int.MinValue });
+            nudNumerical.Name = "nudNumerical";
+            nudNumerical.Size = new System.Drawing.Size(503, 23);
+            nudNumerical.TabIndex = 0;
+            nudNumerical.ValueChanged += nudNumerical_ValueChanged;
+            // 
+            // tabVector2
+            // 
+            tabVector2.Controls.Add(tableVector2);
+            tabVector2.Location = new System.Drawing.Point(4, 24);
+            tabVector2.Margin = new System.Windows.Forms.Padding(1);
+            tabVector2.Name = "tabVector2";
+            tabVector2.Size = new System.Drawing.Size(503, 29);
+            tabVector2.TabIndex = 6;
+            tabVector2.Text = "Vector2";
+            tabVector2.UseVisualStyleBackColor = true;
+            // 
+            // tableVector2
+            // 
+            tableVector2.ColumnCount = 2;
+            tableVector2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            tableVector2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            tableVector2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            tableVector2.Controls.Add(nudVector2Y, 1, 0);
+            tableVector2.Controls.Add(nudVector2X, 0, 0);
+            tableVector2.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableVector2.Location = new System.Drawing.Point(0, 0);
+            tableVector2.Margin = new System.Windows.Forms.Padding(0);
+            tableVector2.Name = "tableVector2";
+            tableVector2.RowCount = 1;
+            tableVector2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableVector2.Size = new System.Drawing.Size(503, 29);
+            tableVector2.TabIndex = 1;
+            // 
+            // nudVector2Y
+            // 
+            nudVector2Y.AllowDrop = true;
+            nudVector2Y.DecimalPlaces = 2;
+            nudVector2Y.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector2Y.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudVector2Y.Location = new System.Drawing.Point(253, 0);
+            nudVector2Y.LoopValues = false;
+            nudVector2Y.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            nudVector2Y.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            nudVector2Y.Minimum = new decimal(new int[] { 1000000, 0, 0, int.MinValue });
+            nudVector2Y.Name = "nudVector2Y";
+            nudVector2Y.Size = new System.Drawing.Size(248, 23);
+            nudVector2Y.TabIndex = 1;
+            nudVector2Y.ValueChanged += nudVector2_ValueChanged;
+            // 
+            // nudVector2X
+            // 
+            nudVector2X.AllowDrop = true;
+            nudVector2X.DecimalPlaces = 2;
+            nudVector2X.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector2X.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudVector2X.Location = new System.Drawing.Point(0, 0);
+            nudVector2X.LoopValues = false;
+            nudVector2X.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            nudVector2X.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            nudVector2X.Minimum = new decimal(new int[] { 1000000, 0, 0, int.MinValue });
+            nudVector2X.Name = "nudVector2X";
+            nudVector2X.Size = new System.Drawing.Size(249, 23);
+            nudVector2X.TabIndex = 0;
+            nudVector2X.ValueChanged += nudVector2_ValueChanged;
             // 
             // tabVector3
             // 
-            this.tabVector3.Controls.Add(this.tableVector3);
-            this.tabVector3.Location = new System.Drawing.Point(4, 22);
-            this.tabVector3.Margin = new System.Windows.Forms.Padding(1);
-            this.tabVector3.Name = "tabVector3";
-            this.tabVector3.Size = new System.Drawing.Size(430, 23);
-            this.tabVector3.TabIndex = 2;
-            this.tabVector3.Text = "Vector3";
-            this.tabVector3.UseVisualStyleBackColor = true;
+            tabVector3.Controls.Add(tableVector3);
+            tabVector3.Location = new System.Drawing.Point(4, 24);
+            tabVector3.Margin = new System.Windows.Forms.Padding(1);
+            tabVector3.Name = "tabVector3";
+            tabVector3.Size = new System.Drawing.Size(503, 29);
+            tabVector3.TabIndex = 2;
+            tabVector3.Text = "Vector3";
+            tabVector3.UseVisualStyleBackColor = true;
             // 
             // tableVector3
             // 
-            this.tableVector3.ColumnCount = 3;
-            this.tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableVector3.Controls.Add(this.nudVector3Z, 2, 0);
-            this.tableVector3.Controls.Add(this.nudVector3Y, 1, 0);
-            this.tableVector3.Controls.Add(this.nudVector3X, 0, 0);
-            this.tableVector3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableVector3.Location = new System.Drawing.Point(0, 0);
-            this.tableVector3.Margin = new System.Windows.Forms.Padding(0);
-            this.tableVector3.Name = "tableVector3";
-            this.tableVector3.RowCount = 1;
-            this.tableVector3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableVector3.Size = new System.Drawing.Size(430, 23);
-            this.tableVector3.TabIndex = 0;
+            tableVector3.ColumnCount = 3;
+            tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            tableVector3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            tableVector3.Controls.Add(nudVector3Z, 2, 0);
+            tableVector3.Controls.Add(nudVector3Y, 1, 0);
+            tableVector3.Controls.Add(nudVector3X, 0, 0);
+            tableVector3.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableVector3.Location = new System.Drawing.Point(0, 0);
+            tableVector3.Margin = new System.Windows.Forms.Padding(0);
+            tableVector3.Name = "tableVector3";
+            tableVector3.RowCount = 1;
+            tableVector3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableVector3.Size = new System.Drawing.Size(503, 29);
+            tableVector3.TabIndex = 0;
             // 
             // nudVector3Z
             // 
-            this.nudVector3Z.DecimalPlaces = 2;
-            this.nudVector3Z.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudVector3Z.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.nudVector3Z.Location = new System.Drawing.Point(288, 0);
-            this.nudVector3Z.LoopValues = false;
-            this.nudVector3Z.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
-            this.nudVector3Z.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudVector3Z.Minimum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            -2147483648});
-            this.nudVector3Z.AllowDrop = true;
-            this.nudVector3Z.Name = "nudVector3Z";
-            this.nudVector3Z.Size = new System.Drawing.Size(142, 20);
-            this.nudVector3Z.TabIndex = 2;
-            this.nudVector3Z.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
-            this.nudVector3Z.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
-            this.nudVector3Z.DragEnter += new System.Windows.Forms.DragEventHandler(this.luaNameControl_DragEnter);
+            nudVector3Z.AllowDrop = true;
+            nudVector3Z.DecimalPlaces = 2;
+            nudVector3Z.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector3Z.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudVector3Z.Location = new System.Drawing.Point(336, 0);
+            nudVector3Z.LoopValues = false;
+            nudVector3Z.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            nudVector3Z.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            nudVector3Z.Minimum = new decimal(new int[] { 1000000, 0, 0, int.MinValue });
+            nudVector3Z.Name = "nudVector3Z";
+            nudVector3Z.Size = new System.Drawing.Size(167, 23);
+            nudVector3Z.TabIndex = 2;
+            nudVector3Z.ValueChanged += nudVector3_ValueChanged;
+            nudVector3Z.DragDrop += vector3Control_DragDrop;
+            nudVector3Z.DragEnter += draggableControl_DragEnter;
             // 
             // nudVector3Y
             // 
-            this.nudVector3Y.DecimalPlaces = 2;
-            this.nudVector3Y.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudVector3Y.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.nudVector3Y.Location = new System.Drawing.Point(145, 0);
-            this.nudVector3Y.LoopValues = false;
-            this.nudVector3Y.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.nudVector3Y.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudVector3Y.Minimum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            -2147483648});
-            this.nudVector3Y.AllowDrop = true;
-            this.nudVector3Y.Name = "nudVector3Y";
-            this.nudVector3Y.Size = new System.Drawing.Size(139, 20);
-            this.nudVector3Y.TabIndex = 1;
-            this.nudVector3Y.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
-            this.nudVector3Y.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
-            this.nudVector3Y.DragEnter += new System.Windows.Forms.DragEventHandler(this.luaNameControl_DragEnter);
+            nudVector3Y.AllowDrop = true;
+            nudVector3Y.DecimalPlaces = 2;
+            nudVector3Y.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector3Y.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudVector3Y.Location = new System.Drawing.Point(169, 0);
+            nudVector3Y.LoopValues = false;
+            nudVector3Y.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            nudVector3Y.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            nudVector3Y.Minimum = new decimal(new int[] { 1000000, 0, 0, int.MinValue });
+            nudVector3Y.Name = "nudVector3Y";
+            nudVector3Y.Size = new System.Drawing.Size(163, 23);
+            nudVector3Y.TabIndex = 1;
+            nudVector3Y.ValueChanged += nudVector3_ValueChanged;
+            nudVector3Y.DragDrop += vector3Control_DragDrop;
+            nudVector3Y.DragEnter += draggableControl_DragEnter;
             // 
             // nudVector3X
             // 
-            this.nudVector3X.DecimalPlaces = 2;
-            this.nudVector3X.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudVector3X.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.nudVector3X.Location = new System.Drawing.Point(0, 0);
-            this.nudVector3X.LoopValues = false;
-            this.nudVector3X.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.nudVector3X.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudVector3X.Minimum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            -2147483648});
-            this.nudVector3X.AllowDrop = true;
-            this.nudVector3X.Name = "nudVector3X";
-            this.nudVector3X.Size = new System.Drawing.Size(141, 20);
-            this.nudVector3X.TabIndex = 0;
-            this.nudVector3X.ValueChanged += new System.EventHandler(this.nudVector3_ValueChanged);
-            this.nudVector3X.DragDrop += new System.Windows.Forms.DragEventHandler(this.vector3Control_DragDrop);
-            this.nudVector3X.DragEnter += new System.Windows.Forms.DragEventHandler(this.luaNameControl_DragEnter);
+            nudVector3X.AllowDrop = true;
+            nudVector3X.DecimalPlaces = 2;
+            nudVector3X.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector3X.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudVector3X.Location = new System.Drawing.Point(0, 0);
+            nudVector3X.LoopValues = false;
+            nudVector3X.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            nudVector3X.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            nudVector3X.Minimum = new decimal(new int[] { 1000000, 0, 0, int.MinValue });
+            nudVector3X.Name = "nudVector3X";
+            nudVector3X.Size = new System.Drawing.Size(165, 23);
+            nudVector3X.TabIndex = 0;
+            nudVector3X.ValueChanged += nudVector3_ValueChanged;
+            nudVector3X.DragDrop += vector3Control_DragDrop;
+            nudVector3X.DragEnter += draggableControl_DragEnter;
             // 
             // tabString
             // 
-            this.tabString.Controls.Add(this.tbString);
-            this.tabString.Controls.Add(this.panelMultiline);
-            this.tabString.Location = new System.Drawing.Point(4, 22);
-            this.tabString.Margin = new System.Windows.Forms.Padding(1);
-            this.tabString.Name = "tabString";
-            this.tabString.Size = new System.Drawing.Size(430, 23);
-            this.tabString.TabIndex = 3;
-            this.tabString.Text = "String";
-            this.tabString.UseVisualStyleBackColor = true;
+            tabString.Controls.Add(tbString);
+            tabString.Controls.Add(panelMultiline);
+            tabString.Location = new System.Drawing.Point(4, 24);
+            tabString.Margin = new System.Windows.Forms.Padding(1);
+            tabString.Name = "tabString";
+            tabString.Size = new System.Drawing.Size(503, 29);
+            tabString.TabIndex = 3;
+            tabString.Text = "String";
+            tabString.UseVisualStyleBackColor = true;
             // 
             // tbString
             // 
-            this.tbString.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbString.Location = new System.Drawing.Point(0, 0);
-            this.tbString.Name = "tbString";
-            this.tbString.Size = new System.Drawing.Size(407, 20);
-            this.tbString.TabIndex = 0;
-            this.tbString.TextChanged += new System.EventHandler(this.tbString_TextChanged);
+            tbString.Dock = System.Windows.Forms.DockStyle.Fill;
+            tbString.Location = new System.Drawing.Point(0, 0);
+            tbString.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tbString.Name = "tbString";
+            tbString.Size = new System.Drawing.Size(475, 23);
+            tbString.TabIndex = 0;
+            tbString.TextChanged += tbString_TextChanged;
             // 
             // panelMultiline
             // 
-            this.panelMultiline.Controls.Add(this.butMultiline);
-            this.panelMultiline.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelMultiline.Location = new System.Drawing.Point(406, 0);
-            this.panelMultiline.Name = "panelMultiline";
-            this.panelMultiline.Size = new System.Drawing.Size(24, 23);
-            this.panelMultiline.TabIndex = 2;
+            panelMultiline.Controls.Add(butMultiline);
+            panelMultiline.Dock = System.Windows.Forms.DockStyle.Right;
+            panelMultiline.Location = new System.Drawing.Point(475, 0);
+            panelMultiline.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelMultiline.Name = "panelMultiline";
+            panelMultiline.Size = new System.Drawing.Size(28, 29);
+            panelMultiline.TabIndex = 2;
             // 
             // butMultiline
             // 
-            this.butMultiline.Checked = false;
-            this.butMultiline.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butMultiline.Image = global::TombLib.Properties.Resources.general_Multiline_text_16;
-            this.butMultiline.Location = new System.Drawing.Point(0, 0);
-            this.butMultiline.Name = "butMultiline";
-            this.butMultiline.Size = new System.Drawing.Size(24, 23);
-            this.butMultiline.TabIndex = 2;
-            this.butMultiline.Click += new System.EventHandler(this.butMultiline_Click);
+            butMultiline.Checked = false;
+            butMultiline.Dock = System.Windows.Forms.DockStyle.Fill;
+            butMultiline.Image = Properties.Resources.general_Multiline_text_16;
+            butMultiline.Location = new System.Drawing.Point(0, 0);
+            butMultiline.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            butMultiline.Name = "butMultiline";
+            butMultiline.Size = new System.Drawing.Size(28, 29);
+            butMultiline.TabIndex = 2;
+            butMultiline.Click += butMultiline_Click;
             // 
             // tabColor
             // 
-            this.tabColor.Controls.Add(this.panelColor);
-            this.tabColor.Location = new System.Drawing.Point(4, 22);
-            this.tabColor.Margin = new System.Windows.Forms.Padding(1);
-            this.tabColor.Name = "tabColor";
-            this.tabColor.Size = new System.Drawing.Size(430, 23);
-            this.tabColor.TabIndex = 4;
-            this.tabColor.Text = "Color";
-            this.tabColor.UseVisualStyleBackColor = true;
+            tabColor.Controls.Add(panelColor);
+            tabColor.Location = new System.Drawing.Point(4, 24);
+            tabColor.Margin = new System.Windows.Forms.Padding(1);
+            tabColor.Name = "tabColor";
+            tabColor.Size = new System.Drawing.Size(503, 29);
+            tabColor.TabIndex = 4;
+            tabColor.Text = "Color";
+            tabColor.UseVisualStyleBackColor = true;
             // 
             // panelColor
             // 
-            this.panelColor.AllowDrop = true;
-            this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelColor.Location = new System.Drawing.Point(0, 0);
-            this.panelColor.Name = "panelColor";
-            this.panelColor.Size = new System.Drawing.Size(430, 23);
-            this.panelColor.TabIndex = 0;
-            this.panelColor.BackColorChanged += new System.EventHandler(this.panelColor_BackColorChanged);
-            this.panelColor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelColor_MouseClick);
-            this.panelColor.DragDrop += new System.Windows.Forms.DragEventHandler(this.panelColor_DragDrop);
-            this.panelColor.DragEnter += new System.Windows.Forms.DragEventHandler(this.panelColor_DragEnter);
+            panelColor.AllowDrop = true;
+            panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            panelColor.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelColor.Location = new System.Drawing.Point(0, 0);
+            panelColor.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelColor.Name = "panelColor";
+            panelColor.Size = new System.Drawing.Size(503, 29);
+            panelColor.TabIndex = 0;
+            panelColor.BackColorChanged += panelColor_BackColorChanged;
+            panelColor.DragDrop += panelColor_DragDrop;
+            panelColor.DragEnter += panelColor_DragEnter;
+            panelColor.MouseClick += panelColor_MouseClick;
+            // 
+            // tabTime
+            // 
+            tabTime.Controls.Add(tableTime);
+            tabTime.Location = new System.Drawing.Point(4, 24);
+            tabTime.Name = "tabTime";
+            tabTime.Padding = new System.Windows.Forms.Padding(3);
+            tabTime.Size = new System.Drawing.Size(503, 29);
+            tabTime.TabIndex = 7;
+            tabTime.Text = "Time";
+            tabTime.UseVisualStyleBackColor = true;
+            // 
+            // tableTime
+            // 
+            tableTime.ColumnCount = 4;
+            tableTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            tableTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            tableTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            tableTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            tableTime.Controls.Add(nudTimeCents, 3, 0);
+            tableTime.Controls.Add(nudTimeSeconds, 2, 0);
+            tableTime.Controls.Add(nudTimeMinutes, 1, 0);
+            tableTime.Controls.Add(nudTimeHours, 0, 0);
+            tableTime.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableTime.Location = new System.Drawing.Point(3, 3);
+            tableTime.Margin = new System.Windows.Forms.Padding(0);
+            tableTime.Name = "tableTime";
+            tableTime.RowCount = 1;
+            tableTime.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableTime.Size = new System.Drawing.Size(497, 23);
+            tableTime.TabIndex = 1;
+            // 
+            // nudTimeCents
+            // 
+            nudTimeCents.AllowDrop = true;
+            nudTimeCents.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudTimeCents.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudTimeCents.Location = new System.Drawing.Point(374, 0);
+            nudTimeCents.LoopValues = false;
+            nudTimeCents.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            nudTimeCents.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
+            nudTimeCents.Name = "nudTimeCents";
+            nudTimeCents.Size = new System.Drawing.Size(123, 23);
+            nudTimeCents.TabIndex = 3;
+            nudTimeCents.ValueChanged += nudTime_ValueChanged;
+            // 
+            // nudTimeSeconds
+            // 
+            nudTimeSeconds.AllowDrop = true;
+            nudTimeSeconds.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudTimeSeconds.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudTimeSeconds.Location = new System.Drawing.Point(250, 0);
+            nudTimeSeconds.LoopValues = false;
+            nudTimeSeconds.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            nudTimeSeconds.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
+            nudTimeSeconds.Name = "nudTimeSeconds";
+            nudTimeSeconds.Size = new System.Drawing.Size(122, 23);
+            nudTimeSeconds.TabIndex = 2;
+            nudTimeSeconds.ValueChanged += nudTime_ValueChanged;
+            // 
+            // nudTimeMinutes
+            // 
+            nudTimeMinutes.AllowDrop = true;
+            nudTimeMinutes.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudTimeMinutes.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudTimeMinutes.Location = new System.Drawing.Point(126, 0);
+            nudTimeMinutes.LoopValues = false;
+            nudTimeMinutes.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            nudTimeMinutes.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
+            nudTimeMinutes.Name = "nudTimeMinutes";
+            nudTimeMinutes.Size = new System.Drawing.Size(120, 23);
+            nudTimeMinutes.TabIndex = 1;
+            nudTimeMinutes.ValueChanged += nudTime_ValueChanged;
+            // 
+            // nudTimeHours
+            // 
+            nudTimeHours.AllowDrop = true;
+            nudTimeHours.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudTimeHours.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
+            nudTimeHours.Location = new System.Drawing.Point(0, 0);
+            nudTimeHours.LoopValues = false;
+            nudTimeHours.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            nudTimeHours.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            nudTimeHours.Name = "nudTimeHours";
+            nudTimeHours.Size = new System.Drawing.Size(122, 23);
+            nudTimeHours.TabIndex = 0;
+            nudTimeHours.ValueChanged += nudTime_ValueChanged;
             // 
             // tabList
             // 
-            this.tabList.Controls.Add(this.cbList);
-            this.tabList.Controls.Add(this.panelAction);
-            this.tabList.Location = new System.Drawing.Point(4, 22);
-            this.tabList.Margin = new System.Windows.Forms.Padding(1);
-            this.tabList.Name = "tabList";
-            this.tabList.Size = new System.Drawing.Size(430, 23);
-            this.tabList.TabIndex = 5;
-            this.tabList.Text = "List";
-            this.tabList.UseVisualStyleBackColor = true;
+            tabList.Controls.Add(cbList);
+            tabList.Controls.Add(panelAction);
+            tabList.Location = new System.Drawing.Point(4, 24);
+            tabList.Margin = new System.Windows.Forms.Padding(1);
+            tabList.Name = "tabList";
+            tabList.Size = new System.Drawing.Size(503, 29);
+            tabList.TabIndex = 5;
+            tabList.Text = "List";
+            tabList.UseVisualStyleBackColor = true;
             // 
             // cbList
             // 
-            this.cbList.AllowDrop = true;
-            this.cbList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cbList.Location = new System.Drawing.Point(0, 0);
-            this.cbList.Name = "cbList";
-            this.cbList.SearchThreshold = 10;
-            this.cbList.Size = new System.Drawing.Size(406, 21);
-            this.cbList.TabIndex = 0;
-            this.cbList.SelectedIndexChanged += new System.EventHandler(this.cbList_SelectedIndexChanged);
-            this.cbList.DragDrop += new System.Windows.Forms.DragEventHandler(this.cbList_DragDrop);
-            this.cbList.DragEnter += new System.Windows.Forms.DragEventHandler(this.luaNameControl_DragEnter);
-			// 
-			// panelAction
-			// 
-			this.panelAction.Controls.Add(this.butAction);
-            this.panelAction.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelAction.Location = new System.Drawing.Point(406, 0);
-            this.panelAction.Name = "panelAction";
-            this.panelAction.Size = new System.Drawing.Size(24, 23);
-            this.panelAction.TabIndex = 1;
-			// 
-			// butAction
-			// 
-			this.butAction.Checked = false;
-            this.butAction.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butAction.Image = global::TombLib.Properties.Resources.general_target_16;
-            this.butAction.Location = new System.Drawing.Point(0, 0);
-            this.butAction.Name = "butAction";
-            this.butAction.Size = new System.Drawing.Size(24, 23);
-            this.butAction.TabIndex = 0;
-            this.butAction.Click += new System.EventHandler(this.butAction_Click);
+            cbList.AllowDrop = true;
+            cbList.Dock = System.Windows.Forms.DockStyle.Fill;
+            cbList.Location = new System.Drawing.Point(0, 0);
+            cbList.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            cbList.Name = "cbList";
+            cbList.SearchThreshold = 10;
+            cbList.Size = new System.Drawing.Size(475, 24);
+            cbList.TabIndex = 0;
+            cbList.SelectedIndexChanged += cbList_SelectedIndexChanged;
+            cbList.DragDrop += cbList_DragDrop;
+            cbList.DragEnter += draggableControl_DragEnter;
+            // 
+            // panelAction
+            // 
+            panelAction.Controls.Add(butAction);
+            panelAction.Dock = System.Windows.Forms.DockStyle.Right;
+            panelAction.Location = new System.Drawing.Point(475, 0);
+            panelAction.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelAction.Name = "panelAction";
+            panelAction.Size = new System.Drawing.Size(28, 29);
+            panelAction.TabIndex = 1;
+            // 
+            // butAction
+            // 
+            butAction.Checked = false;
+            butAction.Dock = System.Windows.Forms.DockStyle.Fill;
+            butAction.Image = Properties.Resources.general_target_16;
+            butAction.Location = new System.Drawing.Point(0, 0);
+            butAction.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            butAction.Name = "butAction";
+            butAction.Size = new System.Drawing.Size(28, 29);
+            butAction.TabIndex = 0;
+            butAction.Click += butAction_Click;
             // 
             // ArgumentEditor
             // 
-            this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.container);
-            this.Name = "ArgumentEditor";
-            this.Size = new System.Drawing.Size(438, 49);
-            this.container.ResumeLayout(false);
-            this.tabBoolean.ResumeLayout(false);
-            this.tabBoolean.PerformLayout();
-            this.tabNumerical.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.nudNumerical)).EndInit();
-            this.tabVector3.ResumeLayout(false);
-            this.tableVector3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.nudVector3Z)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVector3Y)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudVector3X)).EndInit();
-            this.tabString.ResumeLayout(false);
-            this.tabString.PerformLayout();
-            this.panelMultiline.ResumeLayout(false);
-            this.tabColor.ResumeLayout(false);
-            this.tabList.ResumeLayout(false);
-            this.panelAction.ResumeLayout(false);
-            this.ResumeLayout(false);
-
+            AllowDrop = true;
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(container);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "ArgumentEditor";
+            Size = new System.Drawing.Size(511, 57);
+            container.ResumeLayout(false);
+            tabBoolean.ResumeLayout(false);
+            tabBoolean.PerformLayout();
+            tabNumerical.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)nudNumerical).EndInit();
+            tabVector2.ResumeLayout(false);
+            tableVector2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)nudVector2Y).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudVector2X).EndInit();
+            tabVector3.ResumeLayout(false);
+            tableVector3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)nudVector3Z).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudVector3Y).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudVector3X).EndInit();
+            tabString.ResumeLayout(false);
+            tabString.PerformLayout();
+            panelMultiline.ResumeLayout(false);
+            tabColor.ResumeLayout(false);
+            tabTime.ResumeLayout(false);
+            tableTime.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)nudTimeCents).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudTimeSeconds).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudTimeMinutes).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudTimeHours).EndInit();
+            tabList.ResumeLayout(false);
+            panelAction.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         #endregion
@@ -419,5 +559,15 @@
         private DarkUI.Controls.DarkCheckBox cbBool;
         private DarkUI.Controls.DarkPanel panelMultiline;
         private DarkUI.Controls.DarkButton butMultiline;
+        private System.Windows.Forms.TabPage tabVector2;
+        private System.Windows.Forms.TableLayoutPanel tableVector2;
+        private DarkUI.Controls.DarkNumericUpDown nudVector2Y;
+        private DarkUI.Controls.DarkNumericUpDown nudVector2X;
+        private System.Windows.Forms.TabPage tabTime;
+        private System.Windows.Forms.TableLayoutPanel tableTime;
+        private DarkUI.Controls.DarkNumericUpDown nudTimeCents;
+        private DarkUI.Controls.DarkNumericUpDown nudTimeSeconds;
+        private DarkUI.Controls.DarkNumericUpDown nudTimeMinutes;
+        private DarkUI.Controls.DarkNumericUpDown nudTimeHours;
     }
 }

@@ -27,6 +27,8 @@ namespace TombLib.Utils
         public const string Activator = "activator";
         public const string ActivatorNamePrefix = Activator + ":GetName()";
         public const string ColorTypePrefix = "TEN.Color";
+        public const string TimeTypePrefix = "TEN.Time";
+        public const string Vec2TypePrefix = "TEN.Vec2";
         public const string Vec3TypePrefix = "TEN.Vec3";
         public const string ObjectIDPrefix = "TEN.Objects.ObjID";
         public const string ReservedFunctionPrefix = "__";
