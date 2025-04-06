@@ -96,6 +96,7 @@ namespace WadTool
 
             // Lock TEN-specific controls
             sectionBlending.Visible = isTEN;
+            panelRootMotion.Visible = isTEN;
 
             // Update UI
             UpdateUIControls();
