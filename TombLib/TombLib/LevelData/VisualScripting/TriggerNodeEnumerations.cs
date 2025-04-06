@@ -33,9 +33,11 @@ namespace TombLib.LevelData.VisualScripting
     {
         Boolean,
         Numerical,
+        Vector2,
         Vector3,
         String,
         Color,
+        Time,
         LuaScript,       // Listable
         VolumeEventSets, // Listable
         GlobalEventSets, // Listable
