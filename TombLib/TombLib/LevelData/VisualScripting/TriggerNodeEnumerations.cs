@@ -51,6 +51,7 @@ namespace TombLib.LevelData.VisualScripting
         SoundEffects,    // Listable
         SoundTracks,     // Listable
         SpriteSlots,     // Listable
+        Videos,          // Listable
         WadSlots,        // Listable
         Enumeration,
         CompareOperator
