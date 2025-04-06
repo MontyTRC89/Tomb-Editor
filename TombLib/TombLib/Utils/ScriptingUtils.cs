@@ -19,6 +19,8 @@ namespace TombLib.Utils
         public const string Is = "=";
         public const string BracketOpen = "(";
         public const string BracketClose = ")";
+        public const string TableOpen = "{";
+        public const string TableClose = "}";
         public const string Splitter = ".";
         public const string Separator = ",";
         public const string Space = " ";

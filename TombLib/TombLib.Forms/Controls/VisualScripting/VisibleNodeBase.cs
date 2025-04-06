@@ -678,9 +678,10 @@ namespace TombLib.Controls.VisualScripting
             if (_lastSelectedIndex == cbFunction.SelectedIndex)
                 return;
 
-            Node.Function = (cbFunction.SelectedItem as NodeFunction).Signature;
+            var funcSetup = cbFunction.SelectedItem as NodeFunction;
+            Node.Function = funcSetup.Signature;
 
-            if (_lastSelectedIndex != -1 && cbFunction.SelectedIndex != -1)
+            if ((_lastSelectedIndex != -1 && cbFunction.SelectedIndex != -1) || (funcSetup.Arguments.Count != Node.Arguments.Count))
                 ResetArguments();
 
             SpawnUIElements();

@@ -368,8 +368,8 @@
             // 
             tabTime.Controls.Add(tableTime);
             tabTime.Location = new System.Drawing.Point(4, 24);
+            tabTime.Margin = new System.Windows.Forms.Padding(1);
             tabTime.Name = "tabTime";
-            tabTime.Padding = new System.Windows.Forms.Padding(3);
             tabTime.Size = new System.Drawing.Size(503, 29);
             tabTime.TabIndex = 7;
             tabTime.Text = "Time";
@@ -387,12 +387,12 @@
             tableTime.Controls.Add(nudTimeMinutes, 1, 0);
             tableTime.Controls.Add(nudTimeHours, 0, 0);
             tableTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            tableTime.Location = new System.Drawing.Point(3, 3);
+            tableTime.Location = new System.Drawing.Point(0, 0);
             tableTime.Margin = new System.Windows.Forms.Padding(0);
             tableTime.Name = "tableTime";
             tableTime.RowCount = 1;
             tableTime.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableTime.Size = new System.Drawing.Size(497, 23);
+            tableTime.Size = new System.Drawing.Size(503, 29);
             tableTime.TabIndex = 1;
             // 
             // nudTimeCents
@@ -400,12 +400,12 @@
             nudTimeCents.AllowDrop = true;
             nudTimeCents.Dock = System.Windows.Forms.DockStyle.Fill;
             nudTimeCents.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudTimeCents.Location = new System.Drawing.Point(374, 0);
+            nudTimeCents.Location = new System.Drawing.Point(377, 0);
             nudTimeCents.LoopValues = false;
             nudTimeCents.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             nudTimeCents.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             nudTimeCents.Name = "nudTimeCents";
-            nudTimeCents.Size = new System.Drawing.Size(123, 23);
+            nudTimeCents.Size = new System.Drawing.Size(126, 23);
             nudTimeCents.TabIndex = 3;
             nudTimeCents.ValueChanged += nudTime_ValueChanged;
             // 
@@ -414,12 +414,12 @@
             nudTimeSeconds.AllowDrop = true;
             nudTimeSeconds.Dock = System.Windows.Forms.DockStyle.Fill;
             nudTimeSeconds.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudTimeSeconds.Location = new System.Drawing.Point(250, 0);
+            nudTimeSeconds.Location = new System.Drawing.Point(252, 0);
             nudTimeSeconds.LoopValues = false;
             nudTimeSeconds.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             nudTimeSeconds.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
             nudTimeSeconds.Name = "nudTimeSeconds";
-            nudTimeSeconds.Size = new System.Drawing.Size(122, 23);
+            nudTimeSeconds.Size = new System.Drawing.Size(123, 23);
             nudTimeSeconds.TabIndex = 2;
             nudTimeSeconds.ValueChanged += nudTime_ValueChanged;
             // 
@@ -428,12 +428,12 @@
             nudTimeMinutes.AllowDrop = true;
             nudTimeMinutes.Dock = System.Windows.Forms.DockStyle.Fill;
             nudTimeMinutes.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudTimeMinutes.Location = new System.Drawing.Point(126, 0);
+            nudTimeMinutes.Location = new System.Drawing.Point(127, 0);
             nudTimeMinutes.LoopValues = false;
             nudTimeMinutes.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             nudTimeMinutes.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
             nudTimeMinutes.Name = "nudTimeMinutes";
-            nudTimeMinutes.Size = new System.Drawing.Size(120, 23);
+            nudTimeMinutes.Size = new System.Drawing.Size(121, 23);
             nudTimeMinutes.TabIndex = 1;
             nudTimeMinutes.ValueChanged += nudTime_ValueChanged;
             // 
@@ -447,7 +447,7 @@
             nudTimeHours.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             nudTimeHours.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             nudTimeHours.Name = "nudTimeHours";
-            nudTimeHours.Size = new System.Drawing.Size(122, 23);
+            nudTimeHours.Size = new System.Drawing.Size(123, 23);
             nudTimeHours.TabIndex = 0;
             nudTimeHours.ValueChanged += nudTime_ValueChanged;
             // 

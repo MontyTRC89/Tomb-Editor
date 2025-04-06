@@ -355,7 +355,7 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.Vector2:
                     {
-                        if (source.StartsWith(LuaSyntax.Vec2TypePrefix + "(") && source.EndsWith(")"))
+                        if (source.StartsWith(LuaSyntax.Vec2TypePrefix + LuaSyntax.BracketOpen) && source.EndsWith(LuaSyntax.BracketClose))
                             source = source.Substring(LuaSyntax.Vec2TypePrefix.Length + 1, source.Length - LuaSyntax.Vec2TypePrefix.Length - 2);
 
                         var floats = UnboxVectorValue(source);
@@ -389,7 +389,7 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.Vector3:
                     {
-                        if (source.StartsWith(LuaSyntax.Vec3TypePrefix + "(") && source.EndsWith(")"))
+                        if (source.StartsWith(LuaSyntax.Vec3TypePrefix + LuaSyntax.BracketOpen) && source.EndsWith(LuaSyntax.BracketClose))
                             source = source.Substring(LuaSyntax.Vec3TypePrefix.Length + 1, source.Length - LuaSyntax.Vec3TypePrefix.Length - 2);
 
                         var floats = UnboxVectorValue(source);
@@ -425,7 +425,7 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.Color:
                     {
-                        if (source.StartsWith(LuaSyntax.ColorTypePrefix + "(") && source.EndsWith(")"))
+                        if (source.StartsWith(LuaSyntax.ColorTypePrefix + LuaSyntax.BracketOpen) && source.EndsWith(LuaSyntax.BracketClose))
                             source = source.Substring(LuaSyntax.ColorTypePrefix.Length + 1, source.Length - LuaSyntax.ColorTypePrefix.Length - 2);
 
                         var floats = UnboxVectorValue(source);
@@ -442,12 +442,12 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.Time:
                     {
-                        if (source.StartsWith(LuaSyntax.TimeTypePrefix + "(") && source.EndsWith(")"))
-                            source = source.Substring(LuaSyntax.TimeTypePrefix.Length + 1, source.Length - LuaSyntax.TimeTypePrefix.Length - 2);
+                        if (source.StartsWith(LuaSyntax.TimeTypePrefix + LuaSyntax.BracketOpen + LuaSyntax.TableOpen) && source.EndsWith(LuaSyntax.TableClose + LuaSyntax.BracketClose))
+                            source = source.Substring(LuaSyntax.TimeTypePrefix.Length + 2, source.Length - LuaSyntax.Vec3TypePrefix.Length - 4);
 
                         var floats = UnboxVectorValue(source);
 
-                        for (int i = 0; i < 4; i++)
+                        for (int i = 0; i < 5; i++)
                         {
                             var currentFloat = 0.0f;
                             if (floats.Length > i)
@@ -552,11 +552,11 @@ namespace TombLib.Controls.VisualScripting
             var m = ((int)nudTimeMinutes.Value).ToString();
             var s = ((int)nudTimeSeconds.Value).ToString();
             var c = ((int)nudTimeCents.Value).ToString();
-            _text = LuaSyntax.TimeTypePrefix + LuaSyntax.BracketOpen +
+            _text = LuaSyntax.TimeTypePrefix + LuaSyntax.BracketOpen + LuaSyntax.TableOpen +
                     h + LuaSyntax.Separator +
                     m + LuaSyntax.Separator +
                     s + LuaSyntax.Separator +
-                    c + LuaSyntax.BracketClose;
+                    c + LuaSyntax.TableClose + LuaSyntax.BracketClose;
             OnValueChanged();
         }
 
