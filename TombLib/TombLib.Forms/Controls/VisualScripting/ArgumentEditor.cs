@@ -427,6 +427,23 @@ namespace TombLib.Controls.VisualScripting
                         BoxVector3Value();
                         break;
                     }
+                case ArgumentType.Color:
+                    {
+                        if (source.StartsWith(LuaSyntax.ColorTypePrefix + LuaSyntax.BracketOpen) && source.EndsWith(LuaSyntax.BracketClose))
+                            source = source.Substring(LuaSyntax.ColorTypePrefix.Length + 1, source.Length - LuaSyntax.ColorTypePrefix.Length - 2);
+
+                        var floats = UnboxVectorValue(source);
+                        var bytes = new byte[3] { 0, 0, 0 };
+
+                        for (int i = 0; i < 3; i++)
+                            if (floats.Length > i)
+                                bytes[i] = (byte)MathC.Clamp(floats[i], 0, 255);
+
+                        panelColor.BackColor = Color.FromArgb(255, bytes[0], bytes[1], bytes[2]);
+
+                        BoxColorValue();
+                        break;
+                    }
                 case ArgumentType.Time:
                     {
                         if (source.StartsWith(LuaSyntax.TimeTypePrefix + LuaSyntax.BracketOpen + LuaSyntax.TableOpen) && source.EndsWith(LuaSyntax.TableClose + LuaSyntax.BracketClose))
@@ -463,23 +480,6 @@ namespace TombLib.Controls.VisualScripting
                         }
 
                         BoxTimeValue();
-                        break;
-                    }
-                case ArgumentType.Color:
-                    {
-                        if (source.StartsWith(LuaSyntax.ColorTypePrefix + LuaSyntax.BracketOpen) && source.EndsWith(LuaSyntax.BracketClose))
-                            source = source.Substring(LuaSyntax.ColorTypePrefix.Length + 1, source.Length - LuaSyntax.ColorTypePrefix.Length - 2);
-
-                        var floats = UnboxVectorValue(source);
-                        var bytes = new byte[3] { 0, 0, 0 };
-
-                        for (int i = 0; i < 3; i++)
-                            if (floats.Length > i)
-                                bytes[i] = (byte)MathC.Clamp(floats[i], 0, 255);
-
-                        panelColor.BackColor = Color.FromArgb(255, bytes[0], bytes[1], bytes[2]);
-
-                        BoxColorValue();
                         break;
                     }
                 case ArgumentType.String:
