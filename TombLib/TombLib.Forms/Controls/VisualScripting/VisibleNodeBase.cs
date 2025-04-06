@@ -543,6 +543,7 @@ namespace TombLib.Controls.VisualScripting
 
             base.OnMouseLeave(e);
 
+            _currentGrip = _lastSnappedGrip = -1;
             _mouseDown = false;
 
             Invalidate();
