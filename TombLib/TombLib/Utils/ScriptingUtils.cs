@@ -250,7 +250,7 @@ namespace TombLib.Utils
 #endif
             }
 
-            return result;
+            return result.OrderBy(n => n.Section).ToList();
         }
 
         public static List<string> GetAllFunctionNames(string path, List<string> list = null, int depth = 0)
@@ -310,6 +310,7 @@ namespace TombLib.Utils
                         pos1 = subfile.IndexOf(LuaSyntax.BracketOpen) + 1;
                         pos2 = subfile.IndexOf(LuaSyntax.BracketClose);
                         subfile = subfile.Substring(pos1, pos2 - pos1).Replace('"', ' ').Trim();
+                        subfile = subfile.Replace('.', '/').Trim();
                         subfile = Path.Combine(Path.GetDirectoryName(path), subfile + ".lua");
 
                         depth++;
