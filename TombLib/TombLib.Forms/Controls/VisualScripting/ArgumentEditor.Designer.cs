@@ -89,6 +89,7 @@
             groupBool.Location = new System.Drawing.Point(0, 204);
             groupBool.Margin = new System.Windows.Forms.Padding(0);
             groupBool.Name = "groupBool";
+            groupBool.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
             groupBool.Size = new System.Drawing.Size(511, 29);
             groupBool.TabIndex = 1;
             groupBool.Visible = false;
@@ -96,11 +97,11 @@
             // cbBool
             // 
             cbBool.AutoSize = true;
-            cbBool.Dock = System.Windows.Forms.DockStyle.Bottom;
-            cbBool.Location = new System.Drawing.Point(0, 10);
+            cbBool.Dock = System.Windows.Forms.DockStyle.Fill;
+            cbBool.Location = new System.Drawing.Point(0, 2);
             cbBool.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             cbBool.Name = "cbBool";
-            cbBool.Size = new System.Drawing.Size(511, 19);
+            cbBool.Size = new System.Drawing.Size(511, 27);
             cbBool.TabIndex = 1;
             cbBool.Text = "None";
             cbBool.CheckedChanged += rb_CheckedChanged;
