@@ -38,8 +38,9 @@
     <state item="0" id="189" name="REMOVE_PUZZLE" />
     <state item="0" id="190" name="PUSHABLE_EDGE_SLIP" />
     <state item="0" id="191" name="SPRINT_SLIDE" />
-    
-    <!-- APE -->
+	<state item="0" id="198" name="PULLEY_UNGRAB" />
+
+	<!-- APE -->
     <state item="102" id="1" name="IDLE" />
     <state item="102" id="2" name="WALK_FORWARD" />
     <state item="102" id="3" name="RUN_FORWARD" />
@@ -208,4 +209,11 @@
     <state item="298" id="11" name="DEFEAT_RECOVER" />
     <state item="298" id="12" name="BRUSH_OFF" />
     <state item="298" id="13" name="DEFEAT_END" />
+
+	<!-- PULLEY-->
+	<state item="830" id="0" name="OFF" />
+	<state item="830" id="1" name="ON" />
+	<state item="830" id="2" name="WAIT" />
+	<state item="830" id="3" name="ANIMATE" />
+	<state item="830" id="4" name="ANIMATE_UNDERWATER" />
 </states>
