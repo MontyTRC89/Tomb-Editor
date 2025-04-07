@@ -396,10 +396,10 @@
             nudTimeSeconds.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudTimeSeconds.Location = new System.Drawing.Point(256, 6);
             nudTimeSeconds.LoopValues = false;
-            nudTimeSeconds.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            nudTimeSeconds.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             nudTimeSeconds.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
             nudTimeSeconds.Name = "nudTimeSeconds";
-            nudTimeSeconds.Size = new System.Drawing.Size(125, 23);
+            nudTimeSeconds.Size = new System.Drawing.Size(123, 23);
             nudTimeSeconds.TabIndex = 2;
             nudTimeSeconds.ValueChanged += nudTime_ValueChanged;
             // 
