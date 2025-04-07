@@ -89,6 +89,7 @@
             groupBool.Location = new System.Drawing.Point(0, 204);
             groupBool.Margin = new System.Windows.Forms.Padding(0);
             groupBool.Name = "groupBool";
+            groupBool.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
             groupBool.Size = new System.Drawing.Size(511, 29);
             groupBool.TabIndex = 1;
             groupBool.Visible = false;
@@ -96,11 +97,11 @@
             // cbBool
             // 
             cbBool.AutoSize = true;
-            cbBool.Dock = System.Windows.Forms.DockStyle.Bottom;
-            cbBool.Location = new System.Drawing.Point(0, 10);
+            cbBool.Dock = System.Windows.Forms.DockStyle.Fill;
+            cbBool.Location = new System.Drawing.Point(0, 2);
             cbBool.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             cbBool.Name = "cbBool";
-            cbBool.Size = new System.Drawing.Size(511, 19);
+            cbBool.Size = new System.Drawing.Size(511, 27);
             cbBool.TabIndex = 1;
             cbBool.Text = "None";
             cbBool.CheckedChanged += rb_CheckedChanged;
@@ -395,10 +396,10 @@
             nudTimeSeconds.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudTimeSeconds.Location = new System.Drawing.Point(256, 6);
             nudTimeSeconds.LoopValues = false;
-            nudTimeSeconds.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            nudTimeSeconds.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             nudTimeSeconds.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
             nudTimeSeconds.Name = "nudTimeSeconds";
-            nudTimeSeconds.Size = new System.Drawing.Size(125, 23);
+            nudTimeSeconds.Size = new System.Drawing.Size(123, 23);
             nudTimeSeconds.TabIndex = 2;
             nudTimeSeconds.ValueChanged += nudTime_ValueChanged;
             // 

@@ -206,7 +206,6 @@ namespace TombLib.Controls.VisualScripting
                 {
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                     Name = "argEditor" + i.ToString(),
-                    Visible = false
                 };
 
                 ctrl.SuspendLayout();
@@ -271,9 +270,6 @@ namespace TombLib.Controls.VisualScripting
 
             for (int i = 0; i < Node.Arguments.Count; i++)
                 RefreshArgument(i);
-
-            foreach (var control in _argControls)
-                control.Visible = true;
 
             foreach (var sub in WinFormsUtils.AllSubControls(this))
                 sub.MouseDown += Ctrl_RightClick;
