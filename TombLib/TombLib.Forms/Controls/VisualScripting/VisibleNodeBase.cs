@@ -209,6 +209,8 @@ namespace TombLib.Controls.VisualScripting
                     Visible = false
                 };
 
+                ctrl.SuspendLayout();
+
                 _argControls.Add(ctrl);
                 Controls.Add(ctrl);
 
@@ -246,6 +248,8 @@ namespace TombLib.Controls.VisualScripting
                 ctrl.LocatedItemFound += Ctrl_LocatedItemFound;
                 ctrl.SoundEffectPlayed += Ctrl_SoundEffectPlayed;
                 ctrl.SoundtrackPlayed += Ctrl_SoundtrackPlayed;
+
+                ctrl.ResumeLayout();
             }
 
             var newHeight = scaledSpacing +
