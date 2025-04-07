@@ -96,11 +96,11 @@
             // cbBool
             // 
             cbBool.AutoSize = true;
-            cbBool.Dock = System.Windows.Forms.DockStyle.Fill;
-            cbBool.Location = new System.Drawing.Point(0, 0);
+            cbBool.Dock = System.Windows.Forms.DockStyle.Bottom;
+            cbBool.Location = new System.Drawing.Point(0, 10);
             cbBool.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             cbBool.Name = "cbBool";
-            cbBool.Size = new System.Drawing.Size(511, 29);
+            cbBool.Size = new System.Drawing.Size(511, 19);
             cbBool.TabIndex = 1;
             cbBool.Text = "None";
             cbBool.CheckedChanged += rb_CheckedChanged;
@@ -119,9 +119,9 @@
             // nudNumerical
             // 
             nudNumerical.DecimalPlaces = 2;
-            nudNumerical.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudNumerical.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudNumerical.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudNumerical.Location = new System.Drawing.Point(0, 0);
+            nudNumerical.Location = new System.Drawing.Point(0, 6);
             nudNumerical.LoopValues = false;
             nudNumerical.Margin = new System.Windows.Forms.Padding(0);
             nudNumerical.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
@@ -163,9 +163,9 @@
             // 
             nudVector2Y.AllowDrop = true;
             nudVector2Y.DecimalPlaces = 2;
-            nudVector2Y.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector2Y.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudVector2Y.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudVector2Y.Location = new System.Drawing.Point(257, 0);
+            nudVector2Y.Location = new System.Drawing.Point(257, 6);
             nudVector2Y.LoopValues = false;
             nudVector2Y.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             nudVector2Y.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
@@ -179,9 +179,9 @@
             // 
             nudVector2X.AllowDrop = true;
             nudVector2X.DecimalPlaces = 2;
-            nudVector2X.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector2X.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudVector2X.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudVector2X.Location = new System.Drawing.Point(0, 0);
+            nudVector2X.Location = new System.Drawing.Point(0, 6);
             nudVector2X.LoopValues = false;
             nudVector2X.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             nudVector2X.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
@@ -224,9 +224,9 @@
             // 
             nudVector3Z.AllowDrop = true;
             nudVector3Z.DecimalPlaces = 2;
-            nudVector3Z.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector3Z.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudVector3Z.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudVector3Z.Location = new System.Drawing.Point(342, 0);
+            nudVector3Z.Location = new System.Drawing.Point(342, 6);
             nudVector3Z.LoopValues = false;
             nudVector3Z.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             nudVector3Z.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
@@ -242,9 +242,9 @@
             // 
             nudVector3Y.AllowDrop = true;
             nudVector3Y.DecimalPlaces = 2;
-            nudVector3Y.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector3Y.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudVector3Y.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudVector3Y.Location = new System.Drawing.Point(172, 0);
+            nudVector3Y.Location = new System.Drawing.Point(172, 6);
             nudVector3Y.LoopValues = false;
             nudVector3Y.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             nudVector3Y.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
@@ -260,9 +260,9 @@
             // 
             nudVector3X.AllowDrop = true;
             nudVector3X.DecimalPlaces = 2;
-            nudVector3X.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudVector3X.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudVector3X.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudVector3X.Location = new System.Drawing.Point(0, 0);
+            nudVector3X.Location = new System.Drawing.Point(0, 6);
             nudVector3X.LoopValues = false;
             nudVector3X.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             nudVector3X.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
@@ -288,9 +288,9 @@
             // 
             // tbString
             // 
-            tbString.Dock = System.Windows.Forms.DockStyle.Fill;
-            tbString.Location = new System.Drawing.Point(0, 0);
-            tbString.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tbString.Dock = System.Windows.Forms.DockStyle.Bottom;
+            tbString.Location = new System.Drawing.Point(0, 6);
+            tbString.Margin = new System.Windows.Forms.Padding(1);
             tbString.Name = "tbString";
             tbString.Size = new System.Drawing.Size(483, 23);
             tbString.TabIndex = 3;
@@ -309,13 +309,14 @@
             // butMultiline
             // 
             butMultiline.Checked = false;
-            butMultiline.Dock = System.Windows.Forms.DockStyle.Fill;
+            butMultiline.Dock = System.Windows.Forms.DockStyle.Bottom;
             butMultiline.Image = Properties.Resources.general_Multiline_text_16;
-            butMultiline.Location = new System.Drawing.Point(0, 0);
+            butMultiline.Location = new System.Drawing.Point(0, 5);
             butMultiline.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             butMultiline.Name = "butMultiline";
-            butMultiline.Size = new System.Drawing.Size(28, 29);
+            butMultiline.Size = new System.Drawing.Size(28, 24);
             butMultiline.TabIndex = 2;
+            butMultiline.Click += butMultiline_Click;
             // 
             // groupColor
             // 
@@ -331,10 +332,9 @@
             // panelColor
             // 
             panelColor.AllowDrop = true;
-            panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             panelColor.Dock = System.Windows.Forms.DockStyle.Fill;
             panelColor.Location = new System.Drawing.Point(0, 0);
-            panelColor.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelColor.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
             panelColor.Name = "panelColor";
             panelColor.Size = new System.Drawing.Size(511, 29);
             panelColor.TabIndex = 1;
@@ -377,9 +377,9 @@
             // nudTimeCents
             // 
             nudTimeCents.AllowDrop = true;
-            nudTimeCents.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudTimeCents.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudTimeCents.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudTimeCents.Location = new System.Drawing.Point(383, 0);
+            nudTimeCents.Location = new System.Drawing.Point(383, 6);
             nudTimeCents.LoopValues = false;
             nudTimeCents.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             nudTimeCents.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
@@ -391,9 +391,9 @@
             // nudTimeSeconds
             // 
             nudTimeSeconds.AllowDrop = true;
-            nudTimeSeconds.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudTimeSeconds.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudTimeSeconds.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudTimeSeconds.Location = new System.Drawing.Point(256, 0);
+            nudTimeSeconds.Location = new System.Drawing.Point(256, 6);
             nudTimeSeconds.LoopValues = false;
             nudTimeSeconds.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             nudTimeSeconds.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
@@ -405,9 +405,9 @@
             // nudTimeMinutes
             // 
             nudTimeMinutes.AllowDrop = true;
-            nudTimeMinutes.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudTimeMinutes.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudTimeMinutes.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudTimeMinutes.Location = new System.Drawing.Point(129, 0);
+            nudTimeMinutes.Location = new System.Drawing.Point(129, 6);
             nudTimeMinutes.LoopValues = false;
             nudTimeMinutes.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             nudTimeMinutes.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
@@ -419,9 +419,9 @@
             // nudTimeHours
             // 
             nudTimeHours.AllowDrop = true;
-            nudTimeHours.Dock = System.Windows.Forms.DockStyle.Fill;
+            nudTimeHours.Dock = System.Windows.Forms.DockStyle.Bottom;
             nudTimeHours.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
-            nudTimeHours.Location = new System.Drawing.Point(0, 0);
+            nudTimeHours.Location = new System.Drawing.Point(0, 6);
             nudTimeHours.LoopValues = false;
             nudTimeHours.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             nudTimeHours.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
@@ -445,8 +445,8 @@
             // cbList
             // 
             cbList.AllowDrop = true;
-            cbList.Dock = System.Windows.Forms.DockStyle.Fill;
-            cbList.Location = new System.Drawing.Point(0, 0);
+            cbList.Dock = System.Windows.Forms.DockStyle.Bottom;
+            cbList.Location = new System.Drawing.Point(0, 5);
             cbList.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
             cbList.Name = "cbList";
             cbList.SearchThreshold = 10;
@@ -469,11 +469,12 @@
             // butAction
             // 
             butAction.Checked = false;
+            butAction.Dock = System.Windows.Forms.DockStyle.Bottom;
             butAction.Image = Properties.Resources.general_target_16;
-            butAction.Location = new System.Drawing.Point(0, 0);
+            butAction.Location = new System.Drawing.Point(0, 5);
             butAction.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             butAction.Name = "butAction";
-            butAction.Size = new System.Drawing.Size(28, 29);
+            butAction.Size = new System.Drawing.Size(28, 24);
             butAction.TabIndex = 0;
             butAction.Click += butAction_Click;
             // 

@@ -1,7 +1,6 @@
 ﻿using DarkUI.Config;
 using DarkUI.Controls;
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -77,17 +76,28 @@ namespace TombLib.Controls.VisualScripting
             var groups = Controls.OfType<DarkPanel>().Where(c => c.Name.StartsWith("group")).ToList();
             groups.ForEach(g => g.Visible = false);
 
+            DarkPanel targetPanel;
+
             switch (_argumentType)
             {
-                case ArgumentType.Boolean: groupBool.Visible = true; break;
-                case ArgumentType.Numerical: groupNumerical.Visible = true; break;
-                case ArgumentType.String: groupString.Visible = true; break;
-                case ArgumentType.Color: groupColor.Visible = true; break;
-                case ArgumentType.Vector2: groupVector2.Visible = true; break;
-                case ArgumentType.Vector3: groupVector3.Visible = true; break;
-                case ArgumentType.Time: groupTime.Visible = true; break;
-                default: groupList.Visible = true; break;
+                case ArgumentType.Boolean: targetPanel = groupBool; break;
+                case ArgumentType.Numerical: targetPanel = groupNumerical; break;
+                case ArgumentType.String: targetPanel = groupString; break;
+                case ArgumentType.Color: targetPanel = groupColor; break;
+                case ArgumentType.Vector2: targetPanel = groupVector2; break;
+                case ArgumentType.Vector3: targetPanel = groupVector3; break;
+                case ArgumentType.Time: targetPanel = groupTime; break;
+                default: targetPanel = groupList; break;
             }
+
+            targetPanel.Visible = true;
+            targetPanel.BringToFront();
+
+            foreach (Control control in targetPanel.Controls)
+                control.Height = targetPanel.Height;
+
+            tbString.AutoSize = false;
+            tbString.Height = nudNumerical.Height;
         }
 
         public void SetArgumentType(ArgumentLayout layout, NodeEditor editor)
@@ -277,6 +287,7 @@ namespace TombLib.Controls.VisualScripting
 
             ResumeLayout();
             Visible = true;
+
         }
 
         public void SetToolTip(ToolTip toolTip, string caption)
