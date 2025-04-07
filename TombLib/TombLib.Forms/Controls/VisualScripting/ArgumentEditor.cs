@@ -72,15 +72,12 @@ namespace TombLib.Controls.VisualScripting
             nudNumerical.Font = tableVector3.Font = new Font(Font.Name, Font.Size + 1.0f);
         }
 
-        public void HideGroups()
+        public void ShowGroup()
         {
             var groups = Controls.OfType<DarkPanel>().Where(c => c.Name.StartsWith("group")).ToList();
             groups.ForEach(g => g.Visible = false);
-        }
 
-        public void ShowGroup(ArgumentType type)
-        {
-            switch (type)
+            switch (_argumentType)
             {
                 case ArgumentType.Boolean: groupBool.Visible = true; break;
                 case ArgumentType.Numerical: groupNumerical.Visible = true; break;
@@ -100,11 +97,10 @@ namespace TombLib.Controls.VisualScripting
             Visible = false;
             SuspendLayout();
 
-            HideGroups();
+            ShowGroup();
 
             if (_argumentType >= ArgumentType.LuaScript)
             {
-                ShowGroup(_argumentType);
 
                 switch (_argumentType)
                 {
@@ -137,10 +133,6 @@ namespace TombLib.Controls.VisualScripting
                 }
 
                 cbList.Items.Clear();
-            }
-            else
-            {
-                ShowGroup(_argumentType);
             }
 
             if (_argumentType == ArgumentType.String)
