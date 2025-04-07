@@ -119,6 +119,7 @@
             // nudNumerical
             // 
             nudNumerical.DecimalPlaces = 2;
+            nudNumerical.Dock = System.Windows.Forms.DockStyle.Fill;
             nudNumerical.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudNumerical.Location = new System.Drawing.Point(0, 0);
             nudNumerical.LoopValues = false;
@@ -162,6 +163,7 @@
             // 
             nudVector2Y.AllowDrop = true;
             nudVector2Y.DecimalPlaces = 2;
+            nudVector2Y.Dock = System.Windows.Forms.DockStyle.Fill;
             nudVector2Y.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudVector2Y.Location = new System.Drawing.Point(257, 0);
             nudVector2Y.LoopValues = false;
@@ -177,6 +179,7 @@
             // 
             nudVector2X.AllowDrop = true;
             nudVector2X.DecimalPlaces = 2;
+            nudVector2X.Dock = System.Windows.Forms.DockStyle.Fill;
             nudVector2X.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudVector2X.Location = new System.Drawing.Point(0, 0);
             nudVector2X.LoopValues = false;
@@ -221,6 +224,7 @@
             // 
             nudVector3Z.AllowDrop = true;
             nudVector3Z.DecimalPlaces = 2;
+            nudVector3Z.Dock = System.Windows.Forms.DockStyle.Fill;
             nudVector3Z.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudVector3Z.Location = new System.Drawing.Point(342, 0);
             nudVector3Z.LoopValues = false;
@@ -238,6 +242,7 @@
             // 
             nudVector3Y.AllowDrop = true;
             nudVector3Y.DecimalPlaces = 2;
+            nudVector3Y.Dock = System.Windows.Forms.DockStyle.Fill;
             nudVector3Y.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudVector3Y.Location = new System.Drawing.Point(172, 0);
             nudVector3Y.LoopValues = false;
@@ -255,6 +260,7 @@
             // 
             nudVector3X.AllowDrop = true;
             nudVector3X.DecimalPlaces = 2;
+            nudVector3X.Dock = System.Windows.Forms.DockStyle.Fill;
             nudVector3X.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudVector3X.Location = new System.Drawing.Point(0, 0);
             nudVector3X.LoopValues = false;
@@ -282,6 +288,7 @@
             // 
             // tbString
             // 
+            tbString.Dock = System.Windows.Forms.DockStyle.Fill;
             tbString.Location = new System.Drawing.Point(0, 0);
             tbString.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tbString.Name = "tbString";
@@ -370,6 +377,7 @@
             // nudTimeCents
             // 
             nudTimeCents.AllowDrop = true;
+            nudTimeCents.Dock = System.Windows.Forms.DockStyle.Fill;
             nudTimeCents.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudTimeCents.Location = new System.Drawing.Point(383, 0);
             nudTimeCents.LoopValues = false;
@@ -383,6 +391,7 @@
             // nudTimeSeconds
             // 
             nudTimeSeconds.AllowDrop = true;
+            nudTimeSeconds.Dock = System.Windows.Forms.DockStyle.Fill;
             nudTimeSeconds.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudTimeSeconds.Location = new System.Drawing.Point(256, 0);
             nudTimeSeconds.LoopValues = false;
@@ -396,6 +405,7 @@
             // nudTimeMinutes
             // 
             nudTimeMinutes.AllowDrop = true;
+            nudTimeMinutes.Dock = System.Windows.Forms.DockStyle.Fill;
             nudTimeMinutes.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudTimeMinutes.Location = new System.Drawing.Point(129, 0);
             nudTimeMinutes.LoopValues = false;
@@ -409,6 +419,7 @@
             // nudTimeHours
             // 
             nudTimeHours.AllowDrop = true;
+            nudTimeHours.Dock = System.Windows.Forms.DockStyle.Fill;
             nudTimeHours.IncrementAlternate = new decimal(new int[] { 10, 0, 0, 65536 });
             nudTimeHours.Location = new System.Drawing.Point(0, 0);
             nudTimeHours.LoopValues = false;
@@ -434,6 +445,7 @@
             // cbList
             // 
             cbList.AllowDrop = true;
+            cbList.Dock = System.Windows.Forms.DockStyle.Fill;
             cbList.Location = new System.Drawing.Point(0, 0);
             cbList.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
             cbList.Name = "cbList";
