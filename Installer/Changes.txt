@@ -1,13 +1,28 @@
+Version 1.8.2
+=============
+
+Tomb Editor:
+ * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
+ * Increased node editor performance and response time.
+ * Fixed PRJ converter to accept projects with inconsistent animated texture data.
+ * Fixed functions from nested lua scripts not appearing in the function list.
+ * Fixed nodes randomly not saving parameters.
+ 
 Version 1.8.1
 =============
 
 Tomb Editor:
  * Save transform window position after closing it.
+ * Invert vertical position value in a transform window.
+ * Order nodes in a list by category.
+ * Fixed exception when a classic trigger was created with a volume selected.
 
 TombIDE:
+ * Added default placeholder texture for newly created TEN projects.
  * Fixed string editor throwing exception with TRNG scripts.
 
 TEN nodes:
+ * Added nodes for moving moveables and statics along flyby paths.
  * Added a node for changing scale of a moveable (visual only).
 
 Version 1.8
@@ -30,6 +45,7 @@ WadTool:
  * Added option to cancel skeleton editor closing if a warning about unbalanced meshtree is thrown.
  * Fixed incorrect copying of sprite sequences from one wad to another.
  * Fixed TR3-TEN remapping of puzzle objects.
+ * Fixed TR4 UNDERWATER_SWITCH2 remapping incorrectly for TEN.
 
 TombIDE:
  * Updated TR1X preset to 4.8.3 - no auto-update available due to breaking changes in the engine.
