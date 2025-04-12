@@ -11,7 +11,8 @@ namespace TombLib.LevelData
         PFrames,
         UVRotate,
         RiverRotate,
-        HalfRotate
+        HalfRotate,
+        Video
     }
 
     public class AnimatedTextureFrame : ICloneable, IEquatable<AnimatedTextureFrame>

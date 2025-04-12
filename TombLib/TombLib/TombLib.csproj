@@ -274,6 +274,9 @@
     <None Update="Catalogs\TEN Node Catalogs\UI.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Video.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\View.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
