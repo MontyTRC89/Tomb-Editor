@@ -25,7 +25,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var newMesh = new TombEngineMesh
             {
                 Sphere = oldMesh.BoundingSphere,
-                LightingType = oldMesh.LightingType
+                LightingType = oldMesh.LightingType,
+                Hidden = oldMesh.Hidden
             };
 
             var objectString = isStatic ? "Static" : "Moveable";
@@ -44,12 +45,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 var v = new TombEngineVertex() 
                 { 
-                    Position = new Vector3(pos.X, -pos.Y, pos.Z),
-                    Normal   = Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)),
-                    Color    = color,
-                    Bone     = meshIndex,
-                    Glow     = (oldMesh.HasAttributes) ? (float)oldMesh.VertexAttributes[i].Glow / 64.0f : 0.0f,
-                    Move     = (oldMesh.HasAttributes) ? (float)oldMesh.VertexAttributes[i].Move / 64.0f : 0.0f
+                    Position   = new Vector3(pos.X, -pos.Y, pos.Z),
+                    Normal     = Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)),
+                    Color      = color,
+                    BoneIndex  = oldMesh.HasWeights ? oldMesh.VertexWeights[i].Index : new int[4] { meshIndex, 0, 0, 0 },
+                    BoneWeight = oldMesh.HasWeights ? oldMesh.VertexWeights[i].Weight : new float[4] { 1, 0, 0, 0 },
+                    Glow       = oldMesh.HasAttributes ? (float)oldMesh.VertexAttributes[i].Glow / 64.0f : 0.0f,
+                    Move       = oldMesh.HasAttributes ? (float)oldMesh.VertexAttributes[i].Move / 64.0f : 0.0f
             };
 
                 newMesh.Vertices.Add(v);

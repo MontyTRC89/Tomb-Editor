@@ -70,7 +70,8 @@ namespace TombLib.Wad
     {
         public WadMoveableId Id { get; private set; }
         public DataVersion Version { get; set; } = DataVersion.GetNext();
-        public List<WadMesh> Meshes => /*Skeleton.LinearizedBones*/ Bones.Select(bone => bone.Mesh).ToList();
+        public WadMesh Skin { get; set; }
+        public List<WadMesh> Meshes => Bones.Select(bone => bone.Mesh).ToList();
         public List<WadAnimation> Animations { get; } = new List<WadAnimation>();
         //public WadBone Skeleton { get; set; } = new WadBone();
         public List<WadBone> Bones { get; } = new List<WadBone>();
@@ -87,6 +88,7 @@ namespace TombLib.Wad
         public WadMoveable Clone()
         {
             var mov = new WadMoveable(Id);
+            mov.Skin = Skin?.Clone() ?? null;
             foreach (var mesh in Meshes)
                 mov.Meshes.Add(mesh.Clone());
             foreach (var bone in Bones)

@@ -148,7 +148,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     foreach (var e in mesh.Vertices)
                         writer.Write(new Vector3(e.Glow, e.Move, e.Locked ? 0 : 1));
                     foreach (var b in mesh.Vertices)
-                        writer.Write(b.Bone);
+                    {
+                        writer.Write(b.BoneIndex.Length);
+                        for (int w = 0; w < b.BoneIndex.Length; w++)
+                        {
+                            writer.Write(b.BoneIndex[w]);
+                            writer.Write(b.BoneWeight[w]);
+                        }
+                    }    
 
                     writer.Write(mesh.Buckets.Count);
                     foreach (var bucket in mesh.Buckets.Values)

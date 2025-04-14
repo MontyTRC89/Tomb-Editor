@@ -68,7 +68,7 @@ namespace WadTool
 
         public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
             : this(tool, deviceManager, wad, null) { }
-       
+
         public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, IWadObjectId obj, Wad2 wad)
             : this(tool, deviceManager, wad)
         {
@@ -90,7 +90,7 @@ namespace WadTool
                 if (isStatic != (objectId is WadStaticId))
                     continue;
 
-                if (( isStatic  && ((WadStaticId)obj).TypeId == ((WadStaticId)objectId).TypeId) ||
+                if ((isStatic && ((WadStaticId)obj).TypeId == ((WadStaticId)objectId).TypeId) ||
                    ((!isStatic) && ((WadMoveableId)obj).TypeId == ((WadMoveableId)objectId).TypeId))
                 {
                     lstMeshes.SelectNode(nodes[i]);
@@ -334,7 +334,7 @@ namespace WadTool
                                             currTexture.Mirror(poly.IsTriangle);
                                         else if (Control.ModifierKeys == Keys.Shift)
                                             // We actually need to rotate polygon indices to get correct behaviour like in Strpix.
-                                            poly.Rotate(1, poly.IsTriangle); 
+                                            poly.Rotate(1, poly.IsTriangle);
                                     }
                                 }
 
@@ -397,7 +397,7 @@ namespace WadTool
 
         private void PrepareUI(WadMesh mesh)
         {
-            if (mesh == null) 
+            if (mesh == null)
             {
                 // Populate tree view
 
@@ -437,7 +437,7 @@ namespace WadTool
                 comboCurrentTexture.Width += comboCurrentTexture.Left - butAllTextures.Left;
                 comboCurrentTexture.Left = butAllTextures.Left;
             }
-            else 
+            else
             {
                 // If form is called with specific mesh, show only it and not meshtree or any related controls.
 
@@ -462,7 +462,7 @@ namespace WadTool
             panelEditingTools.Enabled = panelMesh.Mesh != null;
 
             // Disable vertex remap controls if no vertex is selected
-            var enableRemap = panelMesh.EditingMode == MeshEditingMode.VertexRemap && 
+            var enableRemap = panelMesh.EditingMode == MeshEditingMode.VertexRemap &&
                               panelMesh.CurrentElement != -1;
             if (enableRemap) nudVertexNum.Value = panelMesh.CurrentElement;
             butRemapVertex.Enabled = enableRemap;
@@ -471,6 +471,10 @@ namespace WadTool
             butTbWireframe.Checked = panelMesh.WireframeMode;
             butTbAlpha.Checked = panelMesh.AlphaTest;
             cbExtra.Checked = panelMesh.DrawExtraInfo;
+
+            // Borrow visibility option from a mesh
+            butHide.Enabled = panelMesh.Mesh != null;
+            butHide.Checked = panelMesh.Mesh?.Hidden ?? false;
 
             // Hide cancel button in case editing mode is active in tree view.
             // It is needed because editing happens realtime, without keeping backup mesh.
@@ -529,9 +533,9 @@ namespace WadTool
         private void UpdateStatusLabel()
         {
             var prompt = NoMesh() ? string.Empty : panelMesh.Mesh.VertexPositions.Count + " vertices, " +
-                                                   panelMesh.Mesh.Polys.Count + " face" + 
+                                                   panelMesh.Mesh.Polys.Count + " face" +
                                                   (panelMesh.Mesh.Polys.Count > 1 ? "s" : "") + ", " +
-                                                   panelMesh.Mesh.TextureAreas.Count + " texture info" + 
+                                                   panelMesh.Mesh.TextureAreas.Count + " texture info" +
                                                   (panelMesh.Mesh.TextureAreas.Count > 1 ? "s" : "") + ". ";
 
             if (panelTextureMap.SelectedTexture != TextureArea.None)
@@ -971,6 +975,15 @@ namespace WadTool
                 UpdateUI();
                 UpdateMeshTreeName();
             }
+        }
+
+        private void ToggleMeshVisibility()
+        {
+            if (panelMesh.Mesh == null)
+                return;
+
+            panelMesh.Mesh.Hidden = !panelMesh.Mesh.Hidden;
+            UpdateUI();
         }
 
         private void UpdateMeshTreeName()
@@ -1430,7 +1443,7 @@ namespace WadTool
             butAllTextures.Checked = !butAllTextures.Checked;
             RepopulateTextureList();
         }
-        
+
         private void butTbUndo_Click(object sender, EventArgs e)
         {
             _tool.UndoManager.Undo();
@@ -1532,6 +1545,11 @@ namespace WadTool
         {
             if (lstMeshes.SelectedNodes.Count == 1 && lstMeshes.SelectedNodes[0].Tag != null)
                 RenameMesh();
+        }
+
+        private void butHide_Click(object sender, EventArgs e)
+        {
+            ToggleMeshVisibility();
         }
     }
 }

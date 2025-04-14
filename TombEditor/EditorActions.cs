@@ -5072,31 +5072,6 @@ namespace TombEditor
                 // Rebuild DirectX buffer
                 newObject.DirectXModel.UpdateBuffers();
 
-                // Load the XML db
-                /*string dbName = Path.GetDirectoryName(importedGeometryPath) + "\\" + Path.GetFileNameWithoutExtension(importedGeometryPath) + ".xml";
-                var db = RoomsImportExportXmlDatabase.LoadFromFile(dbName);
-                if (db == null)
-                    throw new FileNotFoundException("There must be also an XML file with the same name of the 3D file");
-        */
-
-                // Create a dictionary of the rooms by name
-                /* var roomDictionary = new Dictionary<string, IOMesh>();
-                 foreach (var msh in newObject.DirectXModel)
-
-                 // Translate rooms
-                 for (int i=0;i<db.Rooms.Count;i++)
-                 {
-                     string roomMeshName = db.Rooms.ElementAt(i).Key;
-                     foreach (var mesh in model.Meshes)
-                         for (int i = 0; i < mesh.Positions.Count; i++)
-                         {
-                             var pos = mesh.Positions[i];
-                             pos -= mesh.Origin;
-                             mesh.Positions[i] = pos;
-                         }
-                 }
-                 */
-
                 // Figure out the relevant rooms
                 Dictionary<int, int> roomIndices = new Dictionary<int, int>();
                 int meshIndex = 0;
@@ -5124,7 +5099,6 @@ namespace TombEditor
                         currentIndex = roomIndexEnd;
                     } while (currentIndex < mesh.Name.Length);
                 }
-                //roomIndices = roomIndices.Distinct().ToList();
 
                 // Add rooms
                 foreach (var pair in roomIndices)

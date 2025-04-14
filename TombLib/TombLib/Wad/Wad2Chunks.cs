@@ -72,7 +72,10 @@ namespace TombLib.Wad
         /******/public static readonly ChunkId MeshVertexColor = ChunkId.FromString("W2VxCol");
         /****/public static readonly ChunkId MeshVertexAttributes = ChunkId.FromString("W2VrtAttr");
         /******/public static readonly ChunkId MeshVertexAttribute = ChunkId.FromString("W2VxAttr");
+        /****/public static readonly ChunkId MeshVertexWeights = ChunkId.FromString("W2VrtWghts");
+        /****/public static readonly ChunkId MeshVertexWeight = ChunkId.FromString("W2VrtWght");
         /****/public static readonly ChunkId MeshLightingType = ChunkId.FromString("W2MeshLightType");
+        /****/public static readonly ChunkId MeshVisibility = ChunkId.FromString("W2MeshVisible");
         /****/public static readonly ChunkId MeshPolygons = ChunkId.FromString("W2Polys");
         /******/public static readonly ChunkId MeshTriangle = ChunkId.FromString("W2Tr");
         /******/public static readonly ChunkId MeshQuad = ChunkId.FromString("W2Uq");
@@ -99,6 +102,7 @@ namespace TombLib.Wad
         ///******/public static readonly ChunkId MoveableName = ChunkId.FromString("W2MovName");
         /******/public static readonly ChunkId MoveableMeshes = ChunkId.FromString("W2MovMeshes");
         /********/public static readonly ChunkId MoveableMesh = ChunkId.FromString("W2MovMeshPtr");
+        /********/public static readonly ChunkId MoveableSkin = ChunkId.FromString("W2MovSkin");
         /******/public static readonly ChunkId MoveableLinks = ChunkId.FromString("W2Links");
         /********/public static readonly ChunkId MoveableLink = ChunkId.FromString("W2Lnk");
         /********/public static readonly ChunkId MoveableBone = ChunkId.FromString("W2Bone");
@@ -107,6 +111,7 @@ namespace TombLib.Wad
         /**********/public static readonly ChunkId MoveableBoneMeshPointer = ChunkId.FromString("W2BoneMesh");
         /**********/public static readonly ChunkId MoveableBoneName = ChunkId.FromString("W2BoneName");
         /**********/public static readonly ChunkId MoveableBoneTranslation = ChunkId.FromString("W2BoneTrans");
+        /**********/public static readonly ChunkId MoveableBoneVisibility = ChunkId.FromString("W2BoneVisible");
         /********/public static readonly ChunkId MoveableLinkOffset = ChunkId.FromString("W2LnkO");
         /******/public static readonly ChunkId Animations = ChunkId.FromString("W2Animations");
         /********/public static readonly ChunkId AnimationObsolete = ChunkId.FromString("W2Anm");

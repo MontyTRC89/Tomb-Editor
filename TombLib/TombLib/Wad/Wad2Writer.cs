@@ -179,6 +179,22 @@ namespace TombLib.Wad
                     }
                 });
 
+                // Write weights
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexWeights, () =>
+                {
+                    foreach (var weight in mesh.VertexWeights)
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexWeight, () =>
+                        {
+                            chunkIO.Raw.Write(weight.Index.Length);
+
+                            for (int w = 0; w < weight.Index.Length; w++)
+                            {
+                                chunkIO.Raw.Write(weight.Index[w]);
+                                chunkIO.Raw.Write(weight.Weight[w]);
+                            }
+                        });
+                });
+
                 // Write vertex attributes
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexAttributes, () =>
                 {
@@ -190,8 +206,9 @@ namespace TombLib.Wad
                         });
                 });
 
-                // Write light mode
+                // Write light mode and visibility
                 chunkIO.WriteChunkInt(Wad2Chunks.MeshLightingType, (int)mesh.LightingType);
+                chunkIO.WriteChunkBool(Wad2Chunks.MeshVisibility, mesh.Hidden);
 
                 // Write polygons
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshPolygons, () =>
@@ -253,6 +270,14 @@ namespace TombLib.Wad
 
                         foreach (var mesh in m.Meshes)
                             WriteMesh(chunkIO, mesh, textureTable);
+
+                        if (m.Skin != null)
+                        {
+                            chunkIO.WriteChunkWithChildren(Wad2Chunks.MoveableSkin, () =>
+                            {
+                                WriteMesh(chunkIO, m.Skin, textureTable);
+                            });
+                        }
 
                         foreach (var b in m.Bones)
                         {
