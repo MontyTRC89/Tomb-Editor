@@ -582,6 +582,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public struct TombEngineMoveable
     {
         public int ObjectID;
+        public int Skin;
         public int NumMeshes;
         public int StartingMesh;
         public int MeshTree;

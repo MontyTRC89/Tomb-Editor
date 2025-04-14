@@ -19,8 +19,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private int _soundMapSize = 0;
         private short[] _finalSoundMap;
 
-        private TombEngineMesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
-                                            bool isWaterfall = false, bool isOptics = false)
+        private TombEngineMesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex = 0,
+                                              bool isWaterfall = false, bool isOptics = false)
         {
             var newMesh = new TombEngineMesh
             {
@@ -399,6 +399,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
                 }
 
+                newMoveable.Skin = -1;
+                if (oldMoveable.Skin != null)
+                {
+                    newMoveable.Skin = _meshes.Count;
+                    var wadSkin = oldMoveable.Skin;
+                    ConvertWadMesh(
+                        wadSkin,
+                        false,
+                        oldMoveable.Id.ShortName(_level.Settings.GameVersion));
+                }
+
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
                 usedMeshes.Add(oldMoveable.Bones[0].Mesh);
@@ -488,10 +499,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     ConvertWadMesh(
                         oldStaticMesh.Mesh, 
                         true,
-                        oldStaticMesh.Id.ShortName(_level.Settings.GameVersion), 
-                        0,
-                        false, 
-                        false);
+                        oldStaticMesh.Id.ShortName(_level.Settings.GameVersion));
                 }
                 else
                 {
