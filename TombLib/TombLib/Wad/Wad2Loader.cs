@@ -273,10 +273,8 @@ namespace TombLib.Wad
                     {
                         if (id3 == Wad2Chunks.MeshVertexWeight)
                         {
-                            int weightCount = chunkIO.Raw.ReadInt32();
-
                             var weight = new VertexWeight();
-                            for (int w = 0; w < weightCount; w++)
+                            for (int w = 0; w < weight.Index.Length; w++)
                             {
                                 weight.Index[w] = chunkIO.Raw.ReadInt32();
                                 weight.Weight[w] = chunkIO.Raw.ReadSingle();

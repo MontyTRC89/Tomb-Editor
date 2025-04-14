@@ -183,10 +183,9 @@ namespace TombLib.Wad
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexWeights, () =>
                 {
                     foreach (var weight in mesh.VertexWeights)
+
                         chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexWeight, () =>
                         {
-                            chunkIO.Raw.Write(weight.Index.Length);
-
                             for (int w = 0; w < weight.Index.Length; w++)
                             {
                                 chunkIO.Raw.Write(weight.Index[w]);
