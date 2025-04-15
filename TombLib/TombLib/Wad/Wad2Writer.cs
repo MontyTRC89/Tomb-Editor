@@ -314,10 +314,10 @@ namespace TombLib.Wad
                                                 LEB128.Write(chunkIO.Raw, dispatch.InFrame);
                                                 LEB128.Write(chunkIO.Raw, dispatch.OutFrame);
                                                 LEB128.Write(chunkIO.Raw, dispatch.NextAnimation);
-                                                LEB128.Write(chunkIO.Raw, dispatch.NextFrame);
+                                                LEB128.Write(chunkIO.Raw, dispatch.NextFrameLow);
 
+                                                LEB128.Write(chunkIO.Raw, dispatch.NextFrameHigh);
                                                 LEB128.Write(chunkIO.Raw, dispatch.BlendFrameCount);
-                                                LEB128.Write(chunkIO.Raw, dispatch.BlendEndFrame);
 
                                                 chunkIO.WriteChunkVector2(Wad2Chunks.CurveStart, dispatch.BlendCurve.Start);
                                                 chunkIO.WriteChunkVector2(Wad2Chunks.CurveEnd, dispatch.BlendCurve.End);

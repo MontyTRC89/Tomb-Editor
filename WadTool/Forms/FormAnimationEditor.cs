@@ -2295,7 +2295,7 @@ namespace WadTool
                     InFrame = (ushort)timeline.SelectionStartFrameIndex,
                     OutFrame = (ushort)timeline.SelectionEndFrameIndex,
                     NextAnimation = 0,
-                    NextFrame = 0
+                    NextFrameLow = 0
                 });
             }
 

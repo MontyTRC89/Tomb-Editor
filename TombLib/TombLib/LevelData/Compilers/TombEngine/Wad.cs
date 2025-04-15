@@ -367,9 +367,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             newStateChange.FrameLow = unchecked((int)(dispatch.InFrame));
                             newStateChange.FrameHigh = unchecked((int)(dispatch.OutFrame));
                             newStateChange.NextAnimation = checked((int)(dispatch.NextAnimation));
-                            newStateChange.NextFrame = (int)dispatch.NextFrame;
+                            newStateChange.NextFrameLow = (int)dispatch.NextFrameLow;
+                            newStateChange.NextFrameHigh = (int)dispatch.NextFrameHigh;
                             newStateChange.BlendFrameCount = (int)dispatch.BlendFrameCount;
-                            newStateChange.BlendEndFrame = (int)dispatch.BlendEndFrame;
                             newStateChange.BlendCurve = dispatch.BlendCurve.Clone();
 
                             newAnimation.StateChanges.Add(newStateChange);
@@ -382,7 +382,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newMoveable.MeshTree = _meshTrees.Count;
                 newMoveable.StartingMesh = _meshes.Count;
 
-                for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
+                for (int i = 0; i < oldMoveable.Meshes.Count; i++)
+                {
                     var wadMesh = oldMoveable.Meshes[i];
                     ConvertWadMesh(
                         wadMesh, 

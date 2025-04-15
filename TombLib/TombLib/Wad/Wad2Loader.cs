@@ -652,12 +652,12 @@ namespace TombLib.Wad
                                         dispatch.InFrame = LEB128.ReadUShort(chunkIO.Raw);
                                         dispatch.OutFrame = LEB128.ReadUShort(chunkIO.Raw);
                                         dispatch.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);
-                                        dispatch.NextFrame = LEB128.ReadUShort(chunkIO.Raw);
+                                        dispatch.NextFrameLow = LEB128.ReadUShort(chunkIO.Raw);
 
                                         if (id4 == Wad2Chunks.Dispatch2)
                                         {
+                                            dispatch.NextFrameHigh = LEB128.ReadUShort(chunkIO.Raw);
                                             dispatch.BlendFrameCount = LEB128.ReadUShort(chunkIO.Raw);
-                                            dispatch.BlendEndFrame = LEB128.ReadUShort(chunkIO.Raw);
 
                                             chunkIO.ReadChunks((id5, chunkSize5) =>
                                             {

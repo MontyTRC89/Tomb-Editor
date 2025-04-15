@@ -34,16 +34,16 @@ namespace WadTool
             public BezierCurve2D BlendCurve { get; set; }
 
             public WadStateChangeRow(string stateName, ushort stateId, ushort lowFrame, ushort highFrame, ushort nextAnimation,
-                                     ushort nextFrame, ushort blendFrameCount, ushort blendEndFrame, BezierCurve2D blendCurve)
+                                     ushort nextFrameLow, ushort nextFrameHigh, ushort blendFrameCount, BezierCurve2D blendCurve)
             {
                 StateName = stateName;
                 StateId = stateId;
                 LowFrame = lowFrame;
                 HighFrame = highFrame;
                 NextAnimation = nextAnimation;
-                NextFrame = nextFrame;
+                NextFrame = nextFrameLow;
+                BlendEndFrame = nextFrameHigh;
                 BlendFrameCount = blendFrameCount;
-                BlendEndFrame = blendEndFrame;
                 BlendCurve = blendCurve.Clone();
             }
 
@@ -94,7 +94,7 @@ namespace WadTool
             foreach (var sc in _animation.WadAnimation.StateChanges)
                 foreach (var d in sc.Dispatches)
                     rows.Add(new WadStateChangeRow(TrCatalog.GetStateName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, sc.StateId),
-                                                sc.StateId, d.InFrame, d.OutFrame, d.NextAnimation, d.NextFrame, d.BlendFrameCount, d.BlendEndFrame, d.BlendCurve));
+                                                   sc.StateId, d.InFrame, d.OutFrame, d.NextAnimation, d.NextFrameLow, d.NextFrameHigh, d.BlendFrameCount, d.BlendCurve));
 
             if (newStateChange != null && newStateChange.Dispatches.Count == 1)
             {
@@ -103,9 +103,9 @@ namespace WadTool
                                                newStateChange.Dispatches[0].InFrame,
                                                newStateChange.Dispatches[0].OutFrame,
                                                newStateChange.Dispatches[0].NextAnimation,
-                                               newStateChange.Dispatches[0].NextFrame,
+                                               newStateChange.Dispatches[0].NextFrameLow,
+                                               newStateChange.Dispatches[0].NextFrameHigh,
                                                newStateChange.Dispatches[0].BlendFrameCount,
-                                               newStateChange.Dispatches[0].BlendEndFrame,
                                                newStateChange.Dispatches[0].BlendCurve));
                 _createdNew = true;
             }
@@ -189,8 +189,8 @@ namespace WadTool
                 sc.StateId = row.StateId;
 
                 var newDispatch = new WadAnimDispatch(row.LowFrame, row.HighFrame, row.NextAnimation, row.NextFrame);
+                newDispatch.NextFrameHigh = row.BlendEndFrame;
                 newDispatch.BlendFrameCount = row.BlendFrameCount;
-                newDispatch.BlendEndFrame = row.BlendEndFrame;
                 newDispatch.BlendCurve = row.BlendCurve;
 
                 sc.Dispatches.Add(newDispatch);
