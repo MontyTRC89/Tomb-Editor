@@ -411,8 +411,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
                 var meshTrees = new List<tr_meshtree>();
-                var usedMeshes = new List<WadMesh>();
-                usedMeshes.Add(oldMoveable.Bones[0].Mesh);
 
                 for (int b = 1; b < oldMoveable.Bones.Count; b++)
                 {
@@ -427,7 +425,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     tree.Y = (int)-bone.Translation.Y;
                     tree.Z = (int) bone.Translation.Z;
 
-                    usedMeshes.Add(oldMoveable.Bones[b].Mesh);
                     meshTrees.Add(tree);
                 }
 

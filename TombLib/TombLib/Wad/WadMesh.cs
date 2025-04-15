@@ -59,6 +59,14 @@ namespace TombLib.Wad
             }
             return hash;
         }
+
+        public override string ToString()
+        {
+            return (Weight[0] > 0.2f ? Index[0].ToString() : string.Empty) + "\n" +
+                   (Weight[1] > 0.2f ? Index[1].ToString() : string.Empty) + "\n" +
+                   (Weight[2] > 0.2f ? Index[2].ToString() : string.Empty) + "\n" +
+                   (Weight[3] > 0.2f ? Index[3].ToString() : string.Empty) + "\n";
+        }
     }
 
     public class WadMesh : ICloneable

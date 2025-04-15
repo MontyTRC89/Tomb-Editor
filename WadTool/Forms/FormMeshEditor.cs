@@ -413,6 +413,15 @@ namespace WadTool
                         node.Tag = new MeshTreeNode(moveable.Key, i, wadMesh);
                         list.Add(node);
                     }
+
+                    if (moveable.Value.Skin != null)
+                    {
+                        var wadMesh = moveable.Value.Skin;
+                        var node = new DarkTreeNode(wadMesh.Name);
+                        node.Tag = new MeshTreeNode(moveable.Key, moveable.Value.Meshes.Count(), wadMesh);
+                        list.Add(node);
+                    }
+
                     moveableNode.Nodes.AddRange(list);
                     moveablesNode.Nodes.Add(moveableNode);
                 }
@@ -629,10 +638,17 @@ namespace WadTool
 
             var obj = _wad.TryGet(_currentNode.ObjectId);
 
-            if (obj is WadMoveable)
+            if (obj is WadMoveable mov)
             {
-                (obj as WadMoveable).Meshes[_currentNode.MeshIndex] =
-                (obj as WadMoveable).Bones[_currentNode.MeshIndex].Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                if (mov.Meshes.Count == _currentNode.MeshIndex)
+                {
+                    mov.Skin = _currentNode.WadMesh = panelMesh.Mesh;
+                }
+                else
+                {
+                    mov.Meshes[_currentNode.MeshIndex] =
+                    mov.Bones[_currentNode.MeshIndex].Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                }
             }
             else if (obj is WadStatic)
             {

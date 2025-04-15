@@ -67,6 +67,8 @@ namespace TombLib.GeometryIO.Importers
             // Traverse hierarchy and add only nodes that are bones
             TraverseBoneNodes(scene.RootNode, boneNames, orderedBones);
 
+            // Sort bones by name
+            orderedBones.Sort();
             return orderedBones;
         }
 
