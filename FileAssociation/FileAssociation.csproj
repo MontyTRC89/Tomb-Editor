@@ -47,6 +47,5 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MiniFileAssociation" Version="1.0.1" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 </Project>

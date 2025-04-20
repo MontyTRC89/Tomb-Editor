@@ -110,7 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="IconUtilities" Version="1.0.2" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
