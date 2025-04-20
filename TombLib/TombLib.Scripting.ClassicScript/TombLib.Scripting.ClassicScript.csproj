@@ -75,7 +75,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
     <ProjectReference Include="..\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
   </ItemGroup>

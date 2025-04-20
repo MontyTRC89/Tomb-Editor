@@ -28,7 +28,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>

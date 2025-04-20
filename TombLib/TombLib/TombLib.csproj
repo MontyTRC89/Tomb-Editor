@@ -425,9 +425,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Catalogs\Engines\TRNG\CLICK_DISTANCE_32.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
