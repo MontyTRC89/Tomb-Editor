@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
