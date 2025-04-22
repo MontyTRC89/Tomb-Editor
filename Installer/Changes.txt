@@ -2,6 +2,7 @@ Version 1.8.2
 =============
 
 Tomb Editor:
+ * Added streaming video animated texture type for TEN.
  * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
  * Increased node editor performance and response time.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
@@ -10,6 +11,9 @@ Tomb Editor:
  
 WadTool:
  * Added support for importing models with embedded textures.
+ 
+TEN nodes:
+ * Added nodes for video playback.
  
 Version 1.8.1
 =============
