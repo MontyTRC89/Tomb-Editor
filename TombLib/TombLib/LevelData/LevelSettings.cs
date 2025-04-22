@@ -224,7 +224,8 @@ namespace TombLib.LevelData
         public bool RemoveUnusedObjects { get; set; } = false;
         public bool EnableCustomSampleRate { get; set; } = false;
         public int CustomSampleRate { get; set; } = 44100;
-
+        public bool AutomaticallyApplyDynamicWaterSurfaces { get; set; } = true;
+        
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
         public Tr5WeatherType Tr5WeatherType { get; set; } = Tr5WeatherType.Normal;

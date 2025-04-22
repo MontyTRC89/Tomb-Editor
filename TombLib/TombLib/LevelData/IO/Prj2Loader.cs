@@ -192,7 +192,9 @@ namespace TombLib.LevelData.IO
                     settings.Tr5ExtraSpritesFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.TenLuaScriptFile)
                     settings.TenLuaScriptFile = chunkIO.ReadChunkString(chunkSize);
-                else if (id == Prj2Chunks.OldWadSoundPaths)
+				else if (id == Prj2Chunks.TenAutomaticallyApplyDynamicWaterSurfaces)
+					settings.AutomaticallyApplyDynamicWaterSurfaces = chunkIO.ReadChunkBool(chunkSize);
+				else if (id == Prj2Chunks.OldWadSoundPaths)
                 {
                     bool Update1_0_8 = false;
 
@@ -1165,24 +1167,6 @@ namespace TombLib.LevelData.IO
             }
 
 			progressReporter?.ReportInfo("Applying dynamic water surface");
-
-			// Link rooms
-			foreach (var room in newRooms)
-			{
-				cancelToken.ThrowIfCancellationRequested();
-
-				foreach (var portal in room.Value.Portals)
-                {
-                    if (portal.Direction == PortalDirection.Floor && 
-                        portal.AdjoiningRoom?.Properties.Type == RoomType.Water)
-                    {
-                        portal.Effect = PortalEffectType.DynamicWaterSurface;
-                        portal.Properties.WaterRefractionStrength = WaterRefractionStrength.Medium;
-                        portal.Properties.WaterDirection = WaterDirection.North;
-                        portal.Properties.WaterSpeed = 32;
-                    }
-                }
-			}
 
 			// Now build the real geometry and update geometry buffers
 			ParallelOptions parallelOptions = new ParallelOptions()

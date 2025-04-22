@@ -1062,8 +1062,17 @@ namespace TombEditor
                 EditorActions.ImportRooms(args.Window);
             });
 
+			AddCommand("SetDynamicWaterSurfacesForCurrentRoom", "Enable dynamic water surfaces for current room", CommandType.Rooms, delegate (CommandArgs args)
+			{
+				EditorActions.ApplyDynamicWaterSurfacesToSingleRoom(args.Editor.SelectedRoom, args.Window);
+			});
 
-            AddCommand("EditAmbientLight", "Edit ambient light...", CommandType.Rooms, delegate (CommandArgs args)
+			AddCommand("SetDynamicWaterSurfacesForAllRooms", "Enable dynamic water surfaces for all rooms", CommandType.Rooms, delegate (CommandArgs args)
+			{
+				EditorActions.ApplyDynamicWaterSurfacesToAllRooms(args.Window);
+			});
+
+			AddCommand("EditAmbientLight", "Edit ambient light...", CommandType.Rooms, delegate (CommandArgs args)
             {
                 var room = args.Editor.SelectedRoom;
                 var undo = new RoomPropertyUndoInstance(args.Editor.UndoManager, room);

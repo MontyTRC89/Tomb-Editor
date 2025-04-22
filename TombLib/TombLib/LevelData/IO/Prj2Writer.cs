@@ -181,8 +181,9 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 chunkIO.WriteChunkInt(Prj2Chunks.LastRoom, settings.LastSelectedRoom);
                 chunkIO.WriteChunkString(Prj2Chunks.TenLuaScriptFile, settings.TenLuaScriptFile ?? string.Empty);
+				chunkIO.WriteChunkBool(Prj2Chunks.TenAutomaticallyApplyDynamicWaterSurfaces, settings.AutomaticallyApplyDynamicWaterSurfaces);
 
-                using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
+				using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {
                     foreach (ReferencedWad wad in settings.Wads)
                         using (var chunkWad = chunkIO.WriteChunk(Prj2Chunks.Wad))

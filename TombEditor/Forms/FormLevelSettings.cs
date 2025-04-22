@@ -705,9 +705,11 @@ namespace TombEditor.Forms
             {
                 tbLuaPath.BackColor = File.Exists(_levelSettings.MakeAbsolute(_levelSettings.TenLuaScriptFile)) ? _correctColor : _wrongColor;
             }
+			cbAutomaticallyApplyDynamicWaterSurfaces.Visible = currentVersionToCheck;
+			cbAutomaticallyApplyDynamicWaterSurfaces.Checked = _levelSettings.AutomaticallyApplyDynamicWaterSurfaces;
 
-            // TR4 and TombEngine platforms
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
+			// TR4 and TombEngine platforms
+			currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
             cbEnableExtraBlendingModes.Visible = currentVersionToCheck;
 
             // TR2-5 platforms
@@ -1239,7 +1241,13 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
-        private void GameEnableExtraReverbPresetsCheckBox_CheckedChanged(object sender, EventArgs e)
+		private void cbAutomaticallyApplyDynamicWaterSurfaces_CheckedChanged(object sender, EventArgs e)
+		{
+			_levelSettings.AutomaticallyApplyDynamicWaterSurfaces = cbAutomaticallyApplyDynamicWaterSurfaces.Checked;
+			UpdateDialog();
+		}
+
+		private void GameEnableExtraReverbPresetsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.GameEnableExtraReverbPresets = GameEnableExtraReverbPresetsCheckBox.Checked;
             UpdateDialog();

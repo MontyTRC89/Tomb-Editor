@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -3039,6 +3040,15 @@ namespace TombEditor
             var mainPortal = new PortalInstance(area, destinationDirection, destination);
             var portals = room.AddObject(_editor.Level, mainPortal).Cast<PortalInstance>();
 
+            // Apply special dynamic surface if needed
+            if (_editor.Level.IsTombEngine && destinationDirection < PortalDirection.WallPositiveZ)
+            {
+                foreach (var portal in portals)
+                {
+                    ApplyDynamicWaterSurfacesToSinglePortal(portal, owner);
+                }
+            }
+
             if (destinationDirection >= PortalDirection.WallPositiveZ) // If portal is any wall
             {
                 // Remove all splits from affected walls to expose geometry of the other room
@@ -4841,6 +4851,86 @@ namespace TombEditor
 
 			portal.Effect = (portal.Effect == PortalEffectType.ClassicMirror) ? PortalEffectType.None : PortalEffectType.ClassicMirror;
 			_editor.ObjectChange(portal, ObjectChangeType.Change);
+		}
+
+        public static void ApplyDynamicWaterSurfacesToSingleRoom(Room room, IWin32Window owner)
+        {
+            if (!VersionCheck(_editor.Level.IsTombEngine, "Dynamic water surface effect"))
+                return;
+
+            var touchedPortals = new List<PortalInstance>();
+
+            foreach (var portal in room.Portals)
+            {
+                TryApplyDynamicWaterSurfaceToPortal(portal);
+
+                var oppositePortal = portal.FindOppositePortal(room);
+                TryApplyDynamicWaterSurfaceToPortal(oppositePortal);
+
+                touchedPortals.Add(portal);
+                touchedPortals.Add(oppositePortal);
+            }
+
+            _editor.ObjectChange(touchedPortals, ObjectChangeType.Change);
+        }
+
+		public static void ApplyDynamicWaterSurfacesToAllRooms(IWin32Window owner)
+		{
+			if (!VersionCheck(_editor.Level.IsTombEngine, "Dynamic water surface effect"))
+				return;
+
+            if (DarkMessageBox.Show(owner, "Do you really want to setup all water portals in your project as dynamic surfaces?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+			foreach (var room in _editor.Level.Rooms.Where(r => r != null))
+			{
+                ApplyDynamicWaterSurfacesToSingleRoom(room, owner);
+			}
+		}
+
+        public static IEnumerable<PortalInstance> ApplyDynamicWaterSurfacesToSinglePortal(PortalInstance portal, IWin32Window owner)
+        {
+            if (!VersionCheck(_editor.Level.IsTombEngine, "Dynamic water surface effect"))
+                return null;
+
+            var touchedPortals = new List<PortalInstance>();
+
+            if (!TryApplyDynamicWaterSurfaceToPortal(portal))
+                return null;
+
+            touchedPortals.Add(portal);
+
+            var oppositePortal = portal.FindOppositePortal(portal.Room);
+
+            if (!TryApplyDynamicWaterSurfaceToPortal(oppositePortal))
+                return touchedPortals;
+
+            touchedPortals.Add(oppositePortal);
+
+            return touchedPortals;
+        }
+
+		private static bool TryApplyDynamicWaterSurfaceToPortal(PortalInstance portal)
+		{
+            if (portal.Direction == PortalDirection.Floor &&
+                   portal.Room.Properties.Type < RoomType.Water &&
+                   portal.AdjoiningRoom?.Properties.Type == RoomType.Water ||
+                   portal.Direction == PortalDirection.Ceiling &&
+                   portal.Room.Properties.Type == RoomType.Water &&
+                   portal.AdjoiningRoom?.Properties.Type < RoomType.Water)
+            {
+                portal.Effect = PortalEffectType.DynamicWaterSurface;
+                portal.Properties.WaterSpeed = 32;
+                portal.Properties.WaterRefractionStrength = WaterRefractionStrength.Medium;
+                portal.Properties.WaterDirection = WaterDirection.North;
+
+                return true;
+            }
+            else
+            {
+                portal.Effect = PortalEffectType.None;
+                return false;
+            }
 		}
 
 		public static bool SaveLevel(IWin32Window owner, bool askForPath)

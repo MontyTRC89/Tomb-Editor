@@ -251,7 +251,10 @@ namespace TombEditor.ToolWindows
                 _editor.SelectedRoom.Properties.Type = newType;
                 _editor.SelectedRoom.Properties.TypeStrength = newStrength;
                 _editor.RoomPropertiesChange(_editor.SelectedRoom);
-            }
+
+                if (_editor.Level.IsTombEngine)
+                    EditorActions.ApplyDynamicWaterSurfacesToSingleRoom(_editor.SelectedRoom, null);
+			}
         }
 
         private void ReadRoomType()
