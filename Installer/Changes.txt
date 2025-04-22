@@ -8,6 +8,9 @@ Tomb Editor:
  * Fixed functions from nested lua scripts not appearing in the function list.
  * Fixed nodes randomly not saving parameters.
  
+WadTool:
+ * Added support for importing models with embedded textures.
+ 
 Version 1.8.1
 =============
 
