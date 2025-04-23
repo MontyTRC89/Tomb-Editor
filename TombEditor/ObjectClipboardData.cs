@@ -83,14 +83,13 @@ namespace TombEditor
                     if (!luaObj.CanSetLuaName(luaObj.LuaName))
                     {
                         luaObj.LuaName = string.Empty;
-                        Editor.Instance.SendMessage("The value of Lua Name is already taken by another object", TombLib.Forms.PopupType.Error, true);
+                        editor.SendMessage("The value of Lua Name is already taken by another object", TombLib.Forms.PopupType.Error, true);
                     }
                     else
                     {
                         luaObj.LuaName = luaObj.LuaName;
                         editor.SelectedRoom.RemoveObject(editor.Level, obj);
                     }
-
                 }
 
                 if (obj is FlybyCameraInstance)

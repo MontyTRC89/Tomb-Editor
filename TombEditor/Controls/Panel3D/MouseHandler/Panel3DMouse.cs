@@ -200,8 +200,8 @@ namespace TombEditor.Controls.Panel3D
                     {
                         if (!BaseGeometryImporter.FileExtensions.Matches(file))
                             continue;
-
-                        if (!file.CheckAndWarnIfNotANSI(this)) {
+                        if (!file.CheckAndWarnIfNotANSI(this)) 
+                        {
                             DarkMessageBox.Show(FindForm(), "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
                             continue;
 
