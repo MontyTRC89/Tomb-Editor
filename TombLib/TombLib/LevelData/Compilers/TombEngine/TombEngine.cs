@@ -155,9 +155,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
                         writer.Write(bucket.Material.Texture);
                         writer.Write(bucket.Material.BlendMode);
-						writer.Write(bucket.Material.MaterialType);
 						writer.Write(bucket.Material.Animated);
-                        writer.Write(bucket.Polygons.Count);
+
+						// New properties for materials
+						writer.Write(bucket.Material.MaterialType);
+
+						writer.Write(bucket.Polygons.Count);
                         foreach (var poly in bucket.Polygons)
                         {
                             writer.Write((int)poly.Shape);
