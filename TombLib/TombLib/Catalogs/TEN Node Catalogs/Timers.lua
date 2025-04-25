@@ -379,7 +379,7 @@ end
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.GetRemainingTime = function(name)
     if name ~= '' then
-        if Timer.IfExists(name) and Timer.Get(name):TimerCheck() then
+        if Timer.IfExists(name) and Timer.Get(name):IsTicking() then
             TEN.Util.PrintLog("Timer '" .. name .. "' remaining time: " .. tostring(Timer.Get(name):GetRemainingTimeInSeconds()), TEN.Util.LogLevel.INFO)
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
@@ -396,7 +396,7 @@ end
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.GetTotalTime = function(name)
     if name ~= '' then
-        if Timer.IfExists(name) and Timer.Get(name):TimerCheck() then
+        if Timer.IfExists(name) and Timer.Get(name):IsTicking() then
             TEN.Util.PrintLog("Timer '" .. name .. "' total time: " .. Timer.Get(name):GetTotalTimeInSeconds(), TEN.Util.LogLevel.INFO)
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
@@ -475,7 +475,7 @@ end
 LevelFuncs.Engine.Node.IfRemainingTimeIs = function(name, operator, value)
     if name ~= '' then
         if Timer.IfExists(name) then
-            if Timer.Get(name):IsActive() and Timer.Get(name):TimerCheck() then
+            if Timer.Get(name):IsActive() and Timer.Get(name):IsTicking() then
                 local remainingTime = Timer.Get(name):GetRemainingTimeInSeconds()
                 local floatValue = value + 0.0
                 local result = Timer.Get(name):IfRemainingTimeIs(operator, floatValue)
