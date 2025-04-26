@@ -6,26 +6,26 @@
 	<!--  Base Colors  -->
 	<Color x:Key="Color_Text">#DCDCDC</Color>
 
-	<Color x:Key="Color_Background">#3C3F41</Color>
-	<Color x:Key="Color_Background_Alternative">#393C3E</Color>
-	<Color x:Key="Color_Background_Control">#45494A</Color>
-	<Color x:Key="Color_Background_Defaulted">#343942</Color>
-	<Color x:Key="Color_Background_Disabled">#525252</Color>
-	<Color x:Key="Color_Background_High">#5F6566</Color>
-	<Color x:Key="Color_Background_Low">#313335</Color>
+	<Color x:Key="Color_Background">Black</Color>
+	<Color x:Key="Color_Background_Alternative">#0A0A0A</Color>
+	<Color x:Key="Color_Background_Control">#282828</Color>
+	<Color x:Key="Color_Background_Defaulted">#16191F</Color>
+	<Color x:Key="Color_Background_Disabled">#2F2C2C</Color>
+	<Color x:Key="Color_Background_High">#444444</Color>
+	<Color x:Key="Color_Background_Low">#0A0A0A</Color>
 
-	<Color x:Key="Color_Border">#5C5C5C</Color>
-	<Color x:Key="Color_Border_High">#B2B2B2</Color>
-	<Color x:Key="Color_Border_Low">#313335</Color>
+	<Color x:Key="Color_Border">#444444</Color>
+	<Color x:Key="Color_Border_High">#CCCCCC</Color>
+	<Color x:Key="Color_Border_Low">#333333</Color>
 
-	<Color x:Key="Color_Highlight">#6897BB</Color>
-	<Color x:Key="Color_Selection">#4B6EAF</Color>
-	<Color x:Key="Color_Selection_LostFocus">#5C5C5C</Color>
+	<Color x:Key="Color_Highlight">#2B5482</Color>
+	<Color x:Key="Color_Selection">#192F71</Color>
+	<Color x:Key="Color_Selection_LostFocus">#232323</Color>
 
 	<Color x:Key="Color_HoveredHighlight">White</Color>
 	<Color x:Key="Color_PressedHighlight">Black</Color>
 
-	<Color x:Key="Color_WindowBorder">#424D5F</Color>
+	<Color x:Key="Color_WindowBorder">#141A25</Color>
 
 	<!--  Opacities  -->
 	<sys:Double x:Key="Opacity_HoveredHighlight">0.15</sys:Double>
@@ -41,7 +41,7 @@
 
 	<SolidColorBrush x:Key="Brush_Background" Color="{DynamicResource Color_Background}" />
 	<SolidColorBrush x:Key="Brush_Background_Alternative" Color="{DynamicResource Color_Background_Alternative}" />
-	<SolidColorBrush x:Key="Brush_Background_TextControl" Color="{DynamicResource Color_Background_Control}" />
+	<SolidColorBrush x:Key="Brush_Background_TextControl" Color="{DynamicResource Color_Background}" />
 	<SolidColorBrush x:Key="Brush_Background_ClickableControl" Color="{DynamicResource Color_Background_Control}" />
 	<SolidColorBrush x:Key="Brush_Background_Defaulted" Color="{DynamicResource Color_Background_Defaulted}" />
 	<SolidColorBrush x:Key="Brush_Background_Disabled" Color="{DynamicResource Color_Background_Disabled}" />

@@ -7,14 +7,10 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-	<Platforms>AnyCPU;x64;x86</Platforms>
+	<Platforms>x64;x86</Platforms>
   </PropertyGroup>
-	
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <OutputPath>..\..\Build ($(Platform))\</OutputPath>
-  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <OutputPath>..\..\BuildRelease ($(Platform))\</OutputPath>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
