@@ -149,7 +149,8 @@ LevelFuncs.Engine.RunKeypad = function()
 
     local offset = 296
     local heightOffset = 618
-
+    local cameraPos = targetPos
+	
     if (targetRot.y == 0) then
         cameraPos = Vec3(targetPos.x, targetPos.y-heightOffset, targetPos.z - offset)
     elseif (targetRot.y == 90) then
