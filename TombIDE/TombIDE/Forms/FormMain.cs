@@ -6,7 +6,9 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using TombIDE.ProjectMaster;
+using TombIDE.ProjectMaster.ViewModels;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
@@ -35,13 +37,17 @@ namespace TombIDE
 			InitializeComponent();
 			Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
+			elementHost.Child = new TombIDE.ProjectMaster.Views.LevelManager { DataContext = new LevelManagerViewModel(project) };
+			elementHost.Dock = DockStyle.Fill;
+			tabPage_LevelManager.Controls.Add(elementHost);
+
 			_ide = ide;
 			_ide.Project = project;
 
 			_ide.IDEEventRaised += OnIDEEventRaised;
 
 			levelManager = new LevelManager { Dock = DockStyle.Fill };
-			tabPage_LevelManager.Controls.Add(levelManager);
+			//tabPage_LevelManager.Controls.Add(levelManager);
 
 			miscellaneous = new Miscellaneous { Dock = DockStyle.Fill };
 			tabPage_Misc.Controls.Add(miscellaneous);

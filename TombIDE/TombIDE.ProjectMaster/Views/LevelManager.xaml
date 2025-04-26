@@ -1,0 +1,235 @@
+﻿<UserControl
+	x:Class="TombIDE.ProjectMaster.Views.LevelManager"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:conv="clr-namespace:TombIDE.ProjectMaster.Converters"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:local="clr-namespace:TombIDE.ProjectMaster.Views"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+	d:DesignHeight="640"
+	d:DesignWidth="1024"
+	Background="{DynamicResource Brush_Background}"
+	mc:Ignorable="d">
+
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/DarkUI.WPF;component/Generic.xaml" />
+				<ResourceDictionary Source="/DarkUI.WPF;component/Dictionaries/DarkColors.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+
+			<conv:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+		</ResourceDictionary>
+	</UserControl.Resources>
+
+	<Grid>
+		<Grid.Margin>
+			<Thickness
+				Bottom="{x:Static darkUI:Defaults.JumboThicknessWidth}"
+				Left="{x:Static darkUI:Defaults.JumboThicknessWidth}"
+				Right="{x:Static darkUI:Defaults.JumboThicknessWidth}"
+				Top="{x:Static darkUI:Defaults.ExtraLargeThicknessWidth}" />
+		</Grid.Margin>
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="320" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition MinWidth="320" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<StackPanel
+			Grid.ColumnSpan="3"
+			darkUI:SpacingSetter.Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}"
+			Orientation="Horizontal">
+			<StackPanel.Margin>
+				<Thickness Bottom="{x:Static darkUI:Defaults.ExtraLargeThicknessWidth}" />
+			</StackPanel.Margin>
+
+			<Image
+				Width="30"
+				Height="30"
+				Source="/TombIDE.ProjectMaster;component/Resources/ide-master-30.png"
+				Style="{StaticResource ImageIcon}" />
+			<TextBlock
+				VerticalAlignment="Center"
+				FontSize="{x:Static darkUI:Defaults.H1FontSize}"
+				FontWeight="Bold"
+				Text="Level Manager" />
+
+			<Image Source="/TombIDE.ProjectMaster;component/Resources/TR1_LVL.png">
+				<Image.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+				</Image.Margin>
+			</Image>
+			<TextBlock VerticalAlignment="Center">
+				<Run Text="Engine version:" />
+				<Run Text="4.8.1" />
+				<Run Foreground="LightGreen" Text="(Latest)" />
+			</TextBlock>
+		</StackPanel>
+
+		<Button
+			Grid.Column="2"
+			Width="40"
+			Height="40"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Top">
+			<Image Source="/TombIDE.ProjectMaster;component/Resources/archive-folder-16.png" Style="{StaticResource SmallImageIcon}" />
+		</Button>
+
+		<GroupBox
+			Grid.Row="1"
+			Padding="0"
+			BorderThickness="{x:Static darkUI:Defaults.BorderThickness}"
+			Header="Level List"
+			Style="{StaticResource SectionGroupBox}">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<Grid Margin="{x:Static darkUI:Defaults.SmallThickness}">
+					<ToolBar ToolBarTray.IsLocked="True">
+						<Button Command="{Binding AddLevelCommand}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/general_plus_math-16.png" />
+						</Button>
+						<Button Command="{Binding ImportLevelCommand}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/general_Import-16.png" />
+						</Button>
+
+						<Separator />
+
+						<Button Command="{Binding OpenLevelCommand}" IsEnabled="{Binding SelectedLevel, Converter={StaticResource NullToBooleanConverter}}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/TE_icon.png" />
+						</Button>
+						<Button Command="{Binding RebuildLevelCommand}" IsEnabled="{Binding SelectedLevel, Converter={StaticResource NullToBooleanConverter}}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/actions_compile-16.png" />
+						</Button>
+
+						<Separator />
+
+						<Button Command="{Binding RenameLevelCommand}" IsEnabled="{Binding SelectedLevel, Converter={StaticResource NullToBooleanConverter}}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/general_edit-16.png" />
+						</Button>
+						<Button Command="{Binding RemoveLevelCommand}" IsEnabled="{Binding SelectedLevel, Converter={StaticResource NullToBooleanConverter}}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/general_trash-16.png" />
+						</Button>
+
+						<Separator />
+
+						<Button Command="{Binding MoveLevelUpOnListCommand}" IsEnabled="{Binding SelectedLevel, Converter={StaticResource NullToBooleanConverter}}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/general_ArrowUp-16.png" />
+						</Button>
+						<Button Command="{Binding MoveLevelDownOnListCommand}" IsEnabled="{Binding SelectedLevel, Converter={StaticResource NullToBooleanConverter}}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/general_ArrowDown-16.png" />
+						</Button>
+
+						<Separator />
+
+						<Button Command="{Binding OpenLevelFolderCommand}" IsEnabled="{Binding SelectedLevel, Converter={StaticResource NullToBooleanConverter}}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/forward-arrow-16.png" />
+						</Button>
+					</ToolBar>
+
+					<ToolBar HorizontalAlignment="Right" ToolBarTray.IsLocked="True">
+						<Button HorizontalAlignment="Right" Command="{Binding RepopulateLevelListCommand}">
+							<Image Source="/TombIDE.ProjectMaster;component/Resources/actions_refresh-16.png" />
+						</Button>
+					</ToolBar>
+				</Grid>
+
+				<ListBox
+					Grid.Row="1"
+					AlternationCount="1"
+					Background="{DynamicResource Brush_Background_Low}"
+					ItemsSource="{Binding Levels}"
+					SelectedItem="{Binding SelectedLevel}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Margin="{x:Static darkUI:Defaults.LargeThickness}" darkUI:SpacingSetter.Spacing="{x:Static darkUI:Defaults.TinyThicknessWidth}">
+								<TextBlock
+									FontSize="{x:Static darkUI:Defaults.H2FontSize}"
+									FontWeight="Bold"
+									Text="{Binding Name, Mode=OneWay}" />
+
+								<TextBlock>
+									<TextBlock>
+										~/<Run Text="{Binding PartialPrj2FilePath, Mode=OneWay}" />
+									</TextBlock>
+								</TextBlock>
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+		</GroupBox>
+
+		<GridSplitter
+			Grid.Row="1"
+			Grid.RowSpan="2"
+			Grid.Column="1"
+			Width="{x:Static darkUI:Defaults.LargeThicknessWidth}"
+			HorizontalAlignment="Stretch"
+			Background="Transparent" />
+
+		<GroupBox
+			Grid.Row="1"
+			Grid.RowSpan="2"
+			Grid.Column="2"
+			BorderThickness="{x:Static darkUI:Defaults.BorderThickness}"
+			Header="Selected Level Properties"
+			IsEnabled="{Binding SelectedLevel, Converter={StaticResource NullToBooleanConverter}}"
+			Style="{StaticResource SectionGroupBox}">
+			<TabControl>
+				<TabItem Header="Settings">
+					<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}" RowSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<RadioButton Content="Use the latest .prj2 file by date as the default level file" IsChecked="{Binding IsUsingMostRecentlyModifiedPrj2File}" />
+						<RadioButton
+							Grid.Row="1"
+							Content="Use a specific .prj2 file from the folder:"
+							IsChecked="{Binding IsUsingMostRecentlyModifiedPrj2File, Converter={StaticResource InverseBoolConverter}}" />
+
+						<ListBox
+							Grid.Row="2"
+							AlternationCount="1"
+							Background="{DynamicResource Brush_Background_Low}"
+							ItemsSource="{Binding AvailablePrj2Files}"
+							SelectedItem="{Binding SelectedPrj2File}" />
+
+						<CheckBox
+							Grid.Row="3"
+							Content="Show all .prj2 files (includes backup files)"
+							IsChecked="{Binding IncludeBackups}" />
+					</sg:SpacedGrid>
+				</TabItem>
+				<TabItem Header="Assets" />
+			</TabControl>
+		</GroupBox>
+
+		<Button Grid.Row="2">
+			<Button.Margin>
+				<Thickness Top="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+			</Button.Margin>
+
+			<StackPanel Orientation="Horizontal">
+				<Image Source="/TombIDE.ProjectMaster;component/Resources/actions_compile-16.png" Style="{StaticResource SmallImageIconForButtonsWithText}" />
+				<TextBlock Text="Re-build all levels at once (batch operation)" />
+			</StackPanel>
+		</Button>
+	</Grid>
+</UserControl>

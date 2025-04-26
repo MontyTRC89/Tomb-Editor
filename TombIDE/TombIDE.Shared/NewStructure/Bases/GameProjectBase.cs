@@ -141,9 +141,9 @@ namespace TombIDE.Shared.NewStructure
 			return result.ToArray();
 		}
 
-		public virtual LevelProject[] GetAllValidLevelProjects()
+		public virtual ILevelProject[] GetAllValidLevelProjects()
 		{
-			var result = new List<LevelProject>();
+			var result = new List<ILevelProject>();
 
 			foreach (FileInfo trlvlFile in GetAllValidTrlvlFiles())
 			{

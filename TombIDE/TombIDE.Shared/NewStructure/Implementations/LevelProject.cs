@@ -12,6 +12,11 @@ namespace TombIDE.Shared.NewStructure.Implementations
 		public string Name { get; protected set; } = "UNTITLED LEVEL";
 		public string DirectoryPath { get; protected set; } = string.Empty;
 
+		public string FileToOpen
+			=> TargetPrj2FileName is not null
+				? Path.Combine(DirectoryPath, TargetPrj2FileName)
+				: Path.Combine(DirectoryPath, GetMostRecentlyModifiedPrj2FileName());
+
 		public LevelProject(string name, string directoryPath, string targetPrj2FileName = null)
 		{
 			Name = name;
@@ -63,11 +68,7 @@ namespace TombIDE.Shared.NewStructure.Implementations
 				return false;
 			}
 
-			string targetPrj2FilePath = TargetPrj2FileName is not null
-				? Path.Combine(DirectoryPath, TargetPrj2FileName)
-				: Path.Combine(DirectoryPath, GetMostRecentlyModifiedPrj2FileName());
-
-			if (!File.Exists(targetPrj2FilePath))
+			if (!File.Exists(FileToOpen))
 			{
 				errorMessage = "The target .prj2 file does not exist.";
 				return false;

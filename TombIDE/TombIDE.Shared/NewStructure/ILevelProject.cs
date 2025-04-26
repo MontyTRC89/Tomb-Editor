@@ -5,10 +5,15 @@ namespace TombIDE.Shared.NewStructure
 	public interface ILevelProject : IProject
 	{
 		/// <summary>
-		/// The target .prj2 file name (not path) which should be opened in TombEditor when double-clicking on the level entry on the list.
+		/// The target .prj2 file name (not path) which should be opened in Tomb Editor when double-clicking on the level entry on the list.
 		/// <para>Set to <see langword="null" /> to get the file name of the most recently modified .prj2 file from the level's directory.</para>
 		/// </summary>
 		string TargetPrj2FileName { get; set; }
+
+		/// <summary>
+		/// The full path to the .prj2 file which should be opened in Tomb Editor when double-clicking on the level entry on the list.
+		/// </summary>
+		string FileToOpen { get; }
 
 		/// <summary>
 		/// Returns the path to the .trlvl file of the level. File name should be "project.trlvl".

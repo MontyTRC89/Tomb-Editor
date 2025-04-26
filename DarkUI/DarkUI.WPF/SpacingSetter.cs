@@ -42,8 +42,8 @@ public static class SpacingSetter
 
 			element.Margin = panel.LogicalOrientationPublic switch
 			{
-				Orientation.Horizontal => new Thickness(element.Margin.Left, element.Margin.Top, spacing, element.Margin.Bottom),
-				_ => new Thickness(element.Margin.Left, element.Margin.Top, element.Margin.Right, spacing),
+				Orientation.Horizontal => new Thickness(element.Margin.Left, element.Margin.Top, element.Margin.Right + spacing, element.Margin.Bottom),
+				_ => new Thickness(element.Margin.Left, element.Margin.Top, element.Margin.Right, element.Margin.Bottom + spacing),
 			};
 		}
 	}

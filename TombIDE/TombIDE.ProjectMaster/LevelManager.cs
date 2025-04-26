@@ -119,7 +119,7 @@ namespace TombIDE.ProjectMaster
 
 		private void button_RebuildAll_Click(object sender, EventArgs e)
 		{
-			LevelProject[] levels = _ide.Project.GetAllValidLevelProjects();
+			ILevelProject[] levels = _ide.Project.GetAllValidLevelProjects();
 
 			if (levels.Length == 0)
 			{

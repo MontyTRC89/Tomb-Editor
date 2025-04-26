@@ -25,6 +25,7 @@
 			tabPage_Plugins = new System.Windows.Forms.TabPage();
 			tabPage_Misc = new System.Windows.Forms.TabPage();
 			sideBar = new Controls.SideBar();
+			elementHost = new System.Windows.Forms.Integration.ElementHost();
 			panel_Main.SuspendLayout();
 			tablessTabControl.SuspendLayout();
 			SuspendLayout();
@@ -138,5 +139,6 @@
 		private System.Windows.Forms.TabPage tabPage_LevelManager;
 		private System.Windows.Forms.TabPage tabPage_Plugins;
 		private Controls.SideBar sideBar;
+		private System.Windows.Forms.Integration.ElementHost elementHost;
 	}
 }
