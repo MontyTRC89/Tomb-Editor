@@ -159,7 +159,10 @@ namespace TombEditor.Controls
                 foreach (string path in paths)
                 {
                     if (!path.CheckAndWarnIfNotANSI(this))
+                    {
+                        DarkMessageBox.Show(FindForm(), "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
                         continue;
+                    }
 
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {

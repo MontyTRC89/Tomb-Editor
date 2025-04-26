@@ -1,5 +1,4 @@
-﻿using DarkUI.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +28,6 @@ namespace TombLib.Utils
         {
             if (!source.IsANSI())
             {
-                DarkMessageBox.Show(owner, "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
                 return false;
             }
             else

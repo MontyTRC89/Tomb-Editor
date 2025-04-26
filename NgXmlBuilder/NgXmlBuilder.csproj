@@ -30,9 +30,6 @@
     <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="NG\ANIMATION_RANGE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

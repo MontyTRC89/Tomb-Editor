@@ -32,7 +32,6 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <Compile Update="Workers\T1MNodesProvider.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -52,7 +51,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
     <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
   </ItemGroup>
 </Project>
