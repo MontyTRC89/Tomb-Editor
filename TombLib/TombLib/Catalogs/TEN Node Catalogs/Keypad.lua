@@ -6,10 +6,9 @@ LevelVars.Engine.ActivatedKeypad = nil
 -- !Description "Creates a keypad."
 -- !Arguments "NewLine, 80, Moveables, Keypad Object"
 -- !Arguments "Numerical, 20, [ 1000 | 9999 ], Pass code"
--- !Arguments "NewLine, Cameras, Camera to activate"
 -- !Arguments "NewLine, Volumes, Volume to use for the keypad"
 
-LevelFuncs.Engine.Node.KeypadCreate = function(object, code, camera, volume)
+LevelFuncs.Engine.Node.KeypadCreate = function(object, code, volume)
 
     local dataName = object .. "_KeypadData"
 
@@ -18,7 +17,6 @@ LevelFuncs.Engine.Node.KeypadCreate = function(object, code, camera, volume)
     LevelVars.Engine.Keypad[dataName]           = {}
 	LevelVars.Engine.Keypad[dataName].Code      = LevelVars.Engine.Keypad[dataName].Code or codeS
     LevelVars.Engine.Keypad[dataName].CodeInput = ""
-    LevelVars.Engine.Keypad[dataName].Camera    = camera
     LevelVars.Engine.Keypad[dataName].Volume    = volume
     LevelVars.Engine.Keypad[dataName].Status    = false
     LevelVars.Engine.Keypad[dataName].CursorX   = 1
@@ -138,19 +136,16 @@ LevelFuncs.Engine.RunKeypad = function()
         [7] = 992,          -- TR5_Keypad_7
         [8] = 993,          -- TR5_Keypad_8
         [9] = 994,          -- TR5_Keypad_9
-        ["Failure"] = 995,          -- TR5_Keypad_Entry_No
-        ["Success"] = 996,          -- TR5_Keypad_Entry_Yes
-        ["Click"] = 644,          -- TR2_Click
+        ["Failure"] = 995,  -- TR5_Keypad_Entry_No
+        ["Success"] = 996,  -- TR5_Keypad_Entry_Yes
+        ["Click"] = 644,    -- TR2_Click
     }
 
     local object = LevelVars.Engine.ActivatedKeypad 
     local dataName = object .. "_KeypadData"
-    local camera = GetCameraByName(LevelVars.Engine.Keypad[dataName].Camera)
     local target = GetMoveableByName(object)
-
     local targetPos = target:GetPosition()
     local targetRot = target:GetRotation()
-    local cameraPos = targetPos
 
     local offset = 296
     local heightOffset = 618
@@ -165,10 +160,14 @@ LevelFuncs.Engine.RunKeypad = function()
         cameraPos = Vec3(targetPos.x+ offset, targetPos.y-heightOffset, targetPos.z )
     end
 
-    camera:SetPosition(cameraPos)
+    if GetMoveableByName("keypadCam1") == nil then
+        Moveable(TEN.Objects.ObjID.CAMERA_TARGET, "keypadCam1", cameraPos)
+    end
 
-    --Run camera until the freeze mode is exited
-    camera:PlayCamera(target)
+    local cameraObject = GetMoveableByName("keypadCam1")
+
+    cameraObject:SetPosition(cameraPos)
+    cameraObject:AttachObjCamera(0, target, 0)
 
     local keypad = {
         {1, 2, 3},
@@ -176,7 +175,7 @@ LevelFuncs.Engine.RunKeypad = function()
         {7, 8, 9},
         {"Clear", 0, "Enter"}
     }
-  
+
     -- Mesh mappings (1-12 dark keys, 13-24 bright keys)
     local meshMappings = {
         [1] = {dark = 13, bright = 1}, [2] = {dark = 14, bright = 2}, [3] = {dark = 15, bright = 3},
@@ -184,7 +183,7 @@ LevelFuncs.Engine.RunKeypad = function()
         [7] = {dark = 19, bright = 7}, [8] = {dark = 20, bright = 8}, [9] = {dark = 21, bright = 9},
         ["Clear"] = {dark = 22, bright = 10}, [0] = {dark = 23, bright = 11}, ["Enter"] = {dark = 24, bright = 12}
     }
-   
+ 
     -- Starting cursor position
     local correctCode = LevelVars.Engine.Keypad[dataName].Code
     local maxCodeLength = string.len(correctCode)
@@ -204,6 +203,9 @@ LevelFuncs.Engine.RunKeypad = function()
                 end
                 LevelVars.Engine.Keypad[dataName].Status = true
                 View.SetFOV = 80
+                Lara:SetVisible(true)
+                ResetObjCamera()
+                cameraObject:Destroy()
                 Lara:SetVisible(true)
                 TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
                 Flow.SetFreezeMode(Flow.FreezeMode.NONE)
@@ -242,6 +244,8 @@ LevelFuncs.Engine.RunKeypad = function()
 
         View.SetFOV = 80
         Lara:SetVisible(true)
+        ResetObjCamera()
+        cameraObject:Destroy()
         Flow.SetFreezeMode(Flow.FreezeMode.NONE)
         TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
         return
@@ -277,10 +281,9 @@ LevelFuncs.Engine.RunKeypad = function()
             end
         end
     end
-        -- Display entered code with dashes
 
-        local controlsText = TEN.Strings.DisplayString(codeWithDashes, TEN.Vec2(TEN.Util.PercentToScreen(52.5, 46.1)), 0.60, TEN.Color(255,255,255), false, {Strings.DisplayStringOption.RIGHT})
-        ShowString(controlsText, 1 / 30)
+    -- Display entered code with dashes
+    local controlsText = TEN.Strings.DisplayString(codeWithDashes, TEN.Vec2(TEN.Util.PercentToScreen(52.5, 39.3)), 0.60, TEN.Color(255,255,255), false, {Strings.DisplayStringOption.RIGHT})
+    ShowString(controlsText, 1 / 30)
 
 end
-
