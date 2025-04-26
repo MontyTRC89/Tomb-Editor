@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -174,8 +175,8 @@ public class NumericUpDown : Control
 
 	private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
 	{
-		// Prevent character input, but allow '.'
-		if (!double.TryParse(e.Text, out _) && e.Text != ".")
+		// Prevent character input, but allow the current culture's decimal separator
+		if (!double.TryParse(e.Text, out _) && e.Text != CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
 			e.Handled = true;
 	}
 
