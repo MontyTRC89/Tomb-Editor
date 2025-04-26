@@ -1579,7 +1579,6 @@ namespace WadTool
                 {
                     DarkMessageBox.Show(owner, "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
                     return ImportMesh(tool, owner);
-
                 }
 
                 try
