@@ -1,10 +1,10 @@
 ﻿using DarkUI.Controls;
-using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.LevelData;
@@ -203,9 +203,9 @@ namespace TombEditor.Controls.Panel3D
                         if (!BaseGeometryImporter.FileExtensions.Matches(file))
                             continue;
 
-                        if (!file.CheckAndWarnIfNotANSI(this)) 
+                        if (!file.IsANSI())
                         {
-                            DarkMessageBox.Show(FindForm(), "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
+                            MessageBoxes.NonANSIFilePathError(FindForm());
                             continue;
                         }
 

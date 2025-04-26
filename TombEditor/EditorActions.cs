@@ -1018,7 +1018,10 @@ namespace TombEditor
                     return;
 
                 if (!luaInstance.CanSetLuaName(form.Result))
+                {
+                    MessageBoxes.LuaNameAlreadyTakenError(owner);
                     RenameObject(luaInstance, owner);
+                }
                 else
                 {
                     luaInstance.LuaName = form.Result;
@@ -4969,9 +4972,9 @@ namespace TombEditor
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(owner))
+                if (!saveFileDialog.FileName.IsANSI())
                 {
-                    DarkMessageBox.Show(owner, "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
+                    MessageBoxes.NonANSIFilePathError(owner);
                     ExportRooms(rooms, owner);
                     return;
                 }

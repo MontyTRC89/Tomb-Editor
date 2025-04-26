@@ -24,16 +24,6 @@ namespace TombLib.Utils
             return regex.IsMatch(source);
         }
 
-        public static bool CheckAndWarnIfNotANSI(this string source, IWin32Window owner)
-        {
-            if (!source.IsANSI())
-            {
-                return false;
-            }
-            else
-                return true;
-        }
-
         public static string[] SplitParenthesis(this string source)
         {
             return Regex.Matches(source, @"[^{},]+|\{[^{}]*\}").Select(m => m.Value.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray();
