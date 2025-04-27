@@ -465,6 +465,103 @@ namespace TombEditor
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
 
+        public static void SmoothTerrain(Room room, RectangleInt2 area, SectorVerticalPart vertical, bool disableUndo = false)
+        {
+            if (!disableUndo)
+            {
+                HashSet<Room> affectedRooms = room.GetAdjoiningRoomsFromArea(area);
+                affectedRooms.Add(room);
+                _editor.UndoManager.PushGeometryChanged(affectedRooms);
+            }
+
+            bool isBorder;
+
+            // Iterate through the selected region (excluding border sectors)
+            for (int z = area.Y0; z <= area.Y1; z++)
+            {
+                isBorder = z <= 1 || z >= room.NumZSectors - 2;
+
+                if (isBorder)
+                    continue;
+
+                for (int x = area.X0; x <= area.X1; x++)
+                {
+                    isBorder = x <= 1 || x >= room.NumXSectors - 2;
+
+                    if (isBorder)
+                        continue;
+
+                    // Smooth all four corners of current sector
+                    for (SectorEdge edge = 0; edge < SectorEdge.Count; edge++)
+                        SmoothSectorCorner(room, x, z, edge, vertical);
+                }
+            }
+
+            SmartBuildGeometry(room, area);
+        }
+
+        private static void SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical)
+        {
+            // Define the neighboring sectors and their corresponding edges based on the corner we're processing
+            (int X, int Z, SectorEdge Edge)[] neighbors = edge switch
+            {
+                SectorEdge.XnZp => new[] { (-1, 0, SectorEdge.XpZp), (-1, 1, SectorEdge.XpZn), (0, 1, SectorEdge.XnZn) }, // North-west corner
+                SectorEdge.XpZp => new[] { (1, 0, SectorEdge.XnZp), (1, 1, SectorEdge.XnZn), (0, 1, SectorEdge.XpZn) }, // North-east corner
+                SectorEdge.XpZn => new[] { (0, -1, SectorEdge.XpZp), (1, -1, SectorEdge.XnZp), (1, 0, SectorEdge.XnZn) }, // South-east corner
+                SectorEdge.XnZn => new[] { (-1, 0, SectorEdge.XpZn), (-1, -1, SectorEdge.XpZp), (0, -1, SectorEdge.XnZp) }, // South-west corner
+                _ => throw new ArgumentException("Invalid edge") // Handle invalid edge
+            };
+
+            Sector currentSector = room.GetSectorTry(x, z);
+
+            if (currentSector is null || currentSector.IsFullWall)
+                return;
+
+            // Calculate average height from current corner and surrounding neighbors
+            int heightSum = currentSector.GetHeight(vertical, edge);
+            int validCorners = 1;
+
+            // Add heights from valid neighboring corners
+            foreach ((int neighborX, int neighborZ, SectorEdge neighborEdge) in neighbors)
+            {
+                Sector sector = room.GetSectorTry(x + neighborX, z + neighborZ);
+
+                if (sector is null || sector.IsFullWall)
+                    continue;
+
+                heightSum += sector.GetHeight(vertical, neighborEdge);
+                validCorners++;
+            }
+
+            // If there are not enough valid corners, return without making changes
+            if (validCorners < 2)
+                return;
+
+            int averageHeight = heightSum / validCorners;
+
+            // Round to the nearest step height
+            int stepHeight = _editor.IncrementReference;
+
+            if (stepHeight > 0)
+                averageHeight = (int)Math.Round((float)averageHeight / stepHeight) * stepHeight;
+
+            // Apply the average height to the current corner
+            currentSector.SetHeight(vertical, edge, averageHeight);
+            currentSector.FixHeight(edge, vertical);
+
+            // Apply the same height to neighboring corners
+            foreach ((int neighborX, int neighborZ, SectorEdge neighborEdge) in neighbors)
+            {
+                Sector sector = room.GetSectorTry(x + neighborX, z + neighborZ);
+
+                if (sector is null || sector.IsFullWall)
+                    continue;
+
+                sector.SetHeight(vertical, neighborEdge, averageHeight);
+                currentSector.FixHeight(edge, vertical);
+            }
+        }
+
         public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, SectorVerticalPart vertical, double heightScale, bool precise, bool stepped)
         {
             if (precise)
