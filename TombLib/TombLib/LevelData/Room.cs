@@ -2207,7 +2207,7 @@ namespace TombLib.LevelData
                     yield return l;
             
         }
-        public void DetermineChunksForRelight(ObjectInstance instance)
+        public void SetLightingDirtyForAffectedChunks(ObjectInstance instance)
         {
             List<RoomGeometry> affectedChunks = new List<RoomGeometry>(8);
             IEnumerable<LightInstance> lights = GetLightsFromObject(instance);
@@ -2222,13 +2222,9 @@ namespace TombLib.LevelData
                         var bbMin = new Vector3(areaWorld.X0, 0, areaWorld.Y0) * Level.SectorSizeUnit;
                         var bbMax = new Vector3(areaWorld.X1, 1, areaWorld.Y1) * Level.SectorSizeUnit;
                         if (light.Type == LightType.Effect)
-                        {
                             // treat effects as point lights with small radius
                             if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(light.Position, 1024)))
-                            {
                                 affectedChunks.Add(geo);
-                            }
-                        }
                         if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(light.Position, light.OuterRange * 1024)))
                             affectedChunks.Add(geo);
                     }
@@ -2237,7 +2233,7 @@ namespace TombLib.LevelData
                 chunk.LightingDirty = true;
         }
 
-        public void DetermineChunksForMovedLight(LightInstance instance, in Vector3 oldPosition, in Vector3 newPosition)
+        public void SetLightingDirtyForMovedLight(LightInstance instance, in Vector3 oldPosition, in Vector3 newPosition)
         {
             List<RoomGeometry> affectedChunks = new List<RoomGeometry>(8);
             IEnumerable<LightInstance> lights = GetLightsFromObject(instance);

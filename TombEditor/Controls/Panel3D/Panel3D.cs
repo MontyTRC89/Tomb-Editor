@@ -286,9 +286,18 @@ namespace TombEditor.Controls.Panel3D
             if (obj is IEditorObjectChangedEvent)
             {
                 var value = (IEditorObjectChangedEvent)obj;
-                if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
+                if (value.ChangeType == ObjectChangeType.Remove && value.Object is LightInstance l)
                 {
-                    value.Object.Room.DetermineChunksForRelight(value.Object);
+                    value.Room.SetLightingDirtyForAffectedChunks(l);
+                    foreach (var geo in value.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
+                    {
+                        geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        _renderingCachedRooms.Remove(geo);
+                    }
+                }
+                else if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
+                {
+                    value.Object.Room.SetLightingDirtyForAffectedChunks(value.Object);
                     foreach (var geo in value.Object.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
                     {
                         geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);
@@ -301,7 +310,7 @@ namespace TombEditor.Controls.Panel3D
             {
                 if (movedEvent.Object is LightInstance light)
                 {
-                    movedEvent.Room.DetermineChunksForMovedLight(light,movedEvent.OldPosition,movedEvent.NewPosition);
+                    movedEvent.Room.SetLightingDirtyForMovedLight(light,movedEvent.OldPosition,movedEvent.NewPosition);
                     foreach (var geo in movedEvent.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
                     {
                         geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);

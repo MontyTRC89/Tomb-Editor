@@ -1212,7 +1212,7 @@ namespace TombEditor
             if (obj is IEditorObjectMovedEvent movedEvent)
             {
                 if (movedEvent.Object is LightInstance light)
-                    movedEvent.Room.DetermineChunksForMovedLight(light, movedEvent.OldPosition, movedEvent.NewPosition);
+                    movedEvent.Room.SetLightingDirtyForMovedLight(light, movedEvent.OldPosition, movedEvent.NewPosition);
             }
         }
 

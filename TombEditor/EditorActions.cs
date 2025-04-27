@@ -951,7 +951,7 @@ namespace TombEditor
 
         public static void RebuildLightsForObject(ObjectInstance instance)
         {
-            instance.Room.DetermineChunksForRelight(instance); // wonky
+            instance.Room.SetLightingDirtyForAffectedChunks(instance); // wonky
             instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
         }
 
