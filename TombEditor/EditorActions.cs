@@ -558,8 +558,7 @@ namespace TombEditor
                     continue;
 
                 sector.SetHeight(vertical, neighborEdge, averageHeight);
-                currentSector.FixHeight(edge, vertical);
-            }
+                sector.FixHeight(neighborEdge, vertical);
         }
 
         public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, SectorVerticalPart vertical, double heightScale, bool precise, bool stepped)
