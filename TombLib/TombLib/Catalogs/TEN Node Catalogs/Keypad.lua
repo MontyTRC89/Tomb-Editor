@@ -146,6 +146,7 @@ LevelFuncs.Engine.RunKeypad = function()
     local target = GetMoveableByName(object)
     local targetPos = target:GetPosition()
     local targetRot = target:GetRotation()
+    local targetRoom = target:GetRoomNumber()
 
     local offset = 296
     local heightOffset = 618
@@ -162,12 +163,13 @@ LevelFuncs.Engine.RunKeypad = function()
     end
 
     if GetMoveableByName("keypadCam1") == nil then
-        Moveable(TEN.Objects.ObjID.CAMERA_TARGET, "keypadCam1", cameraPos)
+        Moveable(TEN.Objects.ObjID.CAMERA_TARGET, "keypadCam1", cameraPos, Rotation(0,0,0), targetRoom)
     end
 
     local cameraObject = GetMoveableByName("keypadCam1")
 
     cameraObject:SetPosition(cameraPos)
+    cameraObject:SetRoomNumber(targetRoom)
     cameraObject:AttachObjCamera(0, target, 0)
 
     local keypad = {
