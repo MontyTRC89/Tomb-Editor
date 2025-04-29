@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.LevelData;
@@ -159,6 +160,7 @@ namespace TombEditor.Controls.Panel3D
         {
             // Check if we are done with all common file tasks
             var filesToProcess = EditorActions.DragDropCommonFiles(e, FindForm());
+
             if (filesToProcess == 0)
                 return;
 
@@ -175,6 +177,7 @@ namespace TombEditor.Controls.Panel3D
                     _editor.SelectedRoom = newSectorPicking.Room;
 
                 var obj = e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject;
+
                 if (obj != null)
                 {
                     PositionBasedObjectInstance instance = null;
@@ -200,8 +203,11 @@ namespace TombEditor.Controls.Panel3D
                         if (!BaseGeometryImporter.FileExtensions.Matches(file))
                             continue;
 
-                        if (!file.CheckAndWarnIfNotANSI(this))
+                        if (!file.IsANSI())
+                        {
+                            MessageBoxes.NonANSIFilePathError(FindForm());
                             continue;
+                        }
 
                         EditorActions.AddAndPlaceImportedGeometry(this, newSectorPicking.Pos, file);
                     }

@@ -1018,10 +1018,16 @@ namespace TombEditor
                 if (form.ShowDialog(owner) == DialogResult.Cancel)
                     return;
 
-                if (!luaInstance.TrySetLuaName(form.Result, owner))
+                if (!luaInstance.CanSetLuaName(form.Result))
+                {
+                    MessageBoxes.LuaNameAlreadyTakenError(owner);
                     RenameObject(luaInstance, owner);
+                }
                 else
+                {
+                    luaInstance.LuaName = form.Result;
                     _editor.ObjectChange(luaInstance, ObjectChangeType.Change);
+                }
             }
         }
 
@@ -5056,8 +5062,9 @@ namespace TombEditor
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(owner))
+                if (!saveFileDialog.FileName.IsANSI())
                 {
+                    MessageBoxes.NonANSIFilePathError(owner);
                     ExportRooms(rooms, owner);
                     return;
                 }

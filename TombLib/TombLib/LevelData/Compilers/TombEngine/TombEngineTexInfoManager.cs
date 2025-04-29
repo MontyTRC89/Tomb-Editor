@@ -1609,11 +1609,30 @@ namespace TombLib.LevelData.Compilers
             writer.Write((int)_actualAnimTextures.Count);
             for (int i = 0; i < _actualAnimTextures.Count; i++)
             {
-                var sequence = _actualAnimTextures[i].CompiledAnimation;
+                byte animType = 0;
+
+                switch (_actualAnimTextures[i].Origin.AnimationType)
+                {
+                    default:
+                    case AnimatedTextureAnimationType.Frames:
+                        animType = 0;
+                        break;
+
+                    case AnimatedTextureAnimationType.UVRotate:
+                        animType = 1;
+                        break;
+
+                    case AnimatedTextureAnimationType.Video:
+                        animType = 2;
+                        break;
+                }
 
                 writer.Write(i);
-                writer.Write((int)_actualAnimTextures[i].Origin.Fps);
+                writer.Write((byte)_actualAnimTextures[i].Origin.Fps);
+                writer.Write((byte)animType);
+                writer.Write((short)0); // Reserved for future settings
                 writer.Write(_animTextureIndices[i].Count); // Number of frames
+
                 foreach (var frame in _animTextureIndices[i])
                 {
                     var texture = _objectTextures[(int)frame];

@@ -316,6 +316,22 @@ namespace TombLib.LevelData
                             .ToList();
         }
 
+        public List<string> GetListOfVideos()
+        {
+            var path = Path.Combine(MakeAbsolute(GameDirectory), WadVideos.VideoFolder);
+
+            if (!Directory.Exists(path))
+                return new List<string>();
+
+            var extList = Enum.GetValues(typeof(WadVideos.VideoFormat)).Cast<object>().Select(s => s.ToString().ToLowerInvariant());
+
+            return Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
+                            .Where(s => extList.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant()))
+                            .Select(s => TextExtensions.ToLinuxPath(Path.Combine(Path.GetDirectoryName(Path.GetRelativePath(path, s)), Path.GetFileNameWithoutExtension(s))))
+                            .Distinct()
+                            .ToList();
+        }
+
         public string GetVariable(VariableType type)
         {
             string result;
