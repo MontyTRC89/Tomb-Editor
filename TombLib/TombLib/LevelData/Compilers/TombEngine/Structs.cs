@@ -269,7 +269,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public bool NormalMapping;
         public int AnimatedSequence;
         public int WaterPlaneIndex;
-        public byte WaterSurfaceDirection;
+        public Vector2 WaterSurfaceDirection;
 		public int WaterSurfaceSpeed;
 		public byte WaterRefractionStrength;
 

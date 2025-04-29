@@ -1963,14 +1963,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 		private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, TombEnginePolygonMaterial polygonMaterial, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
 		{
-			var material = new TombEngineMaterial(polygonMaterial.Type)
+            var material = new TombEngineMaterial(polygonMaterial.Type)
 			{
 				Texture = texture,
 				BlendMode = blendMode,
 				Animated = animated,
 				AnimatedSequence = sequence,
                 WaterRefractionStrength = (byte)polygonMaterial.WaterRefractionStrength,
-                WaterSurfaceDirection = (byte)polygonMaterial.WaterDirection,
+                WaterSurfaceDirection = polygonMaterial.WaterDirection switch
+				{
+					WaterDirection.North => new Vector2(0, 1),
+					WaterDirection.East => new Vector2(1, 0),
+					WaterDirection.South => new Vector2(0, -1),
+					WaterDirection.West => new Vector2(-1, 0),
+					_ => Vector2.Zero
+				},
                 WaterSurfaceSpeed = polygonMaterial.WaterSpeed
 			};
 
