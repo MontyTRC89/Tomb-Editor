@@ -653,7 +653,7 @@ namespace TombLib.LevelData.Compilers
                 return new tr_face4 { Vertices = new ushort[4] { transformedIndices[0], transformedIndices[1], transformedIndices[2], transformedIndices[3] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
             }
 
-            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, byte materialType, List<TombEngineVertex> vertices)
+            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 3)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -678,7 +678,11 @@ namespace TombLib.LevelData.Compilers
                 polygon.TextureId = objectTextureIndex;
                 polygon.BlendMode = blendMode;
                 polygon.Animated = Animated;
-                polygon.MaterialType = materialType;
+
+                if (material is not null)
+                    polygon.Material = material;
+                else
+                    polygon.Material = new TombEnginePolygonMaterial(TombEngineMaterialType.Opaque);
 
                 if (vertices != null)
                 {
@@ -691,7 +695,7 @@ namespace TombLib.LevelData.Compilers
                 return polygon;
             }
 
-            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, byte blendMode, byte materialType, List<TombEngineVertex> vertices)
+            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, byte blendMode, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 4)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -717,9 +721,13 @@ namespace TombLib.LevelData.Compilers
                 polygon.TextureId = objectTextureIndex;
                 polygon.BlendMode = blendMode;
                 polygon.Animated = Animated;
-                polygon.MaterialType = materialType;
 
-                if (vertices != null)
+				if (material is not null)
+					polygon.Material = material;
+				else
+					polygon.Material = new TombEnginePolygonMaterial(TombEngineMaterialType.Opaque);
+
+				if (vertices != null)
                 {
                     // Calculate the normal
                     Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;

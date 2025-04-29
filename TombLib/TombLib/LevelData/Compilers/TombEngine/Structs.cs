@@ -79,7 +79,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public TombEngineSectorFlags Flags;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public class TombEnginePolygonMaterial
+	{
+		public TombEngineMaterialType Type;
+		public WaterDirection WaterDirection;
+		public int WaterSpeed;
+		public WaterRefractionStrength WaterRefractionStrength;
+
+		public TombEnginePolygonMaterial(TombEngineMaterialType type)
+		{
+			Type = type;
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEnginePolygon
     {
         public TombEnginePolygonShape Shape;
@@ -99,7 +112,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int AnimatedFrame;
         public float ShineStrength;
 
-        public byte MaterialType;
+        public TombEnginePolygonMaterial Material;
 	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -218,8 +231,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             public bool Equals(TombEngineMaterial x, TombEngineMaterial y)
             {
-                return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated && x.NormalMapping == y.NormalMapping && 
-                    x.AnimatedSequence == y.AnimatedSequence && x.WaterPlaneIndex == y.WaterPlaneIndex);
+                return (x.Texture == y.Texture && 
+                    x.BlendMode == y.BlendMode && 
+                    x.Animated == y.Animated && 
+                    x.NormalMapping == y.NormalMapping && 
+                    x.AnimatedSequence == y.AnimatedSequence && 
+                    x.WaterPlaneIndex == y.WaterPlaneIndex && 
+                    x.WaterRefractionStrength == y.WaterRefractionStrength &&
+                    x.WaterSurfaceSpeed == y.WaterSurfaceSpeed &&
+                    x.WaterSurfaceDirection == y.WaterSurfaceDirection);
             }
 
             public int GetHashCode(TombEngineMaterial obj)
@@ -234,6 +254,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
 					hash = hash * 23 + obj.WaterPlaneIndex.GetHashCode();
 					hash = hash * 23 + obj.MaterialType.GetHashCode();
+					hash = hash * 23 + obj.WaterSurfaceDirection.GetHashCode();
+					hash = hash * 23 + obj.WaterSurfaceSpeed.GetHashCode();
+					hash = hash * 23 + obj.WaterRefractionStrength.GetHashCode();
 					return hash;
                 }
             }
@@ -246,7 +269,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public bool NormalMapping;
         public int AnimatedSequence;
         public int WaterPlaneIndex;
-    }
+        public Vector2 WaterSurfaceDirection;
+		public int WaterSurfaceSpeed;
+		public byte WaterRefractionStrength;
+
+        public TombEngineMaterial(TombEngineMaterialType type)
+        {
+            MaterialType = (byte)type;  
+        }
+
+	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineBucket
@@ -388,9 +420,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
-				writer.Write(bucket.Material.MaterialType);
 				writer.Write(bucket.Material.Animated);
+
+				// New material properties
+				writer.Write(bucket.Material.MaterialType);
 				writer.Write(bucket.Material.WaterPlaneIndex);
+				writer.Write(bucket.Material.WaterSurfaceDirection);
+				writer.Write(bucket.Material.WaterSurfaceSpeed);
+				writer.Write(bucket.Material.WaterRefractionStrength);
+
 				writer.Write(bucket.Polygons.Count);
                 foreach (var poly in bucket.Polygons)
                 {
