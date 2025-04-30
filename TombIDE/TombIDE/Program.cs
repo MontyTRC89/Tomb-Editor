@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using WPF = System.Windows;
 
 namespace TombIDE
 {
@@ -16,6 +17,8 @@ namespace TombIDE
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			InitializeWPF();
+
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 			UpdateNGCompilerPaths();
@@ -57,6 +60,27 @@ namespace TombIDE
 			}
 			else
 				Application.Run(form);
+		}
+
+		private static void InitializeWPF()
+		{
+			// Initialize WPF resources
+			var wpfApp = new WPF.Application
+			{
+				ShutdownMode = WPF.ShutdownMode.OnExplicitShutdown
+			};
+
+			// Add the DarkUI theme to the WPF application
+			wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
+			{
+				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Generic.xaml")
+			});
+
+			// Use DarkColours theme (default DarkUI look)
+			wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
+			{
+				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Dictionaries/DarkColors.xaml")
+			});
 		}
 
 		private static void UpdateNGCompilerPaths()
