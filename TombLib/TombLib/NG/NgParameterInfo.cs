@@ -658,7 +658,7 @@ namespace TombLib.NG
 
                             ushort conditionId = GetValue(level, trigger.Timer);
 
-                            mask |= (ushort)(trigger.Target is ObjectInstance ? 0x9000 : 0x8000);
+                            mask |= (ushort)(trigger.Target is MoveableInstance ? 0x9000 : 0x8000);
                             firstValue = GetValue(level, trigger.Target);
                             secondValue = conditionId;
 

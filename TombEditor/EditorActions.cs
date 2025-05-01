@@ -669,10 +669,10 @@ namespace TombEditor
                 trigger.TargetType = TriggerTargetType.Sink;
                 trigger.Target = firstObject;
             }
-            else if (firstObject is VolumeInstance && _editor.Level.IsTombEngine)
+            else if (firstObject is VolumeInstance volume && volume.EventSet != null && _editor.Level.IsTombEngine)
             {
                 trigger.TargetType = TriggerTargetType.VolumeEvent;
-                trigger.Target = new TriggerParameterString((firstObject as VolumeInstance).EventSet.Name);
+                trigger.Target = new TriggerParameterString(volume.EventSet.Name);
             }
             else if (firstObject is StaticInstance && _editor.Level.IsNG)
             {
@@ -1134,6 +1134,15 @@ namespace TombEditor
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
+            else if (instance is PortalInstance)
+            {
+                if (!VersionCheck(_editor.Level.IsTombEngine, "Portal properties"))
+                    return;
+                using (var formPortal = new FormPortal((PortalInstance)instance))
+                    if (formPortal.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }
         }
 
         public static void PasteObject(VectorInt2 pos, Room room)
@@ -1339,9 +1348,9 @@ namespace TombEditor
                             {
                                 if (func.Arguments[i].Type == type &&
                                     node.Arguments.Count > i &&
-                                    TextExtensions.Unquote(node.Arguments[i]) == oldName)
+                                    TextExtensions.Unquote(node.Arguments[i].Value) == oldName)
                                 {
-                                    node.Arguments[i] = TextExtensions.Quote(newName);
+                                    node.Arguments[i] = new TriggerNodeArgument() { Name = node.Arguments[i].Name, Value = TextExtensions.Quote(newName) };
                                 }
                             }
 
@@ -4816,9 +4825,25 @@ namespace TombEditor
             portal.Room.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomGeometryChange(portal.Room);
             _editor.ObjectChange(portal, ObjectChangeType.Change);
-        }
+		}
 
-        public static bool SaveLevel(IWin32Window owner, bool askForPath)
+		public static void ToggleClassicPortalMirror(IWin32Window owner)
+		{
+			if (!VersionCheck(_editor.Level.IsTombEngine, "Classic mirror effect"))
+				return;
+
+			var portal = _editor.SelectedObject as PortalInstance;
+			if (portal == null)
+			{
+				_editor.SendMessage("No portal selected.", PopupType.Error);
+				return;
+			}
+
+			portal.Effect = (portal.Effect == PortalEffectType.ClassicMirror) ? PortalEffectType.None : PortalEffectType.ClassicMirror;
+			_editor.ObjectChange(portal, ObjectChangeType.Change);
+		}
+
+		public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
             // Disable saving if level has unknown data (i.e. new prj2 version opened in old editor version)
             if (_editor.Level.Settings.HasUnknownData)

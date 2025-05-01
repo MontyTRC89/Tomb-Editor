@@ -232,6 +232,12 @@
     <None Update="Catalogs\TEN Node Catalogs\Dynamic Lights.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Environment.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Keypad.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Lara.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -244,7 +250,13 @@
     <None Update="Catalogs\TEN Node Catalogs\Revolution.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Diary.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Rooms.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\Flyby Paths.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Sound.lua">
@@ -257,6 +269,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\Timespan Actions.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Catalogs\TEN Node Catalogs\UI.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Catalogs\TEN Node Catalogs\View.lua">

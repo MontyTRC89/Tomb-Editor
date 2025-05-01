@@ -341,13 +341,17 @@ namespace TombEditor.Forms
             private Vector2 Quantize2(Vector2 texCoord, bool end)
             {
                 var selectionPrecision = GetSelectionPrecision(true);
+
                 if (selectionPrecision.Precision == 0.0f)
                     return texCoord;
+
                 texCoord /= selectionPrecision.Precision;
+
                 if (end)
                     texCoord = new Vector2((float)Math.Ceiling(texCoord.X), (float)Math.Ceiling(texCoord.Y));
                 else
                     texCoord = new Vector2((float)Math.Floor(texCoord.X), (float)Math.Floor(texCoord.Y));
+
                 texCoord *= selectionPrecision.Precision;
                 return texCoord;
             }
@@ -389,7 +393,7 @@ namespace TombEditor.Forms
                     if (e.Button == MouseButtons.Left)
                     {
                         var newStart = Quantize2(FromVisualCoord(e.Location, false), false);
-                        if (newStart.X >= 0 && newStart.Y >= 0 && 
+                        if (newStart.X >= 0 && newStart.Y >= 0 &&
                             newStart.X < VisibleTexture.Image.Size.X && newStart.Y < VisibleTexture.Image.Size.Y)
                         {
                             FormParent.sourceTextureMap.Start = newStart;

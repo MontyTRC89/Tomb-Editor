@@ -143,23 +143,23 @@ namespace TombEditor.Controls.Panel3D
         private static readonly List<VectorInt2> _flybyPathIndices = new List<VectorInt2>()
         {
             new VectorInt2(0, 0),
-            new VectorInt2(0, 1),
-            new VectorInt2(2, 0),
-            new VectorInt2(2, 0),
-            new VectorInt2(0, 1),
-            new VectorInt2(2, 1),
-            new VectorInt2(2, 1),
-            new VectorInt2(2, 0),
-            new VectorInt2(1, 1),
-            new VectorInt2(1, 1),
-            new VectorInt2(2, 0),
-            new VectorInt2(1, 0),
             new VectorInt2(1, 0),
             new VectorInt2(1, 1),
-            new VectorInt2(0, 0),
-            new VectorInt2(0, 0),
             new VectorInt2(1, 1),
-            new VectorInt2(0, 1)
+            new VectorInt2(0, 1),
+            new VectorInt2(0, 0),
+            new VectorInt2(2, 0),
+            new VectorInt2(1, 0),
+            new VectorInt2(1, 1),
+            new VectorInt2(1, 1),
+            new VectorInt2(2, 1),
+            new VectorInt2(2, 0),
+            new VectorInt2(0, 0),
+            new VectorInt2(2, 0),
+            new VectorInt2(2, 1),
+            new VectorInt2(2, 1),
+            new VectorInt2(0, 1),
+            new VectorInt2(0, 0)
         };
 
         // Other drawing consts

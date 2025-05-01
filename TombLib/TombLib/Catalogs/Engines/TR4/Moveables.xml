@@ -315,7 +315,7 @@
     <moveable id="312" name="SWITCH_TYPE7" description="Switch Type7" ten="SHOOT_SWITCH1" essential="false" />
     <moveable id="313" name="SWITCH_TYPE8" description="Switch Type8" ten="SHOOT_SWITCH2" essential="false" />
     <moveable id="314" name="UNDERWATER_SWITCH1" description="Underwater Switch1" ten="UNDERWATER_WALL_SWITCH1" essential="false" />
-    <moveable id="315" name="UNDERWATER_SWITCH2" description="Underwater Switch2" ten="UNDERWATER_WALL_SWITCH2" essential="false" />
+    <moveable id="315" name="UNDERWATER_SWITCH2" description="Underwater Switch2" ten="UNDERWATER_CEILING_SWITCH1" essential="false" />
     <moveable id="316" name="TURN_SWITCH" description="Turn Switch" ten="TURN_SWITCH" essential="false" />
     <moveable id="317" name="COG_SWITCH" description="Cog Switch" ten="COG_SWITCH" essential="false" />
     <moveable id="318" name="LEVER_SWITCH" description="Lever Switch" ten="LEVER_SWITCH" essential="false" />
@@ -461,8 +461,8 @@
     <moveable id="458" name="ANIMATING16_MIP" description="Animating16 Mip" ten="ANIMATING32" />
     <moveable id="459" name="HORIZON" description="Horizon" ten="HORIZON" hidden="true" />
     <moveable id="460" name="SKY_GRAPHICS" description="Sky Graphics" ten="SKY_GRAPHICS" hidden="true" />
-    <moveable id="461" name="BINOCULAR_GRAPHICS" description="Binocular Graphics" ten="BINOCULAR_GRAPHICS" hidden="true" />
-    <moveable id="462" name="TARGET_GRAPHICS" description="Target Graphics" ten="TARGET_GRAPHICS" hidden="true" />
+    <moveable id="461" name="BINOCULAR_GRAPHICS" description="Binocular Graphics" hidden="true" />
+    <moveable id="462" name="TARGET_GRAPHICS" description="Target Graphics" hidden="true" />
     <moveable id="463" name="DEFAULT_SPRITE_SEQUENCES" description="Default sprites" ten="DEFAULT_SPRITES" hidden="true" />
     <moveable id="464" name="MISC_SPRITE_SEQUENCES" description="Misc sprites" ten="MISC_SPRITES" hidden="true" />
     <moveable id="465" name="MOTOR_BOAT" description="NG Motor Boat" ten="SPEEDBOAT" essential="false" />
@@ -472,14 +472,14 @@
     <moveable id="469" name="MOTORBIKE_LARA" description="NG Motorbike Lara" ten="MOTORBIKE_LARA_ANIMS" />
     <moveable id="470" name="FONT_GRAPHICS" description="NG Font Graphics" />
     <moveable id="471" name="PARALLEL_BARS" description="NG Parallel Bars" ten="PARALLEL_BARS" essential="false" />
-    <moveable id="472" name="PANEL_BORDER" description="NG Panel Border" ten="PANEL_BORDER" essential="false" />
-    <moveable id="473" name="PANEL_MIDDLE" description="NG Panel Middle" ten="PANEL_MIDDLE" essential="false" />
-    <moveable id="474" name="PANEL_CORNER" description="NG Panel Corner" ten="PANEL_CORNER" essential="false" />
-    <moveable id="475" name="PANEL_DIAGONAL" description="NG Panel Diagonal" ten="PANEL_DIAGONAL" essential="false" />
-    <moveable id="476" name="PANEL_STRIP" description="NG Panel Strip" ten="PANEL_STRIP" essential="false" />
-    <moveable id="477" name="PANEL_HALF_BORDER1" description="NG Panel Half Border1" ten="PANEL_HALF_BORDER1" essential="false" />
-    <moveable id="478" name="PANEL_HALF_BORDER2" description="NG Panel Half Border2" ten="PANEL_HALF_BORDER2" essential="false" />
-    <moveable id="479" name="PANEL_MIDDLE_CORNER" description="NG Panel Middle Corner" ten="PANEL_MIDDLE_CORNER" essential="false" />
+    <moveable id="472" name="PANEL_BORDER" description="NG Panel Border" essential="false" />
+    <moveable id="473" name="PANEL_MIDDLE" description="NG Panel Middle" essential="false" />
+    <moveable id="474" name="PANEL_CORNER" description="NG Panel Corner" essential="false" />
+    <moveable id="475" name="PANEL_DIAGONAL" description="NG Panel Diagonal" essential="false" />
+    <moveable id="476" name="PANEL_STRIP" description="NG Panel Strip" essential="false" />
+    <moveable id="477" name="PANEL_HALF_BORDER1" description="NG Panel Half Border1" essential="false" />
+    <moveable id="478" name="PANEL_HALF_BORDER2" description="NG Panel Half Border2" essential="false" />
+    <moveable id="479" name="PANEL_MIDDLE_CORNER" description="NG Panel Middle Corner" essential="false" />
     <moveable id="480" name="TIGHT_ROPE" description="NG Tight Rope" ten="TIGHT_ROPE" essential="false" />
     <moveable id="481" name="LASER_HEAD" description="NG Laser Head" ten="LASERHEAD" essential="false" />
     <moveable id="482" name="LASER_HEAD_BASE" description="NG Laser Head Base" ten="LASERHEAD_BASE" essential="false" />

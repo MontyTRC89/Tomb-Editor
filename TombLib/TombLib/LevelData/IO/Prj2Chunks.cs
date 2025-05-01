@@ -114,6 +114,9 @@ namespace TombLib.LevelData.IO
         /***********/public static readonly ChunkId NodeLocked = ChunkId.FromString("TeNodeLocked");
         /***********/public static readonly ChunkId NodeFunction = ChunkId.FromString("TeNodeFunc");
         /***********/public static readonly ChunkId NodeArgument = ChunkId.FromString("TeNodeArg");
+        /***********/public static readonly ChunkId NodeArgument2 = ChunkId.FromString("TeNodeArg2");
+        /***********/public static readonly ChunkId NodeArgumentName = ChunkId.FromString("TeNodeArgName");
+        /***********/public static readonly ChunkId NodeArgumentValue = ChunkId.FromString("TeNodeArgValue");
         public static readonly ChunkId Rooms = ChunkId.FromString("TeRooms");
         /**/public static readonly ChunkId Room = ChunkId.FromString("TeRoom"); // Contains X, Y sectors, Name, Position directly
         /******/public static readonly ChunkId RoomIndex = ChunkId.FromString("TeI");
@@ -212,6 +215,8 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectLight4 = ChunkId.FromString("TeLig4");
         /**********/public static readonly ChunkId ObjectLight5 = ChunkId.FromString("TeLig5");
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
+        /**********/public static readonly ChunkId ObjectPortal2 = ChunkId.FromString("TePor2");
+        /**********/public static readonly ChunkId ObjectPortalMirrorProperties = ChunkId.FromString("TePorMirror");
         /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri"); // DEPRECATED
         /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2"); // DEPRECATED
         /**********/public static readonly ChunkId ObjectTrigger3 = ChunkId.FromString("TeTri3");

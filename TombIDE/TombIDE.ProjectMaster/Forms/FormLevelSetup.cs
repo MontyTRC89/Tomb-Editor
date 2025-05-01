@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.NewStructure.Implementations;
 using TombIDE.Shared.SharedClasses;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Utils;
@@ -37,6 +38,11 @@ namespace TombIDE.ProjectMaster
 			{
 				checkBox_EnableHorizon.Visible = false;
 				panel_ScriptSettings.Height -= 35;
+			}
+
+			if (targetProject.GameVersion is TRVersion.Game.TombEngine)
+			{
+				checkBox_GenerateSection.Text = "Generate Lua script";
 			}
 
 			if (_targetProject.GameVersion == TRVersion.Game.TR2)
@@ -155,10 +161,24 @@ namespace TombIDE.ProjectMaster
 					_ => null
 				};
 
-				if (defaultWadPath is not null)
+				if (defaultWadPath is not null && File.Exists(defaultWadPath))
 					level.Settings.LoadWad(defaultWadPath);
 
-				Prj2Writer.SaveToPrj2(prj2FilePath, level);
+                var texturePath = Path.Combine(_targetProject.DirectoryPath, "Assets", "Textures", "default.png");
+
+                if (File.Exists(texturePath))
+                {
+                    level.Settings.Textures.Add(new LevelTexture(level.Settings, Path.Combine(_targetProject.DirectoryPath, "Assets", "Textures", "default.png")));
+                    var texture = new TextureArea() { Texture = level.Settings.Textures[0] };
+
+                    texture.TexCoord0 = new VectorInt2(0, 0);
+                    texture.TexCoord1 = new VectorInt2(texture.Texture.Image.Width, 0);
+                    texture.TexCoord2 = new VectorInt2(texture.Texture.Image.Width, texture.Texture.Image.Height);
+                    texture.TexCoord3 = new VectorInt2(0, texture.Texture.Image.Height);
+                    level.Settings.DefaultTexture = texture;
+                }
+
+                Prj2Writer.SaveToPrj2(prj2FilePath, level);
 
 				if (checkBox_GenerateSection.Checked)
 				{

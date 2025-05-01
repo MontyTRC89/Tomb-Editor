@@ -38,12 +38,30 @@ namespace TombLib.Utils
 
         public static string[] SplitParenthesis(this string source)
         {
-            return Regex.Matches(source, @"[^{},]+|\{[^{}]*\}").Select(m => m.Value).ToArray();
+            return Regex.Matches(source, @"[^{},]+|\{[^{}]*\}").Select(m => m.Value.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray();
         }
 
         public static string SplitCamelcase(this string source)
         {
             return Regex.Replace(source, "([a-z](?=[A-Z])|[a-z](?=[0-9])|[A-Z](?=[A-Z][a-z]))", "$1 ");
+        }
+
+        public static string UppercaseFirstChar(this string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return source;
+
+            return char.ToUpper(source[0]) + source.Substring(1);
+        }
+
+        public static string TrimIndentation(this string source)
+        {
+            var lines = source.Split('\n').Select(line => line.TrimEnd());
+
+            lines = lines.Select(line => line.Replace("\t", "    "));
+            lines = lines.Select(line => line.TrimStart());
+
+            return string.Join("\n", lines);
         }
 
         public static string Capitalize(this string source)

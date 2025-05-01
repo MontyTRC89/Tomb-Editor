@@ -138,5 +138,7 @@ namespace TombLib.Wad
         /******/public static readonly ChunkId StaticLightPosition = ChunkId.FromString("W2StaticLightPos");
         /******/public static readonly ChunkId StaticLightRadius = ChunkId.FromString("W2StaticLightR");
         /******/public static readonly ChunkId StaticLightIntensity = ChunkId.FromString("W2StaticLightI");
+        /******/public static readonly ChunkId StaticShatter = ChunkId.FromString("W2StaticShatter");
+        /******/public static readonly ChunkId StaticShatterSound = ChunkId.FromString("W2StaticShatterSound");
     }
 }
