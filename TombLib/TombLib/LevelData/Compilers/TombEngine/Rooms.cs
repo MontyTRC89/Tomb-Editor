@@ -1030,7 +1030,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         Death         = (sector.Flags & SectorFlags.DeathFire) != 0,
                         MarkBeetle    = (sector.Flags & SectorFlags.Beetle) != 0,
                         Monkeyswing   = (sector.Flags & SectorFlags.Monkey) != 0,
-                        MarkTriggerer = (sector.Flags & SectorFlags.TriggerTriggerer) != 0
+                        MarkTriggerer = (sector.Flags & SectorFlags.TriggerTriggerer) != 0,
+                        Wall          = (sector.Type == SectorType.Wall)
                     };
 
                     // Setup portals
