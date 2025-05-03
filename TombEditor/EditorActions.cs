@@ -479,14 +479,14 @@ namespace TombEditor
             // Iterate through the selected region (excluding border sectors)
             for (int z = area.Y0; z <= area.Y1; z++)
             {
-                isBorder = z <= 1 || z >= room.NumZSectors - 2;
+                isBorder = z <= 0 || z >= room.NumZSectors - 1;
 
                 if (isBorder)
                     continue;
 
                 for (int x = area.X0; x <= area.X1; x++)
                 {
-                    isBorder = x <= 1 || x >= room.NumXSectors - 2;
+                    isBorder = x <= 0 || x >= room.NumXSectors - 1;
 
                     if (isBorder)
                         continue;
