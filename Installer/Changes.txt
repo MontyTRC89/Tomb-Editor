@@ -6,6 +6,7 @@ Tomb Editor:
  * Added "Smooth floor terrain" and "Smooth ceiling terrain" transform options.
  * Added streaming video animated texture type for TEN.
  * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
+ * Handle portal crossing geometry rendering and texturing correctly.
  * Increased node editor performance and response time.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
  * Fixed functions from nested lua scripts not appearing in the function list.
