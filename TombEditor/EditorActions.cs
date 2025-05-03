@@ -503,12 +503,12 @@ namespace TombEditor
         private static void SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical, int stepHeight)
         {
             // Define the neighboring sectors and their corresponding edges based on the corner we're processing
-            ReadOnlySpan<SectorEdgeLocation> neighbors = edge switch
+            ReadOnlySpan<SectorEdgeOffset> neighbors = edge switch
             {
-                SectorEdge.XnZp => stackalloc SectorEdgeLocation[] { new(-1,  0, SectorEdge.XpZp), new(-1,  1, SectorEdge.XpZn), new(0,  1, SectorEdge.XnZn) }, // North-west corner
-                SectorEdge.XpZp => stackalloc SectorEdgeLocation[] { new( 1,  0, SectorEdge.XnZp), new( 1,  1, SectorEdge.XnZn), new(0,  1, SectorEdge.XpZn) }, // North-east corner
-                SectorEdge.XpZn => stackalloc SectorEdgeLocation[] { new( 0, -1, SectorEdge.XpZp), new( 1, -1, SectorEdge.XnZp), new(1,  0, SectorEdge.XnZn) }, // South-east corner
-                SectorEdge.XnZn => stackalloc SectorEdgeLocation[] { new(-1,  0, SectorEdge.XpZn), new(-1, -1, SectorEdge.XpZp), new(0, -1, SectorEdge.XnZp) }, // South-west corner
+                SectorEdge.XnZp => stackalloc SectorEdgeOffset[] { new(-1,  0, SectorEdge.XpZp), new(-1,  1, SectorEdge.XpZn), new(0,  1, SectorEdge.XnZn) }, // North-west corner
+                SectorEdge.XpZp => stackalloc SectorEdgeOffset[] { new( 1,  0, SectorEdge.XnZp), new( 1,  1, SectorEdge.XnZn), new(0,  1, SectorEdge.XpZn) }, // North-east corner
+                SectorEdge.XpZn => stackalloc SectorEdgeOffset[] { new( 0, -1, SectorEdge.XpZp), new( 1, -1, SectorEdge.XnZp), new(1,  0, SectorEdge.XnZn) }, // South-east corner
+                SectorEdge.XnZn => stackalloc SectorEdgeOffset[] { new(-1,  0, SectorEdge.XpZn), new(-1, -1, SectorEdge.XpZp), new(0, -1, SectorEdge.XnZp) }, // South-west corner
                 _ => throw new ArgumentException("Invalid edge") // Handle invalid edge
             };
 
