@@ -468,11 +468,7 @@ namespace TombEditor
         public static void SmoothTerrain(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
         {
             if (!disableUndo)
-            {
-                HashSet<Room> affectedRooms = room.GetAdjoiningRoomsFromArea(area);
-                affectedRooms.Add(room);
-                _editor.UndoManager.PushGeometryChanged(affectedRooms);
-            }
+                _editor.UndoManager.PushGeometryChanged(room);
 
             bool isBorder;
 
