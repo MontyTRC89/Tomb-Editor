@@ -7,7 +7,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Configurations>Debug;Release</Configurations>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Platforms>x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <OutputPath>..\..\Build ($(Platform))\</OutputPath>
@@ -274,6 +274,9 @@
     <None Update="Catalogs\TEN Node Catalogs\UI.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Video.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\View.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -425,9 +428,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Catalogs\Engines\TRNG\CLICK_DISTANCE_32.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -490,7 +490,6 @@
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
     <PackageReference Include="NLog" Version="5.0.0" />
     <PackageReference Include="Pfim" Version="0.10.3" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="GeometryIO\IOBone.cs" />
