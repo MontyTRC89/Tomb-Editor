@@ -251,6 +251,7 @@ namespace WadTool.Controls
                     effect.Parameters["AlphaTest"].SetValue(true);
                     effect.Parameters["Bones"].SetValue(dxMatrices);
                     effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                    effect.Parameters["Color"].SetValue(Vector4.One);
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var submesh in Skin.Skin.Submeshes)
