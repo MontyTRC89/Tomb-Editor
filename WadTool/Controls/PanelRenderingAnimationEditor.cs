@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -164,36 +165,8 @@ namespace WadTool.Controls
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
             _device.SetBlendState(_device.BlendStates.Opaque);
 
-            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-
-            /*if (Level != null && Room != null)
-            {
-                Effect roomsEffect = _deviceManager.Effects["Room"];
-
-                roomsEffect.Parameters["TextureEnabled"].SetValue(true);
-                roomsEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
-                roomsEffect.Parameters["Highlight"].SetValue(false);
-                roomsEffect.Parameters["Dim"].SetValue(false);
-                roomsEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-                roomsEffect.Parameters["Texture"].SetResource(_textureAtlas);
-                roomsEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
-                roomsEffect.Parameters["UseVertexColors"].SetValue(true);
-                roomsEffect.Parameters["TextureAtlasRemappingSize"].SetValue(_textureAtlasRemappingSize);
-                roomsEffect.Parameters["TextureCoordinateFactor"].SetValue(_textureAtlas == null ? new Vector2(0) : new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
-
-                _device.SetVertexBuffer(0, Room.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, Room.VertexBuffer));
-
-                var world = Matrix4x4.CreateTranslation(new Vector3(-RoomPosition.X, 0, -RoomPosition.Z));
-
-                roomsEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-
-                roomsEffect.Techniques[0].Passes[0].Apply();
-                _device.Draw(PrimitiveType.TriangleList, Room.VertexBuffer.ElementCount);
-
-            }*/
-
-            Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
+            var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            var solidEffect = _deviceManager.___LegacyEffects["Solid"];
 
             if (_model != null)
             {
@@ -218,10 +191,15 @@ namespace WadTool.Controls
                         matrices.Add(bone.GlobalTransform);
                 }
 
+                bool showSkin = _editor.Wad.GameVersion == TRVersion.Game.TombEngine && Configuration.AnimationEditor_ShowSkin && skin.Skin != null;
+
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
                     var mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0)
+                        continue;
+
+                    if (showSkin && skin.Meshes[i].Hidden)
                         continue;
 
                     mesh.UpdateBuffers(Camera.GetPosition());
@@ -253,6 +231,44 @@ namespace WadTool.Controls
 
                         _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
+                }
+
+                if (showSkin)
+                {
+                    Skin.Skin.UpdateBuffers(Camera.GetPosition());
+
+                    _device.SetVertexBuffer(0, Skin.Skin.VertexBuffer);
+                    _device.SetIndexBuffer(Skin.Skin.IndexBuffer, true);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, Skin.Skin.VertexBuffer));
+
+                    var dxMatrices = matrices.Select(m =>
+                    {
+                        Matrix4x4.Invert(_model.BindPoseTransforms[matrices.IndexOf(m)], out Matrix4x4 invBindPose);
+                        return Matrix4x4.Transpose(invBindPose * m);
+                    }).ToArray();
+
+                    effect.Parameters["Skinned"].SetValue(true);
+                    effect.Parameters["AlphaTest"].SetValue(true);
+                    effect.Parameters["Bones"].SetValue(dxMatrices);
+                    effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                    effect.Techniques[0].Passes[0].Apply();
+
+                    foreach (var submesh in Skin.Skin.Submeshes)
+                    {
+                        if (submesh.Value.Material.AdditiveBlending)
+                            _device.SetBlendState(_device.BlendStates.Additive);
+                        else
+                            _device.SetBlendState(_device.BlendStates.Opaque);
+
+                        if (submesh.Value.Material.DoubleSided)
+                            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
+                        else
+                            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                    }
+
+                    effect.Parameters["Skinned"].SetValue(false);
                 }
 
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);

@@ -64,12 +64,12 @@
             butEditMesh = new DarkUI.Controls.DarkButton();
             butExportSelectedMesh = new DarkUI.Controls.DarkButton();
             panelSkinned = new DarkUI.Controls.DarkPanel();
+            darkPanel2 = new DarkUI.Controls.DarkPanel();
+            lblSkin = new DarkUI.Controls.DarkLabel();
             butClearSkin = new DarkUI.Controls.DarkButton();
             butSetSkin = new DarkUI.Controls.DarkButton();
-            lblSkin = new DarkUI.Controls.DarkLabel();
             butCancel = new DarkUI.Controls.DarkButton();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            darkPanel2 = new DarkUI.Controls.DarkPanel();
             cmBone.SuspendLayout();
             sectionCurrentBone.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudTransZ).BeginInit();
@@ -107,6 +107,7 @@
             cbDrawGizmo.Size = new System.Drawing.Size(87, 17);
             cbDrawGizmo.TabIndex = 82;
             cbDrawGizmo.Text = "Draw gizmo";
+            toolTip.SetToolTip(cbDrawGizmo, "Draw gizmo");
             cbDrawGizmo.CheckedChanged += cbDrawGizmo_CheckedChanged;
             // 
             // cbDrawGrid
@@ -120,6 +121,7 @@
             cbDrawGrid.Size = new System.Drawing.Size(77, 17);
             cbDrawGrid.TabIndex = 81;
             cbDrawGrid.Text = "Draw grid";
+            toolTip.SetToolTip(cbDrawGrid, "Draw coordinate grid");
             cbDrawGrid.CheckedChanged += cbDrawGrid_CheckedChanged;
             // 
             // butSaveChanges
@@ -623,31 +625,14 @@
             panelSkinned.Size = new System.Drawing.Size(314, 29);
             panelSkinned.TabIndex = 93;
             // 
-            // butClearSkin
+            // darkPanel2
             // 
-            butClearSkin.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            butClearSkin.Checked = false;
-            butClearSkin.Location = new System.Drawing.Point(266, 3);
-            butClearSkin.Name = "butClearSkin";
-            butClearSkin.Size = new System.Drawing.Size(47, 23);
-            butClearSkin.TabIndex = 108;
-            butClearSkin.Text = "Clear";
-            butClearSkin.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            toolTip.SetToolTip(butClearSkin, "Edit mesh for currently selected bone");
-            butClearSkin.Click += butClearSkin_Click;
-            // 
-            // butSetSkin
-            // 
-            butSetSkin.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            butSetSkin.Checked = false;
-            butSetSkin.Location = new System.Drawing.Point(214, 3);
-            butSetSkin.Name = "butSetSkin";
-            butSetSkin.Size = new System.Drawing.Size(47, 23);
-            butSetSkin.TabIndex = 107;
-            butSetSkin.Text = "Set";
-            butSetSkin.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            toolTip.SetToolTip(butSetSkin, "Edit mesh for currently selected bone");
-            butSetSkin.Click += butSetSkin_Click;
+            darkPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            darkPanel2.Controls.Add(lblSkin);
+            darkPanel2.Location = new System.Drawing.Point(3, 3);
+            darkPanel2.Name = "darkPanel2";
+            darkPanel2.Size = new System.Drawing.Size(205, 23);
+            darkPanel2.TabIndex = 109;
             // 
             // lblSkin
             // 
@@ -658,6 +643,32 @@
             lblSkin.Size = new System.Drawing.Size(199, 13);
             lblSkin.TabIndex = 106;
             lblSkin.Text = "Skinned mesh:";
+            // 
+            // butClearSkin
+            // 
+            butClearSkin.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            butClearSkin.Checked = false;
+            butClearSkin.Location = new System.Drawing.Point(266, 3);
+            butClearSkin.Name = "butClearSkin";
+            butClearSkin.Size = new System.Drawing.Size(47, 23);
+            butClearSkin.TabIndex = 108;
+            butClearSkin.Text = "Clear";
+            butClearSkin.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            toolTip.SetToolTip(butClearSkin, "Remove skinned mesh");
+            butClearSkin.Click += butClearSkin_Click;
+            // 
+            // butSetSkin
+            // 
+            butSetSkin.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            butSetSkin.Checked = false;
+            butSetSkin.Location = new System.Drawing.Point(214, 3);
+            butSetSkin.Name = "butSetSkin";
+            butSetSkin.Size = new System.Drawing.Size(47, 23);
+            butSetSkin.TabIndex = 107;
+            butSetSkin.Text = "Add";
+            butSetSkin.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            toolTip.SetToolTip(butSetSkin, "Add skinned mesh");
+            butSetSkin.Click += butSetSkin_Click;
             // 
             // butCancel
             // 
@@ -670,15 +681,6 @@
             butCancel.Text = "Cancel";
             butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             butCancel.Click += butCancel_Click;
-            // 
-            // darkPanel2
-            // 
-            darkPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            darkPanel2.Controls.Add(lblSkin);
-            darkPanel2.Location = new System.Drawing.Point(3, 3);
-            darkPanel2.Name = "darkPanel2";
-            darkPanel2.Size = new System.Drawing.Size(205, 23);
-            darkPanel2.TabIndex = 109;
             // 
             // FormSkeletonEditor
             // 

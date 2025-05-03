@@ -119,11 +119,14 @@ namespace TombLib.Wad
             // If skin is the same as in previous call, immediately return same skinned model.
             // Otherwise construct skinned model again.
 
-            if (_skin != null && _skin == skin)
+            if (_skin != null && _skin == skin && _skinnedModel.Skin == skin.Skin)
                 return _skinnedModel;
 
             _skin = skin;
             _skinnedModel = new WadMoveable(Id);
+
+            if (skin.Skin != null)
+                _skinnedModel.Skin = skin.Skin;
 
             for (int i = 0; i < Meshes.Count; i++)
             {
