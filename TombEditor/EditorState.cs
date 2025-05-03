@@ -1,4 +1,5 @@
-﻿using TombLib;
+﻿using System;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
 using TombLib.Rendering;
@@ -27,28 +28,27 @@ namespace TombEditor
     {
         public EditorToolType Tool { get; set; } = EditorToolType.Selection;
         public bool TextureUVFixer { get; set; } = true;
+        public bool SnapToStepHeight { get; set; } = false;
         public PaintGridSize GridSize { get; set; } = PaintGridSize.Grid2x2;
 
         public static bool operator ==(EditorTool first, EditorTool second)
         {
-            return first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer;
+            return first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer && first.SnapToStepHeight == second.SnapToStepHeight && first.GridSize == second.GridSize;
         }
 
         public static bool operator !=(EditorTool first, EditorTool second)
         {
-            return first.Tool != second.Tool || first.TextureUVFixer != second.TextureUVFixer;
+            return first.Tool != second.Tool || first.TextureUVFixer != second.TextureUVFixer || first.SnapToStepHeight != second.SnapToStepHeight || first.GridSize != second.GridSize;
         }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is EditorTool))
-                return false;
-            return this == (EditorTool)obj;
+            return obj is EditorTool tool && this == tool;
         }
 
         public override int GetHashCode()
         {
-            return Tool.GetHashCode() ^ (TextureUVFixer.GetHashCode() * 1334740973);
+            return HashCode.Combine(Tool, TextureUVFixer, SnapToStepHeight, GridSize);
         }
     }
 

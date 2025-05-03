@@ -80,7 +80,7 @@ namespace TombEditor
             Any
         }
 
-        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, SectorVerticalPart vertical, int increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
+        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, SectorVerticalPart vertical, int increment, bool smooth, bool snapToIncrement, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true, bool disableUndo = false)
         {
             if (!disableUndo)
             {
@@ -166,7 +166,7 @@ namespace TombEditor
                             pair.Sector.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
                         {
                             pair.Room.ChangeSectorHeight(pair.SectorPosition.X, pair.SectorPosition.Y, vertical, edge, increment);
-                            pair.Sector.FixHeights(vertical);
+                            pair.Sector.FixHeights(vertical, snapToIncrement ? increment : 0);
                         }
                     }
                 }
@@ -306,7 +306,7 @@ namespace TombEditor
                                 targetRoom.ChangeSectorHeight(targetPos.X, targetPos.Y, vertical, corners[0], increment);
                             }
                         }
-                        targetSector.FixHeights(vertical);
+                        targetSector.FixHeights(vertical, snapToIncrement ? increment : 0);
                     }
 
                     if (autoUpdateThroughPortal && lookupSector.Sector != targetSector)
@@ -5549,7 +5549,13 @@ namespace TombEditor
                 _editor.Mode != EditorMode.Geometry && toolIndex > 6)
                 return;
 
-            EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, TextureUVFixer = _editor.Tool.TextureUVFixer, GridSize = _editor.Tool.GridSize };
+            var currentTool = new EditorTool()
+            {
+                Tool = _editor.Tool.Tool,
+                TextureUVFixer = _editor.Tool.TextureUVFixer,
+                SnapToStepHeight = _editor.Tool.SnapToStepHeight,
+                GridSize = _editor.Tool.GridSize
+            };
 
             switch (toolIndex)
             {

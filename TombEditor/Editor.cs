@@ -220,8 +220,9 @@ namespace TombEditor
             get { return _tool; }
             set
             {
-                if (value.Tool == _tool.Tool && value.GridSize == _tool.GridSize && value.TextureUVFixer == _tool.TextureUVFixer)
+                if (value.Tool == _tool.Tool && value.GridSize == _tool.GridSize && value.TextureUVFixer == _tool.TextureUVFixer && value.SnapToStepHeight == _tool.SnapToStepHeight)
                     return;
+
                 var previous = _tool;
                 _tool = value;
                 RaiseEvent(new ToolChangedEvent { Previous = previous, Current = value });

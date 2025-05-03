@@ -120,4 +120,15 @@
   <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toolSnapToStepHeight.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADPSURBVDhP3Y5PDsFAGMVnpQucoJylnId0J3EDnEYIZ1Ab
+        XKI9AJZtx+9rvo5ONOlGIvGSl755f2Zqvo6yLAMY53mewKcywZtba3taawelkPKtKIotOoJ9IcMJ3o7s
+        Kh2t+yAIZMx3odYHuGhJ59L6JwxjeVm0FNAbyhlMOa/rEf6e7ky0B4pngki0DCgeOIdwhD7ClWScp3RP
+        oj1gPhgOVKcyrAKAHouneoi+V0ETjK1KT9foyv/lgibUdlDbQe03mmZboSvvfEFtB7V/DmNeD3tCjo2R
+        b2EAAAAASUVORK5CYII=
+</value>
+  </data>
 </root>
