@@ -86,6 +86,7 @@ namespace WadTool.Controls
 
                     case MeshEditingMode.VertexEffects:
                     case MeshEditingMode.VertexColorsAndNormals:
+                    case MeshEditingMode.VertexWeights:
                     case MeshEditingMode.VertexRemap:
                         SelectElement(value);
                         engageUndo = !Control.ModifierKeys.HasFlag(Keys.Alt) && EditingMode != MeshEditingMode.VertexRemap;
@@ -387,6 +388,7 @@ namespace WadTool.Controls
 
             if (EditingMode == MeshEditingMode.VertexRemap ||
                 EditingMode == MeshEditingMode.VertexEffects ||
+                EditingMode == MeshEditingMode.VertexWeights ||
                 EditingMode == MeshEditingMode.VertexColorsAndNormals)
             {
                 // Draw model first in vertex or sphere modes
@@ -445,6 +447,21 @@ namespace WadTool.Controls
                                     solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.8f));
                                 break;
 
+                            case MeshEditingMode.VertexWeights:
+                                if (_mesh.HasWeights)
+                                {
+                                    var mul   = 1.0f - _mesh.VertexWeights[i].Weight[3];
+                                    var color = new Vector4(_mesh.VertexWeights[i].Weight[0] * mul,
+                                                            _mesh.VertexWeights[i].Weight[1] * mul,
+                                                            _mesh.VertexWeights[i].Weight[2] * mul, 1.0f);
+
+                                    solidEffect.Parameters["Color"].SetValue(color);
+                                }
+                                else
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.0f));
+
+                                break;
+
                             case MeshEditingMode.VertexColorsAndNormals:
 
                                 // Simply draw normal color, since we don't need any extra indication for this mode
@@ -478,6 +495,13 @@ namespace WadTool.Controls
                                         }
 
                                         message = i.ToString();
+                                    }
+                                    break;
+
+                                case MeshEditingMode.VertexWeights:
+                                    {
+                                        if (_mesh.HasWeights)
+                                            message = _mesh.VertexWeights[i].ToString();
                                     }
                                     break;
 
@@ -851,6 +875,7 @@ namespace WadTool.Controls
 
             if (EditingMode == MeshEditingMode.VertexRemap ||
                 EditingMode == MeshEditingMode.VertexEffects ||
+                EditingMode == MeshEditingMode.VertexWeights ||
                 EditingMode == MeshEditingMode.VertexColorsAndNormals)
             {
                 // Try to pick a vertex sphere

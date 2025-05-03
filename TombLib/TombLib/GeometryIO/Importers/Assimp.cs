@@ -297,6 +297,9 @@ namespace TombLib.GeometryIO.Importers
                                 newMesh.Weights[weight.VertexID].Add(new KeyValuePair<int, float>(boneIndex, weight.Weight));
                             }
                         }
+
+                        for (int i = 0; i < newMesh.Weights.Count; i++)
+                            newMesh.Weights[i] = newMesh.Weights[i].OrderByDescending(kvp => kvp.Key).ToList();
                     }
 
                     // Add polygons

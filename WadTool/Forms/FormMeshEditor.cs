@@ -269,6 +269,26 @@ namespace WadTool
                         }
                         break;
 
+                    case MeshEditingMode.VertexWeights:
+                        {
+                            if (newIndex == -1) return;
+
+                            // Add missing data if needed
+                            if (!panelMesh.Mesh.HasWeights)
+                                GenerateMissingVertexData();
+
+                            if (Control.ModifierKeys == Keys.Alt) // Picking
+                            {
+                                GetWeightValues(newIndex);
+                            }
+                            else // Editing
+                            {
+                                SetWeightValues(newIndex);
+                                panelMesh.Invalidate();
+                            }
+                        }
+                        break;
+
                     case MeshEditingMode.VertexColorsAndNormals:
                         {
                             if (newIndex == -1) return;
@@ -518,6 +538,9 @@ namespace WadTool
                 case MeshEditingMode.VertexRemap:
                     cbExtra.Text = "Show all numbers";
                     break;
+                case MeshEditingMode.VertexWeights:
+                    cbExtra.Text = "Show all weights";
+                    break;
                 case MeshEditingMode.Sphere:
                     cbExtra.Text = "Show gizmo";
                     break;
@@ -585,6 +608,37 @@ namespace WadTool
             nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
             nudSphereRadius.Value = (decimal)Math.Abs(panelMesh.Mesh.BoundingSphere.Radius);
             _readingValues = false;
+        }
+
+        private void GetWeightValues(int index)
+        {
+            if (NoMesh() || panelMesh.CurrentElement == -1) return;
+
+            _readingValues = true;
+            nudWeightIndex1.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Index[0];
+            nudWeightIndex2.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Index[1];
+            nudWeightIndex3.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Index[2];
+            nudWeightIndex4.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Index[3];
+            nudWeightValue1.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Weight[0];
+            nudWeightValue2.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Weight[1];
+            nudWeightValue3.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Weight[2];
+            nudWeightValue4.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Weight[3];
+            _readingValues = false;
+        }
+
+        private void SetWeightValues(int index)
+        {
+            var weight = new VertexWeight();
+            weight.Index[0] = (int)nudWeightIndex1.Value;
+            weight.Index[1] = (int)nudWeightIndex2.Value;
+            weight.Index[2] = (int)nudWeightIndex3.Value;
+            weight.Index[3] = (int)nudWeightIndex4.Value;
+            weight.Weight[0] = (float)nudWeightValue1.Value;
+            weight.Weight[1] = (float)nudWeightValue2.Value;
+            weight.Weight[2] = (float)nudWeightValue3.Value;
+            weight.Weight[3] = (float)nudWeightValue4.Value;
+
+            panelMesh.Mesh.VertexWeights[index] = weight;
         }
 
         private bool CheckTextureSize(ImageC image)
