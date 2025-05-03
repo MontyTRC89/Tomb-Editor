@@ -269,6 +269,10 @@ namespace WadTool.Controls
         private readonly Timer _previewTimer = new Timer { Interval = 33 };
         private int _frameCount;
 
+        // Vertex weight preview
+        private const int _maxBones = 32;
+        private Vector4[] _boneColors = new Vector4[_maxBones];
+
         // Gizmo
         private GizmoMeshEditor _gizmo;
 
@@ -281,6 +285,7 @@ namespace WadTool.Controls
         public PanelRenderingMesh()
         {
             _previewTimer.Tick += new EventHandler(PreviewTimer_Tick);
+            GenerateBoneColors();
         }
 
         public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
@@ -450,10 +455,19 @@ namespace WadTool.Controls
                             case MeshEditingMode.VertexWeights:
                                 if (_mesh.HasWeights)
                                 {
-                                    var mul   = 1.0f - _mesh.VertexWeights[i].Weight[3];
-                                    var color = new Vector4(_mesh.VertexWeights[i].Weight[0] * mul,
-                                                            _mesh.VertexWeights[i].Weight[1] * mul,
-                                                            _mesh.VertexWeights[i].Weight[2] * mul, 1.0f);
+                                    var color = Vector4.UnitW;
+
+                                    for (int w = 0; w < 4; w++)
+                                    {
+                                        int boneIndex = _mesh.VertexWeights[i].Index[w];
+                                        float weight = _mesh.VertexWeights[i].Weight[w];
+
+                                        if (boneIndex >= 0 && boneIndex < _maxBones && weight > 0)
+                                        {
+                                            var boneColor = _boneColors[boneIndex];
+                                            color += boneColor * weight;
+                                        }
+                                    }
 
                                     solidEffect.Parameters["Color"].SetValue(color);
                                 }
@@ -681,6 +695,26 @@ namespace WadTool.Controls
 
                 _device.Draw(PrimitiveType.LineList, bufferLines.ElementCount);
             }
+        }
+
+        private void GenerateBoneColors()
+        {
+            float[] hues = new float[_maxBones];
+
+            // Fill hues evenly spaced
+            for (int i = 0; i < _maxBones; i++)
+                hues[i] = i / (float)_maxBones;
+
+            // Shuffle using a stride that skips close neighbors (good for small prime strides)
+            float[] shuffledHues = new float[_maxBones];
+            int stride = 7;
+
+            for (int i = 0, j = 0; i < _maxBones; i++, j = (j + stride) % _maxBones)
+                shuffledHues[i] = hues[j];
+
+            // Convert hues to RGB
+            for (int i = 0; i < _maxBones; i++)
+                _boneColors[i] = MathC.HsvToRgb(shuffledHues[i], 1.0f, 1.0f);
         }
 
         public void SelectElement(int element, bool highlight = false)
