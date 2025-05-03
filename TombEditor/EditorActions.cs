@@ -465,7 +465,7 @@ namespace TombEditor
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
 
-        public static void SmoothTerrain(Room room, RectangleInt2 area, SectorVerticalPart vertical, bool disableUndo = false)
+        public static void SmoothTerrain(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
         {
             if (!disableUndo)
             {
@@ -493,17 +493,17 @@ namespace TombEditor
 
                     // Smooth all four corners of current sector
                     for (SectorEdge edge = 0; edge < SectorEdge.Count; edge++)
-                        SmoothSectorCorner(room, x, z, edge, vertical);
+                        SmoothSectorCorner(room, x, z, edge, vertical, stepHeight);
                 }
             }
 
             SmartBuildGeometry(room, area);
         }
 
-        private static void SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical)
+        private static void SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical, int stepHeight)
         {
             // Define the neighboring sectors and their corresponding edges based on the corner we're processing
-            Span<SectorEdgeLocation> neighbors = edge switch
+            ReadOnlySpan<SectorEdgeLocation> neighbors = edge switch
             {
                 SectorEdge.XnZp => stackalloc SectorEdgeLocation[] { new(-1,  0, SectorEdge.XpZp), new(-1,  1, SectorEdge.XpZn), new(0,  1, SectorEdge.XnZn) }, // North-west corner
                 SectorEdge.XpZp => stackalloc SectorEdgeLocation[] { new( 1,  0, SectorEdge.XnZp), new( 1,  1, SectorEdge.XnZn), new(0,  1, SectorEdge.XpZn) }, // North-east corner
@@ -540,8 +540,6 @@ namespace TombEditor
             int averageHeight = heightSum / validCorners;
 
             // Round to the nearest step height
-            int stepHeight = _editor.IncrementReference;
-
             if (stepHeight > 0)
                 averageHeight = (int)Math.Round((float)averageHeight / stepHeight) * stepHeight;
 
