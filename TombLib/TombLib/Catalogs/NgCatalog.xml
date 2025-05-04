@@ -16,25 +16,33 @@
     </Choice>
   </TimerFieldTrigger>
   <FlipEffectTrigger>
-    <Subtrigger K="1" V="OldFlip. Plays a fast single earthquake, sound and rumbler." />
-    <Subtrigger K="2" V="OldFlip. Plays a flooding sound effect" />
-    <Subtrigger K="4" V="OldFlip. Jump to next level (following position in script.dat)" />
-    <Subtrigger K="5" V="OldFlip. Triggers a camera in puzzle animation belove the puzzle_hole." />
-    <Subtrigger K="7" V="OldFlip. Plays continuous earthquake sound effect and rumbler." />
-    <Subtrigger K="8" V="OldFlip. Swap crowbar with empty hand on Lara's right hand" />
-    <Subtrigger K="10" V="OldFlip. Will play the &lt;&amp;&gt;sound effect number.">
+    <Subtrigger K="0" V="(000) OldFlip. Turn the item 180 degrees." />
+    <Subtrigger K="1" V="(001) OldFlip. Plays a fast single earthquake, sound and rumbler." />
+    <Subtrigger K="2" V="(002) OldFlip. Plays a flooding sound effect" />
+    <Subtrigger K="3" V="(003) OldFlip. Triggers lara bubbles. (Only underwater) (Only 1 bubble)" />
+    <Subtrigger K="4" V="(004) OldFlip. Jump to next level (following position in script.dat)" />
+    <Subtrigger K="5" V="(005) OldFlip. Activate a camera trigger if it exist." />
+    <Subtrigger K="6" V="(006) OldFlip. Activate a key trigger if it exist." />
+    <Subtrigger K="7" V="(007) OldFlip. Plays continuous earthquake sound effect and rumbler." />
+    <Subtrigger K="8" V="(008) OldFlip. Swap crowbar with empty hand on Lara's right hand" />
+    <Subtrigger K="10" V="(010) OldFlip. Will play the &lt;&amp;&gt;sound effect number.">
       <Timer>
         <AnyNumber />
       </Timer>
     </Subtrigger>
-    <Subtrigger K="11" V="OldFlip. Will play an explosion sound effect." />
-    <Subtrigger K="12" V="OldFlip. Remove items (weapons, crowbar, flare) from Lara's hands" />
-    <Subtrigger K="14" V="OldFlip. Adds/Removes Right Gun from Lara's hand and/or holster" />
-    <Subtrigger K="15" V="OldFlip. Adds/Removes Left Gun from Lara's hand and/or holster" />
-    <Subtrigger K="16" V="OldFlip. Creates right gun constant flare" />
-    <Subtrigger K="17" V="OldFlip. Creates left gun constant flare" />
-    <Subtrigger K="26" V="OldFlip. Initialise Hair of Lara, to call after swap mesh" />
-    <Subtrigger K="28" V="OldFlip. Set the RGB color for the fog bulbs to the &lt;&amp;&gt;value">
+    <Subtrigger K="11" V="(011) OldFlip. Will play an explosion sound effect." />
+    <Subtrigger K="12" V="(012) OldFlip. Remove items (weapons, crowbar, flare) from Lara's hands" />
+    <Subtrigger K="14" V="(014) OldFlip. Adds/Removes Right Gun from Lara's hand and/or holster" />
+    <Subtrigger K="15" V="(015) OldFlip. Adds/Removes Left Gun from Lara's hand and/or holster" />
+    <Subtrigger K="16" V="(016) OldFlip. Creates right gun constant flare" />
+    <Subtrigger K="17" V="(017) OldFlip. Creates left gun constant flare" />
+    <Subtrigger K="18" V="(018) OldFlip. Swap current item meshes with MESHSWAP1 (Recall it to invert the swap)" />
+    <Subtrigger K="19" V="(019) OldFlip. Swap current item meshes with MESHSWAP2 (Recall it to invert the swap)" />
+    <Subtrigger K="20" V="(020) OldFlip. Swap current item meshes with MESHSWAP3 (Recall it to invert the swap)" />
+    <Subtrigger K="21" V="(021) OldFlip. Enable invisibility of the item" />
+    <Subtrigger K="22" V="(022) OldFlip. Disable invisibility of the item" />
+    <Subtrigger K="26" V="(026) OldFlip. Initialise Hair of Lara, to call after swap mesh" />
+    <Subtrigger K="28" V="(028) OldFlip. Set the RGB color for the fog bulbs to the &lt;&amp;&gt;value">
       <Timer>
         <FixedEnumeration>
           <Enum K="0" V="[ 0] Black  (Red=0  Green=0  Blue=0)" />
@@ -69,19 +77,22 @@
         </FixedEnumeration>
       </Timer>
     </Subtrigger>
-    <Subtrigger K="30" V="OldFlip. (?) Force Von Croy to reach &lt;&amp;&gt;AI_FOLLOW OCB when ???">
+    <Subtrigger K="29" V="(029) OldFlip. Reset all WRAITH3 health points" />
+    <Subtrigger K="30" V="(030) OldFlip. (?) Force Von Croy to reach &lt;&amp;&gt;AI_FOLLOW OCB when ???">
       <Timer>
         <AnyNumber />
       </Timer>
     </Subtrigger>
-    <Subtrigger K="31" V="OldFlip. Kills any swarming scarab beetles that are currently active." />
-    <Subtrigger K="44" V="OldFlip. Free left hand of Lara." />
-    <Subtrigger K="45" V="OldFlip. Start screen timer and force Von Croy to reach &lt;&amp;&gt;AI_FOLLOW OCB number">
+    <Subtrigger K="31" V="(031) OldFlip. Kills any swarming scarab beetles that are currently active." />
+    <Subtrigger K="32" V="(032) OldFlip. Add footprint (Only with TOMB4 from Troye) (Right foot use flipeffect 33 in lara object which is wrong)" />
+    <Subtrigger K="43" V="(043) OldFlip. Swap left hand of Lara with water skin (Which water skin is swap is made by the engine)" />
+    <Subtrigger K="44" V="(044) OldFlip. Free left hand of Lara from water skin (Or any other swap)" />
+    <Subtrigger K="45" V="(045) OldFlip. Start screen timer and force Von Croy to reach &lt;&amp;&gt;AI_FOLLOW OCB number">
       <Timer>
         <AnyNumber />
       </Timer>
     </Subtrigger>
-    <Subtrigger K="46" V="OldFlip. Kill all enemies. They disappear, no dying animation." />
+    <Subtrigger K="46" V="(046) OldFlip. Disable and hide all enemies." />
     <Subtrigger K="47" V="Inventory-Item. Remove &lt;&amp;&gt;inventory-item from inventory">
       <Timer>
         <FixedEnumeration>

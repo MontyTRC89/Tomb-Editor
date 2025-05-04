@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <limits>
-    <limit name="TexPages" value="32" />
-    <limit name="TexInfos" value="2000" />
+    <limit name="TexPages" value="1024" />
+    <limit name="TexInfos" value="32768" />
     <limit name="SoundBitsPerSample" value="16" />
     <limit name="SoundSampleRate" value="11025" />
     <limit name="SoundSampleSize" value="256" />
     <limit name="SoundSampleCount" value="256" />
     <limit name="SoundMapSize" value="370" />
-    <limit name="ItemMaxCount" value="256" />
-    <limit name="ItemSafeCount" value="256" />
+    <limit name="ItemMaxCount" value="1024" />
+    <limit name="ItemSafeCount" value="1024" />
     <limit name="BoxLimit" value="32768" />
     <limit name="BoxMinCount" value="1" />
     <limit name="OverlapLimit" value="16384" />

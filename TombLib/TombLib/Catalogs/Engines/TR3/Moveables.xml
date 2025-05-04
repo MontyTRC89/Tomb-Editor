@@ -33,6 +33,7 @@
     <moveable id="30" name="Assault-course target" essential="false" ten="SHOOT_SWITCH1" />
     <moveable id="31" name="Crawler mutant in closet" essential="false" ten="ANIMATING108"/>
     <moveable id="32" name="Crocodile (in water)" essential="false" />
+    <moveable id="33" name="Butterfly [unused]" essential="false" />
     <moveable id="34" name="Compsognathus" essential="false" ten="COMPSOGNATHUS"/>
     <moveable id="35" name="Lizard thing" essential="false" ten="LIZARD"/>
     <moveable id="36" name="Puna guy" essential="false" ten="PUNA_BOSS"/>
@@ -42,6 +43,7 @@
     <moveable id="40" name="RX-Tech guy with gun" essential="false"  ten="SAS_CAIRO" /> 
     <moveable id="41" name="Dog (Antarctica)" essential="false" ten="HUSKIE"/>
     <moveable id="42" name="Crawler mutant" essential="false" ten="SEAL_MUTANT" /> 
+    <moveable id="43" name="Willard [unused]" essential="false" />
     <moveable id="44" name="Tinnos wasp" essential="false" ten="WASP_MUTANT" /> 
     <moveable id="45" name="Tinnos monster" essential="false" ten="CLAW_MUTANT" />
     <moveable id="46" name="Brute mutant (with claw)" essential="false" /> 
@@ -49,23 +51,28 @@
     <moveable id="48" name="Raptor respawn point" />
     <moveable id="49" name="Willardspider" essential="false" ten="WILLARD" /> 
     <moveable id="50" name="RX-Tech flamethrower guy" essential="false" ten="FLAMETHROWER_BADDY" /> 
-    <moveable id="51" name="London goon" essential="false" ten="SAS_CAIRO"/> 
-    <moveable id="53" name="'Damned' stick-wielding goon" essential="false" ten="MP_WITH_STICK" /> 
+    <moveable id="51" name="London goon" essential="false" ten="SAS_CAIRO"/>
+    <moveable id="52" name="London goon 2 [unused]" essential="false" />
+    <moveable id="53" name="'Damned' stick-wielding goon" essential="false" ten="MP_WITH_STICK" />
+    <moveable id="54" name="Punk 2 [unused]" essential="false" />
+    <moveable id="55" name="Lift [unused]" essential="false" />
     <moveable id="56" name="London guard" essential="false" ten="MP_WITH_GUN" /> 
     <moveable id="57" name="Sophia-Leigh" essential="false" ten="SOPHIA_LEIGH_BOSS"/>
-    <moveable id="58" name="Thames Wharf machine" essential="false" ten="ELECTRIC_CLEANER" /> 
+    <moveable id="58" name="Thames Wharf machine" essential="false" ten="ELECTRIC_CLEANER" />
+    <moveable id="59" name="Floating corpse [unused]" essential="false" />
     <moveable id="60" name="MP with stick" essential="false" ten="MP_WITH_STICK" />
     <moveable id="61" name="MP with gun" essential="false" ten="MP_WITH_GUN" />
     <moveable id="62" name="Prisoner" essential="false" ten="CIVVY" />
     <moveable id="63" name="MP with sighted gun and night sight" essential="false" ten="SAS_CAIRO" /> 
     <moveable id="64" name="Gun turret" essential="false" ten="TWIN_AUTO_GUN"/>
     <moveable id="65" name="Dam guard" essential="false" ten="MP_WITH_STICK" /> 
-    <moveable id="66" name="Tripwire" essential="false" ten="LASER_BEAM" />
+    <moveable id="66" name="Tripwire" essential="false" />
     <moveable id="67" name="Electrified wire" essential="false" ten="ELECTRIC_FENCE" /> 
-    <moveable id="68" name="Killer tripwire" essential="false" ten="LASER_BEAM"/> 
+    <moveable id="68" name="Killer tripwire" essential="false" ten="LASER_BEAM" /> 
     <moveable id="69" name="Cobra / Rattlesnake" essential="false" ten="COBRA" />
     <moveable id="70" name="Temple statue" essential="false" ten="SHIVA"/>
-    <moveable id="71" name="Monkey" essential="false" ten="MONKEY"/> 
+    <moveable id="71" name="Monkey" essential="false" ten="MONKEY"/>
+    <moveable id="72" name="Bear trap [unused]" essential="false" />
     <moveable id="73" name="Tony Firehands" essential="false" ten="TONY_BOSS"/>
     <moveable id="74" ai="true" name="AI Guard" essential="false" ten="AI_GUARD" />
     <moveable id="75" ai="true" name="AI Ambush" essential="false" ten="AI_AMBUSH"/>
@@ -73,31 +80,43 @@
     <moveable id="77" ai="true" name="AI Modify" essential="false" ten="AI_MODIFY"/>
     <moveable id="78" ai="true" name="AI Follow" essential="false" ten="AI_FOLLOW"/>
     <moveable id="79" ai="true" name="AI Patrol 2" essential="false" ten="AI_PATROL2"/>
-    <moveable id="80" ai="true" name="AI Path" essential="false" ten="AI_X1"/> 
-    <moveable id="81" ai="true" name="AI Check" essential="false" ten="AI_X2"/>
-    <moveable id="82" name="Unknown Id #82" essential="false" />
+    <moveable id="80" ai="true" name="AI X1" essential="false" ten="AI_X1"/> 
+    <moveable id="81" ai="true" name="AI X2" essential="false" ten="AI_X2"/>
+    <moveable id="82" ai="true" name="AI X3" essential="false" />
     <moveable id="83" name="Collapsible floor" essential="false" ten="CRUMBLING_FLOOR" />
+    <moveable id="84" name="Collapsible floor 2" essential="false" />
+    <moveable id="85" name="Falling plank" essential="false" />
     <moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" ten="WALL_MOUNTED_BLADE" />  
     <moveable id="87" name="Spikes / Barbed wire" essential="false" ten="TEETH_SPIKES" />
     <moveable id="88" name="Boulder / Barrel" essential="false" ten="CLASSIC_ROLLINGBALL" />
     <moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" ten="BIG_ROLLINGBALL" /> 
-    <moveable id="90" name="Disk (like dart)" hidden="true" ten="DART" />
+    <moveable id="90" name="Dart" hidden="true" ten="DART" />
     <moveable id="91" name="Dart emitter" essential="false" ten="DART_EMITTER" />
+    <moveable id="92" name="Homing dart emitter" essential="false" />
+    <moveable id="93" name="Draw bridge" essential="false" />
     <moveable id="94" name="Spiked frame / Slamming door" essential="false" ten="SLAMMING_DOORS" />
-    <moveable id="97" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1" />
-    <moveable id="98" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE2"/>
-	<moveable id="99" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE3"/>
-	<moveable id="100" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE4"/>
-    <moveable id="101" name="Destroyable boarded-up window" essential="false" ten="SMASH_OBJECT1" />
-    <moveable id="102" name="Destroyable boarded-up window / wall" essential="false" ten="SMASH_OBJECT2" />
+    <moveable id="95" name="Lift" essential="false" />
+    <moveable id="96" name="Moving bar" essential="false" />
+    <moveable id="97" name="Movable cubical block 1 (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1" />
+    <moveable id="98" name="Movable cubical block 2 (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE2"/>
+    <moveable id="99" name="Movable cubical block 3 (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE3"/>
+    <moveable id="100" name="Movable cubical block 4 (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE4"/>
+    <moveable id="101" name="Smash window" essential="false" ten="SMASH_OBJECT1" />
+    <moveable id="102" name="Smash object 1" essential="false" ten="SMASH_OBJECT2" />
+    <moveable id="103" name="Smash object 2" essential="false" ten="SMASH_OBJECT3" />
+    <moveable id="104" name="Smash object 3" essential="false" ten="SMASH_OBJECT4" />
+    <moveable id="105" name="Saw" essential="false" />
     <moveable id="106" name="Overhead pulley hook" essential="false" ten="MOVING_BLADE" />
     <moveable id="107" name="Falling fragments" essential="false" ten="FALLING_CEILING" />
     <moveable id="108" name="Rolling spindle" essential="false" ten="ROLLING_SPINDLE" />
+    <moveable id="109" name="Circular blade [unused]" essential="false" />
     <moveable id="110" name="Subway train" essential="false" ten="TRAIN" />
     <moveable id="111" name="Wall-mounted knife blade / Knife disk" essential="false" ten="WALL_MOUNTED_BLADE" />
+    <moveable id="112" name="Avalanche" essential="false" />
     <moveable id="113" name="Detachable stalacites" essential="false" ten="FALLING_BLOCK" />
     <moveable id="114" name="Spiky moveable wall" essential="false" ten="SPIKY_WALL" />
-    <moveable id="116" name="Spiky moveable vertical wall / Tunnel borer" essential="false" ten="SPIKY_CEILING" />
+    <moveable id="115" name="Spring board (TR2 remnant) [work]" essential="false" ten="SPIKY_CEILING" />
+    <moveable id="116" name="Spiky moveable vertical wall / Tunnel borer" essential="false" ten="SPIKY_WALL" />
     <moveable id="117" name="Valve wheel / Pulley" essential="false" ten="SWITCH_TYPE1"/>
     <moveable id="118" name="Switch / Pullable book" essential="false" ten="SWITCH_TYPE2"/>
     <moveable id="119" name="Underwater propeller / Diver sitting on block / Underwater rotating knives / Meteorite" essential="false" /> 
@@ -105,9 +124,11 @@
     <moveable id="121" name="Heavy stamper / Grinding drum / Underwater rotating knives" essential="false" />
     <moveable id="122" name="Temple statue (original petrified state)" essential="false" ten="SHIVA_STATUE"/>
     <moveable id="123" name="Monkey with medipack" use_body_from="71" ten="MESHSWAP_MONKEY_MEDIPACK"/> 
-    <moveable id="124" name="Monkey with key" use_body_from="71" ten="MESHSWAP_MONKEY_KEY"/> 
+    <moveable id="124" name="Monkey with key" use_body_from="71" ten="MESHSWAP_MONKEY_KEY"/>
+    <moveable id="125" name="Borders [unused]" essential="false" />
+    <moveable id="126" name="Oildrum [unused]" essential="false" />
     <moveable id="127" name="Zipline handle" essential="false" ten="ZIPLINE_HANDLE" />
-    <moveable id="128" name="Above-water switch" essential="false" 	ten="SWITCH_TYPE3" />
+    <moveable id="128" name="Above-water switch" essential="false"     ten="SWITCH_TYPE3" />
     <moveable id="129" name="Above-water switch" essential="false" ten="SWITCH_TYPE4" />
     <moveable id="130" name="Underwater switch" essential="false" ten="UNDERWATER_WALL_SWITCH1"/>
     <moveable id="131" name="Door" essential="false" ten="DOOR_TYPE1" />
@@ -124,9 +145,9 @@
     <moveable id="142" name="Bridge (flat)" essential="false" ten="BRIDGE_FLAT" />
     <moveable id="143" name="Bridge (tilt = 1)" essential="false" ten="BRIDGE_TILT1" />
     <moveable id="144" name="Bridge (tilt = 2)" essential="false" ten="BRIDGE_TILT2" />
-    <moveable id="145" name="Passport (opening up)" ten="INVENTORY_PASSPORT" hidden="true" />
-    <moveable id="146" name="Stopwatch" hidden="true" />
-    <moveable id="147" name="Lara and butler picture" ten="INVENTORY_POLAROID" hidden="true" />
+    <moveable id="145" name="Passport (opening up) (menu item)" ten="INVENTORY_PASSPORT" hidden="true" />
+    <moveable id="146" name="Stopwatch (menu item)" hidden="true" />
+    <moveable id="147" name="Lara and butler picture (menu item)" ten="INVENTORY_POLAROID" hidden="true" />
     <moveable id="148" name="Cutscene Object 1" ten="ANIMATING101" />
     <moveable id="149" name="Cutscene Object 2" ten="ANIMATING102" />
     <moveable id="150" name="Cutscene Object 3" ten="ANIMATING103" />
@@ -136,8 +157,9 @@
     <moveable id="154" name="Cutscene Object 7" ten="ANIMATING107" />
     <moveable id="155" name="Cutscene Object 8" ten="ANIMATING108" />
     <moveable id="156" name="Cutscene Object 9" ten="ANIMATING109" />
-    <moveable id="158" name="Passport (closed)" hidden="true" />
-    <moveable id="159" name="Bar with 'N' logo" hidden="true" />
+    <moveable id="157" name="Cutscene Object 10" ten="ANIMATING110" />
+    <moveable id="158" name="Passport (closed) (menu item)" hidden="true" />
+    <moveable id="159" name="Bar with 'N' logo (menu item)" hidden="true" />
     <moveable id="160" name="Pistols (pickup)" essential="false" ten="PISTOL_ITEM"  />
     <moveable id="161" name="Shotgun (pickup)" essential="false" ten="SHOTGUN_ITEM" />
     <moveable id="162" name="Desert Eagle (pickup)" essential="false" ten="REVOLVER_ITEM" />
@@ -159,10 +181,10 @@
     <moveable id="178" name="Flares (pickup)" essential="false" ten="FLARE_ITEM"/>
     <moveable id="179" name="Flare (pickup)" ten="FLARE" />
     <moveable id="180" name="Savegame crystal (pickup)" essential="false" />
-    <moveable id="181" name="Sunglasses" ten="INVENTORY_SUNGLASSES" hidden="true" />
-    <moveable id="182" name="Portable CD Player" ten="INVENTORY_HEADPHONES" hidden="true" />
-    <moveable id="183" name="Direction keys" ten="INVENTORY_KEYS" hidden="true" />
-    <moveable id="184" name="Globe (for indicating destinations)" hidden="true" />
+    <moveable id="181" name="Sunglasses (menu item)" ten="INVENTORY_SUNGLASSES" hidden="true" />
+    <moveable id="182" name="Portable CD Player (menu item)" ten="INVENTORY_HEADPHONES" hidden="true" />
+    <moveable id="183" name="Direction keys (menu item)" ten="INVENTORY_KEYS" hidden="true" />
+    <moveable id="184" name="Globe (for indicating destinations) (menu item)" hidden="true" />
     <moveable id="185" name="Pistols (menu item)" hidden="true" />
     <moveable id="186" name="Shotgun (menu item)" hidden="true" />
     <moveable id="187" name="Desert Eagle (menu item)" hidden="true" />
@@ -182,7 +204,7 @@
     <moveable id="201" name="Small medipack (menu item)" hidden="true" />
     <moveable id="202" name="Large medipack (menu item)" hidden="true" />
     <moveable id="203" name="Flares (menu item)" hidden="true" />
-    <moveable id="204" name="Savegame crystal" hidden="true" />
+    <moveable id="204" name="Savegame crystal (menu item)" hidden="true" />
     <moveable id="205" name="Puzzle 1 (pickup)" essential="false" ten="PUZZLE_ITEM1" />
     <moveable id="206" name="Puzzle 2 (pickup)" essential="false" ten="PUZZLE_ITEM2" />
     <moveable id="207" name="Puzzle 3 (pickup)" essential="false" ten="PUZZLE_ITEM3" />
@@ -191,7 +213,7 @@
     <moveable id="210" name="Puzzle 2 (menu item)" hidden="true" />
     <moveable id="211" name="Puzzle 3 (menu item)" hidden="true" />
     <moveable id="212" name="Puzzle 4 (menu item)" hidden="true" />
-    <moveable id="213" name="Slot 1 empty" essential="false" ten="PUZZLE_HOLE1"/> 
+	<moveable id="213" name="Slot 1 empty" essential="false" ten="PUZZLE_HOLE1"/> 
     <moveable id="214" name="Slot 2 empty" essential="false" ten="PUZZLE_HOLE2"/> 
     <moveable id="215" name="Slot 3 empty" essential="false" ten="PUZZLE_HOLE3"/> 
     <moveable id="216" name="Slot 4 empty" essential="false" ten="PUZZLE_HOLE4"/> 
@@ -207,14 +229,14 @@
     <moveable id="229" name="Key 2 (menu item)" hidden="true" />
     <moveable id="230" name="Key 3 (menu item)" hidden="true" />
     <moveable id="231" name="Key 4 (menu item)" hidden="true" />
-    <moveable id="232" name="Lock 1" essential="false" ten="KEY_HOLE1" />
-    <moveable id="233" name="Lock 2" essential="false" ten="KEY_HOLE2" />
-    <moveable id="234" name="Lock 3" essential="false" ten="KEY_HOLE3" />
-    <moveable id="235" name="Lock 4" essential="false" ten="KEY_HOLE4" />
+    <moveable id="232" name="Key hole 1" essential="false" ten="KEY_HOLE1" />
+    <moveable id="233" name="Key hole 2" essential="false" ten="KEY_HOLE2" />
+    <moveable id="234" name="Key hole 3" essential="false" ten="KEY_HOLE3" />
+    <moveable id="235" name="Key hole 4" essential="false" ten="KEY_HOLE4" />
     <moveable id="236" name="Pickup 1 (pickup)" essential="false" ten="PICKUP_ITEM1" />
-    <moveable id="237" name="Pickup 2? [unused] (pickup)" essential="false" ten="PICKUP_ITEM2"/>
+    <moveable id="237" name="Pickup 2 (pickup)" essential="false" ten="PICKUP_ITEM2"/>
     <moveable id="238" name="Pickup 1 (menu item)" hidden="true" />
-    <moveable id="239" name="Pickup 2? [unused] (menu item)" hidden="true" />
+    <moveable id="239" name="Pickup 2 (menu item)" hidden="true" />
     <moveable id="240" name="Infada stone (pickup)" essential="false" ten="PICKUP_ITEM3" />
     <moveable id="241" name="Element 115 (pickup)" essential="false" ten="PICKUP_ITEM4" />
     <moveable id="242" name="Eye of Isis (pickup)" essential="false" ten="PICKUP_ITEM5" />
@@ -223,52 +245,97 @@
     <moveable id="245" name="Element 115 (menu item)" hidden="true" />
     <moveable id="246" name="Eye of Isis (menu item)" hidden="true" />
     <moveable id="247" name="Ora dagger (menu item)" hidden="true" />
-    <moveable id="272" name="Keys (sprites)" />
-    <moveable id="273" name="Keys (sprites)" />
-    <moveable id="276" name="Infada stone" />
-    <moveable id="277" name="Element 115" />
-    <moveable id="278" name="Eye of Isis" />
-    <moveable id="279" name="Ora dagger" />
-    <moveable id="282" name="Fire-breathing dragon statue" essential="false" ten="ANIMATING2" /> 
-    <moveable id="285" name="Unknown visible #285" />
+    <moveable id="248" name="Pistols (sprites) [unused]" />
+    <moveable id="249" name="Shotgun (sprites) [unused]" />
+    <moveable id="250" name="Deserteagle (sprites) [unused]" />
+    <moveable id="251" name="Uzis (sprites) [unused]" />
+    <moveable id="252" name="Harpoon (sprites) [unused]" />
+    <moveable id="253" name="MP5 (sprites) [unused]" />
+    <moveable id="254" name="Rocket launcher (sprites) [unused]" />
+    <moveable id="255" name="Grenade launcher (sprites) [unused]" />
+    <moveable id="256" name="Pistols ammo (sprites) [unused]" />
+    <moveable id="257" name="Shotgun ammo (sprites) [unused]" />
+    <moveable id="258" name="Desert eagle ammo (sprites) [unused]" />
+    <moveable id="259" name="Uzi ammo (sprites) [unused]" />
+    <moveable id="260" name="Harpoon ammo (sprites) [unused]" />
+    <moveable id="261" name="MP5 ammo (sprites) [unused]" />
+    <moveable id="262" name="Rocket launcher (sprites) [unused]" />
+    <moveable id="263" name="Grenade launcher (sprites) [unused]" />
+    <moveable id="264" name="Small medipack (sprites) [unused]" />
+    <moveable id="265" name="Large medipack (sprites) [unused]" />
+    <moveable id="266" name="Flares (sprites) [unused]" />
+    <moveable id="267" name="Savegame crystal (sprites) [unused]" />
+    <moveable id="268" name="Puzzle 1 (sprites) [unused]" />
+    <moveable id="269" name="Puzzle 2 (sprites) [unused]" />
+    <moveable id="270" name="Puzzle 3 (sprites) [unused]" />
+    <moveable id="271" name="Puzzle 4 (sprites) [unused]" />
+    <moveable id="272" name="Keys 1 (sprites) [unused]" />
+    <moveable id="273" name="Keys 2 (sprites) [unused] [unused]" />
+    <moveable id="274" name="Keys 3 (sprites) [unused]" />
+    <moveable id="275" name="Keys 4 (sprites) [unused]" />
+    <moveable id="276" name="Infada stone [unused]" />
+    <moveable id="277" name="Element 115 [unused]" />
+    <moveable id="278" name="Eye of Isis [unused]" />
+    <moveable id="279" name="Ora dagger [unused]" />
+    <moveable id="280" name="Pickup 1 [unused]" />
+    <moveable id="281" name="Pickup 2 [unused]" />
+    <moveable id="282" name="Fire-breathing dragon statue" essential="false" ten="ANIMATING2" />
+    <moveable id="283" name="Tony (fireball)" />
+    <moveable id="284" name="Sphere of doom 3 [unused]" />
+    <moveable id="285" name="Alarm sound" />
+    <moveable id="286" name="Water drip" />
     <moveable id="287" name="Tyrannosaur" essential="false" ten="TYRANNOSAUR"/>
     <moveable id="288" name="Raptor" essential="false" ten="RAPTOR"/>
-    <moveable id="291" name="Laser sweeper" essential="false" ten="MOVING_LASER" />
+	<moveable id="291" name="Laser sweeper" essential="false" ten="MOVING_LASER" />
     <moveable id="292" name="Electrified Field" essential="false" /> 
     <moveable id="295" name="Detonator switch box" essential="false"  />
     <moveable id="300" name="Gunflare / Gunflare (spiky)" hidden="true" ten="GUN_FLASH" />
     <moveable id="301" name="Spiky gunflare for MP5" hidden="true" ten="GUN_FLASH2" />
     <moveable id="304" name="Camera target" essential="false" ten="CAMERA_TARGET" />
     <moveable id="305" name="Waterfall mist" essential="false" ten="WATERFALLMIST" />
-    <moveable id="306" name="Harpoon (single)" hidden="true" ten="HARPOON"/>
-    <moveable id="309" name="Rocket (single)" hidden="true"  ten="ROCKET"/>
-    <moveable id="310" name="Harpoon (single)" hidden="true" ten="HARPOON"/>
-    <moveable id="311" name="Grenade (single)" hidden="true"  ten="GRENADE"/>
-    <moveable id="312" name="Big missile" essential="false" />
-    <moveable id="313" name="Smoke" essential="false" />
-    <moveable id="314" name="Movable Boom" essential="false" />
-    <moveable id="315" name="Lara true appearance" hidden="true" ten="LARA_SKIN"/>
-    <moveable id="317" name="Unknown visible #317" />
+    <moveable id="306" name="Diver harpoon (projectile)" hidden="true" ten="HARPOON"/>
+    <moveable id="307" name="Dragon fire" hidden="true" />
+    <moveable id="308" name="Knife (projectile)" hidden="true" />
+    <moveable id="309" name="Rocket (projectile)" hidden="true"  ten="ROCKET"/>
+    <moveable id="310" name="Harpoon (projectile)" hidden="true" ten="HARPOON"/>
+    <moveable id="311" name="Grenade (projectile)" hidden="true"  ten="GRENADE"/>
+    <moveable id="312" name="Area51 rocket 1" essential="false" />
+    <moveable id="313" name="Area51 rocket 2" essential="false" />
+    <moveable id="314" name="Area51 rocket support" essential="false" />
+    <moveable id="315" name="Lara skin" hidden="true" ten="LARA_SKIN"/>
+    <moveable id="316" name="Lava [unused]" essential="false" />
+    <moveable id="317" name="Lava emitter [unused]" essential="false" />
     <moveable id="318" name="Alarm light" essential="false" ten="COLOR_LIGHT" /> 
-    <moveable id="319" name="Light" essential="false" /> 
-    <moveable id="321" name="Light #2" essential="false" /> 
-    <moveable id="322" name="Pulsating Light" essential="false" ten="PULSE_LIGHT" />
-    <moveable id="324" name="Red Light" essential="false" ten="COLOR_LIGHT" /> 
+    <moveable id="319" name="Electrical light" essential="false" />
+    <moveable id="320" name="On/off light" essential="false" />
+    <moveable id="321" name="Pulse light" essential="false" />
+    <moveable id="322" name="Beacon light" essential="false" ten="PULSE_LIGHT" />
+    <moveable id="323" name="Extra light 2 [unused]" essential="false" ten="COLOR_LIGHT" />
+    <moveable id="324" name="Red Light" essential="false" ten="COLOR_LIGHT" />
     <moveable id="325" name="Green Light" essential="false" ten="COLOR_LIGHT" />
-    <moveable id="326" name="Blue Light" essential="false" ten="COLOR_LIGHT" /> 
-    <moveable id="327" name="Light #3" essential="false" ten="COLOR_LIGHT" /> 
-    <moveable id="328" name="Light #4" essential="false" ten="COLOR_LIGHT" /> 
-    <moveable id="330" name="Flame emitter" essential="false"   ten="FLAME_EMIITER1"  />
+    <moveable id="326" name="Blue Light" essential="false" ten="COLOR_LIGHT" />
+    <moveable id="327" name="Amber light" essential="false" ten="COLOR_LIGHT" />
+    <moveable id="328" name="White light" essential="false" ten="COLOR_LIGHT" />
+    <moveable id="329" name="Flame" essential="false" />
+    <moveable id="330" name="Flame emitter" essential="false"   ten="FLAME_EMIITER1" />
     <moveable id="331" name="Flame emitter 2" essential="false" ten="FLAME_EMIITER2" />
     <moveable id="332" name="Flame emitter 3" essential="false" ten="FLAME_EMIITER3" />
-    <moveable id="333" name="Flame emitter 4" essential="false" />
-    <moveable id="334" name="Smoke #2" essential="false" />
-    <moveable id="335" name="Smoke #3" essential="false" />
-    <moveable id="336" name="Smoke #4" essential="false" />
-    <moveable id="337" name="Greenish Smoke" essential="false" />
-    <moveable id="338" name="Pirahnas" essential="false" /> 
-    <moveable id="339" name="Fish" essential="false" ten="FISH_EMITTER" />
-    <moveable id="347" name="Bat swarm" essential="false" ten="BAT_EMMITER" />
+    <moveable id="333" name="Side flame emitter" essential="false" />
+    <moveable id="334" name="Smoke white emitter" essential="false" />
+    <moveable id="335" name="Smoke black emitter" essential="false" />
+    <moveable id="336" name="Steam emitter" essential="false" />
+    <moveable id="337" name="Ghost gas emitter" essential="false" />
+    <moveable id="338" name="Pirahnas" essential="false" ten="FISH_EMITTER" /> 
+    <moveable id="339" name="Tropical fish" essential="false" ten="FISH_EMITTER" />
+    <moveable id="340" name="PirahnaGFX [unused]" essential="false" />
+    <moveable id="341" name="TropicalfishGFX [unused]" essential="false" />
+    <moveable id="342" name="BatGFX [unused]" essential="false" />
+    <moveable id="343" name="TribebossGFX [unused]" essential="false" />
+    <moveable id="344" name="SpiderGFX [unused]" essential="false" />
+    <moveable id="345" name="Tumbleweed [unused]" essential="false" />
+    <moveable id="346" name="Leaves [unused]" essential="false" />
+    <moveable id="347" name="Bat emitter" essential="false" ten="BAT_EMMITER" />
+    <moveable id="348" name="Bird emitter [unused]" essential="false" />
     <moveable id="349" name="Animating 1" essential="false" ten="ANIMATING5" />
     <moveable id="350" name="Animating 2" essential="false" ten="ANIMATING6" />
     <moveable id="351" name="Animating 3" essential="false" ten="ANIMATING7" />
@@ -276,13 +343,22 @@
     <moveable id="353" name="Animating 5" essential="false" ten="ANIMATING9" />
     <moveable id="354" name="Animating 6" essential="false" ten="ANIMATING10" />
     <moveable id="355" name="Skybox" hidden="true" ten="HORIZON" />
-    <moveable id="357" name="Unknown id #357" />
-    <moveable id="358" name="Unknown id #358" />
+    <moveable id="357" name="Door bell" />
+    <moveable id="358" name="Burglar alarm" />
+    <moveable id="359" name="Mini-copter" />
     <moveable id="360" name="The butler" essential="false" ten="WINSTON" />
     <moveable id="361" name="The butler in military outfit and target" essential="false" ten="MESHSWAP_WINSTON_ARMY_OUTFIT" />
+    <moveable id="363" name="Final level" hidden="true" />
+    <moveable id="364" name="Cutscene shotgun" hidden="true" />
     <moveable id="365" name="Earthquake" essential="false" ten="EARTHQUAKE" />
     <moveable id="366" name="Yellow shell casing" hidden="true" />
     <moveable id="367" name="Red shell casing" hidden="true" />
+    <moveable id="368" name="Clawmute plasma ball" hidden="true" />
+    <moveable id="369" name="Willard plasma ball" hidden="true" />
     <moveable id="370" name="Tinnos light shaft" essential="false" ten="WATERFALL1" />
-    <moveable id="373" name="Electrical switch box" essential="false" ten="SHOOT_SWITCH2" /> 
+    <moveable id="371" name="London boss laser bolt" hidden="true" />
+    <moveable id="372" name="London boss plasma ball" hidden="true" />
+    <moveable id="373" name="Electrical switch box" essential="false" ten="SHOOT_SWITCH2" />
+    <moveable id="374" name="Extrafx 7 [unused]" hidden="true" />
+    <moveable id="375" name="Extrafx 8 [unused]" hidden="true" />
 </moveables>

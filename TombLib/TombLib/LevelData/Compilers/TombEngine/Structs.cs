@@ -55,7 +55,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public bool ClimbSouth;
         public bool ClimbWest;
         public bool ClimbEast;
-       
+        public bool Wall;
         public bool MarkTriggerer;
         public bool MarkBeetle;
     }
@@ -443,6 +443,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(s.Flags.ClimbSouth);
                 writer.Write(s.Flags.ClimbEast);
                 writer.Write(s.Flags.ClimbWest);
+                writer.Write(s.Flags.Wall);
                 writer.Write(s.Flags.MarkTriggerer);
                 writer.Write(s.Flags.MarkBeetle);
             }
