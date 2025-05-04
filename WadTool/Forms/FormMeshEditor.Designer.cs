@@ -738,9 +738,9 @@
             darkLabel11.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             darkLabel11.Location = new System.Drawing.Point(1, 6);
             darkLabel11.Name = "darkLabel11";
-            darkLabel11.Size = new System.Drawing.Size(38, 13);
+            darkLabel11.Size = new System.Drawing.Size(36, 13);
             darkLabel11.TabIndex = 15;
-            darkLabel11.Text = "Index:";
+            darkLabel11.Text = "Bone:";
             // 
             // tabSphere
             // 
