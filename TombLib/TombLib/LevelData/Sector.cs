@@ -538,32 +538,39 @@ namespace TombLib.LevelData
         public void FixHeights(SectorVerticalPart? vertical = null)
         {
             for (SectorEdge i = 0; i < SectorEdge.Count; i++)
+                FixHeight(i, vertical);
+        }
+
+        public void FixHeight(SectorEdge edge, SectorVerticalPart? vertical = null)
+        {
+            if (vertical is null || vertical.Value.IsOnFloor())
             {
-                for (int j = 0; j < ExtraFloorSplits.Count; j++)
+                for (int i = 0; i < ExtraFloorSplits.Count; i++)
                 {
-                    SectorVerticalPart splitVertical = SectorVerticalPartExtensions.GetExtraFloorSplit(j);
-                    SectorVerticalPart lastSectorVertical = j == 0 ? SectorVerticalPart.QA : SectorVerticalPartExtensions.GetExtraFloorSplit(j - 1);
-                    SetHeight(splitVertical, i, Math.Min(GetHeight(splitVertical, i), GetHeight(lastSectorVertical, i)));
+                    SectorVerticalPart splitVertical = SectorVerticalPartExtensions.GetExtraFloorSplit(i);
+                    SectorVerticalPart lastSectorVertical = i == 0 ? SectorVerticalPart.QA : SectorVerticalPartExtensions.GetExtraFloorSplit(i - 1);
+                    SetHeight(splitVertical, edge, Math.Min(GetHeight(splitVertical, edge), GetHeight(lastSectorVertical, edge)));
                 }
 
-                for (int j = 0; j < ExtraCeilingSplits.Count; j++)
+                if (Floor.DiagonalSplit != DiagonalSplit.None)
+                    Floor.SetHeight(edge, Math.Min(Floor.GetHeight(edge), Ceiling.Min));
+                else
+                    Floor.SetHeight(edge, Math.Min(Floor.GetHeight(edge), Ceiling.GetHeight(edge)));
+            }
+
+            if (vertical is null || vertical.Value.IsOnCeiling())
+            {
+                for (int i = 0; i < ExtraCeilingSplits.Count; i++)
                 {
-                    SectorVerticalPart splitVertical = SectorVerticalPartExtensions.GetExtraCeilingSplit(j);
-                    SectorVerticalPart lastSectorVertical = j == 0 ? SectorVerticalPart.WS : SectorVerticalPartExtensions.GetExtraCeilingSplit(j - 1);
-                    SetHeight(splitVertical, i, Math.Max(GetHeight(splitVertical, i), GetHeight(lastSectorVertical, i)));
+                    SectorVerticalPart splitVertical = SectorVerticalPartExtensions.GetExtraCeilingSplit(i);
+                    SectorVerticalPart lastSectorVertical = i == 0 ? SectorVerticalPart.WS : SectorVerticalPartExtensions.GetExtraCeilingSplit(i - 1);
+                    SetHeight(splitVertical, edge, Math.Max(GetHeight(splitVertical, edge), GetHeight(lastSectorVertical, edge)));
                 }
 
-                if (vertical == null || vertical.Value.IsOnFloor())
-                    if (Floor.DiagonalSplit != DiagonalSplit.None)
-                        Floor.SetHeight(i, Math.Min(Floor.GetHeight(i), Ceiling.Min));
-                    else
-                        Floor.SetHeight(i, Math.Min(Floor.GetHeight(i), Ceiling.GetHeight(i)));
-
-                if (vertical == null || vertical.Value.IsOnCeiling())
-                    if (Ceiling.DiagonalSplit != DiagonalSplit.None)
-                        Ceiling.SetHeight(i, Math.Max(Ceiling.GetHeight(i), Floor.Max));
-                    else
-                        Ceiling.SetHeight(i, Math.Max(Ceiling.GetHeight(i), Floor.GetHeight(i)));
+                if (Ceiling.DiagonalSplit != DiagonalSplit.None)
+                    Ceiling.SetHeight(edge, Math.Max(Ceiling.GetHeight(edge), Floor.Max));
+                else
+                    Ceiling.SetHeight(edge, Math.Max(Ceiling.GetHeight(edge), Floor.GetHeight(edge)));
             }
         }
 
