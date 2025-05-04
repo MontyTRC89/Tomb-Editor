@@ -264,7 +264,6 @@ namespace WadTool
             drawGridToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowGrid;
             drawCollisionBoxToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowCollisionBox;
             drawSkinToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowSkin;
-            drawSkinToolStripMenuItem.Visible = _editor.Wad.GameVersion == TRVersion.Game.TombEngine;
 
             if (_editor.Tool.Configuration.AnimationEditor_ChainPlayback)
                 butTransportChained.Image = Properties.Resources.transport_chain_enabled_24;
