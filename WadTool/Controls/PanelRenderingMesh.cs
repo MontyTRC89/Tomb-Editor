@@ -737,12 +737,13 @@ namespace WadTool.Controls
             if (mesh.Meshes.Count == 0)
                 return;
 
-            bool wireframe = WireframeMode || EditingMode == MeshEditingMode.VertexWeights;
+            if (!WireframeMode && EditingMode == MeshEditingMode.VertexWeights)
+                return;
 
             // Next, draw whole textured mesh.
             // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
 
-            if (wireframe)
+            if (WireframeMode)
             {
                 _device.SetRasterizerState(_rasterizerWireframe);
                 _device.SetBlendState(_device.BlendStates.Opaque);
@@ -752,12 +753,12 @@ namespace WadTool.Controls
 
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             effect.Parameters["ModelViewProjection"].SetValue(world.ToSharpDX());
-            effect.Parameters["Color"].SetValue(wireframe ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One);
+            effect.Parameters["Color"].SetValue(WireframeMode ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One);
             effect.Parameters["StaticLighting"].SetValue(showColors);
             effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine);
             effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             effect.Parameters["TextureSampler"].SetResource(_bilinear ? _device.SamplerStates.AnisotropicWrap : _device.SamplerStates.PointClamp);
-            effect.Parameters["AlphaTest"].SetValue(!wireframe && AlphaTest);
+            effect.Parameters["AlphaTest"].SetValue(!WireframeMode && AlphaTest);
             effect.Techniques[0].Passes[0].Apply();
 
             foreach (var mesh_ in mesh.Meshes)
@@ -772,7 +773,7 @@ namespace WadTool.Controls
 
                 foreach (var submesh in mesh_.Submeshes)
                 {
-                    if (!wireframe)
+                    if (!WireframeMode)
                     {
                         if (AlphaTest && submesh.Value.Material.AdditiveBlending)
                             _device.SetBlendState(_device.BlendStates.Additive);
