@@ -38,12 +38,15 @@ namespace WadTool.Controls
                 if (ResetCameraOnMeshChange)
                     ResetCamera();
 
+                if (EditingMode == MeshEditingMode.VertexWeights)
+                    ColorizeVertexWeights();
+
                 CurrentElement = -1;
             }
         }
         private WadMesh _mesh;
 
-        public WadMesh VisibleMesh => (_previewTimer.Enabled && _previewMesh != null) ? _previewMesh : _mesh;
+        public WadMesh VisibleMesh => ((_editingMode == MeshEditingMode.VertexWeights || _previewTimer.Enabled) && _previewMesh != null) ? _previewMesh : _mesh;
         private WadMesh _previewMesh;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -57,6 +60,9 @@ namespace WadTool.Controls
 
                 if (value != MeshEditingMode.VertexEffects)
                     StopPreview();
+
+                if (value == MeshEditingMode.VertexWeights)
+                    ColorizeVertexWeights();
 
                 CurrentElement = -1;
                 _editingMode = value;
@@ -104,6 +110,9 @@ namespace WadTool.Controls
                 }
 
                 _tool.MeshEditorElementChanged(_currentElement);
+
+                if (EditingMode == MeshEditingMode.VertexWeights && value != -1)
+                    ColorizeVertexWeights();
             }
         }
         private int _currentElement = -1;
@@ -401,7 +410,7 @@ namespace WadTool.Controls
 
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
                 _device.SetBlendState(_device.BlendStates.AlphaBlend);
-                _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
+                _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
                 _device.SetVertexBuffer(_littleSphere.VertexBuffer);
                 _device.SetVertexInputLayout(_littleSphere.InputLayout);
@@ -454,25 +463,9 @@ namespace WadTool.Controls
 
                             case MeshEditingMode.VertexWeights:
                                 if (_mesh.HasWeights)
-                                {
-                                    var color = Vector4.UnitW;
-
-                                    for (int w = 0; w < 4; w++)
-                                    {
-                                        int boneIndex = _mesh.VertexWeights[i].Index[w];
-                                        float weight = _mesh.VertexWeights[i].Weight[w];
-
-                                        if (boneIndex >= 0 && boneIndex < _maxBones && weight > 0)
-                                        {
-                                            var boneColor = _boneColors[boneIndex];
-                                            color += boneColor * weight;
-                                        }
-                                    }
-
-                                    solidEffect.Parameters["Color"].SetValue(color);
-                                }
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 1, 1));
                                 else
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.0f));
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 1));
 
                                 break;
 
@@ -565,14 +558,17 @@ namespace WadTool.Controls
                     }
                 }
             }
-            else if (EditingMode == MeshEditingMode.FaceAttributes)
+            
+            if (EditingMode == MeshEditingMode.FaceAttributes ||
+                EditingMode == MeshEditingMode.VertexWeights)
             {
                 // Accumulate and draw extra face info (for now, only shininess values)
 
-                if ((DrawExtraInfo || _highlightFace) && _mesh.Polys.Count > 0)
+                if ((DrawExtraInfo || _highlightFace || EditingMode == MeshEditingMode.VertexWeights) && _mesh.Polys.Count > 0)
                 {
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
                     _device.SetBlendState(_device.BlendStates.Opaque);
+                    _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
                     _device.SetVertexBuffer(_faceVertexBuffer);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _faceVertexBuffer));
@@ -592,23 +588,29 @@ namespace WadTool.Controls
                         for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
                             for (int v = 0; v < 3; v++)
                             {
+                                int index = 0;
                                 Vector3 pos = Vector3.Zero;
                                 Vector4 color = Vector4.Zero;
 
-                                if (DrawExtraInfo || i == _currentElement)
+                                if (DrawExtraInfo || i == _currentElement || EditingMode == MeshEditingMode.VertexWeights)
                                 {
                                     switch (vn)
                                     {
-                                        case 0: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
-                                        case 1: pos = _mesh.VertexPositions[_mesh.Polys[i].Index1]; break;
-                                        case 2: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
+                                        case 0: index = _mesh.Polys[i].Index0; break;
+                                        case 1: index = _mesh.Polys[i].Index1; break;
+                                        case 2: index = _mesh.Polys[i].Index2; break;
 
-                                        case 3: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
-                                        case 4: pos = _mesh.VertexPositions[_mesh.Polys[i].Index3]; break;
-                                        case 5: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                        case 3: index = _mesh.Polys[i].Index2; break;
+                                        case 4: index = _mesh.Polys[i].Index3; break;
+                                        case 5: index = _mesh.Polys[i].Index0; break;
                                     }
 
-                                    color = DrawExtraInfo ? new Vector4(1, 1 - strength, 1 - strength, 1) : new Vector4(1, 0, 0, 1);
+                                    pos = _mesh.VertexPositions[index];
+
+                                    if (EditingMode == MeshEditingMode.FaceAttributes)
+                                        color = DrawExtraInfo ? new Vector4(1, 1 - strength, 1 - strength, 1) : new Vector4(1, 0, 0, 1);
+                                    else if (_previewMesh != null && _mesh.HasWeights)
+                                        color = new Vector4(_previewMesh.VertexColors[index], 1.0f);
                                 }
 
                                 vtxs[vertexCount] = new SolidVertex(pos) { Color = color };
@@ -623,7 +625,7 @@ namespace WadTool.Controls
                     solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                     solidEffect.Techniques[0].Passes[0].Apply();
 
-                    if (!DrawExtraInfo)
+                    if (!DrawExtraInfo && EditingMode != MeshEditingMode.VertexWeights)
                     {
                         _device.SetRasterizerState(_rasterizerWireframe);
                         _device.SetBlendState(_device.BlendStates.Opaque);
@@ -633,7 +635,6 @@ namespace WadTool.Controls
                 }
 
                 // Draw model last in face editing only if wireframe mode is set or extra mode is unset
-
                 if (WireframeMode || !DrawExtraInfo)
                     DrawModel(mesh, world * viewProjection);
             }
@@ -677,6 +678,7 @@ namespace WadTool.Controls
 
             if (textToDraw.Count > 0)
             {
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
                 _device.SetBlendState(_device.BlendStates.AlphaBlend);
                 SwapChain.RenderText(textToDraw);
             }
@@ -735,10 +737,12 @@ namespace WadTool.Controls
             if (mesh.Meshes.Count == 0)
                 return;
 
+            bool wireframe = WireframeMode || EditingMode == MeshEditingMode.VertexWeights;
+
             // Next, draw whole textured mesh.
             // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
 
-            if (WireframeMode)
+            if (wireframe)
             {
                 _device.SetRasterizerState(_rasterizerWireframe);
                 _device.SetBlendState(_device.BlendStates.Opaque);
@@ -748,12 +752,12 @@ namespace WadTool.Controls
 
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             effect.Parameters["ModelViewProjection"].SetValue(world.ToSharpDX());
-            effect.Parameters["Color"].SetValue(WireframeMode ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One);
+            effect.Parameters["Color"].SetValue(wireframe ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One);
             effect.Parameters["StaticLighting"].SetValue(showColors);
             effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine);
             effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             effect.Parameters["TextureSampler"].SetResource(_bilinear ? _device.SamplerStates.AnisotropicWrap : _device.SamplerStates.PointClamp);
-            effect.Parameters["AlphaTest"].SetValue(!WireframeMode && AlphaTest);
+            effect.Parameters["AlphaTest"].SetValue(!wireframe && AlphaTest);
             effect.Techniques[0].Passes[0].Apply();
 
             foreach (var mesh_ in mesh.Meshes)
@@ -768,7 +772,7 @@ namespace WadTool.Controls
 
                 foreach (var submesh in mesh_.Submeshes)
                 {
-                    if (!WireframeMode)
+                    if (!wireframe)
                     {
                         if (AlphaTest && submesh.Value.Material.AdditiveBlending)
                             _device.SetBlendState(_device.BlendStates.Additive);
@@ -1076,6 +1080,37 @@ namespace WadTool.Controls
                     _previewMesh.VertexColors.Add(newCol);
                 else
                     _previewMesh.VertexColors[i] = newCol;
+            }
+        }
+
+        private void ColorizeVertexWeights()
+        {
+            if (_mesh == null || _mesh.VertexPositions.Count == 0 || !_mesh.HasWeights)
+                return;
+
+            if (_previewMesh == null)
+                _previewMesh = _mesh.Clone();
+
+            for (int i = 0; i < _mesh.VertexPositions.Count; i++)
+            {
+                var color = Vector4.UnitW;
+
+                for (int w = 0; w < 4; w++)
+                {
+                    int boneIndex = _mesh.VertexWeights[i].Index[w];
+                    float weight = _mesh.VertexWeights[i].Weight[w];
+
+                    if (boneIndex >= 0 && boneIndex < _maxBones && weight > 0)
+                    {
+                        var boneColor = _boneColors[boneIndex];
+                        color += boneColor * weight;
+                    }
+                }
+
+                if (!_previewMesh.HasColors)
+                    _previewMesh.VertexColors.Add(color.To3());
+                else
+                    _previewMesh.VertexColors[i] = color.To3();
             }
         }
 
