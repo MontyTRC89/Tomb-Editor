@@ -643,6 +643,7 @@
             lblSkin.Size = new System.Drawing.Size(199, 13);
             lblSkin.TabIndex = 106;
             lblSkin.Text = "Skinned mesh:";
+            lblSkin.Click += butSetSkin_Click;
             // 
             // butClearSkin
             // 
