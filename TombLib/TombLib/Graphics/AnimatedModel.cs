@@ -253,7 +253,9 @@ namespace TombLib.Graphics
 
             var dxMatrices = model.AnimationTransforms.Select(m =>
             {
-                Matrix4x4.Invert(model.BindPoseTransforms[model.AnimationTransforms.IndexOf(m)], out Matrix4x4 invBindPose);
+                if (!Matrix4x4.Invert(model.BindPoseTransforms[model.AnimationTransforms.IndexOf(m)], out Matrix4x4 invBindPose))
+                    return Matrix4x4.Identity;
+
                 return Matrix4x4.Transpose(invBindPose * m);
             }).ToArray();
 

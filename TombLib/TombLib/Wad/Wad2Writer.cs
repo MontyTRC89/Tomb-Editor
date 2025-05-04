@@ -183,7 +183,7 @@ namespace TombLib.Wad
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexWeights, () =>
                 {
                     foreach (var weight in mesh.VertexWeights)
-
+                    {
                         chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexWeight, () =>
                         {
                             for (int w = 0; w < weight.Index.Length; w++)
@@ -192,6 +192,7 @@ namespace TombLib.Wad
                                 chunkIO.Raw.Write(weight.Weight[w]);
                             }
                         });
+                    }
                 });
 
                 // Write vertex attributes
