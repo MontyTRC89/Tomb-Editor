@@ -482,6 +482,18 @@ namespace WadTool
             if (mesh == null)
                 return;
 
+            if (_moveable.Meshes.All(m => !m.Hidden))
+            {
+                if (DarkMessageBox.Show(this, "Do you want to hide all non-skinned meshes for this model?" + "\n" +
+                                              "You can unhide them later in the mesh editor.",
+                                        "Hide unskinned meshes",
+                                        MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    _moveable.Meshes.ForEach(m => m.Hidden = true);
+                }
+            }
+
             _moveable.Skin = mesh;
             UpdateUI();
         }
