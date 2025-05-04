@@ -119,7 +119,7 @@ namespace TombLib.Wad
             // If skin is the same as in previous call, immediately return same skinned model.
             // Otherwise construct skinned model again.
 
-            if (_skin != null && _skin == skin && _skinnedModel.Skin == skin.Skin)
+            if (_skin != null && _skinnedModel != null && _skinnedModel.Version == skin.Version)
                 return _skinnedModel;
 
             _skin = skin;
@@ -151,6 +151,7 @@ namespace TombLib.Wad
             else
                 _skinnedModel.Animations.Add(new WadAnimation());
 
+            _skinnedModel.Version = skin.Version;
             return _skinnedModel;
         }
     }

@@ -703,10 +703,13 @@ namespace WadTool
                     mov.Meshes[_currentNode.MeshIndex] =
                     mov.Bones[_currentNode.MeshIndex].Mesh = _currentNode.WadMesh = panelMesh.Mesh;
                 }
+
+                mov.Version = DataVersion.GetNext();
             }
-            else if (obj is WadStatic)
+            else if (obj is WadStatic stat)
             {
-                (obj as WadStatic).Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                stat.Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                stat.Version = DataVersion.GetNext();
             }
         }
 
