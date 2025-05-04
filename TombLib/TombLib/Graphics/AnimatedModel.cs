@@ -240,6 +240,47 @@ namespace TombLib.Graphics
             return model.Bones[0];
         }
 
+        public void RenderSkin(GraphicsDevice device, Effect effect, SharpDX.Matrix world, AnimatedModel animSource = null)
+        {
+            if (Skin == null)
+                return;
+
+            device.SetVertexBuffer(0, Skin.VertexBuffer);
+            device.SetIndexBuffer(Skin.IndexBuffer, true);
+            device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, Skin.VertexBuffer));
+
+            var model = animSource == null ? this : animSource;
+
+            var dxMatrices = model.AnimationTransforms.Select(m =>
+            {
+                Matrix4x4.Invert(model.BindPoseTransforms[model.AnimationTransforms.IndexOf(m)], out Matrix4x4 invBindPose);
+                return Matrix4x4.Transpose(invBindPose * m);
+            }).ToArray();
+
+            effect.Parameters["Skinned"].SetValue(true);
+            effect.Parameters["Bones"].SetValue(dxMatrices);
+
+            effect.Parameters["ModelViewProjection"].SetValue(world);
+            effect.Techniques[0].Passes[0].Apply();
+
+            foreach (var submesh in Skin.Submeshes)
+            {
+                if (submesh.Value.Material.AdditiveBlending)
+                    device.SetBlendState(device.BlendStates.Additive);
+                else
+                    device.SetBlendState(device.BlendStates.Opaque);
+
+                if (submesh.Value.Material.DoubleSided)
+                    device.SetRasterizerState(device.RasterizerStates.CullNone);
+                else
+                    device.SetRasterizerState(device.RasterizerStates.CullBack);
+
+                device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+            }
+
+            effect.Parameters["Skinned"].SetValue(false);
+        }
+
         public List<int[]> GetBonePairs(bool flipZ = false, int symmetryMargin = 16)
         {
             var sigList = new List<BoneSignature>();

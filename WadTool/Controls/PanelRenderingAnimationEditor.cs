@@ -235,41 +235,11 @@ namespace WadTool.Controls
 
                 if (showSkin)
                 {
-                    Skin.Skin.UpdateBuffers(Camera.GetPosition());
-
-                    _device.SetVertexBuffer(0, Skin.Skin.VertexBuffer);
-                    _device.SetIndexBuffer(Skin.Skin.IndexBuffer, true);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, Skin.Skin.VertexBuffer));
-
-                    var dxMatrices = matrices.Select(m =>
-                    {
-                        Matrix4x4.Invert(_model.BindPoseTransforms[matrices.IndexOf(m)], out Matrix4x4 invBindPose);
-                        return Matrix4x4.Transpose(invBindPose * m);
-                    }).ToArray();
-
-                    effect.Parameters["Skinned"].SetValue(true);
                     effect.Parameters["AlphaTest"].SetValue(true);
-                    effect.Parameters["Bones"].SetValue(dxMatrices);
-                    effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                     effect.Parameters["Color"].SetValue(Vector4.One);
-                    effect.Techniques[0].Passes[0].Apply();
 
-                    foreach (var submesh in Skin.Skin.Submeshes)
-                    {
-                        if (submesh.Value.Material.AdditiveBlending)
-                            _device.SetBlendState(_device.BlendStates.Additive);
-                        else
-                            _device.SetBlendState(_device.BlendStates.Opaque);
-
-                        if (submesh.Value.Material.DoubleSided)
-                            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
-                        else
-                            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                    }
-
-                    effect.Parameters["Skinned"].SetValue(false);
+                    Skin.Skin.UpdateBuffers(Camera.GetPosition());
+                    Skin.RenderSkin(_device, effect, viewProjection.ToSharpDX(), _model);
                 }
 
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);

@@ -1505,8 +1505,14 @@ namespace TombEditor.Controls.Panel3D
         {
             if (moveablesToDraw.Count == 0)
                 return;
-            var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
+
             var camPos = Camera.GetPosition();
+            var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
+
+            skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
+            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
+            skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
 
             var groups = moveablesToDraw.GroupBy(m => m.WadObjectId);
             foreach (var group in groups)
@@ -1531,10 +1537,37 @@ namespace TombEditor.Controls.Panel3D
                     }
                 }
 
+                if (_editor.Level.IsTombEngine)
+                {
+                    foreach (var instance in group)
+                    {
+                        if (!disableSelection && _highlightedObjects.Contains(instance)) // Selection
+                            skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                        else
+                        {
+                            if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
+                            {
+                                skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
+                                skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight * instance.Color));
+                            }
+                            else
+                            {
+                                skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
+                                skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
+                            }
+                        }
+
+                        skin.RenderSkin(_legacyDevice, skinnedModelEffect, (instance.ObjectMatrix * _viewProjection).ToSharpDX(), model);
+                    }
+                }
+
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
                     var mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.InputLayout == null || mesh.IndexBuffer == null)
+                        continue;
+
+                    if (_editor.Level.IsTombEngine && skin.Skin != null && mesh.Hidden)
                         continue;
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -1570,10 +1603,6 @@ namespace TombEditor.Controls.Panel3D
 
                         var world = model.AnimationTransforms[i] * instance.ObjectMatrix;
                         skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * _viewProjection).ToSharpDX());
-                        skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-                        skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
-                        skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                        skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
                         skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
                         foreach (var submesh in mesh.Submeshes)
