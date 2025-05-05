@@ -68,7 +68,7 @@ namespace TombLib.GeometryIO.Importers
             TraverseBoneNodes(scene.RootNode, boneNames, orderedBones);
 
             // Sort bones by name
-            orderedBones.OrderBy(m => m, new CustomComparer<string>(NaturalComparer.Do)).ToList();
+            orderedBones = orderedBones.OrderBy(m => m, new CustomComparer<string>(NaturalComparer.Do)).ToList();
             return orderedBones;
         }
 
