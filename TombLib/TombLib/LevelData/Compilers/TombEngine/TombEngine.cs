@@ -133,6 +133,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(_meshes.Count);
                 foreach (var mesh in _meshes)
                 {
+                    writer.Write(mesh.Hidden);
                     writer.Write((byte)mesh.LightingType);
 
                     writer.Write( mesh.Sphere.Center.X);
@@ -148,7 +149,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     foreach (var e in mesh.Vertices)
                         writer.Write(new Vector3(e.Glow, e.Move, e.Locked ? 0 : 1));
                     foreach (var b in mesh.Vertices)
-                        writer.Write(b.Bone);
+                        for (int w = 0; w < b.BoneIndex.Length; w++)
+                            writer.Write((byte)b.BoneIndex[w]);
+                    foreach (var b in mesh.Vertices)
+                        for (int w = 0; w < b.BoneWeight.Length; w++)
+                            writer.Write((byte)(b.BoneWeight[w] * byte.MaxValue));
 
                     writer.Write(mesh.Buckets.Count);
                     foreach (var bucket in mesh.Buckets.Values)

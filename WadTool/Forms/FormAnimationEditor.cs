@@ -263,6 +263,7 @@ namespace WadTool
             drawGizmoToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowGizmo;
             drawGridToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowGrid;
             drawCollisionBoxToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowCollisionBox;
+            drawSkinToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowSkin;
 
             if (_editor.Tool.Configuration.AnimationEditor_ChainPlayback)
                 butTransportChained.Image = Properties.Resources.transport_chain_enabled_24;
@@ -2112,6 +2113,12 @@ namespace WadTool
         private void drawGizmoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _editor.Tool.Configuration.AnimationEditor_ShowGizmo = !_editor.Tool.Configuration.AnimationEditor_ShowGizmo;
+            panelRendering.Invalidate();
+        }
+
+        private void drawSkinToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.Tool.Configuration.AnimationEditor_ShowSkin = !_editor.Tool.Configuration.AnimationEditor_ShowSkin;
             panelRendering.Invalidate();
         }
 

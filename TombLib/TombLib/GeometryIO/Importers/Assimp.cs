@@ -67,6 +67,8 @@ namespace TombLib.GeometryIO.Importers
             // Traverse hierarchy and add only nodes that are bones
             TraverseBoneNodes(scene.RootNode, boneNames, orderedBones);
 
+            // Sort bones by name
+            orderedBones = orderedBones.OrderBy(m => m, new CustomComparer<string>(NaturalComparer.Do)).ToList();
             return orderedBones;
         }
 
@@ -295,6 +297,9 @@ namespace TombLib.GeometryIO.Importers
                                 newMesh.Weights[weight.VertexID].Add(new KeyValuePair<int, float>(boneIndex, weight.Weight));
                             }
                         }
+
+                        for (int i = 0; i < newMesh.Weights.Count; i++)
+                            newMesh.Weights[i] = newMesh.Weights[i].OrderByDescending(kvp => kvp.Key).ToList();
                     }
 
                     // Add polygons
