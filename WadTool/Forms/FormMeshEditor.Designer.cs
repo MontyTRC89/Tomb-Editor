@@ -158,6 +158,7 @@
             lstMeshes.Location = new System.Drawing.Point(1, 55);
             lstMeshes.MaxDragChange = 20;
             lstMeshes.Name = "lstMeshes";
+            lstMeshes.ShowIcons = true;
             lstMeshes.Size = new System.Drawing.Size(257, 509);
             lstMeshes.TabIndex = 1;
             lstMeshes.Text = "darkTreeView1";

@@ -439,6 +439,7 @@ namespace WadTool
                         var wadMesh = moveable.Value.Skin;
                         var node = new DarkTreeNode(wadMesh.Name);
                         node.Tag = new MeshTreeNode(moveable.Key, moveable.Value.Meshes.Count(), wadMesh);
+                        node.Icon = Properties.Resources.skinned_16;
                         list.Add(node);
                     }
 
