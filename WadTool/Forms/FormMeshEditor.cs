@@ -565,11 +565,21 @@ namespace WadTool
 
         private void UpdateStatusLabel()
         {
-            var prompt = NoMesh() ? string.Empty : panelMesh.Mesh.VertexPositions.Count + " vertices, " +
-                                                   panelMesh.Mesh.Polys.Count + " face" +
-                                                  (panelMesh.Mesh.Polys.Count > 1 ? "s" : "") + ", " +
-                                                   panelMesh.Mesh.TextureAreas.Count + " texture info" +
-                                                  (panelMesh.Mesh.TextureAreas.Count > 1 ? "s" : "") + ". ";
+            var prompt = string.Empty;
+            
+            if (!NoMesh())
+            {
+                prompt += panelMesh.Mesh.VertexPositions.Count + " vertices, " +
+                          panelMesh.Mesh.Polys.Count + " face" + (panelMesh.Mesh.Polys.Count > 1 ? "s" : "");
+                
+                if (panelMesh.Mesh.Polys.Count < 1024)
+                {
+                    int textureCount = panelMesh.Mesh.TextureAreas.Count;
+                    prompt += ", " + textureCount + " texture info" + (textureCount > 1 ? "s" : "");
+                }
+
+                prompt += ". ";
+            }
 
             if (panelTextureMap.SelectedTexture != TextureArea.None)
             {

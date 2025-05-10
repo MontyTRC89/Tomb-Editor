@@ -93,8 +93,7 @@ namespace TombLib.Wad
         public bool HasAttributes => VertexAttributes.Count == VertexPositions.Count;
         public bool HasWeights => VertexWeights.Count == VertexPositions.Count;
 
-        public List<TextureArea> TextureAreas => Polys.GroupBy(p => p.Texture.GetCanonicalTexture(p.IsTriangle))
-                                                       .Select(g => g.Key).Distinct().ToList();
+        public List<TextureArea> TextureAreas => Polys.AsParallel().Select(p => p.Texture.GetCanonicalTexture(p.IsTriangle)).Distinct().ToList();
 
         public static readonly TextureArea EmptyTextureArea = new TextureArea()
         {
