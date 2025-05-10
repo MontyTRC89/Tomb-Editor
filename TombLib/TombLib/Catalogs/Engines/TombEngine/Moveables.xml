@@ -681,10 +681,7 @@
     <moveable id="901" name="SEQUENCE_SWITCH3" />
     <moveable id="902" name="STEEL_DOOR" />
     <moveable id="903" name="GOD_HEAD" />
-	<moveable id="904" name="BREAKABLE_WALL1" />
-	<moveable id="905" name="BREAKABLE_WALL2" />
-	<moveable id="906" name="BREAKABLE_WALL3" />
-	<moveable id="907" name="BREAKABLE_WALL4" />
+	<moveable id="904" name="BREAKABLE_WALL" />
     <moveable id="950" name="PISTOLS_ITEM" />
     <moveable id="951" name="PISTOLS_AMMO_ITEM" />
     <moveable id="952" name="UZI_ITEM" />
