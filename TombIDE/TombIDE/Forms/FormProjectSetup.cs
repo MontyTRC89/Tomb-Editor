@@ -512,17 +512,20 @@ namespace TombIDE
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
 			string sharedAudioArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TR4-TEN Shared Audio.zip");
 			string libsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TEN External DLLs.zip");
+			string resourcesArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TEN Resources.zip");
 			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TEN.zip");
 
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
 			using (var sharedAudioArchive = new ZipArchive(File.OpenRead(sharedAudioArchivePath)))
 			using (var libsArchive = new ZipArchive(File.OpenRead(libsArchivePath)))
+			using (var resourcesArchive = new ZipArchive(File.OpenRead(resourcesArchivePath)))
 			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
 			{
 				var allFiles = new List<ZipArchiveEntry>();
 				allFiles.AddRange(engineArchive.Entries);
 				allFiles.AddRange(sharedAudioArchive.Entries);
 				allFiles.AddRange(libsArchive.Entries);
+				allFiles.AddRange(resourcesArchive.Entries);
 				allFiles.AddRange(soundsArchive.Entries);
 
 				ExtractEntries(allFiles, targetProject);

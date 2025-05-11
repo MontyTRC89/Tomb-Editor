@@ -226,8 +226,10 @@ namespace TombIDE.ProjectMaster
 			{
 				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
 				string libsPath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TEN External DLLs.zip");
+				string resourcesPath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TEN Resources.zip");
 				using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
 				using var libsArchive = new ZipArchive(File.OpenRead(libsPath));
+				using var resourcesArchive = new ZipArchive(File.OpenRead(resourcesPath));
 
 				var bin = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/Bin")).ToList();
 				bin.AddRange(libsArchive.Entries);
@@ -255,13 +257,16 @@ namespace TombIDE.ProjectMaster
 				systemStrings?.ExtractToFile(Path.Combine(_ide.Project.DirectoryPath, systemStrings.FullName), true);
 
 				// Version-specific file updates.
-                if (settingsUpdate16)
-                {
-                    ZipArchiveEntry settings = engineArchive.Entries.FirstOrDefault(entry => entry.Name.Equals("Settings.lua"));
+				if (settingsUpdate16)
+				{
+					ZipArchiveEntry settings = engineArchive.Entries.FirstOrDefault(entry => entry.Name.Equals("Settings.lua"));
 					settings?.ExtractToFile(Path.Combine(_ide.Project.DirectoryPath, settings.FullName), true);
-                }
+				}
 
-                UpdateVersionLabel();
+				// Extract resources, but don't overwrite
+				ExtractEntries(resourcesArchive.Entries, _ide.Project, false);
+
+				UpdateVersionLabel();
 
 				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
@@ -329,7 +334,7 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private static void ExtractEntries(List<ZipArchiveEntry> entries, IGameProject targetProject)
+		private static void ExtractEntries(IEnumerable<ZipArchiveEntry> entries, IGameProject targetProject, bool overwrite = true)
 		{
 			foreach (ZipArchiveEntry entry in entries)
 			{
@@ -341,7 +346,14 @@ namespace TombIDE.ProjectMaster
 						Directory.CreateDirectory(dirPath);
 				}
 				else
-					entry.ExtractToFile(Path.Combine(targetProject.DirectoryPath, entry.FullName), true);
+				{
+					string targetPath = Path.Combine(targetProject.DirectoryPath, entry.FullName);
+
+					if (overwrite)
+						entry.ExtractToFile(targetPath, true);
+					else if (!File.Exists(targetPath))
+						entry.ExtractToFile(targetPath, false);
+				}
 			}
 		}
 

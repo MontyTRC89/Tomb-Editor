@@ -186,9 +186,10 @@ namespace TombIDE.ProjectMaster.Forms
 
 			string[] importantFolders = new string[]
 			{
-				Path.Combine(engineDirectory, "Bin"),
 				Path.Combine(engineDirectory, "Audio"),
+				Path.Combine(engineDirectory, "Bin"),
 				Path.Combine(engineDirectory, "Data"),
+				Path.Combine(engineDirectory, "FMV"),
 				Path.Combine(engineDirectory, "Screens"),
 				Path.Combine(engineDirectory, "Scripts"),
 				Path.Combine(engineDirectory, "Shaders"),
