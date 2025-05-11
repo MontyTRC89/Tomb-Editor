@@ -225,9 +225,12 @@ namespace TombIDE.ProjectMaster
 			try
 			{
 				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
+				string libsPath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TEN External DLLs.zip");
 				using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
+				using var libsArchive = new ZipArchive(File.OpenRead(libsPath));
 
 				var bin = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/Bin")).ToList();
+				bin.AddRange(libsArchive.Entries);
 				ExtractEntries(bin, _ide.Project);
 
 				// Delete the "Engine/Shaders/Bin" directory before extracting new shaders
