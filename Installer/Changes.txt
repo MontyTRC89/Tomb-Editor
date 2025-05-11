@@ -13,6 +13,9 @@ Tomb Editor:
  
 WadTool:
  * Added support for importing models with embedded textures.
+
+TombIDE:
+ * Fixed random app crash caused by cloud drives locking temporary files.
  
 TEN nodes:
  * Added nodes for video playback.
