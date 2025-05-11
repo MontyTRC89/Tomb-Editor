@@ -1,0 +1,35 @@
+{
+  "PARAM_ACTOR_SPEECH": "[Level] Parameters= PARAM_ACTOR_SPEECH, SpeechId, SpeechFlags (SPCF_...), Parameter, FrameRate, SpeechSlot, HeadSlotMesh, FirstMeshIndex, SpeechMeshAmount, CommandArray",
+
+  "PARAM_BIG_NUMBERS": "[Level] Parameters= PARAM_BIG_NUMBERS, Many Numbers separeted by commas",
+
+  "PARAM_CIRCLE": "[Level] Parameters= PARAM_CIRCLE, IdParamList, xCenter, yCenter, Radius",
+
+  "PARAM_COLOR_ITEM": "[Level] Parameters= PARAM_COLOR_ITEM, IdParamList, ColorType (COLTYPE_...), ItemIndex, Index1ColorRGB, Index2ColorRGB, SpeedChange",
+
+  "PARAM_INPUT_BOX": "[Level] Parameters= PARAM_INPUT_BOX, InputBoxId, BckImageId, WFontId, MaxChars, SfxSound, Flags (RIB_...), ExtraParam",
+
+  "PARAM_LIGHTNING": "[Level] Parameters= PARAM_LIGHTNING, IdParamList, Lightning flags (LGTN_...), SourcePosItem, TargetPosItem, IdColorRGB, Intensity, SoundEffect, Size, ParticleDurate, IntervalTime, Alfa, Beta",
+
+  "PARAM_MOVE_ITEM": "[Level] Parameters= PARAM_MOVE_ITEM, IdParamList, Flags (FMOV_...), IndexItem, Direction (DIR_...), Distance, Speed, MovingSound, FinalSound, Extra",
+
+  "PARAM_PRINT_TEXT": "[Level] Parameters= PARAM_PRINT_TEXT, IdPrintText, Color (CL_...), FontType (FT_...), BlinkTime, DurateTime, X_Position, Y_Position",
+
+  "PARAM_QUADRILATERAL": "[Level] Parameters= PARAM_QUADRILATERAL, IdParamList, Xa, Ya, Xb, Yb, Xc, Yc, Xd, Yd",
+
+  "PARAM_RECT": "[Level] Parameters= PARAM_RECT, RectId, XOrigin, YOrigin, Width, Height, ForeColor, BackColor",
+
+  "PARAM_ROTATE_ITEM": "[Level] Parameters= PARAM_ROTATE_ITEM, IdParamList, FlagsRotation (FROT_...), ItemIndex, DirHRotation (ROTH_...), HRotationAngle, SpeedHRotation, DirVRotation (ROTV_...), VRotationAngle, SpeedVRotation, MovingSound, FinalSound",
+
+  "PARAM_SCALE_ITEM": "[Level] Parameters= PARAM_SCALE_ITEM, IdScaling, ItemIndex, Flags Scaling (FSCA_...), BeginSizePercentage, FinalSizePercentage, PercentageSpeed",
+
+  "PARAM_SET_CAMERA": "[Level] Parameters= PARAM_SET_CAMERA, IdSetCamera, Flags (FSCAM_...), DistanceCam, VOrientCam, HOrientCam, SpeedCamera",
+
+  "PARAM_SHOW_SPRITE": "[Level] Parameters= PARAM_SHOW_SPRITE, IdParamShowSprite, Flags Show Sprites (FSS_...), OriginX, OriginY, Width, Height, SlotSprite, SpriteIndex, IdColorRGB, GridX, GridY, Extra Value",
+
+  "PARAM_SWAP_ANIMATIONS": "[Level] Parameters= PARAM_SWAP_ANIMATIONS, ASwapId, SourceFirstAnim, TargetFirstAnim, NumberOfAnimations",
+
+  "PARAM_TRIANGLE": "[Level] Parameters= PARAM_TRIANGLE, IdParamList, Xa, Ya, Xb, Yb, Xc, Yc",
+
+  "PARAM_WTEXT": "[Level] Parameters= PARAM_WTEXT, IdParameter, Flags (WTF_...), WindowsFontId, TimeDurate, Left, Top, Right, Bottom"
+}

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>13</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Hints\CustHints.json" />
+    <None Remove="Hints\NewCommandHints.json" />
+    <None Remove="Hints\OldCommandHints.json" />
+    <None Remove="Hints\ParamHints.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Hints\CustHints.json" />
+    <EmbeddedResource Include="Hints\NewCommandHints.json" />
+    <EmbeddedResource Include="Hints\OldCommandHints.json" />
+    <EmbeddedResource Include="Hints\ParamHints.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="CoreCLR-NCalc" Version="3.1.253" />
+    <PackageReference Include="ThomasLevesque.WeakEvent" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ScriptLib.Core\ScriptLib.Core.csproj" />
+  </ItemGroup>
+
+</Project>

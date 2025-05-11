@@ -1,0 +1,83 @@
+{
+  "AnimatingMIP": "[Level] AnimatingMIP= {SLOT (1-16)}, {DISTANCE (Sectors)}",
+
+  "ColAddHorizon": "[Level] ColAddHorizon= ENABLED / DISABLED",
+
+  "CutPC": "[PCExtensions] Cut= .TR4 ; Default value",
+
+  "CutPSX": "[PSXExtensions] Cut= .CUT ; Default value",
+
+  "DemoDisc": "[Options] DemoDisc= ENABLED / DISABLED",
+
+  "Examine": "[Level] Examine= {TYPE (1-3)}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}",
+
+  "File": "[Language] File= {UNIQUE_ID}, {FILE_NAME}.TXT",
+
+  "FlyCheat": "[Options] FlyCheat= ENABLED / DISABLED",
+
+  "FMVPC": "[PCExtensions] FMV= .BIK ; Default value",
+
+  "FMVPSX": "[PSXExtensions] FMV= .FMV ; Default value",
+
+  "Fog": "[Level] Fog= {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}",
+
+  "Horizon": "[Level] Horizon= ENABLED / DISABLED",
+
+  "InputTimeout": "[Options] InputTimeout= {NUM_OF_FRAMES}",
+
+  "Key": "[Level] Key= {1-12}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}",
+
+  "KeyCombo": "[Level] KeyCombo= {1-8}, {1-2}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}",
+
+  "Layer1": "[Level] Layer1= {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}, {SPEED}",
+
+  "Layer2": "[Level] Layer2= {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}, {SPEED}",
+
+  "Legend": "[Level] Legend= {MESSAGE_STRING}",
+
+  "LensFlare": "[Level] LensFlare= {GLOBAL_COORD_X}, {GLOBAL_COORD_Y}, {GLOBAL_COORD_Z}, {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}",
+
+  "LevelLevel": "[Level] Level= {LEVEL_PATH}, {SOUND_ID}",
+
+  "LevelPC": "[PCExtensions] Level= .TR4 ; Default value",
+
+  "LevelPSX": "[PSXExtensions] Level= .PSX ; Default value",
+
+  "Lightning": "[Level] Lightning= ENABLED / DISABLED",
+
+  "LoadCamera": "[Level] LoadCamera= {SOURCE_X_POS}, {SOURCE_Y_POS}, {SOURCE_Z_POS}, {TARGET_X_POS}, {TARGET_Y_POS}, {TARGET_Z_POS}, {ROOM_NUMBER}",
+
+  "LoadSave": "[Options] LoadSave= ENABLED / DISABLED",
+
+  "Mirror": "[Level] Mirror= {ROOM_NUMBER}, {ROOM_ORIGIN}",
+
+  "Name": "[Level] Name= {NAME_STRING}",
+
+  "Pickup": "[Level] Pickup= {1-4}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}",
+
+  "PickupCombo": "[Level] PickupCombo= {1-4}, {1-2}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}",
+
+  "PlayAnyLevel": "[Options] PlayAnyLevel= ENABLED / DISABLED",
+
+  "Puzzle": "[Level] Puzzle= {1-12}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}",
+
+  "PuzzleCombo": "[Level] PuzzleCombo= {1-8}, {1-2}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}",
+
+  "RemoveAmulet": "[Level] RemoveAmulet= ENABLED / DISABLED",
+
+  "ResetHUB": "[Level] ResetHUB= {LEVEL_ID}",
+
+  "ResidentCut": "[Level] ResidentCut= {TRIGGER_ID}, {CUTSCENE_ID}",
+
+  "Security": "[Options] Security= ??? ; Not used ?",
+
+  "Timer": "[Level] Timer= ENABLED / DISABLED",
+
+  "Title": "[Options] Title= ENABLED / DISABLED",
+
+  "Train": "[Level] Train= ENABLED / DISABLED",
+
+  "UVRotate": "[Level] UVrotate= {SPEED}",
+
+  "YoungLara": "[Level] YoungLara= ENABLED / DISABLED"
+}

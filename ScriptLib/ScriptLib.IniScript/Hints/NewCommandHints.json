@@ -1,0 +1,117 @@
+{
+  "#DEFINE": "[Any] #DEFINE {CONSTANT_NAME} {VALUE}",
+
+  "#FIRST_ID": "[Level] #FIRST_ID {COMMAND_NAME}={FIRST_ID}",
+
+  "#INCLUDE": "[Any] #INCLUDE \"{FILE_NAME}.TXT\"",
+
+  "AddEffect": "[Level] AddEffect= {ID}, {Effect Type (ADD_...)}, {Effect Flag (FADD_...)}, {Joint Type (JOINT_...)}, {ORIGIN_X_DISTANCE}, {ORIGIN_Y_DISTANCE}, {ORIGIN_Z_DISTANCE}, {EMIT_DURATION}, {PAUSE_DURATION}, {Extra Params (*Array*)}",
+
+  "Animation": "[Level] Animation= AnimIndex, (KEY1_...), (KEY2_...), (FAN_...) flags, (ENV_...) Environment, Distance for Env, Extra, StateId (STATE_...) or (-)AnimationIndex (*Array*)",
+
+  "AnimationSlot": "[Level] AnimationSlot= Slot, AnimSlotFlags (ASF_...), AnimIndex, (KEY1_...), (KEY2_...), (FAN_...) flags, (ENV_...) Environment, Distance for Env, Extra, StateId (STATE_...) or (-)AnimationIndex (*Array*)",
+
+  "AssignSlot": "[Level] AssignSlot= MyUsedSlot, OBJ_Type",
+
+  "ColorRGB": "[Level] ColorRGB= IdColor, Red, Green, Blue",
+
+  "CombineItems": "[Level] CombineItems= FirstItem (slot), SecondItem (slot), FinalItem (slot)",
+
+  "CRS": "[Options] CRS= ENABLED / DISABLED",
+
+  "Customize": "[Level] Customize= {TYPE (CUST_...)}, {Arguments (*Array*)}",
+
+  "CutScene": "[Level] CutScene= ENABLED",
+
+  "Damage": "[Level] Damage= Flags (DMG_...), SecondsForDeath, SecondsForBarRestore, BarColor, BarName, BlinkPercentage",
+
+  "DefaultWindowsFont": "[Title] DefaultWindowsFont= IdWindowsFont, FLAGS (DWF_...), LineSpacing, MainMenuOffsets, NewGameTitle, LoadGameTitle, NewGameList, LoadGameList, OptionSettings, OptionCmdList, PauseScreen, StatList, InventoryItemName, ExamineText",
+
+  "Demo": "[Level] Demo= DemoFlags (DEMF_...), Parameter, InfoText , DemoLegendText, WaitingTime, DemoIndex (*Array*)",
+
+  "Detector": "[Level] Detector= Flags (DTF_...), MetricScale, MetersOfRange, Target Items (*Array*)",
+
+  "Diagnostic": "[Options] Diagnostic= ENABLED / DISABLED",
+
+  "DiagnosticType": "[Options] DiagnosticType= DiagnosticType (DGX_...), Extra Dgx flags (EDGX_...)",
+
+  "Diary": "[Level] Diary= Id Diary, SlotDiaryItem, LaraDiaryFlags (LDF_...), BackGroundImageID, Default PageLayout (PL_...), FirstString, TitleWFontId, CommonTextWFontId",
+
+  "Elevator": "[Level] Elevator= ElevatorIndex, ClickFloorDistance, NumberOfFloors, Elevator flags (EF_...), FirstDoorIndex, InnerKeyPadIndex, Speed, Frame items (*Array*)",
+
+  "Enemy": "[Level] Enemy= Slot, HP (vitality), (NEF_...) flags, TombFlags (TCF_...), (EXTRA_...) flags, Damage1, Damage2, Damage3",
+
+  "Equipment": "[Level] Equipment= SLOT item, Amount",
+
+  "FMVLevel": "[Level] FMV= NumberFmv, EnableEscape",
+
+  "FogRange": "[Level] FogRange= StartLimitDistanceFog, EndLimitDistanceFog",
+
+  "ForceBumpMapping": "[Options] ForceBumpMapping= ENABLED / DISABLED",
+
+  "ForceVolumetricFX": "[Level] ForceVolumetricFX= ENABLED / DISABLED",
+
+  "GlobalTrigger": "[Level] GlobalTrigger= IdGlobalTrigger, Flags Global Trigger (FGT_...), Global Trigger (GT_...), Parameter, IdConditionTriggerGroup, IdPerformTriggerGroup, IdOnFalseTriggerGroup",
+
+  "Image": "[Level] Image= IdImageCommand, IdImageFile, ImageFlags (IF_...), EffectTime, AudioTrack, XPosition, YPosition, SizeX, SizeY",
+
+  "ImportFile": "[Options] ImportFile= IdImport, PathFile, FileType (FTYPE_...), ImportType (IMPORT_...)",
+
+  "ItemGroup": "[Level] ItemGroup= IdGroup, FirstIndexItem, {Other indices for items (*Array*)}",
+
+  "KeyPad": "[Level] KeyPad= AtStartAnimation, FrameStartPopUp, AtEndAnimation, ClickSound",
+
+  "LaraStartPos": "[Level] LaraStartPos= RoomOfLSP, OcbOfLSP",
+
+  "LevelFarView": "[Level] LevelFarView= NumberOfBlocks",
+
+  "LogItem": "[Options] LogItem= FlagsLogItem (FLI_...), IndexOfItem",
+
+  "MirrorEffect": "[Level] MirrorEffect= InFrontRoom, HiddenRoom, MirrorType (MIR_...), {Animating array + (FMIR_...) flags (*Array*)}",
+
+  "MultEnvCondition": "[Level] MultEnvCondition= IdMultCondition, (ENV_...) condition, DistanceForEnv, Extra field, array of tripled of {(ENV_...) Condition, DistanceForEnv, Extra field}",
+
+  "NewSoundEngine": "[Options] NewSoundEngine= ENABLED / DISABLED",
+
+  "Organizer": "[Level] Organizer= IdOrganizer, Flags Organizer (FO_...), Parameter, FirstTime, PerformFirstIdTriggerGroup, SecondTime, PerformSecondIdTriggerGroup, {Time and TriggerGroup (*Array*)}",
+
+  "Parameters": "[Level] Parameters= {TYPE (PARAM_...)}, {PARAM_LIST_ID}, {Parameters (*Array*)}",
+
+  "Plugin": "[Options] Plugin= PluginId, PluginName, MainPluginSettings (MPS_...), {DisableFeature (*Array*)}",
+
+  "PreserveInventory": "[Level] PreserveInventory= ENABLED / DISABLED",
+
+  "Rain": "[Level] Rain= (RAIN_...) constant",
+
+  "SavegamePanel": "[Level] SavegamePanel= SavegamePanelFlags (SPF_...), BackGroundImageId, NumberOfSave, NumberOfVisibleSave, SavegamePanelLayout (SPL_...), InfoFormatString, IdListWindowsFont, IdInfoWindowsFont, InTitleWindowsFont",
+
+  "Settings": "[Options] Settings= (SET_...) constants",
+
+  "ShowLaraInTitle": "[Options] ShowLaraInTitle= ENABLED / DISABLED",
+
+  "Snow": "[Level] Snow= (SNOW_...) constant",
+
+  "SoundSettings": "[Options] SoundSettings= Sound Quality (SQ_...), MusicVolume, SoundEffectVolume",
+
+  "StandBy": "[Level] StandBy= IdStandBY, Type StandBy (TSB_...), WaitTime, Flags StandBy (FSB_...), Text, NumTexts, AudioTrack, VAngle, RotateSpeed, Distance, IdTriggerGroupBegin, IdTriggerGroupEnd",
+
+  "StaticMIP": "[Level] StaticMIP= MainStaticSlot, BStaticLimit, BStaticSlot, CStaticLimit, CStaticSlot",
+
+  "Switch": "[Level] Switch= SwitchId, VariablePlaceFolder, FlagsSwitch (SWT_...), {Trigger Group Indices (*Array*)}",
+
+  "TestPosition": "[Level] TestPosition= IdTestPosition, Flags (TPOS_...), Slot Moveable, XDistanceMin, XDistanceMax, YDistanceMin, YDistanceMax, ZDistanceMin, ZDistanceMax,  HOrientDiffMin, HOrientDiffMax, VOrientDiffMin, VOrientDiffMax, ROrientDiffMin, ROrientDiffMax",
+
+  "TextFormat": "[Level] TextFormat= Color (CL_...), FormatFlags (FT_...), BlinkTime, SizeCharacterMenu (SC_...)",
+
+  "TextureSequence": "[Level] TextureSequence= IdTexSeq, FramePerSec, (SEQ_...) flags, {Tex Indices (*Array*)}",
+
+  "TriggerGroup": "[Level] TriggerGroup= IdGroup, ExportValue1 + (TGROUP_...) flags, ExportValue2, ExportValue3, {Other Values 1/2/3 of exported triggers or conditions (*Array*)}",
+
+  "Turbo": "[Level] Turbo= Flags (TRB_...), FPStoKeep",
+
+  "WindowsFont": "[Level] WindowsFont= IdWindowFont, WindowFontName, WindowsFontFlags (WFF_...), SizeFont, ColorRbgId, ShadowColorRgbId",
+
+  "WindowTitle": "[Level] WindowTitle= NameOfCurrentLevel",
+
+  "WorldFarView": "[Options] WorldFarView= MaxSectorDistance"
+}
