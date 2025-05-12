@@ -256,7 +256,7 @@ namespace TombEditor.Forms
 			newLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			newLevelToolStripMenuItem.Image = Properties.Resources.general_create_new_16;
 			newLevelToolStripMenuItem.Name = "newLevelToolStripMenuItem";
-			newLevelToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			newLevelToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			newLevelToolStripMenuItem.Tag = "NewLevel";
 			newLevelToolStripMenuItem.Text = "NewLevel";
 			// 
@@ -266,7 +266,7 @@ namespace TombEditor.Forms
 			openLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			openLevelToolStripMenuItem.Image = Properties.Resources.general_Open_16;
 			openLevelToolStripMenuItem.Name = "openLevelToolStripMenuItem";
-			openLevelToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			openLevelToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			openLevelToolStripMenuItem.Tag = "OpenLevel";
 			openLevelToolStripMenuItem.Text = "OpenLevel";
 			// 
@@ -275,7 +275,7 @@ namespace TombEditor.Forms
 			openRecentToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			openRecentToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			openRecentToolStripMenuItem.Name = "openRecentToolStripMenuItem";
-			openRecentToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			openRecentToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			openRecentToolStripMenuItem.Text = "Open recent";
 			// 
 			// saveLevelToolStripMenuItem
@@ -284,7 +284,7 @@ namespace TombEditor.Forms
 			saveLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			saveLevelToolStripMenuItem.Image = Properties.Resources.general_Save_16;
 			saveLevelToolStripMenuItem.Name = "saveLevelToolStripMenuItem";
-			saveLevelToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			saveLevelToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			saveLevelToolStripMenuItem.Tag = "SaveLevel";
 			saveLevelToolStripMenuItem.Text = "SaveLevel";
 			// 
@@ -294,7 +294,7 @@ namespace TombEditor.Forms
 			saveAsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			saveAsToolStripMenuItem.Image = Properties.Resources.general_Save_As_16;
 			saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			saveAsToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			saveAsToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			saveAsToolStripMenuItem.Tag = "SaveLevelAs";
 			saveAsToolStripMenuItem.Text = "SaveLevelAs";
 			// 
@@ -304,7 +304,7 @@ namespace TombEditor.Forms
 			toolStripMenuSeparator1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripMenuSeparator1.Margin = new Padding(0, 0, 0, 1);
 			toolStripMenuSeparator1.Name = "toolStripMenuSeparator1";
-			toolStripMenuSeparator1.Size = new System.Drawing.Size(220, 6);
+			toolStripMenuSeparator1.Size = new System.Drawing.Size(218, 6);
 			// 
 			// importTRLEPRJToolStripMenuItem
 			// 
@@ -312,7 +312,7 @@ namespace TombEditor.Forms
 			importTRLEPRJToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			importTRLEPRJToolStripMenuItem.Image = Properties.Resources.general_Import_16;
 			importTRLEPRJToolStripMenuItem.Name = "importTRLEPRJToolStripMenuItem";
-			importTRLEPRJToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			importTRLEPRJToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			importTRLEPRJToolStripMenuItem.Tag = "ImportPrj";
 			importTRLEPRJToolStripMenuItem.Text = "ImportPrj";
 			// 
@@ -322,7 +322,7 @@ namespace TombEditor.Forms
 			convertToTENToolstripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			convertToTENToolstripMenuItem.Image = Properties.Resources.actions_TEN_16;
 			convertToTENToolstripMenuItem.Name = "convertToTENToolstripMenuItem";
-			convertToTENToolstripMenuItem.Size = new System.Drawing.Size(223, 22);
+			convertToTENToolstripMenuItem.Size = new System.Drawing.Size(221, 22);
 			convertToTENToolstripMenuItem.Tag = "ConvertLevelToTombEngine";
 			convertToTENToolstripMenuItem.Text = "ConvertLevelToTombEngine";
 			// 
@@ -331,7 +331,7 @@ namespace TombEditor.Forms
 			toolStripMenuSeparator2.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripMenuSeparator2.Margin = new Padding(0, 0, 0, 1);
 			toolStripMenuSeparator2.Name = "toolStripMenuSeparator2";
-			toolStripMenuSeparator2.Size = new System.Drawing.Size(220, 6);
+			toolStripMenuSeparator2.Size = new System.Drawing.Size(218, 6);
 			// 
 			// buildLevelPlayToolStripMenuItem
 			// 
@@ -339,7 +339,7 @@ namespace TombEditor.Forms
 			buildLevelPlayToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			buildLevelPlayToolStripMenuItem.Image = Properties.Resources.actions_play_16;
 			buildLevelPlayToolStripMenuItem.Name = "buildLevelPlayToolStripMenuItem";
-			buildLevelPlayToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			buildLevelPlayToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			buildLevelPlayToolStripMenuItem.Tag = "BuildAndPlay";
 			buildLevelPlayToolStripMenuItem.Text = "BuildAndPlay";
 			// 
@@ -349,7 +349,7 @@ namespace TombEditor.Forms
 			buildLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			buildLevelToolStripMenuItem.Image = Properties.Resources.actions_compile_16;
 			buildLevelToolStripMenuItem.Name = "buildLevelToolStripMenuItem";
-			buildLevelToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			buildLevelToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			buildLevelToolStripMenuItem.Tag = "BuildLevel";
 			buildLevelToolStripMenuItem.Text = "BuildLevel";
 			// 
@@ -358,14 +358,14 @@ namespace TombEditor.Forms
 			toolStripMenuSeparator3.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripMenuSeparator3.Margin = new Padding(0, 0, 0, 1);
 			toolStripMenuSeparator3.Name = "toolStripMenuSeparator3";
-			toolStripMenuSeparator3.Size = new System.Drawing.Size(220, 6);
+			toolStripMenuSeparator3.Size = new System.Drawing.Size(218, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			exitToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			exitToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			exitToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
 			exitToolStripMenuItem.Tag = "QuitEditor";
 			exitToolStripMenuItem.Text = "QuitEditor";
 			// 
@@ -998,7 +998,7 @@ namespace TombEditor.Forms
 			addWadToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			addWadToolStripMenuItem.Image = Properties.Resources.general_plus_math_16;
 			addWadToolStripMenuItem.Name = "addWadToolStripMenuItem";
-			addWadToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			addWadToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			addWadToolStripMenuItem.Tag = "AddWad";
 			addWadToolStripMenuItem.Text = "AddWad";
 			// 
@@ -1009,7 +1009,7 @@ namespace TombEditor.Forms
 			removeWadsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
 			removeWadsToolStripMenuItem.Image = Properties.Resources.general_trash_16;
 			removeWadsToolStripMenuItem.Name = "removeWadsToolStripMenuItem";
-			removeWadsToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			removeWadsToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			removeWadsToolStripMenuItem.Tag = "RemoveWads";
 			removeWadsToolStripMenuItem.Text = "RemoveWads";
 			// 
@@ -1019,7 +1019,7 @@ namespace TombEditor.Forms
 			reloadWadsToolStripMenuItem.Enabled = false;
 			reloadWadsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
 			reloadWadsToolStripMenuItem.Name = "reloadWadsToolStripMenuItem";
-			reloadWadsToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			reloadWadsToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			reloadWadsToolStripMenuItem.Tag = "ReloadWads";
 			reloadWadsToolStripMenuItem.Text = "ReloadWads";
 			// 
@@ -1029,7 +1029,7 @@ namespace TombEditor.Forms
 			reloadSoundsToolStripMenuItem.Enabled = false;
 			reloadSoundsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
 			reloadSoundsToolStripMenuItem.Name = "reloadSoundsToolStripMenuItem";
-			reloadSoundsToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			reloadSoundsToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			reloadSoundsToolStripMenuItem.Tag = "ReloadSounds";
 			reloadSoundsToolStripMenuItem.Text = "ReloadSounds";
 			// 
@@ -1039,7 +1039,7 @@ namespace TombEditor.Forms
 			toolStripMenuSeparator6.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripMenuSeparator6.Margin = new Padding(0, 0, 0, 1);
 			toolStripMenuSeparator6.Name = "toolStripMenuSeparator6";
-			toolStripMenuSeparator6.Size = new System.Drawing.Size(257, 6);
+			toolStripMenuSeparator6.Size = new System.Drawing.Size(256, 6);
 			// 
 			// toolStripMenuItem8
 			// 
@@ -1047,7 +1047,7 @@ namespace TombEditor.Forms
 			toolStripMenuItem8.DropDownItems.AddRange(new ToolStripItem[] { addCameraToolStripMenuItem, addFlybyCameraToolStripMenuItem, addSpriteToolStripMenuItem, addSinkToolStripMenuItem, addSoundSourceToolStripMenuItem, addImportedGeometryToolStripMenuItem, addGhostBlockToolStripMenuItem, addMemoToolStripMenuItem });
 			toolStripMenuItem8.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripMenuItem8.Name = "toolStripMenuItem8";
-			toolStripMenuItem8.Size = new System.Drawing.Size(260, 22);
+			toolStripMenuItem8.Size = new System.Drawing.Size(259, 22);
 			toolStripMenuItem8.Text = "Add item";
 			// 
 			// addCameraToolStripMenuItem
@@ -1135,7 +1135,7 @@ namespace TombEditor.Forms
 			addPortalToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			addPortalToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			addPortalToolStripMenuItem.Name = "addPortalToolStripMenuItem";
-			addPortalToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			addPortalToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			addPortalToolStripMenuItem.Tag = "AddPortal";
 			addPortalToolStripMenuItem.Text = "AddPortal";
 			// 
@@ -1144,7 +1144,7 @@ namespace TombEditor.Forms
 			addTriggerToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			addTriggerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			addTriggerToolStripMenuItem.Name = "addTriggerToolStripMenuItem";
-			addTriggerToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			addTriggerToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			addTriggerToolStripMenuItem.Tag = "AddTrigger";
 			addTriggerToolStripMenuItem.Text = "AddTrigger";
 			// 
@@ -1154,7 +1154,7 @@ namespace TombEditor.Forms
 			addBoxVolumeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			addBoxVolumeToolStripMenuItem.Image = Properties.Resources.objects_volume_box_16;
 			addBoxVolumeToolStripMenuItem.Name = "addBoxVolumeToolStripMenuItem";
-			addBoxVolumeToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			addBoxVolumeToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			addBoxVolumeToolStripMenuItem.Tag = "AddBoxVolume";
 			addBoxVolumeToolStripMenuItem.Text = "AddBoxVolume";
 			addBoxVolumeToolStripMenuItem.Visible = false;
@@ -1165,7 +1165,7 @@ namespace TombEditor.Forms
 			addSphereVolumeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			addSphereVolumeToolStripMenuItem.Image = Properties.Resources.objects_volume_sphere_16;
 			addSphereVolumeToolStripMenuItem.Name = "addSphereVolumeToolStripMenuItem";
-			addSphereVolumeToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			addSphereVolumeToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			addSphereVolumeToolStripMenuItem.Tag = "AddSphereVolume";
 			addSphereVolumeToolStripMenuItem.Text = "AddSphereVolume";
 			addSphereVolumeToolStripMenuItem.Visible = false;
@@ -1176,7 +1176,7 @@ namespace TombEditor.Forms
 			toolStripSeparator7.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripSeparator7.Margin = new Padding(0, 0, 0, 1);
 			toolStripSeparator7.Name = "toolStripSeparator7";
-			toolStripSeparator7.Size = new System.Drawing.Size(257, 6);
+			toolStripSeparator7.Size = new System.Drawing.Size(256, 6);
 			// 
 			// deleteAllToolStripMenuItem
 			// 
@@ -1184,7 +1184,7 @@ namespace TombEditor.Forms
 			deleteAllToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { deleteAllLightsToolStripMenuItem, toolStripMenuItem2, deleteAllTriggersToolStripMenuItem, deleteMissingObjectsToolStripMenuItem });
 			deleteAllToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			deleteAllToolStripMenuItem.Name = "deleteAllToolStripMenuItem";
-			deleteAllToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			deleteAllToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			deleteAllToolStripMenuItem.Text = "Delete...";
 			// 
 			// deleteAllLightsToolStripMenuItem
@@ -1229,7 +1229,7 @@ namespace TombEditor.Forms
 			toolStripMenuSeparator8.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripMenuSeparator8.Margin = new Padding(0, 0, 0, 1);
 			toolStripMenuSeparator8.Name = "toolStripMenuSeparator8";
-			toolStripMenuSeparator8.Size = new System.Drawing.Size(257, 6);
+			toolStripMenuSeparator8.Size = new System.Drawing.Size(256, 6);
 			toolStripMenuSeparator8.Visible = false;
 			// 
 			// findObjectToolStripMenuItem
@@ -1238,7 +1238,7 @@ namespace TombEditor.Forms
 			findObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			findObjectToolStripMenuItem.Image = Properties.Resources.general_target_16;
 			findObjectToolStripMenuItem.Name = "findObjectToolStripMenuItem";
-			findObjectToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			findObjectToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			findObjectToolStripMenuItem.Tag = "LocateItem";
 			findObjectToolStripMenuItem.Text = "LocateItem";
 			// 
@@ -1247,7 +1247,7 @@ namespace TombEditor.Forms
 			moveLaraToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			moveLaraToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			moveLaraToolStripMenuItem.Name = "moveLaraToolStripMenuItem";
-			moveLaraToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			moveLaraToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			moveLaraToolStripMenuItem.Tag = "MoveLara";
 			moveLaraToolStripMenuItem.Text = "MoveLara";
 			// 
@@ -1256,7 +1256,7 @@ namespace TombEditor.Forms
 			selectItemsInSelectedAreaToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			selectItemsInSelectedAreaToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			selectItemsInSelectedAreaToolStripMenuItem.Name = "selectItemsInSelectedAreaToolStripMenuItem";
-			selectItemsInSelectedAreaToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			selectItemsInSelectedAreaToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			selectItemsInSelectedAreaToolStripMenuItem.Tag = "SelectAllObjectsInArea";
 			selectItemsInSelectedAreaToolStripMenuItem.Text = "SelectAllObjectsInArea";
 			// 
@@ -1266,7 +1266,7 @@ namespace TombEditor.Forms
 			selectFloorBelowObjectToolStripMenuItem.Enabled = false;
 			selectFloorBelowObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
 			selectFloorBelowObjectToolStripMenuItem.Name = "selectFloorBelowObjectToolStripMenuItem";
-			selectFloorBelowObjectToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			selectFloorBelowObjectToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			selectFloorBelowObjectToolStripMenuItem.Tag = "SelectFloorBelowObject";
 			selectFloorBelowObjectToolStripMenuItem.Text = "SelectFloorBelowObject";
 			// 
@@ -1276,7 +1276,7 @@ namespace TombEditor.Forms
 			splitSectorObjectOnSelectionToolStripMenuItem.Enabled = false;
 			splitSectorObjectOnSelectionToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
 			splitSectorObjectOnSelectionToolStripMenuItem.Name = "splitSectorObjectOnSelectionToolStripMenuItem";
-			splitSectorObjectOnSelectionToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			splitSectorObjectOnSelectionToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			splitSectorObjectOnSelectionToolStripMenuItem.Tag = "SplitSectorObjectOnSelection";
 			splitSectorObjectOnSelectionToolStripMenuItem.Text = "SplitSectorObjectOnSelection";
 			// 
@@ -1286,14 +1286,14 @@ namespace TombEditor.Forms
 			toolStripSeparator3.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripSeparator3.Margin = new Padding(0, 0, 0, 1);
 			toolStripSeparator3.Name = "toolStripSeparator3";
-			toolStripSeparator3.Size = new System.Drawing.Size(257, 6);
+			toolStripSeparator3.Size = new System.Drawing.Size(256, 6);
 			// 
 			// setStaticMeshColorToRoomLightToolStripMenuItem
 			// 
 			setStaticMeshColorToRoomLightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			setStaticMeshColorToRoomLightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			setStaticMeshColorToRoomLightToolStripMenuItem.Name = "setStaticMeshColorToRoomLightToolStripMenuItem";
-			setStaticMeshColorToRoomLightToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			setStaticMeshColorToRoomLightToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			setStaticMeshColorToRoomLightToolStripMenuItem.Tag = "SetStaticMeshesColorToRoomLight";
 			setStaticMeshColorToRoomLightToolStripMenuItem.Text = "SetStaticMeshesColorToRoomLight";
 			// 
@@ -1302,7 +1302,7 @@ namespace TombEditor.Forms
 			toolStripMenuItem10.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			toolStripMenuItem10.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripMenuItem10.Name = "toolStripMenuItem10";
-			toolStripMenuItem10.Size = new System.Drawing.Size(260, 22);
+			toolStripMenuItem10.Size = new System.Drawing.Size(259, 22);
 			toolStripMenuItem10.Tag = "SetStaticMeshesColor";
 			toolStripMenuItem10.Text = "SetStaticMeshesColor";
 			// 
@@ -1312,14 +1312,14 @@ namespace TombEditor.Forms
 			toolStripSeparator9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripSeparator9.Margin = new Padding(0, 0, 0, 1);
 			toolStripSeparator9.Name = "toolStripSeparator9";
-			toolStripSeparator9.Size = new System.Drawing.Size(257, 6);
+			toolStripSeparator9.Size = new System.Drawing.Size(256, 6);
 			// 
 			// makeQuickItemGroupToolStripMenuItem
 			// 
 			makeQuickItemGroupToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			makeQuickItemGroupToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			makeQuickItemGroupToolStripMenuItem.Name = "makeQuickItemGroupToolStripMenuItem";
-			makeQuickItemGroupToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			makeQuickItemGroupToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			makeQuickItemGroupToolStripMenuItem.Tag = "MakeQuickItemGroup";
 			makeQuickItemGroupToolStripMenuItem.Text = "MakeQuickItemGroup";
 			// 
@@ -1328,7 +1328,7 @@ namespace TombEditor.Forms
 			getObjectStatisticsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			getObjectStatisticsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			getObjectStatisticsToolStripMenuItem.Name = "getObjectStatisticsToolStripMenuItem";
-			getObjectStatisticsToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			getObjectStatisticsToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			getObjectStatisticsToolStripMenuItem.Tag = "GetObjectStatistics";
 			getObjectStatisticsToolStripMenuItem.Text = "GetObjectStatistics";
 			// 
@@ -1337,7 +1337,7 @@ namespace TombEditor.Forms
 			generateObjectNamesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			generateObjectNamesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			generateObjectNamesToolStripMenuItem.Name = "generateObjectNamesToolStripMenuItem";
-			generateObjectNamesToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+			generateObjectNamesToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			generateObjectNamesToolStripMenuItem.Tag = "GenerateObjectNames";
 			generateObjectNamesToolStripMenuItem.Text = "GenerateObjectNames";
 			// 
@@ -1512,7 +1512,7 @@ namespace TombEditor.Forms
 			transformToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { increaseStepHeightToolStripMenuItem, decreaseStepHeightToolStripMenuItem, toolStripSeparator10, smoothRandomFloorUpToolStripMenuItem, smoothRandomFloorDownToolStripMenuItem, smoothRandomCeilingUpToolStripMenuItem, smoothRandomCeilingDownToolStripMenuItem, smoothFloorTerrainToolStripMenuItem, smoothCeilingTerrainToolStripMenuItem, toolStripMenuSeparator11, sharpRandomFloorUpToolStripMenuItem, sharpRandomFloorDownToolStripMenuItem, sharpRandomCeilingUpToolStripMenuItem, sharpRandomCeilingDownToolStripMenuItem, toolStripMenuSeparator12, averageFloorToolStripMenuItem, averageCeilingToolStripMenuItem, flattenFloorToolStripMenuItem, flattenCeilingToolStripMenuItem, resetGeometryToolStripMenuItem, toolStripMenuSeparator13, gridWallsIn3ToolStripMenuItem, gridWallsIn5ToolStripMenuItem, gridWallsIn3SquaresToolStripMenuItem, gridWallsIn5SquaresToolStripMenuItem });
 			transformToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			transformToolStripMenuItem.Name = "transformToolStripMenuItem";
-			transformToolStripMenuItem.Size = new System.Drawing.Size(73, 25);
+			transformToolStripMenuItem.Size = new System.Drawing.Size(72, 25);
 			transformToolStripMenuItem.Text = "Transform";
 			// 
 			// increaseStepHeightToolStripMenuItem
@@ -1584,7 +1584,8 @@ namespace TombEditor.Forms
 			// smoothFloorTerrainToolStripMenuItem
 			// 
 			smoothFloorTerrainToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			smoothFloorTerrainToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			smoothFloorTerrainToolStripMenuItem.Enabled = false;
+			smoothFloorTerrainToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
 			smoothFloorTerrainToolStripMenuItem.Name = "smoothFloorTerrainToolStripMenuItem";
 			smoothFloorTerrainToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
 			smoothFloorTerrainToolStripMenuItem.Tag = "SmoothFloorTerrain";
@@ -1593,7 +1594,8 @@ namespace TombEditor.Forms
 			// smoothCeilingTerrainToolStripMenuItem
 			// 
 			smoothCeilingTerrainToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			smoothCeilingTerrainToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			smoothCeilingTerrainToolStripMenuItem.Enabled = false;
+			smoothCeilingTerrainToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
 			smoothCeilingTerrainToolStripMenuItem.Name = "smoothCeilingTerrainToolStripMenuItem";
 			smoothCeilingTerrainToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
 			smoothCeilingTerrainToolStripMenuItem.Tag = "SmoothCeilingTerrain";
@@ -1756,7 +1758,7 @@ namespace TombEditor.Forms
 			toolStripMenuItem4.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItem5, editOptionsToolStripMenuItem, keyboardLayoutToolStripMenuItem, toolStripSeparator5, toolStripMenuItem7, toolStripMenuItem6 });
 			toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			toolStripMenuItem4.Name = "toolStripMenuItem4";
-			toolStripMenuItem4.Size = new System.Drawing.Size(47, 25);
+			toolStripMenuItem4.Size = new System.Drawing.Size(46, 25);
 			toolStripMenuItem4.Text = "Tools";
 			// 
 			// toolStripMenuItem5
@@ -1977,7 +1979,7 @@ namespace TombEditor.Forms
 			aboutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			aboutToolStripMenuItem.Image = Properties.Resources.general_AboutIcon_16;
 			aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			aboutToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+			aboutToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			aboutToolStripMenuItem.Text = "About Tomb Editor...";
 			aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
 			// 
