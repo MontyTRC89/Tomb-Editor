@@ -283,6 +283,9 @@ namespace TombLib.Wad
             else
                 pages = tempTextures.Values.ToList();
 
+            // Clean up incorrect textures
+            pages = pages.Where(p => p.Image.Width > 0 && p.Image.Height > 0).ToList();
+
             var name = string.IsNullOrEmpty(mesh.Name) ? "UntitledMesh" : mesh.Name;
 
             // Create the materials

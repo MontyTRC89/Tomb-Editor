@@ -13,6 +13,7 @@ Tomb Editor:
  
 WadTool:
  * Added support for importing models with embedded textures.
+ * Fixed crashes when exporting meshes with incorrectly sized textures.
 
 TombIDE:
  * Fixed random app crash caused by cloud drives locking temporary files.
