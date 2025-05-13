@@ -545,8 +545,9 @@ namespace TombLib.Wad
 
                             var value = v.ElementAt(w).Value;
 
-                            // Discard weights below threshold, they may be added by smooth pass.
-                            if (value < 0.001f)
+                            // Discard weights below threshold, which may have been added by smooth pass.
+                            // Threshold is approximately equal to lowest possible 8-bit value (1 / 255).
+                            if (value < 0.004f)
                                 continue;
 
                             weight.Index[addedCount] = v.ElementAt(w).Key;
