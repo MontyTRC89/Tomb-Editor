@@ -1,10 +1,11 @@
-Version 1.8.2
-=============
+Version 1.9
+===========
 
 Tomb Editor:
  * Added "Smooth floor terrain" and "Smooth ceiling terrain" transform options.
  * Added streaming video animated texture type for TEN.
  * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
+ * Added skinned mesh preview if it is available.
  * Handle portal crossing geometry rendering and texturing correctly.
  * Increased node editor performance and response time.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
@@ -12,6 +13,7 @@ Tomb Editor:
  * Fixed nodes randomly not saving parameters.
  
 WadTool:
+ * Added skinned mesh import option in skeleton editor and vertex weight painting mode in mesh editor.
  * Added support for importing models with embedded textures.
  * Fixed crashes when exporting meshes with incorrectly sized textures.
 

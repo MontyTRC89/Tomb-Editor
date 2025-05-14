@@ -521,5 +521,27 @@ namespace TombLib
 
             return new Vector3(R, G, B);
         }
+
+        public static Vector4 HsvToRgb(float h, float s, float v)
+        {
+            float c = v * s;
+            float x = c * (1 - MathF.Abs((h * 6) % 2 - 1));
+            float m = v - c;
+
+            float r = 0, g = 0, b = 0;
+            int hue = (int)(h * 6);
+
+            switch (hue)
+            {
+                case 0: r = c; g = x; b = 0; break;
+                case 1: r = x; g = c; b = 0; break;
+                case 2: r = 0; g = c; b = x; break;
+                case 3: r = 0; g = x; b = c; break;
+                case 4: r = x; g = 0; b = c; break;
+                case 5: r = c; g = 0; b = x; break;
+            }
+
+            return new Vector4(r + m, g + m, b + m, 1.0f);
+        }
     }
 }
