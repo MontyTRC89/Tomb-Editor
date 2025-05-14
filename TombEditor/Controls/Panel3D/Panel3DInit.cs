@@ -7,6 +7,8 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Controls;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TombEditor.Controls.Panel3D
 {
@@ -104,7 +106,7 @@ namespace TombEditor.Controls.Panel3D
             }
         }
 
-        RenderingDrawingRoom CacheRoom(Room room)
+        RenderingDrawingRoom CacheRoom(RoomGeometry geometry)
         {
             var sectorTextures = new SectorTextureDefault
             {
@@ -115,20 +117,25 @@ namespace TombEditor.Controls.Panel3D
                 HideHiddenRooms = DisablePickingForHiddenRooms
             };
 
-            if (_editor.SelectedRoom == room)
+            if (_editor.SelectedRoom == geometry.Room)
             {
                 sectorTextures.HighlightArea = _editor.HighlightedSectors.Area;
                 sectorTextures.SelectionArea = _editor.SelectedSectors.Area;
                 sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
             }
 
-            return Device.CreateDrawingRoom(
-                    new RenderingDrawingRoom.Description
-                    {
-                        Room = room,
-                        TextureAllocator = _renderingTextures,
-                        SectorTextureGet = sectorTextures.Get
-                    });
+            return Device.CreateDrawingRoom( new RenderingDrawingRoom.Description()
+            {
+                Room = geometry.Room,
+                TextureAllocator = _renderingTextures,
+                Geometry = geometry,
+                SectorTextureGet = sectorTextures.Get
+            });
+        }
+
+        void DisposeRoom(RenderingDrawingRoom cached)
+        {
+            cached.Dispose();
         }
     }
 }
