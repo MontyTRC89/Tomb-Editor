@@ -601,59 +601,12 @@ namespace TombLib.LevelData.Compilers
             public byte Rotation;
 
             public bool Animated;
-            public int AnimatedSequence;
-            public int AnimatedFrame;
 
             // This value indicates that if used on triangle, it must be converted to
             // degenerate quad. It's needed to fake UVRotate application to triangular areas.
             public bool ConvertToQuad;
 
-            public tr_face3 CreateFace3(ushort[] indices, bool doubleSided, ushort lightingEffect)
-            {
-                if (indices.Length != 3)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
-
-                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
-                ushort[] transformedIndices = new ushort[3] { indices[0], indices[1], indices[2] };
-
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        ushort tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
-
-                return new tr_face3 { Vertices = new ushort[3] { transformedIndices[0], transformedIndices[1], transformedIndices[2] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
-            }
-
-            public tr_face4 CreateFace4(ushort[] indices, bool doubleSided, ushort lightingEffect)
-            {
-                if (indices.Length != 4)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
-
-                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
-                ushort[] transformedIndices = new ushort[4] { indices[0], indices[1], indices[2], indices[3] };
-
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        ushort tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[3];
-                        transformedIndices[3] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
-
-                return new tr_face4 { Vertices = new ushort[4] { transformedIndices[0], transformedIndices[1], transformedIndices[2], transformedIndices[3] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
-            }
-
-            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
+            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 3)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -676,13 +629,8 @@ namespace TombLib.LevelData.Compilers
                 polygon.Shape = TombEnginePolygonShape.Triangle;
                 polygon.Indices.AddRange(transformedIndices);
                 polygon.TextureId = objectTextureIndex;
-                polygon.BlendMode = blendMode;
                 polygon.Animated = Animated;
-
-                if (material is not null)
-                    polygon.Material = material;
-                else
-                    polygon.Material = new TombEnginePolygonMaterial(TombEngineMaterialType.Opaque);
+                polygon.Material = material;
 
                 if (vertices != null)
                 {
@@ -695,7 +643,7 @@ namespace TombLib.LevelData.Compilers
                 return polygon;
             }
 
-            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, byte blendMode, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
+            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 4)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -719,13 +667,8 @@ namespace TombLib.LevelData.Compilers
                 polygon.Shape = TombEnginePolygonShape.Quad;
                 polygon.Indices.AddRange(transformedIndices);
                 polygon.TextureId = objectTextureIndex;
-                polygon.BlendMode = blendMode;
                 polygon.Animated = Animated;
-
-				if (material is not null)
-					polygon.Material = material;
-				else
-					polygon.Material = new TombEnginePolygonMaterial(TombEngineMaterialType.Opaque);
+                polygon.Material = material;
 
 				if (vertices != null)
                 {

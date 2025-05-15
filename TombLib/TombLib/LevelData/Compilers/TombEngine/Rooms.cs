@@ -166,7 +166,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 Flags = 0
             };
 
-            if (!room.Alternated)
+            // Prepare immediately sectors and portals because they contain useful informations
+            // for the geometry build stage
+
+			var tempIdPortals = new List<PortalInstance>();
+
+			for (var z = 0; z < room.NumZSectors; z++)
+			{
+				for (var x = 0; x < room.NumXSectors; x++)
+				{
+					if (room.Sectors[x, z].WallPortal != null && !tempIdPortals.Contains(room.Sectors[x, z].WallPortal))
+						tempIdPortals.Add(room.Sectors[x, z].WallPortal);
+
+					if (room.Sectors[x, z].FloorPortal != null &&
+						!tempIdPortals.Contains(room.Sectors[x, z].FloorPortal))
+						tempIdPortals.Add(room.Sectors[x, z].FloorPortal);
+
+					if (room.Sectors[x, z].CeilingPortal != null &&
+						!tempIdPortals.Contains(room.Sectors[x, z].CeilingPortal))
+						tempIdPortals.Add(room.Sectors[x, z].CeilingPortal);
+				}
+			}
+
+			ConvertPortals(room, tempIdPortals, newRoom);
+			ConvertSectors(room, newRoom);
+
+			if (!room.Alternated)
                 newRoom.AlternateKind = AlternateKind.NotAlternated;
             else if (room.AlternateBaseRoom != null)
                 newRoom.AlternateKind = AlternateKind.AlternateRoom;
@@ -207,8 +232,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             var lightEffect = room.Properties.LightEffect;
             var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Properties.Type >= RoomType.Water).ToList();
+            var dynamicWaterPortals = waterPortals.Where(p => p.Effect == PortalEffectType.DynamicWaterSurface).ToList();
 
-            bool waterSchemeSet = false;
+			bool waterSchemeSet = false;
 
             // Calculate bottom room-based water scheme in advance, if mode is default, mist or reflection
             if (waterPortals.Count > 0 && room.Properties.Type < RoomType.Water &&
@@ -327,37 +353,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (texture.BlendMode == BlendMode.Normal)
                                     realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
-                                int rangeEnd = range.Start + range.Count;
+                                var material = new TombEnginePolygonMaterial();
+                                material.Type = TombEngineMaterialType.Opaque;
+                                material.BlendMode = realBlendMode;
+                                
+								int rangeEnd = range.Start + range.Count;
                                 for (int i = range.Start; i < rangeEnd; i += 3)
                                 {
                                     int vertex0Index, vertex1Index, vertex2Index;
 
                                     if (shape == FaceShape.Quad)
                                     {
-                                        TombEnginePolygonMaterial material = null;
-                                       
-										if (/* TEST CONDITIONS
+                                        if (/* TEST CONDITIONS
 										     * room.Properties.Type == RoomType.Normal &&
 											 * (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2) &&
 											 * room.Sectors[x, z].FloorPortal != null &&
 											 * room.Sectors[x, z].FloorPortal.AdjoiningRoom.Properties.Type == RoomType.Water*/
 
                                             realBlendMode == BlendMode.Additive &&
-											room.Sectors[x, z].Floor.IsQuad && 
+                                            room.Sectors[x, z].Floor.IsQuad &&
                                             room.Sectors[x, z].Floor.IfQuadSlopeX == 0 &&
-											room.Sectors[x, z].Floor.IfQuadSlopeZ == 0 &&
-											room.Sectors[x, z].FloorPortal != null &&
-											room.Sectors[x,z].FloorPortal.Effect == PortalEffectType.DynamicWaterSurface &&
-											(face == SectorFace.Floor || face == SectorFace.Floor_Triangle2)
-											)
-										{
-                                            material = new TombEnginePolygonMaterial(TombEngineMaterialType.Water)
-                                            {
-                                                WaterDirection = room.Sectors[x, z].FloorPortal.Properties.WaterDirection,
-                                                WaterSpeed = room.Sectors[x, z].FloorPortal.Properties.WaterSpeed,
-                                                WaterRefractionStrength = room.Sectors[x, z].FloorPortal.Properties.WaterRefractionStrength
-                                            };
-										}
+                                            room.Sectors[x, z].Floor.IfQuadSlopeZ == 0 &&
+                                            room.Sectors[x, z].FloorPortal != null &&
+                                            room.Sectors[x, z].FloorPortal.Effect == PortalEffectType.DynamicWaterSurface &&
+                                            (face == SectorFace.Floor || face == SectorFace.Floor_Triangle2)
+                                            )
+                                        {
+                                            SetMaterialWaterProperties(material, room.Sectors[x, z].FloorPortal);
+                                        }
 
 										if (/* room.Properties.Type == RoomType.Water &&
 											 * (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2) &&
@@ -373,15 +396,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											(face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
 											)
 										{
-											material = new TombEnginePolygonMaterial(TombEngineMaterialType.Water)
-											{
-												WaterDirection = room.Sectors[x, z].CeilingPortal.Properties.WaterDirection,
-												WaterSpeed = room.Sectors[x, z].CeilingPortal.Properties.WaterSpeed,
-												WaterRefractionStrength = room.Sectors[x, z].CeilingPortal.Properties.WaterRefractionStrength
-											};
+											SetMaterialWaterProperties(material, room.Sectors[x, z].CeilingPortal);
 										}
 
-                                        int vertex3Index;
+										int vertex3Index;
 
                                         if (face == SectorFace.Ceiling)
                                         {
@@ -401,7 +419,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
                                         var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
-                                                         (byte)realBlendMode, material, roomVertices);
+                                                         material, roomVertices);
                                         roomPolygons.Add(poly);
                                         roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
@@ -412,7 +430,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             texture.Mirror();
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
                                             poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
-                                                            (byte)realBlendMode, material, roomVertices);
+                                                            material, roomVertices);
                                             roomPolygons.Add(poly);
 
                                             // TODO: Solve problems with averaging normals on double-sided triangles
@@ -427,8 +445,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     {
                                         if (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
                                             texture.Mirror(true);
-
-                                        TombEnginePolygonMaterial material = null;
 
 										if (/* TEST CONDITIONS
 										     * room.Properties.Type == RoomType.Normal &&
@@ -446,12 +462,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y
 											)
 										{
-											material = new TombEnginePolygonMaterial(TombEngineMaterialType.Water)
-											{
-												WaterDirection = room.Sectors[x, z].FloorPortal.Properties.WaterDirection,
-												WaterSpeed = room.Sectors[x, z].FloorPortal.Properties.WaterSpeed,
-												WaterRefractionStrength = room.Sectors[x, z].FloorPortal.Properties.WaterRefractionStrength
-											};
+											SetMaterialWaterProperties(material, room.Sectors[x, z].FloorPortal);
 										}
 
 										if (/* TEST CONDITIONS
@@ -469,21 +480,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											vertexPositions[i + 1].Y == vertexPositions[i + 2].Y
 											)
 										{
-											material = new TombEnginePolygonMaterial(TombEngineMaterialType.Water)
-											{
-												WaterDirection = room.Sectors[x, z].CeilingPortal.Properties.WaterDirection,
-												WaterSpeed = room.Sectors[x, z].CeilingPortal.Properties.WaterSpeed,
-												WaterRefractionStrength = room.Sectors[x, z].CeilingPortal.Properties.WaterRefractionStrength
-											};
+											SetMaterialWaterProperties(material, room.Sectors[x, z].CeilingPortal);
 										}
 
-                                        vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);
+										vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);
                                         vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 1);
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                         var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
-                                                        (byte)realBlendMode, material, roomVertices);
+                                                        material, roomVertices);
                                         roomPolygons.Add(poly);
                                         roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
@@ -493,7 +499,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             texture.Mirror(true);
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                             poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
-                                                            (byte)realBlendMode, material, roomVertices);
+                                                            material, roomVertices);
                                             roomPolygons.Add(poly);
 
                                             // TODO: Solve problems with averaging normals on double-sided triangles
@@ -625,13 +631,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (texture.BlendMode == BlendMode.Normal)
                                     realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
-                                bool texInfoExists = _mergedStaticMeshTextureInfos.ContainsKey(key);
+								var material = new TombEnginePolygonMaterial();
+								material.Type = TombEngineMaterialType.Opaque;
+                                material.BlendMode = realBlendMode;
+    
+								bool texInfoExists = _mergedStaticMeshTextureInfos.ContainsKey(key);
                                 var result = texInfoExists ? _mergedStaticMeshTextureInfos[key] :
                                             _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
 
                                 var face = poly.IsTriangle ?
-                                    result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, null, roomVertices) :
-                                    result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, null, roomVertices);
+                                    result.CreateTombEnginePolygon3(indices, material, roomVertices) :
+                                    result.CreateTombEnginePolygon4(indices, material, roomVertices);
 
                                 if (!texInfoExists)
                                     _mergedStaticMeshTextureInfos.Add(key, result);
@@ -780,6 +790,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                     texture.ClampToBounds();
 
+                                    var material = new TombEnginePolygonMaterial();
+                                    material.Type = TombEngineMaterialType.Opaque;
+
                                     var realBlendMode = texture.BlendMode;
                                     if (texture.BlendMode == BlendMode.Normal)
                                         realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
@@ -792,19 +805,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         texture.Mirror(true);
                                     }
 
-                                    TombEnginePolygonMaterial material = null;
-									if (submesh.Value.Material.DynamicWaterSurface)
-                                    {
-                                        material = new TombEnginePolygonMaterial(TombEngineMaterialType.Water)
-                                        {
-                                            WaterRefractionStrength = WaterRefractionStrength.Medium,
-                                            WaterSpeed = 32,
-                                            WaterDirection = WaterDirection.North
-                                        };
-                                    }
+                                    material.BlendMode = realBlendMode;
 
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-                                    var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, material, roomVertices);
+									if (submesh.Value.Material.DynamicWaterSurface)
+									{
+                                        // Find a compatible floor portal for water properties
+                                        float y = roomVertices[index0].Position.Y;
+                                        Vector3 firstVertex = roomVertices[index0].Position;
+
+                                        TombEnginePortal? waterPortal = newRoom.Portals.Where(p =>
+                                                (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling) &&
+                                                p.Vertices.Any(v =>
+                                                    v.X <= firstVertex.X && v.X >= firstVertex.X &&
+                                                    Math.Abs(v.Y - y) < 8.0f &&
+                                                    v.Z <= firstVertex.Z && v.Z >= firstVertex.Z))
+                                            .FirstOrDefault(); 
+
+                                        if (waterPortal is not null)
+                                        {
+											SetMaterialWaterProperties(material, waterPortal.Value.OriginalPortal);
+										}
+									}
+
+									var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
+                                    var tri = result.CreateTombEnginePolygon3(indices, material, roomVertices);
 
                                     roomPolygons.Add(tri);
                                     roomVertices[index0].NormalHelpers.Add(new NormalHelper(tri));
@@ -824,9 +848,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Now we need to build final normals, tangents, bitangents
             }
 
-            // Assign vertex effects
+			// Merge similar portals for performance
+			MergePortals(newRoom);
 
-            for (int i = 0; i < newRoom.Vertices.Count; ++i)
+			// Assign vertex effects
+
+			for (int i = 0; i < newRoom.Vertices.Count; ++i)
             {
                 var trVertex = newRoom.Vertices[i];
                 bool allowGlow = true;
@@ -957,30 +984,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 newRoom.Vertices[i] = trVertex;
             }
-
-            // Build portals
-
-            var tempIdPortals = new List<PortalInstance>();
-
-            for (var z = 0; z < room.NumZSectors; z++)
-            {
-                for (var x = 0; x < room.NumXSectors; x++)
-                {
-                    if (room.Sectors[x, z].WallPortal != null && !tempIdPortals.Contains(room.Sectors[x, z].WallPortal))
-                        tempIdPortals.Add(room.Sectors[x, z].WallPortal);
-
-                    if (room.Sectors[x, z].FloorPortal != null &&
-                        !tempIdPortals.Contains(room.Sectors[x, z].FloorPortal))
-                        tempIdPortals.Add(room.Sectors[x, z].FloorPortal);
-
-                    if (room.Sectors[x, z].CeilingPortal != null &&
-                        !tempIdPortals.Contains(room.Sectors[x, z].CeilingPortal))
-                        tempIdPortals.Add(room.Sectors[x, z].CeilingPortal);
-                }
-            }
-
-            ConvertPortals(room, tempIdPortals, newRoom);
-            ConvertSectors(room, newRoom);
 
             foreach (var instance in room.Objects.OfType<StaticInstance>())
             {
@@ -1232,8 +1235,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         throw new ApplicationException("Unknown PortalDirection");
                 }
             }
-
-            MergePortals(newRoom);
         }
 
         private void ConvertWallPortal(Room room, PortalInstance portal, List<TombEnginePortal> outPortals, SectorEdge[] relevantEdges, SectorEdge[] oppositeRelevantEdges)
@@ -1392,7 +1393,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 AdjoiningRoom = (ushort)_roomRemapping[portal.AdjoiningRoom],
                 Vertices = portalVertices,
                 Normal = normal,
-                Direction = portal.Direction
+                Direction = portal.Direction,
+                OriginalPortal = portal
             };
 
             _portalRemapping.TryAdd(portalToAdd, portal);
@@ -1658,7 +1660,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					AdjoiningRoom = (ushort)_roomRemapping[portal.AdjoiningRoom],
 					Vertices = portalVertices,
 					Normal = normal,
-					Direction = isCeiling ? PortalDirection.Ceiling : PortalDirection.Floor
+					Direction = isCeiling ? PortalDirection.Ceiling : PortalDirection.Floor,
+					OriginalPortal = portal
 				};
 
 				_portalRemapping.TryAdd(portalToAdd, portal);
@@ -1961,24 +1964,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
 			return tmp;
 		}
 
-		private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, TombEnginePolygonMaterial polygonMaterial, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
+		private TombEngineBucket GetOrAddBucket(int textureId, TombEnginePolygonMaterial polygonMaterial, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
 		{
             var material = new TombEngineMaterial(polygonMaterial.Type)
 			{
-				Texture = texture,
-				BlendMode = blendMode,
-				Animated = animated,
-				AnimatedSequence = sequence,
-                WaterRefractionStrength = (byte)polygonMaterial.WaterRefractionStrength,
-                WaterSurfaceDirection = polygonMaterial.WaterDirection switch
-				{
-					WaterDirection.North => new Vector2(0, 1),
-					WaterDirection.East => new Vector2(1, 0),
-					WaterDirection.South => new Vector2(0, -1),
-					WaterDirection.West => new Vector2(-1, 0),
-					_ => Vector2.Zero
-				},
-                WaterSurfaceSpeed = polygonMaterial.WaterSpeed
+				Texture = textureId,
+				BlendMode = (byte)polygonMaterial.BlendMode,
+				Animated = polygonMaterial.Animated,
+				AnimatedSequence = polygonMaterial.AnimatedSequence,
+                FloatParameters0 = polygonMaterial.FloatParameters0,
+				FloatParameters1 = polygonMaterial.FloatParameters1,
+				FloatParameters2 = polygonMaterial.FloatParameters2,
+				FloatParameters3 = polygonMaterial.FloatParameters3,
+				IntegerParameters0 = polygonMaterial.IntegerParameters0,
+				IntegerParameters1 = polygonMaterial.IntegerParameters1,
+				IntegerParameters2 = polygonMaterial.IntegerParameters2,
+				IntegerParameters3 = polygonMaterial.IntegerParameters3
 			};
 
 			if (!buckets.ContainsKey(material))
@@ -2014,7 +2015,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					}
 				}
 
-				var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Material, poly.Animated, poly.AnimatedSequence, room.Buckets);
+				var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.Material, room.Buckets);
 
 				var texture = textures[poly.TextureId];
 
@@ -2122,6 +2123,31 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					}
 				}
 			}
+		}
+
+        private Vector2 GetWaterDirectionAsVector2(WaterDirection waterDirection)
+        {
+            return waterDirection switch
+            {
+                WaterDirection.North => new Vector2(0, 1),
+                WaterDirection.East => new Vector2(1, 0),
+                WaterDirection.South => new Vector2(0, -1),
+                WaterDirection.West => new Vector2(-1, 0),
+                _ => Vector2.Zero
+            };
+		}
+
+        private void SetMaterialWaterProperties(TombEnginePolygonMaterial material, PortalInstance portal)
+        {
+			material.Type = TombEngineMaterialType.Water;
+
+            var waterDirection = GetWaterDirectionAsVector2(portal.Properties.WaterDirection);
+
+			material.FloatParameters0.X = waterDirection.X;
+			material.FloatParameters0.Y = waterDirection.Y;
+
+			material.IntegerParameters0.X = (int)portal.Properties.WaterRefractionStrength;
+			material.IntegerParameters0.Y = portal.Properties.WaterSpeed;
 		}
 	}
 }

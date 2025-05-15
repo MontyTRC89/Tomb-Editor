@@ -137,7 +137,7 @@ namespace TombLib.GeometryIO
                             var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + page.Index, tex, page.Path, false, true, 0, page.Index, false);
                             var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + page.Index, tex, page.Path, true, false, 0, page.Index, false);
                             var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + page.Index, tex, page.Path, true, true, 0, page.Index, false);
-							var matDynamicWaterSurface = new IOMaterial(Material.Material_DynamicWaterSurface + "_" + j + "_" + page.Index, tex, page.Path, true, true, 0, page.Index, true);
+							var matDynamicWaterSurface = new IOMaterial(Material.Material_DynamicWaterSurface + "_" + j + "_" + page.Index, tex, page.Path, true, false, 0, page.Index, true);
 
 							model.Materials.Add(matOpaque);
                             model.Materials.Add(matOpaqueDoubleSided);
@@ -190,6 +190,10 @@ namespace TombLib.GeometryIO
 
                             var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                             var shape = room.GetFaceShape(x, z, face);
+
+                                bool isWaterSurface = false;
+
+                                if (sector.FloorPortal != null)
 
                             if (shape == FaceShape.Quad)
                             {
@@ -255,7 +259,8 @@ namespace TombLib.GeometryIO
                                                             textureArea1.BlendMode >= BlendMode.Additive,
                                                             textureAreaPage,
                                                             textureArea1.DoubleSided,
-                                                            0);
+                                                            0,
+															isWaterSurface);
 
                                 if (!mesh.Submeshes.ContainsKey(mat))
                                     mesh.Submeshes.Add(mat, new IOSubmesh(mat));
@@ -300,7 +305,8 @@ namespace TombLib.GeometryIO
                                                             textureArea.BlendMode >= BlendMode.Additive,
                                                             textureAreaPage,
                                                             textureArea.DoubleSided,
-                                                            0);
+                                                            0,
+															isWaterSurface);
 
                                 if (!mesh.Submeshes.ContainsKey(mat))
                                     mesh.Submeshes.Add(mat, new IOSubmesh(mat));

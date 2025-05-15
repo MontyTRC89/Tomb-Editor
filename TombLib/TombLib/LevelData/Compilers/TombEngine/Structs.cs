@@ -82,13 +82,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
 	public class TombEnginePolygonMaterial
 	{
 		public TombEngineMaterialType Type;
-		public WaterDirection WaterDirection;
-		public int WaterSpeed;
-		public WaterRefractionStrength WaterRefractionStrength;
+        public BlendMode BlendMode;
+        public bool Animated;
+        public int AnimatedSequence;
+        public Vector4 FloatParameters0;
+		public Vector4 FloatParameters1;
+		public Vector4 FloatParameters2;
+		public Vector4 FloatParameters3;
+		public VectorInt4 IntegerParameters0;
+		public VectorInt4 IntegerParameters1;
+		public VectorInt4 IntegerParameters2;
+		public VectorInt4 IntegerParameters3;
 
-		public TombEnginePolygonMaterial(TombEngineMaterialType type)
+		public TombEnginePolygonMaterial()
 		{
-			Type = type;
 		}
 	}
 
@@ -103,7 +110,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public List<Vector3> Tangents = new List<Vector3>();
         public List<Vector3> Binormals = new List<Vector3>();
         public int TextureId;
-        public byte BlendMode;
         public bool Animated;
         public Vector3 Normal;
         public Vector3 Tangent;
@@ -237,9 +243,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     x.NormalMapping == y.NormalMapping && 
                     x.AnimatedSequence == y.AnimatedSequence && 
                     x.WaterPlaneIndex == y.WaterPlaneIndex && 
-                    x.WaterRefractionStrength == y.WaterRefractionStrength &&
-                    x.WaterSurfaceSpeed == y.WaterSurfaceSpeed &&
-                    x.WaterSurfaceDirection == y.WaterSurfaceDirection);
+                    x.FloatParameters0 == y.FloatParameters0 &&
+					x.FloatParameters1 == y.FloatParameters1 &&
+					x.FloatParameters2 == y.FloatParameters2 &&
+					x.FloatParameters3 == y.FloatParameters3 &&
+                    x.IntegerParameters0 == y.IntegerParameters0 &&
+                    x.IntegerParameters1 == y.IntegerParameters1 &&
+                    x.IntegerParameters2 == y.IntegerParameters2 &&
+                    x.IntegerParameters3 == y.IntegerParameters3);
             }
 
             public int GetHashCode(TombEngineMaterial obj)
@@ -254,9 +265,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
 					hash = hash * 23 + obj.WaterPlaneIndex.GetHashCode();
 					hash = hash * 23 + obj.MaterialType.GetHashCode();
-					hash = hash * 23 + obj.WaterSurfaceDirection.GetHashCode();
-					hash = hash * 23 + obj.WaterSurfaceSpeed.GetHashCode();
-					hash = hash * 23 + obj.WaterRefractionStrength.GetHashCode();
+					hash = hash * 23 + obj.FloatParameters0.GetHashCode();
+					hash = hash * 23 + obj.FloatParameters1.GetHashCode();
+					hash = hash * 23 + obj.FloatParameters2.GetHashCode();
+					hash = hash * 23 + obj.FloatParameters3.GetHashCode();
+					hash = hash * 23 + obj.IntegerParameters0.GetHashCode();
+					hash = hash * 23 + obj.IntegerParameters1.GetHashCode();
+					hash = hash * 23 + obj.IntegerParameters2.GetHashCode();
+					hash = hash * 23 + obj.IntegerParameters3.GetHashCode();
 					return hash;
                 }
             }
@@ -269,11 +285,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public bool NormalMapping;
         public int AnimatedSequence;
         public int WaterPlaneIndex;
-        public Vector2 WaterSurfaceDirection;
-		public int WaterSurfaceSpeed;
-		public byte WaterRefractionStrength;
+        public Vector4 FloatParameters0;
+		public Vector4 FloatParameters1;
+		public Vector4 FloatParameters2;
+		public Vector4 FloatParameters3;
+        public VectorInt4 IntegerParameters0;
+		public VectorInt4 IntegerParameters1;
+		public VectorInt4 IntegerParameters2;
+		public VectorInt4 IntegerParameters3;
 
-        public TombEngineMaterial(TombEngineMaterialType type)
+		public TombEngineMaterial(TombEngineMaterialType type)
         {
             MaterialType = (byte)type;  
         }
@@ -300,6 +321,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public VectorInt3[] Vertices;
 
         public PortalDirection Direction;
+        public PortalInstance OriginalPortal;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -421,13 +443,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
 				writer.Write(bucket.Material.Animated);
-
-				// New material properties
+				writer.Write(bucket.Material.AnimatedSequence);
 				writer.Write(bucket.Material.MaterialType);
 				writer.Write(bucket.Material.WaterPlaneIndex);
-				writer.Write(bucket.Material.WaterSurfaceDirection);
-				writer.Write(bucket.Material.WaterSurfaceSpeed);
-				writer.Write(bucket.Material.WaterRefractionStrength);
+				writer.Write(bucket.Material.FloatParameters0);
+				writer.Write(bucket.Material.FloatParameters1);
+				writer.Write(bucket.Material.FloatParameters2);
+				writer.Write(bucket.Material.FloatParameters3);
+				writer.Write(bucket.Material.IntegerParameters0);
+				writer.Write(bucket.Material.IntegerParameters1);
+				writer.Write(bucket.Material.IntegerParameters2);
+				writer.Write(bucket.Material.IntegerParameters3);
 
 				writer.Write(bucket.Polygons.Count);
                 foreach (var poly in bucket.Polygons)

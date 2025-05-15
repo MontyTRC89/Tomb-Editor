@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Numerics;
@@ -95,6 +96,12 @@ namespace TombLib.GeometryIO.Importers
                                 {
                                     material.AdditiveBlending = (alpha < 1.0f);
                                 }
+                            }
+
+                            if (material.Name.StartsWith(Graphics.Material.Material_DynamicWaterSurface))
+                            {
+                                material.AdditiveBlending = true;
+                                material.DynamicWaterSurface = true;
                             }
 
                             if (textures.Count > i)
