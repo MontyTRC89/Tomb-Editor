@@ -99,7 +99,7 @@ namespace TombEditor
             }
         }
 
-        private static void GenericDirectionalControlCommand(CommandArgs args, SectorVerticalPart surface, int increment, bool smooth, bool oppositeDiagonal)
+        private static void GenericDirectionalControlCommand(CommandArgs args, SectorVerticalPart surface, int increment, bool smooth, bool snapToIncrement, bool oppositeDiagonal)
         {
             if (args.Editor.HighlightedSplit != 0)
             {
@@ -121,7 +121,7 @@ namespace TombEditor
 
             if (args.Editor.LastSelection == LastSelectionType.Sector && args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
             {
-                EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, surface, increment, smooth, oppositeDiagonal);
+                EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, surface, increment, smooth, snapToIncrement, oppositeDiagonal);
             }
             else if (args.Editor.LastSelection == LastSelectionType.SpatialObject && (surface == SectorVerticalPart.QA || surface == SectorVerticalPart.WS) && !oppositeDiagonal && !smooth)
             {
@@ -430,202 +430,202 @@ namespace TombEditor
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseQA4Click", "Raise selected floor or item (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference * 4, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerQA1Click", "Lower selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerQA4Click", "Lower selected floor or item (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference * 4, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseWS1Click", "Raise selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseWS4Click", "Raise selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference * 4, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerWS1Click", "Lower selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerWS4Click", "Lower selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference * 4, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseED1Click", "Raise selected floor split (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, args.Editor.IncrementReference, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseED4Click", "Raise selected floor split (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, args.Editor.IncrementReference * 4, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerED1Click", "Lower selected floor split (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, -args.Editor.IncrementReference, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, -args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerED4Click", "Lower selected floor split (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, -args.Editor.IncrementReference * 4, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, -args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseRF1Click", "Raise selected ceiling split (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, args.Editor.IncrementReference, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseRF4Click", "Raise selected ceiling split (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, args.Editor.IncrementReference * 4, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerRF1Click", "Lower selected ceiling split (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, -args.Editor.IncrementReference, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, -args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerRF4Click", "Lower selected ceiling split (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, -args.Editor.IncrementReference * 4, false, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, -args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseQA1ClickSmooth", "Smoothly raise selected floor (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseQA4ClickSmooth", "Smoothly raise selected floor (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference * 4, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference * 4, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerQA1ClickSmooth", "Smoothly lower selected floor (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerQA4ClickSmooth", "Smoothly lower selected floor (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference * 4, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference * 4, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseWS1ClickSmooth", "Smoothly raise selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseWS4ClickSmooth", "Smoothly raise selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference * 4, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference * 4, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerWS1ClickSmooth", "Smoothly lower selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerWS4ClickSmooth", "Smoothly lower selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference * 4, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference * 4, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseED1ClickSmooth", "Smoothly raise selected floor split (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, args.Editor.IncrementReference, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, args.Editor.IncrementReference, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseED4ClickSmooth", "Smoothly raise selected floor split (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, args.Editor.IncrementReference * 4, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, args.Editor.IncrementReference * 4, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerED1ClickSmooth", "Smoothly lower selected floor split (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, -args.Editor.IncrementReference, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, -args.Editor.IncrementReference, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerED4ClickSmooth", "Smoothly lower selected floor split (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, -args.Editor.IncrementReference * 4, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Floor2, -args.Editor.IncrementReference * 4, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseRF1ClickSmooth", "Smoothly raise selected ceiling split (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, args.Editor.IncrementReference, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, args.Editor.IncrementReference, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseRF4ClickSmooth", "Smoothly raise selected ceiling split (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, args.Editor.IncrementReference * 4, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, args.Editor.IncrementReference * 4, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerRF1ClickSmooth", "Smoothly lower selected ceiling split (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, -args.Editor.IncrementReference, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, -args.Editor.IncrementReference, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("LowerRF4ClickSmooth", "Smoothly lower selected ceiling split (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, -args.Editor.IncrementReference * 4, true, false);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.Ceiling2, -args.Editor.IncrementReference * 4, true, args.Editor.Tool.SnapToStepHeight, false);
             });
 
             AddCommand("RaiseYH1Click", "Raise selected floor diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference, false, true);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, true);
             });
 
             AddCommand("RaiseYH4Click", "Raise selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference * 4, false, true);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, true);
             });
 
             AddCommand("LowerYH1Click", "Lower selected floor diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference, false, true);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, true);
             });
 
             AddCommand("LowerYH4Click", "Lower selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference * 4, false, true);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.QA, -args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, true);
             });
 
             AddCommand("RaiseUJ1Click", "Raise selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference, false, true);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, true);
             });
 
             AddCommand("RaiseUJ4Click", "Raise selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference * 4, false, true);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, true);
             });
 
             AddCommand("LowerUJ1Click", "Lower selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference, false, true);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference, false, args.Editor.Tool.SnapToStepHeight, true);
             });
 
             AddCommand("LowerUJ4Click", "Lower selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference * 4, false, true);
+                GenericDirectionalControlCommand(args, SectorVerticalPart.WS, -args.Editor.IncrementReference * 4, false, args.Editor.Tool.SnapToStepHeight, true);
             });
 
             AddCommand("RotateObject5", "Rotate object (5 degrees)", CommandType.Objects, delegate (CommandArgs args)

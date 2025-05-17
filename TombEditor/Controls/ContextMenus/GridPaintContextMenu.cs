@@ -25,7 +25,14 @@ namespace TombEditor.Controls.ContextMenus
 
         private void SwitchGridPaintTool(PaintGridSize size)
         {
-            EditorTool currentTool = new EditorTool() { Tool = EditorToolType.GridPaint, TextureUVFixer = _editor.Tool.TextureUVFixer, GridSize = size };
+            var currentTool = new EditorTool()
+            {
+                Tool = EditorToolType.GridPaint,
+                TextureUVFixer = _editor.Tool.TextureUVFixer,
+                SnapToStepHeight = _editor.Tool.SnapToStepHeight,
+                GridSize = size
+            };
+
             _editor.Tool = currentTool;
         }
     }

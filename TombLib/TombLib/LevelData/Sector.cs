@@ -535,13 +535,13 @@ namespace TombLib.LevelData
             }
         }
 
-        public void FixHeights(SectorVerticalPart? vertical = null)
+        public void FixHeights(SectorVerticalPart? vertical = null, int snapHeight = 0)
         {
             for (SectorEdge i = 0; i < SectorEdge.Count; i++)
-                FixHeight(i, vertical);
+                FixHeight(i, vertical, snapHeight);
         }
 
-        public void FixHeight(SectorEdge edge, SectorVerticalPart? vertical = null)
+        public void FixHeight(SectorEdge edge, SectorVerticalPart? vertical = null, int snapHeight = 0)
         {
             if (vertical is null || vertical.Value.IsOnFloor())
             {
@@ -549,13 +549,22 @@ namespace TombLib.LevelData
                 {
                     SectorVerticalPart splitVertical = SectorVerticalPartExtensions.GetExtraFloorSplit(i);
                     SectorVerticalPart lastSectorVertical = i == 0 ? SectorVerticalPart.QA : SectorVerticalPartExtensions.GetExtraFloorSplit(i - 1);
-                    SetHeight(splitVertical, edge, Math.Min(GetHeight(splitVertical, edge), GetHeight(lastSectorVertical, edge)));
+                    int newHeight = Math.Min(GetHeight(splitVertical, edge), GetHeight(lastSectorVertical, edge));
+
+                    if (snapHeight > 0)
+                        newHeight = (int)Math.Round((double)newHeight / snapHeight) * snapHeight;
+
+                    SetHeight(splitVertical, edge, newHeight);
                 }
 
-                if (Floor.DiagonalSplit != DiagonalSplit.None)
-                    Floor.SetHeight(edge, Math.Min(Floor.GetHeight(edge), Ceiling.Min));
-                else
-                    Floor.SetHeight(edge, Math.Min(Floor.GetHeight(edge), Ceiling.GetHeight(edge)));
+                int floorHeight = Floor.DiagonalSplit != DiagonalSplit.None
+                    ? Math.Min(Floor.GetHeight(edge), Ceiling.Min)
+                    : Math.Min(Floor.GetHeight(edge), Ceiling.GetHeight(edge));
+
+                if (snapHeight > 0)
+                    floorHeight = (int)Math.Round((double)floorHeight / snapHeight) * snapHeight;
+
+                Floor.SetHeight(edge, floorHeight);
             }
 
             if (vertical is null || vertical.Value.IsOnCeiling())
@@ -564,13 +573,22 @@ namespace TombLib.LevelData
                 {
                     SectorVerticalPart splitVertical = SectorVerticalPartExtensions.GetExtraCeilingSplit(i);
                     SectorVerticalPart lastSectorVertical = i == 0 ? SectorVerticalPart.WS : SectorVerticalPartExtensions.GetExtraCeilingSplit(i - 1);
-                    SetHeight(splitVertical, edge, Math.Max(GetHeight(splitVertical, edge), GetHeight(lastSectorVertical, edge)));
+                    int newHeight = Math.Max(GetHeight(splitVertical, edge), GetHeight(lastSectorVertical, edge));
+
+                    if (snapHeight > 0)
+                        newHeight = (int)Math.Round((double)newHeight / snapHeight) * snapHeight;
+
+                    SetHeight(splitVertical, edge, newHeight);
                 }
 
-                if (Ceiling.DiagonalSplit != DiagonalSplit.None)
-                    Ceiling.SetHeight(edge, Math.Max(Ceiling.GetHeight(edge), Floor.Max));
-                else
-                    Ceiling.SetHeight(edge, Math.Max(Ceiling.GetHeight(edge), Floor.GetHeight(edge)));
+                int ceilingHeight = Ceiling.DiagonalSplit != DiagonalSplit.None
+                    ? Math.Max(Ceiling.GetHeight(edge), Floor.Max)
+                    : Math.Max(Ceiling.GetHeight(edge), Floor.GetHeight(edge));
+
+                if (snapHeight > 0)
+                    ceilingHeight = (int)Math.Round((double)ceilingHeight / snapHeight) * snapHeight;
+
+                Ceiling.SetHeight(edge, ceilingHeight);
             }
         }
 
