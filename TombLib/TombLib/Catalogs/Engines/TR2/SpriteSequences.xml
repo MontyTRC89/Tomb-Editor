@@ -2,7 +2,7 @@
 <sprite_sequences>
     <sprite_sequence id="89" name="Boat wake (Venice, Bartoli)" />
     <sprite_sequence id="90" name="Snowmobile wake (Tibetan Foothills)" />
-    <sprite_sequence id="100" name="Frame (for indicator bars) " zoom="1.714" />
+    <sprite_sequence id="100" name="Frame (for indicator bars)" zoom="1.714" />
     <sprite_sequence id="135" name="Pistols" />
     <sprite_sequence id="136" name="Shotgun" />
     <sprite_sequence id="137" name="Auto pistols" />
@@ -21,7 +21,7 @@
     <sprite_sequence id="151" name="Flares" />
     <sprite_sequence id="174" name="Puzzle 1" />
     <sprite_sequence id="175" name="Puzzle 2" />
-    <sprite_sequence id="176" name="Puzzle 3 ?" />
+    <sprite_sequence id="176" name="Puzzle 3" />
     <sprite_sequence id="177" name="Puzzle 4" />
     <sprite_sequence id="190" name="Secret 1" />
     <sprite_sequence id="191" name="Secret 2" />
@@ -30,8 +30,8 @@
     <sprite_sequence id="194" name="Key 2" />
     <sprite_sequence id="195" name="Key 3" />
     <sprite_sequence id="196" name="Key 4" />
-    <sprite_sequence id="205" name="Pickup 5" />
-    <sprite_sequence id="206" name="Pickup 6" />
+    <sprite_sequence id="205" name="Pickup 1" />
+    <sprite_sequence id="206" name="Pickup 2" />
     <sprite_sequence id="220" name="Extra Fire (Ice Palace)" />
     <sprite_sequence id="224" name="Gray disk" />
     <sprite_sequence id="229" name="Grenade blast" zoom="-2.4" />
