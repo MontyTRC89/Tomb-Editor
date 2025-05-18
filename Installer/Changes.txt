@@ -11,6 +11,7 @@ Tomb Editor:
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
  * Fixed functions from nested lua scripts not appearing in the function list.
  * Fixed nodes randomly not saving parameters.
+ * Fixed occasional garbage polygons in merged static meshes in TEN levels.
  
 WadTool:
  * Added skinned mesh import option in skeleton editor and vertex weight painting mode in mesh editor.
@@ -18,7 +19,7 @@ WadTool:
  * Fixed crashes when exporting meshes with incorrectly sized textures.
 
 TombIDE:
- * Fixed random app crash caused by cloud drives locking temporary files.
+ * Fixed random crash caused by cloud drives locking temporary files.
  
 TEN nodes:
  * Added nodes for video playback.

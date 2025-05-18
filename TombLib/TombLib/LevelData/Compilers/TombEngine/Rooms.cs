@@ -486,7 +486,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                             var trVertex = new TombEngineVertex
                             {
-                                Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
+                                Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), position.Z),
                                 Color = color,
                                 Normal = normal,
                                 Glow = glow,
@@ -505,10 +505,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (!poly.Texture.DoubleSided && doubleSided)
                                     continue;
 
-                                ushort index0 = (ushort)(poly.Index0 + meshVertexBase);
-                                ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
-                                ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
-                                ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
+                                int index0 = poly.Index0 + meshVertexBase;
+                                int index1 = poly.Index1 + meshVertexBase;
+                                int index2 = poly.Index2 + meshVertexBase;
+                                int index3 = poly.Index3 + meshVertexBase;
 
                                 var texture = poly.Texture;
                                 texture.ClampToBounds();
@@ -1780,19 +1780,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         FindConnectedRooms(outSharedRooms, roomPair.Key, worldPos, checkFloorCeiling);
                     FindConnectedRooms(outSharedRooms, roomPair.Value, worldPos, checkFloorCeiling);
                 }
-        }
-
-        private static ushort PackColorTo16Bit(Vector3 color)
-        {
-            color *= 32.0f;
-            color += new Vector3(0.5f); // Round correctly
-            color = Vector3.Min(new Vector3(31), Vector3.Max(new Vector3(0), color));
-
-            ushort tmp = 0;
-            tmp |= (ushort)((ushort)color.X << 10);
-            tmp |= (ushort)((ushort)color.Y << 5);
-            tmp |= (ushort)color.Z;
-            return tmp;
         }
 
         private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
