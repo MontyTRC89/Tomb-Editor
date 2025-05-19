@@ -25,7 +25,8 @@ TEN nodes:
  * Added nodes for video playback.
  
 TEN base WAD:
- * Fix underwater animation sounds not playing.
+ * Added snow sprites in a dedicated sprite slot.
+ * Fixed underwater animation sounds not playing.
  
 Version 1.8.1
 =============
