@@ -9,7 +9,67 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public struct VertexColors : IEquatable<VertexColors>
+	{
+		public Vector3 ColorB1;
+		public Vector3 ColorB2;
+		public Vector3 ColorB3;
+		public Vector3 ColorB4;
+		public Vector3 ColorB5;
+		public Vector3 ColorB6;
+
+		// Operatore +
+		public static VertexColors operator +(VertexColors a, VertexColors b)
+		{
+			return new VertexColors
+			{
+				ColorB1 = a.ColorB1 + b.ColorB1,
+				ColorB2 = a.ColorB2 + b.ColorB2,
+				ColorB3 = a.ColorB3 + b.ColorB3,
+				ColorB4 = a.ColorB3 + b.ColorB4,
+				ColorB5 = a.ColorB3 + b.ColorB5,
+				ColorB6 = a.ColorB3 + b.ColorB6
+			};
+		}
+
+		// Operatore /
+		public static VertexColors operator /(VertexColors a, float scalar)
+		{
+			return new VertexColors
+			{
+				ColorB1 = a.ColorB1 / scalar,
+				ColorB2 = a.ColorB2 / scalar,
+				ColorB3 = a.ColorB3 / scalar,
+				ColorB4 = a.ColorB4 / scalar,
+				ColorB5 = a.ColorB5 / scalar,
+				ColorB6 = a.ColorB6 / scalar
+			};
+		}
+
+		// Equality (==, !=)
+		public static bool operator ==(VertexColors a, VertexColors b) =>
+			a.ColorB1 == b.ColorB1 && a.ColorB2 == b.ColorB2 && a.ColorB3 == b.ColorB3 &&
+			a.ColorB4 == b.ColorB4 && a.ColorB5 == b.ColorB5 && a.ColorB6 == b.ColorB6;
+
+		public static bool operator !=(VertexColors a, VertexColors b) =>
+			!(a == b);
+
+		// Equals (interfaccia IEquatable)
+		public bool Equals(VertexColors other) =>
+			this == other;
+
+		public override bool Equals(object obj) =>
+			obj is VertexColors other && Equals(other);
+
+		// HashCode (adatto per dizionari)
+		public override int GetHashCode()
+		{
+			return HashCode.Combine(ColorB1, ColorB2, ColorB3);
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineSpriteTexture
     {
         public int Tile;
@@ -128,8 +188,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public Vector3 Position;
         public Vector3 Normal;
         public Vector2 TextureCoords;
-        public Vector3 Color;
-        public Vector3 Tangent;
+        public VertexColors Colors;
+		public Vector3 Tangent;
         public Vector3 Bitangent;
         public int[] BoneIndex;
         public float[] BoneWeight;
@@ -368,8 +428,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var p in Vertices)
                 writer.Write(p.Position);
             foreach (var c in Vertices)
-                writer.Write(c.Color);
-            foreach (var v in Vertices)
+            {
+                writer.Write(c.Colors.ColorB1);
+                writer.Write(c.Colors.ColorB2);
+                writer.Write(c.Colors.ColorB3);
+				writer.Write(c.Colors.ColorB4);
+				writer.Write(c.Colors.ColorB5);
+				writer.Write(c.Colors.ColorB6);
+			}
+			foreach (var v in Vertices)
                 writer.Write(new Vector3(v.Glow, v.Move, v.Locked ? 0 : 1));
 
             writer.Write(Buckets.Count);

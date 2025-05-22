@@ -145,7 +145,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     foreach (var p in mesh.Vertices)
                         writer.Write(p.Position);
                     foreach (var c in mesh.Vertices)
-                        writer.Write(c.Color);
+                        writer.Write(c.Colors.ColorB1);
                     foreach (var e in mesh.Vertices)
                         writer.Write(new Vector3(e.Glow, e.Move, e.Locked ? 0 : 1));
                     foreach (var b in mesh.Vertices)

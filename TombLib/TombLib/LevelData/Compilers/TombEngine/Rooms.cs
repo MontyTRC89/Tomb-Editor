@@ -20,9 +20,26 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private readonly Dictionary<TombEnginePortal, PortalInstance> _portalRemapping = new Dictionary<TombEnginePortal, PortalInstance>();
         private readonly List<Room> _roomUnmapping = new List<Room>();
         private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
-        private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
+        private Dictionary<ShadeMatchSignature, VertexColors> _vertexColors;
 
-        private void BuildRooms(CancellationToken cancelToken)
+        /*private Vector3[] _vertexColorsBasis = new Vector3[]
+        {
+            new Vector3(  0.57735027f,  0.57735027f,  0.57735027f ),  // +X +Y +Z
+	        new Vector3( -0.57735027f, -0.57735027f,  0.57735027f ) , // -X -Y +Z
+	        new Vector3(-0.57735027f,  0.57735027f, -0.57735027f ),  // -X +Y -Z
+        };*/
+
+        private Vector3[] _vertexColorsBasis = new Vector3[]
+        {
+            new Vector3(1,0,0),
+            new Vector3(-1,0,0),
+            new Vector3(0,1,0),
+            new Vector3(0,-1,0),
+            new Vector3(0,0,1),
+            new Vector3(0,0,-1)
+        };
+ 
+		private void BuildRooms(CancellationToken cancelToken)
         {
             ReportProgress(5, "Lighting Rooms");
 
@@ -72,7 +89,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 ReportProgress(23, "    Matching vertex colors on portals...");
 
-                _vertexColors = new Dictionary<ShadeMatchSignature, Vector3>();
+                _vertexColors = new Dictionary<ShadeMatchSignature, VertexColors>();
                 var rooms = _tempRooms.Values.ToList();
                 for (int flipped = 0; flipped <= 1; flipped++)
                     foreach (var room in rooms)
@@ -99,9 +116,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (_vertexColors.ContainsKey(sig))
                     {
-                        v.Color = _vertexColors[sig];
-                        v.Color = _vertexColors[sig];
-                        trRoom.Vertices[i] = v;
+                        v.Colors = _vertexColors[sig];
+
+						trRoom.Vertices[i] = v;
                     }
                 }
             });
@@ -288,9 +305,23 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Add room geometry
 
                 var vertexPositions = room.RoomGeometry.VertexPositions;
-                var vertexColors = room.RoomGeometry.VertexColors;
+                
+                var vertexColors = new List<VertexColors>();
+                for (int i = 0; i < vertexPositions.Count; i++)
+                {
+                    var colors = new VertexColors();
 
-                var roomVerticesDictionary = new Dictionary<int, int>();
+                    colors.ColorB1 = CalculateLightForCustomVertex(room, vertexPositions[i], _vertexColorsBasis[0], false, room.Properties.AmbientLight * 128);
+                    colors.ColorB2 = CalculateLightForCustomVertex(room, vertexPositions[i], _vertexColorsBasis[1], false, room.Properties.AmbientLight * 128);
+                    colors.ColorB3 = CalculateLightForCustomVertex(room, vertexPositions[i], _vertexColorsBasis[2], false, room.Properties.AmbientLight * 128);
+					colors.ColorB4 = CalculateLightForCustomVertex(room, vertexPositions[i], _vertexColorsBasis[3], false, room.Properties.AmbientLight * 128);
+					colors.ColorB5 = CalculateLightForCustomVertex(room, vertexPositions[i], _vertexColorsBasis[4], false, room.Properties.AmbientLight * 128);
+					colors.ColorB6 = CalculateLightForCustomVertex(room, vertexPositions[i], _vertexColorsBasis[5], false, room.Properties.AmbientLight * 128);
+
+					vertexColors.Add(colors);
+                }
+
+				var roomVerticesDictionary = new Dictionary<int, int>();
                 var roomVertices = new List<TombEngineVertex>();
                 var roomPolygons = new List<TombEnginePolygon>();
 
@@ -468,27 +499,91 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 }
                             }
 
-                            Vector3 color;
-                            if (!entry.TintAsAmbient)
+                            Vector3 colorB1;
+							Vector3 colorB2;
+							Vector3 colorB3;
+							Vector3 colorB4;
+							Vector3 colorB5;
+							Vector3 colorB6;
+
+							if (!entry.TintAsAmbient)
                             {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
-                                // Apply Shade factor
-                                color *= shade;
-                                // Apply Instance Color
-                                color *= staticMesh.Color;
-                            }
+                                colorB1 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[0], false, room.Properties.AmbientLight * 128);
+								// Apply Shade factor
+								colorB1 *= shade;
+								// Apply Instance Color
+								colorB1 *= staticMesh.Color;
+
+								colorB2 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[1], false, room.Properties.AmbientLight * 128);
+								// Apply Shade factor
+								colorB2 *= shade;
+								// Apply Instance Color
+								colorB2 *= staticMesh.Color;
+
+								colorB3 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[2], false, room.Properties.AmbientLight * 128);
+								// Apply Shade factor
+								colorB3 *= shade;
+								// Apply Instance Color
+								colorB3 *= staticMesh.Color;
+
+								colorB4 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[3], false, room.Properties.AmbientLight * 128);
+								// Apply Shade factor
+								colorB4 *= shade;
+								// Apply Instance Color
+								colorB4 *= staticMesh.Color;
+
+								colorB5 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[4], false, room.Properties.AmbientLight * 128);
+								// Apply Shade factor
+								colorB5 *= shade;
+								// Apply Instance Color
+								colorB5 *= staticMesh.Color;
+
+								colorB6 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[5], false, room.Properties.AmbientLight * 128);
+								// Apply Shade factor
+								colorB6 *= shade;
+								// Apply Instance Color
+								colorB6 *= staticMesh.Color;
+							}
                             else
                             {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
-                                //Apply Shade factor
-                                color *= shade;
-                            }
+								colorB1 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[0], false, staticMesh.Color * 128);
+								//Apply Shade factor
+								colorB1 *= shade;
+
+								colorB2 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[1], false, staticMesh.Color * 128);
+								//Apply Shade factor
+								colorB2 *= shade;
+
+								colorB3 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[2], false, staticMesh.Color * 128);
+								//Apply Shade factor
+								colorB3 *= shade;
+
+								colorB4 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[3], false, staticMesh.Color * 128);
+								//Apply Shade factor
+								colorB4 *= shade;
+
+								colorB5 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[4], false, staticMesh.Color * 128);
+								//Apply Shade factor
+								colorB5 *= shade;
+
+								colorB6 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[5], false, staticMesh.Color * 128);
+								//Apply Shade factor
+								colorB6 *= shade;
+							}
 
                             var trVertex = new TombEngineVertex
                             {
                                 Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
-                                Color = color,
-                                Normal = normal,
+                                Colors = new VertexColors
+                                {
+                                    ColorB1 = colorB1,
+                                    ColorB2 = colorB2,
+                                    ColorB3 = colorB3,
+                                    ColorB4 = colorB4,
+                                    ColorB5 = colorB5,
+                                    ColorB6 = colorB6
+                                },
+								Normal = normal,
                                 Glow = glow,
                                 Move = move
                             };
@@ -611,17 +706,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         // Pack the light according to chosen lighting model
                                         if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                                         {
-                                            trVertex.Color = vertex.Color;
+                                            trVertex.Colors = new VertexColors
+                                            {
+                                                ColorB1 = vertex.Color
+                                            };
                                         }
                                         else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                                         {
-                                            var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 128);
-                                            trVertex.Color = color;
-                                        }
+                                            trVertex.Colors = new VertexColors
+                                            {
+                                                ColorB1 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[0], true, room.Properties.AmbientLight * 128),
+                                                ColorB2 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[1], true, room.Properties.AmbientLight * 128),
+                                                ColorB3 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[2], true, room.Properties.AmbientLight * 128),
+                                                ColorB4 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[2], true, room.Properties.AmbientLight * 128),
+                                                ColorB5 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[2], true, room.Properties.AmbientLight * 128),
+                                                ColorB6 = CalculateLightForCustomVertex(room, position, _vertexColorsBasis[2], true, room.Properties.AmbientLight * 128)
+                                            };
+										}
                                         else
                                         {
                                             var color = room.Properties.AmbientLight;
-                                            trVertex.Color = color;
+                                            trVertex.Colors = new VertexColors
+                                            {
+                                                ColorB1 = color
+                                            };
                                         }
 
                                         // HACK: Find a vertex with same coordinates and merge with it.
@@ -639,8 +747,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         {
                                             existingIndex = roomVertices.IndexOf(
                                                 v => v.Position == trVertex.Position
-                                                    && v.Color == trVertex.Color
-                                                    && v.DoubleSided == trVertex.DoubleSided);
+                                                    && v.Colors == trVertex.Colors
+													&& v.DoubleSided == trVertex.DoubleSided);
                                             if (existingIndex == -1)
                                             {
                                                 existingIndex = roomVertices.Count;
@@ -902,13 +1010,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
         }
 
         private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices,
-            Vector3 Position, Vector3 color, int index)
+            Vector3 Position, VertexColors colors, int index)
         {
             var trVertex = new TombEngineVertex();
 
             trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
-            trVertex.Color = color;
-            trVertex.IsOnPortal = false;
+            trVertex.Colors = colors;
+			trVertex.IsOnPortal = false;
             trVertex.IndexInPoly = index;
 
             int vertexIndex;
@@ -1686,15 +1794,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     for (int j = 0; j < otherRoom.Vertices.Count; j++)
                                     {
                                         var v2 = otherRoom.Vertices[j];
-                                        Vector3 refColor;
+                                        VertexColors refColor;
                                         var isPresentInLookup = _vertexColors.TryGetValue(sig, out refColor);
-                                        if (!isPresentInLookup) refColor = v1.Color;
+                                        if (!isPresentInLookup) refColor = v1.Colors;
 
                                         if (room.Info.X + v1.Position.X == otherRoom.Info.X + v2.Position.X &&
                                             v1.Position.Y == v2.Position.Y &&
                                             room.Info.Z + v1.Position.Z == otherRoom.Info.Z + v2.Position.Z)
                                         {
-                                            Vector3 newColor;
+											VertexColors newColor;
 
                                             // NOTE: We DON'T INTERPOLATE colours of both rooms in case we're dealing with alternate room and matched room
                                             // isn't alternate room itself. Instead, we simply copy vertex colour from matched base room.
@@ -1703,11 +1811,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             if (flipped && otherRoom.AlternateKind != AlternateKind.AlternateRoom)
                                             {
                                                 var baseSig = new ShadeMatchSignature() { IsWater = sig.IsWater, AlternateGroup = -1, Position = sig.Position };
-                                                if (!_vertexColors.TryGetValue(baseSig, out newColor)) newColor = v2.Color;
+                                                if (!_vertexColors.TryGetValue(baseSig, out newColor)) newColor = v2.Colors;
                                             }
                                             else
                                             {
-                                                newColor = (v2.Color + refColor) / 2.0f;
+                                                newColor = (v2.Colors + refColor) / 2.0f;
                                             }
 
                                             if (!isPresentInLookup)
