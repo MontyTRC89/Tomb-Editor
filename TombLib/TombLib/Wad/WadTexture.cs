@@ -46,7 +46,7 @@ namespace TombLib.Wad
             if (string.IsNullOrEmpty(Image.FileName))
                 hint += "Untitled (" + Image.Size.X + "x" + Image.Size.Y + ")";
             else
-                hint += Path.GetFileName(Image.FileName) + " ";
+                hint += Path.GetFileName(Image.FileName) + " (External) ";
 
             return hint;
         }
@@ -54,5 +54,8 @@ namespace TombLib.Wad
         public void Dispose()
         {
         }
+
+        // Used only for loading and saving
+        public string RelativePath { get; set; }
     }
 }

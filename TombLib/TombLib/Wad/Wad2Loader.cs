@@ -16,7 +16,7 @@ namespace TombLib.Wad
         {
             Wad2 result;
             using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                result = LoadFromStream(fileStream);
+                result = LoadFromStream(fileStream, fileName);
             result.FileName = fileName;
 
             // Load additional XML file if it exists
@@ -36,7 +36,7 @@ namespace TombLib.Wad
             return result;
         }
 
-        public static Wad2 LoadFromStream(Stream stream)
+        public static Wad2 LoadFromStream(Stream stream, string fileName)
         {
             byte[] magicNumber = new byte[4];
 
@@ -47,12 +47,13 @@ namespace TombLib.Wad
                 throw new NotImplementedException("Loaded wad2 version is deprecated and not supported. Please use version 1.3.15 or earlier.");
             else
                 using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream, Wad2Chunks.ChunkList))
-                    return LoadWad2(chunkIO);
+                    return LoadWad2(chunkIO, fileName);
         }
 
-        private static Wad2 LoadWad2(ChunkReader chunkIO)
+        private static Wad2 LoadWad2(ChunkReader chunkIO, string fileName)
         {
             var wad = new Wad2() { Timestamp = DateTime.MinValue };
+            wad.FileName = fileName;
 
             Dictionary<long, WadTexture> textures = null;
             Dictionary<long, WadSprite> sprites = null;
@@ -150,17 +151,35 @@ namespace TombLib.Wad
                         name = chunkIO.ReadChunkString(chunkSize2);
                     else if (id2 == Wad2Chunks.TextureData)
                         textureData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
-                    else
+					else
                         return false;
                     return true;
                 });
 
-                var texture = ImageC.FromByteArray(textureData, width, height);
-                texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
-                texture.FileName = name;
-                textures.Add(obsoleteIndex++, new WadTexture(texture));
-                return true;
-            });
+                ImageC texture;
+
+                if (textureData is not null)
+                {
+                    texture = ImageC.FromByteArray(textureData, width, height);
+                    name = null;
+                }
+                else if (!string.IsNullOrEmpty(name))
+                {
+                    var path = PathC.IsTrulyAbsolutePath(name) ? name : Path.Combine(Path.GetDirectoryName(wad.FileName), name);
+					texture = ImageC.FromFile(path);
+                }
+                else
+                {
+                    texture = ImageC.Magenta;
+					name = null;
+				}
+
+				texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+				texture.FileName = name;
+				textures.Add(obsoleteIndex++, new WadTexture(texture));
+
+				return true;
+			});
 
             outTextures = textures;
             return true;
