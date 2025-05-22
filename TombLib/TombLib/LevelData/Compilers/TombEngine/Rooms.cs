@@ -44,8 +44,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _roomUnmapping.Add(room);
             }
 
-            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
-
             foreach (var room in _roomRemapping.Keys)
             {
                 cancelToken.ThrowIfCancellationRequested();
@@ -877,9 +875,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             foreach (var instance in room.Objects.OfType<StaticInstance>())
             {
-                // For TRNG statics chunk
-                _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
-
                 var sm = _level.Settings?.WadTryGetStatic(instance.WadObjectId);
                 newRoom.StaticMeshes.Add(new TombEngineRoomStaticMesh
                 {

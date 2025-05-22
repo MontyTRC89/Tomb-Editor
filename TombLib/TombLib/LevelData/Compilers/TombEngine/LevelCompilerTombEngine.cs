@@ -52,7 +52,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private Dictionary<MoveableInstance, int> _aiObjectsTable;
         private Dictionary<SoundSourceInstance, int> _soundSourcesTable;
         private Dictionary<FlybyCameraInstance, int> _flybyTable;
-        private Dictionary<StaticInstance, int> _staticsTable;
 
         // Collected game limits
         private Dictionary<Limit, int> _limits;
