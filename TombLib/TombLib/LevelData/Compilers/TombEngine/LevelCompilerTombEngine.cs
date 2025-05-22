@@ -222,13 +222,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var instance in _cameraTable.Keys)
             {
                 Vector3 position = instance.Room.WorldPos + instance.Position;
+
+                int flags = 0;
+
+                if (instance.CameraMode == CameraInstanceMode.Locked)
+                    flags |= 0x0001;
+
+                if (instance.GlideOut)
+                    flags |= 0x0002;
+
                 _cameras.Add(new TombEngineCamera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = (short)_roomRemapping[instance.Room],
-                    Flags = instance.CameraMode == CameraInstanceMode.Locked ? 1 : 0,
+                    Flags = flags,
                     Speed = instance.MoveTimer,
                     LuaName = instance.LuaName ?? string.Empty
                 });
