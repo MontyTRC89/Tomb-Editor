@@ -465,6 +465,97 @@ namespace TombEditor
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
 
+        public static void SmoothTerrain(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(room);
+
+            bool isBorder;
+
+            // Iterate through the selected region (excluding border sectors)
+            for (int z = area.Y0; z <= area.Y1; z++)
+            {
+                isBorder = z <= 0 || z >= room.NumZSectors - 1;
+
+                if (isBorder)
+                    continue;
+
+                for (int x = area.X0; x <= area.X1; x++)
+                {
+                    isBorder = x <= 0 || x >= room.NumXSectors - 1;
+
+                    if (isBorder)
+                        continue;
+
+                    // Smooth all four corners of current sector
+                    for (SectorEdge edge = 0; edge < SectorEdge.Count; edge++)
+                        SmoothSectorCorner(room, x, z, edge, vertical, stepHeight);
+                }
+            }
+
+            SmartBuildGeometry(room, area);
+        }
+
+        private static void SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical, int stepHeight)
+        {
+            // Define the neighboring sectors and their corresponding edges based on the corner we're processing
+            ReadOnlySpan<SectorEdgeOffset> neighbors = edge switch
+            {
+                SectorEdge.XnZp => stackalloc SectorEdgeOffset[] { new(-1,  0, SectorEdge.XpZp), new(-1,  1, SectorEdge.XpZn), new(0,  1, SectorEdge.XnZn) }, // North-west corner
+                SectorEdge.XpZp => stackalloc SectorEdgeOffset[] { new( 1,  0, SectorEdge.XnZp), new( 1,  1, SectorEdge.XnZn), new(0,  1, SectorEdge.XpZn) }, // North-east corner
+                SectorEdge.XpZn => stackalloc SectorEdgeOffset[] { new( 0, -1, SectorEdge.XpZp), new( 1, -1, SectorEdge.XnZp), new(1,  0, SectorEdge.XnZn) }, // South-east corner
+                SectorEdge.XnZn => stackalloc SectorEdgeOffset[] { new(-1,  0, SectorEdge.XpZn), new(-1, -1, SectorEdge.XpZp), new(0, -1, SectorEdge.XnZp) }, // South-west corner
+                _ => throw new ArgumentException("Invalid edge") // Handle invalid edge
+            };
+
+            Sector currentSector = room.GetSectorTry(x, z);
+
+            if (currentSector is null || currentSector.IsFullWall)
+                return;
+
+            // Calculate average height from current corner and surrounding neighbors
+            int heightSum = currentSector.GetHeight(vertical, edge);
+            int validCorners = 1;
+
+            // Add heights from valid neighboring corners
+            foreach ((int neighborX, int neighborZ, SectorEdge neighborEdge) in neighbors)
+            {
+                Sector sector = room.GetSectorTry(x + neighborX, z + neighborZ);
+
+                if (sector is null || sector.IsFullWall)
+                    continue;
+
+                heightSum += sector.GetHeight(vertical, neighborEdge);
+                validCorners++;
+            }
+
+            // If there are not enough valid corners, return without making changes
+            if (validCorners < 2)
+                return;
+
+            int averageHeight = heightSum / validCorners;
+
+            // Round to the nearest step height
+            if (stepHeight > 0)
+                averageHeight = (int)Math.Round((float)averageHeight / stepHeight) * stepHeight;
+
+            // Apply the average height to the current corner
+            currentSector.SetHeight(vertical, edge, averageHeight);
+            currentSector.FixHeight(edge, vertical);
+
+            // Apply the same height to neighboring corners
+            foreach ((int neighborX, int neighborZ, SectorEdge neighborEdge) in neighbors)
+            {
+                Sector sector = room.GetSectorTry(x + neighborX, z + neighborZ);
+
+                if (sector is null || sector.IsFullWall)
+                    continue;
+
+                sector.SetHeight(vertical, neighborEdge, averageHeight);
+                sector.FixHeight(neighborEdge, vertical);
+            }
+        }
+
         public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, SectorVerticalPart vertical, double heightScale, bool precise, bool stepped)
         {
             if (precise)
@@ -1017,10 +1108,16 @@ namespace TombEditor
                 if (form.ShowDialog(owner) == DialogResult.Cancel)
                     return;
 
-                if (!luaInstance.TrySetLuaName(form.Result, owner))
+                if (!luaInstance.CanSetLuaName(form.Result))
+                {
+                    MessageBoxes.LuaNameAlreadyTakenError(owner);
                     RenameObject(luaInstance, owner);
+                }
                 else
+                {
+                    luaInstance.LuaName = form.Result;
                     _editor.ObjectChange(luaInstance, ObjectChangeType.Change);
+                }
             }
         }
 
@@ -4966,8 +5063,9 @@ namespace TombEditor
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(owner))
+                if (!saveFileDialog.FileName.IsANSI())
                 {
+                    MessageBoxes.NonANSIFilePathError(owner);
                     ExportRooms(rooms, owner);
                     return;
                 }
@@ -5072,31 +5170,6 @@ namespace TombEditor
                 // Rebuild DirectX buffer
                 newObject.DirectXModel.UpdateBuffers();
 
-                // Load the XML db
-                /*string dbName = Path.GetDirectoryName(importedGeometryPath) + "\\" + Path.GetFileNameWithoutExtension(importedGeometryPath) + ".xml";
-                var db = RoomsImportExportXmlDatabase.LoadFromFile(dbName);
-                if (db == null)
-                    throw new FileNotFoundException("There must be also an XML file with the same name of the 3D file");
-        */
-
-                // Create a dictionary of the rooms by name
-                /* var roomDictionary = new Dictionary<string, IOMesh>();
-                 foreach (var msh in newObject.DirectXModel)
-
-                 // Translate rooms
-                 for (int i=0;i<db.Rooms.Count;i++)
-                 {
-                     string roomMeshName = db.Rooms.ElementAt(i).Key;
-                     foreach (var mesh in model.Meshes)
-                         for (int i = 0; i < mesh.Positions.Count; i++)
-                         {
-                             var pos = mesh.Positions[i];
-                             pos -= mesh.Origin;
-                             mesh.Positions[i] = pos;
-                         }
-                 }
-                 */
-
                 // Figure out the relevant rooms
                 Dictionary<int, int> roomIndices = new Dictionary<int, int>();
                 int meshIndex = 0;
@@ -5124,7 +5197,6 @@ namespace TombEditor
                         currentIndex = roomIndexEnd;
                     } while (currentIndex < mesh.Name.Length);
                 }
-                //roomIndices = roomIndices.Distinct().ToList();
 
                 // Add rooms
                 foreach (var pair in roomIndices)

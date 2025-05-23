@@ -158,8 +158,11 @@ namespace TombEditor.Controls
                 var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
                 foreach (string path in paths)
                 {
-                    if (!path.CheckAndWarnIfNotANSI(this))
+                    if (!path.IsANSI())
+                    {
+                        MessageBoxes.NonANSIFilePathError(FindForm());
                         continue;
+                    }
 
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {

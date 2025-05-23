@@ -154,10 +154,15 @@ namespace TombEditor.Forms
 			findTexturesToolStripMenuItem = new ToolStripMenuItem();
 			animationRangesToolStripMenuItem = new ToolStripMenuItem();
 			transformToolStripMenuItem = new ToolStripMenuItem();
+			increaseStepHeightToolStripMenuItem = new ToolStripMenuItem();
+			decreaseStepHeightToolStripMenuItem = new ToolStripMenuItem();
+			toolStripSeparator10 = new ToolStripSeparator();
 			smoothRandomFloorUpToolStripMenuItem = new ToolStripMenuItem();
 			smoothRandomFloorDownToolStripMenuItem = new ToolStripMenuItem();
 			smoothRandomCeilingUpToolStripMenuItem = new ToolStripMenuItem();
 			smoothRandomCeilingDownToolStripMenuItem = new ToolStripMenuItem();
+			smoothFloorTerrainToolStripMenuItem = new ToolStripMenuItem();
+			smoothCeilingTerrainToolStripMenuItem = new ToolStripMenuItem();
 			toolStripMenuSeparator11 = new ToolStripSeparator();
 			sharpRandomFloorUpToolStripMenuItem = new ToolStripMenuItem();
 			sharpRandomFloorDownToolStripMenuItem = new ToolStripMenuItem();
@@ -219,9 +224,6 @@ namespace TombEditor.Forms
 			dockArea = new DarkUI.Docking.DarkDockPanel();
 			panelDockArea = new Panel();
 			assToolStripMenuItem = new ToolStripMenuItem();
-			toolStripSeparator10 = new ToolStripSeparator();
-			increaseStepHeightToolStripMenuItem = new ToolStripMenuItem();
-			decreaseStepHeightToolStripMenuItem = new ToolStripMenuItem();
 			menuStrip.SuspendLayout();
 			statusStrip.SuspendLayout();
 			panelDockArea.SuspendLayout();
@@ -1507,11 +1509,37 @@ namespace TombEditor.Forms
 			// transformToolStripMenuItem
 			// 
 			transformToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			transformToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { increaseStepHeightToolStripMenuItem, decreaseStepHeightToolStripMenuItem, toolStripSeparator10, smoothRandomFloorUpToolStripMenuItem, smoothRandomFloorDownToolStripMenuItem, smoothRandomCeilingUpToolStripMenuItem, smoothRandomCeilingDownToolStripMenuItem, toolStripMenuSeparator11, sharpRandomFloorUpToolStripMenuItem, sharpRandomFloorDownToolStripMenuItem, sharpRandomCeilingUpToolStripMenuItem, sharpRandomCeilingDownToolStripMenuItem, toolStripMenuSeparator12, averageFloorToolStripMenuItem, averageCeilingToolStripMenuItem, flattenFloorToolStripMenuItem, flattenCeilingToolStripMenuItem, resetGeometryToolStripMenuItem, toolStripMenuSeparator13, gridWallsIn3ToolStripMenuItem, gridWallsIn5ToolStripMenuItem, gridWallsIn3SquaresToolStripMenuItem, gridWallsIn5SquaresToolStripMenuItem });
+			transformToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { increaseStepHeightToolStripMenuItem, decreaseStepHeightToolStripMenuItem, toolStripSeparator10, smoothRandomFloorUpToolStripMenuItem, smoothRandomFloorDownToolStripMenuItem, smoothRandomCeilingUpToolStripMenuItem, smoothRandomCeilingDownToolStripMenuItem, smoothFloorTerrainToolStripMenuItem, smoothCeilingTerrainToolStripMenuItem, toolStripMenuSeparator11, sharpRandomFloorUpToolStripMenuItem, sharpRandomFloorDownToolStripMenuItem, sharpRandomCeilingUpToolStripMenuItem, sharpRandomCeilingDownToolStripMenuItem, toolStripMenuSeparator12, averageFloorToolStripMenuItem, averageCeilingToolStripMenuItem, flattenFloorToolStripMenuItem, flattenCeilingToolStripMenuItem, resetGeometryToolStripMenuItem, toolStripMenuSeparator13, gridWallsIn3ToolStripMenuItem, gridWallsIn5ToolStripMenuItem, gridWallsIn3SquaresToolStripMenuItem, gridWallsIn5SquaresToolStripMenuItem });
 			transformToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			transformToolStripMenuItem.Name = "transformToolStripMenuItem";
 			transformToolStripMenuItem.Size = new System.Drawing.Size(72, 25);
 			transformToolStripMenuItem.Text = "Transform";
+			// 
+			// increaseStepHeightToolStripMenuItem
+			// 
+			increaseStepHeightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			increaseStepHeightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			increaseStepHeightToolStripMenuItem.Name = "increaseStepHeightToolStripMenuItem";
+			increaseStepHeightToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+			increaseStepHeightToolStripMenuItem.Tag = "IncreaseStepHeight";
+			increaseStepHeightToolStripMenuItem.Text = "IncreaseStepHeight";
+			// 
+			// decreaseStepHeightToolStripMenuItem
+			// 
+			decreaseStepHeightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			decreaseStepHeightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			decreaseStepHeightToolStripMenuItem.Name = "decreaseStepHeightToolStripMenuItem";
+			decreaseStepHeightToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+			decreaseStepHeightToolStripMenuItem.Tag = "DecreaseStepHeight";
+			decreaseStepHeightToolStripMenuItem.Text = "DecreaseStepHeight";
+			// 
+			// toolStripSeparator10
+			// 
+			toolStripSeparator10.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			toolStripSeparator10.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			toolStripSeparator10.Margin = new Padding(0, 0, 0, 1);
+			toolStripSeparator10.Name = "toolStripSeparator10";
+			toolStripSeparator10.Size = new System.Drawing.Size(226, 6);
 			// 
 			// smoothRandomFloorUpToolStripMenuItem
 			// 
@@ -1552,6 +1580,26 @@ namespace TombEditor.Forms
 			smoothRandomCeilingDownToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
 			smoothRandomCeilingDownToolStripMenuItem.Tag = "SmoothRandomCeilingDown";
 			smoothRandomCeilingDownToolStripMenuItem.Text = "SmoothRandomCeilingDown";
+			// 
+			// smoothFloorTerrainToolStripMenuItem
+			// 
+			smoothFloorTerrainToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			smoothFloorTerrainToolStripMenuItem.Enabled = false;
+			smoothFloorTerrainToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
+			smoothFloorTerrainToolStripMenuItem.Name = "smoothFloorTerrainToolStripMenuItem";
+			smoothFloorTerrainToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+			smoothFloorTerrainToolStripMenuItem.Tag = "SmoothFloorTerrain";
+			smoothFloorTerrainToolStripMenuItem.Text = "SmoothFloorTerrain";
+			// 
+			// smoothCeilingTerrainToolStripMenuItem
+			// 
+			smoothCeilingTerrainToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			smoothCeilingTerrainToolStripMenuItem.Enabled = false;
+			smoothCeilingTerrainToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(153, 153, 153);
+			smoothCeilingTerrainToolStripMenuItem.Name = "smoothCeilingTerrainToolStripMenuItem";
+			smoothCeilingTerrainToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+			smoothCeilingTerrainToolStripMenuItem.Tag = "SmoothCeilingTerrain";
+			smoothCeilingTerrainToolStripMenuItem.Text = "SmoothCeilingTerrain";
 			// 
 			// toolStripMenuSeparator11
 			// 
@@ -2118,32 +2166,6 @@ namespace TombEditor.Forms
 			assToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			assToolStripMenuItem.Text = "ass";
 			// 
-			// toolStripSeparator10
-			// 
-			toolStripSeparator10.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			toolStripSeparator10.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			toolStripSeparator10.Margin = new Padding(0, 0, 0, 1);
-			toolStripSeparator10.Name = "toolStripSeparator10";
-			toolStripSeparator10.Size = new System.Drawing.Size(226, 6);
-			// 
-			// increaseStepHeightToolStripMenuItem
-			// 
-			increaseStepHeightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			increaseStepHeightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			increaseStepHeightToolStripMenuItem.Name = "increaseStepHeightToolStripMenuItem";
-			increaseStepHeightToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-			increaseStepHeightToolStripMenuItem.Tag = "IncreaseStepHeight";
-			increaseStepHeightToolStripMenuItem.Text = "IncreaseStepHeight";
-			// 
-			// decreaseStepHeightToolStripMenuItem
-			// 
-			decreaseStepHeightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			decreaseStepHeightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			decreaseStepHeightToolStripMenuItem.Name = "decreaseStepHeightToolStripMenuItem";
-			decreaseStepHeightToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-			decreaseStepHeightToolStripMenuItem.Tag = "DecreaseStepHeight";
-			decreaseStepHeightToolStripMenuItem.Text = "DecreaseStepHeight";
-			// 
 			// FormMain
 			// 
 			AllowDrop = true;
@@ -2374,5 +2396,7 @@ namespace TombEditor.Forms
 		private ToolStripMenuItem increaseStepHeightToolStripMenuItem;
 		private ToolStripMenuItem decreaseStepHeightToolStripMenuItem;
 		private ToolStripSeparator toolStripSeparator10;
+		private ToolStripMenuItem smoothCeilingTerrainToolStripMenuItem;
+		private ToolStripMenuItem smoothFloorTerrainToolStripMenuItem;
 	}
 }
