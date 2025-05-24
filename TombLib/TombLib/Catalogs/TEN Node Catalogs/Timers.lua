@@ -150,7 +150,7 @@ end
 
 -- !Name "Start timer"
 -- !Conditional "False"
--- !Description "Begins or resumes a timer.\n\nNot to be used inside the On Volume Inside or On Loop events."
+-- !Description "Begins or resumes a timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 -- !Arguments "NewLine, Boolean , Reset timer when expired"
@@ -291,7 +291,7 @@ end
 
 -- !Name "Set timer colors"
 -- !Conditional "False"
--- !Description "Sets colours for timer."
+-- !Description "Sets colours for timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 52, [ NoMultiline ], Timer name"
 -- !Arguments "Color, 10, {TEN.Color(255, 255, 255)}, Timer's unpaused Color
@@ -313,7 +313,7 @@ end
 
 -- !Name "Modify timer position"
 -- !Conditional "False"
--- !Description "sets the position of the timer."
+-- !Description "sets the position of the timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Timer name"
 -- !Arguments "NewLine, Enumeration, 10, [ + | - | * | / | = ], {4}, Mathematical operation to perform for X"
@@ -348,7 +348,7 @@ end
 
 -- !Name "Modify timer scale"
 -- !Conditional "False"
--- !Description "Sets the scale of the timer."
+-- !Description "Sets the scale of the timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Timer name"
 -- !Arguments "Enumeration, 10, [ + | - | * | / | = ], {4}, Mathematical operation to perform"
