@@ -45,7 +45,7 @@ namespace TombLib.Forms
         {
             if (!_presets.Any(item => item.Name == name))
             {
-                _presets.Add(new IOGeometrySettingsPreset() { Name = name, Settings = settings });
+                _presets.Add(new IOGeometrySettingsPreset(name, settings));
                 PopulatePresetList();
             }
         }
