@@ -1419,20 +1419,6 @@ namespace TombEditor
                 EditorActions.SmoothRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, SectorVerticalPart.WS);
             });
 
-            AddCommand("SmoothFloorTerrain", "Smooth floor terrain", CommandType.Geometry, delegate (CommandArgs args)
-            {
-                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
-                    return;
-                EditorActions.SmoothTerrain(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.QA, args.Editor.IncrementReference);
-            });
-
-            AddCommand("SmoothCeilingTerrain", "Smooth ceiling terrain", CommandType.Geometry, delegate (CommandArgs args)
-            {
-                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
-                    return;
-                EditorActions.SmoothTerrain(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
-            });
-
             AddCommand("SharpRandomFloorUp", "Sharp random floor up", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
@@ -1473,6 +1459,20 @@ namespace TombEditor
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
                     return;
                 EditorActions.RealignToStepHeight(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
+            });
+
+            AddCommand("SmoothFloor", "Smooth floor", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.SmoothArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.QA, args.Editor.IncrementReference);
+            });
+
+            AddCommand("SmoothCeiling", "Smooth ceiling", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.SmoothArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
             });
 
             AddCommand("AverageFloor", "Average floor", CommandType.Geometry, delegate (CommandArgs args)

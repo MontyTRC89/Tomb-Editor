@@ -424,7 +424,7 @@ namespace TombEditor
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
 
-        public static void SmoothTerrain(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        public static void SmoothArea(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
         {
             if (!disableUndo)
             {

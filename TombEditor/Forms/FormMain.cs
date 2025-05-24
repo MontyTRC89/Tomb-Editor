@@ -167,8 +167,8 @@ namespace TombEditor.Forms
                 smoothRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomFloorDownToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomFloorUpToolStripMenuItem.Enabled = validSectorSelection;
-                smoothFloorTerrainToolStripMenuItem.Enabled = validSectorSelection;
-                smoothCeilingTerrainToolStripMenuItem.Enabled = validSectorSelection;
+                smoothFloorToolStripMenuItem.Enabled = validSectorSelection;
+                smoothCeilingToolStripMenuItem.Enabled = validSectorSelection;
                 sharpRandomCeilingDownToolStripMenuItem.Enabled = validSectorSelection;
                 sharpRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
                 sharpRandomFloorDownToolStripMenuItem.Enabled = validSectorSelection;
