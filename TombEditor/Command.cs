@@ -1461,6 +1461,20 @@ namespace TombEditor
                 EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, SectorVerticalPart.WS);
             });
 
+            AddCommand("RealignFloorToStepHeight", "Re-align floor to step height", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.RealignToStepHeight(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.QA, args.Editor.IncrementReference);
+            });
+
+            AddCommand("RealignCeilingToStepHeight", "Re-align ceiling to step height", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.RealignToStepHeight(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
+            });
+
             AddCommand("AverageFloor", "Average floor", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))

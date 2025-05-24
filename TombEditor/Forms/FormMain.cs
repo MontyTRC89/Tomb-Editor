@@ -173,6 +173,8 @@ namespace TombEditor.Forms
                 sharpRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
                 sharpRandomFloorDownToolStripMenuItem.Enabled = validSectorSelection;
                 sharpRandomFloorUpToolStripMenuItem.Enabled = validSectorSelection;
+                realignFloorToStepHeightToolStripMenuItem.Enabled = validSectorSelection;
+                realignCeilingToStepHeightToolStripMenuItem.Enabled = validSectorSelection;
                 averageCeilingToolStripMenuItem.Enabled = validSectorSelection;
                 averageFloorToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn3ToolStripMenuItem.Enabled = validSectorSelection;

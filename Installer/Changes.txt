@@ -3,6 +3,7 @@ Version 1.9
 
 Tomb Editor:
  * Added "Smooth floor terrain" and "Smooth ceiling terrain" transform options.
+ * Added "Re-align floor to step height" and "Re-align ceiling to step height" transform options.
  * Added streaming video animated texture type for TEN.
  * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
  * Added skinned mesh preview if it is available.
@@ -10,7 +11,7 @@ Tomb Editor:
  * Increased node editor performance and response time.
  * Reworked "Smooth" brush tool.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
- * Fixed functions from nested lua scripts not appearing in the function list.
+ * Fixed functions from nested Lua scripts not appearing in the function list.
  * Fixed nodes randomly not saving parameters.
  * Fixed occasional garbage polygons in merged static meshes in TEN levels.
  

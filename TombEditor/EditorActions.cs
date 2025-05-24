@@ -5846,5 +5846,22 @@ namespace TombEditor
 
 			}
 		}
+
+        public static void RealignToStepHeight(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(room);
+
+            for (int x = area.X0; x <= area.X1; x++)
+            {
+                for (int z = area.Y0; z <= area.Y1; z++)
+                {
+                    Sector sector = room.GetSectorTry(x, z);
+                    sector?.FixHeights(vertical, stepHeight);
+                }
+            }
+
+            SmartBuildGeometry(room, area);
+        }
     }
 }
