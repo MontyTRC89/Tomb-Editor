@@ -62,9 +62,6 @@
 	</Style>
 
 	<Style TargetType="{x:Type ComboBox}">
-		<!--  Control properties  -->
-		<Setter Property="Focusable" Value="False" />
-
 		<!--  Layout  -->
 		<Setter Property="Height" Value="{x:Static local:Defaults.InputControl_Height}" />
 		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
@@ -100,7 +97,8 @@
 							MaxHeight="{x:Static local:Defaults.ComboBox_Popup_MaxHeight}"
 							AllowsTransparency="True"
 							IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-							Placement="Bottom">
+							Placement="Bottom"
+							PopupAnimation="Slide">
 							<Border
 								x:Name="dropDownBorder"
 								Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"

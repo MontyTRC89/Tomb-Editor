@@ -1,12 +1,11 @@
 ﻿namespace TombLib.GeometryIO
 {
-    public struct IOGeometrySettingsPreset
+    public record IOGeometrySettingsPreset(string Name, IOGeometrySettings Settings)
     {
-        public string Name;
-        public IOGeometrySettings Settings;
-    }
+        public override string ToString() => Name;
+	}
 
-    public class IOGeometrySettings
+    public record IOGeometrySettings
     {
         // Internal settings
         public bool Export { get; set; } = false;
