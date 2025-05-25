@@ -29,11 +29,11 @@ public static class SurfaceToQuadConverter
 					continue;
 
 				if (isFloor)
-					DeTriangulateFloor(ref surface);
+					DeTriangulateFloor(ref surface, snapHeight);
 				else
-					DeTriangulateCeiling(ref surface);
+					DeTriangulateCeiling(ref surface, snapHeight);
 
-				sector.FixHeights(vertical, snapHeight);
+				sector.FixHeights(vertical);
 				success = true;
 			}
 		}
@@ -43,7 +43,7 @@ public static class SurfaceToQuadConverter
 
 	#region Floor
 
-	private static void DeTriangulateFloor(ref SectorSurface surface)
+	private static void DeTriangulateFloor(ref SectorSurface surface, int snapHeight)
 	{
 		int[] heights = new int[] { surface.XnZp, surface.XpZp, surface.XpZn, surface.XnZn };
 
@@ -51,54 +51,58 @@ public static class SurfaceToQuadConverter
 		int minCornerCount = heights.Count(height => height == minCornerHeight);
 
 		if (minCornerCount == 1)
-			HandleSingleCornerFloorCase(ref surface, minCornerHeight);
+			HandleSingleCornerFloorCase(ref surface, minCornerHeight, snapHeight);
 		else if (minCornerCount == 2)
 			HandleTwoCornerFloorCase(ref surface, minCornerHeight);
 		else if (minCornerCount == 3)
 			SetAllCorners(ref surface, minCornerHeight); // Set all corners to min height to create a flat floor
 	}
 
-	private static void HandleSingleCornerFloorCase(ref SectorSurface surface, int minCornerHeight)
+	private static void HandleSingleCornerFloorCase(ref SectorSurface surface, int minCornerHeight, int snapHeight)
 	{
 		if (minCornerHeight == surface.XnZp)
 		{
 			// Slope from NW (lowest) to diagonal
-			int xSlope = Math.Min(Math.Max(surface.XnZp - surface.XpZp, surface.XnZn - surface.XpZn), Math.Min(surface.XpZp - surface.XnZp, surface.XpZn - surface.XnZn));
-			int zSlope = Math.Min(Math.Max(surface.XnZp - surface.XnZn, surface.XpZp - surface.XpZn), Math.Min(surface.XnZn - surface.XnZp, surface.XpZn - surface.XpZp));
+			int average = GetNormalizedFloorAverage(surface.XnZp, surface.XpZn, snapHeight);
+			bool willFormQuad = surface.XnZp + average == surface.XpZn - average;
 
-			surface.XpZp = minCornerHeight - xSlope;
-			surface.XpZn = minCornerHeight - xSlope - zSlope;
-			surface.XnZn = minCornerHeight - zSlope;
+			if (!willFormQuad)
+				surface.XpZn = surface.XnZp + ((average - surface.XnZp) * 2);
+
+			surface.XpZp = surface.XnZn = average;
 		}
 		else if (minCornerHeight == surface.XpZp)
 		{
 			// Slope from NE (lowest) to diagonal
-			int xSlope = Math.Min(Math.Max(surface.XpZp - surface.XnZp, surface.XpZn - surface.XnZn), Math.Min(surface.XnZp - surface.XpZp, surface.XnZn - surface.XpZn));
-			int zSlope = Math.Min(Math.Max(surface.XpZp - surface.XpZn, surface.XnZp - surface.XnZn), Math.Min(surface.XpZn - surface.XpZp, surface.XnZn - surface.XnZp));
+			int average = GetNormalizedFloorAverage(surface.XpZp, surface.XnZn, snapHeight);
+			bool willFormQuad = surface.XpZp + average == surface.XnZn - average;
 
-			surface.XnZp = minCornerHeight - xSlope;
-			surface.XpZn = minCornerHeight - zSlope;
-			surface.XnZn = minCornerHeight - xSlope - zSlope;
+			if (!willFormQuad)
+				surface.XnZn = surface.XpZp + ((average - surface.XpZp) * 2);
+
+			surface.XnZp = surface.XpZn = average;
 		}
 		else if (minCornerHeight == surface.XpZn)
 		{
 			// Slope from SE (lowest) to diagonal
-			int xSlope = Math.Min(Math.Max(surface.XpZn - surface.XnZn, surface.XpZp - surface.XnZp), Math.Min(surface.XnZn - surface.XpZn, surface.XnZp - surface.XpZp));
-			int zSlope = Math.Min(Math.Max(surface.XpZn - surface.XpZp, surface.XnZn - surface.XnZp), Math.Min(surface.XpZp - surface.XpZn, surface.XnZp - surface.XnZn));
+			int average = GetNormalizedFloorAverage(surface.XpZn, surface.XnZp, snapHeight);
+			bool willFormQuad = surface.XpZn + average == surface.XnZp - average;
 
-			surface.XnZp = minCornerHeight - xSlope - zSlope;
-			surface.XpZp = minCornerHeight - zSlope;
-			surface.XnZn = minCornerHeight - xSlope;
+			if (!willFormQuad)
+				surface.XnZp = surface.XpZn + ((average - surface.XpZn) * 2);
+
+			surface.XpZp = surface.XnZn = average;
 		}
 		else if (minCornerHeight == surface.XnZn)
 		{
 			// Slope from SW (lowest) to diagonal
-			int xSlope = Math.Min(Math.Max(surface.XnZn - surface.XpZn, surface.XnZp - surface.XpZp), Math.Min(surface.XpZn - surface.XnZn, surface.XpZp - surface.XnZp));
-			int zSlope = Math.Min(Math.Max(surface.XnZn - surface.XnZp, surface.XpZn - surface.XpZp), Math.Min(surface.XnZp - surface.XnZn, surface.XpZp - surface.XpZn));
+			int average = GetNormalizedFloorAverage(surface.XnZn, surface.XpZp, snapHeight);
+			bool willFormQuad = surface.XnZn + average == surface.XpZp - average;
 
-			surface.XnZp = minCornerHeight - zSlope;
-			surface.XpZp = minCornerHeight - xSlope - zSlope;
-			surface.XpZn = minCornerHeight - xSlope;
+			if (!willFormQuad)
+				surface.XpZp = surface.XnZn + ((average - surface.XnZn) * 2);
+
+			surface.XnZp = surface.XpZn = average;
 		}
 	}
 
@@ -156,11 +160,14 @@ public static class SurfaceToQuadConverter
 		}
 	}
 
+	private static int GetNormalizedFloorAverage(int height1, int height2, int snapHeight)
+		=> (int)Math.Floor((height1 + height2) / 2.0 / snapHeight) * snapHeight;
+
 	#endregion Floor
 
 	#region Ceiling
 
-	private static void DeTriangulateCeiling(ref SectorSurface surface)
+	private static void DeTriangulateCeiling(ref SectorSurface surface, int snapHeight)
 	{
 		int[] heights = new int[] { surface.XnZp, surface.XpZp, surface.XpZn, surface.XnZn };
 
@@ -168,54 +175,58 @@ public static class SurfaceToQuadConverter
 		int maxCornerCount = heights.Count(height => height == maxCornerHeight);
 
 		if (maxCornerCount == 1)
-			HandleSingleCornerCeilingCase(ref surface, maxCornerHeight);
+			HandleSingleCornerCeilingCase(ref surface, maxCornerHeight, snapHeight);
 		else if (maxCornerCount == 2)
 			HandleTwoCornerCeilingCase(ref surface, maxCornerHeight);
 		else if (maxCornerCount == 3)
 			SetAllCorners(ref surface, maxCornerHeight); // Set all corners to max height to create a flat floor
 	}
 
-	private static void HandleSingleCornerCeilingCase(ref SectorSurface surface, int maxCornerHeight)
+	private static void HandleSingleCornerCeilingCase(ref SectorSurface surface, int maxCornerHeight, int snapHeight)
 	{
 		if (maxCornerHeight == surface.XnZp)
 		{
 			// Slope from NW (highest) to diagonal
-			int xSlope = Math.Max(Math.Min(surface.XnZp - surface.XpZp, surface.XnZn - surface.XpZn), Math.Max(surface.XpZp - surface.XnZp, surface.XpZn - surface.XnZn));
-			int zSlope = Math.Max(Math.Min(surface.XnZp - surface.XnZn, surface.XpZp - surface.XpZn), Math.Max(surface.XnZn - surface.XnZp, surface.XpZn - surface.XpZp));
+			int average = GetNormalizedCeilingAverage(surface.XnZp, surface.XpZn, snapHeight);
+			bool willFormQuad = surface.XnZp - average == surface.XpZn + average;
 
-			surface.XpZp = maxCornerHeight - xSlope;
-			surface.XpZn = maxCornerHeight - xSlope - zSlope;
-			surface.XnZn = maxCornerHeight - zSlope;
+			if (!willFormQuad)
+				surface.XpZn = surface.XnZp - ((surface.XnZp - average) * 2);
+
+			surface.XpZp = surface.XnZn = average;
 		}
 		else if (maxCornerHeight == surface.XpZp)
 		{
 			// Slope from NE (highest) to diagonal
-			int xSlope = Math.Max(Math.Min(surface.XpZp - surface.XnZp, surface.XpZn - surface.XnZn), Math.Max(surface.XnZp - surface.XpZp, surface.XnZn - surface.XpZn));
-			int zSlope = Math.Max(Math.Min(surface.XpZp - surface.XpZn, surface.XnZp - surface.XnZn), Math.Max(surface.XpZn - surface.XpZp, surface.XnZn - surface.XnZp));
+			int average = GetNormalizedCeilingAverage(surface.XpZp, surface.XnZn, snapHeight);
+			bool willFormQuad = surface.XpZp - average == surface.XnZn + average;
 
-			surface.XnZp = maxCornerHeight - xSlope;
-			surface.XpZn = maxCornerHeight - zSlope;
-			surface.XnZn = maxCornerHeight - xSlope - zSlope;
+			if (!willFormQuad)
+				surface.XnZn = surface.XpZp - ((surface.XpZp - average) * 2);
+
+			surface.XnZp = surface.XpZn = average;
 		}
 		else if (maxCornerHeight == surface.XpZn)
 		{
 			// Slope from SE (highest) to diagonal
-			int xSlope = Math.Max(Math.Min(surface.XpZn - surface.XnZn, surface.XpZp - surface.XnZp), Math.Max(surface.XnZn - surface.XpZn, surface.XnZp - surface.XpZp));
-			int zSlope = Math.Max(Math.Min(surface.XpZn - surface.XpZp, surface.XnZn - surface.XnZp), Math.Max(surface.XpZp - surface.XpZn, surface.XnZp - surface.XnZn));
+			int average = GetNormalizedCeilingAverage(surface.XpZn, surface.XnZp, snapHeight);
+			bool willFormQuad = surface.XpZn - average == surface.XnZp + average;
 
-			surface.XnZp = maxCornerHeight - xSlope - zSlope;
-			surface.XpZp = maxCornerHeight - zSlope;
-			surface.XnZn = maxCornerHeight - xSlope;
+			if (!willFormQuad)
+				surface.XnZp = surface.XpZn - ((surface.XpZn - average) * 2);
+
+			surface.XpZp = surface.XnZn = average;
 		}
 		else if (maxCornerHeight == surface.XnZn)
 		{
 			// Slope from SW (highest) to diagonal
-			int xSlope = Math.Max(Math.Min(surface.XnZn - surface.XpZn, surface.XnZp - surface.XpZp), Math.Max(surface.XpZn - surface.XnZn, surface.XpZp - surface.XnZp));
-			int zSlope = Math.Max(Math.Min(surface.XnZn - surface.XnZp, surface.XpZn - surface.XpZp), Math.Max(surface.XnZp - surface.XnZn, surface.XpZp - surface.XpZn));
+			int average = GetNormalizedCeilingAverage(surface.XnZn, surface.XpZp, snapHeight);
+			bool willFormQuad = surface.XnZn - average == surface.XpZp + average;
 
-			surface.XnZp = maxCornerHeight - zSlope;
-			surface.XpZp = maxCornerHeight - xSlope - zSlope;
-			surface.XpZn = maxCornerHeight - xSlope;
+			if (!willFormQuad)
+				surface.XpZp = surface.XnZn - ((surface.XnZn - average) * 2);
+
+			surface.XnZp = surface.XpZn = average;
 		}
 	}
 
@@ -272,6 +283,9 @@ public static class SurfaceToQuadConverter
 			}
 		}
 	}
+
+	private static int GetNormalizedCeilingAverage(int height1, int height2, int snapHeight)
+		=> (int)Math.Ceiling((height1 + height2) / 2.0 / snapHeight) * snapHeight;
 
 	#endregion Ceiling
 
