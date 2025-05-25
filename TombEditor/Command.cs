@@ -1461,6 +1461,20 @@ namespace TombEditor
                 EditorActions.RealignToStepHeight(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
             });
 
+            AddCommand("ConvertFloorToQuads", "Convert floor to quads", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.ConvertAreaToQuads(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.QA, args.Editor.IncrementReference);
+            });
+
+            AddCommand("ConvertCeilingToQuads", "Convert ceiling to quads", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.ConvertAreaToQuads(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
+            });
+
             AddCommand("SmoothFloor", "Smooth floor", CommandType.Geometry, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
