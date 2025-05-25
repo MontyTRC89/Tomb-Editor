@@ -3,6 +3,7 @@ Version 1.9
 
 Tomb Editor:
  * Added "Re-align floor to step height" and "Re-align ceiling to step height" transform options.
+ * Added "Convert floor to quads" and "Convert ceiling to quads" transform options.
  * Added "Smooth floor" and "Smooth ceiling" transform options.
  * Added streaming video animated texture type for TEN.
  * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
