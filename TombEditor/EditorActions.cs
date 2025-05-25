@@ -22,6 +22,7 @@ using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.LevelData.IO;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorServices;
 using TombLib.LevelData.SectorStructs;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Rendering;
@@ -5862,6 +5863,17 @@ namespace TombEditor
             }
 
             SmartBuildGeometry(room, area);
+        }
+
+        public static void ConvertAreaToQuads(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(room);
+
+            bool success = SurfaceToQuadConverter.ConvertAreaToQuads(room, area, vertical, stepHeight);
+
+            if (success)
+                SmartBuildGeometry(room, area);
         }
     }
 }
