@@ -5863,5 +5863,324 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
         }
-    }
+
+		public static void DeTriangulateArea(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+		{
+			if (!disableUndo)
+				_editor.UndoManager.PushGeometryChanged(room);
+
+			bool isFloor = vertical.IsOnFloor();
+
+			// De-triangulate the area by making all sectors in the area have quad surfaces
+			for (int x = area.X0; x <= area.X1; x++)
+			{
+				for (int z = area.Y0; z <= area.Y1; z++)
+				{
+					Sector sector = room.GetSectorTry(x, z);
+
+					if (sector is null || sector.IsFullWall)
+						continue;
+
+					if (isFloor)
+						DeTriangulateFloor(ref sector.Floor);
+					else
+						DeTriangulateCeiling(ref sector.Ceiling);
+
+					// Fix any height discrepancies
+					sector.FixHeights(vertical);
+				}
+			}
+
+			// Rebuild the room geometry to reflect the changes
+			SmartBuildGeometry(room, area);
+		}
+
+		private static void DeTriangulateCeiling(ref SectorSurface surface)
+		{
+			// Skip if all corners are at the same height (already flat)
+			if (surface.XnZp == surface.XpZp && surface.XpZp == surface.XpZn && surface.XpZn == surface.XnZn)
+				return;
+
+			int[] heights = new int[] { surface.XnZp, surface.XpZp, surface.XpZn, surface.XnZn };
+
+			// Store slope information before making changes
+			int xSlope = 0;
+			int zSlope = 0;
+
+			int max = surface.Max;
+			int maxCount = heights.Count(height => height == max);
+
+			if (maxCount == 3)
+			{
+				// Special case: 3 corners at max height, 1 corner lower
+				// Find which corner is the odd one out and adjust it
+				if (surface.XnZp != max)
+					surface.XnZp = max;
+				else if (surface.XpZp != max)
+					surface.XpZp = max;
+				else if (surface.XpZn != max)
+					surface.XpZn = max;
+				else if (surface.XnZn != max)
+					surface.XnZn = max;
+			}
+			else if (maxCount == 2)
+			{
+				// Case: 2 corners at max height - check if they're adjacent or diagonal
+				bool adjacentXn = surface.XnZp == max && surface.XnZn == max;
+				bool adjacentXp = surface.XpZp == max && surface.XpZn == max;
+				bool adjacentZp = surface.XnZp == max && surface.XpZp == max;
+				bool adjacentZn = surface.XnZn == max && surface.XpZn == max;
+
+				if (adjacentXn || adjacentXp || adjacentZp || adjacentZn)
+				{
+					// Adjacent corners at max height - create a slope
+					if (adjacentXn)
+					{
+						// Left edge is high
+						zSlope = 0;
+						xSlope = Math.Min(max - surface.XpZp, max - surface.XpZn); // Use larger slope
+						surface.XpZp = max - xSlope;
+						surface.XpZn = max - xSlope;
+					}
+					else if (adjacentXp)
+					{
+						// Right edge is high
+						zSlope = 0;
+						xSlope = Math.Min(max - surface.XnZp, max - surface.XnZn); // Use larger slope
+						surface.XnZp = max - xSlope;
+						surface.XnZn = max - xSlope;
+					}
+					else if (adjacentZp)
+					{
+						// Top edge is high
+						xSlope = 0;
+						zSlope = Math.Min(max - surface.XnZn, max - surface.XpZn); // Use larger slope
+						surface.XnZn = max - zSlope;
+						surface.XpZn = max - zSlope;
+					}
+					else if (adjacentZn)
+					{
+						// Bottom edge is high
+						xSlope = 0;
+						zSlope = Math.Min(max - surface.XnZp, max - surface.XpZp); // Use larger slope
+						surface.XnZp = max - zSlope;
+						surface.XpZp = max - zSlope;
+					}
+				}
+				else
+				{
+					// Diagonal corners at max height
+					if (surface.XnZp == max && surface.XpZn == max)
+					{
+						// NW and SE corners are hig
+						int maxOfLowerCorners = Math.Max(surface.XpZp, surface.XnZn);
+
+						surface.XnZp = maxOfLowerCorners;
+						surface.XpZn = maxOfLowerCorners;
+						surface.XpZp = maxOfLowerCorners;
+						surface.XnZn = maxOfLowerCorners;
+
+					}
+					else if (surface.XpZp == max && surface.XnZn == max)
+					{
+						// NE and SW corners are high
+						int maxOfLowerCorners = Math.Max(surface.XnZp, surface.XpZn);
+
+						surface.XnZp = maxOfLowerCorners;
+						surface.XpZn = maxOfLowerCorners;
+						surface.XpZp = maxOfLowerCorners;
+						surface.XnZn = maxOfLowerCorners;
+					}
+				}
+			}
+			else if (maxCount == 1)
+			{
+				// Only one corner is at max height
+				if (max == surface.XnZp)
+				{
+					// Slope from NW (highest) to diagonal
+					xSlope = Math.Max(Math.Min(surface.XnZp - surface.XpZp, surface.XnZn - surface.XpZn), Math.Max(surface.XpZp - surface.XnZp, surface.XpZn - surface.XnZn));
+					zSlope = Math.Max(Math.Min(surface.XnZp - surface.XnZn, surface.XpZp - surface.XpZn), Math.Max(surface.XnZn - surface.XnZp, surface.XpZn - surface.XpZp));
+
+					surface.XpZp = max - xSlope;
+					surface.XpZn = max - xSlope - zSlope;
+					surface.XnZn = max - zSlope;
+				}
+				else if (max == surface.XpZp)
+				{
+					// Slope from NE (highest) to diagonal
+					xSlope = Math.Max(Math.Min(surface.XpZp - surface.XnZp, surface.XpZn - surface.XnZn), Math.Max(surface.XnZp - surface.XpZp, surface.XnZn - surface.XpZn));
+					zSlope = Math.Max(Math.Min(surface.XpZp - surface.XpZn, surface.XnZp - surface.XnZn), Math.Max(surface.XpZn - surface.XpZp, surface.XnZn - surface.XnZp));
+
+					surface.XnZp = max - xSlope;
+					surface.XpZn = max - zSlope;
+					surface.XnZn = max - xSlope - zSlope;
+				}
+				else if (max == surface.XpZn)
+				{
+					// Slope from SE (highest) to diagonal
+					xSlope = Math.Max(Math.Min(surface.XpZn - surface.XnZn, surface.XpZp - surface.XnZp), Math.Max(surface.XnZn - surface.XpZn, surface.XnZp - surface.XpZp));
+					zSlope = Math.Max(Math.Min(surface.XpZn - surface.XpZp, surface.XnZn - surface.XnZp), Math.Max(surface.XpZp - surface.XpZn, surface.XnZp - surface.XnZn));
+
+					surface.XnZp = max - xSlope - zSlope;
+					surface.XpZp = max - zSlope;
+					surface.XnZn = max - xSlope;
+				}
+				else if (max == surface.XnZn)
+				{
+					// Slope from SW (highest) to diagonal
+					xSlope = Math.Max(Math.Min(surface.XnZn - surface.XpZn, surface.XnZp - surface.XpZp), Math.Max(surface.XpZn - surface.XnZn, surface.XpZp - surface.XnZp));
+					zSlope = Math.Max(Math.Min(surface.XnZn - surface.XnZp, surface.XpZn - surface.XpZp), Math.Max(surface.XnZp - surface.XnZn, surface.XpZp - surface.XpZn));
+
+					surface.XnZp = max - zSlope;
+					surface.XpZp = max - xSlope - zSlope;
+					surface.XpZn = max - xSlope;
+				}
+			}
+		}
+
+        private static void DeTriangulateFloor(ref SectorSurface surface)
+        {
+            // Skip if all corners are at the same height (already flat)
+            if (surface.XnZp == surface.XpZp && surface.XpZp == surface.XpZn && surface.XpZn == surface.XnZn)
+                return;
+
+            int[] heights = new int[] { surface.XnZp, surface.XpZp, surface.XpZn, surface.XnZn };
+
+            // Store slope information before making changes
+            int xSlope = 0;
+            int zSlope = 0;
+
+            int min = surface.Min;
+            int minCount = heights.Count(height => height == min);
+
+            if (minCount == 3)
+            {
+                // Special case: 3 corners at min height, 1 corner higher
+                // Find which corner is the odd one out and adjust it
+                if (surface.XnZp != min)
+                    surface.XnZp = min;
+                else if (surface.XpZp != min)
+                    surface.XpZp = min;
+                else if (surface.XpZn != min)
+                    surface.XpZn = min;
+                else if (surface.XnZn != min)
+                    surface.XnZn = min;
+            }
+            else if (minCount == 2)
+            {
+                // Case: 2 corners at min height - check if they're adjacent or diagonal
+                bool adjacentXn = surface.XnZp == min && surface.XnZn == min;
+                bool adjacentXp = surface.XpZp == min && surface.XpZn == min;
+                bool adjacentZp = surface.XnZp == min && surface.XpZp == min;
+                bool adjacentZn = surface.XnZn == min && surface.XpZn == min;
+
+                if (adjacentXn || adjacentXp || adjacentZp || adjacentZn)
+                {
+					// Adjacent corners at min height - create a slope
+					if (adjacentXn)
+                    {
+                        // Left edge is low
+                        zSlope = 0;
+                        xSlope = Math.Max(min - surface.XpZp, min - surface.XpZn); // Use larger slope
+                        surface.XpZp = min - xSlope;
+                        surface.XpZn = min - xSlope;
+                    }
+                    else if (adjacentXp)
+                    {
+						// Right edge is low
+						zSlope = 0;
+                        xSlope = Math.Max(min - surface.XnZp, min - surface.XnZn); // Use larger slope
+                        surface.XnZp = min - xSlope;
+                        surface.XnZn = min - xSlope;
+                    }
+                    else if (adjacentZp)
+                    {
+						// Top edge is low
+						xSlope = 0;
+                        zSlope = Math.Max(min - surface.XnZn, min - surface.XpZn); // Use larger slope
+                        surface.XnZn = min - zSlope;
+                        surface.XpZn = min - zSlope;
+                    }
+                    else if (adjacentZn)
+                    {
+						// Bottom edge is low
+						xSlope = 0;
+                        zSlope = Math.Max(min - surface.XnZp, min - surface.XpZp); // Use larger slope
+                        surface.XnZp = min - zSlope;
+                        surface.XpZp = min - zSlope;
+                    }
+                }
+                else
+                {
+                    // Diagonal corners at min height
+                    if (surface.XnZp == min && surface.XpZn == min)
+                    {
+                        // NW and SE corners are hig
+                        int minOfHigherCorners = Math.Min(surface.XpZp, surface.XnZn);
+
+                        surface.XnZp = minOfHigherCorners;
+                        surface.XpZn = minOfHigherCorners;
+                        surface.XpZp = minOfHigherCorners;
+                        surface.XnZn = minOfHigherCorners;
+
+                    }
+                    else if (surface.XpZp == min && surface.XnZn == min)
+                    {
+                        // NE and SW corners are high
+                        int minOfHigherCorners = Math.Min(surface.XnZp, surface.XpZn);
+
+                        surface.XnZp = minOfHigherCorners;
+                        surface.XpZn = minOfHigherCorners;
+                        surface.XpZp = minOfHigherCorners;
+                        surface.XnZn = minOfHigherCorners;
+                    }
+                }
+            }
+            else if (minCount == 1)
+            {
+                // Only one corner is at min height
+                if (min == surface.XnZp)
+                {
+                    // Slope from NW (lowest) to diagonal
+                    xSlope = Math.Min(Math.Max(surface.XnZp - surface.XpZp, surface.XnZn - surface.XpZn), Math.Min(surface.XpZp - surface.XnZp, surface.XpZn - surface.XnZn));
+                    zSlope = Math.Min(Math.Max(surface.XnZp - surface.XnZn, surface.XpZp - surface.XpZn), Math.Min(surface.XnZn - surface.XnZp, surface.XpZn - surface.XpZp));
+
+                    surface.XpZp = min - xSlope;
+                    surface.XpZn = min - xSlope - zSlope;
+                    surface.XnZn = min - zSlope;
+                }
+                else if (min == surface.XpZp)
+                {
+					// Slope from NE (lowest) to diagonal
+					xSlope = Math.Min(Math.Max(surface.XpZp - surface.XnZp, surface.XpZn - surface.XnZn), Math.Min(surface.XnZp - surface.XpZp, surface.XnZn - surface.XpZn));
+                    zSlope = Math.Min(Math.Max(surface.XpZp - surface.XpZn, surface.XnZp - surface.XnZn), Math.Min(surface.XpZn - surface.XpZp, surface.XnZn - surface.XnZp));
+
+                    surface.XnZp = min - xSlope;
+                    surface.XpZn = min - zSlope;
+                    surface.XnZn = min - xSlope - zSlope;
+                }
+                else if (min == surface.XpZn)
+                {
+					// Slope from SE (lowest) to diagonal
+					xSlope = Math.Min(Math.Max(surface.XpZn - surface.XnZn, surface.XpZp - surface.XnZp), Math.Min(surface.XnZn - surface.XpZn, surface.XnZp - surface.XpZp));
+                    zSlope = Math.Min(Math.Max(surface.XpZn - surface.XpZp, surface.XnZn - surface.XnZp), Math.Min(surface.XpZp - surface.XpZn, surface.XnZp - surface.XnZn));
+
+                    surface.XnZp = min - xSlope - zSlope;
+                    surface.XpZp = min - zSlope;
+                    surface.XnZn = min - xSlope;
+                }
+                else if (min == surface.XnZn)
+                {
+					// Slope from SW (lowest) to diagonal
+					xSlope = Math.Min(Math.Max(surface.XnZn - surface.XpZn, surface.XnZp - surface.XpZp), Math.Min(surface.XpZn - surface.XnZn, surface.XpZp - surface.XnZp));
+                    zSlope = Math.Min(Math.Max(surface.XnZn - surface.XnZp, surface.XpZn - surface.XpZp), Math.Min(surface.XnZp - surface.XnZn, surface.XpZp - surface.XpZn));
+
+                    surface.XnZp = min - zSlope;
+                    surface.XpZp = min - xSlope - zSlope;
+                    surface.XpZn = min - xSlope;
+                }
+            }
+        }
+	}
 }
