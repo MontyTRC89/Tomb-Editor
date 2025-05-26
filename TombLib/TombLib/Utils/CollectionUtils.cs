@@ -131,5 +131,41 @@ namespace TombLib.Utils
             list.Add(item);
             return item;
         }
+
+        /// <summary>
+        /// Checks if a sample of elements from the list satisfies a given predicate.
+        /// </summary>
+        /// <typeparam name="T">The type of elements in the list.</typeparam>
+        /// <param name="list">The source list to sample from.</param>
+        /// <param name="sampleSize">The maximum number of elements to sample.</param>
+        /// <param name="predicate">The condition to check for each sampled element.</param>
+        /// <returns>
+        /// <see langword="true" /> if all sampled elements satisfy the predicate; otherwise, <see langword="false" />.
+        /// </returns>
+        /// <remarks>
+        /// This is a less accurate alternative to LINQ's <c>.All()</c> method, but much faster
+        /// for large collections when checking only a representative sample is sufficient.<br />
+        /// It samples elements evenly across the entire list rather than checking every element.
+        /// </remarks>
+        public static bool SampleSatisfies<T>(this IList<T> list, int sampleSize, Predicate<T> predicate)
+        {
+            bool result = true;
+            int samplesToCheck = Math.Min(sampleSize, list.Count);
+
+            // Sample evenly from the list to get a representative subset
+            for (int i = 0; i < samplesToCheck; i++)
+            {
+                int index = i * list.Count / samplesToCheck;
+                T item = list[index];
+
+                if (!predicate(item))
+                {
+                    result = false;
+                    break;
+                }
+            }
+
+            return result;
+        }
     }
 }
