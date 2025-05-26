@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
 using TombLib.LevelData.SectorStructs;
@@ -22,39 +21,27 @@ public static class SurfaceToQuadConverter
 	/// <returns><see langword="true" /> if any surfaces were converted, <see langword="false" /> if no changes were made.</returns>
 	public static bool ConvertAreaToQuads(Room room, RectangleInt2 area, SectorVerticalPart vertical, int snapHeight)
 	{
-		bool success = false;
 		bool isFloor = vertical.IsOnFloor();
 
-		object lockObj = new();
-
 		// De-triangulate the area by making all sectors in the area have quad surfaces
-		Parallel.For(area.Y0, area.Y1 + 1, z =>
+		return ParallelUtils.PerformActionOnArea(area, (x, z) =>
 		{
-			for (int x = area.X0; x <= area.X1; x++)
-			{
-				Sector sector = room.GetSectorTry(x, z);
+			if (!room.GetSectorTry(x, z, out Sector sector) || sector.IsFullWall)
+				return false;
 
-				if (sector is null || sector.IsFullWall)
-					continue;
+			ref SectorSurface surface = ref isFloor ? ref sector.Floor : ref sector.Ceiling;
 
-				ref SectorSurface surface = ref isFloor ? ref sector.Floor : ref sector.Ceiling;
+			if (surface.IsQuad)
+				return false;
 
-				if (surface.IsQuad)
-					continue;
+			if (isFloor)
+				DeTriangulateFloor(ref surface, snapHeight);
+			else
+				DeTriangulateCeiling(ref surface, snapHeight);
 
-				if (isFloor)
-					DeTriangulateFloor(ref surface, snapHeight);
-				else
-					DeTriangulateCeiling(ref surface, snapHeight);
-
-				sector.FixHeights(vertical, snapHeight);
-
-				lock (lockObj)
-					success = true;
-			}
+			sector.FixHeights(vertical, snapHeight);
+			return true;
 		});
-
-		return success;
 	}
 
 	#region Floor

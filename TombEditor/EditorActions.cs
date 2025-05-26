@@ -435,38 +435,35 @@ namespace TombEditor
                 _editor.UndoManager.PushGeometryChanged(affectedRooms);
             }
 
-            bool isBorder;
-
             // Iterate through the selected region (excluding border sectors)
-            for (int z = area.Y0; z <= area.Y1; z++)
+            bool success = ParallelUtils.PerformActionOnArea(area, (x, z) =>
             {
-                isBorder = z <= 0 || z >= room.NumZSectors - 1;
+                bool success = false;
 
-                if (isBorder)
-                    continue;
-
-                for (int x = area.X0; x <= area.X1; x++)
+                // Smooth all four corners of current sector
+                for (SectorEdge edge = 0; edge < SectorEdge.Count; edge++)
                 {
-                    isBorder = x <= 0 || x >= room.NumXSectors - 1;
+                    bool result = SmoothSectorCorner(room, x, z, edge, vertical, stepHeight);
 
-                    if (isBorder)
-                        continue;
-
-                    // Smooth all four corners of current sector
-                    for (SectorEdge edge = 0; edge < SectorEdge.Count; edge++)
-                        SmoothSectorCorner(room, x, z, edge, vertical, stepHeight);
+                    if (!success && result)
+                        success = true;
                 }
-            }
 
-            SmartBuildGeometry(room, area);
+                return success;
+            },
+            validXCondition: (x) => x > 0 && x < room.NumXSectors - 1,
+            validZCondition: (z) => z > 0 && z < room.NumZSectors - 1);
+
+            if (success)
+                SmartBuildGeometry(room, area);
         }
 
-        private static void SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical, int stepHeight)
+        private static bool SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical, int stepHeight)
         {
             RoomSectorPair currentSectorPair = room.GetSectorTryThroughPortal(x, z);
 
             if (currentSectorPair.Sector is null || currentSectorPair.Sector.IsFullWall)
-                return;
+                return false;
 
             // Define the neighboring sectors and their corresponding edges based on the corner we're processing
             ReadOnlySpan<SectorEdgeOffset> neighbors = edge switch
@@ -496,7 +493,7 @@ namespace TombEditor
 
             // If there are not enough valid corners, return without making changes
             if (validCorners < 2)
-                return;
+                return false;
 
             int averageHeight = heightSum / validCorners;
 
@@ -519,6 +516,8 @@ namespace TombEditor
                 sectorPair.Sector.SetHeight(vertical, neighborEdge, averageHeight);
                 sectorPair.Sector.FixHeight(neighborEdge, vertical);
             }
+
+            return true;
         }
 
         public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, SectorVerticalPart vertical, double heightScale, bool precise, bool stepped)
@@ -5853,16 +5852,17 @@ namespace TombEditor
             if (!disableUndo)
                 _editor.UndoManager.PushGeometryChanged(room);
 
-            for (int x = area.X0; x <= area.X1; x++)
+            bool success = ParallelUtils.PerformActionOnArea(area, (x, z) =>
             {
-                for (int z = area.Y0; z <= area.Y1; z++)
-                {
-                    Sector sector = room.GetSectorTry(x, z);
-                    sector?.FixHeights(vertical, stepHeight);
-                }
-            }
+                if (!room.GetSectorTry(x, z, out Sector sector))
+                    return false;
 
-            SmartBuildGeometry(room, area);
+                sector.FixHeights(vertical, stepHeight);
+                return true;
+            });
+
+            if (success)
+                SmartBuildGeometry(room, area);
         }
 
         public static void ConvertAreaToQuads(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
