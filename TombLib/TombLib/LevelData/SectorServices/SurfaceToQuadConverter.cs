@@ -24,7 +24,7 @@ public static class SurfaceToQuadConverter
 		bool isFloor = vertical.IsOnFloor();
 
 		// De-triangulate the area by making all sectors in the area have quad surfaces
-		return ParallelUtils.PerformActionOnArea(area, (x, z) =>
+		return AreaUtils.PerformActionOnArea(area, (x, z) =>
 		{
 			if (!room.GetSectorTry(x, z, out Sector sector) || sector.IsFullWall)
 				return false;
