@@ -1,22 +1,36 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
 using TombLib.LevelData.SectorStructs;
 
 namespace TombLib.LevelData.SectorServices;
 
+/// <summary>
+/// Provides functionality to convert triangular sector surfaces to quad surfaces.
+/// </summary>
 public static class SurfaceToQuadConverter
 {
+	/// <summary>
+	/// Converts all triangular surfaces in the specified area to quad surfaces.
+	/// </summary>
+	/// <param name="room">The room containing the sectors to convert.</param>
+	/// <param name="area">The rectangular area within the room to process.</param>
+	/// <param name="vertical">Specifies whether to convert floor or ceiling surfaces.</param>
+	/// <param name="snapHeight">The height increment to snap values to.</param>
+	/// <returns><see langword="true" /> if any surfaces were converted, <see langword="false" /> if no changes were made.</returns>
 	public static bool ConvertAreaToQuads(Room room, RectangleInt2 area, SectorVerticalPart vertical, int snapHeight)
 	{
 		bool success = false;
 		bool isFloor = vertical.IsOnFloor();
 
+		object lockObj = new();
+
 		// De-triangulate the area by making all sectors in the area have quad surfaces
-		for (int x = area.X0; x <= area.X1; x++)
+		Parallel.For(area.Y0, area.Y1 + 1, z =>
 		{
-			for (int z = area.Y0; z <= area.Y1; z++)
+			for (int x = area.X0; x <= area.X1; x++)
 			{
 				Sector sector = room.GetSectorTry(x, z);
 
@@ -34,9 +48,11 @@ public static class SurfaceToQuadConverter
 					DeTriangulateCeiling(ref surface, snapHeight);
 
 				sector.FixHeights(vertical, snapHeight);
-				success = true;
+
+				lock (lockObj)
+					success = true;
 			}
-		}
+		});
 
 		return success;
 	}
@@ -160,6 +176,13 @@ public static class SurfaceToQuadConverter
 		}
 	}
 
+	/// <summary>
+	/// Calculates a normalized average height for floor corners that snaps to the specified height increment.
+	/// </summary>
+	/// <param name="height1">First height value.</param>
+	/// <param name="height2">Second height value.</param>
+	/// <param name="snapHeight">The height increment to snap to.</param>
+	/// <returns>The floor-normalized average height, snapped to the specified increment.</returns>
 	private static int GetNormalizedFloorAverage(int height1, int height2, int snapHeight)
 		=> (int)Math.Floor((height1 + height2) / 2.0 / snapHeight) * snapHeight;
 
@@ -284,11 +307,23 @@ public static class SurfaceToQuadConverter
 		}
 	}
 
+	/// <summary>
+	/// Calculates a normalized average height for ceiling corners that snaps to the specified height increment.
+	/// </summary>
+	/// <param name="height1">First height value.</param>
+	/// <param name="height2">Second height value.</param>
+	/// <param name="snapHeight">The height increment to snap to.</param>
+	/// <returns>The ceiling-normalized average height, snapped to the specified increment.</returns>
 	private static int GetNormalizedCeilingAverage(int height1, int height2, int snapHeight)
 		=> (int)Math.Ceiling((height1 + height2) / 2.0 / snapHeight) * snapHeight;
 
 	#endregion Ceiling
 
+	/// <summary>
+	/// Sets all four corners of a surface to the same height.
+	/// </summary>
+	/// <param name="surface">Reference to the surface to modify.</param>
+	/// <param name="height">The height to set for all corners.</param>
 	private static void SetAllCorners(ref SectorSurface surface, int height)
 		=> surface.XnZp = surface.XpZp = surface.XpZn = surface.XnZn = height;
 }
