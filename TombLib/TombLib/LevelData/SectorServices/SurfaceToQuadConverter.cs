@@ -33,7 +33,7 @@ public static class SurfaceToQuadConverter
 				else
 					DeTriangulateCeiling(ref surface, snapHeight);
 
-				sector.FixHeights(vertical);
+				sector.FixHeights(vertical, snapHeight);
 				success = true;
 			}
 		}
