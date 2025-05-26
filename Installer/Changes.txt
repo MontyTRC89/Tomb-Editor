@@ -11,7 +11,7 @@ Tomb Editor:
  * Handle portal crossing geometry rendering and texturing correctly.
  * Increased node editor performance and response time.
  * Reworked "Smooth" brush tool.
- * TRNG plugin trigger params ending with digits should now be correctly sorted.
+ * Fixed incorrect TRNG plugin trigger parameter sorting.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
  * Fixed functions from nested Lua scripts not appearing in the function list.
  * Fixed nodes randomly not saving parameters.
