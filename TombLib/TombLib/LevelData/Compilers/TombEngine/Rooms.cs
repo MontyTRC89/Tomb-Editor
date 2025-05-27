@@ -21,8 +21,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private readonly List<Room> _roomUnmapping = new List<Room>();
         private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
+		private Dictionary<Vector3, List<(int vertexIndex, NormalHelper poly)>> _normalGroups;
 
-        private void BuildRooms(CancellationToken cancelToken)
+		private void BuildRooms(CancellationToken cancelToken)
         {
             ReportProgress(5, "Lighting Rooms");
 
@@ -1793,13 +1794,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return buckets[material];
         }
 
-        private void PrepareRoomsBuckets()
+		private void PrepareRoomsBuckets()
         {
-            for (int i = 0; i < _tempRooms.Count; i++)
-                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
-        }
+            CollectNormalGroups();   
 
-        private void PrepareRoomBuckets(TombEngineRoom room)
+			for (int i = 0; i < _tempRooms.Count; i++)
+                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
+
+            AverageAndApplyNormals();
+		}
+
+		private void PrepareRoomBuckets(TombEngineRoom room)
         {
             // Build buckets and assign texture coordinates
             var textures = _textureInfoManager.GetObjectTextures();
@@ -1873,61 +1878,81 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     normalHelper.Polygon.Binormal = Vector3.Cross(normalHelper.Polygon.Normal, normalHelper.Polygon.Tangent);
                 }
             }
-
-            // Average everything
-            for (int i = 0; i < room.Vertices.Count; i++)
-            {
-                var vertex = room.Vertices[i];
-                var normalHelpers = vertex.NormalHelpers;
-
-                if (normalHelpers.Count == 0)
-                    continue;
-
-                var normal = Vector3.Zero;
-
-                // WARNING: we need to flip normal because it was calculated with Y negative up
-                for (int j = 0; j < normalHelpers.Count; j++)
-                    normal += normalHelpers[j].Polygon.Normal;
-
-                normal = -Vector3.Normalize(normal);
-
-                // FAILSAFE: In case normal is NaN, average again with reference normal
-                if (float.IsNaN(normal.X) || float.IsNaN(normal.Y) || float.IsNaN(normal.Z))
-                {
-                    normal = Vector3.Zero;
-
-                    // Use the first polygon's normal as a reference
-                    var referenceNormal = normalHelpers[0].Polygon.Normal;
-
-                    for (int j = 0; j < normalHelpers.Count; j++)
-                    {
-                        var currentNormal = normalHelpers[j].Polygon.Normal;
-                        if (Vector3.Dot(referenceNormal, currentNormal) < 0)
-                            currentNormal = -currentNormal;
-
-                        normal += currentNormal;
-                    }
-
-                    normal = -Vector3.Normalize(normal);
-                }
-
-                for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var poly = normalHelpers[j];
-
-                    for (int k = 0; k < poly.Polygon.Indices.Count; k++)
-                    {
-                        int index = poly.Polygon.Indices[k];
-                        if (index == i)
-                        {
-                            poly.Polygon.Normals[k] = normal;
-                            poly.Polygon.Tangents[k] = poly.Polygon.Tangent;
-                            poly.Polygon.Binormals[k] = poly.Polygon.Binormal;
-                            break;
-                        }
-                    }
-                }
-            }
         }
-    }
+
+        private void CollectNormalGroups()
+        {
+			_normalGroups = new Dictionary<Vector3, List<(int vertexIndex, NormalHelper poly)>>();
+
+			foreach (var room in _tempRooms.Values)
+			{
+                var roomPosition = new Vector3(room.Info.X, room.Info.YBottom, room.Info.Z);
+
+				for (int i = 0; i < room.Vertices.Count; i++)
+				{
+					var vertex = room.Vertices[i];
+					var pos = roomPosition + vertex.Position;
+
+					if (!_normalGroups.TryGetValue(pos, out var list))
+					{
+						list = new List<(int vertexIndex, NormalHelper poly)>();
+						_normalGroups[pos] = list;
+					}
+
+					foreach (var helper in vertex.NormalHelpers)
+						list.Add((i, helper));
+				}
+			}
+		}
+
+		private void AverageAndApplyNormals()
+		{
+			foreach (var kvp in _normalGroups)
+			{
+				var sharedNormal = Vector3.Zero;
+				var helpers = kvp.Value;
+
+				foreach (var (_, helper) in helpers)
+					sharedNormal += helper.Polygon.Normal;
+
+				sharedNormal = -Vector3.Normalize(sharedNormal);
+
+				// FAILSAFE: In case normal is NaN, average again with reference normal
+				if (float.IsNaN(sharedNormal.X) || float.IsNaN(sharedNormal.Y) || float.IsNaN(sharedNormal.Z))
+				{
+					sharedNormal = Vector3.Zero;
+
+					// Use the first polygon's normal as a reference
+					var reference = helpers[0].poly.Polygon.Normal;
+
+					foreach (var (_, helper) in helpers)
+					{
+						var n = helper.Polygon.Normal;
+						if (Vector3.Dot(reference, n) < 0)
+							n = -n;
+						sharedNormal += n;
+					}
+
+					sharedNormal = -Vector3.Normalize(sharedNormal);
+				}
+
+				// Apply averaged normals and already calculated tangents and binormals
+                // TombEnginePolygon is a class (reference type) so changes are already applied to 
+                // single rooms.
+				foreach (var (vertexIndex, helper) in helpers)
+				{
+					for (int k = 0; k < helper.Polygon.Indices.Count; k++)
+					{
+						if (helper.Polygon.Indices[k] == vertexIndex)
+						{
+							helper.Polygon.Normals[k] = sharedNormal;
+							helper.Polygon.Tangents[k] = helper.Polygon.Tangent;
+							helper.Polygon.Binormals[k] = helper.Polygon.Binormal;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 }
