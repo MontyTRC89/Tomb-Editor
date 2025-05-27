@@ -25,7 +25,8 @@ namespace TombEditor.Forms
             if (_instance.Room.Level.Settings.GameVersion != TRVersion.Game.TRNG)
                 ckGlideOut.Enabled = false;
             if (_instance.Room.Level.Settings.GameVersion >= TRVersion.Game.TR3 &&
-                _instance.Room.Level.Settings.GameVersion != TRVersion.Game.TRNG)
+                _instance.Room.Level.Settings.GameVersion != TRVersion.Game.TRNG &&
+                _instance.Room.Level.Settings.GameVersion != TRVersion.Game.TombEngine)
                 nudMoveTimer.Enabled = false;
         }
 

@@ -22,6 +22,7 @@ using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.LevelData.IO;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorServices;
 using TombLib.LevelData.SectorStructs;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Rendering;
@@ -407,68 +408,32 @@ namespace TombEditor
             }
         }
 
-        public static void SmoothSector(Room room, int x, int z, SectorVerticalPart vertical, int increment, bool disableUndo = false)
+        public static void SmoothSector(Room room, int x, int z, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
         {
-            var currSector = room.GetSectorTryThroughPortal(x, z);
+            RoomSectorPair currentSectorPair = room.GetSectorTryThroughPortal(x, z);
 
-            if (currSector.Room != room ||
-                vertical.IsOnFloor() && currSector.Sector.Floor.DiagonalSplit != DiagonalSplit.None ||
-                vertical.IsOnCeiling() && currSector.Sector.Ceiling.DiagonalSplit != DiagonalSplit.None)
+            if (currentSectorPair.Room != room)
                 return;
 
             if (!disableUndo)
-                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+                _editor.UndoManager.PushGeometryChanged(room.AndAdjoiningRooms);
 
-            var lookupSectors = new RoomSectorPair[8]
-            {
-                room.GetSectorTryThroughPortal(x - 1, z + 1),
-                room.GetSectorTryThroughPortal(x, z + 1),
-                room.GetSectorTryThroughPortal(x + 1, z + 1),
-                room.GetSectorTryThroughPortal(x + 1, z),
-                room.GetSectorTryThroughPortal(x + 1, z - 1),
-                room.GetSectorTryThroughPortal(x, z - 1),
-                room.GetSectorTryThroughPortal(x - 1, z - 1),
-                room.GetSectorTryThroughPortal(x - 1, z)
-            };
-
-            int[] adj = new int[8];
-            for (int i = 0; i < 8; i++)
-                adj[i] = (currSector.Room != null ? currSector.Room.Position.Y : 0) - (lookupSectors[i].Room != null ? lookupSectors[i].Room.Position.Y : 0);
-
-            int validSectorCntXnZp = (lookupSectors[7].Room != null ? 1 : 0) + (lookupSectors[0].Room != null ? 1 : 0) + (lookupSectors[1].Room != null ? 1 : 0);
-            int newXnZp = ((lookupSectors[7].Sector?.GetHeight(vertical, SectorEdge.XpZp) ?? 0) + adj[7] +
-                                   (lookupSectors[0].Sector?.GetHeight(vertical, SectorEdge.XpZn) ?? 0) + adj[0] +
-                                   (lookupSectors[1].Sector?.GetHeight(vertical, SectorEdge.XnZn) ?? 0) + adj[1]) / validSectorCntXnZp;
-
-            int validSectorCntXpZp = (lookupSectors[1].Room != null ? 1 : 0) + (lookupSectors[2].Room != null ? 1 : 0) + (lookupSectors[3].Room != null ? 1 : 0);
-            int newXpZp = ((lookupSectors[1].Sector?.GetHeight(vertical, SectorEdge.XpZn) ?? 0) + adj[2] +
-                                   (lookupSectors[2].Sector?.GetHeight(vertical, SectorEdge.XnZn) ?? 0) + adj[3] +
-                                   (lookupSectors[3].Sector?.GetHeight(vertical, SectorEdge.XnZp) ?? 0) + adj[0]) / validSectorCntXpZp;
-
-            int validSectorCntXpZn = (lookupSectors[3].Room != null ? 1 : 0) + (lookupSectors[4].Room != null ? 1 : 0) + (lookupSectors[5].Room != null ? 1 : 0);
-            int newXpZn = ((lookupSectors[3].Sector?.GetHeight(vertical, SectorEdge.XnZn) ?? 0) + adj[3] +
-                                   (lookupSectors[4].Sector?.GetHeight(vertical, SectorEdge.XnZp) ?? 0) + adj[0] +
-                                   (lookupSectors[5].Sector?.GetHeight(vertical, SectorEdge.XpZp) ?? 0) + adj[1]) / validSectorCntXpZn;
-
-            int validSectorCntXnZn = (lookupSectors[5].Room != null ? 1 : 0) + (lookupSectors[6].Room != null ? 1 : 0) + (lookupSectors[7].Room != null ? 1 : 0);
-            int newXnZn = ((lookupSectors[5].Sector?.GetHeight(vertical, SectorEdge.XnZp) ?? 0) + adj[0] +
-                                   (lookupSectors[6].Sector?.GetHeight(vertical, SectorEdge.XpZp) ?? 0) + adj[1] +
-                                   (lookupSectors[7].Sector?.GetHeight(vertical, SectorEdge.XpZn) ?? 0) + adj[2]) / validSectorCntXnZn;
-
-            room.ChangeSectorHeight(x, z, vertical, SectorEdge.XnZp, Math.Sign(newXnZp - currSector.Sector.GetHeight(vertical, SectorEdge.XnZp)) * increment);
-            room.ChangeSectorHeight(x, z, vertical, SectorEdge.XpZp, Math.Sign(newXpZp - currSector.Sector.GetHeight(vertical, SectorEdge.XpZp)) * increment);
-            room.ChangeSectorHeight(x, z, vertical, SectorEdge.XpZn, Math.Sign(newXpZn - currSector.Sector.GetHeight(vertical, SectorEdge.XpZn)) * increment);
-            room.ChangeSectorHeight(x, z, vertical, SectorEdge.XnZn, Math.Sign(newXnZn - currSector.Sector.GetHeight(vertical, SectorEdge.XnZn)) * increment);
-
-            currSector.Sector.FixHeights(vertical);
+            // Apply smoothing to each corner of the sector
+            for (SectorEdge edge = 0; edge < SectorEdge.Count; edge++)
+                SmoothSectorCorner(room, x, z, edge, vertical, stepHeight);
 
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
 
-        public static void SmoothTerrain(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        public static void SmoothArea(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
         {
             if (!disableUndo)
-                _editor.UndoManager.PushGeometryChanged(room);
+            {
+                HashSet<Room> affectedRooms = room.GetAdjoiningRoomsFromArea(area.Inflate(1));
+                affectedRooms.Add(room);
+
+                _editor.UndoManager.PushGeometryChanged(affectedRooms);
+            }
 
             bool isBorder;
 
@@ -498,6 +463,11 @@ namespace TombEditor
 
         private static void SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical, int stepHeight)
         {
+            RoomSectorPair currentSectorPair = room.GetSectorTryThroughPortal(x, z);
+
+            if (currentSectorPair.Sector is null || currentSectorPair.Sector.IsFullWall)
+                return;
+
             // Define the neighboring sectors and their corresponding edges based on the corner we're processing
             ReadOnlySpan<SectorEdgeOffset> neighbors = edge switch
             {
@@ -508,24 +478,19 @@ namespace TombEditor
                 _ => throw new ArgumentException("Invalid edge") // Handle invalid edge
             };
 
-            Sector currentSector = room.GetSectorTry(x, z);
-
-            if (currentSector is null || currentSector.IsFullWall)
-                return;
-
             // Calculate average height from current corner and surrounding neighbors
-            int heightSum = currentSector.GetHeight(vertical, edge);
+            int heightSum = currentSectorPair.Sector.GetHeight(vertical, edge);
             int validCorners = 1;
 
             // Add heights from valid neighboring corners
             foreach ((int neighborX, int neighborZ, SectorEdge neighborEdge) in neighbors)
             {
-                Sector sector = room.GetSectorTry(x + neighborX, z + neighborZ);
+                RoomSectorPair sectorPair = currentSectorPair.Room.GetSectorTryThroughPortal(x + neighborX, z + neighborZ);
 
-                if (sector is null || sector.IsFullWall)
+                if (sectorPair.Sector is null || sectorPair.Sector.IsFullWall)
                     continue;
 
-                heightSum += sector.GetHeight(vertical, neighborEdge);
+                heightSum += sectorPair.Sector.GetHeight(vertical, neighborEdge);
                 validCorners++;
             }
 
@@ -540,19 +505,19 @@ namespace TombEditor
                 averageHeight = (int)Math.Round((float)averageHeight / stepHeight) * stepHeight;
 
             // Apply the average height to the current corner
-            currentSector.SetHeight(vertical, edge, averageHeight);
-            currentSector.FixHeight(edge, vertical);
+            currentSectorPair.Sector.SetHeight(vertical, edge, averageHeight);
+            currentSectorPair.Sector.FixHeight(edge, vertical);
 
             // Apply the same height to neighboring corners
             foreach ((int neighborX, int neighborZ, SectorEdge neighborEdge) in neighbors)
             {
-                Sector sector = room.GetSectorTry(x + neighborX, z + neighborZ);
+                RoomSectorPair sectorPair = currentSectorPair.Room.GetSectorTryThroughPortal(x + neighborX, z + neighborZ);
 
-                if (sector is null || sector.IsFullWall)
+                if (sectorPair.Sector is null || sectorPair.Sector.IsFullWall)
                     continue;
 
-                sector.SetHeight(vertical, neighborEdge, averageHeight);
-                sector.FixHeight(neighborEdge, vertical);
+                sectorPair.Sector.SetHeight(vertical, neighborEdge, averageHeight);
+                sectorPair.Sector.FixHeight(neighborEdge, vertical);
             }
         }
 
@@ -5882,5 +5847,34 @@ namespace TombEditor
 
 			}
 		}
+
+        public static void RealignToStepHeight(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(room);
+
+            bool success = AreaUtils.PerformActionOnArea(area, (x, z) =>
+            {
+                if (!room.GetSectorTry(x, z, out Sector sector))
+                    return false;
+
+                sector.FixHeights(vertical, stepHeight);
+                return true;
+            });
+
+            if (success)
+                SmartBuildGeometry(room, area);
+        }
+
+        public static void ConvertAreaToQuads(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(room);
+
+            bool success = SurfaceToQuadConverter.ConvertAreaToQuads(room, area, vertical, stepHeight);
+
+            if (success)
+                SmartBuildGeometry(room, area);
+        }
     }
 }
