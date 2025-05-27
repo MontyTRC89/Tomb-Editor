@@ -302,7 +302,7 @@ namespace TombLib.NG
                     return Enumerable.Range(0, 256).Select(formatSounds1);
 
                 case NgParameterKind.SoundEffectsB:
-                    return Enumerable.Range(0, 114).Select(formatSounds2);
+                    return Enumerable.Range(0, 256).Select(formatSounds2);
 
                 case NgParameterKind.Sfx1024:
                     return Enumerable.Range(0, 1024).Select(formatSounds1);

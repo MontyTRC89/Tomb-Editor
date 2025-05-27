@@ -12,6 +12,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public struct VertexColors : IEquatable<VertexColors>
 	{
+        public Vector3 Color;
 		public Vector3 ColorB1;
 		public Vector3 ColorB2;
 		public Vector3 ColorB3;
@@ -24,6 +25,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 		{
 			return new VertexColors
 			{
+				Color = a.Color + b.Color,
 				ColorB1 = a.ColorB1 + b.ColorB1,
 				ColorB2 = a.ColorB2 + b.ColorB2,
 				ColorB3 = a.ColorB3 + b.ColorB3,
@@ -38,6 +40,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 		{
 			return new VertexColors
 			{
+				Color = a.Color / scalar,
 				ColorB1 = a.ColorB1 / scalar,
 				ColorB2 = a.ColorB2 / scalar,
 				ColorB3 = a.ColorB3 / scalar,
@@ -49,6 +52,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 		// Equality (==, !=)
 		public static bool operator ==(VertexColors a, VertexColors b) =>
+            a.Color == b.Color &&
 			a.ColorB1 == b.ColorB1 && a.ColorB2 == b.ColorB2 && a.ColorB3 == b.ColorB3 &&
 			a.ColorB4 == b.ColorB4 && a.ColorB5 == b.ColorB5 && a.ColorB6 == b.ColorB6;
 
@@ -65,7 +69,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 		// HashCode (adatto per dizionari)
 		public override int GetHashCode()
 		{
-			return HashCode.Combine(ColorB1, ColorB2, ColorB3);
+			return HashCode.Combine(Color, ColorB1, ColorB2, ColorB3, ColorB4, ColorB5, ColorB6);
 		}
 	}
 
@@ -428,8 +432,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var p in Vertices)
                 writer.Write(p.Position);
             foreach (var c in Vertices)
-            {
-                writer.Write(c.Colors.ColorB1);
+			{
+				writer.Write(c.Colors.Color);
+				writer.Write(c.Colors.ColorB1);
                 writer.Write(c.Colors.ColorB2);
                 writer.Write(c.Colors.ColorB3);
 				writer.Write(c.Colors.ColorB4);

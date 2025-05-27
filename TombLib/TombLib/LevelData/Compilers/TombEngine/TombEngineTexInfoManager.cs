@@ -608,51 +608,6 @@ namespace TombLib.LevelData.Compilers
             // degenerate quad. It's needed to fake UVRotate application to triangular areas.
             public bool ConvertToQuad;
 
-            public tr_face3 CreateFace3(ushort[] indices, bool doubleSided, ushort lightingEffect)
-            {
-                if (indices.Length != 3)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
-
-                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
-                ushort[] transformedIndices = new ushort[3] { indices[0], indices[1], indices[2] };
-
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        ushort tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
-
-                return new tr_face3 { Vertices = new ushort[3] { transformedIndices[0], transformedIndices[1], transformedIndices[2] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
-            }
-
-            public tr_face4 CreateFace4(ushort[] indices, bool doubleSided, ushort lightingEffect)
-            {
-                if (indices.Length != 4)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
-
-                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
-                ushort[] transformedIndices = new ushort[4] { indices[0], indices[1], indices[2], indices[3] };
-
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        ushort tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[3];
-                        transformedIndices[3] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
-
-                return new tr_face4 { Vertices = new ushort[4] { transformedIndices[0], transformedIndices[1], transformedIndices[2], transformedIndices[3] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
-            }
-
             public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 3)

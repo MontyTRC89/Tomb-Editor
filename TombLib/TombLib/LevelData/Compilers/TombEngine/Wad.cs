@@ -47,7 +47,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 { 
                     Position   = new Vector3(pos.X, -pos.Y, pos.Z),
                     Normal     = Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)),
-                    Colors     = new VertexColors { ColorB1 = color },
+                    Colors     = new VertexColors { Color = color, ColorB1 = color },
                     BoneIndex  = oldMesh.HasWeights ? oldMesh.VertexWeights[i].Index : new int[4] { meshIndex, 0, 0, 0 },
                     BoneWeight = oldMesh.HasWeights ? oldMesh.VertexWeights[i].Weight : new float[4] { 1, 0, 0, 0 },
                     Glow       = oldMesh.HasAttributes ? (float)oldMesh.VertexAttributes[i].Glow / 64.0f : 0.0f,
