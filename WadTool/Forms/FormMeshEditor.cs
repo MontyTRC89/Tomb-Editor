@@ -464,8 +464,8 @@ namespace WadTool
 
 				butAllTextures.Checked = true;
 				butAllTextures.Visible = false;
-				comboCurrentTexture.Width += comboCurrentTexture.Left - butAllTextures.Left;
-				comboCurrentTexture.Left = butAllTextures.Left;
+				//comboCurrentTexture.Width += comboCurrentTexture.Left - butAllTextures.Left;
+				//comboCurrentTexture.Left = butAllTextures.Left;
 			}
 			else
 			{
@@ -1326,12 +1326,17 @@ namespace WadTool
 				panelMesh.StopPreview();
 		}
 
-		private void butAddTexture_Click(object sender, EventArgs e)
+		private void butAddEmbeddedTexture_Click(object sender, EventArgs e)
 		{
 			AddTexture(false);
 		}
 
-		private void butReplaceTexture_Click(object sender, EventArgs e)
+		private void butReplaceWithEmbeddedTexture_Click(object sender, EventArgs e)
+		{
+			ReplaceTexture(false);
+		}
+
+		private void ReplaceTexture(bool isExternal)
 		{
 			if (panelTextureMap.VisibleTexture == null ||
 				panelTextureMap.VisibleTexture.IsUnavailable)
@@ -1348,6 +1353,9 @@ namespace WadTool
 
 			if (!CheckTextureSize(image))
 				return;
+
+			if (!isExternal)
+				image.FileName = string.Empty;
 
 			image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
 			var newTexture = new WadTexture(image);
@@ -1647,6 +1655,11 @@ namespace WadTool
 
 				_userTextures.Add(newTexture);
 			}
+		}
+
+		private void replaceWithExternalTextureToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ReplaceTexture(true);
 		}
 	}
 }
