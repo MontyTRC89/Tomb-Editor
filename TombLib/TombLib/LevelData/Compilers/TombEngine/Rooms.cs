@@ -1959,34 +1959,45 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 		private void AverageAndApplyNormals()
 		{
-			NormalizeLocalVertexNormals(); 
+			NormalizeLocalVertexNormals(); // Prima normalizza quelli NON su portale
 
 			foreach (var kvp in _normalGroups)
 			{
-				var sharedNormal = Vector3.Zero;
 				var helpers = kvp.Value;
 
+				// Step 1: ottieni normale di riferimento robusta
+				var reference = GetReferenceNormal(helpers);
+
+				// Step 2: somma solo le normali compatibili
+				var normalSum = Vector3.Zero;
+				int count = 0;
+
 				foreach (var (_, _, helper) in helpers)
-					sharedNormal += helper.Polygon.Normal;
-
-				sharedNormal = -Vector3.Normalize(sharedNormal);
-
-				if (float.IsNaN(sharedNormal.X) || float.IsNaN(sharedNormal.Y) || float.IsNaN(sharedNormal.Z))
 				{
-					sharedNormal = Vector3.Zero;
-					var reference = helpers[0].poly.Polygon.Normal;
-
-					foreach (var (_, _, helper) in helpers)
+					var n = Vector3.Normalize(helper.Polygon.Normal);
+					if (Vector3.Dot(reference, n) >= 0.5f) // solo normali allineate
 					{
-						var n = helper.Polygon.Normal;
-						if (Vector3.Dot(reference, n) < 0)
-							n = -n;
-						sharedNormal += n;
+						normalSum += n;
+						count++;
 					}
-
-					sharedNormal = -Vector3.Normalize(sharedNormal);
 				}
 
+				// Step 3: fallback se non c'è niente da mediare
+				if (count == 0)
+				{
+					foreach (var (_, _, helper) in helpers)
+						normalSum += Vector3.Normalize(helper.Polygon.Normal);
+
+					count = helpers.Count;
+				}
+
+				var sharedNormal = -Vector3.Normalize(normalSum / count);
+
+				// Step 4: fallback se normalizzazione fallisce
+				if (float.IsNaN(sharedNormal.X) || float.IsNaN(sharedNormal.Y) || float.IsNaN(sharedNormal.Z))
+					sharedNormal = -reference;
+
+				// Step 5: applica la normale condivisa nei poligoni
 				foreach (var (_, vertexIndex, helper) in helpers)
 				{
 					for (int k = 0; k < helper.Polygon.Indices.Count; k++)
@@ -2001,6 +2012,31 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					}
 				}
 			}
+		}
+
+
+		Vector3 GetReferenceNormal(List<(TombEngineRoom room, int index, NormalHelper poly)> helpers)
+		{
+			var sum = Vector3.Zero;
+			foreach (var (_, _, helper) in helpers)
+				sum += Vector3.Normalize(helper.Polygon.Normal);
+
+			var average = Vector3.Normalize(sum);
+
+			// Verifica se l'average ha senso: almeno metà devono avere dot > 0.5
+			int countAligned = 0;
+			foreach (var (_, _, helper) in helpers)
+			{
+				var n = Vector3.Normalize(helper.Polygon.Normal);
+				if (Vector3.Dot(average, n) > 0.5f)
+					countAligned++;
+			}
+
+			if (countAligned >= helpers.Count / 2)
+				return average;
+
+			// fallback: usa la prima normale se il gruppo è troppo divergente
+			return Vector3.Normalize(helpers[0].poly.Polygon.Normal);
 		}
 	}
 }
