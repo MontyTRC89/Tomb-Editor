@@ -14,6 +14,7 @@ Tomb Editor:
  * Fixed incorrect TRNG plugin trigger parameter sorting.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
  * Fixed functions from nested Lua scripts not appearing in the function list.
+ * Fixed multiline textbox in nodes not parsing Unix-like newline symbols correctly.
  * Fixed nodes randomly not saving parameters.
  * Fixed occasional garbage polygons in merged static meshes in TEN levels.
  

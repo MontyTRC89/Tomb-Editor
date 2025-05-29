@@ -97,7 +97,7 @@ namespace TombLib.Utils
             if (string.IsNullOrEmpty(source))
                 return string.Empty;
 
-            return source.Replace(Environment.NewLine, "\\n");
+            return source.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\\n");
         }
 
         public static string SingleLineToMultiLine(string source)
