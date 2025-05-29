@@ -21,7 +21,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private readonly List<Room> _roomUnmapping = new List<Room>();
         private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
-		private Dictionary<Vector3, List<(int vertexIndex, NormalHelper poly)>> _normalGroups;
+		private Dictionary<Vector3, List<(TombEngineRoom room, int vertexIndex, NormalHelper poly)>> _normalGroups;
 
 		private void BuildRooms(CancellationToken cancelToken)
         {
@@ -1880,52 +1880,103 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private void CollectNormalGroups()
-        {
-			_normalGroups = new Dictionary<Vector3, List<(int vertexIndex, NormalHelper poly)>>();
+		private void CollectNormalGroups()
+		{
+			_normalGroups = new Dictionary<Vector3, List<(TombEngineRoom room, int vertexIndex, NormalHelper poly)>>();
 
 			foreach (var room in _tempRooms.Values)
 			{
-                var roomPosition = new Vector3(room.Info.X, 0, room.Info.Z);
+				var roomPosition = new Vector3(room.Info.X, 0, room.Info.Z);
 
 				for (int i = 0; i < room.Vertices.Count; i++)
 				{
 					var vertex = room.Vertices[i];
+					if (!vertex.IsOnPortal)
+						continue;
+
 					var pos = roomPosition + vertex.Position;
 
 					if (!_normalGroups.TryGetValue(pos, out var list))
 					{
-						list = new List<(int vertexIndex, NormalHelper poly)>();
+						list = new List<(TombEngineRoom, int, NormalHelper)>();
 						_normalGroups[pos] = list;
 					}
 
 					foreach (var helper in vertex.NormalHelpers)
-						list.Add((i, helper));
+						list.Add((room, i, helper));
+				}
+			}
+		}
+
+		private void NormalizeLocalVertexNormals()
+		{
+			foreach (var room in _tempRooms.Values)
+			{
+				for (int i = 0; i < room.Vertices.Count; i++)
+				{
+					var vertex = room.Vertices[i];
+					if (vertex.IsOnPortal)
+						continue;
+
+					var normalSum = Vector3.Zero;
+					var helpers = vertex.NormalHelpers;
+
+					foreach (var helper in helpers)
+						normalSum += helper.Polygon.Normal;
+
+					var finalNormal = -Vector3.Normalize(normalSum);
+
+					if (float.IsNaN(finalNormal.X) || float.IsNaN(finalNormal.Y) || float.IsNaN(finalNormal.Z))
+					{
+						finalNormal = Vector3.Zero;
+						var reference = helpers[0].Polygon.Normal;
+						foreach (var helper in helpers)
+						{
+							var n = helper.Polygon.Normal;
+							if (Vector3.Dot(reference, n) < 0)
+								n = -n;
+							finalNormal += n;
+						}
+						finalNormal = -Vector3.Normalize(finalNormal);
+					}
+
+					foreach (var helper in helpers)
+					{
+						for (int k = 0; k < helper.Polygon.Indices.Count; k++)
+						{
+							if (helper.Polygon.Indices[k] == i)
+							{
+								helper.Polygon.Normals[k] = finalNormal;
+								helper.Polygon.Tangents[k] = helper.Polygon.Tangent;
+								helper.Polygon.Binormals[k] = helper.Polygon.Binormal;
+								break;
+							}
+						}
+					}
 				}
 			}
 		}
 
 		private void AverageAndApplyNormals()
 		{
+			NormalizeLocalVertexNormals(); 
+
 			foreach (var kvp in _normalGroups)
 			{
 				var sharedNormal = Vector3.Zero;
 				var helpers = kvp.Value;
 
-				foreach (var (_, helper) in helpers)
+				foreach (var (_, _, helper) in helpers)
 					sharedNormal += helper.Polygon.Normal;
 
 				sharedNormal = -Vector3.Normalize(sharedNormal);
 
-				// FAILSAFE: In case normal is NaN, average again with reference normal
 				if (float.IsNaN(sharedNormal.X) || float.IsNaN(sharedNormal.Y) || float.IsNaN(sharedNormal.Z))
 				{
 					sharedNormal = Vector3.Zero;
-
-					// Use the first polygon's normal as a reference
 					var reference = helpers[0].poly.Polygon.Normal;
 
-					foreach (var (_, helper) in helpers)
+					foreach (var (_, _, helper) in helpers)
 					{
 						var n = helper.Polygon.Normal;
 						if (Vector3.Dot(reference, n) < 0)
@@ -1936,10 +1987,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					sharedNormal = -Vector3.Normalize(sharedNormal);
 				}
 
-				// Apply averaged normals and already calculated tangents and binormals
-                // TombEnginePolygon is a class (reference type) so changes are already applied to 
-                // single rooms.
-				foreach (var (vertexIndex, helper) in helpers)
+				foreach (var (_, vertexIndex, helper) in helpers)
 				{
 					for (int k = 0; k < helper.Polygon.Indices.Count; k++)
 					{
