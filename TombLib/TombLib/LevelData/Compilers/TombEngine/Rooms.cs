@@ -1959,84 +1959,77 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 		private void AverageAndApplyNormals()
 		{
-			NormalizeLocalVertexNormals(); // Prima normalizza quelli NON su portale
+			NormalizeLocalVertexNormals();
 
 			foreach (var kvp in _normalGroups)
 			{
 				var helpers = kvp.Value;
 
-				// Step 1: ottieni normale di riferimento robusta
-				var reference = GetReferenceNormal(helpers);
+				// Split normals in clusters by angle threshold
+				var clusters = ClusterNormals(helpers, angleThreshold: -0.1f); // ≈ 95°
 
-				// Step 2: somma solo le normali compatibili
-				var normalSum = Vector3.Zero;
-				int count = 0;
-
-				foreach (var (_, _, helper) in helpers)
+				foreach (var cluster in clusters)
 				{
-					var n = Vector3.Normalize(helper.Polygon.Normal);
-					if (Vector3.Dot(reference, n) >= 0.5f) // solo normali allineate
+					var normalSum = Vector3.Zero;
+					foreach (var (_, _, helper) in cluster)
 					{
-						normalSum += n;
-						count++;
-					}
-				}
-
-				// Step 3: fallback se non c'è niente da mediare
-				if (count == 0)
-				{
-					foreach (var (_, _, helper) in helpers)
 						normalSum += Vector3.Normalize(helper.Polygon.Normal);
+					}
 
-					count = helpers.Count;
-				}
+					var sharedNormal = -Vector3.Normalize(normalSum / cluster.Count);
 
-				var sharedNormal = -Vector3.Normalize(normalSum / count);
-
-				// Step 4: fallback se normalizzazione fallisce
-				if (float.IsNaN(sharedNormal.X) || float.IsNaN(sharedNormal.Y) || float.IsNaN(sharedNormal.Z))
-					sharedNormal = -reference;
-
-				// Step 5: applica la normale condivisa nei poligoni
-				foreach (var (_, vertexIndex, helper) in helpers)
-				{
-					for (int k = 0; k < helper.Polygon.Indices.Count; k++)
+					// Fallback in the case of NaN
+					if (float.IsNaN(sharedNormal.X) || float.IsNaN(sharedNormal.Y) || float.IsNaN(sharedNormal.Z))
 					{
-						if (helper.Polygon.Indices[k] == vertexIndex)
+						sharedNormal = -Vector3.Normalize(cluster[0].poly.Polygon.Normal);
+					}
+
+					// Apply the normal to the vertices of that cluster
+					foreach (var (_, vertexIndex, helper) in cluster)
+					{
+						for (int k = 0; k < helper.Polygon.Indices.Count; k++)
 						{
-							helper.Polygon.Normals[k] = sharedNormal;
-							helper.Polygon.Tangents[k] = helper.Polygon.Tangent;
-							helper.Polygon.Binormals[k] = helper.Polygon.Binormal;
-							break;
+							if (helper.Polygon.Indices[k] == vertexIndex)
+							{
+								helper.Polygon.Normals[k] = sharedNormal;
+								helper.Polygon.Tangents[k] = helper.Polygon.Tangent;
+								helper.Polygon.Binormals[k] = helper.Polygon.Binormal;
+								break;
+							}
 						}
 					}
 				}
 			}
 		}
 
-
-		Vector3 GetReferenceNormal(List<(TombEngineRoom room, int index, NormalHelper poly)> helpers)
+		private List<List<(TombEngineRoom room, int index, NormalHelper poly)>> ClusterNormals(
+			List<(TombEngineRoom room, int index, NormalHelper poly)> helpers, float angleThreshold)
 		{
-			var sum = Vector3.Zero;
-			foreach (var (_, _, helper) in helpers)
-				sum += Vector3.Normalize(helper.Polygon.Normal);
+			var clusters = new List<List<(TombEngineRoom room, int index, NormalHelper poly)>>();
 
-			var average = Vector3.Normalize(sum);
-
-			// Verifica se l'average ha senso: almeno metà devono avere dot > 0.5
-			int countAligned = 0;
-			foreach (var (_, _, helper) in helpers)
+			foreach (var helper in helpers)
 			{
-				var n = Vector3.Normalize(helper.Polygon.Normal);
-				if (Vector3.Dot(average, n) > 0.5f)
-					countAligned++;
+				var normal = Vector3.Normalize(helper.poly.Polygon.Normal);
+				bool added = false;
+
+				foreach (var cluster in clusters)
+				{
+					var referenceNormal = Vector3.Normalize(cluster[0].poly.Polygon.Normal);
+					if (Vector3.Dot(normal, referenceNormal) >= angleThreshold)
+					{
+						cluster.Add(helper);
+						added = true;
+						break;
+					}
+				}
+
+				if (!added)
+				{
+					clusters.Add(new List<(TombEngineRoom room, int index, NormalHelper poly)> { helper });
+				}
 			}
 
-			if (countAligned >= helpers.Count / 2)
-				return average;
-
-			// fallback: usa la prima normale se il gruppo è troppo divergente
-			return Vector3.Normalize(helpers[0].poly.Polygon.Normal);
+			return clusters;
 		}
 	}
 }
