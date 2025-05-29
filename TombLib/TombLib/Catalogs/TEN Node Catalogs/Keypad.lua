@@ -112,10 +112,7 @@ LevelFuncs.Engine.ExitKeypad = function(object, status)
     local cameraObject = GetMoveableByName("keypadCam1")
     local dataName = object .. "_KeypadData"
 
-    if status then
-        LevelVars.Engine.Keypad[dataName].Status = true
-    end
-
+    LevelVars.Engine.Keypad[dataName].Status = status
     View.SetFOV(80)
     Lara:SetVisible(true)
     ResetObjCamera()
