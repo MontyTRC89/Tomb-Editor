@@ -43,17 +43,7 @@ LevelFuncs.Engine.Node.KeypadTrigger = function(object, triggerer)
         volume:Disable()
     end
 
-    local target = GetMoveableByName(object)
-
-    Lara:Interact(target)
-
-    if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
-        Lara:SetVisible(false)
-        View.SetFOV = 1
-        LevelVars.Engine.ActivatedKeypad  = object
-        TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
-        Flow.SetFreezeMode(Flow.FreezeMode.SPECTATOR)
-    end
+    LevelFuncs.Engine.ActivateKeypad(object)
 
 end
 -- !Name "Run a keypad (volume event)"
@@ -75,17 +65,7 @@ LevelFuncs.Engine.Node.KeypadVolume = function(object, volumeEvent, eventType)
         volume:Disable()
     end
 
-    local target = GetMoveableByName(object)
-
-    Lara:Interact(target)
-
-    if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
-        Lara:SetVisible(false)
-        View.SetFOV = 1
-        LevelVars.Engine.ActivatedKeypad = object
-        TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
-        Flow.SetFreezeMode(Flow.FreezeMode.SPECTATOR)
-    end
+    LevelFuncs.Engine.ActivateKeypad(object)
 
 end
 
@@ -107,17 +87,41 @@ LevelFuncs.Engine.Node.KeypadScript = function(object, funcName, args)
         volume:Disable()
     end
 
+    LevelFuncs.Engine.ActivateKeypad(object)
+
+end
+
+LevelFuncs.Engine.ActivateKeypad = function(object)
+
     local target = GetMoveableByName(object)
 
     Lara:Interact(target)
 
     if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
         Lara:SetVisible(false)
-        View.SetFOV = 1
+        View.SetFOV(30)
         LevelVars.Engine.ActivatedKeypad = object
         TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
         Flow.SetFreezeMode(Flow.FreezeMode.SPECTATOR)
     end
+
+end
+
+LevelFuncs.Engine.ExitKeypad = function(object, status)
+
+    local cameraObject = GetMoveableByName("keypadCam1")
+    local dataName = object .. "_KeypadData"
+
+    if status then
+        LevelVars.Engine.Keypad[dataName].Status = true
+    end
+
+    View.SetFOV(80)
+    Lara:SetVisible(true)
+    ResetObjCamera()
+    cameraObject:Destroy()
+    Flow.SetFreezeMode(Flow.FreezeMode.NONE)
+    TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
 
 end
 
@@ -204,14 +208,7 @@ LevelFuncs.Engine.RunKeypad = function()
                     target:SetMeshVisible(mesh.dark, true)  -- Show dark keys
                     target:SetMeshVisible(mesh.bright, false)  -- Hide bright keys
                 end
-                LevelVars.Engine.Keypad[dataName].Status = true
-                View.SetFOV = 80
-                Lara:SetVisible(true)
-                ResetObjCamera()
-                cameraObject:Destroy()
-                Lara:SetVisible(true)
-                TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
-                Flow.SetFreezeMode(Flow.FreezeMode.NONE)
+                LevelFuncs.Engine.ExitKeypad(object, true)
                 return
             else
                 TEN.Sound.PlaySound(soundIDs["Failure"])
@@ -245,12 +242,7 @@ LevelFuncs.Engine.RunKeypad = function()
             target:SetMeshVisible(mesh.bright, false)  -- Hide bright keys
         end
 
-        View.SetFOV = 80
-        Lara:SetVisible(true)
-        ResetObjCamera()
-        cameraObject:Destroy()
-        Flow.SetFreezeMode(Flow.FreezeMode.NONE)
-        TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
+        LevelFuncs.Engine.ExitKeypad(object, false)
         return
 
     end
@@ -286,7 +278,7 @@ LevelFuncs.Engine.RunKeypad = function()
     end
 
     -- Display entered code with dashes
-    local controlsText = TEN.Strings.DisplayString(codeWithDashes, TEN.Vec2(TEN.Util.PercentToScreen(52.5, 39.3)), 0.60, TEN.Color(255,255,255), false, {Strings.DisplayStringOption.RIGHT})
+    local controlsText = TEN.Strings.DisplayString(codeWithDashes, TEN.Vec2(TEN.Util.PercentToScreen(57.5, 19.5)), 1.60, TEN.Color(255,255,255), false, {Strings.DisplayStringOption.RIGHT})
     ShowString(controlsText, 1 / 30)
 
 end
