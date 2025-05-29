@@ -1886,7 +1886,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 			foreach (var room in _tempRooms.Values)
 			{
-                var roomPosition = new Vector3(room.Info.X, room.Info.YBottom, room.Info.Z);
+                var roomPosition = new Vector3(room.Info.X, 0, room.Info.Z);
 
 				for (int i = 0; i < room.Vertices.Count; i++)
 				{
