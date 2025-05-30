@@ -28,6 +28,7 @@ TombIDE:
  
 TEN nodes:
  * Added nodes for video playback.
+ * Updated "Add item to inventory" node with pickup summary toggle.
  
 TEN base WAD:
  * Added snow sprites in a dedicated sprite slot.
