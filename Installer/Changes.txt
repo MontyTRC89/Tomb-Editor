@@ -17,6 +17,7 @@ Tomb Editor:
  * Fixed multiline textbox in nodes not parsing Unix-like newline symbols correctly.
  * Fixed nodes randomly not saving parameters.
  * Fixed occasional garbage polygons in merged static meshes in TEN levels.
+ * Update "Add item to inventory" node
  
 WadTool:
  * Added skinned mesh import option in skeleton editor and vertex weight painting mode in mesh editor.
