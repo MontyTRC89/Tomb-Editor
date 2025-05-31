@@ -11,11 +11,12 @@ Tomb Editor:
  * Handle portal crossing geometry rendering and texturing correctly.
  * Increased node editor performance and response time.
  * Reworked "Smooth" brush tool.
- * Fixed incorrect TRNG plugin trigger parameter sorting.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
  * Fixed functions from nested Lua scripts not appearing in the function list.
  * Fixed multiline textbox in nodes not parsing Unix-like newline symbols correctly.
  * Fixed nodes randomly not saving parameters.
+ * Fixed incorrect handling of single and double quotes in text nodes.
+ * Fixed incorrect TRNG plugin trigger parameter sorting.
  * Fixed occasional garbage polygons in merged static meshes in TEN levels.
  
 WadTool:
