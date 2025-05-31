@@ -89,7 +89,7 @@
 						FontSize="{x:Static darkUI:Defaults.SmallFontSize}"
 						Foreground="{DynamicResource Brush_Text_Warning}"
 						TextWrapping="Wrap">
-						Warning: This engine known to not function correctly on modern systems.
+						Warning: This engine is known to not function correctly on modern systems.
 						External software, such as dgVoodoo, might be required for proper operation.
 					</TextBlock>
 				</controls:SpacedStack>
