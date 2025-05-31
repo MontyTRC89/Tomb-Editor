@@ -47,6 +47,11 @@ namespace TombIDE.ProjectMaster.Forms
 			switch (_ide.Project.GameVersion)
 			{
 				case TRVersion.Game.TR1:
+					GenerateTR1Archive(filePath, readmeText);
+					break;
+
+				case TRVersion.Game.TR2X:
+					GenerateTR2XArchive(filePath, readmeText);
 					break;
 
 				case TRVersion.Game.TR2:
@@ -57,8 +62,7 @@ namespace TombIDE.ProjectMaster.Forms
 					GenerateTR3Archive(filePath, readmeText);
 					break;
 
-				case TRVersion.Game.TR4:
-				case TRVersion.Game.TRNG:
+				case TRVersion.Game.TR4 or TRVersion.Game.TRNG:
 					GenerateTR4Archive(filePath, readmeText);
 					break;
 

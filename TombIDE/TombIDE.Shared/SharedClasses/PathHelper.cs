@@ -23,6 +23,11 @@ namespace TombIDE.Shared.SharedClasses
 					targetExtension = "*.json5";
 					break;
 
+				case TRVersion.Game.TR2X:
+					targetFile = "TR2X_gameflow.json5";
+					targetExtension = "*.json5";
+					break;
+
 				case TRVersion.Game.TombEngine:
 					targetFile = "Gameflow.lua";
 					targetExtension = "*.lua";
