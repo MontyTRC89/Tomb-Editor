@@ -28,7 +28,9 @@ public static class Defaults
 	public const bool SnapsToDevicePixels = true;
 	public const bool UseLayoutRounding = true;
 
+	public const double SmallFontSize = 10;
 	public const double DefaultFontSize = 11;
+	public const double LargeFontSize = 13;
 	public const double H1FontSize = 20;
 	public const double H2FontSize = 16;
 
@@ -39,6 +41,8 @@ public static class Defaults
 	public const double LargeThicknessWidth = 16;
 	public const double ExtraLargeThicknessWidth = 24;
 	public const double JumboThicknessWidth = 32;
+
+	public const double StandardButtonWidth = 75;
 
 	#endregion Constants
 

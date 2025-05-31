@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
+using TombIDE.Forms;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
@@ -47,8 +48,8 @@ namespace TombIDE
 
 		private void button_Help_Click(object sender, EventArgs e)
 		{
-			var form = new FormEngineHelp(Cursor.Position);
-			form.Show(this);
+			var window = new EngineHelpWindow();
+			window.Show();
 		}
 
 		private void radio_Script_01_CheckedChanged(object sender, EventArgs e)
