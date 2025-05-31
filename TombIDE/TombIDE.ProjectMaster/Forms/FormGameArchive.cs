@@ -47,6 +47,7 @@ namespace TombIDE.ProjectMaster.Forms
 			switch (_ide.Project.GameVersion)
 			{
 				case TRVersion.Game.TR1:
+					GenerateTR1Archive(filePath, readmeText);
 					break;
 
 				case TRVersion.Game.TR2:

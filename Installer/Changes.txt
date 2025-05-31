@@ -26,6 +26,7 @@ WadTool:
 
 TombIDE:
  * Fixed random crash caused by cloud drives locking temporary files.
+ * Fixed TR1X "Ready to Publish" game archive creation not working.
  
 TEN nodes:
  * Added nodes for video playback.
