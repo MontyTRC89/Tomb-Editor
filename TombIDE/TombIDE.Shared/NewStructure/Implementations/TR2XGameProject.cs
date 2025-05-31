@@ -8,26 +8,15 @@ using TombLib.LevelData;
 
 namespace TombIDE.Shared.NewStructure
 {
-	public class Tomb1MainGameProject : GameProjectBase
+	public class TR2XGameProject : GameProjectBase
 	{
 		public const string MainScriptFileNameFilter = "*_gameflow.json5";
 		public const string LanguageFileNameFilter = MainScriptFileNameFilter; // Same file as main script file
 
-		public override TRVersion.Game GameVersion => TRVersion.Game.TR1;
+		public override TRVersion.Game GameVersion => TRVersion.Game.TR2X;
 
-		public override string DataFileExtension => ".phd";
-		public override string EngineExecutableFileName
-		{
-			get
-			{
-				string tomb1MainPath = Path.Combine(GetEngineRootDirectoryPath(), "Tomb1Main.exe");
-
-				if (File.Exists(tomb1MainPath))
-					return "Tomb1Main.exe";
-
-				return "TR1X.exe"; // Default
-			}
-		}
+		public override string DataFileExtension => ".tr2";
+		public override string EngineExecutableFileName => "TR2X.exe";
 
 		public override string MainScriptFilePath => Directory
 			.GetFiles(GetScriptRootDirectory(), MainScriptFileNameFilter, SearchOption.TopDirectoryOnly)
@@ -36,10 +25,10 @@ namespace TombIDE.Shared.NewStructure
 		public override bool SupportsCustomScriptPaths => false;
 		public override bool SupportsPlugins => false;
 
-		public Tomb1MainGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
+		public TR2XGameProject(TrprojFile trproj, Version targetTrprojVersion) : base(trproj, targetTrprojVersion)
 		{ }
 
-		public Tomb1MainGameProject(string name, string directoryPath, string levelsDirectoryPath)
+		public TR2XGameProject(string name, string directoryPath, string levelsDirectoryPath)
 			: base(name, directoryPath, levelsDirectoryPath)
 		{ }
 
@@ -79,7 +68,7 @@ namespace TombIDE.Shared.NewStructure
 			{
 				string engineExecutablePath = GetEngineExecutableFilePath();
 				string versionInfo = FileVersionInfo.GetVersionInfo(engineExecutablePath).ProductVersion;
-				versionInfo = versionInfo.Replace("TR1X ", string.Empty);
+				versionInfo = versionInfo.Replace("TR2X ", string.Empty);
 
 				return new Version(versionInfo);
 			}
@@ -95,17 +84,17 @@ namespace TombIDE.Shared.NewStructure
 
 			try
 			{
-				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR1.zip");
+				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR2X.zip");
 
 				using ZipArchive archive = ZipFile.OpenRead(enginePresetPath);
-				ZipArchiveEntry entry = archive.Entries.FirstOrDefault(e => e.Name == "TR1X.exe");
+				ZipArchiveEntry entry = archive.Entries.FirstOrDefault(e => e.Name == "TR2X.exe");
 
 				if (entry == null)
 					return null;
 
 				entry.ExtractToFile(tempFileName, true);
 				string productVersion = FileVersionInfo.GetVersionInfo(tempFileName).ProductVersion;
-				productVersion = productVersion.Replace("TR1X ", string.Empty);
+				productVersion = productVersion.Replace("TR2X ", string.Empty);
 
 				return new Version(productVersion);
 			}
