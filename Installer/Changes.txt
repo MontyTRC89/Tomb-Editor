@@ -25,6 +25,8 @@ WadTool:
  * Fixed crashes when exporting meshes with incorrectly sized textures.
 
 TombIDE:
+ * Updated TR1X preset to 4.11.2.
+ * Updated FLEP to version 15.
  * Updated "Engine Help" popup.
  * Fixed random crash caused by cloud drives locking temporary files.
  * Fixed TR1X "Ready to Publish" game archive creation not working.
