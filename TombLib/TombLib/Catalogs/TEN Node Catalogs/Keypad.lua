@@ -163,7 +163,7 @@ LevelFuncs.Engine.RunKeypad = function()
         cameraPos = Vec3(targetPos.x+ offset, targetPos.y-heightOffset, targetPos.z )
     end
 
-    if GetMoveableByName("keypadCam1") == nil then
+    if not IsNameInUse("keypadCam1")  then
         Moveable(TEN.Objects.ObjID.CAMERA_TARGET, "keypadCam1", cameraPos, Rotation(0,0,0), targetRoom)
     end
 
