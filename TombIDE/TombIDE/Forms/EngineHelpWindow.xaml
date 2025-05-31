@@ -80,9 +80,9 @@
 					</TextBlock>
 					<TextBlock
 						FontSize="{x:Static darkUI:Defaults.SmallFontSize}"
-						Foreground="{DynamicResource Brush_Text_Warning}"
+						Foreground="{DynamicResource Brush_Text_Highlight}"
 						TextWrapping="Wrap">
-						Warning: Some anti-virus software, including Windows Defender, may flag this engine as a false positive.
+						Note: Some anti-virus software, including Windows Defender, may flag this engine as a false positive.
 						To prevent this, add the project directory to your anti-virus exceptions list.
 					</TextBlock>
 					<TextBlock
@@ -116,6 +116,12 @@
 						Tomb Engine is a powerful and flexible engine with modern enhancements, including 60 FPS rendering, SSAO, dynamic shadows, and more.
 						Built for both experienced developers and newcomers, it offers advanced features while remaining easy to use.
 						With Lua programming support and an intuitive node system, it allows for deep customization and creativity.
+					</TextBlock>
+					<TextBlock
+						FontSize="{x:Static darkUI:Defaults.SmallFontSize}"
+						Foreground="{DynamicResource Brush_Text_Highlight}"
+						TextWrapping="Wrap">
+						Note: This engine is actively being developed, and changes to the scripting API may occur.
 					</TextBlock>
 				</controls:SpacedStack>
 			</controls:SpacedStack>
