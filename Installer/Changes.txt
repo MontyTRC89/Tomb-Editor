@@ -1,14 +1,55 @@
+Version 1.9
+===========
+
+Tomb Editor:
+ * Added "Re-align floor to step height" and "Re-align ceiling to step height" transform options.
+ * Added "Convert floor to quads" and "Convert ceiling to quads" transform options.
+ * Added "Smooth floor" and "Smooth ceiling" transform options.
+ * Added streaming video animated texture type for TEN.
+ * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
+ * Added skinned mesh preview if it is available.
+ * Handle portal crossing geometry rendering and texturing correctly.
+ * Increased node editor performance and response time.
+ * Reworked "Smooth" brush tool.
+ * Fixed PRJ converter to accept projects with inconsistent animated texture data.
+ * Fixed functions from nested Lua scripts not appearing in the function list.
+ * Fixed multiline textbox in nodes not parsing Unix-like newline symbols correctly.
+ * Fixed nodes randomly not saving parameters.
+ * Fixed incorrect handling of single and double quotes in text nodes.
+ * Fixed incorrect TRNG plugin trigger parameter sorting.
+ * Fixed occasional garbage polygons in merged static meshes in TEN levels.
+ 
+WadTool:
+ * Added skinned mesh import option in skeleton editor and vertex weight painting mode in mesh editor.
+ * Added support for importing models with embedded textures.
+ * Fixed crashes when exporting meshes with incorrectly sized textures.
+
+TombIDE:
+ * Fixed random crash caused by cloud drives locking temporary files.
+ 
+TEN nodes:
+ * Added nodes for video playback.
+ * Updated "Add item to inventory" node with pickup summary toggle.
+ 
+TEN base WAD:
+ * Added snow sprites in a dedicated sprite slot.
+ * Fixed underwater animation sounds not playing.
+ 
 Version 1.8.1
 =============
 
 Tomb Editor:
  * Save transform window position after closing it.
  * Invert vertical position value in a transform window.
+ * Order nodes in a list by category.
+ * Fixed exception when a classic trigger was created with a volume selected.
 
 TombIDE:
+ * Added default placeholder texture for newly created TEN projects.
  * Fixed string editor throwing exception with TRNG scripts.
 
 TEN nodes:
+ * Added nodes for moving moveables and statics along flyby paths.
  * Added a node for changing scale of a moveable (visual only).
 
 Version 1.8
@@ -31,6 +72,7 @@ WadTool:
  * Added option to cancel skeleton editor closing if a warning about unbalanced meshtree is thrown.
  * Fixed incorrect copying of sprite sequences from one wad to another.
  * Fixed TR3-TEN remapping of puzzle objects.
+ * Fixed TR4 UNDERWATER_SWITCH2 remapping incorrectly for TEN.
 
 TombIDE:
  * Updated TR1X preset to 4.8.3 - no auto-update available due to breaking changes in the engine.

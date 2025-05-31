@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -502,6 +503,22 @@ namespace TombLib.LevelData
             if (x >= 0 && z >= 0 && x < NumXSectors && z < NumZSectors)
                 return Sectors[x, z];
             return null;
+        }
+
+        public bool GetSectorTry(int x, int z, [NotNullWhen(true)] out Sector sector)
+        {
+            sector = null;
+
+            if (Sectors is null)
+                return false;
+
+            if (x >= 0 && z >= 0 && x < NumXSectors && z < NumZSectors)
+            {
+                sector = Sectors[x, z];
+                return true;
+            }
+
+            return false;
         }
 
         public Sector GetSectorTry(VectorInt2 pos)
