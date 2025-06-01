@@ -2,15 +2,21 @@ Version 1.9
 ===========
 
 Tomb Editor:
- * Added "Smooth floor terrain" and "Smooth ceiling terrain" transform options.
+ * Added "Re-align floor to step height" and "Re-align ceiling to step height" transform options.
+ * Added "Convert floor to quads" and "Convert ceiling to quads" transform options.
+ * Added "Smooth floor" and "Smooth ceiling" transform options.
  * Added streaming video animated texture type for TEN.
  * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
  * Added skinned mesh preview if it is available.
  * Handle portal crossing geometry rendering and texturing correctly.
  * Increased node editor performance and response time.
+ * Reworked "Smooth" brush tool.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
- * Fixed functions from nested lua scripts not appearing in the function list.
+ * Fixed functions from nested Lua scripts not appearing in the function list.
+ * Fixed multiline textbox in nodes not parsing Unix-like newline symbols correctly.
  * Fixed nodes randomly not saving parameters.
+ * Fixed incorrect handling of single and double quotes in text nodes.
+ * Fixed incorrect TRNG plugin trigger parameter sorting.
  * Fixed occasional garbage polygons in merged static meshes in TEN levels.
  
 WadTool:
@@ -19,10 +25,15 @@ WadTool:
  * Fixed crashes when exporting meshes with incorrectly sized textures.
 
 TombIDE:
+ * Updated TR1X preset to 4.11.2.
+ * Updated FLEP to version 15.
+ * Updated "Engine Help" popup.
  * Fixed random crash caused by cloud drives locking temporary files.
+ * Fixed TR1X "Ready to Publish" game archive creation not working.
  
 TEN nodes:
  * Added nodes for video playback.
+ * Updated "Add item to inventory" node with pickup summary toggle.
  
 TEN base WAD:
  * Added snow sprites in a dedicated sprite slot.

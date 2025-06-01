@@ -25,7 +25,7 @@
 
 		<!--  Brushes  -->
 		<Setter Property="Background" Value="{DynamicResource Brush_Background}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource Brush_WindowBorder}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Background_Low}" />
 		<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 
 		<!--  Thicknesses  -->
@@ -145,6 +145,15 @@
 					</Grid>
 
 					<ControlTemplate.Triggers>
+						<Trigger Property="ResizeMode" Value="CanMinimize">
+							<Setter TargetName="btnRestore" Property="Visibility" Value="Collapsed" />
+						</Trigger>
+
+						<Trigger Property="ResizeMode" Value="NoResize">
+							<Setter TargetName="btnMinimize" Property="Visibility" Value="Collapsed" />
+							<Setter TargetName="btnRestore" Property="Visibility" Value="Collapsed" />
+						</Trigger>
+
 						<Trigger Property="WindowState" Value="Normal">
 							<Setter TargetName="btnRestore" Property="Content">
 								<Setter.Value>

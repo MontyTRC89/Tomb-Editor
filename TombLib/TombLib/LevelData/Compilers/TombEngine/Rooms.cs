@@ -21,8 +21,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private readonly List<Room> _roomUnmapping = new List<Room>();
         private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
+		private Dictionary<Vector3, List<(TombEngineRoom room, int vertexIndex, NormalHelper poly)>> _normalGroups;
 
-        private void BuildRooms(CancellationToken cancelToken)
+		private void BuildRooms(CancellationToken cancelToken)
         {
             ReportProgress(5, "Lighting Rooms");
 
@@ -1793,13 +1794,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return buckets[material];
         }
 
-        private void PrepareRoomsBuckets()
+		private void PrepareRoomsBuckets()
         {
-            for (int i = 0; i < _tempRooms.Count; i++)
-                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
-        }
+            CollectNormalGroups();   
 
-        private void PrepareRoomBuckets(TombEngineRoom room)
+			for (int i = 0; i < _tempRooms.Count; i++)
+                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
+
+            AverageAndApplyNormals();
+		}
+
+		private void PrepareRoomBuckets(TombEngineRoom room)
         {
             // Build buckets and assign texture coordinates
             var textures = _textureInfoManager.GetObjectTextures();
@@ -1873,61 +1878,158 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     normalHelper.Polygon.Binormal = Vector3.Cross(normalHelper.Polygon.Normal, normalHelper.Polygon.Tangent);
                 }
             }
-
-            // Average everything
-            for (int i = 0; i < room.Vertices.Count; i++)
-            {
-                var vertex = room.Vertices[i];
-                var normalHelpers = vertex.NormalHelpers;
-
-                if (normalHelpers.Count == 0)
-                    continue;
-
-                var normal = Vector3.Zero;
-
-                // WARNING: we need to flip normal because it was calculated with Y negative up
-                for (int j = 0; j < normalHelpers.Count; j++)
-                    normal += normalHelpers[j].Polygon.Normal;
-
-                normal = -Vector3.Normalize(normal);
-
-                // FAILSAFE: In case normal is NaN, average again with reference normal
-                if (float.IsNaN(normal.X) || float.IsNaN(normal.Y) || float.IsNaN(normal.Z))
-                {
-                    normal = Vector3.Zero;
-
-                    // Use the first polygon's normal as a reference
-                    var referenceNormal = normalHelpers[0].Polygon.Normal;
-
-                    for (int j = 0; j < normalHelpers.Count; j++)
-                    {
-                        var currentNormal = normalHelpers[j].Polygon.Normal;
-                        if (Vector3.Dot(referenceNormal, currentNormal) < 0)
-                            currentNormal = -currentNormal;
-
-                        normal += currentNormal;
-                    }
-
-                    normal = -Vector3.Normalize(normal);
-                }
-
-                for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var poly = normalHelpers[j];
-
-                    for (int k = 0; k < poly.Polygon.Indices.Count; k++)
-                    {
-                        int index = poly.Polygon.Indices[k];
-                        if (index == i)
-                        {
-                            poly.Polygon.Normals[k] = normal;
-                            poly.Polygon.Tangents[k] = poly.Polygon.Tangent;
-                            poly.Polygon.Binormals[k] = poly.Polygon.Binormal;
-                            break;
-                        }
-                    }
-                }
-            }
         }
-    }
+
+		private void CollectNormalGroups()
+		{
+			_normalGroups = new Dictionary<Vector3, List<(TombEngineRoom room, int vertexIndex, NormalHelper poly)>>();
+
+			foreach (var room in _tempRooms.Values)
+			{
+				var roomPosition = new Vector3(room.Info.X, 0, room.Info.Z);
+
+				for (int i = 0; i < room.Vertices.Count; i++)
+				{
+					var vertex = room.Vertices[i];
+					if (!vertex.IsOnPortal)
+						continue;
+
+					var pos = roomPosition + vertex.Position;
+
+					if (!_normalGroups.TryGetValue(pos, out var list))
+					{
+						list = new List<(TombEngineRoom, int, NormalHelper)>();
+						_normalGroups[pos] = list;
+					}
+
+					foreach (var helper in vertex.NormalHelpers)
+						list.Add((room, i, helper));
+				}
+			}
+		}
+
+		private void NormalizeLocalVertexNormals()
+		{
+			foreach (var room in _tempRooms.Values)
+			{
+				for (int i = 0; i < room.Vertices.Count; i++)
+				{
+					var vertex = room.Vertices[i];
+					if (vertex.IsOnPortal)
+						continue;
+
+					var normalSum = Vector3.Zero;
+					var helpers = vertex.NormalHelpers;
+
+					foreach (var helper in helpers)
+						normalSum += helper.Polygon.Normal;
+
+					var finalNormal = -Vector3.Normalize(normalSum);
+
+					if (float.IsNaN(finalNormal.X) || float.IsNaN(finalNormal.Y) || float.IsNaN(finalNormal.Z))
+					{
+						finalNormal = Vector3.Zero;
+						var reference = helpers[0].Polygon.Normal;
+						foreach (var helper in helpers)
+						{
+							var n = helper.Polygon.Normal;
+							if (Vector3.Dot(reference, n) < 0)
+								n = -n;
+							finalNormal += n;
+						}
+						finalNormal = -Vector3.Normalize(finalNormal);
+					}
+
+					foreach (var helper in helpers)
+					{
+						for (int k = 0; k < helper.Polygon.Indices.Count; k++)
+						{
+							if (helper.Polygon.Indices[k] == i)
+							{
+								helper.Polygon.Normals[k] = finalNormal;
+								helper.Polygon.Tangents[k] = helper.Polygon.Tangent;
+								helper.Polygon.Binormals[k] = helper.Polygon.Binormal;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private void AverageAndApplyNormals()
+		{
+			NormalizeLocalVertexNormals();
+
+			foreach (var kvp in _normalGroups)
+			{
+				var helpers = kvp.Value;
+
+				// Split normals in clusters by angle threshold
+				var clusters = ClusterNormals(helpers, angleThreshold: -0.1f); // ≈ 95°
+
+				foreach (var cluster in clusters)
+				{
+					var normalSum = Vector3.Zero;
+					foreach (var (_, _, helper) in cluster)
+					{
+						normalSum += Vector3.Normalize(helper.Polygon.Normal);
+					}
+
+					var sharedNormal = -Vector3.Normalize(normalSum / cluster.Count);
+
+					// Fallback in the case of NaN
+					if (float.IsNaN(sharedNormal.X) || float.IsNaN(sharedNormal.Y) || float.IsNaN(sharedNormal.Z))
+					{
+						sharedNormal = -Vector3.Normalize(cluster[0].poly.Polygon.Normal);
+					}
+
+					// Apply the normal to the vertices of that cluster
+					foreach (var (_, vertexIndex, helper) in cluster)
+					{
+						for (int k = 0; k < helper.Polygon.Indices.Count; k++)
+						{
+							if (helper.Polygon.Indices[k] == vertexIndex)
+							{
+								helper.Polygon.Normals[k] = sharedNormal;
+								helper.Polygon.Tangents[k] = helper.Polygon.Tangent;
+								helper.Polygon.Binormals[k] = helper.Polygon.Binormal;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private List<List<(TombEngineRoom room, int index, NormalHelper poly)>> ClusterNormals(
+			List<(TombEngineRoom room, int index, NormalHelper poly)> helpers, float angleThreshold)
+		{
+			var clusters = new List<List<(TombEngineRoom room, int index, NormalHelper poly)>>();
+
+			foreach (var helper in helpers)
+			{
+				var normal = Vector3.Normalize(helper.poly.Polygon.Normal);
+				bool added = false;
+
+				foreach (var cluster in clusters)
+				{
+					var referenceNormal = Vector3.Normalize(cluster[0].poly.Polygon.Normal);
+					if (Vector3.Dot(normal, referenceNormal) >= angleThreshold)
+					{
+						cluster.Add(helper);
+						added = true;
+						break;
+					}
+				}
+
+				if (!added)
+				{
+					clusters.Add(new List<(TombEngineRoom room, int index, NormalHelper poly)> { helper });
+				}
+			}
+
+			return clusters;
+		}
+	}
 }

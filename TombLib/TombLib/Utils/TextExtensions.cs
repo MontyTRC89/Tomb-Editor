@@ -79,6 +79,22 @@ namespace TombLib.Utils
             return QuoteChar + source + QuoteChar;
         }
 
+        public static string EscapeQuotes(string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
+
+            return source.Replace("\"", "\\\"").Replace("'", "\\'");
+        }
+
+        public static string UnescapeQuotes(string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
+
+            return source.Replace("\\'", "'").Replace("\\\"", "\"");
+        }
+
         public static string ToLinuxPath(string source)
         {
             return source.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
@@ -97,7 +113,7 @@ namespace TombLib.Utils
             if (string.IsNullOrEmpty(source))
                 return string.Empty;
 
-            return source.Replace(Environment.NewLine, "\\n");
+            return source.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\\n");
         }
 
         public static string SingleLineToMultiLine(string source)

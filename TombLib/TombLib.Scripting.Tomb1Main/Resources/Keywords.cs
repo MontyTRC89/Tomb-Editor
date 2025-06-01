@@ -4,6 +4,7 @@ namespace TombLib.Scripting.Tomb1Main.Resources
 	{
 		public static readonly string[] Collections = new string[]
 		{
+			"ambient_tracks",
 			"cutscenes",
 			"demos",
 			"fmvs",
