@@ -63,7 +63,7 @@
 						FontSize="{x:Static darkUI:Defaults.SmallFontSize}"
 						Foreground="{DynamicResource Brush_Text_Warning}"
 						TextWrapping="Wrap">
-						Warning: This engine has never been updated and may not function correctly on modern systems.
+						Warning: This engine has never received any updates since its original release. It may not function correctly on modern systems.
 					</TextBlock>
 				</controls:SpacedStack>
 
