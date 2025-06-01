@@ -95,7 +95,7 @@ namespace TombIDE.Shared.SharedClasses
 					$"{dataFileName}.ambientTrack = \"{ambientSoundID}\"",
 					$"{dataFileName}.horizon1.enabled = " + (horizon ? "true" : "false"),
 					$"{dataFileName}.levelFile = \"Data\\\\{dataFileName}.ten\"",
-					$"{dataFileName}.loadScreenFile = \"Screens\\\\rome.jpg\"\n",
+					$"{dataFileName}.loadScreenFile = \"Screens\\\\loading.png\"\n",
 					$"TEN.Flow.AddLevel({dataFileName})\n",
 					"--------------------------------------------------",
 					$"	{dataFileName} = {{ \"{levelName}\" }}"
