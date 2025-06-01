@@ -33,7 +33,7 @@ end
 LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, hours, minutes, seconds, deciseconds, debug, alignment, effects, color, pColor, x, y, scale)
     if name ~= '' then
         local nodeTimerFormat = {hours = hours, minutes = minutes, seconds = seconds, deciseconds = deciseconds }
-        Timer.Create(name, time, loop, nodeTimerFormat, nil)
+        Timer.Create(name, time, loop, nodeTimerFormat)
         LevelFuncs.Engine.Node.SetTimer(name, debug, alignment, effects, color, pColor, x, y, scale)
         if LevelVars.nodeTimers[name].debug then
             TEN.Util.PrintLog("Timer '" .. name .. "' created successfully!", TEN.Util.LogLevel.INFO)
