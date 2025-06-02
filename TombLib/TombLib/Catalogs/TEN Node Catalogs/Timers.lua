@@ -13,7 +13,7 @@ end
 
 -- !Name "Create basic timer"
 -- !Conditional "False"
--- !Description "Creates a simple countdown.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Creates a simple countdown.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -45,7 +45,7 @@ end
 
 -- !Name "Create timer with function"
 -- !Conditional "False"
--- !Description "Creates a countdown which will execute a `LevelFuncs` lua function upon ending.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Creates a countdown which will execute a `LevelFuncs` lua function upon ending.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -80,7 +80,7 @@ end
 
 -- !Name "Create timer with volume event set"
 -- !Conditional "False"
--- !Description "Creates a countdown that triggers a volume event set upon ending.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Creates a countdown that triggers a volume event set upon ending.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -115,7 +115,7 @@ end
 
 -- !Name "Create timer with global event set"
 -- !Conditional "False"
--- !Description "Creates a countdown that triggers a global event set upon ending.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Creates a countdown that triggers a global event set upon ending.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 57, [ NoMultiline ], Timer name"
 -- !Arguments "Numerical, 30, [ 0 | 1000 | 1 | 0.1 | 1 ], The duration of the timer in seconds"
@@ -150,7 +150,7 @@ end
 
 -- !Name "Start timer"
 -- !Conditional "False"
--- !Description "Begins or resumes a timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Begins or resumes a timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 -- !Arguments "NewLine, Boolean , Reset timer when expired"
@@ -175,7 +175,7 @@ end
 
 -- !Name "Stop timer"
 -- !Conditional "False"
--- !Description "Stops a timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Stops a timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.StopTimer = function(name)
@@ -195,7 +195,7 @@ end
 
 -- !Name "Pause timer"
 -- !Conditional "False"
--- !Description "Pauses a timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Pauses a timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Timer name"
 LevelFuncs.Engine.Node.SetPausedTimer = function(name)
@@ -215,7 +215,7 @@ end
 
 -- !Name "Modify remaining time"
 -- !Conditional "False"
--- !Description "Changes the remaining time value (in seconds) of a specific timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Changes the remaining time value (in seconds) of a specific timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Timer name"
 -- !Arguments "Enumeration, 10, [ + | - | * | / | = ], {4}, Mathematical operation to perform"
@@ -242,7 +242,7 @@ end
 
 -- !Name "Modify total time"
 -- !Conditional "False"
--- !Description "Changes the total duration value (in seconds) of a specific timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Changes the total duration value (in seconds) of a specific timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Timer name"
 -- !Arguments "Enumeration, 10, [ + | - | * | / | = ], {4}, Mathematical operation to perform"
@@ -269,7 +269,7 @@ end
 
 -- !Name "Set timer loop"
 -- !Conditional "False"
--- !Description "Sets an existing timer as looped or one shot.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Sets an existing timer as looped or one shot.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 67, [ NoMultiline ], Timer name"
 -- !Arguments "Enumeration, 33, [ One shot | Looped ], Set timer as"
@@ -291,7 +291,7 @@ end
 
 -- !Name "Set timer colors"
 -- !Conditional "False"
--- !Description "Sets colours for timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Sets colours for timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 52, [ NoMultiline ], Timer name"
 -- !Arguments "Color, 10, {TEN.Color(255, 255, 255)}, Timer's unpaused Color
@@ -313,7 +313,7 @@ end
 
 -- !Name "Modify timer position"
 -- !Conditional "False"
--- !Description "sets the position of the timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "sets the position of the timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 100, [ NoMultiline ], Timer name"
 -- !Arguments "NewLine, Enumeration, 10, [ + | - | * | / | = ], {4}, Mathematical operation to perform for X"
@@ -348,7 +348,7 @@ end
 
 -- !Name "Modify timer scale"
 -- !Conditional "False"
--- !Description "Sets the scale of the timer.\n\nPlease be careful when using it within `On Volume Inside` or `On Loop` events."
+-- !Description "Sets the scale of the timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
 -- !Arguments "NewLine, String, 70, [ NoMultiline ], Timer name"
 -- !Arguments "Enumeration, 10, [ + | - | * | / | = ], {4}, Mathematical operation to perform"
