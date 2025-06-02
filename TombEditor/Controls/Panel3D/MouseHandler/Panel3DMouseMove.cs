@@ -159,6 +159,7 @@ namespace TombEditor.Controls.Panel3D
                                     splitToEdit,
                                     Math.Sign(dragValue.Value.Y) * _editor.IncrementReference,
                                     ModifierKeys.HasFlag(Keys.Alt),
+                                    _editor.Tool.SnapToStepHeight,
                                     _toolHandler.ReferenceIsOppositeDiagonalStep, true, true, true);
                                 break;
                             case EditorToolType.Terrain:
@@ -275,6 +276,7 @@ namespace TombEditor.Controls.Panel3D
                                             belongsToFloor ? SectorVerticalPart.QA : SectorVerticalPart.WS,
                                             increment,
                                             _editor.Tool.Tool is EditorToolType.Brush or EditorToolType.Shovel,
+                                            _editor.Tool.SnapToStepHeight,
                                             false, false, true, true);
                                         break;
                                 }

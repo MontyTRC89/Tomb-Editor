@@ -73,6 +73,7 @@ namespace TombEditor.Controls
                 toolPortalDigger.Checked = currentTool.Tool == EditorToolType.PortalDigger;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
+                toolSnapToStepHeight.Checked = currentTool.SnapToStepHeight;
 
                 switch(currentTool.GridSize)
                 {
@@ -119,6 +120,7 @@ namespace TombEditor.Controls
                 toolPyramid.Visible = geometryMode;
                 toolTerrain.Visible = geometryMode;
                 toolPortalDigger.Visible = geometryMode;
+                toolSnapToStepHeight.Visible = geometryMode;
 
                 toolStrip.AutoSize = true;
                 AutoSize = true;
@@ -135,7 +137,14 @@ namespace TombEditor.Controls
 
         private void SwitchTool(EditorToolType tool)
         {
-            EditorTool currentTool = new EditorTool() { Tool = tool, TextureUVFixer = _editor.Tool.TextureUVFixer, GridSize = _editor.Tool.GridSize };
+            var currentTool = new EditorTool()
+            {
+                Tool = tool,
+                TextureUVFixer = _editor.Tool.TextureUVFixer,
+                SnapToStepHeight = _editor.Tool.SnapToStepHeight,
+                GridSize = _editor.Tool.GridSize
+            };
+
             _editor.Tool = currentTool;
         }
 
@@ -236,7 +245,27 @@ namespace TombEditor.Controls
 
         private void toolUVFixer_Click(object sender, EventArgs e)
         {
-            EditorTool currentTool = new EditorTool() { Tool = _editor.Tool.Tool, TextureUVFixer = !_editor.Tool.TextureUVFixer, GridSize = _editor.Tool.GridSize };
+            var currentTool = new EditorTool()
+            {
+                Tool = _editor.Tool.Tool,
+                TextureUVFixer = !_editor.Tool.TextureUVFixer,
+                SnapToStepHeight = _editor.Tool.SnapToStepHeight,
+                GridSize = _editor.Tool.GridSize
+            };
+
+            _editor.Tool = currentTool;
+        }
+
+        private void toolSnapToStepHeight_Click(object sender, EventArgs e)
+        {
+            var currentTool = new EditorTool()
+            {
+                Tool = _editor.Tool.Tool,
+                TextureUVFixer = _editor.Tool.TextureUVFixer,
+                SnapToStepHeight = !_editor.Tool.SnapToStepHeight,
+                GridSize = _editor.Tool.GridSize
+            };
+
             _editor.Tool = currentTool;
         }
 
