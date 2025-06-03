@@ -11,10 +11,12 @@ Tomb Editor:
  * Handle portal crossing geometry rendering and texturing correctly.
  * Increased node editor performance and response time.
  * Reworked "Smooth" brush tool.
- * Fixed incorrect TRNG plugin trigger parameter sorting.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
  * Fixed functions from nested Lua scripts not appearing in the function list.
+ * Fixed multiline textbox in nodes not parsing Unix-like newline symbols correctly.
  * Fixed nodes randomly not saving parameters.
+ * Fixed incorrect handling of single and double quotes in text nodes.
+ * Fixed incorrect TRNG plugin trigger parameter sorting.
  * Fixed occasional garbage polygons in merged static meshes in TEN levels.
  
 WadTool:
@@ -23,10 +25,16 @@ WadTool:
  * Fixed crashes when exporting meshes with incorrectly sized textures.
 
 TombIDE:
+ * Updated TR1X preset to 4.11.2.
+ * Updated FLEP to version 15.
+ * Updated "Engine Help" popup.
  * Fixed random crash caused by cloud drives locking temporary files.
+ * Fixed TR1X "Ready to Publish" game archive creation not working.
  
 TEN nodes:
  * Added nodes for video playback.
+ * Updated "Add item to inventory" node with pickup summary toggle.
+ * Updated Timer nodes. Edited nodes to set or change remaining time and total time. Added nodes to change position, colors and scale of a Timer
  
 TEN base WAD:
  * Added snow sprites in a dedicated sprite slot.

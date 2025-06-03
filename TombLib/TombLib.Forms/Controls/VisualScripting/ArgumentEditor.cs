@@ -520,7 +520,7 @@ namespace TombLib.Controls.VisualScripting
                     }
                 case ArgumentType.String:
                     {
-                        tbString.Text = TextExtensions.Unquote(source);
+                        tbString.Text = TextExtensions.UnescapeQuotes(TextExtensions.Unquote(source));
                         BoxStringValue();
                         break;
                     }
@@ -617,7 +617,7 @@ namespace TombLib.Controls.VisualScripting
 
         private void BoxStringValue()
         {
-            _text = TextExtensions.Quote(tbString.Text);
+            _text = TextExtensions.Quote(TextExtensions.EscapeQuotes(tbString.Text));
             OnValueChanged();
         }
 

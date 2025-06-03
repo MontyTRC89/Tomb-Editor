@@ -77,7 +77,7 @@
     <moveable id="81" ai="true" name="AI Check" essential="false" ten="AI_X2"/>
     <moveable id="82" name="Unknown Id #82" essential="false" />
     <moveable id="83" name="Collapsible floor" essential="false" ten="CRUMBLING_FLOOR" />
-    <moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" ten="WALL_MOUNTED_BLADE" />  
+    <moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" ten="CHAIN" />  
     <moveable id="87" name="Spikes / Barbed wire" essential="false" ten="TEETH_SPIKES" />
     <moveable id="88" name="Boulder / Barrel" essential="false" ten="CLASSIC_ROLLINGBALL" />
     <moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" ten="BIG_ROLLINGBALL" /> 

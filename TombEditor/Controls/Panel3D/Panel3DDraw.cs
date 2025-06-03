@@ -1558,6 +1558,22 @@ namespace TombEditor.Controls.Panel3D
                         }
 
                         skin.RenderSkin(_legacyDevice, skinnedModelEffect, (instance.ObjectMatrix * _viewProjection).ToSharpDX(), model);
+
+                        // Add text message
+                        if (_editor.SelectedObject == instance)
+                        {
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * _viewProjection,
+                                instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
+                                instance.GetScriptIDOrName() + "\n" +
+                                GetObjectPositionString(instance.Room, instance) + "\n" +
+                                GetObjectRotationString(instance.Room, instance) +
+                                (instance.Ocb == 0 ? string.Empty : "\nOCB: " + instance.Ocb) +
+                                GetObjectTriggerString(instance)));
+
+                            // Add the line height of the object
+                            AddObjectHeightLine(instance.Room, instance.Position);
+                        }
                     }
                 }
 
@@ -1612,22 +1628,6 @@ namespace TombEditor.Controls.Panel3D
 
                             submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
-
-                        // Add text message
-                        if (i == 0 && _editor.SelectedObject == instance)
-                        {
-                            textToDraw.Add(CreateTextTagForObject(
-                                instance.RotationPositionMatrix * _viewProjection,
-                                instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
-                                instance.GetScriptIDOrName() + "\n" +
-                                GetObjectPositionString(instance.Room, instance) + "\n" +
-                                GetObjectRotationString(instance.Room, instance) +
-                                (instance.Ocb == 0 ? string.Empty : "\nOCB: " + instance.Ocb) +
-                                GetObjectTriggerString(instance)));
-
-                            // Add the line height of the object
-                            AddObjectHeightLine(instance.Room, instance.Position);
                         }
                     }
                 }
