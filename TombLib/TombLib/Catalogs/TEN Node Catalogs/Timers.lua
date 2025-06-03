@@ -405,7 +405,7 @@ LevelFuncs.Engine.Node.GetTotalTime = function(name)
     end
 end
 
--- !Name "If the timer active..."
+-- !Name "If timer active..."
 -- !Conditional "True"
 -- !Description "Checks if a specific timer is active.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"
@@ -426,7 +426,7 @@ LevelFuncs.Engine.Node.IsTimerActive = function(name)
     end
 end
 
--- !Name "If the timer is paused..."
+-- !Name "If timer is paused..."
 -- !Conditional "True"
 -- !Description "Checks if a specific timer is paused.\n\nTo be used inside the `On Volume Inside` or `On Loop` events only."
 -- !Section "Timer"
