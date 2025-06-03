@@ -1958,8 +1958,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 		}
 
 		private void AverageAndApplyNormals()
-		{
-			NormalizeLocalVertexNormals();
+        {
+            _progressReporter.ReportInfo("Averaging room normals");
+
+            NormalizeLocalVertexNormals();
 
 			foreach (var kvp in _normalGroups)
 			{
