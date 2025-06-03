@@ -298,11 +298,11 @@ end
 -- !Arguments "Numerical, 14, {1}, [ 0 | 1 | 2 | 0.1 ], Transparency 'unpaused Color'"
 -- !Arguments "Color, 10, {TEN.Color(255, 255, 0)}, Timer's paused color"
 -- !Arguments "Numerical, 14, {1}, [ 0 | 1 | 2 | 0.1 ], Transparency 'paused Color'"
-LevelFuncs.Engine.Node.SetTimerColors = function (name, color, pausedColor)
+LevelFuncs.Engine.Node.SetTimerColors = function (name, color, tColor, pausedColor, tPausedColor)
     if name ~= '' then
         if Timer.IfExists(name) then
-            Timer.Get(name):SetPausedColor(pausedColor)
-            Timer.Get(name):SetUnpausedColor(color)
+            Timer.Get(name):SetUnpausedColor(TEN.Color(color.r, color.g, color.b, (255 * tColor)))
+            Timer.Get(name):SetPausedColor(TEN.Color(pausedColor.r, pausedColor.g, pausedColor.b, (255 * tPausedColor)))
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
@@ -323,7 +323,6 @@ end
 LevelFuncs.Engine.Node.SetTimerPosition = function (name, operatorX, x, operatorY, y)
     if name ~= '' then
         if Timer.IfExists(name) then
-            -- Timer.Get(name):SetPosition(x,y)
             local valueX, valueY
             if operatorX == 4 then
                 valueX = x
