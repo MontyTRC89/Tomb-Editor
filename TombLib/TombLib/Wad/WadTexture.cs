@@ -55,7 +55,10 @@ namespace TombLib.Wad
         {
         }
 
-        // Used only for loading and saving
+        // Relative path is calculated before the save of Wad2 because in the final file there will be only relative paths
         public string RelativePath { get; set; }
-    }
+
+        // This helps the texture packer of TombEngine compiler to have ready paths for doing sidecar loading
+		public string AbsolutePath { get; set; }
+	}
 }

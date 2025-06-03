@@ -1219,35 +1219,49 @@ namespace TombLib.LevelData.Compilers
                         var bumpX = destX;
                         var bumpY = destY;
 
-                        // Try to copy custom bumpmaps
-                        if (!String.IsNullOrEmpty(tex.BumpPath))
-                        {
-                            if (!customBumpmaps.ContainsKey(tex.BumpPath))
-                            {
-                                var potentialBumpImage = ImageC.FromFile(_level.Settings.MakeAbsolute(tex.BumpPath));
+						// Build the path for eventual sidecar load
+						string externalNormalMapPath = Path.Combine(
+							Path.GetDirectoryName(p.Texture.Image.FileName),
+							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + "_N" +
+							Path.GetExtension(p.Texture.Image.FileName));
 
-                                // Only assign bumpmap image if size is equal to texture image size, otherwise use dummy
+						string bumpPathToUse = null;
 
-                                if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
-                                    customBumpmaps.Add(tex.BumpPath, potentialBumpImage);
-                                else
-                                {
-                                    _progressReporter.ReportWarn("Texture file '" + tex + "' has external bumpmap assigned which has different size and was ignored.");
-                                    customBumpmaps.Add(tex.BumpPath, ImageC.Black);
-                                }
-                            }
+						// Choose the path to use
+						if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
+							bumpPathToUse = externalNormalMapPath;
+						else if (!string.IsNullOrEmpty(tex.BumpPath))
+							bumpPathToUse = _level.Settings.MakeAbsolute(tex.BumpPath);
 
-                            // Init the normal map if not done yet
-                            if (!image.HasNormalMap)
-                            {
-                                image.HasNormalMap = true;
-                                image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                                image.NormalMap.Fill(new ColorC(128, 128, 255));
-                            }
-                            image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
-                            AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
-                        }
-                        else
+						// If normal map is found
+						if (!string.IsNullOrEmpty(bumpPathToUse))
+						{
+							if (!customBumpmaps.ContainsKey(bumpPathToUse))
+							{
+								var potentialBumpImage = ImageC.FromFile(bumpPathToUse);
+
+								if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+								{
+									customBumpmaps[bumpPathToUse] = potentialBumpImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{tex}' has a bump/normal map with a different size and was ignored.");
+									customBumpmaps[bumpPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (!image.HasNormalMap)
+							{
+								image.HasNormalMap = true;
+								image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.NormalMap.Fill(new ColorC(128, 128, 255));
+							}
+
+							image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[bumpPathToUse], x, y, width, height);
+							AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
+						}
+						else
                         {
                             var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
 
@@ -1295,6 +1309,57 @@ namespace TombLib.LevelData.Compilers
                             AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
                         }
                     }
+                    else if (p.Texture is WadTexture && b == 1)
+                    {
+						var tex = (p.Texture as WadTexture);
+						var bumpX = destX;
+						var bumpY = destY;
+
+                        // Embedded textures don't have a valid path
+                        if (string.IsNullOrEmpty(tex.AbsolutePath))
+                            continue;
+
+						// Build the path for eventual sidecar load
+						string externalNormalMapPath = Path.Combine(
+							Path.GetDirectoryName(tex.AbsolutePath),
+							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + "_N" +
+							Path.GetExtension(tex.AbsolutePath));
+
+						string bumpPathToUse = null;
+
+						// Choose the path to use
+						if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
+							bumpPathToUse = externalNormalMapPath;
+						
+						// If normal map is found
+						if (!string.IsNullOrEmpty(bumpPathToUse))
+						{
+							if (!customBumpmaps.ContainsKey(bumpPathToUse))
+							{
+								var potentialBumpImage = ImageC.FromFile(bumpPathToUse);
+
+								if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+								{
+									customBumpmaps[bumpPathToUse] = potentialBumpImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{tex}' has a bump/normal map with a different size and was ignored.");
+									customBumpmaps[bumpPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (!image.HasNormalMap)
+							{
+								image.HasNormalMap = true;
+								image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.NormalMap.Fill(new ColorC(128, 128, 255));
+							}
+
+							image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[bumpPathToUse], x, y, width, height);
+							AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
+						}
+					}
                 }
             }
 
@@ -1453,8 +1518,8 @@ namespace TombLib.LevelData.Compilers
             VectorInt2 atlasSize = new VectorInt2(MaxTileSize, MaxTileSize);
 
             RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize);
-            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize);
-            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, false, true, 0, atlasSize);
+            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, true, true, 0, atlasSize);
+            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, true, true, 0, atlasSize);
 
             AnimatedAtlas = new List<TombEngineAtlas>();
             for (int n = 0; n < _actualAnimTextures.Count; n++)

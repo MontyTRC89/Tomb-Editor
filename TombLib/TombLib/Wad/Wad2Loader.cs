@@ -157,6 +157,7 @@ namespace TombLib.Wad
                 });
 
                 ImageC texture;
+                string absolutePath = null;
 
                 if (textureData is not null)
                 {
@@ -165,8 +166,8 @@ namespace TombLib.Wad
                 }
                 else if (!string.IsNullOrEmpty(name))
                 {
-                    var path = PathC.IsTrulyAbsolutePath(name) ? name : Path.Combine(Path.GetDirectoryName(wad.FileName), name);
-					texture = ImageC.FromFile(path);
+					absolutePath = Path.GetFullPath(PathC.IsTrulyAbsolutePath(name) ? name : Path.Combine(Path.GetDirectoryName(wad.FileName), name));
+					texture = ImageC.FromFile(absolutePath);
                 }
                 else
                 {
@@ -176,7 +177,11 @@ namespace TombLib.Wad
 
 				texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 				texture.FileName = name;
-				textures.Add(obsoleteIndex++, new WadTexture(texture));
+
+                var wadTexture = new WadTexture(texture);
+                wadTexture.AbsolutePath = absolutePath;
+
+				textures.Add(obsoleteIndex++, wadTexture);
 
 				return true;
 			});
