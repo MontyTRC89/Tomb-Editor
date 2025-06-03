@@ -39,7 +39,7 @@ LevelFuncs.Engine.Node.CreateTimer = function(name, time, loop, hours, minutes, 
             TEN.Util.PrintLog("Timer '" .. name .. "' created successfully!", TEN.Util.LogLevel.INFO)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Create Timer' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Create basic timer' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -74,7 +74,7 @@ LevelFuncs.Engine.Node.CreateTimerWithFunction = function(name, time, loop, hour
             TEN.Util.PrintLog("Timer with Function '" .. name .. "' created successfully!", TEN.Util.LogLevel.INFO)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Create Timer with Function' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Create timer with function' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -109,7 +109,7 @@ LevelFuncs.Engine.Node.CreateTimerWithEventSet = function(name, time, loop, hour
             TEN.Util.PrintLog("Timer with volume event set '" .. name .. "' created successfully", TEN.Util.LogLevel.INFO)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Create Timer with Function' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Create timer with volume event set' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -144,7 +144,7 @@ LevelFuncs.Engine.Node.CreateTimerWithGEventSet = function(name, time, loop, hou
             TEN.Util.PrintLog("Timer with global event set '" .. name .. "' created successfully", TEN.Util.LogLevel.INFO)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Create Timer with Function' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Create timer with global event set' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -209,7 +209,7 @@ LevelFuncs.Engine.Node.SetPausedTimer = function(name)
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Set Paused Timer' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Pause timer' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -307,7 +307,7 @@ LevelFuncs.Engine.Node.SetTimerColors = function (name, color, tColor, pausedCol
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Get Remaining Time' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Set timer colors' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -341,7 +341,7 @@ LevelFuncs.Engine.Node.SetTimerPosition = function (name, operatorX, x, operator
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Get Remaining Time' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Modify timer position' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -367,7 +367,7 @@ LevelFuncs.Engine.Node.SetTimerScale = function (name, operator, scale)
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Get Remaining Time' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Modify timer scale' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -384,7 +384,7 @@ LevelFuncs.Engine.Node.GetRemainingTime = function(name)
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Get Remaining Time' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Get remaining time (in seconds) in console' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -401,7 +401,7 @@ LevelFuncs.Engine.Node.GetTotalTime = function(name)
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Get Total Time' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'Get total time (in seconds) in console' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -422,7 +422,7 @@ LevelFuncs.Engine.Node.IsTimerActive = function(name)
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Timer is Active' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'If the timer active...' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -443,7 +443,7 @@ LevelFuncs.Engine.Node.IsTimerPaused = function(name)
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'Timer is Paused' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'If the timer is paused...' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -460,7 +460,7 @@ LevelFuncs.Engine.Node.IfTimerExpired = function(name)
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'If Timer has expired' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'If timer has expired...' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -487,7 +487,7 @@ LevelFuncs.Engine.Node.IfRemainingTimeIs = function(name, operator, value)
             -- TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'If remaining Time is' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'If remaining time is...' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -506,7 +506,7 @@ LevelFuncs.Engine.Node.IfTotalTimeIs = function(name, operator, time)
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
     else
-        TEN.Util.PrintLog("Error in the 'If Total Time is' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'If total time is...' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
 
@@ -519,6 +519,6 @@ LevelFuncs.Engine.Node.IfTimerExists = function(name)
     if name ~= '' then
         return Timer.IfExists(name)
     else
-        TEN.Util.PrintLog("Error in the 'If timer exists' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+        TEN.Util.PrintLog("Error in the 'If timer exists...' node. No timer name provided", TEN.Util.LogLevel.ERROR)
     end
 end
