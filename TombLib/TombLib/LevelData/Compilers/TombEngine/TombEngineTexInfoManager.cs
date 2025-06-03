@@ -1309,7 +1309,58 @@ namespace TombLib.LevelData.Compilers
                             AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
                         }
                     }
-                    else if (p.Texture is WadTexture && b == 1)
+                    else if (p.Texture is ImportedGeometryTexture && b == 1)
+					{
+						var tex = (p.Texture as ImportedGeometryTexture);
+						var bumpX = destX;
+						var bumpY = destY;
+
+						// Embedded textures don't have a valid path
+						if (string.IsNullOrEmpty(tex.AbsolutePath))
+							continue;
+
+						// Build the path for eventual sidecar load
+						string externalNormalMapPath = Path.Combine(
+							Path.GetDirectoryName(tex.AbsolutePath),
+							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + "_N" +
+							Path.GetExtension(tex.AbsolutePath));
+
+						string bumpPathToUse = null;
+
+						// Choose the path to use
+						if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
+							bumpPathToUse = externalNormalMapPath;
+
+						// If normal map is found
+						if (!string.IsNullOrEmpty(bumpPathToUse))
+						{
+							if (!customBumpmaps.ContainsKey(bumpPathToUse))
+							{
+								var potentialBumpImage = ImageC.FromFile(bumpPathToUse);
+
+								if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+								{
+									customBumpmaps[bumpPathToUse] = potentialBumpImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{tex}' has a bump/normal map with a different size and was ignored.");
+									customBumpmaps[bumpPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (!image.HasNormalMap)
+							{
+								image.HasNormalMap = true;
+								image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.NormalMap.Fill(new ColorC(128, 128, 255));
+							}
+
+							image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[bumpPathToUse], x, y, width, height);
+							AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
+						}
+					}
+					else if (p.Texture is WadTexture && b == 1)
                     {
 						var tex = (p.Texture as WadTexture);
 						var bumpX = destX;
