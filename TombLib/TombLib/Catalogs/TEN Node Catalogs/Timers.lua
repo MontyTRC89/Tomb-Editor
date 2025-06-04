@@ -290,19 +290,35 @@ LevelFuncs.Engine.Node.SetLooping = function(name, looping)
     end
 end
 
--- !Name "Set timer colors"
+-- !Name "Set timer color"
 -- !Conditional "False"
 -- !Description "Sets colours for timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
--- !Arguments "NewLine, String, 52, [ NoMultiline ], Timer name"
--- !Arguments "Color, 10, {TEN.Color(255, 255, 255)}, Timer's unpaused Color
--- !Arguments "Numerical, 14, {1}, [ 0 | 1 | 2 | 0.1 ], Transparency 'unpaused Color'"
--- !Arguments "Color, 10, {TEN.Color(255, 255, 0)}, Timer's paused color"
--- !Arguments "Numerical, 14, {1}, [ 0 | 1 | 2 | 0.1 ], Transparency 'paused Color'"
-LevelFuncs.Engine.Node.SetTimerColors = function (name, color, tColor, pausedColor, tPausedColor)
+-- !Arguments "NewLine, String, 76, [ NoMultiline ], Timer name"
+-- !Arguments "Color, 10, {TEN.Color(255, 255, 255)}, Timer's color
+-- !Arguments "Numerical, 14, {1}, [ 0 | 1 | 2 | 0.1 ], Color transparency'"
+LevelFuncs.Engine.Node.SetTimerColor = function (name, color, tColor)
     if name ~= '' then
         if Timer.IfExists(name) then
             Timer.Get(name):SetUnpausedColor(TEN.Color(color.r, color.g, color.b, (255 * tColor)))
+        else
+            TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
+        end
+    else
+        TEN.Util.PrintLog("Error in the 'Set timer colors' node. No timer name provided", TEN.Util.LogLevel.ERROR)
+    end
+end
+
+-- !Name "Set timer paused color"
+-- !Conditional "False"
+-- !Description "Sets colours for timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
+-- !Section "Timer"
+-- !Arguments "NewLine, String, 76, [ NoMultiline ], Timer name"
+-- !Arguments "Color, 10, {TEN.Color(255, 255, 0)}, Timer's paused color"
+-- !Arguments "Numerical, 14, {1}, [ 0 | 1 | 2 | 0.1 ], Paused color transparency"
+LevelFuncs.Engine.Node.SetTimerPauseColor = function (name, pausedColor, tPausedColor)
+    if name ~= '' then
+        if Timer.IfExists(name) then
             Timer.Get(name):SetPausedColor(TEN.Color(pausedColor.r, pausedColor.g, pausedColor.b, (255 * tPausedColor)))
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
@@ -418,11 +434,7 @@ end
 LevelFuncs.Engine.Node.IsTimerActive = function(name)
     if name ~= '' then
         if Timer.IfExists(name) then
-            local status = Timer.Get(name):IsActive()
-            if LevelVars.nodeTimers[name].debug then
-                TEN.Util.PrintLog("Timer '" .. name .. (status and "' is active" or "' is not active"), TEN.Util.LogLevel.INFO)
-            end
-            return status
+            return Timer.Get(name):IsActive()
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
@@ -439,11 +451,7 @@ end
 LevelFuncs.Engine.Node.IsTimerPaused = function(name)
     if name ~= '' then
         if Timer.IfExists(name) then
-            local status = Timer.Get(name):IsPaused()
-            if LevelVars.nodeTimers[name].debug then
-                TEN.Util.PrintLog("Timer '" .. name .. (status and "' is paused" or "' is not paused"), TEN.Util.LogLevel.INFO)
-            end
-            return status
+            return Timer.Get(name):IsPaused()
         else
             TEN.Util.PrintLog("Timer '" .. name .. "' does not exist", TEN.Util.LogLevel.ERROR)
         end
