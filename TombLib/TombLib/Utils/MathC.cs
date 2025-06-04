@@ -544,18 +544,16 @@ namespace TombLib
             return new Vector4(r + m, g + m, b + m, 1.0f);
         }
 
-        public static Vector4 GetRandomColorByIndex(int index, int maxIndices)
+        public static Vector4 GetRandomColorByIndex(int index, int maxIndices, float saturation = 1.0f)
         {
-            if (maxIndices <= 0)
-                throw new ArgumentOutOfRangeException(nameof(maxIndices), "Color index count must be greater than zero.");
-            if (index < 0 || index >= maxIndices)
-                throw new ArgumentOutOfRangeException(nameof(index), "Color index must be within [0, maxIndices).");
+            if (maxIndices <= 0 || index < 0)
+                throw new ArgumentOutOfRangeException(nameof(maxIndices), "Color index and index count must be greater than zero.");
 
             int stride = 7;
             int shuffledIndex = (index * stride) % maxIndices;
             float hue = shuffledIndex / (float)maxIndices;
 
-            return HsvToRgb(hue, 1.0f, 1.0f);
+            return HsvToRgb(hue, saturation, 1.0f);
         }
     }
 }
