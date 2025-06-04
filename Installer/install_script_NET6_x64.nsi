@@ -736,7 +736,8 @@ FunctionEnd
 ; either your .onInit function or your first install section before 
 ; other code.
 Function isDotNetInstalled
- 
+  SetRegView 64
+  
   StrCpy $0 "0"
   StrCpy $1 "SOFTWARE\Microsoft\ASP.NET Core" ;registry entry to look in.
   StrCpy $2 0
@@ -790,6 +791,8 @@ Function isDotNetInstalled
  
   yesDotNet:
     ;Everything checks out.  Go on with the rest of the installation.
+	
+  SetRegView lastused
  
 FunctionEnd
 
