@@ -1921,6 +1921,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					var normalSum = Vector3.Zero;
 					var helpers = vertex.NormalHelpers;
 
+					if (helpers.Count == 0)
+						continue;
+
 					foreach (var helper in helpers)
 						normalSum += helper.Polygon.Normal;
 
@@ -1958,8 +1961,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 		}
 
 		private void AverageAndApplyNormals()
-		{
-			NormalizeLocalVertexNormals();
+        {
+            _progressReporter.ReportInfo("Averaging room normals");
+
+            NormalizeLocalVertexNormals();
 
 			foreach (var kvp in _normalGroups)
 			{

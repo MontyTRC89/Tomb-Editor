@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
@@ -1112,7 +1111,8 @@ namespace TombEditor.Controls.Panel3D
                     {
                         _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                        Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                        var color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+
                         if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
@@ -1308,7 +1308,7 @@ namespace TombEditor.Controls.Panel3D
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                 {
-                    var color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                    var color = MathC.GetRandomColorByIndex(instance.Sequence, 32, 0.7f);
                     Matrix4x4 model;
 
                     if (_highlightedObjects.Contains(instance))

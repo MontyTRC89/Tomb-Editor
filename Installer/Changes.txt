@@ -8,8 +8,10 @@ Tomb Editor:
  * Added streaming video animated texture type for TEN.
  * Added ability to drag-n-drop objects from item browser into wad slot lists in nodes.
  * Added skinned mesh preview if it is available.
+ * Added flyby sequence color highlight.
  * Handle portal crossing geometry rendering and texturing correctly.
  * Increased node editor performance and response time.
+ * Disabled scrolling node list with a mouse wheel to prevent accidental parameter reset.
  * Reworked "Smooth" brush tool.
  * Fixed PRJ converter to accept projects with inconsistent animated texture data.
  * Fixed functions from nested Lua scripts not appearing in the function list.
