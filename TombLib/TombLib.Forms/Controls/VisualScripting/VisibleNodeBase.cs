@@ -60,6 +60,8 @@ namespace TombLib.Controls.VisualScripting
             Size = new Size(Editor?.DefaultNodeWidth ?? TriggerNode.DefaultSize, Size.Height);
             GripSize = 0;
 
+            cbFunction.Control.DisableMouseScrolling = true;
+
             SpawnGrips();
         }
 

@@ -293,11 +293,9 @@ end
 -- !Conditional "False"
 -- !Description "Sets colours for timer.\nUsing this node within “On Volume Inside” or “On Loop” events may cause continuous loops and improper operation. Please carefully consider this configuration."
 -- !Section "Timer"
--- !Arguments "NewLine, String, 52, [ NoMultiline ], Timer name"
--- !Arguments "Color, 10, {TEN.Color(255, 255, 255)}, Timer's unpaused Color
--- !Arguments "Numerical, 14, {1}, [ 0 | 1 | 2 | 0.1 ], Transparency 'unpaused Color'"
--- !Arguments "Color, 10, {TEN.Color(255, 255, 0)}, Timer's paused color"
--- !Arguments "Numerical, 14, {1}, [ 0 | 1 | 2 | 0.1 ], Transparency 'paused Color'"
+-- !Arguments "NewLine, String, 60, [ NoMultiline ], Timer name"
+-- !Arguments "Color, 20, {TEN.Color(255, 255, 255)}, Timer's unpaused color
+-- !Arguments "Color, 20, {TEN.Color(255, 255, 0)}, Timer's paused color"
 LevelFuncs.Engine.Node.SetTimerColors = function (name, color, pausedColor)
     if name ~= '' then
         if Timer.IfExists(name) then

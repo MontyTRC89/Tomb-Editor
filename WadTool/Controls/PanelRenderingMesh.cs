@@ -701,22 +701,8 @@ namespace WadTool.Controls
 
         private void GenerateBoneColors()
         {
-            float[] hues = new float[_maxBones];
-
-            // Fill hues evenly spaced
             for (int i = 0; i < _maxBones; i++)
-                hues[i] = i / (float)_maxBones;
-
-            // Shuffle using a stride that skips close neighbors (good for small prime strides)
-            float[] shuffledHues = new float[_maxBones];
-            int stride = 7;
-
-            for (int i = 0, j = 0; i < _maxBones; i++, j = (j + stride) % _maxBones)
-                shuffledHues[i] = hues[j];
-
-            // Convert hues to RGB
-            for (int i = 0; i < _maxBones; i++)
-                _boneColors[i] = MathC.HsvToRgb(shuffledHues[i], 1.0f, 1.0f);
+                MathC.GetRandomColorByIndex(i, _maxBones);
         }
 
         public void SelectElement(int element, bool highlight = false)
