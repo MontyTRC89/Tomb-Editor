@@ -1025,81 +1025,85 @@ namespace TombLib.LevelData.Compilers
             textures = result.Select(entry => entry.Value).ToList();
         }
 
-        // Maps parent texture areas on the proposed texture map.
-        // This step only prepares for actual image data layout, actual layout is done in BuildTextureMap.
+		// Maps parent texture areas on the proposed texture map.
+		// This step only prepares for actual image data layout, actual layout is done in BuildTextureMap.
 
-        private int PlaceTexturesInMap(ref List<ParentTextureArea> textures)
-        {
-            if (textures.Count == 0)
-                return 0;
+		private List<VectorInt2> PlaceTexturesInMap(ref List<ParentTextureArea> textures)
+		{
+			List<VectorInt2> atlasSizes = new List<VectorInt2>();
+			if (textures.Count == 0)
+				return atlasSizes;
 
-            int currentPage = -1;
-            List<RectPacker> texPackers = new List<RectPacker>();
+			const int MinAtlasSize = 512;
+			const int MaxAtlasSize = 4096;
+            const int AtlasSizeStep = 512;
 
-            for (int i = 0; i < textures.Count; i++)
-            {
-                // Get the size of the quad surrounding texture area, typically should be the texture area itself
-                int w = (int)(textures[i].Area.Width);
-                int h = (int)(textures[i].Area.Height);
+			var unplaced = new List<ParentTextureArea>(textures);
+			int currentPage = -1;
 
-                // Calculate adaptive padding at all sides
-                int padding = _padding == 0 ? _minimumPadding : _padding;
+			while (unplaced.Count > 0)
+			{
+				List<ParentTextureArea> placed = null;
+				VectorInt2 finalAtlasSize = VectorInt2.Zero;
 
-                int tP = padding;
-                int bP = padding;
-                int lP = padding;
-                int rP = padding;
+				// Try to find the smallest size possible that can be used with current texture
+				for (int size = MinAtlasSize; size <= MaxAtlasSize; size += AtlasSizeStep)
+				{
+					var packer = new RectPackerTree(new VectorInt2(size, size));
+					var tempPlaced = new List<ParentTextureArea>();
 
-                int horizontalPaddingSpace = MaxTileSize - w;
-                int verticalPaddingSpace = MaxTileSize - h;
+					foreach (var texture in unplaced)
+					{
+						int w = (int)(texture.Area.Width);
+						int h = (int)(texture.Area.Height);
 
-                // If hor/ver padding won't fully fit, get existing space and calculate padding out of it
-                if (verticalPaddingSpace < tP + bP)
-                {
-                    tP = verticalPaddingSpace / 2;
-                    bP = verticalPaddingSpace - tP;
-                }
-                if (horizontalPaddingSpace < padding * 2)
-                {
-                    lP = horizontalPaddingSpace / 2;
-                    rP = horizontalPaddingSpace - lP;
-                }
+						int padding = _padding == 0 ? _minimumPadding : _padding;
+						int tP = padding, bP = padding, lP = padding, rP = padding;
+						int paddedW = w + lP + rP;
+						int paddedH = h + tP + bP;
 
-                w += lP + rP;
-                h += tP + bP;
+						if (paddedW > size || paddedH > size)
+							continue;
 
-                // Pack texture
-                int fitPage;
-                VectorInt2? pos;
+						var pos = packer.TryAdd(new VectorInt2(paddedW, paddedH));
+						if (pos.HasValue)
+						{
+							texture.Padding[0] = lP;
+							texture.Padding[1] = tP;
+							texture.Padding[2] = rP;
+							texture.Padding[3] = bP;
+							texture.Page = currentPage + 1;
+							texture.PositionInPage = pos.Value;
+							tempPlaced.Add(texture);
+						}
+						else
+						{
+							// If only a single texture cannot fit in this atlas, start again increasing the size
+							tempPlaced.Clear();
+							break;
+						}
+					}
 
-                for (ushort j = 0; j <= currentPage; ++j)
-                {
-                    pos = texPackers[j].TryAdd(new VectorInt2(w, h));
-                    if (pos.HasValue)
-                    {
-                        fitPage = j;
-                        goto PackNextUsedTexture;
-                    }
-                }
+					if (tempPlaced.Count > 0)
+					{
+						placed = tempPlaced;
+						finalAtlasSize = new VectorInt2(size, size);
+						break;
+					}
+				}
 
-                currentPage++;
-                fitPage = currentPage;
-                texPackers.Add(new RectPackerTree(new VectorInt2(MaxTileSize, MaxTileSize)));
-                pos = texPackers.Last().TryAdd(new VectorInt2(w, h));
+				if (placed == null)
+					throw new Exception("Some textures could not be placed in 4096x4096 atlas");
 
-            PackNextUsedTexture:
-                textures[i].Padding[0] = lP;
-                textures[i].Padding[1] = tP;
-                textures[i].Padding[2] = rP;
-                textures[i].Padding[3] = bP;
-                textures[i].Page = fitPage;
-                textures[i].PositionInPage = pos.Value;
-            }
+				currentPage++;
+				atlasSizes.Add(finalAtlasSize);
+				unplaced = unplaced.Except(placed).ToList();
+			}
 
-            return (currentPage + 1);
-        }
+			return atlasSizes;
+		}
 
-        private VectorInt2 PlaceAnimatedTexturesInMap(ref List<ParentTextureArea> textures)
+		private VectorInt2 PlaceAnimatedTexturesInMap(ref List<ParentTextureArea> textures)
         {
             if (textures.Count == 0)
             {
@@ -1174,13 +1178,13 @@ namespace TombLib.LevelData.Compilers
             return new VectorInt2(atlasWidth, atlasHeight);
         }
 
-        private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex, VectorInt2 atlasSize)
+        private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, bool bump, bool forceMinimumPadding, int baseIndex, List<VectorInt2> atlasSizes)
         {
             var customBumpmaps = new Dictionary<string, ImageC>();
             var atlasList = new List<TombEngineAtlas>();
-            for (int i = 0; i < numPages; i++)
+            for (int i = 0; i < atlasSizes.Count; i++)
             {
-                atlasList.Add(new TombEngineAtlas { ColorMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y) });
+                atlasList.Add(new TombEngineAtlas { ColorMap = ImageC.CreateNew(atlasSizes[i].X, atlasSizes[i].Y) });
             }
 
             var actualPadding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
@@ -1191,6 +1195,7 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < textures.Count; i++)
                 {
                     var p = textures[i];
+                    var atlasSize = atlasSizes[p.Page];
 
                     if (p.Texture == null || p.Texture.Image == null)
                     {
@@ -1420,6 +1425,17 @@ namespace TombLib.LevelData.Compilers
                 textures[i].AtlasIndex = textures[i].Page + baseIndex;
             }
 
+            // Fill atlas empty channels with 1x1 textures
+            foreach (var atlas in atlasList)
+            {
+                if (!atlas.HasNormalMap)
+                {
+                    atlas.HasNormalMap = true;
+                    atlas.NormalMap = ImageC.CreateNew(1, 1);
+                    atlas.NormalMap.Fill(new ColorC(128, 128, 255));
+                }
+            }
+
             return atlasList;
         }
 
@@ -1553,12 +1569,12 @@ namespace TombLib.LevelData.Compilers
                .ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y)
                .ToList();
 
-            // Calculate new X, Y of each texture area
-            int numRoomsAtlases = PlaceTexturesInMap(ref roomTextures);
-            int numMoveablesAtlases = PlaceTexturesInMap(ref moveablesTextures);
-            int numStaticsAtlases = PlaceTexturesInMap(ref staticsTextures);
+			// Calculate new X, Y of each texture area
+			var roomsAtlasSizes = PlaceTexturesInMap(ref roomTextures);
+            var moveablesAtlasSizes = PlaceTexturesInMap(ref moveablesTextures);
+            var staticsAtlasSizes = PlaceTexturesInMap(ref staticsTextures);
 
-            ICollection<VectorInt2> animatedAtlasSizes = new List<VectorInt2>();
+            var animatedAtlasSizes = new List<VectorInt2>();
             for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
                 var textures = animatedTextures[n];
@@ -1568,15 +1584,20 @@ namespace TombLib.LevelData.Compilers
             // In TombEngine, we pack textures in 4K pages and we can use big textures up to 256 pixels without bleeding
             VectorInt2 atlasSize = new VectorInt2(MaxTileSize, MaxTileSize);
 
-            RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize);
-            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, true, true, 0, atlasSize);
-            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, true, true, 0, atlasSize);
+            RoomsAtlas = new List<TombEngineAtlas>();
+            RoomsAtlas.AddRange(CreateAtlas(ref roomTextures, true, false, 0, roomsAtlasSizes));
+
+            MoveablesAtlas = new List<TombEngineAtlas>();
+            MoveablesAtlas.AddRange(CreateAtlas(ref moveablesTextures, true, false, 0, moveablesAtlasSizes));
+
+            StaticsAtlas = new List<TombEngineAtlas>();
+            StaticsAtlas.AddRange(CreateAtlas(ref staticsTextures, true, false, 0, staticsAtlasSizes));
 
             AnimatedAtlas = new List<TombEngineAtlas>();
             for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
                 var textures = animatedTextures[n];
-                AnimatedAtlas.AddRange(CreateAtlas(ref textures, 1, false, false, AnimatedAtlas.Count, animatedAtlasSizes.ElementAt(n)));
+                AnimatedAtlas.AddRange(CreateAtlas(ref textures, false, false, AnimatedAtlas.Count, new List<VectorInt2>() { animatedAtlasSizes.ElementAt(n) }));
             }
 
 #if DEBUG
@@ -1587,17 +1608,20 @@ namespace TombLib.LevelData.Compilers
                 for (int n = 0; n < RoomsAtlas.Count; n++)
                 {
                     RoomsAtlas[n].ColorMap.Save("OutputDebug\\RoomsAtlas" + n + ".png");
-                }
+					RoomsAtlas[n].NormalMap.Save("OutputDebug\\RoomsAtlas" + n + "_N.png");
+				}
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
                     MoveablesAtlas[n].ColorMap.Save("OutputDebug\\MoveablesAtlas" + n + ".png");
-                }
+					MoveablesAtlas[n].NormalMap.Save("OutputDebug\\MoveablesAtlas" + n + "_N.png");
+				}
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
                     StaticsAtlas[n].ColorMap.Save("OutputDebug\\StaticsAtlas" + n + ".png");
-                }
+					StaticsAtlas[n].NormalMap.Save("OutputDebug\\StaticsAtlas" + n + "_N.png");
+				}
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
