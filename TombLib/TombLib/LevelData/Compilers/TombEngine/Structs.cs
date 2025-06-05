@@ -83,8 +83,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 	{
 		public TombEngineMaterialType Type;
 		public BlendMode BlendMode;
-		public bool Animated;
-		public int AnimatedSequence;
 		public Vector4 FloatParameters0;
 		public Vector4 FloatParameters1;
 		public Vector4 FloatParameters2;

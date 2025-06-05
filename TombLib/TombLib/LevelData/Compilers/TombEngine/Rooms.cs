@@ -1789,14 +1789,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
         }
 
-		private TombEngineBucket GetOrAddBucket(int textureId, TombEnginePolygonMaterial polygonMaterial, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
+		private TombEngineBucket GetOrAddBucket(int textureId, TombEnginePolygonMaterial polygonMaterial, int animatedSequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
 		{
 			var material = new TombEngineMaterial(polygonMaterial.Type)
 			{
 				Texture = textureId,
 				BlendMode = (byte)polygonMaterial.BlendMode,
-				Animated = polygonMaterial.Animated,
-				AnimatedSequence = polygonMaterial.AnimatedSequence,
+				Animated = animatedSequence >= 0,
+				AnimatedSequence = animatedSequence,
 				FloatParameters0 = polygonMaterial.FloatParameters0,
 				FloatParameters1 = polygonMaterial.FloatParameters1,
 				FloatParameters2 = polygonMaterial.FloatParameters2,
@@ -1808,7 +1808,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 			};
 
 			if (!buckets.ContainsKey(material))
-				buckets.Add(material, new TombEngineBucket { Material = material });
+				buckets.Add(material, new TombEngineBucket { 
+                    Material = material 
+                });
 
 			return buckets[material];
 		}
@@ -1844,7 +1846,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.Material, room.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.Material, poly.AnimatedSequence, room.Buckets);
 
 				var texture = textures[poly.TextureId];
 
