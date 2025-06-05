@@ -9,7 +9,13 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public enum TombEngineMaterialType : byte
+	{
+		Opaque,
+		Water
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineSpriteTexture
     {
         public int Tile;
@@ -73,7 +79,27 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public TombEngineSectorFlags Flags;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public class TombEnginePolygonMaterial
+	{
+		public TombEngineMaterialType Type;
+		public BlendMode BlendMode;
+		public bool Animated;
+		public int AnimatedSequence;
+		public Vector4 FloatParameters0;
+		public Vector4 FloatParameters1;
+		public Vector4 FloatParameters2;
+		public Vector4 FloatParameters3;
+		public VectorInt4 IntegerParameters0;
+		public VectorInt4 IntegerParameters1;
+		public VectorInt4 IntegerParameters2;
+		public VectorInt4 IntegerParameters3;
+
+		public TombEnginePolygonMaterial()
+		{
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEnginePolygon
     {
         public TombEnginePolygonShape Shape;
@@ -92,7 +118,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int AnimatedSequence;
         public int AnimatedFrame;
         public float ShineStrength;
-    }
+
+		public TombEnginePolygonMaterial Material;
+	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineRoomStaticMesh
@@ -204,46 +232,84 @@ namespace TombLib.LevelData.Compilers.TombEngine
         }
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngineMaterial
-    {
-        public class TombEngineMaterialComparer : IEqualityComparer<TombEngineMaterial>
-        {
-            public bool Equals(TombEngineMaterial x, TombEngineMaterial y)
-            {
-                return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated && x.NormalMapping == y.NormalMapping && 
-                    x.AnimatedSequence == y.AnimatedSequence);
-            }
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public class TombEngineMaterial
+	{
+		public class TombEngineMaterialComparer : IEqualityComparer<TombEngineMaterial>
+		{
+			public bool Equals(TombEngineMaterial x, TombEngineMaterial y)
+			{
+				return (x.Texture == y.Texture &&
+					x.BlendMode == y.BlendMode &&
+					x.Animated == y.Animated &&
+					x.NormalMapping == y.NormalMapping &&
+					x.AnimatedSequence == y.AnimatedSequence &&
+					x.WaterPlaneIndex == y.WaterPlaneIndex &&
+					x.FloatParameters0 == y.FloatParameters0 &&
+					x.FloatParameters1 == y.FloatParameters1 &&
+					x.FloatParameters2 == y.FloatParameters2 &&
+					x.FloatParameters3 == y.FloatParameters3 &&
+					x.IntegerParameters0 == y.IntegerParameters0 &&
+					x.IntegerParameters1 == y.IntegerParameters1 &&
+					x.IntegerParameters2 == y.IntegerParameters2 &&
+					x.IntegerParameters3 == y.IntegerParameters3);
+			}
 
-            public int GetHashCode(TombEngineMaterial obj)
-            {
-                unchecked
-                {
-                    int hash = 17;
-                    hash = hash * 23 + obj.Texture.GetHashCode();
-                    hash = hash * 23 + obj.BlendMode.GetHashCode();
-                    hash = hash * 23 + obj.Animated.GetHashCode();
-                    hash = hash * 23 + obj.NormalMapping.GetHashCode();
-                    hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
-                    return hash;
-                }
-            }
-        }
+			public int GetHashCode(TombEngineMaterial obj)
+			{
+				unchecked
+				{
+					int hash = 17;
+					hash = hash * 23 + obj.Texture.GetHashCode();
+					hash = hash * 23 + obj.BlendMode.GetHashCode();
+					hash = hash * 23 + obj.Animated.GetHashCode();
+					hash = hash * 23 + obj.NormalMapping.GetHashCode();
+					hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
+					hash = hash * 23 + obj.WaterPlaneIndex.GetHashCode();
+					hash = hash * 23 + obj.MaterialType.GetHashCode();
+					hash = hash * 23 + obj.FloatParameters0.GetHashCode();
+					hash = hash * 23 + obj.FloatParameters1.GetHashCode();
+					hash = hash * 23 + obj.FloatParameters2.GetHashCode();
+					hash = hash * 23 + obj.FloatParameters3.GetHashCode();
+					hash = hash * 23 + obj.IntegerParameters0.GetHashCode();
+					hash = hash * 23 + obj.IntegerParameters1.GetHashCode();
+					hash = hash * 23 + obj.IntegerParameters2.GetHashCode();
+					hash = hash * 23 + obj.IntegerParameters3.GetHashCode();
+					return hash;
+				}
+			}
+		}
 
-        public int Texture;
-        public byte BlendMode;
-        public bool Animated;
-        public bool NormalMapping;
-        public int AnimatedSequence;
-    }
+		public int Texture;
+		public byte BlendMode;
+		public byte MaterialType;
+		public bool Animated;
+		public bool NormalMapping;
+		public int AnimatedSequence;
+		public int WaterPlaneIndex;
+		public Vector4 FloatParameters0;
+		public Vector4 FloatParameters1;
+		public Vector4 FloatParameters2;
+		public Vector4 FloatParameters3;
+		public VectorInt4 IntegerParameters0;
+		public VectorInt4 IntegerParameters1;
+		public VectorInt4 IntegerParameters2;
+		public VectorInt4 IntegerParameters3;
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public TombEngineMaterial(TombEngineMaterialType type)
+		{
+			MaterialType = (byte)type;
+		}
+	}
+
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineBucket
     {
-        public TombEngineMaterial Material;
-        public List<TombEnginePolygon> Polygons;
+		public TombEngineMaterial Material;
+		public List<TombEnginePolygon> Polygons;
 
-        public TombEngineBucket()
+		public TombEngineBucket()
         {
             Polygons = new List<TombEnginePolygon>();
         }

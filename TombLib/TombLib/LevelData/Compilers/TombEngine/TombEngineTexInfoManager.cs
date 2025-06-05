@@ -608,81 +608,81 @@ namespace TombLib.LevelData.Compilers
             // degenerate quad. It's needed to fake UVRotate application to triangular areas.
             public bool ConvertToQuad;
 
-            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
-            {
-                if (indices.Length != 3)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
+			public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
+			{
+				if (indices.Length != 3)
+					throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
-                int objectTextureIndex = TexInfoIndex;
-                int[] transformedIndices = new int[3] { indices[0], indices[1], indices[2] };
+				int objectTextureIndex = TexInfoIndex;
+				int[] transformedIndices = new int[3] { indices[0], indices[1], indices[2] };
 
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        int tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
+				if (Rotation > 0)
+				{
+					for (int i = 0; i < Rotation; i++)
+					{
+						int tempIndex = transformedIndices[0];
+						transformedIndices[0] = transformedIndices[2];
+						transformedIndices[2] = transformedIndices[1];
+						transformedIndices[1] = tempIndex;
+					}
+				}
 
-                var polygon = new TombEnginePolygon();
-                polygon.Shape = TombEnginePolygonShape.Triangle;
-                polygon.Indices.AddRange(transformedIndices);
-                polygon.TextureId = objectTextureIndex;
-                polygon.BlendMode = blendMode;
-                polygon.Animated = Animated;
+				var polygon = new TombEnginePolygon();
+				polygon.Shape = TombEnginePolygonShape.Triangle;
+				polygon.Indices.AddRange(transformedIndices);
+				polygon.TextureId = objectTextureIndex;
+				polygon.Animated = Animated;
+				polygon.Material = material;
 
-                if (vertices != null)
-                {
-                    // Calculate the normal
-                    Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
-                    Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
-                    polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
-                }
+				if (vertices != null)
+				{
+					// Calculate the normal
+					Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
+					Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
+					polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
+				}
 
-                return polygon;
-            }
+				return polygon;
+			}
 
-            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
-            {
-                if (indices.Length != 4)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
+			public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
+			{
+				if (indices.Length != 4)
+					throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
-                int objectTextureIndex = TexInfoIndex;
-                int[] transformedIndices = new int[4] { indices[0], indices[1], indices[2], indices[3] };
+				int objectTextureIndex = TexInfoIndex;
+				int[] transformedIndices = new int[4] { indices[0], indices[1], indices[2], indices[3] };
 
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        int tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[3];
-                        transformedIndices[3] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
+				if (Rotation > 0)
+				{
+					for (int i = 0; i < Rotation; i++)
+					{
+						int tempIndex = transformedIndices[0];
+						transformedIndices[0] = transformedIndices[3];
+						transformedIndices[3] = transformedIndices[2];
+						transformedIndices[2] = transformedIndices[1];
+						transformedIndices[1] = tempIndex;
+					}
+				}
 
-                var polygon = new TombEnginePolygon();
-                polygon.Shape = TombEnginePolygonShape.Quad;
-                polygon.Indices.AddRange(transformedIndices);
-                polygon.TextureId = objectTextureIndex;
-                polygon.BlendMode = blendMode;
-                polygon.Animated = Animated;
+				var polygon = new TombEnginePolygon();
+				polygon.Shape = TombEnginePolygonShape.Quad;
+				polygon.Indices.AddRange(transformedIndices);
+				polygon.TextureId = objectTextureIndex;
+				polygon.Animated = Animated;
+				polygon.Material = material;
 
-                if (vertices != null)
-                {
-                    // Calculate the normal
-                    Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
-                    Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
-                    polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
-                }
+				if (vertices != null)
+				{
+					// Calculate the normal
+					Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
+					Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
+					polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
+				}
 
-                return polygon;
-            }
-        }
+				return polygon;
+			}
+		}
 
         // Gets existing TexInfo child index if there is similar one in parent textures list
         private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, TextureDestination destination,
