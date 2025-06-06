@@ -1572,7 +1572,8 @@ namespace TombLib.LevelData.Compilers
                         break;
 
                     case AnimatedTextureAnimationType.UVRotate:
-                        animType = 1;
+                        _progressReporter.ReportWarn("UVRotate animated textures are not supported in TombEngine yet and will be ignored.");
+                        animType = 0; // FIXME: Change to 1 when implemented -- Lwmte, 06.06.2025`
                         break;
 
                     case AnimatedTextureAnimationType.Video:
