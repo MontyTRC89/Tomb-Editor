@@ -1299,7 +1299,9 @@ namespace TombLib.LevelData.Compilers
                             if (level != BumpMappingLevel.None)
                             {
                                 bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
-                                bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Sobel, 0, 0, bumpImage.Width, bumpImage.Height);
+								bumpImage = ImageC.GaussianBlur(bumpImage, radius: 1.0f);
+								bumpImage = ImageC.NormalizeContrast(bumpImage);
+								bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Scharr, 0, 0, bumpImage.Width, bumpImage.Height);
                             }
                             else
                                 // Neutral Bump
