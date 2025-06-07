@@ -9,12 +9,6 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
-	public enum TombEngineMaterialType : byte
-	{
-		Opaque,
-		Water
-	}
-
 	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineSpriteTexture
     {
@@ -81,7 +75,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 	public class TombEnginePolygonMaterial
 	{
-		public TombEngineMaterialType Type;
+		public MaterialType Type;
 		public BlendMode BlendMode;
 		public Vector4 FloatParameters0;
 		public Vector4 FloatParameters1;
@@ -294,7 +288,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 		public VectorInt4 IntegerParameters2;
 		public VectorInt4 IntegerParameters3;
 
-		public TombEngineMaterial(TombEngineMaterialType type)
+		public TombEngineMaterial(MaterialType type)
 		{
 			MaterialType = (byte)type;
 		}

@@ -1220,7 +1220,11 @@ namespace TombLib.LevelData.Compilers
                         var bumpY = destY;
 
 						// Build the path for eventual sidecar load
-						string externalNormalMapPath = Path.Combine(
+                        string externalXmlMaterialPath = Path.Combine(
+                            Path.GetDirectoryName(p.Texture.Image.FileName),
+							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + ".xml");
+
+			            string externalNormalMapPath = Path.Combine(
 							Path.GetDirectoryName(p.Texture.Image.FileName),
 							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + "_N" +
 							Path.GetExtension(p.Texture.Image.FileName));
@@ -1228,10 +1232,24 @@ namespace TombLib.LevelData.Compilers
 						string bumpPathToUse = null;
 
 						// Choose the path to use
-						if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
-							bumpPathToUse = externalNormalMapPath;
-						else if (!string.IsNullOrEmpty(tex.BumpPath))
-							bumpPathToUse = _level.Settings.MakeAbsolute(tex.BumpPath);
+
+                        // First try to load normal map from XML file if exists
+                        if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
+                        {
+                            var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
+                            if (!string.IsNullOrEmpty(material.NormalMap) && File.Exists(material.NormalMap))
+                                bumpPathToUse = material.NormalMap;
+                        }
+
+                        // If no material was found or the material didn't contain any normal map, try
+                        // sidecar loading directly or use bump math specified in level settings
+                        if (string.IsNullOrEmpty(bumpPathToUse))
+                        {
+                            if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
+                                bumpPathToUse = externalNormalMapPath;
+                            else if (!string.IsNullOrEmpty(tex.BumpPath))
+                                bumpPathToUse = _level.Settings.MakeAbsolute(tex.BumpPath);
+                        }
 
 						// If normal map is found
 						if (!string.IsNullOrEmpty(bumpPathToUse))
@@ -1322,16 +1340,34 @@ namespace TombLib.LevelData.Compilers
 							continue;
 
 						// Build the path for eventual sidecar load
+						string externalXmlMaterialPath = Path.Combine(
+							Path.GetDirectoryName(p.Texture.Image.FileName),
+							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + ".xml");
+
 						string externalNormalMapPath = Path.Combine(
-							Path.GetDirectoryName(tex.AbsolutePath),
-							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + "_N" +
-							Path.GetExtension(tex.AbsolutePath));
+							Path.GetDirectoryName(p.Texture.Image.FileName),
+							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + "_N" +
+							Path.GetExtension(p.Texture.Image.FileName));
 
 						string bumpPathToUse = null;
 
 						// Choose the path to use
-						if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
-							bumpPathToUse = externalNormalMapPath;
+
+						// First try to load normal map from XML file if exists
+						if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
+						{
+							var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
+							if (!string.IsNullOrEmpty(material.NormalMap) && File.Exists(material.NormalMap))
+								bumpPathToUse = material.NormalMap;
+						}
+
+						// If no material was found or the material didn't contain any normal map, try
+						// sidecar loading directly or use bump math specified in level settings
+						if (string.IsNullOrEmpty(bumpPathToUse))
+						{
+							if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
+								bumpPathToUse = externalNormalMapPath;
+						}
 
 						// If normal map is found
 						if (!string.IsNullOrEmpty(bumpPathToUse))
@@ -1373,12 +1409,34 @@ namespace TombLib.LevelData.Compilers
                             continue;
 
 						// Build the path for eventual sidecar load
+						string externalXmlMaterialPath = Path.Combine(
+							Path.GetDirectoryName(p.Texture.Image.FileName),
+							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + ".xml");
+
 						string externalNormalMapPath = Path.Combine(
-							Path.GetDirectoryName(tex.AbsolutePath),
-							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + "_N" +
-							Path.GetExtension(tex.AbsolutePath));
+							Path.GetDirectoryName(p.Texture.Image.FileName),
+							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + "_N" +
+							Path.GetExtension(p.Texture.Image.FileName));
 
 						string bumpPathToUse = null;
+
+						// Choose the path to use
+
+						// First try to load normal map from XML file if exists
+						if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
+						{
+							var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
+							if (!string.IsNullOrEmpty(material.NormalMap) && File.Exists(material.NormalMap))
+								bumpPathToUse = material.NormalMap;
+						}
+
+						// If no material was found or the material didn't contain any normal map, try
+						// sidecar loading directly or use bump math specified in level settings
+						if (string.IsNullOrEmpty(bumpPathToUse))
+						{
+							if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
+								bumpPathToUse = externalNormalMapPath;
+						}
 
 						// Choose the path to use
 						if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
