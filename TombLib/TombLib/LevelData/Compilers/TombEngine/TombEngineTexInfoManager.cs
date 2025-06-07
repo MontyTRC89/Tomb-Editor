@@ -1341,13 +1341,13 @@ namespace TombLib.LevelData.Compilers
 
 						// Build the path for eventual sidecar load
 						string externalXmlMaterialPath = Path.Combine(
-							Path.GetDirectoryName(p.Texture.Image.FileName),
-							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + ".xml");
+						Path.GetDirectoryName(tex.AbsolutePath),
+						Path.GetFileNameWithoutExtension(tex.AbsolutePath) + ".xml");
 
 						string externalNormalMapPath = Path.Combine(
-							Path.GetDirectoryName(p.Texture.Image.FileName),
-							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + "_N" +
-							Path.GetExtension(p.Texture.Image.FileName));
+							Path.GetDirectoryName(tex.AbsolutePath),
+							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + "_N" +
+							Path.GetExtension(tex.AbsolutePath));
 
 						string bumpPathToUse = null;
 
@@ -1357,8 +1357,15 @@ namespace TombLib.LevelData.Compilers
 						if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
 						{
 							var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
-							if (!string.IsNullOrEmpty(material.NormalMap) && File.Exists(material.NormalMap))
-								bumpPathToUse = material.NormalMap;
+							if (!string.IsNullOrEmpty(material.NormalMap))
+							{
+								var normalMapPath = Path.Combine(
+														Path.GetDirectoryName(tex.AbsolutePath),
+														material.NormalMap);
+								if (File.Exists(normalMapPath))
+									bumpPathToUse = normalMapPath;
+							}
+
 						}
 
 						// If no material was found or the material didn't contain any normal map, try
@@ -1410,13 +1417,13 @@ namespace TombLib.LevelData.Compilers
 
 						// Build the path for eventual sidecar load
 						string externalXmlMaterialPath = Path.Combine(
-							Path.GetDirectoryName(p.Texture.Image.FileName),
-							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + ".xml");
+							Path.GetDirectoryName(tex.AbsolutePath),
+							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + ".xml");
 
 						string externalNormalMapPath = Path.Combine(
-							Path.GetDirectoryName(p.Texture.Image.FileName),
-							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + "_N" +
-							Path.GetExtension(p.Texture.Image.FileName));
+							Path.GetDirectoryName(tex.AbsolutePath),
+							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + "_N" +
+							Path.GetExtension(tex.AbsolutePath));
 
 						string bumpPathToUse = null;
 
@@ -1426,8 +1433,15 @@ namespace TombLib.LevelData.Compilers
 						if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
 						{
 							var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
-							if (!string.IsNullOrEmpty(material.NormalMap) && File.Exists(material.NormalMap))
-								bumpPathToUse = material.NormalMap;
+							if (!string.IsNullOrEmpty(material.NormalMap))
+                            {
+                                var normalMapPath = Path.Combine(
+							                            Path.GetDirectoryName(tex.AbsolutePath),
+														material.NormalMap);
+                                if (File.Exists(normalMapPath))
+								    bumpPathToUse = normalMapPath;
+							}
+								
 						}
 
 						// If no material was found or the material didn't contain any normal map, try
@@ -1743,8 +1757,6 @@ namespace TombLib.LevelData.Compilers
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
-            bool unsupportedTextureFound = false;
-
             writer.Write((int)_actualAnimTextures.Count);
             for (int i = 0; i < _actualAnimTextures.Count; i++)
             {
@@ -1758,12 +1770,7 @@ namespace TombLib.LevelData.Compilers
                         break;
 
                     case AnimatedTextureAnimationType.UVRotate:
-                        if (unsupportedTextureFound == false)
-                        {
-                            _progressReporter.ReportWarn("UVRotate animated textures are not supported in TombEngine yet and will be ignored.");
-                            unsupportedTextureFound = true;
-                        }
-                        animType = 0; // FIXME: Change to 1 when implemented -- Lwmte, 06.06.2025`
+                        animType = 1;
                         break;
 
                     case AnimatedTextureAnimationType.Video:
