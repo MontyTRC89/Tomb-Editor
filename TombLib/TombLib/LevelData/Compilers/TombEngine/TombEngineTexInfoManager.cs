@@ -1743,6 +1743,8 @@ namespace TombLib.LevelData.Compilers
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
+            bool unsupportedTextureFound = false;
+
             writer.Write((int)_actualAnimTextures.Count);
             for (int i = 0; i < _actualAnimTextures.Count; i++)
             {
@@ -1756,7 +1758,12 @@ namespace TombLib.LevelData.Compilers
                         break;
 
                     case AnimatedTextureAnimationType.UVRotate:
-                        animType = 1;
+                        if (unsupportedTextureFound == false)
+                        {
+                            _progressReporter.ReportWarn("UVRotate animated textures are not supported in TombEngine yet and will be ignored.");
+                            unsupportedTextureFound = true;
+                        }
+                        animType = 0; // FIXME: Change to 1 when implemented -- Lwmte, 06.06.2025`
                         break;
 
                     case AnimatedTextureAnimationType.Video:

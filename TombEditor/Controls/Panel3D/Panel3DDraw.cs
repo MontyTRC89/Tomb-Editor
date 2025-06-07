@@ -1537,44 +1537,44 @@ namespace TombEditor.Controls.Panel3D
                     }
                 }
 
-                if (_editor.Level.IsTombEngine)
+                foreach (var instance in group)
                 {
-                    foreach (var instance in group)
+                    // Add text message
+                    if (_editor.SelectedObject == instance)
                     {
-                        if (!disableSelection && _highlightedObjects.Contains(instance)) // Selection
-                            skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * _viewProjection,
+                            instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
+                            instance.GetScriptIDOrName() + "\n" +
+                            GetObjectPositionString(instance.Room, instance) + "\n" +
+                            GetObjectRotationString(instance.Room, instance) +
+                            (instance.Ocb == 0 ? string.Empty : "\nOCB: " + instance.Ocb) +
+                            GetObjectTriggerString(instance)));
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(instance.Room, instance.Position);
+                    }
+
+                    if (!_editor.Level.IsTombEngine || skin.Skin == null)
+                        continue;
+
+                    if (!disableSelection && _highlightedObjects.Contains(instance)) // Selection
+                        skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                    else
+                    {
+                        if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
+                        {
+                            skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
+                            skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight * instance.Color));
+                        }
                         else
                         {
-                            if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
-                            {
-                                skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
-                                skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight * instance.Color));
-                            }
-                            else
-                            {
-                                skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
-                                skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
-                            }
-                        }
-
-                        skin.RenderSkin(_legacyDevice, skinnedModelEffect, (instance.ObjectMatrix * _viewProjection).ToSharpDX(), model);
-
-                        // Add text message
-                        if (_editor.SelectedObject == instance)
-                        {
-                            textToDraw.Add(CreateTextTagForObject(
-                                instance.RotationPositionMatrix * _viewProjection,
-                                instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
-                                instance.GetScriptIDOrName() + "\n" +
-                                GetObjectPositionString(instance.Room, instance) + "\n" +
-                                GetObjectRotationString(instance.Room, instance) +
-                                (instance.Ocb == 0 ? string.Empty : "\nOCB: " + instance.Ocb) +
-                                GetObjectTriggerString(instance)));
-
-                            // Add the line height of the object
-                            AddObjectHeightLine(instance.Room, instance.Position);
+                            skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
+                            skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
                         }
                     }
+
+                    skin.RenderSkin(_legacyDevice, skinnedModelEffect, (instance.ObjectMatrix * _viewProjection).ToSharpDX(), model);
                 }
 
                 for (int i = 0; i < skin.Meshes.Count; i++)
