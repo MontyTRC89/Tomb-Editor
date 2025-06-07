@@ -1586,25 +1586,33 @@ namespace TombLib.LevelData.Compilers
             {
                 Directory.CreateDirectory("OutputDebug");
 
+                var files = Directory.EnumerateFiles("OutputDebug");
+                foreach (var file in files)
+                    File.Delete(file);
+
                 for (int n = 0; n < RoomsAtlas.Count; n++)
                 {
                     RoomsAtlas[n].ColorMap.Save("OutputDebug\\RoomsAtlas" + n + ".png");
-                }
+					RoomsAtlas[n].NormalMap.Save("OutputDebug\\RoomsAtlas" + n + "_N.png");
+				}
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
                     MoveablesAtlas[n].ColorMap.Save("OutputDebug\\MoveablesAtlas" + n + ".png");
-                }
+					MoveablesAtlas[n].NormalMap.Save("OutputDebug\\MoveablesAtlas" + n + "_N.png");
+				}
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
                     StaticsAtlas[n].ColorMap.Save("OutputDebug\\StaticsAtlas" + n + ".png");
-                }
+					StaticsAtlas[n].NormalMap.Save("OutputDebug\\StaticsAtlas" + n + "_N.png");
+				}
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
                     AnimatedAtlas[n].ColorMap.Save("OutputDebug\\AnimatedAtlas" + n + ".png");
-                }
+					AnimatedAtlas[n].NormalMap.Save("OutputDebug\\AnimatedAtlas" + n + "_N.png");
+				}
             }
             catch { }   
 #endif
