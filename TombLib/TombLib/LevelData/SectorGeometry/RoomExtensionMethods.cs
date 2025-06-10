@@ -1070,25 +1070,31 @@ public static class RoomExtensionMethods
 
 	private static bool CanOverdraw(Sector sector, Direction direction, Sector adjoiningSector)
 	{
-		if (sector.WallPortal is not null && adjoiningSector is not null)
+		if (sector.WallPortal is not null)
 		{
-			DiagonalSplit adjoiningDiagonalSplit = adjoiningSector.Floor.DiagonalSplit;
-			bool isAdjoiningSectorADiagonalWall = adjoiningSector.IsAnyWall && adjoiningDiagonalSplit is not DiagonalSplit.None;
+			if (sector.WallPortal.Opacity is not PortalOpacity.None)
+				return false; // Do not allow overdraw on textured portals
 
-			if (isAdjoiningSectorADiagonalWall)
+			if (adjoiningSector is not null)
 			{
-				// Depending on the direction, we need to check the diagonal split of the adjoining sector, as 2 sides of a diagonal wall can be solid
-				return direction switch
-				{
-					Direction.PositiveZ => adjoiningDiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XpZn,
-					Direction.PositiveX => adjoiningDiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XnZp,
-					Direction.NegativeZ => adjoiningDiagonalSplit is DiagonalSplit.XpZp or DiagonalSplit.XnZp,
-					Direction.NegativeX => adjoiningDiagonalSplit is DiagonalSplit.XpZp or DiagonalSplit.XpZn,
-					_ => false
-				};
-			}
+				DiagonalSplit adjoiningDiagonalSplit = adjoiningSector.Floor.DiagonalSplit;
+				bool isAdjoiningSectorADiagonalWall = adjoiningSector.IsAnyWall && adjoiningDiagonalSplit is not DiagonalSplit.None;
 
-			return !adjoiningSector.IsAnyWall;
+				if (isAdjoiningSectorADiagonalWall)
+				{
+					// Depending on the direction, we need to check the diagonal split of the adjoining sector, as 2 sides of a diagonal wall can be solid
+					return direction switch
+					{
+						Direction.PositiveZ => adjoiningDiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XpZn,
+						Direction.PositiveX => adjoiningDiagonalSplit is DiagonalSplit.XnZn or DiagonalSplit.XnZp,
+						Direction.NegativeZ => adjoiningDiagonalSplit is DiagonalSplit.XpZp or DiagonalSplit.XnZp,
+						Direction.NegativeX => adjoiningDiagonalSplit is DiagonalSplit.XpZp or DiagonalSplit.XpZn,
+						_ => false
+					};
+				}
+
+				return !adjoiningSector.IsAnyWall;
+			}
 		}
 
 		return !sector.IsAnyWall;
