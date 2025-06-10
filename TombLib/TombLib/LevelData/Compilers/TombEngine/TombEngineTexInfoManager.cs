@@ -10,6 +10,7 @@ using TombLib.IO;
 using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.Utils;
 using TombLib.Wad;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -1176,8 +1177,11 @@ namespace TombLib.LevelData.Compilers
 
         private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex, VectorInt2 atlasSize)
         {
-            var customBumpmaps = new Dictionary<string, ImageC>();
-            var atlasList = new List<TombEngineAtlas>();
+            var customNormalMaps = new Dictionary<string, ImageC>();
+			var customSpecularMaps = new Dictionary<string, ImageC>();
+			var customAmbientOcclusionMaps = new Dictionary<string, ImageC>();
+			var customRoughnessMaps = new Dictionary<string, ImageC>();
+			var atlasList = new List<TombEngineAtlas>();
             for (int i = 0; i < numPages; i++)
             {
                 atlasList.Add(new TombEngineAtlas { ColorMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y) });
@@ -1211,281 +1215,290 @@ namespace TombLib.LevelData.Compilers
                     image.ColorMap.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
                     AddPadding(p, p.Texture.Image, image.ColorMap, 0, actualPadding);
 
-                    // Do the bump map if needed
-
-                    if (p.Texture is LevelTexture && b == 1)
+                    if (b == 1)
                     {
-                        var tex = (p.Texture as LevelTexture);
-                        var bumpX = destX;
-                        var bumpY = destY;
+                        // Try sidecar loading
+                        var textureAbsolutePath = "";
 
-						// Build the path for eventual sidecar load
-                        string externalXmlMaterialPath = Path.Combine(
-                            Path.GetDirectoryName(p.Texture.Image.FileName),
-							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + ".xml");
+                        var normalMapPaths = new List<string>();
+                        var specularMapPaths = new List<string>();
+                        var ambientOcclusionMapPaths = new List<string>();
+                        var roughnessMapPaths = new List<string>();
 
-			            string externalNormalMapPath = Path.Combine(
-							Path.GetDirectoryName(p.Texture.Image.FileName),
-							Path.GetFileNameWithoutExtension(p.Texture.Image.FileName) + "_N" +
-							Path.GetExtension(p.Texture.Image.FileName));
+                        if (p.Texture is LevelTexture)
+                            textureAbsolutePath = p.Texture.Image.FileName;
+                        else if (p.Texture is ImportedGeometryTexture)
+                            textureAbsolutePath = ((ImportedGeometryTexture)p.Texture).AbsolutePath;
+                        else if (p.Texture is WadTexture)
+                            textureAbsolutePath = ((WadTexture)p.Texture).AbsolutePath;
 
-						string bumpPathToUse = null;
-
-						// Choose the path to use
-
-                        // First try to load normal map from XML file if exists
-                        if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
+                        if (!string.IsNullOrEmpty(textureAbsolutePath))
                         {
-                            var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
-                            if (!string.IsNullOrEmpty(material.NormalMap) && File.Exists(material.NormalMap))
-                                bumpPathToUse = material.NormalMap;
-                        }
+                            string externalXmlMaterialPath = Path.Combine(
+                                 Path.GetDirectoryName(textureAbsolutePath),
+                                 Path.GetFileNameWithoutExtension(textureAbsolutePath) + ".xml");
 
-                        // If no material was found or the material didn't contain any normal map, try
-                        // sidecar loading directly or use bump math specified in level settings
-                        if (string.IsNullOrEmpty(bumpPathToUse))
-                        {
-                            if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
-                                bumpPathToUse = externalNormalMapPath;
-                            else if (!string.IsNullOrEmpty(tex.BumpPath))
-                                bumpPathToUse = _level.Settings.MakeAbsolute(tex.BumpPath);
-                        }
-
-						// If normal map is found
-						if (!string.IsNullOrEmpty(bumpPathToUse))
-						{
-							if (!customBumpmaps.ContainsKey(bumpPathToUse))
-							{
-								var potentialBumpImage = ImageC.FromFile(bumpPathToUse);
-
-								if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
-								{
-									customBumpmaps[bumpPathToUse] = potentialBumpImage;
-								}
-								else
-								{
-									_progressReporter.ReportWarn($"Texture file '{tex}' has a bump/normal map with a different size and was ignored.");
-									customBumpmaps[bumpPathToUse] = ImageC.Black;
-								}
+                            if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
+                            {
+                                var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
+                                if (!string.IsNullOrEmpty(material.NormalMap))
+                                    normalMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.NormalMap));
+                                if (!string.IsNullOrEmpty(material.SpecularMap))
+									specularMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.SpecularMap));
+								if (!string.IsNullOrEmpty(material.RoughnessMap))
+									roughnessMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.RoughnessMap));
+								if (!string.IsNullOrEmpty(material.AmbientOcclusionMap))
+									ambientOcclusionMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.AmbientOcclusionMap));
 							}
 
-							if (!image.HasNormalMap)
-							{
-								image.HasNormalMap = true;
-								image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-								image.NormalMap.Fill(new ColorC(128, 128, 255));
-							}
+                            normalMapPaths.Add(Path.Combine(
+                                    Path.GetDirectoryName(textureAbsolutePath),
+                                    Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_N" +
+                                    Path.GetExtension(textureAbsolutePath)));
 
-							image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[bumpPathToUse], x, y, width, height);
-							AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
-						}
-						else
+                            specularMapPaths.Add(Path.Combine(
+                                    Path.GetDirectoryName(textureAbsolutePath),
+                                    Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_S" +
+                                    Path.GetExtension(textureAbsolutePath)));
+
+                            ambientOcclusionMapPaths.Add(Path.Combine(
+                                    Path.GetDirectoryName(textureAbsolutePath),
+                                    Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_AO" +
+                                    Path.GetExtension(textureAbsolutePath)));
+
+                            roughnessMapPaths.Add(Path.Combine(
+                                    Path.GetDirectoryName(textureAbsolutePath),
+                                    Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_R" +
+                                    Path.GetExtension(textureAbsolutePath)));
+
+                            if (p.Texture is LevelTexture)
+                            {
+                                LevelTexture tex = p.Texture as LevelTexture;
+
+                                if (!string.IsNullOrEmpty(tex.BumpPath))
+                                    normalMapPaths.Add(_level.Settings.MakeAbsolute(tex.BumpPath));
+                            }
+                        }
+
+                        // Calculate or fetch normal maps
+                        if (p.Texture is LevelTexture)
                         {
-                            var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
+                            var tex = (p.Texture as LevelTexture);
+                            var bumpX = destX;
+                            var bumpY = destY;
 
-
-                            var bumpImage = ImageC.CreateNew(width, height);
-                            bumpImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
-
-                            float sobelLevel = 0;
-                            float sobelStrength = 0;
-
-                            switch (level)
-                            {
-                                case BumpMappingLevel.Level1:
-                                    sobelLevel = 0.004f;
-                                    sobelStrength = 0.003f;
+                            string normalMapPathToUse = "";
+                            foreach (var normaMapPath in normalMapPaths)
+                                if (File.Exists(normaMapPath))
+                                {
+                                    normalMapPathToUse = normaMapPath;
                                     break;
-                                case BumpMappingLevel.Level2:
-                                    sobelLevel = 0.007f;
-                                    sobelStrength = 0.004f;
-                                    break;
-                                case BumpMappingLevel.Level3:
-                                    sobelLevel = 0.009f;
-                                    sobelStrength = 0.008f;
-                                    break;
-                            }
+                                }
 
-                            // Init the normal map if not done yet
-                            if (!image.HasNormalMap)
+                            // If normal map is found
+                            if (!string.IsNullOrEmpty(normalMapPathToUse))
                             {
-                                image.HasNormalMap = true;
-                                image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                                image.NormalMap.Fill(new ColorC(128, 128, 255));
-                            }
+                                if (!customNormalMaps.ContainsKey(normalMapPathToUse))
+                                {
+                                    var potentialBumpImage = ImageC.FromFile(normalMapPathToUse);
 
-                            if (level != BumpMappingLevel.None)
-                            {
-                                bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
-								bumpImage = ImageC.GaussianBlur(bumpImage, radius: 1.0f);
-								bumpImage = ImageC.NormalizeContrast(bumpImage);
-								bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Scharr, 0, 0, bumpImage.Width, bumpImage.Height);
+                                    if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+                                    {
+                                        customNormalMaps[normalMapPathToUse] = potentialBumpImage;
+                                    }
+                                    else
+                                    {
+                                        _progressReporter.ReportWarn($"Texture file '{tex}' has a bump/normal map with a different size and was ignored.");
+                                        customNormalMaps[normalMapPathToUse] = ImageC.Black;
+                                    }
+                                }
+
+                                if (image.NormalMap is null)
+                                {
+                                    image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                    image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
+                                }
+
+                                image.NormalMap.Value.CopyFrom(bumpX, bumpY, customNormalMaps[normalMapPathToUse], x, y, width, height);
+                                AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, bumpX, bumpY);
                             }
                             else
-                                // Neutral Bump
-                                bumpImage.Fill(new ColorC(128, 128, 255, 255));
-
-                            image.NormalMap.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
-                            AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
-                        }
-                    }
-                    else if (p.Texture is ImportedGeometryTexture && b == 1)
-					{
-						var tex = (p.Texture as ImportedGeometryTexture);
-						var bumpX = destX;
-						var bumpY = destY;
-
-						// Embedded textures don't have a valid path
-						if (string.IsNullOrEmpty(tex.AbsolutePath))
-							continue;
-
-						// Build the path for eventual sidecar load
-						string externalXmlMaterialPath = Path.Combine(
-						Path.GetDirectoryName(tex.AbsolutePath),
-						Path.GetFileNameWithoutExtension(tex.AbsolutePath) + ".xml");
-
-						string externalNormalMapPath = Path.Combine(
-							Path.GetDirectoryName(tex.AbsolutePath),
-							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + "_N" +
-							Path.GetExtension(tex.AbsolutePath));
-
-						string bumpPathToUse = null;
-
-						// Choose the path to use
-
-						// First try to load normal map from XML file if exists
-						if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
-						{
-							var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
-							if (!string.IsNullOrEmpty(material.NormalMap))
-							{
-								var normalMapPath = Path.Combine(
-														Path.GetDirectoryName(tex.AbsolutePath),
-														material.NormalMap);
-								if (File.Exists(normalMapPath))
-									bumpPathToUse = normalMapPath;
-							}
-
-						}
-
-						// If no material was found or the material didn't contain any normal map, try
-						// sidecar loading directly or use bump math specified in level settings
-						if (string.IsNullOrEmpty(bumpPathToUse))
-						{
-							if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
-								bumpPathToUse = externalNormalMapPath;
-						}
-
-						// If normal map is found
-						if (!string.IsNullOrEmpty(bumpPathToUse))
-						{
-							if (!customBumpmaps.ContainsKey(bumpPathToUse))
-							{
-								var potentialBumpImage = ImageC.FromFile(bumpPathToUse);
-
-								if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
-								{
-									customBumpmaps[bumpPathToUse] = potentialBumpImage;
-								}
-								else
-								{
-									_progressReporter.ReportWarn($"Texture file '{tex}' has a bump/normal map with a different size and was ignored.");
-									customBumpmaps[bumpPathToUse] = ImageC.Black;
-								}
-							}
-
-							if (!image.HasNormalMap)
-							{
-								image.HasNormalMap = true;
-								image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-								image.NormalMap.Fill(new ColorC(128, 128, 255));
-							}
-
-							image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[bumpPathToUse], x, y, width, height);
-							AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
-						}
-					}
-					else if (p.Texture is WadTexture && b == 1)
-                    {
-						var tex = (p.Texture as WadTexture);
-						var bumpX = destX;
-						var bumpY = destY;
-
-                        // Embedded textures don't have a valid path
-                        if (string.IsNullOrEmpty(tex.AbsolutePath))
-                            continue;
-
-						// Build the path for eventual sidecar load
-						string externalXmlMaterialPath = Path.Combine(
-							Path.GetDirectoryName(tex.AbsolutePath),
-							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + ".xml");
-
-						string externalNormalMapPath = Path.Combine(
-							Path.GetDirectoryName(tex.AbsolutePath),
-							Path.GetFileNameWithoutExtension(tex.AbsolutePath) + "_N" +
-							Path.GetExtension(tex.AbsolutePath));
-
-						string bumpPathToUse = null;
-
-						// Choose the path to use
-
-						// First try to load normal map from XML file if exists
-						if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
-						{
-							var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
-							if (!string.IsNullOrEmpty(material.NormalMap))
                             {
-                                var normalMapPath = Path.Combine(
-							                            Path.GetDirectoryName(tex.AbsolutePath),
-														material.NormalMap);
-                                if (File.Exists(normalMapPath))
-								    bumpPathToUse = normalMapPath;
-							}
-								
-						}
+                                var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
 
-						// If no material was found or the material didn't contain any normal map, try
-						// sidecar loading directly or use bump math specified in level settings
-						if (string.IsNullOrEmpty(bumpPathToUse))
-						{
-							if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
-								bumpPathToUse = externalNormalMapPath;
-						}
+                                var bumpImage = ImageC.CreateNew(width, height);
+                                bumpImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
 
-						// Choose the path to use
-						if (!string.IsNullOrEmpty(externalNormalMapPath) && File.Exists(externalNormalMapPath))
-							bumpPathToUse = externalNormalMapPath;
-						
-						// If normal map is found
-						if (!string.IsNullOrEmpty(bumpPathToUse))
-						{
-							if (!customBumpmaps.ContainsKey(bumpPathToUse))
+                                float sobelLevel = 0;
+                                float sobelStrength = 0;
+
+                                switch (level)
+                                {
+                                    case BumpMappingLevel.Level1:
+                                        sobelLevel = 0.004f;
+                                        sobelStrength = 0.003f;
+                                        break;
+                                    case BumpMappingLevel.Level2:
+                                        sobelLevel = 0.007f;
+                                        sobelStrength = 0.004f;
+                                        break;
+                                    case BumpMappingLevel.Level3:
+                                        sobelLevel = 0.009f;
+                                        sobelStrength = 0.008f;
+                                        break;
+                                }
+
+                                // Init the normal map if not done yet
+                                if (image.NormalMap is null)
+                                {
+                                    image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                    image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
+                                }
+
+                                if (level != BumpMappingLevel.None)
+                                {
+                                    bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
+                                    bumpImage = ImageC.GaussianBlur(bumpImage, radius: 1.0f);
+                                    bumpImage = ImageC.NormalizeContrast(bumpImage);
+                                    bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Scharr, 0, 0, bumpImage.Width, bumpImage.Height);
+                                }
+                                else
+                                    // Neutral Bump
+                                    bumpImage.Fill(new ColorC(128, 128, 255, 255));
+
+                                image.NormalMap.Value.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
+                                AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, bumpX, bumpY);
+                            }
+                        }
+                        else
+                        {
+                            var bumpX = destX;
+                            var bumpY = destY;
+
+                            string normalMapPathToUse = "";
+                            foreach (var normaMapPath in normalMapPaths)
+                                if (File.Exists(normaMapPath))
+                                {
+                                    normalMapPathToUse = normaMapPath;
+                                    break;
+                                }
+
+                            if (!string.IsNullOrEmpty(normalMapPathToUse))
+                            {
+                                if (!customNormalMaps.ContainsKey(normalMapPathToUse))
+                                {
+                                    var potentialBumpImage = ImageC.FromFile(normalMapPathToUse);
+
+                                    if (potentialBumpImage != null && potentialBumpImage.Size == p.Texture.Image.Size)
+                                    {
+                                        customNormalMaps[normalMapPathToUse] = potentialBumpImage;
+                                    }
+                                    else
+                                    {
+                                        _progressReporter.ReportWarn($"Texture file '{p.Texture}' has a bump/normal map with a different size and was ignored.");
+                                        customNormalMaps[normalMapPathToUse] = ImageC.Black;
+                                    }
+                                }
+
+                                if (image.NormalMap is null)
+                                {
+                                    image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                    image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
+                                }
+
+                                image.NormalMap.Value.CopyFrom(bumpX, bumpY, customNormalMaps[normalMapPathToUse], x, y, width, height);
+                                AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, bumpX, bumpY);
+                            }
+                        }
+
+                        // Load specular map
+                        string specularMapPathToUse = specularMapPaths.FirstOrDefault(p => File.Exists(p));
+                        if (!string.IsNullOrEmpty(specularMapPathToUse))
+                        {
+							if (!customSpecularMaps.ContainsKey(specularMapPathToUse))
 							{
-								var potentialBumpImage = ImageC.FromFile(bumpPathToUse);
+								var potentialImage = ImageC.FromFile(specularMapPathToUse);
 
-								if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
 								{
-									customBumpmaps[bumpPathToUse] = potentialBumpImage;
+									customSpecularMaps[specularMapPathToUse] = potentialImage;
 								}
 								else
 								{
-									_progressReporter.ReportWarn($"Texture file '{tex}' has a bump/normal map with a different size and was ignored.");
-									customBumpmaps[bumpPathToUse] = ImageC.Black;
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
+									customSpecularMaps[specularMapPathToUse] = ImageC.Black;
 								}
 							}
 
-							if (!image.HasNormalMap)
+							if (image.AmbientOcclusionRoughnessSpecularMap is null)
 							{
-								image.HasNormalMap = true;
-								image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-								image.NormalMap.Fill(new ColorC(128, 128, 255));
+								image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
 							}
 
-							image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[bumpPathToUse], x, y, width, height);
-							AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
+                            image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customSpecularMaps[specularMapPathToUse], x, y, width, height, ImageChannel.R);
 						}
+
+						// Load ambient occlusion map
+						string ambientOcclusionMapPathToUse = ambientOcclusionMapPaths.FirstOrDefault(p => File.Exists(p));
+						if (!string.IsNullOrEmpty(ambientOcclusionMapPathToUse))
+						{
+							if (!customAmbientOcclusionMaps.ContainsKey(ambientOcclusionMapPathToUse))
+							{
+								var potentialImage = ImageC.FromFile(ambientOcclusionMapPathToUse);
+
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
+								{
+									customAmbientOcclusionMaps[ambientOcclusionMapPathToUse] = potentialImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
+									customAmbientOcclusionMaps[ambientOcclusionMapPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (image.AmbientOcclusionRoughnessSpecularMap is null)
+							{
+								image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
+							}
+
+							image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customAmbientOcclusionMaps[ambientOcclusionMapPathToUse], x, y, width, height, ImageChannel.G);
+						}
+
+						// Load roughness map
+						string roughnessMapPathToUse = roughnessMapPaths.FirstOrDefault(p => File.Exists(p));
+						if (!string.IsNullOrEmpty(roughnessMapPathToUse))
+						{
+							if (!customRoughnessMaps.ContainsKey(roughnessMapPathToUse))
+							{
+								var potentialImage = ImageC.FromFile(roughnessMapPathToUse);
+
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
+								{
+									customRoughnessMaps[roughnessMapPathToUse] = potentialImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
+									customRoughnessMaps[roughnessMapPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (image.AmbientOcclusionRoughnessSpecularMap is null)
+							{
+								image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
+							}
+
+							image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customRoughnessMaps[roughnessMapPathToUse], x, y, width, height, ImageChannel.B);
+						}
+
+                        if (image.AmbientOcclusionRoughnessSpecularMap != null)
+						    AddPadding(p, image.AmbientOcclusionRoughnessSpecularMap.Value, image.AmbientOcclusionRoughnessSpecularMap.Value, 0, actualPadding, destX, destY);
 					}
-                }
+				}
             }
 
             for (int i = 0; i < textures.Count; i++)
@@ -1493,7 +1506,7 @@ namespace TombLib.LevelData.Compilers
                 textures[i].AtlasDimensions = atlasList[textures[i].Page].ColorMap.Size;
                 textures[i].AtlasIndex = textures[i].Page + baseIndex;
             }
-
+			
             return atlasList;
         }
 
@@ -1665,25 +1678,29 @@ namespace TombLib.LevelData.Compilers
                 for (int n = 0; n < RoomsAtlas.Count; n++)
                 {
                     RoomsAtlas[n].ColorMap.Save("OutputDebug\\RoomsAtlas" + n + ".png");
-					RoomsAtlas[n].NormalMap.Save("OutputDebug\\RoomsAtlas" + n + "_N.png");
+					RoomsAtlas[n].NormalMap?.Save("OutputDebug\\RoomsAtlas" + n + "_N.png");
+					RoomsAtlas[n].AmbientOcclusionRoughnessSpecularMap?.Save("OutputDebug\\RoomsAtlas" + n + "_AO_S_R.png");
 				}
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
                     MoveablesAtlas[n].ColorMap.Save("OutputDebug\\MoveablesAtlas" + n + ".png");
-					MoveablesAtlas[n].NormalMap.Save("OutputDebug\\MoveablesAtlas" + n + "_N.png");
+					MoveablesAtlas[n].NormalMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_N.png");
+					MoveablesAtlas[n].AmbientOcclusionRoughnessSpecularMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_AO_S_R.png");
 				}
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
                     StaticsAtlas[n].ColorMap.Save("OutputDebug\\StaticsAtlas" + n + ".png");
-					StaticsAtlas[n].NormalMap.Save("OutputDebug\\StaticsAtlas" + n + "_N.png");
+					StaticsAtlas[n].NormalMap?.Save("OutputDebug\\StaticsAtlas" + n + "_N.png");
+					StaticsAtlas[n].AmbientOcclusionRoughnessSpecularMap?.Save("OutputDebug\\StaticsAtlas" + n + "_AO_S_R.png");
 				}
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
                     AnimatedAtlas[n].ColorMap.Save("OutputDebug\\AnimatedAtlas" + n + ".png");
-					AnimatedAtlas[n].NormalMap.Save("OutputDebug\\AnimatedAtlas" + n + "_N.png");
+					AnimatedAtlas[n].NormalMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_N.png");
+					AnimatedAtlas[n].AmbientOcclusionRoughnessSpecularMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_AO_S_R.png");
 				}
             }
             catch { }   

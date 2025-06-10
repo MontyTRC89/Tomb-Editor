@@ -17,6 +17,7 @@ namespace TombLib.LevelData
 		public string NormalMap { get; set; }
 		public string SpecularMap { get; set; }
 		public string RoughnessMap { get; set; }
+		public string AmbientOcclusionMap { get; set; }
 		public string AlphaMaskMap { get; set; }
 		public string AdditionalColorMap { get; set; }
 		public Vector4 FloatParameters0 { get; set; }

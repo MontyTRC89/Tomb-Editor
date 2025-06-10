@@ -33,10 +33,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public class TombEngineAtlas
     {
         public ImageC ColorMap;
-        public ImageC NormalMap;
-        public bool HasNormalMap;
-        public bool CustomNormalMap;
-    }
+        public ImageC? NormalMap;
+		public ImageC? AmbientOcclusionRoughnessSpecularMap;
+		public bool CustomNormalMap;
+
+        // TODO: to finish
+		/*public int PriorityKey =>
+	       (NormalMap is not null ? 1 << 4 : 0) |
+	       (SpecularMap is not null ? 1 << 3 : 0) |
+	       (RoughnessMap is not null ? 1 << 2 : 0) |
+	       (AmbientOcclusionMap is not null ? 1 << 1 : 0) |
+	       (HeightMap is not null ? 1 << 0 : 0);*/
+	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineCollisionInfo

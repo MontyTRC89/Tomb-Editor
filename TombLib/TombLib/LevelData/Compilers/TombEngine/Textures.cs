@@ -304,20 +304,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(output.ToArray());
                 }
 
-                writer.Write(atlas.HasNormalMap);
-                if (!atlas.HasNormalMap)
-                    continue;
-
-                using (var ms = new MemoryStream())
+                writer.Write(atlas.NormalMap is not null);
+                if (atlas.NormalMap is not null)
                 {
-                    byte[] output =
-                        _level.Settings.CompressTextures ?
-                        GetCompressedTexture(atlas.NormalMap, CompressionFormat.Bc5) :
-                        GetUncompressedTexture(atlas.NormalMap);
-                    writer.Write((int)output.Length);
-                    writer.Write(output.ToArray());
+                    using (var ms = new MemoryStream())
+                    {
+                        byte[] output =
+                            _level.Settings.CompressTextures ?
+                            GetCompressedTexture(atlas.NormalMap.Value, CompressionFormat.Bc5) :
+                            GetUncompressedTexture(atlas.NormalMap.Value);
+                        writer.Write((int)output.Length);
+                        writer.Write(output.ToArray());
+                    }
                 }
-            }
+
+				writer.Write(atlas.AmbientOcclusionRoughnessSpecularMap is not null);
+                if (atlas.AmbientOcclusionRoughnessSpecularMap is not null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        byte[] output =
+                            _level.Settings.CompressTextures ?
+                            GetCompressedTexture(atlas.AmbientOcclusionRoughnessSpecularMap.Value, CompressionFormat.Bc5) :
+                            GetUncompressedTexture(atlas.AmbientOcclusionRoughnessSpecularMap.Value);
+                        writer.Write((int)output.Length);
+                        writer.Write(output.ToArray());
+                    }
+                }
+			}
         }
     }
 }

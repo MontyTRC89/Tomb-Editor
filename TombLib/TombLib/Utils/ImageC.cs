@@ -18,6 +18,14 @@ namespace TombLib.Utils
         Scharr
     }
 
+    public enum ImageChannel : int
+    {
+        R,
+        G,
+        B,
+        A
+    }
+
     public struct ColorC
     {
         public byte B;
@@ -610,11 +618,61 @@ namespace TombLib.Utils
             }
         }
 
-        /// <summary>
-        /// uint's are platform dependet representation of the color.
-        /// They should stay private inside ImageC to prevent abuse.
-        /// </summary>
-        private static unsafe uint ColorToUint(ColorC color)
+		public unsafe void CopySingleChannelFrom(int toX, int toY, ImageC fromImage, int fromX, int fromY, int width, int height, ImageChannel channel)
+		{
+			// Check coordinates
+			if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
+				toX + width > Width || toY + height > Height ||
+				fromX + width > fromImage.Width || fromY + height > fromImage.Height)
+				return;
+			//throw new ArgumentOutOfRangeException();
+
+			int shiftTarget = (int)channel * 8;
+			int shiftSource = 0; // R channel (always 0 * 8)
+
+			uint maskClearTarget = ~(0xFFu << shiftTarget);
+
+			// Copy data quickly
+			fixed (void* toPtr = _data)
+			{
+				fixed (void* fromPtr = fromImage._data)
+				{
+					// Adjust starting position to account for image positions
+					uint* toPtrOffseted = (uint*)toPtr + toY * Width + toX;
+					uint* fromPtrOffseted = (uint*)fromPtr + fromY * fromImage.Width + fromX;
+
+					// Copy image data line by line
+					for (int y = 0; y < height; ++y)
+					{
+						uint* toLinePtr = toPtrOffseted + y * Width;
+						uint* fromLinePtr = fromPtrOffseted + y * fromImage.Width;
+                        
+						for (int x = 0; x < width; ++x)
+						{
+							uint src = fromLinePtr[x];
+							uint dst = toLinePtr[x];
+
+							// Estrai R dal sorgente
+							uint red = (src >> shiftSource) & 0xFF;
+
+							// Pulisci il canale target nel pixel destinazione
+							dst &= maskClearTarget;
+
+							// Inserisci il valore nel canale target
+							dst |= (red << shiftTarget);
+
+							toLinePtr[x] = dst;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// uint's are platform dependet representation of the color.
+		/// They should stay private inside ImageC to prevent abuse.
+		/// </summary>
+		private static unsafe uint ColorToUint(ColorC color)
         {
             byte* byteArray = stackalloc byte[4];
             byteArray[0] = color.B;
