@@ -20,6 +20,7 @@ namespace TombLib.LevelData
 		public string AmbientOcclusionMap { get; set; }
 		public string AlphaMaskMap { get; set; }
 		public string AdditionalColorMap { get; set; }
+		public string EmissiveMap { get; set; }
 		public Vector4 FloatParameters0 { get; set; }
 		public Vector4 FloatParameters1 { get; set; }
 		public Vector4 FloatParameters2 { get; set; }

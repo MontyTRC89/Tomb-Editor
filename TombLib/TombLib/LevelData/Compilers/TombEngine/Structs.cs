@@ -34,7 +34,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
     {
         public ImageC ColorMap;
         public ImageC? NormalMap;
-		public ImageC? AmbientOcclusionRoughnessSpecularMap;
+		public ImageC? OcclusionRoughnessSpecularMap;
+		public ImageC? EmissiveMap;
 		public bool CustomNormalMap;
 
         // TODO: to finish

@@ -1181,6 +1181,7 @@ namespace TombLib.LevelData.Compilers
 			var customSpecularMaps = new Dictionary<string, ImageC>();
 			var customAmbientOcclusionMaps = new Dictionary<string, ImageC>();
 			var customRoughnessMaps = new Dictionary<string, ImageC>();
+			var customEmissiveMaps = new Dictionary<string, ImageC>();
 			var atlasList = new List<TombEngineAtlas>();
             for (int i = 0; i < numPages; i++)
             {
@@ -1224,8 +1225,9 @@ namespace TombLib.LevelData.Compilers
                         var specularMapPaths = new List<string>();
                         var ambientOcclusionMapPaths = new List<string>();
                         var roughnessMapPaths = new List<string>();
+						var emissiveMapPaths = new List<string>();
 
-                        if (p.Texture is LevelTexture)
+						if (p.Texture is LevelTexture)
                             textureAbsolutePath = p.Texture.Image.FileName;
                         else if (p.Texture is ImportedGeometryTexture)
                             textureAbsolutePath = ((ImportedGeometryTexture)p.Texture).AbsolutePath;
@@ -1249,6 +1251,8 @@ namespace TombLib.LevelData.Compilers
 									roughnessMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.RoughnessMap));
 								if (!string.IsNullOrEmpty(material.AmbientOcclusionMap))
 									ambientOcclusionMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.AmbientOcclusionMap));
+								if (!string.IsNullOrEmpty(material.EmissiveMap))
+									emissiveMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.EmissiveMap));
 							}
 
                             normalMapPaths.Add(Path.Combine(
@@ -1271,7 +1275,12 @@ namespace TombLib.LevelData.Compilers
                                     Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_R" +
                                     Path.GetExtension(textureAbsolutePath)));
 
-                            if (p.Texture is LevelTexture)
+							emissiveMapPaths.Add(Path.Combine(
+								  Path.GetDirectoryName(textureAbsolutePath),
+								  Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_E" +
+								  Path.GetExtension(textureAbsolutePath)));
+
+							if (p.Texture is LevelTexture)
                             {
                                 LevelTexture tex = p.Texture as LevelTexture;
 
@@ -1411,34 +1420,6 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
 
-                        // Load specular map
-                        string specularMapPathToUse = specularMapPaths.FirstOrDefault(p => File.Exists(p));
-                        if (!string.IsNullOrEmpty(specularMapPathToUse))
-                        {
-							if (!customSpecularMaps.ContainsKey(specularMapPathToUse))
-							{
-								var potentialImage = ImageC.FromFile(specularMapPathToUse);
-
-								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
-								{
-									customSpecularMaps[specularMapPathToUse] = potentialImage;
-								}
-								else
-								{
-									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
-									customSpecularMaps[specularMapPathToUse] = ImageC.Black;
-								}
-							}
-
-							if (image.AmbientOcclusionRoughnessSpecularMap is null)
-							{
-								image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                                image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
-							}
-
-                            image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customSpecularMaps[specularMapPathToUse], x, y, width, height, ImageChannel.R);
-						}
-
 						// Load ambient occlusion map
 						string ambientOcclusionMapPathToUse = ambientOcclusionMapPaths.FirstOrDefault(p => File.Exists(p));
 						if (!string.IsNullOrEmpty(ambientOcclusionMapPathToUse))
@@ -1458,13 +1439,13 @@ namespace TombLib.LevelData.Compilers
 								}
 							}
 
-							if (image.AmbientOcclusionRoughnessSpecularMap is null)
+							if (image.OcclusionRoughnessSpecularMap is null)
 							{
-								image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-								image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
+								image.OcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.OcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
 							}
 
-							image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customAmbientOcclusionMaps[ambientOcclusionMapPathToUse], x, y, width, height, ImageChannel.G);
+							image.OcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customAmbientOcclusionMaps[ambientOcclusionMapPathToUse], x, y, width, height, ImageChannel.R);
 						}
 
 						// Load roughness map
@@ -1486,17 +1467,76 @@ namespace TombLib.LevelData.Compilers
 								}
 							}
 
-							if (image.AmbientOcclusionRoughnessSpecularMap is null)
+							if (image.OcclusionRoughnessSpecularMap is null)
 							{
-								image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-								image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
+								image.OcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.OcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
 							}
 
-							image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customRoughnessMaps[roughnessMapPathToUse], x, y, width, height, ImageChannel.B);
+							image.OcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customRoughnessMaps[roughnessMapPathToUse], x, y, width, height, ImageChannel.G);
 						}
 
-                        if (image.AmbientOcclusionRoughnessSpecularMap != null)
-						    AddPadding(p, image.AmbientOcclusionRoughnessSpecularMap.Value, image.AmbientOcclusionRoughnessSpecularMap.Value, 0, actualPadding, destX, destY);
+						// Load specular map
+						string specularMapPathToUse = specularMapPaths.FirstOrDefault(p => File.Exists(p));
+						if (!string.IsNullOrEmpty(specularMapPathToUse))
+						{
+							if (!customSpecularMaps.ContainsKey(specularMapPathToUse))
+							{
+								var potentialImage = ImageC.FromFile(specularMapPathToUse);
+
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
+								{
+									customSpecularMaps[specularMapPathToUse] = potentialImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
+									customSpecularMaps[specularMapPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (image.OcclusionRoughnessSpecularMap is null)
+							{
+								image.OcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.OcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
+							}
+
+							image.OcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customSpecularMaps[specularMapPathToUse], x, y, width, height, ImageChannel.B);
+						}
+
+						// Load emissive map
+						string emissiveMapPathToUse = emissiveMapPaths.FirstOrDefault(p => File.Exists(p));
+						if (!string.IsNullOrEmpty(emissiveMapPathToUse))
+						{
+							if (!customEmissiveMaps.ContainsKey(emissiveMapPathToUse))
+							{
+								var potentialImage = ImageC.FromFile(emissiveMapPathToUse);
+
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
+								{
+									customEmissiveMaps[emissiveMapPathToUse] = potentialImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has an emissive map with a different size and was ignored.");
+									customEmissiveMaps[emissiveMapPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (image.EmissiveMap is null)
+							{
+								image.EmissiveMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.EmissiveMap.Value.Fill(new ColorC(0, 0, 0, 255));
+							}
+
+							image.EmissiveMap.Value.CopyFrom(destX, destY, customEmissiveMaps[emissiveMapPathToUse], x, y, width, height);
+						}
+
+						if (image.OcclusionRoughnessSpecularMap != null)
+						    AddPadding(p, image.OcclusionRoughnessSpecularMap.Value, image.OcclusionRoughnessSpecularMap.Value, 0, actualPadding, destX, destY);
+
+						if (image.EmissiveMap != null)
+							AddPadding(p, image.EmissiveMap.Value, image.EmissiveMap.Value, 0, actualPadding, destX, destY);
 					}
 				}
             }
@@ -1679,28 +1719,32 @@ namespace TombLib.LevelData.Compilers
                 {
                     RoomsAtlas[n].ColorMap.Save("OutputDebug\\RoomsAtlas" + n + ".png");
 					RoomsAtlas[n].NormalMap?.Save("OutputDebug\\RoomsAtlas" + n + "_N.png");
-					RoomsAtlas[n].AmbientOcclusionRoughnessSpecularMap?.Save("OutputDebug\\RoomsAtlas" + n + "_AO_S_R.png");
+					RoomsAtlas[n].OcclusionRoughnessSpecularMap?.Save("OutputDebug\\RoomsAtlas" + n + "_AO_R_S.png");
+					RoomsAtlas[n].EmissiveMap?.Save("OutputDebug\\RoomsAtlas" + n + "_E.png");
 				}
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
                     MoveablesAtlas[n].ColorMap.Save("OutputDebug\\MoveablesAtlas" + n + ".png");
 					MoveablesAtlas[n].NormalMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_N.png");
-					MoveablesAtlas[n].AmbientOcclusionRoughnessSpecularMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_AO_S_R.png");
+					MoveablesAtlas[n].OcclusionRoughnessSpecularMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_AO_R_S.png");
+					MoveablesAtlas[n].EmissiveMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_E.png");
 				}
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
                     StaticsAtlas[n].ColorMap.Save("OutputDebug\\StaticsAtlas" + n + ".png");
 					StaticsAtlas[n].NormalMap?.Save("OutputDebug\\StaticsAtlas" + n + "_N.png");
-					StaticsAtlas[n].AmbientOcclusionRoughnessSpecularMap?.Save("OutputDebug\\StaticsAtlas" + n + "_AO_S_R.png");
+					StaticsAtlas[n].OcclusionRoughnessSpecularMap?.Save("OutputDebug\\StaticsAtlas" + n + "_AO_R_S.png");
+					StaticsAtlas[n].EmissiveMap?.Save("OutputDebug\\StaticsAtlas" + n + "_E.png");
 				}
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
                     AnimatedAtlas[n].ColorMap.Save("OutputDebug\\AnimatedAtlas" + n + ".png");
 					AnimatedAtlas[n].NormalMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_N.png");
-					AnimatedAtlas[n].AmbientOcclusionRoughnessSpecularMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_AO_S_R.png");
+					AnimatedAtlas[n].OcclusionRoughnessSpecularMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_AO_R_S.png");
+					AnimatedAtlas[n].EmissiveMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_E.png");
 				}
             }
             catch { }   
