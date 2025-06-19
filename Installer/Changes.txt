@@ -1,6 +1,9 @@
 Version 1.9.1
 =============
 
+Tomb Editor:
+ * Highlight flyby camera 2D icons for currently selected flyby sequence.
+ 
 WadTool:
  * Fixed vertex weight coloring.
  * Fixed texture replacement for skinned meshes.
