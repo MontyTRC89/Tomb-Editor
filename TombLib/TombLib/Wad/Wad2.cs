@@ -91,8 +91,13 @@ namespace TombLib.Wad
                 var texinfos = new List<TextureArea>();
 
                 foreach (var moveable in Moveables.Values)
+                {
                     foreach (var mesh in moveable.Meshes)
                         texinfos.AddRange(mesh.TextureAreas);
+
+                    if (moveable.Skin != null)
+                        texinfos.AddRange(moveable.Skin.TextureAreas);
+                }
                 foreach (var stat in Statics.Values)
                     texinfos.AddRange(stat.Mesh.TextureAreas);
 

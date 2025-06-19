@@ -1423,7 +1423,13 @@ namespace WadTool
                 // Deep replace
 
                 foreach (var moveable in _tool.DestinationWad.Moveables.Values)
-                    foreach (var mesh in moveable.Meshes)
+                {
+                    var meshList = new List<WadMesh>(moveable.Meshes);
+
+                    if (moveable.Skin != null)
+                        meshList.Add(moveable.Skin);
+
+                    foreach (var mesh in meshList)
                         for (int i = 0; i < mesh.Polys.Count; i++)
                         {
                             if (mesh.Polys[i].Texture.Texture == panelTextureMap.VisibleTexture)
@@ -1433,8 +1439,10 @@ namespace WadTool
                                 mesh.Polys[i] = newPoly;
                             }
                         }
+                }
 
                 foreach (var stat in _tool.DestinationWad.Statics.Values)
+                {
                     for (int i = 0; i < stat.Mesh.Polys.Count; i++)
                     {
                         if (stat.Mesh.Polys[i].Texture.Texture == panelTextureMap.VisibleTexture)
@@ -1444,6 +1452,7 @@ namespace WadTool
                             stat.Mesh.Polys[i] = newPoly;
                         }
                     }
+                }
             }
 
             // Visually update

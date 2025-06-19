@@ -1,3 +1,10 @@
+Version 1.9.1
+=============
+
+WadTool:
+ * Fixed vertex weight coloring.
+ * Fixed texture replacement for skinned meshes.
+
 Version 1.9
 ===========
 
