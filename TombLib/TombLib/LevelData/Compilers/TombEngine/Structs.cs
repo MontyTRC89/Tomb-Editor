@@ -339,7 +339,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var bv = volume as BoxVolumeInstance;
 
                     writer.Write(bvPos);
-                    writer.Write(Quaternion.CreateFromYawPitchRoll(MathC.DegToRad(bv.RotationY), MathC.DegToRad(bv.RotationX), MathC.DegToRad(bv.Roll)));
+                    writer.Write(Quaternion.CreateFromYawPitchRoll(MathC.DegToRad(bv.RotationY), MathC.DegToRad(bv.RotationX), MathC.DegToRad(-bv.Roll)));
                     writer.Write(bv.Size / 2.0f);
                 }
                 else if (volume is SphereVolumeInstance)
