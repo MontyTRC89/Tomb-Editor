@@ -1414,17 +1414,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 break;
 
                             case PortalDirection.Floor:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yBottom, zMax);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yBottom, zMax);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yBottom, zMin);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yBottom, zMin);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yBottom, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yBottom, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yBottom, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yBottom, zMin);
                                 break;
 
                             case PortalDirection.Ceiling:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yTop, zMin);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yTop, zMin);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yTop, zMax);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yTop, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yTop, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yTop, zMax);
                                 break;
                         }
                     }
