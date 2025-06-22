@@ -4,6 +4,7 @@ Version 1.9.1
 Tomb Editor:
  * Highlight flyby camera 2D icons for currently selected flyby sequence.
  * Fixed volume rotation on roll axis.
+ * Fixed TRNG plugin trigger issues with Timer values above 255.
  
 WadTool:
  * Fixed vertex weight coloring.
