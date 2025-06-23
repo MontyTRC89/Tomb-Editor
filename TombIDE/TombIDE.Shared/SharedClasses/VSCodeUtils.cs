@@ -1,0 +1,281 @@
+﻿using CustomMessageBox.WPF;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace TombIDE.Shared.SharedClasses;
+
+/// <summary>
+/// Provides utility methods for interacting with Visual Studio Code.
+/// </summary>
+public static class VSCodeUtils
+{
+	/// <summary>
+	/// Opens the specified directory in Visual Studio Code.
+	/// </summary>
+	/// <param name="config">The IDE configuration.</param>
+	/// <param name="directoryPath">The directory path to open in VSCode.</param>
+	public static void OpenDirectoryInVSCode(IDEConfiguration config, string directoryPath)
+	{
+		bool isValidVSCodeExecutable = !string.IsNullOrWhiteSpace(config.VSCodePath)
+			&& File.Exists(config.VSCodePath)
+			&& Path.GetFileName(config.VSCodePath).Equals("code", StringComparison.OrdinalIgnoreCase);
+
+		string codePath = isValidVSCodeExecutable ? config.VSCodePath : FindVSCodePath();
+
+		if (codePath is null)
+		{
+			codePath = PromptForVSCodeInstallation();
+
+			if (codePath is null)
+				return; // User cancelled the operation
+		}
+
+		// Store the verified VS Code path for future use
+		if (!string.IsNullOrWhiteSpace(codePath) && (string.IsNullOrWhiteSpace(config.VSCodePath) || config.VSCodePath != codePath))
+		{
+			config.VSCodePath = codePath;
+			config.Save();
+		}
+
+		// TODO: Create our own Lua extension for the Tomb Engine API
+		// CheckAndInstallLuaExtension(config, codePath);
+
+		// Open VSCode with the directory
+		Process.Start(new ProcessStartInfo
+		{
+			FileName = "cmd.exe",
+			Arguments = $"/c \"\"{codePath}\" \"{directoryPath}\"\"",
+			UseShellExecute = false,
+			CreateNoWindow = true
+		});
+	}
+
+	/// <summary>
+	/// Finds the VSCode executable path from common installation locations.
+	/// </summary>
+	/// <returns>The path to the VSCode executable, or <see langword="null" /> if not found.</returns>
+	private static string FindVSCodePath()
+	{
+		string[] possiblePaths = new[]
+		{
+			Environment.ExpandEnvironmentVariables(@"%LocalAppData%\Programs\Microsoft VS Code\bin\code"),
+			Environment.ExpandEnvironmentVariables(@"%ProgramFiles%\Microsoft VS Code\bin\code"),
+			Environment.ExpandEnvironmentVariables(@"%ProgramFiles(x86)%\Microsoft VS Code\bin\code")
+		};
+
+		return possiblePaths.FirstOrDefault(File.Exists);
+	}
+
+	/// <summary>
+	/// Prompts the user to install VSCode or select a custom VSCode installation.
+	/// </summary>
+	/// <returns>The path to the VSCode executable, or <see langword="null" /> if the user cancelled.</returns>
+	private static string PromptForVSCodeInstallation()
+	{
+		CMessageBoxResult result = CMessageBox.Show(
+			"Visual Studio Code is not installed on this system. Would you like to install it now?\n\n" +
+			"If you're using a portable version of VSCode, or it was installed it in a custom directory,\n" +
+			"please use the \"Browse...\" option to select the custom \"Code.exe\" file location.",
+			"VSCode not found",
+			CMessageBoxIcon.Question,
+			new CMessageBoxButton<CMessageBoxResult>("Yes", CMessageBoxResult.Yes),
+			new CMessageBoxButton<CMessageBoxResult>("No", CMessageBoxResult.No),
+			new CMessageBoxButton<CMessageBoxResult>("Browse...", CMessageBoxResult.Continue));
+
+		if (result == CMessageBoxResult.Yes)
+		{
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = "https://code.visualstudio.com/",
+				UseShellExecute = true
+			});
+
+			return null;
+		}
+		else if (result == CMessageBoxResult.Continue)
+		{
+			return SelectCustomVSCodeExecutable();
+		}
+
+		return null;
+	}
+
+	/// <summary>
+	/// Allows the user to browse for a custom VSCode executable.
+	/// </summary>
+	/// <returns>The path to the custom VSCode executable, or <see langword="null" /> if the selection was invalid or cancelled.</returns>
+	private static string SelectCustomVSCodeExecutable()
+	{
+		using var dialog = new OpenFileDialog
+		{
+			Title = "Select Visual Studio Code's \"Code.exe\" File",
+			Filter = "Executable Files (*.exe)|*.exe",
+			InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)
+		};
+
+		if (dialog.ShowDialog() != DialogResult.OK || !File.Exists(dialog.FileName))
+			return null;
+
+		string codePath = dialog.FileName;
+
+		// Verify if the selected file is indeed VSCode
+		try
+		{
+			string fileName = Path.GetFileName(codePath);
+
+			if (fileName != "Code.exe")
+			{
+				ShowInvalidExecutableError();
+				return null;
+			}
+
+			// Select the `code` file inside the /bin/ directory
+			codePath = Path.Combine(Path.GetDirectoryName(codePath), "bin", "code");
+
+			if (!IsValidVSCodeExecutable(codePath))
+			{
+				ShowInvalidExecutableError();
+				return null;
+			}
+
+			return codePath;
+		}
+		catch
+		{
+			CMessageBox.Show("Failed to verify the selected file. Please ensure it is a valid Visual Studio Code executable.",
+				"Error", CMessageBoxButtons.OK, CMessageBoxIcon.Error);
+
+			return null;
+		}
+	}
+
+	/// <summary>
+	/// Verifies that the given path points to a valid VSCode executable.
+	/// </summary>
+	/// <param name="codePath">The path to the VSCode executable to verify.</param>
+	/// <returns>True if the path is a valid VSCode executable, false otherwise.</returns>
+	private static bool IsValidVSCodeExecutable(string codePath)
+	{
+		if (!File.Exists(codePath))
+			return false;
+
+		var process = new Process
+		{
+			StartInfo = new ProcessStartInfo
+			{
+				FileName = "cmd.exe",
+				Arguments = $"/c \"\"{codePath}\" --version\"",
+				UseShellExecute = false,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true,
+				CreateNoWindow = true
+			}
+		};
+
+		process.Start();
+		string output = process.StandardOutput.ReadToEnd();
+		process.WaitForExit();
+
+		return !string.IsNullOrWhiteSpace(output);
+	}
+
+	/// <summary>
+	/// Shows an error message indicating that the selected file is not a valid VSCode executable.
+	/// </summary>
+	private static void ShowInvalidExecutableError()
+	{
+		CMessageBox.Show("The selected file is not a valid Visual Studio Code executable.",
+			"Invalid executable", CMessageBoxButtons.OK, CMessageBoxIcon.Error);
+	}
+
+	/// <summary>
+	/// Checks if the Lua extension is installed in VSCode and offers to install it if it's not.
+	/// </summary>
+	/// <param name="config">The IDE configuration.</param>
+	/// <param name="codePath">The path to the VSCode executable.</param>
+	private static void CheckAndInstallLuaExtension(IDEConfiguration config, string codePath)
+	{
+		if (config.DoNotAskToInstallLuaExtension)
+			return;
+
+		// Check if Lua extension is already installed
+		if (IsLuaExtensionInstalled(codePath))
+			return;
+
+		CMessageBoxResult result = CMessageBox.Show(
+			"The Lua extension for Visual Studio Code is not installed.\n" +
+			"Would you like to install sumneko.lua now?",
+			"Lua extension not found",
+			CMessageBoxIcon.Question,
+			new CMessageBoxButton<CMessageBoxResult>("Yes", CMessageBoxResult.Yes),
+			new CMessageBoxButton<CMessageBoxResult>("No", CMessageBoxResult.No),
+			new CMessageBoxButton<CMessageBoxResult>("Don't Ask Again", CMessageBoxResult.Ignore));
+
+		if (result == CMessageBoxResult.Yes)
+		{
+			InstallLuaExtension(codePath);
+
+			config.DoNotAskToInstallLuaExtension = true;
+			config.Save();
+		}
+		else if (result == CMessageBoxResult.Ignore)
+		{
+			config.DoNotAskToInstallLuaExtension = true;
+			config.Save();
+		}
+	}
+
+	/// <summary>
+	/// Checks if the Lua extension is installed in VSCode.
+	/// </summary>
+	/// <param name="codePath">The path to the VSCode executable.</param>
+	/// <returns>True if the Lua extension is installed, false otherwise.</returns>
+	private static bool IsLuaExtensionInstalled(string codePath)
+	{
+		try
+		{
+			var process = new Process
+			{
+				StartInfo = new ProcessStartInfo
+				{
+					FileName = "cmd.exe",
+					Arguments = $"/c \"\"{codePath}\" --list-extensions\"",
+					UseShellExecute = false,
+					RedirectStandardOutput = true,
+					RedirectStandardError = true,
+					CreateNoWindow = true
+				}
+			};
+
+			process.Start();
+			string output = process.StandardOutput.ReadToEnd();
+			process.WaitForExit();
+
+			return output.Split('\n').Any(line
+				=> line.Trim().Equals("sumneko.lua", StringComparison.OrdinalIgnoreCase)
+				|| line.Trim().Equals("Lua", StringComparison.OrdinalIgnoreCase));
+		}
+		catch
+		{
+			return false; // Assume not installed in case of errors
+		}
+	}
+
+	/// <summary>
+	/// Installs the Lua extension for VSCode.
+	/// </summary>
+	/// <param name="codePath">The path to the VSCode executable.</param>
+	private static void InstallLuaExtension(string codePath)
+	{
+		Process.Start(new ProcessStartInfo
+		{
+			FileName = "cmd.exe",
+			Arguments = $"/c \"\"{codePath}\" --install-extension sumneko.lua\"",
+			UseShellExecute = false,
+			CreateNoWindow = true
+		});
+	}
+}

@@ -10,6 +10,9 @@ WadTool:
  * Fixed vertex weight coloring.
  * Fixed texture replacement for skinned meshes.
 
+TombIDE:
+ * Added "Open project in Visual Studio Code" option for TEN projects.
+
 Version 1.9
 ===========
 
