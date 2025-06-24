@@ -12,6 +12,15 @@ namespace TombIDE.Shared.SharedClasses;
 /// </summary>
 public static class VSCodeUtils
 {
+	private const string VSCODE_PATH_VARIABLE = "code";
+
+	private static readonly string[] _possiblePaths = new[]
+	{
+		Environment.ExpandEnvironmentVariables(@"%LocalAppData%\Programs\Microsoft VS Code\bin\code"),
+		Environment.ExpandEnvironmentVariables(@"%ProgramFiles%\Microsoft VS Code\bin\code"),
+		Environment.ExpandEnvironmentVariables(@"%ProgramFiles(x86)%\Microsoft VS Code\bin\code")
+	};
+
 	/// <summary>
 	/// Opens the specified directory in Visual Studio Code.
 	/// </summary>
@@ -21,7 +30,7 @@ public static class VSCodeUtils
 	{
 		bool isValidVSCodeExecutable = !string.IsNullOrWhiteSpace(config.VSCodePath)
 			&& File.Exists(config.VSCodePath)
-			&& Path.GetFileName(config.VSCodePath).Equals("code", StringComparison.OrdinalIgnoreCase);
+			&& Path.GetFileName(config.VSCodePath) == VSCODE_PATH_VARIABLE;
 
 		string codePath = isValidVSCodeExecutable ? config.VSCodePath : FindVSCodePath();
 
@@ -47,7 +56,7 @@ public static class VSCodeUtils
 		Process.Start(new ProcessStartInfo
 		{
 			FileName = "cmd.exe",
-			Arguments = $"/c \"\"{codePath}\" \"{directoryPath}\"\"",
+			Arguments = BuildCmdArguments(codePath, $"\"{directoryPath}\""),
 			UseShellExecute = false,
 			CreateNoWindow = true
 		});
@@ -59,14 +68,15 @@ public static class VSCodeUtils
 	/// <returns>The path to the VSCode executable, or <see langword="null" /> if not found.</returns>
 	private static string FindVSCodePath()
 	{
-		string[] possiblePaths = new[]
-		{
-			Environment.ExpandEnvironmentVariables(@"%LocalAppData%\Programs\Microsoft VS Code\bin\code"),
-			Environment.ExpandEnvironmentVariables(@"%ProgramFiles%\Microsoft VS Code\bin\code"),
-			Environment.ExpandEnvironmentVariables(@"%ProgramFiles(x86)%\Microsoft VS Code\bin\code")
-		};
+		if (IsValidVSCodeExecutable(VSCODE_PATH_VARIABLE))
+			return VSCODE_PATH_VARIABLE; // Assume 'code' is in PATH
 
-		return possiblePaths.FirstOrDefault(File.Exists);
+		string possiblePath = _possiblePaths.FirstOrDefault(File.Exists);
+
+		if (possiblePath is not null && IsValidVSCodeExecutable(possiblePath))
+			return possiblePath;
+
+		return null;
 	}
 
 	/// <summary>
@@ -78,12 +88,12 @@ public static class VSCodeUtils
 		CMessageBoxResult result = CMessageBox.Show(
 			"Visual Studio Code is not installed on this system. Would you like to install it now?\n\n" +
 			"If you're using a portable version of VSCode, or it was installed it in a custom directory,\n" +
-			"please use the \"Browse...\" option to select the custom \"Code.exe\" file location.",
+			"please use the \"Select Code.exe file...\" option to select a custom \"Code.exe\" file location.",
 			"VSCode not found",
 			CMessageBoxIcon.Question,
 			new CMessageBoxButton<CMessageBoxResult>("Yes", CMessageBoxResult.Yes),
 			new CMessageBoxButton<CMessageBoxResult>("No", CMessageBoxResult.No),
-			new CMessageBoxButton<CMessageBoxResult>("Browse...", CMessageBoxResult.Continue));
+			new CMessageBoxButton<CMessageBoxResult>("Select Code.exe file...", CMessageBoxResult.Continue));
 
 		if (result == CMessageBoxResult.Yes)
 		{
@@ -122,52 +132,39 @@ public static class VSCodeUtils
 		string codePath = dialog.FileName;
 
 		// Verify if the selected file is indeed VSCode
-		try
+		string fileName = Path.GetFileName(codePath);
+
+		if (fileName != "Code.exe")
 		{
-			string fileName = Path.GetFileName(codePath);
-
-			if (fileName != "Code.exe")
-			{
-				ShowInvalidExecutableError();
-				return null;
-			}
-
-			// Select the `code` file inside the /bin/ directory
-			codePath = Path.Combine(Path.GetDirectoryName(codePath), "bin", "code");
-
-			if (!IsValidVSCodeExecutable(codePath))
-			{
-				ShowInvalidExecutableError();
-				return null;
-			}
-
-			return codePath;
-		}
-		catch
-		{
-			CMessageBox.Show("Failed to verify the selected file. Please ensure it is a valid Visual Studio Code executable.",
-				"Error", CMessageBoxButtons.OK, CMessageBoxIcon.Error);
-
+			ShowInvalidExecutableError();
 			return null;
 		}
+
+		// Select the `code` file inside the /bin/ directory
+		codePath = Path.Combine(Path.GetDirectoryName(codePath), "bin", VSCODE_PATH_VARIABLE);
+
+		if (!File.Exists(codePath) || !IsValidVSCodeExecutable(codePath))
+		{
+			ShowInvalidExecutableError();
+			return null;
+		}
+
+		return codePath;
 	}
 
 	/// <summary>
 	/// Verifies that the given path points to a valid VSCode executable.
 	/// </summary>
 	/// <param name="codePath">The path to the VSCode executable to verify.</param>
-	/// <returns>True if the path is a valid VSCode executable, false otherwise.</returns>
+	/// <returns><see langword="true" /> if the path is a valid VSCode executable, <see langword="false" /> otherwise.</returns>
 	private static bool IsValidVSCodeExecutable(string codePath)
 	{
-		if (!File.Exists(codePath))
-			return false;
-
 		var process = new Process
 		{
 			StartInfo = new ProcessStartInfo
 			{
 				FileName = "cmd.exe",
-				Arguments = $"/c \"\"{codePath}\" --version\"",
+				Arguments = BuildCmdArguments(codePath, "--version"),
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
 				RedirectStandardError = true,
@@ -181,6 +178,16 @@ public static class VSCodeUtils
 
 		return !string.IsNullOrWhiteSpace(output);
 	}
+
+	/// <summary>
+	/// Constructs the command line arguments for starting VSCode.
+	/// </summary>
+	/// <param name="codePath">The path to the VSCode executable.</param>
+	/// <param name="codeArguments">The arguments to pass to VSCode.</param>
+	/// <returns>The command line arguments for starting VSCode.</returns>
+	private static string BuildCmdArguments(string codePath, string codeArguments) => codePath == VSCODE_PATH_VARIABLE
+		? $"/c \"{VSCODE_PATH_VARIABLE} {codeArguments}\"" // Use the PATH variable directly
+		: $"/c \"\"{codePath}\" {codeArguments}\""; // Use the full path to the executable
 
 	/// <summary>
 	/// Shows an error message indicating that the selected file is not a valid VSCode executable.
@@ -242,7 +249,7 @@ public static class VSCodeUtils
 				StartInfo = new ProcessStartInfo
 				{
 					FileName = "cmd.exe",
-					Arguments = $"/c \"\"{codePath}\" --list-extensions\"",
+					Arguments = BuildCmdArguments(codePath, "--list-extensions"),
 					UseShellExecute = false,
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
@@ -273,7 +280,7 @@ public static class VSCodeUtils
 		Process.Start(new ProcessStartInfo
 		{
 			FileName = "cmd.exe",
-			Arguments = $"/c \"\"{codePath}\" --install-extension sumneko.lua\"",
+			Arguments = BuildCmdArguments(codePath, "--install-extension sumneko.lua"),
 			UseShellExecute = false,
 			CreateNoWindow = true
 		});
