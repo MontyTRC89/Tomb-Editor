@@ -77,7 +77,7 @@ namespace TombIDE
 				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Generic.xaml")
 			});
 
-			// Use DarkColours theme (default DarkUI look)
+			// Use DarkColors theme (default DarkUI look)
 			wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
 			{
 				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Dictionaries/DarkColors.xaml")

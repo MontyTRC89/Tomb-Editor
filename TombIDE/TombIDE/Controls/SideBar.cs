@@ -462,7 +462,7 @@ namespace TombIDE.Controls
 					}
 					else if (_ide.Project.GameVersion == TRVersion.Game.TombEngine)
 					{
-						VSCodeUtils.OpenDirectoryInVSCode(_ide.IDEConfiguration, _ide.Project.GetScriptRootDirectory());
+						VSCodeUtils.OpenDirectoryInVSCode(FindForm(), _ide.IDEConfiguration, _ide.Project.GetScriptRootDirectory());
 						return;
 					}
 

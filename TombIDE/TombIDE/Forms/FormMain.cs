@@ -245,7 +245,7 @@ namespace TombIDE
 					if (_ide.Project.GameVersion == TRVersion.Game.TRNG)
 						tablessTabControl.SelectTab(2);
 					else if (_ide.Project.GameVersion == TRVersion.Game.TombEngine)
-						VSCodeUtils.OpenDirectoryInVSCode(_ide.IDEConfiguration, _ide.Project.GetScriptRootDirectory());
+						VSCodeUtils.OpenDirectoryInVSCode(this, _ide.IDEConfiguration, _ide.Project.GetScriptRootDirectory());
 
 					break;
 

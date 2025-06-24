@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Interop;
+using IWinFormsWindow = System.Windows.Forms.IWin32Window;
 
 namespace TombIDE.Shared.SharedClasses;
 
@@ -26,7 +28,7 @@ public static class VSCodeUtils
 	/// </summary>
 	/// <param name="config">The IDE configuration.</param>
 	/// <param name="directoryPath">The directory path to open in VSCode.</param>
-	public static void OpenDirectoryInVSCode(IDEConfiguration config, string directoryPath)
+	public static void OpenDirectoryInVSCode(IWinFormsWindow dialogOwner, IDEConfiguration config, string directoryPath)
 	{
 		bool isValidVSCodeExecutable = !string.IsNullOrWhiteSpace(config.VSCodePath)
 			&& File.Exists(config.VSCodePath)
@@ -36,7 +38,7 @@ public static class VSCodeUtils
 
 		if (codePath is null)
 		{
-			codePath = PromptForVSCodeInstallation();
+			codePath = PromptForVSCodeInstallation(dialogOwner);
 
 			if (codePath is null)
 				return; // User cancelled the operation
@@ -50,7 +52,7 @@ public static class VSCodeUtils
 		}
 
 		// TODO: Create our own Lua extension for the Tomb Engine API
-		// CheckAndInstallLuaExtension(config, codePath);
+		// CheckAndInstallLuaExtension(dialogOwner, config, codePath);
 
 		// Open VSCode with the directory
 		Process.Start(new ProcessStartInfo
@@ -83,14 +85,17 @@ public static class VSCodeUtils
 	/// Prompts the user to install VSCode or select a custom VSCode installation.
 	/// </summary>
 	/// <returns>The path to the VSCode executable, or <see langword="null" /> if the user cancelled.</returns>
-	private static string PromptForVSCodeInstallation()
+	private static string PromptForVSCodeInstallation(IWinFormsWindow dialogOwner)
 	{
-		CMessageBoxResult result = CMessageBox.Show(
+		var messageBox = new CMessageBox(
 			"Visual Studio Code is not installed on this system. Would you like to install it now?\n\n" +
 			"If you're using a portable version of VSCode, or it was installed it in a custom directory,\n" +
 			"please use the \"Select Code.exe file...\" option to select a custom \"Code.exe\" file location.",
-			"VSCode not found",
-			CMessageBoxIcon.Question,
+			"VSCode not found", CMessageBoxIcon.Question);
+
+		SetMessageBoxOwner(messageBox, dialogOwner);
+
+		CMessageBoxResult result = messageBox.Show(
 			new CMessageBoxButton<CMessageBoxResult>("Yes", CMessageBoxResult.Yes),
 			new CMessageBoxButton<CMessageBoxResult>("No", CMessageBoxResult.No),
 			new CMessageBoxButton<CMessageBoxResult>("Select Code.exe file...", CMessageBoxResult.Continue));
@@ -107,7 +112,7 @@ public static class VSCodeUtils
 		}
 		else if (result == CMessageBoxResult.Continue)
 		{
-			return SelectCustomVSCodeExecutable();
+			return SelectCustomVSCodeExecutable(dialogOwner);
 		}
 
 		return null;
@@ -117,7 +122,7 @@ public static class VSCodeUtils
 	/// Allows the user to browse for a custom VSCode executable.
 	/// </summary>
 	/// <returns>The path to the custom VSCode executable, or <see langword="null" /> if the selection was invalid or cancelled.</returns>
-	private static string SelectCustomVSCodeExecutable()
+	private static string SelectCustomVSCodeExecutable(IWinFormsWindow dialogOwner)
 	{
 		using var dialog = new OpenFileDialog
 		{
@@ -136,7 +141,7 @@ public static class VSCodeUtils
 
 		if (fileName != "Code.exe")
 		{
-			ShowInvalidExecutableError();
+			ShowInvalidExecutableError(dialogOwner);
 			return null;
 		}
 
@@ -145,7 +150,7 @@ public static class VSCodeUtils
 
 		if (!File.Exists(codePath) || !IsValidVSCodeExecutable(codePath))
 		{
-			ShowInvalidExecutableError();
+			ShowInvalidExecutableError(dialogOwner);
 			return null;
 		}
 
@@ -192,10 +197,26 @@ public static class VSCodeUtils
 	/// <summary>
 	/// Shows an error message indicating that the selected file is not a valid VSCode executable.
 	/// </summary>
-	private static void ShowInvalidExecutableError()
+	private static void ShowInvalidExecutableError(IWinFormsWindow dialogOwner)
 	{
-		CMessageBox.Show("The selected file is not a valid Visual Studio Code executable.",
-			"Invalid executable", CMessageBoxButtons.OK, CMessageBoxIcon.Error);
+		var messageBox = new CMessageBox(
+			"The selected file is not a valid Visual Studio Code executable.\n" +
+			"Please select the \"Code.exe\" file located in the VSCode installation directory.",
+			"Invalid executable", CMessageBoxIcon.Error);
+
+		SetMessageBoxOwner(messageBox, dialogOwner);
+		messageBox.Show(CMessageBoxButtons.OK);
+	}
+
+	/// <summary>
+	/// Sets the owner of the message box to the specified WinForms window.
+	/// </summary>
+	/// <param name="messageBox">Message box to set the owner for.</param>
+	/// <param name="owner">WinForms owner window to set for the message box.</param>
+	private static void SetMessageBoxOwner(CMessageBox messageBox, IWinFormsWindow owner)
+	{
+		var interopHelper = new WindowInteropHelper(messageBox);
+		interopHelper.Owner = owner.Handle;
 	}
 
 	/// <summary>
@@ -203,7 +224,7 @@ public static class VSCodeUtils
 	/// </summary>
 	/// <param name="config">The IDE configuration.</param>
 	/// <param name="codePath">The path to the VSCode executable.</param>
-	private static void CheckAndInstallLuaExtension(IDEConfiguration config, string codePath)
+	private static void CheckAndInstallLuaExtension(IWinFormsWindow dialogOwner, IDEConfiguration config, string codePath)
 	{
 		if (config.DoNotAskToInstallLuaExtension)
 			return;
@@ -212,11 +233,14 @@ public static class VSCodeUtils
 		if (IsLuaExtensionInstalled(codePath))
 			return;
 
-		CMessageBoxResult result = CMessageBox.Show(
+		var messageBox = new CMessageBox(
 			"The Lua extension for Visual Studio Code is not installed.\n" +
 			"Would you like to install sumneko.lua now?",
-			"Lua extension not found",
-			CMessageBoxIcon.Question,
+			"Lua extension not found", CMessageBoxIcon.Question);
+
+		SetMessageBoxOwner(messageBox, dialogOwner);
+
+		CMessageBoxResult result = messageBox.Show(
 			new CMessageBoxButton<CMessageBoxResult>("Yes", CMessageBoxResult.Yes),
 			new CMessageBoxButton<CMessageBoxResult>("No", CMessageBoxResult.No),
 			new CMessageBoxButton<CMessageBoxResult>("Don't Ask Again", CMessageBoxResult.Ignore));
