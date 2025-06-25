@@ -344,10 +344,12 @@ end
 -- !Name "Set weather"
 -- !Section "Environment"
 -- !Description "Sets weather conditions."
--- !Arguments "Enumeration, 25, [ None | Rain | Snow ], {0}, Weather type" "Numerical, 15, [ 0 | 1 | 2 | 0.1 ], Weather strength"
-LevelFuncs.Engine.Node.SetWeather = function(weather, strength)
+-- !Arguments "NewLine, Enumeration, 50, [ None | Rain | Snow ], {0}, Weather type" "Numerical, 30, [ 0 | 1 | 2 | 0.1 ], Weather strength"
+-- !Arguments "Boolean, 20, Clustered"
+LevelFuncs.Engine.Node.SetWeather = function(weather, strength, clustered)
     TEN.Flow.GetCurrentLevel().weather = weather
 	TEN.Flow.GetCurrentLevel().weatherStrength = strength
+	TEN.Flow.GetCurrentLevel().weatherClustering = clustered
 end
 
 -- !Name "Change weather strength over time"
