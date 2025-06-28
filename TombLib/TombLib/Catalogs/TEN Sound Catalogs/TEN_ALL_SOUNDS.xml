@@ -23093,7 +23093,7 @@
 		</WadSoundInfo>
 		<WadSoundInfo>
 			<Id>1195</Id>
-			<Name>TR5_Moving_Laser_Loop</Name>
+			<Name>TEN_Moving_Laser_Loop</Name>
 			<Volume>60</Volume>
 			<RangeInSectors>10</RangeInSectors>
 			<Chance>100</Chance>
