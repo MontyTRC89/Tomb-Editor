@@ -12,6 +12,9 @@ WadTool:
 
 TombIDE:
  * Added "Open project in Visual Studio Code" option for TEN projects.
+ 
+TEN nodes:
+ * Added clustering setting to weather node.
 
 Version 1.9
 ===========
