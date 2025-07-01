@@ -314,8 +314,8 @@
     <moveable id="311" name="SWITCH_TYPE6" description="Switch Type6" ten="SWITCH_TYPE6" essential="false" />
     <moveable id="312" name="SWITCH_TYPE7" description="Switch Type7" ten="SHOOT_SWITCH1" essential="false" />
     <moveable id="313" name="SWITCH_TYPE8" description="Switch Type8" ten="SHOOT_SWITCH2" essential="false" />
-    <moveable id="314" name="UNDERWATER_SWITCH1" description="Underwater Switch1" ten="UNDERWATER_WALL_SWITCH1" essential="false" />
-    <moveable id="315" name="UNDERWATER_SWITCH2" description="Underwater Switch2" ten="UNDERWATER_CEILING_SWITCH1" essential="false" />
+    <moveable id="314" name="UNDERWATER_SWITCH1" description="Underwater Switch1" ten="WALL_SWITCH1" essential="false" />
+    <moveable id="315" name="UNDERWATER_SWITCH2" description="Underwater Switch2" ten="CEILING_SWITCH1" essential="false" />
     <moveable id="316" name="TURN_SWITCH" description="Turn Switch" ten="TURN_SWITCH" essential="false" />
     <moveable id="317" name="COG_SWITCH" description="Cog Switch" ten="COG_SWITCH" essential="false" />
     <moveable id="318" name="LEVER_SWITCH" description="Lever Switch" ten="LEVER_SWITCH" essential="false" />

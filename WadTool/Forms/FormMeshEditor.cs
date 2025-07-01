@@ -1274,61 +1274,61 @@ namespace WadTool
 			panelMesh.Invalidate();
 		}
 
-		private void butDoubleSide_Click(object sender, EventArgs e)
-		{
-			butDoubleSide.Checked = !butDoubleSide.Checked;
-		}
+        private void butDoubleSide_Click(object sender, EventArgs e)
+        {
+            butDoubleSide.Checked = !butDoubleSide.Checked;
+        }
 
-		private void butAutoFit_Click(object sender, EventArgs e)
-		{
-			if (panelMesh.Mesh.VertexPositions.Count < panelMesh.SafeVertexRemapLimit)
-			{
-				popup.ShowInfo(panelMesh, "Vertex count is lower than remap limit. No auto-fitting is needed.");
-				return;
-			}
+        private void butAutoFit_Click(object sender, EventArgs e)
+        {
+            if (panelMesh.Mesh.VertexPositions.Count < panelMesh.SafeVertexRemapLimit)
+            {
+                popup.ShowInfo(panelMesh, "Vertex count is lower than remap limit. No auto-fitting is needed.");
+                return;
+            }
 
-			var count = AutoFit();
+            var count = AutoFit();
 
-			if (count == 0)
-				popup.ShowWarning(panelMesh, "No vertices were auto-fitted. Possibly mesh is already remapped or contains no holes.");
-			else
-				popup.ShowInfo(panelMesh, "Auto-fitted " + count + " vertices.");
+            if (count == 0)
+                popup.ShowWarning(panelMesh, "No vertices were auto-fitted. Possibly mesh is already remapped or contains no holes.");
+            else
+                popup.ShowInfo(panelMesh, "Auto-fitted " + count + " vertices.");
 
-			panelMesh.Invalidate();
-		}
+            panelMesh.Invalidate();
+        }
 
-		private void nudSphereData_ValueChanged(object sender, EventArgs e)
-		{
-			if (_readingValues)
-				return;
+        private void nudSphereData_ValueChanged(object sender, EventArgs e)
+        {
+            if (_readingValues)
+                return;
 
-			_tool.UndoManager.PushMeshChanged(panelMesh);
+            _tool.UndoManager.PushMeshChanged(panelMesh);
 
-			var newCoord = new Vector3((float)nudSphereX.Value, (float)nudSphereY.Value, (float)nudSphereZ.Value);
-			panelMesh.Mesh.BoundingSphere = new BoundingSphere(newCoord, (float)nudSphereRadius.Value);
-			panelMesh.Invalidate();
-		}
+            var newCoord = new Vector3((float)nudSphereX.Value, (float)nudSphereY.Value, (float)nudSphereZ.Value);
+            panelMesh.Mesh.BoundingSphere = new BoundingSphere(newCoord, (float)nudSphereRadius.Value);
+            panelMesh.Invalidate();
+        }
 
-		private void butResetSphere_Click(object sender, EventArgs e)
-		{
-			_tool.UndoManager.PushMeshChanged(panelMesh);
+        private void butResetSphere_Click(object sender, EventArgs e)
+        {
+            _tool.UndoManager.PushMeshChanged(panelMesh);
 
-			panelMesh.Mesh.BoundingSphere = panelMesh.Mesh.CalculateBoundingSphere();
-			panelMesh.Invalidate();
-			GetSphereValues();
-		}
+            panelMesh.Mesh.BoundingSphere = panelMesh.Mesh.CalculateBoundingSphere();
+            panelMesh.Invalidate();
+            GetSphereValues();
+        }
 
-		private void butPreview_Click(object sender, EventArgs e)
-		{
-			butPreview.Checked = !butPreview.Checked;
+        private void butPreview_Click(object sender, EventArgs e)
+        {
+            butPreview.Checked = !butPreview.Checked;
 
-			if (butPreview.Checked)
-				panelMesh.StartPreview();
-			else
-				panelMesh.StopPreview();
-		}
+            if (butPreview.Checked)
+                panelMesh.StartPreview();
+            else
+                panelMesh.StopPreview();
+        }
 
-		private void butAddEmbeddedTexture_Click(object sender, EventArgs e)
+       private void butAddEmbeddedTexture_Click(object sender, EventArgs e)
 		{
 			AddTexture(false);
 		}
@@ -1336,6 +1336,39 @@ namespace WadTool
 		private void butReplaceWithEmbeddedTexture_Click(object sender, EventArgs e)
 		{
 			ReplaceTexture(false);
+		}
+
+		private void AddTexture(bool isExternal)
+		{
+			var paths = LevelFileDialog.BrowseFiles(this, null, null, "Load texture file", ImageC.FileExtensions).ToList();
+			if (paths.Count == 0)
+				return;
+
+			foreach (var path in paths)
+			{
+				var image = ImageC.FromFile(path);
+
+				// Ignore textures with sizes more than 2048x2048 because they may cause issues with UV precision loss
+				// and also not processed correctly by renderer.
+
+				if (!CheckTextureSize(image))
+					continue;
+
+				image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
+
+				var newTexture = new WadTexture(image);
+
+				if (comboCurrentTexture.Items.Contains(newTexture))
+					continue;
+
+				if (!isExternal)
+					image.FileName = string.Empty;
+
+				comboCurrentTexture.Items.Add(newTexture);
+				comboCurrentTexture.SelectedItem = newTexture;
+
+				_userTextures.Add(newTexture);
+			}
 		}
 
 		private void ReplaceTexture(bool isExternal)
@@ -1444,219 +1477,186 @@ namespace WadTool
 			SelectTexture(newSelectedTexture);
 		}
 
-		private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
-		{
-			var selectedTexture = comboCurrentTexture.SelectedItem as Texture;
-			panelTextureMap.ResetVisibleTexture(selectedTexture, true);
-		}
+        private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
+        {
+            var selectedTexture = comboCurrentTexture.SelectedItem as Texture;
+            panelTextureMap.ResetVisibleTexture(selectedTexture, true);
+        }
 
-		private void butDeleteTexture_Click(object sender, EventArgs e)
-		{
-			if (panelMesh.Mesh.Polys.Any(p => p.Texture.Texture == panelTextureMap.VisibleTexture))
-			{
-				popup.ShowError(panelMesh, "Unable to remove selected texture because it's still used in mesh.");
-				return;
-			}
+        private void butDeleteTexture_Click(object sender, EventArgs e)
+        {
+            if (panelMesh.Mesh.Polys.Any(p => p.Texture.Texture == panelTextureMap.VisibleTexture))
+            {
+                popup.ShowError(panelMesh, "Unable to remove selected texture because it's still used in mesh.");
+                return;
+            }
 
-			if (_tool.DestinationWad.MeshTexturesUnique.Contains(panelTextureMap.VisibleTexture as WadTexture))
-			{
-				popup.ShowError(panelMesh, "Unable to remove selected texture because it's still used in wad.");
-				return;
-			}
+            if (_tool.DestinationWad.MeshTexturesUnique.Contains(panelTextureMap.VisibleTexture as WadTexture))
+            {
+                popup.ShowError(panelMesh, "Unable to remove selected texture because it's still used in wad.");
+                return;
+            }
 
-			var index = comboCurrentTexture.Items.IndexOf(panelTextureMap.VisibleTexture);
-			if (index != -1)
-			{
-				if (_userTextures.Contains(panelTextureMap.VisibleTexture))
-					_userTextures.Remove((WadTexture)panelTextureMap.VisibleTexture);
+            var index = comboCurrentTexture.Items.IndexOf(panelTextureMap.VisibleTexture);
+            if (index != -1)
+            {
+                if (_userTextures.Contains(panelTextureMap.VisibleTexture))
+                    _userTextures.Remove((WadTexture)panelTextureMap.VisibleTexture);
 
-				comboCurrentTexture.Items.RemoveAt(index);
-			}
+                comboCurrentTexture.Items.RemoveAt(index);
+            }
 
-			comboCurrentTexture.SelectedIndex = 0;
-		}
+            comboCurrentTexture.SelectedIndex = 0;
+        }
 
-		private void butExportTexture_Click(object sender, EventArgs e)
-		{
-			if (panelTextureMap.VisibleTexture == null ||
-				panelTextureMap.VisibleTexture.IsUnavailable)
-			{
-				popup.ShowError(panelMesh, "Unable to save texture.\nSelected texture is invalid.");
-				return;
-			}
+        private void butExportTexture_Click(object sender, EventArgs e)
+        {
+            if (panelTextureMap.VisibleTexture == null ||
+                panelTextureMap.VisibleTexture.IsUnavailable)
+            {
+                popup.ShowError(panelMesh, "Unable to save texture.\nSelected texture is invalid.");
+                return;
+            }
 
-			using (var fileDialog = new SaveFileDialog())
-			{
-				try
-				{
-					fileDialog.Filter = ImageC.SaveFileFileExtensions.GetFilter(true);
-					fileDialog.Title = "Choose a texture file name";
-					fileDialog.FileName = Path.GetFileNameWithoutExtension(panelTextureMap.VisibleTexture.ToString());
-					fileDialog.AddExtension = true;
+            using (var fileDialog = new SaveFileDialog())
+            {
+                try
+                {
+                    fileDialog.Filter = ImageC.SaveFileFileExtensions.GetFilter(true);
+                    fileDialog.Title = "Choose a texture file name";
+                    fileDialog.FileName = Path.GetFileNameWithoutExtension(panelTextureMap.VisibleTexture.ToString());
+                    fileDialog.AddExtension = true;
 
-					DialogResult dialogResult = fileDialog.ShowDialog(this);
-					if (dialogResult != DialogResult.OK)
-						return;
+                    DialogResult dialogResult = fileDialog.ShowDialog(this);
+                    if (dialogResult != DialogResult.OK)
+                        return;
 
-					panelTextureMap.VisibleTexture.Image.Save(fileDialog.FileName);
-				}
-				catch (Exception exc)
-				{
-					popup.ShowError(panelMesh, "Unable to save texture. Exception: \n" + exc);
-				}
-			}
-		}
+                    panelTextureMap.VisibleTexture.Image.Save(fileDialog.FileName);
+                }
+                catch (Exception exc)
+                {
+                    popup.ShowError(panelMesh, "Unable to save texture. Exception: \n" + exc);
+                }
+            }
+        }
 
-		private void butAllTextures_Click(object sender, EventArgs e)
-		{
-			butAllTextures.Checked = !butAllTextures.Checked;
-			RepopulateTextureList();
-		}
+        private void butAllTextures_Click(object sender, EventArgs e)
+        {
+            butAllTextures.Checked = !butAllTextures.Checked;
+            RepopulateTextureList();
+        }
 
-		private void butTbUndo_Click(object sender, EventArgs e)
-		{
-			_tool.UndoManager.Undo();
-			RepopulateTextureListIfChanged();
-		}
+        private void butTbUndo_Click(object sender, EventArgs e)
+        {
+            _tool.UndoManager.Undo();
+            RepopulateTextureListIfChanged();
+        }
 
-		private void butTbRedo_Click(object sender, EventArgs e)
-		{
-			_tool.UndoManager.Redo();
-			RepopulateTextureListIfChanged();
-		}
+        private void butTbRedo_Click(object sender, EventArgs e)
+        {
+            _tool.UndoManager.Redo();
+            RepopulateTextureListIfChanged();
+        }
 
-		private void butTbWireframe_Click(object sender, EventArgs e)
-		{
-			_tool.Configuration.MeshEditor_Wireframe = panelMesh.WireframeMode = butTbWireframe.Checked;
-			UpdateUI();
-		}
+        private void butTbWireframe_Click(object sender, EventArgs e)
+        {
+            _tool.Configuration.MeshEditor_Wireframe = panelMesh.WireframeMode = butTbWireframe.Checked;
+            UpdateUI();
+        }
 
-		private void butTbAlpha_Click(object sender, EventArgs e)
-		{
-			_tool.Configuration.MeshEditor_AlphaTest = panelMesh.AlphaTest = butTbAlpha.Checked;
-			UpdateUI();
-		}
+        private void butTbAlpha_Click(object sender, EventArgs e)
+        {
+            _tool.Configuration.MeshEditor_AlphaTest = panelMesh.AlphaTest = butTbAlpha.Checked;
+            UpdateUI();
+        }
 
-		private void butTbBilinear_Click(object sender, EventArgs e)
-		{
-			_tool.Configuration.MeshEditor_Bilinear = panelMesh.Bilinear = butTbBilinear.Checked;
-			UpdateUI();
-		}
+        private void butTbBilinear_Click(object sender, EventArgs e)
+        {
+            _tool.Configuration.MeshEditor_Bilinear = panelMesh.Bilinear = butTbBilinear.Checked;
+            UpdateUI();
+        }
 
-		private void butTbAxis_Click(object sender, EventArgs e)
-		{
-			_tool.Configuration.MeshEditor_DrawGrid = panelMesh.DrawGrid = butTbAxis.Checked;
-			UpdateUI();
-		}
+        private void butTbAxis_Click(object sender, EventArgs e)
+        {
+            _tool.Configuration.MeshEditor_DrawGrid = panelMesh.DrawGrid = butTbAxis.Checked;
+            UpdateUI();
+        }
 
-		private void butTbResetCamera_Click(object sender, EventArgs e)
-		{
-			panelMesh.ResetCamera();
-		}
+        private void butTbResetCamera_Click(object sender, EventArgs e)
+        {
+            panelMesh.ResetCamera();
+        }
 
-		private void butTbRotateTexture_Click(object sender, EventArgs e)
-		{
-			RotateTexture();
-		}
+        private void butTbRotateTexture_Click(object sender, EventArgs e)
+        {
+            RotateTexture();
+        }
 
-		private void butTbMirrorTexture_Click(object sender, EventArgs e)
-		{
-			MirrorTexture();
-		}
+        private void butTbMirrorTexture_Click(object sender, EventArgs e)
+        {
+            MirrorTexture();
+        }
 
-		private void butSearchMeshes_Click(object sender, EventArgs e)
-		{
-			SearchTree();
-		}
+        private void butSearchMeshes_Click(object sender, EventArgs e)
+        {
+            SearchTree();
+        }
 
-		private void tbSearchMeshes_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Enter)
-				SearchTree();
-		}
+        private void tbSearchMeshes_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                SearchTree();
+        }
 
-		private void lstMeshes_SelectedNodesChanged(object sender, EventArgs e)
-		{
-			SaveCurrentMesh();
-			ShowSelectedMesh();
-		}
+        private void lstMeshes_SelectedNodesChanged(object sender, EventArgs e)
+        {
+            SaveCurrentMesh();
+            ShowSelectedMesh();
+        }
 
-		private void butTbImport_Click(object sender, EventArgs e)
-		{
-			var mesh = WadActions.ImportMesh(_tool, this);
-			if (mesh == null)
-				return;
+        private void butTbImport_Click(object sender, EventArgs e)
+        {
+            var mesh = WadActions.ImportMesh(_tool, this);
+            if (mesh == null)
+                return;
 
-			_tool.UndoManager.PushMeshChanged(panelMesh);
-			panelMesh.Mesh = mesh;
-			SaveCurrentMesh();
-			GetSphereValues();
-			UpdateUI();
-			RepopulateTextureList();
-		}
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+            panelMesh.Mesh = mesh;
+            SaveCurrentMesh();
+            GetSphereValues();
+            UpdateUI();
+            RepopulateTextureList();
+        }
 
-		private void butTbExport_Click(object sender, EventArgs e)
-		{
-			WadActions.ExportMesh(panelMesh.Mesh, _tool, this);
-		}
+        private void butTbExport_Click(object sender, EventArgs e)
+        {
+            WadActions.ExportMesh(panelMesh.Mesh, _tool, this);
+        }
 
-		private void butTbFindSelectedTexture_Click(object sender, EventArgs e)
-		{
-			FindTexture();
-		}
+        private void butTbFindSelectedTexture_Click(object sender, EventArgs e)
+        {
+            FindTexture();
+        }
 
-		private void butTbRename_Click(object sender, EventArgs e)
-		{
-			RenameMesh();
-		}
+        private void butTbRename_Click(object sender, EventArgs e)
+        {
+            RenameMesh();
+        }
 
-		private void lstMeshes_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			if (lstMeshes.SelectedNodes.Count == 1 && lstMeshes.SelectedNodes[0].Tag != null)
-				RenameMesh();
-		}
+        private void lstMeshes_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (lstMeshes.SelectedNodes.Count == 1 && lstMeshes.SelectedNodes[0].Tag != null)
+                RenameMesh();
+        }
 
-		private void butHide_Click(object sender, EventArgs e)
-		{
-			ToggleMeshVisibility();
-		}
+        private void butHide_Click(object sender, EventArgs e)
+        {
+            ToggleMeshVisibility();
+        }
 
 		private void butAddExternalTexture_Click(object sender, EventArgs e)
 		{
 			AddTexture(true);
-		}
-
-		private void AddTexture(bool isExternal)
-		{
-			var paths = LevelFileDialog.BrowseFiles(this, null, null, "Load texture file", ImageC.FileExtensions).ToList();
-			if (paths.Count == 0)
-				return;
-
-			foreach (var path in paths)
-			{
-				var image = ImageC.FromFile(path);
-
-				// Ignore textures with sizes more than 2048x2048 because they may cause issues with UV precision loss
-				// and also not processed correctly by renderer.
-
-				if (!CheckTextureSize(image))
-					continue;
-
-				image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
-
-				var newTexture = new WadTexture(image);
-
-				if (comboCurrentTexture.Items.Contains(newTexture))
-					continue;
-
-				if (!isExternal)
-					image.FileName = string.Empty;
-
-				comboCurrentTexture.Items.Add(newTexture);
-				comboCurrentTexture.SelectedItem = newTexture;
-
-				_userTextures.Add(newTexture);
-			}
 		}
 
 		private void replaceWithExternalTextureToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1675,5 +1675,5 @@ namespace WadTool
 				}
 			}
 		}
-	}
+    }
 }

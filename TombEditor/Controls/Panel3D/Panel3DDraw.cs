@@ -1113,6 +1113,9 @@ namespace TombEditor.Controls.Panel3D
 
                         var color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
+                        if (_editor.SelectedObject is FlybyCameraInstance && (_editor.SelectedObject as FlybyCameraInstance).Sequence == instance.Sequence)
+                            color = MathC.GetRandomColorByIndex(instance.Sequence, 32, 0.7f);
+
                         if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;

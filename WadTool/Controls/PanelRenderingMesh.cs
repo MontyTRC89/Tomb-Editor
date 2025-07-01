@@ -702,7 +702,7 @@ namespace WadTool.Controls
         private void GenerateBoneColors()
         {
             for (int i = 0; i < _maxBones; i++)
-                MathC.GetRandomColorByIndex(i, _maxBones);
+                _boneColors[i] = MathC.GetRandomColorByIndex(i, _maxBones);
         }
 
         public void SelectElement(int element, bool highlight = false)
