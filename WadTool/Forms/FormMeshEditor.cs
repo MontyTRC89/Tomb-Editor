@@ -113,6 +113,8 @@ namespace WadTool
 			panelMesh.InitializeRendering(_tool, _deviceManager);
 			panelTextureMap.Initialize(_tool);
 
+			butMaterialEditor.Enabled = wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
+
 			// Populate blending modes
 			cbBlendMode.Items.Clear();
 			TextureExtensions.BlendModeUserNames(_tool.DestinationWad.GameVersion).ForEach(s => cbBlendMode.Items.Add(s));
@@ -1660,6 +1662,18 @@ namespace WadTool
 		private void replaceWithExternalTextureToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ReplaceTexture(true);
+		}
+
+		private void butMaterialEditor_Click(object sender, EventArgs e)
+		{
+			var texture = comboCurrentTexture.SelectedItem as WadTexture;
+			if (!string.IsNullOrEmpty(texture.AbsolutePath))
+			{
+				using (var form = new FormMaterialEditor(texture.AbsolutePath))
+				{
+					form.ShowDialog();
+				}
+			}
 		}
 	}
 }

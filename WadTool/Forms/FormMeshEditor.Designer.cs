@@ -116,6 +116,7 @@
 			replaceWithExternalTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			butExportTexture = new System.Windows.Forms.ToolStripButton();
 			butDeleteTexture = new System.Windows.Forms.ToolStripButton();
+			butMaterialEditor = new System.Windows.Forms.ToolStripButton();
 			comboCurrentTexture = new TombLib.Controls.DarkSearchableComboBox();
 			panelTree = new DarkUI.Controls.DarkPanel();
 			toolTip = new System.Windows.Forms.ToolTip(components);
@@ -178,7 +179,7 @@
 			panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			panelMesh.Location = new System.Drawing.Point(0, 29);
 			panelMesh.Name = "panelMesh";
-			panelMesh.Size = new System.Drawing.Size(343, 535);
+			panelMesh.Size = new System.Drawing.Size(399, 535);
 			panelMesh.TabIndex = 0;
 			// 
 			// btCancel
@@ -186,7 +187,7 @@
 			btCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			btCancel.Checked = false;
 			btCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			btCancel.Location = new System.Drawing.Point(900, 575);
+			btCancel.Location = new System.Drawing.Point(956, 575);
 			btCancel.Name = "btCancel";
 			btCancel.Size = new System.Drawing.Size(81, 23);
 			btCancel.TabIndex = 52;
@@ -198,7 +199,7 @@
 			btOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			btOk.Checked = false;
 			btOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-			btOk.Location = new System.Drawing.Point(813, 575);
+			btOk.Location = new System.Drawing.Point(869, 575);
 			btOk.Name = "btOk";
 			btOk.Size = new System.Drawing.Size(81, 23);
 			btOk.TabIndex = 53;
@@ -962,7 +963,7 @@
 			panelMain.Controls.Add(panelTree);
 			panelMain.Location = new System.Drawing.Point(6, 4);
 			panelMain.Name = "panelMain";
-			panelMain.Size = new System.Drawing.Size(975, 565);
+			panelMain.Size = new System.Drawing.Size(1031, 565);
 			panelMain.TabIndex = 56;
 			// 
 			// panelCenter
@@ -973,7 +974,7 @@
 			panelCenter.Location = new System.Drawing.Point(263, 0);
 			panelCenter.Name = "panelCenter";
 			panelCenter.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
-			panelCenter.Size = new System.Drawing.Size(343, 565);
+			panelCenter.Size = new System.Drawing.Size(399, 565);
 			panelCenter.TabIndex = 57;
 			// 
 			// topBar
@@ -986,7 +987,7 @@
 			topBar.Location = new System.Drawing.Point(0, 1);
 			topBar.Name = "topBar";
 			topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-			topBar.Size = new System.Drawing.Size(343, 28);
+			topBar.Size = new System.Drawing.Size(399, 28);
 			topBar.TabIndex = 59;
 			topBar.Text = "darkToolStrip1";
 			// 
@@ -1180,7 +1181,7 @@
 			butTbMirrorTexture.Image = Properties.Resources.general_Mirror;
 			butTbMirrorTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
 			butTbMirrorTexture.Name = "butTbMirrorTexture";
-			butTbMirrorTexture.Size = new System.Drawing.Size(24, 24);
+			butTbMirrorTexture.Size = new System.Drawing.Size(23, 25);
 			butTbMirrorTexture.ToolTipText = "Mirror current texture (Shift+~)";
 			butTbMirrorTexture.Click += butTbMirrorTexture_Click;
 			// 
@@ -1200,7 +1201,7 @@
 			butHide.Image = (System.Drawing.Image)resources.GetObject("butHide.Image");
 			butHide.ImageTransparentColor = System.Drawing.Color.Magenta;
 			butHide.Name = "butHide";
-			butHide.Size = new System.Drawing.Size(24, 24);
+			butHide.Size = new System.Drawing.Size(23, 25);
 			butHide.Text = "Hide mesh if skinned mesh is used for the parent object";
 			butHide.Click += butHide_Click;
 			// 
@@ -1209,7 +1210,7 @@
 			panelEditing.Controls.Add(panelTexturing);
 			panelEditing.Controls.Add(panelEditingTools);
 			panelEditing.Dock = System.Windows.Forms.DockStyle.Right;
-			panelEditing.Location = new System.Drawing.Point(606, 0);
+			panelEditing.Location = new System.Drawing.Point(662, 0);
 			panelEditing.Name = "panelEditing";
 			panelEditing.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
 			panelEditing.Size = new System.Drawing.Size(369, 565);
@@ -1251,11 +1252,11 @@
 			darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			darkToolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { butAllTextures, toolStripButton2, toolStripButton3, butExportTexture, butDeleteTexture });
-			darkToolStrip1.Location = new System.Drawing.Point(196, 2);
+			darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { butAllTextures, toolStripButton2, toolStripButton3, butExportTexture, butDeleteTexture, butMaterialEditor });
+			darkToolStrip1.Location = new System.Drawing.Point(182, 2);
 			darkToolStrip1.Name = "darkToolStrip1";
 			darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-			darkToolStrip1.Size = new System.Drawing.Size(161, 28);
+			darkToolStrip1.Size = new System.Drawing.Size(181, 28);
 			darkToolStrip1.TabIndex = 0;
 			darkToolStrip1.Text = "darkToolStrip1";
 			// 
@@ -1356,13 +1357,26 @@
 			butDeleteTexture.ToolTipText = "Delete texture";
 			butDeleteTexture.Click += butDeleteTexture_Click;
 			// 
+			// butMaterialEditor
+			// 
+			butMaterialEditor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			butMaterialEditor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			butMaterialEditor.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			butMaterialEditor.Image = Properties.Resources.misc_TransparentBackground;
+			butMaterialEditor.ImageTransparentColor = System.Drawing.Color.Magenta;
+			butMaterialEditor.Name = "butMaterialEditor";
+			butMaterialEditor.Size = new System.Drawing.Size(23, 25);
+			butMaterialEditor.Text = "toolStripButton1";
+			butMaterialEditor.ToolTipText = "Material Editor";
+			butMaterialEditor.Click += butMaterialEditor_Click;
+			// 
 			// comboCurrentTexture
 			// 
 			comboCurrentTexture.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 			comboCurrentTexture.Location = new System.Drawing.Point(4, 3);
 			comboCurrentTexture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			comboCurrentTexture.Name = "comboCurrentTexture";
-			comboCurrentTexture.Size = new System.Drawing.Size(188, 23);
+			comboCurrentTexture.Size = new System.Drawing.Size(174, 23);
 			comboCurrentTexture.TabIndex = 4;
 			comboCurrentTexture.SelectedValueChanged += comboCurrentTexture_SelectedValueChanged;
 			// 
@@ -1391,7 +1405,7 @@
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			ClientSize = new System.Drawing.Size(986, 605);
+			ClientSize = new System.Drawing.Size(1042, 605);
 			Controls.Add(panelMain);
 			Controls.Add(statusLabel);
 			Controls.Add(btCancel);
@@ -1559,5 +1573,6 @@
 		private System.Windows.Forms.ToolStripDropDownButton toolStripButton3;
 		private System.Windows.Forms.ToolStripMenuItem replaceWithEmbeddedTextureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem replaceWithExternalTextureToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton butMaterialEditor;
 	}
 }

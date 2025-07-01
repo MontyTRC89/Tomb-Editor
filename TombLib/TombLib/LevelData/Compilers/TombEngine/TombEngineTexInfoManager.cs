@@ -1236,13 +1236,13 @@ namespace TombLib.LevelData.Compilers
 
                         if (!string.IsNullOrEmpty(textureAbsolutePath))
                         {
-                            string externalXmlMaterialPath = Path.Combine(
+                            string externalMaterialDataPath = Path.Combine(
                                  Path.GetDirectoryName(textureAbsolutePath),
                                  Path.GetFileNameWithoutExtension(textureAbsolutePath) + ".xml");
 
-                            if (!string.IsNullOrEmpty(externalXmlMaterialPath) && File.Exists(externalXmlMaterialPath))
+                            if (!string.IsNullOrEmpty(externalMaterialDataPath) && File.Exists(externalMaterialDataPath))
                             {
-                                var material = XmlMaterial.ReadFromXml(externalXmlMaterialPath);
+                                var material = MaterialData.ReadFromXml(externalMaterialDataPath);
                                 if (!string.IsNullOrEmpty(material.NormalMap))
                                     normalMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.NormalMap));
                                 if (!string.IsNullOrEmpty(material.SpecularMap))
