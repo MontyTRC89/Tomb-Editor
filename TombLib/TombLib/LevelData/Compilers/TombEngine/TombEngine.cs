@@ -158,10 +158,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(mesh.Buckets.Count);
                     foreach (var bucket in mesh.Buckets.Values)
                     {
-                        writer.Write(bucket.Material.Texture);
-                        writer.Write(bucket.Material.BlendMode);
-                        writer.Write(bucket.Material.Animated);
-                        writer.Write(bucket.Polygons.Count);
+						writer.Write(bucket.Material.Texture);
+						writer.Write(bucket.Material.BlendMode);
+						writer.Write(bucket.Material.MaterialType);
+						writer.Write(bucket.Material.Animated);
+						writer.Write(bucket.Material.FloatParameters0);
+						writer.Write(bucket.Material.FloatParameters1);
+						writer.Write(bucket.Material.FloatParameters2);
+						writer.Write(bucket.Material.FloatParameters3);
+						writer.Write(bucket.Material.IntegerParameters0);
+						writer.Write(bucket.Material.IntegerParameters1);
+						writer.Write(bucket.Material.IntegerParameters2);
+						writer.Write(bucket.Material.IntegerParameters3);
+						writer.Write(bucket.Material.Vector2Parameters0);
+						writer.Write(bucket.Material.Vector2Parameters1);
+						writer.Write(bucket.Material.Vector2Parameters2);
+						writer.Write(bucket.Material.Vector2Parameters3);
+						writer.Write(bucket.Material.Vector3Parameters0);
+						writer.Write(bucket.Material.Vector3Parameters1);
+						writer.Write(bucket.Material.Vector3Parameters2);
+						writer.Write(bucket.Material.Vector3Parameters3);
+						writer.Write(bucket.Material.Vector4Parameters0);
+						writer.Write(bucket.Material.Vector4Parameters1);
+						writer.Write(bucket.Material.Vector4Parameters2);
+						writer.Write(bucket.Material.Vector4Parameters3);
+
+						writer.Write(bucket.Polygons.Count);
                         foreach (var poly in bucket.Polygons)
                         {
                             writer.Write((int)poly.Shape);

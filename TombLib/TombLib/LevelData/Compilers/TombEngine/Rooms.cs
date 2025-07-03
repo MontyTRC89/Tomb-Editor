@@ -1804,7 +1804,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				IntegerParameters0 = polygonMaterial.IntegerParameters0,
 				IntegerParameters1 = polygonMaterial.IntegerParameters1,
 				IntegerParameters2 = polygonMaterial.IntegerParameters2,
-				IntegerParameters3 = polygonMaterial.IntegerParameters3
+				IntegerParameters3 = polygonMaterial.IntegerParameters3,
+                Vector2Parameters0 = polygonMaterial.Vector2Parameters0,
+                Vector2Parameters1 = polygonMaterial.Vector2Parameters1,
+                Vector2Parameters2 = polygonMaterial.Vector2Parameters2,
+                Vector2Parameters3 = polygonMaterial.Vector2Parameters3,
+                Vector3Parameters0 = polygonMaterial.Vector3Parameters0,
+                Vector3Parameters1 = polygonMaterial.Vector3Parameters1,
+                Vector3Parameters2 = polygonMaterial.Vector3Parameters2,
+                Vector3Parameters3 = polygonMaterial.Vector3Parameters3,
+                Vector4Parameters0 = polygonMaterial.Vector4Parameters0,
+                Vector4Parameters1 = polygonMaterial.Vector4Parameters1,
+                Vector4Parameters2 = polygonMaterial.Vector4Parameters2,
+                Vector4Parameters3 = polygonMaterial.Vector4Parameters3,
 			};
 
 			if (!buckets.ContainsKey(material))

@@ -84,16 +84,28 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 	public class TombEnginePolygonMaterial
 	{
-		public MaterialType Type;
-		public BlendMode BlendMode;
-		public Vector4 FloatParameters0;
-		public Vector4 FloatParameters1;
-		public Vector4 FloatParameters2;
-		public Vector4 FloatParameters3;
-		public VectorInt4 IntegerParameters0;
-		public VectorInt4 IntegerParameters1;
-		public VectorInt4 IntegerParameters2;
-		public VectorInt4 IntegerParameters3;
+		public MaterialType Type { get; set; }
+		public BlendMode BlendMode { get; set; }
+		public Vector4 FloatParameters0 { get; set; }
+		public Vector4 FloatParameters1 { get; set; }
+		public Vector4 FloatParameters2 { get; set; }
+		public Vector4 FloatParameters3 { get; set; }
+		public VectorInt4 IntegerParameters0 { get; set; }
+		public VectorInt4 IntegerParameters1 { get; set; }
+		public VectorInt4 IntegerParameters2 { get; set; }
+		public VectorInt4 IntegerParameters3 { get; set; }
+		public Vector2 Vector2Parameters0 { get; set; }
+		public Vector2 Vector2Parameters1 { get; set; }
+		public Vector2 Vector2Parameters2 { get; set; }
+		public Vector2 Vector2Parameters3 { get; set; }
+		public Vector3 Vector3Parameters0 { get; set; }
+		public Vector3 Vector3Parameters1 { get; set; }
+		public Vector3 Vector3Parameters2 { get; set; }
+		public Vector3 Vector3Parameters3 { get; set; }
+		public Vector4 Vector4Parameters0 { get; set; }
+		public Vector4 Vector4Parameters1 { get; set; }
+		public Vector4 Vector4Parameters2 { get; set; }
+		public Vector4 Vector4Parameters3 { get; set; }
 
 		public TombEnginePolygonMaterial()
 		{
@@ -253,7 +265,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					x.IntegerParameters0 == y.IntegerParameters0 &&
 					x.IntegerParameters1 == y.IntegerParameters1 &&
 					x.IntegerParameters2 == y.IntegerParameters2 &&
-					x.IntegerParameters3 == y.IntegerParameters3);
+					x.IntegerParameters3 == y.IntegerParameters3 &&
+					x.Vector2Parameters0 == y.Vector2Parameters0 &&
+					x.Vector2Parameters1 == y.Vector2Parameters1 &&
+					x.Vector2Parameters2 == y.Vector2Parameters2 &&
+					x.Vector2Parameters3 == y.Vector2Parameters3 &&
+					x.Vector3Parameters0 == y.Vector3Parameters0 &&
+					x.Vector3Parameters1 == y.Vector3Parameters1 &&
+					x.Vector3Parameters2 == y.Vector3Parameters2 &&
+					x.Vector3Parameters3 == y.Vector3Parameters3 &&
+					x.Vector4Parameters0 == y.Vector4Parameters0 &&
+					x.Vector4Parameters1 == y.Vector4Parameters1 &&
+					x.Vector4Parameters2 == y.Vector4Parameters2 &&
+					x.Vector4Parameters3 == y.Vector4Parameters3);
 			}
 
 			public int GetHashCode(TombEngineMaterial obj)
@@ -276,6 +300,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					hash = hash * 23 + obj.IntegerParameters1.GetHashCode();
 					hash = hash * 23 + obj.IntegerParameters2.GetHashCode();
 					hash = hash * 23 + obj.IntegerParameters3.GetHashCode();
+					hash = hash * 23 + obj.Vector2Parameters0.GetHashCode();
+					hash = hash * 23 + obj.Vector2Parameters1.GetHashCode();
+					hash = hash * 23 + obj.Vector2Parameters2.GetHashCode();
+					hash = hash * 23 + obj.Vector2Parameters3.GetHashCode();
+					hash = hash * 23 + obj.Vector3Parameters0.GetHashCode();
+					hash = hash * 23 + obj.Vector3Parameters1.GetHashCode();
+					hash = hash * 23 + obj.Vector3Parameters2.GetHashCode();
+					hash = hash * 23 + obj.Vector3Parameters3.GetHashCode();
+					hash = hash * 23 + obj.Vector4Parameters0.GetHashCode();
+					hash = hash * 23 + obj.Vector4Parameters1.GetHashCode();
+					hash = hash * 23 + obj.Vector4Parameters2.GetHashCode();
+					hash = hash * 23 + obj.Vector4Parameters3.GetHashCode();
+
 					return hash;
 				}
 			}
@@ -296,6 +333,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
 		public VectorInt4 IntegerParameters1;
 		public VectorInt4 IntegerParameters2;
 		public VectorInt4 IntegerParameters3;
+		public Vector2 Vector2Parameters0;
+		public Vector2 Vector2Parameters1;
+		public Vector2 Vector2Parameters2;
+		public Vector2 Vector2Parameters3;
+        public Vector3 Vector3Parameters0;
+		public Vector3 Vector3Parameters1;
+		public Vector3 Vector3Parameters2;
+		public Vector3 Vector3Parameters3;
+		public Vector4 Vector4Parameters0;
+		public Vector4 Vector4Parameters1;
+		public Vector4 Vector4Parameters2;
+		public Vector4 Vector4Parameters3;
 
 		public TombEngineMaterial(MaterialType type)
 		{
@@ -444,8 +493,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
-                writer.Write(bucket.Material.Animated);
-                writer.Write(bucket.Polygons.Count);
+				writer.Write(bucket.Material.MaterialType);
+				writer.Write(bucket.Material.Animated);
+				writer.Write(bucket.Material.FloatParameters0);
+				writer.Write(bucket.Material.FloatParameters1);
+				writer.Write(bucket.Material.FloatParameters2);
+				writer.Write(bucket.Material.FloatParameters3);
+				writer.Write(bucket.Material.IntegerParameters0);
+				writer.Write(bucket.Material.IntegerParameters1);
+				writer.Write(bucket.Material.IntegerParameters2);
+				writer.Write(bucket.Material.IntegerParameters3);
+				writer.Write(bucket.Material.Vector2Parameters0);
+				writer.Write(bucket.Material.Vector2Parameters1);
+				writer.Write(bucket.Material.Vector2Parameters2);
+				writer.Write(bucket.Material.Vector2Parameters3);
+				writer.Write(bucket.Material.Vector3Parameters0);
+				writer.Write(bucket.Material.Vector3Parameters1);
+				writer.Write(bucket.Material.Vector3Parameters2);
+				writer.Write(bucket.Material.Vector3Parameters3);
+				writer.Write(bucket.Material.Vector4Parameters0);
+				writer.Write(bucket.Material.Vector4Parameters1);
+				writer.Write(bucket.Material.Vector4Parameters2);
+				writer.Write(bucket.Material.Vector4Parameters3);
+
+				writer.Write(bucket.Polygons.Count);
                 foreach (var poly in bucket.Polygons)
                 {
                     writer.Write((int)poly.Shape);
