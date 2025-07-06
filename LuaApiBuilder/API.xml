@@ -3613,7 +3613,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>name</name>
 					<type>string</type>
-					<description>A label to give this timer; used to retrieve the timer later.&lt;br&gt;__Do not give your timers a name beginning with __TEN, as this is reserved for timers used by other internal libaries__.</description>
+					<description>A label to give this timer; used to retrieve the timer later.&lt;br&gt;__Do not give your timers a name beginning with \_\_TEN, as this is reserved for timers used by other internal libaries__.</description>
 				</parameter>
 				<parameter>
 					<name>totalTime</name>
