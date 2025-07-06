@@ -1,5 +1,6 @@
 using LuaApiBuilder.Interfaces;
 using LuaApiBuilder.Objects;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace LuaApiBuilder;
@@ -113,12 +114,27 @@ public static class ApiXmlParser
 		// Parse fields
 		foreach (var field in membersElement.Elements("field"))
 		{
-			apiClass.Fields.Add(new ApiField
+			var apiField = new ApiField
 			{
 				Name = field.Element("name")?.Value ?? string.Empty,
+				Type = field.Element("type")?.Value ?? string.Empty,
 				Summary = field.Element("summary")?.Value ?? string.Empty,
 				Description = field.Element("description")?.Value ?? string.Empty
-			});
+			};
+
+			if (string.IsNullOrWhiteSpace(apiField.Type))
+			{
+				// If type is not specified, try to extract it from the summary
+				apiField.Type = ExtractTypeFromSummary(apiField);
+			}
+
+			if (string.IsNullOrWhiteSpace(apiField.Type))
+			{
+				// If type is still not specified, try to extract it from the description
+				apiField.Type = ExtractTypeFromDescription(apiField);
+			}
+
+			apiClass.Fields.Add(apiField);
 		}
 
 		return apiClass;
@@ -190,4 +206,28 @@ public static class ApiXmlParser
 	private static string GetModuleFromTypeName(string typeName) => typeName.Contains('.')
 		? typeName.Split('.')[0]
 		: "Core";
+
+	private static string ExtractTypeFromSummary(ISummarizedObject obj)
+	{
+		// Extract type from patterns like "(type) description"
+		var match = Regex.Match(obj.Summary, @"^\(([^)]+)\)");
+		var result = match.Success ? match.Groups[1].Value : "any";
+
+		// Remove the type from the summary
+		obj.Summary = Regex.Replace(obj.Summary, @"^\([^)]+\)\s*", string.Empty).Trim();
+
+		return result;
+	}
+
+	private static string ExtractTypeFromDescription(IDescribedObject obj)
+	{
+		// Extract type from patterns like "(type) description"
+		var match = Regex.Match(obj.Description, @"^\(([^)]+)\)");
+		var result = match.Success ? match.Groups[1].Value : "any";
+
+		// Remove the type from the description
+		obj.Description = Regex.Replace(obj.Description, @"^\([^)]+\)\s*", string.Empty).Trim();
+
+		return result;
+	}
 }

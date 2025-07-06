@@ -8,5 +8,5 @@ public interface ITypedObject
 	/// <summary>
 	/// The type of the object.
 	/// </summary>
-	string Type { get; }
+	string Type { get; set; }
 }

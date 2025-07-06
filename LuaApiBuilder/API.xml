@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <api>
 	<functions>
 		<function>
@@ -2390,7 +2390,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<module>CustomBar</module>
 			<name>SetEnemiesHpGenericBar</name>
 			<summary>Creates health bars for all enemies.</summary>
-			<description>A new bar is generated whenever Lara targets an enemy. If the "hide text" option is disabled, the enemy's name (as set in the editor) is displayed.
+			<description>A new bar is generated whenever Lara targets an enemy. If the "hide text" option is disabled, the enemy's name (as set in the editor) is displayed. 
  Multiple enemies can share the same name by appending _number to the name in the editor. If adjusting an enemy's max HP, ensure this is done before Lara targets the enemy.
  To create health bars for specific enemies, use CustomBar.CreateEnemyHpBar, ensuring the bar is created prior to targeting.</description>
 			<parameters>
@@ -2715,8 +2715,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>ImportDiary</name>
 			<summary>Imports diary from an external file.</summary>
 			<description>There are different types that must be defined. (diary, background, controls, pageNumbers, notification, image, text, narration). Each of the section's arguements are the same as the functions described in this documentation.
@@ -2730,8 +2729,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>Create</name>
 			<summary>Creates a diary with extensive configuration options.</summary>
 			<description>Parameters:</description>
@@ -2810,8 +2808,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</returns>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>Get</name>
 			<summary>The function retrieves a diary by its unique object.</summary>
 			<description>This function is useful when you need to access or manipulate a diary that has already been created .</description>
@@ -2830,11 +2827,10 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</returns>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>Delete</name>
 			<summary>The function removes a custom diary and its associated data from the system.</summary>
-			<description>It ensures that the diary is no longer tracked or accessible in the LevelVars.Engine.Diaries.
+			<description>It ensures that the diary is no longer tracked or accessible in the LevelVars.Engine.Diaries. 
  Please call this once a diary has served its purpose. It helps reduce the savegame size.</description>
 			<parameters>
 				<parameter>
@@ -2845,8 +2841,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>Status</name>
 			<summary>The function adds the callback to enable diaries in levels.</summary>
 			<description>This needs to be added to every level preferably in the LevelFuncs.OnStart.</description>
@@ -2859,8 +2854,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>IsVisible</name>
 			<summary>The function checks whether the specified diary is currently visible.</summary>
 			<returns>
@@ -2871,8 +2865,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</returns>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>ShowDiary</name>
 			<summary>The function displays the specified diary.</summary>
 			<description>Can be used to call the diary directly using volume or classic triggers.</description>
@@ -2885,8 +2878,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>GetUnlockedPageCount</name>
 			<summary>The function returns the number of unlocked pages in the diary.</summary>
 			<returns>
@@ -2897,8 +2889,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</returns>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>UnlockPages</name>
 			<summary>The function unlocks the specified diary up to the given page number.</summary>
 			<description>This value can be overridden to lock or unlock pages as needed.
@@ -2917,8 +2908,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>ClearPage</name>
 			<summary>The function clears the page for the diary.</summary>
 			<parameters>
@@ -2930,8 +2920,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>AddTextEntry</name>
 			<summary>Adds a text entry to the specified page for the diary.</summary>
 			<parameters>
@@ -2968,8 +2957,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>AddImageEntry</name>
 			<summary>Adds an image entry to the specified page for the diary.</summary>
 			<parameters>
@@ -3026,8 +3014,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>AddNarration</name>
 			<summary>Add a narration track in the voice channel to the page.</summary>
 			<description>Track is played with the draw button.</description>
@@ -3045,8 +3032,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>RemoveNarration</name>
 			<summary>Remove the narration track from the page of the specified diary.</summary>
 			<parameters>
@@ -3058,8 +3044,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>AddBackground</name>
 			<summary>Add a background image for the diary.</summary>
 			<parameters>
@@ -3116,14 +3101,12 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>ClearBackground</name>
 			<summary>Clears settings for the background for the specified diary.</summary>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>CustomizeNotification</name>
 			<summary>Customizes the notification icon and sound for the diary.</summary>
 			<parameters>
@@ -3185,14 +3168,12 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>ClearNotification</name>
 			<summary>Clears settings for the notification system for the specified diary.</summary>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>CustomizePageNumbers</name>
 			<summary>Customizes the page numbers for the diary.</summary>
 			<parameters>
@@ -3234,14 +3215,12 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>ClearPageNumbers</name>
 			<summary>Clears settings for the page numbers for the specified diary.</summary>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>CustomizeControls</name>
 			<summary>Customizes the controls text for the diary.</summary>
 			<parameters>
@@ -3268,8 +3247,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>CustomizeControlsText</name>
 			<summary>Customizes the display text for controls for specified diary.</summary>
 			<parameters>
@@ -3301,8 +3279,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			</parameters>
 		</function>
 		<function>
-			<module>Diary</module>
-			<caller>CustomDiary</caller>
+			<module>CustomDiary</module>
 			<name>ClearControls</name>
 			<summary>Clears settings for the specified diary's controls text.</summary>
 		</function>
@@ -4263,7 +4240,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetPosition</name>
+					<name>Probe:GetPosition</name>
 					<summary>Get the world position of this Probe.</summary>
 					<returns>
 						<return>
@@ -4273,7 +4250,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetRoom</name>
+					<name>Probe:GetRoom</name>
 					<summary>Get the Room object of this Probe.</summary>
 					<returns>
 						<return>
@@ -4283,7 +4260,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetRoomName</name>
+					<name>Probe:GetRoomName</name>
 					<summary>Get the room name of this Probe.</summary>
 					<returns>
 						<return>
@@ -4293,7 +4270,17 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetFloorHeight</name>
+					<name>Probe:GetRoomNumber</name>
+					<summary>Get the room number of this Probe.</summary>
+					<returns>
+						<return>
+							<type>int</type>
+							<description>Room number.</description>
+						</return>
+					</returns>
+				</method>
+				<method>
+					<name>Probe:GetFloorHeight</name>
 					<summary>Get the floor height at this Probe.</summary>
 					<returns>
 						<return>
@@ -4303,7 +4290,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetCeilingHeight</name>
+					<name>Probe:GetCeilingHeight</name>
 					<summary>Get the ceiling height at this Probe.</summary>
 					<returns>
 						<return>
@@ -4313,7 +4300,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetWaterSurfaceHeight</name>
+					<name>Probe:GetWaterSurfaceHeight</name>
 					<summary>Get the water surface height at this Probe.</summary>
 					<returns>
 						<return>
@@ -4323,7 +4310,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetFloorNormal</name>
+					<name>Probe:GetFloorNormal</name>
 					<summary>Get the normal of the floor at this Probe.</summary>
 					<returns>
 						<return>
@@ -4333,7 +4320,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetCeilingNormal</name>
+					<name>Probe:GetCeilingNormal</name>
 					<summary>Get the normal of the ceiling at this Probe.</summary>
 					<returns>
 						<return>
@@ -4343,7 +4330,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetFloorMaterialType</name>
+					<name>Probe:GetFloorMaterialType</name>
 					<summary>Get the material type of the floor at this Probe.</summary>
 					<returns>
 						<return>
@@ -4353,7 +4340,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>GetCeilingMaterialType</name>
+					<name>Probe:GetCeilingMaterialType</name>
 					<summary>Get the material type of the ceiling at this Probe.</summary>
 					<returns>
 						<return>
@@ -4363,7 +4350,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>IsSteepFloor</name>
+					<name>Probe:IsSteepFloor</name>
 					<summary>Check if the floor at this Probe is steep.</summary>
 					<returns>
 						<return>
@@ -4373,7 +4360,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>IsSteepCeiling</name>
+					<name>Probe:IsSteepCeiling</name>
 					<summary>Check if the ceiling at this Probe is steep.</summary>
 					<returns>
 						<return>
@@ -4383,7 +4370,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>IsWall</name>
+					<name>Probe:IsWall</name>
 					<summary>Check if the Probe is inside a wall.</summary>
 					<description>Can be used to determine if a wall and ceiling exist.</description>
 					<returns>
@@ -4394,7 +4381,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>IsInsideSolidGeometry</name>
+					<name>Probe:IsInsideSolidGeometry</name>
 					<summary>Check if this Probe is inside solid geometry (below a floor, above a ceiling, inside a bridge, or inside a wall).</summary>
 					<returns>
 						<return>
@@ -4404,7 +4391,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>IsClimbableWall</name>
+					<name>Probe:IsClimbableWall</name>
 					<summary>Check if there is a climbable wall in the given heading angle at this Probe.</summary>
 					<parameters>
 						<parameter>
@@ -4421,7 +4408,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>IsMonkeySwing</name>
+					<name>Probe:IsMonkeySwing</name>
 					<summary>Check if there is a monkey swing sector at this Probe.</summary>
 					<returns>
 						<return>
@@ -4431,7 +4418,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>IsDeath</name>
+					<name>Probe:IsDeath</name>
 					<summary>Check if there is a death sector at this Probe.</summary>
 					<returns>
 						<return>
@@ -4441,7 +4428,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 					</returns>
 				</method>
 				<method>
-					<name>Preview</name>
+					<name>Probe:Preview</name>
 					<summary>Preview this Probe in the Collision Stats debug page.</summary>
 				</method>
 			</members>
@@ -4782,220 +4769,11 @@ This setting does not affect ability to use weapons or flares.</description>
 				</field>
 				<field>
 					<name>objects</name>
-					<summary>(table of @{Flow.InventoryItem}s) A table of inventory object layout overrides.</summary>
+					<summary>(@{Flow.InventoryItem}[]) A table of inventory object layout overrides.</summary>
 				</field>
 				<field>
 					<name>secrets</name>
 					<summary>(short) Set total secret count for current level.</summary>
-				</field>
-			</members>
-		</class>
-		<class>
-			<name>Flow.Settings</name>
-			<type>tenclass</type>
-			<summary>Global engine settings which don't fall into particular category or can't be assigned to a specific object.</summary>
-			<description>Can be accessed using @{Flow.SetSettings} and @{Flow.GetSettings} functions.</description>
-			<members>
-				<field>
-					<name>crawlExtended</name>
-					<summary>Extended crawl moveset.</summary>
-				</field>
-				<field>
-					<name>crouchRoll</name>
-					<summary>Crouch roll.</summary>
-				</field>
-				<field>
-					<name>crawlspaceSwandive</name>
-					<summary>Crawlspace dive.</summary>
-				</field>
-				<field>
-					<name>sprintJump</name>
-					<summary>Sprint jump.</summary>
-				</field>
-				<field>
-					<name>ledgeJumps</name>
-					<summary>Ledge jumps.</summary>
-				</field>
-				<field>
-					<name>poseTimeout</name>
-					<summary>Pose timeout.</summary>
-				</field>
-				<field>
-					<name>binocularLightColor</name>
-					<summary>Determines highlight color in binocular mode.</summary>
-				</field>
-				<field>
-					<name>lasersightLightColor</name>
-					<summary>Determines highlight color in lasersight mode.</summary>
-				</field>
-				<field>
-					<name>objectCollision</name>
-					<summary>Specify whether camera can collide with objects.</summary>
-				</field>
-				<field>
-					<name>color</name>
-					<summary>Flare color.</summary>
-				</field>
-				<field>
-					<name>offset</name>
-					<summary>Muzzle offset.</summary>
-				</field>
-				<field>
-					<name>range</name>
-					<summary>Light range.</summary>
-				</field>
-				<field>
-					<name>timeout</name>
-					<summary>Burn timeout.</summary>
-				</field>
-				<field>
-					<name>pickupCount</name>
-					<summary>Default flare pickup count.</summary>
-				</field>
-				<field>
-					<name>lensflareBrightness</name>
-					<summary>Lens flare brightness.</summary>
-				</field>
-				<field>
-					<name>sparks</name>
-					<summary>Toggle spark effect.</summary>
-				</field>
-				<field>
-					<name>smoke</name>
-					<summary>Toggle smoke effect.</summary>
-				</field>
-				<field>
-					<name>muzzleGlow</name>
-					<summary>Toggle muzzle glow effect.</summary>
-				</field>
-				<field>
-					<name>flicker</name>
-					<summary>Toggle flicker effect.</summary>
-				</field>
-				<field>
-					<name>skinning</name>
-					<summary>Enable skinning.</summary>
-				</field>
-				<field>
-					<name>mesh</name>
-					<summary>Root mesh to which hair object will attach to.</summary>
-				</field>
-				<field>
-					<name>offset</name>
-					<summary>Relative braid offset to a headmesh.</summary>
-					<description>Not used with skinned hair mesh.</description>
-				</field>
-				<field>
-					<name>indices</name>
-					<summary>Braid connection indices.</summary>
-					<description>Not used with skinned hair mesh.</description>
-				</field>
-				<field>
-					<name>statusBars</name>
-					<summary>Toggle in-game status bars visibility.</summary>
-				</field>
-				<field>
-					<name>loadingBar</name>
-					<summary>Toggle loading bar visibility.</summary>
-				</field>
-				<field>
-					<name>speedometer</name>
-					<summary>Toggle speedometer visibility.</summary>
-				</field>
-				<field>
-					<name>pickupNotifier</name>
-					<summary>Toggle pickup notifier visibility.</summary>
-				</field>
-				<field>
-					<name>gravity</name>
-					<summary>Global world gravity.</summary>
-				</field>
-				<field>
-					<name>swimVelocity</name>
-					<summary>Swim velocity.</summary>
-				</field>
-				<field>
-					<name>accuracy</name>
-					<summary>Shooting accuracy.</summary>
-				</field>
-				<field>
-					<name>targetingDistance</name>
-					<summary>Targeting distance.</summary>
-				</field>
-				<field>
-					<name>interval</name>
-					<summary>Shooting interval.</summary>
-				</field>
-				<field>
-					<name>damage</name>
-					<summary>Damage.</summary>
-				</field>
-				<field>
-					<name>alternateDamage</name>
-					<summary>Alternate damage.</summary>
-				</field>
-				<field>
-					<name>waterLevel</name>
-					<summary>Water level.</summary>
-				</field>
-				<field>
-					<name>pickupCount</name>
-					<summary>Default ammo pickup count.</summary>
-				</field>
-				<field>
-					<name>flashColor</name>
-					<summary>Gunflash color.</summary>
-				</field>
-				<field>
-					<name>flashRange</name>
-					<summary>Gunflash range.</summary>
-				</field>
-				<field>
-					<name>flashDuration</name>
-					<summary>Gunflash duration.</summary>
-				</field>
-				<field>
-					<name>smoke</name>
-					<summary>Gun smoke.</summary>
-				</field>
-				<field>
-					<name>shell</name>
-					<summary>Gun shell.</summary>
-				</field>
-				<field>
-					<name>muzzleFlash</name>
-					<summary>Display muzzle flash.</summary>
-				</field>
-				<field>
-					<name>muzzleGlow</name>
-					<summary>Display muzzle glow.</summary>
-				</field>
-				<field>
-					<name>colorizeMuzzleFlash</name>
-					<summary>Colorize muzzle flash.</summary>
-				</field>
-				<field>
-					<name>muzzleOffset</name>
-					<summary>Muzzle offset.</summary>
-				</field>
-				<field>
-					<name>errorMode</name>
-					<summary>How should the application respond to script errors?</summary>
-				</field>
-				<field>
-					<name>multithreaded</name>
-					<summary>Use multithreading in certain calculations.</summary>
-					<description>&lt;br /&gt;
- When set to `true`, some performance-critical calculations will be performed in parallel, which can give
- a significant performance boost. Don't disable unless you have problems with launching or using TombEngine.</description>
-				</field>
-				<field>
-					<name>fastReload</name>
-					<summary>Can the game utilize the fast reload feature?</summary>
-					<description>&lt;br /&gt;
- When set to `true`, the game will attempt to perform fast savegame reloading if current level is the same as
- the level loaded from the savegame. It will not work if the level timestamp or checksum has changed
- (i.e. level was updated). If set to `false`, this functionality is turned off.</description>
 				</field>
 			</members>
 		</class>
@@ -8047,7 +7825,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 					</returns>
 				</method>
 				<method>
-					<name>Translate</name>
+					<name>Vec3:Translate</name>
 					<summary>Get a copy of this Vec3 translated in the input Vec3 direction by the input distance.</summary>
 					<parameters>
 						<parameter>
@@ -8069,7 +7847,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 					</returns>
 				</method>
 				<method>
-					<name>Translate</name>
+					<name>Vec3:Translate</name>
 					<summary>Get a copy of this Vec3 translated in the direction of the input Rotation object by the input distance.</summary>
 					<parameters>
 						<parameter>
@@ -8091,7 +7869,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 					</returns>
 				</method>
 				<method>
-					<name>Translate</name>
+					<name>Vec3:Translate</name>
 					<summary>Get a copy of this Vec3 translated by an offset, where the input relative offset Vec3 is rotated according to the input Rotation object.</summary>
 					<parameters>
 						<parameter>
@@ -8465,6 +8243,380 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 						</parameter>
 					</parameters>
 				</method>
+			</members>
+		</class>
+		<class>
+			<name>Flow.AnimSettings</name>
+			<type>tenclass</type>
+			<description>These settings determine whether a specific moveset is available in-game.</description>
+			<members>
+				<field>
+					<name>crawlExtended</name>
+					<summary>(bool) Extended crawl moveset.</summary>
+					<description>When enabled, player will be able to traverse across one-click steps in crawlspaces.</description>
+				</field>
+				<field>
+					<name>crouchRoll</name>
+					<summary>(bool) Crouch roll.</summary>
+					<description>When enabled, player can perform crawlspace roll by pressing sprint key.</description>
+				</field>
+				<field>
+					<name>crawlspaceSwandive</name>
+					<summary>(bool) Crawlspace dive.</summary>
+					<description>When enabled, player will be able to swandive into crawlspaces.</description>
+				</field>
+				<field>
+					<name>overhangClimb</name>
+					<summary>(bool) Overhang climbing.</summary>
+					<description>Enables overhang climbing feature. Currently does not work.</description>
+				</field>
+				<field>
+					<name>slideExtended</name>
+					<summary>(bool) Extended slide mechanics.</summary>
+					<description>If enabled, player will be able to change slide direction with controls. Currently does not work.</description>
+				</field>
+				<field>
+					<name>sprintJump</name>
+					<summary>(bool) Sprint jump.</summary>
+					<description>If enabled, player will be able to perform extremely long jump when sprinting.</description>
+				</field>
+				<field>
+					<name>ledgeJumps</name>
+					<summary>(bool) Ledge jumps.</summary>
+					<description>If this setting is enabled, player will be able to jump upwards while hanging on the ledge.</description>
+				</field>
+				<field>
+					<name>poseTimeout</name>
+					<summary>(int) Pose timeout.</summary>
+					<description>If this setting is larger than 0, idle standing pose animation will be performed after given timeout (in seconds).</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.FlareSettings</name>
+			<type>tenclass</type>
+			<description>These settings change appearance and behaviour of a flare.</description>
+			<members>
+				<field>
+					<name>color</name>
+					<summary>(Color) Flare color.</summary>
+					<description>Flare color. Used for sparks and lensflare coloring as well.</description>
+				</field>
+				<field>
+					<name>offset</name>
+					<summary>(Vec3) Muzzle offset.</summary>
+					<description>A relative muzzle offset where light and particle effects originate from.</description>
+				</field>
+				<field>
+					<name>range</name>
+					<summary>(int) Light range.</summary>
+					<description>Flare light radius or range. Represented in "clicks" equal to 256 world units.</description>
+				</field>
+				<field>
+					<name>timeout</name>
+					<summary>(int) Burn timeout.</summary>
+					<description>Flare burn timeout. Flare will stop working after given timeout (specified in seconds).</description>
+				</field>
+				<field>
+					<name>pickupCount</name>
+					<summary>(int) Default flare pickup count.</summary>
+					<description>Specifies amount of flares that you get when you pick up a box of flares.</description>
+				</field>
+				<field>
+					<name>lensflareBrightness</name>
+					<summary>(float) Lens flare brightness.</summary>
+					<description>Brightness multiplier. Specifies how bright lens flare is in relation to light (on a range from 0 to 1).</description>
+				</field>
+				<field>
+					<name>sparks</name>
+					<summary>(bool) Toggle spark effect.</summary>
+					<description>Spark effect. Determines whether flare generates sparks when burning.</description>
+				</field>
+				<field>
+					<name>smoke</name>
+					<summary>(bool) Toggle smoke effect.</summary>
+					<description>Smoke effect. Determines whether flare generates smoke when burning.</description>
+				</field>
+				<field>
+					<name>muzzleGlow</name>
+					<summary>(bool) Toggle muzzle glow effect.</summary>
+					<description>Glow effect. Determines whether flare generates glow when burning.</description>
+				</field>
+				<field>
+					<name>flicker</name>
+					<summary>(bool) Toggle flicker effect.</summary>
+					<description>Light and lensflare flickering. When turned off, flare light will be constant.</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.HairSettings</name>
+			<type>tenclass</type>
+			<description>This is a table of braid object settings. &lt;br&gt; Table consists of three entries, with first one representing classic Lara braid, and 2 and 3 representing left and right young Lara braids respectively. Therefore, if you want to access classic Lara braid settings, use `settings.Hair[1]`, and so on.</description>
+			<members>
+				<field>
+					<name>rootMesh</name>
+					<summary>(int) Root mesh to which hair object will attach to.</summary>
+					<description>Index of a root mesh to which hair will attach. Root mesh may be different for each hair object.</description>
+				</field>
+				<field>
+					<name>offset</name>
+					<summary>(Vec3) Relative braid offset to a headmesh. Not used with skinned hair mesh.</summary>
+					<description>Specifies how braid is positioned in relation to a headmesh.</description>
+				</field>
+				<field>
+					<name>indices</name>
+					<summary>(table) Braid connection indices. Not used with skinned hair mesh.</summary>
+					<description>A list of headmesh's vertex connection indices. Each index corresponds to nearest braid rootmesh vertex. Amount of indices is unlimited.</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.WeaponSettings</name>
+			<type>tenclass</type>
+			<description>This is a table of weapon settings, with several parameters available for every weapon. Access particular weapon's settings by using @{Objects.WeaponType} as an index for this table, e.g. `settings.Weapons[Flow.WeaponType.PISTOLS]`.</description>
+			<members>
+				<field>
+					<name>accuracy</name>
+					<summary>(float) Shooting accuracy.</summary>
+					<description>Determines accuracy range in angles (smaller angles mean higher accuracy). Applicable only for firearms.</description>
+				</field>
+				<field>
+					<name>targetingDistance</name>
+					<summary>(float) Targeting distance.</summary>
+					<description>Specifies maximum targeting distance in world units (1 block = 1024 world units) for a given weapon.</description>
+				</field>
+				<field>
+					<name>interval</name>
+					<summary>(float) Shooting interval.</summary>
+					<description>Specifies an interval (in frames), after which Lara is able to shoot again. Not applicable for backholster weapons.</description>
+				</field>
+				<field>
+					<name>damage</name>
+					<summary>(int) Damage.</summary>
+					<description>Amount of hit points taken for every hit.</description>
+				</field>
+				<field>
+					<name>alternateDamage</name>
+					<summary>(int) Alternate damage.</summary>
+					<description>For crossbow, specifies damage for explosive ammo.</description>
+				</field>
+				<field>
+					<name>waterLevel</name>
+					<summary>(int) Water level.</summary>
+					<description>Specifies water depth, at which Lara will put weapons back into holsters, indicating it's not possible to use it in water.</description>
+				</field>
+				<field>
+					<name>pickupCount</name>
+					<summary>(int) Default ammo pickup count.</summary>
+					<description>Amount of ammo which is given with every ammo pickup for this weapon.</description>
+				</field>
+				<field>
+					<name>flashColor</name>
+					<summary>(Color) Gunflash color.</summary>
+					<description>specifies the color of the gunflash.</description>
+				</field>
+				<field>
+					<name>flashRange</name>
+					<summary>(int) Gunflash range.</summary>
+					<description>specifies the range of the gunflash.</description>
+				</field>
+				<field>
+					<name>flashDuration</name>
+					<summary>(int) Gunflash duration.</summary>
+					<description>specifies the duration of a gunflash effect.</description>
+				</field>
+				<field>
+					<name>smoke</name>
+					<summary>(bool) Gun smoke.</summary>
+					<description>if set to true, indicates that weapon emits gun smoke.</description>
+				</field>
+				<field>
+					<name>shell</name>
+					<summary>(bool) Gun shell.</summary>
+					<description>If set to true, indicates that weapon emits gun shell. Applicable only for firearms.</description>
+				</field>
+				<field>
+					<name>muzzleFlash</name>
+					<summary>(bool) Display muzzle flash.</summary>
+					<description>specifies whether muzzle flash should be displayed or not.</description>
+				</field>
+				<field>
+					<name>muzzleGlow</name>
+					<summary>(bool) Display muzzle glow.</summary>
+					<description>specifies whether muzzle glow should be displayed or not.</description>
+				</field>
+				<field>
+					<name>colorizeMuzzleFlash</name>
+					<summary>(bool) Colorize muzzle flash.</summary>
+					<description>specifies whether muzzle flash should be tinted with the same color as gunflash color.</description>
+				</field>
+				<field>
+					<name>muzzleOffset</name>
+					<summary>(Vec3) Muzzle offset.</summary>
+					<description>specifies offset for spawning muzzle gunflash effects.</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.SystemSettings</name>
+			<type>tenclass</type>
+			<description>Global system settings that is not directly related to gameplay.</description>
+			<members>
+				<field>
+					<name>errorMode</name>
+					<summary>(ErrorMode) How should the application respond to script errors?</summary>
+					<description>Error mode to use.</description>
+				</field>
+				<field>
+					<name>multithreaded</name>
+					<summary>(bool) Use multithreading in certain calculations. &lt;br&gt;</summary>
+					<description>When set to `true`, some performance-critical calculations will be performed in parallel, which can give a significant performance boost. Don't disable unless you have problems with launching or using TombEngine.</description>
+				</field>
+				<field>
+					<name>fastReload</name>
+					<summary>(bool) Can the game utilize the fast reload feature? &lt;br&gt;</summary>
+					<description>When set to `true`, the game will attempt to perform fast savegame reloading if current level is the same as the level loaded from the savegame. It will not work if the level timestamp or checksum has changed (i.e. level was updated). If set to `false`, this functionality is turned off.</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.GraphicsSettings</name>
+			<type>tenclass</type>
+			<description>These settings are used to enable or disable certain graphics features.</description>
+			<members>
+				<field>
+					<name>skinning</name>
+					<summary>(bool) Enable skinning.</summary>
+					<description>If enabled, skinning will be used for animated objects with skinned mesh. Disable to force classic TR workflow.</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.PhysicsSettings</name>
+			<type>tenclass</type>
+			<description>Here you will find various settings for game world physics.</description>
+			<members>
+				<field>
+					<name>gravity</name>
+					<summary>(float) Global world gravity.</summary>
+					<description>Specifies global gravity. Mostly affects Lara and several other objects.</description>
+				</field>
+				<field>
+					<name>swimVelocity</name>
+					<summary>(float) Swim velocity.</summary>
+					<description>Specifies swim velocity for Lara. Affects both surface and underwater.</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.HudSettings</name>
+			<type>tenclass</type>
+			<description>These settings determine visibility of particular in-game HUD elements.</description>
+			<members>
+				<field>
+					<name>statusBars</name>
+					<summary>(bool) Toggle in-game status bars visibility.</summary>
+					<description>If disabled, all status bars (health, air, stamina) will be hidden.</description>
+				</field>
+				<field>
+					<name>loadingBar</name>
+					<summary>(bool) Toggle loading bar visibility.</summary>
+					<description>If disabled, loading bar will be invisible in game.</description>
+				</field>
+				<field>
+					<name>speedometer</name>
+					<summary>(bool) Toggle speedometer visibility.</summary>
+					<description>If disabled, speedometer will be invisible in game.</description>
+				</field>
+				<field>
+					<name>pickupNotifier</name>
+					<summary>(bool) Toggle pickup notifier visibility.</summary>
+					<description>If disabled, pickup notifier will be invisible in game.</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.CameraSettings</name>
+			<type>tenclass</type>
+			<description>Parameters to customize camera and everything related to it.</description>
+			<members>
+				<field>
+					<name>binocularLightColor</name>
+					<summary>(Color) Determines highlight color in binocular mode.</summary>
+					<description>Color of highlight, when player presses action. Zero color means there will be no highlight.</description>
+				</field>
+				<field>
+					<name>lasersightLightColor</name>
+					<summary>(Color) Determines highlight color in lasersight mode.</summary>
+					<description>Lasersight highlight color. Zero color means there will be no highlight.</description>
+				</field>
+				<field>
+					<name>objectCollision</name>
+					<summary>(bool) Specify whether camera can collide with objects.</summary>
+					<description>When enabled, camera will collide with moveables and statics. Disable for TR4-like camera behaviour.</description>
+				</field>
+			</members>
+		</class>
+		<class>
+			<name>Flow.Settings</name>
+			<type>tenclass</type>
+			<description>Global engine settings which don't fall into particular category or can't be assigned to a specific object. Can be accessed using @{Flow.SetSettings} and @{Flow.GetSettings} functions.</description>
+			<members>
+				<field>
+					<name>Animations</name>
+					<type>Flow.AnimSettings</type>
+					<summary>These settings determine whether a specific moveset is available in-game.</summary>
+					<description>These settings determine whether a specific moveset is available in-game.</description>
+				</field>
+				<field>
+					<name>Camera</name>
+					<type>Flow.CameraSettings</type>
+					<summary>Parameters to customize camera and everything related to it.</summary>
+					<description>Parameters to customize camera and everything related to it.</description>
+				</field>
+				<field>
+					<name>Flare</name>
+					<type>Flow.FlareSettings</type>
+					<summary>These settings change appearance and behaviour of a flare.</summary>
+					<description>These settings change appearance and behaviour of a flare.</description>
+				</field>
+				<field>
+					<name>Graphics</name>
+					<type>Flow.GraphicsSettings</type>
+					<summary>These settings are used to enable or disable certain graphics features.</summary>
+					<description>These settings are used to enable or disable certain graphics features.</description>
+				</field>
+				<field>
+					<name>Hair</name>
+					<type>HairSettings[]</type>
+					<summary>This is a table of braid object settings. &lt;br&gt; Table consists of three entries, with first one representing classic Lara braid, and 2 and 3 representing left and right young Lara braids respectively. Therefore, if you want to access classic Lara braid settings, use `settings.Hair[1]`, and so on.</summary>
+					<description>This is a table of braid object settings. &lt;br&gt; Table consists of three entries, with first one representing classic Lara braid, and 2 and 3 representing left and right young Lara braids respectively. Therefore, if you want to access classic Lara braid settings, use `settings.Hair[1]`, and so on.</description>
+				</field>
+				<field>
+					<name>Hud</name>
+					<type>Flow.HudSettings</type>
+					<summary>These settings determine visibility of particular in-game HUD elements.</summary>
+					<description>These settings determine visibility of particular in-game HUD elements.</description>
+				</field>
+				<field>
+					<name>Physics</name>
+					<type>Flow.PhysicsSettings</type>
+					<summary>Here you will find various settings for game world physics.</summary>
+					<description>Here you will find various settings for game world physics.</description>
+				</field>
+				<field>
+					<name>System</name>
+					<type>Flow.SystemSettings</type>
+					<summary>Global system settings that is not directly related to gameplay.</summary>
+					<description>Global system settings that is not directly related to gameplay.</description>
+				</field>
+				<field>
+					<name>Weapons</name>
+					<type>{ [WeaponType]: WeaponSettings }</type>
+					<summary>This is a table of weapon settings, with several parameters available for every weapon. Access particular weapon's settings by using @{Objects.WeaponType} as an index for this table, e.g. `settings.Weapons[Flow.WeaponType.PISTOLS]`.</summary>
+					<description>This is a table of weapon settings, with several parameters available for every weapon. Access particular weapon's settings by using @{Objects.WeaponType} as an index for this table, e.g. `settings.Weapons[Flow.WeaponType.PISTOLS]`.</description>
+				</field>
 			</members>
 		</class>
 	</classes>
@@ -9184,43 +9336,43 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 					<summary>Keyboard Z key.</summary>
 				</value>
 				<value>
-					<name>Num1</name>
+					<name>NUM1</name>
 					<summary>Keyboard 1 key.</summary>
 				</value>
 				<value>
-					<name>Num2</name>
+					<name>NUM2</name>
 					<summary>Keyboard 2 key.</summary>
 				</value>
 				<value>
-					<name>Num3</name>
+					<name>NUM3</name>
 					<summary>Keyboard 3 key.</summary>
 				</value>
 				<value>
-					<name>Num4</name>
+					<name>NUM4</name>
 					<summary>Keyboard 4 key.</summary>
 				</value>
 				<value>
-					<name>Num5</name>
+					<name>NUM5</name>
 					<summary>Keyboard 5 key.</summary>
 				</value>
 				<value>
-					<name>Num6</name>
+					<name>NUM6</name>
 					<summary>Keyboard 6 key.</summary>
 				</value>
 				<value>
-					<name>Num7</name>
+					<name>NUM7</name>
 					<summary>Keyboard 7 key.</summary>
 				</value>
 				<value>
-					<name>Num8</name>
+					<name>NUM8</name>
 					<summary>Keyboard 8 key.</summary>
 				</value>
 				<value>
-					<name>Num9</name>
+					<name>NUM9</name>
 					<summary>Keyboard 9 key.</summary>
 				</value>
 				<value>
-					<name>Num0</name>
+					<name>NUM0</name>
 					<summary>Keyboard 0 key.</summary>
 				</value>
 				<value>
