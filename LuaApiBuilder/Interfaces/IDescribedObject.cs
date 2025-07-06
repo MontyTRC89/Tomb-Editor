@@ -8,5 +8,5 @@ public interface IDescribedObject
 	/// <summary>
 	/// A detailed description of the object.
 	/// </summary>
-	string Description { get; }
+	string Description { get; set; }
 }

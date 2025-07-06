@@ -148,10 +148,7 @@ public sealed class ApiConverter
 
 		// Generate fields
 		foreach (var field in apiClass.Fields)
-		{
-			var fieldType = MapType(ExtractTypeFromSummary(field.Summary));
-			builder.AppendLine($"---@field {field.Name} {fieldType} # {CleanDescription(field.Summary)}");
-		}
+			builder.AppendLine($"---@field {field.Name} {MapType(field.Type)} # {CleanDescription(field.Summary)}");
 
 		// Generate the direct class name first
 		builder.AppendLine($"{className} = {{}}");
@@ -450,7 +447,8 @@ public sealed class ApiConverter
 		// Map basic types
 		return xmlType.ToLowerInvariant() switch
 		{
-			"int" or "float" or "short" or "number" => "number",
+			"int" or "short" => "integer",
+			"float" or "number" => "number",
 			"bool" or "boolean" => "boolean",
 			"string" => "string",
 			"table" => "table",
@@ -500,13 +498,6 @@ public sealed class ApiConverter
 		}
 
 		return lines.Count > 0 ? lines : new List<string> { description };
-	}
-
-	private static string ExtractTypeFromSummary(string summary)
-	{
-		// Extract type from patterns like "(type) description"
-		var match = Regex.Match(summary, @"^\(([^)]+)\)");
-		return match.Success ? match.Groups[1].Value : "any";
 	}
 
 	private static string EscapeLuaReservedKeyword(string name)

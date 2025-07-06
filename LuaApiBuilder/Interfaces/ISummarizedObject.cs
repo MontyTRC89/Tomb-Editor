@@ -8,5 +8,5 @@ public interface ISummarizedObject
 	/// <summary>
 	/// A brief summary of the object.
 	/// </summary>
-	string Summary { get; }
+	string Summary { get; set; }
 }
