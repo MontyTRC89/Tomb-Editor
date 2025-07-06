@@ -19,36 +19,50 @@
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
 					<description>Color.</description>
 				</parameter>
 				<parameter>
 					<name>life</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>Lifetime in seconds. Clamped to [0, 4.233] for now because of strange internal maths.</description>
 				</parameter>
 				<parameter>
 					<name>amplitude</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>20</defaultValue>
 					<description>Strength of the lightning - the higher the value, the "taller" the arcs. Clamped to [1, 255].</description>
 				</parameter>
 				<parameter>
 					<name>beamWidth</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>2</defaultValue>
 					<description>Beam width. Clamped to [1, 127].</description>
 				</parameter>
 				<parameter>
 					<name>detail</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>10</defaultValue>
 					<description>Higher numbers equal more segments, but it's not a 1:1 correlation. Clamped to [1, 127].</description>
 				</parameter>
 				<parameter>
 					<name>smooth</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, the arc will have large, smooth curves; if false, it will have small, jagged spikes.</description>
 				</parameter>
 				<parameter>
 					<name>endDrift</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, the end of the arc will be able to gradually drift away from its destination in a random direction.</description>
 				</parameter>
 			</parameters>
@@ -76,61 +90,85 @@
 				<parameter>
 					<name>gravity</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Effect of gravity. Positive value ascends, negative value descends.</description>
 				</parameter>
 				<parameter>
 					<name>rotVel</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Rotational velocity in degrees.</description>
 				</parameter>
 				<parameter>
 					<name>startColor</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
 					<description>Color at start of life.</description>
 				</parameter>
 				<parameter>
 					<name>endColor</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
 					<description>Color at end of life. This will finish long before the end of the particle's life due to internal math.</description>
 				</parameter>
 				<parameter>
 					<name>blendMode</name>
 					<type>Effects.BlendID</type>
+					<optional>true</optional>
+					<defaultValue>TEN.Effects.BlendID.ALPHA_BLEND</defaultValue>
 					<description>Render blend mode.</description>
 				</parameter>
 				<parameter>
 					<name>startSize</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>10</defaultValue>
 					<description>Size at start of life.</description>
 				</parameter>
 				<parameter>
 					<name>endSize</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Size at end of life.</description>
 				</parameter>
 				<parameter>
 					<name>life</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>2</defaultValue>
 					<description>Lifespan in seconds.</description>
 				</parameter>
 				<parameter>
 					<name>damage</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>Harm the player on collision.</description>
 				</parameter>
 				<parameter>
 					<name>poison</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>Poison the player on collision.</description>
 				</parameter>
 				<parameter>
 					<name>spriteSeqID</name>
 					<type>Objects.ObjID</type>
+					<optional>true</optional>
+					<defaultValue>Objects.ObjID.DEFAULT_SPRITES</defaultValue>
 					<description>Sprite sequence slot ID.</description>
 				</parameter>
 				<parameter>
 					<name>startRot</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>random</defaultValue>
 					<description>Rotation at start of life.</description>
 				</parameter>
 			</parameters>
@@ -161,36 +199,50 @@
 				<parameter>
 					<name>innerRadius</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Initial inner radius of the shockwave circle - 128 will be approx a click, 512 approx a block.</description>
 				</parameter>
 				<parameter>
 					<name>outerRadius</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>128</defaultValue>
 					<description>Initial outer radius of the shockwave circle.</description>
 				</parameter>
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
 					<description>Color.</description>
 				</parameter>
 				<parameter>
 					<name>lifetime</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1.0</defaultValue>
 					<description>Lifetime in seconds (max 8.5 because of inner maths weirdness).</description>
 				</parameter>
 				<parameter>
 					<name>speed</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>50</defaultValue>
 					<description>Initial speed of the shockwave's expansion (the shockwave will always slow as it goes).</description>
 				</parameter>
 				<parameter>
 					<name>angle</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Angle about the X axis - a value of 90 will cause the shockwave to be entirely vertical.</description>
 				</parameter>
 				<parameter>
 					<name>hurtsLara</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, the shockwave will hurt Lara, with the damage being relative to the shockwave's current speed.</description>
 				</parameter>
 			</parameters>
@@ -209,21 +261,28 @@
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
 					<description>light color.</description>
 				</parameter>
 				<parameter>
 					<name>radius</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>20</defaultValue>
 					<description>Measured in "clicks" or 256 world units.</description>
 				</parameter>
 				<parameter>
 					<name>shadows</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>Determines whether light should generate dynamic shadows for applicable moveables.</description>
 				</parameter>
 				<parameter>
 					<name>name</name>
 					<type>string</type>
+					<optional>true</optional>
 					<description>If provided, engine will interpolate this light for high framerate mode (be careful not to use same name for different lights).</description>
 				</parameter>
 			</parameters>
@@ -247,31 +306,42 @@
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
 					<description>Color.</description>
 				</parameter>
 				<parameter>
 					<name>radius</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>10</defaultValue>
 					<description>Overall radius at the endpoint of a light cone, measured in "clicks" or 256 world units.</description>
 				</parameter>
 				<parameter>
 					<name>falloff</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>5</defaultValue>
 					<description>Radius, at which light starts to fade out, measured in "clicks".</description>
 				</parameter>
 				<parameter>
 					<name>distance</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>20</defaultValue>
 					<description>Distance, at which light cone fades out, measured in "clicks".</description>
 				</parameter>
 				<parameter>
 					<name>shadows</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>Determines whether light should generate dynamic shadows for applicable moveables.</description>
 				</parameter>
 				<parameter>
 					<name>name</name>
 					<type>string</type>
+					<optional>true</optional>
 					<description>If provided, engine will interpolate this light for high framerate mode (be careful not to use same name for different lights).</description>
 				</parameter>
 			</parameters>
@@ -289,6 +359,8 @@
 				<parameter>
 					<name>count</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>Blood sprite count.</description>
 				</parameter>
 			</parameters>
@@ -306,11 +378,15 @@
 				<parameter>
 					<name>size</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>32</defaultValue>
 					<description>Sprite size.</description>
 				</parameter>
 				<parameter>
 					<name>amp</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>32</defaultValue>
 					<description>Oscillation amplitude.</description>
 				</parameter>
 			</parameters>
@@ -328,21 +404,29 @@
 				<parameter>
 					<name>size</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>64</defaultValue>
 					<description>Effect size.</description>
 				</parameter>
 				<parameter>
 					<name>width</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>32</defaultValue>
 					<description>Width of the effect.</description>
 				</parameter>
 				<parameter>
 					<name>rot</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Rotation of effect in degrees.</description>
 				</parameter>
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255, 255)</defaultValue>
 					<description>Color of the effect.</description>
 				</parameter>
 			</parameters>
@@ -361,6 +445,8 @@
 				<parameter>
 					<name>size</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>Fire size.</description>
 				</parameter>
 			</parameters>
@@ -393,56 +479,78 @@
 				<parameter>
 					<name>rot</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Start rotation in degrees.</description>
 				</parameter>
 				<parameter>
 					<name>startColor</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
 					<description>Color at the start of life.</description>
 				</parameter>
 				<parameter>
 					<name>endColor</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(0, 0, 0)</defaultValue>
 					<description>Color at the end of life.</description>
 				</parameter>
 				<parameter>
 					<name>width</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Width in world units.</description>
 				</parameter>
 				<parameter>
 					<name>life</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>Lifetime in seconds.</description>
 				</parameter>
 				<parameter>
 					<name>vel</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Movement velocity in world units per second.</description>
 				</parameter>
 				<parameter>
 					<name>expRate</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Width expansion rate in world units per second.</description>
 				</parameter>
 				<parameter>
 					<name>rotRate</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Rotation rate in degrees per second.</description>
 				</parameter>
 				<parameter>
 					<name>edgeFeatherMode</name>
 					<type>Effects.StreamerFeatherMode</type>
+					<optional>true</optional>
+					<defaultValue>Effects.StreamerFeatherMode.NONE</defaultValue>
 					<description>Edge feather mode.</description>
 				</parameter>
 				<parameter>
 					<name>lengthFeatherMode</name>
 					<type>Effects.StreamerFeatherMode</type>
+					<optional>true</optional>
+					<defaultValue>Effects.StreamerFeatherMode.LEFT</defaultValue>
 					<description>Length feather mode. _Not yet implemented._</description>
 				</parameter>
 				<parameter>
 					<name>blendID</name>
 					<type>Effects.BlendID</type>
+					<optional>true</optional>
+					<defaultValue>Effects.BlendID.ALPHA_BLEND</defaultValue>
 					<description>Renderer blend ID.</description>
 				</parameter>
 			</parameters>
@@ -465,41 +573,57 @@
 				<parameter>
 					<name>radius</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>512</defaultValue>
 					<description>Radius of emitter. The particles will be emitted inside the circle of provided radius measured from centre of world position.</description>
 				</parameter>
 				<parameter>
 					<name>life</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>Lifespan in seconds.</description>
 				</parameter>
 				<parameter>
 					<name>friction</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Friction affecting velocity over time in world units per second.</description>
 				</parameter>
 				<parameter>
 					<name>maxSize</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>25</defaultValue>
 					<description>Max size of the particle.</description>
 				</parameter>
 				<parameter>
 					<name>startColor</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(128, 128, 128)</defaultValue>
 					<description>Color at start of life.</description>
 				</parameter>
 				<parameter>
 					<name>endColor</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(0, 0, 0)</defaultValue>
 					<description>Color at end of life.</description>
 				</parameter>
 				<parameter>
 					<name>spriteSeqID</name>
 					<type>Objects.ObjID</type>
+					<optional>true</optional>
+					<defaultValue>Objects.ObjID.DEFAULT_SPRITES</defaultValue>
 					<description>Sprite sequence slot ID.</description>
 				</parameter>
 				<parameter>
 					<name>spriteID</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>14 (UNDERWATER_DUST)</defaultValue>
 					<description>Sprite ID in the sprite sequence slot.</description>
 				</parameter>
 			</parameters>
@@ -518,22 +642,28 @@
 				<parameter>
 					<name>size</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>512</defaultValue>
 					<description>Size of the shockwave if enabled.</description>
 				</parameter>
 				<parameter>
 					<name>shockwave</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, creates a very faint shockwave which will not hurt Lara.
  For underwater rooms, it creates a splash if `pos` is near the surface. Shockwave uses `mainColor` if provided.</description>
 				</parameter>
 				<parameter>
 					<name>mainColor</name>
 					<type>Color</type>
+					<optional>true</optional>
 					<description>Main color of the explosion and the shockwave. If not provided, default explosion color will be used. Must be provided for colored explosions.</description>
 				</parameter>
 				<parameter>
 					<name>additionalColor</name>
 					<type>Color</type>
+					<optional>true</optional>
 					<description>Additional color of the explosion. If provided, explosion would randomly use the main or the additional color. If not provided, only main color will be used.</description>
 				</parameter>
 			</parameters>
@@ -546,6 +676,8 @@
 				<parameter>
 					<name>strength</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>100</defaultValue>
 					<description>How strong should the earthquake be? Increasing this value also increases the lifespan of the earthquake.</description>
 				</parameter>
 			</parameters>
@@ -743,11 +875,15 @@ teleported to such object with OCB similar to provided second argument.</descrip
 				<parameter>
 					<name>index</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Level index.</description>
 				</parameter>
 				<parameter>
 					<name>startPos</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Player start position in the next level. Should correspond to OCB of `Objects.ObjID.LARA_START_POS` object in the next level.</description>
 				</parameter>
 			</parameters>
@@ -761,6 +897,8 @@ teleported to such object with OCB similar to provided second argument.</descrip
 				<parameter>
 					<name>game</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, returns overall game statistics, otherwise returns current level statistics.</description>
 				</parameter>
 			</parameters>
@@ -785,6 +923,8 @@ teleported to such object with OCB similar to provided second argument.</descrip
 				<parameter>
 					<name>game</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, sets overall game statistics, otherwise sets current level statistics.</description>
 				</parameter>
 			</parameters>
@@ -959,6 +1099,7 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>index</name>
 					<type>int</type>
+					<optional>true</optional>
 					<description>Flipmap group ID to check. If no group specified or group is -1, function returns overall flipmap status (on or off).</description>
 				</parameter>
 			</parameters>
@@ -1116,6 +1257,8 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>delaySec</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Delay time in seconds before a hold can be registered.</description>
 				</parameter>
 			</parameters>
@@ -1139,6 +1282,8 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>initialDelaySec</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0</defaultValue>
 					<description>Initial delay time in seconds on the first pulse.</description>
 				</parameter>
 			</parameters>
@@ -1156,6 +1301,8 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>maxDelaySec</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>infinity</defaultValue>
 					<description>Max delay time in seconds between hit and release within which a release can be registered.</description>
 				</parameter>
 			</parameters>
@@ -1202,6 +1349,8 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>time</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>0.3</defaultValue>
 					<description>Vibration time in seconds.</description>
 				</parameter>
 			</parameters>
@@ -1219,11 +1368,15 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>count</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>The amount of items to add. Default is the yield from a single pickup, e.g. 1 from a medipack, 12 from a flare pack.</description>
 				</parameter>
 				<parameter>
 					<name>addToPickupSummary</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, display the item in the pickup summary. Default is false.</description>
 				</parameter>
 			</parameters>
@@ -1241,6 +1394,8 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>count</name>
 					<type>int</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>The amount of items to remove. Default is the yield from a single pickup, e.g. 1 from a medipack, 12 from a flare pack.</description>
 				</parameter>
 			</parameters>
@@ -1367,6 +1522,8 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>activator</name>
 					<type>Objects.Moveable</type>
+					<optional>true</optional>
+					<defaultValue>Lara</defaultValue>
 					<description>Optional activator.</description>
 				</parameter>
 			</parameters>
@@ -1704,6 +1861,7 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>position</name>
 					<type>Vec3</type>
+					<optional>true</optional>
 					<description>The 3D position of the sound, i.e. where the sound "comes from". If not given, the sound will not be positional.</description>
 				</parameter>
 			</parameters>
@@ -1770,12 +1928,15 @@ custom menu creation, photo mode or time freeze.</description>
 				<parameter>
 					<name>time</name>
 					<type>float</type>
+					<optional>true</optional>
 					<description>The time in seconds for which to show the string. If not given, the string will have an "infinite" life, and will show
 until @{HideString} is called or until the level is finished.</description>
 				</parameter>
 				<parameter>
 					<name>autoDelete</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>true</defaultValue>
 					<description>Should be string automatically deleted after timeout is reached. If not given, the string will remain
 allocated even after timeout is reached, and can be shown again without re-initialization.</description>
 				</parameter>
@@ -1992,6 +2153,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>allowSpam</name>
 					<type>bool</type>
+					<optional>true</optional>
 					<description>If true, allows continuous spamming of the message.</description>
 				</parameter>
 			</parameters>
@@ -2004,6 +2166,8 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>speed</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>Speed in units per second. A value of 1 will make the fade take one second.</description>
 				</parameter>
 			</parameters>
@@ -2017,6 +2181,8 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>speed</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>Speed in units per second. A value of 1 will make the fade take one second.</description>
 				</parameter>
 			</parameters>
@@ -2029,11 +2195,15 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>height</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>30</defaultValue>
 					<description>Percentage of the screen to be covered.</description>
 				</parameter>
 				<parameter>
 					<name>speed</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>30</defaultValue>
 					<description>Coverage percent per second.</description>
 				</parameter>
 			</parameters>
@@ -2125,6 +2295,8 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>strength</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>How strong the effect is.</description>
 				</parameter>
 			</parameters>
@@ -2155,17 +2327,23 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>background</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>Play video in the background mode.
  In such case, video won't play in fullscreen, but must be shown using special animated texture type in Tomb Editor, or using @{View.DisplaySprite}.</description>
 				</parameter>
 				<parameter>
 					<name>silent</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>Play video without sound.</description>
 				</parameter>
 				<parameter>
 					<name>loop</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>Play video in a loop.</description>
 				</parameter>
 			</parameters>
@@ -2219,6 +2397,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>name</name>
 					<type>string</type>
+					<optional>true</optional>
 					<description>Video file name. If provided, checks if the currently playing video file name is the same as the provided one.</description>
 				</parameter>
 			</parameters>
@@ -2259,6 +2438,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>loop</name>
 					<type>bool</type>
+					<optional>true</optional>
 					<description>Smooth the position near start and end points, as if the sequence is looped.</description>
 				</parameter>
 			</parameters>
@@ -2287,6 +2467,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>loop</name>
 					<type>bool</type>
+					<optional>true</optional>
 					<description>Smooth the position near start and end points, as if the sequence is looped.</description>
 				</parameter>
 			</parameters>
@@ -2310,11 +2491,15 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
 					<description>Color.</description>
 				</parameter>
 				<parameter>
 					<name>speed</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1</defaultValue>
 					<description>Speed in units per second. Value of 1 will make flash take one second. Clamped to [0.005, 1.0].</description>
 				</parameter>
 			</parameters>
@@ -3301,14 +3486,14 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>timerFormat</name>
 					<type>?table|bool</type>
-					<description>Same as in <a href="Timer.html#timerFormat">Timer format</a> for Timer. This is mainly for debugging. __This will not work properly if another sequence or timer is showing a countdown.__</description>
+					<description>Same as in &lt;a href="Timer.html#timerFormat"&gt;Timer format&lt;/a&gt; for Timer. This is mainly for debugging. __This will not work properly if another sequence or timer is showing a countdown.__</description>
 				</parameter>
 				<parameter>
 					<name>...</name>
 					<type>...</type>
-					<description>A variable number of pairs of arguments, each pair consisting of:&lt;br /&gt;
- - a time in seconds (positive values are accepted and with only 1 tenth of a second [__0.1__]),&lt;br /&gt;
- - followed by the function defined in the *LevelFuncs* table to call once the time has elapsed,&lt;br /&gt;
+					<description>A variable number of pairs of arguments, each pair consisting of:&lt;br&gt;
+ - a time in seconds (positive values are accepted and with only 1 tenth of a second [__0.1__]),&lt;br&gt;
+ - followed by the function defined in the *LevelFuncs* table to call once the time has elapsed,&lt;br&gt;
  - followed by another duration in seconds, another function name, etc.
 
  You can specify a function either by its name, or by a *table* __{ }__ with the function name as the first member, followed by its arguments (see example).</description>
@@ -3428,31 +3613,38 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>name</name>
 					<type>string</type>
-					<description>A label to give this timer; used to retrieve the timer later.&lt;br /&gt;__Do not give your timers a name beginning with __TEN, as this is reserved for timers used by other internal libaries__.</description>
+					<description>A label to give this timer; used to retrieve the timer later.&lt;br&gt;__Do not give your timers a name beginning with __TEN, as this is reserved for timers used by other internal libaries__.</description>
 				</parameter>
 				<parameter>
 					<name>totalTime</name>
 					<type>float</type>
-					<description>Duration of the timer, in seconds.&lt;br /&gt;Values with only 1 tenth of a second (0.1) are accepted, example: 1.5 - 6.0 - 9.9 - 123.6. No negative values allowed!</description>
+					<description>Duration of the timer, in seconds.&lt;br&gt;Values with only 1 tenth of a second (0.1) are accepted, example: 1.5 - 6.0 - 9.9 - 123.6. No negative values allowed!</description>
 				</parameter>
 				<parameter>
 					<name>loop</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, the timer will start again immediately after the time has elapsed.</description>
 				</parameter>
 				<parameter>
 					<name>timerFormat</name>
 					<type>?table|bool</type>
-					<description>Sets the remaining time display. See <a href="#timerFormat">Timer format</a>.</description>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
+					<description>Sets the remaining time display. See &lt;a href="#timerFormat"&gt;Timer format&lt;/a&gt;.</description>
 				</parameter>
 				<parameter>
 					<name>func</name>
 					<type>LevelFunc</type>
+					<optional>true</optional>
+					<defaultValue>nil</defaultValue>
 					<description>The function defined in the *LevelFuncs* table to call when the time is up</description>
 				</parameter>
 				<parameter>
 					<name>...</name>
 					<type>...</type>
+					<optional>true</optional>
 					<description>a variable number of arguments with which the above function will be called</description>
 				</parameter>
 			</parameters>
@@ -3521,6 +3713,8 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>reset</name>
 					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>false</defaultValue>
 					<description>If true, the timer will restart from the beginning (total time)</description>
 				</parameter>
 			</parameters>
@@ -3565,7 +3759,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<returns>
 				<return>
 					<type>float</type>
-					<description>The remaining time in seconds of timer.&lt;br /&gt;Seconds have an accuracy of 0.1 tenths. Example: 1.5 - 6.0 - 9.9 - 123.6</description>
+					<description>The remaining time in seconds of timer.&lt;br&gt;Seconds have an accuracy of 0.1 tenths. Example: 1.5 - 6.0 - 9.9 - 123.6</description>
 				</return>
 			</returns>
 		</function>
@@ -3578,7 +3772,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>timerFormat</name>
 					<type>?table|bool</type>
-					<description>Sets the remaining time display. See <a href="#timerFormat">Timer format</a>.</description>
+					<description>Sets the remaining time display. See &lt;a href="#timerFormat"&gt;Timer format&lt;/a&gt;.</description>
 				</parameter>
 			</parameters>
 			<returns>
@@ -3597,7 +3791,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>remainingTime</name>
 					<type>float</type>
-					<description>The new time remaining for the timer in seconds.&lt;br /&gt;
+					<description>The new time remaining for the timer in seconds.&lt;br&gt;
  Values with only 1 tenth of a second (0.1) are accepted, example: 1.5 - 6.0 - 9.9 - 123.6. No negative values allowed!</description>
 				</parameter>
 			</parameters>
@@ -3612,19 +3806,19 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>operator</name>
 					<type>int</type>
-					<description>The type of comparison.&lt;br /&gt;
- 0 : If the remaining time is equal to the value&lt;br /&gt;
- 1 : If the remaining time is different from the value&lt;br /&gt;
- 2 : If the remaining time is less the value&lt;br /&gt;
- 3 : If the remaining time is less or equal to the value&lt;br /&gt;
- 4 : If the remaining time is greater the value&lt;br /&gt;
+					<description>The type of comparison.&lt;br&gt;
+ 0 : If the remaining time is equal to the value&lt;br&gt;
+ 1 : If the remaining time is different from the value&lt;br&gt;
+ 2 : If the remaining time is less the value&lt;br&gt;
+ 3 : If the remaining time is less or equal to the value&lt;br&gt;
+ 4 : If the remaining time is greater the value&lt;br&gt;
  5 : If the remaining time is greater or equal to the value</description>
 				</parameter>
 				<parameter>
 					<name>seconds</name>
 					<type>float</type>
-					<description>The value in seconds to compare.&lt;br /&gt;
- Values with only 1 tenth of a second (0.1) are accepted, example: 1.5 - 6.0 - 9.9 - 123.6. No negative values allowed!&lt;br /&gt;
+					<description>The value in seconds to compare.&lt;br&gt;
+ Values with only 1 tenth of a second (0.1) are accepted, example: 1.5 - 6.0 - 9.9 - 123.6. No negative values allowed!&lt;br&gt;
  Please note: to have continuous control, the remaining time must be controlled within the *OnLoop* event and only when the Timer is active @{Timer.IsActive}.</description>
 				</parameter>
 			</parameters>
@@ -3657,7 +3851,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<returns>
 				<return>
 					<type>float</type>
-					<description>The timer's total time in seconds.&lt;br /&gt;
+					<description>The timer's total time in seconds.&lt;br&gt;
  Seconds have an accuracy of 0.1 tenths. Example: 1.5 - 6.0 - 9.9 - 123.6</description>
 				</return>
 			</returns>
@@ -3672,7 +3866,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>timerFormat</name>
 					<type>?table|bool</type>
-					<description>Sets the remaining time display. See <a href="#timerFormat">Timer format</a>.</description>
+					<description>Sets the remaining time display. See &lt;a href="#timerFormat"&gt;Timer format&lt;/a&gt;.</description>
 				</parameter>
 			</parameters>
 			<returns>
@@ -3691,7 +3885,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>totalTime</name>
 					<type>float</type>
-					<description>Timer's new total time in seconds.&lt;br /&gt;
+					<description>Timer's new total time in seconds.&lt;br&gt;
  Values with only 1 tenth of a second (0.1) are accepted, example: 1.5 - 6.0 - 9.9 - 123.6. No negative values allowed!</description>
 				</parameter>
 			</parameters>
@@ -3706,18 +3900,18 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>operator</name>
 					<type>int</type>
-					<description>The type of comparison.&lt;br /&gt;
- 0 : If the total time is equal to the value&lt;br /&gt;
- 1 : If the total time is different from the value&lt;br /&gt;
- 2 : If the total time is less the value&lt;br /&gt;
- 3 : If the total time is less or equal to the value&lt;br /&gt;
- 4 : If the total time is greater the value&lt;br /&gt;
+					<description>The type of comparison.&lt;br&gt;
+ 0 : If the total time is equal to the value&lt;br&gt;
+ 1 : If the total time is different from the value&lt;br&gt;
+ 2 : If the total time is less the value&lt;br&gt;
+ 3 : If the total time is less or equal to the value&lt;br&gt;
+ 4 : If the total time is greater the value&lt;br&gt;
  5 : If the total time is greater or equal to the value</description>
 				</parameter>
 				<parameter>
 					<name>seconds</name>
 					<type>float</type>
-					<description>the value in seconds to compare.&lt;br /&gt;
+					<description>the value in seconds to compare.&lt;br&gt;
  Values with only 1 tenth of a second (0.1) are accepted, example: 1.5 - 6.0 - 9.9 - 123.6. No negative values allowed!</description>
 				</parameter>
 			</parameters>
@@ -3751,11 +3945,14 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>func</name>
 					<type>LevelFunc</type>
+					<optional>true</optional>
+					<defaultValue>nil</defaultValue>
 					<description>The function defined in the *LevelFuncs* table to call when the time is up</description>
 				</parameter>
 				<parameter>
 					<name>...</name>
 					<type>...</type>
+					<optional>true</optional>
 					<description>A variable number of arguments with which the above function will be called</description>
 				</parameter>
 			</parameters>
@@ -3770,11 +3967,15 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>x</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>50</defaultValue>
 					<description>The x-coordinate in percent</description>
 				</parameter>
 				<parameter>
 					<name>y</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>90</defaultValue>
 					<description>The y-coordinate in percent</description>
 				</parameter>
 			</parameters>
@@ -3800,6 +4001,8 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>scale</name>
 					<type>float</type>
+					<optional>true</optional>
+					<defaultValue>1.0</defaultValue>
 					<description>The new scale value</description>
 				</parameter>
 			</parameters>
@@ -3825,6 +4028,8 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>TEN.Color(255, 255, 0, 255)</defaultValue>
 					<description>Timer's new paused color.</description>
 				</parameter>
 			</parameters>
@@ -3838,6 +4043,8 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
+					<optional>true</optional>
+					<defaultValue>TEN.Color(255, 255, 255, 255)</defaultValue>
 					<description>Timer's new color.</description>
 				</parameter>
 			</parameters>
@@ -3851,7 +4058,9 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<parameter>
 					<name>optionsTable</name>
 					<type>table</type>
-					<description>Table containing timer's new text options. See @{Strings.DisplayStringOption}&lt;br /&gt;</description>
+					<optional>true</optional>
+					<defaultValue>{TEN.Strings.DisplayStringOption.CENTER, TEN.Strings.DisplayStringOption.SHADOW}</defaultValue>
+					<description>Table containing timer's new text options. See @{Strings.DisplayStringOption}&lt;br&gt;</description>
 				</parameter>
 			</parameters>
 		</function>
@@ -3884,8 +4093,8 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<caller>Timer</caller>
 			<name>IsTicking</name>
 			<summary>Checks if the timer has ticked (every 0.1 seconds).</summary>
-			<description>Returns `true` every 0.1 seconds when the timer is active and not paused.&lt;br /&gt;
- TEN's engine runs on a 0.03-second internal tick, while this timer ticks every 0.1 seconds.&lt;br /&gt;
+			<description>Returns `true` every 0.1 seconds when the timer is active and not paused.&lt;br&gt;
+ TEN's engine runs on a 0.03-second internal tick, while this timer ticks every 0.1 seconds.&lt;br&gt;
  Use `IsTicking()` to ensure consistency and avoid unexpected behavior — for example, inside the `OnLoop` event.</description>
 			<returns>
 				<return>
@@ -4130,6 +4339,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 						<parameter>
 							<name>roomNumber</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>Room number. Must be used if probing a position in an overlapping room.</description>
 						</parameter>
 					</parameters>
@@ -4553,13 +4763,13 @@ allocated even after timeout is reached, and can be shown again without re-initi
 						<parameter>
 							<name>yOffset</name>
 							<type>float</type>
-							<description>y-axis offset (positive values move the item down).&lt;br /&gt;
+							<description>y-axis offset (positive values move the item down).&lt;br&gt;
 A value of about 100 will cause the item to display directly below its usual position.</description>
 						</parameter>
 						<parameter>
 							<name>scale</name>
 							<type>float</type>
-							<description>item size (1 being standard size).&lt;br /&gt;
+							<description>item size (1 being standard size).&lt;br&gt;
 A value of 0.5 will cause the item to render at half the size,
 and a value of 2 will cause the item to render at twice the size.</description>
 						</parameter>
@@ -4571,7 +4781,7 @@ and a value of 2 will cause the item to render at twice the size.</description>
 						<parameter>
 							<name>axis</name>
 							<type>RotationAxis</type>
-							<description>Axis to rotate around when the item is observed at in the inventory.&lt;br /&gt;
+							<description>Axis to rotate around when the item is observed at in the inventory.&lt;br&gt;
 Note that this is entirely separate from the `rot` field described above.
 Must one of the following:
 	X
@@ -5152,6 +5362,7 @@ This setting does not affect ability to use weapons or flares.</description>
 						<parameter>
 							<name>target</name>
 							<type>Objects.Moveable</type>
+							<optional>true</optional>
 							<description>If you put a moveable, the camera will look at it. Otherwise, it will look at Lara.</description>
 						</parameter>
 					</parameters>
@@ -5172,6 +5383,7 @@ This setting does not affect ability to use weapons or flares.</description>
 						<parameter>
 							<name>poison</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>New poison value. __default: 0, max: 128__</description>
 						</parameter>
 					</parameters>
@@ -5386,36 +5598,50 @@ This setting does not affect ability to use weapons or flares.</description>
 						<parameter>
 							<name>animNumber</name>
 							<type>int</type>
+							<optional>true</optional>
+							<defaultValue>197 (BUTTON_PUSH)</defaultValue>
 							<description>The animation to play after alignment is complete.</description>
 						</parameter>
 						<parameter>
 							<name>offset</name>
 							<type>Vec3</type>
+							<optional>true</optional>
+							<defaultValue>Vec3(0, 0, 312)</defaultValue>
 							<description>Relative position offset from the moveable.</description>
 						</parameter>
 						<parameter>
 							<name>minOffsetConstraint</name>
 							<type>Vec3</type>
+							<optional>true</optional>
+							<defaultValue>Vec3(-256, -512, 0)</defaultValue>
 							<description>Minimum relative offset constraint.</description>
 						</parameter>
 						<parameter>
 							<name>maxOffsetConstraint</name>
 							<type>Vec3</type>
+							<optional>true</optional>
+							<defaultValue>Vec3(256, 0, 512)</defaultValue>
 							<description>Maximum relative offset constraint.</description>
 						</parameter>
 						<parameter>
 							<name>minRotConstraint</name>
 							<type>Rotation</type>
+							<optional>true</optional>
+							<defaultValue>Rotation(-10, -40, -10)</defaultValue>
 							<description>Minimum relative rotation constraint.</description>
 						</parameter>
 						<parameter>
 							<name>maxRotConstraint</name>
 							<type>Rotation</type>
+							<optional>true</optional>
+							<defaultValue>Rotation(10, 40, 10)</defaultValue>
 							<description>Maximum relative rotation constraint.</description>
 						</parameter>
 						<parameter>
 							<name>actionID</name>
 							<type>Input.ActionID</type>
+							<optional>true</optional>
+							<defaultValue>Input.ActionID.ACTION</defaultValue>
 							<description>Input action ID to trigger the alignment.</description>
 						</parameter>
 					</parameters>
@@ -5432,21 +5658,29 @@ This setting does not affect ability to use weapons or flares.</description>
 						<parameter>
 							<name>minOffsetConstraint</name>
 							<type>Vec3</type>
+							<optional>true</optional>
+							<defaultValue>Vec3(-256, -512, 0)</defaultValue>
 							<description>Minimum relative offset constraint.</description>
 						</parameter>
 						<parameter>
 							<name>maxOffsetConstraint</name>
 							<type>Vec3</type>
+							<optional>true</optional>
+							<defaultValue>Vec3(256, 0, 512)</defaultValue>
 							<description>Maximum relative offset constraint.</description>
 						</parameter>
 						<parameter>
 							<name>minRotConstraint</name>
 							<type>Rotation</type>
+							<optional>true</optional>
+							<defaultValue>Rotation(-10, -40, -10)</defaultValue>
 							<description>Minimum relative rotation constraint.</description>
 						</parameter>
 						<parameter>
 							<name>maxRotConstraint</name>
 							<type>Rotation</type>
+							<optional>true</optional>
+							<defaultValue>Rotation(10, 40, 10)</defaultValue>
 							<description>Maximum relative rotation constraint.</description>
 						</parameter>
 					</parameters>
@@ -5490,36 +5724,43 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>rotation</name>
 							<type>Rotation</type>
+							<optional>true</optional>
 							<description>Rotation about x, y, and z axes.</description>
 						</parameter>
 						<parameter>
 							<name>roomNumber</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>The room number the moveable is in. Needed if you are dealing with overlapping rooms and need to force certain room number.</description>
 						</parameter>
 						<parameter>
 							<name>animNumber</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>Animation number.</description>
 						</parameter>
 						<parameter>
 							<name>frameNumber</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>Frame number.</description>
 						</parameter>
 						<parameter>
 							<name>hp</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>Hit points.</description>
 						</parameter>
 						<parameter>
 							<name>OCB</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>Object code bits.</description>
 						</parameter>
 						<parameter>
 							<name>AIBits</name>
 							<type>table</type>
+							<optional>true</optional>
 							<description>Table with six AI bits.</description>
 						</parameter>
 					</parameters>
@@ -5651,6 +5892,8 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>updateRoom</name>
 							<type>bool</type>
+							<optional>true</optional>
+							<defaultValue>true</defaultValue>
 							<description>Will room changes be automatically detected? Set to false if you are using overlapping rooms.</description>
 						</parameter>
 					</parameters>
@@ -5667,6 +5910,7 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>offset</name>
 							<type>Vec3</type>
+							<optional>true</optional>
 							<description>Offset relative to the joint.</description>
 						</parameter>
 					</parameters>
@@ -5802,6 +6046,7 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>timeout</name>
 							<type>float</type>
+							<optional>true</optional>
 							<description>Time (in seconds) after which effect turns off.</description>
 						</parameter>
 					</parameters>
@@ -5823,6 +6068,7 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>timeout</name>
 							<type>float</type>
+							<optional>true</optional>
 							<description>Time (in seconds) after which effect turns off.</description>
 						</parameter>
 					</parameters>
@@ -6018,6 +6264,7 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>slot</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>Slot ID of the desired anim (if omitted, moveable's own slot ID is used).</description>
 						</parameter>
 					</parameters>
@@ -6252,6 +6499,7 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>swapIndex</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>Index of a mesh from meshswap slot to use.</description>
 						</parameter>
 					</parameters>
@@ -6281,6 +6529,7 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>swapIndex</name>
 							<type>int</type>
+							<optional>true</optional>
 							<description>If set, swaps skinned mesh with bone mesh with a specified index.
  Use if you have several skinned meshes (e.g. outfits) in a single slot.</description>
 						</parameter>
@@ -6298,6 +6547,7 @@ most can just be ignored (see usage).</description>
 						<parameter>
 							<name>timeout</name>
 							<type>float</type>
+							<optional>true</optional>
 							<description>Time (in seconds) after which moveable automatically disables.</description>
 						</parameter>
 					</parameters>
@@ -7056,27 +7306,36 @@ when you need to use screen-space coordinates.</description>
 						<parameter>
 							<name>scale</name>
 							<type>float</type>
+							<optional>true</optional>
+							<defaultValue>1</defaultValue>
 							<description>Size of the string, relative to the default size.</description>
 						</parameter>
 						<parameter>
 							<name>color</name>
 							<type>Color</type>
+							<optional>true</optional>
+							<defaultValue>Color(255, 255, 255)</defaultValue>
 							<description>The color of the text.</description>
 						</parameter>
 						<parameter>
 							<name>translated</name>
 							<type>bool</type>
+							<optional>true</optional>
+							<defaultValue>false</defaultValue>
 							<description>If false or omitted, the input string argument will be displayed as is.
 If true, the string argument will be treated as the key of a translated string specified in strings.lua.</description>
 						</parameter>
 						<parameter>
 							<name>flags</name>
 							<type>Strings.DisplayStringOption</type>
+							<optional>true</optional>
 							<description>Flags which affect visual representation of a string, such as shadow or alignment.</description>
 						</parameter>
 						<parameter>
 							<name>area</name>
 							<type>Vec2</type>
+							<optional>true</optional>
+							<defaultValue>Vec2(0, 0)</defaultValue>
 							<description>Rectangular area in pixels to perform word wrapping.
 No word wrapping will occur if this parameter is default or omitted.</description>
 						</parameter>
@@ -8047,6 +8306,8 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 						<parameter>
 							<name>color</name>
 							<type>Color</type>
+							<optional>true</optional>
+							<defaultValue>Color(255, 255, 255)</defaultValue>
 							<description>Color.</description>
 						</parameter>
 					</parameters>
@@ -8080,6 +8341,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 						<parameter>
 							<name>color</name>
 							<type>Color</type>
+							<optional>true</optional>
 							<description>Color. __Default: Color(255, 255, 255, 255)__</description>
 						</parameter>
 					</parameters>
@@ -8223,22 +8485,30 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 						<parameter>
 							<name>priority</name>
 							<type>int</type>
+							<optional>true</optional>
+							<defaultValue>0</defaultValue>
 							<description>Draw priority. Can be thought of as a layer, with higher values having precedence.
  Negative values will draw sprite above strings, while positive values will draw it under.</description>
 						</parameter>
 						<parameter>
 							<name>alignMode</name>
 							<type>View.AlignMode</type>
+							<optional>true</optional>
+							<defaultValue>View.AlignMode.CENTER</defaultValue>
 							<description>Align mode interpreting an offset from the sprite's position.</description>
 						</parameter>
 						<parameter>
 							<name>scaleMode</name>
 							<type>View.ScaleMode</type>
+							<optional>true</optional>
+							<defaultValue>View.ScaleMode.FIT</defaultValue>
 							<description>Scale mode interpreting the display sprite's horizontal and vertical scale.</description>
 						</parameter>
 						<parameter>
 							<name>blendMode</name>
 							<type>Effects.BlendID</type>
+							<optional>true</optional>
+							<defaultValue>Effects.BlendID.ALPHABLEND</defaultValue>
 							<description>Blend mode.</description>
 						</parameter>
 					</parameters>
@@ -8851,14 +9121,14 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 			<name>Flow.ErrorMode</name>
 			<summary>Constants for error modes.</summary>
 			<description>To be used in @{Flow.Settings.System.errorMode} setting.
- &lt;br /&gt;
+ &lt;br&gt;
  In all of these modes, an *unrecoverable* error will boot you to the title level. If the title level itself
  has an unrecoverable error, the game will close.</description>
 			<values>
 				<value>
 					<name>SILENT</name>
 					<summary>Do nothing when a recoverable script error is hit.</summary>
-					<description>&lt;br /&gt;
+					<description>&lt;br&gt;
  Think _very_ carefully before using this setting.
  These error modes are here to help you to keep your scripts working properly,
  but if you opt to ignore errors, you won't be alerted if you've misused a function or passed an invalid argument.</description>
@@ -9614,7 +9884,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 			<name>Objects.WeaponType</name>
 			<summary>Constants for weapon types.</summary>
 			<description>To be used with @{Objects.LaraObject.GetWeaponType} and @{Objects.LaraObject.SetWeaponType} functions.
- &lt;br /&gt;
+ &lt;br&gt;
  Note that this table also contains the flare and torch, as they are internally counted as "weapons" in the engine.</description>
 			<values>
 				<value>

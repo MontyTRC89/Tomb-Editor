@@ -227,13 +227,7 @@ public sealed class ApiConverter
 			{
 				// Generate parameter annotations for the direct constructor
 				foreach (var param in constructor.Parameters)
-				{
-					var paramType = MapType(param.Type);
-					var description = CleanDescription(param.Description);
-					var paramName = EscapeLuaReservedKeyword(param.Name);
-
-					builder.AppendLine($"---@param {paramName} {paramType} # {description}");
-				}
+					GenerateParameterAnnotation(builder, param);
 
 				// Generate return annotations for the direct constructor
 				foreach (var ret in constructor.Returns)
@@ -245,7 +239,7 @@ public sealed class ApiConverter
 				}
 
 				// Generate direct constructor function signature for direct class
-				var paramNames = string.Join(", ", constructor.Parameters.Select(p => EscapeLuaReservedKeyword(p.Name)));
+				var paramNames = GetParameterNamesForSignature(constructor.Parameters);
 
 				builder.AppendLine($"function {className}({paramNames}) end");
 				builder.AppendLine();
@@ -260,13 +254,7 @@ public sealed class ApiConverter
 				{
 					// Generate parameter annotations for the direct constructor
 					foreach (var param in constructor.Parameters)
-					{
-						var paramType = MapType(param.Type);
-						var description = CleanDescription(param.Description);
-						var paramName = EscapeLuaReservedKeyword(param.Name);
-
-						builder.AppendLine($"---@param {paramName} {paramType} # {description}");
-					}
+						GenerateParameterAnnotation(builder, param);
 
 					// Generate return annotations for the direct constructor
 					foreach (var ret in constructor.Returns)
@@ -278,7 +266,7 @@ public sealed class ApiConverter
 					}
 
 					// Generate direct constructor function signature for module-prefixed version
-					var paramNames = string.Join(", ", constructor.Parameters.Select(p => EscapeLuaReservedKeyword(p.Name)));
+					var paramNames = GetParameterNamesForSignature(constructor.Parameters);
 
 					builder.AppendLine($"function {moduleName}.{className}({paramNames}) end");
 					builder.AppendLine();
@@ -298,13 +286,7 @@ public sealed class ApiConverter
 
 		// Generate parameter annotations
 		foreach (var param in function.Parameters)
-		{
-			var paramType = MapType(param.Type);
-			var description = CleanDescription(param.Description);
-			var paramName = EscapeLuaReservedKeyword(param.Name);
-
-			builder.AppendLine($"---@param {paramName} {paramType} # {description}");
-		}
+			GenerateParameterAnnotation(builder, param);
 
 		// Generate return annotations
 		foreach (var ret in function.Returns)
@@ -316,7 +298,7 @@ public sealed class ApiConverter
 		}
 
 		// Generate function signature
-		var paramNames = string.Join(", ", function.Parameters.Select(p => EscapeLuaReservedKeyword(p.Name)));
+		var paramNames = GetParameterNamesForSignature(function.Parameters);
 
 		if (isConstructor)
 			builder.AppendLine($"function {moduleName}{separator}new({paramNames}) end");
@@ -331,13 +313,7 @@ public sealed class ApiConverter
 
 		// Generate parameter annotations
 		foreach (var param in method.Parameters)
-		{
-			var paramType = MapType(param.Type);
-			var description = CleanDescription(param.Description);
-			var paramName = EscapeLuaReservedKeyword(param.Name);
-
-			builder.AppendLine($"---@param {paramName} {paramType} # {description}");
-		}
+			GenerateParameterAnnotation(builder, param);
 
 		// Generate return annotations
 		foreach (var ret in method.Returns)
@@ -349,7 +325,7 @@ public sealed class ApiConverter
 		}
 
 		// Generate method signature
-		var paramNames = string.Join(", ", method.Parameters.Select(p => EscapeLuaReservedKeyword(p.Name)));
+		var paramNames = GetParameterNamesForSignature(method.Parameters);
 
 		if (isConstructor)
 		{
@@ -367,6 +343,63 @@ public sealed class ApiConverter
 			else
 				builder.AppendLine($"function {className}:{methodName}({paramNames}) end");
 		}
+	}
+
+	/// <summary>
+	/// Generates a parameter annotation for Lua Language Server, handling optional parameters and default values.
+	/// </summary>
+	/// <param name="builder">The string builder to append to.</param>
+	/// <param name="param">The parameter to generate annotation for.</param>
+	private void GenerateParameterAnnotation(StringBuilder builder, ApiParameter param)
+	{
+		var paramType = MapType(param.Type);
+		var description = CleanDescription(param.Description);
+		var paramName = EscapeLuaReservedKeyword(param.Name);
+
+		// Handle optional parameters
+		if (param.Optional)
+		{
+			// Make the type optional by appending '?'
+			if (!paramType.EndsWith("?"))
+				paramType += "?";
+
+			// Add default value information to description if available
+			if (!string.IsNullOrWhiteSpace(param.DefaultValue))
+			{
+				if (!string.IsNullOrWhiteSpace(description))
+					description += $" (default: `{param.DefaultValue}`)";
+				else
+					description = $"Default: `{param.DefaultValue}`";
+			}
+			else
+			{
+				// If no default value is specified but parameter is optional, indicate it's optional
+				if (!string.IsNullOrWhiteSpace(description))
+					description += " (optional)";
+				else
+					description = "Optional parameter";
+			}
+		}
+
+		builder.AppendLine($"---@param {paramName} {paramType} # {description}");
+	}
+
+	/// <summary>
+	/// Gets parameter names for function signature, considering optional parameters.
+	/// </summary>
+	/// <param name="parameters">The list of parameters.</param>
+	/// <returns>A comma-separated string of parameter names for the function signature.</returns>
+	private static string GetParameterNamesForSignature(IEnumerable<ApiParameter> parameters)
+	{
+		var paramNames = new List<string>();
+
+		foreach (var param in parameters)
+		{
+			var paramName = EscapeLuaReservedKeyword(param.Name);
+			paramNames.Add(paramName);
+		}
+
+		return string.Join(", ", paramNames);
 	}
 
 	private static void TryWriteDescription(StringBuilder builder, string? description, int indentation = 0)
