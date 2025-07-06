@@ -26,23 +26,29 @@ public sealed class ApiConverter
 
 	private void GenerateModuleFile(string moduleName, string outputDirectory)
 	{
+		bool isCoreModule = moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase);
+		string actualModuleName = isCoreModule ? "TEN" : moduleName;
+
 		var builder = new StringBuilder();
 
 		builder.AppendLine("---@meta");
 		builder.AppendLine();
 
-		// Module comment
-		builder.AppendLine($"---{moduleName} module for Tomb Engine");
-		builder.AppendLine($"---@class {moduleName}");
-		builder.AppendLine($"{moduleName} = {{}}");
-		builder.AppendLine();
+		if (!isCoreModule)
+		{
+			// Module comment
+			builder.AppendLine($"---{moduleName} module for Tomb Engine");
+			builder.AppendLine($"---@class {moduleName}");
+			builder.AppendLine($"{moduleName} = {{}}");
+			builder.AppendLine();
+		}
 
 		// Generate enums first
 		if (_api.ModuleEnums.ContainsKey(moduleName))
 		{
 			foreach (var apiEnum in _api.ModuleEnums[moduleName])
 			{
-				GenerateEnum(builder, apiEnum, moduleName);
+				GenerateEnum(builder, apiEnum, actualModuleName);
 				builder.AppendLine();
 			}
 		}
@@ -52,7 +58,7 @@ public sealed class ApiConverter
 		{
 			foreach (var apiClass in _api.ModuleClasses[moduleName])
 			{
-				GenerateClass(builder, apiClass, moduleName);
+				GenerateClass(builder, apiClass, actualModuleName);
 				builder.AppendLine();
 			}
 		}
@@ -62,12 +68,13 @@ public sealed class ApiConverter
 		{
 			foreach (var function in _api.ModuleTypeFunctions[moduleName])
 			{
-				GenerateFunction(builder, function, moduleName);
+				GenerateFunction(builder, function, actualModuleName);
 				builder.AppendLine();
 			}
 		}
 
-		builder.AppendLine($"return {moduleName}");
+		if (!isCoreModule)
+			builder.AppendLine($"return {moduleName}");
 
 		// Write to file
 		var fileName = Path.Combine(outputDirectory, $"{moduleName}.lua");
@@ -87,6 +94,9 @@ public sealed class ApiConverter
 
 		foreach (var moduleName in _api.AllModules.OrderBy(x => x))
 		{
+			if (moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase))
+				continue; // Skip Core module as it is not a Lua module
+
 			builder.AppendLine($"---@type {moduleName}");
 			builder.AppendLine($"TEN.{moduleName} = require(\"{moduleName}\")");
 		}
@@ -129,12 +139,9 @@ public sealed class ApiConverter
 		builder.AppendLine("}");
 		builder.AppendLine();
 
-		// Generate the module-prefixed alias only if module is not "Core"
-		if (!moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase))
-		{
-			builder.AppendLine($"---Module-prefixed alias for {enumName}");
-			builder.AppendLine($"{moduleName}.{enumName} = {enumName}");
-		}
+		// Generate the module-prefixed alias
+		builder.AppendLine($"---Module-prefixed alias for {enumName}");
+		builder.AppendLine($"{moduleName}.{enumName} = {enumName}");
 	}
 
 	private void GenerateClass(StringBuilder builder, ApiClass apiClass, string moduleName)
@@ -154,13 +161,10 @@ public sealed class ApiConverter
 		builder.AppendLine($"{className} = {{}}");
 		builder.AppendLine();
 
-		// Generate the module-prefixed alias only if module is not "Core"
-		if (!moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase))
-		{
-			builder.AppendLine($"---Module-prefixed alias for {className}");
-			builder.AppendLine($"{moduleName}.{className} = {className}");
-			builder.AppendLine();
-		}
+		// Generate the module-prefixed alias
+		builder.AppendLine($"---Module-prefixed alias for {className}");
+		builder.AppendLine($"{moduleName}.{className} = {className}");
+		builder.AppendLine();
 
 		// Generate methods (including constructors) for both direct class and module-prefixed version
 		foreach (var method in apiClass.Methods)
@@ -171,8 +175,7 @@ public sealed class ApiConverter
 			GenerateMethodForClass(builder, method, className, className, isConstructor, false);
 			builder.AppendLine();
 
-			// Only generate module-prefixed constructors if module is not "Core"
-			if (isConstructor && !moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase))
+			if (isConstructor)
 			{
 				// Generate constructor for module-prefixed version
 				GenerateMethodForClass(builder, method, moduleName, className, isConstructor, true);
@@ -194,14 +197,11 @@ public sealed class ApiConverter
 			builder.AppendLine($"function {className}.new() end");
 			builder.AppendLine();
 
-			// Generate empty constructor for module-prefixed version only if module is not "Core"
-			if (!moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase))
-			{
-				builder.AppendLine($"---Constructor for {moduleName}.{className}");
-				builder.AppendLine(returnLine);
-				builder.AppendLine($"function {moduleName}.{className}.new() end");
-				builder.AppendLine();
-			}
+			// Generate empty constructor for module-prefixed version
+			builder.AppendLine($"---Constructor for {moduleName}.{className}");
+			builder.AppendLine(returnLine);
+			builder.AppendLine($"function {moduleName}.{className}.new() end");
+			builder.AppendLine();
 
 			// Generate constructor alias for direct class name
 			builder.AppendLine($"---Constructor for {className} (alias for {className}.new)");
@@ -209,14 +209,11 @@ public sealed class ApiConverter
 			builder.AppendLine($"function {className}() end");
 			builder.AppendLine();
 
-			// Generate constructor alias for module-prefixed version only if module is not "Core"
-			if (!moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase))
-			{
-				builder.AppendLine($"---Constructor for {moduleName}.{className} (alias for {moduleName}.{className}.new)");
-				builder.AppendLine(returnLine);
-				builder.AppendLine($"function {moduleName}.{className}() end");
-				builder.AppendLine();
-			}
+			// Generate constructor alias for module-prefixed version
+			builder.AppendLine($"---Constructor for {moduleName}.{className} (alias for {moduleName}.{className}.new)");
+			builder.AppendLine(returnLine);
+			builder.AppendLine($"function {moduleName}.{className}() end");
+			builder.AppendLine();
 		}
 		else // Generate direct function call constructor aliases for existing constructors
 		{
@@ -245,32 +242,29 @@ public sealed class ApiConverter
 				builder.AppendLine();
 			}
 
-			// Generate direct constructor for module-prefixed version only if module is not "Core"
-			if (!moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase))
+			// Generate direct constructor for module-prefixed version
+			builder.AppendLine($"---Constructor function for {moduleName}.{className} (alias for {moduleName}.{className}.new)");
+
+			foreach (var constructor in constructorMethods)
 			{
-				builder.AppendLine($"---Constructor function for {moduleName}.{className} (alias for {moduleName}.{className}.new)");
+				// Generate parameter annotations for the direct constructor
+				foreach (var param in constructor.Parameters)
+					GenerateParameterAnnotation(builder, param);
 
-				foreach (var constructor in constructorMethods)
+				// Generate return annotations for the direct constructor
+				foreach (var ret in constructor.Returns)
 				{
-					// Generate parameter annotations for the direct constructor
-					foreach (var param in constructor.Parameters)
-						GenerateParameterAnnotation(builder, param);
+					var returnType = MapType(ret.Type);
+					var description = CleanDescription(ret.Description);
 
-					// Generate return annotations for the direct constructor
-					foreach (var ret in constructor.Returns)
-					{
-						var returnType = MapType(ret.Type);
-						var description = CleanDescription(ret.Description);
-
-						builder.AppendLine($"---@return {returnType} # {description}");
-					}
-
-					// Generate direct constructor function signature for module-prefixed version
-					var paramNames = GetParameterNamesForSignature(constructor.Parameters);
-
-					builder.AppendLine($"function {moduleName}.{className}({paramNames}) end");
-					builder.AppendLine();
+					builder.AppendLine($"---@return {returnType} # {description}");
 				}
+
+				// Generate direct constructor function signature for module-prefixed version
+				var paramNames = GetParameterNamesForSignature(constructor.Parameters);
+
+				builder.AppendLine($"function {moduleName}.{className}({paramNames}) end");
+				builder.AppendLine();
 			}
 		}
 	}
