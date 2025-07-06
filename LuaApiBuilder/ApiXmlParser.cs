@@ -181,7 +181,9 @@ public static class ApiXmlParser
 			{
 				Name = param.Element("name")?.Value ?? string.Empty,
 				Type = param.Element("type")?.Value ?? string.Empty,
-				Description = param.Element("description")?.Value ?? string.Empty
+				Description = param.Element("description")?.Value ?? string.Empty,
+				Optional = bool.TryParse(param.Element("optional")?.Value, out var optional) && optional,
+				DefaultValue = param.Element("defaultValue")?.Value ?? string.Empty
 			});
 		}
 	}
