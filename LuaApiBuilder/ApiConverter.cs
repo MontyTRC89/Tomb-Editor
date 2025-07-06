@@ -108,6 +108,9 @@ public sealed class ApiConverter
 
 		foreach (var moduleName in _api.AllModules.OrderBy(x => x))
 		{
+			if (moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase))
+				continue; // Skip Core module as it is not a Lua module
+
 			builder.AppendLine($"---@type {moduleName}");
 			builder.AppendLine($"{moduleName} = TEN.{moduleName}");
 		}
