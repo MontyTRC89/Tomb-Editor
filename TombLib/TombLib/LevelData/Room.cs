@@ -1666,7 +1666,7 @@ namespace TombLib.LevelData
                                     {
                                         AnimatedTextureSet newSet = setToCopy.Clone();
                                         foreach (AnimatedTextureFrame frame in newSet.Frames)
-                                            frame.Texture = TextureRemap[frame.Texture]; // Remap source textures to destination textures.
+                                            frame.Texture = TextureRemap[(LevelTexture)frame.Texture]; // Remap source textures to destination textures.
                                         args.DestinationLevelSettings.AnimatedTextureSets.Add(newSet);
                                     }
                                     LookForAnimatedSets = false;

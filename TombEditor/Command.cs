@@ -20,6 +20,7 @@ using TombLib.Wad.Catalog;
 using TombLib.Utils;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
+using TombEditor.Controls;
 
 namespace TombEditor
 {
@@ -1384,7 +1385,12 @@ namespace TombEditor
                 var existingWindow = Application.OpenForms[nameof(FormAnimatedTextures)];
                 if (existingWindow == null)
                 {
-                    var form = new FormAnimatedTextures(args.Editor);
+                    var context = new TombEditorAnimatedTexturesContext(args.Editor);
+                    var form = new FormAnimatedTextures(
+                            new PanelTextureMapForAnimations(),
+							context,
+                            args.Editor.Configuration
+						);
                     form.Show(args.Window);
                 }
                 else

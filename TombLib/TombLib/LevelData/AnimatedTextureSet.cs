@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
@@ -17,7 +18,7 @@ namespace TombLib.LevelData
 
     public class AnimatedTextureFrame : ICloneable, IEquatable<AnimatedTextureFrame>
     {
-        public LevelTexture Texture { get; set; }
+        public Texture Texture { get; set; }
         public Vector2 TexCoord0 { get; set; }
         public Vector2 TexCoord1 { get; set; }
         public Vector2 TexCoord2 { get; set; }
