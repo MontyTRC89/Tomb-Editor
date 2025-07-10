@@ -543,7 +543,33 @@ namespace TombLib.LevelData.Compilers
                 MaxTileSize = (ushort)_minimumTileSize;
             }
 
-            GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
+            GenerateAnimLookups(_level.Settings.AnimatedTextureSets, TextureDestination.RoomOrAggressive);  // Generate anim texture lookup table
+
+            foreach (var wad in _level.Settings.Wads)
+            {
+                var usedMoveablesTextures = wad.Wad.Moveables
+                    .SelectMany(m => m.Value.Meshes)
+                    .SelectMany(msh => msh.Polys)
+                    .Select(p => p.Texture.Texture)
+                    .Distinct()
+                    .ToList();
+
+                GenerateAnimLookups(wad.Wad.AnimatedTextureSets
+                    .Where(s => s.Frames.Any(f => usedMoveablesTextures.Contains(f.Texture)))
+                    .ToList(), TextureDestination.Moveable);
+
+				var usedStaticsTextures = wad.Wad.Statics
+				   .Select(m => m.Value.Mesh)
+				   .SelectMany(m => m.Polys)
+				   .Select(p => p.Texture.Texture)
+				   .Distinct()
+				   .ToList();
+
+				GenerateAnimLookups(wad.Wad.AnimatedTextureSets
+					.Where(s => s.Frames.Any(f => usedStaticsTextures.Contains(f.Texture)))
+					.ToList(), TextureDestination.Static);
+			}
+            
             _generateTexInfos = true;    // Set manager ready state 
         }
 
@@ -890,7 +916,7 @@ namespace TombLib.LevelData.Compilers
 
         // Generates list of dummy lookup animated textures.
 
-        private void GenerateAnimLookups(List<AnimatedTextureSet> sets)
+        private void GenerateAnimLookups(List<AnimatedTextureSet> sets, TextureDestination destination)
         {
             foreach (var set in sets)
             {
@@ -957,7 +983,7 @@ namespace TombLib.LevelData.Compilers
                         // Make frame, including repeat versions
                         for (int i = 0; i < frame.Repeat; i++)
                         {
-                            AddTexture(newFrame, refAnim.CompiledAnimation, TextureDestination.RoomOrAggressive, (triangleVariation > 0), newFrame.BlendMode, index, set.IsUvRotate);
+                            AddTexture(newFrame, refAnim.CompiledAnimation, destination, (triangleVariation > 0), newFrame.BlendMode, index, set.IsUvRotate);
                             index++;
                         }
                     }

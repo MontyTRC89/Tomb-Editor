@@ -128,15 +128,26 @@ namespace TombLib.LevelData.Compilers.TombEngine
             mesh.Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
             foreach (var poly in mesh.Polygons)
             {
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, 0, mesh.Buckets);
-
-                var texture = textures[poly.TextureId];
-
                 poly.AnimatedSequence = -1;
                 poly.AnimatedFrame = -1;
 
-                // We output only triangles, no quads anymore
-                if (poly.Shape == TombEnginePolygonShape.Quad)
+				if (poly.Animated)
+				{
+					var animInfo = _textureInfoManager.GetAnimatedTexture(poly.TextureId);
+					if (animInfo != null)
+					{
+						poly.AnimatedSequence = animInfo.Item1;
+						poly.AnimatedFrame = animInfo.Item2;
+						Console.WriteLine(animInfo.Item1);
+					}
+				}
+
+				var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, mesh.Buckets);
+
+				var texture = textures[poly.TextureId];
+
+				// We output only triangles, no quads anymore
+				if (poly.Shape == TombEnginePolygonShape.Quad)
                 {
                     for (int n = 0; n < 4; n++)
                     {
