@@ -96,6 +96,7 @@ namespace TombLib.Forms
 		private int _previewCurrentRepeatTimes;
 		private const int _maxLegacyFrames = 16;
 		private const string animNameCombineString = " (with ";
+		private int _lastX;
 		private int _lastY;
 
 		private readonly TRVersion.Game _version;
@@ -269,6 +270,7 @@ namespace TombLib.Forms
 			if (_version == TRVersion.Game.TombEngine)
 			{
 				comboEffect.Items.Add(AnimatedTextureAnimationType.Video);
+				comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
 			}
 
 			// NG settings
@@ -285,6 +287,19 @@ namespace TombLib.Forms
 					comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
 
 				// Fill with NG predefined FPS values required for river rotate etc.
+				for (int i = 1; i <= 32; i++)
+					comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
+			}
+			else if (_version == TRVersion.Game.TombEngine)
+			{
+				comboUvRotate.Enabled = false;
+				comboUvRotate.Items.Add(UVRotateDirection.TopToBottom);
+				comboUvRotate.Items.Add(UVRotateDirection.LeftToRight);
+				comboUvRotate.Items.Add(UVRotateDirection.BottomToTop);
+				comboUvRotate.Items.Add(UVRotateDirection.RightToLeft);
+
+				comboFps.Enabled = true;
+
 				for (int i = 1; i <= 32; i++)
 					comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
 			}
@@ -345,6 +360,7 @@ namespace TombLib.Forms
 				previewProgressBar.TextMode = DarkProgressBarMode.XOfN;
 			}
 			_previewTimer.Interval = (int)MathC.Clamp(Math.Round(1000.0f / selectedSet.Fps), 1, int.MaxValue); // Without NG, the default value of 15 should be present at this point.
+			_lastX = 0;
 			_lastY = 0;
 
 			// Update warning about too many frames
@@ -362,7 +378,7 @@ namespace TombLib.Forms
 			else
 				comboEffect.SelectedItem = null;
 
-			if (_version == TRVersion.Game.TRNG || _version == TRVersion.Game.TombEngine)
+			if (_version == TRVersion.Game.TRNG)
 			{
 				OnEffectChanged();
 				switch (selectedSet.AnimationType)
@@ -375,6 +391,20 @@ namespace TombLib.Forms
 					case AnimatedTextureAnimationType.RiverRotate:
 						NgSelectComboboxValue(selectedSet.Fps, comboFps);
 						NgSelectComboboxValue(selectedSet.UvRotate, comboUvRotate);
+						break;
+				}
+			}
+			else if (_version == TRVersion.Game.TombEngine)
+			{
+				OnEffectChanged();
+				switch (selectedSet.AnimationType)
+				{
+					case AnimatedTextureAnimationType.Frames:
+						numericUpDownFPS.Value = (decimal)selectedSet.Fps;
+						break;
+					case AnimatedTextureAnimationType.UVRotate:
+						numericUpDownFPS.Value = (decimal)selectedSet.Fps;
+						comboUvRotate.SelectedIndex = selectedSet.UvRotate;
 						break;
 				}
 			}
@@ -461,14 +491,70 @@ namespace TombLib.Forms
 
 			if (selectedSet.IsUvRotate && comboEffect.SelectedItem != null)
 			{
-				g.DrawImage(image, new Point(0, _lastY * 2 - 128));
-				g.DrawImage(image, new Point(0, _lastY * 2));
+				if (_version == TRVersion.Game.TRNG)
+				{
+					g.DrawImage(image, new Point(0, _lastY * 2 - 128));
+					g.DrawImage(image, new Point(0, _lastY * 2));
 
-				_lastY += selectedSet.UvRotate;
-				if (_lastY >= 64 && selectedSet.UvRotate > 0)
-					_lastY = 0;
-				if (_lastY <= 0 && selectedSet.UvRotate < 0)
-					_lastY = 64;
+					_lastY += selectedSet.UvRotate;
+					if (_lastY >= 64 && selectedSet.UvRotate > 0)
+						_lastY = 0;
+					if (_lastY <= 0 && selectedSet.UvRotate < 0)
+						_lastY = 64;
+				}
+				else
+				{
+					switch ((UVRotateDirection)comboUvRotate.SelectedIndex)
+					{
+						case UVRotateDirection.TopToBottom:
+							g.DrawImage(image, new Point(0, _lastY * 2 - 128));
+							g.DrawImage(image, new Point(0, _lastY * 2));
+
+							_lastX = 0;
+							_lastY++;
+
+							if (_lastY >= 64)
+								_lastY = 0;
+
+							break;
+
+						case UVRotateDirection.BottomToTop:
+							g.DrawImage(image, new Point(0, _lastY * 2 - 128));
+							g.DrawImage(image, new Point(0, _lastY * 2));
+
+							_lastX = 0;
+							_lastY--;
+
+							if (_lastY <= 0)
+								_lastY = 64;
+
+							break;
+
+						case UVRotateDirection.LeftToRight:
+							g.DrawImage(image, new Point(_lastX * 2 - 128, 0));
+							g.DrawImage(image, new Point(_lastX * 2, 0));
+
+							_lastX++;
+							_lastY = 0;
+
+							if (_lastX >= 64)
+								_lastX = 0;
+
+							break;
+
+						case UVRotateDirection.RightToLeft:
+							g.DrawImage(image, new Point(_lastX * 2 - 128, 0));
+							g.DrawImage(image, new Point(_lastX * 2, 0));
+
+							_lastX--;
+							_lastY = 0;
+
+							if (_lastX <= 0)
+								_lastX = 64;
+
+							break;
+					}
+				}
 			}
 			else
 			{
@@ -987,7 +1073,7 @@ namespace TombLib.Forms
 
 		private void comboEffect_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (_version == TRVersion.Game.TRNG)
+			if (_version == TRVersion.Game.TRNG || _version == TRVersion.Game.TombEngine)
 				OnEffectChanged();
 		}
 
@@ -1026,12 +1112,26 @@ namespace TombLib.Forms
 				case AnimatedTextureAnimationType.UVRotate:
 				case AnimatedTextureAnimationType.HalfRotate:
 				case AnimatedTextureAnimationType.RiverRotate:
-					comboFps.Visible = true;
-					numericUpDownFPS.Visible = false;
-					comboUvRotate.Enabled = true;
+					if (_version == TRVersion.Game.TRNG)
+					{
+						comboFps.Visible = true;
+						numericUpDownFPS.Visible = false;
+						comboUvRotate.Enabled = true;
 
-					comboFps.SelectedIndex = 0;
-					comboUvRotate.SelectedIndex = 64;
+						comboFps.SelectedIndex = 0;
+						comboUvRotate.SelectedIndex = 64;
+					}
+					else
+					{
+						comboFps.Visible = false;
+						numericUpDownFPS.Visible = true;
+						numericUpDownFPS.Enabled = true;
+						comboUvRotate.Enabled = true;
+
+						numericUpDownFPS.Value = 15;
+						comboUvRotate.SelectedIndex = 0;
+					}	
+
 					break;
 
 				case AnimatedTextureAnimationType.Video:
@@ -1078,7 +1178,10 @@ namespace TombLib.Forms
 			var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
 			if (selectedSet == null)
 				return;
-			selectedSet.UvRotate = (sbyte)((NgAnimatedTextureSettingPair)comboUvRotate.SelectedItem).Key;
+			if (_version == TRVersion.Game.TRNG)
+				selectedSet.UvRotate = (sbyte)((NgAnimatedTextureSettingPair)comboUvRotate.SelectedItem).Key;
+			else
+				selectedSet.UvRotate = (int)comboUvRotate.SelectedItem;
 			_context.OnAnimatedTexturesChanged.Invoke();
 		}
 
