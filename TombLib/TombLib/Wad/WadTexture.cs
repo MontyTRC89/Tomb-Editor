@@ -46,7 +46,7 @@ namespace TombLib.Wad
             if (string.IsNullOrEmpty(Image.FileName))
                 hint += "Untitled (" + Image.Size.X + "x" + Image.Size.Y + ")";
             else
-                hint += Path.GetFileName(Image.FileName) + " ";
+                hint += Path.GetFileName(Image.FileName) + " (External) ";
 
             return hint;
         }
@@ -54,5 +54,11 @@ namespace TombLib.Wad
         public void Dispose()
         {
         }
-    }
+
+        // Relative path is calculated before the save of Wad2 because in the final file there will be only relative paths
+        public string RelativePath { get; set; }
+
+        // This helps the texture packer of TombEngine compiler to have ready paths for doing sidecar loading
+		public string AbsolutePath { get; set; }
+	}
 }
