@@ -1242,7 +1242,9 @@ namespace TombLib.LevelData.Compilers
 
                             if (!string.IsNullOrEmpty(externalMaterialDataPath) && File.Exists(externalMaterialDataPath))
                             {
-                                var material = MaterialData.ReadFromXml(externalMaterialDataPath);
+								_progressReporter.ReportInfo($"Found XML material file: {externalMaterialDataPath}");
+
+								var material = MaterialData.ReadFromXml(externalMaterialDataPath);
                                 if (!string.IsNullOrEmpty(material.NormalMap))
                                     normalMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.NormalMap));
                                 if (!string.IsNullOrEmpty(material.SpecularMap))
@@ -1307,6 +1309,8 @@ namespace TombLib.LevelData.Compilers
                             // If normal map is found
                             if (!string.IsNullOrEmpty(normalMapPathToUse))
                             {
+                                _progressReporter.ReportInfo($"Found normal map: {normalMapPathToUse}");
+
                                 if (!customNormalMaps.ContainsKey(normalMapPathToUse))
                                 {
                                     var potentialBumpImage = ImageC.FromFile(normalMapPathToUse);
@@ -1394,7 +1398,9 @@ namespace TombLib.LevelData.Compilers
 
                             if (!string.IsNullOrEmpty(normalMapPathToUse))
                             {
-                                if (!customNormalMaps.ContainsKey(normalMapPathToUse))
+								_progressReporter.ReportInfo($"Found normal map: {normalMapPathToUse}");
+
+								if (!customNormalMaps.ContainsKey(normalMapPathToUse))
                                 {
                                     var potentialBumpImage = ImageC.FromFile(normalMapPathToUse);
 
@@ -1424,6 +1430,8 @@ namespace TombLib.LevelData.Compilers
 						string ambientOcclusionMapPathToUse = ambientOcclusionMapPaths.FirstOrDefault(p => File.Exists(p));
 						if (!string.IsNullOrEmpty(ambientOcclusionMapPathToUse))
 						{
+							_progressReporter.ReportInfo($"Found AO map: {ambientOcclusionMapPathToUse}");
+
 							if (!customAmbientOcclusionMaps.ContainsKey(ambientOcclusionMapPathToUse))
 							{
 								var potentialImage = ImageC.FromFile(ambientOcclusionMapPathToUse);
@@ -1452,6 +1460,8 @@ namespace TombLib.LevelData.Compilers
 						string roughnessMapPathToUse = roughnessMapPaths.FirstOrDefault(p => File.Exists(p));
 						if (!string.IsNullOrEmpty(roughnessMapPathToUse))
 						{
+							_progressReporter.ReportInfo($"Found roughness map: {roughnessMapPathToUse}");
+
 							if (!customRoughnessMaps.ContainsKey(roughnessMapPathToUse))
 							{
 								var potentialImage = ImageC.FromFile(roughnessMapPathToUse);
@@ -1480,6 +1490,8 @@ namespace TombLib.LevelData.Compilers
 						string specularMapPathToUse = specularMapPaths.FirstOrDefault(p => File.Exists(p));
 						if (!string.IsNullOrEmpty(specularMapPathToUse))
 						{
+							_progressReporter.ReportInfo($"Found specular map: {specularMapPathToUse}");
+
 							if (!customSpecularMaps.ContainsKey(specularMapPathToUse))
 							{
 								var potentialImage = ImageC.FromFile(specularMapPathToUse);
@@ -1508,6 +1520,8 @@ namespace TombLib.LevelData.Compilers
 						string emissiveMapPathToUse = emissiveMapPaths.FirstOrDefault(p => File.Exists(p));
 						if (!string.IsNullOrEmpty(emissiveMapPathToUse))
 						{
+							_progressReporter.ReportInfo($"Found emissive map: {emissiveMapPathToUse}");
+
 							if (!customEmissiveMaps.ContainsKey(emissiveMapPathToUse))
 							{
 								var potentialImage = ImageC.FromFile(emissiveMapPathToUse);
