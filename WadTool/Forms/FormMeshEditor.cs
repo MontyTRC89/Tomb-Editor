@@ -1363,6 +1363,8 @@ namespace WadTool
 
 				if (!isExternal)
 					image.FileName = string.Empty;
+				else
+					newTexture.AbsolutePath = path;
 
 				comboCurrentTexture.Items.Add(newTexture);
 				comboCurrentTexture.SelectedItem = newTexture;
@@ -1389,11 +1391,13 @@ namespace WadTool
 			if (!CheckTextureSize(image))
 				return;
 
-			if (!isExternal)
-				image.FileName = string.Empty;
-
 			image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
 			var newTexture = new WadTexture(image);
+
+			if (!isExternal)
+				image.FileName = string.Empty;
+			else
+				newTexture.AbsolutePath = path;
 
 			if (!lstMeshes.Visible)
 			{
