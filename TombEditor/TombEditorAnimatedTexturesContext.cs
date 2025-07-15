@@ -39,8 +39,10 @@ namespace TombEditor
 		}
 
 		public List<Texture> AvailableTextures => _editor.Level.Settings.Textures
-			.Where(x => x is LevelTexture)
 			.Cast<Texture>()
+			.Union(_editor.Level.Settings.ImportedGeometries
+					.SelectMany(ig => ig.Textures.Where(t => t.IsAvailable))
+					.ToList())
 			.ToList();
 
 		public Action OnAnimatedTexturesChanged { get; set; }

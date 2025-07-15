@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -17,21 +18,27 @@ namespace WadTool.Controls
 		private static readonly Brush textShadowBrush = new SolidBrush(Color.Black);
 		private static readonly Font textFont = new Font("Segoe UI", 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
 		private static readonly StringFormat textFormat = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
+		
+		private readonly WadToolClass _tool;
+
+		public PanelTextureMapForAnimations(WadToolClass tool) : base()
+		{
+			_tool = tool;
+		}
 
 		protected override void OnPaintSelection(PaintEventArgs e)
 		{
 			// Paint other animated textures
-			/*LevelSettings levelSettings = _editor.Level.Settings;
-			if (levelSettings.AnimatedTextureSets.Count > 0)
+			if (_tool.DestinationWad?.AnimatedTextureSets.Count > 0)
 			{
 				var selectedSet = ParentForm.SelectedSet;
 
-				foreach (AnimatedTextureSet set in levelSettings.AnimatedTextureSets)
+				foreach (AnimatedTextureSet set in _tool.DestinationWad?.AnimatedTextureSets)
 					if (set != selectedSet)
 						DrawSetOutlines(e, set, false);
 
 				DrawSetOutlines(e, selectedSet, true);
-			}*/
+			}
 
 			// Paint current selection
 			base.OnPaintSelection(e);

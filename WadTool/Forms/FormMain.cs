@@ -699,7 +699,7 @@ namespace WadTool
 
 			var context = new WadToolAnimatedTexturesContext(_tool);
 			using (var form = new FormAnimatedTextures(
-				new PanelTextureMapForAnimations(),
+				new PanelTextureMapForAnimations(_tool),
 				context,
 				_tool.Configuration
 				))
