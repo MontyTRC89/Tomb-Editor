@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
@@ -15,9 +16,17 @@ namespace TombLib.LevelData
         Video
     }
 
+    public enum UVRotateDirection
+    {
+        TopToBottom,
+        LeftToRight,
+        BottomToTop,
+        RightToLeft
+    }
+
     public class AnimatedTextureFrame : ICloneable, IEquatable<AnimatedTextureFrame>
     {
-        public LevelTexture Texture { get; set; }
+        public Texture Texture { get; set; }
         public Vector2 TexCoord0 { get; set; }
         public Vector2 TexCoord1 { get; set; }
         public Vector2 TexCoord2 { get; set; }
@@ -65,8 +74,9 @@ namespace TombLib.LevelData
         public string Name { get; set; } = null;
         public float Fps { get; set; } = 16.0f;  // float is for FPS (frames per second) values. 0 is not a valid default for this!
         public int UvRotate { get; set; } = 0;
+		public UVRotateDirection UvRotateDirection { get; set; }
 
-        public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
+		public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
 
         public bool IsUvRotate
         {

@@ -53,7 +53,17 @@ namespace TombLib.LevelData
         public override Texture Clone() => new ImportedGeometryTexture(this);
 
         public override int GetHashCode() => AbsolutePath.GetHashCode();
-    }
+
+		public override string ToString()
+		{
+			string Filename = System.IO.Path.GetFileNameWithoutExtension(AbsolutePath);
+
+			if (String.IsNullOrEmpty(Filename) && String.IsNullOrEmpty(AbsolutePath))
+				return "<Unloaded placeholder>";
+			else
+				return Filename + " (at " + AbsolutePath + ")";
+		}
+	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct ImportedGeometryVertex : IVertex

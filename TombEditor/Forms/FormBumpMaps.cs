@@ -57,11 +57,11 @@ namespace TombEditor.Forms
         {
             if (textureMap.VisibleTexture != null)
             {
-                bool isCustomMap = !String.IsNullOrEmpty(textureMap.VisibleTexture.BumpPath);
+                bool isCustomMap = !String.IsNullOrEmpty((textureMap.VisibleTexture as LevelTexture).BumpPath);
                 cmbBump.Enabled = !isCustomMap;
                 butAssignBumpmap.Enabled = !isCustomMap;
                 cbUseCustomFile.Checked = isCustomMap;
-                lblCustomMapPath.Text = (isCustomMap ? _editor.Level.Settings.MakeAbsolute(textureMap.VisibleTexture.BumpPath) : _noCustomMapMessage);
+                lblCustomMapPath.Text = (isCustomMap ? _editor.Level.Settings.MakeAbsolute((textureMap.VisibleTexture as LevelTexture).BumpPath) : _noCustomMapMessage);
             }
             else
             {
@@ -75,7 +75,7 @@ namespace TombEditor.Forms
         {
             if (textureMap.VisibleTexture != null)
             {
-                var currentTexture = textureMap.VisibleTexture;
+                var currentTexture = textureMap.VisibleTexture as LevelTexture;
 
                 if (cbUseCustomFile.Checked)
                     currentTexture.BumpPath = null;
@@ -135,7 +135,7 @@ namespace TombEditor.Forms
 
             for (int y = yMin; y < yMax; ++y)
                 for (int x = xMin; x < xMax; ++x)
-                    textureMap.VisibleTexture.SetBumpMappingLevel(x, y, bump);
+                    (textureMap.VisibleTexture as LevelTexture).SetBumpMappingLevel(x, y, bump);
 
             textureMap.Invalidate();
             _editor.BumpmapsChange();
@@ -153,7 +153,7 @@ namespace TombEditor.Forms
 
             protected override void OnPaintSelection(PaintEventArgs e)
             {
-                var texture = VisibleTexture;
+                var texture = VisibleTexture as LevelTexture;
 
                 // Determine relevant area
                 Vector2 start = FromVisualCoord(new PointF());

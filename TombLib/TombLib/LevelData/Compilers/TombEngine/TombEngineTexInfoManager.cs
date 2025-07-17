@@ -543,7 +543,33 @@ namespace TombLib.LevelData.Compilers
                 MaxTileSize = (ushort)_minimumTileSize;
             }
 
-            GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
+            GenerateAnimLookups(_level.Settings.AnimatedTextureSets, TextureDestination.RoomOrAggressive);  // Generate anim texture lookup table
+
+            foreach (var wad in _level.Settings.Wads)
+            {
+                var usedMoveablesTextures = wad.Wad.Moveables
+                    .SelectMany(m => m.Value.Meshes)
+                    .SelectMany(msh => msh.Polys)
+                    .Select(p => p.Texture.Texture)
+                    .Distinct()
+                    .ToList();
+
+                GenerateAnimLookups(wad.Wad.AnimatedTextureSets
+                    .Where(s => s.Frames.Any(f => usedMoveablesTextures.Contains(f.Texture)))
+                    .ToList(), TextureDestination.Moveable);
+
+				var usedStaticsTextures = wad.Wad.Statics
+				   .Select(m => m.Value.Mesh)
+				   .SelectMany(m => m.Polys)
+				   .Select(p => p.Texture.Texture)
+				   .Distinct()
+				   .ToList();
+
+				GenerateAnimLookups(wad.Wad.AnimatedTextureSets
+					.Where(s => s.Frames.Any(f => usedStaticsTextures.Contains(f.Texture)))
+					.ToList(), TextureDestination.Static);
+			}
+            
             _generateTexInfos = true;    // Set manager ready state 
         }
 
@@ -890,7 +916,7 @@ namespace TombLib.LevelData.Compilers
 
         // Generates list of dummy lookup animated textures.
 
-        private void GenerateAnimLookups(List<AnimatedTextureSet> sets)
+        private void GenerateAnimLookups(List<AnimatedTextureSet> sets, TextureDestination destination)
         {
             foreach (var set in sets)
             {
@@ -957,7 +983,7 @@ namespace TombLib.LevelData.Compilers
                         // Make frame, including repeat versions
                         for (int i = 0; i < frame.Repeat; i++)
                         {
-                            AddTexture(newFrame, refAnim.CompiledAnimation, TextureDestination.RoomOrAggressive, (triangleVariation > 0), newFrame.BlendMode, index, set.IsUvRotate);
+                            AddTexture(newFrame, refAnim.CompiledAnimation, destination, (triangleVariation > 0), newFrame.BlendMode, index, set.IsUvRotate);
                             index++;
                         }
                     }
@@ -1559,8 +1585,6 @@ namespace TombLib.LevelData.Compilers
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
-            bool unsupportedTextureFound = false;
-
             writer.Write((int)_actualAnimTextures.Count);
             for (int i = 0; i < _actualAnimTextures.Count; i++)
             {
@@ -1574,12 +1598,7 @@ namespace TombLib.LevelData.Compilers
                         break;
 
                     case AnimatedTextureAnimationType.UVRotate:
-                        if (unsupportedTextureFound == false)
-                        {
-                            _progressReporter.ReportWarn("UVRotate animated textures are not supported in TombEngine yet and will be ignored.");
-                            unsupportedTextureFound = true;
-                        }
-                        animType = 0; // FIXME: Change to 1 when implemented -- Lwmte, 06.06.2025`
+                        animType = 1;
                         break;
 
                     case AnimatedTextureAnimationType.Video:
@@ -1590,7 +1609,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(i);
                 writer.Write((byte)_actualAnimTextures[i].Origin.Fps);
                 writer.Write((byte)animType);
-                writer.Write((short)0); // Reserved for future settings
+                writer.Write((short)(animType == 1 ? _actualAnimTextures[i].Origin.UvRotate : 0));
                 writer.Write(_animTextureIndices[i].Count); // Number of frames
 
                 foreach (var frame in _animTextureIndices[i])
