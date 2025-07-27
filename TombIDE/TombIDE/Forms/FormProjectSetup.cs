@@ -199,8 +199,10 @@ namespace TombIDE
 
 				switch (comboBox_EngineType.SelectedIndex)
 				{
-					case 1:
-						using (var form = new FormFindMusic())
+					case 1 or 2:
+						TRVersion.Game engine = comboBox_EngineType.SelectedIndex is 1 ? TRVersion.Game.TR1 : TRVersion.Game.TR2X;
+
+						using (var form = new FormFindMusic(engine))
 						{
 							if (form.ShowDialog(this) == DialogResult.OK)
 							{
@@ -216,7 +218,7 @@ namespace TombIDE
 
 						break;
 
-					case 2 or 3 or 4:
+					case 3 or 4:
 						DialogResult result = DarkMessageBox.Show(this,
 							"In order to correctly install the game, you will have to select an /audio/ folder\n" +
 							"from an original copy of the game (Steam and GOG versions are also valid).\n" +
@@ -356,7 +358,7 @@ namespace TombIDE
 			return gameVersion switch
 			{
 				TRVersion.Game.TR1 => new TR1XGameProject(projectName, projectPath, levelsPath),
-				TRVersion.Game.TR2X => new TR1XGameProject(projectName, projectPath, levelsPath),
+				TRVersion.Game.TR2X => new TR2XGameProject(projectName, projectPath, levelsPath),
 				TRVersion.Game.TR2 => new TR2GameProject(projectName, projectPath, levelsPath, scriptPath),
 				TRVersion.Game.TR3 => new TR3GameProject(projectName, projectPath, levelsPath, scriptPath),
 				TRVersion.Game.TR4 => new TR4GameProject(projectName, projectPath, levelsPath, scriptPath),
@@ -371,7 +373,7 @@ namespace TombIDE
 			progressBar.Maximum = 1;
 
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR1.zip");
-			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR1.zip");
+			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR1.zip"); // TODO: Replace this!
 
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
 			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
@@ -399,6 +401,46 @@ namespace TombIDE
 						Directory.CreateDirectory(Path.Combine(engineRootDirectory, entry.FullName));
 					else
 						entry.ExtractToFile(Path.Combine(engineRootDirectory, entry.FullName));
+				}
+			}
+
+			targetProject.Save();
+			progressBar.Increment(1);
+		}
+
+		private void InstallTR2XEngine(IGameProject targetProject)
+		{
+			progressBar.Maximum = 1;
+
+			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR2X.zip");
+			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR1.zip");
+
+			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
+			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
+			{
+				var allFiles = new List<ZipArchiveEntry>();
+				allFiles.AddRange(engineArchive.Entries);
+				allFiles.AddRange(soundsArchive.Entries);
+
+				ExtractEntries(allFiles, targetProject);
+			}
+
+			string engineRootDirectory = targetProject.GetEngineRootDirectoryPath();
+			string musicDir = Path.Combine(engineRootDirectory, "music");
+
+			if (!Directory.Exists(musicDir))
+				Directory.CreateDirectory(musicDir);
+
+			if (_musicZipFilePath != null)
+			{
+				using var musicArchive = new ZipArchive(File.OpenRead(_musicZipFilePath));
+
+				foreach (ZipArchiveEntry entry in musicArchive.Entries)
+				{
+					if (entry.FullName.EndsWith("/"))
+						Directory.CreateDirectory(Path.Combine(engineRootDirectory, entry.FullName));
+					else
+						entry.ExtractToFile(Path.Combine(engineRootDirectory, entry.FullName), true);
 				}
 			}
 

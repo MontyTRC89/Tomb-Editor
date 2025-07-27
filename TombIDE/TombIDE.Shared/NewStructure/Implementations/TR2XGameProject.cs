@@ -68,7 +68,6 @@ namespace TombIDE.Shared.NewStructure
 			{
 				string engineExecutablePath = GetEngineExecutableFilePath();
 				string versionInfo = FileVersionInfo.GetVersionInfo(engineExecutablePath).ProductVersion;
-				versionInfo = versionInfo.Replace("TR2X ", string.Empty);
 
 				return new Version(versionInfo);
 			}

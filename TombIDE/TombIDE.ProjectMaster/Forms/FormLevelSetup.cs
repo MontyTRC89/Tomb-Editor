@@ -215,7 +215,7 @@ namespace TombIDE.ProjectMaster
 		{
 			string engineDirectory = _targetProject.GetEngineRootDirectoryPath();
 
-			if (_targetProject.GameVersion == TRVersion.Game.TR1)
+			if (_targetProject.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TR2X)
 				SharedMethods.OpenInExplorer(Path.Combine(engineDirectory, "music"));
 			else
 				SharedMethods.OpenInExplorer(Path.Combine(engineDirectory, "audio"));
