@@ -207,24 +207,37 @@ namespace TombLib.Utils
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public ColorC GetPixelFast(int x, int y)
+        public ColorC GetPixelFast(int x, int y)
         {
+	        if ((uint)x >= (uint)Width || (uint)y >= (uint)Height)
+		        return new ColorC(255, 0, 0);
+
 	        int i = (y * Width + x) * 4;
-	        return new ColorC { B = _data[i], G = _data[i + 1], R = _data[i + 2], A = _data[i + 3] };
+	        if ((uint)(i + 3) >= (uint)_data.Length)
+		        return new ColorC(255, 0, 0);
+
+	        return new ColorC
+	        {
+		        B = _data[i],
+		        G = _data[i + 1],
+		        R = _data[i + 2],
+		        A = _data[i + 3]
+	        };
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
-        {
-	        int index = (y * Width + x) * 4;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
+		{
+			if ((uint)x >= (uint)Width || (uint)y >= (uint)Height)
+				return;
 
-	        if ((uint)(index + 3) >= (uint)_data.Length)
-		        return;
+			int index = (y * Width + x) * 4;
+			if ((uint)(index + 3) >= (uint)_data.Length)
+				return;
 
-	        uint packed = (uint)(b | (g << 8) | (r << 16) | (a << 24));
-
-	        Unsafe.As<byte, uint>(ref _data[index]) = packed;
-        }
+			uint packed = (uint)(b | (g << 8) | (r << 16) | (a << 24));
+			Unsafe.As<byte, uint>(ref _data[index]) = packed;
+		}
 
 		public void SetPixel(int x, int y, ColorC color)
         {
@@ -648,7 +661,7 @@ namespace TombLib.Utils
 			    width <= 0 || height <= 0 ||
 			    toX + width > Width || toY + height > Height ||
 			    fromX + width > fromImage.Width || fromY + height > fromImage.Height)
-				return;
+				return;  
 
 			fixed (byte* toBase = _data)
 				fixed (byte* fromBase = fromImage._data)
@@ -663,7 +676,6 @@ namespace TombLib.Utils
 					for (int y = 0; y < height; ++y)
 					{
 						Buffer.MemoryCopy(srcRow, destRow, rowSize, rowSize);
-
 						srcRow += srcStride;
 						destRow += destStride;
 					}
@@ -671,11 +683,11 @@ namespace TombLib.Utils
 		}
 
 
-        /// <summary>
-        /// uint's are platform dependet representation of the color.
-        /// They should stay private inside ImageC to prevent abuse.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		/// <summary>
+		/// uint's are platform dependet representation of the color.
+		/// They should stay private inside ImageC to prevent abuse.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static unsafe uint ColorToUint(ColorC color)
         {
             byte* byteArray = stackalloc byte[4];
@@ -781,28 +793,28 @@ namespace TombLib.Utils
         public unsafe byte[] ToByteArray(Rectangle2 rect) =>
             ToByteArray((int)rect.X0, (int)rect.Y0, (int)rect.Width, (int)rect.Height);
 
-		public unsafe byte[] ToByteArray(int fromX, int fromY, int width, int height)
-		{
-			if (fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
-			    fromX + width > Width || fromY + height > Height)
-				return new byte[] { 0 };
+        public unsafe byte[] ToByteArray(int fromX, int fromY, int width, int height)
+        {
+	        if (fromX < 0 || fromY < 0 || width <= 0 || height <= 0 ||
+	            fromX + width > Width || fromY + height > Height)
+		        return Array.Empty<byte>();
 
-			var size = width * height * 4;
-			var result = new byte[size];
+	        var size = width * height * 4;
+	        var result = new byte[size];
 
-			fixed (byte* toPtr = result)
-				fixed (byte* fromPtr = _data)
-				{
-					for (int y = 0; y < height; ++y)
-					{
-						byte* src = fromPtr + ((fromY + y) * Width + fromX) * 4;
-						byte* dst = toPtr + (y * width) * 4;
-						Buffer.MemoryCopy(src, dst, width * 4, width * 4);
-					}
-				}
+	        fixed (byte* toPtr = result)
+		        fixed (byte* fromPtr = _data)
+		        {
+			        for (int y = 0; y < height; ++y)
+			        {
+				        byte* src = fromPtr + ((fromY + y) * Width + fromX) * 4;
+				        byte* dst = toPtr + (y * width) * 4;
+				        Buffer.MemoryCopy(src, dst, width * 4, width * 4);
+			        }
+		        }
 
-			return result;
-		}
+	        return result;
+        }
 
 		public unsafe Hash GetHashOfAreaFast(Rectangle2 area)
 		{
