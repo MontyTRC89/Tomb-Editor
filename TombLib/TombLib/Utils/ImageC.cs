@@ -9,6 +9,8 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using ColorThiefDotNet;
 using TombLib.LevelData;
+using System.Runtime.CompilerServices;
+using System.IO.Hashing;
 
 namespace TombLib.Utils
 {
@@ -146,57 +148,81 @@ namespace TombLib.Utils
             return new Rectangle2(0, 0, Width - 1, Height - 1);
         }
 
-        public ColorC Get(int i)
-        {
-            int index = i * PixelSize;
-            if (index + 3 >= _data.Length || index < 0)
-                return new ColorC(255, 0, 0);
-            else
-                return new ColorC { B = _data[index], G = _data[index + 1], R = _data[index + 2], A = _data[index + 3] };
-        }
+		public ColorC Get(int i)
+		{
+			int index = i * PixelSize;
+			if ((uint)(index + 3) >= (uint)_data.Length)
+				return new ColorC(255, 0, 0);
 
-        public void Set(int i, byte r, byte g, byte b, byte a = 255)
-        {
-            int index = i * PixelSize;
-            if (index + 3 >= _data.Length || index < 0)
-                return;
+			ref byte start = ref _data[index];
+			return new ColorC
+			{
+				B = Unsafe.Add(ref start, 0),
+				G = Unsafe.Add(ref start, 1),
+				R = Unsafe.Add(ref start, 2),
+				A = Unsafe.Add(ref start, 3)
+			};
+		}
 
-            _data[index] = b;
-            _data[index + 1] = g;
-            _data[index + 2] = r;
-            _data[index + 3] = a;
-        }
+		public void Set(int i, byte r, byte g, byte b, byte a = 255)
+		{
+			int index = i * PixelSize;
+			if ((uint)(index + 3) >= (uint)_data.Length)
+				return;
 
-        public void Set(int i, ColorC color)
+			ref byte start = ref _data[index];
+			Unsafe.Add(ref start, 0) = b;
+			Unsafe.Add(ref start, 1) = g;
+			Unsafe.Add(ref start, 2) = r;
+			Unsafe.Add(ref start, 3) = a;
+		}
+
+		public void Set(int i, ColorC color)
         {
             Set(i, color.R, color.G, color.B, color.A);
         }
 
         public ColorC GetPixel(int x, int y)
         {
-            x = MathC.Clamp(x, 0, Width - 1);
-            y = MathC.Clamp(y, 0, Height - 1);
+			if (x < 0) x = 0;
+			else if (x >= Width) x = Width - 1;
 
-            int index = (y * Width + x) * PixelSize;
-            if (index + 3 >= _data.Length || index < 0)
-                return new ColorC(255, 0, 0);
-            else
-                return new ColorC { B = _data[index], G = _data[index + 1], R = _data[index + 2], A = _data[index + 3] };
+			if (y < 0) y = 0;
+			else if (y >= Height) y = Height - 1;
+
+			int index = ((y * Width) + x) * PixelSize;
+
+			ref byte start = ref _data[index];
+			return new ColorC
+			{
+				B = Unsafe.Add(ref start, 0),
+				G = Unsafe.Add(ref start, 1),
+				R = Unsafe.Add(ref start, 2),
+				A = Unsafe.Add(ref start, 3)
+			};
         }
 
-        public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
+        public ColorC GetPixelFast(int x, int y)
         {
-            int index = (y * Width + x) * PixelSize;
-            if (index + 3 >= _data.Length || index < 0)
-                return;
-
-            _data[index] = b;
-            _data[index + 1] = g;
-            _data[index + 2] = r;
-            _data[index + 3] = a;
+	        int i = (y * Width + x) * 4;
+	        return new ColorC { B = _data[i], G = _data[i + 1], R = _data[i + 2], A = _data[i + 3] };
         }
 
-        public void SetPixel(int x, int y, ColorC color)
+		public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
+		{
+			int index = ((y * Width) + x) * PixelSize;
+
+			if ((uint)(index + 3) >= (uint)_data.Length)
+				return;
+
+			ref byte start = ref _data[index];
+			Unsafe.Add(ref start, 0) = b;
+			Unsafe.Add(ref start, 1) = g;
+			Unsafe.Add(ref start, 2) = r;
+			Unsafe.Add(ref start, 3) = a;
+		}
+
+		public void SetPixel(int x, int y, ColorC color)
         {
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
@@ -719,40 +745,61 @@ namespace TombLib.Utils
         public unsafe byte[] ToByteArray(Rectangle2 rect) =>
             ToByteArray((int)rect.X0, (int)rect.Y0, (int)rect.Width, (int)rect.Height);
 
-        public unsafe byte[] ToByteArray(int fromX, int fromY, int width, int height)
-        {
-            // Check coordinates
-            if (fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
-                fromX + width > Width || fromY + height > Height)
-                return new byte[] { 0 };
+		public unsafe byte[] ToByteArray(int fromX, int fromY, int width, int height)
+		{
+			if (fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
+			    fromX + width > Width || fromY + height > Height)
+				return new byte[] { 0 };
 
-            var size = width * height * 4;
-            var result = new byte[size];
+			var size = width * height * 4;
+			var result = new byte[size];
 
-            // Copy data quickly
-            fixed (void* toPtr = result)
-            {
-                fixed (void* fromPtr = _data)
-                {
-                    // Adjust starting position to account for image positions
-                    uint* toPtrOffseted = (uint*)toPtr;
-                    uint* fromPtrOffseted = (uint*)fromPtr + fromY * Width + fromX;
+			fixed (byte* toPtr = result)
+				fixed (byte* fromPtr = _data)
+				{
+					for (int y = 0; y < height; ++y)
+					{
+						byte* src = fromPtr + ((fromY + y) * Width + fromX) * 4;
+						byte* dst = toPtr + (y * width) * 4;
+						Buffer.MemoryCopy(src, dst, width * 4, width * 4);
+					}
+				}
 
-                    // Copy image data line by line
-                    for (int y = 0; y < height; ++y)
-                    {
-                        uint* toLinePtr = toPtrOffseted + y * width;
-                        uint* fromLinePtr = fromPtrOffseted + y * Width;
-                        for (int x = 0; x < width; ++x)
-                            toLinePtr[x] = fromLinePtr[x];
-                    }
-                }
-            }
+			return result;
+		}
 
-            return result;
-        }
+		public unsafe Hash GetHashOfAreaFast(Rectangle2 area)
+		{
+			int x = (int)area.TopLeft.X;
+			int y = (int)area.TopLeft.Y;
+			int width = (int)area.Width;
+			int height = (int)area.Height;
 
-        public Stream ToRawStream(int yStart, int Height)
+			if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
+			    x + width > Width || y + height > Height)
+				return Hash.Zero;
+
+			var hasher = new XxHash64();
+
+			fixed (byte* srcPtr = _data) 
+			{
+				int stride = Width * 4;
+				for (int row = 0; row < height; row++)
+				{
+					byte* src = srcPtr + ((y + row) * Width + x) * 4;
+					hasher.Append(new ReadOnlySpan<byte>(src, width * 4));
+				}
+			}
+
+			Span<byte> hashBytes = stackalloc byte[8];
+			hasher.GetHashAndReset(hashBytes);
+
+			ulong low = BitConverter.ToUInt64(hashBytes);
+
+			return new Hash { HashLow = low, HashHigh = 0 };
+		}
+
+		public Stream ToRawStream(int yStart, int Height)
         {
             return new MemoryStream(_data, yStart * Width * PixelSize, Height * Width * PixelSize);
         }

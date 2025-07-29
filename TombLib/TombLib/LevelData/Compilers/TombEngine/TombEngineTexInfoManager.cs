@@ -159,6 +159,7 @@ namespace TombLib.LevelData.Compilers
             public TextureDestination Destination { get; set; }
             public BlendMode BlendMode { get; set; }
 
+            
             private Rectangle2 _area;
             public Rectangle2 Area
             {
@@ -232,19 +233,23 @@ namespace TombLib.LevelData.Compilers
             public TextureArea? TextureSimilar(TextureArea texture)
             {
                 // Only scan if:
-                //  - Parent is room texture
-                //  - Parent's texture isn't the same as incoming texture
-                //  - Incoming texture is either from imported geometry or wad
+				//  - Parent is room texture
+				//  - Parent's texture isn't the same as incoming texture
+				//  - Incoming texture is either from imported geometry or wad
 
-                if (Texture != texture.Texture && Texture is LevelTexture &&
+				if (Texture != texture.Texture && Texture is LevelTexture &&
                    (texture.Texture is ImportedGeometryTexture || texture.Texture is WadTexture))
                 {
                     var rr = texture.GetRect();
-                    var pp0 = texture.Texture.Image.GetPixel((int)rr.TopLeft.X, (int)rr.TopLeft.Y);
-                    var pp1 = texture.Texture.Image.GetPixel((int)rr.TopRight.X - 1, (int)rr.TopRight.Y);
-                    var pp2 = texture.Texture.Image.GetPixel((int)rr.BottomRight.X - 1, (int)rr.BottomRight.Y - 1);
-                    var pp3 = texture.Texture.Image.GetPixel((int)rr.BottomLeft.X, (int)rr.BottomLeft.Y - 1);
-                    var pp4 = texture.Texture.Image.GetPixel((int)rr.Width / 2, (int)rr.Height / 2);
+					
+                    // Precompute hash
+					var hash1 = texture.Texture.Image.GetHashOfAreaFast(rr);
+
+                    var pp0 = texture.Texture.Image.GetPixelFast((int)rr.TopLeft.X, (int)rr.TopLeft.Y);
+                    var pp1 = texture.Texture.Image.GetPixelFast((int)rr.TopRight.X - 1, (int)rr.TopRight.Y);
+                    var pp2 = texture.Texture.Image.GetPixelFast((int)rr.BottomRight.X - 1, (int)rr.BottomRight.Y - 1);
+                    var pp3 = texture.Texture.Image.GetPixelFast((int)rr.BottomLeft.X, (int)rr.BottomLeft.Y - 1);
+                    var pp4 = texture.Texture.Image.GetPixelFast((int)rr.Width / 2, (int)rr.Height / 2);
 
                     foreach (var child in Children)
                     {
@@ -254,17 +259,16 @@ namespace TombLib.LevelData.Compilers
                             continue;
 
                         // Compare 4 corner pixels and center to quickly filter out wrong results
-                        var p0 = Texture.Image.GetPixel((int)r.TopLeft.X, (int)r.TopLeft.Y);
-                        var p1 = Texture.Image.GetPixel((int)r.TopRight.X - 1, (int)r.TopRight.Y);
-                        var p2 = Texture.Image.GetPixel((int)r.BottomRight.X - 1, (int)r.BottomRight.Y - 1);
-                        var p3 = Texture.Image.GetPixel((int)r.BottomLeft.X, (int)r.BottomLeft.Y - 1);
-                        var p4 = texture.Texture.Image.GetPixel((int)r.Width / 2, (int)r.Height / 2);
+                        var p0 = Texture.Image.GetPixelFast((int)r.TopLeft.X, (int)r.TopLeft.Y);
+                        var p1 = Texture.Image.GetPixelFast((int)r.TopRight.X - 1, (int)r.TopRight.Y);
+                        var p2 = Texture.Image.GetPixelFast((int)r.BottomRight.X - 1, (int)r.BottomRight.Y - 1);
+                        var p3 = Texture.Image.GetPixelFast((int)r.BottomLeft.X, (int)r.BottomLeft.Y - 1);
+                        var p4 = texture.Texture.Image.GetPixelFast((int)r.Width / 2, (int)r.Height / 2);
                         if (p0 != pp0 || p1 != pp1 || p2 != pp2 || p3 != pp3 || p4 != pp4)
                             continue;
 
                         // All pixels match. Now compare all raw data
-                        var hash1 = Hash.FromByteArray(texture.Texture.Image.ToByteArray(rr));
-                        var hash2 = Hash.FromByteArray(Texture.Image.ToByteArray(r));
+                        var hash2 = Texture.Image.GetHashOfAreaFast(r);
 
                         if (hash1 == hash2)
                         {
