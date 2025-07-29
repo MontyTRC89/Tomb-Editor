@@ -671,10 +671,11 @@ namespace TombLib.Utils
 		}
 
 
-		/// <summary>
-		/// uint's are platform dependet representation of the color.
-		/// They should stay private inside ImageC to prevent abuse.
-		/// </summary>
+        /// <summary>
+        /// uint's are platform dependet representation of the color.
+        /// They should stay private inside ImageC to prevent abuse.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static unsafe uint ColorToUint(ColorC color)
         {
             byte* byteArray = stackalloc byte[4];
