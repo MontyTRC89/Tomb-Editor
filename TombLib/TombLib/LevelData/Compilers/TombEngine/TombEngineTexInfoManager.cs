@@ -811,9 +811,8 @@ namespace TombLib.LevelData.Compilers
                 throw new InvalidOperationException("Data has been already laid out for this TexInfoManager. Reinitialize it if you want to restart texture collection.");
 
             // Only try to remap animated textures if fast mode is disabled
-            // TODO: this is from legacy texture packer, do we really need it?
-            // Disabling it makes the compilation faster of about 30%.
-            bool remapAnimatedTextures = false; //_level.Settings.RemapAnimatedTextures && !_level.Settings.FastMode;
+            // TODO: bottleneck: we need to test it carefully
+            bool remapAnimatedTextures = _level.Settings.RemapAnimatedTextures && !_level.Settings.FastMode;
 
             // If UVRotate hack is needed and texture is triangle, prepare a quad substitute reference for animation lookup.
             var refQuad = texture;

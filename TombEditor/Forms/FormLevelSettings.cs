@@ -696,7 +696,6 @@ namespace TombEditor.Forms
             // TombEngine
             currentVersionToCheck = (_levelSettings.GameVersion == Game.TombEngine);
             cbRearrangeRooms.Enabled = !currentVersionToCheck;
-            cbRemapAnimTextures.Enabled = !currentVersionToCheck; // TODO: This must be re-enabled on TEN side -- Lwmte, 29.01.23
             cbAgressiveTexturePacking.Enabled = !currentVersionToCheck;
             cbAgressiveFloordataPacking.Enabled = !currentVersionToCheck;
             cbCompressTextures.Enabled = currentVersionToCheck;
