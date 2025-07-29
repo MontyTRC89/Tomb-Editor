@@ -1043,7 +1043,7 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var tex in textures) // Do not parallelize this. For some reason it breaks everything.
             {
-                var bmpHash = Hash.FromByteArray(tex.Texture.Image.ToByteArray(tex.Area));
+	            var bmpHash = tex.Texture.Image.GetHashOfAreaFast(tex.Area);
 
                 if (result.ContainsKey(bmpHash))
                 {
