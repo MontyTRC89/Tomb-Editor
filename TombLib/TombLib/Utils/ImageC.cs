@@ -227,14 +227,20 @@ namespace TombLib.Utils
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
-        public void Fill(ColorC color)
-        {
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                    SetPixel(x, y, color);
-        }
+		public unsafe void Fill(ColorC color)
+		{
+			uint packed = (uint)(color.B | (color.G << 8) | (color.R << 16) | (color.A << 24));
+			int pixels = Width * Height;
 
-        public void SetColorDataForTransparentPixels(ColorC color)
+			fixed (byte* ptr = _data)
+			{
+				uint* p = (uint*)ptr;
+				for (int i = 0; i < pixels; i++)
+					p[i] = packed;
+			}
+		}
+
+		public void SetColorDataForTransparentPixels(ColorC color)
         {
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
