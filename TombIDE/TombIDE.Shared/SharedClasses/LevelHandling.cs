@@ -21,7 +21,7 @@ namespace TombIDE.Shared.SharedClasses
 			level.Settings.GameDirectory = level.Settings.MakeRelative(engineDirectory, VariableType.LevelDirectory);
 			level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
 			level.Settings.ScriptDirectory = level.Settings.MakeRelative(destProject.GetScriptRootDirectory(), VariableType.LevelDirectory);
-			level.Settings.GameVersion = destProject.GameVersion;
+			level.Settings.GameVersion = destProject.GameVersion is TRVersion.Game.TR2X ? TRVersion.Game.TR2 : destProject.GameVersion; // Temporarily set TR2X to TR2, because TR2X is not supported by the level editor yet
 
 			if (string.IsNullOrWhiteSpace(dataFileName))
 			{
