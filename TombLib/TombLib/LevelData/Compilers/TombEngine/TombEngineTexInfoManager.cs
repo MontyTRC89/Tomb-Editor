@@ -1144,7 +1144,7 @@ namespace TombLib.LevelData.Compilers
             return (currentPage + 1);
         }
 
-        private VectorInt2 PlaceAnimatedTexturesInMap(ref List<ParentTextureArea> textures)
+        private VectorInt2 PlaceAnimatedTexturesInMap(ref List<ParentTextureArea> textures, bool uvrotate)
         {
             if (textures.Count == 0)
             {
@@ -1152,10 +1152,10 @@ namespace TombLib.LevelData.Compilers
             }
 
             bool done;
-            int atlasWidth = 256;
-            int atlasHeight = 256;
+            int atlasWidth = uvrotate ? (int)textures[0].Area.Width : 256; 
+            int atlasHeight = uvrotate ? (int)textures[0].Area.Height : 256;
 
-            do
+			do
             {
                 RectPacker texPacker = new RectPackerTree(new VectorInt2(atlasWidth, atlasHeight));
 
@@ -1168,7 +1168,11 @@ namespace TombLib.LevelData.Compilers
                     int h = (int)(textures[i].Area.Height);
 
                     // Calculate adaptive padding at all sides
-                    int padding = _padding == 0 ? _minimumPadding : _padding;
+                    int padding = 0;
+                    if (!uvrotate)
+                    {
+	                    padding = _padding == 0 ? _minimumPadding : _padding;
+                    }
 
                     int tP = padding;
                     int bP = padding;
@@ -1219,7 +1223,7 @@ namespace TombLib.LevelData.Compilers
             return new VectorInt2(atlasWidth, atlasHeight);
         }
 
-        private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex, VectorInt2 atlasSize)
+        private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex, VectorInt2 atlasSize, bool uvrotate)
         {
             var customBumpmaps = new Dictionary<string, ImageC>();
             var atlasList = new List<TombEngineAtlas>();
@@ -1228,7 +1232,12 @@ namespace TombLib.LevelData.Compilers
                 atlasList.Add(new TombEngineAtlas { ColorMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y) });
             }
 
-            var actualPadding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
+            var actualPadding = 0;
+            if (!uvrotate)
+            {
+	            actualPadding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
+			}
+
             int x, y;
 
             for (int b = 0; b < (bump ? 2 : 1); b++)
@@ -1491,21 +1500,23 @@ namespace TombLib.LevelData.Compilers
             for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
                 var textures = animatedTextures[n];
-                animatedAtlasSizes.Add(PlaceAnimatedTexturesInMap(ref textures));
+                animatedAtlasSizes.Add(PlaceAnimatedTexturesInMap(ref textures, _actualAnimTextures[n].Origin.AnimationType == AnimatedTextureAnimationType.UVRotate));
             }
 
             // In TombEngine, we pack textures in 4K pages and we can use big textures up to 256 pixels without bleeding
             VectorInt2 atlasSize = new VectorInt2(MaxTileSize, MaxTileSize);
 
-            RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize);
-            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize);
-            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, false, true, 0, atlasSize);
+            RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize, false);
+            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize, false);
+            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, false, true, 0, atlasSize, false);
 
             AnimatedAtlas = new List<TombEngineAtlas>();
             for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
-                var textures = animatedTextures[n];
-                AnimatedAtlas.AddRange(CreateAtlas(ref textures, 1, false, false, AnimatedAtlas.Count, animatedAtlasSizes.ElementAt(n)));
+	            var textures = animatedTextures[n];
+	            AnimatedAtlas.AddRange(CreateAtlas(ref textures, 1, false, false, AnimatedAtlas.Count,
+		            animatedAtlasSizes.ElementAt(n),
+		            _actualAnimTextures[n].Origin.AnimationType == AnimatedTextureAnimationType.UVRotate));
             }
 
 #if DEBUG
