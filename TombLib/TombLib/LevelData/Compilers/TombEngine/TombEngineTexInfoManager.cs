@@ -247,11 +247,11 @@ namespace TombLib.LevelData.Compilers
                     // Precompute hash
 					var hash1 = texture.Texture.Image.GetHashOfAreaFast(rr);
 
-                    var pp0 = texture.Texture.Image.GetPixelFast((int)rr.TopLeft.X, (int)rr.TopLeft.Y);
-                    var pp1 = texture.Texture.Image.GetPixelFast((int)rr.TopRight.X - 1, (int)rr.TopRight.Y);
-                    var pp2 = texture.Texture.Image.GetPixelFast((int)rr.BottomRight.X - 1, (int)rr.BottomRight.Y - 1);
-                    var pp3 = texture.Texture.Image.GetPixelFast((int)rr.BottomLeft.X, (int)rr.BottomLeft.Y - 1);
-                    var pp4 = texture.Texture.Image.GetPixelFast((int)rr.Width / 2, (int)rr.Height / 2);
+                    var pp0 = texture.Texture.Image.GetPixel((int)rr.TopLeft.X, (int)rr.TopLeft.Y);
+                    var pp1 = texture.Texture.Image.GetPixel((int)rr.TopRight.X - 1, (int)rr.TopRight.Y);
+                    var pp2 = texture.Texture.Image.GetPixel((int)rr.BottomRight.X - 1, (int)rr.BottomRight.Y - 1);
+                    var pp3 = texture.Texture.Image.GetPixel((int)rr.BottomLeft.X, (int)rr.BottomLeft.Y - 1);
+                    var pp4 = texture.Texture.Image.GetPixel((int)rr.Width / 2, (int)rr.Height / 2);
 
                     foreach (var child in Children)
                     {
@@ -261,11 +261,11 @@ namespace TombLib.LevelData.Compilers
                             continue;
 
                         // Compare 4 corner pixels and center to quickly filter out wrong results
-                        var p0 = Texture.Image.GetPixelFast((int)r.TopLeft.X, (int)r.TopLeft.Y);
-                        var p1 = Texture.Image.GetPixelFast((int)r.TopRight.X - 1, (int)r.TopRight.Y);
-                        var p2 = Texture.Image.GetPixelFast((int)r.BottomRight.X - 1, (int)r.BottomRight.Y - 1);
-                        var p3 = Texture.Image.GetPixelFast((int)r.BottomLeft.X, (int)r.BottomLeft.Y - 1);
-                        var p4 = texture.Texture.Image.GetPixelFast((int)r.Width / 2, (int)r.Height / 2);
+                        var p0 = Texture.Image.GetPixel((int)r.TopLeft.X, (int)r.TopLeft.Y);
+                        var p1 = Texture.Image.GetPixel((int)r.TopRight.X - 1, (int)r.TopRight.Y);
+                        var p2 = Texture.Image.GetPixel((int)r.BottomRight.X - 1, (int)r.BottomRight.Y - 1);
+                        var p3 = Texture.Image.GetPixel((int)r.BottomLeft.X, (int)r.BottomLeft.Y - 1);
+                        var p4 = texture.Texture.Image.GetPixel((int)r.Width / 2, (int)r.Height / 2);
                         if (p0 != pp0 || p1 != pp1 || p2 != pp2 || p3 != pp3 || p4 != pp4)
                             continue;
 

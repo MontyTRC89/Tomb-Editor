@@ -148,20 +148,21 @@ namespace TombLib.Utils
             return new Rectangle2(0, 0, Width - 1, Height - 1);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public ColorC Get(int i)
 		{
 			int index = i * PixelSize;
 			if ((uint)(index + 3) >= (uint)_data.Length)
 				return new ColorC(255, 0, 0);
 
-			ref byte start = ref _data[index];
+			uint value = Unsafe.ReadUnaligned<uint>(ref _data[index]);
+
 			return new ColorC
 			{
-				B = Unsafe.Add(ref start, 0),
-				G = Unsafe.Add(ref start, 1),
-				R = Unsafe.Add(ref start, 2),
-				A = Unsafe.Add(ref start, 3)
+				B = (byte)(value & 0xFF),
+				G = (byte)((value >> 8) & 0xFF),
+				R = (byte)((value >> 16) & 0xFF),
+				A = (byte)((value >> 24) & 0xFF)
 			};
 		}
 
@@ -172,11 +173,10 @@ namespace TombLib.Utils
 			if ((uint)(index + 3) >= (uint)_data.Length)
 				return;
 
-			ref byte start = ref _data[index];
-			Unsafe.Add(ref start, 0) = b;
-			Unsafe.Add(ref start, 1) = g;
-			Unsafe.Add(ref start, 2) = r;
-			Unsafe.Add(ref start, 3) = a;
+			// BGRA in little-endian
+			uint value = (uint)(b | (g << 8) | (r << 16) | (a << 24));
+
+			Unsafe.WriteUnaligned(ref _data[index], value);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -185,45 +185,24 @@ namespace TombLib.Utils
             Set(i, color.R, color.G, color.B, color.A);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public ColorC GetPixel(int x, int y)
-        {
-			if (x < 0) x = 0;
-			else if (x >= Width) x = Width - 1;
-
-			if (y < 0) y = 0;
-			else if (y >= Height) y = Height - 1;
+		{
+			x = Math.Clamp(x, 0, Width - 1);
+			y = Math.Clamp(y, 0, Height - 1);
 
 			int index = ((y * Width) + x) * PixelSize;
 
-			ref byte start = ref _data[index];
+			uint value = Unsafe.ReadUnaligned<uint>(ref _data[index]);
+
 			return new ColorC
 			{
-				B = Unsafe.Add(ref start, 0),
-				G = Unsafe.Add(ref start, 1),
-				R = Unsafe.Add(ref start, 2),
-				A = Unsafe.Add(ref start, 3)
+				B = (byte)value,
+				G = (byte)(value >> 8),
+				R = (byte)(value >> 16),
+				A = (byte)(value >> 24)
 			};
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ColorC GetPixelFast(int x, int y)
-        {
-	        if ((uint)x >= (uint)Width || (uint)y >= (uint)Height)
-		        return new ColorC(255, 0, 0);
-
-	        int i = (y * Width + x) * 4;
-	        if ((uint)(i + 3) >= (uint)_data.Length)
-		        return new ColorC(255, 0, 0);
-
-	        return new ColorC
-	        {
-		        B = _data[i],
-		        G = _data[i + 1],
-		        R = _data[i + 2],
-		        A = _data[i + 3]
-	        };
-        }
+		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
@@ -236,15 +215,17 @@ namespace TombLib.Utils
 				return;
 
 			uint packed = (uint)(b | (g << 8) | (r << 16) | (a << 24));
-			Unsafe.As<byte, uint>(ref _data[index]) = packed;
+			Unsafe.WriteUnaligned(ref _data[index], packed);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetPixel(int x, int y, ColorC color)
         {
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
-		public unsafe void Fill(ColorC color)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Fill(ColorC color)
 		{
 			uint packed = (uint)(color.B | (color.G << 8) | (color.R << 16) | (color.A << 24));
 
@@ -253,6 +234,7 @@ namespace TombLib.Utils
 			span.Fill(packed);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
 		public void SetColorDataForTransparentPixels(ColorC color)
 		{
 			uint packed = (uint)(color.B | (color.G << 8) | (color.R << 16));
