@@ -237,41 +237,40 @@ namespace TombLib.Utils
 		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
 		public void SetColorDataForTransparentPixels(ColorC color)
 		{
-			uint packed = (uint)(color.B | (color.G << 8) | (color.R << 16));
+			// Build the RGB color wth alpha = zero
+			uint packedRgb = (uint)(color.B | (color.G << 8) | (color.R << 16)); // alpha = 0
+			var vRgb = new Vector<uint>(packedRgb);
+			var vAlphaMask = new Vector<uint>(0xFF000000);
 
 			var span = MemoryMarshal.Cast<byte, uint>(_data);
-			int count = span.Length;
-
-			var alphaMask = new Vector<uint>(0xFF000000);
-			var rgbPacked = new Vector<uint>(packed);
-
 			int simdSize = Vector<uint>.Count;
+			int len = span.Length;
 			int i = 0;
 
-			for (; i <= count - simdSize; i += simdSize)
+			for (; i <= len - simdSize; i += simdSize)
 			{
+				// Load the block
 				var block = new Vector<uint>(span.Slice(i, simdSize));
-				var blockAlpha = block & alphaMask;
+				var blockAlpha = block & vAlphaMask;
 
-				// If all pixels have alpha not equal to zero, then continue
-				if (Vector.EqualsAll(blockAlpha, alphaMask))
+				// Pixels mask (alpha = zero)
+				var mask = Vector.Equals(blockAlpha, Vector<uint>.Zero);
+
+				// If no pixel is transparent, skip
+				if (Vector.EqualsAll(mask, Vector<uint>.Zero))
 					continue;
 
-				// Check pixel by pixel in block
-				for (int j = 0; j < simdSize; j++)
-				{
-					uint p = span[i + j];
-					if ((p & 0xFF000000) == 0)
-						span[i + j] = packed; // set the color with alpha zero
-				}
+				// BUild the block replacing RGB where alpha is zero  
+				var replaced = Vector.ConditionalSelect(mask, vRgb, block);
+				replaced.CopyTo(span.Slice(i, simdSize));
 			}
 
 			// Remaining pixels
-			for (; i < count; i++)
+			for (; i < len; i++)
 			{
 				uint p = span[i];
 				if ((p & 0xFF000000) == 0)
-					span[i] = packed;
+					span[i] = packedRgb;
 			}
 		}
 
@@ -680,23 +679,41 @@ namespace TombLib.Utils
             return *(uint*)byteArray;
         }
 
-        public unsafe void ReplaceColor(ColorC from, ColorC to)
-        {
-            uint fromUint = ColorToUint(from);
-            uint toUint = ColorToUint(to);
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public void ReplaceColor(ColorC from, ColorC to)
+		{
+			uint fromUint = ColorToUint(from);
+			uint toUint = ColorToUint(to);
 
-            fixed (void* ptr = _data)
-            {
-                uint* ptrUint = (uint*)ptr;
-                uint* ptrUintEnd = ptrUint + Width * Height;
-                while (ptrUint < ptrUintEnd)
-                {
-                    if (*ptrUint == fromUint)
-                        *ptrUint = toUint;
-                    ++ptrUint;
-                }
-            }
-        }
+			var span = MemoryMarshal.Cast<byte, uint>(_data);
+
+			var vFrom = new Vector<uint>(fromUint);
+			var vTo = new Vector<uint>(toUint);
+
+			int i = 0;
+			int simdCount = Vector<uint>.Count;
+			int length = span.Length;
+
+			// Process SIMD blocks
+			for (; i <= length - simdCount; i += simdCount)
+			{
+				var block = new Vector<uint>(span.Slice(i, simdCount));
+				var mask = Vector.Equals(block, vFrom);
+				if (!Vector.EqualsAll(mask, Vector<uint>.Zero))
+				{
+					var replaced = Vector.ConditionalSelect(mask, vTo, block);
+					replaced.CopyTo(span.Slice(i, simdCount));
+				}
+			}
+
+			// Remaining pixels
+			for (; i < length; i++)
+			{
+				if (span[i] == fromUint)
+					span[i] = toUint;
+			}
+		}
+
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public unsafe BlendMode HasAlpha(TRVersion.Game version, int X, int Y, int width, int height)
