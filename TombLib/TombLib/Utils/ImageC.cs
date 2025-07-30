@@ -716,56 +716,58 @@ namespace TombLib.Utils
             }
         }
 
-        public unsafe BlendMode HasAlpha(TRVersion.Game version, int X, int Y, int width, int height)
-        {
-            var result = BlendMode.Normal;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public unsafe BlendMode HasAlpha(TRVersion.Game version, int X, int Y, int width, int height)
+		{
+			var result = BlendMode.Normal;
 
-            // Check coordinates
-            if (X < 0 || Y < 0 || width < 0 || height < 0 ||
-                X + width > Width || Y + height > Height)
-                return result;
+			if ((uint)X >= Width || (uint)Y >= Height ||
+			    width <= 0 || height <= 0 ||
+			    X + width > Width || Y + height > Height)
+				return result;
 
-            // Check for alpha
+			fixed (byte* basePtr8 = _data)
+			{
+				uint* basePtr = (uint*)basePtr8;
+				uint* ptr = basePtr + (Y * Width + X);
 
-            fixed (void* ptr = _data)
-            {
-                uint* toPtrOffseted = (uint*)ptr + Y * Width + X;
+				if (version == TRVersion.Game.TombEngine)
+				{
+					for (int row = 0; row < height; row++)
+					{
+						uint* p = ptr + row * Width;
+						for (int col = 0; col < width; col++)
+						{
+							uint alpha = p[col] & AlphaBits;
 
-                if (version == TRVersion.Game.TombEngine)
-                {
-                    for (int y = 0; y < height; ++y)
-                    {
-                        uint* linePtr = toPtrOffseted + y * Width;
-                        for (int x = 0; x < width; ++x)
-                        {
-                            var alpha = (linePtr[x] & AlphaBits);
-                            if (alpha == AlphaBits)
-                                continue;
+							if (alpha == AlphaBits)
+								continue; 
 
-                            if (alpha > 0)
-                                return BlendMode.AlphaBlend;
-                            else
-                                result = BlendMode.AlphaTest;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int y = 0; y < height; ++y)
-                    {
-                        uint* linePtr = toPtrOffseted + y * Width;
-                        for (int x = 0; x < width; ++x)
-                            if ((linePtr[x] & AlphaBits) != AlphaBits)
-                                return BlendMode.AlphaTest;
-                    }
-                }
+							if (alpha != 0)
+								return BlendMode.AlphaBlend; 
 
-            }
+							result = BlendMode.AlphaTest;
+						}
+					}
+				}
+				else
+				{
+					for (int row = 0; row < height; row++)
+					{
+						uint* p = ptr + row * Width;
+						for (int col = 0; col < width; col++)
+						{
+							if ((p[col] & AlphaBits) != AlphaBits)
+								return BlendMode.AlphaTest;
+						}
+					}
+				}
+			}
 
-            return result;
-        }
+			return result;
+		}
 
-        public unsafe BlendMode HasAlpha(TRVersion.Game version)
+		public unsafe BlendMode HasAlpha(TRVersion.Game version)
         {
             return HasAlpha(version, 0, 0, Width, Height);
         }

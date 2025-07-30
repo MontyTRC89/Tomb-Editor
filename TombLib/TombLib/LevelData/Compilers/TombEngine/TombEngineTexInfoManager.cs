@@ -211,6 +211,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Compare parent's properties with incoming texture properties.
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool ParametersSimilar(TextureArea incomingTexture, TextureDestination destination)
             {
                 if (Destination != destination)

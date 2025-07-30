@@ -3,6 +3,7 @@ using System.Numerics;
 using System.Linq;
 using System.Collections.Generic;
 using TombLib.LevelData;
+using System.Runtime.CompilerServices;
 
 namespace TombLib.Utils
 {
@@ -346,18 +347,16 @@ namespace TombLib.Utils
             }
         }
 
-        public Rectangle2 GetRect(bool? isTriangle = null)
-        {
-            if (!isTriangle.HasValue)
-                isTriangle = TextureIsTriangle;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Rectangle2 GetRect(bool? isTriangle = null)
+		{
+			bool tri = isTriangle ?? TextureIsTriangle;
+			return tri
+				? Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2)
+				: Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
+		}
 
-            if (isTriangle.Value)
-                return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2);
-            else
-                return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
-        }
-
-        public Vector2[] TexCoords
+		public Vector2[] TexCoords
         {
             get
             {
