@@ -296,7 +296,20 @@ namespace TombLib.Utils
         public static bool operator !=(TextureArea first, TextureArea second) => !(first == second);
         public bool Equals(TextureArea other) => this == other;
         public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
-        public override int GetHashCode() => base.GetHashCode();
+
+        public override int GetHashCode()
+        {
+	        var hash = new HashCode();
+	        hash.Add(Texture);
+	        hash.Add(TexCoord0);
+	        hash.Add(TexCoord1);
+	        hash.Add(TexCoord2);
+	        hash.Add(TexCoord3);
+	        hash.Add(ParentArea);
+	        hash.Add(BlendMode);
+	        hash.Add(DoubleSided);
+	        return hash.ToHashCode();
+		}
 
         public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
         public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null;

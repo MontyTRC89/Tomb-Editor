@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.LevelData.Compilers.TombEngine;
@@ -771,32 +772,44 @@ namespace TombLib.LevelData.Compilers
         // If all coordinates are equal for one of the rotation factors, rotation factor is returned,
         // otherwise NoTexInfo is returned (not similar). If coordinates are 100% equal, 0 is returned.
 
-        private int TestUVSimilarity(Vector2[] first, Vector2[] second, float lookupMargin)
-        {
-            // If first/second coordinates are not mutually quads/tris, quickly return NoTexInfo.
-            // Also discard out of bounds cases without exception.
-            if (first.Length == second.Length && first.Length >= 3 && first.Length <= 4)
-            {
-                for (int i = 0; i < first.Length; i++)
-                    for (int j = 0; j < second.Length; j++)
-                    {
-                        var shift = (j + i) % second.Length;
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		private int TestUVSimilarity(Vector2[] first, Vector2[] second, float lookupMargin)
+		{
+			int len = first.Length;
 
-                        if (!MathC.WithinEpsilon(first[j].X, second[shift].X, lookupMargin) ||
-                            !MathC.WithinEpsilon(first[j].Y, second[shift].Y, lookupMargin))
-                            break;
+			if (len != second.Length || len < 3 || len > 4)
+				return _noTexInfo;
 
-                        //Comparison was successful
-                        if (j == second.Length - 1)
-                            return i == 0 ? 0 : second.Length - i;
-                    }
-            }
-            return _noTexInfo;
-        }
+			for (int rotation = 0; rotation < len; rotation++)
+			{
+				bool allEqual = true;
 
-        // Generate new parent with incoming texture and immediately add incoming texture as a child
+				for (int j = 0; j < len; j++)
+				{
+					int idx = j + rotation;
+					if (idx >= len) idx -= len; // più veloce di %
 
-        private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int frameIndex = -1)
+					var f = first[j];
+					var s = second[idx];
+
+					if (!MathC.WithinEpsilon(f.X, s.X, lookupMargin) ||
+					    !MathC.WithinEpsilon(f.Y, s.Y, lookupMargin))
+					{
+						allEqual = false;
+						break;
+					}
+				}
+
+				if (allEqual)
+					return rotation == 0 ? 0 : len - rotation;
+			}
+
+			return _noTexInfo;
+		}
+
+		// Generate new parent with incoming texture and immediately add incoming texture as a child
+
+		private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int frameIndex = -1)
         {
             var newParent = new ParentTextureArea(texture, destination);
             parentList.Add(newParent);
