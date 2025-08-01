@@ -83,6 +83,23 @@ namespace TombLib.Forms
 			}
 		}
 
+		private struct TombEngineFpsSetting
+		{
+			public readonly float Key;
+			public readonly string Value;
+
+			public TombEngineFpsSetting(float key, string value)
+			{
+				Key = key;
+				Value = value;
+			}
+
+			public override string ToString()
+			{
+				return Value;
+			}
+		}
+
 		public AnimatedTextureSet SelectedSet { get; set; }
 
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -300,8 +317,8 @@ namespace TombLib.Forms
 
 				comboFps.Enabled = true;
 
-				for (int i = 1; i <= 32; i++)
-					comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
+				for (int i = 1; i <= 120; i++)
+					comboFps.Items.Add(new TombEngineFpsSetting(i, i + " FPS"));
 			}
 			else
 			{
@@ -403,7 +420,8 @@ namespace TombLib.Forms
 						numericUpDownFPS.Value = (decimal)selectedSet.Fps;
 						break;
 					case AnimatedTextureAnimationType.UVRotate:
-						numericUpDownFPS.Value = (decimal)selectedSet.Fps;
+						int fps = (int)selectedSet.Fps;
+						comboFps.SelectedIndex = fps > 1 ? fps - 1 : 0;
 						comboUvRotate.SelectedIndex = selectedSet.UvRotate;
 						break;
 				}
@@ -1125,12 +1143,12 @@ namespace TombLib.Forms
 					}
 					else
 					{
-						comboFps.Visible = false;
-						numericUpDownFPS.Visible = true;
-						numericUpDownFPS.Enabled = true;
+						comboFps.Visible = true;
+						numericUpDownFPS.Visible = false;
+						numericUpDownFPS.Enabled = false;
 						comboUvRotate.Enabled = true;
 
-						numericUpDownFPS.Value = 15;
+						comboFps.SelectedIndex = 0;
 						comboUvRotate.SelectedIndex = 0;
 					}	
 
@@ -1162,7 +1180,10 @@ namespace TombLib.Forms
 			var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
 			if (selectedSet == null)
 				return;
-			selectedSet.Fps = ((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
+			if (_version == TRVersion.Game.TRNG)
+				selectedSet.Fps = ((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
+			else
+				selectedSet.Fps = comboFps.SelectedIndex + 1;
 			_context.OnAnimatedTexturesChanged.Invoke();
 		}
 
