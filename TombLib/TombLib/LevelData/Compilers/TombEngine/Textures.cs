@@ -304,20 +304,48 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(output.ToArray());
                 }
 
-                writer.Write(atlas.HasNormalMap);
-                if (!atlas.HasNormalMap)
-                    continue;
-
-                using (var ms = new MemoryStream())
+                writer.Write(atlas.NormalMap is not null);
+                if (atlas.NormalMap is not null)
                 {
-                    byte[] output =
-                        _level.Settings.CompressTextures ?
-                        GetCompressedTexture(atlas.NormalMap, CompressionFormat.Bc5) :
-                        GetUncompressedTexture(atlas.NormalMap);
-                    writer.Write((int)output.Length);
-                    writer.Write(output.ToArray());
+                    using (var ms = new MemoryStream())
+                    {
+                        byte[] output =
+                            _level.Settings.CompressTextures ?
+                            GetCompressedTexture(atlas.NormalMap.Value, CompressionFormat.Bc5) :
+                            GetUncompressedTexture(atlas.NormalMap.Value);
+                        writer.Write((int)output.Length);
+                        writer.Write(output.ToArray());
+                    }
                 }
-            }
+
+				writer.Write(atlas.OcclusionRoughnessSpecularMap is not null);
+                if (atlas.OcclusionRoughnessSpecularMap is not null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        byte[] output =
+                            _level.Settings.CompressTextures ?
+                            GetCompressedTexture(atlas.OcclusionRoughnessSpecularMap.Value, CompressionFormat.Bc3) :
+                            GetUncompressedTexture(atlas.OcclusionRoughnessSpecularMap.Value);
+                        writer.Write((int)output.Length);
+                        writer.Write(output.ToArray());
+                    }
+                }
+
+				writer.Write(atlas.EmissiveMap is not null);
+				if (atlas.EmissiveMap is not null)
+				{
+					using (var ms = new MemoryStream())
+					{
+						byte[] output =
+							_level.Settings.CompressTextures ?
+							GetCompressedTexture(atlas.EmissiveMap.Value, CompressionFormat.Bc3) :
+							GetUncompressedTexture(atlas.EmissiveMap.Value);
+						writer.Write((int)output.Length);
+						writer.Write(output.ToArray());
+					}
+				}
+			}
         }
     }
 }

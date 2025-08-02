@@ -10,6 +10,7 @@ using TombLib.IO;
 using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.Utils;
 using TombLib.Wad;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -608,81 +609,81 @@ namespace TombLib.LevelData.Compilers
             // degenerate quad. It's needed to fake UVRotate application to triangular areas.
             public bool ConvertToQuad;
 
-            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
-            {
-                if (indices.Length != 3)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
+			public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
+			{
+				if (indices.Length != 3)
+					throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
-                int objectTextureIndex = TexInfoIndex;
-                int[] transformedIndices = new int[3] { indices[0], indices[1], indices[2] };
+				int objectTextureIndex = TexInfoIndex;
+				int[] transformedIndices = new int[3] { indices[0], indices[1], indices[2] };
 
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        int tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
+				if (Rotation > 0)
+				{
+					for (int i = 0; i < Rotation; i++)
+					{
+						int tempIndex = transformedIndices[0];
+						transformedIndices[0] = transformedIndices[2];
+						transformedIndices[2] = transformedIndices[1];
+						transformedIndices[1] = tempIndex;
+					}
+				}
 
-                var polygon = new TombEnginePolygon();
-                polygon.Shape = TombEnginePolygonShape.Triangle;
-                polygon.Indices.AddRange(transformedIndices);
-                polygon.TextureId = objectTextureIndex;
-                polygon.BlendMode = blendMode;
-                polygon.Animated = Animated;
+				var polygon = new TombEnginePolygon();
+				polygon.Shape = TombEnginePolygonShape.Triangle;
+				polygon.Indices.AddRange(transformedIndices);
+				polygon.TextureId = objectTextureIndex;
+				polygon.Animated = Animated;
+				polygon.Material = material;
 
-                if (vertices != null)
-                {
-                    // Calculate the normal
-                    Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
-                    Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
-                    polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
-                }
+				if (vertices != null)
+				{
+					// Calculate the normal
+					Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
+					Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
+					polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
+				}
 
-                return polygon;
-            }
+				return polygon;
+			}
 
-            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
-            {
-                if (indices.Length != 4)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
+			public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
+			{
+				if (indices.Length != 4)
+					throw new ArgumentOutOfRangeException(nameof(indices.Length));
 
-                int objectTextureIndex = TexInfoIndex;
-                int[] transformedIndices = new int[4] { indices[0], indices[1], indices[2], indices[3] };
+				int objectTextureIndex = TexInfoIndex;
+				int[] transformedIndices = new int[4] { indices[0], indices[1], indices[2], indices[3] };
 
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        int tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[3];
-                        transformedIndices[3] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
+				if (Rotation > 0)
+				{
+					for (int i = 0; i < Rotation; i++)
+					{
+						int tempIndex = transformedIndices[0];
+						transformedIndices[0] = transformedIndices[3];
+						transformedIndices[3] = transformedIndices[2];
+						transformedIndices[2] = transformedIndices[1];
+						transformedIndices[1] = tempIndex;
+					}
+				}
 
-                var polygon = new TombEnginePolygon();
-                polygon.Shape = TombEnginePolygonShape.Quad;
-                polygon.Indices.AddRange(transformedIndices);
-                polygon.TextureId = objectTextureIndex;
-                polygon.BlendMode = blendMode;
-                polygon.Animated = Animated;
+				var polygon = new TombEnginePolygon();
+				polygon.Shape = TombEnginePolygonShape.Quad;
+				polygon.Indices.AddRange(transformedIndices);
+				polygon.TextureId = objectTextureIndex;
+				polygon.Animated = Animated;
+				polygon.Material = material;
 
-                if (vertices != null)
-                {
-                    // Calculate the normal
-                    Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
-                    Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
-                    polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
-                }
+				if (vertices != null)
+				{
+					// Calculate the normal
+					Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
+					Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
+					polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
+				}
 
-                return polygon;
-            }
-        }
+				return polygon;
+			}
+		}
 
         // Gets existing TexInfo child index if there is similar one in parent textures list
         private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, TextureDestination destination,
@@ -1176,8 +1177,12 @@ namespace TombLib.LevelData.Compilers
 
         private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex, VectorInt2 atlasSize)
         {
-            var customBumpmaps = new Dictionary<string, ImageC>();
-            var atlasList = new List<TombEngineAtlas>();
+            var customNormalMaps = new Dictionary<string, ImageC>();
+			var customSpecularMaps = new Dictionary<string, ImageC>();
+			var customAmbientOcclusionMaps = new Dictionary<string, ImageC>();
+			var customRoughnessMaps = new Dictionary<string, ImageC>();
+			var customEmissiveMaps = new Dictionary<string, ImageC>();
+			var atlasList = new List<TombEngineAtlas>();
             for (int i = 0; i < numPages; i++)
             {
                 atlasList.Add(new TombEngineAtlas { ColorMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y) });
@@ -1211,91 +1216,343 @@ namespace TombLib.LevelData.Compilers
                     image.ColorMap.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
                     AddPadding(p, p.Texture.Image, image.ColorMap, 0, actualPadding);
 
-                    // Do the bump map if needed
-
-                    if (p.Texture is LevelTexture && b == 1)
+                    if (b == 1)
                     {
-                        var tex = (p.Texture as LevelTexture);
-                        var bumpX = destX;
-                        var bumpY = destY;
+                        // Try sidecar loading
+                        var textureAbsolutePath = "";
 
-                        // Try to copy custom bumpmaps
-                        if (!String.IsNullOrEmpty(tex.BumpPath))
+                        var normalMapPaths = new List<string>();
+                        var specularMapPaths = new List<string>();
+                        var ambientOcclusionMapPaths = new List<string>();
+                        var roughnessMapPaths = new List<string>();
+						var emissiveMapPaths = new List<string>();
+
+						if (p.Texture is LevelTexture)
+                            textureAbsolutePath = p.Texture.Image.FileName;
+                        else if (p.Texture is ImportedGeometryTexture)
+                            textureAbsolutePath = ((ImportedGeometryTexture)p.Texture).AbsolutePath;
+                        else if (p.Texture is WadTexture)
+                            textureAbsolutePath = ((WadTexture)p.Texture).AbsolutePath;
+
+                        if (!string.IsNullOrEmpty(textureAbsolutePath))
                         {
-                            if (!customBumpmaps.ContainsKey(tex.BumpPath))
+                            string externalMaterialDataPath = Path.Combine(
+                                 Path.GetDirectoryName(textureAbsolutePath),
+                                 Path.GetFileNameWithoutExtension(textureAbsolutePath) + ".xml");
+
+                            if (!string.IsNullOrEmpty(externalMaterialDataPath) && File.Exists(externalMaterialDataPath))
                             {
-                                var potentialBumpImage = ImageC.FromFile(_level.Settings.MakeAbsolute(tex.BumpPath));
+								_progressReporter.ReportInfo($"Found XML material file: {externalMaterialDataPath}");
 
-                                // Only assign bumpmap image if size is equal to texture image size, otherwise use dummy
+								var material = MaterialData.ReadFromXml(externalMaterialDataPath);
+                                if (!string.IsNullOrEmpty(material.NormalMap))
+                                    normalMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.NormalMap));
+                                if (!string.IsNullOrEmpty(material.SpecularMap))
+									specularMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.SpecularMap));
+								if (!string.IsNullOrEmpty(material.RoughnessMap))
+									roughnessMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.RoughnessMap));
+								if (!string.IsNullOrEmpty(material.AmbientOcclusionMap))
+									ambientOcclusionMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.AmbientOcclusionMap));
+								if (!string.IsNullOrEmpty(material.EmissiveMap))
+									emissiveMapPaths.Add(Path.Combine(Path.GetDirectoryName(textureAbsolutePath), material.EmissiveMap));
+							}
 
-                                if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
-                                    customBumpmaps.Add(tex.BumpPath, potentialBumpImage);
-                                else
+                            normalMapPaths.Add(Path.Combine(
+                                    Path.GetDirectoryName(textureAbsolutePath),
+                                    Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_N" +
+                                    Path.GetExtension(textureAbsolutePath)));
+
+                            specularMapPaths.Add(Path.Combine(
+                                    Path.GetDirectoryName(textureAbsolutePath),
+                                    Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_S" +
+                                    Path.GetExtension(textureAbsolutePath)));
+
+                            ambientOcclusionMapPaths.Add(Path.Combine(
+                                    Path.GetDirectoryName(textureAbsolutePath),
+                                    Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_AO" +
+                                    Path.GetExtension(textureAbsolutePath)));
+
+                            roughnessMapPaths.Add(Path.Combine(
+                                    Path.GetDirectoryName(textureAbsolutePath),
+                                    Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_R" +
+                                    Path.GetExtension(textureAbsolutePath)));
+
+							emissiveMapPaths.Add(Path.Combine(
+								  Path.GetDirectoryName(textureAbsolutePath),
+								  Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_E" +
+								  Path.GetExtension(textureAbsolutePath)));
+
+							if (p.Texture is LevelTexture)
+                            {
+                                LevelTexture tex = p.Texture as LevelTexture;
+
+                                if (!string.IsNullOrEmpty(tex.BumpPath))
+                                    normalMapPaths.Add(_level.Settings.MakeAbsolute(tex.BumpPath));
+                            }
+                        }
+
+                        // Calculate or fetch normal maps
+                        if (p.Texture is LevelTexture)
+                        {
+                            var tex = (p.Texture as LevelTexture);
+                            var bumpX = destX;
+                            var bumpY = destY;
+
+                            string normalMapPathToUse = "";
+                            foreach (var normaMapPath in normalMapPaths)
+                                if (File.Exists(normaMapPath))
                                 {
-                                    _progressReporter.ReportWarn("Texture file '" + tex + "' has external bumpmap assigned which has different size and was ignored.");
-                                    customBumpmaps.Add(tex.BumpPath, ImageC.Black);
+                                    normalMapPathToUse = normaMapPath;
+                                    break;
                                 }
-                            }
 
-                            // Init the normal map if not done yet
-                            if (!image.HasNormalMap)
+                            // If normal map is found
+                            if (!string.IsNullOrEmpty(normalMapPathToUse))
                             {
-                                image.HasNormalMap = true;
-                                image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                                image.NormalMap.Fill(new ColorC(128, 128, 255));
+                                _progressReporter.ReportInfo($"Found normal map: {normalMapPathToUse}");
+
+                                if (!customNormalMaps.ContainsKey(normalMapPathToUse))
+                                {
+                                    var potentialBumpImage = ImageC.FromFile(normalMapPathToUse);
+
+                                    if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+                                    {
+                                        customNormalMaps[normalMapPathToUse] = potentialBumpImage;
+                                    }
+                                    else
+                                    {
+                                        _progressReporter.ReportWarn($"Texture file '{tex}' has a bump/normal map with a different size and was ignored.");
+                                        customNormalMaps[normalMapPathToUse] = ImageC.Black;
+                                    }
+                                }
+
+                                if (image.NormalMap is null)
+                                {
+                                    image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                    image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
+                                }
+
+                                image.NormalMap.Value.CopyFrom(bumpX, bumpY, customNormalMaps[normalMapPathToUse], x, y, width, height);
+                                AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, bumpX, bumpY);
                             }
-                            image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
-                            AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
+                            else
+                            {
+                                var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
+
+                                var bumpImage = ImageC.CreateNew(width, height);
+                                bumpImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
+
+                                float sobelLevel = 0;
+                                float sobelStrength = 0;
+
+                                switch (level)
+                                {
+                                    case BumpMappingLevel.Level1:
+                                        sobelLevel = 0.004f;
+                                        sobelStrength = 0.003f;
+                                        break;
+                                    case BumpMappingLevel.Level2:
+                                        sobelLevel = 0.007f;
+                                        sobelStrength = 0.004f;
+                                        break;
+                                    case BumpMappingLevel.Level3:
+                                        sobelLevel = 0.009f;
+                                        sobelStrength = 0.008f;
+                                        break;
+                                }
+
+                                // Init the normal map if not done yet
+                                if (image.NormalMap is null)
+                                {
+                                    image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                    image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
+                                }
+
+                                if (level != BumpMappingLevel.None)
+                                {
+                                    bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
+                                    bumpImage = ImageC.GaussianBlur(bumpImage, radius: 1.0f);
+                                    bumpImage = ImageC.NormalizeContrast(bumpImage);
+                                    bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Scharr, 0, 0, bumpImage.Width, bumpImage.Height);
+                                }
+                                else
+                                    // Neutral Bump
+                                    bumpImage.Fill(new ColorC(128, 128, 255, 255));
+
+                                image.NormalMap.Value.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
+                                AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, bumpX, bumpY);
+                            }
                         }
                         else
                         {
-                            var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
+                            var bumpX = destX;
+                            var bumpY = destY;
 
-
-                            var bumpImage = ImageC.CreateNew(width, height);
-                            bumpImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
-
-                            float sobelLevel = 0;
-                            float sobelStrength = 0;
-
-                            switch (level)
-                            {
-                                case BumpMappingLevel.Level1:
-                                    sobelLevel = 0.004f;
-                                    sobelStrength = 0.003f;
+                            string normalMapPathToUse = "";
+                            foreach (var normaMapPath in normalMapPaths)
+                                if (File.Exists(normaMapPath))
+                                {
+                                    normalMapPathToUse = normaMapPath;
                                     break;
-                                case BumpMappingLevel.Level2:
-                                    sobelLevel = 0.007f;
-                                    sobelStrength = 0.004f;
-                                    break;
-                                case BumpMappingLevel.Level3:
-                                    sobelLevel = 0.009f;
-                                    sobelStrength = 0.008f;
-                                    break;
-                            }
+                                }
 
-                            // Init the normal map if not done yet
-                            if (!image.HasNormalMap)
+                            if (!string.IsNullOrEmpty(normalMapPathToUse))
                             {
-                                image.HasNormalMap = true;
-                                image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                                image.NormalMap.Fill(new ColorC(128, 128, 255));
-                            }
+								_progressReporter.ReportInfo($"Found normal map: {normalMapPathToUse}");
 
-                            if (level != BumpMappingLevel.None)
-                            {
-                                bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
-                                bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Sobel, 0, 0, bumpImage.Width, bumpImage.Height);
-                            }
-                            else
-                                // Neutral Bump
-                                bumpImage.Fill(new ColorC(128, 128, 255, 255));
+								if (!customNormalMaps.ContainsKey(normalMapPathToUse))
+                                {
+                                    var potentialBumpImage = ImageC.FromFile(normalMapPathToUse);
 
-                            image.NormalMap.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
-                            AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
+                                    if (potentialBumpImage != null && potentialBumpImage.Size == p.Texture.Image.Size)
+                                    {
+                                        customNormalMaps[normalMapPathToUse] = potentialBumpImage;
+                                    }
+                                    else
+                                    {
+                                        _progressReporter.ReportWarn($"Texture file '{p.Texture}' has a bump/normal map with a different size and was ignored.");
+                                        customNormalMaps[normalMapPathToUse] = ImageC.Black;
+                                    }
+                                }
+
+                                if (image.NormalMap is null)
+                                {
+                                    image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                                    image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
+                                }
+
+                                image.NormalMap.Value.CopyFrom(bumpX, bumpY, customNormalMaps[normalMapPathToUse], x, y, width, height);
+                                AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, bumpX, bumpY);
+                            }
                         }
-                    }
-                }
+
+						// Load ambient occlusion map
+						string ambientOcclusionMapPathToUse = ambientOcclusionMapPaths.FirstOrDefault(p => File.Exists(p));
+						if (!string.IsNullOrEmpty(ambientOcclusionMapPathToUse))
+						{
+							_progressReporter.ReportInfo($"Found AO map: {ambientOcclusionMapPathToUse}");
+
+							if (!customAmbientOcclusionMaps.ContainsKey(ambientOcclusionMapPathToUse))
+							{
+								var potentialImage = ImageC.FromFile(ambientOcclusionMapPathToUse);
+
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
+								{
+									customAmbientOcclusionMaps[ambientOcclusionMapPathToUse] = potentialImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
+									customAmbientOcclusionMaps[ambientOcclusionMapPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (image.OcclusionRoughnessSpecularMap is null)
+							{
+								image.OcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.OcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
+							}
+
+							image.OcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customAmbientOcclusionMaps[ambientOcclusionMapPathToUse], x, y, width, height, ImageChannel.R);
+						}
+
+						// Load roughness map
+						string roughnessMapPathToUse = roughnessMapPaths.FirstOrDefault(p => File.Exists(p));
+						if (!string.IsNullOrEmpty(roughnessMapPathToUse))
+						{
+							_progressReporter.ReportInfo($"Found roughness map: {roughnessMapPathToUse}");
+
+							if (!customRoughnessMaps.ContainsKey(roughnessMapPathToUse))
+							{
+								var potentialImage = ImageC.FromFile(roughnessMapPathToUse);
+
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
+								{
+									customRoughnessMaps[roughnessMapPathToUse] = potentialImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
+									customRoughnessMaps[roughnessMapPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (image.OcclusionRoughnessSpecularMap is null)
+							{
+								image.OcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.OcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
+							}
+
+							image.OcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customRoughnessMaps[roughnessMapPathToUse], x, y, width, height, ImageChannel.G);
+						}
+
+						// Load specular map
+						string specularMapPathToUse = specularMapPaths.FirstOrDefault(p => File.Exists(p));
+						if (!string.IsNullOrEmpty(specularMapPathToUse))
+						{
+							_progressReporter.ReportInfo($"Found specular map: {specularMapPathToUse}");
+
+							if (!customSpecularMaps.ContainsKey(specularMapPathToUse))
+							{
+								var potentialImage = ImageC.FromFile(specularMapPathToUse);
+
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
+								{
+									customSpecularMaps[specularMapPathToUse] = potentialImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
+									customSpecularMaps[specularMapPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (image.OcclusionRoughnessSpecularMap is null)
+							{
+								image.OcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.OcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 255, 255));
+							}
+
+							image.OcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, customSpecularMaps[specularMapPathToUse], x, y, width, height, ImageChannel.B);
+						}
+
+						// Load emissive map
+						string emissiveMapPathToUse = emissiveMapPaths.FirstOrDefault(p => File.Exists(p));
+						if (!string.IsNullOrEmpty(emissiveMapPathToUse))
+						{
+							_progressReporter.ReportInfo($"Found emissive map: {emissiveMapPathToUse}");
+
+							if (!customEmissiveMaps.ContainsKey(emissiveMapPathToUse))
+							{
+								var potentialImage = ImageC.FromFile(emissiveMapPathToUse);
+
+								if (potentialImage != null && potentialImage.Size == p.Texture.Image.Size)
+								{
+									customEmissiveMaps[emissiveMapPathToUse] = potentialImage;
+								}
+								else
+								{
+									_progressReporter.ReportWarn($"Texture file '{p.Texture}' has an emissive map with a different size and was ignored.");
+									customEmissiveMaps[emissiveMapPathToUse] = ImageC.Black;
+								}
+							}
+
+							if (image.EmissiveMap is null)
+							{
+								image.EmissiveMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+								image.EmissiveMap.Value.Fill(new ColorC(0, 0, 0, 255));
+							}
+
+							image.EmissiveMap.Value.CopyFrom(destX, destY, customEmissiveMaps[emissiveMapPathToUse], x, y, width, height);
+						}
+
+						if (image.OcclusionRoughnessSpecularMap != null)
+						    AddPadding(p, image.OcclusionRoughnessSpecularMap.Value, image.OcclusionRoughnessSpecularMap.Value, 0, actualPadding, destX, destY);
+
+						if (image.EmissiveMap != null)
+							AddPadding(p, image.EmissiveMap.Value, image.EmissiveMap.Value, 0, actualPadding, destX, destY);
+					}
+				}
             }
 
             for (int i = 0; i < textures.Count; i++)
@@ -1303,7 +1560,7 @@ namespace TombLib.LevelData.Compilers
                 textures[i].AtlasDimensions = atlasList[textures[i].Page].ColorMap.Size;
                 textures[i].AtlasIndex = textures[i].Page + baseIndex;
             }
-
+			
             return atlasList;
         }
 
@@ -1453,8 +1710,8 @@ namespace TombLib.LevelData.Compilers
             VectorInt2 atlasSize = new VectorInt2(MaxTileSize, MaxTileSize);
 
             RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize);
-            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize);
-            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, false, true, 0, atlasSize);
+            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, true, true, 0, atlasSize);
+            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, true, true, 0, atlasSize);
 
             AnimatedAtlas = new List<TombEngineAtlas>();
             for (int n = 0; n < _actualAnimTextures.Count; n++)
@@ -1468,25 +1725,41 @@ namespace TombLib.LevelData.Compilers
             {
                 Directory.CreateDirectory("OutputDebug");
 
+                var files = Directory.EnumerateFiles("OutputDebug");
+                foreach (var file in files)
+                    File.Delete(file);
+
                 for (int n = 0; n < RoomsAtlas.Count; n++)
                 {
                     RoomsAtlas[n].ColorMap.Save("OutputDebug\\RoomsAtlas" + n + ".png");
-                }
+					RoomsAtlas[n].NormalMap?.Save("OutputDebug\\RoomsAtlas" + n + "_N.png");
+					RoomsAtlas[n].OcclusionRoughnessSpecularMap?.Save("OutputDebug\\RoomsAtlas" + n + "_AO_R_S.png");
+					RoomsAtlas[n].EmissiveMap?.Save("OutputDebug\\RoomsAtlas" + n + "_E.png");
+				}
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
                     MoveablesAtlas[n].ColorMap.Save("OutputDebug\\MoveablesAtlas" + n + ".png");
-                }
+					MoveablesAtlas[n].NormalMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_N.png");
+					MoveablesAtlas[n].OcclusionRoughnessSpecularMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_AO_R_S.png");
+					MoveablesAtlas[n].EmissiveMap?.Save("OutputDebug\\MoveablesAtlas" + n + "_E.png");
+				}
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
                     StaticsAtlas[n].ColorMap.Save("OutputDebug\\StaticsAtlas" + n + ".png");
-                }
+					StaticsAtlas[n].NormalMap?.Save("OutputDebug\\StaticsAtlas" + n + "_N.png");
+					StaticsAtlas[n].OcclusionRoughnessSpecularMap?.Save("OutputDebug\\StaticsAtlas" + n + "_AO_R_S.png");
+					StaticsAtlas[n].EmissiveMap?.Save("OutputDebug\\StaticsAtlas" + n + "_E.png");
+				}
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
                     AnimatedAtlas[n].ColorMap.Save("OutputDebug\\AnimatedAtlas" + n + ".png");
-                }
+					AnimatedAtlas[n].NormalMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_N.png");
+					AnimatedAtlas[n].OcclusionRoughnessSpecularMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_AO_R_S.png");
+					AnimatedAtlas[n].EmissiveMap?.Save("OutputDebug\\AnimatedAtlas" + n + "_E.png");
+				}
             }
             catch { }   
 #endif
@@ -1559,8 +1832,6 @@ namespace TombLib.LevelData.Compilers
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
-            bool unsupportedTextureFound = false;
-
             writer.Write((int)_actualAnimTextures.Count);
             for (int i = 0; i < _actualAnimTextures.Count; i++)
             {
@@ -1574,12 +1845,7 @@ namespace TombLib.LevelData.Compilers
                         break;
 
                     case AnimatedTextureAnimationType.UVRotate:
-                        if (unsupportedTextureFound == false)
-                        {
-                            _progressReporter.ReportWarn("UVRotate animated textures are not supported in TombEngine yet and will be ignored.");
-                            unsupportedTextureFound = true;
-                        }
-                        animType = 0; // FIXME: Change to 1 when implemented -- Lwmte, 06.06.2025`
+                        animType = 1;
                         break;
 
                     case AnimatedTextureAnimationType.Video:
