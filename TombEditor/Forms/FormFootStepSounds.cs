@@ -97,7 +97,7 @@ namespace TombEditor.Forms
 
             for (int y = yMin; y < yMax; ++y)
                 for (int x = xMin; x < xMax; ++x)
-                    textureMap.VisibleTexture.SetFootStepSound(x, y, sound);
+                    (textureMap.VisibleTexture as LevelTexture).SetFootStepSound(x, y, sound);
 
             textureMap.Invalidate();
             _editor.TextureSoundsChange();
@@ -121,7 +121,7 @@ namespace TombEditor.Forms
 
             protected override void OnPaintSelection(PaintEventArgs e)
             {
-                var texture = VisibleTexture;
+                var texture = VisibleTexture as LevelTexture;
 
                 // Determine relevant area
                 Vector2 start = FromVisualCoord(new PointF());

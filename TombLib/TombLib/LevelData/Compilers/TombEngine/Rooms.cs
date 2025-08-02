@@ -54,17 +54,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // Remove WaterScheme values for water rooms
             Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
-            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
-            {
-                for (int i = 0; i < trRoom.Polygons.Count; i++)
-                {
-                    if (trRoom.Polygons[i].Animated)
-                    {
-                        //trRoom.Polygons[i].AnimatedSequence = _textureInfoManager.AnimatedTextures[0].Value.
-                    }
-                }
-            });
-
             ReportProgress(20, "    Number of rooms: " + _roomUnmapping.Count);
 
             if (!_level.Settings.FastMode)

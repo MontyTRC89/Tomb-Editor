@@ -89,6 +89,9 @@
     <Compile Update="Controls\WadTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Forms\FormAnimatedTextures.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
