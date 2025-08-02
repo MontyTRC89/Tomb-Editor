@@ -90,7 +90,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(30, "Packing textures");
             _textureInfoManager.LayOutAllData();
 
-            ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
+            ReportProgress(35, "   Number of processed texture fragments: " + _textureInfoManager.TexturesCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
             GetAllReachableRooms();
 
@@ -131,7 +131,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 BoxCount = _boxes.Count,
                 OverlapCount = _overlaps.Count,
-                ObjectTextureCount = _textureInfoManager.TexInfoCount,
+                ObjectTextureCount = _textureInfoManager.TexturesCount,
             };
         }
 
