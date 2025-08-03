@@ -24,14 +24,20 @@ namespace TombLib.Scripting.Tomb1Main
 		private bool _suppressBracketAutospacing;
 		private DocumentLine _cachedLine;
 		private ErrorDetectionWorker _errorDetectionWorker;
+		private bool _isTR2;
 
-		public Tomb1MainEditor(Version engineVersion) : base(engineVersion)
+		public Tomb1MainEditor(Version engineVersion) : this(engineVersion, false)
+		{ }
+
+		public Tomb1MainEditor(Version engineVersion, bool isTR2) : base(engineVersion)
 		{
 			BindEventMethods();
 			CommentPrefix = "//";
 
 			_errorDetectionWorker = new ErrorDetectionWorker(new ErrorDetector(), EngineVersion, new TimeSpan(500));
 			_errorDetectionWorker.RunWorkerCompleted += ErrorWorker_RunWorkerCompleted;
+
+			_isTR2 = isTR2;
 		}
 
 		private void ErrorWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -81,7 +87,7 @@ namespace TombLib.Scripting.Tomb1Main
 					if (Document.GetCharAt(CaretOffset) == '\"')
 						_completionWindow.EndOffset = CaretOffset + 1;
 
-					foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
+					foreach (ICompletionData item in Autocomplete.GetAutocompleteData(_isTR2))
 						_completionWindow.CompletionList.CompletionData.Add(item);
 
 					ShowCompletionWindow();
@@ -153,7 +159,7 @@ namespace TombLib.Scripting.Tomb1Main
 				if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == '\"')
 					_completionWindow.EndOffset = CaretOffset + 1;
 
-				foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
+				foreach (ICompletionData item in Autocomplete.GetAutocompleteData(_isTR2))
 					_completionWindow.CompletionList.CompletionData.Add(item);
 
 				ShowCompletionWindow();
@@ -176,7 +182,7 @@ namespace TombLib.Scripting.Tomb1Main
 		{
 			var config = configuration as T1MEditorConfiguration;
 
-			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
+			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme, _isTR2);
 
 			Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
 			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));

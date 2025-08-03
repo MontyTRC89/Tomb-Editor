@@ -42,7 +42,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void InitializePreview()
 		{
-			editorPreview = new Tomb1MainEditor(new Version(0, 0))
+			editorPreview = new Tomb1MainEditor(new Version(0, 0), false)
 			{
 				Text =
 					"\"levels\": [\n" +
@@ -459,7 +459,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				)
 			);
 
-			editorPreview.SyntaxHighlighting = new SyntaxHighlighting(scheme);
+			editorPreview.SyntaxHighlighting = new SyntaxHighlighting(scheme, false);
 		}
 
 		private void ToggleSaveSchemeButton()
