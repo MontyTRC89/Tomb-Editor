@@ -13,7 +13,7 @@ namespace TombIDE.Shared.NewStructure
 
 		private static readonly string[] ValidEngineExecutableNames = new string[]
 		{
-			"Tomb1Main.exe", "TR1X.exe", "Tomb2.exe", "tomb3.exe", "tomb4.exe", "TombEngine.exe" // Only the ones TIDE currently supports
+			"Tomb1Main.exe", "TR1X.exe", "TR2X.exe", "Tomb2.exe", "tomb3.exe", "tomb4.exe", "TombEngine.exe" // Only the ones TIDE currently supports
 		};
 
 		private static readonly string[] PlatformSpecificDirectories = new string[] // TEN only
@@ -349,8 +349,7 @@ namespace TombIDE.Shared.NewStructure
 			switch (targetGameVersion)
 			{
 				case TRVersion.Game.TR1 or TRVersion.Game.TR2X:
-					string[] gameflowFiles = Directory.GetFiles(directoryPath, TR1XGameProject.MainScriptFileNameFilter, SearchOption.TopDirectoryOnly);
-					return gameflowFiles.Length > 0;
+					return true; // File names will change soon, pass validation for now
 
 				case TRVersion.Game.TombEngine:
 					string[] luaFiles = Directory.GetFiles(directoryPath, "*.lua", SearchOption.TopDirectoryOnly);
