@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Hashing;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace TombLib.Utils

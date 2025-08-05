@@ -562,7 +562,8 @@ namespace TombLib.Utils
             switch (extension)
             {
                 case "png":
-                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Png));
+                    //GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Png));
+                    PngWriter.SaveToFile(fileName, _data, Width, Height);
                     break;
                 case "bmp":
                 case "dib":
@@ -591,9 +592,10 @@ namespace TombLib.Utils
             }
         }
 
-        public void Save(Stream stream, ImageFormat format)
+        public void SaveToPNG(Stream stream)
         {
-            GetTempSystemDrawingBitmap(bitmap => bitmap.Save(stream, format));
+			//PngWriter.SaveToStream(stream, _data, Width, Height);
+			GetTempSystemDrawingBitmap(bitmap => bitmap.Save(stream, ImageFormat.Png));
         }
 
         // Try to use 'GetTempSystemDrawingBitmap' instead if possible to avoid unnecessary data allocation

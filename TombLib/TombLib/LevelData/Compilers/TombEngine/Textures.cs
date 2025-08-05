@@ -223,15 +223,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private byte[] GetUncompressedTexture(ImageC i)
         {
             MemoryStream output = new MemoryStream();
-            i.Save(output, System.Drawing.Imaging.ImageFormat.Png);
+            i.SaveToPNG(output);
             output = RemoveColorChunks(output);
             return output.ToArray();
         }
 
         private byte[] GetCompressedTexture(ImageC i, CompressionFormat format)
         {
-            using Image bitmap = i.ToBitmap();
-
             BcEncoder encoder = new BcEncoder();
 
             encoder.OutputOptions.GenerateMipMaps = true;

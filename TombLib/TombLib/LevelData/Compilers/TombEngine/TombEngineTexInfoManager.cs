@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.LevelData.Compilers.TombEngine;
@@ -23,7 +24,7 @@ namespace TombLib.LevelData.Compilers
 
     public class TombEngineTexInfoManager
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private const int _noTexInfo = -1;
         private const int _dummyTexInfo = -2;
@@ -137,6 +138,7 @@ namespace TombLib.LevelData.Compilers
             public BlendMode BlendMode;
             public bool IsForTriangle;
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public Rectangle2 GetRect()
             {
                 if (AbsCoord.Length == 3)
@@ -719,84 +721,131 @@ namespace TombLib.LevelData.Compilers
         }
 
         // Gets existing TexInfo child index if there is similar one in parent textures list
-        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, TextureDestination destination,
-                                   bool isForTriangle, BlendMode blendMode,
-                                   bool checkParameters = true, bool scanOtherSets = false, float lookupMargin = 0.0f)
-        {
-            var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
-            for (int i = 0; i < lookupCoordinates.Length; i++)
-                lookupCoordinates[i] = areaToLook.GetTexCoord(i);
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, TextureDestination destination,
+						   bool isForTriangle, BlendMode blendMode,
+						   bool checkParameters = true, bool scanOtherSets = false, float lookupMargin = 0.0f)
+		{
+			int coordCount = isForTriangle ? 3 : 4;
+			Span<Vector2> lookupCoordinates = stackalloc Vector2[coordCount];
+			for (int i = 0; i < coordCount; i++)
+				lookupCoordinates[i] = areaToLook.GetTexCoord(i);
 
-            foreach (var parent in parentList)
-            {
-                // Parents with different attributes are quickly discarded
-                if (!parent.ParametersSimilar(areaToLook, destination))
+            foreach (ref var parent in CollectionsMarshal.AsSpan(parentList))
+			{
+				if (!parent.ParametersSimilar(areaToLook, destination))
+				{
+					if (!scanOtherSets)
+						continue;
+
+					var sr = parent.TextureSimilar(areaToLook);
+					if (!sr.HasValue)
+						continue;
+
+					for (int i = 0; i < coordCount; i++)
+						lookupCoordinates[i] = sr.Value.GetTexCoord(i);
+				}
+
+                int childCount = parent.Children.Count;
+
+                for (int i = 0; i < childCount; i++)
                 {
-                    // Try to identify if similar texture info from another texture set is present 
-                    // by checking hash of the image area. If match is found, substitute lookup coordinates.
+                    var child = parent.Children[i];
 
-                    if (!scanOtherSets) continue;
-
-                    var sr = parent.TextureSimilar(areaToLook);
-                    if (!sr.HasValue) continue;
-
-                    for (int i = 0; i < lookupCoordinates.Length; i++)
-                        lookupCoordinates[i] = sr.Value.GetTexCoord(i);
-                }
-
-                // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
-                foreach (var child in parent.Children)
-                {
-                    // If parameters are different, children is quickly discarded from comparison.
-                    if ((checkParameters && areaToLook.BlendMode != child.BlendMode) || child.IsForTriangle != isForTriangle)
+                    if (child.IsForTriangle != isForTriangle)
                         continue;
 
-                    // Test if coordinates are mutually equal and return resulting rotation if they are
-                    var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
+                    if (checkParameters && areaToLook.BlendMode != child.BlendMode)
+                        continue;
+
+					var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
                     if (result != _noTexInfo)
                     {
-                        // Refresh topmost flag, as same texture may be applied to faces with different topmost priority
                         parent.BlendMode = blendMode;
 
-                        // Refresh parent area (only in case it's from the same texture set, otherwise clashes are possible)
                         if (areaToLook.Texture == parent.Texture && !areaToLook.ParentArea.IsZero)
                             parent.Area = areaToLook.ParentArea;
 
-                        // Child is rotation-wise equal to incoming area
-                        return new Result() { TexInfoIndex = child.TextureId, Rotation = (byte)result };
+                        return new Result
+                        {
+                            TexInfoIndex = child.TextureId,
+                            Rotation = (byte)result
+                        };
                     }
                 }
-            }
+			}
 
-            return null; // No equal entry, new should be created
-        }
+			return null;
+		}
 
-        // Tests if all UV coordinates are similar with different rotations.
-        // If all coordinates are equal for one of the rotation factors, rotation factor is returned,
-        // otherwise NoTexInfo is returned (not similar). If coordinates are 100% equal, 0 is returned.
+		// Tests if all UV coordinates are similar with different rotations.
+		// If all coordinates are equal for one of the rotation factors, rotation factor is returned,
+		// otherwise NoTexInfo is returned (not similar). If coordinates are 100% equal, 0 is returned.
 
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-		private int TestUVSimilarity(Vector2[] first, Vector2[] second, float lookupMargin)
+		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+		private int TestUVSimilarity(Vector2[] first, ReadOnlySpan<Vector2> second, float lookupMargin)
 		{
 			int len = first.Length;
-
-			if (len != second.Length || len < 3 || len > 4)
+			if (len != second.Length || (uint)(len - 3) > 1) // solo 3 o 4
 				return _noTexInfo;
 
-			for (int rotation = 0; rotation < len; rotation++)
+			float marginSquared = lookupMargin * lookupMargin;
+
+			if (len == 4)
+			{
+				// Flatten first array: [x0, y0, x1, y1, x2, y2, x3, y3]
+				Span<float> flatFirst = stackalloc float[8];
+				for (int i = 0; i < 4; i++)
+				{
+					flatFirst[i * 2 + 0] = first[i].X;
+					flatFirst[i * 2 + 1] = first[i].Y;
+				}
+
+				var vecFirst = new Vector<float>(flatFirst);
+
+				// Reusable span to avoid CA2014 warning
+				Span<float> flatSecond = stackalloc float[8];
+
+				for (int rotation = 0; rotation < 4; rotation++)
+				{
+					for (int i = 0; i < 4; i++)
+					{
+						int idx = (i + rotation) & 3; // faster than modulus
+						flatSecond[i * 2 + 0] = second[idx].X;
+						flatSecond[i * 2 + 1] = second[idx].Y;
+					}
+
+					var vecSecond = new Vector<float>(flatSecond);
+					var diff = vecFirst - vecSecond;
+					var distSquared = diff * diff;
+
+					float sum = 0f;
+					for (int i = 0; i < Vector<float>.Count; i++)
+						sum += distSquared[i];
+
+					if (sum <= marginSquared)
+						return rotation == 0 ? 0 : 4 - rotation;
+				}
+
+				return _noTexInfo;
+			}
+
+			// Fallback for len == 3
+			for (int rotation = 0; rotation < 3; rotation++)
 			{
 				bool allEqual = true;
 
-				for (int j = 0; j < len; j++)
+				for (int j = 0; j < 3; j++)
 				{
 					int idx = j + rotation;
-					if (idx >= len) idx -= len; // più veloce di %
+					if (idx >= 3) idx -= 3;
 
 					var f = first[j];
 					var s = second[idx];
 
-					if (!MathC.WithinEpsilon(f.X, s.X, lookupMargin) ||
-					    !MathC.WithinEpsilon(f.Y, s.Y, lookupMargin))
+					var dx = f.X - s.X;
+					var dy = f.Y - s.Y;
+					if ((dx * dx + dy * dy) > marginSquared)
 					{
 						allEqual = false;
 						break;
@@ -804,7 +853,7 @@ namespace TombLib.LevelData.Compilers
 				}
 
 				if (allEqual)
-					return rotation == 0 ? 0 : len - rotation;
+					return rotation == 0 ? 0 : 3 - rotation;
 			}
 
 			return _noTexInfo;
