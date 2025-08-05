@@ -20,5 +20,5 @@ public sealed class Patterns
 	public string Strings { get; }
 
 	public static string LevelProperty => "\"title\":\\s*\"";
-	public static string LevelCommentName => @"^\s*//\s*Level\s*\d+\s*:\s*(.+)$";
+	public static string LevelCommentName => @"^\s*\/\/\s*(Level)?\s*\d+\s*(:|\.)\s*(.+)$";
 }

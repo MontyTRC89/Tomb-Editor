@@ -373,7 +373,7 @@ namespace TombIDE
 			progressBar.Maximum = 1;
 
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR1.zip");
-			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR1.zip"); // TODO: Replace this!
+			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR1.zip");
 
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
 			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
@@ -413,17 +413,9 @@ namespace TombIDE
 			progressBar.Maximum = 1;
 
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR2X.zip");
-			string soundsArchivePath = Path.Combine(DefaultPaths.TemplatesDirectory, "Sounds", "TR1.zip");
 
 			using (var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath)))
-			using (var soundsArchive = new ZipArchive(File.OpenRead(soundsArchivePath)))
-			{
-				var allFiles = new List<ZipArchiveEntry>();
-				allFiles.AddRange(engineArchive.Entries);
-				allFiles.AddRange(soundsArchive.Entries);
-
-				ExtractEntries(allFiles, targetProject);
-			}
+				ExtractEntries(engineArchive.Entries, targetProject);
 
 			string engineRootDirectory = targetProject.GetEngineRootDirectoryPath();
 			string musicDir = Path.Combine(engineRootDirectory, "music");
@@ -610,7 +602,7 @@ namespace TombIDE
 			IconUtilities.InjectIcon(launcherFile, icoFilePath);
 		}
 
-		private void ExtractEntries(List<ZipArchiveEntry> entries, IGameProject targetProject)
+		private void ExtractEntries(IList<ZipArchiveEntry> entries, IGameProject targetProject)
 		{
 			progressBar.Maximum += entries.Count;
 
