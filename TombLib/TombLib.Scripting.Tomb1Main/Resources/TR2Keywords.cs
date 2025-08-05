@@ -34,9 +34,6 @@ namespace TombLib.Scripting.Tomb1Main.Resources
 			"fog_start",
 			"fog_end",
 			"water_color",
-
-			// Level properties
-			"sfx_path",
 		};
 	}
 }
