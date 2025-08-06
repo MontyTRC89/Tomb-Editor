@@ -42,7 +42,7 @@ namespace TombLib.Utils
 			return compressionLevel switch
 			{
 				CompressionLevel.SmallestSize => LZ4Level.L12_MAX,
-				CompressionLevel.Optimal => LZ4Level.L11_OPT,
+				CompressionLevel.Optimal => LZ4Level.L03_HC,
 				CompressionLevel.Fastest => LZ4Level.L00_FAST,
 				_ => LZ4Level.L11_OPT
 			};

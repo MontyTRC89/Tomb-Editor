@@ -223,7 +223,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private byte[] GetUncompressedTexture(ImageC i)
         {
             MemoryStream output = new MemoryStream();
-            i.SaveToPNG(output);
+            i.SaveToPngFast(output);
             output = RemoveColorChunks(output);
             return output.ToArray();
         }
