@@ -1,3 +1,9 @@
+Version 1.9.2
+=============
+
+WadTool:
+ * Fixed loading of certain dxtre3d levels with corrupted animcommand data.
+
 Version 1.9.1
 =============
 
