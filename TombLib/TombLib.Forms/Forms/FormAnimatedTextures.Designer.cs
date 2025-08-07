@@ -275,7 +275,7 @@ namespace TombLib.Forms
 			lblFps.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			lblFps.Location = new System.Drawing.Point(109, 6);
 			lblFps.Name = "lblFps";
-			lblFps.Size = new System.Drawing.Size(32, 14);
+			lblFps.Size = new System.Drawing.Size(71, 14);
 			lblFps.TabIndex = 8;
 			lblFps.Text = "FPS:";
 			// 

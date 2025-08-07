@@ -113,8 +113,8 @@ namespace TombLib.Forms
 		private int _previewCurrentRepeatTimes;
 		private const int _maxLegacyFrames = 16;
 		private const string animNameCombineString = " (with ";
-		private int _lastX;
-		private int _lastY;
+		private float _lastX;
+		private float _lastY;
 
 		private readonly TRVersion.Game _version;
 		private readonly TextureMapBase _textureMap;
@@ -376,7 +376,10 @@ namespace TombLib.Forms
 				_previewTimer.Enabled = true;
 				previewProgressBar.TextMode = DarkProgressBarMode.XOfN;
 			}
-			_previewTimer.Interval = (int)MathC.Clamp(Math.Round(1000.0f / selectedSet.Fps), 1, int.MaxValue); // Without NG, the default value of 15 should be present at this point.
+			if (_version == TRVersion.Game.TombEngine && selectedSet.AnimationType == AnimatedTextureAnimationType.UVRotate)
+				_previewTimer.Interval = (int)MathC.Clamp(Math.Round(1000.0f / 30.0f), 1, int.MaxValue); 
+			else
+				_previewTimer.Interval = (int)MathC.Clamp(Math.Round(1000.0f / selectedSet.Fps), 1, int.MaxValue); // Without NG, the default value of 15 should be present at this point.
 			_lastX = 0;
 			_lastY = 0;
 
@@ -420,8 +423,7 @@ namespace TombLib.Forms
 						numericUpDownFPS.Value = (decimal)selectedSet.Fps;
 						break;
 					case AnimatedTextureAnimationType.UVRotate:
-						int fps = (int)selectedSet.Fps;
-						comboFps.SelectedIndex = fps > 1 ? fps - 1 : 0;
+						numericUpDownFPS.Value = (decimal)selectedSet.TenUvRotateSpeed;
 						comboUvRotate.SelectedIndex = selectedSet.UvRotate;
 						break;
 				}
@@ -495,6 +497,8 @@ namespace TombLib.Forms
 			}];
 		}
 
+		private float _scrollProgress = 0f;
+
 		private void _onPicturePreviewPaint(object sender, PaintEventArgs args)
 		{
 			var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
@@ -511,8 +515,8 @@ namespace TombLib.Forms
 			{
 				if (_version == TRVersion.Game.TRNG)
 				{
-					g.DrawImage(image, new Point(0, _lastY * 2 - 128));
-					g.DrawImage(image, new Point(0, _lastY * 2));
+					g.DrawImage(image, new Point(0, (int)_lastY * 2 - 128));
+					g.DrawImage(image, new Point(0, (int)_lastY * 2));
 
 					_lastY += selectedSet.UvRotate;
 					if (_lastY >= 64 && selectedSet.UvRotate > 0)
@@ -522,14 +526,16 @@ namespace TombLib.Forms
 				}
 				else
 				{
+					const float UvRotateStepFactor = 128.0f / 30.0f;
+
 					switch ((UVRotateDirection)comboUvRotate.SelectedIndex)
 					{
 						case UVRotateDirection.TopToBottom:
-							g.DrawImage(image, new Point(0, _lastY * 2 - 128));
-							g.DrawImage(image, new Point(0, _lastY * 2));
+							g.DrawImage(image, new PointF(0, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(0, _lastY * 2));
 
 							_lastX = 0;
-							_lastY++;
+							_lastY += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
 
 							if (_lastY >= 64)
 								_lastY = 0;
@@ -537,11 +543,11 @@ namespace TombLib.Forms
 							break;
 
 						case UVRotateDirection.BottomToTop:
-							g.DrawImage(image, new Point(0, _lastY * 2 - 128));
-							g.DrawImage(image, new Point(0, _lastY * 2));
+							g.DrawImage(image, new PointF(0, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(0,	_lastY * 2));
 
 							_lastX = 0;
-							_lastY--;
+							_lastY -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
 
 							if (_lastY <= 0)
 								_lastY = 64;
@@ -549,10 +555,10 @@ namespace TombLib.Forms
 							break;
 
 						case UVRotateDirection.LeftToRight:
-							g.DrawImage(image, new Point(_lastX * 2 - 128, 0));
-							g.DrawImage(image, new Point(_lastX * 2, 0));
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, 0));
+							g.DrawImage(image, new PointF(_lastX * 2, 0));
 
-							_lastX++;
+							_lastX += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
 							_lastY = 0;
 
 							if (_lastX >= 64)
@@ -561,10 +567,10 @@ namespace TombLib.Forms
 							break;
 
 						case UVRotateDirection.RightToLeft:
-							g.DrawImage(image, new Point(_lastX * 2 - 128, 0));
-							g.DrawImage(image, new Point(_lastX * 2, 0));
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, 0));
+							g.DrawImage(image, new PointF(_lastX * 2, 0));
 
-							_lastX--;
+							_lastX -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
 							_lastY = 0;
 
 							if (_lastX <= 0)
@@ -1113,6 +1119,8 @@ namespace TombLib.Forms
 
 			var effect = (AnimatedTextureAnimationType)comboEffect.SelectedItem;
 
+			lblFps.Text = "FPS";
+
 			switch (effect)
 			{
 				case AnimatedTextureAnimationType.Frames:
@@ -1143,12 +1151,12 @@ namespace TombLib.Forms
 					}
 					else
 					{
-						comboFps.Visible = true;
-						numericUpDownFPS.Visible = false;
-						numericUpDownFPS.Enabled = false;
+						comboFps.Visible = false;
+						numericUpDownFPS.Visible = true;
+						numericUpDownFPS.Enabled = true;
 						comboUvRotate.Enabled = true;
+						lblFps.Text = "Cycles/s";
 
-						comboFps.SelectedIndex = 0;
 						comboUvRotate.SelectedIndex = 0;
 					}	
 
@@ -1192,7 +1200,10 @@ namespace TombLib.Forms
 			var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
 			if (selectedSet == null)
 				return;
-			selectedSet.Fps = (float)numericUpDownFPS.Value;
+			if (selectedSet.AnimationType == AnimatedTextureAnimationType.UVRotate)
+				selectedSet.TenUvRotateSpeed = (float)numericUpDownFPS.Value;
+			else
+				selectedSet.Fps = (float)numericUpDownFPS.Value;
 			_context.OnAnimatedTexturesChanged.Invoke();
 		}
 

@@ -2,13 +2,10 @@
 using System.Buffers.Binary;
 using System.IO;
 using System.IO.Compression;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib.Utils
 {
@@ -79,8 +76,8 @@ namespace TombLib.Utils
 			using (var deflate = new ZLibStream(ms, CompressionLevel.Fastest, leaveOpen: false))
 			{
 				for (int y = 0; y < height; y++)
-				{		
-					row[0] = 1; // filtro Sub
+				{
+					row[0] = 1; // Sub filter
 					var src = bgra.Slice(y * stride, stride);
 
 					if (Avx2.IsSupported)
@@ -136,7 +133,7 @@ namespace TombLib.Utils
 						}
 					}
 
-					// Filtro Sub (su rgba → row[1..])
+					// Filter Sub (on rgba → row[1..])
 					for (int i = 0; i < stride; i++)
 					{
 						byte prev = (i >= 4) ? rgba[i - 4] : (byte)0;
