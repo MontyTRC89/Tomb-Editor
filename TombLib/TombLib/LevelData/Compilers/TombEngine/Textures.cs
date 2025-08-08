@@ -2,6 +2,7 @@
 using BCnEncoder.Shared;
 using NLog;
 using Pfim;
+using SharpDX.DXGI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -171,63 +172,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        static MemoryStream RemoveColorChunks(MemoryStream stream)
-        {
-            MemoryStream final = new MemoryStream();
-            stream.Seek(0, SeekOrigin.Begin);
-
-            byte[] temp = new byte[8];
-            stream.Read(temp, 0, 8);
-            final.Write(temp, 0, 8);
-
-            while (true)
-            {
-                byte[] lenBytes = new byte[4];
-                if (stream.Read(lenBytes, 0, 4) != 4)
-                {
-                    break;
-                }
-
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(lenBytes);
-                }
-
-                int len = BitConverter.ToInt32(lenBytes, 0);
-
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(lenBytes);
-                }
-
-                byte[] type = new byte[4];
-                stream.Read(type, 0, 4);
-
-                byte[] data = new byte[len + 4];
-                stream.Read(data, 0, data.Length);
-
-                if (!(DoesTypeMatch(type, "cHRM") ||
-                    DoesTypeMatch(type, "gAMA") ||
-                    DoesTypeMatch(type, "iCCP") ||
-                    DoesTypeMatch(type, "sRGB")))
-                {
-                    final.Write(lenBytes, 0, lenBytes.Length);
-                    final.Write(type, 0, type.Length);
-                    final.Write(data, 0, data.Length);
-                }
-            }
-
-            return final;
-        }
-
-        private byte[] GetUncompressedTexture(ImageC i)
-        {
-            MemoryStream output = new MemoryStream();
-            i.SaveToPngFast(output);
-            output = RemoveColorChunks(output);
-            return output.ToArray();
-        }
-
         private byte[] GetCompressedTexture(ImageC i, CompressionFormat format)
         {
             BcEncoder encoder = new BcEncoder();
@@ -256,65 +200,57 @@ namespace TombLib.LevelData.Compilers.TombEngine
             writer.Write(_spritesTexturesPages.Count);
             foreach (var atlas in _spritesTexturesPages)
             {
-                writer.Write(atlas.Width);
-                writer.Write(atlas.Height);
-                using (var ms = new MemoryStream())
-                {
-                    byte[] output = 
-                        _level.Settings.CompressTextures ? 
-                        GetCompressedTexture(atlas, CompressionFormat.Bc3) : 
-                        GetUncompressedTexture(atlas);
-                    writer.Write((int)output.Length);
-                    writer.Write(output.ToArray());
-                }
+				writer.Write(atlas.Width);
+				writer.Write(atlas.Height);
+
+				WriteImageFast(writer, atlas, CompressionFormat.Bc3);
             }
 
             // Sky texture
             var sky = GetSkyTexture();
-            using (var ms = new MemoryStream())
-            {
-                writer.Write(sky.Width);
-                writer.Write(sky.Height);
-                byte[] output =
-                    _level.Settings.CompressTextures ?
-                    GetCompressedTexture(sky, CompressionFormat.Bc3) :
-                    GetUncompressedTexture(sky);
-                writer.Write((int)output.Length);
-                writer.Write(output.ToArray());
-            }
-        }
+			writer.Write(sky.Width);
+			writer.Write(sky.Height);
+			WriteImageFast(writer, sky, CompressionFormat.Bc3);
+		}
+
+        void WriteImageFast(BinaryWriterEx writer, ImageC image, CompressionFormat compressionFormat)
+        {
+			var stream = writer.BaseStream;
+			long lenPos = stream.Position;
+			writer.Write(0); // Placeholder
+			long startPos = stream.Position;
+
+			if (_level.Settings.CompressTextures)
+			{
+                writer.Write(GetCompressedTexture(image, compressionFormat));
+			}
+			else
+			{
+				image.SaveToPngFast(stream);
+			}
+
+			long endPos = stream.Position;
+			int len = checked((int)(endPos - startPos));
+
+			long cur = endPos;
+			stream.Position = lenPos;
+			writer.Write(len);
+			stream.Position = cur;
+		}
 
         void WriteAtlas(BinaryWriterEx writer, List<TombEngineAtlas> atlasList)
         {
             writer.Write(atlasList.Count);
             foreach (var atlas in atlasList)
-            {
-                writer.Write(atlas.ColorMap.Width);
-                writer.Write(atlas.ColorMap.Height);
+			{
+				writer.Write(atlas.ColorMap.Width);
+				writer.Write(atlas.ColorMap.Height);
 
-                using (var ms = new MemoryStream())
-                {
-                    byte[] output =
-                        _level.Settings.CompressTextures ?
-                        GetCompressedTexture(atlas.ColorMap, CompressionFormat.Bc3) :
-                        GetUncompressedTexture(atlas.ColorMap);
-                    writer.Write((int)output.Length);
-                    writer.Write(output.ToArray());
-                }
-
+				WriteImageFast(writer, atlas.ColorMap, CompressionFormat.Bc3);
                 writer.Write(atlas.HasNormalMap);
-                if (!atlas.HasNormalMap)
-                    continue;
 
-                using (var ms = new MemoryStream())
-                {
-                    byte[] output =
-                        _level.Settings.CompressTextures ?
-                        GetCompressedTexture(atlas.NormalMap, CompressionFormat.Bc5) :
-                        GetUncompressedTexture(atlas.NormalMap);
-                    writer.Write((int)output.Length);
-                    writer.Write(output.ToArray());
-                }
+                if (atlas.HasNormalMap)
+                    WriteImageFast(writer, atlas.NormalMap, CompressionFormat.Bc5);
             }
         }
     }
