@@ -18,10 +18,14 @@ namespace TombLib.LevelData
 
     public enum UVRotateDirection
     {
-        TopToBottom,
-        LeftToRight,
-        BottomToTop,
-        RightToLeft
+        T_B,
+        L_R,
+        B_T,
+        R_L,
+        TL_BR,
+        TR_BL,
+        BR_TL,
+        BL_TR
     }
 
     public class AnimatedTextureFrame : ICloneable, IEquatable<AnimatedTextureFrame>

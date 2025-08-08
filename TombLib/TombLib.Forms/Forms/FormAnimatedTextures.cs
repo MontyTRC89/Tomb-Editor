@@ -310,10 +310,14 @@ namespace TombLib.Forms
 			else if (_version == TRVersion.Game.TombEngine)
 			{
 				comboUvRotate.Enabled = false;
-				comboUvRotate.Items.Add(UVRotateDirection.TopToBottom);
-				comboUvRotate.Items.Add(UVRotateDirection.LeftToRight);
-				comboUvRotate.Items.Add(UVRotateDirection.BottomToTop);
-				comboUvRotate.Items.Add(UVRotateDirection.RightToLeft);
+				comboUvRotate.Items.Add(UVRotateDirection.T_B);
+				comboUvRotate.Items.Add(UVRotateDirection.L_R);
+				comboUvRotate.Items.Add(UVRotateDirection.B_T);
+				comboUvRotate.Items.Add(UVRotateDirection.R_L);
+				comboUvRotate.Items.Add(UVRotateDirection.TL_BR);
+				comboUvRotate.Items.Add(UVRotateDirection.TR_BL);
+				comboUvRotate.Items.Add(UVRotateDirection.BR_TL);
+				comboUvRotate.Items.Add(UVRotateDirection.BL_TR);
 
 				comboFps.Enabled = true;
 
@@ -530,52 +534,88 @@ namespace TombLib.Forms
 
 					switch ((UVRotateDirection)comboUvRotate.SelectedIndex)
 					{
-						case UVRotateDirection.TopToBottom:
+						case UVRotateDirection.T_B:
 							g.DrawImage(image, new PointF(0, _lastY * 2 - 128));
 							g.DrawImage(image, new PointF(0, _lastY * 2));
-
 							_lastX = 0;
 							_lastY += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-
 							if (_lastY >= 64)
 								_lastY = 0;
-
 							break;
-
-						case UVRotateDirection.BottomToTop:
+						case UVRotateDirection.B_T:
 							g.DrawImage(image, new PointF(0, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(0,	_lastY * 2));
-
+							g.DrawImage(image, new PointF(0, _lastY * 2));
 							_lastX = 0;
 							_lastY -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-
 							if (_lastY <= 0)
 								_lastY = 64;
-
 							break;
-
-						case UVRotateDirection.LeftToRight:
+						case UVRotateDirection.L_R:
 							g.DrawImage(image, new PointF(_lastX * 2 - 128, 0));
 							g.DrawImage(image, new PointF(_lastX * 2, 0));
-
 							_lastX += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
 							_lastY = 0;
-
 							if (_lastX >= 64)
 								_lastX = 0;
-
 							break;
-
-						case UVRotateDirection.RightToLeft:
+						case UVRotateDirection.R_L:
 							g.DrawImage(image, new PointF(_lastX * 2 - 128, 0));
 							g.DrawImage(image, new PointF(_lastX * 2, 0));
-
 							_lastX -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
 							_lastY = 0;
-
 							if (_lastX <= 0)
 								_lastX = 64;
+							break;
+						case UVRotateDirection.TL_BR:
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2));
+							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2));
+							_lastX += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
+							_lastY += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
+							if (_lastX >= 64)
+								_lastX = 0;
+							if (_lastY >= 64)
+								_lastY = 0;
+							break;
 
+						case UVRotateDirection.TR_BL:
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2));
+							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2));
+							_lastX -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
+							_lastY += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
+							if (_lastX < 0)
+								_lastX = 64 + _lastX; 
+							if (_lastY >= 64)
+								_lastY = 0;
+							break;
+
+						case UVRotateDirection.BR_TL:
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2));
+							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2));
+							_lastX -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
+							_lastY -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
+							if (_lastX < 0)
+								_lastX = 64 + _lastX; 
+							if (_lastY < 0)
+								_lastY = 64 + _lastY;
+							break;
+
+						case UVRotateDirection.BL_TR:
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2 - 128));
+							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2));
+							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2));
+							_lastX += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
+							_lastY -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
+							if (_lastX >= 64)
+								_lastX = 0;
+							if (_lastY < 0)
+								_lastY = 64 + _lastY;  
 							break;
 					}
 				}
