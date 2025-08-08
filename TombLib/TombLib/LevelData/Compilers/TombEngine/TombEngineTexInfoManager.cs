@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -192,8 +193,10 @@ namespace TombLib.LevelData.Compilers
 			private const int DefaultCellSize = 64;
 			private int _cellSize = DefaultCellSize;
 
-			private readonly Dictionary<int, List<int>> _grid = new Dictionary<int, List<int>>(256);
-			private readonly Dictionary<int, List<int>> _childCells = new Dictionary<int, List<int>>(256);
+			private readonly Dictionary<int, HashSet<int>> _grid = new Dictionary<int, HashSet<int>>(256);
+			private readonly Dictionary<int, HashSet<int>> _childCells = new Dictionary<int, HashSet<int>>(256);
+			
+			private static readonly ArrayPool<int> _childPool = ArrayPool<int>.Shared;
 
 			public int Version { get; set; }
 
@@ -235,17 +238,31 @@ namespace TombLib.LevelData.Compilers
 				var rect = GetChildRect(Children[childIndex]);
 				GetCellRange(rect, out int cx0, out int cx1, out int cy0, out int cy1);
 
-				var cells = new List<int>(Math.Max(1, (cx1 - cx0 + 1) * (cy1 - cy0 + 1)));
+				// Creiamo un HashSet per raccogliere le celle toccate
+				var cells = _childPool.Rent(Math.Max(1, (cx1 - cx0 + 1) * (cy1 - cy0 + 1)));
+				int count = 0;
+
 				for (int cy = cy0; cy <= cy1; cy++)
+				{
 					for (int cx = cx0; cx <= cx1; cx++)
 					{
 						int key = PackCellKey(cx, cy);
 						if (!_grid.TryGetValue(key, out var list))
-							_grid[key] = list = new List<int>(4);
+						{
+							list = new HashSet<int>();
+							_grid[key] = list;
+						}
+
+						// Aggiungiamo l'indice del figlio alla cella
 						list.Add(childIndex);
-						cells.Add(key);
+						cells[count++] = key;
 					}
-				_childCells[childIndex] = cells;
+				}
+
+				_childCells[childIndex] = new HashSet<int>(cells.Take(count));
+
+				// Restituire l'array pool
+				_childPool.Return(cells);
 			}
 
 			private void UnindexChild(int childIndex)
@@ -253,20 +270,16 @@ namespace TombLib.LevelData.Compilers
 				if (!_childCells.TryGetValue(childIndex, out var cells))
 					return;
 
-				for (int i = 0; i < cells.Count; i++)
+				// Usa ArrayPool per evitare allocazioni
+				var cellsArray = cells.ToArray();
+				foreach (var key in cellsArray)
 				{
-					int key = cells[i];
 					if (_grid.TryGetValue(key, out var list))
 					{
-						// swap-remove per O(1)
-						int p = list.IndexOf(childIndex);
-						if (p >= 0)
-						{
-							int last = list.Count - 1;
-							if (p != last) list[p] = list[last];
-							list.RemoveAt(last);
-							if (list.Count == 0) _grid.Remove(key);
-						}
+						// Rimuoviamo il figlio dalla lista delle celle
+						list.Remove(childIndex);
+						if (list.Count == 0)
+							_grid.Remove(key);
 					}
 				}
 				_childCells.Remove(childIndex);
@@ -523,23 +536,31 @@ namespace TombLib.LevelData.Compilers
 				Version++;
 			}
 
-			public int CollectCandidates(Rectangle2 rect, List<int> outIndices)
+			public int CollectCandidates(Rectangle2 rect, HashSet<int> outIndices)
 			{
 				GetCellRange(rect, out int cx0, out int cx1, out int cy0, out int cy1);
 
-				// evitiamo duplicati: usa un piccolo HashSet pooled o una bitmap volatile
-				// qui semplice HashSet (puoi ottimizzare con ArrayPool se serve)
+				// Usa HashSet per raccogliere gli indici senza duplicati
 				HashSet<int> seen = new HashSet<int>();
 
+				// Loop attraverso tutte le celle che potrebbero essere toccate dal rettangolo
 				for (int cy = cy0; cy <= cy1; cy++)
+				{
 					for (int cx = cx0; cx <= cx1; cx++)
 					{
 						int key = PackCellKey(cx, cy);
 						if (!_grid.TryGetValue(key, out var list)) continue;
-						for (int i = 0; i < list.Count; i++)
-							if (seen.Add(list[i]))
-								outIndices.Add(list[i]);
+
+						// Aggiungi ogni indice alla lista di candidati se non è già stato aggiunto
+						foreach (var index in list)
+						{
+							if (seen.Add(index)) // Aggiungi e verifica se è stato aggiunto
+							{
+								outIndices.Add(index);
+							}
+						}
 					}
+				}
 
 				return outIndices.Count;
 			}
@@ -873,14 +894,14 @@ namespace TombLib.LevelData.Compilers
 					: Rectangle2.FromCoordinates(lookupCoordinates[0], lookupCoordinates[1], lookupCoordinates[2], lookupCoordinates[3]);
 
 				// 1) Candidates from grid index
-				List<int> candidates = new List<int>(16);
+				HashSet<int> candidates = new HashSet<int>();
 				parent.CollectCandidates(rect, candidates);
 
 				if (candidates.Count > 0)
 				{
-					for (int c = 0; c < candidates.Count; c++)
+					foreach (var candidateIndex in candidates)
 					{
-						var child = parent.Children[candidates[c]];
+						var child = parent.Children[candidateIndex];
 						if (child.IsForTriangle != isForTriangle) continue;
 						if (checkParameters && areaToLook.BlendMode != child.BlendMode) continue;
 
@@ -917,6 +938,7 @@ namespace TombLib.LevelData.Compilers
 
 			return null;
 		}
+
 
 		// Tests if all UV coordinates are similar with different rotations.
 		// If all coordinates are equal for one of the rotation factors, rotation factor is returned,
