@@ -1,0 +1,12 @@
+{
+	"diagnostics": {
+		"globals": [
+			"LevelVars",
+			"LevelFuncs",
+			"GameVars"
+		],
+		"disable": [
+			"duplicate-set-field"
+		]
+	}
+}

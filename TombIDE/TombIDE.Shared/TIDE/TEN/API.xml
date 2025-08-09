@@ -6974,7 +6974,7 @@ most can just be ignored (see usage).</description>
 					<summary>Get this static's world scale.</summary>
 					<returns>
 						<return>
-							<type>float</type>
+							<type>Vec3</type>
 							<description>World scale.</description>
 						</return>
 					</returns>
@@ -7080,7 +7080,7 @@ most can just be ignored (see usage).</description>
 					<parameters>
 						<parameter>
 							<name>scale</name>
-							<type>float</type>
+							<type>Vec3</type>
 							<description>New world scale.</description>
 						</parameter>
 					</parameters>
@@ -7493,6 +7493,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 				</field>
 				<method>
 					<name>Color</name>
+					<summary>Create a Color object.</summary>
 					<parameters>
 						<parameter>
 							<name>R</name>
@@ -7508,6 +7509,13 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 							<name>B</name>
 							<type>int</type>
 							<description>Blue component.</description>
+						</parameter>
+						<parameter>
+							<name>A</name>
+							<type>int</type>
+							<optional>true</optional>
+							<defaultValue>255</defaultValue>
+							<description>Alpha (transparency) component.</description>
 						</parameter>
 					</parameters>
 					<returns>
@@ -7608,6 +7616,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 				<method>
 					<name>Direction</name>
 					<summary>Get the normalized direction vector of this Rotation.</summary>
+					<description>Can be used to get an offset from a rotation by multiplying needed distance value with this vector.</description>
 					<returns>
 						<return>
 							<type>Vec3</type>
@@ -8735,8 +8744,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 			<members>
 				<field>
 					<name>errorMode</name>
-					<summary>(ErrorMode) How should the application respond to script errors?</summary>
-					<description>Error mode to use.</description>
+					<summary>How should the application respond to script errors?</summary>
 				</field>
 				<field>
 					<name>multithreaded</name>
@@ -9289,27 +9297,17 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 			<values>
 				<value>
 					<name>Normal</name>
-					<summary>Normal Lara.</summary>
+					<summary>Normal Lara with a single braid.</summary>
 				</value>
 				<value>
 					<name>Young</name>
-					<summary>Young Lara.</summary>
-				</value>
-				<value>
-					<name>Bunhead</name>
-					<summary>Bunhead Lara.</summary>
-				</value>
-				<value>
-					<name>Catsuit</name>
-					<summary>Catsuit Lara.</summary>
+					<summary>Young Lara with two ponytails.</summary>
+					<description>This setting does not affect ability to use flares and weapons, which can be removed from inventory via scripting.</description>
 				</value>
 				<value>
 					<name>Divesuit</name>
 					<summary>Divesuit Lara.</summary>
-				</value>
-				<value>
-					<name>Invisible</name>
-					<summary>Invisible Lara.</summary>
+					<description>As seen in the underwater levels of TR5.</description>
 				</value>
 			</values>
 		</enum>
@@ -9966,3959 +9964,3959 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 			<values>
 				<value>
 					<name>LARA</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_EXTRA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PISTOLS_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UZI_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOTGUN_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>REVOLVER_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CROSSBOW_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HK_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GRENADE_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROCKET_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HARPOON_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLARE_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_SKIN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_SKIN_JOINTS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_SCREAM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_CROSSBOW_LASER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_REVOLVER_LASER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_HOLSTERS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_HOLSTERS_PISTOLS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_HOLSTERS_UZIS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_HOLSTERS_REVOLVER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_SPEECH_HEAD1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_SPEECH_HEAD2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_SPEECH_HEAD3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_SPEECH_HEAD4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ACTOR1_SPEECH_HEAD1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ACTOR1_SPEECH_HEAD2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ACTOR2_SPEECH_HEAD1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ACTOR2_SPEECH_HEAD2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_BINOCULARS_MESH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_EXTRA_MESH1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_EXTRA_MESH2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_WATER_MESH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_PETROL_MESH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_DIRT_MESH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_CROWBAR_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_TORCH_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HAIR_PRIMARY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HAIR_SECONDARY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SNOWMOBILE_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SNOWMOBILE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>QUAD_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>QUAD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPEEDBOAT_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPEEDBOAT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KAYAK_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KAYAK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UPV_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UPV</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MINECART_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MINECART</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>JEEP_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>JEEP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MOTORBIKE_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MOTORBIKE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RUBBER_BOAT_LARA_ANIMS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RUBBER_BOAT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_BIGGUN_ANIM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BIGGUN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>VEHICLE_SMASHABLE_FLOOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>VEHICLE_SMASHABLE_WALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WOLF</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BEAR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>APE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMALL_SPIDER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BIG_SPIDER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CROW</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TIGER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>EAGLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RAPTOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TYRANNOSAUR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>COBRA</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MONKEY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WHALE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>COMPSOGNATHUS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FISH_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RAT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BIG_RAT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CROCODILE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BAT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPHINX</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WILD_BOAR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HARPY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BIG_SCORPION</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMALL_SCORPION</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BABOON_NORMAL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BABOON_INV</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BABOON_SILENT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LITTLE_BEETLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LOCUSTS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHARK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HUSKIE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOG</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BATS_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RATS_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPIDERS_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LION</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOBERMAN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HAMMERHEAD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CROCODILE_GOD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LOCUSTS_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SCUBA_HARPOON</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SCUBA_DIVER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GOON_SILENCER1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GOON_SILENCER2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GOON_SILENCER3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BARRACUDA</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WORKER_SHOTGUN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WORKER_MACHINEGUN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WORKER_DUAL_REVOLVER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WORKER_FLAMETHROWER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MONK1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MONK2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KNIFETHROWER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KNIFETHROWER_KNIFE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MERCENARY_UZI</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MERCENARY_AUTOPISTOLS1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MERCENARY_AUTOPISTOLS2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SNOWMOBILE_GUN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SNOWMOBILE_DRIVER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLAMETHROWER_BADDY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TRIBESMAN_WITH_AX</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TRIBESMAN_WITH_DARTS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MP_WITH_STICK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MP_WITH_GUN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BADDY1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BADDY2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SAS_CAIRO</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SAS_DYING</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SAS_CAPTAIN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SAS_DRAG_BLOKE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUIDE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>VON_CROY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TROOPS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SAS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWAT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWAT_PLUS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUARD1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUARD_LASER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARSON</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PIERRE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MAFIA</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MAFIA2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUARD2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUARD3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GLADIATOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CYBORG</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SNIPER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CHEF</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KOLD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WINGED_MUMMY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CENTAUR_MUTANT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOPPELGANGER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>NATLA</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GIANT_MUTANT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PROJ_SHARD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PROJ_BOMB</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>YETI</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BIRDMONSTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MARCO_BARTOLI</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DRAGON_FRONT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DRAGON_BACK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DRAGON_BONE_FRONT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DRAGON_BONE_BACK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPHERE_OF_DOOM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPHERE_OF_DOOM2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPHERE_OF_DOOM3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>COWBOY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPEAR_GUARDIAN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPEAR_GUARDIAN_STATUE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWORD_GUARDIAN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWORD_GUARDIAN_STATUE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHIVA</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHIVA_STATUE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WILLARD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CIVVY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MUTANT2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LIZARD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TONY_BOSS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TONY_BOSS_FLAME</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUNA_BOSS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SOPHIA_LEIGH_BOSS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LASER_BOLT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SKELETON</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MUMMY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ENEMY_JEEP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HORSE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HORSEMAN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DEMIGOD1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DEMIGOD2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DEMIGOD3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SETHA</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KNIGHT_TEMPLAR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AHMET</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BIG_BEETLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>JEAN_YVES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WRAITH1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WRAITH2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WRAITH3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WRAITH4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_DOUBLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HYDRA</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LASERHEAD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SCIENTIST</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MERCENARY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WILLOWISP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>INVISIBLE_GHOST</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>REAPER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BROWN_BEAST</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ATTACK_SUB</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>IMP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>IMP_ROCK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUNSHIP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AUTO_GUN_VCI</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROMAN_GOD1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROMAN_GOD2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LAGOON_WITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BOSS_SHIELD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BOSS_EXPLOSION_SHOCKWAVE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BOSS_EXPLOSION_RING</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CLAW_MUTANT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WASP_MUTANT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TWIN_AUTO_GUN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SKATEBOARD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SKATEBOARD_KID</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WINSTON</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEAL_MUTANT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPRINGBOARD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROLLING_SPINDLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DISK_SHOOTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DISK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WALL_MOUNTED_BLADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>STATUE_WITH_BLADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>COG</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPIKEBALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLOOR_4BLADES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CEILING_4BLADES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CATWALK_BLADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SETH_BLADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PLINTH_BLADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SLICER_DICER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BIRD_BLADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CHAIN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PLOUGH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>STARGATE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPIKY_FLOOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPIKY_WALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SPIKY_CEILING</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TEETH_SPIKES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>JOBY_SPIKES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SENTRY_GUN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MAPPER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MOVING_BLADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ELEMENT_PUZZLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LIGHTING_CONDUCTOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HAMMER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>OBELISK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WHEEL_OF_FORTUNE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GAME_PIECE1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GAME_PIECE2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GAME_PIECE3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RAISING_COG</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MINE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SCALES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROME_HAMMER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLAME</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLAME_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLAME_EMITTER2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLAME_EMITTER3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BURNING_ROOTS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROPE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FIREROPE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>POLEROPE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ELECTRICAL_CABLES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BURNING_FLOOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DARTS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DART_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HOMING_DART_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FALLING_CEILING</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FALLING_BLOCK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FALLING_BLOCK2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CRUMBLING_FLOOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TRAPDOOR1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TRAPDOOR2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TRAPDOOR3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLOOR_TRAPDOOR1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLOOR_TRAPDOOR2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CEILING_TRAPDOOR1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CEILING_TRAPDOOR2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SCALING_TRAPDOOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROLLINGBALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROLLINGBARREL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PROPELLER_H</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PROPELLER_V</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ONEBLOCK_PLATFORM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TWOBLOCK_PLATFORM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RAISING_BLOCK1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RAISING_BLOCK2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RAISING_BLOCK3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>RAISING_BLOCK4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHABLE_OBJECT10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WRECKING_BALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ZIPLINE_HANDLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TORPEDO</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CHAFF</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ELECTRIC_FENCE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LIFT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TIGHT_ROPE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PARALLEL_BARS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>XRAY_CONTROLLER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PORTAL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GEN_SLOT1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GEN_SLOT2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GEN_SLOT3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GEN_SLOT4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEARCH_OBJECT1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEARCH_OBJECT2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEARCH_OBJECT3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEARCH_OBJECT4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SARCOPHAGUS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ENEMY_PIECE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>EXPANDING_PLATFORM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SQUISHY_BLOCK_HORIZONTAL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SQUISHY_BLOCK_VERTICAL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LASER_BEAM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MINE_DETECTOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MAP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SECRET_MAP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SETH_DOOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HORUS_STATUE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>STATUE_PLINTH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CLASSIC_ROLLING_BALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BIG_ROLLING_BALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_1</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE1</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_2</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE2</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_3</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE3</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_4</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE4</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_5</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE5</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_6</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE6</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_7</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE7</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_8</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE8</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_9</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE9</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>PUSHABLE_OBJECT_CLIMBABLE_10</name>
-					<summary>Generic constant.</summary>
+					<name>PUSHABLE_OBJECT_CLIMBABLE10</name>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TRAIN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>EXPLOSION</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DAMOCLES_SWORD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ELECTRIC_CLEANER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SLAMMING_DOORS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWINGING_BLADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ELECTRIC_BALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ELECTRIC_BALL_IMPACT_POINT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>THOR_HAMMER_HANDLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>THOR_HAMMER_HEAD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MOVING_LASER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM3</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM4</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM5</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM6</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM7</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM8</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM9</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM10</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM11</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM12</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM13</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM14</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM15</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM16</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM1_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM1_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM2_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM2_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM3_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM3_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM4_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM4_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM5_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM5_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM6_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM6_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM7_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM7_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM8_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM8_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM9_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM9_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM10_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM10_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM11_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM11_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM12_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM12_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM13_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM13_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM14_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM14_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM15_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM15_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM16_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_ITEM16_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM3</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM4</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM5</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM6</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM7</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM8</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM9</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM10</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM11</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM12</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM13</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM14</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM15</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM16</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM1_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM1_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM2_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM2_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM3_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM3_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM4_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM4_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM5_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM5_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM6_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM6_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM7_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM7_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM8_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM8_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM9_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM9_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM10_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM10_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM11_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM11_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM12_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM12_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM13_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM13_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM14_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM14_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM15_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM15_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM16_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_ITEM16_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM3</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM4</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM5</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM6</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM7</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM8</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM9</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM10</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM11</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM12</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM13</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM14</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM15</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM16</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM1_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM1_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM2_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM2_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM3_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM3_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM4_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM4_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM5_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM5_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM6_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM6_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM7_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM7_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM8_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM8_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM9_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM9_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM10_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM10_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM11_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM11_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM12_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM12_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM13_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM13_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM14_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM14_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM15_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM15_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM16_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PICKUP_ITEM16_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE3</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE4</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE5</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE6</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE7</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE8</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE1_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE1_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE2_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE2_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE3_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE3_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE4_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE4_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE5_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE5_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE6_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE6_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE7_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE7_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE8_COMBO1</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>EXAMINE8_COMBO2</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE11</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE12</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE13</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE14</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE15</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_HOLE16</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE11</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE12</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE13</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE14</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE15</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUZZLE_DONE16</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE11</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE12</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE13</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE14</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE15</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KEY_HOLE16</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN1_EMPTY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN1_1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN1_2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN1_3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN2_EMPTY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN2_1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN2_2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN2_3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN2_4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERSKIN2_5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HAMMER_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>CROWBAR_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>BURNING_TORCH_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>CLOCKWORK_BEETLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CLOCKWORK_BEETLE_COMBO1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CLOCKWORK_BEETLE_COMBO2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE11</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE12</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE13</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE14</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE15</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SWITCH_TYPE16</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOOT_SWITCH1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOOT_SWITCH2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOOT_SWITCH3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOOT_SWITCH4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AIRLOCK_SWITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UNDERWATER_WALL_SWITCH1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UNDERWATER_WALL_SWITCH2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UNDERWATER_CEILING_SWITCH1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UNDERWATER_CEILING_SWITCH2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TURN_SWITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>COG_SWITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LEVER_SWITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>JUMP_SWITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CROWBAR_SWITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PULLEY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CROWDOVE_SWITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MINECART_SWITCH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE11</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE12</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE13</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE14</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE15</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE16</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE17</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE18</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE19</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE20</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE21</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE22</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE23</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE24</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE25</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE26</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE27</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE28</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE29</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOOR_TYPE30</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LIFT_DOORS1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LIFT_DOORS2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHPULL_DOOR1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHPULL_DOOR2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHPULL_DOOR3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PUSHPULL_DOOR4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KICK_DOOR1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KICK_DOOR2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KICK_DOOR3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KICK_DOOR4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UNDERWATER_DOOR1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UNDERWATER_DOOR2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UNDERWATER_DOOR3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>UNDERWATER_DOOR4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOUBLE_DOORS1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOUBLE_DOORS2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOUBLE_DOORS3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOUBLE_DOORS4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEQUENCE_DOOR1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEQUENCE_SWITCH1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEQUENCE_SWITCH2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SEQUENCE_SWITCH3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>STEEL_DOOR</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GOD_HEAD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BREAKABLE_WALL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PISTOLS_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PISTOLS_AMMO_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>UZI_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>UZI_AMMO_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOTGUN_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOTGUN_AMMO1_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOTGUN_AMMO2_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>REVOLVER_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>REVOLVER_AMMO_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>CROSSBOW_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>CROSSBOW_AMMO1_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>CROSSBOW_AMMO2_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>CROSSBOW_AMMO3_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>CROSSBOW_BOLT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HK_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>HK_AMMO_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>GRENADE_GUN_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>GRENADE_AMMO1_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>GRENADE_AMMO2_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>GRENADE_AMMO3_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>GRENADE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ROCKET_LAUNCHER_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>ROCKET_LAUNCHER_AMMO_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>ROCKET</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HARPOON_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>HARPOON_AMMO_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>HARPOON</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GOLDROSE_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>BIGMEDI_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>SMALLMEDI_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>LASERSIGHT_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>BINOCULARS_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>SILENCER_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>FLARE_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>FLARE_INV_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>COMPASS_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>DIARY_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>STOPWATCH_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>MEMCARD_LOAD_INV_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>MEMCARD_SAVE_INV_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PC_LOAD_INV_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>PC_SAVE_INV_ITEM</name>
-					<summary>Pickup constant.</summary>
+					<summary>Pickup Object ID.</summary>
 				</value>
 				<value>
 					<name>DIARY_OPEN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>INVENTORY_PASSPORT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>INVENTORY_SUNGLASSES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>INVENTORY_KEYS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>INVENTORY_HEADPHONES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>INVENTORY_PHOTO</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMOKE_EMITTER_WHITE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMOKE_EMITTER_BLACK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMOKE_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>EARTHQUAKE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BUBBLES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALLMIST</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUNSHELL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SHOTGUNSHELL</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUN_FLASH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>GUN_FLASH2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>COLOR_LIGHT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BLINKING_LIGHT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PULSE_LIGHT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>STROBE_LIGHT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ELECTRICAL_LIGHT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LENS_FLARE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ENERGY_BUBBLES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>PLANET_EFFECT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BUTTERFLY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AI_GUARD</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AI_AMBUSH</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AI_PATROL1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AI_MODIFY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AI_FOLLOW</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AI_PATROL2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AI_X1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>AI_X2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LARA_START_POS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TELEPORTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LIFT_TELEPORTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LASER_BARRIER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>STEAM_LASERS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FLOOR_LASERS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>KILL_ALL_TRIGGERS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>TRIGGER_TRIGGERER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HIGH_OBJECT1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>EMBER_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT11</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT12</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT13</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT14</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT15</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SMASH_OBJECT16</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BODY_PART</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CAMERA_TARGET</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALL1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALL2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALL3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALL4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALL5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALL6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALLSS1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALLSS2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FISHTANK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>DOPPELGANGER_ORIGIN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>CORPSE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WRAITH_TRAP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALL_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>FIREFLY_EMITTER</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_BADDY1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_BADDY2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_MAFIA2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_IMP</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_HITMAN</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_ROMAN_GOD1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_ROMAN_GOD2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_MONKEY_MEDIPACK</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_MONKEY_KEY</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>MESHSWAP_WINSTON_ARMY_OUTFIT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING5</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING6</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING7</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING8</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING9</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING10</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING11</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING12</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING13</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING14</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING15</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING16</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING17</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING18</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING19</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING20</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING21</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING22</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING23</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING24</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING25</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING26</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING27</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING28</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING29</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING30</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING31</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING32</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING33</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING34</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING35</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING36</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING37</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING38</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING39</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING40</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING41</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING42</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING43</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING44</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING45</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING46</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING47</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING48</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING49</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING50</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING51</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING52</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING53</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING54</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING55</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING56</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING57</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING58</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING59</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING60</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING61</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING62</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING63</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING64</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING65</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING66</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING67</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING68</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING69</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING70</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING71</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING72</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING73</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING74</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING75</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING76</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING77</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING78</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING79</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING80</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING81</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING82</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING83</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING84</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING85</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING86</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING87</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING88</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING89</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING90</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING91</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING92</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING93</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING94</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING95</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING96</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING97</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING98</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING99</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING100</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING101</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING102</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING103</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING104</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING105</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING106</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING107</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING108</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING109</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING110</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING111</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING112</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING113</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING114</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING115</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING116</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING117</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING118</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING119</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING120</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING121</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING122</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING123</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING124</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING125</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING126</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING127</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>ANIMATING128</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LASERHEAD_BASE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LASERHEAD_TENTACLE</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BRIDGE_FLAT</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BRIDGE_TILT1</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BRIDGE_TILT2</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BRIDGE_TILT3</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BRIDGE_TILT4</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BRIDGE_CUSTOM</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>HORIZON</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>SKY_GRAPHICS</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>DEFAULT_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>MISC_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>CUSTOM_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>FIRE_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>SMOKE_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>SPARK_SPRITE</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>DRIP_SPRITE</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>EXPLOSION_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>MOTORBOAT_FOAM_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>RUBBER_BOAT_WAVE_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>SKIDOO_SNOW_TRAIL_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>KAYAK_PADDLE_TRAIL_SPRITE</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>KAYAK_WAKE_SPRTIES</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>BINOCULAR_GRAPHICS</name>
-					<summary>Generic constant.</summary>
+					<summary>Object ID.</summary>
 				</value>
 				<value>
 					<name>LASERSIGHT_GRAPHICS</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>CAUSTIC_TEXTURES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>BAR_BORDER_GRAPHICS</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>HEALTH_BAR_TEXTURE</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>AIR_BAR_TEXTURE</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>DASH_BAR_TEXTURE</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>SFX_BAR_TEXTURE</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>WATERFALL_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>FIREFLY_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>CROSSHAIR_GRAPHICS</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>SPEEDOMETER_GRAPHICS</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>CUSTOM_BAR_GRAPHICS</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>CUSTOM_AMMO_GRAPHICS</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>DIARY_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>DIARY_ENTRY_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>SNOW_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 				<value>
 					<name>RAIN_SPRITES</name>
-					<summary>Sprite constant.</summary>
+					<summary>Sprite Object ID.</summary>
 				</value>
 			</values>
 		</enum>

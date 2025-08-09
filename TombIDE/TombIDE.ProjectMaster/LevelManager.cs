@@ -1,4 +1,5 @@
 ﻿using DarkUI.Forms;
+using LuaApiBuilder;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -266,6 +267,7 @@ namespace TombIDE.ProjectMaster
 				// Extract resources, but don't overwrite
 				ExtractEntries(resourcesArchive.Entries, _ide.Project, false);
 
+				UpdateTENApi();
 				UpdateVersionLabel();
 
 				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -361,6 +363,34 @@ namespace TombIDE.ProjectMaster
 		{
 			using var form = new FormGameArchive(_ide);
 			form.ShowDialog();
+		}
+
+		private void UpdateTENApi()
+		{
+			if (_ide.Project.GameVersion != TRVersion.Game.TombEngine)
+				return;
+
+			string scriptRootDirectory = _ide.Project.GetScriptRootDirectory();
+
+			string inputPath = Path.Combine(DefaultPaths.TENApiDirectory, "API.xml");
+			string outputPath = Path.Combine(scriptRootDirectory, ".API");
+
+			try
+			{
+				var converter = new ApiConverter();
+				converter.Convert(inputPath, outputPath);
+
+				// Copy .luarc.json file into script root directory
+				string luarcPath = Path.Combine(DefaultPaths.TENApiDirectory, ".luarc.json");
+				string luarcTargetPath = Path.Combine(scriptRootDirectory, ".luarc.json");
+
+				if (File.Exists(luarcPath))
+					File.Copy(luarcPath, luarcTargetPath, true);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, "An error occurred while updating the API:\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 	}
 }
