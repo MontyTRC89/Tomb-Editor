@@ -78,8 +78,8 @@ namespace TombLib.LevelData
         public string Name { get; set; } = null;
         public float Fps { get; set; } = 16.0f;  // float is for FPS (frames per second) values. 0 is not a valid default for this!
         public int UvRotate { get; set; } = 0;
-		public UVRotateDirection UvRotateDirection { get; set; }
-        public float TenUvRotateSpeed { get; set; } = 1.0f;
+		public float TenUvRotateDirection { get; set; } = 0.0f;
+		public float TenUvRotateSpeed { get; set; } = 1.0f;
 
 		public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
 

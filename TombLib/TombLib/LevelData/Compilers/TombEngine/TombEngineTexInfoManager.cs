@@ -1891,7 +1891,7 @@ namespace TombLib.LevelData.Compilers
 				writer.Write(i);
 				writer.Write((byte)_actualAnimTextures[i].Origin.Fps);
 				writer.Write((byte)animType);
-				writer.Write((short)(animType == 1 ? _actualAnimTextures[i].Origin.UvRotate : 0));
+				writer.Write((float)(animType == 1 ? _actualAnimTextures[i].Origin.TenUvRotateDirection : 0));
 				writer.Write((float)(animType == 1 ? _actualAnimTextures[i].Origin.TenUvRotateSpeed : 0.0f));
 				writer.Write(_animTextureIndices[i].Count); // Number of frames
 

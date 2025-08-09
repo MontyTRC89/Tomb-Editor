@@ -295,7 +295,8 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkInt(Prj2Chunks.AnimatedTextureSetType, (int)set.AnimationType);
                             chunkIO.WriteChunkFloat(Prj2Chunks.AnimatedTextureSetFps, set.Fps);
                             chunkIO.WriteChunkInt(Prj2Chunks.AnimatedTextureSetUvRotate, set.UvRotate);
-                            using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrames))
+							chunkIO.WriteChunkFloat(Prj2Chunks.AnimatedTextureSetTenUvRotateDirection, set.TenUvRotateDirection);
+							using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrames))
                             {
                                 foreach (AnimatedTextureFrame frame in set.Frames)
                                 {

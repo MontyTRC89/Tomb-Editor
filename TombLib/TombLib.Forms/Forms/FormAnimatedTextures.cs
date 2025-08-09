@@ -123,7 +123,7 @@ namespace TombLib.Forms
 		private List<AnimatedTextureSet> _backupSets = new List<AnimatedTextureSet>();
 		private List<AnimatedTextureSet> _animatedTextureSets = new List<AnimatedTextureSet>();
 
-		public FormAnimatedTextures(TextureMapBase _textureMap, 
+		public FormAnimatedTextures(TextureMapBase _textureMap,
 			IAnimatedTexturesContext context, ConfigurationBase configuration)
 		{
 			InitializeComponent();
@@ -381,7 +381,7 @@ namespace TombLib.Forms
 				previewProgressBar.TextMode = DarkProgressBarMode.XOfN;
 			}
 			if (_version == TRVersion.Game.TombEngine && selectedSet.AnimationType == AnimatedTextureAnimationType.UVRotate)
-				_previewTimer.Interval = (int)MathC.Clamp(Math.Round(1000.0f / 30.0f), 1, int.MaxValue); 
+				_previewTimer.Interval = (int)MathC.Clamp(Math.Round(1000.0f / 30.0f), 1, int.MaxValue);
 			else
 				_previewTimer.Interval = (int)MathC.Clamp(Math.Round(1000.0f / selectedSet.Fps), 1, int.MaxValue); // Without NG, the default value of 15 should be present at this point.
 			_lastX = 0;
@@ -428,7 +428,7 @@ namespace TombLib.Forms
 						break;
 					case AnimatedTextureAnimationType.UVRotate:
 						numericUpDownFPS.Value = (decimal)selectedSet.TenUvRotateSpeed;
-						comboUvRotate.SelectedIndex = selectedSet.UvRotate;
+						numericUpDownUvRotateDirection.Value = (decimal)selectedSet.TenUvRotateDirection;
 						break;
 				}
 			}
@@ -530,94 +530,30 @@ namespace TombLib.Forms
 				}
 				else
 				{
-					const float UvRotateStepFactor = 128.0f / 30.0f;
+					const float Tile = 64f;  
+					const float Canvas = 128f;
+					const float UvRotateStepFactor = Canvas / 30f; 
 
-					switch ((UVRotateDirection)comboUvRotate.SelectedIndex)
-					{
-						case UVRotateDirection.T_B:
-							g.DrawImage(image, new PointF(0, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(0, _lastY * 2));
-							_lastX = 0;
-							_lastY += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							if (_lastY >= 64)
-								_lastY = 0;
-							break;
-						case UVRotateDirection.B_T:
-							g.DrawImage(image, new PointF(0, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(0, _lastY * 2));
-							_lastX = 0;
-							_lastY -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							if (_lastY <= 0)
-								_lastY = 64;
-							break;
-						case UVRotateDirection.L_R:
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, 0));
-							g.DrawImage(image, new PointF(_lastX * 2, 0));
-							_lastX += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							_lastY = 0;
-							if (_lastX >= 64)
-								_lastX = 0;
-							break;
-						case UVRotateDirection.R_L:
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, 0));
-							g.DrawImage(image, new PointF(_lastX * 2, 0));
-							_lastX -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							_lastY = 0;
-							if (_lastX <= 0)
-								_lastX = 64;
-							break;
-						case UVRotateDirection.TL_BR:
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2));
-							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2));
-							_lastX += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							_lastY += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							if (_lastX >= 64)
-								_lastX = 0;
-							if (_lastY >= 64)
-								_lastY = 0;
-							break;
+					float angleDeg = selectedSet.TenUvRotateDirection;
 
-						case UVRotateDirection.TR_BL:
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2));
-							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2));
-							_lastX -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							_lastY += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							if (_lastX < 0)
-								_lastX = 64 + _lastX; 
-							if (_lastY >= 64)
-								_lastY = 0;
-							break;
+					float theta = (angleDeg + 90f) * (MathF.PI / 180f);
+					float dirX = MathF.Cos(theta);
+					float dirY = MathF.Sin(theta);
 
-						case UVRotateDirection.BR_TL:
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2));
-							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2));
-							_lastX -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							_lastY -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							if (_lastX < 0)
-								_lastX = 64 + _lastX; 
-							if (_lastY < 0)
-								_lastY = 64 + _lastY;
-							break;
+					float step = UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
 
-						case UVRotateDirection.BL_TR:
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2 - 128));
-							g.DrawImage(image, new PointF(_lastX * 2 - 128, _lastY * 2));
-							g.DrawImage(image, new PointF(_lastX * 2, _lastY * 2));
-							_lastX += UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							_lastY -= UvRotateStepFactor * selectedSet.TenUvRotateSpeed;
-							if (_lastX >= 64)
-								_lastX = 0;
-							if (_lastY < 0)
-								_lastY = 64 + _lastY;  
-							break;
-					}
+					_lastX = (_lastX + step * dirX) % Tile;
+					_lastY = (_lastY + step * dirY) % Tile;
+					if (_lastX < 0) _lastX += Tile;
+					if (_lastY < 0) _lastY += Tile;
+
+					float dx = _lastX * 2f;
+					float dy = _lastY * 2f;
+
+					g.DrawImage(image, new PointF(dx - Canvas, dy - Canvas));
+					g.DrawImage(image, new PointF(dx, dy - Canvas));
+					g.DrawImage(image, new PointF(dx - Canvas, dy));
+					g.DrawImage(image, new PointF(dx, dy));
 				}
 			}
 			else
@@ -1152,12 +1088,15 @@ namespace TombLib.Forms
 				numericUpDownFPS.Visible = true;
 				numericUpDownFPS.Enabled = false;
 				comboUvRotate.Enabled = false;
+				numericUpDownUvRotateDirection.Visible = false;
+				numericUpDownUvRotateDirection.Enabled = false;
 				return;
 			}
 
 			var effect = (AnimatedTextureAnimationType)comboEffect.SelectedItem;
 
 			lblFps.Text = "FPS";
+			lblUvRotate.Text = "UvRotate";
 
 			switch (effect)
 			{
@@ -1166,6 +1105,9 @@ namespace TombLib.Forms
 					numericUpDownFPS.Visible = true;
 					numericUpDownFPS.Enabled = true;
 					comboUvRotate.Enabled = false;
+					comboUvRotate.Visible = true;
+					numericUpDownUvRotateDirection.Visible = false;
+					numericUpDownUvRotateDirection.Enabled = false;
 					break;
 
 				case AnimatedTextureAnimationType.PFrames:
@@ -1173,6 +1115,9 @@ namespace TombLib.Forms
 					numericUpDownFPS.Visible = true;
 					numericUpDownFPS.Enabled = false;
 					comboUvRotate.Enabled = false;
+					comboUvRotate.Visible = true;
+					numericUpDownUvRotateDirection.Visible = false;
+					numericUpDownUvRotateDirection.Enabled = false;
 					break;
 
 				case AnimatedTextureAnimationType.UVRotate:
@@ -1192,11 +1137,13 @@ namespace TombLib.Forms
 						comboFps.Visible = false;
 						numericUpDownFPS.Visible = true;
 						numericUpDownFPS.Enabled = true;
-						comboUvRotate.Enabled = true;
 						lblFps.Text = "Cycles/s";
 
-						comboUvRotate.SelectedIndex = 0;
-					}	
+						comboUvRotate.Visible = false;
+						numericUpDownUvRotateDirection.Visible = true;
+						numericUpDownUvRotateDirection.Enabled = true;
+						lblUvRotate.Text = "UvRotate (degrees)";
+					}
 
 					break;
 
@@ -1205,6 +1152,9 @@ namespace TombLib.Forms
 					numericUpDownFPS.Visible = true;
 					numericUpDownFPS.Enabled = false;
 					comboUvRotate.Enabled = false;
+					comboUvRotate.Visible = true;
+					numericUpDownUvRotateDirection.Visible = false;
+					numericUpDownUvRotateDirection.Enabled = false;
 					break;
 
 				default:
@@ -1339,6 +1289,15 @@ namespace TombLib.Forms
 				}
 			}
 			catch (Exception) { }
+		}
+
+		private void numericUpDownUvRotateDirection_ValueChanged(object sender, EventArgs e)
+		{
+			var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+			if (selectedSet == null)
+				return;
+			selectedSet.TenUvRotateDirection = (float)numericUpDownUvRotateDirection.Value;
+			_context.OnAnimatedTexturesChanged.Invoke();
 		}
 	}
 }

@@ -24,6 +24,7 @@ namespace TombLib.Forms
 			previewImage = new PictureBox();
 			panel4 = new DarkPanel();
 			settingsPanel = new Panel();
+			numericUpDownUvRotateDirection = new DarkNumericUpDown();
 			comboUvRotate = new DarkComboBox();
 			comboEffect = new DarkComboBox();
 			numericUpDownFPS = new DarkNumericUpDown();
@@ -76,6 +77,7 @@ namespace TombLib.Forms
 			((System.ComponentModel.ISupportInitialize)previewImage).BeginInit();
 			panel4.SuspendLayout();
 			settingsPanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)numericUpDownUvRotateDirection).BeginInit();
 			((System.ComponentModel.ISupportInitialize)numericUpDownFPS).BeginInit();
 			panel3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)numFrames).BeginInit();
@@ -198,6 +200,7 @@ namespace TombLib.Forms
 			// settingsPanel
 			// 
 			settingsPanel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			settingsPanel.Controls.Add(numericUpDownUvRotateDirection);
 			settingsPanel.Controls.Add(comboUvRotate);
 			settingsPanel.Controls.Add(comboEffect);
 			settingsPanel.Controls.Add(numericUpDownFPS);
@@ -206,6 +209,21 @@ namespace TombLib.Forms
 			settingsPanel.Name = "settingsPanel";
 			settingsPanel.Size = new System.Drawing.Size(323, 24);
 			settingsPanel.TabIndex = 12;
+			// 
+			// numericUpDownUvRotateDirection
+			// 
+			numericUpDownUvRotateDirection.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			numericUpDownUvRotateDirection.DecimalPlaces = 2;
+			numericUpDownUvRotateDirection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			numericUpDownUvRotateDirection.IncrementAlternate = new decimal(new int[] { 25, 0, 0, 131072 });
+			numericUpDownUvRotateDirection.Location = new System.Drawing.Point(184, 0);
+			numericUpDownUvRotateDirection.LoopValues = false;
+			numericUpDownUvRotateDirection.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+			numericUpDownUvRotateDirection.Name = "numericUpDownUvRotateDirection";
+			numericUpDownUvRotateDirection.Size = new System.Drawing.Size(71, 23);
+			numericUpDownUvRotateDirection.TabIndex = 20;
+			numericUpDownUvRotateDirection.Visible = false;
+			numericUpDownUvRotateDirection.ValueChanged += numericUpDownUvRotateDirection_ValueChanged;
 			// 
 			// comboUvRotate
 			// 
@@ -256,7 +274,7 @@ namespace TombLib.Forms
 			lblUvRotate.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			lblUvRotate.Location = new System.Drawing.Point(186, 6);
 			lblUvRotate.Name = "lblUvRotate";
-			lblUvRotate.Size = new System.Drawing.Size(58, 14);
+			lblUvRotate.Size = new System.Drawing.Size(142, 13);
 			lblUvRotate.TabIndex = 10;
 			lblUvRotate.Text = "UvRotate:";
 			// 
@@ -747,6 +765,7 @@ namespace TombLib.Forms
 			((System.ComponentModel.ISupportInitialize)previewImage).EndInit();
 			panel4.ResumeLayout(false);
 			settingsPanel.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)numericUpDownUvRotateDirection).EndInit();
 			((System.ComponentModel.ISupportInitialize)numericUpDownFPS).EndInit();
 			panel3.ResumeLayout(false);
 			panel3.PerformLayout();
@@ -813,5 +832,6 @@ namespace TombLib.Forms
         private DarkButton butCancel;
         private DarkPanel darkPanel1;
 		private Panel panelTextureMapContainer;
+		private DarkNumericUpDown numericUpDownUvRotateDirection;
 	}
 }
