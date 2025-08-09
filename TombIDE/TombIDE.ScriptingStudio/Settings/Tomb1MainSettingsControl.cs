@@ -180,7 +180,7 @@ namespace TombIDE.ScriptingStudio.Settings
 		{
 			using (var dialog = new OpenFileDialog())
 			{
-				dialog.Filter = "T1M / TR1X Scheme|*.t1msch";
+				dialog.Filter = "TR1X / TR2X Scheme|*.t1msch";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{

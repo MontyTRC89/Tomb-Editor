@@ -107,7 +107,7 @@ namespace TombLib.Scripting.Tomb1Main.Objects
 
 		#region Other
 
-		public string Name => "T1M / TR1X Rules";
+		public string Name => "TRX Rules";
 
 		public IEnumerable<HighlightingColor> NamedHighlightingColors => throw new NotImplementedException();
 		public IDictionary<string, string> Properties => throw new NotImplementedException();

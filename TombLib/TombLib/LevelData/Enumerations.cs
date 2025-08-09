@@ -14,9 +14,9 @@ namespace TombLib.LevelData
             TR3 = 3,
             TR4 = 4,
             TR5 = 5,
-			TR1X = 11,
-			TR2X = 12,
-			TRNG = 16,
+            TR1X = 11, // Temporarily unused, only for TombIDE identification
+            TR2X = 12, // Temporarily unused, only for TombIDE identification
+            TRNG = 16,
             TombEngine = 18,
         }
 
@@ -30,20 +30,22 @@ namespace TombLib.LevelData
         public static bool UsesMainSfx(this Game ver) => ver is Game.TR2 or Game.TR2X or Game.TR3;
 
         /// <summary> Base enumeration. Contains all possible game versions.
-        public static List<Game> AllVersions => Enum.GetValues<Game>().ToList();
+        public static List<Game> AllVersions => Enum.GetValues<Game>()
+            .Where(e => e is not Game.TR1X and not Game.TR2X) // Exclude TombIDE versions
+            .ToList();
 
         /// <summary> Helper native (aka WadGameVersion) enumeration list. Can be used to populate various controls, like listbox. </summary>
         public static List<Game> NativeVersions => new()
         {
-			Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TombEngine
-		};
+            Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TombEngine
+        };
 
         /// <summary> Helper legacy (aka TRVersion) enumeration list. Can be used to populate various controls, like listbox. </summary>
         public static List<Game> LegacyVersions => new()
-		{
-			Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TRNG
-		};
-	}
+        {
+            Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TRNG
+        };
+    }
 
     /// Only for TR5+
     public enum Tr5LaraType : byte
