@@ -700,8 +700,7 @@ namespace TombLib.Forms
 		private AnimatedTextureFrame GetSelectedAnimatedTextureFrame()
 		{
 			TextureArea textureArea = _textureMap.SelectedTexture;
-			if (!(textureArea.Texture is LevelTexture) && !(textureArea.Texture is WadTexture)
-				&& !(textureArea.Texture is ImportedGeometryTexture))
+			if (!(textureArea.Texture is LevelTexture) && !(textureArea.Texture is WadTexture))
 			{
 				popup.ShowError(_textureMap, "No valid texture region selected", "Invalid selection");
 				return null;
@@ -720,8 +719,7 @@ namespace TombLib.Forms
 		private bool GenerateProceduralAnimation(ProceduralAnimationType type, int resultingFrameCount = _maxLegacyFrames, float effectStrength = 1.0f, bool smooth = true, bool loop = true, AnimGenerationType genType = AnimGenerationType.New)
 		{
 			TextureArea textureArea = _textureMap.SelectedTexture;
-			if (!(textureArea.Texture is LevelTexture) && !(textureArea.Texture is WadTexture)
-				&& !(textureArea.Texture is ImportedGeometryTexture))
+			if (!(textureArea.Texture is LevelTexture) && !(textureArea.Texture is WadTexture))
 			{
 				popup.ShowError(_textureMap, "No valid texture region selected", "Invalid selection");
 				return false;
@@ -1017,7 +1015,7 @@ namespace TombLib.Forms
 
 		private void texturesDataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e)
 		{
-			if (e.DesiredType == typeof(LevelTexture) || e.DesiredType == typeof(WadTexture) || e.DesiredType == typeof(ImportedGeometryTexture))
+			if (e.DesiredType == typeof(LevelTexture) || e.DesiredType == typeof(WadTexture))
 			{
 				e.Value = _context.AvailableTextures.FirstOrDefault(texture => texture.ToString() == (string)e.Value);
 				e.ParsingApplied = true;

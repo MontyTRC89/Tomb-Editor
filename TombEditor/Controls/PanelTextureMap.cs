@@ -15,9 +15,9 @@ namespace TombEditor.Controls
     {
         protected readonly Editor _editor;
 
-        public new Texture VisibleTexture
+        public new LevelTexture VisibleTexture
         {
-            get { return base.VisibleTexture; }
+            get { return base.VisibleTexture as LevelTexture; }
             set { base.VisibleTexture = value; }
         }
 
@@ -56,10 +56,10 @@ namespace TombEditor.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (!(VisibleTexture?.IsAvailable ?? false) && VisibleTexture is LevelTexture)
+            if (!(VisibleTexture?.IsAvailable ?? false))
             {
                 if (VisibleTexture != null)
-                    EditorActions.ReloadResource(Parent, _editor.Level.Settings, VisibleTexture as LevelTexture);
+                    EditorActions.ReloadResource(Parent, _editor.Level.Settings, VisibleTexture);
                 else
                     EditorActions.AddTexture(Parent);
                 return;
@@ -70,33 +70,30 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (this is not PanelTextureMapForAnimations)
-                if (VisibleTexture == null || !VisibleTexture.IsAvailable)
+            if (VisibleTexture == null || !VisibleTexture.IsAvailable)
+            {
+                string notifyMessage;
+
+                if (string.IsNullOrEmpty(VisibleTexture?.Path))
+                    notifyMessage = "Click here to load new texture file.";
+                else
                 {
-                    LevelTexture texture = VisibleTexture as LevelTexture;
-
-                    string notifyMessage;
-
-                    if (string.IsNullOrEmpty(texture?.Path))
-                        notifyMessage = "Click here to load new texture file.";
+                    string fileName = PathC.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";
+                    if (PathC.IsFileNotFoundException(VisibleTexture?.LoadException))
+                        notifyMessage = "Texture file '" + fileName + "' was not found!\n";
                     else
-                    {
-                        string fileName = PathC.GetFileNameWithoutExtensionTry(texture?.Path) ?? "";
-                        if (PathC.IsFileNotFoundException(texture?.LoadException))
-                            notifyMessage = "Texture file '" + fileName + "' was not found!\n";
-                        else
-                            notifyMessage = "Unable to load texture from file '" + fileName + "'.\n";
-                        notifyMessage += "Click here to choose a replacement.\n\n";
-                        notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(texture?.Path) ?? "");
-                    }
-
-                    RectangleF textArea = ClientRectangle;
-                    textArea.Size -= new SizeF(_scrollSizeTotal, _scrollSizeTotal);
-
-                    using (var b = new SolidBrush(Colors.DisabledText))
-                        e.Graphics.DrawString(notifyMessage, Font, b, textArea,
-                            new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                        notifyMessage = "Unable to load texture from file '" + fileName + "'.\n";
+                    notifyMessage += "Click here to choose a replacement.\n\n";
+                    notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(VisibleTexture?.Path) ?? "");
                 }
+
+                RectangleF textArea = ClientRectangle;
+                textArea.Size -= new SizeF(_scrollSizeTotal, _scrollSizeTotal);
+
+                using (var b = new SolidBrush(Colors.DisabledText))
+                    e.Graphics.DrawString(notifyMessage, Font, b, textArea,
+                        new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+            }
 
             base.OnPaint(e);
         }
