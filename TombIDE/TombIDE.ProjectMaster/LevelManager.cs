@@ -178,7 +178,7 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTEN()
 		{
-			var newVersion  = _ide.Project.GetLatestEngineVersion();
+			var newVersion = _ide.Project.GetLatestEngineVersion();
 			var prevVersion = _ide.Project.GetCurrentEngineVersion();
 
 			// 1.0.9 is the first version that supports auto-updating
@@ -191,7 +191,7 @@ namespace TombIDE.ProjectMaster
 			}
 
 			// In 1.6 onwards we need to upgrade settings file.
-			var settingsUpdate16 = (newVersion.Major == 1 && newVersion.Minor >= 6 && prevVersion.Major == 1 && prevVersion.Minor <= 6 && prevVersion <= newVersion);
+			var settingsUpdate16 = newVersion.Major == 1 && newVersion.Minor >= 6 && prevVersion.Major == 1 && prevVersion.Minor <= 6 && prevVersion <= newVersion;
 
 			var message =
 				@"This update will replace the following directories and files:
@@ -267,7 +267,7 @@ namespace TombIDE.ProjectMaster
 				// Extract resources, but don't overwrite
 				ExtractEntries(resourcesArchive.Entries, _ide.Project, false);
 
-				UpdateTENApi();
+				UpdateTENApi(newVersion);
 				UpdateVersionLabel();
 
 				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -365,7 +365,7 @@ namespace TombIDE.ProjectMaster
 			form.ShowDialog();
 		}
 
-		private void UpdateTENApi()
+		private void UpdateTENApi(Version currentEngineVersion)
 		{
 			if (_ide.Project.GameVersion != TRVersion.Game.TombEngine)
 				return;
@@ -378,7 +378,7 @@ namespace TombIDE.ProjectMaster
 			try
 			{
 				var converter = new ApiConverter();
-				converter.Convert(inputPath, outputPath);
+				converter.Convert(currentEngineVersion, inputPath, outputPath);
 
 				// Copy .luarc.json file into script root directory
 				string luarcPath = Path.Combine(DefaultPaths.TENApiDirectory, ".luarc.json");

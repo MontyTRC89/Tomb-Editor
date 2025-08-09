@@ -6,10 +6,13 @@ namespace LuaApiBuilder;
 
 public sealed class ApiConverter
 {
+	private Version _engineVersion = null!;
 	private ApiResult _api = null!;
 
-	public void Convert(string inputPath, string outputDirectory)
+	public void Convert(Version engineVersion, string inputPath, string outputDirectory)
 	{
+		_engineVersion = engineVersion;
+
 		// Parse the XML file
 		_api = ApiXmlParser.ParseApi(inputPath);
 
@@ -24,12 +27,22 @@ public sealed class ApiConverter
 		GenerateMainTenFile(outputDirectory);
 	}
 
+	private void WriteFileHeader(StringBuilder builder)
+	{
+		builder.AppendLine($"-- TEN {_engineVersion} API");
+		builder.AppendLine("-- This file is auto-generated and for IntelliSense purposes only!");
+		builder.AppendLine("-- Any changes made here will not be reflected in the engine.");
+		builder.AppendLine();
+	}
+
 	private void GenerateModuleFile(string moduleName, string outputDirectory)
 	{
 		bool isCoreModule = moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase);
 		string actualModuleName = isCoreModule ? "TEN" : moduleName;
 
 		var builder = new StringBuilder();
+
+		WriteFileHeader(builder);
 
 		builder.AppendLine("---@meta");
 		builder.AppendLine();
@@ -84,6 +97,8 @@ public sealed class ApiConverter
 	private void GenerateMainTenFile(string outputDirectory)
 	{
 		var builder = new StringBuilder();
+
+		WriteFileHeader(builder);
 
 		builder.AppendLine("---@meta");
 		builder.AppendLine();
