@@ -74,7 +74,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\LuaApiBuilder\LuaApiBuilder.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj" />

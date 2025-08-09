@@ -1,5 +1,4 @@
 ﻿using DarkUI.Forms;
-using LuaApiBuilder;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +11,7 @@ using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.NewStructure.Implementations;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -367,25 +367,9 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTENApi(Version currentEngineVersion)
 		{
-			if (_ide.Project.GameVersion != TRVersion.Game.TombEngine)
-				return;
-
-			string scriptRootDirectory = _ide.Project.GetScriptRootDirectory();
-
-			string inputPath = Path.Combine(DefaultPaths.TENApiDirectory, "API.xml");
-			string outputPath = Path.Combine(scriptRootDirectory, ".API");
-
 			try
 			{
-				var converter = new ApiConverter();
-				converter.Convert(currentEngineVersion, inputPath, outputPath);
-
-				// Copy .luarc.json file into script root directory
-				string luarcPath = Path.Combine(DefaultPaths.TENApiDirectory, ".luarc.json");
-				string luarcTargetPath = Path.Combine(scriptRootDirectory, ".luarc.json");
-
-				if (File.Exists(luarcPath))
-					File.Copy(luarcPath, luarcTargetPath, true);
+				TENApiService.InjectTENApi(_ide.Project, currentEngineVersion);
 			}
 			catch (Exception ex)
 			{
