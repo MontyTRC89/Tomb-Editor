@@ -15,7 +15,7 @@ public sealed class ApiFunction : IApiFunction
 
 	/// <summary>
 	/// The name or identifier of the caller associated with the current operation.
-	/// It indicated that this function is part of an instance of a class.
+	/// It indicates that this function is part of an instance of a class.
 	/// </summary>
 	public string? Caller { get; set; }
 
