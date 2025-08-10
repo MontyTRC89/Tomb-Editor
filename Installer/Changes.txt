@@ -5,7 +5,7 @@ WadTool:
  * Fixed loading of certain dxtre3d levels with corrupted animcommand data.
 
 TombIDE:
- * Added full TEN IntelliSense support for Visual Studio Code.
+ * Added full TEN IntelliSense support for Visual Studio Code, including auto-complete, definition hinting and error underlining.
  * Added TR2X support and engine preset (1.3.2).
  * Updated TR1X preset to 4.13.2.
 
