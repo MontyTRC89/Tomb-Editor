@@ -541,7 +541,7 @@ namespace TombIDE
 
 		private void InstallTENEngine(IGameProject targetProject)
 		{
-			const int extraSteps = 3;
+			const int extraSteps = 4;
 			progressBar.Maximum = 1 + extraSteps;
 
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
@@ -579,6 +579,9 @@ namespace TombIDE
 			string assetsDirectoryToCopy = Path.Combine(DefaultPaths.ProgramDirectory, "Assets");
 			string assetsDestination = Path.Combine(targetProject.DirectoryPath, "Assets");
 			DirectoryUtils.DeepCopy(assetsDirectoryToCopy, assetsDestination);
+			progressBar.Increment(1);
+
+			TENApiService.InjectTENApi(targetProject, targetProject.GetCurrentEngineVersion());
 			progressBar.Increment(1);
 
 			targetProject.Save();

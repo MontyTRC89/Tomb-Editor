@@ -11,6 +11,7 @@ using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.NewStructure.Implementations;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -184,7 +185,7 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTEN()
 		{
-			var newVersion  = _ide.Project.GetLatestEngineVersion();
+			var newVersion = _ide.Project.GetLatestEngineVersion();
 			var prevVersion = _ide.Project.GetCurrentEngineVersion();
 
 			// 1.0.9 is the first version that supports auto-updating
@@ -273,6 +274,7 @@ namespace TombIDE.ProjectMaster
 				// Extract resources, but don't overwrite
 				ExtractEntries(resourcesArchive.Entries, _ide.Project, false);
 
+				UpdateTENApi(newVersion);
 				UpdateVersionLabel();
 
 				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -415,6 +417,18 @@ namespace TombIDE.ProjectMaster
 		{
 			using var form = new FormGameArchive(_ide);
 			form.ShowDialog();
+		}
+
+		private void UpdateTENApi(Version currentEngineVersion)
+		{
+			try
+			{
+				TENApiService.InjectTENApi(_ide.Project, currentEngineVersion);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, "An error occurred while updating the API:\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 	}
 }

@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\..\LuaApiBuilder\LuaApiBuilder.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +241,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TIDE\Templates\Sounds\TR4-TRNG.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\TEN\.luarc.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TIDE\TEN\API.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
