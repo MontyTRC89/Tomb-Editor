@@ -43,13 +43,8 @@ public sealed class ApiConverter
 
 		builder.AppendLine(description);
 		builder.AppendLine("Lara = LaraObject()");
-
-		builder.AppendLine(description);
 		builder.AppendLine("Objects.Lara = Lara");
-
-		builder.AppendLine(description);
 		builder.AppendLine("TEN.Objects.Lara = Lara");
-
 		builder.AppendLine();
 
 		// Write variable declaration for `GameVars` table
@@ -58,13 +53,8 @@ public sealed class ApiConverter
 
 		builder.AppendLine(description);
 		builder.AppendLine("GameVars = {}");
-
-		builder.AppendLine(description);
 		builder.AppendLine("Logic.GameVars = GameVars");
-
-		builder.AppendLine(description);
 		builder.AppendLine("TEN.Logic.GameVars = GameVars");
-
 		builder.AppendLine();
 
 		// Write variable declaration for `LevelVars` table
@@ -73,13 +63,8 @@ public sealed class ApiConverter
 
 		builder.AppendLine(description);
 		builder.AppendLine("LevelVars = {}");
-
-		builder.AppendLine(description);
 		builder.AppendLine("Logic.LevelVars = LevelVars");
-
-		builder.AppendLine(description);
 		builder.AppendLine("TEN.Logic.LevelVars = LevelVars");
-
 		builder.AppendLine();
 
 		// Write variable declaration for `LevelFuncs` table
@@ -87,16 +72,11 @@ public sealed class ApiConverter
 
 		builder.AppendLine(description);
 		builder.AppendLine("LevelFuncs = {}");
-
-		builder.AppendLine(description);
 		builder.AppendLine("Logic.LevelFuncs = LevelFuncs");
-
-		builder.AppendLine(description);
 		builder.AppendLine("TEN.Logic.LevelFuncs = LevelFuncs");
+		builder.AppendLine();
 
 		// Add functions for LevelFuncs
-
-		builder.AppendLine();
 
 		builder.AppendLine("---Will be called when a level is entered by completing a previous level or by selecting it in the menu. Will not be called when loaded from a saved game.");
 		builder.AppendLine("LevelFuncs.OnStart = function() end");
@@ -105,6 +85,7 @@ public sealed class ApiConverter
 		builder.AppendLine("LevelFuncs.OnLoad = function() end");
 
 		builder.AppendLine("---Will be called during the game's update loop, and provides the delta time (a float representing game time since last call) via its argument.");
+		builder.AppendLine("---@param dt number # Delta time since last call.");
 		builder.AppendLine("LevelFuncs.OnLoop = function(dt) end");
 
 		builder.AppendLine("---Will be called when the player saves the game, just before data is saved.");
