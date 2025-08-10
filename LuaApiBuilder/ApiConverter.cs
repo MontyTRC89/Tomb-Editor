@@ -35,6 +35,91 @@ public sealed class ApiConverter
 		builder.AppendLine();
 	}
 
+	// TEMPORARY - Fix LDoc XML export to include these globals!
+	private static void WriteUndocumentedGlobals(StringBuilder builder)
+	{
+		// Write variable declaration for `Lara` global which is of type `LaraObject`
+		string description = "---Global variable for Lara object.";
+
+		builder.AppendLine(description);
+		builder.AppendLine("Lara = LaraObject()");
+
+		builder.AppendLine(description);
+		builder.AppendLine("Objects.Lara = Lara");
+
+		builder.AppendLine(description);
+		builder.AppendLine("TEN.Objects.Lara = Lara");
+
+		builder.AppendLine();
+
+		// Write variable declaration for `GameVars` table
+		description = "---A table with game data which will be saved and loaded. " +
+			"This is for information not specific to any level, but which concerns your whole levelset or game, that you want to store in saved games.";
+
+		builder.AppendLine(description);
+		builder.AppendLine("GameVars = {}");
+
+		builder.AppendLine(description);
+		builder.AppendLine("Logic.GameVars = GameVars");
+
+		builder.AppendLine(description);
+		builder.AppendLine("TEN.Logic.GameVars = GameVars");
+
+		builder.AppendLine();
+
+		// Write variable declaration for `LevelVars` table
+		description = "---A table with level-specific data which will be saved and loaded. " +
+			"This is for level-specific information that you want to store in saved games.";
+
+		builder.AppendLine(description);
+		builder.AppendLine("LevelVars = {}");
+
+		builder.AppendLine(description);
+		builder.AppendLine("Logic.LevelVars = LevelVars");
+
+		builder.AppendLine(description);
+		builder.AppendLine("TEN.Logic.LevelVars = LevelVars");
+
+		builder.AppendLine();
+
+		// Write variable declaration for `LevelFuncs` table
+		description = "---A nested table system for level-specific functions.";
+
+		builder.AppendLine(description);
+		builder.AppendLine("LevelFuncs = {}");
+
+		builder.AppendLine(description);
+		builder.AppendLine("Logic.LevelFuncs = LevelFuncs");
+
+		builder.AppendLine(description);
+		builder.AppendLine("TEN.Logic.LevelFuncs = LevelFuncs");
+
+		// Add functions for LevelFuncs
+
+		builder.AppendLine();
+
+		builder.AppendLine("---Will be called when a level is entered by completing a previous level or by selecting it in the menu. Will not be called when loaded from a saved game.");
+		builder.AppendLine("LevelFuncs.OnStart = function() end");
+
+		builder.AppendLine("---Will be called when a saved game is loaded, just after data is loaded.");
+		builder.AppendLine("LevelFuncs.OnLoad = function() end");
+
+		builder.AppendLine("---Will be called during the game's update loop, and provides the delta time (a float representing game time since last call) via its argument.");
+		builder.AppendLine("LevelFuncs.OnLoop = function(dt) end");
+
+		builder.AppendLine("---Will be called when the player saves the game, just before data is saved.");
+		builder.AppendLine("LevelFuncs.OnSave = function() end");
+
+		builder.AppendLine("---Will be called when leaving a level. This includes finishing it, exiting to the menu, or loading a save in a different level.");
+		builder.AppendLine("LevelFuncs.OnEnd = function() end");
+
+		builder.AppendLine("---Will be called when using an item from inventory.");
+		builder.AppendLine("LevelFuncs.OnUseItem = function() end");
+
+		builder.AppendLine("---Will be called when any of the Freeze modes are activated.");
+		builder.AppendLine("LevelFuncs.OnFreeze = function() end");
+	}
+
 	private void GenerateModuleFile(string moduleName, string outputDirectory)
 	{
 		bool isCoreModule = moduleName.Equals("Core", StringComparison.OrdinalIgnoreCase);
@@ -131,9 +216,13 @@ public sealed class ApiConverter
 		}
 
 		builder.AppendLine();
+
+		WriteUndocumentedGlobals(builder);
+
+		builder.AppendLine();
 		builder.AppendLine("return TEN");
 
-		var fileName = Path.Combine(outputDirectory, "ten.lua");
+		var fileName = Path.Combine(outputDirectory, "TEN.lua");
 		File.WriteAllText(fileName, builder.ToString());
 	}
 
