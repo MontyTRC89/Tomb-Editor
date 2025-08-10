@@ -36,8 +36,8 @@ namespace TombIDE.ProjectMaster
 				case TRVersion.Game.TRNG: panel_GameLabel.BackgroundImage = Properties.Resources.TRNG_LVL; break;
 				case TRVersion.Game.TR4: panel_GameLabel.BackgroundImage = Properties.Resources.TR4_LVL; break;
 				case TRVersion.Game.TR3: panel_GameLabel.BackgroundImage = Properties.Resources.TR3_LVL; break;
-				case TRVersion.Game.TR2: panel_GameLabel.BackgroundImage = Properties.Resources.TR2_LVL; break;
-				case TRVersion.Game.TR1: panel_GameLabel.BackgroundImage = Properties.Resources.TR1_LVL; break;
+				case TRVersion.Game.TR2 or TRVersion.Game.TR2X: panel_GameLabel.BackgroundImage = Properties.Resources.TR2_LVL; break;
+				case TRVersion.Game.TR1 or TRVersion.Game.TR1X: panel_GameLabel.BackgroundImage = Properties.Resources.TR1_LVL; break;
 			}
 
 			UpdateVersionLabel();
@@ -108,6 +108,9 @@ namespace TombIDE.ProjectMaster
 							button_Update.Width = 300;
 						}
 					}
+
+					if (_ide.Project.GameVersion is TRVersion.Game.TR2X)
+						button_Update.Visible = true;
 				}
 				else
 				{
@@ -172,6 +175,10 @@ namespace TombIDE.ProjectMaster
 				case TRVersion.Game.TR1:
 					UpdateTR1X();
 					break;
+
+				case TRVersion.Game.TR2X:
+					UpdateTR2X();
+					break;
 			}
 		}
 
@@ -190,7 +197,7 @@ namespace TombIDE.ProjectMaster
 			}
 
 			// In 1.6 onwards we need to upgrade settings file.
-			var settingsUpdate16 = (newVersion.Major == 1 && newVersion.Minor >= 6 && prevVersion.Major == 1 && prevVersion.Minor <= 6 && prevVersion <= newVersion);
+			var settingsUpdate16 = newVersion.Major == 1 && newVersion.Minor >= 6 && prevVersion.Major == 1 && prevVersion.Minor <= 6 && prevVersion <= newVersion;
 
 			var message =
 				@"This update will replace the following directories and files:
@@ -316,6 +323,53 @@ namespace TombIDE.ProjectMaster
 			try
 			{
 				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR1.zip");
+				using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
+
+				var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/shaders")).ToList();
+				ExtractEntries(shaders, _ide.Project);
+
+				var executables = engineArchive.Entries.Where(entry => entry.FullName.EndsWith(".exe")).ToList();
+				ExtractEntries(executables, _ide.Project);
+
+				UpdateVersionLabel();
+
+				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, "An error occurred while updating the engine:\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void UpdateTR2X()
+		{
+			DialogResult result = MessageBox.Show(this,
+				"This update will replace the following directories and files:\n\n" +
+
+				"- Engine/shaders/\n" +
+				"- Engine/TR2X.exe\n" +
+				"- Engine/TR2X_ConfigTool.exe\n\n" +
+
+				"If any of these directories / files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
+
+				"Are you sure you want to continue?\n" +
+				"This action cannot be reverted.",
+				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+			if (result is not DialogResult.Yes)
+				return;
+
+			string engineDirectoryPath = Path.Combine(_ide.Project.DirectoryPath, "Engine");
+
+			if (!Directory.Exists(engineDirectoryPath))
+			{
+				DarkMessageBox.Show(this, "Couldn't locate \"Engine\" directory. Updating is not supported for your project structure.", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			try
+			{
+				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR2X.zip");
 				using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
 
 				var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/shaders")).ToList();

@@ -50,6 +50,10 @@ namespace TombIDE.ProjectMaster.Forms
 					GenerateTR1Archive(filePath, readmeText);
 					break;
 
+				case TRVersion.Game.TR2X:
+					GenerateTR2XArchive(filePath, readmeText);
+					break;
+
 				case TRVersion.Game.TR2:
 					GenerateTR2Archive(filePath, readmeText);
 					break;
@@ -58,8 +62,7 @@ namespace TombIDE.ProjectMaster.Forms
 					GenerateTR3Archive(filePath, readmeText);
 					break;
 
-				case TRVersion.Game.TR4:
-				case TRVersion.Game.TRNG:
+				case TRVersion.Game.TR4 or TRVersion.Game.TRNG:
 					GenerateTR4Archive(filePath, readmeText);
 					break;
 
@@ -88,6 +91,29 @@ namespace TombIDE.ProjectMaster.Forms
 				Path.Combine(engineDirectory, "Tomb1Main.exe"),
 				Path.Combine(engineDirectory, "TR1X_ConfigTool.exe"),
 				Path.Combine(engineDirectory, "Tomb1Main_ConfigTool.exe"),
+				Path.Combine(engineDirectory, "splash.xml")
+			};
+
+			CreateArchive(importantFolders, importantFiles, filePath, readmeText);
+		}
+
+		public void GenerateTR2XArchive(string filePath, string readmeText)
+		{
+			string engineDirectory = _ide.Project.GetEngineRootDirectoryPath();
+
+			string[] importantFolders = new string[]
+			{
+				Path.Combine(engineDirectory, "music"),
+				Path.Combine(engineDirectory, "cfg"),
+				Path.Combine(engineDirectory, "data"),
+				Path.Combine(engineDirectory, "shaders")
+			};
+
+			string[] importantFiles = new string[]
+			{
+				Path.Combine(engineDirectory, "splash.bmp"),
+				Path.Combine(engineDirectory, "TR2X.exe"),
+				Path.Combine(engineDirectory, "TR2X_ConfigTool.exe"),
 				Path.Combine(engineDirectory, "splash.xml")
 			};
 
