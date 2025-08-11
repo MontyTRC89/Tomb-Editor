@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace TombLib.Utils
 {
     public static class CollectionUtils
     {
+		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 		public static int IndexOf<T>(this IEnumerable<T> source, Predicate<T> test, int skip = 0, int @default = -1)
 		{
 			if (source is null) throw new ArgumentNullException(nameof(source));
@@ -51,46 +53,47 @@ namespace TombLib.Utils
 			}
 		}
 
-		public static int ReferenceIndexOf<T>(this IEnumerable<T> source, T needle, int skip = 0)
-			where T : class
-		{
-			if (needle is null) return -1;
-			if (source is null) throw new ArgumentNullException(nameof(source));
-			if (skip < 0) skip = 0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        public static int ReferenceIndexOf<T>(this IEnumerable<T> source, T needle, int skip = 0)
+            where T : class
+        {
+            if (needle is null) return -1;
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (skip < 0) skip = 0;
 
-			switch (source)
-			{
-				case T[] arr:
-					for (int i = skip; (uint)i < (uint)arr.Length; i++)
-						if (ReferenceEquals(arr[i], needle)) return i;
-					return -1;
+            switch (source)
+            {
+                case T[] arr:
+                    for (int i = skip; (uint)i < (uint)arr.Length; i++)
+                        if (ReferenceEquals(arr[i], needle)) return i;
+                    return -1;
 
-				case List<T> list:
-					var span = CollectionsMarshal.AsSpan(list);
-					for (int i = skip; (uint)i < (uint)span.Length; i++)
-						if (ReferenceEquals(span[i], needle)) return i;
-					return -1;
+                case List<T> list:
+                    var span = CollectionsMarshal.AsSpan(list);
+                    for (int i = skip; (uint)i < (uint)span.Length; i++)
+                        if (ReferenceEquals(span[i], needle)) return i;
+                    return -1;
 
-				case IReadOnlyList<T> ro:
-					for (int i = skip; i < ro.Count; i++)
-						if (ReferenceEquals(ro[i], needle)) return i;
-					return -1;
+                case IReadOnlyList<T> ro:
+                    for (int i = skip; i < ro.Count; i++)
+                        if (ReferenceEquals(ro[i], needle)) return i;
+                    return -1;
 
-				case IList<T> il:
-					for (int i = skip; i < il.Count; i++)
-						if (ReferenceEquals(il[i], needle)) return i;
-					return -1;
+                case IList<T> il:
+                    for (int i = skip; i < il.Count; i++)
+                        if (ReferenceEquals(il[i], needle)) return i;
+                    return -1;
 
-				default:
-					int idx = 0;
-					foreach (var item in source)
-					{
-						if (idx >= skip && ReferenceEquals(item, needle)) return idx;
-						idx++;
-					}
-					return -1;
-			}
-		}
+                default:
+                    int idx = 0;
+                    foreach (var item in source)
+                    {
+                        if (idx >= skip && ReferenceEquals(item, needle)) return idx;
+                        idx++;
+                    }
+                    return -1;
+            }
+        }
 
 		public static TValue TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue @default = default(TValue))
         {
@@ -108,7 +111,6 @@ namespace TombLib.Utils
                 return result;
             return @default;
         }
-
 
         public static void Resize<T>(this List<T> list, int newCount, T newElement = default(T))
         {
