@@ -99,7 +99,9 @@ namespace TombLib.LevelData
                                             AnimationType = AnimationType,
                                             Fps = Fps,
                                             UvRotate = UvRotate,
-                                            Name = Name
+                                            Name = Name,
+                                            TenUvRotateDirection = TenUvRotateDirection,
+                                            TenUvRotateSpeed = TenUvRotateSpeed
                                           };
         }
         object ICloneable.Clone() => Clone();
