@@ -1,41 +1,98 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace TombLib.Utils
 {
     public static class CollectionUtils
     {
-        public static int IndexOf<T>(this IEnumerable<T> list, Predicate<T> test, int skip = 0, int @default = -1)
-        {
-            int i = 0;
-            foreach (T element in list)
-            {
-                if (i >= skip)
-                    if (test(element))
-                        return i;
-                ++i;
-            }
-            return @default;
-        }
+		public static int IndexOf<T>(this IEnumerable<T> source, Predicate<T> test, int skip = 0, int @default = -1)
+		{
+			if (source is null) throw new ArgumentNullException(nameof(source));
+			if (test is null) throw new ArgumentNullException(nameof(test));
+			if (skip < 0) skip = 0;
 
-        public static int ReferenceIndexOf<T>(this IEnumerable<T> list, T needle)
-        {
-            if (needle == null)
-                return -1;
+			switch (source)
+			{
+				// Array: indicizzazione diretta
+				case T[] arr:
+					for (int i = skip; (uint)i < (uint)arr.Length; i++)
+						if (test(arr[i])) return i;
+					return @default;
 
-            int i = 0;
-            foreach (T element in list)
-            {
-                if (ReferenceEquals(element, needle))
-                    return i;
-                ++i;
-            }
+				// List<T>: Span veloce senza bounds-check multipli
+				case List<T> list:
+					var span = CollectionsMarshal.AsSpan(list);
+					for (int i = skip; (uint)i < (uint)span.Length; i++)
+						if (test(span[i])) return i;
+					return @default;
 
-            return -1;
-        }
+				// Collezioni indicizzabili
+				case IReadOnlyList<T> ro:
+					for (int i = skip; i < ro.Count; i++)
+						if (test(ro[i])) return i;
+					return @default;
 
-        public static TValue TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue @default = default(TValue))
+				case IList<T> il:
+					for (int i = skip; i < il.Count; i++)
+						if (test(il[i])) return i;
+					return @default;
+
+				// Fallback: enumerazione
+				default:
+					int idx = 0;
+					foreach (var item in source)
+					{
+						if (idx >= skip && test(item)) return idx;
+						idx++;
+					}
+					return @default;
+			}
+		}
+
+		public static int ReferenceIndexOf<T>(this IEnumerable<T> source, T needle, int skip = 0)
+			where T : class
+		{
+			if (needle is null) return -1;
+			if (source is null) throw new ArgumentNullException(nameof(source));
+			if (skip < 0) skip = 0;
+
+			switch (source)
+			{
+				case T[] arr:
+					for (int i = skip; (uint)i < (uint)arr.Length; i++)
+						if (ReferenceEquals(arr[i], needle)) return i;
+					return -1;
+
+				case List<T> list:
+					var span = CollectionsMarshal.AsSpan(list);
+					for (int i = skip; (uint)i < (uint)span.Length; i++)
+						if (ReferenceEquals(span[i], needle)) return i;
+					return -1;
+
+				case IReadOnlyList<T> ro:
+					for (int i = skip; i < ro.Count; i++)
+						if (ReferenceEquals(ro[i], needle)) return i;
+					return -1;
+
+				case IList<T> il:
+					for (int i = skip; i < il.Count; i++)
+						if (ReferenceEquals(il[i], needle)) return i;
+					return -1;
+
+				default:
+					int idx = 0;
+					foreach (var item in source)
+					{
+						if (idx >= skip && ReferenceEquals(item, needle)) return idx;
+						idx++;
+					}
+					return -1;
+			}
+		}
+
+		public static TValue TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue @default = default(TValue))
         {
             TValue result;
             if (@this.TryGetValue(key, out result))
