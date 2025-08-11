@@ -625,10 +625,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         }
                                         else
                                         {
-                                            existingIndex = roomVertices.IndexOf(
-                                                v => v.Position == trVertex.Position
-                                                    && v.Color == trVertex.Color
-                                                    && v.DoubleSided == trVertex.DoubleSided);
+                                            existingIndex = -1;
+											var span = CollectionsMarshal.AsSpan(roomVertices);
+                                            for (int i = 0; (uint)i < (uint)span.Length; i++)
+                                                if (span[i].Position == trVertex.Position &&
+                                                    span[i].Color == span[i].Color &&
+                                                    span[i].DoubleSided == span[i].DoubleSided)
+                                                {
+                                                    existingIndex = i;
+                                                    break;
+                                                }
                                             if (existingIndex == -1)
                                             {
                                                 existingIndex = roomVertices.Count;
