@@ -787,79 +787,96 @@ namespace TombLib.LevelData.Compilers
 			// degenerate quad. It's needed to fake UVRotate application to triangular areas.
 			public bool ConvertToQuad;
 
-			public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
+			[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+			public TombEnginePolygon CreateTombEnginePolygon3(int i0, int i1, int i2, byte blendMode, List<TombEngineVertex> vertices)
 			{
-				if (indices.Length != 3)
-					throw new ArgumentOutOfRangeException(nameof(indices.Length));
-
-				int objectTextureIndex = TexInfoIndex;
-				int[] transformedIndices = new int[3] { indices[0], indices[1], indices[2] };
-
-				if (Rotation > 0)
+				// Rotation % 3
+				int r = Rotation % 3;
+				int a, b, c;
+				switch (r)
 				{
-					for (int i = 0; i < Rotation; i++)
-					{
-						int tempIndex = transformedIndices[0];
-						transformedIndices[0] = transformedIndices[2];
-						transformedIndices[2] = transformedIndices[1];
-						transformedIndices[1] = tempIndex;
-					}
+					case 1: a = i2; b = i0; c = i1; break;
+					case 2: a = i1; b = i2; c = i0; break;
+					default: a = i0; b = i1; c = i2; break;
 				}
 
-				var polygon = new TombEnginePolygon();
-				polygon.Shape = TombEnginePolygonShape.Triangle;
-				polygon.Indices.AddRange(transformedIndices);
-				polygon.TextureId = objectTextureIndex;
-				polygon.BlendMode = blendMode;
-				polygon.Animated = Animated;
-
-				if (vertices != null)
+				var poly = new TombEnginePolygon
 				{
-					// Calculate the normal
-					Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
-					Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
-					polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
+					Shape = TombEnginePolygonShape.Triangle,
+					TextureId = TexInfoIndex,
+					BlendMode = blendMode,
+					Animated = Animated
+				};
+
+				poly.Indices.EnsureCapacity(3);
+				poly.Indices.Add(a);
+				poly.Indices.Add(b);
+				poly.Indices.Add(c);
+
+				if (vertices is not null)
+				{
+					Vector3 e1 = vertices[b].Position - vertices[a].Position;
+					Vector3 e2 = vertices[c].Position - vertices[a].Position;
+					Vector3 n = Vector3.Cross(e1, e2);
+					float len2 = n.LengthSquared();
+					poly.Normal = (len2 > 1e-20f) ? n / MathF.Sqrt(len2) : Vector3.Zero;
 				}
 
-				return polygon;
+				return poly;
 			}
 
-			public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
+			[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+			public TombEnginePolygon CreateTombEnginePolygon4(int i0, int i1, int i2, int i3, byte blendMode, List<TombEngineVertex> vertices)
 			{
-				if (indices.Length != 4)
-					throw new ArgumentOutOfRangeException(nameof(indices.Length));
-
-				int objectTextureIndex = TexInfoIndex;
-				int[] transformedIndices = new int[4] { indices[0], indices[1], indices[2], indices[3] };
-
-				if (Rotation > 0)
+				// Rotation % 4
+				int r = Rotation & 3;
+				int a, b, c, d;
+				switch (r)
 				{
-					for (int i = 0; i < Rotation; i++)
-					{
-						int tempIndex = transformedIndices[0];
-						transformedIndices[0] = transformedIndices[3];
-						transformedIndices[3] = transformedIndices[2];
-						transformedIndices[2] = transformedIndices[1];
-						transformedIndices[1] = tempIndex;
-					}
+					case 1: a = i3; b = i0; c = i1; d = i2; break;
+					case 2: a = i2; b = i3; c = i0; d = i1; break;
+					case 3: a = i1; b = i2; c = i3; d = i0; break;
+					default: a = i0; b = i1; c = i2; d = i3; break;
 				}
 
-				var polygon = new TombEnginePolygon();
-				polygon.Shape = TombEnginePolygonShape.Quad;
-				polygon.Indices.AddRange(transformedIndices);
-				polygon.TextureId = objectTextureIndex;
-				polygon.BlendMode = blendMode;
-				polygon.Animated = Animated;
-
-				if (vertices != null)
+				var poly = new TombEnginePolygon
 				{
-					// Calculate the normal
-					Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
-					Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
-					polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
+					Shape = TombEnginePolygonShape.Quad,
+					TextureId = TexInfoIndex,
+					BlendMode = blendMode,
+					Animated = Animated
+				};
+
+				poly.Indices.EnsureCapacity(4);
+				poly.Indices.Add(a);
+				poly.Indices.Add(b);
+				poly.Indices.Add(c);
+				poly.Indices.Add(d);
+
+				if (vertices is not null)
+				{
+					Vector3 e1 = vertices[b].Position - vertices[a].Position;
+					Vector3 e2 = vertices[c].Position - vertices[a].Position;
+					Vector3 n = Vector3.Cross(e1, e2);
+					float len2 = n.LengthSquared();
+					poly.Normal = (len2 > 1e-20f) ? n / MathF.Sqrt(len2) : Vector3.Zero;
 				}
 
-				return polygon;
+				return poly;
+			}
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			public TombEnginePolygon CreateTombEnginePolygon3(ReadOnlySpan<int> indices, byte blendMode, List<TombEngineVertex> vertices)
+			{
+				if (indices.Length != 3) throw new ArgumentOutOfRangeException(nameof(indices));
+				return CreateTombEnginePolygon3(indices[0], indices[1], indices[2], blendMode, vertices);
+			}
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			public TombEnginePolygon CreateTombEnginePolygon4(ReadOnlySpan<int> indices, byte blendMode, List<TombEngineVertex> vertices)
+			{
+				if (indices.Length != 4) throw new ArgumentOutOfRangeException(nameof(indices));
+				return CreateTombEnginePolygon4(indices[0], indices[1], indices[2], indices[3], blendMode, vertices);
 			}
 		}
 
@@ -1730,22 +1747,22 @@ namespace TombLib.LevelData.Compilers
 
                 for (int n = 0; n < RoomsAtlas.Count; n++)
                 {
-                    RoomsAtlas[n].ColorMap.Save("OutputDebug\\RoomsAtlas" + n + ".png");
+                    RoomsAtlas[n].ColorMap.SaveToFile("OutputDebug\\RoomsAtlas" + n + ".png");
                 }
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
-                    MoveablesAtlas[n].ColorMap.Save("OutputDebug\\MoveablesAtlas" + n + ".png");
+                    MoveablesAtlas[n].ColorMap.SaveToFile("OutputDebug\\MoveablesAtlas" + n + ".png");
                 }
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
-                    StaticsAtlas[n].ColorMap.Save("OutputDebug\\StaticsAtlas" + n + ".png");
+                    StaticsAtlas[n].ColorMap.SaveToFile("OutputDebug\\StaticsAtlas" + n + ".png");
                 }
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
-                    AnimatedAtlas[n].ColorMap.Save("OutputDebug\\AnimatedAtlas" + n + ".png");
+                    AnimatedAtlas[n].ColorMap.SaveToFile("OutputDebug\\AnimatedAtlas" + n + ".png");
                 }
             }
             catch { }   

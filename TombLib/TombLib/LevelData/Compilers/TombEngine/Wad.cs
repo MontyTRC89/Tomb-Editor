@@ -77,11 +77,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, texture.BlendMode);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    int[] indices = poly.IsTriangle ? new int[] { poly.Index0, poly.Index1, poly.Index2 } : 
-                                                      new int[] { poly.Index0, poly.Index1, poly.Index2, poly.Index3 };
+                    int index0 = poly.Index0;
+                    int index1 = poly.Index1;
+                    int index2 = poly.Index2;
+                    int index3 = poly.Index3;
 
                     if (doubleSided)
-                        Array.Reverse(indices);
+                    {
+                        index0 = poly.Index3;
+                        index1 = poly.Index2;
+                        index2 = poly.Index1;
+                        index3 = poly.Index0;
+                    }
 
                     var realBlendMode = texture.BlendMode;
                     if (texture.BlendMode == BlendMode.Normal)
@@ -89,19 +96,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
-                        newPoly = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, null);
+                        newPoly = result.CreateTombEnginePolygon3(index0, index1, index2, (byte)realBlendMode, null);
                     else
-                        newPoly = result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, null);
+                        newPoly = result.CreateTombEnginePolygon4(index0, index1, index2, index3, (byte)realBlendMode, null);
 
                     newPoly.ShineStrength = (float)poly.ShineStrength / 63.0f;
 
                     newMesh.Polygons.Add(newPoly);
 
-                    newMesh.Vertices[indices[0]].NormalHelpers.Add(new NormalHelper(newPoly));
-                    newMesh.Vertices[indices[1]].NormalHelpers.Add(new NormalHelper(newPoly));
-                    newMesh.Vertices[indices[2]].NormalHelpers.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[index0].NormalHelpers.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[index1].NormalHelpers.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[index2].NormalHelpers.Add(new NormalHelper(newPoly));
                     if (!poly.IsTriangle)
-                        newMesh.Vertices[indices[3]].NormalHelpers.Add(new NormalHelper(newPoly));
+                        newMesh.Vertices[index3].NormalHelpers.Add(new NormalHelper(newPoly));
 
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[0]].Normal);
                     newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[1]].Normal);

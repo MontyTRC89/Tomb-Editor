@@ -555,15 +555,14 @@ namespace TombLib.Utils
             stream.Write(_data, 0, Width * Height * PixelSize);
         }
 
-        public void Save(string fileName)
+        public void SaveToFile(string fileName)
         {
             // Figure out image format
             string extension = Path.GetExtension(fileName).Remove(0, 1).ToLowerInvariant();
             switch (extension)
             {
                 case "png":
-                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Png));
-                    //PngWriter.SaveToFile(fileName, _data, Width, Height);
+                    PngWriter.SaveToFile(fileName, _data, Width, Height);
                     break;
                 case "bmp":
                 case "dib":
@@ -592,7 +591,7 @@ namespace TombLib.Utils
             }
         }
 
-		public void Save(Stream stream, ImageFormat format)
+		public void SaveToStream(Stream stream, ImageFormat format)
 		{
 			GetTempSystemDrawingBitmap(bitmap => bitmap.Save(stream, ImageFormat.Png));
 		}
