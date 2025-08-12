@@ -91,11 +91,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             _textureInfoManager.LayOutAllData();
 
             ReportProgress(35, "   Number of processed texture fragments: " + _textureInfoManager.TexturesCount);
-			ReportProgress(35, "   Number of rooms atlases: " + _textureInfoManager.RoomsAtlas.Count);
-			ReportProgress(35, "   Number of moveables atlases: " + _textureInfoManager.MoveablesAtlas.Count);
-			ReportProgress(35, "   Number of statics atlases: " + _textureInfoManager.StaticsAtlas.Count);
-			ReportProgress(35, "   Number of animated atlases: " + _textureInfoManager.AnimatedAtlas.Count);
-			ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
+            ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
             GetAllReachableRooms();
 
             cancelToken.ThrowIfCancellationRequested();

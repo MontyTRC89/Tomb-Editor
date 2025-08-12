@@ -1525,7 +1525,7 @@ namespace WadTool
 					if (dialogResult != DialogResult.OK)
 						return;
 
-					panelTextureMap.VisibleTexture.Image.SaveToFile(fileDialog.FileName);
+					panelTextureMap.VisibleTexture.Image.Save(fileDialog.FileName);
 				}
 				catch (Exception exc)
 				{

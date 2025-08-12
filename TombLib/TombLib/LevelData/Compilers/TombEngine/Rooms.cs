@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
@@ -343,19 +341,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         }
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
-                                        var poly = result.CreateTombEnginePolygon4(vertex0Index, vertex1Index, vertex2Index, vertex3Index,
+                                        var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                          (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
                                         roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
-                                    
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
-                                            poly = result.CreateTombEnginePolygon4(vertex3Index, vertex2Index, vertex1Index, vertex0Index,
+                                            poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
 
@@ -377,18 +374,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-                                        var poly = result.CreateTombEnginePolygon3(vertex0Index, vertex1Index, vertex2Index,
+                                        var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
                                                         (byte)realBlendMode, roomVertices);
                                         roomPolygons.Add(poly);
                                         roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
-                                   
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror(true);
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-                                            poly = result.CreateTombEnginePolygon3(vertex2Index, vertex1Index, vertex0Index,
+                                            poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
 
@@ -497,45 +493,24 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (!poly.Texture.DoubleSided && doubleSided)
                                     continue;
 
-                                int i0 = poly.Index0 + meshVertexBase;
-                                int i1 = poly.Index1 + meshVertexBase;
-                                int i2 = poly.Index2 + meshVertexBase;
-                                int i3 = poly.Index3 + meshVertexBase;
-
-                                int index0 = i0;
-                                int index1 = i1;
-                                int index2 = i2;
-                                int index3 = i3;
+                                int index0 = poly.Index0 + meshVertexBase;
+                                int index1 = poly.Index1 + meshVertexBase;
+                                int index2 = poly.Index2 + meshVertexBase;
+                                int index3 = poly.Index3 + meshVertexBase;
 
                                 var texture = poly.Texture;
                                 texture.ClampToBounds();
 
+                                int[] indices = poly.IsTriangle ? new int[] { index0, index1, index2 } :
+                                                                  new int[] { index0, index1, index2, index3 };
                                 var key = poly;
 
                                 if (doubleSided)
                                 {
-                                    if (poly.IsTriangle)
-                                    {
-                                        index0 = i2;
-                                        index1 = i1;
-                                        index2 = i0;
-                                    }    
-                                    else
-                                    {
-                                        index0 = i3;
-                                        index1 = i2;
-                                        index2 = i1;
-                                        index3 = i0;
-                                    }
-
+                                    Array.Reverse(indices);
                                     texture.Mirror(poly.IsTriangle);
-
-                                    key.Index0 = index0; 
-                                    key.Index1 = index1; 
-                                    key.Index2 = index2;
-
-                                    if (!poly.IsTriangle)
-                                        key.Index3 = index3;
+                                    key.Index0 = indices[0]; key.Index1 = indices[1]; key.Index2 = indices[2];
+                                    if (!poly.IsTriangle) key.Index3 = indices[3];
                                 }
 
                                 var realBlendMode = texture.BlendMode;
@@ -547,8 +522,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
 
                                 var face = poly.IsTriangle ?
-                                    result.CreateTombEnginePolygon3(index0, index1, index2, (byte)realBlendMode, roomVertices) :
-                                    result.CreateTombEnginePolygon4(index0, index1, index2, index3, (byte)realBlendMode, roomVertices);
+                                    result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
+                                    result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
 
                                 if (!texInfoExists)
                                     _mergedStaticMeshTextureInfos.Add(key, result);
@@ -654,7 +629,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											var span = CollectionsMarshal.AsSpan(roomVertices);
                                             for (int i = 0; (uint)i < (uint)span.Length; i++)
                                                 if (span[i].Position == trVertex.Position &&
-                                                    span[i].Color == trVertex.Color &&
+                                                    span[i].Color == span[i].Color &&
                                                     span[i].DoubleSided == span[i].DoubleSided)
                                                 {
                                                     existingIndex = i;
@@ -682,11 +657,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     int index1 = tempIndices[1];
                                     int index2 = tempIndices[2];
 
+                                    int[] indices = new int[] { index0, index1, index2 };
                                     if (doubleSided)
                                     {
-                                        // Reverse the order
-                                        index0 = tempIndices[2];
-                                        index2 = tempIndices[0];
+                                        Array.Reverse(indices);
                                     }
 
                                     // TODO Move texture area into the mesh
@@ -717,7 +691,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     }
 
                                     var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-                                    var tri = result.CreateTombEnginePolygon3(index0, index1, index2, (byte)realBlendMode, roomVertices);
+                                    var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices);
 
                                     roomPolygons.Add(tri);
                                     roomVertices[index0].NormalHelpers.Add(new NormalHelper(tri));
@@ -918,27 +892,23 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return newRoom;
         }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-		private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices,
+        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices,
             Vector3 Position, Vector3 color, int index)
         {
-            var position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
+            var trVertex = new TombEngineVertex();
 
-			var trVertex = new TombEngineVertex();
+            trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
+            trVertex.Color = color;
+            trVertex.IsOnPortal = false;
+            trVertex.IndexInPoly = index;
 
-			trVertex.Position = position;
+            int vertexIndex;
+            if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
+                return vertexIndex;
 
-			ref int slot = ref CollectionsMarshal.GetValueRefOrAddDefault(roomVerticesDictionary, trVertex.GetHashCode(), out bool exists);
-			if (exists)
-				return slot;
-
-			trVertex.Color = color;
-			trVertex.IsOnPortal = false;
-			trVertex.IndexInPoly = index;
-
-			int vertexIndex = roomVertices.Count;
+            vertexIndex = roomVertices.Count;
             roomVertices.Add(trVertex);
-
+            roomVerticesDictionary.Add(trVertex.GetHashCode(), vertexIndex);
             return vertexIndex;
         }
 

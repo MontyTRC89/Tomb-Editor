@@ -170,8 +170,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         public override int GetHashCode()
         {
-			return HashCode.Combine((int)Position.X, (int)Position.Y, (int)Position.Z);
-		}
+            return HashCode.Combine((int)Position.X, (int)Position.Y, (int)Position.Z);
+        }
     }
 
     public static class TombEngineVertexExtensions

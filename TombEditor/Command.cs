@@ -1326,7 +1326,7 @@ namespace TombEditor
                                 "File already exists", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                             return;
                     }
-                    texture.Image.SaveToFile(pngFilePath);
+                    texture.Image.Save(pngFilePath);
 
                     args.Editor.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
                     texture.SetPath(args.Editor.Level.Settings, pngFilePath);
