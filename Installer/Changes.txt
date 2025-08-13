@@ -1,6 +1,9 @@
 Version 1.9.2
 =============
 
+Tomb Editor:
+ * Make deselection by clicking outside rooms more responsive.
+ 
 WadTool:
  * Fixed loading of certain dxtre3d levels with corrupted animcommand data.
 

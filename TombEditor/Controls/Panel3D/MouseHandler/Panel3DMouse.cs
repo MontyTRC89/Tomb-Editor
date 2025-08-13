@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.GeometryIO;
@@ -83,7 +84,9 @@ namespace TombEditor.Controls.Panel3D
                 return;
 
             // Reset internal bool for deselection
-            _noSelectionConfirm = false;
+            var distance = new Vector2(_startMousePosition.X, _startMousePosition.Y) - new Vector2(location.X, location.Y);
+            if (distance.Length() > 8.0f)
+                _noSelectionConfirm = false;
 
             bool redrawWindow = false;
 
