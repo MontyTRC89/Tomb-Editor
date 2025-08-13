@@ -1730,22 +1730,22 @@ namespace TombLib.LevelData.Compilers
 
                 for (int n = 0; n < RoomsAtlas.Count; n++)
                 {
-                    RoomsAtlas[n].ColorMap.Save("OutputDebug\\RoomsAtlas" + n + ".png");
+                    RoomsAtlas[n].ColorMap.SaveToFile("OutputDebug\\RoomsAtlas" + n + ".png");
                 }
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
-                    MoveablesAtlas[n].ColorMap.Save("OutputDebug\\MoveablesAtlas" + n + ".png");
+                    MoveablesAtlas[n].ColorMap.SaveToFile("OutputDebug\\MoveablesAtlas" + n + ".png");
                 }
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
-                    StaticsAtlas[n].ColorMap.Save("OutputDebug\\StaticsAtlas" + n + ".png");
+                    StaticsAtlas[n].ColorMap.SaveToFile("OutputDebug\\StaticsAtlas" + n + ".png");
                 }
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
-                    AnimatedAtlas[n].ColorMap.Save("OutputDebug\\AnimatedAtlas" + n + ".png");
+                    AnimatedAtlas[n].ColorMap.SaveToFile("OutputDebug\\AnimatedAtlas" + n + ".png");
                 }
             }
             catch { }   

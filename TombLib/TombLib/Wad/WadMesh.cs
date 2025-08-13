@@ -467,7 +467,7 @@ namespace TombLib.Wad
             {
                 var textureFileName = name + "_" + i + ".png";
                 var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
-                pages[i].Image.Save(path);
+                pages[i].Image.SaveToFile(path);
             }
 
             return model;

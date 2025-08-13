@@ -226,7 +226,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 			}
 			else
 			{
-				image.SaveToPngFast(stream);
+				image.SavePngToStreamFast(stream);
 			}
 
 			long endPos = stream.Position;
