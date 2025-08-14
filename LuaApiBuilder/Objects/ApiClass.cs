@@ -10,6 +10,16 @@ public sealed class ApiClass : INamedObject, ITypedObject, ISummarizedObject, ID
 	public string Description { get; set; } = string.Empty;
 
 	/// <summary>
+	/// The parent class this class inherits from.
+	/// </summary>
+	public string Inherits { get; set; } = string.Empty;
+
+	/// <summary>
+	/// Indicates whether this class has a constructor.
+	/// </summary>
+	public bool HasConstructor { get; set; } = true;
+
+	/// <summary>
 	/// The list of methods for this class.
 	/// </summary>
 	public List<ApiMethod> Methods { get; } = new();

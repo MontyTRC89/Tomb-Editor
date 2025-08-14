@@ -239,7 +239,10 @@ public sealed class ApiConverter
 
 		var className = GetLastPart(apiClass.Name);
 
-		builder.AppendLine($"---@class {className}");
+		if (!string.IsNullOrWhiteSpace(apiClass.Inherits))
+			builder.AppendLine($"---@class {className} : {MapType(apiClass.Inherits)}");
+		else
+			builder.AppendLine($"---@class {className}");
 
 		// Generate fields
 		foreach (var field in apiClass.Fields)
@@ -270,6 +273,9 @@ public sealed class ApiConverter
 				builder.AppendLine();
 			}
 		}
+
+		if (!apiClass.HasConstructor)
+			return; // Don't generate constructors
 
 		// Check if class has any constructors defined
 		var constructorMethods = apiClass.Methods.Where(m => IsConstructor(m.Name, className)).ToList();

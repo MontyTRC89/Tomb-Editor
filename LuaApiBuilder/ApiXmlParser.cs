@@ -81,12 +81,19 @@ public static class ApiXmlParser
 
 	private static ApiClass ParseClass(XElement cls)
 	{
+		bool hasConstructor = true;
+
+		if (bool.TryParse(cls.Element("ctor")?.Value, out var result))
+			hasConstructor = result;
+
 		var apiClass = new ApiClass
 		{
 			Name = cls.Element("name")?.Value ?? string.Empty,
 			Type = cls.Element("type")?.Value ?? string.Empty,
 			Summary = cls.Element("summary")?.Value ?? string.Empty,
-			Description = cls.Element("description")?.Value ?? string.Empty
+			Description = cls.Element("description")?.Value ?? string.Empty,
+			Inherits = cls.Element("inherits")?.Value ?? string.Empty,
+			HasConstructor = hasConstructor
 		};
 
 		// Parse members
