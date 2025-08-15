@@ -278,8 +278,8 @@ namespace TombLib.Forms
 			// Add common animation types
 			comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
 
-			if (_version == TRVersion.Game.TR4 ||
-				_version == TRVersion.Game.TR5)
+			if (_version.Native() == TRVersion.Game.TR4 ||
+				_version.Native() == TRVersion.Game.TR5)
 			{
 				comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
 			}
@@ -306,23 +306,6 @@ namespace TombLib.Forms
 				// Fill with NG predefined FPS values required for river rotate etc.
 				for (int i = 1; i <= 32; i++)
 					comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " FPS"));
-			}
-			else if (_version == TRVersion.Game.TombEngine)
-			{
-				comboUvRotate.Enabled = false;
-				comboUvRotate.Items.Add(UVRotateDirection.T_B);
-				comboUvRotate.Items.Add(UVRotateDirection.L_R);
-				comboUvRotate.Items.Add(UVRotateDirection.B_T);
-				comboUvRotate.Items.Add(UVRotateDirection.R_L);
-				comboUvRotate.Items.Add(UVRotateDirection.TL_BR);
-				comboUvRotate.Items.Add(UVRotateDirection.TR_BL);
-				comboUvRotate.Items.Add(UVRotateDirection.BR_TL);
-				comboUvRotate.Items.Add(UVRotateDirection.BL_TR);
-
-				comboFps.Enabled = true;
-
-				for (int i = 1; i <= 120; i++)
-					comboFps.Items.Add(new TombEngineFpsSetting(i, i + " FPS"));
 			}
 			else
 			{

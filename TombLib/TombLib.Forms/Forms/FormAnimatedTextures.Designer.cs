@@ -220,7 +220,7 @@ namespace TombLib.Forms
 			numericUpDownUvRotateDirection.LoopValues = false;
 			numericUpDownUvRotateDirection.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
 			numericUpDownUvRotateDirection.Name = "numericUpDownUvRotateDirection";
-			numericUpDownUvRotateDirection.Size = new System.Drawing.Size(71, 23);
+			numericUpDownUvRotateDirection.Size = new System.Drawing.Size(139, 23);
 			numericUpDownUvRotateDirection.TabIndex = 20;
 			numericUpDownUvRotateDirection.Visible = false;
 			numericUpDownUvRotateDirection.ValueChanged += numericUpDownUvRotateDirection_ValueChanged;
