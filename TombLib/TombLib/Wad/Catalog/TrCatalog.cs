@@ -437,9 +437,9 @@ namespace TombLib.Wad.Catalog
         {
             switch (version)
             {
-                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR1 or TRVersion.Game.TR1X:
                     return "Tomb Raider";
-                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR2 or TRVersion.Game.TR2X:
                     return "Tomb Raider 2";
                 case TRVersion.Game.TR3:
                     return "Tomb Raider 3";

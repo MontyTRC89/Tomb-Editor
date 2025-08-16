@@ -14,25 +14,43 @@ namespace TombLib.LevelData
             TR3 = 3,
             TR4 = 4,
             TR5 = 5,
-            TR1X = 11, // Temporarily unused, only for TombIDE identification
-            TR2X = 12, // Temporarily unused, only for TombIDE identification
+            TR1X = 11,
+            TR2X = 12,
             TRNG = 16,
             TombEngine = 18,
         }
 
         /// <summary> Wrapper for getting native game version, excluding TombEngine. Equal to deprecated WadGameVersion enum.</summary>
-        public static Game Native(this Game ver) => ver == Game.TRNG ? Game.TR4 : ver;
+        public static Game Native(this Game ver) => ver switch
+        {
+            Game.TR1X => Game.TR1,
+            Game.TR2X => Game.TR2,
+            Game.TRNG => Game.TR4,
+            _ => ver
+        };
 
         /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TombEngine. Equal to deprecated TRVersion enum. </summary>
-        public static Game Legacy(this Game ver) => ver == Game.TRNG ? Game.TR4 : (ver == Game.TombEngine ? Game.TR5 : ver);
+        public static Game Legacy(this Game ver) => ver switch
+        {
+            Game.TR1X => Game.TR1,
+            Game.TR2X => Game.TR2,
+            Game.TRNG => Game.TR4,
+            Game.TombEngine => Game.TR5,
+            _ => ver
+        };
+
+        public static Game NonTRX(this Game ver) => ver switch
+        {
+            Game.TR1X => Game.TR1,
+            Game.TR2X => Game.TR2,
+            _ => ver
+        };
 
         /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TombEngine. Equal to deprecated TRVersion enum. </summary>
         public static bool UsesMainSfx(this Game ver) => ver is Game.TR2 or Game.TR2X or Game.TR3;
 
         /// <summary> Base enumeration. Contains all possible game versions.
-        public static List<Game> AllVersions => Enum.GetValues<Game>()
-            .Where(e => e is not Game.TR1X and not Game.TR2X) // Exclude TombIDE versions
-            .ToList();
+        public static List<Game> AllVersions => Enum.GetValues<Game>().ToList();
 
         /// <summary> Helper native (aka WadGameVersion) enumeration list. Can be used to populate various controls, like listbox. </summary>
         public static List<Game> NativeVersions => new()
@@ -40,11 +58,50 @@ namespace TombLib.LevelData
             Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TombEngine
         };
 
-        /// <summary> Helper legacy (aka TRVersion) enumeration list. Can be used to populate various controls, like listbox. </summary>
-        public static List<Game> LegacyVersions => new()
-        {
-            Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TRNG
-        };
+        // Equality operations for Game enum
+
+        public static bool IsGreaterThan(this Game ver, Game other)
+            => ver.NonTRX() > other.NonTRX();
+
+        public static bool IsGreaterThanOrEqual(this Game ver, Game other)
+            => ver.NonTRX() >= other.NonTRX();
+
+        public static bool IsLessThan(this Game ver, Game other)
+            => ver.NonTRX() < other.NonTRX();
+
+        public static bool IsLessThanOrEqual(this Game ver, Game other)
+            => ver.NonTRX() <= other.NonTRX();
+
+        // Checks for specific game versions
+
+        public static bool IsTR1OrTR1X(this Game ver)
+            => ver is Game.TR1 or Game.TR1X;
+
+        public static bool IsTR2OrTR2X(this Game ver)
+            => ver is Game.TR2 or Game.TR2X;
+
+        public static bool IsAnyTRX(this Game ver)
+            => ver is Game.TR1X or Game.TR2X;
+
+        public static bool IsTR4OrNG(this Game ver)
+            => ver is Game.TR4 or Game.TRNG;
+
+        public static bool IsTR5OrTEN(this Game ver)
+            => ver is Game.TR5 or Game.TombEngine;
+
+        // Checks for features supported by the game version
+
+        public static bool Supports16BitDithering(this Game ver)
+            => ver.NonTRX() is > Game.TR1 and < Game.TombEngine;
+
+        public static bool SupportsFontAndSkySettings(this Game ver)
+            => ver.IsGreaterThanOrEqual(Game.TR4);
+
+        public static bool SupportsReverberation(this Game ver)
+            => ver.IsGreaterThanOrEqual(Game.TR3);
+
+        public static bool SupportsLensflare(this Game ver)
+            => ver.IsGreaterThanOrEqual(Game.TR4);
     }
 
     /// Only for TR5+

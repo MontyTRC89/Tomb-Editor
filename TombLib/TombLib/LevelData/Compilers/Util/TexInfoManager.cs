@@ -792,7 +792,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // UVRotate hack is needed for TR4-5, because we couldn't figure real Core's UVRotate approach. 
             // For TombEngine, hopefully no such hack will be needed.
-            var uvRotateHack = _level.Settings.GameVersion > TRVersion.Game.TR3;
+            var uvRotateHack = _level.Settings.GameVersion.IsGreaterThan(TRVersion.Game.TR3);
 
             // If UVRotate hack is needed and texture is triangle, prepare a quad substitute reference for animation lookup.
             var refQuad = uvRotateHack && isForTriangle ? texture.RestoreQuadWithRotation() : texture;
@@ -1464,13 +1464,13 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // Tile and flags
                 ushort tile = (ushort)texture.Tile;
-                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR3) tile |= 0x8000;
+                if (texture.IsForTriangle && level.Settings.GameVersion.IsGreaterThan(TRVersion.Game.TR3)) tile |= 0x8000;
 
                 // Blend mode
                 ushort attribute = (ushort)texture.BlendMode;
 
                 // Clamp blend modes according to game version
-                if (level.Settings.GameVersion <= TRVersion.Game.TR2 && attribute > 1)
+                if (level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR2) && attribute > 1)
                     attribute = 1;
                 if ((level.Settings.GameVersion == TRVersion.Game.TR3 || level.Settings.GameVersion == TRVersion.Game.TR5) && attribute > 2)
                     attribute = 2;
@@ -1480,7 +1480,7 @@ namespace TombLib.LevelData.Compilers.Util
                 writer.Write(tile);
 
                 // New flags from >= TR4
-                if (level.Settings.GameVersion >= TRVersion.Game.TR4)
+                if (level.Settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR4))
                 {
                     // Built-in TR4-5 mapping correction is not used. Dummy mapping type is used
                     // together with compensation coordinate distortion.
@@ -1509,7 +1509,7 @@ namespace TombLib.LevelData.Compilers.Util
                     }
                 }
 
-                if (level.Settings.GameVersion >= TRVersion.Game.TR4)
+                if (level.Settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR4))
                 {
                     var rect = texture.GetRect();
                     writer.Write((int)0);

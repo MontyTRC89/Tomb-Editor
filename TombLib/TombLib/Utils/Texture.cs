@@ -152,7 +152,7 @@ namespace TombLib.Utils
             else
             {
                 // Additive blending is for TR3-5 only
-                if (settings.GameVersion >= TRVersion.Game.TR3)
+                if (settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR3))
                     blendCount = 2;
                 else
                     blendCount = 1; // Type 0 exists everywhere

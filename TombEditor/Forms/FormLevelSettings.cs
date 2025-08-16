@@ -710,11 +710,11 @@ namespace TombEditor.Forms
             cbEnableExtraBlendingModes.Visible = currentVersionToCheck;
 
             // TR2-5 platforms
-            currentVersionToCheck = (_levelSettings.GameVersion > Game.TR1 && _levelSettings.GameVersion < Game.TombEngine);
+            currentVersionToCheck = (_levelSettings.GameVersion.Supports16BitDithering());
             cbDither16BitTextures.Enabled = currentVersionToCheck;
 
             // TR4 and above
-            currentVersionToCheck = (_levelSettings.GameVersion >= Game.TR4);
+            currentVersionToCheck = (_levelSettings.GameVersion.SupportsFontAndSkySettings());
             panelFont.Enabled = currentVersionToCheck;
             panelSky.Enabled = currentVersionToCheck;
 

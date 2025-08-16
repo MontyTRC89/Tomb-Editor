@@ -521,7 +521,7 @@ namespace TombLib.LevelData
                     // HACK: TR1-2 pickups can be colored because they are sprites.
                     // Guess them by getting substitute ID.
 
-                    if (obj.Room.Level.Settings.GameVersion <= TRVersion.Game.TR2)
+                    if (obj.Room.Level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR2))
                     {
                         var id = (obj as MoveableInstance).WadObjectId.TypeId;
                         var subId = TrCatalog.GetSubstituteID(obj.Room.Level.Settings.GameVersion, id);
@@ -539,7 +539,7 @@ namespace TombLib.LevelData
                     if (mesh == null || mesh.Mesh.LightingType == Wad.WadMeshLightingType.Normals)
                         changeColor = false;
                 }
-                else if (obj is LightInstance && (obj as LightInstance).Type == LightType.FogBulb && obj.Room.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4)
+                else if (obj is LightInstance && (obj as LightInstance).Type == LightType.FogBulb && obj.Room.Level.Settings.GameVersion.Legacy().IsLessThanOrEqual(TRVersion.Game.TR4))
                 {
                     changeColor = false;
                 }

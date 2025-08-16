@@ -1135,7 +1135,7 @@ namespace TombEditor
             }
             else if (instance is SpriteInstance)
             {
-                if (!VersionCheck(_editor.Level.Settings.GameVersion <= TRVersion.Game.TR2, "Room sprite"))
+                if (!VersionCheck(_editor.Level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR2), "Room sprite"))
                     return;
 
                 using (var formSprite = GetObjectSetupWindow((SpriteInstance)instance))
@@ -2334,7 +2334,7 @@ namespace TombEditor
 
         public static void PlaceLight(LightType type)
         {
-            var color = (type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4) ?
+            var color = (type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy().IsLessThanOrEqual(TRVersion.Game.TR4)) ?
                 Vector3.One : (Vector3)_editor.LastUsedPaletteColour * 2.0f;
 
             _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(type) { Color = color });
@@ -4095,7 +4095,7 @@ namespace TombEditor
                 light =>
                 {
                     // Prompt user that real intensity is now used to define fog bulb intensity
-                    if (_editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
+                    if (_editor.Level.Settings.GameVersion.Legacy().IsLessThanOrEqual(TRVersion.Game.TR4) && light.Type == LightType.FogBulb)
                     {
                         _editor.SendMessage("To edit fog bulb intensity, use 'Intensity' field.", PopupType.Info);
                         return light.Color;
@@ -4190,7 +4190,7 @@ namespace TombEditor
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 (progressReporter, cancelToken) =>
                 {
-                    using (var compiler = level.Settings.GameVersion <= TRVersion.Game.TRNG ?
+                    using (var compiler = level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TRNG) ?
                             (LevelCompiler)(new LevelCompilerClassicTR(level, fileName, progressReporter)) :
                             (LevelCompiler)(new LevelCompilerTombEngine(level, fileName, progressReporter)))
                     {
@@ -5718,7 +5718,7 @@ namespace TombEditor
 
             switch (settings.GameVersion)
             {
-                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR1 or TRVersion.Game.TR1X:
                     samplePath = samplePath + "TR1";
                     break;
 

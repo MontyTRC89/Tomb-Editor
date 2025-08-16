@@ -995,7 +995,7 @@ namespace TombEditor.Controls.Panel3D
 
         private void DrawSprites(Room[] roomsWhoseObjectsToDraw, List<Sprite> sprites, bool disableSelection)
         {
-            if (_editor.Level.Settings.GameVersion > TRVersion.Game.TR2)
+            if (_editor.Level.Settings.GameVersion.IsGreaterThan(TRVersion.Game.TR2))
                 return;
 
             var sequences = _editor.Level.Settings.WadGetAllSpriteSequences();
@@ -1060,7 +1060,7 @@ namespace TombEditor.Controls.Panel3D
                             AddObjectHeightLine(instance.Room, instance.Position);
                         }
 
-                        if (_editor.Level.Settings.GameVersion > TRVersion.Game.TR2 || !instance.SpriteIsValid)
+                        if (_editor.Level.Settings.GameVersion.IsGreaterThan(TRVersion.Game.TR2) || !instance.SpriteIsValid)
                         {
                             Vector4 color;
                             if (_editor.SelectedObject == instance)
@@ -1527,7 +1527,7 @@ namespace TombEditor.Controls.Panel3D
                 var model = _wadRenderer.GetMoveable(movID);
                 var skin = model;
                 var version = _editor.Level.Settings.GameVersion;
-                var colored = version <= TRVersion.Game.TR2 && group.First().CanBeColored();
+                var colored = version.IsLessThanOrEqual(TRVersion.Game.TR2) && group.First().CanBeColored();
 
                 if (group.Key == WadMoveableId.Lara) // Show Lara
                 {
@@ -1872,8 +1872,8 @@ namespace TombEditor.Controls.Panel3D
             int lightMode = 0;
             switch (_editor.Level.Settings.GameVersion)
             {
-                case TRVersion.Game.TR1:
-                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR1 or TRVersion.Game.TR1X:
+                case TRVersion.Game.TR2 or TRVersion.Game.TR2X:
                     lightMode = 2;
                     break;
 

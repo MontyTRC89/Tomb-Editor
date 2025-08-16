@@ -104,7 +104,7 @@ namespace TombLib.Wad.TrLevels
                 }
 
                 // Read the palette only for TR2 and TR3, TR1 has the palette near the end of the file
-                if (Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
+                if (Version.IsTR2OrTR2X() || Version == TRVersion.Game.TR3)
                 {
                     for (int i = 0; i < 256; i++)
                     {
@@ -131,11 +131,11 @@ namespace TombLib.Wad.TrLevels
                 byte[] texture32 = new byte[0];
 
                 // Read 8 bit and 16 bit textures if version is <= TR3
-                if (Version == TRVersion.Game.TR1 || Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
+                if (Version.IsTR1OrTR1X() || Version.IsTR2OrTR2X() || Version == TRVersion.Game.TR3)
                 {
                     uint numTextureTiles = reader.ReadUInt32();
                     texture8 = reader.ReadBytes((int)numTextureTiles * 65536);
-                    if (Version != TRVersion.Game.TR1)
+                    if (!Version.IsTR1OrTR1X())
                         texture16 = reader.ReadBytes((int)numTextureTiles * 131072);
 
                     // Later I will convert textures to 32 bit format
@@ -168,7 +168,7 @@ namespace TombLib.Wad.TrLevels
                 }
 
                 // Put the level geometry into a byte array
-                if (Version == TRVersion.Game.TR1 || Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
+                if (Version.IsTR1OrTR1X() || Version.IsTR2OrTR2X() || Version == TRVersion.Game.TR3)
                 {
                     levelData = reader.ReadBytes((int)(reader.BaseStream.Length - reader.BaseStream.Position));
                 }
@@ -216,17 +216,17 @@ namespace TombLib.Wad.TrLevels
 
                                 // Ambient intensity 1 & 2
                                 levelReader.ReadUInt16();
-                                if (Version != TRVersion.Game.TR1)
+                                if (!Version.IsTR1OrTR1X())
                                     levelReader.ReadUInt16();
 
                                 // Lightmode
-                                if (Version == TRVersion.Game.TR2)
+                                if (Version.IsTR2OrTR2X())
                                     levelReader.ReadUInt16();
 
                                 var numLights = levelReader.ReadUInt16();
-                                if (Version == TRVersion.Game.TR1)
+                                if (Version.IsTR1OrTR1X())
                                     levelReader.ReadBytes(numLights * 18);
-                                if (Version == TRVersion.Game.TR2)
+                                if (Version.IsTR2OrTR2X())
                                     levelReader.ReadBytes(numLights * 24);
                                 if (Version == TRVersion.Game.TR3)
                                     levelReader.ReadBytes(numLights * 24);
@@ -234,15 +234,15 @@ namespace TombLib.Wad.TrLevels
                                     levelReader.ReadBytes(numLights * 46);
 
                                 var numRoomStaticMeshes = levelReader.ReadUInt16();
-                                if (Version == TRVersion.Game.TR1)
+                                if (Version.IsTR1OrTR1X())
                                     levelReader.ReadBytes(numRoomStaticMeshes * 18);
                                 else
                                     levelReader.ReadBytes(numRoomStaticMeshes * 20);
 
                                 // Various flags and alternate room
-                                if (Version == TRVersion.Game.TR1)
+                                if (Version.IsTR1OrTR1X())
                                     levelReader.ReadBytes(4);
-                                if (Version == TRVersion.Game.TR2)
+                                if (Version.IsTR2OrTR2X())
                                     levelReader.ReadBytes(4);
                                 if (Version == TRVersion.Game.TR3)
                                     levelReader.ReadBytes(7);
@@ -395,7 +395,7 @@ namespace TombLib.Wad.TrLevels
                                 mesh.TexturedTriangles[i] = poly;
                             }
 
-                            if (Version == TRVersion.Game.TR1 || Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
+                            if (Version.IsTR1OrTR1X() || Version.IsTR2OrTR2X() || Version == TRVersion.Game.TR3)
                             {
                                 mesh.NumColoredQuads = levelReader.ReadInt16();
                                 mesh.ColoredQuads = new tr_face4[mesh.NumColoredQuads];
@@ -602,7 +602,7 @@ namespace TombLib.Wad.TrLevels
                         }
 
                         // If version <= TR2 object textures are here
-                        if (Version == TRVersion.Game.TR1 || Version == TRVersion.Game.TR2)
+                        if (Version.IsTR1OrTR1X() || Version.IsTR2OrTR2X())
                         {
                             var numObjectTextures = levelReader.ReadUInt32();
                             for (var i = 0; i < numObjectTextures; i++)
@@ -674,14 +674,14 @@ namespace TombLib.Wad.TrLevels
 
                         // Boxes
                         var numBoxes = levelReader.ReadUInt32();
-                        levelReader.ReadBytes((int)numBoxes * (Version == TRVersion.Game.TR1 ? 20 : 8));
+                        levelReader.ReadBytes((int)numBoxes * (Version.IsTR1OrTR1X() ? 20 : 8));
 
                         // Overlaps
                         var numOverlaps = levelReader.ReadUInt32();
                         levelReader.ReadBytes((int)numOverlaps * 2);
 
                         // Zones
-                        levelReader.ReadBytes((int)numBoxes * (Version == TRVersion.Game.TR1 ? 12 : 20));
+                        levelReader.ReadBytes((int)numBoxes * (Version.IsTR1OrTR1X() ? 12 : 20));
 
                         // Animated textures
                         var numAnimatedTextures = levelReader.ReadUInt32();
@@ -721,15 +721,15 @@ namespace TombLib.Wad.TrLevels
 
                         // Items
                         var numEntities = levelReader.ReadUInt32();
-                        levelReader.ReadBytes((int)numEntities * (Version == TRVersion.Game.TR1 ? 22 : 24));
+                        levelReader.ReadBytes((int)numEntities * (Version.IsTR1OrTR1X() ? 22 : 24));
 
-                        if (Version == TRVersion.Game.TR1 || Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
+                        if (Version.IsTR1OrTR1X() || Version.IsTR2OrTR2X() || Version == TRVersion.Game.TR3)
                         {
                             // Lightmap
                             levelReader.ReadBytes(8192);
 
                             // Palette
-                            if (Version == TRVersion.Game.TR1)
+                            if (Version.IsTR1OrTR1X())
                             {
                                 for (var i = 0; i < 256; i++)
                                 {
@@ -769,7 +769,7 @@ namespace TombLib.Wad.TrLevels
                         for (var i = 0; i < numSoundDetails; i++)
                         {
                             var soundDetails = new tr_sound_details();
-                            if (Version == TRVersion.Game.TR1 || Version == TRVersion.Game.TR2)
+                            if (Version.IsTR1OrTR1X() || Version.IsTR2OrTR2X())
                             {
                                 soundDetails.Sample = levelReader.ReadInt16();
                                 soundDetails.Volume = levelReader.ReadUInt16();
@@ -864,7 +864,7 @@ namespace TombLib.Wad.TrLevels
 #endif
 
                         // In TR1 waves are here
-                        if (Version == TRVersion.Game.TR1)
+                        if (Version.IsTR1OrTR1X())
                         {
                             var numSamples = levelReader.ReadUInt32();
                             var samplesBytesRead = 0;
@@ -923,7 +923,7 @@ namespace TombLib.Wad.TrLevels
                 }
 
                 // Convert textures to 32 bit format if needed
-                if (Version == TRVersion.Game.TR1)
+                if (Version.IsTR1OrTR1X())
                 {
                     // We'll use palette8 and texture8
                     var numPages = texture8.Length / 65536;
@@ -949,7 +949,7 @@ namespace TombLib.Wad.TrLevels
                     }
                 }
 
-                if (Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
+                if (Version.IsTR2OrTR2X() || Version == TRVersion.Game.TR3)
                 {
                     // We'll use texture16
                     var numPages = texture16.Length / 131072;
@@ -982,7 +982,7 @@ namespace TombLib.Wad.TrLevels
                 File.Delete(levelName);
 
             // If TR2 or TR3, read samples from SFX files
-            if (Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
+            if (Version.IsTR2OrTR2X() || Version == TRVersion.Game.TR3)
             {
                 string path = PathC.TryFindFile(Path.GetDirectoryName(fileName), "data/main.sfx", 4, 4);
                 if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
