@@ -139,7 +139,7 @@ namespace TombIDE.ProjectMaster
 				level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
 				level.Settings.ScriptDirectory = level.Settings.MakeRelative(_targetProject.GetScriptRootDirectory(), VariableType.LevelDirectory);
 				level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
-				level.Settings.GameVersion = _targetProject.GameVersion is TRVersion.Game.TR1X ? TRVersion.Game.TR1 : _targetProject.GameVersion; // Map TR1 to TR1X - we never supported vanilla TR1 in TombIDE
+				level.Settings.GameVersion = _targetProject.GameVersion is TRVersion.Game.TR1 ? TRVersion.Game.TR1X : _targetProject.GameVersion; // Map TR1 to TR1X - we never supported vanilla TR1 in TombIDE
 
 				level.Settings.WadSoundPaths.Clear();
 				level.Settings.WadSoundPaths.Add(new WadSoundPath(LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + ".." + LevelSettings.Dir + ".." + LevelSettings.Dir + "Sounds"));
