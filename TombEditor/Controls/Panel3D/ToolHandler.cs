@@ -374,16 +374,21 @@ namespace TombEditor.Controls.Panel3D
                 if (newPosition != _newPosition)
                 {
                     Point delta;
+
                     if (relative)
                         delta = new Point(Math.Sign(_newPosition.X - newPosition.X), Math.Sign(_newPosition.Y - newPosition.Y));
                     else
                         delta = new Point(_referencePosition.X - newPosition.X, _referencePosition.Y - newPosition.Y);
+
                     _newPosition = newPosition;
                     Dragged = true;
+
                     if (highlightSelection)
                         _parent._editor.HighlightedSectors = _parent._editor.SelectedSectors;
-                    foreach(var geo in ReferenceRoom.RoomGeometry.Where(g => g.Area.Intersects(_parent._editor.SelectedSectors.Area)))
+
+                    foreach (RoomGeometry geo in ReferenceRoom.RoomGeometry.Where(g => g.Area.Intersects(_parent._editor.SelectedSectors.Area)))
                         _parent._renderingCachedRooms.Remove(geo); // To update highlight state
+
                     return delta;
                 }
                 else
