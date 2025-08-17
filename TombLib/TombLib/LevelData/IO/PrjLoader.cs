@@ -1981,18 +1981,23 @@ namespace TombLib.LevelData.IO
 
             // Update level geometry
             progressReporter?.ReportProgress(95, "Building rooms");
+
             ParallelOptions options = new ParallelOptions
             {
                 CancellationToken = cancelToken
             };
-            Parallel.ForEach(level.ExistingRooms, options, room => {
+
+            Parallel.ForEach(level.ExistingRooms, options, room =>
+            {
                 foreach(var geo in room.RoomGeometry)
                 {
                     geo.LightingDirty = true;
                     geo.GeometryDirty = true;
                 }
+
                 room.Rebuild(relight: true, highQualityLighting: true);
             });
+
             progressReporter?.ReportProgress(100, "Level loaded correctly!");
 
             return level;
