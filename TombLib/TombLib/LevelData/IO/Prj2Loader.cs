@@ -1169,18 +1169,22 @@ namespace TombLib.LevelData.IO
             {
                 CancellationToken = cancelToken,
             };
+
             progressReporter?.ReportInfo("Building world geometry");
+
             Parallel.ForEach(level.ExistingRooms, parallelOptions, room =>
             {
                 // Loading sets sectors directly, room geometry has no info about it.
-                // set it to dirty to enforce a rebuild
-                foreach(var geo in room.RoomGeometry)
+                // Set it to dirty to enforce a rebuild.
+                foreach (RoomGeometry geo in room.RoomGeometry)
                 {
                     geo.GeometryDirty = true;
                     geo.LightingDirty = true;
                 }
+
                 room.Rebuild(relight: true, highQualityLighting: true);
             });
+
             return true;
         }
 

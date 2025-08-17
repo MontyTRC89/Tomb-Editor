@@ -400,9 +400,11 @@ namespace TombEditor
                 for (int x = Area.X0, i = 0; x < Area.X1; x++, i++)
                     for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
                         Room.Sectors[x, z].ReplaceGeometry(Parent.Editor.Level, Sectors[i, j]);
-                foreach (var geo in Room.RoomGeometry.Where(geo => geo.Area.Intersects(Area)).AsParallel())
+
+                foreach (RoomGeometry geo in Room.RoomGeometry.Where(geo => geo.Area.Intersects(Area)).AsParallel())
                 {
                     geo.Build(false);
+
                     if (parent.Editor.ShouldRelight)
                         geo.Relight(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 }

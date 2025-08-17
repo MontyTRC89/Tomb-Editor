@@ -185,6 +185,7 @@ namespace TombLib.GeometryIO
 
                             if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable)
                                 continue;
+
                             var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(x, z)));
                             var range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                             var shape = room.GetFaceShape(x, z, face);
