@@ -2233,10 +2233,12 @@ namespace TombLib.LevelData
         {
             if (instance is LightInstance light)
                 yield return light;
-            if(instance is ObjectGroup group)
-                foreach(var l in group.OfType<LightInstance>())
+
+            if (instance is ObjectGroup group)
+            {
+                foreach (var l in group.OfType<LightInstance>())
                     yield return l;
-            
+            }
         }
 
         public void SetLightingDirtyForAffectedChunks(ObjectInstance instance)

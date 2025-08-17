@@ -817,9 +817,9 @@ namespace TombLib.Utils
             return result;
         }
 
-        public static ImageC Resize(in ImageC Original, int newWidth,int newHeight)
+        public static ImageC Resize(ImageC original, int newWidth,int newHeight)
         {
-            var bitmap = Original.ToBitmap();
+            var bitmap = original.ToBitmap();
             var resizedBitmap = new Bitmap(bitmap, newWidth, newHeight);
             return FromSystemDrawingBitmapMatchingPixelFormat(resizedBitmap);
         }

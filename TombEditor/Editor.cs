@@ -700,7 +700,7 @@ namespace TombEditor
             public VectorInt2 OldSectorPosition { get; internal set; }
         }
 
-        public void MoveObject(PositionBasedObjectInstance @object, Room room, in Vector3 oldPosition, in Vector3 newPos, in VectorInt2 oldSector, in VectorInt2 newSector)
+        public void MoveObject(PositionBasedObjectInstance @object, Room room, Vector3 oldPosition, Vector3 newPos, VectorInt2 oldSector, VectorInt2 newSector)
         {
             if (room == null || @object == null)
                 throw new ArgumentNullException();
