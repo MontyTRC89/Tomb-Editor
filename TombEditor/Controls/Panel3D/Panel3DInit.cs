@@ -6,9 +6,6 @@ using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace TombEditor.Controls.Panel3D
 {
@@ -124,7 +121,7 @@ namespace TombEditor.Controls.Panel3D
                 sectorTextures.SelectionArrow = _editor.SelectedSectors.Arrow;
             }
 
-            return Device.CreateDrawingRoom( new RenderingDrawingRoom.Description()
+            return Device.CreateDrawingRoom(new RenderingDrawingRoom.Description()
             {
                 Room = geometry.Room,
                 TextureAllocator = _renderingTextures,
