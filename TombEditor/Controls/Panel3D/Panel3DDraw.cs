@@ -327,7 +327,9 @@ namespace TombEditor.Controls.Panel3D
                             yOffset = pair.Room.Position.Y - currentRoom.Position.Y;
                         }
                     }
-                    var geo = currentRoom.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(x, z)));
+
+                    RoomGeometry geo = currentRoom.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(x, z)));
+
                     if (splitIndex is < 0 or > 7) // QA or WS
                     {
                         
@@ -368,7 +370,6 @@ namespace TombEditor.Controls.Panel3D
                     }
                     else // Actual splits
                     {
-
                         // Floor split
                         if (splitIndex < targetSector.ExtraFloorSplits.Count)
                         {
@@ -1941,8 +1942,9 @@ namespace TombEditor.Controls.Panel3D
 
             // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
-            foreach (var geo in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden).SelectMany(r => r.RoomGeometry))
-                    _renderingCachedRooms[geo].Render(renderArgs);
+
+            foreach (RoomGeometry geo in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden).SelectMany(r => r.RoomGeometry))
+                _renderingCachedRooms[geo].Render(renderArgs);
 
             // Determine if selection should be visible or not.
             var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
@@ -2017,8 +2019,10 @@ namespace TombEditor.Controls.Panel3D
             {
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
-                foreach (var geo in hiddenRooms.SelectMany(r => r.RoomGeometry))
+
+                foreach (RoomGeometry geo in hiddenRooms.SelectMany(r => r.RoomGeometry))
                     _renderingCachedRooms[geo].Render(renderArgs);
+
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             }
 
