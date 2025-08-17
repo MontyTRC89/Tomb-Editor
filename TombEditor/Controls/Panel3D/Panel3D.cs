@@ -283,22 +283,23 @@ namespace TombEditor.Controls.Panel3D
                             _renderingCachedRooms.Remove(geo);
             }
 
-            if (obj is IEditorObjectChangedEvent)
+            if (obj is IEditorObjectChangedEvent changedEvent)
             {
-                var value = (IEditorObjectChangedEvent)obj;
-                if (value.ChangeType == ObjectChangeType.Remove && value.Object is LightInstance l)
+                if (changedEvent.ChangeType == ObjectChangeType.Remove && changedEvent.Object is LightInstance light)
                 {
-                    value.Room.SetLightingDirtyForAffectedChunks(l);
-                    foreach (var geo in value.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
+                    changedEvent.Room.SetLightingDirtyForAffectedChunks(light);
+
+                    foreach (var geo in changedEvent.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
                     {
                         geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _renderingCachedRooms.Remove(geo);
                     }
                 }
-                else if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
+                else if (changedEvent.ChangeType != ObjectChangeType.Remove && changedEvent.Object is LightInstance)
                 {
-                    value.Object.Room.SetLightingDirtyForAffectedChunks(value.Object);
-                    foreach (var geo in value.Object.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
+                    changedEvent.Object.Room.SetLightingDirtyForAffectedChunks(changedEvent.Object);
+
+                    foreach (var geo in changedEvent.Object.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
                     {
                         geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _renderingCachedRooms.Remove(geo);
@@ -311,6 +312,7 @@ namespace TombEditor.Controls.Panel3D
                 if (movedEvent.Object is LightInstance light)
                 {
                     movedEvent.Room.SetLightingDirtyForMovedLight(light,movedEvent.OldPosition,movedEvent.NewPosition);
+
                     foreach (var geo in movedEvent.Room.RoomGeometry.Where(geo => geo.LightingDirty).AsParallel())
                     {
                         geo.Relight(_editor.Configuration.Rendering3D_HighQualityLightPreview);
@@ -320,27 +322,39 @@ namespace TombEditor.Controls.Panel3D
             }
 
             // Reset rooms render cache
-            if (obj is Editor.SelectedSectorsChangedEvent  selection)
-                foreach (var geo in _editor.SelectedRoom.RoomGeometry.Where(geo => 
-                geo.Area.Intersects(selection.Current.Area) || 
-                geo.Area.Contains(selection.Current.Area) || 
-                geo.Area.Contains(selection.Previous.Area) ||
-                geo.Area.Intersects(selection.Previous.Area)))
-                    _renderingCachedRooms.Remove(geo);
-            if (obj is Editor.HighlightedSectorChangedEvent sectorChanged)
-                foreach (var geo in _editor.SelectedRoom.RoomGeometry.Where(geo =>
-                geo.Area.Intersects(sectorChanged.Current.Area) ||
-                geo.Area.Contains(sectorChanged.Current.Area) ||
-                geo.Area.Contains(sectorChanged.Previous.Area) ||
-                geo.Area.Intersects(sectorChanged.Previous.Area)))
-                    _renderingCachedRooms.Remove(geo);
-            if (obj is Editor.SelectedRoomChangedEvent roomChangedEvent)
+            if (obj is Editor.SelectedSectorsChangedEvent selection)
             {
+                foreach (RoomGeometry geo in _editor.SelectedRoom.RoomGeometry.Where(geo
+                    => geo.Area.Intersects(selection.Current.Area)
+                    || geo.Area.Contains(selection.Current.Area)
+                    || geo.Area.Contains(selection.Previous.Area)
+                    || geo.Area.Intersects(selection.Previous.Area)))
+                {
+                    _renderingCachedRooms.Remove(geo);
+                }
             }
 
+            if (obj is Editor.HighlightedSectorChangedEvent sectorChanged)
+            {
+                foreach (RoomGeometry geo in _editor.SelectedRoom.RoomGeometry.Where(geo
+                    => geo.Area.Intersects(sectorChanged.Current.Area)
+                    || geo.Area.Contains(sectorChanged.Current.Area)
+                    || geo.Area.Contains(sectorChanged.Previous.Area)
+                    || geo.Area.Intersects(sectorChanged.Previous.Area)))
+                {
+                    _renderingCachedRooms.Remove(geo);
+                }
+            }
+
+            if (obj is Editor.SelectedRoomChangedEvent roomChangedEvent)
+            { }
+
             if (obj is Editor.RoomSectorPropertiesChangedEvent sectorPropChanged)
+            {
                 foreach (var geo in sectorPropChanged.Room.RoomGeometry)
                     _renderingCachedRooms.Remove(geo);
+            }
+
             if (obj is Editor.LoadedTexturesChangedEvent ||
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.LevelChangedEvent ||
