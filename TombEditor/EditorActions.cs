@@ -898,6 +898,7 @@ namespace TombEditor
 
             var oldPosition = instance.Position;
             var oldSectorPosition = instance.SectorPosition;
+
             // Limit movement precision
             if (precision.X > 0.0f && pos.X != instance.Position.X)
                 pos.X = (float)Math.Round(pos.X / precision.X) * precision.X;
@@ -923,6 +924,7 @@ namespace TombEditor
 
             // Update position
             instance.Position = pos;
+
             // Update state
             RebuildLightsForObject(instance);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
@@ -1436,8 +1438,9 @@ namespace TombEditor
             sector.SetFaceTexture(face, newTexture);
 
             // Update state
-            var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+            RoomGeometry geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
             geo.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
+
             _editor.RoomTextureChange(room);
         }
 
@@ -1452,8 +1455,9 @@ namespace TombEditor
             sector.SetFaceTexture(face, newTexture);
 
             // Update state
-            var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+            RoomGeometry geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
             geo.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
+
             _editor.RoomTextureChange(room);
         }
 
@@ -1659,7 +1663,8 @@ namespace TombEditor
                 {
                     TextureArea currentTexture = sector.GetFaceTexture(face);
                     CheckTextureAttributes(room, pos, face, currentTexture);
-                    var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+
+                    RoomGeometry geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
                     geo.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
                 }
 
@@ -1722,7 +1727,8 @@ namespace TombEditor
                     {
                         // Get current face
                         VertexRange vertexRange = new VertexRange(0, 0);
-                        var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+                        RoomGeometry geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+
                         if (!geo.VertexRangeLookup.TryGetValue(new SectorFaceIdentity(pos.X, pos.Y, face), out vertexRange))
                             return false;
 
@@ -1842,7 +1848,8 @@ namespace TombEditor
             {
                 TextureArea currentTexture = sector.GetFaceTexture(face);
                 CheckTextureAttributes(room, pos, face, currentTexture);
-                var geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
+
+                RoomGeometry geo = room.RoomGeometry.FirstOrDefault(g => g.Area.Contains(new VectorInt2(pos.X, pos.Y)));
                 geo.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
             }
 
