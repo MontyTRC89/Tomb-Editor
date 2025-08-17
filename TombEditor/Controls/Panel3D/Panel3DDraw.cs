@@ -332,7 +332,6 @@ namespace TombEditor.Controls.Panel3D
 
                     if (splitIndex is < 0 or > 7) // QA or WS
                     {
-                        
                         // PositiveZ Floor
                         if (geo.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_QA)))
                             HandlePositiveZ(x, z, targetSector.Floor, yOffset);
