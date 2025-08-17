@@ -29,6 +29,12 @@ namespace TombLib.Wad
             Weight = new float[4];
         }
 
+        public bool Valid()
+        {
+            return Weight[0] > 0.0f || Weight[1] > 0.0f ||
+                   Weight[2] > 0.0f || Weight[3] > 0.0f;
+        }
+
         public static bool operator ==(VertexWeight a, VertexWeight b)
         {
             for (int i = 0; i < 4; i++)
