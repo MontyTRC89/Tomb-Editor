@@ -456,20 +456,20 @@ namespace TombLib
             return Hash.FromByteArray(buffer);
         }
 
-        public static float CalculateArea(in Vector2 coord0, in Vector2 coord1)
+        public static float CalculateArea(Vector2 coord0, Vector2 coord1)
         {
             return (coord1.X - coord0.X) * (coord1.Y + coord0.Y);
         }
 
-        public static float CalculateArea(in Vector2 coord0, in Vector2 coord1, in Vector2 coord2, in Vector2? coord3 = null)
+        public static float CalculateArea(Vector2 coord0, Vector2 coord1, Vector2 coord2, Vector2? coord3 = null)
         {
             if (!coord3.HasValue)
-                return CalculateArea(stackalloc Vector2[3] { coord0, coord1, coord2 });
+                return CalculateArea(new Vector2[3] { coord0, coord1, coord2 });
             else
-                return CalculateArea(stackalloc Vector2[4] { coord0, coord1, coord2, coord3.Value });
+                return CalculateArea(new Vector2[4] { coord0, coord1, coord2, coord3.Value });
         }
 
-        public static float CalculateArea(Span<Vector2> coords)
+        public static float CalculateArea(Vector2[] coords)
         {
             if (coords.Length == 3)
             {
@@ -508,7 +508,7 @@ namespace TombLib
             return coords;
         }
 
-        public static Vector3 Screen(in Vector3 ambient, in Vector3 tint)
+        public static Vector3 Screen(Vector3 ambient, Vector3 tint)
         {
             var luma = Clamp(tint.GetLuma(), 0.0f, 1.0f);
 
@@ -520,6 +520,40 @@ namespace TombLib
             var B = (float)Lerp(multiplicative.Z, additive.Z, luma);
 
             return new Vector3(R, G, B);
+        }
+
+        public static Vector4 HsvToRgb(float h, float s, float v)
+        {
+            float c = v * s;
+            float x = c * (1 - MathF.Abs((h * 6) % 2 - 1));
+            float m = v - c;
+
+            float r = 0, g = 0, b = 0;
+            int hue = (int)(h * 6);
+
+            switch (hue)
+            {
+                case 0: r = c; g = x; b = 0; break;
+                case 1: r = x; g = c; b = 0; break;
+                case 2: r = 0; g = c; b = x; break;
+                case 3: r = 0; g = x; b = c; break;
+                case 4: r = x; g = 0; b = c; break;
+                case 5: r = c; g = 0; b = x; break;
+            }
+
+            return new Vector4(r + m, g + m, b + m, 1.0f);
+        }
+
+        public static Vector4 GetRandomColorByIndex(int index, int maxIndices, float saturation = 1.0f)
+        {
+            if (maxIndices <= 0 || index < 0)
+                throw new ArgumentOutOfRangeException(nameof(maxIndices), "Color index and index count must be greater than zero.");
+
+            int stride = 7;
+            int shuffledIndex = (index * stride) % maxIndices;
+            float hue = shuffledIndex / (float)maxIndices;
+
+            return HsvToRgb(hue, saturation, 1.0f);
         }
     }
 }

@@ -4,6 +4,12 @@ using System.Numerics;
 
 namespace TombLib.LevelData.VisualScripting
 {
+    public struct TriggerNodeArgument
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+
     // Every node in visual trigger has this set of parameters. Name and color are
     // merely UI properties, while Previous/Next and ScreenPosition determines the
     // order of compilation. Every node may have or may have no any previous or
@@ -27,7 +33,7 @@ namespace TombLib.LevelData.VisualScripting
         public bool Locked { get; set; } = false;
 
         public string Function { get; set; } = string.Empty;
-        public List<string> Arguments { get; private set; } = new List<string>();
+        public List<TriggerNodeArgument> Arguments { get; private set; } = new List<TriggerNodeArgument>();
 
         public TriggerNode Previous { get; set; }
         public TriggerNode Next { get; set; }
@@ -50,8 +56,7 @@ namespace TombLib.LevelData.VisualScripting
         public virtual TriggerNode Clone()
         {
             var node = (TriggerNode)MemberwiseClone();
-
-            node.Arguments = new List<string>(Arguments);
+            node.Arguments = new List<TriggerNodeArgument>(Arguments);
 
             if (Next != null)
             {
@@ -70,7 +75,7 @@ namespace TombLib.LevelData.VisualScripting
             if (Function != null)
                 hash ^= Function.GetHashCode();
 
-            Arguments.ForEach(a => { if (a != null) hash ^= a.GetHashCode(); });
+            Arguments.ForEach(a => { if (!string.IsNullOrEmpty(a.Value)) hash ^= a.Value.GetHashCode(); });
             if (Next != null)
                 hash ^= Next.GetHashCode();
 
@@ -79,15 +84,25 @@ namespace TombLib.LevelData.VisualScripting
 
         public void FixArguments(NodeFunction reference)
         {
-            if (reference.Arguments.Count < Arguments.Count)
+            var argumentOrder = new List<int>();
+            var newArguments  = new List<TriggerNodeArgument>();
+
+            foreach (var arg in Arguments)
             {
-                Arguments.RemoveRange(reference.Arguments.Count, Arguments.Count - reference.Arguments.Count);
+                int index = reference.Arguments.FindIndex(a => a.Name == arg.Name);
+                if (index >= 0)
+                    argumentOrder.Add(index);
             }
-            else if (reference.Arguments.Count > Arguments.Count)
+
+            for (int i = 0; i < reference.Arguments.Count; i++)
             {
-                for (int i = Arguments.Count; i < reference.Arguments.Count; i++)
-                    Arguments.Add(reference.Arguments[i].DefaultValue);
+                if (argumentOrder.Contains(i))
+                    newArguments.Add(Arguments[argumentOrder.IndexOf(i)]);
+                else
+                    newArguments.Add(new TriggerNodeArgument() { Name = reference.Arguments[i].Name, Value = reference.Arguments[i].DefaultValue });
             }
+
+            Arguments = newArguments;
         }
 
 		public static List<TriggerNode> LinearizeNodes(List<TriggerNode> list)

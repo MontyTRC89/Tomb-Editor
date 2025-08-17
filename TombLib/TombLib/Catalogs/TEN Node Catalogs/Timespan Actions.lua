@@ -16,7 +16,7 @@ LevelFuncs.Engine.Node.ConstructTimedData = function(objectName, isStatic, dataT
 		value = object:GetRotation()
 	elseif (dataType == 2) then
 		prefix = "_scale"
-		value = object:GetScale()
+		value = object:GetScale().x
 	elseif (dataType == 3) then
 		prefix = "_color"
 		value = object:GetColor()
@@ -156,15 +156,29 @@ LevelFuncs.Engine.Node.ChangeMoveableRotationOverTimespan = function(moveableNam
 	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 1, fullNewRotation, time, smooth) end
 end
 
--- !Name "Change colour of a moveable"
+-- !Name "Change color of a moveable"
 -- !Section "Timespan actions"
--- !Description "Gradually change colour of a moveable over specified timespan."
--- !Arguments "NewLine, Moveables, 70" "Color, 15, Moveable colour"
+-- !Description "Gradually change color of a moveable over specified timespan."
+-- !Arguments "NewLine, Moveables, 70" "Color, 15, Moveable color"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
 LevelFuncs.Engine.Node.ChangeMoveableColourOverTimespan = function(moveableName, newColour, time)
+	newColour.a = TEN.Objects.GetMoveableByName(moveableName):GetColor().a
 	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 3, newColour, time, true) end
 end
+
+-- !Name "Change transparency of a moveable"
+-- !Section "Timespan actions"
+-- !Description "Gradually change transparency of a moveable over specified timespan."
+-- !Arguments "NewLine, Moveables, 70" "Numerical, [ 0 | 255 | 0 | 1 | 5 ], {255}, 15, Transparency"
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
+
+LevelFuncs.Engine.Node.ChangeMoveableAlphaOverTimespan = function(moveableName, alpha, time)
+	local newColour = TEN.Objects.GetMoveableByName(moveableName):GetColor()
+	newColour.a = alpha
+	do LevelFuncs.Engine.Node.ConstructTimedData(moveableName, false, 3, newColour, time, true) end
+end
+
 
 -- !Name "Change position of a static mesh"
 -- !Section "Timespan actions"
@@ -239,19 +253,32 @@ end
 LevelFuncs.Engine.Node.ChangeStaticScaleOverTimespan = function(staticName, newScale, relative, time, smooth)
 
 	if (relative) then
-		newScale = TEN.Objects.GetStaticByName(staticName):GetScale() + newScale
+		newScale = TEN.Objects.GetStaticByName(staticName):GetScale().x + newScale
 	end
 
 	-- Wrap another node function call into do/end to prevent wrong parsing
 	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 2, newScale, time, smooth) end
 end
 
--- !Name "Change colour of a static mesh"
+-- !Name "Change color of a static mesh"
 -- !Section "Timespan actions"
--- !Description "Gradually change colour of a static mesh over specified timespan."
--- !Arguments "NewLine, Statics, 70" "Color, 15, Static mesh colour"
+-- !Description "Gradually change color of a static mesh over specified timespan."
+-- !Arguments "NewLine, Statics, 70" "Color, 15, Static mesh color"
 -- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
 
 LevelFuncs.Engine.Node.ChangeStaticColourOverTimespan = function(staticName, newColour, time)
+	newColour.a = TEN.Objects.GetStaticByName(staticName):GetColor().a
+	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 3, newColour, time, true) end
+end
+
+-- !Name "Change transparency of a static mesh"
+-- !Section "Timespan actions"
+-- !Description "Gradually change transparency of a static mesh over specified timespan."
+-- !Arguments "NewLine, Statics, 70" "Numerical, [ 0 | 255 | 0 | 1 | 5 ], {255}, 15, Transparency"
+-- !Arguments "Numerical, [ 0.1 | 65535 | 2 | 0.1 | 1 ], {1}, 15, Time (in seconds)"
+
+LevelFuncs.Engine.Node.ChangeStaticAlphaOverTimespan = function(staticName, alpha, time)
+	local newColour = TEN.Objects.GetStaticByName(staticName):GetColor()
+	newColour.a = alpha
 	do LevelFuncs.Engine.Node.ConstructTimedData(staticName, true, 3, newColour, time, true) end
 end

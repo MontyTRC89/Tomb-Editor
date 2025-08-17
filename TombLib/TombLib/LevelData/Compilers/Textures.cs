@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.HighPerformance;
-using NLog;
+﻿using NLog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -214,7 +213,7 @@ namespace TombLib.LevelData.Compilers
             return texturePages;
         }
 
-        private static byte[] PackTextureMap32To16Bit(Span<byte> textureData, LevelSettings settings)
+        private static byte[] PackTextureMap32To16Bit(byte[] textureData, LevelSettings settings)
         {
             if (settings.Dither16BitTextures && !settings.FastMode)
                 return PackTextureMap32To16BitDithered(textureData, 256);
@@ -222,7 +221,7 @@ namespace TombLib.LevelData.Compilers
                 return PackTextureMap32To16Bit(textureData);
         }
 
-        private static byte[] PackTextureMap32To16Bit(Span<byte> textureData)
+        private static byte[] PackTextureMap32To16Bit(byte[] textureData)
         {
             int pixelCount = textureData.Length / 4;
             byte[] newTextureData = new byte[pixelCount * 2];
@@ -280,14 +279,14 @@ namespace TombLib.LevelData.Compilers
             return newTextureData;
         }
 
-        private static byte[] PackTextureMap32To16BitDithered(Span<byte> textureData, int pageSize)
+        private static byte[] PackTextureMap32To16BitDithered(byte[] textureData, int pageSize)
         {
             // Stucki dithering matrix, it produces better result than Floyd-Steinberg
             // with gradients
-            Span<byte> ditherMatrix = stackalloc byte[]
-            {  0, 0, 0, 8, 4 ,
-               2, 4, 8, 4, 2 ,
-               1, 2, 4, 2, 1  };
+            var ditherMatrix = new byte[,]
+            { { 0, 0, 0, 8, 4 },
+              { 2, 4, 8, 4, 2 },
+              { 1, 2, 4, 2, 1 } };
 
             var seed = new Random(31459);
             int pixelCount = textureData.Length / 4;
@@ -312,7 +311,7 @@ namespace TombLib.LevelData.Compilers
 
                     for (int col = 0; col < 5; col++)
                     {
-                        int coefficient = ditherMatrix[row * 3 + col];
+                        int coefficient = ditherMatrix[row, col];
                         int offsetX = (i % pageSize) + (col - 4);
 
                         if (coefficient != 0 && offsetX >= 0 && offsetX < pageSize && offsetY >= 0 && offsetY < height)
@@ -368,9 +367,9 @@ namespace TombLib.LevelData.Compilers
             return newTextureData;
         }
 
-        private static byte[] PackTextureMap32To8Bit(Span<byte> textureData, out tr_color[] palette) =>
+        private static byte[] PackTextureMap32To8Bit(byte[] textureData, out tr_color[] palette) =>
             PackTextureMap32To8Bit(textureData, new List<Color>(), out palette);
-        private static byte[] PackTextureMap32To8Bit(Span<byte> textureData, List<Color> predefinedColors, out tr_color[] palette)
+        private static byte[] PackTextureMap32To8Bit(byte[] textureData, List<Color> predefinedColors, out tr_color[] palette)
         {
             int offset = predefinedColors.Count;
             int colorCount = 256 - offset;
@@ -427,7 +426,7 @@ namespace TombLib.LevelData.Compilers
             return result;
         }
 
-        private byte[] CalculateLightmap(Span<tr_color> palette)
+        private byte[] CalculateLightmap(tr_color[] palette)
         {
             var result = new byte[palette.Length * 32];
             for (int k = 0; k < 32; k++)
@@ -452,7 +451,7 @@ namespace TombLib.LevelData.Compilers
             return result;
         }
 
-        private static int FindClosestColor(in tr_color color, Span<tr_color> palette)
+        private static int FindClosestColor(tr_color color, tr_color[] palette)
         {
             int colorReturn = 0;
 

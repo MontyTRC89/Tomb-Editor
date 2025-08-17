@@ -608,51 +608,6 @@ namespace TombLib.LevelData.Compilers
             // degenerate quad. It's needed to fake UVRotate application to triangular areas.
             public bool ConvertToQuad;
 
-            public tr_face3 CreateFace3(ushort[] indices, bool doubleSided, ushort lightingEffect)
-            {
-                if (indices.Length != 3)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
-
-                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
-                ushort[] transformedIndices = new ushort[3] { indices[0], indices[1], indices[2] };
-
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        ushort tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
-
-                return new tr_face3 { Vertices = new ushort[3] { transformedIndices[0], transformedIndices[1], transformedIndices[2] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
-            }
-
-            public tr_face4 CreateFace4(ushort[] indices, bool doubleSided, ushort lightingEffect)
-            {
-                if (indices.Length != 4)
-                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
-
-                ushort objectTextureIndex = (ushort)(TexInfoIndex | (doubleSided ? 0x8000 : 0));
-                ushort[] transformedIndices = new ushort[4] { indices[0], indices[1], indices[2], indices[3] };
-
-                if (Rotation > 0)
-                {
-                    for (int i = 0; i < Rotation; i++)
-                    {
-                        ushort tempIndex = transformedIndices[0];
-                        transformedIndices[0] = transformedIndices[3];
-                        transformedIndices[3] = transformedIndices[2];
-                        transformedIndices[2] = transformedIndices[1];
-                        transformedIndices[1] = tempIndex;
-                    }
-                }
-
-                return new tr_face4 { Vertices = new ushort[4] { transformedIndices[0], transformedIndices[1], transformedIndices[2], transformedIndices[3] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
-            }
-
             public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 3)
@@ -1602,16 +1557,42 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        public void WriteAnimatedTextures(BinaryWriter writer)
+        public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
+            bool unsupportedTextureFound = false;
+
             writer.Write((int)_actualAnimTextures.Count);
             for (int i = 0; i < _actualAnimTextures.Count; i++)
             {
-                var sequence = _actualAnimTextures[i].CompiledAnimation;
+                byte animType = 0;
+
+                switch (_actualAnimTextures[i].Origin.AnimationType)
+                {
+                    default:
+                    case AnimatedTextureAnimationType.Frames:
+                        animType = 0;
+                        break;
+
+                    case AnimatedTextureAnimationType.UVRotate:
+                        if (unsupportedTextureFound == false)
+                        {
+                            _progressReporter.ReportWarn("UVRotate animated textures are not supported in TombEngine yet and will be ignored.");
+                            unsupportedTextureFound = true;
+                        }
+                        animType = 0; // FIXME: Change to 1 when implemented -- Lwmte, 06.06.2025`
+                        break;
+
+                    case AnimatedTextureAnimationType.Video:
+                        animType = 2;
+                        break;
+                }
 
                 writer.Write(i);
-                writer.Write((int)_actualAnimTextures[i].Origin.Fps);
+                writer.Write((byte)_actualAnimTextures[i].Origin.Fps);
+                writer.Write((byte)animType);
+                writer.Write((short)0); // Reserved for future settings
                 writer.Write(_animTextureIndices[i].Count); // Number of frames
+
                 foreach (var frame in _animTextureIndices[i])
                 {
                     var texture = _objectTextures[(int)frame];

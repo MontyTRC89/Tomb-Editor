@@ -1,18 +1,24 @@
-﻿using System.Linq;
+﻿namespace TombLib.Scripting.Tomb1Main.Resources;
 
-namespace TombLib.Scripting.Tomb1Main.Resources
+public sealed class Patterns
 {
-	public struct Patterns
+	public Patterns(bool isTR2)
 	{
-		public static string Comments => "//.*$";
-		public static string Constants => "\"\\b(" + string.Join("|", Keywords.Constants) + "|" + string.Join("|", Keywords.RemovedConstants.Select(x => x.Keyword)) + ")\\b\"";
-		public static string Collections => "\"\\b(" + string.Join("|", Keywords.Collections) + ")\\b\"";
-		public static string Properties => "\"\\b(" + string.Join("|", Keywords.Properties) + "|" + string.Join("|", Keywords.RemovedProperties.Select(x => x.Keyword)) + ")\\b\"";
-		public static string Values => @"\b(" + string.Join("|", Keywords.Values) + @")\b";
-		public static string Strings => "\"(.+?)\"";
-
-		public static string LevelProperty => "\"title\":\\s*\"";
-		public static string LevelCommentName => @"^\s*//\s*Level\s*\d+\s*:\s*(.+)$";
-		public static string PhdPathProperty => "\"path\":\\s*\"(.*\\.phd)\"";
+		Comments = "//.*$";
+		Constants = $"\"\\b({string.Join("|", Keywords.GetAllConstants(isTR2))})\\b\"";
+		Collections = $"\"\\b({string.Join("|", Keywords.GetAllCollections(isTR2))})\\b\"";
+		Properties = $"\"\\b({string.Join("|", Keywords.GetAllProperties(isTR2))})\\b\"";
+		Values = $@"\b({string.Join("|", Keywords.Values)})\b";
+		Strings = "\"(.+?)\"";
 	}
+
+	public string Comments { get; }
+	public string Constants { get; }
+	public string Collections { get; }
+	public string Properties { get; }
+	public string Values { get; }
+	public string Strings { get; }
+
+	public static string LevelProperty => "\"title\":\\s*\"";
+	public static string LevelCommentName => @"^\s*\/\/\s*(Level)?\s*\d+\s*(:|\.)\s*(.+)$";
 }

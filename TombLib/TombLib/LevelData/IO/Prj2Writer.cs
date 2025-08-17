@@ -36,6 +36,7 @@ namespace TombLib.LevelData.IO
                 var tempName = filename + ".tmp";
                 if (File.Exists(tempName)) File.Delete(tempName);
 
+                stream.Seek(0, SeekOrigin.Begin);
                 using (var writer = new BinaryWriter(new FileStream(tempName, FileMode.Create, FileAccess.Write, FileShare.None)))
                 {
                     var buffer = stream.ToArray();
@@ -930,7 +931,13 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.NodeFunction, node.Function);
 
                 foreach (var arg in node.Arguments)
-                    chunkIO.WriteChunkString(Prj2Chunks.NodeArgument, arg);
+                {
+                    chunkIO.WriteChunkWithChildren(Prj2Chunks.NodeArgument2, () =>
+                    {
+                        chunkIO.WriteChunkString(Prj2Chunks.NodeArgumentName, arg.Name);
+                        chunkIO.WriteChunkString(Prj2Chunks.NodeArgumentValue, arg.Value);
+                    });
+                }
 
                 if (node.Next != null)
                     WriteNode(chunkIO, node.Next, Prj2Chunks.EventNodeNext);

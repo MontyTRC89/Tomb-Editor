@@ -97,7 +97,7 @@ namespace TombLib.LevelData.Compilers
         public ushort Texture;
         public ushort LightingEffect;
 
-        public void Write(BinaryWriter writer)
+        public void Write(BinaryWriterEx writer)
         {
             writer.Write(Vertices[0]);
             writer.Write(Vertices[1]);
@@ -114,7 +114,7 @@ namespace TombLib.LevelData.Compilers
         public ushort Texture;
         public ushort LightingEffect;
 
-        public void Write(BinaryWriter writer)
+        public void Write(BinaryWriterEx writer)
         {
             writer.Write(Vertices[0]);
             writer.Write(Vertices[1]);
@@ -237,7 +237,7 @@ namespace TombLib.LevelData.Compilers
         public int Vertex;
         public int SpriteID;
 
-        public void Write(BinaryWriter writer)
+        public void Write(BinaryWriterEx writer)
         {
             writer.Write((ushort)Vertex);
             writer.Write((ushort)SpriteID);
@@ -276,7 +276,7 @@ namespace TombLib.LevelData.Compilers
         public Room BaseRoom;
         public Room OriginalRoom;
 
-        public void WriteTr1(BinaryWriter writer)
+        public void WriteTr1(BinaryWriterEx writer)
         {
             writer.WriteBlock(Info);
 
@@ -362,7 +362,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write(Flags);
         }
 
-        public void WriteTr2(BinaryWriter writer)
+        public void WriteTr2(BinaryWriterEx writer)
         {
             writer.WriteBlock(Info);
 
@@ -446,7 +446,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write(Flags);
         }
 
-        public void WriteTr3(BinaryWriter writer)
+        public void WriteTr3(BinaryWriterEx writer)
         {
             writer.WriteBlock(Info);
 
@@ -546,7 +546,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write((byte)0x00); // Alternate group was introduced in TR4
         }
 
-        public void WriteTr4(BinaryWriter writer)
+        public void WriteTr4(BinaryWriterEx writer)
         {
             writer.WriteBlock(Info);
 
@@ -617,7 +617,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write(AlternateGroup);
         }
 
-        public void WriteTr5(BinaryWriter writer)
+        public void WriteTr5(BinaryWriterEx writer)
         {
             var lights = Lights.Where(l => l.LightType != 4).ToList();
             var bulbs  = Lights.Where(l => l.LightType == 4).ToList();
@@ -913,7 +913,7 @@ namespace TombLib.LevelData.Compilers
         public int MeshSize;
         public int MeshPointer;
 
-        public long WriteTr4AndTr5(BinaryWriter writer)
+        public long WriteTr4AndTr5(BinaryWriterEx writer)
         {
             long meshOffset1 = writer.BaseStream.Position;
 
@@ -953,7 +953,7 @@ namespace TombLib.LevelData.Compilers
             return meshSize;
         }
 
-        public long WriteTr3(BinaryWriter writer)
+        public long WriteTr3(BinaryWriterEx writer)
         {
             var meshOffset1 = writer.BaseStream.Position;
 
@@ -1098,7 +1098,7 @@ namespace TombLib.LevelData.Compilers
         public ushort NumAnimCommands;
         public ushort AnimCommand;
 
-        public void Write(BinaryWriter writer, Level level)
+        public void Write(BinaryWriterEx writer, Level level)
         {
             writer.Write(FrameOffset);
             writer.Write(FrameRate);

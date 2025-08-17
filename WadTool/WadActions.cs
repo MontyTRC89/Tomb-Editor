@@ -1168,7 +1168,7 @@ namespace WadTool
         {
             WadAnimation result = new WadAnimation();
 
-            using (var reader = new BinaryReader(File.OpenRead(fileName)))
+            using (var reader = new BinaryReaderEx(File.OpenRead(fileName)))
             {
                 int wmVersion = reader.ReadInt32();
                 int fileType = reader.ReadInt32();
@@ -1516,8 +1516,9 @@ namespace WadTool
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(owner))
+                if (!saveFileDialog.FileName.IsANSI())
                 {
+                    MessageBoxes.NonANSIFilePathError(owner);
                     ExportMesh(mesh, tool, owner);
                     return;
                 }
@@ -1574,8 +1575,11 @@ namespace WadTool
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
                     return null;
 
-                if (!dialog.FileName.CheckAndWarnIfNotANSI(owner))
+                if (!dialog.FileName.IsANSI())
+                {
+                    MessageBoxes.NonANSIFilePathError(owner);
                     return ImportMesh(tool, owner);
+                }
 
                 try
                 {

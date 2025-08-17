@@ -103,10 +103,10 @@ namespace TombEditor.Forms
 
             // Setup image cache
             _imageCache = new Cache<CachedImageInfo, Bitmap>(512, subsection =>
-                {
-                    return GetPerspectivePreview(subsection._image, subsection._sourceTexCoord0, subsection._sourceTexCoord1, subsection._sourceTexCoord2,
-                        subsection._sourceTexCoord3, subsection._destinationSize).ToBitmap();
-                });
+            {
+                return GetPerspectivePreview(subsection._image, subsection._sourceTexCoord0, subsection._sourceTexCoord1, subsection._sourceTexCoord2,
+                    subsection._sourceTexCoord3, subsection._destinationSize).ToBitmap();
+            });
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
@@ -251,6 +251,11 @@ namespace TombEditor.Forms
                 comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
             }
 
+            if (_editor.Level.IsTombEngine)
+            {
+                comboEffect.Items.Add(AnimatedTextureAnimationType.Video);
+            }
+
             // NG settings
             if (_editor.Level.IsNG)
             {
@@ -275,7 +280,7 @@ namespace TombEditor.Forms
             }
 
             // Legacy engine settings
-            comboEffect.Enabled = !_editor.Level.IsTombEngine && _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;               
+            comboEffect.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;               
 
             comboProcPresets.SelectedIndex = 0;
             numFrames.Value = _maxLegacyFrames;
@@ -1098,6 +1103,14 @@ namespace TombEditor.Forms
                     comboFps.SelectedIndex = 0;
                     comboUvRotate.SelectedIndex = 64;
                     break;
+
+                case AnimatedTextureAnimationType.Video:
+                    comboFps.Visible = false;
+                    numericUpDownFPS.Visible = true;
+                    numericUpDownFPS.Enabled = false;
+                    comboUvRotate.Enabled = false;
+                    break;
+
                 default:
                     throw new NotSupportedException("Unsupported texture animation type encountered.");
             }

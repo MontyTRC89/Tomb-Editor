@@ -47,10 +47,16 @@ namespace TombLib.Wad
             {
                 var textures = new HashSet<WadTexture>();
                 foreach (var moveable in Moveables)
+                {
                     foreach (var mesh in moveable.Value.Meshes)
                         if (mesh != null)
                             foreach (WadPolygon polygon in mesh.Polys)
                                 textures.Add((WadTexture)polygon.Texture.Texture);
+
+                    if (moveable.Value.Skin != null)
+                        foreach (WadPolygon polygon in moveable.Value.Skin.Polys)
+                            textures.Add((WadTexture)polygon.Texture.Texture);
+                }
                 foreach (var stat in Statics)
                     if (stat.Value.Mesh != null)
                         foreach (WadPolygon polygon in stat.Value.Mesh.Polys)
@@ -65,8 +71,13 @@ namespace TombLib.Wad
             {
                 var meshes = new List<WadMesh>();
                 foreach (WadMoveable moveable in Moveables.Values)
+                {
                     foreach (WadMesh mesh in moveable.Meshes)
                         meshes.Add(mesh);
+
+                    if (moveable.Skin != null)
+                        meshes.Add(moveable.Skin);
+                }
                 foreach (WadStatic @static in Statics.Values)
                     meshes.Add(@static.Mesh);
                 return meshes;
@@ -80,8 +91,13 @@ namespace TombLib.Wad
                 var texinfos = new List<TextureArea>();
 
                 foreach (var moveable in Moveables.Values)
+                {
                     foreach (var mesh in moveable.Meshes)
                         texinfos.AddRange(mesh.TextureAreas);
+
+                    if (moveable.Skin != null)
+                        texinfos.AddRange(moveable.Skin.TextureAreas);
+                }
                 foreach (var stat in Statics.Values)
                     texinfos.AddRange(stat.Mesh.TextureAreas);
 

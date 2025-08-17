@@ -260,6 +260,9 @@ namespace TombEditor
         public Size Window_FormEventSetEditor_Size { get; set; } = new Size(930, 460);
         public bool Window_FormEventSetEditor_Maximized { get; set; } = false;
         public int Window_FormEventSetEditor_SplitterDistance { get; set; } = 250;
+        public Point Window_FormTransform_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormTransform_Size { get; set; } = new Size(345, 171);
+        public bool Window_FormTransform_Maximized { get; set; } = false;
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 

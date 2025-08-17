@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
@@ -94,7 +93,7 @@ namespace TombLib.LevelData
             return trimmedName + "_" + belongedSet.Events.First(e => e.Value == this).Key.ToString();
         }
 
-        public void Write(BinaryWriter writer, List<EventSet> eventSets)
+        public void Write(BinaryWriterEx writer, List<EventSet> eventSets)
         {
             writer.Write((int)Mode);
 
@@ -152,7 +151,7 @@ namespace TombLib.LevelData
             return base.Equals(other) && (Activators == other.Activators);
         }
 
-        public new void Write(BinaryWriter writer, List<EventSet> eventSets)
+        public new void Write(BinaryWriterEx writer, List<EventSet> eventSets)
         {
             writer.Write(Name);
             writer.Write((int)Activators);
@@ -170,7 +169,7 @@ namespace TombLib.LevelData
                 Events.Add(eventType, new Event());
         }
 
-        public new void Write(BinaryWriter writer, List<EventSet> eventSets)
+        public new void Write(BinaryWriterEx writer, List<EventSet> eventSets)
         {
             writer.Write(Name);
             base.Write(writer, eventSets);
@@ -213,7 +212,7 @@ namespace TombLib.LevelData
             return set;
         }
 
-        public void Write(BinaryWriter writer, List<EventSet> eventSets)
+        public void Write(BinaryWriterEx writer, List<EventSet> eventSets)
         {
             var nonEmptyEvents = Events.Where(e => !e.Value.Empty).ToList();
 

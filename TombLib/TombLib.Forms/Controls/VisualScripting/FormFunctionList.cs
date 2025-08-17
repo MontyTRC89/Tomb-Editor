@@ -59,7 +59,7 @@ namespace TombLib.Controls.VisualScripting
                 treeFunctions.EnsureVisible();
             }
 
-            txtSearch.Focus(); 
+            txtSearch.Focus();
         }
 
         private void SearchNodes(string text)
@@ -159,7 +159,12 @@ namespace TombLib.Controls.VisualScripting
                 TryApplyFunction();
         }
 
-        private void butSearch_Click(object sender, EventArgs e) => SearchNodes(txtSearch.Text);
         private void treeFunctions_MouseDoubleClick(object sender, MouseEventArgs e) => TryApplyFunction();
+        private void butSearch_Click(object sender, EventArgs e) => SearchNodes(txtSearch.Text);
+
+        private void butExpand_Click(object sender, EventArgs e)
+        {
+            treeFunctions.ExpandAllNodes();
+        }
     }
 }

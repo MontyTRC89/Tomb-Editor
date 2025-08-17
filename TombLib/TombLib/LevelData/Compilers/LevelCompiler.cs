@@ -39,6 +39,13 @@ namespace TombLib.LevelData.Compilers
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Delete old backup and replace it with new level file
             if (_compiledSuccessfully)
             {
                 if (File.Exists(_backup))

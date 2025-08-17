@@ -112,7 +112,7 @@ namespace TombLib.LevelData.IO
             level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
 
             // Open file
-            using (var reader = new BinaryReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 progressReporter?.ReportProgress(0, "Begin of PRJ import from " + filename);
                 logger.Debug("Opening Winroomedit PRJ file " + filename);
@@ -1623,6 +1623,12 @@ namespace TombLib.LevelData.IO
                                         {
                                             var data = reader.ReadUInt16();
                                             var animationType = data & 0xE000;
+
+                                            if (i >= level.Settings.AnimatedTextureSets.Count)
+                                            {
+                                                progressReporter?.ReportWarn("Animated texture set " + i + " is out of range, unknown version or corrupted project. Review your animated texture sets.");
+                                                continue;
+                                            }
 
                                             switch (animationType)
                                             {

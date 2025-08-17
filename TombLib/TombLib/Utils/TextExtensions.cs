@@ -1,5 +1,4 @@
-﻿using DarkUI.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,25 +24,22 @@ namespace TombLib.Utils
             return regex.IsMatch(source);
         }
 
-        public static bool CheckAndWarnIfNotANSI(this string source, IWin32Window owner)
-        {
-            if (!source.IsANSI())
-            {
-                DarkMessageBox.Show(owner, "Filename or path is invalid. Please use standard characters.", "Wrong filename", MessageBoxIcon.Error);
-                return false;
-            }
-            else
-                return true;
-        }
-
         public static string[] SplitParenthesis(this string source)
         {
-            return Regex.Matches(source, @"[^{},]+|\{[^{}]*\}").Select(m => m.Value).ToArray();
+            return Regex.Matches(source, @"[^{},]+|\{[^{}]*\}").Select(m => m.Value.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray();
         }
 
         public static string SplitCamelcase(this string source)
         {
             return Regex.Replace(source, "([a-z](?=[A-Z])|[a-z](?=[0-9])|[A-Z](?=[A-Z][a-z]))", "$1 ");
+        }
+
+        public static string UppercaseFirstChar(this string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return source;
+
+            return char.ToUpper(source[0]) + source.Substring(1);
         }
 
         public static string TrimIndentation(this string source)
@@ -83,6 +79,22 @@ namespace TombLib.Utils
             return QuoteChar + source + QuoteChar;
         }
 
+        public static string EscapeQuotes(string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
+
+            return source.Replace("\"", "\\\"").Replace("'", "\\'");
+        }
+
+        public static string UnescapeQuotes(string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
+
+            return source.Replace("\\'", "'").Replace("\\\"", "\"");
+        }
+
         public static string ToLinuxPath(string source)
         {
             return source.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
@@ -101,7 +113,7 @@ namespace TombLib.Utils
             if (string.IsNullOrEmpty(source))
                 return string.Empty;
 
-            return source.Replace(Environment.NewLine, "\\n");
+            return source.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\\n");
         }
 
         public static string SingleLineToMultiLine(string source)

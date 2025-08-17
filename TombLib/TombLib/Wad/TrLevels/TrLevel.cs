@@ -49,7 +49,7 @@ namespace TombLib.Wad.TrLevels
             string levelName = fileName;
 
             uint version;
-            using (var reader = new BinaryReader(File.OpenRead(fileName)))
+            using (var reader = new BinaryReaderEx(File.OpenRead(fileName)))
             {
                 version = reader.ReadUInt32();
                 if (version == 0x00000020)
@@ -82,7 +82,7 @@ namespace TombLib.Wad.TrLevels
                     throw new Exception("Can't decrypt TRNG level " + fileName + ".");
             }
 
-            using (var reader = new BinaryReader(File.OpenRead(levelName)))
+            using (var reader = new BinaryReaderEx(File.OpenRead(levelName)))
             {
                 Name = Path.GetFileNameWithoutExtension(levelName);
 
@@ -191,7 +191,7 @@ namespace TombLib.Wad.TrLevels
                 // Now store the level data in a new stream
                 using (var stream = new MemoryStream(levelData))
                 {
-                    using (var levelReader = new BinaryReader(stream))
+                    using (var levelReader = new BinaryReaderEx(stream))
                     {
                         var unused = levelReader.ReadUInt32();
                         var numRooms = Version != TRVersion.Game.TR5 ? levelReader.ReadUInt16() : levelReader.ReadUInt32();
@@ -885,7 +885,7 @@ namespace TombLib.Wad.TrLevels
                                 // Write to a MemoryStream
                                 using (var ms = new MemoryStream())
                                 {
-                                    using (var writerSample = new BinaryWriter(ms))
+                                    using (var writerSample = new BinaryWriterEx(ms))
                                     {
                                         writerSample.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
                                         writerSample.Write(fileSize);
@@ -987,7 +987,7 @@ namespace TombLib.Wad.TrLevels
                 string path = PathC.TryFindFile(Path.GetDirectoryName(fileName), "data/main.sfx", 4, 4);
                 if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
                 {
-                    using (var sampleReader = new BinaryReader(File.OpenRead(path)))
+                    using (var sampleReader = new BinaryReaderEx(File.OpenRead(path)))
                     {
                         while (sampleReader.BaseStream.Position < sampleReader.BaseStream.Length)
                         {
@@ -1004,7 +1004,7 @@ namespace TombLib.Wad.TrLevels
                             // Write to a MemoryStream
                             using (var ms = new MemoryStream())
                             {
-                                using (var writerSample = new BinaryWriter(ms))
+                                using (var writerSample = new BinaryWriterEx(ms))
                                 {
                                     writerSample.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
                                     writerSample.Write(fileSize);

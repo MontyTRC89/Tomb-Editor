@@ -14,7 +14,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             byte[] dynamicDataBuffer;
             using (var dynamicDataStream = new MemoryStream())
             {
-                var writer = new BinaryWriter(dynamicDataStream); // Don't dispose
+                var writer = new BinaryWriterEx(dynamicDataStream); // Don't dispose
                 ReportProgress(80, "Writing dynamic data to memory buffer");
 
                 // Write room dynamic data
@@ -117,7 +117,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             byte[] geometryDataBuffer;
             using (var geometryDataStream = new MemoryStream())
             {
-                var writer = new BinaryWriter(geometryDataStream); // Don't dispose
+                var writer = new BinaryWriterEx(geometryDataStream); // Don't dispose
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
                 writer.Write(_level.ExistingRooms.Count);
@@ -133,6 +133,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(_meshes.Count);
                 foreach (var mesh in _meshes)
                 {
+                    writer.Write(mesh.Hidden);
                     writer.Write((byte)mesh.LightingType);
 
                     writer.Write( mesh.Sphere.Center.X);
@@ -148,7 +149,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     foreach (var e in mesh.Vertices)
                         writer.Write(new Vector3(e.Glow, e.Move, e.Locked ? 0 : 1));
                     foreach (var b in mesh.Vertices)
-                        writer.Write(b.Bone);
+                        for (int w = 0; w < b.BoneIndex.Length; w++)
+                            writer.Write((byte)b.BoneIndex[w]);
+                    foreach (var b in mesh.Vertices)
+                        for (int w = 0; w < b.BoneWeight.Length; w++)
+                            writer.Write((byte)(b.BoneWeight[w] * byte.MaxValue));
 
                     writer.Write(mesh.Buckets.Count);
                     foreach (var bucket in mesh.Buckets.Values)
@@ -262,7 +267,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             using (var mediaStream = new MemoryStream())
             {
-                using (var writer = new BinaryWriter(mediaStream, System.Text.Encoding.UTF8, true))
+                using (var writer = new BinaryWriterEx(mediaStream, true))
                 {
                     WriteTextureData(writer);
 
