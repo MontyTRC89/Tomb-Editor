@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -133,12 +132,12 @@ namespace TombLib.LevelData
         public Room AlternateRoom { get; set; }
         public short AlternateGroup { get; set; } = -1;
 
-
         // Internal data structures
         private const int ChunkSize = 16;
-        private int ChunkCountX => (int)Math.Max((int)Math.Ceiling(NumXSectors / (float)ChunkSize), 1);
-        private int ChunkCountZ => (int)Math.Max((int)Math.Ceiling(NumZSectors / (float)ChunkSize), 1);
+        private int ChunkCountX => Math.Max((int)Math.Ceiling(NumXSectors / (float)ChunkSize), 1);
+        private int ChunkCountZ => Math.Max((int)Math.Ceiling(NumZSectors / (float)ChunkSize), 1);
         public RoomGeometry[] RoomGeometry { get; private set; }
+
         // Per Sector lookup
         private Dictionary<VectorInt2, RoomGeometry> GeometrySectorLookup { get; set; } = new Dictionary<VectorInt2, RoomGeometry>();
         public bool PendingRelight { get; private set; } = true;
@@ -218,6 +217,7 @@ namespace TombLib.LevelData
 
             RoomGeometry = new RoomGeometry[ChunkCountX * ChunkCountZ];
             GeometrySectorLookup.Clear();
+
             for (int x = 0; x < ChunkCountX; ++x)
             {
                 for (int y = 0; y < ChunkCountZ; ++y)
@@ -233,13 +233,18 @@ namespace TombLib.LevelData
 
                     Debug.Assert(chunkWidth > 0);
                     Debug.Assert(chunkHeight > 0);
+
                     var chunkArea = new RectangleInt2(chunkX, chunkZ, chunkX + chunkWidth - 1, chunkZ + chunkHeight - 1);
                     var chunkGeo = new RoomGeometry(this, chunkArea);
                     chunkGeo.Build();
+
                     RoomGeometry[idx] = chunkGeo;
+
                     for (int sectorX = chunkX; sectorX < chunkX + chunkWidth; ++sectorX)
+                    {
                         for (int sectorZ = chunkZ; sectorZ < chunkZ + chunkHeight; ++sectorZ)
                             GeometrySectorLookup.Add(new VectorInt2(sectorX, sectorZ), chunkGeo);
+                    }
                 }
             }
         }
@@ -658,7 +663,6 @@ namespace TombLib.LevelData
                     adjacentBottomLeftSector.FixHeights(vertical);
                 }
             }
-
         }
 
         public bool IsIllegalSlope(int x, int z)
@@ -938,62 +942,68 @@ namespace TombLib.LevelData
 
         public bool IsFaceDefined(int x, int z, SectorFace face)
         {
-            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+            RoomGeometry geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
             return geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count != 0;
         }
 
         public float GetFaceHighestPoint(int x, int z, SectorFace face)
         {
-            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
-            var range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
+            RoomGeometry geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+
+            if (geo is null)
+                return float.NegativeInfinity;
+
+            VertexRange range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
             float max = float.NegativeInfinity;
+
             for (int i = 0; i < range.Count; ++i)
                 max = Math.Max(geo.VertexPositions[i + range.Start].Y, max);
+
             return max;
         }
 
         public float GetFaceLowestPoint(int x, int z, SectorFace face)
         {
-            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
-            var range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
-            float max = float.PositiveInfinity;
+            RoomGeometry geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+
+            if (geo is null)
+                return float.PositiveInfinity;
+
+            VertexRange range = geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
+            float min = float.PositiveInfinity;
+
             for (int i = 0; i < range.Count; ++i)
-                max = Math.Min(geo.VertexPositions[i + range.Start].Y, max);
-            return max;
+                min = Math.Min(geo.VertexPositions[i + range.Start].Y, min);
+
+            return min;
         }
 
         public FaceShape GetFaceShape(int x, int z, SectorFace face)
         {
-            var geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
-            if(geo.Area.Contains(new VectorInt2(x,z)))
+            RoomGeometry geo = RoomGeometry.FirstOrDefault(r => r.Area.Contains(new VectorInt2(x, z)));
+
+            switch (geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count)
             {
-                switch (geo.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face)).Count)
-                {
-                    case 3:
-                        return FaceShape.Triangle;
-                    case 6:
-                        return FaceShape.Quad;
-                    default:
-                        return FaceShape.Unknown;
-                }
+                case 3:
+                    return FaceShape.Triangle;
+                case 6:
+                    return FaceShape.Quad;
+                default:
+                    return FaceShape.Unknown;
             }
-            return FaceShape.Unknown;
         }
 
         public void Rebuild(bool relight, bool highQualityLighting)
         {
-            RoomGeometry.AsParallel().Where(geo => geo.LightingDirty || geo.GeometryDirty).ForAll(geo => {
+            RoomGeometry.AsParallel().Where(geo => geo.LightingDirty || geo.GeometryDirty).ForAll(geo =>
+            {
                 geo.Build();
+
                 if (relight)
-                {
                     geo.Relight(highQualityLighting);
-                }
             });
 
-            if (relight)
-                PendingRelight = false;
-            else
-                PendingRelight = true;
+            PendingRelight = !relight;
         }
 
         public void BuildGeometry(bool useLegacyCode = false)
@@ -2118,6 +2128,7 @@ namespace TombLib.LevelData
             }
 
             sector.SetHeight(vertical, edge, sector.GetHeight(vertical, edge) + increment);
+
             GeometrySectorLookup[new VectorInt2(x, z)].GeometryDirty = true;
             GeometrySectorLookup[new VectorInt2(x, z)].LightingDirty = true;
         }
@@ -2158,6 +2169,7 @@ namespace TombLib.LevelData
                     ChangeSectorHeight(x, z, vertical, edge, increment);
                 }
             }
+
             GeometrySectorLookup[new VectorInt2(x, z)].GeometryDirty = true;
             GeometrySectorLookup[new VectorInt2(x, z)].LightingDirty = true;
         }
@@ -2201,6 +2213,7 @@ namespace TombLib.LevelData
             var adjoiningRooms = new HashSet<Room>();
 
             for (int x = area.X0; x <= area.X1; x++)
+            {
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
                     Sector sector = GetSectorTry(x, z);
@@ -2211,10 +2224,11 @@ namespace TombLib.LevelData
                     if (sector.WallPortal is not null)
                         adjoiningRooms.Add(sector.WallPortal.AdjoiningRoom);
                 }
-            
+            }
 
             return adjoiningRooms;
         }
+
         private IEnumerable<LightInstance> GetLightsFromObject(ObjectInstance instance)
         {
             if (instance is LightInstance light)
@@ -2224,62 +2238,81 @@ namespace TombLib.LevelData
                     yield return l;
             
         }
+
         public void SetLightingDirtyForAffectedChunks(ObjectInstance instance)
         {
-            List<RoomGeometry> affectedChunks = new List<RoomGeometry>(8);
-            IEnumerable<LightInstance> lights = GetLightsFromObject(instance);
+            var affectedChunks = new List<RoomGeometry>(8);
 
-            foreach (var light in lights)
+            foreach (LightInstance light in GetLightsFromObject(instance))
+            {
                 if (light.Type == LightType.Sun)
+                {
                     affectedChunks.AddRange(RoomGeometry);
+                }
                 else
-                    foreach (var geo in RoomGeometry)
+                {
+                    foreach (RoomGeometry geo in RoomGeometry)
                     {
-                        var areaWorld = geo.Area;
+                        RectangleInt2 areaWorld = geo.Area;
                         var bbMin = new Vector3(areaWorld.X0, 0, areaWorld.Y0) * Level.SectorSizeUnit;
                         var bbMax = new Vector3(areaWorld.X1, 1, areaWorld.Y1) * Level.SectorSizeUnit;
+
                         if (light.Type == LightType.Effect)
-                            // treat effects as point lights with small radius
+                        {
+                            // Treat effects as point lights with small radius
                             if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(light.Position, 1024)))
                                 affectedChunks.Add(geo);
+                        }
+
                         if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(light.Position, light.OuterRange * 1024)))
                             affectedChunks.Add(geo);
                     }
+                }
+            }
 
-            foreach (var chunk in affectedChunks)
+            foreach (RoomGeometry chunk in affectedChunks)
                 chunk.LightingDirty = true;
         }
 
-        public void SetLightingDirtyForMovedLight(LightInstance instance, in Vector3 oldPosition, in Vector3 newPosition)
+        public void SetLightingDirtyForMovedLight(LightInstance instance, Vector3 oldPosition, Vector3 newPosition)
         {
-            List<RoomGeometry> affectedChunks = new List<RoomGeometry>(8);
-            IEnumerable<LightInstance> lights = GetLightsFromObject(instance);
+            var affectedChunks = new List<RoomGeometry>(8);
 
-            foreach (var light in lights)
+            foreach (var light in GetLightsFromObject(instance))
+            {
                 if (light.Type == LightType.Sun)
+                {
                     affectedChunks.AddRange(RoomGeometry);
+                }
                 else
-                    foreach (var geo in RoomGeometry)
+                {
+                    foreach (RoomGeometry geo in RoomGeometry)
                     {
-                        var areaWorld = geo.Area;
+                        RectangleInt2 areaWorld = geo.Area;
                         var bbMin = new Vector3(areaWorld.X0, 0, areaWorld.Y0) * Level.SectorSizeUnit;
                         var bbMax = new Vector3(areaWorld.X1, 1, areaWorld.Y1) * Level.SectorSizeUnit;
+
                         if (light.Type == LightType.Effect)
                         {
-                            // treat effects as point lights with small radius
+                            // Treat effects as point lights with small radius
                             if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(oldPosition.X, 0.5f, oldPosition.Z), 1024)))
                                 affectedChunks.Add(geo);
-                            if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(newPosition.X,0.5f,newPosition.Z), 1024)))
+
+                            if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(newPosition.X, 0.5f, newPosition.Z), 1024)))
                                 affectedChunks.Add(geo);
 
                         }
-                        if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(oldPosition.X, 0.5f, oldPosition.Z), light.OuterRange * 1024)))
-                            { affectedChunks.Add(geo); }
-                        if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(newPosition.X, 0.5f, newPosition.Z), light.OuterRange * 1024)))
-                            { affectedChunks.Add(geo); }
-                    }
 
-            foreach (var chunk in affectedChunks)
+                        if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(oldPosition.X, 0.5f, oldPosition.Z), light.OuterRange * 1024)))
+                            affectedChunks.Add(geo);
+
+                        if (Collision.BoxIntersectsSphere(new BoundingBox(bbMin, bbMax), new BoundingSphere(new Vector3(newPosition.X, 0.5f, newPosition.Z), light.OuterRange * 1024)))
+                            affectedChunks.Add(geo);
+                    }
+                }
+            }
+
+            foreach (RoomGeometry chunk in affectedChunks)
                 chunk.LightingDirty = true;
         }
     }
