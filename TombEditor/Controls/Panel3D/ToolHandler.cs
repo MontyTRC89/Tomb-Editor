@@ -348,9 +348,11 @@ namespace TombEditor.Controls.Panel3D
                 {
                     Engaged = false;
                     Dragged = false;
+
                     _parent._editor.HighlightedSectors = SectorSelection.None;
-                        foreach(var geo in ReferenceRoom.RoomGeometry)
-                            _parent._renderingCachedRooms.Remove(geo); // To update highlight state
+
+                    foreach(RoomGeometry geo in ReferenceRoom.RoomGeometry)
+                        _parent._renderingCachedRooms.Remove(geo); // To update highlight state
                 }
             }
 

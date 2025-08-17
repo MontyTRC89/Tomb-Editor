@@ -219,6 +219,7 @@ namespace TombEditor.Forms
 
             // Send out updates
             Parallel.ForEach(relevantRooms, room => room.Rebuild(_editor.ShouldRelight, _editor.Configuration.Rendering3D_HighQualityLightPreview));
+
             foreach (Room room in relevantRooms)
                 _editor.RoomTextureChange(room);
 
