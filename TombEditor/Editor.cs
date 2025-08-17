@@ -712,7 +712,6 @@ namespace TombEditor
             }
 
             RaiseEvent(new ObjectMovedEvent { Room = room, Object = @object, OldPosition = oldPosition, NewPosition = newPos, OldSectorPosition = oldSector, NewSectorPosition = newSector });
-
         }
 
         // This is invoked when level statistics change.

@@ -49,12 +49,13 @@ namespace TombLib.LevelData
         public bool LightingDirty { get; set; } = true;
         public Room Room { get; private set; }
 
-        // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
-        public RoomGeometry(Room r, in RectangleInt2 area)
+        public RoomGeometry(Room r, RectangleInt2 area)
         {
-            this.Area = area;
-            this.Room = r;
+            Area = area;
+            Room = r;
         }
+
+        // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
         public void Build(bool useLegacyCode = false)
         {
             VertexPositions.Clear();
@@ -334,8 +335,8 @@ namespace TombLib.LevelData
             // Build color array
             VertexColors.Resize(VertexPositions.Count, room.Properties.AmbientLight);
 
-            Vector3 aabbMin = new Vector3((Area.X0) * Level.SectorSizeUnit, room.GetLowestCorner(),(Area.Y0) * Level.SectorSizeUnit);
-            Vector3 aabbMax = new Vector3((Area.X1+1) * Level.SectorSizeUnit, room.GetHighestCorner(),(Area.Y1+1) * Level.SectorSizeUnit);
+            Vector3 aabbMin = new Vector3(Area.X0 * Level.SectorSizeUnit, room.GetLowestCorner(), Area.Y0 * Level.SectorSizeUnit);
+            Vector3 aabbMax = new Vector3((Area.X1 + 1) * Level.SectorSizeUnit, room.GetHighestCorner(), (Area.Y1 + 1) * Level.SectorSizeUnit);
             BoundingBox = new BoundingBox(aabbMin, aabbMax);
             GeometryDirty = false;
             LightingDirty = true;
@@ -386,6 +387,7 @@ namespace TombLib.LevelData
 
                 TriangleTextureAreas[(range.Start + 3) / 3] = texture1;
             }
+
             GeometryDirty = true;
         }
 
@@ -1203,7 +1205,7 @@ namespace TombLib.LevelData
         {
             // Collect lights
             // check against all lights is negligible, since we already set LightingDirty Flag with a intersectin test
-            // So just collect all lights
+            // so just collect all lights
             var lights = Room.Objects.OfType<LightInstance>().ToArray();
 
             // Calculate lighting
@@ -1240,6 +1242,7 @@ namespace TombLib.LevelData
                 foreach (var vertexIndex in pair.Value)
                     VertexColors[vertexIndex] = faceColorSum;
             }
+
             LightingDirty = false;
         }
 
@@ -1253,29 +1256,33 @@ namespace TombLib.LevelData
 
         public IntersectionInfo? RayIntersectsGeometry(Ray ray)
         {
-            
             IntersectionInfo result = new IntersectionInfo { Distance = float.NaN };
+
             if (Collision.RayIntersectsBox(ray, BoundingBox, out float _))
+            {
                 foreach (var entry in VertexRangeLookup)
+                {
                     for (int i = 0; i < entry.Value.Count; i += 3)
                     {
                         var p0 = VertexPositions[entry.Value.Start + i];
                         var p1 = VertexPositions[entry.Value.Start + i + 1];
                         var p2 = VertexPositions[entry.Value.Start + i + 2];
 
-                        Vector3 position;
-                        if (Collision.RayIntersectsTriangle(ray, p0, p1, p2, true, out position))
+                        if (Collision.RayIntersectsTriangle(ray, p0, p1, p2, true, out Vector3 position))
                         {
                             float distance = (position - ray.Position).Length();
                             var normal = Vector3.Cross(p1 - p0, p2 - p0);
-                            if (Vector3.Dot(ray.Direction, normal) <= 0)
-                                if (!(distance > result.Distance))
-                                    result = new IntersectionInfo() { Distance = distance, Face = entry.Key.Face, Pos = entry.Key.Position, VerticalCoord = position.Y };
+
+                            if (Vector3.Dot(ray.Direction, normal) <= 0 && !(distance > result.Distance))
+                                result = new IntersectionInfo() { Distance = distance, Face = entry.Key.Face, Pos = entry.Key.Position, VerticalCoord = position.Y };
                         }
                     }
+                }
+            }
 
             if (float.IsNaN(result.Distance))
                 return null;
+
             return result;
         }
     }
