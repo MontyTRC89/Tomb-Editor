@@ -1,7 +1,6 @@
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -703,13 +702,15 @@ namespace TombEditor
 
         public void MoveObject(PositionBasedObjectInstance @object, Room room, in Vector3 oldPosition, in Vector3 newPos, in VectorInt2 oldSector, in VectorInt2 newSector)
         {
-
             if (room == null || @object == null)
                 throw new ArgumentNullException();
 
-            if (@object is ObjectGroup)
-                foreach (var o in ((ObjectGroup)@object).ToList())
+            if (@object is ObjectGroup objectGroup)
+            {
+                foreach (var o in objectGroup.ToList())
                     RaiseEvent(new ObjectMovedEvent { Room = room, Object = o, OldPosition = oldPosition, NewPosition = newPos, OldSectorPosition = oldSector, NewSectorPosition = newSector });
+            }
+
             RaiseEvent(new ObjectMovedEvent { Room = room, Object = @object, OldPosition = oldPosition, NewPosition = newPos, OldSectorPosition = oldSector, NewSectorPosition = newSector });
 
         }
@@ -1209,6 +1210,7 @@ namespace TombEditor
             {
                 BookmarkedObject = null;
             }
+
             if (obj is IEditorObjectMovedEvent movedEvent)
             {
                 if (movedEvent.Object is LightInstance light)
@@ -1262,76 +1264,76 @@ namespace TombEditor
 
                     // Ignore object stats if only room geometry is updated
                     if (!onlyRoom) foreach (var r in Level.ExistingRooms)
+                    {
+                        stats.RoomCount++;
+
+                        foreach (var obj in r.Objects)
                         {
-                            stats.RoomCount++;
-
-                            foreach (var obj in r.Objects)
+                            if (obj is MoveableInstance)
                             {
-                                if (obj is MoveableInstance)
+                                // Ignore AI objects since they don't count as moveables
+                                if (TrCatalog.IsMoveableAI(Level.Settings.GameVersion, (obj as MoveableInstance).WadObjectId.TypeId))
+                                    continue;
+
+                                stats.LevelStats.MoveableCount++;
+                                if (r == SelectedRoom)
+                                    stats.RoomStats.MoveableCount++;
+                            }
+
+                            if (obj is StaticInstance)
+                            {
+                                stats.LevelStats.StaticCount++;
+                                if (r == SelectedRoom)
+                                    stats.RoomStats.StaticCount++;
+                            }
+
+                            if (obj is LightInstance)
+                            {
+                                // Ignore disabled and effect lights since they never added
+
+                                var light = obj as LightInstance;
+                                if (!light.Enabled)
+                                    continue;
+
+                                stats.LevelStats.LightCount++;
+                                if (r == SelectedRoom)
+                                    stats.RoomStats.LightCount++;
+
+                                // Additionally count dynamic lights separately
+
+                                if (light.Type != LightType.Effect && light.IsDynamicallyUsed)
                                 {
-                                    // Ignore AI objects since they don't count as moveables
-                                    if (TrCatalog.IsMoveableAI(Level.Settings.GameVersion, (obj as MoveableInstance).WadObjectId.TypeId))
-                                        continue;
-
-                                    stats.LevelStats.MoveableCount++;
+                                    stats.LevelStats.DynLightCount++;
                                     if (r == SelectedRoom)
-                                        stats.RoomStats.MoveableCount++;
-                                }
-
-                                if (obj is StaticInstance)
-                                {
-                                    stats.LevelStats.StaticCount++;
-                                    if (r == SelectedRoom)
-                                        stats.RoomStats.StaticCount++;
-                                }
-
-                                if (obj is LightInstance)
-                                {
-                                    // Ignore disabled and effect lights since they never added
-
-                                    var light = obj as LightInstance;
-                                    if (!light.Enabled)
-                                        continue;
-
-                                    stats.LevelStats.LightCount++;
-                                    if (r == SelectedRoom)
-                                        stats.RoomStats.LightCount++;
-
-                                    // Additionally count dynamic lights separately
-
-                                    if (light.Type != LightType.Effect && light.IsDynamicallyUsed)
-                                    {
-                                        stats.LevelStats.DynLightCount++;
-                                        if (r == SelectedRoom)
-                                            stats.RoomStats.DynLightCount++;
-                                    }
-                                }
-
-                                if (obj is CameraInstance)
-                                {
-                                    stats.LevelStats.CameraCount++;
-                                    if (r == SelectedRoom)
-                                        stats.RoomStats.CameraCount++;
-                                }
-
-                                if (obj is FlybyCameraInstance)
-                                {
-                                    stats.LevelStats.FlybyCount++;
-                                    if (r == SelectedRoom)
-                                        stats.RoomStats.FlybyCount++;
+                                        stats.RoomStats.DynLightCount++;
                                 }
                             }
 
-                            foreach (var obj in r.SectorObjects)
+                            if (obj is CameraInstance)
                             {
-                                if (obj is TriggerInstance)
-                                {
-                                    stats.LevelStats.TriggerCount++;
-                                    if (r == SelectedRoom)
-                                        stats.RoomStats.TriggerCount++;
-                                }
+                                stats.LevelStats.CameraCount++;
+                                if (r == SelectedRoom)
+                                    stats.RoomStats.CameraCount++;
+                            }
+
+                            if (obj is FlybyCameraInstance)
+                            {
+                                stats.LevelStats.FlybyCount++;
+                                if (r == SelectedRoom)
+                                    stats.RoomStats.FlybyCount++;
                             }
                         }
+
+                        foreach (var obj in r.SectorObjects)
+                        {
+                            if (obj is TriggerInstance)
+                            {
+                                stats.LevelStats.TriggerCount++;
+                                if (r == SelectedRoom)
+                                    stats.RoomStats.TriggerCount++;
+                            }
+                        }
+                    }
 
                     if (onlyRoom || force || stats != Stats)
                     {
@@ -1442,9 +1444,9 @@ namespace TombEditor
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
         {
-
             if (synchronizationContext == null)
                 throw new ArgumentNullException(nameof(synchronizationContext));
+
             Editor.Instance = this;
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
