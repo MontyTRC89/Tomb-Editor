@@ -1204,7 +1204,7 @@ namespace TombLib.LevelData
         public void Relight(bool highQuality = false)
         {
             // Collect lights
-            // check against all lights is negligible, since we already set LightingDirty Flag with a intersectin test
+            // check against all lights is negligible, since we already set LightingDirty Flag with an intersection test
             // so just collect all lights
             var lights = Room.Objects.OfType<LightInstance>().ToArray();
 
