@@ -138,7 +138,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					{
 						poly.AnimatedSequence = animInfo.Item1;
 						poly.AnimatedFrame = animInfo.Item2;
-						Console.WriteLine(animInfo.Item1);
 					}
 				}
 
