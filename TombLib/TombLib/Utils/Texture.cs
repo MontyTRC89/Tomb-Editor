@@ -300,17 +300,17 @@ namespace TombLib.Utils
 
         public override int GetHashCode()
         {
-	        var hash = new HashCode();
-	        hash.Add(Texture);
-	        hash.Add(TexCoord0);
-	        hash.Add(TexCoord1);
-	        hash.Add(TexCoord2);
-	        hash.Add(TexCoord3);
-	        hash.Add(ParentArea);
-	        hash.Add(BlendMode);
-	        hash.Add(DoubleSided);
-	        return hash.ToHashCode();
-		}
+            var hash = new HashCode();
+            hash.Add(Texture);
+            hash.Add(TexCoord0);
+            hash.Add(TexCoord1);
+            hash.Add(TexCoord2);
+            hash.Add(TexCoord3);
+            hash.Add(ParentArea);
+            hash.Add(BlendMode);
+            hash.Add(DoubleSided);
+            return hash.ToHashCode();
+        }
 
         public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
         public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null;
@@ -347,16 +347,16 @@ namespace TombLib.Utils
             }
         }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Rectangle2 GetRect(bool? isTriangle = null)
-		{
-			bool tri = isTriangle ?? TextureIsTriangle;
-			return tri
-				? Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2)
-				: Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
-		}
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rectangle2 GetRect(bool? isTriangle = null)
+        {
+            bool tri = isTriangle ?? TextureIsTriangle;
+            return tri
+                ? Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2)
+                : Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
+        }
 
-		public Vector2[] TexCoords
+        public Vector2[] TexCoords
         {
             get
             {

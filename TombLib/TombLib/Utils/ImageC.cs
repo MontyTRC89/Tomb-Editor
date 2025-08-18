@@ -148,133 +148,133 @@ namespace TombLib.Utils
             return new Rectangle2(0, 0, Width - 1, Height - 1);
         }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public ColorC Get(int i)
-		{
-			int index = i * PixelSize;
-			if ((uint)(index + 3) >= (uint)_data.Length)
-				return new ColorC(255, 0, 0);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ColorC Get(int i)
+        {
+            int index = i * PixelSize;
+            if ((uint)(index + 3) >= (uint)_data.Length)
+                return new ColorC(255, 0, 0);
 
-			uint value = Unsafe.ReadUnaligned<uint>(ref _data[index]);
+            uint value = Unsafe.ReadUnaligned<uint>(ref _data[index]);
 
-			return new ColorC
-			{
-				B = (byte)(value & 0xFF),
-				G = (byte)((value >> 8) & 0xFF),
-				R = (byte)((value >> 16) & 0xFF),
-				A = (byte)((value >> 24) & 0xFF)
-			};
-		}
+            return new ColorC
+            {
+                B = (byte)(value & 0xFF),
+                G = (byte)((value >> 8) & 0xFF),
+                R = (byte)((value >> 16) & 0xFF),
+                A = (byte)((value >> 24) & 0xFF)
+            };
+        }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Set(int i, byte r, byte g, byte b, byte a = 255)
-		{
-			int index = i * PixelSize;
-			if ((uint)(index + 3) >= (uint)_data.Length)
-				return;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set(int i, byte r, byte g, byte b, byte a = 255)
+        {
+            int index = i * PixelSize;
+            if ((uint)(index + 3) >= (uint)_data.Length)
+                return;
 
-			// BGRA in little-endian
-			uint value = (uint)(b | (g << 8) | (r << 16) | (a << 24));
+            // BGRA in little-endian
+            uint value = (uint)(b | (g << 8) | (r << 16) | (a << 24));
 
-			Unsafe.WriteUnaligned(ref _data[index], value);
-		}
+            Unsafe.WriteUnaligned(ref _data[index], value);
+        }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Set(int i, ColorC color)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set(int i, ColorC color)
         {
             Set(i, color.R, color.G, color.B, color.A);
         }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public ColorC GetPixel(int x, int y)
-		{
-			x = Math.Clamp(x, 0, Width - 1);
-			y = Math.Clamp(y, 0, Height - 1);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ColorC GetPixel(int x, int y)
+        {
+            x = Math.Clamp(x, 0, Width - 1);
+            y = Math.Clamp(y, 0, Height - 1);
 
-			int index = ((y * Width) + x) * PixelSize;
+            int index = ((y * Width) + x) * PixelSize;
 
-			uint value = Unsafe.ReadUnaligned<uint>(ref _data[index]);
+            uint value = Unsafe.ReadUnaligned<uint>(ref _data[index]);
 
-			return new ColorC
-			{
-				B = (byte)value,
-				G = (byte)(value >> 8),
-				R = (byte)(value >> 16),
-				A = (byte)(value >> 24)
-			};
-		}
+            return new ColorC
+            {
+                B = (byte)value,
+                G = (byte)(value >> 8),
+                R = (byte)(value >> 16),
+                A = (byte)(value >> 24)
+            };
+        }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
-		{
-			if ((uint)x >= (uint)Width || (uint)y >= (uint)Height)
-				return;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
+        {
+            if ((uint)x >= (uint)Width || (uint)y >= (uint)Height)
+                return;
 
-			int index = (y * Width + x) * 4;
-			if ((uint)(index + 3) >= (uint)_data.Length)
-				return;
+            int index = (y * Width + x) * 4;
+            if ((uint)(index + 3) >= (uint)_data.Length)
+                return;
 
-			uint packed = (uint)(b | (g << 8) | (r << 16) | (a << 24));
-			Unsafe.WriteUnaligned(ref _data[index], packed);
-		}
+            uint packed = (uint)(b | (g << 8) | (r << 16) | (a << 24));
+            Unsafe.WriteUnaligned(ref _data[index], packed);
+        }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetPixel(int x, int y, ColorC color)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetPixel(int x, int y, ColorC color)
         {
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Fill(ColorC color)
-		{
-			uint packed = (uint)(color.B | (color.G << 8) | (color.R << 16) | (color.A << 24));
+        public void Fill(ColorC color)
+        {
+            uint packed = (uint)(color.B | (color.G << 8) | (color.R << 16) | (color.A << 24));
 
             // JIT runtime uses SIMD operations here
-			var span = MemoryMarshal.Cast<byte, uint>(_data);
-			span.Fill(packed);
-		}
+            var span = MemoryMarshal.Cast<byte, uint>(_data);
+            span.Fill(packed);
+        }
 
-		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
-		public void SetColorDataForTransparentPixels(ColorC color)
-		{
-			// Build the RGB color wth alpha = zero
-			uint packedRgb = (uint)(color.B | (color.G << 8) | (color.R << 16)); // alpha = 0
-			var vRgb = new Vector<uint>(packedRgb);
-			var vAlphaMask = new Vector<uint>(0xFF000000);
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public void SetColorDataForTransparentPixels(ColorC color)
+        {
+            // Build the RGB color wth alpha = zero
+            uint packedRgb = (uint)(color.B | (color.G << 8) | (color.R << 16)); // alpha = 0
+            var vRgb = new Vector<uint>(packedRgb);
+            var vAlphaMask = new Vector<uint>(0xFF000000);
 
-			var span = MemoryMarshal.Cast<byte, uint>(_data);
-			int simdSize = Vector<uint>.Count;
-			int len = span.Length;
-			int i = 0;
+            var span = MemoryMarshal.Cast<byte, uint>(_data);
+            int simdSize = Vector<uint>.Count;
+            int len = span.Length;
+            int i = 0;
 
-			for (; i <= len - simdSize; i += simdSize)
-			{
-				// Load the block
-				var block = new Vector<uint>(span.Slice(i, simdSize));
-				var blockAlpha = block & vAlphaMask;
+            for (; i <= len - simdSize; i += simdSize)
+            {
+                // Load the block
+                var block = new Vector<uint>(span.Slice(i, simdSize));
+                var blockAlpha = block & vAlphaMask;
 
-				// Pixels mask (alpha = zero)
-				var mask = Vector.Equals(blockAlpha, Vector<uint>.Zero);
+                // Pixels mask (alpha = zero)
+                var mask = Vector.Equals(blockAlpha, Vector<uint>.Zero);
 
-				// If no pixel is transparent, skip
-				if (Vector.EqualsAll(mask, Vector<uint>.Zero))
-					continue;
+                // If no pixel is transparent, skip
+                if (Vector.EqualsAll(mask, Vector<uint>.Zero))
+                    continue;
 
-				// Build the block replacing RGB where alpha is zero  
-				var replaced = Vector.ConditionalSelect(mask, vRgb, block);
-				replaced.CopyTo(span.Slice(i, simdSize));
-			}
+                // Build the block replacing RGB where alpha is zero  
+                var replaced = Vector.ConditionalSelect(mask, vRgb, block);
+                replaced.CopyTo(span.Slice(i, simdSize));
+            }
 
-			// Remaining pixels
-			for (; i < len; i++)
-			{
-				uint p = span[i];
-				if ((p & 0xFF000000) == 0)
-					span[i] = packedRgb;
-			}
-		}
+            // Remaining pixels
+            for (; i < len; i++)
+            {
+                uint p = span[i];
+                if ((p & 0xFF000000) == 0)
+                    span[i] = packedRgb;
+            }
+        }
 
-		public void CalculatePalette(int colorCount = 256)
+        public void CalculatePalette(int colorCount = 256)
         {
             if (colorCount > 256) colorCount = 256; // For some reason it fails with more...
             var colorThief = new ColorThief();
@@ -591,14 +591,14 @@ namespace TombLib.Utils
             }
         }
 
-		public void SaveToStream(Stream stream, ImageFormat format)
-		{
-			GetTempSystemDrawingBitmap(bitmap => bitmap.Save(stream, ImageFormat.Png));
-		}
-
-		public void SavePngToStreamFast(Stream stream)
+        public void SaveToStream(Stream stream, ImageFormat format)
         {
-			PngWriter.SaveToStream(stream, _data, Width, Height);
+            GetTempSystemDrawingBitmap(bitmap => bitmap.Save(stream, ImageFormat.Png));
+        }
+
+        public void SavePngToStreamFast(Stream stream)
+        {
+            PngWriter.SaveToStream(stream, _data, Width, Height);
         }
 
         // Try to use 'GetTempSystemDrawingBitmap' instead if possible to avoid unnecessary data allocation
@@ -641,40 +641,40 @@ namespace TombLib.Utils
                 intPtrAction(new IntPtr(dataPtr));
         }
 
-		public unsafe void CopyFrom(int toX, int toY, ImageC fromImage, int fromX, int fromY, int width, int height)
-		{
-			if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 ||
-			    width <= 0 || height <= 0 ||
-			    toX + width > Width || toY + height > Height ||
-			    fromX + width > fromImage.Width || fromY + height > fromImage.Height)
-				return;  
+        public unsafe void CopyFrom(int toX, int toY, ImageC fromImage, int fromX, int fromY, int width, int height)
+        {
+            if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 ||
+                width <= 0 || height <= 0 ||
+                toX + width > Width || toY + height > Height ||
+                fromX + width > fromImage.Width || fromY + height > fromImage.Height)
+                return;  
 
-			fixed (byte* toBase = _data)
-				fixed (byte* fromBase = fromImage._data)
-				{
-					int destStride = Width * 4;
-					int srcStride = fromImage.Width * 4;
-					int rowSize = width * 4;
+            fixed (byte* toBase = _data)
+                fixed (byte* fromBase = fromImage._data)
+                {
+                    int destStride = Width * 4;
+                    int srcStride = fromImage.Width * 4;
+                    int rowSize = width * 4;
 
-					byte* destRow = toBase + (toY * Width + toX) * 4;
-					byte* srcRow = fromBase + (fromY * fromImage.Width + fromX) * 4;
+                    byte* destRow = toBase + (toY * Width + toX) * 4;
+                    byte* srcRow = fromBase + (fromY * fromImage.Width + fromX) * 4;
 
-					for (int y = 0; y < height; ++y)
-					{
-						Buffer.MemoryCopy(srcRow, destRow, rowSize, rowSize);
-						srcRow += srcStride;
-						destRow += destStride;
-					}
-				}
-		}
+                    for (int y = 0; y < height; ++y)
+                    {
+                        Buffer.MemoryCopy(srcRow, destRow, rowSize, rowSize);
+                        srcRow += srcStride;
+                        destRow += destStride;
+                    }
+                }
+        }
 
 
-		/// <summary>
-		/// uint's are platform dependet representation of the color.
-		/// They should stay private inside ImageC to prevent abuse.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static unsafe uint ColorToUint(ColorC color)
+        /// <summary>
+        /// uint's are platform dependet representation of the color.
+        /// They should stay private inside ImageC to prevent abuse.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe uint ColorToUint(ColorC color)
         {
             byte* byteArray = stackalloc byte[4];
             byteArray[0] = color.B;
@@ -684,94 +684,94 @@ namespace TombLib.Utils
             return *(uint*)byteArray;
         }
 
-		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
-		public void ReplaceColor(ColorC from, ColorC to)
-		{
-			uint fromUint = ColorToUint(from);
-			uint toUint = ColorToUint(to);
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public void ReplaceColor(ColorC from, ColorC to)
+        {
+            uint fromUint = ColorToUint(from);
+            uint toUint = ColorToUint(to);
 
-			var span = MemoryMarshal.Cast<byte, uint>(_data);
+            var span = MemoryMarshal.Cast<byte, uint>(_data);
 
-			var vFrom = new Vector<uint>(fromUint);
-			var vTo = new Vector<uint>(toUint);
+            var vFrom = new Vector<uint>(fromUint);
+            var vTo = new Vector<uint>(toUint);
 
-			int i = 0;
-			int simdCount = Vector<uint>.Count;
-			int length = span.Length;
+            int i = 0;
+            int simdCount = Vector<uint>.Count;
+            int length = span.Length;
 
-			// Process SIMD blocks
-			for (; i <= length - simdCount; i += simdCount)
-			{
-				var block = new Vector<uint>(span.Slice(i, simdCount));
-				var mask = Vector.Equals(block, vFrom);
-				if (!Vector.EqualsAll(mask, Vector<uint>.Zero))
-				{
-					var replaced = Vector.ConditionalSelect(mask, vTo, block);
-					replaced.CopyTo(span.Slice(i, simdCount));
-				}
-			}
+            // Process SIMD blocks
+            for (; i <= length - simdCount; i += simdCount)
+            {
+                var block = new Vector<uint>(span.Slice(i, simdCount));
+                var mask = Vector.Equals(block, vFrom);
+                if (!Vector.EqualsAll(mask, Vector<uint>.Zero))
+                {
+                    var replaced = Vector.ConditionalSelect(mask, vTo, block);
+                    replaced.CopyTo(span.Slice(i, simdCount));
+                }
+            }
 
-			// Remaining pixels
-			for (; i < length; i++)
-			{
-				if (span[i] == fromUint)
-					span[i] = toUint;
-			}
-		}
+            // Remaining pixels
+            for (; i < length; i++)
+            {
+                if (span[i] == fromUint)
+                    span[i] = toUint;
+            }
+        }
 
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public unsafe BlendMode HasAlpha(TRVersion.Game version, int X, int Y, int width, int height)
-		{
-			var result = BlendMode.Normal;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe BlendMode HasAlpha(TRVersion.Game version, int X, int Y, int width, int height)
+        {
+            var result = BlendMode.Normal;
 
-			if ((uint)X >= Width || (uint)Y >= Height ||
-			    width <= 0 || height <= 0 ||
-			    X + width > Width || Y + height > Height)
-				return result;
+            if ((uint)X >= Width || (uint)Y >= Height ||
+                width <= 0 || height <= 0 ||
+                X + width > Width || Y + height > Height)
+                return result;
 
-			fixed (byte* basePtr8 = _data)
-			{
-				uint* basePtr = (uint*)basePtr8;
-				uint* ptr = basePtr + (Y * Width + X);
+            fixed (byte* basePtr8 = _data)
+            {
+                uint* basePtr = (uint*)basePtr8;
+                uint* ptr = basePtr + (Y * Width + X);
 
-				if (version == TRVersion.Game.TombEngine)
-				{
-					for (int row = 0; row < height; row++)
-					{
-						uint* p = ptr + row * Width;
-						for (int col = 0; col < width; col++)
-						{
-							uint alpha = p[col] & AlphaBits;
+                if (version == TRVersion.Game.TombEngine)
+                {
+                    for (int row = 0; row < height; row++)
+                    {
+                        uint* p = ptr + row * Width;
+                        for (int col = 0; col < width; col++)
+                        {
+                            uint alpha = p[col] & AlphaBits;
 
-							if (alpha == AlphaBits)
-								continue; 
+                            if (alpha == AlphaBits)
+                                continue; 
 
-							if (alpha != 0)
-								return BlendMode.AlphaBlend; 
+                            if (alpha != 0)
+                                return BlendMode.AlphaBlend; 
 
-							result = BlendMode.AlphaTest;
-						}
-					}
-				}
-				else
-				{
-					for (int row = 0; row < height; row++)
-					{
-						uint* p = ptr + row * Width;
-						for (int col = 0; col < width; col++)
-						{
-							if ((p[col] & AlphaBits) != AlphaBits)
-								return BlendMode.AlphaTest;
-						}
-					}
-				}
-			}
+                            result = BlendMode.AlphaTest;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int row = 0; row < height; row++)
+                    {
+                        uint* p = ptr + row * Width;
+                        for (int col = 0; col < width; col++)
+                        {
+                            if ((p[col] & AlphaBits) != AlphaBits)
+                                return BlendMode.AlphaTest;
+                        }
+                    }
+                }
+            }
 
-			return result;
-		}
+            return result;
+        }
 
-		public unsafe BlendMode HasAlpha(TRVersion.Game version)
+        public unsafe BlendMode HasAlpha(TRVersion.Game version)
         {
             return HasAlpha(version, 0, 0, Width, Height);
         }
@@ -801,59 +801,59 @@ namespace TombLib.Utils
 
         public unsafe byte[] ToByteArray(int fromX, int fromY, int width, int height)
         {
-	        if (fromX < 0 || fromY < 0 || width <= 0 || height <= 0 ||
-	            fromX + width > Width || fromY + height > Height)
-		        return Array.Empty<byte>();
+            if (fromX < 0 || fromY < 0 || width <= 0 || height <= 0 ||
+                fromX + width > Width || fromY + height > Height)
+                return Array.Empty<byte>();
 
-	        var size = width * height * 4;
-	        var result = new byte[size];
+            var size = width * height * 4;
+            var result = new byte[size];
 
-	        fixed (byte* toPtr = result)
-		        fixed (byte* fromPtr = _data)
-		        {
-			        for (int y = 0; y < height; ++y)
-			        {
-				        byte* src = fromPtr + ((fromY + y) * Width + fromX) * 4;
-				        byte* dst = toPtr + (y * width) * 4;
-				        Buffer.MemoryCopy(src, dst, width * 4, width * 4);
-			        }
-		        }
+            fixed (byte* toPtr = result)
+                fixed (byte* fromPtr = _data)
+                {
+                    for (int y = 0; y < height; ++y)
+                    {
+                        byte* src = fromPtr + ((fromY + y) * Width + fromX) * 4;
+                        byte* dst = toPtr + (y * width) * 4;
+                        Buffer.MemoryCopy(src, dst, width * 4, width * 4);
+                    }
+                }
 
-	        return result;
+            return result;
         }
 
-		public unsafe Hash GetHashOfAreaFast(Rectangle2 area)
-		{
-			int x = (int)area.TopLeft.X;
-			int y = (int)area.TopLeft.Y;
-			int width = (int)area.Width;
-			int height = (int)area.Height;
+        public unsafe Hash GetHashOfAreaFast(Rectangle2 area)
+        {
+            int x = (int)area.TopLeft.X;
+            int y = (int)area.TopLeft.Y;
+            int width = (int)area.Width;
+            int height = (int)area.Height;
 
-			if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
-			    x + width > Width || y + height > Height)
-				return Hash.Zero;
+            if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
+                x + width > Width || y + height > Height)
+                return Hash.Zero;
 
-			var hasher = new XxHash64();
+            var hasher = new XxHash64();
 
-			fixed (byte* srcPtr = _data) 
-			{
-				int stride = Width * 4;
-				for (int row = 0; row < height; row++)
-				{
-					byte* src = srcPtr + ((y + row) * Width + x) * 4;
-					hasher.Append(new ReadOnlySpan<byte>(src, width * 4));
-				}
-			}
+            fixed (byte* srcPtr = _data) 
+            {
+                int stride = Width * 4;
+                for (int row = 0; row < height; row++)
+                {
+                    byte* src = srcPtr + ((y + row) * Width + x) * 4;
+                    hasher.Append(new ReadOnlySpan<byte>(src, width * 4));
+                }
+            }
 
-			Span<byte> hashBytes = stackalloc byte[8];
-			hasher.GetHashAndReset(hashBytes);
+            Span<byte> hashBytes = stackalloc byte[8];
+            hasher.GetHashAndReset(hashBytes);
 
-			ulong low = BitConverter.ToUInt64(hashBytes);
+            ulong low = BitConverter.ToUInt64(hashBytes);
 
-			return new Hash { HashLow = low, HashHigh = 0 };
-		}
+            return new Hash { HashLow = low, HashHigh = 0 };
+        }
 
-		public Stream ToRawStream(int yStart, int Height)
+        public Stream ToRawStream(int yStart, int Height)
         {
             return new MemoryStream(_data, yStart * Width * PixelSize, Height * Width * PixelSize);
         }
@@ -927,41 +927,41 @@ namespace TombLib.Utils
 
         public static ImageC GrayScaleFilter(ImageC source, bool invert, int posX, int posY, int w, int h)
         {
-			ImageC result = ImageC.CreateNew(w, h);
+            ImageC result = ImageC.CreateNew(w, h);
 
-			byte[] srcData = source.ToByteArray();
-			byte[] dstData = result.ToByteArray();
+            byte[] srcData = source.ToByteArray();
+            byte[] dstData = result.ToByteArray();
 
-			int srcStride = source.Width * 4;
-			int dstStride = w * 4;
+            int srcStride = source.Width * 4;
+            int dstStride = w * 4;
 
-			for (int y = 0; y < h; y++)
-			{
-				int srcRow = ((posY + y) * source.Width + posX) * 4;
-				int dstRow = y * dstStride;
+            for (int y = 0; y < h; y++)
+            {
+                int srcRow = ((posY + y) * source.Width + posX) * 4;
+                int dstRow = y * dstStride;
 
-				for (int x = 0; x < w; x++)
-				{
-					byte b = srcData[srcRow + 0];
-					byte g = srcData[srcRow + 1];
-					byte r = srcData[srcRow + 2];
-					byte a = srcData[srcRow + 3];
+                for (int x = 0; x < w; x++)
+                {
+                    byte b = srcData[srcRow + 0];
+                    byte g = srcData[srcRow + 1];
+                    byte r = srcData[srcRow + 2];
+                    byte a = srcData[srcRow + 3];
 
-					double gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-					if (invert) gray = 255 - gray;
-					byte g8 = (byte)gray;
+                    double gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                    if (invert) gray = 255 - gray;
+                    byte g8 = (byte)gray;
 
-					dstData[dstRow + 0] = g8;
-					dstData[dstRow + 1] = g8;
-					dstData[dstRow + 2] = g8;
-					dstData[dstRow + 3] = a;
+                    dstData[dstRow + 0] = g8;
+                    dstData[dstRow + 1] = g8;
+                    dstData[dstRow + 2] = g8;
+                    dstData[dstRow + 3] = a;
 
-					srcRow += 4;
-					dstRow += 4;
-				}
-			}
+                    srcRow += 4;
+                    dstRow += 4;
+                }
+            }
 
-			return result;
-		}
+            return result;
+        }
     }
 }
