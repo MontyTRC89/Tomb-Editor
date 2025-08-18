@@ -629,8 +629,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 											var span = CollectionsMarshal.AsSpan(roomVertices);
                                             for (int i = 0; (uint)i < (uint)span.Length; i++)
                                                 if (span[i].Position == trVertex.Position &&
-                                                    span[i].Color == span[i].Color &&
-                                                    span[i].DoubleSided == span[i].DoubleSided)
+                                                    span[i].Color == trVertex.Color &&
+                                                    span[i].DoubleSided == trVertex.DoubleSided)
                                                 {
                                                     existingIndex = i;
                                                     break;
