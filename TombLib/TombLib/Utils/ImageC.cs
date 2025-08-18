@@ -18,6 +18,14 @@ namespace TombLib.Utils
         Scharr
     }
 
+    public enum ImageChannel : int
+    {
+        R,
+        G,
+        B,
+        A
+    }
+
     public struct ColorC
     {
         public byte B;
@@ -610,11 +618,61 @@ namespace TombLib.Utils
             }
         }
 
-        /// <summary>
-        /// uint's are platform dependet representation of the color.
-        /// They should stay private inside ImageC to prevent abuse.
-        /// </summary>
-        private static unsafe uint ColorToUint(ColorC color)
+		public unsafe void CopySingleChannelFrom(int toX, int toY, ImageC fromImage, int fromX, int fromY, int width, int height, ImageChannel channel)
+		{
+			// Check coordinates
+			if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
+				toX + width > Width || toY + height > Height ||
+				fromX + width > fromImage.Width || fromY + height > fromImage.Height)
+				return;
+			//throw new ArgumentOutOfRangeException();
+
+			int shiftTarget = (int)channel * 8;
+			int shiftSource = 0; // R channel (always 0 * 8)
+
+			uint maskClearTarget = ~(0xFFu << shiftTarget);
+
+			// Copy data quickly
+			fixed (void* toPtr = _data)
+			{
+				fixed (void* fromPtr = fromImage._data)
+				{
+					// Adjust starting position to account for image positions
+					uint* toPtrOffseted = (uint*)toPtr + toY * Width + toX;
+					uint* fromPtrOffseted = (uint*)fromPtr + fromY * fromImage.Width + fromX;
+
+					// Copy image data line by line
+					for (int y = 0; y < height; ++y)
+					{
+						uint* toLinePtr = toPtrOffseted + y * Width;
+						uint* fromLinePtr = fromPtrOffseted + y * fromImage.Width;
+                        
+						for (int x = 0; x < width; ++x)
+						{
+							uint src = fromLinePtr[x];
+							uint dst = toLinePtr[x];
+
+							// Estrai R dal sorgente
+							uint red = (src >> shiftSource) & 0xFF;
+
+							// Pulisci il canale target nel pixel destinazione
+							dst &= maskClearTarget;
+
+							// Inserisci il valore nel canale target
+							dst |= (red << shiftTarget);
+
+							toLinePtr[x] = dst;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// uint's are platform dependet representation of the color.
+		/// They should stay private inside ImageC to prevent abuse.
+		/// </summary>
+		private static unsafe uint ColorToUint(ColorC color)
         {
             byte* byteArray = stackalloc byte[4];
             byteArray[0] = color.B;
@@ -841,5 +899,86 @@ namespace TombLib.Utils
 
             return result;
         }
-    }
+
+		public static ImageC GaussianBlur(ImageC source, float radius = 1.0f)
+		{
+			int size = (int)Math.Ceiling(radius * 3.0);
+			float[] kernel = new float[size * 2 + 1];
+			float sigma = radius;
+			float norm = 0;
+
+			for (int i = -size; i <= size; i++)
+			{
+				float val = (float)Math.Exp(-(i * i) / (2 * sigma * sigma));
+				kernel[i + size] = val;
+				norm += val;
+			}
+			for (int i = 0; i < kernel.Length; i++)
+				kernel[i] /= norm;
+
+			ImageC temp = CreateNew(source.Width, source.Height);
+			ImageC result = CreateNew(source.Width, source.Height);
+
+			for (int y = 0; y < source.Height; y++)
+			{
+				for (int x = 0; x < source.Width; x++)
+				{
+					float r = 0, g = 0, b = 0, a = 0;
+					for (int k = -size; k <= size; k++)
+					{
+						int ix = MathC.Clamp(x + k, 0, source.Width - 1);
+						ColorC c = source.GetPixel(ix, y);
+						float weight = kernel[k + size];
+						r += c.R * weight;
+						g += c.G * weight;
+						b += c.B * weight;
+						a += c.A * weight;
+					}
+					temp.SetPixel(x, y, (byte)r, (byte)g, (byte)b, (byte)a);
+				}
+			}
+
+			for (int y = 0; y < source.Height; y++)
+			{
+				for (int x = 0; x < source.Width; x++)
+				{
+					float r = 0, g = 0, b = 0, a = 0;
+					for (int k = -size; k <= size; k++)
+					{
+						int iy = MathC.Clamp(y + k, 0, source.Height - 1);
+						ColorC c = temp.GetPixel(x, iy);
+						float weight = kernel[k + size];
+						r += c.R * weight;
+						g += c.G * weight;
+						b += c.B * weight;
+						a += c.A * weight;
+					}
+					result.SetPixel(x, y, (byte)r, (byte)g, (byte)b, (byte)a);
+				}
+			}
+
+			return result;
+		}
+
+		public static ImageC NormalizeContrast(ImageC source)
+		{
+			byte min = 255, max = 0;
+			for (int i = 0; i < source.Width * source.Height; i++)
+			{
+				byte v = source.Get(i).R;
+				if (v < min) min = v;
+				if (v > max) max = v;
+			}
+
+			float scale = 255.0f / Math.Max(1, max - min);
+			ImageC result = CreateNew(source.Width, source.Height);
+			for (int i = 0; i < source.Width * source.Height; i++)
+			{
+				ColorC c = source.Get(i);
+				byte newVal = (byte)MathC.Clamp((int)((c.R - min) * scale), 0, 255);
+				result.Set(i, new ColorC(newVal, newVal, newVal, c.A));
+			}
+			return result;
+		}
+	}
 }

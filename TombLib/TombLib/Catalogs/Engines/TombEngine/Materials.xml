@@ -1,0 +1,27 @@
+﻿<materials>
+  <material
+    name="Opaque"
+    shader_type="0"
+    has_normal_map="true"
+    has_specular_map="true"
+    has_ambient_occlusion_map="true"
+    has_emissive_map="true">
+    <parameters>
+      <parameter type="float" index="0" description="Normal map strength" default="1.0f" />
+      <parameter type="float" index="1" description="Specular intensity" default="1.0f" />
+    </parameters>
+  </material>
+
+  <material
+    name="Water"
+    shader_type="1"
+    has_normal_map="true"
+    has_specular_map="false"
+    has_ambient_occlusion_map="false"
+    has_emissive_map="false">
+    <parameters>
+      <parameter type="float" index="0" description="Normal map strength" default="1.0f" />
+      <parameter type="float" index="1" description="Specular intensity" default="1.0f" />
+    </parameters>
+  </material>
+</materials>
