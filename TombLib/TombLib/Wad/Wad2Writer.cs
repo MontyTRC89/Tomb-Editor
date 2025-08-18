@@ -90,45 +90,45 @@ namespace TombLib.Wad
                         chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, texture.Image.ToByteArray());
                     });
                 }
-			}, LEB128.MaximumSize5Byte); // Texture chunk can be very large, therefore increased size.);
+            }, LEB128.MaximumSize5Byte); // Texture chunk can be very large, therefore increased size.);
         }
 
-		private static void WriteAnimatedTextures(ChunkWriter chunkIO, List<AnimatedTextureSet> animatedTextureSets, List<WadTexture> textureTable)
+        private static void WriteAnimatedTextures(ChunkWriter chunkIO, List<AnimatedTextureSet> animatedTextureSets, List<WadTexture> textureTable)
         {
-			using (var chunkAnimatedTextureSets = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureSets, long.MaxValue))
-			{
-				foreach (AnimatedTextureSet set in animatedTextureSets)
-					using (var chunkAnimatedTextureSet = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureSet))
-					{
-						chunkIO.WriteChunkString(Wad2Chunks.AnimatedTextureSetName, set.Name ?? string.Empty);
-						chunkIO.WriteChunkInt(Wad2Chunks.AnimatedTextureSetType, (int)set.AnimationType);
-						chunkIO.WriteChunkFloat(Wad2Chunks.AnimatedTextureSetFps, set.Fps);
-						chunkIO.WriteChunkInt(Wad2Chunks.AnimatedTextureSetUvRotate, set.UvRotate);
-						using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureFrames))
-						{
-							foreach (AnimatedTextureFrame frame in set.Frames)
-							{
-								if (frame.Texture != null && textureTable.Contains((WadTexture)frame.Texture))
-									using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureFrame, 120))
-									{
-										LEB128.Write(chunkIO.Raw, textureTable.IndexOf((WadTexture)frame.Texture));
-										chunkIO.Raw.Write(frame.TexCoord0);
-										chunkIO.Raw.Write(frame.TexCoord1);
-										chunkIO.Raw.Write(frame.TexCoord2);
-										chunkIO.Raw.Write(frame.TexCoord3);
-										LEB128.Write(chunkIO.Raw, frame.Repeat);
-									}
-								else
-									logger.Warn("Animated sequence " + set.Name + " has a frame refering to a texture file which is missing from project.");
-							}
+            using (var chunkAnimatedTextureSets = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureSets, long.MaxValue))
+            {
+                foreach (AnimatedTextureSet set in animatedTextureSets)
+                    using (var chunkAnimatedTextureSet = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureSet))
+                    {
+                        chunkIO.WriteChunkString(Wad2Chunks.AnimatedTextureSetName, set.Name ?? string.Empty);
+                        chunkIO.WriteChunkInt(Wad2Chunks.AnimatedTextureSetType, (int)set.AnimationType);
+                        chunkIO.WriteChunkFloat(Wad2Chunks.AnimatedTextureSetFps, set.Fps);
+                        chunkIO.WriteChunkInt(Wad2Chunks.AnimatedTextureSetUvRotate, set.UvRotate);
+                        using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureFrames))
+                        {
+                            foreach (AnimatedTextureFrame frame in set.Frames)
+                            {
+                                if (frame.Texture != null && textureTable.Contains((WadTexture)frame.Texture))
+                                    using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureFrame, 120))
+                                    {
+                                        LEB128.Write(chunkIO.Raw, textureTable.IndexOf((WadTexture)frame.Texture));
+                                        chunkIO.Raw.Write(frame.TexCoord0);
+                                        chunkIO.Raw.Write(frame.TexCoord1);
+                                        chunkIO.Raw.Write(frame.TexCoord2);
+                                        chunkIO.Raw.Write(frame.TexCoord3);
+                                        LEB128.Write(chunkIO.Raw, frame.Repeat);
+                                    }
+                                else
+                                    logger.Warn("Animated sequence " + set.Name + " has a frame refering to a texture file which is missing from project.");
+                            }
 
-							chunkIO.WriteChunkEnd();
-						}
-						chunkIO.WriteChunkEnd();
-					}
-				chunkIO.WriteChunkEnd();
-			}
-		}
+                            chunkIO.WriteChunkEnd();
+                        }
+                        chunkIO.WriteChunkEnd();
+                    }
+                chunkIO.WriteChunkEnd();
+            }
+        }
 
         private static void WriteSprites(ChunkWriter chunkIO, List<WadSprite> spriteTable)
         {
