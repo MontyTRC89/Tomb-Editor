@@ -43,7 +43,7 @@ end
 -- !Arguments "Numerical, 30, Scale value, [ 0 | 256 | 2 ]"
 
 LevelFuncs.Engine.Node.TestStaticScale = function(staticName, operator, value)
-	local scale = TEN.Objects.GetStaticByName(staticName):GetScale()
+	local scale = TEN.Objects.GetStaticByName(staticName):GetScale().x
 	return LevelFuncs.Engine.Node.CompareValue(scale, value, operator)
 end
 
@@ -156,7 +156,7 @@ LevelFuncs.Engine.Node.SetStaticScale = function(operation, value, staticName)
 	local stat = TEN.Objects.GetStaticByName(staticName)
 
 	if (operation == 0) then
-		local scale = stat:GetScale();
+		local scale = stat:GetScale().x;
 		stat:SetScale(scale + value)
 	else
 		stat:SetScale(value)

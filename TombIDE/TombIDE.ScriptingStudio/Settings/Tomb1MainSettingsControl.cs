@@ -42,7 +42,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void InitializePreview()
 		{
-			editorPreview = new Tomb1MainEditor(new Version(0, 0))
+			editorPreview = new Tomb1MainEditor(new Version(0, 0), false)
 			{
 				Text =
 					"\"levels\": [\n" +
@@ -180,7 +180,7 @@ namespace TombIDE.ScriptingStudio.Settings
 		{
 			using (var dialog = new OpenFileDialog())
 			{
-				dialog.Filter = "T1M / TR1X Scheme|*.t1msch";
+				dialog.Filter = "TR1X / TR2X Scheme|*.t1msch";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
@@ -459,7 +459,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				)
 			);
 
-			editorPreview.SyntaxHighlighting = new SyntaxHighlighting(scheme);
+			editorPreview.SyntaxHighlighting = new SyntaxHighlighting(scheme, false);
 		}
 
 		private void ToggleSaveSchemeButton()

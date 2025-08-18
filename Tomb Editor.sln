@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkUI.WPF", "DarkUI\DarkUI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkUI.WPF.Demo", "DarkUI\DarkUI.WPF.Demo\DarkUI.WPF.Demo.csproj", "{E9735476-7460-42E5-AA5A-8F3244C3B0A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaApiBuilder", "LuaApiBuilder\LuaApiBuilder.csproj", "{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -256,6 +258,14 @@ Global
 		{E9735476-7460-42E5-AA5A-8F3244C3B0A5}.Release|x64.Build.0 = Release|x64
 		{E9735476-7460-42E5-AA5A-8F3244C3B0A5}.Release|x86.ActiveCfg = Release|x86
 		{E9735476-7460-42E5-AA5A-8F3244C3B0A5}.Release|x86.Build.0 = Release|x86
+		{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}.Debug|x64.ActiveCfg = Debug|x64
+		{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}.Debug|x64.Build.0 = Debug|x64
+		{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}.Debug|x86.ActiveCfg = Debug|x86
+		{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}.Debug|x86.Build.0 = Debug|x86
+		{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}.Release|x64.ActiveCfg = Release|x64
+		{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}.Release|x64.Build.0 = Release|x64
+		{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}.Release|x86.ActiveCfg = Release|x86
+		{B7DD9EF9-2AD4-4FB7-9576-35B92502D1AD}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,8 +14,10 @@ namespace TombLib.LevelData
             TR3 = 3,
             TR4 = 4,
             TR5 = 5,
+            TR1X = 11, // Temporarily unused, only for TombIDE identification
+            TR2X = 12, // Temporarily unused, only for TombIDE identification
             TRNG = 16,
-            TombEngine = 18
+            TombEngine = 18,
         }
 
         /// <summary> Wrapper for getting native game version, excluding TombEngine. Equal to deprecated WadGameVersion enum.</summary>
@@ -25,16 +27,24 @@ namespace TombLib.LevelData
         public static Game Legacy(this Game ver) => ver == Game.TRNG ? Game.TR4 : (ver == Game.TombEngine ? Game.TR5 : ver);
 
         /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TombEngine. Equal to deprecated TRVersion enum. </summary>
-        public static bool UsesMainSfx(this Game ver) => ver == Game.TR2  || ver == Game.TR3;
+        public static bool UsesMainSfx(this Game ver) => ver is Game.TR2 or Game.TR2X or Game.TR3;
 
         /// <summary> Base enumeration. Contains all possible game versions.
-        public static List<Game> AllVersions => Enum.GetValues(typeof(Game)).OfType<Game>().ToList();
+        public static List<Game> AllVersions => Enum.GetValues<Game>()
+            .Where(e => e is not Game.TR1X and not Game.TR2X) // Exclude TombIDE versions
+            .ToList();
 
         /// <summary> Helper native (aka WadGameVersion) enumeration list. Can be used to populate various controls, like listbox. </summary>
-        public static List<Game> NativeVersions => AllVersions.Where(item => item != Game.TRNG).ToList();
+        public static List<Game> NativeVersions => new()
+        {
+            Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TombEngine
+        };
 
         /// <summary> Helper legacy (aka TRVersion) enumeration list. Can be used to populate various controls, like listbox. </summary>
-        public static List<Game> LegacyVersions => NativeVersions.Where(item => item != Game.TombEngine).ToList();
+        public static List<Game> LegacyVersions => new()
+        {
+            Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TRNG
+        };
     }
 
     /// Only for TR5+

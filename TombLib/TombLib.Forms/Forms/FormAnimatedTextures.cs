@@ -278,8 +278,8 @@ namespace TombLib.Forms
 			// Add common animation types
 			comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
 
-			if (_version == TRVersion.Game.TR4 ||
-				_version == TRVersion.Game.TR5)
+			if (_version.Native() == TRVersion.Game.TR4 ||
+				_version.Native() == TRVersion.Game.TR5)
 			{
 				comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
 			}
