@@ -5,11 +5,8 @@ using System.Linq;
 using System.Numerics;
 using TombLib.IO;
 using TombLib.LevelData;
-using TombLib.LevelData.IO;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
-using static TombLib.LevelData.IO.Prj2Loader;
 
 namespace TombLib.Wad
 {
