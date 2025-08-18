@@ -260,7 +260,7 @@ namespace TombLib.Utils
 				if (Vector.EqualsAll(mask, Vector<uint>.Zero))
 					continue;
 
-				// BUild the block replacing RGB where alpha is zero  
+				// Build the block replacing RGB where alpha is zero  
 				var replaced = Vector.ConditionalSelect(mask, vRgb, block);
 				replaced.CopyTo(span.Slice(i, simdSize));
 			}
