@@ -57,6 +57,8 @@ internal static class DefaultPaths
 
 	public static string TRNGPluginsDirectory => Path.Combine(TIDEDirectory, "TRNG Plugins");
 
+	public static string TENApiDirectory => Path.Combine(TIDEDirectory, "TEN");
+
 	#endregion TIDE
 
 	#region .EXEs

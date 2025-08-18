@@ -29,7 +29,7 @@ namespace TombIDE.ProjectMaster
 
 			InitializeComponent();
 
-			if (targetProject.GameVersion == TRVersion.Game.TR1)
+			if (targetProject.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TR2X)
 			{
 				checkBox_GenerateSection.Checked = checkBox_GenerateSection.Visible = false;
 				panel_ScriptSettings.Visible = false;
@@ -139,7 +139,7 @@ namespace TombIDE.ProjectMaster
 				level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
 				level.Settings.ScriptDirectory = level.Settings.MakeRelative(_targetProject.GetScriptRootDirectory(), VariableType.LevelDirectory);
 				level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
-				level.Settings.GameVersion = _targetProject.GameVersion;
+				level.Settings.GameVersion = _targetProject.GameVersion is TRVersion.Game.TR2X ? TRVersion.Game.TR2 : _targetProject.GameVersion; // Temporarily set TR2X to TR2, because TR2X is not supported by the level editor yet
 
 				level.Settings.WadSoundPaths.Clear();
 				level.Settings.WadSoundPaths.Add(new WadSoundPath(LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + ".." + LevelSettings.Dir + ".." + LevelSettings.Dir + "Sounds"));
@@ -215,7 +215,7 @@ namespace TombIDE.ProjectMaster
 		{
 			string engineDirectory = _targetProject.GetEngineRootDirectoryPath();
 
-			if (_targetProject.GameVersion == TRVersion.Game.TR1)
+			if (_targetProject.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TR2X)
 				SharedMethods.OpenInExplorer(Path.Combine(engineDirectory, "music"));
 			else
 				SharedMethods.OpenInExplorer(Path.Combine(engineDirectory, "audio"));

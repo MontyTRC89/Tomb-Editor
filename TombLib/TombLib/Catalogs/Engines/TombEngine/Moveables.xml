@@ -362,6 +362,9 @@
 	<moveable id="453" name="THOR_HAMMER_HANDLE" />
 	<moveable id="454" name="THOR_HAMMER_HEAD" />
 	<moveable id="455" name="MOVING_LASER" freeRot="true" />
+    <moveable id="456" name="TURNING_WALL_BLADE" />
+    <moveable id="457" name="TURNING_CEILING_BLADE" />
+    <moveable id="458" name="FIRE_PENDULUM" />
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
     <moveable id="502" name="PUZZLE_ITEM3" />

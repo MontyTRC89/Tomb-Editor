@@ -395,6 +395,16 @@ namespace TombLib.Wad.TrLevels
                     newAnimation.StateChanges.Add(sc);
                 }
 
+                Func<int, bool> IsAnimCommandSizeValid = (requiredCount) =>
+                {
+                    if (requiredCount >= oldLevel.AnimCommands.Count)
+                    {
+                        logger.Warn($"Inconsistent animcommand data encountered for moveable with ID {oldMoveable.ObjectID}. Corrupted dxtre3d level?");
+                        return false;
+                    }
+                    return true;
+                };
+
                 if (oldAnimation.NumAnimCommands < oldLevel.AnimCommands.Count)
                 {
                     int lastCommand = oldAnimation.AnimCommand;
@@ -403,8 +413,8 @@ namespace TombLib.Wad.TrLevels
                     {
                         // HACK: FexMerger corrupts some animcommand sequences, refering to the anim command uint16 outside
                         // of animcommand block. We still try to load animations, ignoring corrupted animcommands.
-                        if (lastCommand >= oldLevel.AnimCommands.Count)
-                            continue;
+                        if (!(IsAnimCommandSizeValid(lastCommand)))
+                            break;
 
                         var commandType = (WadAnimCommandType)oldLevel.AnimCommands[lastCommand + 0];
 
@@ -412,6 +422,9 @@ namespace TombLib.Wad.TrLevels
                         switch (commandType)
                         {
                             case WadAnimCommandType.SetPosition:
+                                if (!(IsAnimCommandSizeValid(lastCommand + 3)))
+                                    goto ExitForLoop;
+
                                 command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 command.Parameter3 = (short)oldLevel.AnimCommands[lastCommand + 3];
@@ -420,6 +433,9 @@ namespace TombLib.Wad.TrLevels
                                 break;
 
                             case WadAnimCommandType.SetJumpDistance:
+                                if (!(IsAnimCommandSizeValid(lastCommand + 2)))
+                                    goto ExitForLoop;
+
                                 command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
 
@@ -436,6 +452,9 @@ namespace TombLib.Wad.TrLevels
 
                             case WadAnimCommandType.PlaySound:
                             case WadAnimCommandType.FlipEffect:
+                                if (!(IsAnimCommandSizeValid(lastCommand + 2)))
+                                    goto ExitForLoop;
+
                                 command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
                                 command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 command.ConvertLegacyConditions();
