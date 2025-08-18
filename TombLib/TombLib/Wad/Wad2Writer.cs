@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TombLib.IO;
-using TombLib.LevelData.IO;
 using TombLib.LevelData;
 using TombLib.Utils;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
-using static TombLib.LevelData.IO.Prj2Loader;
 
 namespace TombLib.Wad
 {

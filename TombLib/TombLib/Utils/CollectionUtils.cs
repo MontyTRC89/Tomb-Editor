@@ -17,20 +17,20 @@ namespace TombLib.Utils
 
 			switch (source)
 			{
-				// Array: indicizzazione diretta
+				// Array: direct indexing
 				case T[] arr:
 					for (int i = skip; (uint)i < (uint)arr.Length; i++)
 						if (test(arr[i])) return i;
 					return @default;
 
-				// List<T>: Span veloce senza bounds-check multipli
+				// List<T>: Cast as span for avoiding multiple boundary checks
 				case List<T> list:
 					var span = CollectionsMarshal.AsSpan(list);
 					for (int i = skip; (uint)i < (uint)span.Length; i++)
 						if (test(span[i])) return i;
 					return @default;
 
-				// Collezioni indicizzabili
+				// Indexable collections
 				case IReadOnlyList<T> ro:
 					for (int i = skip; i < ro.Count; i++)
 						if (test(ro[i])) return i;
@@ -41,7 +41,7 @@ namespace TombLib.Utils
 						if (test(il[i])) return i;
 					return @default;
 
-				// Fallback: enumerazione
+				// Fallback: classic enumeration (slowest!)
 				default:
 					int idx = 0;
 					foreach (var item in source)

@@ -30,7 +30,6 @@ namespace TombLib.Utils
 				GetCompressionLevel(compressionLevel)
 			);
 
-			// Ridimensiona l'array alla dimensione effettiva dei dati compressi
 			if (compressedLength != output.Length)
 				System.Array.Resize(ref output, compressedLength);
 

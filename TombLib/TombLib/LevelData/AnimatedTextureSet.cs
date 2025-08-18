@@ -16,18 +16,6 @@ namespace TombLib.LevelData
         Video
     }
 
-    public enum UVRotateDirection
-    {
-        T_B,
-        L_R,
-        B_T,
-        R_L,
-        TL_BR,
-        TR_BL,
-        BR_TL,
-        BL_TR
-    }
-
     public class AnimatedTextureFrame : ICloneable, IEquatable<AnimatedTextureFrame>
     {
         public Texture Texture { get; set; }
