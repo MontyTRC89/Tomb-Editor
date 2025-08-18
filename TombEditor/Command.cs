@@ -1326,6 +1326,7 @@ namespace TombEditor
                                 "File already exists", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                             return;
                     }
+
                     texture.Image.SaveToFile(pngFilePath);
 
                     args.Editor.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
@@ -1383,14 +1384,16 @@ namespace TombEditor
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
                 var existingWindow = Application.OpenForms[nameof(FormAnimatedTextures)];
+
                 if (existingWindow == null)
                 {
                     var context = new TombEditorAnimatedTexturesContext(args.Editor);
                     var form = new FormAnimatedTextures(
-                            new PanelTextureMapForAnimations(),
-							context,
-                            args.Editor.Configuration
-						);
+                        new PanelTextureMapForAnimations(),
+                        context,
+                        args.Editor.Configuration
+                    );
+
                     form.Show(args.Window);
                 }
                 else
