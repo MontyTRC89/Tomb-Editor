@@ -6,6 +6,7 @@ Tomb Editor:
 * Added animated textures for imported geometry and objects.
 * Added UVRotate support for moveables and imported geometry models.
 * Fixed bug with textures not aligned properly for TURNING_WALL_BLADE and TURNING_CEILING_BLADE.
+* Switched to LZ4 compression library and removed ZLIB support.
 
 WadTool:
 * Added animated textures support for objects using the same window of Tomb Editor.
