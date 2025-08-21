@@ -8,50 +8,50 @@ namespace TombLib.Utils
 {
     public static class CollectionUtils
     {
-		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-		public static int IndexOf<T>(this IEnumerable<T> source, Predicate<T> test, int skip = 0, int @default = -1)
-		{
-			if (source is null) throw new ArgumentNullException(nameof(source));
-			if (test is null) throw new ArgumentNullException(nameof(test));
-			if (skip < 0) skip = 0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        public static int IndexOf<T>(this IEnumerable<T> source, Predicate<T> test, int skip = 0, int @default = -1)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (test is null) throw new ArgumentNullException(nameof(test));
+            if (skip < 0) skip = 0;
 
-			switch (source)
-			{
-				// Array: direct indexing
-				case T[] arr:
-					for (int i = skip; (uint)i < (uint)arr.Length; i++)
-						if (test(arr[i])) return i;
-					return @default;
+            switch (source)
+            {
+                // Array: direct indexing
+                case T[] arr:
+                    for (int i = skip; (uint)i < (uint)arr.Length; i++)
+                        if (test(arr[i])) return i;
+                    return @default;
 
-				// List<T>: Cast as span for avoiding multiple boundary checks
-				case List<T> list:
-					var span = CollectionsMarshal.AsSpan(list);
-					for (int i = skip; (uint)i < (uint)span.Length; i++)
-						if (test(span[i])) return i;
-					return @default;
+                // List<T>: Cast as span for avoiding multiple boundary checks
+                case List<T> list:
+                    var span = CollectionsMarshal.AsSpan(list);
+                    for (int i = skip; (uint)i < (uint)span.Length; i++)
+                        if (test(span[i])) return i;
+                    return @default;
 
-				// Indexable collections
-				case IReadOnlyList<T> ro:
-					for (int i = skip; i < ro.Count; i++)
-						if (test(ro[i])) return i;
-					return @default;
+                // Indexable collections
+                case IReadOnlyList<T> ro:
+                    for (int i = skip; i < ro.Count; i++)
+                        if (test(ro[i])) return i;
+                    return @default;
 
-				case IList<T> il:
-					for (int i = skip; i < il.Count; i++)
-						if (test(il[i])) return i;
-					return @default;
+                case IList<T> il:
+                    for (int i = skip; i < il.Count; i++)
+                        if (test(il[i])) return i;
+                    return @default;
 
-				// Fallback: classic enumeration (slowest!)
-				default:
-					int idx = 0;
-					foreach (var item in source)
-					{
-						if (idx >= skip && test(item)) return idx;
-						idx++;
-					}
-					return @default;
-			}
-		}
+                // Fallback: classic enumeration (slowest!)
+                default:
+                    int idx = 0;
+                    foreach (var item in source)
+                    {
+                        if (idx >= skip && test(item)) return idx;
+                        idx++;
+                    }
+                    return @default;
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public static int ReferenceIndexOf<T>(this IEnumerable<T> source, T needle, int skip = 0)
@@ -95,7 +95,7 @@ namespace TombLib.Utils
             }
         }
 
-		public static TValue TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue @default = default(TValue))
+        public static TValue TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue @default = default(TValue))
         {
             TValue result;
             if (@this.TryGetValue(key, out result))

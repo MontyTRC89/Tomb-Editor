@@ -57,7 +57,7 @@ namespace TombLib.Wad
             Dictionary<long, WadTexture> textures = null;
             Dictionary<long, WadSprite> sprites = null;
 
-			bool incompatible = true;
+            bool incompatible = true;
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -84,9 +84,9 @@ namespace TombLib.Wad
                     return true;
                 else if (LoadStatics(chunkIO, id, wad, textures))
                     return true;
-				else if (LoadAnimatedTextures(chunkIO, id, wad, textures))
-					return true;
-				return false;
+                else if (LoadAnimatedTextures(chunkIO, id, wad, textures))
+                    return true;
+                return false;
             });
 
             if (incompatible)
@@ -165,7 +165,7 @@ namespace TombLib.Wad
             wad.AnimatedTextureSets = animatedTextureSets;
 
             return true;
-		}
+        }
 
         private static bool LoadMetadata(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
         {

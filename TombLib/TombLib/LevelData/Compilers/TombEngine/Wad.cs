@@ -131,22 +131,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 poly.AnimatedSequence = -1;
                 poly.AnimatedFrame = -1;
 
-				if (poly.Animated)
-				{
-					var animInfo = _textureInfoManager.GetAnimatedTexture(poly.TextureId);
-					if (animInfo != null)
-					{
-						poly.AnimatedSequence = animInfo.Item1;
-						poly.AnimatedFrame = animInfo.Item2;
-					}
-				}
+                if (poly.Animated)
+                {
+                    var animInfo = _textureInfoManager.GetAnimatedTexture(poly.TextureId);
+                    if (animInfo != null)
+                    {
+                        poly.AnimatedSequence = animInfo.Item1;
+                        poly.AnimatedFrame = animInfo.Item2;
+                    }
+                }
 
-				var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, mesh.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, mesh.Buckets);
 
-				var texture = textures[poly.TextureId];
+                var texture = textures[poly.TextureId];
 
-				// We output only triangles, no quads anymore
-				if (poly.Shape == TombEnginePolygonShape.Quad)
+                // We output only triangles, no quads anymore
+                if (poly.Shape == TombEnginePolygonShape.Quad)
                 {
                     for (int n = 0; n < 4; n++)
                     {
