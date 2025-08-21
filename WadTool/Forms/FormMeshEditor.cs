@@ -8,12 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.Graphics;
-using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
 using WadTool.Controls;
@@ -77,6 +75,8 @@ namespace WadTool
         {
             if (obj == null)
                 return;
+
+            panelAnimTextures.Visible = wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
 
             var isStatic = obj is WadStaticId;
             var nodes = lstMeshes.GetAllNodes();

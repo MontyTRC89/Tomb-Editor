@@ -2,14 +2,12 @@ Version 1.9.3
 =============
 
 Tomb Editor:
-* Optimized the level compiler for TEN target.
-* Added animated textures for imported geometry and objects.
-* Added UVRotate support for moveables and imported geometry models.
-* Fixed bug with textures not aligned properly for TURNING_WALL_BLADE and TURNING_CEILING_BLADE.
-* Switched to LZ4 compression library and removed ZLIB support.
+* Added UVRotate texture animation type support for TEN target.
+* Optimized the level compiler and switched compression to LZ4 for TEN target.
+* Fixed bug with textures not aligned properly for TURNING_WALL_BLADE and TURNING_CEILING_BLADE objects for TEN target.
 
 WadTool:
-* Added animated textures support for objects using the same window of Tomb Editor.
+* Added animated textures support for objects in TEN target using the same window as in Tomb Editor.
 * Added UVRotate support for objects.
 
 Version 1.9.2

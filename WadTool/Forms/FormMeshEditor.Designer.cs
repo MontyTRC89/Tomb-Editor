@@ -104,8 +104,9 @@
             butHide = new System.Windows.Forms.ToolStripButton();
             panelEditing = new DarkUI.Controls.DarkPanel();
             panelTexturing = new DarkUI.Controls.DarkSectionPanel();
-            butAnimationRanges = new DarkUI.Controls.DarkButton();
             panelTextureMap = new Controls.PanelTextureMap();
+            panelAnimTextures = new DarkUI.Controls.DarkPanel();
+            butAnimationRanges = new DarkUI.Controls.DarkButton();
             panelTexturingTools = new DarkUI.Controls.DarkPanel();
             butReplaceTexture = new DarkUI.Controls.DarkButton();
             butAllTextures = new DarkUI.Controls.DarkButton();
@@ -147,6 +148,7 @@
             topBar.SuspendLayout();
             panelEditing.SuspendLayout();
             panelTexturing.SuspendLayout();
+            panelAnimTextures.SuspendLayout();
             panelTexturingTools.SuspendLayout();
             panelTree.SuspendLayout();
             SuspendLayout();
@@ -1212,8 +1214,8 @@
             // 
             // panelTexturing
             // 
-            panelTexturing.Controls.Add(butAnimationRanges);
             panelTexturing.Controls.Add(panelTextureMap);
+            panelTexturing.Controls.Add(panelAnimTextures);
             panelTexturing.Controls.Add(panelTexturingTools);
             panelTexturing.Dock = System.Windows.Forms.DockStyle.Fill;
             panelTexturing.Location = new System.Drawing.Point(4, 0);
@@ -1222,26 +1224,35 @@
             panelTexturing.Size = new System.Drawing.Size(326, 404);
             panelTexturing.TabIndex = 0;
             // 
+            // panelTextureMap
+            // 
+            panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelTextureMap.Location = new System.Drawing.Point(1, 55);
+            panelTextureMap.Name = "panelTextureMap";
+            panelTextureMap.Size = new System.Drawing.Size(324, 323);
+            panelTextureMap.TabIndex = 0;
+            // 
+            // panelAnimTextures
+            // 
+            panelAnimTextures.Controls.Add(butAnimationRanges);
+            panelAnimTextures.Dock = System.Windows.Forms.DockStyle.Bottom;
+            panelAnimTextures.Location = new System.Drawing.Point(1, 378);
+            panelAnimTextures.Name = "panelAnimTextures";
+            panelAnimTextures.Size = new System.Drawing.Size(324, 25);
+            panelAnimTextures.TabIndex = 12;
+            // 
             // butAnimationRanges
             // 
-            butAnimationRanges.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             butAnimationRanges.Checked = false;
+            butAnimationRanges.Dock = System.Windows.Forms.DockStyle.Bottom;
             butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            butAnimationRanges.Location = new System.Drawing.Point(1, 377);
+            butAnimationRanges.Location = new System.Drawing.Point(0, 2);
             butAnimationRanges.Name = "butAnimationRanges";
             butAnimationRanges.Size = new System.Drawing.Size(324, 23);
             butAnimationRanges.TabIndex = 11;
             butAnimationRanges.Tag = "EditAnimationRanges";
             butAnimationRanges.Text = "Animated textures";
             butAnimationRanges.Click += butAnimationRanges_Click;
-            // 
-            // panelTextureMap
-            // 
-            panelTextureMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            panelTextureMap.Location = new System.Drawing.Point(1, 57);
-            panelTextureMap.Name = "panelTextureMap";
-            panelTextureMap.Size = new System.Drawing.Size(324, 316);
-            panelTextureMap.TabIndex = 0;
             // 
             // panelTexturingTools
             // 
@@ -1413,6 +1424,7 @@
             topBar.PerformLayout();
             panelEditing.ResumeLayout(false);
             panelTexturing.ResumeLayout(false);
+            panelAnimTextures.ResumeLayout(false);
             panelTexturingTools.ResumeLayout(false);
             panelTree.ResumeLayout(false);
             ResumeLayout(false);
@@ -1520,5 +1532,6 @@
         private DarkUI.Controls.DarkNumericUpDown nudWeightValue2;
         private DarkUI.Controls.DarkNumericUpDown nudWeightValue1;
 		private DarkUI.Controls.DarkButton butAnimationRanges;
-	}
+        private DarkUI.Controls.DarkPanel panelAnimTextures;
+    }
 }
