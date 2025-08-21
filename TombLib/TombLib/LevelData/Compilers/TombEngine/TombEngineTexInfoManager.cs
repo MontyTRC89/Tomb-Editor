@@ -222,7 +222,7 @@ namespace TombLib.LevelData.Compilers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void GetCellRange(Rectangle2 r, out int cx0, out int cx1, out int cy0, out int cy1)
             {
-                // coordinate pixel-aligned: arrotonda in giù/su
+                // Pixel-aligned coordinates
                 int x0 = (int)MathF.Floor(r.X0);
                 int y0 = (int)MathF.Floor(r.Y0);
                 int x1 = (int)MathF.Ceiling(r.X1) - 1; // inclusive
@@ -239,7 +239,7 @@ namespace TombLib.LevelData.Compilers
                 var rect = GetChildRect(Children[childIndex]);
                 GetCellRange(rect, out int cx0, out int cx1, out int cy0, out int cy1);
 
-                // Creiamo un HashSet per raccogliere le celle toccate
+                // Create an HashSet with touched cells
                 var cells = _childPool.Rent(Math.Max(1, (cx1 - cx0 + 1) * (cy1 - cy0 + 1)));
                 int count = 0;
 
@@ -254,7 +254,7 @@ namespace TombLib.LevelData.Compilers
                             _grid[key] = list;
                         }
 
-                        // Aggiungiamo l'indice del figlio alla cella
+                        // Add index's child to the cell
                         list.Add(childIndex);
                         cells[count++] = key;
                     }
@@ -262,7 +262,6 @@ namespace TombLib.LevelData.Compilers
 
                 _childCells[childIndex] = new HashSet<int>(cells.Take(count));
 
-                // Restituire l'array pool
                 _childPool.Return(cells);
             }
 
@@ -271,13 +270,13 @@ namespace TombLib.LevelData.Compilers
                 if (!_childCells.TryGetValue(childIndex, out var cells))
                     return;
 
-                // Usa ArrayPool per evitare allocazioni
+                // Use ArrayPool for avoiding allocations
                 var cellsArray = cells.ToArray();
                 foreach (var key in cellsArray)
                 {
                     if (_grid.TryGetValue(key, out var list))
                     {
-                        // Rimuoviamo il figlio dalla lista delle celle
+                        // Remove the child from the list
                         list.Remove(childIndex);
                         if (list.Count == 0)
                             _grid.Remove(key);
