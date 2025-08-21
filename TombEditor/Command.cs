@@ -20,6 +20,7 @@ using TombLib.Wad.Catalog;
 using TombLib.Utils;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
+using TombEditor.Controls;
 
 namespace TombEditor
 {
@@ -1325,7 +1326,8 @@ namespace TombEditor
                                 "File already exists", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                             return;
                     }
-                    texture.Image.Save(pngFilePath);
+
+                    texture.Image.SaveToFile(pngFilePath);
 
                     args.Editor.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
                     texture.SetPath(args.Editor.Level.Settings, pngFilePath);
@@ -1382,9 +1384,16 @@ namespace TombEditor
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
                 var existingWindow = Application.OpenForms[nameof(FormAnimatedTextures)];
+
                 if (existingWindow == null)
                 {
-                    var form = new FormAnimatedTextures(args.Editor);
+                    var context = new TombEditorAnimatedTexturesContext(args.Editor);
+                    var form = new FormAnimatedTextures(
+                        new PanelTextureMapForAnimations(),
+                        context,
+                        args.Editor.Configuration
+                    );
+
                     form.Show(args.Window);
                 }
                 else

@@ -10,6 +10,7 @@ using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.IO;
+using WadTool.Controls;
 
 namespace WadTool
 {
@@ -94,12 +95,14 @@ namespace WadTool
                                            "Texture infos: " + _tool.DestinationWad.MeshTexInfosUnique.Count;
 
                     meshEditorToolStripMenuItem.Enabled = true;
+                    animatedTexturesToolStripMenuItem.Enabled = true;
                     convertDestinationWadToTombEngineToolStripMenuItem.Enabled = true;
                 }
                 else
                 {
                     labelStatistics.Text = "";
                     meshEditorToolStripMenuItem.Enabled = false;
+                    animatedTexturesToolStripMenuItem.Enabled = false;
                     convertDestinationWadToTombEngineToolStripMenuItem.Enabled = false;
                 }
             }
@@ -118,7 +121,7 @@ namespace WadTool
 
             if (obj is WadToolClass.MainSelectionChangedEvent ||
                 obj is WadToolClass.DestinationWadChangedEvent ||
-                obj is WadToolClass.SourceWadChangedEvent || 
+                obj is WadToolClass.SourceWadChangedEvent ||
                 obj is InitEvent)
             {
                 var mainSelection = _tool.MainSelection;
@@ -139,7 +142,7 @@ namespace WadTool
                     if (mainSelection.Value.Id is WadMoveableId)
                     {
                         var skin = wad.TryGet(new WadMoveableId(TrCatalog.GetMoveableSkin(wad.GameVersion, ((WadMoveableId)mainSelection.Value.Id).TypeId)));
-                        var msh  = wad.TryGet(mainSelection.Value.Id);
+                        var msh = wad.TryGet(mainSelection.Value.Id);
                         if (skin != null && skin != msh)
                             panel3D.CurrentObject = ((WadMoveable)msh)?.ReplaceDummyMeshes((WadMoveable)skin);
                         else
@@ -189,7 +192,7 @@ namespace WadTool
 
         private void UpdateSaveUI(bool hasUnsavedChanges)
         {
-            Text  = "WadTool";
+            Text = "WadTool";
             if (_tool?.DestinationWad != null)
             {
                 var newOrImported = String.IsNullOrEmpty(_tool.DestinationWad.FileName);
@@ -322,15 +325,15 @@ namespace WadTool
             // Update menus
             convertSelectionToDynamicLightingToolStripMenuItem.Enabled =
             convertSelectionToStaticLightingToolStripMenuItem.Enabled =
-            convertToUVMappedToolStripMenuItem.Enabled = 
+            convertToUVMappedToolStripMenuItem.Enabled =
             convertToTiledToolStripMenuItem.Enabled = treeDestWad.SelectedWadObjectIds.Count() > 0;
         }
 
         private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
         {
-             IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
-             if (currentSelection != null)
-                 _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
+            IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
+            if (currentSelection != null)
+                _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
         }
 
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -609,7 +612,7 @@ namespace WadTool
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if(e.CloseReason == CloseReason.UserClosing ||
+            if (e.CloseReason == CloseReason.UserClosing ||
                e.CloseReason == CloseReason.None)
             {
                 var result = CheckIfSaved();
@@ -687,6 +690,22 @@ namespace WadTool
         private void convertToTiledToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WadActions.ConvertSelectedObjectUVMapping(_tool, this, treeDestWad.SelectedWadObjectIds.ToList(), false);
+        }
+
+        private void animatedTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad == null)
+                return;
+
+            var context = new WadToolAnimatedTexturesContext(_tool);
+            using (var form = new FormAnimatedTextures(
+                new PanelTextureMapForAnimations(_tool),
+                context,
+                _tool.Configuration
+                ))
+            {
+                form.ShowDialog();
+            }
         }
     }
 }

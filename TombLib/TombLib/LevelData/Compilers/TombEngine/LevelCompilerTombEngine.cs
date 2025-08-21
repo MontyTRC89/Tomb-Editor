@@ -90,7 +90,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(30, "Packing textures");
             _textureInfoManager.LayOutAllData();
 
-            ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
+            ReportProgress(35, "   Number of processed texture fragments: " + _textureInfoManager.TexturesCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
             GetAllReachableRooms();
 
@@ -131,7 +131,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 BoxCount = _boxes.Count,
                 OverlapCount = _overlaps.Count,
-                ObjectTextureCount = _textureInfoManager.TexInfoCount,
+                ObjectTextureCount = _textureInfoManager.TexturesCount,
             };
         }
 
@@ -335,7 +335,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private void GetAllReachableRoomsUp(Room baseRoom, Room currentRoom)
         {
             // Wall portals
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
@@ -346,7 +346,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             // Ceiling portals
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction != PortalDirection.Ceiling)
                     continue;
@@ -363,7 +363,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private void GetAllReachableRoomsDown(Room baseRoom, Room currentRoom)
         {
             // portali laterali
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
@@ -373,7 +373,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     tempRoom.ReachableRooms.Add(p.AdjoiningRoom);
             }
 
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction != PortalDirection.Floor)
                     continue;

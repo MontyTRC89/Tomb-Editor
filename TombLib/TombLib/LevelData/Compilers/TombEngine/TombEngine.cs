@@ -281,9 +281,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 mediaStream.Seek(0, SeekOrigin.Begin);
 
-                var mediaBlock    = ZLib.CompressData(mediaStream, System.IO.Compression.CompressionLevel.SmallestSize);
-                var geometryBlock = ZLib.CompressData(geometryDataBuffer, System.IO.Compression.CompressionLevel.SmallestSize);
-                var dynamicBlock  = ZLib.CompressData(dynamicDataBuffer, System.IO.Compression.CompressionLevel.Optimal);
+                var mediaBlock    = LZ4.CompressData(mediaStream, System.IO.Compression.CompressionLevel.Fastest);
+                var geometryBlock = LZ4.CompressData(geometryDataBuffer, System.IO.Compression.CompressionLevel.Fastest);
+                var dynamicBlock  = LZ4.CompressData(dynamicDataBuffer, System.IO.Compression.CompressionLevel.Fastest);
 
                 using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
                 {

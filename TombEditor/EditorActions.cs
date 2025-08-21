@@ -4198,7 +4198,8 @@ namespace TombEditor
                         watch.Start();
                         var statistics = compiler.CompileLevel(cancelToken);
                         watch.Stop();
-                        progressReporter.ReportProgress(100, "\nElapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+
+                        progressReporter.ReportProgress(100, $"\nElapsed time: {FormatElapsedSmart(watch.Elapsed.TotalMilliseconds)}");
 
                         // Raise an event for statistics update
                         _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
@@ -4224,6 +4225,37 @@ namespace TombEditor
                 form.ShowDialog(owner);
                 return form.DialogResult != DialogResult.Cancel;
             }
+        }
+
+        private static string FormatElapsedSmart(double elapsedMs) =>
+            FormatElapsedSmart(TimeSpan.FromMilliseconds(elapsedMs));
+
+        private static string FormatElapsedSmart(TimeSpan t)
+        {
+            long totalMs = (long)Math.Round(t.TotalMilliseconds);
+
+            if (totalMs < 1_000)
+                return $"{totalMs} ms";
+
+            if (totalMs < 60_000)
+            {
+                long s = totalMs / 1_000;
+                long ms = totalMs % 1_000;
+                return $"{s} s {ms} ms";
+            }
+
+            if (totalMs < 3_600_000)
+            {
+                long m = totalMs / 60_000;
+                long s = (totalMs % 60_000) / 1_000;
+                return $"{m} min {s} s";
+            }
+
+            // >= 1 hour
+            long h = totalMs / 3_600_000;
+            long m2 = (totalMs % 3_600_000) / 60_000;
+            long s2 = (totalMs % 60_000) / 1_000;
+            return $"{h} h {m2} min {s2} s";
         }
 
         public static void BuildLevelAndPlay(IWin32Window owner, bool fastMode = false)

@@ -144,5 +144,14 @@ namespace TombLib.Wad
         /******/public static readonly ChunkId StaticLightIntensity = ChunkId.FromString("W2StaticLightI");
         /******/public static readonly ChunkId StaticShatter = ChunkId.FromString("W2StaticShatter");
         /******/public static readonly ChunkId StaticShatterSound = ChunkId.FromString("W2StaticShatterSound");
+        /**/public static readonly ChunkId AnimatedTextureSets = ChunkId.FromString("W2AnimatedTextureSets");
+        /******/public static readonly ChunkId AnimatedTextureSet = ChunkId.FromString("W2AnimatedTextureSet");
+        /**********/public static readonly ChunkId AnimatedTextureSetName = ChunkId.FromString("W2AnimatedTextureSetName");
+        /**********/public static readonly ChunkId AnimatedTextureSetType = ChunkId.FromString("W2AnimatedTextureSetType");
+        /**********/public static readonly ChunkId AnimatedTextureSetFps = ChunkId.FromString("W2AnimatedTextureSetFps");
+        /**********/public static readonly ChunkId AnimatedTextureSetUvRotate = ChunkId.FromString("W2AnimatedTextureSetUvRotate");
+        /**********/public static readonly ChunkId AnimatedTextureSetExtraInfo = ChunkId.FromString("W2AnimatedTextureSetExtra");
+        /**************/public static readonly ChunkId AnimatedTextureFrames = ChunkId.FromString("W2Frames");
+        /******************/public static readonly ChunkId AnimatedTextureFrame = ChunkId.FromString("W2Frame");
     }
 }
