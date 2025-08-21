@@ -335,7 +335,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private void GetAllReachableRoomsUp(Room baseRoom, Room currentRoom)
         {
             // Wall portals
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
@@ -346,7 +346,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             // Ceiling portals
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction != PortalDirection.Ceiling)
                     continue;
@@ -363,7 +363,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private void GetAllReachableRoomsDown(Room baseRoom, Room currentRoom)
         {
             // portali laterali
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
@@ -373,7 +373,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     tempRoom.ReachableRooms.Add(p.AdjoiningRoom);
             }
 
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction != PortalDirection.Floor)
                     continue;
