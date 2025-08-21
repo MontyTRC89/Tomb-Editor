@@ -1,3 +1,16 @@
+Version 1.9.3
+=============
+
+Tomb Editor:
+* Optimized the level compiler for TEN target.
+* Added animated textures for imported geometry and objects.
+* Added UVRotate support for moveables and imported geometry models.
+* Fixed bug with textures not aligned properly for TURNING_WALL_BLADE and TURNING_CEILING_BLADE.
+
+WadTool:
+* Added animated textures support for objects using the same window of Tomb Editor.
+* Added UVRotate support for objects.
+
 Version 1.9.2
 =============
 
