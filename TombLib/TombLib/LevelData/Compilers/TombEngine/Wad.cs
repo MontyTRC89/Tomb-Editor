@@ -19,8 +19,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private int _soundMapSize = 0;
         private short[] _finalSoundMap;
 
-        private TombEngineMesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex = 0,
-                                              bool isWaterfall = false, bool isOptics = false)
+        private TombEngineMesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex = 0)
         {
             var newMesh = new TombEngineMesh
             {
@@ -75,7 +74,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (doubleSided)
                         texture.Mirror(poly.IsTriangle);
                     var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, texture.BlendMode);
-                    if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     int[] indices = poly.IsTriangle ? new int[] { poly.Index0, poly.Index1, poly.Index2 } : 
                                                       new int[] { poly.Index0, poly.Index1, poly.Index2, poly.Index3 };
@@ -404,9 +402,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         wadMesh, 
                         false, 
                         oldMoveable.Id.ShortName(_level.Settings.GameVersion), 
-                        i, 
-                        oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), 
-                        oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
+                        i);
                 }
 
                 newMoveable.Skin = -1;
