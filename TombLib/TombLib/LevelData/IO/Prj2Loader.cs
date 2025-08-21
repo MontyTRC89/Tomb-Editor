@@ -628,6 +628,10 @@ namespace TombLib.LevelData.IO
                             {
                                 set.UvRotate = chunkIO.ReadChunkInt(chunkSize3);
                             }
+                            else if (id3 == Prj2Chunks.AnimatedTextureSetTenUvRotateDirection)
+                            {
+                                set.TenUvRotateDirection = chunkIO.ReadChunkFloat(chunkSize3);
+                            }
                             else if (id3 == Prj2Chunks.AnimatedTextureFrames)
                             {
                                 var frames = new List<AnimatedTextureFrame>();
