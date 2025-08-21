@@ -156,6 +156,7 @@ namespace TombLib.Forms
 
 			// Setup controls
 			SetupControls();
+			UpdateEnable();
 
 			// Setup data grid view
 			texturesDataGridViewControls.DataGridView = texturesDataGridView;
@@ -576,7 +577,6 @@ namespace TombLib.Forms
 
 		private void UpdateEnable()
 		{
-			//if (!_loaded) return;
 			bool enable = comboAnimatedTextureSets.SelectedItem is AnimatedTextureSet;
 			settingsPanel.Enabled = enable;
 			texturesDataGridViewControls.Enabled = enable;
