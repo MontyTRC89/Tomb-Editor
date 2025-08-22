@@ -486,7 +486,6 @@
     <PackageReference Include="Blake3" Version="0.6.1" />
     <PackageReference Include="K4os.Compression.LZ4" Version="1.3.8" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.3.8" />
-    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.8" />
     <PackageReference Include="ksemenenko.ColorThief" Version="1.1.1.4" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="NAudio.Flac.Unknown" Version="1.0.2" />
