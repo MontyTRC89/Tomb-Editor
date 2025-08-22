@@ -104,7 +104,10 @@ namespace TombLib.Wad
                         chunkIO.WriteChunkInt(Wad2Chunks.AnimatedTextureSetType, (int)set.AnimationType);
                         chunkIO.WriteChunkFloat(Wad2Chunks.AnimatedTextureSetFps, set.Fps);
                         chunkIO.WriteChunkInt(Wad2Chunks.AnimatedTextureSetUvRotate, set.UvRotate);
-                        using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureFrames))
+						chunkIO.WriteChunkFloat(Wad2Chunks.AnimatedTextureSetTenUvRotateDirection, set.TenUvRotateDirection);
+						chunkIO.WriteChunkFloat(Wad2Chunks.AnimatedTextureSetTenUvRotateSpeed, set.TenUvRotateSpeed);
+
+						using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureFrames))
                         {
                             foreach (AnimatedTextureFrame frame in set.Frames)
                             {

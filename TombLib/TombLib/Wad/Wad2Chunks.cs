@@ -150,6 +150,8 @@ namespace TombLib.Wad
         /**********/public static readonly ChunkId AnimatedTextureSetType = ChunkId.FromString("W2AnimatedTextureSetType");
         /**********/public static readonly ChunkId AnimatedTextureSetFps = ChunkId.FromString("W2AnimatedTextureSetFps");
         /**********/public static readonly ChunkId AnimatedTextureSetUvRotate = ChunkId.FromString("W2AnimatedTextureSetUvRotate");
+        /**********/public static readonly ChunkId AnimatedTextureSetTenUvRotateDirection = ChunkId.FromString("W2AnimatedTextureSetTenUvRotateDirection");
+        /**********/public static readonly ChunkId AnimatedTextureSetTenUvRotateSpeed = ChunkId.FromString("W2AnimatedTextureSetTenUvRotateSpeed");
         /**********/public static readonly ChunkId AnimatedTextureSetExtraInfo = ChunkId.FromString("W2AnimatedTextureSetExtra");
         /**************/public static readonly ChunkId AnimatedTextureFrames = ChunkId.FromString("W2Frames");
         /******************/public static readonly ChunkId AnimatedTextureFrame = ChunkId.FromString("W2Frame");

@@ -132,7 +132,15 @@ namespace TombLib.Wad
                         {
                             set.UvRotate = chunkIO.ReadChunkInt(chunkSize3);
                         }
-                        else if (id3 == Wad2Chunks.AnimatedTextureFrames)
+						else if (id3 == Wad2Chunks.AnimatedTextureSetTenUvRotateDirection)
+						{
+							set.TenUvRotateDirection = chunkIO.ReadChunkFloat(chunkSize3);
+						}
+						else if (id3 == Wad2Chunks.AnimatedTextureSetTenUvRotateSpeed)
+						{
+							set.TenUvRotateSpeed = chunkIO.ReadChunkFloat(chunkSize3);
+						}
+						else if (id3 == Wad2Chunks.AnimatedTextureFrames)
                         {
                             var frames = new List<AnimatedTextureFrame>();
                             chunkIO.ReadChunks((id4, chunkSize4) =>
