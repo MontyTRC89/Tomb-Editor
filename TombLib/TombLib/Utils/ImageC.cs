@@ -1,16 +1,16 @@
-﻿using System;
+﻿using bzPSD;
+using ColorThiefDotNet;
+using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using bzPSD;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using ColorThiefDotNet;
-using TombLib.LevelData;
 using System.Runtime.CompilerServices;
-using System.IO.Hashing;
+using System.Runtime.InteropServices;
+using TombLib.LevelData;
 
 namespace TombLib.Utils
 {
@@ -822,38 +822,40 @@ namespace TombLib.Utils
             return result;
         }
 
-        public unsafe Hash GetHashOfAreaFast(Rectangle2 area)
-        {
-            int x = (int)area.TopLeft.X;
-            int y = (int)area.TopLeft.Y;
-            int width = (int)area.Width;
-            int height = (int)area.Height;
+		public unsafe Hash GetHashOfAreaFast(Rectangle2 area)
+		{
+			int x = (int)area.TopLeft.X;
+			int y = (int)area.TopLeft.Y;
+			int width = (int)area.Width;
+			int height = (int)area.Height;
 
-            if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
-                x + width > Width || y + height > Height)
-                return Hash.Zero;
+			if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
+				x + width > Width || y + height > Height)
+				return Hash.Zero;
 
-            var hasher = new XxHash64();
+			using var hasher = Blake3.Hasher.New();
 
-            fixed (byte* srcPtr = _data) 
-            {
-                int stride = Width * 4;
-                for (int row = 0; row < height; row++)
-                {
-                    byte* src = srcPtr + ((y + row) * Width + x) * 4;
-                    hasher.Append(new ReadOnlySpan<byte>(src, width * 4));
-                }
-            }
+			fixed (byte* srcPtr = _data)
+			{
+				int srcStride = Width * 4;
+				int rowBytes = width * 4;
 
-            Span<byte> hashBytes = stackalloc byte[8];
-            hasher.GetHashAndReset(hashBytes);
+				for (int row = 0; row < height; row++)
+				{
+					byte* src = srcPtr + (y + row) * srcStride + x * 4;
+					hasher.Update(new ReadOnlySpan<byte>(src, rowBytes));
+				}
+			}
 
-            ulong low = BitConverter.ToUInt64(hashBytes);
+			Span<byte> digest = stackalloc byte[32];
+			hasher.Finalize(digest);
 
-            return new Hash { HashLow = low, HashHigh = 0 };
-        }
+			ulong low = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(0, 8));
+			ulong high = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(8, 8));
+			return new Hash { HashLow = low, HashHigh = high };
+		}
 
-        public Stream ToRawStream(int yStart, int Height)
+		public Stream ToRawStream(int yStart, int Height)
         {
             return new MemoryStream(_data, yStart * Width * PixelSize, Height * Width * PixelSize);
         }

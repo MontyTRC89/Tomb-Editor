@@ -1,41 +1,51 @@
-﻿using System;
+﻿using Blake3;
+using System;
+using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace TombLib.Utils
 {
-    public struct Hash : IEquatable<Hash>
-    {
-        public ulong HashLow;
-        public ulong HashHigh;
+	public struct Hash : IEquatable<Hash>
+	{
+		public ulong HashLow;
+		public ulong HashHigh;
 
-        public static bool operator ==(Hash first, Hash second) =>
-            first.HashLow == second.HashLow && first.HashHigh == second.HashHigh;
+		public static bool operator ==(Hash first, Hash second) =>
+			first.HashLow == second.HashLow && first.HashHigh == second.HashHigh;
 
-        public static bool operator !=(Hash first, Hash second) =>
-            !(first == second);
+		public static bool operator !=(Hash first, Hash second) => !(first == second);
 
-        public bool Equals(Hash other) => this == other;
-        public override bool Equals(object? obj) => obj is Hash other && this == other;
-        public override int GetHashCode() => unchecked((int)HashLow);
+		public bool Equals(Hash other) => this == other;
+		public override bool Equals(object? obj) => obj is Hash other && this == other;
 
-        public static Hash FromByteArray(byte[] data)
-        {
-            byte[] hashBytes = XxHash64.Hash(data);
-            ulong hash64 = BitConverter.ToUInt64(hashBytes, 0);
+		public override int GetHashCode()
+		{
+			ulong x = HashLow ^ HashHigh;
+			x ^= x >> 30; x *= 0xBF58476D1CE4E5B9UL;
+			x ^= x >> 27; x *= 0x94D049BB133111EBUL;
+			x ^= x >> 31;
+			return (int)x;
+		}
 
-            return new Hash
-            {
-                HashLow = hash64,
-                HashHigh = 0
-            };
-        }
+		public static Hash FromByteArray(byte[] data)
+		{
+			using var hasher = Hasher.New();
+			hasher.Update(data);
 
-        public static Hash Zero => new Hash { HashHigh = 0, HashLow = 0 };
-    }
+			Span<byte> digest = stackalloc byte[32];
+			hasher.Finalize(digest);
 
-    public class Checksum
+			ulong low = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(0, 8));
+			ulong high = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(8, 8));
+			return new Hash { HashLow = low, HashHigh = high };
+		}
+
+		public static Hash Zero => new Hash { HashHigh = 0, HashLow = 0 };
+	}
+
+	public class Checksum
     {
         public static int Calculate(byte[] data)
         {
