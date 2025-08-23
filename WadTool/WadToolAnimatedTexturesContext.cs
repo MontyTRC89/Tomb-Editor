@@ -4,16 +4,19 @@ using System.Linq;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace WadTool;
 
 public class WadToolAnimatedTexturesContext : FormAnimatedTextures.IAnimatedTexturesContext
 {
 	private readonly WadToolClass _tool;
+	private readonly List<WadTexture> _userTextures;
 
-	public WadToolAnimatedTexturesContext(WadToolClass tool)
+	public WadToolAnimatedTexturesContext(WadToolClass tool, List<WadTexture> userTextures)
 	{
 		_tool = tool;
+		_userTextures = userTextures;
 		_tool.EditorEventRaised += EditorEventRaised;
 	}
 
@@ -33,7 +36,9 @@ public class WadToolAnimatedTexturesContext : FormAnimatedTextures.IAnimatedText
 
 	public List<Texture> AvailableTextures => _tool.DestinationWad.MeshTexturesUnique
 		.Where(x => x is not null)
+		.Union(_userTextures)
 		.Cast<Texture>()
+		.Distinct()
 		.ToList();
 
 	public Action OnAnimatedTexturesChanged { get; set; }

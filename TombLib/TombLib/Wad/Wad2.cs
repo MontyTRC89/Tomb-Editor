@@ -62,7 +62,12 @@ namespace TombLib.Wad
                     if (stat.Value.Mesh != null)
                         foreach (WadPolygon polygon in stat.Value.Mesh.Polys)
                             textures.Add((WadTexture)polygon.Texture.Texture);
-                return textures;
+				foreach (var set in AnimatedTextureSets)
+                    foreach (var frame in set.AnimationType == AnimatedTextureAnimationType.Video ? new List<AnimatedTextureFrame>() : set.Frames)
+                        if (frame.Texture is WadTexture wadTexture)
+                            textures.Add(wadTexture);
+				
+				return textures;
             }
         }
 

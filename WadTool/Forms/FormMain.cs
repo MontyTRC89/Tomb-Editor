@@ -11,6 +11,7 @@ using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.IO;
 using WadTool.Controls;
+using System.Collections.Generic;
 
 namespace WadTool
 {
@@ -697,7 +698,7 @@ namespace WadTool
             if (_tool.DestinationWad == null)
                 return;
 
-            var context = new WadToolAnimatedTexturesContext(_tool);
+            var context = new WadToolAnimatedTexturesContext(_tool, new List<WadTexture>());
             using (var form = new FormAnimatedTextures(
                 new PanelTextureMapForAnimations(_tool),
                 context,

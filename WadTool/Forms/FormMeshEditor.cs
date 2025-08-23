@@ -934,7 +934,12 @@ namespace WadTool
                     foreach (var poly in mesh.Polys)
                         if (poly.Texture.Texture.IsAvailable && !list.Exists(t => t == poly.Texture.Texture))
                             list.Add(poly.Texture.Texture);
-            }
+
+				foreach (var set in _tool.DestinationWad.AnimatedTextureSets)
+					foreach (var frame in set.Frames)
+						if (frame.Texture.IsAvailable && !list.Exists(t => t == frame.Texture))
+							list.Add(frame.Texture);
+			}
 
             // If count is the same it means no changes were made in texture list
             // and there's no need to actually repopulate.
@@ -1650,7 +1655,7 @@ namespace WadTool
 
         private void butAnimationRanges_Click(object sender, EventArgs e)
         {
-            var context = new WadToolAnimatedTexturesContext(_tool);
+            var context = new WadToolAnimatedTexturesContext(_tool, _userTextures);
             using (var form = new FormAnimatedTextures(
                 new PanelTextureMapForAnimations(_tool),
                 context,
