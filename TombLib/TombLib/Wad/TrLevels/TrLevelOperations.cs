@@ -114,7 +114,7 @@ namespace TombLib.Wad.TrLevels
             }
 
             // Create the bounding areas
-            mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.Center.X, -oldMesh.Center.Y, oldMesh.Center.Z), oldMesh.Radius);
+            mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.Center.X, -oldMesh.Center.Y, oldMesh.Center.Z), Math.Abs(oldMesh.Radius));
             mesh.BoundingBox = mesh.CalculateBoundingBox();
 
             // Add normals

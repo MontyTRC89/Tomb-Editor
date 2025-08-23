@@ -9,6 +9,7 @@ Tomb Editor:
 WadTool:
 * Added animated textures support for objects in TEN target using the same window as in Tomb Editor.
 * Fixed incorrect bone weight writing if other vertex data tint was changed in mesh editor.
+* Fixed incorrect sphere radius while importing some objects from classic TR levels.
 
 Version 1.9.2
 =============
