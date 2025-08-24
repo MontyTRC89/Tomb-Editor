@@ -40,7 +40,7 @@ namespace TombLib.NG
                 if (levelSettings.GameVersion == TRVersion.Game.TR5)
                     yield return TriggerType.Skeleton;
 
-                if (levelSettings.GameVersion.Legacy() == TRVersion.Game.TR5)
+                if (levelSettings.GameVersion is TRVersion.Game.TR5 or TRVersion.Game.TombEngine)
                 {
                     yield return TriggerType.TightRope;
                     yield return TriggerType.Crawl;

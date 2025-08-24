@@ -32,19 +32,6 @@ namespace TombLib.LevelData
         };
 
         /// <summary>
-        /// Returns the legacy (non-TRX, non-TRNG) variant of the game version, if applicable.
-        /// <para>Additionally maps TombEngine to TR5.</para>
-        /// </summary>
-        public static Game Legacy(this Game ver) => ver switch
-        {
-            Game.TR1X => Game.TR1,
-            Game.TR2X => Game.TR2,
-            Game.TRNG => Game.TR4,
-            Game.TombEngine => Game.TR5,
-            _ => ver
-        };
-
-        /// <summary>
         /// Returns the non-TRX variant of the game version, if applicable.
         /// </summary>
         public static Game NonTRX(this Game ver) => ver switch
