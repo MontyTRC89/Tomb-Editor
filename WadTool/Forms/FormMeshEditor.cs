@@ -1664,5 +1664,30 @@ namespace WadTool
                 form.ShowDialog();
             }
         }
+
+        private void butApplyWeightsToAllVertices_Click(object sender, EventArgs e)
+        {
+            if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexWeights)
+                return;
+
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+
+            GenerateMissingVertexData();
+
+            for (int i = 0; i < panelMesh.Mesh.VertexWeights.Count; i++)
+            {
+                panelMesh.Mesh.VertexWeights[i].Index[0] = (int)nudWeightIndex1.Value;
+                panelMesh.Mesh.VertexWeights[i].Index[1] = (int)nudWeightIndex1.Value;
+                panelMesh.Mesh.VertexWeights[i].Index[2] = (int)nudWeightIndex2.Value;
+                panelMesh.Mesh.VertexWeights[i].Index[3] = (int)nudWeightIndex3.Value;
+                panelMesh.Mesh.VertexWeights[i].Weight[0] = (float)nudWeightValue1.Value;
+                panelMesh.Mesh.VertexWeights[i].Weight[1] = (float)nudWeightValue2.Value;
+                panelMesh.Mesh.VertexWeights[i].Weight[2] = (float)nudWeightValue3.Value;
+                panelMesh.Mesh.VertexWeights[i].Weight[3] = (float)nudWeightValue4.Value;
+            }
+
+            panelMesh.ColorizeVertexWeights();
+            panelMesh.Invalidate();
+        }
     }
 }

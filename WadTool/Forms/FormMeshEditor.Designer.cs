@@ -53,6 +53,7 @@
             darkLabel4 = new DarkUI.Controls.DarkLabel();
             butApplyToAllVertices = new DarkUI.Controls.DarkButton();
             tabVertexWeights = new System.Windows.Forms.TabPage();
+            butApplyWeightsToAllVertices = new DarkUI.Controls.DarkButton();
             nudWeightIndex4 = new DarkUI.Controls.DarkNumericUpDown();
             nudWeightIndex3 = new DarkUI.Controls.DarkNumericUpDown();
             nudWeightIndex2 = new DarkUI.Controls.DarkNumericUpDown();
@@ -597,6 +598,7 @@
             // tabVertexWeights
             // 
             tabVertexWeights.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            tabVertexWeights.Controls.Add(butApplyWeightsToAllVertices);
             tabVertexWeights.Controls.Add(nudWeightIndex4);
             tabVertexWeights.Controls.Add(nudWeightIndex3);
             tabVertexWeights.Controls.Add(nudWeightIndex2);
@@ -614,16 +616,28 @@
             tabVertexWeights.TabIndex = 5;
             tabVertexWeights.Text = "Vertex weights";
             // 
+            // butApplyWeightsToAllVertices
+            // 
+            butApplyWeightsToAllVertices.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            butApplyWeightsToAllVertices.Checked = false;
+            butApplyWeightsToAllVertices.Location = new System.Drawing.Point(284, 3);
+            butApplyWeightsToAllVertices.Name = "butApplyWeightsToAllVertices";
+            butApplyWeightsToAllVertices.Size = new System.Drawing.Size(30, 52);
+            butApplyWeightsToAllVertices.TabIndex = 34;
+            butApplyWeightsToAllVertices.Text = "Fill";
+            toolTip.SetToolTip(butApplyWeightsToAllVertices, "Apply current weight to all vertices");
+            butApplyWeightsToAllVertices.Click += butApplyWeightsToAllVertices_Click;
+            // 
             // nudWeightIndex4
             // 
             nudWeightIndex4.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             nudWeightIndex4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             nudWeightIndex4.IncrementAlternate = new decimal(new int[] { 1, 0, 0, 0 });
-            nudWeightIndex4.Location = new System.Drawing.Point(250, 3);
+            nudWeightIndex4.Location = new System.Drawing.Point(223, 3);
             nudWeightIndex4.LoopValues = false;
             nudWeightIndex4.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
             nudWeightIndex4.Name = "nudWeightIndex4";
-            nudWeightIndex4.Size = new System.Drawing.Size(64, 23);
+            nudWeightIndex4.Size = new System.Drawing.Size(56, 23);
             nudWeightIndex4.TabIndex = 33;
             toolTip.SetToolTip(nudWeightIndex4, "Bone index");
             // 
@@ -632,11 +646,11 @@
             nudWeightIndex3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             nudWeightIndex3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             nudWeightIndex3.IncrementAlternate = new decimal(new int[] { 1, 0, 0, 0 });
-            nudWeightIndex3.Location = new System.Drawing.Point(180, 3);
+            nudWeightIndex3.Location = new System.Drawing.Point(162, 3);
             nudWeightIndex3.LoopValues = false;
             nudWeightIndex3.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
             nudWeightIndex3.Name = "nudWeightIndex3";
-            nudWeightIndex3.Size = new System.Drawing.Size(64, 23);
+            nudWeightIndex3.Size = new System.Drawing.Size(56, 23);
             nudWeightIndex3.TabIndex = 32;
             toolTip.SetToolTip(nudWeightIndex3, "Bone index");
             // 
@@ -645,11 +659,11 @@
             nudWeightIndex2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             nudWeightIndex2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             nudWeightIndex2.IncrementAlternate = new decimal(new int[] { 1, 0, 0, 0 });
-            nudWeightIndex2.Location = new System.Drawing.Point(110, 3);
+            nudWeightIndex2.Location = new System.Drawing.Point(101, 3);
             nudWeightIndex2.LoopValues = false;
             nudWeightIndex2.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
             nudWeightIndex2.Name = "nudWeightIndex2";
-            nudWeightIndex2.Size = new System.Drawing.Size(64, 23);
+            nudWeightIndex2.Size = new System.Drawing.Size(56, 23);
             nudWeightIndex2.TabIndex = 31;
             toolTip.SetToolTip(nudWeightIndex2, "Bone index");
             // 
@@ -662,59 +676,59 @@
             nudWeightIndex1.LoopValues = false;
             nudWeightIndex1.Maximum = new decimal(new int[] { 63, 0, 0, 0 });
             nudWeightIndex1.Name = "nudWeightIndex1";
-            nudWeightIndex1.Size = new System.Drawing.Size(64, 23);
+            nudWeightIndex1.Size = new System.Drawing.Size(56, 23);
             nudWeightIndex1.TabIndex = 30;
             toolTip.SetToolTip(nudWeightIndex1, "Bone index");
             // 
             // nudWeightValue4
             // 
             nudWeightValue4.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            nudWeightValue4.DecimalPlaces = 5;
+            nudWeightValue4.DecimalPlaces = 4;
             nudWeightValue4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             nudWeightValue4.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
             nudWeightValue4.IncrementAlternate = new decimal(new int[] { 5, 0, 0, 196608 });
-            nudWeightValue4.Location = new System.Drawing.Point(250, 32);
+            nudWeightValue4.Location = new System.Drawing.Point(223, 32);
             nudWeightValue4.LoopValues = false;
             nudWeightValue4.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             nudWeightValue4.Name = "nudWeightValue4";
-            nudWeightValue4.Size = new System.Drawing.Size(64, 23);
+            nudWeightValue4.Size = new System.Drawing.Size(56, 23);
             nudWeightValue4.TabIndex = 29;
             toolTip.SetToolTip(nudWeightValue4, "Bone weight");
             // 
             // nudWeightValue3
             // 
             nudWeightValue3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            nudWeightValue3.DecimalPlaces = 5;
+            nudWeightValue3.DecimalPlaces = 4;
             nudWeightValue3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             nudWeightValue3.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
             nudWeightValue3.IncrementAlternate = new decimal(new int[] { 5, 0, 0, 196608 });
-            nudWeightValue3.Location = new System.Drawing.Point(180, 32);
+            nudWeightValue3.Location = new System.Drawing.Point(162, 32);
             nudWeightValue3.LoopValues = false;
             nudWeightValue3.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             nudWeightValue3.Name = "nudWeightValue3";
-            nudWeightValue3.Size = new System.Drawing.Size(64, 23);
+            nudWeightValue3.Size = new System.Drawing.Size(56, 23);
             nudWeightValue3.TabIndex = 28;
             toolTip.SetToolTip(nudWeightValue3, "Bone weight");
             // 
             // nudWeightValue2
             // 
             nudWeightValue2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            nudWeightValue2.DecimalPlaces = 5;
+            nudWeightValue2.DecimalPlaces = 4;
             nudWeightValue2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             nudWeightValue2.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
             nudWeightValue2.IncrementAlternate = new decimal(new int[] { 5, 0, 0, 196608 });
-            nudWeightValue2.Location = new System.Drawing.Point(110, 32);
+            nudWeightValue2.Location = new System.Drawing.Point(101, 32);
             nudWeightValue2.LoopValues = false;
             nudWeightValue2.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             nudWeightValue2.Name = "nudWeightValue2";
-            nudWeightValue2.Size = new System.Drawing.Size(64, 23);
+            nudWeightValue2.Size = new System.Drawing.Size(56, 23);
             nudWeightValue2.TabIndex = 27;
             toolTip.SetToolTip(nudWeightValue2, "Bone weight");
             // 
             // nudWeightValue1
             // 
             nudWeightValue1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            nudWeightValue1.DecimalPlaces = 5;
+            nudWeightValue1.DecimalPlaces = 4;
             nudWeightValue1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             nudWeightValue1.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
             nudWeightValue1.IncrementAlternate = new decimal(new int[] { 5, 0, 0, 196608 });
@@ -722,7 +736,7 @@
             nudWeightValue1.LoopValues = false;
             nudWeightValue1.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             nudWeightValue1.Name = "nudWeightValue1";
-            nudWeightValue1.Size = new System.Drawing.Size(64, 23);
+            nudWeightValue1.Size = new System.Drawing.Size(56, 23);
             nudWeightValue1.TabIndex = 26;
             toolTip.SetToolTip(nudWeightValue1, "Bone weight");
             // 
@@ -1533,5 +1547,6 @@
         private DarkUI.Controls.DarkNumericUpDown nudWeightValue1;
 		private DarkUI.Controls.DarkButton butAnimationRanges;
         private DarkUI.Controls.DarkPanel panelAnimTextures;
+        private DarkUI.Controls.DarkButton butApplyWeightsToAllVertices;
     }
 }
