@@ -339,7 +339,7 @@ namespace TombLib.LevelData.IO
                     return string.Empty;
                 }
 
-                if (level.Settings.GameVersion.Native() is not TRVersion.Game.TR4 and not TRVersion.Game.TRNG)
+                if (level.Settings.GameVersion is not TRVersion.Game.TR4 and not TRVersion.Game.TRNG)
                 {
                     if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         progressReporter.ReportWarn("You are trying to convert a project which is already TEN project.");
