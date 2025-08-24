@@ -69,10 +69,10 @@ namespace TombLib.Wad
         public override string ToString()
         {
             var epsilon = 0.001f;
-            return (Weight[0] > epsilon ? (Index[0].ToString() + ": " + Weight[0].ToString()) : string.Empty) + "\n" +
-                   (Weight[1] > epsilon ? (Index[1].ToString() + ": " + Weight[1].ToString()) : string.Empty) + "\n" +
-                   (Weight[2] > epsilon ? (Index[2].ToString() + ": " + Weight[2].ToString()) : string.Empty) + "\n" +
-                   (Weight[3] > epsilon ? (Index[3].ToString() + ": " + Weight[3].ToString()) : string.Empty) + "\n";
+            return (Weight[0] > epsilon ? (Index[0].ToString() + ": " + Weight[0].ToString() + "\n") : string.Empty) +
+                   (Weight[1] > epsilon ? (Index[1].ToString() + ": " + Weight[1].ToString() + "\n") : string.Empty) +
+                   (Weight[2] > epsilon ? (Index[2].ToString() + ": " + Weight[2].ToString() + "\n") : string.Empty) +
+                   (Weight[3] > epsilon ? (Index[3].ToString() + ": " + Weight[3].ToString() + "\n") : string.Empty);
         }
     }
 
