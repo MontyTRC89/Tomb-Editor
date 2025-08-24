@@ -274,7 +274,7 @@ namespace TombLib.LevelData.IO
                 newSlotName.Contains("TRAPDOOR") ||
                 newSlotName.Contains("RAISING_BLOCK") ||
                 newSlotName.Contains("TWOBLOCK_PLATFORM") ||
-                (newSlotName.Contains("PUSHABLE") && sourceVersion <= TRVersion.Game.TR3))
+                (newSlotName.Contains("PUSHABLE") && sourceVersion.IsLessThanOrEqual(TRVersion.Game.TR3)))
             {
                 progressReporter?.ReportInfo("    Adjusting bridge bounds for " + newSlotName);
 
@@ -339,8 +339,7 @@ namespace TombLib.LevelData.IO
                     return string.Empty;
                 }
 
-                if (level.Settings.GameVersion.Native() != TRVersion.Game.TR4 &&
-                    level.Settings.GameVersion.Native() != TRVersion.Game.TRNG)
+                if (level.Settings.GameVersion.Native() is not TRVersion.Game.TR4 and not TRVersion.Game.TRNG)
                 {
                     if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         progressReporter.ReportWarn("You are trying to convert a project which is already TEN project.");

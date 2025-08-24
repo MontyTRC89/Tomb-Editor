@@ -60,34 +60,29 @@ namespace TombLib.LevelData
 
         // Equality operations for Game enum
 
+        /// <summary>
+        /// Compares two game versions, ignoring TRX variants.
+        /// </summary>
         public static bool IsGreaterThan(this Game ver, Game other)
             => ver.NonTRX() > other.NonTRX();
 
+        /// <summary>
+        /// Compares two game versions, ignoring TRX variants.
+        /// </summary>
         public static bool IsGreaterThanOrEqual(this Game ver, Game other)
             => ver.NonTRX() >= other.NonTRX();
 
+        /// <summary>
+        /// Compares two game versions, ignoring TRX variants.
+        /// </summary>
         public static bool IsLessThan(this Game ver, Game other)
             => ver.NonTRX() < other.NonTRX();
 
+        /// <summary>
+        /// Compares two game versions, ignoring TRX variants.
+        /// </summary>
         public static bool IsLessThanOrEqual(this Game ver, Game other)
             => ver.NonTRX() <= other.NonTRX();
-
-        // Checks for specific game versions
-
-        public static bool IsTR1OrTR1X(this Game ver)
-            => ver is Game.TR1 or Game.TR1X;
-
-        public static bool IsTR2OrTR2X(this Game ver)
-            => ver is Game.TR2 or Game.TR2X;
-
-        public static bool IsAnyTRX(this Game ver)
-            => ver is Game.TR1X or Game.TR2X;
-
-        public static bool IsTR4OrNG(this Game ver)
-            => ver is Game.TR4 or Game.TRNG;
-
-        public static bool IsTR5OrTEN(this Game ver)
-            => ver is Game.TR5 or Game.TombEngine;
 
         // Checks for features supported by the game version
 

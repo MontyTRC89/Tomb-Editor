@@ -47,11 +47,11 @@ namespace TombEditor.ToolWindows
                 obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.LevelChangedEvent)
             {
-                bool isTR4orNG = _editor.Level.Settings.GameVersion.IsTR4OrNG();
+                bool isTR4orNG = _editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4;
                 bool isNGorTEN = _editor.Level.Settings.GameVersion is TRVersion.Game.TRNG or TRVersion.Game.TombEngine;
                 bool supportsLensflare = _editor.Level.Settings.GameVersion.SupportsLensflare();
                 bool supportsReverb = _editor.Level.Settings.GameVersion.SupportsReverberation();
-                bool isTR1 = _editor.Level.Settings.GameVersion.IsTR1OrTR1X();
+                bool isTR1 = _editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR1;
 
                 cbHorizon.Enabled = !isTR1;
                 cbFlagOutside.Enabled = !isTR1;
@@ -195,7 +195,7 @@ namespace TombEditor.ToolWindows
             ReadRoomType();
 
             // Repopulate room effect type
-            bool isTR2 = _editor.Level.Settings.GameVersion.IsTR2OrTR2X();
+            bool isTR2 = _editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR2;
             var list = new List<string>()
             {
                 "None",

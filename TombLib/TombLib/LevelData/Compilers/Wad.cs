@@ -300,12 +300,12 @@ namespace TombLib.LevelData.Compilers
                         unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.Z))));
 
                         // TR1 has also the number of angles to follow
-                        if (_level.Settings.GameVersion.IsTR1OrTR1X())
+                        if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR1)
                             unpaddedFrame.Add((short)wadFrame.Angles.Count);
 
                         foreach (var angle in wadFrame.Angles)
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
-                                _level.Settings.GameVersion.IsTR1OrTR1X(),
+                                _level.Settings.GameVersion.Native() == TRVersion.Game.TR1,
                                 _level.Settings.GameVersion == TRVersion.Game.TR4 ||
                                 _level.IsNG ||
                                 _level.Settings.GameVersion == TRVersion.Game.TR5);
@@ -320,7 +320,7 @@ namespace TombLib.LevelData.Compilers
                     foreach (List<short> unpaddedFrame in unpaddedFrames)
                     {
                         _frames.AddRange(unpaddedFrame);
-                        if (!_level.Settings.GameVersion.IsTR1OrTR1X())
+                        if (_level.Settings.GameVersion.Native() != TRVersion.Game.TR1)
                             _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
                     }
                     animationHelper.KeyFrameSize = longestFrame;
@@ -876,7 +876,7 @@ namespace TombLib.LevelData.Compilers
 
                         ushort characteristics;
 
-                        if (_level.Settings.GameVersion.IsTR1OrTR1X())
+                        if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR1)
                         {
                             switch (soundDetail.LoopBehaviour)
                             {
@@ -949,7 +949,7 @@ namespace TombLib.LevelData.Compilers
         {
             var sampleRate = _limits[Limit.SoundSampleRate];
 
-            if (_level.Settings.GameVersion.IsTR1OrTR1X())
+            if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR1)
             {
                 // Calculate sum of all sample sizes
                 int sumSize = 0;

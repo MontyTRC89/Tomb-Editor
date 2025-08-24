@@ -293,7 +293,7 @@ namespace TombLib.LevelData.Compilers.Util
             // NOTE: This function is only used to check if bumpmap is possible, DO NOT use it to check ACTUAL bumpmap level!
             public BumpMappingLevel BumpLevel(TRVersion.Game version)
             {
-                if (Texture is LevelTexture && version > TRVersion.Game.TR3)
+                if (Texture is LevelTexture && version.IsGreaterThan(TRVersion.Game.TR3))
                 {
                     var tex = Texture as LevelTexture;
                     if (!String.IsNullOrEmpty(tex.BumpPath))
@@ -506,7 +506,7 @@ namespace TombLib.LevelData.Compilers.Util
                                             child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
                     
                     // If padding exists, apply half-pixel blow-up as countermeasure for hardcoded TR4-5 AdjustUV mapping correction.
-                    if (version >= TRVersion.Game.TR4)
+                    if (version.IsGreaterThanOrEqual(TRVersion.Game.TR4))
                         coords[i] -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] :
                                                      TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
                 }
