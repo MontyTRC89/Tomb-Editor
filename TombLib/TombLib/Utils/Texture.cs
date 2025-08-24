@@ -145,7 +145,7 @@ namespace TombLib.Utils
             {
                 blendCount = 7;
             }
-            else if (((settings.GameEnableExtraBlendingModes ?? false) && settings.GameVersion.Legacy() == TRVersion.Game.TR4))
+            else if (((settings.GameEnableExtraBlendingModes ?? false) && settings.GameVersion.Native() == TRVersion.Game.TR4))
             {
                 blendCount = 6;
             }

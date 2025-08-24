@@ -683,7 +683,7 @@ namespace TombEditor.Forms
             }
 
             // TR4 platform
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
+            currentVersionToCheck = (_levelSettings.GameVersion.Native() == Game.TR4);
             GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
             GameEnableExtraReverbPresetsCheckBox.Visible = currentVersionToCheck;
 
@@ -706,7 +706,7 @@ namespace TombEditor.Forms
             }
 
             // TR4 and TombEngine platforms
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
+            currentVersionToCheck = (_levelSettings.GameVersion.Native() == Game.TR4);
             cbEnableExtraBlendingModes.Visible = currentVersionToCheck;
 
             // TR2-5 platforms

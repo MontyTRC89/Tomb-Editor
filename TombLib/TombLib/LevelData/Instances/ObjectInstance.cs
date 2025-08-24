@@ -539,7 +539,7 @@ namespace TombLib.LevelData
                     if (mesh == null || mesh.Mesh.LightingType == Wad.WadMeshLightingType.Normals)
                         changeColor = false;
                 }
-                else if (obj is LightInstance && (obj as LightInstance).Type == LightType.FogBulb && obj.Room.Level.Settings.GameVersion.Legacy().IsLessThanOrEqual(TRVersion.Game.TR4))
+                else if (obj is LightInstance && (obj as LightInstance).Type == LightType.FogBulb && obj.Room.Level.Settings.GameVersion.Native().IsLessThanOrEqual(TRVersion.Game.TR4))
                 {
                     changeColor = false;
                 }

@@ -1165,7 +1165,7 @@ namespace TombLib.LevelData.Compilers
 
                 if (light.Type == LightType.FogBulb)
                 {
-                    if (_level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4)
+                    if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR4)
                     {
                         // HACK: remap TR4 fog bulb intensity to color (native TR4 hack)
                         var remappedColor = new Vector3(MathC.Clamp(light.Intensity, 0.0f, 2.0f));
