@@ -292,7 +292,7 @@ namespace TombLib.Wad.Catalog
 
             if (entry.Name == null)
             {
-                List<KeyValuePair<TRVersion.Game, Game>> otherGames = Games.Where(g => g.Key <= version.Native()).ToList();
+                List<KeyValuePair<TRVersion.Game, Game>> otherGames = Games.Where(g => g.Key.IsLessThanOrEqual(version.Native())).ToList();
                 otherGames.Reverse();
 
                 foreach (KeyValuePair<TRVersion.Game, Game> otherGame in otherGames)
@@ -320,7 +320,7 @@ namespace TombLib.Wad.Catalog
 
             if (entry.Name == null)
             {
-                List<KeyValuePair<TRVersion.Game, Game>> otherGames = Games.Where(g => g.Key <= version.Native()).ToList();
+                List<KeyValuePair<TRVersion.Game, Game>> otherGames = Games.Where(g => g.Key.IsLessThanOrEqual(version.Native())).ToList();
                 otherGames.Reverse();
 
                 foreach (KeyValuePair<TRVersion.Game, Game> otherGame in otherGames)
@@ -357,7 +357,7 @@ namespace TombLib.Wad.Catalog
                     if (!string.IsNullOrEmpty(entry.Name))
                         break;
 
-                    foreach (KeyValuePair<TRVersion.Game, Game> otherGame in Games.Where(g => g.Key <= version.Native()))
+                    foreach (KeyValuePair<TRVersion.Game, Game> otherGame in Games.Where(g => g.Key.IsLessThanOrEqual(version.Native())))
                     {
                         sortedStates = otherGame.Value.States.Where(item => item.Item == objectId).OrderBy(item => item.State);
 
@@ -392,7 +392,7 @@ namespace TombLib.Wad.Catalog
 
             if (value == int.MinValue)
             {
-                List<KeyValuePair<TRVersion.Game, Game>> otherGames = Games.Where(g => g.Key <= version.Native()).ToList();
+                List<KeyValuePair<TRVersion.Game, Game>> otherGames = Games.Where(g => g.Key.IsLessThanOrEqual(version.Native())).ToList();
                 otherGames.Reverse();
 
                 foreach (KeyValuePair<TRVersion.Game, Game> otherGame in otherGames)
@@ -437,9 +437,9 @@ namespace TombLib.Wad.Catalog
         {
             switch (version)
             {
-                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR1 or TRVersion.Game.TR1X:
                     return "Tomb Raider";
-                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR2 or TRVersion.Game.TR2X:
                     return "Tomb Raider 2";
                 case TRVersion.Game.TR3:
                     return "Tomb Raider 3";

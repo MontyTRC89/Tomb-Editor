@@ -46,8 +46,8 @@ namespace TombEditor.Controls.Panel3D
         {
             switch (_editor.Level.Settings.GameVersion)
             {
-                case TRVersion.Game.TR1:
-                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR1 or TRVersion.Game.TR1X:
+                case TRVersion.Game.TR2 or TRVersion.Game.TR2X:
                     return new Vector4(new Vector3(originalColor.GetLuma()), 1.0f);
 
                 case TRVersion.Game.TombEngine:

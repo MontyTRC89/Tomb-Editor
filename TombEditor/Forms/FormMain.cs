@@ -133,7 +133,7 @@ namespace TombEditor.Forms
                 obj is Editor.LevelChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent)
             {
-                addSpriteToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
+                addSpriteToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR2);
 
                 makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.IsNG;
 

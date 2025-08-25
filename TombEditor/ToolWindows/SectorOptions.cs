@@ -73,8 +73,8 @@ namespace TombEditor.ToolWindows
                 obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.LevelChangedEvent)
             {
-                bool isTR2 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR2;
-                bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
+                bool isTR2 = _editor.Level.Settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR2);
+                bool isTR345 = _editor.Level.Settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR3);
 
                 butClimbNegativeX.Enabled = isTR2;
                 butClimbNegativeZ.Enabled = isTR2;
@@ -84,7 +84,7 @@ namespace TombEditor.ToolWindows
                 butFlagBeetle.Enabled = isTR345;
                 butFlagTriggerTriggerer.Enabled = isTR345;
 
-                if (_editor.Level.Settings.GameVersion >= TRVersion.Game.TR4)
+                if (_editor.Level.Settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR4))
                 {
                     butFlagTriggerTriggerer.Image = Properties.Resources.sectortype_TriggerTriggerer_16;
                     butFlagBeetle.Image = Properties.Resources.sectortype_Beetle_16;

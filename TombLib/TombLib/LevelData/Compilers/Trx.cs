@@ -13,10 +13,10 @@ public partial class LevelCompilerClassicTR
     {
         switch (_level.Settings.GameVersion)
         {
-            case TRVersion.Game.TR1:
+            case TRVersion.Game.TR1X:
                 WriteLevelTr1();
                 break;
-            case TRVersion.Game.TR2:
+            case TRVersion.Game.TR2X:
                 WriteLevelTr2();
                 break;
             default:
