@@ -9,7 +9,7 @@ namespace TombLib.Graphics
 {
     public class WadRenderer : IDisposable
     {
-        public record struct AllocationResult(VectorInt3 Position, VectorInt2 OriginalSize, VectorInt2 AllocatedSize, VectorInt2 AtlasDimension);
+        public readonly record struct AllocationResult(VectorInt3 Position, VectorInt2 OriginalSize, VectorInt2 AllocatedSize, VectorInt2 AtlasDimension);
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 

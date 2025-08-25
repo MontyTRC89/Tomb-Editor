@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using TombLib;
@@ -47,6 +48,16 @@ namespace TombEditor
         Room Room { get; }
         ObjectInstance Object { get; }
         ObjectChangeType ChangeType { get; }
+    }
+
+    public interface IEditorObjectMovedEvent : IEditorEventCausesUnsavedChanges
+    {
+        public PositionBasedObjectInstance Object { get; }
+        public Room Room { get; }
+        public Vector3 NewPosition { get; }
+        public Vector3 OldPosition { get; }
+        public VectorInt2 NewSectorPosition { get; }
+        public VectorInt2 OldSectorPosition { get; }
     }
 
     public class Editor : IDisposable
@@ -679,6 +690,30 @@ namespace TombEditor
                 ObjectChange(@object, changeType, room);
         }
 
+        public class ObjectMovedEvent : IEditorObjectMovedEvent
+        {
+            public PositionBasedObjectInstance Object { get; internal set; }
+            public Room Room { get; internal set; }
+            public Vector3 NewPosition { get; internal set; }
+            public Vector3 OldPosition { get; internal set; }
+            public VectorInt2 NewSectorPosition { get; internal set; }
+            public VectorInt2 OldSectorPosition { get; internal set; }
+        }
+
+        public void MoveObject(PositionBasedObjectInstance @object, Room room, Vector3 oldPosition, Vector3 newPos, VectorInt2 oldSector, VectorInt2 newSector)
+        {
+            if (room == null || @object == null)
+                throw new ArgumentNullException();
+
+            if (@object is ObjectGroup objectGroup)
+            {
+                foreach (var o in objectGroup.ToList())
+                    RaiseEvent(new ObjectMovedEvent { Room = room, Object = o, OldPosition = oldPosition, NewPosition = newPos, OldSectorPosition = oldSector, NewSectorPosition = newSector });
+            }
+
+            RaiseEvent(new ObjectMovedEvent { Room = room, Object = @object, OldPosition = oldPosition, NewPosition = newPos, OldSectorPosition = oldSector, NewSectorPosition = newSector });
+        }
+
         // This is invoked when level statistics change.
         public class StatisticsChangedEvent : IEditorEvent { }
         private Task _statsTask;
@@ -820,8 +855,13 @@ namespace TombEditor
         }
         public void UndoStackChanged()
         {
-            RaiseEvent(new UndoStackChangedEvent() { UndoPossible = UndoManager.UndoPossible, RedoPossible = UndoManager.RedoPossible,
-                UndoReversible = UndoManager.UndoReversible, RedoReversible = UndoManager.UndoReversible });
+            RaiseEvent(new UndoStackChangedEvent()
+            {
+                UndoPossible = UndoManager.UndoPossible,
+                RedoPossible = UndoManager.RedoPossible,
+                UndoReversible = UndoManager.UndoReversible,
+                RedoReversible = UndoManager.UndoReversible
+            });
         }
 
         // Change sector highlights
@@ -1055,7 +1095,7 @@ namespace TombEditor
                 UpdateLevelStatistics(false, false, true);
             }
 
-            if (obj is LevelChangedEvent) 
+            if (obj is LevelChangedEvent)
             {
                 var evnt = obj as LevelChangedEvent;
                 var settings = evnt.Current.Settings;
@@ -1076,6 +1116,16 @@ namespace TombEditor
                     Tool = _lastGeometryTool;
                 else
                     Tool = _lastFaceEditTool;
+
+                // If the mode switched to lighting mode, relight all rooms which have `PendingRelight` set to true
+                if (@event.Current == EditorMode.Lighting)
+                {
+                    foreach (Room room in Level.Rooms)
+                    {
+                        if (room?.PendingRelight == true)
+                            room.RebuildLighting(Configuration.Rendering3D_HighQualityLightPreview);
+                    }
+                }
             }
 
             // Backup last used tool for next mode
@@ -1086,7 +1136,7 @@ namespace TombEditor
                 {
                     _lastGeometryTool = @event.Current;
                     Configuration.UI_LastGeometryTool = _lastGeometryTool;
-                }    
+                }
                 else
                 {
                     _lastFaceEditTool = @event.Current;
@@ -1158,6 +1208,12 @@ namespace TombEditor
                     ((ObjectChangedEvent)obj).Object == _bookmarkedObject)
             {
                 BookmarkedObject = null;
+            }
+
+            if (obj is IEditorObjectMovedEvent movedEvent)
+            {
+                if (movedEvent.Object is LightInstance light)
+                    movedEvent.Room.SetLightingDirtyForMovedLight(light, movedEvent.OldPosition, movedEvent.NewPosition);
             }
         }
 
@@ -1296,7 +1352,7 @@ namespace TombEditor
             public int BoxCount { get; internal set; }
             public int OverlapCount { get; internal set; }
             public int TextureCount { get; internal set; }
-            public String InfoString { get;internal set; }
+            public String InfoString { get; internal set; }
         }
 
         public class SuspendRenderingEvent : IEditorEvent { }
@@ -1387,9 +1443,9 @@ namespace TombEditor
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
         {
-            
             if (synchronizationContext == null)
                 throw new ArgumentNullException(nameof(synchronizationContext));
+
             Editor.Instance = this;
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
@@ -1449,5 +1505,7 @@ namespace TombEditor
             => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
 
         public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
+
+        public bool ShouldRelight => Mode is EditorMode.Lighting;
     }
 }

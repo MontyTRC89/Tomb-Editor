@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorGeometry;
@@ -32,6 +33,8 @@ namespace TombLib.LevelData
         //                      |
 
         // Quads are reformed by 2 triangles.
+        public RectangleInt2 Area { get; set; }
+        public BoundingBox BoundingBox { get; set; }
         public int DoubleSidedTriangleCount { get; private set; } = 0;
         public List<Vector3> VertexPositions { get; } = new List<Vector3>(); // one for each vertex
         public List<Vector2> VertexEditorUVs { get; } = new List<Vector2>(); // one for each vertex (ushort to save (GPU) memory and bandwidth)
@@ -42,9 +45,18 @@ namespace TombLib.LevelData
 
         public Dictionary<Vector3, List<int>> SharedVertices { get; } = new Dictionary<Vector3, List<int>>();
         public SortedList<SectorFaceIdentity, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorFaceIdentity, VertexRange>();
+        public bool GeometryDirty { get; set; } = true;
+        public bool LightingDirty { get; set; } = true;
+        public Room Room { get; private set; }
+
+        public RoomGeometry(Room r, RectangleInt2 area)
+        {
+            Area = area;
+            Room = r;
+        }
 
         // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
-        public void Build(Room room, bool highQualityLighting, bool useLegacyCode = false)
+        public void Build(bool useLegacyCode = false)
         {
             VertexPositions.Clear();
             VertexEditorUVs.Clear();
@@ -55,10 +67,11 @@ namespace TombLib.LevelData
             VertexRangeLookup.Clear();
             DoubleSidedTriangleCount = 0;
 
-            const int xMin = 0;
-            const int zMin = 0;
-            int xMax = room.NumXSectors - 1;
-            int zMax = room.NumZSectors - 1;
+            int xMin = Area.X0;
+            int zMin = Area.Y0;
+            int xMax = Area.X1;
+            int zMax = Area.Y1;
+            Room room = Room;
             Sector[,] sectors = room.Sectors;
 
             // Build face polygons
@@ -322,8 +335,11 @@ namespace TombLib.LevelData
             // Build color array
             VertexColors.Resize(VertexPositions.Count, room.Properties.AmbientLight);
 
-            // Lighting
-            Relight(room, highQualityLighting);
+            Vector3 aabbMin = new Vector3(Area.X0 * Level.SectorSizeUnit, room.GetLowestCorner(), Area.Y0 * Level.SectorSizeUnit);
+            Vector3 aabbMax = new Vector3((Area.X1 + 1) * Level.SectorSizeUnit, room.GetHighestCorner(), (Area.Y1 + 1) * Level.SectorSizeUnit);
+            BoundingBox = new BoundingBox(aabbMin, aabbMax);
+            GeometryDirty = false;
+            LightingDirty = true;
         }
 
         public void UpdateFaceTexture(int x, int z, SectorFace face, TextureArea texture, bool wasDoubleSided)
@@ -371,6 +387,8 @@ namespace TombLib.LevelData
 
                 TriangleTextureAreas[(range.Start + 3) / 3] = texture1;
             }
+
+            GeometryDirty = true;
         }
 
         private enum FaceDirection
@@ -1183,16 +1201,12 @@ namespace TombLib.LevelData
             return Vector3.Zero;
         }
 
-        public void Relight(Room room, bool highQuality = false)
+        public void Relight(bool highQuality = false)
         {
             // Collect lights
-            List<LightInstance> lights = new List<LightInstance>();
-            foreach (var instance in room.Objects)
-            {
-                LightInstance light = instance as LightInstance;
-                if (light != null)
-                    lights.Add(light);
-            }
+            // check against all lights is negligible, since we already set LightingDirty Flag with an intersection test
+            // so just collect all lights
+            var lights = Room.Objects.OfType<LightInstance>().ToArray();
 
             // Calculate lighting
             for (int i = 0; i < VertexPositions.Count; i += 3)
@@ -1205,12 +1219,12 @@ namespace TombLib.LevelData
                 for (int j = 0; j < 3; ++j)
                 {
                     var position = VertexPositions[i + j];
-                    Vector3 color = room.Properties.AmbientLight * 128;
+                    Vector3 color = Room.Properties.AmbientLight * 128;
 
                     foreach (var light in lights) // No Linq here because it's slow
                     {
                         if (light.IsStaticallyUsed)
-                            color += CalculateLightForVertex(room, light, position, normal, true, highQuality);
+                            color += CalculateLightForVertex(Room, light, position, normal, true, highQuality);
                     }
 
                     // Apply color
@@ -1228,6 +1242,8 @@ namespace TombLib.LevelData
                 foreach (var vertexIndex in pair.Value)
                     VertexColors[vertexIndex] = faceColorSum;
             }
+
+            LightingDirty = false;
         }
 
         public struct IntersectionInfo
@@ -1241,26 +1257,32 @@ namespace TombLib.LevelData
         public IntersectionInfo? RayIntersectsGeometry(Ray ray)
         {
             IntersectionInfo result = new IntersectionInfo { Distance = float.NaN };
-            foreach (var entry in VertexRangeLookup)
-                for (int i = 0; i < entry.Value.Count; i += 3)
-                {
-                    var p0 = VertexPositions[entry.Value.Start + i];
-                    var p1 = VertexPositions[entry.Value.Start + i + 1];
-                    var p2 = VertexPositions[entry.Value.Start + i + 2];
 
-                    Vector3 position;
-                    if (Collision.RayIntersectsTriangle(ray, p0, p1, p2, true, out position))
+            if (Collision.RayIntersectsBox(ray, BoundingBox, out float _))
+            {
+                foreach (var entry in VertexRangeLookup)
+                {
+                    for (int i = 0; i < entry.Value.Count; i += 3)
                     {
-                        float distance = (position - ray.Position).Length();
-                        var normal = Vector3.Cross(p1 - p0, p2 - p0);
-                        if (Vector3.Dot(ray.Direction, normal) <= 0)
-                            if (!(distance > result.Distance))
+                        var p0 = VertexPositions[entry.Value.Start + i];
+                        var p1 = VertexPositions[entry.Value.Start + i + 1];
+                        var p2 = VertexPositions[entry.Value.Start + i + 2];
+
+                        if (Collision.RayIntersectsTriangle(ray, p0, p1, p2, true, out Vector3 position))
+                        {
+                            float distance = (position - ray.Position).Length();
+                            var normal = Vector3.Cross(p1 - p0, p2 - p0);
+
+                            if (Vector3.Dot(ray.Direction, normal) <= 0 && !(distance > result.Distance))
                                 result = new IntersectionInfo() { Distance = distance, Face = entry.Key.Face, Pos = entry.Key.Position, VerticalCoord = position.Y };
+                        }
                     }
                 }
+            }
 
             if (float.IsNaN(result.Distance))
                 return null;
+
             return result;
         }
     }
