@@ -10,13 +10,18 @@ namespace TombLib.Forms
     public partial class GeometryIOSettingsDialog : DarkForm
     {
         public IOGeometrySettings Settings { get; private set; }
+        
         private readonly List<IOGeometrySettingsPreset> _presets = new List<IOGeometrySettingsPreset>();
+		private readonly bool _importMesh;
 
-        public GeometryIOSettingsDialog(IOGeometrySettings inSettings)
+		public GeometryIOSettingsDialog(IOGeometrySettings inSettings)
         {
             InitializeComponent();
 
-            Settings = inSettings;
+			Settings = inSettings;
+
+			_importMesh = Settings.ImportMesh;
+			
             UpdateControls(Settings);
             PopulatePresetList();
             SelectNullPreset();
@@ -116,8 +121,9 @@ namespace TombLib.Forms
             cbImportBakedLight.Enabled = settings.ProcessGeometry;
             cbSortByName.Enabled = !settings.Export;
             cbPackTextures.Enabled = cbPadPackedTextures.Enabled = settings.Export && !Settings.ExportRoom;
+			cbKeepTexturesExternally.Enabled = Settings.ImportMesh;
 
-            cbFlipX.Checked = settings.FlipX;
+			cbFlipX.Checked = settings.FlipX;
             cbFlipY.Checked = settings.FlipY;
             cbFlipZ.Checked = settings.FlipZ;
             cbSwapXY.Checked = settings.SwapXY;
@@ -133,7 +139,8 @@ namespace TombLib.Forms
             cbSortByName.Checked = settings.SortByName;
             cbPackTextures.Checked = settings.PackTextures;
             cbPadPackedTextures.Checked = settings.PadPackedTextures;
-        }
+			cbKeepTexturesExternally.Checked = !settings.Export && _importMesh && settings.KeepTexturesExternally;
+		}
 
         private void UpdateSettings()
         {
@@ -153,7 +160,8 @@ namespace TombLib.Forms
             Settings.SortByName = cbSortByName.Checked;
             Settings.PackTextures = cbPackTextures.Checked;
             Settings.PadPackedTextures = cbPadPackedTextures.Checked;
-        }
+			Settings.KeepTexturesExternally = cbKeepTexturesExternally.Checked;
+		}
 
         private void butOK_Click(object sender, EventArgs e)
         {
@@ -193,7 +201,8 @@ namespace TombLib.Forms
             cbSortByName.CheckedChanged += ModifiedPresetEvent;
             cbPackTextures.CheckedChanged += ModifiedPresetEvent;
             cbPadPackedTextures.CheckedChanged += ModifiedPresetEvent;
-        }
+			cbKeepTexturesExternally.CheckedChanged += ModifiedPresetEvent;
+		}
 
         private void SuspendControlListening()
         {
@@ -213,7 +222,8 @@ namespace TombLib.Forms
             cbSortByName.CheckedChanged -= ModifiedPresetEvent;
             cbPackTextures.CheckedChanged -= ModifiedPresetEvent;
             cbPadPackedTextures.CheckedChanged -= ModifiedPresetEvent;
-        }
+			cbKeepTexturesExternally.CheckedChanged -= ModifiedPresetEvent;
+		}
 
         private void ModifiedPresetEvent(object sender, EventArgs e)
         {

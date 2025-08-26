@@ -14,8 +14,9 @@
         public bool ProcessGeometry { get; set; } = true;
         public bool ProcessUntexturedGeometry { get; set; } = false;
         public bool ProcessAnimations { get; set; } = false;
+		public bool ImportMesh { get; set; } = false;
 
-        public bool SwapXY { get; set; } = false;
+		public bool SwapXY { get; set; } = false;
         public bool SwapXZ { get; set; } = false;
         public bool SwapYZ { get; set; } = false;
         public bool FlipX { get; set; } = false;
@@ -31,5 +32,6 @@
         public bool SortByName { get; set; } = true;
         public bool PackTextures { get; set; } = true;
         public bool PadPackedTextures { get; set; } = true;
-    }
+		public bool KeepTexturesExternally { get; set; } = false;
+	}
 }

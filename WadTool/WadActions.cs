@@ -1583,7 +1583,10 @@ namespace WadTool
 
                 try
                 {
-                    using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+					using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings
+					{
+						ImportMesh = true
+					}))
                     {
                         form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
                         if (form.ShowDialog(owner) != DialogResult.OK)
