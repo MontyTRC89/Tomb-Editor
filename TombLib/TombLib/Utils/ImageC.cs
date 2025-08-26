@@ -1,6 +1,8 @@
-﻿using bzPSD;
+﻿using Assimp;
+using bzPSD;
 using ColorThiefDotNet;
 using System;
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,6 +12,8 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using TombLib.LevelData;
 
 namespace TombLib.Utils
@@ -821,41 +825,93 @@ namespace TombLib.Utils
 
             return result;
         }
+ 
+        public unsafe Hash GetHashOfAreaFast(Rectangle2 area)
+	    {
+            const int Bpp = 4;
 
-		public unsafe Hash GetHashOfAreaFast(Rectangle2 area)
-		{
-			int x = (int)area.TopLeft.X;
-			int y = (int)area.TopLeft.Y;
-			int width = (int)area.Width;
-			int height = (int)area.Height;
+		    int x = (int)area.TopLeft.X;
+		    int y = (int)area.TopLeft.Y;
+		    int width = (int)area.Width;
+		    int height = (int)area.Height;
 
-			if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
-				x + width > Width || y + height > Height)
-				return Hash.Zero;
+		    if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
+			    x + width > Width || y + height > Height)
+			    return Hash.Zero;
 
-			using var hasher = Blake3.Hasher.New();
+		    int srcStride = Width * Bpp;
+		    int rowBytes = width * Bpp;
+		    long total = (long)rowBytes * height;
 
-			fixed (byte* srcPtr = _data)
-			{
-				int srcStride = Width * 4;
-				int rowBytes = width * 4;
+		    using var hasher = Blake3.Hasher.New();
 
-				for (int row = 0; row < height; row++)
-				{
-					byte* src = srcPtr + (y + row) * srcStride + x * 4;
-					hasher.Update(new ReadOnlySpan<byte>(src, rowBytes));
-				}
-			}
+		    fixed (byte* basePtr = _data)
+		    {
+			    // FAST-PATH: rettangolo contiguo (una sola Update)
+			    if (width == Width && x == 0)
+			    {
+				    byte* start = basePtr + y * srcStride;
+				    hasher.Update(new ReadOnlySpan<byte>(start, (int)total));
+			    }
+			    else
+			    {
+				    const int ChunkSize = 1 << 20; // 1 MiB
+				    byte[] rented = ArrayPool<byte>.Shared.Rent(ChunkSize);
+				    try
+				    {
+					    int row = 0;
+					    while (row < height)
+					    {
+						    int rowsPerChunk = Math.Max(1, Math.Min(height - row, ChunkSize / rowBytes));
+						    int bytesThisChunk = rowsPerChunk * rowBytes;
 
-			Span<byte> digest = stackalloc byte[32];
-			hasher.Finalize(digest);
+						    fixed (byte* dstFixed = rented)
+						    {
+							    byte* dstBase = dstFixed;
+							    byte* srcBase0 = basePtr + (y + row) * srcStride + x * Bpp;
 
-			ulong low = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(0, 8));
-			ulong high = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(8, 8));
-			return new Hash { HashLow = low, HashHigh = high };
-		}
+							    bool doParallel = rowsPerChunk >= 64 && rowBytes >= 1024;
 
-		public Stream ToRawStream(int yStart, int Height)
+							    if (doParallel)
+							    {
+								    Parallel.For(0, rowsPerChunk, r =>
+								    {
+									    byte* src = srcBase0 + (long)r * srcStride;
+									    byte* dst = dstBase + (long)r * rowBytes;
+									    Unsafe.CopyBlockUnaligned(dst, src, (uint)rowBytes);
+								    });
+							    }
+							    else
+							    {
+								    for (int r = 0; r < rowsPerChunk; r++)
+								    {
+									    byte* src = srcBase0 + (long)r * srcStride;
+									    byte* dst = dstBase + (long)r * rowBytes;
+									    Unsafe.CopyBlockUnaligned(dst, src, (uint)rowBytes);
+								    }
+							    }
+						    }
+
+						    hasher.Update(new ReadOnlySpan<byte>(rented, 0, bytesThisChunk));
+						    row += rowsPerChunk;
+					    }
+				    }
+				    finally
+				    {
+					    ArrayPool<byte>.Shared.Return(rented);
+				    }
+			    }
+		    }
+
+		    Span<byte> digest = stackalloc byte[32];
+		    hasher.Finalize(digest);
+
+		    ulong low = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(0, 8));
+		    ulong high = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(8, 8));
+		    return new Hash { HashLow = low, HashHigh = high };
+	    }
+
+	    public Stream ToRawStream(int yStart, int Height)
         {
             return new MemoryStream(_data, yStart * Width * PixelSize, Height * Width * PixelSize);
         }
