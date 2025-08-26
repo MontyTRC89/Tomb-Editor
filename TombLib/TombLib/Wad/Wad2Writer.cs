@@ -19,7 +19,23 @@ namespace TombLib.Wad
             // We save first to a temporary memory stream
             using (var stream = new MemoryStream())
             {
-                SaveToStream(wad, stream);
+				// Prepare external texture relative paths
+				var textureTable = new List<WadTexture>(wad.MeshTexturesUnique);
+				var basePath = Path.GetDirectoryName(filename);
+				foreach (var texture in textureTable)
+				{
+					var path = texture.Image.FileName ?? string.Empty;
+					var relativePath = path;
+					if (!string.IsNullOrEmpty(path))
+					{
+						relativePath = PathC.GetRelativePath(basePath, path);
+						if (relativePath is null)
+							relativePath = path;
+					}
+					texture.RelativePath = relativePath;
+				}
+
+				SaveToStream(wad, stream);
 
                 // Save to temporary file as well, so original wad2 won't vanish in case of crash
                 var tempName = filename + ".tmp";
@@ -86,8 +102,18 @@ namespace TombLib.Wad
                     {
                         LEB128.Write(chunkIO.Raw, texture.Image.Width);
                         LEB128.Write(chunkIO.Raw, texture.Image.Height);
-                        chunkIO.WriteChunkString(Wad2Chunks.TextureName, texture.Image.FileName);
-                        chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, texture.Image.ToByteArray());
+                        chunkIO.WriteChunkString(Wad2Chunks.TextureName, texture.Image.FileName ?? "");
+
+                        // TextureName chunk could not contain the relative path of the texture, 
+                        // so I've added a dedicated field and chunk to Wad2 file format.
+						chunkIO.WriteChunkString(Wad2Chunks.TextureRelativePath, texture.RelativePath);
+
+                        // NOTE: when external textures are used, data is not necessary, but don't saving it
+                        // will break backward compatibility. We could save always the data, even if 
+                        // we'll double the disk spage usage. 
+                        // In this way, older versions of WT and TE will ignore the external path and use 
+                        // the data stored inside the Wad2 file.
+						chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, texture.Image.ToByteArray());
                     });
                 }
             }, LEB128.MaximumSize5Byte); // Texture chunk can be very large, therefore increased size.);

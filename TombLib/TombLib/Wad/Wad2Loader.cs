@@ -16,7 +16,7 @@ namespace TombLib.Wad
         {
             Wad2 result;
             using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                result = LoadFromStream(fileStream);
+                result = LoadFromStream(fileStream, fileName);
             result.FileName = fileName;
 
             // Load additional XML file if it exists
@@ -36,7 +36,7 @@ namespace TombLib.Wad
             return result;
         }
 
-        public static Wad2 LoadFromStream(Stream stream)
+        public static Wad2 LoadFromStream(Stream stream, string fileName)
         {
             byte[] magicNumber = new byte[4];
 
@@ -47,12 +47,13 @@ namespace TombLib.Wad
                 throw new NotImplementedException("Loaded wad2 version is deprecated and not supported. Please use version 1.3.15 or earlier.");
             else
                 using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream, Wad2Chunks.ChunkList))
-                    return LoadWad2(chunkIO);
+                    return LoadWad2(chunkIO, fileName);
         }
 
-        private static Wad2 LoadWad2(ChunkReader chunkIO)
+        private static Wad2 LoadWad2(ChunkReader chunkIO, string fileName)
         {
             var wad = new Wad2() { Timestamp = DateTime.MinValue };
+            wad.FileName = fileName;
 
             Dictionary<long, WadTexture> textures = null;
             Dictionary<long, WadSprite> sprites = null;
@@ -221,6 +222,7 @@ namespace TombLib.Wad
                 var width = LEB128.ReadInt(chunkIO.Raw);
                 var height = LEB128.ReadInt(chunkIO.Raw);
                 var name = string.Empty;
+                var relativePath = String.Empty;
 
                 byte[] textureData = null;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
@@ -229,17 +231,53 @@ namespace TombLib.Wad
                         obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
                     else if (id2 == Wad2Chunks.TextureName)
                         name = chunkIO.ReadChunkString(chunkSize2);
-                    else if (id2 == Wad2Chunks.TextureData)
+					else if (id2 == Wad2Chunks.TextureRelativePath)
+						relativePath = chunkIO.ReadChunkString(chunkSize2);
+					else if (id2 == Wad2Chunks.TextureData)
                         textureData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
                     else
                         return false;
                     return true;
                 });
 
-                var texture = ImageC.FromByteArray(textureData, width, height);
-                texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
-                texture.FileName = name;
-                textures.Add(obsoleteIndex++, new WadTexture(texture));
+				// NOTE: we'll always have data there, but it should be loaded 
+				// only if RelativePath is null or empty, meaning that this is 
+				// an embedded texture.
+
+				ImageC texture = ImageC.Magenta;
+				string absolutePath = null;
+                bool textureLoaded = false;
+
+                if (!string.IsNullOrEmpty(relativePath))
+                {
+                    absolutePath = Path.GetFullPath(PathC.IsTrulyAbsolutePath(name) ? name : Path.Combine(Path.GetDirectoryName(wad.FileName), name));
+                    try
+                    {
+                        texture = ImageC.FromFile(absolutePath);
+						textureLoaded = true;
+					}
+                    catch (Exception ex)
+                    {
+					}
+				}
+
+                // At this point, if the texture is embedded or if external but an error occurred,
+                // we fallback using the data stored inside the Wad2 file.
+
+                if (!textureLoaded && textureData is not null)
+                {
+                    texture = ImageC.FromByteArray(textureData, width, height);
+                    name = null;
+                    textureLoaded = true;
+                }
+
+				texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+				texture.FileName = name;
+
+				var wadTexture = new WadTexture(texture);
+				wadTexture.AbsolutePath = absolutePath;
+                textures.Add(obsoleteIndex++, wadTexture);
+
                 return true;
             });
 

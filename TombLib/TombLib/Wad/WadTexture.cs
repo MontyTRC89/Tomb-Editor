@@ -39,20 +39,26 @@ namespace TombLib.Wad
         public override bool Equals(object other) => other is WadTexture && Hash == ((WadTexture)other).Hash;
         public override int GetHashCode() => Hash.GetHashCode();
 
-        public override string ToString()
-        {
-            var hint = string.Empty;
+		public override string ToString()
+		{
+			var hint = string.Empty;
 
             if (string.IsNullOrEmpty(Image.FileName))
                 hint += "Untitled (" + Image.Size.X + "x" + Image.Size.Y + ")";
             else
-                hint += Path.GetFileName(Image.FileName) + " ";
+                hint += "[Ext] " + Path.GetFileName(Image.FileName);
 
-            return hint;
-        }
+			return hint;
+		}
 
-        public void Dispose()
+		public void Dispose()
         {
         }
-    }
+
+		// Relative path is calculated before the save of Wad2 because in the final file there will be only relative paths
+		public string RelativePath { get; set; }
+
+		// This helps the texture packer of TombEngine compiler to have ready paths for doing sidecar loading
+		public string AbsolutePath { get; set; }
+	}
 }
