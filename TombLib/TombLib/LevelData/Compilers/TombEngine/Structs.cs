@@ -32,11 +32,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineAtlas
     {
-        public ImageC ColorMap;
-        public ImageC NormalMap;
-        public bool HasNormalMap;
-        public bool CustomNormalMap;
-    }
+		public ImageC ColorMap;
+		public ImageC? NormalMap;
+		public ImageC? AmbientOcclusionRoughnessSpecularMap;
+		public ImageC? EmissiveMap;
+		public bool CustomNormalMap;
+	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineCollisionInfo
@@ -73,7 +74,37 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public TombEngineSectorFlags Flags;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public class TombEnginePolygonMaterial
+	{
+		public MaterialType Type { get; set; }
+		public BlendMode BlendMode { get; set; }
+		public Vector4 FloatParameters0 { get; set; }
+		public Vector4 FloatParameters1 { get; set; }
+		public Vector4 FloatParameters2 { get; set; }
+		public Vector4 FloatParameters3 { get; set; }
+		public VectorInt4 IntegerParameters0 { get; set; }
+		public VectorInt4 IntegerParameters1 { get; set; }
+		public VectorInt4 IntegerParameters2 { get; set; }
+		public VectorInt4 IntegerParameters3 { get; set; }
+		public Vector2 Vector2Parameters0 { get; set; }
+		public Vector2 Vector2Parameters1 { get; set; }
+		public Vector2 Vector2Parameters2 { get; set; }
+		public Vector2 Vector2Parameters3 { get; set; }
+		public Vector3 Vector3Parameters0 { get; set; }
+		public Vector3 Vector3Parameters1 { get; set; }
+		public Vector3 Vector3Parameters2 { get; set; }
+		public Vector3 Vector3Parameters3 { get; set; }
+		public Vector4 Vector4Parameters0 { get; set; }
+		public Vector4 Vector4Parameters1 { get; set; }
+		public Vector4 Vector4Parameters2 { get; set; }
+		public Vector4 Vector4Parameters3 { get; set; }
+
+		public TombEnginePolygonMaterial()
+		{
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEnginePolygon
     {
         public TombEnginePolygonShape Shape;
@@ -92,7 +123,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int AnimatedSequence;
         public int AnimatedFrame;
         public float ShineStrength;
-    }
+
+		public TombEnginePolygonMaterial Material;
+	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TombEngineRoomStaticMesh
@@ -205,39 +238,65 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngineMaterial
-    {
-        public class TombEngineMaterialComparer : IEqualityComparer<TombEngineMaterial>
-        {
-            public bool Equals(TombEngineMaterial x, TombEngineMaterial y)
-            {
-                return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated && x.NormalMapping == y.NormalMapping && 
-                    x.AnimatedSequence == y.AnimatedSequence);
-            }
+	public class TombEngineMaterial
+	{
+		public class TombEngineMaterialComparer : IEqualityComparer<TombEngineMaterial>
+		{
+			public bool Equals(TombEngineMaterial x, TombEngineMaterial y)
+			{
+                return (x.Texture == y.Texture &&
+                    x.BlendMode == y.BlendMode &&
+                    x.Animated == y.Animated &&
+                    x.NormalMapping == y.NormalMapping &&
+                    x.AnimatedSequence == y.AnimatedSequence &&
+                    x.WaterPlaneIndex == y.WaterPlaneIndex &&
+                    x.Parameters0 == y.Parameters0 &&
+                    x.Parameters1 == y.Parameters1 &&
+                    x.Parameters2 == y.Parameters2 &&
+                    x.Parameters3 == y.Parameters3);
+			}
 
-            public int GetHashCode(TombEngineMaterial obj)
-            {
-                unchecked
-                {
-                    int hash = 17;
-                    hash = hash * 23 + obj.Texture.GetHashCode();
-                    hash = hash * 23 + obj.BlendMode.GetHashCode();
-                    hash = hash * 23 + obj.Animated.GetHashCode();
-                    hash = hash * 23 + obj.NormalMapping.GetHashCode();
-                    hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
-                    return hash;
-                }
-            }
-        }
+			public int GetHashCode(TombEngineMaterial obj)
+			{
+				unchecked
+				{
+					int hash = 17;
+					hash = hash * 23 + obj.Texture.GetHashCode();
+					hash = hash * 23 + obj.BlendMode.GetHashCode();
+					hash = hash * 23 + obj.Animated.GetHashCode();
+					hash = hash * 23 + obj.NormalMapping.GetHashCode();
+					hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
+					hash = hash * 23 + obj.WaterPlaneIndex.GetHashCode();
+					hash = hash * 23 + obj.MaterialType.GetHashCode();
+					hash = hash * 23 + obj.Parameters0.GetHashCode();
+					hash = hash * 23 + obj.Parameters1.GetHashCode();
+					hash = hash * 23 + obj.Parameters2.GetHashCode();
+					hash = hash * 23 + obj.Parameters3.GetHashCode();
 
-        public int Texture;
-        public byte BlendMode;
-        public bool Animated;
-        public bool NormalMapping;
-        public int AnimatedSequence;
-    }
+					return hash;
+				}
+			}
+		}
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public int Texture;
+		public byte BlendMode;
+		public byte MaterialType;
+		public bool Animated;
+		public bool NormalMapping;
+		public int AnimatedSequence;
+		public int WaterPlaneIndex;
+		public Vector4 Parameters0;
+		public Vector4 Parameters1;
+		public Vector4 Parameters2;
+		public Vector4 Parameters3;
+
+		public TombEngineMaterial(MaterialType type)
+		{
+			MaterialType = (byte)type;
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineBucket
     {
         public TombEngineMaterial Material;
@@ -377,7 +436,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
+                writer.Write(bucket.Material.MaterialType);
                 writer.Write(bucket.Material.Animated);
+                writer.Write(bucket.Material.Parameters0);
+                writer.Write(bucket.Material.Parameters1);
+				writer.Write(bucket.Material.Parameters2);
+				writer.Write(bucket.Material.Parameters3);
+
                 writer.Write(bucket.Polygons.Count);
                 foreach (var poly in bucket.Polygons)
                 {

@@ -71,7 +71,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (doubleSided && !texture.DoubleSided)
                         break;
 
-                    if (doubleSided)
+					var material = new TombEnginePolygonMaterial();
+
+					if (doubleSided)
                         texture.Mirror(poly.IsTriangle);
                     var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, texture.BlendMode);
 
@@ -85,11 +87,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (texture.BlendMode == BlendMode.Normal)
                         realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
-                    TombEnginePolygon newPoly;
+					material.BlendMode = realBlendMode;
+
+					TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
-                        newPoly = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, null);
+                        newPoly = result.CreateTombEnginePolygon3(indices, material, null);
                     else
-                        newPoly = result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, null);
+                        newPoly = result.CreateTombEnginePolygon4(indices, material, null);
 
                     newPoly.ShineStrength = (float)poly.ShineStrength / 63.0f;
 
@@ -139,7 +143,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, mesh.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.Material, poly.AnimatedSequence, mesh.Buckets);
 
                 var texture = textures[poly.TextureId];
 

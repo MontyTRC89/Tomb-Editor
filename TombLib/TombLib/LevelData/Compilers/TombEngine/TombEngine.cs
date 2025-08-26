@@ -158,9 +158,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(mesh.Buckets.Count);
                     foreach (var bucket in mesh.Buckets.Values)
                     {
-                        writer.Write(bucket.Material.Texture);
-                        writer.Write(bucket.Material.BlendMode);
-                        writer.Write(bucket.Material.Animated);
+						writer.Write(bucket.Material.Texture);
+						writer.Write(bucket.Material.BlendMode);
+						writer.Write(bucket.Material.MaterialType);
+						writer.Write(bucket.Material.Animated);
+						writer.Write(bucket.Material.Parameters0);
+						writer.Write(bucket.Material.Parameters1);
+						writer.Write(bucket.Material.Parameters2);
+						writer.Write(bucket.Material.Parameters3);
+
                         writer.Write(bucket.Polygons.Count);
                         foreach (var poly in bucket.Polygons)
                         {

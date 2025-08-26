@@ -118,6 +118,7 @@
 			replaceWithExternalTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			butExportTexture = new System.Windows.Forms.ToolStripButton();
 			butDeleteTexture = new System.Windows.Forms.ToolStripButton();
+			butMaterialEditor = new System.Windows.Forms.ToolStripButton();
 			butAllTextures = new DarkUI.Controls.DarkButton();
 			comboCurrentTexture = new TombLib.Controls.DarkSearchableComboBox();
 			panelTree = new DarkUI.Controls.DarkPanel();
@@ -1292,11 +1293,11 @@
 			darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			darkToolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { butAddTexture, butReplaceTexture, butExportTexture, butDeleteTexture });
-			darkToolStrip1.Location = new System.Drawing.Point(269, 2);
+			darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { butAddTexture, butReplaceTexture, butExportTexture, butDeleteTexture, butMaterialEditor });
+			darkToolStrip1.Location = new System.Drawing.Point(237, 2);
 			darkToolStrip1.Name = "darkToolStrip1";
 			darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-			darkToolStrip1.Size = new System.Drawing.Size(123, 28);
+			darkToolStrip1.Size = new System.Drawing.Size(155, 28);
 			darkToolStrip1.TabIndex = 9;
 			darkToolStrip1.Text = "darkToolStrip1";
 			// 
@@ -1380,9 +1381,22 @@
 			butDeleteTexture.Image = Properties.Resources.trash_16;
 			butDeleteTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
 			butDeleteTexture.Name = "butDeleteTexture";
-			butDeleteTexture.Size = new System.Drawing.Size(23, 20);
+			butDeleteTexture.Size = new System.Drawing.Size(23, 25);
 			butDeleteTexture.Text = "Delete texture";
 			butDeleteTexture.Click += butDeleteTexture_Click;
+			// 
+			// butMaterialEditor
+			// 
+			butMaterialEditor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			butMaterialEditor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			butMaterialEditor.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			butMaterialEditor.Image = Properties.Resources.material_editor_16;
+			butMaterialEditor.ImageTransparentColor = System.Drawing.Color.Magenta;
+			butMaterialEditor.Name = "butMaterialEditor";
+			butMaterialEditor.Size = new System.Drawing.Size(23, 20);
+			butMaterialEditor.Text = "Open material editor";
+			butMaterialEditor.ToolTipText = "Open the material editor";
+			butMaterialEditor.Click += butMaterialEditor_Click;
 			// 
 			// butAllTextures
 			// 
@@ -1403,7 +1417,7 @@
 			comboCurrentTexture.Location = new System.Drawing.Point(30, 3);
 			comboCurrentTexture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			comboCurrentTexture.Name = "comboCurrentTexture";
-			comboCurrentTexture.Size = new System.Drawing.Size(235, 23);
+			comboCurrentTexture.Size = new System.Drawing.Size(203, 23);
 			comboCurrentTexture.TabIndex = 4;
 			comboCurrentTexture.SelectedValueChanged += comboCurrentTexture_SelectedValueChanged;
 			// 
@@ -1602,5 +1616,6 @@
 		private System.Windows.Forms.ToolStripMenuItem addExternalTextureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem replaceWithEmbeddedTextureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem replaceWithExternalTextureToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton butMaterialEditor;
 	}
 }

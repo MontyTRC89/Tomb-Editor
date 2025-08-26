@@ -113,6 +113,8 @@ namespace WadTool
 			_tool.EditorEventRaised += Tool_EditorEventRaised;
 			panelTextureMap.SelectedTextureChanged += (s, e) => UpdateStatusLabel();
 
+			butMaterialEditor.Visible = wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
+
 			panelMesh.InitializeRendering(_tool, _deviceManager);
 			panelTextureMap.Initialize(_tool);
 
@@ -1718,6 +1720,20 @@ namespace WadTool
 		private void replaceWithExternalTextureToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ReplaceTexture(true);
+		}
+
+		private void butMaterialEditor_Click(object sender, EventArgs e)
+		{
+			var texture = comboCurrentTexture.SelectedItem as WadTexture;
+			if (!string.IsNullOrEmpty(texture.AbsolutePath))
+			{
+				using (var form = new FormMaterialEditor(texture.AbsolutePath))
+				{
+					form.ShowDialog();
+				}
+			}
+			else
+				DarkMessageBox.Show(this, "You can use the material editor only with external textures", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 	}
 }

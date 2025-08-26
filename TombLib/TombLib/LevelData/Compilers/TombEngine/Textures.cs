@@ -243,11 +243,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				writer.Write(atlas.ColorMap.Height);
 
 				WriteImageFast(writer, atlas.ColorMap, CompressionFormat.Bc3);
-                writer.Write(atlas.HasNormalMap);
+             
+				writer.Write(atlas.NormalMap is not null);
+				if (atlas.NormalMap is not null)
+				{
+					using (var ms = new MemoryStream())
+					{
+                        WriteImageFast(writer, atlas.NormalMap.Value, CompressionFormat.Bc5);
+					}
+				}
 
-                if (atlas.HasNormalMap)
-                    WriteImageFast(writer, atlas.NormalMap, CompressionFormat.Bc5);
-            }
+				writer.Write(atlas.AmbientOcclusionRoughnessSpecularMap is not  null);
+				if (atlas.AmbientOcclusionRoughnessSpecularMap is not null)
+				{
+					using (var ms = new MemoryStream())
+					{
+						WriteImageFast(writer, atlas.AmbientOcclusionRoughnessSpecularMap.Value, CompressionFormat.Bc3);
+					}
+				}
+
+				writer.Write(atlas.EmissiveMap is not null);
+				if (atlas.EmissiveMap is not null)
+				{
+					using (var ms = new MemoryStream())
+					{
+						WriteImageFast(writer, atlas.EmissiveMap.Value, CompressionFormat.Bc3);
+					}
+				}
+			}
         }
     }
 }
