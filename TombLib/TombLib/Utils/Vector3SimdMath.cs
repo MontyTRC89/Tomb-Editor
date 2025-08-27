@@ -6,7 +6,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace TombLib.Utils
 {
-	internal static class Simd3
+	internal static class Vector3SimdMath
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 		public static float Dot(in Vector3 a, in Vector3 b)
@@ -15,15 +15,20 @@ namespace TombLib.Utils
 			{
 				Vector128<float> va = Vector128.Create(a.X, a.Y, a.Z, 0f);
 				Vector128<float> vb = Vector128.Create(b.X, b.Y, b.Z, 0f);
-				Vector128<float> dp = Sse41.DotProduct(va, vb, 0x7F); // somma 3 componenti
+
+				// Sum 3 components
+				Vector128<float> dp = Sse41.DotProduct(va, vb, 0x7F); 
+
 				return dp.ToScalar();
 			}
 			else if (Sse3.IsSupported)
 			{
 				Vector128<float> va = Vector128.Create(a.X * b.X, a.Y * b.Y, a.Z * b.Z, 0f);
-				// hadd 2 volte per sommare x+y+z
+				
+				// hadd 2 times for summing x + y + z 
 				Vector128<float> s1 = Sse3.HorizontalAdd(va, va);
 				Vector128<float> s2 = Sse3.HorizontalAdd(s1, s1);
+				
 				return s2.ToScalar();
 			}
 			return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
@@ -32,7 +37,7 @@ namespace TombLib.Utils
 		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 		public static Vector3 Normalize(in Vector3 v)
 		{
-			// usa rsqrt: veloce, sufficiente per normal maps/lighting
+			// Use rsqrt, it's faster
 			if (Sse.IsSupported)
 			{
 				Vector128<float> x = Vector128.Create(v.X, v.Y, v.Z, 0f);
@@ -67,7 +72,7 @@ namespace TombLib.Utils
 		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 		public static Vector3 NormalizeFromDxDy(in Vector3 d, float dz)
 		{
-			// normalizza (dx,dy,dz) con intrinsics
+			// normaliza (dx, dy, dz) with intrinsics
 			if (Sse.IsSupported)
 			{
 				Vector128<float> v = Vector128.Create(d.X, d.Y, dz, 0f);
