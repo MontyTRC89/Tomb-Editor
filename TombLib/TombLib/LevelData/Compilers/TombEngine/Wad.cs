@@ -263,6 +263,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
+			ReportProgress(3, "Building moveables");
+			
             int lastAnimation = 0;
             int lastAnimDispatch = 0;
             foreach (WadMoveable oldMoveable in moveables.Values)
@@ -465,8 +467,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _animDispatches[i] = dispatch;
             }
 
-            // Convert static meshes
-            int convertedStaticsCount = 0;
+			// Convert static meshes
+
+			ReportProgress(4, "Building statics");
+
+			int convertedStaticsCount = 0;
             ReportProgress(10, "Converting static meshes");
             foreach (WadStatic oldStaticMesh in statics.Values)
             {
