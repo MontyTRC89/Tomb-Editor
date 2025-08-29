@@ -699,7 +699,10 @@ namespace TombEditor.Forms
             cbAgressiveTexturePacking.Enabled = !currentVersionToCheck;
             cbAgressiveFloordataPacking.Enabled = !currentVersionToCheck;
             cbCompressTextures.Enabled = currentVersionToCheck;
-            panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
+            cbRemapAnimTextures.Checked = !currentVersionToCheck;
+            cbRemapAnimTextures.Enabled = !currentVersionToCheck;
+
+			panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
             if (currentVersionToCheck)
             {
                 tbLuaPath.BackColor = File.Exists(_levelSettings.MakeAbsolute(_levelSettings.TenLuaScriptFile)) ? _correctColor : _wrongColor;
