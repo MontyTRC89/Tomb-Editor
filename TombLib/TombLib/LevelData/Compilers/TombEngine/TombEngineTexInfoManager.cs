@@ -1956,14 +1956,14 @@ namespace TombLib.LevelData.Compilers
             VectorInt2 atlasSize = new VectorInt2(MaxTileSize, MaxTileSize);
 
             RoomsAtlas = CreateAtlas(ref roomTextures, numRoomsAtlases, true, false, 0, atlasSize, false);
-            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, false, true, 0, atlasSize, false);
-            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, false, true, 0, atlasSize, false);
+            MoveablesAtlas = CreateAtlas(ref moveablesTextures, numMoveablesAtlases, true, true, 0, atlasSize, false);
+            StaticsAtlas = CreateAtlas(ref staticsTextures, numStaticsAtlases, true, true, 0, atlasSize, false);
 
             AnimatedAtlas = new List<TombEngineAtlas>();
             for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
                 var textures = animatedTextures[n];
-                AnimatedAtlas.AddRange(CreateAtlas(ref textures, 1, false, false, AnimatedAtlas.Count,
+                AnimatedAtlas.AddRange(CreateAtlas(ref textures, 1, true, false, AnimatedAtlas.Count,
                     animatedAtlasSizes.ElementAt(n),
                     _actualAnimTextures[n].Origin.AnimationType == AnimatedTextureAnimationType.UVRotate));
             }
