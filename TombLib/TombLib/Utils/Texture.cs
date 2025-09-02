@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using TombLib.LevelData;
 using System.Runtime.CompilerServices;
+using System.Reflection.Metadata;
 
 namespace TombLib.Utils
 {
@@ -347,7 +348,7 @@ namespace TombLib.Utils
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public Rectangle2 GetRect(bool? isTriangle = null)
         {
             bool tri = isTriangle ?? TextureIsTriangle;
@@ -372,6 +373,7 @@ namespace TombLib.Utils
 
         // Gets canonical texture area which is compatible with UVRotate routine
         // and also puts rotational difference into Rotation out parameter
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public TextureArea GetCanonicalTexture(bool isTriangle)
         {
             var minY = GetRect(isTriangle).Start.Y;
@@ -538,7 +540,8 @@ namespace TombLib.Utils
             }
         }
 
-        public void Rotate(int iter = 1, bool isTriangle = false)
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public void Rotate(int iter = 1, bool isTriangle = false)
         {
             for (int i = 0; i < iter; i++)
             {

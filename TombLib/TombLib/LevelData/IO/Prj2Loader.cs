@@ -54,6 +54,10 @@ namespace TombLib.LevelData.IO
                 });
 
                 level.Settings.HasUnknownData = chunkIO.UnknownChunksFound;
+
+                if (level.IsTombEngine)
+                    level.Settings.RemapAnimatedTextures = false;
+
                 return level;
             }
         }
