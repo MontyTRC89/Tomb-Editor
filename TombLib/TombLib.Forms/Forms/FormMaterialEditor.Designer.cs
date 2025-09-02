@@ -23,21 +23,25 @@
 			picPreviewColorMap = new System.Windows.Forms.PictureBox();
 			darkLabel9 = new DarkUI.Controls.DarkLabel();
 			panel1 = new System.Windows.Forms.Panel();
+			butClearSpecularMap = new DarkUI.Controls.DarkButton();
 			butBrowseSpecularMap = new DarkUI.Controls.DarkButton();
 			tbSpecularMapPath = new DarkUI.Controls.DarkTextBox();
 			picPreviewSpecularMap = new System.Windows.Forms.PictureBox();
 			darkLabel1 = new DarkUI.Controls.DarkLabel();
 			panel2 = new System.Windows.Forms.Panel();
+			butClearNormalMap = new DarkUI.Controls.DarkButton();
 			butBrowseNormalMap = new DarkUI.Controls.DarkButton();
 			tbNormalMapPath = new DarkUI.Controls.DarkTextBox();
 			picPreviewNormalMap = new System.Windows.Forms.PictureBox();
 			darkLabel2 = new DarkUI.Controls.DarkLabel();
 			panel3 = new System.Windows.Forms.Panel();
+			butClearAmbientOcclusionMap = new DarkUI.Controls.DarkButton();
 			butBrowseAmbientOcclusionMap = new DarkUI.Controls.DarkButton();
 			tbAmbientOcclusionMapPath = new DarkUI.Controls.DarkTextBox();
 			picPreviewAmbientOcclusionMap = new System.Windows.Forms.PictureBox();
 			darkLabel3 = new DarkUI.Controls.DarkLabel();
 			panel4 = new System.Windows.Forms.Panel();
+			butClearEmissiveMap = new DarkUI.Controls.DarkButton();
 			butBrowseEmissiveMap = new DarkUI.Controls.DarkButton();
 			tbEmissiveMapPath = new DarkUI.Controls.DarkTextBox();
 			picPreviewEmissiveMap = new System.Windows.Forms.PictureBox();
@@ -138,6 +142,7 @@
 			// panel1
 			// 
 			panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+			panel1.Controls.Add(butClearSpecularMap);
 			panel1.Controls.Add(butBrowseSpecularMap);
 			panel1.Controls.Add(tbSpecularMapPath);
 			panel1.Controls.Add(picPreviewSpecularMap);
@@ -147,13 +152,24 @@
 			panel1.Size = new System.Drawing.Size(513, 54);
 			panel1.TabIndex = 19;
 			// 
+			// butClearSpecularMap
+			// 
+			butClearSpecularMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			butClearSpecularMap.Checked = false;
+			butClearSpecularMap.Location = new System.Drawing.Point(407, 20);
+			butClearSpecularMap.Name = "butClearSpecularMap";
+			butClearSpecularMap.Size = new System.Drawing.Size(54, 22);
+			butClearSpecularMap.TabIndex = 11;
+			butClearSpecularMap.Text = "Clear";
+			butClearSpecularMap.Click += butClearSpecularMap_Click;
+			// 
 			// butBrowseSpecularMap
 			// 
 			butBrowseSpecularMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 			butBrowseSpecularMap.Checked = false;
-			butBrowseSpecularMap.Location = new System.Drawing.Point(370, 20);
+			butBrowseSpecularMap.Location = new System.Drawing.Point(332, 20);
 			butBrowseSpecularMap.Name = "butBrowseSpecularMap";
-			butBrowseSpecularMap.Size = new System.Drawing.Size(91, 22);
+			butBrowseSpecularMap.Size = new System.Drawing.Size(70, 22);
 			butBrowseSpecularMap.TabIndex = 9;
 			butBrowseSpecularMap.Text = "Browse";
 			butBrowseSpecularMap.Click += butBrowseSpecularMap_Click;
@@ -164,7 +180,7 @@
 			tbSpecularMapPath.Enabled = false;
 			tbSpecularMapPath.Location = new System.Drawing.Point(0, 20);
 			tbSpecularMapPath.Name = "tbSpecularMapPath";
-			tbSpecularMapPath.Size = new System.Drawing.Size(363, 22);
+			tbSpecularMapPath.Size = new System.Drawing.Size(326, 22);
 			tbSpecularMapPath.TabIndex = 8;
 			// 
 			// picPreviewSpecularMap
@@ -191,6 +207,7 @@
 			// 
 			// panel2
 			// 
+			panel2.Controls.Add(butClearNormalMap);
 			panel2.Controls.Add(butBrowseNormalMap);
 			panel2.Controls.Add(tbNormalMapPath);
 			panel2.Controls.Add(picPreviewNormalMap);
@@ -201,13 +218,24 @@
 			panel2.Size = new System.Drawing.Size(513, 51);
 			panel2.TabIndex = 20;
 			// 
+			// butClearNormalMap
+			// 
+			butClearNormalMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			butClearNormalMap.Checked = false;
+			butClearNormalMap.Location = new System.Drawing.Point(408, 20);
+			butClearNormalMap.Name = "butClearNormalMap";
+			butClearNormalMap.Size = new System.Drawing.Size(54, 22);
+			butClearNormalMap.TabIndex = 10;
+			butClearNormalMap.Text = "Clear";
+			butClearNormalMap.Click += butClearNormalMap_Click;
+			// 
 			// butBrowseNormalMap
 			// 
 			butBrowseNormalMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 			butBrowseNormalMap.Checked = false;
-			butBrowseNormalMap.Location = new System.Drawing.Point(370, 20);
+			butBrowseNormalMap.Location = new System.Drawing.Point(332, 20);
 			butBrowseNormalMap.Name = "butBrowseNormalMap";
-			butBrowseNormalMap.Size = new System.Drawing.Size(91, 22);
+			butBrowseNormalMap.Size = new System.Drawing.Size(70, 22);
 			butBrowseNormalMap.TabIndex = 9;
 			butBrowseNormalMap.Text = "Browse";
 			butBrowseNormalMap.Click += butBrowseNormalMap_Click;
@@ -218,7 +246,7 @@
 			tbNormalMapPath.Enabled = false;
 			tbNormalMapPath.Location = new System.Drawing.Point(0, 20);
 			tbNormalMapPath.Name = "tbNormalMapPath";
-			tbNormalMapPath.Size = new System.Drawing.Size(363, 22);
+			tbNormalMapPath.Size = new System.Drawing.Size(326, 22);
 			tbNormalMapPath.TabIndex = 8;
 			// 
 			// picPreviewNormalMap
@@ -245,6 +273,7 @@
 			// 
 			// panel3
 			// 
+			panel3.Controls.Add(butClearAmbientOcclusionMap);
 			panel3.Controls.Add(butBrowseAmbientOcclusionMap);
 			panel3.Controls.Add(tbAmbientOcclusionMapPath);
 			panel3.Controls.Add(picPreviewAmbientOcclusionMap);
@@ -255,13 +284,24 @@
 			panel3.Size = new System.Drawing.Size(513, 51);
 			panel3.TabIndex = 21;
 			// 
+			// butClearAmbientOcclusionMap
+			// 
+			butClearAmbientOcclusionMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			butClearAmbientOcclusionMap.Checked = false;
+			butClearAmbientOcclusionMap.Location = new System.Drawing.Point(407, 20);
+			butClearAmbientOcclusionMap.Name = "butClearAmbientOcclusionMap";
+			butClearAmbientOcclusionMap.Size = new System.Drawing.Size(54, 22);
+			butClearAmbientOcclusionMap.TabIndex = 11;
+			butClearAmbientOcclusionMap.Text = "Clear";
+			butClearAmbientOcclusionMap.Click += butClearAmbientOcclusionMap_Click;
+			// 
 			// butBrowseAmbientOcclusionMap
 			// 
 			butBrowseAmbientOcclusionMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 			butBrowseAmbientOcclusionMap.Checked = false;
-			butBrowseAmbientOcclusionMap.Location = new System.Drawing.Point(370, 20);
+			butBrowseAmbientOcclusionMap.Location = new System.Drawing.Point(332, 20);
 			butBrowseAmbientOcclusionMap.Name = "butBrowseAmbientOcclusionMap";
-			butBrowseAmbientOcclusionMap.Size = new System.Drawing.Size(91, 22);
+			butBrowseAmbientOcclusionMap.Size = new System.Drawing.Size(70, 22);
 			butBrowseAmbientOcclusionMap.TabIndex = 9;
 			butBrowseAmbientOcclusionMap.Text = "Browse";
 			butBrowseAmbientOcclusionMap.Click += butBrowseAmbientOcclusionMap_Click;
@@ -272,7 +312,7 @@
 			tbAmbientOcclusionMapPath.Enabled = false;
 			tbAmbientOcclusionMapPath.Location = new System.Drawing.Point(0, 20);
 			tbAmbientOcclusionMapPath.Name = "tbAmbientOcclusionMapPath";
-			tbAmbientOcclusionMapPath.Size = new System.Drawing.Size(363, 22);
+			tbAmbientOcclusionMapPath.Size = new System.Drawing.Size(326, 22);
 			tbAmbientOcclusionMapPath.TabIndex = 8;
 			// 
 			// picPreviewAmbientOcclusionMap
@@ -299,6 +339,7 @@
 			// 
 			// panel4
 			// 
+			panel4.Controls.Add(butClearEmissiveMap);
 			panel4.Controls.Add(butBrowseEmissiveMap);
 			panel4.Controls.Add(tbEmissiveMapPath);
 			panel4.Controls.Add(picPreviewEmissiveMap);
@@ -309,13 +350,24 @@
 			panel4.Size = new System.Drawing.Size(513, 51);
 			panel4.TabIndex = 22;
 			// 
+			// butClearEmissiveMap
+			// 
+			butClearEmissiveMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			butClearEmissiveMap.Checked = false;
+			butClearEmissiveMap.Location = new System.Drawing.Point(407, 20);
+			butClearEmissiveMap.Name = "butClearEmissiveMap";
+			butClearEmissiveMap.Size = new System.Drawing.Size(54, 22);
+			butClearEmissiveMap.TabIndex = 11;
+			butClearEmissiveMap.Text = "Clear";
+			butClearEmissiveMap.Click += butClearEmissiveMap_Click;
+			// 
 			// butBrowseEmissiveMap
 			// 
 			butBrowseEmissiveMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 			butBrowseEmissiveMap.Checked = false;
-			butBrowseEmissiveMap.Location = new System.Drawing.Point(370, 20);
+			butBrowseEmissiveMap.Location = new System.Drawing.Point(332, 20);
 			butBrowseEmissiveMap.Name = "butBrowseEmissiveMap";
-			butBrowseEmissiveMap.Size = new System.Drawing.Size(91, 22);
+			butBrowseEmissiveMap.Size = new System.Drawing.Size(70, 22);
 			butBrowseEmissiveMap.TabIndex = 9;
 			butBrowseEmissiveMap.Text = "Browse";
 			butBrowseEmissiveMap.Click += butBrowseEmissiveMap_Click;
@@ -326,7 +378,7 @@
 			tbEmissiveMapPath.Enabled = false;
 			tbEmissiveMapPath.Location = new System.Drawing.Point(0, 20);
 			tbEmissiveMapPath.Name = "tbEmissiveMapPath";
-			tbEmissiveMapPath.Size = new System.Drawing.Size(363, 22);
+			tbEmissiveMapPath.Size = new System.Drawing.Size(326, 22);
 			tbEmissiveMapPath.TabIndex = 8;
 			// 
 			// picPreviewEmissiveMap
@@ -411,6 +463,7 @@
 			nmSpecularIntensity.Size = new System.Drawing.Size(368, 22);
 			nmSpecularIntensity.TabIndex = 11;
 			nmSpecularIntensity.Value = new decimal(new int[] { 1, 0, 0, 0 });
+			nmSpecularIntensity.ValueChanged += nmSpecularIntensity_ValueChanged;
 			// 
 			// darkLabel6
 			// 
@@ -436,6 +489,7 @@
 			nmNormalMapStrength.Size = new System.Drawing.Size(368, 22);
 			nmNormalMapStrength.TabIndex = 9;
 			nmNormalMapStrength.Value = new decimal(new int[] { 1, 0, 0, 0 });
+			nmNormalMapStrength.ValueChanged += nmNormalMapStrength_ValueChanged;
 			// 
 			// lblScale
 			// 
@@ -570,5 +624,9 @@
 		private DarkUI.Controls.DarkNumericUpDown nmNormalMapStrength;
 		private DarkUI.Controls.DarkLabel darkLabel7;
 		private DarkUI.Controls.DarkLabel lblXmlMaterialFile;
+		private DarkUI.Controls.DarkButton butClearSpecularMap;
+		private DarkUI.Controls.DarkButton butClearNormalMap;
+		private DarkUI.Controls.DarkButton butClearAmbientOcclusionMap;
+		private DarkUI.Controls.DarkButton butClearEmissiveMap;
 	}
 }

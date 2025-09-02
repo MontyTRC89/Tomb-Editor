@@ -26,6 +26,13 @@ namespace TombLib.LevelData
 		public Vector4 Parameters1 { get; set; }
 		public Vector4 Parameters2 { get; set; }
 		public Vector4 Parameters3 { get; set; }
+		public bool IsNormalMapFound { get; set; }
+		public bool IsSpecularMapFound { get; set; }
+		public bool IsRoughnessMapFound { get; set; }
+		public bool IsAmbientOcclusionMapFound { get; set; }
+		public bool IsAlphaMaskMapFound { get; set; }
+		public bool IsAdditionalColorMapFound { get; set; }
+		public bool IsEmissiveMapFound { get; set; }
 
 		[XmlIgnore]
 		public string XmlMaterialFileName { get; set; }
@@ -53,30 +60,35 @@ namespace TombLib.LevelData
 				{
 					if (!PathC.IsTrulyAbsolutePath(materialData.NormalMap))
 						materialData.NormalMap = Path.Combine(basePath, materialData.NormalMap);
+					materialData.IsNormalMapFound = File.Exists(materialData.NormalMap);
 				}
 
 				if (!string.IsNullOrEmpty(materialData.EmissiveMap))
 				{
 					if (!PathC.IsTrulyAbsolutePath(materialData.EmissiveMap))
 						materialData.EmissiveMap = Path.Combine(basePath, materialData.EmissiveMap);
+					materialData.IsEmissiveMapFound = File.Exists(materialData.EmissiveMap);
 				}
 
 				if (!string.IsNullOrEmpty(materialData.SpecularMap))
 				{
 					if (!PathC.IsTrulyAbsolutePath(materialData.SpecularMap))
 						materialData.SpecularMap = Path.Combine(basePath, materialData.SpecularMap);
+					materialData.IsSpecularMapFound = File.Exists(materialData.SpecularMap);
 				}
 
 				if (!string.IsNullOrEmpty(materialData.RoughnessMap))
 				{
 					if (!PathC.IsTrulyAbsolutePath(materialData.RoughnessMap))
 						materialData.RoughnessMap = Path.Combine(basePath, materialData.RoughnessMap);
+					materialData.IsRoughnessMapFound = File.Exists(materialData.RoughnessMap);
 				}
 
 				if (!string.IsNullOrEmpty(materialData.AmbientOcclusionMap))
 				{
 					if (!PathC.IsTrulyAbsolutePath(materialData.AmbientOcclusionMap))
 						materialData.AmbientOcclusionMap = Path.Combine(basePath, materialData.AmbientOcclusionMap);
+					materialData.IsAmbientOcclusionMapFound = File.Exists(materialData.AmbientOcclusionMap);
 				}
 			}
 
@@ -177,17 +189,33 @@ namespace TombLib.LevelData
 					  Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_E" +
 					  Path.GetExtension(textureAbsolutePath));
 
-			// Clear textures which are not found
+			// Clear textures which are not found in this case
+			// Instead for XML we keep paths and we set to false their IsXYZFound properties 
+			// so we can show the problem in material editor
 			if (!File.Exists(materialData.NormalMap))
 				materialData.NormalMap = "";
+			else
+				materialData.IsNormalMapFound = true;
+
 			if (!File.Exists(materialData.SpecularMap))
 				materialData.SpecularMap = "";
+			else
+				materialData.IsSpecularMapFound = true;
+
 			if (!File.Exists(materialData.RoughnessMap))
 				materialData.RoughnessMap = "";
+			else
+				materialData.IsRoughnessMapFound = true;
+
 			if (!File.Exists(materialData.AmbientOcclusionMap))
 				materialData.AmbientOcclusionMap = "";
+			else
+				materialData.IsAmbientOcclusionMapFound = true;
+
 			if (!File.Exists(materialData.EmissiveMap))
 				materialData.EmissiveMap = "";
+			else
+				materialData.IsEmissiveMapFound = true;
 
 			// Default material is opaque with normal and specular intensitites equals to 1.0f
 			materialData.Type = MaterialType.Opaque;
