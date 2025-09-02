@@ -625,7 +625,7 @@
             butApplyWeightsToAllVertices.Size = new System.Drawing.Size(30, 52);
             butApplyWeightsToAllVertices.TabIndex = 34;
             butApplyWeightsToAllVertices.Text = "Fill";
-            toolTip.SetToolTip(butApplyWeightsToAllVertices, "Apply current weight to all vertices");
+            toolTip.SetToolTip(butApplyWeightsToAllVertices, "Apply current weights to all vertices");
             butApplyWeightsToAllVertices.Click += butApplyWeightsToAllVertices_Click;
             // 
             // nudWeightIndex4
