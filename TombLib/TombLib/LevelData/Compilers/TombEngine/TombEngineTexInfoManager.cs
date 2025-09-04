@@ -309,25 +309,25 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Compare parent's properties with incoming texture properties.
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
             public bool ParametersSimilar(TextureArea incomingTexture, TextureDestination destination)
             {
-                if (Destination != destination)
+				if (Destination != destination) return false;
+
+				var t1 = incomingTexture.Texture;
+				var t2 = Texture;
+
+				if (ReferenceEquals(t1, t2))
+                    return true;
+
+				if (t1 is TextureHashed h1)
+					return t2 is TextureHashed h2 && h1.Hash == h2.Hash;
+
+				if (t2 is TextureHashed) 
                     return false;
 
-                // See if texture is the same
-                TextureHashed incoming = incomingTexture.Texture as TextureHashed;
-                TextureHashed current = Texture as TextureHashed;
-
-                // First case here should never happen, unless we find a way to texture rooms
-                // with WAD textures or vice versa.
-                if ((incoming == null) != (current == null))
-                    return false;
-                else if (incoming != null)
-                    return incoming.Hash == current.Hash;
-                else
-                    return incomingTexture.Texture.GetHashCode() == Texture.GetHashCode();
-            }
+				return t1.GetHashCode() == t2.GetHashCode();
+			}
 
             // Compare raw bitmap data of given area with incoming texture
             public TextureArea? TextureSimilar(TextureArea texture)
@@ -1564,6 +1564,7 @@ namespace TombLib.LevelData.Compilers
                             // If also no custom bump path was found, we'll generate gradually the normal map later
                         }
 
+                        // Specular map
                         if (!string.IsNullOrEmpty(materialData.SpecularMap))
                         {
                             if (materialData.IsSpecularMapFound)
@@ -1590,7 +1591,8 @@ namespace TombLib.LevelData.Compilers
                                 _progressReporter.ReportWarn($"Specular map not found: {materialData.SpecularMap}");
                         }
 
-                        if (!string.IsNullOrEmpty(materialData.AmbientOcclusionMap))
+						// Ambient occlusion map
+						if (!string.IsNullOrEmpty(materialData.AmbientOcclusionMap))
                         {
                             if (materialData.IsAmbientOcclusionMapFound)
                             {
@@ -1616,6 +1618,7 @@ namespace TombLib.LevelData.Compilers
                                 _progressReporter.ReportWarn($"Ambient occlusion map not found: {materialData.AmbientOcclusionMap}");
                         }
 
+						// Roughness map
 						if (!string.IsNullOrEmpty(materialData.RoughnessMap))
 						{
 							if (materialData.IsRoughnessMapFound)
@@ -1642,6 +1645,7 @@ namespace TombLib.LevelData.Compilers
 								_progressReporter.ReportWarn($"Roughness map not found: {materialData.RoughnessMap}");
 						}
 
+						// Emissive map
 						if (!string.IsNullOrEmpty(materialData.EmissiveMap))
                         {
                             if (materialData.IsEmissiveMapFound)
@@ -1672,9 +1676,9 @@ namespace TombLib.LevelData.Compilers
                     sidecarLoadingCache.Add(p.Texture, cacheEntry);
                 }
 
-                // Normal map processing
                 var currentCacheEntry = sidecarLoadingCache[p.Texture];
 
+                // Normal map processing
                 if (currentCacheEntry.NormalMap is not null)
                 {
                     if (image.NormalMap is null)
@@ -1688,7 +1692,10 @@ namespace TombLib.LevelData.Compilers
                 }
                 else if (p.Texture is LevelTexture)
                 {
-                    var tex = p.Texture as LevelTexture;
+					// LEGACY: generate normal maps programmatically if no sidecar normal or bump map was provided
+					// and bump mapping is requested for this texture
+
+					var tex = p.Texture as LevelTexture;
 
                     // Only for level textures, try to generate normal maps
                     var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
