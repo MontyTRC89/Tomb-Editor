@@ -1683,7 +1683,7 @@ namespace TombLib.LevelData.Compilers
                         image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
                     }
 
-                    image.NormalMap.Value.CopyFrom(destX, destY, image.NormalMap.Value, x, y, width, height);
+                    image.NormalMap.Value.CopyFrom(destX, destY, currentCacheEntry.NormalMap.Value, x, y, width, height);
                     AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, destX, destY);
                 }
                 else if (p.Texture is LevelTexture)
@@ -1783,7 +1783,7 @@ namespace TombLib.LevelData.Compilers
                         image.EmissiveMap.Value.Fill(new ColorC(0, 0, 0, 255));
                     }
 
-                    image.NormalMap.Value.CopyFrom(destX, destY, image.NormalMap.Value, x, y, width, height);
+                    image.EmissiveMap.Value.CopyFrom(destX, destY, currentCacheEntry.EmissiveMap.Value, x, y, width, height);
                     AddPadding(p, image.EmissiveMap.Value, image.EmissiveMap.Value, 0, actualPadding, destX, destY);
                 }
 

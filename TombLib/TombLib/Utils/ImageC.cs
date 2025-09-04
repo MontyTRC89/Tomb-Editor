@@ -1,4 +1,5 @@
-﻿using bzPSD;
+﻿using Assimp;
+using bzPSD;
 using ColorThiefDotNet;
 using System;
 using System.Buffers;
@@ -14,6 +15,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using TombLib.LevelData;
 
 namespace TombLib.Utils
@@ -673,18 +675,18 @@ namespace TombLib.Utils
                 byte* destTop = toBase + (toY * Width + toX) * bpp;
                 byte* srcTop = fromBase + (fromY * fromImage.Width + fromX) * bpp;
 
-				// ========= LINEAR FAST PATH: a single block =========
-				// byte-contiguous rectangle on both images
+                // ========= LINEAR FAST PATH: a single block =========
+                // byte-contiguous rectangle on both images
 
-				if (destStride == (int)rowSize && srcStride == (int)rowSize)
+                if (destStride == (int)rowSize && srcStride == (int)rowSize)
                 {
                     nuint total = (nuint)(height) * rowSize;
 
                     // Overlap? Choose direction (memmove)
                     if (srcTop < destTop && destTop < srcTop + total)
                     {
-						// copy backwards
-						byte* s = srcTop + (long)total;
+                        // copy backwards
+                        byte* s = srcTop + (long)total;
                         byte* d = destTop + (long)total;
                         CopyBlockBackward(d, s, total);
                     }
@@ -707,23 +709,23 @@ namespace TombLib.Utils
 
                     if (overlap)
                     {
-						// copy backwards on this line
-						CopyBlockBackward(destRow + (long)rowSize, srcRow + (long)rowSize, rowSize);
+                        // copy backwards on this line
+                        CopyBlockBackward(destRow + (long)rowSize, srcRow + (long)rowSize, rowSize);
                     }
                     else
                     {
-						// copy forewards on this line
-						CopyBlockForward(destRow, srcRow, rowSize);
+                        // copy forewards on this line
+                        CopyBlockForward(destRow, srcRow, rowSize);
                     }
                 }
             }
         }
 
-		/// <summary>
-		/// Forward copy(src -> dst) of 'count' bytes, using AVX2/SSE2 and 8/4/2/1 queues.
-		/// dst and src must not increase toward low in overlap; to overlap, use backward.
-		/// </summary>
-				[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        /// <summary>
+        /// Forward copy(src -> dst) of 'count' bytes, using AVX2/SSE2 and 8/4/2/1 queues.
+        /// dst and src must not increase toward low in overlap; to overlap, use backward.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         private static unsafe void CopyBlockForward(byte* dst, byte* src, nuint count)
         {
             // AVX2: 32B
@@ -748,8 +750,8 @@ namespace TombLib.Utils
                 }
             }
 
-			// Scalar queues
-			while (count >= 8)
+            // Scalar queues
+            while (count >= 8)
             {
                 *(ulong*)dst = *(ulong*)src;
                 src += 8; dst += 8; count -= 8;
@@ -770,19 +772,19 @@ namespace TombLib.Utils
             }
         }
 
-		/// <summary>
-		/// Backward copy (srcEnd -> dstEnd) of 'count' bytes (like memmove left),
-		/// using AVX2/SSE2 and code 8/4/2/1. srcEnd and dstEnd point **one byte past** the end.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        /// <summary>
+        /// Backward copy (srcEnd -> dstEnd) of 'count' bytes (like memmove left),
+        /// using AVX2/SSE2 and code 8/4/2/1. srcEnd and dstEnd point **one byte past** the end.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         private static unsafe void CopyBlockBackward(byte* dstEnd, byte* srcEnd, nuint count)
         {
             // End pointers
             byte* dst = dstEnd;
             byte* src = srcEnd;
 
-			// AVX2: 32B at a time, going backwards
-			if (Avx2.IsSupported)
+            // AVX2: 32B at a time, going backwards
+            if (Avx2.IsSupported)
             {
                 while (count >= 32)
                 {
@@ -1000,9 +1002,9 @@ namespace TombLib.Utils
 
             fixed (byte* basePtr = _data)
             {
-				// FAST PATH: contiguous rectangle(only one Update)
+                // FAST PATH: contiguous rectangle(only one Update)
 
-				if (width == Width && x == 0)
+                if (width == Width && x == 0)
                 {
                     byte* start = basePtr + y * srcStride;
                     hasher.Update(new ReadOnlySpan<byte>(start, (int)total));
@@ -1258,22 +1260,32 @@ namespace TombLib.Utils
         }
 
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public unsafe void CopySingleChannelFrom(int toX, int toY, ImageC fromImage, int fromX, int fromY, int width, int height, ImageChannel channel)
+        public unsafe void CopySingleChannelFrom(
+            int toX, int toY, ImageC fromImage, int fromX, int fromY,
+            int width, int height, ImageChannel channel)
         {
             if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 ||
-                width <= 0 || height <= 0 ||
+            width <= 0 || height <= 0 ||
                 toX + width > Width || toY + height > Height ||
                 fromX + width > fromImage.Width || fromY + height > fromImage.Height)
                 return;
 
-			// Target channel (0..3) -> bit shift
-			int shiftTarget = ((int)channel & 3) * 8;
+            // ARGB nel uint (in memoria little-endian = BGRA):
+            // R=16, G=8, B=0, A=24
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            static int ShiftOf(ImageChannel ch) => ch switch
+            {
+                ImageChannel.R => 16,
+                ImageChannel.G => 8,
+                ImageChannel.B => 0,
+                _ => 24
+            };
 
-			// Scalar masks for fallback and vector construction
-			uint keepSrcRedMask = 0x000000FFu;                         // holds only the low byte (R) of each u32
-			uint clearDstMask = ~(0xFFu << shiftTarget);             // clears the destination byte in the dst
+            int shift = ShiftOf(channel);
+            uint mask = 0xFFu << shift;
+            uint invMask = ~mask;
 
-			fixed (byte* pDstBase = _data)
+            fixed (byte* pDstBase = _data)
             fixed (byte* pSrcBase = fromImage._data)
             {
                 int dstStrideBytes = Width * 4;
@@ -1282,97 +1294,53 @@ namespace TombLib.Utils
                 byte* dstRow = pDstBase + (toY * Width + toX) * 4;
                 byte* srcRow = pSrcBase + (fromY * fromImage.Width + fromX) * 4;
 
-                // --- Path AVX2: 8 pixel / iteration (32 byte) ---
+                // -------- AVX2: 8 px / iterazione --------
                 if (Avx2.IsSupported)
                 {
-                    var vKeepMask = Vector256.Create(keepSrcRedMask);
-                    var vClearMask = Vector256.Create(clearDstMask);
-
-					// 32 bit per-lane shift: use immediate via switch (faster and supported)
-
-					byte s = (byte)shiftTarget;
+                    var vMask = Vector256.Create(mask);
+                    var vInvMask = Vector256.Create(invMask);
 
                     for (int y = 0; y < height; ++y)
                     {
                         byte* dst = dstRow;
                         byte* src = srcRow;
 
-                        int x = 0;
-                        int n8 = width & ~7; // multiplies of 8 pixels
-
-                        for (; x < n8; x += 8)
+                        int n8 = width & ~7;
+                        for (int x = 0; x < n8; x += 8)
                         {
                             var vSrc = Avx.LoadVector256((uint*)(src + x * 4));
                             var vDst = Avx.LoadVector256((uint*)(dst + x * 4));
 
-                            // Extract R (low byte) for each pixel
-                            vSrc = Avx2.And(vSrc, vKeepMask);
-
-							// Shift in target channel (immediate -> use overload with const)
-							Vector256<uint> vShifted;
-                            switch (s)
-                            {
-                                case 0: vShifted = vSrc; break;
-                                case 8: vShifted = Avx2.ShiftLeftLogical(vSrc, 8); break;
-                                case 16: vShifted = Avx2.ShiftLeftLogical(vSrc, 16); break;
-                                default: vShifted = Avx2.ShiftLeftLogical(vSrc, 24); break;
-                            }
-
-							// Clear target byte and insert value
-							vDst = Avx2.And(vDst, vClearMask);
-                            vDst = Avx2.Or(vDst, vShifted);
-
-                            Avx.Store((uint*)(dst + x * 4), vDst);
+                            // dst = (dst & ~mask) | (src & mask)
+                            var vOut = Avx2.Or(Avx2.And(vDst, vInvMask), Avx2.And(vSrc, vMask));
+                            Avx.Store((uint*)(dst + x * 4), vOut);
                         }
 
-						// SSE2 queue (4 px) and scalar
-						int rem = width - n8;
+                        int rem = width - n8;
 
-                        if (Sse2.IsSupported)
+                        // Coda 4 px con SSE2 se disponibile
+                        if (Sse2.IsSupported && rem >= 4)
                         {
-                            var vKeep128 = Vector128.Create(keepSrcRedMask);
-                            var vClear128 = Vector128.Create(clearDstMask);
+                            int x4 = n8;
+                            var vSrc128 = Sse2.LoadVector128((uint*)(src + x4 * 4));
+                            var vDst128 = Sse2.LoadVector128((uint*)(dst + x4 * 4));
 
-                            int n4 = rem >= 4 ? 4 : 0;
-                            if (n4 != 0)
-                            {
-                                int x4 = n8;
+                            var vMask128 = Vector128.Create(mask);
+                            var vInvMask128 = Vector128.Create(invMask);
 
-                                var vSrc = Sse2.LoadVector128((uint*)(src + x4 * 4));
-                                var vDst = Sse2.LoadVector128((uint*)(dst + x4 * 4));
-                                vSrc = Sse2.And(vSrc, vKeep128);
+                            var vOut128 = Sse2.Or(Sse2.And(vDst128, vInvMask128), Sse2.And(vSrc128, vMask128));
+                            Sse2.Store((uint*)(dst + x4 * 4), vOut128);
 
-                                Vector128<uint> vShifted;
-                                switch (s)
-                                {
-                                    case 0: vShifted = vSrc; break;
-                                    case 8: vShifted = Sse2.ShiftLeftLogical(vSrc, 8); break;
-                                    case 16: vShifted = Sse2.ShiftLeftLogical(vSrc, 16); break;
-                                    default: vShifted = Sse2.ShiftLeftLogical(vSrc, 24); break;
-                                }
-
-                                vDst = Sse2.And(vDst, vClear128);
-                                vDst = Sse2.Or(vDst, vShifted);
-
-                                Sse2.Store((uint*)(dst + x4 * 4), vDst);
-
-                                n8 += 4;
-                                rem -= 4;
-                            }
+                            n8 += 4;
+                            rem -= 4;
                         }
 
-						// Scalar queue for residual pixels
-						for (int xi = n8; xi < width; ++xi)
+                        // Residui (0..3) scalar
+                        for (int x = n8; x < width; ++x)
                         {
-                            uint srcPx = ((uint*)src)[xi];
-                            uint dstPx = ((uint*)dst)[xi];
-
-                            uint red = srcPx & keepSrcRedMask;                 // byte R in LSB
-                            red <<= shiftTarget;                               // in the target channel
-                            dstPx &= clearDstMask;                             // clean target c
-                            dstPx |= red;                                      // write
-
-                            ((uint*)dst)[xi] = dstPx;
+                            uint sPx = ((uint*)src)[x];
+                            uint dPx = ((uint*)dst)[x];
+                            ((uint*)dst)[x] = (dPx & invMask) | (sPx & mask);
                         }
 
                         srcRow += srcStrideBytes;
@@ -1382,52 +1350,32 @@ namespace TombLib.Utils
                     return;
                 }
 
-				// --- SSE2 path (if AVX2 is not present): 4 pixels / iteration ---
-				if (Sse2.IsSupported)
+                // -------- SSE2: 4 px / iteration --------
+                if (Sse2.IsSupported)
                 {
-                    var vKeepMask = Vector128.Create(keepSrcRedMask);
-                    var vClearMask = Vector128.Create(clearDstMask);
-                    byte s = (byte)shiftTarget;
+                    var vMask = Vector128.Create(mask);
+                    var vInvMask = Vector128.Create(invMask);
 
                     for (int y = 0; y < height; ++y)
                     {
                         byte* dst = dstRow;
                         byte* src = srcRow;
 
-                        int x = 0;
                         int n4 = width & ~3;
-
-                        for (; x < n4; x += 4)
+                        for (int x = 0; x < n4; x += 4)
                         {
                             var vSrc = Sse2.LoadVector128((uint*)(src + x * 4));
                             var vDst = Sse2.LoadVector128((uint*)(dst + x * 4));
 
-                            vSrc = Sse2.And(vSrc, vKeepMask);
-
-                            Vector128<uint> vShifted;
-                            switch (s)
-                            {
-                                case 0: vShifted = vSrc; break;
-                                case 8: vShifted = Sse2.ShiftLeftLogical(vSrc, 8); break;
-                                case 16: vShifted = Sse2.ShiftLeftLogical(vSrc, 16); break;
-                                default: vShifted = Sse2.ShiftLeftLogical(vSrc, 24); break;
-                            }
-
-                            vDst = Sse2.And(vDst, vClearMask);
-                            vDst = Sse2.Or(vDst, vShifted);
-
-                            Sse2.Store((uint*)(dst + x * 4), vDst);
+                            var vOut = Sse2.Or(Sse2.And(vDst, vInvMask), Sse2.And(vSrc, vMask));
+                            Sse2.Store((uint*)(dst + x * 4), vOut);
                         }
 
-                        for (int i = n4; i < width; ++i)
+                        for (int x = n4; x < width; ++x)
                         {
-                            uint srcPx = ((uint*)src)[i];
-                            uint dstPx = ((uint*)dst)[i];
-                            uint red = srcPx & keepSrcRedMask;
-                            red <<= shiftTarget;
-                            dstPx &= clearDstMask;
-                            dstPx |= red;
-                            ((uint*)dst)[i] = dstPx;
+                            uint sPx = ((uint*)src)[x];
+                            uint dPx = ((uint*)dst)[x];
+                            ((uint*)dst)[x] = (dPx & invMask) | (sPx & mask);
                         }
 
                         srcRow += srcStrideBytes;
@@ -1437,7 +1385,7 @@ namespace TombLib.Utils
                     return;
                 }
 
-                // --- Fallback ---
+                // -------- Scalar fallback --------
                 for (int y = 0; y < height; ++y)
                 {
                     uint* dst = (uint*)dstRow;
@@ -1447,14 +1395,7 @@ namespace TombLib.Utils
                     {
                         uint sPx = src[x];
                         uint dPx = dst[x];
-
-                        uint red = sPx & keepSrcRedMask; // R in LSB
-                        red <<= shiftTarget;
-
-                        dPx &= clearDstMask;
-                        dPx |= red;
-
-                        dst[x] = dPx;
+                        dst[x] = (dPx & invMask) | (sPx & mask);
                     }
 
                     srcRow += srcStrideBytes;
