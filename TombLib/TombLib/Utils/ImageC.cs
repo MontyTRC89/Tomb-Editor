@@ -248,47 +248,78 @@ namespace TombLib.Utils
             span.Fill(packed);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public void SetColorDataForTransparentPixels(ColorC color)
-        {
-            // Build the RGB color wth alpha = zero
-            uint packedRgb = (uint)(color.B | (color.G << 8) | (color.R << 16)); // alpha = 0
-            var vRgb = new Vector<uint>(packedRgb);
-            var vAlphaMask = new Vector<uint>(0xFF000000);
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public unsafe void SetColorDataForTransparentPixels(ColorC color)
+		{
+			// Build RGB with alpha = 0 (BGRA packing)
+			uint packedRgb = (uint)(color.B | (color.G << 8) | (color.R << 16)); // A=0
+			int pixelCount = _data.Length >> 2; // bytes -> pixels
 
-            var span = MemoryMarshal.Cast<byte, uint>(_data);
-            int simdSize = Vector<uint>.Count;
-            int len = span.Length;
-            int i = 0;
+			fixed (byte* pBase8 = _data)
+			{
+				uint* p = (uint*)pBase8;
 
-            for (; i <= len - simdSize; i += simdSize)
-            {
-                // Load the block
-                var block = new Vector<uint>(span.Slice(i, simdSize));
-                var blockAlpha = block & vAlphaMask;
+				int i = 0;
 
-                // Pixels mask (alpha = zero)
-                var mask = Vector.Equals(blockAlpha, Vector<uint>.Zero);
+				if (Avx2.IsSupported)
+				{
+					var vRgb = Vector256.Create(packedRgb);
+					var vAlphaMask = Vector256.Create(0xFF000000u);
+					var vZero = Vector256<uint>.Zero;
 
-                // If no pixel is transparent, skip
-                if (Vector.EqualsAll(mask, Vector<uint>.Zero))
-                    continue;
+					// 8 pixels per iteration
+					int n8 = pixelCount & ~7;
+					for (; i < n8; i += 8)
+					{
+						var block = Avx.LoadVector256(p + i);
+						var a = Avx2.And(block, vAlphaMask);
 
-                // Build the block replacing RGB where alpha is zero  
-                var replaced = Vector.ConditionalSelect(mask, vRgb, block);
-                replaced.CopyTo(span.Slice(i, simdSize));
-            }
+						// mask = (alpha==0) ? 0xFFFFFFFF : 0x00000000
+						var mask = Avx2.CompareEqual(a, vZero);
 
-            // Remaining pixels
-            for (; i < len; i++)
-            {
-                uint p = span[i];
-                if ((p & 0xFF000000) == 0)
-                    span[i] = packedRgb;
-            }
-        }
+						// Quick skip if no transparent pixel in this block
+						if (Avx2.MoveMask(mask.AsByte()) == 0)
+							continue;
 
-        public void CalculatePalette(int colorCount = 256)
+						// result = (mask & vRgb) | (~mask & block)
+						var repl = Avx2.Or(Avx2.And(mask, vRgb), Avx2.AndNot(mask, block));
+						Avx.Store(p + i, repl);
+					}
+
+					// SSE2 tail (4 pixels)
+					if (Sse2.IsSupported)
+					{
+						var vRgb128 = Vector128.Create(packedRgb);
+						var vAlphaMask128 = Vector128.Create(0xFF000000u);
+						var vZero128 = Vector128<uint>.Zero;
+
+						int n4 = i + ((pixelCount - i) & ~3);
+						for (; i < n4; i += 4)
+						{
+							var block = Sse2.LoadVector128(p + i);
+							var a = Sse2.And(block, vAlphaMask128);
+							var mask = Sse2.CompareEqual(a, vZero128);
+
+							if (Sse2.MoveMask(mask.AsByte()) == 0)
+								continue;
+
+							var repl = Sse2.Or(Sse2.And(mask, vRgb128), Sse2.AndNot(mask, block));
+							Sse2.Store(p + i, repl);
+						}
+					}
+				}
+
+				// Scalar tail (<=3 pixels or no AVX2/SSE2)
+				for (; i < pixelCount; ++i)
+				{
+					uint px = p[i];
+					if ((px & 0xFF000000u) == 0) // alpha == 0
+						p[i] = packedRgb;        // replace RGB, keep A=0
+				}
+			}
+		}
+
+		public void CalculatePalette(int colorCount = 256)
         {
             if (colorCount > 256) colorCount = 256; // For some reason it fails with more...
             var colorThief = new ColorThief();
@@ -878,59 +909,237 @@ namespace TombLib.Utils
             }
         }
 
+		[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+		public unsafe BlendMode HasAlpha(TRVersion.Game version, int X, int Y, int width, int height)
+		{
+			var result = BlendMode.Normal;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe BlendMode HasAlpha(TRVersion.Game version, int X, int Y, int width, int height)
-        {
-            var result = BlendMode.Normal;
+			// Region bounds check
+			if ((uint)X >= Width || (uint)Y >= Height ||
+				width <= 0 || height <= 0 ||
+				X + width > Width || Y + height > Height)
+				return result;
 
-            if ((uint)X >= Width || (uint)Y >= Height ||
-                width <= 0 || height <= 0 ||
-                X + width > Width || Y + height > Height)
-                return result;
+			fixed (byte* basePtr8 = _data)
+			{
+				uint* basePtr = (uint*)basePtr8;
+				uint* ptr = basePtr + (Y * Width + X); // region top-left
+				int stride = Width;                    // image stride in pixels
 
-            fixed (byte* basePtr8 = _data)
-            {
-                uint* basePtr = (uint*)basePtr8;
-                uint* ptr = basePtr + (Y * Width + X);
+				if (version == TRVersion.Game.TombEngine)
+				{
+					bool hasZeroAlpha = false;
 
-                if (version == TRVersion.Game.TombEngine)
-                {
-                    for (int row = 0; row < height; row++)
-                    {
-                        uint* p = ptr + row * Width;
-                        for (int col = 0; col < width; col++)
-                        {
-                            uint alpha = p[col] & AlphaBits;
+					if (Avx2.IsSupported)
+					{
+						var vZero = Vector256.Create(0u);
+						var vFF = Vector256.Create(255u);
 
-                            if (alpha == AlphaBits)
-                                continue;
+						for (int row = 0; row < height; ++row)
+						{
+							uint* p = ptr + row * stride;
+							int x = 0;
 
-                            if (alpha != 0)
-                                return BlendMode.AlphaBlend;
+							// 8-pixel blocks (8 x uint = 32 bytes)
+							int n8 = width & ~7;
+							for (; x < n8; x += 8)
+							{
+								var v = Avx.LoadVector256(p + x);          // 8 * u32 BGRA
+								var a = Avx2.ShiftRightLogical(v, 24);     // per-lane alpha (0..255)
 
-                            result = BlendMode.AlphaTest;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int row = 0; row < height; row++)
-                    {
-                        uint* p = ptr + row * Width;
-                        for (int col = 0; col < width; col++)
-                        {
-                            if ((p[col] & AlphaBits) != AlphaBits)
-                                return BlendMode.AlphaTest;
-                        }
-                    }
-                }
-            }
+								var m0 = Avx2.CompareEqual(a, vZero); // a == 0?
+								var m255 = Avx2.CompareEqual(a, vFF);   // a == 255?
+								var nonPartial = Avx2.Or(m0, m255);          // true if (0 or 255)
 
-            return result;
-        }
+								// If NOT all lanes are (0 or 255) => at least one partial alpha => AlphaBlend
+								if (Avx2.MoveMask(nonPartial.AsByte()) != -1)
+									return BlendMode.AlphaBlend;
 
-        public unsafe BlendMode HasAlpha(TRVersion.Game version)
+								// Track presence of alpha == 0
+								if (!hasZeroAlpha && Avx2.MoveMask(m0.AsByte()) != 0)
+									hasZeroAlpha = true;
+							}
+
+							// SSE2 tail (4 px)
+							if (Sse2.IsSupported)
+							{
+								var vZero128 = Vector128.Create(0u);
+								var vFF128 = Vector128.Create(255u);
+								int n4 = x + ((width - x) & ~3);
+								for (; x < n4; x += 4)
+								{
+									var v128 = Sse2.LoadVector128(p + x);
+									var a128 = Sse2.ShiftRightLogical(v128, 24);
+
+									var m0128 = Sse2.CompareEqual(a128, vZero128);
+									var m255_128 = Sse2.CompareEqual(a128, vFF128);
+									var nonPartial128 = Sse2.Or(m0128, m255_128);
+
+									if (Sse2.MoveMask(nonPartial128.AsByte()) != 0xFFFF)
+										return BlendMode.AlphaBlend;
+
+									if (!hasZeroAlpha && Sse2.MoveMask(m0128.AsByte()) != 0)
+										hasZeroAlpha = true;
+								}
+							}
+
+							// Scalar tail (<= 3 px)
+							for (; x < width; ++x)
+							{
+								uint a = (p[x] >> 24) & 0xFFu; // A is the highest byte (BGRA)
+								if (a != 0 && a != 255) return BlendMode.AlphaBlend;
+								if (a == 0) hasZeroAlpha = true;
+							}
+						}
+
+						return hasZeroAlpha ? BlendMode.AlphaTest : BlendMode.Normal;
+					}
+					else if (Sse2.IsSupported)
+					{
+						var vZero128 = Vector128.Create(0u);
+						var vFF128 = Vector128.Create(255u);
+
+						for (int row = 0; row < height; ++row)
+						{
+							uint* p = ptr + row * stride;
+							int x = 0;
+							bool rowHasZero = false;
+
+							int n4 = width & ~3;
+							for (; x < n4; x += 4)
+							{
+								var v128 = Sse2.LoadVector128(p + x);
+								var a128 = Sse2.ShiftRightLogical(v128, 24);
+
+								var m0128 = Sse2.CompareEqual(a128, vZero128);
+								var m255_128 = Sse2.CompareEqual(a128, vFF128);
+								var nonPartial128 = Sse2.Or(m0128, m255_128);
+
+								if (Sse2.MoveMask(nonPartial128.AsByte()) != 0xFFFF)
+									return BlendMode.AlphaBlend;
+
+								if (!rowHasZero && Sse2.MoveMask(m0128.AsByte()) != 0)
+									rowHasZero = true;
+							}
+
+							for (; x < width; ++x)
+							{
+								uint a = (p[x] >> 24) & 0xFFu;
+								if (a != 0 && a != 255) return BlendMode.AlphaBlend;
+								if (a == 0) rowHasZero = true;
+							}
+
+							if (rowHasZero) result = BlendMode.AlphaTest;
+						}
+
+						return result;
+					}
+					else
+					{
+						// Scalar path
+						bool hasZero = false;
+						for (int row = 0; row < height; ++row)
+						{
+							uint* p = ptr + row * stride;
+							for (int col = 0; col < width; ++col)
+							{
+								uint a = (p[col] >> 24) & 0xFFu;
+								if (a != 0 && a != 255) return BlendMode.AlphaBlend;
+								if (a == 0) hasZero = true;
+							}
+						}
+						return hasZero ? BlendMode.AlphaTest : BlendMode.Normal;
+					}
+				}
+				else
+				{
+					// Non-TEN: any alpha != 255 => AlphaTest
+					if (Avx2.IsSupported)
+					{
+						var vFF = Vector256.Create(255u);
+
+						for (int row = 0; row < height; ++row)
+						{
+							uint* p = ptr + row * stride;
+							int x = 0;
+							int n8 = width & ~7;
+
+							for (; x < n8; x += 8)
+							{
+								var v = Avx.LoadVector256(p + x);
+								var a = Avx2.ShiftRightLogical(v, 24);
+								var m255 = Avx2.CompareEqual(a, vFF);
+
+								if (Avx2.MoveMask(m255.AsByte()) != -1)
+									return BlendMode.AlphaTest;
+							}
+
+							if (Sse2.IsSupported)
+							{
+								var vFF128 = Vector128.Create(255u);
+								int n4 = x + ((width - x) & ~3);
+								for (; x < n4; x += 4)
+								{
+									var v128 = Sse2.LoadVector128(p + x);
+									var a128 = Sse2.ShiftRightLogical(v128, 24);
+									var m255_128 = Sse2.CompareEqual(a128, vFF128);
+
+									if (Sse2.MoveMask(m255_128.AsByte()) != 0xFFFF)
+										return BlendMode.AlphaTest;
+								}
+							}
+
+							for (; x < width; ++x)
+								if (((p[x] >> 24) & 0xFFu) != 255)
+									return BlendMode.AlphaTest;
+						}
+
+						return BlendMode.Normal;
+					}
+					else if (Sse2.IsSupported)
+					{
+						var vFF128 = Vector128.Create(255u);
+
+						for (int row = 0; row < height; ++row)
+						{
+							uint* p = ptr + row * stride;
+							int x = 0;
+							int n4 = width & ~3;
+
+							for (; x < n4; x += 4)
+							{
+								var v128 = Sse2.LoadVector128(p + x);
+								var a128 = Sse2.ShiftRightLogical(v128, 24);
+								var m255_128 = Sse2.CompareEqual(a128, vFF128);
+
+								if (Sse2.MoveMask(m255_128.AsByte()) != 0xFFFF)
+									return BlendMode.AlphaTest;
+							}
+
+							for (; x < width; ++x)
+								if (((p[x] >> 24) & 0xFFu) != 255)
+									return BlendMode.AlphaTest;
+						}
+
+						return BlendMode.Normal;
+					}
+					else
+					{
+						// Scalar path
+						for (int row = 0; row < height; ++row)
+						{
+							uint* p = ptr + row * stride;
+							for (int col = 0; col < width; ++col)
+								if (((p[col] >> 24) & 0xFFu) != 255)
+									return BlendMode.AlphaTest;
+						}
+						return BlendMode.Normal;
+					}
+				}
+			}
+		}
+
+		public unsafe BlendMode HasAlpha(TRVersion.Game version)
         {
             return HasAlpha(version, 0, 0, Width, Height);
         }
