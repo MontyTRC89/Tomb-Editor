@@ -20,8 +20,28 @@ namespace TombLib.Utils
         };
 
         public static Color ToWinFormsColor(this Vector3 color) => new Vector4(color, 255.0f).ToWinFormsColor();
-        public static Vector3 ToFloat3Color(this Color color) => new Vector3(color.R, color.G, color.B) / 255.0f;
-        public static Vector4 ToFloat4Color(this Color color) => new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
+
+        public static Vector3 ToFloat3Color(this Color color)
+        {
+            if (color.R == Color.Gray.R && color.G == Color.Gray.G && color.B == Color.Gray.B)
+                return new Vector3(0.5f);
+
+            if (color.R == Color.White.R && color.G == Color.White.G && color.B == Color.White.B)
+                return Vector3.One;
+
+            return new Vector3(color.R, color.G, color.B) / 255.0f;
+        }
+
+        public static Vector4 ToFloat4Color(this Color color)
+        {
+            if (color.R == Color.Gray.R && color.G == Color.Gray.G && color.B == Color.Gray.B)
+                return new Vector4(0.5f);
+
+            if (color.R == Color.White.R && color.G == Color.White.G && color.B == Color.White.B)
+                return Vector4.One;
+
+            return new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
+        }
 
         public static Color ToWinFormsColor(this Vector4 color, float? alpha = null)
         {
