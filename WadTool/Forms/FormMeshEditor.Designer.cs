@@ -632,7 +632,7 @@
 			butApplyWeightsToAllVertices.Size = new System.Drawing.Size(30, 52);
 			butApplyWeightsToAllVertices.TabIndex = 34;
 			butApplyWeightsToAllVertices.Text = "Fill";
-			toolTip.SetToolTip(butApplyWeightsToAllVertices, "Apply current weight to all vertices");
+			toolTip.SetToolTip(butApplyWeightsToAllVertices, "Apply current weights to all vertices");
 			butApplyWeightsToAllVertices.Click += butApplyWeightsToAllVertices_Click;
 			// 
 			// nudWeightIndex4
@@ -1311,7 +1311,6 @@
 			butAddTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
 			butAddTexture.Name = "butAddTexture";
 			butAddTexture.Size = new System.Drawing.Size(29, 25);
-			butAddTexture.Text = "toolStripDropDownButton1";
 			// 
 			// addEmbeddedTextureToolStripMenuItem
 			// 
@@ -1341,7 +1340,6 @@
 			butReplaceTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
 			butReplaceTexture.Name = "butReplaceTexture";
 			butReplaceTexture.Size = new System.Drawing.Size(29, 25);
-			butReplaceTexture.Text = "toolStripDropDownButton2";
 			// 
 			// replaceWithEmbeddedTextureToolStripMenuItem
 			// 
