@@ -10,7 +10,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
-		private Dictionary<string, MaterialData> _materialsCache = new Dictionary<string, MaterialData>(StringComparer.OrdinalIgnoreCase);
+		private Dictionary<string, MaterialData> _materialsDictionary = new Dictionary<string, MaterialData>(StringComparer.OrdinalIgnoreCase);
+        private List<string> _materialsNames = new List<string>();
 
 		private void WriteLevelTombEngine()
         {
@@ -163,12 +164,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     {
 						writer.Write(bucket.Material.Texture);
 						writer.Write(bucket.Material.BlendMode);
-						writer.Write(bucket.Material.MaterialType);
+						writer.Write(bucket.Material.MaterialIndex);
 						writer.Write(bucket.Material.Animated);
-						writer.Write(bucket.Material.Parameters0);
-						writer.Write(bucket.Material.Parameters1);
-						writer.Write(bucket.Material.Parameters2);
-						writer.Write(bucket.Material.Parameters3);
 
                         writer.Write(bucket.Polygons.Count);
                         foreach (var poly in bucket.Polygons)
@@ -271,7 +268,24 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
 
-                geometryDataBuffer = geometryDataStream.ToArray();
+				// Write materials
+				writer.Write((uint)_materialsDictionary.Count);
+                foreach (var material in _materialsDictionary)
+                {
+                    writer.Write(material.Key);
+                    writer.Write((int)material.Value.Type);
+                    writer.Write(material.Value.Parameters0);
+					writer.Write(material.Value.Parameters1);
+					writer.Write(material.Value.Parameters2);
+					writer.Write(material.Value.Parameters3);
+					writer.Write(material.Value.IsNormalMapFound);
+					writer.Write(material.Value.IsAmbientOcclusionMapFound);
+					writer.Write(material.Value.IsRoughnessMapFound);
+					writer.Write(material.Value.IsSpecularMapFound);
+					writer.Write(material.Value.IsEmissiveMapFound);
+				}
+
+				geometryDataBuffer = geometryDataStream.ToArray();
             }
 
             using (var mediaStream = new MemoryStream())

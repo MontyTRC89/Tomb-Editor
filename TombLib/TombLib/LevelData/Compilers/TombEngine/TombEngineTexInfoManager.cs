@@ -787,7 +787,7 @@ namespace TombLib.LevelData.Compilers
             // degenerate quad. It's needed to fake UVRotate application to triangular areas.
             public bool ConvertToQuad;
 
-            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
+            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, BlendMode blendMode, int materialIndex, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 3)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -810,7 +810,8 @@ namespace TombLib.LevelData.Compilers
                 polygon.Shape = TombEnginePolygonShape.Triangle;
                 polygon.Indices.AddRange(transformedIndices);
                 polygon.TextureId = objectTextureIndex;
-                polygon.Material = material;
+                polygon.MaterialIndex = materialIndex;
+                polygon.BlendMode = (byte)blendMode;
                 polygon.Animated = Animated;
 
                 if (vertices != null)
@@ -824,7 +825,7 @@ namespace TombLib.LevelData.Compilers
                 return polygon;
             }
 
-            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, TombEnginePolygonMaterial material, List<TombEngineVertex> vertices)
+            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, BlendMode blendMode, int materialIndex, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 4)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -848,8 +849,9 @@ namespace TombLib.LevelData.Compilers
                 polygon.Shape = TombEnginePolygonShape.Quad;
                 polygon.Indices.AddRange(transformedIndices);
                 polygon.TextureId = objectTextureIndex;
-                polygon.Material = material;
-                polygon.Animated = Animated;
+				polygon.MaterialIndex = materialIndex;
+				polygon.BlendMode = (byte)blendMode;
+				polygon.Animated = Animated;
 
                 if (vertices != null)
                 {
@@ -1958,22 +1960,34 @@ namespace TombLib.LevelData.Compilers
                 for (int n = 0; n < RoomsAtlas.Count; n++)
                 {
                     RoomsAtlas[n].ColorMap.SaveToFile("OutputDebug\\RoomsAtlas" + n + ".png");
-                }
+					RoomsAtlas[n].NormalMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_N.png");
+					RoomsAtlas[n].AmbientOcclusionRoughnessSpecularMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_AOS.png");
+					RoomsAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_E.png");
+				}
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
                     MoveablesAtlas[n].ColorMap.SaveToFile("OutputDebug\\MoveablesAtlas" + n + ".png");
-                }
+					MoveablesAtlas[n].NormalMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_N.png");
+					MoveablesAtlas[n].AmbientOcclusionRoughnessSpecularMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_AOS.png");
+					MoveablesAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_E.png");
+				}
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
                     StaticsAtlas[n].ColorMap.SaveToFile("OutputDebug\\StaticsAtlas" + n + ".png");
-                }
+					StaticsAtlas[n].NormalMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_N.png");
+					StaticsAtlas[n].AmbientOcclusionRoughnessSpecularMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_AOS.png");
+					StaticsAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_E.png");
+				}
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
                     AnimatedAtlas[n].ColorMap.SaveToFile("OutputDebug\\AnimatedAtlas" + n + ".png");
-                }
+					AnimatedAtlas[n].NormalMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_N.png");
+					AnimatedAtlas[n].AmbientOcclusionRoughnessSpecularMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_AOS.png");
+					AnimatedAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_E.png");
+				}
             }
             catch { }   
 #endif

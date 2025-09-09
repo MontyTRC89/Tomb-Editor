@@ -71,8 +71,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (doubleSided && !texture.DoubleSided)
                         break;
 
-					var material = new TombEnginePolygonMaterial();
-
 					if (doubleSided)
                         texture.Mirror(poly.IsTriangle);
                     var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, texture.BlendMode);
@@ -86,21 +84,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var realBlendMode = texture.BlendMode;
                     if (texture.BlendMode == BlendMode.Normal)
                         realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
-
-					material.BlendMode = realBlendMode;
-
-					var cachedMaterial = _materialsCache.TryGetOrDefault(((WadTexture)texture.Texture).AbsolutePath);
-					material.Parameters0 = cachedMaterial.Parameters0;
-					material.Parameters1 = cachedMaterial.Parameters1;
-					material.Parameters2 = cachedMaterial.Parameters2;
-					material.Parameters3 = cachedMaterial.Parameters3;
-					material.Type = cachedMaterial.Type;
-
+					
+					var textureAbsolutePath = ((WadTexture)texture.Texture).AbsolutePath;
+                    int materialIndex = -1;
+					if (!string.IsNullOrEmpty(textureAbsolutePath))
+					{
+						materialIndex = _materialsNames.IndexOf(textureAbsolutePath);
+					}
+		
 					TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
-                        newPoly = result.CreateTombEnginePolygon3(indices, material, null);
+                        newPoly = result.CreateTombEnginePolygon3(indices, realBlendMode, materialIndex, null);
                     else
-                        newPoly = result.CreateTombEnginePolygon4(indices, material, null);
+                        newPoly = result.CreateTombEnginePolygon4(indices, realBlendMode, materialIndex, null);
 
                     newPoly.ShineStrength = (float)poly.ShineStrength / 63.0f;
 
@@ -150,7 +146,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.Material, poly.AnimatedSequence, mesh.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.MaterialIndex, poly.AnimatedSequence, mesh.Buckets);
 
                 var texture = textures[poly.TextureId];
 

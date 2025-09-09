@@ -219,10 +219,10 @@ namespace TombLib.LevelData
 
 			// Default material is opaque with:
 			// Normal intensity = 1.0
-			// Specular intensity = 0.0f
-			// Glow intensity = 0.0f
+			// Specular intensity = 1.0f
+			// Glow intensity = 1.0f
 			materialData.Type = MaterialType.Opaque;
-			materialData.Parameters0 = new Vector4(1.0f, 0.0f, 0.0f, 0.0f);
+			materialData.Parameters0 = new Vector4(1.0f, 1.0f, 1.0f, 0.0f);
 
 			return materialData;
 		}

@@ -82,30 +82,33 @@ namespace TombLib.LevelData.Compilers.TombEngine
 			{
 				foreach (var texture in _level.Settings.Textures)
 				{
-					if (!_materialsCache.ContainsKey(texture.Image.FileName))
+					if (!_materialsDictionary.ContainsKey(texture.Image.FileName))
 					{
 						var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
-						_materialsCache.Add(texture.Image.FileName, materialData);
+						_materialsDictionary.Add(texture.Image.FileName, materialData);
+                        _materialsNames.Add(texture.Image.FileName);
 					}
 				}
 
 				foreach (var importedGeometry in _level.Settings.ImportedGeometries)
 					foreach (var texture in importedGeometry.Textures)
 					{
-						if (!_materialsCache.ContainsKey(texture.Image.FileName))
+						if (!_materialsDictionary.ContainsKey(texture.Image.FileName))
 						{
 							var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
-							_materialsCache.Add(texture.Image.FileName, materialData);
+							_materialsDictionary.Add(texture.Image.FileName, materialData);
+							_materialsNames.Add(texture.Image.FileName);
 						}
 					}
 
 				foreach (var wad in _level.Settings.Wads)
 					foreach (var texture in wad.Wad.MeshTexturesUnique.Where(t => !string.IsNullOrEmpty(t.AbsolutePath)))
 					{
-						if (!_materialsCache.ContainsKey(texture.AbsolutePath))
+						if (!_materialsDictionary.ContainsKey(texture.AbsolutePath))
 						{
 							var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.AbsolutePath);
-							_materialsCache.Add(texture.AbsolutePath, materialData);
+							_materialsDictionary.Add(texture.AbsolutePath, materialData);
+							_materialsNames.Add(texture.AbsolutePath);
 						}
 					}
 			}

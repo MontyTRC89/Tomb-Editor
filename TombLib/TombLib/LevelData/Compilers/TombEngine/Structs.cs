@@ -74,20 +74,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public TombEngineSectorFlags Flags;
     }
 
-	public class TombEnginePolygonMaterial
-	{
-		public MaterialType Type { get; set; }
-		public BlendMode BlendMode { get; set; }
-		public Vector4 Parameters0 { get; set; }
-		public Vector4 Parameters1 { get; set; }
-		public Vector4 Parameters2 { get; set; }
-		public Vector4 Parameters3 { get; set; }
-
-		public TombEnginePolygonMaterial()
-		{
-		}
-	}
-
 	[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEnginePolygon
     {
@@ -107,8 +93,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int AnimatedSequence;
         public int AnimatedFrame;
         public float ShineStrength;
-
-		public TombEnginePolygonMaterial Material;
+		public int MaterialIndex;
 	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -233,12 +218,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     x.Animated == y.Animated &&
                     x.NormalMapping == y.NormalMapping &&
                     x.AnimatedSequence == y.AnimatedSequence &&
-                    x.WaterPlaneIndex == y.WaterPlaneIndex &&
-					x.MaterialType == y.MaterialType &&
-					x.Parameters0 == y.Parameters0 &&
-                    x.Parameters1 == y.Parameters1 &&
-                    x.Parameters2 == y.Parameters2 &&
-                    x.Parameters3 == y.Parameters3);
+                    x.WaterPlaneIndex == y.WaterPlaneIndex);
 			}
 
 			public int GetHashCode(TombEngineMaterial obj)
@@ -252,11 +232,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					hash = hash * 23 + obj.NormalMapping.GetHashCode();
 					hash = hash * 23 + obj.AnimatedSequence.GetHashCode();
 					hash = hash * 23 + obj.WaterPlaneIndex.GetHashCode();
-					hash = hash * 23 + obj.MaterialType.GetHashCode();
-					hash = hash * 23 + obj.Parameters0.GetHashCode();
-					hash = hash * 23 + obj.Parameters1.GetHashCode();
-					hash = hash * 23 + obj.Parameters2.GetHashCode();
-					hash = hash * 23 + obj.Parameters3.GetHashCode();
+					hash = hash * 23 + obj.MaterialIndex.GetHashCode();
 
 					return hash;
 				}
@@ -265,19 +241,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 		public int Texture;
 		public byte BlendMode;
-		public byte MaterialType;
 		public bool Animated;
 		public bool NormalMapping;
 		public int AnimatedSequence;
 		public int WaterPlaneIndex;
-		public Vector4 Parameters0;
-		public Vector4 Parameters1;
-		public Vector4 Parameters2;
-		public Vector4 Parameters3;
+        public int MaterialIndex;
 
-		public TombEngineMaterial(MaterialType type)
+		public TombEngineMaterial()
 		{
-			MaterialType = (byte)type;
 		}
 	}
 
@@ -421,12 +392,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
-                writer.Write(bucket.Material.MaterialType);
+                writer.Write(bucket.Material.MaterialIndex);
                 writer.Write(bucket.Material.Animated);
-                writer.Write(bucket.Material.Parameters0);
-                writer.Write(bucket.Material.Parameters1);
-				writer.Write(bucket.Material.Parameters2);
-				writer.Write(bucket.Material.Parameters3);
 
                 writer.Write(bucket.Polygons.Count);
                 foreach (var poly in bucket.Polygons)
