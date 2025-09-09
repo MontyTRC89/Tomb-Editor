@@ -77,7 +77,7 @@
 			// 
 			butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			butOK.Checked = false;
-			butOK.Location = new System.Drawing.Point(345, 614);
+			butOK.Location = new System.Drawing.Point(345, 439);
 			butOK.Name = "butOK";
 			butOK.Size = new System.Drawing.Size(80, 23);
 			butOK.TabIndex = 16;
@@ -89,7 +89,7 @@
 			butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			butCancel.Checked = false;
 			butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			butCancel.Location = new System.Drawing.Point(431, 614);
+			butCancel.Location = new System.Drawing.Point(431, 439);
 			butCancel.Name = "butCancel";
 			butCancel.Size = new System.Drawing.Size(80, 23);
 			butCancel.TabIndex = 17;
@@ -407,7 +407,7 @@
 			// 
 			darkLabel5.AutoSize = true;
 			darkLabel5.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel5.Location = new System.Drawing.Point(7, 268);
+			darkLabel5.Location = new System.Drawing.Point(4, 268);
 			darkLabel5.Name = "darkLabel5";
 			darkLabel5.Size = new System.Drawing.Size(77, 13);
 			darkLabel5.TabIndex = 25;
@@ -426,14 +426,15 @@
 			// 
 			// tabcontainerParameters
 			// 
-			tabcontainerParameters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+			tabcontainerParameters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 			tabcontainerParameters.Controls.Add(tabPage1);
 			tabcontainerParameters.Controls.Add(tabPage2);
-			tabcontainerParameters.Location = new System.Drawing.Point(4, 294);
+			tabcontainerParameters.Location = new System.Drawing.Point(7, 347);
 			tabcontainerParameters.Name = "tabcontainerParameters";
 			tabcontainerParameters.SelectedIndex = 0;
-			tabcontainerParameters.Size = new System.Drawing.Size(514, 260);
+			tabcontainerParameters.Size = new System.Drawing.Size(514, 82);
 			tabcontainerParameters.TabIndex = 26;
+			tabcontainerParameters.Visible = false;
 			// 
 			// tabPage1
 			// 
@@ -445,7 +446,7 @@
 			tabPage1.Location = new System.Drawing.Point(4, 22);
 			tabPage1.Name = "tabPage1";
 			tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			tabPage1.Size = new System.Drawing.Size(506, 234);
+			tabPage1.Size = new System.Drawing.Size(506, 56);
 			tabPage1.TabIndex = 0;
 			tabPage1.Text = "tabPage1";
 			// 
@@ -513,11 +514,10 @@
 			// 
 			// darkLabel7
 			// 
-			darkLabel7.AutoSize = true;
 			darkLabel7.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			darkLabel7.Location = new System.Drawing.Point(7, 563);
+			darkLabel7.Location = new System.Drawing.Point(4, 301);
 			darkLabel7.Name = "darkLabel7";
-			darkLabel7.Size = new System.Drawing.Size(94, 13);
+			darkLabel7.Size = new System.Drawing.Size(76, 32);
 			darkLabel7.TabIndex = 27;
 			darkLabel7.Text = "XML material file:";
 			// 
@@ -525,9 +525,9 @@
 			// 
 			lblXmlMaterialFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			lblXmlMaterialFile.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			lblXmlMaterialFile.Location = new System.Drawing.Point(107, 563);
+			lblXmlMaterialFile.Location = new System.Drawing.Point(90, 301);
 			lblXmlMaterialFile.Name = "lblXmlMaterialFile";
-			lblXmlMaterialFile.Size = new System.Drawing.Size(407, 43);
+			lblXmlMaterialFile.Size = new System.Drawing.Size(428, 43);
 			lblXmlMaterialFile.TabIndex = 28;
 			lblXmlMaterialFile.Text = "-";
 			// 
@@ -538,7 +538,7 @@
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			AutoSize = true;
 			CancelButton = butCancel;
-			ClientSize = new System.Drawing.Size(521, 647);
+			ClientSize = new System.Drawing.Size(521, 472);
 			Controls.Add(lblXmlMaterialFile);
 			Controls.Add(darkLabel7);
 			Controls.Add(tabcontainerParameters);
