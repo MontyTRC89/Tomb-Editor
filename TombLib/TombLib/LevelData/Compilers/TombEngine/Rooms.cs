@@ -23,7 +23,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
 		private Dictionary<Vector3, List<(TombEngineRoom room, int vertexIndex, NormalHelper poly)>> _normalGroups;
         private Dictionary<Room, VectorInt2> _roomsMinFloorMaxCeilingCache = new Dictionary<Room, VectorInt2>();
-
+        
 		private void BuildRooms(CancellationToken cancelToken)
         {
             ReportProgress(5, "Lighting Rooms");
@@ -38,7 +38,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 room.RebuildLighting(!_level.Settings.FastMode);
             });
 
-            ReportProgress(15, "Building rooms");
+			ReportProgress(15, "Building rooms");
 
             foreach (var room in _level.ExistingRooms)
             {
@@ -323,6 +323,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 								material.BlendMode = realBlendMode;
 
+                                var cachedMaterial = _materialsCache.TryGetOrDefault(texture.Texture.Image.FileName);
+                                material.Parameters0 = cachedMaterial.Parameters0;
+								material.Parameters1 = cachedMaterial.Parameters1;
+								material.Parameters2 = cachedMaterial.Parameters2;
+								material.Parameters3 = cachedMaterial.Parameters3;
+								material.Type = cachedMaterial.Type;
+
 								int rangeEnd = range.Start + range.Count;
                                 for (int i = range.Start; i < rangeEnd; i += 3)
                                 {
@@ -529,6 +536,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 								material.BlendMode = realBlendMode;
 
+								var cachedMaterial = _materialsCache.TryGetOrDefault(texture.Texture.Image.FileName);
+								material.Parameters0 = cachedMaterial.Parameters0;
+								material.Parameters1 = cachedMaterial.Parameters1;
+								material.Parameters2 = cachedMaterial.Parameters2;
+								material.Parameters3 = cachedMaterial.Parameters3;
+								material.Type = cachedMaterial.Type;
+
 								bool texInfoExists = _mergedStaticMeshTextureInfos.ContainsKey(key);
                                 var result = texInfoExists ? _mergedStaticMeshTextureInfos[key] :
                                             _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
@@ -700,6 +714,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         realBlendMode = BlendMode.AlphaTest;
 
 									material.BlendMode = realBlendMode;
+
+									var cachedMaterial = _materialsCache.TryGetOrDefault(texture.Texture.Image.FileName);
+									material.Parameters0 = cachedMaterial.Parameters0;
+									material.Parameters1 = cachedMaterial.Parameters1;
+									material.Parameters2 = cachedMaterial.Parameters2;
+									material.Parameters3 = cachedMaterial.Parameters3;
+									material.Type = cachedMaterial.Type;
 
 									if (doubleSided)
                                     {
@@ -1799,10 +1820,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				BlendMode = (byte)polygonMaterial.BlendMode,
 				Animated = animatedSequence >= 0,
 				AnimatedSequence = animatedSequence,
-				Parameters0 = polygonMaterial.FloatParameters0,
-				Parameters1 = polygonMaterial.FloatParameters1,
-				Parameters2 = polygonMaterial.FloatParameters2,
-				Parameters3 = polygonMaterial.FloatParameters3
+				Parameters0 = polygonMaterial.Parameters0,
+				Parameters1 = polygonMaterial.Parameters1,
+				Parameters2 = polygonMaterial.Parameters2,
+				Parameters3 = polygonMaterial.Parameters3,
+                MaterialType = (byte)polygonMaterial.Type
 			};
 
 			if (!buckets.ContainsKey(material))

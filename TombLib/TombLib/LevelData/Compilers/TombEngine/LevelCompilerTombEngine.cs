@@ -77,8 +77,41 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _textureInfoManager = new TombEngineTexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
-            // Prepare level data in parallel to the sounds
-            ConvertWad2DataToTombEngine();
+			//Load all sidecar materials, if they are not found they will be created as opaque with default settings
+			ReportProgress(0, "Building cache of sidecar loaded materials");
+			{
+				foreach (var texture in _level.Settings.Textures)
+				{
+					if (!_materialsCache.ContainsKey(texture.Image.FileName))
+					{
+						var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+						_materialsCache.Add(texture.Image.FileName, materialData);
+					}
+				}
+
+				foreach (var importedGeometry in _level.Settings.ImportedGeometries)
+					foreach (var texture in importedGeometry.Textures)
+					{
+						if (!_materialsCache.ContainsKey(texture.Image.FileName))
+						{
+							var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+							_materialsCache.Add(texture.Image.FileName, materialData);
+						}
+					}
+
+				foreach (var wad in _level.Settings.Wads)
+					foreach (var texture in wad.Wad.MeshTexturesUnique.Where(t => !string.IsNullOrEmpty(t.AbsolutePath)))
+					{
+						if (!_materialsCache.ContainsKey(texture.AbsolutePath))
+						{
+							var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.AbsolutePath);
+							_materialsCache.Add(texture.AbsolutePath, materialData);
+						}
+					}
+			}
+
+			// Prepare level data in parallel to the sounds
+			ConvertWad2DataToTombEngine();
 
             cancelToken.ThrowIfCancellationRequested();
 

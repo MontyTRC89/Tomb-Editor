@@ -89,6 +89,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
 					material.BlendMode = realBlendMode;
 
+					var cachedMaterial = _materialsCache.TryGetOrDefault(((WadTexture)texture.Texture).AbsolutePath);
+					material.Parameters0 = cachedMaterial.Parameters0;
+					material.Parameters1 = cachedMaterial.Parameters1;
+					material.Parameters2 = cachedMaterial.Parameters2;
+					material.Parameters3 = cachedMaterial.Parameters3;
+					material.Type = cachedMaterial.Type;
+
 					TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
                         newPoly = result.CreateTombEnginePolygon3(indices, material, null);

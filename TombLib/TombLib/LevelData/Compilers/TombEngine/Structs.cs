@@ -78,26 +78,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 	{
 		public MaterialType Type { get; set; }
 		public BlendMode BlendMode { get; set; }
-		public Vector4 FloatParameters0 { get; set; }
-		public Vector4 FloatParameters1 { get; set; }
-		public Vector4 FloatParameters2 { get; set; }
-		public Vector4 FloatParameters3 { get; set; }
-		public VectorInt4 IntegerParameters0 { get; set; }
-		public VectorInt4 IntegerParameters1 { get; set; }
-		public VectorInt4 IntegerParameters2 { get; set; }
-		public VectorInt4 IntegerParameters3 { get; set; }
-		public Vector2 Vector2Parameters0 { get; set; }
-		public Vector2 Vector2Parameters1 { get; set; }
-		public Vector2 Vector2Parameters2 { get; set; }
-		public Vector2 Vector2Parameters3 { get; set; }
-		public Vector3 Vector3Parameters0 { get; set; }
-		public Vector3 Vector3Parameters1 { get; set; }
-		public Vector3 Vector3Parameters2 { get; set; }
-		public Vector3 Vector3Parameters3 { get; set; }
-		public Vector4 Vector4Parameters0 { get; set; }
-		public Vector4 Vector4Parameters1 { get; set; }
-		public Vector4 Vector4Parameters2 { get; set; }
-		public Vector4 Vector4Parameters3 { get; set; }
+		public Vector4 Parameters0 { get; set; }
+		public Vector4 Parameters1 { get; set; }
+		public Vector4 Parameters2 { get; set; }
+		public Vector4 Parameters3 { get; set; }
 
 		public TombEnginePolygonMaterial()
 		{
@@ -250,7 +234,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     x.NormalMapping == y.NormalMapping &&
                     x.AnimatedSequence == y.AnimatedSequence &&
                     x.WaterPlaneIndex == y.WaterPlaneIndex &&
-                    x.Parameters0 == y.Parameters0 &&
+					x.MaterialType == y.MaterialType &&
+					x.Parameters0 == y.Parameters0 &&
                     x.Parameters1 == y.Parameters1 &&
                     x.Parameters2 == y.Parameters2 &&
                     x.Parameters3 == y.Parameters3);

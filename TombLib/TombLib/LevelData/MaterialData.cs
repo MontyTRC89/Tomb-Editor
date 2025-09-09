@@ -217,9 +217,12 @@ namespace TombLib.LevelData
 			else
 				materialData.IsEmissiveMapFound = true;
 
-			// Default material is opaque with normal and specular intensitites equals to 1.0f
+			// Default material is opaque with:
+			// Normal intensity = 1.0
+			// Specular intensity = 0.0f
+			// Glow intensity = 0.0f
 			materialData.Type = MaterialType.Opaque;
-			materialData.Parameters0 = new Vector4(1.0f, 1.0f, 0.0f, 0.0f);
+			materialData.Parameters0 = new Vector4(1.0f, 0.0f, 0.0f, 0.0f);
 
 			return materialData;
 		}

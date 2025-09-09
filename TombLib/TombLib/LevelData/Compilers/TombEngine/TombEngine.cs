@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
@@ -9,7 +10,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
-        private void WriteLevelTombEngine()
+		private Dictionary<string, MaterialData> _materialsCache = new Dictionary<string, MaterialData>(StringComparer.OrdinalIgnoreCase);
+
+		private void WriteLevelTombEngine()
         {
             byte[] dynamicDataBuffer;
             using (var dynamicDataStream = new MemoryStream())
