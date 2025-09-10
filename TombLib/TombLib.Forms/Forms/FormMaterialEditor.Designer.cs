@@ -417,7 +417,7 @@
 			// 
 			comboMaterialType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 			comboMaterialType.FormattingEnabled = true;
-			comboMaterialType.Items.AddRange(new object[] { "Opaque" });
+			comboMaterialType.Items.AddRange(new object[] { "Opaque", "Reflective" });
 			comboMaterialType.Location = new System.Drawing.Point(90, 265);
 			comboMaterialType.Name = "comboMaterialType";
 			comboMaterialType.Size = new System.Drawing.Size(424, 23);
@@ -508,7 +508,7 @@
 			tabPage2.Location = new System.Drawing.Point(4, 22);
 			tabPage2.Name = "tabPage2";
 			tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			tabPage2.Size = new System.Drawing.Size(506, 234);
+			tabPage2.Size = new System.Drawing.Size(506, 56);
 			tabPage2.TabIndex = 1;
 			tabPage2.Text = "tabPage2";
 			// 

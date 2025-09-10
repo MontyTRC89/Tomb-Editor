@@ -218,7 +218,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     x.Animated == y.Animated &&
                     x.NormalMapping == y.NormalMapping &&
                     x.AnimatedSequence == y.AnimatedSequence &&
-                    x.WaterPlaneIndex == y.WaterPlaneIndex);
+					x.MaterialIndex == y.MaterialIndex &&
+					x.WaterPlaneIndex == y.WaterPlaneIndex);
 			}
 
 			public int GetHashCode(TombEngineMaterial obj)

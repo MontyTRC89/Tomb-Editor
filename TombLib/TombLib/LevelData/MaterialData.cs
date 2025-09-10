@@ -8,7 +8,7 @@ namespace TombLib.LevelData
 	public enum MaterialType : byte
 	{
 		Opaque,
-		Water
+		Reflective
 	}
 
 	public class MaterialData
