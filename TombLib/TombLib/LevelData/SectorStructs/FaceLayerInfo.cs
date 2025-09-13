@@ -1,11 +1,12 @@
-﻿using TombLib.LevelData.SectorEnums;
+﻿using System;
+using TombLib.LevelData.SectorEnums;
 
 namespace TombLib.LevelData.SectorStructs;
 
-public struct FaceLayerInfo
+public readonly struct FaceLayerInfo : IEquatable<FaceLayerInfo>
 {
-	public SectorFace Face { get; set; }
-	public FaceLayer Layer { get; set; }
+	public readonly SectorFace Face { get; }
+	public readonly FaceLayer Layer { get; }
 
 	public FaceLayerInfo(SectorFace face, FaceLayer layer)
 	{
@@ -13,5 +14,11 @@ public struct FaceLayerInfo
 		Layer = layer;
 	}
 
-	public override int GetHashCode() => Face.GetHashCode() ^ Layer.GetHashCode();
+	public override int GetHashCode() => HashCode.Combine(Face, Layer);
+
+	public bool Equals(FaceLayerInfo other) => Face == other.Face && Layer == other.Layer;
+	public override bool Equals(object obj) => obj is FaceLayerInfo other && Equals(other);
+
+	public static bool operator ==(FaceLayerInfo first, FaceLayerInfo second) => first.Equals(second);
+	public static bool operator !=(FaceLayerInfo first, FaceLayerInfo second) => !first.Equals(second);
 }
