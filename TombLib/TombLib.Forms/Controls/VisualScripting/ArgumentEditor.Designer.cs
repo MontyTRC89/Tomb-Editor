@@ -341,7 +341,7 @@
             panelColor.TabIndex = 1;
             panelColor.BackColorChanged += panelColor_BackColorChanged;
             panelColor.DragDrop += panelColor_DragDrop;
-            panelColor.DragEnter += panelColor_DragEnter;
+            panelColor.DragEnter += draggableControl_DragEnter;
             panelColor.MouseClick += panelColor_MouseClick;
             // 
             // groupTime

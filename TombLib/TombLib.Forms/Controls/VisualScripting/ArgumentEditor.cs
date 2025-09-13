@@ -649,6 +649,16 @@ namespace TombLib.Controls.VisualScripting
             return (_argumentType == ArgumentType.WadSlots);
         }
 
+        private bool IsPositionBased()
+        {
+            return (_argumentType == ArgumentType.Vector3);
+        }
+
+        private bool IsColorBased()
+        {
+            return (_argumentType == ArgumentType.Color);
+        }
+
         private void rb_CheckedChanged(object sender, EventArgs e) => BoxBoolValue();
         private void nudNumerical_ValueChanged(object sender, EventArgs e) => BoxNumericalValue();
         private void nudTime_ValueChanged(object sender, EventArgs e) => BoxTimeValue();
@@ -714,6 +724,12 @@ namespace TombLib.Controls.VisualScripting
 
             if (IsWadSlotBased() && (e.Data.GetData(e.Data.GetFormats()[0]) as WadMoveable) != null)
                 e.Effect = DragDropEffects.Copy;
+
+            if (IsPositionBased() && (e.Data.GetData(e.Data.GetFormats()[0]) as PositionBasedObjectInstance) != null)
+                e.Effect = DragDropEffects.Copy;
+
+            if (IsColorBased() && (e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) != null)
+                e.Effect = DragDropEffects.Copy;
         }
 
         private void cbList_DragDrop(object sender, DragEventArgs e)
@@ -760,23 +776,14 @@ namespace TombLib.Controls.VisualScripting
 
         private void vector3Control_DragDrop(object sender, DragEventArgs e)
         {
-            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as PositionBasedObjectInstance) == null)
                 return;
 
-            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
-
-            if (string.IsNullOrEmpty(item.LuaName))
-                return;
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionBasedObjectInstance;
 
             nudVector3X.Value = (decimal)item.WorldPosition.X;
             nudVector3Y.Value = (decimal)-item.WorldPosition.Y;
             nudVector3Z.Value = (decimal)item.WorldPosition.Z;
-        }
-
-        private void panelColor_DragEnter(object sender, DragEventArgs e)
-        {
-            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) != null)
-                e.Effect = DragDropEffects.Copy;
         }
 
         private void panelColor_DragDrop(object sender, DragEventArgs e)
