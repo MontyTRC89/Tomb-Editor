@@ -84,6 +84,8 @@ namespace TombLib.Wad
                     return true;
                 else if (LoadStatics(chunkIO, id, wad, textures))
                     return true;
+                else if (LoadAnimatedTextures(chunkIO, id, wad, textures))
+                    return true;
                 return false;
             });
 
@@ -92,6 +94,85 @@ namespace TombLib.Wad
 
             wad.HasUnknownData = chunkIO.UnknownChunksFound;
             return wad;
+        }
+
+        private static bool LoadAnimatedTextures(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadTexture> textures)
+        {
+            if (idOuter != Wad2Chunks.AnimatedTextureSets)
+                return false;
+
+                var animatedTextureSets = new List<AnimatedTextureSet>();
+                chunkIO.ReadChunks((id2, chunkSize2) =>
+                {
+                    if (id2 != Wad2Chunks.AnimatedTextureSet)
+                        return false;
+
+                    var set = new AnimatedTextureSet();
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.AnimatedTextureSetName)
+                            set.Name = chunkIO.ReadChunkString(chunkSize3);
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetExtraInfo) // Legacy!
+                        {
+                            set.AnimationType = (AnimatedTextureAnimationType)LEB128.ReadByte(chunkIO.Raw);
+                            set.Fps = LEB128.ReadSByte(chunkIO.Raw);
+                            if (set.Fps == 0.0f)
+                                set.Fps = 15.0f;
+                            set.UvRotate = LEB128.ReadSByte(chunkIO.Raw);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetType)
+                        {
+                            set.AnimationType = (AnimatedTextureAnimationType)chunkIO.ReadChunkInt(chunkSize3);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetFps)
+                        {
+                            set.Fps = chunkIO.ReadChunkFloat(chunkSize3);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetUvRotate)
+                        {
+                            set.UvRotate = chunkIO.ReadChunkInt(chunkSize3);
+                        }
+						else if (id3 == Wad2Chunks.AnimatedTextureSetTenUvRotateDirection)
+						{
+							set.TenUvRotateDirection = chunkIO.ReadChunkFloat(chunkSize3);
+						}
+						else if (id3 == Wad2Chunks.AnimatedTextureSetTenUvRotateSpeed)
+						{
+							set.TenUvRotateSpeed = chunkIO.ReadChunkFloat(chunkSize3);
+						}
+						else if (id3 == Wad2Chunks.AnimatedTextureFrames)
+                        {
+                            var frames = new List<AnimatedTextureFrame>();
+                            chunkIO.ReadChunks((id4, chunkSize4) =>
+                            {
+                                if (id4 != Wad2Chunks.AnimatedTextureFrame)
+                                    return false;
+
+                                frames.Add(new AnimatedTextureFrame
+                                {
+                                    Texture = textures[LEB128.ReadLong(chunkIO.Raw)],
+                                    TexCoord0 = chunkIO.Raw.ReadVector2(),
+                                    TexCoord1 = chunkIO.Raw.ReadVector2(),
+                                    TexCoord2 = chunkIO.Raw.ReadVector2(),
+                                    TexCoord3 = chunkIO.Raw.ReadVector2(),
+                                    Repeat = Math.Max(LEB128.ReadInt(chunkIO.Raw), 1)
+                                });
+                                return true;
+                            });
+
+                            set.Frames = frames;
+                        }
+                        else
+                            return false;
+                        return true;
+                    });
+                    animatedTextureSets.Add(set);
+                    return true;
+                });
+
+            wad.AnimatedTextureSets = animatedTextureSets;
+
+            return true;
         }
 
         private static bool LoadMetadata(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
@@ -267,9 +348,38 @@ namespace TombLib.Wad
                         return true;
                     });
                 }
+                else if (id2 == Wad2Chunks.MeshVertexWeights)
+                {
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.MeshVertexWeight)
+                        {
+                            var weight = new VertexWeight();
+                            for (int w = 0; w < weight.Index.Length; w++)
+                            {
+                                weight.Index[w] = chunkIO.Raw.ReadInt32();
+                                weight.Weight[w] = chunkIO.Raw.ReadSingle();
+                            }
+
+                            mesh.VertexWeights.Add(weight);
+
+                            chunkIO.ReadChunks((id4, chunkSize4) =>
+                            {
+                                return false;
+                            });
+                        }
+                        else
+                            return false;
+                        return true;
+                    });
+                }
                 else if (id2 == Wad2Chunks.MeshLightingType)
                 {
                     mesh.LightingType = (WadMeshLightingType)chunkIO.ReadChunkInt(chunkSize2);
+                }
+                else if (id2 == Wad2Chunks.MeshVisibility)
+                {
+                    mesh.Hidden = chunkIO.ReadChunkBool(chunkSize2);
                 }
                 else if (id2 == Wad2Chunks.MeshPolygons)
                 {
@@ -481,12 +591,27 @@ namespace TombLib.Wad
                 uint objTypeId = LEB128.ReadUInt(chunkIO.Raw);
                 var mov = new WadMoveable(new WadMoveableId(objTypeId));
                 var meshes = new List<WadMesh>();
+
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     if (id2 == Wad2Chunks.Mesh)
                     {
                         var mesh = LoadMesh(chunkIO, chunkSize2, textures);
                         meshes.Add(mesh);
+                    }
+                    else if (id2 == Wad2Chunks.MoveableSkin)
+                    {
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Wad2Chunks.Mesh)
+                            {
+                                var mesh = LoadMesh(chunkIO, chunkSize3, textures);
+                                mov.Skin = mesh;
+                                return true;
+                            }
+                            else
+                                return false;
+                        });
                     }
                     else if (id2 == Wad2Chunks.MoveableBone)
                     {

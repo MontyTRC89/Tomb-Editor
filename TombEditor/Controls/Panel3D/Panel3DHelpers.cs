@@ -109,8 +109,9 @@ namespace TombEditor.Controls.Panel3D
 
             // Initialize variables for vertex buffer preparation
             var vertices = new List<SolidVertex>();
-            var startColor = new Vector4(0.8f, 1.0f, 0.8f, 1.0f);
-            var endColor = new Vector4(1.0f, 0.8f, 0.8f, 1.0f);
+            var startColor = MathC.GetRandomColorByIndex(sequence, 32, 0.7f);
+            var endColor = MathC.GetRandomColorByIndex(sequence, 32, 0.3f);
+
             float th = _flybyPathThickness;
 
             // Process flyby cameras to calculate paths
@@ -120,8 +121,15 @@ namespace TombEditor.Controls.Panel3D
                 var cam = flybyCameras[i];
                 camList.Add(cam.Position + cam.Room.WorldPos);
 
-                // Check for a sequence cut or the end of the list
-                bool isCut = (cam.Flags & (1 << 7)) != 0 && i + 1 < flybyCameras.Count && flybyCameras[i + 1].Number == cam.Timer;
+                // Check for a sequence cut and jump to appropriate camera, if setup is correct
+                bool isCut = false;
+                if ((cam.Flags & (1 << 7)) != 0 && cam.Timer < flybyCameras.Count && cam.Timer > i)
+                {
+                    isCut = true;
+                    i = cam.Timer - 1;
+                }
+
+                // Check for the end of the list
                 bool isLast = i == flybyCameras.Count - 1;
 
                 if (isCut || isLast)

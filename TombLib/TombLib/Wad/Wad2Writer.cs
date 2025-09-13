@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TombLib.IO;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.Wad
@@ -71,6 +72,7 @@ namespace TombLib.Wad
             WriteMoveables(chunkIO, wad, textureTable);
             WriteStatics(chunkIO, wad, textureTable);
             WriteMetadata(chunkIO, wad);
+            WriteAnimatedTextures(chunkIO, wad.AnimatedTextureSets, textureTable);
             chunkIO.WriteChunkEnd();
         }
 
@@ -89,6 +91,46 @@ namespace TombLib.Wad
                     });
                 }
             }, LEB128.MaximumSize5Byte); // Texture chunk can be very large, therefore increased size.);
+        }
+
+        private static void WriteAnimatedTextures(ChunkWriter chunkIO, List<AnimatedTextureSet> animatedTextureSets, List<WadTexture> textureTable)
+        {
+            using (var chunkAnimatedTextureSets = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureSets, long.MaxValue))
+            {
+                foreach (AnimatedTextureSet set in animatedTextureSets)
+                    using (var chunkAnimatedTextureSet = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureSet))
+                    {
+                        chunkIO.WriteChunkString(Wad2Chunks.AnimatedTextureSetName, set.Name ?? string.Empty);
+                        chunkIO.WriteChunkInt(Wad2Chunks.AnimatedTextureSetType, (int)set.AnimationType);
+                        chunkIO.WriteChunkFloat(Wad2Chunks.AnimatedTextureSetFps, set.Fps);
+                        chunkIO.WriteChunkInt(Wad2Chunks.AnimatedTextureSetUvRotate, set.UvRotate);
+						chunkIO.WriteChunkFloat(Wad2Chunks.AnimatedTextureSetTenUvRotateDirection, set.TenUvRotateDirection);
+						chunkIO.WriteChunkFloat(Wad2Chunks.AnimatedTextureSetTenUvRotateSpeed, set.TenUvRotateSpeed);
+
+						using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureFrames))
+                        {
+                            foreach (AnimatedTextureFrame frame in set.Frames)
+                            {
+                                if (frame.Texture != null && textureTable.Contains((WadTexture)frame.Texture))
+                                    using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Wad2Chunks.AnimatedTextureFrame, 120))
+                                    {
+                                        LEB128.Write(chunkIO.Raw, textureTable.IndexOf((WadTexture)frame.Texture));
+                                        chunkIO.Raw.Write(frame.TexCoord0);
+                                        chunkIO.Raw.Write(frame.TexCoord1);
+                                        chunkIO.Raw.Write(frame.TexCoord2);
+                                        chunkIO.Raw.Write(frame.TexCoord3);
+                                        LEB128.Write(chunkIO.Raw, frame.Repeat);
+                                    }
+                                else
+                                    logger.Warn("Animated sequence " + set.Name + " has a frame refering to a texture file which is missing from project.");
+                            }
+
+                            chunkIO.WriteChunkEnd();
+                        }
+                        chunkIO.WriteChunkEnd();
+                    }
+                chunkIO.WriteChunkEnd();
+            }
         }
 
         private static void WriteSprites(ChunkWriter chunkIO, List<WadSprite> spriteTable)
@@ -179,6 +221,22 @@ namespace TombLib.Wad
                     }
                 });
 
+                // Write weights
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexWeights, () =>
+                {
+                    foreach (var weight in mesh.VertexWeights)
+                    {
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexWeight, () =>
+                        {
+                            for (int w = 0; w < weight.Index.Length; w++)
+                            {
+                                chunkIO.Raw.Write(weight.Index[w]);
+                                chunkIO.Raw.Write(weight.Weight[w]);
+                            }
+                        });
+                    }
+                });
+
                 // Write vertex attributes
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexAttributes, () =>
                 {
@@ -190,8 +248,9 @@ namespace TombLib.Wad
                         });
                 });
 
-                // Write light mode
+                // Write light mode and visibility
                 chunkIO.WriteChunkInt(Wad2Chunks.MeshLightingType, (int)mesh.LightingType);
+                chunkIO.WriteChunkBool(Wad2Chunks.MeshVisibility, mesh.Hidden);
 
                 // Write polygons
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshPolygons, () =>
@@ -253,6 +312,14 @@ namespace TombLib.Wad
 
                         foreach (var mesh in m.Meshes)
                             WriteMesh(chunkIO, mesh, textureTable);
+
+                        if (m.Skin != null)
+                        {
+                            chunkIO.WriteChunkWithChildren(Wad2Chunks.MoveableSkin, () =>
+                            {
+                                WriteMesh(chunkIO, m.Skin, textureTable);
+                            });
+                        }
 
                         foreach (var b in m.Bones)
                         {

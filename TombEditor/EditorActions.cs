@@ -22,6 +22,7 @@ using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.LevelData.IO;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
+using TombLib.LevelData.SectorServices;
 using TombLib.LevelData.SectorStructs;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Rendering;
@@ -407,62 +408,117 @@ namespace TombEditor
             }
         }
 
-        public static void SmoothSector(Room room, int x, int z, SectorVerticalPart vertical, int increment, bool disableUndo = false)
+        public static void SmoothSector(Room room, int x, int z, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
         {
-            var currSector = room.GetSectorTryThroughPortal(x, z);
+            RoomSectorPair currentSectorPair = room.GetSectorTryThroughPortal(x, z);
 
-            if (currSector.Room != room ||
-                vertical.IsOnFloor() && currSector.Sector.Floor.DiagonalSplit != DiagonalSplit.None ||
-                vertical.IsOnCeiling() && currSector.Sector.Ceiling.DiagonalSplit != DiagonalSplit.None)
+            if (currentSectorPair.Room != room)
                 return;
 
             if (!disableUndo)
-                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+                _editor.UndoManager.PushGeometryChanged(room.AndAdjoiningRooms);
 
-            var lookupSectors = new RoomSectorPair[8]
-            {
-                room.GetSectorTryThroughPortal(x - 1, z + 1),
-                room.GetSectorTryThroughPortal(x, z + 1),
-                room.GetSectorTryThroughPortal(x + 1, z + 1),
-                room.GetSectorTryThroughPortal(x + 1, z),
-                room.GetSectorTryThroughPortal(x + 1, z - 1),
-                room.GetSectorTryThroughPortal(x, z - 1),
-                room.GetSectorTryThroughPortal(x - 1, z - 1),
-                room.GetSectorTryThroughPortal(x - 1, z)
-            };
-
-            int[] adj = new int[8];
-            for (int i = 0; i < 8; i++)
-                adj[i] = (currSector.Room != null ? currSector.Room.Position.Y : 0) - (lookupSectors[i].Room != null ? lookupSectors[i].Room.Position.Y : 0);
-
-            int validSectorCntXnZp = (lookupSectors[7].Room != null ? 1 : 0) + (lookupSectors[0].Room != null ? 1 : 0) + (lookupSectors[1].Room != null ? 1 : 0);
-            int newXnZp = ((lookupSectors[7].Sector?.GetHeight(vertical, SectorEdge.XpZp) ?? 0) + adj[7] +
-                                   (lookupSectors[0].Sector?.GetHeight(vertical, SectorEdge.XpZn) ?? 0) + adj[0] +
-                                   (lookupSectors[1].Sector?.GetHeight(vertical, SectorEdge.XnZn) ?? 0) + adj[1]) / validSectorCntXnZp;
-
-            int validSectorCntXpZp = (lookupSectors[1].Room != null ? 1 : 0) + (lookupSectors[2].Room != null ? 1 : 0) + (lookupSectors[3].Room != null ? 1 : 0);
-            int newXpZp = ((lookupSectors[1].Sector?.GetHeight(vertical, SectorEdge.XpZn) ?? 0) + adj[2] +
-                                   (lookupSectors[2].Sector?.GetHeight(vertical, SectorEdge.XnZn) ?? 0) + adj[3] +
-                                   (lookupSectors[3].Sector?.GetHeight(vertical, SectorEdge.XnZp) ?? 0) + adj[0]) / validSectorCntXpZp;
-
-            int validSectorCntXpZn = (lookupSectors[3].Room != null ? 1 : 0) + (lookupSectors[4].Room != null ? 1 : 0) + (lookupSectors[5].Room != null ? 1 : 0);
-            int newXpZn = ((lookupSectors[3].Sector?.GetHeight(vertical, SectorEdge.XnZn) ?? 0) + adj[3] +
-                                   (lookupSectors[4].Sector?.GetHeight(vertical, SectorEdge.XnZp) ?? 0) + adj[0] +
-                                   (lookupSectors[5].Sector?.GetHeight(vertical, SectorEdge.XpZp) ?? 0) + adj[1]) / validSectorCntXpZn;
-
-            int validSectorCntXnZn = (lookupSectors[5].Room != null ? 1 : 0) + (lookupSectors[6].Room != null ? 1 : 0) + (lookupSectors[7].Room != null ? 1 : 0);
-            int newXnZn = ((lookupSectors[5].Sector?.GetHeight(vertical, SectorEdge.XnZp) ?? 0) + adj[0] +
-                                   (lookupSectors[6].Sector?.GetHeight(vertical, SectorEdge.XpZp) ?? 0) + adj[1] +
-                                   (lookupSectors[7].Sector?.GetHeight(vertical, SectorEdge.XpZn) ?? 0) + adj[2]) / validSectorCntXnZn;
-
-            room.ChangeSectorHeight(x, z, vertical, SectorEdge.XnZp, Math.Sign(newXnZp - currSector.Sector.GetHeight(vertical, SectorEdge.XnZp)) * increment);
-            room.ChangeSectorHeight(x, z, vertical, SectorEdge.XpZp, Math.Sign(newXpZp - currSector.Sector.GetHeight(vertical, SectorEdge.XpZp)) * increment);
-            room.ChangeSectorHeight(x, z, vertical, SectorEdge.XpZn, Math.Sign(newXpZn - currSector.Sector.GetHeight(vertical, SectorEdge.XpZn)) * increment);
-            room.ChangeSectorHeight(x, z, vertical, SectorEdge.XnZn, Math.Sign(newXnZn - currSector.Sector.GetHeight(vertical, SectorEdge.XnZn)) * increment);
-
-            currSector.Sector.FixHeights(vertical);
+            // Apply smoothing to each corner of the sector
+            for (SectorEdge edge = 0; edge < SectorEdge.Count; edge++)
+                SmoothSectorCorner(room, x, z, edge, vertical, stepHeight);
 
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
+        }
+
+        public static void SmoothArea(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        {
+            if (!disableUndo)
+            {
+                HashSet<Room> affectedRooms = room.GetAdjoiningRoomsFromArea(area.Inflate(1));
+                affectedRooms.Add(room);
+
+                _editor.UndoManager.PushGeometryChanged(affectedRooms);
+            }
+
+            bool isBorder;
+
+            // Iterate through the selected region (excluding border sectors)
+            for (int z = area.Y0; z <= area.Y1; z++)
+            {
+                isBorder = z <= 0 || z >= room.NumZSectors - 1;
+
+                if (isBorder)
+                    continue;
+
+                for (int x = area.X0; x <= area.X1; x++)
+                {
+                    isBorder = x <= 0 || x >= room.NumXSectors - 1;
+
+                    if (isBorder)
+                        continue;
+
+                    // Smooth all four corners of current sector
+                    for (SectorEdge edge = 0; edge < SectorEdge.Count; edge++)
+                        SmoothSectorCorner(room, x, z, edge, vertical, stepHeight);
+                }
+            }
+
+            SmartBuildGeometry(room, area);
+        }
+
+        private static void SmoothSectorCorner(Room room, int x, int z, SectorEdge edge, SectorVerticalPart vertical, int stepHeight)
+        {
+            RoomSectorPair currentSectorPair = room.GetSectorTryThroughPortal(x, z);
+
+            if (currentSectorPair.Sector is null || currentSectorPair.Sector.IsFullWall)
+                return;
+
+            // Define the neighboring sectors and their corresponding edges based on the corner we're processing
+            ReadOnlySpan<SectorEdgeOffset> neighbors = edge switch
+            {
+                SectorEdge.XnZp => stackalloc SectorEdgeOffset[] { new(-1,  0, SectorEdge.XpZp), new(-1,  1, SectorEdge.XpZn), new(0,  1, SectorEdge.XnZn) }, // North-west corner
+                SectorEdge.XpZp => stackalloc SectorEdgeOffset[] { new( 1,  0, SectorEdge.XnZp), new( 1,  1, SectorEdge.XnZn), new(0,  1, SectorEdge.XpZn) }, // North-east corner
+                SectorEdge.XpZn => stackalloc SectorEdgeOffset[] { new( 0, -1, SectorEdge.XpZp), new( 1, -1, SectorEdge.XnZp), new(1,  0, SectorEdge.XnZn) }, // South-east corner
+                SectorEdge.XnZn => stackalloc SectorEdgeOffset[] { new(-1,  0, SectorEdge.XpZn), new(-1, -1, SectorEdge.XpZp), new(0, -1, SectorEdge.XnZp) }, // South-west corner
+                _ => throw new ArgumentException("Invalid edge") // Handle invalid edge
+            };
+
+            // Calculate average height from current corner and surrounding neighbors
+            int heightSum = currentSectorPair.Sector.GetHeight(vertical, edge);
+            int validCorners = 1;
+
+            // Add heights from valid neighboring corners
+            foreach ((int neighborX, int neighborZ, SectorEdge neighborEdge) in neighbors)
+            {
+                RoomSectorPair sectorPair = currentSectorPair.Room.GetSectorTryThroughPortal(x + neighborX, z + neighborZ);
+
+                if (sectorPair.Sector is null || sectorPair.Sector.IsFullWall)
+                    continue;
+
+                heightSum += sectorPair.Sector.GetHeight(vertical, neighborEdge);
+                validCorners++;
+            }
+
+            // If there are not enough valid corners, return without making changes
+            if (validCorners < 2)
+                return;
+
+            int averageHeight = heightSum / validCorners;
+
+            // Round to the nearest step height
+            if (stepHeight > 0)
+                averageHeight = (int)Math.Round((float)averageHeight / stepHeight) * stepHeight;
+
+            // Apply the average height to the current corner
+            currentSectorPair.Sector.SetHeight(vertical, edge, averageHeight);
+            currentSectorPair.Sector.FixHeight(edge, vertical);
+
+            // Apply the same height to neighboring corners
+            foreach ((int neighborX, int neighborZ, SectorEdge neighborEdge) in neighbors)
+            {
+                RoomSectorPair sectorPair = currentSectorPair.Room.GetSectorTryThroughPortal(x + neighborX, z + neighborZ);
+
+                if (sectorPair.Sector is null || sectorPair.Sector.IsFullWall)
+                    continue;
+
+                sectorPair.Sector.SetHeight(vertical, neighborEdge, averageHeight);
+                sectorPair.Sector.FixHeight(neighborEdge, vertical);
+            }
         }
 
         public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, SectorVerticalPart vertical, double heightScale, bool precise, bool stepped)
@@ -669,10 +725,10 @@ namespace TombEditor
                 trigger.TargetType = TriggerTargetType.Sink;
                 trigger.Target = firstObject;
             }
-            else if (firstObject is VolumeInstance && _editor.Level.IsTombEngine)
+            else if (firstObject is VolumeInstance volume && volume.EventSet != null && _editor.Level.IsTombEngine)
             {
                 trigger.TargetType = TriggerTargetType.VolumeEvent;
-                trigger.Target = new TriggerParameterString((firstObject as VolumeInstance).EventSet.Name);
+                trigger.Target = new TriggerParameterString(volume.EventSet.Name);
             }
             else if (firstObject is StaticInstance && _editor.Level.IsNG)
             {
@@ -1017,10 +1073,16 @@ namespace TombEditor
                 if (form.ShowDialog(owner) == DialogResult.Cancel)
                     return;
 
-                if (!luaInstance.TrySetLuaName(form.Result, owner))
+                if (!luaInstance.CanSetLuaName(form.Result))
+                {
+                    MessageBoxes.LuaNameAlreadyTakenError(owner);
                     RenameObject(luaInstance, owner);
+                }
                 else
+                {
+                    luaInstance.LuaName = form.Result;
                     _editor.ObjectChange(luaInstance, ObjectChangeType.Change);
+                }
             }
         }
 
@@ -1131,6 +1193,15 @@ namespace TombEditor
             {
                 using (var formMemo = new FormMemo((MemoInstance)instance))
                     if (formMemo.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }
+            else if (instance is PortalInstance)
+            {
+                if (!VersionCheck(_editor.Level.IsTombEngine, "Portal properties"))
+                    return;
+                using (var formPortal = new FormPortal((PortalInstance)instance))
+                    if (formPortal.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
@@ -1339,9 +1410,9 @@ namespace TombEditor
                             {
                                 if (func.Arguments[i].Type == type &&
                                     node.Arguments.Count > i &&
-                                    TextExtensions.Unquote(node.Arguments[i]) == oldName)
+                                    TextExtensions.Unquote(node.Arguments[i].Value) == oldName)
                                 {
-                                    node.Arguments[i] = TextExtensions.Quote(newName);
+                                    node.Arguments[i] = new TriggerNodeArgument() { Name = node.Arguments[i].Name, Value = TextExtensions.Quote(newName) };
                                 }
                             }
 
@@ -4166,7 +4237,8 @@ namespace TombEditor
                         watch.Start();
                         var statistics = compiler.CompileLevel(cancelToken);
                         watch.Stop();
-                        progressReporter.ReportProgress(100, "\nElapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+
+                        progressReporter.ReportProgress(100, $"\nElapsed time: {FormatElapsedSmart(watch.Elapsed.TotalMilliseconds)}");
 
                         // Raise an event for statistics update
                         _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
@@ -4192,6 +4264,37 @@ namespace TombEditor
                 form.ShowDialog(owner);
                 return form.DialogResult != DialogResult.Cancel;
             }
+        }
+
+        private static string FormatElapsedSmart(double elapsedMs) =>
+            FormatElapsedSmart(TimeSpan.FromMilliseconds(elapsedMs));
+
+        private static string FormatElapsedSmart(TimeSpan t)
+        {
+            long totalMs = (long)Math.Round(t.TotalMilliseconds);
+
+            if (totalMs < 1_000)
+                return $"{totalMs} ms";
+
+            if (totalMs < 60_000)
+            {
+                long s = totalMs / 1_000;
+                long ms = totalMs % 1_000;
+                return $"{s} s {ms} ms";
+            }
+
+            if (totalMs < 3_600_000)
+            {
+                long m = totalMs / 60_000;
+                long s = (totalMs % 60_000) / 1_000;
+                return $"{m} min {s} s";
+            }
+
+            // >= 1 hour
+            long h = totalMs / 3_600_000;
+            long m2 = (totalMs % 3_600_000) / 60_000;
+            long s2 = (totalMs % 60_000) / 1_000;
+            return $"{h} h {m2} min {s2} s";
         }
 
         public static void BuildLevelAndPlay(IWin32Window owner, bool fastMode = false)
@@ -4855,9 +4958,25 @@ namespace TombEditor
             portal.Room.BuildGeometry(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomGeometryChange(portal.Room);
             _editor.ObjectChange(portal, ObjectChangeType.Change);
-        }
+		}
 
-        public static bool SaveLevel(IWin32Window owner, bool askForPath)
+		public static void ToggleClassicPortalMirror(IWin32Window owner)
+		{
+			if (!VersionCheck(_editor.Level.IsTombEngine, "Classic mirror effect"))
+				return;
+
+			var portal = _editor.SelectedObject as PortalInstance;
+			if (portal == null)
+			{
+				_editor.SendMessage("No portal selected.", PopupType.Error);
+				return;
+			}
+
+			portal.Effect = (portal.Effect == PortalEffectType.ClassicMirror) ? PortalEffectType.None : PortalEffectType.ClassicMirror;
+			_editor.ObjectChange(portal, ObjectChangeType.Change);
+		}
+
+		public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
             // Disable saving if level has unknown data (i.e. new prj2 version opened in old editor version)
             if (_editor.Level.Settings.HasUnknownData)
@@ -4980,8 +5099,9 @@ namespace TombEditor
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(owner))
+                if (!saveFileDialog.FileName.IsANSI())
                 {
+                    MessageBoxes.NonANSIFilePathError(owner);
                     ExportRooms(rooms, owner);
                     return;
                 }
@@ -5086,31 +5206,6 @@ namespace TombEditor
                 // Rebuild DirectX buffer
                 newObject.DirectXModel.UpdateBuffers();
 
-                // Load the XML db
-                /*string dbName = Path.GetDirectoryName(importedGeometryPath) + "\\" + Path.GetFileNameWithoutExtension(importedGeometryPath) + ".xml";
-                var db = RoomsImportExportXmlDatabase.LoadFromFile(dbName);
-                if (db == null)
-                    throw new FileNotFoundException("There must be also an XML file with the same name of the 3D file");
-        */
-
-                // Create a dictionary of the rooms by name
-                /* var roomDictionary = new Dictionary<string, IOMesh>();
-                 foreach (var msh in newObject.DirectXModel)
-
-                 // Translate rooms
-                 for (int i=0;i<db.Rooms.Count;i++)
-                 {
-                     string roomMeshName = db.Rooms.ElementAt(i).Key;
-                     foreach (var mesh in model.Meshes)
-                         for (int i = 0; i < mesh.Positions.Count; i++)
-                         {
-                             var pos = mesh.Positions[i];
-                             pos -= mesh.Origin;
-                             mesh.Positions[i] = pos;
-                         }
-                 }
-                 */
-
                 // Figure out the relevant rooms
                 Dictionary<int, int> roomIndices = new Dictionary<int, int>();
                 int meshIndex = 0;
@@ -5138,7 +5233,6 @@ namespace TombEditor
                         currentIndex = roomIndexEnd;
                     } while (currentIndex < mesh.Name.Length);
                 }
-                //roomIndices = roomIndices.Distinct().ToList();
 
                 // Add rooms
                 foreach (var pair in roomIndices)
@@ -5824,5 +5918,34 @@ namespace TombEditor
 
 			}
 		}
+
+        public static void RealignToStepHeight(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(room);
+
+            bool success = AreaUtils.PerformActionOnArea(area, (x, z) =>
+            {
+                if (!room.GetSectorTry(x, z, out Sector sector))
+                    return false;
+
+                sector.FixHeights(vertical, stepHeight);
+                return true;
+            });
+
+            if (success)
+                SmartBuildGeometry(room, area);
+        }
+
+        public static void ConvertAreaToQuads(Room room, RectangleInt2 area, SectorVerticalPart vertical, int stepHeight, bool disableUndo = false)
+        {
+            if (!disableUndo)
+                _editor.UndoManager.PushGeometryChanged(room);
+
+            bool success = SurfaceToQuadConverter.ConvertAreaToQuads(room, area, vertical, stepHeight);
+
+            if (success)
+                SmartBuildGeometry(room, area);
+        }
     }
 }

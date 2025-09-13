@@ -62,6 +62,16 @@ LevelFuncs.Engine.Node.TestMoveableAnimation = function(moveableName, animationI
 	return TEN.Objects.GetMoveableByName(moveableName):GetAnim() == animationId
 end
 
+-- !Name "If animation slot of a moveable is..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable is currently playing animation from a specified object slot."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables" "NewLine, WadSlots, Moveable slot ID to check"
+
+LevelFuncs.Engine.Node.TestMoveableAnimationSlot = function(moveableName, slotId)
+	return TEN.Objects.GetMoveableByName(moveableName):GetAnimSlot() == slotId
+end
+
 -- !Name "If animation of a moveable is complete..."
 -- !Section "Moveable parameters"
 -- !Description "Checks if moveable's current animation has reached end frame."
@@ -294,6 +304,15 @@ LevelFuncs.Engine.Node.SetMoveableAnimation = function(moveableName, animationId
 	TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId)
 end
 
+-- !Name "Set moveable's animation from another slot"
+-- !Section "Moveable parameters"
+-- !Description "Sets moveable's animation from another slot."
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 1000 ], Animation ID"  "NewLine, WadSlots, Moveable slot ID"
+
+LevelFuncs.Engine.Node.SetMoveableAnimationFromAnotherSlot = function(moveableName, animationId, slotId)
+	TEN.Objects.GetMoveableByName(moveableName):SetAnim(animationId, slotId)
+end
+
 -- !Name "Set moveable's state"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable's next state."
@@ -404,6 +423,26 @@ LevelFuncs.Engine.Node.SetMoveableRotation = function(operation, value, moveable
 	moveable:SetRotation(rotation)
 end
 
+-- !Name "Modify scale of a moveable"
+-- !Section "Moveable parameters"
+-- !Description "Set given moveable scale separately for every axis. For vsual effect only."
+-- !Arguments "NewLine, Enumeration, [ Change | Set ], 25, Change adds/subtracts given value while Set forces it."
+-- !Arguments "Vector3, [ 0 | 256 | 2 | 0.1 | 1 ], 75, { TEN.Vec3(1,1,1) }, Scale value to define"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.SetMoveableScale = function(operation, value, moveableName)
+	local moveable = TEN.Objects.GetMoveableByName(moveableName)
+	local scale = moveable:GetScale();
+
+	if (operation == 0) then
+		scale = scale + value
+	else
+		scale = value
+	end
+
+	moveable:SetScale(scale)
+end
+
 -- !Name "Move moveable to another moveable"
 -- !Section "Moveable parameters"
 -- !Description "Moves moveable to a position of another moveable."
@@ -443,13 +482,35 @@ LevelFuncs.Engine.Node.ShiftMoveable = function(moveableName, distance)
 	moveable:SetPosition(newPosition)
 end
 
--- !Name "Set moveable colour"
+-- !Name "Set moveable color"
 -- !Section "Moveable parameters"
 -- !Description "Sets moveable tint to a given value."
--- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable colour"
+-- !Arguments "NewLine, Moveables, 80" "Color, 20, Moveable color"
 
 LevelFuncs.Engine.Node.SetMoveableColor = function(moveableName, color)
+	color.a = TEN.Objects.GetMoveableByName(moveableName):GetColor().a
 	TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
+end
+
+-- !Name "Set moveable transparency"
+-- !Section "Moveable parameters"
+-- !Description "Sets moveable transparency to a given value."
+-- !Arguments "NewLine, Moveables, 80" "Numerical, 20, [ 0 | 255 | 0 | 1 | 5 ], {255}, Moveable transparency"
+
+LevelFuncs.Engine.Node.SetMoveableTransparency = function(moveableName, transparency)
+	local color = TEN.Objects.GetMoveableByName(moveableName):GetColor()
+	color.a = transparency
+	TEN.Objects.GetMoveableByName(moveableName):SetColor(color)
+end
+
+-- !Name "Set moveable visibility"
+-- !Description "Sets moveable visibility"
+-- !Section "Moveable parameters"
+-- !Arguments "NewLine, Moveables, 80"
+-- !Arguments "Enumeration, [ Visible  | Invisible ], 20, Visibility"
+LevelFuncs.Engine.Node.SetMoveableVisibility = function(moveableName, state)
+	local visibility = (state == 0) and true or false
+	TEN.Objects.GetMoveableByName(moveableName):SetVisible(visibility)
 end
 
 -- !Name "Set specified moveable mesh visibility"
@@ -503,8 +564,8 @@ end
 -- !Name "Set custom moveable effect"
 -- !Section "Moveable state"
 -- !Description "Assigns custom colored burn effect to a moveable."
--- !Arguments "Color, 10, Effect primary colour"
--- !Arguments "Color, 10, Effect secondary colour"
+-- !Arguments "Color, 10, Effect primary color"
+-- !Arguments "Color, 10, Effect secondary color"
 -- !Arguments "Numerical, 13, [ -1 | 99 ], Effect timeout (set to -1 for indefinite timeout)"
 -- !Arguments "NewLine, Moveables, Moveable to check"
 
@@ -524,9 +585,9 @@ end
 -- !Name "Modify ItemFlag of a moveable"
 -- !Section "Moveable parameters"
 -- !Description "Modify ItemFlag for moveable. Used for extended customisation of certain moveables."
--- !Arguments "NewLine,Moveables, 50, Choose moveable"
--- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to change"
--- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value to store in moveable's ItemFlags
+-- !Arguments "NewLine,Moveables, 70, Choose moveable"
+-- !Arguments "Numerical, 13, [ 0 | 7 ], ItemFlag index to change"
+-- !Arguments "Numerical, 17, [ -32768 | 32767 | 0 ], Value to store in moveable's ItemFlags
 
 LevelFuncs.Engine.Node.ModifyItemFlag = function (moveable, itemFlagLocation, itemFlagValue)
 	TEN.Objects.GetMoveableByName(moveable):SetItemFlags(itemFlagValue,itemFlagLocation)
@@ -536,9 +597,9 @@ end
 -- !Section "Moveable parameters"
 -- !Description "Checks current value contained inside a given ItemFlag"
 -- !Conditional "True"
--- !Arguments "NewLine,Moveables, 50, Choose moveable"
--- !Arguments "Numerical, 25, [ 0 | 7 ], ItemFlag index to check"
--- !Arguments "Numerical, 25, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
+-- !Arguments "NewLine,Moveables, 70, Choose moveable"
+-- !Arguments "Numerical, 13, [ 0 | 7 ], ItemFlag index to check"
+-- !Arguments "Numerical, 17, [ -32768 | 32767 | 0 ], Value stored in ItemFlag
 
 LevelFuncs.Engine.Node.CheckItemFlag = function(moveable, itemFlagLocation, itemFlagValue)
     local itemFlag = TEN.Objects.GetMoveableByName(moveable):GetItemFlags(itemFlagLocation)

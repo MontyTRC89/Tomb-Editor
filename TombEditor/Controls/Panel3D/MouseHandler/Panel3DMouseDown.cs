@@ -280,6 +280,7 @@ namespace TombEditor.Controls.Panel3D
             {
                 // Click outside room; if mouse is released without action, unselect all
                 _noSelectionConfirm = true;
+                _startMousePosition = location;
             }
         }
 

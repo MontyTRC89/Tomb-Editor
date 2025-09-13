@@ -32,7 +32,7 @@ namespace TombIDE.Shared.NewStructure
 			}
 			catch
 			{
-				return null;
+				return new Version(0, 0);
 			}
 		}
 	}

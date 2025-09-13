@@ -439,9 +439,10 @@ namespace TombLib.LevelData.Compilers
 
             // Filter out singular key/switch triggers, as they are technically invalid in engine
             if (triggers.Count == 1 && (triggers[0].TriggerType == TriggerType.Key ||
-                                        triggers[0].TriggerType == TriggerType.Switch))
+                                        triggers[0].TriggerType == TriggerType.Switch ||
+                                        triggers[0].TriggerType == TriggerType.Pickup))
             {
-                _progressReporter.ReportWarn("Key or switch trigger in room " + room + " at sector (" + pos.X + "," + pos.Y +
+                _progressReporter.ReportWarn("Key, switch or pickup trigger in room " + room + " at sector (" + pos.X + "," + pos.Y +
                                              ") has no additional actions and will be ignored.");
             }
             else if (triggers.Count > 0)
@@ -528,8 +529,11 @@ namespace TombLib.LevelData.Compilers
 
                 if (_level.IsNG)
                 {
+                    bool isNGFlipEffectRange = setupTrigger.Target is TriggerParameterUshort { Key: > 46 }; // 46 is the last original tomb4 flip effect
+                    bool isPluginTrigger = setupTrigger.Plugin is TriggerParameterUshort { Key: > 0 }; // 0 is Tomb_NextGeneration
+
                     // NG flipeffects store timer and extra in additional ushort
-                    if (setupTrigger.TargetType == TriggerTargetType.FlipEffect && (setupTrigger.Target as TriggerParameterUshort)?.Key > 46)
+                    if (setupTrigger.TargetType == TriggerTargetType.FlipEffect && (isNGFlipEffectRange || isPluginTrigger))
                         triggerSetup = 0;
                     // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
                     else if (setupTrigger.TriggerType == TriggerType.ConditionNg)

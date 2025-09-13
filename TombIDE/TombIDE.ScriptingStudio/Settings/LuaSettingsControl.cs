@@ -41,7 +41,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void InitializePreview()
 		{
-			editorPreview = new LuaEditor
+			editorPreview = new LuaEditor(new Version(0, 0))
 			{
 				Text =
 					"if _G[k] then\n" +

@@ -2,6 +2,7 @@
 
 local Timer = require("Engine.Timer")
 
+-- !Ignore
 -- Construct timed transform data and start transform
 LevelFuncs.Engine.Node.ConstructRevolveData = function(objectName, objectCentre, dataType, radius, time, startAngle, endAngle, isLoop, isCCW, isSmooth, isRotate, isCRotate, SFX)
 
@@ -43,6 +44,7 @@ LevelFuncs.Engine.Node.ConstructRevolveData = function(objectName, objectCentre,
     timer:Start()
 end
 
+-- !Ignore
 -- Transform object parameter using previously saved timed transform data
 LevelFuncs.Engine.Node.TransformRevolveData = function(dataName)
    
@@ -97,7 +99,7 @@ LevelFuncs.Engine.Node.TransformRevolveData = function(dataName)
                 center2:SetRotation(Rotation(0, center2rot.y, newValue1))
             end
             
-        elseif (center2rot.y == -180) then
+        elseif (center2rot.y == 180) then
             local ptx, pty = x + radius2 * math.sin(-angle), y - radius2 * math.cos(-angle)
             object2:SetPosition(Vec3(ptx, pty, object2pos.z))
             
@@ -109,7 +111,7 @@ LevelFuncs.Engine.Node.TransformRevolveData = function(dataName)
                 center2:SetRotation(Rotation(0, center2rot.y, newValue1))
             end    
             
-        elseif (center2rot.y == -90) then
+        elseif (center2rot.y == 270) then
             local ptz, pty = z + radius2 * math.sin(angle), y - radius2 * math.cos(angle)
             object2:SetPosition(Vec3(object2pos.x, pty, ptz))
             
@@ -147,6 +149,7 @@ LevelFuncs.Engine.Node.TransformRevolveData = function(dataName)
     end
 end
 
+-- !Ignore
 --- Delete timed transform data
 LevelFuncs.Engine.Node.DeleteTimedData = function(objectName, endAngle)
     local dataName = objectName .. "_revolve_data"

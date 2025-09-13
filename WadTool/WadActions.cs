@@ -1149,7 +1149,10 @@ namespace WadTool
                 reader.Close();
 
                 foreach (var cmd in animation.AnimCommands)
-                    cmd.ConvertLegacyConditions();
+                {
+                    if (cmd.Type == WadAnimCommandType.FlipEffect || cmd.Type == WadAnimCommandType.PlaySound)
+                        cmd.ConvertLegacyConditions();
+                }
 
                 return animation;
             }
@@ -1513,8 +1516,9 @@ namespace WadTool
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                if (!saveFileDialog.FileName.CheckAndWarnIfNotANSI(owner))
+                if (!saveFileDialog.FileName.IsANSI())
                 {
+                    MessageBoxes.NonANSIFilePathError(owner);
                     ExportMesh(mesh, tool, owner);
                     return;
                 }
@@ -1571,8 +1575,11 @@ namespace WadTool
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
                     return null;
 
-                if (!dialog.FileName.CheckAndWarnIfNotANSI(owner))
+                if (!dialog.FileName.IsANSI())
+                {
+                    MessageBoxes.NonANSIFilePathError(owner);
                     return ImportMesh(tool, owner);
+                }
 
                 try
                 {

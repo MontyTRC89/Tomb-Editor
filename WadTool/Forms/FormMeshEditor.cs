@@ -14,6 +14,7 @@ using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
+using WadTool.Controls;
 
 namespace WadTool
 {
@@ -68,12 +69,14 @@ namespace WadTool
 
         public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
             : this(tool, deviceManager, wad, null) { }
-       
+
         public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, IWadObjectId obj, Wad2 wad)
             : this(tool, deviceManager, wad)
         {
             if (obj == null)
                 return;
+
+            panelAnimTextures.Visible = wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
 
             var isStatic = obj is WadStaticId;
             var nodes = lstMeshes.GetAllNodes();
@@ -90,7 +93,7 @@ namespace WadTool
                 if (isStatic != (objectId is WadStaticId))
                     continue;
 
-                if (( isStatic  && ((WadStaticId)obj).TypeId == ((WadStaticId)objectId).TypeId) ||
+                if ((isStatic && ((WadStaticId)obj).TypeId == ((WadStaticId)objectId).TypeId) ||
                    ((!isStatic) && ((WadMoveableId)obj).TypeId == ((WadMoveableId)objectId).TypeId))
                 {
                     lstMeshes.SelectNode(nodes[i]);
@@ -269,6 +272,26 @@ namespace WadTool
                         }
                         break;
 
+                    case MeshEditingMode.VertexWeights:
+                        {
+                            if (newIndex == -1) return;
+
+                            // Add missing data if needed
+                            if (!panelMesh.Mesh.HasWeights)
+                                GenerateMissingVertexData();
+
+                            if (Control.ModifierKeys == Keys.Alt) // Picking
+                            {
+                                GetWeightValues(newIndex);
+                            }
+                            else // Editing
+                            {
+                                SetWeightValues(newIndex);
+                                panelMesh.Invalidate();
+                            }
+                        }
+                        break;
+
                     case MeshEditingMode.VertexColorsAndNormals:
                         {
                             if (newIndex == -1) return;
@@ -334,7 +357,7 @@ namespace WadTool
                                             currTexture.Mirror(poly.IsTriangle);
                                         else if (Control.ModifierKeys == Keys.Shift)
                                             // We actually need to rotate polygon indices to get correct behaviour like in Strpix.
-                                            poly.Rotate(1, poly.IsTriangle); 
+                                            poly.Rotate(1, poly.IsTriangle);
                                     }
                                 }
 
@@ -397,7 +420,7 @@ namespace WadTool
 
         private void PrepareUI(WadMesh mesh)
         {
-            if (mesh == null) 
+            if (mesh == null)
             {
                 // Populate tree view
 
@@ -413,6 +436,16 @@ namespace WadTool
                         node.Tag = new MeshTreeNode(moveable.Key, i, wadMesh);
                         list.Add(node);
                     }
+
+                    if (moveable.Value.Skin != null)
+                    {
+                        var wadMesh = moveable.Value.Skin;
+                        var node = new DarkTreeNode(wadMesh.Name);
+                        node.Tag = new MeshTreeNode(moveable.Key, moveable.Value.Meshes.Count(), wadMesh);
+                        node.Icon = Properties.Resources.skinned_16;
+                        list.Add(node);
+                    }
+
                     moveableNode.Nodes.AddRange(list);
                     moveablesNode.Nodes.Add(moveableNode);
                 }
@@ -437,7 +470,7 @@ namespace WadTool
                 comboCurrentTexture.Width += comboCurrentTexture.Left - butAllTextures.Left;
                 comboCurrentTexture.Left = butAllTextures.Left;
             }
-            else 
+            else
             {
                 // If form is called with specific mesh, show only it and not meshtree or any related controls.
 
@@ -462,7 +495,7 @@ namespace WadTool
             panelEditingTools.Enabled = panelMesh.Mesh != null;
 
             // Disable vertex remap controls if no vertex is selected
-            var enableRemap = panelMesh.EditingMode == MeshEditingMode.VertexRemap && 
+            var enableRemap = panelMesh.EditingMode == MeshEditingMode.VertexRemap &&
                               panelMesh.CurrentElement != -1;
             if (enableRemap) nudVertexNum.Value = panelMesh.CurrentElement;
             butRemapVertex.Enabled = enableRemap;
@@ -471,6 +504,10 @@ namespace WadTool
             butTbWireframe.Checked = panelMesh.WireframeMode;
             butTbAlpha.Checked = panelMesh.AlphaTest;
             cbExtra.Checked = panelMesh.DrawExtraInfo;
+
+            // Borrow visibility option from a mesh
+            butHide.Enabled = panelMesh.Mesh != null;
+            butHide.Checked = panelMesh.Mesh?.Hidden ?? false;
 
             // Hide cancel button in case editing mode is active in tree view.
             // It is needed because editing happens realtime, without keeping backup mesh.
@@ -505,6 +542,9 @@ namespace WadTool
                 case MeshEditingMode.VertexRemap:
                     cbExtra.Text = "Show all numbers";
                     break;
+                case MeshEditingMode.VertexWeights:
+                    cbExtra.Text = "Show all weights";
+                    break;
                 case MeshEditingMode.Sphere:
                     cbExtra.Text = "Show gizmo";
                     break;
@@ -528,11 +568,21 @@ namespace WadTool
 
         private void UpdateStatusLabel()
         {
-            var prompt = NoMesh() ? string.Empty : panelMesh.Mesh.VertexPositions.Count + " vertices, " +
-                                                   panelMesh.Mesh.Polys.Count + " face" + 
-                                                  (panelMesh.Mesh.Polys.Count > 1 ? "s" : "") + ", " +
-                                                   panelMesh.Mesh.TextureAreas.Count + " texture info" + 
-                                                  (panelMesh.Mesh.TextureAreas.Count > 1 ? "s" : "") + ". ";
+            var prompt = string.Empty;
+
+            if (!NoMesh())
+            {
+                prompt += panelMesh.Mesh.VertexPositions.Count + " vertices, " +
+                          panelMesh.Mesh.Polys.Count + " face" + (panelMesh.Mesh.Polys.Count > 1 ? "s" : "");
+
+                if (panelMesh.Mesh.Polys.Count < 1024)
+                {
+                    int textureCount = panelMesh.Mesh.TextureAreas.Count;
+                    prompt += ", " + textureCount + " texture info" + (textureCount > 1 ? "s" : "");
+                }
+
+                prompt += ". ";
+            }
 
             if (panelTextureMap.SelectedTexture != TextureArea.None)
             {
@@ -572,6 +622,37 @@ namespace WadTool
             nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
             nudSphereRadius.Value = (decimal)Math.Abs(panelMesh.Mesh.BoundingSphere.Radius);
             _readingValues = false;
+        }
+
+        private void GetWeightValues(int index)
+        {
+            if (NoMesh() || panelMesh.CurrentElement == -1) return;
+
+            _readingValues = true;
+            nudWeightIndex1.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Index[0];
+            nudWeightIndex2.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Index[1];
+            nudWeightIndex3.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Index[2];
+            nudWeightIndex4.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Index[3];
+            nudWeightValue1.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Weight[0];
+            nudWeightValue2.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Weight[1];
+            nudWeightValue3.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Weight[2];
+            nudWeightValue4.Value = (decimal)panelMesh.Mesh.VertexWeights[index].Weight[3];
+            _readingValues = false;
+        }
+
+        private void SetWeightValues(int index)
+        {
+            var weight = new VertexWeight();
+            weight.Index[0] = (int)nudWeightIndex1.Value;
+            weight.Index[1] = (int)nudWeightIndex2.Value;
+            weight.Index[2] = (int)nudWeightIndex3.Value;
+            weight.Index[3] = (int)nudWeightIndex4.Value;
+            weight.Weight[0] = (float)nudWeightValue1.Value;
+            weight.Weight[1] = (float)nudWeightValue2.Value;
+            weight.Weight[2] = (float)nudWeightValue3.Value;
+            weight.Weight[3] = (float)nudWeightValue4.Value;
+
+            panelMesh.Mesh.VertexWeights[index] = weight;
         }
 
         private bool CheckTextureSize(ImageC image)
@@ -625,14 +706,24 @@ namespace WadTool
 
             var obj = _wad.TryGet(_currentNode.ObjectId);
 
-            if (obj is WadMoveable)
+            if (obj is WadMoveable mov)
             {
-                (obj as WadMoveable).Meshes[_currentNode.MeshIndex] =
-                (obj as WadMoveable).Bones[_currentNode.MeshIndex].Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                if (mov.Meshes.Count == _currentNode.MeshIndex)
+                {
+                    mov.Skin = _currentNode.WadMesh = panelMesh.Mesh;
+                }
+                else
+                {
+                    mov.Meshes[_currentNode.MeshIndex] =
+                    mov.Bones[_currentNode.MeshIndex].Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                }
+
+                mov.Version = DataVersion.GetNext();
             }
-            else if (obj is WadStatic)
+            else if (obj is WadStatic stat)
             {
-                (obj as WadStatic).Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                stat.Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                stat.Version = DataVersion.GetNext();
             }
         }
 
@@ -843,7 +934,12 @@ namespace WadTool
                     foreach (var poly in mesh.Polys)
                         if (poly.Texture.Texture.IsAvailable && !list.Exists(t => t == poly.Texture.Texture))
                             list.Add(poly.Texture.Texture);
-            }
+
+				foreach (var set in _tool.DestinationWad.AnimatedTextureSets)
+					foreach (var frame in set.Frames)
+						if (frame.Texture.IsAvailable && !list.Exists(t => t == frame.Texture))
+							list.Add(frame.Texture);
+			}
 
             // If count is the same it means no changes were made in texture list
             // and there's no need to actually repopulate.
@@ -971,6 +1067,15 @@ namespace WadTool
                 UpdateUI();
                 UpdateMeshTreeName();
             }
+        }
+
+        private void ToggleMeshVisibility()
+        {
+            if (panelMesh.Mesh == null)
+                return;
+
+            panelMesh.Mesh.Hidden = !panelMesh.Mesh.Hidden;
+            UpdateUI();
         }
 
         private void UpdateMeshTreeName()
@@ -1326,7 +1431,13 @@ namespace WadTool
                 // Deep replace
 
                 foreach (var moveable in _tool.DestinationWad.Moveables.Values)
-                    foreach (var mesh in moveable.Meshes)
+                {
+                    var meshList = new List<WadMesh>(moveable.Meshes);
+
+                    if (moveable.Skin != null)
+                        meshList.Add(moveable.Skin);
+
+                    foreach (var mesh in meshList)
                         for (int i = 0; i < mesh.Polys.Count; i++)
                         {
                             if (mesh.Polys[i].Texture.Texture == panelTextureMap.VisibleTexture)
@@ -1336,8 +1447,10 @@ namespace WadTool
                                 mesh.Polys[i] = newPoly;
                             }
                         }
+                }
 
                 foreach (var stat in _tool.DestinationWad.Statics.Values)
+                {
                     for (int i = 0; i < stat.Mesh.Polys.Count; i++)
                     {
                         if (stat.Mesh.Polys[i].Texture.Texture == panelTextureMap.VisibleTexture)
@@ -1347,6 +1460,7 @@ namespace WadTool
                             stat.Mesh.Polys[i] = newPoly;
                         }
                     }
+                }
             }
 
             // Visually update
@@ -1416,7 +1530,7 @@ namespace WadTool
                     if (dialogResult != DialogResult.OK)
                         return;
 
-                    panelTextureMap.VisibleTexture.Image.Save(fileDialog.FileName);
+                    panelTextureMap.VisibleTexture.Image.SaveToFile(fileDialog.FileName);
                 }
                 catch (Exception exc)
                 {
@@ -1430,7 +1544,7 @@ namespace WadTool
             butAllTextures.Checked = !butAllTextures.Checked;
             RepopulateTextureList();
         }
-        
+
         private void butTbUndo_Click(object sender, EventArgs e)
         {
             _tool.UndoManager.Undo();
@@ -1532,6 +1646,48 @@ namespace WadTool
         {
             if (lstMeshes.SelectedNodes.Count == 1 && lstMeshes.SelectedNodes[0].Tag != null)
                 RenameMesh();
+        }
+
+        private void butHide_Click(object sender, EventArgs e)
+        {
+            ToggleMeshVisibility();
+        }
+
+        private void butAnimationRanges_Click(object sender, EventArgs e)
+        {
+            var context = new WadToolAnimatedTexturesContext(_tool, _userTextures);
+            using (var form = new FormAnimatedTextures(
+                new PanelTextureMapForAnimations(_tool),
+                context,
+                _tool.Configuration))
+            {
+                form.ShowDialog();
+            }
+        }
+
+        private void butApplyWeightsToAllVertices_Click(object sender, EventArgs e)
+        {
+            if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexWeights)
+                return;
+
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+
+            GenerateMissingVertexData();
+
+            for (int i = 0; i < panelMesh.Mesh.VertexWeights.Count; i++)
+            {
+                panelMesh.Mesh.VertexWeights[i].Index[0] = (int)nudWeightIndex1.Value;
+                panelMesh.Mesh.VertexWeights[i].Index[1] = (int)nudWeightIndex2.Value;
+                panelMesh.Mesh.VertexWeights[i].Index[2] = (int)nudWeightIndex3.Value;
+                panelMesh.Mesh.VertexWeights[i].Index[3] = (int)nudWeightIndex4.Value;
+                panelMesh.Mesh.VertexWeights[i].Weight[0] = (float)nudWeightValue1.Value;
+                panelMesh.Mesh.VertexWeights[i].Weight[1] = (float)nudWeightValue2.Value;
+                panelMesh.Mesh.VertexWeights[i].Weight[2] = (float)nudWeightValue3.Value;
+                panelMesh.Mesh.VertexWeights[i].Weight[3] = (float)nudWeightValue4.Value;
+            }
+
+            panelMesh.ColorizeVertexWeights();
+            panelMesh.Invalidate();
         }
     }
 }

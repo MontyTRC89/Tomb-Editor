@@ -54,6 +54,10 @@ namespace TombLib.LevelData.IO
                 });
 
                 level.Settings.HasUnknownData = chunkIO.UnknownChunksFound;
+
+                if (level.IsTombEngine)
+                    level.Settings.RemapAnimatedTextures = false;
+
                 return level;
             }
         }
@@ -628,7 +632,15 @@ namespace TombLib.LevelData.IO
                             {
                                 set.UvRotate = chunkIO.ReadChunkInt(chunkSize3);
                             }
-                            else if (id3 == Prj2Chunks.AnimatedTextureFrames)
+                            else if (id3 == Prj2Chunks.AnimatedTextureSetTenUvRotateDirection)
+                            {
+                                set.TenUvRotateDirection = chunkIO.ReadChunkFloat(chunkSize3);
+                            }
+							else if (id3 == Prj2Chunks.AnimatedTextureSetTenUvRotateSpeed)
+							{
+								set.TenUvRotateSpeed = chunkIO.ReadChunkFloat(chunkSize3);
+							}
+							else if (id3 == Prj2Chunks.AnimatedTextureFrames)
                             {
                                 var frames = new List<AnimatedTextureFrame>();
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
@@ -1627,7 +1639,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectPortal)
+                else if (id3 == Prj2Chunks.ObjectPortal || id3 == Prj2Chunks.ObjectPortal2)
                 {
                     var area = new RectangleInt2(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
                     var adjoiningRoomIndex = LEB128.ReadLong(chunkIO.Raw);
@@ -1637,6 +1649,26 @@ namespace TombLib.LevelData.IO
                     // If an issue comes up that prevents loading the second room, this placeholder will be used permanently.
                     var instance = new PortalInstance(area, direction, room);
                     instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
+
+                    if (id3 == Prj2Chunks.ObjectPortal2)
+                    {
+                        instance.Effect = (PortalEffectType)chunkIO.Raw.ReadByte();
+
+                        chunkIO.ReadChunks((id4, chunkSize4) =>
+                        {
+                            if (id4 == Prj2Chunks.ObjectPortalMirrorProperties)
+                            {
+                                instance.Properties.ReflectLara = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectMoveables = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectStatics = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectSprites = chunkIO.Raw.ReadBoolean();
+                                instance.Properties.ReflectLights = chunkIO.Raw.ReadBoolean();
+                                return true;
+                            }
+                            return false;
+                        });
+                    }
+
                     roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, adjoiningRoom => instance.AdjoiningRoom = adjoiningRoom ?? room));
 
                     addObject(instance);
@@ -1905,6 +1937,7 @@ namespace TombLib.LevelData.IO
 
         private static TriggerNode LoadNode(ChunkReader chunkIO, TriggerNode previous = null)
         {
+            bool restoreArgumentNames = false;
             TriggerNode node = new TriggerNodeAction();
 
             chunkIO.ReadChunks((id, chunkSize) =>
@@ -1927,7 +1960,28 @@ namespace TombLib.LevelData.IO
                 else if (id == Prj2Chunks.NodeFunction)
                     node.Function = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.NodeArgument)
-                    node.Arguments.Add(chunkIO.ReadChunkString(chunkSize));
+                {
+                    restoreArgumentNames = true;
+                    node.Arguments.Add(new TriggerNodeArgument() { Name = string.Empty, Value = chunkIO.ReadChunkString(chunkSize) });
+                }
+                else if (id == Prj2Chunks.NodeArgument2)
+                {
+                    var name  = string.Empty;
+                    var val = string.Empty;
+
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Prj2Chunks.NodeArgumentName)
+                            name = chunkIO.ReadChunkString(chunkSize2);
+                        else if (id2 == Prj2Chunks.NodeArgumentValue)
+                            val = chunkIO.ReadChunkString(chunkSize2);
+                        else
+                            return false;
+                        return true;
+                    });
+
+                    node.Arguments.Add(new TriggerNodeArgument() { Name = name, Value = val });
+                }
                 else if (id == Prj2Chunks.EventNodeNext)
                     node.Next = LoadNode(chunkIO, node);
                 else if (id == Prj2Chunks.EventNodeElse)
@@ -1939,7 +1993,20 @@ namespace TombLib.LevelData.IO
 
             // Attempt to fix missing or excessive arguments in case node was changed
             if (ScriptingUtils.NodeFunctions.Any(f => f.Signature == node.Function))
-                node.FixArguments(ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function));
+            {
+                if (restoreArgumentNames)
+                {
+                    // Restore argument names for old chunk version.
+                    var function = ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function);
+                    for (int i = 0; i < node.Arguments.Count; i++)
+                        node.Arguments[i] = new TriggerNodeArgument() { Name = function.Arguments[i].Name, Value = node.Arguments[i].Value };
+                }
+                else
+                {
+                    // Reorder arguments, if order was changed.
+                    node.FixArguments(ScriptingUtils.NodeFunctions.First(f => f.Signature == node.Function));
+                }
+            }
 
             node.Previous = previous;
             return node;

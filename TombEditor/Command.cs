@@ -20,6 +20,7 @@ using TombLib.Wad.Catalog;
 using TombLib.Utils;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
+using TombEditor.Controls;
 
 namespace TombEditor
 {
@@ -1325,7 +1326,8 @@ namespace TombEditor
                                 "File already exists", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                             return;
                     }
-                    texture.Image.Save(pngFilePath);
+
+                    texture.Image.SaveToFile(pngFilePath);
 
                     args.Editor.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
                     texture.SetPath(args.Editor.Level.Settings, pngFilePath);
@@ -1382,9 +1384,16 @@ namespace TombEditor
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
                 var existingWindow = Application.OpenForms[nameof(FormAnimatedTextures)];
+
                 if (existingWindow == null)
                 {
-                    var form = new FormAnimatedTextures(args.Editor);
+                    var context = new TombEditorAnimatedTexturesContext(args.Editor);
+                    var form = new FormAnimatedTextures(
+                        new PanelTextureMapForAnimations(),
+                        context,
+                        args.Editor.Configuration
+                    );
+
                     form.Show(args.Window);
                 }
                 else
@@ -1445,6 +1454,48 @@ namespace TombEditor
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
                     return;
                 EditorActions.SharpRandom(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, -1, SectorVerticalPart.WS);
+            });
+
+            AddCommand("RealignFloorToStepHeight", "Re-align floor to step height", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.RealignToStepHeight(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.QA, args.Editor.IncrementReference);
+            });
+
+            AddCommand("RealignCeilingToStepHeight", "Re-align ceiling to step height", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.RealignToStepHeight(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
+            });
+
+            AddCommand("ConvertFloorToQuads", "Convert floor to quads", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.ConvertAreaToQuads(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.QA, args.Editor.IncrementReference);
+            });
+
+            AddCommand("ConvertCeilingToQuads", "Convert ceiling to quads", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.ConvertAreaToQuads(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
+            });
+
+            AddCommand("SmoothFloor", "Smooth floor", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.SmoothArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.QA, args.Editor.IncrementReference);
+            });
+
+            AddCommand("SmoothCeiling", "Smooth ceiling", CommandType.Geometry, delegate (CommandArgs args)
+            {
+                if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
+                    return;
+                EditorActions.SmoothArea(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorVerticalPart.WS, args.Editor.IncrementReference);
             });
 
             AddCommand("AverageFloor", "Average floor", CommandType.Geometry, delegate (CommandArgs args)
@@ -1810,7 +1861,12 @@ namespace TombEditor
                 EditorActions.SetPortalOpacity(PortalOpacity.TraversableFaces, args.Window);
             });
 
-            AddCommand("AddPointLight", "Add point light", CommandType.Lighting, delegate (CommandArgs args)
+			AddCommand("ToggleClassicPortalMirror", "Toggle classic portal mirror effect", CommandType.Rooms, delegate (CommandArgs args)
+			{
+				EditorActions.ToggleClassicPortalMirror(args.Window);
+			});
+
+			AddCommand("AddPointLight", "Add point light", CommandType.Lighting, delegate (CommandArgs args)
             {
                 EditorActions.PlaceLight(LightType.Point);
             });
@@ -1838,6 +1894,23 @@ namespace TombEditor
             AddCommand("AddFogBulb", "Add fog bulb", CommandType.Lighting, delegate (CommandArgs args)
             {
                 EditorActions.PlaceLight(LightType.FogBulb);
+            });
+
+            AddCommand("EditObjectTransform", "Edit object transform", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is not PositionBasedObjectInstance)
+                {
+                    args.Editor.SendMessage("Select a position-based object first.", PopupType.Warning);
+                    return;
+                }
+
+                using (var form = new FormTransform(args.Editor.SelectedObject as PositionBasedObjectInstance))
+                {
+                    if (form.ShowDialog(args.Window) == DialogResult.Cancel)
+                        return;
+
+                    args.Editor.ObjectChange(args.Editor.SelectedObject, ObjectChangeType.Change);
+                }
             });
 
             AddCommand("EditRoomName", "Edit room name", CommandType.Rooms, delegate (CommandArgs args)
