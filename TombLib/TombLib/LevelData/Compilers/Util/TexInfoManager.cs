@@ -679,7 +679,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, 
                                    bool isForRoom, bool isForTriangle, bool topmostAndUnpadded,
-                                   bool checkParameters = true, bool scanOtherSets = false, float lookupMargin = 0.0f)
+                                   bool checkParameters = true, bool scanOtherSets = false, float lookupMargin = 0.0f, int forceRotation = -1)
         {
             var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
             for (int i = 0; i < lookupCoordinates.Length; i++)
@@ -713,6 +713,10 @@ namespace TombLib.LevelData.Compilers.Util
                     var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
                     if (result != _noTexInfo)
                     {
+                        // If rotation is forced for decal coordination, reject this match if rotation doesn't match
+                        if (forceRotation >= 0 && result != forceRotation)
+                            continue;
+
                         // Refresh topmost flag, as same texture may be applied to faces with different topmost priority
                         parent.TopmostAndUnpadded |= topmostAndUnpadded;
 
@@ -769,23 +773,8 @@ namespace TombLib.LevelData.Compilers.Util
 
         public Result AddTexture(TextureArea texture, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false)
         {
-            if (_dataHasBeenLaidOut)
-                throw new InvalidOperationException("Data has been already laid out for this TexInfoManager. Reinitialize it if you want to restart texture collection.");
-
-            if ((isForTriangle && texture.TriangleCoordsOutOfBounds) || (!isForTriangle && texture.QuadCoordsOutOfBounds))
-            {
-                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + 
-                    texture.TexCoord2 + ", " + texture.TexCoord3 + ") is out of bounds and will be ignored.");
+            if (!ValidateTexture(texture, isForTriangle))
                 return new Result();
-            }
-
-            if (texture.ParentArea.Width > MaxTileSize || texture.ParentArea.Height > MaxTileSize)
-            {
-                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + 
-                    texture.TexCoord2 + ", " + texture.TexCoord3 + ") has incorrect parent area which has been reset. " + 
-                    "Possibly UV-mapped mesh with texture bigger than " + MaxTileSize + " in size.");
-                texture.ParentArea = Rectangle2.Zero;
-            }
 
             // Only try to remap animated textures if fast mode is disabled
             bool remapAnimatedTextures = _level.Settings.RemapAnimatedTextures && !_level.Settings.FastMode;
@@ -834,24 +823,73 @@ namespace TombLib.LevelData.Compilers.Util
             return AddTexture(texture, _parentTextures, isForRoom, isForTriangle, topmostAndUnpadded);
         }
 
+        public Result AddTexture(TextureArea texture, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, int forceRotation)
+        {
+            if (!ValidateTexture(texture, isForTriangle))
+                return new Result();
+
+            // Force specific rotation for decal coordination
+            return AddTexture(texture, _parentTextures, isForRoom, isForTriangle, topmostAndUnpadded, -1, true, forceRotation);
+        }
+
+        public bool ValidateTexture(TextureArea texture, bool isForTriangle)
+        {
+            if (_dataHasBeenLaidOut)
+                throw new InvalidOperationException("Data has been already laid out for this TexInfoManager. Reinitialize it if you want to restart texture collection.");
+
+            if ((isForTriangle && texture.TriangleCoordsOutOfBounds) || (!isForTriangle && texture.QuadCoordsOutOfBounds))
+            {
+                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " +
+                    texture.TexCoord2 + ", " + texture.TexCoord3 + ") is out of bounds and will be ignored.");
+
+                return false;
+            }
+
+            if (texture.ParentArea.Width > MaxTileSize || texture.ParentArea.Height > MaxTileSize)
+            {
+                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " +
+                    texture.TexCoord2 + ", " + texture.TexCoord3 + ") has incorrect parent area which has been reset. " +
+                    "Possibly UV-mapped mesh with texture bigger than " + MaxTileSize + " in size.");
+
+                texture.ParentArea = Rectangle2.Zero;
+            }
+
+            return true;
+        }
+
         // Internal AddTexture variation which is capable of adding texture to various ParentTextureArea lists
         // with customizable parameters.
         // If animFrameIndex == -1, it means that ordinary texture is added, otherwise it indicates that specific anim
         // texture frame is being processed. If so, frame index is saved into TexInfoIndex field of resulting child.
         // Later on, on real anim texture creation, this index is used to sort frames in proper order.
 
-        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1, bool makeCanonical = true)
+        private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1, bool makeCanonical = true, int forceRotation = -1)
         {
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
             // frames can be duplicated with Repeat function or simply because of complex animator functions applied.
-            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
+            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, forceRotation: forceRotation);
 
             if (!result.HasValue)
             {
                 // Try to create new canonical (top-left-based) texture as child or parent.
                 // makeCanonical parameter is necessary for animated textures, because animators may produce frames
                 // with non-canonically rotated coordinates (e.g. spin animator).
-                var canonicalTexture = makeCanonical ? texture.GetCanonicalTexture(isForTriangle) : texture;
+                // If forceRotation is specified, apply that specific rotation instead of canonical optimization.
+                
+                TextureArea canonicalTexture;
+
+                if (forceRotation >= 0)
+                {
+                    // Force specific rotation for decal coordination
+                    canonicalTexture = texture;
+
+                    if (forceRotation > 0)
+                        canonicalTexture.Rotate(forceRotation, isForTriangle);
+                }
+                else
+                {
+                    canonicalTexture = makeCanonical ? texture.GetCanonicalTexture(isForTriangle) : texture;
+                }
 
                 // If no any potential parents or children, create as new parent
                 if (!TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, animFrameIndex))
@@ -861,7 +899,7 @@ namespace TombLib.LevelData.Compilers.Util
                 if (animFrameIndex >= 0)
                     result = new Result { TexInfoIndex = _dummyTexInfo, Rotation = 0 };
                 else
-                    result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
+                    result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, forceRotation: forceRotation);
             }
             
             if (!result.HasValue)
