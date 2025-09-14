@@ -19,7 +19,7 @@ public readonly struct SectorFaceIdentity : IEquatable<SectorFaceIdentity>, ICom
 	public override int GetHashCode() => HashCode.Combine(Position, Face.Face, Face.Layer);
 
 	public bool Equals(SectorFaceIdentity other) => Position == other.Position && Face == other.Face;
-	public override bool Equals(object other) => other is SectorFaceIdentity identity && identity.Equals(other);
+	public override bool Equals(object other) => other is SectorFaceIdentity identity && Equals(identity);
 
 	int IComparable.CompareTo(object other) => CompareTo((SectorFaceIdentity)other);
 	public int CompareTo(SectorFaceIdentity other)
