@@ -59,7 +59,7 @@ namespace TombEditor
                             writer.Write((byte)b.Ceiling.DiagonalSplit);
                             writer.Write((short)b.Flags);
 
-                            Dictionary<FaceLayerInfo, TextureArea> textures = b.GetFaceTexturesAll();
+                            Dictionary<FaceLayerInfo, TextureArea> textures = b.GetAllFaceTextures();
                             writer.Write(textures.Count);
 
                             foreach (KeyValuePair<FaceLayerInfo, TextureArea> texturePair in textures)

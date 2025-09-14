@@ -3832,7 +3832,7 @@ namespace TombEditor
                         Sector newSector = sector.Value.GetSector(newSectorVec).Clone();
 
                         // Preserve outer wall textures
-                        foreach (FaceLayerInfo face in oldSector.GetFaceTexturesAll().Keys.Union(newSector.GetFaceTexturesAll().Keys))
+                        foreach (FaceLayerInfo face in oldSector.GetAllFaceTextures().Keys.Union(newSector.GetAllFaceTextures().Keys))
                         {
                             var direction = face.Face.GetDirection();
                             if (direction == Direction.NegativeX || direction == Direction.PositiveX || direction == Direction.NegativeZ || direction == Direction.PositiveZ)

@@ -107,7 +107,7 @@ namespace TombLib.LevelData
         public Dictionary<SectorFace, TextureArea> GetFaceTextures(FaceLayer layer)
             => _faceTextures.Where(kvp => kvp.Key.Layer == layer).ToDictionary(kvp => kvp.Key.Face, kvp => kvp.Value);
 
-        public Dictionary<FaceLayerInfo, TextureArea> GetFaceTexturesAll()
+        public Dictionary<FaceLayerInfo, TextureArea> GetAllFaceTextures()
             => _faceTextures;
 
         public IEnumerable<SectorVerticalPart> GetVerticals()
@@ -142,7 +142,7 @@ namespace TombLib.LevelData
             Flags = replacement.Flags;
             ForceFloorSolid = replacement.ForceFloorSolid;
 
-            foreach (FaceLayerInfo face in replacement.GetFaceTexturesAll().Keys.Union(_faceTextures.Keys))
+            foreach (FaceLayerInfo face in replacement.GetAllFaceTextures().Keys.Union(_faceTextures.Keys))
             {
                 var texture = replacement.GetFaceTexture(face);
                 if (texture.TextureIsInvisible || level.Settings.Textures.Contains(texture.Texture))

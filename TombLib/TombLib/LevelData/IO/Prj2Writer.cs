@@ -466,7 +466,7 @@ namespace TombLib.LevelData.IO
                                                 for (SectorEdge edge = 0; edge < SectorEdge.Count; ++edge)
                                                     LEB128.Write(chunkIO.Raw, b.GetHeight(splitVertical, edge));
                                         }
-                                        foreach (FaceLayerInfo face in b.GetFaceTexturesAll().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, texture.Key))).Select(x => x.Key))
+                                        foreach (FaceLayerInfo face in b.GetAllFaceTextures().Where(texture => room.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, texture.Key))).Select(x => x.Key))
                                         {
                                             TextureArea texture = b.GetFaceTexture(face);
 

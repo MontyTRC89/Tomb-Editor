@@ -292,7 +292,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
-                            foreach (FaceLayerInfo face in room.Sectors[x, z].GetFaceTexturesAll().Keys)
+                            foreach (FaceLayerInfo face in room.Sectors[x, z].GetAllFaceTextures().Keys)
                             {
                                 var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                                 var shape = room.GetFaceShape(x, z, face.Face);

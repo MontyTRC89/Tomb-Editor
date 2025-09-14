@@ -105,7 +105,7 @@ namespace TombLib.GeometryIO
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
                             var sector = room.GetSector(new VectorInt2(x, z));
-                            foreach (FaceLayerInfo face in sector.GetFaceTexturesAll().Keys)
+                            foreach (FaceLayerInfo face in sector.GetAllFaceTextures().Keys)
                             {
                                 var faceTexture = sector.GetFaceTexture(face);
                                 if (faceTexture.TextureIsInvisible || faceTexture.TextureIsUnavailable || faceTexture.Texture == null)
@@ -179,7 +179,7 @@ namespace TombLib.GeometryIO
                     {
                         var sector = room.GetSector(new VectorInt2(x, z));
 
-                        foreach (FaceLayerInfo face in sector.GetFaceTexturesAll().Keys)
+                        foreach (FaceLayerInfo face in sector.GetAllFaceTextures().Keys)
                         {
                             var faceTexture = sector.GetFaceTexture(face);
 
