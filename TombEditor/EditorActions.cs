@@ -26,6 +26,7 @@ using TombLib.LevelData.SectorServices;
 using TombLib.LevelData.SectorStructs;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Rendering;
+using TombLib.Results;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -1633,7 +1634,7 @@ namespace TombEditor
         private static bool _textureAtrributeMessageState = false;
         private static int  _textureAttributeMessageCount = 0;
 
-        private static bool ApplyTextureToFace(Room room, VectorInt2 pos, FaceLayerInfo face, TextureArea texture, bool autocorrectCeiling = true)
+        private static ApplyTextureResult ApplyTextureToFace(Room room, VectorInt2 pos, FaceLayerInfo face, TextureArea texture, bool autocorrectCeiling = true)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&
                 !room.Properties.FlagHorizon && texture.TextureIsInvisible)
@@ -1645,7 +1646,7 @@ namespace TombEditor
             Sector sector = room.GetSector(pos);
             FaceShape shape = room.GetFaceShape(pos.X, pos.Y, face.Face);
             bool wasDoubleSided = sector.GetFaceTexture(face).DoubleSided;
-            bool textureApplied = false;
+            bool textureApplied, needsGeometryRebuild = false;
 
             // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
             texture.ClampToBounds();
@@ -1674,7 +1675,7 @@ namespace TombEditor
 
                     if (!updated && face.Layer is FaceLayer.Decal)
                     {
-                        room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        needsGeometryRebuild = true;
                         updated = true;
                     }
 
@@ -1682,7 +1683,7 @@ namespace TombEditor
                         _editor.RoomTextureChange(room);
                 }
 
-                return textureApplied;
+                return new(textureApplied, needsGeometryRebuild);
             }
 
             TextureArea processedTexture = texture;
@@ -1742,7 +1743,7 @@ namespace TombEditor
                         // Get current face
                         VertexRange vertexRange = new VertexRange(0, 0);
                         if (!room.RoomGeometry.VertexRangeLookup.TryGetValue(new SectorFaceIdentity(pos.X, pos.Y, new(face.Face, FaceLayer.Base)), out vertexRange))
-                            return false;
+                            return ApplyTextureResult.NoChange;
 
                         if (vertexRange.Count == 6)
                         {
@@ -1865,7 +1866,7 @@ namespace TombEditor
 
                 if (!updated && face.Layer is FaceLayer.Decal)
                 {
-                    room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    needsGeometryRebuild = true;
                     updated = true;
                 }
 
@@ -1873,7 +1874,7 @@ namespace TombEditor
                     _editor.RoomTextureChange(room);
             }
 
-            return textureApplied;
+            return new(textureApplied, needsGeometryRebuild);
         }
 
         public static bool ApplyTexture(Room room, VectorInt2 pos, FaceLayerInfo face, TextureArea texture, bool disableUndo = false)
@@ -1883,12 +1884,18 @@ namespace TombEditor
 
             texture.ParentArea = new Rectangle2();
 
-            bool textureApplied = ApplyTextureToFace(room, pos, face, texture);
+            ApplyTextureResult result = ApplyTextureToFace(room, pos, face, texture);
 
-            if (textureApplied)
+            if (result.NeedsGeometryRebuild)
+            {
+                room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                _editor.RoomGeometryChange(room);
+            }
+
+            if (result.Success)
                 _editor.RoomTextureChange(room);
 
-            return textureApplied;
+            return result.Success;
         }
 
         public static Dictionary<SectorFace, float[]> GetFaces(Room room, VectorInt2 pos, Direction direction, SectorFaceType section)
@@ -2119,7 +2126,7 @@ namespace TombEditor
             return new float[2] { minHeight, maxHeight };
         }
 
-        public static void TexturizeWallSection(Room room, VectorInt2 pos, Direction direction, SectorFaceType section, TextureArea texture, int subdivisions = 0, int iteration = 0, float[] overrideHeights = null)
+        public static ApplyTextureResult TexturizeWallSection(Room room, VectorInt2 pos, Direction direction, SectorFaceType section, TextureArea texture, int subdivisions = 0, int iteration = 0, float[] overrideHeights = null)
         {
             if (subdivisions < 0 || iteration < 0)
                 subdivisions = 0;
@@ -2150,6 +2157,10 @@ namespace TombEditor
 
             float sectionHeight = maxSectionHeight - minSectionHeight;
             bool inverted = false;
+
+            bool anyTextureApplied = false;
+            bool needsGeometryRebuild = false;
+            ApplyTextureResult result;
 
             foreach (var segment in segments)
             {
@@ -2208,8 +2219,12 @@ namespace TombEditor
                     }
                 }
 
-                ApplyTextureToFace(room, pos, new FaceLayerInfo(segment.Key, _editor.ActiveTextureLayer), processedTexture);
+                result = ApplyTextureToFace(room, pos, new FaceLayerInfo(segment.Key, _editor.ActiveTextureLayer), processedTexture);
+                anyTextureApplied |= result.Success;
+                needsGeometryRebuild |= result.NeedsGeometryRebuild;
             }
+
+            return new(anyTextureApplied, needsGeometryRebuild);
         }
 
         public static void TexturizeGroup(Room room, SectorSelection selection, SectorSelection workArea, TextureArea texture, SectorFace pickedFace, bool subdivideWalls, bool unifyHeight, bool disableUndo = false)
@@ -2219,6 +2234,10 @@ namespace TombEditor
 
             if (pickedFace.IsCeiling()) texture.Mirror();
             RectangleInt2 area = selection != SectorSelection.None ? selection.Area : _editor.SelectedRoom.LocalArea;
+
+            bool anyTextureApplied = false;
+            bool needsGeometryRebuild = false;
+            ApplyTextureResult result;
 
             if (pickedFace.IsWall())
             {
@@ -2238,16 +2257,22 @@ namespace TombEditor
                         {
                             case Direction.PositiveZ:
                             case Direction.NegativeZ:
-                                TexturizeWallSection(room, new VectorInt2(x, z), direction, faceType, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, direction, faceType) : null);
+                                result = TexturizeWallSection(room, new VectorInt2(x, z), direction, faceType, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, direction, faceType) : null);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
                                 break;
 
                             case Direction.PositiveX:
                             case Direction.NegativeX:
-                                TexturizeWallSection(room, new VectorInt2(x, z), direction, faceType, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, direction, faceType) : null);
+                                result = TexturizeWallSection(room, new VectorInt2(x, z), direction, faceType, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, direction, faceType) : null);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
                                 break;
 
                             case Direction.Diagonal:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, faceType, texture);
+                                result = TexturizeWallSection(room, new VectorInt2(x, z), Direction.Diagonal, faceType, texture);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
                                 break;
                         }
                     }
@@ -2289,21 +2314,38 @@ namespace TombEditor
                         {
                             case SectorFace.Floor:
                             case SectorFace.Floor_Triangle2:
-                                ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Floor, _editor.ActiveTextureLayer), currentTexture);
-                                ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Floor_Triangle2, _editor.ActiveTextureLayer), currentTexture);
+                                result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Floor, _editor.ActiveTextureLayer), currentTexture);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
+
+                                result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Floor_Triangle2, _editor.ActiveTextureLayer), currentTexture);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
                                 break;
 
                             case SectorFace.Ceiling:
                             case SectorFace.Ceiling_Triangle2:
-                                ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Ceiling, _editor.ActiveTextureLayer), currentTexture, false);
-                                ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Ceiling_Triangle2, _editor.ActiveTextureLayer), currentTexture, false);
+                                result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Ceiling, _editor.ActiveTextureLayer), currentTexture, false);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
+
+                                result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Ceiling_Triangle2, _editor.ActiveTextureLayer), currentTexture, false);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
                                 break;
                         }
                     }
                 }
             }
 
-            _editor.RoomTextureChange(room);
+            if (needsGeometryRebuild)
+            {
+                room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                _editor.RoomGeometryChange(room);
+            }
+
+            if (anyTextureApplied)
+                _editor.RoomTextureChange(room);
         }
 
         public static void TexturizeAll(Room room, SectorSelection selection, TextureArea texture, SectorFaceType type)
@@ -2315,6 +2357,11 @@ namespace TombEditor
 
             texture.ParentArea = new Rectangle2();
 
+            // Track if we need to rebuild geometry for decals at the end
+            bool anyTextureApplied = false;
+            bool needsGeometryRebuild = false;
+            ApplyTextureResult result;
+
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
@@ -2323,29 +2370,47 @@ namespace TombEditor
                         case SectorFaceType.Floor:
                             if (!room.Sectors[x, z].IsFullWall)
                             {
-                                ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Floor, _editor.ActiveTextureLayer), texture);
-                                ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Floor_Triangle2, _editor.ActiveTextureLayer), texture);
+                                result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Floor, _editor.ActiveTextureLayer), texture);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
+
+                                result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Floor_Triangle2, _editor.ActiveTextureLayer), texture);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
                             }
                             break;
 
                         case SectorFaceType.Ceiling:
                             if (!room.Sectors[x, z].IsFullWall)
                             {
-                                ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Ceiling, _editor.ActiveTextureLayer), texture);
-                                ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Ceiling_Triangle2, _editor.ActiveTextureLayer), texture);
+                                result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Ceiling, _editor.ActiveTextureLayer), texture);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
+
+                                result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(SectorFace.Ceiling_Triangle2, _editor.ActiveTextureLayer), texture);
+                                anyTextureApplied |= result.Success;
+                                needsGeometryRebuild |= result.NeedsGeometryRebuild;
                             }
                             break;
 
                         case SectorFaceType.Wall:
                             foreach (SectorFace face in SectorFaceExtensions.GetWalls())
                                 if (room.IsFaceDefined(x, z, face))
-                                    ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(face, _editor.ActiveTextureLayer), texture);
+                                {
+                                    result = ApplyTextureToFace(room, new VectorInt2(x, z), new FaceLayerInfo(face, _editor.ActiveTextureLayer), texture);
+                                    anyTextureApplied |= result.Success;
+                                    needsGeometryRebuild |= result.NeedsGeometryRebuild;
+                                }
                             break;
                     }
 
                 }
 
-            _editor.RoomTextureChange(room);
+            if (needsGeometryRebuild)
+                room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+
+            if (anyTextureApplied)
+                _editor.RoomTextureChange(room);
         }
 
         private static void AllocateScriptIds(PositionBasedObjectInstance instance)
