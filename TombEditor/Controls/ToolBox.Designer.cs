@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolBox));
             toolStrip = new DarkUI.Controls.DarkToolStrip();
             toolSelection = new System.Windows.Forms.ToolStripButton();
             toolBrush = new System.Windows.Forms.ToolStripButton();
@@ -364,7 +363,7 @@
             toolOverlayMode.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
             toolOverlayMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             toolOverlayMode.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            toolOverlayMode.Image = (System.Drawing.Image)resources.GetObject("toolOverlayMode.Image");
+            toolOverlayMode.Image = Properties.Resources.general_layers_16;
             toolOverlayMode.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolOverlayMode.Margin = new System.Windows.Forms.Padding(1);
             toolOverlayMode.Name = "toolOverlayMode";
