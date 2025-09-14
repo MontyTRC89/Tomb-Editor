@@ -1,6 +1,4 @@
 ﻿using DarkUI.Forms;
-using Microsoft.Build.Tasks;
-using NLog;
 using System;
 using System.Drawing;
 using System.IO;
@@ -8,7 +6,6 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using static TombLib.LevelData.Compilers.TombEngineTexInfoManager;
 
 namespace TombLib.Forms
 {
@@ -65,7 +62,8 @@ namespace TombLib.Forms
 
 			comboMaterialType.SelectedIndex = (int)_materialData.Type;
 			UpdateMaterialProperties();
-		}
+            UpdateUI();
+        }
 
 		private void LoadTexturePreview(string path, PictureBox pictureBox)
 		{
@@ -113,7 +111,43 @@ namespace TombLib.Forms
 			}
 		}
 
-		private void butCancel_Click(object sender, EventArgs e)
+        private void UpdateUI()
+        {
+            butClearNormalMap.Enabled = !string.IsNullOrEmpty(tbNormalMapPath.Text);
+            butClearAmbientOcclusionMap.Enabled = !string.IsNullOrEmpty(tbAmbientOcclusionMapPath.Text);
+            butClearEmissiveMap.Enabled = !string.IsNullOrEmpty(tbEmissiveMapPath.Text);
+            butClearSpecularMap.Enabled = !string.IsNullOrEmpty(tbSpecularMapPath.Text);
+        }
+
+        private void BrowseTexture(TextBox textBox, PictureBox previewBox)
+        {
+            var texturePath = LevelFileDialog.BrowseFile(this, "Browse texture", ImageC.FileExtensions, false);
+            
+            if (!string.IsNullOrEmpty(texturePath))
+            {
+                textBox.Text = texturePath;
+                textBox.BackColor = _correctColor;
+                LoadTexturePreview(texturePath, previewBox);
+                UpdateUI();
+                _saveXml = true;
+            }
+        }
+
+        private void ClearTexture(TextBox textBox, PictureBox previewBox, string mapName)
+        {
+            var message = "Do you really want to clear the " + mapName + " map ?";
+
+            if (DarkMessageBox.Show(this, message, "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                textBox.Text = string.Empty;
+                textBox.BackColor = this.BackColor;
+                LoadTexturePreview(string.Empty, previewBox);
+                UpdateUI();
+                _saveXml = true;
+            }
+        }
+
+        private void butCancel_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();
@@ -170,106 +204,24 @@ namespace TombLib.Forms
 			UpdateMaterialProperties();
 		}
 
-		private void butBrowseNormalMap_Click(object sender, EventArgs e)
-		{
-			var texturePath = LevelFileDialog.BrowseFile(this, "Browse texture", ImageC.FileExtensions, false);
-			if (!string.IsNullOrEmpty(texturePath))
-			{
-				tbNormalMapPath.Text = texturePath;
-				tbNormalMapPath.BackColor = _correctColor;
-				LoadTexturePreview(texturePath, picPreviewNormalMap);
-				_saveXml = true;
-			}
-		}
+        private void butBrowseNormalMap_Click(object sender, EventArgs e) => BrowseTexture(tbNormalMapPath, picPreviewNormalMap);
+        private void butBrowseAmbientOcclusionMap_Click(object sender, EventArgs e) => BrowseTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap);
+        private void butBrowseEmissiveMap_Click(object sender, EventArgs e) =>  BrowseTexture(tbEmissiveMapPath, picPreviewEmissiveMap);
+        private void butBrowseSpecularMap_Click(object sender, EventArgs e) => BrowseTexture(tbSpecularMapPath, picPreviewSpecularMap);
 
-		private void butBrowseAmbientOcclusionMap_Click(object sender, EventArgs e)
-		{
-			var texturePath = LevelFileDialog.BrowseFile(this, "Browse texture", ImageC.FileExtensions, false);
-			if (!string.IsNullOrEmpty(texturePath))
-			{
-				tbAmbientOcclusionMapPath.Text = texturePath;
-				tbAmbientOcclusionMapPath.BackColor = _correctColor;
-				LoadTexturePreview(texturePath, picPreviewAmbientOcclusionMap);
-				_saveXml = true;
-			}
-		}
+        private void butClearNormalMap_Click(object sender, EventArgs e) => ClearTexture(tbNormalMapPath, picPreviewNormalMap, "normal");
+        private void butClearAmbientOcclusionMap_Click(object sender, EventArgs e) => ClearTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap, "ambient occlusion");
+        private void butClearEmissiveMap_Click(object sender, EventArgs e) => ClearTexture(tbEmissiveMapPath, picPreviewEmissiveMap, "emissive");
+        private void butClearSpecularMap_Click(object sender, EventArgs e) => ClearTexture(tbSpecularMapPath, picPreviewSpecularMap, "specular");
 
-		private void butBrowseEmissiveMap_Click(object sender, EventArgs e)
-		{
-			var texturePath = LevelFileDialog.BrowseFile(this, "Browse texture", ImageC.FileExtensions, false);
-			if (!string.IsNullOrEmpty(texturePath))
-			{
-				tbEmissiveMapPath.Text = texturePath;
-				tbEmissiveMapPath.BackColor = _correctColor;
-				LoadTexturePreview(texturePath, picPreviewEmissiveMap);
-				_saveXml = true;
-			}
-		}
+        private void nmNormalMapStrength_ValueChanged(object sender, EventArgs e)
+	    {
+		    _saveXml = true;
+	    }
 
-		private void butBrowseSpecularMap_Click(object sender, EventArgs e)
-		{
-			var texturePath = LevelFileDialog.BrowseFile(this, "Browse texture", ImageC.FileExtensions, false);
-			if (!string.IsNullOrEmpty(texturePath))
-			{
-				tbSpecularMapPath.Text = texturePath;
-				tbSpecularMapPath.BackColor = _correctColor;
-				LoadTexturePreview(texturePath, picPreviewSpecularMap);
-				_saveXml = true;
-			}
-		}
-
-		private void butClearNormalMap_Click(object sender, EventArgs e)
-		{
-			if (DarkMessageBox.Show(this, "Do you really want to clear the normal map?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-			{
-				tbNormalMapPath.Text = "";
-				tbSpecularMapPath.BackColor = this.BackColor;
-				LoadTexturePreview("", picPreviewNormalMap);
-				_saveXml = true;
-			}
-		}
-
-		private void butClearAmbientOcclusionMap_Click(object sender, EventArgs e)
-		{
-			if (DarkMessageBox.Show(this, "Do you really want to clear the ambient occlusion map?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-			{
-				tbAmbientOcclusionMapPath.Text = "";
-				tbSpecularMapPath.BackColor = this.BackColor;
-				LoadTexturePreview("", picPreviewAmbientOcclusionMap);
-				_saveXml = true;
-			}
-		}
-
-		private void butClearEmissiveMap_Click(object sender, EventArgs e)
-		{
-			if (DarkMessageBox.Show(this, "Do you really want to clear the emissive map?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-			{
-				tbEmissiveMapPath.Text = "";
-				tbSpecularMapPath.BackColor = this.BackColor;
-				LoadTexturePreview("", picPreviewEmissiveMap);
-				_saveXml = true;
-			}
-		}
-
-		private void butClearSpecularMap_Click(object sender, EventArgs e)
-		{
-			if (DarkMessageBox.Show(this, "Do you really want to clear normal map?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-			{
-				tbSpecularMapPath.Text = "";
-				tbSpecularMapPath.BackColor = this.BackColor;
-				LoadTexturePreview("", picPreviewSpecularMap);
-				_saveXml = true;
-			}
-		}
-
-		private void nmNormalMapStrength_ValueChanged(object sender, EventArgs e)
-		{
-			_saveXml = true;
-		}
-
-		private void nmSpecularIntensity_ValueChanged(object sender, EventArgs e)
-		{
-			_saveXml = true;
-		}
+	    private void nmSpecularIntensity_ValueChanged(object sender, EventArgs e)
+	    {
+		    _saveXml = true;
+	    }
 	}
 }
