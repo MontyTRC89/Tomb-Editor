@@ -1674,13 +1674,7 @@ namespace TombEditor
                     bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
 
                     if (!updated && face.Layer is FaceLayer.Overlay)
-                    {
                         needsGeometryRebuild = true;
-                        updated = true;
-                    }
-
-                    if (updated)
-                        _editor.RoomTextureChange(room);
                 }
 
                 return new(textureApplied, needsGeometryRebuild);
@@ -1865,13 +1859,7 @@ namespace TombEditor
                 bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
 
                 if (!updated && face.Layer is FaceLayer.Overlay)
-                {
                     needsGeometryRebuild = true;
-                    updated = true;
-                }
-
-                if (updated)
-                    _editor.RoomTextureChange(room);
             }
 
             return new(textureApplied, needsGeometryRebuild);
@@ -2407,7 +2395,10 @@ namespace TombEditor
                 }
 
             if (needsGeometryRebuild)
+            {
                 room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
+                _editor.RoomGeometryChange(room);
+            }
 
             if (anyTextureApplied)
                 _editor.RoomTextureChange(room);

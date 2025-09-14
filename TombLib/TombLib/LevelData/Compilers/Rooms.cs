@@ -430,19 +430,19 @@ namespace TombLib.LevelData.Compilers
 
                                         if (face.Layer == FaceLayer.Base)
                                         {
-                                            // Base layer: use optimal rotation and remember it
+                                            // Base layer: Use optimal rotation and remember it
                                             result = _textureInfoManager.AddTexture(texture, true, false);
                                             baseRotations[faceKey] = result.Rotation;
                                         }
                                         else if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
                                         {
-                                            // Overlay layer: force to use same rotation as base
+                                            // Overlay layer: Force to use same rotation as base
                                             var baseRotation = baseRotations[faceKey];
                                             result = _textureInfoManager.AddTexture(texture, true, false, false, baseRotation);
                                         }
                                         else
                                         {
-                                            // Fallback: use optimal rotation
+                                            // Fallback: Use optimal rotation
                                             result = _textureInfoManager.AddTexture(texture, true, false);
                                         }
 
@@ -503,19 +503,19 @@ namespace TombLib.LevelData.Compilers
 
                                         if (face.Layer == FaceLayer.Base)
                                         {
-                                            // Base layer: use optimal rotation and remember it
+                                            // Base layer: Use optimal rotation and remember it
                                             result = _textureInfoManager.AddTexture(texture, true, true);
                                             baseRotations[faceKey] = result.Rotation;
                                         }
                                         else if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
                                         {
-                                            // Overlay layer: force to use same rotation as base
+                                            // Overlay layer: Force to use same rotation as base
                                             var baseRotation = baseRotations[faceKey];
                                             result = _textureInfoManager.AddTexture(texture, true, true, false, baseRotation);
                                         }
                                         else
                                         {
-                                            // Fallback: use optimal rotation
+                                            // Fallback: Use optimal rotation
                                             result = _textureInfoManager.AddTexture(texture, true, true);
                                         }
 

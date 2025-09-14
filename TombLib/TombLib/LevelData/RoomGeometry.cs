@@ -330,7 +330,7 @@ namespace TombLib.LevelData
         public bool UpdateFaceTexture(int x, int z, FaceLayerInfo face, TextureArea texture, bool wasDoubleSided)
         {
             if (face.Layer is FaceLayer.Overlay && texture.TextureIsInvisible)
-                return false;
+                return false; // Setting invisible texture on overlay should remove the overlay - prevent texture update
 
             VertexRange range = VertexRangeLookup.GetValueOrDefault(new SectorFaceIdentity(x, z, face));
 
