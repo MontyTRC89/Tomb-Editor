@@ -53,7 +53,7 @@
             toolPortalDigger = new System.Windows.Forms.ToolStripButton();
             toolUVFixer = new System.Windows.Forms.ToolStripButton();
             toolSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            toolDecalsMode = new System.Windows.Forms.ToolStripButton();
+            toolOverlayMode = new System.Windows.Forms.ToolStripButton();
             toolStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -65,7 +65,7 @@
             toolStrip.Dock = System.Windows.Forms.DockStyle.Fill;
             toolStrip.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolSelection, toolBrush, toolShovel, toolPencil, toolFlatten, toolSmooth, toolFill, toolGridPaint, toolGroup, toolSeparator1, toolDrag, toolRamp, toolQuarterPipe, toolHalfPipe, toolBowl, toolPyramid, toolTerrain, toolEraser, toolInvisibility, toolSeparator2, toolPortalDigger, toolUVFixer, toolSeparator3, toolDecalsMode });
+            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolSelection, toolBrush, toolShovel, toolPencil, toolFlatten, toolSmooth, toolFill, toolGridPaint, toolGroup, toolSeparator1, toolDrag, toolRamp, toolQuarterPipe, toolHalfPipe, toolBowl, toolPyramid, toolTerrain, toolEraser, toolInvisibility, toolSeparator2, toolPortalDigger, toolUVFixer, toolSeparator3, toolOverlayMode });
             toolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             toolStrip.Location = new System.Drawing.Point(0, 0);
             toolStrip.Name = "toolStrip";
@@ -359,18 +359,18 @@
             toolSeparator3.Name = "toolSeparator3";
             toolSeparator3.Size = new System.Drawing.Size(23, 6);
             // 
-            // toolDecalsMode
+            // toolOverlayMode
             // 
-            toolDecalsMode.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-            toolDecalsMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            toolDecalsMode.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            toolDecalsMode.Image = (System.Drawing.Image)resources.GetObject("toolDecalsMode.Image");
-            toolDecalsMode.ImageTransparentColor = System.Drawing.Color.Magenta;
-            toolDecalsMode.Margin = new System.Windows.Forms.Padding(1);
-            toolDecalsMode.Name = "toolDecalsMode";
-            toolDecalsMode.Size = new System.Drawing.Size(23, 20);
-            toolDecalsMode.ToolTipText = "Toggle decals mode";
-            toolDecalsMode.Click += toolDecalsMode_Click;
+            toolOverlayMode.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            toolOverlayMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            toolOverlayMode.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            toolOverlayMode.Image = (System.Drawing.Image)resources.GetObject("toolOverlayMode.Image");
+            toolOverlayMode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            toolOverlayMode.Margin = new System.Windows.Forms.Padding(1);
+            toolOverlayMode.Name = "toolOverlayMode";
+            toolOverlayMode.Size = new System.Drawing.Size(23, 20);
+            toolOverlayMode.ToolTipText = "Toggle overlay mode";
+            toolOverlayMode.Click += toolOverlayMode_Click;
             // 
             // ToolBox
             // 
@@ -412,6 +412,6 @@
         private System.Windows.Forms.ToolStripButton toolGridPaint;
         private System.Windows.Forms.ToolStripButton toolPortalDigger;
         private System.Windows.Forms.ToolStripSeparator toolSeparator3;
-        private System.Windows.Forms.ToolStripButton toolDecalsMode;
+        private System.Windows.Forms.ToolStripButton toolOverlayMode;
     }
 }

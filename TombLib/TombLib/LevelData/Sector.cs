@@ -86,7 +86,7 @@ namespace TombLib.LevelData
 
         public bool SetFaceTexture(FaceLayerInfo face, TextureArea texture)
         {
-            if (texture == TextureArea.None)
+            if (texture == TextureArea.None || (face.Layer is FaceLayer.Overlay && texture.TextureIsInvisible))
                 return _faceTextures.Remove(face);
 
             if (texture.TextureIsDegenerate)

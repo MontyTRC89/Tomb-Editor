@@ -1434,7 +1434,7 @@ namespace TombEditor
             // Update state
             bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
 
-            if (!updated && face.Layer is FaceLayer.Decal)
+            if (!updated && face.Layer is FaceLayer.Overlay)
             {
                 room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
                 updated = true;
@@ -1457,7 +1457,7 @@ namespace TombEditor
             // Update state
             bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, newTexture, newTexture.DoubleSided);
 
-            if (!updated && face.Layer is FaceLayer.Decal)
+            if (!updated && face.Layer is FaceLayer.Overlay)
             {
                 room.RoomGeometry.Build(room, _editor.Configuration.Rendering3D_HighQualityLightPreview);
                 updated = true;
@@ -1673,7 +1673,7 @@ namespace TombEditor
 
                     bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
 
-                    if (!updated && face.Layer is FaceLayer.Decal)
+                    if (!updated && face.Layer is FaceLayer.Overlay)
                     {
                         needsGeometryRebuild = true;
                         updated = true;
@@ -1864,7 +1864,7 @@ namespace TombEditor
 
                 bool updated = room.RoomGeometry.UpdateFaceTexture(pos.X, pos.Y, face, currentTexture, wasDoubleSided);
 
-                if (!updated && face.Layer is FaceLayer.Decal)
+                if (!updated && face.Layer is FaceLayer.Overlay)
                 {
                     needsGeometryRebuild = true;
                     updated = true;
@@ -2357,7 +2357,7 @@ namespace TombEditor
 
             texture.ParentArea = new Rectangle2();
 
-            // Track if we need to rebuild geometry for decals at the end
+            // Track if we need to rebuild geometry for overlays at the end
             bool anyTextureApplied = false;
             bool needsGeometryRebuild = false;
             ApplyTextureResult result;

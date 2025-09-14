@@ -3,6 +3,6 @@
 public enum FaceLayer : byte
 {
 	Base,
-	Decal,
+	Overlay,
 	Count
 }

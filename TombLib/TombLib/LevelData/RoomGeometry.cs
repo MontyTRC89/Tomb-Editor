@@ -329,7 +329,7 @@ namespace TombLib.LevelData
 
         public bool UpdateFaceTexture(int x, int z, FaceLayerInfo face, TextureArea texture, bool wasDoubleSided)
         {
-            if (face.Layer is FaceLayer.Decal && texture.TextureIsInvisible)
+            if (face.Layer is FaceLayer.Overlay && texture.TextureIsInvisible)
                 return false;
 
             VertexRange range = VertexRangeLookup.GetValueOrDefault(new SectorFaceIdentity(x, z, face));
@@ -661,24 +661,24 @@ namespace TombLib.LevelData
         {
             TextureArea
                 texture = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base)),
-                decal = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Decal));
+                overlay = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Overlay));
 
             AddQuad(x, z, new FaceLayerInfo(face, FaceLayer.Base), p0, p1, p2, p3, texture, uv0, uv1, uv2, uv3);
 
-            if (decal != TextureArea.None)
-                AddQuad(x, z, new FaceLayerInfo(face, FaceLayer.Decal), p0, p1, p2, p3, decal, uv0, uv1, uv2, uv3);
+            if (overlay != TextureArea.None)
+                AddQuad(x, z, new FaceLayerInfo(face, FaceLayer.Overlay), p0, p1, p2, p3, overlay, uv0, uv1, uv2, uv3);
         }
 
         private void TryRenderTriangleFace(Sector sector, int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
         {
             TextureArea
                 texture = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base)),
-                decal = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Decal));
+                overlay = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Overlay));
 
             AddTriangle(x, z, new FaceLayerInfo(face, FaceLayer.Base), p0, p1, p2, texture, uv0, uv1, uv2, isXEqualYDiagonal);
 
-            if (decal != TextureArea.None)
-                AddTriangle(x, z, new FaceLayerInfo(face, FaceLayer.Decal), p0, p1, p2, decal, uv0, uv1, uv2, isXEqualYDiagonal);
+            if (overlay != TextureArea.None)
+                AddTriangle(x, z, new FaceLayerInfo(face, FaceLayer.Overlay), p0, p1, p2, overlay, uv0, uv1, uv2, isXEqualYDiagonal);
         }
 
         private void AddQuad(int x, int z, FaceLayerInfo face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,

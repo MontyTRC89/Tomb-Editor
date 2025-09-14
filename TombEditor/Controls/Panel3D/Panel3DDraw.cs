@@ -498,89 +498,132 @@ namespace TombEditor.Controls.Panel3D
             return vector;
         }
 
-        private void DrawDecalOutlines(Effect effect)
+        private void DrawOverlayOutlines(Effect effect)
         {
-            const float DecalOutlineOffset = 8.0f;
+            const float OverlayOutlineOffset = 16.0f;
 
             if (_editor.Mode is not EditorMode.FaceEdit)
                 return;
 
             Room currentRoom = _editor.SelectedRoom;
-            var vertices = new List<SolidVertex>();
 
-            for (int x = currentRoom.LocalArea.X0; x <= currentRoom.LocalArea.X1; x++)
-                for (int z = currentRoom.LocalArea.Y0; z <= currentRoom.LocalArea.Y1; z++)
+            // Check if we need to regenerate the vertex buffer
+            bool needsUpdate = _lastOverlayOutlineRoom != currentRoom || _overlayOutlineVertexBuffer is null;
+
+            if (needsUpdate)
+            {
+                _overlayOutlineVertices.Clear();
+
+                // Quick check: does this room have any overlays at all?
+                bool hasOverlays = false;
+
+                for (int x = currentRoom.LocalArea.X0; x <= currentRoom.LocalArea.X1 && !hasOverlays; x++)
                 {
-                    for (SectorFace face = 0; face < SectorFace.Count; face++)
+                    for (int z = currentRoom.LocalArea.Y0; z <= currentRoom.LocalArea.Y1 && !hasOverlays; z++)
                     {
-                        Sector sector = currentRoom.Sectors[x, z];
-                        var key = new SectorFaceIdentity(x, z, new FaceLayerInfo(face, FaceLayer.Decal));
-
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(key))
+                        for (SectorFace face = 0; face < SectorFace.Count; face++)
                         {
-                            VertexRange range = currentRoom.RoomGeometry.VertexRangeLookup[key];
-                            DiagonalSplit diagonalSplit = face.IsFloorWall() ? sector.Floor.DiagonalSplit : sector.Ceiling.DiagonalSplit;
+                            var key = new SectorFaceIdentity(x, z, new FaceLayerInfo(face, FaceLayer.Overlay));
 
-                            TextureArea baseTexture = sector.GetFaceTexture(new(face, FaceLayer.Base));
-                            TextureArea decalTexture = sector.GetFaceTexture(new(face, FaceLayer.Decal));
-
-                            if (range.Count == 3)
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(key))
                             {
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                hasOverlays = true;
+                                break;
                             }
-                            else if (range.Count == 6)
+                        }
+                    }
+                }
+
+                if (!hasOverlays)
+                {
+                    _lastOverlayOutlineRoom = currentRoom;
+                    _overlayOutlineVertexBuffer?.Dispose();
+                    _overlayOutlineVertexBuffer = null;
+                    return;
+                }
+
+                // Generate vertices for all overlay outlines in this room
+                for (int x = currentRoom.LocalArea.X0; x <= currentRoom.LocalArea.X1; x++)
+                {
+                    for (int z = currentRoom.LocalArea.Y0; z <= currentRoom.LocalArea.Y1; z++)
+                    {
+                        for (SectorFace face = 0; face < SectorFace.Count; face++)
+                        {
+                            Sector sector = currentRoom.Sectors[x, z];
+                            var key = new SectorFaceIdentity(x, z, new FaceLayerInfo(face, FaceLayer.Overlay));
+
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(key))
                             {
-                                if (face.IsCeiling())
+                                VertexRange range = currentRoom.RoomGeometry.VertexRangeLookup[key];
+                                DiagonalSplit diagonalSplit = face.IsFloorWall() ? sector.Floor.DiagonalSplit : sector.Ceiling.DiagonalSplit;
+
+                                if (range.Count == 3)
                                 {
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
                                 }
-                                else
+                                else if (range.Count == 6)
                                 {
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                    if (face.IsCeiling())
+                                    {
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
 
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
-                                    vertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, DecalOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    }
+                                    else
+                                    {
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
-            if (vertices.Count > 0)
-            {
-                using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+                // Create/update the vertex buffer
+                _overlayOutlineVertexBuffer?.Dispose();
 
+                _overlayOutlineVertexBuffer = _overlayOutlineVertices.Count > 0
+                    ? SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, _overlayOutlineVertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable)
+                    : null;
+
+                _lastOverlayOutlineRoom = currentRoom;
+            }
+
+            // Draw using the cached buffer
+            if (_overlayOutlineVertexBuffer is not null)
+            {
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.Default);
-                _legacyDevice.SetVertexBuffer(buffer);
-                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
+                _legacyDevice.SetVertexBuffer(_overlayOutlineVertexBuffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _overlayOutlineVertexBuffer));
                 effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.Draw(PrimitiveType.LineList, buffer.ElementCount);
+                _legacyDevice.Draw(PrimitiveType.LineList, _overlayOutlineVertexBuffer.ElementCount);
             }
         }
 
@@ -2123,8 +2166,8 @@ namespace TombEditor.Controls.Panel3D
                 DrawFlybyPath(effect);
                 // Draw sector split highlights
                 DrawSectorSplitHighlights(effect);
-                // Draw decal outlines
-                DrawDecalOutlines(effect);
+                // Draw overlay outlines
+                DrawOverlayOutlines(effect);
             }
 
             // Draw ghost block cubes

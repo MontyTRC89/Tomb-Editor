@@ -1,4 +1,5 @@
 ﻿using SharpDX.Toolkit.Graphics;
+using System.Collections.Generic;
 using System.Numerics;
 using TombLib.Graphics.Primitives;
 using TombLib.Graphics;
@@ -57,6 +58,10 @@ namespace TombEditor.Controls.Panel3D
                 // Initialize vertex buffers
                 _ghostBlockVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 84);
                 _boxVertexBuffer = new BoundingBox(new Vector3(-_littleCubeRadius), new Vector3(_littleCubeRadius)).GetVertexBuffer(_legacyDevice);
+
+                // Initialize overlay outline cache
+                _overlayOutlineVertices = new List<SolidVertex>();
+                _lastOverlayOutlineRoom = null;
 
                 // Maybe I could use this as bounding box, scaling it properly before drawing
                 _linesCube = GeometricPrimitive.LinesCube.New(_legacyDevice, 128, 128, 128);

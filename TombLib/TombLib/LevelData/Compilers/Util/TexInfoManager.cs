@@ -713,7 +713,7 @@ namespace TombLib.LevelData.Compilers.Util
                     var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
                     if (result != _noTexInfo)
                     {
-                        // If rotation is forced for decal coordination, reject this match if rotation doesn't match
+                        // If rotation is forced for overlay coordination, reject this match if rotation doesn't match
                         if (forceRotation >= 0 && result != forceRotation)
                             continue;
 
@@ -828,7 +828,7 @@ namespace TombLib.LevelData.Compilers.Util
             if (!ValidateTexture(texture, isForTriangle))
                 return new Result();
 
-            // Force specific rotation for decal coordination
+            // Force specific rotation for overlay coordination
             return AddTexture(texture, _parentTextures, isForRoom, isForTriangle, topmostAndUnpadded, -1, true, forceRotation);
         }
 
@@ -880,7 +880,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 if (forceRotation >= 0)
                 {
-                    // Force specific rotation for decal coordination
+                    // Force specific rotation for overlay coordination
                     canonicalTexture = texture;
 
                     if (forceRotation > 0)

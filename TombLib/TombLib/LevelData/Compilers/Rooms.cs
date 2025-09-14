@@ -342,7 +342,7 @@ namespace TombLib.LevelData.Compilers
                 var roomTriangles = new List<tr_face3>();
                 var roomQuads = new List<tr_face4>();
 
-                // Track base polygon rotations for decal coordination
+                // Track base polygon rotations for overlay coordination
                 var baseRotations = new Dictionary<(int, int, SectorFace), int>();
 
                 // Add room's own geometry
@@ -424,8 +424,8 @@ namespace TombLib.LevelData.Compilers
                                         }
 
                                         Util.TexInfoManager.Result result;
-                                        
-                                        // Coordinate texture rotations between base and decal layers
+
+                                        // Coordinate texture rotations between base and overlay layers
                                         var faceKey = (x, z, face.Face);
 
                                         if (face.Layer == FaceLayer.Base)
@@ -434,9 +434,9 @@ namespace TombLib.LevelData.Compilers
                                             result = _textureInfoManager.AddTexture(texture, true, false);
                                             baseRotations[faceKey] = result.Rotation;
                                         }
-                                        else if (face.Layer == FaceLayer.Decal && baseRotations.ContainsKey(faceKey))
+                                        else if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
                                         {
-                                            // Decal layer: force to use same rotation as base
+                                            // Overlay layer: force to use same rotation as base
                                             var baseRotation = baseRotations[faceKey];
                                             result = _textureInfoManager.AddTexture(texture, true, false, false, baseRotation);
                                         }
@@ -454,7 +454,7 @@ namespace TombLib.LevelData.Compilers
 
                                             Util.TexInfoManager.Result mirrorResult;
 
-                                            if (face.Layer == FaceLayer.Decal && baseRotations.ContainsKey(faceKey))
+                                            if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
                                             {
                                                 var baseRotation = baseRotations[faceKey];
                                                 mirrorResult = _textureInfoManager.AddTexture(texture, true, false, false, baseRotation);
@@ -497,8 +497,8 @@ namespace TombLib.LevelData.Compilers
                                         }
 
                                         Util.TexInfoManager.Result result;
-                                        
-                                        // Coordinate texture rotations between base and decal layers
+
+                                        // Coordinate texture rotations between base and overlay layers
                                         var faceKey = (x, z, face.Face);
 
                                         if (face.Layer == FaceLayer.Base)
@@ -507,9 +507,9 @@ namespace TombLib.LevelData.Compilers
                                             result = _textureInfoManager.AddTexture(texture, true, true);
                                             baseRotations[faceKey] = result.Rotation;
                                         }
-                                        else if (face.Layer == FaceLayer.Decal && baseRotations.ContainsKey(faceKey))
+                                        else if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
                                         {
-                                            // Decal layer: force to use same rotation as base
+                                            // Overlay layer: force to use same rotation as base
                                             var baseRotation = baseRotations[faceKey];
                                             result = _textureInfoManager.AddTexture(texture, true, true, false, baseRotation);
                                         }
@@ -532,7 +532,7 @@ namespace TombLib.LevelData.Compilers
 
                                             Util.TexInfoManager.Result mirrorResult;
 
-                                            if (face.Layer == FaceLayer.Decal && baseRotations.ContainsKey(faceKey))
+                                            if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
                                             {
                                                 var baseRotation = baseRotations[faceKey];
                                                 mirrorResult = _textureInfoManager.AddTexture(texture, true, true, false, baseRotation);
