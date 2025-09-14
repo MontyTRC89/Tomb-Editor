@@ -5,8 +5,8 @@ namespace TombLib.LevelData.SectorStructs;
 
 public readonly struct FaceLayerInfo : IEquatable<FaceLayerInfo>
 {
-	public readonly SectorFace Face { get; }
-	public readonly FaceLayer Layer { get; }
+	public SectorFace Face { get; }
+	public FaceLayer Layer { get; }
 
 	public FaceLayerInfo(SectorFace face, FaceLayer layer)
 	{

@@ -7,8 +7,8 @@ namespace TombLib.LevelData.SectorStructs;
 /// </summary>
 public readonly struct SectorFaceIdentity : IEquatable<SectorFaceIdentity>, IComparable, IComparable<SectorFaceIdentity>
 {
-	public readonly VectorInt2 Position { get; }
-	public readonly FaceLayerInfo Face { get; }
+	public VectorInt2 Position { get; }
+	public FaceLayerInfo Face { get; }
 
 	public SectorFaceIdentity(int x, int z, FaceLayerInfo face)
 	{
