@@ -31,10 +31,10 @@ namespace TombLib.Utils
             for (FaceLayer layer = 0; layer < FaceLayer.Count; layer++)
             {
                 FaceLayerInfo
-                   key0 = new(rotation0, layer),
-                   key1 = new(rotation1, layer),
-                   key2 = new(rotation2, layer),
-                   key3 = new(rotation3, layer);
+                    key0 = new(rotation0, layer),
+                    key1 = new(rotation1, layer),
+                    key2 = new(rotation2, layer),
+                    key3 = new(rotation3, layer);
 
                 if (MirrorX)
                     faceTextures.TrySwap(key0, key2);
