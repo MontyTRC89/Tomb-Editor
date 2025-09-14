@@ -514,7 +514,7 @@ namespace TombEditor.Controls.Panel3D
             {
                 _overlayOutlineVertices.Clear();
 
-                // Quick check: does this room have any overlays at all?
+                // Quick check: Does this room have any overlays at all?
                 bool hasOverlays = false;
 
                 for (int x = currentRoom.LocalArea.X0; x <= currentRoom.LocalArea.X1 && !hasOverlays; x++)
