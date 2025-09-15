@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using System.Linq;
+using System.Drawing;
 
 namespace TombEditor.Forms
 {
@@ -93,9 +93,16 @@ namespace TombEditor.Forms
 
         private void panelColor_Click(object sender, EventArgs e)
         {
-            EditorActions.EditColor(this, _movable, (Vector3 newColor) => {
+            EditorActions.EditColor(this, _movable, (Vector3 newColor) =>
+            {
                 panelColor.BackColor = newColor.ToWinFormsColor();
             });
+        }
+
+        private void butResetTint_Click(object sender, EventArgs e)
+        {
+            panelColor.BackColor = Color.Gray;
+            _movable.Color = panelColor.BackColor.ToFloat3Color() * 2.0f;
         }
     }
 }
