@@ -280,7 +280,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     {
         public tr_room_info Info;
         public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
-        public Dictionary<TombEngineMaterial, TombEngineBucket> Buckets;
+        public List<TombEngineBucket> Buckets;
         public List<TombEnginePortal> Portals;
         public int NumZSectors;
         public int NumXSectors;
@@ -389,7 +389,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(new Vector3(v.Glow, v.Move, v.Locked ? 0 : 1));
 
             writer.Write(Buckets.Count);
-            foreach (var bucket in Buckets.Values)
+            foreach (var bucket in Buckets)
             {
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
@@ -513,7 +513,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public BoundingSphere Sphere;
         public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
         public List<TombEnginePolygon> Polygons = new List<TombEnginePolygon>();
-        public Dictionary<TombEngineMaterial, TombEngineBucket> Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>();
+        public List<TombEngineBucket> Buckets;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

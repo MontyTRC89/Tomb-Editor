@@ -15,7 +15,13 @@ namespace TombLib.Utils
         // Do not change the image with this methode
         public ImageC Image { get; protected set; } = UnloadedPlaceholder;
 
-        public abstract Texture Clone();
+		// Relative path is calculated before the save of Wad2 because in the final file there will be only relative paths
+		public string RelativePath { get; set; }
+
+		// This helps the texture packer of TombEngine compiler to have ready paths for doing sidecar loading
+		public string AbsolutePath { get; set; }
+
+		public abstract Texture Clone();
 
         object ICloneable.Clone()
         {

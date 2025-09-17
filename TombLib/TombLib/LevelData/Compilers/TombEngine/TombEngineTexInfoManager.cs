@@ -312,21 +312,29 @@ namespace TombLib.LevelData.Compilers
             [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
             public bool ParametersSimilar(TextureArea incomingTexture, TextureDestination destination)
             {
+                // Are textures for the same destination?
 				if (Destination != destination) return false;
 
 				var t1 = incomingTexture.Texture;
 				var t2 = Texture;
 
+                // Are textures the same .NET instance?
 				if (ReferenceEquals(t1, t2))
                     return true;
 
-				if (t1 is TextureHashed h1)
+                // Have textures the same absolute path if present?
+                if (!string.IsNullOrEmpty(t1.AbsolutePath) && !string.IsNullOrEmpty(t2.AbsolutePath))
+                    return string.Equals(t1.AbsolutePath, t2.AbsolutePath, StringComparison.OrdinalIgnoreCase);
+
+                // Are textures hashed and have same hash? (For embedded WadTexture only)
+                if (t1 is TextureHashed h1)
 					return t2 is TextureHashed h2 && h1.Hash == h2.Hash;
 
 				if (t2 is TextureHashed) 
                     return false;
 
-				return t1.GetHashCode() == t2.GetHashCode();
+                // Fallback to GetHashCode comparison (it shouldn't happen for most of the situations however)
+                return t1.GetHashCode() == t2.GetHashCode();
 			}
 
             // Compare raw bitmap data of given area with incoming texture

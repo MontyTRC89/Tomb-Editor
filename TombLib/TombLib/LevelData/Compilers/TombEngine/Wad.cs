@@ -87,12 +87,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					
 					var textureAbsolutePath = ((WadTexture)texture.Texture).AbsolutePath;
                     int materialIndex = -1;
-					if (!string.IsNullOrEmpty(textureAbsolutePath))
-					{
-						materialIndex = _materialsNames.IndexOf(textureAbsolutePath);
-					}
-		
-					TombEnginePolygon newPoly;
+                    if (!string.IsNullOrEmpty(textureAbsolutePath))
+                        materialIndex = _materialsNames.IndexOf(textureAbsolutePath);
+                    if (materialIndex == -1)
+                        materialIndex = 0;
+
+                    TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
                         newPoly = result.CreateTombEnginePolygon3(indices, realBlendMode, materialIndex, null);
                     else
@@ -130,7 +130,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private void PrepareMeshBuckets(TombEngineMesh mesh)
         {
             var textures = _textureInfoManager.GetObjectTextures();
-            mesh.Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
+            var buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
+            
             foreach (var poly in mesh.Polygons)
             {
                 poly.AnimatedSequence = -1;
@@ -146,7 +147,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.MaterialIndex, poly.AnimatedSequence, mesh.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.MaterialIndex, poly.AnimatedSequence, buckets);
 
                 var texture = textures[poly.TextureId];
 
@@ -174,6 +175,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     bucket.Polygons.Add(poly);
                 }
             }
+
+            mesh.Buckets = buckets.Values.ToList();
+            mesh.Buckets.Sort(TombEngineBucketComparer.Instance);
 
             // Calculate tangents and bitangents
             for (int i = 0; i < mesh.Vertices.Count; i++)

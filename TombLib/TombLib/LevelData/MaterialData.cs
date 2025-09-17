@@ -37,7 +37,15 @@ namespace TombLib.LevelData
 		[XmlIgnore]
 		public string XmlMaterialFileName { get; set; }
 
-		public MaterialData() { }
+		public MaterialData()
+		{
+            // Default material is opaque with:
+            // Normal intensity = 1.0
+            // Specular intensity = 1.0f
+            // Glow intensity = 1.0f
+            Type = MaterialType.Opaque;
+            Parameters0 = new Vector4(1.0f, 1.0f, 1.0f, 0.0f);
+        }
 
 		public static MaterialData ReadFromXml(string filename)
 		{
@@ -216,13 +224,6 @@ namespace TombLib.LevelData
 				materialData.EmissiveMap = "";
 			else
 				materialData.IsEmissiveMapFound = true;
-
-			// Default material is opaque with:
-			// Normal intensity = 1.0
-			// Specular intensity = 1.0f
-			// Glow intensity = 1.0f
-			materialData.Type = MaterialType.Opaque;
-			materialData.Parameters0 = new Vector4(1.0f, 1.0f, 1.0f, 0.0f);
 
 			return materialData;
 		}

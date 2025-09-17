@@ -10,9 +10,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
-		private Dictionary<string, MaterialData> _materialsDictionary = new Dictionary<string, MaterialData>(StringComparer.OrdinalIgnoreCase);
-        private List<string> _materialsNames = new List<string>();
-
 		private void WriteLevelTombEngine()
         {
             byte[] dynamicDataBuffer;
@@ -160,7 +157,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             writer.Write((byte)(b.BoneWeight[w] * byte.MaxValue));
 
                     writer.Write(mesh.Buckets.Count);
-                    foreach (var bucket in mesh.Buckets.Values)
+                    foreach (var bucket in mesh.Buckets)
                     {
 						writer.Write(bucket.Material.Texture);
 						writer.Write(bucket.Material.BlendMode);
