@@ -76,7 +76,7 @@ namespace WadTool
 			if (obj == null)
 				return;
 
-			panelAnimTextures.Visible = wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
+			panelTextureTools.Visible = wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
 
 			var isStatic = obj is WadStaticId;
 			var nodes = lstMeshes.GetAllNodes();
@@ -112,8 +112,6 @@ namespace WadTool
 			_deviceManager = deviceManager;
 			_tool.EditorEventRaised += Tool_EditorEventRaised;
 			panelTextureMap.SelectedTextureChanged += (s, e) => UpdateStatusLabel();
-
-			butMaterialEditor.Visible = wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
 
 			panelMesh.InitializeRendering(_tool, _deviceManager);
 			panelTextureMap.Initialize(_tool);
@@ -1725,15 +1723,15 @@ namespace WadTool
 		private void butMaterialEditor_Click(object sender, EventArgs e)
 		{
 			var texture = comboCurrentTexture.SelectedItem as WadTexture;
-			if (!string.IsNullOrEmpty(texture.AbsolutePath))
+
+			if (string.IsNullOrEmpty(texture.AbsolutePath))
 			{
-				using (var form = new FormMaterialEditor(texture.AbsolutePath))
-				{
-					form.ShowDialog();
-				}
+				DarkMessageBox.Show(this, "Material editor can be used only with external textures.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				return;
 			}
-			else
-				DarkMessageBox.Show(this, "You can use the material editor only with external textures", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+			using (var form = new FormMaterialEditor(texture.AbsolutePath))
+			form.ShowDialog();
 		}
 	}
 }
