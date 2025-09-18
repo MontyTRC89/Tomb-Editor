@@ -255,12 +255,12 @@ namespace TombLib.LevelData
         public void ConvertLevelExtension()
         {
             string result = string.Empty;
-            switch (GameVersion)
+            switch (GameVersion.Native())
             {
-                case TRVersion.Game.TR1 or TRVersion.Game.TR1X:
+                case TRVersion.Game.TR1:
                     result = ".phd";
                     break;
-                case TRVersion.Game.TR2 or TRVersion.Game.TR2X:
+                case TRVersion.Game.TR2:
                 case TRVersion.Game.TR3:
                     result = ".tr2";
                     break;
@@ -708,11 +708,11 @@ namespace TombLib.LevelData
 
             switch (GameVersion.Native())
             {
-                case TRVersion.Game.TR1 or TRVersion.Game.TR1X:
+                case TRVersion.Game.TR1:
                     catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr1.xml");
                     break;
 
-                case TRVersion.Game.TR2 or TRVersion.Game.TR2X:
+                case TRVersion.Game.TR2:
                     catalogName = Path.Combine(DefaultPaths.CatalogsDirectory, "Sounds.tr2.xml");
                     break;
 

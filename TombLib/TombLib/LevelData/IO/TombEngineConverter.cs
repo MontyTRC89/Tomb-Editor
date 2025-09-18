@@ -274,7 +274,7 @@ namespace TombLib.LevelData.IO
                 newSlotName.Contains("TRAPDOOR") ||
                 newSlotName.Contains("RAISING_BLOCK") ||
                 newSlotName.Contains("TWOBLOCK_PLATFORM") ||
-                (newSlotName.Contains("PUSHABLE") && sourceVersion.IsLessThanOrEqual(TRVersion.Game.TR3)))
+                (newSlotName.Contains("PUSHABLE") && sourceVersion.Native() <= TRVersion.Game.TR3))
             {
                 progressReporter?.ReportInfo("    Adjusting bridge bounds for " + newSlotName);
 

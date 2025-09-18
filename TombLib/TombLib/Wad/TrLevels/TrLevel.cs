@@ -808,7 +808,7 @@ namespace TombLib.Wad.TrLevels
 
                                 var sd = SoundDetails[index];
 
-                                float divider = (Version.IsLessThan(TRVersion.Game.TR3) ? 32767.0f : 255.0f);
+                                float divider = (Version.Native() < TRVersion.Game.TR3 ? 32767.0f : 255.0f);
                                 var vol = (int)Math.Round(((float)sd.Volume / divider) * 99.0f);
                                 var rad = sd.Range;
                                 var ch  = (int)Math.Round(((float)sd.Chance / divider) * 99.0f);

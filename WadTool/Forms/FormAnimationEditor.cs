@@ -2059,7 +2059,7 @@ namespace WadTool
                 }
                 else if (ac.Type == WadAnimCommandType.FlipEffect &&
                          previewSoundType == SoundPreviewType.LandWithMaterial &&
-                         _editor.Wad.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR3))
+                         _editor.Wad.GameVersion.Native() >= TRVersion.Game.TR3)
                 {
                     var flipID = ac.Parameter2;
                     if (flipID == 32 || flipID == 33)

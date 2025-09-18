@@ -172,7 +172,7 @@ namespace TombLib.LevelData.Compilers
                     var packInfo = spriteAllocator.GetPackInfo(id);
                     var newTexture = new tr_sprite_texture();
 
-                    if (_level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR3))
+                    if (_level.Settings.GameVersion.Native() <= TRVersion.Game.TR3)
                     {
                         ushort texW = (ushort)sprite.Texture.Image.Width;
                         ushort texH = (ushort)sprite.Texture.Image.Height;

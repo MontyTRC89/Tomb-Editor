@@ -61,7 +61,7 @@ namespace TombEditor.Forms
                 cbBit12.Text = "Make fade-in";
                 cbBit13.Text = "Make fade-out";
             }
-            else if (_editor.Level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR3))
+            else if (_editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR3)
             {
                 Size = new System.Drawing.Size(205, 319);
             }

@@ -44,10 +44,10 @@ namespace TombEditor.Controls.Panel3D
 
         private Vector4 ConvertColor(Vector3 originalColor)
         {
-            switch (_editor.Level.Settings.GameVersion)
+            switch (_editor.Level.Settings.GameVersion.Native())
             {
-                case TRVersion.Game.TR1 or TRVersion.Game.TR1X:
-                case TRVersion.Game.TR2 or TRVersion.Game.TR2X:
+                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR2:
                     return new Vector4(new Vector3(originalColor.GetLuma()), 1.0f);
 
                 case TRVersion.Game.TombEngine:

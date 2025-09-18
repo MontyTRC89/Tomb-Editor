@@ -85,7 +85,7 @@ namespace TombLib.LevelData.Compilers
                 var rooms = _tempRooms.Values.ToList();
                 for (int flipped = 0; flipped <= 1; flipped++)
                     foreach (var room in rooms)
-                        MatchDoorShades(rooms, room, (_level.Settings.GameVersion.IsLessThan(TRVersion.Game.TR3)), flipped == 1);
+                        MatchDoorShades(rooms, room, (_level.Settings.GameVersion.Native() < TRVersion.Game.TR3), flipped == 1);
             }
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
@@ -199,7 +199,7 @@ namespace TombLib.LevelData.Compilers
                 newRoom.AlternateKind = AlternateKind.BaseRoom;
 
             // Store ambient intensity
-            if (_level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR3))
+            if (_level.Settings.GameVersion.Native() <= TRVersion.Game.TR3)
                 newRoom.AmbientIntensity = PackColorTo13BitGreyscale(room.Properties.AmbientLight);
             else
                 newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) |
@@ -209,7 +209,7 @@ namespace TombLib.LevelData.Compilers
             // Properly identify game version to swap light mode, quicksand and no lensflare flags
             bool isTR2  = room.Level.Settings.GameVersion.Native() == TRVersion.Game.TR2;
             bool isTR23 = isTR2 || room.Level.Settings.GameVersion == TRVersion.Game.TR3;
-            bool isNL   = room.Level.Settings.GameVersion.Native().IsGreaterThanOrEqual(TRVersion.Game.TR4);
+            bool isNL   = room.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR4;
             bool isNG   = room.Level.IsNG;
 
             // Room flags
@@ -371,8 +371,8 @@ namespace TombLib.LevelData.Compilers
                                     continue;
                                 }
 
-                                var doubleSided = _level.Settings.GameVersion.IsGreaterThan(TRVersion.Game.TR2) && texture.DoubleSided;
-                                var copyFace    = _level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR2) && texture.DoubleSided;
+                                var doubleSided = _level.Settings.GameVersion.Native() > TRVersion.Game.TR2 && texture.DoubleSided;
+                                var copyFace    = _level.Settings.GameVersion.Native() <= TRVersion.Game.TR2 && texture.DoubleSided;
 
                                 int rangeEnd = range.Start + range.Count;
                                 for (int i = range.Start; i < rangeEnd; i += 3)
@@ -510,7 +510,7 @@ namespace TombLib.LevelData.Compilers
                             int lightingEffect = 0;
                             float shade = 1.0f;
                             if (interpretShadesAsEffect &&
-                                _level.Settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR3))
+                                _level.Settings.GameVersion.Native() >= TRVersion.Game.TR3)
                             {
                                 if (j < wadStatic.Mesh.VertexColors.Count)
                                 {
@@ -528,7 +528,7 @@ namespace TombLib.LevelData.Compilers
                                 // Use native wad2 vertex effect values to assign vertex flags.
                                 // Since legacy engines doesn't support individual values, we convert any value to a flag.
 
-                                if (_level.Settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR3) && wadStatic.Mesh.HasAttributes)
+                                if (_level.Settings.GameVersion.Native() >= TRVersion.Game.TR3 && wadStatic.Mesh.HasAttributes)
                                 {
                                     if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
                                         lightingEffect |= 0x2000; // Movement
@@ -585,8 +585,8 @@ namespace TombLib.LevelData.Compilers
                             var texture = poly.Texture;
                             texture.ClampToBounds();
 
-                            var doubleSided = _level.Settings.GameVersion.IsGreaterThan(TRVersion.Game.TR2) && texture.DoubleSided;
-                            var copyFace = _level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR2) && texture.DoubleSided;
+                            var doubleSided = _level.Settings.GameVersion.Native() > TRVersion.Game.TR2 && texture.DoubleSided;
+                            var copyFace = _level.Settings.GameVersion.Native() <= TRVersion.Game.TR2 && texture.DoubleSided;
 
                             if (poly.IsTriangle)
                             {
@@ -751,8 +751,8 @@ namespace TombLib.LevelData.Compilers
 
                                 texture.ClampToBounds();
 
-                                var doubleSided = _level.Settings.GameVersion.IsGreaterThan(TRVersion.Game.TR2) && texture.DoubleSided;
-                                var copyFace    = _level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR2) && texture.DoubleSided;
+                                var doubleSided = _level.Settings.GameVersion.Native() > TRVersion.Game.TR2 && texture.DoubleSided;
+                                var copyFace    = _level.Settings.GameVersion.Native() <= TRVersion.Game.TR2 && texture.DoubleSided;
 
                                 var result = _textureInfoManager.AddTexture(texture, true, true);
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, doubleSided, 0));
@@ -978,7 +978,7 @@ namespace TombLib.LevelData.Compilers
                 // Add sprites and dummy vertices for them (only for TR1-2 targets, unsupported since TR3)
 
                 newRoom.Sprites = new List<tr_room_sprite>();
-                if (_level.Settings.GameVersion.IsLessThanOrEqual(TRVersion.Game.TR2))
+                if (_level.Settings.GameVersion.Native() <= TRVersion.Game.TR2)
                     foreach (var sprite in room.Objects.OfType<SpriteInstance>())
                     {
                         if (!sprite.SpriteIsValid)
@@ -1078,7 +1078,7 @@ namespace TombLib.LevelData.Compilers
             ConvertLights(room, newRoom);
 
             // Clear double-sided flag for versions prior to TR3, so at least surfaces remain visible
-            if (_level.Settings.GameVersion.IsLessThan(TRVersion.Game.TR3))
+            if (_level.Settings.GameVersion.Native() < TRVersion.Game.TR3)
             {
                 for (int i = 0; i < newRoom.Triangles.Count; i++)
                 {
@@ -1149,12 +1149,12 @@ namespace TombLib.LevelData.Compilers
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
                 // If target game is <= TR3 then ignore all special lights (except sun for TR3) and fog bulbs
-                if (_level.Settings.GameVersion.IsLessThan(TRVersion.Game.TR4) &&
+                if (_level.Settings.GameVersion.Native() < TRVersion.Game.TR4 &&
                     (light.Type == LightType.Spot || light.Type == LightType.Shadow || light.Type == LightType.FogBulb))
                     continue;
 
                 // Sun type is present in TR3
-                if (_level.Settings.GameVersion.IsLessThan(TRVersion.Game.TR3) && light.Type == LightType.Sun)
+                if (_level.Settings.GameVersion.Native() < TRVersion.Game.TR3 && light.Type == LightType.Sun)
                     continue;
 
                 if (!light.Enabled || !light.IsDynamicallyUsed)
@@ -1265,7 +1265,7 @@ namespace TombLib.LevelData.Compilers
                     var compiledSector = new tr_room_sector();
                     var aux = new TrSectorAux();
 
-                    if (_level.Settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR3))
+                    if (_level.Settings.GameVersion.Native() >= TRVersion.Game.TR3)
                         compiledSector.BoxIndex = (ushort)(0x7ff0 | (0xf & (short)GetTextureSound(room, x, z)));
                     else
                         compiledSector.BoxIndex = 0xffff;
@@ -1961,7 +1961,7 @@ namespace TombLib.LevelData.Compilers
                 packed1 = PackColorTo24BitLow(color);
                 packed2 = PackColorTo24BitHigh(color);
             }
-            else if (settings.GameVersion.IsGreaterThanOrEqual(TRVersion.Game.TR3))
+            else if (settings.GameVersion.Native() >= TRVersion.Game.TR3)
             {
                 packed1 = PackColorTo16Bit(color);
                 packed2 = packed1;

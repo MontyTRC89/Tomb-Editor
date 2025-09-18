@@ -139,7 +139,7 @@ namespace TombEditor.ToolWindows
             butAnimationRanges.Enabled = comboCurrentTexture.SelectedItem != null;
 
             butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null && 
-                _editor.Level.Settings.GameVersion.Native().IsGreaterThanOrEqual(TRVersion.Game.TR3);
+                _editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR3;
 
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
                 (_editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);

@@ -323,7 +323,7 @@ namespace TombLib.Forms
 			}
 
 			// Legacy engine settings
-			comboEffect.Enabled = _version.IsGreaterThanOrEqual(TRVersion.Game.TR4);
+			comboEffect.Enabled = _version.Native() >= TRVersion.Game.TR4;
 
 			comboProcPresets.SelectedIndex = 0;
 			numFrames.Value = _maxLegacyFrames;

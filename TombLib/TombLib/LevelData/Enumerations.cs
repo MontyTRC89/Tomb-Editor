@@ -32,16 +32,6 @@ namespace TombLib.LevelData
         };
 
         /// <summary>
-        /// Returns the non-TRX variant of the game version, if applicable.
-        /// </summary>
-        public static Game NonTRX(this Game ver) => ver switch
-        {
-            Game.TR1X => Game.TR1,
-            Game.TR2X => Game.TR2,
-            _ => ver
-        };
-
-        /// <summary>
         /// Returns all game versions, including TRX variants and TRNG.
         /// </summary>
         public static List<Game> AllVersions => Enum.GetValues<Game>().ToList();
@@ -54,48 +44,22 @@ namespace TombLib.LevelData
             Game.TR1, Game.TR2, Game.TR3, Game.TR4, Game.TR5, Game.TombEngine
         };
 
-        // Equality operations for Game enum
-
-        /// <summary>
-        /// Compares two game versions, ignoring TRX variants.
-        /// </summary>
-        public static bool IsGreaterThan(this Game ver, Game other)
-            => ver.NonTRX() > other.NonTRX();
-
-        /// <summary>
-        /// Compares two game versions, ignoring TRX variants.
-        /// </summary>
-        public static bool IsGreaterThanOrEqual(this Game ver, Game other)
-            => ver.NonTRX() >= other.NonTRX();
-
-        /// <summary>
-        /// Compares two game versions, ignoring TRX variants.
-        /// </summary>
-        public static bool IsLessThan(this Game ver, Game other)
-            => ver.NonTRX() < other.NonTRX();
-
-        /// <summary>
-        /// Compares two game versions, ignoring TRX variants.
-        /// </summary>
-        public static bool IsLessThanOrEqual(this Game ver, Game other)
-            => ver.NonTRX() <= other.NonTRX();
-
         // Checks for features supported by the game version
 
         public static bool UsesMainSfx(this Game ver)
             => ver.Native() is Game.TR2 or Game.TR3;
 
         public static bool Supports16BitDithering(this Game ver)
-            => ver.NonTRX() is > Game.TR1 and < Game.TombEngine;
+            => ver.Native() is > Game.TR1 and < Game.TombEngine;
 
         public static bool SupportsFontAndSkySettings(this Game ver)
-            => ver.IsGreaterThanOrEqual(Game.TR4);
+            => ver.Native() >= Game.TR4;
 
         public static bool SupportsReverberation(this Game ver)
-            => ver.IsGreaterThanOrEqual(Game.TR3);
+            => ver.Native() >= Game.TR3;
 
         public static bool SupportsLensflare(this Game ver)
-            => ver.IsGreaterThanOrEqual(Game.TR4);
+            => ver.Native() >= Game.TR4;
     }
 
     // Only for TR5+
