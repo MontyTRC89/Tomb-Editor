@@ -16,6 +16,7 @@ using System.Text;
 using WPF = System.Windows;
 using TombLib.Forms.Views;
 using CustomMessageBox.WPF;
+using TombLib.Forms;
 
 namespace TombEditor
 {
@@ -144,6 +145,8 @@ namespace TombEditor
 
         private static void InitializeWPF()
         {
+            Localizer.Instance.LoadLanguage("en");
+
             // Initialize WPF resources
             var wpfApp = new WPF.Application
             {

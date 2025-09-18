@@ -125,6 +125,7 @@
     <EmbeddedResource Remove="Forms\FormPopUpSearch.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Resources\Localization\en.json" />
     <None Remove="Resources\general_edit-16.png" />
     <None Remove="Resources\general_Save-16.png" />
     <None Remove="Resources\general_trash-16.png" />
@@ -139,5 +140,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Resources\Localization\EN\TombLib.Forms.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
