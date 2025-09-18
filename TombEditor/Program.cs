@@ -14,7 +14,7 @@ using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using System.Text;
 using WPF = System.Windows;
-using TombLib.Views;
+using TombLib.Forms.Views;
 using CustomMessageBox.WPF;
 
 namespace TombEditor
@@ -28,11 +28,11 @@ namespace TombEditor
         {
             InitializeWPF();
 
-            var window = new GeometryIOSettingsWindow();
+            var window = new GeometryIOSettingsWindow(TombLib.Forms.ViewModels.GeometryIOSettingsType.Import);
             window.ShowDialog();
             return;
 
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             string startFile = null;
             string batchFile = null;
@@ -142,33 +142,36 @@ namespace TombEditor
                 SingleInstanceManagement.Bump(Process.GetCurrentProcess());
         }
 
-		private static void InitializeWPF()
-		{
-			// Initialize WPF resources
-			var wpfApp = new WPF.Application
-			{
-				ShutdownMode = WPF.ShutdownMode.OnExplicitShutdown
-			};
+        private static void InitializeWPF()
+        {
+            // Initialize WPF resources
+            var wpfApp = new WPF.Application
+            {
+                ShutdownMode = WPF.ShutdownMode.OnExplicitShutdown
+            };
 
-			// Add the DarkUI theme to the WPF application
-			wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
-			{
-				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Generic.xaml")
-			});
+            // Add the DarkUI theme to the WPF application
+            wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Generic.xaml")
+            });
 
-			// Use DarkColours theme (default DarkUI look)
-			wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
-			{
-				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Dictionaries/DarkColors.xaml")
-			});
+            // Use DarkColours theme (default DarkUI look)
+            wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Dictionaries/DarkColors.xaml")
+            });
 
 
-			// Replace the problematic line with the following:
-			CMessageBox.WindowStyleOverride = (WPF.Style)wpfApp.Resources["CustomWindowStyle"];
+            // Replace the problematic line with the following:
+            CMessageBox.WindowStyleOverride = (WPF.Style)wpfApp.Resources["CustomWindowStyle"];
             CMessageBox.UsePathIconsByDefault = true;
 
-			if (wpfApp.TryFindResource("Brush_Background_Alternative") is WPF.Media.SolidColorBrush brush)
-				CMessageBox.DefaultButtonsPanelBackground = brush;
-		}
-	}
+            if (wpfApp.TryFindResource("Brush_Background_Alternative") is WPF.Media.SolidColorBrush brush)
+                CMessageBox.DefaultButtonsPanelBackground = brush;
+
+            // Initialize service providers
+            TombLib.Services.ServiceProvider.Configure(TombLib.Services.ServiceCollectionExtensions.CreateTombLibServiceProvider());
+        }
+    }
 }

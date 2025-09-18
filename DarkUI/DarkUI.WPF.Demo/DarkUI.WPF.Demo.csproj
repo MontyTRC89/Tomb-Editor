@@ -27,11 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CustomMessageBox.WPF" Version="1.0.0" />
-    <PackageReference Include="SpacedGrid-WPF" Version="1.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\DarkUI.WPF\DarkUI.WPF.csproj" />
     <ProjectReference Include="..\DarkUI\DarkUI.csproj" />

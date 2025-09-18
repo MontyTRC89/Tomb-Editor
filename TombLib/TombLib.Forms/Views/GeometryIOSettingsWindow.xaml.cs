@@ -1,14 +1,13 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using System.Windows;
+﻿using System.Windows;
 using TombLib.Forms.ViewModels;
 
-namespace TombLib.Views;
+namespace TombLib.Forms.Views;
 
 public partial class GeometryIOSettingsWindow : Window
 {
-	public GeometryIOSettingsWindow()
+	public GeometryIOSettingsWindow(GeometryIOSettingsType settingsType)
 	{
 		InitializeComponent();
-		DataContext = new GeometryIOSettingsViewModel(WeakReferenceMessenger.Default, GeometryIOSettingsType.Import);
+		DataContext = new GeometryIOSettingsWindowViewModel(settingsType);
 	}
 }

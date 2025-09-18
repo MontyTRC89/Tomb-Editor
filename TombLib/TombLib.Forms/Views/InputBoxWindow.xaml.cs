@@ -1,15 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using System.Windows;
-using TombLib.Forms.ViewModels;
+﻿using System.Windows;
 
-namespace TombLib.Views;
+namespace TombLib.Forms.Views;
 
 public partial class InputBoxWindow : Window
 {
 	public InputBoxWindow()
 	{
 		InitializeComponent();
-		DataContext = new InputBoxViewModel(WeakReferenceMessenger.Default);
 		Loaded += InputBoxWindow_Loaded;
 	}
 

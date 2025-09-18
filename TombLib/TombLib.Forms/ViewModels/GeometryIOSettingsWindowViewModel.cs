@@ -1,13 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
+using CustomMessageBox.WPF;
 using MvvmDialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using TombLib.GeometryIO;
-using TombLib.Views;
+using TombLib.Services;
 
 namespace TombLib.Forms.ViewModels;
 
@@ -18,7 +18,7 @@ public enum GeometryIOSettingsType
 	AnimationImport,
 }
 
-public partial class GeometryIOSettingsViewModel : ObservableObject
+public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 {
 	private const string UnsavedPresetName = "-- Unsaved --";
 
@@ -144,13 +144,11 @@ public partial class GeometryIOSettingsViewModel : ObservableObject
 		}
 	}
 
-	private readonly IMessenger _messenger;
 	private readonly IDialogService _dialogService;
 
-	public GeometryIOSettingsViewModel(IMessenger messenger, IDialogService dialogService, GeometryIOSettingsType type)
+	public GeometryIOSettingsWindowViewModel(GeometryIOSettingsType type, IDialogService dialogService = null)
 	{
-		_messenger = messenger;
-		_dialogService = dialogService;
+		_dialogService = dialogService ?? ServiceProvider.GetRequiredService<IDialogService>();
 
 		Presets = type switch
 		{
@@ -223,7 +221,6 @@ public partial class GeometryIOSettingsViewModel : ObservableObject
 	partial void OnPackTexturesChanged(bool value) => UpdateSelectedPreset();
 	partial void OnPadPackedTexturesChanged(bool value) => UpdateSelectedPreset();
 	partial void OnSortByNameChanged(bool value) => UpdateSelectedPreset();
-
 	private bool _applyingSelectedPreset;
 
 	partial void OnSelectedPresetChanged(IOGeometrySettingsPreset value)
@@ -273,15 +270,11 @@ public partial class GeometryIOSettingsViewModel : ObservableObject
 	private void SavePreset()
 	{
 		// Open a dialog to enter a name for the new preset
-		var inputBox = new InputBoxViewModel(_messenger, "Save Preset", "Enter a name for the preset:", "TEST", UnsavedPresetName);
-		_dialogService.ShowDialog(this, inputBox);
+		var inputBox = new InputBoxWindowViewModel("Save Preset", "Enter a name for the preset:", "", UnsavedPresetName);
 
-		var inputBoxWindow = new InputBoxWindow
-		{
-			DataContext = inputBox
-		};
+		bool? result = _dialogService.ShowDialog(this, inputBox);
 
-		if (inputBoxWindow.ShowDialog() == true)
+		if (result == true)
 		{
 			string presetName = inputBox.Value;
 
@@ -291,7 +284,13 @@ public partial class GeometryIOSettingsViewModel : ObservableObject
 			// Check if a preset with the same name already exists
 			if (Presets.Any(p => p.Name == presetName))
 			{
-				MessageBox.Show("A preset with this name already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				CMessageBox.Show(
+					"A preset with this name already exists.",
+					"Error",
+					CMessageBoxButtons.OK,
+					CMessageBoxIcon.Error
+				);
+
 				return;
 			}
 
