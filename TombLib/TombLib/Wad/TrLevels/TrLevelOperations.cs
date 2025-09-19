@@ -73,7 +73,7 @@ namespace TombLib.Wad.TrLevels
                 int textureTileIndex = oldTexture.TileAndFlags & 0x7fff;
                 bool isTriangle = (oldTexture.TileAndFlags & 0x8000) != 0; // Exists only in TR4+
 
-                if (oldLevel.Version.Native() is TRVersion.Game.TR1 or TRVersion.Game.TR2 or TRVersion.Game.TR3)
+                if (oldLevel.Version is TRVersion.Game.TR1 or TRVersion.Game.TR2 or TRVersion.Game.TR3)
                     isTriangle = (oldTexture.Vertices[3].X == 0) && (oldTexture.Vertices[3].Y == 0);
 
                 // Calculate UV coordinates...
@@ -267,7 +267,7 @@ namespace TombLib.Wad.TrLevels
                     int y1 = oldSpriteTexture.TopSide;
                     int y2 = oldSpriteTexture.BottomSide;
 
-                    if (oldLevel.Version.Native() is TRVersion.Game.TR1 or TRVersion.Game.TR2 or TRVersion.Game.TR3)
+                    if (oldLevel.Version is TRVersion.Game.TR1 or TRVersion.Game.TR2 or TRVersion.Game.TR3)
                     {
                         spriteX = oldSpriteTexture.X;
                         spriteY = oldSpriteTexture.Y;
@@ -476,14 +476,14 @@ namespace TombLib.Wad.TrLevels
                 if (j + oldMoveable.Animation == oldLevel.Animations.Count - 1)
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = oldLevel.Version.Native() == TRVersion.Game.TR1 ? (uint)(Math.Ceiling((float)newAnimation.EndFrame / (float)newAnimation.FrameRate) + 1) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)(Math.Ceiling((float)newAnimation.EndFrame / (float)newAnimation.FrameRate) + 1) : 0;
                     else
                         numFrames = ((uint)(2 * oldLevel.Frames.Count) - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
                 else
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = oldLevel.Version.Native() == TRVersion.Game.TR1 ? (uint)(Math.Ceiling((float)newAnimation.EndFrame / (float)newAnimation.FrameRate) + 1) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)(Math.Ceiling((float)newAnimation.EndFrame / (float)newAnimation.FrameRate) + 1) : 0;
                     else
                         numFrames = (oldLevel.Animations[oldMoveable.Animation + j + 1].FrameOffset - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
@@ -509,13 +509,13 @@ namespace TombLib.Wad.TrLevels
                     frames += 3;
 
                     // TR1 has also the number of angles to follow
-                    if (oldLevel.Version.Native() == TRVersion.Game.TR1)
+                    if (oldLevel.Version == TRVersion.Game.TR1)
                         frames++;
 
                     for (int n = 0; n < oldMoveable.NumMeshes; n++)
                         frame.Angles.Add(
                             WadKeyFrameRotation.FromTrAngle(ref frames, oldLevel.Frames,
-                                oldLevel.Version.Native() == TRVersion.Game.TR1,
+                                oldLevel.Version == TRVersion.Game.TR1,
                                 oldLevel.Version is TRVersion.Game.TR4 or TRVersion.Game.TR5));
 
                     if ((frames - startOfFrame) < oldAnimation.FrameSize)
