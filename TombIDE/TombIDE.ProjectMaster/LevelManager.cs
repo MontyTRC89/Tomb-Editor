@@ -11,7 +11,9 @@ using TombIDE.ProjectMaster.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.NewStructure.Implementations;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
 {
@@ -35,8 +37,8 @@ namespace TombIDE.ProjectMaster
 				case TRVersion.Game.TRNG: panel_GameLabel.BackgroundImage = Properties.Resources.TRNG_LVL; break;
 				case TRVersion.Game.TR4: panel_GameLabel.BackgroundImage = Properties.Resources.TR4_LVL; break;
 				case TRVersion.Game.TR3: panel_GameLabel.BackgroundImage = Properties.Resources.TR3_LVL; break;
-				case TRVersion.Game.TR2: panel_GameLabel.BackgroundImage = Properties.Resources.TR2_LVL; break;
-				case TRVersion.Game.TR1: panel_GameLabel.BackgroundImage = Properties.Resources.TR1_LVL; break;
+				case TRVersion.Game.TR2 or TRVersion.Game.TR2X: panel_GameLabel.BackgroundImage = Properties.Resources.TR2_LVL; break;
+				case TRVersion.Game.TR1 or TRVersion.Game.TR1X: panel_GameLabel.BackgroundImage = Properties.Resources.TR1_LVL; break;
 			}
 
 			UpdateVersionLabel();
@@ -63,7 +65,7 @@ namespace TombIDE.ProjectMaster
 			}
 
 			Version engineVersion = _ide.Project.GetCurrentEngineVersion();
-			string engineVersionString = engineVersion is null ? "Unknown" : engineVersion.ToString();
+			string engineVersionString = engineVersion == new Version(0, 0) ? "Unknown" : engineVersion.ToString();
 			label_EngineVersion.Text = $"Engine Version: {engineVersionString}";
 
 			Version latestVersion = _ide.Project.GetLatestEngineVersion();
@@ -87,7 +89,7 @@ namespace TombIDE.ProjectMaster
 						if (engineVersion.Major <= 1 && engineVersion.Minor <= 0 && engineVersion.Build <= 8)
 						{
 							button_Update.Enabled = false;
-							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
+							button_Update.Text = "Cannot Auto-Update engine. Current version is too old.";
 							button_Update.Width = 300;
 						}
 					}
@@ -96,14 +98,20 @@ namespace TombIDE.ProjectMaster
 					{
 						button_Update.Visible = true;
 
-						// 3.0 is the first version that supports auto-updating
-						if (engineVersion.Major <= 2)
+						// 3.0 is the first version that supports auto-updating - 4.8 introduced breaking changes
+						if (engineVersion.Major <= 4 && engineVersion.Minor <= 7)
 						{
+							button_Update.Text = engineVersion.Major <= 2
+								? "Cannot Auto-Update engine. Current version is too old."
+								: "Cannot Auto-Update engine. TR1X 4.8 introduced breaking changes, which require manual migration.";
+
 							button_Update.Enabled = false;
-							button_Update.Text = "Can't Auto-Update engine. Current version is too old.";
 							button_Update.Width = 300;
 						}
 					}
+
+					if (_ide.Project.GameVersion is TRVersion.Game.TR2X)
+						button_Update.Visible = true;
 				}
 				else
 				{
@@ -168,23 +176,47 @@ namespace TombIDE.ProjectMaster
 				case TRVersion.Game.TR1:
 					UpdateTR1X();
 					break;
+
+				case TRVersion.Game.TR2X:
+					UpdateTR2X();
+					break;
 			}
 		}
 
 		private void UpdateTEN()
 		{
-			DialogResult result = MessageBox.Show(this,
-				"This update will replace the following directories and files:\n\n" +
+			var newVersion = _ide.Project.GetLatestEngineVersion();
+			var prevVersion = _ide.Project.GetCurrentEngineVersion();
 
-				"- Engine/Bin/\n" +
-				"- Engine/Shaders/\n" +
-				"- Engine/Scripts/Engine/\n" +
-				"- Engine/Scripts/SystemStrings.lua\n\n" +
+			// 1.0.9 is the first version that supports auto-updating
+			if (prevVersion.Major <= 1 && prevVersion.Minor <= 0 && prevVersion.Build <= 8)
+			{
+				MessageBox.Show(this, "Cannot Auto-Update engine. Current version is too old.",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-				"If any of these directories or files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
+				return;
+			}
 
-				"Are you sure you want to continue?\n" +
-				"This action cannot be reverted.",
+			// In 1.6 onwards we need to upgrade settings file.
+			var settingsUpdate16 = newVersion.Major == 1 && newVersion.Minor >= 6 && prevVersion.Major == 1 && prevVersion.Minor <= 6 && prevVersion <= newVersion;
+
+			var message =
+				@"This update will replace the following directories and files:
+
+				- Engine/Bin/
+				- Engine/Shaders/
+				- Engine/Scripts/Engine/
+				- Engine/Scripts/SystemStrings.lua" +
+
+				(settingsUpdate16 ? "\n- Engine/Scripts/Settings.lua" : "") +
+
+				"\n\n" +
+				@"If any of these directories or files are important to you, please update the engine manually or create a copy of these files before performing this update.
+
+				Are you sure you want to continue?
+				This action cannot be reverted.";
+
+			DialogResult result = MessageBox.Show(this, message.TrimIndentation(),
 				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
 			if (result is not DialogResult.Yes)
@@ -201,10 +233,21 @@ namespace TombIDE.ProjectMaster
 			try
 			{
 				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TEN.zip");
+				string libsPath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TEN External DLLs.zip");
+				string resourcesPath = Path.Combine(DefaultPaths.TemplatesDirectory, "Shared", "TEN Resources.zip");
 				using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
+				using var libsArchive = new ZipArchive(File.OpenRead(libsPath));
+				using var resourcesArchive = new ZipArchive(File.OpenRead(resourcesPath));
 
 				var bin = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/Bin")).ToList();
+				bin.AddRange(libsArchive.Entries);
 				ExtractEntries(bin, _ide.Project);
+
+				// Delete the "Engine/Shaders/Bin" directory before extracting new shaders
+				string compiledShadersPath = Path.Combine(_ide.Project.DirectoryPath, "Engine/Shaders/Bin");
+
+				if (Directory.Exists(compiledShadersPath))
+					Directory.Delete(compiledShadersPath, true);
 
 				var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/Shaders")).ToList();
 				ExtractEntries(shaders, _ide.Project);
@@ -221,6 +264,17 @@ namespace TombIDE.ProjectMaster
 				ZipArchiveEntry systemStrings = engineArchive.Entries.FirstOrDefault(entry => entry.Name.Equals("SystemStrings.lua"));
 				systemStrings?.ExtractToFile(Path.Combine(_ide.Project.DirectoryPath, systemStrings.FullName), true);
 
+				// Version-specific file updates.
+				if (settingsUpdate16)
+				{
+					ZipArchiveEntry settings = engineArchive.Entries.FirstOrDefault(entry => entry.Name.Equals("Settings.lua"));
+					settings?.ExtractToFile(Path.Combine(_ide.Project.DirectoryPath, settings.FullName), true);
+				}
+
+				// Extract resources, but don't overwrite
+				ExtractEntries(resourcesArchive.Entries, _ide.Project, false);
+
+				UpdateTENApi(newVersion);
 				UpdateVersionLabel();
 
 				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -233,6 +287,17 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTR1X()
 		{
+			var prevVersion = _ide.Project.GetCurrentEngineVersion();
+
+			// 4.8 had breaking changes
+			if (prevVersion.Major <= 4 && prevVersion.Minor <= 7)
+			{
+				MessageBox.Show(this, "Cannot Auto-Update engine. TR1X 4.8 introduced breaking changes, which require manual migration.",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				return;
+			}
+
 			DialogResult result = MessageBox.Show(this,
 				"This update will replace the following directories and files:\n\n" +
 
@@ -278,7 +343,54 @@ namespace TombIDE.ProjectMaster
 			}
 		}
 
-		private static void ExtractEntries(List<ZipArchiveEntry> entries, IGameProject targetProject)
+		private void UpdateTR2X()
+		{
+			DialogResult result = MessageBox.Show(this,
+				"This update will replace the following directories and files:\n\n" +
+
+				"- Engine/shaders/\n" +
+				"- Engine/TR2X.exe\n" +
+				"- Engine/TR2X_ConfigTool.exe\n\n" +
+
+				"If any of these directories / files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
+
+				"Are you sure you want to continue?\n" +
+				"This action cannot be reverted.",
+				"Warning...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+			if (result is not DialogResult.Yes)
+				return;
+
+			string engineDirectoryPath = Path.Combine(_ide.Project.DirectoryPath, "Engine");
+
+			if (!Directory.Exists(engineDirectoryPath))
+			{
+				DarkMessageBox.Show(this, "Couldn't locate \"Engine\" directory. Updating is not supported for your project structure.", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			try
+			{
+				string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, "TR2X.zip");
+				using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
+
+				var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/shaders")).ToList();
+				ExtractEntries(shaders, _ide.Project);
+
+				var executables = engineArchive.Entries.Where(entry => entry.FullName.EndsWith(".exe")).ToList();
+				ExtractEntries(executables, _ide.Project);
+
+				UpdateVersionLabel();
+
+				DarkMessageBox.Show(this, "Engine has been updated successfully!", "Done.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, "An error occurred while updating the engine:\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private static void ExtractEntries(IEnumerable<ZipArchiveEntry> entries, IGameProject targetProject, bool overwrite = true)
 		{
 			foreach (ZipArchiveEntry entry in entries)
 			{
@@ -290,7 +402,14 @@ namespace TombIDE.ProjectMaster
 						Directory.CreateDirectory(dirPath);
 				}
 				else
-					entry.ExtractToFile(Path.Combine(targetProject.DirectoryPath, entry.FullName), true);
+				{
+					string targetPath = Path.Combine(targetProject.DirectoryPath, entry.FullName);
+
+					if (overwrite)
+						entry.ExtractToFile(targetPath, true);
+					else if (!File.Exists(targetPath))
+						entry.ExtractToFile(targetPath, false);
+				}
 			}
 		}
 
@@ -298,6 +417,18 @@ namespace TombIDE.ProjectMaster
 		{
 			using var form = new FormGameArchive(_ide);
 			form.ShowDialog();
+		}
+
+		private void UpdateTENApi(Version currentEngineVersion)
+		{
+			try
+			{
+				TENApiService.InjectTENApi(_ide.Project, currentEngineVersion);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, "An error occurred while updating the API:\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 	}
 }

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using System.Linq;
+using System.Drawing;
 
 namespace TombEditor.Forms
 {
@@ -21,6 +21,10 @@ namespace TombEditor.Forms
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
+
+            // Clear body flag in TEN is repurposed for reflection canceling.
+            if (_editor.Level.IsTombEngine)
+                cbClearBody.Text = "No reflection";
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -33,7 +37,7 @@ namespace TombEditor.Forms
         private void FormObject_Load(object sender, EventArgs e)
         {
             // Disable version-specific controls
-            tbOCB.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR3;
+            tbOCB.Enabled = _editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR3;
 
             oldColor = _movable.Color;
             cbBit1.Checked = (_movable.CodeBits & (1 << 0)) != 0;
@@ -89,9 +93,16 @@ namespace TombEditor.Forms
 
         private void panelColor_Click(object sender, EventArgs e)
         {
-            EditorActions.EditColor(this, _movable, (Vector3 newColor) => {
+            EditorActions.EditColor(this, _movable, (Vector3 newColor) =>
+            {
                 panelColor.BackColor = newColor.ToWinFormsColor();
             });
+        }
+
+        private void butResetTint_Click(object sender, EventArgs e)
+        {
+            panelColor.BackColor = Color.Gray;
+            _movable.Color = panelColor.BackColor.ToFloat3Color() * 2.0f;
         }
     }
 }

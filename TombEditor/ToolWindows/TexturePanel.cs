@@ -33,8 +33,8 @@ namespace TombEditor.ToolWindows
             { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
             // Populate selection tile size
-            for (int i = 4; i <= 8; i++)
-                cmbTileSize.Items.Add((float)(Math.Pow(2, i)));
+            for (int i = 1; i <= 8; i++)
+                cmbTileSize.Items.Add((float)Math.Pow(2, i));
 
             RepopulateBlendingModes();
 
@@ -139,10 +139,10 @@ namespace TombEditor.ToolWindows
             butAnimationRanges.Enabled = comboCurrentTexture.SelectedItem != null;
 
             butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null && 
-                _editor.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR3;
+                _editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR3;
 
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
-                (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);
+                (_editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);
 
             RepopulateBlendingModes();
         }

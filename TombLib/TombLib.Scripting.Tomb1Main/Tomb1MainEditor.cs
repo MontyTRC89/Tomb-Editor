@@ -1,5 +1,9 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Rendering;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -9,6 +13,7 @@ using TombLib.Scripting.Objects;
 using TombLib.Scripting.Tomb1Main.Objects;
 using TombLib.Scripting.Tomb1Main.Parsers;
 using TombLib.Scripting.Tomb1Main.Utils;
+using TombLib.Scripting.Workers;
 
 namespace TombLib.Scripting.Tomb1Main
 {
@@ -18,18 +23,39 @@ namespace TombLib.Scripting.Tomb1Main
 
 		private bool _suppressBracketAutospacing;
 		private DocumentLine _cachedLine;
+		private ErrorDetectionWorker _errorDetectionWorker;
+		private bool _isTR2;
 
-		public Tomb1MainEditor()
+		public Tomb1MainEditor(Version engineVersion) : this(engineVersion, false)
+		{ }
+
+		public Tomb1MainEditor(Version engineVersion, bool isTR2) : base(engineVersion)
 		{
 			BindEventMethods();
-
 			CommentPrefix = "//";
+
+			_errorDetectionWorker = new ErrorDetectionWorker(new ErrorDetector(), EngineVersion, new TimeSpan(500));
+			_errorDetectionWorker.RunWorkerCompleted += ErrorWorker_RunWorkerCompleted;
+
+			_isTR2 = isTR2;
+		}
+
+		private void ErrorWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			if (e.Result == null)
+				return;
+
+			ResetAllErrors();
+			ApplyErrorsToLines(e.Result as List<ErrorLine>);
+
+			TextArea.TextView.InvalidateLayer(KnownLayer.Caret);
 		}
 
 		private void BindEventMethods()
 		{
 			TextArea.TextEntering += TextArea_TextEntering;
 			TextArea.TextEntered += TextEditor_TextEntered;
+			TextChanged += TextEditor_TextChanged;
 		}
 
 		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
@@ -61,7 +87,7 @@ namespace TombLib.Scripting.Tomb1Main
 					if (Document.GetCharAt(CaretOffset) == '\"')
 						_completionWindow.EndOffset = CaretOffset + 1;
 
-					foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
+					foreach (ICompletionData item in Autocomplete.GetAutocompleteData(_isTR2))
 						_completionWindow.CompletionList.CompletionData.Add(item);
 
 					ShowCompletionWindow();
@@ -98,6 +124,12 @@ namespace TombLib.Scripting.Tomb1Main
 			}
 		}
 
+		private void TextEditor_TextChanged(object sender, EventArgs e)
+		{
+			if (LiveErrorUnderlining)
+				_errorDetectionWorker.RunErrorCheckOnIdle(Text);
+		}
+
 		private void HandleAutocomplete()
 		{
 			string currentLineText = LineParser.EscapeComments(Document.GetText(Document.GetLineByOffset(CaretOffset))).Trim();
@@ -127,7 +159,7 @@ namespace TombLib.Scripting.Tomb1Main
 				if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == '\"')
 					_completionWindow.EndOffset = CaretOffset + 1;
 
-				foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
+				foreach (ICompletionData item in Autocomplete.GetAutocompleteData(_isTR2))
 					_completionWindow.CompletionList.CompletionData.Add(item);
 
 				ShowCompletionWindow();
@@ -150,7 +182,7 @@ namespace TombLib.Scripting.Tomb1Main
 		{
 			var config = configuration as T1MEditorConfiguration;
 
-			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
+			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme, _isTR2);
 
 			Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
 			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));

@@ -1,35 +1,51 @@
-﻿using System;
+﻿using Blake3;
+using System;
+using System.Buffers.Binary;
+using System.IO.Hashing;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace TombLib.Utils
 {
-    public struct Hash : IEquatable<Hash>
-    {
-        private static readonly Random _rng = new Random();
-        private static readonly ulong _keyLow = (ulong)_rng.Next() ^ ((ulong)_rng.Next() << 32);
-        private static readonly ulong _keyHigh = (ulong)_rng.Next() ^ ((ulong)_rng.Next() << 32);
+	public struct Hash : IEquatable<Hash>
+	{
+		public ulong HashLow;
+		public ulong HashHigh;
 
-        public ulong HashLow;
-        public ulong HashHigh;
+		public static bool operator ==(Hash first, Hash second) =>
+			first.HashLow == second.HashLow && first.HashHigh == second.HashHigh;
 
-        public static bool operator ==(Hash first, Hash second) => first.HashLow == second.HashLow && first.HashHigh == second.HashHigh;
-        public static bool operator !=(Hash first, Hash second) => first.HashLow != second.HashLow || first.HashHigh != second.HashHigh;
-        public bool Equals(Hash other) => this == other;
-        public override bool Equals(object other) => other is Hash && this == (Hash)other;
-        public override int GetHashCode() => unchecked((int)HashLow);
+		public static bool operator !=(Hash first, Hash second) => !(first == second);
 
-        public static Hash FromByteArray(byte[] data)
-        {
-            ulong result = CH.SipHash.SipHash.SipHash_2_4_UlongCast_ForcedInline(data, _keyLow, _keyHigh);
-            // TODO are 64 bit hashes really enough?
-            // Seems a little bit risky.
-            return new Hash { HashLow = result, HashHigh = 0 };
-        }
+		public bool Equals(Hash other) => this == other;
+		public override bool Equals(object? obj) => obj is Hash other && this == other;
 
-        public static Hash Zero => new Hash() { HashHigh = 0, HashLow = 0 };
-    }
+		public override int GetHashCode()
+		{
+			ulong x = HashLow ^ HashHigh;
+			x ^= x >> 30; x *= 0xBF58476D1CE4E5B9UL;
+			x ^= x >> 27; x *= 0x94D049BB133111EBUL;
+			x ^= x >> 31;
+			return (int)x;
+		}
 
-    public class Checksum
+		public static Hash FromByteArray(byte[] data)
+		{
+			using var hasher = Hasher.New();
+			hasher.Update(data);
+
+			Span<byte> digest = stackalloc byte[32];
+			hasher.Finalize(digest);
+
+			ulong low = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(0, 8));
+			ulong high = BinaryPrimitives.ReadUInt64LittleEndian(digest.Slice(8, 8));
+			return new Hash { HashLow = low, HashHigh = high };
+		}
+
+		public static Hash Zero => new Hash { HashHigh = 0, HashLow = 0 };
+	}
+
+	public class Checksum
     {
         public static int Calculate(byte[] data)
         {

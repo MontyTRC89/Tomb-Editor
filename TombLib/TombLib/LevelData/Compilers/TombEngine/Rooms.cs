@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -20,8 +21,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private readonly List<Room> _roomUnmapping = new List<Room>();
         private Dictionary<WadPolygon, TombEngineTexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, TombEngineTexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
+		private Dictionary<Vector3, List<(TombEngineRoom room, int vertexIndex, NormalHelper poly)>> _normalGroups;
+        private Dictionary<Room, VectorInt2> _roomsMinFloorMaxCeilingCache = new Dictionary<Room, VectorInt2>();
 
-        private void BuildRooms(CancellationToken cancelToken)
+		private void BuildRooms(CancellationToken cancelToken)
         {
             ReportProgress(5, "Lighting Rooms");
 
@@ -41,9 +44,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 _roomRemapping.Add(room, _roomUnmapping.Count);
                 _roomUnmapping.Add(room);
+                room.RebuildPortalsCache();
+                _roomsMinFloorMaxCeilingCache.Add(
+                    room,
+                    new VectorInt2(room.GetLowestCorner(), room.GetHighestCorner()));
             }
-
-            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
             foreach (var room in _roomRemapping.Keys)
             {
@@ -53,17 +58,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Remove WaterScheme values for water rooms
             Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
-
-            Parallel.ForEach(_tempRooms.Values, parallelOptions, (TombEngineRoom trRoom) =>
-            {
-                for (int i = 0; i < trRoom.Polygons.Count; i++)
-                {
-                    if (trRoom.Polygons[i].Animated)
-                    {
-                        //trRoom.Polygons[i].AnimatedSequence = _textureInfoManager.AnimatedTextures[0].Value.
-                    }
-                }
-            });
 
             ReportProgress(20, "    Number of rooms: " + _roomUnmapping.Count);
 
@@ -182,7 +176,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newRoom.Flags |= 0x0020;
 
             // Not-near-horizon flag (set automatically)
-            if (!room.Properties.FlagHorizon && !room.Portals.Any(p => p.Room.Properties.FlagHorizon))
+            if (!room.Properties.FlagHorizon && !room.PortalsCache.Any(p => p.Room.Properties.FlagHorizon))
                 newRoom.Flags |= 0x0040;
 
             // TRNG-specific flags
@@ -205,7 +199,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             var lightEffect = room.Properties.LightEffect;
-            var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Properties.Type >= RoomType.Water).ToList();
+            var waterPortals = room.PortalsCache.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Properties.Type >= RoomType.Water).ToList();
 
             bool waterSchemeSet = false;
 
@@ -366,10 +360,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
-                                            roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
-                                            roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
-                                            roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
-                                            roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
+
+                                            // TODO: Solve problems with averaging normals on double-sided triangles
+                                            // roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex3Index].NormalHelpers.Add(new NormalHelper(poly));
                                         }
                                         i += 3;
                                     }
@@ -396,9 +392,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
                                                             (byte)realBlendMode, roomVertices);
                                             roomPolygons.Add(poly);
-                                            roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
-                                            roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
-                                            roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
+
+                                            // TODO: Solve problems with averaging normals on double-sided triangles
+                                            // roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
+                                            // roomVertices[vertex2Index].NormalHelpers.Add(new NormalHelper(poly));
                                         }
                                     }
                                 }
@@ -428,96 +426,82 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         if (wadStatic == null || wadStatic.Mesh == null)
                             continue;
 
+                        for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
+                        {
+                            // Apply the transform to the vertex
+                            Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
+                            Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform);
+                            Vector3 shade = Vector3.One;
+
+                            var glow = 0f;
+                            var move = 0f;
+
+                            if (interpretShadesAsEffect)
+                            {
+                                if (j < wadStatic.Mesh.VertexColors.Count)
+                                {
+                                    var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
+                                    if (luma < 0.5f) move = luma * 2.0f;   // Movement
+                                    else if (luma < 1.0f) glow = (luma - 0.5f) * 2.0f; // Glow
+                                }
+                            }
+                            else
+                            {
+                                // If we have vertex colors, use them as a luma factor for the resulting vertex color
+                                if (!clearShades && wadStatic.Mesh.HasColors)
+                                    shade = wadStatic.Mesh.VertexColors[j];
+
+                                if (wadStatic.Mesh.HasAttributes)
+                                {
+                                    if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
+                                        move = (float)wadStatic.Mesh.VertexAttributes[j].Move / 64.0f; // Movement
+
+                                    if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
+                                        glow = (float)wadStatic.Mesh.VertexAttributes[j].Glow / 64.0f; // Glow
+                                }
+                            }
+
+                            Vector3 color;
+                            if (!entry.TintAsAmbient)
+                            {
+                                color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
+                                // Apply Shade factor
+                                color *= shade;
+                                // Apply Instance Color
+                                color *= staticMesh.Color;
+                            }
+                            else
+                            {
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
+                                //Apply Shade factor
+                                color *= shade;
+                            }
+
+                            var trVertex = new TombEngineVertex
+                            {
+                                Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), position.Z),
+                                Color = color,
+                                Normal = normal,
+                                Glow = glow,
+                                Move = move
+                            };
+
+                            roomVertices.Add(trVertex);
+                        }
+
                         foreach (bool doubleSided in new[] { false, true })
                         {
                             for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
                             {
                                 WadPolygon poly = wadStatic.Mesh.Polys[i];
 
-                                // Create vertices
-                                int[] oldIndices = new int[] {poly.Index0, poly.Index1, poly.Index2, poly.Index3};
-                                int[] tempIndices = new int[4];
-
-                                for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 4 : 3); j++)
-                                {
-                                    // Apply the transform to the vertex
-                                    Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[oldIndices[j]], worldTransform);
-                                    Vector3 normal = Vector3.Normalize(MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[oldIndices[j]], normalTransform));
-                                    Vector3 shade = Vector3.One;
-
-                                    if (doubleSided)
-                                    {
-                                        normal = -normal;
-                                    }
-
-                                    var glow = 0f;
-                                    var move = 0f;
-
-                                    if (interpretShadesAsEffect)
-                                    {
-                                        if (j < wadStatic.Mesh.VertexColors.Count)
-                                        {
-                                            var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
-                                            if (luma < 0.5f) move = luma * 2.0f;   // Movement
-                                            else if (luma < 1.0f) glow = (luma - 0.5f) * 2.0f; // Glow
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // If we have vertex colors, use them as a luma factor for the resulting vertex color
-                                        if (!clearShades && wadStatic.Mesh.HasColors)
-                                            shade = wadStatic.Mesh.VertexColors[j];
-
-                                        if (wadStatic.Mesh.HasAttributes)
-                                        {
-                                            if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
-                                                move = (float)wadStatic.Mesh.VertexAttributes[j].Move / 64.0f; // Movement
-
-                                            if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
-                                                glow = (float)wadStatic.Mesh.VertexAttributes[j].Glow / 64.0f; // Glow
-                                        }
-                                    }
-
-                                    Vector3 color;
-                                    if (!entry.TintAsAmbient)
-                                    {
-                                        color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
-                                        // Apply Shade factor
-                                        color *= shade;
-                                        // Apply Instance Color
-                                        color *= staticMesh.Color;
-                                    }
-                                    else
-                                    {
-                                        color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
-                                        //Apply Shade factor
-                                        color *= shade;
-                                    }
-
-                                    var trVertex = new TombEngineVertex
-                                    {
-                                        Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
-                                        Color = color,
-                                        Normal = normal,
-                                        Glow = glow,
-                                        Move = move,
-                                        DoubleSided = doubleSided
-                                    };
-
-                                    tempIndices[j] = roomVertices.Count;
-                                    roomVertices.Add(trVertex);
-                                }
-
-                                // Avoid degenerate triangles
-                                if (tempIndices.Distinct().Count() < 3)
-                                {
+                                if (!poly.Texture.DoubleSided && doubleSided)
                                     continue;
-                                }
 
-                                int index0 = tempIndices[0];
-                                int index1 = tempIndices[1];
-                                int index2 = tempIndices[2];
-                                int index3 = tempIndices[3];
+                                int index0 = poly.Index0 + meshVertexBase;
+                                int index1 = poly.Index1 + meshVertexBase;
+                                int index2 = poly.Index2 + meshVertexBase;
+                                int index3 = poly.Index3 + meshVertexBase;
 
                                 var texture = poly.Texture;
                                 texture.ClampToBounds();
@@ -538,28 +522,25 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (texture.BlendMode == BlendMode.Normal)
                                     realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
-                                if (_mergedStaticMeshTextureInfos.ContainsKey(key))
-                                {
-                                    var result = _mergedStaticMeshTextureInfos[key];
-                                    var face = poly.IsTriangle ?
-                                        result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
-                                        result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
+                                bool texInfoExists = _mergedStaticMeshTextureInfos.ContainsKey(key);
+                                var result = texInfoExists ? _mergedStaticMeshTextureInfos[key] :
+                                            _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
 
-                                    roomPolygons.Add(face);
-                                }
-                                else
-                                {
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
-                                    var face = poly.IsTriangle ?
-                                        result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
-                                        result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
+                                var face = poly.IsTriangle ?
+                                    result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
+                                    result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
 
-                                    roomPolygons.Add(face);
+                                if (!texInfoExists)
                                     _mergedStaticMeshTextureInfos.Add(key, result);
+
+                                roomPolygons.Add(face);
+
+                                if (!doubleSided)
+                                {
                                     roomVertices[index0].NormalHelpers.Add(new NormalHelper(face));
                                     roomVertices[index1].NormalHelpers.Add(new NormalHelper(face));
                                     roomVertices[index2].NormalHelpers.Add(new NormalHelper(face));
-                                    if (doubleSided)
+                                    if (!poly.IsTriangle)
                                         roomVertices[index3].NormalHelpers.Add(new NormalHelper(face));
                                 }
                             }
@@ -649,10 +630,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         }
                                         else
                                         {
-                                            existingIndex = roomVertices.IndexOf(
-                                                v => v.Position == trVertex.Position
-                                                    && v.Color == trVertex.Color
-                                                    && v.DoubleSided == trVertex.DoubleSided);
+                                            existingIndex = -1;
+											var span = CollectionsMarshal.AsSpan(roomVertices);
+                                            for (int i = 0; (uint)i < (uint)span.Length; i++)
+                                                if (span[i].Position == trVertex.Position &&
+                                                    span[i].Color == trVertex.Color &&
+                                                    span[i].DoubleSided == trVertex.DoubleSided)
+                                                {
+                                                    existingIndex = i;
+                                                    break;
+                                                }
                                             if (existingIndex == -1)
                                             {
                                                 existingIndex = roomVertices.Count;
@@ -743,7 +730,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (xv <= 0 || zv <= 0 || xv >= room.NumXSectors || zv >= room.NumZSectors)
                     continue;
 
-                foreach (var portal in room.Portals)
+                foreach (var portal in room.PortalsCache)
                 {
                     var otherRoomLightEffect = portal.AdjoiningRoom.Properties.LightEffect;
                     if (otherRoomLightEffect == RoomLightEffect.Default)
@@ -795,12 +782,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var pos = new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z);
 
                     // Preemptively disable movement for all portal faces
-                    if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
+                    if (portal.PositionOnPortalFast(pos, false, false, _roomsMinFloorMaxCeilingCache[portal.Room].X, _roomsMinFloorMaxCeilingCache[portal.Room].Y) || 
+                        portal.PositionOnPortalFast(pos, true, false, _roomsMinFloorMaxCeilingCache[portal.Room].X, _roomsMinFloorMaxCeilingCache[portal.Room].Y))
                         trVertex.Locked = true;
 
                     // A bit complex but working code for water surface movement.
                     // Works better than winroomedit as it takes adjacent portals into account.
-                    if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(pos, false, true)))
+                    if ((waterPortals.Contains(portal) && !portal.PositionOnPortalFast(pos, false, true, _roomsMinFloorMaxCeilingCache[portal.Room].X, _roomsMinFloorMaxCeilingCache[portal.Room].Y)))
                     {
                         // A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
                         if ((isTraversablePortal || isOppositeCorner) &&
@@ -821,7 +809,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor && isTraversablePortal)
                     {
                         // Assign mist, if set, for vertices inside portal
-                        if (portal.PositionOnPortal(pos, true, false))
+                        if (portal.PositionOnPortalFast(pos, true, false, _roomsMinFloorMaxCeilingCache[portal.Room].X, _roomsMinFloorMaxCeilingCache[portal.Room].Y))
                         {
                             trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
                             break;
@@ -831,8 +819,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         ((room.Properties.Type == RoomType.Water || room.Properties.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Properties.Type == RoomType.Water || portal.AdjoiningRoom.Properties.Type == RoomType.Quicksand)))
                     {
                         // Assign reflection, if set, for all enclosed portal faces
-                        if (portal.PositionOnPortal(pos, false, false) ||
-                            portal.PositionOnPortal(pos, true, false))
+                        if (portal.PositionOnPortalFast(pos, false, false, _roomsMinFloorMaxCeilingCache[portal.Room].X, _roomsMinFloorMaxCeilingCache[portal.Room].Y) ||
+                            portal.PositionOnPortalFast(pos, true, false, _roomsMinFloorMaxCeilingCache[portal.Room].X, _roomsMinFloorMaxCeilingCache[portal.Room].Y))
                         {
                             trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
                             break;
@@ -841,7 +829,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
                     {
-                        if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
+                        if (portal.PositionOnPortalFast(pos, false, false, _roomsMinFloorMaxCeilingCache[portal.Room].X, _roomsMinFloorMaxCeilingCache[portal.Room].Y) || 
+                            portal.PositionOnPortalFast(pos, true, false, _roomsMinFloorMaxCeilingCache[portal.Room].X, _roomsMinFloorMaxCeilingCache[portal.Room].Y))
                         {
                             // Disable glow for portal faces, if room light interp mode is not sharp-cut
                             if (interpMode != RoomLightInterpolationMode.NoInterpolate)
@@ -889,9 +878,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             foreach (var instance in room.Objects.OfType<StaticInstance>())
             {
-                // For TRNG statics chunk
-                _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
-
                 var sm = _level.Settings?.WadTryGetStatic(instance.WadObjectId);
                 newRoom.StaticMeshes.Add(new TombEngineRoomStaticMesh
                 {
@@ -901,7 +887,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Yaw = ToTrAngle(instance.RotationY),
                     Scale = instance.Scale,
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Flags = (ushort)(0x0003), // FIXME: later let user choose if solid (0x0003) or soft (0x0001)!
+                    Flags = (ushort)(0x0007), // FIXME: later let user choose if solid (0x0007) or soft (0x0005)!
                     Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
                     HitPoints = 0,
                     LuaName = instance.LuaName ?? string.Empty
@@ -1302,6 +1288,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _portalRemapping.TryAdd(portalToAdd, portal);
             outPortals.Add(portalToAdd);
+
+            if (portal.Effect == PortalEffectType.ClassicMirror)
+            {
+                var room2DPosition = new Vector3(
+                    room.Position.X * Level.SectorSizeUnit, 0, room.Position.Z * Level.SectorSizeUnit);
+                
+                var mirror = new TombEngineMirror();
+                mirror.Room = (short)_roomRemapping[room];
+
+				mirror.Plane.X = normal.X;
+                mirror.Plane.Y = normal.Y;
+                mirror.Plane.Z = normal.Z;
+                mirror.Plane.W = -(
+                    normal.X * (portalVertices[0].X + room2DPosition.X) +
+                    normal.Y * (portalVertices[0].Y) +
+                    normal.Z * (portalVertices[0].Z + room2DPosition.Z));
+
+                mirror.ReflectLara = portal.Properties.ReflectLara;
+                mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                mirror.ReflectLights = portal.Properties.ReflectLights;
+
+				if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+                {
+                    _mirrors.Add(mirror);
+                }
+            }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -1402,17 +1416,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 break;
 
                             case PortalDirection.Floor:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yBottom, zMax);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yBottom, zMax);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yBottom, zMin);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yBottom, zMin);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yBottom, zMax);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yBottom, zMax);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yBottom, zMin);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yBottom, zMin);
                                 break;
 
                             case PortalDirection.Ceiling:
-                                mergedPortal.Vertices[0] = new VectorInt3(xMin, yTop, zMin);
-                                mergedPortal.Vertices[1] = new VectorInt3(xMax, yTop, zMin);
-                                mergedPortal.Vertices[2] = new VectorInt3(xMax, yTop, zMax);
-                                mergedPortal.Vertices[3] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[0] = new VectorInt3(xMax, yTop, zMin);
+                                mergedPortal.Vertices[1] = new VectorInt3(xMin, yTop, zMin);
+                                mergedPortal.Vertices[2] = new VectorInt3(xMin, yTop, zMax);
+                                mergedPortal.Vertices[3] = new VectorInt3(xMax, yTop, zMax);
                                 break;
                         }
                     }
@@ -1541,7 +1555,29 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 _portalRemapping.TryAdd(portalToAdd, portal);
                 outPortals.Add(portalToAdd);
-            }
+
+				if (portal.Effect == PortalEffectType.ClassicMirror)
+				{
+					var mirror = new TombEngineMirror();
+					mirror.Room = (short)_roomRemapping[room];
+
+                    mirror.Plane.X = normal.X;
+					mirror.Plane.Y = normal.Y;
+					mirror.Plane.Z = normal.Z;
+                    mirror.Plane.W = -normal.Y * portalVertices[0].Y;
+
+                    mirror.ReflectLara = portal.Properties.ReflectLara;
+                    mirror.ReflectMoveables = portal.Properties.ReflectMoveables;
+                    mirror.ReflectStatics = portal.Properties.ReflectStatics;
+                    mirror.ReflectSprites = portal.Properties.ReflectSprites;
+                    mirror.ReflectLights = portal.Properties.ReflectLights;
+                    
+                    if (!_mirrors.Any(m => m.Room == mirror.Room && m.Plane == mirror.Plane))
+					{
+						_mirrors.Add(mirror);
+					}
+				}
+			}
         }
 
         private void MatchDoorShades(List<TombEngineRoom> roomList, TombEngineRoom room, bool grayscale, bool flipped)
@@ -1744,19 +1780,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
         }
 
-        private static ushort PackColorTo16Bit(Vector3 color)
-        {
-            color *= 32.0f;
-            color += new Vector3(0.5f); // Round correctly
-            color = Vector3.Min(new Vector3(31), Vector3.Max(new Vector3(0), color));
-
-            ushort tmp = 0;
-            tmp |= (ushort)((ushort)color.X << 10);
-            tmp |= (ushort)((ushort)color.Y << 5);
-            tmp |= (ushort)color.Z;
-            return tmp;
-        }
-
         private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
         {
             var material = new TombEngineMaterial
@@ -1773,13 +1796,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return buckets[material];
         }
 
-        private void PrepareRoomsBuckets()
+		private void PrepareRoomsBuckets()
         {
-            for (int i = 0; i < _tempRooms.Count; i++)
-                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
-        }
+            CollectNormalGroups();   
 
-        private void PrepareRoomBuckets(TombEngineRoom room)
+			for (int i = 0; i < _tempRooms.Count; i++)
+                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
+
+            AverageAndApplyNormals();
+		}
+
+		private void PrepareRoomBuckets(TombEngineRoom room)
         {
             // Build buckets and assign texture coordinates
             var textures = _textureInfoManager.GetObjectTextures();
@@ -1853,53 +1880,163 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     normalHelper.Polygon.Binormal = Vector3.Cross(normalHelper.Polygon.Normal, normalHelper.Polygon.Tangent);
                 }
             }
-
-            // Average everything
-            for (int i = 0; i < room.Vertices.Count; i++)
-            {
-                var vertex = room.Vertices[i];
-                var normalHelpers = vertex.NormalHelpers;
-
-                if (normalHelpers.Count == 0)
-                    continue;
-
-                var normal = Vector3.Zero;
-                var referenceNormal = normalHelpers[0].Polygon.Normal; // Use the first polygon's normal as a reference
-
-                for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var currentNormal = normalHelpers[j].Polygon.Normal;
-
-                    // Check the angle (dot product) between the current normal and the reference normal
-                    if (Vector3.Dot(referenceNormal, currentNormal) < 0)
-                    {
-                        // Flip the normal if it's in the opposite direction
-                        currentNormal = -currentNormal;
-                    }
-
-                    normal += currentNormal;
-                }
-
-                // Normalize the final averaged normal
-                normal = -Vector3.Normalize(normal);
-
-                for (int j = 0; j < normalHelpers.Count; j++)
-                {
-                    var poly = normalHelpers[j];
-
-                    for (int k = 0; k < poly.Polygon.Indices.Count; k++)
-                    {
-                        int index = poly.Polygon.Indices[k];
-                        if (index == i)
-                        {
-                            poly.Polygon.Normals[k] = normal;
-                            poly.Polygon.Tangents[k] = poly.Polygon.Tangent;
-                            poly.Polygon.Binormals[k] = poly.Polygon.Binormal;
-                            break;
-                        }
-                    }
-                }
-            }
         }
-    }
+
+		private void CollectNormalGroups()
+		{
+			_normalGroups = new Dictionary<Vector3, List<(TombEngineRoom room, int vertexIndex, NormalHelper poly)>>();
+
+			foreach (var room in _tempRooms.Values)
+			{
+				var roomPosition = new Vector3(room.Info.X, 0, room.Info.Z);
+
+				for (int i = 0; i < room.Vertices.Count; i++)
+				{
+					var vertex = room.Vertices[i];
+					if (!vertex.IsOnPortal)
+						continue;
+
+					var pos = roomPosition + vertex.Position;
+
+					if (!_normalGroups.TryGetValue(pos, out var list))
+					{
+						list = new List<(TombEngineRoom, int, NormalHelper)>();
+						_normalGroups[pos] = list;
+					}
+
+					foreach (var helper in vertex.NormalHelpers)
+						list.Add((room, i, helper));
+				}
+			}
+		}
+
+		private void NormalizeLocalVertexNormals()
+		{
+			foreach (var room in _tempRooms.Values)
+			{
+				for (int i = 0; i < room.Vertices.Count; i++)
+				{
+					var vertex = room.Vertices[i];
+					if (vertex.IsOnPortal)
+						continue;
+
+					var normalSum = Vector3.Zero;
+					var helpers = vertex.NormalHelpers;
+
+					if (helpers.Count == 0)
+						continue;
+
+					foreach (var helper in helpers)
+						normalSum += helper.Polygon.Normal;
+
+					var finalNormal = -Vector3.Normalize(normalSum);
+
+					if (float.IsNaN(finalNormal.X) || float.IsNaN(finalNormal.Y) || float.IsNaN(finalNormal.Z))
+					{
+						finalNormal = Vector3.Zero;
+						var reference = helpers[0].Polygon.Normal;
+						foreach (var helper in helpers)
+						{
+							var n = helper.Polygon.Normal;
+							if (Vector3.Dot(reference, n) < 0)
+								n = -n;
+							finalNormal += n;
+						}
+						finalNormal = -Vector3.Normalize(finalNormal);
+					}
+
+					foreach (var helper in helpers)
+					{
+						for (int k = 0; k < helper.Polygon.Indices.Count; k++)
+						{
+							if (helper.Polygon.Indices[k] == i)
+							{
+								helper.Polygon.Normals[k] = finalNormal;
+								helper.Polygon.Tangents[k] = helper.Polygon.Tangent;
+								helper.Polygon.Binormals[k] = helper.Polygon.Binormal;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private void AverageAndApplyNormals()
+        {
+            _progressReporter.ReportInfo("Averaging room normals");
+
+            NormalizeLocalVertexNormals();
+
+			foreach (var kvp in _normalGroups)
+			{
+				var helpers = kvp.Value;
+
+				// Split normals in clusters by angle threshold
+				var clusters = ClusterNormals(helpers, angleThreshold: -0.1f); // ≈ 95°
+
+				foreach (var cluster in clusters)
+				{
+					var normalSum = Vector3.Zero;
+					foreach (var (_, _, helper) in cluster)
+					{
+						normalSum += Vector3.Normalize(helper.Polygon.Normal);
+					}
+
+					var sharedNormal = -Vector3.Normalize(normalSum / cluster.Count);
+
+					// Fallback in the case of NaN
+					if (float.IsNaN(sharedNormal.X) || float.IsNaN(sharedNormal.Y) || float.IsNaN(sharedNormal.Z))
+					{
+						sharedNormal = -Vector3.Normalize(cluster[0].poly.Polygon.Normal);
+					}
+
+					// Apply the normal to the vertices of that cluster
+					foreach (var (_, vertexIndex, helper) in cluster)
+					{
+						for (int k = 0; k < helper.Polygon.Indices.Count; k++)
+						{
+							if (helper.Polygon.Indices[k] == vertexIndex)
+							{
+								helper.Polygon.Normals[k] = sharedNormal;
+								helper.Polygon.Tangents[k] = helper.Polygon.Tangent;
+								helper.Polygon.Binormals[k] = helper.Polygon.Binormal;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private List<List<(TombEngineRoom room, int index, NormalHelper poly)>> ClusterNormals(
+			List<(TombEngineRoom room, int index, NormalHelper poly)> helpers, float angleThreshold)
+		{
+			var clusters = new List<List<(TombEngineRoom room, int index, NormalHelper poly)>>();
+
+			foreach (var helper in helpers)
+			{
+				var normal = Vector3.Normalize(helper.poly.Polygon.Normal);
+				bool added = false;
+
+				foreach (var cluster in clusters)
+				{
+					var referenceNormal = Vector3.Normalize(cluster[0].poly.Polygon.Normal);
+					if (Vector3.Dot(normal, referenceNormal) >= angleThreshold)
+					{
+						cluster.Add(helper);
+						added = true;
+						break;
+					}
+				}
+
+				if (!added)
+				{
+					clusters.Add(new List<(TombEngineRoom room, int index, NormalHelper poly)> { helper });
+				}
+			}
+
+			return clusters;
+		}
+	}
 }

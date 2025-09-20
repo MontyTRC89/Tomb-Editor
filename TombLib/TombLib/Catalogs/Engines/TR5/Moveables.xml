@@ -97,7 +97,7 @@
     <moveable id="94" name="Little rat" ten="RATS_EMITTER" />
     <moveable id="95" name="Spider" ten="SPIDER" />
     <moveable id="96" name="Spider generator" ten="SPIDERS_EMITTER" />
-    <moveable id="97" name="Auto guns" ten="AUTO_GUN" />
+    <moveable id="97" name="Auto guns" ten="AUTO_GUN_VCI" />
     <moveable id="98" name="Electricity wires" ten="ELECTRICAL_CABLES" />
     <moveable id="99" name="Dart" ten="DARTS" />
     <moveable id="100" name="Dart emitter" ten="DART_EMITTER" />
@@ -162,7 +162,7 @@
     <moveable id="159" name="Generic slot 1" ten="GEN_SLOT1" />
     <moveable id="160" name="Gas emitter" ten="GEN_SLOT2" />
     <moveable id="161" name="Generic slot 2" ten="GEN_SLOT3" />
-    <moveable id="162" name="Moving laser" ten="GEN_SLOT4" />
+    <moveable id="162" name="Moving laser" ten="MOVING_LASER" />
     <moveable id="163" name="Imp rock" ten="IMP_ROCK" hidden="true" />
     <moveable id="164" name="Cupboard" y_adjust="180" ten="SEARCH_OBJECT1" />
     <moveable id="165" name="Cupboard_mip" hidden="true" />
@@ -275,8 +275,8 @@
     <moveable id="272" name="Shoot switch 1" ten="SHOOT_SWITCH3" />
     <moveable id="273" name="Shoot switch 2" ten="SHOOT_SWITCH4" />
     <moveable id="274" name="Airlock switch" ten="AIRLOCK_SWITCH" />
-    <moveable id="275" name="Underwater switch 1" ten="UNDERWATER_WALL_SWITCH1" />
-    <moveable id="276" name="Underwater switch 2" ten="UNDERWATER_WALL_SWITCH2" />
+    <moveable id="275" name="Underwater switch 1" ten="WALL_SWITCH1" />
+    <moveable id="276" name="Underwater switch 2" ten="WALL_SWITCH2" />
     <moveable id="277" name="Turn switch" ten="TURN_SWITCH" />
     <moveable id="278" name="Cog switch" x_adjust="-90" y_adjust="0.26" ten="COG_SWITCH" />
     <moveable id="279" name="Lever switch" ten="LEVER_SWITCH" />
@@ -455,6 +455,6 @@
     <moveable id="452" name="Bridge 1 tilt 2" ten="BRIDGE_TILT2" />
     <moveable id="453" name="Bridge 2 tilt 2" />
     <moveable id="454" name="Horizon" ten="HORIZON" hidden="true" />
-    <moveable id="456" name="Binoculars graphics" ten="BINOCULAR_GRAPHICS" hidden="true" />
-    <moveable id="457" name="Target graphics" ten="TARGET_GRAPHICS" hidden="true" />
+    <moveable id="456" name="Binocular graphics" hidden="true" />
+    <moveable id="457" name="Target graphics" hidden="true" />
 </moveables>

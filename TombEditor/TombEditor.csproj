@@ -7,7 +7,7 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Configurations>Debug;Release</Configurations>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Platforms>x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <OutputPath>..\Build ($(Platform))\</OutputPath>
@@ -95,6 +95,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Controls\PanelRenderingItem.cs" />
+    <Compile Update="Forms\FormPortal.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -137,7 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.0.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="EditorCommands.cs" />

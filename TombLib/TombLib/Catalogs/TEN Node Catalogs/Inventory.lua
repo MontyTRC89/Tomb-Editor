@@ -4,9 +4,10 @@
 -- !Description "A count of 0 will add the default pickup amount of that item."
 -- !Arguments "NewLine, 80, WadSlots, [ _ITEM ], Object to add to Lara's inventory."
 -- !Arguments "20, Numerical, [ 0 | 1000 ], Amount of items to add (0 to give default amount)."
+-- !Arguments "NewLine, Boolean , 100, Display the item in the pickup summary"
 
-LevelFuncs.Engine.Node.AddInventoryItem = function(item, count)
-    TEN.Inventory.GiveItem(item, count)
+LevelFuncs.Engine.Node.AddInventoryItem = function(item, count, addToPickupSummary)
+    TEN.Inventory.GiveItem(item, count, addToPickupSummary)
 end
 
 -- !Name "Remove item from inventory"
@@ -39,8 +40,8 @@ end
 -- !Section "Inventory"
 -- !Description "Clears last used inventory item. Can be needed to avoid playing of 'No' sound."
 
-LevelFuncs.Engine.Node.ClearUsedItem = function(item)
-    TEN.Inventory.ClearUsedItem(item)
+LevelFuncs.Engine.Node.ClearUsedItem = function()
+    TEN.Inventory.ClearUsedItem()
 end
 
 -- !Name "If item is present in inventory..."
@@ -69,8 +70,7 @@ end
 -- !Section "Inventory"
 -- !Description "Checks last used inventory item. If condition is met and item is recognized, it will be automatically cleared."
 -- !Conditional "True"
--- !Arguments "NewLine, 75, WadSlots, [ _ITEM ], Item to check"
--- !Arguments "25, Boolean, Don't say no'"
+-- !Arguments "NewLine, WadSlots, [ _ITEM ], Item to check"
 
 LevelFuncs.Engine.Node.TesttUsedItem = function(item)
     local itemWasUsed = (TEN.Inventory.GetUsedItem() == item)
