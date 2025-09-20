@@ -1744,8 +1744,8 @@ namespace TombLib.LevelData
                                 (shape == FaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == FaceShape.Quad && texture.QuadCoordsOutOfBounds))
                                 continue;
 
-                            var doubleSided = Level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
-                            var copyFace = Level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
+                            var doubleSided = Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 && texture.DoubleSided;
+                            var copyFace = Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2 && texture.DoubleSided;
 
                             int rangeEnd = range.Start + range.Count;
                             for (int i = range.Start; i < rangeEnd; i += 3)
@@ -1895,8 +1895,8 @@ namespace TombLib.LevelData
                             ushort index1 = (ushort)(indexList[j + baseIndex + 1]);
                             ushort index2 = (ushort)(indexList[j + baseIndex + 2]);
 
-                            var doubleSided = Level.Settings.GameVersion > TRVersion.Game.TR2 && submesh.Key.DoubleSided;
-                            var copyFace = Level.Settings.GameVersion <= TRVersion.Game.TR2 && submesh.Key.DoubleSided;
+                            var doubleSided = Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 && submesh.Key.DoubleSided;
+                            var copyFace = Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2 && submesh.Key.DoubleSided;
 
                             faces++;
 

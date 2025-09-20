@@ -279,8 +279,7 @@ namespace TombLib.Forms
 			// Add common animation types
 			comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
 
-			if (_version.Native() == TRVersion.Game.TR4 ||
-				_version.Native() == TRVersion.Game.TR5)
+			if (_version.Native() is TRVersion.Game.TR4 or TRVersion.Game.TR5)
 			{
 				comboEffect.Items.Add(AnimatedTextureAnimationType.UVRotate);
 			}
@@ -324,7 +323,7 @@ namespace TombLib.Forms
 			}
 
 			// Legacy engine settings
-			comboEffect.Enabled = _version >= TRVersion.Game.TR4;
+			comboEffect.Enabled = _version.Native() >= TRVersion.Game.TR4;
 
 			comboProcPresets.SelectedIndex = 0;
 			numFrames.Value = _maxLegacyFrames;
@@ -1065,7 +1064,7 @@ namespace TombLib.Forms
 
 		private void comboEffect_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (_version == TRVersion.Game.TRNG || _version == TRVersion.Game.TombEngine)
+			if (_version is TRVersion.Game.TRNG or TRVersion.Game.TombEngine)
 				OnEffectChanged();
 		}
 

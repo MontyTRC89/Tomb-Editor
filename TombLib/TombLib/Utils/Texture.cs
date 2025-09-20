@@ -145,14 +145,14 @@ namespace TombLib.Utils
             {
                 blendCount = 7;
             }
-            else if (((settings.GameEnableExtraBlendingModes ?? false) && settings.GameVersion.Legacy() == TRVersion.Game.TR4))
+            else if (((settings.GameEnableExtraBlendingModes ?? false) && settings.GameVersion.Native() == TRVersion.Game.TR4))
             {
                 blendCount = 6;
             }
             else
             {
                 // Additive blending is for TR3-5 only
-                if (settings.GameVersion >= TRVersion.Game.TR3)
+                if (settings.GameVersion.Native() >= TRVersion.Game.TR3)
                     blendCount = 2;
                 else
                     blendCount = 1; // Type 0 exists everywhere
