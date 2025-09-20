@@ -87,9 +87,10 @@ end
 -- !Section "Batch actions"
 -- !Description "Set effect for moveables matching the criteria."
 -- !Arguments "NewLine, WadSlots, 65, Object ID to use" "String, 35, Word to search in a moveable name"
--- !Arguments "NewLine, Enumeration, [ None | Fire | Sparks | Smoke | Electric ignite | Red ignite ], Effect type to set"
+-- !Arguments "NewLine, Enumeration, 80, [ None | Fire | Sparks | Smoke | Electric ignite | Red ignite ], Effect type to set"
+-- !Arguments "Numerical, [ 0 | 65535 | 2 | 0.1 | 1 ], {0}, 20, Time (in seconds) after which effect turns off\n0 = infinite" 
 
-LevelFuncs.Engine.Node.SetEffectForSpecifiedMoveables = function(objectId, namePart, effectID)
+LevelFuncs.Engine.Node.SetEffectForSpecifiedMoveables = function(objectId, namePart, effectID, timeout)
 	local moveables = TEN.Objects.GetMoveablesBySlot(objectId)
     local noNameSearch = LevelFuncs.Engine.Node.StringIsEmpty(namePart)
 
