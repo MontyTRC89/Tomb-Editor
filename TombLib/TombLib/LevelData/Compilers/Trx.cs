@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using TombLib.IO;
 using TombLib.LevelData.Compilers.Util;
@@ -8,6 +9,7 @@ namespace TombLib.LevelData.Compilers;
 public partial class LevelCompilerClassicTR
 {
     private const int _legacyRoomLimit = 255;
+    private const int _noRoom = -1;
 
     private void WriteLevelTrx()
     {
@@ -26,49 +28,55 @@ public partial class LevelCompilerClassicTR
         ReportProgress(98, "Writing TRX data");
 
         var injData = new TrxInjectionData();
-        GenerateTrxSectorEdits(injData);
+        injData.SectorEdits.AddRange(GenerateTrxSectorEdits());
 
         using var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Append));
         TrxInjector.Serialize(injData, writer);
     }
 
-    private void GenerateTrxSectorEdits(TrxInjectionData data)
+    private IEnumerable<TrxSectorEdit> GenerateTrxSectorEdits()
     {
         foreach (var (teRoom, trRoom) in _tempRooms)
         {
-            short roomIndex = (short)_roomRemapping[teRoom];
             for (ushort x = 1; x < teRoom.NumXSectors - 1; x++)
             {
                 for (ushort z = 1; z < teRoom.NumZSectors - 1; z++)
                 {
-                    var teSector = teRoom.Sectors[x, z];
-                    short roomBelow = -1;
-                    short roomAbove = -1;
-                    if (teSector.FloorPortal != null && teSector.FloorPortal.Opacity != PortalOpacity.SolidFaces)
+                    if (GetSectorOverwrite(teRoom, trRoom, x, z) is TrxSectorEdit overwriteEdit)
                     {
-                        roomBelow = (short)_roomRemapping[teSector.FloorPortal.AdjoiningRoom];
+                        yield return overwriteEdit;
                     }
-                    if (teSector.CeilingPortal != null && teSector.CeilingPortal.Opacity != PortalOpacity.SolidFaces)
-                    {
-                        roomAbove = (short)_roomRemapping[teSector.CeilingPortal.AdjoiningRoom];
-                    }
-
-                    if (roomBelow < _legacyRoomLimit && roomAbove < _legacyRoomLimit)
-                    {
-                        continue;
-                    }
-
-                    data.SectorEdits.Add(new()
-                    {
-                        RoomIndex = roomIndex,
-                        X = x,
-                        Z = z,
-                        BaseSector = trRoom.Sectors[x * teRoom.NumZSectors + z],
-                        RoomAboveExt = roomAbove,
-                        RoomBelowExt = roomBelow,
-                    });
                 }
             }
         }
+    }
+
+    private TrxSectorOverwrite GetSectorOverwrite(Room teRoom, tr_room trRoom, ushort x, ushort z)
+    {
+        var teSector = teRoom.Sectors[x, z];
+        var roomBelow = GetPortalRoom(teSector.FloorPortal);
+        var roomAbove = GetPortalRoom(teSector.CeilingPortal);
+        
+        if (roomBelow < _legacyRoomLimit && roomAbove < _legacyRoomLimit)
+        {
+            return null;
+        }
+
+        return new()
+        {
+            RoomIndex = (short)_roomRemapping[teRoom],
+            X = x,
+            Z = z,
+            BaseSector = trRoom.Sectors[x * teRoom.NumZSectors + z],
+            RoomAboveExt = (short)roomAbove,
+            RoomBelowExt = (short)roomBelow,
+        };
+    }
+
+    private int GetPortalRoom(PortalInstance portal)
+    {
+        return portal != null && portal.Opacity != PortalOpacity.SolidFaces
+            ? _roomRemapping[portal.AdjoiningRoom]
+            : _noRoom;
     }
 }

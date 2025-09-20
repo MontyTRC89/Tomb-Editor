@@ -9,7 +9,7 @@ namespace TombLib.LevelData.Compilers.Util;
 public static class TrxInjector
 {
     private const uint _magic = 'T' | 'R' << 8 | 'X' << 16 | 'J' << 24;
-    private const uint _version = 2;
+    private const uint _version = 4;
     private const uint _injectionType = 0; // Implies no link to a TRX config option
 
     public static void Serialize(TrxInjectionData data, BinaryWriterEx outWriter)
@@ -133,30 +133,41 @@ public static class TrxInjector
 
 public class TrxInjectionData
 {
-    public List<TrxSectorOverwrite> SectorEdits { get; set; } = new();
+    public List<TrxSectorEdit> SectorEdits { get; set; } = new();
 }
 
-public class TrxSectorOverwrite
+public abstract class TrxSectorEdit
 {
-    private const int _overwriteCommand = 7;
-
+    public abstract int Command { get; }
     public short RoomIndex { get; set; }
     public ushort X { get; set; }
     public ushort Z { get; set; }
-    public tr_room_sector BaseSector { get; set; }
-    public short RoomBelowExt { get; set; }
-    public short RoomAboveExt { get; set; }
 
     public void Serialize(BinaryWriterEx writer)
     {
-        // TRX uses -1 for NO_ROOM and supports up to 1024 rooms, including
-        // vertical portal support. The engine expects all values for the sector
-        // here, including heights being in world units.
         writer.Write(RoomIndex);
         writer.Write(X);
         writer.Write(Z);
         writer.Write(1); // "edit" count
-        writer.Write(_overwriteCommand);
+        writer.Write(Command);
+        SerializeImpl(writer);
+    }
+
+    protected abstract void SerializeImpl(BinaryWriterEx writer);
+}
+
+public class TrxSectorOverwrite : TrxSectorEdit
+{
+    public override int Command => 7;
+    public tr_room_sector BaseSector { get; set; }
+    public short RoomBelowExt { get; set; }
+    public short RoomAboveExt { get; set; }
+
+    protected override void SerializeImpl(BinaryWriterEx writer)
+    {
+        // TRX uses -1 for NO_ROOM and supports up to 1024 rooms, including
+        // vertical portal support. The engine expects all values for the sector
+        // here, including heights being in world units.
         writer.Write(BaseSector.FloorDataIndex);
         writer.Write(BaseSector.BoxIndex);
         writer.Write(RoomBelowExt);
