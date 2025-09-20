@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TombLib.IO;
 using TombLib.LevelData.Compilers.Util;
+using TombLib.LevelData.SectorEnums;
 
 namespace TombLib.LevelData.Compilers;
 
@@ -46,6 +47,10 @@ public partial class LevelCompilerClassicTR
                     {
                         yield return overwriteEdit;
                     }
+                    if (GetClimbEntry(teRoom, x, z) is TrxSectorEdit climbEdit)
+                    {
+                        yield return climbEdit;
+                    }
                 }
             }
         }
@@ -78,5 +83,27 @@ public partial class LevelCompilerClassicTR
         return portal != null && portal.Opacity != PortalOpacity.SolidFaces
             ? _roomRemapping[portal.AdjoiningRoom]
             : _noRoom;
+    }
+
+    private TrxClimbEntry GetClimbEntry(Room teRoom, ushort x, ushort z)
+    {
+        if (_level.Settings.GameVersion != TRVersion.Game.TR1X)
+        {
+            return null;
+        }
+
+        var teSector = teRoom.Sectors[x, z];
+        if ((teSector.Flags & SectorFlags.ClimbAny) == SectorFlags.None)
+        {
+            return null;
+        }
+
+        return new()
+        {
+            RoomIndex = (short)_roomRemapping[teRoom],
+            X = x,
+            Z = z,
+            Flags = teSector.Flags,
+        };
     }
 }

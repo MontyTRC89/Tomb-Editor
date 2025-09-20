@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using TombLib.IO;
+using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util;
@@ -174,5 +175,21 @@ public class TrxSectorOverwrite : TrxSectorEdit
         writer.Write((short)(BaseSector.Floor * Level.FullClickHeight));
         writer.Write(RoomAboveExt);
         writer.Write((short)(BaseSector.Ceiling * Level.FullClickHeight));
+    }
+}
+
+public class TrxClimbEntry : TrxSectorEdit
+{
+    public override int Command => 11;
+    public SectorFlags Flags { get; set; }
+
+    protected override void SerializeImpl(BinaryWriterEx writer)
+    {
+        var direction = 0;
+        direction |= Convert.ToInt32(Flags.HasFlag(SectorFlags.ClimbPositiveZ)) << 0;
+        direction |= Convert.ToInt32(Flags.HasFlag(SectorFlags.ClimbPositiveX)) << 1;
+        direction |= Convert.ToInt32(Flags.HasFlag(SectorFlags.ClimbNegativeZ)) << 2;
+        direction |= Convert.ToInt32(Flags.HasFlag(SectorFlags.ClimbNegativeX)) << 3;
+        writer.Write(direction);
     }
 }
