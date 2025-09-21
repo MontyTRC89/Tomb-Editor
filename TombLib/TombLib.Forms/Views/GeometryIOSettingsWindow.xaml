@@ -23,6 +23,10 @@
 	WindowStartupLocation="CenterScreen"
 	mc:Ignorable="d">
 
+	<Window.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+	</Window.Resources>
+
 	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}" RowSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
@@ -110,47 +114,53 @@
 					</GroupBox>
 				</sg:SpacedGrid>
 
-				<sg:SpacedGrid
-					Grid.Row="1"
-					Grid.ColumnSpan="2"
-					ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-					<sg:SpacedGrid.ColumnDefinitions>
+				<Grid Grid.Row="1" Grid.ColumnSpan="2">
+					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
-					</sg:SpacedGrid.ColumnDefinitions>
+					</Grid.ColumnDefinitions>
 
 					<Label
 						VerticalAlignment="Center"
 						Content="{forms:Localize Preset}"
-						Target="{Binding ElementName=presetComboBox}" />
+						Target="{Binding ElementName=presetComboBox}">
+						<Label.Margin>
+							<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+						</Label.Margin>
+					</Label>
+
 					<ComboBox
 						x:Name="presetComboBox"
 						Grid.Column="1"
-						ItemsSource="{Binding Presets}"
+						ItemsSource="{Binding AvailablePresets}"
 						SelectedItem="{Binding SelectedPreset}" />
 
 					<Button
 						Grid.Column="2"
-						Command="{Binding RenamePresetCommand}"
-						Style="{DynamicResource ButtonWithIconOnly}">
-						<Image Source="/TombLib.Forms;component/Resources/general_edit-16.png" />
-					</Button>
-					<Button
-						Grid.Column="2"
 						Command="{Binding SavePresetCommand}"
-						Style="{DynamicResource ButtonWithIconOnly}">
+						Style="{DynamicResource ButtonWithIconOnly}"
+						Visibility="{Binding IsSelectedPresetUnsaved, Converter={StaticResource BoolToVisConverter}}">
+						<Button.Margin>
+							<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+						</Button.Margin>
+
 						<Image Source="/TombLib.Forms;component/Resources/general_Save-16.png" />
 					</Button>
 
 					<Button
 						Grid.Column="3"
 						Command="{Binding DeletePresetCommand}"
-						Style="{DynamicResource ButtonWithIconOnly}">
+						Style="{DynamicResource ButtonWithIconOnly}"
+						Visibility="{Binding IsSelectedPresetCustom, Converter={StaticResource BoolToVisConverter}}">
+						<Button.Margin>
+							<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+						</Button.Margin>
+
 						<Image Source="/TombLib.Forms;component/Resources/general_trash-16.png" />
 					</Button>
-				</sg:SpacedGrid>
+				</Grid>
 			</sg:SpacedGrid>
 		</Border>
 

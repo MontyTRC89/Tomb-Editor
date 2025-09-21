@@ -1,6 +1,6 @@
 ﻿namespace TombLib.GeometryIO
 {
-    public record IOGeometrySettingsPreset(string Name, IOGeometrySettings Settings)
+    public record IOGeometrySettingsPreset(string Name, IOGeometrySettings Settings, bool IsCustom = false)
     {
         public override string ToString() => Name;
 	}
