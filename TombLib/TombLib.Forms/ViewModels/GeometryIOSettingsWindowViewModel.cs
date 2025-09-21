@@ -6,9 +6,11 @@ using CustomMessageBox.WPF;
 using MvvmDialogs;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using TombLib.GeometryIO;
 using TombLib.Services;
+using TombLib.Services.Abstract;
 
 namespace TombLib.Forms.ViewModels;
 
@@ -179,20 +181,34 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	/// </summary>
 	private bool _applyingSelectedPreset;
 
+	private readonly string _customPresetConfigFilePath;
+
+	private readonly ICustomGeometrySettingsPresetIOService _customPresetIOService;
 	private readonly IDialogService _dialogService;
 
-	public GeometryIOSettingsWindowViewModel(GeometryIOSettingsType type, IDialogService? dialogService = null)
+	public GeometryIOSettingsWindowViewModel(GeometryIOSettingsType type,
+		string? customPresetConfigFilePath = null,
+		ICustomGeometrySettingsPresetIOService? customPresetIOService = null,
+		IDialogService? dialogService = null)
 	{
+		_customPresetConfigFilePath = customPresetConfigFilePath
+			?? Path.Combine(DefaultPaths.ConfigsDirectory, "GeometryIOPresets.xml");
+
+		_customPresetIOService = customPresetIOService ?? ServiceProvider.GetRequiredService<ICustomGeometrySettingsPresetIOService>();
 		_dialogService = dialogService ?? ServiceProvider.GetRequiredService<IDialogService>();
 
-		AvailablePresets = type switch
+		var builtInPresets = type switch
 		{
-			GeometryIOSettingsType.Export => new(IOSettingsPresets.GeometryExportSettingsPresets),
-			GeometryIOSettingsType.Import => new(IOSettingsPresets.GeometryImportSettingsPresets),
-			GeometryIOSettingsType.AnimationImport => new(IOSettingsPresets.AnimationSettingsPresets),
+			GeometryIOSettingsType.Export => IOSettingsPresets.GeometryExportSettingsPresets,
+			GeometryIOSettingsType.Import => IOSettingsPresets.GeometryImportSettingsPresets,
+			GeometryIOSettingsType.AnimationImport => IOSettingsPresets.AnimationSettingsPresets,
 			_ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
 		};
 
+		var customPresets = _customPresetIOService.LoadPresets(_customPresetConfigFilePath);
+		var allPresets = builtInPresets.Concat(customPresets).ToHashSet();
+
+		AvailablePresets = new(allPresets);
 		SelectedPreset = AvailablePresets.First();
 	}
 
@@ -203,7 +219,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	{
 		foreach (IOGeometrySettingsPreset preset in AvailablePresets)
 		{
-			if (preset.Name == UNSAVED_PRESET_NAME)
+			if (preset.Name is UNSAVED_PRESET_NAME)
 				continue; // Skip the unsaved preset
 
 			bool isMatch = preset.Settings.SwapXY == SwapXYAxes
@@ -254,6 +270,17 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 			AvailablePresets.Remove(_unsavedPreset);
 			_unsavedPreset = null;
 		}
+	}
+
+	/// <summary>
+	/// Saves custom presets to the configuration file.
+	/// </summary>
+	private void SaveCustomPresets()
+	{
+		_customPresetIOService.SavePresets(
+			_customPresetConfigFilePath,
+			AvailablePresets.Where(p => p.IsCustom)
+		);
 	}
 
 	partial void OnSwapXYAxesChanged(bool value) => UpdateSelectedPreset();
@@ -378,12 +405,13 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 			SortByName = SortByName,
 			PackTextures = PackTextures,
 			PadPackedTextures = PadPackedTextures
-		}, IsCustom: true);
+		}, isCustom: true);
 
-		// TODO: Save preset to config file
-
+		// Add the new preset and select it
 		AvailablePresets.Add(newPreset);
 		SelectedPreset = newPreset;
+
+		SaveCustomPresets();
 	}
 
 	[RelayCommand]
@@ -403,9 +431,9 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		if (result is not CMessageBoxResult.Yes)
 			return;
 
-		// TODO: Remove preset from config file
-
 		AvailablePresets.Remove(SelectedPreset);
 		SelectedPreset = AvailablePresets.First();
+
+		SaveCustomPresets();
 	}
 }

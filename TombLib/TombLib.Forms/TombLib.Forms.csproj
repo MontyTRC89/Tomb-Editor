@@ -49,6 +49,7 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\GlobalPaths.cs" Link="GlobalPaths.cs" />
     <Compile Update="Controls\AnimationTrackBar.cs">
       <SubType>UserControl</SubType>
     </Compile>

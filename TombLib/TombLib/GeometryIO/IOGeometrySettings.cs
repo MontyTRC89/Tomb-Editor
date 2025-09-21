@@ -1,9 +1,29 @@
-﻿namespace TombLib.GeometryIO
+﻿using System;
+using System.Xml.Serialization;
+
+namespace TombLib.GeometryIO
 {
-    public record IOGeometrySettingsPreset(string Name, IOGeometrySettings Settings, bool IsCustom = false)
+    public record IOGeometrySettingsPreset
     {
+        public string Name { get; set; }
+        public IOGeometrySettings Settings { get; set; }
+
+        [XmlIgnore]
+        public bool IsCustom { get; set; }
+
+        [Obsolete("For XML deserialization purposes only. Do not use directly.", true)]
+        public IOGeometrySettingsPreset() : this(string.Empty, new IOGeometrySettings(), true)
+        { }
+
+        public IOGeometrySettingsPreset(string name, IOGeometrySettings settings, bool isCustom = false)
+        {
+            Name = name;
+            Settings = settings;
+            IsCustom = isCustom;
+        }
+
         public override string ToString() => Name;
-	}
+    }
 
     public record IOGeometrySettings
     {
