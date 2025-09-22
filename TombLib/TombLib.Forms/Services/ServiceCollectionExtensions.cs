@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
 	public static IServiceCollection AddTombLibFormServices(this IServiceCollection services)
 	{
 		services.AddSingleton<IDialogService, DialogService>();
+		services.AddSingleton<IMessageService, MessageBoxService>();
 		services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
 
 		return services;

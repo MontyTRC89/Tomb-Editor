@@ -3,6 +3,9 @@ using TombLib.GeometryIO;
 
 namespace TombLib.Services.Abstract;
 
+/// <summary>
+/// Provides methods for loading and saving custom geometry settings presets.
+/// </summary>
 public interface ICustomGeometrySettingsPresetIOService
 {
 	/// <summary>

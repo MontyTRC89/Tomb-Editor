@@ -2,7 +2,6 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CustomMessageBox.WPF;
 using MvvmDialogs;
 using System;
 using System.Collections.ObjectModel;
@@ -25,7 +24,9 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 {
 	private const string UNSAVED_PRESET_NAME = "-- Custom Preset --";
 
-	/* View model properties */
+	#region Properties and Fields
+
+	/* View Model Properties */
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
@@ -47,7 +48,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
 	private bool _processAnimations;
 
-	/* Axis properties */
+	/* Axis Properties */
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
@@ -77,14 +78,14 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
 	private bool _invertFaces;
 
-	/* Size properties */
+	/* Size Properties */
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(IsValid))]
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
 	private float _scale = 1.0f;
 
-	/* Texture mapping properties */
+	/* Texture Mapping Properties */
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
@@ -102,7 +103,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
 	private bool _premultiplyUV;
 
-	/* Misc properties */
+	/* Misc. Properties */
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
@@ -120,7 +121,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
 	private bool _sortByName;
 
-	/* Preset properties */
+	/* Preset Properties */
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(IsSelectedPresetCustom))]
@@ -185,17 +186,22 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 
 	private readonly ICustomGeometrySettingsPresetIOService _customPresetIOService;
 	private readonly IDialogService _dialogService;
+	private readonly IMessageService _messageService;
+
+	#endregion Properties and Fields
 
 	public GeometryIOSettingsWindowViewModel(GeometryIOSettingsType type,
 		string? customPresetConfigFilePath = null,
 		ICustomGeometrySettingsPresetIOService? customPresetIOService = null,
-		IDialogService? dialogService = null)
+		IDialogService? dialogService = null,
+		IMessageService? messageService = null)
 	{
 		_customPresetConfigFilePath = customPresetConfigFilePath
 			?? Path.Combine(DefaultPaths.ConfigsDirectory, "GeometryIOPresets.xml");
 
 		_customPresetIOService = customPresetIOService ?? ServiceProvider.GetRequiredService<ICustomGeometrySettingsPresetIOService>();
 		_dialogService = dialogService ?? ServiceProvider.GetRequiredService<IDialogService>();
+		_messageService = messageService ?? ServiceProvider.GetRequiredService<IMessageService>();
 
 		var builtInPresets = type switch
 		{
@@ -211,6 +217,160 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		AvailablePresets = new(allPresets);
 		SelectedPreset = AvailablePresets.First();
 	}
+
+	#region Partial Methods for Property Changes
+
+	partial void OnSwapXYAxesChanged(bool value) => UpdateSelectedPreset();
+	partial void OnSwapXZAxesChanged(bool value) => UpdateSelectedPreset();
+	partial void OnSwapYZAxesChanged(bool value) => UpdateSelectedPreset();
+	partial void OnInvertXAxisChanged(bool value) => UpdateSelectedPreset();
+	partial void OnInvertYAxisChanged(bool value) => UpdateSelectedPreset();
+	partial void OnInvertZAxisChanged(bool value) => UpdateSelectedPreset();
+	partial void OnInvertFacesChanged(bool value) => UpdateSelectedPreset();
+	partial void OnScaleChanged(float value) => UpdateSelectedPreset();
+	partial void OnInvertVCoordinateChanged(bool value) => UpdateSelectedPreset();
+	partial void OnUvMappedChanged(bool value) => UpdateSelectedPreset();
+	partial void OnWrapUVChanged(bool value) => UpdateSelectedPreset();
+	partial void OnPremultiplyUVChanged(bool value) => UpdateSelectedPreset();
+	partial void OnVertexColorLightChanged(bool value) => UpdateSelectedPreset();
+	partial void OnPackTexturesChanged(bool value) => UpdateSelectedPreset();
+	partial void OnPadPackedTexturesChanged(bool value) => UpdateSelectedPreset();
+	partial void OnSortByNameChanged(bool value) => UpdateSelectedPreset();
+
+	partial void OnSelectedPresetChanging(IOGeometrySettingsPreset? oldValue, IOGeometrySettingsPreset newValue)
+	{
+		if (oldValue?.Name is UNSAVED_PRESET_NAME)
+			RemoveUnsavedPreset();
+	}
+
+	partial void OnSelectedPresetChanged(IOGeometrySettingsPreset value)
+	{
+		if (value is null || value.Name is UNSAVED_PRESET_NAME)
+			return;
+
+		_applyingSelectedPreset = true; // Prevent recursive updates
+
+		// Update all settings based on the selected preset
+		IsExport = value.Settings.Export;
+		IsRoomExport = value.Settings.ExportRoom;
+		ProcessGeometry = value.Settings.ProcessGeometry;
+		ProcessUntexturedGeometry = value.Settings.ProcessUntexturedGeometry;
+		ProcessAnimations = value.Settings.ProcessAnimations;
+		SwapXYAxes = value.Settings.SwapXY;
+		SwapXZAxes = value.Settings.SwapXZ;
+		SwapYZAxes = value.Settings.SwapYZ;
+		InvertXAxis = value.Settings.FlipX;
+		InvertYAxis = value.Settings.FlipY;
+		InvertZAxis = value.Settings.FlipZ;
+		InvertFaces = value.Settings.InvertFaces;
+		Scale = value.Settings.Scale;
+		InvertVCoordinate = value.Settings.FlipUV_V;
+		UvMapped = value.Settings.MappedUV;
+		WrapUV = value.Settings.WrapUV;
+		PremultiplyUV = value.Settings.PremultiplyUV;
+		VertexColorLight = value.Settings.UseVertexColor;
+		PackTextures = value.Settings.PackTextures;
+		PadPackedTextures = value.Settings.PadPackedTextures;
+		SortByName = value.Settings.SortByName;
+
+		_applyingSelectedPreset = false;
+	}
+
+	#endregion Partial Methods for Property Changes
+
+	#region Relay Commands
+
+	[RelayCommand(CanExecute = nameof(IsValid))]
+	private void Confirm()
+	{
+		// Save settings logic here
+	}
+
+	[RelayCommand(CanExecute = nameof(IsValid))]
+	private void SavePreset()
+	{
+		var inputBox = new InputBoxWindowViewModel(
+			title: "Save Preset",
+			label: "Enter a name for the preset:",
+			invalidNames: UNSAVED_PRESET_NAME
+		);
+
+		bool? result = _dialogService.ShowDialog(this, inputBox);
+
+		if (result is not true)
+			return;
+
+		string presetName = inputBox.Value;
+
+		if (string.IsNullOrWhiteSpace(presetName))
+			return;
+
+		bool presetAlreadyExists = AvailablePresets.Any(p => p.Name == presetName);
+
+		if (presetAlreadyExists)
+		{
+			_messageService.ShowError("A preset with this name already exists.");
+			return;
+		}
+
+		// Create a new preset and add it to the list
+		var newPreset = new IOGeometrySettingsPreset(presetName, new IOGeometrySettings
+		{
+			Export = IsExport,
+			ExportRoom = IsRoomExport,
+			ProcessGeometry = ProcessGeometry,
+			ProcessUntexturedGeometry = ProcessUntexturedGeometry,
+			ProcessAnimations = ProcessAnimations,
+			SwapXY = SwapXYAxes,
+			SwapXZ = SwapXZAxes,
+			SwapYZ = SwapYZAxes,
+			FlipX = InvertXAxis,
+			FlipY = InvertYAxis,
+			FlipZ = InvertZAxis,
+			InvertFaces = InvertFaces,
+			Scale = Scale,
+			FlipUV_V = InvertVCoordinate,
+			MappedUV = UvMapped,
+			WrapUV = WrapUV,
+			PremultiplyUV = PremultiplyUV,
+			UseVertexColor = VertexColorLight,
+			SortByName = SortByName,
+			PackTextures = PackTextures,
+			PadPackedTextures = PadPackedTextures
+		}, isCustom: true);
+
+		// Add the new preset and select it
+		AvailablePresets.Add(newPreset);
+		SelectedPreset = newPreset;
+
+		SaveCustomPresets();
+	}
+
+	[RelayCommand(CanExecute = nameof(IsSelectedPresetCustom))]
+	private void DeletePreset()
+	{
+		if (SelectedPreset is null || !IsSelectedPresetCustom)
+			return;
+
+		bool deleteConfirmed = _messageService.ShowConfirmation(
+			$"Are you sure you want to delete the '{SelectedPreset.Name}' preset?",
+			"Delete Preset?",
+			defaultValue: false,
+			isRisky: true
+		);
+
+		if (deleteConfirmed)
+		{
+			AvailablePresets.Remove(SelectedPreset);
+			SelectedPreset = AvailablePresets.First();
+
+			SaveCustomPresets();
+		}
+	}
+
+	#endregion Relay Commands
+
+	#region Private Methods
 
 	/// <summary>
 	/// Finds a preset that matches the current settings.
@@ -283,157 +443,5 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		);
 	}
 
-	partial void OnSwapXYAxesChanged(bool value) => UpdateSelectedPreset();
-	partial void OnSwapXZAxesChanged(bool value) => UpdateSelectedPreset();
-	partial void OnSwapYZAxesChanged(bool value) => UpdateSelectedPreset();
-	partial void OnInvertXAxisChanged(bool value) => UpdateSelectedPreset();
-	partial void OnInvertYAxisChanged(bool value) => UpdateSelectedPreset();
-	partial void OnInvertZAxisChanged(bool value) => UpdateSelectedPreset();
-	partial void OnInvertFacesChanged(bool value) => UpdateSelectedPreset();
-	partial void OnScaleChanged(float value) => UpdateSelectedPreset();
-	partial void OnInvertVCoordinateChanged(bool value) => UpdateSelectedPreset();
-	partial void OnUvMappedChanged(bool value) => UpdateSelectedPreset();
-	partial void OnWrapUVChanged(bool value) => UpdateSelectedPreset();
-	partial void OnPremultiplyUVChanged(bool value) => UpdateSelectedPreset();
-	partial void OnVertexColorLightChanged(bool value) => UpdateSelectedPreset();
-	partial void OnPackTexturesChanged(bool value) => UpdateSelectedPreset();
-	partial void OnPadPackedTexturesChanged(bool value) => UpdateSelectedPreset();
-	partial void OnSortByNameChanged(bool value) => UpdateSelectedPreset();
-
-	partial void OnSelectedPresetChanging(IOGeometrySettingsPreset? oldValue, IOGeometrySettingsPreset newValue)
-	{
-		if (oldValue?.Name is UNSAVED_PRESET_NAME)
-			RemoveUnsavedPreset();
-	}
-
-	partial void OnSelectedPresetChanged(IOGeometrySettingsPreset value)
-	{
-		if (value is null || value.Name is UNSAVED_PRESET_NAME)
-			return;
-
-		_applyingSelectedPreset = true; // Prevent recursive updates
-
-		// Update all settings based on the selected preset
-		IsExport = value.Settings.Export;
-		IsRoomExport = value.Settings.ExportRoom;
-		ProcessGeometry = value.Settings.ProcessGeometry;
-		ProcessUntexturedGeometry = value.Settings.ProcessUntexturedGeometry;
-		ProcessAnimations = value.Settings.ProcessAnimations;
-		SwapXYAxes = value.Settings.SwapXY;
-		SwapXZAxes = value.Settings.SwapXZ;
-		SwapYZAxes = value.Settings.SwapYZ;
-		InvertXAxis = value.Settings.FlipX;
-		InvertYAxis = value.Settings.FlipY;
-		InvertZAxis = value.Settings.FlipZ;
-		InvertFaces = value.Settings.InvertFaces;
-		Scale = value.Settings.Scale;
-		InvertVCoordinate = value.Settings.FlipUV_V;
-		UvMapped = value.Settings.MappedUV;
-		WrapUV = value.Settings.WrapUV;
-		PremultiplyUV = value.Settings.PremultiplyUV;
-		VertexColorLight = value.Settings.UseVertexColor;
-		PackTextures = value.Settings.PackTextures;
-		PadPackedTextures = value.Settings.PadPackedTextures;
-		SortByName = value.Settings.SortByName;
-
-		_applyingSelectedPreset = false;
-	}
-
-	[RelayCommand]
-	private void Confirm()
-	{
-		if (!IsValid)
-			return;
-
-		// Save settings logic here
-	}
-
-	[RelayCommand]
-	private void SavePreset()
-	{
-		var inputBox = new InputBoxWindowViewModel(
-			title: "Save Preset",
-			label: "Enter a name for the preset:",
-			invalidNames: UNSAVED_PRESET_NAME
-		);
-
-		bool? result = _dialogService.ShowDialog(this, inputBox);
-
-		if (result is not true)
-			return;
-
-		string presetName = inputBox.Value;
-
-		if (string.IsNullOrWhiteSpace(presetName))
-			return;
-
-		bool presetAlreadyExists = AvailablePresets.Any(p => p.Name == presetName);
-
-		if (presetAlreadyExists)
-		{
-			CMessageBox.Show(
-				"A preset with this name already exists.",
-				"Error",
-				CMessageBoxButtons.OK,
-				CMessageBoxIcon.Error
-			);
-
-			return;
-		}
-
-		// Create a new preset and add it to the list
-		var newPreset = new IOGeometrySettingsPreset(presetName, new IOGeometrySettings
-		{
-			Export = IsExport,
-			ExportRoom = IsRoomExport,
-			ProcessGeometry = ProcessGeometry,
-			ProcessUntexturedGeometry = ProcessUntexturedGeometry,
-			ProcessAnimations = ProcessAnimations,
-			SwapXY = SwapXYAxes,
-			SwapXZ = SwapXZAxes,
-			SwapYZ = SwapYZAxes,
-			FlipX = InvertXAxis,
-			FlipY = InvertYAxis,
-			FlipZ = InvertZAxis,
-			InvertFaces = InvertFaces,
-			Scale = Scale,
-			FlipUV_V = InvertVCoordinate,
-			MappedUV = UvMapped,
-			WrapUV = WrapUV,
-			PremultiplyUV = PremultiplyUV,
-			UseVertexColor = VertexColorLight,
-			SortByName = SortByName,
-			PackTextures = PackTextures,
-			PadPackedTextures = PadPackedTextures
-		}, isCustom: true);
-
-		// Add the new preset and select it
-		AvailablePresets.Add(newPreset);
-		SelectedPreset = newPreset;
-
-		SaveCustomPresets();
-	}
-
-	[RelayCommand]
-	private void DeletePreset()
-	{
-		if (SelectedPreset is null || !IsSelectedPresetCustom)
-			return;
-
-		var result = CMessageBox.Show(
-			$"Are you sure you want to delete the '{SelectedPreset.Name}' preset?",
-			"Delete Preset?",
-			CMessageBoxButtons.YesNo,
-			CMessageBoxIcon.Warning,
-			CMessageBoxDefaultButton.Button2
-		);
-
-		if (result is not CMessageBoxResult.Yes)
-			return;
-
-		AvailablePresets.Remove(SelectedPreset);
-		SelectedPreset = AvailablePresets.First();
-
-		SaveCustomPresets();
-	}
+	#endregion Private Methods
 }

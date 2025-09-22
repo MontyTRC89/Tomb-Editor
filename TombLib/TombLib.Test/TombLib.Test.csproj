@@ -26,10 +26,12 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
+    <PackageReference Include="Moq" Version="4.20.69" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TombLib\TombLib.csproj" />
+    <ProjectReference Include="..\TombLib.Forms\TombLib.Forms.csproj" />
   </ItemGroup>
 
   <ItemGroup>
