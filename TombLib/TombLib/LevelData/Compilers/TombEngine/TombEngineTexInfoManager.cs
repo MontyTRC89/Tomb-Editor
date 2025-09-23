@@ -1761,7 +1761,7 @@ namespace TombLib.LevelData.Compilers
                     if (image.AmbientOcclusionRoughnessSpecularMap is null)
                     {
                         image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 0, 255, 255));
+                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 128, 128, 255));
                     }
 
                     image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.AmbientOcclusionMap.Value, x, y, width, height, ImageChannel.R);
@@ -1773,7 +1773,7 @@ namespace TombLib.LevelData.Compilers
                     if (image.AmbientOcclusionRoughnessSpecularMap is null)
                     {
                         image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 0, 255, 255));
+                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 128, 128, 255));
                     }
 
                     image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.RoughnessMap.Value, x, y, width, height, ImageChannel.G);
@@ -1785,7 +1785,7 @@ namespace TombLib.LevelData.Compilers
                     if (image.AmbientOcclusionRoughnessSpecularMap is null)
                     {
                         image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 0, 255, 255));
+                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 128, 128, 255));
                     }
 
                     image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.SpecularMap.Value, x, y, width, height, ImageChannel.B);
