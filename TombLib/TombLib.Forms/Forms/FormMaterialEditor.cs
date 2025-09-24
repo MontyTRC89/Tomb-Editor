@@ -21,7 +21,7 @@ namespace TombLib.Forms
 
 		private bool _saveXml = false;
 
-		public FormMaterialEditor(string texturePath)
+		public FormMaterialEditor(string texturePath, ConfigurationBase configuration)
 		{
 			InitializeComponent();
 
@@ -30,6 +30,9 @@ namespace TombLib.Forms
 
 			_texturePath = texturePath;
 			_materialData = MaterialData.TrySidecarLoadOrLoadExisting(texturePath);
+
+			// Set window property handlers
+			ConfigurationBase.ConfigureWindow(this, configuration);
 		}
 
 		private void FormMaterialEditor_Load(object sender, EventArgs e)

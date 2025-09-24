@@ -280,7 +280,7 @@ namespace TombEditor.ToolWindows
 		private void butMaterialEditor_Click(object sender, EventArgs e)
 		{
 			LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
-			using (var form = new FormMaterialEditor(texture.Image.FileName))
+			using (var form = new FormMaterialEditor(texture.Image.FileName, _editor.Configuration))
 			{
 				form.ShowDialog();
 			}
