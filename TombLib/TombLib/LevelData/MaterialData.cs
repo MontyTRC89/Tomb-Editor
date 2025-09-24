@@ -7,7 +7,7 @@ namespace TombLib.LevelData
 {
 	public enum MaterialType : byte
 	{
-		Opaque,
+		Default,
 		Reflective
 	}
 
@@ -39,11 +39,11 @@ namespace TombLib.LevelData
 
 		public MaterialData()
 		{
-            // Default material is opaque with:
+            // Default material has:
             // Normal intensity = 1.0
             // Specular intensity = 1.0f
             // Glow intensity = 1.0f
-            Type = MaterialType.Opaque;
+            Type = MaterialType.Default;
             Parameters0 = new Vector4(1.0f, 1.0f, 1.0f, 0.0f);
         }
 
