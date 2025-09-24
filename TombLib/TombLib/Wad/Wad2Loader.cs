@@ -222,7 +222,7 @@ namespace TombLib.Wad
                 var width = LEB128.ReadInt(chunkIO.Raw);
                 var height = LEB128.ReadInt(chunkIO.Raw);
                 var name = string.Empty;
-                var relativePath = String.Empty;
+                var relativePath = string.Empty;
 
                 byte[] textureData = null;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
@@ -244,7 +244,7 @@ namespace TombLib.Wad
 				// only if RelativePath is null or empty, meaning that this is 
 				// an embedded texture.
 
-				ImageC texture = ImageC.Magenta;
+				var texture = ImageC.Magenta;
 				string absolutePath = null;
                 bool textureLoaded = false;
 

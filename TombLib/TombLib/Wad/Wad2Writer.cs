@@ -102,7 +102,7 @@ namespace TombLib.Wad
                     {
                         LEB128.Write(chunkIO.Raw, texture.Image.Width);
                         LEB128.Write(chunkIO.Raw, texture.Image.Height);
-                        chunkIO.WriteChunkString(Wad2Chunks.TextureName, texture.Image.FileName ?? "");
+                        chunkIO.WriteChunkString(Wad2Chunks.TextureName, texture.Image.FileName ?? string.Empty);
 
                         // TextureName chunk could not contain the relative path of the texture, 
                         // so I've added a dedicated field and chunk to Wad2 file format.

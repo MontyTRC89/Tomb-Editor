@@ -4,7 +4,6 @@ using System.Linq;
 using System.Collections.Generic;
 using TombLib.LevelData;
 using System.Runtime.CompilerServices;
-using System.Reflection.Metadata;
 
 namespace TombLib.Utils
 {

@@ -588,7 +588,7 @@ namespace WadTool
             foreach (var moveable in src.Moveables)
             {
                 string compatibleSlot = TrCatalog.GetMoveableTombEngineSlot(src.GameVersion, moveable.Key.TypeId);
-                if (compatibleSlot == String.Empty)
+                if (compatibleSlot == string.Empty)
                     continue;
 
                 uint? destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out bool isMoveable);

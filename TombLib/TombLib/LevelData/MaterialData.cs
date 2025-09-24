@@ -201,27 +201,27 @@ namespace TombLib.LevelData
 			// Instead for XML we keep paths and we set to false their IsXYZFound properties 
 			// so we can show the problem in material editor
 			if (!File.Exists(materialData.NormalMap))
-				materialData.NormalMap = "";
+				materialData.NormalMap = string.Empty;
 			else
 				materialData.IsNormalMapFound = true;
 
 			if (!File.Exists(materialData.SpecularMap))
-				materialData.SpecularMap = "";
+				materialData.SpecularMap = string.Empty;
 			else
 				materialData.IsSpecularMapFound = true;
 
 			if (!File.Exists(materialData.RoughnessMap))
-				materialData.RoughnessMap = "";
+				materialData.RoughnessMap = string.Empty;
 			else
 				materialData.IsRoughnessMapFound = true;
 
 			if (!File.Exists(materialData.AmbientOcclusionMap))
-				materialData.AmbientOcclusionMap = "";
+				materialData.AmbientOcclusionMap = string.Empty;
 			else
 				materialData.IsAmbientOcclusionMapFound = true;
 
 			if (!File.Exists(materialData.EmissiveMap))
-				materialData.EmissiveMap = "";
+				materialData.EmissiveMap = string.Empty;
 			else
 				materialData.IsEmissiveMapFound = true;
 
