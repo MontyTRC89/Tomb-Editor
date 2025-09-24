@@ -1135,7 +1135,7 @@ namespace TombEditor
             }
             else if (instance is SpriteInstance)
             {
-                if (!VersionCheck(_editor.Level.Settings.GameVersion <= TRVersion.Game.TR2, "Room sprite"))
+                if (!VersionCheck(_editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2, "Room sprite"))
                     return;
 
                 using (var formSprite = GetObjectSetupWindow((SpriteInstance)instance))
@@ -2334,7 +2334,7 @@ namespace TombEditor
 
         public static void PlaceLight(LightType type)
         {
-            var color = (type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4) ?
+            var color = (type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR4) ?
                 Vector3.One : (Vector3)_editor.LastUsedPaletteColour * 2.0f;
 
             _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(type) { Color = color });
@@ -4095,7 +4095,7 @@ namespace TombEditor
                 light =>
                 {
                     // Prompt user that real intensity is now used to define fog bulb intensity
-                    if (_editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
+                    if (_editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
                     {
                         _editor.SendMessage("To edit fog bulb intensity, use 'Intensity' field.", PopupType.Info);
                         return light.Color;
@@ -5716,7 +5716,7 @@ namespace TombEditor
 
             var samplePath = Application.StartupPath + "\\Assets\\Samples\\";
 
-            switch (settings.GameVersion)
+            switch (settings.GameVersion.Native())
             {
                 case TRVersion.Game.TR1:
                     samplePath = samplePath + "TR1";
@@ -5811,7 +5811,7 @@ namespace TombEditor
 
         public static void AssignTriggerSounds(LevelSettings settings)
         {
-            bool isTR4 = _editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4;
+            bool isTR4 = _editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4;
 
             foreach (var room in _editor.Level.Rooms)
                 if (room != null)

@@ -44,7 +44,7 @@ namespace TombEditor.Controls.Panel3D
 
         private Vector4 ConvertColor(Vector3 originalColor)
         {
-            switch (_editor.Level.Settings.GameVersion)
+            switch (_editor.Level.Settings.GameVersion.Native())
             {
                 case TRVersion.Game.TR1:
                 case TRVersion.Game.TR2:

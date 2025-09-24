@@ -141,11 +141,11 @@ namespace TombEditor.ToolWindows
 			butBrowseTexture.Enabled =
 			butAnimationRanges.Enabled = comboCurrentTexture.SelectedItem != null;
 
-			butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null &&
-				_editor.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR3;
+            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null && 
+                _editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR3;
 
-			butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
-				(_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);
+            butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
+                (_editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);
 
 			RepopulateBlendingModes();
 		}
