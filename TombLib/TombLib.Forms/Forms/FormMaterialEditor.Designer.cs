@@ -417,7 +417,6 @@
             // 
             comboMaterialType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             comboMaterialType.FormattingEnabled = true;
-            comboMaterialType.Items.AddRange(new object[] { "Opaque" });
             comboMaterialType.Location = new System.Drawing.Point(90, 265);
             comboMaterialType.Name = "comboMaterialType";
             comboMaterialType.Size = new System.Drawing.Size(427, 23);
@@ -426,7 +425,7 @@
             // 
             // tabcontainerParameters
             // 
-            tabcontainerParameters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tabcontainerParameters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             tabcontainerParameters.Controls.Add(tabPage1);
             tabcontainerParameters.Controls.Add(tabPage2);
             tabcontainerParameters.Location = new System.Drawing.Point(7, 347);
@@ -523,6 +522,7 @@
             // 
             // lblXmlMaterialFile
             // 
+            lblXmlMaterialFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             lblXmlMaterialFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             lblXmlMaterialFile.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             lblXmlMaterialFile.Location = new System.Drawing.Point(90, 301);

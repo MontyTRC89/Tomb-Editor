@@ -37,8 +37,6 @@ namespace TombEditor.ToolWindows
 			for (int i = 1; i <= 8; i++)
 				cmbTileSize.Items.Add((float)Math.Pow(2, i));
 
-			butMaterialEditor.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
-
 			RepopulateBlendingModes();
 
 			cmbBlending.SelectedIndex = 0;
@@ -146,6 +144,8 @@ namespace TombEditor.ToolWindows
 
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
                 (_editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);
+
+			panelMaterials.Visible = _editor.Level.IsTombEngine;
 
 			RepopulateBlendingModes();
 		}
@@ -280,7 +280,7 @@ namespace TombEditor.ToolWindows
 		private void butMaterialEditor_Click(object sender, EventArgs e)
 		{
 			LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
-			using (var form = new FormMaterialEditor(texture.Image.FileName))
+			using (var form = new FormMaterialEditor(texture.Image.FileName, _editor.Configuration))
 			{
 				form.ShowDialog();
 			}

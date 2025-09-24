@@ -1730,7 +1730,7 @@ namespace WadTool
 				return;
 			}
 
-			using (var form = new FormMaterialEditor(texture.AbsolutePath))
+			using (var form = new FormMaterialEditor(texture.AbsolutePath, _tool.Configuration))
 			form.ShowDialog();
 		}
 	}
