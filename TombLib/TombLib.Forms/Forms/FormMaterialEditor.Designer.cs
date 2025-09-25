@@ -79,7 +79,7 @@
             // 
             butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butOK.Checked = false;
-            butOK.Location = new System.Drawing.Point(349, 299);
+            butOK.Location = new System.Drawing.Point(349, 297);
             butOK.Name = "butOK";
             butOK.Size = new System.Drawing.Size(80, 23);
             butOK.TabIndex = 16;
@@ -91,7 +91,7 @@
             butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butCancel.Checked = false;
             butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            butCancel.Location = new System.Drawing.Point(435, 299);
+            butCancel.Location = new System.Drawing.Point(435, 297);
             butCancel.Name = "butCancel";
             butCancel.Size = new System.Drawing.Size(80, 23);
             butCancel.TabIndex = 17;
@@ -433,7 +433,7 @@
             tabcontainerParameters.Location = new System.Drawing.Point(6, 296);
             tabcontainerParameters.Name = "tabcontainerParameters";
             tabcontainerParameters.SelectedIndex = 0;
-            tabcontainerParameters.Size = new System.Drawing.Size(509, 0);
+            tabcontainerParameters.Size = new System.Drawing.Size(326, 24);
             tabcontainerParameters.TabIndex = 26;
             tabcontainerParameters.Visible = false;
             // 
@@ -447,7 +447,7 @@
             tabPage1.Location = new System.Drawing.Point(4, 22);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(501, 0);
+            tabPage1.Size = new System.Drawing.Size(318, 0);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "tabPage1";
             // 
@@ -462,7 +462,7 @@
             nmSpecularIntensity.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             nmSpecularIntensity.Minimum = new decimal(new int[] { 1, 0, 0, 262144 });
             nmSpecularIntensity.Name = "nmSpecularIntensity";
-            nmSpecularIntensity.Size = new System.Drawing.Size(363, 22);
+            nmSpecularIntensity.Size = new System.Drawing.Size(180, 22);
             nmSpecularIntensity.TabIndex = 11;
             nmSpecularIntensity.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nmSpecularIntensity.ValueChanged += nmSpecularIntensity_ValueChanged;
@@ -488,7 +488,7 @@
             nmNormalMapStrength.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             nmNormalMapStrength.Minimum = new decimal(new int[] { 1, 0, 0, 262144 });
             nmNormalMapStrength.Name = "nmNormalMapStrength";
-            nmNormalMapStrength.Size = new System.Drawing.Size(363, 22);
+            nmNormalMapStrength.Size = new System.Drawing.Size(180, 22);
             nmNormalMapStrength.TabIndex = 9;
             nmNormalMapStrength.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nmNormalMapStrength.ValueChanged += nmNormalMapStrength_ValueChanged;
@@ -518,10 +518,10 @@
             statusStrip.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
             statusStrip.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblResult, lblXmlMaterialFile });
-            statusStrip.Location = new System.Drawing.Point(6, 325);
+            statusStrip.Location = new System.Drawing.Point(6, 326);
             statusStrip.Name = "statusStrip";
             statusStrip.Padding = new System.Windows.Forms.Padding(2, 5, 0, 3);
-            statusStrip.Size = new System.Drawing.Size(509, 26);
+            statusStrip.Size = new System.Drawing.Size(509, 28);
             statusStrip.TabIndex = 29;
             // 
             // lblResult
@@ -530,14 +530,15 @@
             lblResult.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             lblResult.ForeColor = System.Drawing.Color.Silver;
             lblResult.Name = "lblResult";
-            lblResult.Size = new System.Drawing.Size(0, 13);
+            lblResult.Size = new System.Drawing.Size(0, 15);
             lblResult.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // lblXmlMaterialFile
             // 
             lblXmlMaterialFile.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            lblXmlMaterialFile.ForeColor = System.Drawing.Color.Silver;
             lblXmlMaterialFile.Name = "lblXmlMaterialFile";
-            lblXmlMaterialFile.Size = new System.Drawing.Size(0, 13);
+            lblXmlMaterialFile.Size = new System.Drawing.Size(0, 15);
             // 
             // FormMaterialEditor
             // 
@@ -546,7 +547,9 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             CancelButton = butCancel;
-            ClientSize = new System.Drawing.Size(521, 357);
+            ClientSize = new System.Drawing.Size(521, 360);
+            Controls.Add(butCancel);
+            Controls.Add(butOK);
             Controls.Add(panel1);
             Controls.Add(statusStrip);
             Controls.Add(tabcontainerParameters);
@@ -556,8 +559,6 @@
             Controls.Add(panel3);
             Controls.Add(panel2);
             Controls.Add(panelSky);
-            Controls.Add(butCancel);
-            Controls.Add(butOK);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;

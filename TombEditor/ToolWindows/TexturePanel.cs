@@ -282,7 +282,8 @@ namespace TombEditor.ToolWindows
 			LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
 			using (var form = new FormMaterialEditor(texture.Image.FileName, _editor.Configuration))
 			{
-				form.ShowDialog();
+				if (form.ShowDialog() == DialogResult.OK && form.MaterialChanged)
+					_editor.SendMessage("Material settings for current texture were saved to " + form.MaterialFileName + ".", PopupType.Info);
 			}
 		}
 	}

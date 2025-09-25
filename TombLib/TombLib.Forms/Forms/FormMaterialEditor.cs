@@ -12,6 +12,7 @@ namespace TombLib.Forms
 	public partial class FormMaterialEditor : DarkForm
 	{
 		public string MaterialFileName { get; set; }
+		public bool MaterialChanged => _saveXml;
 
 		private MaterialData _materialData;
 		private string _texturePath;

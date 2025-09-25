@@ -1731,7 +1731,11 @@ namespace WadTool
 			}
 
 			using (var form = new FormMaterialEditor(texture.AbsolutePath, _tool.Configuration))
-			form.ShowDialog();
+			{
+				if (form.ShowDialog() == DialogResult.OK && form.MaterialChanged)
+					popup.ShowInfo(panelMesh, "Material settings for current texture were saved to " + form.MaterialFileName + ".");
+
+			}
 		}
 	}
 }
