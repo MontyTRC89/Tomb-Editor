@@ -195,7 +195,7 @@ namespace TombEditor.ToolWindows
             butMaterialEditor.Size = new System.Drawing.Size(280, 23);
             butMaterialEditor.TabIndex = 4;
             butMaterialEditor.Text = "Materials";
-            toolTip.SetToolTip(butMaterialEditor, "Delete texture");
+            toolTip.SetToolTip(butMaterialEditor, "Edit materials...");
             butMaterialEditor.Click += butMaterialEditor_Click;
             // 
             // textureSelectionPanel
