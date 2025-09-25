@@ -20,6 +20,7 @@ namespace TombLib.Forms
 		private readonly Color _wrongColor;
 
 		private bool _saveXml = false;
+		private bool _loaded = false;
 
 		public FormMaterialEditor(string texturePath, ConfigurationBase configuration)
 		{
@@ -71,7 +72,9 @@ namespace TombLib.Forms
 			comboMaterialType.SelectedIndex = (int)_materialData.Type;
 			LoadMaterialProperties();
 			UpdateUI();
-		}
+
+			_loaded = true;
+        }
 
 		private void LoadTexturePreview(string path, PictureBox pictureBox)
 		{
@@ -214,7 +217,9 @@ namespace TombLib.Forms
 		private void comboMaterialType_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			LoadMaterialProperties();
-		}
+			if (_loaded)
+				_saveXml = true;
+        }
 
 		private void butBrowseNormalMap_Click(object sender, EventArgs e) => BrowseTexture(tbNormalMapPath, picPreviewNormalMap);
 		private void butBrowseAmbientOcclusionMap_Click(object sender, EventArgs e) => BrowseTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap);
