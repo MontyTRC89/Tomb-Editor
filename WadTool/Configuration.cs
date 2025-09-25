@@ -95,7 +95,7 @@ namespace WadTool
         public Size Window_FormMeshEditor_Size { get; set; } = new Size(1055, 707);
         public bool Window_FormMeshEditor_Maximized { get; set; } = false;
         public Point Window_FormMaterialEditor_Position { get; set; } = new Point(-1);
-        public Size Window_FormMaterialEditor_Size { get; set; } = new Size(537, 511);
+        public Size Window_FormMaterialEditor_Size { get; set; } = new Size(537, 396);
         public bool Window_FormMaterialEditor_Maximized { get; set; } = false;
     }
 }

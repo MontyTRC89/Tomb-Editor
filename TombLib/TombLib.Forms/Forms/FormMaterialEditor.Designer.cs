@@ -55,8 +55,9 @@
             nmNormalMapStrength = new DarkUI.Controls.DarkNumericUpDown();
             lblScale = new DarkUI.Controls.DarkLabel();
             tabPage2 = new System.Windows.Forms.TabPage();
-            darkLabel7 = new DarkUI.Controls.DarkLabel();
-            lblXmlMaterialFile = new DarkUI.Controls.DarkLabel();
+            statusStrip = new DarkUI.Controls.DarkStatusStrip();
+            lblResult = new System.Windows.Forms.ToolStripStatusLabel();
+            lblXmlMaterialFile = new System.Windows.Forms.ToolStripStatusLabel();
             panelSky.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picPreviewColorMap).BeginInit();
             panel1.SuspendLayout();
@@ -71,13 +72,14 @@
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nmSpecularIntensity).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nmNormalMapStrength).BeginInit();
+            statusStrip.SuspendLayout();
             SuspendLayout();
             // 
             // butOK
             // 
             butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butOK.Checked = false;
-            butOK.Location = new System.Drawing.Point(345, 439);
+            butOK.Location = new System.Drawing.Point(349, 299);
             butOK.Name = "butOK";
             butOK.Size = new System.Drawing.Size(80, 23);
             butOK.TabIndex = 16;
@@ -89,7 +91,7 @@
             butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butCancel.Checked = false;
             butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            butCancel.Location = new System.Drawing.Point(431, 439);
+            butCancel.Location = new System.Drawing.Point(435, 299);
             butCancel.Name = "butCancel";
             butCancel.Size = new System.Drawing.Size(80, 23);
             butCancel.TabIndex = 17;
@@ -102,9 +104,9 @@
             panelSky.Controls.Add(picPreviewColorMap);
             panelSky.Controls.Add(darkLabel9);
             panelSky.Dock = System.Windows.Forms.DockStyle.Top;
-            panelSky.Location = new System.Drawing.Point(4, 4);
+            panelSky.Location = new System.Drawing.Point(6, 6);
             panelSky.Name = "panelSky";
-            panelSky.Size = new System.Drawing.Size(513, 51);
+            panelSky.Size = new System.Drawing.Size(509, 51);
             panelSky.TabIndex = 18;
             // 
             // tbColorMapPath
@@ -114,7 +116,7 @@
             tbColorMapPath.Location = new System.Drawing.Point(0, 20);
             tbColorMapPath.Name = "tbColorMapPath";
             tbColorMapPath.ReadOnly = true;
-            tbColorMapPath.Size = new System.Drawing.Size(466, 22);
+            tbColorMapPath.Size = new System.Drawing.Size(462, 22);
             tbColorMapPath.TabIndex = 8;
             // 
             // picPreviewColorMap
@@ -123,7 +125,7 @@
             picPreviewColorMap.BackColor = System.Drawing.Color.Gray;
             picPreviewColorMap.BackgroundImage = (System.Drawing.Image)resources.GetObject("picPreviewColorMap.BackgroundImage");
             picPreviewColorMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            picPreviewColorMap.Location = new System.Drawing.Point(472, 3);
+            picPreviewColorMap.Location = new System.Drawing.Point(468, 3);
             picPreviewColorMap.Name = "picPreviewColorMap";
             picPreviewColorMap.Size = new System.Drawing.Size(41, 39);
             picPreviewColorMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -141,22 +143,22 @@
             // 
             // panel1
             // 
-            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             panel1.Controls.Add(butClearSpecularMap);
             panel1.Controls.Add(butBrowseSpecularMap);
             panel1.Controls.Add(tbSpecularMapPath);
             panel1.Controls.Add(picPreviewSpecularMap);
             panel1.Controls.Add(darkLabel1);
-            panel1.Location = new System.Drawing.Point(4, 205);
+            panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            panel1.Location = new System.Drawing.Point(6, 210);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(513, 54);
+            panel1.Size = new System.Drawing.Size(509, 51);
             panel1.TabIndex = 19;
             // 
             // butClearSpecularMap
             // 
             butClearSpecularMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             butClearSpecularMap.Checked = false;
-            butClearSpecularMap.Location = new System.Drawing.Point(412, 20);
+            butClearSpecularMap.Location = new System.Drawing.Point(408, 20);
             butClearSpecularMap.Name = "butClearSpecularMap";
             butClearSpecularMap.Size = new System.Drawing.Size(54, 22);
             butClearSpecularMap.TabIndex = 11;
@@ -167,7 +169,7 @@
             // 
             butBrowseSpecularMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             butBrowseSpecularMap.Checked = false;
-            butBrowseSpecularMap.Location = new System.Drawing.Point(336, 20);
+            butBrowseSpecularMap.Location = new System.Drawing.Point(332, 20);
             butBrowseSpecularMap.Name = "butBrowseSpecularMap";
             butBrowseSpecularMap.Size = new System.Drawing.Size(70, 22);
             butBrowseSpecularMap.TabIndex = 9;
@@ -180,7 +182,7 @@
             tbSpecularMapPath.Enabled = false;
             tbSpecularMapPath.Location = new System.Drawing.Point(0, 20);
             tbSpecularMapPath.Name = "tbSpecularMapPath";
-            tbSpecularMapPath.Size = new System.Drawing.Size(330, 22);
+            tbSpecularMapPath.Size = new System.Drawing.Size(326, 22);
             tbSpecularMapPath.TabIndex = 8;
             // 
             // picPreviewSpecularMap
@@ -189,7 +191,7 @@
             picPreviewSpecularMap.BackColor = System.Drawing.Color.Gray;
             picPreviewSpecularMap.BackgroundImage = (System.Drawing.Image)resources.GetObject("picPreviewSpecularMap.BackgroundImage");
             picPreviewSpecularMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            picPreviewSpecularMap.Location = new System.Drawing.Point(472, 3);
+            picPreviewSpecularMap.Location = new System.Drawing.Point(468, 3);
             picPreviewSpecularMap.Name = "picPreviewSpecularMap";
             picPreviewSpecularMap.Size = new System.Drawing.Size(41, 39);
             picPreviewSpecularMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -213,16 +215,16 @@
             panel2.Controls.Add(picPreviewNormalMap);
             panel2.Controls.Add(darkLabel2);
             panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            panel2.Location = new System.Drawing.Point(4, 55);
+            panel2.Location = new System.Drawing.Point(6, 57);
             panel2.Name = "panel2";
-            panel2.Size = new System.Drawing.Size(513, 51);
+            panel2.Size = new System.Drawing.Size(509, 51);
             panel2.TabIndex = 20;
             // 
             // butClearNormalMap
             // 
             butClearNormalMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             butClearNormalMap.Checked = false;
-            butClearNormalMap.Location = new System.Drawing.Point(412, 20);
+            butClearNormalMap.Location = new System.Drawing.Point(408, 20);
             butClearNormalMap.Name = "butClearNormalMap";
             butClearNormalMap.Size = new System.Drawing.Size(54, 22);
             butClearNormalMap.TabIndex = 10;
@@ -233,7 +235,7 @@
             // 
             butBrowseNormalMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             butBrowseNormalMap.Checked = false;
-            butBrowseNormalMap.Location = new System.Drawing.Point(336, 20);
+            butBrowseNormalMap.Location = new System.Drawing.Point(332, 20);
             butBrowseNormalMap.Name = "butBrowseNormalMap";
             butBrowseNormalMap.Size = new System.Drawing.Size(70, 22);
             butBrowseNormalMap.TabIndex = 9;
@@ -246,7 +248,7 @@
             tbNormalMapPath.Enabled = false;
             tbNormalMapPath.Location = new System.Drawing.Point(0, 20);
             tbNormalMapPath.Name = "tbNormalMapPath";
-            tbNormalMapPath.Size = new System.Drawing.Size(330, 22);
+            tbNormalMapPath.Size = new System.Drawing.Size(326, 22);
             tbNormalMapPath.TabIndex = 8;
             // 
             // picPreviewNormalMap
@@ -255,7 +257,7 @@
             picPreviewNormalMap.BackColor = System.Drawing.Color.Gray;
             picPreviewNormalMap.BackgroundImage = (System.Drawing.Image)resources.GetObject("picPreviewNormalMap.BackgroundImage");
             picPreviewNormalMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            picPreviewNormalMap.Location = new System.Drawing.Point(472, 3);
+            picPreviewNormalMap.Location = new System.Drawing.Point(468, 3);
             picPreviewNormalMap.Name = "picPreviewNormalMap";
             picPreviewNormalMap.Size = new System.Drawing.Size(41, 39);
             picPreviewNormalMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -279,16 +281,16 @@
             panel3.Controls.Add(picPreviewAmbientOcclusionMap);
             panel3.Controls.Add(darkLabel3);
             panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            panel3.Location = new System.Drawing.Point(4, 106);
+            panel3.Location = new System.Drawing.Point(6, 108);
             panel3.Name = "panel3";
-            panel3.Size = new System.Drawing.Size(513, 51);
+            panel3.Size = new System.Drawing.Size(509, 51);
             panel3.TabIndex = 21;
             // 
             // butClearAmbientOcclusionMap
             // 
             butClearAmbientOcclusionMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             butClearAmbientOcclusionMap.Checked = false;
-            butClearAmbientOcclusionMap.Location = new System.Drawing.Point(412, 20);
+            butClearAmbientOcclusionMap.Location = new System.Drawing.Point(408, 20);
             butClearAmbientOcclusionMap.Name = "butClearAmbientOcclusionMap";
             butClearAmbientOcclusionMap.Size = new System.Drawing.Size(54, 22);
             butClearAmbientOcclusionMap.TabIndex = 11;
@@ -299,7 +301,7 @@
             // 
             butBrowseAmbientOcclusionMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             butBrowseAmbientOcclusionMap.Checked = false;
-            butBrowseAmbientOcclusionMap.Location = new System.Drawing.Point(336, 20);
+            butBrowseAmbientOcclusionMap.Location = new System.Drawing.Point(332, 20);
             butBrowseAmbientOcclusionMap.Name = "butBrowseAmbientOcclusionMap";
             butBrowseAmbientOcclusionMap.Size = new System.Drawing.Size(70, 22);
             butBrowseAmbientOcclusionMap.TabIndex = 9;
@@ -312,7 +314,7 @@
             tbAmbientOcclusionMapPath.Enabled = false;
             tbAmbientOcclusionMapPath.Location = new System.Drawing.Point(0, 20);
             tbAmbientOcclusionMapPath.Name = "tbAmbientOcclusionMapPath";
-            tbAmbientOcclusionMapPath.Size = new System.Drawing.Size(330, 22);
+            tbAmbientOcclusionMapPath.Size = new System.Drawing.Size(326, 22);
             tbAmbientOcclusionMapPath.TabIndex = 8;
             // 
             // picPreviewAmbientOcclusionMap
@@ -321,7 +323,7 @@
             picPreviewAmbientOcclusionMap.BackColor = System.Drawing.Color.Gray;
             picPreviewAmbientOcclusionMap.BackgroundImage = (System.Drawing.Image)resources.GetObject("picPreviewAmbientOcclusionMap.BackgroundImage");
             picPreviewAmbientOcclusionMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            picPreviewAmbientOcclusionMap.Location = new System.Drawing.Point(472, 3);
+            picPreviewAmbientOcclusionMap.Location = new System.Drawing.Point(468, 3);
             picPreviewAmbientOcclusionMap.Name = "picPreviewAmbientOcclusionMap";
             picPreviewAmbientOcclusionMap.Size = new System.Drawing.Size(41, 39);
             picPreviewAmbientOcclusionMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -345,16 +347,16 @@
             panel4.Controls.Add(picPreviewEmissiveMap);
             panel4.Controls.Add(darkLabel4);
             panel4.Dock = System.Windows.Forms.DockStyle.Top;
-            panel4.Location = new System.Drawing.Point(4, 157);
+            panel4.Location = new System.Drawing.Point(6, 159);
             panel4.Name = "panel4";
-            panel4.Size = new System.Drawing.Size(513, 51);
+            panel4.Size = new System.Drawing.Size(509, 51);
             panel4.TabIndex = 22;
             // 
             // butClearEmissiveMap
             // 
             butClearEmissiveMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             butClearEmissiveMap.Checked = false;
-            butClearEmissiveMap.Location = new System.Drawing.Point(412, 20);
+            butClearEmissiveMap.Location = new System.Drawing.Point(408, 20);
             butClearEmissiveMap.Name = "butClearEmissiveMap";
             butClearEmissiveMap.Size = new System.Drawing.Size(54, 22);
             butClearEmissiveMap.TabIndex = 11;
@@ -365,7 +367,7 @@
             // 
             butBrowseEmissiveMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             butBrowseEmissiveMap.Checked = false;
-            butBrowseEmissiveMap.Location = new System.Drawing.Point(336, 20);
+            butBrowseEmissiveMap.Location = new System.Drawing.Point(332, 20);
             butBrowseEmissiveMap.Name = "butBrowseEmissiveMap";
             butBrowseEmissiveMap.Size = new System.Drawing.Size(70, 22);
             butBrowseEmissiveMap.TabIndex = 9;
@@ -378,7 +380,7 @@
             tbEmissiveMapPath.Enabled = false;
             tbEmissiveMapPath.Location = new System.Drawing.Point(0, 20);
             tbEmissiveMapPath.Name = "tbEmissiveMapPath";
-            tbEmissiveMapPath.Size = new System.Drawing.Size(330, 22);
+            tbEmissiveMapPath.Size = new System.Drawing.Size(326, 22);
             tbEmissiveMapPath.TabIndex = 8;
             // 
             // picPreviewEmissiveMap
@@ -387,7 +389,7 @@
             picPreviewEmissiveMap.BackColor = System.Drawing.Color.Gray;
             picPreviewEmissiveMap.BackgroundImage = (System.Drawing.Image)resources.GetObject("picPreviewEmissiveMap.BackgroundImage");
             picPreviewEmissiveMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            picPreviewEmissiveMap.Location = new System.Drawing.Point(472, 3);
+            picPreviewEmissiveMap.Location = new System.Drawing.Point(468, 3);
             picPreviewEmissiveMap.Name = "picPreviewEmissiveMap";
             picPreviewEmissiveMap.Size = new System.Drawing.Size(41, 39);
             picPreviewEmissiveMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -407,7 +409,7 @@
             // 
             darkLabel5.AutoSize = true;
             darkLabel5.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel5.Location = new System.Drawing.Point(4, 268);
+            darkLabel5.Location = new System.Drawing.Point(6, 267);
             darkLabel5.Name = "darkLabel5";
             darkLabel5.Size = new System.Drawing.Size(77, 13);
             darkLabel5.TabIndex = 25;
@@ -417,9 +419,9 @@
             // 
             comboMaterialType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             comboMaterialType.FormattingEnabled = true;
-            comboMaterialType.Location = new System.Drawing.Point(90, 265);
+            comboMaterialType.Location = new System.Drawing.Point(92, 264);
             comboMaterialType.Name = "comboMaterialType";
-            comboMaterialType.Size = new System.Drawing.Size(427, 23);
+            comboMaterialType.Size = new System.Drawing.Size(423, 23);
             comboMaterialType.TabIndex = 24;
             comboMaterialType.SelectedIndexChanged += comboMaterialType_SelectedIndexChanged;
             // 
@@ -428,10 +430,10 @@
             tabcontainerParameters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             tabcontainerParameters.Controls.Add(tabPage1);
             tabcontainerParameters.Controls.Add(tabPage2);
-            tabcontainerParameters.Location = new System.Drawing.Point(7, 347);
+            tabcontainerParameters.Location = new System.Drawing.Point(6, 296);
             tabcontainerParameters.Name = "tabcontainerParameters";
             tabcontainerParameters.SelectedIndex = 0;
-            tabcontainerParameters.Size = new System.Drawing.Size(514, 82);
+            tabcontainerParameters.Size = new System.Drawing.Size(509, 0);
             tabcontainerParameters.TabIndex = 26;
             tabcontainerParameters.Visible = false;
             // 
@@ -445,7 +447,7 @@
             tabPage1.Location = new System.Drawing.Point(4, 22);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(506, 56);
+            tabPage1.Size = new System.Drawing.Size(501, 0);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "tabPage1";
             // 
@@ -460,7 +462,7 @@
             nmSpecularIntensity.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             nmSpecularIntensity.Minimum = new decimal(new int[] { 1, 0, 0, 262144 });
             nmSpecularIntensity.Name = "nmSpecularIntensity";
-            nmSpecularIntensity.Size = new System.Drawing.Size(368, 22);
+            nmSpecularIntensity.Size = new System.Drawing.Size(363, 22);
             nmSpecularIntensity.TabIndex = 11;
             nmSpecularIntensity.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nmSpecularIntensity.ValueChanged += nmSpecularIntensity_ValueChanged;
@@ -486,7 +488,7 @@
             nmNormalMapStrength.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             nmNormalMapStrength.Minimum = new decimal(new int[] { 1, 0, 0, 262144 });
             nmNormalMapStrength.Name = "nmNormalMapStrength";
-            nmNormalMapStrength.Size = new System.Drawing.Size(368, 22);
+            nmNormalMapStrength.Size = new System.Drawing.Size(363, 22);
             nmNormalMapStrength.TabIndex = 9;
             nmNormalMapStrength.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nmNormalMapStrength.ValueChanged += nmNormalMapStrength_ValueChanged;
@@ -507,29 +509,35 @@
             tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(506, 56);
+            tabPage2.Size = new System.Drawing.Size(501, 0);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             // 
-            // darkLabel7
+            // statusStrip
             // 
-            darkLabel7.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel7.Location = new System.Drawing.Point(4, 301);
-            darkLabel7.Name = "darkLabel7";
-            darkLabel7.Size = new System.Drawing.Size(76, 32);
-            darkLabel7.TabIndex = 27;
-            darkLabel7.Text = "XML material file:";
+            statusStrip.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            statusStrip.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblResult, lblXmlMaterialFile });
+            statusStrip.Location = new System.Drawing.Point(6, 325);
+            statusStrip.Name = "statusStrip";
+            statusStrip.Padding = new System.Windows.Forms.Padding(2, 5, 0, 3);
+            statusStrip.Size = new System.Drawing.Size(509, 26);
+            statusStrip.TabIndex = 29;
+            // 
+            // lblResult
+            // 
+            lblResult.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            lblResult.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            lblResult.ForeColor = System.Drawing.Color.Silver;
+            lblResult.Name = "lblResult";
+            lblResult.Size = new System.Drawing.Size(0, 13);
+            lblResult.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // lblXmlMaterialFile
             // 
-            lblXmlMaterialFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            lblXmlMaterialFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            lblXmlMaterialFile.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            lblXmlMaterialFile.Location = new System.Drawing.Point(90, 301);
+            lblXmlMaterialFile.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
             lblXmlMaterialFile.Name = "lblXmlMaterialFile";
-            lblXmlMaterialFile.Size = new System.Drawing.Size(428, 43);
-            lblXmlMaterialFile.TabIndex = 28;
-            lblXmlMaterialFile.Text = "-";
+            lblXmlMaterialFile.Size = new System.Drawing.Size(0, 13);
             // 
             // FormMaterialEditor
             // 
@@ -538,16 +546,15 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             CancelButton = butCancel;
-            ClientSize = new System.Drawing.Size(521, 472);
-            Controls.Add(lblXmlMaterialFile);
-            Controls.Add(darkLabel7);
+            ClientSize = new System.Drawing.Size(521, 357);
+            Controls.Add(panel1);
+            Controls.Add(statusStrip);
             Controls.Add(tabcontainerParameters);
             Controls.Add(darkLabel5);
             Controls.Add(comboMaterialType);
             Controls.Add(panel4);
             Controls.Add(panel3);
             Controls.Add(panel2);
-            Controls.Add(panel1);
             Controls.Add(panelSky);
             Controls.Add(butCancel);
             Controls.Add(butOK);
@@ -555,7 +562,7 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "FormMaterialEditor";
-            Padding = new System.Windows.Forms.Padding(4);
+            Padding = new System.Windows.Forms.Padding(6);
             ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -581,6 +588,8 @@
             tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nmSpecularIntensity).EndInit();
             ((System.ComponentModel.ISupportInitialize)nmNormalMapStrength).EndInit();
+            statusStrip.ResumeLayout(false);
+            statusStrip.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -622,11 +631,13 @@
 		private DarkUI.Controls.DarkNumericUpDown nmSpecularIntensity;
 		private DarkUI.Controls.DarkLabel darkLabel6;
 		private DarkUI.Controls.DarkNumericUpDown nmNormalMapStrength;
-		private DarkUI.Controls.DarkLabel darkLabel7;
-		private DarkUI.Controls.DarkLabel lblXmlMaterialFile;
+		private DarkUI.Controls.DarkLabel AAA;
 		private DarkUI.Controls.DarkButton butClearSpecularMap;
 		private DarkUI.Controls.DarkButton butClearNormalMap;
 		private DarkUI.Controls.DarkButton butClearAmbientOcclusionMap;
 		private DarkUI.Controls.DarkButton butClearEmissiveMap;
-	}
+        private DarkUI.Controls.DarkStatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel lblResult;
+        private System.Windows.Forms.ToolStripStatusLabel lblXmlMaterialFile;
+    }
 }
