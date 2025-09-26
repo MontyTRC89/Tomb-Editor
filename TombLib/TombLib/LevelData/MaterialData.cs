@@ -8,8 +8,9 @@ namespace TombLib.LevelData
 	public enum MaterialType : byte
 	{
 		Default,
-		Reflective
-	}
+		Reflective,
+        SkyBoxReflective
+    }
 
 	public class MaterialData
 	{

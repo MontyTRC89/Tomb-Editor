@@ -48,8 +48,9 @@ namespace TombLib.Forms
 			tbSpecularMapPath.Text = _materialData.SpecularMap;
 			tbAmbientOcclusionMapPath.Text = _materialData.AmbientOcclusionMap;
 			tbEmissiveMapPath.Text = _materialData.EmissiveMap;
+			tbRoughnessMapPath.Text = _materialData.RoughnessMap;
 
-			if (!string.IsNullOrEmpty(_materialData.NormalMap))
+            if (!string.IsNullOrEmpty(_materialData.NormalMap))
 				tbNormalMapPath.BackColor = (_materialData.IsNormalMapFound ? _correctColor : _wrongColor);
 
 			if (!string.IsNullOrEmpty(_materialData.AmbientOcclusionMap))
@@ -61,13 +62,17 @@ namespace TombLib.Forms
 			if (!string.IsNullOrEmpty(_materialData.EmissiveMap))
 				tbEmissiveMapPath.BackColor = (_materialData.IsEmissiveMapFound ? _correctColor : _wrongColor);
 
-			LoadTexturePreview(_materialData.ColorMap, picPreviewColorMap);
+			if (!string.IsNullOrEmpty(_materialData.RoughnessMap))
+				tbRoughnessMapPath.BackColor = (_materialData.IsRoughnessMapFound ? _correctColor : _wrongColor);
+
+            LoadTexturePreview(_materialData.ColorMap, picPreviewColorMap);
 			LoadTexturePreview(_materialData.NormalMap, picPreviewNormalMap);
 			LoadTexturePreview(_materialData.SpecularMap, picPreviewSpecularMap);
 			LoadTexturePreview(_materialData.AmbientOcclusionMap, picPreviewAmbientOcclusionMap);
 			LoadTexturePreview(_materialData.EmissiveMap, picPreviewEmissiveMap);
+			LoadTexturePreview(_materialData.RoughnessMap, picPreviewRoughnessMap);
 
-			lblXmlMaterialFile.Text = string.IsNullOrEmpty(_materialData.XmlMaterialFileName) ? string.Empty :
+            lblXmlMaterialFile.Text = string.IsNullOrEmpty(_materialData.XmlMaterialFileName) ? string.Empty :
 				"Material settings file: " + _materialData.XmlMaterialFileName;
 
 			comboMaterialType.SelectedIndex = (int)_materialData.Type;
@@ -75,7 +80,7 @@ namespace TombLib.Forms
 			UpdateUI();
 
 			_loaded = true;
-        }
+		}
 
 		private void LoadTexturePreview(string path, PictureBox pictureBox)
 		{
@@ -130,18 +135,19 @@ namespace TombLib.Forms
 			string externalMaterialDataPath = Path.Combine(
 						Path.GetDirectoryName(_texturePath),
 						Path.GetFileNameWithoutExtension(_texturePath) + ".xml");
-		
+
 			var materialData = new MaterialData();
-		
+
 			materialData.Type = (MaterialType)comboMaterialType.SelectedIndex;
-		
+
 			materialData.ColorMap = _texturePath;
 			materialData.NormalMap = tbNormalMapPath.Text;
 			materialData.SpecularMap = tbSpecularMapPath.Text;
 			materialData.EmissiveMap = tbEmissiveMapPath.Text;
 			materialData.AmbientOcclusionMap = tbAmbientOcclusionMapPath.Text;
-		
-			switch (materialData.Type)
+			materialData.RoughnessMap = tbRoughnessMapPath.Text;
+
+            switch (materialData.Type)
 			{
 				case MaterialType.Default:
 					materialData.Parameters0 = new Vector4(
@@ -161,7 +167,7 @@ namespace TombLib.Forms
 			catch (Exception)
 			{
 				DarkMessageBox.Show(this, $"An error occurred while saving XML material file to '{externalMaterialDataPath}'",
-					"Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 		}
@@ -172,12 +178,13 @@ namespace TombLib.Forms
 			butClearAmbientOcclusionMap.Enabled = !string.IsNullOrEmpty(tbAmbientOcclusionMapPath.Text);
 			butClearEmissiveMap.Enabled = !string.IsNullOrEmpty(tbEmissiveMapPath.Text);
 			butClearSpecularMap.Enabled = !string.IsNullOrEmpty(tbSpecularMapPath.Text);
-		}
+			butClearRoughnessMap.Enabled = !string.IsNullOrEmpty(tbRoughnessMapPath.Text);
+        }
 
 		private void BrowseTexture(TextBox textBox, PictureBox previewBox)
 		{
 			var texturePath = LevelFileDialog.BrowseFile(this, "Browse texture", ImageC.FileExtensions, false);
-			
+
 			if (!string.IsNullOrEmpty(texturePath))
 			{
 				textBox.Text = texturePath;
@@ -220,19 +227,22 @@ namespace TombLib.Forms
 			LoadMaterialProperties();
 			if (_loaded)
 				_saveXml = true;
-        }
+		}
 
 		private void butBrowseNormalMap_Click(object sender, EventArgs e) => BrowseTexture(tbNormalMapPath, picPreviewNormalMap);
 		private void butBrowseAmbientOcclusionMap_Click(object sender, EventArgs e) => BrowseTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap);
-		private void butBrowseEmissiveMap_Click(object sender, EventArgs e) =>  BrowseTexture(tbEmissiveMapPath, picPreviewEmissiveMap);
+		private void butBrowseEmissiveMap_Click(object sender, EventArgs e) => BrowseTexture(tbEmissiveMapPath, picPreviewEmissiveMap);
 		private void butBrowseSpecularMap_Click(object sender, EventArgs e) => BrowseTexture(tbSpecularMapPath, picPreviewSpecularMap);
+        private void butBrowseRoughnessMap_Click(object sender, EventArgs e) => BrowseTexture(tbRoughnessMapPath, picPreviewRoughnessMap);
 
-		private void butClearNormalMap_Click(object sender, EventArgs e) => ClearTexture(tbNormalMapPath, picPreviewNormalMap, "normal");
+        private void butClearNormalMap_Click(object sender, EventArgs e) => ClearTexture(tbNormalMapPath, picPreviewNormalMap, "normal");
 		private void butClearAmbientOcclusionMap_Click(object sender, EventArgs e) => ClearTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap, "ambient occlusion");
 		private void butClearEmissiveMap_Click(object sender, EventArgs e) => ClearTexture(tbEmissiveMapPath, picPreviewEmissiveMap, "emissive");
 		private void butClearSpecularMap_Click(object sender, EventArgs e) => ClearTexture(tbSpecularMapPath, picPreviewSpecularMap, "specular");
+        private void butClearRoughnessMap_Click(object sender, EventArgs e) => ClearTexture(tbRoughnessMapPath, picPreviewRoughnessMap, "roughness");
 
-		private void nmNormalMapStrength_ValueChanged(object sender, EventArgs e)
+
+        private void nmNormalMapStrength_ValueChanged(object sender, EventArgs e)
 		{
 			_saveXml = true;
 		}
