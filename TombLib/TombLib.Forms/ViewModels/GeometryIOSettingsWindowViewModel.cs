@@ -8,8 +8,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using TombLib.GeometryIO;
-using TombLib.Services;
 using TombLib.Services.Abstract;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 
 namespace TombLib.Forms.ViewModels;
 
@@ -22,7 +23,7 @@ public enum GeometryIOSettingsType
 
 public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 {
-	private const string UNSAVED_PRESET_NAME = "-- Custom Preset --";
+	private const string DefaultCustomPresetConfigFileName = "GeometryIOPresets.xml";
 
 	#region Properties and Fields
 
@@ -136,7 +137,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	/// <summary>
 	/// Indicates whether the selected preset is the unsaved preset.
 	/// </summary>
-	public bool IsSelectedPresetUnsaved => SelectedPreset?.Name is UNSAVED_PRESET_NAME;
+	public bool IsSelectedPresetUnsaved => SelectedPreset?.Name == _unsavedPresetName;
 
 	/// <summary>
 	/// Collection of available presets. This includes built-in and user-defined presets.
@@ -161,7 +162,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 			{
 				if (_unsavedPreset is null)
 				{
-					_unsavedPreset = new IOGeometrySettingsPreset(UNSAVED_PRESET_NAME, null);
+					_unsavedPreset = new IOGeometrySettingsPreset(_unsavedPresetName, null);
 					AvailablePresets.Insert(0, _unsavedPreset);
 				}
 
@@ -182,11 +183,13 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	/// </summary>
 	private bool _applyingSelectedPreset;
 
+	private readonly string _unsavedPresetName;
 	private readonly string _customPresetConfigFilePath;
 
 	private readonly ICustomGeometrySettingsPresetIOService _customPresetIOService;
 	private readonly IDialogService _dialogService;
 	private readonly IMessageService _messageService;
+	private readonly ILocalizationService _localizationService;
 
 	#endregion Properties and Fields
 
@@ -194,14 +197,18 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		string? customPresetConfigFilePath = null,
 		ICustomGeometrySettingsPresetIOService? customPresetIOService = null,
 		IDialogService? dialogService = null,
-		IMessageService? messageService = null)
+		IMessageService? messageService = null,
+		ILocalizationService? localizationService = null)
 	{
 		_customPresetConfigFilePath = customPresetConfigFilePath
-			?? Path.Combine(DefaultPaths.ConfigsDirectory, "GeometryIOPresets.xml");
+			?? Path.Combine(DefaultPaths.ConfigsDirectory, DefaultCustomPresetConfigFileName);
 
-		_customPresetIOService = customPresetIOService ?? ServiceProvider.GetRequiredService<ICustomGeometrySettingsPresetIOService>();
-		_dialogService = dialogService ?? ServiceProvider.GetRequiredService<IDialogService>();
-		_messageService = messageService ?? ServiceProvider.GetRequiredService<IMessageService>();
+		_customPresetIOService = ServiceProvider.ResolveService(customPresetIOService);
+		_dialogService = ServiceProvider.ResolveService(dialogService);
+		_messageService = ServiceProvider.ResolveService(messageService);
+		_localizationService = ServiceProvider.ResolveService(localizationService).For(this);
+
+		_unsavedPresetName = _localizationService["CustomPresetName"];
 
 		var builtInPresets = type switch
 		{
@@ -239,13 +246,13 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 
 	partial void OnSelectedPresetChanging(IOGeometrySettingsPreset? oldValue, IOGeometrySettingsPreset newValue)
 	{
-		if (oldValue?.Name is UNSAVED_PRESET_NAME)
+		if (oldValue?.Name == _unsavedPresetName)
 			RemoveUnsavedPreset();
 	}
 
 	partial void OnSelectedPresetChanged(IOGeometrySettingsPreset value)
 	{
-		if (value is null || value.Name is UNSAVED_PRESET_NAME)
+		if (value is null || value.Name == _unsavedPresetName)
 			return;
 
 		_applyingSelectedPreset = true; // Prevent recursive updates
@@ -290,9 +297,9 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	private void SavePreset()
 	{
 		var inputBox = new InputBoxWindowViewModel(
-			title: "Save Preset",
-			label: "Enter a name for the preset:",
-			invalidNames: UNSAVED_PRESET_NAME
+			title: _localizationService["SavePreset"],
+			label: _localizationService["EnterPresetName"],
+			invalidNames: _unsavedPresetName
 		);
 
 		bool? result = _dialogService.ShowDialog(this, inputBox);
@@ -309,7 +316,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 
 		if (presetAlreadyExists)
 		{
-			_messageService.ShowError("A preset with this name already exists.");
+			_messageService.ShowError(_localizationService["PresetNameAlreadyExists"]);
 			return;
 		}
 
@@ -349,12 +356,12 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	[RelayCommand(CanExecute = nameof(IsSelectedPresetCustom))]
 	private void DeletePreset()
 	{
-		if (SelectedPreset is null || !IsSelectedPresetCustom)
+		if (SelectedPreset is null)
 			return;
 
 		bool deleteConfirmed = _messageService.ShowConfirmation(
-			$"Are you sure you want to delete the '{SelectedPreset.Name}' preset?",
-			"Delete Preset?",
+			_localizationService.Format("DeletePresetMessage", SelectedPreset.Name),
+			_localizationService["DeletePreset"],
 			defaultValue: false,
 			isRisky: true
 		);
@@ -379,7 +386,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	{
 		foreach (IOGeometrySettingsPreset preset in AvailablePresets)
 		{
-			if (preset.Name is UNSAVED_PRESET_NAME)
+			if (preset.Name == _unsavedPresetName)
 				continue; // Skip the unsaved preset
 
 			bool isMatch = preset.Settings.SwapXY == SwapXYAxes

@@ -5,12 +5,12 @@
 	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
-	xmlns:forms="clr-namespace:TombLib.Forms"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	xmlns:viewModels="clr-namespace:TombLib.Forms.ViewModels;assembly=TombLib.Forms"
-	Title="{forms:Localize GeometryIOSettings}"
+	Title="{tombLib:Localize Title}"
 	Width="375"
 	Height="375"
 	MinWidth="325"
@@ -53,19 +53,19 @@
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
-					<GroupBox Header="{forms:Localize Axis}">
+					<GroupBox Header="{tombLib:Localize Axis}">
 						<controls:SpacedStack Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-							<CheckBox Content="{forms:Localize SwapXYAxes}" IsChecked="{Binding SwapXYAxes}" />
-							<CheckBox Content="{forms:Localize SwapXZAxes}" IsChecked="{Binding SwapXZAxes}" />
-							<CheckBox Content="{forms:Localize SwapYZAxes}" IsChecked="{Binding SwapYZAxes}" />
-							<CheckBox Content="{forms:Localize InvertXAxis}" IsChecked="{Binding InvertXAxis}" />
-							<CheckBox Content="{forms:Localize InvertYAxis}" IsChecked="{Binding InvertYAxis}" />
-							<CheckBox Content="{forms:Localize InvertZAxis}" IsChecked="{Binding InvertZAxis}" />
-							<CheckBox Content="{forms:Localize InvertFaces}" IsChecked="{Binding InvertFaces}" />
+							<CheckBox Content="{tombLib:Localize SwapXYAxes}" IsChecked="{Binding SwapXYAxes}" />
+							<CheckBox Content="{tombLib:Localize SwapXZAxes}" IsChecked="{Binding SwapXZAxes}" />
+							<CheckBox Content="{tombLib:Localize SwapYZAxes}" IsChecked="{Binding SwapYZAxes}" />
+							<CheckBox Content="{tombLib:Localize InvertXAxis}" IsChecked="{Binding InvertXAxis}" />
+							<CheckBox Content="{tombLib:Localize InvertYAxis}" IsChecked="{Binding InvertYAxis}" />
+							<CheckBox Content="{tombLib:Localize InvertZAxis}" IsChecked="{Binding InvertZAxis}" />
+							<CheckBox Content="{tombLib:Localize InvertFaces}" IsChecked="{Binding InvertFaces}" />
 						</controls:SpacedStack>
 					</GroupBox>
 
-					<GroupBox Grid.Row="1" Header="{forms:Localize Size}">
+					<GroupBox Grid.Row="1" Header="{tombLib:Localize Size}">
 						<sg:SpacedGrid ColumnSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
@@ -74,7 +74,7 @@
 
 							<Label
 								VerticalAlignment="Center"
-								Content="{forms:Localize Scale}"
+								Content="{tombLib:Localize Scale}"
 								Target="{Binding ElementName=scaleNumericUpDown}" />
 							<controls:NumericUpDown
 								x:Name="scaleNumericUpDown"
@@ -95,21 +95,21 @@
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 
-					<GroupBox Header="{forms:Localize TextureMapping}">
+					<GroupBox Header="{tombLib:Localize TextureMapping}">
 						<controls:SpacedStack Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-							<CheckBox Content="{forms:Localize InvertVCoordinate}" IsChecked="{Binding InvertVCoordinate}" />
-							<CheckBox Content="{forms:Localize UVMapped}" IsChecked="{Binding UvMapped}" />
-							<CheckBox Content="{forms:Localize WrapUV}" IsChecked="{Binding WrapUV}" />
-							<CheckBox Content="{forms:Localize PremultiplyUV}" IsChecked="{Binding PremultiplyUV}" />
+							<CheckBox Content="{tombLib:Localize InvertVCoordinate}" IsChecked="{Binding InvertVCoordinate}" />
+							<CheckBox Content="{tombLib:Localize UVMapped}" IsChecked="{Binding UvMapped}" />
+							<CheckBox Content="{tombLib:Localize WrapUV}" IsChecked="{Binding WrapUV}" />
+							<CheckBox Content="{tombLib:Localize PremultiplyUV}" IsChecked="{Binding PremultiplyUV}" />
 						</controls:SpacedStack>
 					</GroupBox>
 
-					<GroupBox Grid.Row="1" Header="{forms:Localize Misc}">
+					<GroupBox Grid.Row="1" Header="{tombLib:Localize Misc}">
 						<controls:SpacedStack Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-							<CheckBox Content="{forms:Localize VertexColorLight}" IsChecked="{Binding VertexColorLight}" />
-							<CheckBox Content="{forms:Localize PackTextures}" IsChecked="{Binding PackTextures}" />
-							<CheckBox Content="{forms:Localize PadPackedTextures}" IsChecked="{Binding PadPackedTextures}" />
-							<CheckBox Content="{forms:Localize SortByName}" IsChecked="{Binding SortByName}" />
+							<CheckBox Content="{tombLib:Localize VertexColorLight}" IsChecked="{Binding VertexColorLight}" />
+							<CheckBox Content="{tombLib:Localize PackTextures}" IsChecked="{Binding PackTextures}" />
+							<CheckBox Content="{tombLib:Localize PadPackedTextures}" IsChecked="{Binding PadPackedTextures}" />
+							<CheckBox Content="{tombLib:Localize SortByName}" IsChecked="{Binding SortByName}" />
 						</controls:SpacedStack>
 					</GroupBox>
 				</sg:SpacedGrid>
@@ -124,7 +124,7 @@
 
 					<Label
 						VerticalAlignment="Center"
-						Content="{forms:Localize Preset}"
+						Content="{tombLib:Localize Preset}"
 						Target="{Binding ElementName=presetComboBox}">
 						<Label.Margin>
 							<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
@@ -172,11 +172,11 @@
 			<Button
 				Width="80"
 				Command="{Binding ConfirmCommand}"
-				Content="{forms:Localize OK}" />
+				Content="{tombLib:Localize Common.OK}" />
 			<Button
 				Width="80"
 				Command="{Binding CancelCommand}"
-				Content="{forms:Localize Cancel}"
+				Content="{tombLib:Localize Common.Cancel}"
 				IsCancel="True"
 				IsDefault="True" />
 		</controls:SpacedStack>

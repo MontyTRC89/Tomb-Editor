@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace TombLib.Services.Abstract;
+﻿namespace TombLib.WPF.Services.Abstract;
 
 /// <summary>
 /// Provides methods for displaying various types of messages to the user.

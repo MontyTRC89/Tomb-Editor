@@ -1,13 +1,8 @@
-﻿#nullable enable
+﻿using CustomMessageBox.WPF;
+using TombLib.WPF.Services.Abstract;
 
-using CustomMessageBox.WPF;
-using TombLib.Services.Abstract;
+namespace TombLib.WPF.Services;
 
-namespace TombLib.Services;
-
-/// <summary>
-/// Service for displaying message boxes to the user.
-/// </summary>
 public sealed class MessageBoxService : IMessageService
 {
 	public void ShowInformation(string message, string caption = "Information")

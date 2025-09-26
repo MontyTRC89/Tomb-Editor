@@ -35,7 +35,7 @@
 		<TextBox
 			x:Name="textBox_Value"
 			Grid.Row="1"
-			Text="{Binding Value}" />
+			Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />
 
 		<controls:SpacedStack
 			Grid.Row="2"

@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CustomMessageBox.WPF;
 using MvvmDialogs;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 
 namespace TombLib.Forms.ViewModels;
 
@@ -9,11 +10,19 @@ public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogVie
 {
 	[ObservableProperty] private string _title = string.Empty;
 	[ObservableProperty] private string _label = "Please enter a value:";
-	[ObservableProperty] private string _value = string.Empty;
+
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(IsValueNotEmpty))]
+	private string _value = string.Empty;
 
 	[ObservableProperty] private bool? _dialogResult;
 
+	public bool IsValueNotEmpty => !string.IsNullOrWhiteSpace(Value);
+
 	private readonly string[] _invalidNames = [];
+
+	private readonly IMessageService _messageService;
+	private readonly ILocalizationService _localizationService;
 
 	public InputBoxWindowViewModel(string title, string label, string placeholder = null, params string[] invalidNames)
 	{
@@ -22,23 +31,20 @@ public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogVie
 		Value = placeholder ?? string.Empty;
 
 		_invalidNames = invalidNames;
+
+		_messageService = ServiceProvider.ResolveService<IMessageService>();
+		_localizationService = ServiceProvider.ResolveService<ILocalizationService>()
+			.For(this);
 	}
 
-	[RelayCommand]
+	[RelayCommand(CanExecute = nameof(IsValueNotEmpty))]
 	private void Confirm()
 	{
 		foreach (string invalidName in _invalidNames)
 		{
 			if (Value.Equals(invalidName))
 			{
-				CMessageBox.Show(
-					"Invalid name, please choose another one.",
-					"Invalid name",
-					CMessageBoxButtons.OK,
-					CMessageBoxIcon.Error,
-					CMessageBoxDefaultButton.Button1
-				);
-
+				_messageService.ShowError(_localizationService["InvalidNameMessage"]);
 				return;
 			}
 		}

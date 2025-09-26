@@ -108,13 +108,10 @@
     <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
     <ProjectReference Include="..\TombLib.Rendering\TombLib.Rendering.csproj" />
+    <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
     <ProjectReference Include="..\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
-    <PackageReference Include="MvvmDialogs" Version="9.1.2" />
     <PackageReference Include="NLog" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +123,6 @@
     <EmbeddedResource Remove="Forms\FormPopUpSearch.resx" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Resources\Localization\en.json" />
     <None Remove="Resources\general_edit-16.png" />
     <None Remove="Resources\general_Save-16.png" />
     <None Remove="Resources\general_trash-16.png" />
@@ -141,10 +137,5 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Resources\Localization\EN\TombLib.Forms.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

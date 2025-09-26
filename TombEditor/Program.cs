@@ -1,22 +1,28 @@
-﻿using DarkUI.Config;
+﻿using CustomMessageBox.WPF;
+using DarkUI.Config;
 using DarkUI.Win32;
+using Microsoft.Extensions.DependencyInjection;
+using MvvmDialogs;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using TombEditor.Forms;
-using TombLib.NG;
+using TombLib.Forms.Views;
 using TombLib.LevelData;
+using TombLib.NG;
+using TombLib.Services;
+using TombLib.Services.Abstract;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
-using System.Text;
+using TombLib.WPF;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 using WPF = System.Windows;
-using TombLib.Forms.Views;
-using CustomMessageBox.WPF;
-using TombLib.Forms;
 
 namespace TombEditor
 {
@@ -173,8 +179,16 @@ namespace TombEditor
             if (wpfApp.TryFindResource("Brush_Background_Alternative") is WPF.Media.SolidColorBrush brush)
                 CMessageBox.DefaultButtonsPanelBackground = brush;
 
-            // Initialize service providers
-            TombLib.Services.ServiceProvider.Configure(TombLib.Services.ServiceCollectionExtensions.CreateTombLibServiceProvider());
+			// Initialize service providers
+			var services = new ServiceCollection();
+
+			services.AddSingleton<IDialogService, DialogService>();
+			services.AddSingleton<IMessageService, MessageBoxService>();
+			services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
+
+            services.AddTransient<ILocalizationService, LocalizationService>();
+
+			TombLib.WPF.Services.ServiceProvider.Configure(services.BuildServiceProvider());
         }
     }
 }

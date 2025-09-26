@@ -1,5 +1,4 @@
 using Moq;
-using MvvmDialogs;
 using TombLib.Forms.ViewModels;
 using TombLib.GeometryIO;
 using TombLib.Services.Abstract;
