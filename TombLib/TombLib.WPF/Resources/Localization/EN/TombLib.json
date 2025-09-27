@@ -1,6 +1,8 @@
 {
 	"GeometryIOSettingsWindow": {
 		"Title": "Geometry I/O Settings",
+		"TitleImport": "Import Settings",
+		"TitleExport": "Export Settings",
 
 		"Axis": "Axis",
 		"Size": "Size",

@@ -25,15 +25,17 @@ namespace TombLib.GeometryIO
         public override string ToString() => Name;
     }
 
-    public record IOGeometrySettings
+    public record IOGeometryInternalSettings
     {
-        // Internal settings
         public bool Export { get; set; } = false;
         public bool ExportRoom { get; set; } = false;
         public bool ProcessGeometry { get; set; } = true;
         public bool ProcessUntexturedGeometry { get; set; } = false;
         public bool ProcessAnimations { get; set; } = false;
+    }
 
+    public record IOGeometrySettings : IOGeometryInternalSettings
+    {
         public bool SwapXY { get; set; } = false;
         public bool SwapXZ { get; set; } = false;
         public bool SwapYZ { get; set; } = false;

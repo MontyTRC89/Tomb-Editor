@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using TombEditor.Forms;
-using TombLib.Forms.Views;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Services;
@@ -34,10 +33,6 @@ namespace TombEditor
         public static void Main(string[] args)
         {
             InitializeWPF();
-
-            var window = new GeometryIOSettingsWindow(TombLib.Forms.ViewModels.GeometryIOSettingsType.Import);
-            window.ShowDialog();
-            return;
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 

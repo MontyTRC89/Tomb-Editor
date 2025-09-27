@@ -3,7 +3,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MvvmDialogs;
-using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -14,40 +14,15 @@ using TombLib.WPF.Services.Abstract;
 
 namespace TombLib.Forms.ViewModels;
 
-public enum GeometryIOSettingsType
-{
-	Export,
-	Import,
-	AnimationImport,
-}
-
-public partial class GeometryIOSettingsWindowViewModel : ObservableObject
+public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModalDialogViewModel
 {
 	private const string DefaultCustomPresetConfigFileName = "GeometryIOPresets.xml";
 
 	#region Properties and Fields
 
-	/* View Model Properties */
+	public IOGeometryInternalSettings InternalSettings { get; }
 
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
-	private bool _isExport;
-
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
-	private bool _isRoomExport;
-
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
-	private bool _processGeometry = true;
-
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
-	private bool _processUntexturedGeometry;
-
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
-	private bool _processAnimations;
+	[ObservableProperty] private bool? _dialogResult;
 
 	/* Axis Properties */
 
@@ -164,7 +139,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 			{
 				if (_unsavedPreset is null)
 				{
-					_unsavedPreset = new IOGeometrySettingsPreset(_unsavedPresetName, null);
+					_unsavedPreset = new IOGeometrySettingsPreset(_unsavedPresetName, new IOGeometrySettings());
 					AvailablePresets.Insert(0, _unsavedPreset);
 				}
 
@@ -188,6 +163,8 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	private readonly string _unsavedPresetName;
 	private readonly string _customPresetConfigFilePath;
 
+	/* Services */
+
 	private readonly ICustomGeometrySettingsPresetIOService _customPresetIOService;
 	private readonly IDialogService _dialogService;
 	private readonly IMessageService _messageService;
@@ -196,7 +173,8 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	#endregion Properties and Fields
 
 	public GeometryIOSettingsWindowViewModel(
-		GeometryIOSettingsType type,
+		IReadOnlyList<IOGeometrySettingsPreset> builtInPresets,
+		IOGeometryInternalSettings? internalSettings = null,
 		string? customPresetConfigFilePath = null,
 		ICustomGeometrySettingsPresetIOService? customPresetIOService = null,
 		IDialogService? dialogService = null,
@@ -210,19 +188,13 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		_localizationService = ServiceLocator.ResolveService(localizationService)
 			.KeysFor(this);
 
-		// Properties
+		// Fields and Properties
 		_customPresetConfigFilePath = customPresetConfigFilePath
 			?? Path.Combine(DefaultPaths.ConfigsDirectory, DefaultCustomPresetConfigFileName);
 
 		_unsavedPresetName = _localizationService["CustomPresetName"];
 
-		var builtInPresets = type switch
-		{
-			GeometryIOSettingsType.Export => IOSettingsPresets.GeometryExportSettingsPresets,
-			GeometryIOSettingsType.Import => IOSettingsPresets.GeometryImportSettingsPresets,
-			GeometryIOSettingsType.AnimationImport => IOSettingsPresets.AnimationSettingsPresets,
-			_ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-		};
+		InternalSettings = internalSettings ?? new();
 
 		var customPresets = _customPresetIOService.LoadPresets(_customPresetConfigFilePath);
 		var allPresets = builtInPresets.Concat(customPresets).ToHashSet();
@@ -230,6 +202,53 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		AvailablePresets = new(allPresets);
 		SelectedPreset = AvailablePresets.First();
 	}
+
+	#region Public Methods
+
+	/// <summary>
+	/// Selects a preset whose name contains the specified filter string.
+	/// </summary>
+	/// <param name="nameFilter">The substring to search for in preset names.</param>
+	public void SelectPreset(string nameFilter)
+	{
+		IOGeometrySettingsPreset? presetToSelect = AvailablePresets
+			.FirstOrDefault(p => p.Name.Contains(nameFilter));
+
+		if (presetToSelect is not null)
+			SelectedPreset = presetToSelect;
+	}
+
+	/// <summary>
+	/// Gets the current geometry settings based on provided internal settings and user selections.
+	/// </summary>
+	public IOGeometrySettings GetCurrentSettings() => new()
+	{
+		// Internal settings
+		Export = InternalSettings.Export,
+		ExportRoom = InternalSettings.ExportRoom,
+		ProcessGeometry = InternalSettings.ProcessGeometry,
+		ProcessUntexturedGeometry = InternalSettings.ProcessUntexturedGeometry,
+		ProcessAnimations = InternalSettings.ProcessAnimations,
+
+		SwapXY = SwapXYAxes,
+		SwapXZ = SwapXZAxes,
+		SwapYZ = SwapYZAxes,
+		FlipX = InvertXAxis,
+		FlipY = InvertYAxis,
+		FlipZ = InvertZAxis,
+		InvertFaces = InvertFaces,
+		Scale = Scale,
+		FlipUV_V = InvertVCoordinate,
+		MappedUV = UvMapped,
+		WrapUV = WrapUV,
+		PremultiplyUV = PremultiplyUV,
+		UseVertexColor = VertexColorLight,
+		PackTextures = PackTextures,
+		PadPackedTextures = PadPackedTextures,
+		SortByName = SortByName
+	};
+
+	#endregion Public Methods
 
 	#region Partial Methods for Property Changes
 
@@ -264,11 +283,6 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		_applyingSelectedPreset = true; // Prevent recursive updates
 
 		// Update all settings based on the selected preset
-		IsExport = value.Settings.Export;
-		IsRoomExport = value.Settings.ExportRoom;
-		ProcessGeometry = value.Settings.ProcessGeometry;
-		ProcessUntexturedGeometry = value.Settings.ProcessUntexturedGeometry;
-		ProcessAnimations = value.Settings.ProcessAnimations;
 		SwapXYAxes = value.Settings.SwapXY;
 		SwapXZAxes = value.Settings.SwapXZ;
 		SwapYZAxes = value.Settings.SwapYZ;
@@ -296,7 +310,15 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	[RelayCommand(CanExecute = nameof(IsValid))]
 	private void Confirm()
 	{
-		// Save settings logic here
+		DialogResult = true;
+		_dialogService.Close(this);
+	}
+
+	[RelayCommand]
+	private void Cancel()
+	{
+		DialogResult = false;
+		_dialogService.Close(this);
 	}
 
 	[RelayCommand(CanExecute = nameof(IsValid))]
@@ -329,11 +351,6 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		// Create a new preset and add it to the list
 		var newPreset = new IOGeometrySettingsPreset(presetName, new IOGeometrySettings
 		{
-			Export = IsExport,
-			ExportRoom = IsRoomExport,
-			ProcessGeometry = ProcessGeometry,
-			ProcessUntexturedGeometry = ProcessUntexturedGeometry,
-			ProcessAnimations = ProcessAnimations,
 			SwapXY = SwapXYAxes,
 			SwapXZ = SwapXZAxes,
 			SwapYZ = SwapYZAxes,

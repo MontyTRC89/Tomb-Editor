@@ -15,6 +15,8 @@ using TombEditor.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
@@ -29,6 +31,7 @@ using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.WPF;
 
 namespace TombEditor
 {
@@ -4354,19 +4357,19 @@ namespace TombEditor
 
             var geometry = new ImportedGeometry();
 
-            using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-            {
-                settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                settingsDialog.SelectPreset("Normal scale to TR scale");
+            var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+            var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
+            settingsDialog.SetOwner(owner);
+            settingsDialog.ShowDialog();
 
-                if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
-                    return null;
+            if (viewModel.DialogResult != true)
+                return null;
 
-                var info = new ImportedGeometryInfo(path, settingsDialog.Settings);
-                _editor.Level.Settings.ImportedGeometryUpdate(geometry, info);
-                _editor.Level.Settings.ImportedGeometries.Add(geometry);
-                _editor.LoadedImportedGeometriesChange();
-            }
+            var settings = viewModel.GetCurrentSettings();
+            var info = new ImportedGeometryInfo(path, settings);
+            _editor.Level.Settings.ImportedGeometryUpdate(geometry, info);
+            _editor.Level.Settings.ImportedGeometries.Add(geometry);
+            _editor.LoadedImportedGeometriesChange();
 
             return geometry;
         }
@@ -5067,56 +5070,61 @@ namespace TombEditor
                     return;
                 }
 
-                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true, ExportRoom = true }))
+                var viewModel = new GeometryIOSettingsWindowViewModel(
+                    IOSettingsPresets.GeometryExportSettingsPresets,
+                    new() { Export = true, ExportRoom = true }
+                );
+
+                var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
+                settingsDialog.SetOwner(owner);
+                settingsDialog.ShowDialog();
+
+                if (viewModel.DialogResult != true)
+                    return;
+
+                var settings = viewModel.GetCurrentSettings();
+
+                BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
                 {
-                    settingsDialog.AddPreset(IOSettingsPresets.GeometryExportSettingsPresets);
-                    settingsDialog.SelectPreset("Normal scale");
+                    if (txt is LevelTexture)
+                        return _editor.Level.Settings.MakeAbsolute(((LevelTexture)txt).Path);
+                    else
+                        return "";
+                };
 
-                    if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
+                BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settings, getTextureCallback);
+                new Thread(() =>
+                {
+                    bool exportInWorldCoordinates = rooms.Count() > 1;
+                    var result = RoomGeometryExporter.ExportRooms(rooms, saveFileDialog.FileName, _editor.Level, exportInWorldCoordinates);
+
+                    if (result.Errors.Count < 1)
                     {
-                        BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
+                        IOModel resultModel = result.Model;
+                        if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
                         {
-                            if (txt is LevelTexture)
-                                return _editor.Level.Settings.MakeAbsolute(((LevelTexture)txt).Path);
-                            else
-                                return "";
-                        };
-
-                        BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
-                        new Thread(() =>
-                        {
-                            bool exportInWorldCoordinates = rooms.Count() > 1;
-                            var result = RoomGeometryExporter.ExportRooms(rooms, saveFileDialog.FileName, _editor.Level, exportInWorldCoordinates);
-
-                            if (result.Errors.Count < 1)
+                            if (result.Warnings.Count > 0)
                             {
-                                IOModel resultModel = result.Model;
-                                if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
+                                if (result.Warnings.Count < 5)
                                 {
-                                    if (result.Warnings.Count > 0)
-                                    {
-                                        if (result.Warnings.Count < 5)
-                                        {
-                                            string warningmessage = "";
-                                            result.Warnings.ForEach(warning => warningmessage += warning + "\n");
-                                            _editor.SendMessage("Room export successful with warnings: \n" + warningmessage, PopupType.Warning);
-                                        }
-                                        else
-                                            _editor.SendMessage("Room export successful with multiple warnings.", PopupType.Warning);
-                                    }
-                                    else
-                                        _editor.SendMessage("Room export successful.", PopupType.Info);
+                                    string warningmessage = "";
+                                    result.Warnings.ForEach(warning => warningmessage += warning + "\n");
+                                    _editor.SendMessage("Room export successful with warnings: \n" + warningmessage, PopupType.Warning);
                                 }
+                                else
+                                    _editor.SendMessage("Room export successful with multiple warnings.", PopupType.Warning);
                             }
                             else
-                            {
-                                string errorMessage = "";
-                                result.Errors.ForEach((error) => { errorMessage += error + "\n"; });
-                                _editor.SendMessage("There was an error exporting room(s): \n" + errorMessage, PopupType.Error);
-                            }
-                        }).Start();
+                                _editor.SendMessage("Room export successful.", PopupType.Info);
+                        }
                     }
-                }
+                    else
+                    {
+                        string errorMessage = "";
+                        result.Errors.ForEach((error) => { errorMessage += error + "\n"; });
+                        _editor.SendMessage("There was an error exporting room(s): \n" + errorMessage, PopupType.Error);
+                    }
+                }).Start();
             }
         }
 
