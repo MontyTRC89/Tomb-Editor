@@ -16,6 +16,7 @@ public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogVie
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(IsValueNotEmpty))]
+	[NotifyCanExecuteChangedFor(nameof(ConfirmCommand))]
 	private string _value = string.Empty;
 
 	[ObservableProperty] private bool? _dialogResult;

@@ -127,6 +127,8 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(IsSelectedPresetCustom))]
 	[NotifyPropertyChangedFor(nameof(IsSelectedPresetUnsaved))]
+	[NotifyCanExecuteChangedFor(nameof(SavePresetCommand))]
+	[NotifyCanExecuteChangedFor(nameof(DeletePresetCommand))]
 	private IOGeometrySettingsPreset _selectedPreset;
 
 	/// <summary>
@@ -206,7 +208,8 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		_customPresetIOService = ServiceLocator.ResolveService(customPresetIOService);
 		_dialogService = ServiceLocator.ResolveService(dialogService);
 		_messageService = ServiceLocator.ResolveService(messageService);
-		_localizationService = ServiceLocator.ResolveService(localizationService).For(this);
+		_localizationService = ServiceLocator.ResolveService(localizationService)
+			.For(this);
 
 		_unsavedPresetName = _localizationService["CustomPresetName"];
 

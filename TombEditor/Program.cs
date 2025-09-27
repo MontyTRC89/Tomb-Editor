@@ -188,7 +188,7 @@ namespace TombEditor
 
             services.AddTransient<ILocalizationService, LocalizationService>();
 
-            TombLib.WPF.Services.ServiceLocator.Configure(services.BuildServiceProvider());
+            ServiceLocator.Configure(services.BuildServiceProvider());
         }
     }
 }
