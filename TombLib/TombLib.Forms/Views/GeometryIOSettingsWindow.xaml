@@ -10,7 +10,7 @@
 	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	xmlns:viewModels="clr-namespace:TombLib.Forms.ViewModels;assembly=TombLib.Forms"
-	Title="{tombLib:Localize Title}"
+	Title="{Binding WindowTitle}"
 	Width="375"
 	Height="375"
 	MinWidth="325"
@@ -61,7 +61,10 @@
 							<CheckBox Content="{tombLib:Localize InvertXAxis}" IsChecked="{Binding InvertXAxis}" />
 							<CheckBox Content="{tombLib:Localize InvertYAxis}" IsChecked="{Binding InvertYAxis}" />
 							<CheckBox Content="{tombLib:Localize InvertZAxis}" IsChecked="{Binding InvertZAxis}" />
-							<CheckBox Content="{tombLib:Localize InvertFaces}" IsChecked="{Binding InvertFaces}" />
+							<CheckBox
+								Content="{tombLib:Localize InvertFaces}"
+								IsChecked="{Binding InvertFaces}"
+								IsEnabled="{Binding CanInvertFaces}" />
 						</controls:SpacedStack>
 					</GroupBox>
 
@@ -81,6 +84,7 @@
 								Grid.Column="1"
 								FormatString="F4"
 								Increment="0.25"
+								IsEnabled="{Binding CanProcessGeometry}"
 								Maximum="2048"
 								Minimum="0.0001"
 								TextAlignment="Left"
@@ -95,7 +99,7 @@
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 
-					<GroupBox Header="{tombLib:Localize TextureMapping}">
+					<GroupBox Header="{tombLib:Localize TextureMapping}" IsEnabled="{Binding CanProcessTextures}">
 						<controls:SpacedStack Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
 							<CheckBox Content="{tombLib:Localize InvertVCoordinate}" IsChecked="{Binding InvertVCoordinate}" />
 							<CheckBox Content="{tombLib:Localize UVMapped}" IsChecked="{Binding UvMapped}" />
@@ -106,10 +110,22 @@
 
 					<GroupBox Grid.Row="1" Header="{tombLib:Localize Misc}">
 						<controls:SpacedStack Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-							<CheckBox Content="{tombLib:Localize VertexColorLight}" IsChecked="{Binding VertexColorLight}" />
-							<CheckBox Content="{tombLib:Localize PackTextures}" IsChecked="{Binding PackTextures}" />
-							<CheckBox Content="{tombLib:Localize PadPackedTextures}" IsChecked="{Binding PadPackedTextures}" />
-							<CheckBox Content="{tombLib:Localize SortByName}" IsChecked="{Binding SortByName}" />
+							<CheckBox
+								Content="{tombLib:Localize VertexColorLight}"
+								IsChecked="{Binding VertexColorLight}"
+								IsEnabled="{Binding CanProcessGeometry}" />
+							<CheckBox
+								Content="{tombLib:Localize PackTextures}"
+								IsChecked="{Binding PackTextures}"
+								IsEnabled="{Binding CanPackTextures}" />
+							<CheckBox
+								Content="{tombLib:Localize PadPackedTextures}"
+								IsChecked="{Binding PadPackedTextures}"
+								IsEnabled="{Binding CanPadPackedTextures}" />
+							<CheckBox
+								Content="{tombLib:Localize SortByName}"
+								IsChecked="{Binding SortByName}"
+								IsEnabled="{Binding CanSortByName}" />
 						</controls:SpacedStack>
 					</GroupBox>
 				</sg:SpacedGrid>

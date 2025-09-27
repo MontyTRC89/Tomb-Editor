@@ -27,11 +27,11 @@ namespace TombLib.GeometryIO
 
     public record IOGeometryInternalSettings
     {
-        public bool Export { get; set; } = false;
-        public bool ExportRoom { get; set; } = false;
-        public bool ProcessGeometry { get; set; } = true;
-        public bool ProcessUntexturedGeometry { get; set; } = false;
-        public bool ProcessAnimations { get; set; } = false;
+        public bool Export { get; init; } = false;
+        public bool ExportRoom { get; init; } = false;
+        public bool ProcessGeometry { get; init; } = true;
+        public bool ProcessUntexturedGeometry { get; init; } = false;
+        public bool ProcessAnimations { get; init; } = false;
     }
 
     public record IOGeometrySettings : IOGeometryInternalSettings

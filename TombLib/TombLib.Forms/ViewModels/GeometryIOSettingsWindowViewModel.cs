@@ -20,9 +20,28 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 
 	#region Properties and Fields
 
-	public IOGeometryInternalSettings InternalSettings { get; }
-
 	[ObservableProperty] private bool? _dialogResult;
+
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(WindowTitle))]
+	[NotifyPropertyChangedFor(nameof(CanInvertFaces))]
+	[NotifyPropertyChangedFor(nameof(CanProcessTextures))]
+	[NotifyPropertyChangedFor(nameof(CanProcessGeometry))]
+	[NotifyPropertyChangedFor(nameof(CanSortByName))]
+	[NotifyPropertyChangedFor(nameof(CanPackTextures))]
+	[NotifyPropertyChangedFor(nameof(CanPadPackedTextures))]
+	private IOGeometryInternalSettings _internalSettings;
+
+	public string WindowTitle => InternalSettings.Export
+		? _localizationService["TitleExport"]
+		: _localizationService["TitleImport"];
+
+	public bool CanInvertFaces => !InternalSettings.ProcessAnimations;
+	public bool CanProcessTextures => InternalSettings.ProcessGeometry && !InternalSettings.Export;
+	public bool CanProcessGeometry => InternalSettings.ProcessGeometry;
+	public bool CanSortByName => !InternalSettings.Export;
+	public bool CanPackTextures => InternalSettings.Export && !InternalSettings.ExportRoom;
+	public bool CanPadPackedTextures => CanPackTextures && PackTextures;
 
 	/* Axis Properties */
 
@@ -87,6 +106,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
+	[NotifyPropertyChangedFor(nameof(CanPadPackedTextures))]
 	private bool _packTextures;
 
 	[ObservableProperty]
@@ -186,7 +206,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 		_dialogService = ServiceLocator.ResolveService(dialogService);
 		_messageService = ServiceLocator.ResolveService(messageService);
 		_localizationService = ServiceLocator.ResolveService(localizationService)
-			.KeysFor(this);
+			.WithKeysFor(this);
 
 		// Fields and Properties
 		_customPresetConfigFilePath = customPresetConfigFilePath

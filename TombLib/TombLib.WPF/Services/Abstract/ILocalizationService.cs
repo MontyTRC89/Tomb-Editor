@@ -38,7 +38,7 @@ public interface ILocalizationService
 	/// </list>
 	/// <para>These values are then used to automatically prefix localization keys when using the indexer.</para>
 	/// </remarks>
-	ILocalizationService KeysFor(INotifyPropertyChanged viewModel);
+	ILocalizationService WithKeysFor(INotifyPropertyChanged viewModel);
 
 	/// <summary>
 	/// Gets the localized string for the specified key using the current namespace and component context.

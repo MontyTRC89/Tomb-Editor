@@ -39,7 +39,7 @@ public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogVie
 		// Services
 		_messageService = ServiceLocator.ResolveService(messageService);
 		_localizationService = ServiceLocator.ResolveService(localizationService)
-			.KeysFor(this);
+			.WithKeysFor(this);
 
 		// Properties
 		Title = title ?? string.Empty;
