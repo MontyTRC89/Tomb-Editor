@@ -8,7 +8,7 @@ public sealed class LocalizationService : ILocalizationService
 	public string? NamespaceName { get; private set; }
 	public string? ComponentName { get; private set; }
 
-	public ILocalizationService For(INotifyPropertyChanged viewModel)
+	public ILocalizationService KeysFor(INotifyPropertyChanged viewModel)
 	{
 		Type viewModelType = viewModel.GetType();
 

@@ -11,8 +11,8 @@ namespace TombLib.Forms.ViewModels;
 
 public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogViewModel
 {
-	[ObservableProperty] private string _title = string.Empty;
-	[ObservableProperty] private string _label = "Please enter a value:";
+	[ObservableProperty] private string _title;
+	[ObservableProperty] private string _label;
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(IsValueNotEmpty))]
@@ -29,19 +29,24 @@ public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogVie
 	private readonly ILocalizationService _localizationService;
 
 	public InputBoxWindowViewModel(
-		string title, string label, string? placeholder = null, IEnumerable<string>? invalidNames = null,
+		string? title = null,
+		string? label = null,
+		string? placeholder = null,
+		IEnumerable<string>? invalidNames = null,
 		IMessageService? messageService = null,
 		ILocalizationService? localizationService = null)
 	{
-		Title = title;
-		Label = label;
+		// Services
+		_messageService = ServiceLocator.ResolveService(messageService);
+		_localizationService = ServiceLocator.ResolveService(localizationService)
+			.KeysFor(this);
+
+		// Properties
+		Title = title ?? string.Empty;
+		Label = label ?? _localizationService["EnterValue"];
 		Value = placeholder ?? string.Empty;
 
 		_invalidNames = invalidNames ?? [];
-
-		_messageService = ServiceLocator.ResolveService(messageService);
-		_localizationService = ServiceLocator.ResolveService(localizationService)
-			.For(this);
 	}
 
 	[RelayCommand(CanExecute = nameof(IsValueNotEmpty))]

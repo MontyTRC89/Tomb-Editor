@@ -36,7 +36,7 @@ public class GeometryIOSettingsWindowViewModelTests
 			.Returns(true);
 
 		// Setup localization service
-		_mockLocalizationService.Setup(x => x.For(It.IsAny<INotifyPropertyChanged>()))
+		_mockLocalizationService.Setup(x => x.KeysFor(It.IsAny<INotifyPropertyChanged>()))
 			.Returns(_mockLocalizationService.Object);
 
 		_mockLocalizationService.Setup(x => x[It.IsAny<string>()])

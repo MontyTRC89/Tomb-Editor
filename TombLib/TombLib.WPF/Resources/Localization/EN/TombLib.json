@@ -37,6 +37,7 @@
 	},
 
 	"InputBoxWindow": {
+		"EnterValue": "Please enter a value:",
 		"InvalidNameMessage": "Invalid name, please choose another one."
 	}
 }

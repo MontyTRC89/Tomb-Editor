@@ -195,21 +195,24 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 
 	#endregion Properties and Fields
 
-	public GeometryIOSettingsWindowViewModel(GeometryIOSettingsType type,
+	public GeometryIOSettingsWindowViewModel(
+		GeometryIOSettingsType type,
 		string? customPresetConfigFilePath = null,
 		ICustomGeometrySettingsPresetIOService? customPresetIOService = null,
 		IDialogService? dialogService = null,
 		IMessageService? messageService = null,
 		ILocalizationService? localizationService = null)
 	{
-		_customPresetConfigFilePath = customPresetConfigFilePath
-			?? Path.Combine(DefaultPaths.ConfigsDirectory, DefaultCustomPresetConfigFileName);
-
+		// Services
 		_customPresetIOService = ServiceLocator.ResolveService(customPresetIOService);
 		_dialogService = ServiceLocator.ResolveService(dialogService);
 		_messageService = ServiceLocator.ResolveService(messageService);
 		_localizationService = ServiceLocator.ResolveService(localizationService)
-			.For(this);
+			.KeysFor(this);
+
+		// Properties
+		_customPresetConfigFilePath = customPresetConfigFilePath
+			?? Path.Combine(DefaultPaths.ConfigsDirectory, DefaultCustomPresetConfigFileName);
 
 		_unsavedPresetName = _localizationService["CustomPresetName"];
 
