@@ -30,7 +30,7 @@ namespace TombLib.GeometryIO
         public bool Export { get; init; } = false;
         public bool ExportRoom { get; init; } = false;
         public bool ProcessGeometry { get; init; } = true;
-        public bool ProcessUntexturedGeometry { get; init; } = false;
+        public bool ProcessUntexturedGeometry { get; set; } = false;
         public bool ProcessAnimations { get; init; } = false;
     }
 
