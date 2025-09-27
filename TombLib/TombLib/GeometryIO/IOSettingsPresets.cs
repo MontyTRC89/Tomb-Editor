@@ -84,6 +84,8 @@ public static class IOSettingsPresets
 				PremultiplyUV = true,
 				WrapUV = true
 			}),
+
+			// Blender
 			new("Blender DAE", new IOGeometrySettings
 			{
 				Scale = Level.SectorSizeUnit,
@@ -135,15 +137,12 @@ public static class IOSettingsPresets
 
 		AnimationSettingsPresets = new List<IOGeometrySettingsPreset>
 		{
-			// 3dsmax COLLADA
 			new("3dsmax COLLADA", new IOGeometrySettings
 			{
 				ProcessAnimations = true,
 				ProcessGeometry = false,
 				SwapYZ = true
 			}),
-
-			// 3dsmax Filmbox (FBX)
 			new("3dsmax Filmbox (FBX)", new IOGeometrySettings
 			{
 				ProcessAnimations = true,
