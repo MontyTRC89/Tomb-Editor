@@ -7,10 +7,11 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	xmlns:viewModels="clr-namespace:TombLib.Forms.ViewModels;assembly=TombLib.Forms"
 	Title="{Binding Title}"
 	Width="420"
-	d:DataContext="{d:DesignInstance Type=viewModels:InputBoxViewModel}"
+	d:DataContext="{d:DesignInstance Type=viewModels:InputBoxWindowViewModel}"
 	md:DialogServiceViews.IsRegistered="True"
 	Background="{DynamicResource Brush_Background}"
 	ResizeMode="CanMinimize"
@@ -49,12 +50,12 @@
 			<Button
 				Width="80"
 				Command="{Binding ConfirmCommand}"
-				Content="OK"
+				Content="{tombLib:Localize ~Common.OK}"
 				IsDefault="True" />
 			<Button
 				Width="80"
 				Command="{Binding CancelCommand}"
-				Content="Cancel"
+				Content="{tombLib:Localize ~Common.Cancel}"
 				IsCancel="True" />
 		</controls:SpacedStack>
 	</Grid>

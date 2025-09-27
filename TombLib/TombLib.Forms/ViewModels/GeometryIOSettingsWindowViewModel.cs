@@ -203,10 +203,10 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		_customPresetConfigFilePath = customPresetConfigFilePath
 			?? Path.Combine(DefaultPaths.ConfigsDirectory, DefaultCustomPresetConfigFileName);
 
-		_customPresetIOService = ServiceProvider.ResolveService(customPresetIOService);
-		_dialogService = ServiceProvider.ResolveService(dialogService);
-		_messageService = ServiceProvider.ResolveService(messageService);
-		_localizationService = ServiceProvider.ResolveService(localizationService).For(this);
+		_customPresetIOService = ServiceLocator.ResolveService(customPresetIOService);
+		_dialogService = ServiceLocator.ResolveService(dialogService);
+		_messageService = ServiceLocator.ResolveService(messageService);
+		_localizationService = ServiceLocator.ResolveService(localizationService).For(this);
 
 		_unsavedPresetName = _localizationService["CustomPresetName"];
 
@@ -299,7 +299,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject
 		var inputBox = new InputBoxWindowViewModel(
 			title: _localizationService["SavePreset"],
 			label: _localizationService["EnterPresetName"],
-			invalidNames: _unsavedPresetName
+			invalidNames: [_unsavedPresetName]
 		);
 
 		bool? result = _dialogService.ShowDialog(this, inputBox);

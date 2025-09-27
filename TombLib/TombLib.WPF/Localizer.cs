@@ -278,7 +278,7 @@ public sealed class Localizer : INotifyPropertyChanged
 				.Replace("\\r", "\r");
 
 	private string CreateFallbackString(string key)
-		=> $"{Language ?? "UNKNOWN"}:{key}";
+		=> $"{Language}:{key}";
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 

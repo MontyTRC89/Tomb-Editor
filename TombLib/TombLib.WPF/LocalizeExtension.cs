@@ -57,15 +57,16 @@ public class LocalizeExtension : MarkupExtension, IMultiValueConverter
 
 	/// <summary>
 	/// Resolves the localization key, automatically prepending namespace and class name if needed.
+	/// <para>If the key starts with '~', it is treated as an absolute key and returned as-is (without the '~').</para>
 	/// </summary>
 	/// <param name="serviceProvider">The service provider from the markup extension context.</param>
 	/// <returns>The resolved localization key.</returns>
 	private string ResolveKey(IServiceProvider serviceProvider)
 	{
-		bool isFullPath = Key.Contains('.');
+		bool isAbsoluteKey = Key.StartsWith('~');
 
-		if (isFullPath)
-			return Key;
+		if (isAbsoluteKey)
+			return Key.TrimStart('~');
 
 		// Try to get the root object to determine the target type
 		if (serviceProvider.GetService(typeof(IRootObjectProvider)) is not IRootObjectProvider rootProvider)

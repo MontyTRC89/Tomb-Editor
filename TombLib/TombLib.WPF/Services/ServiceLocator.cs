@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace TombLib.WPF.Services;
 
 /// <summary>
-/// Provides a global service provider for dependency injection.
+/// Provides a global service locator for dependency injection.
 /// </summary>
-public static class ServiceProvider
+public static class ServiceLocator
 {
 	private static readonly object _lock = new();
 

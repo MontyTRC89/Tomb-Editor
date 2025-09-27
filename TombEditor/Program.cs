@@ -179,16 +179,16 @@ namespace TombEditor
             if (wpfApp.TryFindResource("Brush_Background_Alternative") is WPF.Media.SolidColorBrush brush)
                 CMessageBox.DefaultButtonsPanelBackground = brush;
 
-			// Initialize service providers
-			var services = new ServiceCollection();
+            // Initialize service providers
+            var services = new ServiceCollection();
 
-			services.AddSingleton<IDialogService, DialogService>();
-			services.AddSingleton<IMessageService, MessageBoxService>();
-			services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
+            services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<IMessageService, MessageBoxService>();
+            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
 
             services.AddTransient<ILocalizationService, LocalizationService>();
 
-			TombLib.WPF.Services.ServiceProvider.Configure(services.BuildServiceProvider());
+            TombLib.WPF.Services.ServiceLocator.Configure(services.BuildServiceProvider());
         }
     }
 }

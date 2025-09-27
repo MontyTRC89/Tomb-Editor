@@ -172,11 +172,11 @@
 			<Button
 				Width="80"
 				Command="{Binding ConfirmCommand}"
-				Content="{tombLib:Localize Common.OK}" />
+				Content="{tombLib:Localize ~Common.OK}" />
 			<Button
 				Width="80"
 				Command="{Binding CancelCommand}"
-				Content="{tombLib:Localize Common.Cancel}"
+				Content="{tombLib:Localize ~Common.Cancel}"
 				IsCancel="True"
 				IsDefault="True" />
 		</controls:SpacedStack>

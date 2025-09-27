@@ -1,6 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿#nullable enable
+
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MvvmDialogs;
+using System.Collections.Generic;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
@@ -19,21 +22,24 @@ public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogVie
 
 	public bool IsValueNotEmpty => !string.IsNullOrWhiteSpace(Value);
 
-	private readonly string[] _invalidNames = [];
+	private readonly IEnumerable<string> _invalidNames;
 
 	private readonly IMessageService _messageService;
 	private readonly ILocalizationService _localizationService;
 
-	public InputBoxWindowViewModel(string title, string label, string placeholder = null, params string[] invalidNames)
+	public InputBoxWindowViewModel(
+		string title, string label, string? placeholder = null, IEnumerable<string>? invalidNames = null,
+		IMessageService? messageService = null,
+		ILocalizationService? localizationService = null)
 	{
 		Title = title;
 		Label = label;
 		Value = placeholder ?? string.Empty;
 
-		_invalidNames = invalidNames;
+		_invalidNames = invalidNames ?? [];
 
-		_messageService = ServiceProvider.ResolveService<IMessageService>();
-		_localizationService = ServiceProvider.ResolveService<ILocalizationService>()
+		_messageService = ServiceLocator.ResolveService(messageService);
+		_localizationService = ServiceLocator.ResolveService(localizationService)
 			.For(this);
 	}
 

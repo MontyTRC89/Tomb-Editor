@@ -22,6 +22,11 @@ public sealed class LocalizationService : ILocalizationService
 	{
 		get
 		{
+			bool isAbsoluteKey = key.StartsWith('~');
+
+			if (isAbsoluteKey)
+				key = key.TrimStart('~');
+
 			string fullKey = key;
 
 			if (!string.IsNullOrEmpty(ComponentName))
