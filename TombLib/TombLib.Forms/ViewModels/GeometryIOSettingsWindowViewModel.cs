@@ -371,25 +371,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 		}
 
 		// Create a new preset and add it to the list
-		var newPreset = new IOGeometrySettingsPreset(presetName, new IOGeometrySettings
-		{
-			SwapXY = SwapXYAxes,
-			SwapXZ = SwapXZAxes,
-			SwapYZ = SwapYZAxes,
-			FlipX = InvertXAxis,
-			FlipY = InvertYAxis,
-			FlipZ = InvertZAxis,
-			InvertFaces = InvertFaces,
-			Scale = Scale,
-			FlipUV_V = InvertVCoordinate,
-			MappedUV = UvMapped,
-			WrapUV = WrapUV,
-			PremultiplyUV = PremultiplyUV,
-			UseVertexColor = VertexColorLight,
-			SortByName = SortByName,
-			PackTextures = PackTextures,
-			PadPackedTextures = PadPackedTextures
-		}, isCustom: true);
+		var newPreset = new IOGeometrySettingsPreset(presetName, GetCurrentSettings(), isCustom: true);
 
 		// Add the new preset and select it
 		AvailablePresets.Add(newPreset);
