@@ -1,4 +1,5 @@
 ﻿using CustomMessageBox.WPF;
+using System;
 using TombLib.WPF.Services.Abstract;
 
 namespace TombLib.WPF.Services;
@@ -34,7 +35,7 @@ public sealed class MessageBoxService : IMessageService
 		{
 			CMessageBoxResult.Yes => yesValue,
 			CMessageBoxResult.No => noValue,
-			_ => cancelValue ?? default,
+			_ => cancelValue ?? throw new InvalidOperationException("Cancel option is not available."),
 		};
 	}
 }

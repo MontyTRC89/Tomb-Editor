@@ -227,6 +227,8 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 
 	/// <summary>
 	/// Selects a preset whose name contains the specified filter string.
+	/// <para>If multiple presets match, the first one found is selected.</para>
+	/// <para>If no presets match, no changes are made.</para>
 	/// </summary>
 	/// <param name="nameFilter">The substring to search for in preset names.</param>
 	public void SelectPreset(string nameFilter)

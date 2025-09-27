@@ -20,6 +20,10 @@ public class GeometryIOSettingsWindowViewModelTests
 	private Mock<IMessageService> _mockMessageService = null!;
 	private Mock<ILocalizationService> _mockLocalizationService = null!;
 
+	private List<IOGeometrySettingsPreset> _builtInPresets = null!;
+	private IOGeometryInternalSettings _exportSettings = null!;
+	private IOGeometryInternalSettings _importSettings = null!;
+
 	[TestInitialize]
 	public void TestInitialize()
 	{
@@ -52,98 +56,113 @@ public class GeometryIOSettingsWindowViewModelTests
 		services.AddTransient(_ => _mockLocalizationService.Object);
 
 		ServiceLocator.Configure(services.BuildServiceProvider());
+
+		// Create test presets
+		_builtInPresets =
+		[
+			new("Default", new IOGeometrySettings { Scale = 1.0f }),
+			new("2x Scale", new IOGeometrySettings { Scale = 2.0f }),
+			new("Inverted Y", new IOGeometrySettings { FlipY = true })
+		];
+
+		// Create test internal settings
+		_exportSettings = new IOGeometryInternalSettings
+		{
+			Export = true,
+			ExportRoom = false,
+			ProcessGeometry = true,
+			ProcessUntexturedGeometry = false,
+			ProcessAnimations = false
+		};
+
+		_importSettings = new IOGeometryInternalSettings
+		{
+			Export = false,
+			ExportRoom = false,
+			ProcessGeometry = true,
+			ProcessUntexturedGeometry = true,
+			ProcessAnimations = false
+		};
 	}
+
+	#region Helper Methods
+
+	private GeometryIOSettingsWindowViewModel CreateViewModel(
+		List<IOGeometrySettingsPreset>? presets = null,
+		IOGeometryInternalSettings? internalSettings = null)
+	{
+		presets ??= _builtInPresets;
+
+		return new GeometryIOSettingsWindowViewModel(
+			presets,
+			internalSettings,
+			TestCustomPresetPath,
+			_mockPresetIOService.Object,
+			_mockDialogService.Object,
+			_mockMessageService.Object,
+			_mockLocalizationService.Object
+		);
+	}
+
+	#endregion Helper Methods
 
 	#region Constructor Tests
 
 	[TestMethod]
-	public void Constructor_ExportType_SetsCorrectPresetsAndProperties()
+	public void Constructor_WithDefaultParameters_InitializesCorrectly()
 	{
 		// Act
-		var viewModel = new GeometryIOSettingsWindowViewModel(
-			GeometryIOSettingsType.Export,
-			TestCustomPresetPath,
-			_mockPresetIOService.Object,
-			_mockDialogService.Object,
-			_mockMessageService.Object,
-			_mockLocalizationService.Object
-		);
+		var viewModel = CreateViewModel();
 
 		// Assert
-		Assert.IsTrue(viewModel.AvailablePresets.Count > 0);
-		Assert.AreEqual(IOSettingsPresets.GeometryExportSettingsPresets.Count, viewModel.AvailablePresets.Count);
+		Assert.IsNotNull(viewModel);
+		Assert.AreEqual(_builtInPresets.Count, viewModel.AvailablePresets.Count);
 		Assert.IsNotNull(viewModel.SelectedPreset);
-
-		_mockPresetIOService.Verify(x => x.LoadPresets(TestCustomPresetPath), Times.Once);
+		Assert.AreEqual(1.0f, viewModel.Scale);
+		Assert.IsTrue(viewModel.IsValid);
 	}
 
 	[TestMethod]
-	public void Constructor_ImportType_SetsCorrectPresetsAndProperties()
+	public void Constructor_WithExportSettings_SetsCorrectWindowTitleAndCapabilities()
 	{
 		// Act
-		var viewModel = new GeometryIOSettingsWindowViewModel(
-			GeometryIOSettingsType.Import,
-			TestCustomPresetPath,
-			_mockPresetIOService.Object,
-			_mockDialogService.Object,
-			_mockMessageService.Object,
-			_mockLocalizationService.Object
-		);
+		var viewModel = CreateViewModel(internalSettings: _exportSettings);
 
 		// Assert
-		Assert.IsTrue(viewModel.AvailablePresets.Count > 0);
-		Assert.AreEqual(IOSettingsPresets.GeometryImportSettingsPresets.Count, viewModel.AvailablePresets.Count);
-		Assert.IsNotNull(viewModel.SelectedPreset);
+		Assert.AreEqual("TitleExport", viewModel.WindowTitle);
+		Assert.IsTrue(viewModel.CanPackTextures);
 	}
 
 	[TestMethod]
-	public void Constructor_AnimationImportType_SetsCorrectPresetsAndProperties()
+	public void Constructor_WithImportSettings_SetsCorrectWindowTitleAndCapabilities()
 	{
 		// Act
-		var viewModel = new GeometryIOSettingsWindowViewModel(
-			GeometryIOSettingsType.AnimationImport,
-			TestCustomPresetPath,
-			_mockPresetIOService.Object,
-			_mockDialogService.Object,
-			_mockMessageService.Object,
-			_mockLocalizationService.Object
-		);
+		var viewModel = CreateViewModel(internalSettings: _importSettings);
 
 		// Assert
-		Assert.IsTrue(viewModel.AvailablePresets.Count > 0);
-		Assert.AreEqual(IOSettingsPresets.AnimationSettingsPresets.Count, viewModel.AvailablePresets.Count);
-		Assert.IsNotNull(viewModel.SelectedPreset);
+		Assert.AreEqual("TitleImport", viewModel.WindowTitle);
+		Assert.IsTrue(viewModel.CanProcessTextures);
+		Assert.IsTrue(viewModel.CanSortByName);
 	}
 
 	[TestMethod]
-	public void Constructor_WithCustomPresets_CombinesBuiltInAndCustomPresets()
+	public void Constructor_WithCustomPresets_LoadsAndCombinesPresets()
 	{
 		// Arrange
 		var customPresets = new List<IOGeometrySettingsPreset>
 		{
-			new("Custom Preset 1", new IOGeometrySettings { Scale = 2.0f }, true),
-			new("Custom Preset 2", new IOGeometrySettings { Scale = 3.0f }, true)
+			new("Custom1", new IOGeometrySettings(), true),
+			new("Custom2", new IOGeometrySettings(), true)
 		};
 
 		_mockPresetIOService.Setup(x => x.LoadPresets(TestCustomPresetPath))
 			.Returns(customPresets);
 
 		// Act
-		var viewModel = new GeometryIOSettingsWindowViewModel(
-			GeometryIOSettingsType.Export,
-			TestCustomPresetPath,
-			_mockPresetIOService.Object,
-			_mockDialogService.Object,
-			_mockMessageService.Object,
-			_mockLocalizationService.Object
-		);
+		var viewModel = CreateViewModel();
 
 		// Assert
-		int expectedCount = IOSettingsPresets.GeometryExportSettingsPresets.Count + customPresets.Count;
-
-		Assert.AreEqual(expectedCount, viewModel.AvailablePresets.Count);
-		Assert.IsTrue(viewModel.AvailablePresets.Any(p => p.Name == "Custom Preset 1"));
-		Assert.IsTrue(viewModel.AvailablePresets.Any(p => p.Name == "Custom Preset 2"));
+		Assert.AreEqual(_builtInPresets.Count + customPresets.Count, viewModel.AvailablePresets.Count);
 	}
 
 	#endregion Constructor Tests
@@ -151,20 +170,7 @@ public class GeometryIOSettingsWindowViewModelTests
 	#region Property Tests
 
 	[TestMethod]
-	public void IsValid_PositiveScale_ReturnsTrue()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		// Act
-		viewModel.Scale = 1.5f;
-
-		// Assert
-		Assert.IsTrue(viewModel.IsValid);
-	}
-
-	[TestMethod]
-	public void IsValid_ZeroScale_ReturnsFalse()
+	public void Scale_WhenSetToZero_IsValidReturnsFalse()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
@@ -177,7 +183,7 @@ public class GeometryIOSettingsWindowViewModelTests
 	}
 
 	[TestMethod]
-	public void IsValid_NegativeScale_ReturnsFalse()
+	public void Scale_WhenSetToNegative_IsValidReturnsFalse()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
@@ -190,629 +196,369 @@ public class GeometryIOSettingsWindowViewModelTests
 	}
 
 	[TestMethod]
-	public void IsSelectedPresetCustom_CustomPreset_ReturnsTrue()
+	public void Scale_WhenSetToPositive_IsValidReturnsTrue()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
 
 		// Act
-		viewModel.SelectedPreset = new IOGeometrySettingsPreset("Custom", new IOGeometrySettings(), true);
+		viewModel.Scale = 2.5f;
 
 		// Assert
-		Assert.IsTrue(viewModel.IsSelectedPresetCustom);
+		Assert.IsTrue(viewModel.IsValid);
+		Assert.AreEqual(2.5f, viewModel.Scale);
 	}
 
 	[TestMethod]
-	public void IsSelectedPresetCustom_BuiltInPreset_ReturnsFalse()
+	public void CanInvertFaces_WhenProcessAnimationsIsTrue_ReturnsFalse()
+	{
+		// Arrange
+		var animationSettings = new IOGeometryInternalSettings
+		{
+			ProcessAnimations = true
+		};
+
+		var viewModel = CreateViewModel(internalSettings: animationSettings);
+
+		// Assert
+		Assert.IsFalse(viewModel.CanInvertFaces);
+	}
+
+	[TestMethod]
+	public void CanPadPackedTextures_DependsOnPackTextures()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(internalSettings: _exportSettings);
+
+		// Act & Assert
+		viewModel.PackTextures = true;
+		Assert.IsTrue(viewModel.CanPadPackedTextures);
+
+		viewModel.PackTextures = false;
+		Assert.IsFalse(viewModel.CanPadPackedTextures);
+	}
+
+	#endregion Property Tests
+
+	#region Preset Management Tests
+
+	[TestMethod]
+	public void SelectPreset_WithValidNameFilter_SelectsCorrectPreset()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
 
 		// Act
-		viewModel.SelectedPreset = new IOGeometrySettingsPreset("Built-In", new IOGeometrySettings(), false);
+		viewModel.SelectPreset("2x");
+
+		// Assert
+		Assert.AreEqual("2x Scale", viewModel.SelectedPreset.Name);
+		Assert.AreEqual(2.0f, viewModel.Scale);
+	}
+
+	[TestMethod]
+	public void SelectPreset_WithInvalidNameFilter_DoesNotChangeSelection()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+		var originalPreset = viewModel.SelectedPreset;
+
+		// Act
+		viewModel.SelectPreset("NonExistent");
+
+		// Assert
+		Assert.AreEqual(originalPreset, viewModel.SelectedPreset);
+	}
+
+	[TestMethod]
+	public void SelectedPreset_WhenChanged_UpdatesAllSettings()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+
+		// Act
+		viewModel.SelectedPreset = _builtInPresets.First(p => p.Name == "Inverted Y");
+
+		// Assert
+		Assert.IsTrue(viewModel.InvertYAxis);
+		Assert.IsFalse(viewModel.InvertXAxis);
+		Assert.IsTrue(viewModel.InvertZAxis);
+	}
+
+	[TestMethod]
+	public void MatchingPreset_WhenSettingsMatchExistingPreset_ReturnsCorrectPreset()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+
+		// Act
+		viewModel.Scale = 2.0f;
+
+		// Assert
+		Assert.AreEqual("2x Scale", viewModel.MatchingPreset.Name);
+	}
+
+	[TestMethod]
+	public void MatchingPreset_WhenSettingsDoNotMatch_ReturnsUnsavedPreset()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+
+		// Act
+		viewModel.Scale = 3.5f; // Not matching any preset
+
+		// Assert
+		Assert.AreEqual("CustomPresetName", viewModel.MatchingPreset.Name);
+		Assert.IsTrue(viewModel.AvailablePresets.Any(p => p.Name == "CustomPresetName"));
+	}
+
+	[TestMethod]
+	public void IsSelectedPresetCustom_WithBuiltInPreset_ReturnsFalse()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+
+		// Act
+		viewModel.SelectedPreset = _builtInPresets[0];
 
 		// Assert
 		Assert.IsFalse(viewModel.IsSelectedPresetCustom);
 	}
 
 	[TestMethod]
-	public void IsSelectedPresetUnsaved_UnsavedPreset_ReturnsTrue()
+	public void IsSelectedPresetCustom_WithCustomPreset_ReturnsTrue()
 	{
 		// Arrange
-		var viewModel = CreateViewModel();
-
-		// Act - Modify a setting to trigger unsaved preset creation
-		viewModel.Scale = 999.0f;
-
-		// Assert
-		Assert.IsTrue(viewModel.IsSelectedPresetUnsaved);
-	}
-
-	#endregion Property Tests
-
-	#region Preset Matching Tests
-
-	[TestMethod]
-	public void MatchingPreset_ExactMatch_ReturnsMatchingPreset()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-		var targetPreset = viewModel.AvailablePresets.First();
-
-		// Act - Apply the first preset's settings
-		viewModel.SelectedPreset = targetPreset;
-
-		// Assert
-		Assert.AreEqual(targetPreset, viewModel.MatchingPreset);
-	}
-
-	[TestMethod]
-	public void MatchingPreset_NoMatch_ReturnsUnsavedPreset()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		// Act - Set unique settings that don't match any preset
-		viewModel.Scale = 999.0f;
-		viewModel.InvertXAxis = true;
-		viewModel.InvertYAxis = true;
-
-		// Assert
-		Assert.IsTrue(viewModel.MatchingPreset.Name.Equals("CustomPresetName"));
-	}
-
-	[TestMethod]
-	public void UpdateSelectedPreset_WhenSettingsChange_UpdatesSelectedPreset()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-		var originalPreset = viewModel.SelectedPreset;
+		var customPreset = new IOGeometrySettingsPreset("Custom", new IOGeometrySettings(), true);
+		var presets = _builtInPresets.Concat([customPreset]).ToList();
+		var viewModel = CreateViewModel(presets);
 
 		// Act
-		viewModel.Scale = 999.0f; // Change a setting
+		viewModel.SelectedPreset = customPreset;
 
 		// Assert
-		Assert.AreNotEqual(originalPreset, viewModel.SelectedPreset);
-		Assert.IsTrue(viewModel.IsSelectedPresetUnsaved);
+		Assert.IsTrue(viewModel.IsSelectedPresetCustom);
 	}
 
-	#endregion Preset Matching Tests
+	#endregion Preset Management Tests
+
+	#region GetCurrentSettings Tests
+
+	[TestMethod]
+	public void GetCurrentSettings_ReturnsCorrectSettings()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(internalSettings: _exportSettings);
+
+		// Set some values
+		viewModel.SwapXYAxes = true;
+		viewModel.InvertXAxis = true;
+		viewModel.Scale = 2.5f;
+		viewModel.PackTextures = true;
+
+		// Act
+		var settings = viewModel.GetCurrentSettings();
+
+		// Assert
+		Assert.IsTrue(settings.Export);
+		Assert.IsTrue(settings.ProcessGeometry);
+		Assert.IsTrue(settings.SwapXY);
+		Assert.IsTrue(settings.FlipX);
+		Assert.AreEqual(2.5f, settings.Scale);
+		Assert.IsTrue(settings.PackTextures);
+	}
+
+	#endregion GetCurrentSettings Tests
 
 	#region Command Tests
 
 	[TestMethod]
-	public void ConfirmCommand_ValidSettings_CanExecute()
+	public void ConfirmCommand_WhenIsValidTrue_SetsDialogResultToTrue()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
-		viewModel.Scale = 1.0f;
 
-		// Act & Assert
-		Assert.IsTrue(viewModel.ConfirmCommand.CanExecute(null));
+		// Act
+		viewModel.ConfirmCommand.Execute(null);
+
+		// Assert
+		Assert.IsTrue(viewModel.DialogResult);
 	}
 
 	[TestMethod]
-	public void ConfirmCommand_InvalidSettings_CannotExecute()
+	public void ConfirmCommand_WhenIsValidFalse_CannotExecute()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
-		viewModel.Scale = 0.0f;
+		viewModel.Scale = 0; // Invalid scale
 
 		// Act & Assert
 		Assert.IsFalse(viewModel.ConfirmCommand.CanExecute(null));
 	}
 
 	[TestMethod]
-	public void DeletePresetCommand_BuiltInPreset_CannotExecute()
+	public void CancelCommand_SetsDialogResultToFalse()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
-		viewModel.SelectedPreset = viewModel.AvailablePresets.First(p => !p.IsCustom);
+
+		// Act
+		viewModel.CancelCommand.Execute(null);
+
+		// Assert
+		Assert.IsFalse(viewModel.DialogResult);
+	}
+
+	[TestMethod]
+	public void SavePresetCommand_WhenUserEntersValidName_CreatesNewPreset()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+		var originalCount = viewModel.AvailablePresets.Count;
+
+		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
+			.Callback<object, object>((_, vm) =>
+				// Simulate user entering a valid name
+				(vm as InputBoxWindowViewModel)!.Value = "New Preset")
+			.Returns(true);
+
+		// Act
+		viewModel.SavePresetCommand.Execute(null);
+
+		// Assert
+		_mockDialogService.Verify(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()), Times.Once);
+		Assert.AreEqual(originalCount + 1, viewModel.AvailablePresets.Count);
+		Assert.IsTrue(viewModel.AvailablePresets.Any(p => p.Name == "New Preset" && p.IsCustom));
+		_mockPresetIOService.Verify(x => x.SavePresets(TestCustomPresetPath, It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Once);
+	}
+
+	[TestMethod]
+	public void SavePresetCommand_WhenUserCancels_DoesNotCreatePreset()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+
+		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
+			.Returns(false);
+
+		var originalCount = viewModel.AvailablePresets.Count;
+
+		// Act
+		viewModel.SavePresetCommand.Execute(null);
+
+		// Assert
+		Assert.AreEqual(originalCount, viewModel.AvailablePresets.Count);
+		_mockPresetIOService.Verify(x => x.SavePresets(It.IsAny<string>(), It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Never);
+	}
+
+	[TestMethod]
+	public void DeletePresetCommand_WithCustomPreset_DeletesPreset()
+	{
+		// Arrange
+		var customPreset = new IOGeometrySettingsPreset("Custom", new IOGeometrySettings(), true);
+		var presets = _builtInPresets.Concat([customPreset]).ToList();
+		var viewModel = CreateViewModel(presets);
+
+		viewModel.SelectedPreset = customPreset;
+
+		_mockMessageService.Setup(x => x.ShowConfirmation(
+			It.IsAny<string>(),
+			It.IsAny<string>(),
+			It.IsAny<bool?>(),
+			It.IsAny<bool>()))
+			.Returns(true);
+
+		// Act
+		viewModel.DeletePresetCommand.Execute(null);
+
+		// Assert
+		Assert.IsFalse(viewModel.AvailablePresets.Contains(customPreset));
+		_mockPresetIOService.Verify(x => x.SavePresets(TestCustomPresetPath, It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Once);
+	}
+
+	[TestMethod]
+	public void DeletePresetCommand_WithBuiltInPreset_CannotExecute()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+		viewModel.SelectedPreset = _builtInPresets[0];
 
 		// Act & Assert
 		Assert.IsFalse(viewModel.DeletePresetCommand.CanExecute(null));
 	}
 
-	[TestMethod]
-	public void DeletePresetCommand_CustomPreset_CanExecute()
-	{
-		// Arrange
-		var customPreset = new IOGeometrySettingsPreset("Custom Test", new IOGeometrySettings(), true);
-		var viewModel = CreateViewModel();
-
-		viewModel.AvailablePresets.Add(customPreset);
-		viewModel.SelectedPreset = customPreset;
-
-		// Act & Assert
-		Assert.IsTrue(viewModel.DeletePresetCommand.CanExecute(null));
-	}
-
-	[TestMethod]
-	public void DeletePresetCommand_UserConfirms_DeletesPresetAndSavesConfig()
-	{
-		// Arrange
-		var customPreset = new IOGeometrySettingsPreset("Custom Test", new IOGeometrySettings(), true);
-		var viewModel = CreateViewModel();
-
-		viewModel.AvailablePresets.Add(customPreset);
-		viewModel.SelectedPreset = customPreset;
-
-		_mockMessageService.Setup(x => x.ShowConfirmation(
-			It.IsAny<string>(),
-			It.IsAny<string>(),
-			It.IsAny<bool?>(),
-			It.IsAny<bool>()))
-			.Returns(true);
-
-		int originalPresetCount = viewModel.AvailablePresets.Count;
-
-		// Act
-		viewModel.DeletePresetCommand.Execute(null);
-
-		// Assert
-		Assert.AreEqual(originalPresetCount - 1, viewModel.AvailablePresets.Count);
-		Assert.IsFalse(viewModel.AvailablePresets.Contains(customPreset));
-		Assert.AreEqual(viewModel.AvailablePresets.First(), viewModel.SelectedPreset);
-
-		_mockMessageService.Verify(x => x.ShowConfirmation(
-			It.IsAny<string>(),
-			It.IsAny<string>(),
-			It.IsAny<bool?>(),
-			It.IsAny<bool>()), Times.Once);
-
-		_mockPresetIOService.Verify(x => x.SavePresets(
-			TestCustomPresetPath,
-			It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Once);
-	}
-
-	[TestMethod]
-	public void DeletePresetCommand_UserCancels_DoesNotDeletePreset()
-	{
-		// Arrange
-		var customPreset = new IOGeometrySettingsPreset("Custom Test", new IOGeometrySettings(), true);
-		var viewModel = CreateViewModel();
-
-		viewModel.AvailablePresets.Add(customPreset);
-		viewModel.SelectedPreset = customPreset;
-
-		_mockMessageService.Setup(x => x.ShowConfirmation(
-			It.IsAny<string>(),
-			It.IsAny<string>(),
-			It.IsAny<bool?>(),
-			It.IsAny<bool>()))
-			.Returns(false);
-
-		int originalPresetCount = viewModel.AvailablePresets.Count;
-
-		// Act
-		viewModel.DeletePresetCommand.Execute(null);
-
-		// Assert
-		Assert.AreEqual(originalPresetCount, viewModel.AvailablePresets.Count);
-		Assert.IsTrue(viewModel.AvailablePresets.Contains(customPreset));
-		Assert.AreEqual(customPreset, viewModel.SelectedPreset);
-
-		_mockPresetIOService.Verify(x => x.SavePresets(
-			It.IsAny<string>(),
-			It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Never);
-	}
-
-	[TestMethod]
-	public void SavePresetCommand_UserProvidesValidName_CreatesAndSavesNewPreset()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-		viewModel.Scale = 2.5f;
-		viewModel.InvertXAxis = true;
-
-		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
-			.Callback<object, object>((_, vm) => (vm as InputBoxWindowViewModel)!.Value = "My Test Preset")
-			.Returns(true);
-
-		int originalPresetCount = viewModel.AvailablePresets.Count;
-
-		// Act
-		viewModel.SavePresetCommand.Execute(null);
-
-		// Assert
-		Assert.AreEqual(originalPresetCount, viewModel.AvailablePresets.Count); // Should not change as unsaved preset is replaced
-
-		var newPreset = viewModel.AvailablePresets.FirstOrDefault(p => p.Name == "My Test Preset");
-
-		Assert.IsNotNull(newPreset);
-		Assert.IsTrue(newPreset.IsCustom);
-		Assert.AreEqual(2.5f, newPreset.Settings.Scale);
-		Assert.IsTrue(newPreset.Settings.FlipX);
-		Assert.AreEqual(newPreset, viewModel.SelectedPreset);
-
-		_mockPresetIOService.Verify(x => x.SavePresets(
-			TestCustomPresetPath,
-			It.Is<IEnumerable<IOGeometrySettingsPreset>>(presets => presets.Any(p => p.Name == "My Test Preset"))),
-			Times.Once);
-	}
-
-	[TestMethod]
-	public void SavePresetCommand_UserCancelsDialog_DoesNotCreatePreset()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
-			.Returns(false);
-
-		var originalCount = viewModel.AvailablePresets.Count;
-
-		// Act
-		viewModel.SavePresetCommand.Execute(null);
-
-		// Assert
-		Assert.AreEqual(originalCount, viewModel.AvailablePresets.Count);
-
-		_mockPresetIOService.Verify(x => x.SavePresets(
-			It.IsAny<string>(),
-			It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Never);
-	}
-
-	[TestMethod]
-	public void SavePresetCommand_UserProvidesEmptyName_DoesNotCreatePreset()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
-			.Callback<object, object>((_, vm) => (vm as InputBoxWindowViewModel)!.Value = string.Empty)
-			.Returns(true);
-
-		var originalCount = viewModel.AvailablePresets.Count;
-
-		// Act
-		viewModel.SavePresetCommand.Execute(null);
-
-		// Assert
-		Assert.AreEqual(originalCount, viewModel.AvailablePresets.Count);
-
-		_mockPresetIOService.Verify(x => x.SavePresets(
-			It.IsAny<string>(),
-			It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Never);
-	}
-
-	[TestMethod]
-	public void SavePresetCommand_UserProvidesWhitespaceOnlyName_DoesNotCreatePreset()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
-			.Callback<object, object>((_, vm) => (vm as InputBoxWindowViewModel)!.Value = "   ")
-			.Returns(true);
-
-		var originalCount = viewModel.AvailablePresets.Count;
-
-		// Act
-		viewModel.SavePresetCommand.Execute(null);
-
-		// Assert
-		Assert.AreEqual(originalCount, viewModel.AvailablePresets.Count);
-
-		_mockPresetIOService.Verify(x => x.SavePresets(
-			It.IsAny<string>(),
-			It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Never);
-	}
-
-	[TestMethod]
-	public void SavePresetCommand_PresetNameAlreadyExists_ShowsErrorAndDoesNotCreatePreset()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-		var existingPresetName = viewModel.AvailablePresets.First().Name;
-
-		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
-			.Callback<object, object>((_, vm) => (vm as InputBoxWindowViewModel)!.Value = existingPresetName)
-			.Returns(true);
-
-		var originalCount = viewModel.AvailablePresets.Count;
-
-		// Act
-		viewModel.SavePresetCommand.Execute(null);
-
-		// Assert
-		Assert.AreEqual(originalCount, viewModel.AvailablePresets.Count);
-
-		_mockMessageService.Verify(x => x.ShowError(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-
-		_mockPresetIOService.Verify(x => x.SavePresets(
-			It.IsAny<string>(),
-			It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()), Times.Never);
-	}
-
-	[TestMethod]
-	public void SavePresetCommand_CreatesPresetWithAllCurrentSettings()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		// Set various properties to test they're all captured
-		viewModel.Scale = 2.5f;
-		viewModel.SwapXYAxes = true;
-		viewModel.SwapXZAxes = false;
-		viewModel.SwapYZAxes = true;
-		viewModel.InvertXAxis = false;
-		viewModel.InvertYAxis = true;
-		viewModel.InvertZAxis = false;
-		viewModel.InvertFaces = true;
-		viewModel.InvertVCoordinate = false;
-		viewModel.UvMapped = true;
-		viewModel.WrapUV = false;
-		viewModel.PremultiplyUV = true;
-		viewModel.VertexColorLight = false;
-		viewModel.PackTextures = true;
-		viewModel.PadPackedTextures = false;
-		viewModel.SortByName = true;
-
-		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
-			.Callback<object, object>((_, vm) => (vm as InputBoxWindowViewModel)!.Value = "Complete Test Preset")
-			.Returns(true);
-
-		// Act
-		viewModel.SavePresetCommand.Execute(null);
-
-		// Assert
-		var newPreset = viewModel.AvailablePresets.FirstOrDefault(p => p.Name == "Complete Test Preset");
-		Assert.IsNotNull(newPreset);
-
-		var settings = newPreset.Settings;
-		Assert.AreEqual(2.5f, settings.Scale);
-		Assert.AreEqual(true, settings.SwapXY);
-		Assert.AreEqual(false, settings.SwapXZ);
-		Assert.AreEqual(true, settings.SwapYZ);
-		Assert.AreEqual(false, settings.FlipX);
-		Assert.AreEqual(true, settings.FlipY);
-		Assert.AreEqual(false, settings.FlipZ);
-		Assert.AreEqual(true, settings.InvertFaces);
-		Assert.AreEqual(false, settings.FlipUV_V);
-		Assert.AreEqual(true, settings.MappedUV);
-		Assert.AreEqual(false, settings.WrapUV);
-		Assert.AreEqual(true, settings.PremultiplyUV);
-		Assert.AreEqual(false, settings.UseVertexColor);
-		Assert.AreEqual(true, settings.PackTextures);
-		Assert.AreEqual(false, settings.PadPackedTextures);
-		Assert.AreEqual(true, settings.SortByName);
-	}
-
 	#endregion Command Tests
 
-	#region Property Change Tests
+	#region Property Change Notification Tests
 
 	[TestMethod]
-	public void PropertyChanges_UpdateSelectedPreset()
+	public void PropertyChanges_UpdateMatchingPreset()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
-		var originalPreset = viewModel.SelectedPreset;
+		var originalMatchingPreset = viewModel.MatchingPreset;
 
-		// Act - Test various property changes
-		viewModel.SwapXYAxes = !viewModel.SwapXYAxes;
-		Assert.AreNotEqual(originalPreset, viewModel.SelectedPreset, "SwapXYAxes change should update preset.");
+		// Act
+		viewModel.SwapXYAxes = true; // This should change the matching preset
 
-		// Reset and test another property
-		viewModel.SelectedPreset = originalPreset;
-		viewModel.InvertXAxis = !viewModel.InvertXAxis;
-		Assert.AreNotEqual(originalPreset, viewModel.SelectedPreset, "InvertXAxis change should update preset.");
-
-		// Reset and test scale
-		viewModel.SelectedPreset = originalPreset;
-		viewModel.Scale++;
-
-		Assert.AreNotEqual(originalPreset, viewModel.SelectedPreset, "Scale change should update preset.");
+		// Assert
+		Assert.AreNotEqual(originalMatchingPreset, viewModel.MatchingPreset);
 	}
 
 	[TestMethod]
-	public void SelectedPresetChanged_UpdatesAllProperties()
+	public void PackTextures_PropertyChange_NotifiesCanPadPackedTextures()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(internalSettings: _exportSettings);
+
+		// Act
+		viewModel.PackTextures = true;
+
+		// Assert
+		Assert.IsTrue(viewModel.CanPadPackedTextures);
+	}
+
+	#endregion Property Change Notification Tests
+
+	#region Edge Case Tests
+
+	[TestMethod]
+	public void UnsavedPreset_WhenDeselected_IsRemovedFromCollection()
 	{
 		// Arrange
 		var viewModel = CreateViewModel();
 
-		var testSettings = new IOGeometrySettings
+		// Force creation of unsaved preset
+		viewModel.Scale = 3.5f; // Non-matching value
+		var unsavedPreset = viewModel.MatchingPreset;
+		Assert.AreEqual("CustomPresetName", unsavedPreset.Name);
+
+		// Act
+		viewModel.SelectedPreset = _builtInPresets[0]; // Select a different preset
+
+		// Assert
+		Assert.IsFalse(viewModel.AvailablePresets.Any(p => p.Name == "CustomPresetName"));
+	}
+
+	[TestMethod]
+	public void RecursiveUpdate_Prevention_WhenApplyingPreset()
+	{
+		// Arrange
+		var viewModel = CreateViewModel();
+		int propertyChangeCount = 0;
+
+		viewModel.PropertyChanged += (sender, e) =>
 		{
-			Export = true,
-			ExportRoom = true,
-			ProcessGeometry = false,
-			SwapXY = true,
-			SwapXZ = true,
-			FlipX = true,
-			Scale = 5.0f,
-			FlipUV_V = false,
-			MappedUV = false,
-			UseVertexColor = false,
-			PackTextures = false
+			if (e.PropertyName == nameof(viewModel.MatchingPreset))
+				propertyChangeCount++;
 		};
 
-		// Act
-		viewModel.SelectedPreset = new IOGeometrySettingsPreset("Test Preset", testSettings);
+		// Act - This should not cause recursive updates
+		viewModel.SelectedPreset = _builtInPresets.First(p => p.Name == "2x Scale");
 
-		// Assert
-		Assert.AreEqual(testSettings.Export, viewModel.IsExport);
-		Assert.AreEqual(testSettings.ExportRoom, viewModel.IsRoomExport);
-		Assert.AreEqual(testSettings.ProcessGeometry, viewModel.ProcessGeometry);
-		Assert.AreEqual(testSettings.SwapXY, viewModel.SwapXYAxes);
-		Assert.AreEqual(testSettings.SwapXZ, viewModel.SwapXZAxes);
-		Assert.AreEqual(testSettings.FlipX, viewModel.InvertXAxis);
-		Assert.AreEqual(testSettings.Scale, viewModel.Scale);
-		Assert.AreEqual(testSettings.FlipUV_V, viewModel.InvertVCoordinate);
-		Assert.AreEqual(testSettings.MappedUV, viewModel.UvMapped);
-		Assert.AreEqual(testSettings.UseVertexColor, viewModel.VertexColorLight);
-		Assert.AreEqual(testSettings.PackTextures, viewModel.PackTextures);
+		// Assert - Only one change notification should have occurred
+		Assert.IsTrue(propertyChangeCount == 1);
 	}
 
-	[TestMethod]
-	public void PropertyChanged_NotifiesCorrectProperties()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-		var propertyChangedEvents = new List<string?>();
-
-		viewModel.PropertyChanged += (sender, e) => propertyChangedEvents.Add(e.PropertyName);
-
-		// Act
-		viewModel.Scale = 2.0f;
-
-		// Assert
-		Assert.IsTrue(propertyChangedEvents.Contains(nameof(viewModel.Scale)));
-		Assert.IsTrue(propertyChangedEvents.Contains(nameof(viewModel.IsValid)));
-		Assert.IsTrue(propertyChangedEvents.Contains(nameof(viewModel.MatchingPreset)));
-	}
-
-	[TestMethod]
-	public void AllAxisProperties_CanBeSetAndRetrieved()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		// Act & Assert
-		viewModel.SwapXYAxes = true;
-		Assert.IsTrue(viewModel.SwapXYAxes);
-
-		viewModel.SwapXZAxes = true;
-		Assert.IsTrue(viewModel.SwapXZAxes);
-
-		viewModel.SwapYZAxes = true;
-		Assert.IsTrue(viewModel.SwapYZAxes);
-
-		viewModel.InvertXAxis = true;
-		Assert.IsTrue(viewModel.InvertXAxis);
-
-		viewModel.InvertYAxis = true;
-		Assert.IsTrue(viewModel.InvertYAxis);
-
-		viewModel.InvertZAxis = false;
-		Assert.IsFalse(viewModel.InvertZAxis);
-
-		viewModel.InvertFaces = true;
-		Assert.IsTrue(viewModel.InvertFaces);
-	}
-
-	[TestMethod]
-	public void AllTextureProperties_CanBeSetAndRetrieved()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		// Act & Assert
-		viewModel.InvertVCoordinate = false;
-		Assert.IsFalse(viewModel.InvertVCoordinate);
-
-		viewModel.UvMapped = false;
-		Assert.IsFalse(viewModel.UvMapped);
-
-		viewModel.WrapUV = false;
-		Assert.IsFalse(viewModel.WrapUV);
-
-		viewModel.PremultiplyUV = false;
-		Assert.IsFalse(viewModel.PremultiplyUV);
-	}
-
-	[TestMethod]
-	public void AllMiscProperties_CanBeSetAndRetrieved()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-
-		// Act & Assert
-		viewModel.VertexColorLight = false;
-		Assert.IsFalse(viewModel.VertexColorLight);
-
-		viewModel.PackTextures = false;
-		Assert.IsFalse(viewModel.PackTextures);
-
-		viewModel.PadPackedTextures = false;
-		Assert.IsFalse(viewModel.PadPackedTextures);
-
-		viewModel.SortByName = false;
-		Assert.IsFalse(viewModel.SortByName);
-	}
-
-	#endregion Property Change Tests
-
-	#region Unsaved Preset Management Tests
-
-	[TestMethod]
-	public void UnsavedPreset_CreatedWhenNeeded_RemovedWhenNotNeeded()
-	{
-		// Arrange
-		var viewModel = CreateViewModel();
-		int originalCount = viewModel.AvailablePresets.Count;
-
-		// Act - Modify settings to create unsaved preset
-		viewModel.Scale = 999.0f;
-		int countWithUnsaved = viewModel.AvailablePresets.Count;
-
-		// Switch back to a real preset
-		viewModel.SelectedPreset = viewModel.AvailablePresets.First(p => p.Name != "CustomPresetName");
-		int countAfterSwitch = viewModel.AvailablePresets.Count;
-
-		// Assert
-		Assert.AreEqual(originalCount + 1, countWithUnsaved, "Unsaved preset should be created.");
-		Assert.AreEqual(originalCount, countAfterSwitch, "Unsaved preset should be removed.");
-	}
-
-	#endregion Unsaved Preset Management Tests
-
-	#region Integration Tests
-
-	[TestMethod]
-	public void FindMatchingPreset_WithComplexSettingsCombination_FindsCorrectMatch()
-	{
-		// Arrange
-		var viewModel = CreateViewModel(GeometryIOSettingsType.Import);
-
-		// Use settings that match the "Metasequoia MQO unscaled" preset
-		viewModel.Scale = 1.0f;
-		viewModel.InvertZAxis = true;
-		viewModel.InvertFaces = false;
-		viewModel.InvertVCoordinate = false;
-		viewModel.PremultiplyUV = true;
-		viewModel.WrapUV = true;
-		viewModel.VertexColorLight = true;
-
-		// Act
-		var matchingPreset = viewModel.MatchingPreset;
-
-		// Assert
-		Assert.IsNotNull(matchingPreset);
-		Assert.AreEqual("Metasequoia MQO unscaled", matchingPreset.Name);
-	}
-
-	[TestMethod]
-	public void GeometryIOSettingsType_DeterminesCorrectPresetLists()
-	{
-		// Test Export
-		var exportViewModel = CreateViewModel(GeometryIOSettingsType.Export);
-		Assert.AreEqual(IOSettingsPresets.GeometryExportSettingsPresets.Count, exportViewModel.AvailablePresets.Count);
-
-		// Test Import
-		var importViewModel = CreateViewModel(GeometryIOSettingsType.Import);
-		Assert.AreEqual(IOSettingsPresets.GeometryImportSettingsPresets.Count, importViewModel.AvailablePresets.Count);
-
-		// Test Animation Import
-		var animViewModel = CreateViewModel(GeometryIOSettingsType.AnimationImport);
-		Assert.AreEqual(IOSettingsPresets.AnimationSettingsPresets.Count, animViewModel.AvailablePresets.Count);
-	}
-
-	#endregion Integration Tests
-
-	#region Helper Methods
-
-	private GeometryIOSettingsWindowViewModel CreateViewModel(GeometryIOSettingsType type = GeometryIOSettingsType.Export)
-	{
-		return new GeometryIOSettingsWindowViewModel(
-			type,
-			TestCustomPresetPath,
-			_mockPresetIOService.Object,
-			_mockDialogService.Object,
-			_mockMessageService.Object,
-			_mockLocalizationService.Object
-		);
-	}
-
-	#endregion Helper Methods
+	#endregion Edge Case Tests
 }
