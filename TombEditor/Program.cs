@@ -1,8 +1,6 @@
-﻿using CustomMessageBox.WPF;
-using DarkUI.Config;
+﻿using DarkUI.Config;
 using DarkUI.Win32;
 using Microsoft.Extensions.DependencyInjection;
-using MvvmDialogs;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -20,8 +18,6 @@ using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
 using TombLib.WPF.Services;
-using TombLib.WPF.Services.Abstract;
-using WPF = System.Windows;
 
 namespace TombEditor
 {
@@ -32,7 +28,9 @@ namespace TombEditor
         [STAThread]
         public static void Main(string[] args)
         {
-            InitializeWPF();
+            var services = WPFInitializer.InitializeWPF();
+            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
+            ServiceLocator.Configure(services.BuildServiceProvider());
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -142,48 +140,6 @@ namespace TombEditor
                 SingleInstanceManagement.Send(Process.GetCurrentProcess(), new List<string>() { ".prj2" }, startFile);
             else // Just bring editor to top, if user tries to launch another copy
                 SingleInstanceManagement.Bump(Process.GetCurrentProcess());
-        }
-
-        private static void InitializeWPF()
-        {
-            Localizer.Instance.LoadLanguage("en");
-
-            // Initialize WPF resources
-            var wpfApp = new WPF.Application
-            {
-                ShutdownMode = WPF.ShutdownMode.OnExplicitShutdown
-            };
-
-            // Add the DarkUI theme to the WPF application
-            wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
-            {
-                Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Generic.xaml")
-            });
-
-            // Use DarkColours theme (default DarkUI look)
-            wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
-            {
-                Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Dictionaries/DarkColors.xaml")
-            });
-
-
-            // Replace the problematic line with the following:
-            CMessageBox.WindowStyleOverride = (WPF.Style)wpfApp.Resources["CustomWindowStyle"];
-            CMessageBox.UsePathIconsByDefault = true;
-
-            if (wpfApp.TryFindResource("Brush_Background_Alternative") is WPF.Media.SolidColorBrush brush)
-                CMessageBox.DefaultButtonsPanelBackground = brush;
-
-            // Initialize service providers
-            var services = new ServiceCollection();
-
-            services.AddSingleton<IDialogService, DialogService>();
-            services.AddSingleton<IMessageService, MessageBoxService>();
-            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
-
-            services.AddTransient<ILocalizationService, LocalizationService>();
-
-            ServiceLocator.Configure(services.BuildServiceProvider());
         }
     }
 }
