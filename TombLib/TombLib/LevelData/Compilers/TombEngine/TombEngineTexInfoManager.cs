@@ -1441,6 +1441,7 @@ namespace TombLib.LevelData.Compilers
 
         private class SidecarLoadingCacheEntry
         {
+            public MaterialType MaterialType { get; set; } = MaterialType.Default;
             public string NormalMapPath { get; set; }
             public string SpecularMapPath { get; set; }
             public string AmbientOcclusionMapPath { get; set; }
@@ -1516,6 +1517,8 @@ namespace TombLib.LevelData.Compilers
                         // We called TrySidecarLoadOrLoadExisting for loading XML or texture paths by convention,
                         // and we don't need material parameters
                         // At this point, materialData contains also IsXYZFound variables 
+
+                        cacheEntry.MaterialType = materialData.Type;
 
                         if (!string.IsNullOrEmpty(materialData.NormalMap))
                         {
@@ -1789,6 +1792,17 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.SpecularMap.Value, x, y, width, height, ImageChannel.B);
+                }
+                else
+                {
+                    // In this case, for reflective materials, let's create a dummy white specular map on the fly
+                    if (currentCacheEntry.MaterialType == MaterialType.Reflective || 
+                        currentCacheEntry.MaterialType == MaterialType.SkyBoxReflective)
+                    {
+                        var dummySpecularMap = ImageC.CreateNew(width, height);
+                        dummySpecularMap.Fill(new ColorC(255, 255, 255, 255));
+                        image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, dummySpecularMap, 0, 0, width, height, ImageChannel.B);
+                    }
                 }
 
                 // Emissive map
