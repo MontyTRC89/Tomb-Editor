@@ -1,7 +1,12 @@
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using MvvmDialogs;
+using System.ComponentModel;
 using TombLib.Forms.ViewModels;
 using TombLib.GeometryIO;
 using TombLib.Services.Abstract;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 
 namespace TombLib.Test;
 
@@ -13,6 +18,7 @@ public class GeometryIOSettingsWindowViewModelTests
 	private Mock<ICustomGeometrySettingsPresetIOService> _mockPresetIOService = null!;
 	private Mock<IDialogService> _mockDialogService = null!;
 	private Mock<IMessageService> _mockMessageService = null!;
+	private Mock<ILocalizationService> _mockLocalizationService = null!;
 
 	[TestInitialize]
 	public void TestInitialize()
@@ -20,13 +26,32 @@ public class GeometryIOSettingsWindowViewModelTests
 		_mockPresetIOService = new Mock<ICustomGeometrySettingsPresetIOService>();
 		_mockDialogService = new Mock<IDialogService>();
 		_mockMessageService = new Mock<IMessageService>();
+		_mockLocalizationService = new Mock<ILocalizationService>();
 
 		// Setup default behaviour for preset service
 		_mockPresetIOService.Setup(x => x.LoadPresets(It.IsAny<string>()))
-			.Returns(new List<IOGeometrySettingsPreset>());
+			.Returns([]);
 
 		_mockPresetIOService.Setup(x => x.SavePresets(It.IsAny<string>(), It.IsAny<IEnumerable<IOGeometrySettingsPreset>>()))
 			.Returns(true);
+
+		// Setup localization service
+		_mockLocalizationService.Setup(x => x.For(It.IsAny<INotifyPropertyChanged>()))
+			.Returns(_mockLocalizationService.Object);
+
+		_mockLocalizationService.Setup(x => x[It.IsAny<string>()])
+			.Returns<string>(key => key);
+
+		_mockLocalizationService.Setup(x => x.Format(It.IsAny<string>(), It.IsAny<object[]>()))
+			.Returns<string, object[]>(string.Format);
+
+		// Setup ServiceLocator with mocked services for InputBoxWindowViewModel to resolve dependencies
+		var services = new ServiceCollection();
+
+		services.AddSingleton(_ => _mockMessageService.Object);
+		services.AddTransient(_ => _mockLocalizationService.Object);
+
+		ServiceLocator.Configure(services.BuildServiceProvider());
 	}
 
 	#region Constructor Tests
@@ -40,7 +65,8 @@ public class GeometryIOSettingsWindowViewModelTests
 			TestCustomPresetPath,
 			_mockPresetIOService.Object,
 			_mockDialogService.Object,
-			_mockMessageService.Object
+			_mockMessageService.Object,
+			_mockLocalizationService.Object
 		);
 
 		// Assert
@@ -60,7 +86,8 @@ public class GeometryIOSettingsWindowViewModelTests
 			TestCustomPresetPath,
 			_mockPresetIOService.Object,
 			_mockDialogService.Object,
-			_mockMessageService.Object
+			_mockMessageService.Object,
+			_mockLocalizationService.Object
 		);
 
 		// Assert
@@ -78,7 +105,8 @@ public class GeometryIOSettingsWindowViewModelTests
 			TestCustomPresetPath,
 			_mockPresetIOService.Object,
 			_mockDialogService.Object,
-			_mockMessageService.Object
+			_mockMessageService.Object,
+			_mockLocalizationService.Object
 		);
 
 		// Assert
@@ -106,7 +134,8 @@ public class GeometryIOSettingsWindowViewModelTests
 			TestCustomPresetPath,
 			_mockPresetIOService.Object,
 			_mockDialogService.Object,
-			_mockMessageService.Object
+			_mockMessageService.Object,
+			_mockLocalizationService.Object
 		);
 
 		// Assert
@@ -229,7 +258,7 @@ public class GeometryIOSettingsWindowViewModelTests
 		viewModel.InvertYAxis = true;
 
 		// Assert
-		Assert.IsTrue(viewModel.MatchingPreset.Name.Contains("Custom Preset"));
+		Assert.IsTrue(viewModel.MatchingPreset.Name.Equals("CustomPresetName"));
 	}
 
 	[TestMethod]
@@ -326,7 +355,7 @@ public class GeometryIOSettingsWindowViewModelTests
 		Assert.AreEqual(viewModel.AvailablePresets.First(), viewModel.SelectedPreset);
 
 		_mockMessageService.Verify(x => x.ShowConfirmation(
-			It.Is<string>(s => s.Contains("Custom Test")),
+			It.IsAny<string>(),
 			It.IsAny<string>(),
 			It.IsAny<bool?>(),
 			It.IsAny<bool>()), Times.Once);
@@ -375,11 +404,6 @@ public class GeometryIOSettingsWindowViewModelTests
 		var viewModel = CreateViewModel();
 		viewModel.Scale = 2.5f;
 		viewModel.InvertXAxis = true;
-
-		var inputBoxViewModel = new InputBoxWindowViewModel(string.Empty, string.Empty, invalidNames: "-- Custom Preset --")
-		{
-			Value = "My Test Preset"
-		};
 
 		_mockDialogService.Setup(x => x.ShowDialog(viewModel, It.IsAny<InputBoxWindowViewModel>()))
 			.Callback<object, object>((_, vm) => (vm as InputBoxWindowViewModel)!.Value = "My Test Preset")
@@ -723,7 +747,7 @@ public class GeometryIOSettingsWindowViewModelTests
 		int countWithUnsaved = viewModel.AvailablePresets.Count;
 
 		// Switch back to a real preset
-		viewModel.SelectedPreset = viewModel.AvailablePresets.First(p => p.Name != "-- Custom Preset --");
+		viewModel.SelectedPreset = viewModel.AvailablePresets.First(p => p.Name != "CustomPresetName");
 		int countAfterSwitch = viewModel.AvailablePresets.Count;
 
 		// Assert
@@ -785,7 +809,8 @@ public class GeometryIOSettingsWindowViewModelTests
 			TestCustomPresetPath,
 			_mockPresetIOService.Object,
 			_mockDialogService.Object,
-			_mockMessageService.Object
+			_mockMessageService.Object,
+			_mockLocalizationService.Object
 		);
 	}
 
