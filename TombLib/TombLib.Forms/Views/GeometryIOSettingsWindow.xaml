@@ -157,6 +157,7 @@
 						Grid.Column="2"
 						Command="{Binding SavePresetCommand}"
 						Style="{DynamicResource ButtonWithIconOnly}"
+						ToolTip="{tombLib:Localize SavePresetTooltip}"
 						Visibility="{Binding IsSelectedPresetUnsaved, Converter={StaticResource BoolToVisConverter}}">
 						<Button.Margin>
 							<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
@@ -169,6 +170,7 @@
 						Grid.Column="3"
 						Command="{Binding DeletePresetCommand}"
 						Style="{DynamicResource ButtonWithIconOnly}"
+						ToolTip="{tombLib:Localize DeletePresetTooltip}"
 						Visibility="{Binding IsSelectedPresetCustom, Converter={StaticResource BoolToVisConverter}}">
 						<Button.Margin>
 							<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />

@@ -30,11 +30,13 @@
 
 		"CustomPresetName": "-- Custom Preset --",
 
-		"SavePreset": "Save Preset",
+		"SavePresetTitle": "Save Preset",
+		"SavePresetTooltip": "Save preset",
 		"EnterPresetName": "Enter a name for the preset:",
 		"PresetNameAlreadyExists": "A preset with this name already exists.",
 
-		"DeletePreset": "Delete Preset?",
+		"DeletePresetTitle": "Delete Preset?",
+		"DeletePresetTooltip": "Delete preset",
 		"DeletePresetMessage": "Are you sure you want to delete the \"{0}\" preset?"
 	},
 

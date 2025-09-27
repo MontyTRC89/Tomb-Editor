@@ -347,7 +347,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 	private void SavePreset()
 	{
 		var inputBox = new InputBoxWindowViewModel(
-			title: _localizationService["SavePreset"],
+			title: _localizationService["SavePresetTitle"],
 			label: _localizationService["EnterPresetName"],
 			invalidNames: [_unsavedPresetName]
 		);
@@ -388,7 +388,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 
 		bool deleteConfirmed = _messageService.ShowConfirmation(
 			_localizationService.Format("DeletePresetMessage", SelectedPreset.Name),
-			_localizationService["DeletePreset"],
+			_localizationService["DeletePresetTitle"],
 			defaultValue: false,
 			isRisky: true
 		);
