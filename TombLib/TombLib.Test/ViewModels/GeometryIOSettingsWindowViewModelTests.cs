@@ -8,7 +8,7 @@ using TombLib.Services.Abstract;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombLib.Test;
+namespace TombLib.Test.ViewModels;
 
 [TestClass]
 public class GeometryIOSettingsWindowViewModelTests
