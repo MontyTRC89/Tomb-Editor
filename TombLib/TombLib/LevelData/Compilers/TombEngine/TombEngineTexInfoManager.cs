@@ -1797,7 +1797,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     // In this case, for reflective materials, let's create a dummy white specular map on the fly
                     if (currentCacheEntry.MaterialType == MaterialType.Reflective || 
-                        currentCacheEntry.MaterialType == MaterialType.SkyBoxReflective)
+                        currentCacheEntry.MaterialType == MaterialType.SkyboxReflective)
                     {
                         var dummySpecularMap = ImageC.CreateNew(width, height);
                         dummySpecularMap.Fill(new ColorC(255, 255, 255, 255));
