@@ -903,7 +903,7 @@ namespace TombLib.LevelData.Compilers
                     foreach (var candidateIndex in candidates)
                     {
                         var child = parent.Children[candidateIndex];
-                        if (child.IsForTriangle != isForTriangle) continue;
+                        //if (child.IsForTriangle != isForTriangle) continue;
                         if (checkParameters && areaToLook.BlendMode != child.BlendMode) continue;
 
                         int rot = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
@@ -922,7 +922,7 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < parent.Children.Count; i++)
                 {
                     var child = parent.Children[i];
-                    if (child.IsForTriangle != isForTriangle) continue;
+                    //if (child.IsForTriangle != isForTriangle) continue;
                     if (checkParameters && areaToLook.BlendMode != child.BlendMode) continue;
 
                     int rot = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
@@ -1801,6 +1801,13 @@ namespace TombLib.LevelData.Compilers
                     {
                         var dummySpecularMap = ImageC.CreateNew(width, height);
                         dummySpecularMap.Fill(new ColorC(255, 255, 255, 255));
+
+                        if (image.AmbientOcclusionRoughnessSpecularMap is null)
+                        {
+                            image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                            image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 0, 255));
+                        }
+
                         image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, dummySpecularMap, 0, 0, width, height, ImageChannel.B);
                     }
                 }
