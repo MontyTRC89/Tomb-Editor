@@ -35,7 +35,7 @@ namespace TombLib.Forms
 
 			// Populate material type combobox.
 			foreach (MaterialType matType in Enum.GetValues(typeof(MaterialType)))
-				comboMaterialType.Items.Add(matType);
+				comboMaterialType.Items.Add(matType.ToString().SplitCamelcase());
 
 			// Set window property handlers.
 			ConfigurationBase.ConfigureWindow(this, configuration);
