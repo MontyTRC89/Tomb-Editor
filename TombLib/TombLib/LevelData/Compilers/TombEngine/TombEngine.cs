@@ -168,9 +168,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         foreach (var poly in bucket.Polygons)
                         {
                             writer.Write((int)poly.Shape);
+
                             writer.Write((int)poly.AnimatedSequence);
                             writer.Write((int)poly.AnimatedFrame);
+
                             writer.Write((float)poly.ShineStrength);
+
+                            writer.Write(poly.Normal); 
+
                             foreach (int index in poly.Indices)
                                 writer.Write(index);
                             foreach (var uv in poly.TextureCoordinates)
