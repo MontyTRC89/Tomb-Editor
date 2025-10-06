@@ -911,7 +911,7 @@ namespace WadTool
 				RepopulateTextureList();
 		}
 
-		private void RepopulateTextureList()
+		private void RepopulateTextureList(bool force = false)
 		{
 			bool wholeWad = butAllTextures.Checked;
 
@@ -944,7 +944,8 @@ namespace WadTool
 			// If count is the same it means no changes were made in texture list
 			// and there's no need to actually repopulate.
 
-			if (wholeWad && comboCurrentTexture.Items.Count == list.Count)
+			// NOTE: this check required to reopen the mesh editor if a texture was replaced
+			if (wholeWad && !force && comboCurrentTexture.Items.Count == list.Count)
 				return;
 
 			comboCurrentTexture.Items.Clear();
@@ -1398,14 +1399,14 @@ namespace WadTool
 				return;
 
 			image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
-			var newTexture = new WadTexture(image);
-
+			
 			if (!isExternal)
 				image.FileName = string.Empty;
-			else
-				newTexture.AbsolutePath = path;
+			
+			var newTexture = new WadTexture(image);
+			newTexture.AbsolutePath = image.FileName;
 
-			if (!lstMeshes.Visible)
+            if (!lstMeshes.Visible)
 			{
 				// Push undo
 				_tool.UndoManager.PushMeshChanged(panelMesh);
@@ -1484,7 +1485,7 @@ namespace WadTool
 			}
 
 			// Visually update
-			RepopulateTextureList();
+			RepopulateTextureList(true);
 			UpdateUI();
 
 			if (panelTextureMap.SelectedTexture == TextureArea.None)

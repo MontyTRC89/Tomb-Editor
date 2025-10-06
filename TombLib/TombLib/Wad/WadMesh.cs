@@ -497,7 +497,10 @@ namespace TombLib.Wad
 					var image = ImageC.FromFile(absoluteTexturePath);
 					if (!settings.KeepTexturesExternally)
 						image.FileName = string.Empty;
-					return new WadTexture(image);
+                    
+                    var texture = new WadTexture(image);
+                    texture.AbsolutePath = image.FileName;
+                    return texture;
 				});
                 tmpModel = importer.ImportFromFile(fileName);
 
