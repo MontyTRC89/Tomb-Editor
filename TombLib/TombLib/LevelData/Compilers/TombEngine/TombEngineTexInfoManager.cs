@@ -1826,7 +1826,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
 				// Add padding here for AmbientOcclusionRoughnessSpecularMap because we have packed three textures in RGB channels
-				if (image.AmbientOcclusionRoughnessSpecularMap != null)
+				if (image.AmbientOcclusionRoughnessSpecularMap is not null)
                     AddPadding(p, image.AmbientOcclusionRoughnessSpecularMap.Value, image.AmbientOcclusionRoughnessSpecularMap.Value, 0, actualPadding, destX, destY);
             }
 

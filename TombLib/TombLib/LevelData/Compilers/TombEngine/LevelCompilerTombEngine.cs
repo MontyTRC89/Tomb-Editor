@@ -122,9 +122,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
 				{
 					if (!_materialsDictionary.ContainsKey(texture.Image.FileName))
 					{
-						var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
-						_materialsDictionary.Add(texture.Image.FileName, materialData);
-                        _materialsNames.Add(texture.Image.FileName);
+                        try
+                        {
+                            var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+                            _materialsDictionary.Add(texture.Image.FileName, materialData);
+                            _materialsNames.Add(texture.Image.FileName);
+                        }
+                        catch (Exception ex)
+                        {
+                            string externalMaterialDataPath = Path.Combine(
+                                 Path.GetDirectoryName(texture.Image.FileName),
+                                 Path.GetFileNameWithoutExtension(texture.Image.FileName) + ".xml");
+
+                            _progressReporter.ReportWarn($"Error while processing: {externalMaterialDataPath}");
+                            throw;
+                        }
 					}
 				}
 
