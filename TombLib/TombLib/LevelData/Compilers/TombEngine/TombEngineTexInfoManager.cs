@@ -903,7 +903,7 @@ namespace TombLib.LevelData.Compilers
                     foreach (var candidateIndex in candidates)
                     {
                         var child = parent.Children[candidateIndex];
-                        //if (child.IsForTriangle != isForTriangle) continue;
+                        if (child.IsForTriangle != isForTriangle) continue;
                         if (checkParameters && areaToLook.BlendMode != child.BlendMode) continue;
 
                         int rot = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
@@ -922,7 +922,7 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < parent.Children.Count; i++)
                 {
                     var child = parent.Children[i];
-                    //if (child.IsForTriangle != isForTriangle) continue;
+                    if (child.IsForTriangle != isForTriangle) continue;
                     if (checkParameters && areaToLook.BlendMode != child.BlendMode) continue;
 
                     int rot = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
