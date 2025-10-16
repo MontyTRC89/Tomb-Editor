@@ -320,7 +320,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 								if (texture.BlendMode == BlendMode.Normal)
 									realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
                            
-                                var materialIndex = _materialsNames.IndexOf(texture.Texture.Image.FileName);
+                                var materialIndex = _materialNames.IndexOf(texture.Texture.Image.FileName);
                                 if (materialIndex == -1)
                                     materialIndex = 0;
 
@@ -526,7 +526,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (texture.BlendMode == BlendMode.Normal)
                                     realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
-								var materialIndex = _materialsNames.IndexOf(texture.Texture.Image.FileName);
+								var materialIndex = _materialNames.IndexOf(texture.Texture.Image.FileName);
                                 if (materialIndex == -1)
                                     materialIndex = 0;
 
@@ -698,7 +698,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     if (realBlendMode == BlendMode.AlphaBlend && geometry.UseAlphaTestInsteadOfAlphaBlend)
                                         realBlendMode = BlendMode.AlphaTest;
 
-									var materialIndex = _materialsNames.IndexOf(texture.Texture.Image.FileName);
+									var materialIndex = _materialNames.IndexOf(texture.Texture.Image.FileName);
                                     if (materialIndex == -1)
                                         materialIndex = 0;
 
