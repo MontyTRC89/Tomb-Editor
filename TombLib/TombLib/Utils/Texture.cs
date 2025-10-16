@@ -11,11 +11,8 @@ namespace TombLib.Utils
     {
         public static ImageC UnloadedPlaceholder { get; } = ImageC.Black;
 
-        // Do not change the image with this methode
+        // Do not change the image with this method
         public ImageC Image { get; protected set; } = UnloadedPlaceholder;
-
-		// Relative path is calculated before the save of Wad2 because in the final file there will be only relative paths
-		public string RelativePath { get; set; }
 
 		// This helps the texture packer of TombEngine compiler to have ready paths for doing sidecar loading
 		public string AbsolutePath { get; set; }

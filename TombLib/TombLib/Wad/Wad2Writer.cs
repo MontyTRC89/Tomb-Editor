@@ -11,30 +11,17 @@ namespace TombLib.Wad
     public static class Wad2Writer
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static string _filename = string.Empty;
 
         public static IReadOnlyCollection<FileFormat> FileFormats = new[] { new FileFormat("Wad2 file", "wad2") };
 
         public static void SaveToFile(Wad2 wad, string filename)
         {
+            _filename = filename;
+
             // We save first to a temporary memory stream
             using (var stream = new MemoryStream())
             {
-				// Prepare external texture relative paths
-				var textureTable = new List<WadTexture>(wad.MeshTexturesUnique);
-				var basePath = Path.GetDirectoryName(filename);
-				foreach (var texture in textureTable)
-				{
-					var path = texture.Image.FileName ?? string.Empty;
-					var relativePath = path;
-					if (!string.IsNullOrEmpty(path))
-					{
-						relativePath = PathC.GetRelativePath(basePath, path);
-						if (relativePath is null)
-							relativePath = path;
-					}
-					texture.RelativePath = relativePath;
-				}
-
 				SaveToStream(wad, stream);
 
                 // Save to temporary file as well, so original wad2 won't vanish in case of crash
@@ -105,11 +92,23 @@ namespace TombLib.Wad
                         chunkIO.WriteChunkString(Wad2Chunks.TextureName, texture.Image.FileName ?? string.Empty);
 
                         // TextureName chunk could not contain the relative path of the texture, 
-                        // so I've added a dedicated field and chunk to Wad2 file format.
-						chunkIO.WriteChunkString(Wad2Chunks.TextureRelativePath, texture.RelativePath);
+                        // so write it using dedicated chunk.
 
-                        // NOTE: when external textures are used, data is not necessary, but don't saving it
-                        // will break backward compatibility. We could save always the data, even if 
+                        var basePath = Path.GetDirectoryName(_filename);
+                        var path = texture.Image.FileName ?? string.Empty;
+                        var relativePath = path;
+
+                        if (!string.IsNullOrEmpty(path))
+                        {
+                            relativePath = PathC.GetRelativePath(basePath, path);
+                            if (relativePath is null)
+                                relativePath = path;
+                        }
+
+                        chunkIO.WriteChunkString(Wad2Chunks.TextureRelativePath, relativePath);
+
+                        // NOTE: when external textures are used, data is not necessary, but not saving it
+                        // will break backwards compatibility. We could save always the data, even if 
                         // we'll double the disk spage usage. 
                         // In this way, older versions of WT and TE will ignore the external path and use 
                         // the data stored inside the Wad2 file.
