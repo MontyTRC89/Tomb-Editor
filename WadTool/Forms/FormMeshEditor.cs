@@ -1501,6 +1501,7 @@ namespace WadTool
 		{
 			var selectedTexture = comboCurrentTexture.SelectedItem as Texture;
 			panelTextureMap.ResetVisibleTexture(selectedTexture, true);
+			butMaterialEditor.Enabled = (selectedTexture != null && !string.IsNullOrEmpty(selectedTexture.AbsolutePath));
 		}
 
 		private void butDeleteTexture_Click(object sender, EventArgs e)
@@ -1724,12 +1725,6 @@ namespace WadTool
 		private void butMaterialEditor_Click(object sender, EventArgs e)
 		{
 			var texture = comboCurrentTexture.SelectedItem as WadTexture;
-
-			if (string.IsNullOrEmpty(texture.AbsolutePath))
-			{
-				DarkMessageBox.Show(this, "Material editor can be used only with external textures.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
 
 			using (var form = new FormMaterialEditor(texture.AbsolutePath, _tool.Configuration))
 			{
