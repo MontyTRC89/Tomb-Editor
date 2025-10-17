@@ -1,5 +1,5 @@
-Version 1.9.3
-=============
+Version 1.10
+============
 
 Tomb Editor:
 * Added UVRotate texture animation type support for TEN target.
@@ -13,6 +13,10 @@ WadTool:
 * Added ability to fill all bone weights with specified values.
 * Fixed incorrect bone weight writing if other vertex data was changed in mesh editor.
 * Fixed incorrect sphere radius while importing some objects from classic TR levels.
+
+TEN nodes:
+ * Added batch nodes for moving a group of moveables or statics over specified timespan.
+ * Add timeout parameter for the node “Set effect for specified moveables”.
 
 Version 1.9.2
 =============
