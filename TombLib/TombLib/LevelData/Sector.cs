@@ -27,7 +27,7 @@ namespace TombLib.LevelData
         public bool ForceFloorSolid { get; set; } // If this is set to true, portals are overwritten for this sector.
         public List<SectorSplit> ExtraFloorSplits { get; } = new();
         public List<SectorSplit> ExtraCeilingSplits { get; } = new();
-        private Dictionary<SectorFace, TextureArea> _faceTextures { get; } = new();
+        private Dictionary<FaceLayerInfo, TextureArea> _faceTextures { get; } = new();
 
         public SectorSurface Floor;
         public SectorSurface Ceiling;
@@ -59,7 +59,7 @@ namespace TombLib.LevelData
                 Ceiling = Ceiling
             };
 
-            foreach (KeyValuePair<SectorFace, TextureArea> entry in _faceTextures)
+            foreach (KeyValuePair<FaceLayerInfo, TextureArea> entry in _faceTextures)
                 result._faceTextures[entry.Key] = entry.Value;
 
             foreach (SectorSplit split in ExtraFloorSplits)
@@ -84,15 +84,10 @@ namespace TombLib.LevelData
         public bool IsAnyPortal => FloorPortal != null || CeilingPortal != null || WallPortal != null;
         public bool HasGhostBlock => GhostBlock != null;
 
-        public bool SetFaceTexture(SectorFace face, TextureArea texture)
+        public bool SetFaceTexture(FaceLayerInfo face, TextureArea texture)
         {
-            if (texture == TextureArea.None)
-            {
-                if (_faceTextures.ContainsKey(face))
-                    _faceTextures.Remove(face);
-
-                return true;
-            }
+            if (texture == TextureArea.None || (face.Layer is FaceLayer.Overlay && texture.TextureIsInvisible))
+                return _faceTextures.Remove(face);
 
             if (texture.TextureIsDegenerate)
                 texture = TextureArea.Invisible;
@@ -106,15 +101,14 @@ namespace TombLib.LevelData
                 return false;
         }
 
-        public TextureArea GetFaceTexture(SectorFace face)
-        {
-            return _faceTextures.GetValueOrDefault(face);
-        }
+        public TextureArea GetFaceTexture(FaceLayerInfo face)
+            => _faceTextures.GetValueOrDefault(face);
 
-        public Dictionary<SectorFace, TextureArea> GetFaceTextures()
-        {
-            return _faceTextures;
-        }
+        public Dictionary<SectorFace, TextureArea> GetFaceTextures(FaceLayer layer)
+            => _faceTextures.Where(kvp => kvp.Key.Layer == layer).ToDictionary(kvp => kvp.Key.Face, kvp => kvp.Value);
+
+        public Dictionary<FaceLayerInfo, TextureArea> GetAllFaceTextures()
+            => _faceTextures;
 
         public IEnumerable<SectorVerticalPart> GetVerticals()
         {
@@ -148,7 +142,7 @@ namespace TombLib.LevelData
             Flags = replacement.Flags;
             ForceFloorSolid = replacement.ForceFloorSolid;
 
-            foreach (SectorFace face in replacement.GetFaceTextures().Keys.Union(_faceTextures.Keys))
+            foreach (FaceLayerInfo face in replacement.GetAllFaceTextures().Keys.Union(_faceTextures.Keys))
             {
                 var texture = replacement.GetFaceTexture(face);
                 if (texture.TextureIsInvisible || level.Settings.Textures.Contains(texture.Texture))
@@ -304,7 +298,7 @@ namespace TombLib.LevelData
             return split;
         }
 
-        private void MirrorWallTexture(SectorFace oldFace, Func<SectorFace, FaceShape> oldFaceIsTriangle)
+        private void MirrorWallTexture(FaceLayerInfo oldFace, Func<FaceLayerInfo, FaceShape> oldFaceIsTriangle)
         {
             if (!_faceTextures.TryGetValue(oldFace, out TextureArea area))
                 return;
@@ -329,7 +323,7 @@ namespace TombLib.LevelData
         // When mirroring is done, a oldFaceIsTriangle must be provided that can return the previous shape of texture faces.
         // Set "onlyFloor" to true, to only modify the floor.
         // Set "onlyFloor" to false, to only modify the ceiling.
-        public void Transform(RectTransformation transformation, bool? onlyFloor = null, Func<SectorFace, FaceShape> oldFaceIsTriangle = null)
+        public void Transform(RectTransformation transformation, bool? onlyFloor = null, Func<FaceLayerInfo, FaceShape> oldFaceIsTriangle = null)
         {
             // Rotate sector flags
             if (transformation.MirrorX)
@@ -389,13 +383,15 @@ namespace TombLib.LevelData
                     transformation.TransformValueDiagonalQuad(ref GhostBlock.Ceiling.XpZp, ref GhostBlock.Ceiling.XnZp, ref GhostBlock.Ceiling.XnZn, ref GhostBlock.Ceiling.XpZn);
             }
 
+            for (FaceLayer layer = 0; layer < FaceLayer.Count; layer++)
+            {
             // Rotate applied textures
             if (onlyFloor != false)
             {
                 // Fix lower wall textures
                 if (transformation.MirrorX)
                 {
-                    var faces = _faceTextures.Where(pair => pair.Key.IsFloorWall()).Select(pair => pair.Key).ToList();
+                    var faces = _faceTextures.Where(pair => pair.Key.Face.IsFloorWall()).Select(pair => pair.Key).ToList();
 
                     for (int i = 0; i < faces.Count; i++)
                         MirrorWallTexture(faces[i], oldFaceIsTriangle);
@@ -412,44 +408,48 @@ namespace TombLib.LevelData
                         SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, i));
                 }
 
+                FaceLayerInfo
+                    floorKey = new(SectorFace.Floor, layer),
+                    floorTriangle2Key = new(SectorFace.Floor_Triangle2, layer);
+
                 // Fix floor textures
                 if (Floor.IsQuad)
                 {
-                    if (_faceTextures.ContainsKey(SectorFace.Floor))
-                        _faceTextures[SectorFace.Floor] = _faceTextures[SectorFace.Floor].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
+                    if (_faceTextures.ContainsKey(floorKey))
+                        _faceTextures[floorKey] = _faceTextures[floorKey].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
                 }
                 else
                 {
                     // Mirror
                     if (transformation.MirrorX)
                     {
-                        _faceTextures.TrySwap(SectorFace.Floor, SectorFace.Floor_Triangle2);
+                        _faceTextures.TrySwap(floorKey, floorTriangle2Key);
 
-                        if (_faceTextures.ContainsKey(SectorFace.Floor))
+                        if (_faceTextures.ContainsKey(floorKey))
                         {
-                            TextureArea floor = _faceTextures[SectorFace.Floor];
+                            TextureArea floor = _faceTextures[floorKey];
                             Swap.Do(ref floor.TexCoord0, ref floor.TexCoord2);
-                            _faceTextures[SectorFace.Floor] = floor;
+                            _faceTextures[floorKey] = floor;
                         }
 
-                        if (_faceTextures.ContainsKey(SectorFace.Floor_Triangle2))
+                        if (_faceTextures.ContainsKey(floorTriangle2Key))
                         {
-                            TextureArea floorTriangle2 = _faceTextures[SectorFace.Floor_Triangle2];
+                            TextureArea floorTriangle2 = _faceTextures[floorTriangle2Key];
                             Swap.Do(ref floorTriangle2.TexCoord0, ref floorTriangle2.TexCoord2);
-                            _faceTextures[SectorFace.Floor_Triangle2] = floorTriangle2;
+                            _faceTextures[floorTriangle2Key] = floorTriangle2;
                         }
 
                         if (Floor.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
-                            _faceTextures.TrySwap(SectorFace.Floor, SectorFace.Floor_Triangle2);
+                            _faceTextures.TrySwap(floorKey, floorTriangle2Key);
                     }
 
                     // Rotation
                     for (int i = 0; i < transformation.QuadrantRotation; ++i)
                     {
                         if (!oldFloorSplitDirectionIsXEqualsZReal)
-                            _faceTextures.TrySwap(SectorFace.Floor, SectorFace.Floor_Triangle2);
+                            _faceTextures.TrySwap(floorKey, floorTriangle2Key);
                         if (Floor.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
-                            _faceTextures.TrySwap(SectorFace.Floor, SectorFace.Floor_Triangle2);
+                            _faceTextures.TrySwap(floorKey, floorTriangle2Key);
 
                         oldFloorSplitDirectionIsXEqualsZReal = !oldFloorSplitDirectionIsXEqualsZReal;
                     }
@@ -460,7 +460,7 @@ namespace TombLib.LevelData
                 // Fix upper wall textures
                 if (transformation.MirrorX)
                 {
-                    var faces = _faceTextures.Where(pair => pair.Key.IsCeilingWall()).Select(pair => pair.Key).ToList();
+                    var faces = _faceTextures.Where(pair => pair.Key.Face.IsCeilingWall()).Select(pair => pair.Key).ToList();
 
                     for (int i = 0; i < faces.Count; i++)
                         MirrorWallTexture(faces[i], oldFaceIsTriangle);
@@ -477,44 +477,48 @@ namespace TombLib.LevelData
                         SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, i));
                 }
 
+                FaceLayerInfo
+                    ceilingKey = new(SectorFace.Ceiling, layer),
+                    ceilingTriangle2Key = new(SectorFace.Ceiling_Triangle2, layer);
+
                 // Fix ceiling textures
                 if (Ceiling.IsQuad)
                 {
-                    if (_faceTextures.ContainsKey(SectorFace.Ceiling))
-                        _faceTextures[SectorFace.Ceiling] = _faceTextures[SectorFace.Ceiling].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
+                    if (_faceTextures.ContainsKey(ceilingKey))
+                        _faceTextures[ceilingKey] = _faceTextures[ceilingKey].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
                 }
                 else
                 {
                     // Mirror
                     if (transformation.MirrorX)
                     {
-                        _faceTextures.TrySwap(SectorFace.Ceiling, SectorFace.Ceiling_Triangle2);
+                        _faceTextures.TrySwap(ceilingKey, ceilingTriangle2Key);
 
-                        if (_faceTextures.ContainsKey(SectorFace.Ceiling))
+                        if (_faceTextures.ContainsKey(ceilingKey))
                         {
-                            TextureArea ceiling = _faceTextures[SectorFace.Ceiling];
+                            TextureArea ceiling = _faceTextures[ceilingKey];
                             Swap.Do(ref ceiling.TexCoord0, ref ceiling.TexCoord2);
-                            _faceTextures[SectorFace.Ceiling] = ceiling;
+                            _faceTextures[ceilingKey] = ceiling;
                         }
 
-                        if (_faceTextures.ContainsKey(SectorFace.Ceiling_Triangle2))
+                        if (_faceTextures.ContainsKey(ceilingTriangle2Key))
                         {
-                            TextureArea ceilingTriangle2 = _faceTextures[SectorFace.Ceiling_Triangle2];
+                            TextureArea ceilingTriangle2 = _faceTextures[ceilingTriangle2Key];
                             Swap.Do(ref ceilingTriangle2.TexCoord0, ref ceilingTriangle2.TexCoord2);
-                            _faceTextures[SectorFace.Ceiling_Triangle2] = ceilingTriangle2;
+                            _faceTextures[ceilingTriangle2Key] = ceilingTriangle2;
                         }
 
                         if (Ceiling.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
-                            _faceTextures.TrySwap(SectorFace.Ceiling, SectorFace.Ceiling_Triangle2);
+                            _faceTextures.TrySwap(ceilingKey, ceilingTriangle2Key);
                     }
 
                     // Rotation
                     for (int i = 0; i < transformation.QuadrantRotation; ++i)
                     {
                         if (!oldCeilingSplitDirectionIsXEqualsZReal)
-                            _faceTextures.TrySwap(SectorFace.Ceiling, SectorFace.Ceiling_Triangle2);
+                            _faceTextures.TrySwap(ceilingKey, ceilingTriangle2Key);
                         if (Ceiling.DiagonalSplit != DiagonalSplit.None) // REMOVE this when we have better diaognal steps.
-                            _faceTextures.TrySwap(SectorFace.Ceiling, SectorFace.Ceiling_Triangle2);
+                            _faceTextures.TrySwap(ceilingKey, ceilingTriangle2Key);
 
                         oldCeilingSplitDirectionIsXEqualsZReal = !oldCeilingSplitDirectionIsXEqualsZReal;
                     }
@@ -524,14 +528,15 @@ namespace TombLib.LevelData
             {
                 if (transformation.MirrorX)
                 {
-                    MirrorWallTexture(SectorFace.Wall_PositiveX_Middle, oldFaceIsTriangle);
-                    MirrorWallTexture(SectorFace.Wall_PositiveZ_Middle, oldFaceIsTriangle);
-                    MirrorWallTexture(SectorFace.Wall_NegativeX_Middle, oldFaceIsTriangle);
-                    MirrorWallTexture(SectorFace.Wall_NegativeZ_Middle, oldFaceIsTriangle);
-                    MirrorWallTexture(SectorFace.Wall_Diagonal_Middle, oldFaceIsTriangle);
+                    MirrorWallTexture(new(SectorFace.Wall_PositiveX_Middle, layer), oldFaceIsTriangle);
+                    MirrorWallTexture(new(SectorFace.Wall_PositiveZ_Middle, layer), oldFaceIsTriangle);
+                    MirrorWallTexture(new(SectorFace.Wall_NegativeX_Middle, layer), oldFaceIsTriangle);
+                    MirrorWallTexture(new(SectorFace.Wall_NegativeZ_Middle, layer), oldFaceIsTriangle);
+                    MirrorWallTexture(new(SectorFace.Wall_Diagonal_Middle, layer), oldFaceIsTriangle);
                 }
 
                 transformation.TransformValueQuad(_faceTextures, SectorFace.Wall_PositiveX_Middle, SectorFace.Wall_PositiveZ_Middle, SectorFace.Wall_NegativeX_Middle, SectorFace.Wall_NegativeZ_Middle);
+            }
             }
         }
 

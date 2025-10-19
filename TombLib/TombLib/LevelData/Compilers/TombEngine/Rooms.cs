@@ -292,10 +292,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
-                            foreach (SectorFace face in room.Sectors[x, z].GetFaceTextures().Keys)
+                            foreach (FaceLayerInfo face in room.Sectors[x, z].GetAllFaceTextures().Keys)
                             {
                                 var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
-                                var shape = room.GetFaceShape(x, z, face);
+                                var shape = room.GetFaceShape(x, z, face.Face);
 
                                 if (range.Count == 0)
                                     continue;
@@ -329,7 +329,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     {
                                         int vertex3Index;
 
-                                        if (face == SectorFace.Ceiling)
+                                        if (face.Face == SectorFace.Ceiling)
                                         {
                                             texture.Mirror();
                                             vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 0);
@@ -371,7 +371,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     }
                                     else
                                     {
-                                        if (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
+                                        if (face.Face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                                             texture.Mirror(true);
 
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);

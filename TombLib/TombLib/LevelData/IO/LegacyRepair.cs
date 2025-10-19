@@ -52,25 +52,25 @@ internal static class LegacyRepair
         if (xn.Sector is not null)
         {
             if (split.XnZn > xn.Sector.Ceiling.XpZn || split.XnZp > xn.Sector.Ceiling.XpZp)
-                sector.SetFaceTexture(SectorFace.Wall_NegativeX_Floor2, sector.GetFaceTexture(SectorFace.Wall_NegativeX_QA));
+                sector.SetFaceTexture(new(SectorFace.Wall_NegativeX_Floor2, FaceLayer.Base), sector.GetFaceTexture(new(SectorFace.Wall_NegativeX_QA, FaceLayer.Base)));
         }
 
         if (xp.Sector is not null)
         {
             if (split.XpZn > xp.Sector.Ceiling.XnZn || split.XpZp > xp.Sector.Ceiling.XnZp)
-                sector.SetFaceTexture(SectorFace.Wall_PositiveX_Floor2, sector.GetFaceTexture(SectorFace.Wall_PositiveX_QA));
+                sector.SetFaceTexture(new(SectorFace.Wall_PositiveX_Floor2, FaceLayer.Base), sector.GetFaceTexture(new(SectorFace.Wall_PositiveX_QA, FaceLayer.Base)));
         }
 
         if (zn.Sector is not null)
         {
             if (split.XnZn > zn.Sector.Ceiling.XnZp || split.XpZn > zn.Sector.Ceiling.XpZp)
-                sector.SetFaceTexture(SectorFace.Wall_NegativeZ_Floor2, sector.GetFaceTexture(SectorFace.Wall_NegativeZ_QA));
+                sector.SetFaceTexture(new(SectorFace.Wall_NegativeZ_Floor2, FaceLayer.Base), sector.GetFaceTexture(new(SectorFace.Wall_NegativeZ_QA, FaceLayer.Base)));
         }
 
         if (zp.Sector is not null)
         {
             if (split.XnZp > zp.Sector.Ceiling.XnZn || split.XpZp > zp.Sector.Ceiling.XpZn)
-                sector.SetFaceTexture(SectorFace.Wall_PositiveZ_Floor2, sector.GetFaceTexture(SectorFace.Wall_PositiveZ_QA));
+                sector.SetFaceTexture(new(SectorFace.Wall_PositiveZ_Floor2, FaceLayer.Base), sector.GetFaceTexture(new(SectorFace.Wall_PositiveZ_QA, FaceLayer.Base)));
         }
     }
 
@@ -98,25 +98,25 @@ internal static class LegacyRepair
         if (xn.Sector is not null)
         {
             if (split.XnZn < xn.Sector.Floor.XpZn || split.XnZp < xn.Sector.Floor.XpZp)
-                sector.SetFaceTexture(SectorFace.Wall_NegativeX_Ceiling2, sector.GetFaceTexture(SectorFace.Wall_NegativeX_WS));
+                sector.SetFaceTexture(new(SectorFace.Wall_NegativeX_Ceiling2, FaceLayer.Base), sector.GetFaceTexture(new(SectorFace.Wall_NegativeX_WS, FaceLayer.Base)));
         }
 
         if (xp.Sector is not null)
         {
             if (split.XpZn < xp.Sector.Floor.XnZn || split.XpZp < xp.Sector.Floor.XnZp)
-                sector.SetFaceTexture(SectorFace.Wall_PositiveX_Ceiling2, sector.GetFaceTexture(SectorFace.Wall_PositiveX_WS));
+                sector.SetFaceTexture(new(SectorFace.Wall_PositiveX_Ceiling2, FaceLayer.Base), sector.GetFaceTexture(new(SectorFace.Wall_PositiveX_WS, FaceLayer.Base)));
         }
 
         if (zn.Sector is not null)
         {
             if (split.XnZn < zn.Sector.Floor.XnZp || split.XpZn < zn.Sector.Floor.XpZp)
-                sector.SetFaceTexture(SectorFace.Wall_NegativeZ_Ceiling2, sector.GetFaceTexture(SectorFace.Wall_NegativeZ_WS));
+                sector.SetFaceTexture(new(SectorFace.Wall_NegativeZ_Ceiling2, FaceLayer.Base), sector.GetFaceTexture(new(SectorFace.Wall_NegativeZ_WS, FaceLayer.Base)));
         }
 
         if (zp.Sector is not null)
         {
             if (split.XnZp < zp.Sector.Floor.XnZn || split.XpZp < zp.Sector.Floor.XpZn)
-                sector.SetFaceTexture(SectorFace.Wall_PositiveZ_Ceiling2, sector.GetFaceTexture(SectorFace.Wall_PositiveZ_WS));
+                sector.SetFaceTexture(new(SectorFace.Wall_PositiveZ_Ceiling2, FaceLayer.Base), sector.GetFaceTexture(new(SectorFace.Wall_PositiveZ_WS, FaceLayer.Base)));
         }
     }
 
@@ -145,43 +145,43 @@ internal static class LegacyRepair
             return;
 
         TextureArea
-            qaPositiveZ = localSector.GetFaceTexture(SectorFace.Wall_PositiveZ_QA),
-            qaNegativeZ = localSector.GetFaceTexture(SectorFace.Wall_NegativeZ_QA),
-            qaNegativeX = localSector.GetFaceTexture(SectorFace.Wall_NegativeX_QA),
-            qaPositiveX = localSector.GetFaceTexture(SectorFace.Wall_PositiveX_QA);
+            qaPositiveZ = localSector.GetFaceTexture(new(SectorFace.Wall_PositiveZ_QA, FaceLayer.Base)),
+            qaNegativeZ = localSector.GetFaceTexture(new(SectorFace.Wall_NegativeZ_QA, FaceLayer.Base)),
+            qaNegativeX = localSector.GetFaceTexture(new(SectorFace.Wall_NegativeX_QA, FaceLayer.Base)),
+            qaPositiveX = localSector.GetFaceTexture(new(SectorFace.Wall_PositiveX_QA, FaceLayer.Base));
 
         switch (probingSector.Floor.DiagonalSplit)
         {
             case DiagonalSplit.XnZp:
                 if (split.XnZn > localSector.Floor.XpZn)
-                    localSector.SetFaceTexture(SectorFace.Wall_NegativeZ_Floor2, qaNegativeZ);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_NegativeZ_Floor2, FaceLayer.Base), qaNegativeZ);
 
                 if (split.XpZp > localSector.Floor.XpZn)
-                    localSector.SetFaceTexture(SectorFace.Wall_PositiveX_Floor2, qaPositiveX);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_PositiveX_Floor2, FaceLayer.Base), qaPositiveX);
                 break;
 
             case DiagonalSplit.XpZn:
                 if (split.XnZn > localSector.Floor.XnZp)
-                    localSector.SetFaceTexture(SectorFace.Wall_NegativeX_Floor2, qaNegativeX);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_NegativeX_Floor2, FaceLayer.Base), qaNegativeX);
 
                 if (split.XpZp > localSector.Floor.XnZp)
-                    localSector.SetFaceTexture(SectorFace.Wall_PositiveZ_Floor2, qaPositiveZ);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_PositiveZ_Floor2, FaceLayer.Base), qaPositiveZ);
                 break;
 
             case DiagonalSplit.XpZp:
                 if (split.XpZn > localSector.Floor.XnZn)
-                    localSector.SetFaceTexture(SectorFace.Wall_NegativeZ_Floor2, qaNegativeZ);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_NegativeZ_Floor2, FaceLayer.Base), qaNegativeZ);
 
                 if (split.XnZp > localSector.Floor.XnZn)
-                    localSector.SetFaceTexture(SectorFace.Wall_NegativeX_Floor2, qaNegativeX);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_NegativeX_Floor2, FaceLayer.Base), qaNegativeX);
                 break;
 
             case DiagonalSplit.XnZn:
                 if (split.XnZp > localSector.Floor.XpZp)
-                    localSector.SetFaceTexture(SectorFace.Wall_PositiveZ_Floor2, qaPositiveZ);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_PositiveZ_Floor2, FaceLayer.Base), qaPositiveZ);
 
                 if (split.XpZn > localSector.Floor.XpZp)
-                    localSector.SetFaceTexture(SectorFace.Wall_PositiveX_Floor2, qaPositiveX);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_PositiveX_Floor2, FaceLayer.Base), qaPositiveX);
                 break;
         }
     }
@@ -211,43 +211,43 @@ internal static class LegacyRepair
             return;
 
         TextureArea
-            wsPositiveZ = localSector.GetFaceTexture(SectorFace.Wall_PositiveZ_WS),
-            wsNegativeZ = localSector.GetFaceTexture(SectorFace.Wall_NegativeZ_WS),
-            wsNegativeX = localSector.GetFaceTexture(SectorFace.Wall_NegativeX_WS),
-            wsPositiveX = localSector.GetFaceTexture(SectorFace.Wall_PositiveX_WS);
+            wsPositiveZ = localSector.GetFaceTexture(new(SectorFace.Wall_PositiveZ_WS, FaceLayer.Base)),
+            wsNegativeZ = localSector.GetFaceTexture(new(SectorFace.Wall_NegativeZ_WS, FaceLayer.Base)),
+            wsNegativeX = localSector.GetFaceTexture(new(SectorFace.Wall_NegativeX_WS, FaceLayer.Base)),
+            wsPositiveX = localSector.GetFaceTexture(new(SectorFace.Wall_PositiveX_WS, FaceLayer.Base));
 
         switch (probingSector.Ceiling.DiagonalSplit)
         {
             case DiagonalSplit.XnZp:
                 if (split.XnZn < localSector.Ceiling.XpZn)
-                    localSector.SetFaceTexture(SectorFace.Wall_NegativeZ_Ceiling2, wsNegativeZ);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_NegativeZ_Ceiling2, FaceLayer.Base), wsNegativeZ);
 
                 if (split.XpZp < localSector.Ceiling.XpZn)
-                    localSector.SetFaceTexture(SectorFace.Wall_PositiveX_Ceiling2, wsPositiveX);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_PositiveX_Ceiling2, FaceLayer.Base), wsPositiveX);
                 break;
 
             case DiagonalSplit.XpZn:
                 if (split.XnZn < localSector.Ceiling.XnZp)
-                    localSector.SetFaceTexture(SectorFace.Wall_NegativeX_Ceiling2, wsNegativeX);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_NegativeX_Ceiling2, FaceLayer.Base), wsNegativeX);
 
                 if (split.XpZp < localSector.Ceiling.XnZp)
-                    localSector.SetFaceTexture(SectorFace.Wall_PositiveZ_Ceiling2, wsPositiveZ);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_PositiveZ_Ceiling2, FaceLayer.Base), wsPositiveZ);
                 break;
 
             case DiagonalSplit.XpZp:
                 if (split.XpZn < localSector.Ceiling.XnZn)
-                    localSector.SetFaceTexture(SectorFace.Wall_NegativeZ_Ceiling2, wsNegativeZ);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_NegativeZ_Ceiling2, FaceLayer.Base), wsNegativeZ);
 
                 if (split.XnZp < localSector.Ceiling.XnZn)
-                    localSector.SetFaceTexture(SectorFace.Wall_NegativeX_Ceiling2, wsNegativeX);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_NegativeX_Ceiling2, FaceLayer.Base), wsNegativeX);
                 break;
 
             case DiagonalSplit.XnZn:
                 if (split.XnZp < localSector.Ceiling.XpZp)
-                    localSector.SetFaceTexture(SectorFace.Wall_PositiveZ_Ceiling2, wsPositiveZ);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_PositiveZ_Ceiling2, FaceLayer.Base), wsPositiveZ);
 
                 if (split.XpZn < localSector.Ceiling.XpZp)
-                    localSector.SetFaceTexture(SectorFace.Wall_PositiveX_Ceiling2, wsPositiveX);
+                    localSector.SetFaceTexture(new(SectorFace.Wall_PositiveX_Ceiling2, FaceLayer.Base), wsPositiveX);
                 break;
         }
     }

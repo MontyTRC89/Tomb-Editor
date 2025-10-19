@@ -161,19 +161,19 @@ namespace TombEditor.Controls.Panel3D
                         {
                             if (ModifierKeys.HasFlag(Keys.Shift))
                             {
-                                EditorActions.RotateTexture(_editor.SelectedRoom, pos, newSectorPicking.Face);
+                                EditorActions.RotateTexture(_editor.SelectedRoom, pos, new(newSectorPicking.Face, _editor.ActiveTextureLayer));
                                 break;
                             }
                             else if (ModifierKeys.HasFlag(Keys.Control))
                             {
-                                EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newSectorPicking.Face);
+                                EditorActions.MirrorTexture(_editor.SelectedRoom, pos, new(newSectorPicking.Face, _editor.ActiveTextureLayer));
                                 break;
                             }
                         }
 
                         if (ModifierKeys.HasFlag(Keys.Alt))
                         {
-                            EditorActions.PickTexture(_editor.SelectedRoom, pos, newSectorPicking.Face);
+                            EditorActions.PickTexture(_editor.SelectedRoom, pos, new(newSectorPicking.Face, _editor.ActiveTextureLayer));
                         }
                         else if (_editor.Tool.Tool == EditorToolType.GridPaint && !_editor.HighlightedSectors.Empty)
                         {
@@ -212,7 +212,7 @@ namespace TombEditor.Controls.Panel3D
 
                                 case EditorToolType.Brush:
                                 case EditorToolType.Pencil:
-                                    EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newSectorPicking.Face, _editor.SelectedTexture);
+                                    EditorActions.ApplyTexture(_editor.SelectedRoom, pos, new(newSectorPicking.Face, _editor.ActiveTextureLayer), _editor.SelectedTexture);
                                     _toolHandler.Engage(location.X, location.Y, newSectorPicking, false);
                                     break;
 

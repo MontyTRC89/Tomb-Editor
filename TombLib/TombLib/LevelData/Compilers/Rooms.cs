@@ -342,15 +342,18 @@ namespace TombLib.LevelData.Compilers
                 var roomTriangles = new List<tr_face3>();
                 var roomQuads = new List<tr_face4>();
 
+                // Track base polygon rotations for overlay coordination
+                var baseRotations = new Dictionary<(int, int, SectorFace), int>();
+
                 // Add room's own geometry
 
                 if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
-                            foreach (SectorFace face in room.Sectors[x, z].GetFaceTextures().Keys)
+                            foreach (FaceLayerInfo face in room.Sectors[x, z].GetAllFaceTextures().Keys)
                             {
                                 var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
-                                var shape = room.GetFaceShape(x, z, face);
+                                var shape = room.GetFaceShape(x, z, face.Face);
 
                                 if (range.Count == 0)
                                     continue;
@@ -383,7 +386,7 @@ namespace TombLib.LevelData.Compilers
                                     {
                                         ushort vertex3Index;
 
-                                        if (face == SectorFace.Ceiling)
+                                        if (face.Face == SectorFace.Ceiling)
                                         {
                                             texture.Mirror();
                                             vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
@@ -420,21 +423,56 @@ namespace TombLib.LevelData.Compilers
                                             roomVertices[vertex3Index] = trVertex;
                                         }
 
-                                        var result = _textureInfoManager.AddTexture(texture, true, false);
+                                        Util.TexInfoManager.Result result;
+
+                                        // Coordinate texture rotations between base and overlay layers
+                                        var faceKey = (x, z, face.Face);
+
+                                        if (face.Layer == FaceLayer.Base)
+                                        {
+                                            // Base layer: Use optimal rotation and remember it
+                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                            baseRotations[faceKey] = result.Rotation;
+                                        }
+                                        else if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
+                                        {
+                                            // Overlay layer: Force to use same rotation as base
+                                            var baseRotation = baseRotations[faceKey];
+                                            result = _textureInfoManager.AddTexture(texture, true, false, false, baseRotation);
+                                        }
+                                        else
+                                        {
+                                            // Fallback: Use optimal rotation
+                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                        }
+
                                         roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                         doubleSided, 0));
                                         if (copyFace)
                                         {
                                             texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, true, false);
-                                            roomQuads.Add(result.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
+
+                                            Util.TexInfoManager.Result mirrorResult;
+
+                                            if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
+                                            {
+                                                var baseRotation = baseRotations[faceKey];
+                                                mirrorResult = _textureInfoManager.AddTexture(texture, true, false, false, baseRotation);
+                                            }
+                                            else
+                                            {
+                                                mirrorResult = _textureInfoManager.AddTexture(texture, true, false);
+                                            }
+
+                                            roomQuads.Add(mirrorResult.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
                                                             doubleSided, 0));
                                         }
+
                                         i += 3;
                                     }
                                     else
                                     {
-                                        if (face == SectorFace.Ceiling || face == SectorFace.Ceiling_Triangle2)
+                                        if (face.Face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                                             texture.Mirror(true);
 
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
@@ -458,7 +496,28 @@ namespace TombLib.LevelData.Compilers
                                             roomVertices[vertex2Index] = trVertex;
                                         }
 
-                                        var result = _textureInfoManager.AddTexture(texture, true, true);
+                                        Util.TexInfoManager.Result result;
+
+                                        // Coordinate texture rotations between base and overlay layers
+                                        var faceKey = (x, z, face.Face);
+
+                                        if (face.Layer == FaceLayer.Base)
+                                        {
+                                            // Base layer: Use optimal rotation and remember it
+                                            result = _textureInfoManager.AddTexture(texture, true, true);
+                                            baseRotations[faceKey] = result.Rotation;
+                                        }
+                                        else if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
+                                        {
+                                            // Overlay layer: Force to use same rotation as base
+                                            var baseRotation = baseRotations[faceKey];
+                                            result = _textureInfoManager.AddTexture(texture, true, true, false, baseRotation);
+                                        }
+                                        else
+                                        {
+                                            // Fallback: Use optimal rotation
+                                            result = _textureInfoManager.AddTexture(texture, true, true);
+                                        }
 
                                         if (result.ConvertToQuad)
                                             roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex2Index },
@@ -470,8 +529,20 @@ namespace TombLib.LevelData.Compilers
                                         if (copyFace)
                                         {
                                             texture.Mirror(true);
-                                            result = _textureInfoManager.AddTexture(texture, true, true);
-                                            roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
+
+                                            Util.TexInfoManager.Result mirrorResult;
+
+                                            if (face.Layer == FaceLayer.Overlay && baseRotations.ContainsKey(faceKey))
+                                            {
+                                                var baseRotation = baseRotations[faceKey];
+                                                mirrorResult = _textureInfoManager.AddTexture(texture, true, true, false, baseRotation);
+                                            }
+                                            else
+                                            {
+                                                mirrorResult = _textureInfoManager.AddTexture(texture, true, true);
+                                            }
+
+                                            roomTriangles.Add(mirrorResult.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
                                                             doubleSided, 0));
                                         }
                                     }

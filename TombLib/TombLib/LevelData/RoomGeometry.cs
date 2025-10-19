@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using TombLib.LevelData.SectorEnums;
+using TombLib.LevelData.SectorEnums.Extensions;
 using TombLib.LevelData.SectorGeometry;
 using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
@@ -326,8 +327,11 @@ namespace TombLib.LevelData
             Relight(room, highQualityLighting);
         }
 
-        public void UpdateFaceTexture(int x, int z, SectorFace face, TextureArea texture, bool wasDoubleSided)
+        public bool UpdateFaceTexture(int x, int z, FaceLayerInfo face, TextureArea texture, bool wasDoubleSided)
         {
+            if (face.Layer is FaceLayer.Overlay && texture.TextureIsInvisible)
+                return false; // Setting invisible texture on overlay should remove the overlay - prevent texture update
+
             VertexRange range = VertexRangeLookup.GetValueOrDefault(new SectorFaceIdentity(x, z, face));
 
             if (range.Count == 3) // Triangle
@@ -338,10 +342,11 @@ namespace TombLib.LevelData
                 if (texture.DoubleSided)
                     DoubleSidedTriangleCount++;
 
-                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
+                if (face.Face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                     Swap.Do(ref texture.TexCoord0, ref texture.TexCoord2);
 
                 TriangleTextureAreas[range.Start / 3] = texture;
+                return true;
             }
             else if (range.Count == 6) // Quad
             {
@@ -356,7 +361,7 @@ namespace TombLib.LevelData
                 texture0.TexCoord1 = texture.TexCoord3;
                 texture0.TexCoord2 = texture.TexCoord1;
 
-                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
+                if (face.Face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                     Swap.Do(ref texture0.TexCoord0, ref texture0.TexCoord2);
 
                 TriangleTextureAreas[range.Start / 3] = texture0;
@@ -366,11 +371,14 @@ namespace TombLib.LevelData
                 texture1.TexCoord1 = texture.TexCoord1;
                 texture1.TexCoord2 = texture.TexCoord3;
 
-                if (face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
+                if (face.Face is SectorFace.Ceiling or SectorFace.Ceiling_Triangle2)
                     Swap.Do(ref texture1.TexCoord0, ref texture1.TexCoord2);
 
                 TriangleTextureAreas[(range.Start + 3) / 3] = texture1;
+                return true;
             }
+
+            return false;
         }
 
         private enum FaceDirection
@@ -381,7 +389,8 @@ namespace TombLib.LevelData
         private void BuildFloorOrCeilingFace(Room room, int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY,
                                              SectorFace face1, SectorFace face2, Room.RoomConnectionType portalMode)
         {
-            SectorType sectorType = room.Sectors[x, z].Type;
+            Sector sector = room.Sectors[x, z];
+            SectorType sectorType = sector.Type;
 
             // Exit function if the sector is a complete wall or portal
             if (portalMode == Room.RoomConnectionType.FullPortal)
@@ -428,21 +437,15 @@ namespace TombLib.LevelData
             // 4----3
             //
 
-            Sector sector = room.Sectors[x, z];
-
             TextureArea defaultTexture = room.Level.Settings.DefaultTexture;
-            bool shouldApplyDefaultTexture1 = sector.GetFaceTexture(face1) == TextureArea.None && defaultTexture != TextureArea.None,
-                 shouldApplyDefaultTexture2 = sector.GetFaceTexture(face2) == TextureArea.None && defaultTexture != TextureArea.None;
+            bool shouldApplyDefaultTexture1 = sector.GetFaceTexture(new(face1, FaceLayer.Base)) == TextureArea.None && defaultTexture != TextureArea.None,
+                 shouldApplyDefaultTexture2 = sector.GetFaceTexture(new(face2, FaceLayer.Base)) == TextureArea.None && defaultTexture != TextureArea.None;
 
             if (shouldApplyDefaultTexture1)
-                sector.SetFaceTexture(face1, defaultTexture);
+                sector.SetFaceTexture(new(face1, FaceLayer.Base), defaultTexture);
 
             if (shouldApplyDefaultTexture2)
-                sector.SetFaceTexture(face2, defaultTexture);
-
-            TextureArea
-                face1Texture = sector.GetFaceTexture(face1),
-                face2Texture = sector.GetFaceTexture(face2);
+                sector.SetFaceTexture(new(face2, FaceLayer.Base), defaultTexture);
 
             // Build sector
             if (splitType != DiagonalSplit.None)
@@ -452,20 +455,20 @@ namespace TombLib.LevelData
                     case DiagonalSplit.XpZn:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
                         {
-                            AddTriangle(x, z, face1,
+                            TryRenderTriangleFace(sector, x, z, face1,
                                 new Vector3(x * Level.SectorSizeUnit, h0, z * Level.SectorSizeUnit),
                                 new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
-                                face1Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                                new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                         }
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn && sectorType != SectorType.Wall)
                         {
-                            AddTriangle(x, z, face2,
+                            TryRenderTriangleFace(sector, x, z, face2,
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                                 new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
-                                face2Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
+                                new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         }
 
                         break;
@@ -473,20 +476,20 @@ namespace TombLib.LevelData
                     case DiagonalSplit.XnZn:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
                         {
-                            AddTriangle(x, z, face1,
+                            TryRenderTriangleFace(sector, x, z, face1,
                                 new Vector3(x * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h1, z * Level.SectorSizeUnit),
-                                face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
+                                new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         }
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn && sectorType != SectorType.Wall)
                         {
-                            AddTriangle(x, z, face2,
+                            TryRenderTriangleFace(sector, x, z, face2,
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                                 new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                                 new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
-                                face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
+                                new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         }
 
                         break;
@@ -494,20 +497,20 @@ namespace TombLib.LevelData
                     case DiagonalSplit.XnZp:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
                         {
-                            AddTriangle(x, z, face2,
+                            TryRenderTriangleFace(sector, x, z, face2,
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h2, (z + 1) * Level.SectorSizeUnit),
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                                 new Vector3(x * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
-                                face2Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
+                                new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                         }
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp && sectorType != SectorType.Wall)
                         {
-                            AddTriangle(x, z, face1,
+                            TryRenderTriangleFace(sector, x, z, face1,
                                 new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                                 new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
-                                face1Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                                new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                         }
 
                         break;
@@ -515,21 +518,21 @@ namespace TombLib.LevelData
                     case DiagonalSplit.XpZp:
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
                         {
-                            AddTriangle(x, z, face2,
+                            TryRenderTriangleFace(sector, x, z, face2,
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                                 new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                                 new Vector3(x * Level.SectorSizeUnit, h3, (z + 1) * Level.SectorSizeUnit),
-                                face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
+                                new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                         }
 
 
                         if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp && sectorType != SectorType.Wall)
                         {
-                            AddTriangle(x, z, face1,
+                            TryRenderTriangleFace(sector, x, z, face1,
                                 new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                                 new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
-                                face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
+                                new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                         }
 
                         break;
@@ -540,51 +543,51 @@ namespace TombLib.LevelData
             }
             else if (SectorSurface.IsQuad2(h0, h1, h2, h3) && portalMode == Room.RoomConnectionType.NoPortal)
             {
-                AddQuad(x, z, face1,
+                TryRenderQuadFace(sector, x, z, face1,
                     new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                     new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                     new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                     new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
-                    face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
+                    new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1));
             }
             else if (diagonalSplitXEqualsY || portalMode == Room.RoomConnectionType.TriangularPortalXnZp || portalMode == Room.RoomConnectionType.TriangularPortalXpZn)
             {
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZp)
                 {
-                    AddTriangle(x, z, face2,
+                    TryRenderTriangleFace(sector, x, z, face2,
                         new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                         new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                         new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
-                        face2Texture, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
+                        new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 0), true);
                 }
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZn)
                 {
-                    AddTriangle(x, z, face1,
+                    TryRenderTriangleFace(sector, x, z, face1,
                         new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                         new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                         new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
-                        face1Texture, new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
+                        new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), true);
                 }
             }
             else
             {
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXpZp)
                 {
-                    AddTriangle(x, z, face1,
+                    TryRenderTriangleFace(sector, x, z, face1,
                         new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
                         new Vector3((x + 1) * Level.SectorSizeUnit, h1, (z + 1) * Level.SectorSizeUnit),
                         new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
-                        face1Texture, new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
+                        new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), false);
                 }
 
                 if (portalMode != Room.RoomConnectionType.TriangularPortalXnZn)
                 {
-                    AddTriangle(x, z, face2,
+                    TryRenderTriangleFace(sector, x, z, face2,
                         new Vector3((x + 1) * Level.SectorSizeUnit, h2, z * Level.SectorSizeUnit),
                         new Vector3(x * Level.SectorSizeUnit, h3, z * Level.SectorSizeUnit),
                         new Vector3(x * Level.SectorSizeUnit, h0, (z + 1) * Level.SectorSizeUnit),
-                        face2Texture, new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
+                        new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 0), false);
                 }
             }
         }
@@ -640,22 +643,45 @@ namespace TombLib.LevelData
         private void AddFace(Room room, int x, int z, SectorFaceData face)
         {
             Sector sector = room.Sectors[x, z];
+            var baseLayer = new FaceLayerInfo(face.Face, FaceLayer.Base);
 
-            bool shouldApplyDefaultTexture = sector.GetFaceTexture(face.Face) == TextureArea.None
+            bool shouldApplyDefaultTexture = sector.GetFaceTexture(baseLayer) == TextureArea.None
                 && room.Level.Settings.DefaultTexture != TextureArea.None;
 
             if (shouldApplyDefaultTexture)
-                sector.SetFaceTexture(face.Face, room.Level.Settings.DefaultTexture);
-
-            TextureArea texture = sector.GetFaceTexture(face.Face);
+                sector.SetFaceTexture(baseLayer, room.Level.Settings.DefaultTexture);
 
             if (face.IsQuad)
-                AddQuad(x, z, face.Face, face.P0, face.P1, face.P2, face.P3.Value, texture, face.UV0, face.UV1, face.UV2, face.UV3.Value);
+                TryRenderQuadFace(sector, x, z, face.Face, face.P0, face.P1, face.P2, face.P3.Value, face.UV0, face.UV1, face.UV2, face.UV3.Value);
             else
-                AddTriangle(x, z, face.Face, face.P0, face.P1, face.P2, texture, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
+                TryRenderTriangleFace(sector, x, z, face.Face, face.P0, face.P1, face.P2, face.UV0, face.UV1, face.UV2, face.IsXEqualYDiagonal.Value);
         }
 
-        private void AddQuad(int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
+        private void TryRenderQuadFace(Sector sector, int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
+        {
+            TextureArea
+                texture = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base)),
+                overlay = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Overlay));
+
+            AddQuad(x, z, new FaceLayerInfo(face, FaceLayer.Base), p0, p1, p2, p3, texture, uv0, uv1, uv2, uv3);
+
+            if (overlay != TextureArea.None)
+                AddQuad(x, z, new FaceLayerInfo(face, FaceLayer.Overlay), p0, p1, p2, p3, overlay, uv0, uv1, uv2, uv3);
+        }
+
+        private void TryRenderTriangleFace(Sector sector, int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector2 uv0, Vector2 uv1, Vector2 uv2, bool isXEqualYDiagonal)
+        {
+            TextureArea
+                texture = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Base)),
+                overlay = sector.GetFaceTexture(new FaceLayerInfo(face, FaceLayer.Overlay));
+
+            AddTriangle(x, z, new FaceLayerInfo(face, FaceLayer.Base), p0, p1, p2, texture, uv0, uv1, uv2, isXEqualYDiagonal);
+
+            if (overlay != TextureArea.None)
+                AddTriangle(x, z, new FaceLayerInfo(face, FaceLayer.Overlay), p0, p1, p2, overlay, uv0, uv1, uv2, isXEqualYDiagonal);
+        }
+
+        private void AddQuad(int x, int z, FaceLayerInfo face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
                              TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
         {
             if (texture.DoubleSided)
@@ -691,7 +717,7 @@ namespace TombLib.LevelData
             TriangleSectorInfo.Add(new SectorFaceIdentity(x, z, face));
         }
 
-        private void AddTriangle(int x, int z, SectorFace face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool isXEqualYDiagonal)
+        private void AddTriangle(int x, int z, FaceLayerInfo face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool isXEqualYDiagonal)
         {
             if (texture.DoubleSided)
                 DoubleSidedTriangleCount += 1;
@@ -1255,7 +1281,7 @@ namespace TombLib.LevelData
                         var normal = Vector3.Cross(p1 - p0, p2 - p0);
                         if (Vector3.Dot(ray.Direction, normal) <= 0)
                             if (!(distance > result.Distance))
-                                result = new IntersectionInfo() { Distance = distance, Face = entry.Key.Face, Pos = entry.Key.Position, VerticalCoord = position.Y };
+                                result = new IntersectionInfo() { Distance = distance, Face = entry.Key.Face.Face, Pos = entry.Key.Position, VerticalCoord = position.Y };
                     }
                 }
 

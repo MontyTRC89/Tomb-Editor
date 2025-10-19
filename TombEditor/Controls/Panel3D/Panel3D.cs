@@ -136,6 +136,9 @@ namespace TombEditor.Controls.Panel3D
         private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private Buffer<SolidVertex> _ghostBlockVertexBuffer;
         private Buffer<SolidVertex> _boxVertexBuffer;
+        private Buffer<SolidVertex> _overlayOutlineVertexBuffer;
+        private List<SolidVertex> _overlayOutlineVertices;
+        private Room _lastOverlayOutlineRoom;
 
         // Flyby stuff
         private const float _flybyPathThickness = 32.0f;
@@ -217,6 +220,7 @@ namespace TombEditor.Controls.Panel3D
                 _rasterizerWireframe?.Dispose();
                 _objectHeightLineVertexBuffer?.Dispose();
                 _flybyPathVertexBuffer?.Dispose();
+                _overlayOutlineVertexBuffer?.Dispose();
                 _gizmo?.Dispose();
                 _sphere?.Dispose();
                 _cone?.Dispose();
@@ -233,6 +237,16 @@ namespace TombEditor.Controls.Panel3D
         }
 
         private IReadOnlyList<Keys> _splitHighlightHotkeys;
+
+        private void InvalidateOverlayOutlineCache(Room room = null)
+        {
+            if (room is null || _lastOverlayOutlineRoom == room)
+            {
+                _lastOverlayOutlineRoom = null;
+                _overlayOutlineVertexBuffer?.Dispose();
+                _overlayOutlineVertexBuffer = null;
+            }
+        }
 
         private void EditorEventRaised(IEditorEvent obj)
         {
@@ -276,6 +290,15 @@ namespace TombEditor.Controls.Panel3D
                 var room = ((IEditorRoomChangedEvent)obj).Room;
 
                 _renderingCachedRooms.Remove(room);
+
+                // Invalidate overlay outline cache for geometry or face-related changes
+                if (obj is Editor.RoomGeometryChangedEvent ||
+                    obj is Editor.RoomPositionChangedEvent ||
+                    obj is Editor.RoomSectorPropertiesChangedEvent)
+                {
+                    InvalidateOverlayOutlineCache(room);
+                }
+
                 if (obj is Editor.RoomGeometryChangedEvent || obj is Editor.RoomPositionChangedEvent)
                     foreach (var portal in room.Portals)
                         _renderingCachedRooms.Remove(portal.AdjoiningRoom);
@@ -292,10 +315,23 @@ namespace TombEditor.Controls.Panel3D
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.HighlightedSectorChangedEvent)
                 _renderingCachedRooms.Remove(_editor.SelectedRoom);
+
             if (obj is Editor.SelectedRoomChangedEvent)
+            {
                 _renderingCachedRooms.Remove(((Editor.SelectedRoomChangedEvent)obj).Previous);
+
+                // Overlay outlines are room-specific, so invalidate cache when switching rooms
+                InvalidateOverlayOutlineCache();
+            }
+
             if (obj is Editor.RoomSectorPropertiesChangedEvent)
-                _renderingCachedRooms.Remove(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
+            {
+                var room = ((Editor.RoomSectorPropertiesChangedEvent)obj).Room;
+                _renderingCachedRooms.Remove(room);
+
+                InvalidateOverlayOutlineCache(room);
+            }
+
             if (obj is Editor.LoadedTexturesChangedEvent ||
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.LevelChangedEvent ||

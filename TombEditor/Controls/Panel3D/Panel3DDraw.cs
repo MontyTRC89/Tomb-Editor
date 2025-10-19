@@ -331,38 +331,38 @@ namespace TombEditor.Controls.Panel3D
                     if (splitIndex is < 0 or > 7) // QA or WS
                     {
                         // PositiveZ Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_PositiveZ_QA, FaceLayer.Base))))
                             HandlePositiveZ(x, z, targetSector.Floor, yOffset);
                         // PositiveZ Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveZ_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_PositiveZ_WS, FaceLayer.Base))))
                             HandlePositiveZ(x, z, targetSector.Ceiling, yOffset);
 
                         // PositiveX Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveX_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_PositiveX_QA, FaceLayer.Base))))
                             HandlePositiveX(x, z, targetSector.Floor, yOffset);
                         // PositiveX Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_PositiveX_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_PositiveX_WS, FaceLayer.Base))))
                             HandlePositiveX(x, z, targetSector.Ceiling, yOffset);
 
                         // NegativeZ Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeZ_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_NegativeZ_QA, FaceLayer.Base))))
                             HandleNegativeZ(x, z, targetSector.Floor, yOffset);
                         // NegativeZ Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeZ_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_NegativeZ_WS, FaceLayer.Base))))
                             HandleNegativeZ(x, z, targetSector.Ceiling, yOffset);
 
                         // NegativeX Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeX_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_NegativeX_QA, FaceLayer.Base))))
                             HandleNegativeX(x, z, targetSector.Floor, yOffset);
                         // NegativeX Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_NegativeX_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_NegativeX_WS, FaceLayer.Base))))
                             HandleNegativeX(x, z, targetSector.Ceiling, yOffset);
 
                         // Diagonal Floor
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_Diagonal_QA)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_Diagonal_QA, FaceLayer.Base))))
                             HandleDiagonal(x, z, targetSector.Floor, yOffset);
                         // Diagonal Ceiling
-                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFace.Wall_Diagonal_WS)))
+                        if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFace.Wall_Diagonal_WS, FaceLayer.Base))))
                             HandleDiagonal(x, z, targetSector.Ceiling, yOffset);
                     }
                     else // Actual splits
@@ -380,23 +380,23 @@ namespace TombEditor.Controls.Panel3D
                             };
 
                             // PositiveZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveZ, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveZ, splitIndex), FaceLayer.Base))))
                                 HandlePositiveZ(x, z, floorSurface, yOffset);
 
                             // PositiveX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveX, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraFloorSplitFace(Direction.PositiveX, splitIndex), FaceLayer.Base))))
                                 HandlePositiveX(x, z, floorSurface, yOffset);
 
                             // NegativeZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeZ, splitIndex), FaceLayer.Base))))
                                 HandleNegativeZ(x, z, floorSurface, yOffset);
 
                             // NegativeX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeX, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraFloorSplitFace(Direction.NegativeX, splitIndex), FaceLayer.Base))))
                                 HandleNegativeX(x, z, floorSurface, yOffset);
 
                             // Diagonal
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraFloorSplitFace(Direction.Diagonal, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraFloorSplitFace(Direction.Diagonal, splitIndex), FaceLayer.Base))))
                                 HandleDiagonal(x, z, floorSurface, yOffset);
                         }
 
@@ -413,23 +413,23 @@ namespace TombEditor.Controls.Panel3D
                             };
 
                             // PositiveZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveZ, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveZ, splitIndex), FaceLayer.Base))))
                                 HandlePositiveZ(x, z, ceilingSurface, yOffset);
 
                             // PositiveX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveX, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.PositiveX, splitIndex), FaceLayer.Base))))
                                 HandlePositiveX(x, z, ceilingSurface, yOffset);
 
                             // NegativeZ
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeZ, splitIndex), FaceLayer.Base))))
                                 HandleNegativeZ(x, z, ceilingSurface, yOffset);
 
                             // NegativeX
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeX, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.NegativeX, splitIndex), FaceLayer.Base))))
                                 HandleNegativeX(x, z, ceilingSurface, yOffset);
 
                             // Diagonal
-                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new SectorFaceIdentity(x, z, SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.Diagonal, splitIndex))))
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(new(x, z, new(SectorFaceExtensions.GetExtraCeilingSplitFace(Direction.Diagonal, splitIndex), FaceLayer.Base))))
                                 HandleDiagonal(x, z, ceilingSurface, yOffset);
                         }
                     }
@@ -447,6 +447,184 @@ namespace TombEditor.Controls.Panel3D
             effect.Parameters["Color"].SetValue(Vector4.One);
             effect.CurrentTechnique.Passes[0].Apply();
             _legacyDevice.Draw(PrimitiveType.TriangleList, buffer.ElementCount);
+        }
+
+        private static Vector3 ShiftVector3(Vector3 vector, SectorFace face, DiagonalSplit diagonalSplit, float shift)
+        {
+            switch (face.GetDirection())
+            {
+                case Direction.PositiveX:
+                    vector.X += shift;
+                    break;
+                case Direction.NegativeX:
+                    vector.X -= shift;
+                    break;
+                case Direction.PositiveZ:
+                    vector.Z += shift;
+                    break;
+                case Direction.NegativeZ:
+                    vector.Z -= shift;
+                    break;
+                case Direction.Diagonal:
+                    switch (diagonalSplit)
+                    {
+                        case DiagonalSplit.XpZn:
+                            vector.X -= shift;
+                            vector.Z += shift;
+                            break;
+                        case DiagonalSplit.XnZn:
+                            vector.X += shift;
+                            vector.Z += shift;
+                            break;
+                        case DiagonalSplit.XnZp:
+                            vector.X += shift;
+                            vector.Z -= shift;
+                            break;
+                        case DiagonalSplit.XpZp:
+                            vector.X -= shift;
+                            vector.Z -= shift;
+                            break;
+                    }
+
+                    break;
+                default: // Either Floor or Ceiling
+                    if (face.IsFloor())
+                        vector.Y += shift;
+                    else
+                        vector.Y -= shift;
+                    break;
+            }
+
+            return vector;
+        }
+
+        private void DrawOverlayOutlines(Effect effect)
+        {
+            const float OverlayOutlineOffset = 16.0f;
+
+            if (_editor.Mode is not EditorMode.FaceEdit)
+                return;
+
+            Room currentRoom = _editor.SelectedRoom;
+
+            // Check if we need to regenerate the vertex buffer
+            bool needsUpdate = _lastOverlayOutlineRoom != currentRoom || _overlayOutlineVertexBuffer is null;
+
+            if (needsUpdate)
+            {
+                _overlayOutlineVertices.Clear();
+
+                // Quick check: Does this room have any overlays at all?
+                bool hasOverlays = false;
+
+                for (int x = currentRoom.LocalArea.X0; x <= currentRoom.LocalArea.X1 && !hasOverlays; x++)
+                {
+                    for (int z = currentRoom.LocalArea.Y0; z <= currentRoom.LocalArea.Y1 && !hasOverlays; z++)
+                    {
+                        for (SectorFace face = 0; face < SectorFace.Count; face++)
+                        {
+                            var key = new SectorFaceIdentity(x, z, new FaceLayerInfo(face, FaceLayer.Overlay));
+
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(key))
+                            {
+                                hasOverlays = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!hasOverlays)
+                {
+                    _lastOverlayOutlineRoom = currentRoom;
+                    _overlayOutlineVertexBuffer?.Dispose();
+                    _overlayOutlineVertexBuffer = null;
+                    return;
+                }
+
+                // Generate vertices for all overlay outlines in this room
+                for (int x = currentRoom.LocalArea.X0; x <= currentRoom.LocalArea.X1; x++)
+                {
+                    for (int z = currentRoom.LocalArea.Y0; z <= currentRoom.LocalArea.Y1; z++)
+                    {
+                        for (SectorFace face = 0; face < SectorFace.Count; face++)
+                        {
+                            Sector sector = currentRoom.Sectors[x, z];
+                            var key = new SectorFaceIdentity(x, z, new FaceLayerInfo(face, FaceLayer.Overlay));
+
+                            if (currentRoom.RoomGeometry.VertexRangeLookup.ContainsKey(key))
+                            {
+                                VertexRange range = currentRoom.RoomGeometry.VertexRangeLookup[key];
+                                DiagonalSplit diagonalSplit = face.IsFloorWall() ? sector.Floor.DiagonalSplit : sector.Ceiling.DiagonalSplit;
+
+                                if (range.Count == 3)
+                                {
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                }
+                                else if (range.Count == 6)
+                                {
+                                    if (face.IsCeiling())
+                                    {
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 5] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    }
+                                    else
+                                    {
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 1] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 3] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start + 2] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                        _overlayOutlineVertices.Add(new SolidVertex(ShiftVector3(currentRoom.RoomGeometry.VertexPositions[range.Start] + currentRoom.WorldPos, face, diagonalSplit, OverlayOutlineOffset)));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Create/update the vertex buffer
+                _overlayOutlineVertexBuffer?.Dispose();
+
+                _overlayOutlineVertexBuffer = _overlayOutlineVertices.Count > 0
+                    ? SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, _overlayOutlineVertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable)
+                    : null;
+
+                _lastOverlayOutlineRoom = currentRoom;
+            }
+
+            // Draw using the cached buffer
+            if (_overlayOutlineVertexBuffer is not null)
+            {
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.Default);
+                _legacyDevice.SetVertexBuffer(_overlayOutlineVertexBuffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _overlayOutlineVertexBuffer));
+                effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
+                effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.CurrentTechnique.Passes[0].Apply();
+                _legacyDevice.Draw(PrimitiveType.LineList, _overlayOutlineVertexBuffer.ElementCount);
+            }
         }
 
         private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
@@ -1988,6 +2166,8 @@ namespace TombEditor.Controls.Panel3D
                 DrawFlybyPath(effect);
                 // Draw sector split highlights
                 DrawSectorSplitHighlights(effect);
+                // Draw overlay outlines
+                DrawOverlayOutlines(effect);
             }
 
             // Draw ghost block cubes
