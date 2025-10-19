@@ -6,6 +6,8 @@ using Newtonsoft.Json.Schema;
 using System.Collections.Generic;
 using TombLib.Scripting.Tomb1Main.Utils;
 
+namespace TombLib.Scripting.Tomb1Main.Services.Implementations;
+
 public sealed class GameflowAutocompleteService : IGameflowAutocompleteService
 {
 	private static readonly string[] JsonPrimitives = { "true", "false", "null" };

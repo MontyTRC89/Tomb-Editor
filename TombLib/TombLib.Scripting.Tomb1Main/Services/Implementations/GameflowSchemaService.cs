@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using TombLib.Scripting.Tomb1Main.Objects;
 
+namespace TombLib.Scripting.Tomb1Main.Services.Implementations;
+
 public sealed class GameflowSchemaService : IGameflowSchemaService
 {
 	public static IGameflowSchemaService? Instance { get; set; } // Dirty singleton for easy access in settings - TODO: Refactor later

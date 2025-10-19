@@ -5,6 +5,8 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Text.RegularExpressions;
 
+namespace TombLib.Scripting.Tomb1Main.Services.Implementations;
+
 public sealed class GameflowHoverService : IGameflowHoverService
 {
 	private static readonly Regex _wordPattern = new(@"""([^""]+)""|(\w+)", RegexOptions.Compiled);

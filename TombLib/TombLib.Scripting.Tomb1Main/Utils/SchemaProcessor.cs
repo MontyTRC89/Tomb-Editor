@@ -82,15 +82,6 @@ public sealed class SchemaProcessor
 		ProcessSchemaCollection(schema.AllOf);
 	}
 
-	private void ProcessArrayItems(JSchema schema)
-	{
-		if (schema.Items?.Count > 0)
-		{
-			foreach (var item in schema.Items)
-				ProcessSchema(item);
-		}
-	}
-
 	private void ProcessSchemaProperties(JSchema schema)
 	{
 		if (schema.Properties is null)
@@ -98,6 +89,15 @@ public sealed class SchemaProcessor
 
 		foreach (var property in schema.Properties.Values)
 			ProcessSchema(property);
+	}
+
+	private void ProcessArrayItems(JSchema schema)
+	{
+		if (schema.Items?.Count > 0)
+		{
+			foreach (var item in schema.Items)
+				ProcessSchema(item);
+		}
 	}
 
 	private void ProcessSchemaCollection(IList<JSchema>? schemas)
