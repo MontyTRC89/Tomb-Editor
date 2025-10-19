@@ -74,8 +74,8 @@ public sealed class TextAnalysisService : ITextAnalysisService
 				quoteCount++;
 		}
 
-		// If even number of quotes (including the one we just typed), we're starting a new string
-		return quoteCount % 2 == 1; // The quote we just typed makes it odd, so we're starting a string
+		// If odd number of quotes, we're inside a string (the quote we just typed makes it odd)
+		return quoteCount % 2 == 1; // Odd count: caret is inside a string
 	}
 
 	public string GetCurrentWordBeingTyped(TextDocument document, int caretOffset)
