@@ -1,4 +1,4 @@
-﻿using TombLib.Scripting.Tomb1Main.Utils;
+﻿using TombLib.Scripting.Tomb1Main.Services;
 
 namespace TombLib.Scripting.Tomb1Main.Resources;
 

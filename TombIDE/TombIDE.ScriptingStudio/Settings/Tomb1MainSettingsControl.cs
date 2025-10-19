@@ -14,6 +14,7 @@ using TombLib.Scripting.Resources;
 using TombLib.Scripting.Tomb1Main;
 using TombLib.Scripting.Tomb1Main.Objects;
 using TombLib.Scripting.Tomb1Main.Resources;
+using TombLib.Scripting.Tomb1Main.Services.Implementations;
 using TombLib.Utils;
 
 namespace TombIDE.ScriptingStudio.Settings
