@@ -1,13 +1,22 @@
-﻿namespace TombLib.Scripting.Tomb1Main.Resources;
+﻿using TombLib.Scripting.Tomb1Main.Services;
+
+namespace TombLib.Scripting.Tomb1Main.Resources;
 
 public sealed class Patterns
 {
-	public Patterns(bool isTR2)
+	public Patterns(IGameflowSchemaService schemaService)
 	{
 		Comments = "//.*$";
-		Constants = $"\"\\b({string.Join("|", Keywords.GetAllConstants(isTR2))})\\b\"";
-		Collections = $"\"\\b({string.Join("|", Keywords.GetAllCollections(isTR2))})\\b\"";
-		Properties = $"\"\\b({string.Join("|", Keywords.GetAllProperties(isTR2))})\\b\"";
+
+		var schemaKeywords = schemaService.GetSchemaKeywords();
+
+		if (schemaKeywords != null)
+		{
+			Constants = $"\"\\b({string.Join("|", schemaKeywords.Constants)})\\b\"";
+			Collections = $"\"\\b({string.Join("|", schemaKeywords.Collections)})\\b\"";
+			Properties = $"\"\\b({string.Join("|", schemaKeywords.Properties)})\\b\"";
+		}
+
 		Values = $@"\b({string.Join("|", Keywords.Values)})\b";
 		Strings = "\"(.+?)\"";
 	}

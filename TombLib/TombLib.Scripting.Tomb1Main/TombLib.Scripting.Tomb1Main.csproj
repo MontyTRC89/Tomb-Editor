@@ -32,6 +32,7 @@
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <Compile Update="Workers\T1MNodesProvider.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -49,8 +50,19 @@
     <None Update="Configs\TextEditors\ColorSchemes\Tomb1Main\VS15.t1msch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\TRX\tr1.gameflow.schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TRX\tr2.gameflow.schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Constant.png" />
+    <Resource Include="Resources\Icons\Property.png" />
+    <Resource Include="Resources\Icons\Array.png" />
   </ItemGroup>
 </Project>
