@@ -1974,7 +1974,7 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
                     return;
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR2, "Climbing"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.SupportsClimbing(), "Climbing"))
                     return;
                 EditorActions.ToggleSectorFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorFlags.ClimbPositiveZ);
             });
@@ -1983,7 +1983,7 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
                     return;
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR2, "Climbing"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.SupportsClimbing(), "Climbing"))
                     return;
                 EditorActions.ToggleSectorFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorFlags.ClimbPositiveX);
             });
@@ -1992,7 +1992,7 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
                     return;
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR2, "Climbing"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.SupportsClimbing(), "Climbing"))
                     return;
                 EditorActions.ToggleSectorFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorFlags.ClimbNegativeZ);
             });
@@ -2001,7 +2001,7 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
                     return;
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR2, "Climbing"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.SupportsClimbing(), "Climbing"))
                     return;
                 EditorActions.ToggleSectorFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorFlags.ClimbNegativeX);
             });

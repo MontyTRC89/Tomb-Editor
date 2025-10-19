@@ -60,6 +60,9 @@ namespace TombLib.LevelData
 
         public static bool SupportsLensflare(this Game ver)
             => ver.Native() >= Game.TR4;
+
+        public static bool SupportsClimbing(this Game ver)
+            => ver != Game.TR1;
     }
 
     // Only for TR5+
