@@ -459,7 +459,7 @@ namespace TombIDE.ScriptingStudio.Settings
 				)
 			);
 
-			editorPreview.SyntaxHighlighting = new SyntaxHighlighting(scheme, false);
+			editorPreview.SyntaxHighlighting = new SyntaxHighlighting(scheme, GameflowSchemaService.Instance);
 		}
 
 		private void ToggleSaveSchemeButton()

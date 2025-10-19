@@ -11,14 +11,14 @@ namespace TombLib.Scripting.Tomb1Main.Objects
 	public sealed class SyntaxHighlighting : IHighlightingDefinition
 	{
 		private readonly ColorScheme _scheme;
-		private readonly bool _isTR2;
+		private readonly IGameflowSchemaService _schemaService;
 
 		#region Construction
 
-		public SyntaxHighlighting(ColorScheme scheme, bool isTR2)
+		public SyntaxHighlighting(ColorScheme scheme, IGameflowSchemaService schemaService)
 		{
 			_scheme = scheme;
-			_isTR2 = isTR2;
+			_schemaService = schemaService;
 		}
 
 		#endregion Construction
@@ -29,7 +29,7 @@ namespace TombLib.Scripting.Tomb1Main.Objects
 		{
 			get
 			{
-				var patterns = new Patterns(_isTR2);
+				var patterns = new Patterns(_schemaService);
 				var ruleSet = new HighlightingRuleSet();
 
 				ruleSet.Rules.Add(new HighlightingRule
