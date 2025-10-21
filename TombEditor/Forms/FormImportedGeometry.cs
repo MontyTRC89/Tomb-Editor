@@ -106,7 +106,7 @@ namespace TombEditor.Forms
 				return;
 			}
 
-			using (var form = new FormMaterialEditor(null, currentModelObj.Textures, Editor.Instance.Configuration))
+			using (var form = new FormMaterialEditor(null, Editor.Instance.Configuration, currentModelObj.Textures))
 			{
 				form.ShowDialog();
 			}

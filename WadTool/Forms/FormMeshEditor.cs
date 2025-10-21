@@ -1726,7 +1726,7 @@ namespace WadTool
 		{
 			var texture = comboCurrentTexture.SelectedItem as WadTexture;
 
-			using (var form = new FormMaterialEditor(texture.AbsolutePath, null,_tool.Configuration))
+			using (var form = new FormMaterialEditor(texture.AbsolutePath, _tool.Configuration))
 			{
 				if (form.ShowDialog() == DialogResult.OK && form.MaterialChanged)
 					popup.ShowInfo(panelMesh, "Material settings for current texture were saved to " + form.MaterialFileName + ".");

@@ -121,36 +121,36 @@
   <data name="picPreviewColorMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAC5JREFUOE9jSEtL+48Pz5w5Ey9mQNeAjtE1oONRAwaFAegC6BjdQHQ8asCwMAAA
-        fKJ9n4Oo8gcAAAAASUVORK5CYII=
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="picPreviewSpecularMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAC5JREFUOE9jSEtL+48Pz5w5Ey9mQNeAjtE1oONRAwaFAegC6BjdQHQ8asCwMAAA
-        fKJ9n4Oo8gcAAAAASUVORK5CYII=
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="picPreviewNormalMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAC5JREFUOE9jSEtL+48Pz5w5Ey9mQNeAjtE1oONRAwaFAegC6BjdQHQ8asCwMAAA
-        fKJ9n4Oo8gcAAAAASUVORK5CYII=
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="picPreviewAmbientOcclusionMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAC5JREFUOE9jSEtL+48Pz5w5Ey9mQNeAjtE1oONRAwaFAegC6BjdQHQ8asCwMAAA
-        fKJ9n4Oo8gcAAAAASUVORK5CYII=
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="picPreviewEmissiveMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAC5JREFUOE9jSEtL+48Pz5w5Ey9mQNeAjtE1oONRAwaFAegC6BjdQHQ8asCwMAAA
-        fKJ9n4Oo8gcAAAAASUVORK5CYII=
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
 </value>
   </data>
   <metadata name="statusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -159,8 +159,8 @@
   <data name="picPreviewRoughnessMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAC5JREFUOE9jSEtL+48Pz5w5Ey9mQNeAjtE1oONRAwaFAegC6BjdQHQ8asCwMAAA
-        fKJ9n4Oo8gcAAAAASUVORK5CYII=
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
 </value>
   </data>
 </root>
