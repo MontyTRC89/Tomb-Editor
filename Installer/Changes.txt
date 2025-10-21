@@ -2,6 +2,7 @@ Version 1.10
 ============
 
 General:
+ * Added material editor for TEN target.
  * Reworked geometry import/export dialog with support for custom presets.
 
 Tomb Editor:
