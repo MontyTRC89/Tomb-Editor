@@ -64,7 +64,7 @@
             picPreviewRoughnessMap = new System.Windows.Forms.PictureBox();
             darkLabel7 = new DarkUI.Controls.DarkLabel();
             panelTextureSelect = new DarkUI.Controls.DarkPanel();
-            comboTexture = new DarkUI.Controls.DarkComboBox();
+            comboTexture = new TombLib.Controls.DarkSearchableComboBox();
             darkLabel8 = new DarkUI.Controls.DarkLabel();
             comboMaterialType = new DarkUI.Controls.DarkComboBox();
             panelSky.SuspendLayout();
@@ -760,7 +760,7 @@
 		private DarkUI.Controls.DarkLabel darkLabel7;
 		private DarkUI.Controls.DarkPanel panelTextureSelect;
 		private DarkUI.Controls.DarkLabel darkLabel8;
-		private DarkUI.Controls.DarkComboBox comboTexture;
+		private TombLib.Controls.DarkSearchableComboBox comboTexture;
         private DarkUI.Controls.DarkComboBox comboMaterialType;
     }
 }
