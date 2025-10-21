@@ -66,12 +66,12 @@ namespace TombLib.Forms
 
 			_loading = true;
 
-			tbColorMapPath.Text = _materialData.ColorMap;
-			tbNormalMapPath.Text = _materialData.NormalMap;
-			tbSpecularMapPath.Text = _materialData.SpecularMap;
-			tbAmbientOcclusionMapPath.Text = _materialData.AmbientOcclusionMap;
-			tbEmissiveMapPath.Text = _materialData.EmissiveMap;
-			tbRoughnessMapPath.Text = _materialData.RoughnessMap;
+			SetTexturePath(tbColorMapPath, picPreviewColorMap, _materialData.ColorMap);
+			SetTexturePath(tbNormalMapPath, picPreviewNormalMap, _materialData.NormalMap);
+			SetTexturePath(tbSpecularMapPath, picPreviewSpecularMap, _materialData.SpecularMap);
+			SetTexturePath(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap, _materialData.AmbientOcclusionMap);
+			SetTexturePath(tbEmissiveMapPath, picPreviewEmissiveMap, _materialData.EmissiveMap);
+			SetTexturePath(tbRoughnessMapPath, picPreviewRoughnessMap, _materialData.RoughnessMap);
 
 			if (!string.IsNullOrEmpty(_materialData.NormalMap))
 				tbNormalMapPath.BackColor = (_materialData.IsNormalMapFound ? _correctColor : _wrongColor);
@@ -87,13 +87,6 @@ namespace TombLib.Forms
 
 			if (!string.IsNullOrEmpty(_materialData.RoughnessMap))
 				tbRoughnessMapPath.BackColor = (_materialData.IsRoughnessMapFound ? _correctColor : _wrongColor);
-
-			LoadTexturePreview(_materialData.ColorMap, picPreviewColorMap);
-			LoadTexturePreview(_materialData.NormalMap, picPreviewNormalMap);
-			LoadTexturePreview(_materialData.SpecularMap, picPreviewSpecularMap);
-			LoadTexturePreview(_materialData.AmbientOcclusionMap, picPreviewAmbientOcclusionMap);
-			LoadTexturePreview(_materialData.EmissiveMap, picPreviewEmissiveMap);
-			LoadTexturePreview(_materialData.RoughnessMap, picPreviewRoughnessMap);
 
 			lblXmlMaterialFile.Text = string.IsNullOrEmpty(_materialData.XmlMaterialFileName) ? string.Empty :
 				"Material settings file: " + _materialData.XmlMaterialFileName;
@@ -203,15 +196,22 @@ namespace TombLib.Forms
 			butClearRoughnessMap.Enabled = !string.IsNullOrEmpty(tbRoughnessMapPath.Text);
 		}
 
+		private void SetTexturePath(TextBox textBox, PictureBox previewBox, string texturePath)
+		{
+			textBox.Text = texturePath;
+			textBox.SelectionStart = textBox.Text.Length;
+			textBox.ScrollToCaret();
+			textBox.BackColor = _correctColor;
+			LoadTexturePreview(texturePath, previewBox);
+		}
+
 		private void BrowseTexture(TextBox textBox, PictureBox previewBox)
 		{
 			var texturePath = LevelFileDialog.BrowseFile(this, "Browse texture", ImageC.FileExtensions, false);
 
 			if (!string.IsNullOrEmpty(texturePath))
 			{
-				textBox.Text = texturePath;
-				textBox.BackColor = _correctColor;
-				LoadTexturePreview(texturePath, previewBox);
+				SetTexturePath(textBox, previewBox, texturePath);
 				UpdateUI();
 				_saveXml = true;
 			}
