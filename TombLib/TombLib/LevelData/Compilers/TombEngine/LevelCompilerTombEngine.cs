@@ -83,8 +83,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         // Collected game limits
         private Dictionary<Limit, int> _limits;
 
-        private Dictionary<string, MaterialData> _materialsDictionary = new Dictionary<string, MaterialData>(StringComparer.OrdinalIgnoreCase);
-        private List<string> _materialsNames = new List<string>();
+        private Dictionary<string, MaterialData> _materialDictionary = new Dictionary<string, MaterialData>(StringComparer.OrdinalIgnoreCase);
+        private List<string> _materialNames = new List<string>();
 
         public LevelCompilerTombEngine(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
@@ -114,19 +114,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // will require a dedicated material handling.
 
                 // Add a generic material (to use for example with embedded Wad2 textures)
-                _materialsDictionary.Add("Default", new MaterialData());
-                _materialsNames.Add("Default");
+                _materialDictionary.Add("Default", new MaterialData());
+                _materialNames.Add("Default");
 
                 // Sidecar load level textures
                 foreach (var texture in _level.Settings.Textures)
 				{
-					if (!_materialsDictionary.ContainsKey(texture.Image.FileName))
+					if (!_materialDictionary.ContainsKey(texture.Image.FileName))
 					{
                         try
                         {
                             var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
-                            _materialsDictionary.Add(texture.Image.FileName, materialData);
-                            _materialsNames.Add(texture.Image.FileName);
+                            _materialDictionary.Add(texture.Image.FileName, materialData);
+                            _materialNames.Add(texture.Image.FileName);
                         }
                         catch (Exception ex)
                         {
@@ -144,11 +144,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 foreach (var importedGeometry in _level.Settings.ImportedGeometries)
 					foreach (var texture in importedGeometry.Textures)
 					{
-						if (!_materialsDictionary.ContainsKey(texture.Image.FileName))
+						if (!_materialDictionary.ContainsKey(texture.Image.FileName))
 						{
 							var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
-							_materialsDictionary.Add(texture.Image.FileName, materialData);
-							_materialsNames.Add(texture.Image.FileName);
+							_materialDictionary.Add(texture.Image.FileName, materialData);
+							_materialNames.Add(texture.Image.FileName);
 						}
 					}
 
@@ -156,11 +156,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 foreach (var wad in _level.Settings.Wads)
 					foreach (var texture in wad.Wad.MeshTexturesUnique.Where(t => !string.IsNullOrEmpty(t.AbsolutePath)))
 					{
-						if (!_materialsDictionary.ContainsKey(texture.AbsolutePath))
+						if (!_materialDictionary.ContainsKey(texture.AbsolutePath))
 						{
 							var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.AbsolutePath);
-							_materialsDictionary.Add(texture.AbsolutePath, materialData);
-							_materialsNames.Add(texture.AbsolutePath);
+							_materialDictionary.Add(texture.AbsolutePath, materialData);
+							_materialNames.Add(texture.AbsolutePath);
 						}
 					}
 
@@ -171,7 +171,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 foreach (var texture in _level.Settings.Textures)
                     texture.AbsolutePath = _level.Settings.MakeAbsolute(texture.Path);
 
-                ReportProgress(0, $"   Found {_materialsDictionary.Count} materials");
+                ReportProgress(0, $"   Found {_materialDictionary.Count} materials");
             }
 
             // Prepare level data in parallel to the sounds

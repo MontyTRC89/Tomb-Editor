@@ -270,9 +270,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
 
-				// Write materials
-				writer.Write((uint)_materialsDictionary.Count);
-                foreach (var material in _materialsDictionary)
+                // Write materials
+                writer.Write((uint)_materialDictionary.Count);
+                foreach (var material in _materialDictionary)
                 {
                     writer.Write(material.Key);
                     writer.Write((int)material.Value.Type);

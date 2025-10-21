@@ -88,7 +88,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					var textureAbsolutePath = ((WadTexture)texture.Texture).AbsolutePath;
                     int materialIndex = -1;
                     if (!string.IsNullOrEmpty(textureAbsolutePath))
-                        materialIndex = _materialsNames.IndexOf(textureAbsolutePath);
+                        materialIndex = _materialNames.IndexOf(textureAbsolutePath);
                     if (materialIndex == -1)
                         materialIndex = 0;
 

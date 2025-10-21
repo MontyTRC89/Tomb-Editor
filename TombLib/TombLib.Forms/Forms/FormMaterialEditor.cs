@@ -286,17 +286,6 @@ namespace TombLib.Forms
 		private void butClearSpecularMap_Click(object sender, EventArgs e) => ClearTexture(tbSpecularMapPath, picPreviewSpecularMap, "specular");
 		private void butClearRoughnessMap_Click(object sender, EventArgs e) => ClearTexture(tbRoughnessMapPath, picPreviewRoughnessMap, "roughness");
 
-
-		private void nmNormalMapStrength_ValueChanged(object sender, EventArgs e)
-		{
-			_saveXml = true;
-		}
-
-		private void nmSpecularIntensity_ValueChanged(object sender, EventArgs e)
-		{
-			_saveXml = true;
-		}
-
 		private void comboTexture_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			var texture = _importedGeometryTextures.ElementAt(comboTexture.SelectedIndex);
@@ -317,5 +306,8 @@ namespace TombLib.Forms
 
 			LoadMaterialInUI();
 		}
+
+		private void nmNormalMapStrength_ValueChanged(object sender, EventArgs e) => _saveXml = true;
+		private void nmSpecularIntensity_ValueChanged(object sender, EventArgs e) => _saveXml = true;
 	}
 }
