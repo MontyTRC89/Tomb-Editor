@@ -99,10 +99,16 @@ namespace TombEditor.Forms
 
 		private void butEditMaterials_Click(object sender, EventArgs e)
 		{
-			ImportedGeometry currentModelObj = NewLevelSettings.ImportedGeometryFromID(_currentModel);
+			var currentModelObj = NewLevelSettings.ImportedGeometryFromID(_currentModel);
 			if (currentModelObj == null)
 			{
 				DarkMessageBox.Show(this, "You need to assign a model before opening the Material Editor.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			if (currentModelObj.Textures.Count == 0 || currentModelObj.LoadException != null)
+			{
+				DarkMessageBox.Show(this, "Assigned model has no textures or was not loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 

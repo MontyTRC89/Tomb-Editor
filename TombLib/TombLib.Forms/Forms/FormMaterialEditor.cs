@@ -1,6 +1,5 @@
 ﻿using DarkUI.Forms;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -25,7 +24,6 @@ namespace TombLib.Forms
 
 		private bool _saveXml = false;
 		private bool _loaded = false;
-		private bool _multipleMaterials = false;
 
 		private IEnumerable<Texture> _textureList;
 
@@ -51,9 +49,6 @@ namespace TombLib.Forms
 			else
 			{
 				panelTextureSelect.Visible = true;
-				butOK.Text = "Save";
-				butCancel.Text = "Close";
-				_multipleMaterials = true;
 
 				foreach (var texture in _textureList)
 					comboTexture.Items.Add(texture.AbsolutePath);
@@ -77,6 +72,9 @@ namespace TombLib.Forms
 
 		private void LoadMaterialInUI()
 		{
+			if (_materialData is null)
+				return;
+
 			tbColorMapPath.Text = _materialData.ColorMap;
 			tbNormalMapPath.Text = _materialData.NormalMap;
 			tbSpecularMapPath.Text = _materialData.SpecularMap;
@@ -159,10 +157,10 @@ namespace TombLib.Forms
 			}
 		}
 
-		private string SaveMaterialProperties()
+		private void SaveMaterialProperties()
 		{
 			if (!_saveXml)
-				return null;
+				return;
 
 			string externalMaterialDataPath = Path.Combine(
 						Path.GetDirectoryName(_texturePath),
@@ -198,12 +196,9 @@ namespace TombLib.Forms
 			}
 			catch (Exception)
 			{
-				DarkMessageBox.Show(this, $"An error occurred while saving XML material file to '{externalMaterialDataPath}'",
+				DarkMessageBox.Show(this, $"An error occurred while saving XML material file to '{externalMaterialDataPath}'.",
 					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return null;
 			}
-
-			return externalMaterialDataPath;
 		}
 
 		private void UpdateUI()
@@ -246,20 +241,9 @@ namespace TombLib.Forms
 
 		private void butOK_Click(object sender, EventArgs e)
 		{
-			var savedXmlPath = SaveMaterialProperties();
-
-			if (!_multipleMaterials)
-			{
-				DialogResult = DialogResult.OK;
-				Close();
-			}
-			else if (savedXmlPath is not null)
-			{
-				_saveXml = false;
-				DarkMessageBox.Show(this, "Material settings for current texture were saved to " + savedXmlPath, "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-			else
-				DarkMessageBox.Show(this, "No changes were saved", "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			SaveMaterialProperties();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		private void comboMaterialType_SelectedIndexChanged(object sender, EventArgs e)
@@ -272,6 +256,14 @@ namespace TombLib.Forms
 		private void comboTexture_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			var texture = _textureList.ElementAt(comboTexture.SelectedIndex);
+
+			if (_saveXml)
+			{
+				if (DarkMessageBox.Show(this, "Save changes to current material?", "Confirm changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+					SaveMaterialProperties();
+
+				_saveXml = false;
+			}
 
 			MaterialData material;
 			try
