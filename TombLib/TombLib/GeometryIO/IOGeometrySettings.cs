@@ -1,20 +1,41 @@
-﻿namespace TombLib.GeometryIO
+﻿using System;
+using System.Xml.Serialization;
+
+namespace TombLib.GeometryIO
 {
-    public struct IOGeometrySettingsPreset
+    public record IOGeometrySettingsPreset
     {
-        public string Name;
-        public IOGeometrySettings Settings;
+        public string Name { get; set; }
+        public IOGeometrySettings Settings { get; set; }
+
+        [XmlIgnore]
+        public bool IsCustom { get; set; }
+
+        [Obsolete("For XML deserialization purposes only. Do not use directly.", true)]
+        public IOGeometrySettingsPreset() : this(string.Empty, new IOGeometrySettings(), true)
+        { }
+
+        public IOGeometrySettingsPreset(string name, IOGeometrySettings settings, bool isCustom = false)
+        {
+            Name = name;
+            Settings = settings;
+            IsCustom = isCustom;
+        }
+
+        public override string ToString() => Name;
     }
 
-    public class IOGeometrySettings
+    public record IOGeometryInternalSettings
     {
-        // Internal settings
-        public bool Export { get; set; } = false;
-        public bool ExportRoom { get; set; } = false;
-        public bool ProcessGeometry { get; set; } = true;
-        public bool ProcessUntexturedGeometry { get; set; } = false;
-        public bool ProcessAnimations { get; set; } = false;
+        [XmlIgnore] public bool Export { get; init; } = false;
+        [XmlIgnore] public bool ExportRoom { get; init; } = false;
+        [XmlIgnore] public bool ProcessGeometry { get; init; } = true;
+        [XmlIgnore] public bool ProcessUntexturedGeometry { get; set; } = false;
+        [XmlIgnore] public bool ProcessAnimations { get; init; } = false;
+    }
 
+    public record IOGeometrySettings : IOGeometryInternalSettings
+    {
         public bool SwapXY { get; set; } = false;
         public bool SwapXZ { get; set; } = false;
         public bool SwapYZ { get; set; } = false;

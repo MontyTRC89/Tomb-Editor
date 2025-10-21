@@ -7,9 +7,12 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.Forms;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.WPF;
 
 namespace TombEditor.Controls
 {
@@ -164,17 +167,17 @@ namespace TombEditor.Controls
                         continue;
                     }
 
-                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                    {
-                        settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                        settingsDialog.SelectPreset("Normal scale to TR scale");
+                    var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                    var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
+                    settingsDialog.SetOwner(this);
+                    settingsDialog.ShowDialog();
 
-                        if (settingsDialog.ShowDialog(this) == DialogResult.Cancel)
-                            continue;
+                    if (viewModel.DialogResult != true)
+                        continue;
 
-                        var info = new ImportedGeometryInfo(LevelSettings.MakeRelative(path, VariableType.LevelDirectory), settingsDialog.Settings);
-                        importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
-                    }
+                    var settings = viewModel.GetCurrentSettings();
+                    var info = new ImportedGeometryInfo(LevelSettings.MakeRelative(path, VariableType.LevelDirectory), settings);
+                    importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
                 }
 
                 LevelSettings.ImportedGeometryUpdate(importInfos);
