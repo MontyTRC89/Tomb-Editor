@@ -1,7 +1,10 @@
 ﻿using DarkUI.Forms;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.LevelData;
@@ -22,8 +25,11 @@ namespace TombLib.Forms
 
 		private bool _saveXml = false;
 		private bool _loaded = false;
+		private bool _multipleMaterials = false;
 
-		public FormMaterialEditor(string texturePath, ConfigurationBase configuration)
+		private IEnumerable<ImportedGeometryTexture> _importedGeometryTextures;
+
+		public FormMaterialEditor(string texturePath, IEnumerable<ImportedGeometryTexture> importedGeomteryTextures, ConfigurationBase configuration)
 		{
 			InitializeComponent();
 
@@ -31,17 +37,45 @@ namespace TombLib.Forms
 			_wrongColor = _correctColor.MixWith(Color.DarkRed, 0.55);
 
 			_texturePath = texturePath;
-			_materialData = MaterialData.TrySidecarLoadOrLoadExisting(texturePath);
+			_importedGeometryTextures = importedGeomteryTextures;
 
 			// Populate material type combobox.
 			foreach (MaterialType matType in Enum.GetValues(typeof(MaterialType)))
 				comboMaterialType.Items.Add(matType.ToString().SplitCamelcase());
+
+			if (_importedGeometryTextures is null || !_importedGeometryTextures.Any())
+			{
+				panelTextureSelect.Visible = false;
+				_materialData = MaterialData.TrySidecarLoadOrLoadExisting(texturePath);
+			}
+			else
+			{
+				panelTextureSelect.Visible = true;
+				butOK.Text = "Save";
+				butCancel.Text = "Close";
+				_multipleMaterials = true;
+
+				foreach (var texture in _importedGeometryTextures)
+					comboTexture.Items.Add(texture.AbsolutePath);
+				
+				comboTexture.SelectedIndex = 0;
+				
+				_materialData = MaterialData.TrySidecarLoadOrLoadExisting(_importedGeometryTextures.ElementAt(0).AbsolutePath);
+				_texturePath = _materialData.ColorMap;
+			}
 
 			// Set window property handlers.
 			ConfigurationBase.ConfigureWindow(this, configuration);
 		}
 
 		private void FormMaterialEditor_Load(object sender, EventArgs e)
+		{
+			LoadMaterialInUI();
+
+			_loaded = true;
+		}
+
+		private void LoadMaterialInUI()
 		{
 			tbColorMapPath.Text = _materialData.ColorMap;
 			tbNormalMapPath.Text = _materialData.NormalMap;
@@ -50,7 +84,7 @@ namespace TombLib.Forms
 			tbEmissiveMapPath.Text = _materialData.EmissiveMap;
 			tbRoughnessMapPath.Text = _materialData.RoughnessMap;
 
-            if (!string.IsNullOrEmpty(_materialData.NormalMap))
+			if (!string.IsNullOrEmpty(_materialData.NormalMap))
 				tbNormalMapPath.BackColor = (_materialData.IsNormalMapFound ? _correctColor : _wrongColor);
 
 			if (!string.IsNullOrEmpty(_materialData.AmbientOcclusionMap))
@@ -65,21 +99,19 @@ namespace TombLib.Forms
 			if (!string.IsNullOrEmpty(_materialData.RoughnessMap))
 				tbRoughnessMapPath.BackColor = (_materialData.IsRoughnessMapFound ? _correctColor : _wrongColor);
 
-            LoadTexturePreview(_materialData.ColorMap, picPreviewColorMap);
+			LoadTexturePreview(_materialData.ColorMap, picPreviewColorMap);
 			LoadTexturePreview(_materialData.NormalMap, picPreviewNormalMap);
 			LoadTexturePreview(_materialData.SpecularMap, picPreviewSpecularMap);
 			LoadTexturePreview(_materialData.AmbientOcclusionMap, picPreviewAmbientOcclusionMap);
 			LoadTexturePreview(_materialData.EmissiveMap, picPreviewEmissiveMap);
 			LoadTexturePreview(_materialData.RoughnessMap, picPreviewRoughnessMap);
 
-            lblXmlMaterialFile.Text = string.IsNullOrEmpty(_materialData.XmlMaterialFileName) ? string.Empty :
+			lblXmlMaterialFile.Text = string.IsNullOrEmpty(_materialData.XmlMaterialFileName) ? string.Empty :
 				"Material settings file: " + _materialData.XmlMaterialFileName;
 
 			comboMaterialType.SelectedIndex = (int)_materialData.Type;
 			LoadMaterialProperties();
 			UpdateUI();
-
-			_loaded = true;
 		}
 
 		private void LoadTexturePreview(string path, PictureBox pictureBox)
@@ -127,10 +159,10 @@ namespace TombLib.Forms
 			}
 		}
 
-		private void SaveMaterialProperties()
+		private string SaveMaterialProperties()
 		{
 			if (!_saveXml)
-				return;
+				return null;
 
 			string externalMaterialDataPath = Path.Combine(
 						Path.GetDirectoryName(_texturePath),
@@ -147,7 +179,7 @@ namespace TombLib.Forms
 			materialData.AmbientOcclusionMap = tbAmbientOcclusionMapPath.Text;
 			materialData.RoughnessMap = tbRoughnessMapPath.Text;
 
-            switch (materialData.Type)
+			switch (materialData.Type)
 			{
 				case MaterialType.Default:
 					materialData.Parameters0 = new Vector4(
@@ -168,8 +200,10 @@ namespace TombLib.Forms
 			{
 				DarkMessageBox.Show(this, $"An error occurred while saving XML material file to '{externalMaterialDataPath}'",
 					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				return null;
 			}
+
+			return externalMaterialDataPath;
 		}
 
 		private void UpdateUI()
@@ -179,7 +213,7 @@ namespace TombLib.Forms
 			butClearEmissiveMap.Enabled = !string.IsNullOrEmpty(tbEmissiveMapPath.Text);
 			butClearSpecularMap.Enabled = !string.IsNullOrEmpty(tbSpecularMapPath.Text);
 			butClearRoughnessMap.Enabled = !string.IsNullOrEmpty(tbRoughnessMapPath.Text);
-        }
+		}
 
 		private void BrowseTexture(TextBox textBox, PictureBox previewBox)
 		{
@@ -217,9 +251,20 @@ namespace TombLib.Forms
 
 		private void butOK_Click(object sender, EventArgs e)
 		{
-			SaveMaterialProperties();
-			DialogResult = DialogResult.OK;
-			Close();
+			var savedXmlPath = SaveMaterialProperties();
+
+			if (!_multipleMaterials)
+			{
+				DialogResult = DialogResult.OK;
+				Close();
+			}
+			else if (savedXmlPath is not null)
+			{
+				_saveXml = false;
+				DarkMessageBox.Show(this, "Material settings for current texture were saved to " + savedXmlPath, "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+			else
+				DarkMessageBox.Show(this, "No changes were saved", "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private void comboMaterialType_SelectedIndexChanged(object sender, EventArgs e)
@@ -233,16 +278,16 @@ namespace TombLib.Forms
 		private void butBrowseAmbientOcclusionMap_Click(object sender, EventArgs e) => BrowseTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap);
 		private void butBrowseEmissiveMap_Click(object sender, EventArgs e) => BrowseTexture(tbEmissiveMapPath, picPreviewEmissiveMap);
 		private void butBrowseSpecularMap_Click(object sender, EventArgs e) => BrowseTexture(tbSpecularMapPath, picPreviewSpecularMap);
-        private void butBrowseRoughnessMap_Click(object sender, EventArgs e) => BrowseTexture(tbRoughnessMapPath, picPreviewRoughnessMap);
+		private void butBrowseRoughnessMap_Click(object sender, EventArgs e) => BrowseTexture(tbRoughnessMapPath, picPreviewRoughnessMap);
 
-        private void butClearNormalMap_Click(object sender, EventArgs e) => ClearTexture(tbNormalMapPath, picPreviewNormalMap, "normal");
+		private void butClearNormalMap_Click(object sender, EventArgs e) => ClearTexture(tbNormalMapPath, picPreviewNormalMap, "normal");
 		private void butClearAmbientOcclusionMap_Click(object sender, EventArgs e) => ClearTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap, "ambient occlusion");
 		private void butClearEmissiveMap_Click(object sender, EventArgs e) => ClearTexture(tbEmissiveMapPath, picPreviewEmissiveMap, "emissive");
 		private void butClearSpecularMap_Click(object sender, EventArgs e) => ClearTexture(tbSpecularMapPath, picPreviewSpecularMap, "specular");
-        private void butClearRoughnessMap_Click(object sender, EventArgs e) => ClearTexture(tbRoughnessMapPath, picPreviewRoughnessMap, "roughness");
+		private void butClearRoughnessMap_Click(object sender, EventArgs e) => ClearTexture(tbRoughnessMapPath, picPreviewRoughnessMap, "roughness");
 
 
-        private void nmNormalMapStrength_ValueChanged(object sender, EventArgs e)
+		private void nmNormalMapStrength_ValueChanged(object sender, EventArgs e)
 		{
 			_saveXml = true;
 		}
@@ -250,6 +295,27 @@ namespace TombLib.Forms
 		private void nmSpecularIntensity_ValueChanged(object sender, EventArgs e)
 		{
 			_saveXml = true;
+		}
+
+		private void comboTexture_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			var texture = _importedGeometryTextures.ElementAt(comboTexture.SelectedIndex);
+			
+			MaterialData material;
+			try
+			{
+				material = MaterialData.TrySidecarLoadOrLoadExisting(texture.AbsolutePath);
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, "There was an error while loading the selected material", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			_materialData = material;
+			_texturePath = material.ColorMap;
+
+			LoadMaterialInUI();
 		}
 	}
 }

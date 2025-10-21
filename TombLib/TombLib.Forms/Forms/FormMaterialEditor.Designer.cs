@@ -48,7 +48,7 @@
 			darkLabel4 = new DarkUI.Controls.DarkLabel();
 			darkLabel5 = new DarkUI.Controls.DarkLabel();
 			comboMaterialType = new DarkUI.Controls.DarkComboBox();
-			tabcontainerParameters = new TombLib.Controls.DarkTabbedContainer();
+			tabcontainerParameters = new Controls.DarkTabbedContainer();
 			tabPage1 = new System.Windows.Forms.TabPage();
 			nmSpecularIntensity = new DarkUI.Controls.DarkNumericUpDown();
 			darkLabel6 = new DarkUI.Controls.DarkLabel();
@@ -64,6 +64,9 @@
 			tbRoughnessMapPath = new DarkUI.Controls.DarkTextBox();
 			picPreviewRoughnessMap = new System.Windows.Forms.PictureBox();
 			darkLabel7 = new DarkUI.Controls.DarkLabel();
+			panelTextureSelect = new DarkUI.Controls.DarkPanel();
+			comboTexture = new DarkUI.Controls.DarkComboBox();
+			darkLabel8 = new DarkUI.Controls.DarkLabel();
 			panelSky.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)picPreviewColorMap).BeginInit();
 			panel1.SuspendLayout();
@@ -81,13 +84,14 @@
 			statusStrip.SuspendLayout();
 			panel5.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)picPreviewRoughnessMap).BeginInit();
+			panelTextureSelect.SuspendLayout();
 			SuspendLayout();
 			// 
 			// butOK
 			// 
 			butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			butOK.Checked = false;
-			butOK.Location = new System.Drawing.Point(349, 383);
+			butOK.Location = new System.Drawing.Point(349, 419);
 			butOK.Name = "butOK";
 			butOK.Size = new System.Drawing.Size(80, 23);
 			butOK.TabIndex = 16;
@@ -99,7 +103,7 @@
 			butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			butCancel.Checked = false;
 			butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			butCancel.Location = new System.Drawing.Point(435, 383);
+			butCancel.Location = new System.Drawing.Point(435, 419);
 			butCancel.Name = "butCancel";
 			butCancel.Size = new System.Drawing.Size(80, 23);
 			butCancel.TabIndex = 17;
@@ -112,7 +116,7 @@
 			panelSky.Controls.Add(picPreviewColorMap);
 			panelSky.Controls.Add(darkLabel9);
 			panelSky.Dock = System.Windows.Forms.DockStyle.Top;
-			panelSky.Location = new System.Drawing.Point(6, 6);
+			panelSky.Location = new System.Drawing.Point(6, 57);
 			panelSky.Name = "panelSky";
 			panelSky.Size = new System.Drawing.Size(509, 51);
 			panelSky.TabIndex = 18;
@@ -157,7 +161,7 @@
 			panel1.Controls.Add(picPreviewSpecularMap);
 			panel1.Controls.Add(darkLabel1);
 			panel1.Dock = System.Windows.Forms.DockStyle.Top;
-			panel1.Location = new System.Drawing.Point(6, 210);
+			panel1.Location = new System.Drawing.Point(6, 261);
 			panel1.Name = "panel1";
 			panel1.Size = new System.Drawing.Size(509, 51);
 			panel1.TabIndex = 19;
@@ -223,7 +227,7 @@
 			panel2.Controls.Add(picPreviewNormalMap);
 			panel2.Controls.Add(darkLabel2);
 			panel2.Dock = System.Windows.Forms.DockStyle.Top;
-			panel2.Location = new System.Drawing.Point(6, 57);
+			panel2.Location = new System.Drawing.Point(6, 108);
 			panel2.Name = "panel2";
 			panel2.Size = new System.Drawing.Size(509, 51);
 			panel2.TabIndex = 20;
@@ -289,7 +293,7 @@
 			panel3.Controls.Add(picPreviewAmbientOcclusionMap);
 			panel3.Controls.Add(darkLabel3);
 			panel3.Dock = System.Windows.Forms.DockStyle.Top;
-			panel3.Location = new System.Drawing.Point(6, 108);
+			panel3.Location = new System.Drawing.Point(6, 159);
 			panel3.Name = "panel3";
 			panel3.Size = new System.Drawing.Size(509, 51);
 			panel3.TabIndex = 21;
@@ -355,7 +359,7 @@
 			panel4.Controls.Add(picPreviewEmissiveMap);
 			panel4.Controls.Add(darkLabel4);
 			panel4.Dock = System.Windows.Forms.DockStyle.Top;
-			panel4.Location = new System.Drawing.Point(6, 159);
+			panel4.Location = new System.Drawing.Point(6, 210);
 			panel4.Name = "panel4";
 			panel4.Size = new System.Drawing.Size(509, 51);
 			panel4.TabIndex = 22;
@@ -441,7 +445,7 @@
 			tabcontainerParameters.Location = new System.Drawing.Point(6, 396);
 			tabcontainerParameters.Name = "tabcontainerParameters";
 			tabcontainerParameters.SelectedIndex = 0;
-			tabcontainerParameters.Size = new System.Drawing.Size(326, 10);
+			tabcontainerParameters.Size = new System.Drawing.Size(326, 46);
 			tabcontainerParameters.TabIndex = 26;
 			tabcontainerParameters.Visible = false;
 			// 
@@ -455,7 +459,7 @@
 			tabPage1.Location = new System.Drawing.Point(4, 22);
 			tabPage1.Name = "tabPage1";
 			tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			tabPage1.Size = new System.Drawing.Size(318, 0);
+			tabPage1.Size = new System.Drawing.Size(318, 20);
 			tabPage1.TabIndex = 0;
 			tabPage1.Text = "tabPage1";
 			// 
@@ -517,7 +521,7 @@
 			tabPage2.Location = new System.Drawing.Point(4, 22);
 			tabPage2.Name = "tabPage2";
 			tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			tabPage2.Size = new System.Drawing.Size(318, 0);
+			tabPage2.Size = new System.Drawing.Size(318, 20);
 			tabPage2.TabIndex = 1;
 			tabPage2.Text = "tabPage2";
 			// 
@@ -526,7 +530,7 @@
 			statusStrip.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 			statusStrip.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblResult, lblXmlMaterialFile });
-			statusStrip.Location = new System.Drawing.Point(6, 412);
+			statusStrip.Location = new System.Drawing.Point(6, 448);
 			statusStrip.Name = "statusStrip";
 			statusStrip.Padding = new System.Windows.Forms.Padding(2, 5, 0, 3);
 			statusStrip.Size = new System.Drawing.Size(509, 28);
@@ -556,7 +560,7 @@
 			panel5.Controls.Add(picPreviewRoughnessMap);
 			panel5.Controls.Add(darkLabel7);
 			panel5.Dock = System.Windows.Forms.DockStyle.Top;
-			panel5.Location = new System.Drawing.Point(6, 261);
+			panel5.Location = new System.Drawing.Point(6, 312);
 			panel5.Name = "panel5";
 			panel5.Size = new System.Drawing.Size(509, 51);
 			panel5.TabIndex = 30;
@@ -614,6 +618,35 @@
 			darkLabel7.TabIndex = 1;
 			darkLabel7.Text = "Roughness map:";
 			// 
+			// panelTextureSelect
+			// 
+			panelTextureSelect.Controls.Add(comboTexture);
+			panelTextureSelect.Controls.Add(darkLabel8);
+			panelTextureSelect.Dock = System.Windows.Forms.DockStyle.Top;
+			panelTextureSelect.Location = new System.Drawing.Point(6, 6);
+			panelTextureSelect.Name = "panelTextureSelect";
+			panelTextureSelect.Size = new System.Drawing.Size(509, 51);
+			panelTextureSelect.TabIndex = 9;
+			// 
+			// comboTexture
+			// 
+			comboTexture.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+			comboTexture.FormattingEnabled = true;
+			comboTexture.Location = new System.Drawing.Point(4, 20);
+			comboTexture.Name = "comboTexture";
+			comboTexture.Size = new System.Drawing.Size(502, 23);
+			comboTexture.TabIndex = 3;
+			comboTexture.SelectedIndexChanged += comboTexture_SelectedIndexChanged;
+			// 
+			// darkLabel8
+			// 
+			darkLabel8.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			darkLabel8.Location = new System.Drawing.Point(4, 0);
+			darkLabel8.Name = "darkLabel8";
+			darkLabel8.Size = new System.Drawing.Size(381, 17);
+			darkLabel8.TabIndex = 2;
+			darkLabel8.Text = "Select texture:";
+			// 
 			// FormMaterialEditor
 			// 
 			AcceptButton = butOK;
@@ -621,7 +654,7 @@
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			AutoSize = true;
 			CancelButton = butCancel;
-			ClientSize = new System.Drawing.Size(521, 446);
+			ClientSize = new System.Drawing.Size(521, 482);
 			Controls.Add(panel5);
 			Controls.Add(butCancel);
 			Controls.Add(butOK);
@@ -634,6 +667,7 @@
 			Controls.Add(panel3);
 			Controls.Add(panel2);
 			Controls.Add(panelSky);
+			Controls.Add(panelTextureSelect);
 			FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			MaximizeBox = false;
 			MinimizeBox = false;
@@ -669,6 +703,7 @@
 			panel5.ResumeLayout(false);
 			panel5.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)picPreviewRoughnessMap).EndInit();
+			panelTextureSelect.ResumeLayout(false);
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -724,5 +759,8 @@
 		private DarkUI.Controls.DarkTextBox tbRoughnessMapPath;
 		private System.Windows.Forms.PictureBox picPreviewRoughnessMap;
 		private DarkUI.Controls.DarkLabel darkLabel7;
+		private DarkUI.Controls.DarkPanel panelTextureSelect;
+		private DarkUI.Controls.DarkLabel darkLabel8;
+		private DarkUI.Controls.DarkComboBox comboTexture;
 	}
 }

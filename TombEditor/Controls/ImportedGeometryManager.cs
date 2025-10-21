@@ -196,7 +196,8 @@ namespace TombEditor.Controls
 
             Enabled = true;
 
-            Editor.Instance.EditorEventRaised += EditorEventRaised;
+            if (Editor.Instance is not null)
+                Editor.Instance.EditorEventRaised += EditorEventRaised;
         }
 
         protected override void Dispose(bool disposing)
