@@ -137,7 +137,8 @@ namespace TombEditor.ToolWindows
 		{
 			butDeleteTexture.Enabled =
 			butBrowseTexture.Enabled =
-			butAnimationRanges.Enabled = comboCurrentTexture.SelectedItem != null;
+			butAnimationRanges.Enabled =
+			butMaterialEditor.Enabled = comboCurrentTexture.SelectedItem != null;
 
             butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null && 
                 _editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR3;
@@ -279,11 +280,11 @@ namespace TombEditor.ToolWindows
 
 		private void butMaterialEditor_Click(object sender, EventArgs e)
 		{
-			LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
-			using (var form = new FormMaterialEditor(texture, _editor.Configuration))
+			var list = comboCurrentTexture.Items.Cast<Texture>().OrderByDescending(x => x == comboCurrentTexture.SelectedItem).ToList();
+			using (var form = new FormMaterialEditor(list, _editor.Configuration))
 			{
 				if (form.ShowDialog() == DialogResult.OK && form.MaterialChanged)
-					_editor.SendMessage("Material settings for current texture were saved to " + form.MaterialFileName + ".", PopupType.Info);
+					_editor.SendMessage("Material settings for selected texture were saved to " + form.MaterialFileName + ".", PopupType.Info);
 			}
 		}
 	}
