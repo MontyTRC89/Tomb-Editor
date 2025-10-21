@@ -646,6 +646,7 @@
             comboMaterialType.Name = "comboMaterialType";
             comboMaterialType.Size = new System.Drawing.Size(426, 23);
             comboMaterialType.TabIndex = 31;
+            comboMaterialType.SelectedIndexChanged += comboMaterialType_SelectedIndexChanged;
             // 
             // FormMaterialEditor
             // 
@@ -677,7 +678,6 @@
             ShowInTaskbar = false;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "Material editor";
-            Load += FormMaterialEditor_Load;
             panelSky.ResumeLayout(false);
             panelSky.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picPreviewColorMap).EndInit();

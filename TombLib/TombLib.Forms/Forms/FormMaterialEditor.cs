@@ -23,7 +23,7 @@ namespace TombLib.Forms
 		private readonly Color _wrongColor;
 
 		private bool _saveXml = false;
-		private bool _loaded = false;
+		private bool _loading = false;
 
 		private IEnumerable<Texture> _textureList;
 
@@ -59,17 +59,12 @@ namespace TombLib.Forms
 			ConfigurationBase.ConfigureWindow(this, configuration);
 		}
 
-		private void FormMaterialEditor_Load(object sender, EventArgs e)
-		{
-			LoadMaterialInUI();
-
-			_loaded = true;
-		}
-
 		private void LoadMaterialInUI()
 		{
 			if (_materialData is null)
 				return;
+
+			_loading = true;
 
 			tbColorMapPath.Text = _materialData.ColorMap;
 			tbNormalMapPath.Text = _materialData.NormalMap;
@@ -106,6 +101,8 @@ namespace TombLib.Forms
 			comboMaterialType.SelectedIndex = (int)_materialData.Type;
 			LoadMaterialProperties();
 			UpdateUI();
+
+			_loading = false;
 		}
 
 		private void LoadTexturePreview(string path, PictureBox pictureBox)
@@ -244,9 +241,11 @@ namespace TombLib.Forms
 
 		private void comboMaterialType_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_loading)
+				return;
+
 			LoadMaterialProperties();
-			if (_loaded)
-				_saveXml = true;
+			_saveXml = true;
 		}
 
 		private void comboTexture_SelectedIndexChanged(object sender, EventArgs e)
