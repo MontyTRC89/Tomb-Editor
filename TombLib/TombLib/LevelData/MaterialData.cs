@@ -9,8 +9,8 @@ namespace TombLib.LevelData
 	{
 		Default,
 		Reflective,
-        SkyboxReflective
-    }
+		SkyboxReflective
+	}
 
 	public class MaterialData
 	{
@@ -23,30 +23,39 @@ namespace TombLib.LevelData
 		public string AlphaMaskMap { get; set; }
 		public string AdditionalColorMap { get; set; }
 		public string EmissiveMap { get; set; }
+
 		public Vector4 Parameters0 { get; set; }
 		public Vector4 Parameters1 { get; set; }
 		public Vector4 Parameters2 { get; set; }
 		public Vector4 Parameters3 { get; set; }
-		public bool IsNormalMapFound { get; set; }
-		public bool IsSpecularMapFound { get; set; }
-		public bool IsRoughnessMapFound { get; set; }
-		public bool IsAmbientOcclusionMapFound { get; set; }
-		public bool IsAlphaMaskMapFound { get; set; }
-		public bool IsAdditionalColorMapFound { get; set; }
-		public bool IsEmissiveMapFound { get; set; }
+
+		[XmlIgnore]
+		public bool IsNormalMapFound { get; private set; }
+		[XmlIgnore]
+		public bool IsSpecularMapFound { get; private set; }
+		[XmlIgnore]
+		public bool IsRoughnessMapFound { get; private set; }
+		[XmlIgnore]
+		public bool IsAmbientOcclusionMapFound { get; private set; }
+		[XmlIgnore]
+		public bool IsAlphaMaskMapFound { get; private set; }
+		[XmlIgnore]
+		public bool IsAdditionalColorMapFound { get; private set; }
+		[XmlIgnore]
+		public bool IsEmissiveMapFound { get; private set; }
 
 		[XmlIgnore]
 		public string XmlMaterialFileName { get; set; }
 
 		public MaterialData()
 		{
-            // Default material has:
-            // Normal intensity = 1.0
-            // Specular intensity = 1.0f
-            // Glow intensity = 1.0f
-            Type = MaterialType.Default;
-            Parameters0 = new Vector4(1.0f, 1.0f, 1.0f, 0.0f);
-        }
+			// Default material has:
+			// Normal intensity = 1.0
+			// Specular intensity = 1.0f
+			// Glow intensity = 1.0f
+			Type = MaterialType.Default;
+			Parameters0 = new Vector4(1.0f, 1.0f, 1.0f, 0.0f);
+		}
 
 		public static MaterialData ReadFromXml(string filename)
 		{

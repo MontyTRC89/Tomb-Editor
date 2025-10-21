@@ -47,7 +47,6 @@
             picPreviewEmissiveMap = new System.Windows.Forms.PictureBox();
             darkLabel4 = new DarkUI.Controls.DarkLabel();
             darkLabel5 = new DarkUI.Controls.DarkLabel();
-            comboMaterialType = new DarkUI.Controls.DarkComboBox();
             tabcontainerParameters = new Controls.DarkTabbedContainer();
             tabPage1 = new System.Windows.Forms.TabPage();
             nmSpecularIntensity = new DarkUI.Controls.DarkNumericUpDown();
@@ -67,6 +66,7 @@
             panelTextureSelect = new DarkUI.Controls.DarkPanel();
             comboTexture = new DarkUI.Controls.DarkComboBox();
             darkLabel8 = new DarkUI.Controls.DarkLabel();
+            comboMaterialType = new DarkUI.Controls.DarkComboBox();
             panelSky.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picPreviewColorMap).BeginInit();
             panel1.SuspendLayout();
@@ -91,7 +91,7 @@
             // 
             butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butOK.Checked = false;
-            butOK.Location = new System.Drawing.Point(349, 372);
+            butOK.Location = new System.Drawing.Point(349, 405);
             butOK.Name = "butOK";
             butOK.Size = new System.Drawing.Size(80, 23);
             butOK.TabIndex = 16;
@@ -103,7 +103,7 @@
             butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             butCancel.Checked = false;
             butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            butCancel.Location = new System.Drawing.Point(435, 372);
+            butCancel.Location = new System.Drawing.Point(435, 405);
             butCancel.Name = "butCancel";
             butCancel.Size = new System.Drawing.Size(80, 23);
             butCancel.TabIndex = 17;
@@ -419,33 +419,24 @@
             // 
             // darkLabel5
             // 
+            darkLabel5.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             darkLabel5.AutoSize = true;
             darkLabel5.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel5.Location = new System.Drawing.Point(3, 331);
+            darkLabel5.Location = new System.Drawing.Point(6, 372);
             darkLabel5.Name = "darkLabel5";
             darkLabel5.Size = new System.Drawing.Size(77, 13);
             darkLabel5.TabIndex = 25;
             darkLabel5.Text = "Material type:";
-            // 
-            // comboMaterialType
-            // 
-            comboMaterialType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            comboMaterialType.FormattingEnabled = true;
-            comboMaterialType.Location = new System.Drawing.Point(89, 328);
-            comboMaterialType.Name = "comboMaterialType";
-            comboMaterialType.Size = new System.Drawing.Size(423, 23);
-            comboMaterialType.TabIndex = 24;
-            comboMaterialType.SelectedIndexChanged += comboMaterialType_SelectedIndexChanged;
             // 
             // tabcontainerParameters
             // 
             tabcontainerParameters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             tabcontainerParameters.Controls.Add(tabPage1);
             tabcontainerParameters.Controls.Add(tabPage2);
-            tabcontainerParameters.Location = new System.Drawing.Point(6, 396);
+            tabcontainerParameters.Location = new System.Drawing.Point(9, 486);
             tabcontainerParameters.Name = "tabcontainerParameters";
             tabcontainerParameters.SelectedIndex = 0;
-            tabcontainerParameters.Size = new System.Drawing.Size(326, 0);
+            tabcontainerParameters.Size = new System.Drawing.Size(506, 0);
             tabcontainerParameters.TabIndex = 26;
             tabcontainerParameters.Visible = false;
             // 
@@ -459,7 +450,7 @@
             tabPage1.Location = new System.Drawing.Point(4, 22);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(318, 0);
+            tabPage1.Size = new System.Drawing.Size(498, 0);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "tabPage1";
             // 
@@ -474,7 +465,7 @@
             nmSpecularIntensity.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             nmSpecularIntensity.Minimum = new decimal(new int[] { 1, 0, 0, 262144 });
             nmSpecularIntensity.Name = "nmSpecularIntensity";
-            nmSpecularIntensity.Size = new System.Drawing.Size(180, 22);
+            nmSpecularIntensity.Size = new System.Drawing.Size(360, 22);
             nmSpecularIntensity.TabIndex = 11;
             nmSpecularIntensity.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nmSpecularIntensity.ValueChanged += nmSpecularIntensity_ValueChanged;
@@ -500,7 +491,7 @@
             nmNormalMapStrength.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             nmNormalMapStrength.Minimum = new decimal(new int[] { 1, 0, 0, 262144 });
             nmNormalMapStrength.Name = "nmNormalMapStrength";
-            nmNormalMapStrength.Size = new System.Drawing.Size(180, 22);
+            nmNormalMapStrength.Size = new System.Drawing.Size(360, 22);
             nmNormalMapStrength.TabIndex = 9;
             nmNormalMapStrength.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nmNormalMapStrength.ValueChanged += nmNormalMapStrength_ValueChanged;
@@ -521,7 +512,7 @@
             tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(318, 20);
+            tabPage2.Size = new System.Drawing.Size(498, 0);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             // 
@@ -530,7 +521,7 @@
             statusStrip.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
             statusStrip.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblResult, lblXmlMaterialFile });
-            statusStrip.Location = new System.Drawing.Point(6, 401);
+            statusStrip.Location = new System.Drawing.Point(6, 434);
             statusStrip.Name = "statusStrip";
             statusStrip.Padding = new System.Windows.Forms.Padding(2, 5, 0, 3);
             statusStrip.Size = new System.Drawing.Size(509, 28);
@@ -647,14 +638,23 @@
             darkLabel8.TabIndex = 2;
             darkLabel8.Text = "Texture:";
             // 
+            // comboMaterialType
+            // 
+            comboMaterialType.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            comboMaterialType.FormattingEnabled = true;
+            comboMaterialType.Location = new System.Drawing.Point(89, 369);
+            comboMaterialType.Name = "comboMaterialType";
+            comboMaterialType.Size = new System.Drawing.Size(426, 23);
+            comboMaterialType.TabIndex = 31;
+            // 
             // FormMaterialEditor
             // 
             AcceptButton = butOK;
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            AutoSize = true;
             CancelButton = butCancel;
-            ClientSize = new System.Drawing.Size(521, 435);
+            ClientSize = new System.Drawing.Size(521, 468);
+            Controls.Add(comboMaterialType);
             Controls.Add(panel5);
             Controls.Add(butCancel);
             Controls.Add(butOK);
@@ -662,7 +662,6 @@
             Controls.Add(statusStrip);
             Controls.Add(tabcontainerParameters);
             Controls.Add(darkLabel5);
-            Controls.Add(comboMaterialType);
             Controls.Add(panel4);
             Controls.Add(panel3);
             Controls.Add(panel2);
@@ -671,6 +670,7 @@
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
+            MinimumSize = new System.Drawing.Size(537, 507);
             Name = "FormMaterialEditor";
             Padding = new System.Windows.Forms.Padding(6);
             ShowIcon = false;
@@ -737,7 +737,6 @@
 		private System.Windows.Forms.PictureBox picPreviewEmissiveMap;
 		private DarkUI.Controls.DarkLabel darkLabel4;
 		private DarkUI.Controls.DarkLabel darkLabel5;
-		private DarkUI.Controls.DarkComboBox comboMaterialType;
 		private Controls.DarkTabbedContainer tabcontainerParameters;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
@@ -762,5 +761,6 @@
 		private DarkUI.Controls.DarkPanel panelTextureSelect;
 		private DarkUI.Controls.DarkLabel darkLabel8;
 		private DarkUI.Controls.DarkComboBox comboTexture;
-	}
+        private DarkUI.Controls.DarkComboBox comboMaterialType;
+    }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Numerics;
-using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombEditor.Forms
 {
@@ -112,7 +110,7 @@ namespace TombEditor.Forms
 				return;
 			}
 
-			using (var form = new FormMaterialEditor(null, Editor.Instance.Configuration, currentModelObj.Textures))
+			using (var form = new FormMaterialEditor(currentModelObj.Textures, Editor.Instance.Configuration))
 			{
 				form.ShowDialog();
 			}

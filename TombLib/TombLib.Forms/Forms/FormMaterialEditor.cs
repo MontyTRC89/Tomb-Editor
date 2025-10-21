@@ -27,14 +27,14 @@ namespace TombLib.Forms
 
 		private IEnumerable<Texture> _textureList;
 
-		public FormMaterialEditor(string texturePath, ConfigurationBase configuration, IEnumerable<Texture> textureList = null)
+		public FormMaterialEditor(Texture texture, ConfigurationBase configuration) : this(new List<Texture> { texture }, configuration) { }
+		public FormMaterialEditor(IEnumerable<Texture> textureList, ConfigurationBase configuration)
 		{
 			InitializeComponent();
 
 			_correctColor = tbNormalMapPath.BackColor;
 			_wrongColor = _correctColor.MixWith(Color.DarkRed, 0.55);
 
-			_texturePath = texturePath;
 			_textureList = textureList;
 
 			// Populate material type combobox.
@@ -43,20 +43,16 @@ namespace TombLib.Forms
 
 			if (_textureList is null || !_textureList.Any())
 			{
-				panelTextureSelect.Visible = false;
-				_materialData = MaterialData.TrySidecarLoadOrLoadExisting(texturePath);
+				panelTextureSelect.Enabled = false;
 			}
 			else
 			{
-				panelTextureSelect.Visible = true;
+				panelTextureSelect.Enabled = true;
 
 				foreach (var texture in _textureList)
 					comboTexture.Items.Add(texture.AbsolutePath);
 				
 				comboTexture.SelectedIndex = 0;
-				
-				_materialData = MaterialData.TrySidecarLoadOrLoadExisting(_textureList.ElementAt(0).AbsolutePath);
-				_texturePath = _materialData.ColorMap;
 			}
 
 			// Set window property handlers.
