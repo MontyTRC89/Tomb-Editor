@@ -495,7 +495,7 @@ namespace TombLib.Wad
                 var importer = BaseGeometryImporter.CreateForFile(fileName, settings, absoluteTexturePath =>
                 {
 					var image = ImageC.FromFile(absoluteTexturePath);
-					if (!settings.KeepTexturesExternally)
+					if (!settings.KeepTexturesExternal)
 						image.FileName = string.Empty;
                     
                     var texture = new WadTexture(image);

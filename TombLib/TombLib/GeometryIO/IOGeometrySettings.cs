@@ -53,6 +53,6 @@ namespace TombLib.GeometryIO
         public bool SortByName { get; set; } = true;
         public bool PackTextures { get; set; } = true;
         public bool PadPackedTextures { get; set; } = true;
-		public bool KeepTexturesExternally { get; set; } = false;
+        public bool KeepTexturesExternal { get; set; } = false;
 	}
 }
