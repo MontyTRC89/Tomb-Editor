@@ -89,7 +89,7 @@ namespace TombLib.Forms
 				tbRoughnessMapPath.BackColor = (_materialData.IsRoughnessMapFound ? _correctColor : _wrongColor);
 
 			lblXmlMaterialFile.Text = string.IsNullOrEmpty(_materialData.XmlMaterialFileName) ? string.Empty :
-				"Material settings file: " + _materialData.XmlMaterialFileName;
+				"Material settings file: " + Path.GetFileName(_materialData.XmlMaterialFileName);
 
 			comboMaterialType.SelectedIndex = (int)_materialData.Type;
 			LoadMaterialProperties();
