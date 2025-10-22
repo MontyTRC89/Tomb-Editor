@@ -615,15 +615,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         public bool CheckTombEngineVersion()
         {
-            var buffer = _level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath);
+            var path = _level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath);
 
-            if (!File.Exists(buffer))
+            if (!File.Exists(path))
             {
                 _progressReporter.ReportWarn("Tomb Engine executable was not found in game directory.");
                 return false;
             }
 
-            var version = FileVersionInfo.GetVersionInfo(buffer);
+            var version = FileVersionInfo.GetVersionInfo(path);
 
             if (string.IsNullOrEmpty(version.ProductVersion))
             {
@@ -631,35 +631,25 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return false;
             }
 
-            buffer = version.ProductVersion.Replace(",", ".");
-            _progressReporter.ReportInfo("Target Tomb Engine version is " + buffer);
+            var engineVersion = new Version(version.ProductMajorPart, version.ProductMinorPart,
+                                            version.ProductBuildPart, version.ProductPrivatePart);
 
-            int currentVersion = 0;
-            int.TryParse(FileVersionInfo
-                .GetVersionInfo(Assembly.GetExecutingAssembly().Location)
-                .ProductVersion
-                .Replace(".", string.Empty)
-                .PadRight(4, '0'), out currentVersion);
+            _progressReporter.ReportInfo("Target Tomb Engine version is " + engineVersion);
 
-            buffer = version.ProductMajorPart.ToString() + "." +
-                     version.ProductMinorPart.ToString() + "." +
-                     version.ProductBuildPart.ToString() + ".0";
+            var editorInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var editorVersion = new Version(editorInfo.ProductMajorPart, editorInfo.ProductMinorPart,
+                                            editorInfo.ProductBuildPart, editorInfo.ProductPrivatePart);
 
-            int targetVersion = 0;
-            int.TryParse(buffer
-                .Replace(".", string.Empty)
-                .PadRight(4, '0'), out targetVersion);
+            int comparison = engineVersion.CompareTo(editorVersion);
 
-            if (targetVersion > currentVersion)
+            if (comparison > 0)
             {
-                _progressReporter.ReportWarn("Tomb Engine version is higher than this Tomb Editor version. " +
-                    "Please update Tomb Editor.");
+                _progressReporter.ReportWarn("Tomb Engine version is higher than this Tomb Editor version. Please update Tomb Editor.");
                 return false;
             }
-            else if (targetVersion < currentVersion)
+            else if (comparison < 0)
             {
-                _progressReporter.ReportWarn("Tomb Engine version is lower than this Tomb Editor version. " +
-                    "Please update your project to the latest Tomb Engine version.");
+                _progressReporter.ReportWarn("Tomb Engine version is lower than this Tomb Editor version. Please update your project to the latest Tomb Engine version.");
                 return false;
             }
 
