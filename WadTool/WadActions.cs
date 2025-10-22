@@ -1376,15 +1376,6 @@ namespace WadTool
 
                 string resultingExtension = Path.GetExtension(fileName).ToLowerInvariant();
 
-                if (resultingExtension.Equals(".fbx"))
-                {
-                    viewModel.SelectPreset("3dsmax Filmbox (FBX)");
-                }
-                else if (resultingExtension.Equals(".dae"))
-                {
-                    viewModel.SelectPreset("3dsmax COLLADA");
-                }
-
                 var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                 settingsDialog.SetOwner(owner);
                 settingsDialog.ShowDialog();
