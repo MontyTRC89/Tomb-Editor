@@ -23,7 +23,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
 		private Dictionary<Vector3, List<(TombEngineRoom room, int vertexIndex, NormalHelper poly)>> _normalGroups;
         private Dictionary<Room, VectorInt2> _roomsMinFloorMaxCeilingCache = new Dictionary<Room, VectorInt2>();
-
+        
 		private void BuildRooms(CancellationToken cancelToken)
         {
             ReportProgress(5, "Lighting Rooms");
@@ -38,7 +38,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 room.RebuildLighting(!_level.Settings.FastMode);
             });
 
-            ReportProgress(15, "Building rooms");
+			ReportProgress(15, "Building rooms");
 
             foreach (var room in _level.ExistingRooms)
             {
@@ -296,7 +296,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             {
                                 var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorFaceIdentity(x, z, face));
                                 var shape = room.GetFaceShape(x, z, face);
-
+								
                                 if (range.Count == 0)
                                     continue;
 
@@ -316,9 +316,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     continue;
                                 }
 
-                                var realBlendMode = texture.BlendMode;
-                                if (texture.BlendMode == BlendMode.Normal)
-                                    realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
+								var realBlendMode = texture.BlendMode;
+								if (texture.BlendMode == BlendMode.Normal)
+									realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
+                           
+                                var materialIndex = _materialNames.IndexOf(texture.Texture.Image.FileName);
+                                if (materialIndex == -1)
+                                    materialIndex = 0;
 
                                 int rangeEnd = range.Start + range.Count;
                                 for (int i = range.Start; i < rangeEnd; i += 3)
@@ -347,7 +351,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
                                         var poly = result.CreateTombEnginePolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
-                                                         (byte)realBlendMode, roomVertices);
+                                                         realBlendMode, materialIndex, roomVertices);
                                         roomPolygons.Add(poly);
                                         roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
@@ -358,7 +362,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             texture.Mirror();
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false, realBlendMode);
                                             poly = result.CreateTombEnginePolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
-                                                            (byte)realBlendMode, roomVertices);
+                                                            realBlendMode, materialIndex, roomVertices);
                                             roomPolygons.Add(poly);
 
                                             // TODO: Solve problems with averaging normals on double-sided triangles
@@ -380,7 +384,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                         var poly = result.CreateTombEnginePolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
-                                                        (byte)realBlendMode, roomVertices);
+                                                        realBlendMode, materialIndex, roomVertices);
                                         roomPolygons.Add(poly);
                                         roomVertices[vertex0Index].NormalHelpers.Add(new NormalHelper(poly));
                                         roomVertices[vertex1Index].NormalHelpers.Add(new NormalHelper(poly));
@@ -390,7 +394,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             texture.Mirror(true);
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
                                             poly = result.CreateTombEnginePolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
-                                                            (byte)realBlendMode, roomVertices);
+                                                            realBlendMode, materialIndex, roomVertices);
                                             roomPolygons.Add(poly);
 
                                             // TODO: Solve problems with averaging normals on double-sided triangles
@@ -498,7 +502,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (!poly.Texture.DoubleSided && doubleSided)
                                     continue;
 
-                                int index0 = poly.Index0 + meshVertexBase;
+								int index0 = poly.Index0 + meshVertexBase;
                                 int index1 = poly.Index1 + meshVertexBase;
                                 int index2 = poly.Index2 + meshVertexBase;
                                 int index3 = poly.Index3 + meshVertexBase;
@@ -522,13 +526,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (texture.BlendMode == BlendMode.Normal)
                                     realBlendMode = texture.Texture.Image.HasAlpha(TRVersion.Game.TombEngine, texture.GetRect());
 
+								var materialIndex = _materialNames.IndexOf(texture.Texture.Image.FileName);
+                                if (materialIndex == -1)
+                                    materialIndex = 0;
+
                                 bool texInfoExists = _mergedStaticMeshTextureInfos.ContainsKey(key);
                                 var result = texInfoExists ? _mergedStaticMeshTextureInfos[key] :
                                             _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle, realBlendMode);
 
                                 var face = poly.IsTriangle ?
-                                    result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices) :
-                                    result.CreateTombEnginePolygon4(indices, (byte)realBlendMode, roomVertices);
+                                    result.CreateTombEnginePolygon3(indices, realBlendMode, materialIndex, roomVertices) :
+                                    result.CreateTombEnginePolygon4(indices, realBlendMode, materialIndex, roomVertices);
 
                                 if (!texInfoExists)
                                     _mergedStaticMeshTextureInfos.Add(key, result);
@@ -658,7 +666,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         continue;
                                     }
 
-                                    int index0 = tempIndices[0];
+									int index0 = tempIndices[0];
                                     int index1 = tempIndices[1];
                                     int index2 = tempIndices[2];
 
@@ -690,13 +698,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     if (realBlendMode == BlendMode.AlphaBlend && geometry.UseAlphaTestInsteadOfAlphaBlend)
                                         realBlendMode = BlendMode.AlphaTest;
 
+									var materialIndex = _materialNames.IndexOf(texture.Texture.Image.FileName);
+                                    if (materialIndex == -1)
+                                        materialIndex = 0;
+
                                     if (doubleSided)
                                     {
                                         texture.Mirror(true);
                                     }
 
                                     var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true, realBlendMode);
-                                    var tri = result.CreateTombEnginePolygon3(indices, (byte)realBlendMode, roomVertices);
+                                    var tri = result.CreateTombEnginePolygon3(indices, realBlendMode, materialIndex, roomVertices);
 
                                     roomPolygons.Add(tri);
                                     roomVertices[index0].NormalHelpers.Add(new NormalHelper(tri));
@@ -1780,17 +1792,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
         }
 
-        private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
-        {
-            var material = new TombEngineMaterial
-            {
-                Texture = texture,
-                BlendMode = blendMode,
-                Animated = animated,
-                AnimatedSequence = sequence
-            };
+		private TombEngineBucket GetOrAddBucket(int textureId, byte blendMode, int materialIndex, int animatedSequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
+		{
+			var material = new TombEngineMaterial()
+			{
+				Texture = textureId,
+				BlendMode = blendMode,
+				Animated = animatedSequence >= 0,
+				AnimatedSequence = animatedSequence,
+				MaterialIndex = materialIndex
+			};
 
-            if (!buckets.ContainsKey(material))
+			if (!buckets.ContainsKey(material))
                 buckets.Add(material, new TombEngineBucket { Material = material });
 
             return buckets[material];
@@ -1810,7 +1823,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             // Build buckets and assign texture coordinates
             var textures = _textureInfoManager.GetObjectTextures();
-            room.Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
+            var buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
+           
             foreach (var poly in room.Polygons)
             {
                 poly.AnimatedSequence = -1;
@@ -1827,11 +1841,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, poly.AnimatedSequence, room.Buckets);
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.MaterialIndex, poly.AnimatedSequence, buckets);
 
                 var texture = textures[poly.TextureId];
 
-                // We output only triangles, no quads anymore
                 if (poly.Shape == TombEnginePolygonShape.Quad)
                 {
                     for (int n = 0; n < 4; n++)
@@ -1858,6 +1871,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     bucket.Polygons.Add(poly);
                 }
             }
+
+            room.Buckets = buckets.Values.ToList();
+            room.Buckets.Sort(TombEngineBucketComparer.Instance);
 
             // Calculate tangents and binormals
             for (int i = 0; i < room.Vertices.Count; i++)

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
@@ -15,6 +16,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine : LevelCompiler
     {
+        private sealed class TombEngineBucketComparer : IComparer<TombEngineBucket>
+        {
+            public static readonly TombEngineBucketComparer Instance = new();
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public int Compare(TombEngineBucket x, TombEngineBucket y)
+            {
+                var a = x.Material;
+                var b = y.Material;
+
+                int c = a.MaterialIndex.CompareTo(b.MaterialIndex);
+                if (c != 0) 
+                    return c;
+
+                 c = a.Texture.CompareTo(b.Texture);
+                if (c != 0) 
+                    return c;
+
+                c = a.BlendMode.CompareTo(b.BlendMode);
+                if (c != 0) 
+                    return c;
+
+                return 0;
+            }
+        }
+
         private readonly Dictionary<Room, TombEngineRoom> _tempRooms = new Dictionary<Room, TombEngineRoom>(new ReferenceEqualityComparer<Room>());
 
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
@@ -56,6 +83,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         // Collected game limits
         private Dictionary<Limit, int> _limits;
 
+        private Dictionary<string, MaterialData> _materialDictionary = new Dictionary<string, MaterialData>(StringComparer.OrdinalIgnoreCase);
+        private List<string> _materialNames = new List<string>();
+
         public LevelCompilerTombEngine(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
         {
@@ -76,6 +106,73 @@ namespace TombLib.LevelData.Compilers.TombEngine
             CheckTombEngineVersion();
 
             _textureInfoManager = new TombEngineTexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
+
+            ReportProgress(0, "Building materials");
+			{
+                // Collect all materials used in the level, using sidecar loading if possible.
+                // All textures are stored in the filesystem except for Wad2 embedded textures that
+                // will require a dedicated material handling.
+
+                // Add a generic material (to use for example with embedded Wad2 textures)
+                _materialDictionary.Add("Default", new MaterialData());
+                _materialNames.Add("Default");
+
+                // Sidecar load level textures
+                foreach (var texture in _level.Settings.Textures)
+				{
+					if (!_materialDictionary.ContainsKey(texture.Image.FileName))
+					{
+                        try
+                        {
+                            var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+                            _materialDictionary.Add(texture.Image.FileName, materialData);
+                            _materialNames.Add(texture.Image.FileName);
+                        }
+                        catch (Exception ex)
+                        {
+                            string externalMaterialDataPath = Path.Combine(
+                                 Path.GetDirectoryName(texture.Image.FileName),
+                                 Path.GetFileNameWithoutExtension(texture.Image.FileName) + ".xml");
+
+                            _progressReporter.ReportWarn($"Error while processing: {externalMaterialDataPath}");
+                            throw;
+                        }
+					}
+				}
+
+                // Sidecar load imported geometry textures
+                foreach (var importedGeometry in _level.Settings.ImportedGeometries)
+					foreach (var texture in importedGeometry.Textures)
+					{
+						if (!_materialDictionary.ContainsKey(texture.Image.FileName))
+						{
+							var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+							_materialDictionary.Add(texture.Image.FileName, materialData);
+							_materialNames.Add(texture.Image.FileName);
+						}
+					}
+
+                // Sidecar load external Wad2 textures
+                foreach (var wad in _level.Settings.Wads)
+					foreach (var texture in wad.Wad.MeshTexturesUnique.Where(t => !string.IsNullOrEmpty(t.AbsolutePath)))
+					{
+						if (!_materialDictionary.ContainsKey(texture.AbsolutePath))
+						{
+							var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.AbsolutePath);
+							_materialDictionary.Add(texture.AbsolutePath, materialData);
+							_materialNames.Add(texture.AbsolutePath);
+						}
+					}
+
+                // Make all level texturs paths absolute for comparing them with imported geometry textures
+                // and Wad2 external textures.
+                // Imported geometry textures and Wad2 external textures are always stored as absolute paths,
+                // insted level textures have the relative syntax.
+                foreach (var texture in _level.Settings.Textures)
+                    texture.AbsolutePath = _level.Settings.MakeAbsolute(texture.Path);
+
+                ReportProgress(0, $"   Found {_materialDictionary.Count} materials");
+            }
 
             // Prepare level data in parallel to the sounds
             ConvertWad2DataToTombEngine();

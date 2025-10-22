@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Numerics;
 using TombLib.Graphics;
 using TombLib.Utils;
 
@@ -46,13 +45,13 @@ namespace TombLib.Wad
             if (string.IsNullOrEmpty(Image.FileName))
                 hint += "Untitled (" + Image.Size.X + "x" + Image.Size.Y + ")";
             else
-                hint += Path.GetFileName(Image.FileName) + " ";
+                hint += "[Ext] " + Path.GetFileName(Image.FileName);
 
-            return hint;
-        }
+			return hint;
+		}
 
-        public void Dispose()
+		public void Dispose()
         {
         }
-    }
+	}
 }

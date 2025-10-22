@@ -11,10 +11,13 @@ namespace TombLib.Utils
     {
         public static ImageC UnloadedPlaceholder { get; } = ImageC.Black;
 
-        // Do not change the image with this methode
+        // Do not change the image with this method
         public ImageC Image { get; protected set; } = UnloadedPlaceholder;
 
-        public abstract Texture Clone();
+		// This helps the texture packer of TombEngine compiler to have ready paths for doing sidecar loading
+		public string AbsolutePath { get; set; }
+
+		public abstract Texture Clone();
 
         object ICloneable.Clone()
         {
@@ -347,7 +350,7 @@ namespace TombLib.Utils
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public Rectangle2 GetRect(bool? isTriangle = null)
         {
             bool tri = isTriangle ?? TextureIsTriangle;
@@ -372,6 +375,7 @@ namespace TombLib.Utils
 
         // Gets canonical texture area which is compatible with UVRotate routine
         // and also puts rotational difference into Rotation out parameter
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public TextureArea GetCanonicalTexture(bool isTriangle)
         {
             var minY = GetRect(isTriangle).Start.Y;
@@ -538,7 +542,8 @@ namespace TombLib.Utils
             }
         }
 
-        public void Rotate(int iter = 1, bool isTriangle = false)
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public void Rotate(int iter = 1, bool isTriangle = false)
         {
             for (int i = 0; i < iter; i++)
             {

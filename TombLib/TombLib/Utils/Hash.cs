@@ -1,8 +1,9 @@
 ﻿using Blake3;
 using System;
 using System.Buffers.Binary;
-using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 
 namespace TombLib.Utils
@@ -12,8 +13,35 @@ namespace TombLib.Utils
 		public ulong HashLow;
 		public ulong HashHigh;
 
-		public static bool operator ==(Hash first, Hash second) =>
-			first.HashLow == second.HashLow && first.HashHigh == second.HashHigh;
+		public static bool operator ==(Hash first, Hash second)
+		{
+			// AVX2 path
+			if (Avx2.IsSupported)
+			{
+				var a128 = Unsafe.As<Hash, Vector128<byte>>(ref first);
+				var b128 = Unsafe.As<Hash, Vector128<byte>>(ref second);
+
+				var a256 = Vector256.Create(a128, Vector128<byte>.Zero);
+				var b256 = Vector256.Create(b128, Vector128<byte>.Zero);
+
+				var cmp = Avx2.CompareEqual(a256, b256);
+				int mask = Avx2.MoveMask(cmp); 
+
+				return (mask & 0xFFFF) == 0xFFFF;
+			}
+			
+			// SSE2 path
+			if (Sse2.IsSupported)
+			{
+				var a = Unsafe.As<Hash, Vector128<byte>>(ref first);
+				var b = Unsafe.As<Hash, Vector128<byte>>(ref second);
+				var eq = Sse2.CompareEqual(a, b);     // PCMPEQB
+				return Sse2.MoveMask(eq) == 0xFFFF; 
+			}
+
+			// Fallback
+			return first.HashLow == second.HashLow && first.HashHigh == second.HashHigh;
+		}
 
 		public static bool operator !=(Hash first, Hash second) => !(first == second);
 

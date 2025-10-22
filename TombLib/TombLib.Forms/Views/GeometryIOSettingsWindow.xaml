@@ -11,14 +11,12 @@
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	xmlns:viewModels="clr-namespace:TombLib.Forms.ViewModels;assembly=TombLib.Forms"
 	Title="{Binding WindowTitle}"
-	Width="375"
-	Height="375"
-	MinWidth="325"
-	MinHeight="375"
+	Width="400"
 	d:DataContext="{d:DesignInstance Type=viewModels:GeometryIOSettingsWindowViewModel}"
 	md:DialogServiceViews.IsRegistered="True"
 	Background="{DynamicResource Brush_Background}"
 	ResizeMode="CanMinimize"
+	SizeToContent="Height"
 	Style="{DynamicResource CustomWindowStyle}"
 	WindowStartupLocation="CenterScreen"
 	mc:Ignorable="d">
@@ -95,7 +93,7 @@
 
 				<sg:SpacedGrid Grid.Column="1" RowSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 
@@ -126,6 +124,10 @@
 								Content="{tombLib:Localize SortByName}"
 								IsChecked="{Binding SortByName}"
 								IsEnabled="{Binding CanSortByName}" />
+							<CheckBox
+								Content="{tombLib:Localize KeepTexturesExternal}"
+								IsChecked="{Binding KeepTexturesExternal}"
+								IsEnabled="{Binding CanKeepTexturesExternal}" />
 						</controls:SpacedStack>
 					</GroupBox>
 				</sg:SpacedGrid>

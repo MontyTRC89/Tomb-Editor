@@ -494,8 +494,14 @@ namespace TombLib.Wad
             {
                 var importer = BaseGeometryImporter.CreateForFile(fileName, settings, absoluteTexturePath =>
                 {
-                    return new WadTexture(ImageC.FromFile(absoluteTexturePath));
-                });
+					var image = ImageC.FromFile(absoluteTexturePath);
+					if (!settings.KeepTexturesExternal)
+						image.FileName = string.Empty;
+                    
+                    var texture = new WadTexture(image);
+                    texture.AbsolutePath = image.FileName;
+                    return texture;
+				});
                 tmpModel = importer.ImportFromFile(fileName);
 
                 calculateNormals = importer is MetasequoiaImporter;

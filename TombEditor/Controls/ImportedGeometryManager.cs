@@ -159,6 +159,8 @@ namespace TombEditor.Controls
 
                 // Load imported geometries
                 var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
+                var config = Editor.Instance?.Configuration;
+
                 foreach (string path in paths)
                 {
                     if (!path.IsANSI())
@@ -168,12 +170,17 @@ namespace TombEditor.Controls
                     }
 
                     var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                    viewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryImportPresetName);
+
                     var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                     settingsDialog.SetOwner(this);
                     settingsDialog.ShowDialog();
 
                     if (viewModel.DialogResult != true)
                         continue;
+
+                    if (config is not null)
+                        config.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
 
                     var settings = viewModel.GetCurrentSettings();
                     var info = new ImportedGeometryInfo(LevelSettings.MakeRelative(path, VariableType.LevelDirectory), settings);
@@ -199,7 +206,8 @@ namespace TombEditor.Controls
 
             Enabled = true;
 
-            Editor.Instance.EditorEventRaised += EditorEventRaised;
+            if (Editor.Instance is not null)
+                Editor.Instance.EditorEventRaised += EditorEventRaised;
         }
 
         protected override void Dispose(bool disposing)

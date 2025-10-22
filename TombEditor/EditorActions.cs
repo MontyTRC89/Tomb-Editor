@@ -4356,14 +4356,20 @@ namespace TombEditor
                 return null;
 
             var geometry = new ImportedGeometry();
+            var config = Editor.Instance?.Configuration;
 
             var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+            viewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryImportPresetName);
+
             var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
             settingsDialog.SetOwner(owner);
             settingsDialog.ShowDialog();
 
             if (viewModel.DialogResult != true)
                 return null;
+
+            if (config is not null)
+                config.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
 
             var settings = viewModel.GetCurrentSettings();
             var info = new ImportedGeometryInfo(path, settings);
@@ -5070,10 +5076,14 @@ namespace TombEditor
                     return;
                 }
 
+                var config = Editor.Instance?.Configuration;
+
                 var viewModel = new GeometryIOSettingsWindowViewModel(
                     IOSettingsPresets.GeometryExportSettingsPresets,
                     new() { Export = true, ExportRoom = true }
                 );
+
+                viewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryExportPresetName);
 
                 var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                 settingsDialog.SetOwner(owner);
@@ -5081,6 +5091,9 @@ namespace TombEditor
 
                 if (viewModel.DialogResult != true)
                     return;
+
+                if (config is not null)
+                    config.GeometryIO_LastUsedGeometryExportPresetName = viewModel.SelectedPreset?.Name;
 
                 var settings = viewModel.GetCurrentSettings();
 

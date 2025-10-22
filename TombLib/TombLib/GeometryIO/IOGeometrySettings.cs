@@ -29,9 +29,14 @@ namespace TombLib.GeometryIO
     {
         [XmlIgnore] public bool Export { get; init; } = false;
         [XmlIgnore] public bool ExportRoom { get; init; } = false;
+        [XmlIgnore] public bool ImportWadMesh { get; init; } = false;
         [XmlIgnore] public bool ProcessGeometry { get; init; } = true;
         [XmlIgnore] public bool ProcessUntexturedGeometry { get; set; } = false;
         [XmlIgnore] public bool ProcessAnimations { get; init; } = false;
+
+        [XmlIgnore] public bool IsGeometryImportSettings => !Export && !ProcessAnimations;
+        [XmlIgnore] public bool IsGeometryExportSettings => Export && !ProcessAnimations;
+        [XmlIgnore] public bool IsAnimationSettings => ProcessAnimations;
     }
 
     public record IOGeometrySettings : IOGeometryInternalSettings
@@ -52,5 +57,6 @@ namespace TombLib.GeometryIO
         public bool SortByName { get; set; } = true;
         public bool PackTextures { get; set; } = true;
         public bool PadPackedTextures { get; set; } = true;
-    }
+        public bool KeepTexturesExternal { get; set; } = false;
+	}
 }

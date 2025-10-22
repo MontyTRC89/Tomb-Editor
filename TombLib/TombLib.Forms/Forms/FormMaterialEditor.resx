@@ -117,27 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="topBar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>473, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="butHide.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="picPreviewColorMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVDhP1VLBEYMwDGOEjJARGIURGKLvHiN0hIzQEfro
-        AB2BEfrmgFRK5B4+4N/qzpdEsoXj0Pwfcs49Iuu4B7SISNM0jUwktE/rul4qk3ule0AYqC7LcsPSiibf
-        zvP8lHYX7QEtIemFlR0EnhEFVowOrspJKqsgISHYGfFARGubJtKCM8GmQ7wpFALAnmAnZWBmIrmYIFjT
-        nRpsB4ag2bGBCHcFtou9mbCY1yktY/VXMJCgwEFh/x2cwJnwq/Gw2MAnYraK3TPqaYlBtAeE7cB2P5IM
-        otL3qKknf9gPo2k+JcqSkujlRFsAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="darkToolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>562, 17</value>
+  <data name="picPreviewSpecularMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="picPreviewNormalMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="picPreviewAmbientOcclusionMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="picPreviewEmissiveMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
+</value>
+  </data>
+  <metadata name="statusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>25</value>
-  </metadata>
+  <data name="picPreviewRoughnessMap.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAChJREFUOE9jSEtL+48Pz5w5Ey8eNWB4GIBNEBljMxQZjxowDAxI+w8AfKJ9n/5u
+        PhMAAAAASUVORK5CYII=
+</value>
+  </data>
 </root>

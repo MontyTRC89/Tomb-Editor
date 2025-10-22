@@ -557,13 +557,17 @@ namespace WadTool
                     return;
                 }
 
-                var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets, new() { ImportWadMesh = true });
+                viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName);
+
                 var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                 settingsDialog.SetOwner(owner);
                 settingsDialog.ShowDialog();
 
                 if (viewModel.DialogResult != true)
                     return;
+
+                tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
 
                 var settings = viewModel.GetCurrentSettings();
                 var @static = new WadStatic(tool.DestinationWad.GetFirstFreeStaticMesh());
@@ -591,7 +595,7 @@ namespace WadTool
             foreach (var moveable in src.Moveables)
             {
                 string compatibleSlot = TrCatalog.GetMoveableTombEngineSlot(src.GameVersion, moveable.Key.TypeId);
-                if (compatibleSlot == String.Empty)
+                if (compatibleSlot == string.Empty)
                     continue;
 
                 uint? destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out bool isMoveable);
@@ -1368,16 +1372,9 @@ namespace WadTool
                     new() { ProcessAnimations = true, ProcessGeometry = false }
                 );
 
-                string resultingExtension = Path.GetExtension(fileName).ToLowerInvariant();
+                viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedAnimationPresetName);
 
-                if (resultingExtension.Equals(".fbx"))
-                {
-                    viewModel.SelectPreset("3dsmax Filmbox (FBX)");
-                }
-                else if (resultingExtension.Equals(".dae"))
-                {
-                    viewModel.SelectPreset("3dsmax COLLADA");
-                }
+                string resultingExtension = Path.GetExtension(fileName).ToLowerInvariant();
 
                 var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                 settingsDialog.SetOwner(owner);
@@ -1385,6 +1382,8 @@ namespace WadTool
 
                 if (viewModel.DialogResult != true)
                     return null;
+
+                tool.Configuration.GeometryIO_LastUsedAnimationPresetName = viewModel.SelectedPreset?.Name;
 
                 var settings = viewModel.GetCurrentSettings();
                 var importer = BaseGeometryImporter.CreateForFile(fileName, settings, null);
@@ -1538,12 +1537,16 @@ namespace WadTool
                         new() { Export = true }
                     );
 
+                    viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedGeometryExportPresetName);
+
                     var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                     settingsDialog.SetOwner(owner);
                     settingsDialog.ShowDialog();
 
                     if (viewModel.DialogResult != true)
                         return;
+
+                    tool.Configuration.GeometryIO_LastUsedGeometryExportPresetName = viewModel.SelectedPreset?.Name;
 
                     var settings = viewModel.GetCurrentSettings();
 
@@ -1595,7 +1598,9 @@ namespace WadTool
 
                 try
                 {
-                    var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                    var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets, new() { ImportWadMesh = true });
+                    viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName);
+
                     var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                     settingsDialog.SetOwner(owner);
                     settingsDialog.ShowDialog();
@@ -1603,9 +1608,11 @@ namespace WadTool
                     if (viewModel.DialogResult != true)
                         return null;
 
+                    tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
+
                     var settings = viewModel.GetCurrentSettings();
 
-                    // A flag which allows to import untextured meshes
+                    // A flag which allows to import untextured meshes.
                     settings.ProcessUntexturedGeometry = true;
 
                     WadMesh mesh = WadMesh.ImportFromExternalModel(dialog.FileName, settings, tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());

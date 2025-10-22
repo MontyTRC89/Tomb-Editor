@@ -446,12 +446,16 @@ namespace WadTool
                     return;
 
                 var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                viewModel.SelectPreset(_tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName);
+
                 var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                 settingsDialog.SetOwner(this);
                 settingsDialog.ShowDialog();
 
                 if (viewModel.DialogResult != true)
                     return;
+
+                _tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
 
                 var settings = viewModel.GetCurrentSettings();
                 var meshes = WadMesh.ImportFromExternalModel(dialog.FileName, settings, false, _tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
