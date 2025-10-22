@@ -26,7 +26,6 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(WindowTitle))]
-	[NotifyPropertyChangedFor(nameof(CanInvertFaces))]
 	[NotifyPropertyChangedFor(nameof(CanProcessTextures))]
 	[NotifyPropertyChangedFor(nameof(CanProcessGeometry))]
 	[NotifyPropertyChangedFor(nameof(CanSortByName))]
@@ -39,7 +38,6 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 		? _localizationService["TitleExport"]
 		: _localizationService["TitleImport"];
 
-	public bool CanInvertFaces => !InternalSettings.ProcessAnimations;
 	public bool CanProcessTextures => InternalSettings.ProcessGeometry && !InternalSettings.Export;
 	public bool CanProcessGeometry => InternalSettings.ProcessGeometry;
 	public bool CanSortByName => !InternalSettings.Export;

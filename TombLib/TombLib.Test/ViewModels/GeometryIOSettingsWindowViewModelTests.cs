@@ -210,21 +210,6 @@ public class GeometryIOSettingsWindowViewModelTests
 	}
 
 	[TestMethod]
-	public void CanInvertFaces_WhenProcessAnimationsIsTrue_ReturnsFalse()
-	{
-		// Arrange
-		var animationSettings = new IOGeometryInternalSettings
-		{
-			ProcessAnimations = true
-		};
-
-		var viewModel = CreateViewModel(internalSettings: animationSettings);
-
-		// Assert
-		Assert.IsFalse(viewModel.CanInvertFaces);
-	}
-
-	[TestMethod]
 	public void CanPadPackedTextures_DependsOnPackTextures()
 	{
 		// Arrange

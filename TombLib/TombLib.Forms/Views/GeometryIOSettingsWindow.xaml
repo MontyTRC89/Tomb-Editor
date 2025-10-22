@@ -59,10 +59,7 @@
 							<CheckBox Content="{tombLib:Localize InvertXAxis}" IsChecked="{Binding InvertXAxis}" />
 							<CheckBox Content="{tombLib:Localize InvertYAxis}" IsChecked="{Binding InvertYAxis}" />
 							<CheckBox Content="{tombLib:Localize InvertZAxis}" IsChecked="{Binding InvertZAxis}" />
-							<CheckBox
-								Content="{tombLib:Localize InvertFaces}"
-								IsChecked="{Binding InvertFaces}"
-								IsEnabled="{Binding CanInvertFaces}" />
+							<CheckBox Content="{tombLib:Localize InvertFaces}" IsChecked="{Binding InvertFaces}" />
 						</controls:SpacedStack>
 					</GroupBox>
 

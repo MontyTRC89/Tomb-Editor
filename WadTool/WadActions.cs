@@ -557,7 +557,7 @@ namespace WadTool
                     return;
                 }
 
-                var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets, new() { ImportWadMesh = true });
                 viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName);
 
                 var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
@@ -1607,7 +1607,7 @@ namespace WadTool
 
                 try
                 {
-                    var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                    var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets, new() { ImportWadMesh = true });
                     viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName);
 
                     var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
@@ -1621,7 +1621,7 @@ namespace WadTool
 
                     var settings = viewModel.GetCurrentSettings();
 
-                    // A flag which allows to import untextured meshes
+                    // A flag which allows to import untextured meshes.
                     settings.ProcessUntexturedGeometry = true;
 
                     WadMesh mesh = WadMesh.ImportFromExternalModel(dialog.FileName, settings, tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
