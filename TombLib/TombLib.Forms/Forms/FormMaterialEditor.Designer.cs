@@ -64,7 +64,7 @@
             picPreviewRoughnessMap = new System.Windows.Forms.PictureBox();
             darkLabel7 = new DarkUI.Controls.DarkLabel();
             panelTextureSelect = new DarkUI.Controls.DarkPanel();
-            comboTexture = new TombLib.Controls.DarkSearchableComboBox();
+            comboTexture = new Controls.DarkSearchableComboBox();
             darkLabel8 = new DarkUI.Controls.DarkLabel();
             comboMaterialType = new DarkUI.Controls.DarkComboBox();
             panelSky.SuspendLayout();
@@ -124,7 +124,6 @@
             // tbColorMapPath
             // 
             tbColorMapPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            tbColorMapPath.Enabled = false;
             tbColorMapPath.Location = new System.Drawing.Point(0, 20);
             tbColorMapPath.Name = "tbColorMapPath";
             tbColorMapPath.ReadOnly = true;
@@ -191,9 +190,9 @@
             // tbSpecularMapPath
             // 
             tbSpecularMapPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            tbSpecularMapPath.Enabled = false;
             tbSpecularMapPath.Location = new System.Drawing.Point(0, 20);
             tbSpecularMapPath.Name = "tbSpecularMapPath";
+            tbSpecularMapPath.ReadOnly = true;
             tbSpecularMapPath.Size = new System.Drawing.Size(326, 22);
             tbSpecularMapPath.TabIndex = 8;
             // 
@@ -257,9 +256,9 @@
             // tbNormalMapPath
             // 
             tbNormalMapPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            tbNormalMapPath.Enabled = false;
             tbNormalMapPath.Location = new System.Drawing.Point(0, 20);
             tbNormalMapPath.Name = "tbNormalMapPath";
+            tbNormalMapPath.ReadOnly = true;
             tbNormalMapPath.Size = new System.Drawing.Size(326, 22);
             tbNormalMapPath.TabIndex = 8;
             // 
@@ -323,9 +322,9 @@
             // tbAmbientOcclusionMapPath
             // 
             tbAmbientOcclusionMapPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            tbAmbientOcclusionMapPath.Enabled = false;
             tbAmbientOcclusionMapPath.Location = new System.Drawing.Point(0, 20);
             tbAmbientOcclusionMapPath.Name = "tbAmbientOcclusionMapPath";
+            tbAmbientOcclusionMapPath.ReadOnly = true;
             tbAmbientOcclusionMapPath.Size = new System.Drawing.Size(326, 22);
             tbAmbientOcclusionMapPath.TabIndex = 8;
             // 
@@ -389,9 +388,9 @@
             // tbEmissiveMapPath
             // 
             tbEmissiveMapPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            tbEmissiveMapPath.Enabled = false;
             tbEmissiveMapPath.Location = new System.Drawing.Point(0, 20);
             tbEmissiveMapPath.Name = "tbEmissiveMapPath";
+            tbEmissiveMapPath.ReadOnly = true;
             tbEmissiveMapPath.Size = new System.Drawing.Size(326, 22);
             tbEmissiveMapPath.TabIndex = 8;
             // 
@@ -581,9 +580,9 @@
             // tbRoughnessMapPath
             // 
             tbRoughnessMapPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            tbRoughnessMapPath.Enabled = false;
             tbRoughnessMapPath.Location = new System.Drawing.Point(0, 20);
             tbRoughnessMapPath.Name = "tbRoughnessMapPath";
+            tbRoughnessMapPath.ReadOnly = true;
             tbRoughnessMapPath.Size = new System.Drawing.Size(326, 22);
             tbRoughnessMapPath.TabIndex = 8;
             // 

@@ -270,8 +270,9 @@ namespace TombLib.Forms
 			}
 			catch (Exception ex)
 			{
-				DarkMessageBox.Show(this, "There was an error while loading the selected material.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				DarkMessageBox.Show(this, "There was an error while loading the selected material. Using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				material = new MaterialData() { ColorMap = texture.AbsolutePath };
+				_saveXml = true;
 			}
 
 			_materialData = material;
