@@ -1744,16 +1744,16 @@ namespace TombLib.LevelData.Compilers
 
                     if (level != BumpMappingLevel.None)
                     {
-						// TODO: disabled for now
-						// bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
-						// bumpImage = ImageC.GaussianBlur(bumpImage, radius: 1.0f);
-						// bumpImage = ImageC.NormalizeContrast(bumpImage);
-						// bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Scharr, 0, 0, bumpImage.Width, bumpImage.Height);
+                        // TODO: disabled for now
+                        // bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
+                        // bumpImage = ImageC.GaussianBlur(bumpImage, radius: 1.0f);
+                        // bumpImage = ImageC.NormalizeContrast(bumpImage);
+                        // bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Scharr, 0, 0, bumpImage.Width, bumpImage.Height);
 
-						// The old way of doing normal maps
-						bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
-						bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Sobel, 0, 0, bumpImage.Width, bumpImage.Height);
-					}
+                        // The old way of doing normal maps
+                        bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
+                        bumpImage = ImageC.SobelFilter(bumpImage, sobelStrength, sobelLevel, SobelFilterType.Sobel, 0, 0, bumpImage.Width, bumpImage.Height);
+                    }
                     else
                         // Neutral Bump
                         bumpImage.Fill(new ColorC(128, 128, 255, 255));
