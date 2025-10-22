@@ -280,8 +280,8 @@ namespace TombEditor.ToolWindows
 
 		private void butMaterialEditor_Click(object sender, EventArgs e)
 		{
-			var list = comboCurrentTexture.Items.Cast<Texture>().OrderByDescending(x => x == comboCurrentTexture.SelectedItem).ToList();
-			using (var form = new FormMaterialEditor(list, _editor.Configuration))
+			var list = comboCurrentTexture.Items.Cast<Texture>();
+			using (var form = new FormMaterialEditor(list, _editor.Configuration, comboCurrentTexture.SelectedItem as Texture))
 			{
 				if (form.ShowDialog() == DialogResult.OK && form.MaterialChanged)
 					_editor.SendMessage("Material settings for selected texture were saved to " + form.MaterialFileName + ".", PopupType.Info);
