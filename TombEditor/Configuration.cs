@@ -205,6 +205,12 @@ namespace TombEditor
         public EditorTool UI_LastGeometryTool { get; set; } = new EditorTool();
         public EditorTool UI_LastTexturingTool { get; set; } = new EditorTool() { Tool = EditorToolType.Brush };
 
+        // Geometry IO Window
+
+        public string GeometryIO_LastUsedGeometryImportPresetName { get; set; }
+        public string GeometryIO_LastUsedGeometryExportPresetName { get; set; }
+        public string GeometryIO_LastUsedAnimationPresetName { get; set; }
+
         // Window options
 
         public Point ColorDialog_Position { get; set; } = new Point(-1); // Center by default

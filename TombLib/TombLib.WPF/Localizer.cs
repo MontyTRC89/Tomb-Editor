@@ -280,8 +280,8 @@ public sealed class Localizer : INotifyPropertyChanged
 				.Replace("\\t", "\t")
 				.Replace("\\r", "\r");
 
-	private string CreateFallbackString(string key)
-		=> $"{Language}:{key}";
+	private static string CreateFallbackString(string key)
+		=> key.Split('.')[^1];
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 

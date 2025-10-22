@@ -558,12 +558,16 @@ namespace WadTool
                 }
 
                 var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName);
+
                 var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                 settingsDialog.SetOwner(owner);
                 settingsDialog.ShowDialog();
 
                 if (viewModel.DialogResult != true)
                     return;
+
+                tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
 
                 var settings = viewModel.GetCurrentSettings();
                 var @static = new WadStatic(tool.DestinationWad.GetFirstFreeStaticMesh());
@@ -1368,6 +1372,8 @@ namespace WadTool
                     new() { ProcessAnimations = true, ProcessGeometry = false }
                 );
 
+                viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedAnimationPresetName);
+
                 string resultingExtension = Path.GetExtension(fileName).ToLowerInvariant();
 
                 if (resultingExtension.Equals(".fbx"))
@@ -1385,6 +1391,8 @@ namespace WadTool
 
                 if (viewModel.DialogResult != true)
                     return null;
+
+                tool.Configuration.GeometryIO_LastUsedAnimationPresetName = viewModel.SelectedPreset?.Name;
 
                 var settings = viewModel.GetCurrentSettings();
                 var importer = BaseGeometryImporter.CreateForFile(fileName, settings, null);
@@ -1538,12 +1546,16 @@ namespace WadTool
                         new() { Export = true }
                     );
 
+                    viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedGeometryExportPresetName);
+
                     var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                     settingsDialog.SetOwner(owner);
                     settingsDialog.ShowDialog();
 
                     if (viewModel.DialogResult != true)
                         return;
+
+                    tool.Configuration.GeometryIO_LastUsedGeometryExportPresetName = viewModel.SelectedPreset?.Name;
 
                     var settings = viewModel.GetCurrentSettings();
 
@@ -1596,12 +1608,16 @@ namespace WadTool
                 try
                 {
                     var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                    viewModel.SelectPreset(tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName);
+
                     var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
                     settingsDialog.SetOwner(owner);
                     settingsDialog.ShowDialog();
 
                     if (viewModel.DialogResult != true)
                         return null;
+
+                    tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
 
                     var settings = viewModel.GetCurrentSettings();
 

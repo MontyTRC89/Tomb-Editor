@@ -24,6 +24,7 @@
 		"PackTextures": "Pack textures",
 		"PadPackedTextures": "Pad packed textures",
 		"SortByName": "Sort by name",
+		"KeepTexturesExternal": "Keep textures external",
 
 		"Scale": "Scale:",
 		"Preset": "Preset:",

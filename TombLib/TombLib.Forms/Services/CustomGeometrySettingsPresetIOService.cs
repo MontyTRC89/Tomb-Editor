@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TombLib.GeometryIO;
@@ -31,6 +33,11 @@ public sealed class CustomGeometrySettingsPresetIOService : ICustomGeometrySetti
 	{
 		try
 		{
+			string? directoryName = Path.GetDirectoryName(filePath);
+
+			if (directoryName is not null && !Directory.Exists(directoryName))
+				Directory.CreateDirectory(directoryName);
+
 			XmlUtils.WriteXmlFile(filePath, presets.ToList());
 			return true;
 		}

@@ -16,7 +16,9 @@ namespace TombLib.Forms.ViewModels;
 
 public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModalDialogViewModel
 {
-	private const string DefaultCustomPresetConfigFileName = "GeometryIOPresets.xml";
+	private const string GeometryImportPresetsConfigFileName = "GeometryImportPresets.xml";
+	private const string GeometryExportPresetsConfigFileName = "GeometryExportPresets.xml";
+	private const string AnimationPresetsConfigFileName = "AnimationPresets.xml";
 
 	#region Properties and Fields
 
@@ -30,6 +32,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 	[NotifyPropertyChangedFor(nameof(CanSortByName))]
 	[NotifyPropertyChangedFor(nameof(CanPackTextures))]
 	[NotifyPropertyChangedFor(nameof(CanPadPackedTextures))]
+	[NotifyPropertyChangedFor(nameof(CanKeepTexturesExternal))]
 	private IOGeometryInternalSettings _internalSettings;
 
 	public string WindowTitle => InternalSettings.Export
@@ -42,6 +45,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 	public bool CanSortByName => !InternalSettings.Export;
 	public bool CanPackTextures => InternalSettings.Export && !InternalSettings.ExportRoom;
 	public bool CanPadPackedTextures => CanPackTextures && PackTextures;
+	public bool CanKeepTexturesExternal => !InternalSettings.Export && InternalSettings.ImportWadMesh;
 
 	/* Axis Properties */
 
@@ -116,6 +120,10 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
 	private bool _sortByName;
+
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(MatchingPreset))]
+	private bool _keepTexturesExternal;
 
 	/* Preset Properties */
 
@@ -208,13 +216,20 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 		_localizationService = ServiceLocator.ResolveService(localizationService)
 			.WithKeysFor(this);
 
-		// Fields and Properties
+		// Properties and Fields
+		InternalSettings = internalSettings ?? new();
+
+		string targetConfigFileName = internalSettings switch
+		{
+			{ IsGeometryExportSettings: true } => GeometryExportPresetsConfigFileName,
+			{ IsAnimationSettings: true } => AnimationPresetsConfigFileName,
+			_ => GeometryImportPresetsConfigFileName
+		};
+
 		_customPresetConfigFilePath = customPresetConfigFilePath
-			?? Path.Combine(DefaultPaths.ConfigsDirectory, DefaultCustomPresetConfigFileName);
+			?? Path.Combine(DefaultPaths.GeometryIOConfigsDirectory, targetConfigFileName);
 
 		_unsavedPresetName = _localizationService["CustomPresetName"];
-
-		InternalSettings = internalSettings ?? new();
 
 		var customPresets = _customPresetIOService.LoadPresets(_customPresetConfigFilePath);
 		var allPresets = builtInPresets.Concat(customPresets).ToHashSet();
@@ -233,6 +248,9 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 	/// <param name="nameFilter">The substring to search for in preset names.</param>
 	public void SelectPreset(string nameFilter)
 	{
+		if (string.IsNullOrWhiteSpace(nameFilter))
+			return;
+
 		IOGeometrySettingsPreset? presetToSelect = AvailablePresets
 			.FirstOrDefault(p => p.Name.Contains(nameFilter));
 
@@ -248,6 +266,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 		// Internal settings
 		Export = InternalSettings.Export,
 		ExportRoom = InternalSettings.ExportRoom,
+		ImportWadMesh = InternalSettings.ImportWadMesh,
 		ProcessGeometry = InternalSettings.ProcessGeometry,
 		ProcessUntexturedGeometry = InternalSettings.ProcessUntexturedGeometry,
 		ProcessAnimations = InternalSettings.ProcessAnimations,
@@ -267,7 +286,8 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 		UseVertexColor = VertexColorLight,
 		PackTextures = PackTextures,
 		PadPackedTextures = PadPackedTextures,
-		SortByName = SortByName
+		SortByName = SortByName,
+		KeepTexturesExternal = KeepTexturesExternal
 	};
 
 	#endregion Public Methods
@@ -290,6 +310,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 	partial void OnPackTexturesChanged(bool value) => UpdateSelectedPreset();
 	partial void OnPadPackedTexturesChanged(bool value) => UpdateSelectedPreset();
 	partial void OnSortByNameChanged(bool value) => UpdateSelectedPreset();
+	partial void OnKeepTexturesExternalChanged(bool value) => UpdateSelectedPreset();
 
 	partial void OnSelectedPresetChanging(IOGeometrySettingsPreset? oldValue, IOGeometrySettingsPreset newValue)
 	{
@@ -321,6 +342,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 		PackTextures = value.Settings.PackTextures;
 		PadPackedTextures = value.Settings.PadPackedTextures;
 		SortByName = value.Settings.SortByName;
+		KeepTexturesExternal = value.Settings.KeepTexturesExternal;
 
 		_applyingSelectedPreset = false;
 	}
@@ -357,7 +379,7 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 		if (result is not true)
 			return;
 
-		string presetName = inputBox.Value;
+		string presetName = inputBox.Value.Trim();
 
 		if (string.IsNullOrWhiteSpace(presetName))
 			return;
@@ -431,7 +453,8 @@ public partial class GeometryIOSettingsWindowViewModel : ObservableObject, IModa
 				&& preset.Settings.UseVertexColor == VertexColorLight
 				&& preset.Settings.PackTextures == PackTextures
 				&& preset.Settings.PadPackedTextures == PadPackedTextures
-				&& preset.Settings.SortByName == SortByName;
+				&& preset.Settings.SortByName == SortByName
+				&& preset.Settings.KeepTexturesExternal == KeepTexturesExternal;
 
 			if (isMatch)
 				return preset;
