@@ -42,10 +42,15 @@ namespace TombLib.Wad
         {
             var hint = string.Empty;
 
-            if (string.IsNullOrEmpty(Image.FileName))
-                hint += "Untitled (" + Image.Size.X + "x" + Image.Size.Y + ")";
+            if (string.IsNullOrEmpty(AbsolutePath))
+            {
+                if (string.IsNullOrEmpty(Image.FileName))
+                    hint = "Untitled (" + Image.Size.X + "x" + Image.Size.Y + ")";
+                else
+                    hint = Path.GetFileName(Image.FileName);
+            }
             else
-                hint += "[Ext] " + Path.GetFileName(Image.FileName);
+                hint = "[Ext] " + Path.GetFileName(AbsolutePath);
 
 			return hint;
 		}

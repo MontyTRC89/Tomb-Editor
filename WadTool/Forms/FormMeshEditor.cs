@@ -1365,13 +1365,11 @@ namespace WadTool
 
 				var newTexture = new WadTexture(image);
 
+				if (isExternal)
+					newTexture.AbsolutePath = path;
+
 				if (comboCurrentTexture.Items.Contains(newTexture))
 					continue;
-
-				if (!isExternal)
-					image.FileName = string.Empty;
-				else
-					newTexture.AbsolutePath = path;
 
 				comboCurrentTexture.Items.Add(newTexture);
 				comboCurrentTexture.SelectedItem = newTexture;
