@@ -94,9 +94,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
-                        newPoly = result.CreateTombEnginePolygon3(indices, realBlendMode, materialIndex, null);
+                        newPoly = result.CreateTombEnginePolygon3(indices, realBlendMode, materialIndex, newMesh.Vertices);
                     else
-                        newPoly = result.CreateTombEnginePolygon4(indices, realBlendMode, materialIndex, null);
+                        newPoly = result.CreateTombEnginePolygon4(indices, realBlendMode, materialIndex, newMesh.Vertices);
 
                     newPoly.ShineStrength = (float)poly.ShineStrength / 63.0f;
 

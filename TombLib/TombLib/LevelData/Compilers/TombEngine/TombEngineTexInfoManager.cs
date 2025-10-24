@@ -825,8 +825,8 @@ namespace TombLib.LevelData.Compilers
                 if (vertices != null)
                 {
                     // Calculate the normal
-                    Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
-                    Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
+                    var e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
+                    var e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
                     polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
                 }
 
