@@ -672,7 +672,7 @@
 			// 
 			butClearHeightMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 			butClearHeightMap.Checked = false;
-			butClearHeightMap.Location = new System.Drawing.Point(408, 17);
+			butClearHeightMap.Location = new System.Drawing.Point(408, 20);
 			butClearHeightMap.Name = "butClearHeightMap";
 			butClearHeightMap.Size = new System.Drawing.Size(54, 22);
 			butClearHeightMap.TabIndex = 11;
@@ -683,7 +683,7 @@
 			// 
 			butBrowseHeightMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 			butBrowseHeightMap.Checked = false;
-			butBrowseHeightMap.Location = new System.Drawing.Point(332, 17);
+			butBrowseHeightMap.Location = new System.Drawing.Point(332, 20);
 			butBrowseHeightMap.Name = "butBrowseHeightMap";
 			butBrowseHeightMap.Size = new System.Drawing.Size(70, 22);
 			butBrowseHeightMap.TabIndex = 9;
