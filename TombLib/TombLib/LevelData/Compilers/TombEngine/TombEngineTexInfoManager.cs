@@ -1613,7 +1613,6 @@ namespace TombLib.LevelData.Compilers
                         TryLoadMap("Ambient occlusion map", materialData.IsAmbientOcclusionMapFound, m => m.AmbientOcclusionMap,
                             img => cacheEntry.AmbientOcclusionMap = img, path => cacheEntry.AmbientOcclusionMapPath = path);
 
-                                    if (potentialImage.Size == p.Texture.Image.Size)
                         TryLoadMap("Roughness map", materialData.IsRoughnessMapFound,  m => m.RoughnessMap,
                             img => cacheEntry.RoughnessMap = img, path => cacheEntry.RoughnessMapPath = path);
 
