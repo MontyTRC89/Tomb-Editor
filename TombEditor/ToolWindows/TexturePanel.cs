@@ -7,8 +7,11 @@ using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombEditor.Forms;
 using TombLib.Forms;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.WPF;
 
 namespace TombEditor.ToolWindows
 {
@@ -140,7 +143,7 @@ namespace TombEditor.ToolWindows
 			butAnimationRanges.Enabled =
 			butMaterialEditor.Enabled = comboCurrentTexture.SelectedItem != null;
 
-            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null && 
+            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null &&
                 _editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR3;
 
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
@@ -281,11 +284,15 @@ namespace TombEditor.ToolWindows
 		private void butMaterialEditor_Click(object sender, EventArgs e)
 		{
 			var list = comboCurrentTexture.Items.Cast<Texture>();
-			using (var form = new FormMaterialEditor(list, _editor.Configuration, comboCurrentTexture.SelectedItem as Texture))
-			{
-				if (form.ShowDialog() == DialogResult.OK && form.MaterialChanged)
-					_editor.SendMessage("Material settings for selected texture were saved to " + form.MaterialFileName + ".", PopupType.Info);
-			}
+
+			var viewModel = new MaterialEditorWindowViewModel(list.ToList(), comboCurrentTexture.SelectedItem as Texture);
+
+			var window = new MaterialEditorWindow { DataContext = viewModel };
+			window.SetOwner(this);
+			window.ShowDialog();
+
+			if (viewModel.DialogResult == true)
+				_editor.SendMessage("Material settings for selected texture were saved to " + viewModel.MaterialFileName + ".", PopupType.Info);
 		}
 	}
 }

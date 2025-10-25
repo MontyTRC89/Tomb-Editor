@@ -1,0 +1,66 @@
+<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls"
+	xmlns:local="clr-namespace:DarkUI.WPF">
+
+	<Style TargetType="{x:Type controls:MaterialMapPreview}">
+		<!--  Control properties  -->
+		<Setter Property="Focusable" Value="False" />
+
+		<!--  Layout  -->
+		<Setter Property="Width" Value="40" />
+		<Setter Property="Height" Value="40" />
+		<Setter Property="SnapsToDevicePixels" Value="{x:Static local:Defaults.SnapsToDevicePixels}" />
+		<Setter Property="UseLayoutRounding" Value="{x:Static local:Defaults.UseLayoutRounding}" />
+
+		<!--  Brushes  -->
+		<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+
+		<!--  Thicknesses  -->
+		<Setter Property="BorderThickness" Value="{x:Static local:Defaults.BorderThickness}" />
+
+		<!--  Template  -->
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type controls:MaterialMapPreview}">
+					<Border
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+						UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
+						<Border.Background>
+							<DrawingBrush
+								TileMode="Tile"
+								Viewport="0,0,8,8"
+								ViewportUnits="Absolute">
+								<DrawingBrush.Drawing>
+									<DrawingGroup>
+										<GeometryDrawing Brush="#FFCCCCCC">
+											<GeometryDrawing.Geometry>
+												<RectangleGeometry Rect="0,0,8,8" />
+											</GeometryDrawing.Geometry>
+										</GeometryDrawing>
+										<GeometryDrawing Brush="#FFAAAAAA">
+											<GeometryDrawing.Geometry>
+												<GeometryGroup>
+													<RectangleGeometry Rect="0,0,4,4" />
+													<RectangleGeometry Rect="4,4,4,4" />
+												</GeometryGroup>
+											</GeometryDrawing.Geometry>
+										</GeometryDrawing>
+									</DrawingGroup>
+								</DrawingBrush.Drawing>
+							</DrawingBrush>
+						</Border.Background>
+
+						<Image
+							Source="{TemplateBinding ImageSource}"
+							Stretch="{TemplateBinding Stretch}"
+							StretchDirection="{TemplateBinding StretchDirection}" />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</ResourceDictionary>

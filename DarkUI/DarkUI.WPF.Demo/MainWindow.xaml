@@ -119,6 +119,7 @@
 							</ToggleButton>
 						</StackPanel>
 					</StackPanel>
+
 					<StackPanel>
 						<StackPanel.Margin>
 							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
@@ -943,6 +944,43 @@
 								<Button Width="Auto">Button</Button>
 							</StackPanel>
 						</GroupBox>
+					</StackPanel>
+
+					<StackPanel>
+						<StackPanel.Margin>
+							<Thickness Bottom="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
+						</StackPanel.Margin>
+
+						<TextBlock FontSize="{x:Static local:LocalDefaults.LargeFontSize}" Text="MaterialMapPreview">
+							<TextBlock.Margin>
+								<Thickness Bottom="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+							</TextBlock.Margin>
+						</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<StackPanel>
+								<StackPanel.Margin>
+									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								</StackPanel.Margin>
+
+								<Label>Normal (40x40):</Label>
+								<controls:MaterialMapPreview />
+							</StackPanel>
+
+							<StackPanel>
+								<StackPanel.Margin>
+									<Thickness Right="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+								</StackPanel.Margin>
+
+								<Label>Large (64x64):</Label>
+								<controls:MaterialMapPreview Width="64" Height="64" />
+							</StackPanel>
+
+							<StackPanel>
+								<Label>Small (24x24):</Label>
+								<controls:MaterialMapPreview Width="24" Height="24" />
+							</StackPanel>
+						</StackPanel>
 					</StackPanel>
 				</StackPanel>
 
