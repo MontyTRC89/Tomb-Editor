@@ -72,7 +72,7 @@ namespace TombLib.LevelData
 
 			var basePath = Path.GetDirectoryName(filename);
 
-			(string path, bool found) FixPath(string path)
+			(string path, bool found) LoadPath(string path)
 			{
 				if (string.IsNullOrEmpty(path))
 					return (path, false);
@@ -84,13 +84,13 @@ namespace TombLib.LevelData
 				return (path, found);
 			}
 
-			(materialData.ColorMap, _) = FixPath(materialData.ColorMap);
-			(materialData.NormalMap, materialData.IsNormalMapFound) = FixPath(materialData.NormalMap);
-			(materialData.HeightMap, materialData.IsHeightMapFound) = FixPath(materialData.HeightMap);
-			(materialData.EmissiveMap, materialData.IsEmissiveMapFound) = FixPath(materialData.EmissiveMap);
-			(materialData.SpecularMap, materialData.IsSpecularMapFound) = FixPath(materialData.SpecularMap);
-			(materialData.RoughnessMap, materialData.IsRoughnessMapFound) = FixPath(materialData.RoughnessMap);
-			(materialData.AmbientOcclusionMap, materialData.IsAmbientOcclusionMapFound) = FixPath(materialData.AmbientOcclusionMap);
+			(materialData.ColorMap, _) = LoadPath(materialData.ColorMap);
+			(materialData.NormalMap, materialData.IsNormalMapFound) = LoadPath(materialData.NormalMap);
+			(materialData.HeightMap, materialData.IsHeightMapFound) = LoadPath(materialData.HeightMap);
+			(materialData.EmissiveMap, materialData.IsEmissiveMapFound) = LoadPath(materialData.EmissiveMap);
+			(materialData.SpecularMap, materialData.IsSpecularMapFound) = LoadPath(materialData.SpecularMap);
+			(materialData.RoughnessMap, materialData.IsRoughnessMapFound) = LoadPath(materialData.RoughnessMap);
+			(materialData.AmbientOcclusionMap, materialData.IsAmbientOcclusionMapFound) = LoadPath(materialData.AmbientOcclusionMap);
 
 			return materialData;
 		}
