@@ -313,13 +313,13 @@ namespace TombLib.LevelData.Compilers
             public bool ParametersSimilar(TextureArea incomingTexture, TextureDestination destination)
             {
                 // Are textures for the same destination?
-				if (Destination != destination) return false;
+                if (Destination != destination) return false;
 
-				var t1 = incomingTexture.Texture;
-				var t2 = Texture;
+                var t1 = incomingTexture.Texture;
+                var t2 = Texture;
 
                 // Are textures the same .NET instance?
-				if (ReferenceEquals(t1, t2))
+                if (ReferenceEquals(t1, t2))
                     return true;
 
                 // Have textures the same absolute path if present?
@@ -328,14 +328,14 @@ namespace TombLib.LevelData.Compilers
 
                 // Are textures hashed and have same hash? (For embedded WadTexture only)
                 if (t1 is TextureHashed h1)
-					return t2 is TextureHashed h2 && h1.Hash == h2.Hash;
+                    return t2 is TextureHashed h2 && h1.Hash == h2.Hash;
 
-				if (t2 is TextureHashed) 
+                if (t2 is TextureHashed) 
                     return false;
 
                 // Fallback to GetHashCode comparison (it shouldn't happen for most of the situations however)
                 return t1.GetHashCode() == t2.GetHashCode();
-			}
+            }
 
             // Compare raw bitmap data of given area with incoming texture
             public TextureArea? TextureSimilar(TextureArea texture)
@@ -857,9 +857,9 @@ namespace TombLib.LevelData.Compilers
                 polygon.Shape = TombEnginePolygonShape.Quad;
                 polygon.Indices.AddRange(transformedIndices);
                 polygon.TextureId = objectTextureIndex;
-				polygon.MaterialIndex = materialIndex;
-				polygon.BlendMode = (byte)blendMode;
-				polygon.Animated = Animated;
+                polygon.MaterialIndex = materialIndex;
+                polygon.BlendMode = (byte)blendMode;
+                polygon.Animated = Animated;
 
                 if (vertices != null)
                 {
@@ -1443,11 +1443,13 @@ namespace TombLib.LevelData.Compilers
         {
             public MaterialType MaterialType { get; set; } = MaterialType.Default;
             public string NormalMapPath { get; set; }
+            public string HeightMapPath { get; set; }
             public string SpecularMapPath { get; set; }
             public string AmbientOcclusionMapPath { get; set; }
             public string RoughnessMapPath { get; set; }
             public string EmissiveMapPath { get; set; }
             public ImageC? NormalMap { get; set; }
+            public ImageC? HeightMap { get; set; }
             public ImageC? SpecularMap { get; set; }
             public ImageC? AmbientOcclusionMap { get; set; }
             public ImageC? RoughnessMap { get; set; }
@@ -1468,6 +1470,15 @@ namespace TombLib.LevelData.Compilers
             if (!uvrotate)
             {
                 actualPadding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
+            }
+
+            void EnsureMap(ref ImageC? image, ColorC value)
+            {
+                if (image is null)
+                {
+                    image = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
+                    image.Value.Fill(value);
+                }
             }
 
             int x, y;
@@ -1509,51 +1520,52 @@ namespace TombLib.LevelData.Compilers
                         textureAbsolutePath = ((WadTexture)p.Texture).AbsolutePath;
 
                     var cacheEntry = new SidecarLoadingCacheEntry();
+                    var materialData = MaterialData.TrySidecarLoadOrLoadExisting(textureAbsolutePath);
+
+                    void TryLoadMap(string mapName, bool isFound, Func<MaterialData, string> pathSelector, Action<ImageC> assignImage, Action<string> assignPath)
+                    {
+                        var mapPath = pathSelector(materialData);
+                        if (string.IsNullOrEmpty(mapPath))
+                            return;
+
+                        if (!isFound)
+                        {
+                            _progressReporter.ReportWarn($"{mapName} not found: {mapPath}");
+                            return;
+                        }
+
+                        try
+                        {
+                            var potentialImage = ImageC.FromFile(mapPath);
+                            if (potentialImage.Size == p.Texture.Image.Size)
+                            {
+                                assignImage(potentialImage);
+                                assignPath(mapPath);
+                                _progressReporter.ReportInfo($"{mapName} found: {mapPath}");
+                            }
+                            else
+                            {
+                                _progressReporter.ReportWarn(
+                                    $"Texture file '{p.Texture}' has a {mapName.ToLower()} with a different size and was ignored.");
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            _progressReporter.ReportWarn($"Error while loading {mapName.ToLower()}: {mapPath}");
+                        }
+                    }
 
                     if (!string.IsNullOrEmpty(textureAbsolutePath))
                     {
-                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(textureAbsolutePath);
-
-                        // We called TrySidecarLoadOrLoadExisting for loading XML or texture paths by convention,
-                        // and we don't need material parameters
-                        // At this point, materialData contains also IsXYZFound variables 
-
                         cacheEntry.MaterialType = materialData.Type;
 
-                        if (!string.IsNullOrEmpty(materialData.NormalMap))
-                        {
-                            if (materialData.IsNormalMapFound)
-                            {
-                                try
-                                {
-                                    var potentialImage = ImageC.FromFile(materialData.NormalMap);
-                                    if (potentialImage.Size == p.Texture.Image.Size)
-                                    {
-                                        cacheEntry.NormalMap = potentialImage;
-                                        cacheEntry.NormalMapPath = materialData.NormalMap;
-
-										_progressReporter.ReportInfo($"Normal map found: {materialData.NormalMap}");
-									}
-                                    else
-                                        _progressReporter.ReportWarn($"Texture file '{p.Texture}' has a normal map with a different size and was ignored.");
-                                }
-                                catch (Exception)
-                                {
-                                    _progressReporter.ReportWarn($"Error while loading normal map: {materialData.NormalMap}");
-                                }
-                            }
-                            else
-                                _progressReporter.ReportWarn($"Normal map not found: {materialData.NormalMap}");
-                        }
+                        TryLoadMap("Normal map", materialData.IsNormalMapFound, m => m.NormalMap,
+                            img => cacheEntry.NormalMap = img, path => cacheEntry.NormalMapPath = path );
 
                         // LEGACY: for legacy compatibility, try to load external bump map textures or generate automatically,
-                        // if no normal was provided with sidecar loading, and fill the cache
-                        if (cacheEntry.NormalMap is null && p.Texture is LevelTexture)
+                        // if no normal was provided with sidecar loading, and fill the cache.
+                        if (cacheEntry.NormalMap is null && p.Texture is LevelTexture tex)
                         {
-                            var tex = (p.Texture as LevelTexture);
-                            var bumpX = destX;
-                            var bumpY = destY;
-
                             if (!string.IsNullOrEmpty(tex.BumpPath))
                             {
                                 // Load external custom bump map
@@ -1574,116 +1586,39 @@ namespace TombLib.LevelData.Compilers
                                 }
                             }
 
-                            // If also no custom bump path was found, we'll generate gradually the normal map later
+                            // If also no custom bump path was found, we'll automatically generate the normal map later
                         }
 
-                        // Specular map
-                        if (!string.IsNullOrEmpty(materialData.SpecularMap))
+                        TryLoadMap("Height map", materialData.IsHeightMapFound, m => m.HeightMap,
+                            img => cacheEntry.HeightMap = img, path => cacheEntry.HeightMapPath = path);
+
+                        // TODO: Copy R channel of height map to A channel. Must be later done in CopySingleChannelFrom.
+                        if (cacheEntry.HeightMap is not null)
                         {
-                            if (materialData.IsSpecularMapFound)
+                            var heightMap = cacheEntry.HeightMap.Value;
+                            Parallel.For(0, heightMap.Height, yy =>
                             {
-                                try
+                                for (int xx = 0; xx < heightMap.Width; xx++)
                                 {
-                                    var potentialImage = ImageC.FromFile(materialData.SpecularMap);
-                                    if (potentialImage.Size == p.Texture.Image.Size)
-                                    {
-                                        cacheEntry.SpecularMap = potentialImage;
-                                        cacheEntry.SpecularMapPath = materialData.SpecularMap;
-
-										_progressReporter.ReportInfo($"Specular map found: {materialData.SpecularMap}");
-									}
-                                    else
-                                        _progressReporter.ReportWarn($"Texture file '{p.Texture}' has a specular map with a different size and was ignored.");
+                                    var heightPixel = heightMap.GetPixel(xx, yy);
+                                    heightPixel.A = heightPixel.R;
+                                    heightMap.SetPixel(xx, yy, heightPixel);
                                 }
-                                catch (Exception)
-                                {
-                                    _progressReporter.ReportWarn($"Error while loading specular map: {materialData.SpecularMap}");
-                                }
-                            }
-                            else
-                                _progressReporter.ReportWarn($"Specular map not found: {materialData.SpecularMap}");
+                            });
                         }
 
-						// Ambient occlusion map
-						if (!string.IsNullOrEmpty(materialData.AmbientOcclusionMap))
-                        {
-                            if (materialData.IsAmbientOcclusionMapFound)
-                            {
-                                try
-                                {
-                                    var potentialImage = ImageC.FromFile(materialData.AmbientOcclusionMap);
+                        TryLoadMap("Specular map", materialData.IsSpecularMapFound, m => m.SpecularMap,
+                            img => cacheEntry.SpecularMap = img, path => cacheEntry.SpecularMapPath = path);
+
+                        TryLoadMap("Ambient occlusion map", materialData.IsAmbientOcclusionMapFound, m => m.AmbientOcclusionMap,
+                            img => cacheEntry.AmbientOcclusionMap = img, path => cacheEntry.AmbientOcclusionMapPath = path);
+
                                     if (potentialImage.Size == p.Texture.Image.Size)
-                                    {
-                                        cacheEntry.AmbientOcclusionMap = potentialImage;
-                                        cacheEntry.AmbientOcclusionMapPath = materialData.AmbientOcclusionMap;
+                        TryLoadMap("Roughness map", materialData.IsRoughnessMapFound,  m => m.RoughnessMap,
+                            img => cacheEntry.RoughnessMap = img, path => cacheEntry.RoughnessMapPath = path);
 
-										_progressReporter.ReportInfo($"Ambient occlusion map found: {materialData.AmbientOcclusionMap}");
-									}
-                                    else
-                                        _progressReporter.ReportWarn($"Texture file '{p.Texture}' has an ambient occlusion map with a different size and was ignored.");
-                                }
-                                catch (Exception)
-                                {
-                                    _progressReporter.ReportWarn($"Error while loading ambient occlusion map: {materialData.AmbientOcclusionMap}");
-                                }
-                            }
-                            else
-                                _progressReporter.ReportWarn($"Ambient occlusion map not found: {materialData.AmbientOcclusionMap}");
-                        }
-
-						// Roughness map
-						if (!string.IsNullOrEmpty(materialData.RoughnessMap))
-						{
-							if (materialData.IsRoughnessMapFound)
-							{
-								try
-								{
-									var potentialImage = ImageC.FromFile(materialData.RoughnessMap);
-									if (potentialImage.Size == p.Texture.Image.Size)
-									{
-										cacheEntry.RoughnessMap = potentialImage;
-										cacheEntry.RoughnessMapPath = materialData.RoughnessMap;
-
-										_progressReporter.ReportInfo($"Roughness map found: {materialData.RoughnessMap}");
-									}
-									else
-										_progressReporter.ReportWarn($"Texture file '{p.Texture}' has a roughness map with a different size and was ignored.");
-								}
-								catch (Exception)
-								{
-									_progressReporter.ReportWarn($"Error while loading roughness map: {materialData.RoughnessMap}");
-								}
-							}
-							else
-								_progressReporter.ReportWarn($"Roughness map not found: {materialData.RoughnessMap}");
-						}
-
-						// Emissive map
-						if (!string.IsNullOrEmpty(materialData.EmissiveMap))
-                        {
-                            if (materialData.IsEmissiveMapFound)
-                            {
-                                try
-                                {
-                                    var potentialImage = ImageC.FromFile(materialData.EmissiveMap);
-                                    if (potentialImage.Size == p.Texture.Image.Size)
-                                    {
-                                        cacheEntry.EmissiveMap = potentialImage;
-                                        cacheEntry.EmissiveMapPath = materialData.EmissiveMap;
-
-										_progressReporter.ReportInfo($"Emissive map found: {materialData.EmissiveMap}");
-									}
-                                    else
-                                        _progressReporter.ReportWarn($"Texture file '{p.Texture}' has an emissive map with a different size and was ignored.");
-                                }
-                                catch (Exception)
-                                {
-                                    _progressReporter.ReportWarn($"Error while loading emissive map: {materialData.EmissiveMap}");
-                                }
-                            }
-                            else
-                                _progressReporter.ReportWarn($"Emissive map not found: {materialData.EmissiveMap}");
-                        }
+                        TryLoadMap( "Emissive map", materialData.IsEmissiveMapFound, m => m.EmissiveMap,
+                            img => cacheEntry.EmissiveMap = img, path => cacheEntry.EmissiveMapPath = path);
                     }
 
                     sidecarLoadingCache.Add(p.Texture, cacheEntry);
@@ -1694,21 +1629,15 @@ namespace TombLib.LevelData.Compilers
                 // Normal map processing
                 if (currentCacheEntry.NormalMap is not null)
                 {
-                    if (image.NormalMap is null)
-                    {
-                        image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
-                    }
-
+                    EnsureMap(ref image.NormalMap, new ColorC(128, 128, 255));
                     image.NormalMap.Value.CopyFrom(destX, destY, currentCacheEntry.NormalMap.Value, x, y, width, height);
-                    AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, destX, destY);
                 }
                 else if (p.Texture is LevelTexture)
                 {
-					// LEGACY: generate normal maps programmatically if no sidecar normal or bump map was provided
-					// and bump mapping is requested for this texture
+                    // LEGACY: generate normal maps programmatically if no sidecar normal or bump map was provided
+                    // and bump mapping is requested for this texture
 
-					var tex = p.Texture as LevelTexture;
+                    var tex = p.Texture as LevelTexture;
 
                     // Only for level textures, try to generate normal maps
                     var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
@@ -1736,11 +1665,7 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     // Init the normal map if not done yet
-                    if (image.NormalMap is null)
-                    {
-                        image.NormalMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.NormalMap.Value.Fill(new ColorC(128, 128, 255));
-                    }
+                    EnsureMap(ref image.NormalMap, new ColorC(128, 128, 255));
 
                     if (level != BumpMappingLevel.None)
                     {
@@ -1756,47 +1681,34 @@ namespace TombLib.LevelData.Compilers
                     }
                     else
                         // Neutral Bump
-                        bumpImage.Fill(new ColorC(128, 128, 255, 255));
+                        bumpImage.Fill(new ColorC(128, 128, 255));
 
                     image.NormalMap.Value.CopyFrom(destX, destY, bumpImage, 0, 0, width, height);
-                    AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, destX, destY);
                 }
 
+                // Add padding for normal map
+                if (image.NormalMap is not null)
+                    AddPadding(p, image.NormalMap.Value, image.NormalMap.Value, 0, actualPadding, destX, destY);
 
                 // Ambient occlusion map
                 if (currentCacheEntry.AmbientOcclusionMap is not null)
                 {
-                    if (image.AmbientOcclusionRoughnessSpecularMap is null)
-                    {
-                        image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 0, 255));
-                    }
-
-                    image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.AmbientOcclusionMap.Value, x, y, width, height, ImageChannel.R);
+                    EnsureMap(ref image.ORSHMap, new ColorC(255, 255, 0));
+                    image.ORSHMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.AmbientOcclusionMap.Value, x, y, width, height, ImageChannel.R);
                 }
 
                 // Roughness map
                 if (currentCacheEntry.RoughnessMap is not null)
                 {
-                    if (image.AmbientOcclusionRoughnessSpecularMap is null)
-                    {
-                        image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 0, 255));
-                    }
-
-                    image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.RoughnessMap.Value, x, y, width, height, ImageChannel.G);
+                    EnsureMap(ref image.ORSHMap, new ColorC(255, 255, 0));
+                    image.ORSHMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.RoughnessMap.Value, x, y, width, height, ImageChannel.G);
                 }
 
                 // Specular map
                 if (currentCacheEntry.SpecularMap is not null)
                 {
-                    if (image.AmbientOcclusionRoughnessSpecularMap is null)
-                    {
-                        image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 0, 255));
-                    }
-
-                    image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.SpecularMap.Value, x, y, width, height, ImageChannel.B);
+                    EnsureMap(ref image.ORSHMap, new ColorC(255, 255, 0));
+                    image.ORSHMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.SpecularMap.Value, x, y, width, height, ImageChannel.B);
                 }
                 else
                 {
@@ -1805,34 +1717,31 @@ namespace TombLib.LevelData.Compilers
                         currentCacheEntry.MaterialType == MaterialType.SkyboxReflective)
                     {
                         var dummySpecularMap = ImageC.CreateNew(width, height);
-                        dummySpecularMap.Fill(new ColorC(255, 255, 255, 255));
+                        dummySpecularMap.Fill(new ColorC(128, 128, 128));
 
-                        if (image.AmbientOcclusionRoughnessSpecularMap is null)
-                        {
-                            image.AmbientOcclusionRoughnessSpecularMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                            image.AmbientOcclusionRoughnessSpecularMap.Value.Fill(new ColorC(255, 255, 0, 255));
-                        }
-
-                        image.AmbientOcclusionRoughnessSpecularMap.Value.CopySingleChannelFrom(destX, destY, dummySpecularMap, 0, 0, width, height, ImageChannel.B);
+                        EnsureMap(ref image.ORSHMap, new ColorC(255, 255, 0));
+                        image.ORSHMap.Value.CopySingleChannelFrom(destX, destY, dummySpecularMap, 0, 0, width, height, ImageChannel.B);
                     }
                 }
+
+                // Height map
+                if (currentCacheEntry.HeightMap is not null)
+                {
+                    EnsureMap(ref image.ORSHMap, new ColorC(255, 255, 0));
+                    image.ORSHMap.Value.CopySingleChannelFrom(destX, destY, currentCacheEntry.HeightMap.Value, x, y, width, height, ImageChannel.A);
+                }
+
+                // Add padding here for AmbientOcclusionRoughnessSpecularMap because we have packed three textures in RGB channels
+                if (image.ORSHMap is not null)
+                    AddPadding(p, image.ORSHMap.Value, image.ORSHMap.Value, 0, actualPadding, destX, destY);
 
                 // Emissive map
                 if (currentCacheEntry.EmissiveMap is not null)
                 {
-                    if (image.EmissiveMap is null)
-                    {
-                        image.EmissiveMap = ImageC.CreateNew(atlasSize.X, atlasSize.Y);
-                        image.EmissiveMap.Value.Fill(new ColorC(0, 0, 0, 255));
-                    }
-
+                    EnsureMap(ref image.EmissiveMap, new ColorC(0, 0, 0, 255));
                     image.EmissiveMap.Value.CopyFrom(destX, destY, currentCacheEntry.EmissiveMap.Value, x, y, width, height);
                     AddPadding(p, image.EmissiveMap.Value, image.EmissiveMap.Value, 0, actualPadding, destX, destY);
                 }
-
-				// Add padding here for AmbientOcclusionRoughnessSpecularMap because we have packed three textures in RGB channels
-				if (image.AmbientOcclusionRoughnessSpecularMap is not null)
-                    AddPadding(p, image.AmbientOcclusionRoughnessSpecularMap.Value, image.AmbientOcclusionRoughnessSpecularMap.Value, 0, actualPadding, destX, destY);
             }
 
             for (int i = 0; i < textures.Count; i++)
@@ -1994,34 +1903,34 @@ namespace TombLib.LevelData.Compilers
                 for (int n = 0; n < RoomsAtlas.Count; n++)
                 {
                     RoomsAtlas[n].ColorMap.SaveToFile("OutputDebug\\RoomsAtlas" + n + ".png");
-					RoomsAtlas[n].NormalMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_N.png");
-					RoomsAtlas[n].AmbientOcclusionRoughnessSpecularMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_AOS.png");
-					RoomsAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_E.png");
-				}
+                    RoomsAtlas[n].NormalMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_N.png");
+                    RoomsAtlas[n].ORSHMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_AOS.png");
+                    RoomsAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\RoomsAtlas" + n + "_E.png");
+                }
 
                 for (int n = 0; n < MoveablesAtlas.Count; n++)
                 {
                     MoveablesAtlas[n].ColorMap.SaveToFile("OutputDebug\\MoveablesAtlas" + n + ".png");
-					MoveablesAtlas[n].NormalMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_N.png");
-					MoveablesAtlas[n].AmbientOcclusionRoughnessSpecularMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_AOS.png");
-					MoveablesAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_E.png");
-				}
+                    MoveablesAtlas[n].NormalMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_N.png");
+                    MoveablesAtlas[n].ORSHMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_AOS.png");
+                    MoveablesAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\MoveablesAtlas" + n + "_E.png");
+                }
 
                 for (int n = 0; n < StaticsAtlas.Count; n++)
                 {
                     StaticsAtlas[n].ColorMap.SaveToFile("OutputDebug\\StaticsAtlas" + n + ".png");
-					StaticsAtlas[n].NormalMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_N.png");
-					StaticsAtlas[n].AmbientOcclusionRoughnessSpecularMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_AOS.png");
-					StaticsAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_E.png");
-				}
+                    StaticsAtlas[n].NormalMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_N.png");
+                    StaticsAtlas[n].ORSHMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_AOS.png");
+                    StaticsAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\StaticsAtlas" + n + "_E.png");
+                }
 
                 for (int n = 0; n < AnimatedAtlas.Count; n++)
                 {
                     AnimatedAtlas[n].ColorMap.SaveToFile("OutputDebug\\AnimatedAtlas" + n + ".png");
-					AnimatedAtlas[n].NormalMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_N.png");
-					AnimatedAtlas[n].AmbientOcclusionRoughnessSpecularMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_AOS.png");
-					AnimatedAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_E.png");
-				}
+                    AnimatedAtlas[n].NormalMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_N.png");
+                    AnimatedAtlas[n].ORSHMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_AOS.png");
+                    AnimatedAtlas[n].EmissiveMap?.SaveToFile("OutputDebug\\AnimatedAtlas" + n + "_E.png");
+                }
             }
             catch { }   
 #endif

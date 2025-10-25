@@ -17,6 +17,7 @@ namespace TombLib.LevelData
 		public MaterialType Type { get; set; }
 		public string ColorMap { get; set; }
 		public string NormalMap { get; set; }
+		public string HeightMap { get; set; }
 		public string SpecularMap { get; set; }
 		public string RoughnessMap { get; set; }
 		public string AmbientOcclusionMap { get; set; }
@@ -31,6 +32,8 @@ namespace TombLib.LevelData
 
 		[XmlIgnore]
 		public bool IsNormalMapFound { get; private set; }
+		[XmlIgnore]
+		public bool IsHeightMapFound { get; private set; }
 		[XmlIgnore]
 		public bool IsSpecularMapFound { get; private set; }
 		[XmlIgnore]
@@ -63,100 +66,61 @@ namespace TombLib.LevelData
 
 			materialData.XmlMaterialFileName = filename;
 
-			// Make all paths absolutes
-			if (materialData is not null)
+			// Make all paths absolute.
+			if (materialData is null)
+				return null;
+
+			var basePath = Path.GetDirectoryName(filename);
+
+			(string path, bool found) FixPath(string path)
 			{
-				var basePath = Path.GetDirectoryName(filename);
+				if (string.IsNullOrEmpty(path))
+					return (path, false);
 
-				if (!string.IsNullOrEmpty(materialData.ColorMap))
-				{
-					if (!PathC.IsTrulyAbsolutePath(materialData.ColorMap))
-						materialData.ColorMap = Path.Combine(basePath, materialData.ColorMap);
-				}
+				if (!PathC.IsTrulyAbsolutePath(path))
+					path = Path.Combine(basePath, path);
 
-				if (!string.IsNullOrEmpty(materialData.NormalMap))
-				{
-					if (!PathC.IsTrulyAbsolutePath(materialData.NormalMap))
-						materialData.NormalMap = Path.Combine(basePath, materialData.NormalMap);
-					materialData.IsNormalMapFound = File.Exists(materialData.NormalMap);
-				}
-
-				if (!string.IsNullOrEmpty(materialData.EmissiveMap))
-				{
-					if (!PathC.IsTrulyAbsolutePath(materialData.EmissiveMap))
-						materialData.EmissiveMap = Path.Combine(basePath, materialData.EmissiveMap);
-					materialData.IsEmissiveMapFound = File.Exists(materialData.EmissiveMap);
-				}
-
-				if (!string.IsNullOrEmpty(materialData.SpecularMap))
-				{
-					if (!PathC.IsTrulyAbsolutePath(materialData.SpecularMap))
-						materialData.SpecularMap = Path.Combine(basePath, materialData.SpecularMap);
-					materialData.IsSpecularMapFound = File.Exists(materialData.SpecularMap);
-				}
-
-				if (!string.IsNullOrEmpty(materialData.RoughnessMap))
-				{
-					if (!PathC.IsTrulyAbsolutePath(materialData.RoughnessMap))
-						materialData.RoughnessMap = Path.Combine(basePath, materialData.RoughnessMap);
-					materialData.IsRoughnessMapFound = File.Exists(materialData.RoughnessMap);
-				}
-
-				if (!string.IsNullOrEmpty(materialData.AmbientOcclusionMap))
-				{
-					if (!PathC.IsTrulyAbsolutePath(materialData.AmbientOcclusionMap))
-						materialData.AmbientOcclusionMap = Path.Combine(basePath, materialData.AmbientOcclusionMap);
-					materialData.IsAmbientOcclusionMapFound = File.Exists(materialData.AmbientOcclusionMap);
-				}
+				bool found = File.Exists(path);
+				return (path, found);
 			}
+
+			(materialData.ColorMap, _) = FixPath(materialData.ColorMap);
+			(materialData.NormalMap, materialData.IsNormalMapFound) = FixPath(materialData.NormalMap);
+			(materialData.HeightMap, materialData.IsHeightMapFound) = FixPath(materialData.HeightMap);
+			(materialData.EmissiveMap, materialData.IsEmissiveMapFound) = FixPath(materialData.EmissiveMap);
+			(materialData.SpecularMap, materialData.IsSpecularMapFound) = FixPath(materialData.SpecularMap);
+			(materialData.RoughnessMap, materialData.IsRoughnessMapFound) = FixPath(materialData.RoughnessMap);
+			(materialData.AmbientOcclusionMap, materialData.IsAmbientOcclusionMapFound) = FixPath(materialData.AmbientOcclusionMap);
 
 			return materialData;
 		}
 
 		public static bool SaveToXml(string filename, MaterialData materialData)
 		{
-			// Make all paths relatives
-			if (!string.IsNullOrEmpty(materialData.ColorMap) && File.Exists(materialData.ColorMap))
+			if (materialData == null)
+				return false;
+
+			string baseDir = Path.GetDirectoryName(filename);
+
+			string MakeRelative(string mapPath)
 			{
-				var relativePath = PathC.GetRelativePath(Path.GetDirectoryName(filename), materialData.ColorMap);
+				if (string.IsNullOrEmpty(mapPath) || !File.Exists(mapPath))
+					return string.Empty;
+
+				var relativePath = PathC.GetRelativePath(baseDir, mapPath);
 				if (relativePath is not null)
-					materialData.ColorMap = relativePath;
+					return relativePath;
+				else
+					return string.Empty;
 			}
 
-			if (!string.IsNullOrEmpty(materialData.NormalMap) && File.Exists(materialData.NormalMap))
-			{
-				var relativePath = PathC.GetRelativePath(Path.GetDirectoryName(filename), materialData.NormalMap);
-				if (relativePath is not null)
-					materialData.NormalMap = relativePath;
-			}
-
-			if (!string.IsNullOrEmpty(materialData.SpecularMap) && File.Exists(materialData.SpecularMap))
-			{
-				var relativePath = PathC.GetRelativePath(Path.GetDirectoryName(filename), materialData.SpecularMap);
-				if (relativePath is not null)
-					materialData.SpecularMap = relativePath;
-			}
-
-			if (!string.IsNullOrEmpty(materialData.EmissiveMap) && File.Exists(materialData.EmissiveMap))
-			{
-				var relativePath = PathC.GetRelativePath(Path.GetDirectoryName(filename), materialData.EmissiveMap);
-				if (relativePath is not null)
-					materialData.EmissiveMap = relativePath;
-			}
-
-			if (!string.IsNullOrEmpty(materialData.AmbientOcclusionMap) && File.Exists(materialData.AmbientOcclusionMap))
-			{
-				var relativePath = PathC.GetRelativePath(Path.GetDirectoryName(filename), materialData.AmbientOcclusionMap);
-				if (relativePath is not null)
-					materialData.AmbientOcclusionMap = relativePath;
-			}
-
-			if (!string.IsNullOrEmpty(materialData.RoughnessMap) && File.Exists(materialData.RoughnessMap))
-			{
-				var relativePath = PathC.GetRelativePath(Path.GetDirectoryName(filename), materialData.RoughnessMap);
-				if (relativePath is not null)
-					materialData.RoughnessMap = relativePath;
-			}
+			materialData.ColorMap = MakeRelative(materialData.ColorMap);
+			materialData.NormalMap = MakeRelative(materialData.NormalMap);
+			materialData.HeightMap = MakeRelative(materialData.HeightMap);
+			materialData.SpecularMap = MakeRelative(materialData.SpecularMap);
+			materialData.EmissiveMap = MakeRelative(materialData.EmissiveMap);
+			materialData.AmbientOcclusionMap = MakeRelative(materialData.AmbientOcclusionMap);
+			materialData.RoughnessMap = MakeRelative(materialData.RoughnessMap);
 
 			XmlUtils.WriteXmlFile(filename, materialData);
 			return true;
@@ -167,73 +131,34 @@ namespace TombLib.LevelData
 			if (string.IsNullOrEmpty(textureAbsolutePath))
 				return null;
 
-			string externalMaterialDataPath = Path.Combine(
-				 Path.GetDirectoryName(textureAbsolutePath),
-				 Path.GetFileNameWithoutExtension(textureAbsolutePath) + ".xml");
+			string baseDir = Path.GetDirectoryName(textureAbsolutePath);
+			string baseName = Path.GetFileNameWithoutExtension(textureAbsolutePath);
+			string ext = Path.GetExtension(textureAbsolutePath);
 
-			// If a material XML file already exists, just load it
+			string externalMaterialDataPath = Path.Combine(baseDir, baseName + ".xml");
+
+			// If XML material file exists, just load it.
 			if (!string.IsNullOrEmpty(externalMaterialDataPath) && File.Exists(externalMaterialDataPath))
-			{
 				return ReadFromXml(externalMaterialDataPath);
+
+			var materialData = new MaterialData { ColorMap = textureAbsolutePath };
+
+			// Clear textures which are not found in this case.
+			// Instead of XML, keep paths and set to false their IsXYZFound properties 
+			// so we can show the problem in material editor.
+			(string path, bool found) CreateSidecar(string suffix)
+			{
+				string path = Path.Combine(baseDir, baseName + suffix + ext);
+				return File.Exists(path) ? (path, true) : (string.Empty, false);
 			}
 
-			// Otherwise, try to sidecar load textures
-			var materialData = new MaterialData();
-
-			materialData.ColorMap = textureAbsolutePath;
-
-			materialData.NormalMap = Path.Combine(
-						Path.GetDirectoryName(textureAbsolutePath),
-						Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_N" +
-						Path.GetExtension(textureAbsolutePath));
-
-			materialData.SpecularMap = Path.Combine(
-						Path.GetDirectoryName(textureAbsolutePath),
-						Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_S" +
-						Path.GetExtension(textureAbsolutePath));
-
-			materialData.AmbientOcclusionMap = Path.Combine(
-						Path.GetDirectoryName(textureAbsolutePath),
-						Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_AO" +
-						Path.GetExtension(textureAbsolutePath));
-
-			materialData.RoughnessMap = Path.Combine(
-						Path.GetDirectoryName(textureAbsolutePath),
-						Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_R" +
-						Path.GetExtension(textureAbsolutePath));
-
-			materialData.EmissiveMap = Path.Combine(
-					  Path.GetDirectoryName(textureAbsolutePath),
-					  Path.GetFileNameWithoutExtension(textureAbsolutePath) + "_E" +
-					  Path.GetExtension(textureAbsolutePath));
-
-			// Clear textures which are not found in this case
-			// Instead for XML we keep paths and we set to false their IsXYZFound properties 
-			// so we can show the problem in material editor
-			if (!File.Exists(materialData.NormalMap))
-				materialData.NormalMap = string.Empty;
-			else
-				materialData.IsNormalMapFound = true;
-
-			if (!File.Exists(materialData.SpecularMap))
-				materialData.SpecularMap = string.Empty;
-			else
-				materialData.IsSpecularMapFound = true;
-
-			if (!File.Exists(materialData.RoughnessMap))
-				materialData.RoughnessMap = string.Empty;
-			else
-				materialData.IsRoughnessMapFound = true;
-
-			if (!File.Exists(materialData.AmbientOcclusionMap))
-				materialData.AmbientOcclusionMap = string.Empty;
-			else
-				materialData.IsAmbientOcclusionMapFound = true;
-
-			if (!File.Exists(materialData.EmissiveMap))
-				materialData.EmissiveMap = string.Empty;
-			else
-				materialData.IsEmissiveMapFound = true;
+			// Build sidecar maps.
+			(materialData.NormalMap, materialData.IsNormalMapFound) = CreateSidecar("_N");
+			(materialData.HeightMap, materialData.IsHeightMapFound) = CreateSidecar("_H");
+			(materialData.SpecularMap, materialData.IsSpecularMapFound) = CreateSidecar("_S");
+			(materialData.AmbientOcclusionMap, materialData.IsAmbientOcclusionMapFound) = CreateSidecar("_AO");
+			(materialData.RoughnessMap, materialData.IsRoughnessMapFound) = CreateSidecar("_R");
+			(materialData.EmissiveMap, materialData.IsEmissiveMapFound) = CreateSidecar("_E");
 
 			return materialData;
 		}

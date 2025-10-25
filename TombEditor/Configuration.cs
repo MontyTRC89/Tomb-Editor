@@ -270,7 +270,7 @@ namespace TombEditor
         public Size Window_FormTransform_Size { get; set; } = new Size(345, 171);
         public bool Window_FormTransform_Maximized { get; set; } = false;
         public Point Window_FormMaterialEditor_Position { get; set; } = new Point(-1);
-        public Size Window_FormMaterialEditor_Size { get; set; } = new Size(537, 507);
+        public Size Window_FormMaterialEditor_Size { get; set; } = new Size(537, 560);
         public bool Window_FormMaterialEditor_Maximized { get; set; } = false;
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
