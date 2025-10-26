@@ -253,12 +253,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					}
 				}
 
-				writer.Write(atlas.AmbientOcclusionRoughnessSpecularMap is not  null);
-				if (atlas.AmbientOcclusionRoughnessSpecularMap is not null)
+				writer.Write(atlas.ORSHMap is not  null);
+				if (atlas.ORSHMap is not null)
 				{
 					using (var ms = new MemoryStream())
 					{
-						WriteImageFast(writer, atlas.AmbientOcclusionRoughnessSpecularMap.Value, CompressionFormat.Bc3);
+						WriteImageFast(writer, atlas.ORSHMap.Value, CompressionFormat.Bc3);
 					}
 				}
 

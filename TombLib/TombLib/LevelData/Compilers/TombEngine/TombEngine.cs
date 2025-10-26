@@ -281,6 +281,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 					writer.Write(material.Value.Parameters2);
 					writer.Write(material.Value.Parameters3);
 					writer.Write(material.Value.IsNormalMapFound);
+					writer.Write(material.Value.IsHeightMapFound);
 					writer.Write(material.Value.IsAmbientOcclusionMapFound);
 					writer.Write(material.Value.IsRoughnessMapFound);
 					writer.Write(material.Value.IsSpecularMapFound);

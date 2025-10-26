@@ -71,6 +71,7 @@ namespace TombLib.Forms
 
 			SetTexturePath(tbColorMapPath, picPreviewColorMap, _materialData.ColorMap);
 			SetTexturePath(tbNormalMapPath, picPreviewNormalMap, _materialData.NormalMap);
+			SetTexturePath(tbHeightMapPath, picPreviewHeightMap, _materialData.HeightMap);
 			SetTexturePath(tbSpecularMapPath, picPreviewSpecularMap, _materialData.SpecularMap);
 			SetTexturePath(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap, _materialData.AmbientOcclusionMap);
 			SetTexturePath(tbEmissiveMapPath, picPreviewEmissiveMap, _materialData.EmissiveMap);
@@ -78,6 +79,9 @@ namespace TombLib.Forms
 
 			if (!string.IsNullOrEmpty(_materialData.NormalMap))
 				tbNormalMapPath.BackColor = (_materialData.IsNormalMapFound ? _correctColor : _wrongColor);
+
+			if (!string.IsNullOrEmpty(_materialData.HeightMap))
+				tbHeightMapPath.BackColor = (_materialData.IsHeightMapFound ? _correctColor : _wrongColor);
 
 			if (!string.IsNullOrEmpty(_materialData.AmbientOcclusionMap))
 				tbAmbientOcclusionMapPath.BackColor = (_materialData.IsAmbientOcclusionMapFound ? _correctColor : _wrongColor);
@@ -161,6 +165,7 @@ namespace TombLib.Forms
 
 			materialData.ColorMap = _texturePath;
 			materialData.NormalMap = tbNormalMapPath.Text;
+			materialData.HeightMap = tbHeightMapPath.Text;
 			materialData.SpecularMap = tbSpecularMapPath.Text;
 			materialData.EmissiveMap = tbEmissiveMapPath.Text;
 			materialData.AmbientOcclusionMap = tbAmbientOcclusionMapPath.Text;
@@ -193,6 +198,7 @@ namespace TombLib.Forms
 		private void UpdateUI()
 		{
 			butClearNormalMap.Enabled = !string.IsNullOrEmpty(tbNormalMapPath.Text);
+			butClearHeightMap.Enabled = !string.IsNullOrEmpty(tbHeightMapPath.Text);
 			butClearAmbientOcclusionMap.Enabled = !string.IsNullOrEmpty(tbAmbientOcclusionMapPath.Text);
 			butClearEmissiveMap.Enabled = !string.IsNullOrEmpty(tbEmissiveMapPath.Text);
 			butClearSpecularMap.Enabled = !string.IsNullOrEmpty(tbSpecularMapPath.Text);
@@ -282,12 +288,14 @@ namespace TombLib.Forms
 		}
 
 		private void butBrowseNormalMap_Click(object sender, EventArgs e) => BrowseTexture(tbNormalMapPath, picPreviewNormalMap);
+		private void butBrowseHeightMap_Click(object sender, EventArgs e) => BrowseTexture(tbHeightMapPath, picPreviewHeightMap);
 		private void butBrowseAmbientOcclusionMap_Click(object sender, EventArgs e) => BrowseTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap);
 		private void butBrowseEmissiveMap_Click(object sender, EventArgs e) => BrowseTexture(tbEmissiveMapPath, picPreviewEmissiveMap);
 		private void butBrowseSpecularMap_Click(object sender, EventArgs e) => BrowseTexture(tbSpecularMapPath, picPreviewSpecularMap);
 		private void butBrowseRoughnessMap_Click(object sender, EventArgs e) => BrowseTexture(tbRoughnessMapPath, picPreviewRoughnessMap);
 
 		private void butClearNormalMap_Click(object sender, EventArgs e) => ClearTexture(tbNormalMapPath, picPreviewNormalMap, "normal");
+		private void butClearHeightMap_Click(object sender, EventArgs e) => ClearTexture(tbHeightMapPath, picPreviewHeightMap, "height");
 		private void butClearAmbientOcclusionMap_Click(object sender, EventArgs e) => ClearTexture(tbAmbientOcclusionMapPath, picPreviewAmbientOcclusionMap, "ambient occlusion");
 		private void butClearEmissiveMap_Click(object sender, EventArgs e) => ClearTexture(tbEmissiveMapPath, picPreviewEmissiveMap, "emissive");
 		private void butClearSpecularMap_Click(object sender, EventArgs e) => ClearTexture(tbSpecularMapPath, picPreviewSpecularMap, "specular");
