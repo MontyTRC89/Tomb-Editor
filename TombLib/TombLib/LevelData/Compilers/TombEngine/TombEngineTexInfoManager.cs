@@ -1510,7 +1510,7 @@ namespace TombLib.LevelData.Compilers
                 // Try sidecar loading
                 if (!sidecarLoadingCache.ContainsKey(p.Texture))
                 {
-                    var textureAbsolutePath = "";
+                    var textureAbsolutePath = string.Empty;
 
                     if (p.Texture is LevelTexture)
                         textureAbsolutePath = p.Texture.Image.FileName;
