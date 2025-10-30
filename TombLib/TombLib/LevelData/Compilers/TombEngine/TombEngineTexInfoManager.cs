@@ -1541,7 +1541,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 assignImage(potentialImage);
                                 assignPath(mapPath);
-                                _progressReporter.ReportInfo($"{mapName} found: {mapPath}");
+                                logger.Info($"{mapName} found: {mapPath}");
                             }
                             else
                             {
