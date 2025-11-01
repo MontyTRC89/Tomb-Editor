@@ -229,7 +229,7 @@ namespace TombLib.Forms
 		private void ClearTexture(TextBox textBox, PictureBox previewBox, string mapName)
 		{
 			textBox.Text = string.Empty;
-			textBox.BackColor = this.BackColor;
+			textBox.BackColor = _correctColor;
 			LoadTexturePreview(string.Empty, previewBox);
 			UpdateUI();
 			_saveXml = true;
