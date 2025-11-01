@@ -1938,100 +1938,70 @@ namespace TombLib.LevelData.Compilers
             BuildTextureInfos();
         }
 
-        // Compiles all final texture infos into final list to be written into level file.
-        private void BuildTextureInfos()
-        {
-            float maxSize = (float)MaxTileSize - (1.0f / (float)(MaxTileSize - 1));
+		private void BuildTextureInfos()
+		{
+			float maxSize = (float)MaxTileSize - (1.0f / (float)(MaxTileSize - 1));
 
-            _objectTextures = new SortedDictionary<int, ObjectTexture>();
+			_objectTextures = new SortedDictionary<int, ObjectTexture>();
 
-            SortOutAlpha(_parentRoomTextureAreas);
-            foreach (var parent in _parentRoomTextureAreas)
-                foreach (var child in parent.Children)
-                    if (!_objectTextures.ContainsKey(child.TextureId))
-                    {
-                        var newObjectTexture = new ObjectTexture(parent, child, maxSize);
+			// Helper local function for repetitive pattern
+			void ProcessAreas(List<ParentTextureArea> parents)
+			{
+				SortOutAlpha(parents);
+				foreach (var parent in parents)
+				{
+					foreach (var child in parent.Children)
+					{
+						if (_objectTextures.ContainsKey(child.TextureId))
+							continue;
+
+						var newObjectTexture = new ObjectTexture(parent, child, maxSize);
 #if DEBUG
-                        if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
-                            newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
-                            newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
-                            newObjectTexture.TexCoord[0].X < 0 || newObjectTexture.TexCoord[0].Y < 0 ||
-                            newObjectTexture.TexCoord[1].X < 0 || newObjectTexture.TexCoord[1].Y < 0 ||
-                            newObjectTexture.TexCoord[2].X < 0 || newObjectTexture.TexCoord[2].Y < 0 ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[2] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && (newObjectTexture.TexCoord[3].X < 0 || newObjectTexture.TexCoord[3].Y < 0)))
-                        {
-                            _progressReporter.ReportWarn("Compiled TexInfo " + child.TextureId + " is broken, coordinates are invalid.");
-                        }
+						if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
+							newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
+							newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
+							newObjectTexture.TexCoord[0].X < 0 || newObjectTexture.TexCoord[0].Y < 0 ||
+							newObjectTexture.TexCoord[1].X < 0 || newObjectTexture.TexCoord[1].Y < 0 ||
+							newObjectTexture.TexCoord[2].X < 0 || newObjectTexture.TexCoord[2].Y < 0 ||
+							(!child.IsForTriangle && newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[3]) ||
+							(!child.IsForTriangle && newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[3]) ||
+							(!child.IsForTriangle && newObjectTexture.TexCoord[2] == newObjectTexture.TexCoord[3]) ||
+							(!child.IsForTriangle && (newObjectTexture.TexCoord[3].X < 0 || newObjectTexture.TexCoord[3].Y < 0)))
+						{
+							_progressReporter.ReportWarn(
+								"Compiled TexInfo " + child.TextureId + " is broken, coordinates are invalid.");
+						}
 #endif
-                        _objectTextures.Add(child.TextureId, newObjectTexture);
-                    }
+						_objectTextures.Add(child.TextureId, newObjectTexture);
+					}
+				}
+			}
 
-            SortOutAlpha(_parentMoveableTextureAreas);
-            foreach (var parent in _parentMoveableTextureAreas)
-                foreach (var child in parent.Children)
-                    if (!_objectTextures.ContainsKey(child.TextureId))
-                    {
-                        var newObjectTexture = new ObjectTexture(parent, child, maxSize);
-#if DEBUG
-                        if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
-                            newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
-                            newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
-                            newObjectTexture.TexCoord[0].X < 0 || newObjectTexture.TexCoord[0].Y < 0 ||
-                            newObjectTexture.TexCoord[1].X < 0 || newObjectTexture.TexCoord[1].Y < 0 ||
-                            newObjectTexture.TexCoord[2].X < 0 || newObjectTexture.TexCoord[2].Y < 0 ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[2] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && (newObjectTexture.TexCoord[3].X < 0 || newObjectTexture.TexCoord[3].Y < 0)))
-                        {
-                            _progressReporter.ReportWarn("Compiled TexInfo " + child.TextureId + " is broken, coordinates are invalid.");
-                        }
-#endif
-                        _objectTextures.Add(child.TextureId, newObjectTexture);
-                    }
+			// Process texture sets
+			ProcessAreas(_parentRoomTextureAreas);
+			ProcessAreas(_parentMoveableTextureAreas);
+			ProcessAreas(_parentStaticTextureAreas);
 
-            SortOutAlpha(_parentStaticTextureAreas);
-            foreach (var parent in _parentStaticTextureAreas)
-                foreach (var child in parent.Children)
-                    if (!_objectTextures.ContainsKey(child.TextureId))
-                    {
-                        var newObjectTexture = new ObjectTexture(parent, child, maxSize);
-#if DEBUG
-                        if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
-                            newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
-                            newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
-                            newObjectTexture.TexCoord[0].X < 0 || newObjectTexture.TexCoord[0].Y < 0 ||
-                            newObjectTexture.TexCoord[1].X < 0 || newObjectTexture.TexCoord[1].Y < 0 ||
-                            newObjectTexture.TexCoord[2].X < 0 || newObjectTexture.TexCoord[2].Y < 0 ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && newObjectTexture.TexCoord[2] == newObjectTexture.TexCoord[3]) ||
-                            (!child.IsForTriangle && (newObjectTexture.TexCoord[3].X < 0 || newObjectTexture.TexCoord[3].Y < 0)))
-                        {
-                            _progressReporter.ReportWarn("Compiled TexInfo " + child.TextureId + " is broken, coordinates are invalid.");
-                        }
-#endif
-                        _objectTextures.Add(child.TextureId, newObjectTexture);
-                    }
+			// Process animated textures
+			foreach (var animTexture in _actualAnimTextures)
+			{
+				SortOutAlpha(animTexture.CompiledAnimation);
+				foreach (var parent in animTexture.CompiledAnimation)
+				{
+					foreach (var child in parent.Children)
+					{
+						if (!_objectTextures.ContainsKey(child.TextureId))
+							_objectTextures.Add(child.TextureId, new ObjectTexture(parent, child, maxSize));
+					}
+				}
+			}
+		}
 
-            foreach (var animTexture in _actualAnimTextures)
-            {
-                SortOutAlpha(animTexture.CompiledAnimation);
-                foreach (var parent in animTexture.CompiledAnimation)
-                    foreach (var child in parent.Children)
-                        if (!_objectTextures.ContainsKey(child.TextureId))
-                            _objectTextures.Add(child.TextureId, new ObjectTexture(parent, child, maxSize));
-            }
-        }
+		// Sorts animated textures and prepares index table to layout them later.
+		// We need to build index table in advance of CleanUp() call, because after that step animated texture order
+		// gets shuffled.
 
-        // Sorts animated textures and prepares index table to layout them later.
-        // We need to build index table in advance of CleanUp() call, because after that step animated texture order
-        // gets shuffled.
-
-        private void PrepareAnimatedTextures()
+		private void PrepareAnimatedTextures()
         {
             // Put UVRotate sequences first
             _actualAnimTextures = _actualAnimTextures.OrderBy(item => !item.Origin.IsUvRotate).ToList();

@@ -36,7 +36,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 		public ImageC? NormalMap;
 		public ImageC? ORSHMap;
 		public ImageC? EmissiveMap;
-		public bool CustomNormalMap;
 	}
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
