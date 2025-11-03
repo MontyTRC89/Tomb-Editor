@@ -1616,7 +1616,7 @@ namespace TombLib.LevelData.Compilers
                         TryLoadMap("Roughness map", materialData.IsRoughnessMapFound,  m => m.RoughnessMap,
                             img => cacheEntry.RoughnessMap = img, path => cacheEntry.RoughnessMapPath = path);
 
-                        TryLoadMap( "Emissive map", materialData.IsEmissiveMapFound, m => m.EmissiveMap,
+                        TryLoadMap("Emissive map", materialData.IsEmissiveMapFound, m => m.EmissiveMap,
                             img => cacheEntry.EmissiveMap = img, path => cacheEntry.EmissiveMapPath = path);
                     }
 
