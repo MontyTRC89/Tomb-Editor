@@ -10,6 +10,7 @@ Tomb Editor:
  * Added a button in edit object window to reset tint to default.
  * Added ladders support for TR1X engine target.
  * Optimized the level compiler and switched compression to LZ4 for TEN target.
+ * Fixed textured ceiling portals in water rooms ignoring wave effect strength.
  * Fixed bug with textures not aligned properly for TURNING_WALL_BLADE and TURNING_CEILING_BLADE objects for TEN target.
  * Fixed position and color controls in nodes not accepting objects via drag-n-drop.
 

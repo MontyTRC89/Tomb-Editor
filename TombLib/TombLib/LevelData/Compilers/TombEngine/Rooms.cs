@@ -199,7 +199,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             var lightEffect = room.Properties.LightEffect;
-            var waterPortals = room.PortalsCache.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Properties.Type >= RoomType.Water).ToList();
+            var waterPortals = room.PortalsCache.Where(p => (room.Properties.Type == RoomType.Normal && p.Direction == PortalDirection.Floor   && p.AdjoiningRoom.Properties.Type >= RoomType.Water) ||
+                                                            (room.Properties.Type >= RoomType.Water  && p.Direction == PortalDirection.Ceiling && p.AdjoiningRoom.Properties.Type == RoomType.Normal)).ToList();
 
             bool waterSchemeSet = false;
 
@@ -761,10 +762,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         }
                     }
 
-                    var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
-                    var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
-                    var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
-                    var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
+                    var connectionInfo1 = portal.Direction == PortalDirection.Floor ? room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv)) : room.GetCeilingRoomConnectionInfo(new VectorInt2(xv, zv));
+                    var connectionInfo2 = portal.Direction == PortalDirection.Floor ? room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv)) : room.GetCeilingRoomConnectionInfo(new VectorInt2(xv - 1, zv));
+                    var connectionInfo3 = portal.Direction == PortalDirection.Floor ? room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1)) : room.GetCeilingRoomConnectionInfo(new VectorInt2(xv, zv - 1));
+                    var connectionInfo4 = portal.Direction == PortalDirection.Floor ? room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1)) : room.GetCeilingRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
 
                     bool isTraversablePortal = connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
                                                connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
