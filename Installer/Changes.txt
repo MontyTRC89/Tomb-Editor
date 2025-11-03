@@ -21,7 +21,7 @@ WadTool:
  * Fixed incorrect sphere radius while importing some objects from classic TR levels.
 
 TombIDE:
- * Completely reworked scripting autocomplete for TRX game projects.
+ * Reworked scripting autocomplete and hover definitions for TRX game projects.
  * Added hover definitions for TRX scripting.
  * Updated TR1X preset to 4.15.1.
  * Updated TR2X preset to 1.5.1.
