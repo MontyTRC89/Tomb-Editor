@@ -191,7 +191,7 @@ namespace TombEditor.ToolWindows
                 if (wad != null)
                 {
                     lblFromWad.Text = "From " + Path.GetFileName(wad.Path);
-                    toolTip.SetToolTip(lblFromWad, (multiple ? "This object exists in several wads." + "\n" + "Used one is: " : "From: ") + _editor.Level.Settings.MakeAbsolute(wad.Path, VariableType.LevelDirectory));
+                    toolTip.SetToolTip(lblFromWad, (multiple ? "This object exists in several wads." + "\n" + "Used one is: " : "From: ") + _editor.Level.Settings.MakeAbsolute(wad.Path));
                     return;
                 }
             }
