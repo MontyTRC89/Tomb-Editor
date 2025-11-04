@@ -9,6 +9,7 @@ Tomb Editor:
  * Added UVRotate texture animation type support for TEN target.
  * Added a button in edit object window to reset tint to default.
  * Added ladders support for TR1X engine target.
+ * Added source wad tooltip in item browser for all objects.
  * Optimized the level compiler and switched compression to LZ4 for TEN target.
  * Fixed textured ceiling portals in water rooms ignoring wave effect strength.
  * Fixed bug with textures not aligned properly for TURNING_WALL_BLADE and TURNING_CEILING_BLADE objects for TEN target.
