@@ -14,6 +14,7 @@ Tomb Editor:
  * Fixed textured ceiling portals in water rooms ignoring wave effect strength.
  * Fixed bug with textures not aligned properly for TURNING_WALL_BLADE and TURNING_CEILING_BLADE objects for TEN target.
  * Fixed position and color controls in nodes not accepting objects via drag-n-drop.
+ * Fixed search button not working in wad preview window in level settings.
 
 WadTool:
  * Added animated textures support for objects in TEN target using the same window as in Tomb Editor.
