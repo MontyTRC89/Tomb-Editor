@@ -9,7 +9,7 @@ LevelFuncs.Engine.Node.TestMoveableActivity = function(moveableName)
 end
 
 -- !Name "If moveable is visible..."
--- !Section "Moveable state"
+-- !Section "Moveable parameters"
 -- !Description "Checks if moveable is visible."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables"
