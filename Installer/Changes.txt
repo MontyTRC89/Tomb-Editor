@@ -19,6 +19,7 @@ Tomb Editor:
 WadTool:
  * Added animated textures support for objects in TEN target using the same window as in Tomb Editor.
  * Added ability to fill all bone weights with specified values.
+ * Fixed exceptions when copying objects to a TEN wad without a reference wad present.
  * Fixed incorrect bone weight writing if other vertex data was changed in mesh editor.
  * Fixed incorrect sphere radius while importing some objects from classic TR levels.
 

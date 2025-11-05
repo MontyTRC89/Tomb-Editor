@@ -866,26 +866,41 @@ namespace WadTool
 
                 // TEN moveables sometimes need conversion procedures.
                 if (destinationWad.GameVersion == TRVersion.Game.TombEngine && sourceWad.GameVersion != TRVersion.Game.TombEngine && obj is WadMoveable)
-				{
-					var mov = (obj as WadMoveable).Clone();
+                {
+                    var mov = (obj as WadMoveable).Clone();
 
-					if (referenceWad == null)
-                        referenceWad = Wad2Loader.LoadFromFile(TombEngineConverter.ReferenceWadPath, true);
+                    if (referenceWad == null)
+                    {
+                        if (File.Exists((TombEngineConverter.ReferenceWadPath)))
+                            referenceWad = Wad2Loader.LoadFromFile(TombEngineConverter.ReferenceWadPath, true);
+                        else
+                            referenceWad = new Wad2();
+                    }
 
-					if (mov.Id.TypeId == 0)
-					{
-						var dialogResult = DarkMessageBox.Show(owner,
-							"You are trying to copy incompatible Lara object from legacy wad to TEN wad. \n" +
-							"Replace it with compatible Lara object from reference wad?",
-							"Incompatible Lara object", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (mov.Id.TypeId == 0)
+                    {
+                        if (referenceWad.Moveables.ContainsKey(mov.Id))
+                        {
+                            var dialogResult = DarkMessageBox.Show(owner,
+                                "You are trying to copy incompatible Lara object from legacy wad to TEN wad. \n" +
+                                "Replace it with compatible Lara object from reference wad?",
+                                "Incompatible Lara object", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-						if (dialogResult == DialogResult.Yes)
-							mov = referenceWad.Moveables[new WadMoveableId(0)].Clone();
-					}
-					else
-					{
-						mov.ConvertMoveable(sourceWad.GameVersion, referenceWad);
-					}
+                            if (dialogResult == DialogResult.Yes)
+                                mov = referenceWad.Moveables[new WadMoveableId(0)].Clone();
+                        }
+                        else
+                        {
+                            DarkMessageBox.Show(owner,
+                                "Reference wad can't be loaded.\n" + 
+                                "Copying original Lara object which is incompatible with TEN.",
+                                "Incompatible Lara object", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    else
+                    {
+                        mov.ConvertMoveable(sourceWad.GameVersion, referenceWad);
+                    }
 
                     obj = mov;
                 }
