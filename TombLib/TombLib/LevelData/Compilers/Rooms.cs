@@ -247,8 +247,8 @@ namespace TombLib.LevelData.Compilers
             }
 
             var lightEffect = room.Properties.LightEffect;
-            var waterPortals = room.PortalsCache.Where(p => (room.Properties.Type == RoomType.Normal && p.Direction == PortalDirection.Floor   && p.AdjoiningRoom.Properties.Type >= RoomType.Water) ||
-                                                            (room.Properties.Type >= RoomType.Water  && p.Direction == PortalDirection.Ceiling && p.AdjoiningRoom.Properties.Type == RoomType.Normal)).ToList();
+            var waterPortals = room.Portals.Where(p => (room.Properties.Type == RoomType.Normal && p.Direction == PortalDirection.Floor   && p.AdjoiningRoom.Properties.Type >= RoomType.Water) ||
+                                                       (room.Properties.Type >= RoomType.Water  && p.Direction == PortalDirection.Ceiling && p.AdjoiningRoom.Properties.Type == RoomType.Normal)).ToList();
 
             bool waterSchemeSet = false;
 
