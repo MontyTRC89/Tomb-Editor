@@ -30,6 +30,7 @@ TombIDE:
 
 TEN nodes:
  * Added batch nodes for moving a group of moveables or statics over specified timespan.
+ * Added a node for checking moveable visibility.
  * Add timeout parameter for the node “Set effect for specified moveables”.
 
 Version 1.9.2
