@@ -636,9 +636,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _progressReporter.ReportInfo("Target Tomb Engine version is " + engineVersion);
 
+            engineVersion = new Version(version.ProductMajorPart, version.ProductMinorPart,
+                                        version.ProductBuildPart);
+
             var editorInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
             var editorVersion = new Version(editorInfo.ProductMajorPart, editorInfo.ProductMinorPart,
-                                            editorInfo.ProductBuildPart, editorInfo.ProductPrivatePart);
+                                            editorInfo.ProductBuildPart);
 
             int comparison = engineVersion.CompareTo(editorVersion);
 
