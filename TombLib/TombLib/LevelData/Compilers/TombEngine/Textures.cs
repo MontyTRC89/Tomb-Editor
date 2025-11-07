@@ -1,6 +1,7 @@
 ﻿using BCnEncoder.Encoder;
 using BCnEncoder.Shared;
 using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -58,6 +59,84 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 ReportProgress(96, "Reading sky texture: " + skyFileName);
 
             return _level.Settings.LoadSkyTexture(skyFileName);
+        }
+
+        private void BuildMaterials()
+        {
+            ReportProgress(0, "Building materials");
+
+            var supported = new List<string>();
+            if (System.Runtime.Intrinsics.X86.Avx2.IsSupported) supported.Add("AVX2");
+            if (System.Runtime.Intrinsics.X86.Ssse3.IsSupported) supported.Add("SSSE3");
+            if (System.Runtime.Intrinsics.X86.Sse2.IsSupported) supported.Add("SSE2");
+
+            if (supported.Count > 0)
+                ReportProgress(0, "   Supported SIMD instruction sets: " + string.Join(", ", supported));
+
+            // Collect all materials used in the level, using sidecar loading if possible.
+            // All textures are stored in the filesystem except for Wad2 embedded textures that
+            // will require a dedicated material handling.
+
+            // Add a generic material (to use for example with embedded Wad2 textures)
+            _materialDictionary.Add("Default", new MaterialData());
+            _materialNames.Add("Default");
+
+            // Sidecar load level textures
+            foreach (var texture in _level.Settings.Textures)
+            {
+                if (!_materialDictionary.ContainsKey(texture.Image.FileName))
+                {
+                    try
+                    {
+                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+                        _materialDictionary.Add(texture.Image.FileName, materialData);
+                        _materialNames.Add(texture.Image.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        string externalMaterialDataPath = Path.Combine(
+                                Path.GetDirectoryName(texture.Image.FileName),
+                                Path.GetFileNameWithoutExtension(texture.Image.FileName) + ".xml");
+
+                        _progressReporter.ReportWarn($"Error while processing: {externalMaterialDataPath}");
+                        throw;
+                    }
+                }
+            }
+
+            // Sidecar load imported geometry textures
+            foreach (var importedGeometry in _level.Settings.ImportedGeometries)
+                foreach (var texture in importedGeometry.Textures)
+                {
+                    if (!_materialDictionary.ContainsKey(texture.Image.FileName))
+                    {
+                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+                        _materialDictionary.Add(texture.Image.FileName, materialData);
+                        _materialNames.Add(texture.Image.FileName);
+                    }
+                }
+
+            // Sidecar load external Wad2 textures
+            foreach (var wad in _level.Settings.Wads)
+                foreach (var texture in wad.Wad.MeshTexturesUnique.Where(t => !string.IsNullOrEmpty(t.AbsolutePath)))
+                {
+                    if (!_materialDictionary.ContainsKey(texture.AbsolutePath))
+                    {
+                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.AbsolutePath);
+                        _materialDictionary.Add(texture.AbsolutePath, materialData);
+                        _materialNames.Add(texture.AbsolutePath);
+                    }
+                }
+
+            // Make all level texturs paths absolute for comparing them with imported geometry textures
+            // and Wad2 external textures.
+            // Imported geometry textures and Wad2 external textures are always stored as absolute paths,
+            // insted level textures have the relative syntax.
+
+            foreach (var texture in _level.Settings.Textures)
+                texture.AbsolutePath = _level.Settings.MakeAbsolute(texture.Path);
+
+            ReportProgress(0, $"   Number of materials: {_materialDictionary.Count}");
         }
 
         private void BuildSprites()
