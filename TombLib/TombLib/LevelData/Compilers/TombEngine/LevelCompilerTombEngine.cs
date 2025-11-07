@@ -110,6 +110,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(0, "SIMD supported instructions sets");
             ReportProgress(0, $"    AVX2: {System.Runtime.Intrinsics.X86.Avx2.IsSupported}");
             ReportProgress(0, $"    SSSE3: {System.Runtime.Intrinsics.X86.Ssse3.IsSupported}");
+            ReportProgress(0, $"    SSE2: {System.Runtime.Intrinsics.X86.Sse2.IsSupported}");
 
             ReportProgress(0, "Building materials");
 			{
