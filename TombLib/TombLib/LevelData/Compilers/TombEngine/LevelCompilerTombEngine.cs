@@ -107,6 +107,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _textureInfoManager = new TombEngineTexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
+            ReportProgress(0, "SIMD supported instructions sets");
+            ReportProgress(0, $"    AVX2: {System.Runtime.Intrinsics.X86.Avx2.IsSupported}");
+            ReportProgress(0, $"    SSSE3: {System.Runtime.Intrinsics.X86.Ssse3.IsSupported}");
+
             ReportProgress(0, "Building materials");
 			{
                 // Collect all materials used in the level, using sidecar loading if possible.
