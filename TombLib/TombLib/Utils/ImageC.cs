@@ -1479,7 +1479,7 @@ namespace TombLib.Utils
                 fromX + width > fromImage.Width || fromY + height > fromImage.Height)
                 return;
 
-            // ARGB nel uint (in memoria little-endian = BGRA):
+            // ARGB in uint (in memory little-endian = BGRA):
             // R=16, G=8, B=0, A=24
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             static int ShiftOf(ImageChannel ch) => ch switch

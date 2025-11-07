@@ -873,90 +873,223 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        // Gets existing TexInfo child index if there is similar one in parent textures list
+        /// <summary>
+        /// Tries to find an existing texture info (TexInfo) that matches the given texture area,
+        /// optionally taking into account whether the area is a triangle or a quad, blend mode,
+        /// and a UV similarity margin.
+        /// 
+        /// The search is performed across a list of parent texture areas, each of which can hold
+        /// multiple children (candidate TexInfos). The method:
+        /// 1. Normalizes the UV coordinates for the incoming area.
+        /// 2. For each parent whose parameters are compatible:
+        ///    - Builds a bounding rectangle from the area UVs.
+        ///    - Queries a spatial index (grid) to quickly find candidate children.
+        ///    - For those candidates, compares UVs using <see cref="TestUVSimilarity"/>.
+        ///    - If no candidate from the grid matches, performs a full scan over all children.
+        /// 3. If a match is found, it updates some bookkeeping info on the parent and returns
+        ///    a <see cref="Result"/> containing the TexInfo index and the rotation needed
+        ///    to align the coordinates.
+        /// 4. If no match is found in any parent, returns null.
+        /// </summary>
+        /// <param name="areaToLook">
+        /// The texture area we are trying to match against existing TexInfos.
+        /// Contains UVs, texture reference, blend mode, etc.
+        /// </param>
+        /// <param name="parentList">
+        /// List of parent texture areas. Each parent groups several children (TexInfos)
+        /// and may also maintain a spatial grid index for fast lookup.
+        /// </param>
+        /// <param name="destination">
+        /// The texture destination (atlas / target texture) where the area will be placed.
+        /// Used to compare parameters between the incoming area and a parent.
+        /// </param>
+        /// <param name="isForTriangle">
+        /// If true, the area is treated as a triangle (3 UV coordinates).
+        /// If false, it is treated as a quad (4 UV coordinates).
+        /// </param>
+        /// <param name="blendMode">
+        /// Blend mode that will be applied to the parent if a matching child is found.
+        /// Also used as a filtering criterion when <paramref name="checkParameters"/> is true.
+        /// </param>
+        /// <param name="checkParameters">
+        /// If true, candidate children must match the blend mode (and possibly other parameters)
+        /// of <paramref name="areaToLook"/> before being considered as UV matches.
+        /// If false, only UV similarity is checked.
+        /// </param>
+        /// <param name="lookupMargin">
+        /// Allowed margin for UV similarity. Passed to <see cref="TestUVSimilarity"/> as the
+        /// maximum squared distance threshold (after squaring inside that method).
+        /// </param>
+        /// <returns>
+        /// A <see cref="Result"/> containing the matched TexInfo index and rotation if a match is found,
+        /// or null if no compatible TexInfo exists in the provided parents.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, TextureDestination destination,
-                           bool isForTriangle, BlendMode blendMode,
-                           bool checkParameters = true, float lookupMargin = 0.0f)
+        private Result? GetTexInfo(
+            TextureArea areaToLook,
+            List<ParentTextureArea> parentList,
+            TextureDestination destination,
+            bool isForTriangle,
+            BlendMode blendMode,
+            bool checkParameters = true,
+            float lookupMargin = 0.0f)
         {
+            // Decide how many UV coordinates we expect based on primitive type:
+            //  - 3 for triangles
+            //  - 4 for quads
             int coordCount = isForTriangle ? 3 : 4;
+
+            // Stackallocate a small buffer for the UVs of the area we are trying to match.
+            // Using Span + stackalloc avoids heap allocations in this hot path.
             Span<Vector2> lookupCoordinates = stackalloc Vector2[coordCount];
             for (int i = 0; i < coordCount; i++)
                 lookupCoordinates[i] = areaToLook.GetTexCoord(i);
 
+            // Iterate over all parents by reference (CollectionsMarshal.AsSpan avoids
+            // Enumerator overhead and allows direct ref access to list elements).
             foreach (ref var parent in CollectionsMarshal.AsSpan(parentList))
             {
+                // Quickly skip parents whose parameters are not compatible
+                // with the target area and destination. 
                 if (!parent.ParametersSimilar(areaToLook, destination))
                     continue;
 
-                // Lookup rectangle
-                Rectangle2 rect = (isForTriangle)
+                // Build a bounding rectangle in UV space for the lookup area.
+                // For triangles, we compute a rectangle that encloses the 3 UVs.
+                // For quads, the rectangle encloses all 4 UVs.
+                Rectangle2 rect = isForTriangle
                     ? Rectangle2.FromCoordinates(lookupCoordinates[0], lookupCoordinates[1], lookupCoordinates[2])
                     : Rectangle2.FromCoordinates(lookupCoordinates[0], lookupCoordinates[1], lookupCoordinates[2], lookupCoordinates[3]);
 
-                // 1) Candidates from grid index
+                // --- Phase 1: use the grid / spatial index to get a reduced candidate set ---
+
+                // HashSet used to avoid duplicate indices when collecting from the grid.
                 HashSet<int> candidates = new HashSet<int>();
+
+                // Collect candidate child indices whose bounding rectangles overlap 'rect'.
+                // This is a fast pre-filter: it reduces the number of expensive UV comparisons.
                 parent.CollectCandidates(rect, candidates);
 
                 if (candidates.Count > 0)
                 {
+                    // Check each candidate from the spatial index.
                     foreach (var candidateIndex in candidates)
                     {
                         var child = parent.Children[candidateIndex];
-                        if (child.IsForTriangle != isForTriangle) continue;
-                        if (checkParameters && areaToLook.BlendMode != child.BlendMode) continue;
 
+                        // Skip if the primitive type (triangle vs quad) does not match.
+                        if (child.IsForTriangle != isForTriangle)
+                            continue;
+
+                        // Optionally require a blend mode match (and other parameters) before checking UVs.
+                        if (checkParameters && areaToLook.BlendMode != child.BlendMode)
+                            continue;
+
+                        // Compare UVs with optional rotation using the SIMD-optimized UV similarity test.
                         int rot = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
                         if (rot != _noTexInfo)
                         {
+                            // We found a matching TexInfo.
+                            // Update the parent's blend mode to the requested one.
                             parent.BlendMode = blendMode;
+
+                            // If the texture is the same and the incoming area has a non-zero parent area,
+                            // propagate that parent area to the parent. This can be used to track
+                            // hierarchy or aggregated area information.
                             if (areaToLook.Texture == parent.Texture && !areaToLook.ParentArea.IsZero)
                                 parent.Area = areaToLook.ParentArea;
 
-                            return new Result { TexInfoIndex = child.TextureId, Rotation = (byte)rot };
+                            // Return the matched TexInfo index and the rotation needed to align UVs.
+                            return new Result
+                            {
+                                TexInfoIndex = child.TextureId,
+                                Rotation = (byte)rot
+                            };
                         }
                     }
                 }
 
-                // 2) Fallback for all other cases
+                // --- Phase 2: fallback – linear scan over all children ---
+                // This covers cases where the grid did not return any candidates
+                // (e.g., small or misaligned rectangles), or where all candidates failed.
                 for (int i = 0; i < parent.Children.Count; i++)
                 {
                     var child = parent.Children[i];
-                    if (child.IsForTriangle != isForTriangle) continue;
-                    if (checkParameters && areaToLook.BlendMode != child.BlendMode) continue;
 
+                    // Again, ensure primitive type compatibility.
+                    if (child.IsForTriangle != isForTriangle)
+                        continue;
+
+                    // Optional parameter check (e.g. matching blend mode).
+                    if (checkParameters && areaToLook.BlendMode != child.BlendMode)
+                        continue;
+
+                    // Test UV similarity for this child.
                     int rot = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
                     if (rot != _noTexInfo)
                     {
+                        // Matching TexInfo found in the fallback path.
                         parent.BlendMode = blendMode;
+
                         if (areaToLook.Texture == parent.Texture && !areaToLook.ParentArea.IsZero)
                             parent.Area = areaToLook.ParentArea;
 
-                        return new Result { TexInfoIndex = child.TextureId, Rotation = (byte)rot };
+                        return new Result
+                        {
+                            TexInfoIndex = child.TextureId,
+                            Rotation = (byte)rot
+                        };
                     }
                 }
             }
 
+            // No matching TexInfo found among any parent.
             return null;
         }
 
-
-        // Tests if all UV coordinates are similar with different rotations.
-        // If all coordinates are equal for one of the rotation factors, rotation factor is returned,
-        // otherwise NoTexInfo is returned (not similar). If coordinates are 100% equal, 0 is returned.
-
+        /// <summary>
+        /// Tests whether two small UV sets (triangles or quads) are similar within a given margin,
+        /// optionally allowing for cyclic rotation of the vertices.
+        /// 
+        /// Returns:
+        /// - 0  -> UVs are similar with no rotation.
+        /// - N  -> UVs are similar, but the 'second' set is rotated N steps relative to 'first'
+        ///         (encoded as 4 - rotation for quads, 3 - rotation for tris).
+        /// - _noTexInfo -> UVs are not similar (different size, too far apart, or no rotation matches).
+        /// </summary>
+        /// <param name="first">First UV set, as a plain array (3 or 4 elements).</param>
+        /// <param name="second">Second UV set, as a read-only span (must have the same length).</param>
+        /// <param name="lookupMargin">
+        /// Maximum allowed Euclidean distance between corresponding UVs, summed over all vertices.
+        /// The comparison uses the squared distance, so this value is squared internally.
+        /// </param>
+        /// <returns>
+        /// An integer encoding the rotation needed to align the second UV set to the first,
+        /// or _noTexInfo if no match is found.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         private int TestUVSimilarity(Vector2[] first, ReadOnlySpan<Vector2> second, float lookupMargin)
         {
             int len = first.Length;
-            if (len != second.Length || (uint)(len - 3) > 1) // solo 3 o 4
+
+            // If the lengths differ, or len is NOT 3 or 4, there is no possible match.
+            // (uint)(len - 3) > 1 is a branchless range check:
+            //   len == 3 -> len - 3 = 0 -> (uint)0 > 1? false
+            //   len == 4 -> len - 3 = 1 -> (uint)1 > 1? false
+            //   any other len -> (uint)(len - 3) is either very large (for len < 3) or >= 2 (for len > 4),
+            //   which makes the condition true.
+            if (len != second.Length || (uint)(len - 3) > 1) // only 3 or 4 vertices allowed
                 return _noTexInfo;
 
+            // Work with squared distances to avoid expensive square roots.
             float marginSquared = lookupMargin * lookupMargin;
 
+            // Fast SIMD path for quads (4 vertices).
             if (len == 4)
             {
-                // Flatten first array: [x0, y0, x1, y1, x2, y2, x3, y3]
+                // Flatten "first" into a contiguous array of floats:
+                // [x0, y0, x1, y1, x2, y2, x3, y3]
+                // This layout matches what Vector<float> expects.
                 Span<float> flatFirst = stackalloc float[8];
                 for (int i = 0; i < 4; i++)
                 {
@@ -964,50 +1097,81 @@ namespace TombLib.LevelData.Compilers
                     flatFirst[i * 2 + 1] = first[i].Y;
                 }
 
+                // Load the first UV set into a SIMD vector.
                 var vecFirst = new Vector<float>(flatFirst);
 
-                // Reusable span to avoid CA2014 warning
+                // Reusable stack-allocated buffer for the rotated "second" UV set.
+                // Allocated once here to avoid stackalloc inside the inner loop (which can trigger CA2014 warnings).
                 Span<float> flatSecond = stackalloc float[8];
 
+                // Try all 4 cyclic rotations of the second UV set.
+                // rotation == 0  -> (0,1,2,3)
+                // rotation == 1  -> (1,2,3,0)
+                // rotation == 2  -> (2,3,0,1)
+                // rotation == 3  -> (3,0,1,2)
                 for (int rotation = 0; rotation < 4; rotation++)
                 {
+                    // Write the rotated UVs from "second" into the flat buffer.
                     for (int i = 0; i < 4; i++)
                     {
-                        int idx = (i + rotation) & 3; // faster than modulus
+                        // (i + rotation) & 3 is equivalent to (i + rotation) % 4,
+                        // but cheaper because it avoids the modulus operation.
+                        int idx = (i + rotation) & 3;
                         flatSecond[i * 2 + 0] = second[idx].X;
                         flatSecond[i * 2 + 1] = second[idx].Y;
                     }
 
+                    // Load the rotated second UV set into a SIMD vector.
                     var vecSecond = new Vector<float>(flatSecond);
+
+                    // Compute per-lane differences and square them:
+                    // distSquared[k] = (first[k] - second[k])^2 for each float lane.
                     var diff = vecFirst - vecSecond;
                     var distSquared = diff * diff;
 
+                    // Sum all lanes to get the total squared distance between both UV sets.
                     float sum = 0f;
                     for (int i = 0; i < Vector<float>.Count; i++)
                         sum += distSquared[i];
 
+                    // If the UV sets are close enough (within margin), we consider them a match.
                     if (sum <= marginSquared)
+                    {
+                        // Return 0 if there is no rotation, otherwise return 4 - rotation.
+                        // This encoding maps:
+                        //   rotation = 1 -> return 3
+                        //   rotation = 2 -> return 2
+                        //   rotation = 3 -> return 1
+                        // so that the result represents the number of steps needed to
+                        // "rotate back" to the base orientation.
                         return rotation == 0 ? 0 : 4 - rotation;
+                    }
                 }
 
+                // No rotation produced a sufficiently close match.
                 return _noTexInfo;
             }
 
-            // Fallback for len == 3
+            // Fallback scalar path for triangles (len == 3).
+            // No SIMD optimization here because the data size is small and the code is simpler.
             for (int rotation = 0; rotation < 3; rotation++)
             {
                 bool allEqual = true;
 
+                // Test all 3 vertices for the current rotation.
                 for (int j = 0; j < 3; j++)
                 {
                     int idx = j + rotation;
-                    if (idx >= 3) idx -= 3;
+                    if (idx >= 3)
+                        idx -= 3; // Equivalent to (j + rotation) % 3.
 
                     var f = first[j];
                     var s = second[idx];
 
                     var dx = f.X - s.X;
                     var dy = f.Y - s.Y;
+
+                    // If any vertex is further than allowed, this rotation is not a match.
                     if ((dx * dx + dy * dy) > marginSquared)
                     {
                         allEqual = false;
@@ -1015,10 +1179,20 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
+                // If all three vertices are within the margin, we have a match.
                 if (allEqual)
+                {
+                    // Same encoding idea as for quads:
+                    //   rotation = 0 -> return 0
+                    //   rotation = 1 -> return 2
+                    //   rotation = 2 -> return 1
+                    // so the return value indicates how many steps you need to rotate
+                    // to realign with the original orientation.
                     return rotation == 0 ? 0 : 3 - rotation;
+                }
             }
 
+            // No rotation for triangles produced a match either.
             return _noTexInfo;
         }
 
