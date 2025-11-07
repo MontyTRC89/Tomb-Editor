@@ -13,11 +13,10 @@ using TombLib.IO;
 using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.Utils;
 using TombLib.Wad;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TombLib.LevelData.Compilers
 {
-    public enum TextureDestination
+	public enum TextureDestination
     {
         RoomOrAggressive,
         Moveable,
@@ -1047,158 +1046,156 @@ namespace TombLib.LevelData.Compilers
             return null;
         }
 
-        /// <summary>
-        /// Tests whether two small UV sets (triangles or quads) are similar within a given margin,
-        /// optionally allowing for cyclic rotation of the vertices.
-        /// 
-        /// Returns:
-        /// - 0  -> UVs are similar with no rotation.
-        /// - N  -> UVs are similar, but the 'second' set is rotated N steps relative to 'first'
-        ///         (encoded as 4 - rotation for quads, 3 - rotation for tris).
-        /// - _noTexInfo -> UVs are not similar (different size, too far apart, or no rotation matches).
-        /// </summary>
-        /// <param name="first">First UV set, as a plain array (3 or 4 elements).</param>
-        /// <param name="second">Second UV set, as a read-only span (must have the same length).</param>
-        /// <param name="lookupMargin">
-        /// Maximum allowed Euclidean distance between corresponding UVs, summed over all vertices.
-        /// The comparison uses the squared distance, so this value is squared internally.
-        /// </param>
-        /// <returns>
-        /// An integer encoding the rotation needed to align the second UV set to the first,
-        /// or _noTexInfo if no match is found.
-        /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-        private int TestUVSimilarity(Vector2[] first, ReadOnlySpan<Vector2> second, float lookupMargin)
-        {
-            int len = first.Length;
+		/// </returns>
+		/// <summary>
+		/// Tests whether two small UV sets (triangles or quads) are similar within a given margin,
+		/// optionally allowing for cyclic rotation of the vertices.
+		/// 
+		/// Returns:
+		/// - 0  -> UVs are similar with no rotation.
+		/// - N  -> UVs are similar, but the 'second' set is rotated N steps relative to 'first'
+		///         (encoded as 4 - rotation for quads, 3 - rotation for triangles).
+		/// - _noTexInfo -> UVs are not similar (different size, too far apart, or no rotation matches).
+		/// </summary>
+		/// <param name="first">
+		/// First UV set, as a plain array (must contain either 3 or 4 elements).
+		/// This set is treated as the canonical orientation.
+		/// </param>
+		/// <param name="second">
+		/// Second UV set, as a read-only span (must have the same length as <paramref name="first"/>).
+		/// The method will try all cyclic rotations of this set.
+		/// </param>
+		/// <param name="lookupMargin">
+		/// Maximum allowed Euclidean distance between corresponding UVs, *summed* over all vertices.
+		/// The comparison is done on squared distances, so this value is squared internally.
+		/// </param>
+		/// <returns>
+		/// An integer encoding the rotation needed to align the second UV set to the first,
+		/// or _noTexInfo if no match is found.
+		/// </returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+		private int TestUVSimilarity(Vector2[] first, ReadOnlySpan<Vector2> second, float lookupMargin)
+		{
+			int len = first.Length;
 
-            // If the lengths differ, or len is NOT 3 or 4, there is no possible match.
-            // (uint)(len - 3) > 1 is a branchless range check:
-            //   len == 3 -> len - 3 = 0 -> (uint)0 > 1? false
-            //   len == 4 -> len - 3 = 1 -> (uint)1 > 1? false
-            //   any other len -> (uint)(len - 3) is either very large (for len < 3) or >= 2 (for len > 4),
-            //   which makes the condition true.
-            if (len != second.Length || (uint)(len - 3) > 1) // only 3 or 4 vertices allowed
-                return _noTexInfo;
+			// Only 3 or 4 vertices are supported.
+			// Conditions:
+			//  - lengths must match
+			//  - (uint)(len - 3) > 1 is a compact range check:
+			//      len == 3 -> len - 3 = 0  -> (uint)0 > 1?  false
+			//      len == 4 -> len - 3 = 1  -> (uint)1 > 1?  false
+			//      any other len -> result is either very large (for len < 3) or >= 2 (for len > 4),
+			//                       so the condition becomes true.
+			if (len != second.Length || (uint)(len - 3) > 1)
+				return _noTexInfo;
 
-            // Work with squared distances to avoid expensive square roots.
-            float marginSquared = lookupMargin * lookupMargin;
+			// Work with squared distances to avoid the cost of square roots.
+			// The caller specifies a distance in UV units, but internally we compare
+			// against lookupMargin^2.
+			float marginSquared = lookupMargin * lookupMargin;
 
-            // Fast SIMD path for quads (4 vertices).
-            if (len == 4)
-            {
-                // Flatten "first" into a contiguous array of floats:
-                // [x0, y0, x1, y1, x2, y2, x3, y3]
-                // This layout matches what Vector<float> expects.
-                Span<float> flatFirst = stackalloc float[8];
-                for (int i = 0; i < 4; i++)
-                {
-                    flatFirst[i * 2 + 0] = first[i].X;
-                    flatFirst[i * 2 + 1] = first[i].Y;
-                }
+			// --- Quad path (4 vertices) -------------------------------------------------
+			if (len == 4)
+			{
+				// Try all 4 cyclic rotations of the "second" set.
+				// rotation = 0 -> (0,1,2,3)
+				// rotation = 1 -> (1,2,3,0)
+				// rotation = 2 -> (2,3,0,1)
+				// rotation = 3 -> (3,0,1,2)
+				for (int rotation = 0; rotation < 4; rotation++)
+				{
+					float sum = 0.0f;
 
-                // Load the first UV set into a SIMD vector.
-                var vecFirst = new Vector<float>(flatFirst);
+					// Accumulate the squared distance for all 4 vertices
+					// under the current rotation.
+					for (int i = 0; i < 4; i++)
+					{
+						// (i + rotation) & 3 is equivalent to (i + rotation) % 4,
+						// but avoids the modulo operator.
+						int idx = (i + rotation) & 3;
 
-                // Reusable stack-allocated buffer for the rotated "second" UV set.
-                // Allocated once here to avoid stackalloc inside the inner loop (which can trigger CA2014 warnings).
-                Span<float> flatSecond = stackalloc float[8];
+						var f = first[i];
+						var s = second[idx];
 
-                // Try all 4 cyclic rotations of the second UV set.
-                // rotation == 0  -> (0,1,2,3)
-                // rotation == 1  -> (1,2,3,0)
-                // rotation == 2  -> (2,3,0,1)
-                // rotation == 3  -> (3,0,1,2)
-                for (int rotation = 0; rotation < 4; rotation++)
-                {
-                    // Write the rotated UVs from "second" into the flat buffer.
-                    for (int i = 0; i < 4; i++)
-                    {
-                        // (i + rotation) & 3 is equivalent to (i + rotation) % 4,
-                        // but cheaper because it avoids the modulus operation.
-                        int idx = (i + rotation) & 3;
-                        flatSecond[i * 2 + 0] = second[idx].X;
-                        flatSecond[i * 2 + 1] = second[idx].Y;
-                    }
+						float dx = f.X - s.X;
+						float dy = f.Y - s.Y;
 
-                    // Load the rotated second UV set into a SIMD vector.
-                    var vecSecond = new Vector<float>(flatSecond);
+						sum += dx * dx + dy * dy;
+					}
 
-                    // Compute per-lane differences and square them:
-                    // distSquared[k] = (first[k] - second[k])^2 for each float lane.
-                    var diff = vecFirst - vecSecond;
-                    var distSquared = diff * diff;
+					// If the total squared distance is within the allowed margin,
+					// the two UV sets are considered equivalent under this rotation.
+					if (sum <= marginSquared)
+					{
+						// Encoding:
+						//  - rotation == 0 -> return 0 (no rotation needed)
+						//  - rotation == 1 -> return 3
+						//  - rotation == 2 -> return 2
+						//  - rotation == 3 -> return 1
+						//
+						// This "4 - rotation" encoding corresponds to how many steps are needed
+						// to rotate back to the canonical orientation and is used by the
+						// polygon-building code to reindex the vertices.
+						return rotation == 0 ? 0 : 4 - rotation;
+					}
+				}
 
-                    // Sum all lanes to get the total squared distance between both UV sets.
-                    float sum = 0f;
-                    for (int i = 0; i < Vector<float>.Count; i++)
-                        sum += distSquared[i];
+				// None of the 4 rotations produced a match.
+				return _noTexInfo;
+			}
 
-                    // If the UV sets are close enough (within margin), we consider them a match.
-                    if (sum <= marginSquared)
-                    {
-                        // Return 0 if there is no rotation, otherwise return 4 - rotation.
-                        // This encoding maps:
-                        //   rotation = 1 -> return 3
-                        //   rotation = 2 -> return 2
-                        //   rotation = 3 -> return 1
-                        // so that the result represents the number of steps needed to
-                        // "rotate back" to the base orientation.
-                        return rotation == 0 ? 0 : 4 - rotation;
-                    }
-                }
+			// --- Triangle path (3 vertices) --------------------------------------------
+			// For triangles, we reuse the same idea as in the original version:
+			// test each of the 3 cyclic rotations and ensure that *each* corresponding
+			// vertex pair is within the allowed margin.
 
-                // No rotation produced a sufficiently close match.
-                return _noTexInfo;
-            }
+			for (int rotation = 0; rotation < 3; rotation++)
+			{
+				bool allEqual = true;
 
-            // Fallback scalar path for triangles (len == 3).
-            // No SIMD optimization here because the data size is small and the code is simpler.
-            for (int rotation = 0; rotation < 3; rotation++)
-            {
-                bool allEqual = true;
+				// Test all 3 vertices for the current rotation.
+				for (int j = 0; j < 3; j++)
+				{
+					int idx = j + rotation;
+					if (idx >= 3)
+						idx -= 3; // Equivalent to (j + rotation) % 3.
 
-                // Test all 3 vertices for the current rotation.
-                for (int j = 0; j < 3; j++)
-                {
-                    int idx = j + rotation;
-                    if (idx >= 3)
-                        idx -= 3; // Equivalent to (j + rotation) % 3.
+					var f = first[j];
+					var s = second[idx];
 
-                    var f = first[j];
-                    var s = second[idx];
+					float dx = f.X - s.X;
+					float dy = f.Y - s.Y;
 
-                    var dx = f.X - s.X;
-                    var dy = f.Y - s.Y;
+					// If any vertex is further than allowed, this rotation fails.
+					if ((dx * dx + dy * dy) > marginSquared)
+					{
+						allEqual = false;
+						break;
+					}
+				}
 
-                    // If any vertex is further than allowed, this rotation is not a match.
-                    if ((dx * dx + dy * dy) > marginSquared)
-                    {
-                        allEqual = false;
-                        break;
-                    }
-                }
+				// All vertices are within the margin for this rotation.
+				if (allEqual)
+				{
+					// Encoding mirrors the quad case:
+					//  - rotation == 0 -> return 0 (no rotation)
+					//  - rotation == 1 -> return 2
+					//  - rotation == 2 -> return 1
+					//
+					// Again, the return value represents how many steps you'd need
+					// to rotate back to the canonical ordering.
+					return rotation == 0 ? 0 : 3 - rotation;
+				}
+			}
 
-                // If all three vertices are within the margin, we have a match.
-                if (allEqual)
-                {
-                    // Same encoding idea as for quads:
-                    //   rotation = 0 -> return 0
-                    //   rotation = 1 -> return 2
-                    //   rotation = 2 -> return 1
-                    // so the return value indicates how many steps you need to rotate
-                    // to realign with the original orientation.
-                    return rotation == 0 ? 0 : 3 - rotation;
-                }
-            }
+			// No rotation (for triangle) produced a match either.
+			return _noTexInfo;
+		}
 
-            // No rotation for triangles produced a match either.
-            return _noTexInfo;
-        }
 
-        // Generate new parent with incoming texture and immediately add incoming texture as a child
+		// Generate new parent with incoming texture and immediately add incoming texture as a child
 
-        private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int frameIndex = -1)
+		private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int frameIndex = -1)
         {
             var newParent = new ParentTextureArea(texture, destination);
             parentList.Add(newParent);
