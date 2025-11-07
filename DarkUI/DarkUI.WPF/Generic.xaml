@@ -13,6 +13,7 @@
 		<ResourceDictionary Source="Styles/GroupBox.xaml" />
 		<ResourceDictionary Source="Styles/Label.xaml" />
 		<ResourceDictionary Source="Styles/ListBox.xaml" />
+		<ResourceDictionary Source="Styles/MaterialMapPreview.xaml" />
 		<ResourceDictionary Source="Styles/Menu.xaml" />
 		<ResourceDictionary Source="Styles/NumericUpDown.xaml" />
 		<ResourceDictionary Source="Styles/ProgressBar.xaml" />

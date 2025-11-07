@@ -44,5 +44,21 @@
 	"InputBoxWindow": {
 		"EnterValue": "Please enter a value:",
 		"InvalidNameMessage": "Invalid name, please choose another one."
+	},
+
+	"MaterialEditorWindow": {
+		"Title": "Material Editor",
+		"TextureSelection": "Texture Selection",
+		"Texture": "Texture:",
+		"ColorMap": "Color Map",
+		"NormalMap": "Normal Map",
+		"SpecularMap": "Specular Map",
+		"AmbientOcclusionMap": "Ambient Occlusion Map",
+		"EmissiveMap": "Emissive Map",
+		"RoughnessMap": "Roughness Map",
+		"Browse": "Browse",
+		"Clear": "Clear",
+		"MaterialParameters": "Material Parameters",
+		"MaterialType": "Material Type:"
 	}
 }

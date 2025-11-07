@@ -1,0 +1,262 @@
+<Window
+	x:Class="TombLib.Forms.Views.MaterialEditorWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+	xmlns:sg="clr-namespace:SpacedGridControl;assembly=SpacedGridControl"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
+	xmlns:viewModels="clr-namespace:TombLib.Forms.ViewModels;assembly=TombLib.Forms"
+	Title="{tombLib:Localize Title}"
+	Width="600"
+	Height="600"
+	d:DataContext="{d:DesignInstance Type=viewModels:MaterialEditorWindowViewModel}"
+	md:DialogServiceViews.IsRegistered="True"
+	Background="{DynamicResource Brush_Background}"
+	ResizeMode="CanMinimize"
+	Style="{DynamicResource CustomWindowStyle}"
+	WindowStartupLocation="CenterScreen"
+	mc:Ignorable="d">
+
+	<Window.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+	</Window.Resources>
+
+	<sg:SpacedGrid Margin="{x:Static darkUI:Defaults.MediumThickness}" RowSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<!--  Texture Selection Panel  -->
+		<sg:SpacedGrid RowSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}" Visibility="{Binding IsTextureSelectionVisible, Converter={StaticResource BoolToVisConverter}}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<Label Content="{tombLib:Localize Texture}" Target="{Binding ElementName=comboTexture}" />
+			<controls:SearchableComboBox
+				x:Name="comboTexture"
+				Grid.Column="1"
+				ItemsSource="{Binding TextureList}"
+				SelectedItem="{Binding SelectedTexture}" />
+		</sg:SpacedGrid>
+
+		<!--  Material Maps  -->
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+			<controls:SpacedStack Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+				<!--  Color Map  -->
+				<GroupBox Header="{tombLib:Localize ColorMap}">
+					<sg:SpacedGrid ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<TextBox IsReadOnly="True" Text="{Binding ColorMapPath}" />
+						<controls:MaterialMapPreview Grid.Column="1" ImageSource="{Binding ColorMapPreview}" />
+					</sg:SpacedGrid>
+				</GroupBox>
+
+				<!--  Normal Map  -->
+				<GroupBox Grid.Row="1" Header="{tombLib:Localize NormalMap}">
+					<sg:SpacedGrid ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<TextBox
+							Background="{Binding NormalMapBackgroundBrush}"
+							IsReadOnly="True"
+							Text="{Binding NormalMapPath}" />
+
+						<Button
+							Grid.Column="1"
+							Width="70"
+							Command="{Binding BrowseNormalMapCommand}"
+							Content="{tombLib:Localize Browse}" />
+
+						<Button
+							Grid.Column="2"
+							Width="55"
+							Command="{Binding ClearNormalMapCommand}"
+							Content="{tombLib:Localize Clear}"
+							IsEnabled="{Binding HasNormalMap}" />
+
+						<controls:MaterialMapPreview Grid.Column="3" ImageSource="{Binding NormalMapPreview}" />
+					</sg:SpacedGrid>
+				</GroupBox>
+
+				<!--  Ambient Occlusion Map  -->
+				<GroupBox Grid.Row="3" Header="{tombLib:Localize AmbientOcclusionMap}">
+					<sg:SpacedGrid ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<TextBox
+							Background="{Binding AmbientOcclusionMapBackgroundBrush}"
+							IsReadOnly="True"
+							Text="{Binding AmbientOcclusionMapPath}" />
+
+						<Button
+							Grid.Column="1"
+							Width="70"
+							Command="{Binding BrowseAmbientOcclusionMapCommand}"
+							Content="{tombLib:Localize Browse}" />
+
+						<Button
+							Grid.Column="2"
+							Width="55"
+							Command="{Binding ClearAmbientOcclusionMapCommand}"
+							Content="{tombLib:Localize Clear}"
+							IsEnabled="{Binding HasAmbientOcclusionMap}" />
+
+						<controls:MaterialMapPreview Grid.Column="3" ImageSource="{Binding AmbientOcclusionMapPreview}" />
+					</sg:SpacedGrid>
+				</GroupBox>
+
+				<!--  Emissive Map  -->
+				<GroupBox Grid.Row="4" Header="{tombLib:Localize EmissiveMap}">
+					<sg:SpacedGrid ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<TextBox
+							Background="{Binding EmissiveMapBackgroundBrush}"
+							IsReadOnly="True"
+							Text="{Binding EmissiveMapPath}" />
+
+						<Button
+							Grid.Column="1"
+							Width="70"
+							Command="{Binding BrowseEmissiveMapCommand}"
+							Content="{tombLib:Localize Browse}" />
+
+						<Button
+							Grid.Column="2"
+							Width="55"
+							Command="{Binding ClearEmissiveMapCommand}"
+							Content="{tombLib:Localize Clear}"
+							IsEnabled="{Binding HasEmissiveMap}" />
+
+						<controls:MaterialMapPreview Grid.Column="3" ImageSource="{Binding EmissiveMapPreview}" />
+					</sg:SpacedGrid>
+				</GroupBox>
+
+				<!--  Specular Map  -->
+				<GroupBox Grid.Row="2" Header="{tombLib:Localize SpecularMap}">
+					<sg:SpacedGrid ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<TextBox
+							Background="{Binding SpecularMapBackgroundBrush}"
+							IsReadOnly="True"
+							Text="{Binding SpecularMapPath}" />
+
+						<Button
+							Grid.Column="1"
+							Width="70"
+							Command="{Binding BrowseSpecularMapCommand}"
+							Content="{tombLib:Localize Browse}" />
+
+						<Button
+							Grid.Column="2"
+							Width="55"
+							Command="{Binding ClearSpecularMapCommand}"
+							Content="{tombLib:Localize Clear}"
+							IsEnabled="{Binding HasSpecularMap}" />
+
+						<controls:MaterialMapPreview Grid.Column="3" ImageSource="{Binding SpecularMapPreview}" />
+					</sg:SpacedGrid>
+				</GroupBox>
+
+				<!--  Roughness Map  -->
+				<GroupBox Grid.Row="5" Header="{tombLib:Localize RoughnessMap}">
+					<sg:SpacedGrid ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<TextBox
+							Background="{Binding RoughnessMapBackgroundBrush}"
+							IsReadOnly="True"
+							Text="{Binding RoughnessMapPath}" />
+
+						<Button
+							Grid.Column="1"
+							Width="70"
+							Command="{Binding BrowseRoughnessMapCommand}"
+							Content="{tombLib:Localize Browse}" />
+
+						<Button
+							Grid.Column="2"
+							Width="55"
+							Command="{Binding ClearRoughnessMapCommand}"
+							Content="{tombLib:Localize Clear}"
+							IsEnabled="{Binding HasRoughnessMap}" />
+
+						<controls:MaterialMapPreview Grid.Column="3" ImageSource="{Binding RoughnessMapPreview}" />
+					</sg:SpacedGrid>
+				</GroupBox>
+			</controls:SpacedStack>
+		</ScrollViewer>
+
+		<!--  Material Type  -->
+		<sg:SpacedGrid Grid.Row="2" ColumnSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<Label Content="{tombLib:Localize MaterialType}" Target="{Binding ElementName=comboMaterialType}" />
+			<ComboBox
+				x:Name="comboMaterialType"
+				Grid.Column="1"
+				ItemsSource="{Binding MaterialTypes}"
+				SelectedItem="{Binding SelectedMaterialType}" />
+		</sg:SpacedGrid>
+
+		<!--  Buttons  -->
+		<controls:SpacedStack
+			Grid.Row="3"
+			HorizontalAlignment="Right"
+			Orientation="Horizontal"
+			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			<Button
+				Width="80"
+				Command="{Binding ConfirmCommand}"
+				Content="{tombLib:Localize ~Common.OK}"
+				IsDefault="True" />
+			<Button
+				Width="80"
+				Command="{Binding CancelCommand}"
+				Content="{tombLib:Localize ~Common.Cancel}"
+				IsCancel="True" />
+		</controls:SpacedStack>
+	</sg:SpacedGrid>
+</Window>
