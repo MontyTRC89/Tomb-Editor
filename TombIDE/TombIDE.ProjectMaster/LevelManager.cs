@@ -108,10 +108,28 @@ namespace TombIDE.ProjectMaster
 							button_Update.Enabled = false;
 							button_Update.Width = 300;
 						}
+
+						if (engineVersion.Major <= 4 && engineVersion.Minor <= 14)
+						{
+							button_Update.Text = "Cannot Auto-Update engine. TR1X 4.15 introduced breaking changes, which require manual migration.";
+
+							button_Update.Enabled = false;
+							button_Update.Width = 300;
+						}
 					}
 
 					if (_ide.Project.GameVersion is TRVersion.Game.TR2X)
+					{
 						button_Update.Visible = true;
+
+						if (engineVersion.Major <= 1 && engineVersion.Minor <= 4)
+						{
+							button_Update.Text = "Cannot Auto-Update engine. TR2X 1.5 introduced breaking changes, which require manual migration.";
+
+							button_Update.Enabled = false;
+							button_Update.Width = 300;
+						}
+					}
 				}
 				else
 				{
@@ -298,6 +316,15 @@ namespace TombIDE.ProjectMaster
 				return;
 			}
 
+			// 4.15 also had breaking changes
+			if (prevVersion.Major <= 4 && prevVersion.Minor <= 14)
+			{
+				MessageBox.Show(this, "Cannot Auto-Update engine. TR1X 4.15 introduced breaking changes, which require manual migration.",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				return;
+			}
+
 			DialogResult result = MessageBox.Show(this,
 				"This update will replace the following directories and files:\n\n" +
 
@@ -345,6 +372,17 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateTR2X()
 		{
+			var prevVersion = _ide.Project.GetCurrentEngineVersion();
+
+			// 1.5 had breaking changes
+			if (prevVersion.Major <= 1 && prevVersion.Minor <= 4)
+			{
+				MessageBox.Show(this, "Cannot Auto-Update engine. TR2X 1.5 introduced breaking changes, which require manual migration.",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				return;
+			}
+
 			DialogResult result = MessageBox.Show(this,
 				"This update will replace the following directories and files:\n\n" +
 

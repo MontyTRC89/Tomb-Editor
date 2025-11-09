@@ -7,9 +7,12 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.Forms;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.WPF;
 
 namespace TombEditor.Controls
 {
@@ -156,6 +159,8 @@ namespace TombEditor.Controls
 
                 // Load imported geometries
                 var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
+                var config = Editor.Instance?.Configuration;
+
                 foreach (string path in paths)
                 {
                     if (!path.IsANSI())
@@ -164,17 +169,22 @@ namespace TombEditor.Controls
                         continue;
                     }
 
-                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                    {
-                        settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                        settingsDialog.SelectPreset("Normal scale to TR scale");
+                    var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                    viewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryImportPresetName);
 
-                        if (settingsDialog.ShowDialog(this) == DialogResult.Cancel)
-                            continue;
+                    var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
+                    settingsDialog.SetOwner(this);
+                    settingsDialog.ShowDialog();
 
-                        var info = new ImportedGeometryInfo(LevelSettings.MakeRelative(path, VariableType.LevelDirectory), settingsDialog.Settings);
-                        importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
-                    }
+                    if (viewModel.DialogResult != true)
+                        continue;
+
+                    if (config is not null)
+                        config.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
+
+                    var settings = viewModel.GetCurrentSettings();
+                    var info = new ImportedGeometryInfo(LevelSettings.MakeRelative(path, VariableType.LevelDirectory), settings);
+                    importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
                 }
 
                 LevelSettings.ImportedGeometryUpdate(importInfos);
@@ -196,7 +206,8 @@ namespace TombEditor.Controls
 
             Enabled = true;
 
-            Editor.Instance.EditorEventRaised += EditorEventRaised;
+            if (Editor.Instance is not null)
+                Editor.Instance.EditorEventRaised += EditorEventRaised;
         }
 
         protected override void Dispose(bool disposing)

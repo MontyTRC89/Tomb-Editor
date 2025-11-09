@@ -1,3 +1,39 @@
+Version 1.10
+============
+
+General:
+ * Added material editor for TEN target.
+ * Reworked geometry import/export dialog with support for custom presets.
+
+Tomb Editor:
+ * Added UVRotate texture animation type support for TEN target.
+ * Added a button in edit object window to reset tint to default.
+ * Added ladders support for TR1X engine target.
+ * Added source wad tooltip in item browser for all objects.
+ * Optimized the level compiler and switched compression to LZ4 for TEN target.
+ * Fixed textured ceiling portals in water rooms ignoring wave effect strength.
+ * Fixed bug with textures not aligned properly for TURNING_WALL_BLADE and TURNING_CEILING_BLADE objects for TEN target.
+ * Fixed position and color controls in nodes not accepting objects via drag-n-drop.
+ * Fixed search button not working in wad preview window in level settings.
+
+WadTool:
+ * Added animated textures support for objects in TEN target using the same window as in Tomb Editor.
+ * Added ability to fill all bone weights with specified values.
+ * Fixed exceptions when copying objects to a TEN wad without a reference wad present.
+ * Fixed incorrect bone weight writing if other vertex data was changed in mesh editor.
+ * Fixed incorrect sphere radius while importing some objects from classic TR levels.
+
+TombIDE:
+ * Reworked scripting autocomplete and hover definitions for TRX game projects.
+ * Added hover definitions for TRX scripting.
+ * Updated TR1X preset to 4.15.1.
+ * Updated TR2X preset to 1.5.1.
+
+TEN nodes:
+ * Added batch nodes for moving a group of moveables or statics over specified timespan.
+ * Added a node for checking moveable visibility.
+ * Add timeout parameter for the node “Set effect for specified moveables”.
+
 Version 1.9.2
 =============
 

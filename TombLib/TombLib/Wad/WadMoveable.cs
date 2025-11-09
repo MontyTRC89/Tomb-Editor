@@ -38,18 +38,18 @@ namespace TombLib.Wad
         public bool IsWaterfall(TRVersion.Game gameVersion)
         {
             return (gameVersion.Native() == TRVersion.Game.TR4 && TypeId >= 423 && TypeId <= 425) ||
-                   (gameVersion.Native() >= TRVersion.Game.TR5 && TypeId >= 410 && TypeId <= 415);
+                   (gameVersion.Native() == TRVersion.Game.TR5 && TypeId >= 410 && TypeId <= 415);
         }
         public bool IsOptics(TRVersion.Game gameVersion)
         {
             return (gameVersion.Native() == TRVersion.Game.TR4 && TypeId >= 461 && TypeId <= 462) ||
-                   (gameVersion.Native() >= TRVersion.Game.TR5 && TypeId >= 456 && TypeId <= 457);
+                   (gameVersion.Native() == TRVersion.Game.TR5 && TypeId >= 456 && TypeId <= 457);
         }
 
         public static WadMoveableId Lara = new WadMoveableId(0);
 
         public static WadMoveableId? GetHorizon(TRVersion.Game gameVersion) {
-            switch (gameVersion) {
+            switch (gameVersion.Native()) {
                 case TRVersion.Game.TR2:
                     return new WadMoveableId(254);
                 case TRVersion.Game.TR3:

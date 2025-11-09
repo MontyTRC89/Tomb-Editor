@@ -263,7 +263,7 @@
 					<type>Color</type>
 					<optional>true</optional>
 					<defaultValue>Color(255, 255, 255)</defaultValue>
-					<description>light color.</description>
+					<description>Light color.</description>
 				</parameter>
 				<parameter>
 					<name>radius</name>
@@ -308,7 +308,7 @@
 					<type>Color</type>
 					<optional>true</optional>
 					<defaultValue>Color(255, 255, 255)</defaultValue>
-					<description>Color.</description>
+					<description>Light color.</description>
 				</parameter>
 				<parameter>
 					<name>radius</name>
@@ -349,37 +349,40 @@
 		<function>
 			<module>Effects</module>
 			<name>EmitFogBulb</name>
-			<summary>Emit dynamic fogbulb that lasts for a single frame.</summary>
-			<description>If you want a fogbulb that sticks around, you must call this each frame.</description>
+			<summary>Emit dynamic fog bulb that lasts for a single frame.</summary>
+			<description>If you want a fog bulb that sticks around, you must call this each frame.</description>
 			<parameters>
 				<parameter>
 					<name>pos</name>
 					<type>Vec3</type>
-					<description>position of the fogbulb</description>
+					<description>Position of the fog bulb.</description>
 				</parameter>
 				<parameter>
 					<name>radius</name>
 					<type>int</type>
 					<optional>true</optional>
-					<description>measured in "clicks" or 256 world units (default 20)</description>
+					<defaultValue>20</defaultValue>
+					<description>Radius measured in "clicks" or 256 world units.</description>
 				</parameter>
 				<parameter>
 					<name>density</name>
 					<type>int</type>
 					<optional>true</optional>
-					<description>from 0 to 255 (default 255)</description>
+					<defaultValue>255</defaultValue>
+					<description>Density, ranging from 0 to 255.</description>
 				</parameter>
 				<parameter>
 					<name>color</name>
 					<type>Color</type>
 					<optional>true</optional>
-					<description>(default Color(255, 255, 255))</description>
+					<defaultValue>Color(255, 255, 255)</defaultValue>
+					<description>Color.</description>
 				</parameter>
 				<parameter>
 					<name>name</name>
 					<type>string</type>
 					<optional>true</optional>
-					<description>if provided, engine will interpolate this light for high framerate mode (be careful not to use same name for different fogbulbs)</description>
+					<description>If provided, engine will interpolate this fog bulb for high framerate mode (be careful not to use same name for different fogbulbs)</description>
 				</parameter>
 			</parameters>
 		</function>
@@ -3808,8 +3811,10 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<parameters>
 				<parameter>
 					<name>timerFormat</name>
-					<type>?table|bool</type>
-					<description>Sets the remaining time display. See &lt;a href="#timerFormat"&gt;Timer format&lt;/a&gt;.</description>
+					<type>table|bool</type>
+					<optional>true</optional>
+					<defaultValue>{minutes = true, seconds = true, deciseconds = true}</defaultValue>
+					<description>Sets the remaining time display. See &lt;a href="#timerFormat"&gt;Timer format&lt;/a&gt;.&lt;br&gt;</description>
 				</parameter>
 			</parameters>
 			<returns>
@@ -3902,8 +3907,10 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<parameters>
 				<parameter>
 					<name>timerFormat</name>
-					<type>?table|bool</type>
-					<description>Sets the remaining time display. See &lt;a href="#timerFormat"&gt;Timer format&lt;/a&gt;.</description>
+					<type>table|bool</type>
+					<optional>true</optional>
+					<defaultValue>{minutes = true, seconds = true, deciseconds = true}</defaultValue>
+					<description>Sets the remaining time display. See &lt;a href="#timerFormat"&gt;Timer format&lt;/a&gt;.&lt;br&gt;</description>
 				</parameter>
 			</parameters>
 			<returns>
@@ -4060,7 +4067,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<module>Timer</module>
 			<caller>Timer</caller>
 			<name>SetPausedColor</name>
-			<summary>Set the paused color of the displayed timer when it is active.</summary>
+			<summary>Set the paused color of the displayed timer when it is in pause.</summary>
 			<parameters>
 				<parameter>
 					<name>color</name>
@@ -4091,12 +4098,13 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<caller>Timer</caller>
 			<name>SetTextOption</name>
 			<summary>Set text options for a timer.</summary>
+			<description>Note: the &lt;em&gt;VERTICAL_CENTER&lt;/em&gt; option is always added.</description>
 			<parameters>
 				<parameter>
 					<name>optionsTable</name>
 					<type>table</type>
 					<optional>true</optional>
-					<defaultValue>{TEN.Strings.DisplayStringOption.CENTER, TEN.Strings.DisplayStringOption.SHADOW}</defaultValue>
+					<defaultValue>&lt;br&gt;{&lt;br&gt;TEN.Strings.DisplayStringOption.CENTER,&lt;br&gt; TEN.Strings.DisplayStringOption.SHADOW,&lt;br&gt; TEN.Strings.DisplayStringOption.VERTICAL_CENTER&lt;br&gt;}</defaultValue>
 					<description>Table containing timer's new text options. See @{Strings.DisplayStringOption}&lt;br&gt;</description>
 				</parameter>
 			</parameters>
@@ -4316,7 +4324,7 @@ allocated even after timeout is reached, and can be shown again without re-initi
 			<returns>
 				<return>
 					<type>bool</type>
-					<description>`rue` if the variable is a Vec3, `false` otherwise.</description>
+					<description>`true` if the variable is a Vec3, `false` otherwise.</description>
 				</return>
 			</returns>
 		</function>
@@ -4353,6 +4361,36 @@ allocated even after timeout is reached, and can be shown again without re-initi
 				<return>
 					<type>bool</type>
 					<description>`true` if the variable is a LevelFunc, `false` otherwise.</description>
+				</return>
+			</returns>
+		</function>
+		<function>
+			<module>Type</module>
+			<name>IsEnumValue</name>
+			<summary>Check if the variable is an enum value.</summary>
+			<parameters>
+				<parameter>
+					<name>variable</name>
+					<type>variable</type>
+					<description>Variable to be checked.</description>
+				</parameter>
+				<parameter>
+					<name>enumTable</name>
+					<type>table</type>
+					<description>Enum table to be checked against.</description>
+				</parameter>
+				<parameter>
+					<name>showError</name>
+					<type>bool</type>
+					<optional>true</optional>
+					<defaultValue>true</defaultValue>
+					<description>(optional) If `true`, an error message will be printed if the parameters are invalid.</description>
+				</parameter>
+			</parameters>
+			<returns>
+				<return>
+					<type>bool</type>
+					<description>`true` if the variable is a value of the enum, `false` otherwise.</description>
 				</return>
 			</returns>
 		</function>
@@ -5560,6 +5598,8 @@ This setting does not affect ability to use weapons or flares.</description>
 						<parameter>
 							<name>activate</name>
 							<type>bool</type>
+							<optional>true</optional>
+							<defaultValue>false</defaultValue>
 							<description>If `true`, also draw the weapons or set torch lit. If `false`, keep weapons holstered or leave torch unlit.</description>
 						</parameter>
 					</parameters>
@@ -6156,7 +6196,11 @@ most can just be ignored (see usage).</description>
 				</method>
 				<method>
 					<name>Moveable:GetLocationAI</name>
-					<summary>Get the location value stored in the Enemy AI.</summary>
+					<summary>Get the OCB of the AI object that the enemy is currently trying to reach.</summary>
+					<description>Used exclusively by:
+ - SOPHIA_LEIGH
+ - VON_CROY
+ - The GUIDE, only if he has ItemFlags[2] bit 1 set</description>
 					<returns>
 						<return>
 							<type>short</type>
@@ -6166,7 +6210,11 @@ most can just be ignored (see usage).</description>
 				</method>
 				<method>
 					<name>Moveable:SetLocationAI</name>
-					<summary>Updates the location in the enemy AI with the given value.</summary>
+					<summary>Updates the AI object OCB that the enemy should try to reach.</summary>
+					<description>Used exclusively by:
+ - SOPHIA_LEIGH
+ - VON_CROY
+ - The GUIDE, only if he has ItemFlags[2] bit 1 set (otherwise, he ignore it and simply look for the next AI object OCB until he reaches the one set by the last call to flipeffect 30)</description>
 					<parameters>
 						<parameter>
 							<name>value</name>
@@ -6627,6 +6675,16 @@ most can just be ignored (see usage).</description>
 					</parameters>
 				</method>
 				<method>
+					<name>Moveable:GetVisible</name>
+					<summary>Get the item's visibility state.</summary>
+					<returns>
+						<return>
+							<type>bool</type>
+							<description>Item's visibility state.</description>
+						</return>
+					</returns>
+				</method>
+				<method>
 					<name>Moveable:SetVisible</name>
 					<summary>Set the item's visibility.</summary>
 					<description>An invisible item will have collision turned off, as if it no longer exists in the game world.</description>
@@ -6696,6 +6754,11 @@ most can just be ignored (see usage).</description>
 						</parameter>
 					</parameters>
 				</method>
+				<method>
+					<name>Moveable:ShowInteractionHighlight</name>
+					<summary>Show interaction highlight for the object.</summary>
+					<description>Can be useful if you have scripted an interaction with it.</description>
+				</method>
 			</members>
 		</class>
 		<class>
@@ -6706,6 +6769,7 @@ most can just be ignored (see usage).</description>
 				<method>
 					<name>Room:GetRoomNumber</name>
 					<summary>Get the room's number.</summary>
+					<description>If room is in flipped state, it will indicate the flipped room number.</description>
 					<returns>
 						<return>
 							<type>int</type>
@@ -7501,9 +7565,20 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 						<parameter>
 							<name>table</name>
 							<type>table</type>
-							<description>The new table with display flags options.</description>
+							<description>The table with @{Strings.DisplayStringOption} flags.</description>
 						</parameter>
 					</parameters>
+				</method>
+				<method>
+					<name>DisplayString:GetFlags</name>
+					<summary>Get the display string's flags.</summary>
+					<returns>
+						<return>
+							<type>table</type>
+							<description>A table of booleans representing @{Strings.DisplayStringOption} flags, indexed from 1:&lt;br&gt;1: TEN.Strings.DisplayStringOption.CENTER&lt;br&gt;2: TEN.Strings.DisplayStringOption.SHADOW&lt;br&gt;3: TEN.Strings.DisplayStringOption.RIGHT&lt;br&gt;4: TEN.Strings.DisplayStringOption.BLINK&lt;br&gt;5: TEN.Strings.DisplayStringOption.VERTICAL_CENTER&lt;br&gt;
+ If a boolean value is true, the corresponding flag is assigned to the DisplayString, otherwise it is not assigned.</description>
+						</return>
+					</returns>
 				</method>
 			</members>
 		</class>
@@ -8884,6 +8959,19 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 			</members>
 		</class>
 		<class>
+			<name>Flow.GameplaySettings</name>
+			<type>tenclass</type>
+			<ctor>false</ctor>
+			<description>These settings are used to enable or disable certain gameplay features.</description>
+			<members>
+				<field>
+					<name>targetObjectOcclusion</name>
+					<summary>(bool) Enable target occlusion by moveables and static meshes.</summary>
+					<description>If enabled, player won't be able to target enemies through moveables and static meshes.</description>
+				</field>
+			</members>
+		</class>
+		<class>
 			<name>Flow.Settings</name>
 			<type>tenclass</type>
 			<description>Global engine settings which don't fall into particular category or can't be assigned to a specific object. Can be accessed using @{Flow.SetSettings} and @{Flow.GetSettings} functions.</description>
@@ -8905,6 +8993,12 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 					<type>Flow.FlareSettings</type>
 					<summary>These settings change appearance and behaviour of a flare.</summary>
 					<description>These settings change appearance and behaviour of a flare.</description>
+				</field>
+				<field>
+					<name>Gameplay</name>
+					<type>Flow.GameplaySettings</type>
+					<summary>These settings are used to enable or disable certain gameplay features.</summary>
+					<description>These settings are used to enable or disable certain gameplay features.</description>
 				</field>
 				<field>
 					<name>Graphics</name>
@@ -10163,6 +10257,10 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 				</value>
 				<value>
 					<name>HAIR_SECONDARY</name>
+					<summary>Object ID.</summary>
+				</value>
+				<value>
+					<name>SNOWMOBILE_TRACKS</name>
 					<summary>Object ID.</summary>
 				</value>
 				<value>
@@ -13278,7 +13376,7 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>MESHSWAP_HITMAN</name>
+					<name>MESHSWAP_CYBORG</name>
 					<summary>Object ID.</summary>
 				</value>
 				<value>
@@ -13975,6 +14073,10 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 				</value>
 				<value>
 					<name>RAIN_SPRITES</name>
+					<summary>Sprite Object ID.</summary>
+				</value>
+				<value>
+					<name>INTERACTION_SPRITES</name>
 					<summary>Sprite Object ID.</summary>
 				</value>
 			</values>

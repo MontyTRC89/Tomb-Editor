@@ -37,7 +37,8 @@
     <moveable id="35" name="LARA_CROWBAR_ANIM" use_body_from="12" />
     <moveable id="36" name="LARA_TORCH_ANIM" use_body_from="12" />
     <moveable id="37" name="HAIR_PRIMARY" />
-	<moveable id="38" name="HAIR_SECONDARY" />
+    <moveable id="38" name="HAIR_SECONDARY" />
+    <moveable id="49" name="SNOWMOBILE_TRACKS" />
     <moveable id="50" name="SNOWMOBILE_LARA_ANIMS" use_body_from="12" />
     <moveable id="51" name="SNOWMOBILE" />
     <moveable id="52" name="QUAD_LARA_ANIMS" use_body_from="12" />
@@ -816,7 +817,7 @@
     <moveable id="1111" name="MESHSWAP_BADDY2" />
     <moveable id="1113" name="MESHSWAP_MAFIA2" />
     <moveable id="1114" name="MESHSWAP_IMP" />
-    <moveable id="1115" name="MESHSWAP_HITMAN" />
+    <moveable id="1115" name="MESHSWAP_CYBORG" />
     <moveable id="1116" name="MESHSWAP_ROMAN_GOD1" />
     <moveable id="1117" name="MESHSWAP_ROMAN_GOD2" />
     <moveable id="1118" name="MESHSWAP_MONKEY_MEDIPACK" />

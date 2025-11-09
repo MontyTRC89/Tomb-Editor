@@ -15,6 +15,8 @@ using TombEditor.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
@@ -29,6 +31,7 @@ using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.WPF;
 
 namespace TombEditor
 {
@@ -1135,7 +1138,7 @@ namespace TombEditor
             }
             else if (instance is SpriteInstance)
             {
-                if (!VersionCheck(_editor.Level.Settings.GameVersion <= TRVersion.Game.TR2, "Room sprite"))
+                if (!VersionCheck(_editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2, "Room sprite"))
                     return;
 
                 using (var formSprite = GetObjectSetupWindow((SpriteInstance)instance))
@@ -2334,7 +2337,7 @@ namespace TombEditor
 
         public static void PlaceLight(LightType type)
         {
-            var color = (type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4) ?
+            var color = (type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR4) ?
                 Vector3.One : (Vector3)_editor.LastUsedPaletteColour * 2.0f;
 
             _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(type) { Color = color });
@@ -4095,7 +4098,7 @@ namespace TombEditor
                 light =>
                 {
                     // Prompt user that real intensity is now used to define fog bulb intensity
-                    if (_editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
+                    if (_editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
                     {
                         _editor.SendMessage("To edit fog bulb intensity, use 'Intensity' field.", PopupType.Info);
                         return light.Color;
@@ -4198,7 +4201,8 @@ namespace TombEditor
                         watch.Start();
                         var statistics = compiler.CompileLevel(cancelToken);
                         watch.Stop();
-                        progressReporter.ReportProgress(100, "\nElapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+
+                        progressReporter.ReportProgress(100, $"\nElapsed time: {FormatElapsedSmart(watch.Elapsed.TotalMilliseconds)}");
 
                         // Raise an event for statistics update
                         _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
@@ -4224,6 +4228,37 @@ namespace TombEditor
                 form.ShowDialog(owner);
                 return form.DialogResult != DialogResult.Cancel;
             }
+        }
+
+        private static string FormatElapsedSmart(double elapsedMs) =>
+            FormatElapsedSmart(TimeSpan.FromMilliseconds(elapsedMs));
+
+        private static string FormatElapsedSmart(TimeSpan t)
+        {
+            long totalMs = (long)Math.Round(t.TotalMilliseconds);
+
+            if (totalMs < 1_000)
+                return $"{totalMs} ms";
+
+            if (totalMs < 60_000)
+            {
+                long s = totalMs / 1_000;
+                long ms = totalMs % 1_000;
+                return $"{s} s {ms} ms";
+            }
+
+            if (totalMs < 3_600_000)
+            {
+                long m = totalMs / 60_000;
+                long s = (totalMs % 60_000) / 1_000;
+                return $"{m} min {s} s";
+            }
+
+            // >= 1 hour
+            long h = totalMs / 3_600_000;
+            long m2 = (totalMs % 3_600_000) / 60_000;
+            long s2 = (totalMs % 60_000) / 1_000;
+            return $"{h} h {m2} min {s2} s";
         }
 
         public static void BuildLevelAndPlay(IWin32Window owner, bool fastMode = false)
@@ -4321,20 +4356,26 @@ namespace TombEditor
                 return null;
 
             var geometry = new ImportedGeometry();
+            var config = Editor.Instance?.Configuration;
 
-            using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-            {
-                settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                settingsDialog.SelectPreset("Normal scale to TR scale");
+            var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+            viewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryImportPresetName);
 
-                if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
-                    return null;
+            var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
+            settingsDialog.SetOwner(owner);
+            settingsDialog.ShowDialog();
 
-                var info = new ImportedGeometryInfo(path, settingsDialog.Settings);
-                _editor.Level.Settings.ImportedGeometryUpdate(geometry, info);
-                _editor.Level.Settings.ImportedGeometries.Add(geometry);
-                _editor.LoadedImportedGeometriesChange();
-            }
+            if (viewModel.DialogResult != true)
+                return null;
+
+            if (config is not null)
+                config.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
+
+            var settings = viewModel.GetCurrentSettings();
+            var info = new ImportedGeometryInfo(path, settings);
+            _editor.Level.Settings.ImportedGeometryUpdate(geometry, info);
+            _editor.Level.Settings.ImportedGeometries.Add(geometry);
+            _editor.LoadedImportedGeometriesChange();
 
             return geometry;
         }
@@ -5035,56 +5076,68 @@ namespace TombEditor
                     return;
                 }
 
-                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true, ExportRoom = true }))
+                var config = Editor.Instance?.Configuration;
+
+                var viewModel = new GeometryIOSettingsWindowViewModel(
+                    IOSettingsPresets.GeometryExportSettingsPresets,
+                    new() { Export = true, ExportRoom = true }
+                );
+
+                viewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryExportPresetName);
+
+                var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
+                settingsDialog.SetOwner(owner);
+                settingsDialog.ShowDialog();
+
+                if (viewModel.DialogResult != true)
+                    return;
+
+                if (config is not null)
+                    config.GeometryIO_LastUsedGeometryExportPresetName = viewModel.SelectedPreset?.Name;
+
+                var settings = viewModel.GetCurrentSettings();
+
+                BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
                 {
-                    settingsDialog.AddPreset(IOSettingsPresets.GeometryExportSettingsPresets);
-                    settingsDialog.SelectPreset("Normal scale");
+                    if (txt is LevelTexture)
+                        return _editor.Level.Settings.MakeAbsolute(((LevelTexture)txt).Path);
+                    else
+                        return "";
+                };
 
-                    if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
+                BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settings, getTextureCallback);
+                new Thread(() =>
+                {
+                    bool exportInWorldCoordinates = rooms.Count() > 1;
+                    var result = RoomGeometryExporter.ExportRooms(rooms, saveFileDialog.FileName, _editor.Level, exportInWorldCoordinates);
+
+                    if (result.Errors.Count < 1)
                     {
-                        BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
+                        IOModel resultModel = result.Model;
+                        if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
                         {
-                            if (txt is LevelTexture)
-                                return _editor.Level.Settings.MakeAbsolute(((LevelTexture)txt).Path);
-                            else
-                                return "";
-                        };
-
-                        BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
-                        new Thread(() =>
-                        {
-                            bool exportInWorldCoordinates = rooms.Count() > 1;
-                            var result = RoomGeometryExporter.ExportRooms(rooms, saveFileDialog.FileName, _editor.Level, exportInWorldCoordinates);
-
-                            if (result.Errors.Count < 1)
+                            if (result.Warnings.Count > 0)
                             {
-                                IOModel resultModel = result.Model;
-                                if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
+                                if (result.Warnings.Count < 5)
                                 {
-                                    if (result.Warnings.Count > 0)
-                                    {
-                                        if (result.Warnings.Count < 5)
-                                        {
-                                            string warningmessage = "";
-                                            result.Warnings.ForEach(warning => warningmessage += warning + "\n");
-                                            _editor.SendMessage("Room export successful with warnings: \n" + warningmessage, PopupType.Warning);
-                                        }
-                                        else
-                                            _editor.SendMessage("Room export successful with multiple warnings.", PopupType.Warning);
-                                    }
-                                    else
-                                        _editor.SendMessage("Room export successful.", PopupType.Info);
+                                    string warningmessage = "";
+                                    result.Warnings.ForEach(warning => warningmessage += warning + "\n");
+                                    _editor.SendMessage("Room export successful with warnings: \n" + warningmessage, PopupType.Warning);
                                 }
+                                else
+                                    _editor.SendMessage("Room export successful with multiple warnings.", PopupType.Warning);
                             }
                             else
-                            {
-                                string errorMessage = "";
-                                result.Errors.ForEach((error) => { errorMessage += error + "\n"; });
-                                _editor.SendMessage("There was an error exporting room(s): \n" + errorMessage, PopupType.Error);
-                            }
-                        }).Start();
+                                _editor.SendMessage("Room export successful.", PopupType.Info);
+                        }
                     }
-                }
+                    else
+                    {
+                        string errorMessage = "";
+                        result.Errors.ForEach((error) => { errorMessage += error + "\n"; });
+                        _editor.SendMessage("There was an error exporting room(s): \n" + errorMessage, PopupType.Error);
+                    }
+                }).Start();
             }
         }
 
@@ -5684,7 +5737,7 @@ namespace TombEditor
 
             var samplePath = Application.StartupPath + "\\Assets\\Samples\\";
 
-            switch (settings.GameVersion)
+            switch (settings.GameVersion.Native())
             {
                 case TRVersion.Game.TR1:
                     samplePath = samplePath + "TR1";
@@ -5779,7 +5832,7 @@ namespace TombEditor
 
         public static void AssignTriggerSounds(LevelSettings settings)
         {
-            bool isTR4 = _editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4;
+            bool isTR4 = _editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4;
 
             foreach (var room in _editor.Level.Rooms)
                 if (room != null)

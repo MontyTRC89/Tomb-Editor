@@ -8,6 +8,16 @@ LevelFuncs.Engine.Node.TestMoveableActivity = function(moveableName)
 	return TEN.Objects.GetMoveableByName(moveableName):GetActive()
 end
 
+-- !Name "If moveable is visible..."
+-- !Section "Moveable parameters"
+-- !Description "Checks if moveable is visible."
+-- !Conditional "True"
+-- !Arguments "NewLine, Moveables"
+
+LevelFuncs.Engine.Node.TestMoveableVisibility = function(moveableName)
+	return TEN.Objects.GetMoveableByName(moveableName):GetVisible()
+end
+
 -- !Name "If health of a moveable is..."
 -- !Section "Moveable parameters"
 -- !Description "Compares selected moveable health with given value."

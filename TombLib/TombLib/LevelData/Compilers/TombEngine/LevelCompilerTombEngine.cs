@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
@@ -15,6 +16,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine : LevelCompiler
     {
+        private sealed class TombEngineBucketComparer : IComparer<TombEngineBucket>
+        {
+            public static readonly TombEngineBucketComparer Instance = new();
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public int Compare(TombEngineBucket x, TombEngineBucket y)
+            {
+                var a = x.Material;
+                var b = y.Material;
+
+                int c = a.MaterialIndex.CompareTo(b.MaterialIndex);
+                if (c != 0) 
+                    return c;
+
+                 c = a.Texture.CompareTo(b.Texture);
+                if (c != 0) 
+                    return c;
+
+                c = a.BlendMode.CompareTo(b.BlendMode);
+                if (c != 0) 
+                    return c;
+
+                return 0;
+            }
+        }
+
         private readonly Dictionary<Room, TombEngineRoom> _tempRooms = new Dictionary<Room, TombEngineRoom>(new ReferenceEqualityComparer<Room>());
 
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
@@ -56,6 +83,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         // Collected game limits
         private Dictionary<Limit, int> _limits;
 
+        private Dictionary<string, MaterialData> _materialDictionary = new Dictionary<string, MaterialData>(StringComparer.OrdinalIgnoreCase);
+        private List<string> _materialNames = new List<string>();
+
         public LevelCompilerTombEngine(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
         {
@@ -77,6 +107,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             _textureInfoManager = new TombEngineTexInfoManager(_level, _progressReporter, _limits[Limit.TexPageSize]);
 
+            BuildMaterials();
+
             // Prepare level data in parallel to the sounds
             ConvertWad2DataToTombEngine();
 
@@ -90,7 +122,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(30, "Packing textures");
             _textureInfoManager.LayOutAllData();
 
-            ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
+            ReportProgress(35, "   Number of processed texture fragments: " + _textureInfoManager.TexturesCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
             GetAllReachableRooms();
 
@@ -131,7 +163,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             {
                 BoxCount = _boxes.Count,
                 OverlapCount = _overlaps.Count,
-                ObjectTextureCount = _textureInfoManager.TexInfoCount,
+                ObjectTextureCount = _textureInfoManager.TexturesCount,
             };
         }
 
@@ -335,7 +367,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private void GetAllReachableRoomsUp(Room baseRoom, Room currentRoom)
         {
             // Wall portals
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
@@ -346,7 +378,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             // Ceiling portals
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction != PortalDirection.Ceiling)
                     continue;
@@ -363,7 +395,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private void GetAllReachableRoomsDown(Room baseRoom, Room currentRoom)
         {
             // portali laterali
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
@@ -373,7 +405,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     tempRoom.ReachableRooms.Add(p.AdjoiningRoom);
             }
 
-            foreach (var p in currentRoom.Portals)
+            foreach (var p in currentRoom.PortalsCache)
             {
                 if (p.Direction != PortalDirection.Floor)
                     continue;
@@ -518,15 +550,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         public bool CheckTombEngineVersion()
         {
-            var buffer = _level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath);
+            var path = _level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath);
 
-            if (!File.Exists(buffer))
+            if (!File.Exists(path))
             {
                 _progressReporter.ReportWarn("Tomb Engine executable was not found in game directory.");
                 return false;
             }
 
-            var version = FileVersionInfo.GetVersionInfo(buffer);
+            var version = FileVersionInfo.GetVersionInfo(path);
 
             if (string.IsNullOrEmpty(version.ProductVersion))
             {
@@ -534,35 +566,28 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return false;
             }
 
-            buffer = version.ProductVersion.Replace(",", ".");
-            _progressReporter.ReportInfo("Target Tomb Engine version is " + buffer);
+            var engineVersion = new Version(version.ProductMajorPart, version.ProductMinorPart,
+                                            version.ProductBuildPart, version.ProductPrivatePart);
 
-            int currentVersion = 0;
-            int.TryParse(FileVersionInfo
-                .GetVersionInfo(Assembly.GetExecutingAssembly().Location)
-                .ProductVersion
-                .Replace(".", string.Empty)
-                .PadRight(4, '0'), out currentVersion);
+            _progressReporter.ReportInfo("Target Tomb Engine version is " + engineVersion);
 
-            buffer = version.ProductMajorPart.ToString() + "." +
-                     version.ProductMinorPart.ToString() + "." +
-                     version.ProductBuildPart.ToString() + ".0";
+            engineVersion = new Version(version.ProductMajorPart, version.ProductMinorPart,
+                                        version.ProductBuildPart);
 
-            int targetVersion = 0;
-            int.TryParse(buffer
-                .Replace(".", string.Empty)
-                .PadRight(4, '0'), out targetVersion);
+            var editorInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var editorVersion = new Version(editorInfo.ProductMajorPart, editorInfo.ProductMinorPart,
+                                            editorInfo.ProductBuildPart);
 
-            if (targetVersion > currentVersion)
+            int comparison = engineVersion.CompareTo(editorVersion);
+
+            if (comparison > 0)
             {
-                _progressReporter.ReportWarn("Tomb Engine version is higher than this Tomb Editor version. " +
-                    "Please update Tomb Editor.");
+                _progressReporter.ReportWarn("Tomb Engine version is higher than this Tomb Editor version. Please update Tomb Editor.");
                 return false;
             }
-            else if (targetVersion < currentVersion)
+            else if (comparison < 0)
             {
-                _progressReporter.ReportWarn("Tomb Engine version is lower than this Tomb Editor version. " +
-                    "Please update your project to the latest Tomb Engine version.");
+                _progressReporter.ReportWarn("Tomb Engine version is lower than this Tomb Editor version. Please update your project to the latest Tomb Engine version.");
                 return false;
             }
 

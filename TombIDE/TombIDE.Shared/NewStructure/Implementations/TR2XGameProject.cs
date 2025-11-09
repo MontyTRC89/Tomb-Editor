@@ -10,7 +10,7 @@ namespace TombIDE.Shared.NewStructure
 {
 	public class TR2XGameProject : GameProjectBase
 	{
-		public const string MainScriptFileNameFilter = "*_gameflow.json5";
+		public const string MainScriptFileNameFilter = "*gameflow.json5";
 		public const string LanguageFileNameFilter = MainScriptFileNameFilter; // Same file as main script file
 
 		public override TRVersion.Game GameVersion => TRVersion.Game.TR2X;
@@ -19,7 +19,7 @@ namespace TombIDE.Shared.NewStructure
 		public override string EngineExecutableFileName => "TR2X.exe";
 
 		public override string MainScriptFilePath => Directory
-			.GetFiles(GetScriptRootDirectory(), MainScriptFileNameFilter, SearchOption.TopDirectoryOnly)
+			.GetFiles(GetScriptRootDirectory(), MainScriptFileNameFilter, SearchOption.AllDirectories)
 			.FirstOrDefault();
 
 		public override bool SupportsCustomScriptPaths => false;
@@ -39,7 +39,7 @@ namespace TombIDE.Shared.NewStructure
 			return File.Exists(defaultLanguageFilePath)
 				? defaultLanguageFilePath
 				: throw new FileNotFoundException("The default game language file could not be found.\n" +
-					"Required file not found: ..._gameflow.json5");
+					"Required file not found: gameflow.json5");
 		}
 
 		public override bool IsValid(out string errorMessage)
