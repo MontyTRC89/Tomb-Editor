@@ -4,6 +4,8 @@ Version 1.10.1
 Tomb Editor:
  * Copy main room attributes from the parent room when using portal digger tool.
 
+TEN nodes:
+ * Fixed flipmap node accepting values only up to 16.
 
 Version 1.10
 ============
