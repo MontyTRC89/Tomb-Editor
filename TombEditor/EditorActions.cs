@@ -3465,7 +3465,7 @@ namespace TombEditor
                 return null;
             }
 
-            if(room.IsAnyPortal(direction, clampedSelection.Value.Area))
+            if (room.IsAnyPortal(direction, clampedSelection.Value.Area))
             {
                 _editor.SendMessage("Can't create adjoining room. \nSelection contains existing portals.", PopupType.Error);
                 return null;
@@ -3583,6 +3583,15 @@ namespace TombEditor
             newRoom.AddObject(_editor.Level, new PortalInstance(portalArea, PortalInstance.GetOppositeDirection(direction), room));
             newRoom.Name = "Room " + roomNumber;
 
+            // Copy main parent room properties
+            newRoom.Properties.AmbientLight = room.Properties.AmbientLight;
+            newRoom.Properties.Type = room.Properties.Type;
+            newRoom.Properties.TypeStrength = room.Properties.TypeStrength;
+            newRoom.Properties.FlagCold = room.Properties.FlagCold;
+            newRoom.Properties.FlagDamage = room.Properties.FlagDamage;
+            newRoom.Properties.FlagOutside = room.Properties.FlagOutside;
+            newRoom.Properties.FlagHorizon = room.Properties.FlagHorizon;
+
             if (_editor.Configuration.UI_GenerateRoomDescriptions)
                 newRoom.Name += " (dug " + dirString + ")";
 
@@ -3601,7 +3610,7 @@ namespace TombEditor
             });
 
             if (switchRoom && (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite))
-                _editor.SelectedRoom = newRoom; //Don't center
+                _editor.SelectedRoom = newRoom; // Don't center
             else
             {
                 _editor.RoomSectorPropertiesChange(room);

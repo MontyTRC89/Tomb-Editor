@@ -1,3 +1,10 @@
+Version 1.10.1
+==============
+
+Tomb Editor:
+ * Copy main room attributes from the parent room when using portal digger tool.
+
+
 Version 1.10
 ============
 
