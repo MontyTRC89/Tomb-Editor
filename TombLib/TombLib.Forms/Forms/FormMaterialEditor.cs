@@ -182,9 +182,25 @@ namespace TombLib.Forms
 					break;
 			}
 
+			bool emptyMaterial = 
+				materialData.Type == MaterialType.Default &&
+				string.IsNullOrEmpty(materialData.NormalMap) &&
+				string.IsNullOrEmpty(materialData.HeightMap) &&
+				string.IsNullOrEmpty(materialData.SpecularMap) &&
+				string.IsNullOrEmpty(materialData.EmissiveMap) &&
+				string.IsNullOrEmpty(materialData.AmbientOcclusionMap) &&
+				string.IsNullOrEmpty(materialData.RoughnessMap);
+
 			try
 			{
 				File.Delete(externalMaterialDataPath);
+
+				if (emptyMaterial)
+				{
+					MaterialFileName = null;
+					return;
+				}
+
 				MaterialData.SaveToXml(externalMaterialDataPath, materialData);
 				MaterialFileName = externalMaterialDataPath;
 			}
