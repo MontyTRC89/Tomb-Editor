@@ -5,6 +5,7 @@ Version 1.10.1
  * Delete external material xml file if material settings are reset to default.
 
 Tomb Editor:
+ * Fixed incorrect prompt about other missing resources when reconnecting an offline file.
  * Copy main room attributes from the parent room when using portal digger tool.
 
 TEN nodes:

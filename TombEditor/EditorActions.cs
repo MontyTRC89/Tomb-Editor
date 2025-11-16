@@ -4643,7 +4643,10 @@ namespace TombEditor
             var list = new Dictionary<IReloadableResource, string>() { { toReplace, path } };
 
             if (searchForOthers)
-                foreach (var item in toReplace.GetResourceList(settings).Where(i => i != toReplace && i != null && i.LoadException != null))
+            {
+                var resourceListToReplace = toReplace.GetResourceList(settings).Where(i => !string.Equals(i.GetPath(), toReplace.GetPath()) && i != null && i.LoadException != null);
+
+                foreach (var item in resourceListToReplace)
                 {
                     // Now recursively search down the folder structure
                     var newPath = PathC.TryFindFile(Path.GetDirectoryName(settings.MakeAbsolute(path)), settings.MakeAbsolute(item.GetPath()), 4, 4);
@@ -4660,6 +4663,7 @@ namespace TombEditor
                         list.TryAdd(item, settings.MakeRelative(newPath, VariableType.LevelDirectory));
                     }
                 }
+            }
 
             if (toReplace.ResourceType == ReloadableResourceType.ImportedGeometry)
             {
