@@ -1,7 +1,5 @@
-using DarkUI.Forms;
 using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.NewStructure.Implementations;
 using TombLib.LevelData;
@@ -10,67 +8,55 @@ namespace TombIDE.ProjectMaster.Services.LevelCompile;
 
 public sealed class LevelCompileService : ILevelCompileService
 {
-	public void RebuildAllLevels(IGameProject project, IWin32Window owner)
+	public bool RebuildAllLevels(IGameProject project)
 	{
 		LevelProject[] levels = project.GetAllValidLevelProjects();
 
 		if (levels.Length == 0)
-		{
-			DarkMessageBox.Show(owner,
-				"There are no levels in the current project.",
-				"Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-			return;
-		}
+			return false;
 
 		var batchList = new BatchCompileList();
 
 		foreach (ILevelProject level in levels)
 		{
-			string prj2Path;
-
-			if (level.TargetPrj2FileName is null)
-				prj2Path = Path.Combine(level.DirectoryPath, level.GetMostRecentlyModifiedPrj2FileName());
-			else
-				prj2Path = Path.Combine(level.DirectoryPath, level.TargetPrj2FileName);
-
+			string prj2Path = GetPrj2Path(level);
 			batchList.Files.Add(prj2Path);
 		}
 
-		string batchListFilePath = Path.Combine(Path.GetTempPath(), "tide_batch.xml");
-		BatchCompileList.SaveToXml(batchListFilePath, batchList);
-
-		var startInfo = new ProcessStartInfo
-		{
-			FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
-			Arguments = "\"" + batchListFilePath + "\"",
-			WorkingDirectory = DefaultPaths.ProgramDirectory,
-			UseShellExecute = true
-		};
-
-		Process.Start(startInfo);
+		ExecuteBatchCompile(batchList);
+		return true;
 	}
 
 	public void RebuildLevel(ILevelProject level)
 	{
 		var batchList = new BatchCompileList();
+		batchList.Files.Add(GetPrj2Path(level));
 
-		string prj2Path;
+		ExecuteBatchCompile(batchList);
+	}
 
-		if (level.TargetPrj2FileName is null)
-			prj2Path = Path.Combine(level.DirectoryPath, level.GetMostRecentlyModifiedPrj2FileName());
-		else
-			prj2Path = Path.Combine(level.DirectoryPath, level.TargetPrj2FileName);
+	/// <summary>
+	/// Gets the full path to the .prj2 file for the specified level.
+	/// Uses the target filename if specified, otherwise uses the most recently modified .prj2 file.
+	/// </summary>
+	private static string GetPrj2Path(ILevelProject level)
+	{
+		string fileName = level.TargetPrj2FileName ?? level.GetMostRecentlyModifiedPrj2FileName();
+		return Path.Combine(level.DirectoryPath, fileName);
+	}
 
-		batchList.Files.Add(prj2Path);
-
+	/// <summary>
+	/// Executes a batch compile by saving the batch list to a temporary XML file and launching TombEditor.exe.
+	/// </summary>
+	private static void ExecuteBatchCompile(BatchCompileList batchList)
+	{
 		string batchListFilePath = Path.Combine(Path.GetTempPath(), "tide_batch.xml");
 		BatchCompileList.SaveToXml(batchListFilePath, batchList);
 
 		var startInfo = new ProcessStartInfo
 		{
 			FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
-			Arguments = "\"" + batchListFilePath + "\"",
+			Arguments = $"\"{batchListFilePath}\"",
 			WorkingDirectory = DefaultPaths.ProgramDirectory,
 			UseShellExecute = true
 		};

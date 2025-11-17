@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using TombIDE.ProjectMaster.Services.PakFile;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedClasses;
@@ -90,13 +91,10 @@ public sealed class LogoManagementService : ILogoManagementService
 		if (!File.Exists(pakFilePath))
 			return true;
 
-		foreach (byte byteInfo in _pakFileService.GetDecompressedData(pakFilePath))
-		{
-			if (byteInfo != 0)
-				return false;
-		}
+		byte[] decompressedData = _pakFileService.GetDecompressedData(pakFilePath);
+		bool hasAnyNonZeroBytes = decompressedData.Any(b => b != 0);
 
-		return true;
+		return !hasAnyNonZeroBytes; // True if the entire data is zeroes (blank logo)
 	}
 
 	private static string GetPakFilePath(IGameProject project)

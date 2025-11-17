@@ -18,8 +18,9 @@
 		private void InitializeComponent()
 		{
 			this.label = new DarkUI.Controls.DarkLabel();
-			this.progressBar = new System.Windows.Forms.ProgressBar();
+			this.progressBar = new DarkUI.Controls.DarkProgressBar();
 			this.labelStatus = new DarkUI.Controls.DarkLabel();
+			this.buttonCancel = new DarkUI.Controls.DarkButton();
 			this.SuspendLayout();
 			// 
 			// label
@@ -51,11 +52,23 @@
 			this.labelStatus.Text = "Initializing...";
 			this.labelStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Checked = false;
+			this.buttonCancel.Location = new System.Drawing.Point(202, 99);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(100, 23);
+			this.buttonCancel.TabIndex = 3;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.Visible = false;
+			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			// 
 			// FormPleaseWait
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(504, 105);
+			this.ClientSize = new System.Drawing.Size(504, 130);
+			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.labelStatus);
 			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.label);
@@ -72,7 +85,8 @@
 		#endregion
 
 		private DarkUI.Controls.DarkLabel label;
-		private System.Windows.Forms.ProgressBar progressBar;
+		private DarkUI.Controls.DarkProgressBar progressBar;
 		private DarkUI.Controls.DarkLabel labelStatus;
+		private DarkUI.Controls.DarkButton buttonCancel;
 	}
 }

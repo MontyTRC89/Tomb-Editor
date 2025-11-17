@@ -5,7 +5,7 @@ namespace TombIDE.ProjectMaster.Services.PakFile;
 
 /// <summary>
 /// Provides functionality for reading and writing PAK files used by TR4.
-/// PAK files are compressed data files with a 4-byte prefix used for game resources like logos.
+/// <para>PAK files are compressed data files with a 4-byte prefix used for game resources like logos.</para>
 /// </summary>
 public interface IPakFileService
 {

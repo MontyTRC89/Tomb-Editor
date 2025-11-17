@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TombIDE.Shared.NewStructure;
-using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ProjectMaster.Services.ArchiveCreation;
 
@@ -28,108 +29,124 @@ public abstract class GameArchiveServiceBase : IGameArchiveService
 
 	public abstract bool SupportsGameVersion(IGameProject project);
 
-	public async Task CreateGameArchiveAsync(IGameProject project, string outputPath, string? readmeText = null)
+	public async Task CreateGameArchiveAsync(
+		IGameProject project,
+		string outputPath,
+		string? readmeText = null,
+		CancellationToken cancellationToken = default)
 	{
 		if (!SupportsGameVersion(project))
-			throw new InvalidOperationException($"This service does not support {project.GameVersion}");
+			throw new InvalidOperationException($"This service does not support {project.GameVersion}.");
 
-		string tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+		// Delete existing archive if it exists
+		if (File.Exists(outputPath))
+			File.Delete(outputPath);
 
-		try
+		string engineDirectory = project.GetEngineRootDirectoryPath();
+		string launchFilePath = project.GetLauncherFilePath();
+
+		bool hasLauncherFile = File.Exists(launchFilePath);
+		bool hasReadmeContent = !string.IsNullOrWhiteSpace(readmeText);
+
+		IReadOnlyList<string> importantFolders = GetImportantFolders(engineDirectory);
+		IReadOnlyList<string> importantFiles = GetImportantFiles(engineDirectory);
+
+		int totalFileCount = CalculateTotalFileCount(importantFolders, importantFiles, hasLauncherFile, hasReadmeContent);
+
+		OnProgressChanged("Creating archive...", 0, totalFileCount);
+
+		int processedFiles = 0;
+
+		await Task.Run(() =>
 		{
-			if (!Directory.Exists(tempDirectory))
-				Directory.CreateDirectory(tempDirectory);
+			using var archive = ZipFile.Open(outputPath, ZipArchiveMode.Create);
 
-			OnProgressChanged("Preparing archive structure...", 0, 100);
-
-			string engineDirectory = project.GetEngineRootDirectoryPath();
-			string targetTempEngineDirectory = Path.Combine(tempDirectory, "Engine");
-
-			// Get engine-specific folders and files
-			var importantFolders = GetImportantFolders(engineDirectory);
-			var importantFiles = GetImportantFiles(engineDirectory);
-
-			int totalItems = importantFolders.Count + importantFiles.Count + (CreateSavesFolder() ? 1 : 0);
-			int processedItems = 0;
-
-			// Copy folders
-			foreach (string folder in importantFolders)
+			// Add files from folders
+			foreach (string folder in importantFolders.Where(Directory.Exists))
 			{
-				if (!Directory.Exists(folder))
-					continue;
+				cancellationToken.ThrowIfCancellationRequested();
 
-				string pathPart = folder[engineDirectory.Length..];
-				string targetPath = Path.Combine(targetTempEngineDirectory, pathPart.Trim('\\'));
+				foreach (string file in Directory.GetFiles(folder, "*", SearchOption.AllDirectories))
+				{
+					cancellationToken.ThrowIfCancellationRequested();
 
-				OnProgressChanged($"Copying folder: {Path.GetFileName(folder)}", processedItems++, totalItems);
-				await Task.Run(() => SharedMethods.CopyFilesRecursively(folder, targetPath));
+					AddFileToArchive(archive, file, engineDirectory, "Engine/");
+					OnProgressChanged($"Adding: {Path.GetFileName(file)}", ++processedFiles, totalFileCount);
+				}
 			}
 
 			// Create saves folder if needed
 			if (CreateSavesFolder())
 			{
-				OnProgressChanged("Creating saves folder...", processedItems++, totalItems);
-				Directory.CreateDirectory(Path.Combine(targetTempEngineDirectory, "saves"));
+				cancellationToken.ThrowIfCancellationRequested();
+
+				archive.CreateEntry("Engine/saves/keep.me", CompressionLevel.Optimal);
+				OnProgressChanged("Creating saves folder...", ++processedFiles, totalFileCount);
 			}
 
-			// Copy files
-			foreach (string file in importantFiles)
+			// Add individual files
+			foreach (string file in importantFiles.Where(File.Exists))
 			{
-				if (!File.Exists(file))
-					continue;
+				cancellationToken.ThrowIfCancellationRequested();
 
-				string pathPart = file[engineDirectory.Length..];
-				string targetPath = Path.Combine(targetTempEngineDirectory, pathPart.Trim('\\'));
-
-				string? targetDirectory = Path.GetDirectoryName(targetPath);
-
-				if (targetDirectory is not null && !Directory.Exists(targetDirectory))
-					Directory.CreateDirectory(targetDirectory);
-
-				OnProgressChanged($"Copying file: {Path.GetFileName(file)}", processedItems++, totalItems);
-				await Task.Run(() => File.Copy(file, targetPath));
+				AddFileToArchive(archive, file, engineDirectory, "Engine/");
+				OnProgressChanged($"Adding: {Path.GetFileName(file)}", ++processedFiles, totalFileCount);
 			}
 
-			// Copy launcher
-			string launchFilePath = project.GetLauncherFilePath();
-
-			if (File.Exists(launchFilePath))
+			// Add launcher
+			if (hasLauncherFile)
 			{
-				OnProgressChanged("Copying launcher...", processedItems++, totalItems);
-				await Task.Run(() => File.Copy(launchFilePath, Path.Combine(tempDirectory, Path.GetFileName(launchFilePath)), true));
+				cancellationToken.ThrowIfCancellationRequested();
+
+				string launcherFileName = Path.GetFileName(launchFilePath);
+				archive.CreateEntryFromFile(launchFilePath, launcherFileName, CompressionLevel.Optimal);
+
+				OnProgressChanged($"Adding: {launcherFileName}", ++processedFiles, totalFileCount);
 			}
 
-			// Create README if provided
-			if (!string.IsNullOrWhiteSpace(readmeText))
+			// Add README if provided
+			if (hasReadmeContent)
 			{
-				OnProgressChanged("Creating README.txt...", processedItems++, totalItems);
-				await File.WriteAllTextAsync(Path.Combine(tempDirectory, "README.txt"), readmeText);
+				cancellationToken.ThrowIfCancellationRequested();
+
+				AddReadmeToArchive(archive, readmeText!);
+				OnProgressChanged("Adding: README.txt", ++processedFiles, totalFileCount);
 			}
+		}, cancellationToken);
 
-			// Create the archive
-			if (File.Exists(outputPath))
-				File.Delete(outputPath);
+		OnProgressChanged("Archive creation complete!", totalFileCount, totalFileCount);
+	}
 
-			OnProgressChanged("Creating ZIP archive...", processedItems++, totalItems);
-			await Task.Run(() => ZipFile.CreateFromDirectory(tempDirectory, outputPath));
+	private static int CalculateTotalFileCount(
+		IReadOnlyList<string> importantFolders,
+		IReadOnlyList<string> importantFiles,
+		bool hasLauncherFile,
+		bool hasReadmeContent)
+	{
+		int count = importantFiles.Count +
+				   (hasLauncherFile ? 1 : 0) +
+				   (hasReadmeContent ? 1 : 0);
 
-			OnProgressChanged("Archive creation complete!", totalItems, totalItems);
-		}
-		finally
-		{
-			// Cleanup temp directory
-			if (Directory.Exists(tempDirectory))
-			{
-				try
-				{
-					Directory.Delete(tempDirectory, true);
-				}
-				catch
-				{
-					// Ignore cleanup errors
-				}
-			}
-		}
+		// Count files in folders
+		count += importantFolders
+			.Where(Directory.Exists)
+			.Sum(folder => Directory.GetFiles(folder, "*", SearchOption.AllDirectories).Length);
+
+		return count;
+	}
+
+	private static void AddFileToArchive(ZipArchive archive, string filePath, string baseDirectory, string archivePrefix)
+	{
+		string relativePath = filePath[baseDirectory.Length..].Trim('\\');
+		string entryName = archivePrefix + relativePath.Replace('\\', '/');
+		archive.CreateEntryFromFile(filePath, entryName, CompressionLevel.Optimal);
+	}
+
+	private static void AddReadmeToArchive(ZipArchive archive, string readmeText)
+	{
+		ZipArchiveEntry readmeEntry = archive.CreateEntry("README.txt", CompressionLevel.Optimal);
+		using var writer = new StreamWriter(readmeEntry.Open());
+		writer.Write(readmeText);
 	}
 
 	protected abstract IReadOnlyList<string> GetImportantFolders(string engineDirectory);

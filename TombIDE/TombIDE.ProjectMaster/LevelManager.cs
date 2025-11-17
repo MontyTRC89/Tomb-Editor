@@ -120,7 +120,14 @@ public partial class LevelManager : UserControl
 	}
 
 	private void button_RebuildAll_Click(object sender, EventArgs e)
-		=> _levelBuildService.RebuildAllLevels(_ide.Project, this);
+	{
+		if (!_levelBuildService.RebuildAllLevels(_ide.Project))
+		{
+			DarkMessageBox.Show(this,
+				"There are no levels in the current project.",
+				"Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+	}
 
 	private void button_Update_Click(object sender, EventArgs e)
 		=> BeginEngineUpdate();

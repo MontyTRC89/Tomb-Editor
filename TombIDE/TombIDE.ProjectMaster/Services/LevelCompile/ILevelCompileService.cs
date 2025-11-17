@@ -1,4 +1,3 @@
-using System.Windows.Forms;
 using TombIDE.Shared.NewStructure;
 
 namespace TombIDE.ProjectMaster.Services.LevelCompile;
@@ -12,8 +11,8 @@ public interface ILevelCompileService
 	/// Performs a batch rebuild of all levels in the project.
 	/// </summary>
 	/// <param name="project">The project containing levels to rebuild.</param>
-	/// <param name="owner">The owner window for dialogs.</param>
-	void RebuildAllLevels(IGameProject project, IWin32Window owner);
+	/// <returns><see langword="true"/> if levels were found and the rebuild was initiated; <see langword="false"/> if no levels exist in the project.</returns>
+	bool RebuildAllLevels(IGameProject project);
 
 	/// <summary>
 	/// Performs a rebuild of a single level.

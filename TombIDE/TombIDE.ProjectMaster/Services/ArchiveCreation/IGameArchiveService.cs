@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using TombIDE.Shared.NewStructure;
 
@@ -32,7 +33,12 @@ public interface IGameArchiveService
 	/// <param name="project">The project to archive.</param>
 	/// <param name="outputPath">The destination path for the archive (.zip).</param>
 	/// <param name="readmeText">Optional README.txt content to include in the archive.</param>
-	Task CreateGameArchiveAsync(IGameProject project, string outputPath, string? readmeText = null);
+	/// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+	Task CreateGameArchiveAsync(
+		IGameProject project,
+		string outputPath,
+		string? readmeText = null,
+		CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Checks if this service supports the given game version.

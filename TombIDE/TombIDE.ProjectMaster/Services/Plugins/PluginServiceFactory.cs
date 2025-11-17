@@ -57,9 +57,11 @@ public sealed class PluginServiceFactory : IPluginServiceFactory
 		if (_discoveryServices.TryGetValue(gameVersion, out var service))
 			return service;
 
+		var metadataService = GetMetadataService(gameVersion);
+
 		service = gameVersion switch
 		{
-			TRVersion.Game.TRNG => new TRNGPluginDiscoveryService(GetMetadataService(gameVersion)),
+			TRVersion.Game.TRNG when metadataService is not null => new TRNGPluginDiscoveryService(metadataService),
 			// Add other game versions here in the future
 			_ => null
 		};
@@ -75,9 +77,11 @@ public sealed class PluginServiceFactory : IPluginServiceFactory
 		if (_installationServices.TryGetValue(gameVersion, out var service))
 			return service;
 
+		var metadataService = GetMetadataService(gameVersion);
+
 		service = gameVersion switch
 		{
-			TRVersion.Game.TRNG => new TRNGPluginInstallationService(GetMetadataService(gameVersion)),
+			TRVersion.Game.TRNG when metadataService is not null => new TRNGPluginInstallationService(metadataService),
 			// Add other game versions here in the future
 			_ => null
 		};

@@ -1,5 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombIDE.ProjectMaster.Services.ArchiveCreation;
@@ -10,7 +12,6 @@ namespace TombIDE.ProjectMaster.Forms;
 public partial class FormGameArchive : DarkForm
 {
 	private readonly IDE _ide;
-	private readonly FormPleaseWait _waitForm = new();
 
 	private readonly IGameArchiveServiceFactory _archiveServiceFactory;
 
@@ -41,32 +42,58 @@ public partial class FormGameArchive : DarkForm
 
 	private async Task CreateArchiveAsync(string fileName)
 	{
-		_waitForm.Show(this);
-		_waitForm.UpdateProgressAndStatus(0, "Initializing archive creation...");
+		using var cts = new CancellationTokenSource();
+		using var waitForm = new FormPleaseWait();
+
+		waitForm.CancellationTokenSource = cts;
+		waitForm.SetCancelButtonVisible(true);
+		waitForm.UpdateProgressAndStatus(0, "Initializing archive creation...");
+		waitForm.Show(this);
 
 		var archiveService = _archiveServiceFactory.GetArchiveService(_ide.Project);
 
 		// Define the event handler so we can unsubscribe later
 		void progressHandler(object? sender, ArchiveProgressEventArgs e)
-			=> _waitForm.UpdateProgressAndStatus(e.PercentComplete, e.CurrentOperation);
+			=> waitForm.UpdateProgressAndStatus(e.PercentComplete, e.CurrentOperation);
 
 		try
 		{
 			// Wire up progress reporting
 			archiveService.ProgressChanged += progressHandler;
 
-			// Execute async archive creation
-			await archiveService.CreateGameArchiveAsync(_ide.Project, fileName, richTextBox.Text);
+			// Execute async archive creation with cancellation support
+			await archiveService.CreateGameArchiveAsync(_ide.Project, fileName, richTextBox.Text, cts.Token);
 
-			_waitForm.Close();
+			waitForm.Close();
 
 			DarkMessageBox.Show(this, "Archive creation completed.", "Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 			DialogResult = DialogResult.OK;
 		}
+		catch (OperationCanceledException)
+		{
+			waitForm.Close();
+
+			// Delete partial archive if it exists
+			if (File.Exists(fileName))
+			{
+				try
+				{
+					File.Delete(fileName);
+				}
+				catch
+				{
+					// Ignore cleanup errors
+				}
+			}
+
+			DarkMessageBox.Show(this, "Archive creation was cancelled.", "Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+			DialogResult = DialogResult.None;
+		}
 		catch (Exception ex)
 		{
-			_waitForm.Close();
+			waitForm.Close();
 
 			DarkMessageBox.Show(this, $"Archive creation failed:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -76,6 +103,7 @@ public partial class FormGameArchive : DarkForm
 		{
 			// Always unsubscribe to prevent memory leaks
 			archiveService.ProgressChanged -= progressHandler;
+			waitForm.CancellationTokenSource = null;
 		}
 	}
 }
