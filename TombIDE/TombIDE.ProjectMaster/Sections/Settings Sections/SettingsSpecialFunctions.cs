@@ -35,16 +35,16 @@ public partial class SettingsSpecialFunctions : UserControl
 	{
 		_ide = ide;
 
-		if (!_launcherService.CanRenameLauncher(_ide.Project))
+		if (_launcherService.CanRenameLauncher(_ide.Project))
+		{
+			textBox_LauncherName.Text = _launcherService.GetLauncherName(_ide.Project);
+		}
+		else
 		{
 			button_RenameLauncher.Enabled = false;
 
 			textBox_LauncherName.ForeColor = Color.Gray;
 			textBox_LauncherName.Text = "Unavailable for legacy projects";
-		}
-		else
-		{
-			textBox_LauncherName.Text = _launcherService.GetLauncherName(_ide.Project);
 		}
 	}
 

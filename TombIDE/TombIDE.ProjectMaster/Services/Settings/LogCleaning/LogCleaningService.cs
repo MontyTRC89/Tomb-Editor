@@ -67,7 +67,7 @@ public sealed class LogCleaningService : ILogCleaningService
 		return deletedCount;
 	}
 
-	private bool ShouldDeleteFile(string fileName)
+	private static bool ShouldDeleteFile(string fileName)
 	{
 		// Check for specific file names
 		if (fileName
@@ -78,11 +78,13 @@ public sealed class LogCleaningService : ILogCleaningService
 			return true;
 		}
 
+		string extension = Path.GetExtension(fileName);
+
 		// Check for crash dump patterns
 		bool isLastCrashDump = fileName.StartsWith("Last_Crash_", StringComparison.OrdinalIgnoreCase);
 
-		bool isValidLastCrashDumpExtension = fileName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
-			|| fileName.EndsWith(".mem", StringComparison.OrdinalIgnoreCase);
+		bool isValidLastCrashDumpExtension = extension.Equals(".txt", StringComparison.OrdinalIgnoreCase)
+			|| extension.Equals(".mem", StringComparison.OrdinalIgnoreCase);
 
 		if (isLastCrashDump && isValidLastCrashDumpExtension)
 			return true;
@@ -91,8 +93,8 @@ public sealed class LogCleaningService : ILogCleaningService
 		if (fileName.EndsWith("_warm_up_log.txt", StringComparison.OrdinalIgnoreCase))
 			return true;
 
-		// Check for .log extension (root directory only, recursive handled separately)
-		if (Path.GetExtension(fileName).Equals(".log", StringComparison.OrdinalIgnoreCase))
+		// Check for .log extension
+		if (extension.Equals(".log", StringComparison.OrdinalIgnoreCase))
 			return true;
 
 		return false;

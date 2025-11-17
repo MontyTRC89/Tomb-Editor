@@ -32,17 +32,17 @@ public partial class SettingsSplashScreen : UserControl
 	{
 		_ide = ide;
 
-		if (!_splashScreenService.IsSupported(_ide.Project))
+		if (_splashScreenService.IsSupported(_ide.Project))
+		{
+			UpdatePreview();
+		}
+		else
 		{
 			label_NotSupported.Visible = true;
 
 			button_Preview.Enabled = false;
 			button_Change.Enabled = false;
 			button_Remove.Enabled = false;
-		}
-		else
-		{
-			UpdatePreview();
 		}
 	}
 
@@ -58,11 +58,13 @@ public partial class SettingsSplashScreen : UserControl
 			return;
 		}
 
+		string launcherFilePath = _ide.Project.GetLauncherFilePath();
+
 		var startInfo = new ProcessStartInfo
 		{
-			FileName = _ide.Project.GetLauncherFilePath(),
+			FileName = launcherFilePath,
 			Arguments = "-p",
-			WorkingDirectory = Path.GetDirectoryName(_ide.Project.GetLauncherFilePath()),
+			WorkingDirectory = Path.GetDirectoryName(launcherFilePath),
 			UseShellExecute = true
 		};
 

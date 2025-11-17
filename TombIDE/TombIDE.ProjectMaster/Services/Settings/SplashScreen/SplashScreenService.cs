@@ -22,7 +22,7 @@ public sealed class SplashScreenService : ISplashScreenService
 			return false;
 
 		string? originalFileName = FileVersionInfo.GetVersionInfo(launcherExecutable).OriginalFilename;
-		return originalFileName?.Equals("launch.exe", StringComparison.OrdinalIgnoreCase) is true;
+		return originalFileName?.Equals("launch.exe", StringComparison.OrdinalIgnoreCase) is true; // TODO: Needs a more robust check
 	}
 
 	public Image? GetSplashScreenImage(IGameProject project)
@@ -40,7 +40,7 @@ public sealed class SplashScreenService : ISplashScreenService
 		using var image = Image.FromFile(imageFilePath);
 
 		if (!IsValidResolution(image))
-			throw new ArgumentException("Wrong image size. Supported resolutions: 1024x512, 768x384, or 512x256.");
+			throw new ArgumentException("Wrong image size.");
 
 		string destPath = GetSplashScreenPath(project);
 		File.Copy(imageFilePath, destPath, true);
@@ -55,9 +55,8 @@ public sealed class SplashScreenService : ISplashScreenService
 	}
 
 	public bool IsValidResolution(Image image)
-		=> (image.Width == 1024 && image.Height == 512)
-		|| (image.Width == 768 && image.Height == 384)
-		|| (image.Width == 512 && image.Height == 256);
+		=> image.Width is 1024 or 768 or 512 or 384
+		&& image.Height is 512 or 384 or 256;
 
 	private static string GetSplashScreenPath(IGameProject project)
 		=> Path.Combine(project.GetEngineRootDirectoryPath(), "splash.bmp");

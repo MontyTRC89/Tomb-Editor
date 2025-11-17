@@ -252,7 +252,11 @@ namespace TombIDE.ProjectMaster
 
 		private void OnContextMenuProgramClicked(object? sender, EventArgs e)
 		{
-			string? programPath = (sender as ToolStripMenuItem)?.Tag.ToString();
+			string? programPath = (sender as ToolStripMenuItem)?.Tag?.ToString();
+
+			if (string.IsNullOrEmpty(programPath) || treeView_Resources.SelectedNodes.Count == 0)
+				return;
+
 			string selectedFilePath = treeView_Resources.SelectedNodes[0].Text;
 
 			var startInfo = new ProcessStartInfo
