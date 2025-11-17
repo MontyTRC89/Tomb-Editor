@@ -71,7 +71,7 @@ public abstract class GameArchiveServiceBase : IGameArchiveService
 					cancellationToken.ThrowIfCancellationRequested();
 
 					AddFileToArchive(archive, file, engineDirectory, "Engine/");
-					OnProgressChanged($"Adding: {Path.GetFileName(file)}", ++processedFiles, totalFileCount);
+					OnProgressChanged($"Added: {Path.GetFileName(file)}", ++processedFiles, totalFileCount);
 				}
 			}
 
@@ -81,7 +81,7 @@ public abstract class GameArchiveServiceBase : IGameArchiveService
 				cancellationToken.ThrowIfCancellationRequested();
 
 				archive.CreateEntry("Engine/saves/keep.me", CompressionLevel.Optimal);
-				OnProgressChanged("Creating saves folder...", ++processedFiles, totalFileCount);
+				OnProgressChanged("Created: /saves/ folder", ++processedFiles, totalFileCount);
 			}
 
 			// Add individual files
@@ -90,7 +90,7 @@ public abstract class GameArchiveServiceBase : IGameArchiveService
 				cancellationToken.ThrowIfCancellationRequested();
 
 				AddFileToArchive(archive, file, engineDirectory, "Engine/");
-				OnProgressChanged($"Adding: {Path.GetFileName(file)}", ++processedFiles, totalFileCount);
+				OnProgressChanged($"Added: {Path.GetFileName(file)}", ++processedFiles, totalFileCount);
 			}
 
 			// Add launcher
@@ -101,7 +101,7 @@ public abstract class GameArchiveServiceBase : IGameArchiveService
 				string launcherFileName = Path.GetFileName(launchFilePath);
 				archive.CreateEntryFromFile(launchFilePath, launcherFileName, CompressionLevel.Optimal);
 
-				OnProgressChanged($"Adding: {launcherFileName}", ++processedFiles, totalFileCount);
+				OnProgressChanged($"Added: {launcherFileName}", ++processedFiles, totalFileCount);
 			}
 
 			// Add README if provided
@@ -110,7 +110,7 @@ public abstract class GameArchiveServiceBase : IGameArchiveService
 				cancellationToken.ThrowIfCancellationRequested();
 
 				AddReadmeToArchive(archive, readmeText!);
-				OnProgressChanged("Adding: README.txt", ++processedFiles, totalFileCount);
+				OnProgressChanged("Added: README.txt", ++processedFiles, totalFileCount);
 			}
 		}, cancellationToken);
 
