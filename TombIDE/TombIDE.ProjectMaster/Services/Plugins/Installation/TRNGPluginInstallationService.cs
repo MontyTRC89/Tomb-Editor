@@ -11,11 +11,11 @@ using TombIDE.Shared.NewStructure;
 
 namespace TombIDE.ProjectMaster.Services.Plugins.Installation;
 
-/// <summary>
-/// TRNG-specific implementation of plugin installation.
-/// </summary>
 public sealed class TRNGPluginInstallationService : IPluginInstallationService
 {
+	private const string PluginDllPattern = "plugin_*.dll";
+	private const string PluginDllRegexPattern = @"plugin_.*\.dll";
+
 	private readonly IPluginMetadataService _metadataService;
 
 	public TRNGPluginInstallationService(IPluginMetadataService metadataService)
@@ -58,7 +58,7 @@ public sealed class TRNGPluginInstallationService : IPluginInstallationService
 		using var archive = new ZipArchive(fileStream);
 
 		IReadOnlyList<ZipArchiveEntry> dllFileEntries = archive.Entries
-			.Where(entry => Regex.IsMatch(entry.Name, @"plugin_.*\.dll", RegexOptions.IgnoreCase))
+			.Where(entry => Regex.IsMatch(entry.Name, PluginDllRegexPattern, RegexOptions.IgnoreCase))
 			.ToList();
 
 		if (dllFileEntries.Count == 0)
@@ -114,12 +114,12 @@ public sealed class TRNGPluginInstallationService : IPluginInstallationService
 
 		var selectedDir = new DirectoryInfo(folderPath);
 
-		FileInfo[] dllFiles = selectedDir.GetFiles("plugin_*.dll", System.IO.SearchOption.TopDirectoryOnly);
+		FileInfo[] dllFiles = selectedDir.GetFiles(PluginDllPattern, System.IO.SearchOption.TopDirectoryOnly);
 
 		if (dllFiles.Length == 0)
 			throw new ArgumentException("Selected folder doesn't contain a valid plugin DLL file.");
 		else if (dllFiles.Length > 1)
-			throw new ArgumentException("Selected folder contains more than 1 valid plugin .dll file.");
+			throw new ArgumentException("Selected folder contains more than 1 valid plugin DLL file.");
 
 		FileInfo dllFile = dllFiles[0];
 

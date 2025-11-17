@@ -5,9 +5,6 @@ using TombIDE.ProjectMaster.Services.Plugins.Models;
 
 namespace TombIDE.ProjectMaster.Services.Plugins.Metadata;
 
-/// <summary>
-/// TRNG-specific implementation of plugin metadata reading.
-/// </summary>
 public sealed class TRNGPluginMetadataService : IPluginMetadataService
 {
 	public PluginInfo ReadPluginMetadata(string pluginDirectoryPath, string dllFileName)

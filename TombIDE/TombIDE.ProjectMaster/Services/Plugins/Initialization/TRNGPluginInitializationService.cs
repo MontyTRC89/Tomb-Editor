@@ -6,11 +6,10 @@ using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ProjectMaster.Services.Plugins.Initialization;
 
-/// <summary>
-/// TRNG-specific implementation of plugin initialization.
-/// </summary>
 public sealed class TRNGPluginInitializationService : IPluginInitializationService
 {
+	private const string PluginDllPattern = "plugin_*.dll";
+
 	public void InitializePluginDirectory(IGameProject project)
 	{
 		string pluginsPath = project.PluginsDirectoryPath;
@@ -39,7 +38,7 @@ public sealed class TRNGPluginInitializationService : IPluginInitializationServi
 	{
 		string[] internalPluginDirs = Directory.GetDirectories(DefaultPaths.TRNGPluginsDirectory, "*", SearchOption.TopDirectoryOnly);
 
-		foreach (string pluginFile in Directory.GetFiles(project.GetEngineRootDirectoryPath(), "plugin_*.dll", SearchOption.TopDirectoryOnly))
+		foreach (string pluginFile in Directory.GetFiles(project.GetEngineRootDirectoryPath(), PluginDllPattern, SearchOption.TopDirectoryOnly))
 		{
 			string? tidePluginDir = internalPluginDirs.FirstOrDefault(x =>
 				Path.GetFileName(x).Equals(Path.GetFileNameWithoutExtension(pluginFile)));
@@ -53,11 +52,13 @@ public sealed class TRNGPluginInitializationService : IPluginInitializationServi
 	{
 		using ZipArchive parc = ZipFile.OpenRead(parcPath);
 
-		foreach (string pluginFile in Directory.GetFiles(project.GetEngineRootDirectoryPath(), "plugin_*.dll", SearchOption.TopDirectoryOnly))
+		foreach (string pluginFile in Directory.GetFiles(project.GetEngineRootDirectoryPath(), PluginDllPattern, SearchOption.TopDirectoryOnly))
 		{
+			string pluginName = Path.GetFileNameWithoutExtension(pluginFile);
+
 			foreach (ZipArchiveEntry entry in parc.Entries)
 			{
-				if (entry.FullName.Split('\\')[0].Equals(Path.GetFileNameWithoutExtension(pluginFile), System.StringComparison.OrdinalIgnoreCase))
+				if (entry.FullName.Split('\\')[0].Equals(pluginName, System.StringComparison.OrdinalIgnoreCase))
 				{
 					string destPath = Path.Combine(pluginsDirectory.FullName, entry.FullName);
 					string? dirName = Path.GetDirectoryName(destPath);

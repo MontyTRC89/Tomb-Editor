@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,15 +8,14 @@ using TombIDE.Shared.NewStructure;
 
 namespace TombIDE.ProjectMaster.Services.Plugins.Discovery;
 
-/// <summary>
-/// TRNG-specific implementation of plugin discovery.
-/// </summary>
 public sealed class TRNGPluginDiscoveryService : IPluginDiscoveryService
 {
+	private const string PluginDllPattern = "plugin_*.dll";
+
 	private readonly IPluginMetadataService _metadataService;
 
 	public TRNGPluginDiscoveryService(IPluginMetadataService metadataService)
-		=> _metadataService = metadataService ?? throw new System.ArgumentNullException(nameof(metadataService));
+		=> _metadataService = metadataService ?? throw new ArgumentNullException(nameof(metadataService));
 
 	public IEnumerable<PluginInfo> DiscoverPlugins(IGameProject project)
 	{
@@ -27,7 +27,7 @@ public sealed class TRNGPluginDiscoveryService : IPluginDiscoveryService
 
 		foreach (DirectoryInfo subDirectory in pluginsDirectory.GetDirectories())
 		{
-			FileInfo? dllFile = subDirectory.GetFiles("plugin_*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault();
+			FileInfo? dllFile = subDirectory.GetFiles(PluginDllPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
 
 			if (dllFile is null)
 				continue;
@@ -46,7 +46,7 @@ public sealed class TRNGPluginDiscoveryService : IPluginDiscoveryService
 		if (!directory.Exists)
 			return null;
 
-		FileInfo? dllFile = directory.GetFiles("plugin_*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault();
+		FileInfo? dllFile = directory.GetFiles(PluginDllPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
 
 		if (dllFile is null)
 			return null;
