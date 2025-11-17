@@ -50,7 +50,7 @@ public partial class FormGameArchive : DarkForm
 		waitForm.UpdateProgressAndStatus(0, "Initializing archive creation...");
 		waitForm.Show(this);
 
-		var archiveService = _archiveServiceFactory.GetArchiveService(_ide.Project);
+		var archiveService = _archiveServiceFactory.GetArchiveService(_ide.Project.GameVersion);
 
 		// Define the event handler so we can unsubscribe later
 		void progressHandler(object? sender, ArchiveProgressEventArgs e)

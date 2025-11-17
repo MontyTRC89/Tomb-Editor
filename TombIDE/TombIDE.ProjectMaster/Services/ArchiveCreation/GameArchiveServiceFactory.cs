@@ -1,5 +1,4 @@
 using System;
-using TombIDE.Shared.NewStructure;
 using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster.Services.ArchiveCreation;
@@ -12,15 +11,15 @@ public interface IGameArchiveServiceFactory
 	/// <summary>
 	/// Gets the appropriate archive service for the given project.
 	/// </summary>
-	/// <param name="project">The project to get the archive service for.</param>
+	/// <param name="gameVersion">The game version.</param>
 	/// <returns>An archive service instance for the project's game version.</returns>
 	/// <exception cref="NotSupportedException">Thrown when the game version is not supported.</exception>
-	IGameArchiveService GetArchiveService(IGameProject project);
+	IGameArchiveService GetArchiveService(TRVersion.Game gameVersion);
 }
 
 public sealed class GameArchiveServiceFactory : IGameArchiveServiceFactory
 {
-	public IGameArchiveService GetArchiveService(IGameProject project) => project.GameVersion switch
+	public IGameArchiveService GetArchiveService(TRVersion.Game gameVersion) => gameVersion switch
 	{
 		TRVersion.Game.TR1 => new TR1XArchiveService(),
 		TRVersion.Game.TR2X => new TR2XArchiveService(),
@@ -28,6 +27,6 @@ public sealed class GameArchiveServiceFactory : IGameArchiveServiceFactory
 		TRVersion.Game.TR3 => new TR3ArchiveService(),
 		TRVersion.Game.TR4 or TRVersion.Game.TRNG => new TR4ArchiveService(),
 		TRVersion.Game.TombEngine => new TombEngineArchiveService(),
-		_ => throw new NotSupportedException($"Archive creation is not supported for {project.GameVersion}")
+		_ => throw new NotSupportedException($"Archive creation is not supported for {gameVersion}.")
 	};
 }
