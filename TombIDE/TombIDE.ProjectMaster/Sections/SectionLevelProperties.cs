@@ -254,7 +254,7 @@ namespace TombIDE.ProjectMaster
 		{
 			string? programPath = (sender as ToolStripMenuItem)?.Tag?.ToString();
 
-			if (string.IsNullOrEmpty(programPath) || treeView_Resources.SelectedNodes.Count == 0)
+			if (string.IsNullOrWhiteSpace(programPath) || treeView_Resources.SelectedNodes.Count == 0)
 				return;
 
 			string selectedFilePath = treeView_Resources.SelectedNodes[0].Text;
