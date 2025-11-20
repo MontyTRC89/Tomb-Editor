@@ -460,17 +460,13 @@
     <moveable id="457" name="ANIMATING16" description="Animating16" ten="ANIMATING16" />
     <moveable id="458" name="ANIMATING16_MIP" description="Animating16 Mip" ten="ANIMATING32" />
     <moveable id="459" name="HORIZON" description="Horizon" ten="HORIZON" hidden="true" />
-    <moveable id="460" name="SKY_GRAPHICS" description="Sky Graphics" ten="SKY_GRAPHICS" hidden="true" />
     <moveable id="461" name="BINOCULAR_GRAPHICS" description="Binocular Graphics" hidden="true" />
     <moveable id="462" name="TARGET_GRAPHICS" description="Target Graphics" hidden="true" />
-    <moveable id="463" name="DEFAULT_SPRITE_SEQUENCES" description="Default sprites" ten="DEFAULT_SPRITES" hidden="true" />
-    <moveable id="464" name="MISC_SPRITE_SEQUENCES" description="Misc sprites" ten="MISC_SPRITES" hidden="true" />
     <moveable id="465" name="MOTOR_BOAT" description="NG Motor Boat" ten="SPEEDBOAT" />
     <moveable id="466" name="MOTOR_BOAT_LARA" description="NG Motor Boat Lara" ten="SPEEDBOAT_LARA_ANIMS" />
     <moveable id="467" name="RUBBER_BOAT" description="NG Rubber Boat" ten="RUBBER_BOAT" />
     <moveable id="468" name="RUBBER_BOAT_LARA" description="NG Rubber Boat Lara" ten="RUBBER_BOAT_LARA_ANIMS" />
     <moveable id="469" name="MOTORBIKE_LARA" description="NG Motorbike Lara" ten="MOTORBIKE_LARA_ANIMS" />
-    <moveable id="470" name="FONT_GRAPHICS" description="NG Font Graphics" />
     <moveable id="471" name="PARALLEL_BARS" description="NG Parallel Bars" ten="PARALLEL_BARS" />
     <moveable id="472" name="PANEL_BORDER" description="NG Panel Border" />
     <moveable id="473" name="PANEL_MIDDLE" description="NG Panel Middle" />
