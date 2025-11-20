@@ -191,6 +191,21 @@ namespace TombLib
             return (int)Math.Pow(2, (int)Math.Log(x, 2));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int NearestPowerOf2(int x)
+        {
+            if (x <= 1)
+                return 1;
+
+            int p = 1;
+            while (p < x) p <<= 1;
+
+            int lower = p >> 1;
+            int upper = p;
+
+            return (x - lower < upper - x) ? lower : upper;
+        }
+
         /// <summary>
         /// Checks if a - b are almost equals within a float epsilon.
         /// </summary>
