@@ -1,5 +1,4 @@
-﻿using DarkUI.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -476,19 +475,12 @@ namespace TombLib.LevelData
             }
         }
 
-        public bool TrySetLuaName(string newName, IWin32Window owner = null)
+        public bool CanSetLuaName(string newName)
         {
-            var result = (string.IsNullOrEmpty(newName) ||
+            return (string.IsNullOrEmpty(newName) ||
                           Room.Level.GetAllObjects().Where(o => o is IHasLuaName &&
                                                           (o as IHasLuaName).LuaName == newName &&
                                                            o != this).Count() == 0);
-            if (!result && owner != null)
-                DarkMessageBox.Show(owner, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            if (result)
-                LuaName = newName;
-
-            return result;
         }
 
         public string GetScriptIDOrName(bool shortened = true)

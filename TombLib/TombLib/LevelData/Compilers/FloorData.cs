@@ -529,8 +529,11 @@ namespace TombLib.LevelData.Compilers
 
                 if (_level.IsNG)
                 {
+                    bool isNGFlipEffectRange = setupTrigger.Target is TriggerParameterUshort { Key: > 46 }; // 46 is the last original tomb4 flip effect
+                    bool isPluginTrigger = setupTrigger.Plugin is TriggerParameterUshort { Key: > 0 }; // 0 is Tomb_NextGeneration
+
                     // NG flipeffects store timer and extra in additional ushort
-                    if (setupTrigger.TargetType == TriggerTargetType.FlipEffect && (setupTrigger.Target as TriggerParameterUshort)?.Key > 46)
+                    if (setupTrigger.TargetType == TriggerTargetType.FlipEffect && (isNGFlipEffectRange || isPluginTrigger))
                         triggerSetup = 0;
                     // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
                     else if (setupTrigger.TriggerType == TriggerType.ConditionNg)

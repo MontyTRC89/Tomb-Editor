@@ -242,10 +242,11 @@ namespace TombIDE
 					break;
 
 				case IDETab.PluginManager:
-					if (_ide.Project.GameVersion != TRVersion.Game.TRNG)
-						break;
+					if (_ide.Project.GameVersion == TRVersion.Game.TRNG)
+						tablessTabControl.SelectTab(2);
+					else if (_ide.Project.GameVersion == TRVersion.Game.TombEngine)
+						VSCodeUtils.OpenDirectoryInVSCode(this, _ide.IDEConfiguration, _ide.Project.GetScriptRootDirectory());
 
-					tablessTabControl.SelectTab(2);
 					break;
 
 				case IDETab.Miscellaneous:

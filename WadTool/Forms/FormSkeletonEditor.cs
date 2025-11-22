@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.GeometryIO;
@@ -143,7 +142,7 @@ namespace WadTool
                 int linkY = (int)_bones[j].Bone.Translation.Y;
                 int linkZ = (int)_bones[j].Bone.Translation.Z;
 
-                var boneNode = _bones[j]; 
+                var boneNode = _bones[j];
                 string op = "";
                 if (boneNode.Bone.OpCode == WadLinkOpcode.Pop) op = "POP ";
                 if (boneNode.Bone.OpCode == WadLinkOpcode.Push) op = "PUSH ";
@@ -226,6 +225,9 @@ namespace WadTool
 
         public void UpdateUI()
         {
+            panelSkinned.Visible = _wad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine;
+            lblSkin.Text = "Skin: " + (_moveable.Skin?.Name ?? "None");
+
             if (panelRendering.SelectedNode == null)
                 return;
 
@@ -473,6 +475,29 @@ namespace WadTool
             }
         }
 
+        private void AssignSkinnedMesh()
+        {
+            var mesh = WadActions.ImportMesh(_tool, this);
+
+            if (mesh == null)
+                return;
+
+            if (_moveable.Meshes.All(m => !m.Hidden))
+            {
+                if (DarkMessageBox.Show(this, "Do you want to hide all unskinned meshes for this model?" + "\n" +
+                                              "You can unhide them later in the mesh editor.",
+                                        "Hide unskinned meshes",
+                                        MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    _moveable.Meshes.ForEach(m => m.Hidden = true);
+                }
+            }
+
+            _moveable.Skin = mesh;
+            UpdateUI();
+        }
+
         private void ReplaceBoneFromWad2()
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
@@ -670,10 +695,10 @@ namespace WadTool
 
         private void formSkeletonEditor_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control && e.KeyCode == Keys.Up)   MoveBoneUp();
+            if (e.Control && e.KeyCode == Keys.Up) MoveBoneUp();
             if (e.Control && e.KeyCode == Keys.Down) MoveBoneDown();
-            if (e.Control && e.KeyCode == Keys.O)    ToggleBonePop();
-            if (e.Control && e.KeyCode == Keys.P)    ToggleBonePush();
+            if (e.Control && e.KeyCode == Keys.O) ToggleBonePop();
+            if (e.Control && e.KeyCode == Keys.P) ToggleBonePush();
             e.Handled = true;
         }
 
@@ -691,7 +716,7 @@ namespace WadTool
 
             _startPoint = new Point(0, 0);
             UpdateUI();
-        } 
+        }
 
         private void panelRendering_MouseDown(object sender, MouseEventArgs e)
         {
@@ -780,6 +805,17 @@ namespace WadTool
         {
             if (e.Button == MouseButtons.Left && panelRendering.SelectedNode != null)
                 EditMesh();
+        }
+
+        private void butSetSkin_Click(object sender, EventArgs e)
+        {
+            AssignSkinnedMesh();
+        }
+
+        private void butClearSkin_Click(object sender, EventArgs e)
+        {
+            _moveable.Skin = null;
+            UpdateUI();
         }
     }
 }

@@ -47,6 +47,7 @@ namespace TombIDE.ProjectMaster.Forms
 			switch (_ide.Project.GameVersion)
 			{
 				case TRVersion.Game.TR1:
+					GenerateTR1Archive(filePath, readmeText);
 					break;
 
 				case TRVersion.Game.TR2:
@@ -186,9 +187,10 @@ namespace TombIDE.ProjectMaster.Forms
 
 			string[] importantFolders = new string[]
 			{
-				Path.Combine(engineDirectory, "Bin"),
 				Path.Combine(engineDirectory, "Audio"),
+				Path.Combine(engineDirectory, "Bin"),
 				Path.Combine(engineDirectory, "Data"),
+				Path.Combine(engineDirectory, "FMV"),
 				Path.Combine(engineDirectory, "Screens"),
 				Path.Combine(engineDirectory, "Scripts"),
 				Path.Combine(engineDirectory, "Shaders"),

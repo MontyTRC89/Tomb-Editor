@@ -38,7 +38,7 @@ Tomb Editor dev team."
 SetCompressor lzma
 Unicode true
 Name "Tomb Editor"
-OutFile "TombEditorInstall.exe"
+OutFile "TombEditor${Version_1}${Version_2}${Version_3}_Install.exe"
 InstallDir "C:\Tomb Editor"
   
 ;--------------------------------
@@ -169,6 +169,8 @@ Section "Uninstall"
   Delete "$INSTDIR\TIDE\Templates\Sounds\TEN.zip"
   Delete "$INSTDIR\TIDE\Templates\Shared\TR4-TRNG Shared Files.zip"
   Delete "$INSTDIR\TIDE\Templates\Shared\TR4-TEN Shared Audio.zip"
+  Delete "$INSTDIR\TIDE\Templates\Shared\TEN Resources.zip"
+  Delete "$INSTDIR\TIDE\Templates\Shared\TEN External DLLs.zip"
   Delete "$INSTDIR\TIDE\Templates\Shared\splash.xml"
   Delete "$INSTDIR\TIDE\Templates\Shared\PLAY.exe"
   Delete "$INSTDIR\TIDE\Templates\Presets\TRNG.zip"
@@ -280,6 +282,7 @@ Section "Uninstall"
   Delete "$INSTDIR\Catalogs\TEN Sound Catalogs\TEN_ALL_SOUNDS.xml"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Volumes.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\View.lua"
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Video.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Variables.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\UI.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Timespan Actions.lua"
@@ -293,8 +296,10 @@ Section "Uninstall"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Particles.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Moveables.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Lara.lua"
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Keypad.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Inventory.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Input.lua"
+  Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Flyby Paths.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Flow.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Environment.lua"
   Delete "$INSTDIR\Catalogs\TEN Node Catalogs\Dynamic Lights.lua"
@@ -405,6 +410,7 @@ Section "Uninstall"
   Delete "$INSTDIR\Catalogs\Sounds.tr1.xml"
   Delete "$INSTDIR\Catalogs\NgCatalog.xml"
   Delete "$INSTDIR\Assets\Wads\TombEngine.wad2"
+  Delete "$INSTDIR\Assets\Textures\default.png"
   Delete "$INSTDIR\WadTool.runtimeconfig.json"
   Delete "$INSTDIR\WadTool.exe"
   Delete "$INSTDIR\WadTool.dll.config"
@@ -445,6 +451,7 @@ Section "Uninstall"
   Delete "$INSTDIR\TombEditor.dll.config"
   Delete "$INSTDIR\TombEditor.dll"
   Delete "$INSTDIR\TombEditor.deps.json"
+  Delete "$INSTDIR\SpacedGridControl.dll"
   Delete "$INSTDIR\SoundTool.runtimeconfig.json"
   Delete "$INSTDIR\SoundTool.exe"
   Delete "$INSTDIR\SoundTool.dll"
@@ -483,6 +490,8 @@ Section "Uninstall"
   Delete "$INSTDIR\File Association.exe"
   Delete "$INSTDIR\File Association.dll"
   Delete "$INSTDIR\File Association.deps.json"
+  Delete "$INSTDIR\DarkUI.WPF.dll"
+  Delete "$INSTDIR\DarkUI.WPF.deps.json"
   Delete "$INSTDIR\DarkUI.dll"
   Delete "$INSTDIR\DarkUI.deps.json"
   Delete "$INSTDIR\d3dcompiler_43.dll"
@@ -546,6 +555,7 @@ Section "Uninstall"
   RMDir "$INSTDIR\Catalogs\TEN Node Catalogs"
   RMDir "$INSTDIR\Catalogs\Engines"
   RMDir "$INSTDIR\Assets\Wads"
+  RMDir "$INSTDIR\Assets\Textures"
   RMDir "$INSTDIR\TIDE"
   RMDir "$INSTDIR\Runtimes"
   RMDir "$INSTDIR\Resources"
@@ -637,10 +647,6 @@ Function .onInit
   ${EndIf}
 FunctionEnd
 
-Function .onInstSuccess
-  Call isDotNetInstalled
-FunctionEnd
-
 Function un.isEmptyDir
   Exch $0
   Push $1
@@ -675,111 +681,3 @@ Function un.registerExtensions
   Sleep 1000
     
 FunctionEnd
-
-Function openLinkNewWindow
-  Push $3
-  Exch
-  Push $2
-  Exch
-  Push $1
-  Exch
-  Push $0
-  Exch
- 
-  ReadRegStr $0 HKCR "http\shell\open\command" ""
-# Get browser path
-    DetailPrint $0
-  StrCpy $2 '"'
-  StrCpy $1 $0 1
-  StrCmp $1 $2 +2 # if path is not enclosed in " look for space as final char
-    StrCpy $2 ' '
-  StrCpy $3 1
-  loop:
-    StrCpy $1 $0 1 $3
-    DetailPrint $1
-    StrCmp $1 $2 found
-    StrCmp $1 "" found
-    IntOp $3 $3 + 1
-    Goto loop
- 
-  found:
-    StrCpy $1 $0 $3
-    StrCmp $2 " " +2
-      StrCpy $1 '$1"'
- 
-  Pop $0
-  Exec '$1 $0'
-  Pop $0
-  Pop $1
-  Pop $2
-  Pop $3
-FunctionEnd
-
-; Usage
-; Define in your script two constants:
-;   DOT_MAJOR "(Major framework version)"
-;   DOT_MINOR "{Minor framework version)"
-; 
-; Call isDotNetInstalled
-; This function will abort the installation if the required version 
-; or higher version of the .NET Framework is not installed.  Place it in
-; either your .onInit function or your first install section before 
-; other code.
-Function isDotNetInstalled
- 
-  StrCpy $0 "0"
-  StrCpy $1 "SOFTWARE\Microsoft\ASP.NET Core" ;registry entry to look in.
-  StrCpy $2 0
- 
-  StartEnum:
-    ;Enumerate the versions installed.
-    EnumRegKey $3 HKLM "$1\Shared Framework" $2
- 
-    ;If we don't find any versions installed, it's not here.
-    StrCmp $3 "" noDotNet notEmpty
- 
-    ;We found something.
-    notEmpty:
-      ;Find out if the RegKey starts with 'v'.  
-      ;If it doesn't, goto the next key.
-      StrCpy $4 $3 1 0
-      StrCmp $4 "v" +1 goNext
-      StrCpy $4 $3 1 1
- 
-      ;It starts with 'v'.  Now check to see how the installed major version
-      ;relates to our required major version.
-      ;If it's equal check the minor version, if it's greater, 
-      ;we found a good RegKey.
-      IntCmp $4 ${DOT_MAJOR} +1 goNext yesDotNet
-      ;Check the minor version.  If it's equal or greater to our requested 
-      ;version then we're good.
-      StrCpy $4 $3 1 3
-      IntCmp $4 ${DOT_MINOR} yesDotNet goNext yesDotNet
- 
-    goNext:
-      ;Go to the next RegKey.
-      IntOp $2 $2 + 1
-      goto StartEnum
-	  
-  noDotNet:
-	StrCpy $0 "You need .NET "
-	StrCpy $0 "$0${DOT_MAJOR}.${DOT_MINOR}"
-	StrCpy $0 "$0 installed. Do you want to download it now? $\r$\n\
-	If you do, select $\"Run Desktop Apps > Download x64$\" version."
-	
-    ;Nope, something went wrong along the way.  Looks like the 
-    ;proper .NET Framework isn't installed. Ask user to install it.
-    MessageBox MB_YESNO $0 IDYES doInstall IDNO doNotInstall
-	doInstall:
-	  StrCpy $0 "https://dotnet.microsoft.com/en-us/download/dotnet/"
-	  StrCpy $0 "$0${DOT_MAJOR}.${DOT_MINOR}"
-	  StrCpy $0 "$0/runtime"
-	  Push $0
-	  Call openLinkNewWindow
-	doNotInstall:
- 
-  yesDotNet:
-    ;Everything checks out.  Go on with the rest of the installation.
- 
-FunctionEnd
-

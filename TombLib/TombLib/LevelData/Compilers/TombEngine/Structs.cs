@@ -131,7 +131,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public Vector3 Color;
         public Vector3 Tangent;
         public Vector3 Bitangent;
-        public int Bone;
+        public int[] BoneIndex;
+        public float[] BoneWeight;
         public int IndexInPoly;
         public int OriginalIndex;
         public bool DoubleSided;
@@ -338,7 +339,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var bv = volume as BoxVolumeInstance;
 
                     writer.Write(bvPos);
-                    writer.Write(Quaternion.CreateFromYawPitchRoll(MathC.DegToRad(bv.RotationY), MathC.DegToRad(bv.RotationX), MathC.DegToRad(bv.Roll)));
+                    writer.Write(Quaternion.CreateFromYawPitchRoll(MathC.DegToRad(bv.RotationY), MathC.DegToRad(bv.RotationX), MathC.DegToRad(-bv.Roll)));
                     writer.Write(bv.Size / 2.0f);
                 }
                 else if (volume is SphereVolumeInstance)
@@ -489,6 +490,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class TombEngineMesh
     {
+        public bool Hidden;
         public WadMeshLightingType LightingType;
         public BoundingSphere Sphere;
         public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
@@ -580,6 +582,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public struct TombEngineMoveable
     {
         public int ObjectID;
+        public int Skin;
         public int NumMeshes;
         public int StartingMesh;
         public int MeshTree;

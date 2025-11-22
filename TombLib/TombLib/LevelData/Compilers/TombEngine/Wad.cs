@@ -19,13 +19,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private int _soundMapSize = 0;
         private short[] _finalSoundMap;
 
-        private TombEngineMesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
-                                            bool isWaterfall = false, bool isOptics = false)
+        private TombEngineMesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex = 0,
+                                              bool isWaterfall = false, bool isOptics = false)
         {
             var newMesh = new TombEngineMesh
             {
                 Sphere = oldMesh.BoundingSphere,
-                LightingType = oldMesh.LightingType
+                LightingType = oldMesh.LightingType,
+                Hidden = oldMesh.Hidden
             };
 
             var objectString = isStatic ? "Static" : "Moveable";
@@ -44,12 +45,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 var v = new TombEngineVertex() 
                 { 
-                    Position = new Vector3(pos.X, -pos.Y, pos.Z),
-                    Normal   = Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)),
-                    Color    = color,
-                    Bone     = meshIndex,
-                    Glow     = (oldMesh.HasAttributes) ? (float)oldMesh.VertexAttributes[i].Glow / 64.0f : 0.0f,
-                    Move     = (oldMesh.HasAttributes) ? (float)oldMesh.VertexAttributes[i].Move / 64.0f : 0.0f
+                    Position   = new Vector3(pos.X, -pos.Y, pos.Z),
+                    Normal     = Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)),
+                    Color      = color,
+                    BoneIndex  = oldMesh.HasWeights ? oldMesh.VertexWeights[i].Index : new int[4] { meshIndex, 0, 0, 0 },
+                    BoneWeight = oldMesh.HasWeights ? oldMesh.VertexWeights[i].Weight : new float[4] { 1, 0, 0, 0 },
+                    Glow       = oldMesh.HasAttributes ? (float)oldMesh.VertexAttributes[i].Glow / 64.0f : 0.0f,
+                    Move       = oldMesh.HasAttributes ? (float)oldMesh.VertexAttributes[i].Move / 64.0f : 0.0f
             };
 
                 newMesh.Vertices.Add(v);
@@ -397,9 +399,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
                 }
 
+                newMoveable.Skin = -1;
+                if (oldMoveable.Skin != null)
+                {
+                    newMoveable.Skin = _meshes.Count;
+                    var wadSkin = oldMoveable.Skin;
+                    ConvertWadMesh(
+                        wadSkin,
+                        false,
+                        oldMoveable.Id.ShortName(_level.Settings.GameVersion));
+                }
+
                 var meshTrees = new List<tr_meshtree>();
-                var usedMeshes = new List<WadMesh>();
-                usedMeshes.Add(oldMoveable.Bones[0].Mesh);
 
                 for (int b = 1; b < oldMoveable.Bones.Count; b++)
                 {
@@ -414,7 +425,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     tree.Y = (int)-bone.Translation.Y;
                     tree.Z = (int) bone.Translation.Z;
 
-                    usedMeshes.Add(oldMoveable.Bones[b].Mesh);
                     meshTrees.Add(tree);
                 }
 
@@ -486,10 +496,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     ConvertWadMesh(
                         oldStaticMesh.Mesh, 
                         true,
-                        oldStaticMesh.Id.ShortName(_level.Settings.GameVersion), 
-                        0,
-                        false, 
-                        false);
+                        oldStaticMesh.Id.ShortName(_level.Settings.GameVersion));
                 }
                 else
                 {
