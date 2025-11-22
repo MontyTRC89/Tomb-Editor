@@ -726,8 +726,8 @@
     <moveable id="987" name="STOPWATCH_ITEM" />
     <moveable id="988" name="MEMCARD_LOAD_INV_ITEM" hidden="true" />
     <moveable id="989" name="MEMCARD_SAVE_INV_ITEM" hidden="true" />
-    <moveable id="990" name="PC_LOAD_INV_ITEM" hidden="true" />
-    <moveable id="991" name="PC_SAVE_INV_ITEM" hidden="true" />
+    <moveable id="990" name="PC_LOAD_INV_ITEM" />
+    <moveable id="991" name="PC_SAVE_INV_ITEM" />
     <moveable id="992" name="DIARY_OPEN" hidden="true" />
     <moveable id="1000" name="INVENTORY_PASSPORT" hidden="true" />
     <moveable id="1001" name="INVENTORY_SUNGLASSES" hidden="true" />
