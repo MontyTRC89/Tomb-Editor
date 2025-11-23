@@ -1,6 +1,9 @@
 LevelVars.Engine.Keypad = LevelVars.Engine.Keypad or {}
 LevelVars.Engine.Keypad.ActivatedKeypad = nil
 
+local inventoryDelay = 0
+local inventoryOpen = false
+
 LevelFuncs.Engine.Node.KeypadCreate = function(object, code, volume)
 
     local dataName = object .. "_KeypadData"
@@ -113,8 +116,21 @@ LevelFuncs.Engine.ActivateKeypad = function(object)
 
     if Lara:GetAnim() == 197 and Lara:GetFrame() >= 22 and Lara:GetFrame() <= 22 then
         LevelVars.Engine.Keypad.ActivatedKeypad = object
-        TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
-        Flow.SetFreezeMode(Flow.FreezeMode.FULL)
+        inventoryOpen = true
+    end
+
+    if inventoryOpen == true then
+        inventoryDelay = inventoryDelay + 1
+        TEN.View.SetPostProcessMode(View.PostProcessMode.MONOCHROME)
+        TEN.View.SetPostProcessStrength(1)
+        TEN.View.SetPostProcessTint(Color(128,128,128,255))
+
+        if inventoryDelay >= 2 then
+            TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
+            inventoryOpen = false
+            inventoryDelay = 0
+            Flow.SetFreezeMode(Flow.FreezeMode.FULL)
+        end
     end
 
 end
@@ -131,6 +147,10 @@ LevelFuncs.Engine.ExitKeypad = function(object, status)
 end
 
 LevelFuncs.Engine.RunKeypad = function()
+
+    TEN.View.SetPostProcessMode(View.PostProcessMode.NONE)
+    TEN.View.SetPostProcessStrength(0)
+    TEN.View.SetPostProcessTint(Color(255,255,255,255))
 
     local soundIDs = {
         ["Clear"] = 983,    -- TR5_Keypad_Hash (Cancel)
