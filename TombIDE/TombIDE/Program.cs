@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CustomMessageBox.WPF;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -76,11 +77,17 @@ namespace TombIDE
 				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Generic.xaml")
 			});
 
-			// Use DarkColours theme (default DarkUI look)
+			// Use DarkColors theme (default DarkUI look)
 			wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
 			{
 				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Dictionaries/DarkColors.xaml")
 			});
+
+			CMessageBox.WindowStyleOverride = (WPF.Style)wpfApp.Resources["CustomWindowStyle"];
+			CMessageBox.UsePathIconsByDefault = true;
+
+			if (wpfApp.TryFindResource("Brush_Background_Alternative") is WPF.Media.SolidColorBrush brush)
+				CMessageBox.DefaultButtonsPanelBackground = brush;
 		}
 
 		private static void UpdateNGCompilerPaths()

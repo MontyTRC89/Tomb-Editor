@@ -20,7 +20,8 @@ public readonly struct SectorWallData
 	/// <para>
 	/// This can only be true if the following conditions are met:<br />
 	/// - The sector is <u>NOT</u> a green wall tile,<br />
-	/// - The sector is a gray room border tile with a wall portal which leads to another adjoining, non-wall sector.
+	/// - The sector is a gray room border tile with a wall portal which leads to another adjoining, non-wall sector,<br />
+	/// - The portal opacity (if the portal is not <see langword="null" />) is <see cref="PortalOpacity.None" />.
 	/// </para>
 	/// </summary>
 	public readonly bool CanOverdraw;

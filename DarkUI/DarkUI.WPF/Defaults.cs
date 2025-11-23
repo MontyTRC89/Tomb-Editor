@@ -28,7 +28,9 @@ public static class Defaults
 	public const bool SnapsToDevicePixels = true;
 	public const bool UseLayoutRounding = true;
 
+	public const double SmallFontSize = 10;
 	public const double DefaultFontSize = 11;
+	public const double LargeFontSize = 13;
 	public const double H1FontSize = 20;
 	public const double H2FontSize = 16;
 
@@ -39,6 +41,8 @@ public static class Defaults
 	public const double LargeThicknessWidth = 16;
 	public const double ExtraLargeThicknessWidth = 24;
 	public const double JumboThicknessWidth = 32;
+
+	public const double StandardButtonWidth = 75;
 
 	#endregion Constants
 
@@ -169,7 +173,7 @@ public static class Defaults
 	public static readonly double TitleBar_Height = 30;
 	public static readonly double TitleBar_ChromeHeight = TitleBar_Height - 5; // 5 is a system constant (I think)
 	public static readonly double TitleBar_PathIconStrokeWidth = 1;
-	public static readonly double TitleBar_ButtonWidth = 40;
+	public static readonly double TitleBar_ButtonWidth = 45;
 	public static readonly double TitleBar_FontSize = 12;
 	public static readonly double TitleBar_IconWidth = 64;
 	public static readonly double TitleBar_IconVerticalOffset = -12;

@@ -71,6 +71,7 @@ namespace WadTool
             drawGizmoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             drawGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             drawCollisionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            drawSkinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem(); // da develop
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             smoothAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             scrollGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -291,6 +292,7 @@ namespace WadTool
             fileeToolStripMenuItem.Name = "fileeToolStripMenuItem";
             fileeToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             fileeToolStripMenuItem.Text = "Edit";
+
             // 
             // undoToolStripMenuItem
             // 
@@ -2823,5 +2825,6 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel10;
         private Controls.BezierCurveEditor bezierCurveEditor;
         private DarkUI.Controls.DarkPanel panelRootMotion;
+        private System.Windows.Forms.ToolStripMenuItem drawSkinToolStripMenuItem;
     }
 }

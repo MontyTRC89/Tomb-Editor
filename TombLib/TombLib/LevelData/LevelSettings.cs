@@ -255,7 +255,7 @@ namespace TombLib.LevelData
         public void ConvertLevelExtension()
         {
             string result = string.Empty;
-            switch (GameVersion)
+            switch (GameVersion.Native())
             {
                 case TRVersion.Game.TR1:
                     result = ".phd";
