@@ -171,6 +171,7 @@ namespace TombLib.LevelData.IO
                 case "ANIMATING14":
                 case "ANIMATING15":
                 case "ANIMATING16":
+                case "FIREROPE":
                     {
                         if (sourceVersion != TRVersion.Game.TR4)
                             break;
@@ -285,10 +286,10 @@ namespace TombLib.LevelData.IO
                     {
                         var oldBB = anim.KeyFrames[f].BoundingBox;
 
-                        var newMaxX = Math.Sign(oldBB.Maximum.X) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Maximum.X));
-                        var newMaxZ = Math.Sign(oldBB.Maximum.Z) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Maximum.Z));
-                        var newMinX = Math.Sign(oldBB.Minimum.X) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Minimum.X));
-                        var newMinZ = Math.Sign(oldBB.Minimum.Z) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Minimum.Z));
+                        var newMaxX = Math.Sign(oldBB.Maximum.X) * MathC.NearestPowerOf2((int)Math.Abs(oldBB.Maximum.X));
+                        var newMaxZ = Math.Sign(oldBB.Maximum.Z) * MathC.NearestPowerOf2((int)Math.Abs(oldBB.Maximum.Z));
+                        var newMinX = Math.Sign(oldBB.Minimum.X) * MathC.NearestPowerOf2((int)Math.Abs(oldBB.Minimum.X));
+                        var newMinZ = Math.Sign(oldBB.Minimum.Z) * MathC.NearestPowerOf2((int)Math.Abs(oldBB.Minimum.Z));
 
                         oldBB.Maximum = new Vector3(newMaxX, oldBB.Maximum.Y, newMaxZ);
                         oldBB.Minimum = new Vector3(newMinX, oldBB.Minimum.Y, newMinZ);

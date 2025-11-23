@@ -1,5 +1,6 @@
 <states>
     <!-- Lara -->
+    <state item="0" id="62" name="AUTO_JUMP" />
     <state item="0" id="139" name="SHIMMY_45_OUTER_LEFT" />
     <state item="0" id="140" name="SHIMMY_45_OUTER_RIGHT" />
     <state item="0" id="141" name="SHIMMY_45_INNER_LEFT" />

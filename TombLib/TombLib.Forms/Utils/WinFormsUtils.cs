@@ -153,5 +153,17 @@ namespace TombLib.Utils
 
         public static void LockHeight(this Form form) => form.MaximumSize = new Size(int.MaxValue, form.Size.Height);
         public static void LockWidth(this Form form) => form.MaximumSize = new Size(form.Size.Width, int.MaxValue);
+
+        public static IntPtr TryGetMainWindowHandle()
+        {
+            if (Application.OpenForms.Count == 0)
+                return IntPtr.Zero;
+
+            var form = Application.OpenForms[0];
+            if (form == null || form.IsDisposed || !form.IsHandleCreated)
+                return IntPtr.Zero;
+
+            return form.Handle;
+        }
     }
 }

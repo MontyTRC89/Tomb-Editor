@@ -1,3 +1,20 @@
+Version 1.10.1
+==============
+
+General
+ * Delete external material xml file if material settings are reset to default.
+
+Tomb Editor:
+ * Fixed incorrect prompt about other missing resources when reconnecting an offline file.
+ * Fixed exceptions when attempting to open a project file while another project is already loading.
+ * Copy main room attributes from the parent room when using portal digger tool.
+ 
+WadTool:
+ * Fixed incorrect bounding box resizing for several pushable objects while converting them to TEN.
+
+TEN nodes:
+ * Fixed flipmap node accepting values only up to 16.
+
 Version 1.10
 ============
 

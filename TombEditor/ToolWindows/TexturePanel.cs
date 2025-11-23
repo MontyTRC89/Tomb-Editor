@@ -283,7 +283,7 @@ namespace TombEditor.ToolWindows
 			var list = comboCurrentTexture.Items.Cast<Texture>();
 			using (var form = new FormMaterialEditor(list, _editor.Configuration, comboCurrentTexture.SelectedItem as Texture))
 			{
-				if (form.ShowDialog() == DialogResult.OK && form.MaterialChanged)
+				if (form.ShowDialog() == DialogResult.OK && form.MaterialChanged && !string.IsNullOrEmpty(form.MaterialFileName))
 					_editor.SendMessage("Material settings for selected texture were saved to " + form.MaterialFileName + ".", PopupType.Info);
 			}
 		}
