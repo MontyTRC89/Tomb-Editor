@@ -39,6 +39,7 @@ LevelFuncs.Engine.Node.KeypadTrigger = function(object, code, volume, triggerer)
         triggerer:Enable()
         LevelVars.Engine.Keypad[dataName] = nil
         LevelVars.Engine.Keypad.ActivatedKeypad = nil
+        TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
         volume:Disable()
     end
   
@@ -66,6 +67,7 @@ LevelFuncs.Engine.Node.KeypadVolume = function(object, code, volume, volumeEvent
         local volume = GetVolumeByName(LevelVars.Engine.Keypad[dataName].Volume)
         LevelVars.Engine.Keypad[dataName] = nil
         LevelVars.Engine.Keypad.ActivatedKeypad  = nil
+        TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
         TEN.Logic.HandleEvent(volumeEvent, eventType, Lara)
         volume:Disable()
     end
@@ -94,6 +96,7 @@ LevelFuncs.Engine.Node.KeypadScript = function(object, code, volume, funcName, a
         local volume = GetVolumeByName(LevelVars.Engine.Keypad[dataName].Volume)
         LevelVars.Engine.Keypad[dataName] = nil
         LevelVars.Engine.Keypad.ActivatedKeypad = nil
+        TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
         funcName(table.unpack(LevelFuncs.Engine.Node.SplitString(args, ",")))
         volume:Disable()
     end
@@ -124,8 +127,7 @@ LevelFuncs.Engine.ExitKeypad = function(object, status)
     LevelVars.Engine.Keypad[dataName].Status = status
     keypadObject:Remove()
     Flow.SetFreezeMode(Flow.FreezeMode.NONE)
-    TEN.Logic.RemoveCallback(TEN.Logic.CallbackPoint.PREFREEZE, LevelFuncs.Engine.RunKeypad)
-
+    
 end
 
 LevelFuncs.Engine.RunKeypad = function()
