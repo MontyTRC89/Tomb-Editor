@@ -53,8 +53,8 @@ namespace TombEditor.ToolWindows
                 bool supportsReverb = _editor.Level.Settings.GameVersion.SupportsReverberation();
                 bool isTR1 = _editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR1;
 
-                cbHorizon.Enabled = !isTR1;
-                cbFlagOutside.Enabled = !isTR1;
+                cbHorizon.Enabled = !isTR1 || _editor.Level.IsTRX;
+                cbFlagOutside.Enabled = !isTR1 || _editor.Level.IsTRX;
                 cbFlagCold.Enabled = isNGorTEN;
                 cbFlagDamage.Enabled = isNGorTEN;
                 cbNoLensflare.Enabled = supportsLensflare;

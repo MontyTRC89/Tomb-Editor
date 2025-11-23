@@ -3,6 +3,7 @@ Version 1.10.2
 
 Tomb Editor:
  * Added support for drawing the skybox in the editor for TR1X levels
+ * Added support for skybox and wind room flags in TR1X levels
 
 TEN nodes:
  * Added nodes to check the color of a moveable or static mesh.
