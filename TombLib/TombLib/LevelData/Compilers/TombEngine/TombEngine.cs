@@ -199,6 +199,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 foreach (var moveable in _moveables)
                 {
                     writer.Write(moveable.ObjectID);
+                    writer.Write(moveable.Skin);
                     writer.Write(moveable.NumMeshes);
                     writer.Write(moveable.StartingMesh);
                     writer.Write(moveable.MeshTree);
