@@ -123,7 +123,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
                     }
 
-            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
+            return Vector3.Max(output, new Vector3()) * (1.0f / 255.0f);
         }
 
         private TombEngineRoom BuildRoom(Room room)
