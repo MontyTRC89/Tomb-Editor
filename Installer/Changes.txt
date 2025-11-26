@@ -1,3 +1,9 @@
+Version 1.10.2
+==============
+
+WadTool:
+ * Automatically correct hair mesh connections when importing to TEN wad.
+
 Version 1.10.1
 ==============
 
