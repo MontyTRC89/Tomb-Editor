@@ -168,7 +168,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newRoom.AlternateKind = AlternateKind.BaseRoom;
 
             // Store ambient intensity
-            newRoom.AmbientLight = room.Properties.AmbientLight;
+            newRoom.AmbientLight = room.Properties.AmbientLight * 0.5f; // 0...1
 
             // Room flags
             if (room.Properties.FlagHorizon)
