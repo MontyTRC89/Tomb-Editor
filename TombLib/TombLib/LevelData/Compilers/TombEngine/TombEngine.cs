@@ -2,6 +2,7 @@ using NAudio.Flac;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using TombLib.IO;
@@ -242,24 +243,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write(fixedMotionCurveZ.StartHandle);
                         writer.Write(fixedMotionCurveZ.EndHandle);
 
-                        writer.Write(animation.KeyFrames.Count);
-                        foreach (var keyFrame in animation.KeyFrames)
+                        if (animation.KeyFrames.Count == 0)
                         {
-                            var center = new Vector3(
-                                keyFrame.BoundingBox.X1 + keyFrame.BoundingBox.X2,
-                                keyFrame.BoundingBox.Y1 + keyFrame.BoundingBox.Y2,
-                                keyFrame.BoundingBox.Z1 + keyFrame.BoundingBox.Z2) / 2;
-                            var extents = new Vector3(
-                                keyFrame.BoundingBox.X2 - keyFrame.BoundingBox.X1,
-                                keyFrame.BoundingBox.Y2 - keyFrame.BoundingBox.Y1,
-                                keyFrame.BoundingBox.Z2 - keyFrame.BoundingBox.Z1) / 2;
+                            var defaultKeyFrame = new TombEngineKeyFrame();
+                            defaultKeyFrame.BoneOrientations = new List<Quaternion>(Enumerable.Repeat(Quaternion.Identity, moveable.NumMeshes));
 
-                            writer.Write(center);
-                            writer.Write(extents);
-                            writer.Write(keyFrame.RootOffset);
-                            
-                            writer.Write(keyFrame.BoneOrientations.Count);
-                            writer.WriteBlockArray(keyFrame.BoneOrientations);
+                            writer.Write(1);
+                            writer.Write(defaultKeyFrame);
+                        }
+                        else
+                        {
+                            writer.Write(animation.KeyFrames.Count);
+                            foreach (var keyFrame in animation.KeyFrames)
+                            {
+                                writer.Write(keyFrame);
+                            }
                         }
 
                         writer.Write(animation.StateChanges.Count);

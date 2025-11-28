@@ -2,7 +2,9 @@
 using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.Utils;
+using static SharpDX.Serialization.BinarySerializer;
 
 namespace TombLib.IO
 {
@@ -87,6 +89,24 @@ namespace TombLib.IO
             {
                 Marshal.FreeHGlobal(unmanaged);
             }
+        }
+        public void Write(TombEngineKeyFrame keyFrame)
+        {
+            var center = new Vector3(
+                keyFrame.BoundingBox.X1 + keyFrame.BoundingBox.X2,
+                keyFrame.BoundingBox.Y1 + keyFrame.BoundingBox.Y2,
+                keyFrame.BoundingBox.Z1 + keyFrame.BoundingBox.Z2) / 2;
+            var extents = new Vector3(
+                keyFrame.BoundingBox.X2 - keyFrame.BoundingBox.X1,
+                keyFrame.BoundingBox.Y2 - keyFrame.BoundingBox.Y1,
+                keyFrame.BoundingBox.Z2 - keyFrame.BoundingBox.Z1) / 2;
+
+            Write(center);
+            Write(extents);
+            Write(keyFrame.RootOffset);
+
+            Write(keyFrame.BoneOrientations.Count);
+            WriteBlockArray(keyFrame.BoneOrientations);
         }
     }
 }
