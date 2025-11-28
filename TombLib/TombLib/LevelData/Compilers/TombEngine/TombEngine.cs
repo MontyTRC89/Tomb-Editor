@@ -249,14 +249,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             defaultKeyFrame.BoneOrientations = new List<Quaternion>(Enumerable.Repeat(Quaternion.Identity, moveable.NumMeshes));
 
                             writer.Write(1);
-                            writer.Write(defaultKeyFrame);
+                            defaultKeyFrame.Write(writer);
                         }
                         else
                         {
                             writer.Write(animation.KeyFrames.Count);
                             foreach (var keyFrame in animation.KeyFrames)
                             {
-                                writer.Write(keyFrame);
+                                keyFrame.Write(writer);
                             }
                         }
 

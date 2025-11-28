@@ -658,6 +658,25 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public TombEngineBoundingBox BoundingBox;
         public Vector3 RootOffset;
         public List<Quaternion> BoneOrientations;
+
+        public void Write(BinaryWriterEx writer)
+        {
+            var center = new Vector3(
+                BoundingBox.X1 + BoundingBox.X2,
+                BoundingBox.Y1 + BoundingBox.Y2,
+                BoundingBox.Z1 + BoundingBox.Z2) / 2;
+            var extents = new Vector3(
+                BoundingBox.X2 - BoundingBox.X1,
+                BoundingBox.Y2 - BoundingBox.Y1,
+                BoundingBox.Z2 - BoundingBox.Z1) / 2;
+
+            writer.Write(center);
+            writer.Write(extents);
+            writer.Write(RootOffset);
+
+            writer.Write(BoneOrientations.Count);
+            writer.WriteBlockArray(BoneOrientations);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
