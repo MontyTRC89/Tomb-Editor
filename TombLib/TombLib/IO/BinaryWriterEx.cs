@@ -90,6 +90,7 @@ namespace TombLib.IO
                 Marshal.FreeHGlobal(unmanaged);
             }
         }
+
         public void Write(TombEngineKeyFrame keyFrame)
         {
             var center = new Vector3(
