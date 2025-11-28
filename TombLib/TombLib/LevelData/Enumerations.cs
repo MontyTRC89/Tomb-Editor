@@ -63,6 +63,9 @@ namespace TombLib.LevelData
 
         public static bool SupportsClimbing(this Game ver)
             => ver != Game.TR1;
+
+        public static bool SupportsSplits(this Game ver)
+            => ver >= Game.TR3;
     }
 
     // Only for TR5+
