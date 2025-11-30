@@ -2846,19 +2846,19 @@ namespace WadTool
             switch (cbBlendPreset.SelectedIndex)
             {
                 case 0:
-                    bezierCurveEditor.Value.Set(BezierCurve2D.Linear);
+                    bezierCurveEditor.Value.Set(BezierCurve2.Linear);
                     break;
 
                 case 1:
-                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseIn);
+                    bezierCurveEditor.Value.Set(BezierCurve2.EaseIn);
                     break;
 
                 case 2:
-                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseOut);
+                    bezierCurveEditor.Value.Set(BezierCurve2.EaseOut);
                     break;
 
                 case 3:
-                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseInOut);
+                    bezierCurveEditor.Value.Set(BezierCurve2.EaseInOut);
                     break;
             }
 

@@ -643,7 +643,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 var startX = new Vector2(0.0f, animation.VelocityStart.X);
                 var endX = new Vector2(1.0f, animation.VelocityEnd.X);
-                var fixedMotionCurveX = new BezierCurve2D(startX, endX, startX, endX);
+                var fixedMotionCurveX = new BezierCurve2(startX, endX, startX, endX);
                 writer.Write(fixedMotionCurveX.Start);
                 writer.Write(fixedMotionCurveX.End);
                 writer.Write(fixedMotionCurveX.StartHandle);
@@ -651,7 +651,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 var startY = new Vector2(0.0f, animation.VelocityStart.Y);
                 var endY = new Vector2(1.0f, animation.VelocityEnd.Y);
-                var fixedMotionCurveY = new BezierCurve2D(startY, endY, startY, endY);
+                var fixedMotionCurveY = new BezierCurve2(startY, endY, startY, endY);
                 writer.Write(fixedMotionCurveY.Start);
                 writer.Write(fixedMotionCurveY.End);
                 writer.Write(fixedMotionCurveY.StartHandle);
@@ -659,7 +659,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 var startZ = new Vector2(0.0f, animation.VelocityStart.Z);
                 var endZ = new Vector2(1.0f, animation.VelocityEnd.Z);
-                var fixedMotionCurveZ = new BezierCurve2D(startZ, endZ, startZ, endZ);
+                var fixedMotionCurveZ = new BezierCurve2(startZ, endZ, startZ, endZ);
                 writer.Write(fixedMotionCurveZ.Start);
                 writer.Write(fixedMotionCurveZ.End);
                 writer.Write(fixedMotionCurveZ.StartHandle);
@@ -726,7 +726,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int NextFrameLow;
         public int NextFrameHigh;
         public int BlendFrameCount;
-        public BezierCurve2D BlendCurve;
+        public BezierCurve2 BlendCurve;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -738,7 +738,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int NextAnimation;
         public int NextFrame;
         public int BlendFrameCount;
-        public BezierCurve2D BlendCurve;
+        public BezierCurve2 BlendCurve;
         public Vector3 VelocityStart;
         public Vector3 VelocityEnd;
         public List<TombEngineKeyFrame> KeyFrames;

@@ -22,7 +22,7 @@ namespace TombLib.Wad
 
         // New parameters for animation blending (TEN only).
         public ushort BlendFrameCount { get; set; }
-        public BezierCurve2D BlendCurve { get; set; } = BezierCurve2D.Linear.Clone();
+        public BezierCurve2 BlendCurve { get; set; } = BezierCurve2.Linear.Clone();
 
         public List<WadKeyFrame> KeyFrames { get; private set; } = new List<WadKeyFrame>();
         public List<WadStateChange> StateChanges { get; private set; } = new List<WadStateChange>();

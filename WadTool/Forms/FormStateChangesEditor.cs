@@ -31,10 +31,10 @@ namespace WadTool
             public ushort NextFrame { get; set; }
             public ushort BlendFrameCount { get; set; }
             public ushort BlendEndFrame { get; set; }
-            public BezierCurve2D BlendCurve { get; set; }
+            public BezierCurve2 BlendCurve { get; set; }
 
             public WadStateChangeRow(string stateName, ushort stateId, ushort lowFrame, ushort highFrame, ushort nextAnimation,
-                                     ushort nextFrameLow, ushort nextFrameHigh, ushort blendFrameCount, BezierCurve2D blendCurve)
+                                     ushort nextFrameLow, ushort nextFrameHigh, ushort blendFrameCount, BezierCurve2 blendCurve)
             {
                 StateName = stateName;
                 StateId = stateId;
@@ -368,19 +368,19 @@ namespace WadTool
             switch (cbBlendPreset.SelectedIndex)
             {
                 case 0:
-                    bezierCurveEditor.Value.Set(BezierCurve2D.Linear);
+                    bezierCurveEditor.Value.Set(BezierCurve2.Linear);
                     break;
 
                 case 1:
-                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseIn);
+                    bezierCurveEditor.Value.Set(BezierCurve2.EaseIn);
                     break;
 
                 case 2:
-                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseOut);
+                    bezierCurveEditor.Value.Set(BezierCurve2.EaseOut);
                     break;
 
                 case 3:
-                    bezierCurveEditor.Value.Set(BezierCurve2D.EaseInOut);
+                    bezierCurveEditor.Value.Set(BezierCurve2.EaseInOut);
                     break;
             }
 

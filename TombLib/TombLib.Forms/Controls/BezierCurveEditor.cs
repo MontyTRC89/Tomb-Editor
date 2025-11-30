@@ -19,19 +19,19 @@ namespace WadTool.Controls
         public event EventHandler ValueChanged;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BezierCurve2D Value
+        public BezierCurve2 Value
         {
             get => _bezierCurve;
             set
             {
-                _bezierCurve = value ?? BezierCurve2D.Linear.Clone();
+                _bezierCurve = value ?? BezierCurve2.Linear.Clone();
 
                 if (!DesignMode)
                     UpdateUI();
             }
         }
 
-        private BezierCurve2D _bezierCurve = BezierCurve2D.Linear;
+        private BezierCurve2 _bezierCurve = BezierCurve2.Linear;
 
         public BezierCurveEditor()
         {
@@ -228,7 +228,7 @@ namespace WadTool.Controls
 
             if (_selectedPoint == -1)
             {
-                Value.Set(BezierCurve2D.Linear);
+                Value.Set(BezierCurve2.Linear);
                 InitializeControlPoints();
                 ValueChanged?.Invoke(this, e);
                 Invalidate();

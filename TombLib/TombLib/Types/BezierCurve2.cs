@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace TombLib.Types
 {
-    public sealed class BezierCurve2D : ICloneable
+    public sealed class BezierCurve2 : ICloneable
     {
         private const int CONTROL_POINT_COUNT = 4;
 
@@ -58,12 +58,12 @@ namespace TombLib.Types
             }
         }
 
-        public static readonly BezierCurve2D Linear = new BezierCurve2D(Vector2.Zero, Vector2.One, Vector2.Zero, Vector2.One);
-        public static readonly BezierCurve2D EaseIn = new BezierCurve2D(Vector2.Zero, Vector2.One, new Vector2(0.25f, 0.0f), Vector2.One);
-        public static readonly BezierCurve2D EaseOut = new BezierCurve2D(Vector2.Zero, Vector2.One, Vector2.Zero, new Vector2(0.75f, 1.0f));
-        public static readonly BezierCurve2D EaseInOut = new BezierCurve2D(Vector2.Zero, Vector2.One, new Vector2(0.25f, 0.0f), new Vector2(0.75f, 1.0f));
+        public static readonly BezierCurve2 Linear = new BezierCurve2(Vector2.Zero, Vector2.One, Vector2.Zero, Vector2.One);
+        public static readonly BezierCurve2 EaseIn = new BezierCurve2(Vector2.Zero, Vector2.One, new Vector2(0.25f, 0.0f), Vector2.One);
+        public static readonly BezierCurve2 EaseOut = new BezierCurve2(Vector2.Zero, Vector2.One, Vector2.Zero, new Vector2(0.75f, 1.0f));
+        public static readonly BezierCurve2 EaseInOut = new BezierCurve2(Vector2.Zero, Vector2.One, new Vector2(0.25f, 0.0f), new Vector2(0.75f, 1.0f));
 
-        public BezierCurve2D(Vector2 start, Vector2 end, Vector2 startHandle, Vector2 endHandle)
+        public BezierCurve2(Vector2 start, Vector2 end, Vector2 startHandle, Vector2 endHandle)
         {
             Start = start;
             End = end;
@@ -71,7 +71,7 @@ namespace TombLib.Types
             EndHandle = endHandle;
         }
 
-        public void Set(BezierCurve2D other)
+        public void Set(BezierCurve2 other)
         {
             Start = other.Start;
             End = other.End;
@@ -133,18 +133,18 @@ namespace TombLib.Types
             var points = _controlPoints.ToArray();
             int count = _controlPoints.Length - 1;
 
-		    // Calculate derivative control points.
-		    for (int i = 0; i < count; i++)
-			    points[i] = (_controlPoints[i + 1] - _controlPoints[i]) * count;
+            // Calculate derivative control points.
+            for (int i = 0; i < count; i++)
+                points[i] = (_controlPoints[i + 1] - _controlPoints[i]) * count;
 
-		    // Reduce points using De Casteljau interpolation.
-		    for (int i = 1; i < count; i++)
-		    {
-			    for (int j = 0; j < (count - i); j++)
-				    points[j] = Vector2.Lerp(points[j], points[j + 1], alpha);
-		    }
+            // Reduce points using De Casteljau interpolation.
+            for (int i = 1; i < count; i++)
+            {
+                for (int j = 0; j < (count - i); j++)
+                    points[j] = Vector2.Lerp(points[j], points[j + 1], alpha);
+            }
 
-		    return points[0];
+            return points[0];
         }
 
         object ICloneable.Clone()
@@ -152,20 +152,21 @@ namespace TombLib.Types
             return Clone();
         }
 
-        public BezierCurve2D Clone()
+        public BezierCurve2 Clone()
         {
-            return new BezierCurve2D(Start, End, StartHandle, EndHandle);
+            return new BezierCurve2(Start, End, StartHandle, EndHandle);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is BezierCurve2D other)
+            if (obj is BezierCurve2 other)
             {
                 return Start == other.Start &&
                        End == other.End &&
                        StartHandle == other.StartHandle &&
                        EndHandle == other.EndHandle;
             }
+
             return false;
         }
 
@@ -174,7 +175,7 @@ namespace TombLib.Types
             return HashCode.Combine(Start, End, StartHandle, EndHandle);
         }
 
-        public static bool operator ==(BezierCurve2D first, BezierCurve2D second)
+        public static bool operator ==(BezierCurve2 first, BezierCurve2 second)
         {
             if (ReferenceEquals(first, second))
                 return true;
@@ -189,6 +190,6 @@ namespace TombLib.Types
         }
 
 
-        public static bool operator !=(BezierCurve2D first, BezierCurve2D second) => !(first == second);
+        public static bool operator !=(BezierCurve2 first, BezierCurve2 second) => !(first == second);
     }
 }
