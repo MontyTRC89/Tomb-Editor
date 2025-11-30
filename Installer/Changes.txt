@@ -1,6 +1,9 @@
 Version 1.10.2
 ==============
 
+TombIDE:
+ * Updated TR1X and TR2X presets to TRX 1.0.3
+
 TEN nodes:
  * Added nodes to check the color of a moveable or static mesh.
  * Added node to add an interaction highlight to a moveable"
