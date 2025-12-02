@@ -23,7 +23,6 @@ public interface IPakFileService
 	/// </summary>
 	/// <param name="pakFilePath">The path where the PAK file will be saved.</param>
 	/// <param name="rawData">The raw data to compress and save.</param>
-	/// <exception cref="ArgumentNullException">Thrown when rawData is <see langword="null"/>.</exception>
 	/// <exception cref="InvalidOperationException">Thrown when compression fails.</exception>
 	void SavePakFile(string pakFilePath, byte[] rawData);
 }

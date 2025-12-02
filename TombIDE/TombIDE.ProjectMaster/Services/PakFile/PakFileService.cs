@@ -34,9 +34,6 @@ public sealed class PakFileService : IPakFileService
 
 	public void SavePakFile(string pakFilePath, byte[] rawData)
 	{
-		if (rawData is null)
-			throw new ArgumentNullException(nameof(rawData));
-
 		try
 		{
 			byte[] pakFileData = CompressData(rawData);
