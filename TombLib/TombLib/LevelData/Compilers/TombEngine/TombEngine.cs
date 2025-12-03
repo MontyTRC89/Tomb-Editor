@@ -1,9 +1,12 @@
-﻿using System;
+using NAudio.Flac;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using TombLib.IO;
+using TombLib.Types;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.TombEngine
@@ -190,58 +193,28 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                // Write animations' data
-                writer.Write((uint)_animations.Count);
-                writer.WriteBlockArray(_animations);
-
-                writer.Write((uint)_stateChanges.Count);
-                writer.WriteBlockArray(_stateChanges);
-
-                writer.Write((uint)_animDispatches.Count);
-                writer.WriteBlockArray(_animDispatches);
-
-                writer.Write((uint)_animCommands.Count);
-                writer.WriteBlockArray(_animCommands);
-
-                writer.Write((uint)_meshTrees.Count);
+                writer.Write(_meshTrees.Count);
                 writer.WriteBlockArray(_meshTrees);
 
-                writer.Write((uint)_frames.Count);
-                foreach (var frame in _frames)
-                {
-                    writer.Write((short)frame.BoundingBox.X1);
-                    writer.Write((short)frame.BoundingBox.X2);
-                    writer.Write((short)frame.BoundingBox.Y1);
-                    writer.Write((short)frame.BoundingBox.Y2);
-                    writer.Write((short)frame.BoundingBox.Z1);
-                    writer.Write((short)frame.BoundingBox.Z2);
-                    writer.Write((short)frame.Offset.X);
-                    writer.Write((short)frame.Offset.Y);
-                    writer.Write((short)frame.Offset.Z);
-                    writer.Write((short)frame.Angles.Count);
-                    foreach (var angle in frame.Angles)
-                        writer.Write(angle);
-                }
+                writer.Write(_moveables.Count);
+                foreach (var moveable in _moveables)
+                    moveable.Write(writer);
 
-                writer.Write((uint)_moveables.Count);
-                for (var k = 0; k < _moveables.Count; k++)
-                    writer.WriteBlock(_moveables[k]);
-
-                writer.Write((uint)_staticMeshes.Count);
+                writer.Write(_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
-                writer.Write((uint)_spriteTextures.Count);
+                writer.Write(_spriteTextures.Count);
                 writer.WriteBlockArray(_spriteTextures);
 
-                writer.Write((uint)_spriteSequences.Count);
+                writer.Write(_spriteSequences.Count);
                 writer.WriteBlockArray(_spriteSequences);
 
                 // Write pathfinding data
-                writer.Write((uint)_boxes.Count);
+                writer.Write(_boxes.Count);
                 writer.WriteBlockArray(_boxes);
 
-                writer.Write((uint)_overlaps.Count);
+                writer.Write(_overlaps.Count);
                 writer.WriteBlockArray(_overlaps);
 
                 int zoneCount = Enum.GetValues(typeof(ZoneType)).Length;
@@ -252,7 +225,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         _zones.ForEach(z => writer.Write(z.Zones[flipped][i]));
 
                 // Write mirrors
-                writer.Write((uint)_mirrors.Count);
+                writer.Write(_mirrors.Count);
                 foreach (var mirror in _mirrors)
                 {
                     writer.Write(mirror.Room);
