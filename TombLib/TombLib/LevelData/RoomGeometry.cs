@@ -44,7 +44,7 @@ namespace TombLib.LevelData
         public SortedList<SectorFaceIdentity, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorFaceIdentity, VertexRange>();
 
         // useLegacyCode is used for converting legacy .PRJ files to .PRJ2 files
-        public void Build(Room room, bool highQualityLighting, bool useLegacyCode = false)
+        public void Build(Room room, bool useLegacyCode = false)
         {
             VertexPositions.Clear();
             VertexEditorUVs.Clear();
@@ -321,9 +321,6 @@ namespace TombLib.LevelData
 
             // Build color array
             VertexColors.Resize(VertexPositions.Count, room.Properties.AmbientLight);
-
-            // Lighting
-            Relight(room, highQualityLighting);
         }
 
         public void UpdateFaceTexture(int x, int z, SectorFace face, TextureArea texture, bool wasDoubleSided)

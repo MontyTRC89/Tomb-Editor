@@ -1182,7 +1182,7 @@ namespace TombLib.LevelData.IO
                 CancellationToken = cancelToken,
             };
             progressReporter?.ReportInfo("Building world geometry");
-            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.BuildGeometry());
+            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.Rebuild(relight: true, highQualityLighting: true));
             return true;
         }
 

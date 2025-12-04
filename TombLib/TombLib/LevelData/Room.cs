@@ -134,6 +134,7 @@ namespace TombLib.LevelData
 
         // Internal data structures
         public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
+        public bool PendingRelight { get; private set; } = true;
 
         private IEnumerable<PortalInstance> _portalsCache;
 
@@ -143,7 +144,7 @@ namespace TombLib.LevelData
             Level = level;
             Properties = new RoomProperties() { AmbientLight = ambientLight };
             Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling, true);
-            BuildGeometry();
+            Rebuild(relight: true, highQualityLighting: true);
         }
 
         public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
@@ -311,8 +312,8 @@ namespace TombLib.LevelData
                         newRoom.MoveObjectFrom(level, this, instance);
             }
 
-            newRoom.BuildGeometry();
-            BuildGeometry();
+            newRoom.Rebuild(relight: true, highQualityLighting: true);
+            Rebuild(relight: true, highQualityLighting: true);
             return newRoom;
         }
 
@@ -949,14 +950,30 @@ namespace TombLib.LevelData
             }
         }
 
-        public void BuildGeometry(bool highQualityLighting = false, bool useLegacyCode = false)
+        public void Rebuild(bool relight, bool highQualityLighting)
         {
-            RoomGeometry.Build(this, highQualityLighting, useLegacyCode);
+            RoomGeometry.Build(this);
+
+            if (relight)
+            {
+                RoomGeometry.Relight(this, highQualityLighting);
+                PendingRelight = false;
+            }
+            else
+            {
+                PendingRelight = true;
+            }
+        }
+
+        public void BuildGeometry(bool useLegacyCode = false)
+        {
+            RoomGeometry.Build(this, useLegacyCode);
         }
 
         public void RebuildLighting(bool highQualityLighting)
         {
             RoomGeometry.Relight(this, highQualityLighting);
+            PendingRelight = false;
         }
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
@@ -1549,7 +1566,7 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
-        public void SmartBuildGeometry(RectangleInt2 area, bool highQualityLighting = false)
+        public void SmartBuildGeometry(RectangleInt2 area, bool relight, bool highQualityLighting = false)
         {
             area = area.Inflate(1); // Add margin
 
@@ -1593,7 +1610,7 @@ namespace TombLib.LevelData
             // Update the collected stuff now
             Parallel.For(0, roomsToProcess.Count, index =>
             {
-                roomsToProcess[index].BuildGeometry(highQualityLighting);
+                roomsToProcess[index].Rebuild(relight, highQualityLighting);
             });
         }
 
