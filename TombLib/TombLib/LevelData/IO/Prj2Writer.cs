@@ -736,6 +736,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(instance.Position);
                                 chunkIO.Raw.Write(instance.SoundId);
                                 chunkIO.Raw.Write((int)instance.PlayMode);
+                                chunkIO.Raw.Write(instance.Enabled);
                                 chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : string.Empty);
                             }
                         }
