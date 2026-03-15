@@ -22,6 +22,7 @@ namespace DarkUI.Controls
         public event EventHandler SelectedNodesChanged;
         public event EventHandler AfterNodeExpand;
         public event EventHandler AfterNodeCollapse;
+        public event EventHandler NodesMoved;
 
         #endregion
 
@@ -50,6 +51,7 @@ namespace DarkUI.Controls
         private DarkTreeNode _provisionalNode;
         private DarkTreeNode _dropNode;
         private bool _provisionalDragging;
+        private bool _mouseInClientArea;
         private List<DarkTreeNode> _dragNodes;
         private Point _dragPos;
 
@@ -154,6 +156,12 @@ namespace DarkUI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IComparer<DarkTreeNode> TreeViewNodeSorter { get; set; }
 
+        // Optional predicate to restrict which nodes can act as drop targets.
+        // When null, any node may receive drops.
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Func<DarkTreeNode, bool> CanDropIntoNode { get; set; }
+
         #endregion
 
         #region Constructor Region
@@ -182,6 +190,7 @@ namespace DarkUI.Controls
                 SelectedNodesChanged = null;
                 AfterNodeExpand = null;
                 AfterNodeCollapse = null;
+                NodesMoved = null;
 
                 _nodes?.Dispose();
 
@@ -644,7 +653,9 @@ namespace DarkUI.Controls
 
         private void CheckHover()
         {
-            if (!ClientRectangle.Contains(PointToClient(MousePosition)))
+            _mouseInClientArea = ClientRectangle.Contains(PointToClient(MousePosition));
+
+            if (!_mouseInClientArea)
             {
                 if (IsDragging && _dropNode != null)
                 {
@@ -1091,8 +1102,17 @@ namespace DarkUI.Controls
 
             if (dropNode == null)
             {
-                if (Cursor != Cursors.No)
-                    Cursor = Cursors.No;
+                // Allow root-level drop when mouse is inside the control.
+                if (_mouseInClientArea)
+                {
+                    if (Cursor != Cursors.SizeAll)
+                        Cursor = Cursors.SizeAll;
+                }
+                else
+                {
+                    if (Cursor != Cursors.No)
+                        Cursor = Cursors.No;
+                }
 
                 return;
             }
@@ -1118,7 +1138,29 @@ namespace DarkUI.Controls
 
             if (dropNode == null)
             {
+                // Drop to root when mouse is inside the control but not over any node.
+                if (_mouseInClientArea)
+                {
+                    var cachedSelectedNodes = SelectedNodes.ToList();
+
+                    foreach (var node in _dragNodes)
+                    {
+                        if (node.ParentNode == null)
+                            Nodes.Remove(node);
+                        else
+                            node.ParentNode.Nodes.Remove(node);
+
+                        Nodes.Add(node);
+                    }
+
+                    foreach (var node in cachedSelectedNodes)
+                        SelectedNodes.Add(node);
+
+                    NodesMoved?.Invoke(this, EventArgs.Empty);
+                }
+
                 StopDrag();
+                UpdateNodes();
                 return;
             }
 
@@ -1143,6 +1185,8 @@ namespace DarkUI.Controls
 
                 foreach (var node in cachedSelectedNodes)
                     SelectedNodes.Add(node);
+
+                NodesMoved?.Invoke(this, EventArgs.Empty);
             }
 
             StopDrag();
@@ -1165,6 +1209,14 @@ namespace DarkUI.Controls
         {
             if (dropNode == null)
                 return false;
+
+            if (CanDropIntoNode != null && !CanDropIntoNode(dropNode))
+            {
+                if (isMoving)
+                    DarkMessageBox.Show(this, $"Cannot move nodes into '{dropNode.Text}'. This node cannot contain other nodes.", Application.ProductName, MessageBoxIcon.Error);
+
+                return false;
+            }
 
             foreach (var node in dragNodes)
             {

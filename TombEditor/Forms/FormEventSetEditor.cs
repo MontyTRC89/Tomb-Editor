@@ -1,7 +1,8 @@
-﻿using DarkUI.Forms;
+﻿using DarkUI.Collections;
+using DarkUI.Controls;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -14,14 +15,8 @@ namespace TombEditor.Forms
 {
     public partial class FormEventSetEditor : DarkForm
     {
-        private enum SortMode
-        {
-            None,
-            Ascending,
-            Descending
-        }
-
-        private SortMode _nextSortMode = SortMode.Ascending;
+        private const string _folderNodeType = "Folder";
+        private const string _folderSeparator = "/";
 
         private VolumeInstance _instance;
         private readonly Editor _editor;
@@ -61,8 +56,12 @@ namespace TombEditor.Forms
 
                 if (_selectedSet == null)
                 {
-                    if (GenericMode && dgvEvents.Rows.Count > 0)
-                        dgvEvents.Rows[0].Selected = true;
+                    if (GenericMode && treeEvents.Nodes.Count > 0)
+                    {
+                        var firstEventNode = FindFirstEventSetNode();
+                        if (firstEventNode != null)
+                            treeEvents.SelectNode(firstEventNode);
+                    }
                     else
                     {
                         ClearSelection();
@@ -71,19 +70,15 @@ namespace TombEditor.Forms
                 }
                 else
                 {
-                    for (int i = 0; i < dgvEvents.Rows.Count; i++)
+                    var node = FindNodeByEventSet(_selectedSet);
+                    if (node != null)
                     {
-                        if (dgvEvents.Rows[i].Tag == _selectedSet)
-                        {
-                            ClearSelection();
-                            dgvEvents.Rows[i].Selected = true;
-
-                            LoadEventSetIntoUI(_selectedSet);
-                            break;
-                        }
+                        ClearSelection();
+                        treeEvents.SelectNode(node);
+                        treeEvents.EnsureVisible();
+                        LoadEventSetIntoUI(_selectedSet);
                     }
                 }
-
 
                 if (!GenericMode)
                     _instance.EventSet = _selectedSet;
@@ -94,7 +89,6 @@ namespace TombEditor.Forms
         public FormEventSetEditor(bool global, VolumeInstance instance = null)
         {
             InitializeComponent();
-            dgvEvents.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = "Event sets" });
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -121,6 +115,12 @@ namespace TombEditor.Forms
             // Populate and select event set list
             PopulateEventSetList();
 
+            // Only folder nodes can receive drag-drop children.
+            treeEvents.CanDropIntoNode = n => IsFolderNode(n);
+
+            // Sync folders when user drags nodes in the tree.
+            treeEvents.NodesMoved += (s, args) => SyncFoldersFromTree();
+
             // Gray out UI by default, if event set list is empty
             if (_usedList.Count == 0)
                 UpdateUI();
@@ -135,9 +135,6 @@ namespace TombEditor.Forms
 
             // Resize splitter
             splitContainer.SplitterDistance = _editor.Configuration.Window_FormEventSetEditor_SplitterDistance;
-
-            // Select event set, if volume exists. Must be in OnShown event because of DDGV bug which reselects
-            // first row after DDGV is drawn for the first time.
 
             if (!GenericMode)
                 SelectedSet = _instance.EventSet;
@@ -159,6 +156,8 @@ namespace TombEditor.Forms
 
                 if (DialogResult == DialogResult.Cancel)
                     RestoreState();
+                else
+                    SyncFoldersFromTree();
 
                 _editor.EventSetsChange();
             }
@@ -216,11 +215,8 @@ namespace TombEditor.Forms
 
         public void ClearSelection()
         {
-            // HACK: Lock selection change to prevent DDGV from automatically selecting first row
-            // after clearing previous selection.
-
             _lockSelectionChange = true;
-            dgvEvents.ClearSelection();
+            treeEvents.SelectNodes(new List<DarkTreeNode>());
             _lockSelectionChange = false;
         }
 
@@ -251,13 +247,14 @@ namespace TombEditor.Forms
         private void UpdateUI()
         {
             bool eventSetSelected = SelectedSet != null;
+            bool folderSelected = treeEvents.SelectedNodes.Count > 0 && IsFolderNode(treeEvents.SelectedNodes[0]);
 
             tbName.Enabled =
             triggerManager.Enabled =
             cbEvents.Enabled =
             butUnassignEventSet.Enabled =
-            butCloneEventSet.Enabled =
-            butDeleteEventSet.Enabled = eventSetSelected;
+            butCloneEventSet.Enabled = eventSetSelected;
+            butDeleteEventSet.Enabled = eventSetSelected || folderSelected;
 
             cbActivatorLara.Enabled =
             cbActivatorNPC.Enabled =
@@ -266,7 +263,7 @@ namespace TombEditor.Forms
             cbActivatorFlyBy.Enabled =
             lblActivators.Enabled = eventSetSelected && !GlobalMode;
 
-            butSearch.Enabled = dgvEvents.Rows.Count > 0;
+            butSearch.Enabled = treeEvents.Nodes.Count > 0;
         }
 
         private void SetEventTooltip()
@@ -376,16 +373,126 @@ namespace TombEditor.Forms
         {
             _lockSelectionChange = true;
 
-            dgvEvents.Rows.Clear();
+            // Preserve expansion state of existing folder nodes before clearing.
+            var hadNodes = treeEvents.Nodes.Count > 0;
+            var expandedPaths = hadNodes ? new HashSet<string>(treeEvents.GetAllNodes().Where(n => IsFolderNode(n) && n.Expanded).Select(n => GetFolderPath(n))) : null;
+
+            treeEvents.Nodes.Clear();
 
             foreach (var evtSet in _usedList)
             {
-                var row = new DataGridViewRow { Tag = evtSet };
-                row.Cells.Add(new DataGridViewTextBoxCell() { Value = evtSet.Name });
-                dgvEvents.Rows.Add(row);
+                var parentCollection = GetOrCreateFolderNodes(evtSet.Folder);
+                parentCollection.Add(new DarkTreeNode(evtSet.Name) { Tag = evtSet });
             }
 
+            // Restore expansion state only when repopulating an existing tree.
+            if (expandedPaths != null)
+                foreach (var node in treeEvents.GetAllNodes().Where(n => IsFolderNode(n)))
+                    node.Expanded = expandedPaths.Contains(GetFolderPath(node));
+
             _lockSelectionChange = false;
+        }
+
+        private DarkTreeNode FindFirstEventSetNode() => treeEvents.GetAllNodes().FirstOrDefault(n => n.Tag is EventSet);
+        private DarkTreeNode FindNodeByEventSet(EventSet evtSet) => treeEvents.GetAllNodes().FirstOrDefault(n => n.Tag == evtSet);
+        private bool IsFolderNode(DarkTreeNode node) => node != null && node.NodeType as string == _folderNodeType;
+
+        private ObservableList<DarkTreeNode> GetOrCreateFolderNodes(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return treeEvents.Nodes;
+
+            var parts = path.Split(new[] { _folderSeparator }, StringSplitOptions.RemoveEmptyEntries);
+            var currentCollection = treeEvents.Nodes;
+
+            foreach (var part in parts)
+            {
+                var existing = currentCollection.FirstOrDefault(n => IsFolderNode(n) && n.Text == part);
+                if (existing == null)
+                {
+                    existing = new DarkTreeNode(part) { NodeType = _folderNodeType, Expanded = true };
+                    currentCollection.Add(existing);
+                }
+                currentCollection = existing.Nodes;
+            }
+
+            return currentCollection;
+        }
+
+        private string GetFolderPath(DarkTreeNode node)
+        {
+            var parts = new List<string>();
+            var current = node;
+
+            while (current != null)
+            {
+                if (IsFolderNode(current))
+                    parts.Insert(0, current.Text);
+                current = current.ParentNode;
+            }
+
+            return string.Join(_folderSeparator, parts);
+        }
+
+        private void SyncFoldersFromTree()
+        {
+            foreach (var node in treeEvents.GetAllNodes())
+            {
+                if (node.Tag is EventSet evtSet)
+                {
+                    var parent = node.ParentNode;
+                    evtSet.Folder = parent != null ? GetFolderPath(parent) : string.Empty;
+                }
+            }
+
+            // Rebuild used list order from tree.
+            _usedList.Clear();
+            foreach (var node in treeEvents.GetAllNodes())
+            {
+                if (node.Tag is EventSet evtSet)
+                    _usedList.Add(evtSet);
+            }
+        }
+
+        private void CleanupEmptyFolders()
+        {
+            foreach (var evtSet in _usedList)
+            {
+                if (!string.IsNullOrEmpty(evtSet.Folder))
+                {
+                    bool hasOtherSets = _usedList.Any(s => s != evtSet && s.Folder == evtSet.Folder);
+                    if (!hasOtherSets)
+                    {
+                        // Check if there are event sets in subfolders.
+                        bool hasChildren = _usedList.Any(s => s != evtSet && s.Folder.StartsWith(evtSet.Folder + _folderSeparator));
+
+                        if (!hasChildren)
+                        {
+                            // Check if there are sibling event sets in parent folder.
+                            // Only clean up if event set itself no longer exists.
+                        }
+                    }
+                }
+            }
+
+            // Remove folders with no event sets at all.
+            foreach (var evtSet in _usedList)
+            {
+                if (string.IsNullOrEmpty(evtSet.Folder))
+                    continue;
+
+                var parts = evtSet.Folder.Split(new[] { _folderSeparator }, StringSplitOptions.RemoveEmptyEntries);
+                string checkPath = string.Empty;
+
+                foreach (var part in parts)
+                {
+                    checkPath = string.IsNullOrEmpty(checkPath) ? part : checkPath + _folderSeparator + part;
+                    bool hasEvents = _usedList.Any(s => s.Folder == checkPath || s.Folder.StartsWith(checkPath + _folderSeparator));
+
+                    if (!hasEvents)
+                        evtSet.Folder = string.Empty;
+                }
+            }
         }
 
         private void ClearEventSetFromUI()
@@ -463,59 +570,47 @@ namespace TombEditor.Forms
             Close();
         }
 
-        private void dgvEvents_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            switch (_nextSortMode)
-            {
-                case SortMode.Ascending:
-                    dgvEvents.AllowUserToDragDropRows = false;
-
-                    dgvEvents.Sort(dgvEvents.Columns[e.ColumnIndex], ListSortDirection.Ascending);
-                    dgvEvents.Columns[e.ColumnIndex].HeaderText += " ▲";
-                    _nextSortMode = SortMode.Descending;
-                    break;
-
-                case SortMode.Descending:
-                    dgvEvents.AllowUserToDragDropRows = false;
-
-                    dgvEvents.Sort(dgvEvents.Columns[e.ColumnIndex], ListSortDirection.Descending);
-                    dgvEvents.Columns[e.ColumnIndex].HeaderText = dgvEvents.Columns[e.ColumnIndex].HeaderText.TrimEnd('▲', ' ');
-                    dgvEvents.Columns[e.ColumnIndex].HeaderText += " ▼";
-                    _nextSortMode = SortMode.None;
-                    break;
-
-                default:
-                    dgvEvents.AllowUserToDragDropRows = true;
-
-                    object selectedEventCache = dgvEvents.SelectedRows.Count > 0 ? dgvEvents.SelectedRows[0].Tag : null;
-                    PopulateEventSetList();
-                    ClearSelection();
-
-                    if (selectedEventCache != null)
-                        foreach (DataGridViewRow row in dgvEvents.Rows)
-                            if (row.Tag == selectedEventCache)
-                                row.Selected = true;
-
-                    dgvEvents.Columns[e.ColumnIndex].HeaderText = dgvEvents.Columns[e.ColumnIndex].HeaderText.TrimEnd('▼', ' ');
-                    _nextSortMode = SortMode.Ascending;
-                    break;
-            }
-        }
-
-        private void dgvEvents_SelectedIndicesChanged(object sender, EventArgs e)
+        private void treeEvents_SelectedNodesChanged(object sender, EventArgs e)
         {
             if (_lockSelectionChange)
                 return;
 
-            var newEventSet = dgvEvents.SelectedRows.Count == 0 ? null : dgvEvents.SelectedRows[0].Tag as EventSet;
-            SelectedSet = newEventSet;
+            if (treeEvents.SelectedNodes.Count == 0)
+            {
+                SelectedSet = null;
+                UpdateUI();
+                return;
+            }
+
+            var selectedNode = treeEvents.SelectedNodes[0];
+            if (selectedNode.Tag is EventSet evtSet)
+            {
+                _selectedSet = evtSet;
+                LoadEventSetIntoUI(evtSet);
+            }
+            else
+            {
+                _selectedSet = null;
+                ClearEventSetFromUI();
+            }
 
             UpdateUI();
         }
 
         private void butNewEventSet_Click(object sender, EventArgs e)
         {
-            var name = "New " + _mode + " event set " + (dgvEvents.Rows.Count + 1).ToString();
+            var name = "New " + _mode + " event set " + (_usedList.Count + 1).ToString();
+
+            // Determine folder from selected node.
+            string folder = string.Empty;
+            if (treeEvents.SelectedNodes.Count > 0)
+            {
+                var selected = treeEvents.SelectedNodes[0];
+                if (IsFolderNode(selected))
+                    folder = GetFolderPath(selected);
+                else if (selected.ParentNode != null && IsFolderNode(selected.ParentNode))
+                    folder = GetFolderPath(selected.ParentNode);
+            }
 
             EventSet newSet;
 
@@ -524,6 +619,7 @@ namespace TombEditor.Forms
                 newSet = new GlobalEventSet()
                 {
                     Name = name,
+                    Folder = folder,
                     LastUsedEvent = Event.GlobalEventTypes[_editor.Configuration.NodeEditor_DefaultGlobalEventToEdit]
                 };
             }
@@ -532,6 +628,7 @@ namespace TombEditor.Forms
                 newSet = new VolumeEventSet()
                 {
                     Name = name,
+                    Folder = folder,
                     LastUsedEvent = Event.VolumeEventTypes[_editor.Configuration.NodeEditor_DefaultEventToEdit]
                 };
             }
@@ -554,6 +651,7 @@ namespace TombEditor.Forms
 
             var clonedSet = SelectedSet.Clone();
             clonedSet.Name = SelectedSet.Name + " (copy)";
+            clonedSet.Folder = SelectedSet.Folder;
             _usedList.Add(clonedSet);
 
             PopulateEventSetList();
@@ -562,22 +660,93 @@ namespace TombEditor.Forms
 
         private void butDeleteEventSet_Click(object sender, EventArgs e)
         {
-            int index = dgvEvents.SelectedRows.Count == 0 ? 0 : dgvEvents.SelectedRows[0].Index;
-            if (index == dgvEvents.Rows.Count - 1)
-                index--;
+            if (treeEvents.SelectedNodes.Count == 0)
+                return;
 
-            EditorActions.DeleteEventSet(SelectedSet);
-            PopulateEventSetList();
+            var selectedNode = treeEvents.SelectedNodes[0];
 
-            if (dgvEvents.Rows.Count > 0)
+            if (IsFolderNode(selectedNode))
             {
-                SelectedSet = dgvEvents.Rows[index].Tag as EventSet;
+                var eventSetsInFolder = GetAllEventSetsUnder(selectedNode).ToList();
+
+                if (eventSetsInFolder.Count > 0)
+                {
+                    var result = DarkMessageBox.Show(this,
+                        "Delete " + eventSetsInFolder.Count + " event set" + (eventSetsInFolder.Count > 1 ? "s" : string.Empty) + " in folder '" + selectedNode.Text + "'?",
+                        "Delete folder", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+                    if (result == DialogResult.Cancel)
+                        return;
+
+                    foreach (var evtSet in eventSetsInFolder)
+                        EditorActions.DeleteEventSet(evtSet);
+                }
+
+                PopulateEventSetList();
+
+                if (_usedList.Count > 0)
+                {
+                    var firstNode = FindFirstEventSetNode();
+                    if (firstNode != null)
+                        SelectedSet = firstNode.Tag as EventSet;
+                }
+                else
+                {
+                    SelectedSet = null;
+                    UpdateUI();
+                }
             }
-            else
+            else if (selectedNode.Tag is EventSet)
             {
-                SelectedSet = null;
-                UpdateUI();
+                var siblingEventNode = FindNextEventSetNode(selectedNode) ?? FindPrevEventSetNode(selectedNode);
+
+                EditorActions.DeleteEventSet(SelectedSet);
+                PopulateEventSetList();
+
+                if (siblingEventNode?.Tag is EventSet nextSet && _usedList.Contains(nextSet))
+                    SelectedSet = nextSet;
+                else if (_usedList.Count > 0)
+                    SelectedSet = _usedList[0];
+                else
+                {
+                    SelectedSet = null;
+                    UpdateUI();
+                }
             }
+        }
+
+        private IEnumerable<EventSet> GetAllEventSetsUnder(DarkTreeNode node)
+        {
+            if (node.Tag is EventSet evtSet)
+                yield return evtSet;
+
+            foreach (var child in node.Nodes)
+                foreach (var set in GetAllEventSetsUnder(child))
+                    yield return set;
+        }
+
+        private DarkTreeNode FindNextEventSetNode(DarkTreeNode current)
+        {
+            var all = treeEvents.GetAllNodes();
+            int index = all.IndexOf(current);
+            for (int i = index + 1; i < all.Count; i++)
+            {
+                if (all[i].Tag is EventSet)
+                    return all[i];
+            }
+            return null;
+        }
+
+        private DarkTreeNode FindPrevEventSetNode(DarkTreeNode current)
+        {
+            var all = treeEvents.GetAllNodes();
+			int index = all.IndexOf(current);
+            for (int i = index - 1; i >= 0; i--)
+            {
+                if (all[i].Tag is EventSet)
+                    return all[i];
+            }
+            return null;
         }
 
         private void butUnassignEventSet_Click(object sender, EventArgs e)
@@ -595,7 +764,7 @@ namespace TombEditor.Forms
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            var searchPopUp = new PopUpSearch(dgvEvents) { ShowAboveControl = true };
+            var searchPopUp = new PopUpSearch(treeEvents) { ShowAboveControl = true };
             searchPopUp.Show(this);
         }
 
@@ -611,6 +780,19 @@ namespace TombEditor.Forms
 
             switch (keyData)
             {
+                case Keys.Delete:
+                case Keys.Back:
+                    if (treeEvents.ContainsFocus)
+                    {
+                        butDeleteEventSet_Click(butDeleteEventSet, EventArgs.Empty);
+                        return true;
+                    }
+                    else
+                    {
+                        triggerManager.ProcessKey(keyData);
+                    }
+                    break;
+
                 case (Keys.Control | Keys.C):
                     var copiedNodes = triggerManager.CopyNodes(false);
                     if (copiedNodes.Count > 0)
@@ -681,20 +863,74 @@ namespace TombEditor.Forms
             }
 
             EditorActions.ReplaceEventSetNames(_usedList, SelectedSet.Name, tbName.Text);
-            dgvEvents.SelectedCells[0].Value = SelectedSet.Name = tbName.Text;
+            SelectedSet.Name = tbName.Text;
+
+            var node = FindNodeByEventSet(SelectedSet);
+            if (node != null)
+                node.Text = tbName.Text;
         }
 
-        private void dgvEvents_DragDrop(object sender, DragEventArgs e)
+        private void butNewFolder_Click(object sender, EventArgs e)
         {
-            _usedList.Clear();
+            string parentFolder = string.Empty;
 
-            foreach (DataGridViewRow row in dgvEvents.Rows)
+            if (treeEvents.SelectedNodes.Count > 0)
             {
-                if (row.Tag is not EventSet evtSet)
-                    continue;
-
-                _usedList.Add(evtSet);
+                var selected = treeEvents.SelectedNodes[0];
+                if (IsFolderNode(selected))
+                    parentFolder = GetFolderPath(selected);
+                else if (selected.ParentNode != null && IsFolderNode(selected.ParentNode))
+                    parentFolder = GetFolderPath(selected.ParentNode);
             }
+
+            using (var inputBox = new FormInputBox("New folder", "Enter folder name:", "New folder"))
+            {
+                if (inputBox.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                string newFolderName = inputBox.Result.Trim();
+                if (string.IsNullOrEmpty(newFolderName))
+                    return;
+
+                string fullPath = string.IsNullOrEmpty(parentFolder) ? newFolderName : parentFolder + _folderSeparator + newFolderName;
+                GetOrCreateFolderNodes(fullPath);
+
+                var newNode = treeEvents.GetAllNodes().LastOrDefault(n => IsFolderNode(n) && n.Text == newFolderName);
+                if (newNode != null)
+                {
+                    treeEvents.SelectNode(newNode);
+                    treeEvents.EnsureVisible();
+                }
+            }
+        }
+
+        private void RenameFolder(DarkTreeNode node)
+        {
+            if (!IsFolderNode(node))
+                return;
+
+            using (var inputBox = new FormInputBox("Rename folder", "Enter new folder name:", node.Text))
+            {
+                if (inputBox.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                string newName = inputBox.Result.Trim();
+                if (!string.IsNullOrEmpty(newName) && newName != node.Text)
+                {
+                    node.Text = newName;
+                    SyncFoldersFromTree();
+                }
+            }
+        }
+
+        private void treeEvents_DoubleClick(object sender, EventArgs e)
+        {
+            if (treeEvents.SelectedNodes.Count == 0)
+                return;
+
+            var node = treeEvents.SelectedNodes[0];
+            if (IsFolderNode(node))
+                RenameFolder(node);
         }
 
         private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)

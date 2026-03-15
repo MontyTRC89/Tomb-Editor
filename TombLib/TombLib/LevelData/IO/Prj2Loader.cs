@@ -532,6 +532,8 @@ namespace TombLib.LevelData.IO
                                 eventSetIndex = chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetName)
                                 eventSet.Name = chunkIO.ReadChunkString(chunkSize3);
+                            else if (id3 == Prj2Chunks.EventSetFolder)
+                                eventSet.Folder = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetLastUsedEventIndex)
                                 eventSet.LastUsedEvent = (EventType)chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetActivators)

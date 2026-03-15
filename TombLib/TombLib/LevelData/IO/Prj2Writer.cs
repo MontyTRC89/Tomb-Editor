@@ -335,6 +335,8 @@ namespace TombLib.LevelData.IO
                             {
                                 chunkIO.WriteChunkInt(Prj2Chunks.EventSetIndex, index);
                                 chunkIO.WriteChunkString(Prj2Chunks.EventSetName, set.Name ?? string.Empty);
+                                if (!string.IsNullOrEmpty(set.Folder))
+                                    chunkIO.WriteChunkString(Prj2Chunks.EventSetFolder, set.Folder);
                                 chunkIO.WriteChunkInt(Prj2Chunks.EventSetLastUsedEventIndex, (int)set.LastUsedEvent);
 
                                 if (!global)
