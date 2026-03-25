@@ -98,6 +98,7 @@ namespace WadTool
                     meshEditorToolStripMenuItem.Enabled = true;
                     animatedTexturesToolStripMenuItem.Enabled = true;
                     convertDestinationWadToTombEngineToolStripMenuItem.Enabled = true;
+                    itemPropertiesToolStripMenuItem.Enabled = true;
                 }
                 else
                 {
@@ -105,6 +106,7 @@ namespace WadTool
                     meshEditorToolStripMenuItem.Enabled = false;
                     animatedTexturesToolStripMenuItem.Enabled = false;
                     convertDestinationWadToTombEngineToolStripMenuItem.Enabled = false;
+                    itemPropertiesToolStripMenuItem.Enabled = false;
                 }
             }
 
