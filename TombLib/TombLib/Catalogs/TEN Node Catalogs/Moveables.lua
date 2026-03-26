@@ -664,10 +664,10 @@ end
 -- !Arguments "NewLine, WadSlots, 70, Target moveable." 
 -- !Arguments "Numerical, 30, [1 | 128 ], {0} , If > 0, swaps skinned mesh with bone mesh with a specified index.\nUse if you have several skinned meshes (e.g. outfits) in a single slot. A value of 0 leaves the default mesh."
 
-LevelFuncs.Engine.Node.SwapSkinnedMesh = function(moveable,target,mesh)
+LevelFuncs.Engine.Node.SwapSkinnedMesh = function(moveable, targetSlot, mesh)
 	local mov = TEN.Objects.GetMoveableByName(moveable)
 	local swapMesh = (mesh ~= nil and mesh ~= 0) and mesh or nil
-	mov:SwapSkinnedMesh(target, swapMesh)
+	mov:SwapSkinnedMesh(targetSlot, swapMesh)
 end
 
 -- !Name "Unswap skinned mesh"
