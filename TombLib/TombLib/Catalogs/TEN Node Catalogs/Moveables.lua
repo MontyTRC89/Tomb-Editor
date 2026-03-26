@@ -656,3 +656,26 @@ LevelFuncs.Engine.Node.HideInteractionHighlight = function(moveable)
 	local mov = GetMoveableByName(moveable)
 	mov:HideInteractionHighlight()
 end
+
+-- !Name "Swap skinned mesh from another slot."
+-- !Section "Moveable parameters"
+-- !Description "Swap skinned mesh of a moveable. Use this to replace one skinned mesh with another."
+-- !Arguments "NewLine, Moveables, Destination moveable."
+-- !Arguments "NewLine, WadSlots, 70, Target moveable." 
+-- !Arguments "Numerical, 30, [0 | 128 ], {0} , If set, swaps skinned mesh with bone mesh with a specified index.\nUse if you have several skinned meshes (e.g. outfits) in a single slot."
+
+LevelFuncs.Engine.Node.SwapSkinnedMesh = function(moveable,target,mesh)
+	local mov = TEN.Objects.GetMoveableByName(moveable)
+	local swapMesh = (mesh ~= nil and mesh ~= 0) and mesh or nil
+	mov:SwapSkinnedMesh(target, swapMesh)
+end
+
+-- !Name "Unswap skinned mesh"
+-- !Section "Moveable parameters"
+-- !Description "Unset skinned mesh swap of a moveable.\nUse this to bring back original unswapped skinned mesh."
+-- !Arguments "NewLine, Moveables, Destination moveable."
+
+LevelFuncs.Engine.Node.UnswapSkinnedMesh = function(moveable)
+	local mov = TEN.Objects.GetMoveableByName(moveable)
+	mov:UnswapSkinnedMesh()
+end
