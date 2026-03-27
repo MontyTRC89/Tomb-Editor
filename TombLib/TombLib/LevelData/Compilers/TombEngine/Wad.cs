@@ -578,9 +578,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     var extents = Vector3.Lerp(currentKeyframe.BoundingBox.Extents, nextKeyframe.BoundingBox.Extents, alpha);
                     var rootPos = Vector3.Lerp(currentKeyframe.RootOffset, nextKeyframe.RootOffset, alpha);
 
-                    var boneOrients = new List<Quaternion>(currentKeyframe.BoneOrientations.Count);
-                    for (int k = 0; k < boneOrients.Count; k++)
-                        boneOrients[k] = Quaternion.Slerp(currentKeyframe.BoneOrientations[k], nextKeyframe.BoneOrientations[k], alpha);
+                    var boneOrients = new List<Quaternion>();
+                    for (int k = 0; k < currentKeyframe.BoneOrientations.Count; k++)
+                        boneOrients.Add(Quaternion.Slerp(currentKeyframe.BoneOrientations[k], nextKeyframe.BoneOrientations[k], alpha));
 
                     var frame = new TombEngineKeyFrame();
                     frame.BoundingBox = new TombEngineBoundingBox();
