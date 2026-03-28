@@ -14,7 +14,7 @@ namespace TombLib.Wad
             int bitmask = 0;
             if (PositionY) bitmask |= 1 << 1;
             if (PositionZ) bitmask |= 1 << 2;
-            if (RotationY) bitmask |= 1 << 3;
+            if (RotationY) bitmask |= 1 << 4;
 
             return bitmask;
         }
