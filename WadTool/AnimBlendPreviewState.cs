@@ -113,7 +113,10 @@ namespace WadTool
             if (_frameCount == 0)
                 return 0.0f;
 
-            float curveX = (float)_frameNumber / (float)_frameCount;
+            if (_frameCount == 1)
+                return 1.0f;
+
+            float curveX = (float)_frameNumber / (float)(_frameCount - 1);
             return _curve.GetY(curveX);
         }
 

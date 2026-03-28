@@ -558,7 +558,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return;
             }
 
-            float alphaStep = 1.0f / (float)animation.Interpolation;
+            float alphaStep = 1.0f / (float)Math.Max(1, animation.Interpolation);
             for (int i = 0; i < animation.KeyFrames.Count; i++)
             {
                 var currentKeyframe = animation.KeyFrames[i];
@@ -584,12 +584,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     var frame = new TombEngineKeyFrame();
                     frame.BoundingBox = new TombEngineBoundingBox();
-                    frame.BoundingBox.X1 = (short)(center.X + extents.X);
-                    frame.BoundingBox.X2 = (short)(center.X - extents.X);
-                    frame.BoundingBox.Y1 = (short)(center.Y + extents.Y);
-                    frame.BoundingBox.Y2 = (short)(center.Y - extents.Y);
-                    frame.BoundingBox.Z1 = (short)(center.Z + extents.Z);
-                    frame.BoundingBox.Z2 = (short)(center.Z - extents.Z);
+                    frame.BoundingBox.X1 = (short)(center.X - extents.X);
+                    frame.BoundingBox.X2 = (short)(center.X + extents.X);
+                    frame.BoundingBox.Y1 = (short)(center.Y - extents.Y);
+                    frame.BoundingBox.Y2 = (short)(center.Y + extents.Y);
+                    frame.BoundingBox.Z1 = (short)(center.Z - extents.Z);
+                    frame.BoundingBox.Z2 = (short)(center.Z + extents.Z);
                     frame.RootOffset = rootPos;
                     frame.BoneOrientations = boneOrients;
                     animation.InterpolatedFrames.Add(frame);

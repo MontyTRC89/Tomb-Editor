@@ -781,17 +781,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         public void Write(BinaryWriterEx writer)
         {
-            var center = new Vector3(
-                BoundingBox.X1 + BoundingBox.X2,
-                BoundingBox.Y1 + BoundingBox.Y2,
-                BoundingBox.Z1 + BoundingBox.Z2) / 2;
-            var extents = new Vector3(
-                BoundingBox.X2 - BoundingBox.X1,
-                BoundingBox.Y2 - BoundingBox.Y1,
-                BoundingBox.Z2 - BoundingBox.Z1) / 2;
-
-            writer.Write(center);
-            writer.Write(extents);
+            writer.Write(BoundingBox.Center);
+            writer.Write(BoundingBox.Extents);
             writer.Write(RootOffset);
 
             writer.Write(BoneOrientations.Count);
@@ -825,9 +816,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             get
             {
                 return new Vector3(
-                    X1 - X2,
-                    Y1 - Y2,
-                    Z1 - Z2) / 2;
+                    X2 - X1,
+                    Y2 - Y1,
+                    Z2 - Z1) / 2;
             }
         }
     }
