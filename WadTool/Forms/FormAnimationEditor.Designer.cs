@@ -714,7 +714,7 @@ namespace WadTool
             // renderingToolStripMenuItem
             // 
             renderingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-            renderingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { drawGizmoToolStripMenuItem, drawGridToolStripMenuItem, drawCollisionBoxToolStripMenuItem, toolStripSeparator9, smoothAnimationsToolStripMenuItem, scrollGridToolStripMenuItem, restoreGridHeightToolStripMenuItem });
+            renderingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { drawGizmoToolStripMenuItem, drawGridToolStripMenuItem, drawCollisionBoxToolStripMenuItem, drawSkinToolStripMenuItem, toolStripSeparator9, smoothAnimationsToolStripMenuItem, scrollGridToolStripMenuItem, restoreGridHeightToolStripMenuItem });
             renderingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             renderingToolStripMenuItem.Name = "renderingToolStripMenuItem";
             renderingToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
@@ -728,7 +728,7 @@ namespace WadTool
             drawGizmoToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             drawGizmoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             drawGizmoToolStripMenuItem.Name = "drawGizmoToolStripMenuItem";
-            drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             drawGizmoToolStripMenuItem.Text = "Draw gizmo";
             drawGizmoToolStripMenuItem.Click += drawGizmoToolStripMenuItem_Click;
             // 
@@ -740,7 +740,7 @@ namespace WadTool
             drawGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             drawGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             drawGridToolStripMenuItem.Name = "drawGridToolStripMenuItem";
-            drawGridToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            drawGridToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             drawGridToolStripMenuItem.Text = "Draw grid";
             drawGridToolStripMenuItem.Click += drawGridToolStripMenuItem_Click;
             // 
@@ -752,9 +752,19 @@ namespace WadTool
             drawCollisionBoxToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             drawCollisionBoxToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             drawCollisionBoxToolStripMenuItem.Name = "drawCollisionBoxToolStripMenuItem";
-            drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
             drawCollisionBoxToolStripMenuItem.Click += drawCollisionBoxToolStripMenuItem_Click;
+            // 
+            // drawSkinToolStripMenuItem
+            // 
+            drawSkinToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            drawSkinToolStripMenuItem.CheckOnClick = true;
+            drawSkinToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            drawSkinToolStripMenuItem.Name = "drawSkinToolStripMenuItem";
+            drawSkinToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            drawSkinToolStripMenuItem.Text = "Draw skinned mesh";
+            drawSkinToolStripMenuItem.Click += drawSkinToolStripMenuItem_Click;
             // 
             // toolStripSeparator9
             // 
@@ -762,7 +772,7 @@ namespace WadTool
             toolStripSeparator9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             toolStripSeparator9.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             toolStripSeparator9.Name = "toolStripSeparator9";
-            toolStripSeparator9.Size = new System.Drawing.Size(171, 6);
+            toolStripSeparator9.Size = new System.Drawing.Size(177, 6);
             // 
             // smoothAnimationsToolStripMenuItem
             // 
@@ -772,7 +782,7 @@ namespace WadTool
             smoothAnimationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             smoothAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             smoothAnimationsToolStripMenuItem.Name = "smoothAnimationsToolStripMenuItem";
-            smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             smoothAnimationsToolStripMenuItem.Text = "Smooth animation";
             smoothAnimationsToolStripMenuItem.Click += smoothAnimationsToolStripMenuItem_Click;
             // 
@@ -784,7 +794,7 @@ namespace WadTool
             scrollGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             scrollGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             scrollGridToolStripMenuItem.Name = "scrollGridToolStripMenuItem";
-            scrollGridToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            scrollGridToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             scrollGridToolStripMenuItem.Text = "Scroll grid";
             scrollGridToolStripMenuItem.Click += scrollGridToolStripMenuItem_Click;
             // 
@@ -794,14 +804,9 @@ namespace WadTool
             restoreGridHeightToolStripMenuItem.CheckOnClick = true;
             restoreGridHeightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             restoreGridHeightToolStripMenuItem.Name = "restoreGridHeightToolStripMenuItem";
-            restoreGridHeightToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            restoreGridHeightToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             restoreGridHeightToolStripMenuItem.Text = "Restore grid height";
             restoreGridHeightToolStripMenuItem.Click += restoreGridHeightToolStripMenuItem_Click;
-            // 
-            // drawSkinToolStripMenuItem
-            // 
-            drawSkinToolStripMenuItem.Name = "drawSkinToolStripMenuItem";
-            drawSkinToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // statusStrip
             // 
@@ -1411,9 +1416,9 @@ namespace WadTool
             // 
             cbRootPosY.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             cbRootPosY.AutoSize = true;
-            cbRootPosY.Location = new System.Drawing.Point(91, 9);
+            cbRootPosY.Location = new System.Drawing.Point(92, 9);
             cbRootPosY.Name = "cbRootPosY";
-            cbRootPosY.Size = new System.Drawing.Size(32, 17);
+            cbRootPosY.Size = new System.Drawing.Size(31, 17);
             cbRootPosY.TabIndex = 100;
             cbRootPosY.Text = "Y";
             cbRootPosY.CheckedChanged += cbRootPosY_CheckedChanged;
