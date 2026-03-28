@@ -5,8 +5,6 @@ using TombLib.Types;
 
 namespace WadTool
 {
-    // Encapsulates all state and helpers for the animation blending preview.
-
     public class AnimBlendPreviewState
     {
         public bool IsActive { get; private set; }
