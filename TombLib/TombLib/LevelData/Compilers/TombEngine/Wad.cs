@@ -315,10 +315,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newAnimation.KeyFrames.Add(newFrame);
                     }
 
-                    // Bake interpolated frames from keyframes.
+                    // Bake interpolated frames from keyframes and pass root motion settings.
                     BakeInterpolatedFrames(newAnimation, oldMoveable.Meshes.Count());
-
-                    // Pass root motion settings.
                     newAnimation.RootMotion = oldAnimation.RootMotion;
 
                     // Add anim commands
@@ -332,7 +330,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 newAnimation.CommandData.Add(new Vector3(command.Parameter1, command.Parameter2, command.Parameter3));
 
                                 break;
-								
+                                
                             case WadAnimCommandType.SetJumpDistance:
                                 newAnimation.CommandData.Add(2);
 
