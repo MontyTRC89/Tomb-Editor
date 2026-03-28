@@ -734,7 +734,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                writer.Write(animation.RootMotion.GetBitmask());
+                writer.Write((int)animation.RootMotion.Flags);
             }
         }
     }

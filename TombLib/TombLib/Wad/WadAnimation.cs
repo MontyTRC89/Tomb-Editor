@@ -1,22 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TombLib.Types;
 
 namespace TombLib.Wad
 {
+    [Flags]
+    public enum WadAnimRootMotionFlags
+    {
+        None            = 0,
+        TranslationX    = 1 << 0,
+        TranslationY    = 1 << 1,
+        TranslationZ    = 1 << 2,
+        RotationX       = 1 << 3,
+        RotationY       = 1 << 4,
+        RotationZ       = 1 << 5,
+        RootMotionCycle = 1 << 6  // Internally set in TEN.
+}
+
     public struct WadAnimRootMotionSettings
     {
-        public bool PositionY { get; set; }
-        public bool PositionZ { get; set; }
-        public bool RotationY { get; set; }
+		public WadAnimRootMotionFlags Flags;
 
-        public int GetBitmask()
+        public bool TranslationX { get => Flags.HasFlag(WadAnimRootMotionFlags.TranslationX); set => SetFlag(WadAnimRootMotionFlags.TranslationX, value); }
+        public bool TranslationY { get => Flags.HasFlag(WadAnimRootMotionFlags.TranslationY); set => SetFlag(WadAnimRootMotionFlags.TranslationY, value); }
+        public bool TranslationZ { get => Flags.HasFlag(WadAnimRootMotionFlags.TranslationZ); set => SetFlag(WadAnimRootMotionFlags.TranslationZ, value); }
+        public bool RotationX    { get => Flags.HasFlag(WadAnimRootMotionFlags.RotationX);    set => SetFlag(WadAnimRootMotionFlags.RotationX, value); }
+        public bool RotationY    { get => Flags.HasFlag(WadAnimRootMotionFlags.RotationY);    set => SetFlag(WadAnimRootMotionFlags.RotationY, value); }
+        public bool RotationZ    { get => Flags.HasFlag(WadAnimRootMotionFlags.RotationZ);    set => SetFlag(WadAnimRootMotionFlags.RotationZ, value); }
+
+        private void SetFlag(WadAnimRootMotionFlags flag, bool enabled)
         {
-            int bitmask = 0;
-            if (PositionY) bitmask |= 1 << 1;
-            if (PositionZ) bitmask |= 1 << 2;
-            if (RotationY) bitmask |= 1 << 4;
-
-            return bitmask;
+            if (enabled)
+				Flags |= flag;
+            else
+				Flags &= ~flag;
         }
     }
 

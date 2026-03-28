@@ -71,11 +71,11 @@ namespace WadTool
             drawGizmoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             drawGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             drawCollisionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            drawSkinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             smoothAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             scrollGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             restoreGridHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            drawSkinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip = new DarkUI.Controls.DarkStatusStrip();
             statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             darkLabel22 = new DarkUI.Controls.DarkLabel();
@@ -127,6 +127,7 @@ namespace WadTool
             dgvBoundingMeshListCheckboxes = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             dgvBoundingMeshListMeshes = new System.Windows.Forms.DataGridViewTextBoxColumn();
             panelRootMotion = new DarkUI.Controls.DarkPanel();
+            cbRootPosX = new DarkUI.Controls.DarkCheckBox();
             cbRootPosZ = new DarkUI.Controls.DarkCheckBox();
             darkLabel11 = new DarkUI.Controls.DarkLabel();
             cbRootRotation = new DarkUI.Controls.DarkCheckBox();
@@ -728,7 +729,7 @@ namespace WadTool
             drawGizmoToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             drawGizmoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             drawGizmoToolStripMenuItem.Name = "drawGizmoToolStripMenuItem";
-            drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             drawGizmoToolStripMenuItem.Text = "Draw gizmo";
             drawGizmoToolStripMenuItem.Click += drawGizmoToolStripMenuItem_Click;
             // 
@@ -740,7 +741,7 @@ namespace WadTool
             drawGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             drawGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             drawGridToolStripMenuItem.Name = "drawGridToolStripMenuItem";
-            drawGridToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            drawGridToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             drawGridToolStripMenuItem.Text = "Draw grid";
             drawGridToolStripMenuItem.Click += drawGridToolStripMenuItem_Click;
             // 
@@ -752,7 +753,7 @@ namespace WadTool
             drawCollisionBoxToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             drawCollisionBoxToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             drawCollisionBoxToolStripMenuItem.Name = "drawCollisionBoxToolStripMenuItem";
-            drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
             drawCollisionBoxToolStripMenuItem.Click += drawCollisionBoxToolStripMenuItem_Click;
             // 
@@ -762,7 +763,7 @@ namespace WadTool
             drawSkinToolStripMenuItem.CheckOnClick = true;
             drawSkinToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             drawSkinToolStripMenuItem.Name = "drawSkinToolStripMenuItem";
-            drawSkinToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            drawSkinToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             drawSkinToolStripMenuItem.Text = "Draw skinned mesh";
             drawSkinToolStripMenuItem.Click += drawSkinToolStripMenuItem_Click;
             // 
@@ -772,7 +773,7 @@ namespace WadTool
             toolStripSeparator9.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             toolStripSeparator9.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             toolStripSeparator9.Name = "toolStripSeparator9";
-            toolStripSeparator9.Size = new System.Drawing.Size(177, 6);
+            toolStripSeparator9.Size = new System.Drawing.Size(174, 6);
             // 
             // smoothAnimationsToolStripMenuItem
             // 
@@ -782,7 +783,7 @@ namespace WadTool
             smoothAnimationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             smoothAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             smoothAnimationsToolStripMenuItem.Name = "smoothAnimationsToolStripMenuItem";
-            smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             smoothAnimationsToolStripMenuItem.Text = "Smooth animation";
             smoothAnimationsToolStripMenuItem.Click += smoothAnimationsToolStripMenuItem_Click;
             // 
@@ -794,7 +795,7 @@ namespace WadTool
             scrollGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             scrollGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             scrollGridToolStripMenuItem.Name = "scrollGridToolStripMenuItem";
-            scrollGridToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            scrollGridToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             scrollGridToolStripMenuItem.Text = "Scroll grid";
             scrollGridToolStripMenuItem.Click += scrollGridToolStripMenuItem_Click;
             // 
@@ -804,7 +805,7 @@ namespace WadTool
             restoreGridHeightToolStripMenuItem.CheckOnClick = true;
             restoreGridHeightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             restoreGridHeightToolStripMenuItem.Name = "restoreGridHeightToolStripMenuItem";
-            restoreGridHeightToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            restoreGridHeightToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             restoreGridHeightToolStripMenuItem.Text = "Restore grid height";
             restoreGridHeightToolStripMenuItem.Click += restoreGridHeightToolStripMenuItem_Click;
             // 
@@ -1370,6 +1371,7 @@ namespace WadTool
             // 
             // panelRootMotion
             // 
+            panelRootMotion.Controls.Add(cbRootPosX);
             panelRootMotion.Controls.Add(cbRootPosZ);
             panelRootMotion.Controls.Add(darkLabel11);
             panelRootMotion.Controls.Add(cbRootRotation);
@@ -1380,11 +1382,21 @@ namespace WadTool
             panelRootMotion.Size = new System.Drawing.Size(278, 32);
             panelRootMotion.TabIndex = 26;
             // 
+            // cbRootPosX
+            // 
+            cbRootPosX.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            cbRootPosX.AutoSize = true;
+            cbRootPosX.Location = new System.Drawing.Point(86, 9);
+            cbRootPosX.Name = "cbRootPosX";
+            cbRootPosX.Size = new System.Drawing.Size(32, 17);
+            cbRootPosX.TabIndex = 107;
+            cbRootPosX.Text = "X";
+            // 
             // cbRootPosZ
             // 
             cbRootPosZ.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             cbRootPosZ.AutoSize = true;
-            cbRootPosZ.Location = new System.Drawing.Point(131, 9);
+            cbRootPosZ.Location = new System.Drawing.Point(161, 9);
             cbRootPosZ.Name = "cbRootPosZ";
             cbRootPosZ.Size = new System.Drawing.Size(32, 17);
             cbRootPosZ.TabIndex = 101;
@@ -1395,7 +1407,7 @@ namespace WadTool
             // 
             darkLabel11.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             darkLabel11.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-            darkLabel11.Location = new System.Drawing.Point(4, 10);
+            darkLabel11.Location = new System.Drawing.Point(1, 10);
             darkLabel11.Name = "darkLabel11";
             darkLabel11.Size = new System.Drawing.Size(76, 13);
             darkLabel11.TabIndex = 106;
@@ -1405,7 +1417,7 @@ namespace WadTool
             // 
             cbRootRotation.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             cbRootRotation.AutoSize = true;
-            cbRootRotation.Location = new System.Drawing.Point(168, 9);
+            cbRootRotation.Location = new System.Drawing.Point(201, 9);
             cbRootRotation.Name = "cbRootRotation";
             cbRootRotation.Size = new System.Drawing.Size(71, 17);
             cbRootRotation.TabIndex = 102;
@@ -1416,7 +1428,7 @@ namespace WadTool
             // 
             cbRootPosY.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             cbRootPosY.AutoSize = true;
-            cbRootPosY.Location = new System.Drawing.Point(92, 9);
+            cbRootPosY.Location = new System.Drawing.Point(124, 9);
             cbRootPosY.Name = "cbRootPosY";
             cbRootPosY.Size = new System.Drawing.Size(31, 17);
             cbRootPosY.TabIndex = 100;
@@ -2813,5 +2825,6 @@ namespace WadTool
         private Controls.BezierCurveEditor bezierCurveEditor;
         private DarkUI.Controls.DarkPanel panelRootMotion;
         private System.Windows.Forms.ToolStripMenuItem drawSkinToolStripMenuItem;
+        private DarkUI.Controls.DarkCheckBox cbRootPosX;
     }
 }

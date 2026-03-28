@@ -507,8 +507,9 @@ namespace WadTool
                     bezierCurveEditor.Value = node.WadAnimation.BlendCurve;
                     cbBlendPreset.SelectedIndex = -1;
 
-                    cbRootPosY.Checked = node.WadAnimation.RootMotion.PositionY;
-                    cbRootPosZ.Checked = node.WadAnimation.RootMotion.PositionZ;
+                    cbRootPosX.Checked = node.WadAnimation.RootMotion.TranslationX;
+                    cbRootPosY.Checked = node.WadAnimation.RootMotion.TranslationY;
+                    cbRootPosZ.Checked = node.WadAnimation.RootMotion.TranslationZ;
                     cbRootRotation.Checked = node.WadAnimation.RootMotion.RotationY;
 
                     tbStateId.Text = node.WadAnimation.StateId.ToString();
@@ -2867,6 +2868,7 @@ namespace WadTool
             UpdateUIControls();
         }
 
+        private void cbRootPosX_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
         private void cbRootPosY_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
         private void cbRootPosZ_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
         private void cbRootRotation_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
@@ -2883,8 +2885,9 @@ namespace WadTool
             }
 
             var rootMotion = _editor.CurrentAnim.WadAnimation.RootMotion;
-            rootMotion.PositionY = cbRootPosY.Checked;
-            rootMotion.PositionZ = cbRootPosZ.Checked;
+            rootMotion.TranslationX = cbRootPosX.Checked;
+            rootMotion.TranslationY = cbRootPosY.Checked;
+            rootMotion.TranslationZ = cbRootPosZ.Checked;
             rootMotion.RotationY = cbRootRotation.Checked;
             _editor.CurrentAnim.WadAnimation.RootMotion = rootMotion;
 
