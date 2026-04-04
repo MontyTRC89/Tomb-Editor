@@ -72,18 +72,13 @@ namespace WadTool.Controls
 
         private void AdjustHandlesForLinearCurve()
         {
-            if (_bezierCurve.StartHandle == _bezierCurve.Start)
-            {
+            if (_bezierCurve.StartHandle != _bezierCurve.Start || _bezierCurve.EndHandle != _bezierCurve.End)
+                return;
 
-                _controlPoints[0] = new Vector2(0, Height);
-                _controlPoints[1] = new Vector2(Width / 3.0f, Height * 2.0f / 3.0f);
-            }
-
-            if (_bezierCurve.EndHandle == _bezierCurve.End)
-            {
-                _controlPoints[2] = new Vector2(2 * Width / 3.0f, Height / 3.0f);
-                _controlPoints[3] = new Vector2(Width, 0);
-            }
+            _controlPoints[0] = new Vector2(0, Height);
+            _controlPoints[1] = new Vector2(Width / 3.0f, Height * 2.0f / 3.0f);
+            _controlPoints[2] = new Vector2(2 * Width / 3.0f, Height / 3.0f);
+            _controlPoints[3] = new Vector2(Width, 0);
         }
 
         private Vector2 TransformToBezier(Vector2 point)
