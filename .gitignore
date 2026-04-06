@@ -14,4 +14,4 @@ packages/
 # JetBrains IDEs
 .idea/
 
-TEMP_WPF/
+build_output.txt
