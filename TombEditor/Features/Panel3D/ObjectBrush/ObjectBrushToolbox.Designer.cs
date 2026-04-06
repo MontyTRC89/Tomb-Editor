@@ -31,7 +31,6 @@ namespace TombEditor.Features.Panel3D.ObjectBrush
             // 
             // ObjectBrushToolbox
             // 
-            BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
             Controls.Add(_elementHost);
             Name = "ObjectBrushToolbox";
             Size = new System.Drawing.Size(404, 94);

@@ -28,10 +28,6 @@ namespace TombEditor
         [STAThread]
         public static void Main(string[] args)
         {
-            var services = WPFInitializer.InitializeWPF();
-            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
-            ServiceLocator.Configure(services.BuildServiceProvider());
-
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             string startFile = null;
@@ -62,6 +58,10 @@ namespace TombEditor
 
             // Update DarkUI configuration
             Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
+
+            var services = WPFInitializer.InitializeWPF();
+            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
+            ServiceLocator.Configure(services.BuildServiceProvider());
 
             if (configuration.Editor_AllowMultipleInstances || doBatchCompile ||
                 mutex.WaitOne(TimeSpan.Zero, true))

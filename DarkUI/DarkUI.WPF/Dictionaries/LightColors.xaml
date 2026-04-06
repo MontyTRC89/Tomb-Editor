@@ -32,6 +32,7 @@
 	<sys:Double x:Key="Opacity_PressedHighlight">0.25</sys:Double>
 	<sys:Double x:Key="Opacity_CheckedHighlight">0.2</sys:Double>
 	<sys:Double x:Key="Opacity_DisabledContent">0.5</sys:Double>
+	<sys:Double x:Key="Opacity_Icon">1.0</sys:Double>
 
 	<sys:Double x:Key="DropShadow_Opacity">0.3</sys:Double>
 	<sys:Double x:Key="DropShadow_Depth">3</sys:Double>

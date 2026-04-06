@@ -35,6 +35,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DarkUI\DarkUI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\down-right-16.png" />
     <Resource Include="Resources\Invert.ps" />
     <Resource Include="Resources\search-16.png" />
