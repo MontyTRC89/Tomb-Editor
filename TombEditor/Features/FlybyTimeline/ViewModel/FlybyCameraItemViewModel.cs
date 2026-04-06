@@ -3,7 +3,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using TombLib.LevelData;
 
-namespace TombEditor.Controls.FlybyTimeline.ViewModel;
+namespace TombEditor.Features.FlybyTimeline.ViewModel;
 
 /// <summary>
 /// View model for a single flyby camera entry in the camera list.

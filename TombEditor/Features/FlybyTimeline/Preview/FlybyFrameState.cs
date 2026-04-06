@@ -3,7 +3,7 @@
 using System.Numerics;
 using TombLib;
 
-namespace TombEditor.Controls.FlybyTimeline.Preview;
+namespace TombEditor.Features.FlybyTimeline.Preview;
 
 /// <summary>
 /// Stores the camera state for a single flyby frame. Used both as the internal cache

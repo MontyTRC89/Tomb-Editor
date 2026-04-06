@@ -8,7 +8,7 @@ using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
 
-namespace TombEditor.Controls.FlybyTimeline.Sequence;
+namespace TombEditor.Features.FlybyTimeline.Sequence;
 
 /// <summary>
 /// Static helpers for flyby sequence discovery, formatting, flag access, and editor-camera conversions.

@@ -1,13 +1,12 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
-using TombEditor.Controls.FlybyTimeline.Sequence;
+using TombEditor.Features.FlybyTimeline.Sequence;
 
-namespace TombEditor.Controls.FlybyTimeline.UI;
+namespace TombEditor.Features.FlybyTimeline.UI;
 
 // WPF OnRender drawing for ruler, track, markers, and playhead.
 public partial class FlybyTimelineControl

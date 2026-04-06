@@ -1,9 +1,9 @@
 #nullable enable
 
 using System.Collections.Generic;
-using TombEditor.Controls.FlybyTimeline.Sequence;
+using TombEditor.Features.FlybyTimeline.Sequence;
 
-namespace TombEditor.Controls.FlybyTimeline.UI;
+namespace TombEditor.Features.FlybyTimeline.UI;
 
 /// <summary>
 /// Represents the data required to render the current timeline state.

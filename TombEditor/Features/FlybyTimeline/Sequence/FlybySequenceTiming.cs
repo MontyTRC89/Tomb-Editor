@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using TombLib.LevelData;
 using TombLib.Utils;
 
-namespace TombEditor.Controls.FlybyTimeline.Sequence;
+namespace TombEditor.Features.FlybyTimeline.Sequence;
 
 /// <summary>
 /// Represents one cut interval in the generated playback timeline.

@@ -5,7 +5,7 @@ using System.Linq;
 using TombLib.LevelData;
 using TombLib.Utils;
 
-namespace TombEditor.Controls.FlybyTimeline.ViewModel;
+namespace TombEditor.Features.FlybyTimeline.ViewModel;
 
 // Editor event handling and camera selection synchronization.
 public partial class FlybyTimelineViewModel

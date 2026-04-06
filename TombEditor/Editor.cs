@@ -6,7 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using TombEditor.Controls.FlybyTimeline.Preview;
+using TombEditor.Features.FlybyTimeline.Preview;
 using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;

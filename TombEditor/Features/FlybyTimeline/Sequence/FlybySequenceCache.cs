@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using TombEditor.Controls.FlybyTimeline.Preview;
+using TombEditor.Features.FlybyTimeline.Preview;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
 
-namespace TombEditor.Controls.FlybyTimeline.Sequence;
+namespace TombEditor.Features.FlybyTimeline.Sequence;
 
 /// <summary>
 /// <para>

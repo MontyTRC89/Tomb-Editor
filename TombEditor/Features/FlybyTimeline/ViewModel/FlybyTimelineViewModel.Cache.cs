@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Threading;
-using TombEditor.Controls.FlybyTimeline.Sequence;
+using TombEditor.Features.FlybyTimeline.Sequence;
 using TombLib.LevelData;
 
-namespace TombEditor.Controls.FlybyTimeline.ViewModel;
+namespace TombEditor.Features.FlybyTimeline.ViewModel;
 
 // Timing cache, sequence cache, and camera snapshot helpers.
 public partial class FlybyTimelineViewModel

@@ -1,6 +1,6 @@
 ﻿using TombLib.LevelData;
 
-namespace TombEditor.Controls.FlybyTimeline;
+namespace TombEditor.Features.FlybyTimeline;
 
 public static class FlybyConstants
 {

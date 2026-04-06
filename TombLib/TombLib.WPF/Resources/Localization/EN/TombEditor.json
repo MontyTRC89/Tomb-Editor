@@ -31,18 +31,15 @@
     },
 
     "FlybyTimeline": {
-        "PlaySequenceTooltip": "Play sequence",
-        "StopSequenceTooltip": "Stop sequence",
-        "RemoveSequenceConfirmationTitle": "Confirm delete",
-        "RemoveSequenceConfirmationMessage": "Deleting sequence {0} will remove {1} flyby camera(s). Continue?"
-    },
-
-    "FlybyTimelineView": {
         "PlayheadTimecodeTooltip": "Playhead timecode (MM:SS.CC)",
         "SequenceTooltip": "Flyby sequence",
         "AddSequenceTooltip": "Add new sequence",
         "RemoveSequenceTooltip": "Remove current sequence",
-        "AddCameraTooltip": "Add camera at current view position"
+        "AddCameraTooltip": "Add camera at current view position",
+        "PlaySequenceTooltip": "Play sequence",
+        "StopSequenceTooltip": "Stop sequence",
+        "RemoveSequenceConfirmationTitle": "Confirm delete",
+        "RemoveSequenceConfirmationMessage": "Deleting sequence {0} will remove {1} flyby camera(s). Continue?"
     },
 
     "Toolbox": {

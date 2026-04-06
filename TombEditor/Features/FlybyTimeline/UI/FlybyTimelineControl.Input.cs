@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
-namespace TombEditor.Controls.FlybyTimeline.UI;
+namespace TombEditor.Features.FlybyTimeline.UI;
 
 // Mouse and keyboard input handling for the timeline control.
 public partial class FlybyTimelineControl
