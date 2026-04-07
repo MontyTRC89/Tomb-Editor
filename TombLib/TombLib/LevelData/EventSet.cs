@@ -25,8 +25,11 @@ namespace TombLib.LevelData
         OnLevelStart,
         OnLevelEnd,
         OnUseItem,
-        OnFreeze
-    }
+        OnFreeze,
+		OnPickup,
+		OnVehicleEnter,
+		OnVehicleExit
+	}
 
     public class Event : ICloneable, IEquatable<Event>
     {
