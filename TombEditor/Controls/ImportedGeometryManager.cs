@@ -218,7 +218,9 @@ namespace TombEditor.Controls
             {
                 _dataGridViewDataSource.ListChanged -= _listChangedHandler;
                 components?.Dispose();
-                Editor.Instance.EditorEventRaised -= EditorEventRaised;
+
+                if (Editor.Instance is not null)
+                    Editor.Instance.EditorEventRaised -= EditorEventRaised;
             }
 
             base.Dispose(disposing);

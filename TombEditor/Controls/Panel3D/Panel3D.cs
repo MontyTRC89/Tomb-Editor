@@ -212,7 +212,8 @@ namespace TombEditor.Controls.Panel3D
         {
             if (disposing)
             {
-                _editor.EditorEventRaised -= EditorEventRaised;
+                if (_editor is not null)
+                    _editor.EditorEventRaised -= EditorEventRaised;
                 _renderingStateBuffer?.Dispose();
                 _renderingTextures?.Dispose();
                 _renderingCachedRooms?.Dispose();
