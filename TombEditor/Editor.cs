@@ -6,8 +6,10 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using TombEditor.Controls.FlybyTimeline.Preview;
 using TombLib;
 using TombLib.Forms;
+using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Rendering;
@@ -17,7 +19,7 @@ using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
-    public interface IEditorEvent { }
+	public interface IEditorEvent { }
 
     public interface IEditorPropertyChangedEvent : IEditorEvent { }
 
@@ -42,6 +44,12 @@ namespace TombEditor
         None,
         Sector,
         SpatialObject
+    }
+
+    public enum CameraPreviewType
+    {
+        None,
+        Static
     }
 
     public interface IEditorObjectChangedEvent : IEditorEventCausesUnsavedChanges
@@ -706,10 +714,11 @@ namespace TombEditor
         public class ResetCameraEvent : IEditorCameraEvent
         {
             public bool NewCamera { get; set; }
+            public Room? Room { get; set; }
         }
-        public void ResetCamera(bool newCamera = false)
+        public void ResetCamera(bool newCamera = false, Room? room = null)
         {
-            RaiseEvent(new ResetCameraEvent { NewCamera = newCamera });
+            RaiseEvent(new ResetCameraEvent { NewCamera = newCamera, Room = room });
         }
 
         // Toggle FlyMode
@@ -722,6 +731,39 @@ namespace TombEditor
             RaiseEvent(new ToggleFlyModeEvent { FlyModeState = state });
         }
         public bool FlyMode { get; set; } = false;
+
+        // Toggle camera preview (flyby sequence or static camera).
+        public class ToggleCameraPreviewEvent : IEditorCameraEvent
+        {
+            public bool PreviewState { get; set; }
+            public PositionBasedObjectInstance Object { get; set; }
+        }
+        public void ToggleCameraPreview(bool state, PositionBasedObjectInstance obj = null)
+        {
+            RaiseEvent(new ToggleCameraPreviewEvent { PreviewState = state, Object = obj });
+        }
+        public CameraPreviewType CameraPreviewMode { get; set; } = CameraPreviewType.None;
+
+        // The flyby sequence currently visible in the timeline; used to redirect pasted cameras to the correct target sequence.
+        public ushort? SelectedFlybySequence { get; set; }
+
+        // Camera preview frame updated (live editing or scrub playback).
+        public class CameraPreviewFrameEvent : IEditorCameraEvent
+        {
+            public FlybyCameraInstance FlybyCameraInstance { get; set; }
+            public FlybyFrameState? Frame { get; set; }
+        }
+        public void CameraPreviewUpdated(FlybyCameraInstance flybyCamera)
+        {
+            RaiseEvent(new CameraPreviewFrameEvent { FlybyCameraInstance = flybyCamera });
+        }
+        public void CameraPreviewScrub(FlybyFrameState frame)
+        {
+            RaiseEvent(new CameraPreviewFrameEvent { Frame = frame });
+        }
+
+        // Provides access to the current 3D viewport camera. Set by Panel3D on init.
+        public Func<Camera> GetViewportCamera { get; set; }
 
         // Toggle hidden selection (during color picking)
         public class HideSelectionEvent : IEditorEvent
@@ -894,6 +936,29 @@ namespace TombEditor
                 SelectedRooms = new[] { _level.Rooms[_level.Settings.LastSelectedRoom] };
             else
                 SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
+        }
+
+        public Room GetRoomAtPosition(Vector3 pos)
+        {
+            Room selectedRoom = SelectedRoom;
+
+            foreach (var room in Level.Rooms)
+            {
+                if (room is null)
+                    continue;
+
+                BoundingBox b = room.WorldBoundingBox;
+                bool sameAlternate = selectedRoom is null || selectedRoom.IsAlternate == room.IsAlternate;
+
+                if (pos.X >= b.Minimum.X && pos.Y >= b.Minimum.Y && pos.Z >= b.Minimum.Z &&
+                    pos.X <= b.Maximum.X && pos.Y <= b.Maximum.Y && pos.Z <= b.Maximum.Z &&
+                    sameAlternate)
+                {
+                    return room;
+                }
+            }
+
+            return null;
         }
 
         // Show an object by going to the room it, selecting it and centering the camera appropriately.
