@@ -61,9 +61,13 @@ local function GetWaterSkinObjectID()
         return TEN.Objects.ObjID.WATERSKIN2_EMPTY + largeQty - 1
     end
 
+    return nil
+
 end
 
 --Burning Floor
+local START_DELAY = 0.25
+local BURN_DURATION = 1024
 local FIRE_OFFSETS =
 {   --displacement, rotation, size
     {1219.784, 94.488, 2},
@@ -86,17 +90,16 @@ local FIRE_OFFSETS =
 
 LevelVars.Engine.BurningFloor = {}
 LevelVars.Engine.BurningFloor.Active = false
-LevelVars.Engine.BurningFloor.BurnDuration = 1024
-LevelVars.Engine.BurningFloor.Counter = LevelVars.Engine.BurningFloor.BurnDuration
+LevelVars.Engine.BurningFloor.Counter = BURN_DURATION
 LevelVars.Engine.BurningFloor.ItemName = nil
 LevelVars.Engine.BurningFloor.PlayerInVolume = false
 LevelVars.Engine.BurningFloor.FlipMap = 0
 
--- !Name "Burning Floor"
+-- !Name "Create a Burning Floor puzzle"
 -- !Section "Objects"
--- !Description "Create a Burning Floor Object."
--- !Arguments "NewLine, Moveables"
--- !Arguments "NewLine, Moveables, 60"
+-- !Description "Create a Burning Floor Object"
+-- !Arguments "NewLine, Moveables, Burning Floor Object"
+-- !Arguments "NewLine, Moveables, Leave as [Activator] for player detection only"
 LevelFuncs.Engine.Node.BurningFloor = function(moveableName, activator)
 
     local object = TEN.Objects.GetMoveableByName(activator)
@@ -165,6 +168,8 @@ LevelFuncs.Engine.Node.RunBurningFloor = function()
         TEN.Flow.FlipMap(ocb)
         Lara:SetHP(20)
         LevelVars.Engine.BurningFloor.Active = false
+        LevelVars.Engine.BurningFloor.Counter = BURN_DURATION
+        LevelVars.Engine.BurningFloor.ItemName = nil
         return
     end
 
@@ -174,7 +179,7 @@ LevelFuncs.Engine.Node.RunBurningFloor = function()
         burningFloor:Shatter()
         TEN.Flow.FlipMap(ocb)
         LevelVars.Engine.BurningFloor.Active = false
-        LevelVars.Engine.BurningFloor.Counter = LevelVars.Engine.BurningFloor.BurnDuration
+        LevelVars.Engine.BurningFloor.Counter = BURN_DURATION
         LevelVars.Engine.BurningFloor.ItemName = nil
     end
 
@@ -185,8 +190,13 @@ local ELEMENTAL_TYPE =
 {
     WATER = 0,
     FIRE = 1,
-    EARTH = 2,
-    SCALES = 3
+    EARTH = 2
+}
+
+local ITEM_SET = 
+{
+    [ELEMENTAL_TYPE.FIRE] = TEN.Objects.ObjID.PICKUP_ITEM2,
+    [ELEMENTAL_TYPE.EARTH] = TEN.Objects.ObjID.PICKUP_ITEM1
 }
 
 local ELEMENTAL_MESHSET = 
@@ -203,42 +213,36 @@ local MESH_SET =
     [ELEMENTAL_TYPE.EARTH] = TEN.Objects.ObjID.LARA_DIRT_MESH
 }
 
-local ITEM_SET = 
-{
-    [ELEMENTAL_TYPE.WATER] = GetWaterSkinObjectID(),
-    [ELEMENTAL_TYPE.FIRE] = TEN.Objects.ObjID.PICKUP_ITEM2,
-    [ELEMENTAL_TYPE.EARTH] = TEN.Objects.ObjID.PICKUP_ITEM1
-}
-
 LevelVars.Engine.ElementalPuzzle = {}
 LevelVars.Engine.ElementalPuzzle.Active = false
 LevelVars.Engine.ElementalPuzzle.Type = ELEMENTAL_TYPE.WATER
 LevelVars.Engine.ElementalPuzzle.FireList = {}
 
--- !Name "Elemental Puzzle"
+-- !Name "Create an Elemental Puzzle"
 -- !Section "Objects"
--- !Description "Create an Elemental Puzzle Object."
--- !Arguments "NewLine, Moveables"
+-- !Description "Create an Elemental Puzzle Object. Set OCB to 0 for Water, 1 for Fire, 2 for Earth"
+-- !Arguments "NewLine, Moveables, Elemental Puzzle Object"
 -- !Arguments "NewLine, Moveables, Trigger Triggerer object to activate"
 LevelFuncs.Engine.Node.ElementalPuzzle = function(moveableName, trigger)
 
     local elementalPuzzle = TEN.Objects.GetMoveableByName(moveableName)
-    local type = elementalPuzzle:GetOCB()
-    LevelVars.Engine.ElementalPuzzle.Type = type
-    local item = ITEM_SET[type]
+    local triggerer = TEN.Objects.GetMoveableByName(trigger)
+    local puzzleType = math.max(0, math.min(elementalPuzzle:GetOCB(), 2))
+    LevelVars.Engine.ElementalPuzzle.Type = puzzleType
+    local item = ITEM_SET[puzzleType] or GetWaterSkinObjectID()
 
-    if elementalPuzzle:GetItemFlags(type) == 2 then
+    if elementalPuzzle:GetItemFlags(puzzleType) == 2 then
         elementalPuzzle:HideInteractionHighlight()
     end
 
     local positionTest = TestPosition(elementalPuzzle, Vec3(-256, -512, 0), Vec3(256, 0, 512), 30)
 
-    if positionTest and elementalPuzzle:GetItemFlags(type) ~= 2 and elementalPuzzle:GetItemFlags(type) ~= 1 and TEN.Inventory.GetItemCount(item) > 0 then
+    if positionTest and elementalPuzzle:GetItemFlags(puzzleType) ~= 2 and elementalPuzzle:GetItemFlags(puzzleType) ~= 1 and TEN.Inventory.GetItemCount(item) > 0 then
         TEN.Inventory.SetFocusedItem(item)
         LevelVars.Engine.ElementalPuzzle.Active = true
     end
 
-    if positionTest and elementalPuzzle:GetItemFlags(type) == 1 and Lara:IsTorchLit() then
+    if positionTest and elementalPuzzle:GetItemFlags(puzzleType) == 1 and Lara:IsTorchLit() then
         Lara:SetAnim(PLAYER_ANIMS.TORCH_LIGHT_3)
     end
 
@@ -248,47 +252,45 @@ LevelFuncs.Engine.Node.ElementalPuzzle = function(moveableName, trigger)
     
     if Lara:GetAnim() == PLAYER_ANIMS.POUR_WATERSKIN_HIGH and Lara:GetFrame() == 16 then
 
-        if type ~= ELEMENTAL_TYPE.WATER then
-            Lara:SwapMesh(13,MESH_SET[type], 13)
+        if puzzleType ~= ELEMENTAL_TYPE.WATER then
+            Lara:SwapMesh(13,MESH_SET[puzzleType], 13)
         end
 
     end
 
-    if Lara:GetAnim() == PLAYER_ANIMS.POUR_WATERSKIN_HIGH and Lara:GetFrame() == 47  and elementalPuzzle:GetItemFlags(type) ~= 2 then
+    if Lara:GetAnim() == PLAYER_ANIMS.POUR_WATERSKIN_HIGH and Lara:GetFrame() == 47  and elementalPuzzle:GetItemFlags(puzzleType) ~= 2 then
 
-        elementalPuzzle:SetMeshVisible(ELEMENTAL_MESHSET[type].on, true)
-        elementalPuzzle:SetMeshVisible(ELEMENTAL_MESHSET[type].off, false)
-        
-        if type == ELEMENTAL_TYPE.FIRE then
-            elementalPuzzle:SetItemFlags(1, type)
+        elementalPuzzle:SetMeshVisible(ELEMENTAL_MESHSET[puzzleType].on, true)
+        elementalPuzzle:SetMeshVisible(ELEMENTAL_MESHSET[puzzleType].off, false)
+
+        if puzzleType == ELEMENTAL_TYPE.FIRE then
+            elementalPuzzle:SetItemFlags(1, puzzleType)
         else
-            elementalPuzzle:SetItemFlags(2, type)
-            local triggerer = GetMoveableByName(trigger)
+            elementalPuzzle:SetItemFlags(2, puzzleType)
             triggerer:Enable()
         end
     end
 
-    if Lara:GetAnim() == PLAYER_ANIMS.TORCH_LIGHT_3 and Lara:GetFrame() == 25  and elementalPuzzle:GetItemFlags(type) == 1 then
+    if Lara:GetAnim() == PLAYER_ANIMS.TORCH_LIGHT_3 and Lara:GetFrame() == 25  and elementalPuzzle:GetItemFlags(puzzleType) == 1 then
         local position = elementalPuzzle:GetPosition()
-        local triggerer = GetMoveableByName(trigger)
         triggerer:Enable()
         table.insert(LevelVars.Engine.ElementalPuzzle.FireList, Vec3(position.x, position.y - 570, position.z))
-        elementalPuzzle:SetItemFlags(2, type)
+        elementalPuzzle:SetItemFlags(2, puzzleType)
     end
 end
 
 
 
-LevelFuncs.Engine.Node.InterceptWaterSkin = function()
+LevelFuncs.Engine.Node.InterceptInventoryItem = function()
 
     if LevelVars.Engine.ElementalPuzzle.Active then
-        local type = LevelVars.Engine.ElementalPuzzle.Type
+        local puzzleType = LevelVars.Engine.ElementalPuzzle.Type
         local id = TEN.Inventory.GetUsedItem()
         TEN.Inventory.ClearUsedItem()
 
-        if type == ELEMENTAL_TYPE.WATER then
-            local isSmall = (id >= TEN.Objects.ObjID.WATERSKIN1_EMPTY and id <= TEN.Objects.ObjID.WATERSKIN1_3)
-            local isLarge = (id >= TEN.Objects.ObjID.WATERSKIN2_EMPTY and id <= TEN.Objects.ObjID.WATERSKIN2_5)
+        if puzzleType == ELEMENTAL_TYPE.WATER then
+            local isSmall = (id > TEN.Objects.ObjID.WATERSKIN1_EMPTY and id <= TEN.Objects.ObjID.WATERSKIN1_3)
+            local isLarge = (id > TEN.Objects.ObjID.WATERSKIN2_EMPTY and id <= TEN.Objects.ObjID.WATERSKIN2_5)
 
             if isSmall then
                 Lara:SetWaterSkinStatus(1, false)
@@ -298,12 +300,8 @@ LevelFuncs.Engine.Node.InterceptWaterSkin = function()
                 Lara:SetAnim(PLAYER_ANIMS.POUR_WATERSKIN_HIGH)
             end
 
-        elseif type == ELEMENTAL_TYPE.FIRE  or type == ELEMENTAL_TYPE.EARTH then  
-
-            if id == ITEM_SET[type] then
-                Lara:SetAnim(PLAYER_ANIMS.POUR_WATERSKIN_HIGH)
-            end
-
+        elseif (puzzleType == ELEMENTAL_TYPE.FIRE  or puzzleType == ELEMENTAL_TYPE.EARTH) and id == ITEM_SET[puzzleType] then  
+            Lara:SetAnim(PLAYER_ANIMS.POUR_WATERSKIN_HIGH)
         end
 
         LevelVars.Engine.ElementalPuzzle.Active = false
@@ -312,8 +310,8 @@ LevelFuncs.Engine.Node.InterceptWaterSkin = function()
     if LevelVars.Engine.ScalesPuzzle.Active  then
         local id = TEN.Inventory.GetUsedItem()
         TEN.Inventory.ClearUsedItem()
-        local isSmall = (id >= TEN.Objects.ObjID.WATERSKIN1_EMPTY and id <= TEN.Objects.ObjID.WATERSKIN1_3)
-        local isLarge = (id >= TEN.Objects.ObjID.WATERSKIN2_EMPTY and id <= TEN.Objects.ObjID.WATERSKIN2_5)
+        local isSmall = (id > TEN.Objects.ObjID.WATERSKIN1_EMPTY and id <= TEN.Objects.ObjID.WATERSKIN1_3)
+        local isLarge = (id > TEN.Objects.ObjID.WATERSKIN2_EMPTY and id <= TEN.Objects.ObjID.WATERSKIN2_5)
 
         if isSmall or isLarge then           
             Lara:SetAnim(PLAYER_ANIMS.POUR_WATERSKIN_HIGH)
@@ -344,7 +342,7 @@ LevelFuncs.Engine.Node.ElementalPuzzleFire = function()
 
 end
 
-TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRE_USE_ITEM, LevelFuncs.Engine.Node.InterceptWaterSkin)
+TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRE_USE_ITEM, LevelFuncs.Engine.Node.InterceptInventoryItem)
 TEN.Logic.AddCallback(TEN.Logic.CallbackPoint.PRE_LOOP, LevelFuncs.Engine.Node.ElementalPuzzleFire)
 
 --Scales
@@ -368,19 +366,19 @@ LevelVars.Engine.ScalesPuzzle = {}
 LevelVars.Engine.ScalesPuzzle.Active = false
 LevelVars.Engine.ScalesPuzzle.PouredVolume = 0
 
--- !Name "Scales"
+-- !Name "Create a Scales Puzzle"
 -- !Section "Objects"
--- !Description "Create a Scale Puzzle Object."
--- !Arguments "NewLine, Moveables"
--- !Arguments "NewLine, 65, VolumeEventSets, Target event set at correct value"
+-- !Description "Create a Scale Puzzle with volume events. Set OCB of the moveable to the required volume (1-5)"
+-- !Arguments "NewLine, Moveables, Scales Object"
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set to run at correct value"
 -- !Arguments "VolumeEvents, 35, Event to run"
--- !Arguments "NewLine, 65, VolumeEventSets, Target event set at incorrect value"
+-- !Arguments "NewLine, 65, VolumeEventSets, Target event set to run at incorrect value"
 -- !Arguments "VolumeEvents, 35, Event to run"
 LevelFuncs.Engine.Node.ScalesPuzzle = function(moveableName, volumeEventSuccess, eventTypeSuccess, volumeEventFail, eventTypeFail)
 
     local scalePuzzle = TEN.Objects.GetMoveableByName(moveableName)
     local requiredVolume = math.max(1, math.min(scalePuzzle:GetOCB(), 5))
-    local itemPresent = Lara:GetWaterSkinStatus(false) > 0 or Lara:GetWaterSkinStatus(true) > 0
+    local itemPresent = GetWaterSkinObjectID()
 
     if scalePuzzle:GetItemFlags(SCALE_FLAGS.STATUS) == 1 then
         scalePuzzle:HideInteractionHighlight()
@@ -391,7 +389,7 @@ LevelFuncs.Engine.Node.ScalesPuzzle = function(moveableName, volumeEventSuccess,
     local positionTest = TestPosition(scalePuzzle, Vec3(768, -512, 0), Vec3(1280, 0, 512), 30)
 
     if positionTest and scalePuzzle:GetItemFlags(SCALE_FLAGS.STATUS) ~= 1 and itemPresent then
-        TEN.Inventory.SetFocusedItem(GetWaterSkinObjectID())
+        TEN.Inventory.SetFocusedItem(itemPresent)
         LevelVars.Engine.ScalesPuzzle.Active = true
     end
 
@@ -418,8 +416,8 @@ end
 
 -- !Name "Reset Scales"
 -- !Section "Objects"
--- !Description "Reset a Scale Puzzle Object."
--- !Arguments "NewLine, Moveables"
+-- !Description "Reset a Scale Puzzle Object. To be used after an incorrect attempt."
+-- !Arguments "NewLine, Moveables, Scales Object"
 LevelFuncs.Engine.Node.ResetScalesPuzzle = function(moveableName)
 
     local scalePuzzle = TEN.Objects.GetMoveableByName(moveableName)
@@ -436,11 +434,11 @@ end
 
 LevelVars.Engine.SequenceSwitches = {}
 
--- !Name "Sequence Switches"
+-- !Name "Create a Sequence Switches Puzzle"
 -- !Section "Objects"
--- !Description "Create an Elemental Puzzle Object."
--- !Arguments "NewLine, String"
--- !Arguments "NewLine, String, Trigger Triggerer object to activate"
+-- !Description "Create a Sequence Switch and Door puzzle."
+-- !Arguments "NewLine, String, Prefix for switch names (Switch for Switch_1 Switch_2 Switch_3)"
+-- !Arguments "NewLine, String, Prefix for door names (Door for Door_1 Door_2 Door_3 Door_4 Door_5 Door_6)"
 LevelFuncs.Engine.Node.SequenceSwitches = function(switchPrefix, doorPrefix)
 
     if not LevelVars.Engine.SequenceSwitches[switchPrefix] then
@@ -448,28 +446,16 @@ LevelFuncs.Engine.Node.SequenceSwitches = function(switchPrefix, doorPrefix)
             sequence = {},
             switchStates = { false, false, false },
             activeDoor = nil,
-            switchPositions = {},
-            switchRotations = {},
-            switchRoom = nil,
-            switchID = {},
-            switchOCB = {},
+            switchAnim = nil,
             switchStatus = nil,
             needsRecreate = false
         }
 
-        -- Cache switch positions/rotations/room on first run
+        -- Cache switch data on first run
         local state = LevelVars.Engine.SequenceSwitches[switchPrefix]
-        for i = 1, 3 do
-            local switch = TEN.Objects.GetMoveableByName(switchPrefix .. "_" .. i)
-            state.switchPositions[i] = switch:GetPosition()
-            state.switchRotations[i] = switch:GetRotation()
-            state.switchOCB[i] = switch:GetOCB()
-            state.switchID[i] = switch:GetObjectID()
-            if i == 1 then
-                state.switchStatus = switch:GetStatus()
-                state.switchRoom = switch:GetRoomNumber()
-            end
-        end
+        local switch = TEN.Objects.GetMoveableByName(switchPrefix .. "_" .. 1)
+        state.switchStatus = switch:GetStatus()
+        state.switchAnim = switch:GetAnim()
     end
 
 
@@ -522,7 +508,7 @@ LevelFuncs.Engine.Node.SequenceSwitches = function(switchPrefix, doorPrefix)
         for i = 1, 3 do
             local sw = TEN.Objects.GetMoveableByName(switchPrefix .. "_" .. i)
             if sw then
-                sw:SetAnim(0)
+                sw:SetAnim(state.switchAnim)
                 sw:SetStatus(state.switchStatus)
             end
         end
