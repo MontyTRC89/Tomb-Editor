@@ -1,4 +1,4 @@
-﻿using DarkUI.Controls;
+using DarkUI.Controls;
 using DarkUI.Docking;
 using System;
 using System.Numerics;
@@ -39,6 +39,8 @@ namespace TombEditor.ToolWindows
             UpdateToolStripLayout();
             RefreshControls(_editor.Configuration);
             UpdateStatistics();
+
+            flybyTimelineView.Initialize(this);
         }
 
         public void InitializeRendering(RenderingDevice device)
@@ -92,6 +94,7 @@ namespace TombEditor.ToolWindows
             {
                 _editor.EditorEventRaised -= EditorEventRaised;
                 ClipboardEvents.ClipboardChanged -= ClipboardEvents_ClipboardChanged;
+                flybyTimelineView.Cleanup();
             }
             if (disposing && components != null)
                 components.Dispose();
@@ -109,7 +112,10 @@ namespace TombEditor.ToolWindows
                 UpdateStatistics();
 
                 if (obj is Editor.ConfigurationChangedEvent)
+                {
                     panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
+                    UpdateBottomPanelVisibility();
+                }
             }
 
             if (obj is Editor.ConfigurationChangedEvent)
@@ -147,9 +153,10 @@ namespace TombEditor.ToolWindows
                 but3D.Checked = mode == EditorMode.Geometry;
                 butLightingMode.Checked = mode == EditorMode.Lighting;
                 butFaceEdit.Checked = mode == EditorMode.FaceEdit;
+                butObjectPlacement.Checked = mode == EditorMode.ObjectPlacement;
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
-                panel3D.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Geometry || mode == EditorMode.Lighting;
+                panel3D.Visible = mode != EditorMode.Map2D;
             }
 
             // Update flipmap toolbar button
@@ -194,6 +201,7 @@ namespace TombEditor.ToolWindows
                 butAddSprite.Enabled       = _editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2;
 
                 panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
+                UpdateBottomPanelVisibility();
                 UpdateStepHeightCombo();
             }
 
@@ -274,7 +282,15 @@ namespace TombEditor.ToolWindows
 
             panel3D.Invalidate();
 
-            panelStats.Visible = settings.UI_ShowStats;
+            panelFlybyTimeline.Visible = settings.UI_ShowFlybyTimeline;
+            tbStats.Visible = settings.UI_ShowStats;
+            UpdateBottomPanelVisibility();
+        }
+
+        private void UpdateBottomPanelVisibility()
+        {
+            panelBottomStatus.Visible = tbStats.Visible || panelStepHeightOptions.Visible;
+            panelBottom.Visible = panelFlybyTimeline.Visible || panelBottomStatus.Visible;
         }
 
         private void UpdateToolStripLayout()

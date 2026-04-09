@@ -43,6 +43,7 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId Dither16BitTextures = ChunkId.FromString("TeDitherTextures");
         /**/public static readonly ChunkId TexturePadding = ChunkId.FromString("TeTexturePadding");
         /**/public static readonly ChunkId TextureCompression = ChunkId.FromString("TeTextureCompression");
+        /**/public static readonly ChunkId TrxTextureBitDepth = ChunkId.FromString("TeTrxTextureDepth");
         /**/public static readonly ChunkId AgressiveTexturePacking = ChunkId.FromString("TeAgressiveTexturePacking");
         /**/public static readonly ChunkId AgressiveFloordataPacking = ChunkId.FromString("TeAgressiveFloordataPacking");
         /**/public static readonly ChunkId RemapAnimatedTextures = ChunkId.FromString("TeRemapAnimTextures");
@@ -245,5 +246,7 @@ namespace TombLib.LevelData.IO
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry3 = ChunkId.FromString("TeMergeStaticsEntry3");
         /**/public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad"); // DEPRECATED
         /**/public static readonly ChunkId Palette = ChunkId.FromString("TePalette");
+        /**/public static readonly ChunkId Favorites = ChunkId.FromString("TeFavorites");
+        /****/public static readonly ChunkId Favorite = ChunkId.FromString("TeFavorite");
     }
 }

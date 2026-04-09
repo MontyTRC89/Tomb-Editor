@@ -36,10 +36,26 @@ LevelFuncs.Engine.Node.SetInventoryItemCount = function(item, count)
     TEN.Inventory.SetItemCount(item, count)
 end
 
+-- !Name "Reset inventory to default"
+-- !Section "Inventory"
+-- !Description "Resets inventory to a default state."
+LevelFuncs.Engine.Node.ResetInventoryToDefault = function()
+    TEN.Inventory.ResetToDefault()
+end
+
+-- !Name "Use an item"
+-- !Section "Inventory"
+-- !Description "Attempts to use a specified item. If conditions are not applicable for the usage of the item, 'No' sound will play."
+-- !Arguments "NewLine, WadSlots, [ _ITEM ], Item to check"
+
+LevelFuncs.Engine.Node.UseItem = function(item)
+    TEN.Inventory.UseItem(item)
+end
+
 -- !Name "Set last used item"
 -- !Section "Inventory"
 -- !Description "Sets last used inventory item. If item will not be handled by the engine, 'No' sound will play."
--- !Arguments "NewLine, 58, WadSlots, [ _ITEM ], Item to check"
+-- !Arguments "NewLine, WadSlots, [ _ITEM ], Item to check"
 
 LevelFuncs.Engine.Node.SetUsedItem = function(item)
     TEN.Inventory.SetUsedItem(item)
