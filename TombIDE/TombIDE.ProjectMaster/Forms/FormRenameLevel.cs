@@ -40,6 +40,7 @@ namespace TombIDE.ProjectMaster
 			}
 			else if (_ide.Project.GameVersion
 				is TombLib.LevelData.TRVersion.Game.TR1
+				or TombLib.LevelData.TRVersion.Game.TR2X
 				or TombLib.LevelData.TRVersion.Game.TR2
 				or TombLib.LevelData.TRVersion.Game.TR3)
 			{
@@ -112,7 +113,7 @@ namespace TombIDE.ProjectMaster
 					// If the name hasn't changed, but the directory name is different and the user wants to rename it
 					if (Path.GetFileName(_ide.SelectedLevel.DirectoryPath) != newName && renameDirectory)
 					{
-						string newDirectory = Path.Combine(Path.GetDirectoryName(_ide.SelectedLevel.DirectoryPath), newName);
+						string newDirectory = Path.Combine(Path.GetDirectoryName(_ide.SelectedLevel.DirectoryPath) ?? string.Empty, newName);
 
 						if (Directory.Exists(newDirectory))
 							throw new ArgumentException("A directory with the same name already exists in the parent directory.");
@@ -125,7 +126,7 @@ namespace TombIDE.ProjectMaster
 				}
 				else
 				{
-					string newDirectory = Path.Combine(Path.GetDirectoryName(_ide.SelectedLevel.DirectoryPath), newName);
+					string newDirectory = Path.Combine(Path.GetDirectoryName(_ide.SelectedLevel.DirectoryPath) ?? string.Empty, newName);
 
 					if (renameDirectory && Directory.Exists(newDirectory) && !newDirectory.Equals(_ide.SelectedLevel.DirectoryPath, StringComparison.OrdinalIgnoreCase))
 						throw new ArgumentException("A directory with the same name already exists in the parent directory.");

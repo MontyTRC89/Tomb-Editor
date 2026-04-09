@@ -109,10 +109,10 @@ namespace TombEditor.Controls.Panel3D
                 result = new PickingResultObject(TransformRayDistance(ref transformedRay, ref objectMatrix, ref ray, minDistance), objectPtr);
         }
 
-        private PickingResult DoPicking(Ray ray, bool pickAnyRoom = false)
+        private PickingResult DoPicking(Ray ray, bool pickAnyRoom = false, bool skipObjects = false)
         {
             // The gizmo has the priority because it always drawn on top
-            PickingResult result = _gizmo.DoPicking(ray);
+            PickingResult result = CanUseGizmo() ? _gizmo.DoPicking(ray) : null;
             if (result != null)
                 return result;
 
@@ -123,6 +123,7 @@ namespace TombEditor.Controls.Panel3D
                 float distance;
 
                 // First check for all objects in the room
+                if (!skipObjects)
                 foreach (var instance in room.Objects)
                     if (instance is MoveableInstance)
                     {
@@ -190,7 +191,7 @@ namespace TombEditor.Controls.Panel3D
                     else if (ShowOtherObjects)
                         result = TryPickServiceObject(instance, ray, result, out distance);
 
-                if (ShowGhostBlocks)
+                if (!skipObjects && ShowGhostBlocks)
                     foreach (var ghost in room.GhostBlocks)
                     {
                         if (_editor.SelectedObject == ghost)
@@ -260,7 +261,7 @@ namespace TombEditor.Controls.Panel3D
             {
                 RectangleInt2 bounds;
 
-                if (instance is SpriteInstance && _editor.Level.Settings.GameVersion < TRVersion.Game.TR3)
+                if (instance is SpriteInstance && _editor.Level.Settings.GameVersion.Native() < TRVersion.Game.TR3)
                 {
                     var sprite = instance as SpriteInstance;
                     var sequence = _editor.Level.Settings.WadGetAllSpriteSequences()

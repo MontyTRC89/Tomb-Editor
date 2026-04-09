@@ -377,11 +377,11 @@ namespace TombLib.LevelData
                             sector.SetFaceTexture(face, TextureArea.None);
                         }
                     }
-                room.BuildGeometry();
+                room.Rebuild(relight: true, highQualityLighting: true);
             });
 
             foreach (AnimatedTextureSet set in Settings.AnimatedTextureSets)
-                set.Frames.RemoveAll(frame => askIfTextureToRemove(frame.Texture));
+                set.Frames.RemoveAll(frame => askIfTextureToRemove((LevelTexture)frame.Texture));
 
             // Clean up empty texture sets as well
             Settings.AnimatedTextureSets.RemoveAll(set => set.Frames.Count == 0);
@@ -453,8 +453,16 @@ namespace TombLib.LevelData
             return result;
         }
 
+        public HashSet<string> GetAllLuaNames()
+        {
+            var result = new HashSet<string>(GetAllObjects().OfType<IHasLuaName>().Select(o => o.LuaName).Where(n => !string.IsNullOrEmpty(n)));
+            return result;
+        }
+
         public bool IsNG => Settings?.GameVersion == TRVersion.Game.TRNG;
 
         public bool IsTombEngine => Settings?.GameVersion == TRVersion.Game.TombEngine;
+
+        public bool IsTRX => Settings?.GameVersion.IsTRX() ?? false;
     }
 }

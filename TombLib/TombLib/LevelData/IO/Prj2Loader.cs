@@ -54,6 +54,10 @@ namespace TombLib.LevelData.IO
                 });
 
                 level.Settings.HasUnknownData = chunkIO.UnknownChunksFound;
+
+                if (level.IsTombEngine)
+                    level.Settings.RemapAnimatedTextures = false;
+
                 return level;
             }
         }
@@ -310,6 +314,8 @@ namespace TombLib.LevelData.IO
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.TextureCompression)
                     settings.CompressTextures = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.TrxTextureBitDepth)
+                    settings.TrxTextureBitDepth = (TrxTextureBitDepth)chunkIO.ReadChunkInt(chunkSize);
                 else if (id == Prj2Chunks.RearrangeRooms)
                     settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.RemoveUnusedObjects)
@@ -628,7 +634,15 @@ namespace TombLib.LevelData.IO
                             {
                                 set.UvRotate = chunkIO.ReadChunkInt(chunkSize3);
                             }
-                            else if (id3 == Prj2Chunks.AnimatedTextureFrames)
+                            else if (id3 == Prj2Chunks.AnimatedTextureSetTenUvRotateDirection)
+                            {
+                                set.TenUvRotateDirection = chunkIO.ReadChunkFloat(chunkSize3);
+                            }
+							else if (id3 == Prj2Chunks.AnimatedTextureSetTenUvRotateSpeed)
+							{
+								set.TenUvRotateSpeed = chunkIO.ReadChunkFloat(chunkSize3);
+							}
+							else if (id3 == Prj2Chunks.AnimatedTextureFrames)
                             {
                                 var frames = new List<AnimatedTextureFrame>();
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
@@ -703,6 +717,19 @@ namespace TombLib.LevelData.IO
                         colorList.Add(new ColorC(r, g, b));
                     }
                     settings.Palette = colorList;
+                }
+                else if (id == Prj2Chunks.Favorites)
+                {
+                    settings.Favorites.Clear();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Prj2Chunks.Favorite)
+                        {
+                            settings.Favorites.Add(chunkIO.ReadChunkString(chunkSize2));
+                            return true;
+                        }
+                        else return false;
+                    });
                 }
                 else
                     return false;
@@ -977,6 +1004,8 @@ namespace TombLib.LevelData.IO
                     }
                     else if (id2 == Prj2Chunks.RoomFlagCold)
                         room.Properties.FlagCold = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagNoCaustics)
+                        room.Properties.FlagNoCaustics = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagDamage)
                         room.Properties.FlagDamage = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagHorizon)
@@ -1170,7 +1199,7 @@ namespace TombLib.LevelData.IO
                 CancellationToken = cancelToken,
             };
             progressReporter?.ReportInfo("Building world geometry");
-            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.BuildGeometry());
+            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.Rebuild(relight: true, highQualityLighting: true));
             return true;
         }
 

@@ -26,6 +26,7 @@ namespace TombLib.Wad
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
+        public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
 
         public string FileName { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.Now;
@@ -61,7 +62,12 @@ namespace TombLib.Wad
                     if (stat.Value.Mesh != null)
                         foreach (WadPolygon polygon in stat.Value.Mesh.Polys)
                             textures.Add((WadTexture)polygon.Texture.Texture);
-                return textures;
+				foreach (var set in AnimatedTextureSets)
+                    foreach (var frame in set.AnimationType == AnimatedTextureAnimationType.Video ? new List<AnimatedTextureFrame>() : set.Frames)
+                        if (frame.Texture is WadTexture wadTexture)
+                            textures.Add(wadTexture);
+				
+				return textures;
             }
         }
 

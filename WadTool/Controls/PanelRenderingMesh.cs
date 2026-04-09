@@ -1070,7 +1070,7 @@ namespace WadTool.Controls
             }
         }
 
-        private void ColorizeVertexWeights()
+        public void ColorizeVertexWeights()
         {
             if (_mesh == null || _mesh.VertexPositions.Count == 0 || !_mesh.HasWeights)
                 return;

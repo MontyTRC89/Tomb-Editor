@@ -131,6 +131,34 @@ namespace TombLib.LevelData.IO
                     }
                     break;
 
+                // Custom hair meshes often don't connect properly
+
+                case "HAIR_PRIMARY":
+                    {
+                        if (sourceVersion.Native() <= TRVersion.Game.TR3 || moveable.Bones.Count < 2)
+                            break;
+
+                        progressReporter?.ReportInfo("    Adjusting mesh connections for " + newSlotName);
+
+                        // Vertices 4-5-6-7 of a mesh should match the position of vertices 0-1-2-3 of the next mesh
+                        for (int m = 0; m < moveable.Bones.Count - 1; m++)
+                        {
+                            var mesh = moveable.Bones[m].Mesh;
+                            var nextBone = moveable.Bones[m + 1];
+                            var nextMesh = nextBone.Mesh;
+                            
+                            if (mesh.VertexPositions.Count < 8 || nextMesh.VertexPositions.Count < 4)
+                                break;
+
+                            for (int i = 0; i < 4; i++)
+                            {   
+                                mesh.VertexPositions[i + 4] = nextMesh.VertexPositions[i] + nextBone.Translation;
+                            }
+                        }
+
+                    }
+                    break;
+
                 // Correct pivot points
 
                 case "EXPANDING_PLATFORM":
@@ -171,6 +199,7 @@ namespace TombLib.LevelData.IO
                 case "ANIMATING14":
                 case "ANIMATING15":
                 case "ANIMATING16":
+                case "FIREROPE":
                     {
                         if (sourceVersion != TRVersion.Game.TR4)
                             break;
@@ -274,7 +303,7 @@ namespace TombLib.LevelData.IO
                 newSlotName.Contains("TRAPDOOR") ||
                 newSlotName.Contains("RAISING_BLOCK") ||
                 newSlotName.Contains("TWOBLOCK_PLATFORM") ||
-                (newSlotName.Contains("PUSHABLE") && sourceVersion <= TRVersion.Game.TR3))
+                (newSlotName.Contains("PUSHABLE") && sourceVersion.Native() <= TRVersion.Game.TR3))
             {
                 progressReporter?.ReportInfo("    Adjusting bridge bounds for " + newSlotName);
 
@@ -285,10 +314,10 @@ namespace TombLib.LevelData.IO
                     {
                         var oldBB = anim.KeyFrames[f].BoundingBox;
 
-                        var newMaxX = Math.Sign(oldBB.Maximum.X) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Maximum.X));
-                        var newMaxZ = Math.Sign(oldBB.Maximum.Z) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Maximum.Z));
-                        var newMinX = Math.Sign(oldBB.Minimum.X) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Minimum.X));
-                        var newMinZ = Math.Sign(oldBB.Minimum.Z) * MathC.NextPowerOf2((int)Math.Abs(oldBB.Minimum.Z));
+                        var newMaxX = Math.Sign(oldBB.Maximum.X) * MathC.NearestPowerOf2((int)Math.Abs(oldBB.Maximum.X));
+                        var newMaxZ = Math.Sign(oldBB.Maximum.Z) * MathC.NearestPowerOf2((int)Math.Abs(oldBB.Maximum.Z));
+                        var newMinX = Math.Sign(oldBB.Minimum.X) * MathC.NearestPowerOf2((int)Math.Abs(oldBB.Minimum.X));
+                        var newMinZ = Math.Sign(oldBB.Minimum.Z) * MathC.NearestPowerOf2((int)Math.Abs(oldBB.Minimum.Z));
 
                         oldBB.Maximum = new Vector3(newMaxX, oldBB.Maximum.Y, newMaxZ);
                         oldBB.Minimum = new Vector3(newMinX, oldBB.Minimum.Y, newMinZ);
@@ -339,8 +368,7 @@ namespace TombLib.LevelData.IO
                     return string.Empty;
                 }
 
-                if (level.Settings.GameVersion.Native() != TRVersion.Game.TR4 &&
-                    level.Settings.GameVersion.Native() != TRVersion.Game.TRNG)
+                if (level.Settings.GameVersion is not TRVersion.Game.TR4 and not TRVersion.Game.TRNG)
                 {
                     if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         progressReporter.ReportWarn("You are trying to convert a project which is already TEN project.");

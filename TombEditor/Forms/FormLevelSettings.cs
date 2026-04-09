@@ -409,6 +409,12 @@ namespace TombEditor.Forms
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
             comboLaraType.Items.AddRange(Enum.GetValues(typeof(Tr5LaraType)).Cast<object>().ToArray());
 
+            // Populate TRX lists
+            comboTrxTextureDepth.Items.AddRange(Enum.GetValues(typeof(TrxTextureBitDepth))
+                .Cast<TrxTextureBitDepth>()
+                .Select(t => GetDisplayName(t))
+                .ToArray());
+
             // Initialize options list
             tabbedContainer.LinkedControl = optionsList;
 
@@ -432,6 +438,12 @@ namespace TombEditor.Forms
                 textureFileDataGridView.Invalidate(true);
             else if (evt is LoadedWadsChangedEvent)
                 objectFileDataGridView.Invalidate(true);
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            ToggleTRXTab(_levelSettings.GameVersion.IsTRX());
         }
 
         protected override void Dispose(bool disposing)
@@ -509,6 +521,7 @@ namespace TombEditor.Forms
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
             tbLuaPath.Text = _levelSettings.TenLuaScriptFile;
+            comboTrxTextureDepth.Text = GetDisplayName(_levelSettings.TrxTextureBitDepth);
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -683,7 +696,7 @@ namespace TombEditor.Forms
             }
 
             // TR4 platform
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
+            currentVersionToCheck = (_levelSettings.GameVersion.Native() == Game.TR4);
             GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
             GameEnableExtraReverbPresetsCheckBox.Visible = currentVersionToCheck;
 
@@ -696,28 +709,35 @@ namespace TombEditor.Forms
             // TombEngine
             currentVersionToCheck = (_levelSettings.GameVersion == Game.TombEngine);
             cbRearrangeRooms.Enabled = !currentVersionToCheck;
-            cbRemapAnimTextures.Enabled = !currentVersionToCheck; // TODO: This must be re-enabled on TEN side -- Lwmte, 29.01.23
             cbAgressiveTexturePacking.Enabled = !currentVersionToCheck;
             cbAgressiveFloordataPacking.Enabled = !currentVersionToCheck;
             cbCompressTextures.Enabled = currentVersionToCheck;
-            panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
+            cbRemapAnimTextures.Checked = !currentVersionToCheck;
+            cbRemapAnimTextures.Enabled = !currentVersionToCheck;
+
+			panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
             if (currentVersionToCheck)
             {
                 tbLuaPath.BackColor = File.Exists(_levelSettings.MakeAbsolute(_levelSettings.TenLuaScriptFile)) ? _correctColor : _wrongColor;
             }
 
             // TR4 and TombEngine platforms
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4);
+            currentVersionToCheck = (_levelSettings.GameVersion.Native() == Game.TR4);
             cbEnableExtraBlendingModes.Visible = currentVersionToCheck;
 
             // TR2-5 platforms
-            currentVersionToCheck = (_levelSettings.GameVersion > Game.TR1 && _levelSettings.GameVersion < Game.TombEngine);
+            currentVersionToCheck = (_levelSettings.GameVersion.Supports16BitDithering());
             cbDither16BitTextures.Enabled = currentVersionToCheck;
 
             // TR4 and above
-            currentVersionToCheck = (_levelSettings.GameVersion >= Game.TR4);
+            currentVersionToCheck = (_levelSettings.GameVersion.SupportsFontAndSkySettings());
             panelFont.Enabled = currentVersionToCheck;
             panelSky.Enabled = currentVersionToCheck;
+
+            // TRX platform
+            currentVersionToCheck = _levelSettings.GameVersion.IsTRX();
+            cbDither16BitTextures.Enabled |= currentVersionToCheck;
+            ToggleTRXTab(currentVersionToCheck);
 
             // MAIN.SFX options
             currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
@@ -729,6 +749,48 @@ namespace TombEditor.Forms
             lblPathsPrompt.TextAlign = currentVersionToCheck ? ContentAlignment.MiddleCenter : ContentAlignment.TopLeft;
             lblPathsPrompt.AutoSize = !currentVersionToCheck;
             lblPathsPrompt.ForeColor = currentVersionToCheck ? Colors.DisabledText : Colors.LightText;
+        }
+
+        private void ToggleTRXTab(bool isVisible)
+        {
+            if (isVisible && !tabbedContainer.TabPages.Contains(tabTrx))
+            {
+                int miscIndex = tabbedContainer.TabPages.IndexOf(tabMisc);
+
+                if (miscIndex >= 0)
+                    tabbedContainer.TabPages.Insert(miscIndex, tabTrx);
+                else
+                    tabbedContainer.TabPages.Add(tabTrx);
+
+                tabbedContainer.LinkedControl = optionsList; // Refresh linked list
+            }
+            else if (!isVisible && tabbedContainer.TabPages.Contains(tabTrx))
+            {
+                tabbedContainer.TabPages.Remove(tabTrx);
+                tabbedContainer.LinkedControl = optionsList; // Refresh linked list
+            }
+        }
+
+        private static string GetDisplayName(TrxTextureBitDepth depth)
+        {
+            return depth switch
+            {
+                TrxTextureBitDepth.Bit8 => "8-bit",
+                TrxTextureBitDepth.Bit16 => "16-bit",
+                TrxTextureBitDepth.Bit32 => "32-bit",
+                _ => "Default",
+            };
+        }
+
+        private static TrxTextureBitDepth GetTrxTextureDepth(string name)
+        {
+            return name switch
+            {
+                "8-bit" => TrxTextureBitDepth.Bit8,
+                "16-bit" => TrxTextureBitDepth.Bit16,
+                "32-bit" => TrxTextureBitDepth.Bit32,
+                _ => TrxTextureBitDepth.Default,
+            };
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
@@ -1330,6 +1392,15 @@ namespace TombEditor.Forms
             if (_levelSettings.Tr5WeatherType == weather)
                 return;
             _levelSettings.Tr5WeatherType = weather; // Must also check none enum values
+            UpdateDialog();
+        }
+
+        private void comboTrxTextureDepth_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var depth = GetTrxTextureDepth(comboTrxTextureDepth.Text);
+            if (_levelSettings.TrxTextureBitDepth == depth)
+                return;
+            _levelSettings.TrxTextureBitDepth = depth;
             UpdateDialog();
         }
 

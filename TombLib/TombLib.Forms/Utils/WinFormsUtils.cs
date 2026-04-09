@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace TombLib.Utils
 {
@@ -20,8 +21,28 @@ namespace TombLib.Utils
         };
 
         public static Color ToWinFormsColor(this Vector3 color) => new Vector4(color, 255.0f).ToWinFormsColor();
-        public static Vector3 ToFloat3Color(this Color color) => new Vector3(color.R, color.G, color.B) / 255.0f;
-        public static Vector4 ToFloat4Color(this Color color) => new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
+
+        public static Vector3 ToFloat3Color(this Color color)
+        {
+            if (color.R == Color.Gray.R && color.G == Color.Gray.G && color.B == Color.Gray.B)
+                return new Vector3(0.5f);
+
+            if (color.R == Color.White.R && color.G == Color.White.G && color.B == Color.White.B)
+                return Vector3.One;
+
+            return new Vector3(color.R, color.G, color.B) / 255.0f;
+        }
+
+        public static Vector4 ToFloat4Color(this Color color)
+        {
+            if (color.R == Color.Gray.R && color.G == Color.Gray.G && color.B == Color.Gray.B)
+                return new Vector4(0.5f);
+
+            if (color.R == Color.White.R && color.G == Color.White.G && color.B == Color.White.B)
+                return Vector4.One;
+
+            return new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
+        }
 
         public static Color ToWinFormsColor(this Vector4 color, float? alpha = null)
         {
@@ -105,7 +126,22 @@ namespace TombLib.Utils
 
         public static bool CurrentControlSupportsInput(Form form, Keys keyData)
         {
-            var activeControlType = GetFocusedControl(form)?.GetType().Name;
+            var activeControl = GetFocusedControl(form);
+            var activeControlType = activeControl?.GetType().Name;
+
+            if (activeControl is ElementHost &&
+                (keyData.HasFlag(Keys.Control | Keys.A) ||
+                 keyData.HasFlag(Keys.Control | Keys.X) ||
+                 keyData.HasFlag(Keys.Control | Keys.C) ||
+                 keyData.HasFlag(Keys.Control | Keys.V) ||
+                (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt))))
+            {
+                var wpfFocused = System.Windows.Input.Keyboard.FocusedElement;
+
+                if (wpfFocused is System.Windows.Controls.TextBox ||
+                    wpfFocused is System.Windows.Controls.Primitives.TextBoxBase)
+                    return true;
+            }
 
             if ((keyData.HasFlag(Keys.Control | Keys.A) ||
                  keyData.HasFlag(Keys.Control | Keys.X) ||
@@ -133,5 +169,17 @@ namespace TombLib.Utils
 
         public static void LockHeight(this Form form) => form.MaximumSize = new Size(int.MaxValue, form.Size.Height);
         public static void LockWidth(this Form form) => form.MaximumSize = new Size(form.Size.Width, int.MaxValue);
+
+        public static IntPtr TryGetMainWindowHandle()
+        {
+            if (Application.OpenForms.Count == 0)
+                return IntPtr.Zero;
+
+            var form = Application.OpenForms[0];
+            if (form == null || form.IsDisposed || !form.IsHandleCreated)
+                return IntPtr.Zero;
+
+            return form.Handle;
+        }
     }
 }

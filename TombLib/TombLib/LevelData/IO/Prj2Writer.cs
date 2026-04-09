@@ -173,6 +173,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.Dither16BitTextures, settings.Dither16BitTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveTexturePacking, settings.AgressiveTexturePacking);
                 chunkIO.WriteChunkBool(Prj2Chunks.TextureCompression, settings.CompressTextures);
+                chunkIO.WriteChunkInt(Prj2Chunks.TrxTextureBitDepth, (int)settings.TrxTextureBitDepth);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkInt(Prj2Chunks.DefaultLightQuality, (long)settings.DefaultLightQuality);
@@ -295,14 +296,17 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkInt(Prj2Chunks.AnimatedTextureSetType, (int)set.AnimationType);
                             chunkIO.WriteChunkFloat(Prj2Chunks.AnimatedTextureSetFps, set.Fps);
                             chunkIO.WriteChunkInt(Prj2Chunks.AnimatedTextureSetUvRotate, set.UvRotate);
+                            chunkIO.WriteChunkFloat(Prj2Chunks.AnimatedTextureSetTenUvRotateDirection, set.TenUvRotateDirection);
+							chunkIO.WriteChunkFloat(Prj2Chunks.AnimatedTextureSetTenUvRotateSpeed, set.TenUvRotateSpeed);
+							
                             using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrames))
                             {
                                 foreach (AnimatedTextureFrame frame in set.Frames)
                                 {
-                                    if (frame.Texture != null && levelSettingIds.LevelTextures.ContainsKey(frame.Texture))
+                                    if (frame.Texture != null && levelSettingIds.LevelTextures.ContainsKey((LevelTexture)frame.Texture))
                                         using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, 120))
                                         {
-                                            LEB128.Write(chunkIO.Raw, levelSettingIds.LevelTextures[frame.Texture]);
+                                            LEB128.Write(chunkIO.Raw, levelSettingIds.LevelTextures[(LevelTexture)frame.Texture]);
                                             chunkIO.Raw.Write(frame.TexCoord0);
                                             chunkIO.Raw.Write(frame.TexCoord1);
                                             chunkIO.Raw.Write(frame.TexCoord2);
@@ -386,6 +390,15 @@ namespace TombLib.LevelData.IO
                         chunkIO.Raw.Write(color.R);
                         chunkIO.Raw.Write(color.G);
                         chunkIO.Raw.Write(color.B);
+                    }
+                }
+                if (settings.Favorites.Count > 0)
+                {
+                    using (var chunkFavorites = chunkIO.WriteChunk(Prj2Chunks.Favorites, long.MaxValue))
+                    {
+                        foreach (string favorite in settings.Favorites)
+                            chunkIO.WriteChunkString(Prj2Chunks.Favorite, favorite);
+                        chunkIO.WriteChunkEnd();
                     }
                 }
                 chunkIO.WriteChunkEnd();
@@ -503,6 +516,7 @@ namespace TombLib.LevelData.IO
                         // Write room properties
                         chunkIO.WriteChunkVector3(Prj2Chunks.RoomAmbientLight, room.Properties.AmbientLight);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagCold, room.Properties.FlagCold);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagNoCaustics, room.Properties.FlagNoCaustics);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagDamage, room.Properties.FlagDamage);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagHorizon, room.Properties.FlagHorizon);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagOutside, room.Properties.FlagOutside);

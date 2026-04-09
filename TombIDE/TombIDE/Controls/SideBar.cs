@@ -58,7 +58,7 @@ namespace TombIDE.Controls
 			InitializeFLEP();
 			AddPinnedPrograms();
 
-			if (_ide.Project.GameVersion is not TRVersion.Game.TR1 and not TRVersion.Game.TombEngine)
+			if (_ide.Project.GameVersion is not TRVersion.Game.TR1 and not TRVersion.Game.TR2X and not TRVersion.Game.TombEngine)
 				button_Update.Enabled = false;
 		}
 
@@ -388,7 +388,7 @@ namespace TombIDE.Controls
 		{
 			string engineRootDirectory = _ide.Project.GetEngineRootDirectoryPath();
 
-			if (_ide.Project.GameVersion is not TRVersion.Game.TR1 and not TRVersion.Game.TombEngine)
+			if (_ide.Project.GameVersion is not TRVersion.Game.TR1 and not TRVersion.Game.TR2X and not TRVersion.Game.TombEngine)
 			{
 				string scriptDatFilePath = string.Empty;
 

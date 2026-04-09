@@ -29,6 +29,12 @@ namespace TombLib.Wad
             Weight = new float[4];
         }
 
+        public bool Valid()
+        {
+            return Weight[0] > 0.0f || Weight[1] > 0.0f ||
+                   Weight[2] > 0.0f || Weight[3] > 0.0f;
+        }
+
         public static bool operator ==(VertexWeight a, VertexWeight b)
         {
             for (int i = 0; i < 4; i++)
@@ -63,10 +69,10 @@ namespace TombLib.Wad
         public override string ToString()
         {
             var epsilon = 0.001f;
-            return (Weight[0] > epsilon ? (Index[0].ToString() + ": " + Weight[0].ToString()) : string.Empty) + "\n" +
-                   (Weight[1] > epsilon ? (Index[1].ToString() + ": " + Weight[1].ToString()) : string.Empty) + "\n" +
-                   (Weight[2] > epsilon ? (Index[2].ToString() + ": " + Weight[2].ToString()) : string.Empty) + "\n" +
-                   (Weight[3] > epsilon ? (Index[3].ToString() + ": " + Weight[3].ToString()) : string.Empty) + "\n";
+            return (Weight[0] > epsilon ? (Index[0].ToString() + ": " + Weight[0].ToString() + "\n") : string.Empty) +
+                   (Weight[1] > epsilon ? (Index[1].ToString() + ": " + Weight[1].ToString() + "\n") : string.Empty) +
+                   (Weight[2] > epsilon ? (Index[2].ToString() + ": " + Weight[2].ToString() + "\n") : string.Empty) +
+                   (Weight[3] > epsilon ? (Index[3].ToString() + ": " + Weight[3].ToString() + "\n") : string.Empty);
         }
     }
 
@@ -290,8 +296,8 @@ namespace TombLib.Wad
                     var p = m.Polys[i];
 
                     var rect = p.Texture.GetRect();
-                    var image = ImageC.CreateNew((int)rect.Width, (int)rect.Height);
-                    image.CopyFrom(0, 0, p.Texture.Texture.Image, (int)rect.TopLeft.X, (int)rect.TopLeft.Y, (int)rect.Width, (int)rect.Height);
+                    var image = ImageC.CreateNew((int)Math.Clamp(rect.Width, 1, int.MaxValue), (int)Math.Clamp(rect.Height, 1, int.MaxValue));
+                    image.CopyFrom(0, 0, p.Texture.Texture.Image, (int)rect.TopLeft.X, (int)rect.TopLeft.Y, image.Width, image.Height);
 
                     var texture = p.Texture;
                     texture.Texture = new WadTexture(image);
@@ -467,7 +473,7 @@ namespace TombLib.Wad
             {
                 var textureFileName = name + "_" + i + ".png";
                 var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
-                pages[i].Image.Save(path);
+                pages[i].Image.SaveToFile(path);
             }
 
             return model;
@@ -488,8 +494,14 @@ namespace TombLib.Wad
             {
                 var importer = BaseGeometryImporter.CreateForFile(fileName, settings, absoluteTexturePath =>
                 {
-                    return new WadTexture(ImageC.FromFile(absoluteTexturePath));
-                });
+					var image = ImageC.FromFile(absoluteTexturePath);
+					if (!settings.KeepTexturesExternal)
+						image.FileName = string.Empty;
+                    
+                    var texture = new WadTexture(image);
+                    texture.AbsolutePath = image.FileName;
+                    return texture;
+				});
                 tmpModel = importer.ImportFromFile(fileName);
 
                 calculateNormals = importer is MetasequoiaImporter;

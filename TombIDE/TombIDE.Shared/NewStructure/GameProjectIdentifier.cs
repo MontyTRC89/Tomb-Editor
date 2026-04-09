@@ -13,7 +13,7 @@ namespace TombIDE.Shared.NewStructure
 
 		private static readonly string[] ValidEngineExecutableNames = new string[]
 		{
-			"Tomb1Main.exe", "TR1X.exe", "Tomb2.exe", "tomb3.exe", "tomb4.exe", "TombEngine.exe" // Only the ones TIDE currently supports
+			"Tomb1Main.exe", "TR1X.exe", "TR2X.exe", "TRX.exe", "Tomb2.exe", "tomb3.exe", "tomb4.exe", "TombEngine.exe" // Only the ones TIDE currently supports
 		};
 
 		private static readonly string[] PlatformSpecificDirectories = new string[] // TEN only
@@ -221,13 +221,13 @@ namespace TombIDE.Shared.NewStructure
 
 			switch (version)
 			{
-				case TRVersion.Game.TR1:
+				case TRVersion.Game.TR1 or TRVersion.Game.TR2X:
 					scriptsDirectory = Path.Combine(engineDirectory, "cfg");
 
 					if (!Directory.Exists(scriptsDirectory))
 						throw new DirectoryNotFoundException("The game's \"cfg\" directory could not be found.");
 
-					if (!IsValidScriptDirectory(scriptsDirectory, TRVersion.Game.TR1))
+					if (!IsValidScriptDirectory(scriptsDirectory, version))
 						throw new Exception("The game's \"cfg\" directory does not contain a valid gameflow file.");
 
 					result = scriptsDirectory;
@@ -322,6 +322,8 @@ namespace TombIDE.Shared.NewStructure
 			{
 				"TOMB1MAIN" => TRVersion.Game.TR1,
 				"TR1X" => TRVersion.Game.TR1,
+				"TR2X" => TRVersion.Game.TR2X,
+				"TRX" => TRVersion.Game.TR1, // TODO: Distinguish between TR1X and TR2X later
 				"TOMB2" => TRVersion.Game.TR2,
 				"TOMB3" => TRVersion.Game.TR3,
 				"TOMB4" => TRVersion.Game.TR4,
@@ -337,6 +339,24 @@ namespace TombIDE.Shared.NewStructure
 					version = TRVersion.Game.TRNG;
 			}
 
+			if (version == TRVersion.Game.TR1)
+			{
+				// Check if there are any .phd or .tr2 files in the data directory to distinguish between TR1X and TR2X
+				string engineDirectory = Path.GetDirectoryName(engineExecutableFilePath);
+				string dataDirectory = Path.Combine(engineDirectory, "data");
+
+				if (Directory.Exists(dataDirectory))
+				{
+					string[] phdFiles = Directory.GetFiles(dataDirectory, "*.phd", SearchOption.TopDirectoryOnly);
+					string[] tr2Files = Directory.GetFiles(dataDirectory, "*.tr2", SearchOption.TopDirectoryOnly);
+
+					// Which ones are there more of?
+					version = phdFiles.Length >= tr2Files.Length
+						? TRVersion.Game.TR1
+						: TRVersion.Game.TR2X;
+				}
+			}
+
 			return version;
 		}
 
@@ -347,9 +367,8 @@ namespace TombIDE.Shared.NewStructure
 		{
 			switch (targetGameVersion)
 			{
-				case TRVersion.Game.TR1:
-					string[] gameflowFiles = Directory.GetFiles(directoryPath, Tomb1MainGameProject.MainScriptFileNameFilter, SearchOption.TopDirectoryOnly);
-					return gameflowFiles.Length > 0;
+				case TRVersion.Game.TR1 or TRVersion.Game.TR2X:
+					return true; // File names will change soon, pass validation for now
 
 				case TRVersion.Game.TombEngine:
 					string[] luaFiles = Directory.GetFiles(directoryPath, "*.lua", SearchOption.TopDirectoryOnly);

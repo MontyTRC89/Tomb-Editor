@@ -1,4 +1,5 @@
-﻿using System;
+using Microsoft.IO;
+using System;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
@@ -9,10 +10,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine
     {
+        private static readonly RecyclableMemoryStreamManager _streamManager = new();
+
         private void WriteLevelTombEngine()
         {
             byte[] dynamicDataBuffer;
-            using (var dynamicDataStream = new MemoryStream())
+            using (var dynamicDataStream = _streamManager.GetStream())
             {
                 var writer = new BinaryWriterEx(dynamicDataStream); // Don't dispose
                 ReportProgress(80, "Writing dynamic data to memory buffer");
@@ -115,7 +118,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Now begin to compile the geometry block in a MemoryStream
             byte[] geometryDataBuffer;
-            using (var geometryDataStream = new MemoryStream())
+            using (var geometryDataStream = _streamManager.GetStream())
             {
                 var writer = new BinaryWriterEx(geometryDataStream); // Don't dispose
                 ReportProgress(85, "Writing geometry data to memory buffer");
@@ -156,18 +159,25 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             writer.Write((byte)(b.BoneWeight[w] * byte.MaxValue));
 
                     writer.Write(mesh.Buckets.Count);
-                    foreach (var bucket in mesh.Buckets.Values)
+                    foreach (var bucket in mesh.Buckets)
                     {
                         writer.Write(bucket.Material.Texture);
                         writer.Write(bucket.Material.BlendMode);
+                        writer.Write(bucket.Material.MaterialIndex);
                         writer.Write(bucket.Material.Animated);
+
                         writer.Write(bucket.Polygons.Count);
                         foreach (var poly in bucket.Polygons)
                         {
                             writer.Write((int)poly.Shape);
+
                             writer.Write((int)poly.AnimatedSequence);
                             writer.Write((int)poly.AnimatedFrame);
+
                             writer.Write((float)poly.ShineStrength);
+
+                            writer.Write(poly.Normal); 
+
                             foreach (int index in poly.Indices)
                                 writer.Write(index);
                             foreach (var uv in poly.TextureCoordinates)
@@ -182,58 +192,28 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }
                 }
 
-                // Write animations' data
-                writer.Write((uint)_animations.Count);
-                writer.WriteBlockArray(_animations);
-
-                writer.Write((uint)_stateChanges.Count);
-                writer.WriteBlockArray(_stateChanges);
-
-                writer.Write((uint)_animDispatches.Count);
-                writer.WriteBlockArray(_animDispatches);
-
-                writer.Write((uint)_animCommands.Count);
-                writer.WriteBlockArray(_animCommands);
-
-                writer.Write((uint)_meshTrees.Count);
+                writer.Write(_meshTrees.Count);
                 writer.WriteBlockArray(_meshTrees);
 
-                writer.Write((uint)_frames.Count);
-                foreach (var frame in _frames)
-                {
-                    writer.Write((short)frame.BoundingBox.X1);
-                    writer.Write((short)frame.BoundingBox.X2);
-                    writer.Write((short)frame.BoundingBox.Y1);
-                    writer.Write((short)frame.BoundingBox.Y2);
-                    writer.Write((short)frame.BoundingBox.Z1);
-                    writer.Write((short)frame.BoundingBox.Z2);
-                    writer.Write((short)frame.Offset.X);
-                    writer.Write((short)frame.Offset.Y);
-                    writer.Write((short)frame.Offset.Z);
-                    writer.Write((short)frame.Angles.Count);
-                    foreach (var angle in frame.Angles)
-                        writer.Write(angle);
-                }
+                writer.Write(_moveables.Count);
+                foreach (var moveable in _moveables)
+                    moveable.Write(writer);
 
-                writer.Write((uint)_moveables.Count);
-                for (var k = 0; k < _moveables.Count; k++)
-                    writer.WriteBlock(_moveables[k]);
-
-                writer.Write((uint)_staticMeshes.Count);
+                writer.Write(_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
-                writer.Write((uint)_spriteTextures.Count);
+                writer.Write(_spriteTextures.Count);
                 writer.WriteBlockArray(_spriteTextures);
 
-                writer.Write((uint)_spriteSequences.Count);
+                writer.Write(_spriteSequences.Count);
                 writer.WriteBlockArray(_spriteSequences);
 
                 // Write pathfinding data
-                writer.Write((uint)_boxes.Count);
+                writer.Write(_boxes.Count);
                 writer.WriteBlockArray(_boxes);
 
-                writer.Write((uint)_overlaps.Count);
+                writer.Write(_overlaps.Count);
                 writer.WriteBlockArray(_overlaps);
 
                 int zoneCount = Enum.GetValues(typeof(ZoneType)).Length;
@@ -244,7 +224,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         _zones.ForEach(z => writer.Write(z.Zones[flipped][i]));
 
                 // Write mirrors
-                writer.Write((uint)_mirrors.Count);
+                writer.Write(_mirrors.Count);
                 foreach (var mirror in _mirrors)
                 {
                     writer.Write(mirror.Room);
@@ -262,66 +242,104 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
 
+                // Write materials
+                writer.Write((uint)_materialDictionary.Count);
+                foreach (var material in _materialDictionary)
+                {
+                    writer.Write(material.Key);
+                    writer.Write((int)material.Value.Type);
+                    writer.Write(material.Value.Parameters0);
+                    writer.Write(material.Value.Parameters1);
+                    writer.Write(material.Value.Parameters2);
+                    writer.Write(material.Value.Parameters3);
+                    writer.Write(material.Value.IsNormalMapFound);
+                    writer.Write(material.Value.IsHeightMapFound);
+                    writer.Write(material.Value.IsAmbientOcclusionMapFound);
+                    writer.Write(material.Value.IsRoughnessMapFound);
+                    writer.Write(material.Value.IsSpecularMapFound);
+                    writer.Write(material.Value.IsEmissiveMapFound);
+                }
+
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 
-            using (var mediaStream = new MemoryStream())
+            ReportProgress(95, "Compressing level...");
+
+            using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var writer = new BinaryWriter(fs))
             {
-                using (var writer = new BinaryWriterEx(mediaStream, true))
+                long endPos;
+
+                using (var mediaStream = _streamManager.GetStream())
                 {
-                    WriteTextureData(writer);
-
-                    // Write sound meta data
-                    PrepareSoundsData();
-                    WriteSoundMetadata(writer);
-                    WriteSoundData(writer);
-                }
-
-                ReportProgress(95, "Compressing level...");
-
-                mediaStream.Seek(0, SeekOrigin.Begin);
-
-                var mediaBlock    = ZLib.CompressData(mediaStream, System.IO.Compression.CompressionLevel.SmallestSize);
-                var geometryBlock = ZLib.CompressData(geometryDataBuffer, System.IO.Compression.CompressionLevel.SmallestSize);
-                var dynamicBlock  = ZLib.CompressData(dynamicDataBuffer, System.IO.Compression.CompressionLevel.Optimal);
-
-                using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    using (var writer = new BinaryWriter(fs))
+                    using (var mediaWriter = new BinaryWriterEx(mediaStream, true))
                     {
-                        // TEN header
-                        writer.Write(new byte[] { 0x54, 0x45, 0x4E, 0x00 });
+                        WriteTextureData(mediaWriter);
 
-                        // TE compiler version
-                        var version = Assembly.GetExecutingAssembly().GetName().Version;
-                        writer.Write(new byte[] { (byte)version.Major, (byte)version.Minor, (byte)version.Build, 0x00 });
-
-                        // Hashed system name (reserved for quick start feature)
-                        writer.Write(Math.Abs(Environment.MachineName.GetHashCode()));
-
-                        // Checksum to detect incorrect level version on rapid reload
-                        int checksum = Checksum.Calculate(mediaBlock) ^ Checksum.Calculate(geometryBlock);
-                        writer.Write(checksum);
-
-                        // Audiovisual data (textures and sounds)
-                        writer.Write((int)mediaStream.Length);
-                        writer.Write((int)mediaBlock.Length);
-                        writer.Write(mediaBlock, 0, mediaBlock.Length);
-                        ReportProgress(96, $"    Media data size: " + TextExtensions.ToDataSize(mediaBlock.Length));
-
-                        // Geometry data
-                        writer.Write((int)geometryDataBuffer.Length);
-                        writer.Write((int)geometryBlock.Length);
-                        writer.Write(geometryBlock, 0, geometryBlock.Length);
-                        ReportProgress(96, $"    Geometry data size: " + TextExtensions.ToDataSize(geometryBlock.Length));
-
-                        // Dynamic data
-                        writer.Write((int)dynamicDataBuffer.Length);
-                        writer.Write((int)dynamicBlock.Length);
-                        writer.Write(dynamicBlock, 0, dynamicBlock.Length);
-                        ReportProgress(96, $"    Dynamic data size: " + TextExtensions.ToDataSize(dynamicBlock.Length));
+                        // Write sound metadata.
+                        PrepareSoundsData();
+                        WriteSoundMetadata(mediaWriter);
+                        WriteSoundData(mediaWriter);
                     }
+
+                    // TEN header
+                    writer.Write(new byte[] { 0x54, 0x45, 0x4E, 0x00 });
+
+                    // TE compiler version
+                    var version = Assembly.GetExecutingAssembly().GetName().Version;
+                    writer.Write(new byte[] { (byte)version.Major, (byte)version.Minor, (byte)version.Build, 0x00 });
+
+                    // Hashed system name (reserved for quick start feature).
+                    writer.Write(Math.Abs(Environment.MachineName.GetHashCode()));
+
+                    // Checksum to detect incorrect level version on fast reload.
+                    int checksum = Checksum.Calculate(mediaStream) ^ Checksum.Calculate(geometryDataBuffer);
+                    writer.Write(checksum);
+
+                    // Media data (textures and sounds) - stream compressed directly to file.
+                    writer.Write(mediaStream.Length);
+                    long mediaCompSizePos = fs.Position;
+                    writer.Write((long)0);
+
+                    mediaStream.Position = 0;
+                    long mediaCompSize = LZ4.CompressData(mediaStream, fs, System.IO.Compression.CompressionLevel.Fastest);
+
+                    endPos = fs.Position;
+                    fs.Position = mediaCompSizePos;
+                    writer.Write(mediaCompSize);
+                    fs.Position = endPos;
+
+                    ReportProgress(96, $"    Media data size: " + TextExtensions.ToDataSize(mediaCompSize));
                 }
+                // RecyclableMemoryStream is now disposed, releasing pooled buffers.
+
+                // Geometry data
+                writer.Write((long)geometryDataBuffer.Length);
+                long geoCompSizePos = fs.Position;
+                writer.Write((long)0);
+
+                long geoCompSize = LZ4.CompressData(geometryDataBuffer, fs, System.IO.Compression.CompressionLevel.Fastest);
+
+                endPos = fs.Position;
+                fs.Position = geoCompSizePos;
+                writer.Write(geoCompSize);
+                fs.Position = endPos;
+
+                ReportProgress(96, $"    Geometry data size: " + TextExtensions.ToDataSize(geoCompSize));
+
+                // Dynamic data
+                writer.Write((long)dynamicDataBuffer.Length);
+                long dynCompSizePos = fs.Position;
+                writer.Write((long)0);
+
+                long dynCompSize = LZ4.CompressData(dynamicDataBuffer, fs, System.IO.Compression.CompressionLevel.Fastest);
+
+                endPos = fs.Position;
+                fs.Position = dynCompSizePos;
+                writer.Write(dynCompSize);
+                fs.Position = endPos;
+
+                ReportProgress(96, $"    Dynamic data size: " + TextExtensions.ToDataSize(dynCompSize));
             }
 
             ReportProgress(100, "Done");

@@ -67,6 +67,9 @@
     <Compile Update="Controls\PanelRenderingSkeleton.cs" />
     <Compile Update="Controls\PanelRenderingStaticEditor.cs" />
     <Compile Update="Controls\PanelTextureMap.cs" />
+    <Compile Update="Controls\PanelTextureMapForAnimations.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

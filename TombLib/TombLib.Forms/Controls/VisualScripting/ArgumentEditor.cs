@@ -347,9 +347,7 @@ namespace TombLib.Controls.VisualScripting
         protected override void OnBackColorChanged(EventArgs e)
         {
             // HACK: Force background color for reluctant controls.
-
             base.OnBackColorChanged(e);
-            //tabBoolean.BackColor = tableVector3.BackColor = BackColor;
         }
 
         protected override void OnLocationChanged(EventArgs e)
@@ -649,14 +647,32 @@ namespace TombLib.Controls.VisualScripting
             return (_argumentType == ArgumentType.WadSlots);
         }
 
+        private bool IsPositionBased()
+        {
+            return (_argumentType == ArgumentType.Vector3);
+        }
+
+        private bool IsColorBased()
+        {
+            return (_argumentType == ArgumentType.Color);
+        }
+
         private void rb_CheckedChanged(object sender, EventArgs e) => BoxBoolValue();
         private void nudNumerical_ValueChanged(object sender, EventArgs e) => BoxNumericalValue();
         private void nudTime_ValueChanged(object sender, EventArgs e) => BoxTimeValue();
         private void nudVector2_ValueChanged(object sender, EventArgs e) => BoxVector2Value();
         private void nudVector3_ValueChanged(object sender, EventArgs e) => BoxVector3Value();
         private void tbString_TextChanged(object sender, EventArgs e) => BoxStringValue();
-        private void panelColor_BackColorChanged(object sender, EventArgs e) => BoxColorValue();
         private void cbList_SelectedIndexChanged(object sender, EventArgs e) => BoxListValue();
+
+        private void panelColor_BackColorChanged(object sender, EventArgs e)
+        {
+            // HACK: Due to design quirks, WinForms triggers this event when parent node's background is changed.
+            if ((Parent as VisibleNodeBase)?.Editor.LockNodeChanges ?? true)
+                return;
+
+            BoxColorValue();
+        }
 
         private void panelColor_MouseClick(object sender, MouseEventArgs e)
         {
@@ -714,6 +730,12 @@ namespace TombLib.Controls.VisualScripting
 
             if (IsWadSlotBased() && (e.Data.GetData(e.Data.GetFormats()[0]) as WadMoveable) != null)
                 e.Effect = DragDropEffects.Copy;
+
+            if (IsPositionBased() && (e.Data.GetData(e.Data.GetFormats()[0]) as PositionBasedObjectInstance) != null)
+                e.Effect = DragDropEffects.Copy;
+
+            if (IsColorBased() && (e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) != null)
+                e.Effect = DragDropEffects.Copy;
         }
 
         private void cbList_DragDrop(object sender, DragEventArgs e)
@@ -760,23 +782,14 @@ namespace TombLib.Controls.VisualScripting
 
         private void vector3Control_DragDrop(object sender, DragEventArgs e)
         {
-            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IHasLuaName) == null)
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as PositionBasedObjectInstance) == null)
                 return;
 
-            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionAndScriptBasedObjectInstance;
-
-            if (string.IsNullOrEmpty(item.LuaName))
-                return;
+            var item = e.Data.GetData(e.Data.GetFormats()[0]) as PositionBasedObjectInstance;
 
             nudVector3X.Value = (decimal)item.WorldPosition.X;
             nudVector3Y.Value = (decimal)-item.WorldPosition.Y;
             nudVector3Z.Value = (decimal)item.WorldPosition.Z;
-        }
-
-        private void panelColor_DragEnter(object sender, DragEventArgs e)
-        {
-            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IColorable) != null)
-                e.Effect = DragDropEffects.Copy;
         }
 
         private void panelColor_DragDrop(object sender, DragEventArgs e)

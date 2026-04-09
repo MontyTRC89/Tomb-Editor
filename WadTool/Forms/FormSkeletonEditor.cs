@@ -7,11 +7,14 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Forms;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.WPF;
 
 namespace WadTool
 {
@@ -442,36 +445,42 @@ namespace WadTool
                 if (dialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                var viewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                viewModel.SelectPreset(_tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName);
+
+                var settingsDialog = new GeometryIOSettingsWindow { DataContext = viewModel };
+                settingsDialog.SetOwner(this);
+                settingsDialog.ShowDialog();
+
+                if (viewModel.DialogResult != true)
+                    return;
+
+                _tool.Configuration.GeometryIO_LastUsedGeometryImportPresetName = viewModel.SelectedPreset?.Name;
+
+                var settings = viewModel.GetCurrentSettings();
+                var meshes = WadMesh.ImportFromExternalModel(dialog.FileName, settings, false, _tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
+                if (meshes == null || meshes.Count == 0)
                 {
-                    form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                    if (form.ShowDialog(this) != DialogResult.OK)
-                        return;
-
-                    var meshes = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, false, _tool.DestinationWad.MeshTexInfosUnique.FirstOrDefault());
-                    if (meshes == null || meshes.Count == 0)
-                    {
-                        popup.ShowWarning(panelRendering, "No meshes were imported. Selected 3D file is broken or has no valid data.");
-                        return;
-                    }
-
-                    int meshCount;
-                    if (meshes.Count > _bones.Count)
-                    {
-                        meshCount = _bones.Count;
-                        popup.ShowError(panelRendering, "Mesh count is higher in imported model. Only first " + _bones.Count + " will be imported.");
-                    }
-                    else if (meshes.Count < _bones.Count)
-                    {
-                        meshCount = meshes.Count;
-                        popup.ShowError(panelRendering, "Mesh count is lower in imported model. Only meshes up to " + meshes.Count + " will be replaced.");
-                    }
-                    else
-                        meshCount = _bones.Count;
-
-                    for (int i = 0; i < meshCount; i++)
-                        ReplaceExistingBone(meshes[i], _bones[i]);
+                    popup.ShowWarning(panelRendering, "No meshes were imported. Selected 3D file is broken or has no valid data.");
+                    return;
                 }
+
+                int meshCount;
+                if (meshes.Count > _bones.Count)
+                {
+                    meshCount = _bones.Count;
+                    popup.ShowError(panelRendering, "Mesh count is higher in imported model. Only first " + _bones.Count + " will be imported.");
+                }
+                else if (meshes.Count < _bones.Count)
+                {
+                    meshCount = meshes.Count;
+                    popup.ShowError(panelRendering, "Mesh count is lower in imported model. Only meshes up to " + meshes.Count + " will be replaced.");
+                }
+                else
+                    meshCount = _bones.Count;
+
+                for (int i = 0; i < meshCount; i++)
+                    ReplaceExistingBone(meshes[i], _bones[i]);
             }
         }
 
@@ -628,7 +637,7 @@ namespace WadTool
                 if (bone.Bone.OpCode == WadLinkOpcode.Push) numPush++;
             }
 
-            // We can have more PUSH than POP, but the opposite case (POP more than PUSH) will result in a leak 
+            // We can have more PUSH than POP, but the opposite case (POP more than PUSH) will result in a leak
             // inside the previous moveables in the list
             if (numPop > numPush)
             {

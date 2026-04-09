@@ -27,11 +27,11 @@
 					<TextBlock
 						FontSize="{x:Static darkUI:Defaults.H1FontSize}"
 						FontWeight="Bold"
-						Text="Tomb Raider 1 (TR1X)" />
+						Text="Tomb Raider 1 (TR1X) / Tomb Raider 2 (TR2X)" />
 					<TextBlock FontSize="{x:Static darkUI:Defaults.SmallFontSize}" Text="by: Lost Artefacts Team" />
 					<TextBlock FontSize="{x:Static darkUI:Defaults.LargeFontSize}" TextWrapping="Wrap">
-						TR1X is an enhanced engine for Tomb Raider 1, offering smooth, true 60 FPS gameplay and expanded creative tools.
-						It preserves the original feel while adding flexibility through full game-flow scripting in a simple JSON format,
+						These are enhanced engines for Tomb Raider 1 and 2, offering smooth, true 60 FPS gameplay and expanded creative tools.
+						They preserve the original feel while adding flexibility through full game-flow scripting in a simple JSON format,
 						and an injection system that unlocks new features and removes engine limitations.
 					</TextBlock>
 				</controls:SpacedStack>

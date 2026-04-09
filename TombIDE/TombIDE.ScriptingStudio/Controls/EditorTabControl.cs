@@ -183,7 +183,9 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		private IEditorControl InitializeEditor(Type editorClassType, string filePath, bool silentSession)
 		{
-			var newEditor = Activator.CreateInstance(editorClassType, _currentEngineVersion) as IEditorControl;
+			object[] args = new object[] { _currentEngineVersion };
+
+			var newEditor = Activator.CreateInstance(editorClassType, args) as IEditorControl;
 			newEditor.ContentChangedWorkerRunCompleted += Editor_ContentChangedWorkerRunCompleted;
 
 			if (File.Exists(filePath))

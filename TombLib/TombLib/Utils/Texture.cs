@@ -1,7 +1,11 @@
 ﻿using System;
-using System.Numerics;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 using TombLib.LevelData;
 
 namespace TombLib.Utils
@@ -10,10 +14,13 @@ namespace TombLib.Utils
     {
         public static ImageC UnloadedPlaceholder { get; } = ImageC.Black;
 
-        // Do not change the image with this methode
+        // Do not change the image with this method
         public ImageC Image { get; protected set; } = UnloadedPlaceholder;
 
-        public abstract Texture Clone();
+		// This helps the texture packer of TombEngine compiler to have ready paths for doing sidecar loading
+		public string AbsolutePath { get; set; }
+
+		public abstract Texture Clone();
 
         object ICloneable.Clone()
         {
@@ -138,20 +145,23 @@ namespace TombLib.Utils
         public static List<string> BlendModeUserNames(LevelSettings settings)
         {
             int blendCount;
+            bool enableExtraModes = settings.GameEnableExtraBlendingModes ?? false;
 
             // For TR4, TRNG and TombEngine we can add all types (if extra blending modes are enabled)
             if (settings.GameVersion == TRVersion.Game.TombEngine)
             {
                 blendCount = 7;
             }
-            else if (((settings.GameEnableExtraBlendingModes ?? false) && settings.GameVersion.Legacy() == TRVersion.Game.TR4))
+            else if (enableExtraModes && settings.GameVersion.Native() == TRVersion.Game.TR4)
             {
                 blendCount = 6;
             }
             else
             {
-                // Additive blending is for TR3-5 only
-                if (settings.GameVersion >= TRVersion.Game.TR3)
+                // Additive blending is for TR3-5 only and TRX. Extra modes is however
+                // enabled in WadTool context for TR1-2. For non-TRX versions of those
+                // games, modes will be normalised on compilation in TE.
+                if (settings.GameVersion >= TRVersion.Game.TR3 || enableExtraModes)
                     blendCount = 2;
                 else
                     blendCount = 1; // Type 0 exists everywhere
@@ -265,83 +275,125 @@ namespace TombLib.Utils
         }
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct TextureArea : IEquatable<TextureArea>
     {
+        public Vector2 TexCoord0;
+        public Vector2 TexCoord1;
+        public Vector2 TexCoord2;
+        public Vector2 TexCoord3;
+        public Rectangle2 ParentArea;
+
         public static readonly TextureArea None;
         public static readonly TextureArea Invisible = new TextureArea { Texture = TextureInvisible.Instance };
 
         public Texture Texture;
-        public Rectangle2 ParentArea;
-        public Vector2 TexCoord0; // No array for those because:
-        public Vector2 TexCoord1; //    - Cache locality
-        public Vector2 TexCoord2; //    - No array bounds checks
-        public Vector2 TexCoord3; //    - 'Clone', 'GetHashCode' and so on work by default
         public BlendMode BlendMode;
         public bool DoubleSided;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public static bool operator ==(TextureArea first, TextureArea second)
         {
-            return
-                first.Texture == second.Texture &&
-                first.TexCoord0.Equals(second.TexCoord0) &&
-                first.TexCoord1.Equals(second.TexCoord1) &&
-                first.TexCoord2.Equals(second.TexCoord2) &&
-                first.TexCoord3.Equals(second.TexCoord3) &&
-                first.ParentArea.Start.Equals(second.ParentArea.Start) &&
-                first.ParentArea.End.Equals(second.ParentArea.End) &&
-                first.BlendMode == second.BlendMode &&
-                first.DoubleSided == second.DoubleSided;
+            // Early exit
+            if (first.Texture != second.Texture || first.BlendMode != second.BlendMode || first.DoubleSided != second.DoubleSided)
+                return false;
+
+            // SIMD for TexCoords
+            if (!EqualsTexCoords(first, second))
+                return false;
+
+            // ParentArea
+            return first.ParentArea.Start.Equals(second.ParentArea.Start) &&
+                   first.ParentArea.End.Equals(second.ParentArea.End);
         }
 
         public static bool operator !=(TextureArea first, TextureArea second) => !(first == second);
         public bool Equals(TextureArea other) => this == other;
         public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
-        public override int GetHashCode() => base.GetHashCode();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        private static bool EqualsTexCoords(in TextureArea a, in TextureArea b)
+        {
+            if (Avx.IsSupported)
+            {
+                ref readonly var aVec = ref Unsafe.As<Vector2, Vector256<float>>(ref Unsafe.AsRef(in a.TexCoord0));
+                ref readonly var bVec = ref Unsafe.As<Vector2, Vector256<float>>(ref Unsafe.AsRef(in b.TexCoord0));
+
+                var cmp = Avx.Compare(aVec, bVec, FloatComparisonMode.OrderedEqualNonSignaling);
+                return Avx.MoveMask(cmp) == 0xFF;
+            }
+
+            if (Sse.IsSupported)
+            {
+                ref readonly var aVec0 = ref Unsafe.As<Vector2, Vector128<float>>(ref Unsafe.AsRef(in a.TexCoord0));
+                ref readonly var bVec0 = ref Unsafe.As<Vector2, Vector128<float>>(ref Unsafe.AsRef(in b.TexCoord0));
+
+                if (Sse.MoveMask(Sse.CompareEqual(aVec0, bVec0)) != 0xF)
+                    return false;
+
+                ref readonly var aVec1 = ref Unsafe.As<Vector2, Vector128<float>>(ref Unsafe.AsRef(in a.TexCoord2));
+                ref readonly var bVec1 = ref Unsafe.As<Vector2, Vector128<float>>(ref Unsafe.AsRef(in b.TexCoord2));
+
+                return Sse.MoveMask(Sse.CompareEqual(aVec1, bVec1)) == 0xF;
+            }
+
+            return a.TexCoord0.Equals(b.TexCoord0) &&
+                   a.TexCoord1.Equals(b.TexCoord1) &&
+                   a.TexCoord2.Equals(b.TexCoord2) &&
+                   a.TexCoord3.Equals(b.TexCoord3);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(Texture);
+            hash.Add(TexCoord0);
+            hash.Add(TexCoord1);
+            hash.Add(TexCoord2);
+            hash.Add(TexCoord3);
+            hash.Add(ParentArea);
+            hash.Add(BlendMode);
+            hash.Add(DoubleSided);
+            return hash.ToHashCode();
+        }
 
         public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
         public bool TextureIsInvisible => Texture == TextureInvisible.Instance || Texture == null;
         public bool TextureIsTriangle => TexCoord2 == TexCoord3;
         public bool TextureIsDegenerate => (!TextureIsTriangle && QuadArea == 0) || (TextureIsTriangle && TriangleArea == 0);
 
-        public bool TriangleCoordsOutOfBounds
+        public bool AreTriangleCoordsOutOfBounds(float maxCoordSpan)
         {
-            get
-            {
-                if (TextureIsInvisible || TextureIsUnavailable)
-                    return false;
+            if (TextureIsInvisible || TextureIsUnavailable)
+                return false;
 
-                Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
-                Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2);
+            Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
+            Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2);
 
-                return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
-                       max.X - min.X > 256.0f || max.Y - min.Y > 256.0f;
-            }
+            return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
+                   max.X - min.X > maxCoordSpan || max.Y - min.Y > maxCoordSpan;
         }
 
-        public bool QuadCoordsOutOfBounds
+        public bool AreQuadCoordsOutOfBounds(float maxCoordSpan)
         {
-            get
-            {
-                if (TextureIsInvisible || TextureIsUnavailable)
-                    return false;
+            if (TextureIsInvisible || TextureIsUnavailable)
+                return false;
 
-                Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
-                Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
+            Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
+            Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
 
-                return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
-                       max.X - min.X > 256.0f || max.Y - min.Y > 256.0f;
-            }
+            return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
+                   max.X - min.X > maxCoordSpan || max.Y - min.Y > maxCoordSpan;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public Rectangle2 GetRect(bool? isTriangle = null)
         {
-            if (!isTriangle.HasValue)
-                isTriangle = TextureIsTriangle;
-
-            if (isTriangle.Value)
-                return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2);
-            else
-                return Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
+            bool tri = isTriangle ?? TextureIsTriangle;
+            return tri
+                ? Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2)
+                : Rectangle2.FromCoordinates(TexCoord0, TexCoord1, TexCoord2, TexCoord3);
         }
 
         public Vector2[] TexCoords
@@ -360,6 +412,7 @@ namespace TombLib.Utils
 
         // Gets canonical texture area which is compatible with UVRotate routine
         // and also puts rotational difference into Rotation out parameter
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public TextureArea GetCanonicalTexture(bool isTriangle)
         {
             var minY = GetRect(isTriangle).Start.Y;
@@ -526,7 +579,8 @@ namespace TombLib.Utils
             }
         }
 
-        public void Rotate(int iter = 1, bool isTriangle = false)
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public void Rotate(int iter = 1, bool isTriangle = false)
         {
             for (int i = 0; i < iter; i++)
             {

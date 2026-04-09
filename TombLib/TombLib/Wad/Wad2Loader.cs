@@ -16,7 +16,7 @@ namespace TombLib.Wad
         {
             Wad2 result;
             using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                result = LoadFromStream(fileStream);
+                result = LoadFromStream(fileStream, fileName);
             result.FileName = fileName;
 
             // Load additional XML file if it exists
@@ -25,7 +25,14 @@ namespace TombLib.Wad
                 var xmlFile = Path.ChangeExtension(fileName, "xml");
                 if (File.Exists(xmlFile))
                 {
-                    result.Sounds = WadSounds.ReadFromFile(xmlFile);
+                    try
+                    {
+                        result.Sounds = WadSounds.ReadFromFile(xmlFile);
+                    }
+                    catch
+                    {
+                        // Xml file is not a sound catalog (possibly material xml).
+                    }
                 }
             }
 
@@ -36,7 +43,7 @@ namespace TombLib.Wad
             return result;
         }
 
-        public static Wad2 LoadFromStream(Stream stream)
+        public static Wad2 LoadFromStream(Stream stream, string fileName)
         {
             byte[] magicNumber = new byte[4];
 
@@ -47,12 +54,13 @@ namespace TombLib.Wad
                 throw new NotImplementedException("Loaded wad2 version is deprecated and not supported. Please use version 1.3.15 or earlier.");
             else
                 using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream, Wad2Chunks.ChunkList))
-                    return LoadWad2(chunkIO);
+                    return LoadWad2(chunkIO, fileName);
         }
 
-        private static Wad2 LoadWad2(ChunkReader chunkIO)
+        private static Wad2 LoadWad2(ChunkReader chunkIO, string fileName)
         {
             var wad = new Wad2() { Timestamp = DateTime.MinValue };
+            wad.FileName = fileName;
 
             Dictionary<long, WadTexture> textures = null;
             Dictionary<long, WadSprite> sprites = null;
@@ -84,6 +92,8 @@ namespace TombLib.Wad
                     return true;
                 else if (LoadStatics(chunkIO, id, wad, textures))
                     return true;
+                else if (LoadAnimatedTextures(chunkIO, id, wad, textures))
+                    return true;
                 return false;
             });
 
@@ -92,6 +102,85 @@ namespace TombLib.Wad
 
             wad.HasUnknownData = chunkIO.UnknownChunksFound;
             return wad;
+        }
+
+        private static bool LoadAnimatedTextures(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadTexture> textures)
+        {
+            if (idOuter != Wad2Chunks.AnimatedTextureSets)
+                return false;
+
+                var animatedTextureSets = new List<AnimatedTextureSet>();
+                chunkIO.ReadChunks((id2, chunkSize2) =>
+                {
+                    if (id2 != Wad2Chunks.AnimatedTextureSet)
+                        return false;
+
+                    var set = new AnimatedTextureSet();
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.AnimatedTextureSetName)
+                            set.Name = chunkIO.ReadChunkString(chunkSize3);
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetExtraInfo) // Legacy!
+                        {
+                            set.AnimationType = (AnimatedTextureAnimationType)LEB128.ReadByte(chunkIO.Raw);
+                            set.Fps = LEB128.ReadSByte(chunkIO.Raw);
+                            if (set.Fps == 0.0f)
+                                set.Fps = 15.0f;
+                            set.UvRotate = LEB128.ReadSByte(chunkIO.Raw);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetType)
+                        {
+                            set.AnimationType = (AnimatedTextureAnimationType)chunkIO.ReadChunkInt(chunkSize3);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetFps)
+                        {
+                            set.Fps = chunkIO.ReadChunkFloat(chunkSize3);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetUvRotate)
+                        {
+                            set.UvRotate = chunkIO.ReadChunkInt(chunkSize3);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetTenUvRotateDirection)
+                        {
+                            set.TenUvRotateDirection = chunkIO.ReadChunkFloat(chunkSize3);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureSetTenUvRotateSpeed)
+                        {
+                            set.TenUvRotateSpeed = chunkIO.ReadChunkFloat(chunkSize3);
+                        }
+                        else if (id3 == Wad2Chunks.AnimatedTextureFrames)
+                        {
+                            var frames = new List<AnimatedTextureFrame>();
+                            chunkIO.ReadChunks((id4, chunkSize4) =>
+                            {
+                                if (id4 != Wad2Chunks.AnimatedTextureFrame)
+                                    return false;
+
+                                frames.Add(new AnimatedTextureFrame
+                                {
+                                    Texture = textures[LEB128.ReadLong(chunkIO.Raw)],
+                                    TexCoord0 = chunkIO.Raw.ReadVector2(),
+                                    TexCoord1 = chunkIO.Raw.ReadVector2(),
+                                    TexCoord2 = chunkIO.Raw.ReadVector2(),
+                                    TexCoord3 = chunkIO.Raw.ReadVector2(),
+                                    Repeat = Math.Max(LEB128.ReadInt(chunkIO.Raw), 1)
+                                });
+                                return true;
+                            });
+
+                            set.Frames = frames;
+                        }
+                        else
+                            return false;
+                        return true;
+                    });
+                    animatedTextureSets.Add(set);
+                    return true;
+                });
+
+            wad.AnimatedTextureSets = animatedTextureSets;
+
+            return true;
         }
 
         private static bool LoadMetadata(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
@@ -140,6 +229,7 @@ namespace TombLib.Wad
                 var width = LEB128.ReadInt(chunkIO.Raw);
                 var height = LEB128.ReadInt(chunkIO.Raw);
                 var name = string.Empty;
+                var relativePath = string.Empty;
 
                 byte[] textureData = null;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
@@ -148,6 +238,8 @@ namespace TombLib.Wad
                         obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
                     else if (id2 == Wad2Chunks.TextureName)
                         name = chunkIO.ReadChunkString(chunkSize2);
+                    else if (id2 == Wad2Chunks.TextureRelativePath)
+                        relativePath = chunkIO.ReadChunkString(chunkSize2);
                     else if (id2 == Wad2Chunks.TextureData)
                         textureData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
                     else
@@ -155,10 +247,46 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                var texture = ImageC.FromByteArray(textureData, width, height);
+                // NOTE: we'll always have data there, but it should be loaded 
+                // only if RelativePath is null or empty, meaning that this is 
+                // an embedded texture.
+
+                var texture = ImageC.Magenta;
+                string absolutePath = null;
+                bool textureLoaded = false;
+
+                if (!string.IsNullOrEmpty(relativePath))
+                {
+                    bool absPathExists = PathC.IsTrulyAbsolutePath(name) && File.Exists(name);
+                    absolutePath = Path.GetFullPath(absPathExists ? name : Path.Combine(Path.GetDirectoryName(wad.FileName), relativePath));
+
+                    try
+                    {
+                        texture = ImageC.FromFile(absolutePath);
+                        textureLoaded = true;
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+
+                // At this point, if the texture is embedded or if external but an error occurred,
+                // we fallback using the data stored inside the Wad2 file.
+
+                if (!textureLoaded && textureData is not null)
+                {
+                    texture = ImageC.FromByteArray(textureData, width, height);
+                    name = null;
+                    textureLoaded = true;
+                }
+
                 texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
                 texture.FileName = name;
-                textures.Add(obsoleteIndex++, new WadTexture(texture));
+
+                var wadTexture = new WadTexture(texture);
+                wadTexture.AbsolutePath = absolutePath;
+                textures.Add(obsoleteIndex++, wadTexture);
+
                 return true;
             });
 
@@ -572,7 +700,8 @@ namespace TombLib.Wad
                     }
                     else if (id2 == Wad2Chunks.AnimationObsolete || 
                              id2 == Wad2Chunks.Animation ||
-                             id2 == Wad2Chunks.Animation2)
+                             id2 == Wad2Chunks.Animation2 ||
+                             id2 == Wad2Chunks.Animation3)
                     {
                         var animation = new WadAnimation();
 
@@ -589,7 +718,7 @@ namespace TombLib.Wad
                         int oldSpeed, oldAccel, oldLatSpeed, oldLatAccel;
                         oldSpeed = oldAccel = oldLatSpeed = oldLatAccel = 0;
 
-                        if (id2 != Wad2Chunks.Animation2)
+                        if (id2 != Wad2Chunks.Animation2 && id2 != Wad2Chunks.Animation3)
                         {
                             // Use old speeds/accels for legacy chunk versions
                             oldSpeed    = LEB128.ReadInt(chunkIO.Raw);
@@ -609,10 +738,29 @@ namespace TombLib.Wad
                         animation.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);
                         animation.NextFrame = LEB128.ReadUShort(chunkIO.Raw);
 
+                        if (id2 == Wad2Chunks.Animation3)
+                            animation.BlendFrameCount = LEB128.ReadUShort(chunkIO.Raw);
+
                         bool foundNewVelocitiesChunk = false;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if (id3 == Wad2Chunks.AnimationName)
+                            if (id3 == Wad2Chunks.CurveStart)
+                            {
+                                animation.BlendCurve.Start = chunkIO.ReadChunkVector2(chunkSize3);
+                            }
+                            else if (id3 == Wad2Chunks.CurveEnd)
+                            {
+                                animation.BlendCurve.End = chunkIO.ReadChunkVector2(chunkSize3);
+                            }
+                            else if (id3 == Wad2Chunks.CurveStartHandle)
+                            {
+                                animation.BlendCurve.StartHandle = chunkIO.ReadChunkVector2(chunkSize3);
+                            }
+                            else if (id3 == Wad2Chunks.CurveEndHandle)
+                            {
+                                animation.BlendCurve.EndHandle = chunkIO.ReadChunkVector2(chunkSize3);
+                            }
+                            else if (id3 == Wad2Chunks.AnimationName)
                             {
                                 animation.Name = chunkIO.ReadChunkString(chunkSize3);
                             }
@@ -670,13 +818,35 @@ namespace TombLib.Wad
                                 stateChange.StateId = LEB128.ReadUShort(chunkIO.Raw);
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
-                                    if (id4 == Wad2Chunks.Dispatch)
+                                    if (id4 == Wad2Chunks.Dispatch || id4 == Wad2Chunks.Dispatch2)
                                     {
                                         var dispatch = new WadAnimDispatch();
                                         dispatch.InFrame = LEB128.ReadUShort(chunkIO.Raw);
                                         dispatch.OutFrame = LEB128.ReadUShort(chunkIO.Raw);
                                         dispatch.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);
-                                        dispatch.NextFrame = LEB128.ReadUShort(chunkIO.Raw);
+                                        dispatch.NextFrameLow = LEB128.ReadUShort(chunkIO.Raw);
+
+                                        if (id4 == Wad2Chunks.Dispatch2)
+                                        {
+                                            dispatch.NextFrameHigh = LEB128.ReadUShort(chunkIO.Raw);
+                                            dispatch.BlendFrameCount = LEB128.ReadUShort(chunkIO.Raw);
+
+                                            chunkIO.ReadChunks((id5, chunkSize5) =>
+                                            {
+                                                if (id5 == Wad2Chunks.CurveStart)
+                                                    dispatch.BlendCurve.Start = chunkIO.ReadChunkVector2(chunkSize5);
+                                                else if (id5 == Wad2Chunks.CurveEnd)
+                                                    dispatch.BlendCurve.End = chunkIO.ReadChunkVector2(chunkSize5);
+                                                else if (id5 == Wad2Chunks.CurveStartHandle)
+                                                    dispatch.BlendCurve.StartHandle = chunkIO.ReadChunkVector2(chunkSize5);
+                                                else if (id5 == Wad2Chunks.CurveEndHandle)
+                                                    dispatch.BlendCurve.EndHandle = chunkIO.ReadChunkVector2(chunkSize5);
+                                                else
+                                                    return false;
+                                                return true;
+                                            });
+                                        }
+
                                         stateChange.Dispatches.Add(dispatch);
                                     }
                                     else

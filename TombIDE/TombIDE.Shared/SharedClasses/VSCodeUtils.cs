@@ -51,8 +51,7 @@ public static class VSCodeUtils
 			config.Save();
 		}
 
-		// TODO: Create our own Lua extension for the Tomb Engine API
-		// CheckAndInstallLuaExtension(dialogOwner, config, codePath);
+		CheckAndInstallLuaExtension(dialogOwner, config, codePath);
 
 		// Open VSCode with the directory
 		Process.Start(new ProcessStartInfo

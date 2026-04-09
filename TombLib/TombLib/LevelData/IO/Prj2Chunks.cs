@@ -43,6 +43,7 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId Dither16BitTextures = ChunkId.FromString("TeDitherTextures");
         /**/public static readonly ChunkId TexturePadding = ChunkId.FromString("TeTexturePadding");
         /**/public static readonly ChunkId TextureCompression = ChunkId.FromString("TeTextureCompression");
+        /**/public static readonly ChunkId TrxTextureBitDepth = ChunkId.FromString("TeTrxTextureDepth");
         /**/public static readonly ChunkId AgressiveTexturePacking = ChunkId.FromString("TeAgressiveTexturePacking");
         /**/public static readonly ChunkId AgressiveFloordataPacking = ChunkId.FromString("TeAgressiveFloordataPacking");
         /**/public static readonly ChunkId RemapAnimatedTextures = ChunkId.FromString("TeRemapAnimTextures");
@@ -82,6 +83,8 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId AnimatedTextureSetType = ChunkId.FromString("TeAnimatedTextureSetType");
         /**********/public static readonly ChunkId AnimatedTextureSetFps = ChunkId.FromString("TeAnimatedTextureSetFps");
         /**********/public static readonly ChunkId AnimatedTextureSetUvRotate = ChunkId.FromString("TeAnimatedTextureSetUvRotate");
+        /**********/public static readonly ChunkId AnimatedTextureSetTenUvRotateDirection = ChunkId.FromString("TeAnimatedTextureSetTenUvRotateDirection");
+        /**********/public static readonly ChunkId AnimatedTextureSetTenUvRotateSpeed = ChunkId.FromString("TeAnimatedTextureSetTenUvRotateSpeed");
         /**********/public static readonly ChunkId AnimatedTextureSetExtraInfo = ChunkId.FromString("TeAnimatedTextureSetExtra");
         /**************/public static readonly ChunkId AnimatedTextureFrames = ChunkId.FromString("TeFrames");
         /******************/public static readonly ChunkId AnimatedTextureFrame = ChunkId.FromString("TeFrame");
@@ -145,6 +148,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId AlternateGroup = ChunkId.FromString("TeGroup");
         /******/public static readonly ChunkId RoomFlagCold = ChunkId.FromString("TeCold");
         /******/public static readonly ChunkId RoomFlagDamage = ChunkId.FromString("TeDmg");
+        /******/public static readonly ChunkId RoomFlagNoCaustics = ChunkId.FromString("TeNoCaustics");
         /******/public static readonly ChunkId RoomFlagHorizon = ChunkId.FromString("TeHorizon");
         /******/public static readonly ChunkId RoomFlagOutside = ChunkId.FromString("TeOutside");
         /******/public static readonly ChunkId RoomFlagNoLensflare = ChunkId.FromString("TeNoLens");
@@ -242,5 +246,7 @@ namespace TombLib.LevelData.IO
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry3 = ChunkId.FromString("TeMergeStaticsEntry3");
         /**/public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad"); // DEPRECATED
         /**/public static readonly ChunkId Palette = ChunkId.FromString("TePalette");
+        /**/public static readonly ChunkId Favorites = ChunkId.FromString("TeFavorites");
+        /****/public static readonly ChunkId Favorite = ChunkId.FromString("TeFavorite");
     }
 }

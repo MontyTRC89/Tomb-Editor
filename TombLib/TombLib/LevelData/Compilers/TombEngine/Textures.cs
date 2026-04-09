@@ -1,10 +1,7 @@
-﻿using BCnEncoder.Encoder;
-using BCnEncoder.Shared;
+﻿using DirectXTexNet;
 using NLog;
-using Pfim;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -61,6 +58,84 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 ReportProgress(96, "Reading sky texture: " + skyFileName);
 
             return _level.Settings.LoadSkyTexture(skyFileName);
+        }
+
+        private void BuildMaterials()
+        {
+            ReportProgress(0, "Building materials");
+
+            var supported = new List<string>();
+            if (System.Runtime.Intrinsics.X86.Avx2.IsSupported) supported.Add("AVX2");
+            if (System.Runtime.Intrinsics.X86.Ssse3.IsSupported) supported.Add("SSSE3");
+            if (System.Runtime.Intrinsics.X86.Sse2.IsSupported) supported.Add("SSE2");
+
+            if (supported.Count > 0)
+                ReportProgress(0, "   Supported SIMD instruction sets: " + string.Join(", ", supported));
+
+            // Collect all materials used in the level, using sidecar loading if possible.
+            // All textures are stored in the filesystem except for Wad2 embedded textures that
+            // will require a dedicated material handling.
+
+            // Add a generic material (to use for example with embedded Wad2 textures)
+            _materialDictionary.Add("Default", new MaterialData());
+            _materialNames.Add("Default");
+
+            // Sidecar load level textures
+            foreach (var texture in _level.Settings.Textures)
+            {
+                if (!_materialDictionary.ContainsKey(texture.Image.FileName))
+                {
+                    try
+                    {
+                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+                        _materialDictionary.Add(texture.Image.FileName, materialData);
+                        _materialNames.Add(texture.Image.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        string externalMaterialDataPath = Path.Combine(
+                                Path.GetDirectoryName(texture.Image.FileName),
+                                Path.GetFileNameWithoutExtension(texture.Image.FileName) + ".xml");
+
+                        _progressReporter.ReportWarn($"Error while processing: {externalMaterialDataPath}");
+                        throw;
+                    }
+                }
+            }
+
+            // Sidecar load imported geometry textures
+            foreach (var importedGeometry in _level.Settings.ImportedGeometries)
+                foreach (var texture in importedGeometry.Textures)
+                {
+                    if (!_materialDictionary.ContainsKey(texture.Image.FileName))
+                    {
+                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+                        _materialDictionary.Add(texture.Image.FileName, materialData);
+                        _materialNames.Add(texture.Image.FileName);
+                    }
+                }
+
+            // Sidecar load external Wad2 textures
+            foreach (var wad in _level.Settings.Wads)
+                foreach (var texture in wad.Wad.MeshTexturesUnique.Where(t => !string.IsNullOrEmpty(t.AbsolutePath)))
+                {
+                    if (!_materialDictionary.ContainsKey(texture.AbsolutePath))
+                    {
+                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.AbsolutePath);
+                        _materialDictionary.Add(texture.AbsolutePath, materialData);
+                        _materialNames.Add(texture.AbsolutePath);
+                    }
+                }
+
+            // Make all level texturs paths absolute for comparing them with imported geometry textures
+            // and Wad2 external textures.
+            // Imported geometry textures and Wad2 external textures are always stored as absolute paths,
+            // insted level textures have the relative syntax.
+
+            foreach (var texture in _level.Settings.Textures)
+                texture.AbsolutePath = _level.Settings.MakeAbsolute(texture.Path);
+
+            ReportProgress(0, $"   Number of materials: {_materialDictionary.Count}");
         }
 
         private void BuildSprites()
@@ -171,78 +246,31 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        static MemoryStream RemoveColorChunks(MemoryStream stream)
+        private unsafe byte[] GetCompressedTexture(ImageC image, DXGI_FORMAT format)
         {
-            MemoryStream final = new MemoryStream();
-            stream.Seek(0, SeekOrigin.Begin);
+            byte[] pixelData = image.ToByteArray();
+            int slicePitch = image.Width * ImageC.PixelSize * image.Height;
 
-            byte[] temp = new byte[8];
-            stream.Read(temp, 0, 8);
-            final.Write(temp, 0, 8);
+            using var srcImage = TexHelper.Instance.Initialize2D(
+                DXGI_FORMAT.B8G8R8A8_UNORM, image.Width, image.Height, 1, 1, CP_FLAGS.NONE);
 
-            while (true)
+            fixed (byte* pData = pixelData)
             {
-                byte[] lenBytes = new byte[4];
-                if (stream.Read(lenBytes, 0, 4) != 4)
-                {
-                    break;
-                }
-
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(lenBytes);
-                }
-
-                int len = BitConverter.ToInt32(lenBytes, 0);
-
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(lenBytes);
-                }
-
-                byte[] type = new byte[4];
-                stream.Read(type, 0, 4);
-
-                byte[] data = new byte[len + 4];
-                stream.Read(data, 0, data.Length);
-
-                if (!(DoesTypeMatch(type, "cHRM") ||
-                    DoesTypeMatch(type, "gAMA") ||
-                    DoesTypeMatch(type, "iCCP") ||
-                    DoesTypeMatch(type, "sRGB")))
-                {
-                    final.Write(lenBytes, 0, lenBytes.Length);
-                    final.Write(type, 0, type.Length);
-                    final.Write(data, 0, data.Length);
-                }
+                var destImg = srcImage.GetImage(0);
+                Buffer.MemoryCopy(pData, (void*)destImg.Pixels, slicePitch, slicePitch);
             }
 
-            return final;
-        }
+            using var mipChain = srcImage.GenerateMipMaps(
+                TEX_FILTER_FLAGS.DEFAULT, 0);
 
-        private byte[] GetUncompressedTexture(ImageC i)
-        {
-            MemoryStream output = new MemoryStream();
-            i.Save(output, System.Drawing.Imaging.ImageFormat.Png);
-            output = RemoveColorChunks(output);
-            return output.ToArray();
-        }
+            using var compressed = mipChain.Compress(
+                format, TEX_COMPRESS_FLAGS.PARALLEL, 0.5f);
 
-        private byte[] GetCompressedTexture(ImageC i, CompressionFormat format)
-        {
-            using Image bitmap = i.ToBitmap();
+            using var ddsStream = compressed.SaveToDDSMemory(DDS_FLAGS.NONE);
 
-            BcEncoder encoder = new BcEncoder();
-
-            encoder.OutputOptions.GenerateMipMaps = true;
-            encoder.OutputOptions.Quality = CompressionQuality.BestQuality;
-            encoder.OutputOptions.Format = format;
-            encoder.OutputOptions.FileFormat = OutputFileFormat.Dds;  
-
-            MemoryStream output = new MemoryStream();
-            encoder.EncodeToStream(i.ToByteArray(), i.Width, i.Height, PixelFormat.Bgra32, output);
-
-            return output.ToArray();    
+            byte[] result = new byte[ddsStream.Length];
+            ddsStream.Read(result, 0, result.Length);
+            return result;
         }
 
         void WriteTextureData(BinaryWriterEx writer)
@@ -258,33 +286,43 @@ namespace TombLib.LevelData.Compilers.TombEngine
             writer.Write(_spritesTexturesPages.Count);
             foreach (var atlas in _spritesTexturesPages)
             {
-                writer.Write(atlas.Width);
-                writer.Write(atlas.Height);
-                using (var ms = new MemoryStream())
-                {
-                    byte[] output = 
-                        _level.Settings.CompressTextures ? 
-                        GetCompressedTexture(atlas, CompressionFormat.Bc3) : 
-                        GetUncompressedTexture(atlas);
-                    writer.Write((int)output.Length);
-                    writer.Write(output.ToArray());
-                }
+				writer.Write(atlas.Width);
+				writer.Write(atlas.Height);
+
+				WriteImageFast(writer, atlas, DXGI_FORMAT.BC3_UNORM);
             }
 
             // Sky texture
             var sky = GetSkyTexture();
-            using (var ms = new MemoryStream())
-            {
-                writer.Write(sky.Width);
-                writer.Write(sky.Height);
-                byte[] output =
-                    _level.Settings.CompressTextures ?
-                    GetCompressedTexture(sky, CompressionFormat.Bc3) :
-                    GetUncompressedTexture(sky);
-                writer.Write((int)output.Length);
-                writer.Write(output.ToArray());
-            }
-        }
+			writer.Write(sky.Width);
+			writer.Write(sky.Height);
+			WriteImageFast(writer, sky, DXGI_FORMAT.BC3_UNORM);
+		}
+
+        void WriteImageFast(BinaryWriterEx writer, ImageC image, DXGI_FORMAT compressionFormat)
+        {
+			var stream = writer.BaseStream;
+			long lenPos = stream.Position;
+			writer.Write(0); // Placeholder
+			long startPos = stream.Position;
+
+			if (_level.Settings.CompressTextures)
+			{
+                writer.Write(GetCompressedTexture(image, compressionFormat));
+			}
+			else
+			{
+				image.SavePngToStreamFast(stream);
+			}
+
+			long endPos = stream.Position;
+			int len = checked((int)(endPos - startPos));
+
+			long cur = endPos;
+			stream.Position = lenPos;
+			writer.Write(len);
+			stream.Position = cur;
+		}
 
         void WriteAtlas(BinaryWriterEx writer, List<TombEngineAtlas> atlasList)
         {
@@ -294,28 +332,24 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(atlas.ColorMap.Width);
                 writer.Write(atlas.ColorMap.Height);
 
-                using (var ms = new MemoryStream())
+                WriteImageFast(writer, atlas.ColorMap, DXGI_FORMAT.BC3_UNORM);
+
+                writer.Write(atlas.NormalMap is not null);
+                if (atlas.NormalMap is not null)
                 {
-                    byte[] output =
-                        _level.Settings.CompressTextures ?
-                        GetCompressedTexture(atlas.ColorMap, CompressionFormat.Bc3) :
-                        GetUncompressedTexture(atlas.ColorMap);
-                    writer.Write((int)output.Length);
-                    writer.Write(output.ToArray());
+                    WriteImageFast(writer, atlas.NormalMap.Value, DXGI_FORMAT.BC5_UNORM);
                 }
 
-                writer.Write(atlas.HasNormalMap);
-                if (!atlas.HasNormalMap)
-                    continue;
-
-                using (var ms = new MemoryStream())
+                writer.Write(atlas.ORSHMap is not null);
+                if (atlas.ORSHMap is not null)
                 {
-                    byte[] output =
-                        _level.Settings.CompressTextures ?
-                        GetCompressedTexture(atlas.NormalMap, CompressionFormat.Bc5) :
-                        GetUncompressedTexture(atlas.NormalMap);
-                    writer.Write((int)output.Length);
-                    writer.Write(output.ToArray());
+                    WriteImageFast(writer, atlas.ORSHMap.Value, DXGI_FORMAT.BC3_UNORM);
+                }
+
+                writer.Write(atlas.EmissiveMap is not null);
+                if (atlas.EmissiveMap is not null)
+                {
+                    WriteImageFast(writer, atlas.EmissiveMap.Value, DXGI_FORMAT.BC3_UNORM);
                 }
             }
         }

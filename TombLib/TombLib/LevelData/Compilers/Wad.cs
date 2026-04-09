@@ -188,13 +188,13 @@ namespace TombLib.LevelData.Compilers
                     else
                         newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(indices, false, lightingEffect);
 
-                    var size = _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 8 : 10;
+                    var size = _level.Settings.GameVersion.Native() <= TRVersion.Game.TR3 ? 8 : 10;
                     if (!poly.IsTriangle) size += 2;
                     currentMeshSize += size;
                 }
             }
 
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
+            if (_level.Settings.GameVersion.Native() <= TRVersion.Game.TR3)
                 currentMeshSize += 4; // Num colored quads and triangles
 
             if (currentMeshSize % 4 != 0)
@@ -300,12 +300,12 @@ namespace TombLib.LevelData.Compilers
                         unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.Z))));
 
                         // TR1 has also the number of angles to follow
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+                        if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR1)
                             unpaddedFrame.Add((short)wadFrame.Angles.Count);
 
                         foreach (var angle in wadFrame.Angles)
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
-                                _level.Settings.GameVersion == TRVersion.Game.TR1,
+                                _level.Settings.GameVersion.Native() == TRVersion.Game.TR1,
                                 _level.Settings.GameVersion == TRVersion.Game.TR4 ||
                                 _level.IsNG ||
                                 _level.Settings.GameVersion == TRVersion.Game.TR5);
@@ -320,7 +320,7 @@ namespace TombLib.LevelData.Compilers
                     foreach (List<short> unpaddedFrame in unpaddedFrames)
                     {
                         _frames.AddRange(unpaddedFrame);
-                        if (_level.Settings.GameVersion != TRVersion.Game.TR1)
+                        if (_level.Settings.GameVersion.Native() != TRVersion.Game.TR1)
                             _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
                     }
                     animationHelper.KeyFrameSize = longestFrame;
@@ -461,7 +461,7 @@ namespace TombLib.LevelData.Compilers
                             newAnimDispatch.Low = unchecked((ushort)(dispatch.InFrame + newAnimation.FrameStart));
                             newAnimDispatch.High = unchecked((ushort)(dispatch.OutFrame + newAnimation.FrameStart));
                             newAnimDispatch.NextAnimation = checked((ushort)(dispatch.NextAnimation + lastAnimation));
-                            newAnimDispatch.NextFrame = dispatch.NextFrame;
+                            newAnimDispatch.NextFrame = dispatch.NextFrameLow;
 
                             _animDispatches.Add(newAnimDispatch);
                             lastAnimDispatch++;
@@ -495,7 +495,7 @@ namespace TombLib.LevelData.Compilers
                     var tree = new tr_meshtree();
                     var bone = oldMoveable.Bones[b];
 
-                    if (skin != null && skin.Bones.Count == oldMoveable.Bones.Count)
+                    if (skin != null && skin.Bones.Count == oldMoveable.Bones.Count && IsSkinBoneValid(_level.Settings.GameVersion, oldMoveable.Id.TypeId, b))
                         bone = skin.Bones[b];
 
                     tree.Opcode = (int)oldMoveable.Bones[b].OpCode;
@@ -566,7 +566,7 @@ namespace TombLib.LevelData.Compilers
                     Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.Z))
                 };
 
-                if (_level.Settings.GameVersion > TRVersion.Game.TR3)
+                if (_level.Settings.GameVersion.Native() > TRVersion.Game.TR3)
                     newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 else
                 {
@@ -820,6 +820,8 @@ namespace TombLib.LevelData.Compilers
             // Step 3: create the sound map
             if (_level.IsNG)
                 _soundMapSize = _limits[Limit.NG_SoundMapSize];
+            else if (_level.IsTRX)
+                _soundMapSize = Math.Max(_finalSoundInfosList.Count, _limits[Limit.SoundMapSize]);
             else
                 _soundMapSize = _limits[Limit.SoundMapSize];
 
@@ -850,7 +852,23 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteSoundMetadata(BinaryWriter writer)
         {
-            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
+            if (_level.IsTRX)
+            {
+                // TRX levels embed all sound data at the end of the file. Avoid duplication here by writing an
+                // empty sound map at the original size limit.
+                for (int i = 0; i < _limits[Limit.SoundMapSize]; i++)
+                {
+                    writer.Write((short)-1);
+                }
+                writer.Write(0); // sound info count
+                if (_level.Settings.GameVersion != TRVersion.Game.TR1X)
+                {
+                    writer.Write(0); // sample indices count
+                }
+                return;
+            }
+
+            if (_level.Settings.GameVersion.Native() > TRVersion.Game.TR3)
             {
                 // In TRNG and TombEngine NumDemoData is used as sound map size
                 writer.Write((ushort)(_level.IsNG ? _soundMapSize : 0));
@@ -874,54 +892,16 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.Samples.Count > 0x0F)
                             throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
 
-                        ushort characteristics;
-
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+                        if (_level.Settings.GameVersion.Native() <= TRVersion.Game.TR2)
                         {
-                            switch (soundDetail.LoopBehaviour)
-                            {
-                                default:
-                                case WadSoundLoopBehaviour.None:
-                                case WadSoundLoopBehaviour.OneShotRewound:
-                                    characteristics = 1;
-                                    break;
-                                case WadSoundLoopBehaviour.OneShotWait:
-                                    characteristics = 0;
-                                    break;
-                                case WadSoundLoopBehaviour.Looped:
-                                    characteristics = 2;
-                                    break;
-                            }
-                        }
-                        else
-                            characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
-
-                        characteristics |= (ushort)(soundDetail.Samples.Count << 2);
-                        if (soundDetail.DisablePanning)
-                            characteristics |= 0x1000;
-                        if (soundDetail.RandomizePitch)
-                            characteristics |= 0x2000;
-                        if (soundDetail.RandomizeVolume)
-                            characteristics |= 0x4000;
-
-                        if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
-                        {
-                            var newSoundDetail = new tr_sound_details();
+                            var newSoundDetail = GetTR12SoundDetails(soundDetail);
                             newSoundDetail.Sample = (ushort)lastSampleIndex;
-                            newSoundDetail.Volume = (ushort)Math.Round(soundDetail.Volume / WadSoundInfo.MaxAttribValue * short.MaxValue);
-                            newSoundDetail.Chance = (ushort)Math.Floor((soundDetail.Chance == WadSoundInfo.MaxAttribValue ? 0 : soundDetail.Chance) / WadSoundInfo.MaxAttribValue * short.MaxValue);
-                            newSoundDetail.Characteristics = characteristics;
                             bw.WriteBlock(newSoundDetail);
                         }
                         else
                         {
-                            var newSoundDetail = new tr3_sound_details();
+                            var newSoundDetail = GetTR3SoundDetails(soundDetail);
                             newSoundDetail.Sample = (ushort)lastSampleIndex;
-                            newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / WadSoundInfo.MaxAttribValue * byte.MaxValue);
-                            newSoundDetail.Chance = (byte)Math.Floor((soundDetail.Chance == WadSoundInfo.MaxAttribValue ? 0 : soundDetail.Chance) / WadSoundInfo.MaxAttribValue * byte.MaxValue);
-                            newSoundDetail.Range  = (byte)soundDetail.RangeInSectors;
-                            newSoundDetail.Pitch  = (byte)Math.Round(soundDetail.PitchFactor / WadSoundInfo.MaxAttribValue * sbyte.MaxValue + (soundDetail.PitchFactor < 0 ? (byte.MaxValue + 1) : 0));
-                            newSoundDetail.Characteristics = characteristics;
                             bw.WriteBlock(newSoundDetail);
                         }
                         lastSampleIndex += soundDetail.Samples.Count;
@@ -933,7 +913,7 @@ namespace TombLib.LevelData.Compilers
                             " samples, while maximum is " + maxSampleCount + ". Level may crash. Turn off some sounds to prevent that.");
 
                     // Write sample indices (not used but parsed in TR4-5)
-                    if (_level.Settings.GameVersion > TRVersion.Game.TR1)
+                    if (_level.Settings.GameVersion.Native() > TRVersion.Game.TR1)
                     {
                         bw.Write((uint)_finalSoundIndicesList.Count);
                         for (int i = 0; i < _finalSoundIndicesList.Count; i++)
@@ -945,11 +925,73 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
+        private ushort GetSoundInfoCharacteristics(WadSoundInfo soundDetail)
+        {
+            ushort characteristics;
+
+            if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR1)
+            {
+                switch (soundDetail.LoopBehaviour)
+                {
+                    default:
+                    case WadSoundLoopBehaviour.None:
+                    case WadSoundLoopBehaviour.OneShotRewound:
+                        characteristics = 1;
+                        break;
+                    case WadSoundLoopBehaviour.OneShotWait:
+                        characteristics = 0;
+                        break;
+                    case WadSoundLoopBehaviour.Looped:
+                        characteristics = 2;
+                        break;
+                }
+            }
+            else
+                characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
+
+            characteristics |= (ushort)(soundDetail.Samples.Count << 2);
+            if (soundDetail.DisablePanning)
+                characteristics |= 0x1000;
+            if (soundDetail.RandomizePitch)
+                characteristics |= 0x2000;
+            if (soundDetail.RandomizeVolume)
+                characteristics |= 0x4000;
+
+            return characteristics;
+        }
+
+        private tr_sound_details GetTR12SoundDetails(WadSoundInfo soundDetail)
+        {
+            var newSoundDetail = new tr_sound_details();
+            newSoundDetail.Volume = (ushort)Math.Round(soundDetail.Volume / WadSoundInfo.MaxAttribValue * short.MaxValue);
+            newSoundDetail.Chance = (ushort)Math.Floor((soundDetail.Chance == WadSoundInfo.MaxAttribValue ? 0 : soundDetail.Chance) / WadSoundInfo.MaxAttribValue * short.MaxValue);
+            newSoundDetail.Characteristics = GetSoundInfoCharacteristics(soundDetail);
+            return newSoundDetail;
+        }
+
+        private tr3_sound_details GetTR3SoundDetails(WadSoundInfo soundDetail)
+        {
+            var newSoundDetail = new tr3_sound_details();
+            newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / WadSoundInfo.MaxAttribValue * byte.MaxValue);
+            newSoundDetail.Chance = (byte)Math.Floor((soundDetail.Chance == WadSoundInfo.MaxAttribValue ? 0 : soundDetail.Chance) / WadSoundInfo.MaxAttribValue * byte.MaxValue);
+            newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
+            newSoundDetail.Pitch = (byte)Math.Round(soundDetail.PitchFactor / WadSoundInfo.MaxAttribValue * sbyte.MaxValue + (soundDetail.PitchFactor < 0 ? (byte.MaxValue + 1) : 0));
+            newSoundDetail.Characteristics = GetSoundInfoCharacteristics(soundDetail);
+            return newSoundDetail;
+        }
+
         private void WriteSoundData(BinaryWriter writer)
         {
+            if (_level.Settings.GameVersion == TRVersion.Game.TR1X)
+            {
+                writer.Write(0); // sample size
+                writer.Write(0); // sample count
+                return;
+            }
+
             var sampleRate = _limits[Limit.SoundSampleRate];
 
-            if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+            if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR1)
             {
                 // Calculate sum of all sample sizes
                 int sumSize = 0;
@@ -1044,7 +1086,7 @@ namespace TombLib.LevelData.Compilers
 
             newMesh.TexturedQuads = new tr_face4[numQuads];
             newMesh.TexturedTriangles = new tr_face3[numTriangles];
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
+            if (_level.Settings.GameVersion.Native() <= TRVersion.Game.TR3)
                 currentMeshSize += 4; // Num colored quads and triangles
 
             if (currentMeshSize % 4 != 0)
@@ -1061,6 +1103,50 @@ namespace TombLib.LevelData.Compilers
             _meshes.Add(newMesh);
 
             return newMesh;
+        }
+
+        bool IsSkinBoneValid(TRVersion.Game version, uint moveableId, int boneIndex)
+        {
+            if (boneIndex != 14)
+                return true;
+
+            // HACK: Weapon animation slots in original games remap headmesh to a backholster mesh.
+            // We can't determine it programmatically, so an explicit check is needed.
+
+            switch (version.Native())
+            {
+                case TRVersion.Game.TR1:
+                    if (moveableId == 2)
+                        return false;
+                    break;
+
+                case TRVersion.Game.TR2:
+                    if (moveableId == 3 ||
+                        moveableId == 6 ||
+                        moveableId == 7 ||
+                        moveableId == 8)
+                        return false;
+                    break;
+
+                case TRVersion.Game.TR3:
+                    if (moveableId == 3 ||
+                        moveableId == 6 ||
+                        moveableId == 7 ||
+                        moveableId == 8 ||
+                        moveableId == 9)
+                        return false;
+                    break;
+
+                case TRVersion.Game.TR4:
+                case TRVersion.Game.TR5:
+                    if (moveableId == 3 ||
+                        moveableId == 4 ||
+                        moveableId == 5)
+                        return false;
+                    break;
+            }
+
+            return true;
         }
     }
 }

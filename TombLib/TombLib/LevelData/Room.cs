@@ -58,6 +58,8 @@ namespace TombLib.LevelData
         public bool FlagExcludeFromPathFinding { get; set; }
         [DisplayName("No lensflare")]
         public bool FlagNoLensflare { get; set; }
+        [DisplayName("No caustics")]
+        public bool FlagNoCaustics { get; set; }
         [DisplayName("Reverb type")]
         public byte Reverberation { get; set; }
         [DisplayName("Locked")]
@@ -134,14 +136,17 @@ namespace TombLib.LevelData
 
         // Internal data structures
         public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
+        public bool PendingRelight { get; set; } = true;
 
-        public Room(Level level, int numXSectors, int numZSectors, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
+        private IEnumerable<PortalInstance> _portalsCache;
+
+		public Room(Level level, int numXSectors, int numZSectors, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
         {
             Name = name;
             Level = level;
             Properties = new RoomProperties() { AmbientLight = ambientLight };
             Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling, true);
-            BuildGeometry();
+            Rebuild(relight: true, highQualityLighting: true);
         }
 
         public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
@@ -309,8 +314,8 @@ namespace TombLib.LevelData
                         newRoom.MoveObjectFrom(level, this, instance);
             }
 
-            newRoom.BuildGeometry();
-            BuildGeometry();
+            newRoom.Rebuild(relight: true, highQualityLighting: true);
+            Rebuild(relight: true, highQualityLighting: true);
             return newRoom;
         }
 
@@ -422,13 +427,24 @@ namespace TombLib.LevelData
         public IEnumerable<PortalInstance> Portals
         {
             get
-            { // No LINQ because it is really slow.
+            {   // No LINQ because it is really slow.
                 var portals = new HashSet<PortalInstance>();
                 foreach (var sector in Sectors)
                     foreach (var portal in sector.Portals)
                         portals.Add(portal);
                 return portals;
             }
+        }
+
+        public IEnumerable<PortalInstance> RebuildPortalsCache()
+        {
+            _portalsCache = Portals;
+            return _portalsCache;
+        }
+
+        public IEnumerable<PortalInstance> PortalsCache
+        {
+            get => _portalsCache;
         }
 
         public IEnumerable<TriggerInstance> Triggers
@@ -936,19 +952,36 @@ namespace TombLib.LevelData
             }
         }
 
-        public void BuildGeometry(bool highQualityLighting = false, bool useLegacyCode = false)
+        public void Rebuild(bool relight, bool highQualityLighting = false)
         {
-            RoomGeometry.Build(this, highQualityLighting, useLegacyCode);
+            RoomGeometry.Build(this);
+
+            if (relight)
+            {
+                RoomGeometry.Relight(this, highQualityLighting);
+                PendingRelight = false;
+            }
+            else
+            {
+                PendingRelight = true;
+            }
+        }
+
+        public void BuildGeometry(bool useLegacyCode = false)
+        {
+            RoomGeometry.Build(this, useLegacyCode);
         }
 
         public void RebuildLighting(bool highQualityLighting)
         {
             RoomGeometry.Relight(this, highQualityLighting);
+            PendingRelight = false;
         }
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
 
-        public int GetHighestCorner(RectangleInt2 area)
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public int GetHighestCorner(RectangleInt2 area)
         {
             area = area.Intersect(LocalArea);
 
@@ -961,7 +994,8 @@ namespace TombLib.LevelData
             return max == int.MinValue ? DefaultHeight : max;
         }
 
-        public int GetHighestNeighborCeiling(int x, int z)
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public int GetHighestNeighborCeiling(int x, int z)
         {
             RoomSectorPair p1 = GetSectorTryThroughPortal(x - 1, z),
                 p2 = GetSectorTryThroughPortal(x + 1, z),
@@ -985,12 +1019,14 @@ namespace TombLib.LevelData
             return max;
         }
 
-        public int GetHighestCorner()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public int GetHighestCorner()
         {
             return GetHighestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
-        public int GetLowestCorner(RectangleInt2 area)
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public int GetLowestCorner(RectangleInt2 area)
         {
             area = area.Intersect(LocalArea);
 
@@ -1003,7 +1039,8 @@ namespace TombLib.LevelData
             return min == int.MaxValue ? 0 : min;
         }
 
-        public int GetLowestNeighborFloor(int x, int z)
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public int GetLowestNeighborFloor(int x, int z)
         {
             RoomSectorPair p1 = GetSectorTryThroughPortal(x - 1, z),
                 p2 = GetSectorTryThroughPortal(x + 1, z),
@@ -1027,7 +1064,8 @@ namespace TombLib.LevelData
             return min;
         }
 
-        public int GetLowestCorner()
+		[MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+		public int GetLowestCorner()
         {
             return GetLowestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
@@ -1530,7 +1568,7 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
-        public void SmartBuildGeometry(RectangleInt2 area, bool highQualityLighting = false)
+        public void SmartBuildGeometry(RectangleInt2 area, bool relight, bool highQualityLighting = false)
         {
             area = area.Inflate(1); // Add margin
 
@@ -1574,7 +1612,7 @@ namespace TombLib.LevelData
             // Update the collected stuff now
             Parallel.For(0, roomsToProcess.Count, index =>
             {
-                roomsToProcess[index].BuildGeometry(highQualityLighting);
+                roomsToProcess[index].Rebuild(relight, highQualityLighting);
             });
         }
 
@@ -1666,7 +1704,7 @@ namespace TombLib.LevelData
                                     {
                                         AnimatedTextureSet newSet = setToCopy.Clone();
                                         foreach (AnimatedTextureFrame frame in newSet.Frames)
-                                            frame.Texture = TextureRemap[frame.Texture]; // Remap source textures to destination textures.
+                                            frame.Texture = TextureRemap[(LevelTexture)frame.Texture]; // Remap source textures to destination textures.
                                         args.DestinationLevelSettings.AnimatedTextureSets.Add(newSet);
                                     }
                                     LookForAnimatedSets = false;
@@ -1721,12 +1759,14 @@ namespace TombLib.LevelData
                                 continue;
 
                             var texture = Sectors[x, z].GetFaceTexture(face);
+                            float maxTexCoordSpan = Level?.IsTombEngine == true ? 1024.0f : 256.0f;
+
                             if (texture.TextureIsInvisible || texture.TextureIsUnavailable ||
-                                (shape == FaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == FaceShape.Quad && texture.QuadCoordsOutOfBounds))
+                                (shape == FaceShape.Triangle && texture.AreTriangleCoordsOutOfBounds(maxTexCoordSpan)) || (shape == FaceShape.Quad && texture.AreQuadCoordsOutOfBounds(maxTexCoordSpan)))
                                 continue;
 
-                            var doubleSided = Level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
-                            var copyFace = Level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
+                            var doubleSided = Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 && texture.DoubleSided;
+                            var copyFace = Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2 && texture.DoubleSided;
 
                             int rangeEnd = range.Start + range.Count;
                             for (int i = range.Start; i < rangeEnd; i += 3)
@@ -1876,8 +1916,8 @@ namespace TombLib.LevelData
                             ushort index1 = (ushort)(indexList[j + baseIndex + 1]);
                             ushort index2 = (ushort)(indexList[j + baseIndex + 2]);
 
-                            var doubleSided = Level.Settings.GameVersion > TRVersion.Game.TR2 && submesh.Key.DoubleSided;
-                            var copyFace = Level.Settings.GameVersion <= TRVersion.Game.TR2 && submesh.Key.DoubleSided;
+                            var doubleSided = Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 && submesh.Key.DoubleSided;
+                            var copyFace = Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2 && submesh.Key.DoubleSided;
 
                             faces++;
 
