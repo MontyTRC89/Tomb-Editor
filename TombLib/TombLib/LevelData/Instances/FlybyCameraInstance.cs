@@ -5,6 +5,8 @@ namespace TombLib.LevelData
 {
     public class FlybyCameraInstance : PositionAndScriptBasedObjectInstance, IRotateableYXRoll
     {
+        public const float MaxFlybySpeed = 65535.0f / 655.0f;
+
         public ushort Sequence { get; set; }
         public ushort Number { get; set; }
         public short Timer { get; set; }
@@ -15,6 +17,8 @@ namespace TombLib.LevelData
         private float _roll { get; set; }
         private float _rotationX { get; set; }
         private float _rotationY { get; set; }
+
+        public int TimerToFrames => ((int)Timer >> 4);
 
         public FlybyCameraInstance(ObjectInstance selectedObject = null)
         {
@@ -43,14 +47,14 @@ namespace TombLib.LevelData
             }
         }
 
-        /// <summary> Spped in the range [0, Infinity). </summary>
+        /// <summary> Speed in the range [0, MaxFlybySpeed]. </summary>
         public float Speed
         {
             get { return _speed; }
-            set { _speed = Math.Max(0, value); }
+            set { _speed = float.IsFinite(value) ? Math.Clamp(value, 0.0f, MaxFlybySpeed) : 0.0f; }
         }
 
-        /// <summary> Degrees in the range [0, 90) </summary>
+        /// <summary> Degrees in the range [0, 180]. </summary>
         public float Fov
         {
             get { return _fov; }
@@ -64,7 +68,7 @@ namespace TombLib.LevelData
             set { _roll = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
 
-        /// <summary> Degrees in the range [-90, 90] </summary>
+        /// <summary> Degrees in the range [-90, 90]. </summary>
         public float RotationX
         {
             get { return _rotationX; }

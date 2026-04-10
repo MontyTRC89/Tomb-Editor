@@ -3,19 +3,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using TombEditor.Controls.FlybyTimeline.Preview;
 using TombLib;
 using TombLib.Forms;
+using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
+using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
-    public interface IEditorEvent { }
+	public interface IEditorEvent { }
 
     public interface IEditorPropertyChangedEvent : IEditorEvent { }
 
@@ -40,6 +44,12 @@ namespace TombEditor
         None,
         Sector,
         SpatialObject
+    }
+
+    public enum CameraPreviewType
+    {
+        None,
+        Static
     }
 
     public interface IEditorObjectChangedEvent : IEditorEventCausesUnsavedChanges
@@ -90,8 +100,7 @@ namespace TombEditor
                 // Reset state that was related to the old level
                 _levelSettingsWatcher?.StopReloading();
                 SelectedObject = null;
-                ChosenItem = null;
-                ChosenImportedGeometry = null;
+                ChosenItems = Array.Empty<IWadObject>();
                 SelectedSectors = SectorSelection.None;
                 Action = null;
                 SelectedTexture = TextureArea.None;
@@ -152,42 +161,41 @@ namespace TombEditor
             }
         }
 
-        public class ChosenItemChangedEvent : IEditorPropertyChangedEvent
+        public class ChosenItemsChangedEvent : IEditorPropertyChangedEvent
         {
-            public ItemType? Previous { get; internal set; }
-            public ItemType? Current { get; internal set; }
+            public IReadOnlyList<IWadObject> Previous { get; internal set; }
+            public IReadOnlyList<IWadObject> Current { get; internal set; }
         }
-        private ItemType? _chosenItem;
-        public ItemType? ChosenItem
+
+        private IWadObject[] _chosenItems = Array.Empty<IWadObject>();
+        public IReadOnlyList<IWadObject> ChosenItems
         {
-            get { return _chosenItem; }
+            get { return _chosenItems; }
             set
             {
-                if (value == _chosenItem)
+                var arr = value?.ToArray() ?? Array.Empty<IWadObject>();
+                if (_chosenItems.SequenceEqual(arr))
                     return;
-                var previous = _chosenItem;
-                _chosenItem = value;
-                RaiseEvent(new ChosenItemChangedEvent { Previous = previous, Current = value });
+
+                var previous = _chosenItems;
+                _chosenItems = arr;
+
+                RaiseEvent(new ChosenItemsChangedEvent { Previous = previous, Current = arr });
             }
         }
 
-        public class ChosenImportedGeometryChangedEvent : IEditorPropertyChangedEvent
+        public IWadObject GetFirstWadObject()
         {
-            public ImportedGeometry Previous { get; internal set; }
-            public ImportedGeometry Current { get; internal set; }
-        }
-        private ImportedGeometry _chosenImportedGeometry = null;
-        public ImportedGeometry ChosenImportedGeometry
-        {
-            get { return _chosenImportedGeometry; }
-            set
+            if (ChosenItems == null || ChosenItems.Count == 0)
+                return null;
+
+            foreach (var obj in ChosenItems)
             {
-                if (value == _chosenImportedGeometry)
-                    return;
-                var previous = _chosenImportedGeometry;
-                _chosenImportedGeometry = value;
-                RaiseEvent(new ChosenImportedGeometryChangedEvent { Previous = previous, Current = value });
+                if (obj is WadMoveable || obj is WadStatic)
+                    return obj;
             }
+
+            return null;
         }
 
         public class ModeChangedEvent : IEditorPropertyChangedEvent
@@ -229,6 +237,15 @@ namespace TombEditor
         }
         private EditorTool _lastGeometryTool = new EditorTool();
         private EditorTool _lastFaceEditTool = new EditorTool();
+        private EditorTool _lastObjectPlacementTool = new EditorTool();
+
+        // Raised when brush settings (radius, density, rotation, etc.) change in the toolbox.
+        // Only Panel3D needs to respond, so this avoids the heavier ConfigurationChangedEvent.
+        public class ObjectBrushSettingsChangedEvent : IEditorEvent { }
+        public void ObjectBrushSettingsChange()
+        {
+            RaiseEvent(new ObjectBrushSettingsChangedEvent());
+        }
 
         public LastSelectionType LastSelection = LastSelectionType.None;
 
@@ -697,10 +714,11 @@ namespace TombEditor
         public class ResetCameraEvent : IEditorCameraEvent
         {
             public bool NewCamera { get; set; }
+            public Room? Room { get; set; }
         }
-        public void ResetCamera(bool newCamera = false)
+        public void ResetCamera(bool newCamera = false, Room? room = null)
         {
-            RaiseEvent(new ResetCameraEvent { NewCamera = newCamera });
+            RaiseEvent(new ResetCameraEvent { NewCamera = newCamera, Room = room });
         }
 
         // Toggle FlyMode
@@ -713,6 +731,39 @@ namespace TombEditor
             RaiseEvent(new ToggleFlyModeEvent { FlyModeState = state });
         }
         public bool FlyMode { get; set; } = false;
+
+        // Toggle camera preview (flyby sequence or static camera).
+        public class ToggleCameraPreviewEvent : IEditorCameraEvent
+        {
+            public bool PreviewState { get; set; }
+            public PositionBasedObjectInstance Object { get; set; }
+        }
+        public void ToggleCameraPreview(bool state, PositionBasedObjectInstance obj = null)
+        {
+            RaiseEvent(new ToggleCameraPreviewEvent { PreviewState = state, Object = obj });
+        }
+        public CameraPreviewType CameraPreviewMode { get; set; } = CameraPreviewType.None;
+
+        // The flyby sequence currently visible in the timeline; used to redirect pasted cameras to the correct target sequence.
+        public ushort? SelectedFlybySequence { get; set; }
+
+        // Camera preview frame updated (live editing or scrub playback).
+        public class CameraPreviewFrameEvent : IEditorCameraEvent
+        {
+            public FlybyCameraInstance FlybyCameraInstance { get; set; }
+            public FlybyFrameState? Frame { get; set; }
+        }
+        public void CameraPreviewUpdated(FlybyCameraInstance flybyCamera)
+        {
+            RaiseEvent(new CameraPreviewFrameEvent { FlybyCameraInstance = flybyCamera });
+        }
+        public void CameraPreviewScrub(FlybyFrameState frame)
+        {
+            RaiseEvent(new CameraPreviewFrameEvent { Frame = frame });
+        }
+
+        // Provides access to the current 3D viewport camera. Set by Panel3D on init.
+        public Func<Camera> GetViewportCamera { get; set; }
 
         // Toggle hidden selection (during color picking)
         public class HideSelectionEvent : IEditorEvent
@@ -887,6 +938,29 @@ namespace TombEditor
                 SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
         }
 
+        public Room GetRoomAtPosition(Vector3 pos)
+        {
+            Room selectedRoom = SelectedRoom;
+
+            foreach (var room in Level.Rooms)
+            {
+                if (room is null)
+                    continue;
+
+                BoundingBox b = room.WorldBoundingBox;
+                bool sameAlternate = selectedRoom is null || selectedRoom.IsAlternate == room.IsAlternate;
+
+                if (pos.X >= b.Minimum.X && pos.Y >= b.Minimum.Y && pos.Z >= b.Minimum.Z &&
+                    pos.X <= b.Maximum.X && pos.Y <= b.Maximum.Y && pos.Z <= b.Maximum.Z &&
+                    sameAlternate)
+                {
+                    return room;
+                }
+            }
+
+            return null;
+        }
+
         // Show an object by going to the room it, selecting it and centering the camera appropriately.
         public void ShowObject(ObjectInstance objectInstance)
         {
@@ -1019,6 +1093,7 @@ namespace TombEditor
                 // Update tools
                 _lastFaceEditTool = Configuration.UI_LastTexturingTool;
                 _lastGeometryTool = Configuration.UI_LastGeometryTool;
+                _lastObjectPlacementTool = Configuration.UI_LastObjectPlacementTool;
 
                 if (Mode == EditorMode.Geometry)
                     Tool = Configuration.UI_LastGeometryTool;
@@ -1074,8 +1149,17 @@ namespace TombEditor
 
                 if (@event.Current == EditorMode.Geometry)
                     Tool = _lastGeometryTool;
+                else if (@event.Current == EditorMode.ObjectPlacement)
+                    Tool = _lastObjectPlacementTool;
                 else
                     Tool = _lastFaceEditTool;
+
+                // If the mode switched to lighting mode, relight all rooms which have `PendingRelight` set to true
+                if (@event.Current == EditorMode.Lighting)
+                {
+                    Parallel.ForEach(Level.Rooms.Where(room => room?.PendingRelight == true),
+                        room => room.RebuildLighting(Configuration.Rendering3D_HighQualityLightPreview));
+                }
             }
 
             // Backup last used tool for next mode
@@ -1087,6 +1171,11 @@ namespace TombEditor
                     _lastGeometryTool = @event.Current;
                     Configuration.UI_LastGeometryTool = _lastGeometryTool;
                 }    
+                else if (Mode == EditorMode.ObjectPlacement)
+                {
+                    _lastObjectPlacementTool = @event.Current;
+                    Configuration.UI_LastObjectPlacementTool = _lastObjectPlacementTool;
+                }
                 else
                 {
                     _lastFaceEditTool = @event.Current;
@@ -1449,5 +1538,7 @@ namespace TombEditor
             => Level.Settings.GameVersion is TRVersion.Game.TombEngine || Configuration.Editor_EnableStepHeightControlsForUnsupportedEngines;
 
         public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
+
+        public bool ShouldRelight => Mode is EditorMode.Lighting;
     }
 }
