@@ -56,17 +56,8 @@ namespace TombEditor.Forms
 
                 if (_selectedSet == null)
                 {
-                    if (GenericMode && treeEvents.Nodes.Count > 0)
-                    {
-                        var firstEventNode = FindFirstEventSetNode();
-                        if (firstEventNode != null)
-                            treeEvents.SelectNode(firstEventNode);
-                    }
-                    else
-                    {
-                        ClearSelection();
-                        ClearEventSetFromUI();
-                    }
+                    ClearSelection();
+                    ClearEventSetFromUI();
                 }
                 else
                 {
@@ -118,8 +109,12 @@ namespace TombEditor.Forms
             // Only folder nodes can receive drag-drop children.
             treeEvents.CanDropIntoNode = n => IsFolderNode(n);
 
-            // Sync folders when user drags nodes in the tree.
-            treeEvents.NodesMoved += (s, args) => SyncFoldersFromTree();
+            // Sync folder paths when user drags nodes in the tree.
+            treeEvents.NodesMoved += (s, args) =>
+            {
+                SyncFoldersFromTree();
+                RemoveEmptyFolderNodes();
+            };
 
             // Gray out UI by default, if event set list is empty
             if (_usedList.Count == 0)
@@ -436,63 +431,40 @@ namespace TombEditor.Forms
 
         private void SyncFoldersFromTree()
         {
+            _usedList.Clear();
+
             foreach (var node in treeEvents.GetAllNodes())
             {
                 if (node.Tag is EventSet evtSet)
                 {
-                    var parent = node.ParentNode;
-                    evtSet.Folder = parent != null ? GetFolderPath(parent) : string.Empty;
-                }
-            }
-
-            // Rebuild used list order from tree.
-            _usedList.Clear();
-            foreach (var node in treeEvents.GetAllNodes())
-            {
-                if (node.Tag is EventSet evtSet)
+                    evtSet.Folder = node.ParentNode != null ? GetFolderPath(node.ParentNode) : string.Empty;
                     _usedList.Add(evtSet);
+                }
             }
         }
 
-        private void CleanupEmptyFolders()
+        private void RemoveEmptyFolderNodes()
         {
-            foreach (var evtSet in _usedList)
+            bool removed;
+            do
             {
-                if (!string.IsNullOrEmpty(evtSet.Folder))
+                removed = false;
+                foreach (var node in treeEvents.GetAllNodes())
                 {
-                    bool hasOtherSets = _usedList.Any(s => s != evtSet && s.Folder == evtSet.Folder);
-                    if (!hasOtherSets)
+                    if (IsFolderNode(node) && node.Nodes.Count == 0)
                     {
-                        // Check if there are event sets in subfolders.
-                        bool hasChildren = _usedList.Any(s => s != evtSet && s.Folder.StartsWith(evtSet.Folder + _folderSeparator));
+                        var parent = node.ParentNode;
+                        if (parent != null)
+                            parent.Nodes.Remove(node);
+                        else
+                            treeEvents.Nodes.Remove(node);
 
-                        if (!hasChildren)
-                        {
-                            // Check if there are sibling event sets in parent folder.
-                            // Only clean up if event set itself no longer exists.
-                        }
+                        removed = true;
+                        break;
                     }
                 }
             }
-
-            // Remove folders with no event sets at all.
-            foreach (var evtSet in _usedList)
-            {
-                if (string.IsNullOrEmpty(evtSet.Folder))
-                    continue;
-
-                var parts = evtSet.Folder.Split(new[] { _folderSeparator }, StringSplitOptions.RemoveEmptyEntries);
-                string checkPath = string.Empty;
-
-                foreach (var part in parts)
-                {
-                    checkPath = string.IsNullOrEmpty(checkPath) ? part : checkPath + _folderSeparator + part;
-                    bool hasEvents = _usedList.Any(s => s.Folder == checkPath || s.Folder.StartsWith(checkPath + _folderSeparator));
-
-                    if (!hasEvents)
-                        evtSet.Folder = string.Empty;
-                }
-            }
+            while (removed);
         }
 
         private void ClearEventSetFromUI()
@@ -682,37 +654,64 @@ namespace TombEditor.Forms
                         EditorActions.DeleteEventSet(evtSet);
                 }
 
-                PopulateEventSetList();
-
-                if (_usedList.Count > 0)
-                {
-                    var firstNode = FindFirstEventSetNode();
-                    if (firstNode != null)
-                        SelectedSet = firstNode.Tag as EventSet;
-                }
+                // Remove the folder node from the tree.
+                if (selectedNode.ParentNode != null)
+                    selectedNode.ParentNode.Nodes.Remove(selectedNode);
                 else
-                {
-                    SelectedSet = null;
-                    UpdateUI();
-                }
+                    treeEvents.Nodes.Remove(selectedNode);
+
+                SyncFoldersFromTree();
+                SelectFirstAvailableEventSet();
             }
             else if (selectedNode.Tag is EventSet)
             {
-                var siblingEventNode = FindNextEventSetNode(selectedNode) ?? FindPrevEventSetNode(selectedNode);
+                var nextSet = FindAdjacentEventSet(selectedNode);
 
                 EditorActions.DeleteEventSet(SelectedSet);
                 PopulateEventSetList();
 
-                if (siblingEventNode?.Tag is EventSet nextSet && _usedList.Contains(nextSet))
+                if (nextSet != null && _usedList.Contains(nextSet))
                     SelectedSet = nextSet;
-                else if (_usedList.Count > 0)
-                    SelectedSet = _usedList[0];
                 else
-                {
-                    SelectedSet = null;
-                    UpdateUI();
-                }
+                    SelectFirstAvailableEventSet();
             }
+        }
+
+        private void SelectFirstAvailableEventSet()
+        {
+            if (_usedList.Count > 0)
+            {
+                var firstNode = FindFirstEventSetNode();
+                if (firstNode != null)
+                    SelectedSet = firstNode.Tag as EventSet;
+                else
+                    SelectedSet = null;
+            }
+            else
+            {
+                SelectedSet = null;
+            }
+        }
+
+        private EventSet FindAdjacentEventSet(DarkTreeNode current)
+        {
+            var allNodes = treeEvents.GetAllNodes();
+            int index = allNodes.IndexOf(current);
+
+            // Look forward first, then backward.
+            for (int i = index + 1; i < allNodes.Count; i++)
+            {
+                if (allNodes[i].Tag is EventSet evtSet)
+                    return evtSet;
+            }
+
+            for (int i = index - 1; i >= 0; i--)
+            {
+                if (allNodes[i].Tag is EventSet evtSet)
+                    return evtSet;
+            }
+
+            return null;
         }
 
         private IEnumerable<EventSet> GetAllEventSetsUnder(DarkTreeNode node)
@@ -723,30 +722,6 @@ namespace TombEditor.Forms
             foreach (var child in node.Nodes)
                 foreach (var set in GetAllEventSetsUnder(child))
                     yield return set;
-        }
-
-        private DarkTreeNode FindNextEventSetNode(DarkTreeNode current)
-        {
-            var all = treeEvents.GetAllNodes();
-            int index = all.IndexOf(current);
-            for (int i = index + 1; i < all.Count; i++)
-            {
-                if (all[i].Tag is EventSet)
-                    return all[i];
-            }
-            return null;
-        }
-
-        private DarkTreeNode FindPrevEventSetNode(DarkTreeNode current)
-        {
-            var all = treeEvents.GetAllNodes();
-			int index = all.IndexOf(current);
-            for (int i = index - 1; i >= 0; i--)
-            {
-                if (all[i].Tag is EventSet)
-                    return all[i];
-            }
-            return null;
         }
 
         private void butUnassignEventSet_Click(object sender, EventArgs e)

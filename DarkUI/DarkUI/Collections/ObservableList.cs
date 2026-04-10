@@ -67,6 +67,13 @@ namespace DarkUI.Collections
             ItemsAdded?.Invoke(this, new ObservableListModified<T>(list));
         }
 
+        public new void Insert(int index, T item)
+        {
+            base.Insert(index, item);
+
+            ItemsAdded?.Invoke(this, new ObservableListModified<T>(new List<T> { item }));
+        }
+
         public new void Remove(T item)
         {
             base.Remove(item);
