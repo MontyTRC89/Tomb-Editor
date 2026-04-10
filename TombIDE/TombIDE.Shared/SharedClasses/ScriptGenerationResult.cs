@@ -35,7 +35,12 @@ public sealed record ScriptGenerationResult(string DataFileName)
 	public IReadOnlyList<GeneratedScriptFile> FilesToCreate { get; init; } = [];
 
 	/// <summary>
-	/// Whether any script content was generated.
+	/// Whether any inline script content was generated.
 	/// </summary>
 	public bool HasContent => GameFlowScript.Length > 0 || LanguageScript.Length > 0;
+
+	/// <summary>
+	/// Whether any output was generated, including additional files to create.
+	/// </summary>
+	public bool HasOutput => HasContent || FilesToCreate.Count > 0;
 }

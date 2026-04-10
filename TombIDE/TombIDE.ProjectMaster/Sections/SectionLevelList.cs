@@ -2,7 +2,6 @@
 using DarkUI.Forms;
 using Microsoft.VisualBasic.FileIO;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -377,10 +376,12 @@ namespace TombIDE.ProjectMaster
 				}
 			}
 
-			if (generatedScript is not null && generatedScript.HasContent)
+			if (generatedScript is not null && generatedScript.HasOutput)
 			{
 				_ide.ScriptEditor_AppendScript(generatedScript);
-				_ide.ScriptEditor_AddNewLevelString(addedLevel.Name);
+
+				if (generatedScript.HasContent)
+					_ide.ScriptEditor_AddNewLevelString(addedLevel.Name);
 			}
 		}
 
