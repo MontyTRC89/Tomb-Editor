@@ -110,11 +110,7 @@ namespace TombEditor.Forms
             treeEvents.CanDropIntoNode = n => IsFolderNode(n);
 
             // Sync folder paths when user drags nodes in the tree.
-            treeEvents.NodesMoved += (s, args) =>
-            {
-                SyncFoldersFromTree();
-                RemoveEmptyFolderNodes();
-            };
+            treeEvents.NodesMoved += (s, args) => SyncFoldersFromTree();
 
             // Gray out UI by default, if event set list is empty
             if (_usedList.Count == 0)

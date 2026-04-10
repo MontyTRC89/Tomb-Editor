@@ -573,8 +573,10 @@ namespace DarkUI.Controls
 
             if (ShowIcons)
                 node.IconArea = new Rectangle(node.ExpandArea.Right + 2, iconTop, IconSize, IconSize);
-            else
+            else if (node.Nodes.Count > 0)
                 node.IconArea = new Rectangle(node.ExpandArea.Right, iconTop, 0, 0);
+            else
+                node.IconArea = new Rectangle(node.ExpandArea.Left, iconTop, 0, 0);
 
             using (var g = CreateGraphics())
             {
@@ -1360,7 +1362,7 @@ namespace DarkUI.Controls
             // Draw drop indicator line during drag operation.
             if (IsDragging && _dropPosition != DropPosition.Into && _dropPosition != DropPosition.None)
             {
-                int lineY = _dropIndicatorY;
+                int lineY = Math.Max(2, _dropIndicatorY);
                 int width = Math.Max(ContentSize.Width, Viewport.Width);
 
                 using (var pen = new Pen(Colors.BlueHighlight, 2.0f))
