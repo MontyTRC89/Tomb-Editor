@@ -58,6 +58,23 @@ public class TombEngineLanguageScriptServiceTests
 	}
 
 	[TestMethod]
+	public void TryInsertLanguageScript_PlacesCommaBeforeTrailingComment()
+	{
+		var document = CreateDocument(
+			"local strings = {",
+			"    existing = { \"Existing\" } -- note",
+			"}",
+			string.Empty,
+			"TEN.Flow.SetStrings(strings)");
+
+		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+
+		Assert.AreEqual(3, insertedLineNumber);
+		StringAssert.Contains(document.Text, "existing = { \"Existing\" }, -- note");
+		StringAssert.Contains(document.Text, "newLevel = { \"New Level\" }");
+	}
+
+	[TestMethod]
 	public void TryInsertLanguageScript_ReturnsNullWhenStringsTableIsMissing()
 	{
 		var document = CreateDocument(

@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -68,7 +69,7 @@ public sealed class TombEngineLanguageScriptService
 		int bracketDepth = 0;
 		bool foundOpeningBracket = false;
 
-		for (DocumentLine? line = stringsStartLine; line != null; line = line.NextLine)
+		for (DocumentLine? line = stringsStartLine; line is not null; line = line.NextLine)
 		{
 			string lineText = StripLuaLineComment(document.GetText(line));
 
@@ -111,22 +112,29 @@ public sealed class TombEngineLanguageScriptService
 
 	private static int InsertLanguageScript(TextDocument document, string languageScript, DocumentLine insertionLine)
 	{
-		string cleanLine = StripLuaLineComment(document.GetText(insertionLine)).TrimEnd();
-		string insertedText = (cleanLine.EndsWith("}") ? "," : string.Empty) + System.Environment.NewLine + languageScript;
+		string rawLine = document.GetText(insertionLine);
+		string cleanLine = StripLuaLineComment(rawLine).TrimEnd();
 
-		document.Insert(insertionLine.EndOffset, insertedText);
+		if (cleanLine.EndsWith("}"))
+		{
+			int commaOffset = insertionLine.Offset + cleanLine.Length;
+			document.Insert(commaOffset, ",");
+		}
+
+		document.Insert(insertionLine.EndOffset, Environment.NewLine + languageScript);
 		return insertionLine.LineNumber + 1;
 	}
 
 	private static int InsertLanguageScriptIntoEmptyTable(TextDocument document, string languageScript, DocumentLine stopLine)
 	{
-		document.Insert(stopLine.Offset, languageScript + System.Environment.NewLine);
+		document.Insert(stopLine.Offset, languageScript + Environment.NewLine);
 		return stopLine.LineNumber;
 	}
 
 	private static string StripLuaLineComment(string lineText)
 	{
 		var builder = new StringBuilder(lineText.Length);
+
 		bool isInSingleQuotedString = false;
 		bool isInDoubleQuotedString = false;
 
@@ -138,6 +146,7 @@ public sealed class TombEngineLanguageScriptService
 			{
 				builder.Append(character);
 				builder.Append(lineText[i + 1]);
+
 				i++;
 				continue;
 			}

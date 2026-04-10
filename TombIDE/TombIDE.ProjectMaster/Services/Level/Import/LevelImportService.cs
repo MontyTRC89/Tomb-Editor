@@ -72,7 +72,7 @@ public sealed class LevelImportService : ILevelImportService
 		{
 			string fileName = Path.GetFileName(sourcePath);
 
-			if (fileName == specificFileName)
+			if (fileName.Equals(specificFileName, StringComparison.OrdinalIgnoreCase))
 				specificFileSelected = true;
 
 			string destinationPath = Path.Combine(levelFolderPath, fileName);
