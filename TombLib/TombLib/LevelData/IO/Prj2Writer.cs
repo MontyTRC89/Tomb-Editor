@@ -173,6 +173,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.Dither16BitTextures, settings.Dither16BitTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveTexturePacking, settings.AgressiveTexturePacking);
                 chunkIO.WriteChunkBool(Prj2Chunks.TextureCompression, settings.CompressTextures);
+                chunkIO.WriteChunkInt(Prj2Chunks.TrxTextureBitDepth, (int)settings.TrxTextureBitDepth);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkInt(Prj2Chunks.DefaultLightQuality, (long)settings.DefaultLightQuality);
@@ -389,6 +390,15 @@ namespace TombLib.LevelData.IO
                         chunkIO.Raw.Write(color.R);
                         chunkIO.Raw.Write(color.G);
                         chunkIO.Raw.Write(color.B);
+                    }
+                }
+                if (settings.Favorites.Count > 0)
+                {
+                    using (var chunkFavorites = chunkIO.WriteChunk(Prj2Chunks.Favorites, long.MaxValue))
+                    {
+                        foreach (string favorite in settings.Favorites)
+                            chunkIO.WriteChunkString(Prj2Chunks.Favorite, favorite);
+                        chunkIO.WriteChunkEnd();
                     }
                 }
                 chunkIO.WriteChunkEnd();

@@ -1,75 +1,23 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "TR2 gameflow schema",
+  "title": "TRX gameflow schema",
   "type": "object",
   "properties": {
     "main_menu_picture": {
       "type": "string",
       "description": "Path to the main menu background image."
     },
-    "savegame_fmt_legacy": {
+    "main_script": {
       "type": "string",
-      "description": "Path pattern to look for the original savegame files."
+      "description": "Path to a global Lua script to execute after game initialization, before the first level loads."
     },
-    "savegame_fmt_bson": {
+    "savegame_file_fmt": {
       "type": "string",
       "description": "Path pattern to look for the savegame files."
-    },
-    "cmd_init": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when the game is first launched."
-    },
-    "cmd_title": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when the main menu is shown."
-    },
-    "cmd_death_in_demo": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when Lara dies during a demo."
-    },
-    "cmd_death_in_game": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when Lara dies in game."
-    },
-    "cmd_demo_interrupt": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when the player interrupts a demo."
-    },
-    "cmd_demo_end": {
-      "$ref": "#/definitions/command",
-      "description": "Command to run when a demo finishes playback."
-    },
-    "cheat_keys": {
-      "type": "boolean",
-      "description": "Whether to enable original in-game cheat keys."
-    },
-    "load_save_disabled": {
-      "type": "boolean",
-      "description": "Whether to disable saving and loading the game."
-    },
-    "play_any_level": {
-      "type": "boolean",
-      "description": "Whether to show a full list of all levels in place of the New Game screen."
-    },
-    "lockout_option_ring": {
-      "type": "boolean",
-      "description": "Whether to disallow the player from using the option ring in-game."
     },
     "demo_version": {
       "type": "boolean",
       "description": "Legacy demo version flag (scheduled for removal)."
-    },
-    "single_level": {
-      "type": "integer",
-      "description": "Force the player to only play this one level."
-    },
-    "demo_delay": {
-      "type": "number",
-      "description": "Number of seconds to pass in the main menu before playing the demo."
-    },
-    "secret_track": {
-      "type": "integer",
-      "description": "Music track to play when a secret is found. -1 to disable."
     },
     "title": {
       "$ref": "#/definitions/title",
@@ -84,6 +32,13 @@
       "description": "Global data injection file paths applied to all levels unless overridden.",
       "items": {
         "type": "string"
+      }
+    },
+    "globe_select_entries": {
+      "type": "array",
+      "description": "Array of globe entries to define how level area selection works.",
+      "items": {
+        "$ref": "#/definitions/globe_select"
       }
     },
     "levels": {
@@ -114,9 +69,13 @@
         "$ref": "#/definitions/fmv"
       }
     },
-    "enable_killer_pushblocks": {
+    "convert_dropped_guns": {
       "type": "boolean",
-      "description": "If enabled, when a pushblock falls from the air and lands on Lara, it will kill her outright."
+      "description": "Forces guns dropped by enemies to be converted to the equivalent ammo if Lara already has the gun."
+    },
+    "enable_tr2_item_drops": {
+      "type": "boolean",
+      "description": "Forces enemies who are placed in the same position as pickup items to carry those items and drop them when killed."
     },
     "enforced_config": {
       "type": "object",
@@ -164,8 +123,8 @@
   },
   "required": [
     "main_menu_picture",
-    "savegame_fmt_legacy",
-    "savegame_fmt_bson"
+    "savegame_file_fmt",
+    "levels"
   ],
   "additionalProperties": false,
   "definitions": {
@@ -224,11 +183,38 @@
         "type": {
           "type": "string"
         },
+        "script": {
+          "type": "string",
+          "description": "Path to a Lua script executed after loading this level."
+        },
         "path": {
           "type": "string"
         },
         "music_track": {
           "type": "integer"
+        },
+        "lara_outfit": {
+          "type": "string"
+        },
+        "weather_type": {
+          "type": "string",
+          "enum": [
+            "rain",
+            "snow"
+          ],
+          "description": "Enables a per-level weather effect."
+        },
+        "cold_water": {
+          "type": "boolean"
+        },
+        "death_tile": {
+          "type": "string",
+          "description": "Defines death-tile behavior (for TR3 only).",
+          "enum": [
+            "lava",
+            "rapids",
+            "electric"
+          ]
         },
         "sequence": {
           "type": "array",
@@ -245,42 +231,113 @@
             "type": "string"
           }
         },
-        "ambient_tracks": {
+        "item_drops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/item_drop"
+          }
+        },
+        "water_color": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "fog_start": {
+          "type": "number"
+        },
+        "fog_end": {
+          "type": "number"
+        },
+        "unobtainable_pickups": {
+          "type": "integer"
+        },
+        "unobtainable_kills": {
+          "type": "integer"
+        },
+        "unobtainable_ally_kills": {
+          "type": "integer"
+        },
+        "unobtainable_secrets": {
+          "type": "integer"
+        }
+      },
+      "if": {
+        "properties": {
+          "type": {
+            "enum": [
+              "current",
+              "dummy"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "else": {
+        "required": [
+          "path",
+          "sequence",
+          "lara_outfit"
+        ]
+      },
+      "additionalProperties": false
+    },
+    "item_drop": {
+      "type": "object",
+      "properties": {
+        "enemy_num": {
+          "type": "integer"
+        },
+        "object_ids": {
           "type": "array",
           "items": {
             "type": "integer"
           }
         }
       },
-      "anyOf": [
-        {
-          "properties": {
-            "type": {
-              "enum": [
-                "current",
-                "dummy"
-              ]
-            }
+      "required": [
+        "enemy_num",
+        "object_ids"
+      ],
+      "additionalProperties": false
+    },
+    "globe_select": {
+      "type": "object",
+      "properties": {
+        "rot": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "start_level_ordinal": {
+          "type": "integer"
+        },
+        "completion_level_ordinal": {
+          "type": "integer"
+        },
+        "prereq_zones": {
+          "type": "array",
+          "items": {
+            "type": "integer"
           }
         },
-        {
-          "properties": {
-            "type": {
-              "enum": [
-                "title"
-              ]
-            }
-          },
-          "required": [
-            "sequence"
-          ]
-        },
-        {
-          "required": [
-            "path",
-            "sequence"
-          ]
+        "mesh_idx": {
+          "type": "integer"
         }
+      },
+      "required": [
+        "rot",
+        "start_level_ordinal",
+        "completion_level_ordinal",
+        "prereq_zones",
+        "mesh_idx"
       ],
       "additionalProperties": false
     },
@@ -344,13 +401,13 @@
           "$ref": "#/definitions/seq_remove_medipacks"
         },
         {
+          "$ref": "#/definitions/seq_remove_scions"
+        },
+        {
           "$ref": "#/definitions/seq_remove_flares"
         },
         {
           "$ref": "#/definitions/seq_play_cutscene"
-        },
-        {
-          "$ref": "#/definitions/seq_set_cutscene_angle"
         },
         {
           "$ref": "#/definitions/seq_enable_sunset"
@@ -359,7 +416,13 @@
           "$ref": "#/definitions/seq_set_lara_start_anim"
         },
         {
+          "$ref": "#/definitions/seq_setup_bacon_lara"
+        },
+        {
           "$ref": "#/definitions/seq_disable_floor"
+        },
+        {
+          "$ref": "#/definitions/seq_globe_select"
         }
       ]
     },
@@ -629,6 +692,19 @@
       ],
       "additionalProperties": false
     },
+    "seq_remove_scions": {
+      "type": "object",
+      "description": "Any combination of these sequences can be used to modify Lara's inventory at the start of a level. `remove_weapons` does not remove the ammo for those guns, and `remove_ammo` does not remove the guns. Item removal is performed first, followed by addition.",
+      "properties": {
+        "type": {
+          "const": "remove_scions"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
     "seq_remove_flares": {
       "type": "object",
       "description": "Any combination of these sequences can be used to modify Lara's inventory at the start of a level. `remove_weapons` does not remove the ammo for those guns, and `remove_ammo` does not remove the guns. Item removal is performed first, followed by addition.",
@@ -639,23 +715,6 @@
       },
       "required": [
         "type"
-      ],
-      "additionalProperties": false
-    },
-    "seq_set_cutscene_angle": {
-      "type": "object",
-      "description": "Sets the camera's angle.",
-      "properties": {
-        "type": {
-          "const": "set_cutscene_angle"
-        },
-        "angle": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "type",
-        "angle"
       ],
       "additionalProperties": false
     },
@@ -689,6 +748,23 @@
       ],
       "additionalProperties": false
     },
+    "seq_setup_bacon_lara": {
+      "type": "object",
+      "description": "Sets the room number in which Bacon Lara will be anchored to enable correct mirroring behaviour with Lara.",
+      "properties": {
+        "type": {
+          "const": "setup_bacon_lara"
+        },
+        "anchor_room": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "anchor_room"
+      ],
+      "additionalProperties": false
+    },
     "seq_disable_floor": {
       "type": "object",
       "description": "Configures a specific height (with 256 representing 1 click and 1024 representing 1 sector) to define an abyss that will invariably lead to Lara's death if she falls into it. Additionally, it employs special rendering to ensure it isn't treated as solid ground.",
@@ -703,6 +779,23 @@
       "required": [
         "type",
         "height"
+      ],
+      "additionalProperties": false
+    },
+    "seq_globe_select": {
+      "type": "object",
+      "description": "Displays the area selection globe using the specified background image.",
+      "properties": {
+        "type": {
+          "const": "globe_select"
+        },
+        "image": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "image"
       ],
       "additionalProperties": false
     }

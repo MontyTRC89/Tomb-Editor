@@ -324,6 +324,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             dec_overlaps = new List<TombEngineOverlap>();
 
+            if (dec_boxes.Count == 0)
+                return false;
+
             int i = 0;
             int j = 0;
 

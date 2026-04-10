@@ -314,6 +314,8 @@ namespace TombLib.LevelData.IO
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.TextureCompression)
                     settings.CompressTextures = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.TrxTextureBitDepth)
+                    settings.TrxTextureBitDepth = (TrxTextureBitDepth)chunkIO.ReadChunkInt(chunkSize);
                 else if (id == Prj2Chunks.RearrangeRooms)
                     settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.RemoveUnusedObjects)
@@ -715,6 +717,19 @@ namespace TombLib.LevelData.IO
                         colorList.Add(new ColorC(r, g, b));
                     }
                     settings.Palette = colorList;
+                }
+                else if (id == Prj2Chunks.Favorites)
+                {
+                    settings.Favorites.Clear();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Prj2Chunks.Favorite)
+                        {
+                            settings.Favorites.Add(chunkIO.ReadChunkString(chunkSize2));
+                            return true;
+                        }
+                        else return false;
+                    });
                 }
                 else
                     return false;
@@ -1184,7 +1199,7 @@ namespace TombLib.LevelData.IO
                 CancellationToken = cancelToken,
             };
             progressReporter?.ReportInfo("Building world geometry");
-            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.BuildGeometry());
+            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.Rebuild(relight: true, highQualityLighting: true));
             return true;
         }
 
