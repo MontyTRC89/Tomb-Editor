@@ -54,12 +54,5 @@ namespace TombLib.Scripting.Lua
 			base.UpdateSettings(configuration);
 			LiveErrorUnderlining = true;
 		}
-
-		private static SolidColorBrush CreateFrozenBrush(Color color)
-		{
-			var brush = new SolidColorBrush(color);
-			brush.Freeze();
-			return brush;
-		}
 	}
 }

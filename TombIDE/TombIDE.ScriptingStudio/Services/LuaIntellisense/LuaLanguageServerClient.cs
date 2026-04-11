@@ -42,10 +42,12 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		private Task _stderrLoopTask;
 		private string[] _semanticTokenTypes = Array.Empty<string>();
 		private string[] _semanticTokenModifiers = Array.Empty<string>();
+		private bool _supportsCompletionResolve;
 
 		public bool IsReady { get; private set; }
 		public IReadOnlyList<string> SemanticTokenTypes => _semanticTokenTypes;
 		public IReadOnlyList<string> SemanticTokenModifiers => _semanticTokenModifiers;
+		public bool SupportsCompletionResolve => _supportsCompletionResolve;
 
 		public event Action<JsonElement> DiagnosticsPublished;
 
@@ -98,7 +100,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				initializeTimeout.CancelAfter(TimeSpan.FromSeconds(10));
 
 				JsonElement initializeResponse = await SendRequestAsync("initialize", BuildInitializeParams(), initializeTimeout.Token).ConfigureAwait(false);
-				CaptureSemanticTokenLegend(initializeResponse);
+				CaptureServerCapabilities(initializeResponse);
 
 				IsReady = true;
 
@@ -179,7 +181,11 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 							completionItem = new
 							{
 								snippetSupport = false,
-								documentationFormat = new[] { "plaintext", "markdown" }
+								documentationFormat = new[] { "plaintext", "markdown" },
+								resolveSupport = new
+								{
+									properties = new[] { "detail", "documentation" }
+								}
 							}
 						},
 						hover = new
@@ -223,12 +229,20 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				}
 			};
 
-		private void CaptureSemanticTokenLegend(JsonElement initializeResponse)
+		private void CaptureServerCapabilities(JsonElement initializeResponse)
 		{
+			_supportsCompletionResolve = false;
 			_semanticTokenTypes = Array.Empty<string>();
 			_semanticTokenModifiers = Array.Empty<string>();
 
-			if (!initializeResponse.TryGetProperty("capabilities", out JsonElement capabilities)
+			if (initializeResponse.TryGetProperty("capabilities", out JsonElement capabilities)
+				&& capabilities.TryGetProperty("completionProvider", out JsonElement completionProvider)
+				&& completionProvider.TryGetProperty("resolveProvider", out JsonElement resolveProvider))
+			{
+				_supportsCompletionResolve = resolveProvider.ValueKind == JsonValueKind.True;
+			}
+
+			if (!initializeResponse.TryGetProperty("capabilities", out capabilities)
 				|| !capabilities.TryGetProperty("semanticTokensProvider", out JsonElement semanticTokensProvider)
 				|| !semanticTokensProvider.TryGetProperty("legend", out JsonElement legend))
 			{
@@ -619,6 +633,9 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			_process = null;
 			_readLoopTask = null;
 			_stderrLoopTask = null;
+			_supportsCompletionResolve = false;
+			_semanticTokenTypes = Array.Empty<string>();
+			_semanticTokenModifiers = Array.Empty<string>();
 		}
 
 		private void ThrowIfDisposed()

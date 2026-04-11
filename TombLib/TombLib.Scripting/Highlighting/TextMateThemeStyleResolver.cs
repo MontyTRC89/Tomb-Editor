@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using TextMateSharp.Themes;
 using TextMateFontStyle = TextMateSharp.Themes.FontStyle;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Highlighting
 {
@@ -69,8 +70,9 @@ namespace TombLib.Scripting.Highlighting
 				textDecorations = StrikethroughDecorations;
 			}
 
-			Brush brush = foreground > 0
-				? CreateFrozenBrush(_theme.GetColor(foreground))
+			string foregroundColor = foreground > 0 ? _theme.GetColor(foreground) : null;
+			Brush brush = !string.IsNullOrWhiteSpace(foregroundColor)
+				? CreateFrozenBrush(foregroundColor)
 				: null;
 
 			TextMateHighlightingStyle style = new TextMateHighlightingStyle(
@@ -81,16 +83,6 @@ namespace TombLib.Scripting.Highlighting
 
 			_cache[cacheKey] = style;
 			return style;
-		}
-
-		private static Brush CreateFrozenBrush(string colorValue)
-		{
-			if (string.IsNullOrWhiteSpace(colorValue))
-				return null;
-
-			var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorValue));
-			brush.Freeze();
-			return brush;
 		}
 
 		private static TextDecorationCollection CreateTextDecorations(TextDecorationCollection source)

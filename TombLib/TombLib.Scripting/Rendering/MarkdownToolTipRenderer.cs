@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using ICSharpCode.AvalonEdit;
@@ -15,6 +17,8 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using MdXaml;
 using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Resources;
+using TombLib.WPF;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Rendering
 {
@@ -33,15 +37,21 @@ namespace TombLib.Scripting.Rendering
 		private static readonly double CodeFontSize = Math.Max(BodyFontSize - 1.0, 13.0);
 		private static readonly Brush DefaultForeground = CreateFrozenBrush(Colors.Gainsboro);
 		private static readonly Brush DefaultBackground = CreateFrozenBrush(Color.FromRgb(64, 64, 64));
+		private static readonly Brush DefaultLinkForeground = CreateFrozenBrush(Color.FromRgb(112, 192, 231));
+		private static readonly HashSet<string> SupportedHyperlinkSchemes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			Uri.UriSchemeHttp,
+			Uri.UriSchemeHttps
+		};
 		private static readonly Lazy<IHighlightingDefinition> LuaHighlighting = new Lazy<IHighlightingDefinition>(LoadLuaHighlighting);
 
-		public static FrameworkElement CreateContent(string content, Brush foreground, Brush background)
+		public static FrameworkElement CreateContent(string content, Brush foreground, Brush background, bool allowScrolling = true)
 		{
 			string normalizedContent = NormalizeLineEndings(content);
 			string originalContent = normalizedContent;
 
 			if (string.IsNullOrWhiteSpace(normalizedContent))
-				return CreateFallbackContent(string.Empty, foreground);
+				return CreatePlainTextContent(string.Empty, foreground, allowScrolling);
 
 			try
 			{
@@ -54,10 +64,11 @@ namespace TombLib.Scripting.Rendering
 
 				FlowDocument document = markdown.Transform(normalizedContent);
 				ApplyDocumentTheme(document, foreground);
-				ReplaceCodeBlocks(document, fencedCodeBlocks, foreground, background);
+				ReplaceCodeBlocks(document, fencedCodeBlocks, foreground, background, allowScrolling);
 				ApplyInlineCodeTheme(document, foreground, background);
+				ApplyHyperlinkTheme(document);
 
-				return new FlowDocumentScrollViewer
+				var viewer = new FlowDocumentScrollViewer
 				{
 					Document = document,
 					Background = Brushes.Transparent,
@@ -65,20 +76,32 @@ namespace TombLib.Scripting.Rendering
 					Padding = new Thickness(0.0),
 					Margin = new Thickness(0.0),
 					IsToolBarVisible = false,
-					VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+					VerticalScrollBarVisibility = allowScrolling
+						? ScrollBarVisibility.Auto
+						: ScrollBarVisibility.Hidden,
 					HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
 					HorizontalAlignment = HorizontalAlignment.Left,
+					IsSelectionEnabled = false,
 					Focusable = false,
 					MaxHeight = ToolTipMaxHeight,
 					MaxWidth = ToolTipMaxWidth
 				};
+
+				if (allowScrolling)
+					viewer.PreviewMouseWheel += ScrollHost_PreviewMouseWheel;
+
+				viewer.PreviewMouseLeftButtonUp += HyperlinkHost_PreviewMouseLeftButtonUp;
+				return viewer;
 			}
 			catch (Exception exception)
 			{
 				Debug.WriteLine($"[MarkdownToolTipRenderer] Failed to render markdown tooltip: {exception}");
-				return CreateFallbackContent(originalContent, foreground);
+				return CreatePlainTextContent(originalContent, foreground, allowScrolling);
 			}
 		}
+
+		public static FrameworkElement CreatePlainTextContent(string content, Brush foreground, bool allowScrolling = true)
+			=> CreateFallbackContent(content, foreground, allowScrolling);
 
 		private static void ApplyDocumentTheme(FlowDocument document, Brush foreground)
 		{
@@ -93,34 +116,106 @@ namespace TombLib.Scripting.Rendering
 		private static void ApplyInlineCodeTheme(FlowDocument document, Brush foreground, Brush background)
 		{
 			Brush codeBackground = CreateCodeBackground(background);
-			var codeSpanElements = new List<TextElement>();
+			Brush codeBorder = CreateCodeBorder(background);
+			var codeSpanElements = new List<Inline>();
 
 			foreach (TextElement element in EnumerateTextElements(document))
 			{
-				if (!string.Equals(element.Tag as string, "CodeSpan", StringComparison.Ordinal))
+				if (!string.Equals(element.Tag as string, "CodeSpan", StringComparison.Ordinal)
+					|| element is not Inline inline)
 					continue;
 
-				codeSpanElements.Add(element);
+				codeSpanElements.Add(inline);
 			}
 
-			foreach (TextElement element in codeSpanElements)
+			foreach (Inline inline in codeSpanElements)
 			{
+				string inlineText = NormalizeLineEndings(ExtractInlineText(inline)).TrimEnd('\n');
 
-				string inlineText = NormalizeLineEndings(new TextRange(element.ContentStart, element.ContentEnd).Text).TrimEnd('\n');
+				ReplaceInline(inline, CreateInlineCodeContainer(inlineText, foreground, codeBackground, codeBorder));
+			}
+		}
 
-				if (element is Span span)
+		private static string ExtractInlineText(Inline inline)
+		{
+			if (inline is null)
+				return string.Empty;
+
+			switch (inline)
+			{
+				case Run run:
+					return run.Text ?? string.Empty;
+
+				case LineBreak:
+					return Environment.NewLine;
+
+				case Span span:
+					var builder = new StringBuilder();
+
+					foreach (Inline childInline in span.Inlines)
+						builder.Append(ExtractInlineText(childInline));
+
+					return builder.ToString();
+
+				default:
+					return new TextRange(inline.ContentStart, inline.ContentEnd).Text;
+			}
+		}
+
+		private static Inline CreateInlineCodeContainer(string text, Brush foreground, Brush background, Brush borderBrush)
+			=> new InlineUIContainer(
+				new Border
 				{
-					span.Inlines.Clear();
-					span.Inlines.Add(new Run(" " + inlineText + " "));
-				}
-				else if (element is Run run)
-				{
-					run.Text = " " + inlineText + " ";
-				}
+					Background = background,
+					BorderBrush = borderBrush,
+					BorderThickness = new Thickness(1.0),
+					CornerRadius = new CornerRadius(2.0),
+					Padding = new Thickness(4.0, 1.0, 4.0, 1.0),
+					Child = new TextBlock
+					{
+						Text = text ?? string.Empty,
+						Foreground = foreground ?? DefaultForeground,
+						FontFamily = CodeFontFamily,
+						FontSize = CodeFontSize,
+						TextWrapping = TextWrapping.NoWrap
+					}
+				})
+			{
+				BaselineAlignment = BaselineAlignment.Center
+			};
 
-				element.SetValue(TextElement.FontFamilyProperty, CodeFontFamily);
-				element.SetValue(TextElement.ForegroundProperty, foreground ?? DefaultForeground);
-				element.SetValue(TextElement.BackgroundProperty, codeBackground);
+		private static void ReplaceInline(Inline source, Inline replacement)
+		{
+			switch (source?.Parent)
+			{
+				case Paragraph paragraph:
+					paragraph.Inlines.InsertBefore(source, replacement);
+					paragraph.Inlines.Remove(source);
+					break;
+
+				case Span span:
+					span.Inlines.InsertBefore(source, replacement);
+					span.Inlines.Remove(source);
+					break;
+			}
+		}
+
+		private static void ApplyHyperlinkTheme(FlowDocument document)
+		{
+			foreach (TextElement element in EnumerateTextElements(document))
+			{
+				if (element is not Hyperlink hyperlink)
+					continue;
+
+				bool canOpen = IsSupportedHyperlink(hyperlink.NavigateUri);
+
+				if (!canOpen)
+					hyperlink.NavigateUri = null;
+
+				hyperlink.Foreground = DefaultLinkForeground;
+				hyperlink.TextDecorations = TextDecorations.Underline;
+				hyperlink.Cursor = canOpen ? Cursors.Hand : Cursors.Arrow;
+				hyperlink.Focusable = false;
 			}
 		}
 
@@ -139,17 +234,17 @@ namespace TombLib.Scripting.Rendering
 			return codeBlocks;
 		}
 
-		private static void ReplaceCodeBlocks(FlowDocument document, IReadOnlyList<CodeBlockInfo> fencedCodeBlocks, Brush foreground, Brush background)
+		private static void ReplaceCodeBlocks(FlowDocument document, IReadOnlyList<CodeBlockInfo> fencedCodeBlocks, Brush foreground, Brush background, bool allowScrolling)
 		{
 			var codeBlockLookup = new Dictionary<string, CodeBlockInfo>(StringComparer.Ordinal);
 
 			foreach (CodeBlockInfo codeBlock in fencedCodeBlocks)
 				codeBlockLookup[codeBlock.Placeholder] = codeBlock;
 
-			ReplaceCodeBlocks(document.Blocks, codeBlockLookup, foreground, background);
+			ReplaceCodeBlocks(document.Blocks, codeBlockLookup, foreground, background, allowScrolling);
 		}
 
-		private static void ReplaceCodeBlocks(BlockCollection blocks, IReadOnlyDictionary<string, CodeBlockInfo> fencedCodeBlocks, Brush foreground, Brush background)
+		private static void ReplaceCodeBlocks(BlockCollection blocks, IReadOnlyDictionary<string, CodeBlockInfo> fencedCodeBlocks, Brush foreground, Brush background, bool allowScrolling)
 		{
 			Block currentBlock = blocks.FirstBlock;
 
@@ -157,7 +252,7 @@ namespace TombLib.Scripting.Rendering
 			{
 				Block nextBlock = currentBlock.NextBlock;
 
-				if (TryCreateReplacementBlock(currentBlock, fencedCodeBlocks, foreground, background, out Block replacementBlock))
+				if (TryCreateReplacementBlock(currentBlock, fencedCodeBlocks, foreground, background, allowScrolling, out Block replacementBlock))
 				{
 					blocks.InsertBefore(currentBlock, replacementBlock);
 					blocks.Remove(currentBlock);
@@ -167,19 +262,19 @@ namespace TombLib.Scripting.Rendering
 					switch (currentBlock)
 					{
 						case Section section:
-							ReplaceCodeBlocks(section.Blocks, fencedCodeBlocks, foreground, background);
+							ReplaceCodeBlocks(section.Blocks, fencedCodeBlocks, foreground, background, allowScrolling);
 							break;
 
 						case List list:
 							foreach (ListItem item in list.ListItems)
-								ReplaceCodeBlocks(item.Blocks, fencedCodeBlocks, foreground, background);
+								ReplaceCodeBlocks(item.Blocks, fencedCodeBlocks, foreground, background, allowScrolling);
 							break;
 
 						case Table table:
 							foreach (TableRowGroup rowGroup in table.RowGroups)
 								foreach (TableRow row in rowGroup.Rows)
 									foreach (TableCell cell in row.Cells)
-										ReplaceCodeBlocks(cell.Blocks, fencedCodeBlocks, foreground, background);
+										ReplaceCodeBlocks(cell.Blocks, fencedCodeBlocks, foreground, background, allowScrolling);
 							break;
 					}
 				}
@@ -188,7 +283,7 @@ namespace TombLib.Scripting.Rendering
 			}
 		}
 
-		private static bool TryCreateReplacementBlock(Block block, IReadOnlyDictionary<string, CodeBlockInfo> fencedCodeBlocks, Brush foreground, Brush background, out Block replacementBlock)
+		private static bool TryCreateReplacementBlock(Block block, IReadOnlyDictionary<string, CodeBlockInfo> fencedCodeBlocks, Brush foreground, Brush background, bool allowScrolling, out Block replacementBlock)
 		{
 			replacementBlock = null;
 
@@ -200,18 +295,18 @@ namespace TombLib.Scripting.Rendering
 
 			if (fencedCodeBlocks.TryGetValue(normalizedText, out CodeBlockInfo fencedCodeBlock))
 			{
-				replacementBlock = new BlockUIContainer(CreateCodeBlockElement(fencedCodeBlock.Language, fencedCodeBlock.Code, foreground, background));
+				replacementBlock = new BlockUIContainer(CreateCodeBlockElement(fencedCodeBlock.Language, fencedCodeBlock.Code, foreground, background, allowScrolling));
 				return true;
 			}
 
 			if (!string.Equals(paragraph.Tag as string, "CodeBlock", StringComparison.Ordinal))
 				return false;
 
-			replacementBlock = new BlockUIContainer(CreateCodeBlockElement(null, rawText.TrimEnd('\n'), foreground, background));
+			replacementBlock = new BlockUIContainer(CreateCodeBlockElement(null, rawText.TrimEnd('\n'), foreground, background, allowScrolling));
 			return true;
 		}
 
-		private static FrameworkElement CreateCodeBlockElement(string language, string code, Brush foreground, Brush background)
+		private static FrameworkElement CreateCodeBlockElement(string language, string code, Brush foreground, Brush background, bool allowScrolling)
 		{
 			string normalizedCode = NormalizeCodeBlockText(code);
 
@@ -224,12 +319,14 @@ namespace TombLib.Scripting.Rendering
 				BorderThickness = new Thickness(0.0),
 				Margin = new Thickness(0.0),
 				Padding = new Thickness(0.0),
+				Width = ToolTipTextMaxWidth,
+				MaxWidth = ToolTipTextMaxWidth,
 				HorizontalAlignment = HorizontalAlignment.Stretch,
-				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
 				FontFamily = CodeFontFamily,
 				FontSize = CodeFontSize,
 				ShowLineNumbers = false,
-				WordWrap = false
+				WordWrap = true
 			};
 
 			editor.Options.AllowScrollBelowDocument = false;
@@ -245,14 +342,17 @@ namespace TombLib.Scripting.Rendering
 				editor.SyntaxHighlighting = ResolveHighlighting(language);
 			}
 
-			int lineCount = Math.Max(1, editor.Document.LineCount);
 			double lineHeight = GetEditorLineHeight(editor);
-			double visibleLineCount = Math.Min(lineCount, MaxVisibleCodeBlockLines);
+			double maxVisibleHeight = Math.Max(lineHeight + 4.0, Math.Ceiling(MaxVisibleCodeBlockLines * lineHeight) + 2.0);
+			double desiredHeight = Math.Max(lineHeight + 4.0, MeasureWrappedCodeHeight(normalizedCode, ToolTipTextMaxWidth, lineHeight));
 
-			editor.Height = Math.Max(lineHeight + 4.0, Math.Ceiling(visibleLineCount * lineHeight) + 2.0);
-			editor.VerticalScrollBarVisibility = lineCount > MaxVisibleCodeBlockLines
+			editor.Height = Math.Min(desiredHeight, maxVisibleHeight);
+			editor.VerticalScrollBarVisibility = allowScrolling && desiredHeight > maxVisibleHeight
 				? ScrollBarVisibility.Auto
 				: ScrollBarVisibility.Hidden;
+
+			if (allowScrolling)
+				editor.PreviewMouseWheel += ScrollHost_PreviewMouseWheel;
 
 			return new Border
 			{
@@ -262,6 +362,7 @@ namespace TombLib.Scripting.Rendering
 				CornerRadius = new CornerRadius(3.0),
 				Padding = new Thickness(8.0, 6.0, 8.0, 6.0),
 				Margin = new Thickness(0.0, 4.0, 0.0, 6.0),
+				MaxWidth = ToolTipTextMaxWidth,
 				Child = editor
 			};
 		}
@@ -284,6 +385,21 @@ namespace TombLib.Scripting.Rendering
 				1.0);
 
 			return Math.Ceiling(Math.Max(1.0, formattedText.Height));
+		}
+
+		private static double MeasureWrappedCodeHeight(string code, double width, double lineHeight)
+		{
+			var textBlock = new TextBlock
+			{
+				Text = string.IsNullOrEmpty(code) ? " " : code,
+				FontFamily = CodeFontFamily,
+				FontSize = CodeFontSize,
+				TextWrapping = TextWrapping.Wrap,
+				MaxWidth = width
+			};
+
+			textBlock.Measure(new Size(width, double.PositiveInfinity));
+			return Math.Max(Math.Ceiling(textBlock.DesiredSize.Height) + 2.0, Math.Ceiling(lineHeight) + 4.0);
 		}
 
 		private static string NormalizeCodeBlockText(string code)
@@ -370,8 +486,9 @@ namespace TombLib.Scripting.Rendering
 						yield return element;
 		}
 
-		private static FrameworkElement CreateFallbackContent(string content, Brush foreground)
-			=> new TextBlock
+		private static FrameworkElement CreateFallbackContent(string content, Brush foreground, bool allowScrolling)
+		{
+			var textBlock = new TextBlock
 			{
 				Foreground = foreground ?? DefaultForeground,
 				Text = content ?? string.Empty,
@@ -380,6 +497,68 @@ namespace TombLib.Scripting.Rendering
 				FontSize = BodyFontSize,
 				MaxWidth = ToolTipTextMaxWidth
 			};
+
+			var scrollViewer = new ScrollViewer
+			{
+				Content = textBlock,
+				MaxHeight = ToolTipMaxHeight,
+				MaxWidth = ToolTipMaxWidth,
+				VerticalScrollBarVisibility = allowScrolling
+					? ScrollBarVisibility.Auto
+					: ScrollBarVisibility.Hidden,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				CanContentScroll = true
+			};
+
+			if (allowScrolling)
+			{
+				scrollViewer.PreviewMouseWheel += ScrollHost_PreviewMouseWheel;
+			}
+
+			return scrollViewer;
+		}
+
+		private static void HyperlinkHost_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			Hyperlink hyperlink = (e.OriginalSource as DependencyObject)?.FindAncestorOrSelf<Hyperlink>();
+
+			if (hyperlink is not null && TryOpenHyperlink(hyperlink.NavigateUri))
+				e.Handled = true;
+		}
+
+		private static bool TryOpenHyperlink(Uri uri)
+		{
+			if (!IsSupportedHyperlink(uri))
+				return false;
+
+			try
+			{
+				Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true });
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		private static bool IsSupportedHyperlink(Uri uri)
+			=> uri is not null && uri.IsAbsoluteUri && SupportedHyperlinkSchemes.Contains(uri.Scheme);
+
+		private static void ScrollHost_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			ScrollViewer scrollViewer = sender as ScrollViewer ?? (sender as DependencyObject)?.FindVisualDescendant<ScrollViewer>();
+
+			if (scrollViewer is null || scrollViewer.ScrollableHeight <= 0.0)
+				return;
+
+			if (e.Delta > 0)
+				scrollViewer.LineUp();
+			else if (e.Delta < 0)
+				scrollViewer.LineDown();
+
+			e.Handled = true;
+		}
 
 		private static string NormalizeLineEndings(string text)
 			=> (text ?? string.Empty)
@@ -459,13 +638,6 @@ namespace TombLib.Scripting.Rendering
 				(byte)Math.Round(first.R * inverseRatio + second.R * clampedRatio),
 				(byte)Math.Round(first.G * inverseRatio + second.G * clampedRatio),
 				(byte)Math.Round(first.B * inverseRatio + second.B * clampedRatio));
-		}
-
-		private static SolidColorBrush CreateFrozenBrush(Color color)
-		{
-			var brush = new SolidColorBrush(color);
-			brush.Freeze();
-			return brush;
 		}
 
 		private sealed class CodeBlockInfo

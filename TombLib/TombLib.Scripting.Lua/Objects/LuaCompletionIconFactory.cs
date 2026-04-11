@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Windows.Media;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Lua.Objects
 {
@@ -134,11 +135,5 @@ namespace TombLib.Scripting.Lua.Objects
 			};
 		}
 
-		private static SolidColorBrush CreateFrozenBrush(string colorValue)
-		{
-			var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorValue));
-			brush.Freeze();
-			return brush;
-		}
 	}
 }

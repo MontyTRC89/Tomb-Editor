@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
+    <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Configs\TextEditors\ColorSchemes\Lua\Default.xml">

@@ -5,15 +5,16 @@ using System.Windows;
 using System.Windows.Media;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Objects;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Rendering
 {
 	public sealed class ErrorRenderer : IBackgroundRenderer
 	{
-		private static readonly Brush ErrorBrush = CreateBrush(Color.FromArgb(224, 220, 76, 60));
-		private static readonly Brush WarningBrush = CreateBrush(Color.FromArgb(224, 226, 165, 44));
-		private static readonly Brush InformationBrush = CreateBrush(Color.FromArgb(224, 88, 170, 255));
-		private static readonly Brush HintBrush = CreateBrush(Color.FromArgb(192, 166, 166, 166));
+		private static readonly Brush ErrorBrush = CreateFrozenBrush(Color.FromArgb(224, 220, 76, 60));
+		private static readonly Brush WarningBrush = CreateFrozenBrush(Color.FromArgb(224, 226, 165, 44));
+		private static readonly Brush InformationBrush = CreateFrozenBrush(Color.FromArgb(224, 88, 170, 255));
+		private static readonly Brush HintBrush = CreateFrozenBrush(Color.FromArgb(192, 166, 166, 166));
 		private static readonly Pen WarningPen = CreatePen(WarningBrush, new double[] { 1.0, 2.0 });
 		private static readonly Pen InformationPen = CreatePen(InformationBrush, new double[] { 2.0, 2.0 });
 		private static readonly Pen HintPen = CreatePen(HintBrush, new double[] { 1.0, 3.0 });
@@ -43,7 +44,7 @@ namespace TombLib.Scripting.Rendering
 
 				foreach (Rect rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment, false))
 				{
-					if (rect.Width <= 0.0)
+					if (rect.Width < 2.0)
 						continue;
 
 					switch (diagnostic.Severity)
@@ -123,13 +124,6 @@ namespace TombLib.Scripting.Rendering
 		{
 			double y = rect.Bottom - 1.0;
 			drawingContext.DrawLine(pen, new Point(rect.Left, y), new Point(rect.Right, y));
-		}
-
-		private static Brush CreateBrush(Color color)
-		{
-			var brush = new SolidColorBrush(color);
-			brush.Freeze();
-			return brush;
 		}
 
 		private static Pen CreatePen(Brush brush, double[] dashPattern)

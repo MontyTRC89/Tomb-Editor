@@ -1,4 +1,8 @@
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -6,25 +10,30 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using TombLib.Scripting.Rendering;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Lua.Objects
 {
-	public sealed class LuaCompletionData : ICompletionData
+	public sealed class LuaCompletionData : ICompletionData, INotifyPropertyChanged
 	{
 		private const double DescriptionMaxWidth = 540.0;
 		private const double DescriptionTextMaxWidth = 500.0;
 		private static readonly SolidColorBrush DescriptionBorderBrush = CreateFrozenBrush(Color.FromRgb(96, 96, 96));
 		private static readonly SolidColorBrush DescriptionBackgroundBrush = CreateFrozenBrush(Color.FromRgb(64, 64, 64));
 		private static readonly SolidColorBrush DescriptionForegroundBrush = CreateFrozenBrush(Colors.Gainsboro);
-		private readonly LuaCompletionItem _item;
-		private readonly string _displayDetail;
+		private readonly object _resolveSync = new object();
+		private LuaCompletionItem _item;
+		private string _displayDetail;
 		private object _cachedDescription;
+		private Task<LuaCompletionItem> _resolveTask;
 
 		public LuaCompletionData(LuaCompletionItem item)
 		{
 			_item = item ?? throw new ArgumentNullException(nameof(item));
 			_displayDetail = FlattenSingleLineText(_item.Detail);
 		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		public ImageSource Image => LuaCompletionIconFactory.GetIcon(_item.IconKind);
 		public string Text => _item.FilterText;
@@ -34,9 +43,46 @@ namespace TombLib.Scripting.Lua.Objects
 		public object Content => DisplayText;
 		public object Description => _cachedDescription ??= BuildDescriptionContent();
 		public double Priority => _item.Priority;
+		public bool CanResolve => _item.CanResolve;
 
 		public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
 			=> textArea.Document.Replace(completionSegment, _item.InsertText);
+
+		public async Task<object> GetDescriptionAsync(CancellationToken cancellationToken = default)
+		{
+			if (!CanResolve)
+				return Description;
+
+			Task<LuaCompletionItem> resolveTask;
+
+			lock (_resolveSync)
+			{
+				if (!CanResolve)
+					return Description;
+
+				if (_resolveTask is null || _resolveTask.IsCanceled || _resolveTask.IsFaulted)
+					_resolveTask = _item.ResolveAsync(cancellationToken);
+
+				resolveTask = _resolveTask;
+			}
+
+			try
+			{
+				LuaCompletionItem resolvedItem = await resolveTask.ConfigureAwait(true);
+				ApplyResolvedItem(resolvedItem);
+				return Description;
+			}
+			catch
+			{
+				lock (_resolveSync)
+				{
+					if (ReferenceEquals(_resolveTask, resolveTask))
+						_resolveTask = null;
+				}
+
+				throw;
+			}
+		}
 
 		private static string FlattenSingleLineText(string text)
 		{
@@ -78,8 +124,8 @@ namespace TombLib.Scripting.Lua.Objects
 			if (hasDescription)
 			{
 				panel.Children.Add(_item.IsDescriptionMarkdown
-					? MarkdownToolTipRenderer.CreateContent(_item.Description, DescriptionForegroundBrush, DescriptionBackgroundBrush)
-					: CreatePlainDescriptionContent(_item.Description));
+					? MarkdownToolTipRenderer.CreateContent(_item.Description, DescriptionForegroundBrush, DescriptionBackgroundBrush, false)
+					: MarkdownToolTipRenderer.CreatePlainTextContent(_item.Description, DescriptionForegroundBrush, false));
 			}
 
 			return new Border
@@ -93,32 +139,23 @@ namespace TombLib.Scripting.Lua.Objects
 			};
 		}
 
-		private static FrameworkElement CreatePlainDescriptionContent(string text)
+		private void ApplyResolvedItem(LuaCompletionItem resolvedItem)
 		{
-			var textBlock = new TextBlock
-			{
-				Text = text,
-				Foreground = DescriptionForegroundBrush,
-				TextWrapping = TextWrapping.Wrap,
-				MaxWidth = DescriptionTextMaxWidth
-			};
+			if (resolvedItem is null || ReferenceEquals(resolvedItem, _item))
+				return;
 
-			return new ScrollViewer
-			{
-				Content = textBlock,
-				MaxHeight = 420.0,
-				MaxWidth = DescriptionMaxWidth,
-				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-				HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				CanContentScroll = true
-			};
+			_item = resolvedItem;
+			_displayDetail = FlattenSingleLineText(_item.Detail);
+			_cachedDescription = null;
+
+			OnPropertyChanged(nameof(Image));
+			OnPropertyChanged(nameof(DisplayDetail));
+			OnPropertyChanged(nameof(DetailVisibility));
+			OnPropertyChanged(nameof(Description));
 		}
 
-		private static SolidColorBrush CreateFrozenBrush(Color color)
-		{
-			var brush = new SolidColorBrush(color);
-			brush.Freeze();
-			return brush;
-		}
+		private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
 	}
 }

@@ -93,13 +93,57 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 					context = BuildCompletionContext(triggerCharacter)
 				}, cancellationToken).ConfigureAwait(false);
 
-			return LuaLanguageServerResponseParser.ParseCompletionItems(response);
+			IReadOnlyList<JsonElement> itemElements = LuaLanguageServerResponseParser.ExtractCompletionItems(response);
+
+			if (itemElements.Count == 0)
+				return Array.Empty<LuaCompletionItem>();
+
+			return LuaLanguageServerResponseParser.ParseCompletionItems(itemElements, BuildCompletionItemResolveCallback);
 		}
 
 		private static object BuildCompletionContext(char? triggerCharacter)
 			=> triggerCharacter is null
 				? new { triggerKind = 1 }
 				: new { triggerKind = 2, triggerCharacter = triggerCharacter.ToString() };
+
+		private Func<CancellationToken, Task<LuaCompletionItem>> BuildCompletionItemResolveCallback(JsonElement itemElement, int itemIndex)
+		{
+			if (_client is null || !_client.SupportsCompletionResolve || !LuaLanguageServerResponseParser.CompletionItemNeedsResolve(itemElement))
+				return null;
+
+			return cancellationToken => ResolveCompletionItemAsync(itemElement, itemIndex, cancellationToken);
+		}
+
+		private async Task<LuaCompletionItem> ResolveCompletionItemAsync(JsonElement itemElement, int itemIndex, CancellationToken cancellationToken)
+		{
+			LuaCompletionItem unresolvedItem = LuaLanguageServerResponseParser.ParseCompletionItem(itemElement, itemIndex);
+
+			if (_client is null || !_client.SupportsCompletionResolve)
+				return unresolvedItem;
+
+			try
+			{
+				JsonElement resolvedItem = await _client.SendRequestAsync("completionItem/resolve", itemElement, cancellationToken).ConfigureAwait(false);
+
+				if (resolvedItem.ValueKind == JsonValueKind.Object)
+				{
+					LuaCompletionItem parsedItem = LuaLanguageServerResponseParser.ParseCompletionItem(resolvedItem, itemIndex);
+
+					if (parsedItem is not null)
+						return parsedItem;
+				}
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
+			catch
+			{
+				// Ignore
+			}
+
+			return unresolvedItem;
+		}
 
 		public async Task<LuaHoverInfo> GetHoverAsync(string filePath, string content,
 			int line, int column, CancellationToken cancellationToken = default)

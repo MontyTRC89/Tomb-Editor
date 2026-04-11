@@ -4,9 +4,16 @@ namespace TombLib.WPF;
 
 public static class BrushHelpers
 {
-	public static Brush CreateFrozenBrush(Color color)
+	public static SolidColorBrush CreateFrozenBrush(Color color)
 	{
 		var brush = new SolidColorBrush(color);
+		brush.Freeze();
+		return brush;
+	}
+
+	public static SolidColorBrush CreateFrozenBrush(string colorValue)
+	{
+		var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorValue));
 		brush.Freeze();
 		return brush;
 	}

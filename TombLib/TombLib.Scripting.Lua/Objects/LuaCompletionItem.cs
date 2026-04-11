@@ -1,9 +1,13 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace TombLib.Scripting.Lua.Objects
 {
 	public sealed class LuaCompletionItem
 	{
+		private readonly Func<CancellationToken, Task<LuaCompletionItem>> _resolveAsync;
+
 		public LuaCompletionItem(
 			string label,
 			string insertText = null,
@@ -13,7 +17,8 @@ namespace TombLib.Scripting.Lua.Objects
 			double priority = 0.0,
 			LuaCompletionItemKind kind = LuaCompletionItemKind.Text,
 			LuaCompletionIconKind iconKind = LuaCompletionIconKind.Misc,
-			bool isDescriptionMarkdown = false)
+			bool isDescriptionMarkdown = false,
+			Func<CancellationToken, Task<LuaCompletionItem>> resolveAsync = null)
 		{
 			Label = label ?? throw new ArgumentNullException(nameof(label));
 			InsertText = string.IsNullOrWhiteSpace(insertText) ? label : insertText;
@@ -24,6 +29,7 @@ namespace TombLib.Scripting.Lua.Objects
 			Kind = kind;
 			IconKind = iconKind;
 			IsDescriptionMarkdown = isDescriptionMarkdown;
+			_resolveAsync = resolveAsync;
 		}
 
 		public string Label { get; }
@@ -35,5 +41,11 @@ namespace TombLib.Scripting.Lua.Objects
 		public LuaCompletionItemKind Kind { get; }
 		public LuaCompletionIconKind IconKind { get; }
 		public bool IsDescriptionMarkdown { get; }
+		public bool CanResolve => _resolveAsync is not null;
+
+		public Task<LuaCompletionItem> ResolveAsync(CancellationToken cancellationToken = default)
+			=> _resolveAsync is null
+				? Task.FromResult(this)
+				: _resolveAsync(cancellationToken);
 	}
 }

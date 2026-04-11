@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -24,8 +23,6 @@ namespace TombLib.Scripting.Lua
 
 			if (e.Key == Key.F12)
 			{
-				Debug.WriteLine("[LuaLS] F12 pressed, attempting definition navigation.");
-
 				if (await TryNavigateToDefinitionAsync(CaretOffset, CancellationToken.None).ConfigureAwait(true))
 					e.Handled = true;
 			}
@@ -47,8 +44,6 @@ namespace TombLib.Scripting.Lua
 			if (hoveredOffset == -1)
 				return;
 
-			Debug.WriteLine("[LuaLS] CTRL+Click detected, attempting definition navigation.");
-
 			if (await TryNavigateToDefinitionAsync(hoveredOffset, CancellationToken.None).ConfigureAwait(true))
 				e.Handled = true;
 		}
@@ -56,16 +51,12 @@ namespace TombLib.Scripting.Lua
 		private async Task<bool> TryNavigateToDefinitionAsync(int offset, CancellationToken cancellationToken)
 		{
 			if (!IsIntellisenseAvailable())
-			{
-				Debug.WriteLine("[LuaLS] Definition aborted: intellisense not available.");
 				return false;
-			}
+
 
 			if (DefinitionNavigationRequested is null)
-			{
-				Debug.WriteLine("[LuaLS] Definition aborted: DefinitionNavigationRequested callback not set.");
 				return false;
-			}
+
 
 			try
 			{
@@ -73,30 +64,23 @@ namespace TombLib.Scripting.Lua
 				{
 					(int line, int column) = GetPositionFromOffset(candidateOffset);
 
-					Debug.WriteLine($"[LuaLS] Requesting definition at offset {candidateOffset} -> ({line},{column}).");
-
 					LuaDefinitionLocation definitionLocation = await IntellisenseProvider
 						.GetDefinitionAsync(FilePath, Text, line, column, cancellationToken)
 						.ConfigureAwait(true);
 
 					if (definitionLocation is null)
 						continue;
-
-					Debug.WriteLine($"[LuaLS] Definition found: '{definitionLocation.FilePath}' L{definitionLocation.LineNumber}.");
 					DefinitionNavigationRequested(definitionLocation);
 					return true;
 				}
-
-				Debug.WriteLine("[LuaLS] Definition not found for any candidate offset.");
 				return false;
 			}
 			catch (OperationCanceledException)
 			{
 				return false;
 			}
-			catch (Exception exception)
+			catch
 			{
-				Debug.WriteLine($"[LuaLS] Definition navigation failed: {exception.Message}");
 				return false;
 			}
 		}
@@ -138,29 +122,26 @@ namespace TombLib.Scripting.Lua
 				probeOffset = Document.TextLength - 1;
 
 			if (probeOffset > 0
-				&& !IsDefinitionIdentifierCharacter(Document.GetCharAt(probeOffset))
-				&& IsDefinitionIdentifierCharacter(Document.GetCharAt(probeOffset - 1)))
+				&& !IsIdentifierCharacter(Document.GetCharAt(probeOffset))
+				&& IsIdentifierCharacter(Document.GetCharAt(probeOffset - 1)))
 			{
 				probeOffset--;
 			}
 
-			if (!IsDefinitionIdentifierCharacter(Document.GetCharAt(probeOffset)))
+			if (!IsIdentifierCharacter(Document.GetCharAt(probeOffset)))
 				return false;
 
 			wordStart = probeOffset;
 			wordEnd = probeOffset + 1;
 
-			while (wordStart > 0 && IsDefinitionIdentifierCharacter(Document.GetCharAt(wordStart - 1)))
+			while (wordStart > 0 && IsIdentifierCharacter(Document.GetCharAt(wordStart - 1)))
 				wordStart--;
 
-			while (wordEnd < Document.TextLength && IsDefinitionIdentifierCharacter(Document.GetCharAt(wordEnd)))
+			while (wordEnd < Document.TextLength && IsIdentifierCharacter(Document.GetCharAt(wordEnd)))
 				wordEnd++;
 
 			return wordEnd > wordStart;
 		}
-
-		private static bool IsDefinitionIdentifierCharacter(char c)
-			=> char.IsLetterOrDigit(c) || c == '_';
 
 		private static void AddDefinitionCandidateOffset(ICollection<int> offsets, int offset)
 		{

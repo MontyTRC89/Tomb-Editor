@@ -23,6 +23,7 @@ using TombLib.Scripting.Rendering;
 using TombLib.Scripting.Resources;
 using TombLib.Scripting.Utils;
 using TombLib.Scripting.Workers;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Bases
 {
@@ -30,8 +31,8 @@ namespace TombLib.Scripting.Bases
 	{
 		private const double ToolTipMaxHeight = 420.0;
 		private const double ToolTipMaxWidth = 540.0;
-		private const double ToolTipTextMaxWidth = 500.0;
-		private static readonly double ToolTipTextFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
+		protected const double ToolTipTextMaxWidth = 500.0;
+		protected static readonly double ToolTipTextFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
 		protected static readonly SolidColorBrush DefaultToolTipBorder = CreateFrozenBrush(Color.FromRgb(96, 96, 96));
 		protected static readonly SolidColorBrush DefaultToolTipBackground = CreateFrozenBrush(Color.FromRgb(64, 64, 64));
 		private static readonly SolidColorBrush ErrorToolTipBorder = CreateFrozenBrush(Color.FromRgb(128, 86, 86));
@@ -42,7 +43,7 @@ namespace TombLib.Scripting.Bases
 		private static readonly SolidColorBrush InformationToolTipBackground = CreateFrozenBrush(Color.FromRgb(46, 68, 104));
 		private static readonly SolidColorBrush HintToolTipBorder = CreateFrozenBrush(Color.FromRgb(108, 108, 108));
 		private static readonly SolidColorBrush HintToolTipBackground = CreateFrozenBrush(Color.FromRgb(58, 58, 58));
-		private static readonly SolidColorBrush ToolTipForeground = CreateFrozenBrush(Colors.Gainsboro);
+		protected static readonly SolidColorBrush ToolTipForeground = CreateFrozenBrush(Colors.Gainsboro);
 
 		public EditorType EditorType => EditorType.Text;
 		public abstract string DefaultFileExtension { get; }
@@ -192,7 +193,7 @@ namespace TombLib.Scripting.Bases
 		private void InitializeToolTip()
 		{
 			_specialToolTip.AllowsTransparency = true;
-			_specialToolTip.PopupAnimation = PopupAnimation.Fade;
+			_specialToolTip.PopupAnimation = PopupAnimation.None;
 			_specialToolTip.StaysOpen = true;
 			_specialToolTip.Placement = PlacementMode.RelativePoint;
 
@@ -507,8 +508,11 @@ namespace TombLib.Scripting.Bases
 			TryShowDiagnosticToolTip(hoveredOffset);
 		}
 
-		protected bool TryShowDiagnosticToolTip(int hoveredOffset)
+		protected bool TryGetDiagnosticInfo(int hoveredOffset, out string message, out TextEditorDiagnosticSeverity severity)
 		{
+			message = null;
+			severity = TextEditorDiagnosticSeverity.Error;
+
 			if (!LiveErrorUnderlining || _diagnostics.Count == 0)
 				return false;
 
@@ -520,20 +524,33 @@ namespace TombLib.Scripting.Bases
 			if (hoveredDiagnostics.Count == 0)
 				return false;
 
-			TextEditorDiagnosticSeverity severity = hoveredDiagnostics
+			severity = hoveredDiagnostics
 				.OrderBy(diagnostic => diagnostic.Severity)
 				.Select(diagnostic => diagnostic.Severity)
 				.First();
 
-			string message = string.Join(Environment.NewLine + Environment.NewLine,
+			message = string.Join(Environment.NewLine + Environment.NewLine,
 				hoveredDiagnostics
 					.OrderBy(diagnostic => diagnostic.Severity)
 					.ThenBy(diagnostic => diagnostic.StartOffset)
 					.Select(FormatDiagnosticMessage)
 					.Distinct(StringComparer.Ordinal));
 
+			return true;
+		}
+
+		protected void ShowDiagnosticToolTip(string message, TextEditorDiagnosticSeverity severity)
+		{
 			GetDiagnosticToolTipColors(severity, out SolidColorBrush border, out SolidColorBrush background);
 			ShowToolTip(message, border, background, ToolTipForeground);
+		}
+
+		protected bool TryShowDiagnosticToolTip(int hoveredOffset)
+		{
+			if (!TryGetDiagnosticInfo(hoveredOffset, out string message, out TextEditorDiagnosticSeverity severity))
+				return false;
+
+			ShowDiagnosticToolTip(message, severity);
 			return true;
 		}
 
@@ -926,7 +943,7 @@ namespace TombLib.Scripting.Bases
 					|| message.StartsWith("Diagnostic:", StringComparison.OrdinalIgnoreCase));
 
 		private static object CreatePlainToolTipContent(string content, Brush foreground)
-			=> WrapToolTipContent(CreateToolTipTextBlock(content, foreground));
+			=> MarkdownToolTipRenderer.CreatePlainTextContent(content, foreground);
 
 		private static object CreateMarkdownToolTipContent(string content, Brush foreground, Brush background)
 		{
@@ -938,46 +955,10 @@ namespace TombLib.Scripting.Bases
 			return MarkdownToolTipRenderer.CreateContent(normalizedContent, foreground, background);
 		}
 
-		private static object WrapToolTipContent(UIElement content)
-			=> new ScrollViewer
-			{
-				Content = content,
-				MaxHeight = ToolTipMaxHeight,
-				MaxWidth = ToolTipMaxWidth,
-				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-				HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				CanContentScroll = true
-			};
-
-		private static TextBlock CreateToolTipTextBlock(string content, Brush foreground)
-		{
-			var textBlock = CreateBaseToolTipTextBlock(foreground);
-			textBlock.Text = content ?? string.Empty;
-			return textBlock;
-		}
-
-		private static TextBlock CreateBaseToolTipTextBlock(Brush foreground)
-			=> new TextBlock
-			{
-				Foreground = foreground,
-				FontFamily = SystemFonts.MessageFontFamily,
-				FontSize = ToolTipTextFontSize,
-				TextWrapping = TextWrapping.Wrap,
-				MaxWidth = ToolTipTextMaxWidth,
-				Margin = new Thickness(0.0, 0.0, 0.0, 6.0)
-			};
-
 		private static string NormalizeToolTipLineEndings(string text)
 			=> (text ?? string.Empty)
 				.Replace("\r\n", "\n", StringComparison.Ordinal)
 				.Replace('\r', '\n');
-
-		private static SolidColorBrush CreateFrozenBrush(Color color)
-		{
-			var brush = new SolidColorBrush(color);
-			brush.Freeze();
-			return brush;
-		}
 
 		private List<DocumentLine> CollectBookmarkedLines()
 		{
@@ -1073,7 +1054,7 @@ namespace TombLib.Scripting.Bases
 			return diagnostic.Severity.GetLabel() + ":\n" + diagnostic.Message;
 		}
 
-		private static void GetDiagnosticToolTipColors(TextEditorDiagnosticSeverity severity,
+		protected static void GetDiagnosticToolTipColors(TextEditorDiagnosticSeverity severity,
 			out SolidColorBrush border, out SolidColorBrush background)
 		{
 			switch (severity)

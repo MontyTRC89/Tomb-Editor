@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using TombLib.Scripting.Lua.Objects;
 
 namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
@@ -22,6 +24,9 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		}
 
 		public static IReadOnlyList<LuaCompletionItem> ParseCompletionItems(JsonElement response)
+			=> ParseCompletionItems(ExtractCompletionItems(response));
+
+		public static IReadOnlyList<JsonElement> ExtractCompletionItems(JsonElement response)
 		{
 			JsonElement itemsElement = response;
 
@@ -29,51 +34,28 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				itemsElement = completionItemsElement;
 
 			if (itemsElement.ValueKind != JsonValueKind.Array)
-				return Array.Empty<LuaCompletionItem>();
+				return Array.Empty<JsonElement>();
 
+			var itemElements = new List<JsonElement>();
+
+			foreach (JsonElement itemElement in itemsElement.EnumerateArray())
+				itemElements.Add(itemElement.Clone());
+
+			return itemElements;
+		}
+
+		public static IReadOnlyList<LuaCompletionItem> ParseCompletionItems(IEnumerable<JsonElement> itemElements,
+			Func<JsonElement, int, Func<CancellationToken, Task<LuaCompletionItem>>> resolveFactory = null)
+		{
 			var items = new List<LuaCompletionItem>();
 			int itemIndex = 0;
 
-			foreach (JsonElement itemElement in itemsElement.EnumerateArray())
+			foreach (JsonElement itemElement in itemElements)
 			{
-				if (!itemElement.TryGetProperty("label", out JsonElement labelElement))
-					continue;
+				LuaCompletionItem item = ParseCompletionItem(itemElement, itemIndex, resolveFactory?.Invoke(itemElement, itemIndex));
 
-				string label = labelElement.GetString();
-				string insertText = itemElement.TryGetProperty("textEdit", out JsonElement textEditElement)
-					&& textEditElement.TryGetProperty("newText", out JsonElement newTextElement)
-						? newTextElement.GetString()
-						: itemElement.TryGetProperty("insertText", out JsonElement insertTextElement)
-							? insertTextElement.GetString()
-							: label;
-
-				if (itemElement.TryGetProperty("insertTextFormat", out JsonElement insertTextFormatElement)
-					&& insertTextFormatElement.TryGetInt32(out int insertTextFormat) && insertTextFormat == 2)
-				{
-					insertText = StripSnippetPlaceholders(insertText);
-				}
-
-				string filterText = itemElement.TryGetProperty("filterText", out JsonElement filterTextElement)
-					? filterTextElement.GetString()
-					: label;
-
-				LuaCompletionItemKind kind = TryReadCompletionKind(itemElement, out LuaCompletionItemKind completionKind)
-					? completionKind
-					: LuaCompletionItemKind.Text;
-
-				string detail = BuildCompletionDetail(itemElement);
-				MarkupContent description = BuildCompletionDescription(itemElement);
-				string searchableDescription = NormalizeMarkupText(description.Text);
-				items.Add(new LuaCompletionItem(
-					label,
-					insertText,
-					detail,
-					description.Text,
-					filterText,
-					BuildCompletionPriority(itemElement, detail, searchableDescription, itemIndex),
-					kind,
-					BuildCompletionIconKind(kind, detail),
-					description.IsMarkdown));
+				if (item is not null)
+					items.Add(item);
 
 				itemIndex++;
 			}
@@ -82,6 +64,55 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				.GroupBy(item => $"{item.Label}\0{item.InsertText}", StringComparer.OrdinalIgnoreCase)
 				.Select(group => group.First())
 				.ToList();
+		}
+
+		public static bool CompletionItemNeedsResolve(JsonElement itemElement)
+			=> string.IsNullOrWhiteSpace(BuildCompletionDetail(itemElement))
+				|| string.IsNullOrWhiteSpace(BuildCompletionDescription(itemElement).Text);
+
+		public static LuaCompletionItem ParseCompletionItem(JsonElement itemElement, int itemIndex,
+			Func<CancellationToken, Task<LuaCompletionItem>> resolveAsync = null)
+		{
+			if (!itemElement.TryGetProperty("label", out JsonElement labelElement))
+				return null;
+
+			string label = labelElement.GetString();
+			string insertText = itemElement.TryGetProperty("textEdit", out JsonElement textEditElement)
+				&& textEditElement.TryGetProperty("newText", out JsonElement newTextElement)
+					? newTextElement.GetString()
+					: itemElement.TryGetProperty("insertText", out JsonElement insertTextElement)
+						? insertTextElement.GetString()
+						: label;
+
+			if (itemElement.TryGetProperty("insertTextFormat", out JsonElement insertTextFormatElement)
+				&& insertTextFormatElement.TryGetInt32(out int insertTextFormat) && insertTextFormat == 2)
+			{
+				insertText = StripSnippetPlaceholders(insertText);
+			}
+
+			string filterText = itemElement.TryGetProperty("filterText", out JsonElement filterTextElement)
+				? filterTextElement.GetString()
+				: label;
+
+			LuaCompletionItemKind kind = TryReadCompletionKind(itemElement, out LuaCompletionItemKind completionKind)
+				? completionKind
+				: LuaCompletionItemKind.Text;
+
+			string detail = BuildCompletionDetail(itemElement);
+			MarkupContent description = BuildCompletionDescription(itemElement);
+			string searchableDescription = NormalizeMarkupText(description.Text);
+
+			return new LuaCompletionItem(
+				label,
+				insertText,
+				detail,
+				description.Text,
+				filterText,
+				BuildCompletionPriority(itemElement, detail, searchableDescription, itemIndex),
+				kind,
+				BuildCompletionIconKind(kind, detail),
+				description.IsMarkdown,
+				resolveAsync);
 		}
 
 		private static double BuildCompletionPriority(JsonElement itemElement, string detail, string description, int itemIndex)

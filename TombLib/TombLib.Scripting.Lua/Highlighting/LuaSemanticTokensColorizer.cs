@@ -5,6 +5,7 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using TombLib.Scripting.Lua.Objects;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Lua.Highlighting
 {
@@ -151,13 +152,6 @@ namespace TombLib.Scripting.Lua.Highlighting
 
 			if (style.TextDecorations is not null)
 				properties.SetTextDecorations(style.TextDecorations);
-		}
-
-		private static Brush CreateFrozenBrush(string colorValue)
-		{
-			var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorValue));
-			brush.Freeze();
-			return brush;
 		}
 
 		private static TextDecorationCollection CreateTextDecorations(TextDecorationCollection source)

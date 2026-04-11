@@ -5,6 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
 using TombLib.Scripting.Lua.Objects;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Lua
 {

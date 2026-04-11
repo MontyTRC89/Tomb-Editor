@@ -80,10 +80,12 @@ namespace TombLib.Scripting.Highlighting
 			if (_isDisposed)
 				return;
 
-			if (_textView.Dispatcher.CheckAccess())
-				_textView.Redraw();
-			else
-				_textView.Dispatcher.BeginInvoke(new Action(_textView.Redraw));
+			// Always defer to avoid reentrancy during visual line construction.
+			_textView.Dispatcher.BeginInvoke(new Action(() =>
+			{
+				if (!_isDisposed)
+					_textView.Redraw();
+			}));
 		}
 
 		private static int ClampToLine(int index, int lineLength)

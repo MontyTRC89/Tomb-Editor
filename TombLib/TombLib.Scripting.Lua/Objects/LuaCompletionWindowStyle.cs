@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Lua.Objects
 {
@@ -80,11 +81,5 @@ namespace TombLib.Scripting.Lua.Objects
 			return style;
 		}
 
-		private static SolidColorBrush CreateFrozenBrush(string colorValue)
-		{
-			var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorValue));
-			brush.Freeze();
-			return brush;
-		}
 	}
 }
