@@ -849,6 +849,16 @@ namespace TombEditor
             RaiseEvent(new ToolWindowToggleEvent() { ContentType = contentType });
         }
 
+        // Layout switch event
+        public class SwitchLayoutEvent : IEditorEvent
+        {
+            public int LayoutIndex { get; internal set; }
+        }
+        public void SwitchLayout(int layoutIndex)
+        {
+            RaiseEvent(new SwitchLayoutEvent() { LayoutIndex = layoutIndex });
+        }
+
         // Default control engage event
         public class DefaultControlActivationEvent : IEditorEvent
         {

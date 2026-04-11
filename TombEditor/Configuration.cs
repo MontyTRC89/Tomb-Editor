@@ -300,6 +300,8 @@ namespace TombEditor
         public bool Window_FormMaterialEditor_Maximized { get; set; } = false;
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
+        public List<NamedLayout> Window_CustomLayouts { get; set; } = new List<NamedLayout>();
+        public string Window_ActiveLayoutName { get; set; } = string.Empty;
 
         public void EnsureDefaults()
         {
@@ -419,5 +421,11 @@ namespace TombEditor
                 }
             }
         };
+    }
+
+    public class NamedLayout
+    {
+        public string Name { get; set; } = string.Empty;
+        public DockPanelState State { get; set; } = new DockPanelState();
     }
 }

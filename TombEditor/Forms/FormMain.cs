@@ -336,6 +336,14 @@ namespace TombEditor.Forms
             if (obj is Editor.ToolWindowToggleEvent)
                 ToolWindow_Toggle(GetWindow((obj as Editor.ToolWindowToggleEvent).ContentType.FullName) as DarkToolWindow);
 
+            if (obj is Editor.SwitchLayoutEvent)
+            {
+                var evt = (Editor.SwitchLayoutEvent)obj;
+                var layouts = _editor.Configuration.Window_CustomLayouts;
+                if (evt.LayoutIndex > 0 && evt.LayoutIndex <= layouts.Count)
+                    Layout_SwitchTo(layouts[evt.LayoutIndex - 1].Name);
+            }
+
             if (obj is Editor.LevelFileNameChangedEvent)
                 RefreshRecentProjectsList();
 
@@ -573,9 +581,136 @@ namespace TombEditor.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void restoreDefaultLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void layoutsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
+            layoutsToolStripMenuItem.DropDownItems.Clear();
+
+            var config = _editor.Configuration;
+            bool hasCustomLayouts = config.Window_CustomLayouts.Count > 0;
+            bool hasActiveLayout = !string.IsNullOrEmpty(config.Window_ActiveLayoutName);
+
+            // Default layout entry.
+            var defaultItem = new ToolStripMenuItem("Default");
+            defaultItem.Checked = !hasActiveLayout;
+            defaultItem.Click += (s, ev) => Layout_RestoreDefault();
+            layoutsToolStripMenuItem.DropDownItems.Add(defaultItem);
+
+            // Custom layout entries.
+            if (hasCustomLayouts)
+            {
+                layoutsToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+                for (int i = 0; i < config.Window_CustomLayouts.Count; i++)
+                {
+                    var layout = config.Window_CustomLayouts[i];
+                    var item = new ToolStripMenuItem(layout.Name);
+                    item.Checked = layout.Name == config.Window_ActiveLayoutName;
+
+                    if (i < 9)
+                    {
+                        var hotkeys = config.UI_Hotkeys["SwitchLayout" + (i + 1)];
+                        item.ShortcutKeyDisplayString = string.Join(", ", hotkeys.Select(h => h.ToString()).Where(str => !string.IsNullOrWhiteSpace(str)));
+                    }
+
+                    string layoutName = layout.Name;
+                    item.Click += (s, ev) => Layout_SwitchTo(layoutName);
+                    layoutsToolStripMenuItem.DropDownItems.Add(item);
+                }
+            }
+
+            // Management entries.
+            layoutsToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+            var saveItem = new ToolStripMenuItem("Save layout");
+            saveItem.Click += (s, ev) =>
+            {
+                if (hasActiveLayout)
+                    Layout_SaveCurrent();
+                else
+                    Layout_SaveAs();
+            };
+            layoutsToolStripMenuItem.DropDownItems.Add(saveItem);
+
+            var saveAsItem = new ToolStripMenuItem("Save layout as...");
+            saveAsItem.Click += (s, ev) => Layout_SaveAs();
+            layoutsToolStripMenuItem.DropDownItems.Add(saveAsItem);
+
+            var deleteItem = new ToolStripMenuItem("Delete layout");
+            deleteItem.Enabled = hasActiveLayout;
+            deleteItem.Click += (s, ev) => Layout_Delete();
+            layoutsToolStripMenuItem.DropDownItems.Add(deleteItem);
+        }
+
+        private void Layout_RestoreDefault()
+        {
+            _editor.Configuration.Window_ActiveLayoutName = string.Empty;
             LoadWindowLayout(new Configuration());
+        }
+
+        private void Layout_SwitchTo(string name)
+        {
+            var layout = _editor.Configuration.Window_CustomLayouts.FirstOrDefault(l => l.Name == name);
+            if (layout == null)
+                return;
+
+            _editor.Configuration.Window_ActiveLayoutName = name;
+            _editor.Configuration.Window_Layout = layout.State;
+            LoadWindowLayout(_editor.Configuration);
+        }
+
+        private void Layout_SaveCurrent()
+        {
+            var config = _editor.Configuration;
+            var layout = config.Window_CustomLayouts.FirstOrDefault(l => l.Name == config.Window_ActiveLayoutName);
+            if (layout == null)
+                return;
+
+            layout.State = dockArea.GetDockPanelState();
+            config.Window_Layout = layout.State;
+            _editor.ConfigurationChange(false, false, false, true);
+        }
+
+        private void Layout_SaveAs()
+        {
+            using (var form = new FormInputBox("Save layout", "Enter layout name:"))
+            {
+                if (form.ShowDialog(this) != DialogResult.OK || string.IsNullOrWhiteSpace(form.Result))
+                    return;
+
+                string name = form.Result.Trim();
+                var config = _editor.Configuration;
+
+                if (config.Window_CustomLayouts.Any(l => l.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    DarkMessageBox.Show(this, "A layout with this name already exists.", "Save layout",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var newLayout = new NamedLayout
+                {
+                    Name = name,
+                    State = dockArea.GetDockPanelState()
+                };
+
+                config.Window_CustomLayouts.Add(newLayout);
+                config.Window_ActiveLayoutName = name;
+                config.Window_Layout = newLayout.State;
+                _editor.ConfigurationChange(false, false, false, true);
+            }
+        }
+
+        private void Layout_Delete()
+        {
+            var config = _editor.Configuration;
+            var layout = config.Window_CustomLayouts.FirstOrDefault(l => l.Name == config.Window_ActiveLayoutName);
+            if (layout == null)
+                return;
+
+            config.Window_CustomLayouts.Remove(layout);
+            config.Window_ActiveLayoutName = string.Empty;
+            LoadWindowLayout(new Configuration());
+            _editor.ConfigurationChange(false, false, false, true);
         }
 
         private void ToolWindow_Toggle(DarkToolWindow toolWindow)
