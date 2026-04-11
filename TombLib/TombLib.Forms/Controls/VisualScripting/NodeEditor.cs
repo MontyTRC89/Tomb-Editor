@@ -921,13 +921,15 @@ namespace TombLib.Controls.VisualScripting
             if (unsupported)
             {
                 var matrix = new System.Drawing.Imaging.ColorMatrix { Matrix33 = LabelOpacity, Matrix22 = 0.0f };
-                var attributes = new System.Drawing.Imaging.ImageAttributes();
-                attributes.SetColorMatrix(matrix, System.Drawing.Imaging.ColorMatrixFlag.Default, System.Drawing.Imaging.ColorAdjustType.Bitmap);
+                using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                {
+                    attributes.SetColorMatrix(matrix, System.Drawing.Imaging.ColorMatrixFlag.Default, System.Drawing.Imaging.ColorAdjustType.Bitmap);
 
-                var icon = Properties.Resources.general_Warning_16;
-                var iconRect = new Rectangle(rect.X, rect.Y + (rect.Height - icon.Height), icon.Width, icon.Height);
-                e.Graphics.DrawImage(icon, iconRect, 0, 0, icon.Width, icon.Height, GraphicsUnit.Pixel, attributes);
-                iconOffset = icon.Width + 2;
+                    var icon = Properties.Resources.general_Warning_16;
+                    var iconRect = new Rectangle(rect.X, rect.Y + (rect.Height - icon.Height), icon.Width, icon.Height);
+                    e.Graphics.DrawImage(icon, iconRect, 0, 0, icon.Width, icon.Height, GraphicsUnit.Pixel, attributes);
+                    iconOffset = icon.Width + 2;
+                }
             }
 
             var textRect = new Rectangle(rect.X + iconOffset, rect.Y, rect.Width - iconOffset, rect.Height);

@@ -272,10 +272,10 @@ namespace TombLib.Utils
 
         private static void ParseEventTypeList(string comment, string tagId, List<EventType> targetList)
         {
-            var values = TextExtensions.ExtractValues(comment.Substring(tagId.Length, comment.Length - tagId.Length));
+            var values = TextExtensions.ExtractValues(comment.Substring(tagId.Length));
             foreach (var v in values)
             {
-                if (Enum.TryParse(v.Trim(), out EventType eventType))
+                if (Enum.TryParse(v.Trim(), true, out EventType eventType) && !targetList.Contains(eventType))
                     targetList.Add(eventType);
             }
         }
