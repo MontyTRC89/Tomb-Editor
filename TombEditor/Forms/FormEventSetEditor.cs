@@ -377,6 +377,7 @@ namespace TombEditor.Forms
         {
             _lockSelectionChange = true;
 
+            var collapsed = new HashSet<string>(_сollapsedFolders);
             treeEvents.Nodes.Clear();
 
             foreach (var evtSet in _usedList)
@@ -385,10 +386,8 @@ namespace TombEditor.Forms
                 parentCollection.Add(new DarkTreeNode(evtSet.Name) { Tag = evtSet });
             }
 
-            // Apply stored expansion state after all children are in place.
-            // DarkTreeNode.Expanded setter is a no-op on empty nodes, so this must be done post-populate.
             foreach (var node in treeEvents.GetAllNodes().Where(n => IsFolderNode(n)))
-                node.Expanded = !_сollapsedFolders.Contains(GetFolderPath(node));
+                node.Expanded = !collapsed.Contains(GetFolderPath(node));
 
             _lockSelectionChange = false;
         }
