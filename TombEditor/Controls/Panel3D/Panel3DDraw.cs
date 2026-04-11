@@ -8,7 +8,6 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
-
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;

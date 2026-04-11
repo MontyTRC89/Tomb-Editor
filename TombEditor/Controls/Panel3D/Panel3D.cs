@@ -22,7 +22,7 @@ namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D : RenderingPanel
     {
-        private static readonly KeyMessageFilter filter = new KeyMessageFilter();
+        private static readonly KeyMessageFilter _filter = new KeyMessageFilter();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Camera Camera { get; set; }
@@ -92,8 +92,8 @@ namespace TombEditor.Controls.Panel3D
         private bool _disablePickingForHiddenRooms = false;
 
         // Overall state
-        private readonly Editor _editor;
-        private readonly Func<Camera> _getViewportCamera;
+        private Editor _editor;
+        private Func<Camera> _getViewportCamera;
         private Vector3? _currentRoomLastPos;
 
         // Camera state
@@ -103,7 +103,7 @@ namespace TombEditor.Controls.Panel3D
         private Vector2 _nextCameraRot;
         private float _lastCameraDist;
         private float _nextCameraDist;
-        private readonly Timer _flyModeTimer;
+        private Timer _flyModeTimer;
         private Camera _oldCamera;
         private Frustum _frustum;
         private Matrix4x4 _viewProjection;
@@ -121,7 +121,7 @@ namespace TombEditor.Controls.Panel3D
         private bool _gizmoEnabled = false;
         private BaseContextMenu _currentContextMenu;
         private ToolHandler _toolHandler;
-        private readonly MovementTimer _movementTimer;
+        private MovementTimer _movementTimer;
         private bool _dragObjectPicked = false;
         private bool _dragObjectMoved = false;
         private HighlightedObjects _highlightedObjects = HighlightedObjects.Create(null);
@@ -177,7 +177,7 @@ namespace TombEditor.Controls.Panel3D
         private RenderingTextureAllocator _renderingTextures;
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
-        private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
+        private Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
         // Render stats
         private readonly Stopwatch _watch = new Stopwatch();
@@ -188,29 +188,7 @@ namespace TombEditor.Controls.Panel3D
 
         public Panel3D()
         {
-            Application.AddMessageFilter(filter);
-            _getViewportCamera = () => Camera;
-
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
-
-            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
-            {
-                _editor = Editor.Instance;
-                _editor.EditorEventRaised += EditorEventRaised;
-                _editor.GetViewportCamera = _getViewportCamera;
-
-                _frustum = new Frustum();
-                _viewProjection = Matrix4x4.Identity;
-
-                _toolHandler = new ToolHandler(this);
-                _movementTimer = new MovementTimer(MoveTimer_Tick);
-
-                _flyModeTimer = new Timer { Interval = 1 };
-                _flyModeTimer.Tick += FlyModeTimer_Tick;
-
-                _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024, CacheRoom);
-            }
-
         }
 
         protected override void Dispose(bool disposing)

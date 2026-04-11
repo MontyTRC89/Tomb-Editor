@@ -45,6 +45,8 @@ namespace TombEditor.ToolWindows
 
         public void InitializeRendering(RenderingDevice device)
         {
+            panel2DMap.Initialize();
+            panel3D.Initialize();
             panel3D.InitializeRendering(device, _editor.Configuration.Rendering3D_Antialias, (TombLib.Controls.ObjectRenderingQuality)_editor.Configuration.Rendering3D_ObjectQuality);
         }
 
@@ -106,16 +108,8 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.StepHeightChangedEvent)
                 UpdateStepHeightCombo();
 
-            if (obj is Editor.StatisticsChangedEvent ||
-                obj is Editor.ConfigurationChangedEvent)
+            if (obj is Editor.StatisticsChangedEvent)
             {
-                UpdateStatistics();
-
-                if (obj is Editor.ConfigurationChangedEvent)
-                {
-                    panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
-                    UpdateBottomPanelVisibility();
-                }
             }
 
             if (obj is Editor.ConfigurationChangedEvent)
@@ -132,6 +126,7 @@ namespace TombEditor.ToolWindows
                 }
 
                 RefreshControls(_editor.Configuration);
+                UpdateBottomPanelVisibility(_editor.Configuration);
             }
             
             // Gray out menu options that do not apply
@@ -175,13 +170,13 @@ namespace TombEditor.ToolWindows
                 butOpacityNone.Enabled =
                 butOpacitySolidFaces.Enabled =
                 butOpacityTraversableFaces.Enabled = portal != null;
-				butMirror.Enabled = portal != null && _editor.Level.IsTombEngine;
+                butMirror.Enabled = portal != null && _editor.Level.IsTombEngine;
 
                 butOpacityNone.Checked = portal != null && portal.Opacity == PortalOpacity.None;
                 butOpacitySolidFaces.Checked = portal != null && portal.Opacity == PortalOpacity.SolidFaces;
                 butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
 
-				butMirror.Checked = portal != null && portal.Effect == PortalEffectType.ClassicMirror;
+                butMirror.Checked = portal != null && portal.Effect == PortalEffectType.ClassicMirror;
             }
 
             // Dismiss any messages
@@ -200,8 +195,7 @@ namespace TombEditor.ToolWindows
                 butDrawVolumes.Enabled     = _editor.Level.IsTombEngine; // We may safely hide it because it's not customizable
                 butAddSprite.Enabled       = _editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2;
 
-                panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
-                UpdateBottomPanelVisibility();
+                UpdateBottomPanelVisibility(_editor.Configuration);
                 UpdateStepHeightCombo();
             }
 
@@ -282,15 +276,23 @@ namespace TombEditor.ToolWindows
 
             panel3D.Invalidate();
 
-            panelFlybyTimeline.Visible = settings.UI_ShowFlybyTimeline;
-            tbStats.Visible = settings.UI_ShowStats;
-            UpdateBottomPanelVisibility();
+            UpdateBottomPanelVisibility(settings);
         }
 
-        private void UpdateBottomPanelVisibility()
+        private void UpdateBottomPanelVisibility(Configuration settings)
         {
-            panelBottomStatus.Visible = tbStats.Visible || panelStepHeightOptions.Visible;
-            panelBottom.Visible = panelFlybyTimeline.Visible || panelBottomStatus.Visible;
+            bool bottomPanelVisible = settings.UI_ShowStats || _editor.IsPreciseGeometryAllowed;
+            bool timelinePanelVisible = settings.UI_ShowFlybyTimeline;
+
+            UpdateStatistics();
+
+            panelBottom.Visible = timelinePanelVisible || bottomPanelVisible;
+            panelBottomStatus.Visible = bottomPanelVisible;
+
+            panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
+            tbStats.Visible = settings.UI_ShowStats;
+
+            panelFlybyTimeline.Visible = settings.UI_ShowFlybyTimeline;
         }
 
         private void UpdateToolStripLayout()

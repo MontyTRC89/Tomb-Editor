@@ -84,6 +84,8 @@ namespace TombLib.Controls
             if (SwapChain != null)
             {
                 SwapChain.Resize(new VectorInt2(ClientSize.Width, ClientSize.Height));
+                SwapChain.Clear(ClearColor);
+                SwapChain.Present();
                 Invalidate();
             }
         }
