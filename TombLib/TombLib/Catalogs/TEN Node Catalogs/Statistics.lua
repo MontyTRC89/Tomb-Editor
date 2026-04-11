@@ -6,7 +6,7 @@ local count = 0
 -- !Description "Show end of level statistics."
 -- !Arguments "NewLine, Numerical, 20, [ 0 | 256 ], Next level"
 -- !Arguments "80, SoundTracks, Name of the audiotrack to play"
-LevelFuncs.Engine.Node.ShowStatistics = function(level, track)
+LevelFuncs.Engine.Node.ShowEndLevelStatistics = function(level, track)
 	
     if count == 0 then
         Statistics.SetType(false)
