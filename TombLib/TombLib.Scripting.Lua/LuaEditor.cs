@@ -5,16 +5,23 @@ using System.IO;
 using System.Windows.Media;
 using System.Xml;
 using TombLib.Scripting.Bases;
+using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Lua.Services;
 
 namespace TombLib.Scripting.Lua
 {
-	public sealed class LuaEditor : TextEditorBase
+	public sealed partial class LuaEditor : TextEditorBase
 	{
 		public override string DefaultFileExtension => ".lua";
+
+		public ILuaIntellisenseProvider IntellisenseProvider { get; set; }
+		public Action<LuaDefinitionLocation> DefinitionNavigationRequested { get; set; }
 
 		public LuaEditor(Version engineVersion) : base(engineVersion)
 		{
 			CommentPrefix = "--";
+			InitializeSignaturePopup();
+			BindLuaIntellisenseEvents();
 		}
 
 		public override void UpdateSettings(Bases.ConfigurationBase configuration)
@@ -31,6 +38,14 @@ namespace TombLib.Scripting.Lua
 			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
 
 			base.UpdateSettings(configuration);
+			LiveErrorUnderlining = true;
+		}
+
+		private static SolidColorBrush CreateFrozenBrush(Color color)
+		{
+			var brush = new SolidColorBrush(color);
+			brush.Freeze();
+			return brush;
 		}
 	}
 }

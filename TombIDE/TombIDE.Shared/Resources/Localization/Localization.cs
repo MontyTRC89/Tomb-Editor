@@ -53,6 +53,7 @@ namespace TombIDE.Shared.Local
 		public string CommentOut { get; set; }
 		public string Uncomment { get; set; }
 		public string ToggleBookmark { get; set; }
+		public string GoToDefinition { get; set; }
 		public string PrevBookmark { get; set; }
 		public string NextBookmark { get; set; }
 		public string ClearBookmarks { get; set; }

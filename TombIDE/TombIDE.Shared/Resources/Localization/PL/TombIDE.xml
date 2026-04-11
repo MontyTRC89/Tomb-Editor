@@ -64,6 +64,7 @@
 	<CommentOut>Wstaw zakomentowanie</CommentOut>
 	<Uncomment>Usuń zakomentowanie</Uncomment>
 	<ToggleBookmark>Przełącz zakładkę</ToggleBookmark>
+	<GoToDefinition>Przejdź do definicji</GoToDefinition>
 	<PrevBookmark>Idź do poprzedniej zakładki</PrevBookmark>
 	<NextBookmark>Idź do następnej zakładki</NextBookmark>
 	<ClearBookmarks>Wyczyść wszystkie zakładki...</ClearBookmarks>

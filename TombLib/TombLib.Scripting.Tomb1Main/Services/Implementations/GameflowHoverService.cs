@@ -96,10 +96,10 @@ public sealed class GameflowHoverService : IGameflowHoverService
 
 	private static string FormatPropertyInfo(string propertyName, JSchema propertySchema)
 	{
-		var info = $"\"{propertyName}\"";
+		var info = $"`\"{propertyName}\"`";
 
 		if (propertySchema.Type.HasValue)
-			info += $"\nType: {propertySchema.Type.Value}";
+			info += $"\nType: `{propertySchema.Type.Value}`";
 
 		if (!string.IsNullOrEmpty(propertySchema.Description))
 			info += $"\n\n{propertySchema.Description}";

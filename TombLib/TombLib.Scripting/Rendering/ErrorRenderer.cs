@@ -1,13 +1,23 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
+using System;
 using System.Windows;
 using System.Windows.Media;
 using TombLib.Scripting.Bases;
+using TombLib.Scripting.Objects;
 
 namespace TombLib.Scripting.Rendering
 {
 	public sealed class ErrorRenderer : IBackgroundRenderer
 	{
+		private static readonly Brush ErrorBrush = CreateBrush(Color.FromArgb(224, 220, 76, 60));
+		private static readonly Brush WarningBrush = CreateBrush(Color.FromArgb(224, 226, 165, 44));
+		private static readonly Brush InformationBrush = CreateBrush(Color.FromArgb(224, 88, 170, 255));
+		private static readonly Brush HintBrush = CreateBrush(Color.FromArgb(192, 166, 166, 166));
+		private static readonly Pen WarningPen = CreatePen(WarningBrush, new double[] { 1.0, 2.0 });
+		private static readonly Pen InformationPen = CreatePen(InformationBrush, new double[] { 2.0, 2.0 });
+		private static readonly Pen HintPen = CreatePen(HintBrush, new double[] { 1.0, 3.0 });
+
 		private TextEditorBase _editor;
 
 		#region Construction
@@ -23,35 +33,116 @@ namespace TombLib.Scripting.Rendering
 
 		public void Draw(TextView textView, DrawingContext drawingContext)
 		{
-			foreach (DocumentLine line in _editor.Document.Lines)
+			if (!_editor.LiveErrorUnderlining || _editor.Diagnostics.Count == 0)
+				return;
+
+			foreach (TextEditorDiagnostic diagnostic in _editor.Diagnostics)
 			{
-				if (!line.HasError)
+				if (!TryCreateSegment(textView.Document, diagnostic, out TextSegment segment))
 					continue;
 
-				string lineText = _editor.Document.GetText(line.Offset, line.Length);
-
-				int matchIndex = lineText.IndexOf(line.Error.ErrorSegmentText);
-
-				if (matchIndex == -1)
-					continue;
-
-				var segment = new TextSegment
+				foreach (Rect rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment, false))
 				{
-					StartOffset = line.Offset + matchIndex,
-					Length = line.Error.ErrorSegmentText.Length
-				};
-
-				foreach (Rect rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment))
-				{
-					ImageSource underlining = TextRendering.CreateZigZagUnderlining((int)rect.Width, System.Drawing.Color.FromArgb(192, 255, 0, 0));
-
-					if (underlining == null)
+					if (rect.Width <= 0.0)
 						continue;
 
-					drawingContext.DrawImage(underlining,
-						new Rect(new Point(rect.Location.X, rect.Location.Y + rect.Height - 2), new Size(rect.Width, 4)));
+					switch (diagnostic.Severity)
+					{
+						case TextEditorDiagnosticSeverity.Warning:
+							DrawStraightUnderline(drawingContext, rect, WarningPen);
+							break;
+
+						case TextEditorDiagnosticSeverity.Information:
+							DrawStraightUnderline(drawingContext, rect, InformationPen);
+							break;
+
+						case TextEditorDiagnosticSeverity.Hint:
+							DrawStraightUnderline(drawingContext, rect, HintPen);
+							break;
+
+						default:
+							DrawErrorUnderline(drawingContext, rect);
+							break;
+					}
 				}
 			}
+		}
+
+		private static bool TryCreateSegment(TextDocument document, TextEditorDiagnostic diagnostic, out TextSegment segment)
+		{
+			segment = null;
+
+			if (document is null || diagnostic is null || document.TextLength == 0)
+				return false;
+
+			int startOffset = Math.Max(0, Math.Min(diagnostic.StartOffset, document.TextLength - 1));
+			int endOffset = Math.Max(startOffset + 1, Math.Min(diagnostic.EndOffset, document.TextLength));
+
+			if (endOffset <= startOffset)
+				return false;
+
+			segment = new TextSegment
+			{
+				StartOffset = startOffset,
+				EndOffset = endOffset
+			};
+
+			return true;
+		}
+
+		private static void DrawErrorUnderline(DrawingContext drawingContext, Rect rect)
+		{
+			double baseline = rect.Bottom - 1.0;
+			double amplitude = 1.6;
+			double step = 4.0;
+
+			var geometry = new StreamGeometry();
+
+			using (StreamGeometryContext context = geometry.Open())
+			{
+				bool goingUp = true;
+				context.BeginFigure(new Point(rect.Left, baseline), false, false);
+
+				for (double x = rect.Left; x < rect.Right; x += step)
+				{
+					double nextX = Math.Min(x + step / 2.0, rect.Right);
+					double y = baseline + (goingUp ? -amplitude : amplitude);
+					context.LineTo(new Point(nextX, y), true, false);
+					goingUp = !goingUp;
+
+					nextX = Math.Min(x + step, rect.Right);
+					context.LineTo(new Point(nextX, baseline), true, false);
+				}
+			}
+
+			geometry.Freeze();
+			drawingContext.DrawGeometry(null, new Pen(ErrorBrush, 1.4), geometry);
+		}
+
+		private static void DrawStraightUnderline(DrawingContext drawingContext, Rect rect, Pen pen)
+		{
+			double y = rect.Bottom - 1.0;
+			drawingContext.DrawLine(pen, new Point(rect.Left, y), new Point(rect.Right, y));
+		}
+
+		private static Brush CreateBrush(Color color)
+		{
+			var brush = new SolidColorBrush(color);
+			brush.Freeze();
+			return brush;
+		}
+
+		private static Pen CreatePen(Brush brush, double[] dashPattern)
+		{
+			var pen = new Pen(brush, 1.5)
+			{
+				DashStyle = new DashStyle(dashPattern, 0.0),
+				StartLineCap = PenLineCap.Round,
+				EndLineCap = PenLineCap.Round
+			};
+
+			pen.Freeze();
+			return pen;
 		}
 
 		#endregion Drawing

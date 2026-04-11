@@ -23,12 +23,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>

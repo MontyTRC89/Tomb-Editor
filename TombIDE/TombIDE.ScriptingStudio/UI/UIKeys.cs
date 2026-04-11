@@ -24,6 +24,7 @@ namespace TombIDE.ScriptingStudio.UI
 		public const Keys CommentOut = Keys.Control | Keys.Shift | Keys.C;
 		public const Keys Uncomment = Keys.Control | Keys.Shift | Keys.U;
 		public const Keys ToggleBookmark = Keys.Control | Keys.B;
+		public const Keys GoToDefinition = Keys.F12;
 		public const Keys PrevBookmark = Keys.Control | Keys.Oemcomma;
 		public const Keys NextBookmark = Keys.Control | Keys.OemPeriod;
 		public const Keys ClearBookmarks = Keys.Control | Keys.Shift | Keys.B;

@@ -547,7 +547,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			if (editorPreview.LiveErrorUnderlining)
 				editorPreview.CheckForErrors();
 			else
-				editorPreview.ResetAllErrors();
+				editorPreview.ClearDiagnostics();
 
 			editorPreview.WordWrap = checkBox_WordWrapping.Checked;
 

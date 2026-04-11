@@ -5,8 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using ICSharpCode.AvalonEdit.Document;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.Services.LuaIntellisense;
 using TombIDE.ScriptingStudio.ToolWindows;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
@@ -14,11 +16,14 @@ using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
+using TombLib.Scripting.Lua;
+using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Lua.Services;
+using TombLib.Scripting.Objects;
 
 namespace TombIDE.ScriptingStudio
 {
-	public sealed class LuaStudio : StudioBase
+	public sealed partial class LuaStudio : StudioBase
 	{
 		public override StudioMode StudioMode => StudioMode.Lua;
 
@@ -37,6 +42,9 @@ namespace TombIDE.ScriptingStudio
 			FileExplorer.ExcludedDirectoryFilter = "Scripts\\Engine";
 			FileExplorer.Filter = "*.lua";
 			FileExplorer.CommentPrefix = "--";
+
+			_intellisenseProvider = CreateLuaIntellisenseProvider();
+			HookLuaIntellisense();
 
 			EditorTabControl.CheckPreviousSession();
 
@@ -58,6 +66,8 @@ namespace TombIDE.ScriptingStudio
 
 			if (obj is IDE.ProgramClosingEvent)
 			{
+				DisposeLuaIntellisense();
+
 				IDE.Instance.IDEConfiguration.Lua_DockPanelState = DockPanel.GetDockPanelState();
 				IDE.Instance.IDEConfiguration.Save();
 			}
@@ -267,7 +277,13 @@ namespace TombIDE.ScriptingStudio
 		protected override void ApplyUserSettings()
 		{
 			foreach (TabPage tab in EditorTabControl.TabPages)
-				ApplyUserSettings(EditorTabControl.GetEditorOfTab(tab));
+			{
+				IEditorControl editor = EditorTabControl.GetEditorOfTab(tab);
+				ApplyUserSettings(editor);
+
+				if (editor is LuaEditor luaEditor)
+					ApplyDiagnosticsToEditor(luaEditor, _intellisenseProvider?.GetDiagnostics(luaEditor.FilePath));
+			}
 
 			UpdateSettings();
 		}
@@ -281,6 +297,11 @@ namespace TombIDE.ScriptingStudio
 		{
 			switch (command)
 			{
+				case UICommand.GoToDefinition:
+					if (CurrentEditor is LuaEditor luaEditor)
+						luaEditor.NavigateToDefinitionAtCaretAsync();
+					break;
+
 				case UICommand.LuaBasics:
 					string url = "https://github.com/MontyTRC89/TombEngine/wiki/Basics-of-Lua-Programming";
 

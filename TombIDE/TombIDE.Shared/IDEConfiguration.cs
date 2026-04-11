@@ -48,6 +48,7 @@ namespace TombIDE.Shared
 		public DockPanelState Lua_DockPanelState { get; set; } = DefaultLayouts.LuaLayout;
 
 		public string VSCodePath { get; set; } = string.Empty;
+		public string LuaLanguageServerPath { get; set; } = string.Empty;
 		public bool DoNotAskToInstallLuaExtension { get; set; }
 
 		public static string DefaultPath => Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEConfiguration.xml");

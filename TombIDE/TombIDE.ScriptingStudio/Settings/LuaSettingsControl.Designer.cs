@@ -113,13 +113,12 @@
 			// checkBox_Autocomplete
 			// 
 			checkBox_Autocomplete.AutoSize = true;
-			checkBox_Autocomplete.Enabled = false;
 			checkBox_Autocomplete.Location = new System.Drawing.Point(6, 166);
 			checkBox_Autocomplete.Margin = new System.Windows.Forms.Padding(6, 6, 3, 0);
 			checkBox_Autocomplete.Name = "checkBox_Autocomplete";
-			checkBox_Autocomplete.Size = new System.Drawing.Size(30, 17);
+			checkBox_Autocomplete.Size = new System.Drawing.Size(135, 17);
 			checkBox_Autocomplete.TabIndex = 6;
-			checkBox_Autocomplete.Text = "-";
+			checkBox_Autocomplete.Text = "Enable autocomplete";
 			// 
 			// checkBox_HighlightCurrentLine
 			// 

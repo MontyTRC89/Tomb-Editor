@@ -376,13 +376,10 @@ namespace TombLib.Scripting.ClassicScript
 
 		private void ErrorWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			if (e.Result == null)
+			if (e.Result is not IReadOnlyList<TextEditorDiagnostic> diagnostics)
 				return;
 
-			ResetAllErrors();
-			ApplyErrorsToLines(e.Result as List<ErrorLine>);
-
-			TextArea.TextView.InvalidateLayer(KnownLayer.Caret);
+			SetDiagnostics(diagnostics);
 		}
 
 		#endregion Error handling
@@ -444,7 +441,7 @@ namespace TombLib.Scripting.ClassicScript
 
 			DocumentLine hoveredLine = Document.GetLineByOffset(hoveredOffset);
 
-			if (hoveredLine.HasError)
+			if (HasDiagnosticsOnLine(hoveredLine))
 				return;
 
 			string hoveredWord = WordParser.GetWordFromOffset(Document, hoveredOffset);

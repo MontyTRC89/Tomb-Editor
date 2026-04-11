@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Threading;
 using TombLib.Scripting.Interfaces;
+using TombLib.Scripting.Objects;
 
 namespace TombLib.Scripting.Workers
 {
@@ -53,10 +53,14 @@ namespace TombLib.Scripting.Workers
 		{
 			base.OnDoWork(e);
 
-			var errorDetector = (e.Argument as List<object>)[0] as IErrorDetector;
-			string editorContent = (e.Argument as List<object>)[1].ToString();
+			if (ErrorDetector is null)
+			{
+				e.Result = Array.Empty<TextEditorDiagnostic>();
+				return;
+			}
 
-			e.Result = errorDetector.FindErrors(editorContent, EngineVersion);
+			string editorContent = e.Argument as string ?? string.Empty;
+			e.Result = ErrorDetector.FindErrors(editorContent, EngineVersion);
 		}
 
 		#endregion Override methods
@@ -77,13 +81,7 @@ namespace TombLib.Scripting.Workers
 			if (ErrorDetector == null)
 				return;
 
-			var args = new List<object>
-			{
-				ErrorDetector,
-				editorContent
-			};
-
-			base.RunWorkerAsync(args);
+			base.RunWorkerAsync(editorContent ?? string.Empty);
 		}
 
 		#endregion Public methods

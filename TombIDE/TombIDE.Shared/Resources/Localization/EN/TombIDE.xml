@@ -64,6 +64,7 @@
 	<CommentOut>Comment out Selected Lines</CommentOut>
 	<Uncomment>Uncomment Selected Lines</Uncomment>
 	<ToggleBookmark>Toggle Bookmark</ToggleBookmark>
+	<GoToDefinition>Go to Definition</GoToDefinition>
 	<PrevBookmark>Go to Previous Bookmark</PrevBookmark>
 	<NextBookmark>Go to Next Bookmark</NextBookmark>
 	<ClearBookmarks>Clear All Bookmarks...</ClearBookmarks>

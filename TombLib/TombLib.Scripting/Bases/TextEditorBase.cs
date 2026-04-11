@@ -1,8 +1,4 @@
 ﻿using DarkUI.Forms;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,10 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Rendering;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Objects;
@@ -27,6 +28,22 @@ namespace TombLib.Scripting.Bases
 {
 	public abstract class TextEditorBase : TextEditor, IEditorControl, ISupportsFindReplace
 	{
+		private const double ToolTipMaxHeight = 420.0;
+		private const double ToolTipMaxWidth = 540.0;
+		private const double ToolTipTextMaxWidth = 500.0;
+		private static readonly double ToolTipTextFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
+		protected static readonly SolidColorBrush DefaultToolTipBorder = CreateFrozenBrush(Color.FromRgb(96, 96, 96));
+		protected static readonly SolidColorBrush DefaultToolTipBackground = CreateFrozenBrush(Color.FromRgb(64, 64, 64));
+		private static readonly SolidColorBrush ErrorToolTipBorder = CreateFrozenBrush(Color.FromRgb(128, 86, 86));
+		private static readonly SolidColorBrush ErrorToolTipBackground = CreateFrozenBrush(Color.FromRgb(78, 44, 44));
+		private static readonly SolidColorBrush WarningToolTipBorder = CreateFrozenBrush(Color.FromRgb(145, 122, 62));
+		private static readonly SolidColorBrush WarningToolTipBackground = CreateFrozenBrush(Color.FromRgb(86, 69, 30));
+		private static readonly SolidColorBrush InformationToolTipBorder = CreateFrozenBrush(Color.FromRgb(80, 118, 168));
+		private static readonly SolidColorBrush InformationToolTipBackground = CreateFrozenBrush(Color.FromRgb(46, 68, 104));
+		private static readonly SolidColorBrush HintToolTipBorder = CreateFrozenBrush(Color.FromRgb(108, 108, 108));
+		private static readonly SolidColorBrush HintToolTipBackground = CreateFrozenBrush(Color.FromRgb(58, 58, 58));
+		private static readonly SolidColorBrush ToolTipForeground = CreateFrozenBrush(Colors.Gainsboro);
+
 		public EditorType EditorType => EditorType.Text;
 		public abstract string DefaultFileExtension { get; }
 
@@ -105,15 +122,23 @@ namespace TombLib.Scripting.Bases
 
 		#region Fields
 
-		protected ToolTip _specialToolTip = new ToolTip();
+		protected Popup _specialToolTip = new Popup();
 		protected CompletionWindow _completionWindow;
 
 		private ContentChangedWorker _contentChangedWorker;
 
 		private DispatcherTimer _textChangedDelayedTimer = new DispatcherTimer();
+		private DispatcherTimer _toolTipCloseTimer = new DispatcherTimer();
+		private bool _toolTipContentHovered;
+		private readonly Border _specialToolTipBorder = new Border();
+		private readonly ContentPresenter _specialToolTipPresenter = new ContentPresenter();
+		private readonly List<TextAnchor> _bookmarkAnchors = new List<TextAnchor>();
+		private IReadOnlyList<TextEditorDiagnostic> _diagnostics = Array.Empty<TextEditorDiagnostic>();
 
 		private IBackgroundRenderer _bookmarkRenderer;
 		private IBackgroundRenderer _errorRenderer;
+
+		internal IReadOnlyList<TextEditorDiagnostic> Diagnostics => _diagnostics;
 
 		#endregion Fields
 
@@ -125,6 +150,7 @@ namespace TombLib.Scripting.Bases
 
 			InitializeBackgroundWorkers();
 			InitializeTimers();
+			InitializeToolTip();
 			InitializeRenderers();
 
 			BindEventMethods();
@@ -159,6 +185,26 @@ namespace TombLib.Scripting.Bases
 		{
 			TextChangedDelayedInterval = new TimeSpan(0, 0, 0, 0, 300);
 			_textChangedDelayedTimer.Tick += TextChangedDelayedTimer_Tick;
+			_toolTipCloseTimer.Interval = new TimeSpan(0, 0, 0, 0, 900);
+			_toolTipCloseTimer.Tick += ToolTipCloseTimer_Tick;
+		}
+
+		private void InitializeToolTip()
+		{
+			_specialToolTip.AllowsTransparency = true;
+			_specialToolTip.PopupAnimation = PopupAnimation.Fade;
+			_specialToolTip.StaysOpen = true;
+			_specialToolTip.Placement = PlacementMode.RelativePoint;
+
+			_specialToolTipBorder.SnapsToDevicePixels = true;
+			_specialToolTipBorder.CornerRadius = new CornerRadius(3.0);
+			_specialToolTipBorder.BorderThickness = new Thickness(1.0);
+			_specialToolTipBorder.Padding = new Thickness(8.0, 6.0, 8.0, 6.0);
+			_specialToolTipBorder.Child = _specialToolTipPresenter;
+			_specialToolTipBorder.MouseEnter += SpecialToolTip_MouseEnter;
+			_specialToolTipBorder.MouseLeave += SpecialToolTip_MouseLeave;
+
+			_specialToolTip.Child = _specialToolTipBorder;
 		}
 
 		private void InitializeRenderers()
@@ -217,7 +263,7 @@ namespace TombLib.Scripting.Bases
 
 		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
 		{
-			CloseDefinitionToolTip(); // Prevents the ToolTip from covering the screen while typing
+			CloseDefinitionToolTip(true); // Prevents the ToolTip from covering the screen while typing
 			HandleAutoClosing(e);
 		}
 
@@ -238,10 +284,13 @@ namespace TombLib.Scripting.Bases
 		}
 
 		private void TextEditor_MouseHover(object sender, MouseEventArgs e)
+			=> HandleMouseHover(e);
+
+		protected virtual void HandleMouseHover(MouseEventArgs e)
 			=> HandleErrorToolTips(e);
 
 		private void TextEditor_MouseHoverStopped(object sender, MouseEventArgs e)
-			=> CloseDefinitionToolTip();
+			=> ScheduleDefinitionToolTipClose();
 
 		private void TextEditor_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
 		{
@@ -252,17 +301,54 @@ namespace TombLib.Scripting.Bases
 		private void TextEditor_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
 			=> MoveCaretToMousePosition();
 
-		private void CloseDefinitionToolTip()
+		private void ToolTipCloseTimer_Tick(object sender, EventArgs e)
 		{
+			_toolTipCloseTimer.Stop();
+
+			if (!_toolTipContentHovered && !_specialToolTipBorder.IsMouseOver)
+				CloseDefinitionToolTip(true);
+		}
+
+		private void SpecialToolTip_MouseEnter(object sender, MouseEventArgs e)
+		{
+			_toolTipContentHovered = true;
+			_toolTipCloseTimer.Stop();
+		}
+
+		private void SpecialToolTip_MouseLeave(object sender, MouseEventArgs e)
+		{
+			_toolTipContentHovered = false;
+			ScheduleDefinitionToolTipClose();
+		}
+
+		protected void CloseDefinitionToolTip(bool force = false)
+		{
+			_toolTipCloseTimer.Stop();
+
+			if (!force && (_toolTipContentHovered || _specialToolTipBorder.IsMouseOver))
+				return;
+
 			if (_specialToolTip.IsOpen)
 				_specialToolTip.IsOpen = false;
+
+			_specialToolTipPresenter.Content = null;
+			_toolTipContentHovered = false;
+		}
+
+		private void ScheduleDefinitionToolTipClose()
+		{
+			if (!_specialToolTip.IsOpen)
+				return;
+
+			_toolTipCloseTimer.Stop();
+			_toolTipCloseTimer.Start();
 		}
 
 		private void MoveCaretToMousePosition()
 		{
 			if (string.IsNullOrEmpty(SelectedText))
 			{
-				TextViewPosition? position = TextArea.TextView.GetPosition(Mouse.GetPosition(TextArea.TextView) + TextArea.TextView.ScrollOffset);
+				TextViewPosition? position = GetTextViewPosition(Mouse.GetPosition(this));
 
 				if (position != null)
 				{
@@ -302,7 +388,10 @@ namespace TombLib.Scripting.Bases
 
 		private void SaveBookmarks()
 		{
-			IEnumerable<DocumentLine> bookmarkedLines = Document.Lines.Where(line => line.IsBookmarked);
+			if (string.IsNullOrWhiteSpace(FilePath))
+				return;
+
+			List<DocumentLine> bookmarkedLines = CollectBookmarkedLines();
 
 			var builder = new StringBuilder();
 
@@ -313,7 +402,7 @@ namespace TombLib.Scripting.Bases
 			{
 				string bookmarkFileName = FilePath + ".bkmrk";
 
-				if (bookmarkedLines.Count() > 0)
+				if (bookmarkedLines.Count > 0)
 					File.WriteAllText(bookmarkFileName, builder.ToString());
 				else if (File.Exists(bookmarkFileName))
 					File.Delete(bookmarkFileName);
@@ -326,6 +415,8 @@ namespace TombLib.Scripting.Bases
 
 		private void RestoreBookmarks()
 		{
+			_bookmarkAnchors.Clear();
+
 			string bookmarkFileName = FilePath + ".bkmrk";
 
 			if (!File.Exists(bookmarkFileName))
@@ -335,12 +426,12 @@ namespace TombLib.Scripting.Bases
 			{
 				foreach (string line in File.ReadAllLines(bookmarkFileName))
 				{
-					if (int.TryParse(line, out int lineNumber))
+					if (int.TryParse(line, out int lineNumber) && lineNumber >= 1 && lineNumber <= Document.LineCount)
 					{
 						DocumentLine documentLine = Document.GetLineByNumber(lineNumber);
 
-						if (documentLine != null)
-							documentLine.IsBookmarked = true;
+						if (FindBookmarkAnchor(documentLine) is null)
+							AddBookmark(documentLine);
 					}
 				}
 			}
@@ -383,21 +474,27 @@ namespace TombLib.Scripting.Bases
 
 		#region Error handling
 
-		public void ApplyErrorsToLines(List<ErrorLine> errorLines)
+		public void SetDiagnostics(IReadOnlyList<TextEditorDiagnostic> diagnostics)
 		{
-			foreach (ErrorLine line in errorLines)
-			{
-				if (line.LineNumber > Document.LineCount)
-					continue;
-
-				Document.GetLineByNumber(line.LineNumber).Error = line;
-			}
+			_diagnostics = diagnostics ?? Array.Empty<TextEditorDiagnostic>();
+			InvalidateDiagnosticLayer();
 		}
 
-		public void ResetAllErrors()
+		public void ClearDiagnostics()
 		{
-			foreach (DocumentLine line in Document.Lines)
-				line.ClearError();
+			if (_diagnostics.Count == 0)
+				return;
+
+			_diagnostics = Array.Empty<TextEditorDiagnostic>();
+			InvalidateDiagnosticLayer();
+		}
+
+		private void InvalidateDiagnosticLayer()
+		{
+			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
+			TextArea.TextView.InvalidateLayer(KnownLayer.Selection);
+			TextArea.TextView.InvalidateLayer(KnownLayer.Caret);
+			TextArea.TextView.InvalidateVisual();
 		}
 
 		private void HandleErrorToolTips(MouseEventArgs e)
@@ -407,14 +504,41 @@ namespace TombLib.Scripting.Bases
 			if (hoveredOffset == -1)
 				return;
 
-			DocumentLine hoveredLine = Document.GetLineByOffset(hoveredOffset);
-
-			if (hoveredLine.HasError)
-				ShowToolTip("Error:\n" + hoveredLine.Error.Message,
-					new SolidColorBrush(Color.FromRgb(128, 96, 96)),
-					new SolidColorBrush(Color.FromRgb(96, 64, 64)),
-					new SolidColorBrush(Colors.Gainsboro));
+			TryShowDiagnosticToolTip(hoveredOffset);
 		}
+
+		protected bool TryShowDiagnosticToolTip(int hoveredOffset)
+		{
+			if (!LiveErrorUnderlining || _diagnostics.Count == 0)
+				return false;
+
+			List<TextEditorDiagnostic> hoveredDiagnostics = GetDiagnosticsAtOffset(hoveredOffset);
+
+			if (hoveredDiagnostics.Count == 0)
+				hoveredDiagnostics = GetDiagnosticsForLine(Document.GetLineByOffset(hoveredOffset));
+
+			if (hoveredDiagnostics.Count == 0)
+				return false;
+
+			TextEditorDiagnosticSeverity severity = hoveredDiagnostics
+				.OrderBy(diagnostic => diagnostic.Severity)
+				.Select(diagnostic => diagnostic.Severity)
+				.First();
+
+			string message = string.Join(Environment.NewLine + Environment.NewLine,
+				hoveredDiagnostics
+					.OrderBy(diagnostic => diagnostic.Severity)
+					.ThenBy(diagnostic => diagnostic.StartOffset)
+					.Select(FormatDiagnosticMessage)
+					.Distinct(StringComparer.Ordinal));
+
+			GetDiagnosticToolTipColors(severity, out SolidColorBrush border, out SolidColorBrush background);
+			ShowToolTip(message, border, background, ToolTipForeground);
+			return true;
+		}
+
+		protected bool HasDiagnosticsOnLine(DocumentLine line)
+			=> line is not null && GetDiagnosticsForLine(line).Count > 0;
 
 		#endregion Error handling
 
@@ -507,8 +631,6 @@ namespace TombLib.Scripting.Bases
 
 				if (!string.IsNullOrWhiteSpace(currentLineText))
 					builder.AppendLine(whitespaceBuilder.ToString() + CommentPrefix + currentLineText.TrimStart());
-				else
-					builder.AppendLine(whitespaceBuilder.ToString());
 
 				totalLineLength += currentLine.TotalLength;
 			}
@@ -568,7 +690,13 @@ namespace TombLib.Scripting.Bases
 		public void ToggleBookmark()
 		{
 			DocumentLine currentLine = Document.GetLineByOffset(CaretOffset);
-			currentLine.IsBookmarked = !currentLine.IsBookmarked;
+
+			TextAnchor bookmarkAnchor = FindBookmarkAnchor(currentLine);
+
+			if (bookmarkAnchor is null)
+				AddBookmark(currentLine);
+			else
+				_bookmarkAnchors.Remove(bookmarkAnchor);
 
 			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
 
@@ -578,61 +706,31 @@ namespace TombLib.Scripting.Bases
 		public void GoToNextBookmark()
 		{
 			DocumentLine currentLine = Document.GetLineByOffset(CaretOffset);
+			List<DocumentLine> bookmarkedLines = CollectBookmarkedLines();
 
-			for (int i = 1; i < Document.LineCount; i++)
-			{
-				DocumentLine iLine = Document.GetLineByNumber(i);
+			if (bookmarkedLines.Count == 0)
+				return;
 
-				if (iLine.IsBookmarked && iLine.LineNumber > currentLine.LineNumber)
-				{
-					CaretOffset = iLine.EndOffset;
-					ScrollToLine(iLine.LineNumber);
-					break;
-				}
+			DocumentLine nextBookmark = bookmarkedLines.FirstOrDefault(line => line.LineNumber > currentLine.LineNumber)
+				?? bookmarkedLines[0];
 
-				if (i == Document.LineCount - 1)
-					for (int j = 1; j < Document.LineCount; j++)
-					{
-						DocumentLine jLine = Document.GetLineByNumber(j);
-
-						if (jLine.IsBookmarked)
-						{
-							CaretOffset = jLine.EndOffset;
-							ScrollToLine(jLine.LineNumber);
-							break;
-						}
-					}
-			}
+			CaretOffset = nextBookmark.EndOffset;
+			ScrollToLine(nextBookmark.LineNumber);
 		}
 
 		public void GoToPrevBookmark()
 		{
 			DocumentLine currentLine = Document.GetLineByOffset(CaretOffset);
+			List<DocumentLine> bookmarkedLines = CollectBookmarkedLines();
 
-			for (int i = Document.LineCount - 1; i > 0; i--)
-			{
-				if (i == 1)
-					for (int j = Document.LineCount - 1; j > 0; j--)
-					{
-						DocumentLine jLine = Document.GetLineByNumber(j);
+			if (bookmarkedLines.Count == 0)
+				return;
 
-						if (jLine.IsBookmarked)
-						{
-							CaretOffset = jLine.EndOffset;
-							ScrollToLine(jLine.LineNumber);
-							break;
-						}
-					}
+			DocumentLine previousBookmark = bookmarkedLines.LastOrDefault(line => line.LineNumber < currentLine.LineNumber)
+				?? bookmarkedLines[bookmarkedLines.Count - 1];
 
-				DocumentLine iLine = Document.GetLineByNumber(i);
-
-				if (iLine.IsBookmarked && iLine.LineNumber < currentLine.LineNumber)
-				{
-					CaretOffset = iLine.EndOffset;
-					ScrollToLine(iLine.LineNumber);
-					break;
-				}
-			}
+			CaretOffset = previousBookmark.EndOffset;
+			ScrollToLine(previousBookmark.LineNumber);
 		}
 
 		#endregion Bookmarks
@@ -710,9 +808,7 @@ namespace TombLib.Scripting.Bases
 					"Are you sure?", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
 
 			if (result == System.Windows.Forms.DialogResult.Yes)
-				foreach (DocumentLine line in Document.Lines)
-					if (line.IsBookmarked)
-						line.IsBookmarked = false;
+				_bookmarkAnchors.Clear();
 
 			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
 
@@ -754,18 +850,27 @@ namespace TombLib.Scripting.Bases
 
 		public int GetOffsetFromPoint(Point point)
 		{
-			TextViewPosition? position = GetPositionFromPoint(point);
+			TextViewPosition? position = GetTextViewPosition(point);
 
 			if (position == null)
 				return -1;
 
 			DocumentLine pointLine = Document.GetLineByNumber(((TextViewPosition)position).Line);
-			int offset = pointLine.Offset + ((TextViewPosition)position).Column;
+			int offset = pointLine.Offset + Math.Min(pointLine.Length, Math.Max(0, ((TextViewPosition)position).Column - 1));
 
 			if (offset > Document.TextLength)
 				return -1;
 			else
 				return offset;
+		}
+
+		private TextViewPosition? GetTextViewPosition(Point point)
+		{
+			if (TextArea?.TextView is null)
+				return null;
+
+			Point textViewPoint = TranslatePoint(point, TextArea.TextView);
+			return TextArea.TextView.GetPosition(textViewPoint + TextArea.TextView.ScrollOffset);
 		}
 
 		public string GetWordFromOffset(int offset)
@@ -781,20 +886,218 @@ namespace TombLib.Scripting.Bases
 
 		public void ShowToolTip(string content)
 			=> ShowToolTip(content,
-				new SolidColorBrush(Color.FromRgb(96, 96, 96)),
-				new SolidColorBrush(Color.FromRgb(64, 64, 64)),
-				new SolidColorBrush(Colors.Gainsboro));
+				DefaultToolTipBorder,
+				DefaultToolTipBackground,
+				ToolTipForeground);
+
+		public void ShowMarkdownToolTip(string content)
+			=> ShowMarkdownToolTip(content,
+				DefaultToolTipBorder,
+				DefaultToolTipBackground,
+				ToolTipForeground);
 
 		public void ShowToolTip(string content, SolidColorBrush border, SolidColorBrush background, SolidColorBrush foreground)
+			=> ShowToolTip(CreatePlainToolTipContent(content, foreground), border, background);
+
+		public void ShowMarkdownToolTip(string content, SolidColorBrush border, SolidColorBrush background, SolidColorBrush foreground)
+			=> ShowToolTip(CreateMarkdownToolTipContent(content, foreground, background), border, background);
+
+		protected void ShowToolTip(object content, SolidColorBrush border, SolidColorBrush background)
 		{
-			_specialToolTip.PlacementTarget = this; // Required for property inheritance
+			_toolTipCloseTimer.Stop();
+			_toolTipContentHovered = false;
+			_specialToolTip.PlacementTarget = this;
+			Point mousePosition = Mouse.GetPosition(this);
+			_specialToolTip.HorizontalOffset = mousePosition.X + 14.0;
+			_specialToolTip.VerticalOffset = mousePosition.Y + 20.0;
 
-			_specialToolTip.BorderBrush = border;
-			_specialToolTip.Background = background;
-			_specialToolTip.Foreground = foreground;
-
-			_specialToolTip.Content = content;
+			_specialToolTipBorder.BorderBrush = border;
+			_specialToolTipBorder.Background = background;
+			_specialToolTipPresenter.Content = content;
 			_specialToolTip.IsOpen = true;
+		}
+
+		private static bool IsSeverityPrefixed(string message)
+			=> !string.IsNullOrWhiteSpace(message)
+				&& (message.StartsWith("Error:", StringComparison.OrdinalIgnoreCase)
+					|| message.StartsWith("Warning:", StringComparison.OrdinalIgnoreCase)
+					|| message.StartsWith("Information:", StringComparison.OrdinalIgnoreCase)
+					|| message.StartsWith("Hint:", StringComparison.OrdinalIgnoreCase)
+					|| message.StartsWith("Diagnostic:", StringComparison.OrdinalIgnoreCase));
+
+		private static object CreatePlainToolTipContent(string content, Brush foreground)
+			=> WrapToolTipContent(CreateToolTipTextBlock(content, foreground));
+
+		private static object CreateMarkdownToolTipContent(string content, Brush foreground, Brush background)
+		{
+			string normalizedContent = NormalizeToolTipLineEndings(content);
+
+			if (string.IsNullOrWhiteSpace(normalizedContent))
+				return CreatePlainToolTipContent(string.Empty, foreground);
+
+			return MarkdownToolTipRenderer.CreateContent(normalizedContent, foreground, background);
+		}
+
+		private static object WrapToolTipContent(UIElement content)
+			=> new ScrollViewer
+			{
+				Content = content,
+				MaxHeight = ToolTipMaxHeight,
+				MaxWidth = ToolTipMaxWidth,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				CanContentScroll = true
+			};
+
+		private static TextBlock CreateToolTipTextBlock(string content, Brush foreground)
+		{
+			var textBlock = CreateBaseToolTipTextBlock(foreground);
+			textBlock.Text = content ?? string.Empty;
+			return textBlock;
+		}
+
+		private static TextBlock CreateBaseToolTipTextBlock(Brush foreground)
+			=> new TextBlock
+			{
+				Foreground = foreground,
+				FontFamily = SystemFonts.MessageFontFamily,
+				FontSize = ToolTipTextFontSize,
+				TextWrapping = TextWrapping.Wrap,
+				MaxWidth = ToolTipTextMaxWidth,
+				Margin = new Thickness(0.0, 0.0, 0.0, 6.0)
+			};
+
+		private static string NormalizeToolTipLineEndings(string text)
+			=> (text ?? string.Empty)
+				.Replace("\r\n", "\n", StringComparison.Ordinal)
+				.Replace('\r', '\n');
+
+		private static SolidColorBrush CreateFrozenBrush(Color color)
+		{
+			var brush = new SolidColorBrush(color);
+			brush.Freeze();
+			return brush;
+		}
+
+		private List<DocumentLine> CollectBookmarkedLines()
+		{
+			var bookmarkedLines = new List<DocumentLine>();
+			var invalidAnchors = new List<TextAnchor>();
+			var seenLineNumbers = new HashSet<int>();
+
+			foreach (TextAnchor anchor in _bookmarkAnchors)
+			{
+				DocumentLine line = GetBookmarkedLine(anchor);
+
+				if (line is null)
+				{
+					invalidAnchors.Add(anchor);
+					continue;
+				}
+
+				if (seenLineNumbers.Add(line.LineNumber))
+					bookmarkedLines.Add(line);
+			}
+
+			foreach (TextAnchor anchor in invalidAnchors)
+				_bookmarkAnchors.Remove(anchor);
+
+			bookmarkedLines.Sort((left, right) => left.LineNumber.CompareTo(right.LineNumber));
+			return bookmarkedLines;
+		}
+
+		internal IReadOnlyList<DocumentLine> GetBookmarkedLines()
+			=> CollectBookmarkedLines();
+
+		private void AddBookmark(DocumentLine line)
+		{
+			if (line is null)
+				return;
+
+			var anchor = Document.CreateAnchor(line.Offset);
+			anchor.MovementType = AnchorMovementType.BeforeInsertion;
+			anchor.SurviveDeletion = true;
+			_bookmarkAnchors.Add(anchor);
+		}
+
+		private TextAnchor FindBookmarkAnchor(DocumentLine line)
+		{
+			if (line is null)
+				return null;
+
+			foreach (TextAnchor anchor in _bookmarkAnchors)
+			{
+				DocumentLine bookmarkedLine = GetBookmarkedLine(anchor);
+
+				if (bookmarkedLine is not null && bookmarkedLine.LineNumber == line.LineNumber)
+					return anchor;
+			}
+
+			return null;
+		}
+
+		private DocumentLine GetBookmarkedLine(TextAnchor anchor)
+		{
+			if (anchor is null || anchor.IsDeleted || Document.LineCount == 0)
+				return null;
+
+			int offset = Math.Max(0, Math.Min(anchor.Offset, Document.TextLength));
+			return Document.GetLineByOffset(offset);
+		}
+
+		private List<TextEditorDiagnostic> GetDiagnosticsAtOffset(int offset)
+			=> _diagnostics
+				.Where(diagnostic => diagnostic.ContainsOffset(offset))
+				.ToList();
+
+		private List<TextEditorDiagnostic> GetDiagnosticsForLine(DocumentLine line)
+		{
+			if (line is null || _diagnostics.Count == 0)
+				return new List<TextEditorDiagnostic>();
+
+			int endOffset = Math.Max(line.EndOffset, line.Offset + 1);
+
+			return _diagnostics
+				.Where(diagnostic => diagnostic.Intersects(line.Offset, endOffset))
+				.ToList();
+		}
+
+		private static string FormatDiagnosticMessage(TextEditorDiagnostic diagnostic)
+		{
+			if (diagnostic is null)
+				return string.Empty;
+
+			if (IsSeverityPrefixed(diagnostic.Message))
+				return diagnostic.Message;
+
+			return diagnostic.Severity.GetLabel() + ":\n" + diagnostic.Message;
+		}
+
+		private static void GetDiagnosticToolTipColors(TextEditorDiagnosticSeverity severity,
+			out SolidColorBrush border, out SolidColorBrush background)
+		{
+			switch (severity)
+			{
+				case TextEditorDiagnosticSeverity.Warning:
+					border = WarningToolTipBorder;
+					background = WarningToolTipBackground;
+					break;
+
+				case TextEditorDiagnosticSeverity.Information:
+					border = InformationToolTipBorder;
+					background = InformationToolTipBackground;
+					break;
+
+				case TextEditorDiagnosticSeverity.Hint:
+					border = HintToolTipBorder;
+					background = HintToolTipBackground;
+					break;
+
+				default:
+					border = ErrorToolTipBorder;
+					background = ErrorToolTipBackground;
+					break;
+			}
 		}
 
 		public virtual void UpdateSettings(ConfigurationBase configuration)

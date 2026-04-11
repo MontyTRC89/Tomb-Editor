@@ -31,10 +31,7 @@
     <None Remove="Resources\Icons\Section.png" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">

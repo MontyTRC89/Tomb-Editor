@@ -72,6 +72,7 @@
 
 		// Other:
 
+		GoToDefinition,
 		TypeFirstAvailableId,
 		NewFileAtCaret
 	}

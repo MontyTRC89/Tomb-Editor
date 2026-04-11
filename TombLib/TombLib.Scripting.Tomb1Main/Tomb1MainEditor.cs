@@ -118,20 +118,25 @@ namespace TombLib.Scripting.Tomb1Main
 		private void TextView_MouseHover(object? sender, MouseEventArgs e)
 		{
 			int hoveredOffset = GetOffsetFromPoint(e.GetPosition(this));
+
+			if (hoveredOffset == -1)
+				return;
+
+			if (TryShowDiagnosticToolTip(hoveredOffset))
+				return;
+
 			string? hoverInfo = _hoverService.GetHoverInfo(Document, hoveredOffset);
 
 			if (!string.IsNullOrEmpty(hoverInfo))
-				ShowToolTip(hoverInfo);
+				ShowMarkdownToolTip(hoverInfo);
 		}
 
 		private void ErrorWorker_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
 		{
-			if (e.Result is null)
+			if (e.Result is not IReadOnlyList<TextEditorDiagnostic> diagnostics)
 				return;
 
-			ResetAllErrors();
-			ApplyErrorsToLines(e.Result as List<ErrorLine>);
-			TextArea.TextView.InvalidateLayer(KnownLayer.Caret);
+			SetDiagnostics(diagnostics);
 		}
 
 		#endregion Event handlers

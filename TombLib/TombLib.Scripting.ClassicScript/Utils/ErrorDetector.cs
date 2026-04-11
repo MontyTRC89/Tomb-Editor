@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.Interfaces;
+using TombLib.Scripting.Objects;
 
 namespace TombLib.Scripting.ClassicScript.Utils
 {
@@ -14,16 +15,16 @@ namespace TombLib.Scripting.ClassicScript.Utils
 	{
 		#region Public methods
 
-		public object FindErrors(string editorContent, Version engineVersion)
+		public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
 			=> DetectErrorLines(new TextDocument(editorContent));
 
 		#endregion Public methods
 
 		#region Error line finding
 
-		private static List<ErrorLine> DetectErrorLines(TextDocument document)
+		private static List<TextEditorDiagnostic> DetectErrorLines(TextDocument document)
 		{
-			var errorLines = new List<ErrorLine>();
+			var errorLines = new List<TextEditorDiagnostic>();
 
 			bool commandSectionCheckRequired = DocumentParser.DocumentContainsSections(document);
 
@@ -34,7 +35,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				if (LineParser.IsEmptyOrComments(processedLineText))
 					continue;
 
-				ErrorLine error = FindErrorsInLine(document, processedLine, processedLineText, commandSectionCheckRequired);
+				TextEditorDiagnostic error = FindErrorsInLine(document, processedLine, processedLineText, commandSectionCheckRequired);
 
 				if (error != null)
 					errorLines.Add(error);
@@ -43,40 +44,41 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			return errorLines;
 		}
 
-		private static ErrorLine FindErrorsInLine(TextDocument document, DocumentLine line, string lineText, bool commandSectionCheckRequired)
+		private static TextEditorDiagnostic FindErrorsInLine(TextDocument document, DocumentLine line, string lineText, bool commandSectionCheckRequired)
 		{
 			if (LineParser.IsSectionHeaderLine(lineText))
-				return FindErrorsInSectionHeaderLine(line, lineText);
+				return FindErrorsInSectionHeaderLine(document, line, lineText);
 			else
 			{
 				if (commandSectionCheckRequired && LineParser.IsLineInStandardStringSection(document, line))
 					return null;
 				else if (commandSectionCheckRequired && LineParser.IsLineInExtraNGSection(document, line))
-					return FindErrorsInNGStringLine(line, lineText);
+					return FindErrorsInNGStringLine(document, line, lineText);
 				else
 					return FindErrorsInCommandLine(document, line, lineText, commandSectionCheckRequired);
 			}
 		}
 
-		private static ErrorLine FindErrorsInSectionHeaderLine(DocumentLine line, string lineText)
+		private static TextEditorDiagnostic FindErrorsInSectionHeaderLine(TextDocument document, DocumentLine line, string lineText)
 		{
 			if (!IsValidSectionName(lineText))
-				return new ErrorLine("Invalid section name. Please check its spelling.",
-					line.LineNumber, LineParser.RemoveComments(lineText));
+				return CreateDiagnostic(document, line,
+					"Invalid section name. Please check its spelling.", LineParser.RemoveComments(lineText));
 
 			return null;
 		}
 
-		private static ErrorLine FindErrorsInNGStringLine(DocumentLine line, string lineText)
+		private static TextEditorDiagnostic FindErrorsInNGStringLine(TextDocument document, DocumentLine line, string lineText)
 		{
 			if (!IsNGStringLineWellFormatted(lineText))
-				return new ErrorLine("NG string must start with an index.\n\nExample:\n0: First String\n1: Second String",
-					line.LineNumber, LineParser.RemoveComments(lineText));
+				return CreateDiagnostic(document, line,
+					"NG string must start with an index.\n\nExample:\n0: First String\n1: Second String",
+					LineParser.RemoveComments(lineText));
 
 			return null;
 		}
 
-		private static ErrorLine FindErrorsInCommandLine(TextDocument document, DocumentLine line, string lineText, bool commandSectionCheckRequired)
+		private static TextEditorDiagnostic FindErrorsInCommandLine(TextDocument document, DocumentLine line, string lineText, bool commandSectionCheckRequired)
 		{
 			string commandKey = CommandParser.GetCommandKey(document, line.Offset);
 
@@ -90,13 +92,14 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				if (commandKey == null)
 					errorSegmentText = lineText.TrimEnd();
 
-				return new ErrorLine("Invalid command. Please check its spelling.",
-					line.LineNumber, errorSegmentText);
+				return CreateDiagnostic(document, line,
+					"Invalid command. Please check its spelling.", errorSegmentText);
 			}
 
 			if (commandSectionCheckRequired && !IsCommandLineInCorrectSection(document, line.LineNumber, commandKey))
-				return new ErrorLine("Command is placed in the wrong section. Please check the command syntax.",
-					line.LineNumber, LineParser.RemoveComments(lineText));
+				return CreateDiagnostic(document, line,
+					"Command is placed in the wrong section. Please check the command syntax.",
+					LineParser.RemoveComments(lineText));
 
 			if (ContainsBrokenNextLines(document, line.Offset))
 			{
@@ -105,8 +108,9 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				if (errorSegmentText.Length == 0)
 					errorSegmentText = LineParser.RemoveComments(lineText);
 
-				return new ErrorLine("Misplaced \">\" symbols were found.\nYou can only use these symbols at the end of the line and there can only be one on each line.",
-					line.LineNumber, errorSegmentText);
+				return CreateDiagnostic(document, line,
+					"Misplaced \">\" symbols were found.\nYou can only use these symbols at the end of the line and there can only be one on each line.",
+					errorSegmentText);
 			}
 
 			if (!IsArgumentCountValid(document, line.Offset))
@@ -116,8 +120,8 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				if (errorSegmentText.Length == 0)
 					errorSegmentText = LineParser.RemoveComments(lineText);
 
-				return new ErrorLine("Invalid argument count. Please check the command syntax.",
-					line.LineNumber, errorSegmentText);
+				return CreateDiagnostic(document, line,
+					"Invalid argument count. Please check the command syntax.", errorSegmentText);
 			}
 
 			if (ContainsEmptyArguments(document, line.Offset))
@@ -127,11 +131,34 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				if (errorSegmentText.Length == 0)
 					errorSegmentText = LineParser.RemoveComments(lineText);
 
-				return new ErrorLine("Empty arguments were found.",
-					line.LineNumber, errorSegmentText);
+				return CreateDiagnostic(document, line, "Empty arguments were found.", errorSegmentText);
 			}
 
 			return null;
+		}
+
+		private static TextEditorDiagnostic CreateDiagnostic(TextDocument document, DocumentLine line, string message, string errorSegmentText)
+		{
+			string lineText = document.GetText(line);
+			string segmentText = string.IsNullOrWhiteSpace(errorSegmentText)
+				? lineText.Trim()
+				: errorSegmentText;
+
+			int startOffset = line.Offset;
+			int endOffset = Math.Max(line.Offset + 1, line.EndOffset);
+
+			if (!string.IsNullOrWhiteSpace(segmentText))
+			{
+				int matchIndex = lineText.IndexOf(segmentText, StringComparison.Ordinal);
+
+				if (matchIndex >= 0)
+				{
+					startOffset = line.Offset + matchIndex;
+					endOffset = startOffset + segmentText.Length;
+				}
+			}
+
+			return new TextEditorDiagnostic(TextEditorDiagnosticSeverity.Error, message, startOffset, endOffset);
 		}
 
 		#endregion Error line finding
