@@ -403,6 +403,19 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkEnd();
                     }
                 }
+
+                foreach (bool global in new[] { true, false })
+                {
+                    var collapsed = global ? settings.CollapsedGlobalEventSetFolders : settings.CollapsedVolumeEventSetFolders;
+
+                    if (collapsed.Count > 0)
+                        using (var chunkCollapsed = chunkIO.WriteChunk(global ? Prj2Chunks.CollapsedGlobalEventSetFolders : Prj2Chunks.CollapsedVolumeEventSetFolders, long.MaxValue))
+                        {
+                            foreach (var path in collapsed)
+                                chunkIO.WriteChunkString(Prj2Chunks.CollapsedEventSetFolder, path);
+                            chunkIO.WriteChunkEnd();
+                        }
+                }
                 chunkIO.WriteChunkEnd();
             }
 

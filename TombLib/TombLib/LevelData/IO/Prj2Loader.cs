@@ -733,6 +733,22 @@ namespace TombLib.LevelData.IO
                         else return false;
                     });
                 }
+                else if (id == Prj2Chunks.CollapsedGlobalEventSetFolders ||
+                         id == Prj2Chunks.CollapsedVolumeEventSetFolders)
+                {
+                    var target = id == Prj2Chunks.CollapsedGlobalEventSetFolders ? settings.CollapsedGlobalEventSetFolders : settings.CollapsedVolumeEventSetFolders;
+
+                    target.Clear();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Prj2Chunks.CollapsedEventSetFolder)
+                        {
+                            target.Add(chunkIO.ReadChunkString(chunkSize2));
+                            return true;
+                        }
+                        else return false;
+                    });
+                }
                 else
                     return false;
                 return true;

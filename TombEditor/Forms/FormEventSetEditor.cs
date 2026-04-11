@@ -40,6 +40,9 @@ namespace TombEditor.Forms
         public bool GlobalMode => _usedList == _editor.Level.Settings.GlobalEventSets;
         public bool GenericMode => GlobalMode || _instance == null;
 
+        private HashSet<string> _backupCollapsedFolders;
+        private HashSet<string> _сollapsedFolders => GlobalMode ? _editor.Level.Settings.CollapsedGlobalEventSetFolders : _editor.Level.Settings.CollapsedVolumeEventSetFolders;
+
         public EventSet SelectedSet
         {
             get
@@ -111,6 +114,10 @@ namespace TombEditor.Forms
 
             // Sync folder paths when user drags nodes in the tree.
             treeEvents.NodesMoved += (s, args) => SyncFoldersFromTree();
+
+            // Persist folder expansion state to the level file.
+            treeEvents.AfterNodeExpand += (s, args) => SyncCollapsedFolders();
+            treeEvents.AfterNodeCollapse += (s, args) => SyncCollapsedFolders();
 
             // Gray out UI by default, if event set list is empty
             if (_usedList.Count == 0)
@@ -321,10 +328,16 @@ namespace TombEditor.Forms
             _backupEventSetList = new List<EventSet>();
             foreach (var evtSet in _usedList)
                 _backupEventSetList.Add(evtSet.Clone());
+
+            _backupCollapsedFolders = new HashSet<string>(_сollapsedFolders);
         }
 
         private void RestoreState()
         {
+            _сollapsedFolders.Clear();
+            foreach (var path in _backupCollapsedFolders)
+                _сollapsedFolders.Add(path);
+
             if (GlobalMode)
             {
                 _editor.Level.Settings.GlobalEventSets = _backupEventSetList;
@@ -364,10 +377,6 @@ namespace TombEditor.Forms
         {
             _lockSelectionChange = true;
 
-            // Preserve expansion state of existing folder nodes before clearing.
-            var hadNodes = treeEvents.Nodes.Count > 0;
-            var expandedPaths = hadNodes ? new HashSet<string>(treeEvents.GetAllNodes().Where(n => IsFolderNode(n) && n.Expanded).Select(n => GetFolderPath(n))) : null;
-
             treeEvents.Nodes.Clear();
 
             foreach (var evtSet in _usedList)
@@ -376,10 +385,10 @@ namespace TombEditor.Forms
                 parentCollection.Add(new DarkTreeNode(evtSet.Name) { Tag = evtSet });
             }
 
-            // Restore expansion state only when repopulating an existing tree.
-            if (expandedPaths != null)
-                foreach (var node in treeEvents.GetAllNodes().Where(n => IsFolderNode(n)))
-                    node.Expanded = expandedPaths.Contains(GetFolderPath(node));
+            // Apply stored expansion state after all children are in place.
+            // DarkTreeNode.Expanded setter is a no-op on empty nodes, so this must be done post-populate.
+            foreach (var node in treeEvents.GetAllNodes().Where(n => IsFolderNode(n)))
+                node.Expanded = !_сollapsedFolders.Contains(GetFolderPath(node));
 
             _lockSelectionChange = false;
         }
@@ -387,6 +396,8 @@ namespace TombEditor.Forms
         private DarkTreeNode FindFirstEventSetNode() => treeEvents.GetAllNodes().FirstOrDefault(n => n.Tag is EventSet);
         private DarkTreeNode FindNodeByEventSet(EventSet evtSet) => treeEvents.GetAllNodes().FirstOrDefault(n => n.Tag == evtSet);
         private bool IsFolderNode(DarkTreeNode node) => node != null && node.NodeType as string == _folderNodeType;
+        private bool FolderNameExists(ObservableList<DarkTreeNode> collection, string name, DarkTreeNode exclude = null) =>
+            collection.Any(n => IsFolderNode(n) && n != exclude && string.Equals(n.Text, name, StringComparison.OrdinalIgnoreCase));
 
         private ObservableList<DarkTreeNode> GetOrCreateFolderNodes(string path)
         {
@@ -401,7 +412,7 @@ namespace TombEditor.Forms
                 var existing = currentCollection.FirstOrDefault(n => IsFolderNode(n) && n.Text == part);
                 if (existing == null)
                 {
-                    existing = new DarkTreeNode(part) { NodeType = _folderNodeType, Expanded = true };
+                    existing = new DarkTreeNode(part) { NodeType = _folderNodeType };
                     currentCollection.Add(existing);
                 }
                 currentCollection = existing.Nodes;
@@ -436,6 +447,18 @@ namespace TombEditor.Forms
                     evtSet.Folder = node.ParentNode != null ? GetFolderPath(node.ParentNode) : string.Empty;
                     _usedList.Add(evtSet);
                 }
+            }
+        }
+
+
+        private void SyncCollapsedFolders()
+        {
+            _сollapsedFolders.Clear();
+
+            foreach (var node in treeEvents.GetAllNodes())
+            {
+                if (IsFolderNode(node) && !node.Expanded)
+                    _сollapsedFolders.Add(GetFolderPath(node));
             }
         }
 
@@ -854,24 +877,19 @@ namespace TombEditor.Forms
                     parentFolder = GetFolderPath(selected.ParentNode);
             }
 
-            using (var inputBox = new FormInputBox("New folder", "Enter folder name:", "New folder"))
+            var parentCollection = GetOrCreateFolderNodes(parentFolder);
+            string newFolderName = PromptUniqueFolderName("New folder", "Enter folder name:", "New folder", parentCollection);
+            if (newFolderName == null)
+                return;
+
+            string fullPath = string.IsNullOrEmpty(parentFolder) ? newFolderName : parentFolder + _folderSeparator + newFolderName;
+            GetOrCreateFolderNodes(fullPath);
+
+            var newNode = treeEvents.GetAllNodes().LastOrDefault(n => IsFolderNode(n) && n.Text == newFolderName);
+            if (newNode != null)
             {
-                if (inputBox.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                string newFolderName = inputBox.Result.Trim();
-                if (string.IsNullOrEmpty(newFolderName))
-                    return;
-
-                string fullPath = string.IsNullOrEmpty(parentFolder) ? newFolderName : parentFolder + _folderSeparator + newFolderName;
-                GetOrCreateFolderNodes(fullPath);
-
-                var newNode = treeEvents.GetAllNodes().LastOrDefault(n => IsFolderNode(n) && n.Text == newFolderName);
-                if (newNode != null)
-                {
-                    treeEvents.SelectNode(newNode);
-                    treeEvents.EnsureVisible();
-                }
+                treeEvents.SelectNode(newNode);
+                treeEvents.EnsureVisible();
             }
         }
 
@@ -880,16 +898,36 @@ namespace TombEditor.Forms
             if (!IsFolderNode(node))
                 return;
 
-            using (var inputBox = new FormInputBox("Rename folder", "Enter new folder name:", node.Text))
-            {
-                if (inputBox.ShowDialog(this) != DialogResult.OK)
-                    return;
+            var siblings = node.ParentNode?.Nodes ?? treeEvents.Nodes;
+            string newName = PromptUniqueFolderName("Rename folder", "Enter new folder name:", node.Text, siblings, node);
+            if (newName == null || newName == node.Text)
+                return;
 
-                string newName = inputBox.Result.Trim();
-                if (!string.IsNullOrEmpty(newName) && newName != node.Text)
+            node.Text = newName;
+            SyncFoldersFromTree();
+        }
+
+        // Shows a name-input dialog in a loop until the user enters a name that doesn't conflict with
+        // an existing folder in the given collection, or cancels. Returns null on cancel or empty input.
+        private string PromptUniqueFolderName(string title, string prompt, string initialValue, ObservableList<DarkTreeNode> collection, DarkTreeNode exclude = null)
+        {
+            string current = initialValue;
+            while (true)
+            {
+                using (var inputBox = new FormInputBox(title, prompt, current))
                 {
-                    node.Text = newName;
-                    SyncFoldersFromTree();
+                    if (inputBox.ShowDialog(this) != DialogResult.OK)
+                        return null;
+
+                    string name = inputBox.Result.Trim();
+                    if (string.IsNullOrEmpty(name))
+                        return null;
+
+                    if (!FolderNameExists(collection, name, exclude))
+                        return name;
+
+                    DarkMessageBox.Show(this, "A folder with that name already exists. Specify a different name.", title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    current = name;
                 }
             }
         }
@@ -900,8 +938,12 @@ namespace TombEditor.Forms
                 return;
 
             var node = treeEvents.SelectedNodes[0];
-            if (IsFolderNode(node))
-                RenameFolder(node);
+            if (!IsFolderNode(node))
+                return;
+
+            // DarkTreeView already toggled Expanded via OnMouseDoubleClick, undo that.
+            node.Expanded = !node.Expanded;
+            RenameFolder(node);
         }
 
         private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)

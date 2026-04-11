@@ -249,5 +249,8 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId Palette = ChunkId.FromString("TePalette");
         /**/public static readonly ChunkId Favorites = ChunkId.FromString("TeFavorites");
         /****/public static readonly ChunkId Favorite = ChunkId.FromString("TeFavorite");
+        /**/public static readonly ChunkId CollapsedGlobalEventSetFolders = ChunkId.FromString("TeCollapsedGlbEvtFolders");
+        /**/public static readonly ChunkId CollapsedVolumeEventSetFolders = ChunkId.FromString("TeCollapsedVolEvtFolders");
+        /****/public static readonly ChunkId CollapsedEventSetFolder = ChunkId.FromString("TeCollapsedEvtFolder");
     }
 }

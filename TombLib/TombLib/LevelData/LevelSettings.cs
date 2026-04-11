@@ -204,6 +204,8 @@ namespace TombLib.LevelData
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
         public List<EventSet> GlobalEventSets { get; set; } = new List<EventSet>();
         public List<EventSet> VolumeEventSets { get; set; } = new List<EventSet>();
+        public HashSet<string> CollapsedGlobalEventSetFolders { get; set; } = new HashSet<string>();
+        public HashSet<string> CollapsedVolumeEventSetFolders { get; set; } = new HashSet<string>();
         public List<ColorC> Palette { get; set; } = LoadPalette(ResourcesC.ResourcesC.palette);
         public HashSet<string> Favorites { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
