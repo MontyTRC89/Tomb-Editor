@@ -783,10 +783,10 @@ namespace TombLib.Scripting.Bases
 			{
 				WindowStyle = WindowStyle.None,
 				ResizeMode = ResizeMode.NoResize,
-				BorderThickness = new Thickness(2),
-				Background = new SolidColorBrush(Color.FromRgb(69, 69, 69)),
-				Foreground = Brushes.White,
-				BorderBrush = Brushes.Black,
+				BorderThickness = new Thickness(1.0),
+				Background = DefaultToolTipBackground,
+				Foreground = ToolTipForeground,
+				BorderBrush = DefaultToolTipBorder,
 				Width = width,
 				Height = height
 			};

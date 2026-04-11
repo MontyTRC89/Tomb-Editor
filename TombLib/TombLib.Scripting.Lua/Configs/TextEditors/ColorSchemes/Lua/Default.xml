@@ -1,38 +1,58 @@
 <?xml version="1.0"?>
-<SyntaxDefinition name="SharpLua" extensions=".slua;.lua" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-	<!-- The named colors 'Comment' and 'String' are used in SharpDevelop to detect if a line is inside a multiline string/comment -->
-	<Color name="Comment" foreground="#ff999999" exampleText="-- comment" />
-	<Color name="String" foreground="#fff99157" />
-	<Color name="Punctuation" />
-	<Color name="MethodCall" foreground="#ffffcc66" fontWeight="bold" />
-	<Color name="NumberLiteral" foreground="#ff99cc99" />
-	<Color name="NilKeyword" fontWeight="bold" />
-	<Color name="Keywords" fontWeight="bold" foreground="#ff6699cc" />
-	<Color name="GotoKeywords" foreground="#ffcc99cc" />
-	<Color name="Visibility" fontWeight="bold" foreground="#fff99157" />
-	<Color name="TrueFalse" fontWeight="bold" foreground="#ff66cccc" />
-	<Color name="Object" foreground="#ffe6c8ff" />
+<SyntaxDefinition name="Lua" extensions=".lua;.slua" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<!-- Approximate VS Code Dark+ token colors while covering more Lua-specific constructs. -->
+	<Color name="Comment" foreground="#ff6A9955" exampleText="-- comment" />
+	<Color name="CommentDelimiter" foreground="#ff6A9955" />
+	<Color name="CommentMarker" foreground="#ffD16969" />
+	<Color name="DocComment" foreground="#ff6A9955" />
+	<Color name="DocTag" foreground="#ffC586C0" />
+	<Color name="DocType" foreground="#ff4EC9B0" />
+	<Color name="DocParameter" foreground="#ff9CDCFE" />
+	<Color name="String" foreground="#ffCE9178" />
+	<Color name="EscapeSequence" foreground="#ffD7BA7D" />
+	<Color name="NumberLiteral" foreground="#ffB5CEA8" />
+	<Color name="Keyword" foreground="#ff569CD6" />
+	<Color name="NilBooleanKeyword" foreground="#ff569CD6" />
+	<Color name="BuiltinTable" foreground="#ff4EC9B0" />
+	<Color name="BuiltinFunction" foreground="#ffDCDCAA" />
+	<Color name="FunctionDeclaration" foreground="#ffDCDCAA" />
+	<Color name="FunctionCall" foreground="#ffDCDCAA" />
+	<Color name="MemberAccess" foreground="#ff9CDCFE" />
+	<Color name="SpecialVariable" foreground="#ff4FC1FF" />
+	<Color name="Attribute" foreground="#ffC586C0" />
+	<Color name="Label" foreground="#ffD7BA7D" />
+	<Color name="Operator" foreground="#ffD4D4D4" />
+	<Color name="Punctuation" foreground="#ffD4D4D4" />
 
 	<RuleSet name="CommentMarkerSet">
-		<Keywords fontWeight="bold" foreground="#fff2777a">
-			<Word>TODO</Word>
-			<Word>FIXME</Word>
-		</Keywords>
-		<Keywords fontWeight="bold" foreground="#fff2777a">
-			<Word>HACK</Word>
-			<Word>UNDONE</Word>
-		</Keywords>
+		<Rule color="CommentMarker">\b(?:TODO|FIXME|HACK|UNDONE)\b</Rule>
 	</RuleSet>
 
-	<!-- This is the main ruleset. -->
-	<RuleSet>
+	<RuleSet name="LuaStringRuleSet">
+		<Span color="EscapeSequence" begin="\\" end="." />
+	</RuleSet>
 
-		<Span color="Comment">
-			<Begin color="XmlDoc/DocComment">---</Begin>
-			<RuleSet>
-				<Import ruleSet="XmlDoc/DocCommentSet" />
-				<Import ruleSet="CommentMarkerSet" />
-			</RuleSet>
+	<RuleSet name="LuaDocCommentSet">
+		<Import ruleSet="CommentMarkerSet" />
+		<Rule color="DocTag">@(?:alias|as|async|cast|class|deprecated|diagnostic|enum|field|generic|meta|module|nodiscard|operator|overload|package|param|private|protected|public|return|see|source|type|vararg)</Rule>
+		<Rule color="DocParameter">(?&lt;=@param\s)[A-Za-z_][A-Za-z0-9_]*</Rule>
+		<Rule color="DocParameter">(?&lt;=@field\s)[A-Za-z_][A-Za-z0-9_]*</Rule>
+		<Rule color="DocParameter">(?&lt;=@generic\s)[A-Za-z_][A-Za-z0-9_]*</Rule>
+		<Rule color="DocType">(?&lt;=@alias\s)[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*</Rule>
+		<Rule color="DocType">(?&lt;=@class\s)[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*</Rule>
+		<Rule color="DocType">(?&lt;=@enum\s)[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*</Rule>
+		<Rule color="DocType">(?&lt;=@module\s)[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*</Rule>
+		<Rule color="DocType">(?&lt;=@type\s)[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*</Rule>
+		<Rule color="DocType">(?&lt;=@return\s)[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*</Rule>
+		<Rule color="DocType">\b(?:any|boolean|function|integer|lightuserdata|nil|number|string|table|thread|unknown|userdata|void)\b</Rule>
+		<Rule color="NumberLiteral">
+			\b\d+(?:\.\d+)?\b
+		</Rule>
+	</RuleSet>
+
+	<RuleSet>
+		<Span color="DocComment" ruleSet="LuaDocCommentSet">
+			<Begin color="CommentDelimiter">---</Begin>
 		</Span>
 
 		<Span color="Comment" ruleSet="CommentMarkerSet" multiline="true">
@@ -44,128 +64,86 @@
 			<Begin>--</Begin>
 		</Span>
 
-		<Span color="String">
+		<Span color="String" ruleSet="LuaStringRuleSet">
 			<Begin>"</Begin>
 			<End>"</End>
-			<RuleSet>
-				<!-- span for escape sequences -->
-				<Span begin="\\" end="." />
-			</RuleSet>
 		</Span>
 
-		<Span color="String">
+		<Span color="String" ruleSet="LuaStringRuleSet">
 			<Begin>'</Begin>
 			<End>'</End>
-			<RuleSet>
-				<!-- span for escape sequences -->
-				<Span begin="\\" end="." />
-			</RuleSet>
 		</Span>
 
 		<Span color="String" multiline="true">
-			<Begin color="String">\[[=]*\[</Begin>
+			<Begin>\[[=]*\[</Begin>
 			<End>\][=]*]</End>
 		</Span>
 
-		<Keywords color="TrueFalse">
-			<Word>true</Word>
-			<Word>false</Word>
+		<Rule color="Label">(?&lt;=::)[A-Za-z_][A-Za-z0-9_]*(?=::)</Rule>
+		<Rule color="Label">(?&lt;=\bgoto\s)[A-Za-z_][A-Za-z0-9_]*</Rule>
+
+		<Rule color="Attribute">&lt;(?:const|close)&gt;</Rule>
+
+		<Rule color="SpecialVariable">\.\.\.</Rule>
+
+		<Keywords color="SpecialVariable">
+			<Word>self</Word>
+			<Word>_ENV</Word>
 		</Keywords>
 
-		<Keywords color="Keywords">
+		<Keywords color="NilBooleanKeyword">
+			<Word>true</Word>
+			<Word>false</Word>
+			<Word>nil</Word>
+		</Keywords>
+
+		<Keywords color="Keyword">
 			<Word>and</Word>
 			<Word>break</Word>
+			<Word>continue</Word>
 			<Word>do</Word>
 			<Word>else</Word>
 			<Word>elseif</Word>
 			<Word>end</Word>
-			<Word>false</Word>
 			<Word>for</Word>
 			<Word>function</Word>
+			<Word>goto</Word>
 			<Word>if</Word>
 			<Word>in</Word>
 			<Word>local</Word>
-			<!--<Word>nil</Word>-->
 			<Word>not</Word>
 			<Word>or</Word>
 			<Word>repeat</Word>
 			<Word>return</Word>
 			<Word>then</Word>
-			<Word>true</Word>
 			<Word>until</Word>
-			<Word>while</Word>
 			<Word>using</Word>
-			<Word>continue</Word>
+			<Word>while</Word>
 		</Keywords>
 
-		<Keywords color="GotoKeywords">
-			<Word>break</Word>
-			<Word>return</Word>
-		</Keywords>
+		<Rule color="FunctionDeclaration">(?&lt;=\bfunction\s)(?:[A-Za-z_][A-Za-z0-9_]*(?:[.:][A-Za-z_][A-Za-z0-9_]*)*)</Rule>
+		<Rule color="FunctionDeclaration">(?&lt;=\blocal\s)[A-Za-z_][A-Za-z0-9_]*(?=\s*=\s*function\b)</Rule>
 
-		<Keywords color="Visibility">
-			<Word>local</Word>
-		</Keywords>
+		<Rule color="BuiltinTable">\b(?:_G|_VERSION|bit32|coroutine|debug|Effects|Inventory|io|jit|Logic|math|Misc|Objects|os|package|string|Strings|table|TEN|utf8)\b</Rule>
 
-		<Keywords color="NilKeyword">
-			<Word>nil</Word>
-		</Keywords>
+		<Rule color="BuiltinFunction">\b(?:assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadfile|loadstring|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|warn|xpcall)\b(?=\s*(?:\(|\{|"|'|\[=*\[))</Rule>
 
-		<Keywords color="TrueFalse">
-			<Word>TEN</Word>
-			<Word>Logic</Word>
-			<Word>Objects</Word>
-			<Word>Strings</Word>
-			<Word>Inventory</Word>
-			<Word>Misc</Word>
-			<Word>Effects</Word>
-		</Keywords>
+		<Rule color="FunctionCall">(?&lt;=\.)[A-Za-z_][A-Za-z0-9_]*(?=\s*(?:\(|\{|"|'|\[=*\[))</Rule>
+		<Rule color="FunctionCall">(?&lt;=:)[A-Za-z_][A-Za-z0-9_]*(?=\s*(?:\(|\{|"|'|\[=*\[))</Rule>
+		<Rule color="FunctionCall">\b[A-Za-z_][A-Za-z0-9_]*(?=\s*(?:\(|\{|"|'|\[=*\[))</Rule>
 
-		<!-- Mark previous rule-->
-		<Rule color="MethodCall">
-			\b
-			[\d\w_]+  # an identifier
-			(?=\s*\() # followed by (
-		</Rule>
-		<Rule color="MethodCall">
-			\b
-			[\d\w_]+  # an identifier
-			(?=\s*\") # followed by "
-		</Rule>
-		<Rule color="MethodCall">
-			\b
-			[\d\w_]+  # an identifier
-			(?=\s*\') # followed by '
-		</Rule>
-		<Rule color="MethodCall">
-			\b
-			[\d\w_]+  # an identifier
-			(?=\s*\{) # followed by {
-		</Rule>
-		<Rule color="MethodCall">
-			\b
-			[\d\w_]+  # an identifier
-			(?=\s*\[) # followed by [
-		</Rule>
+		<Rule color="MemberAccess">(?&lt;=\.)[A-Za-z_][A-Za-z0-9_]*</Rule>
+		<Rule color="MemberAccess">(?&lt;=:)[A-Za-z_][A-Za-z0-9_]*</Rule>
 
-		<!-- Digits -->
 		<Rule color="NumberLiteral">
-			\b0[xX][0-9a-fA-F]+  # hex number
+			\b0[xX](?:[0-9a-fA-F]+(?:\.[0-9a-fA-F]*)?|\.[0-9a-fA-F]+)(?:[pP][+\-]?\d+)?\b
 			|
-			(	\b\d+(\.[0-9]+)?   #number with optional floating point
-			|	\.[0-9]+           #or just starting with floating point
-			)
-			([eE][+-]?[0-9]+)? # optional exponent
+			\b\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?\b
+			|
+			\B\.\d+(?:[eE][+\-]?\d+)?\b
 		</Rule>
 
-		<Rule color="Object">
-			\b
-			[\d\w_]+  # an identifier
-			(?=\s*\.) # followed by .
-		</Rule>
-
-		<Rule color="Punctuation">
-			[?,.;()\[\]{}+\-/%*&lt;&gt;^+~!|&amp;]+
-		</Rule>
+		<Rule color="Operator">\.\.?|//|==|~=|&lt;=|&gt;=|&lt;&lt;|&gt;&gt;|[=+\-*/%^#&lt;&gt;~&amp;|]</Rule>
+		<Rule color="Punctuation">::|[.,;:()\[\]{}]</Rule>
 	</RuleSet>
 </SyntaxDefinition>

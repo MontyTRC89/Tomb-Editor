@@ -22,6 +22,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 
 		public bool IsAvailable => !_isDisposed && _client is not null;
 		public event Action<string, IReadOnlyList<TextEditorDiagnostic>> DiagnosticsUpdated;
+		public event Action<string, IReadOnlyList<LuaSemanticToken>> SemanticTokensUpdated;
 
 		public LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, string serverExecutablePath)
 		{
@@ -47,6 +48,17 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			return _documents.GetDiagnostics(normalizedFilePath);
 		}
 
+		public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
+		{
+			if (_isDisposed)
+				return Array.Empty<LuaSemanticToken>();
+
+			if (!LuaLanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath))
+				return Array.Empty<LuaSemanticToken>();
+
+			return _documents.GetSemanticTokens(normalizedFilePath);
+		}
+
 		public void OpenDocument(string filePath, string content)
 			=> _ = TrySynchronizeDocumentAsync(filePath, content, CancellationToken.None);
 
@@ -65,7 +77,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		}
 
 		public async Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
-			int line, int column, CancellationToken cancellationToken = default)
+			int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default)
 		{
 			if (!LuaLanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath)
 				|| !await SynchronizeDocumentAsync(normalizedFilePath, content, cancellationToken).ConfigureAwait(false))
@@ -78,11 +90,16 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				{
 					textDocument = new { uri = LuaLanguageServerPathHelper.CreateFileUri(normalizedFilePath) },
 					position = new { line, character = column },
-					context = new { triggerKind = 1 }
+					context = BuildCompletionContext(triggerCharacter)
 				}, cancellationToken).ConfigureAwait(false);
 
 			return LuaLanguageServerResponseParser.ParseCompletionItems(response);
 		}
+
+		private static object BuildCompletionContext(char? triggerCharacter)
+			=> triggerCharacter is null
+				? new { triggerKind = 1 }
+				: new { triggerKind = 2, triggerCharacter = triggerCharacter.ToString() };
 
 		public async Task<LuaHoverInfo> GetHoverAsync(string filePath, string content,
 			int line, int column, CancellationToken cancellationToken = default)
@@ -228,7 +245,57 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 					}, cancellationToken).ConfigureAwait(false);
 			}
 
+			await RefreshSemanticTokensAsync(request.Document, cancellationToken).ConfigureAwait(false);
+
 			return true;
+		}
+
+		private async Task RefreshSemanticTokensAsync(LuaDocumentSnapshot document, CancellationToken cancellationToken)
+		{
+			if (_client is null || document is null || _client.SemanticTokenTypes.Count == 0)
+				return;
+
+			try
+			{
+				JsonElement response = await _client.SendRequestAsync("textDocument/semanticTokens/range",
+					new
+					{
+						textDocument = new { uri = document.Uri },
+						range = BuildDocumentRange(document.Content)
+					}, cancellationToken).ConfigureAwait(false);
+
+				IReadOnlyList<LuaSemanticToken> semanticTokens = LuaLanguageServerSemanticTokensParser.Parse(
+					response,
+					document,
+					_client.SemanticTokenTypes,
+					_client.SemanticTokenModifiers);
+
+				if (!_documents.TryStoreSemanticTokens(document.FilePath, document.Version, semanticTokens))
+					return;
+
+				SemanticTokensUpdated?.Invoke(document.FilePath, semanticTokens);
+			}
+			catch
+			{
+				// Ignore semantic token failures and fall back to TextMate syntax highlighting.
+			}
+		}
+
+		private static object BuildDocumentRange(string content)
+		{
+			string normalizedContent = (content ?? string.Empty)
+				.Replace("\r\n", "\n", StringComparison.Ordinal)
+				.Replace('\r', '\n');
+
+			string[] lines = normalizedContent.Split('\n');
+			int endLine = Math.Max(0, lines.Length - 1);
+			int endCharacter = lines.Length == 0 ? 0 : lines[endLine].Length;
+
+			return new
+			{
+				start = new { line = 0, character = 0 },
+				end = new { line = endLine, character = endCharacter }
+			};
 		}
 
 		private async Task CloseDocumentAsync(LuaDocumentSnapshot document, CancellationToken cancellationToken)

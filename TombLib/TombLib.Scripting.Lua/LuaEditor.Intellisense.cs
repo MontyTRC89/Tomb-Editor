@@ -1,17 +1,27 @@
-using ICSharpCode.AvalonEdit.Document;
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Threading;
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Document;
 using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.Scripting.Lua
 {
 	public sealed partial class LuaEditor
 	{
+		private static readonly FieldInfo CompletionToolTipField =
+			typeof(CompletionWindow).GetField("toolTip", BindingFlags.NonPublic | BindingFlags.Instance);
+
 		private CancellationTokenSource _hoverCancellationTokenSource;
+		private CancellationTokenSource _completionCancellationTokenSource;
 		private CancellationTokenSource _signatureCancellationTokenSource;
+		private int _completionRequestToken;
 		private int _hoverRequestToken;
 		private Window _hostWindow;
 
@@ -57,9 +67,16 @@ namespace TombLib.Scripting.Lua
 
 		private void LuaEditor_Unloaded(object sender, RoutedEventArgs e)
 		{
+			_textMateHighlighting?.Dispose();
+			_textMateHighlighting = null;
+
 			_hoverCancellationTokenSource?.Cancel();
 			_hoverCancellationTokenSource?.Dispose();
 			_hoverCancellationTokenSource = null;
+
+			_completionCancellationTokenSource?.Cancel();
+			_completionCancellationTokenSource?.Dispose();
+			_completionCancellationTokenSource = null;
 
 			_signatureCancellationTokenSource?.Cancel();
 			_signatureCancellationTokenSource?.Dispose();
@@ -72,6 +89,7 @@ namespace TombLib.Scripting.Lua
 
 			DismissSignatureHelp();
 			ClearDiagnostics();
+			ClearSemanticTokens();
 
 			IntellisenseProvider?.CloseDocument(FilePath);
 		}
@@ -85,7 +103,7 @@ namespace TombLib.Scripting.Lua
 			{
 				e.Handled = true;
 
-				await RequestCompletionAsync(CaretOffset).ConfigureAwait(true);
+				await RequestCompletionAsync(CaretOffset, null).ConfigureAwait(true);
 			}
 		}
 
@@ -108,17 +126,22 @@ namespace TombLib.Scripting.Lua
 				return;
 			}
 
-			if (_completionWindow is not null && !ShouldKeepCompletionWindowOpen(e.Text))
+			if (_completionWindow is not null)
 			{
-				CloseCompletionWindow();
-				return;
+				if (!ShouldKeepCompletionWindowOpen(e.Text))
+					CloseCompletionWindow();
+				else
+				{
+					ScheduleCloseIfEmpty();
+					return;
+				}
 			}
 
 			if (!AutocompleteEnabled)
 				return;
 
-			if (ShouldTriggerAutocomplete(e.Text))
-				await RequestCompletionAsync(CaretOffset).ConfigureAwait(true);
+			if (TryGetCompletionTrigger(e.Text, out char? triggerCharacter) && IsValidAutocompleteContext(CaretOffset, triggerCharacter))
+				await RequestCompletionAsync(CaretOffset, triggerCharacter).ConfigureAwait(true);
 		}
 
 		protected override async void HandleMouseHover(MouseEventArgs e)
@@ -175,8 +198,23 @@ namespace TombLib.Scripting.Lua
 		private bool IsIntellisenseAvailable()
 			=> IntellisenseProvider is not null && IntellisenseProvider.IsAvailable && !string.IsNullOrWhiteSpace(FilePath);
 
-		private static bool ShouldTriggerAutocomplete(string inputText)
-			=> inputText == "." || inputText == ":";
+		private static bool TryGetCompletionTrigger(string inputText, out char? triggerCharacter)
+		{
+			triggerCharacter = null;
+
+			if (string.IsNullOrEmpty(inputText) || inputText.Length != 1)
+				return false;
+
+			char typedChar = inputText[0];
+
+			if (typedChar == '.' || typedChar == ':')
+			{
+				triggerCharacter = typedChar;
+				return true;
+			}
+
+			return IsIdentifierTriggerCharacter(typedChar);
+		}
 
 		private static bool ShouldKeepCompletionWindowOpen(string inputText)
 			=> inputText?.Length == 1 && (char.IsLetterOrDigit(inputText[0]) || inputText[0] == '_');
@@ -190,8 +228,23 @@ namespace TombLib.Scripting.Lua
 			_completionWindow = null;
 		}
 
-		private async Task RequestCompletionAsync(int offset)
+		private void InitializeLuaCompletionWindow()
 		{
+			InitializeCompletionWindow(420, 320);
+			LuaCompletionWindowStyle.Apply(_completionWindow);
+			StyleCompletionTooltip();
+			MakeCompletionWindowNonActivatable();
+		}
+
+		private async Task RequestCompletionAsync(int offset, char? triggerCharacter)
+		{
+			_completionCancellationTokenSource?.Cancel();
+			_completionCancellationTokenSource?.Dispose();
+			_completionCancellationTokenSource = new CancellationTokenSource();
+
+			CancellationToken cancellationToken = _completionCancellationTokenSource.Token;
+			int requestToken = ++_completionRequestToken;
+
 			try
 			{
 				if (!IsIntellisenseAvailable())
@@ -199,8 +252,11 @@ namespace TombLib.Scripting.Lua
 
 				(int line, int column) = GetPositionFromOffset(offset);
 				var items = await IntellisenseProvider
-					.GetCompletionItemsAsync(FilePath, Text, line, column, CancellationToken.None)
+					.GetCompletionItemsAsync(FilePath, Text, line, column, triggerCharacter, cancellationToken)
 					.ConfigureAwait(true);
+
+				if (cancellationToken.IsCancellationRequested || requestToken != _completionRequestToken)
+					return;
 
 				if (items is null || items.Count == 0)
 				{
@@ -210,20 +266,178 @@ namespace TombLib.Scripting.Lua
 
 				CloseCompletionWindow();
 
-				InitializeCompletionWindow();
+				InitializeLuaCompletionWindow();
 				SetCompletionWindowOffsets(offset);
 
 				foreach (LuaCompletionItem item in items)
 					_completionWindow.CompletionList.CompletionData.Add(new LuaCompletionData(item));
 
 				if (_completionWindow.CompletionList.CompletionData.Count > 0)
+				{
 					ShowCompletionWindow();
+					ScheduleInitialSelection();
+				}
 			}
 			catch
 			{
 				CloseCompletionWindow();
 				// Ignore completion failures and keep the editor responsive.
 			}
+		}
+
+		private bool IsValidAutocompleteContext(int offset, char? triggerCharacter)
+		{
+			if (offset <= 0 || Document is null)
+				return false;
+
+			if (IsInsideCommentOrString(offset))
+				return false;
+
+			if (triggerCharacter is '.' || triggerCharacter is ':')
+				return true;
+
+			char typedCharacter = Document.GetCharAt(offset - 1);
+
+			if (!IsIdentifierCharacter(typedCharacter))
+				return false;
+
+			if (offset >= 2)
+			{
+				char previousCharacter = Document.GetCharAt(offset - 2);
+
+				if (previousCharacter == '.')
+					return false;
+			}
+
+			return true;
+		}
+
+		private bool IsInsideCommentOrString(int offset)
+		{
+			DocumentLine currentLine = Document.GetLineByOffset(Math.Max(0, Math.Min(offset, Document.TextLength)));
+			int lineStart = currentLine.Offset;
+			int inspectedLength = Math.Max(0, Math.Min(offset, currentLine.EndOffset) - lineStart);
+			string lineText = Document.GetText(lineStart, inspectedLength);
+
+			bool isInsideSingleQuotedString = false;
+			bool isInsideDoubleQuotedString = false;
+			bool isEscaped = false;
+
+			for (int i = 0; i < lineText.Length; i++)
+			{
+				char currentChar = lineText[i];
+
+				if (!isInsideSingleQuotedString && !isInsideDoubleQuotedString && currentChar == '-'
+					&& i + 1 < lineText.Length && lineText[i + 1] == '-')
+				{
+					return true;
+				}
+
+				if (isEscaped)
+				{
+					isEscaped = false;
+					continue;
+				}
+
+				if ((isInsideSingleQuotedString || isInsideDoubleQuotedString) && currentChar == '\\')
+				{
+					isEscaped = true;
+					continue;
+				}
+
+				if (!isInsideDoubleQuotedString && currentChar == '\'')
+					isInsideSingleQuotedString = !isInsideSingleQuotedString;
+				else if (!isInsideSingleQuotedString && currentChar == '"')
+					isInsideDoubleQuotedString = !isInsideDoubleQuotedString;
+			}
+
+			return isInsideSingleQuotedString || isInsideDoubleQuotedString;
+		}
+
+		private static bool IsIdentifierCharacter(char character)
+			=> char.IsLetterOrDigit(character) || character == '_';
+
+		private static bool IsIdentifierTriggerCharacter(char character)
+			=> char.IsLetter(character) || character == '_';
+
+		private void StyleCompletionTooltip()
+		{
+			if (CompletionToolTipField?.GetValue(_completionWindow) is not ToolTip tooltip)
+				return;
+
+			tooltip.Background = DefaultToolTipBackground;
+			tooltip.BorderBrush = DefaultToolTipBorder;
+			tooltip.BorderThickness = new Thickness(0.0);
+			tooltip.Padding = new Thickness(0.0);
+		}
+
+		private void ScheduleCloseIfEmpty()
+			=> Dispatcher.BeginInvoke(new Action(() => CloseCompletionWindowIfEmpty()), DispatcherPriority.Background);
+
+		private void ScheduleInitialSelection()
+			=> Dispatcher.BeginInvoke(new Action(SelectInitialItem), DispatcherPriority.ContextIdle);
+
+		private void SelectInitialItem()
+		{
+			if (_completionWindow is null)
+				return;
+
+			_completionWindow.CompletionList.SelectItem(GetCompletionWindowQuery());
+			CloseCompletionWindowIfEmpty();
+		}
+
+		// AvalonEdit's CompletionWindowBase does not set WS_EX_NOACTIVATE, so clicking the
+		// completion list activates the popup window and steals keyboard focus from the editor.
+		// This hook returns MA_NOACTIVATE to prevent that while still allowing clicks through.
+
+		private void MakeCompletionWindowNonActivatable()
+		{
+			_completionWindow.SourceInitialized += (s, e) =>
+			{
+				if (s is Window window && PresentationSource.FromVisual(window) is HwndSource source)
+					source.AddHook(CompletionWindowWndProc);
+			};
+		}
+
+		private static IntPtr CompletionWindowWndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+		{
+			const int WM_MOUSEACTIVATE = 0x0021;
+			const int MA_NOACTIVATE = 3;
+
+			if (msg == WM_MOUSEACTIVATE)
+			{
+				handled = true;
+				return new IntPtr(MA_NOACTIVATE);
+			}
+
+			return IntPtr.Zero;
+		}
+
+		private bool CloseCompletionWindowIfEmpty()
+		{
+			if (_completionWindow is null)
+				return false;
+
+			var listBox = _completionWindow.CompletionList.ListBox;
+
+			if (listBox is null || listBox.HasItems)
+				return false;
+
+			CloseCompletionWindow();
+			return true;
+		}
+
+		private string GetCompletionWindowQuery()
+		{
+			if (_completionWindow is null || Document is null)
+				return string.Empty;
+
+			int startOffset = Math.Max(0, Math.Min(_completionWindow.StartOffset, Document.TextLength));
+			int endOffset = Math.Max(startOffset, Math.Min(_completionWindow.EndOffset, Document.TextLength));
+
+			return endOffset > startOffset
+				? Document.GetText(startOffset, endOffset - startOffset)
+				: string.Empty;
 		}
 
 		private async Task<LuaHoverInfo> RequestHoverAsync(int offset, CancellationToken cancellationToken)

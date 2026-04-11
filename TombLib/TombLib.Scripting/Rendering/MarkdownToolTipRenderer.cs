@@ -13,6 +13,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using MdXaml;
+using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Resources;
 
 namespace TombLib.Scripting.Rendering
@@ -237,7 +238,12 @@ namespace TombLib.Scripting.Rendering
 			editor.Options.HighlightCurrentLine = false;
 			editor.Options.ShowBoxForControlCharacters = false;
 			editor.TextArea.Margin = new Thickness(0.0);
-			editor.SyntaxHighlighting = ResolveHighlighting(language);
+
+			if (!string.Equals(language?.Trim(), "lua", StringComparison.OrdinalIgnoreCase)
+				|| !LuaTextMateSyntaxHighlighting.TryInstall(editor, out _))
+			{
+				editor.SyntaxHighlighting = ResolveHighlighting(language);
+			}
 
 			int lineCount = Math.Max(1, editor.Document.LineCount);
 			double lineHeight = GetEditorLineHeight(editor);

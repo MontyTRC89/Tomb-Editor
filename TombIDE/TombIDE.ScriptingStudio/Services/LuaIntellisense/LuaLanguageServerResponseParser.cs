@@ -32,6 +32,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				return Array.Empty<LuaCompletionItem>();
 
 			var items = new List<LuaCompletionItem>();
+			int itemIndex = 0;
 
 			foreach (JsonElement itemElement in itemsElement.EnumerateArray())
 			{
@@ -52,14 +53,152 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 					insertText = StripSnippetPlaceholders(insertText);
 				}
 
-				string description = BuildCompletionDescription(itemElement);
-				items.Add(new LuaCompletionItem(label, insertText, description));
+				string filterText = itemElement.TryGetProperty("filterText", out JsonElement filterTextElement)
+					? filterTextElement.GetString()
+					: label;
+
+				LuaCompletionItemKind kind = TryReadCompletionKind(itemElement, out LuaCompletionItemKind completionKind)
+					? completionKind
+					: LuaCompletionItemKind.Text;
+
+				string detail = BuildCompletionDetail(itemElement);
+				MarkupContent description = BuildCompletionDescription(itemElement);
+				string searchableDescription = NormalizeMarkupText(description.Text);
+				items.Add(new LuaCompletionItem(
+					label,
+					insertText,
+					detail,
+					description.Text,
+					filterText,
+					BuildCompletionPriority(itemElement, detail, searchableDescription, itemIndex),
+					kind,
+					BuildCompletionIconKind(kind, detail),
+					description.IsMarkdown));
+
+				itemIndex++;
 			}
 
 			return items
 				.GroupBy(item => $"{item.Label}\0{item.InsertText}", StringComparer.OrdinalIgnoreCase)
 				.Select(group => group.First())
 				.ToList();
+		}
+
+		private static double BuildCompletionPriority(JsonElement itemElement, string detail, string description, int itemIndex)
+		{
+			const double responseOrderWeight = 100000.0;
+			double priority = responseOrderWeight - itemIndex;
+			string searchableText = CombineCompletionText(detail, description);
+
+			if (itemElement.TryGetProperty("preselect", out JsonElement preselectElement)
+				&& preselectElement.ValueKind == JsonValueKind.True)
+			{
+				priority += 1000000.0;
+			}
+
+			if (itemElement.TryGetProperty("kind", out JsonElement kindElement)
+				&& kindElement.TryGetInt32(out int completionKind))
+			{
+				priority += completionKind switch
+				{
+					6 => 10000.0,
+					5 => 9000.0,
+					10 => 9000.0,
+					2 => 7000.0,
+					3 => 7000.0,
+					14 => -5000.0,
+					_ => 0.0
+				};
+			}
+
+			if (!string.IsNullOrWhiteSpace(searchableText))
+			{
+				if (CompletionTextContains(searchableText, "local"))
+					priority += 20000.0;
+
+				if (CompletionTextContains(searchableText, "upvalue")
+					|| CompletionTextContains(searchableText, "parameter"))
+				{
+					priority += 15000.0;
+				}
+			}
+
+			return priority;
+		}
+
+		private static bool TryReadCompletionKind(JsonElement itemElement, out LuaCompletionItemKind kind)
+		{
+			kind = LuaCompletionItemKind.Text;
+
+			if (!itemElement.TryGetProperty("kind", out JsonElement kindElement)
+				|| !kindElement.TryGetInt32(out int rawKind)
+				|| !Enum.IsDefined(typeof(LuaCompletionItemKind), rawKind))
+			{
+				return false;
+			}
+
+			kind = (LuaCompletionItemKind)rawKind;
+			return true;
+		}
+
+		private static LuaCompletionIconKind BuildCompletionIconKind(LuaCompletionItemKind kind, string detail)
+		{
+			if (CompletionTextContains(detail, "parameter"))
+				return LuaCompletionIconKind.Parameter;
+
+			if (CompletionTextContains(detail, "module") || CompletionTextContains(detail, "namespace"))
+				return LuaCompletionIconKind.Namespace;
+
+			if (CompletionTextContains(detail, "method") || CompletionTextContains(detail, "function"))
+				return LuaCompletionIconKind.Method;
+
+			if (CompletionTextContains(detail, "field"))
+				return LuaCompletionIconKind.Field;
+
+			if (CompletionTextContains(detail, "property") || CompletionTextContains(detail, "global")
+				|| CompletionTextContains(detail, "default library"))
+			{
+				return LuaCompletionIconKind.Property;
+			}
+
+			if (CompletionTextContains(detail, "constant"))
+				return LuaCompletionIconKind.Constant;
+
+			if (CompletionTextContains(detail, "keyword"))
+				return LuaCompletionIconKind.Keyword;
+
+			if (CompletionTextContains(detail, "class") || CompletionTextContains(detail, "interface")
+				|| CompletionTextContains(detail, "enum") || CompletionTextContains(detail, "struct"))
+			{
+				return LuaCompletionIconKind.Class;
+			}
+
+			return kind switch
+			{
+				LuaCompletionItemKind.Method => LuaCompletionIconKind.Method,
+				LuaCompletionItemKind.Function => LuaCompletionIconKind.Method,
+				LuaCompletionItemKind.Constructor => LuaCompletionIconKind.Method,
+				LuaCompletionItemKind.Field => LuaCompletionIconKind.Field,
+				LuaCompletionItemKind.Variable => LuaCompletionIconKind.Variable,
+				LuaCompletionItemKind.Class => LuaCompletionIconKind.Class,
+				LuaCompletionItemKind.Interface => LuaCompletionIconKind.Class,
+				LuaCompletionItemKind.Module => LuaCompletionIconKind.Namespace,
+				LuaCompletionItemKind.Property => LuaCompletionIconKind.Property,
+				LuaCompletionItemKind.Value => LuaCompletionIconKind.Variable,
+				LuaCompletionItemKind.Enum => LuaCompletionIconKind.Class,
+				LuaCompletionItemKind.Keyword => LuaCompletionIconKind.Keyword,
+				LuaCompletionItemKind.Snippet => LuaCompletionIconKind.Keyword,
+				LuaCompletionItemKind.File => LuaCompletionIconKind.File,
+				LuaCompletionItemKind.Reference => LuaCompletionIconKind.Variable,
+				LuaCompletionItemKind.Folder => LuaCompletionIconKind.Folder,
+				LuaCompletionItemKind.EnumMember => LuaCompletionIconKind.Constant,
+				LuaCompletionItemKind.Constant => LuaCompletionIconKind.Constant,
+				LuaCompletionItemKind.Struct => LuaCompletionIconKind.Class,
+				LuaCompletionItemKind.Event => LuaCompletionIconKind.Method,
+				LuaCompletionItemKind.Operator => LuaCompletionIconKind.Keyword,
+				LuaCompletionItemKind.TypeParameter => LuaCompletionIconKind.Class,
+				_ => LuaCompletionIconKind.Misc
+			};
 		}
 
 		public static LuaHoverInfo ParseHoverInfo(JsonElement response)
@@ -195,33 +334,47 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			return new LuaSignatureInfo(label, documentation, parameters, activeParameter);
 		}
 
-		private static string BuildCompletionDescription(JsonElement itemElement)
+		private static string BuildCompletionDetail(JsonElement itemElement)
 		{
-			var descriptionBuilder = new StringBuilder();
+			if (!itemElement.TryGetProperty("detail", out JsonElement detailElement))
+				return null;
 
-			if (itemElement.TryGetProperty("detail", out JsonElement detailElement))
-			{
-				string detail = detailElement.GetString();
-
-				if (!string.IsNullOrWhiteSpace(detail))
-					descriptionBuilder.AppendLine(detail.Trim());
-			}
-
-			if (itemElement.TryGetProperty("documentation", out JsonElement documentationElement))
-			{
-				string documentation = ExtractMarkupText(documentationElement);
-
-				if (!string.IsNullOrWhiteSpace(documentation))
-				{
-					if (descriptionBuilder.Length > 0)
-						descriptionBuilder.AppendLine();
-
-					descriptionBuilder.Append(documentation.Trim());
-				}
-			}
-
-			return descriptionBuilder.Length == 0 ? null : descriptionBuilder.ToString();
+			string detail = detailElement.GetString();
+			return string.IsNullOrWhiteSpace(detail) ? null : detail.Trim();
 		}
+
+		private static MarkupContent BuildCompletionDescription(JsonElement itemElement)
+		{
+			if (!itemElement.TryGetProperty("documentation", out JsonElement documentationElement))
+				return default;
+
+			MarkupContent documentation = ExtractMarkupContent(documentationElement);
+
+			if (string.IsNullOrWhiteSpace(documentation.Text))
+				return default;
+
+			string normalizedText = documentation.IsMarkdown
+				? NormalizeMarkdownText(documentation.Text)
+				: NormalizeMarkupText(documentation.Text);
+
+			return string.IsNullOrWhiteSpace(normalizedText)
+				? default
+				: new MarkupContent(normalizedText, documentation.IsMarkdown);
+		}
+
+		private static string CombineCompletionText(string detail, string description)
+		{
+			if (string.IsNullOrWhiteSpace(detail))
+				return description;
+
+			if (string.IsNullOrWhiteSpace(description))
+				return detail;
+
+			return detail + Environment.NewLine + description;
+		}
+
+		private static bool CompletionTextContains(string text, string token)
+			=> !string.IsNullOrWhiteSpace(text) && text.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0;
 
 		private static bool TryExtractParameterLabel(string signatureLabel, JsonElement parameterLabelElement, out string parameterLabel)
 		{
@@ -311,6 +464,13 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 
 			return string.Join(Environment.NewLine, lines).Trim();
 		}
+
+		private static string NormalizeMarkdownText(string text)
+			=> string.IsNullOrWhiteSpace(text)
+				? null
+				: text.Replace("\r\n", "\n", StringComparison.Ordinal)
+					.Replace('\r', '\n')
+					.Trim();
 
 		private static string StripSnippetPlaceholders(string snippet)
 		{

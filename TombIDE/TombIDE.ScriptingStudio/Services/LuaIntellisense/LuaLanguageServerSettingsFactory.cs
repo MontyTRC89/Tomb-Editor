@@ -29,6 +29,13 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 					{
 						callSnippet = "Disable"
 					},
+					semantic = new
+					{
+						enable = true,
+						annotation = true,
+						variable = true,
+						keyword = false
+					},
 					diagnostics = new
 					{
 						disable = new[] { "duplicate-set-field" }

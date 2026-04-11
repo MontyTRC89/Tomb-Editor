@@ -11,15 +11,17 @@ namespace TombLib.Scripting.Lua.Services
 	{
 		bool IsAvailable { get; }
 		event Action<string, IReadOnlyList<TextEditorDiagnostic>> DiagnosticsUpdated;
+		event Action<string, IReadOnlyList<LuaSemanticToken>> SemanticTokensUpdated;
 
 		IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath);
+		IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath);
 
 		void OpenDocument(string filePath, string content);
 		void UpdateDocument(string filePath, string content);
 		void CloseDocument(string filePath);
 
 		Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
-			int line, int column, CancellationToken cancellationToken = default);
+			int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default);
 
 		Task<LuaHoverInfo> GetHoverAsync(string filePath, string content,
 			int line, int column, CancellationToken cancellationToken = default);

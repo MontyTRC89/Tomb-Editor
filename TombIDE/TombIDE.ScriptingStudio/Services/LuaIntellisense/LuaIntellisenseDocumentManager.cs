@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Objects;
 
 namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
@@ -19,6 +20,8 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		private readonly Dictionary<string, DocumentState> _documents = new(StringComparer.OrdinalIgnoreCase);
 		private readonly Dictionary<string, IReadOnlyList<TextEditorDiagnostic>> _diagnosticsByFilePath = new(StringComparer.OrdinalIgnoreCase);
 		private readonly Dictionary<string, int> _diagnosticsVersionByFilePath = new(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, IReadOnlyList<LuaSemanticToken>> _semanticTokensByFilePath = new(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, int> _semanticTokensVersionByFilePath = new(StringComparer.OrdinalIgnoreCase);
 
 		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
 		{
@@ -26,6 +29,14 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				return _diagnosticsByFilePath.TryGetValue(filePath, out IReadOnlyList<TextEditorDiagnostic> diagnostics)
 					? diagnostics
 					: Array.Empty<TextEditorDiagnostic>();
+		}
+
+		public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
+		{
+			lock (_syncRoot)
+				return _semanticTokensByFilePath.TryGetValue(filePath, out IReadOnlyList<LuaSemanticToken> semanticTokens)
+					? semanticTokens
+					: Array.Empty<LuaSemanticToken>();
 		}
 
 		public LuaDocumentSynchronizationRequest Synchronize(string filePath, string content)
@@ -119,6 +130,25 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 					_diagnosticsVersionByFilePath[publishedDiagnostics.FilePath] = publishedDiagnostics.Version;
 
 				_diagnosticsByFilePath[publishedDiagnostics.FilePath] = publishedDiagnostics.Diagnostics;
+				return true;
+			}
+		}
+
+		public bool TryStoreSemanticTokens(string filePath, int version, IReadOnlyList<LuaSemanticToken> semanticTokens)
+		{
+			lock (_syncRoot)
+			{
+				if (version > 0
+					&& _semanticTokensVersionByFilePath.TryGetValue(filePath, out int currentVersion)
+					&& version < currentVersion)
+				{
+					return false;
+				}
+
+				if (version > 0)
+					_semanticTokensVersionByFilePath[filePath] = version;
+
+				_semanticTokensByFilePath[filePath] = semanticTokens ?? Array.Empty<LuaSemanticToken>();
 				return true;
 			}
 		}

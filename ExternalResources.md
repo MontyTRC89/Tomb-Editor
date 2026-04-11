@@ -25,3 +25,4 @@ A big thank you to all the authors for making their work publicly available and 
 ### Icons
 
   Icons and graphics used under CC-BY ND 3.0 license from http://icons8.com
+  A subset of Codicons icon geometry used for Lua completion symbols is vendored from https://github.com/microsoft/vscode-codicons under the MIT license.

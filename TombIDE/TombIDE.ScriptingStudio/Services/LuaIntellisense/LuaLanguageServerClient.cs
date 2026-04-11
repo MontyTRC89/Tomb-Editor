@@ -19,6 +19,18 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		private readonly SemaphoreSlim _startLock = new(1, 1);
 		private readonly SemaphoreSlim _writeLock = new(1, 1);
 		private readonly ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> _pendingRequests = new();
+		private static readonly string[] SupportedSemanticTokenTypes =
+		{
+			"namespace", "type", "class", "enum", "interface", "struct", "typeParameter",
+			"parameter", "variable", "property", "enumMember", "event", "function", "method",
+			"macro", "keyword", "modifier", "comment", "string", "number", "regexp",
+			"operator", "decorator"
+		};
+		private static readonly string[] SupportedSemanticTokenModifiers =
+		{
+			"declaration", "definition", "readonly", "static", "deprecated", "abstract",
+			"async", "modification", "documentation", "defaultLibrary", "global"
+		};
 
 		private long _requestId;
 		private bool _isDisposed;
@@ -28,8 +40,12 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		private Stream _outputStream;
 		private Task _readLoopTask;
 		private Task _stderrLoopTask;
+		private string[] _semanticTokenTypes = Array.Empty<string>();
+		private string[] _semanticTokenModifiers = Array.Empty<string>();
 
 		public bool IsReady { get; private set; }
+		public IReadOnlyList<string> SemanticTokenTypes => _semanticTokenTypes;
+		public IReadOnlyList<string> SemanticTokenModifiers => _semanticTokenModifiers;
 
 		public event Action<JsonElement> DiagnosticsPublished;
 
@@ -81,7 +97,8 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				using var initializeTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 				initializeTimeout.CancelAfter(TimeSpan.FromSeconds(10));
 
-				await SendRequestAsync("initialize", BuildInitializeParams(), initializeTimeout.Token).ConfigureAwait(false);
+				JsonElement initializeResponse = await SendRequestAsync("initialize", BuildInitializeParams(), initializeTimeout.Token).ConfigureAwait(false);
+				CaptureSemanticTokenLegend(initializeResponse);
 
 				IsReady = true;
 
@@ -131,6 +148,13 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			=> new
 			{
 				processId = Process.GetCurrentProcess().Id,
+				initializationOptions = new
+				{
+					changeConfiguration = true,
+					viewDocument = true,
+					trustByClient = true,
+					useSemanticByRange = true
+				},
 				rootUri = CreateFileUri(_workspaceRootDirectoryPath),
 				workspaceFolders = new[]
 				{
@@ -151,6 +175,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 					{
 						completion = new
 						{
+							contextSupport = true,
 							completionItem = new
 							{
 								snippetSupport = false,
@@ -180,10 +205,55 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 								}
 							},
 							contextSupport = true
+						},
+						semanticTokens = new
+						{
+							requests = new
+							{
+								range = true
+							},
+							tokenTypes = SupportedSemanticTokenTypes,
+							tokenModifiers = SupportedSemanticTokenModifiers,
+							formats = new[] { "relative" },
+							multilineTokenSupport = false,
+							overlappingTokenSupport = false,
+							augmentsSyntaxTokens = true
 						}
 					}
 				}
 			};
+
+		private void CaptureSemanticTokenLegend(JsonElement initializeResponse)
+		{
+			_semanticTokenTypes = Array.Empty<string>();
+			_semanticTokenModifiers = Array.Empty<string>();
+
+			if (!initializeResponse.TryGetProperty("capabilities", out JsonElement capabilities)
+				|| !capabilities.TryGetProperty("semanticTokensProvider", out JsonElement semanticTokensProvider)
+				|| !semanticTokensProvider.TryGetProperty("legend", out JsonElement legend))
+			{
+				return;
+			}
+
+			_semanticTokenTypes = ReadStringArray(legend, "tokenTypes");
+			_semanticTokenModifiers = ReadStringArray(legend, "tokenModifiers");
+		}
+
+		private static string[] ReadStringArray(JsonElement parent, string propertyName)
+		{
+			if (!parent.TryGetProperty(propertyName, out JsonElement property) || property.ValueKind != JsonValueKind.Array)
+				return Array.Empty<string>();
+
+			var values = new List<string>();
+
+			foreach (JsonElement item in property.EnumerateArray())
+			{
+				if (item.ValueKind == JsonValueKind.String)
+					values.Add(item.GetString());
+			}
+
+			return values.ToArray();
+		}
 
 		private async Task ReadLoopAsync()
 		{

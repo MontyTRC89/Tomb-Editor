@@ -26,12 +26,15 @@ namespace TombIDE.ScriptingStudio
 
 			_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
 			_intellisenseProvider.DiagnosticsUpdated += IntellisenseProvider_DiagnosticsUpdated;
+			_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
+			_intellisenseProvider.SemanticTokensUpdated += IntellisenseProvider_SemanticTokensUpdated;
 		}
 
 		private void DisposeLuaIntellisense()
 		{
 			EditorTabControl.FileOpened -= EditorTabControl_LuaFileOpened;
 			_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
+			_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
 			_intellisenseProvider.Dispose();
 		}
 
@@ -55,6 +58,7 @@ namespace TombIDE.ScriptingStudio
 
 			_intellisenseProvider.OpenDocument(editor.FilePath, editor.Text);
 			ApplyDiagnosticsToEditor(editor, _intellisenseProvider.GetDiagnostics(editor.FilePath));
+			ApplySemanticTokensToEditor(editor, _intellisenseProvider.GetSemanticTokens(editor.FilePath));
 		}
 
 		private void LuaEditor_TextChangedDelayed(object sender, EventArgs e)
@@ -85,6 +89,21 @@ namespace TombIDE.ScriptingStudio
 			Debug.WriteLine($"[LuaLS] DiagnosticsUpdated for '{filePath}': {diagnostics?.Count ?? 0} items, tab matched={matched}.");
 		}
 
+		private void IntellisenseProvider_SemanticTokensUpdated(string filePath, IReadOnlyList<LuaSemanticToken> semanticTokens)
+		{
+			if (InvokeRequired)
+			{
+				BeginInvoke(new Action<string, IReadOnlyList<LuaSemanticToken>>(IntellisenseProvider_SemanticTokensUpdated), filePath, semanticTokens);
+				return;
+			}
+
+			foreach (TabPage tabPage in EditorTabControl.FindTabPagesOfFile(filePath))
+			{
+				if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor editor)
+					ApplySemanticTokensToEditor(editor, semanticTokens);
+			}
+		}
+
 		private void NavigateToDefinition(LuaDefinitionLocation definitionLocation)
 		{
 			if (definitionLocation is null || string.IsNullOrWhiteSpace(definitionLocation.FilePath) || !File.Exists(definitionLocation.FilePath))
@@ -113,5 +132,8 @@ namespace TombIDE.ScriptingStudio
 
 			editor.SetDiagnostics(editor.LiveErrorUnderlining ? diagnostics : Array.Empty<TextEditorDiagnostic>());
 		}
+
+		private static void ApplySemanticTokensToEditor(LuaEditor editor, IReadOnlyList<LuaSemanticToken> semanticTokens)
+			=> editor.SetSemanticTokens(semanticTokens ?? Array.Empty<LuaSemanticToken>());
 	}
 }
