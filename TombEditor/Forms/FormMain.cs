@@ -667,7 +667,6 @@ namespace TombEditor.Forms
 
             layout.State = dockArea.GetDockPanelState();
             config.Window_Layout = layout.State;
-            _editor.ConfigurationChange(false, false, false, true);
         }
 
         private void Layout_SaveAs()
@@ -696,7 +695,6 @@ namespace TombEditor.Forms
                 config.Window_CustomLayouts.Add(newLayout);
                 config.Window_ActiveLayoutName = name;
                 config.Window_Layout = newLayout.State;
-                _editor.ConfigurationChange(false, false, false, true);
             }
         }
 
@@ -710,7 +708,6 @@ namespace TombEditor.Forms
             config.Window_CustomLayouts.Remove(layout);
             config.Window_ActiveLayoutName = string.Empty;
             LoadWindowLayout(new Configuration());
-            _editor.ConfigurationChange(false, false, false, true);
         }
 
         private void ToolWindow_Toggle(DarkToolWindow toolWindow)
