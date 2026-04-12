@@ -23,9 +23,9 @@ namespace TombLib.Scripting.Lua.Objects
 		private static readonly SolidColorBrush DescriptionForegroundBrush = CreateFrozenBrush(Colors.Gainsboro);
 		private readonly object _resolveSync = new object();
 		private LuaCompletionItem _item;
-		private string _displayDetail;
-		private object _cachedDescription;
-		private Task<LuaCompletionItem> _resolveTask;
+		private string? _displayDetail;
+		private object? _cachedDescription;
+		private Task<LuaCompletionItem>? _resolveTask;
 
 		public LuaCompletionData(LuaCompletionItem item)
 		{
@@ -33,22 +33,22 @@ namespace TombLib.Scripting.Lua.Objects
 			_displayDetail = FlattenSingleLineText(_item.Detail);
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 
 		public ImageSource Image => LuaCompletionIconFactory.GetIcon(_item.IconKind);
 		public string Text => _item.FilterText;
 		public string DisplayText => _item.Label;
-		public string DisplayDetail => _displayDetail;
+		public string? DisplayDetail => _displayDetail;
 		public Visibility DetailVisibility => string.IsNullOrEmpty(_displayDetail) ? Visibility.Collapsed : Visibility.Visible;
 		public object Content => DisplayText;
-		public object Description => _cachedDescription ??= BuildDescriptionContent();
+		public object? Description => _cachedDescription ??= BuildDescriptionContent();
 		public double Priority => _item.Priority;
 		public bool CanResolve => _item.CanResolve;
 
 		public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
 			=> textArea.Document.Replace(completionSegment, _item.InsertText);
 
-		public async Task<object> GetDescriptionAsync(CancellationToken cancellationToken = default)
+		public async Task<object?> GetDescriptionAsync(CancellationToken cancellationToken = default)
 		{
 			if (!CanResolve)
 				return Description;
@@ -87,7 +87,7 @@ namespace TombLib.Scripting.Lua.Objects
 			}
 		}
 
-		private static string FlattenSingleLineText(string text)
+		private static string? FlattenSingleLineText(string? text)
 		{
 			if (string.IsNullOrWhiteSpace(text))
 				return null;
@@ -96,7 +96,7 @@ namespace TombLib.Scripting.Lua.Objects
 			return lines.Length == 0 ? null : string.Join(" ", lines).Trim();
 		}
 
-		private object BuildDescriptionContent()
+		private object? BuildDescriptionContent()
 		{
 			bool hasDetail = !string.IsNullOrWhiteSpace(_item.Detail);
 			bool hasDescription = !string.IsNullOrWhiteSpace(_item.Description);
@@ -126,9 +126,11 @@ namespace TombLib.Scripting.Lua.Objects
 
 			if (hasDescription)
 			{
+				string descriptionText = _item.Description!;
+
 				panel.Children.Add(_item.IsDescriptionMarkdown
-					? MarkdownToolTipRenderer.CreateContent(_item.Description, DescriptionForegroundBrush, DescriptionBackgroundBrush, false)
-					: MarkdownToolTipRenderer.CreatePlainTextContent(_item.Description, DescriptionForegroundBrush, false));
+					? MarkdownToolTipRenderer.CreateContent(descriptionText, DescriptionForegroundBrush, DescriptionBackgroundBrush, false)
+					: MarkdownToolTipRenderer.CreatePlainTextContent(descriptionText, DescriptionForegroundBrush, false));
 			}
 
 			return new Border
@@ -157,7 +159,7 @@ namespace TombLib.Scripting.Lua.Objects
 			OnPropertyChanged(nameof(Description));
 		}
 
-		private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 	}

@@ -6,19 +6,19 @@ namespace TombLib.Scripting.Lua.Objects
 {
 	public sealed class LuaCompletionItem
 	{
-		private readonly Func<CancellationToken, Task<LuaCompletionItem>> _resolveAsync;
+		private readonly Func<CancellationToken, Task<LuaCompletionItem>>? _resolveAsync;
 
 		public LuaCompletionItem(
 			string label,
-			string insertText = null,
-			string detail = null,
-			string description = null,
-			string filterText = null,
+			string? insertText = null,
+			string? detail = null,
+			string? description = null,
+			string? filterText = null,
 			double priority = 0.0,
 			LuaCompletionItemKind kind = LuaCompletionItemKind.Text,
 			LuaCompletionIconKind iconKind = LuaCompletionIconKind.Misc,
 			bool isDescriptionMarkdown = false,
-			Func<CancellationToken, Task<LuaCompletionItem>> resolveAsync = null)
+			Func<CancellationToken, Task<LuaCompletionItem>>? resolveAsync = null)
 		{
 			Label = label ?? throw new ArgumentNullException(nameof(label));
 			InsertText = string.IsNullOrWhiteSpace(insertText) ? label : insertText;
@@ -34,8 +34,8 @@ namespace TombLib.Scripting.Lua.Objects
 
 		public string Label { get; }
 		public string InsertText { get; }
-		public string Detail { get; }
-		public string Description { get; }
+		public string? Detail { get; }
+		public string? Description { get; }
 		public string FilterText { get; }
 		public double Priority { get; }
 		public LuaCompletionItemKind Kind { get; }

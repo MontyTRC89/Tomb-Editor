@@ -17,7 +17,7 @@ namespace TombLib.Scripting.Lua
 		private static readonly SolidColorBrush SignatureActiveParamForeground = CreateFrozenBrush(Color.FromRgb(86, 180, 235));
 		private static readonly SolidColorBrush SignatureForeground = CreateFrozenBrush(Colors.Gainsboro);
 
-		private CancellationTokenSource _signatureCancellationTokenSource;
+		private CancellationTokenSource? _signatureCancellationTokenSource;
 
 		private readonly Popup _signaturePopup = new Popup();
 		private readonly Border _signaturePopupBorder = new Border();
@@ -43,7 +43,7 @@ namespace TombLib.Scripting.Lua
 
 		private void DismissSignatureHelp()
 		{
-			_signatureCancellationTokenSource?.Cancel();
+			CancelAndDispose(ref _signatureCancellationTokenSource);
 
 			if (_signaturePopup.IsOpen)
 				_signaturePopup.IsOpen = false;
@@ -150,7 +150,7 @@ namespace TombLib.Scripting.Lua
 			try
 			{
 				(int line, int column) = GetPositionFromOffset(offset);
-				LuaSignatureInfo signatureInfo = await IntellisenseProvider
+				LuaSignatureInfo? signatureInfo = await IntellisenseProvider
 					.GetSignatureHelpAsync(FilePath, Text, line, column, cancellationToken)
 					.ConfigureAwait(true);
 

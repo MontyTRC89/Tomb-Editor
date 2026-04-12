@@ -11,10 +11,10 @@ namespace TombLib.Scripting.Lua
 	{
 		public override string DefaultFileExtension => ".lua";
 
-		private LuaTextMateInstallation _textMateHighlighting;
+		private LuaTextMateInstallation? _textMateHighlighting;
 
-		public ILuaIntellisenseProvider IntellisenseProvider { get; set; }
-		public event Action<LuaDefinitionLocation> DefinitionNavigationRequested;
+		public ILuaIntellisenseProvider? IntellisenseProvider { get; set; }
+		public event Action<LuaDefinitionLocation>? DefinitionNavigationRequested;
 
 		public LuaEditor(Version engineVersion) : base(engineVersion)
 		{

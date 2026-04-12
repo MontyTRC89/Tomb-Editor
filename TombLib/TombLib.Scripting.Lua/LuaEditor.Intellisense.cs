@@ -1,15 +1,17 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Document;
+using TombLib.Scripting.Lua.Utils;
 
 namespace TombLib.Scripting.Lua
 {
 	public sealed partial class LuaEditor
 	{
-		private Window _hostWindow;
+		private Window? _hostWindow;
 
 		private void BindLuaIntellisenseEvents()
 		{
@@ -23,18 +25,21 @@ namespace TombLib.Scripting.Lua
 			Unloaded += LuaEditor_Unloaded;
 		}
 
-		private void LuaEditor_Loaded(object sender, RoutedEventArgs e)
+		private void LuaEditor_Loaded(object? sender, RoutedEventArgs e)
 			=> AttachHostWindowHandlers();
 
-		private void LuaEditor_IsKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void LuaEditor_IsKeyboardFocusWithinChanged(object? sender, DependencyPropertyChangedEventArgs e)
 		{
 			if (e.NewValue is bool hasKeyboardFocus && !hasKeyboardFocus)
+			{
+				CloseCompletionWindow();
 				DismissTransientToolTips();
+			}
 		}
 
 		private void AttachHostWindowHandlers()
 		{
-			Window window = Window.GetWindow(this);
+			Window? window = Window.GetWindow(this);
 
 			if (window == _hostWindow)
 				return;
@@ -48,10 +53,13 @@ namespace TombLib.Scripting.Lua
 				_hostWindow.Deactivated += HostWindow_Deactivated;
 		}
 
-		private void HostWindow_Deactivated(object sender, EventArgs e)
-			=> DismissTransientToolTips();
+		private void HostWindow_Deactivated(object? sender, EventArgs e)
+		{
+			CloseCompletionWindow();
+			DismissTransientToolTips();
+		}
 
-		private void LuaEditor_Unloaded(object sender, RoutedEventArgs e)
+		private void LuaEditor_Unloaded(object? sender, RoutedEventArgs e)
 		{
 			_textMateHighlighting?.Dispose();
 			_textMateHighlighting = null;
@@ -62,6 +70,7 @@ namespace TombLib.Scripting.Lua
 			CancelCompletionToolTipUpdate();
 
 			CancelAndDispose(ref _signatureCancellationTokenSource);
+			CloseCompletionWindow();
 
 			if (_hostWindow is not null)
 				_hostWindow.Deactivated -= HostWindow_Deactivated;
@@ -75,7 +84,7 @@ namespace TombLib.Scripting.Lua
 			IntellisenseProvider?.CloseDocument(FilePath);
 		}
 
-		private async void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+		private async void TextArea_TextEntering(object? sender, TextCompositionEventArgs e)
 		{
 			if (!AutocompleteEnabled || !IsIntellisenseAvailable())
 				return;
@@ -84,11 +93,12 @@ namespace TombLib.Scripting.Lua
 			{
 				e.Handled = true;
 
-				await RequestCompletionAsync(CaretOffset, null).ConfigureAwait(true);
+				if (LuaEditorInteractionRules.IsValidManualCompletionContext(Document, CaretOffset))
+					await RequestCompletionAsync(CaretOffset, null).ConfigureAwait(true);
 			}
 		}
 
-		private async void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+		private async void TextArea_TextEntered(object? sender, TextCompositionEventArgs e)
 		{
 			if (!IsIntellisenseAvailable())
 				return;
@@ -121,14 +131,16 @@ namespace TombLib.Scripting.Lua
 			if (!AutocompleteEnabled)
 				return;
 
-			if (TryGetCompletionTrigger(e.Text, out char? triggerCharacter) && IsValidAutocompleteContext(CaretOffset, triggerCharacter))
+			if (TryGetCompletionTrigger(e.Text, out char? triggerCharacter)
+				&& LuaEditorInteractionRules.IsValidAutocompleteContext(Document, CaretOffset, triggerCharacter))
 				await RequestCompletionAsync(CaretOffset, triggerCharacter).ConfigureAwait(true);
 		}
 
+		[MemberNotNullWhen(true, nameof(IntellisenseProvider))]
 		private bool IsIntellisenseAvailable()
 			=> IntellisenseProvider is not null && IntellisenseProvider.IsAvailable && !string.IsNullOrWhiteSpace(FilePath);
 
-		private static bool TryGetCompletionTrigger(string inputText, out char? triggerCharacter)
+		private static bool TryGetCompletionTrigger(string? inputText, out char? triggerCharacter)
 		{
 			triggerCharacter = null;
 
@@ -146,7 +158,7 @@ namespace TombLib.Scripting.Lua
 			return IsIdentifierTriggerCharacter(typedChar);
 		}
 
-		private static bool ShouldKeepCompletionWindowOpen(string inputText)
+		private static bool ShouldKeepCompletionWindowOpen(string? inputText)
 			=> inputText?.Length == 1 && (char.IsLetterOrDigit(inputText[0]) || inputText[0] == '_');
 
 		private static bool IsIdentifierCharacter(char character)
@@ -171,14 +183,14 @@ namespace TombLib.Scripting.Lua
 			return (location.Line - 1, location.Column - 1);
 		}
 
-		private static CancellationToken ResetCancellationTokenSource(ref CancellationTokenSource cancellationTokenSource)
+		private static CancellationToken ResetCancellationTokenSource(ref CancellationTokenSource? cancellationTokenSource)
 		{
 			CancelAndDispose(ref cancellationTokenSource);
 			cancellationTokenSource = new CancellationTokenSource();
 			return cancellationTokenSource.Token;
 		}
 
-		private static void CancelAndDispose(ref CancellationTokenSource cancellationTokenSource)
+		private static void CancelAndDispose(ref CancellationTokenSource? cancellationTokenSource)
 		{
 			if (cancellationTokenSource is null)
 				return;

@@ -21,7 +21,7 @@ namespace TombLib.Scripting.Lua.Objects
 		{
 			lock (Cache)
 			{
-				if (Cache.TryGetValue(kind, out ImageSource image))
+				if (Cache.TryGetValue(kind, out ImageSource? image))
 					return image;
 
 				image = CreateIcon(kind);

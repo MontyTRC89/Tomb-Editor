@@ -11,7 +11,7 @@ namespace TombLib.Scripting.Lua
 		public override string DefaultPath { get; }
 		public ColorScheme ColorScheme = new ColorScheme();
 
-		private string _selectedColorSchemeName;
+		private string _selectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
 
 		public string SelectedColorSchemeName
 		{

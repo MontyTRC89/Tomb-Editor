@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Lua.Utils;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.Rendering;
 
@@ -13,7 +14,7 @@ namespace TombLib.Scripting.Lua
 {
 	public sealed partial class LuaEditor
 	{
-		private CancellationTokenSource _hoverCancellationTokenSource;
+		private CancellationTokenSource? _hoverCancellationTokenSource;
 		private int _hoverRequestToken;
 
 		protected override async void HandleMouseHover(MouseEventArgs e)
@@ -24,6 +25,16 @@ namespace TombLib.Scripting.Lua
 				return;
 
 			bool hasDiagnostic = TryGetDiagnosticInfo(hoveredOffset, out string diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity);
+
+			bool isCompletionWindowOpen = _completionWindow is not null;
+
+			if (!LuaEditorInteractionRules.CanRequestHover(Document, hoveredOffset, isCompletionWindowOpen, _signaturePopup.IsOpen))
+			{
+				if (!isCompletionWindowOpen && !_signaturePopup.IsOpen && hasDiagnostic)
+					ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
+
+				return;
+			}
 
 			if (!IsIntellisenseAvailable())
 			{
@@ -48,7 +59,7 @@ namespace TombLib.Scripting.Lua
 
 			try
 			{
-				LuaHoverInfo hoverInfo = await RequestHoverAsync(hoveredOffset, cancellationToken).ConfigureAwait(true);
+				LuaHoverInfo? hoverInfo = await RequestHoverAsync(hoveredOffset, cancellationToken).ConfigureAwait(true);
 
 				if (cancellationToken.IsCancellationRequested || hoverRequestToken != _hoverRequestToken)
 					return;
@@ -58,11 +69,9 @@ namespace TombLib.Scripting.Lua
 				if (currentHoveredOffset != hoveredOffset)
 					return;
 
-				bool hasHover = hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content);
-
-				if (hasHover && hasDiagnostic)
+				if (hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content) && hasDiagnostic)
 					ShowCombinedHoverAndDiagnosticToolTip(hoverInfo, diagnosticMessage, diagnosticSeverity);
-				else if (hasHover)
+				else if (hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content))
 					ShowHoverToolTip(hoverInfo);
 				else if (hasDiagnostic)
 					ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
@@ -120,7 +129,7 @@ namespace TombLib.Scripting.Lua
 			return MarkdownToolTipRenderer.CreatePlainTextContent(hoverInfo.Content, ToolTipForeground);
 		}
 
-		private async Task<LuaHoverInfo> RequestHoverAsync(int offset, CancellationToken cancellationToken)
+		private async Task<LuaHoverInfo?> RequestHoverAsync(int offset, CancellationToken cancellationToken)
 		{
 			if (!IsIntellisenseAvailable())
 				return null;

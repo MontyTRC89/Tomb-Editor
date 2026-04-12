@@ -5,7 +5,7 @@ namespace TombLib.Scripting.Lua.Objects
 {
 	public sealed class LuaSignatureInfo
 	{
-		public LuaSignatureInfo(string label, string documentation, IReadOnlyList<LuaParameterInfo> parameters,
+		public LuaSignatureInfo(string label, string? documentation, IReadOnlyList<LuaParameterInfo> parameters,
 			int activeParameter)
 		{
 			Label = label ?? throw new ArgumentNullException(nameof(label));
@@ -15,20 +15,20 @@ namespace TombLib.Scripting.Lua.Objects
 		}
 
 		public string Label { get; }
-		public string Documentation { get; }
+		public string? Documentation { get; }
 		public IReadOnlyList<LuaParameterInfo> Parameters { get; }
 		public int ActiveParameter { get; }
 	}
 
 	public sealed class LuaParameterInfo
 	{
-		public LuaParameterInfo(string label, string documentation)
+		public LuaParameterInfo(string label, string? documentation)
 		{
 			Label = label ?? string.Empty;
 			Documentation = documentation;
 		}
 
 		public string Label { get; }
-		public string Documentation { get; }
+		public string? Documentation { get; }
 	}
 }

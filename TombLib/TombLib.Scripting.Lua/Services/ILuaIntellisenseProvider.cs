@@ -10,8 +10,8 @@ namespace TombLib.Scripting.Lua.Services
 	public interface ILuaIntellisenseProvider : IDisposable
 	{
 		bool IsAvailable { get; }
-		event Action<string, IReadOnlyList<TextEditorDiagnostic>> DiagnosticsUpdated;
-		event Action<string, IReadOnlyList<LuaSemanticToken>> SemanticTokensUpdated;
+		event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
+		event Action<string, IReadOnlyList<LuaSemanticToken>>? SemanticTokensUpdated;
 
 		IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath);
 		IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath);
@@ -23,13 +23,13 @@ namespace TombLib.Scripting.Lua.Services
 		Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
 			int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default);
 
-		Task<LuaHoverInfo> GetHoverAsync(string filePath, string content,
+		Task<LuaHoverInfo?> GetHoverAsync(string filePath, string content,
 			int line, int column, CancellationToken cancellationToken = default);
 
-		Task<LuaDefinitionLocation> GetDefinitionAsync(string filePath, string content,
+		Task<LuaDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
 			int line, int column, CancellationToken cancellationToken = default);
 
-		Task<LuaSignatureInfo> GetSignatureHelpAsync(string filePath, string content,
+		Task<LuaSignatureInfo?> GetSignatureHelpAsync(string filePath, string content,
 			int line, int column, CancellationToken cancellationToken = default);
 	}
 }

@@ -6,12 +6,12 @@ namespace TombLib.Scripting.Lua
 {
 	public sealed partial class LuaEditor
 	{
-		private LuaSemanticTokensColorizer _semanticTokensColorizer;
+		private LuaSemanticTokensColorizer? _semanticTokensColorizer;
 
 		public void SetSemanticTokens(IReadOnlyList<LuaSemanticToken> tokens)
 		{
 			EnsureSemanticTokensColorizerAttached();
-			_semanticTokensColorizer.SetTokens(tokens);
+			_semanticTokensColorizer!.SetTokens(tokens);
 		}
 
 		public void ClearSemanticTokens()

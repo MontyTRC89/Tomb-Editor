@@ -44,7 +44,7 @@ namespace TombLib.Scripting.Lua.Highlighting
 			{
 				LuaSemanticToken token = tokens[i];
 
-				if (!groupedTokens.TryGetValue(token.Line, out List<LuaSemanticToken> lineTokens))
+				if (!groupedTokens.TryGetValue(token.Line, out List<LuaSemanticToken>? lineTokens) || lineTokens is null)
 				{
 					lineTokens = new List<LuaSemanticToken>();
 					groupedTokens[token.Line] = lineTokens;
@@ -73,7 +73,7 @@ namespace TombLib.Scripting.Lua.Highlighting
 
 		protected override void ColorizeLine(DocumentLine line)
 		{
-			if (!_tokensByLine.TryGetValue(line.LineNumber - 1, out IReadOnlyList<LuaSemanticToken> tokens))
+			if (!_tokensByLine.TryGetValue(line.LineNumber - 1, out IReadOnlyList<LuaSemanticToken>? tokens) || tokens is null)
 				return;
 
 			int lineLength = line.Length;
@@ -98,7 +98,7 @@ namespace TombLib.Scripting.Lua.Highlighting
 
 		private static LuaSemanticTokenStyle ResolveStyle(LuaSemanticToken token)
 		{
-			Brush foreground = token.Type switch
+			Brush? foreground = token.Type switch
 			{
 				"namespace" => token.HasModifier("defaultLibrary") ? DefaultLibraryBrush : TypeBrush,
 				"type" => TypeBrush,
@@ -126,7 +126,7 @@ namespace TombLib.Scripting.Lua.Highlighting
 				token.HasModifier("deprecated") ? DeprecatedDecorations : null);
 		}
 
-		private static Brush ResolveVariableBrush(LuaSemanticToken token)
+		private static Brush? ResolveVariableBrush(LuaSemanticToken token)
 		{
 			if (token.HasModifier("defaultLibrary"))
 				return DefaultLibraryBrush;
@@ -163,7 +163,7 @@ namespace TombLib.Scripting.Lua.Highlighting
 
 		private readonly struct LuaSemanticTokenStyle
 		{
-			public LuaSemanticTokenStyle(Brush foreground, bool isBold, Brush background, TextDecorationCollection textDecorations)
+			public LuaSemanticTokenStyle(Brush? foreground, bool isBold, Brush? background, TextDecorationCollection? textDecorations)
 			{
 				Foreground = foreground;
 				IsBold = isBold;
@@ -171,10 +171,10 @@ namespace TombLib.Scripting.Lua.Highlighting
 				TextDecorations = textDecorations;
 			}
 
-			public Brush Foreground { get; }
+			public Brush? Foreground { get; }
 			public bool IsBold { get; }
-			public Brush Background { get; }
-			public TextDecorationCollection TextDecorations { get; }
+			public Brush? Background { get; }
+			public TextDecorationCollection? TextDecorations { get; }
 
 			public bool HasFormatting => Foreground is not null || Background is not null || IsBold || TextDecorations is not null;
 		}

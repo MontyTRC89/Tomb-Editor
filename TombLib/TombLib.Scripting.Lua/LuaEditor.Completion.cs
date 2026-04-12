@@ -10,22 +10,20 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
 using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Lua.Utils;
 using TombLib.WPF;
 
 namespace TombLib.Scripting.Lua
 {
 	public sealed partial class LuaEditor
 	{
-		private static readonly FieldInfo CompletionToolTipField =
+		private static readonly FieldInfo? CompletionToolTipField =
 			typeof(CompletionWindow).GetField("toolTip", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		private static bool _completionToolTipFieldLoggedMissing;
 
-		private CancellationTokenSource _completionCancellationTokenSource;
-		private CancellationTokenSource _completionToolTipCancellationTokenSource;
+		private CancellationTokenSource? _completionCancellationTokenSource;
+		private CancellationTokenSource? _completionToolTipCancellationTokenSource;
 		private int _completionRequestToken;
 		private int _completionToolTipUpdateToken;
 
@@ -60,6 +58,9 @@ namespace TombLib.Scripting.Lua
 			{
 				if (!IsIntellisenseAvailable())
 					return;
+
+				DismissSignatureHelp();
+				CloseDefinitionToolTip(true);
 
 				(int line, int column) = GetPositionFromOffset(offset);
 				var items = await IntellisenseProvider
@@ -107,43 +108,6 @@ namespace TombLib.Scripting.Lua
 			}
 		}
 
-		private bool IsValidAutocompleteContext(int offset, char? triggerCharacter)
-		{
-			if (offset <= 0 || Document is null || Document.TextLength == 0)
-				return false;
-
-			if (IsInsideCommentOrString(offset))
-				return false;
-
-			if (triggerCharacter is '.' || triggerCharacter is ':')
-				return true;
-
-			char typedCharacter = Document.GetCharAt(offset - 1);
-
-			if (!IsIdentifierCharacter(typedCharacter))
-				return false;
-
-			if (offset >= 2)
-			{
-				char previousCharacter = Document.GetCharAt(offset - 2);
-
-				if (previousCharacter == '.')
-					return false;
-			}
-
-			return true;
-		}
-
-		private bool IsInsideCommentOrString(int offset)
-		{
-			DocumentLine currentLine = Document.GetLineByOffset(Math.Max(0, Math.Min(offset, Document.TextLength)));
-			int lineStart = currentLine.Offset;
-			int inspectedLength = Math.Max(0, Math.Min(offset, currentLine.EndOffset) - lineStart);
-			string lineText = Document.GetText(lineStart, inspectedLength);
-
-			return LuaLineParser.IsInsideCommentOrString(lineText);
-		}
-
 		private void StyleCompletionTooltip()
 		{
 			if (_completionWindow?.CompletionList.ListBox is not ListBox listBox)
@@ -175,7 +139,7 @@ namespace TombLib.Scripting.Lua
 
 		private void HandleCompletionListClick(ListBox listBox, ToolTip tooltip, MouseButtonEventArgs e)
 		{
-			ListBoxItem listBoxItem = (e.OriginalSource as DependencyObject)?.FindVisualAncestorOrSelf<ListBoxItem>();
+			ListBoxItem? listBoxItem = (e.OriginalSource as DependencyObject)?.FindVisualAncestorOrSelf<ListBoxItem>();
 
 			if (listBoxItem is null)
 				return;
@@ -202,7 +166,7 @@ namespace TombLib.Scripting.Lua
 			if (_completionWindow?.CompletionList.ListBox is not ListBox listBox)
 				return;
 
-			ICompletionData item = listBox.SelectedItem as ICompletionData;
+			ICompletionData? item = listBox.SelectedItem as ICompletionData;
 
 			if (item is null)
 			{
@@ -212,7 +176,7 @@ namespace TombLib.Scripting.Lua
 
 			try
 			{
-				object description = item.Description;
+				object? description = item.Description;
 
 				if (description is not null)
 					ApplyCompletionToolTipContent(tooltip, description);
@@ -221,7 +185,7 @@ namespace TombLib.Scripting.Lua
 
 				if (item is LuaCompletionData luaCompletionData && luaCompletionData.CanResolve)
 				{
-					object resolvedDescription = await luaCompletionData.GetDescriptionAsync(cancellationToken).ConfigureAwait(true);
+					object? resolvedDescription = await luaCompletionData.GetDescriptionAsync(cancellationToken).ConfigureAwait(true);
 
 					if (cancellationToken.IsCancellationRequested || updateToken != _completionToolTipUpdateToken)
 						return;

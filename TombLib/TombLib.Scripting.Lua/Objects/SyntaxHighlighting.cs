@@ -30,10 +30,10 @@ namespace TombLib.Scripting.Lua.Objects
 		public IEnumerable<HighlightingColor> NamedHighlightingColors => EmptyHighlightingColors;
 		public IDictionary<string, string> Properties => EmptyProperties;
 
-		public HighlightingColor GetNamedColor(string name)
+		public HighlightingColor? GetNamedColor(string name)
 			=> null;
 
-		public HighlightingRuleSet GetNamedRuleSet(string name)
+		public HighlightingRuleSet? GetNamedRuleSet(string name)
 			=> string.Equals(name, Name, StringComparison.Ordinal) ? _mainRuleSet : null;
 
 		private HighlightingRuleSet CreateMainRuleSet()

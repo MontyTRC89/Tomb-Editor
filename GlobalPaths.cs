@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 internal static class DefaultPaths
 {
-	public static string ProgramDirectory => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+	public static string ProgramDirectory => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? AppContext.BaseDirectory;
 
 	#region Configs
 

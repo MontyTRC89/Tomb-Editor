@@ -1,4 +1,6 @@
-﻿namespace TombLib.Scripting.Lua
+﻿#nullable disable
+
+namespace TombLib.Scripting.Lua
 {
     partial class LuaTextBox
     {

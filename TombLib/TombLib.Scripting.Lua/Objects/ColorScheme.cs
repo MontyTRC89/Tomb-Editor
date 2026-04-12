@@ -13,13 +13,13 @@ namespace TombLib.Scripting.Lua.Objects
 		public HighlightingObject Operators { get; set; } = new HighlightingObject();
 		public HighlightingObject SpecialOperators { get; set; } = new HighlightingObject();
 
-		public static bool operator ==(ColorScheme left, ColorScheme right)
+		public static bool operator ==(ColorScheme? left, ColorScheme? right)
 			=> ReferenceEquals(left, right) || left is not null && left.Equals(right);
 
-		public static bool operator !=(ColorScheme left, ColorScheme right)
+		public static bool operator !=(ColorScheme? left, ColorScheme? right)
 			=> !(left == right);
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (obj is not ColorScheme other)
 				return false;
