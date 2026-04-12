@@ -109,8 +109,7 @@ namespace TombEditor.ToolWindows
                 UpdateStepHeightCombo();
 
             if (obj is Editor.StatisticsChangedEvent)
-            {
-            }
+                UpdateStatistics();
 
             if (obj is Editor.ConfigurationChangedEvent)
             {

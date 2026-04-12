@@ -81,7 +81,7 @@ namespace TombLib.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (SwapChain != null)
+            if (SwapChain != null && SwapChain.RenderException == null)
             {
                 SwapChain.Resize(new VectorInt2(ClientSize.Width, ClientSize.Height));
                 SwapChain.Clear(ClearColor);

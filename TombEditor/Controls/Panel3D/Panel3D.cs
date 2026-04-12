@@ -71,7 +71,7 @@ namespace TombEditor.Controls.Panel3D
         public bool ShowSlideDirections
         {
             get { return _drawSlideDirections; }
-            set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms.Clear(); }
+            set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms?.Clear(); }
         }
         private bool _drawSlideDirections = false;
 
@@ -79,7 +79,7 @@ namespace TombEditor.Controls.Panel3D
         public bool ShowIllegalSlopes
         {
             get { return _drawIllegalSlopes; }
-            set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms.Clear(); }
+            set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms?.Clear(); }
         }
         private bool _drawIllegalSlopes = false;
 
@@ -87,7 +87,7 @@ namespace TombEditor.Controls.Panel3D
         public bool DisablePickingForHiddenRooms
         {
             get { return _disablePickingForHiddenRooms; }
-            set { if (value == _disablePickingForHiddenRooms) return; _disablePickingForHiddenRooms = value; _renderingCachedRooms.Clear(); }
+            set { if (value == _disablePickingForHiddenRooms) return; _disablePickingForHiddenRooms = value; _renderingCachedRooms?.Clear(); }
         }
         private bool _disablePickingForHiddenRooms = false;
 
