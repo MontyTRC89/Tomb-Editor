@@ -40,10 +40,7 @@
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Configs\TextEditors\ColorSchemes\Lua\Default.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\Lua\*.luasch">
+    <None Update="Configs\TextEditors\Themes\Lua\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Configs\TextEditors\Grammars\Lua\lua.tmLanguage.json">

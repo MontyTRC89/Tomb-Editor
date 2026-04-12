@@ -16,10 +16,11 @@ internal static class DefaultPaths
 	public static string ConfigsDirectory => Path.Combine(ProgramDirectory, "Configs");
 	public static string GeometryIOConfigsDirectory => Path.Combine(ConfigsDirectory, "GeometryIO");
 	public static string TextEditorConfigsDirectory => Path.Combine(ConfigsDirectory, "TextEditors");
+	public static string TextEditorThemesDirectory => Path.Combine(TextEditorConfigsDirectory, "Themes");
 	public static string ColorSchemesDirectory => Path.Combine(TextEditorConfigsDirectory, "ColorSchemes");
 
 	public static string ClassicScriptColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "ClassicScript");
-	public static string LuaColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "Lua");
+	public static string LuaThemeConfigsDirectory => Path.Combine(TextEditorThemesDirectory, "Lua");
 	public static string GameFlowColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "GameFlowScript");
 	public static string T1MColorConfigsDirectory => Path.Combine(ColorSchemesDirectory, "Tomb1Main");
 

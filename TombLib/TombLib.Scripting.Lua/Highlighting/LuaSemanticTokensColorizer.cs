@@ -11,24 +11,25 @@ namespace TombLib.Scripting.Lua.Highlighting
 {
 	internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 	{
-		private static readonly Brush DefaultLibraryBrush = LuaEditorColorPalette.TypeBrush;
-		private static readonly Brush GlobalVariableBrush = LuaEditorColorPalette.PropertyBrush;
-		private static readonly Brush TypeBrush = LuaEditorColorPalette.TypeBrush;
-		private static readonly Brush FunctionBrush = LuaEditorColorPalette.MethodBrush;
-		private static readonly Brush ParameterBrush = LuaEditorColorPalette.VariableBrush;
-		private static readonly Brush PropertyBrush = LuaEditorColorPalette.VariableBrush;
-		private static readonly Brush DecoratorBrush = LuaEditorColorPalette.KeywordBrush;
-		private static readonly Brush MacroBrush = LuaEditorColorPalette.KeywordBrush;
-		private static readonly Brush EnumMemberBrush = LuaEditorColorPalette.ConstantBrush;
 		private static readonly TextDecorationCollection DeprecatedDecorations = CreateTextDecorations(TextDecorations.Strikethrough);
 		private static readonly IReadOnlyDictionary<int, IReadOnlyList<LuaSemanticToken>> EmptyTokensByLine =
 			new Dictionary<int, IReadOnlyList<LuaSemanticToken>>();
 
+		private LuaThemeBrushSet _themeBrushSet;
 		private readonly TextView _textView;
 		private IReadOnlyDictionary<int, IReadOnlyList<LuaSemanticToken>> _tokensByLine = EmptyTokensByLine;
 
-		public LuaSemanticTokensColorizer(TextView textView)
-			=> _textView = textView ?? throw new ArgumentNullException(nameof(textView));
+		public LuaSemanticTokensColorizer(TextView textView, LuaThemeBrushSet themeBrushSet)
+		{
+			_textView = textView ?? throw new ArgumentNullException(nameof(textView));
+			_themeBrushSet = themeBrushSet ?? throw new ArgumentNullException(nameof(themeBrushSet));
+		}
+
+		public void UpdateTheme(LuaThemeBrushSet themeBrushSet)
+		{
+			_themeBrushSet = themeBrushSet ?? throw new ArgumentNullException(nameof(themeBrushSet));
+			_textView.Redraw();
+		}
 
 		public void SetTokens(IReadOnlyList<LuaSemanticToken> tokens)
 		{
@@ -108,25 +109,25 @@ namespace TombLib.Scripting.Lua.Highlighting
 			}
 		}
 
-		private static LuaSemanticTokenStyle ResolveStyle(LuaSemanticToken token)
+		private LuaSemanticTokenStyle ResolveStyle(LuaSemanticToken token)
 		{
 			Brush? foreground = token.Type switch
 			{
-				"namespace" => token.HasModifier("defaultLibrary") ? DefaultLibraryBrush : TypeBrush,
-				"type" => TypeBrush,
-				"class" => TypeBrush,
-				"enum" => TypeBrush,
-				"interface" => TypeBrush,
-				"struct" => TypeBrush,
-				"typeParameter" => TypeBrush,
-				"function" => token.HasModifier("defaultLibrary") ? DefaultLibraryBrush : FunctionBrush,
-				"method" => token.HasModifier("defaultLibrary") ? DefaultLibraryBrush : FunctionBrush,
-				"parameter" => ParameterBrush,
-				"property" => PropertyBrush,
-				"event" => PropertyBrush,
-				"enumMember" => EnumMemberBrush,
-				"decorator" => DecoratorBrush,
-				"macro" => MacroBrush,
+				"namespace" => token.HasModifier("defaultLibrary") ? _themeBrushSet.TypeBrush : _themeBrushSet.TypeBrush,
+				"type" => _themeBrushSet.TypeBrush,
+				"class" => _themeBrushSet.TypeBrush,
+				"enum" => _themeBrushSet.TypeBrush,
+				"interface" => _themeBrushSet.TypeBrush,
+				"struct" => _themeBrushSet.TypeBrush,
+				"typeParameter" => _themeBrushSet.TypeBrush,
+				"function" => token.HasModifier("defaultLibrary") ? _themeBrushSet.TypeBrush : _themeBrushSet.MethodBrush,
+				"method" => token.HasModifier("defaultLibrary") ? _themeBrushSet.TypeBrush : _themeBrushSet.MethodBrush,
+				"parameter" => _themeBrushSet.VariableBrush,
+				"property" => _themeBrushSet.VariableBrush,
+				"event" => _themeBrushSet.VariableBrush,
+				"enumMember" => _themeBrushSet.ConstantBrush,
+				"decorator" => _themeBrushSet.KeywordBrush,
+				"macro" => _themeBrushSet.KeywordBrush,
 				"variable" => ResolveVariableBrush(token),
 				_ => null
 			};
@@ -137,13 +138,13 @@ namespace TombLib.Scripting.Lua.Highlighting
 				token.HasModifier("deprecated") ? DeprecatedDecorations : null);
 		}
 
-		private static Brush? ResolveVariableBrush(LuaSemanticToken token)
+		private Brush? ResolveVariableBrush(LuaSemanticToken token)
 		{
 			if (token.HasModifier("defaultLibrary"))
-				return DefaultLibraryBrush;
+				return _themeBrushSet.TypeBrush;
 
 			if (token.HasModifier("global"))
-				return GlobalVariableBrush;
+				return _themeBrushSet.PropertyBrush;
 
 			return null;
 		}

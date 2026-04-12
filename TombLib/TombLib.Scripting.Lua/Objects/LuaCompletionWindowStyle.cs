@@ -9,11 +9,9 @@ namespace TombLib.Scripting.Lua.Objects
 {
 	internal static class LuaCompletionWindowStyle
 	{
-		private static readonly Brush DetailBrush = LuaEditorColorPalette.MutedTextBrush;
-		private static readonly DataTemplate ItemTemplate = CreateItemTemplate();
 		private static readonly Style ItemContainerStyle = CreateItemContainerStyle();
 
-		public static void Apply(CompletionWindow window)
+		public static void Apply(CompletionWindow window, LuaThemeBrushSet brushSet)
 		{
 			if (window is null)
 				return;
@@ -27,11 +25,11 @@ namespace TombLib.Scripting.Lua.Objects
 			window.CompletionList.ListBox.IsTabStop = false;
 			window.CompletionList.ListBox.FontFamily = window.TextArea.FontFamily;
 			window.CompletionList.ListBox.FontSize = window.TextArea.FontSize;
-			window.CompletionList.ListBox.ItemTemplate = ItemTemplate;
+			window.CompletionList.ListBox.ItemTemplate = CreateItemTemplate(brushSet.MutedTextBrush);
 			window.CompletionList.ListBox.ItemContainerStyle = ItemContainerStyle;
 		}
 
-		private static DataTemplate CreateItemTemplate()
+		private static DataTemplate CreateItemTemplate(Brush detailBrush)
 		{
 			var template = new DataTemplate(typeof(LuaCompletionData));
 
@@ -48,7 +46,7 @@ namespace TombLib.Scripting.Lua.Objects
 
 			var detail = new FrameworkElementFactory(typeof(TextBlock));
 			detail.SetValue(DockPanel.DockProperty, Dock.Right);
-			detail.SetValue(TextBlock.ForegroundProperty, DetailBrush);
+			detail.SetValue(TextBlock.ForegroundProperty, detailBrush);
 			detail.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
 			detail.SetValue(FrameworkElement.MarginProperty, new Thickness(12.0, 0.0, 0.0, 0.0));
 			detail.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);

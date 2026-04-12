@@ -1,4 +1,5 @@
 using System.Windows.Media;
+using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Resources;
 using static TombLib.WPF.BrushHelpers;
 
@@ -6,18 +7,118 @@ namespace TombLib.Scripting.Lua.Resources
 {
 	internal static class LuaEditorColorPalette
 	{
-		public static readonly Brush MutedTextBrush = CreateFrozenBrush("#8C8C8C");
-		public static readonly Brush MiscBrush = CreateFrozenBrush("#C8C8C8");
-		public static readonly Brush MethodBrush = CreateFrozenBrush("#DCDCAA");
-		public static readonly Brush VariableBrush = CreateFrozenBrush("#9CDCFE");
-		public static readonly Brush PropertyBrush = CreateFrozenBrush("#4FC1FF");
-		public static readonly Brush TypeBrush = CreateFrozenBrush("#4EC9B0");
-		public static readonly Brush KeywordBrush = CreateFrozenBrush("#C586C0");
-		public static readonly Brush ConstantBrush = CreateFrozenBrush("#B5CEA8");
-		public static readonly Brush FileBrush = CreateFrozenBrush("#D7BA7D");
+		public static LuaThemeBrushSet Create(LuaTheme theme)
+		{
+			LuaTheme effectiveTheme = (theme ?? new LuaTheme()).Normalize(ConfigurationDefaults.SelectedThemeName);
+			LuaThemeSemanticColors semanticColors = effectiveTheme.SemanticColors;
 
-		public static readonly SolidColorBrush SignatureParamDocForeground = CreateFrozenBrush(Color.FromRgb(180, 180, 180));
-		public static readonly SolidColorBrush SignatureActiveParamForeground = CreateFrozenBrush(Color.FromRgb(86, 180, 235));
-		public static readonly SolidColorBrush SignatureForeground = TextEditorColorPalette.ToolTipForeground;
+			return new LuaThemeBrushSet(
+				effectiveTheme.Name,
+				CreateBrush(effectiveTheme.EditorBackground, "#202020"),
+				CreateBrush(effectiveTheme.EditorForeground, "Gainsboro"),
+				CreateBrush(semanticColors.MutedText, "#8C8C8C"),
+				CreateBrush(semanticColors.Misc, "#C8C8C8"),
+				CreateBrush(semanticColors.Method, "#DCDCAA"),
+				CreateBrush(semanticColors.Variable, "#9CDCFE"),
+				CreateBrush(semanticColors.Property, "#4FC1FF"),
+				CreateBrush(semanticColors.Type, "#4EC9B0"),
+				CreateBrush(semanticColors.Keyword, "#C586C0"),
+				CreateBrush(semanticColors.Constant, "#B5CEA8"),
+				CreateBrush(semanticColors.File, "#D7BA7D"),
+				CreateBrush(semanticColors.SignatureParameterDocumentation, "#B4B4B4"),
+				CreateBrush(semanticColors.SignatureActiveParameter, "#56B4EB"),
+				CreateBrush(semanticColors.SignatureText, ColorToString(TextEditorColorPalette.ToolTipForeground.Color)));
+		}
+
+		private static SolidColorBrush CreateBrush(string colorValue, string fallbackColorValue)
+		{
+			try
+			{
+				string effectiveColorValue = string.IsNullOrWhiteSpace(colorValue)
+					? fallbackColorValue
+					: colorValue;
+
+				return CreateFrozenBrush(effectiveColorValue);
+			}
+			catch
+			{
+				return CreateFrozenBrush(fallbackColorValue);
+			}
+		}
+
+		private static string ColorToString(Color color)
+			=> $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+	}
+
+	internal sealed class LuaThemeBrushSet
+	{
+		public LuaThemeBrushSet(
+			string themeName,
+			SolidColorBrush editorBackground,
+			SolidColorBrush editorForeground,
+			SolidColorBrush mutedText,
+			SolidColorBrush misc,
+			SolidColorBrush method,
+			SolidColorBrush variable,
+			SolidColorBrush property,
+			SolidColorBrush type,
+			SolidColorBrush keyword,
+			SolidColorBrush constant,
+			SolidColorBrush file,
+			SolidColorBrush signatureParamDoc,
+			SolidColorBrush signatureActiveParam,
+			SolidColorBrush signatureForeground)
+		{
+			ThemeName = themeName;
+			EditorBackground = editorBackground;
+			EditorForeground = editorForeground;
+			MutedTextBrush = mutedText;
+			MiscBrush = misc;
+			MethodBrush = method;
+			VariableBrush = variable;
+			PropertyBrush = property;
+			TypeBrush = type;
+			KeywordBrush = keyword;
+			ConstantBrush = constant;
+			FileBrush = file;
+			SignatureParamDocForeground = signatureParamDoc;
+			SignatureActiveParamForeground = signatureActiveParam;
+			SignatureForeground = signatureForeground;
+		}
+
+		public string ThemeName { get; }
+		public SolidColorBrush EditorBackground { get; }
+		public SolidColorBrush EditorForeground { get; }
+		public SolidColorBrush MutedTextBrush { get; }
+		public SolidColorBrush MiscBrush { get; }
+		public SolidColorBrush MethodBrush { get; }
+		public SolidColorBrush VariableBrush { get; }
+		public SolidColorBrush PropertyBrush { get; }
+		public SolidColorBrush TypeBrush { get; }
+		public SolidColorBrush KeywordBrush { get; }
+		public SolidColorBrush ConstantBrush { get; }
+		public SolidColorBrush FileBrush { get; }
+		public SolidColorBrush SignatureParamDocForeground { get; }
+		public SolidColorBrush SignatureActiveParamForeground { get; }
+		public SolidColorBrush SignatureForeground { get; }
+
+		public Brush GetCompletionItemBrush(Objects.LuaCompletionIconKind kind)
+		{
+			return kind switch
+			{
+				Objects.LuaCompletionIconKind.Variable => VariableBrush,
+				Objects.LuaCompletionIconKind.Field => PropertyBrush,
+				Objects.LuaCompletionIconKind.Method => MethodBrush,
+				Objects.LuaCompletionIconKind.Property => PropertyBrush,
+				Objects.LuaCompletionIconKind.Class => TypeBrush,
+				Objects.LuaCompletionIconKind.Keyword => KeywordBrush,
+				Objects.LuaCompletionIconKind.Constant => ConstantBrush,
+				Objects.LuaCompletionIconKind.Parameter => VariableBrush,
+				Objects.LuaCompletionIconKind.Namespace => TypeBrush,
+				Objects.LuaCompletionIconKind.File => FileBrush,
+				Objects.LuaCompletionIconKind.Folder => FileBrush,
+				_ => MiscBrush
+			};
+		}
 	}
 }

@@ -11,10 +11,11 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using TombLib.Scripting.Rendering;
 using TombLib.Scripting.Resources;
+using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua.Objects
 {
-	public sealed class LuaCompletionData : ICompletionData, INotifyPropertyChanged
+	internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChanged
 	{
 		private const double DescriptionMaxWidth = 540.0;
 		private const double DescriptionTextMaxWidth = 500.0;
@@ -22,20 +23,22 @@ namespace TombLib.Scripting.Lua.Objects
 		private static readonly SolidColorBrush DescriptionBackgroundBrush = TextEditorColorPalette.ToolTipBackground;
 		private static readonly SolidColorBrush DescriptionForegroundBrush = TextEditorColorPalette.ToolTipForeground;
 		private readonly object _resolveSync = new object();
+		private readonly LuaThemeBrushSet _brushSet;
 		private LuaCompletionItem _item;
 		private string? _displayDetail;
 		private object? _cachedDescription;
 		private Task<LuaCompletionItem>? _resolveTask;
 
-		public LuaCompletionData(LuaCompletionItem item)
+		public LuaCompletionData(LuaCompletionItem item, LuaThemeBrushSet brushSet)
 		{
 			_item = item ?? throw new ArgumentNullException(nameof(item));
+			_brushSet = brushSet ?? throw new ArgumentNullException(nameof(brushSet));
 			_displayDetail = FlattenSingleLineText(_item.Detail);
 		}
 
 		public event PropertyChangedEventHandler? PropertyChanged;
 
-		public ImageSource Image => LuaCompletionIconFactory.GetIcon(_item.IconKind);
+		public ImageSource Image => LuaCompletionIconFactory.GetIcon(_item.IconKind, _brushSet);
 		public string Text => _item.FilterText;
 		public string DisplayText => _item.Label;
 		public string? DisplayDetail => _displayDetail;

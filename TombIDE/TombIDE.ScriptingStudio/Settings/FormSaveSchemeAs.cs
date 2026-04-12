@@ -9,8 +9,7 @@ namespace TombIDE.ScriptingStudio.Settings
 	internal enum ColorSchemeType
 	{
 		ClassicScript,
-		GameFlowScript,
-		Lua
+		GameFlowScript
 	}
 
 	internal partial class FormSaveSchemeAs : DarkForm
@@ -75,17 +74,6 @@ namespace TombIDE.ScriptingStudio.Settings
 								throw new ArgumentException("A scheme with the same name already exists.");
 
 						schemeFilePath = Path.Combine(schemeFolderPath, newName + ".gflsch");
-						break;
-					}
-					case ColorSchemeType.Lua:
-					{
-						string schemeFolderPath = DefaultPaths.LuaColorConfigsDirectory;
-
-						foreach (string file in Directory.GetFiles(schemeFolderPath, "*.luasch", SearchOption.TopDirectoryOnly))
-							if (Path.GetFileNameWithoutExtension(file).Equals(newName, StringComparison.OrdinalIgnoreCase))
-								throw new ArgumentException("A scheme with the same name already exists.");
-
-						schemeFilePath = Path.Combine(schemeFolderPath, newName + ".luasch");
 						break;
 					}
 				}

@@ -56,7 +56,7 @@ namespace TombLib.Scripting.Lua
 		private void InitializeLuaCompletionWindow()
 		{
 			InitializeCompletionWindow(CompletionWindowMinWidth, CompletionWindowHeight);
-			LuaCompletionWindowStyle.Apply(_completionWindow);
+			LuaCompletionWindowStyle.Apply(_completionWindow, GetThemeBrushSet());
 			StyleCompletionTooltip();
 			MakeCompletionWindowNonActivatable();
 		}
@@ -89,9 +89,10 @@ namespace TombLib.Scripting.Lua
 				}
 
 				var completionDataItems = new LuaCompletionData[items.Count];
+				var brushSet = GetThemeBrushSet();
 
 				for (int i = 0; i < items.Count; i++)
-					completionDataItems[i] = new LuaCompletionData(items[i]);
+					completionDataItems[i] = new LuaCompletionData(items[i], brushSet);
 
 				if (cancellationToken.IsCancellationRequested || requestToken != _completionRequestToken)
 					return;

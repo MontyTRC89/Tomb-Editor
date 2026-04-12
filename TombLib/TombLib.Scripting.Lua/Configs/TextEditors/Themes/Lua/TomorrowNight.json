@@ -1,0 +1,34 @@
+{
+  "Name": "Tomorrow Night",
+  "Aliases": ["Tomorrow Night Eighties", "SharpLua Classic"],
+  "EditorBackground": "#2D2D2D",
+  "EditorForeground": "#CCCCCC",
+  "SemanticColors": {
+    "MutedText": "#999999",
+    "Misc": "#CCCCCC",
+    "Method": "#FFCC66",
+    "Variable": "#E6C8FF",
+    "Property": "#E6C8FF",
+    "Type": "#66CCCC",
+    "Keyword": "#6699CC",
+    "Constant": "#99CC99",
+    "File": "#F99157",
+    "SignatureParameterDocumentation": "#999999",
+    "SignatureActiveParameter": "#FFCC66",
+    "SignatureText": "#CCCCCC"
+  },
+  "TextMateTheme": {
+    "Rules": [
+      { "Scope": "comment", "Foreground": "#999999" },
+      { "Scope": "string", "Foreground": "#F99157" },
+      { "Scope": "constant.numeric, constant.character.escape, constant.language.nil", "Foreground": "#99CC99" },
+      { "Scope": "keyword, storage", "Foreground": "#6699CC", "FontStyle": "bold" },
+      { "Scope": "keyword.control.goto, keyword.control.return, keyword.control.break", "Foreground": "#CC99CC" },
+      { "Scope": "keyword.control.local", "Foreground": "#F99157", "FontStyle": "bold" },
+      { "Scope": "constant.language.boolean, support.class, support.type, support.variable, variable.language.self", "Foreground": "#66CCCC", "FontStyle": "bold" },
+      { "Scope": "entity.name.function, support.function, support.function.library, support.function.any-method", "Foreground": "#FFCC66", "FontStyle": "bold" },
+      { "Scope": "entity.name.class, entity.other.attribute, variable.parameter, variable.other.object, support.type.property-name", "Foreground": "#E6C8FF" },
+      { "Scope": "keyword.operator, punctuation", "Foreground": "#CCCCCC" }
+    ]
+  }
+}

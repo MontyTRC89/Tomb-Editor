@@ -20,7 +20,9 @@ namespace TombLib.Scripting.Lua
 		private void EnsureSemanticTokensColorizerAttached()
 		{
 			if (_semanticTokensColorizer is null)
-				_semanticTokensColorizer = new LuaSemanticTokensColorizer(TextArea.TextView);
+				_semanticTokensColorizer = new LuaSemanticTokensColorizer(TextArea.TextView, GetThemeBrushSet());
+			else
+				_semanticTokensColorizer.UpdateTheme(GetThemeBrushSet());
 
 			if (!TextArea.TextView.LineTransformers.Contains(_semanticTokensColorizer))
 				TextArea.TextView.LineTransformers.Add(_semanticTokensColorizer);

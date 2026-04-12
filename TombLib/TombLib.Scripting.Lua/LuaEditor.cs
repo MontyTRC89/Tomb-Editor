@@ -1,13 +1,10 @@
 using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
-using System.IO;
-using System.Windows.Media;
-using System.Xml;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Lua.Services;
+using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua
 {
@@ -16,6 +13,7 @@ namespace TombLib.Scripting.Lua
 		public override string DefaultFileExtension => ".lua";
 
 		private LuaTextMateInstallation? _textMateHighlighting;
+		private LuaThemeBrushSet? _themeBrushSet;
 
 		public ILuaIntellisenseProvider? IntellisenseProvider { get; set; }
 		public event Action<LuaDefinitionLocation>? DefinitionNavigationRequested;
@@ -30,63 +28,27 @@ namespace TombLib.Scripting.Lua
 		public override void UpdateSettings(Bases.ConfigurationBase configuration)
 		{
 			var config = configuration as LuaEditorConfiguration;
-			ColorScheme colorScheme = config?.ColorScheme ?? new ColorScheme();
+			var theme = config?.Theme ?? LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
+			_themeBrushSet = LuaEditorColorPalette.Create(theme);
 			_textMateHighlighting?.Dispose();
 			_textMateHighlighting = null;
 
-			if (!LuaTextMateSyntaxHighlighting.TryInstall(this, out _textMateHighlighting))
-				SyntaxHighlighting = LoadFallbackSyntaxHighlighting() ?? new SyntaxHighlighting(colorScheme);
-			else
-				SyntaxHighlighting = null;
+			LuaTextMateSyntaxHighlighting.TryInstall(this, theme.TextMateTheme, out _textMateHighlighting);
+			SyntaxHighlighting = null;
 
 			EnsureSemanticTokensColorizerAttached();
 
-			Background = CreateEditorBrush(colorScheme.Background, "#202020");
-			Foreground = CreateEditorBrush(colorScheme.Foreground, "Gainsboro");
+			Background = _themeBrushSet.EditorBackground;
+			Foreground = _themeBrushSet.EditorForeground;
 
 			base.UpdateSettings(configuration);
 			LiveErrorUnderlining = true;
 		}
 
-		private static IHighlightingDefinition? LoadFallbackSyntaxHighlighting()
+		private LuaThemeBrushSet GetThemeBrushSet()
 		{
-			string fallbackDefinitionPath = Path.Combine(
-				AppContext.BaseDirectory,
-				"Configs",
-				"TextEditors",
-				"ColorSchemes",
-				"Lua",
-				"Default.xml");
-
-			if (!File.Exists(fallbackDefinitionPath))
-				return null;
-
-			using var stream = new FileStream(fallbackDefinitionPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-			using var reader = new XmlTextReader(stream);
-			return HighlightingLoader.Load(reader, HighlightingManager.Instance);
-		}
-
-		private static SolidColorBrush CreateEditorBrush(string colorValue, string fallbackColorValue)
-		{
-			try
-			{
-				string effectiveColor = string.IsNullOrWhiteSpace(colorValue) ? fallbackColorValue : colorValue;
-				var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(effectiveColor));
-
-				if (brush.CanFreeze)
-					brush.Freeze();
-
-				return brush;
-			}
-			catch
-			{
-				var fallbackBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(fallbackColorValue));
-
-				if (fallbackBrush.CanFreeze)
-					fallbackBrush.Freeze();
-
-				return fallbackBrush;
-			}
+			_themeBrushSet ??= LuaEditorColorPalette.Create(LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName));
+			return _themeBrushSet;
 		}
 	}
 }

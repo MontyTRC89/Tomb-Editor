@@ -7,27 +7,29 @@ namespace TombLib.Scripting.Lua.Objects
 	// Geometry paths below are vendored from microsoft/vscode-codicons under the MIT license.
 	internal static class LuaCompletionIconFactory
 	{
-		private static readonly Dictionary<LuaCompletionIconKind, ImageSource> Cache = new Dictionary<LuaCompletionIconKind, ImageSource>();
+		private static readonly Dictionary<string, ImageSource> Cache = new Dictionary<string, ImageSource>();
 
-		public static ImageSource GetIcon(LuaCompletionIconKind kind)
+		public static ImageSource GetIcon(LuaCompletionIconKind kind, LuaThemeBrushSet brushSet)
 		{
+			string cacheKey = brushSet.ThemeName + ":" + kind;
+
 			lock (Cache)
 			{
-				if (Cache.TryGetValue(kind, out ImageSource? image))
+				if (Cache.TryGetValue(cacheKey, out ImageSource? image))
 					return image;
 
-				image = CreateIcon(kind);
-				Cache[kind] = image;
+				image = CreateIcon(kind, brushSet);
+				Cache[cacheKey] = image;
 				return image;
 			}
 		}
 
-		private static ImageSource CreateIcon(LuaCompletionIconKind kind)
+		private static ImageSource CreateIcon(LuaCompletionIconKind kind, LuaThemeBrushSet brushSet)
 		{
 			var drawingGroup = new DrawingGroup();
 
 			foreach (string pathData in GetPathData(kind))
-				drawingGroup.Children.Add(CreatePathDrawing(GetBrush(kind), pathData));
+				drawingGroup.Children.Add(CreatePathDrawing(brushSet.GetCompletionItemBrush(kind), pathData));
 
 			drawingGroup.Freeze();
 
@@ -41,25 +43,6 @@ namespace TombLib.Scripting.Lua.Objects
 			Geometry geometry = Geometry.Parse(pathData);
 			geometry.Freeze();
 			return new GeometryDrawing(brush, null, geometry);
-		}
-
-		private static Brush GetBrush(LuaCompletionIconKind kind)
-		{
-			return kind switch
-			{
-				LuaCompletionIconKind.Variable => LuaEditorColorPalette.VariableBrush,
-				LuaCompletionIconKind.Field => LuaEditorColorPalette.PropertyBrush,
-				LuaCompletionIconKind.Method => LuaEditorColorPalette.MethodBrush,
-				LuaCompletionIconKind.Property => LuaEditorColorPalette.PropertyBrush,
-				LuaCompletionIconKind.Class => LuaEditorColorPalette.TypeBrush,
-				LuaCompletionIconKind.Keyword => LuaEditorColorPalette.KeywordBrush,
-				LuaCompletionIconKind.Constant => LuaEditorColorPalette.ConstantBrush,
-				LuaCompletionIconKind.Parameter => LuaEditorColorPalette.VariableBrush,
-				LuaCompletionIconKind.Namespace => LuaEditorColorPalette.TypeBrush,
-				LuaCompletionIconKind.File => LuaEditorColorPalette.FileBrush,
-				LuaCompletionIconKind.Folder => LuaEditorColorPalette.FileBrush,
-				_ => LuaEditorColorPalette.MiscBrush
-			};
 		}
 
 		private static string[] GetPathData(LuaCompletionIconKind kind)

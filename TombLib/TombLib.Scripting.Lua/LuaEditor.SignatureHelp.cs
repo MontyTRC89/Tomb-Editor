@@ -13,10 +13,6 @@ namespace TombLib.Scripting.Lua
 {
 	public sealed partial class LuaEditor
 	{
-		private static readonly SolidColorBrush SignatureParamDocForeground = LuaEditorColorPalette.SignatureParamDocForeground;
-		private static readonly SolidColorBrush SignatureActiveParamForeground = LuaEditorColorPalette.SignatureActiveParamForeground;
-		private static readonly SolidColorBrush SignatureForeground = LuaEditorColorPalette.SignatureForeground;
-
 		private CancellationTokenSource? _signatureCancellationTokenSource;
 
 		private readonly Popup _signaturePopup = new Popup();
@@ -83,15 +79,16 @@ namespace TombLib.Scripting.Lua
 
 		private StackPanel CreateSignaturePanel(LuaSignatureInfo signatureInfo, double contentMaxWidth)
 		{
+			LuaThemeBrushSet brushSet = GetThemeBrushSet();
 			var panel = new StackPanel { MaxWidth = contentMaxWidth };
-			panel.Children.Add(BuildSignatureBlock(signatureInfo));
+			panel.Children.Add(BuildSignatureBlock(signatureInfo, brushSet));
 
 			if (!string.IsNullOrWhiteSpace(signatureInfo.Documentation))
 			{
 				panel.Children.Add(new TextBlock
 				{
 					Text = signatureInfo.Documentation,
-					Foreground = SignatureParamDocForeground,
+					Foreground = brushSet.SignatureParamDocForeground,
 					FontFamily = SystemFonts.MessageFontFamily,
 					FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0),
 					TextWrapping = TextWrapping.Wrap,
@@ -108,7 +105,7 @@ namespace TombLib.Scripting.Lua
 					panel.Children.Add(new TextBlock
 					{
 						Text = activeParam.Label + ": " + activeParam.Documentation,
-						Foreground = SignatureParamDocForeground,
+						Foreground = brushSet.SignatureParamDocForeground,
 						FontFamily = SystemFonts.MessageFontFamily,
 						FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0),
 						TextWrapping = TextWrapping.Wrap,
@@ -187,14 +184,14 @@ namespace TombLib.Scripting.Lua
 		private void ScheduleSignatureHelpRefresh()
 			=> Dispatcher.BeginInvoke(new Action(() => _ = RequestSignatureHelpAsync(CaretOffset)));
 
-		private static TextBlock BuildSignatureBlock(LuaSignatureInfo signatureInfo)
+		private static TextBlock BuildSignatureBlock(LuaSignatureInfo signatureInfo, LuaThemeBrushSet brushSet)
 		{
 			var textBlock = new TextBlock
 			{
 				FontFamily = new FontFamily("Consolas"),
 				FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0),
 				TextWrapping = TextWrapping.Wrap,
-				Foreground = SignatureForeground
+				Foreground = brushSet.SignatureForeground
 			};
 
 			string label = signatureInfo.Label;
@@ -226,7 +223,7 @@ namespace TombLib.Scripting.Lua
 				if (i == signatureInfo.ActiveParameter)
 				{
 					run.FontWeight = FontWeights.Bold;
-					run.Foreground = SignatureActiveParamForeground;
+					run.Foreground = brushSet.SignatureActiveParamForeground;
 				}
 
 				textBlock.Inlines.Add(run);
