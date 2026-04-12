@@ -29,8 +29,6 @@ namespace TombLib.Scripting.Bases
 {
 	public abstract class TextEditorBase : TextEditor, IEditorControl, ISupportsFindReplace
 	{
-		private const double ToolTipMaxHeight = 420.0;
-		private const double ToolTipMaxWidth = 540.0;
 		protected const double ToolTipTextMaxWidth = 500.0;
 		protected static readonly double ToolTipTextFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
 		protected static readonly SolidColorBrush DefaultToolTipBorder = TextEditorColorPalette.ToolTipBorder;

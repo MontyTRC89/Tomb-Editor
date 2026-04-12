@@ -41,7 +41,7 @@ namespace TombIDE.ScriptingStudio
 		{
 			TENApiService.InjectTENApi(IDE.Instance.Project, IDE.Instance.Project.GetCurrentEngineVersion());
 
-			string executablePath = LuaLanguageServerLocator.ResolveExecutablePath(IDE.Instance.IDEConfiguration);
+			string executablePath = LuaLanguageServerLocator.ResolveExecutablePath();
 			return new LuaLanguageServerIntellisenseProvider(ScriptRootDirectoryPath, executablePath);
 		}
 
