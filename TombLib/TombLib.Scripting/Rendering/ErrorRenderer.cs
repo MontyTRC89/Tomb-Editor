@@ -15,6 +15,7 @@ namespace TombLib.Scripting.Rendering
 		private static readonly Brush WarningBrush = CreateFrozenBrush(Color.FromArgb(224, 226, 165, 44));
 		private static readonly Brush InformationBrush = CreateFrozenBrush(Color.FromArgb(224, 88, 170, 255));
 		private static readonly Brush HintBrush = CreateFrozenBrush(Color.FromArgb(192, 166, 166, 166));
+		private static readonly Pen ErrorPen = CreateFrozenPen(ErrorBrush, 1.4);
 		private static readonly Pen WarningPen = CreatePen(WarningBrush, new double[] { 1.0, 2.0 });
 		private static readonly Pen InformationPen = CreatePen(InformationBrush, new double[] { 2.0, 2.0 });
 		private static readonly Pen HintPen = CreatePen(HintBrush, new double[] { 1.0, 3.0 });
@@ -117,7 +118,7 @@ namespace TombLib.Scripting.Rendering
 			}
 
 			geometry.Freeze();
-			drawingContext.DrawGeometry(null, new Pen(ErrorBrush, 1.4), geometry);
+			drawingContext.DrawGeometry(null, ErrorPen, geometry);
 		}
 
 		private static void DrawStraightUnderline(DrawingContext drawingContext, Rect rect, Pen pen)

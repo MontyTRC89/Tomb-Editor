@@ -646,6 +646,8 @@ namespace TombLib.Scripting.Bases
 
 				if (!string.IsNullOrWhiteSpace(currentLineText))
 					builder.AppendLine(whitespaceBuilder.ToString() + CommentPrefix + currentLineText.TrimStart());
+				else
+					builder.AppendLine(whitespaceBuilder.ToString());
 
 				totalLineLength += currentLine.TotalLength;
 			}
