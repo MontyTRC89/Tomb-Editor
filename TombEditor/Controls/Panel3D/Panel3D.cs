@@ -92,8 +92,8 @@ namespace TombEditor.Controls.Panel3D
         private bool _disablePickingForHiddenRooms = false;
 
         // Overall state
-        private Editor _editor;
-        private Func<Camera> _getViewportCamera;
+        private readonly Editor _editor;
+        private readonly Func<Camera> _getViewportCamera;
         private Vector3? _currentRoomLastPos;
 
         // Camera state
@@ -103,7 +103,7 @@ namespace TombEditor.Controls.Panel3D
         private Vector2 _nextCameraRot;
         private float _lastCameraDist;
         private float _nextCameraDist;
-        private Timer _flyModeTimer;
+        private readonly Timer _flyModeTimer;
         private Camera _oldCamera;
         private Frustum _frustum;
         private Matrix4x4 _viewProjection;
@@ -121,7 +121,7 @@ namespace TombEditor.Controls.Panel3D
         private bool _gizmoEnabled = false;
         private BaseContextMenu _currentContextMenu;
         private ToolHandler _toolHandler;
-        private MovementTimer _movementTimer;
+        private readonly MovementTimer _movementTimer;
         private bool _dragObjectPicked = false;
         private bool _dragObjectMoved = false;
         private HighlightedObjects _highlightedObjects = HighlightedObjects.Create(null);
@@ -177,7 +177,7 @@ namespace TombEditor.Controls.Panel3D
         private RenderingTextureAllocator _renderingTextures;
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
-        private Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
+        private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
         // Render stats
         private readonly Stopwatch _watch = new Stopwatch();
