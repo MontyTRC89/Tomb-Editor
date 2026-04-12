@@ -10,7 +10,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using TombLib.Scripting.Rendering;
-using static TombLib.WPF.BrushHelpers;
+using TombLib.Scripting.Resources;
 
 namespace TombLib.Scripting.Lua.Objects
 {
@@ -18,9 +18,9 @@ namespace TombLib.Scripting.Lua.Objects
 	{
 		private const double DescriptionMaxWidth = 540.0;
 		private const double DescriptionTextMaxWidth = 500.0;
-		private static readonly SolidColorBrush DescriptionBorderBrush = CreateFrozenBrush(Color.FromRgb(96, 96, 96));
-		private static readonly SolidColorBrush DescriptionBackgroundBrush = CreateFrozenBrush(Color.FromRgb(64, 64, 64));
-		private static readonly SolidColorBrush DescriptionForegroundBrush = CreateFrozenBrush(Colors.Gainsboro);
+		private static readonly SolidColorBrush DescriptionBorderBrush = TextEditorColorPalette.ToolTipBorder;
+		private static readonly SolidColorBrush DescriptionBackgroundBrush = TextEditorColorPalette.ToolTipBackground;
+		private static readonly SolidColorBrush DescriptionForegroundBrush = TextEditorColorPalette.ToolTipForeground;
 		private readonly object _resolveSync = new object();
 		private LuaCompletionItem _item;
 		private string? _displayDetail;

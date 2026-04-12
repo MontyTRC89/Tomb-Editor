@@ -1,5 +1,5 @@
 using ICSharpCode.AvalonEdit.Document;
-using TombLib.Scripting.Lua.Services;
+using TombLib.Scripting.Lua.Utils;
 
 namespace TombLib.Test;
 
@@ -88,6 +88,23 @@ public class TombEngineLanguageScriptServiceTests
 
 		Assert.AreEqual(3, insertedLineNumber);
 		StringAssert.Contains(document.Text, "existing = { \"A \\\"quoted\\\" } brace and -- marker\" }, -- note");
+		StringAssert.Contains(document.Text, "newLevel = { \"New Level\" }");
+	}
+
+	[TestMethod]
+	public void TryInsertLanguageScript_IgnoresBracesInsideLongStrings()
+	{
+		var document = CreateDocument(
+			"local strings = {",
+			"    existing = { [[A } brace inside a long string]] }",
+			"}",
+			string.Empty,
+			"TEN.Flow.SetStrings(strings)");
+
+		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+
+		Assert.AreEqual(3, insertedLineNumber);
+		StringAssert.Contains(document.Text, "existing = { [[A } brace inside a long string]] },");
 		StringAssert.Contains(document.Text, "newLevel = { \"New Level\" }");
 	}
 

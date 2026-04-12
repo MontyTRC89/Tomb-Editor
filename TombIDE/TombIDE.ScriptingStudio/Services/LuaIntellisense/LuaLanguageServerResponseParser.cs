@@ -11,6 +11,35 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 {
 	internal static class LuaLanguageServerResponseParser
 	{
+		private enum LuaLanguageServerCompletionKind
+		{
+			Text = 1,
+			Method = 2,
+			Function = 3,
+			Constructor = 4,
+			Field = 5,
+			Variable = 6,
+			Class = 7,
+			Interface = 8,
+			Module = 9,
+			Property = 10,
+			Unit = 11,
+			Value = 12,
+			Enum = 13,
+			Keyword = 14,
+			Snippet = 15,
+			Color = 16,
+			File = 17,
+			Reference = 18,
+			Folder = 19,
+			EnumMember = 20,
+			Constant = 21,
+			Struct = 22,
+			Event = 23,
+			Operator = 24,
+			TypeParameter = 25
+		}
+
 		private readonly struct MarkupContent
 		{
 			public MarkupContent(string text, bool isMarkdown)
@@ -94,9 +123,9 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				? filterTextElement.GetString()
 				: label;
 
-			LuaCompletionItemKind kind = TryReadCompletionKind(itemElement, out LuaCompletionItemKind completionKind)
-				? completionKind
-				: LuaCompletionItemKind.Text;
+			LuaLanguageServerCompletionKind completionKind = TryReadCompletionKind(itemElement, out LuaLanguageServerCompletionKind parsedCompletionKind)
+				? parsedCompletionKind
+				: LuaLanguageServerCompletionKind.Text;
 
 			string detail = BuildCompletionDetail(itemElement);
 			MarkupContent description = BuildCompletionDescription(itemElement);
@@ -109,8 +138,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				description.Text,
 				filterText,
 				BuildCompletionPriority(itemElement, detail, searchableDescription, itemIndex),
-				kind,
-				BuildCompletionIconKind(kind, detail),
+				BuildCompletionIconKind(completionKind, detail),
 				description.IsMarkdown,
 				resolveAsync);
 		}
@@ -157,22 +185,22 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			return priority;
 		}
 
-		private static bool TryReadCompletionKind(JsonElement itemElement, out LuaCompletionItemKind kind)
+		private static bool TryReadCompletionKind(JsonElement itemElement, out LuaLanguageServerCompletionKind kind)
 		{
-			kind = LuaCompletionItemKind.Text;
+			kind = LuaLanguageServerCompletionKind.Text;
 
 			if (!itemElement.TryGetProperty("kind", out JsonElement kindElement)
 				|| !kindElement.TryGetInt32(out int rawKind)
-				|| !Enum.IsDefined(typeof(LuaCompletionItemKind), rawKind))
+				|| !Enum.IsDefined(typeof(LuaLanguageServerCompletionKind), rawKind))
 			{
 				return false;
 			}
 
-			kind = (LuaCompletionItemKind)rawKind;
+			kind = (LuaLanguageServerCompletionKind)rawKind;
 			return true;
 		}
 
-		private static LuaCompletionIconKind BuildCompletionIconKind(LuaCompletionItemKind kind, string detail)
+		private static LuaCompletionIconKind BuildCompletionIconKind(LuaLanguageServerCompletionKind kind, string detail)
 		{
 			if (CompletionTextContains(detail, "parameter"))
 				return LuaCompletionIconKind.Parameter;
@@ -206,28 +234,28 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 
 			return kind switch
 			{
-				LuaCompletionItemKind.Method => LuaCompletionIconKind.Method,
-				LuaCompletionItemKind.Function => LuaCompletionIconKind.Method,
-				LuaCompletionItemKind.Constructor => LuaCompletionIconKind.Method,
-				LuaCompletionItemKind.Field => LuaCompletionIconKind.Field,
-				LuaCompletionItemKind.Variable => LuaCompletionIconKind.Variable,
-				LuaCompletionItemKind.Class => LuaCompletionIconKind.Class,
-				LuaCompletionItemKind.Interface => LuaCompletionIconKind.Class,
-				LuaCompletionItemKind.Module => LuaCompletionIconKind.Namespace,
-				LuaCompletionItemKind.Property => LuaCompletionIconKind.Property,
-				LuaCompletionItemKind.Value => LuaCompletionIconKind.Variable,
-				LuaCompletionItemKind.Enum => LuaCompletionIconKind.Class,
-				LuaCompletionItemKind.Keyword => LuaCompletionIconKind.Keyword,
-				LuaCompletionItemKind.Snippet => LuaCompletionIconKind.Keyword,
-				LuaCompletionItemKind.File => LuaCompletionIconKind.File,
-				LuaCompletionItemKind.Reference => LuaCompletionIconKind.Variable,
-				LuaCompletionItemKind.Folder => LuaCompletionIconKind.Folder,
-				LuaCompletionItemKind.EnumMember => LuaCompletionIconKind.Constant,
-				LuaCompletionItemKind.Constant => LuaCompletionIconKind.Constant,
-				LuaCompletionItemKind.Struct => LuaCompletionIconKind.Class,
-				LuaCompletionItemKind.Event => LuaCompletionIconKind.Method,
-				LuaCompletionItemKind.Operator => LuaCompletionIconKind.Keyword,
-				LuaCompletionItemKind.TypeParameter => LuaCompletionIconKind.Class,
+				LuaLanguageServerCompletionKind.Method => LuaCompletionIconKind.Method,
+				LuaLanguageServerCompletionKind.Function => LuaCompletionIconKind.Method,
+				LuaLanguageServerCompletionKind.Constructor => LuaCompletionIconKind.Method,
+				LuaLanguageServerCompletionKind.Field => LuaCompletionIconKind.Field,
+				LuaLanguageServerCompletionKind.Variable => LuaCompletionIconKind.Variable,
+				LuaLanguageServerCompletionKind.Class => LuaCompletionIconKind.Class,
+				LuaLanguageServerCompletionKind.Interface => LuaCompletionIconKind.Class,
+				LuaLanguageServerCompletionKind.Module => LuaCompletionIconKind.Namespace,
+				LuaLanguageServerCompletionKind.Property => LuaCompletionIconKind.Property,
+				LuaLanguageServerCompletionKind.Value => LuaCompletionIconKind.Variable,
+				LuaLanguageServerCompletionKind.Enum => LuaCompletionIconKind.Class,
+				LuaLanguageServerCompletionKind.Keyword => LuaCompletionIconKind.Keyword,
+				LuaLanguageServerCompletionKind.Snippet => LuaCompletionIconKind.Keyword,
+				LuaLanguageServerCompletionKind.File => LuaCompletionIconKind.File,
+				LuaLanguageServerCompletionKind.Reference => LuaCompletionIconKind.Variable,
+				LuaLanguageServerCompletionKind.Folder => LuaCompletionIconKind.Folder,
+				LuaLanguageServerCompletionKind.EnumMember => LuaCompletionIconKind.Constant,
+				LuaLanguageServerCompletionKind.Constant => LuaCompletionIconKind.Constant,
+				LuaLanguageServerCompletionKind.Struct => LuaCompletionIconKind.Class,
+				LuaLanguageServerCompletionKind.Event => LuaCompletionIconKind.Method,
+				LuaLanguageServerCompletionKind.Operator => LuaCompletionIconKind.Keyword,
+				LuaLanguageServerCompletionKind.TypeParameter => LuaCompletionIconKind.Class,
 				_ => LuaCompletionIconKind.Misc
 			};
 		}

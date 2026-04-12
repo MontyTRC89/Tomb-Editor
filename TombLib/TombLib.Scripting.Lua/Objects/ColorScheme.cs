@@ -7,11 +7,17 @@ namespace TombLib.Scripting.Lua.Objects
 {
 	public sealed class ColorScheme : ColorSchemeBase
 	{
-		public HighlightingObject Comments { get; set; } = new HighlightingObject();
-		public HighlightingObject Values { get; set; } = new HighlightingObject();
-		public HighlightingObject Statements { get; set; } = new HighlightingObject();
-		public HighlightingObject Operators { get; set; } = new HighlightingObject();
-		public HighlightingObject SpecialOperators { get; set; } = new HighlightingObject();
+		public HighlightingObject Comments { get; set; } = CreateDefaultHighlighting("#6A9955");
+		public HighlightingObject Values { get; set; } = CreateDefaultHighlighting("#569CD6");
+		public HighlightingObject Statements { get; set; } = CreateDefaultHighlighting("#569CD6");
+		public HighlightingObject Operators { get; set; } = CreateDefaultHighlighting("Gainsboro");
+		public HighlightingObject SpecialOperators { get; set; } = CreateDefaultHighlighting("#569CD6");
+
+		public ColorScheme()
+		{
+			Background = "#202020";
+			Foreground = "Gainsboro";
+		}
 
 		public static bool operator ==(ColorScheme? left, ColorScheme? right)
 			=> ReferenceEquals(left, right) || left is not null && left.Equals(right);
@@ -45,5 +51,8 @@ namespace TombLib.Scripting.Lua.Objects
 			hashCode.Add(Foreground ?? string.Empty, StringComparer.OrdinalIgnoreCase);
 			return hashCode.ToHashCode();
 		}
+
+		private static HighlightingObject CreateDefaultHighlighting(string htmlColor)
+			=> new HighlightingObject { HtmlColor = htmlColor };
 	}
 }

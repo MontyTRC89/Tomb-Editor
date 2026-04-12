@@ -35,8 +35,8 @@ namespace TombLib.Scripting.Rendering
 		private static readonly FontFamily CodeFontFamily = new FontFamily(TextEditorBaseDefaults.FontFamily);
 		private static readonly double BodyFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
 		private static readonly double CodeFontSize = Math.Max(BodyFontSize - 1.0, 13.0);
-		private static readonly Brush DefaultForeground = CreateFrozenBrush(Colors.Gainsboro);
-		private static readonly Brush DefaultBackground = CreateFrozenBrush(Color.FromRgb(64, 64, 64));
+		private static readonly Brush DefaultForeground = TextEditorColorPalette.ToolTipForeground;
+		private static readonly Brush DefaultBackground = TextEditorColorPalette.ToolTipBackground;
 		private static readonly Brush DefaultLinkForeground = CreateFrozenBrush(Color.FromRgb(112, 192, 231));
 		private static readonly HashSet<string> SupportedHyperlinkSchemes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 		{

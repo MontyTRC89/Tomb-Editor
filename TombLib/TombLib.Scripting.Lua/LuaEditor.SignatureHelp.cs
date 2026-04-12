@@ -7,15 +7,15 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
 using TombLib.Scripting.Lua.Objects;
-using static TombLib.WPF.BrushHelpers;
+using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua
 {
 	public sealed partial class LuaEditor
 	{
-		private static readonly SolidColorBrush SignatureParamDocForeground = CreateFrozenBrush(Color.FromRgb(180, 180, 180));
-		private static readonly SolidColorBrush SignatureActiveParamForeground = CreateFrozenBrush(Color.FromRgb(86, 180, 235));
-		private static readonly SolidColorBrush SignatureForeground = CreateFrozenBrush(Colors.Gainsboro);
+		private static readonly SolidColorBrush SignatureParamDocForeground = LuaEditorColorPalette.SignatureParamDocForeground;
+		private static readonly SolidColorBrush SignatureActiveParamForeground = LuaEditorColorPalette.SignatureActiveParamForeground;
+		private static readonly SolidColorBrush SignatureForeground = LuaEditorColorPalette.SignatureForeground;
 
 		private CancellationTokenSource? _signatureCancellationTokenSource;
 
@@ -64,6 +64,25 @@ namespace TombLib.Scripting.Lua
 				+ _signaturePopupBorder.BorderThickness.Bottom;
 			double contentMaxWidth = Math.Max(0.0, availablePopupWidth - popupHorizontalPadding);
 
+			StackPanel panel = CreateSignaturePanel(signatureInfo, contentMaxWidth);
+
+			panel.Measure(new Size(contentMaxWidth, double.PositiveInfinity));
+			Size popupSize = new Size(
+				Math.Min(availablePopupWidth, panel.DesiredSize.Width + popupHorizontalPadding),
+				panel.DesiredSize.Height + popupVerticalPadding);
+
+			if (_signaturePopup.IsOpen)
+				_signaturePopup.IsOpen = false;
+
+			_signaturePopupPresenter.Content = panel;
+			_signaturePopupPresenter.InvalidateMeasure();
+			_signaturePopupBorder.InvalidateMeasure();
+			PositionSignaturePopup(popupSize);
+			_signaturePopup.IsOpen = true;
+		}
+
+		private StackPanel CreateSignaturePanel(LuaSignatureInfo signatureInfo, double contentMaxWidth)
+		{
 			var panel = new StackPanel { MaxWidth = contentMaxWidth };
 			panel.Children.Add(BuildSignatureBlock(signatureInfo));
 
@@ -86,7 +105,7 @@ namespace TombLib.Scripting.Lua
 
 				if (!string.IsNullOrWhiteSpace(activeParam.Documentation))
 				{
-					var parameterDocumentation = new TextBlock
+					panel.Children.Add(new TextBlock
 					{
 						Text = activeParam.Label + ": " + activeParam.Documentation,
 						Foreground = SignatureParamDocForeground,
@@ -94,23 +113,15 @@ namespace TombLib.Scripting.Lua
 						FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0),
 						TextWrapping = TextWrapping.Wrap,
 						Margin = new Thickness(0.0, 4.0, 0.0, 0.0)
-					};
-
-					panel.Children.Add(parameterDocumentation);
+					});
 				}
 			}
 
-			panel.Measure(new Size(contentMaxWidth, double.PositiveInfinity));
-			Size popupSize = new Size(
-				Math.Min(availablePopupWidth, panel.DesiredSize.Width + popupHorizontalPadding),
-				panel.DesiredSize.Height + popupVerticalPadding);
+			return panel;
+		}
 
-			if (_signaturePopup.IsOpen)
-				_signaturePopup.IsOpen = false;
-
-			_signaturePopupPresenter.Content = panel;
-			_signaturePopupPresenter.InvalidateMeasure();
-			_signaturePopupBorder.InvalidateMeasure();
+		private void PositionSignaturePopup(Size popupSize)
+		{
 			AttachHostWindowHandlers();
 			_signaturePopup.PlacementTarget = this;
 			TextArea.TextView.EnsureVisualLines();
@@ -134,7 +145,6 @@ namespace TombLib.Scripting.Lua
 
 			_signaturePopup.HorizontalOffset = horizontalOffset;
 			_signaturePopup.VerticalOffset = verticalOffset;
-			_signaturePopup.IsOpen = true;
 		}
 
 		private async Task RequestSignatureHelpAsync(int offset)

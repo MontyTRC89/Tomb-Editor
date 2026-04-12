@@ -48,6 +48,26 @@ public class LuaEditorInteractionRulesTests
 	}
 
 	[TestMethod]
+	public void IsValidManualCompletionContext_BlocksOpenLongComment()
+	{
+		var document = CreateDocument("--[[ player");
+
+		bool result = LuaEditorInteractionRules.IsValidManualCompletionContext(document, document.TextLength);
+
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
+	public void IsValidManualCompletionContext_BlocksOpenLongString()
+	{
+		var document = CreateDocument("value = [[player");
+
+		bool result = LuaEditorInteractionRules.IsValidManualCompletionContext(document, document.TextLength);
+
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
 	public void CanRequestHover_ReturnsFalseWhenCompletionWindowIsOpen()
 	{
 		var document = CreateDocument("player");

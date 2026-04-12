@@ -155,17 +155,11 @@ namespace TombLib.Scripting.Lua
 				return true;
 			}
 
-			return IsIdentifierTriggerCharacter(typedChar);
+			return LuaLineParser.IsIdentifierTriggerCharacter(typedChar);
 		}
 
 		private static bool ShouldKeepCompletionWindowOpen(string? inputText)
-			=> inputText?.Length == 1 && (char.IsLetterOrDigit(inputText[0]) || inputText[0] == '_');
-
-		private static bool IsIdentifierCharacter(char character)
-			=> char.IsLetterOrDigit(character) || character == '_';
-
-		private static bool IsIdentifierTriggerCharacter(char character)
-			=> char.IsLetter(character) || character == '_';
+			=> inputText?.Length == 1 && LuaLineParser.IsIdentifierCharacter(inputText[0]);
 
 		private void DismissTransientToolTips()
 		{
@@ -202,8 +196,7 @@ namespace TombLib.Scripting.Lua
 
 		private static void WriteDebugFailure(string area, Exception exception)
 		{
-			if (exception is not null)
-				Debug.WriteLine($"[Lua] {area} failed: {exception}");
+			Debug.WriteLine($"[Lua] {area} failed: {exception}");
 		}
 	}
 }

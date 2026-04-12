@@ -5,21 +5,21 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using TombLib.Scripting.Lua.Objects;
-using static TombLib.WPF.BrushHelpers;
+using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua.Highlighting
 {
 	internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 	{
-		private static readonly Brush DefaultLibraryBrush = CreateFrozenBrush("#4EC9B0");
-		private static readonly Brush GlobalVariableBrush = CreateFrozenBrush("#4FC1FF");
-		private static readonly Brush TypeBrush = CreateFrozenBrush("#4EC9B0");
-		private static readonly Brush FunctionBrush = CreateFrozenBrush("#DCDCAA");
-		private static readonly Brush ParameterBrush = CreateFrozenBrush("#9CDCFE");
-		private static readonly Brush PropertyBrush = CreateFrozenBrush("#9CDCFE");
-		private static readonly Brush DecoratorBrush = CreateFrozenBrush("#C586C0");
-		private static readonly Brush MacroBrush = CreateFrozenBrush("#C586C0");
-		private static readonly Brush EnumMemberBrush = CreateFrozenBrush("#B5CEA8");
+		private static readonly Brush DefaultLibraryBrush = LuaEditorColorPalette.TypeBrush;
+		private static readonly Brush GlobalVariableBrush = LuaEditorColorPalette.PropertyBrush;
+		private static readonly Brush TypeBrush = LuaEditorColorPalette.TypeBrush;
+		private static readonly Brush FunctionBrush = LuaEditorColorPalette.MethodBrush;
+		private static readonly Brush ParameterBrush = LuaEditorColorPalette.VariableBrush;
+		private static readonly Brush PropertyBrush = LuaEditorColorPalette.VariableBrush;
+		private static readonly Brush DecoratorBrush = LuaEditorColorPalette.KeywordBrush;
+		private static readonly Brush MacroBrush = LuaEditorColorPalette.KeywordBrush;
+		private static readonly Brush EnumMemberBrush = LuaEditorColorPalette.ConstantBrush;
 		private static readonly TextDecorationCollection DeprecatedDecorations = CreateTextDecorations(TextDecorations.Strikethrough);
 		private static readonly IReadOnlyDictionary<int, IReadOnlyList<LuaSemanticToken>> EmptyTokensByLine =
 			new Dictionary<int, IReadOnlyList<LuaSemanticToken>>();
@@ -56,7 +56,19 @@ namespace TombLib.Scripting.Lua.Highlighting
 			var frozenMap = new Dictionary<int, IReadOnlyList<LuaSemanticToken>>(groupedTokens.Count);
 
 			foreach (KeyValuePair<int, List<LuaSemanticToken>> pair in groupedTokens)
+			{
+				pair.Value.Sort((left, right) =>
+				{
+					int characterComparison = left.Character.CompareTo(right.Character);
+
+					if (characterComparison != 0)
+						return characterComparison;
+
+					return left.Length.CompareTo(right.Length);
+				});
+
 				frozenMap[pair.Key] = pair.Value;
+			}
 
 			_tokensByLine = frozenMap;
 			_textView.Redraw();
@@ -122,7 +134,6 @@ namespace TombLib.Scripting.Lua.Highlighting
 			return new LuaSemanticTokenStyle(
 				foreground,
 				token.HasModifier("declaration") && (token.Type == "function" || token.Type == "method"),
-				null,
 				token.HasModifier("deprecated") ? DeprecatedDecorations : null);
 		}
 
@@ -163,20 +174,18 @@ namespace TombLib.Scripting.Lua.Highlighting
 
 		private readonly struct LuaSemanticTokenStyle
 		{
-			public LuaSemanticTokenStyle(Brush? foreground, bool isBold, Brush? background, TextDecorationCollection? textDecorations)
+			public LuaSemanticTokenStyle(Brush? foreground, bool isBold, TextDecorationCollection? textDecorations)
 			{
 				Foreground = foreground;
 				IsBold = isBold;
-				Background = background;
 				TextDecorations = textDecorations;
 			}
 
 			public Brush? Foreground { get; }
 			public bool IsBold { get; }
-			public Brush? Background { get; }
 			public TextDecorationCollection? TextDecorations { get; }
 
-			public bool HasFormatting => Foreground is not null || Background is not null || IsBold || TextDecorations is not null;
+			public bool HasFormatting => Foreground is not null || IsBold || TextDecorations is not null;
 		}
 	}
 }

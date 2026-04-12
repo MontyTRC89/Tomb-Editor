@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,10 +61,10 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		}
 
 		public void OpenDocument(string filePath, string content)
-			=> _ = TrySynchronizeDocumentAsync(filePath, content, CancellationToken.None);
+			=> ObserveBackgroundTask(TrySynchronizeDocumentAsync(filePath, content, CancellationToken.None), "Document open");
 
 		public void UpdateDocument(string filePath, string content)
-			=> _ = TrySynchronizeDocumentAsync(filePath, content, CancellationToken.None);
+			=> ObserveBackgroundTask(TrySynchronizeDocumentAsync(filePath, content, CancellationToken.None), "Document change");
 
 		public void CloseDocument(string filePath)
 		{
@@ -73,7 +74,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			if (!_documents.TryClose(normalizedFilePath, out LuaDocumentSnapshot document))
 				return;
 
-			_ = CloseDocumentAsync(document, CancellationToken.None);
+			ObserveBackgroundTask(CloseDocumentAsync(document, CancellationToken.None), "Document close");
 		}
 
 		public async Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
@@ -258,40 +259,54 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			if (request is null)
 				return true;
 
-			if (request.Kind == LuaDocumentSynchronizationKind.Open)
+			try
 			{
-				await _client.SendNotificationAsync("textDocument/didOpen",
-					new
-					{
-						textDocument = new
+				if (request.Kind == LuaDocumentSynchronizationKind.Open)
+				{
+					await _client.SendNotificationAsync("textDocument/didOpen",
+						new
 						{
-							uri = request.Document.Uri,
-							languageId = "lua",
-							version = request.Document.Version,
-							text = request.Document.Content
-						}
-					}, cancellationToken).ConfigureAwait(false);
+							textDocument = new
+							{
+								uri = request.Document.Uri,
+								languageId = "lua",
+								version = request.Document.Version,
+								text = request.Document.Content
+							}
+						}, cancellationToken).ConfigureAwait(false);
+				}
+				else if (request.Kind == LuaDocumentSynchronizationKind.Change)
+				{
+					await _client.SendNotificationAsync("textDocument/didChange",
+						new
+						{
+							textDocument = new
+							{
+								uri = request.Document.Uri,
+								version = request.Document.Version
+							},
+							contentChanges = new[]
+							{
+								new { text = request.Document.Content }
+							}
+						}, cancellationToken).ConfigureAwait(false);
+				}
+
+				await RefreshSemanticTokensAsync(request.Document, cancellationToken).ConfigureAwait(false);
+				return true;
 			}
-			else if (request.Kind == LuaDocumentSynchronizationKind.Change)
+			catch (OperationCanceledException)
 			{
-				await _client.SendNotificationAsync("textDocument/didChange",
-					new
-					{
-						textDocument = new
-						{
-							uri = request.Document.Uri,
-							version = request.Document.Version
-						},
-						contentChanges = new[]
-						{
-							new { text = request.Document.Content }
-						}
-					}, cancellationToken).ConfigureAwait(false);
+				throw;
 			}
-
-			await RefreshSemanticTokensAsync(request.Document, cancellationToken).ConfigureAwait(false);
-
-			return true;
+			catch (IOException)
+			{
+				return false;
+			}
+			catch (ObjectDisposedException)
+			{
+				return false;
+			}
 		}
 
 		private async Task RefreshSemanticTokensAsync(LuaDocumentSnapshot document, CancellationToken cancellationToken)
@@ -385,6 +400,30 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				return;
 
 			DiagnosticsUpdated?.Invoke(publishedDiagnostics.FilePath, publishedDiagnostics.Diagnostics);
+		}
+
+		private static void ObserveBackgroundTask(Task task, string operation)
+			=> _ = ObserveBackgroundTaskAsync(task, operation);
+
+		private static async Task ObserveBackgroundTaskAsync(Task task, string operation)
+		{
+			try
+			{
+				await task.ConfigureAwait(false);
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			catch (IOException)
+			{
+			}
+			catch (ObjectDisposedException)
+			{
+			}
+			catch (Exception exception)
+			{
+				Debug.WriteLine($"[LuaLS] {operation} failed: {exception}");
+			}
 		}
 
 		public void Dispose()

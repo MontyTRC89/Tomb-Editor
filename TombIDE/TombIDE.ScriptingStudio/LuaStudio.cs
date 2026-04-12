@@ -18,7 +18,7 @@ using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Lua.Services;
+using TombLib.Scripting.Lua.Utils;
 using TombLib.Scripting.Objects;
 
 namespace TombIDE.ScriptingStudio
@@ -162,7 +162,7 @@ namespace TombIDE.ScriptingStudio
 
 		private void AppendLanguageScript(string languageScript, bool wasLanguageFileAlreadyOpened, bool wasLanguageFileFileChanged)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine), EditorType.Text);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
 			TabPage affectedTab = EditorTabControl.SelectedTab;
 
 			if (CurrentEditor is TextEditorBase stringsEditor)
@@ -208,7 +208,7 @@ namespace TombIDE.ScriptingStudio
 
 		private bool IsLevelLanguageStringDefined(string levelName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine), EditorType.Text);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
 
 			if (CurrentEditor is TextEditorBase editor)
 			{
@@ -223,7 +223,7 @@ namespace TombIDE.ScriptingStudio
 
 		private void RenameRequestedLanguageString(string oldName, string newName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine), EditorType.Text);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
 
 			if (CurrentEditor is TextEditorBase editor)
 			{
@@ -282,7 +282,10 @@ namespace TombIDE.ScriptingStudio
 				ApplyUserSettings(editor);
 
 				if (editor is LuaEditor luaEditor)
-					ApplyDiagnosticsToEditor(luaEditor, _intellisenseProvider?.GetDiagnostics(luaEditor.FilePath));
+				{
+					ApplyDiagnosticsToEditor(luaEditor, _intellisenseProvider.GetDiagnostics(luaEditor.FilePath));
+					ApplySemanticTokensToEditor(luaEditor, _intellisenseProvider.GetSemanticTokens(luaEditor.FilePath));
+				}
 			}
 
 			UpdateSettings();

@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,22 +10,32 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Lua.Utils;
 using TombLib.WPF;
 
 namespace TombLib.Scripting.Lua
 {
 	public sealed partial class LuaEditor
 	{
+		private const int CompletionWindowMinWidth = 420;
+		private const int CompletionWindowMaxWidth = 920;
+		private const int CompletionWindowHeight = 320;
+		private const double CompletionToolTipHorizontalOffset = 10.0;
+		private const double CompletionToolTipResolveDelayInMilliseconds = 120.0;
+		private const double CompletionWindowHorizontalChrome = 52.0;
+		private const double CompletionItemIconWidth = 24.0;
+		private const double CompletionItemDetailSpacing = 12.0;
+
 		private static readonly FieldInfo? CompletionToolTipField =
 			typeof(CompletionWindow).GetField("toolTip", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		private static bool _completionToolTipFieldLoggedMissing;
 
 		private CancellationTokenSource? _completionCancellationTokenSource;
-		private CancellationTokenSource? _completionToolTipCancellationTokenSource;
 		private int _completionRequestToken;
 		private int _completionToolTipUpdateToken;
 
@@ -43,7 +55,7 @@ namespace TombLib.Scripting.Lua
 
 		private void InitializeLuaCompletionWindow()
 		{
-			InitializeCompletionWindow(420, 320);
+			InitializeCompletionWindow(CompletionWindowMinWidth, CompletionWindowHeight);
 			LuaCompletionWindowStyle.Apply(_completionWindow);
 			StyleCompletionTooltip();
 			MakeCompletionWindowNonActivatable();
@@ -87,6 +99,7 @@ namespace TombLib.Scripting.Lua
 				CloseCompletionWindow();
 
 				InitializeLuaCompletionWindow();
+				ResizeCompletionWindow(completionDataItems);
 				SetCompletionWindowOffsets(offset);
 
 				foreach (LuaCompletionData completionDataItem in completionDataItems)
@@ -130,7 +143,7 @@ namespace TombLib.Scripting.Lua
 			tooltip.Padding = new Thickness(0.0);
 			tooltip.PlacementTarget = listBox;
 			tooltip.Placement = PlacementMode.Right;
-			tooltip.HorizontalOffset = 10.0;
+			tooltip.HorizontalOffset = CompletionToolTipHorizontalOffset;
 			tooltip.StaysOpen = true;
 
 			listBox.SelectionChanged += (s, e) => ScheduleCompletionTooltipUpdate(tooltip);
@@ -153,15 +166,14 @@ namespace TombLib.Scripting.Lua
 
 		private void ScheduleCompletionTooltipUpdate(ToolTip tooltip)
 		{
-			CancellationToken cancellationToken = ResetCancellationTokenSource(ref _completionToolTipCancellationTokenSource);
 			int updateToken = ++_completionToolTipUpdateToken;
 
 			Dispatcher.BeginInvoke(
-				new Action(() => _ = UpdateCompletionTooltipAsync(tooltip, cancellationToken, updateToken)),
+				new Action(() => _ = UpdateCompletionTooltipAsync(tooltip, updateToken)),
 				DispatcherPriority.Background);
 		}
 
-		private async Task UpdateCompletionTooltipAsync(ToolTip tooltip, CancellationToken cancellationToken, int updateToken)
+		private async Task UpdateCompletionTooltipAsync(ToolTip tooltip, int updateToken)
 		{
 			if (_completionWindow?.CompletionList.ListBox is not ListBox listBox)
 				return;
@@ -185,9 +197,14 @@ namespace TombLib.Scripting.Lua
 
 				if (item is LuaCompletionData luaCompletionData && luaCompletionData.CanResolve)
 				{
-					object? resolvedDescription = await luaCompletionData.GetDescriptionAsync(cancellationToken).ConfigureAwait(true);
+					await Task.Delay(TimeSpan.FromMilliseconds(CompletionToolTipResolveDelayInMilliseconds)).ConfigureAwait(true);
 
-					if (cancellationToken.IsCancellationRequested || updateToken != _completionToolTipUpdateToken)
+					if (updateToken != _completionToolTipUpdateToken)
+						return;
+
+					object? resolvedDescription = await luaCompletionData.GetDescriptionAsync().ConfigureAwait(true);
+
+					if (updateToken != _completionToolTipUpdateToken)
 						return;
 
 					if (_completionWindow?.CompletionList.ListBox is not ListBox currentListBox
@@ -203,14 +220,54 @@ namespace TombLib.Scripting.Lua
 						tooltip.IsOpen = false;
 				}
 			}
-			catch (OperationCanceledException)
-			{
-			}
 			catch (Exception exception)
 			{
 				tooltip.IsOpen = false;
 				WriteDebugFailure("Completion tooltip update", exception);
 			}
+		}
+
+		private void ResizeCompletionWindow(IReadOnlyList<LuaCompletionData> completionDataItems)
+		{
+			if (_completionWindow is null || completionDataItems is null || completionDataItems.Count == 0)
+				return;
+
+			double requiredWidth = CompletionWindowMinWidth;
+
+			for (int i = 0; i < completionDataItems.Count; i++)
+				requiredWidth = Math.Max(requiredWidth, MeasureCompletionItemWidth(completionDataItems[i]));
+
+			_completionWindow.Width = Math.Max(
+				CompletionWindowMinWidth,
+				Math.Min(CompletionWindowMaxWidth, requiredWidth + CompletionWindowHorizontalChrome));
+		}
+
+		private double MeasureCompletionItemWidth(LuaCompletionData completionData)
+		{
+			double width = CompletionItemIconWidth + MeasureCompletionTextWidth(completionData.DisplayText);
+
+			if (!string.IsNullOrWhiteSpace(completionData.DisplayDetail))
+				width += CompletionItemDetailSpacing + MeasureCompletionTextWidth(completionData.DisplayDetail);
+
+			return width;
+		}
+
+		private double MeasureCompletionTextWidth(string text)
+		{
+			if (string.IsNullOrWhiteSpace(text))
+				return 0.0;
+
+			double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+			var formattedText = new FormattedText(
+				text,
+				CultureInfo.CurrentUICulture,
+				FlowDirection.LeftToRight,
+				new Typeface(FontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal),
+				FontSize,
+				Foreground,
+				pixelsPerDip);
+
+			return formattedText.WidthIncludingTrailingWhitespace;
 		}
 
 		private static void ApplyCompletionToolTipContent(ToolTip tooltip, object content)
@@ -226,10 +283,7 @@ namespace TombLib.Scripting.Lua
 		}
 
 		private void CancelCompletionToolTipUpdate()
-		{
-			CancelAndDispose(ref _completionToolTipCancellationTokenSource);
-			_completionToolTipUpdateToken++;
-		}
+			=> _completionToolTipUpdateToken++;
 
 		private void ScheduleCloseIfEmpty()
 			=> Dispatcher.BeginInvoke(new Action(() => CloseCompletionWindowIfEmpty()), DispatcherPriority.Background);
@@ -304,7 +358,7 @@ namespace TombLib.Scripting.Lua
 			{
 				char currentChar = Document.GetCharAt(startOffset - 1);
 
-				if (char.IsLetterOrDigit(currentChar) || currentChar == '_')
+				if (LuaLineParser.IsIdentifierCharacter(currentChar))
 					startOffset--;
 				else
 					break;

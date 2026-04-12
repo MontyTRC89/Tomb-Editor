@@ -26,7 +26,7 @@ namespace TombLib.Scripting.Lua.Utils
 
 			char typedCharacter = document.GetCharAt(offset - 1);
 
-			if (!IsIdentifierCharacter(typedCharacter))
+			if (!LuaLineParser.IsIdentifierCharacter(typedCharacter))
 				return false;
 
 			if (offset >= 2 && document.GetCharAt(offset - 2) == '.')
@@ -93,28 +93,25 @@ namespace TombLib.Scripting.Lua.Utils
 				probeOffset = document.TextLength - 1;
 
 			if (probeOffset > 0
-				&& !IsIdentifierCharacter(document.GetCharAt(probeOffset))
-				&& IsIdentifierCharacter(document.GetCharAt(probeOffset - 1)))
+				&& !LuaLineParser.IsIdentifierCharacter(document.GetCharAt(probeOffset))
+				&& LuaLineParser.IsIdentifierCharacter(document.GetCharAt(probeOffset - 1)))
 			{
 				probeOffset--;
 			}
 
-			if (!IsIdentifierCharacter(document.GetCharAt(probeOffset)))
+			if (!LuaLineParser.IsIdentifierCharacter(document.GetCharAt(probeOffset)))
 				return false;
 
 			wordStart = probeOffset;
 			wordEnd = probeOffset + 1;
 
-			while (wordStart > 0 && IsIdentifierCharacter(document.GetCharAt(wordStart - 1)))
+			while (wordStart > 0 && LuaLineParser.IsIdentifierCharacter(document.GetCharAt(wordStart - 1)))
 				wordStart--;
 
-			while (wordEnd < document.TextLength && IsIdentifierCharacter(document.GetCharAt(wordEnd)))
+			while (wordEnd < document.TextLength && LuaLineParser.IsIdentifierCharacter(document.GetCharAt(wordEnd)))
 				wordEnd++;
 
 			return wordEnd > wordStart;
 		}
-
-		private static bool IsIdentifierCharacter(char character)
-			=> char.IsLetterOrDigit(character) || character == '_';
 	}
 }

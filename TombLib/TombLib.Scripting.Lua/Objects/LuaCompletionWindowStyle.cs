@@ -3,13 +3,13 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using static TombLib.WPF.BrushHelpers;
+using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua.Objects
 {
 	internal static class LuaCompletionWindowStyle
 	{
-		private static readonly Brush DetailBrush = CreateFrozenBrush("#8C8C8C");
+		private static readonly Brush DetailBrush = LuaEditorColorPalette.MutedTextBrush;
 		private static readonly DataTemplate ItemTemplate = CreateItemTemplate();
 		private static readonly Style ItemContainerStyle = CreateItemContainerStyle();
 
@@ -29,8 +29,6 @@ namespace TombLib.Scripting.Lua.Objects
 			window.CompletionList.ListBox.FontSize = window.TextArea.FontSize;
 			window.CompletionList.ListBox.ItemTemplate = ItemTemplate;
 			window.CompletionList.ListBox.ItemContainerStyle = ItemContainerStyle;
-			window.Width = 420.0;
-			window.Height = 320.0;
 		}
 
 		private static DataTemplate CreateItemTemplate()
@@ -52,7 +50,6 @@ namespace TombLib.Scripting.Lua.Objects
 			detail.SetValue(DockPanel.DockProperty, Dock.Right);
 			detail.SetValue(TextBlock.ForegroundProperty, DetailBrush);
 			detail.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
-			detail.SetValue(FrameworkElement.MaxWidthProperty, 220.0);
 			detail.SetValue(FrameworkElement.MarginProperty, new Thickness(12.0, 0.0, 0.0, 0.0));
 			detail.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
 			detail.SetBinding(TextBlock.TextProperty, new Binding(nameof(LuaCompletionData.DisplayDetail)));

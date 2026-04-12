@@ -1,5 +1,9 @@
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
+using System.IO;
 using System.Windows.Media;
+using System.Xml;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Lua.Objects;
@@ -31,17 +35,35 @@ namespace TombLib.Scripting.Lua
 			_textMateHighlighting = null;
 
 			if (!LuaTextMateSyntaxHighlighting.TryInstall(this, out _textMateHighlighting))
-				SyntaxHighlighting = new SyntaxHighlighting(colorScheme);
+				SyntaxHighlighting = LoadFallbackSyntaxHighlighting() ?? new SyntaxHighlighting(colorScheme);
 			else
 				SyntaxHighlighting = null;
 
 			EnsureSemanticTokensColorizerAttached();
 
 			Background = CreateEditorBrush(colorScheme.Background, "#202020");
-			Foreground = CreateEditorBrush(colorScheme.Foreground, "White");
+			Foreground = CreateEditorBrush(colorScheme.Foreground, "Gainsboro");
 
 			base.UpdateSettings(configuration);
 			LiveErrorUnderlining = true;
+		}
+
+		private static IHighlightingDefinition? LoadFallbackSyntaxHighlighting()
+		{
+			string fallbackDefinitionPath = Path.Combine(
+				AppContext.BaseDirectory,
+				"Configs",
+				"TextEditors",
+				"ColorSchemes",
+				"Lua",
+				"Default.xml");
+
+			if (!File.Exists(fallbackDefinitionPath))
+				return null;
+
+			using var stream = new FileStream(fallbackDefinitionPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+			using var reader = new XmlTextReader(stream);
+			return HighlightingLoader.Load(reader, HighlightingManager.Instance);
 		}
 
 		private static SolidColorBrush CreateEditorBrush(string colorValue, string fallbackColorValue)
@@ -49,11 +71,21 @@ namespace TombLib.Scripting.Lua
 			try
 			{
 				string effectiveColor = string.IsNullOrWhiteSpace(colorValue) ? fallbackColorValue : colorValue;
-				return new SolidColorBrush((Color)ColorConverter.ConvertFromString(effectiveColor));
+				var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(effectiveColor));
+
+				if (brush.CanFreeze)
+					brush.Freeze();
+
+				return brush;
 			}
 			catch
 			{
-				return new SolidColorBrush((Color)ColorConverter.ConvertFromString(fallbackColorValue));
+				var fallbackBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(fallbackColorValue));
+
+				if (fallbackBrush.CanFreeze)
+					fallbackBrush.Freeze();
+
+				return fallbackBrush;
 			}
 		}
 	}

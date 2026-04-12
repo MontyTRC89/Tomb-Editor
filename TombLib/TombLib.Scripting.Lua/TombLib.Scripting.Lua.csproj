@@ -43,6 +43,9 @@
     <None Update="Configs\TextEditors\ColorSchemes\Lua\Default.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Configs\TextEditors\ColorSchemes\Lua\*.luasch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Configs\TextEditors\Grammars\Lua\lua.tmLanguage.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

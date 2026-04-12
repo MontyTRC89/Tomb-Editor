@@ -30,16 +30,15 @@ namespace TombLib.Scripting.Lua
 
 			if (!LuaEditorInteractionRules.CanRequestHover(Document, hoveredOffset, isCompletionWindowOpen, _signaturePopup.IsOpen))
 			{
-				if (!isCompletionWindowOpen && !_signaturePopup.IsOpen && hasDiagnostic)
-					ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
+				if (!isCompletionWindowOpen && !_signaturePopup.IsOpen)
+					ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 
 				return;
 			}
 
 			if (!IsIntellisenseAvailable())
 			{
-				if (hasDiagnostic)
-					ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
+				ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 
 				return;
 			}
@@ -48,8 +47,7 @@ namespace TombLib.Scripting.Lua
 
 			if (string.IsNullOrWhiteSpace(hoveredWord))
 			{
-				if (hasDiagnostic)
-					ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
+				ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 
 				return;
 			}
@@ -69,12 +67,7 @@ namespace TombLib.Scripting.Lua
 				if (currentHoveredOffset != hoveredOffset)
 					return;
 
-				if (hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content) && hasDiagnostic)
-					ShowCombinedHoverAndDiagnosticToolTip(hoverInfo, diagnosticMessage, diagnosticSeverity);
-				else if (hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content))
-					ShowHoverToolTip(hoverInfo);
-				else if (hasDiagnostic)
-					ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
+				ShowBestHoverToolTip(hoverInfo, hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 			}
 			catch (OperationCanceledException)
 			{
@@ -83,9 +76,24 @@ namespace TombLib.Scripting.Lua
 			{
 				WriteDebugFailure("Hover request", exception);
 
-				if (hasDiagnostic)
-					ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
+				ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 			}
+		}
+
+		private void ShowDiagnosticToolTipIfAvailable(bool hasDiagnostic, string diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
+		{
+			if (hasDiagnostic)
+				ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
+		}
+
+		private void ShowBestHoverToolTip(LuaHoverInfo? hoverInfo, bool hasDiagnostic, string diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
+		{
+			if (hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content) && hasDiagnostic)
+				ShowCombinedHoverAndDiagnosticToolTip(hoverInfo, diagnosticMessage, diagnosticSeverity);
+			else if (hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content))
+				ShowHoverToolTip(hoverInfo);
+			else
+				ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 		}
 
 		private void ShowCombinedHoverAndDiagnosticToolTip(LuaHoverInfo hoverInfo, string diagnosticMessage, TextEditorDiagnosticSeverity severity)

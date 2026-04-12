@@ -15,7 +15,6 @@ namespace TombLib.Scripting.Lua.Objects
 			string? description = null,
 			string? filterText = null,
 			double priority = 0.0,
-			LuaCompletionItemKind kind = LuaCompletionItemKind.Text,
 			LuaCompletionIconKind iconKind = LuaCompletionIconKind.Misc,
 			bool isDescriptionMarkdown = false,
 			Func<CancellationToken, Task<LuaCompletionItem>>? resolveAsync = null)
@@ -26,7 +25,6 @@ namespace TombLib.Scripting.Lua.Objects
 			Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
 			FilterText = string.IsNullOrWhiteSpace(filterText) ? label : filterText;
 			Priority = priority;
-			Kind = kind;
 			IconKind = iconKind;
 			IsDescriptionMarkdown = isDescriptionMarkdown;
 			_resolveAsync = resolveAsync;
@@ -38,7 +36,6 @@ namespace TombLib.Scripting.Lua.Objects
 		public string? Description { get; }
 		public string FilterText { get; }
 		public double Priority { get; }
-		public LuaCompletionItemKind Kind { get; }
 		public LuaCompletionIconKind IconKind { get; }
 		public bool IsDescriptionMarkdown { get; }
 		public bool CanResolve => _resolveAsync is not null;
