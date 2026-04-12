@@ -88,6 +88,34 @@ public class LuaEditorInteractionRulesTests
 	}
 
 	[TestMethod]
+	public void TryGetHoverOffset_ReturnsOffsetWhenPointerIsOnIdentifierText()
+	{
+		const string identifier = "targetValue";
+		string text = "return " + identifier;
+		var document = CreateDocument(text);
+		int identifierStart = text.IndexOf(identifier, StringComparison.Ordinal);
+		int probeOffset = identifierStart + 2;
+
+		bool result = LuaEditorInteractionRules.TryGetHoverOffset(document, probeOffset, out int hoverOffset);
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(probeOffset, hoverOffset);
+	}
+
+	[TestMethod]
+	public void TryGetHoverOffset_BlocksTrailingWhitespaceAfterIdentifier()
+	{
+		const string identifier = "targetValue";
+		string text = "return " + identifier;
+		var document = CreateDocument(text);
+		int probeOffset = document.TextLength;
+
+		bool result = LuaEditorInteractionRules.TryGetHoverOffset(document, probeOffset, out _);
+
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
 	public void TryGetDefinitionStartOffset_ReturnsWordStartFromInsideIdentifier()
 	{
 		const string identifier = "targetValue";

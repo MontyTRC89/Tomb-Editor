@@ -13,6 +13,28 @@ namespace TombLib.Scripting.Lua.Utils
 			return !IsInsideCommentOrString(document, offset);
 		}
 
+		public static bool TryGetHoverOffset(TextDocument? document, int offset, out int hoverOffset)
+		{
+			hoverOffset = 0;
+
+			if (document is null || document.TextLength == 0)
+				return false;
+
+			int safeOffset = Math.Max(0, Math.Min(offset, document.TextLength));
+
+			if (safeOffset >= document.TextLength)
+				return false;
+
+			if (IsInsideCommentOrString(document, safeOffset))
+				return false;
+
+			if (!LuaLineParser.IsIdentifierCharacter(document.GetCharAt(safeOffset)))
+				return false;
+
+			hoverOffset = safeOffset;
+			return true;
+		}
+
 		public static bool IsValidAutocompleteContext(TextDocument? document, int offset, char? triggerCharacter)
 		{
 			if (offset <= 0 || document is null || document.TextLength == 0)

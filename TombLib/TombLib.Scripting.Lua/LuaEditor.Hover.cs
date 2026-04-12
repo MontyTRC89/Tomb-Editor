@@ -36,6 +36,12 @@ namespace TombLib.Scripting.Lua
 				return;
 			}
 
+			if (!LuaEditorInteractionRules.TryGetHoverOffset(Document, hoveredOffset, out int hoverOffset))
+			{
+				ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
+				return;
+			}
+
 			if (!IsIntellisenseAvailable())
 			{
 				ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
@@ -43,7 +49,7 @@ namespace TombLib.Scripting.Lua
 				return;
 			}
 
-			string hoveredWord = GetWordFromOffset(hoveredOffset);
+			string hoveredWord = GetWordFromOffset(hoverOffset);
 
 			if (string.IsNullOrWhiteSpace(hoveredWord))
 			{
@@ -57,14 +63,15 @@ namespace TombLib.Scripting.Lua
 
 			try
 			{
-				LuaHoverInfo? hoverInfo = await RequestHoverAsync(hoveredOffset, cancellationToken).ConfigureAwait(true);
+				LuaHoverInfo? hoverInfo = await RequestHoverAsync(hoverOffset, cancellationToken).ConfigureAwait(true);
 
 				if (cancellationToken.IsCancellationRequested || hoverRequestToken != _hoverRequestToken)
 					return;
 
 				int currentHoveredOffset = GetOffsetFromPoint(Mouse.GetPosition(this));
 
-				if (currentHoveredOffset != hoveredOffset)
+				if (!LuaEditorInteractionRules.TryGetHoverOffset(Document, currentHoveredOffset, out int currentHoverOffset)
+					|| currentHoverOffset != hoverOffset)
 					return;
 
 				ShowBestHoverToolTip(hoverInfo, hasDiagnostic, diagnosticMessage, diagnosticSeverity);
