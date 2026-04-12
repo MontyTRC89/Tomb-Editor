@@ -146,9 +146,13 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		private static double BuildCompletionPriority(JsonElement itemElement, string detail, string description, int itemIndex)
 		{
 			const double preselectedBonus = 1000000.0;
+			const double responseOrderWeight = 100000.0;
 			const double localScopeBonus = 20000.0;
 			const double upvalueOrParameterBonus = 15000.0;
-			const double responseOrderWeight = 100000.0;
+			const double variableKindBonus = 10000.0;
+			const double fieldOrPropertyKindBonus = 9000.0;
+			const double methodOrFunctionKindBonus = 7000.0;
+			const double keywordKindPenalty = -5000.0;
 
 			double priority = responseOrderWeight - itemIndex;
 			string searchableText = CombineCompletionText(detail, description);
@@ -164,12 +168,12 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			{
 				priority += completionKind switch
 				{
-					(int)LuaLanguageServerCompletionKind.Variable => 10000.0,
-					(int)LuaLanguageServerCompletionKind.Field => 9000.0,
-					(int)LuaLanguageServerCompletionKind.Property => 9000.0,
-					(int)LuaLanguageServerCompletionKind.Method => 7000.0,
-					(int)LuaLanguageServerCompletionKind.Function => 7000.0,
-					(int)LuaLanguageServerCompletionKind.Keyword => -5000.0,
+					(int)LuaLanguageServerCompletionKind.Variable => variableKindBonus,
+					(int)LuaLanguageServerCompletionKind.Field => fieldOrPropertyKindBonus,
+					(int)LuaLanguageServerCompletionKind.Property => fieldOrPropertyKindBonus,
+					(int)LuaLanguageServerCompletionKind.Method => methodOrFunctionKindBonus,
+					(int)LuaLanguageServerCompletionKind.Function => methodOrFunctionKindBonus,
+					(int)LuaLanguageServerCompletionKind.Keyword => keywordKindPenalty,
 					_ => 0.0
 				};
 			}
