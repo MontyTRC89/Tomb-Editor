@@ -128,7 +128,7 @@ namespace TombLib.Scripting.Lua.Highlighting
 				"enumMember" => _themeBrushSet.ConstantBrush,
 				"decorator" => _themeBrushSet.KeywordBrush,
 				"macro" => _themeBrushSet.KeywordBrush,
-				"variable" => token.HasModifier("global") ? _themeBrushSet.PropertyBrush : _themeBrushSet.VariableBrush,
+				"variable" => ResolveVariableBrush(token),
 				_ => null
 			};
 
@@ -136,6 +136,17 @@ namespace TombLib.Scripting.Lua.Highlighting
 				foreground,
 				token.HasModifier("declaration") && (token.Type == "function" || token.Type == "method"),
 				token.HasModifier("deprecated") ? DeprecatedDecorations : null);
+		}
+
+		private Brush? ResolveVariableBrush(LuaSemanticToken token)
+		{
+			if (token.HasModifier("defaultLibrary"))
+				return _themeBrushSet.TypeBrush;
+
+			if (token.HasModifier("global"))
+				return _themeBrushSet.PropertyBrush;
+
+			return _themeBrushSet.VariableBrush;
 		}
 
 		private static void ApplyStyle(VisualLineElement element, LuaSemanticTokenStyle style)
