@@ -1,14 +1,11 @@
 ﻿using SharpDX.Toolkit.Graphics;
-using System.ComponentModel;
 using System.Numerics;
-using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Rendering;
-using TombLib.Utils;
 
 namespace TombEditor.Controls.Panel3D
 {
