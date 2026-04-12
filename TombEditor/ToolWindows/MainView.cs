@@ -45,8 +45,6 @@ namespace TombEditor.ToolWindows
 
         public void InitializeRendering(RenderingDevice device)
         {
-            panel2DMap.Initialize();
-            panel3D.Initialize();
             panel3D.InitializeRendering(device, _editor.Configuration.Rendering3D_Antialias, (TombLib.Controls.ObjectRenderingQuality)_editor.Configuration.Rendering3D_ObjectQuality);
         }
 

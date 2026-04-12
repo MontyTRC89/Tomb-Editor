@@ -41,15 +41,15 @@ namespace TombEditor.Controls
         }
         private float _viewScale = 6.0f;
 
-        private DepthBar _depthBar;
-        private Editor _editor;
+        private readonly DepthBar _depthBar;
+        private readonly Editor _editor;
         private Room _roomMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private Vector2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
         private Vector2? _viewMoveMouseWorldCoord;
         private int? _currentlyEditedDepthProbeIndex;
         private Point _lastMousePosition;
-        private MovementTimer _movementTimer;
+        private readonly MovementTimer _movementTimer;
         private IReadOnlyList<RoomClipboardData.ContourLine> _insertionContourLineData;
         private Vector2 _insertionDropPosition;
         private VectorInt2 _insertionCurrentOffset;
@@ -102,25 +102,22 @@ namespace TombEditor.Controls
             AllowDrop = true;
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.Selectable, true);
             UpdateStyles();
-        }
 
-        public void Initialize()
-        {
-            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
-                return;
+            if (Editor.Instance != null)
+            {
+                _editor = Editor.Instance;
+                _editor.EditorEventRaised += EditorEventRaised;
 
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
+                _depthBar = new DepthBar(_editor);
+                _depthBar.InvalidateParent += Invalidate;
+                _depthBar.GetParent += () => this;
+                _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
 
-            _depthBar = new DepthBar(_editor);
-            _depthBar.InvalidateParent += Invalidate;
-            _depthBar.GetParent += () => this;
-            _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
+                _movementTimer = new MovementTimer(MoveTimerTick);
 
-            _movementTimer = new MovementTimer(MoveTimerTick);
-
-            UpdateBrushes();
-            ResetView();
+                UpdateBrushes();
+                ResetView();
+            }
         }
 
         protected override void Dispose(bool disposing)

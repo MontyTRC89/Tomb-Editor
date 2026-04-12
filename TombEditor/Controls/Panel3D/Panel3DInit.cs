@@ -14,30 +14,6 @@ namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D
     {
-        public void Initialize()
-        {
-            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
-                return;
-
-            _getViewportCamera = () => Camera;
-
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
-            _editor.GetViewportCamera = _getViewportCamera;
-
-            _frustum = new Frustum();
-            _viewProjection = Matrix4x4.Identity;
-
-            _toolHandler = new ToolHandler(this);
-            _movementTimer = new MovementTimer(MoveTimer_Tick);
-
-            _flyModeTimer = new Timer { Interval = 1 };
-            _flyModeTimer.Tick += FlyModeTimer_Tick;
-
-            _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024, CacheRoom);
-            Application.AddMessageFilter(_filter);
-        }
-
         public override void InitializeRendering(RenderingDevice device, bool antialias, ObjectRenderingQuality objectQuality)
         {
             base.InitializeRendering(device, antialias, objectQuality);
