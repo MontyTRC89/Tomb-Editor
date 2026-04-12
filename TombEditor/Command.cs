@@ -1734,10 +1734,10 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
-            for (int i = 1; i <= 9; i++)
+            for (int i = 1; i < Configuration.MaxWindowLayouts; i++)
             {
-                int index = i;
-                AddCommand("SwitchLayout" + i, "Switch to layout " + i, CommandType.Windows, (CommandArgs args) => args.Editor.SwitchLayout(index));
+                int currentLayoutIndex = i;
+                AddCommand("SwitchLayout" + i, "Switch to layout " + i, CommandType.Windows, (CommandArgs args) => args.Editor.SwitchLayout(currentLayoutIndex));
             }
 
             AddCommand("DrawPortals", "Draw portals", CommandType.View, delegate (CommandArgs args)

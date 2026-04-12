@@ -13,6 +13,7 @@ namespace TombEditor
     // They will be loaded and saved automatically.
     public class Configuration : ConfigurationBase
     {
+        public const int MaxWindowLayouts = 10;
         public override string ConfigName { get { return "TombEditorConfiguration.xml"; } }
 
         // Global editor options
