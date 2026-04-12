@@ -28,6 +28,18 @@ public class LuaEditorInteractionRulesTests
 	}
 
 	[TestMethod]
+	public void IsValidAutocompleteContext_BlocksLongStringContinuationOnFollowingLine()
+	{
+		var document = CreateDocument(
+			"value = [[long string",
+			"player");
+
+		bool result = LuaEditorInteractionRules.IsValidAutocompleteContext(document, document.TextLength, null);
+
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
 	public void IsValidManualCompletionContext_BlocksCommentText()
 	{
 		var document = CreateDocument("-- player");
@@ -70,19 +82,27 @@ public class LuaEditorInteractionRulesTests
 	[TestMethod]
 	public void CanRequestHover_ReturnsFalseWhenCompletionWindowIsOpen()
 	{
-		var document = CreateDocument("player");
-
-		bool result = LuaEditorInteractionRules.CanRequestHover(document, document.TextLength, true, false);
+		bool result = LuaEditorInteractionRules.CanRequestHover(true, false);
 
 		Assert.IsFalse(result);
 	}
 
 	[TestMethod]
-	public void CanRequestHover_BlocksCommentText()
+	public void CanRequestHover_ReturnsFalseWhenSignatureHelpIsOpen()
 	{
-		var document = CreateDocument("value = 1 -- hover target");
+		bool result = LuaEditorInteractionRules.CanRequestHover(false, true);
 
-		bool result = LuaEditorInteractionRules.CanRequestHover(document, document.TextLength, false, false);
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
+	public void IsValidManualCompletionContext_BlocksLongCommentContinuationOnFollowingLine()
+	{
+		var document = CreateDocument(
+			"--[[ comment",
+			"player");
+
+		bool result = LuaEditorInteractionRules.IsValidManualCompletionContext(document, document.TextLength);
 
 		Assert.IsFalse(result);
 	}
@@ -109,6 +129,20 @@ public class LuaEditorInteractionRulesTests
 		string text = "return " + identifier;
 		var document = CreateDocument(text);
 		int probeOffset = document.TextLength;
+
+		bool result = LuaEditorInteractionRules.TryGetHoverOffset(document, probeOffset, out _);
+
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
+	public void TryGetHoverOffset_BlocksTextInsideLongCommentContinuation()
+	{
+		var document = CreateDocument(
+			"--[[ comment",
+			"targetValue");
+
+		int probeOffset = document.Text.IndexOf("targetValue", StringComparison.Ordinal) + 2;
 
 		bool result = LuaEditorInteractionRules.TryGetHoverOffset(document, probeOffset, out _);
 
@@ -151,6 +185,20 @@ public class LuaEditorInteractionRulesTests
 		var document = CreateDocument("-- targetValue");
 
 		bool result = LuaEditorInteractionRules.TryGetDefinitionStartOffset(document, document.TextLength, out _);
+
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
+	public void TryGetDefinitionStartOffset_BlocksLongStringContinuationOnFollowingLine()
+	{
+		var document = CreateDocument(
+			"value = [[long string",
+			"targetValue");
+
+		int probeOffset = document.Text.IndexOf("targetValue", StringComparison.Ordinal) + 3;
+
+		bool result = LuaEditorInteractionRules.TryGetDefinitionStartOffset(document, probeOffset, out _);
 
 		Assert.IsFalse(result);
 	}

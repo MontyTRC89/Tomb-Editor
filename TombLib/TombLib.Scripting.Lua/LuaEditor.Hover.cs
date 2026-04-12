@@ -25,33 +25,13 @@ public sealed partial class LuaEditor
 			return;
 
 		bool hasDiagnostic = TryGetDiagnosticInfo(hoveredOffset, out string diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity);
-		bool isCompletionWindowOpen = _completionWindow is not null;
+		bool canShowDiagnosticFallback = _completionWindow is null && !_signaturePopup.IsOpen;
 
-		if (!LuaEditorInteractionRules.CanRequestHover(Document, hoveredOffset, isCompletionWindowOpen, _signaturePopup.IsOpen))
+		if (!TryGetHoverRequestOffset(hoveredOffset, out int hoverOffset) || !IsIntellisenseAvailable())
 		{
-			if (!isCompletionWindowOpen && !_signaturePopup.IsOpen)
+			if (canShowDiagnosticFallback)
 				ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 
-			return;
-		}
-
-		if (!LuaEditorInteractionRules.TryGetHoverOffset(Document, hoveredOffset, out int hoverOffset))
-		{
-			ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
-			return;
-		}
-
-		if (!IsIntellisenseAvailable())
-		{
-			ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
-			return;
-		}
-
-		string hoveredWord = GetWordFromOffset(hoverOffset);
-
-		if (string.IsNullOrWhiteSpace(hoveredWord))
-		{
-			ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 			return;
 		}
 
@@ -80,8 +60,23 @@ public sealed partial class LuaEditor
 		catch (Exception exception)
 		{
 			WriteDebugFailure("Hover request", exception);
-			ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
+
+			if (canShowDiagnosticFallback)
+				ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 		}
+	}
+
+	private bool TryGetHoverRequestOffset(int hoveredOffset, out int hoverOffset)
+	{
+		hoverOffset = 0;
+
+		if (!LuaEditorInteractionRules.CanRequestHover(_completionWindow is not null, _signaturePopup.IsOpen))
+			return false;
+
+		if (!LuaEditorInteractionRules.TryGetHoverOffset(Document, hoveredOffset, out hoverOffset))
+			return false;
+
+		return !string.IsNullOrWhiteSpace(GetWordFromOffset(hoverOffset));
 	}
 
 	private void ShowDiagnosticToolTipIfAvailable(bool hasDiagnostic, string diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
@@ -133,13 +128,9 @@ public sealed partial class LuaEditor
 	private void ShowHoverToolTip(LuaHoverInfo hoverInfo)
 		=> ShowToolTip(CreateHoverToolTipContent(hoverInfo), DefaultToolTipBorder, DefaultToolTipBackground);
 
-	private static FrameworkElement CreateHoverToolTipContent(LuaHoverInfo hoverInfo)
-	{
-		if (hoverInfo.IsMarkdown)
-			return MarkdownToolTipRenderer.CreateContent(hoverInfo.Content, ToolTipForeground, DefaultToolTipBackground);
-
-		return MarkdownToolTipRenderer.CreatePlainTextContent(hoverInfo.Content, ToolTipForeground);
-	}
+	private static FrameworkElement CreateHoverToolTipContent(LuaHoverInfo hoverInfo) => hoverInfo.IsMarkdown
+		? MarkdownToolTipRenderer.CreateContent(hoverInfo.Content, ToolTipForeground, DefaultToolTipBackground)
+		: MarkdownToolTipRenderer.CreatePlainTextContent(hoverInfo.Content, ToolTipForeground);
 
 	private async Task<LuaHoverInfo?> RequestHoverAsync(int offset, CancellationToken cancellationToken)
 	{

@@ -9,20 +9,13 @@ namespace TombLib.Scripting.Lua.Utils;
 internal static class LuaEditorInteractionRules
 {
 	/// <summary>
-	/// Determines whether a hover request should be attempted at the specified offset.
+	/// Determines whether a hover request should be attempted.
 	/// </summary>
-	/// <param name="document">The document being inspected.</param>
-	/// <param name="offset">The zero-based character offset.</param>
 	/// <param name="isCompletionWindowOpen">Whether the completion window is currently open.</param>
 	/// <param name="isSignatureHelpOpen">Whether signature help is currently open.</param>
 	/// <returns><see langword="true"/> if hover may be requested; otherwise, <see langword="false"/>.</returns>
-	public static bool CanRequestHover(TextDocument? document, int offset, bool isCompletionWindowOpen, bool isSignatureHelpOpen)
-	{
-		if (isCompletionWindowOpen || isSignatureHelpOpen)
-			return false;
-
-		return !IsInsideCommentOrString(document, offset);
-	}
+	public static bool CanRequestHover(bool isCompletionWindowOpen, bool isSignatureHelpOpen)
+		=> !isCompletionWindowOpen && !isSignatureHelpOpen;
 
 	/// <summary>
 	/// Attempts to resolve the exact offset that should be used for a hover request.
@@ -125,7 +118,7 @@ internal static class LuaEditorInteractionRules
 	}
 
 	/// <summary>
-	/// Determines whether the specified offset is inside a comment or string using the current line context.
+	/// Determines whether the specified offset is inside a comment or string using document-aware long-block state.
 	/// </summary>
 	/// <param name="document">The document being inspected.</param>
 	/// <param name="offset">The zero-based character offset.</param>
@@ -137,11 +130,22 @@ internal static class LuaEditorInteractionRules
 
 		int safeOffset = Math.Max(0, Math.Min(offset, document.TextLength));
 		DocumentLine currentLine = document.GetLineByOffset(safeOffset);
+		LuaLineParserState lineStartState = GetLineStartParserState(document, currentLine);
 		int lineStart = currentLine.Offset;
 		int inspectedLength = Math.Max(0, Math.Min(safeOffset, currentLine.EndOffset) - lineStart);
 		string lineText = document.GetText(lineStart, inspectedLength);
 
-		return LuaLineParser.IsInsideCommentOrString(lineText);
+		return LuaLineParser.IsInsideCommentOrString(lineText, lineStartState, out _);
+	}
+
+	private static LuaLineParserState GetLineStartParserState(TextDocument document, DocumentLine currentLine)
+	{
+		LuaLineParserState parserState = default;
+
+		for (DocumentLine? line = document.GetLineByNumber(1); line is not null && line != currentLine; line = line.NextLine)
+			LuaLineParser.IsInsideCommentOrString(document.GetText(line), parserState, out parserState);
+
+		return parserState;
 	}
 
 	private static bool TryGetDefinitionWordBounds(TextDocument document, int offset, out int wordStart, out int wordEnd)
