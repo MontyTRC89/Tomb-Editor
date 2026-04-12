@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Media;
 
 namespace TombLib.WPF;
@@ -13,7 +14,15 @@ public static class BrushHelpers
 
 	public static SolidColorBrush CreateFrozenBrush(string colorValue)
 	{
-		var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorValue));
+		if (string.IsNullOrWhiteSpace(colorValue))
+			throw new ArgumentException("Color value must not be empty.", nameof(colorValue));
+
+		object converted = ColorConverter.ConvertFromString(colorValue);
+
+		if (converted is not Color color)
+			throw new ArgumentException($"'{colorValue}' is not a valid color.", nameof(colorValue));
+
+		var brush = new SolidColorBrush(color);
 		brush.Freeze();
 		return brush;
 	}

@@ -66,7 +66,7 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 			if (!CanResolve)
 				return Description;
 
-			if (_resolveTask?.IsCanceled != false || _resolveTask.IsFaulted)
+			if (_resolveTask is null || _resolveTask.IsCanceled || _resolveTask.IsFaulted)
 				_resolveTask = _item.ResolveAsync(cancellationToken);
 
 			resolveTask = _resolveTask;

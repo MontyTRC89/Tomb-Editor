@@ -25,6 +25,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 
 			string localPath = uri.LocalPath;
 
+			// On Windows, Uri.LocalPath may produce "/C:/..." which needs the leading slash trimmed.
 			if (Path.DirectorySeparatorChar == '\\'
 				&& localPath.Length >= 3
 				&& localPath[0] == '/'
@@ -34,8 +35,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 				localPath = localPath[1..];
 			}
 
-			localPath = localPath.Replace('/', Path.DirectorySeparatorChar);
-			return Path.GetFullPath(localPath);
+			return NormalizeLocalPath(localPath);
 		}
 
 		public static bool TryNormalizeLocalPath(string filePath, out string normalizedFilePath)

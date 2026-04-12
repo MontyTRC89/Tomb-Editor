@@ -75,8 +75,10 @@ public static class LuaThemeRepository
 					if (theme is not null)
 						themes.Add(theme.Normalize(Path.GetFileNameWithoutExtension(filePath)));
 				}
-				catch
-				{ }
+				catch (Exception ex)
+				{
+					System.Diagnostics.Debug.WriteLine($"Failed to load Lua theme '{filePath}': {ex.Message}");
+				}
 			}
 		}
 

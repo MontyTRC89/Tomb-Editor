@@ -145,14 +145,18 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 
 		private static double BuildCompletionPriority(JsonElement itemElement, string detail, string description, int itemIndex)
 		{
+			const double preselectedBonus = 1000000.0;
+			const double localScopeBonus = 20000.0;
+			const double upvalueOrParameterBonus = 15000.0;
 			const double responseOrderWeight = 100000.0;
+
 			double priority = responseOrderWeight - itemIndex;
 			string searchableText = CombineCompletionText(detail, description);
 
 			if (itemElement.TryGetProperty("preselect", out JsonElement preselectElement)
 				&& preselectElement.ValueKind == JsonValueKind.True)
 			{
-				priority += 1000000.0;
+				priority += preselectedBonus;
 			}
 
 			if (itemElement.TryGetProperty("kind", out JsonElement kindElement)
@@ -160,12 +164,12 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			{
 				priority += completionKind switch
 				{
-					6 => 10000.0,
-					5 => 9000.0,
-					10 => 9000.0,
-					2 => 7000.0,
-					3 => 7000.0,
-					14 => -5000.0,
+					(int)LuaLanguageServerCompletionKind.Variable => 10000.0,
+					(int)LuaLanguageServerCompletionKind.Field => 9000.0,
+					(int)LuaLanguageServerCompletionKind.Property => 9000.0,
+					(int)LuaLanguageServerCompletionKind.Method => 7000.0,
+					(int)LuaLanguageServerCompletionKind.Function => 7000.0,
+					(int)LuaLanguageServerCompletionKind.Keyword => -5000.0,
 					_ => 0.0
 				};
 			}
@@ -173,12 +177,12 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			if (!string.IsNullOrWhiteSpace(searchableText))
 			{
 				if (CompletionTextContains(searchableText, "local"))
-					priority += 20000.0;
+					priority += localScopeBonus;
 
 				if (CompletionTextContains(searchableText, "upvalue")
 					|| CompletionTextContains(searchableText, "parameter"))
 				{
-					priority += 15000.0;
+					priority += upvalueOrParameterBonus;
 				}
 			}
 
