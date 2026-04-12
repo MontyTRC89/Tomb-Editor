@@ -23,7 +23,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			+ "function Weapon:new(name)\n"
 			+ "    local damage = math.max(levelName and 1 or 0, 1)\n"
 			+ "    self.name = name\n"
-			+ "    return damage\n"
+			+ "    return damage, \"mods\\\\ten\\tpreview\", true, TEN\n"
 			+ "end";
 
 		private static readonly string[] PreviewLines = PreviewText.Replace("\r", string.Empty).Split('\n');

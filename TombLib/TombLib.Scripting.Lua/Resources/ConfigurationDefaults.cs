@@ -4,6 +4,6 @@
 	{
 		public const string ConfigurationFileName = "LuaConfiguration.xml";
 
-		public const string SelectedThemeName = "VSCode Dark+";
+		public const string SelectedThemeName = LuaBuiltInThemes.DefaultThemeName;
 	}
 }

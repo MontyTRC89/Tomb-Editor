@@ -10,6 +10,7 @@
     "Property": "#66D9EF",
     "Type": "#A6E22E",
     "Keyword": "#F92672",
+    "LanguageConstant": "#66D9EF",
     "Constant": "#AE81FF",
     "File": "#E6DB74",
     "SignatureParameterDocumentation": "#CFCFC2",
@@ -20,7 +21,9 @@
     "Rules": [
       { "Scope": "comment", "Foreground": "#75715E" },
       { "Scope": "string", "Foreground": "#E6DB74" },
-      { "Scope": "constant.numeric, constant.character.escape, constant.language", "Foreground": "#AE81FF" },
+      { "Scope": "constant.numeric", "Foreground": "#AE81FF" },
+      { "Scope": "constant.character.escape", "Foreground": "#E6DB74" },
+      { "Scope": "constant.language", "Foreground": "#66D9EF" },
       { "Scope": "keyword, storage", "Foreground": "#F92672" },
       { "Scope": "keyword.operator", "Foreground": "#F8F8F2" },
       { "Scope": "entity.name.function, support.function, support.function.library, support.function.any-method", "Foreground": "#E6DB74" },

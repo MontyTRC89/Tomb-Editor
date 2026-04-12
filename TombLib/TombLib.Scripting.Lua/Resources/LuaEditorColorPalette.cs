@@ -14,19 +14,20 @@ namespace TombLib.Scripting.Lua.Resources
 
 			return new LuaThemeBrushSet(
 				effectiveTheme.Name,
-				CreateBrush(effectiveTheme.EditorBackground, "#202020"),
-				CreateBrush(effectiveTheme.EditorForeground, "Gainsboro"),
-				CreateBrush(semanticColors.MutedText, "#8C8C8C"),
-				CreateBrush(semanticColors.Misc, "#C8C8C8"),
-				CreateBrush(semanticColors.Method, "#DCDCAA"),
-				CreateBrush(semanticColors.Variable, "#9CDCFE"),
-				CreateBrush(semanticColors.Property, "#4FC1FF"),
-				CreateBrush(semanticColors.Type, "#4EC9B0"),
-				CreateBrush(semanticColors.Keyword, "#C586C0"),
-				CreateBrush(semanticColors.Constant, "#B5CEA8"),
-				CreateBrush(semanticColors.File, "#D7BA7D"),
-				CreateBrush(semanticColors.SignatureParameterDocumentation, "#B4B4B4"),
-				CreateBrush(semanticColors.SignatureActiveParameter, "#56B4EB"),
+				CreateBrush(effectiveTheme.EditorBackground, LuaBuiltInThemes.DefaultEditorBackground),
+				CreateBrush(effectiveTheme.EditorForeground, LuaBuiltInThemes.DefaultEditorForeground),
+				CreateBrush(semanticColors.MutedText, LuaBuiltInThemes.DefaultMutedText),
+				CreateBrush(semanticColors.Misc, LuaBuiltInThemes.DefaultMisc),
+				CreateBrush(semanticColors.Method, LuaBuiltInThemes.DefaultMethod),
+				CreateBrush(semanticColors.Variable, LuaBuiltInThemes.DefaultVariable),
+				CreateBrush(semanticColors.Property, LuaBuiltInThemes.DefaultProperty),
+				CreateBrush(semanticColors.Type, LuaBuiltInThemes.DefaultType),
+				CreateBrush(semanticColors.Keyword, LuaBuiltInThemes.DefaultKeyword),
+				CreateBrush(semanticColors.LanguageConstant, LuaBuiltInThemes.DefaultLanguageConstant),
+				CreateBrush(semanticColors.Constant, LuaBuiltInThemes.DefaultConstant),
+				CreateBrush(semanticColors.File, LuaBuiltInThemes.DefaultFile),
+				CreateBrush(semanticColors.SignatureParameterDocumentation, LuaBuiltInThemes.DefaultSignatureParameterDocumentation),
+				CreateBrush(semanticColors.SignatureActiveParameter, LuaBuiltInThemes.DefaultSignatureActiveParameter),
 				CreateBrush(semanticColors.SignatureText, ColorToString(TextEditorColorPalette.ToolTipForeground.Color)));
 		}
 
@@ -63,6 +64,7 @@ namespace TombLib.Scripting.Lua.Resources
 			SolidColorBrush property,
 			SolidColorBrush type,
 			SolidColorBrush keyword,
+			SolidColorBrush languageConstant,
 			SolidColorBrush constant,
 			SolidColorBrush file,
 			SolidColorBrush signatureParamDoc,
@@ -79,6 +81,7 @@ namespace TombLib.Scripting.Lua.Resources
 			PropertyBrush = property;
 			TypeBrush = type;
 			KeywordBrush = keyword;
+			LanguageConstantBrush = languageConstant;
 			ConstantBrush = constant;
 			FileBrush = file;
 			SignatureParamDocForeground = signatureParamDoc;
@@ -96,6 +99,7 @@ namespace TombLib.Scripting.Lua.Resources
 		public SolidColorBrush PropertyBrush { get; }
 		public SolidColorBrush TypeBrush { get; }
 		public SolidColorBrush KeywordBrush { get; }
+		public SolidColorBrush LanguageConstantBrush { get; }
 		public SolidColorBrush ConstantBrush { get; }
 		public SolidColorBrush FileBrush { get; }
 		public SolidColorBrush SignatureParamDocForeground { get; }

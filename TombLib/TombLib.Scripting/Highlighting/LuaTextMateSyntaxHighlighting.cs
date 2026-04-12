@@ -12,7 +12,7 @@ namespace TombLib.Scripting.Highlighting
 	public static class LuaTextMateSyntaxHighlighting
 	{
 		private static readonly Lazy<IGrammar> GrammarState = new Lazy<IGrammar>(LoadGrammarState);
-		private static readonly TextMateTokenTheme DefaultTheme = CreateDefaultTheme();
+		private static readonly TextMateTokenTheme DefaultTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme();
 
 		public static bool TryInstall(TextEditor editor, out LuaTextMateInstallation installation)
 			=> TryInstall(editor, DefaultTheme, out installation);
@@ -51,24 +51,6 @@ namespace TombLib.Scripting.Highlighting
 			return registry.LoadGrammarFromPathSync(grammarFilePath, 0, new Dictionary<string, int>());
 		}
 
-		private static TextMateTokenTheme CreateDefaultTheme()
-		{
-			return new TextMateTokenTheme
-			{
-				Rules = new List<TextMateTokenThemeRule>
-				{
-					new TextMateTokenThemeRule { Scope = "comment", Foreground = "#6A9955" },
-					new TextMateTokenThemeRule { Scope = "string", Foreground = "#CE9178" },
-					new TextMateTokenThemeRule { Scope = "constant.numeric, constant.character.escape, constant.language", Foreground = "#B5CEA8" },
-					new TextMateTokenThemeRule { Scope = "keyword, storage", Foreground = "#C586C0" },
-					new TextMateTokenThemeRule { Scope = "keyword.operator", Foreground = "#D4D4D4" },
-					new TextMateTokenThemeRule { Scope = "entity.name.function, support.function, support.function.library, support.function.any-method", Foreground = "#DCDCAA" },
-					new TextMateTokenThemeRule { Scope = "entity.name.class, support.class, support.type, storage.type.generic", Foreground = "#4EC9B0" },
-					new TextMateTokenThemeRule { Scope = "variable.parameter, entity.other.attribute", Foreground = "#9CDCFE" },
-					new TextMateTokenThemeRule { Scope = "variable.language.self, entity.name.tag, string.tag, storage.type.annotation", Foreground = "#569CD6" }
-				}
-			};
-		}
 	}
 
 	public sealed class LuaTextMateInstallation : IDisposable

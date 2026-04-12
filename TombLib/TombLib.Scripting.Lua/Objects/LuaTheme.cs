@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TombLib.Scripting.Highlighting;
+using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua.Objects
 {
@@ -7,8 +8,8 @@ namespace TombLib.Scripting.Lua.Objects
 	{
 		public string Name { get; set; } = string.Empty;
 		public List<string> Aliases { get; set; } = new List<string>();
-		public string EditorBackground { get; set; } = "#202020";
-		public string EditorForeground { get; set; } = "Gainsboro";
+		public string EditorBackground { get; set; } = LuaBuiltInThemes.DefaultEditorBackground;
+		public string EditorForeground { get; set; } = LuaBuiltInThemes.DefaultEditorForeground;
 		public TextMateTokenTheme TextMateTheme { get; set; } = new TextMateTokenTheme();
 		public LuaThemeSemanticColors SemanticColors { get; set; } = new LuaThemeSemanticColors();
 
@@ -18,10 +19,10 @@ namespace TombLib.Scripting.Lua.Objects
 				Name = fallbackName;
 
 			if (string.IsNullOrWhiteSpace(EditorBackground))
-				EditorBackground = "#202020";
+				EditorBackground = LuaBuiltInThemes.DefaultEditorBackground;
 
 			if (string.IsNullOrWhiteSpace(EditorForeground))
-				EditorForeground = "Gainsboro";
+				EditorForeground = LuaBuiltInThemes.DefaultEditorForeground;
 
 			Aliases ??= new List<string>();
 			TextMateTheme ??= new TextMateTokenTheme();
@@ -34,33 +35,35 @@ namespace TombLib.Scripting.Lua.Objects
 
 	public sealed class LuaThemeSemanticColors
 	{
-		public string MutedText { get; set; } = "#8C8C8C";
-		public string Misc { get; set; } = "#C8C8C8";
-		public string Method { get; set; } = "#DCDCAA";
-		public string Variable { get; set; } = "#9CDCFE";
-		public string Property { get; set; } = "#4FC1FF";
-		public string Type { get; set; } = "#4EC9B0";
-		public string Keyword { get; set; } = "#C586C0";
-		public string Constant { get; set; } = "#B5CEA8";
-		public string File { get; set; } = "#D7BA7D";
-		public string SignatureParameterDocumentation { get; set; } = "#B4B4B4";
-		public string SignatureActiveParameter { get; set; } = "#56B4EB";
-		public string SignatureText { get; set; } = "#D4D4D4";
+		public string MutedText { get; set; } = LuaBuiltInThemes.DefaultMutedText;
+		public string Misc { get; set; } = LuaBuiltInThemes.DefaultMisc;
+		public string Method { get; set; } = LuaBuiltInThemes.DefaultMethod;
+		public string Variable { get; set; } = LuaBuiltInThemes.DefaultVariable;
+		public string Property { get; set; } = LuaBuiltInThemes.DefaultProperty;
+		public string Type { get; set; } = LuaBuiltInThemes.DefaultType;
+		public string Keyword { get; set; } = LuaBuiltInThemes.DefaultKeyword;
+		public string LanguageConstant { get; set; } = LuaBuiltInThemes.DefaultLanguageConstant;
+		public string Constant { get; set; } = LuaBuiltInThemes.DefaultConstant;
+		public string File { get; set; } = LuaBuiltInThemes.DefaultFile;
+		public string SignatureParameterDocumentation { get; set; } = LuaBuiltInThemes.DefaultSignatureParameterDocumentation;
+		public string SignatureActiveParameter { get; set; } = LuaBuiltInThemes.DefaultSignatureActiveParameter;
+		public string SignatureText { get; set; } = LuaBuiltInThemes.DefaultSignatureText;
 
 		public void Normalize()
 		{
-			MutedText = NormalizeValue(MutedText, "#8C8C8C");
-			Misc = NormalizeValue(Misc, "#C8C8C8");
-			Method = NormalizeValue(Method, "#DCDCAA");
-			Variable = NormalizeValue(Variable, "#9CDCFE");
-			Property = NormalizeValue(Property, "#4FC1FF");
-			Type = NormalizeValue(Type, "#4EC9B0");
-			Keyword = NormalizeValue(Keyword, "#C586C0");
-			Constant = NormalizeValue(Constant, "#B5CEA8");
-			File = NormalizeValue(File, "#D7BA7D");
-			SignatureParameterDocumentation = NormalizeValue(SignatureParameterDocumentation, "#B4B4B4");
-			SignatureActiveParameter = NormalizeValue(SignatureActiveParameter, "#56B4EB");
-			SignatureText = NormalizeValue(SignatureText, "#D4D4D4");
+			MutedText = NormalizeValue(MutedText, LuaBuiltInThemes.DefaultMutedText);
+			Misc = NormalizeValue(Misc, LuaBuiltInThemes.DefaultMisc);
+			Method = NormalizeValue(Method, LuaBuiltInThemes.DefaultMethod);
+			Variable = NormalizeValue(Variable, LuaBuiltInThemes.DefaultVariable);
+			Property = NormalizeValue(Property, LuaBuiltInThemes.DefaultProperty);
+			Type = NormalizeValue(Type, LuaBuiltInThemes.DefaultType);
+			Keyword = NormalizeValue(Keyword, LuaBuiltInThemes.DefaultKeyword);
+			LanguageConstant = NormalizeValue(LanguageConstant, LuaBuiltInThemes.DefaultLanguageConstant);
+			Constant = NormalizeValue(Constant, LuaBuiltInThemes.DefaultConstant);
+			File = NormalizeValue(File, LuaBuiltInThemes.DefaultFile);
+			SignatureParameterDocumentation = NormalizeValue(SignatureParameterDocumentation, LuaBuiltInThemes.DefaultSignatureParameterDocumentation);
+			SignatureActiveParameter = NormalizeValue(SignatureActiveParameter, LuaBuiltInThemes.DefaultSignatureActiveParameter);
+			SignatureText = NormalizeValue(SignatureText, LuaBuiltInThemes.DefaultSignatureText);
 		}
 
 		private static string NormalizeValue(string value, string fallbackValue)

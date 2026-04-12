@@ -1,34 +1,37 @@
 {
   "Name": "Tomorrow Night",
-  "Aliases": ["Tomorrow Night Eighties", "SharpLua Classic"],
-  "EditorBackground": "#2D2D2D",
-  "EditorForeground": "#CCCCCC",
+  "Aliases": ["TomorrowNight"],
+  "EditorBackground": "#1D1F21",
+  "EditorForeground": "#C5C8C6",
   "SemanticColors": {
-    "MutedText": "#999999",
-    "Misc": "#CCCCCC",
-    "Method": "#FFCC66",
-    "Variable": "#E6C8FF",
-    "Property": "#E6C8FF",
-    "Type": "#66CCCC",
-    "Keyword": "#6699CC",
-    "Constant": "#99CC99",
-    "File": "#F99157",
-    "SignatureParameterDocumentation": "#999999",
-    "SignatureActiveParameter": "#FFCC66",
-    "SignatureText": "#CCCCCC"
+    "MutedText": "#969896",
+    "Misc": "#CED1CF",
+    "Method": "#81A2BE",
+    "Variable": "#CC6666",
+    "Property": "#CC6666",
+    "Type": "#F0C674",
+    "Keyword": "#B294BB",
+    "LanguageConstant": "#DE935F",
+    "Constant": "#DE935F",
+    "File": "#B5BD68",
+    "SignatureParameterDocumentation": "#969896",
+    "SignatureActiveParameter": "#81A2BE",
+    "SignatureText": "#C5C8C6"
   },
   "TextMateTheme": {
     "Rules": [
-      { "Scope": "comment", "Foreground": "#999999" },
-      { "Scope": "string", "Foreground": "#F99157" },
-      { "Scope": "constant.numeric, constant.character.escape, constant.language.nil", "Foreground": "#99CC99" },
-      { "Scope": "keyword, storage", "Foreground": "#6699CC", "FontStyle": "bold" },
-      { "Scope": "keyword.control.goto, keyword.control.return, keyword.control.break", "Foreground": "#CC99CC" },
-      { "Scope": "keyword.control.local", "Foreground": "#F99157", "FontStyle": "bold" },
-      { "Scope": "constant.language.boolean, support.class, support.type, support.variable, variable.language.self", "Foreground": "#66CCCC", "FontStyle": "bold" },
-      { "Scope": "entity.name.function, support.function, support.function.library, support.function.any-method", "Foreground": "#FFCC66", "FontStyle": "bold" },
-      { "Scope": "entity.name.class, entity.other.attribute, variable.parameter, variable.other.object, support.type.property-name", "Foreground": "#E6C8FF" },
-      { "Scope": "keyword.operator, punctuation", "Foreground": "#CCCCCC" }
+      { "Scope": "comment", "Foreground": "#969896" },
+      { "Scope": "string", "Foreground": "#B5BD68" },
+      { "Scope": "constant.numeric", "Foreground": "#DE935F" },
+      { "Scope": "constant.character.escape", "Foreground": "#DE935F" },
+      { "Scope": "constant.language", "Foreground": "#DE935F" },
+      { "Scope": "keyword, storage", "Foreground": "#B294BB" },
+      { "Scope": "keyword.operator", "Foreground": "#8ABEB7" },
+      { "Scope": "entity.name.function, support.function, support.function.library, support.function.any-method", "Foreground": "#81A2BE" },
+      { "Scope": "entity.name.class, support.class, support.type, storage.type.generic", "Foreground": "#F0C674" },
+      { "Scope": "variable.parameter", "Foreground": "#DE935F" },
+      { "Scope": "entity.other.attribute", "Foreground": "#CC6666" },
+      { "Scope": "variable.language.self, entity.name.tag, string.tag, storage.type.annotation", "Foreground": "#CC6666" }
     ]
   }
 }

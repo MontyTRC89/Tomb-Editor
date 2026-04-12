@@ -65,7 +65,7 @@ namespace TombLib.Scripting.Lua.Resources
 			}
 
 			if (themes.Count == 0)
-				themes.Add(CreateFallbackTheme());
+				themes.Add(LuaBuiltInThemes.CreateDefaultTheme().Normalize(ConfigurationDefaults.SelectedThemeName));
 
 			var orderedThemes = themes
 				.OrderByDescending(theme => string.Equals(theme.Name, ConfigurationDefaults.SelectedThemeName, StringComparison.OrdinalIgnoreCase))
@@ -97,32 +97,6 @@ namespace TombLib.Scripting.Lua.Resources
 				return;
 
 			themesByLookupName[lookupName] = theme;
-		}
-
-		private static LuaTheme CreateFallbackTheme()
-		{
-			return new LuaTheme
-			{
-				Name = ConfigurationDefaults.SelectedThemeName,
-				Aliases = new List<string> { "VS15", "VSCode", "Dark+" },
-				EditorBackground = "#202020",
-				EditorForeground = "#DCDCDC",
-				TextMateTheme = new TextMateTokenTheme
-				{
-					Rules = new List<TextMateTokenThemeRule>
-					{
-						new TextMateTokenThemeRule { Scope = "comment", Foreground = "#6A9955" },
-						new TextMateTokenThemeRule { Scope = "string", Foreground = "#CE9178" },
-						new TextMateTokenThemeRule { Scope = "constant.numeric, constant.character.escape, constant.language", Foreground = "#B5CEA8" },
-						new TextMateTokenThemeRule { Scope = "keyword, storage", Foreground = "#C586C0" },
-						new TextMateTokenThemeRule { Scope = "keyword.operator", Foreground = "#D4D4D4" },
-						new TextMateTokenThemeRule { Scope = "entity.name.function, support.function, support.function.library, support.function.any-method", Foreground = "#DCDCAA" },
-						new TextMateTokenThemeRule { Scope = "entity.name.class, support.class, support.type, storage.type.generic", Foreground = "#4EC9B0" },
-						new TextMateTokenThemeRule { Scope = "variable.parameter, entity.other.attribute", Foreground = "#9CDCFE" },
-						new TextMateTokenThemeRule { Scope = "variable.language.self, entity.name.tag, string.tag, storage.type.annotation", Foreground = "#569CD6" }
-					}
-				}
-			}.Normalize(ConfigurationDefaults.SelectedThemeName);
 		}
 
 		private sealed class LuaThemeCatalog

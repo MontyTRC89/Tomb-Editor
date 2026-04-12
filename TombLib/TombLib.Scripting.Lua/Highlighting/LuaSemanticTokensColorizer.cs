@@ -94,15 +94,15 @@ namespace TombLib.Scripting.Lua.Highlighting
 			for (int i = 0; i < tokens.Count; i++)
 			{
 				LuaSemanticToken token = tokens[i];
-				LuaSemanticTokenStyle style = ResolveStyle(token);
-
-				if (!style.HasFormatting)
-					continue;
-
 				int startIndex = Math.Max(0, Math.Min(token.Character, lineLength));
 				int endIndex = Math.Max(startIndex, Math.Min(token.Character + token.Length, lineLength));
 
 				if (endIndex <= startIndex)
+					continue;
+
+				LuaSemanticTokenStyle style = ResolveStyle(token);
+
+				if (!style.HasFormatting)
 					continue;
 
 				ChangeLinePart(line.Offset + startIndex, line.Offset + endIndex, element => ApplyStyle(element, style));
@@ -113,7 +113,7 @@ namespace TombLib.Scripting.Lua.Highlighting
 		{
 			Brush? foreground = token.Type switch
 			{
-				"namespace" => token.HasModifier("defaultLibrary") ? _themeBrushSet.TypeBrush : _themeBrushSet.TypeBrush,
+				"namespace" => _themeBrushSet.TypeBrush,
 				"type" => _themeBrushSet.TypeBrush,
 				"class" => _themeBrushSet.TypeBrush,
 				"enum" => _themeBrushSet.TypeBrush,
@@ -123,12 +123,12 @@ namespace TombLib.Scripting.Lua.Highlighting
 				"function" => token.HasModifier("defaultLibrary") ? _themeBrushSet.TypeBrush : _themeBrushSet.MethodBrush,
 				"method" => token.HasModifier("defaultLibrary") ? _themeBrushSet.TypeBrush : _themeBrushSet.MethodBrush,
 				"parameter" => _themeBrushSet.VariableBrush,
-				"property" => _themeBrushSet.VariableBrush,
+				"property" => _themeBrushSet.PropertyBrush,
 				"event" => _themeBrushSet.VariableBrush,
 				"enumMember" => _themeBrushSet.ConstantBrush,
 				"decorator" => _themeBrushSet.KeywordBrush,
 				"macro" => _themeBrushSet.KeywordBrush,
-				"variable" => ResolveVariableBrush(token),
+				"variable" => token.HasModifier("global") ? _themeBrushSet.PropertyBrush : _themeBrushSet.VariableBrush,
 				_ => null
 			};
 
@@ -136,17 +136,6 @@ namespace TombLib.Scripting.Lua.Highlighting
 				foreground,
 				token.HasModifier("declaration") && (token.Type == "function" || token.Type == "method"),
 				token.HasModifier("deprecated") ? DeprecatedDecorations : null);
-		}
-
-		private Brush? ResolveVariableBrush(LuaSemanticToken token)
-		{
-			if (token.HasModifier("defaultLibrary"))
-				return _themeBrushSet.TypeBrush;
-
-			if (token.HasModifier("global"))
-				return _themeBrushSet.PropertyBrush;
-
-			return null;
 		}
 
 		private static void ApplyStyle(VisualLineElement element, LuaSemanticTokenStyle style)
