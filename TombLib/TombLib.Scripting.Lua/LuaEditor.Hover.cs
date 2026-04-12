@@ -25,7 +25,6 @@ public sealed partial class LuaEditor
 			return;
 
 		bool hasDiagnostic = TryGetDiagnosticInfo(hoveredOffset, out string diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity);
-
 		bool isCompletionWindowOpen = _completionWindow is not null;
 
 		if (!LuaEditorInteractionRules.CanRequestHover(Document, hoveredOffset, isCompletionWindowOpen, _signaturePopup.IsOpen))
@@ -45,7 +44,6 @@ public sealed partial class LuaEditor
 		if (!IsIntellisenseAvailable())
 		{
 			ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
-
 			return;
 		}
 
@@ -54,7 +52,6 @@ public sealed partial class LuaEditor
 		if (string.IsNullOrWhiteSpace(hoveredWord))
 		{
 			ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
-
 			return;
 		}
 
@@ -83,7 +80,6 @@ public sealed partial class LuaEditor
 		catch (Exception exception)
 		{
 			WriteDebugFailure("Hover request", exception);
-
 			ShowDiagnosticToolTipIfAvailable(hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 		}
 	}

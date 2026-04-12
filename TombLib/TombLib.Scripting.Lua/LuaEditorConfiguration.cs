@@ -5,12 +5,21 @@ using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua;
 
+/// <summary>
+/// Stores user-configurable settings for the Lua editor.
+/// </summary>
 public sealed class LuaEditorConfiguration : TextEditorConfigBase
 {
+	/// <summary>
+	/// Gets the default file path used to persist this configuration.
+	/// </summary>
 	public override string DefaultPath { get; }
 
 	private string _selectedThemeName = ConfigurationDefaults.SelectedThemeName;
 
+	/// <summary>
+	/// Gets or sets the selected Lua theme name.
+	/// </summary>
 	public string SelectedThemeName
 	{
 		get => _selectedThemeName;
@@ -22,15 +31,24 @@ public sealed class LuaEditorConfiguration : TextEditorConfigBase
 		}
 	}
 
+	/// <summary>
+	/// Gets the resolved theme object for the current selection.
+	/// </summary>
 	[XmlIgnore]
 	public Objects.LuaTheme Theme { get; private set; } = LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
 
+	/// <summary>
+	/// Gets or sets the legacy color-scheme alias used by existing serialized configuration data.
+	/// </summary>
 	public string SelectedColorSchemeName
 	{
 		get => SelectedThemeName;
 		set => SelectedThemeName = value;
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaEditorConfiguration"/> class.
+	/// </summary>
 	public LuaEditorConfiguration()
 	{
 		DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);

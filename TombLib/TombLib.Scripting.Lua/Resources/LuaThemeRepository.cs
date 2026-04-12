@@ -7,19 +7,36 @@ using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.Scripting.Lua.Resources;
 
+/// <summary>
+/// Loads and resolves Lua editor themes from disk, falling back to the built-in default theme when needed.
+/// </summary>
 public static class LuaThemeRepository
 {
 	private static readonly Lazy<LuaThemeCatalog> Catalog = new(LoadCatalog);
 
+	/// <summary>
+	/// Gets all available Lua themes known to the repository.
+	/// </summary>
+	/// <returns>The ordered list of available themes.</returns>
 	public static IReadOnlyList<LuaTheme> GetAvailableThemes()
 		=> Catalog.Value.Themes;
 
+	/// <summary>
+	/// Resolves a theme name or alias to the repository's canonical theme name.
+	/// </summary>
+	/// <param name="themeName">The theme name or alias to resolve.</param>
+	/// <returns>The canonical theme name.</returns>
 	public static string ResolveThemeName(string themeName)
 	{
 		LuaTheme theme = GetTheme(themeName);
 		return theme.Name;
 	}
 
+	/// <summary>
+	/// Gets the theme matching the supplied name or alias, or the default theme when no match exists.
+	/// </summary>
+	/// <param name="themeName">The theme name or alias to resolve.</param>
+	/// <returns>The resolved theme.</returns>
 	public static LuaTheme GetTheme(string themeName)
 	{
 		LuaThemeCatalog catalog = Catalog.Value;

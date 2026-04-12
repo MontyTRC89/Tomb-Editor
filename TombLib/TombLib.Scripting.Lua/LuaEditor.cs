@@ -7,17 +7,33 @@ using TombLib.Scripting.Lua.Services;
 
 namespace TombLib.Scripting.Lua;
 
+/// <summary>
+/// Provides a Lua-specific text editor with syntax highlighting, semantic coloring, and language-service integration.
+/// </summary>
 public sealed partial class LuaEditor : TextEditorBase
 {
+	/// <summary>
+	/// Gets the default file extension associated with Lua documents.
+	/// </summary>
 	public override string DefaultFileExtension => ".lua";
 
 	private LuaTextMateInstallation? _textMateHighlighting;
 	private LuaThemeBrushSet? _themeBrushSet;
 
+	/// <summary>
+	/// Gets or sets the IntelliSense provider used to supply completions, hover text, diagnostics, and navigation results.
+	/// </summary>
 	public ILuaIntellisenseProvider? IntellisenseProvider { get; set; }
 
+	/// <summary>
+	/// Occurs when the editor resolves a definition location that should be opened by the host application.
+	/// </summary>
 	public event Action<LuaDefinitionLocation>? DefinitionNavigationRequested;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaEditor"/> class for the specified engine version.
+	/// </summary>
+	/// <param name="engineVersion">The engine version used to configure editor behavior.</param>
 	public LuaEditor(Version engineVersion) : base(engineVersion)
 	{
 		CommentPrefix = "--";
@@ -25,6 +41,10 @@ public sealed partial class LuaEditor : TextEditorBase
 		BindLuaIntellisenseEvents();
 	}
 
+	/// <summary>
+	/// Applies the active Lua theme, refreshes syntax highlighting, and updates shared editor settings.
+	/// </summary>
+	/// <param name="configuration">The editor configuration to apply.</param>
 	public override void UpdateSettings(Bases.ConfigurationBase configuration)
 	{
 		var config = configuration as LuaEditorConfiguration;

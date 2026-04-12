@@ -3,6 +3,9 @@ using System.Text;
 
 namespace TombLib.Scripting.Lua.Utils;
 
+/// <summary>
+/// Provides lightweight line-based parsing helpers for Lua identifiers, comments, and long-bracket strings.
+/// </summary>
 internal static class LuaLineParser
 {
 	private enum ParserState
@@ -14,12 +17,27 @@ internal static class LuaLineParser
 		LongComment
 	}
 
+	/// <summary>
+	/// Determines whether a character can appear within a Lua identifier.
+	/// </summary>
+	/// <param name="character">The character to test.</param>
+	/// <returns><see langword="true"/> if the character is valid inside an identifier; otherwise, <see langword="false"/>.</returns>
 	public static bool IsIdentifierCharacter(char character)
 		=> char.IsLetterOrDigit(character) || character == '_';
 
+	/// <summary>
+	/// Determines whether a character can start an identifier-triggered autocomplete request.
+	/// </summary>
+	/// <param name="character">The character to test.</param>
+	/// <returns><see langword="true"/> if the character is a valid identifier trigger; otherwise, <see langword="false"/>.</returns>
 	public static bool IsIdentifierTriggerCharacter(char character)
 		=> char.IsLetter(character) || character == '_';
 
+	/// <summary>
+	/// Determines whether the inspected line fragment currently ends inside a comment or string.
+	/// </summary>
+	/// <param name="lineText">The line text to inspect, typically truncated at the current offset.</param>
+	/// <returns><see langword="true"/> if the fragment is inside a comment or string; otherwise, <see langword="false"/>.</returns>
 	public static bool IsInsideCommentOrString(string lineText)
 	{
 		if (string.IsNullOrEmpty(lineText))
@@ -97,6 +115,11 @@ internal static class LuaLineParser
 		return state != ParserState.None;
 	}
 
+	/// <summary>
+	/// Removes a trailing Lua line comment while preserving quoted strings and long-bracket strings.
+	/// </summary>
+	/// <param name="lineText">The line text to process.</param>
+	/// <returns>The line text without a trailing line comment.</returns>
 	public static string StripLineComment(string lineText)
 	{
 		if (string.IsNullOrEmpty(lineText))
@@ -186,6 +209,11 @@ internal static class LuaLineParser
 		return builder.ToString();
 	}
 
+	/// <summary>
+	/// Enumerates structural characters that remain after stripping comments and string content from a line.
+	/// </summary>
+	/// <param name="lineText">The line text to inspect.</param>
+	/// <returns>The structural characters that participate in brace and delimiter analysis.</returns>
 	public static IEnumerable<char> EnumerateStructuralCharacters(string lineText)
 	{
 		if (string.IsNullOrEmpty(lineText))

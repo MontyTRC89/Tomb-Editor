@@ -3,8 +3,19 @@ using System;
 
 namespace TombLib.Scripting.Lua.Utils;
 
+/// <summary>
+/// Encapsulates Lua-editor interaction rules for hover, completion, and definition navigation.
+/// </summary>
 internal static class LuaEditorInteractionRules
 {
+	/// <summary>
+	/// Determines whether a hover request should be attempted at the specified offset.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based character offset.</param>
+	/// <param name="isCompletionWindowOpen">Whether the completion window is currently open.</param>
+	/// <param name="isSignatureHelpOpen">Whether signature help is currently open.</param>
+	/// <returns><see langword="true"/> if hover may be requested; otherwise, <see langword="false"/>.</returns>
 	public static bool CanRequestHover(TextDocument? document, int offset, bool isCompletionWindowOpen, bool isSignatureHelpOpen)
 	{
 		if (isCompletionWindowOpen || isSignatureHelpOpen)
@@ -13,6 +24,13 @@ internal static class LuaEditorInteractionRules
 		return !IsInsideCommentOrString(document, offset);
 	}
 
+	/// <summary>
+	/// Attempts to resolve the exact offset that should be used for a hover request.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based character offset under the mouse.</param>
+	/// <param name="hoverOffset">When this method returns, contains the resolved hover offset.</param>
+	/// <returns><see langword="true"/> if a hoverable identifier exists at the requested offset; otherwise, <see langword="false"/>.</returns>
 	public static bool TryGetHoverOffset(TextDocument? document, int offset, out int hoverOffset)
 	{
 		hoverOffset = 0;
@@ -35,6 +53,13 @@ internal static class LuaEditorInteractionRules
 		return true;
 	}
 
+	/// <summary>
+	/// Determines whether the current caret context allows an automatic completion request.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based caret offset after text entry.</param>
+	/// <param name="triggerCharacter">The character that triggered completion, if any.</param>
+	/// <returns><see langword="true"/> if autocomplete should be requested; otherwise, <see langword="false"/>.</returns>
 	public static bool IsValidAutocompleteContext(TextDocument? document, int offset, char? triggerCharacter)
 	{
 		if (offset <= 0 || document is null || document.TextLength == 0)
@@ -57,6 +82,12 @@ internal static class LuaEditorInteractionRules
 		return true;
 	}
 
+	/// <summary>
+	/// Determines whether the current caret context allows a manual completion request.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based caret offset.</param>
+	/// <returns><see langword="true"/> if manual completion may be requested; otherwise, <see langword="false"/>.</returns>
 	public static bool IsValidManualCompletionContext(TextDocument? document, int offset)
 	{
 		if (document is null)
@@ -68,6 +99,13 @@ internal static class LuaEditorInteractionRules
 		return !IsInsideCommentOrString(document, offset);
 	}
 
+	/// <summary>
+	/// Attempts to resolve the identifier start offset that should be used for a go-to-definition request.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based offset near the identifier.</param>
+	/// <param name="definitionOffset">When this method returns, contains the identifier start offset.</param>
+	/// <returns><see langword="true"/> if a definition target offset was found; otherwise, <see langword="false"/>.</returns>
 	public static bool TryGetDefinitionStartOffset(TextDocument? document, int offset, out int definitionOffset)
 	{
 		definitionOffset = 0;
@@ -86,6 +124,12 @@ internal static class LuaEditorInteractionRules
 		return true;
 	}
 
+	/// <summary>
+	/// Determines whether the specified offset is inside a comment or string using the current line context.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based character offset.</param>
+	/// <returns><see langword="true"/> if the offset is inside a comment or string on the current line; otherwise, <see langword="false"/>.</returns>
 	public static bool IsInsideCommentOrString(TextDocument? document, int offset)
 	{
 		if (document is null || document.TextLength == 0)

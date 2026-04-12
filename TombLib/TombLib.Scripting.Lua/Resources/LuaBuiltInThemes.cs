@@ -3,6 +3,9 @@ using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.Scripting.Lua.Resources;
 
+/// <summary>
+/// Defines the built-in Lua theme defaults used when no external theme data is available.
+/// </summary>
 internal static class LuaBuiltInThemes
 {
 	public const string DefaultThemeName = "SharpLua Classic";
@@ -25,6 +28,10 @@ internal static class LuaBuiltInThemes
 	public const string DefaultSignatureActiveParameter = LuaBuiltInTextMateThemeDefaults.DefaultSignatureActiveParameter;
 	public const string DefaultSignatureText = LuaBuiltInTextMateThemeDefaults.DefaultSignatureText;
 
+	/// <summary>
+	/// Creates the built-in fallback Lua theme.
+	/// </summary>
+	/// <returns>A fully populated default Lua theme instance.</returns>
 	public static LuaTheme CreateDefaultTheme()
 	{
 		return new LuaTheme

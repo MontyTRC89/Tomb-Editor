@@ -4,12 +4,21 @@ using System.Text.RegularExpressions;
 
 namespace TombLib.Scripting.Lua.Utils;
 
+/// <summary>
+/// Inserts generated Tomb Engine language strings into an existing Lua strings table.
+/// </summary>
 public sealed class TombEngineLanguageScriptService
 {
 	private static readonly Regex SetStringsRegex = new(
 		@"TEN\.Flow\.SetStrings\s*\(\s*(?<name>[^)\s]+)\s*\)",
 		RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+	/// <summary>
+	/// Attempts to insert a generated language entry into the strings table referenced by <c>TEN.Flow.SetStrings(...)</c>.
+	/// </summary>
+	/// <param name="document">The document to modify.</param>
+	/// <param name="languageScript">The generated language-table entry to insert.</param>
+	/// <returns>The one-based line number of the inserted entry, or <see langword="null"/> when no suitable strings table could be found.</returns>
 	public int? TryInsertLanguageScript(TextDocument document, string languageScript)
 	{
 		string? stringsVariableName = TryGetStringsVariableName(document);

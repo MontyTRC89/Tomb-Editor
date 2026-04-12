@@ -86,6 +86,9 @@ public sealed partial class LuaEditor
 		}
 	}
 
+	/// <summary>
+	/// Attempts to resolve and navigate to the symbol definition at the current caret position.
+	/// </summary>
 	public async void NavigateToDefinitionAtCaretAsync()
 		=> await TryNavigateToDefinitionAsync(CaretOffset, CancellationToken.None).ConfigureAwait(true);
 }
