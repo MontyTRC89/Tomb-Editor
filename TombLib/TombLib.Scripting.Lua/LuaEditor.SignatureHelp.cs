@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -14,6 +16,8 @@ namespace TombLib.Scripting.Lua
 		private static readonly SolidColorBrush SignatureParamDocForeground = CreateFrozenBrush(Color.FromRgb(180, 180, 180));
 		private static readonly SolidColorBrush SignatureActiveParamForeground = CreateFrozenBrush(Color.FromRgb(86, 180, 235));
 		private static readonly SolidColorBrush SignatureForeground = CreateFrozenBrush(Colors.Gainsboro);
+
+		private CancellationTokenSource _signatureCancellationTokenSource;
 
 		private readonly Popup _signaturePopup = new Popup();
 		private readonly Border _signaturePopupBorder = new Border();
@@ -62,6 +66,19 @@ namespace TombLib.Scripting.Lua
 
 			var panel = new StackPanel { MaxWidth = contentMaxWidth };
 			panel.Children.Add(BuildSignatureBlock(signatureInfo));
+
+			if (!string.IsNullOrWhiteSpace(signatureInfo.Documentation))
+			{
+				panel.Children.Add(new TextBlock
+				{
+					Text = signatureInfo.Documentation,
+					Foreground = SignatureParamDocForeground,
+					FontFamily = SystemFonts.MessageFontFamily,
+					FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0),
+					TextWrapping = TextWrapping.Wrap,
+					Margin = new Thickness(0.0, 4.0, 0.0, 0.0)
+				});
+			}
 
 			if (signatureInfo.ActiveParameter < signatureInfo.Parameters.Count)
 			{
@@ -119,6 +136,46 @@ namespace TombLib.Scripting.Lua
 			_signaturePopup.VerticalOffset = verticalOffset;
 			_signaturePopup.IsOpen = true;
 		}
+
+		private async Task RequestSignatureHelpAsync(int offset)
+		{
+			if (!IsIntellisenseAvailable())
+			{
+				DismissSignatureHelp();
+				return;
+			}
+
+			CancellationToken cancellationToken = ResetCancellationTokenSource(ref _signatureCancellationTokenSource);
+
+			try
+			{
+				(int line, int column) = GetPositionFromOffset(offset);
+				LuaSignatureInfo signatureInfo = await IntellisenseProvider
+					.GetSignatureHelpAsync(FilePath, Text, line, column, cancellationToken)
+					.ConfigureAwait(true);
+
+				if (cancellationToken.IsCancellationRequested)
+					return;
+
+				if (signatureInfo is null)
+				{
+					DismissSignatureHelp();
+					return;
+				}
+
+				ShowSignatureToolTip(signatureInfo);
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			catch (Exception exception)
+			{
+				WriteDebugFailure("Signature help", exception);
+			}
+		}
+
+		private void ScheduleSignatureHelpRefresh()
+			=> Dispatcher.BeginInvoke(new Action(() => _ = RequestSignatureHelpAsync(CaretOffset)));
 
 		private static TextBlock BuildSignatureBlock(LuaSignatureInfo signatureInfo)
 		{

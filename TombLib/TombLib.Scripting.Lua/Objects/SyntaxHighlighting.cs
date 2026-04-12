@@ -4,104 +4,68 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using TombLib.Scripting.Objects;
 using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua.Objects
 {
 	public sealed class SyntaxHighlighting : IHighlightingDefinition
 	{
-		private readonly ColorScheme _scheme;
+		private static readonly IReadOnlyList<HighlightingColor> EmptyHighlightingColors = Array.Empty<HighlightingColor>();
+		private static readonly IDictionary<string, string> EmptyProperties = new Dictionary<string, string>();
 
-		#region Construction
+		private readonly ColorScheme _scheme;
+		private readonly HighlightingRuleSet _mainRuleSet;
 
 		public SyntaxHighlighting(ColorScheme scheme)
-			=> _scheme = scheme;
-
-		#endregion Construction
-
-		#region Rules
-
-		public HighlightingRuleSet MainRuleSet
 		{
-			get
-			{
-				var ruleSet = new HighlightingRuleSet();
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Comments),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Comments.HtmlColor)),
-						FontWeight = _scheme.Comments.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Comments.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Values, RegexOptions.IgnoreCase),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Values.HtmlColor)),
-						FontWeight = _scheme.Values.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Values.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Statements, RegexOptions.IgnoreCase),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Statements.HtmlColor)),
-						FontWeight = _scheme.Statements.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Statements.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Operators, RegexOptions.IgnoreCase),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Operators.HtmlColor)),
-						FontWeight = _scheme.Operators.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Operators.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.SpecialOperators, RegexOptions.IgnoreCase),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.SpecialOperators.HtmlColor)),
-						FontWeight = _scheme.SpecialOperators.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.SpecialOperators.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Name = "Lua Rules";
-				return ruleSet;
-			}
+			_scheme = scheme ?? new ColorScheme();
+			_mainRuleSet = CreateMainRuleSet();
 		}
 
-		#endregion Rules
-
-		#region Other
+		public HighlightingRuleSet MainRuleSet => _mainRuleSet;
 
 		public string Name => "Lua Rules";
 
-		public IEnumerable<HighlightingColor> NamedHighlightingColors => throw new NotImplementedException();
-		public IDictionary<string, string> Properties => throw new NotImplementedException();
+		public IEnumerable<HighlightingColor> NamedHighlightingColors => EmptyHighlightingColors;
+		public IDictionary<string, string> Properties => EmptyProperties;
 
 		public HighlightingColor GetNamedColor(string name)
-			=> throw new NotImplementedException();
+			=> null;
 
 		public HighlightingRuleSet GetNamedRuleSet(string name)
-			=> throw new NotImplementedException();
+			=> string.Equals(name, Name, StringComparison.Ordinal) ? _mainRuleSet : null;
 
-		#endregion Other
+		private HighlightingRuleSet CreateMainRuleSet()
+		{
+			var ruleSet = new HighlightingRuleSet
+			{
+				Name = Name
+			};
+
+			ruleSet.Rules.Add(CreateRule(Patterns.Comments, _scheme.Comments));
+			ruleSet.Rules.Add(CreateRule(Patterns.Values, _scheme.Values, RegexOptions.IgnoreCase));
+			ruleSet.Rules.Add(CreateRule(Patterns.Statements, _scheme.Statements, RegexOptions.IgnoreCase));
+			ruleSet.Rules.Add(CreateRule(Patterns.Operators, _scheme.Operators, RegexOptions.IgnoreCase));
+			ruleSet.Rules.Add(CreateRule(Patterns.SpecialOperators, _scheme.SpecialOperators, RegexOptions.IgnoreCase));
+
+			return ruleSet;
+		}
+
+		private static HighlightingRule CreateRule(string pattern, HighlightingObject highlighting, RegexOptions options = RegexOptions.None)
+		{
+			highlighting ??= new HighlightingObject();
+
+			return new HighlightingRule
+			{
+				Regex = new Regex(pattern, RegexOptions.Compiled | options),
+				Color = new HighlightingColor
+				{
+					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(highlighting.HtmlColor)),
+					FontWeight = highlighting.IsBold ? FontWeights.Bold : FontWeights.Normal,
+					FontStyle = highlighting.IsItalic ? FontStyles.Italic : FontStyles.Normal
+				}
+			};
+		}
 	}
 }

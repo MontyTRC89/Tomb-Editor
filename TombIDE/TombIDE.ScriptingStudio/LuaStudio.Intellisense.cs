@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using ICSharpCode.AvalonEdit.Document;
@@ -52,7 +51,8 @@ namespace TombIDE.ScriptingStudio
 				return;
 
 			editor.IntellisenseProvider = _intellisenseProvider;
-			editor.DefinitionNavigationRequested = NavigateToDefinition;
+			editor.DefinitionNavigationRequested -= NavigateToDefinition;
+			editor.DefinitionNavigationRequested += NavigateToDefinition;
 			editor.TextChangedDelayed -= LuaEditor_TextChangedDelayed;
 			editor.TextChangedDelayed += LuaEditor_TextChangedDelayed;
 
@@ -75,18 +75,11 @@ namespace TombIDE.ScriptingStudio
 				return;
 			}
 
-			bool matched = false;
-
 			foreach (TabPage tabPage in EditorTabControl.FindTabPagesOfFile(filePath))
 			{
 				if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor editor)
-				{
 					ApplyDiagnosticsToEditor(editor, diagnostics);
-					matched = true;
-				}
 			}
-
-			Debug.WriteLine($"[LuaLS] DiagnosticsUpdated for '{filePath}': {diagnostics?.Count ?? 0} items, tab matched={matched}.");
 		}
 
 		private void IntellisenseProvider_SemanticTokensUpdated(string filePath, IReadOnlyList<LuaSemanticToken> semanticTokens)
@@ -126,12 +119,7 @@ namespace TombIDE.ScriptingStudio
 		}
 
 		private static void ApplyDiagnosticsToEditor(LuaEditor editor, IReadOnlyList<TextEditorDiagnostic> diagnostics)
-		{
-			int count = editor.LiveErrorUnderlining ? (diagnostics?.Count ?? 0) : 0;
-			Debug.WriteLine($"[LuaLS] Applying {count} diagnostics to '{editor.FilePath}' (LiveErrorUnderlining={editor.LiveErrorUnderlining}).");
-
-			editor.SetDiagnostics(editor.LiveErrorUnderlining ? diagnostics : Array.Empty<TextEditorDiagnostic>());
-		}
+			=> editor.SetDiagnostics(editor.LiveErrorUnderlining ? diagnostics : Array.Empty<TextEditorDiagnostic>());
 
 		private static void ApplySemanticTokensToEditor(LuaEditor editor, IReadOnlyList<LuaSemanticToken> semanticTokens)
 			=> editor.SetSemanticTokens(semanticTokens ?? Array.Empty<LuaSemanticToken>());

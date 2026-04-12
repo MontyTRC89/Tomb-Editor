@@ -75,6 +75,23 @@ public class TombEngineLanguageScriptServiceTests
 	}
 
 	[TestMethod]
+	public void TryInsertLanguageScript_IgnoresEscapedQuotesAndCommentMarkersInsideStrings()
+	{
+		var document = CreateDocument(
+			"local strings = {",
+			"    existing = { \"A \\\"quoted\\\" } brace and -- marker\" } -- note",
+			"}",
+			string.Empty,
+			"TEN.Flow.SetStrings(strings)");
+
+		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+
+		Assert.AreEqual(3, insertedLineNumber);
+		StringAssert.Contains(document.Text, "existing = { \"A \\\"quoted\\\" } brace and -- marker\" }, -- note");
+		StringAssert.Contains(document.Text, "newLevel = { \"New Level\" }");
+	}
+
+	[TestMethod]
 	public void TryInsertLanguageScript_ReturnsNullWhenStringsTableIsMissing()
 	{
 		var document = CreateDocument(

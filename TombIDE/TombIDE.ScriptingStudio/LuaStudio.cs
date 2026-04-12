@@ -136,9 +136,9 @@ namespace TombIDE.ScriptingStudio
 
 				CreateGeneratedFiles(result.FilesToCreate);
 			}
-			catch
+			catch (Exception exception)
 			{
-				// Oh well...
+				Debug.WriteLine($"[LuaStudio] Failed to append generated Lua script output: {exception}");
 			}
 		}
 

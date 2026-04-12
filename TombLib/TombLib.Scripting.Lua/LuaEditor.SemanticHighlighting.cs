@@ -22,10 +22,8 @@ namespace TombLib.Scripting.Lua
 			if (_semanticTokensColorizer is null)
 				_semanticTokensColorizer = new LuaSemanticTokensColorizer(TextArea.TextView);
 
-			if (TextArea.TextView.LineTransformers.Contains(_semanticTokensColorizer))
-				TextArea.TextView.LineTransformers.Remove(_semanticTokensColorizer);
-
-			TextArea.TextView.LineTransformers.Add(_semanticTokensColorizer);
+			if (!TextArea.TextView.LineTransformers.Contains(_semanticTokensColorizer))
+				TextArea.TextView.LineTransformers.Add(_semanticTokensColorizer);
 		}
 	}
 }

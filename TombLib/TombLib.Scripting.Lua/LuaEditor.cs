@@ -1,9 +1,5 @@
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
-using System.IO;
 using System.Windows.Media;
-using System.Xml;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Lua.Objects;
@@ -18,7 +14,7 @@ namespace TombLib.Scripting.Lua
 		private LuaTextMateInstallation _textMateHighlighting;
 
 		public ILuaIntellisenseProvider IntellisenseProvider { get; set; }
-		public Action<LuaDefinitionLocation> DefinitionNavigationRequested { get; set; }
+		public event Action<LuaDefinitionLocation> DefinitionNavigationRequested;
 
 		public LuaEditor(Version engineVersion) : base(engineVersion)
 		{
@@ -30,29 +26,35 @@ namespace TombLib.Scripting.Lua
 		public override void UpdateSettings(Bases.ConfigurationBase configuration)
 		{
 			var config = configuration as LuaEditorConfiguration;
-
-			string xmlFile = Path.Combine(DefaultPaths.LuaColorConfigsDirectory, "Default.xml");
+			ColorScheme colorScheme = config?.ColorScheme ?? new ColorScheme();
 			_textMateHighlighting?.Dispose();
 			_textMateHighlighting = null;
 
 			if (!LuaTextMateSyntaxHighlighting.TryInstall(this, out _textMateHighlighting))
-			{
-				using (var stream = new FileStream(xmlFile, FileMode.Open, FileAccess.Read))
-				using (var reader = new XmlTextReader(stream))
-					SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-			}
+				SyntaxHighlighting = new SyntaxHighlighting(colorScheme);
 			else
-			{
 				SyntaxHighlighting = null;
-			}
 
 			EnsureSemanticTokensColorizerAttached();
 
-			Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#202020"));
-			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
+			Background = CreateEditorBrush(colorScheme.Background, "#202020");
+			Foreground = CreateEditorBrush(colorScheme.Foreground, "White");
 
 			base.UpdateSettings(configuration);
 			LiveErrorUnderlining = true;
+		}
+
+		private static SolidColorBrush CreateEditorBrush(string colorValue, string fallbackColorValue)
+		{
+			try
+			{
+				string effectiveColor = string.IsNullOrWhiteSpace(colorValue) ? fallbackColorValue : colorValue;
+				return new SolidColorBrush((Color)ColorConverter.ConvertFromString(effectiveColor));
+			}
+			catch
+			{
+				return new SolidColorBrush((Color)ColorConverter.ConvertFromString(fallbackColorValue));
+			}
 		}
 	}
 }

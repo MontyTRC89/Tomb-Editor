@@ -102,6 +102,9 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void comboBox_ColorSchemes_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (comboBox_ColorSchemes.SelectedItem is null)
+				return;
+
 			if (comboBox_ColorSchemes.Items.Count == 1)
 				button_DeleteScheme.Enabled = false; // Disallow deleting the last available scheme
 
@@ -131,19 +134,10 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void button_SaveScheme_Click(object sender, EventArgs e)
 		{
-			using (var form = new FormSaveSchemeAs(ColorSchemeType.GameFlowScript))
+			using (var form = new FormSaveSchemeAs(ColorSchemeType.Lua))
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					var currentScheme = new ColorScheme
-					{
-						Values = (HighlightingObject)colorButton_Values.Tag,
-						Operators = (HighlightingObject)colorButton_Operators.Tag,
-						SpecialOperators = (HighlightingObject)colorButton_SpecialOperators.Tag,
-						Statements = (HighlightingObject)colorButton_Statements.Tag,
-						Comments = (HighlightingObject)colorButton_Comments.Tag,
-						Background = ColorTranslator.ToHtml(colorButton_Background.BackColor),
-						Foreground = ColorTranslator.ToHtml(colorButton_Foreground.BackColor)
-					};
+					ColorScheme currentScheme = CreateCurrentScheme();
 
 					XmlUtils.WriteXmlFile(form.SchemeFilePath, currentScheme);
 
@@ -247,7 +241,8 @@ namespace TombIDE.ScriptingStudio.Settings
 
 			ApplySettingsFromCheckBoxes(config);
 
-			//config.SelectedColorSchemeName = comboBox_ColorSchemes.SelectedItem.ToString();
+			if (comboBox_ColorSchemes.SelectedItem is not null)
+				config.SelectedColorSchemeName = comboBox_ColorSchemes.SelectedItem.ToString();
 
 			config.Save();
 		}
@@ -323,16 +318,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void UpdatePreview()
 		{
-			var currentScheme = new ColorScheme
-			{
-				Values = (HighlightingObject)colorButton_Values.Tag,
-				Operators = (HighlightingObject)colorButton_Operators.Tag,
-				SpecialOperators = (HighlightingObject)colorButton_SpecialOperators.Tag,
-				Statements = (HighlightingObject)colorButton_Statements.Tag,
-				Comments = (HighlightingObject)colorButton_Comments.Tag,
-				Background = ColorTranslator.ToHtml(colorButton_Background.BackColor),
-				Foreground = ColorTranslator.ToHtml(colorButton_Foreground.BackColor)
-			};
+			ColorScheme currentScheme = CreateCurrentScheme();
 
 			bool itemFound = false;
 
@@ -386,10 +372,23 @@ namespace TombIDE.ScriptingStudio.Settings
 			UpdateColorButtonStyleText(colorButton_SpecialOperators);
 			UpdateColorButtonStyleText(colorButton_Statements);
 			UpdateColorButtonStyleText(colorButton_Comments);
-			UpdateColorButtonStyleText(colorButton_Comments);
 
 			colorButton_Background.BackColor = ColorTranslator.FromHtml(scheme.Background);
 			colorButton_Foreground.BackColor = ColorTranslator.FromHtml(scheme.Foreground);
+		}
+
+		private ColorScheme CreateCurrentScheme()
+		{
+			return new ColorScheme
+			{
+				Values = (HighlightingObject)colorButton_Values.Tag,
+				Operators = (HighlightingObject)colorButton_Operators.Tag,
+				SpecialOperators = (HighlightingObject)colorButton_SpecialOperators.Tag,
+				Statements = (HighlightingObject)colorButton_Statements.Tag,
+				Comments = (HighlightingObject)colorButton_Comments.Tag,
+				Background = ColorTranslator.ToHtml(colorButton_Background.BackColor),
+				Foreground = ColorTranslator.ToHtml(colorButton_Foreground.BackColor)
+			};
 		}
 
 		private void buttonContextMenu_Opening(object sender, CancelEventArgs e)
@@ -459,6 +458,13 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		private void ToggleSaveSchemeButton()
 		{
+			if (comboBox_ColorSchemes.SelectedItem is null)
+			{
+				button_SaveScheme.Enabled = false;
+				button_SaveScheme.Visible = false;
+				return;
+			}
+
 			bool isUntitled = comboBox_ColorSchemes.SelectedItem.ToString().Equals("~UNTITLED", StringComparison.OrdinalIgnoreCase);
 
 			button_SaveScheme.Enabled = isUntitled;

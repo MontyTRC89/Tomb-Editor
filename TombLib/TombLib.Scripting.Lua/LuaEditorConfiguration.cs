@@ -9,32 +9,22 @@ namespace TombLib.Scripting.Lua
 	public sealed class LuaEditorConfiguration : TextEditorConfigBase
 	{
 		public override string DefaultPath { get; }
-
-		#region Color scheme
+		public ColorScheme ColorScheme = new ColorScheme();
 
 		private string _selectedColorSchemeName;
+
 		public string SelectedColorSchemeName
 		{
 			get => _selectedColorSchemeName;
 			set
 			{
-				_selectedColorSchemeName = value;
+				_selectedColorSchemeName = string.IsNullOrWhiteSpace(value)
+					? ConfigurationDefaults.SelectedColorSchemeName
+					: value;
 
-				string schemeFilePath =
-					Path.Combine(DefaultPaths.LuaColorConfigsDirectory, value + ConfigurationDefaults.ColorSchemeFileExtension);
-
-				if (!File.Exists(schemeFilePath))
-					ColorScheme = new ColorScheme();
-				else
-					ColorScheme = XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
+				ColorScheme = LoadColorScheme(_selectedColorSchemeName);
 			}
 		}
-
-		public ColorScheme ColorScheme;
-
-		#endregion Color scheme
-
-		#region Construction
 
 		public LuaEditorConfiguration()
 		{
@@ -42,6 +32,15 @@ namespace TombLib.Scripting.Lua
 			SelectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
 		}
 
-		#endregion Construction
+		private static ColorScheme LoadColorScheme(string schemeName)
+		{
+			string schemeFilePath = Path.Combine(
+				DefaultPaths.LuaColorConfigsDirectory,
+				schemeName + ConfigurationDefaults.ColorSchemeFileExtension);
+
+			return File.Exists(schemeFilePath)
+				? XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath)
+				: new ColorScheme();
+		}
 	}
 }

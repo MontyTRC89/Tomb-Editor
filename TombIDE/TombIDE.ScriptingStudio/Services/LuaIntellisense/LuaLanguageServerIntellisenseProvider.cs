@@ -170,7 +170,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			if (!LuaLanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath)
 				|| !await SynchronizeDocumentAsync(normalizedFilePath, content, cancellationToken).ConfigureAwait(false))
 			{
-				Debug.WriteLine($"[LuaLS] Definition request aborted: document sync failed for '{filePath}'.");
+				Debug.WriteLine($"[LuaLS] Definition request skipped because document sync failed for '{filePath}'.");
 				return null;
 			}
 
@@ -181,9 +181,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 					position = new { line, character = column }
 				}, cancellationToken).ConfigureAwait(false);
 
-			LuaDefinitionLocation result = LuaLanguageServerResponseParser.ParseDefinitionLocation(response);
-			Debug.WriteLine($"[LuaLS] Definition at ({line},{column}): {(result is not null ? $"'{result.FilePath}' L{result.LineNumber}" : "null")}.");
-			return result;
+			return LuaLanguageServerResponseParser.ParseDefinitionLocation(response);
 		}
 
 		public async Task<LuaSignatureInfo> GetSignatureHelpAsync(string filePath, string content,
@@ -228,7 +226,9 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 
 				_startupSucceeded = await _client.StartAsync(cancellationToken).ConfigureAwait(false);
 
-				Debug.WriteLine($"[LuaLS] Server startup result: {_startupSucceeded}.");
+				if (!_startupSucceeded)
+					Debug.WriteLine("[LuaLS] Failed to start the Lua language server.");
+
 				return _startupSucceeded;
 			}
 			finally
@@ -368,7 +368,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		{
 			if (!LuaLanguageServerPathHelper.TryGetFilePath(parameters, out string filePath))
 			{
-				Debug.WriteLine("[LuaLS] Diagnostics rejected: unable to resolve file path.");
+				Debug.WriteLine("[LuaLS] Diagnostics could not be matched to a local file path.");
 				return;
 			}
 
@@ -377,17 +377,13 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			if (!LuaLanguageServerDiagnosticsParser.TryParse(parameters, filePath,
 				document?.Content, document?.Version ?? 0, out LuaPublishedDiagnostics publishedDiagnostics))
 			{
-				Debug.WriteLine($"[LuaLS] Diagnostics rejected for '{filePath}'.");
+				Debug.WriteLine($"[LuaLS] Diagnostics payload could not be parsed for '{filePath}'.");
 				return;
 			}
 
 			if (!_documents.TryStoreDiagnostics(publishedDiagnostics))
-			{
-				Debug.WriteLine($"[LuaLS] Diagnostics ignored as stale for '{publishedDiagnostics.FilePath}'.");
 				return;
-			}
 
-			Debug.WriteLine($"[LuaLS] Publishing {publishedDiagnostics.Diagnostics.Count} diagnostics for '{publishedDiagnostics.FilePath}'.");
 			DiagnosticsUpdated?.Invoke(publishedDiagnostics.FilePath, publishedDiagnostics.Diagnostics);
 		}
 

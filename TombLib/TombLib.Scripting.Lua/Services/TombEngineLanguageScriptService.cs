@@ -2,9 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using ICSharpCode.AvalonEdit.Document;
+using TombLib.Scripting.Lua.Utils;
 
 namespace TombLib.Scripting.Lua.Services;
 
@@ -41,7 +41,7 @@ public sealed class TombEngineLanguageScriptService
 	{
 		foreach (DocumentLine line in document.Lines)
 		{
-			string lineText = StripLuaLineComment(document.GetText(line));
+			string lineText = LuaLineParser.StripLineComment(document.GetText(line));
 			Match match = SetStringsRegex.Match(lineText);
 
 			if (match.Success)
@@ -57,7 +57,7 @@ public sealed class TombEngineLanguageScriptService
 
 		foreach (DocumentLine line in document.Lines)
 		{
-			if (regex.IsMatch(StripLuaLineComment(document.GetText(line))))
+			if (regex.IsMatch(LuaLineParser.StripLineComment(document.GetText(line))))
 				return line;
 		}
 
@@ -71,9 +71,9 @@ public sealed class TombEngineLanguageScriptService
 
 		for (DocumentLine? line = stringsStartLine; line is not null; line = line.NextLine)
 		{
-			string lineText = StripLuaLineComment(document.GetText(line));
+			string lineText = LuaLineParser.StripLineComment(document.GetText(line));
 
-			foreach (char character in EnumerateStructuralLuaCharacters(lineText))
+			foreach (char character in LuaLineParser.EnumerateStructuralCharacters(lineText))
 			{
 				if (character == '{')
 				{
@@ -101,7 +101,7 @@ public sealed class TombEngineLanguageScriptService
 		for (int i = stopLine.LineNumber - 1; i > stringsStartLine.LineNumber; i--)
 		{
 			DocumentLine line = document.GetLineByNumber(i);
-			string cleanLine = StripLuaLineComment(document.GetText(line)).TrimEnd();
+			string cleanLine = LuaLineParser.StripLineComment(document.GetText(line)).TrimEnd();
 
 			if (cleanLine.EndsWith("}") || cleanLine.EndsWith("},"))
 				return line;
@@ -113,7 +113,7 @@ public sealed class TombEngineLanguageScriptService
 	private static int InsertLanguageScript(TextDocument document, string languageScript, DocumentLine insertionLine)
 	{
 		string rawLine = document.GetText(insertionLine);
-		string cleanLine = StripLuaLineComment(rawLine).TrimEnd();
+			string cleanLine = LuaLineParser.StripLineComment(rawLine).TrimEnd();
 
 		if (cleanLine.EndsWith("}"))
 		{
@@ -129,80 +129,5 @@ public sealed class TombEngineLanguageScriptService
 	{
 		document.Insert(stopLine.Offset, languageScript + Environment.NewLine);
 		return stopLine.LineNumber;
-	}
-
-	private static string StripLuaLineComment(string lineText)
-	{
-		var builder = new StringBuilder(lineText.Length);
-
-		bool isInSingleQuotedString = false;
-		bool isInDoubleQuotedString = false;
-
-		for (int i = 0; i < lineText.Length; i++)
-		{
-			char character = lineText[i];
-
-			if ((isInSingleQuotedString || isInDoubleQuotedString) && character == '\\' && i + 1 < lineText.Length)
-			{
-				builder.Append(character);
-				builder.Append(lineText[i + 1]);
-
-				i++;
-				continue;
-			}
-
-			if (!isInDoubleQuotedString && character == '\'')
-			{
-				isInSingleQuotedString = !isInSingleQuotedString;
-				builder.Append(character);
-				continue;
-			}
-
-			if (!isInSingleQuotedString && character == '"')
-			{
-				isInDoubleQuotedString = !isInDoubleQuotedString;
-				builder.Append(character);
-				continue;
-			}
-
-			if (!isInSingleQuotedString && !isInDoubleQuotedString && character == '-' && i + 1 < lineText.Length && lineText[i + 1] == '-')
-				break;
-
-			builder.Append(character);
-		}
-
-		return builder.ToString();
-	}
-
-	private static IEnumerable<char> EnumerateStructuralLuaCharacters(string lineText)
-	{
-		bool isInSingleQuotedString = false;
-		bool isInDoubleQuotedString = false;
-
-		for (int i = 0; i < lineText.Length; i++)
-		{
-			char character = lineText[i];
-
-			if ((isInSingleQuotedString || isInDoubleQuotedString) && character == '\\' && i + 1 < lineText.Length)
-			{
-				i++;
-				continue;
-			}
-
-			if (!isInDoubleQuotedString && character == '\'')
-			{
-				isInSingleQuotedString = !isInSingleQuotedString;
-				continue;
-			}
-
-			if (!isInSingleQuotedString && character == '"')
-			{
-				isInDoubleQuotedString = !isInDoubleQuotedString;
-				continue;
-			}
-
-			if (!isInSingleQuotedString && !isInDoubleQuotedString)
-				yield return character;
-		}
 	}
 }

@@ -68,7 +68,10 @@ namespace TombLib.Scripting.Lua.Objects
 
 			try
 			{
-				LuaCompletionItem resolvedItem = await resolveTask.ConfigureAwait(true);
+				LuaCompletionItem resolvedItem = cancellationToken.CanBeCanceled
+					? await resolveTask.WaitAsync(cancellationToken).ConfigureAwait(true)
+					: await resolveTask.ConfigureAwait(true);
+
 				ApplyResolvedItem(resolvedItem);
 				return Description;
 			}

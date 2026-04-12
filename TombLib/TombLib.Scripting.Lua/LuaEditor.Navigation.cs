@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -53,11 +54,6 @@ namespace TombLib.Scripting.Lua
 			if (!IsIntellisenseAvailable())
 				return false;
 
-
-			if (DefinitionNavigationRequested is null)
-				return false;
-
-
 			try
 			{
 				foreach (int candidateOffset in GetDefinitionCandidateOffsets(offset))
@@ -70,17 +66,20 @@ namespace TombLib.Scripting.Lua
 
 					if (definitionLocation is null)
 						continue;
-					DefinitionNavigationRequested(definitionLocation);
+
+					DefinitionNavigationRequested?.Invoke(definitionLocation);
 					return true;
 				}
+
 				return false;
 			}
 			catch (OperationCanceledException)
 			{
 				return false;
 			}
-			catch
+			catch (Exception exception)
 			{
+				Debug.WriteLine($"[Lua] Go to definition failed: {exception}");
 				return false;
 			}
 		}

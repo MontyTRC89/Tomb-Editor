@@ -554,7 +554,10 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			}
 
 			IsReady = false;
-			Debug.WriteLine($"[LuaLS] Process exited unexpectedly{(exitCode is not null ? $" with code {exitCode.Value}" : string.Empty)}.");
+
+			if (!_isDisposed)
+				Debug.WriteLine($"[LuaLS] Process exited unexpectedly{(exitCode is not null ? $" with code {exitCode.Value}" : string.Empty)}.");
+
 			FailPendingRequests(new IOException("The Lua language server process exited unexpectedly."));
 		}
 
