@@ -23,6 +23,15 @@
   <PropertyGroup Condition="'$(Platform)'=='x86'">
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup>
+    <LuaLanguageServerArchivePath>$(MSBuildProjectDirectory)\TIDE\LuaLS.zip</LuaLanguageServerArchivePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <LuaLanguageServerRepresentativeOutput Include="bin\lua-language-server.exe" />
+    <LuaLanguageServerRepresentativeOutput Include="main.lua" />
+    <LuaLanguageServerRepresentativeOutput Include="script\cli\check_worker.lua" />
+    <LuaLanguageServerRepresentativeOutput Include="locale\en-us\script.lua" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
@@ -254,4 +263,26 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <Target Name="ExtractLuaLanguageServer"
+          AfterTargets="Build"
+          Inputs="$(LuaLanguageServerArchivePath)"
+          Outputs="@(LuaLanguageServerRepresentativeOutput -> '$(TargetDir)TIDE\LuaLS\%(Identity)');$(TargetDir)TIDE\LuaLS\.extracted">
+    <PropertyGroup>
+      <LuaLanguageServerOutputDirectory>$(TargetDir)TIDE\LuaLS</LuaLanguageServerOutputDirectory>
+      <LuaLanguageServerExtractionStampFile>$(LuaLanguageServerOutputDirectory)\.extracted</LuaLanguageServerExtractionStampFile>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(LuaLanguageServerArchivePath)')"
+           Text="LuaLS archive not found at '$(LuaLanguageServerArchivePath)'." />
+    <RemoveDir Directories="$(LuaLanguageServerOutputDirectory)"
+               Condition="Exists('$(LuaLanguageServerOutputDirectory)')" />
+    <MakeDir Directories="$(LuaLanguageServerOutputDirectory)" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Expand-Archive -LiteralPath '$(LuaLanguageServerArchivePath)' -DestinationPath '$(LuaLanguageServerOutputDirectory)' -Force&quot;" />
+    <Touch Files="@(LuaLanguageServerRepresentativeOutput -> '$(LuaLanguageServerOutputDirectory)\%(Identity)');$(LuaLanguageServerExtractionStampFile)"
+           AlwaysCreate="true" />
+    <ItemGroup>
+      <_LuaLanguageServerOutputFiles Include="$(LuaLanguageServerOutputDirectory)\**\*" />
+      <FileWrites Include="@(_LuaLanguageServerOutputFiles)" />
+      <FileWrites Include="$(LuaLanguageServerExtractionStampFile)" />
+    </ItemGroup>
+  </Target>
 </Project>
