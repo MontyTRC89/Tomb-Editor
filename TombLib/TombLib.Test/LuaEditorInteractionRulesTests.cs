@@ -150,6 +150,30 @@ public class LuaEditorInteractionRulesTests
 	}
 
 	[TestMethod]
+	public void TryGetHoverOffset_RefreshesLongCommentStateAfterDocumentEdit()
+	{
+		var document = CreateDocument(
+			"--[[ comment",
+			"targetValue");
+
+		int initialProbeOffset = document.Text.IndexOf("targetValue", StringComparison.Ordinal) + 2;
+
+		bool initialResult = LuaEditorInteractionRules.TryGetHoverOffset(document, initialProbeOffset, out _);
+
+		document.Text = string.Join(Environment.NewLine,
+			"--[[ comment ]]",
+			"targetValue");
+
+		int updatedProbeOffset = document.Text.IndexOf("targetValue", StringComparison.Ordinal) + 2;
+
+		bool updatedResult = LuaEditorInteractionRules.TryGetHoverOffset(document, updatedProbeOffset, out int hoverOffset);
+
+		Assert.IsFalse(initialResult);
+		Assert.IsTrue(updatedResult);
+		Assert.AreEqual(updatedProbeOffset, hoverOffset);
+	}
+
+	[TestMethod]
 	public void TryGetDefinitionStartOffset_ReturnsWordStartFromInsideIdentifier()
 	{
 		const string identifier = "targetValue";

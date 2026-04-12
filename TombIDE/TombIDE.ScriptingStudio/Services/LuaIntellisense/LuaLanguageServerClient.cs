@@ -12,6 +12,9 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 {
 	internal sealed class LuaLanguageServerClient : IDisposable
 	{
+		private const int ReceiveChunkSize = 4096;
+		private static readonly byte[] HeaderTerminator = { (byte)'\r', (byte)'\n', (byte)'\r', (byte)'\n' };
+
 		private readonly string _workspaceRootDirectoryPath;
 		private readonly string _serverExecutablePath;
 		private readonly Func<object> _settingsProvider;
@@ -38,6 +41,8 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 		private Process _process;
 		private Stream _inputStream;
 		private Stream _outputStream;
+		private byte[] _receiveBuffer = Array.Empty<byte>();
+		private int _receiveBufferCount;
 		private Task _readLoopTask;
 		private Task _stderrLoopTask;
 		private string[] _semanticTokenTypes = Array.Empty<string>();
@@ -323,27 +328,27 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 
 		private async Task<Dictionary<string, string>> ReadHeadersAsync()
 		{
-			var buffer = new List<byte>();
-			var singleByte = new byte[1];
-
 			while (true)
 			{
-				int bytesRead = await _inputStream.ReadAsync(singleByte.AsMemory(0, 1)).ConfigureAwait(false);
+				int headerTerminatorIndex = FindHeaderTerminatorIndex();
 
-				if (bytesRead == 0)
+				if (headerTerminatorIndex >= 0)
+					return ConsumeHeaders(headerTerminatorIndex);
+
+				if (!await ReadIntoReceiveBufferAsync().ConfigureAwait(false))
 					return null;
-
-				buffer.Add(singleByte[0]);
-
-				if (buffer.Count >= 4
-					&& buffer[^4] == '\r'
-					&& buffer[^3] == '\n'
-					&& buffer[^2] == '\r'
-					&& buffer[^1] == '\n')
-					break;
 			}
+		}
 
-			string headerText = Encoding.ASCII.GetString(buffer.ToArray());
+		private Dictionary<string, string> ConsumeHeaders(int headerTerminatorIndex)
+		{
+			string headerText = Encoding.ASCII.GetString(_receiveBuffer, 0, headerTerminatorIndex);
+			ConsumeReceiveBuffer(headerTerminatorIndex + HeaderTerminator.Length);
+			return ParseHeaders(headerText);
+		}
+
+		private static Dictionary<string, string> ParseHeaders(string headerText)
+		{
 			var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
 			foreach (string line in headerText.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
@@ -362,10 +367,60 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			return headers;
 		}
 
+		private int FindHeaderTerminatorIndex()
+			=> new ReadOnlySpan<byte>(_receiveBuffer, 0, _receiveBufferCount).IndexOf(HeaderTerminator);
+
+		private async Task<bool> ReadIntoReceiveBufferAsync()
+		{
+			EnsureReceiveBufferCapacity(_receiveBufferCount + ReceiveChunkSize);
+
+			int bytesToRead = Math.Min(ReceiveChunkSize, _receiveBuffer.Length - _receiveBufferCount);
+			int bytesRead = await _inputStream
+				.ReadAsync(_receiveBuffer.AsMemory(_receiveBufferCount, bytesToRead))
+				.ConfigureAwait(false);
+
+			if (bytesRead == 0)
+				return false;
+
+			_receiveBufferCount += bytesRead;
+			return true;
+		}
+
+		private void EnsureReceiveBufferCapacity(int requiredCapacity)
+		{
+			if (_receiveBuffer.Length >= requiredCapacity)
+				return;
+
+			int newCapacity = Math.Max(ReceiveChunkSize, _receiveBuffer.Length);
+
+			while (newCapacity < requiredCapacity)
+				newCapacity *= 2;
+
+			Array.Resize(ref _receiveBuffer, newCapacity);
+		}
+
+		private void ConsumeReceiveBuffer(int bytesToConsume)
+		{
+			int remainingBytes = _receiveBufferCount - bytesToConsume;
+
+			if (remainingBytes > 0)
+				Buffer.BlockCopy(_receiveBuffer, bytesToConsume, _receiveBuffer, 0, remainingBytes);
+
+			_receiveBufferCount = Math.Max(0, remainingBytes);
+		}
+
 		private async Task<byte[]> ReadPayloadAsync(int contentLength)
 		{
 			byte[] payloadBytes = new byte[contentLength];
 			int totalBytesRead = 0;
+
+			if (_receiveBufferCount > 0)
+			{
+				int bufferedBytesToCopy = Math.Min(contentLength, _receiveBufferCount);
+				Buffer.BlockCopy(_receiveBuffer, 0, payloadBytes, 0, bufferedBytesToCopy);
+				ConsumeReceiveBuffer(bufferedBytesToCopy);
+				totalBytesRead = bufferedBytesToCopy;
+			}
 
 			while (totalBytesRead < contentLength)
 			{
@@ -634,6 +689,8 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
 			_inputStream = null;
 			_outputStream = null;
 			_process = null;
+			_receiveBuffer = Array.Empty<byte>();
+			_receiveBufferCount = 0;
 			_readLoopTask = null;
 			_stderrLoopTask = null;
 			_supportsCompletionResolve = false;

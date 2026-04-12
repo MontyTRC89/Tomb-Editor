@@ -62,7 +62,7 @@ public sealed partial class LuaEditor : TextEditorBase
 		Foreground = _themeBrushSet.EditorForeground;
 
 		base.UpdateSettings(configuration);
-		LiveErrorUnderlining = true;
+		LiveErrorUnderlining = true; // TEMP - Add as a setting later
 	}
 
 	private LuaThemeBrushSet GetThemeBrushSet()

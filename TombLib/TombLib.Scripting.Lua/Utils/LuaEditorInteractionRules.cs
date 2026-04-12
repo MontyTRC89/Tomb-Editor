@@ -1,5 +1,6 @@
-using ICSharpCode.AvalonEdit.Document;
 using System;
+using System.Runtime.CompilerServices;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace TombLib.Scripting.Lua.Utils;
 
@@ -8,6 +9,8 @@ namespace TombLib.Scripting.Lua.Utils;
 /// </summary>
 internal static class LuaEditorInteractionRules
 {
+	private static readonly ConditionalWeakTable<TextDocument, LuaDocumentLineParserStateCache> LineStartStateCaches = [];
+
 	/// <summary>
 	/// Determines whether a hover request should be attempted.
 	/// </summary>
@@ -139,14 +142,7 @@ internal static class LuaEditorInteractionRules
 	}
 
 	private static LuaLineParserState GetLineStartParserState(TextDocument document, DocumentLine currentLine)
-	{
-		LuaLineParserState parserState = default;
-
-		for (DocumentLine? line = document.GetLineByNumber(1); line is not null && line != currentLine; line = line.NextLine)
-			LuaLineParser.IsInsideCommentOrString(document.GetText(line), parserState, out parserState);
-
-		return parserState;
-	}
+		=> LineStartStateCaches.GetValue(document, static doc => new LuaDocumentLineParserStateCache(doc)).GetLineStartState(currentLine.LineNumber);
 
 	private static bool TryGetDefinitionWordBounds(TextDocument document, int offset, out int wordStart, out int wordEnd)
 	{
