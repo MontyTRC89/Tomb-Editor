@@ -1,18 +1,17 @@
-namespace TombLib.Scripting.Lua.Objects
+namespace TombLib.Scripting.Lua.Objects;
+
+public enum LuaCompletionIconKind
 {
-	public enum LuaCompletionIconKind
-	{
-		Misc,
-		Variable,
-		Field,
-		Method,
-		Property,
-		Class,
-		Keyword,
-		Constant,
-		Parameter,
-		Namespace,
-		File,
-		Folder
-	}
+	Misc,
+	Variable,
+	Field,
+	Method,
+	Property,
+	Class,
+	Keyword,
+	Constant,
+	Parameter,
+	Namespace,
+	File,
+	Folder
 }

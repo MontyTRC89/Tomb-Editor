@@ -1,57 +1,57 @@
-using System.Collections.Generic;
 using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Lua.Objects;
 
-namespace TombLib.Scripting.Lua.Resources
+namespace TombLib.Scripting.Lua.Resources;
+
+internal static class LuaBuiltInThemes
 {
-	internal static class LuaBuiltInThemes
+	public const string DefaultThemeName = "SharpLua Classic";
+	public const string DefaultThemeAlias = "SharpLua";
+
+	public const string DefaultEditorBackground = LuaBuiltInTextMateThemeDefaults.DefaultEditorBackground;
+	public const string DefaultEditorForeground = LuaBuiltInTextMateThemeDefaults.DefaultEditorForeground;
+
+	public const string DefaultMutedText = LuaBuiltInTextMateThemeDefaults.DefaultMutedText;
+	public const string DefaultMisc = LuaBuiltInTextMateThemeDefaults.DefaultMisc;
+	public const string DefaultMethod = LuaBuiltInTextMateThemeDefaults.DefaultMethod;
+	public const string DefaultVariable = LuaBuiltInTextMateThemeDefaults.DefaultVariable;
+	public const string DefaultProperty = LuaBuiltInTextMateThemeDefaults.DefaultProperty;
+	public const string DefaultType = LuaBuiltInTextMateThemeDefaults.DefaultType;
+	public const string DefaultKeyword = LuaBuiltInTextMateThemeDefaults.DefaultKeyword;
+	public const string DefaultLanguageConstant = LuaBuiltInTextMateThemeDefaults.DefaultLanguageConstant;
+	public const string DefaultConstant = LuaBuiltInTextMateThemeDefaults.DefaultConstant;
+	public const string DefaultFile = LuaBuiltInTextMateThemeDefaults.DefaultFile;
+	public const string DefaultSignatureParameterDocumentation = LuaBuiltInTextMateThemeDefaults.DefaultSignatureParameterDocumentation;
+	public const string DefaultSignatureActiveParameter = LuaBuiltInTextMateThemeDefaults.DefaultSignatureActiveParameter;
+	public const string DefaultSignatureText = LuaBuiltInTextMateThemeDefaults.DefaultSignatureText;
+
+	public static LuaTheme CreateDefaultTheme()
 	{
-		public const string DefaultThemeName = "SharpLua Classic";
-		public const string DefaultThemeAlias = "SharpLua";
-
-		public const string DefaultEditorBackground = LuaBuiltInTextMateThemeDefaults.DefaultEditorBackground;
-		public const string DefaultEditorForeground = LuaBuiltInTextMateThemeDefaults.DefaultEditorForeground;
-
-		public const string DefaultMutedText = LuaBuiltInTextMateThemeDefaults.DefaultMutedText;
-		public const string DefaultMisc = LuaBuiltInTextMateThemeDefaults.DefaultMisc;
-		public const string DefaultMethod = LuaBuiltInTextMateThemeDefaults.DefaultMethod;
-		public const string DefaultVariable = LuaBuiltInTextMateThemeDefaults.DefaultVariable;
-		public const string DefaultProperty = LuaBuiltInTextMateThemeDefaults.DefaultProperty;
-		public const string DefaultType = LuaBuiltInTextMateThemeDefaults.DefaultType;
-		public const string DefaultKeyword = LuaBuiltInTextMateThemeDefaults.DefaultKeyword;
-		public const string DefaultLanguageConstant = LuaBuiltInTextMateThemeDefaults.DefaultLanguageConstant;
-		public const string DefaultConstant = LuaBuiltInTextMateThemeDefaults.DefaultConstant;
-		public const string DefaultFile = LuaBuiltInTextMateThemeDefaults.DefaultFile;
-		public const string DefaultSignatureParameterDocumentation = LuaBuiltInTextMateThemeDefaults.DefaultSignatureParameterDocumentation;
-		public const string DefaultSignatureActiveParameter = LuaBuiltInTextMateThemeDefaults.DefaultSignatureActiveParameter;
-		public const string DefaultSignatureText = LuaBuiltInTextMateThemeDefaults.DefaultSignatureText;
-
-		public static LuaTheme CreateDefaultTheme()
+		return new LuaTheme
 		{
-			return new LuaTheme
+			Name = DefaultThemeName,
+			Aliases = [DefaultThemeAlias],
+			EditorBackground = DefaultEditorBackground,
+			EditorForeground = DefaultEditorForeground,
+
+			SemanticColors = new LuaThemeSemanticColors
 			{
-				Name = DefaultThemeName,
-				Aliases = new List<string> { DefaultThemeAlias },
-				EditorBackground = DefaultEditorBackground,
-				EditorForeground = DefaultEditorForeground,
-				SemanticColors = new LuaThemeSemanticColors
-				{
-					MutedText = DefaultMutedText,
-					Misc = DefaultMisc,
-					Method = DefaultMethod,
-					Variable = DefaultVariable,
-					Property = DefaultProperty,
-					Type = DefaultType,
-					Keyword = DefaultKeyword,
-					LanguageConstant = DefaultLanguageConstant,
-					Constant = DefaultConstant,
-					File = DefaultFile,
-					SignatureParameterDocumentation = DefaultSignatureParameterDocumentation,
-					SignatureActiveParameter = DefaultSignatureActiveParameter,
-					SignatureText = DefaultSignatureText
-				},
-				TextMateTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme()
-			};
-		}
+				MutedText = DefaultMutedText,
+				Misc = DefaultMisc,
+				Method = DefaultMethod,
+				Variable = DefaultVariable,
+				Property = DefaultProperty,
+				Type = DefaultType,
+				Keyword = DefaultKeyword,
+				LanguageConstant = DefaultLanguageConstant,
+				Constant = DefaultConstant,
+				File = DefaultFile,
+				SignatureParameterDocumentation = DefaultSignatureParameterDocumentation,
+				SignatureActiveParameter = DefaultSignatureActiveParameter,
+				SignatureText = DefaultSignatureText
+			},
+
+			TextMateTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme()
+		};
 	}
 }

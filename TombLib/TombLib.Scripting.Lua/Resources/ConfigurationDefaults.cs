@@ -1,9 +1,8 @@
-﻿namespace TombLib.Scripting.Lua.Resources
-{
-	public struct ConfigurationDefaults
-	{
-		public const string ConfigurationFileName = "LuaConfiguration.xml";
+﻿namespace TombLib.Scripting.Lua.Resources;
 
-		public const string SelectedThemeName = LuaBuiltInThemes.DefaultThemeName;
-	}
+public static class ConfigurationDefaults
+{
+	public const string ConfigurationFileName = "LuaConfiguration.xml";
+
+	public const string SelectedThemeName = LuaBuiltInThemes.DefaultThemeName;
 }

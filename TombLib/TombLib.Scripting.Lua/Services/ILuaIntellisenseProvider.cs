@@ -5,31 +5,35 @@ using System.Threading.Tasks;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Objects;
 
-namespace TombLib.Scripting.Lua.Services
+namespace TombLib.Scripting.Lua.Services;
+
+public interface ILuaIntellisenseProvider : IDisposable
 {
-	public interface ILuaIntellisenseProvider : IDisposable
-	{
-		bool IsAvailable { get; }
-		event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
-		event Action<string, IReadOnlyList<LuaSemanticToken>>? SemanticTokensUpdated;
+	bool IsAvailable { get; }
 
-		IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath);
-		IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath);
+	event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
 
-		void OpenDocument(string filePath, string content);
-		void UpdateDocument(string filePath, string content);
-		void CloseDocument(string filePath);
+	event Action<string, IReadOnlyList<LuaSemanticToken>>? SemanticTokensUpdated;
 
-		Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
-			int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default);
+	IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath);
 
-		Task<LuaHoverInfo?> GetHoverAsync(string filePath, string content,
-			int line, int column, CancellationToken cancellationToken = default);
+	IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath);
 
-		Task<LuaDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
-			int line, int column, CancellationToken cancellationToken = default);
+	void OpenDocument(string filePath, string content);
 
-		Task<LuaSignatureInfo?> GetSignatureHelpAsync(string filePath, string content,
-			int line, int column, CancellationToken cancellationToken = default);
-	}
+	void UpdateDocument(string filePath, string content);
+
+	void CloseDocument(string filePath);
+
+	Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
+		int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default);
+
+	Task<LuaHoverInfo?> GetHoverAsync(string filePath, string content,
+		int line, int column, CancellationToken cancellationToken = default);
+
+	Task<LuaDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
+		int line, int column, CancellationToken cancellationToken = default);
+
+	Task<LuaSignatureInfo?> GetSignatureHelpAsync(string filePath, string content,
+		int line, int column, CancellationToken cancellationToken = default);
 }
