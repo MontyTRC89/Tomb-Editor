@@ -145,20 +145,23 @@ namespace TombLib.Utils
         public static List<string> BlendModeUserNames(LevelSettings settings)
         {
             int blendCount;
+            bool enableExtraModes = settings.GameEnableExtraBlendingModes ?? false;
 
             // For TR4, TRNG and TombEngine we can add all types (if extra blending modes are enabled)
             if (settings.GameVersion == TRVersion.Game.TombEngine)
             {
                 blendCount = 7;
             }
-            else if (((settings.GameEnableExtraBlendingModes ?? false) && settings.GameVersion.Native() == TRVersion.Game.TR4))
+            else if (enableExtraModes && settings.GameVersion.Native() == TRVersion.Game.TR4)
             {
                 blendCount = 6;
             }
             else
             {
-                // Additive blending is for TR3-5 only and TRX
-                if (settings.GameVersion >= TRVersion.Game.TR3)
+                // Additive blending is for TR3-5 only and TRX. Extra modes is however
+                // enabled in WadTool context for TR1-2. For non-TRX versions of those
+                // games, modes will be normalised on compilation in TE.
+                if (settings.GameVersion >= TRVersion.Game.TR3 || enableExtraModes)
                     blendCount = 2;
                 else
                     blendCount = 1; // Type 0 exists everywhere
@@ -360,34 +363,28 @@ namespace TombLib.Utils
         public bool TextureIsTriangle => TexCoord2 == TexCoord3;
         public bool TextureIsDegenerate => (!TextureIsTriangle && QuadArea == 0) || (TextureIsTriangle && TriangleArea == 0);
 
-        public bool TriangleCoordsOutOfBounds
+        public bool AreTriangleCoordsOutOfBounds(float maxCoordSpan)
         {
-            get
-            {
-                if (TextureIsInvisible || TextureIsUnavailable)
-                    return false;
+            if (TextureIsInvisible || TextureIsUnavailable)
+                return false;
 
-                Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
-                Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2);
+            Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
+            Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2);
 
-                return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
-                       max.X - min.X > 256.0f || max.Y - min.Y > 256.0f;
-            }
+            return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
+                   max.X - min.X > maxCoordSpan || max.Y - min.Y > maxCoordSpan;
         }
 
-        public bool QuadCoordsOutOfBounds
+        public bool AreQuadCoordsOutOfBounds(float maxCoordSpan)
         {
-            get
-            {
-                if (TextureIsInvisible || TextureIsUnavailable)
-                    return false;
+            if (TextureIsInvisible || TextureIsUnavailable)
+                return false;
 
-                Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
-                Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
+            Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
+            Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
 
-                return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
-                       max.X - min.X > 256.0f || max.Y - min.Y > 256.0f;
-            }
+            return min.X < 0.0f || min.Y < 0.0f || max.X > Texture.Image.Width || max.Y > Texture.Image.Height ||
+                   max.X - min.X > maxCoordSpan || max.Y - min.Y > maxCoordSpan;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
