@@ -17,13 +17,7 @@ namespace TombEditor.ToolWindows
             CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             foreach (LightType l in Enum.GetValues(typeof(LightType)))
-            {
-                //// Only add Caustics, Move, and Glow if the target is TombEngine
-                //if ((l == LightType.Move || l == LightType.Glow) &&
-                //    _editor.Level.Settings.GameVersion != TRVersion.Game.TombEngine)
-                //    continue;
                 cmbLightTypes.Items.Add(l.ToString().SplitCamelcase());
-            }
             cmbLightQuality.SelectedIndex = cmbLightTypes.SelectedIndex = 0; // Reset index to default
 
             _editor = Editor.Instance;

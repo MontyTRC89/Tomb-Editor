@@ -558,6 +558,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Add geometry imported objects
 
+                int importedGeoVertexStart = roomVertices.Count;
+
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (geometry.Model?.DirectXModel == null)
@@ -909,7 +911,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     }) ;
             }
 
-            ConvertLights(room, newRoom);
+            ConvertLights(room, newRoom, importedGeoVertexStart);
 
             return newRoom;
         }
@@ -934,7 +936,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return vertexIndex;
         }
 
-        private void ConvertLights(Room room, TombEngineRoom newRoom)
+        private void ConvertLights(Room room, TombEngineRoom newRoom, int importedGeoVertexStart = int.MaxValue)
         {
             int lightCount = 0;
 
@@ -1009,10 +1011,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newRoom.Lights.Add(newLight);
             }
             // Process Move and Glow lights for static vertex flags
-            ApplyVertexEffectsFromSpecialLights(room, newRoom);
+            ApplyVertexEffectsFromSpecialLights(room, newRoom, importedGeoVertexStart);
         }
 
-        private void ApplyVertexEffectsFromSpecialLights(Room room, TombEngineRoom newRoom)
+        private void ApplyVertexEffectsFromSpecialLights(Room room, TombEngineRoom newRoom, int importedGeoVertexStart)
         {
             var moveLights = room.Objects.OfType<LightInstance>()
                 .Where(l => l.Type == LightType.Move && l.Enabled).ToList();
@@ -1023,36 +1025,42 @@ namespace TombLib.LevelData.Compilers.TombEngine
             if (moveLights.Count == 0 && glowLights.Count == 0)
                 return;
 
+            bool hasImportedGeo = importedGeoVertexStart < newRoom.Vertices.Count;
+
             // Iterate through all vertices in the room
             for (int i = 0; i < newRoom.Vertices.Count; i++)
             {
                 var vertex = newRoom.Vertices[i];
-                var worldVertex = new Vector3(vertex.Position.X, -vertex.Position.Y, vertex.Position.Z);
+                bool forImportedGeometry = hasImportedGeo && i >= importedGeoVertexStart;
+
+                // Vertex positions are stored as (localX, -(localY + worldPosY), localZ),
+                // so convert back to room-local space to match light.Position coordinates.
+                var localVertex = new Vector3(vertex.Position.X, -vertex.Position.Y - room.WorldPos.Y, vertex.Position.Z);
 
                 // Apply Move effect
                 foreach (var moveLight in moveLights)
                 {
-                    float distance = Vector3.Distance(worldVertex, moveLight.Position);
+                    if (!moveLight.IsUsedForImportedGeometry && forImportedGeometry)
+                        continue;
+
+                    float distance = Vector3.Distance(localVertex, moveLight.Position);
                     float intensity = CalculateVertexIntensity(distance, moveLight.InnerRange, moveLight.OuterRange);
 
                     if (intensity > 0)
-                    {
-                        // Apply MOVE effect using the vertex.Move property
-                        vertex.Move = Math.Max(vertex.Move, intensity * (moveLight.Intensity));
-                    }
+                        vertex.Move = Math.Max(vertex.Move, intensity * moveLight.Intensity);
                 }
 
                 // Apply Glow effect
                 foreach (var glowLight in glowLights)
                 {
-                    float distance = Vector3.Distance(worldVertex, glowLight.Position);
+                    if (!glowLight.IsUsedForImportedGeometry && forImportedGeometry)
+                        continue;
+
+                    float distance = Vector3.Distance(localVertex, glowLight.Position);
                     float intensity = CalculateVertexIntensity(distance, glowLight.InnerRange, glowLight.OuterRange);
 
                     if (intensity > 0)
-                    {
-                        // Apply GLOW effect using the vertex.Glow property
-                        vertex.Glow = Math.Max(vertex.Glow, intensity * (glowLight.Intensity));
-                    }
+                        vertex.Glow = Math.Max(vertex.Glow, intensity * glowLight.Intensity);
                 }
 
                 newRoom.Vertices[i] = vertex;
