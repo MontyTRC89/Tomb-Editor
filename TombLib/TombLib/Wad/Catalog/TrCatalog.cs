@@ -42,7 +42,6 @@ namespace TombLib.Wad.Catalog
         {
             public List<string> Names { get; set; }
             public string Description { get; set; }
-            public string Category { get; set; }
             public string TombEngineSlot { get; set; }
             public uint SkinId { get; set; }
             public int SubstituteId { get; set; }
@@ -120,7 +119,6 @@ namespace TombLib.Wad.Catalog
         }
 
         public static string GetMoveableName(TRVersion.Game version, uint id) => GetMoveable(version, id)?.Names.LastOrDefault() ?? "Moveable #" + id;
-        public static string GetMoveableCategory(TRVersion.Game version, uint id) => GetMoveable(version, id)?.Category ?? string.Empty;
         public static string GetMoveableTombEngineSlot(TRVersion.Game version, uint id) => GetMoveable(version, id)?.TombEngineSlot ?? string.Empty;
         public static uint GetMoveableSkin(TRVersion.Game version, uint id) => GetMoveable(version, id)?.SkinId ?? id;
         public static bool IsMoveableAI(TRVersion.Game version, uint id) => GetMoveable(version, id)?.AIObject ?? false;
@@ -178,20 +176,7 @@ namespace TombLib.Wad.Catalog
             if (!game.Statics.TryGetValue(id, out entry))
                 return "Static #" + id;
 
-            return entry.Names.LastOrDefault();
-        }
-
-        public static string GetStaticCategory(TRVersion.Game version, uint id)
-        {
-            Game game;
-            if (!Games.TryGetValue(version.Native(), out game))
-                return string.Empty;
-
-            Item entry;
-            if (!game.Statics.TryGetValue(id, out entry))
-                return string.Empty;
-
-            return entry.Category;
+            return game.Statics[id].Names.LastOrDefault();
         }
 
         public static bool IsStaticShatterable(TRVersion.Game version, uint id)
@@ -558,7 +543,6 @@ namespace TombLib.Wad.Catalog
                         bool hidden = bool.Parse(moveableNode.Attributes["hidden"]?.Value ?? "false");
                         bool essential = bool.Parse(moveableNode.Attributes["essential"]?.Value ?? "true");
                         string tombEngineSlot = moveableNode.Attributes["ten"]?.Value ?? string.Empty;
-                        string category = moveableNode.Attributes["category"]?.Value ?? string.Empty;
 
                         game.Moveables.Add(id, new Item
                         {
@@ -569,8 +553,7 @@ namespace TombLib.Wad.Catalog
                             TombEngineSlot = tombEngineSlot,
                             FreeRotation = isFreeRotation,
                             IsHidden = hidden,
-                            IsEssential = essential,
-                            Category = category
+                            IsEssential = essential
                         });
                     }
                 }
@@ -587,8 +570,7 @@ namespace TombLib.Wad.Catalog
                         uint id = uint.Parse(staticNode.Attributes["id"].Value);
                         string[] names = (staticNode.Attributes["name"]?.Value ?? "").Split('|');
                         bool shatter = bool.Parse(staticNode.Attributes["shatter"]?.Value ?? "false");
-                        string category = staticNode.Attributes["category"]?.Value ?? string.Empty;
-                        game.Statics.Add(id, new Item { Names = new List<string>(names), Shatterable = shatter, Category = category });
+                        game.Statics.Add(id, new Item { Names = new List<string>(names), Shatterable = shatter });
                     }
                 }
 

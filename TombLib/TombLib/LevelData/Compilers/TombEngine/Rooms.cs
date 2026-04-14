@@ -179,14 +179,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
             if (!room.Properties.FlagHorizon && !room.PortalsCache.Any(p => p.Room.Properties.FlagHorizon))
                 newRoom.Flags |= 0x0040;
 
+            // TRNG-specific flags
             if (room.Properties.FlagDamage)
                 newRoom.Flags |= 0x0800;
             if (room.Properties.FlagCold)
                 newRoom.Flags |= 0x1000;
             if (room.Properties.FlagNoLensflare)
                 newRoom.Flags |= 0x0080;
-            if (room.Properties.FlagNoCaustics)
-                newRoom.Flags |= 0x0200;
 
             // Room type
             switch (room.Properties.Type)
@@ -312,7 +311,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     continue;
                                 }
 
-                                if ((shape == FaceShape.Triangle && texture.AreTriangleCoordsOutOfBounds(1024.0f)) || (shape == FaceShape.Quad && texture.AreQuadCoordsOutOfBounds(1024.0f)))
+                                if ((shape == FaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == FaceShape.Quad && texture.QuadCoordsOutOfBounds))
                                 {
                                     _progressReporter.ReportWarn("Texture is out of bounds at sector (" + x + "," + z + ") in room " + room.Name + ". Wrong or resized texture file?");
                                     continue;

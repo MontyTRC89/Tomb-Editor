@@ -1,16 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
-using TombEditor.Controls.FlybyTimeline.Sequence;
+using System.Text;
+using System.Threading.Tasks;
 using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
-using TombLib.Utils;
 
 namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D
     {
+        private Room GetCurrentRoom()
+        {
+            foreach (var room in _editor.Level.Rooms)
+            {
+                if (room == null)
+                    continue;
+
+                Vector3 p = Camera.GetPosition();
+                BoundingBox b = room.WorldBoundingBox;
+
+                if (p.X >= b.Minimum.X && p.Y >= b.Minimum.Y && p.Z >= b.Minimum.Z &&
+                    p.X <= b.Maximum.X && p.Y <= b.Maximum.Y && p.Z <= b.Maximum.Z &&
+                    _editor.SelectedRoom.IsAlternate == room.IsAlternate)
+                {
+                    return room;
+                }
+            }
+
+            return null;
+        }
+
         private static int GetFloorHeight(Room room, Vector3 position)
         {
             int xSector = (int)Math.Max(0, Math.Min(room.NumXSectors - 1, Math.Floor(position.X / Level.SectorSizeUnit)));
@@ -68,11 +90,22 @@ namespace TombEditor.Controls.Panel3D
 
         private bool AddFlybyPath(int sequence)
         {
-            var flybyCameras = FlybySequenceHelper.GetCameras(_editor.Level, sequence);
+            // Collect all flyby cameras
+            var flybyCameras = new List<FlybyCameraInstance>();
+
+            foreach (var room in _editor.Level.ExistingRooms)
+                foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
+                {
+                    if (instance.Sequence == sequence)
+                        flybyCameras.Add(instance);
+                }
 
             // Is it actually necessary to show the path?
             if (flybyCameras.Count < 2)
                 return false;
+
+            // Sort cameras
+            flybyCameras.Sort((x, y) => x.Number.CompareTo(y.Number));
 
             // Initialize variables for vertex buffer preparation
             var vertices = new List<SolidVertex>();
@@ -89,10 +122,12 @@ namespace TombEditor.Controls.Panel3D
                 camList.Add(cam.Position + cam.Room.WorldPos);
 
                 // Check for a sequence cut and jump to appropriate camera, if setup is correct
-                bool isCut = FlybySequenceHelper.TryResolveCutTargetIndex(flybyCameras, i, out int targetIndex);
-
-                if (isCut)
-                    i = targetIndex - 1;
+                bool isCut = false;
+                if ((cam.Flags & (1 << 7)) != 0 && cam.Timer < flybyCameras.Count && cam.Timer > i)
+                {
+                    isCut = true;
+                    i = cam.Timer - 1;
+                }
 
                 // Check for the end of the list
                 bool isLast = i == flybyCameras.Count - 1;
@@ -100,7 +135,7 @@ namespace TombEditor.Controls.Panel3D
                 if (isCut || isLast)
                 {
                     // Calculate the spline path for the current segment
-                    var pointList = CatmullRomSpline.EvaluatePositions(camList, _flybyPathSmoothness);
+                    var pointList = Spline.Calculate(camList, camList.Count * _flybyPathSmoothness);
 
                     // Add vertices for the current path segment
                     for (int j = 0; j < pointList.Count - 1; j++)

@@ -205,7 +205,6 @@ namespace TombLib.LevelData
         public List<EventSet> GlobalEventSets { get; set; } = new List<EventSet>();
         public List<EventSet> VolumeEventSets { get; set; } = new List<EventSet>();
         public List<ColorC> Palette { get; set; } = LoadPalette(ResourcesC.ResourcesC.palette);
-        public HashSet<string> Favorites { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         // Light options
         public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
@@ -229,9 +228,6 @@ namespace TombLib.LevelData
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
         public Tr5WeatherType Tr5WeatherType { get; set; } = Tr5WeatherType.Normal;
-
-        // For TRX only
-        public TrxTextureBitDepth TrxTextureBitDepth { get; set; } = TrxTextureBitDepth.Default;
 
         public LevelSettings Clone()
         {

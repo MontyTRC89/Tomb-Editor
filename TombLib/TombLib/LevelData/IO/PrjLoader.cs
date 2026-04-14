@@ -1985,7 +1985,7 @@ namespace TombLib.LevelData.IO
             {
                 CancellationToken = cancelToken
             };
-            Parallel.ForEach(level.ExistingRooms, options, room => room.Rebuild(relight: true, highQualityLighting: true));
+            Parallel.ForEach(level.ExistingRooms, options, room => room.BuildGeometry());
             progressReporter?.ReportProgress(100, "Level loaded correctly!");
 
             return level;

@@ -240,9 +240,6 @@
     <None Update="TIDE\Templates\Sounds\TR1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TIDE\Templates\Sounds\TR2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="TIDE\Templates\Sounds\TR4-TRNG.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

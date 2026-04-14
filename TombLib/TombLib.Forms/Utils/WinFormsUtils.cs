@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using System.Windows.Forms.Integration;
 
 namespace TombLib.Utils
 {
@@ -126,22 +125,7 @@ namespace TombLib.Utils
 
         public static bool CurrentControlSupportsInput(Form form, Keys keyData)
         {
-            var activeControl = GetFocusedControl(form);
-            var activeControlType = activeControl?.GetType().Name;
-
-            if (activeControl is ElementHost &&
-                (keyData.HasFlag(Keys.Control | Keys.A) ||
-                 keyData.HasFlag(Keys.Control | Keys.X) ||
-                 keyData.HasFlag(Keys.Control | Keys.C) ||
-                 keyData.HasFlag(Keys.Control | Keys.V) ||
-                (!keyData.HasFlag(Keys.Control) && !keyData.HasFlag(Keys.Alt))))
-            {
-                var wpfFocused = System.Windows.Input.Keyboard.FocusedElement;
-
-                if (wpfFocused is System.Windows.Controls.TextBox ||
-                    wpfFocused is System.Windows.Controls.Primitives.TextBoxBase)
-                    return true;
-            }
+            var activeControlType = GetFocusedControl(form)?.GetType().Name;
 
             if ((keyData.HasFlag(Keys.Control | Keys.A) ||
                  keyData.HasFlag(Keys.Control | Keys.X) ||

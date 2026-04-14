@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,93 +11,50 @@ namespace TombLib.LevelData
     /// </summary>
     public class ObjectGroup : PositionBasedObjectInstance, IRotateableY, IColorable, IEnumerable<PositionBasedObjectInstance>
     {
-        private readonly HashSet<PositionBasedObjectInstance> _objects = new();
-        private PositionBasedObjectInstance? _rootObject;
+        private readonly HashSet<PositionBasedObjectInstance> _objects = new HashSet<PositionBasedObjectInstance>();
 
         public ObjectGroup(PositionBasedObjectInstance initialObject)
         {
             Room = initialObject.Room;
             Position = initialObject.Position;
-            _rootObject = initialObject;
 
             _objects.Add(initialObject);
         }
 
         public ObjectGroup(IReadOnlyList<PositionBasedObjectInstance> objects)
-            : this(objects, null, 0.0f)
-        { }
-
-        private ObjectGroup(IReadOnlyList<PositionBasedObjectInstance> objects, PositionBasedObjectInstance? rootObject, float rotationY)
         {
-            if (objects is null || objects.Count == 0)
-                throw new ArgumentException("The collection of objects must not be null or empty.", nameof(objects));
-
-            // Ensure the provided root belongs to the collection; otherwise fall back to the first element.
-            var initialObject = rootObject is not null && objects.Contains(rootObject) ? rootObject : objects[0];
+            var initialObject = objects.First();
 
             Room = initialObject.Room;
             Position = initialObject.Position;
-            _rootObject = initialObject;
-            _rotationY = rotationY;
 
             foreach (var obj in objects)
+            {
                 _objects.Add(obj);
-        }
-
-        public ObjectGroup(ObjectGroup other)
-        {
-            Room = other.Room;
-            Position = other.Position;
-            _rotationY = other._rotationY;
-            _rootObject = other.RootObject;
-
-            foreach (var obj in other)
-                _objects.Add(obj);
+            }
         }
 
         public override ObjectInstance Clone()
         {
-            var clonedObjects = new List<PositionBasedObjectInstance>(_objects.Count);
-            PositionBasedObjectInstance? clonedRootObject = null;
-
-            foreach (var obj in _objects)
-            {
-                var clonedObject = (PositionBasedObjectInstance)obj.Clone();
-                clonedObjects.Add(clonedObject);
-
-                if (obj == _rootObject)
-                    clonedRootObject = clonedObject;
-            }
-
-            var rootToUse = clonedRootObject ?? clonedObjects.FirstOrDefault();
-            return new ObjectGroup(clonedObjects, rootToUse, _rotationY);
+            return new ObjectGroup(_objects.Select(o => o.Clone() as PositionBasedObjectInstance).ToList());
         }
 
-        public void Add(PositionBasedObjectInstance objectInstance)
-        {
-            _objects.Add(objectInstance);
-            _rootObject ??= objectInstance;
-        }
-
-        public void Remove(PositionBasedObjectInstance objectInstance)
-        {
-            if (!_objects.Remove(objectInstance))
-                return;
-
-            if (_rootObject == objectInstance)
-                _rootObject = _objects.FirstOrDefault();
-        }
-
+        public void Add(PositionBasedObjectInstance objectInstance) => _objects.Add(objectInstance);
+        public void Remove(PositionBasedObjectInstance objectInstance) => _objects.Remove(objectInstance);
         public bool Contains(PositionBasedObjectInstance obInstance) => _objects.Contains(obInstance);
         public bool Any() => _objects.Any();
-        public PositionBasedObjectInstance? RootObject => _rootObject;
+        public PositionBasedObjectInstance RootObject => _objects.FirstOrDefault();
 
         public void AddOrRemove(PositionBasedObjectInstance objectInstance)
         {
             if (Contains(objectInstance))
+            {
                 Remove(objectInstance);
+            }
             else
+            {
                 Add(objectInstance);
+            }
         }
 
         protected override void SetPosition(Vector3 position)
@@ -108,14 +63,17 @@ namespace TombLib.LevelData
             base.SetPosition(position);
 
             foreach (var i in _objects)
-                i.Position += difference;
+                i.Position = i.Position + difference;
         }
 
         private float _rotationY;
 
         public float RotationY
         {
-            get => _rotationY;
+            get
+            {
+                return _rotationY;
+            }
             set
             {
                 var difference = value - _rotationY;
@@ -131,20 +89,18 @@ namespace TombLib.LevelData
         {
             get
             {
-                if (RootObject?.CanBeColored() == true)
-                    return ((IColorable)RootObject).Color; // Prioritize root object for picking color
-
-                var coloredObject = this.FirstOrDefault(o => o.CanBeColored());
-
-                if (coloredObject is not null)
-                    return ((IColorable)coloredObject).Color;
-
-                return Vector3.Zero;
+                if (RootObject.CanBeColored())
+                    return (RootObject as IColorable).Color; // Prioritize root object for picking color
+                else if (this.Any(o => o.CanBeColored()))
+                    return (this.First(o => o.CanBeColored()) as IColorable).Color;
+                else
+                    return Vector3.Zero;
             }
+
             set
             {
                 foreach (var o in this.Where(o => o.CanBeColored()))
-                    ((IColorable)o).Color = value;
+                    (o as IColorable).Color = value;
             }
         }
 

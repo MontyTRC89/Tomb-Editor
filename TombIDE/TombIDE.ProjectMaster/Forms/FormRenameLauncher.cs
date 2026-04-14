@@ -1,70 +1,62 @@
 ﻿using DarkUI.Forms;
 using System;
+using System.IO;
 using System.Windows.Forms;
-using TombIDE.ProjectMaster.Services.Settings.Launcher;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE.ProjectMaster;
-
-public partial class FormRenameLauncher : DarkForm
+namespace TombIDE.ProjectMaster
 {
-	private readonly IDE _ide;
-
-	private readonly ILauncherManagementService _launcherService;
-
-	#region Initialization
-
-	public FormRenameLauncher(IDE ide) : this(ide, new LauncherManagementService())
-	{ }
-
-	public FormRenameLauncher(IDE ide, ILauncherManagementService launcherService)
+	public partial class FormRenameLauncher : DarkForm
 	{
-		_ide = ide;
-		_launcherService = launcherService;
+		private IDE _ide;
 
-		InitializeComponent();
-	}
+		#region Initialization
 
-	protected override void OnShown(EventArgs e)
-	{
-		base.OnShown(e);
-
-		textBox_NewName.Text = _launcherService.GetLauncherName(_ide.Project);
-		textBox_NewName.SelectAll();
-	}
-
-	#endregion Initialization
-
-	#region Events
-
-	private void button_Apply_Click(object sender, EventArgs e)
-	{
-		try
+		public FormRenameLauncher(IDE ide)
 		{
-			string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
+			_ide = ide;
 
-			if (string.IsNullOrWhiteSpace(newName))
-				throw new ArgumentException("Invalid file name.");
+			InitializeComponent();
+		}
 
-			string currentName = _launcherService.GetLauncherName(_ide.Project);
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
 
-			if (newName == currentName)
+			textBox_NewName.Text = Path.GetFileNameWithoutExtension(_ide.Project.GetLauncherFilePath());
+			textBox_NewName.SelectAll();
+		}
+
+		#endregion Initialization
+
+		#region Events
+
+		private void button_Apply_Click(object sender, EventArgs e)
+		{
+			try
 			{
-				DialogResult = DialogResult.Cancel;
+				string launcherFilePath = _ide.Project.GetLauncherFilePath();
+				string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
+
+				if (string.IsNullOrWhiteSpace(newName))
+					throw new ArgumentException("Invalid file name.");
+
+				if (newName == Path.GetFileNameWithoutExtension(launcherFilePath))
+					DialogResult = DialogResult.Cancel;
+				else
+				{
+					string newPath = Path.Combine(Path.GetDirectoryName(launcherFilePath), newName + ".exe");
+					File.Move(launcherFilePath, newPath);
+				}
 			}
-			else
+			catch (Exception ex)
 			{
-				_launcherService.RenameLauncher(_ide.Project, newName);
-				DialogResult = DialogResult.OK;
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DialogResult = DialogResult.None;
 			}
 		}
-		catch (Exception ex)
-		{
-			DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			DialogResult = DialogResult.None;
-		}
-	}
 
-	#endregion Events
+		#endregion Events
+	}
 }

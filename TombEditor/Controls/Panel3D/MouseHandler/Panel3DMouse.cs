@@ -47,8 +47,6 @@ namespace TombEditor.Controls.Panel3D
             _dragObjectMoved = false;
             _dragObjectPicked = false;
 
-            HandleBrushMouseUp();
-
             if (_gizmo.MouseUp())
                 Invalidate();
 
@@ -59,17 +57,9 @@ namespace TombEditor.Controls.Panel3D
         private void OnMouseButtonDown(MouseButtons button, Point location)
         {
             if (_editor.FlyMode)
-                return;
+                return; // Selecting in FlyMode is not allowed
 
             _lastMousePosition = location;
-
-            // End camera preview on any mouse click
-            if (_editor.CameraPreviewMode != CameraPreviewType.None)
-            {
-                ToggleCameraPreview(false);
-                return;
-            }
-
             _doSectorSelection = false;
             _objectPlaced = false;
 
@@ -90,7 +80,7 @@ namespace TombEditor.Controls.Panel3D
 
         private void OnMouseMoved(MouseButtons button, Point location)
         {
-            if (_editor.FlyMode || _editor.CameraPreviewMode != CameraPreviewType.None)
+            if (_editor.FlyMode)
                 return;
 
             // Reset internal bool for deselection
@@ -122,9 +112,7 @@ namespace TombEditor.Controls.Panel3D
             if (!redrawWindow)
             {
                 // Hover effect on gizmo
-                redrawWindow = CanUseGizmo()
-                    ? _gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(location.X, location.Y)))
-                    : _gizmo.GizmoUpdateHoverEffect(null);
+                redrawWindow = _gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(location.X, location.Y)));
             }
 
             if (redrawWindow)
@@ -152,19 +140,14 @@ namespace TombEditor.Controls.Panel3D
             }
         }
 
-        private void OnMouseWheelScroll(int delta, Point location)
+        private void OnMouseWheelScroll(int delta)
         {
-            if (_editor.CameraPreviewMode != CameraPreviewType.None)
-                return;
-
-            if (_movementTimer.Animating)
-                return;
-
-            if (HandleBrushWheelScroll(delta, location))
-                return;
-
-            Camera.Zoom(-delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
-            Invalidate();
+            if (!_movementTimer.Animating)
+            {
+                Console.WriteLine("Delta: " + delta);
+                Camera.Zoom(-delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
+                Invalidate();
+            }
         }
 
         private void OnMouseEntered()
@@ -196,11 +179,7 @@ namespace TombEditor.Controls.Panel3D
                 if (newSectorPicking.Room != _editor.SelectedRoom)
                     _editor.SelectedRoom = newSectorPicking.Room;
 
-                // Check for a single IWadObject.
                 var obj = e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject;
-
-                // Check for multiple IWadObject[] (multi-selection drag from Content Browser).
-                var objArray = e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject[];
 
                 if (obj != null)
                 {
@@ -216,30 +195,6 @@ namespace TombEditor.Controls.Panel3D
                     // Put item from object browser
                     if (instance != null)
                         EditorActions.PlaceObject(_editor.SelectedRoom, newSectorPicking.Pos, instance);
-                }
-                else if (objArray != null && objArray.Length > 0)
-                {
-                    // Build a list of instances for all dragged wad objects
-                    var instances = new List<PositionBasedObjectInstance>();
-                    foreach (var wadObj in objArray)
-                    {
-                        PositionBasedObjectInstance instance = null;
-
-                        if (wadObj is ImportedGeometry importedGeo)
-                            instance = new ImportedGeometryInstance { Model = importedGeo };
-                        else if (wadObj is WadMoveable moveable)
-                            instance = ItemInstance.FromItemType(new ItemType(moveable.Id, _editor?.Level?.Settings));
-                        else if (wadObj is WadStatic staticMesh)
-                            instance = ItemInstance.FromItemType(new ItemType(staticMesh.Id, _editor?.Level?.Settings));
-
-                        if (instance != null)
-                            instances.Add(instance);
-                    }
-
-                    if (instances.Count == 1)
-                        EditorActions.PlaceObject(_editor.SelectedRoom, newSectorPicking.Pos, instances[0]);
-                    else if (instances.Count > 1)
-                        EditorActions.PlaceObject(_editor.SelectedRoom, newSectorPicking.Pos, new ObjectGroup(instances));
                 }
                 else if (filesToProcess != -1)
                 {
@@ -266,8 +221,6 @@ namespace TombEditor.Controls.Panel3D
         private void OnMouseDragEntered(DragEventArgs e)
         {
             if (e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject != null)
-                e.Effect = DragDropEffects.Copy;
-            else if (e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject[] != null)
                 e.Effect = DragDropEffects.Copy;
             else if (e.Data.GetDataPresent(typeof(DarkFloatingToolboxContainer)))
                 e.Effect = DragDropEffects.Move;

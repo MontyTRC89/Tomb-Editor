@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
@@ -41,15 +40,14 @@ namespace TombEditor.Controls
                 Invalidate();
             }
 
-            // Update currently viewed item.
-            if (obj is Editor.ChosenItemsChangedEvent itemsChanged)
+            // Update currently viewed item
+            if (obj is Editor.ChosenItemChangedEvent)
             {
-                if (itemsChanged.Current?.Any(o => o is WadMoveable or WadStatic) == true)
-                {
+                Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
+                if (e.Current != null)
                     ResetCamera();
-                    Invalidate();
-                    Update(); // Magic fix for room view leaking into item view
-                }
+                Invalidate();
+                Update(); // Magic fix for room view leaking into item view
             }
 
             if (obj is Editor.LoadedWadsChangedEvent ||
@@ -111,10 +109,18 @@ namespace TombEditor.Controls
                         else
                             EditorActions.AddWad(Parent);
                     }
-                    else
+                    else if (_editor.ChosenItem != null)
                     {
-                        if (CurrentObject != null)
-                            DoDragDrop(CurrentObject, DragDropEffects.Copy);
+                        if (_editor.ChosenItem.Value.IsStatic)
+                        {
+                            var stat = _editor.Level.Settings.WadTryGetStatic(_editor.ChosenItem.Value.StaticId);
+                            if (stat != null) DoDragDrop(stat, DragDropEffects.Copy);
+                        }
+                        else
+                        {
+                            var mov = _editor.Level.Settings.WadTryGetMoveable(_editor.ChosenItem.Value.MoveableId);
+                            if (mov != null) DoDragDrop(mov, DragDropEffects.Copy);
+                        }
                     }
                     break;
             }

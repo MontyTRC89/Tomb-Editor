@@ -1303,16 +1303,6 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap toolbox_Deselection_16 {
-            get {
-                object obj = ResourceManager.GetObject("toolbox_Deselection_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap toolbox_Drag_16 {
             get {
                 object obj = ResourceManager.GetObject("toolbox_Drag_16", resourceCulture);
@@ -1463,26 +1453,6 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap toolbox_ObjectPlacement_16 {
-            get {
-                object obj = ResourceManager.GetObject("toolbox_ObjectPlacement_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap toolbox_ObjectSelection_16 {
-            get {
-                object obj = ResourceManager.GetObject("toolbox_ObjectSelection_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap toolbox_Paint_16 {
             get {
                 object obj = ResourceManager.GetObject("toolbox_Paint_16", resourceCulture);
@@ -1516,16 +1486,6 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap toolbox_PortalDigger_16 {
             get {
                 object obj = ResourceManager.GetObject("toolbox_PortalDigger_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap toolbox_Ruler_16 {
-            get {
-                object obj = ResourceManager.GetObject("toolbox_Ruler_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1576,26 +1536,6 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap toolbox_Vertex_16 {
             get {
                 object obj = ResourceManager.GetObject("toolbox_Vertex_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap actions_StarOutlined_16 {
-            get {
-                object obj = ResourceManager.GetObject("actions_StarOutlined_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap actions_StarFilled_16 {
-            get {
-                object obj = ResourceManager.GetObject("actions_StarFilled_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

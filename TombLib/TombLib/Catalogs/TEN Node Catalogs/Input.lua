@@ -36,14 +36,6 @@ LevelFuncs.Engine.Node.BlockKey = function(keyCode)
 	return TEN.Input.KeyClear(keyCode)
 end
 
--- !Name "Clear all controls"
--- !Section "Input"
--- !Description "Blocks all keys from pushing."
-
-LevelFuncs.Engine.Node.BlockAllKeys = function()
-	return TEN.Input.ClearAllKeys()
-end
-
 -- !Name "Vibrate game controller"
 -- !Section "Input"
 -- !Description "Vibrates game controller, if vibration feature is available and setting is on."

@@ -17,12 +17,14 @@
 
 		private void InitializeComponent()
 		{
+			components = new System.ComponentModel.Container();
 			tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
 			panel_TextBox = new System.Windows.Forms.Panel();
 			richTextBox = new System.Windows.Forms.RichTextBox();
 			label_Enter = new DarkUI.Controls.DarkLabel();
 			button_Generate = new DarkUI.Controls.DarkButton();
 			label_Info = new DarkUI.Controls.DarkLabel();
+			timer = new System.Windows.Forms.Timer(components);
 			tableLayoutPanel.SuspendLayout();
 			panel_TextBox.SuspendLayout();
 			SuspendLayout();
@@ -112,6 +114,11 @@
 			label_Info.Text = "IMPORTANT: Please manually verify the files in the archive after it's been created.";
 			label_Info.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// timer
+			// 
+			timer.Interval = 300;
+			timer.Tick += timer_Tick;
+			// 
 			// FormGameArchive
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -137,5 +144,6 @@
 		private System.Windows.Forms.RichTextBox richTextBox;
 		private DarkUI.Controls.DarkLabel label_Enter;
 		private DarkUI.Controls.DarkButton button_Generate;
+		private System.Windows.Forms.Timer timer;
 	}
 }

@@ -58,8 +58,6 @@ namespace TombLib.LevelData
         public bool FlagExcludeFromPathFinding { get; set; }
         [DisplayName("No lensflare")]
         public bool FlagNoLensflare { get; set; }
-        [DisplayName("No caustics")]
-        public bool FlagNoCaustics { get; set; }
         [DisplayName("Reverb type")]
         public byte Reverberation { get; set; }
         [DisplayName("Locked")]
@@ -136,7 +134,6 @@ namespace TombLib.LevelData
 
         // Internal data structures
         public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
-        public bool PendingRelight { get; set; } = true;
 
         private IEnumerable<PortalInstance> _portalsCache;
 
@@ -146,7 +143,7 @@ namespace TombLib.LevelData
             Level = level;
             Properties = new RoomProperties() { AmbientLight = ambientLight };
             Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling, true);
-            Rebuild(relight: true, highQualityLighting: true);
+            BuildGeometry();
         }
 
         public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", int ceiling = DefaultHeight)
@@ -314,8 +311,8 @@ namespace TombLib.LevelData
                         newRoom.MoveObjectFrom(level, this, instance);
             }
 
-            newRoom.Rebuild(relight: true, highQualityLighting: true);
-            Rebuild(relight: true, highQualityLighting: true);
+            newRoom.BuildGeometry();
+            BuildGeometry();
             return newRoom;
         }
 
@@ -952,30 +949,14 @@ namespace TombLib.LevelData
             }
         }
 
-        public void Rebuild(bool relight, bool highQualityLighting = false)
+        public void BuildGeometry(bool highQualityLighting = false, bool useLegacyCode = false)
         {
-            RoomGeometry.Build(this);
-
-            if (relight)
-            {
-                RoomGeometry.Relight(this, highQualityLighting);
-                PendingRelight = false;
-            }
-            else
-            {
-                PendingRelight = true;
-            }
-        }
-
-        public void BuildGeometry(bool useLegacyCode = false)
-        {
-            RoomGeometry.Build(this, useLegacyCode);
+            RoomGeometry.Build(this, highQualityLighting, useLegacyCode);
         }
 
         public void RebuildLighting(bool highQualityLighting)
         {
             RoomGeometry.Relight(this, highQualityLighting);
-            PendingRelight = false;
         }
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
@@ -1568,7 +1549,7 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
-        public void SmartBuildGeometry(RectangleInt2 area, bool relight, bool highQualityLighting = false)
+        public void SmartBuildGeometry(RectangleInt2 area, bool highQualityLighting = false)
         {
             area = area.Inflate(1); // Add margin
 
@@ -1612,7 +1593,7 @@ namespace TombLib.LevelData
             // Update the collected stuff now
             Parallel.For(0, roomsToProcess.Count, index =>
             {
-                roomsToProcess[index].Rebuild(relight, highQualityLighting);
+                roomsToProcess[index].BuildGeometry(highQualityLighting);
             });
         }
 
@@ -1759,10 +1740,8 @@ namespace TombLib.LevelData
                                 continue;
 
                             var texture = Sectors[x, z].GetFaceTexture(face);
-                            float maxTexCoordSpan = Level?.IsTombEngine == true ? 1024.0f : 256.0f;
-
                             if (texture.TextureIsInvisible || texture.TextureIsUnavailable ||
-                                (shape == FaceShape.Triangle && texture.AreTriangleCoordsOutOfBounds(maxTexCoordSpan)) || (shape == FaceShape.Quad && texture.AreQuadCoordsOutOfBounds(maxTexCoordSpan)))
+                                (shape == FaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == FaceShape.Quad && texture.QuadCoordsOutOfBounds))
                                 continue;
 
                             var doubleSided = Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 && texture.DoubleSided;

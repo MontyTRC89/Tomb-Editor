@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Drawing;
 using System.Numerics;
 using TombLib.Controls;
@@ -11,43 +9,30 @@ namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D
     {
-        public void ResetCamera(bool forceNewCamera = false, Room? destRoom = null)
+        public void ResetCamera(bool forceNewCamera = false)
         {
-            if (_editor is null)
-                return;
-
-            var room = destRoom ?? _editor.SelectedRoom;
+            Room room = _editor?.SelectedRoom;
 
             // Point the camera to the room's center
-            var target = new Vector3();
-
-            if (room is not null)
+            Vector3 target = new Vector3();
+            if (room != null)
                 target = room.WorldPos + room.GetLocalCenter();
 
             // Calculate camera distance
-            var roomDiagonal = new Vector2(room?.NumXSectors ?? 0, room?.NumZSectors ?? 0);
+            Vector2 roomDiagonal = new Vector2(room?.NumXSectors ?? 0, room?.NumZSectors ?? 0);
 
             var dist = (roomDiagonal.Length() * 0.8f + 2.1f) * Level.SectorSizeUnit;
             var rotX = 0.6f;
             var rotY = (float)Math.PI;
 
-            bool flybyPreviewActive = _flybyPreview is not null && _flybyPreview.SavedCamera is not null;
-
-            if (flybyPreviewActive || Camera is null || forceNewCamera || !_editor.Configuration.Rendering3D_AnimateCameraOnReset)
+            // Initialize a new camera
+            if (Camera == null || forceNewCamera || !_editor.Configuration.Rendering3D_AnimateCameraOnReset)
             {
-                var newCamera = new ArcBallCamera(target, rotX, rotY, -(float)Math.PI / 2, (float)Math.PI / 2, dist, 100, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
-
-                if (flybyPreviewActive)
-                    _flybyPreview!.SavedCamera = newCamera;
-                else
-                    Camera = newCamera;
-
+                Camera = new ArcBallCamera(target, rotX, rotY, -(float)Math.PI / 2, (float)Math.PI / 2, dist, 100, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
                 Invalidate();
             }
             else
-            {
                 AnimateCamera(target, new Vector2(rotX, rotY), dist);
-            }
         }
 
         public int TranslateCameraMouseMovement(Point value, bool horizontal = false)
@@ -75,10 +60,8 @@ namespace TombEditor.Controls.Panel3D
 
             _movementTimer.Animate(AnimationMode.Snap, speed);
         }
-
         private void AnimateCamera(Vector3 newPos, Vector2 newRot, float newDist, float speed = 0.5f)
             => AnimateCamera(Camera.Target, newPos, new Vector2(Camera.RotationX, Camera.RotationY), newRot, Camera.Distance, newDist, speed);
-
         private void AnimateCamera(Vector3 newPos, float speed = 0.5f)
             => AnimateCamera(newPos, new Vector2(Camera.RotationX, Camera.RotationY), Camera.Distance, speed);
     }

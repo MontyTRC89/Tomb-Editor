@@ -15,9 +15,13 @@ using TombLib.LevelData.IO;
 
 namespace TombIDE.ProjectMaster
 {
+	/* Warning */
+	// This is the most fragile class in the whole project.
+	// Modify at your own risk.
+
 	public partial class SectionLevelProperties : UserControl
 	{
-		private IDE _ide = null!;
+		private IDE _ide;
 
 		#region Initialization
 
@@ -50,10 +54,8 @@ namespace TombIDE.ProjectMaster
 					continue;
 
 				// Get the ProductName and the icon of the program
-				string? programName = FileVersionInfo.GetVersionInfo(programPath).ProductName;
-
-				Image? image = Icon.ExtractAssociatedIcon(programPath)?.ToBitmap();
-				image = image is not null ? ImageHandling.ResizeImage(image, 16, 16) : null;
+				string programName = FileVersionInfo.GetVersionInfo(programPath).ProductName;
+				Image image = ImageHandling.ResizeImage(Icon.ExtractAssociatedIcon(programPath).ToBitmap(), 16, 16);
 
 				if (string.IsNullOrEmpty(programName))
 					programName = Path.GetFileNameWithoutExtension(programPath);
@@ -250,13 +252,9 @@ namespace TombIDE.ProjectMaster
 			contextMenu.Show(Cursor.Position);
 		}
 
-		private void OnContextMenuProgramClicked(object? sender, EventArgs e)
+		private void OnContextMenuProgramClicked(object sender, EventArgs e)
 		{
-			string? programPath = (sender as ToolStripMenuItem)?.Tag?.ToString();
-
-			if (string.IsNullOrWhiteSpace(programPath) || treeView_Resources.SelectedNodes.Count == 0)
-				return;
-
+			string programPath = ((ToolStripMenuItem)sender).Tag.ToString();
 			string selectedFilePath = treeView_Resources.SelectedNodes[0].Text;
 
 			var startInfo = new ProcessStartInfo
@@ -400,7 +398,7 @@ namespace TombIDE.ProjectMaster
 			{
 				foreach (DarkTreeNode node in treeView_AllPrjFiles.Nodes)
 				{
-					if (node.Text.Equals(_ide.SelectedLevel.TargetPrj2FileName, StringComparison.OrdinalIgnoreCase))
+					if (node.Text.ToLower() == _ide.SelectedLevel.TargetPrj2FileName.ToLower())
 					{
 						treeView_AllPrjFiles.SelectNode(node);
 						nodeFound = true;
@@ -513,7 +511,7 @@ namespace TombIDE.ProjectMaster
 				int foldersToGoBackCount = Regex.Matches(filePath, @"\\\.\.").Count;
 
 				string partialPath = filePath.Replace("$(LevelDirectory)", string.Empty).Replace(@"\..", string.Empty);
-				string? missingPart = settings.LevelFilePath;
+				string missingPart = settings.LevelFilePath;
 
 				for (int i = 0; i <= foldersToGoBackCount; i++)
 					missingPart = Path.GetDirectoryName(missingPart);

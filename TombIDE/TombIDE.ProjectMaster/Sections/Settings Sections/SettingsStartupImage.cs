@@ -1,104 +1,131 @@
 using DarkUI.Forms;
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Forms;
-using TombIDE.ProjectMaster.Services.Settings.StartupImage;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE.ProjectMaster;
-
-public partial class SettingsStartupImage : UserControl
+namespace TombIDE.ProjectMaster
 {
-	private IDE _ide = null!;
-
-	private readonly IStartupImageService _startupImageService;
-
-	#region Initialization
-
-	public SettingsStartupImage() : this(new StartupImageService())
-	{ }
-
-	public SettingsStartupImage(IStartupImageService startupImageService)
+	public partial class SettingsStartupImage : UserControl
 	{
-		InitializeComponent();
+		private IDE _ide;
 
-		_startupImageService = startupImageService;
-	}
+		#region Initialization
 
-	public void Initialize(IDE ide)
-	{
-		_ide = ide;
-
-		radioButton_Wide.Checked = !_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled;
-		radioButton_Standard.Checked = _ide.IDEConfiguration.StandardAspectRatioPreviewEnabled;
-
-		UpdatePreview();
-	}
-
-	#endregion Initialization
-
-	#region Events
-
-	private void radioButton_Wide_CheckedChanged(object sender, EventArgs e)
-	{
-		if (radioButton_Wide.Checked)
+		public SettingsStartupImage()
 		{
-			try
-			{
-				var image = _startupImageService.GetStartupImage(_ide.Project);
+			InitializeComponent();
+		}
 
-				if (image is not null)
+		public void Initialize(IDE ide)
+		{
+			_ide = ide;
+
+			radioButton_Wide.Checked = !_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled;
+			radioButton_Standard.Checked = _ide.IDEConfiguration.StandardAspectRatioPreviewEnabled;
+
+			UpdatePreview();
+		}
+
+		#endregion Initialization
+
+		#region Events
+
+		private void radioButton_Wide_CheckedChanged(object sender, EventArgs e)
+		{
+			if (radioButton_Wide.Checked)
+			{
+				try
 				{
-					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
-					image.Dispose();
+					using (var image = Image.FromFile(Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp")))
+						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
+
+					_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = false;
+					_ide.IDEConfiguration.Save();
 				}
-
-				_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = false;
-				_ide.IDEConfiguration.Save();
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-	}
-
-	private void radioButton_Standard_CheckedChanged(object sender, EventArgs e)
-	{
-		if (radioButton_Standard.Checked)
-		{
-			try
-			{
-				var image = _startupImageService.GetStartupImage(_ide.Project);
-
-				if (image is not null)
+				catch (Exception ex)
 				{
-					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
-					image.Dispose();
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
-
-				_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = true;
-				_ide.IDEConfiguration.Save();
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-	}
 
-	private void button_Change_Click(object sender, EventArgs e)
-	{
-		using var dialog = new OpenFileDialog
+		private void radioButton_Standard_CheckedChanged(object sender, EventArgs e)
 		{
-			Filter = "Bitmap Files|*.bmp"
-		};
+			if (radioButton_Standard.Checked)
+			{
+				try
+				{
+					using (var image = Image.FromFile(Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp")))
+						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
 
-		if (dialog.ShowDialog(this) == DialogResult.OK)
+					_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = true;
+					_ide.IDEConfiguration.Save();
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+		}
+
+		private void button_Change_Click(object sender, EventArgs e)
+		{
+			using var dialog = new OpenFileDialog();
+			dialog.Filter = "Bitmap Files|*.bmp";
+
+			if (dialog.ShowDialog(this) == DialogResult.OK)
+				ReplaceImage(dialog.FileName);
+		}
+
+		private void button_UseBlank_Click(object sender, EventArgs e)
+		{
+			DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to apply a blank image?", "Are you sure?",
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (result == DialogResult.Yes)
+			{
+				try
+				{
+					using (var bitmap = new Bitmap(1, 1))
+					{
+						bitmap.SetPixel(0, 0, Color.Black);
+						bitmap.Save(Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp"), ImageFormat.Bmp);
+					}
+
+					UpdatePreview();
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+		}
+
+		private void button_Reset_Click(object sender, EventArgs e)
+		{
+			DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to restore the default image?", "Are you sure?",
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (result == DialogResult.Yes)
+			{
+				string imageFilePath = Path.Combine(DefaultPaths.ProgramDirectory, "TIDE", "Templates", "Defaults", "TR4 Resources", "load.bmp");
+				ReplaceImage(imageFilePath);
+			}
+		}
+
+		#endregion Events
+
+		#region Methods
+
+		private void ReplaceImage(string imagePath)
 		{
 			try
 			{
-				_startupImageService.ApplyStartupImage(_ide.Project, dialog.FileName);
+				File.Copy(imagePath, Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp"), true);
 				UpdatePreview();
 			}
 			catch (Exception ex)
@@ -106,77 +133,26 @@ public partial class SettingsStartupImage : UserControl
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-	}
 
-	private void button_UseBlank_Click(object sender, EventArgs e)
-	{
-		DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to apply a blank image?", "Are you sure?",
-			MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-		if (result == DialogResult.Yes)
+		private void UpdatePreview()
 		{
 			try
 			{
-				_startupImageService.ApplyBlankImage(_ide.Project);
-				UpdatePreview();
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-	}
+				using var image = Image.FromFile(Path.Combine(_ide.Project.GetEngineRootDirectoryPath(), "load.bmp"));
 
-	private void button_Reset_Click(object sender, EventArgs e)
-	{
-		DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to restore the default image?", "Are you sure?",
-			MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-		if (result == DialogResult.Yes)
-		{
-			try
-			{
-				_startupImageService.RestoreDefaultImage(_ide.Project);
-				UpdatePreview();
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-	}
-
-	#endregion Events
-
-	#region Methods
-
-	private void UpdatePreview()
-	{
-		try
-		{
-			var image = _startupImageService.GetStartupImage(_ide.Project);
-
-			if (image is not null)
-			{
 				if (radioButton_Wide.Checked)
 					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
 				else if (radioButton_Standard.Checked)
 					panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
 
-				label_Blank.Visible = _startupImageService.IsImageBlank(_ide.Project);
-				image.Dispose();
+				label_Blank.Visible = image.Width == 1 && image.Height == 1;
 			}
-			else
+			catch (Exception ex)
 			{
-				panel_Preview.BackgroundImage = null;
-				label_Blank.Visible = true;
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		catch (Exception ex)
-		{
-			DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
-	}
 
-	#endregion Methods
+		#endregion Methods
+	}
 }

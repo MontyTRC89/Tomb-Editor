@@ -94,9 +94,9 @@ namespace WadTool
             if (!isTEN && _editor.Tool.Configuration.AnimationEditor_SoundPreviewType > SoundPreviewType.Water)
                 _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
 
-            // TODO: Unlock when anim blending is finished.
-            sectionBlending.Visible = false; //isTEN;
-            panelRootMotion.Visible = false; //isTEN;
+            // Lock TEN-specific controls
+            sectionBlending.Visible = isTEN;
+            panelRootMotion.Visible = isTEN;
 
             // Update UI
             UpdateUIControls();

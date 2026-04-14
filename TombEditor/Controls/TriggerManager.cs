@@ -45,7 +45,6 @@ namespace TombEditor.Controls
 
         private Editor _editor;
         private bool _lockUI = false;
-        private bool _nodeListRefreshPending = false;
 
         private void EditorEventRaised(IEditorEvent obj)
         {
@@ -63,16 +62,8 @@ namespace TombEditor.Controls
                (obj is Editor.ObjectChangedEvent && 
                (obj as Editor.ObjectChangedEvent).ChangeType != ObjectChangeType.Change))
             {
-                if (!_nodeListRefreshPending && IsHandleCreated)
-                {
-                    _nodeListRefreshPending = true;
-                    BeginInvoke((Action)(() =>
-                    {
-                        _nodeListRefreshPending = false;
-                        nodeEditor.PopulateCachedNodeLists(_editor.Level);
-                        nodeEditor.RefreshArgumentUI();
-                    }));
-                }
+                nodeEditor.PopulateCachedNodeLists(_editor.Level);
+                nodeEditor.RefreshArgumentUI();
             }
         }
 

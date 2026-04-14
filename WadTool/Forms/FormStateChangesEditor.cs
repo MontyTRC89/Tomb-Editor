@@ -62,8 +62,8 @@ namespace WadTool
             dgvControls.DataGridView = dgvStateChanges;
             dgvControls.Enabled = true;
 
-            // TODO: Enable when animation blending is finished.
-            if (true) // if (editor.Wad.GameVersion != TombLib.LevelData.TRVersion.Game.TombEngine)
+            // Hide TEN controls
+            if (editor.Wad.GameVersion != TombLib.LevelData.TRVersion.Game.TombEngine)
             {
                 blendingGroup.Visible = false;
                 stateChangeGroup.Width = blendingGroup.Left + blendingGroup.Width - stateChangeGroup.Left;

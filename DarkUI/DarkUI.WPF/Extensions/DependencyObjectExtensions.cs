@@ -16,14 +16,6 @@ public static class DependencyObjectExtensions
 		return ancestor as T;
 	}
 
-	public static T? FindVisualAncestorOrSelf<T>(this DependencyObject dependencyObject) where T : class
-	{
-		if (dependencyObject is T self)
-			return self;
-
-		return dependencyObject.FindVisualAncestor<T>();
-	}
-
 	public static T? FindLogicalAncestor<T>(this DependencyObject dependencyObject) where T : class
 	{
 		DependencyObject ancestor = dependencyObject;

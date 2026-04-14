@@ -56,9 +56,9 @@ public sealed class SplashConfiguration
 
 	public void Save(string path)
 	{
-		string? directoryName = Path.GetDirectoryName(path);
+		string directoryName = Path.GetDirectoryName(path);
 
-		if (directoryName is not null && !Directory.Exists(directoryName))
+		if (!Directory.Exists(directoryName))
 			Directory.CreateDirectory(directoryName);
 
 		XmlUtils.WriteXmlFile(path, GetType(), this);

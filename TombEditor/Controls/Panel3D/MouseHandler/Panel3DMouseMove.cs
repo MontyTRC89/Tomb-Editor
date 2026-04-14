@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -34,15 +35,13 @@ namespace TombEditor.Controls.Panel3D
                     delta.X * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
                    -delta.Y * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
-            if (CanUseGizmo())
-                _gizmo.MouseMoved(_viewProjection, GetRay(location.X, location.Y)); // Update gizmo
-
+            _gizmo.MouseMoved(_viewProjection, GetRay(location.X, location.Y)); // Update gizmo
             return true;
         }
 
         private bool OnMouseMovedLeft(Point location)
         {
-            if (CanUseGizmo() && _gizmo.MouseMoved(_viewProjection, GetRay(location.X, location.Y)))
+            if (_gizmo.MouseMoved(_viewProjection, GetRay(location.X, location.Y)))
             {
                 // Process gizmo
                 return true;
@@ -192,9 +191,6 @@ namespace TombEditor.Controls.Panel3D
             }
             else
             {
-                if (HandleBrushMouseMove(location))
-                    return true;
-
                 var newSectorPicking = DoPicking(GetRay(location.X, location.Y)) as PickingResultSector;
 
                 if (newSectorPicking != null)
@@ -347,8 +343,6 @@ namespace TombEditor.Controls.Panel3D
 
         private bool OnMouseMovedNone(Point location)
         {
-            HandleBrushMouseMove(location);
-
             if (_editor.Tool.Tool != EditorToolType.GridPaint)
                 return false;
 

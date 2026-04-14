@@ -1,5 +1,10 @@
 ﻿using System.Numerics;
 using SharpDX.Toolkit.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TombLib.Graphics;
 using WadTool.Controls;
 using TombLib;
@@ -11,9 +16,6 @@ namespace WadTool
         private readonly Configuration _configuration;
         private readonly PanelRenderingAnimationEditor _control;
         private readonly AnimationEditor _editor;
-
-        private Quaternion _pickQuaternion;
-        private Vector3 _pickEuler;
 
         public GizmoAnimationEditor(AnimationEditor editor, GraphicsDevice device,
                                     Effect effect, PanelRenderingAnimationEditor control)
@@ -39,26 +41,19 @@ namespace WadTool
                     return;
 
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
-
-                // Capture pick-time state on the first call after each new gizmo pick.
-                if (!_editor.MadeChanges)
-                {
-                    _pickQuaternion = _editor.CurrentKeyFrame.Quaternions[meshIndex];
-                    _pickEuler = _editor.CurrentKeyFrame.Rotations[meshIndex];
-                }
-
+                var rotationVector = _editor.CurrentKeyFrame.Rotations[meshIndex];
+                var delta = 0f;
                 var axis = Vector3.Zero;
-                float totalDelta = 0.0f;
 
                 switch (mode)
                 {
-                    case GizmoMode.RotateX: totalDelta = newAngle - _pickEuler.X; axis = Vector3.UnitX; break;
-                    case GizmoMode.RotateY: totalDelta = newAngle - _pickEuler.Y; axis = Vector3.UnitY; break;
-                    case GizmoMode.RotateZ: totalDelta = newAngle - _pickEuler.Z; axis = Vector3.UnitZ; break;
+                    case GizmoMode.RotateX: delta = newAngle - rotationVector.X; axis = Vector3.UnitX; break;
+                    case GizmoMode.RotateY: delta = newAngle - rotationVector.Y; axis = Vector3.UnitY; break;
+                    case GizmoMode.RotateZ: delta = newAngle - rotationVector.Z; axis = Vector3.UnitZ; break;
                 }
 
-                var quat = _pickQuaternion * Quaternion.CreateFromAxisAngle(axis, totalDelta);
-                _editor.UpdateTransform(meshIndex, quat, _editor.CurrentKeyFrame.Translations[0]);
+                var quat = _editor.CurrentKeyFrame.Quaternions[meshIndex] * Quaternion.CreateFromAxisAngle(axis, delta);
+                _editor.UpdateTransform(meshIndex, MathC.QuaternionToEuler(quat), _editor.CurrentKeyFrame.Translations[0]);
 
                 _control.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
                 _control.Invalidate();
