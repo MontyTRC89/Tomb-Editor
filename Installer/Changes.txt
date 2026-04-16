@@ -6,6 +6,9 @@ Tomb Editor:
  * Added Content Browser tool window for more streamlined object management.
  * Added Flyby Timeline control to edit and preview flyby sequences.
  * Added "Preview flyby sequence" and "Preview camera" context menus for cameras.
+ 
+WadTool:
+ * Added mesh name display in the skeleton editor.
 
 Version 1.11
 ============
