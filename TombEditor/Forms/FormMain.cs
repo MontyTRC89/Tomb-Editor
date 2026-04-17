@@ -340,8 +340,8 @@ namespace TombEditor.Forms
             {
                 var evt = (Editor.SwitchLayoutEvent)obj;
                 var layouts = _editor.Configuration.Window_CustomLayouts;
-                if (evt.LayoutIndex > 0 && evt.LayoutIndex <= layouts.Count)
-                    Layout_SwitchTo(layouts[evt.LayoutIndex - 1].Name);
+                if (evt.LayoutIndex >= 0 && evt.LayoutIndex < layouts.Count)
+                    Layout_SwitchTo(layouts[evt.LayoutIndex].Name);
             }
 
             if (obj is Editor.LevelFileNameChangedEvent)
@@ -606,10 +606,13 @@ namespace TombEditor.Forms
                     var item = new ToolStripMenuItem(layout.Name);
                     item.Checked = layout.Name == config.Window_ActiveLayoutName;
 
-                    if (i < 9)
+                    if (i < Configuration.MaxWindowLayouts)
                     {
+                        var hotkeyName = "SwitchLayout" + (i + 1);
                         var hotkeys = config.UI_Hotkeys["SwitchLayout" + (i + 1)];
-                        item.ShortcutKeyDisplayString = string.Join(", ", hotkeys.Select(h => h.ToString()).Where(str => !string.IsNullOrWhiteSpace(str)));
+
+                        if (config.UI_Hotkeys.Any(h => h.Key == hotkeyName))
+                            item.ShortcutKeyDisplayString = string.Join(", ", config.UI_Hotkeys[hotkeyName].Select(h => h.ToString()).Where(str => !string.IsNullOrWhiteSpace(str)));
                     }
 
                     string layoutName = layout.Name;
@@ -643,8 +646,12 @@ namespace TombEditor.Forms
 
         private void Layout_RestoreDefault()
         {
+            var defaultConfiguration = new Configuration();
+
             _editor.Configuration.Window_ActiveLayoutName = string.Empty;
-            LoadWindowLayout(new Configuration());
+            _editor.Configuration.Window_Layout = defaultConfiguration.Window_Layout;
+
+            LoadWindowLayout(_editor.Configuration);
         }
 
         private void Layout_SwitchTo(string name)
@@ -706,8 +713,8 @@ namespace TombEditor.Forms
                 return;
 
             config.Window_CustomLayouts.Remove(layout);
-            config.Window_ActiveLayoutName = string.Empty;
-            LoadWindowLayout(new Configuration());
+            Layout_RestoreDefault();
+
         }
 
         private void ToolWindow_Toggle(DarkToolWindow toolWindow)
