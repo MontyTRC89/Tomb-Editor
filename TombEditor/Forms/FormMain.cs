@@ -336,12 +336,11 @@ namespace TombEditor.Forms
             if (obj is Editor.ToolWindowToggleEvent)
                 ToolWindow_Toggle(GetWindow((obj as Editor.ToolWindowToggleEvent).ContentType.FullName) as DarkToolWindow);
 
-            if (obj is Editor.SwitchLayoutEvent)
+            if (obj is Editor.SwitchLayoutEvent layoutEvent)
             {
-                var evt = (Editor.SwitchLayoutEvent)obj;
                 var layouts = _editor.Configuration.Window_CustomLayouts;
-                if (evt.LayoutIndex >= 0 && evt.LayoutIndex < layouts.Count)
-                    Layout_SwitchTo(layouts[evt.LayoutIndex].Name);
+                if (layoutEvent.LayoutIndex >= 0 && layoutEvent.LayoutIndex < layouts.Count)
+                    Layout_SwitchTo(layouts[layoutEvent.LayoutIndex].Name);
             }
 
             if (obj is Editor.LevelFileNameChangedEvent)

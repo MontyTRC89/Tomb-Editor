@@ -190,7 +190,7 @@ namespace TombEditor.Controls.Panel3D
         {
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
-            if (Editor.Instance != null)
+            if (Editor.Instance is not null)
             {
                 _getViewportCamera = () => Camera;
 

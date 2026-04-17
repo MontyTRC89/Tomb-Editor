@@ -103,7 +103,7 @@ namespace TombEditor.Controls
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.Selectable, true);
             UpdateStyles();
 
-            if (Editor.Instance != null)
+            if (Editor.Instance is not null)
             {
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
