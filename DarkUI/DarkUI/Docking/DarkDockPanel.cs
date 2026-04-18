@@ -239,8 +239,7 @@ namespace DarkUI.Docking
             var region = _regions[dockContent.DockArea];
             region.RemoveContent(dockContent);
 
-            if (!_isBulkUpdating)
-                ContentRemoved?.Invoke(this, new DockContentEventArgs(dockContent));
+            ContentRemoved?.Invoke(this, new DockContentEventArgs(dockContent));
         }
 
         public bool ContainsContent(DarkDockContent dockContent)
