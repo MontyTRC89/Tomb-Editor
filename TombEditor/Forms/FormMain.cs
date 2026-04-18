@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using DarkUI.Config;
 using System;
 using System.Collections.Generic;
@@ -195,11 +195,11 @@ namespace TombEditor.Forms
                 if (showBrushToolbox && ObjectBrushSettings.Parent == null)
                 {
                     GetWindow<MainView>().AddToolbox(ObjectBrushSettings);
-                    ObjectBrushSettings.Location = _editor.Configuration.Rendering3D_ObjectBrushToolboxPosition;
+                    ObjectBrushSettings.Location = _editor.Configuration.Window_Layout.ObjectBrushToolboxPosition;
                 }
                 else if (!showBrushToolbox && ObjectBrushSettings.Parent != null)
                 {
-                    _editor.Configuration.Rendering3D_ObjectBrushToolboxPosition = ObjectBrushSettings.Location;
+                    _editor.Configuration.Window_Layout.ObjectBrushToolboxPosition = ObjectBrushSettings.Location;
                     GetWindow<MainView>().RemoveToolbox(ObjectBrushSettings);
                 }
             }
@@ -512,22 +512,17 @@ namespace TombEditor.Forms
         private void LoadWindowLayout(Configuration configuration)
         {
             dockArea.RemoveContent();
-            dockArea.RestoreDockPanelState(configuration.Window_Layout, GetWindow);
+            dockArea.RestoreDockPanelState(configuration.Window_Layout.State, GetWindow);
 
-            floatingToolStripMenuItem.Checked = configuration.Rendering3D_ToolboxVisible;
-            ToolBox.Location = configuration.Rendering3D_ToolboxPosition;
-            ObjectBrushSettings.Location = configuration.Rendering3D_ObjectBrushToolboxPosition;
+            floatingToolStripMenuItem.Checked = configuration.Window_Layout.ToolboxVisible;
+            ToolBox.Location = configuration.Window_Layout.ToolboxPosition;
+            ObjectBrushSettings.Location = configuration.Window_Layout.ObjectBrushToolboxPosition;
         }
 
         private void SaveWindowLayout(Configuration configuration)
         {
-            configuration.Window_Layout = dockArea.GetDockPanelState();
-
-            configuration.Rendering3D_ToolboxVisible = floatingToolStripMenuItem.Checked;
-            configuration.Rendering3D_ToolboxPosition = ToolBox.Location;
-
-            if (ObjectBrushSettings.Parent != null)
-                configuration.Rendering3D_ObjectBrushToolboxPosition = ObjectBrushSettings.Location;
+            SaveCurrentStateToLayout(configuration.Window_Layout);
+            SaveCurrentStateToActiveLayout();
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
@@ -586,11 +581,9 @@ namespace TombEditor.Forms
 
             var config = _editor.Configuration;
             bool hasCustomLayouts = config.Window_CustomLayouts.Count > 0;
-            bool hasActiveLayout = !string.IsNullOrEmpty(config.Window_ActiveLayoutName);
 
             // Default layout entry.
             var defaultItem = new ToolStripMenuItem("Default");
-            defaultItem.Checked = !hasActiveLayout;
             defaultItem.Click += (s, ev) => Layout_RestoreDefault();
             layoutsToolStripMenuItem.DropDownItems.Add(defaultItem);
 
@@ -623,32 +616,21 @@ namespace TombEditor.Forms
             // Management entries.
             layoutsToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
 
-            var saveItem = new ToolStripMenuItem("Save layout");
-            saveItem.Click += (s, ev) =>
-            {
-                if (hasActiveLayout)
-                    Layout_SaveCurrent();
-                else
-                    Layout_SaveAs();
-            };
-            layoutsToolStripMenuItem.DropDownItems.Add(saveItem);
-
             var saveAsItem = new ToolStripMenuItem("Save layout as...");
             saveAsItem.Click += (s, ev) => Layout_SaveAs();
             layoutsToolStripMenuItem.DropDownItems.Add(saveAsItem);
 
             var deleteItem = new ToolStripMenuItem("Delete layout");
-            deleteItem.Enabled = hasActiveLayout;
+            deleteItem.Enabled = !string.IsNullOrEmpty(config.Window_ActiveLayoutName);
             deleteItem.Click += (s, ev) => Layout_Delete();
             layoutsToolStripMenuItem.DropDownItems.Add(deleteItem);
         }
 
         private void Layout_RestoreDefault()
         {
-            var defaultConfiguration = new Configuration();
-
+            SaveCurrentStateToActiveLayout();
             _editor.Configuration.Window_ActiveLayoutName = string.Empty;
-            _editor.Configuration.Window_Layout = defaultConfiguration.Window_Layout;
+            _editor.Configuration.Window_Layout = new NamedLayout();
 
             LoadWindowLayout(_editor.Configuration);
         }
@@ -659,20 +641,10 @@ namespace TombEditor.Forms
             if (layout == null)
                 return;
 
+            SaveCurrentStateToActiveLayout();
             _editor.Configuration.Window_ActiveLayoutName = name;
-            _editor.Configuration.Window_Layout = layout.State;
+            _editor.Configuration.Window_Layout = layout.Clone();
             LoadWindowLayout(_editor.Configuration);
-        }
-
-        private void Layout_SaveCurrent()
-        {
-            var config = _editor.Configuration;
-            var layout = config.Window_CustomLayouts.FirstOrDefault(l => l.Name == config.Window_ActiveLayoutName);
-            if (layout == null)
-                return;
-
-            layout.State = dockArea.GetDockPanelState();
-            config.Window_Layout = layout.State;
         }
 
         private void Layout_SaveAs()
@@ -692,15 +664,12 @@ namespace TombEditor.Forms
                     return;
                 }
 
-                var newLayout = new NamedLayout
-                {
-                    Name = name,
-                    State = dockArea.GetDockPanelState()
-                };
+                var newLayout = new NamedLayout { Name = name };
+                SaveCurrentStateToLayout(newLayout);
 
                 config.Window_CustomLayouts.Add(newLayout);
                 config.Window_ActiveLayoutName = name;
-                config.Window_Layout = newLayout.State;
+                config.Window_Layout = newLayout.Clone();
             }
         }
 
@@ -713,7 +682,28 @@ namespace TombEditor.Forms
 
             config.Window_CustomLayouts.Remove(layout);
             Layout_RestoreDefault();
+        }
 
+        private void SaveCurrentStateToLayout(NamedLayout target)
+        {
+            target.State = dockArea.GetDockPanelState();
+            target.ToolboxVisible = floatingToolStripMenuItem.Checked;
+            target.ToolboxPosition = ToolBox.Location;
+            if (ObjectBrushSettings.Parent != null)
+                target.ObjectBrushToolboxPosition = ObjectBrushSettings.Location;
+        }
+
+        private void SaveCurrentStateToActiveLayout()
+        {
+            var config = _editor.Configuration;
+            if (string.IsNullOrEmpty(config.Window_ActiveLayoutName))
+                return;
+
+            var layout = _editor.Configuration.Window_CustomLayouts.FirstOrDefault(l => l.Name == _editor.Configuration.Window_ActiveLayoutName);
+            if (layout == null)
+                return;
+
+            SaveCurrentStateToLayout(layout);
         }
 
         private void ToolWindow_Toggle(DarkToolWindow toolWindow)

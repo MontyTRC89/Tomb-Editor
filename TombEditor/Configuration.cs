@@ -1,4 +1,5 @@
-﻿using DarkUI.Docking;
+using DarkUI.Docking;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
@@ -62,9 +63,6 @@ namespace TombEditor
         public bool Rendering3D_InvertMouseZoom { get; set; } = false;
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
-        public bool Rendering3D_ToolboxVisible { get; set; } = true;
-        public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 15);
-        public Point Rendering3D_ObjectBrushToolboxPosition { get; set; } = new Point(50, 15);
         public bool Rendering3D_DisablePickingForImportedGeometry { get; set; } = false;
         public bool Rendering3D_DisablePickingForHiddenRooms { get; set; } = false;
         public bool Rendering3D_ShowPortals { get; set; } = false;
@@ -300,7 +298,7 @@ namespace TombEditor
         public Size Window_FormMaterialEditor_Size { get; set; } = new Size(537, 560);
         public bool Window_FormMaterialEditor_Maximized { get; set; } = false;
 
-        public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
+        public NamedLayout Window_Layout { get; set; } = new NamedLayout { State = Window_LayoutDefault };
         public List<NamedLayout> Window_CustomLayouts { get; set; } = new List<NamedLayout>();
         public string Window_ActiveLayoutName { get; set; } = string.Empty;
 
@@ -424,9 +422,23 @@ namespace TombEditor
         };
     }
 
-    public class NamedLayout
+    public class NamedLayout : ICloneable
     {
         public string Name { get; set; } = string.Empty;
-        public DockPanelState State { get; set; } = new DockPanelState();
+        public DockPanelState State { get; set; } = Configuration.Window_LayoutDefault;
+        public Point ToolboxPosition { get; set; } = new Point(15, 15);
+        public Point ObjectBrushToolboxPosition { get; set; } = new Point(50, 15);
+        public bool ToolboxVisible { get; set; } = true;
+
+        public NamedLayout Clone() => new NamedLayout
+        {
+            Name = Name,
+            State = State,
+            ToolboxPosition = ToolboxPosition,
+            ObjectBrushToolboxPosition = ObjectBrushToolboxPosition,
+            ToolboxVisible = ToolboxVisible
+        };
+
+        object ICloneable.Clone() => Clone();
     }
 }
