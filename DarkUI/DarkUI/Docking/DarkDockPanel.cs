@@ -191,11 +191,10 @@ namespace DarkUI.Docking
             var region = _regions[dockContent.DockArea];
             region.AddContent(dockContent, dockGroup);
 
+            ContentAdded?.Invoke(this, new DockContentEventArgs(dockContent));
+
             if (!_isBulkUpdating)
-            {
-                ContentAdded?.Invoke(this, new DockContentEventArgs(dockContent));
                 dockContent.Select();
-            }
         }
 
         public void InsertContent(DarkDockContent dockContent, DarkDockGroup dockGroup, DockInsertType insertType)

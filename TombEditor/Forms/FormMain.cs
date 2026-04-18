@@ -341,7 +341,7 @@ namespace TombEditor.Forms
                 var layouts = _editor.Configuration.Window_CustomLayouts;
                 if (layoutEvent.LayoutIndex >= 0 && layoutEvent.LayoutIndex < layouts.Count)
                     Layout_SwitchTo(layouts[layoutEvent.LayoutIndex].Name);
-                else
+                else if (layoutEvent.LayoutIndex <= -1)
                     Layout_RestoreDefault();
             }
 

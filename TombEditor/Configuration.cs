@@ -296,7 +296,7 @@ namespace TombEditor
         public Size Window_FormMaterialEditor_Size { get; set; } = new Size(537, 560);
         public bool Window_FormMaterialEditor_Maximized { get; set; } = false;
 
-        public NamedLayout Window_Layout { get; set; } = new NamedLayout { State = Window_LayoutDefault };
+        public NamedLayout Window_Layout { get; set; } = new NamedLayout { State = Window_LayoutDefault.Clone() };
         public List<NamedLayout> Window_CustomLayouts { get; set; } = new List<NamedLayout>();
         public string Window_ActiveLayoutName { get; set; } = string.Empty;
 
@@ -423,7 +423,7 @@ namespace TombEditor
     public class NamedLayout : ICloneable
     {
         public string Name { get; set; } = string.Empty;
-        public DockPanelState State { get; set; } = Configuration.Window_LayoutDefault;
+        public DockPanelState State { get; set; } = Configuration.Window_LayoutDefault.Clone();
         public Point ToolboxPosition { get; set; } = new Point(15, 15);
         public Point ObjectBrushToolboxPosition { get; set; } = new Point(50, 15);
         public bool ShowToolbox { get; set; } = true;
