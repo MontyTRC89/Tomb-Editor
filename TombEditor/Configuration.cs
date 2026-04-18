@@ -187,8 +187,6 @@ namespace TombEditor
 
         // User interface options
 
-        public bool UI_ShowStats { get; set; } = true;
-        public bool UI_ShowFlybyTimeline { get; set; } = true;
         public bool UI_AutoFillTriggerTypesForSwitchAndKey { get; set; } = true;
         public bool UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture { get; set; } = false;
         public bool UI_DiscardSelectionOnModeSwitch { get; set; } = false;
@@ -428,7 +426,9 @@ namespace TombEditor
         public DockPanelState State { get; set; } = Configuration.Window_LayoutDefault;
         public Point ToolboxPosition { get; set; } = new Point(15, 15);
         public Point ObjectBrushToolboxPosition { get; set; } = new Point(50, 15);
-        public bool ToolboxVisible { get; set; } = true;
+        public bool ShowToolbox { get; set; } = true;
+        public bool ShowStats { get; set; } = true;
+        public bool ShowFlybyTimeline { get; set; } = true;
 
         public NamedLayout Clone() => new NamedLayout
         {
@@ -436,7 +436,9 @@ namespace TombEditor
             State = State.Clone(),
             ToolboxPosition = ToolboxPosition,
             ObjectBrushToolboxPosition = ObjectBrushToolboxPosition,
-            ToolboxVisible = ToolboxVisible
+            ShowToolbox = ShowToolbox,
+            ShowStats = ShowStats,
+            ShowFlybyTimeline = ShowFlybyTimeline
         };
 
         object ICloneable.Clone() => Clone();

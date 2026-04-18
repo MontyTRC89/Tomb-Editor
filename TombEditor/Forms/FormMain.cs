@@ -373,8 +373,8 @@ namespace TombEditor.Forms
         {
             ShowRealTintForObjectsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForObjects;
             drawWhiteTextureLightingOnlyToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
-            statisticsToolStripMenuItem.Checked = _editor.Configuration.UI_ShowStats;
-            flybyTimelineToolStripMenuItem.Checked = _editor.Configuration.UI_ShowFlybyTimeline;
+            statisticsToolStripMenuItem.Checked = _editor.Configuration.Window_Layout.ShowStats;
+            flybyTimelineToolStripMenuItem.Checked = _editor.Configuration.Window_Layout.ShowFlybyTimeline;
         }
 
         private void RefreshRecentProjectsList()
@@ -514,9 +514,13 @@ namespace TombEditor.Forms
             dockArea.RemoveContent();
             dockArea.RestoreDockPanelState(configuration.Window_Layout.State, GetWindow);
 
-            floatingToolStripMenuItem.Checked = configuration.Window_Layout.ToolboxVisible;
+            floatingToolStripMenuItem.Checked = configuration.Window_Layout.ShowToolbox;
             ToolBox.Location = configuration.Window_Layout.ToolboxPosition;
             ObjectBrushSettings.Location = configuration.Window_Layout.ObjectBrushToolboxPosition;
+            statisticsToolStripMenuItem.Checked = configuration.Window_Layout.ShowStats;
+            flybyTimelineToolStripMenuItem.Checked = configuration.Window_Layout.ShowFlybyTimeline;
+
+            ToolWindow_BuildMenu();
         }
 
         private void SaveWindowLayout(Configuration configuration)
@@ -685,8 +689,10 @@ namespace TombEditor.Forms
         private void SaveCurrentStateToLayout(NamedLayout target)
         {
             target.State = dockArea.GetDockPanelState();
-            target.ToolboxVisible = floatingToolStripMenuItem.Checked;
+            target.ShowToolbox = floatingToolStripMenuItem.Checked;
             target.ToolboxPosition = ToolBox.Location;
+            target.ShowStats = statisticsToolStripMenuItem.Checked;
+            target.ShowFlybyTimeline = flybyTimelineToolStripMenuItem.Checked;
             if (ObjectBrushSettings.Parent != null)
                 target.ObjectBrushToolboxPosition = ObjectBrushSettings.Location;
         }

@@ -50,7 +50,7 @@ namespace TombEditor.ToolWindows
 
         public void AddToolbox(DarkFloatingToolbox toolbox)
         {
-            if(!panel3D.Contains(toolbox))
+            if (!panel3D.Contains(toolbox))
                 panel3D.Controls.Add(toolbox);
         }
 
@@ -278,8 +278,8 @@ namespace TombEditor.ToolWindows
 
         private void UpdateBottomPanelVisibility(Configuration settings)
         {
-            bool bottomPanelVisible = settings.UI_ShowStats || _editor.IsPreciseGeometryAllowed;
-            bool timelinePanelVisible = settings.UI_ShowFlybyTimeline;
+            bool bottomPanelVisible = settings.Window_Layout.ShowStats || _editor.IsPreciseGeometryAllowed;
+            bool timelinePanelVisible = settings.Window_Layout.ShowFlybyTimeline;
 
             UpdateStatistics();
 
@@ -287,9 +287,9 @@ namespace TombEditor.ToolWindows
             panelBottomStatus.Visible = bottomPanelVisible;
 
             panelStepHeightOptions.Visible = _editor.IsPreciseGeometryAllowed;
-            tbStats.Visible = settings.UI_ShowStats;
+            tbStats.Visible = settings.Window_Layout.ShowStats;
 
-            panelFlybyTimeline.Visible = settings.UI_ShowFlybyTimeline;
+            panelFlybyTimeline.Visible = settings.Window_Layout.ShowFlybyTimeline;
         }
 
         private void UpdateToolStripLayout()
@@ -395,7 +395,7 @@ namespace TombEditor.ToolWindows
 
         private void UpdateStatistics()
         {
-            if (_editor == null || _editor.Level == null || !_editor.Configuration.UI_ShowStats)
+            if (_editor == null || _editor.Level == null || !_editor.Configuration.Window_Layout.ShowStats)
                 return;
 
             var summary = _editor.Stats;

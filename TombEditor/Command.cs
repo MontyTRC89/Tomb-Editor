@@ -937,7 +937,7 @@ namespace TombEditor
 
             AddCommand("ShowFlybyTimeline", "Flyby timeline", CommandType.Windows, delegate (CommandArgs args)
             {
-                args.Editor.Configuration.UI_ShowFlybyTimeline = !args.Editor.Configuration.UI_ShowFlybyTimeline;
+                args.Editor.Configuration.Window_Layout.ShowFlybyTimeline = !args.Editor.Configuration.Window_Layout.ShowFlybyTimeline;
                 args.Editor.ConfigurationChange();
             });
 
@@ -1730,7 +1730,7 @@ namespace TombEditor
 
             AddCommand("ShowStatistics", "Statistics display", CommandType.Windows, delegate (CommandArgs args)
             {
-                args.Editor.Configuration.UI_ShowStats = !args.Editor.Configuration.UI_ShowStats;
+                args.Editor.Configuration.Window_Layout.ShowStats = !args.Editor.Configuration.Window_Layout.ShowStats;
                 args.Editor.ConfigurationChange();
             });
 
