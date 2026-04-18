@@ -400,6 +400,7 @@ namespace TombEditor.Controls.Panel3D
             // Stop camera animation if level is changing
             if (obj is Editor.LevelChangedEvent)
             {
+                _roomsDistanceCache = null;
                 _movementTimer.Stop(true);
 
                 if (_editor.CameraPreviewMode != CameraPreviewType.None)
