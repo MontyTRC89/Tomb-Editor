@@ -341,6 +341,8 @@ namespace TombEditor.Forms
                 var layouts = _editor.Configuration.Window_CustomLayouts;
                 if (layoutEvent.LayoutIndex >= 0 && layoutEvent.LayoutIndex < layouts.Count)
                     Layout_SwitchTo(layouts[layoutEvent.LayoutIndex].Name);
+                else
+                    Layout_RestoreDefault();
             }
 
             if (obj is Editor.LevelFileNameChangedEvent)
@@ -521,6 +523,7 @@ namespace TombEditor.Forms
             flybyTimelineToolStripMenuItem.Checked = configuration.Window_Layout.ShowFlybyTimeline;
 
             ToolWindow_BuildMenu();
+            _editor.RaiseEvent(new Editor.LayoutSwitchedEvent());
         }
 
         private void SaveWindowLayout(Configuration configuration)
@@ -588,7 +591,7 @@ namespace TombEditor.Forms
 
             // Default layout entry.
             var defaultItem = new ToolStripMenuItem("Default");
-            defaultItem.Click += (s, ev) => Layout_RestoreDefault();
+            defaultItem.Click += (s, ev) => _editor.SwitchLayout(-1);
             layoutsToolStripMenuItem.DropDownItems.Add(defaultItem);
 
             // Custom layout entries.
@@ -609,8 +612,8 @@ namespace TombEditor.Forms
                             item.ShortcutKeyDisplayString = string.Join(", ", config.UI_Hotkeys[hotkeyName].Select(h => h.ToString()).Where(str => !string.IsNullOrWhiteSpace(str)));
                     }
 
-                    string layoutName = layout.Name;
-                    item.Click += (s, ev) => Layout_SwitchTo(layoutName);
+                    int layoutIndex = i;
+                    item.Click += (s, ev) => _editor.SwitchLayout(layoutIndex);
                     layoutsToolStripMenuItem.DropDownItems.Add(item);
                 }
             }

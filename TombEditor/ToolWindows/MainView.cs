@@ -178,9 +178,10 @@ namespace TombEditor.ToolWindows
 
             // Dismiss any messages
             if (obj is Editor.LevelChangedEvent)
-            {
                 popup.Hide();
-            }
+
+            if (obj is Editor.LayoutSwitchedEvent)
+                RefreshControls(_editor.Configuration);
 
             // Update version-specific controls
             if (obj is Editor.InitEvent ||
