@@ -473,19 +473,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                             Vector3 color;
                             if (!entry.TintAsAmbient)
-                            {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
-                                // Apply Shade factor
-                                color *= shade;
-                                // Apply Instance Color
-                                color *= NormalizeColorRange(staticMesh.Color);
-                            }
+                                color = staticMesh.Color * room.Properties.AmbientLight * shade;
                             else
-                            {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
-                                // Apply Shade factor
-                                color *= shade;
-                            }
+                                color = staticMesh.Color * shade;
+
+                            color = CalculateLightForCustomVertex(room, position, normal, false, color * 128);
 
                             var trVertex = new TombEngineVertex
                             {
