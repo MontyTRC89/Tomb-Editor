@@ -618,16 +618,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                         // Pack the light according to chosen lighting model
                                         if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                                         {
-                                            trVertex.Color = NormalizeColorRange(vertex.Color);
+                                            trVertex.Color = NormalizeColorRange(vertex.Color * geometry.Color);
                                         }
                                         else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                                         {
-                                            var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 128);
+                                            var color = CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * geometry.Color * 128);
                                             trVertex.Color = color;
+                                        }
+                                        else if (geometry.LightingModel == ImportedGeometryLightingModel.TintAsAmbient)
+                                        {
+                                            trVertex.Color = NormalizeColorRange(geometry.Color);
                                         }
                                         else
                                         {
-                                            trVertex.Color = NormalizeColorRange(room.Properties.AmbientLight);
+                                            trVertex.Color = NormalizeColorRange(room.Properties.AmbientLight * geometry.Color);
                                         }
 
                                         // HACK: Find a vertex with same coordinates and merge with it.
