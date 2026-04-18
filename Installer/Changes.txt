@@ -10,6 +10,9 @@ Tomb Editor:
  
 WadTool:
  * Added mesh name display in the skeleton editor.
+ 
+TEN nodes:
+ * Fixed EXAMINE items not appearing in the inventory nodes.
 
 Version 1.11
 ============
