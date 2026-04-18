@@ -127,8 +127,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
                     }
 
-            // Normalize to 0...1 range
-            return Vector3.Max(output, new Vector3()) * (1.0f / 255.0f);
+            return NormalizeColorRange(Vector3.Max(output, Vector3.Zero)) * (1.0f / 128.0f);
         }
 
         private TombEngineRoom BuildRoom(Room room)
