@@ -601,8 +601,6 @@ namespace TombEditor.Forms
                     if (i < Configuration.MaxWindowLayouts)
                     {
                         var hotkeyName = "SwitchLayout" + (i + 1);
-                        var hotkeys = config.UI_Hotkeys["SwitchLayout" + (i + 1)];
-
                         if (config.UI_Hotkeys.Any(h => h.Key == hotkeyName))
                             item.ShortcutKeyDisplayString = string.Join(", ", config.UI_Hotkeys[hotkeyName].Select(h => h.ToString()).Where(str => !string.IsNullOrWhiteSpace(str)));
                     }

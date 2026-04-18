@@ -433,7 +433,7 @@ namespace TombEditor
         public NamedLayout Clone() => new NamedLayout
         {
             Name = Name,
-            State = State,
+            State = State.Clone(),
             ToolboxPosition = ToolboxPosition,
             ObjectBrushToolboxPosition = ObjectBrushToolboxPosition,
             ToolboxVisible = ToolboxVisible
