@@ -712,7 +712,6 @@ namespace TombEditor.Forms
             cbAgressiveTexturePacking.Enabled = !currentVersionToCheck;
             cbAgressiveFloordataPacking.Enabled = !currentVersionToCheck;
             cbCompressTextures.Enabled = currentVersionToCheck;
-            cbRemapAnimTextures.Checked = !currentVersionToCheck;
             cbRemapAnimTextures.Enabled = !currentVersionToCheck;
 
 			panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
