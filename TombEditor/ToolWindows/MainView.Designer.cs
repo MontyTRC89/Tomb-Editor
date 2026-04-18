@@ -1,4 +1,4 @@
-﻿using TombEditor.Controls.Panel3D;
+using TombEditor.Controls.Panel3D;
 
 namespace TombEditor.ToolWindows
 {
@@ -79,17 +79,23 @@ namespace TombEditor.ToolWindows
 			butToggleFlyMode = new System.Windows.Forms.ToolStripButton();
 			butSearch = new System.Windows.Forms.ToolStripButton();
 			butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
-			panelStats = new System.Windows.Forms.Panel();
+			panelBottom = new System.Windows.Forms.Panel();
+			panelBottomStatus = new System.Windows.Forms.Panel();
 			tbStats = new Controls.RichTextLabel();
 			lblStepHeight = new DarkUI.Controls.DarkLabel();
 			panelStepHeightOptions = new System.Windows.Forms.Panel();
 			comboStepHeight = new DarkUI.Controls.DarkComboBox();
+			panelFlybyTimeline = new System.Windows.Forms.Panel();
+			flybyTimelineHost = new System.Windows.Forms.Integration.ElementHost();
+			flybyTimelineView = new Controls.FlybyTimeline.UI.FlybyTimelineView();
 			panelMainView = new System.Windows.Forms.Panel();
 			toolTip = new System.Windows.Forms.ToolTip(components);
 			butMirror = new System.Windows.Forms.ToolStripButton();
 			toolStrip.SuspendLayout();
-			panelStats.SuspendLayout();
+			panelBottom.SuspendLayout();
+			panelBottomStatus.SuspendLayout();
 			panelStepHeightOptions.SuspendLayout();
+			panelFlybyTimeline.SuspendLayout();
 			SuspendLayout();
 			// 
 			// toolStrip
@@ -786,18 +792,30 @@ namespace TombEditor.ToolWindows
 			panel2DMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragDrop);
 			panel2DMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragEnter);
 			// 
-			// panelStats
+			// panelBottom
 			// 
-			panelStats.AutoSize = true;
-			panelStats.Controls.Add(tbStats);
-			panelStats.Controls.Add(panelStepHeightOptions);
-			panelStats.Dock = System.Windows.Forms.DockStyle.Bottom;
-			panelStats.Location = new System.Drawing.Point(0, 307);
-			panelStats.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-			panelStats.Name = "panelStats";
-			panelStats.Padding = new System.Windows.Forms.Padding(5, 5, 5, 0);
-			panelStats.Size = new System.Drawing.Size(1505, 26);
-			panelStats.TabIndex = 15;
+			panelBottom.AutoSize = true;
+			panelBottom.Controls.Add(panelBottomStatus);
+			panelBottom.Controls.Add(panelFlybyTimeline);
+			panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+			panelBottom.Location = new System.Drawing.Point(0, 307);
+			panelBottom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			panelBottom.Name = "panelBottom";
+			panelBottom.Padding = new System.Windows.Forms.Padding(5, 5, 5, 0);
+			panelBottom.Size = new System.Drawing.Size(1505, 26);
+			panelBottom.TabIndex = 15;
+			// 
+			// panelBottomStatus
+			// 
+			panelBottomStatus.AutoSize = true;
+			panelBottomStatus.Controls.Add(tbStats);
+			panelBottomStatus.Controls.Add(panelStepHeightOptions);
+			panelBottomStatus.Dock = System.Windows.Forms.DockStyle.Bottom;
+			panelBottomStatus.Location = new System.Drawing.Point(5, 73);
+			panelBottomStatus.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			panelBottomStatus.Name = "panelBottomStatus";
+			panelBottomStatus.Size = new System.Drawing.Size(1495, 21);
+			panelBottomStatus.TabIndex = 18;
 			// 
 			// tbStats
 			// 
@@ -855,6 +873,25 @@ namespace TombEditor.ToolWindows
 			toolTip.SetToolTip(comboStepHeight, "Set minimum step height for room geometry actions");
 			comboStepHeight.SelectedIndexChanged += comboStepHeight_SelectedIndexChanged;
 			// 
+			// panelFlybyTimeline
+			// 
+			panelFlybyTimeline.Controls.Add(flybyTimelineHost);
+			panelFlybyTimeline.Dock = System.Windows.Forms.DockStyle.Top;
+			panelFlybyTimeline.Location = new System.Drawing.Point(5, 5);
+			panelFlybyTimeline.Name = "panelFlybyTimeline";
+			panelFlybyTimeline.Size = new System.Drawing.Size(1495, 68);
+			panelFlybyTimeline.TabIndex = 17;
+			panelFlybyTimeline.Visible = false;
+			// 
+			// flybyTimelineHost
+			// 
+			flybyTimelineHost.Dock = System.Windows.Forms.DockStyle.Fill;
+			flybyTimelineHost.Location = new System.Drawing.Point(0, 0);
+			flybyTimelineHost.Name = "flybyTimelineHost";
+			flybyTimelineHost.Size = new System.Drawing.Size(1495, 68);
+			flybyTimelineHost.TabIndex = 0;
+			flybyTimelineHost.Child = flybyTimelineView;
+			// 
 			// panelMainView
 			// 
 			panelMainView.Controls.Add(this.panel3D);
@@ -883,7 +920,7 @@ namespace TombEditor.ToolWindows
 			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			Controls.Add(panelMainView);
-			Controls.Add(panelStats);
+			Controls.Add(panelBottom);
 			Controls.Add(toolStrip);
 			DockText = "";
 			Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -892,9 +929,12 @@ namespace TombEditor.ToolWindows
 			Size = new System.Drawing.Size(1505, 333);
 			toolStrip.ResumeLayout(false);
 			toolStrip.PerformLayout();
-			panelStats.ResumeLayout(false);
-			panelStats.PerformLayout();
+			panelBottom.ResumeLayout(false);
+			panelBottom.PerformLayout();
+			panelBottomStatus.ResumeLayout(false);
+			panelBottomStatus.PerformLayout();
 			panelStepHeightOptions.ResumeLayout(false);
+			panelFlybyTimeline.ResumeLayout(false);
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -960,7 +1000,8 @@ namespace TombEditor.ToolWindows
         private System.Windows.Forms.ToolStripButton butCompileAndPlayPreview;
         private System.Windows.Forms.ToolStripButton butAddSprite;
         private System.Windows.Forms.ToolStripButton butAddMemo;
-        private System.Windows.Forms.Panel panelStats;
+        private System.Windows.Forms.Panel panelBottom;
+		private System.Windows.Forms.Panel panelBottomStatus;
         private System.Windows.Forms.Panel panelMainView;
         private TombEditor.Controls.RichTextLabel tbStats;
         private System.Windows.Forms.ToolTip toolTip;
@@ -968,6 +1009,9 @@ namespace TombEditor.ToolWindows
         private System.Windows.Forms.Panel panelStepHeightOptions;
         private DarkUI.Controls.DarkLabel lblStepHeight;
         private DarkUI.Controls.DarkComboBox comboStepHeight;
+        private System.Windows.Forms.Panel panelFlybyTimeline;
+        private System.Windows.Forms.Integration.ElementHost flybyTimelineHost;
+        private Controls.FlybyTimeline.UI.FlybyTimelineView flybyTimelineView;
 		private System.Windows.Forms.ToolStripButton butMirror;
 	}
 }

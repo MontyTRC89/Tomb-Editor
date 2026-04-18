@@ -189,6 +189,7 @@ namespace TombEditor
         // User interface options
 
         public bool UI_ShowStats { get; set; } = true;
+        public bool UI_ShowFlybyTimeline { get; set; } = true;
         public bool UI_AutoFillTriggerTypesForSwitchAndKey { get; set; } = true;
         public bool UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture { get; set; } = false;
         public bool UI_DiscardSelectionOnModeSwitch { get; set; } = false;
@@ -263,6 +264,9 @@ namespace TombEditor
         public Point Window_FormMoveable_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormMoveable_Size { get; set; } = new Size(232, 254);
         public bool Window_FormMoveable_Maximized { get; set; } = false;
+        public Point Window_FormFlybyCamera_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormFlybyCamera_Size { get; set; } = new Size(561, 461);
+        public bool Window_FormFlybyCamera_Maximized { get; set; } = false;
         public Point Window_FormStatic_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormStatic_Size { get; set; } = new Size(237, 418);
         public bool Window_FormStatic_Maximized { get; set; } = false;

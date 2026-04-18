@@ -367,6 +367,7 @@ namespace TombEditor.Forms
             ShowRealTintForObjectsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForObjects;
             drawWhiteTextureLightingOnlyToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
             statisticsToolStripMenuItem.Checked = _editor.Configuration.UI_ShowStats;
+            flybyTimelineToolStripMenuItem.Checked = _editor.Configuration.UI_ShowFlybyTimeline;
         }
 
         private void RefreshRecentProjectsList()
@@ -536,6 +537,19 @@ namespace TombEditor.Forms
             // Disable all hotkeys in fly mode except ToggleFlyMode
             if (_editor.FlyMode && !_editor.Configuration.UI_Hotkeys["ToggleFlyMode"].Contains(keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
+
+            if (_editor.CameraPreviewMode != CameraPreviewType.None)
+            {
+                if (keyData == Keys.Escape)
+                {
+                    _editor.ToggleCameraPreview(false);
+                    return true;
+                }
+
+                // Disable all hotkeys in camera preview mode except PreviewCamera
+                if (!_editor.Configuration.UI_Hotkeys["PreviewCamera"].Contains(keyData))
+                    return true;
+            }
 
             // Don't process reserved camera keys
             if (WinFormsUtils.DirectionalCameraKeys.Contains(keyData))

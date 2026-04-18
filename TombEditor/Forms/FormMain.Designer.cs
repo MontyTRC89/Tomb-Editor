@@ -51,6 +51,7 @@ namespace TombEditor.Forms
 			editGlobalEventSetsToolStripMenuItem = new ToolStripMenuItem();
 			searchToolStripMenuItem = new ToolStripMenuItem();
 			searchAndReplaceToolStripMenuItem = new ToolStripMenuItem();
+			flybyTimelineToolStripMenuItem = new ToolStripMenuItem();
 			viewToolStripMenuItem = new ToolStripMenuItem();
 			resetCameraToolStripMenuItem = new ToolStripMenuItem();
 			relocateCameraToolStripMenuItem = new ToolStripMenuItem();
@@ -556,6 +557,15 @@ namespace TombEditor.Forms
 			searchAndReplaceToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
 			searchAndReplaceToolStripMenuItem.Tag = "SearchAndReplaceObjects";
 			searchAndReplaceToolStripMenuItem.Text = "SearchAndReplaceObjects";
+			// 
+			// flybyTimelineToolStripMenuItem
+			// 
+			flybyTimelineToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			flybyTimelineToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			flybyTimelineToolStripMenuItem.Name = "flybyTimelineToolStripMenuItem";
+			flybyTimelineToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			flybyTimelineToolStripMenuItem.Tag = "ShowFlybyTimeline";
+			flybyTimelineToolStripMenuItem.Text = "ShowFlybyTimeline";
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -1867,7 +1877,7 @@ namespace TombEditor.Forms
 			// windowToolStripMenuItem
 			// 
 			windowToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			windowToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { restoreDefaultLayoutToolStripMenuItem, toolStripMenuSeparator14, sectorOptionsToolStripMenuItem, roomOptionsToolStripMenuItem, itemBrowserToolStripMenuItem, importedGeometryBrowserToolstripMenuItem, contentBrowserToolStripMenuItem, triggerListToolStripMenuItem, lightingToolStripMenuItem, paletteToolStripMenuItem, texturePanelToolStripMenuItem, objectListToolStripMenuItem, statisticsToolStripMenuItem, dockableToolStripMenuItem, floatingToolStripMenuItem });
+			windowToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { restoreDefaultLayoutToolStripMenuItem, toolStripMenuSeparator14, sectorOptionsToolStripMenuItem, roomOptionsToolStripMenuItem, itemBrowserToolStripMenuItem, importedGeometryBrowserToolstripMenuItem, contentBrowserToolStripMenuItem, triggerListToolStripMenuItem, lightingToolStripMenuItem, paletteToolStripMenuItem, texturePanelToolStripMenuItem, objectListToolStripMenuItem, statisticsToolStripMenuItem, flybyTimelineToolStripMenuItem, dockableToolStripMenuItem, floatingToolStripMenuItem });
 			windowToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			windowToolStripMenuItem.Name = "windowToolStripMenuItem";
 			windowToolStripMenuItem.Size = new System.Drawing.Size(63, 25);
@@ -2417,6 +2427,7 @@ namespace TombEditor.Forms
         private System.Windows.Forms.ToolStripMenuItem makeQuickItemGroupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addImportedGeometryToolStripMenuItem;
         private ToolStripMenuItem searchAndReplaceToolStripMenuItem;
+        private ToolStripMenuItem flybyTimelineToolStripMenuItem;
         private ToolStripMenuItem findTexturesToolStripMenuItem;
         private ToolStripMenuItem addSphereVolumeToolStripMenuItem;
         private ToolStripMenuItem addBoxVolumeToolStripMenuItem;
