@@ -1211,13 +1211,61 @@ namespace TombLib.LevelData.Compilers
 		}
 
 
-		// Generate new parent with incoming texture and immediately add incoming texture as a child
+        // Generate new parent with incoming texture and immediately add incoming texture as a child
 
-		private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int frameIndex = -1)
+        private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, TextureDestination destination, bool isForTriangle, BlendMode blendMode, int frameIndex = -1)
         {
             var newParent = new ParentTextureArea(texture, destination);
             parentList.Add(newParent);
             newParent.AddChild(texture, frameIndex >= 0 ? frameIndex : GetNewTextureId(), isForTriangle, blendMode);
+        }
+
+        private Result? TryAddSubAreaAnimatedTexture(TextureArea texture, TextureDestination destination, bool isForTriangle, BlendMode blendMode)
+        {
+            // Check if this is a sub-area of an animated texture (e.g. applied via group texturing tools).
+            // In this case, the actual UV coordinates represent a portion of the full animation frame,
+            // so we reconstruct the full frame from ParentArea and match against reference animations.
+            if (texture.ParentArea.IsZero || _referenceAnimTextures.Count == 0 ||
+                texture.ParentArea == texture.GetRect(isForTriangle))
+                return null;
+
+            TextureArea fullTexture = AnimatedTextureLookupUtility.CreateFullParentAreaTexture(texture);
+            int initialReferenceAnimTextureCount = _referenceAnimTextures.Count;
+
+            for (int i = 0; i < initialReferenceAnimTextureCount; i++)
+            {
+                var refTex = _referenceAnimTextures[i];
+
+                // UVRotate and Video animation types are incompatible with sub-area splitting
+                // because they rely on specific frame arrangement assumptions (vertical strip scrolling
+                // for UVRotate, sequential frame playback for Video) that break when coordinates
+                // are transformed to sub-areas.
+                if (refTex.Origin.IsUvRotate || refTex.Origin.AnimationType == AnimatedTextureAnimationType.Video)
+                    continue;
+
+                if (!GetTexInfo(fullTexture, refTex.CompiledAnimation, destination, false, blendMode, false, _animTextureLookupMargin).HasValue)
+                    continue;
+
+                var origSet = refTex.Origin;
+                var parentRect = texture.ParentArea;
+                var subRect = texture.GetRect(isForTriangle);
+
+                // Skip if this sub-area was already processed for this texture and destination
+                if (!_processedSubAreas.Add(new SubAreaKey(texture.Texture, destination, parentRect, subRect, _animTextureLookupMargin)))
+                    continue;
+
+                if (!AnimatedTextureLookupUtility.TryCreateSubAreaAnimationSet(origSet, texture, parentRect, subRect, _animTextureLookupMargin, out var subSet))
+                    continue;
+
+                // Generate reference lookups for this sub-area animation set while preserving
+                // the original animated set identity for downstream metadata consumers.
+                GenerateAnimLookups(new List<AnimatedTextureSet> { subSet }, destination, origSet);
+
+                // Retry - the sub-area coordinates should now match the new reference lookups
+                return AddTexture(texture, destination, isForTriangle, blendMode);
+            }
+
+            return null;
         }
 
         // Only exposed variation of AddTexture that should be used outside of TexInfoManager itself
@@ -1263,48 +1311,9 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
-            // Check if this is a sub-area of an animated texture (e.g. applied via group texturing tools).
-            // In this case, the actual UV coordinates represent a portion of the full animation frame,
-            // so we reconstruct the full frame from ParentArea and match against reference animations.
-            if (!texture.ParentArea.IsZero && _referenceAnimTextures.Count > 0 &&
-                texture.ParentArea != texture.GetRect(isForTriangle))
-            {
-                TextureArea fullTexture = AnimatedTextureLookupUtility.CreateFullParentAreaTexture(texture);
-                int initialReferenceAnimTextureCount = _referenceAnimTextures.Count;
-
-                for (int i = 0; i < initialReferenceAnimTextureCount; i++)
-                {
-                    var refTex = _referenceAnimTextures[i];
-
-                    // UVRotate and Video animation types are incompatible with sub-area splitting
-                    // because they rely on specific frame arrangement assumptions (vertical strip scrolling
-                    // for UVRotate, sequential frame playback for Video) that break when coordinates
-                    // are transformed to sub-areas.
-                    if (refTex.Origin.IsUvRotate || refTex.Origin.AnimationType == AnimatedTextureAnimationType.Video)
-                        continue;
-
-                    if (GetTexInfo(fullTexture, refTex.CompiledAnimation, destination, false, blendMode, false, _animTextureLookupMargin).HasValue)
-                    {
-                        var origSet = refTex.Origin;
-                        var parentRect = texture.ParentArea;
-                        var subRect = texture.GetRect(isForTriangle);
-
-                        // Skip if this sub-area was already processed for this texture and destination
-                        if (!_processedSubAreas.Add(new SubAreaKey(texture.Texture, destination, parentRect, subRect, _animTextureLookupMargin)))
-                            continue;
-
-                        if (!AnimatedTextureLookupUtility.TryCreateSubAreaAnimationSet(origSet, texture, parentRect, subRect, _animTextureLookupMargin, out var subSet))
-                            continue;
-
-                        // Generate reference lookups for this sub-area animation set while preserving
-                        // the original animated set identity for downstream metadata consumers.
-                        GenerateAnimLookups(new List<AnimatedTextureSet> { subSet }, destination, origSet);
-
-                        // Retry - the sub-area coordinates should now match the new reference lookups
-                        return AddTexture(texture, destination, isForTriangle, blendMode);
-                    }
-                }
-            }
+            var subAreaResult = TryAddSubAreaAnimatedTexture(texture, destination, isForTriangle, blendMode);
+            if (subAreaResult.HasValue)
+                return subAreaResult.Value;
 
             var parentTextures = _parentRoomTextureAreas;
             if (destination == TextureDestination.Moveable)

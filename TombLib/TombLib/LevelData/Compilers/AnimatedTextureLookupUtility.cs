@@ -18,7 +18,7 @@ namespace TombLib.LevelData.Compilers
         /// <param name="rect">The rectangle to normalize.</param>
         /// <param name="margin">The quantization step used by animated texture lookup comparisons.</param>
         /// <returns>A rectangle snapped to the lookup grid defined by <paramref name="margin"/>.</returns>
-        public static Rectangle2 NormalizeLookupRectangle(Rectangle2 rect, float margin) => new(
+        internal static Rectangle2 NormalizeLookupRectangle(Rectangle2 rect, float margin) => new(
             NormalizeLookupCoordinate(rect.Start.X, margin),
             NormalizeLookupCoordinate(rect.Start.Y, margin),
             NormalizeLookupCoordinate(rect.End.X, margin),
@@ -31,7 +31,7 @@ namespace TombLib.LevelData.Compilers
         /// <param name="first">The first texture to compare.</param>
         /// <param name="second">The second texture to compare.</param>
         /// <returns><see langword="true"/> when both textures resolve to the same identity; otherwise <see langword="false"/>.</returns>
-        public static bool AreEquivalentTextures(Texture first, Texture second)
+        internal static bool AreEquivalentTextures(Texture first, Texture second)
         {
             if (ReferenceEquals(first, second))
                 return true;
@@ -53,7 +53,7 @@ namespace TombLib.LevelData.Compilers
         /// </summary>
         /// <param name="texture">The texture whose identity hash should be computed.</param>
         /// <returns>A hash code suitable for deduplication keys.</returns>
-        public static int GetTextureIdentityHash(Texture texture)
+        internal static int GetTextureIdentityHash(Texture texture)
         {
             if (!string.IsNullOrEmpty(texture.AbsolutePath))
                 return StringComparer.OrdinalIgnoreCase.GetHashCode(texture.AbsolutePath);
@@ -71,7 +71,7 @@ namespace TombLib.LevelData.Compilers
         /// <param name="second">The second rectangle.</param>
         /// <param name="margin">The allowed epsilon for each rectangle edge.</param>
         /// <returns><see langword="true"/> when all corresponding edges are within <paramref name="margin"/>.</returns>
-        public static bool RectanglesMatch(Rectangle2 first, Rectangle2 second, float margin)
+        private static bool RectanglesMatch(Rectangle2 first, Rectangle2 second, float margin)
             => MathC.WithinEpsilon(first.X0, second.X0, margin) &&
                MathC.WithinEpsilon(first.Y0, second.Y0, margin) &&
                MathC.WithinEpsilon(first.X1, second.X1, margin) &&
@@ -91,7 +91,7 @@ namespace TombLib.LevelData.Compilers
         /// <param name="parentRect">The full parent rectangle that should match one frame in the set.</param>
         /// <param name="margin">The matching tolerance for rectangle comparison.</param>
         /// <returns>The best matching frame, or <see langword="null"/> when no acceptable match exists.</returns>
-        public static AnimatedTextureFrame? FindBestMatchingAnimatedFrame(AnimatedTextureSet set, TextureArea texture, Rectangle2 parentRect, float margin)
+        private static AnimatedTextureFrame? FindBestMatchingAnimatedFrame(AnimatedTextureSet set, TextureArea texture, Rectangle2 parentRect, float margin)
         {
             AnimatedTextureFrame? bestFrame = null;
             float bestScore = float.MaxValue;
@@ -126,7 +126,7 @@ namespace TombLib.LevelData.Compilers
         /// </summary>
         /// <param name="texture">The texture area whose parent bounds should become the full UV rectangle.</param>
         /// <returns>A copy of <paramref name="texture"/> expanded to its full parent area.</returns>
-        public static TextureArea CreateFullParentAreaTexture(TextureArea texture)
+        internal static TextureArea CreateFullParentAreaTexture(TextureArea texture)
         {
             TextureArea fullTexture = texture;
             fullTexture.TexCoord0 = new Vector2(texture.ParentArea.X0, texture.ParentArea.Y0);
@@ -147,7 +147,7 @@ namespace TombLib.LevelData.Compilers
         /// <param name="margin">The matching tolerance for resolving the source frame.</param>
         /// <param name="subSet">Receives the generated sub-area animation set when the method succeeds.</param>
         /// <returns><see langword="true"/> when a valid sub-area animation set was generated; otherwise <see langword="false"/>.</returns>
-        public static bool TryCreateSubAreaAnimationSet(
+        internal static bool TryCreateSubAreaAnimationSet(
             AnimatedTextureSet originalSet,
             TextureArea texture,
             Rectangle2 parentRect,
