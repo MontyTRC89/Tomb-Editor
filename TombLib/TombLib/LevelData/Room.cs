@@ -1899,7 +1899,12 @@ namespace TombLib.LevelData
                         }
                         else
                         {
-                            existingIndex = roomVertices.IndexOf(v => v == trVertex && v.Normal == trVertex.Normal);
+                            existingIndex = roomVertices.IndexOf(v =>
+                                v.Position == trVertex.Position &&
+                                v.Lighting1 == trVertex.Lighting1 &&
+                                v.Attributes == trVertex.Attributes &&
+                                v.Lighting2 == trVertex.Lighting2 &&
+                                v.Normal == trVertex.Normal);
                             if (existingIndex == -1)
                             {
                                 existingIndex = roomVertices.Count;
