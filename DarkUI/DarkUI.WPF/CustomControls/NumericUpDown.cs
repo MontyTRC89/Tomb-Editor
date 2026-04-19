@@ -112,7 +112,7 @@ public class NumericUpDown : Control
 			TextBox.Text = Value.ToString(FormatString);
 			TextBox.TextAlignment = TextAlignment;
 			TextBox.PreviewTextInput += TextBox_PreviewTextInput;
-			TextBox.PreviewKeyDown += TextBox_PreviewKeyDown;
+			TextBox.KeyDown += TextBox_KeyDown;
 			TextBox.LostFocus += TextBox_LostFocus;
 		}
 
@@ -162,7 +162,7 @@ public class NumericUpDown : Control
 		e.Handled = true;
 	}
 
-	private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+	private void TextBox_KeyDown(object sender, KeyEventArgs e)
 	{
 		if (e.Key == Key.Enter)
 			ApplyTextBoxValue();
