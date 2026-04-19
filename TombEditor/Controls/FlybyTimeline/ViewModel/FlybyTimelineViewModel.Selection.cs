@@ -304,25 +304,16 @@ public partial class FlybyTimelineViewModel
     }
 
     /// <summary>
-    /// Returns the current editor selection as position-based objects.
-    /// </summary>
-    private IReadOnlyList<PositionBasedObjectInstance> GetEditorSelectionObjects()
-    {
-        if (_editor.SelectedObject is ObjectGroup group)
-            return [.. group.Cast<PositionBasedObjectInstance>()];
-
-        if (_editor.SelectedObject is PositionBasedObjectInstance positionBased)
-            return [positionBased];
-
-        return [];
-    }
-
-    /// <summary>
     /// Applies a new selection back into the editor.
     /// </summary>
     private void SetEditorSelection(IReadOnlyList<PositionBasedObjectInstance> selectedObjects)
     {
-        var currentSelection = GetEditorSelectionObjects();
+        IReadOnlyList<PositionBasedObjectInstance> currentSelection = _editor.SelectedObject switch
+        {
+            ObjectGroup group => [.. group.Cast<PositionBasedObjectInstance>()],
+            PositionBasedObjectInstance positionBased => [positionBased],
+            _ => []
+        };
 
         if (currentSelection.Count == selectedObjects.Count && currentSelection.All(selectedObjects.Contains))
             return;

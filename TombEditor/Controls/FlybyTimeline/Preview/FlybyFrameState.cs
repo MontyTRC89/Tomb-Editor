@@ -26,6 +26,6 @@ public struct FlybyFrameState
         RotationY = MathC.DegToRad(rotationY),
         RotationX = -MathC.DegToRad(rotationX),
         Roll = MathC.DegToRad(roll),
-        Fov = MathC.DegToRad(Math.Min(fov, FlybyConstants.MaxFieldOfView))
+        Fov = FlybyConstants.ClampPreviewFieldOfViewRadians(MathC.DegToRad(fov))
     };
 }

@@ -41,7 +41,7 @@ namespace TombEditor.Forms
             _editor = Editor.Instance;
 
             InitializeComponent();
-            numFOV.Maximum = (decimal)FlybyConstants.MaxFieldOfView;
+            numFOV.Maximum = (decimal)FlybyConstants.MaxFlybyFieldOfViewDegrees;
 
             LoadWindowState();
         }

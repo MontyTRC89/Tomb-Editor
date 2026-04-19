@@ -61,22 +61,45 @@ public static class FlybyConstants
     /// <summary>
     /// Lower bound for preview FOV values to avoid invalid or near-zero projection setup.
     /// </summary>
-    public const float PreviewMinFieldOfView = 0.01f;
+    public const float PreviewMinFieldOfViewRadians = 0.01f;
 
     /// <summary>
     /// Upper bound for flyby camera field-of-view values, expressed in degrees.
     /// </summary>
-    public const float MaxFieldOfView = 179.99f;
+    public const float MaxFlybyFieldOfViewDegrees = 179.99f;
 
     /// <summary>
     /// Default preview field of view, expressed in degrees, used as a fallback when flyby data is invalid or non-finite.
     /// </summary>
-    public const float DefaultFieldOfView = 80.0f;
+    public const float DefaultPreviewFieldOfViewDegrees = 80.0f;
 
     /// <summary>
     /// Upper bound for preview projection field-of-view values, expressed in radians.
     /// </summary>
-    public static readonly float PreviewMaxFieldOfView = MathC.DegToRad(MaxFieldOfView);
+    public static readonly float MaxPreviewFieldOfViewRadians = MathC.DegToRad(MaxFlybyFieldOfViewDegrees);
+
+    /// <summary>
+    /// Clamps a flyby camera field-of-view value expressed in degrees to the valid persisted range.
+    /// </summary>
+    public static float ClampFlybyFieldOfViewDegrees(float fovDegrees)
+    {
+        if (!float.IsFinite(fovDegrees))
+            return DefaultPreviewFieldOfViewDegrees;
+
+        return Math.Clamp(fovDegrees, 0.0f, MaxFlybyFieldOfViewDegrees);
+    }
+
+    /// <summary>
+    /// Clamps a preview field-of-view value expressed in radians to the valid projection range.
+    /// Invalid or too-small values fall back to the default preview field of view.
+    /// </summary>
+    public static float ClampPreviewFieldOfViewRadians(float fovRadians)
+    {
+        if (!float.IsFinite(fovRadians) || fovRadians < PreviewMinFieldOfViewRadians)
+            return MathC.DegToRad(DefaultPreviewFieldOfViewDegrees);
+
+        return Math.Min(fovRadians, MaxPreviewFieldOfViewRadians);
+    }
 
     // Timeline constants.
 

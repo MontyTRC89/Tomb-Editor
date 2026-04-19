@@ -108,9 +108,19 @@ public class FlybyPreviewTests
 
         var viewProjection = preview.BuildViewProjection(1920.0f, 1080.0f, MathC.DegToRad(220.0f));
 
-        Assert.AreEqual(FlybyConstants.PreviewMaxFieldOfView, previewCamera.FieldOfView, 0.001f);
+        Assert.AreEqual(FlybyConstants.MaxPreviewFieldOfViewRadians, previewCamera.FieldOfView, 0.001f);
         Assert.IsTrue(float.IsFinite(viewProjection.M11));
         Assert.IsTrue(float.IsFinite(viewProjection.M22));
         Assert.IsTrue(float.IsFinite(viewProjection.M33));
+    }
+
+    [TestMethod]
+    public void FromDegrees_ClampsInvalidFieldOfViewIntoPreviewRange()
+    {
+        var lowFrame = FlybyFrameState.FromDegrees(Vector3.Zero, 0.0f, 0.0f, 0.0f, -15.0f);
+        var highFrame = FlybyFrameState.FromDegrees(Vector3.Zero, 0.0f, 0.0f, 0.0f, 220.0f);
+
+        Assert.AreEqual(MathC.DegToRad(FlybyConstants.DefaultPreviewFieldOfViewDegrees), lowFrame.Fov, 0.001f);
+        Assert.AreEqual(FlybyConstants.MaxPreviewFieldOfViewRadians, highFrame.Fov, 0.001f);
     }
 }
