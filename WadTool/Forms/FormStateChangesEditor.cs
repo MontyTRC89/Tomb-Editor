@@ -52,7 +52,7 @@ namespace WadTool
 
         private static ushort ClampRowValue(int value)
         {
-            if (value < ushort.MinValue)
+            if (value < 0)
                 return ushort.MinValue;
 
             if (value > ushort.MaxValue)
@@ -266,8 +266,7 @@ namespace WadTool
                 var cell = dgvStateChanges.Rows[e.RowIndex].Cells[e.ColumnIndex];
                 var name = dgvStateChanges.Columns[e.ColumnIndex].Name;
 
-                // For some reason, validating against UInt16 type results in unrecoverable DGV exception on
-                // wrong incoming values, so we're validating against Int16 and filtering out negative values afterwards.
+                // Keep validation in the signed range so the grid never pushes invalid unsigned values while editing.
 
                 Int16 parsedValue = 0;
                 if (e.FormattedValue == null || !Int16.TryParse(e.FormattedValue.ToString(), out parsedValue))
