@@ -193,10 +193,21 @@ namespace TombEditor
                         case ArrowType.CornerNW: origin = SectorEdge.XnZp; break;
                         case ArrowType.CornerSE: origin = SectorEdge.XpZn; break;
                     }
+
                     var originSector = room.GetSectorTryThroughPortal(startCoord);
-                    var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
-                    for (int i = 0; i < 4; i++)
-                        corners[i] = originHeight == cornerSectors[i].Sector.GetHeight(vertical, (SectorEdge)i) + cornerSectors[i].Room.Position.Y;
+                    if (originSector.Sector != null && originSector.Room != null)
+                    {
+                        var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
+
+                        for (int i = 0; i < 4; i++)
+                            corners[i] = cornerSectors[i].Sector != null && cornerSectors[i].Room != null &&
+                                         originHeight == cornerSectors[i].Sector.GetHeight(vertical, (SectorEdge)i) + cornerSectors[i].Room.Position.Y;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < corners.Length; i++)
+                            corners[i] = false;
+                    }
                 }
 
                 // Smoothly change sectors on the corners
