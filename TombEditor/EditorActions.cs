@@ -212,10 +212,7 @@ namespace TombEditor
                         }
                     }
                     else
-                    {
-                        for (int i = 0; i < corners.Length; i++)
-                            corners[i] = false;
-                    }
+                        Array.Fill(corners, false);
                 }
 
                 // Smoothly change sectors on the corners
