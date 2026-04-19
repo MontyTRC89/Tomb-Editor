@@ -201,16 +201,16 @@ namespace TombEditor
                     {
                         var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
 
-                        bool IsCornerAtSameHeight(RoomSectorPair cornerSector, SectorEdge edge)
+                        bool IsCornerAtSameHeight(RoomSectorPair cornerSector, SectorEdge edge, SectorVerticalPart cornerVertical, int referenceHeight)
                         {
                             if (cornerSector.Sector == null || cornerSector.Room == null)
                                 return false;
 
-                            return originHeight == cornerSector.Sector.GetHeight(vertical, edge) + cornerSector.Room.Position.Y;
+                            return referenceHeight == cornerSector.Sector.GetHeight(cornerVertical, edge) + cornerSector.Room.Position.Y;
                         }
 
                         for (int i = 0; i < 4; i++)
-                            corners[i] = IsCornerAtSameHeight(cornerSectors[i], (SectorEdge)i);
+                            corners[i] = IsCornerAtSameHeight(cornerSectors[i], (SectorEdge)i, vertical, originHeight);
                     }
                 }
 
