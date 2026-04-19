@@ -38,6 +38,11 @@ namespace TombLib.Scripting.Controls
 					_editingControl.Copy();
 					keyData = Keys.None;
 				}
+				else if (keyData == Keys.Delete)
+				{
+					DeleteEditingControlText();
+					keyData = Keys.None;
+				}
 			}
 			else
 			{
@@ -81,6 +86,17 @@ namespace TombLib.Scripting.Controls
 			int additionalPadding = row.DefaultCellStyle.Font.Height / 2;
 
 			row.Height = fontHeight * maxLineCount + additionalPadding;
+		}
+
+		private void DeleteEditingControlText()
+		{
+			if (_editingControl == null || _editingControl.ReadOnly)
+				return;
+
+			if (_editingControl.SelectionLength == 0 && _editingControl.SelectionStart < _editingControl.TextLength)
+				_editingControl.SelectionLength = 1;
+
+			_editingControl.SelectedText = string.Empty;
 		}
 
 		public void CutCellText()
