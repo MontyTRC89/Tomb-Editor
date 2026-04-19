@@ -52,13 +52,7 @@ namespace WadTool
 
         private static ushort ClampRowValue(int value)
         {
-            if (value < 0)
-                return ushort.MinValue;
-
-            if (value > ushort.MaxValue)
-                return ushort.MaxValue;
-
-            return (ushort)value;
+            return (ushort)Math.Clamp(value, ushort.MinValue, ushort.MaxValue);
         }
 
         public List<WadStateChange> StateChanges { get; private set; }
@@ -197,12 +191,19 @@ namespace WadTool
                 if (!tempDictionary.ContainsKey(row.StateId))
                     tempDictionary.Add(row.StateId, new WadStateChange());
                 var sc = tempDictionary[row.StateId];
-                sc.StateId = ClampRowValue(row.StateId);
+                var stateId = ClampRowValue(row.StateId);
+                var lowFrame = ClampRowValue(row.LowFrame);
+                var highFrame = ClampRowValue(row.HighFrame);
+                var nextAnimation = ClampRowValue(row.NextAnimation);
+                var nextFrame = ClampRowValue(row.NextFrame);
+                var blendEndFrame = ClampRowValue(row.BlendEndFrame);
+                var blendFrameCount = ClampRowValue(row.BlendFrameCount);
 
-                var newDispatch = new WadAnimDispatch(ClampRowValue(row.LowFrame), ClampRowValue(row.HighFrame),
-                                                     ClampRowValue(row.NextAnimation), ClampRowValue(row.NextFrame));
-                newDispatch.NextFrameHigh = ClampRowValue(row.BlendEndFrame);
-                newDispatch.BlendFrameCount = ClampRowValue(row.BlendFrameCount);
+                sc.StateId = stateId;
+
+                var newDispatch = new WadAnimDispatch(lowFrame, highFrame, nextAnimation, nextFrame);
+                newDispatch.NextFrameHigh = blendEndFrame;
+                newDispatch.BlendFrameCount = blendFrameCount;
                 newDispatch.BlendCurve = row.BlendCurve;
 
                 sc.Dispatches.Add(newDispatch);
