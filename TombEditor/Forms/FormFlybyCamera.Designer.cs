@@ -391,10 +391,10 @@ namespace TombEditor.Forms
             this.numFOV.Location = new System.Drawing.Point(82, 124);
             this.numFOV.LoopValues = false;
             this.numFOV.Maximum = new decimal(new int[] {
-            17999,
+            360,
             0,
             0,
-            131072});
+            0});
             this.numFOV.Name = "numFOV";
             this.numFOV.Size = new System.Drawing.Size(71, 22);
             this.numFOV.TabIndex = 4;

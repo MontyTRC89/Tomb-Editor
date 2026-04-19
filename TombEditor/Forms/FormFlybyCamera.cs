@@ -11,7 +11,6 @@ namespace TombEditor.Forms
     public partial class FormFlybyCamera : DarkForm
     {
         private const float ChangeComparisonEpsilon = 0.0001f;
-        private const decimal MaxFieldOfView = 179.99m;
         private static readonly Size DefaultWindowSize = new Size(561, 461);
         private static readonly Size CompactWindowSize = new Size(205, 319);
 
@@ -42,6 +41,7 @@ namespace TombEditor.Forms
             _editor = Editor.Instance;
 
             InitializeComponent();
+            numFOV.Maximum = (decimal)FlybyConstants.MaxFieldOfView;
 
             LoadWindowState();
         }
@@ -234,7 +234,7 @@ namespace TombEditor.Forms
             camera.Number = (ushort)numNumber.Value;
             camera.Timer = (short)numTimer.Value;
             camera.Speed = (float)numSpeed.Value;
-            camera.Fov = (float)Math.Min(numFOV.Value, MaxFieldOfView);
+            camera.Fov = (float)numFOV.Value;
             camera.Roll = (float)numRoll.Value;
             camera.RotationX = (float)numRotationX.Value;
             camera.RotationY = (float)numRotationY.Value;

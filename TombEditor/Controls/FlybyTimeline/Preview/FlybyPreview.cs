@@ -269,10 +269,11 @@ public sealed class FlybyPreview : IDisposable
     private static Matrix4x4 CreateFrameRotation(FlybyFrameState frame)
         => Matrix4x4.CreateFromYawPitchRoll(frame.RotationY, frame.RotationX, 0);
 
+    // Clamps preview FOV to a finite range accepted by perspective projection.
     private static float ClampFieldOfView(float fov)
     {
         if (!float.IsFinite(fov) || fov < FlybyConstants.PreviewMinFieldOfView)
-            return MathC.DegToRad(80.0f);
+            return MathC.DegToRad(FlybyConstants.DefaultFieldOfView);
 
         return Math.Min(fov, FlybyConstants.PreviewMaxFieldOfView);
     }
