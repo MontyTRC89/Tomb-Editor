@@ -69,6 +69,10 @@ namespace TombEditor.Controls
                     BeginInvoke((Action)(() =>
                     {
                         _nodeListRefreshPending = false;
+
+                        if (IsDisposed || !IsHandleCreated || nodeEditor.IsDisposed)
+                            return;
+
                         nodeEditor.PopulateCachedNodeLists(_editor.Level);
                         nodeEditor.RefreshArgumentUI();
                     }));

@@ -162,19 +162,25 @@ namespace TombLib.Controls.VisualScripting
 
         public void SpawnUIElements()
         {
+            if (IsDisposed || Disposing || Node == null)
+                return;
+
+            var editor = Editor;
             var func = cbFunction.SelectedItem as NodeFunction;
 
-            if (func == null)
+            if (func == null || editor == null || editor.IsDisposed)
                 return;
 
             Visible = false;
-            Editor.LockNodeChanges = true;
+            editor.LockNodeChanges = true;
             SuspendLayout();
             DisposeUI();
 
             var scale = 1.0f;
-            using (var gfx = FindForm().CreateGraphics())
-                scale = (float)gfx.DpiX / 96.0f;
+            var form = FindForm();
+            if (form != null && !form.IsDisposed)
+                using (var gfx = form.CreateGraphics())
+                    scale = (float)gfx.DpiX / 96.0f;
 
             Size = new Size((int)(Node.Size * scale), Size.Height);
 
@@ -279,10 +285,10 @@ namespace TombLib.Controls.VisualScripting
 
             RefreshLock();
             ResumeLayout();
-            Editor.LockNodeChanges = false;
+            editor.LockNodeChanges = false;
             Visible = true;
             Invalidate();
-            Editor?.Invalidate();
+            editor.Invalidate();
         }
 
         private void Ctrl_LocatedItemFound(object sender, EventArgs e)
@@ -683,6 +689,9 @@ namespace TombLib.Controls.VisualScripting
                 return;
 
             var funcSetup = cbFunction.SelectedItem as NodeFunction;
+            if (funcSetup == null || Node == null || IsDisposed || Disposing)
+                return;
+
             Node.Function = funcSetup.Signature;
 
             if ((_lastSelectedIndex != -1 && cbFunction.SelectedIndex != -1) || (funcSetup.Arguments.Count != Node.Arguments.Count))
