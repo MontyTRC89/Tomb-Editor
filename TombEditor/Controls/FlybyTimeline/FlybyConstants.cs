@@ -1,4 +1,5 @@
-﻿using TombLib.LevelData;
+﻿using TombLib;
+using TombLib.LevelData;
 
 namespace TombEditor.Controls.FlybyTimeline;
 
@@ -61,6 +62,8 @@ public static class FlybyConstants
     /// Lower bound for preview FOV values to avoid invalid or near-zero projection setup.
     /// </summary>
     public const float PreviewMinFieldOfView = 0.01f;
+    public const float MaxFieldOfView = 179.99f;
+    public static readonly float PreviewMaxFieldOfView = MathC.DegToRad(MaxFieldOfView);
 
     // Timeline constants.
 

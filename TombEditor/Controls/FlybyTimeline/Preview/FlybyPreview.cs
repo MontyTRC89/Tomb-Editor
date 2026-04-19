@@ -212,7 +212,7 @@ public sealed class FlybyPreview : IDisposable
         camera.Position = frame.Position;
         camera.RotationY = frame.RotationY;
         camera.RotationX = frame.RotationX;
-        camera.FieldOfView = frame.Fov;
+        camera.FieldOfView = ClampFieldOfView(frame.Fov);
 
         var rotation = CreateFrameRotation(frame);
         var look = MathC.HomogenousTransform(Vector3.UnitZ, rotation);
@@ -254,10 +254,7 @@ public sealed class FlybyPreview : IDisposable
         }
 
         var target = frame.Position + (Level.SectorSizeUnit * look);
-        float fov = frame.Fov > FlybyConstants.PreviewMinFieldOfView ? frame.Fov : defaultFov;
-
-        if (fov < FlybyConstants.PreviewMinFieldOfView)
-            fov = MathC.DegToRad(80);
+        float fov = ClampFieldOfView(frame.Fov > FlybyConstants.PreviewMinFieldOfView ? frame.Fov : defaultFov);
 
         var view = MathC.Matrix4x4CreateLookAtLH(frame.Position, target, up);
         float aspectRatio = height != 0.0f ? width / height : 1.0f;
@@ -271,6 +268,14 @@ public sealed class FlybyPreview : IDisposable
     /// </summary>
     private static Matrix4x4 CreateFrameRotation(FlybyFrameState frame)
         => Matrix4x4.CreateFromYawPitchRoll(frame.RotationY, frame.RotationX, 0);
+
+    private static float ClampFieldOfView(float fov)
+    {
+        if (!float.IsFinite(fov) || fov < FlybyConstants.PreviewMinFieldOfView)
+            return MathC.DegToRad(80.0f);
+
+        return Math.Min(fov, FlybyConstants.PreviewMaxFieldOfView);
+    }
 
     #endregion Static frame helpers
 }
