@@ -195,24 +195,23 @@ namespace TombEditor
                     }
 
                     var originSector = room.GetSectorTryThroughPortal(startCoord);
-                    if (originSector.Sector != null && originSector.Room != null)
+                    if (originSector.Sector == null || originSector.Room == null)
+                        Array.Fill(corners, false);
+                    else
                     {
                         var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
 
-                        for (int i = 0; i < 4; i++)
+                        bool isCornerAtSameHeight(RoomSectorPair cornerSector, SectorEdge edge)
                         {
-                            var cornerSector = cornerSectors[i];
                             if (cornerSector.Sector == null || cornerSector.Room == null)
-                            {
-                                corners[i] = false;
-                                continue;
-                            }
+                                return false;
 
-                            corners[i] = originHeight == cornerSector.Sector.GetHeight(vertical, (SectorEdge)i) + cornerSector.Room.Position.Y;
+                            return originHeight == cornerSector.Sector.GetHeight(vertical, edge) + cornerSector.Room.Position.Y;
                         }
+
+                        for (int i = 0; i < 4; i++)
+                            corners[i] = isCornerAtSameHeight(cornerSectors[i], (SectorEdge)i);
                     }
-                    else
-                        Array.Fill(corners, false);
                 }
 
                 // Smoothly change sectors on the corners
