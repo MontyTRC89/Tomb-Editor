@@ -145,6 +145,9 @@ namespace TombEditor
             _commands.Add(new CommandObj() { Name = commandName, FriendlyName = friendlyName, Execute = command, Type = type });
         }
 
+        private static int GetRoomMoveVerticalIncrement(int clickCount = 1)
+            => Level.FullClickHeight * clickCount;
+
         static CommandHandler()
         {
             AddCommand("CancelAnyAction", "Cancel any action", CommandType.General, delegate (CommandArgs args)
@@ -416,22 +419,22 @@ namespace TombEditor
 
             AddCommand("MoveRoomUp", "Move room up", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.MoveSelectedRooms(new VectorInt3(0, args.Editor.IncrementReference, 0));
+                EditorActions.MoveSelectedRooms(new VectorInt3(0, GetRoomMoveVerticalIncrement(), 0));
             });
 
             AddCommand("MoveRoomDown", "Move room down", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.MoveSelectedRooms(new VectorInt3(0, -args.Editor.IncrementReference, 0));
+                EditorActions.MoveSelectedRooms(new VectorInt3(0, -GetRoomMoveVerticalIncrement(), 0));
             });
 
             AddCommand("MoveRoomUp4Clicks", "Move room up (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.MoveSelectedRooms(new VectorInt3(0, args.Editor.IncrementReference * 4, 0));
+                EditorActions.MoveSelectedRooms(new VectorInt3(0, GetRoomMoveVerticalIncrement(4), 0));
             });
 
             AddCommand("MoveRoomDown4Clicks", "Move room down (4 clicks)", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.MoveSelectedRooms(new VectorInt3(0, -args.Editor.IncrementReference * 4, 0));
+                EditorActions.MoveSelectedRooms(new VectorInt3(0, -GetRoomMoveVerticalIncrement(4), 0));
             });
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
