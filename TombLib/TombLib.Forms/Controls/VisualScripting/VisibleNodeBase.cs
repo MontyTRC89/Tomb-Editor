@@ -67,10 +67,10 @@ namespace TombLib.Controls.VisualScripting
 
         protected override void Dispose(bool disposing)
         {
-            DisposeUI();
-
             if (disposing)
             {
+                DisposeUI();
+
                 MouseDown -= Ctrl_RightClick;
                 cbFunction.MouseDown -= Ctrl_RightClick;
             }
