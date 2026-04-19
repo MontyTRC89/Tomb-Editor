@@ -199,9 +199,17 @@ namespace TombEditor
                     {
                         var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
 
-                        for (int i = 0; i < corners.Length; i++)
-                            corners[i] = cornerSectors[i].Sector != null && cornerSectors[i].Room != null &&
-                                         originHeight == cornerSectors[i].Sector.GetHeight(vertical, (SectorEdge)i) + cornerSectors[i].Room.Position.Y;
+                        for (int i = 0; i < 4; i++)
+                        {
+                            var cornerSector = cornerSectors[i];
+                            if (cornerSector.Sector == null || cornerSector.Room == null)
+                            {
+                                corners[i] = false;
+                                continue;
+                            }
+
+                            corners[i] = originHeight == cornerSector.Sector.GetHeight(vertical, (SectorEdge)i) + cornerSector.Room.Position.Y;
+                        }
                     }
                     else
                     {
