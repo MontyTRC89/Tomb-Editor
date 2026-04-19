@@ -667,7 +667,8 @@ namespace TombLib.LevelData.Compilers
                                 },
                                 Lighting1 = 0,
                                 Lighting2 = 0,
-                                Attributes = 0
+                                Attributes = 0,
+                                Normal = normal
                             };
 
                             // Pack the light according to chosen lighting model
@@ -709,7 +710,7 @@ namespace TombLib.LevelData.Compilers
                             }
                             else
                             {
-                                existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position && v.Color == trVertex.Color);
+                                existingIndex = roomVertices.IndexOf(v => v == trVertex && v.Normal == trVertex.Normal);
                                 if (existingIndex == -1)
                                 {
                                     existingIndex = roomVertices.Count;
