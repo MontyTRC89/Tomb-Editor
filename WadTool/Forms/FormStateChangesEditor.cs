@@ -24,13 +24,13 @@ namespace WadTool
         private class WadStateChangeRow
         {
             public string StateName { get; set; }
-            public ushort StateId { get; set; }
-            public ushort LowFrame { get; set; }
-            public ushort HighFrame { get; set; }
-            public ushort NextAnimation { get; set; }
-            public ushort NextFrame { get; set; }
-            public ushort BlendFrameCount { get; set; }
-            public ushort BlendEndFrame { get; set; }
+            public int StateId { get; set; }
+            public int LowFrame { get; set; }
+            public int HighFrame { get; set; }
+            public int NextAnimation { get; set; }
+            public int NextFrame { get; set; }
+            public int BlendFrameCount { get; set; }
+            public int BlendEndFrame { get; set; }
             public BezierCurve2 BlendCurve { get; set; } = BezierCurve2.Linear.Clone();
 
             public WadStateChangeRow(string stateName, ushort stateId, ushort lowFrame, ushort highFrame, ushort nextAnimation,
@@ -48,6 +48,17 @@ namespace WadTool
             }
 
             public WadStateChangeRow() { }
+        }
+
+        private static ushort ClampRowValue(int value)
+        {
+            if (value < ushort.MinValue)
+                return ushort.MinValue;
+
+            if (value > ushort.MaxValue)
+                return ushort.MaxValue;
+
+            return (ushort)value;
         }
 
         public List<WadStateChange> StateChanges { get; private set; }
@@ -186,11 +197,12 @@ namespace WadTool
                 if (!tempDictionary.ContainsKey(row.StateId))
                     tempDictionary.Add(row.StateId, new WadStateChange());
                 var sc = tempDictionary[row.StateId];
-                sc.StateId = row.StateId;
+                sc.StateId = ClampRowValue(row.StateId);
 
-                var newDispatch = new WadAnimDispatch(row.LowFrame, row.HighFrame, row.NextAnimation, row.NextFrame);
-                newDispatch.NextFrameHigh = row.BlendEndFrame;
-                newDispatch.BlendFrameCount = row.BlendFrameCount;
+                var newDispatch = new WadAnimDispatch(ClampRowValue(row.LowFrame), ClampRowValue(row.HighFrame),
+                                                     ClampRowValue(row.NextAnimation), ClampRowValue(row.NextFrame));
+                newDispatch.NextFrameHigh = ClampRowValue(row.BlendEndFrame);
+                newDispatch.BlendFrameCount = ClampRowValue(row.BlendFrameCount);
                 newDispatch.BlendCurve = row.BlendCurve;
 
                 sc.Dispatches.Add(newDispatch);
@@ -351,7 +363,7 @@ namespace WadTool
                 return;
 
             var item = ((IEnumerable<WadStateChangeRow>)dgvStateChanges.DataSource).ElementAt(dgvStateChanges.SelectedRows[0].Index);
-            item.BlendFrameCount = (ushort)nudBlendFrameCount.Value;
+            item.BlendFrameCount = (int)nudBlendFrameCount.Value;
         }
 
         private void nudBlendEndFrame_ValueChanged(object sender, EventArgs e)
@@ -360,7 +372,7 @@ namespace WadTool
                 return;
 
             var item = ((IEnumerable<WadStateChangeRow>)dgvStateChanges.DataSource).ElementAt(dgvStateChanges.SelectedRows[0].Index);
-            item.BlendEndFrame = (ushort)nudBlendEndFrame.Value;
+            item.BlendEndFrame = (int)nudBlendEndFrame.Value;
         }
 
         private void cbBlendPreset_SelectedIndexChanged(object sender, EventArgs e)
