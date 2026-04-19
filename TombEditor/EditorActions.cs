@@ -201,7 +201,7 @@ namespace TombEditor
                     {
                         var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
 
-                        bool isCornerAtSameHeight(RoomSectorPair cornerSector, SectorEdge edge)
+                        bool IsCornerAtSameHeight(RoomSectorPair cornerSector, SectorEdge edge)
                         {
                             if (cornerSector.Sector == null || cornerSector.Room == null)
                                 return false;
@@ -210,7 +210,7 @@ namespace TombEditor
                         }
 
                         for (int i = 0; i < 4; i++)
-                            corners[i] = isCornerAtSameHeight(cornerSectors[i], (SectorEdge)i);
+                            corners[i] = IsCornerAtSameHeight(cornerSectors[i], (SectorEdge)i);
                     }
                 }
 
