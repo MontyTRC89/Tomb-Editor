@@ -2417,7 +2417,7 @@ namespace TombEditor
 
         private static bool IsInvalidMoveablePlacement(Room room, ObjectInstance instance)
         {
-            if (room == null || instance == null || !room.IsAlternate)
+            if (!room.IsAlternate)
                 return false;
 
             if (instance is ObjectGroup group)
