@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Reflection;
 using TombLib.LevelData;
+using TombLib.LevelData.Compilers;
 using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorStructs;
@@ -10,7 +11,9 @@ namespace TombLib.Test;
 [TestClass]
 public class DiagonalWallCollisionShapeTests
 {
-    private static readonly Type RoomSectorShapeType = typeof(LevelCompilerTombEngine)
+    private static readonly Type TombEngineRoomSectorShapeType = typeof(LevelCompilerTombEngine)
+        .GetNestedType("RoomSectorShape", BindingFlags.NonPublic)!;
+    private static readonly Type ClassicRoomSectorShapeType = typeof(LevelCompilerClassicTR)
         .GetNestedType("RoomSectorShape", BindingFlags.NonPublic)!;
 
     [DataTestMethod]
@@ -18,16 +21,9 @@ public class DiagonalWallCollisionShapeTests
     [DataRow(DiagonalSplit.XnZp)]
     [DataRow(DiagonalSplit.XpZn)]
     [DataRow(DiagonalSplit.XpZp)]
-    public void RoomSectorShape_FlattensDiagonalWallFloorCollision(DiagonalSplit diagonalSplit)
+    public void TombEngineRoomSectorShape_FlattensDiagonalWallFloorCollision(DiagonalSplit diagonalSplit)
     {
-        var sector = CreateDiagonalWallSector(diagonalSplit, isFloor: true);
-        var shape = CreateRoomSectorShape(sector, floor: true);
-        var (flatHeightField, firstFlattenedField, secondFlattenedField) = GetFlatTriangleFields(diagonalSplit);
-        int flatHeight = GetField<int>(shape, flatHeightField);
-
-        Assert.AreEqual(flatHeight, GetField<int>(shape, firstFlattenedField));
-        Assert.AreEqual(flatHeight, GetField<int>(shape, secondFlattenedField));
-        Assert.AreEqual(0, GetField<int>(shape, "DiagonalStep"));
+        AssertDiagonalWallCollisionIsFlattened(TombEngineRoomSectorShapeType, diagonalSplit, isFloor: true);
     }
 
     [DataTestMethod]
@@ -35,37 +31,41 @@ public class DiagonalWallCollisionShapeTests
     [DataRow(DiagonalSplit.XnZp)]
     [DataRow(DiagonalSplit.XpZn)]
     [DataRow(DiagonalSplit.XpZp)]
-    public void RoomSectorShape_FlattensDiagonalWallCeilingCollision(DiagonalSplit diagonalSplit)
+    public void TombEngineRoomSectorShape_FlattensDiagonalWallCeilingCollision(DiagonalSplit diagonalSplit)
     {
-        var sector = CreateDiagonalWallSector(diagonalSplit, isFloor: false);
-        var shape = CreateRoomSectorShape(sector, floor: false);
-        var (flatHeightField, firstFlattenedField, secondFlattenedField) = GetFlatTriangleFields(diagonalSplit);
-        int flatHeight = GetField<int>(shape, flatHeightField);
-
-        Assert.AreEqual(flatHeight, GetField<int>(shape, firstFlattenedField));
-        Assert.AreEqual(flatHeight, GetField<int>(shape, secondFlattenedField));
-        Assert.AreEqual(0, GetField<int>(shape, "DiagonalStep"));
+        AssertDiagonalWallCollisionIsFlattened(TombEngineRoomSectorShapeType, diagonalSplit, isFloor: false);
     }
 
     [TestMethod]
-    public void RoomSectorShape_LeavesNonWallDiagonalSplitUntouched()
+    public void TombEngineRoomSectorShape_LeavesNonWallDiagonalSplitUntouched()
     {
-        var sector = new Sector(0, 0)
-        {
-            Type = SectorType.Floor,
-            Floor = new SectorSurface
-            {
-                DiagonalSplit = DiagonalSplit.XpZn,
-                XnZn = 28,
-                XnZp = 4,
-                XpZn = 16,
-                XpZp = 40
-            }
-        };
+        AssertNonWallDiagonalCollisionIsUntouched(TombEngineRoomSectorShapeType);
+    }
 
-        var shape = CreateRoomSectorShape(sector, floor: true);
+    [DataTestMethod]
+    [DataRow(DiagonalSplit.XnZn)]
+    [DataRow(DiagonalSplit.XnZp)]
+    [DataRow(DiagonalSplit.XpZn)]
+    [DataRow(DiagonalSplit.XpZp)]
+    public void ClassicRoomSectorShape_FlattensDiagonalWallFloorCollision(DiagonalSplit diagonalSplit)
+    {
+        AssertDiagonalWallCollisionIsFlattened(ClassicRoomSectorShapeType, diagonalSplit, isFloor: true);
+    }
 
-        Assert.AreNotEqual(0, GetField<int>(shape, "DiagonalStep"));
+    [DataTestMethod]
+    [DataRow(DiagonalSplit.XnZn)]
+    [DataRow(DiagonalSplit.XnZp)]
+    [DataRow(DiagonalSplit.XpZn)]
+    [DataRow(DiagonalSplit.XpZp)]
+    public void ClassicRoomSectorShape_FlattensDiagonalWallCeilingCollision(DiagonalSplit diagonalSplit)
+    {
+        AssertDiagonalWallCollisionIsFlattened(ClassicRoomSectorShapeType, diagonalSplit, isFloor: false);
+    }
+
+    [TestMethod]
+    public void ClassicRoomSectorShape_LeavesNonWallDiagonalSplitUntouched()
+    {
+        AssertNonWallDiagonalCollisionIsUntouched(ClassicRoomSectorShapeType);
     }
 
     private static Sector CreateDiagonalWallSector(DiagonalSplit diagonalSplit, bool isFloor)
@@ -102,15 +102,46 @@ public class DiagonalWallCollisionShapeTests
             _ => throw new ArgumentOutOfRangeException(nameof(diagonalSplit))
         };
 
-    private static object CreateRoomSectorShape(Sector sector, bool floor)
-        => Activator.CreateInstance(RoomSectorShapeType,
+    private static void AssertDiagonalWallCollisionIsFlattened(Type roomSectorShapeType, DiagonalSplit diagonalSplit, bool isFloor)
+    {
+        var sector = CreateDiagonalWallSector(diagonalSplit, isFloor);
+        var shape = CreateRoomSectorShape(roomSectorShapeType, sector, isFloor);
+        var (flatHeightField, firstFlattenedField, secondFlattenedField) = GetFlatTriangleFields(diagonalSplit);
+        int flatHeight = GetField<int>(roomSectorShapeType, shape, flatHeightField);
+
+        Assert.AreEqual(flatHeight, GetField<int>(roomSectorShapeType, shape, firstFlattenedField));
+        Assert.AreEqual(flatHeight, GetField<int>(roomSectorShapeType, shape, secondFlattenedField));
+        Assert.AreEqual(0, GetField<int>(roomSectorShapeType, shape, "DiagonalStep"));
+    }
+
+    private static void AssertNonWallDiagonalCollisionIsUntouched(Type roomSectorShapeType)
+    {
+        var sector = new Sector(0, 0)
+        {
+            Type = SectorType.Floor,
+            Floor = new SectorSurface
+            {
+                DiagonalSplit = DiagonalSplit.XpZn,
+                XnZn = 28,
+                XnZp = 4,
+                XpZn = 16,
+                XpZp = 40
+            }
+        };
+
+        var shape = CreateRoomSectorShape(roomSectorShapeType, sector, floor: true);
+        Assert.AreNotEqual(0, GetField<int>(roomSectorShapeType, shape, "DiagonalStep"));
+    }
+
+    private static object CreateRoomSectorShape(Type roomSectorShapeType, Sector sector, bool floor)
+        => Activator.CreateInstance(roomSectorShapeType,
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
             binder: null,
             args: new object[] { sector, floor, Room.RoomConnectionType.NoPortal, sector.IsAnyWall },
             culture: CultureInfo.InvariantCulture)!;
 
-    private static T GetField<T>(object instance, string fieldName)
-        => (T)RoomSectorShapeType
+    private static T GetField<T>(Type roomSectorShapeType, object instance, string fieldName)
+        => (T)roomSectorShapeType
             .GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
             .GetValue(instance)!;
 }
