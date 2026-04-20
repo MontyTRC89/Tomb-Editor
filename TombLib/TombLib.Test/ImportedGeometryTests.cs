@@ -47,7 +47,7 @@ public class ImportedGeometryTests
     [TestMethod]
     public void Assign_UpdatesTextureVersion()
     {
-        var fileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".png");
+        var fileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".png");
         ImageC.CreateNew(2, 2).SaveToFile(fileName);
 
         try
