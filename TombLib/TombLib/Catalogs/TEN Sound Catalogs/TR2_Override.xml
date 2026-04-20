@@ -1247,7 +1247,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>TR2_Grenadegun_Load_01.wav</FileName>
+					<FileName>TR2_LARA_GRENADEGUN_LOAD_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>true</Global>
@@ -1266,7 +1266,7 @@
 			<LoopBehaviour>None</LoopBehaviour>
 			<Samples>
 				<WadSample>
-					<FileName>tr2_grenadegun_lock_01.wav</FileName>
+					<FileName>TR2_LARA_GRENADEGUN_LOCK_01.wav</FileName>
 				</WadSample>
 			</Samples>
 			<Global>true</Global>
