@@ -1,8 +1,17 @@
-Version 1.11.1
-============
+===========
+Version 2.0
+===========
 
-TEN base WAD:
+Tomb Editor:
+ * Added new Object Placement editor mode with a new set of tools for easy object placement and selection.
+ * Added Content Browser tool window for more streamlined object management.
+ * Added Flyby Timeline control to edit and preview flyby sequences.
+ * Added "Preview flyby sequence" and "Preview camera" context menus for cameras.
+ * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
+ 
+ TEN base WAD:
  * Fixed GRENADE_ANIM sound effect order to match classic games.
+
 
 Version 1.11
 ============

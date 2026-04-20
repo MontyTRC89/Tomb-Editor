@@ -362,8 +362,14 @@ namespace TombEditor.Controls.Panel3D
             const float MinBrushTransparency = 0.1f;
             const float MaxBrushTransparency = 0.4f;
 
-            if (_editor.Mode != EditorMode.ObjectPlacement || _editor.Tool.Tool == EditorToolType.Selection || !_brushCursorPosition.HasValue || _brushCursorRoom == null)
+            if (_editor.Mode != EditorMode.ObjectPlacement ||
+                _editor.Tool.Tool == EditorToolType.Selection ||
+                _editor.CameraPreviewMode != CameraPreviewType.None ||
+                !_brushCursorPosition.HasValue ||
+                _brushCursorRoom == null)
+            {
                 reset = true;
+            }
 
             int shape   = 0;
             var center  = Vector4.Zero;

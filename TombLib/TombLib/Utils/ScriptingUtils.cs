@@ -44,7 +44,7 @@ namespace TombLib.Utils
         private const int _maxRecursionDepth = 32;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase", "OnLoop", "OnUseItem", "OnFreeze" };
+        private static readonly string[] _reservedNames = { "OnStart", "OnEnd", "OnLoad", "OnSave", "OnControlPhase", "OnLoop", "OnUseItem", "OnPickup", "OnVehicleEnter", "OnVehicleLeave", "OnFreeze" };
 
         private const string _metadataPrefix = "!";
         private const string _enumSplitterStart = "[";
