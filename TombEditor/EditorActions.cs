@@ -2404,21 +2404,26 @@ namespace TombEditor
         private static bool ObjectGroupContainsMoveable(ObjectGroup group)
         {
             foreach (var itemInGroup in group)
+            {
                 if (itemInGroup is ItemInstance item && !item.ItemType.IsStatic)
                     return true;
+            }
 
             return false;
         }
+
+        private static bool ObjectInstanceIsMoveable(ObjectInstance instance) =>
+            instance is ItemInstance item && !item.ItemType.IsStatic;
 
         private static bool IsInvalidMoveablePlacement(Room room, ObjectInstance instance)
         {
             if (room == null || instance == null || !room.IsAlternate)
                 return false;
 
-            if (instance is ItemInstance item && !item.ItemType.IsStatic)
-                return true;
+            if (instance is ObjectGroup group)
+                return ObjectGroupContainsMoveable(group);
 
-            return instance is ObjectGroup group && ObjectGroupContainsMoveable(group);
+            return ObjectInstanceIsMoveable(instance);
         }
 
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
