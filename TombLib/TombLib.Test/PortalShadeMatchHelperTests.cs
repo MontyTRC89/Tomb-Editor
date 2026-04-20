@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
-using System.Reflection;
-using TombLib.LevelData.Compilers;
 using TombLib;
+using TombLib.LevelData.Compilers;
 
 namespace TombLib.Test;
 
@@ -56,15 +55,11 @@ public class PortalShadeMatchHelperTests
 
     private static bool InvokeLegacyCandidate(tr_vertex[] portalVertices, tr_vertex vertexPosition)
     {
-        var helperType = typeof(ShadeMatchSignature).Assembly.GetType("TombLib.LevelData.Compilers.PortalShadeMatchHelper", true)!;
-        var method = helperType.GetMethod("IsCandidate", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(tr_vertex[]), typeof(tr_vertex) }, null)!;
-        return (bool)method.Invoke(null, new object[] { portalVertices, vertexPosition })!;
+        return PortalShadeMatchHelper.IsCandidate(portalVertices, vertexPosition);
     }
 
     private static bool InvokeTombEngineCandidate(VectorInt3[] portalVertices, Vector3 vertexPosition)
     {
-        var helperType = typeof(ShadeMatchSignature).Assembly.GetType("TombLib.LevelData.Compilers.PortalShadeMatchHelper", true)!;
-        var method = helperType.GetMethod("IsCandidate", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(VectorInt3[]), typeof(Vector3) }, null)!;
-        return (bool)method.Invoke(null, new object[] { portalVertices, vertexPosition })!;
+        return PortalShadeMatchHelper.IsCandidate(portalVertices, vertexPosition);
     }
 }

@@ -34,6 +34,8 @@ namespace TombLib.LevelData.Compilers
 
     internal static class PortalShadeMatchHelper
     {
+        private const float PortalEdgeEpsilon = 0.001f;
+
         public static bool IsCandidate(tr_vertex[] portalVertices, tr_vertex vertexPosition)
         {
             return IsCandidate(
@@ -64,8 +66,6 @@ namespace TombLib.LevelData.Compilers
 
         private static bool IsPointOnSegment(Vector3 vertexPosition, Vector3 segmentStart, Vector3 segmentEnd)
         {
-            const float epsilon = 0.001f;
-
             var segment = segmentEnd - segmentStart;
             var offset = vertexPosition - segmentStart;
             var segmentLengthSquared = segment.LengthSquared();
@@ -74,10 +74,10 @@ namespace TombLib.LevelData.Compilers
                 return false;
 
             var projection = Vector3.Dot(offset, segment);
-            if (projection < -epsilon || projection > segmentLengthSquared + epsilon)
+            if (projection < -PortalEdgeEpsilon || projection > segmentLengthSquared + PortalEdgeEpsilon)
                 return false;
 
-            return Vector3.Cross(offset, segment).LengthSquared() <= epsilon * epsilon * segmentLengthSquared;
+            return Vector3.Cross(offset, segment).LengthSquared() <= PortalEdgeEpsilon * PortalEdgeEpsilon * segmentLengthSquared;
         }
     }
 
