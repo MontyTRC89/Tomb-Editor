@@ -2401,7 +2401,7 @@ namespace TombEditor
             _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(type) { Color = color });
         }
 
-        private static bool MoveablePlacementInFlippedRoom(Room room, ObjectInstance instance)
+        private static bool IsInvalidMoveablePlacement(Room room, ObjectInstance instance)
         {
             if (room == null || instance == null || !room.Alternated || room.AlternateRoom != null)
                 return false;
@@ -2409,7 +2409,7 @@ namespace TombEditor
             if (instance is ItemInstance item && !item.ItemType.IsStatic)
                 return true;
 
-            return instance is ObjectGroup group && group.OfType<ItemInstance>().Any(itemInGroup => !itemInGroup.ItemType.IsStatic);
+            return instance is ObjectGroup group && group.Any(itemInGroup => itemInGroup is ItemInstance itemInGroupItem && !itemInGroupItem.ItemType.IsStatic);
         }
 
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
@@ -2417,7 +2417,7 @@ namespace TombEditor
             if (!(instance is ISpatial))
                 return;
 
-            if (MoveablePlacementInFlippedRoom(room, instance))
+            if (IsInvalidMoveablePlacement(room, instance))
             {
                 _editor.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
                 return;
