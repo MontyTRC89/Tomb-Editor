@@ -128,6 +128,7 @@ namespace TombEditor.Controls.Panel3D
 
         // Legacy rendering state
         private WadRenderer _wadRenderer;
+        private ImportedGeometryRenderer _importedGeometryRenderer;
         private RasterizerState _rasterizerStateDepthBias;
         private GraphicsDevice _legacyDevice;
         private RasterizerState _rasterizerWireframe;
@@ -243,6 +244,7 @@ namespace TombEditor.Controls.Panel3D
                 _rasterizerStateDepthBias?.Dispose();
                 _currentContextMenu?.Dispose();
                 _wadRenderer?.Dispose();
+                _importedGeometryRenderer?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -361,6 +363,10 @@ namespace TombEditor.Controls.Panel3D
             if (obj is Editor.LoadedWadsChangedEvent ||
                 obj is Editor.LevelChangedEvent)
                 _wadRenderer?.GarbageCollect();
+
+            if (obj is Editor.LoadedImportedGeometriesChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+                _importedGeometryRenderer?.GarbageCollect();
 
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
