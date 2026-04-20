@@ -42,9 +42,9 @@ namespace WadTool
     public class MeshUndoInstance : UndoRedoInstance
     {
         private WadMesh Mesh;
-        private PanelRenderingMesh Parent;
+        private IMeshRenderingPanel Parent;
 
-        public MeshUndoInstance(PanelRenderingMesh parent, WadMesh mesh)
+        public MeshUndoInstance(IMeshRenderingPanel parent, WadMesh mesh)
         {
             Mesh = mesh.Clone();
             Parent = parent;
@@ -74,6 +74,6 @@ namespace WadTool
 
         public void PushAnimationChanged(AnimationEditor editor, AnimationNode anim) => Push(new AnimationUndoInstance(editor, anim));
         public void PushAnimationChanged(AnimationEditor editor, List<AnimationNode> anims) => Push(anims.Select(anim => (new AnimationUndoInstance(editor, anim)) as UndoRedoInstance).ToList());
-        public void PushMeshChanged(PanelRenderingMesh editor) => Push(new MeshUndoInstance(editor, editor.Mesh));
+        public void PushMeshChanged(IMeshRenderingPanel editor) => Push(new MeshUndoInstance(editor, editor.Mesh));
     }
 }

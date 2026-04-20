@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build WadTool",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"WadTool\\WadTool.csproj"
+			],
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

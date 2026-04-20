@@ -11,9 +11,9 @@ namespace WadTool
     public class GizmoMeshEditor : BaseGizmo
     {
         private readonly Configuration _configuration;
-        private readonly PanelRenderingMesh _control;
+        private readonly IMeshRenderingPanel _control;
 
-        public GizmoMeshEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingMesh control)
+        public GizmoMeshEditor(Configuration configuration, GraphicsDevice device, Effect effect, IMeshRenderingPanel control)
             : base(device, effect)
         {
             _configuration = configuration;

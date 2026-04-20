@@ -1,7 +1,6 @@
-﻿using SharpDX.Direct3D11;
+﻿using Vortice.Direct3D11;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace TombLib.Rendering.DirectX11
 {
@@ -37,14 +36,13 @@ namespace TombLib.Rendering.DirectX11
         };
         public static readonly int Size = ((Marshal.SizeOf(typeof(ConstantBufferLayout)) + 15) / 16) * 16;
 
-        public readonly DeviceContext Context;
-        public readonly Buffer ConstantBuffer;
+        public readonly ID3D11DeviceContext Context;
+        public readonly ID3D11Buffer ConstantBuffer;
 
         public Dx11RenderingStateBuffer(Dx11RenderingDevice device)
         {
             Context = device.Context;
-            ConstantBuffer = new Buffer(device.Device, Size, ResourceUsage.Default,
-                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+            ConstantBuffer = device.Device.CreateBuffer(new BufferDescription((uint)Size, BindFlags.ConstantBuffer, ResourceUsage.Default));
         }
 
         public override void Dispose()
@@ -54,19 +52,19 @@ namespace TombLib.Rendering.DirectX11
 
         public override void Set(RenderingState State)
         {
-            ConstantBufferLayout Buffer;
-            Buffer.TransformMatrix = State.TransformMatrix;
-            Buffer.RoomGridLineWidth = State.RoomGridLineWidth;
-            Buffer.RoomGridForce = State.RoomGridForce ? 1 : 0;
-            Buffer.RoomDisableVertexColors = State.RoomDisableVertexColors ? 1 : 0;
-            Buffer.ShowExtraBlendingModes = State.ShowExtraBlendingModes ? 1 : 0;
-            Buffer.ShowLightingWhiteTextureOnly = State.ShowLightingWhiteTextureOnly ? 1 : 0;
-            Buffer.LightMode = State.LightMode;
-            Buffer.BrushShape = State.BrushShape;
-            Buffer.BrushRotation = State.BrushRotation;
-            Buffer.BrushCenter = State.BrushCenter;
-            Buffer.BrushColor = State.BrushColor;
-            Context.UpdateSubresource(ref Buffer, ConstantBuffer);
+            ConstantBufferLayout buffer;
+            buffer.TransformMatrix = State.TransformMatrix;
+            buffer.RoomGridLineWidth = State.RoomGridLineWidth;
+            buffer.RoomGridForce = State.RoomGridForce ? 1 : 0;
+            buffer.RoomDisableVertexColors = State.RoomDisableVertexColors ? 1 : 0;
+            buffer.ShowExtraBlendingModes = State.ShowExtraBlendingModes ? 1 : 0;
+            buffer.ShowLightingWhiteTextureOnly = State.ShowLightingWhiteTextureOnly ? 1 : 0;
+            buffer.LightMode = State.LightMode;
+            buffer.BrushShape = State.BrushShape;
+            buffer.BrushRotation = State.BrushRotation;
+            buffer.BrushCenter = State.BrushCenter;
+            buffer.BrushColor = State.BrushColor;
+            Context.UpdateSubresource(buffer, ConstantBuffer);
         }
     }
 }

@@ -192,14 +192,16 @@ namespace WadTool
 
         public static void CreateNewWad(WadToolClass tool, IWin32Window owner)
         {
-            using (var form = new FormNewWad2())
-            {
-                if (form.ShowDialog(owner) == DialogResult.Cancel)
-                    return;
+            var viewModel = new ViewModels.NewWad2WindowViewModel();
+            var dialog = new Views.NewWad2Window { DataContext = viewModel };
+            dialog.SetOwner(owner);
+            dialog.ShowDialog();
 
-                tool.DestinationWad = new Wad2 { GameVersion = form.Version };
-                tool.ToggleUnsavedChanges(false);
-            }
+            if (viewModel.DialogResult != true)
+                return;
+
+            tool.DestinationWad = new Wad2 { GameVersion = viewModel.SelectedVersion };
+            tool.ToggleUnsavedChanges(false);
         }
 
         public static bool LoadReferenceLevel(WadToolClass tool, IWin32Window owner, string path = null)

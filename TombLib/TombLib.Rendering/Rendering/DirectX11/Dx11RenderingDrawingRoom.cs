@@ -1,11 +1,10 @@
-﻿using SharpDX.Direct3D11;
+﻿using Vortice.Direct3D11;
 using System;
 using System.Collections.Generic;
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
-using Buffer = SharpDX.Direct3D11.Buffer;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 
@@ -14,10 +13,12 @@ namespace TombLib.Rendering.DirectX11
     public class Dx11RenderingDrawingRoom : RenderingDrawingRoom
     {
         public readonly Dx11RenderingDevice Device;
-        public readonly ShaderResourceView TextureView;
+        public readonly ID3D11ShaderResourceView TextureView;
         public readonly RenderingTextureAllocator TextureAllocator;
-        public Buffer VertexBuffer;
-        public readonly VertexBufferBinding[] VertexBufferBindings;
+        public ID3D11Buffer VertexBuffer;
+        public ID3D11Buffer[] VertexBuffers;
+        public uint[] VertexStrides;
+        public uint[] VertexOffsets;
         public readonly int VertexCount;
         public readonly int VertexBufferSize;
         public bool TexturesInvalidated = false;
@@ -75,24 +76,21 @@ namespace TombLib.Rendering.DirectX11
                             lastFaceIdentity = currentFaceIdentity;
                             lastSectorTexture = 0;
                             if (result.SectorTexture != SectorTexture.None)
-                            { // Use sector texture
+                            {
                                 lastSectorTexture = 0x40 | (((uint)result.SectorTexture - 1) << 8);
                             }
                             else
-                            { // Use sector color
+                            {
                                 lastSectorTexture =
                                     (((uint)(result.Color.X * 255)) << 8) |
                                     (((uint)(result.Color.Y * 255)) << 16) |
                                     (((uint)(result.Color.Z * 255)) << 24);
                             }
-                            // Highlight / dim sectors
                             if (result.Highlighted) lastSectorTexture |= 0x10;
                             if (result.Dimmed)      lastSectorTexture |= 0x20;
-                            // Indicate selected textured faces
                             if (result.Selected && roomGeometry.TriangleTextureAreas[i].Texture != null)
                                 lastSectorTexture |= 0x80;
 
-                            // Assign overlay color which will be used in geometry mode if face has service texture (e.g. arrows)
                             overlay = Dx11RenderingDevice.CompressColor(new Vector3(result.Overlay.X, result.Overlay.Y, result.Overlay.Z), (result.Hidden ? 0.4f : 1.0f), false);
                         }
                         editorUVAndSectorTexture[i * 3 + 0] |= lastSectorTexture;
@@ -114,22 +112,21 @@ namespace TombLib.Rendering.DirectX11
                         TextureArea texture = roomGeometry.TriangleTextureAreas[i];
 
                         if (texture.Texture == null)
-                        { // Render as geometry
+                        {
                             uvwAndBlendModes[i * 3 + 0] = 1ul << 24;
                             uvwAndBlendModes[i * 3 + 1] = 1ul << 24;
                             uvwAndBlendModes[i * 3 + 2] = 1ul << 24;
                         }
                         else if (texture.Texture is TextureInvisible)
-                        { // Render as invisible
+                        {
                             uvwAndBlendModes[i * 3 + 0] = 0ul << 24;
                             uvwAndBlendModes[i * 3 + 1] = 0ul << 24;
                             uvwAndBlendModes[i * 3 + 2] = 0ul << 24;
                         }
                         else
-                        {                             
-                            // Render as textured (the texture may turn out to be unavailable)
+                        {
                             if (texture.Texture.IsUnavailable)
-                            { // Texture is unvailable (i.e. file couldn't be loaded.
+                            {
                                 ImageC image = Dx11RenderingDevice.TextureUnavailable;
                                 VectorInt3 position = TextureAllocator.Get(image);
                                 uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
@@ -137,7 +134,7 @@ namespace TombLib.Rendering.DirectX11
                                 uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
                             }
                             else if (texture.AreTriangleCoordsOutOfBounds(maxTexCoordSpan))
-                            { // Texture is available but coordinates are out of bounds
+                            {
                                 ImageC image = Dx11RenderingDevice.TextureCoordOutOfBounds;
                                 VectorInt3 position = TextureAllocator.Get(image);
                                 uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
@@ -145,7 +142,7 @@ namespace TombLib.Rendering.DirectX11
                                 uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
                             }
                             else if (!texture.ParentArea.IsZero && !texture.ParentArea.Intersects(texture.GetRect()))
-                            { // Texture is available but coordinates are ouf of bounds
+                            {
                                 ImageC image = Dx11RenderingDevice.TextureCoordOutOfBounds;
                                 VectorInt3 position = TextureAllocator.Get(image);
                                 uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
@@ -153,7 +150,7 @@ namespace TombLib.Rendering.DirectX11
                                 uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - VectorInt2.One) + new Vector2(0.5f), (uint)texture.BlendMode);
                             }
                             else
-                            { // Texture is available
+                            {
                                 VectorInt3 position = TextureAllocator.GetForTriangle(texture);
                                 uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord0, (uint)texture.BlendMode);
                                 uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord1, (uint)texture.BlendMode);
@@ -195,17 +192,18 @@ namespace TombLib.Rendering.DirectX11
                 }
 
                 // Create GPU resources
-                VertexBuffer = new Buffer(device.Device, new IntPtr(data),
-                    new BufferDescription(VertexBufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                    CpuAccessFlags.None, ResourceOptionFlags.None, 0));
-                VertexBufferBindings = new VertexBufferBinding[] {
-                    new VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)colors - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)overlays - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvwAndBlendModes - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)editorUVAndSectorTexture - data))
-                };
-                VertexBuffer.SetDebugName("Room " + (description.Room.Name ?? ""));
+                int posOff = (int)((byte*)positions - data);
+                int colOff = (int)((byte*)colors - data);
+                int ovlOff = (int)((byte*)overlays - data);
+                int uvwOff = (int)((byte*)uvwAndBlendModes - data);
+                int edtOff = (int)((byte*)editorUVAndSectorTexture - data);
+
+                VertexBuffer = device.Device.CreateBuffer(
+                    new BufferDescription((uint)VertexBufferSize, BindFlags.VertexBuffer, ResourceUsage.Immutable),
+                    new SubresourceData(new IntPtr(data)));
+                VertexBuffers = new ID3D11Buffer[] { VertexBuffer, VertexBuffer, VertexBuffer, VertexBuffer, VertexBuffer };
+                VertexStrides = new uint[] { (uint)sizeof(Vector3), (uint)sizeof(uint), (uint)sizeof(uint), (uint)sizeof(ulong), (uint)sizeof(uint) };
+                VertexOffsets = new uint[] { (uint)posOff, (uint)colOff, (uint)ovlOff, (uint)uvwOff, (uint)edtOff };
             }
             TextureAllocator.GarbageCollectionCollectEvent.Add(GarbageCollectTexture);
         }
@@ -226,7 +224,7 @@ namespace TombLib.Rendering.DirectX11
 
             byte[] data = Device.ReadBuffer(VertexBuffer, VertexBufferSize);
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
-            int uvwAndBlendModesOffset = VertexBufferBindings[3].Offset;
+            int uvwAndBlendModesOffset = (int)VertexOffsets[3];
 
             // Collect all used textures
             fixed (byte* dataPtr = data)
@@ -234,7 +232,7 @@ namespace TombLib.Rendering.DirectX11
                 ulong* uvwAndBlendModesPtr = (ulong*)(dataPtr + uvwAndBlendModesOffset);
                 for (int i = 0; i < VertexCount; ++i)
                 {
-                    if (uvwAndBlendModesPtr[i] < 0x1000000) // Very small coordinates make no sense, they are used as a placeholder
+                    if (uvwAndBlendModesPtr[i] < 0x1000000)
                         continue;
                     var texture = map.Lookup(Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], textureScaling));
                     if (texture == null)
@@ -247,7 +245,7 @@ namespace TombLib.Rendering.DirectX11
                 }
             }
 
-            // Provide a methode to update the buffer with new UV coordinates
+            // Provide a method to update the buffer with new UV coordinates.
             return delegate (RenderingTextureAllocator allocator2, RenderingTextureAllocator.Map map2)
             {
                 if (allocator2 == null || map2 == null)
@@ -261,7 +259,7 @@ namespace TombLib.Rendering.DirectX11
                     ulong* uvwAndBlendModesPtr = (ulong*)(dataPtr + uvwAndBlendModesOffset);
                     for (int i = 0; i < VertexCount; ++i)
                     {
-                        if (uvwAndBlendModesPtr[i] < 0x1000000) // Very small coordinates make no sense, they are used as a placeholder
+                        if (uvwAndBlendModesPtr[i] < 0x1000000)
                             continue;
                         var texture = map2.Lookup(Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], textureScaling));
 
@@ -279,17 +277,17 @@ namespace TombLib.Rendering.DirectX11
                 var oldVertexBuffer = VertexBuffer;
                 fixed (byte* dataPtr = data)
                 {
-                    VertexBuffer = new Buffer(Device.Device, new IntPtr(dataPtr),
-                        new BufferDescription(VertexBufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                        CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+                    VertexBuffer = Device.Device.CreateBuffer(
+                        new BufferDescription((uint)VertexBufferSize, BindFlags.VertexBuffer, ResourceUsage.Immutable),
+                        new SubresourceData(new IntPtr(dataPtr)));
 
                     if (oldVertexBuffer != null)
                         oldVertexBuffer?.Dispose();
                 }
 
-                for (int i = 0; i < VertexBufferBindings.Length; ++i)
-                    if (VertexBufferBindings[i].Buffer == oldVertexBuffer)
-                        VertexBufferBindings[i].Buffer = VertexBuffer;
+                for (int i = 0; i < VertexBuffers.Length; ++i)
+                    if (VertexBuffers[i] == oldVertexBuffer)
+                        VertexBuffers[i] = VertexBuffer;
             };
         }
 
@@ -302,12 +300,12 @@ namespace TombLib.Rendering.DirectX11
             // Setup state
             ((Dx11RenderingSwapChain)arg.RenderTarget).Bind();
             Device.RoomShader.Apply(context, arg.StateBuffer);
-            context.PixelShader.SetSampler(0, arg.BilinearFilter ? Device.SamplerDefault : Device.SamplerRoundToNearest);
-            context.PixelShader.SetShaderResources(0, TextureView, Device.SectorTextureArrayView);
-            context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
+            context.PSSetSampler(0, arg.BilinearFilter ? Device.SamplerDefault : Device.SamplerRoundToNearest);
+            context.PSSetShaderResources(0, new ID3D11ShaderResourceView[] { TextureView, Device.SectorTextureArrayView });
+            context.IASetVertexBuffers(0, VertexBuffers, VertexStrides, VertexOffsets);
 
             // Render
-            context.Draw(VertexCount, 0);
+            context.Draw((uint)VertexCount, 0);
         }
     }
 }

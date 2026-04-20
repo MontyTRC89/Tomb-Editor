@@ -150,7 +150,7 @@ namespace TombLib.Rendering
                     throw new GDI.GDIException("GdiFlush");
 
                 // Convert RGB GDI image to RGBA byte array
-                // White color is mapped to full transparency
+                // ClearType provides subpixel RGB data; we convert to clean grayscale alpha.
                 byte[] imageData = new byte[bitmapInfo.biWidth * bitmapInfo.biHeight * ImageC.PixelSize];
                 fixed (byte* destination2 = imageData)
                 {
@@ -159,33 +159,15 @@ namespace TombLib.Rendering
                     int count = bitmapInfo.biWidth * bitmapInfo.biHeight;
                     for (int i = 0; i < count; ++i)
                     {
-                        // Optimized version of:
-                        // https://stackoverflow.com/a/40862635
-
-                        // White text
+                        // Background is white, text is black.
+                        // Coverage per channel = 255 - channel value.
+                        // Average the channels for grayscale alpha.
                         uint pixel = source[i];
-                        uint r = 255 - (pixel & 0xff);
-                        uint g = 255 - ((pixel >> 8) & 0xff);
-                        uint b = 255 - ((pixel >> 16) & 0xff);
-                        uint a = 255;
-                        uint factor = a == 0 ? 0xff0000 : (0xff0000 / a);
-                        r = Math.Min((r * factor + 0x8000) >> 16, 255);
-                        g = Math.Min((g * factor + 0x8000) >> 16, 255);
-                        b = Math.Min((b * factor + 0x8000) >> 16, 255);
-                        destination[i] = (a << 24) | (b << 16) | (g << 8) | r;
-
-                        /* // Black text
-                        uint pixel = source[i];
-                        uint r = pixel & 0xff;
-                        uint g = (pixel >> 8) & 0xff;
-                        uint b = (pixel >> 16) & 0xff;
-                        uint a = 0xff - Math.Min(r, Math.Min(g, b));
-                        uint factor = a == 0 ? 0xff0000 : (0xff0000 / a);
-                        r = (0xff8000 - Math.Min(0xff8000, (255 - r) * factor)) >> 16;
-                        g = (0xff8000 - Math.Min(0xff8000, (255 - g) * factor)) >> 16;
-                        b = (0xff8000 - Math.Min(0xff8000, (255 - b) * factor)) >> 16;
-                        destination[i] = (a << 24) | (b << 16) | (g << 8) | r;
-                         */
+                        uint cr = 255 - (pixel & 0xff);
+                        uint cg = 255 - ((pixel >> 8) & 0xff);
+                        uint cb = 255 - ((pixel >> 16) & 0xff);
+                        uint a = (cr + cg + cb + 1) / 3;
+                        destination[i] = (a << 24) | 0x00ffffff;
                     }
                 }
 

@@ -13,7 +13,7 @@
 			<Setter.Value>
 				<WindowChrome
 					CaptionHeight="{x:Static local:Defaults.TitleBar_ChromeHeight}"
-					GlassFrameThickness="{x:Static local:Defaults.MediumThickness}"
+					GlassFrameThickness="{x:Static local:Defaults.GlassFrameThickness}"
 					ResizeBorderThickness="{x:Static local:Defaults.SmallThickness}"
 					UseAeroCaptionButtons="False" />
 			</Setter.Value>
@@ -60,11 +60,13 @@
 										</Grid.ColumnDefinitions>
 
 										<Image
+											Width="{x:Static local:Defaults.TitleBar_IconWidth}"
 											Height="{x:Static local:Defaults.TitleBar_IconWidth}"
-											Opacity="{DynamicResource Opacity_DisabledContent}"
+											VerticalAlignment="Center"
+											RenderOptions.BitmapScalingMode="HighQuality"
 											Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}">
 											<Image.Margin>
-												<Thickness Top="{x:Static local:Defaults.TitleBar_IconVerticalOffset}" />
+												<Thickness Left="{x:Static local:Defaults.TitleBar_IconMarginLeft}" />
 											</Image.Margin>
 										</Image>
 										<TextBlock
@@ -175,7 +177,7 @@
 										</Rectangle>
 
 										<Rectangle
-											Fill="{DynamicResource Brush_WindowBorder}"
+											Fill="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
 											Stroke="{DynamicResource Brush_Text}"
 											StrokeThickness="{x:Static local:Defaults.TitleBar_PathIconStrokeWidth}">
 											<Rectangle.Margin>
@@ -200,6 +202,10 @@
 
 			<Trigger Property="WindowState" Value="Maximized">
 				<Setter Property="BorderThickness" Value="8" />
+			</Trigger>
+
+			<Trigger Property="IsActive" Value="True">
+				<Setter Property="BorderBrush" Value="{x:Static SystemParameters.WindowGlassBrush}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

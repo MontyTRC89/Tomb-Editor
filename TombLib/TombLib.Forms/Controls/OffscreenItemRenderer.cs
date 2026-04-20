@@ -1,6 +1,7 @@
 using NLog;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
+using Vortice.Direct3D11;
+using Vortice.DXGI;
+using Vortice.Mathematics;
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Numerics;
@@ -10,7 +11,6 @@ using TombLib.LevelData;
 using TombLib.Rendering.DirectX11;
 using TombLib.Utils;
 using TombLib.Wad;
-using Texture2D = SharpDX.Direct3D11.Texture2D;
 
 namespace TombLib.Controls
 {
@@ -22,11 +22,11 @@ namespace TombLib.Controls
         private readonly GraphicsDevice _legacyDevice;
         private readonly WadRenderer _wadRenderer;
 
-        private Texture2D _renderTarget;
-        private RenderTargetView _renderTargetView;
-        private Texture2D _depthBuffer;
-        private DepthStencilView _depthBufferView;
-        private Texture2D _stagingTexture;
+        private ID3D11Texture2D _renderTarget;
+        private ID3D11RenderTargetView _renderTargetView;
+        private ID3D11Texture2D _depthBuffer;
+        private ID3D11DepthStencilView _depthBufferView;
+        private ID3D11Texture2D _stagingTexture;
         private int _currentSize;
 
         public OffscreenItemRenderer()
@@ -56,7 +56,7 @@ namespace TombLib.Controls
                 BindRenderTarget(size);
 
                 // Clear
-                _device.Context.ClearRenderTargetView(_renderTargetView, new SharpDX.Color4(backColor.X, backColor.Y, backColor.Z, backColor.W));
+                _device.Context.ClearRenderTargetView(_renderTargetView, new Color4(backColor.X, backColor.Y, backColor.Z, backColor.W));
                 _device.Context.ClearDepthStencilView(_depthBufferView, DepthStencilClearFlags.Depth, 1.0f, 0);
 
                 // Reset device state.
@@ -87,76 +87,76 @@ namespace TombLib.Controls
             _currentSize = size;
 
             // Create color render target.
-            _renderTarget = new Texture2D(_device.Device, new Texture2DDescription
+            _renderTarget = _device.Device.CreateTexture2D(new Texture2DDescription
             {
                 Format = Format.B8G8R8A8_UNorm,
-                Width = size,
-                Height = size,
+                Width = (uint)size,
+                Height = (uint)size,
                 ArraySize = 1,
                 MipLevels = 1,
                 SampleDescription = new SampleDescription(1, 0),
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.RenderTarget,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None
+                CPUAccessFlags = CpuAccessFlags.None,
+                MiscFlags = ResourceOptionFlags.None
             });
-            _renderTargetView = new RenderTargetView(_device.Device, _renderTarget);
+            _renderTargetView = _device.Device.CreateRenderTargetView(_renderTarget);
 
             // Create depth buffer.
-            _depthBuffer = new Texture2D(_device.Device, new Texture2DDescription
+            _depthBuffer = _device.Device.CreateTexture2D(new Texture2DDescription
             {
                 Format = Format.D32_Float,
-                Width = size,
-                Height = size,
+                Width = (uint)size,
+                Height = (uint)size,
                 ArraySize = 1,
                 MipLevels = 1,
                 SampleDescription = new SampleDescription(1, 0),
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.DepthStencil,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None
+                CPUAccessFlags = CpuAccessFlags.None,
+                MiscFlags = ResourceOptionFlags.None
             });
-            _depthBufferView = new DepthStencilView(_device.Device, _depthBuffer);
+            _depthBufferView = _device.Device.CreateDepthStencilView(_depthBuffer);
 
             // Create staging texture for CPU readback.
-            _stagingTexture = new Texture2D(_device.Device, new Texture2DDescription
+            _stagingTexture = _device.Device.CreateTexture2D(new Texture2DDescription
             {
                 Format = Format.B8G8R8A8_UNorm,
-                Width = size,
-                Height = size,
+                Width = (uint)size,
+                Height = (uint)size,
                 ArraySize = 1,
                 MipLevels = 1,
                 SampleDescription = new SampleDescription(1, 0),
                 Usage = ResourceUsage.Staging,
                 BindFlags = BindFlags.None,
-                CpuAccessFlags = CpuAccessFlags.Read,
-                OptionFlags = ResourceOptionFlags.None
+                CPUAccessFlags = CpuAccessFlags.Read,
+                MiscFlags = ResourceOptionFlags.None
             });
         }
 
         private void BindRenderTarget(int size)
         {
-            _device.Context.Rasterizer.SetViewport(0, 0, size, size, 0.0f, 1.0f);
-            _device.Context.OutputMerger.SetTargets(_depthBufferView, _renderTargetView);
+            _device.Context.RSSetViewport(0, 0, size, size, 0.0f, 1.0f);
+            _device.Context.OMSetRenderTargets(_renderTargetView, _depthBufferView);
             _device.CurrentRenderTarget = null;
         }
 
         private ImageC ReadPixels(int size)
         {
             // Copy render target to staging texture.
-            _device.Context.CopyResource(_renderTarget, _stagingTexture);
+            _device.Context.CopyResource(_stagingTexture, _renderTarget);
 
             // Map and read pixels.
-            var dataBox = _device.Context.MapSubresource(_stagingTexture, 0, MapMode.Read, SharpDX.Direct3D11.MapFlags.None);
+            var mapped = _device.Context.Map(_stagingTexture, 0, MapMode.Read);
             try
             {
                 int bytesPerPixel = 4;
-                int rowPitch = dataBox.RowPitch;
+                int rowPitch = (int)mapped.RowPitch;
                 byte[] pixels = new byte[size * size * bytesPerPixel];
 
                 // Copy row by row (rowPitch may differ from size * bytesPerPixel due to alignment).
                 for (int y = 0; y < size; y++)
-                    Marshal.Copy(dataBox.DataPointer + y * rowPitch, pixels, y * size * bytesPerPixel, size * bytesPerPixel);
+                    Marshal.Copy(mapped.DataPointer + y * rowPitch, pixels, y * size * bytesPerPixel, size * bytesPerPixel);
 
                 return ImageC.FromByteArray(pixels, size, size);
             }
@@ -167,7 +167,7 @@ namespace TombLib.Controls
             }
             finally
             {
-                _device.Context.UnmapSubresource(_stagingTexture, 0);
+                _device.Context.Unmap(_stagingTexture, 0);
             }
         }
 

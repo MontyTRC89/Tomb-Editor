@@ -1,15 +1,16 @@
-﻿using SharpDX;
-using SharpDX.Direct3D11;
+﻿using Vortice.Direct3D11;
 using System;
-using Buffer = SharpDX.Direct3D11.Buffer;
+using System.Numerics;
 
 namespace TombLib.Rendering.DirectX11
 {
     public class Dx11RenderingDrawingTest : RenderingDrawingTest
     {
         public readonly Dx11RenderingDevice Device;
-        public readonly Buffer VertexBuffer;
-        public readonly VertexBufferBinding[] VertexBufferBindings;
+        public readonly ID3D11Buffer VertexBuffer;
+        public readonly ID3D11Buffer[] VertexBuffers;
+        public readonly int[] VertexStrides;
+        public readonly int[] VertexOffsets;
 
         public unsafe Dx11RenderingDrawingTest(Dx11RenderingDevice device, Description description)
         {
@@ -32,13 +33,15 @@ namespace TombLib.Rendering.DirectX11
                 colors[2] = 0xff800000;
 
                 // Create GPU resources
-                VertexBuffer = new Buffer(device.Device, new IntPtr(data),
-                    new BufferDescription(size, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                    CpuAccessFlags.None, ResourceOptionFlags.None, 0));
-                VertexBufferBindings = new VertexBufferBinding[] {
-                    new VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)colors - data))
-                };
+                int posOffset = (int)((byte*)positions - data);
+                int colOffset = (int)((byte*)colors - data);
+
+                VertexBuffer = device.Device.CreateBuffer(
+                    new BufferDescription((uint)size, BindFlags.VertexBuffer, ResourceUsage.Immutable),
+                    new SubresourceData(new IntPtr(data)));
+                VertexBuffers = new ID3D11Buffer[] { VertexBuffer, VertexBuffer };
+                VertexStrides = new int[] { sizeof(Vector3), sizeof(uint) };
+                VertexOffsets = new int[] { posOffset, colOffset };
             }
         }
 
@@ -54,7 +57,7 @@ namespace TombLib.Rendering.DirectX11
             // Setup state
             ((Dx11RenderingSwapChain)arg.RenderTarget).Bind();
             Device.TestShader.Apply(context, arg.StateBuffer);
-            context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
+            context.IASetVertexBuffers(0, VertexBuffers, VertexStrides, VertexOffsets);
 
             // Render
             context.Draw(3, 0);*/

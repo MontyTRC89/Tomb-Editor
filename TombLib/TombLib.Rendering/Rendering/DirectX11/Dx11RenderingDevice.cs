@@ -1,20 +1,16 @@
 ﻿using NLog;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
+using Vortice.Direct3D;
+using Vortice.Direct3D11;
+using Vortice.DXGI;
+using Vortice.Mathematics;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using TombLib.Utils;
-using Buffer = SharpDX.Direct3D11.Buffer;
-using Factory = SharpDX.DXGI.Factory;
-using Format = SharpDX.DXGI.Format;
-using SampleDescription = SharpDX.DXGI.SampleDescription;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 
@@ -25,25 +21,25 @@ namespace TombLib.Rendering.DirectX11
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public const int SectorTextureSize = 256;
-        private static Assembly ThisAssembly = Assembly.GetExecutingAssembly();
+        private static readonly Assembly ThisAssembly = Assembly.GetExecutingAssembly();
         public static ImageC TextureUnavailable = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_unavailable.png"));
         public static ImageC TextureCoordOutOfBounds = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_coord_out_of_bounds.png"));
-        public readonly Device Device;
-        public readonly Factory Factory;
-        public readonly DeviceContext Context;
+        public readonly ID3D11Device Device;
+        public readonly IDXGIFactory1 Factory;
+        public readonly ID3D11DeviceContext Context;
         public readonly Dx11PipelineState TextShader;
         public readonly Dx11PipelineState SpriteShader;
         public readonly Dx11PipelineState RoomShader;
-        public readonly RasterizerState RasterizerBackCulling;
-        public readonly SamplerState SamplerDefault;
-        public readonly SamplerState SamplerRoundToNearest;
-        public readonly DepthStencilState DepthStencilDefault;
-        public readonly DepthStencilState DepthStencilNoZBuffer;
-        public readonly BlendState BlendingDisabled;
-        public readonly BlendState BlendingPremultipliedAlpha;
-        public readonly Texture2D SectorTextureArray;
-        public readonly ShaderResourceView SectorTextureArrayView;
-        public Dx11RenderingSwapChain CurrentRenderTarget = null;
+        public readonly ID3D11RasterizerState RasterizerBackCulling;
+        public readonly ID3D11SamplerState SamplerDefault;
+        public readonly ID3D11SamplerState SamplerRoundToNearest;
+        public readonly ID3D11DepthStencilState DepthStencilDefault;
+        public readonly ID3D11DepthStencilState DepthStencilNoZBuffer;
+        public readonly ID3D11BlendState BlendingDisabled;
+        public readonly ID3D11BlendState BlendingPremultipliedAlpha;
+        public readonly ID3D11Texture2D SectorTextureArray;
+        public readonly ID3D11ShaderResourceView SectorTextureArrayView;
+        public RenderingSwapChain CurrentRenderTarget = null;
 
         public Dx11RenderingDevice()
         {
@@ -55,34 +51,35 @@ namespace TombLib.Rendering.DirectX11
 #endif
             try
             {
-                Factory = new Factory();
-                if (!Factory.Adapters.Any())
-                {
-                    MessageBox.Show("Your system have no video adapters. Try to install video adapter.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    throw new Exception("There are no valid video adapters in system.");
-                }
+                Factory = DXGI.CreateDXGIFactory1<IDXGIFactory1>();
 
-                var adapter = Factory.GetAdapter(0);
+                Factory.EnumAdapters1(0, out var adapter);
                 if (adapter == null)
                 {
                     MessageBox.Show("DirectX wasn't able to acquire video adapter. Try to restart your system.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new Exception("DirectX wasn't able to acquire video adapter.");
                 }
 
-                if (adapter.Outputs == null || !adapter.Outputs.Any())
-                {
-                    MessageBox.Show("There are no video displays connected to your system. Try to connect a display.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    throw new Exception("No connected displays found.");
-                }
+                var adapterDesc = adapter.Description1;
+                logger.Info("Creating D3D device: " + adapterDesc.Description + ", " +
+                    (adapterDesc.DedicatedVideoMemory / 1024 / 1024) + " MB GPU RAM.");
 
-                logger.Info("Creating D3D device: " + adapter.Description.Description + ", " +
-                    (adapter.Description.DedicatedVideoMemory / 1024 / 1024) + " MB GPU RAM.");
+                D3D11.D3D11CreateDevice(
+                    adapter,
+                    DriverType.Unknown,
+                    DebugFlags,
+                    new[] { FeatureLevel.Level_10_0 },
+                    out var device,
+                    out _,
+                    out var context);
 
-                Device = new Device(adapter, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
+                Device = device!;
+                Context = context!;
+                adapter.Dispose();
             }
             catch (Exception exc)
             {
-                switch ((uint)exc.HResult)
+                switch (unchecked((uint)exc.HResult))
                 {
                     case 0x887A0004:
                         MessageBox.Show("Your DirectX version, videocard or drivers are out of date.\nDirectX 11 installation and videocard with DirectX 10 support is required.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -102,81 +99,77 @@ namespace TombLib.Rendering.DirectX11
                 throw new Exception("Can't create Direct3D 11 device! Exception: " + exc);
             }
 
-#if DEBUG
-            using (InfoQueue DeviceInfoQueue = Device.QueryInterface<InfoQueue>())
-            {
-                DeviceInfoQueue.SetBreakOnSeverity(MessageSeverity.Warning, true);
-            }
-#endif
-
             try
             {
-                Context = Device.ImmediateContext;
-                TextShader = new Dx11PipelineState(this, "TextShader", new InputElement[]
+                TextShader = new Dx11PipelineState(this, "TextShader", new InputElementDescription[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
+                    new InputElementDescription("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
+                    new InputElementDescription("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
                 });
-                SpriteShader = new Dx11PipelineState(this, "SpriteShader", new InputElement[]
+                SpriteShader = new Dx11PipelineState(this, "SpriteShader", new InputElementDescription[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 0, 1, InputClassification.PerVertexData, 0),
-                new InputElement("UVW", 0, Format.R32G32_UInt, 0, 2, InputClassification.PerVertexData, 0)
+                    new InputElementDescription("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
+                    new InputElementDescription("COLOR", 0, Format.R32G32B32A32_Float, 0, 1, InputClassification.PerVertexData, 0),
+                    new InputElementDescription("UVW", 0, Format.R32G32_UInt, 0, 2, InputClassification.PerVertexData, 0)
                 });
-                RoomShader = new Dx11PipelineState(this, "RoomShader", new InputElement[]
+                RoomShader = new Dx11PipelineState(this, "RoomShader", new InputElementDescription[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0),
-                new InputElement("OVERLAY", 0, Format.R8G8B8A8_UNorm, 0, 2, InputClassification.PerVertexData, 0),
-                new InputElement("UVWANDBLENDMODE", 0, Format.R32G32_UInt, 0, 3, InputClassification.PerVertexData, 0),
-                new InputElement("EDITORUVANDSECTORTEXTURE", 0, Format.R32_UInt, 0, 4, InputClassification.PerVertexData, 0)
+                    new InputElementDescription("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
+                    new InputElementDescription("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0),
+                    new InputElementDescription("OVERLAY", 0, Format.R8G8B8A8_UNorm, 0, 2, InputClassification.PerVertexData, 0),
+                    new InputElementDescription("UVWANDBLENDMODE", 0, Format.R32G32_UInt, 0, 3, InputClassification.PerVertexData, 0),
+                    new InputElementDescription("EDITORUVANDSECTORTEXTURE", 0, Format.R32_UInt, 0, 4, InputClassification.PerVertexData, 0)
                 });
-                RasterizerBackCulling = new RasterizerState(Device, new RasterizerStateDescription
+                RasterizerBackCulling = Device.CreateRasterizerState(new RasterizerDescription
                 {
                     CullMode = CullMode.Back,
                     FillMode = FillMode.Solid,
                 });
-                SamplerDefault = new SamplerState(Device, new SamplerStateDescription
+                SamplerDefault = Device.CreateSamplerState(new SamplerDescription
                 {
                     AddressU = TextureAddressMode.Mirror,
                     AddressV = TextureAddressMode.Mirror,
                     AddressW = TextureAddressMode.Wrap,
                     Filter = Filter.Anisotropic,
-                    MaximumAnisotropy = 4,
+                    MaxAnisotropy = 4,
                 });
-                SamplerRoundToNearest = new SamplerState(Device, new SamplerStateDescription
+                SamplerRoundToNearest = Device.CreateSamplerState(new SamplerDescription
                 {
                     AddressU = TextureAddressMode.Mirror,
                     AddressV = TextureAddressMode.Mirror,
                     AddressW = TextureAddressMode.Wrap,
                     Filter = Filter.MinMagMipPoint,
-                    MaximumAnisotropy = 4,
+                    MaxAnisotropy = 4,
                 });
                 {
-                    DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
-                    desc.DepthComparison = Comparison.LessEqual;
-                    desc.DepthWriteMask = DepthWriteMask.All;
-                    desc.IsDepthEnabled = true;
-                    desc.IsStencilEnabled = false;
-                    DepthStencilDefault = new DepthStencilState(Device, desc);
+                    var desc = new DepthStencilDescription
+                    {
+                        DepthEnable = true,
+                        DepthWriteMask = DepthWriteMask.All,
+                        DepthFunc = ComparisonFunction.LessEqual,
+                        StencilEnable = false,
+                    };
+                    DepthStencilDefault = Device.CreateDepthStencilState(desc);
                 }
                 {
-                    DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
-                    desc.DepthComparison = Comparison.Always;
-                    desc.DepthWriteMask = DepthWriteMask.Zero;
-                    desc.IsDepthEnabled = false;
-                    desc.IsStencilEnabled = false;
-                    DepthStencilNoZBuffer = new DepthStencilState(Device, desc);
+                    var desc = new DepthStencilDescription
+                    {
+                        DepthEnable = false,
+                        DepthWriteMask = DepthWriteMask.Zero,
+                        DepthFunc = ComparisonFunction.Always,
+                        StencilEnable = false,
+                    };
+                    DepthStencilNoZBuffer = Device.CreateDepthStencilState(desc);
                 }
-                BlendingDisabled = new BlendState(Device, BlendStateDescription.Default());
+                BlendingDisabled = Device.CreateBlendState(BlendDescription.Opaque);
                 {
-                    BlendStateDescription desc = BlendStateDescription.Default();
-                    desc.RenderTarget[0].IsBlendEnabled = true;
-                    desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
-                    desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
-                    desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
-                    desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
-                    BlendingPremultipliedAlpha = new BlendState(Device, desc);
+                    var desc = new BlendDescription();
+                    desc.RenderTarget[0].BlendEnable = true;
+                    desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceBlendAlpha = Blend.One;
+                    desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationBlendAlpha = Blend.InverseSourceAlpha;
+                    desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].BlendOperationAlpha = BlendOperation.Add;
+                    desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteEnable.All;
+                    BlendingPremultipliedAlpha = Device.CreateBlendState(desc);
                 }
             }
             catch (Exception exc)
@@ -185,12 +178,12 @@ namespace TombLib.Rendering.DirectX11
             }
 
             // Sector textures
-            bool support16BitTexture = Device.CheckFormatSupport(Format.B5G5R5A1_UNorm).HasFlag(FormatSupport.Texture2D); // For some reason not all DirectX devices support 16 bit textures.
+            bool support16BitTexture = Device.CheckFormatSupport(Format.B5G5R5A1_UNorm).HasFlag(FormatSupport.Texture2D);
             string[] sectorTextureNames = Enum.GetNames(typeof(SectorTexture)).Skip(1).ToArray();
             GCHandle[] handles = new GCHandle[sectorTextureNames.Length];
             try
             {
-                DataBox[] dataBoxes = new DataBox[sectorTextureNames.Length];
+                SubresourceData[] subresourceData = new SubresourceData[sectorTextureNames.Length];
                 for (int i = 0; i < sectorTextureNames.Length; ++i)
                 {
                     string name = nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures." + sectorTextureNames[i] + ".png";
@@ -201,7 +194,7 @@ namespace TombLib.Rendering.DirectX11
                             throw new ArgumentOutOfRangeException("The embedded resource '" + name + "' is not of a valid size.");
 
                         if (support16BitTexture)
-                        { // Compress image data into B5G5R5A1 format to save a bit of GPU memory. (3 MB saved with currently 23 images)
+                        {
                             ushort[] sectorTextureData = new ushort[SectorTextureSize * SectorTextureSize];
                             for (int j = 0; j < (SectorTextureSize * SectorTextureSize); ++j)
                             {
@@ -213,36 +206,36 @@ namespace TombLib.Rendering.DirectX11
                                     ((Color.A >> 7) << 15));
                             }
                             handles[i] = GCHandle.Alloc(sectorTextureData, GCHandleType.Pinned);
-                            dataBoxes[i] = new DataBox(handles[i].AddrOfPinnedObject(), sizeof(ushort) * SectorTextureSize, 0);
+                            subresourceData[i] = new SubresourceData(handles[i].AddrOfPinnedObject(), (uint)(sizeof(ushort) * SectorTextureSize));
                         }
                         else
                         {
                             handles[i] = GCHandle.Alloc(image.ToByteArray(), GCHandleType.Pinned);
-                            dataBoxes[i] = new DataBox(handles[i].AddrOfPinnedObject(), sizeof(uint) * SectorTextureSize, 0);
+                            subresourceData[i] = new SubresourceData(handles[i].AddrOfPinnedObject(), (uint)(sizeof(uint) * SectorTextureSize));
                         }
                     }
                 }
 
-                SectorTextureArray = new Texture2D(Device, new Texture2DDescription
+                SectorTextureArray = Device.CreateTexture2D(new Texture2DDescription
                 {
-                    Width = SectorTextureSize,
-                    Height = SectorTextureSize,
+                    Width = (uint)SectorTextureSize,
+                    Height = (uint)SectorTextureSize,
                     MipLevels = 1,
-                    ArraySize = sectorTextureNames.Length,
+                    ArraySize = (uint)sectorTextureNames.Length,
                     Format = support16BitTexture ? Format.B5G5R5A1_UNorm : Format.B8G8R8A8_UNorm,
                     SampleDescription = new SampleDescription(1, 0),
                     Usage = ResourceUsage.Immutable,
                     BindFlags = BindFlags.ShaderResource,
-                    CpuAccessFlags = CpuAccessFlags.None,
-                    OptionFlags = ResourceOptionFlags.None
-                }, dataBoxes);
+                    CPUAccessFlags = CpuAccessFlags.None,
+                    MiscFlags = ResourceOptionFlags.None
+                }, subresourceData);
             }
             finally
             {
                 foreach (GCHandle handle in handles)
                     handle.Free();
             }
-            SectorTextureArrayView = new ShaderResourceView(Device, SectorTextureArray);
+            SectorTextureArrayView = Device.CreateShaderResourceView(SectorTextureArray);
 
             // Set omni present state
             ResetState();
@@ -252,9 +245,9 @@ namespace TombLib.Rendering.DirectX11
 
         public void ResetState()
         {
-            Context.Rasterizer.State = RasterizerBackCulling;
-            Context.OutputMerger.SetDepthStencilState(DepthStencilDefault);
-            Context.OutputMerger.SetBlendState(BlendingPremultipliedAlpha);
+            Context.RSSetState(RasterizerBackCulling);
+            Context.OMSetDepthStencilState(DepthStencilDefault);
+            Context.OMSetBlendState(BlendingPremultipliedAlpha);
         }
 
         public override void Dispose()
@@ -314,48 +307,46 @@ namespace TombLib.Rendering.DirectX11
             highestBits = (uint)(value >> 60);
         }
 
-        ///<summary>Works even on immutable buffers</summary>
-        public byte[] ReadBuffer(Buffer buffer, int size)
+        ///<summary>Works even on immutable buffers.</summary>
+        public byte[] ReadBuffer(ID3D11Buffer buffer, int size)
         {
-            using (Buffer tempBuffer = new Buffer(Device,
-                new BufferDescription(size, ResourceUsage.Staging, BindFlags.None,
-                CpuAccessFlags.Read, ResourceOptionFlags.None, 0)))
+            using (var tempBuffer = Device.CreateBuffer(new BufferDescription((uint)size, BindFlags.None, ResourceUsage.Staging, CpuAccessFlags.Read)))
             {
-                Context.CopyResource(buffer, tempBuffer);
-                DataBox mappedBuffer = Context.MapSubresource(tempBuffer, 0, MapMode.Read, MapFlags.None);
+                Context.CopyResource(tempBuffer, buffer);
+                var mapped = Context.Map(tempBuffer, 0, MapMode.Read);
                 try
                 {
                     byte[] result = new byte[size];
-                    Marshal.Copy(mappedBuffer.DataPointer, result, 0, size);
+                    Marshal.Copy(mapped.DataPointer, result, 0, size);
                     return result;
                 }
                 finally
                 {
-                    Context.UnmapSubresource(tempBuffer, 0);
+                    Context.Unmap(tempBuffer, 0);
                 }
             }
         }
 
         public Texture2DDescription CreateTextureDescription(VectorInt3 size)
         {
-            Texture2DDescription dx11Description;
-            dx11Description.Height = size.X;
-            dx11Description.Width = size.Y;
-            dx11Description.ArraySize = size.Z;
-            dx11Description.BindFlags = BindFlags.ShaderResource;
-            dx11Description.CpuAccessFlags = CpuAccessFlags.None;
-            dx11Description.Format = Format.B8G8R8A8_UNorm;
-            dx11Description.MipLevels = 1;
-            dx11Description.OptionFlags = ResourceOptionFlags.None;
-            dx11Description.SampleDescription = new SampleDescription(1, 0);
-            dx11Description.Usage = ResourceUsage.Default; // Perhaps dynamic could be used?
-
-            return dx11Description;
+            return new Texture2DDescription
+            {
+                Height = (uint)size.X,
+                Width = (uint)size.Y,
+                ArraySize = (uint)size.Z,
+                BindFlags = BindFlags.ShaderResource,
+                CPUAccessFlags = CpuAccessFlags.None,
+                Format = Format.B8G8R8A8_UNorm,
+                MipLevels = 1,
+                MiscFlags = ResourceOptionFlags.None,
+                SampleDescription = new SampleDescription(1, 0),
+                Usage = ResourceUsage.Default,
+            };
         }
 
         public VectorInt3 GetAvailableTextureAllocatorSize(VectorInt3 size)
         {
-            if (size.Z < RenderingTextureAllocator.MinimumPageCount) // Page count is below minimum page count, no need to process.
+            if (size.Z < RenderingTextureAllocator.MinimumPageCount)
                 return size;
 
             logger.Info("Trying to reserve " + size.Z + " " + size.X + "x" + size.Y + " pages of texture memory...");
@@ -366,17 +357,14 @@ namespace TombLib.Rendering.DirectX11
             {
                 try
                 {
-                    // Try to allocate texture space and immediately dispose it.
-                    var test = new Texture2D(Device, dx11Description);
+                    var test = Device.CreateTexture2D(dx11Description);
                     test.Dispose();
 
-                    // Test succeeded, return current page count.
                     logger.Info(dx11Description.ArraySize + " texture pages were successfully reserved.");
-                    return new VectorInt3(size.X, size.Y, dx11Description.ArraySize);
+                    return new VectorInt3(size.X, size.Y, (int)dx11Description.ArraySize);
                 }
                 catch
                 {
-                    // Test failed, try to dispose texture, decrease page count and try again.
                     logger.Warn("Not enough memory to allocate " + dx11Description.ArraySize + " texture pages. Trying to reduce page count...");
                     dx11Description.ArraySize -= 2;
                 }
@@ -405,6 +393,7 @@ namespace TombLib.Rendering.DirectX11
             description.Size = GetAvailableTextureAllocatorSize(description.Size);
             return new Dx11RenderingTextureAllocator(this, description);
         }
+
         public override RenderingFont CreateFont(RenderingFont.Description description)
         {
             return new RenderingFont(description);
@@ -413,16 +402,6 @@ namespace TombLib.Rendering.DirectX11
         public override RenderingStateBuffer CreateStateBuffer()
         {
             return new Dx11RenderingStateBuffer(this);
-        }
-    }
-
-    public static class Dx11RenderingDeviceDebugging
-    {
-        public static unsafe void SetDebugName(this DeviceChild child, string debugName)
-        {
-            byte[] debugNameBytes = Encoding.ASCII.GetBytes(debugName);
-            fixed (byte* debugNameBytesPtr = debugNameBytes)
-                child.SetPrivateData(CommonGuid.DebugObjectName, debugNameBytes.Length, new IntPtr(debugNameBytesPtr));
         }
     }
 }

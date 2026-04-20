@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TombLib.Rendering;
 
@@ -22,9 +23,15 @@ namespace TombLib.Graphics
         {
             Device = new Rendering.DirectX11.Dx11RenderingDevice();
 
-            // Recreate legacy environment
+            // Recreate legacy environment via COM pointer sharing.
+            // The Vortice device and SharpDX Toolkit share the same underlying D3D11 device.
             {
-                ___LegacyDevice = GraphicsDevice.New(((Rendering.DirectX11.Dx11RenderingDevice)Device).Device);
+                var vorticeDevice = ((Rendering.DirectX11.Dx11RenderingDevice)Device).Device;
+                IntPtr nativePtr = vorticeDevice.NativePointer;
+                Marshal.AddRef(nativePtr);
+                var sharpDxDevice = new SharpDX.Direct3D11.Device(nativePtr);
+
+                ___LegacyDevice = GraphicsDevice.New(sharpDxDevice);
                 LevelData.ImportedGeometry.Device = ___LegacyDevice;
 
                 // Load legacy effects

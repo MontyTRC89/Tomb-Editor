@@ -170,13 +170,15 @@ public static class Defaults
 	public static readonly double ScrollBar_Width = 17;
 	public static readonly double ScrollBar_Height = 17;
 
+	public static readonly Thickness GlassFrameThickness = new(0);
+
 	public static readonly double TitleBar_Height = 30;
 	public static readonly double TitleBar_ChromeHeight = TitleBar_Height - 5; // 5 is a system constant (I think)
 	public static readonly double TitleBar_PathIconStrokeWidth = 1;
 	public static readonly double TitleBar_ButtonWidth = 45;
 	public static readonly double TitleBar_FontSize = 12;
-	public static readonly double TitleBar_IconWidth = 64;
-	public static readonly double TitleBar_IconVerticalOffset = -12;
+	public static readonly double TitleBar_IconWidth = 16;
+	public static readonly double TitleBar_IconMarginLeft = 8;
 
 	public static readonly double TabControl_SelectedTabMarginOffset = -2;
 

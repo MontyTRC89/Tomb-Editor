@@ -14,9 +14,7 @@ float4 main(PixelInputType input) : SV_TARGET
     if(input.BlendMode == 0)
     {
         result = FontTexture.Sample(DefaultSampler, input.Uvw);
-        //result.a = 0.0f;
-        result.a = (result.r + result.g + result.b) / 3.0f;
-        result.xyz *= result.a;
+        result.rgb *= result.a;
     }
     else
         result = float4(0.0f, 0.0f, 0.0f, 0.6f);    // overlay

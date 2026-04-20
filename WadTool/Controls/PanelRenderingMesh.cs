@@ -17,7 +17,7 @@ using TombLib.Wad;
 
 namespace WadTool.Controls
 {
-    public class PanelRenderingMesh : RenderingPanel
+    public class PanelRenderingMesh : RenderingPanel, IMeshRenderingPanel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 0.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 512.0f, 100, 1000000, (float)Math.PI / 4.0f);
@@ -194,7 +194,7 @@ namespace WadTool.Controls
         }
         private bool _drawInformationForAllElements = false;
 
-        public bool ResetCameraOnMeshChange = true;
+        public bool ResetCameraOnMeshChange { get; set; } = true;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SafeVertexRemapLimit

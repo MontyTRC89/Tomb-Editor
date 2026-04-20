@@ -25,26 +25,29 @@ namespace WadTool
         [STAThread]
         public static void Main(string[] args)
         {
+            // Initialize WinForms subsystem for hosted controls and legacy dialog forms.
+            Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
+            Application.EnableVisualStyles();
+            Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            // Initialize WPF and DI services.
             var services = WPFInitializer.InitializeWPF();
             services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
             ServiceLocator.Configure(services.BuildServiceProvider());
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            // Load configuration
+            // Load configuration.
             var initialEvents = new List<LogEventInfo>();
             var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
 
-            // Update DarkUI configuration
+            // Update DarkUI configuration.
             Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
 
-            // Setup logging
+            // Setup logging.
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
             {
-                Application.EnableVisualStyles();
-                Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
-                Application.SetHighDpiMode(HighDpiMode.SystemAware);
-                Application.SetCompatibleTextRenderingDefault(false);
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                 Application.ThreadException += (sender, e) =>
                 {
@@ -80,7 +83,7 @@ namespace WadTool
                             else
                             {
                                 if (!File.Exists(arg))
-                                    continue; // No file and no valid argument, don't even try to load anything
+                                    continue;
 
                                 if (loadAsRefLevel)
                                 {
@@ -90,20 +93,26 @@ namespace WadTool
                                 else
                                     startWad = arg;
 
-                                loadAsRefLevel = false; // Reset arg mode if no expected path was found next to it
+                                loadAsRefLevel = false;
                             }
                         }
                     }
 
-                    using (FormMain form = new FormMain(tool))
-                    {
-                        form.Show();
+                    // Configure WPF Application for standalone use.
+                    System.Windows.Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
 
-                        if (!string.IsNullOrEmpty(refLevel)) WadActions.LoadReferenceLevel(tool, form, refLevel);
-                        if (!string.IsNullOrEmpty(startWad)) WadActions.LoadWad(tool, form, true, startWad);
+                    // Launch WPF main window.
+                    var window = new MainWindow(tool);
+                    System.Windows.Application.Current.MainWindow = window;
+                    window.Show();
 
-                        Application.Run(form);
-                    }
+                    if (!string.IsNullOrEmpty(refLevel))
+                        WadActions.LoadReferenceLevel(tool, window, refLevel);
+                    if (!string.IsNullOrEmpty(startWad))
+                        WadActions.LoadWad(tool, window, true, startWad);
+
+                    // Run WPF message loop, which also pumps WinForms messages.
+                    System.Windows.Threading.Dispatcher.Run();
                 }
             }
         }

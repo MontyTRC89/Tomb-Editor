@@ -1,0 +1,21 @@
+<Window x:Class="WadTool.Controls.SearchPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+        Style="{DynamicResource CustomWindowStyle}"
+        Title="Search"
+        SizeToContent="Height"
+        Width="300"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        SnapsToDevicePixels="{x:Static darkUI:Defaults.SnapsToDevicePixels}"
+        UseLayoutRounding="{x:Static darkUI:Defaults.UseLayoutRounding}"
+        KeyDown="Window_KeyDown"
+        Loaded="Window_Loaded">
+
+    <StackPanel Margin="8">
+        <TextBox x:Name="searchBox"
+                 KeyDown="SearchBox_KeyDown"
+                 TextChanged="SearchBox_TextChanged" />
+    </StackPanel>
+</Window>

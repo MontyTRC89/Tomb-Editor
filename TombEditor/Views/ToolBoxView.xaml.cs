@@ -136,7 +136,7 @@ public partial class ToolBoxView : UserControl
 
 		Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
-		double dpiScale = GetDpiScale();
+		double dpiScale = GetHostDpiScale();
 		int width = Math.Max(1, (int)Math.Ceiling(DesiredSize.Width * dpiScale));
 
 		PreferredWidthChanged?.Invoke(width);
@@ -153,16 +153,22 @@ public partial class ToolBoxView : UserControl
 		double availableWidth = ActualWidth > 0 ? ActualWidth : 9999;
 		Measure(new Size(availableWidth, double.PositiveInfinity));
 
-		double dpiScale = GetDpiScale();
+		double dpiScale = GetHostDpiScale();
 		int height = Math.Max(1, (int)Math.Ceiling(DesiredSize.Height * dpiScale));
 
 		PreferredHeightChanged?.Invoke(height);
 	}
 
-	private double GetDpiScale()
+	// Uses the WinForms host's DeviceDpi to compute the DPI scale factor.
+	// This ensures consistency with the WinForms coordinate system, which under
+	// DpiUnawareGdiScaled mode reports 96 DPI regardless of the actual system DPI.
+
+	private double GetHostDpiScale()
 	{
-		var source = PresentationSource.FromVisual(this);
-		return source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+		if (_winFormsHost != null)
+			return _winFormsHost.DeviceDpi / 96.0;
+
+		return 1.0;
 	}
 
 	#endregion Layout Measurement

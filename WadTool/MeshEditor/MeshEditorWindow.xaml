@@ -1,0 +1,477 @@
+<Window x:Class="WadTool.MeshEditor.MeshEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+        xmlns:darkUICustom="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+        xmlns:local="clr-namespace:WadTool.MeshEditor"
+        xmlns:controls="clr-namespace:WadTool.Controls"
+        xmlns:wf="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+        d:DataContext="{d:DesignInstance Type=local:MeshEditorViewModel}"
+        mc:Ignorable="d"
+        Style="{DynamicResource CustomWindowStyle}"
+        Title="{Binding WindowTitle}"
+        Width="1001" Height="605"
+        MinWidth="800" MinHeight="500"
+        WindowStartupLocation="CenterScreen"
+        SnapsToDevicePixels="{x:Static darkUI:Defaults.SnapsToDevicePixels}"
+        UseLayoutRounding="{x:Static darkUI:Defaults.UseLayoutRounding}"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True">
+
+        <!-- Bottom bar: Status + OK/Cancel buttons. -->
+        <Grid DockPanel.Dock="Bottom" Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" />
+            <Button x:Name="btOk" Grid.Column="1" Content="OK" Width="75" Margin="0,0,4,0"
+                    Click="BtOk_Click" />
+            <Button x:Name="btCancel" Grid.Column="2" Content="Cancel" Width="75"
+                    Click="BtCancel_Click" />
+        </Grid>
+
+        <!-- Main content. -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <!-- Left: Mesh tree. -->
+                <ColumnDefinition x:Name="colTree" Width="263" />
+                <ColumnDefinition Width="1" />
+                <!-- Center: 3D preview. -->
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="4" />
+                <!-- Right: Editing panel. -->
+                <ColumnDefinition x:Name="colEditing" Width="331" MinWidth="260" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left panel: Mesh tree. -->
+            <GroupBox x:Name="panelTree" Grid.Column="0" Header="Mesh list"
+                      Visibility="{Binding IsTreeMode, Converter={StaticResource BoolToVis}}">
+                <DockPanel>
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="tbSearchMeshes" VerticalAlignment="Center"
+                                 KeyDown="TbSearchMeshes_KeyDown" />
+                        <Button Grid.Column="1" MinWidth="21" MinHeight="21" Margin="4,0,0,0"
+                                ToolTip="Search" Click="ButSearchMeshes_Click">
+                            <Image Source="/WadTool;component/Resources/search-16.png" Width="16" Height="16"
+                                   RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                        </Button>
+                    </Grid>
+                    <TreeView x:Name="lstMeshes" BorderThickness="0" Background="Transparent"
+                              SelectedItemChanged="LstMeshes_SelectedItemChanged"
+                              MouseDoubleClick="LstMeshes_MouseDoubleClick" />
+                </DockPanel>
+            </GroupBox>
+
+            <Border Grid.Column="1" Background="{DynamicResource Brush_Border_Low}" />
+
+            <!-- Center panel: Toolbar + 3D preview. -->
+            <DockPanel Grid.Column="2" LastChildFill="True">
+                <ToolBarTray DockPanel.Dock="Top" IsLocked="True"
+                             Visibility="{Binding ShowEditingTools, Converter={StaticResource BoolToVis}}">
+                    <ToolBar Band="0" BandIndex="0">
+                        <Button ToolTip="Undo (Ctrl+Z)" IsEnabled="{Binding UndoEnabled}"
+                                Click="ButTbUndo_Click">
+                            <Image Source="/WadTool;component/Resources/icons_general/general_undo-16.png" Width="16" Height="16" />
+                        </Button>
+                        <Button ToolTip="Redo (Ctrl+Y)" IsEnabled="{Binding RedoEnabled}"
+                                Click="ButTbRedo_Click">
+                            <Image Source="/WadTool;component/Resources/icons_general/general_redo-16.png" Width="16" Height="16" />
+                        </Button>
+                        <Separator />
+                        <Button ToolTip="Import mesh" IsEnabled="{Binding CanImport}"
+                                Click="ButTbImport_Click">
+                            <Image Source="/WadTool;component/Resources/import-16.png" Width="16" Height="16" />
+                        </Button>
+                        <Button ToolTip="Export mesh" IsEnabled="{Binding CanExport}"
+                                Click="ButTbExport_Click">
+                            <Image Source="/WadTool;component/Resources/general_Export-16.png" Width="16" Height="16" />
+                        </Button>
+                        <Button ToolTip="Rename mesh" IsEnabled="{Binding CanRename}"
+                                Click="ButTbRename_Click">
+                            <Image Source="/WadTool;component/Resources/edit-16.png" Width="16" Height="16" />
+                        </Button>
+                        <Separator />
+                        <Button ToolTip="Reset camera" Click="ButTbResetCamera_Click">
+                            <Image Source="/WadTool;component/Resources/icons_general/general_target-16.png" Width="16" Height="16" />
+                        </Button>
+                        <ToggleButton ToolTip="Show grid/axis" IsChecked="{Binding GridChecked}" Click="RenderOption_Click">
+                            <Image Source="/WadTool;component/Resources/icons_general/general_axis-16.png" Width="16" Height="16" />
+                        </ToggleButton>
+                        <ToggleButton ToolTip="Toggle wireframe" IsChecked="{Binding WireframeChecked}" Click="RenderOption_Click">
+                            <Image Source="/WadTool;component/Resources/wireframe-16.png" Width="16" Height="16" />
+                        </ToggleButton>
+                        <ToggleButton ToolTip="Toggle alpha test" IsChecked="{Binding AlphaTestChecked}" Click="RenderOption_Click">
+                            <Image Source="/WadTool;component/Resources/icons_actions/actions_AlphaTest-16.png" Width="16" Height="16" />
+                        </ToggleButton>
+                        <ToggleButton ToolTip="Toggle bilinear filtering" IsChecked="{Binding BilinearChecked}" Click="RenderOption_Click">
+                            <Image Source="/WadTool;component/Resources/icons_general/general_blur-16.png" Width="16" Height="16" />
+                        </ToggleButton>
+                        <Separator />
+                        <Button x:Name="butTbFindSelectedTexture" ToolTip="Find mesh by selected texture"
+                                Visibility="{Binding IsTreeMode, Converter={StaticResource BoolToVis}}"
+                                Click="ButTbFindSelectedTexture_Click">
+                            <Image Source="/WadTool;component/Resources/search-16.png" Width="16" Height="16" />
+                        </Button>
+                        <Button ToolTip="Rotate current texture" Click="ButTbRotateTexture_Click">
+                            <Image Source="/WadTool;component/Resources/icons_general/general_Rotate.png" Width="16" Height="16" />
+                        </Button>
+                        <Button ToolTip="Mirror current texture" Click="ButTbMirrorTexture_Click">
+                            <Image Source="/WadTool;component/Resources/icons_general/general_Mirror.png" Width="16" Height="16" />
+                        </Button>
+                        <Separator />
+                        <ToggleButton ToolTip="Hide mesh (skinned)" IsEnabled="{Binding HideEnabled}"
+                                      IsChecked="{Binding HideChecked}" Click="ButHide_Click">
+                            <Image Source="/WadTool;component/Resources/skinned-16.png" Width="16" Height="16" />
+                        </ToggleButton>
+                    </ToolBar>
+                </ToolBarTray>
+
+                <!-- 3D mesh preview. -->
+                <controls:WpfRenderingMesh x:Name="panelMesh" />
+            </DockPanel>
+
+            <GridSplitter Grid.Column="3"
+                          Width="4"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          ResizeDirection="Columns"
+                          ResizeBehavior="PreviousAndNext"
+                          ShowsPreview="True"
+                          Background="{DynamicResource Brush_Border_Low}"
+                          Cursor="SizeWE" DragDelta="GridSplitter_DragDelta" />
+
+            <!-- Right panel: Editing tools. -->
+            <DockPanel Grid.Column="4" LastChildFill="True"
+                       Visibility="{Binding ShowEditingTools, Converter={StaticResource BoolToVis}}">
+
+                <!-- Bottom section: Editing tools with dropdown-selected panel. -->
+                <GroupBox DockPanel.Dock="Bottom" Header="Editing tools">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top" Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Mode:" VerticalAlignment="Center" Margin="0,0,4,0" />
+                            <ComboBox x:Name="cbEditingMode" Grid.Column="1"
+                          SelectionChanged="CbEditingMode_SelectionChanged"
+                                      SelectedIndex="{Binding EditingModeIndex}">
+                                <ComboBoxItem>Face attributes</ComboBoxItem>
+                                <ComboBoxItem>Vertex remap</ComboBoxItem>
+                                <ComboBoxItem>Vertex colors and normals</ComboBoxItem>
+                                <ComboBoxItem>Vertex effects</ComboBoxItem>
+                                <ComboBoxItem>Vertex weights</ComboBoxItem>
+                                <ComboBoxItem>Sphere</ComboBoxItem>
+                            </ComboBox>
+                            <CheckBox Grid.Column="2" Content="{Binding ExtraCheckboxText}"
+                                      IsChecked="{Binding ExtraCheckboxChecked}"
+                                      Checked="ExtraOptionChanged"
+                                      Unchecked="ExtraOptionChanged"
+                                      Margin="8,0,0,0" VerticalAlignment="Center" />
+                        </Grid>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <Grid Margin="4">
+                                <StackPanel x:Name="panelFaceAttributes">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox Content="Blend" IsChecked="{Binding BlendChecked}"
+                                                  VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" Margin="4,0"
+                                                  ItemsSource="{Binding BlendModes}"
+                                                  SelectedIndex="{Binding BlendModeIndex}" />
+                                        <ToggleButton x:Name="butDoubleSide" Grid.Column="2"
+                                                     ToolTip="Double sided"
+                                                      IsChecked="{Binding DoubleSideChecked}"
+                                                     MinWidth="24">
+                                              <Image Source="/WadTool;component/Resources/texture_DoubleSided_1-16.png"
+                                                  Width="16" Height="16" />
+                                             </ToggleButton>
+                                    </Grid>
+                                    <CheckBox Content="Texture" IsChecked="{Binding TextureChecked}"
+                                              Margin="0,4,0,0" />
+                                    <Grid Margin="0,4,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox Content="Sheen" IsChecked="{Binding SheenChecked}"
+                                                  VerticalAlignment="Center" />
+                                        <TextBox Grid.Column="1" Margin="4,0,0,0"
+                                                 Text="{Binding ShineStrength, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Grid>
+                                    <Button Content="Apply to all faces" Margin="0,8,0,0"
+                                            Click="ButApplyToAllFaces_Click" />
+                                </StackPanel>
+
+                                <StackPanel x:Name="panelVertexRemap" Visibility="Collapsed">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Vertex #:" VerticalAlignment="Center"
+                                                   Margin="0,0,4,0" />
+                                        <TextBox x:Name="nudVertexNum" Grid.Column="1"
+                                                 Text="{Binding VertexNum, UpdateSourceTrigger=PropertyChanged}"
+                                                 KeyDown="NudVertexNum_KeyDown" />
+                                    </Grid>
+                                    <Grid Margin="0,4,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Content="Find vertex" Margin="0,0,2,0"
+                                                Click="ButFindVertex_Click" />
+                                        <Button Grid.Column="1" Content="Remap vertex"
+                                                Margin="2,0,0,0" IsEnabled="{Binding RemapEnabled}"
+                                                Click="ButRemapVertex_Click" />
+                                    </Grid>
+                                    <Button Content="Auto-fit" Margin="0,4,0,0"
+                                            Click="ButAutoFit_Click" />
+                                </StackPanel>
+
+                                <StackPanel x:Name="panelVertexColorsAndNormals" Visibility="Collapsed">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Content="Recalc normals" Margin="0,0,2,0"
+                                                Click="ButRecalcNormals_Click" />
+                                        <Button Grid.Column="1" Content="Recalc averaged"
+                                                Margin="2,0,0,0"
+                                                Click="ButRecalcNormalsAvg_Click" />
+                                    </Grid>
+                                    <Grid Margin="0,8,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Color:" VerticalAlignment="Center"
+                                                   Margin="0,0,4,0" />
+                                        <Border x:Name="panelColor" Grid.Column="1"
+                                                Height="22" Background="White" BorderThickness="1"
+                                                BorderBrush="{DynamicResource Brush_Border}"
+                                                MouseLeftButtonDown="PanelColor_MouseDown"
+                                                Cursor="Hand" />
+                                    </Grid>
+                                    <Button Content="Apply shade to all vertices" Margin="0,4,0,0"
+                                            Click="ButApplyShadesToAllVertices_Click" />
+                                </StackPanel>
+
+                                <StackPanel x:Name="panelVertexEffects" Visibility="Collapsed">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Glow:" VerticalAlignment="Center"
+                                                   Margin="0,0,4,0" />
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding GlowValue, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBlock Grid.Column="2" Text="Move:"
+                                                   VerticalAlignment="Center" Margin="8,0,4,0" />
+                                        <TextBox Grid.Column="3"
+                                                 Text="{Binding MoveValue, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Grid>
+                                    <Grid Margin="0,4,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <ToggleButton Content="Preview" Margin="0,0,2,0"
+                                                      IsChecked="{Binding PreviewChecked}"
+                                                      Click="ButPreview_Click" />
+                                        <Button Grid.Column="1" Content="From shades"
+                                                Margin="2,0,0,0"
+                                                Click="ButConvertFromShades_Click" />
+                                    </Grid>
+                                    <Button Content="Apply to all vertices" Margin="0,4,0,0"
+                                            Click="ButApplyToAllVertices_Click" />
+                                </StackPanel>
+
+                                <StackPanel x:Name="panelVertexWeights" Visibility="Collapsed">
+                                    <TextBlock Text="Bone indices:" Margin="0,0,0,2" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Margin="0,0,2,0"
+                                                 Text="{Binding WeightIndex1, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBox Grid.Column="1" Margin="2,0,2,0"
+                                                 Text="{Binding WeightIndex2, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBox Grid.Column="2" Margin="2,0,2,0"
+                                                 Text="{Binding WeightIndex3, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBox Grid.Column="3" Margin="2,0,0,0"
+                                                 Text="{Binding WeightIndex4, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Grid>
+                                    <TextBlock Text="Bone weights:" Margin="0,4,0,2" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Margin="0,0,2,0"
+                                                 Text="{Binding WeightValue1, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBox Grid.Column="1" Margin="2,0,2,0"
+                                                 Text="{Binding WeightValue2, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBox Grid.Column="2" Margin="2,0,2,0"
+                                                 Text="{Binding WeightValue3, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBox Grid.Column="3" Margin="2,0,0,0"
+                                                 Text="{Binding WeightValue4, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Grid>
+                                    <Button Content="Apply weights to all vertices" Margin="0,8,0,0"
+                                            Click="ButApplyWeightsToAllVertices_Click" />
+                                </StackPanel>
+
+                                <StackPanel x:Name="panelSphere" Visibility="Collapsed">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="X:" VerticalAlignment="Center"
+                                                   Margin="0,0,4,4" />
+                                        <TextBox Grid.Column="1" Margin="0,0,8,4"
+                                                 Text="{Binding SphereX, UpdateSourceTrigger=PropertyChanged}"
+                                                 TextChanged="NudSphereData_ValueChanged" />
+                                        <TextBlock Grid.Column="2" Text="Y:"
+                                                   VerticalAlignment="Center" Margin="0,0,4,4" />
+                                        <TextBox Grid.Column="3" Margin="0,0,0,4"
+                                                 Text="{Binding SphereY, UpdateSourceTrigger=PropertyChanged}"
+                                                 TextChanged="NudSphereData_ValueChanged" />
+                                        <TextBlock Grid.Row="1" Text="Z:" VerticalAlignment="Center"
+                                                   Margin="0,0,4,0" />
+                                        <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,8,0"
+                                                 Text="{Binding SphereZ, UpdateSourceTrigger=PropertyChanged}"
+                                                 TextChanged="NudSphereData_ValueChanged" />
+                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="R:"
+                                                   VerticalAlignment="Center" Margin="0,0,4,0" />
+                                        <TextBox Grid.Row="1" Grid.Column="3"
+                                                 Text="{Binding SphereRadius, UpdateSourceTrigger=PropertyChanged}"
+                                                 TextChanged="NudSphereData_ValueChanged" />
+                                    </Grid>
+                                    <Button Content="Reset sphere" Margin="0,8,0,0"
+                                            Click="ButResetSphere_Click" />
+                                </StackPanel>
+                            </Grid>
+                        </ScrollViewer>
+                    </DockPanel>
+                </GroupBox>
+
+                <!-- Top section: Texturing. -->
+                <GroupBox Header="Texturing">
+                    <DockPanel>
+                        <!-- Texture selector and tools. -->
+                        <Grid DockPanel.Dock="Top" Margin="0,0,0,4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="comboCurrentTexture"
+                                          SelectionChanged="ComboCurrentTexture_SelectionChanged" />
+                                <Button Grid.Column="1"
+                                        MinWidth="24" MinHeight="24"
+                                        Margin="4,0,0,0"
+                                        ToolTip="Add texture"
+                                        Click="AddTextureMenuButton_Click">
+                                    <Button.ContextMenu>
+                                        <ContextMenu x:Name="cmAddTextureMenu">
+                                            <MenuItem Header="Add embedded texture"
+                                                      Click="AddEmbeddedTexture_Click" />
+                                            <MenuItem Header="Add external texture"
+                                                      Click="AddExternalTexture_Click" />
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                    <Image Source="/WadTool;component/Resources/icons_general/general_plus_math-16.png"
+                                           Width="16" Height="16" />
+                                </Button>
+                            </Grid>
+                            <ToolBarTray Grid.Row="1" IsLocked="True" Margin="0,4,0,0">
+                                <ToolBar Band="0" BandIndex="0">
+                                    <Button ToolTip="Replace with embedded texture"
+                                            Click="ReplaceEmbeddedTexture_Click">
+                                        <Image Source="/WadTool;component/Resources/copy-16.png"
+                                               Width="16" Height="16" />
+                                    </Button>
+                                    <Button ToolTip="Replace with external texture"
+                                            Click="ReplaceExternalTexture_Click">
+                                        <Image Source="/WadTool;component/Resources/replace-16.png"
+                                               Width="16" Height="16" />
+                                    </Button>
+                                    <Separator />
+                                    <Button ToolTip="Export texture"
+                                            Click="ButExportTexture_Click">
+                                        <Image Source="/WadTool;component/Resources/general_Export-16.png"
+                                               Width="16" Height="16" />
+                                    </Button>
+                                    <Button ToolTip="Delete texture"
+                                            Click="ButDeleteTexture_Click">
+                                        <Image Source="/WadTool;component/Resources/trash-16.png"
+                                               Width="16" Height="16" />
+                                    </Button>
+                                </ToolBar>
+                            </ToolBarTray>
+                        </Grid>
+
+                        <!-- Material/Animation buttons. -->
+                        <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0"
+                              Visibility="{Binding ShowTextureTools, Converter={StaticResource BoolToVis}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button Content="Materials" Margin="0,0,2,0"
+                                    IsEnabled="{Binding MaterialEditorEnabled}"
+                                    Click="ButMaterialEditor_Click" Height="19" VerticalAlignment="Bottom" />
+                            <Button Grid.Column="1" Content="Animated Ranges" Margin="2,0,0,0"
+                                    Click="ButAnimationRanges_Click" />
+                        </Grid>
+
+                        <!-- Texture map panel (WindowsFormsHost for now). -->
+                        <wf:WindowsFormsHost x:Name="hostTextureMap" />
+                    </DockPanel>
+                </GroupBox>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Window>

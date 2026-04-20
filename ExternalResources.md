@@ -7,7 +7,9 @@ A big thank you to all the authors for making their work publicly available and 
 | MiniZ.NET              | NuGet                      | 1.0.0      | Boost         | https://github.com/ActuallyaDeviloper/MiniZ.Net |
 | MiniZ                  | NuGet through MiniZ.?Net   | 2.0.6 Beta | MIT           | https://github.com/richgel999/miniz |
 | Pfim                   | NuGet                      | 0.4.2      | MIT           | https://github.com/nickbabcock/Pfim |
-| SharpDX                | *.dll files                | 2.4.2      | MIT           | http://sharpdx.org |
+| SharpDX Toolkit        | *.dll files (legacy)       | 2.4.2      | MIT           | http://sharpdx.org |
+| Vortice.Windows        | NuGet                      | 3.8.3      | MIT           | https://github.com/amerkoleci/Vortice.Windows |
+| Vortice.Windows        | NuGet                      | 3.8.3      | MIT           | https://github.com/amerkoleci/Vortice.Windows |
 | DarkUI                 | Git Subtree                | custom     | MIT           | https://github.com/ActuallyaDeviloper/DarkUI |
 | NLog                   | NuGet                      | 4.4.11     | BSD 3-clause  | http://nlog-project.org |
 | NAudio                 | NuGet                      | 1.8.4      | Ms-PL         | https://github.com/naudio/NAudio |
@@ -19,7 +21,9 @@ A big thank you to all the authors for making their work publicly available and 
 | System.Drawing.PSD     | NuGet                      | 1.1        | BSD 3-clause  | https://github.com/bizzehdee/System.Drawing.PSD |
 
 ### Main Software Documentation
+  SharpDX Toolkit is a legacy dependency for effect compilation only. The Direct3D 11 rendering layer uses Vortice.Windows.
   
+  SharpDX Toolkit is a legacy dependency for effect compilation only. The Direct3D 11 rendering layer uses Vortice.Windows.
   You can find more information about SharpDX Toolkit reading the source code on www.symbolsource.org/Public/Metadata/NuGet/Project/SharpDX.Toolkit/2.4.2/Release/.NETFramework%2cVersion%3dv4.0
 
 ### Icons
