@@ -1651,6 +1651,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     for (int i = 0; i < room.Vertices.Count; i++)
                     {
                         var v1 = room.Vertices[i];
+                        // Only match shades for vertices that actually lie on the portal edge.
                         if (!PortalShadeMatchHelper.IsCandidate(p.Vertices, v1.Position))
                             continue;
 

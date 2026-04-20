@@ -34,6 +34,7 @@ namespace TombLib.LevelData.Compilers
 
     internal static class PortalShadeMatchHelper
     {
+        // Tolerance for point-on-segment checks to absorb floating-point error.
         private const float PortalEdgeEpsilon = 0.001f;
 
         public static bool IsCandidate(tr_vertex[] portalVertices, tr_vertex vertexPosition)
