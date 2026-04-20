@@ -2401,19 +2401,11 @@ namespace TombEditor
             _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(type) { Color = color });
         }
 
-        private static bool ObjectGroupContainsMoveable(ObjectGroup group)
-        {
-            foreach (var itemInGroup in group)
-            {
-                if (itemInGroup is ItemInstance item && !item.ItemType.IsStatic)
-                    return true;
-            }
-
-            return false;
-        }
-
         private static bool ObjectInstanceIsMoveable(ObjectInstance instance) =>
             instance is ItemInstance item && !item.ItemType.IsStatic;
+
+        private static bool ObjectGroupContainsMoveable(ObjectGroup group) =>
+            group.Any(ObjectInstanceIsMoveable);
 
         private static bool IsInvalidMoveablePlacement(Room room, ObjectInstance instance)
         {
