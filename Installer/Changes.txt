@@ -13,7 +13,7 @@ Tomb Editor:
  * Updated TR2 Override with fixes to the sounds for explosive weapons and flares.
  
  TEN base WAD:
- * Fixed GRENADE_ANIM sound effect order to match classic games.
+ * Fixed GRENADE_ANIM sound effect order to match classic games. You must update your GRENADE_ANIM object from the base WAD2 for this to take effect.
 
 
 Version 1.11
