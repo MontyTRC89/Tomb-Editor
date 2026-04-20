@@ -2421,9 +2421,7 @@ namespace TombEditor
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
         {
             if (!(instance is ISpatial))
-            {
                 return;
-            }
 
             if (IsInvalidMoveablePlacement(room, instance))
             {
