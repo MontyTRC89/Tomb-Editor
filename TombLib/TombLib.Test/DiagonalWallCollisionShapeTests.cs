@@ -14,14 +14,15 @@ public class DiagonalWallCollisionShapeTests
         .GetNestedType("RoomSectorShape", BindingFlags.NonPublic)!;
 
     [DataTestMethod]
-    [DataRow(DiagonalSplit.XnZn, "HeightXpZp", "HeightXnZp", "HeightXpZn")]
-    [DataRow(DiagonalSplit.XnZp, "HeightXpZn", "HeightXnZn", "HeightXpZp")]
-    [DataRow(DiagonalSplit.XpZn, "HeightXnZp", "HeightXnZn", "HeightXpZp")]
-    [DataRow(DiagonalSplit.XpZp, "HeightXnZn", "HeightXnZp", "HeightXpZn")]
-    public void RoomSectorShape_FlattensDiagonalWallFloorCollision(DiagonalSplit diagonalSplit, string flatHeightField, string firstFlattenedField, string secondFlattenedField)
+    [DataRow(DiagonalSplit.XnZn)]
+    [DataRow(DiagonalSplit.XnZp)]
+    [DataRow(DiagonalSplit.XpZn)]
+    [DataRow(DiagonalSplit.XpZp)]
+    public void RoomSectorShape_FlattensDiagonalWallFloorCollision(DiagonalSplit diagonalSplit)
     {
         var sector = CreateDiagonalWallSector(diagonalSplit, isFloor: true);
         var shape = CreateRoomSectorShape(sector, floor: true);
+        var (flatHeightField, firstFlattenedField, secondFlattenedField) = GetFlatTriangleFields(diagonalSplit);
         int flatHeight = GetField<int>(shape, flatHeightField);
 
         Assert.AreEqual(flatHeight, GetField<int>(shape, firstFlattenedField));
@@ -30,14 +31,15 @@ public class DiagonalWallCollisionShapeTests
     }
 
     [DataTestMethod]
-    [DataRow(DiagonalSplit.XnZn, "HeightXpZp", "HeightXnZp", "HeightXpZn")]
-    [DataRow(DiagonalSplit.XnZp, "HeightXpZn", "HeightXnZn", "HeightXpZp")]
-    [DataRow(DiagonalSplit.XpZn, "HeightXnZp", "HeightXnZn", "HeightXpZp")]
-    [DataRow(DiagonalSplit.XpZp, "HeightXnZn", "HeightXnZp", "HeightXpZn")]
-    public void RoomSectorShape_FlattensDiagonalWallCeilingCollision(DiagonalSplit diagonalSplit, string flatHeightField, string firstFlattenedField, string secondFlattenedField)
+    [DataRow(DiagonalSplit.XnZn)]
+    [DataRow(DiagonalSplit.XnZp)]
+    [DataRow(DiagonalSplit.XpZn)]
+    [DataRow(DiagonalSplit.XpZp)]
+    public void RoomSectorShape_FlattensDiagonalWallCeilingCollision(DiagonalSplit diagonalSplit)
     {
         var sector = CreateDiagonalWallSector(diagonalSplit, isFloor: false);
         var shape = CreateRoomSectorShape(sector, floor: false);
+        var (flatHeightField, firstFlattenedField, secondFlattenedField) = GetFlatTriangleFields(diagonalSplit);
         int flatHeight = GetField<int>(shape, flatHeightField);
 
         Assert.AreEqual(flatHeight, GetField<int>(shape, firstFlattenedField));
@@ -89,6 +91,16 @@ public class DiagonalWallCollisionShapeTests
 
         return sector;
     }
+
+    private static (string FlatHeightField, string FirstFlattenedField, string SecondFlattenedField) GetFlatTriangleFields(DiagonalSplit diagonalSplit)
+        => diagonalSplit switch
+        {
+            DiagonalSplit.XnZn => ("HeightXpZp", "HeightXnZp", "HeightXpZn"),
+            DiagonalSplit.XnZp => ("HeightXpZn", "HeightXnZn", "HeightXpZp"),
+            DiagonalSplit.XpZn => ("HeightXnZp", "HeightXnZn", "HeightXpZp"),
+            DiagonalSplit.XpZp => ("HeightXnZn", "HeightXnZp", "HeightXpZn"),
+            _ => throw new ArgumentOutOfRangeException(nameof(diagonalSplit))
+        };
 
     private static object CreateRoomSectorShape(Sector sector, bool floor)
         => Activator.CreateInstance(RoomSectorShapeType,
