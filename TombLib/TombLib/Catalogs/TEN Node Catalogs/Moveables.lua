@@ -557,7 +557,7 @@ end
 
 -- !Name "Restore a previously swapped mesh"
 -- !Section "Moveable parameters"
--- !Description "Restore a previously swapped mesh"
+-- !Description "Restores a previously swapped mesh."
 -- !Arguments "NewLine, 80, Moveables, Moveable to restore" "Numerical, 20, [ 0 | 31 ], Mesh index to restore"
 
 LevelFuncs.Engine.Node.UnswapMoveableMesh = function(dest, destIndex)
