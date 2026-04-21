@@ -5,7 +5,7 @@
     <Configurations Condition="'$(Configurations)' == ''">Debug;Release</Configurations>
     <Platforms Condition="'$(Platforms)' == ''">x64;x86</Platforms>
     <Platform Condition="'$(Platform)' == '' or '$(Platform)' == 'Any CPU' or '$(Platform)' == 'AnyCPU'">x64</Platform>
-    <NormalizedPlatform>$([System.String]::Copy('$(Platform)').Replace(' ', ''))</NormalizedPlatform>
+    <NormalizedPlatform>$(Platform.Replace(' ', ''))</NormalizedPlatform>
     <NormalizedPlatform Condition="'$(NormalizedPlatform)' == ''">x64</NormalizedPlatform>
     <UseSharedOutputPath Condition="'$(UseSharedOutputPath)' == ''
         and '$(MSBuildProjectName)' != 'DarkUI.WPF.Demo'

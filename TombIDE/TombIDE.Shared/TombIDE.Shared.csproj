@@ -40,12 +40,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Copy the entire TIDE directory. -->
     <None Update="TIDE\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
+    <!-- LuaLS is materialized from the archive by the build target below. -->
     <None Update="TIDE\LuaLS.zip">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
@@ -55,34 +57,75 @@
     </None>
   </ItemGroup>
 
+  <!-- Extract the vendored LuaLS archive after build.
+       The Outputs list uses a few representative files plus a stamp file so MSBuild
+       can skip this target when the archive has not changed. -->
   <Target Name="ExtractLuaLanguageServer"
           AfterTargets="Build"
           Condition="'$(DesignTimeBuild)' != 'true'"
           Inputs="$(LuaLanguageServerArchivePath)"
           Outputs="@(LuaLanguageServerRepresentativeOutput -> '$(TargetDir)TIDE\LuaLS\%(Identity)');$(TargetDir)TIDE\LuaLS\.extracted">
+    <!-- Keep the staging and final output paths separate so we can validate the
+         extracted archive and remove files that no longer exist upstream. -->
     <PropertyGroup>
       <LuaLanguageServerOutputDirectory>$(TargetDir)TIDE\LuaLS</LuaLanguageServerOutputDirectory>
+      <LuaLanguageServerStagingDirectory>$(IntermediateOutputPath)LuaLS\</LuaLanguageServerStagingDirectory>
       <LuaLanguageServerExtractionStampFile>$(LuaLanguageServerOutputDirectory)\.extracted</LuaLanguageServerExtractionStampFile>
     </PropertyGroup>
 
     <Error Condition="!Exists('$(LuaLanguageServerArchivePath)')"
            Text="LuaLS archive not found at '$(LuaLanguageServerArchivePath)'." />
-    <RemoveDir Directories="$(LuaLanguageServerOutputDirectory)"
-               Condition="Exists('$(LuaLanguageServerOutputDirectory)')" />
-    <MakeDir Directories="$(LuaLanguageServerOutputDirectory)" />
 
-    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Expand-Archive -LiteralPath '$(LuaLanguageServerArchivePath)' -DestinationPath '$(LuaLanguageServerOutputDirectory)' -Force&quot;" />
+    <!-- Extract into staging first so removed upstream files do not linger in the output copy. -->
+    <RemoveDir Directories="$(LuaLanguageServerStagingDirectory)"
+               Condition="Exists('$(LuaLanguageServerStagingDirectory)')" />
+    <MakeDir Directories="$(LuaLanguageServerStagingDirectory)" />
 
     <ItemGroup>
-      <_LuaLanguageServerRepresentativeOutputPath Include="@(LuaLanguageServerRepresentativeOutput -> '$(LuaLanguageServerOutputDirectory)\%(Identity)')" />
+      <_LuaLanguageServerArchive Include="$(LuaLanguageServerArchivePath)" />
     </ItemGroup>
 
+    <Unzip SourceFiles="@(_LuaLanguageServerArchive)"
+           DestinationFolder="$(LuaLanguageServerStagingDirectory)" />
+
+    <!-- Build the lists used by the sync step:
+      - representative staged/output files prove the archive layout is correct
+      - staging files are every file extracted from the archive
+      - expected output files are where those staged files should end up
+      - obsolete output files are current output files no longer present in the archive -->
+    <ItemGroup>
+      <_LuaLanguageServerRepresentativeStagingOutputPath Include="@(LuaLanguageServerRepresentativeOutput -> '$(LuaLanguageServerStagingDirectory)\%(Identity)')" />
+      <_LuaLanguageServerRepresentativeOutputPath Include="@(LuaLanguageServerRepresentativeOutput -> '$(LuaLanguageServerOutputDirectory)\%(Identity)')" />
+      <_LuaLanguageServerStagingFile Include="$(LuaLanguageServerStagingDirectory)\**\*" />
+      <_LuaLanguageServerExpectedOutputFile Include="@(_LuaLanguageServerStagingFile -> '$(LuaLanguageServerOutputDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
+      <_LuaLanguageServerExistingOutputFile Include="$(LuaLanguageServerOutputDirectory)\**\*" />
+      <_LuaLanguageServerObsoleteOutputFile Include="@(_LuaLanguageServerExistingOutputFile)" />
+      <_LuaLanguageServerObsoleteOutputFile Remove="@(_LuaLanguageServerExpectedOutputFile)" />
+    </ItemGroup>
+
+    <!-- Fail fast if the archive does not contain the files the runtime expects. -->
+    <Error Condition="!Exists('%(_LuaLanguageServerRepresentativeStagingOutputPath.Identity)')"
+           Text="LuaLS archive '$(LuaLanguageServerArchivePath)' did not produce required file '%(_LuaLanguageServerRepresentativeStagingOutputPath.Identity)'." />
+
+    <!-- Remove files that disappeared from the archive, then copy the staged tree into the real build output. -->
+    <Delete Files="@(_LuaLanguageServerObsoleteOutputFile)" />
+    <MakeDir Directories="$(LuaLanguageServerOutputDirectory)" />
+    <Copy SourceFiles="@(_LuaLanguageServerStagingFile)"
+          DestinationFiles="@(_LuaLanguageServerStagingFile -> '$(LuaLanguageServerOutputDirectory)\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+
+    <!-- Validate the final output again so copy failures surface during build. -->
     <Error Condition="!Exists('%(_LuaLanguageServerRepresentativeOutputPath.Identity)')"
-           Text="LuaLS archive '$(LuaLanguageServerArchivePath)' did not produce required file '%(_LuaLanguageServerRepresentativeOutputPath.Identity)'." />
+           Text="LuaLS output file '%(_LuaLanguageServerRepresentativeOutputPath.Identity)' could not be created from '$(LuaLanguageServerArchivePath)'." />
+
+    <!-- Touch representative files because Unzip preserves archive timestamps.
+         Without this, MSBuild would keep rerunning the target because the archive
+         looks newer than the extracted files. -->
     <Touch Files="@(_LuaLanguageServerRepresentativeOutputPath)" />
     <Touch Files="$(LuaLanguageServerExtractionStampFile)"
            AlwaysCreate="true" />
 
+    <!-- Register extracted files so Clean removes them from the shared output. -->
     <ItemGroup>
       <_LuaLanguageServerOutputFiles Include="$(LuaLanguageServerOutputDirectory)\**\*" />
       <FileWrites Include="@(_LuaLanguageServerOutputFiles)" />
