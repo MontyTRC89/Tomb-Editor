@@ -3,7 +3,7 @@
 !include WinVer.nsh
 !include x64.nsh
 
-!cd "..\BuildRelease (x64)\net6.0-windows"
+!cd "..\BuildRelease (x64)\net8.0-windows"
 
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_ABORTWARNING
@@ -13,16 +13,13 @@
 !define MUI_ICON "..\..\Icons\ICO\TE.ico"
 !define MUI_FINISHPAGE_SHOWREADME "Changes.txt"
 
-!define DOT_MAJOR "6"
-!define DOT_MINOR "0"
-
 !define MUI_WELCOMEPAGE_TEXT \
 "You are ready to install Tomb Editor ${Version_1}.${Version_2}.${Version_3}. $\r$\n\
 $\r$\n\
 Please make sure your system complies with following system requirements: $\r$\n\
 $\r$\n\
-  ${U+2022} Windows 7 or later (64-bit) $\r$\n\
-  ${U+2022} Installed .NET 6 or later (64-bit)$\r$\n\
+  ${U+2022} Windows 10 or later (64-bit) $\r$\n\
+  ${U+2022} Installed .NET 8 Desktop Runtime or later (64-bit)$\r$\n\
   ${U+2022} Videocard with DirectX 10 support $\r$\n\
   ${U+2022} At least 2 gigabytes of RAM $\r$\n\
 $\r$\n\
@@ -75,7 +72,7 @@ Section "Tomb Editor" Section1
   /x "*.pdb" \
   /x "*.so" \
   /x "*.vshost.*" \
-  /x "install_script.nsi" \
+  /x "install_script_x64.nsi" \
   /x "TombEditorInstall.exe" \
   /x "TombEditorConfiguration.xml" \
   /x "SoundToolConfiguration.xml" \

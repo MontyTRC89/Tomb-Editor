@@ -15,3 +15,5 @@ packages/
 .idea/
 
 build_output.txt
+
+/TombIDE/TombIDE.Shared/TIDE/LuaLS/
