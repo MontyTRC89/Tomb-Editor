@@ -502,7 +502,6 @@
 			<sound id="482" name="TR2_HENCHMAN_DEATH1" ten="484" />
 			<sound id="483" name="TR2_HENCHMAN_DEATH2" ten="483" />
 			<sound id="484" name="TR2_HENCHMAN_DEATH3" ten="482" />
-			<sound id="838" name="TR2_HENCHMAN_DEATH4" ten="838" />
 			<sound id="485" name="TR2_HENCHMAN_FEET" ten="485" />
 			<sound id="486" name="TR2_HENCHMAN_FEET_SNOW" ten="486" />
 			<sound id="487" name="TR2_HENCHMAN_FIRE_SEMIAUTO" ten="487" />
@@ -702,6 +701,7 @@
 			<sound id="681" name="TR2_SLAM_DOOR_CLOSE" ten="681" />
 			<sound id="682" name="TR2_SWINGING" ten="682" />
 			<sound id="683" name="TR2_SWINGING_TRAP" ten="683" />
+			<sound id="838" name="TR2_HENCHMAN_DEATH4" ten="838" />
 			<sound id="1145" name="TR2_DRAGON_FALL" ten="1145" />
 			<sound id="1146" name="TR2_MARCO_BARTOLLI_TRANSFORM" ten="1146" />
 			
