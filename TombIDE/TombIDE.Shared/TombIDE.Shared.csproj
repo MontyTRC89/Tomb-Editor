@@ -69,7 +69,7 @@
          extracted archive and remove files that no longer exist upstream. -->
     <PropertyGroup>
       <LuaLanguageServerOutputDirectory>$(TargetDir)TIDE\LuaLS</LuaLanguageServerOutputDirectory>
-      <LuaLanguageServerStagingDirectory>$(IntermediateOutputPath)LuaLS\</LuaLanguageServerStagingDirectory>
+      <LuaLanguageServerStagingDirectory>$(IntermediateOutputPath)LuaLS</LuaLanguageServerStagingDirectory>
       <LuaLanguageServerExtractionStampFile>$(LuaLanguageServerOutputDirectory)\.extracted</LuaLanguageServerExtractionStampFile>
     </PropertyGroup>
 
