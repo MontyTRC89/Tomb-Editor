@@ -9,7 +9,7 @@ Tomb Editor:
  * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
 
 WadTool:
- * Added missing TR2 henchman death sound (ID 838) and appropiate TR2 -> TEN conversion.
+ * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
  
 Version 1.11
 ============

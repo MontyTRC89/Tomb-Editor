@@ -502,6 +502,7 @@
 			<sound id="482" name="TR2_HENCHMAN_DEATH1" ten="484" />
 			<sound id="483" name="TR2_HENCHMAN_DEATH2" ten="483" />
 			<sound id="484" name="TR2_HENCHMAN_DEATH3" ten="482" />
+			<sound id="838" name="TR2_HENCHMAN_DEATH4" ten="838" />
 			<sound id="485" name="TR2_HENCHMAN_FEET" ten="485" />
 			<sound id="486" name="TR2_HENCHMAN_FEET_SNOW" ten="486" />
 			<sound id="487" name="TR2_HENCHMAN_FIRE_SEMIAUTO" ten="487" />
@@ -860,7 +861,6 @@
 			<sound id="835" name="TR3_CLEANER_FUSEBOX" ten="835" />
 			<sound id="836" name="TR3_CLEANER_LOOP" ten="836" />
 			<sound id="837" name="TR3_CRICKET_LOOP" ten="837" />
-			<sound id="838" name="TR2_ENEMY_DEATH4" ten="838" />
 			<sound id="839" name="TR3_DOORBELL" ten="839" />
 			<sound id="840" name="TR3_DRILL_BIT_1" ten="840" />
 			<sound id="841" name="TR3_GASMETER" ten="841" />
