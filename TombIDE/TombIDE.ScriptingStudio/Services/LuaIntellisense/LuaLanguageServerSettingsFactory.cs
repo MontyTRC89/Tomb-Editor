@@ -1,51 +1,56 @@
-using System;
+#nullable enable
+
 using System.IO;
 
-namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
-{
-	internal static class LuaLanguageServerSettingsFactory
-	{
-		public static object Create(string workspaceRootDirectoryPath)
-		{
-			string apiDirectory = Path.Combine(workspaceRootDirectoryPath, ".API");
-			string[] library = Directory.Exists(apiDirectory)
-				? new[] { Path.GetFullPath(apiDirectory) }
-				: Array.Empty<string>();
+namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 
-			return new
+internal static class LuaLanguageServerSettingsFactory
+{
+	/// <summary>
+	/// Builds the Lua language server settings payload for the active script workspace.
+	/// </summary>
+	/// <param name="workspaceRootDirectoryPath">The root directory of the current Lua script workspace.</param>
+	/// <returns>An anonymous settings object serialized into the LuaLS configuration request.</returns>
+	public static object Create(string workspaceRootDirectoryPath)
+	{
+		string apiDirectory = Path.Combine(workspaceRootDirectoryPath, ".API");
+		string[] library = Directory.Exists(apiDirectory)
+			? [Path.GetFullPath(apiDirectory)]
+			: [];
+
+		return new
+		{
+			Lua = new
 			{
-				Lua = new
+				runtime = new
 				{
-					runtime = new
-					{
-						version = "Lua 5.4"
-					},
-					workspace = new
-					{
-						checkThirdParty = false,
-						library
-					},
-					completion = new
-					{
-						callSnippet = "Disable"
-					},
-					semantic = new
-					{
-						enable = true,
-						annotation = true,
-						variable = true,
-						keyword = false
-					},
-					diagnostics = new
-					{
-						disable = new[] { "duplicate-set-field" }
-					},
-					telemetry = new
-					{
-						enable = false
-					}
+					version = "Lua 5.4"
+				},
+				workspace = new
+				{
+					checkThirdParty = false,
+					library
+				},
+				completion = new
+				{
+					callSnippet = "Disable"
+				},
+				semantic = new
+				{
+					enable = true,
+					annotation = true,
+					variable = true,
+					keyword = false
+				},
+				diagnostics = new
+				{
+					disable = new[] { "duplicate-set-field" }
+				},
+				telemetry = new
+				{
+					enable = false
 				}
-			};
-		}
+			}
+		};
 	}
 }

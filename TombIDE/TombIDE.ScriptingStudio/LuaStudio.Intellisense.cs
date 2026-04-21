@@ -1,127 +1,128 @@
+#nullable enable
+
+using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using ICSharpCode.AvalonEdit.Document;
+using TombIDE.ScriptingStudio.Services.LuaIntellisense;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
-using TombIDE.ScriptingStudio.Services.LuaIntellisense;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Lua.Services;
 using TombLib.Scripting.Objects;
 
-namespace TombIDE.ScriptingStudio
+namespace TombIDE.ScriptingStudio;
+
+public sealed partial class LuaStudio
 {
-	public sealed partial class LuaStudio
+	private readonly ILuaIntellisenseProvider _intellisenseProvider;
+
+	private void HookLuaIntellisense()
 	{
-		private readonly ILuaIntellisenseProvider _intellisenseProvider;
+		EditorTabControl.FileOpened -= EditorTabControl_LuaFileOpened;
+		EditorTabControl.FileOpened += EditorTabControl_LuaFileOpened;
 
-		private void HookLuaIntellisense()
-		{
-			EditorTabControl.FileOpened -= EditorTabControl_LuaFileOpened;
-			EditorTabControl.FileOpened += EditorTabControl_LuaFileOpened;
-
-			_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
-			_intellisenseProvider.DiagnosticsUpdated += IntellisenseProvider_DiagnosticsUpdated;
-			_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
-			_intellisenseProvider.SemanticTokensUpdated += IntellisenseProvider_SemanticTokensUpdated;
-		}
-
-		private void DisposeLuaIntellisense()
-		{
-			EditorTabControl.FileOpened -= EditorTabControl_LuaFileOpened;
-			_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
-			_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
-			_intellisenseProvider.Dispose();
-		}
-
-		private ILuaIntellisenseProvider CreateLuaIntellisenseProvider()
-		{
-			TENApiService.InjectTENApi(IDE.Instance.Project, IDE.Instance.Project.GetCurrentEngineVersion());
-
-			string executablePath = LuaLanguageServerLocator.ResolveExecutablePath();
-			return new LuaLanguageServerIntellisenseProvider(ScriptRootDirectoryPath, executablePath);
-		}
-
-		private void EditorTabControl_LuaFileOpened(object sender, EventArgs e)
-		{
-			if (sender is not LuaEditor editor)
-				return;
-
-			editor.IntellisenseProvider = _intellisenseProvider;
-			editor.DefinitionNavigationRequested -= NavigateToDefinition;
-			editor.DefinitionNavigationRequested += NavigateToDefinition;
-			editor.TextChangedDelayed -= LuaEditor_TextChangedDelayed;
-			editor.TextChangedDelayed += LuaEditor_TextChangedDelayed;
-
-			_intellisenseProvider.OpenDocument(editor.FilePath, editor.Text);
-			ApplyDiagnosticsToEditor(editor, _intellisenseProvider.GetDiagnostics(editor.FilePath));
-			ApplySemanticTokensToEditor(editor, _intellisenseProvider.GetSemanticTokens(editor.FilePath));
-		}
-
-		private void LuaEditor_TextChangedDelayed(object sender, EventArgs e)
-		{
-			if (sender is LuaEditor editor)
-				_intellisenseProvider.UpdateDocument(editor.FilePath, editor.Text);
-		}
-
-		private void IntellisenseProvider_DiagnosticsUpdated(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics)
-		{
-			if (InvokeRequired)
-			{
-				BeginInvoke(new Action<string, IReadOnlyList<TextEditorDiagnostic>>(IntellisenseProvider_DiagnosticsUpdated), filePath, diagnostics);
-				return;
-			}
-
-			foreach (TabPage tabPage in EditorTabControl.FindTabPagesOfFile(filePath))
-			{
-				if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor editor)
-					ApplyDiagnosticsToEditor(editor, diagnostics);
-			}
-		}
-
-		private void IntellisenseProvider_SemanticTokensUpdated(string filePath, IReadOnlyList<LuaSemanticToken> semanticTokens)
-		{
-			if (InvokeRequired)
-			{
-				BeginInvoke(new Action<string, IReadOnlyList<LuaSemanticToken>>(IntellisenseProvider_SemanticTokensUpdated), filePath, semanticTokens);
-				return;
-			}
-
-			foreach (TabPage tabPage in EditorTabControl.FindTabPagesOfFile(filePath))
-			{
-				if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor editor)
-					ApplySemanticTokensToEditor(editor, semanticTokens);
-			}
-		}
-
-		private void NavigateToDefinition(LuaDefinitionLocation definitionLocation)
-		{
-			if (definitionLocation is null || string.IsNullOrWhiteSpace(definitionLocation.FilePath) || !File.Exists(definitionLocation.FilePath))
-				return;
-
-			EditorTabControl.OpenFile(definitionLocation.FilePath);
-
-			if (CurrentEditor is not TextEditorBase editor || editor.Document.LineCount == 0)
-				return;
-
-			int lineNumber = Math.Max(1, Math.Min(definitionLocation.LineNumber, editor.Document.LineCount));
-			DocumentLine documentLine = editor.Document.GetLineByNumber(lineNumber);
-			int columnNumber = Math.Max(1, Math.Min(definitionLocation.ColumnNumber, documentLine.Length + 1));
-			int offset = documentLine.Offset + columnNumber - 1;
-
-			editor.Focus();
-			editor.CaretOffset = offset;
-			editor.Select(offset, 0);
-			editor.ScrollToLine(lineNumber);
-		}
-
-		private static void ApplyDiagnosticsToEditor(LuaEditor editor, IReadOnlyList<TextEditorDiagnostic> diagnostics)
-			=> editor.SetDiagnostics(editor.LiveErrorUnderlining ? diagnostics : Array.Empty<TextEditorDiagnostic>());
-
-		private static void ApplySemanticTokensToEditor(LuaEditor editor, IReadOnlyList<LuaSemanticToken> semanticTokens)
-			=> editor.SetSemanticTokens(semanticTokens ?? Array.Empty<LuaSemanticToken>());
+		_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
+		_intellisenseProvider.DiagnosticsUpdated += IntellisenseProvider_DiagnosticsUpdated;
+		_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
+		_intellisenseProvider.SemanticTokensUpdated += IntellisenseProvider_SemanticTokensUpdated;
 	}
+
+	private void DisposeLuaIntellisense()
+	{
+		EditorTabControl.FileOpened -= EditorTabControl_LuaFileOpened;
+		_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
+		_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
+		_intellisenseProvider.Dispose();
+	}
+
+	private ILuaIntellisenseProvider CreateLuaIntellisenseProvider()
+	{
+		TENApiService.InjectTENApi(IDE.Instance.Project, IDE.Instance.Project.GetCurrentEngineVersion());
+
+		string? executablePath = LuaLanguageServerLocator.ResolveExecutablePath();
+		return new LuaLanguageServerIntellisenseProvider(ScriptRootDirectoryPath, executablePath);
+	}
+
+	private void EditorTabControl_LuaFileOpened(object? sender, EventArgs e)
+	{
+		if (sender is not LuaEditor editor)
+			return;
+
+		editor.IntellisenseProvider = _intellisenseProvider;
+		editor.DefinitionNavigationRequested -= NavigateToDefinition;
+		editor.DefinitionNavigationRequested += NavigateToDefinition;
+		editor.TextChangedDelayed -= LuaEditor_TextChangedDelayed;
+		editor.TextChangedDelayed += LuaEditor_TextChangedDelayed;
+
+		_intellisenseProvider.OpenDocument(editor.FilePath, editor.Text);
+		ApplyDiagnosticsToEditor(editor, _intellisenseProvider.GetDiagnostics(editor.FilePath));
+		ApplySemanticTokensToEditor(editor, _intellisenseProvider.GetSemanticTokens(editor.FilePath));
+	}
+
+	private void LuaEditor_TextChangedDelayed(object? sender, EventArgs e)
+	{
+		if (sender is LuaEditor editor)
+			_intellisenseProvider.UpdateDocument(editor.FilePath, editor.Text);
+	}
+
+	private void IntellisenseProvider_DiagnosticsUpdated(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics)
+	{
+		if (InvokeRequired)
+		{
+			BeginInvoke(new Action<string, IReadOnlyList<TextEditorDiagnostic>>(IntellisenseProvider_DiagnosticsUpdated), filePath, diagnostics);
+			return;
+		}
+
+		foreach (TabPage tabPage in EditorTabControl.FindTabPagesOfFile(filePath))
+		{
+			if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor editor)
+				ApplyDiagnosticsToEditor(editor, diagnostics);
+		}
+	}
+
+	private void IntellisenseProvider_SemanticTokensUpdated(string filePath, IReadOnlyList<LuaSemanticToken> semanticTokens)
+	{
+		if (InvokeRequired)
+		{
+			BeginInvoke(new Action<string, IReadOnlyList<LuaSemanticToken>>(IntellisenseProvider_SemanticTokensUpdated), filePath, semanticTokens);
+			return;
+		}
+
+		foreach (TabPage tabPage in EditorTabControl.FindTabPagesOfFile(filePath))
+		{
+			if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor editor)
+				ApplySemanticTokensToEditor(editor, semanticTokens);
+		}
+	}
+
+	private void NavigateToDefinition(LuaDefinitionLocation definitionLocation)
+	{
+		if (definitionLocation is null || string.IsNullOrWhiteSpace(definitionLocation.FilePath) || !File.Exists(definitionLocation.FilePath))
+			return;
+
+		EditorTabControl.OpenFile(definitionLocation.FilePath);
+
+		if (CurrentEditor is not TextEditorBase editor || editor.Document.LineCount == 0)
+			return;
+
+		int lineNumber = Math.Max(1, Math.Min(definitionLocation.LineNumber, editor.Document.LineCount));
+		DocumentLine documentLine = editor.Document.GetLineByNumber(lineNumber);
+		int columnNumber = Math.Max(1, Math.Min(definitionLocation.ColumnNumber, documentLine.Length + 1));
+		int offset = documentLine.Offset + columnNumber - 1;
+
+		editor.Focus();
+		editor.CaretOffset = offset;
+		editor.Select(offset, 0);
+		editor.ScrollToLine(lineNumber);
+	}
+
+	private static void ApplyDiagnosticsToEditor(LuaEditor editor, IReadOnlyList<TextEditorDiagnostic> diagnostics)
+		=> editor.SetDiagnostics(editor.LiveErrorUnderlining ? diagnostics : []);
+
+	private static void ApplySemanticTokensToEditor(LuaEditor editor, IReadOnlyList<LuaSemanticToken> semanticTokens)
+		=> editor.SetSemanticTokens(semanticTokens ?? []);
 }

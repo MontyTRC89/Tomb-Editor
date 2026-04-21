@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,717 +10,744 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TombIDE.ScriptingStudio.Services.LuaIntellisense
+namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
+
+internal sealed class LuaLanguageServerClient : IDisposable
 {
-	internal sealed class LuaLanguageServerClient : IDisposable
+	private const int ReceiveChunkSize = 4096;
+	private static readonly byte[] HeaderTerminator = [(byte)'\r', (byte)'\n', (byte)'\r', (byte)'\n'];
+
+	private readonly string _workspaceRootDirectoryPath;
+	private readonly string _serverExecutablePath;
+	private readonly Func<object> _settingsProvider;
+
+	private readonly SemaphoreSlim _startLock = new(1, 1);
+	private readonly SemaphoreSlim _writeLock = new(1, 1);
+	private readonly ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> _pendingRequests = new();
+
+	private static readonly string[] SupportedSemanticTokenTypes =
+	[
+		"namespace", "type", "class", "enum", "interface", "struct", "typeParameter",
+		"parameter", "variable", "property", "enumMember", "event", "function", "method",
+		"macro", "keyword", "modifier", "comment", "string", "number", "regexp",
+		"operator", "decorator"
+	];
+
+	private static readonly string[] SupportedSemanticTokenModifiers =
+	[
+		"declaration", "definition", "readonly", "static", "deprecated", "abstract",
+		"async", "modification", "documentation", "defaultLibrary", "global"
+	];
+
+	private long _requestId;
+	private bool _isDisposed;
+
+	private Process? _process;
+	private Stream? _inputStream;
+	private Stream? _outputStream;
+	private byte[] _receiveBuffer = [];
+	private int _receiveBufferCount;
+	private Task? _readLoopTask;
+	private Task? _stderrLoopTask;
+	private string[] _semanticTokenTypes = [];
+	private string[] _semanticTokenModifiers = [];
+	private bool _supportsCompletionResolve;
+
+	public bool IsReady { get; private set; }
+	public IReadOnlyList<string> SemanticTokenTypes => _semanticTokenTypes;
+	public IReadOnlyList<string> SemanticTokenModifiers => _semanticTokenModifiers;
+	public bool SupportsCompletionResolve => _supportsCompletionResolve;
+
+	public event Action<JsonElement>? DiagnosticsPublished;
+
+	public LuaLanguageServerClient(string workspaceRootDirectoryPath, string serverExecutablePath, Func<object> settingsProvider)
 	{
-		private const int ReceiveChunkSize = 4096;
-		private static readonly byte[] HeaderTerminator = { (byte)'\r', (byte)'\n', (byte)'\r', (byte)'\n' };
+		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
+		_serverExecutablePath = serverExecutablePath;
+		_settingsProvider = settingsProvider;
+	}
 
-		private readonly string _workspaceRootDirectoryPath;
-		private readonly string _serverExecutablePath;
-		private readonly Func<object> _settingsProvider;
+	public async Task<bool> StartAsync(CancellationToken cancellationToken)
+	{
+		if (IsReady)
+			return true;
 
-		private readonly SemaphoreSlim _startLock = new(1, 1);
-		private readonly SemaphoreSlim _writeLock = new(1, 1);
-		private readonly ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> _pendingRequests = new();
-		private static readonly string[] SupportedSemanticTokenTypes =
-		{
-			"namespace", "type", "class", "enum", "interface", "struct", "typeParameter",
-			"parameter", "variable", "property", "enumMember", "event", "function", "method",
-			"macro", "keyword", "modifier", "comment", "string", "number", "regexp",
-			"operator", "decorator"
-		};
-		private static readonly string[] SupportedSemanticTokenModifiers =
-		{
-			"declaration", "definition", "readonly", "static", "deprecated", "abstract",
-			"async", "modification", "documentation", "defaultLibrary", "global"
-		};
+		await _startLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-		private long _requestId;
-		private bool _isDisposed;
-
-		private Process _process;
-		private Stream _inputStream;
-		private Stream _outputStream;
-		private byte[] _receiveBuffer = Array.Empty<byte>();
-		private int _receiveBufferCount;
-		private Task _readLoopTask;
-		private Task _stderrLoopTask;
-		private string[] _semanticTokenTypes = Array.Empty<string>();
-		private string[] _semanticTokenModifiers = Array.Empty<string>();
-		private bool _supportsCompletionResolve;
-
-		public bool IsReady { get; private set; }
-		public IReadOnlyList<string> SemanticTokenTypes => _semanticTokenTypes;
-		public IReadOnlyList<string> SemanticTokenModifiers => _semanticTokenModifiers;
-		public bool SupportsCompletionResolve => _supportsCompletionResolve;
-
-		public event Action<JsonElement> DiagnosticsPublished;
-
-		public LuaLanguageServerClient(string workspaceRootDirectoryPath, string serverExecutablePath, Func<object> settingsProvider)
-		{
-			_workspaceRootDirectoryPath = workspaceRootDirectoryPath ?? throw new ArgumentNullException(nameof(workspaceRootDirectoryPath));
-			_serverExecutablePath = serverExecutablePath ?? throw new ArgumentNullException(nameof(serverExecutablePath));
-			_settingsProvider = settingsProvider ?? throw new ArgumentNullException(nameof(settingsProvider));
-		}
-
-		public async Task<bool> StartAsync(CancellationToken cancellationToken)
+		try
 		{
 			if (IsReady)
 				return true;
 
-			await _startLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-			try
-			{
-				if (IsReady)
-					return true;
-
-				ThrowIfDisposed();
-				ResetProcessState();
-
-				var startInfo = new ProcessStartInfo
-				{
-					FileName = _serverExecutablePath,
-					WorkingDirectory = Path.GetDirectoryName(_serverExecutablePath),
-					UseShellExecute = false,
-					CreateNoWindow = true,
-					RedirectStandardInput = true,
-					RedirectStandardOutput = true,
-					RedirectStandardError = true
-				};
-
-				_process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
-				_process.Exited += Process_Exited;
-
-				if (!_process.Start())
-					return false;
-
-				_inputStream = _process.StandardOutput.BaseStream;
-				_outputStream = _process.StandardInput.BaseStream;
-
-				_readLoopTask = Task.Run(ReadLoopAsync);
-				_stderrLoopTask = Task.Run(ReadStandardErrorLoopAsync);
-
-				using var initializeTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-				initializeTimeout.CancelAfter(TimeSpan.FromSeconds(10));
-
-				JsonElement initializeResponse = await SendRequestAsync("initialize", BuildInitializeParams(), initializeTimeout.Token).ConfigureAwait(false);
-				CaptureServerCapabilities(initializeResponse);
-
-				IsReady = true;
-
-				await SendNotificationAsync("initialized", new { }, cancellationToken).ConfigureAwait(false);
-				await SendNotificationAsync("workspace/didChangeConfiguration", new { settings = _settingsProvider() }, cancellationToken).ConfigureAwait(false);
-
-				return true;
-			}
-			catch
-			{
-				await DisposeProcessAsync().ConfigureAwait(false);
-				return false;
-			}
-			finally
-			{
-				_startLock.Release();
-			}
-		}
-
-		public Task SendNotificationAsync(string method, object parameters, CancellationToken cancellationToken)
-			=> WriteMessageAsync(new { jsonrpc = "2.0", method, @params = parameters }, cancellationToken);
-
-		public async Task<JsonElement> SendRequestAsync(string method, object parameters, CancellationToken cancellationToken)
-		{
 			ThrowIfDisposed();
+			ResetProcessState();
 
-			long requestId = Interlocked.Increment(ref _requestId);
-			var responseSource = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-			if (!_pendingRequests.TryAdd(requestId, responseSource))
-				throw new InvalidOperationException("Unable to track a new language server request.");
-
-			using var registration = cancellationToken.Register(() => responseSource.TrySetCanceled(cancellationToken));
-
-			try
+			var startInfo = new ProcessStartInfo
 			{
-				await WriteMessageAsync(new { jsonrpc = "2.0", id = requestId, method, @params = parameters }, cancellationToken).ConfigureAwait(false);
-				return await responseSource.Task.ConfigureAwait(false);
-			}
-			finally
-			{
-				_pendingRequests.TryRemove(requestId, out _);
-			}
-		}
-
-		private object BuildInitializeParams()
-			=> new
-			{
-				processId = Process.GetCurrentProcess().Id,
-				initializationOptions = new
-				{
-					changeConfiguration = true,
-					viewDocument = true,
-					trustByClient = true,
-					useSemanticByRange = true
-				},
-				rootUri = CreateFileUri(_workspaceRootDirectoryPath),
-				workspaceFolders = new[]
-				{
-					new
-					{
-						uri = CreateFileUri(_workspaceRootDirectoryPath),
-						name = Path.GetFileName(_workspaceRootDirectoryPath)
-					}
-				},
-				capabilities = new
-				{
-					workspace = new
-					{
-						workspaceFolders = true,
-						configuration = true
-					},
-					textDocument = new
-					{
-						completion = new
-						{
-							contextSupport = true,
-							completionItem = new
-							{
-								snippetSupport = false,
-								documentationFormat = new[] { "plaintext", "markdown" },
-								resolveSupport = new
-								{
-									properties = new[] { "detail", "documentation" }
-								}
-							}
-						},
-						hover = new
-						{
-							contentFormat = new[] { "plaintext", "markdown" }
-						},
-						definition = new
-						{
-							linkSupport = true
-						},
-						publishDiagnostics = new
-						{
-							versionSupport = true
-						},
-						signatureHelp = new
-						{
-							signatureInformation = new
-							{
-								documentationFormat = new[] { "plaintext", "markdown" },
-								parameterInformation = new
-								{
-									labelOffsetSupport = true
-								}
-							},
-							contextSupport = true
-						},
-						semanticTokens = new
-						{
-							requests = new
-							{
-								range = true
-							},
-							tokenTypes = SupportedSemanticTokenTypes,
-							tokenModifiers = SupportedSemanticTokenModifiers,
-							formats = new[] { "relative" },
-							multilineTokenSupport = false,
-							overlappingTokenSupport = false,
-							augmentsSyntaxTokens = true
-						}
-					}
-				}
+				FileName = _serverExecutablePath,
+				WorkingDirectory = Path.GetDirectoryName(_serverExecutablePath) ?? Environment.CurrentDirectory,
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardInput = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
 			};
 
-		private void CaptureServerCapabilities(JsonElement initializeResponse)
-		{
-			_supportsCompletionResolve = false;
-			_semanticTokenTypes = Array.Empty<string>();
-			_semanticTokenModifiers = Array.Empty<string>();
+			_process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
+			_process.Exited += Process_Exited;
 
-			if (initializeResponse.TryGetProperty("capabilities", out JsonElement capabilities)
-				&& capabilities.TryGetProperty("completionProvider", out JsonElement completionProvider)
-				&& completionProvider.TryGetProperty("resolveProvider", out JsonElement resolveProvider))
-			{
-				_supportsCompletionResolve = resolveProvider.ValueKind == JsonValueKind.True;
-			}
+			if (!_process.Start())
+				return false;
 
-			if (!initializeResponse.TryGetProperty("capabilities", out capabilities)
-				|| !capabilities.TryGetProperty("semanticTokensProvider", out JsonElement semanticTokensProvider)
-				|| !semanticTokensProvider.TryGetProperty("legend", out JsonElement legend))
-			{
-				return;
-			}
+			_inputStream = _process.StandardOutput.BaseStream;
+			_outputStream = _process.StandardInput.BaseStream;
 
-			_semanticTokenTypes = ReadStringArray(legend, "tokenTypes");
-			_semanticTokenModifiers = ReadStringArray(legend, "tokenModifiers");
+			_readLoopTask = Task.Run(ReadLoopAsync, CancellationToken.None);
+			_stderrLoopTask = Task.Run(ReadStandardErrorLoopAsync, CancellationToken.None);
+
+			using var initializeTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+			initializeTimeout.CancelAfter(TimeSpan.FromSeconds(10));
+
+			JsonElement initializeResponse = await SendRequestAsync("initialize", BuildInitializeParams(), initializeTimeout.Token).ConfigureAwait(false);
+			CaptureServerCapabilities(initializeResponse);
+
+			IsReady = true;
+
+			await SendNotificationAsync("initialized", new { }, cancellationToken).ConfigureAwait(false);
+			await SendNotificationAsync("workspace/didChangeConfiguration", new { settings = _settingsProvider() }, cancellationToken).ConfigureAwait(false);
+
+			return true;
 		}
-
-		private static string[] ReadStringArray(JsonElement parent, string propertyName)
+		catch
 		{
-			if (!parent.TryGetProperty(propertyName, out JsonElement property) || property.ValueKind != JsonValueKind.Array)
-				return Array.Empty<string>();
-
-			var values = new List<string>();
-
-			foreach (JsonElement item in property.EnumerateArray())
-			{
-				if (item.ValueKind == JsonValueKind.String)
-					values.Add(item.GetString());
-			}
-
-			return values.ToArray();
+			await DisposeProcessAsync().ConfigureAwait(false);
+			return false;
 		}
-
-		private async Task ReadLoopAsync()
+		finally
 		{
-			try
+			_startLock.Release();
+		}
+	}
+
+	public Task SendNotificationAsync(string method, object parameters, CancellationToken cancellationToken)
+		=> WriteMessageAsync(new { jsonrpc = "2.0", method, @params = parameters }, cancellationToken);
+
+	public async Task<JsonElement> SendRequestAsync(string method, object parameters, CancellationToken cancellationToken)
+	{
+		ThrowIfDisposed();
+
+		long requestId = Interlocked.Increment(ref _requestId);
+		var responseSource = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		if (!_pendingRequests.TryAdd(requestId, responseSource))
+			throw new InvalidOperationException("Unable to track a new language server request.");
+
+		await using var registration = cancellationToken.Register(() => responseSource.TrySetCanceled(cancellationToken));
+
+		try
+		{
+			await WriteMessageAsync(new { jsonrpc = "2.0", id = requestId, method, @params = parameters }, cancellationToken).ConfigureAwait(false);
+			return await responseSource.Task.ConfigureAwait(false);
+		}
+		finally
+		{
+			_pendingRequests.TryRemove(requestId, out _);
+		}
+	}
+
+	private object BuildInitializeParams() => new
+	{
+		processId = Environment.ProcessId,
+		initializationOptions = new
+		{
+			changeConfiguration = true,
+			viewDocument = true,
+			trustByClient = true,
+			useSemanticByRange = true
+		},
+		rootUri = CreateFileUri(_workspaceRootDirectoryPath),
+		workspaceFolders = new[]
+		{
+			new
 			{
-				while (!_isDisposed)
+				uri = CreateFileUri(_workspaceRootDirectoryPath),
+				name = Path.GetFileName(_workspaceRootDirectoryPath)
+			}
+		},
+		capabilities = new
+		{
+			workspace = new
+			{
+				workspaceFolders = true,
+				configuration = true
+			},
+			textDocument = new
+			{
+				completion = new
 				{
-					Dictionary<string, string> headers = await ReadHeadersAsync().ConfigureAwait(false);
-
-					if (headers is null || !headers.TryGetValue("Content-Length", out string contentLengthValue)
-						|| !int.TryParse(contentLengthValue, out int contentLength) || contentLength <= 0)
-						break;
-
-					byte[] payloadBytes = await ReadPayloadAsync(contentLength).ConfigureAwait(false);
-
-					if (payloadBytes is null)
-						break;
-
-					using JsonDocument document = JsonDocument.Parse(payloadBytes);
-					await HandleMessageAsync(document.RootElement).ConfigureAwait(false);
+					contextSupport = true,
+					completionItem = new
+					{
+						snippetSupport = false,
+						documentationFormat = new[] { "plaintext", "markdown" },
+						resolveSupport = new
+						{
+							properties = new[] { "detail", "documentation" }
+						}
+					}
+				},
+				hover = new
+				{
+					contentFormat = new[] { "plaintext", "markdown" }
+				},
+				definition = new
+				{
+					linkSupport = true
+				},
+				publishDiagnostics = new
+				{
+					versionSupport = true
+				},
+				signatureHelp = new
+				{
+					signatureInformation = new
+					{
+						documentationFormat = new[] { "plaintext", "markdown" },
+						parameterInformation = new
+						{
+							labelOffsetSupport = true
+						}
+					},
+					contextSupport = true
+				},
+				semanticTokens = new
+				{
+					requests = new
+					{
+						range = true
+					},
+					tokenTypes = SupportedSemanticTokenTypes,
+					tokenModifiers = SupportedSemanticTokenModifiers,
+					formats = new[] { "relative" },
+					multilineTokenSupport = false,
+					overlappingTokenSupport = false,
+					augmentsSyntaxTokens = true
 				}
 			}
-			catch (Exception exception)
+		}
+	};
+
+	private void CaptureServerCapabilities(JsonElement initializeResponse)
+	{
+		_supportsCompletionResolve = false;
+		_semanticTokenTypes = [];
+		_semanticTokenModifiers = [];
+
+		if (initializeResponse.TryGetProperty("capabilities", out JsonElement capabilities)
+			&& capabilities.TryGetProperty("completionProvider", out JsonElement completionProvider)
+			&& completionProvider.TryGetProperty("resolveProvider", out JsonElement resolveProvider))
+		{
+			_supportsCompletionResolve = resolveProvider.ValueKind == JsonValueKind.True;
+		}
+
+		if (!initializeResponse.TryGetProperty("capabilities", out capabilities)
+			|| !capabilities.TryGetProperty("semanticTokensProvider", out JsonElement semanticTokensProvider)
+			|| !semanticTokensProvider.TryGetProperty("legend", out JsonElement legend))
+		{
+			return;
+		}
+
+		_semanticTokenTypes = ReadStringArray(legend, "tokenTypes");
+		_semanticTokenModifiers = ReadStringArray(legend, "tokenModifiers");
+	}
+
+	private static string[] ReadStringArray(JsonElement parent, string propertyName)
+	{
+		if (!parent.TryGetProperty(propertyName, out JsonElement property) || property.ValueKind != JsonValueKind.Array)
+			return [];
+
+		var values = new List<string>();
+
+		foreach (JsonElement item in property.EnumerateArray())
+		{
+			if (item.ValueKind == JsonValueKind.String)
 			{
-				FailPendingRequests(exception);
-			}
-			finally
-			{
-				IsReady = false;
+				string? value = item.GetString();
+
+				if (!string.IsNullOrEmpty(value))
+					values.Add(value);
 			}
 		}
 
-		private async Task ReadStandardErrorLoopAsync()
+		return [.. values];
+	}
+
+	private async Task ReadLoopAsync()
+	{
+		try
 		{
-			try
+			while (!_isDisposed)
 			{
-				while (!_isDisposed && _process is not null && !_process.HasExited)
+				Dictionary<string, string>? headers = await ReadHeadersAsync().ConfigureAwait(false);
+
+				if (headers is null || !headers.TryGetValue("Content-Length", out string? contentLengthValue)
+					|| string.IsNullOrWhiteSpace(contentLengthValue)
+					|| !int.TryParse(contentLengthValue, out int contentLength) || contentLength <= 0)
 				{
-					string line = await _process.StandardError.ReadLineAsync().ConfigureAwait(false);
-
-					if (line is null)
-						break;
-
-					if (!string.IsNullOrWhiteSpace(line))
-						Debug.WriteLine($"[LuaLS stderr] {line}");
+					break;
 				}
+
+				byte[]? payloadBytes = await ReadPayloadAsync(contentLength).ConfigureAwait(false);
+
+				if (payloadBytes is null)
+					break;
+
+				using JsonDocument document = JsonDocument.Parse(payloadBytes);
+				await HandleMessageAsync(document.RootElement).ConfigureAwait(false);
 			}
-			catch
+		}
+		catch (Exception exception)
+		{
+			FailPendingRequests(exception);
+		}
+		finally
+		{
+			IsReady = false;
+		}
+	}
+
+	private async Task ReadStandardErrorLoopAsync()
+	{
+		try
+		{
+			while (!_isDisposed)
 			{
-				// Ignore stderr read failures.
+				Process? process = _process;
+
+				if (process is null || process.HasExited)
+					break;
+
+				string? line = await process.StandardError.ReadLineAsync().ConfigureAwait(false);
+
+				if (line is null)
+					break;
+
+				if (!string.IsNullOrWhiteSpace(line))
+					Debug.WriteLine($"[LuaLS stderr] {line}");
 			}
 		}
-
-		private async Task<Dictionary<string, string>> ReadHeadersAsync()
+		catch
 		{
-			while (true)
-			{
-				int headerTerminatorIndex = FindHeaderTerminatorIndex();
+			// Ignore stderr read failures.
+		}
+	}
 
-				if (headerTerminatorIndex >= 0)
-					return ConsumeHeaders(headerTerminatorIndex);
+	private async Task<Dictionary<string, string>?> ReadHeadersAsync()
+	{
+		while (true)
+		{
+			int headerTerminatorIndex = FindHeaderTerminatorIndex();
 
-				if (!await ReadIntoReceiveBufferAsync().ConfigureAwait(false))
-					return null;
-			}
+			if (headerTerminatorIndex >= 0)
+				return ConsumeHeaders(headerTerminatorIndex);
+
+			if (!await ReadIntoReceiveBufferAsync().ConfigureAwait(false))
+				return null;
+		}
+	}
+
+	private Dictionary<string, string> ConsumeHeaders(int headerTerminatorIndex)
+	{
+		string headerText = Encoding.ASCII.GetString(_receiveBuffer, 0, headerTerminatorIndex);
+		ConsumeReceiveBuffer(headerTerminatorIndex + HeaderTerminator.Length);
+		return ParseHeaders(headerText);
+	}
+
+	private static Dictionary<string, string> ParseHeaders(string headerText)
+	{
+		var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+		foreach (string line in headerText.Split(["\r\n"], StringSplitOptions.RemoveEmptyEntries))
+		{
+			int separatorIndex = line.IndexOf(':');
+
+			if (separatorIndex <= 0)
+				continue;
+
+			string key = line[..separatorIndex].Trim();
+			headers[key] = line[(separatorIndex + 1)..].Trim();
 		}
 
-		private Dictionary<string, string> ConsumeHeaders(int headerTerminatorIndex)
+		return headers;
+	}
+
+	private int FindHeaderTerminatorIndex()
+		=> new ReadOnlySpan<byte>(_receiveBuffer, 0, _receiveBufferCount).IndexOf(HeaderTerminator);
+
+	private async Task<bool> ReadIntoReceiveBufferAsync()
+	{
+		if (_inputStream is null)
+			return false;
+
+		EnsureReceiveBufferCapacity(_receiveBufferCount + ReceiveChunkSize);
+
+		int bytesToRead = Math.Min(ReceiveChunkSize, _receiveBuffer.Length - _receiveBufferCount);
+		int bytesRead = await _inputStream
+			.ReadAsync(_receiveBuffer.AsMemory(_receiveBufferCount, bytesToRead))
+			.ConfigureAwait(false);
+
+		if (bytesRead == 0)
+			return false;
+
+		_receiveBufferCount += bytesRead;
+		return true;
+	}
+
+	private void EnsureReceiveBufferCapacity(int requiredCapacity)
+	{
+		if (_receiveBuffer.Length >= requiredCapacity)
+			return;
+
+		int newCapacity = Math.Max(ReceiveChunkSize, _receiveBuffer.Length);
+
+		while (newCapacity < requiredCapacity)
+			newCapacity *= 2;
+
+		Array.Resize(ref _receiveBuffer, newCapacity);
+	}
+
+	private void ConsumeReceiveBuffer(int bytesToConsume)
+	{
+		int remainingBytes = _receiveBufferCount - bytesToConsume;
+
+		if (remainingBytes > 0)
+			Buffer.BlockCopy(_receiveBuffer, bytesToConsume, _receiveBuffer, 0, remainingBytes);
+
+		_receiveBufferCount = Math.Max(0, remainingBytes);
+	}
+
+	private async Task<byte[]?> ReadPayloadAsync(int contentLength)
+	{
+		if (_inputStream is null)
+			return null;
+
+		byte[] payloadBytes = new byte[contentLength];
+		int totalBytesRead = 0;
+
+		if (_receiveBufferCount > 0)
 		{
-			string headerText = Encoding.ASCII.GetString(_receiveBuffer, 0, headerTerminatorIndex);
-			ConsumeReceiveBuffer(headerTerminatorIndex + HeaderTerminator.Length);
-			return ParseHeaders(headerText);
+			int bufferedBytesToCopy = Math.Min(contentLength, _receiveBufferCount);
+			Buffer.BlockCopy(_receiveBuffer, 0, payloadBytes, 0, bufferedBytesToCopy);
+			ConsumeReceiveBuffer(bufferedBytesToCopy);
+			totalBytesRead = bufferedBytesToCopy;
 		}
 
-		private static Dictionary<string, string> ParseHeaders(string headerText)
+		while (totalBytesRead < contentLength)
 		{
-			var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-			foreach (string line in headerText.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
-			{
-				int separatorIndex = line.IndexOf(':');
-
-				if (separatorIndex <= 0)
-					continue;
-
-				string key = line[..separatorIndex].Trim();
-				string value = line[(separatorIndex + 1)..].Trim();
-
-				headers[key] = value;
-			}
-
-			return headers;
-		}
-
-		private int FindHeaderTerminatorIndex()
-			=> new ReadOnlySpan<byte>(_receiveBuffer, 0, _receiveBufferCount).IndexOf(HeaderTerminator);
-
-		private async Task<bool> ReadIntoReceiveBufferAsync()
-		{
-			EnsureReceiveBufferCapacity(_receiveBufferCount + ReceiveChunkSize);
-
-			int bytesToRead = Math.Min(ReceiveChunkSize, _receiveBuffer.Length - _receiveBufferCount);
 			int bytesRead = await _inputStream
-				.ReadAsync(_receiveBuffer.AsMemory(_receiveBufferCount, bytesToRead))
+				.ReadAsync(payloadBytes.AsMemory(totalBytesRead, contentLength - totalBytesRead))
 				.ConfigureAwait(false);
 
 			if (bytesRead == 0)
-				return false;
+				return null;
 
-			_receiveBufferCount += bytesRead;
-			return true;
+			totalBytesRead += bytesRead;
 		}
 
-		private void EnsureReceiveBufferCapacity(int requiredCapacity)
+		return payloadBytes;
+	}
+
+	private async Task HandleMessageAsync(JsonElement message)
+	{
+		if (message.TryGetProperty("id", out JsonElement idElement))
 		{
-			if (_receiveBuffer.Length >= requiredCapacity)
-				return;
-
-			int newCapacity = Math.Max(ReceiveChunkSize, _receiveBuffer.Length);
-
-			while (newCapacity < requiredCapacity)
-				newCapacity *= 2;
-
-			Array.Resize(ref _receiveBuffer, newCapacity);
-		}
-
-		private void ConsumeReceiveBuffer(int bytesToConsume)
-		{
-			int remainingBytes = _receiveBufferCount - bytesToConsume;
-
-			if (remainingBytes > 0)
-				Buffer.BlockCopy(_receiveBuffer, bytesToConsume, _receiveBuffer, 0, remainingBytes);
-
-			_receiveBufferCount = Math.Max(0, remainingBytes);
-		}
-
-		private async Task<byte[]> ReadPayloadAsync(int contentLength)
-		{
-			byte[] payloadBytes = new byte[contentLength];
-			int totalBytesRead = 0;
-
-			if (_receiveBufferCount > 0)
+			if (message.TryGetProperty("method", out JsonElement methodElement))
 			{
-				int bufferedBytesToCopy = Math.Min(contentLength, _receiveBufferCount);
-				Buffer.BlockCopy(_receiveBuffer, 0, payloadBytes, 0, bufferedBytesToCopy);
-				ConsumeReceiveBuffer(bufferedBytesToCopy);
-				totalBytesRead = bufferedBytesToCopy;
-			}
+				string? method = methodElement.GetString();
 
-			while (totalBytesRead < contentLength)
-			{
-				int bytesRead = await _inputStream
-					.ReadAsync(payloadBytes.AsMemory(totalBytesRead, contentLength - totalBytesRead))
-					.ConfigureAwait(false);
+				if (string.IsNullOrWhiteSpace(method))
+					return;
 
-				if (bytesRead == 0)
-					return null;
-
-				totalBytesRead += bytesRead;
-			}
-
-			return payloadBytes;
-		}
-
-		private async Task HandleMessageAsync(JsonElement message)
-		{
-			if (message.TryGetProperty("id", out JsonElement idElement))
-			{
-				if (message.TryGetProperty("method", out JsonElement methodElement))
-				{
-					JsonElement parameters = message.TryGetProperty("params", out JsonElement paramsElement)
-						? paramsElement.Clone()
-						: default;
-
-					await HandleServerRequestAsync(idElement.Clone(), methodElement.GetString(), parameters).ConfigureAwait(false);
-				}
-				else
-				{
-					HandleServerResponse(idElement, message);
-				}
-			}
-			else if (message.TryGetProperty("method", out JsonElement notificationMethodElement))
-			{
 				JsonElement parameters = message.TryGetProperty("params", out JsonElement paramsElement)
 					? paramsElement.Clone()
 					: default;
 
-				HandleServerNotification(notificationMethodElement.GetString(), parameters);
+				await HandleServerRequestAsync(idElement.Clone(), method, parameters).ConfigureAwait(false);
 			}
-		}
-
-		private void HandleServerResponse(JsonElement idElement, JsonElement message)
-		{
-			if (!idElement.TryGetInt64(out long requestId) || !_pendingRequests.TryGetValue(requestId, out TaskCompletionSource<JsonElement> responseSource))
-				return;
-
-			if (message.TryGetProperty("error", out JsonElement errorElement))
-			{
-				string messageText = errorElement.TryGetProperty("message", out JsonElement errorMessageElement)
-					? errorMessageElement.GetString()
-					: "Lua language server request failed.";
-
-				responseSource.TrySetException(new InvalidOperationException(messageText));
-				return;
-			}
-
-			if (message.TryGetProperty("result", out JsonElement resultElement))
-				responseSource.TrySetResult(resultElement.Clone());
 			else
-				responseSource.TrySetResult(default);
-		}
-
-		private async Task HandleServerRequestAsync(JsonElement idElement, string method, JsonElement parameters)
-		{
-			object result = method switch
 			{
-				"workspace/configuration" => BuildConfigurationResponse(parameters),
-				"workspace/workspaceFolders" => BuildWorkspaceFolderResponse(),
-				"client/registerCapability" => null,
-				"window/workDoneProgress/create" => null,
-				_ => null
-			};
-
-			await WriteMessageAsync(new { jsonrpc = "2.0", id = idElement, result }, CancellationToken.None).ConfigureAwait(false);
-		}
-
-		private object[] BuildConfigurationResponse(JsonElement parameters)
-		{
-			if (!parameters.TryGetProperty("items", out JsonElement itemsElement) || itemsElement.ValueKind != JsonValueKind.Array)
-				return Array.Empty<object>();
-
-			JsonElement settingsElement = JsonSerializer.SerializeToElement(_settingsProvider());
-			JsonElement luaElement = settingsElement.GetProperty("Lua");
-
-			var results = new List<object>();
-
-			foreach (JsonElement item in itemsElement.EnumerateArray())
-			{
-				string section = item.TryGetProperty("section", out JsonElement sectionElement)
-					? sectionElement.GetString()
-					: null;
-
-				results.Add(GetConfigurationSection(settingsElement, luaElement, section));
-			}
-
-			return results.ToArray();
-		}
-
-		private static object GetConfigurationSection(JsonElement settingsElement, JsonElement luaElement, string section)
-		{
-			if (string.IsNullOrWhiteSpace(section))
-				return settingsElement.Clone();
-
-			if (section.Equals("Lua", StringComparison.OrdinalIgnoreCase))
-				return luaElement.Clone();
-
-			if (section.StartsWith("Lua.", StringComparison.OrdinalIgnoreCase))
-			{
-				JsonElement nestedSection = luaElement;
-				string[] parts = section[4..].Split('.');
-
-				foreach (string part in parts)
-				{
-					if (!nestedSection.TryGetProperty(part, out JsonElement nextSection))
-						return new { };
-
-					nestedSection = nextSection;
-				}
-
-				return nestedSection.Clone();
-			}
-
-			return new { };
-		}
-
-		private object[] BuildWorkspaceFolderResponse()
-			=> new object[]
-			{
-				new
-				{
-					uri = CreateFileUri(_workspaceRootDirectoryPath),
-					name = Path.GetFileName(_workspaceRootDirectoryPath)
-				}
-			};
-
-		private void HandleServerNotification(string method, JsonElement parameters)
-		{
-			switch (method)
-			{
-				case "textDocument/publishDiagnostics":
-					DiagnosticsPublished?.Invoke(parameters);
-					return;
-				case "window/logMessage":
-				case "window/showMessage":
-				case "telemetry/event":
-				case "$/progress":
-					return;
+				HandleServerResponse(idElement, message);
 			}
 		}
-
-		private async Task WriteMessageAsync(object payload, CancellationToken cancellationToken)
+		else if (message.TryGetProperty("method", out JsonElement notificationMethodElement))
 		{
-			ThrowIfDisposed();
+			string? method = notificationMethodElement.GetString();
 
-			byte[] payloadBytes = JsonSerializer.SerializeToUtf8Bytes(payload);
-			byte[] headerBytes = Encoding.ASCII.GetBytes($"Content-Length: {payloadBytes.Length}\r\n\r\n");
-
-			await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-			try
-			{
-				await _outputStream.WriteAsync(headerBytes.AsMemory(0, headerBytes.Length), cancellationToken).ConfigureAwait(false);
-				await _outputStream.WriteAsync(payloadBytes.AsMemory(0, payloadBytes.Length), cancellationToken).ConfigureAwait(false);
-				await _outputStream.FlushAsync(cancellationToken).ConfigureAwait(false);
-			}
-			finally
-			{
-				_writeLock.Release();
-			}
-		}
-
-		private void Process_Exited(object sender, EventArgs e)
-		{
-			int? exitCode = null;
-
-			try
-			{
-				if (_process is not null && _process.HasExited)
-					exitCode = _process.ExitCode;
-			}
-			catch
-			{
-				// Ignore exit-code access failures.
-			}
-
-			IsReady = false;
-
-			if (!_isDisposed)
-				Debug.WriteLine($"[LuaLS] Process exited unexpectedly{(exitCode is not null ? $" with code {exitCode.Value}" : string.Empty)}.");
-
-			FailPendingRequests(new IOException("The Lua language server process exited unexpectedly."));
-		}
-
-		private void FailPendingRequests(Exception exception)
-		{
-			foreach (KeyValuePair<long, TaskCompletionSource<JsonElement>> pendingRequest in _pendingRequests)
-				pendingRequest.Value.TrySetException(exception);
-		}
-
-		private async Task DisposeProcessAsync()
-		{
-			try
-			{
-				if (_process is not null && !_process.HasExited)
-				{
-					using var shutdownTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(1));
-
-					try
-					{
-						await SendRequestAsync("shutdown", new { }, shutdownTimeout.Token).ConfigureAwait(false);
-					}
-					catch
-					{
-						// Ignore shutdown failures.
-					}
-
-					try
-					{
-						await SendNotificationAsync("exit", new { }, shutdownTimeout.Token).ConfigureAwait(false);
-					}
-					catch
-					{
-						// Ignore exit notification failures.
-					}
-
-					if (!_process.HasExited)
-						_process.Kill(true);
-				}
-			}
-			catch
-			{
-				// Ignore process disposal failures.
-			}
-			finally
-			{
-				ResetProcessState();
-				IsReady = false;
-			}
-		}
-
-		private void ResetProcessState()
-		{
-			try
-			{
-				if (_process is not null)
-					_process.Exited -= Process_Exited;
-			}
-			catch
-			{
-				// Ignore event detach failures.
-			}
-
-			try
-			{
-				_inputStream?.Dispose();
-				_outputStream?.Dispose();
-				_process?.Dispose();
-			}
-			catch
-			{
-				// Ignore stream disposal failures.
-			}
-
-			_inputStream = null;
-			_outputStream = null;
-			_process = null;
-			_receiveBuffer = Array.Empty<byte>();
-			_receiveBufferCount = 0;
-			_readLoopTask = null;
-			_stderrLoopTask = null;
-			_supportsCompletionResolve = false;
-			_semanticTokenTypes = Array.Empty<string>();
-			_semanticTokenModifiers = Array.Empty<string>();
-		}
-
-		private void ThrowIfDisposed()
-		{
-			if (_isDisposed)
-				throw new ObjectDisposedException(nameof(LuaLanguageServerClient));
-		}
-
-		private static string CreateFileUri(string path)
-			=> new Uri(Path.GetFullPath(path)).AbsoluteUri;
-
-		public void Dispose()
-		{
-			if (_isDisposed)
+			if (string.IsNullOrWhiteSpace(method))
 				return;
 
-			_isDisposed = true;
-			FailPendingRequests(new ObjectDisposedException(nameof(LuaLanguageServerClient)));
+			JsonElement parameters = message.TryGetProperty("params", out JsonElement paramsElement)
+				? paramsElement.Clone()
+				: default;
 
-			DisposeProcessAsync().GetAwaiter().GetResult();
-
-			_startLock.Dispose();
-			_writeLock.Dispose();
+			HandleServerNotification(method, parameters);
 		}
+	}
+
+	private void HandleServerResponse(JsonElement idElement, JsonElement message)
+	{
+		if (!idElement.TryGetInt64(out long requestId) || !_pendingRequests.TryGetValue(requestId, out TaskCompletionSource<JsonElement>? responseSource))
+			return;
+
+		if (message.TryGetProperty("error", out JsonElement errorElement))
+		{
+			string messageText = errorElement.TryGetProperty("message", out JsonElement errorMessageElement)
+				? errorMessageElement.GetString() ?? "Lua language server request failed."
+				: "Lua language server request failed.";
+
+			responseSource.TrySetException(new InvalidOperationException(messageText));
+			return;
+		}
+
+		if (message.TryGetProperty("result", out JsonElement resultElement))
+			responseSource.TrySetResult(resultElement.Clone());
+		else
+			responseSource.TrySetResult(default);
+	}
+
+	private async Task HandleServerRequestAsync(JsonElement idElement, string method, JsonElement parameters)
+	{
+		object? result = method switch
+		{
+			"workspace/configuration" => BuildConfigurationResponse(parameters),
+			"workspace/workspaceFolders" => BuildWorkspaceFolderResponse(),
+			"client/registerCapability" => null,
+			"window/workDoneProgress/create" => null,
+			_ => null
+		};
+
+		await WriteMessageAsync(new { jsonrpc = "2.0", id = idElement, result }, CancellationToken.None).ConfigureAwait(false);
+	}
+
+	private object[] BuildConfigurationResponse(JsonElement parameters)
+	{
+		if (!parameters.TryGetProperty("items", out JsonElement itemsElement) || itemsElement.ValueKind != JsonValueKind.Array)
+			return [];
+
+		JsonElement settingsElement = JsonSerializer.SerializeToElement(_settingsProvider());
+		JsonElement luaElement = settingsElement.GetProperty("Lua");
+
+		var results = new List<object>();
+
+		foreach (JsonElement item in itemsElement.EnumerateArray())
+		{
+			string? section = item.TryGetProperty("section", out JsonElement sectionElement)
+				? sectionElement.GetString()
+				: null;
+
+			results.Add(GetConfigurationSection(settingsElement, luaElement, section));
+		}
+
+		return [.. results];
+	}
+
+	private static object GetConfigurationSection(JsonElement settingsElement, JsonElement luaElement, string? section)
+	{
+		if (string.IsNullOrWhiteSpace(section))
+			return settingsElement.Clone();
+
+		if (section.Equals("Lua", StringComparison.OrdinalIgnoreCase))
+			return luaElement.Clone();
+
+		if (section.StartsWith("Lua.", StringComparison.OrdinalIgnoreCase))
+		{
+			JsonElement nestedSection = luaElement;
+			string[] parts = section[4..].Split('.');
+
+			foreach (string part in parts)
+			{
+				if (!nestedSection.TryGetProperty(part, out JsonElement nextSection))
+					return new { };
+
+				nestedSection = nextSection;
+			}
+
+			return nestedSection.Clone();
+		}
+
+		return new { };
+	}
+
+	private object[] BuildWorkspaceFolderResponse() =>
+	[
+		new
+		{
+			uri = CreateFileUri(_workspaceRootDirectoryPath),
+			name = Path.GetFileName(_workspaceRootDirectoryPath)
+		}
+	];
+
+	private void HandleServerNotification(string method, JsonElement parameters)
+	{
+		switch (method)
+		{
+			case "textDocument/publishDiagnostics":
+				DiagnosticsPublished?.Invoke(parameters);
+				return;
+
+			case "window/logMessage":
+			case "window/showMessage":
+			case "telemetry/event":
+			case "$/progress":
+				return;
+		}
+	}
+
+	private async Task WriteMessageAsync(object payload, CancellationToken cancellationToken)
+	{
+		ThrowIfDisposed();
+
+		if (_outputStream is null)
+			throw new IOException("The Lua language server output stream is not available.");
+
+		byte[] payloadBytes = JsonSerializer.SerializeToUtf8Bytes(payload);
+		byte[] headerBytes = Encoding.ASCII.GetBytes($"Content-Length: {payloadBytes.Length}\r\n\r\n");
+
+		await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+		try
+		{
+			await _outputStream.WriteAsync(headerBytes.AsMemory(0, headerBytes.Length), cancellationToken).ConfigureAwait(false);
+			await _outputStream.WriteAsync(payloadBytes.AsMemory(0, payloadBytes.Length), cancellationToken).ConfigureAwait(false);
+			await _outputStream.FlushAsync(cancellationToken).ConfigureAwait(false);
+		}
+		finally
+		{
+			_writeLock.Release();
+		}
+	}
+
+	private void Process_Exited(object? sender, EventArgs e)
+	{
+		int? exitCode = null;
+
+		try
+		{
+			if (_process is not null && _process.HasExited)
+				exitCode = _process.ExitCode;
+		}
+		catch
+		{
+			// Ignore exit-code access failures.
+		}
+
+		IsReady = false;
+
+		if (!_isDisposed)
+			Debug.WriteLine($"[LuaLS] Process exited unexpectedly{(exitCode is not null ? $" with code {exitCode.Value}" : string.Empty)}.");
+
+		FailPendingRequests(new IOException("The Lua language server process exited unexpectedly."));
+	}
+
+	private void FailPendingRequests(Exception exception)
+	{
+		foreach (KeyValuePair<long, TaskCompletionSource<JsonElement>> pendingRequest in _pendingRequests)
+			pendingRequest.Value.TrySetException(exception);
+	}
+
+	private async Task DisposeProcessAsync()
+	{
+		try
+		{
+			if (_process is not null && !_process.HasExited)
+			{
+				using var shutdownTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+
+				try
+				{
+					await SendRequestAsync("shutdown", new { }, shutdownTimeout.Token).ConfigureAwait(false);
+				}
+				catch
+				{
+					// Ignore shutdown failures.
+				}
+
+				try
+				{
+					await SendNotificationAsync("exit", new { }, shutdownTimeout.Token).ConfigureAwait(false);
+				}
+				catch
+				{
+					// Ignore exit notification failures.
+				}
+
+				if (!_process.HasExited)
+					_process.Kill(true);
+			}
+		}
+		catch
+		{
+			// Ignore process disposal failures.
+		}
+		finally
+		{
+			ResetProcessState();
+			IsReady = false;
+		}
+	}
+
+	private void ResetProcessState()
+	{
+		try
+		{
+			if (_process is not null)
+				_process.Exited -= Process_Exited;
+		}
+		catch
+		{
+			// Ignore event detach failures.
+		}
+
+		try
+		{
+			_inputStream?.Dispose();
+			_outputStream?.Dispose();
+			_process?.Dispose();
+		}
+		catch
+		{
+			// Ignore stream disposal failures.
+		}
+
+		_inputStream = null;
+		_outputStream = null;
+		_process = null;
+		_receiveBuffer = [];
+		_receiveBufferCount = 0;
+		_readLoopTask = null;
+		_stderrLoopTask = null;
+		_supportsCompletionResolve = false;
+		_semanticTokenTypes = [];
+		_semanticTokenModifiers = [];
+	}
+
+	private void ThrowIfDisposed()
+		=> ObjectDisposedException.ThrowIf(_isDisposed, nameof(LuaLanguageServerClient));
+
+	private static string CreateFileUri(string path)
+		=> new Uri(Path.GetFullPath(path)).AbsoluteUri;
+
+	public void Dispose()
+	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+		FailPendingRequests(new ObjectDisposedException(nameof(LuaLanguageServerClient)));
+
+		DisposeProcessAsync().GetAwaiter().GetResult();
+
+		_startLock.Dispose();
+		_writeLock.Dispose();
 	}
 }
