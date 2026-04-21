@@ -6,6 +6,7 @@ Tomb Editor:
  * Added Content Browser tool window for more streamlined object management.
  * Added Flyby Timeline control to edit and preview flyby sequences.
  * Added "Preview flyby sequence" and "Preview camera" context menus for cameras.
+ * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
 
 WadTool:
  * Added missing TR2 henchman death sound (ID 838) and appropiate TR2 -> TEN conversion.
