@@ -11,6 +11,9 @@ Tomb Editor:
 WadTool:
  * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
  
+TEN nodes:
+ * Added nodes to unswap and previously swapped mesh.
+ 
 Version 1.11
 ============
 
