@@ -15,6 +15,9 @@ using TombLib.Scripting.Resources;
 
 namespace TombLib.Scripting.Lua.Objects;
 
+/// <summary>
+/// Adapts a <see cref="LuaCompletionItem"/> to AvalonEdit's completion-item UI contract.
+/// </summary>
 internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChanged
 {
 	private const double DescriptionMaxWidth = 540.0;
@@ -34,6 +37,11 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 	private object? _cachedDescription;
 	private Task<LuaCompletionItem>? _resolveTask;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaCompletionData"/> class.
+	/// </summary>
+	/// <param name="item">The completion item being adapted.</param>
+	/// <param name="brushSet">The theme brushes used to render the item.</param>
 	public LuaCompletionData(LuaCompletionItem item, LuaThemeBrushSet brushSet)
 	{
 		_item = item ?? throw new ArgumentNullException(nameof(item));
@@ -41,15 +49,44 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 		_displayDetail = FlattenSingleLineText(_item.Detail);
 	}
 
+	/// <summary>
+	/// Occurs when a bindable completion-property value changes.
+	/// </summary>
 	public event PropertyChangedEventHandler? PropertyChanged;
 
+	/// <summary>
+	/// Gets the icon image shown for the completion item.
+	/// </summary>
 	public ImageSource Image => LuaCompletionIconFactory.GetIcon(_item.IconKind, _brushSet);
+
+	/// <summary>
+	/// Gets the text used for filtering and matching.
+	/// </summary>
 	public string Text => _item.FilterText;
+
+	/// <summary>
+	/// Gets the primary label shown in the completion list.
+	/// </summary>
 	public string DisplayText => _item.Label;
+
+	/// <summary>
+	/// Gets the optional secondary detail shown inline in the completion list.
+	/// </summary>
 	public string? DisplayDetail => _displayDetail;
+
+	/// <summary>
+	/// Gets the visibility for the inline detail label.
+	/// </summary>
 	public Visibility DetailVisibility => string.IsNullOrEmpty(_displayDetail) ? Visibility.Collapsed : Visibility.Visible;
+
+	/// <summary>
+	/// Gets the content object used by AvalonEdit for the completion row.
+	/// </summary>
 	public object Content => DisplayText;
 
+	/// <summary>
+	/// Gets the tooltip content for the completion item.
+	/// </summary>
 	public object? Description
 	{
 		get
@@ -61,12 +98,30 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 		}
 	}
 
+	/// <summary>
+	/// Gets the sort priority used by the completion list.
+	/// </summary>
 	public double Priority => _item.Priority;
+
+	/// <summary>
+	/// Gets a value indicating whether this item supports lazy resolve for richer detail.
+	/// </summary>
 	public bool CanResolve => _item.CanResolve;
 
+	/// <summary>
+	/// Inserts the completion text into the editor.
+	/// </summary>
+	/// <param name="textArea">The target text area.</param>
+	/// <param name="completionSegment">The segment to replace.</param>
+	/// <param name="insertionRequestEventArgs">The insertion request context.</param>
 	public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
 		=> textArea.Document.Replace(completionSegment, _item.InsertText);
 
+	/// <summary>
+	/// Resolves and returns the tooltip content for the completion item.
+	/// </summary>
+	/// <param name="cancellationToken">A token that can cancel the lazy resolve request.</param>
+	/// <returns>The tooltip content, or <see langword="null"/> when no detail is available.</returns>
 	public async Task<object?> GetDescriptionAsync(CancellationToken cancellationToken = default)
 	{
 		if (!CanResolve)

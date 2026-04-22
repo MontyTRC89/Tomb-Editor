@@ -78,6 +78,7 @@ public sealed partial class LuaEditor
 
 		try
 		{
+			// Validate the request context up front, then dismiss competing transient UI before asking LuaLS.
 			if (!IsIntellisenseAvailable())
 				return;
 
@@ -99,6 +100,7 @@ public sealed partial class LuaEditor
 				return;
 			}
 
+			// Materialize the provider response into AvalonEdit completion rows using the current theme.
 			var completionDataItems = new LuaCompletionData[items.Count];
 			var brushSet = GetThemeBrushSet();
 
@@ -108,6 +110,7 @@ public sealed partial class LuaEditor
 			if (cancellationToken.IsCancellationRequested || requestToken != _completionRequestToken)
 				return;
 
+			// Recreate the popup from scratch so stale selection and tooltip state never leaks between requests.
 			CloseCompletionWindow();
 
 			InitializeLuaCompletionWindow();

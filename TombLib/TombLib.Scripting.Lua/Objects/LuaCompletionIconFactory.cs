@@ -5,10 +5,19 @@ using TombLib.Scripting.Lua.Resources;
 namespace TombLib.Scripting.Lua.Objects;
 
 // Geometry paths below are vendored from microsoft/vscode-codicons under the MIT license.
+/// <summary>
+/// Creates themed completion icons from the vendored Codicon geometry set.
+/// </summary>
 internal static class LuaCompletionIconFactory
 {
 	private static readonly ConcurrentDictionary<string, ImageSource> Cache = new();
 
+	/// <summary>
+	/// Gets the themed icon image for the supplied completion kind.
+	/// </summary>
+	/// <param name="kind">The completion icon kind.</param>
+	/// <param name="brushSet">The brush set used to color the icon.</param>
+	/// <returns>A cached frozen image for the requested icon.</returns>
 	public static ImageSource GetIcon(LuaCompletionIconKind kind, LuaThemeBrushSet brushSet)
 		=> Cache.GetOrAdd(brushSet.ThemeName + ":" + kind, _ => CreateIcon(kind, brushSet));
 

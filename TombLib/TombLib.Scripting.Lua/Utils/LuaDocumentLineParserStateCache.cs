@@ -4,18 +4,30 @@ using System.Collections.Generic;
 
 namespace TombLib.Scripting.Lua.Utils;
 
+/// <summary>
+/// Caches per-line Lua parser continuation state so comment and long-string checks stay fast after edits.
+/// </summary>
 internal sealed class LuaDocumentLineParserStateCache
 {
 	private readonly object _syncRoot = new();
 	private readonly TextDocument _document;
 	private readonly List<LuaLineParserState> _cachedLineStartStates = [];
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaDocumentLineParserStateCache"/> class.
+	/// </summary>
+	/// <param name="document">The document whose line-start parser state should be cached.</param>
 	public LuaDocumentLineParserStateCache(TextDocument document)
 	{
 		_document = document ?? throw new ArgumentNullException(nameof(document));
 		_document.Changed += Document_Changed;
 	}
 
+	/// <summary>
+	/// Gets the parser continuation state that applies at the start of the specified one-based line.
+	/// </summary>
+	/// <param name="lineNumber">The one-based document line number.</param>
+	/// <returns>The cached or computed line-start parser state.</returns>
 	public LuaLineParserState GetLineStartState(int lineNumber)
 	{
 		if (lineNumber <= 1)

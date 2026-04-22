@@ -12,6 +12,13 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 /// </summary>
 internal static class LuaIncrementalEditCalculator
 {
+	/// <summary>
+	/// Computes the minimal single-range edit that transforms one document snapshot into another.
+	/// </summary>
+	/// <param name="oldText">The previously synchronized document content.</param>
+	/// <param name="newText">The updated document content.</param>
+	/// <param name="oldOffsets">The line-offset table for <paramref name="oldText"/>.</param>
+	/// <returns>The incremental change range to send in <c>textDocument/didChange</c>.</returns>
 	public static LuaDocumentChangeRange Compute(string oldText, string newText, LuaDocumentLineOffsets oldOffsets)
 	{
 		oldText ??= string.Empty;

@@ -22,6 +22,10 @@ internal static class LuaProcessJobObject
 	private static IntPtr _jobHandle = IntPtr.Zero;
 	private static bool _initializationFailed;
 
+	/// <summary>
+	/// Attempts to assign the supplied process to the shared kill-on-close Windows job object.
+	/// </summary>
+	/// <param name="process">The process to attach.</param>
 	public static void TryAssignProcess(Process process)
 	{
 		if (process is null)

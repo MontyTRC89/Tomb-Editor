@@ -78,6 +78,11 @@ internal static partial class LuaLanguageServerResponseParser
 		public LuaCompletionIconKind? IconKindOverride { get; }
 	}
 
+	/// <summary>
+	/// Extracts the completion-item array from either an LSP completion list or a plain array response.
+	/// </summary>
+	/// <param name="response">The raw completion response payload.</param>
+	/// <returns>The cloned completion-item elements.</returns>
 	public static IReadOnlyList<JsonElement> ExtractCompletionItems(JsonElement response)
 	{
 		JsonElement itemsElement = response;
@@ -96,6 +101,12 @@ internal static partial class LuaLanguageServerResponseParser
 		return itemElements;
 	}
 
+	/// <summary>
+	/// Parses a sequence of raw completion items into editor completion entries.
+	/// </summary>
+	/// <param name="itemElements">The raw completion-item payloads.</param>
+	/// <param name="resolveFactory">Builds an optional lazy-resolve callback for each item.</param>
+	/// <returns>The parsed completion items.</returns>
 	public static IReadOnlyList<LuaCompletionItem> ParseCompletionItems(IEnumerable<JsonElement> itemElements,
 		Func<LuaCompletionItem, JsonElement, int, Func<CancellationToken, Task<LuaCompletionItem>>?>? resolveFactory = null)
 	{
@@ -126,6 +137,13 @@ internal static partial class LuaLanguageServerResponseParser
 		return items;
 	}
 
+	/// <summary>
+	/// Parses a single raw LSP completion item into a <see cref="LuaCompletionItem"/>.
+	/// </summary>
+	/// <param name="itemElement">The raw completion-item payload.</param>
+	/// <param name="itemIndex">The zero-based response index used for priority weighting.</param>
+	/// <param name="resolveAsync">An optional lazy-resolve callback.</param>
+	/// <returns>The parsed completion item, or <see langword="null"/> when the payload is invalid.</returns>
 	public static LuaCompletionItem? ParseCompletionItem(JsonElement itemElement, int itemIndex,
 		Func<CancellationToken, Task<LuaCompletionItem>>? resolveAsync = null)
 	{

@@ -7,10 +7,18 @@ using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua.Objects;
 
+/// <summary>
+/// Applies the Lua-specific visual styling for AvalonEdit completion popups.
+/// </summary>
 internal static class LuaCompletionWindowStyle
 {
 	private static readonly Style ItemContainerStyle = CreateItemContainerStyle();
 
+	/// <summary>
+	/// Applies the Lua completion-list styling to the supplied completion window.
+	/// </summary>
+	/// <param name="window">The completion window to style.</param>
+	/// <param name="brushSet">The theme brushes used by the completion UI.</param>
 	public static void Apply(CompletionWindow window, LuaThemeBrushSet brushSet)
 	{
 		if (window is null)

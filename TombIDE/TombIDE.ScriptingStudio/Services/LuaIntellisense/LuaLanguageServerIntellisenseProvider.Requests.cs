@@ -11,6 +11,16 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 
 internal sealed partial class LuaLanguageServerIntellisenseProvider
 {
+	/// <summary>
+	/// Requests completion items for the specified document position.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="triggerCharacter">The optional trigger character that caused completion.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The completion items returned by LuaLS.</returns>
 	public async Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
 		int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default)
 	{
@@ -34,6 +44,15 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken).ConfigureAwait(false);
 	}
 
+	/// <summary>
+	/// Requests hover information for the specified document position.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The hover payload, or <see langword="null"/> when none exists.</returns>
 	public Task<LuaHoverInfo?> GetHoverAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
@@ -45,6 +64,15 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken);
 	}
 
+	/// <summary>
+	/// Requests a definition location for the specified document position.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The definition location, or <see langword="null"/> when none exists.</returns>
 	public Task<LuaDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
@@ -56,6 +84,15 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken);
 	}
 
+	/// <summary>
+	/// Requests signature-help information for the specified document position.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The signature-help payload, or <see langword="null"/> when none exists.</returns>
 	public Task<LuaSignatureInfo?> GetSignatureHelpAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{

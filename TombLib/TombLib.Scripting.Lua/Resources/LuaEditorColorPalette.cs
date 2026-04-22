@@ -5,8 +5,16 @@ using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Lua.Resources;
 
+/// <summary>
+/// Builds the frozen brush palette used by the Lua editor from a resolved theme definition.
+/// </summary>
 internal static class LuaEditorColorPalette
 {
+	/// <summary>
+	/// Creates the editor brush set for the supplied Lua theme.
+	/// </summary>
+	/// <param name="theme">The theme to materialize into brushes.</param>
+	/// <returns>A frozen brush set ready for use by the editor UI.</returns>
 	public static LuaThemeBrushSet Create(LuaTheme theme)
 	{
 		LuaTheme effectiveTheme = (theme ?? new LuaTheme()).Normalize(ConfigurationDefaults.SelectedThemeName);

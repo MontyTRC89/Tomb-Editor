@@ -13,6 +13,9 @@ using TombLib.Scripting.Objects;
 
 namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 
+/// <summary>
+/// Implements the Lua IntelliSense provider by synchronizing editor documents with LuaLS and caching its responses.
+/// </summary>
 internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellisenseProvider
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -36,13 +39,32 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 	private bool _transientStartupFailureReported;
 	private volatile bool _isDisposed;
 
+	/// <summary>
+	/// Gets a value indicating whether IntelliSense requests can currently be served.
+	/// </summary>
 	public bool IsAvailable => !_isDisposed && _client is not null
 		&& _consecutiveStartupFailures < HardStartupFailureThreshold;
 
+	/// <summary>
+	/// Occurs when diagnostics for a tracked document change.
+	/// </summary>
 	public event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
+
+	/// <summary>
+	/// Occurs when semantic tokens for a tracked document change.
+	/// </summary>
 	public event Action<string, IReadOnlyList<LuaSemanticToken>>? SemanticTokensUpdated;
+
+	/// <summary>
+	/// Occurs when repeated language-server startup failures should be surfaced to the user.
+	/// </summary>
 	public event Action<LuaLanguageServerStartupFailure>? StartupFailed;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaLanguageServerIntellisenseProvider"/> class.
+	/// </summary>
+	/// <param name="workspaceRootDirectoryPath">The root directory of the current Lua script workspace.</param>
+	/// <param name="serverExecutablePath">The LuaLS executable path, or <see langword="null"/> when unavailable.</param>
 	public LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, string? serverExecutablePath)
 		: this(workspaceRootDirectoryPath, CreateClient(workspaceRootDirectoryPath, serverExecutablePath))
 	{ }
@@ -70,6 +92,11 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 			() => LuaLanguageServerSettingsFactory.Create(normalizedRoot));
 	}
 
+	/// <summary>
+	/// Gets the latest diagnostics cached for the specified document.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <returns>The cached diagnostics, or an empty list when none are available.</returns>
 	public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
 	{
 		if (_isDisposed)
@@ -81,6 +108,11 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		return _documents.GetDiagnostics(normalizedFilePath);
 	}
 
+	/// <summary>
+	/// Gets the latest semantic tokens cached for the specified document.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <returns>The cached semantic tokens, or an empty list when none are available.</returns>
 	public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
 	{
 		if (_isDisposed)
@@ -92,14 +124,28 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		return _documents.GetSemanticTokens(normalizedFilePath);
 	}
 
+	/// <summary>
+	/// Opens a document in the provider and synchronizes its current content with LuaLS.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The current document content.</param>
 	public void OpenDocument(string filePath, string content)
 		=> ObserveBackgroundTask(TrySynchronizeDocumentAsync(filePath, content, acquireOpenReference: true,
 			refreshSemanticTokens: true, CancellationToken.None), "Document open");
 
+	/// <summary>
+	/// Pushes updated content for a document that is already tracked by the provider.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The updated document content.</param>
 	public void UpdateDocument(string filePath, string content)
 		=> ObserveBackgroundTask(TrySynchronizeDocumentAsync(filePath, content, acquireOpenReference: false,
 			refreshSemanticTokens: true, CancellationToken.None), "Document change");
 
+	/// <summary>
+	/// Closes a tracked document and releases its server-side state when the last open reference disappears.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
 	public void CloseDocument(string filePath)
 	{
 		if (_isDisposed || _client is null || !LuaLanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath))
@@ -113,6 +159,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		if (_client is null || _consecutiveStartupFailures >= HardStartupFailureThreshold)
 			return false;
 
+		// Fast path: once the client is healthy, keep the workspace watcher alive and avoid taking the startup lock.
 		if (_startupSucceeded && _client.IsReady)
 		{
 			EnsureWorkspaceFileWatcherStarted();
@@ -125,6 +172,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		{
 			IReadOnlyList<LuaDocumentSnapshot> documentsToReopen = [];
 
+			// Re-check state after taking the lock so concurrent callers share the same restart/startup work.
 			if (_consecutiveStartupFailures >= HardStartupFailureThreshold)
 				return false;
 
@@ -140,6 +188,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 				documentsToReopen = _documents.PrepareForRestart();
 			}
 
+			// Start the transport, then replay tracked documents when this is a restart rather than a cold start.
 			_startupSucceeded = await _client.StartAsync(cancellationToken).ConfigureAwait(false);
 
 			if (_startupSucceeded && documentsToReopen.Count > 0)
@@ -159,6 +208,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 			}
 			else
 			{
+				// Record repeated failures so IntelliSense eventually stops advertising availability until restart.
 				_consecutiveStartupFailures++;
 				bool isPermanentFailure = _consecutiveStartupFailures >= HardStartupFailureThreshold;
 
@@ -202,6 +252,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		if (_client is null || _isDisposed || batch.Count == 0)
 			return;
 
+		// Normalize every path once, drop invalid entries, and track whether any change affects LuaLS configuration.
 		var changes = new List<object>(batch.Count);
 		bool shouldRefreshConfiguration = false;
 
@@ -224,6 +275,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 
 		try
 		{
+			// Configuration-affecting files must refresh settings before the watched-files notification lands.
 			if (shouldRefreshConfiguration)
 			{
 				await _client.SendNotificationAsync("workspace/didChangeConfiguration",
@@ -292,6 +344,9 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		}
 	}
 
+	/// <summary>
+	/// Releases the language-server client, workspace watcher, and any in-flight semantic-token requests.
+	/// </summary>
 	public void Dispose()
 	{
 		if (_isDisposed)

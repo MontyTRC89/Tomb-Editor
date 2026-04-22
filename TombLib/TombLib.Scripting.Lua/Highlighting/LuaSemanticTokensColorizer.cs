@@ -9,6 +9,9 @@ using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua.Highlighting;
 
+/// <summary>
+/// Applies Lua semantic-token styling on top of the editor's baseline syntax highlighting.
+/// </summary>
 internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 {
 	private static readonly TextDecorationCollection DeprecatedDecorations = CreateTextDecorations(TextDecorations.Strikethrough);
@@ -25,12 +28,21 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 
 	private IReadOnlyDictionary<int, IReadOnlyList<StyledSemanticToken>> _tokensByLine = EmptyTokensByLine;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaSemanticTokensColorizer"/> class.
+	/// </summary>
+	/// <param name="textView">The text view that will be redrawn when semantic styles change.</param>
+	/// <param name="themeBrushSet">The active Lua theme brush set.</param>
 	public LuaSemanticTokensColorizer(TextView textView, LuaThemeBrushSet themeBrushSet)
 	{
 		_textView = textView;
 		_themeBrushSet = themeBrushSet;
 	}
 
+	/// <summary>
+	/// Rebuilds the styled semantic-token cache for a new theme and redraws the text view.
+	/// </summary>
+	/// <param name="themeBrushSet">The new active theme brush set.</param>
 	public void UpdateTheme(LuaThemeBrushSet themeBrushSet)
 	{
 		_themeBrushSet = themeBrushSet;
@@ -38,6 +50,10 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 		_textView.Redraw();
 	}
 
+	/// <summary>
+	/// Replaces the semantic tokens currently applied to the text view.
+	/// </summary>
+	/// <param name="tokens">The semantic tokens to render.</param>
 	public void SetTokens(IReadOnlyList<LuaSemanticToken> tokens)
 	{
 		if (tokens is null || tokens.Count == 0)
@@ -51,6 +67,9 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 		_textView.Redraw();
 	}
 
+	/// <summary>
+	/// Removes all semantic-token styling from the text view.
+	/// </summary>
 	public void ClearTokens()
 	{
 		if (_tokensByLine.Count == 0 && _rawTokens.Count == 0)

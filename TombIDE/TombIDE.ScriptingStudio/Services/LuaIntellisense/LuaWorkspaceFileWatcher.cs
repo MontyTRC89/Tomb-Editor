@@ -34,12 +34,21 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 	private Timer? _debounceTimer;
 	private volatile bool _isDisposed;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaWorkspaceFileWatcher"/> class.
+	/// </summary>
+	/// <param name="workspaceRootDirectoryPath">The workspace root directory to watch.</param>
+	/// <param name="dispatchAsync">The callback that forwards coalesced changes to LuaLS.</param>
 	public LuaWorkspaceFileWatcher(string workspaceRootDirectoryPath, Func<FileChangeBatch, CancellationToken, Task> dispatchAsync)
 	{
 		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
 		_dispatchAsync = dispatchAsync;
 	}
 
+	/// <summary>
+	/// Starts watching the configured workspace for external file changes.
+	/// </summary>
+	/// <returns><see langword="true"/> when the watcher is running; otherwise, <see langword="false"/>.</returns>
 	public bool Start()
 	{
 		if (_isDisposed || _luaWatcher is not null)
@@ -159,6 +168,9 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 		}
 	}
 
+	/// <summary>
+	/// Releases all native file-system watchers and pending dispatch resources.
+	/// </summary>
 	public void Dispose()
 	{
 		if (_isDisposed)
@@ -193,19 +205,48 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 	}
 }
 
+/// <summary>
+/// Identifies the file-system change kind reported to LuaLS.
+/// </summary>
 internal enum FileChangeKind
 {
+	/// <summary>
+	/// A file or directory was created.
+	/// </summary>
 	Created = 1,
+
+	/// <summary>
+	/// A file or directory changed in place.
+	/// </summary>
 	Changed = 2,
+
+	/// <summary>
+	/// A file or directory was deleted.
+	/// </summary>
 	Deleted = 3
 }
 
+/// <summary>
+/// Represents a coalesced batch of workspace file changes ready to forward to LuaLS.
+/// </summary>
 internal sealed class FileChangeBatch
 {
 	private readonly List<(string Path, FileChangeKind Kind)> _entries = [];
 
+	/// <summary>
+	/// Gets the number of coalesced entries in the batch.
+	/// </summary>
 	public int Count => _entries.Count;
+
+	/// <summary>
+	/// Gets the coalesced file-change entries.
+	/// </summary>
 	public IReadOnlyList<(string Path, FileChangeKind Kind)> Entries => _entries;
 
+	/// <summary>
+	/// Adds a file-change entry to the batch.
+	/// </summary>
+	/// <param name="path">The changed local path.</param>
+	/// <param name="kind">The coalesced change kind.</param>
 	public void Add(string path, FileChangeKind kind) => _entries.Add((path, kind));
 }

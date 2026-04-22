@@ -6,6 +6,9 @@ using System.Text.Json;
 
 namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 
+/// <summary>
+/// Normalizes local paths and file URIs so LuaLS and TombIDE use a consistent document identity.
+/// </summary>
 internal static class LuaLanguageServerPathHelper
 {
 	/// <summary>
@@ -30,6 +33,11 @@ internal static class LuaLanguageServerPathHelper
 		return Path.GetFullPath(sanitizedFilePath);
 	}
 
+	/// <summary>
+	/// Normalizes a file URI into the absolute local-path form used by the language server client.
+	/// </summary>
+	/// <param name="uri">The file URI to normalize.</param>
+	/// <returns>The normalized absolute local path.</returns>
 	public static string NormalizeLocalPath(Uri uri)
 	{
 		string localPath = uri.LocalPath;

@@ -24,16 +24,37 @@ internal sealed class LuaDocumentLineOffsets
 		_lineLengths = lineLengths;
 	}
 
+	/// <summary>
+	/// Gets the number of logical lines in the document.
+	/// </summary>
 	public int LineCount => _lineLengths.Length;
+
+	/// <summary>
+	/// Gets the total document length in characters.
+	/// </summary>
 	public int TextLength => _content.Length;
 
+	/// <summary>
+	/// Gets the length of the specified zero-based line.
+	/// </summary>
+	/// <param name="lineIndex">The zero-based line index.</param>
+	/// <returns>The line length in characters.</returns>
 	public int GetLineLength(int lineIndex) => _lineLengths[lineIndex];
+
+	/// <summary>
+	/// Gets the absolute document offset where the specified zero-based line starts.
+	/// </summary>
+	/// <param name="lineIndex">The zero-based line index.</param>
+	/// <returns>The absolute document offset.</returns>
 	public int GetLineStartOffset(int lineIndex) => _lineStartOffsets[lineIndex];
 
 	/// <summary>
 	/// Returns the offset within the document for the supplied zero-based line and character indices,
 	/// clamping the character index to the line length.
 	/// </summary>
+	/// <param name="lineIndex">The zero-based line index.</param>
+	/// <param name="character">The zero-based character index within the line.</param>
+	/// <returns>The absolute document offset.</returns>
 	public int GetOffset(int lineIndex, int character)
 	{
 		int safeLine = Math.Clamp(lineIndex, 0, _lineLengths.Length - 1);
@@ -41,6 +62,11 @@ internal sealed class LuaDocumentLineOffsets
 		return _lineStartOffsets[safeLine] + safeCharacter;
 	}
 
+	/// <summary>
+	/// Gets the text of the specified zero-based line.
+	/// </summary>
+	/// <param name="lineIndex">The zero-based line index.</param>
+	/// <returns>The line text without its trailing newline sequence.</returns>
 	public string GetLineText(int lineIndex)
 	{
 		int safeLine = Math.Clamp(lineIndex, 0, _lineLengths.Length - 1);
@@ -51,6 +77,8 @@ internal sealed class LuaDocumentLineOffsets
 	/// Builds the offset table from the given content in a single pass, avoiding the large intermediate
 	/// allocations of <see cref="string.Split(char[])"/>.
 	/// </summary>
+	/// <param name="content">The document text to analyze.</param>
+	/// <returns>A line-offset table for the supplied content.</returns>
 	public static LuaDocumentLineOffsets Build(string? content)
 	{
 		string text = content ?? string.Empty;

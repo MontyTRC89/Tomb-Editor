@@ -12,15 +12,32 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 /// `data` array (preferred when it is cheaper than a delta), or it returned a list of `edits` that
 /// should be applied to the client-side cached integer stream.
 /// </summary>
+/// <param name="ResultId">The result id that can seed the next delta request.</param>
+/// <param name="Data">The full semantic-token integer stream, when provided.</param>
+/// <param name="Edits">The incremental edits, when provided instead of <paramref name="Data"/>.</param>
 internal readonly record struct LuaSemanticTokensDeltaResponse(
 	string? ResultId,
 	int[]? Data,
 	IReadOnlyList<LuaSemanticTokensEdit>? Edits);
 
+/// <summary>
+/// Represents a single edit against a cached semantic-token integer stream.
+/// </summary>
+/// <param name="Start">The zero-based start offset within the integer stream.</param>
+/// <param name="DeleteCount">The number of integers to remove.</param>
+/// <param name="Data">The replacement integers to insert.</param>
 internal readonly record struct LuaSemanticTokensEdit(int Start, int DeleteCount, int[] Data);
 
+/// <summary>
+/// Parses LuaLS semantic-token delta responses and applies them to the cached token stream.
+/// </summary>
 internal static class LuaLanguageServerSemanticTokensDeltaParser
 {
+	/// <summary>
+	/// Parses a semantic-token response that may contain either a full token stream or incremental edits.
+	/// </summary>
+	/// <param name="response">The raw JSON response payload.</param>
+	/// <returns>The parsed semantic-token delta response.</returns>
 	public static LuaSemanticTokensDeltaResponse Parse(JsonElement response)
 	{
 		string? resultId = response.TryGetProperty("resultId", out JsonElement resultIdElement)
@@ -139,6 +156,14 @@ internal static class LuaLanguageServerSemanticTokensDecoder
 {
 	private static readonly IReadOnlyList<string> EmptyModifiers = [];
 
+	/// <summary>
+	/// Decodes a raw semantic-token integer stream into the typed token objects expected by the editor.
+	/// </summary>
+	/// <param name="data">The raw LSP semantic-token integer stream.</param>
+	/// <param name="document">The document snapshot associated with the token stream.</param>
+	/// <param name="tokenTypes">The semantic token types advertised by the server.</param>
+	/// <param name="tokenModifiers">The semantic token modifiers advertised by the server.</param>
+	/// <returns>The decoded semantic tokens.</returns>
 	public static IReadOnlyList<LuaSemanticToken> Decode(int[] data, LuaDocumentSnapshot? document,
 		IReadOnlyList<string>? tokenTypes, IReadOnlyList<string>? tokenModifiers)
 	{

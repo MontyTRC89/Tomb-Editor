@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 
+/// <summary>
+/// Hosts the LuaLS process, performs the LSP handshake, and transports JSON-RPC requests and notifications.
+/// </summary>
 internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -78,21 +81,56 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 	private bool _supportsCompletionResolve;
 	private bool _supportsSemanticTokensDelta;
 
+	/// <summary>
+	/// Gets a value indicating whether the client finished initialization and can accept requests.
+	/// </summary>
 	public bool IsReady
 	{
 		get => _isReady;
 		private set => _isReady = value;
 	}
 
+	/// <summary>
+	/// Gets the text-document synchronization mode negotiated with the server.
+	/// </summary>
 	public LuaTextDocumentSyncKind TextDocumentSyncKind => _textDocumentSyncKind;
+
+	/// <summary>
+	/// Gets the semantic token types advertised by the server.
+	/// </summary>
 	public IReadOnlyList<string> SemanticTokenTypes => _semanticTokenTypes;
+
+	/// <summary>
+	/// Gets the semantic token modifiers advertised by the server.
+	/// </summary>
 	public IReadOnlyList<string> SemanticTokenModifiers => _semanticTokenModifiers;
+
+	/// <summary>
+	/// Gets a value indicating whether the server supports completion-item resolve requests.
+	/// </summary>
 	public bool SupportsCompletionResolve => _supportsCompletionResolve;
+
+	/// <summary>
+	/// Gets a value indicating whether the server supports semantic-token delta responses.
+	/// </summary>
 	public bool SupportsSemanticTokensDelta => _supportsSemanticTokensDelta;
 
+	/// <summary>
+	/// Occurs when the server publishes diagnostics for a tracked document.
+	/// </summary>
 	public event Action<JsonElement>? DiagnosticsPublished;
+
+	/// <summary>
+	/// Occurs when the server requests that semantic tokens be refreshed.
+	/// </summary>
 	public event Action? SemanticTokensRefreshRequested;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaLanguageServerClient"/> class.
+	/// </summary>
+	/// <param name="workspaceRootDirectoryPath">The normalized workspace root directory.</param>
+	/// <param name="serverExecutablePath">The LuaLS executable path.</param>
+	/// <param name="settingsProvider">Produces the current settings payload for <c>workspace/didChangeConfiguration</c>.</param>
 	public LuaLanguageServerClient(string workspaceRootDirectoryPath, string serverExecutablePath, Func<object> settingsProvider)
 	{
 		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
@@ -100,6 +138,11 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		_settingsProvider = settingsProvider;
 	}
 
+	/// <summary>
+	/// Starts the LuaLS process and completes the initialize/initialized handshake.
+	/// </summary>
+	/// <param name="cancellationToken">A token that can cancel startup.</param>
+	/// <returns><see langword="true"/> when startup succeeded; otherwise, <see langword="false"/>.</returns>
 	public async Task<bool> StartAsync(CancellationToken cancellationToken)
 	{
 		if (IsReady)
@@ -112,6 +155,7 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 			if (IsReady)
 				return true;
 
+			// Reset any stale transport state, then spawn the LuaLS process and attach the read loops.
 			ThrowIfDisposed(allowDisposed: false);
 			ResetProcessState();
 
@@ -142,6 +186,7 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 			_stderrLoopTask = Task.Run(ReadStandardErrorLoopAsync, CancellationToken.None);
 			_diagnosticsPumpTask ??= Task.Run(PumpDiagnosticsAsync, CancellationToken.None);
 
+			// Complete the LSP handshake before marking the client ready for provider requests.
 			using var initializeTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 			initializeTimeout.CancelAfter(TimeSpan.FromSeconds(10));
 
@@ -157,6 +202,7 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 		{
+			// Caller-driven cancellation should tear down the half-started process so later retries begin cleanly.
 			await DisposeProcessAsync().ConfigureAwait(false);
 			throw;
 		}
@@ -174,9 +220,22 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		}
 	}
 
+	/// <summary>
+	/// Sends a JSON-RPC notification to the language server.
+	/// </summary>
+	/// <param name="method">The LSP method name.</param>
+	/// <param name="parameters">The notification payload.</param>
+	/// <param name="cancellationToken">A token that can cancel the send operation.</param>
 	public Task SendNotificationAsync(string method, object parameters, CancellationToken cancellationToken)
 		=> SendNotificationCoreAsync(method, parameters, cancellationToken, allowDisposed: false);
 
+	/// <summary>
+	/// Sends a JSON-RPC request to the language server and returns the raw response payload.
+	/// </summary>
+	/// <param name="method">The LSP method name.</param>
+	/// <param name="parameters">The request payload.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The raw JSON response payload.</returns>
 	public Task<JsonElement> SendRequestAsync(string method, object parameters, CancellationToken cancellationToken)
 		=> SendRequestCoreAsync(method, parameters, cancellationToken, allowDisposed: false);
 
@@ -543,6 +602,9 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 			ObjectDisposedException.ThrowIf(_isDisposed, nameof(LuaLanguageServerClient));
 	}
 
+	/// <summary>
+	/// Stops the language-server process, completes pending requests, and releases transport resources.
+	/// </summary>
 	public void Dispose()
 	{
 		if (_isDisposed)

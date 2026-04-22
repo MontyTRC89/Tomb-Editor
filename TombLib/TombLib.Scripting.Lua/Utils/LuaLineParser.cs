@@ -9,8 +9,19 @@ namespace TombLib.Scripting.Lua.Utils;
 /// </summary>
 internal enum LuaLineParserStateKind
 {
+	/// <summary>
+	/// The parser is not inside a multi-line Lua construct.
+	/// </summary>
 	None,
+
+	/// <summary>
+	/// The parser is inside a long-bracket string literal.
+	/// </summary>
 	LongString,
+
+	/// <summary>
+	/// The parser is inside a long-bracket comment.
+	/// </summary>
 	LongComment
 }
 
@@ -19,7 +30,14 @@ internal enum LuaLineParserStateKind
 /// </summary>
 internal readonly struct LuaLineParserState(LuaLineParserStateKind kind, int longBracketEqualsCount)
 {
+	/// <summary>
+	/// Gets the long-block parser mode that should continue onto the next line.
+	/// </summary>
 	public LuaLineParserStateKind Kind { get; } = kind;
+
+	/// <summary>
+	/// Gets the number of <c>=</c> characters used by the active long-bracket delimiter.
+	/// </summary>
 	public int LongBracketEqualsCount { get; } = longBracketEqualsCount;
 }
 
