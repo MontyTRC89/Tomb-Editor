@@ -679,9 +679,9 @@ LevelFuncs.Engine.Node.SwapSkinnedMesh = function(moveable, targetSlot, mesh)
 	mov:SwapSkinnedMesh(targetSlot, swapMesh)
 end
 
--- !Name "Unswap skinned mesh"
+-- !Name "Restore a previously swapped skinned mesh."
 -- !Section "Moveable parameters"
--- !Description "Unset skinned mesh swap of a moveable.\nUse this to bring back original unswapped skinned mesh."
+-- !Description "Restores a previously swapped skinned mesh swap."
 -- !Arguments "NewLine, Moveables, Destination moveable."
 
 LevelFuncs.Engine.Node.UnswapSkinnedMesh = function(moveable)
