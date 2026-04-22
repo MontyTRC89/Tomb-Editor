@@ -295,6 +295,26 @@ internal sealed class LuaIntellisenseDocumentManager
 		}
 	}
 
+	/// <summary>
+	/// Marks the specified document as needing a fresh server-side open/sync before incremental updates can resume.
+	/// </summary>
+	/// <param name="filePath">The normalized file path.</param>
+	/// <returns><see langword="true"/> when the document was found and invalidated; otherwise, <see langword="false"/>.</returns>
+	public bool InvalidateServerSynchronization(string filePath)
+	{
+		lock (_syncRoot)
+		{
+			if (!_documents.TryGetValue(filePath, out DocumentState? state))
+				return false;
+
+			state.IsOpen = false;
+			state.SemanticTokensVersion = 0;
+			state.SemanticTokensResultId = null;
+			state.SemanticTokensData = null;
+			return true;
+		}
+	}
+
 	private static bool IsStaleVersion(int currentVersion, int incomingVersion)
 		=> incomingVersion > 0 && currentVersion > 0 && incomingVersion < currentVersion;
 

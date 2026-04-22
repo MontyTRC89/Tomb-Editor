@@ -245,6 +245,38 @@ public class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task GetHoverAsync_ReopensDocumentAfterIncrementalChangeTransportFailure()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			ThrowIOExceptionOnNextDidChange = true
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		await provider.GetHoverAsync(filePath, "local value = 1", 0, 0);
+		provider.UpdateDocument(filePath, "local value = 2");
+
+		Assert.IsTrue(await client.WaitForNotificationAsync("textDocument/didChange", TimeSpan.FromSeconds(1)));
+
+		await provider.GetHoverAsync(filePath, "local value = 2", 0, 0);
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				"textDocument/didOpen",
+				"textDocument/hover",
+				"textDocument/didChange",
+				"textDocument/didOpen",
+				"textDocument/hover"
+			},
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
 	public async Task CloseDocument_WaitsForQueuedOpenNotificationToFinish()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -393,6 +425,7 @@ public class LuaLanguageServerIntellisenseProviderTests
 		public bool SupportsCompletionResolve { get; set; }
 		public bool SupportsSemanticTokensDelta => false;
 		public int StartCallCount { get; private set; }
+		public bool ThrowIOExceptionOnNextDidChange { get; set; }
 
 		public event Action<JsonElement>? DiagnosticsPublished;
 
@@ -411,7 +444,15 @@ public class LuaLanguageServerIntellisenseProviderTests
 			_sentNotifications.Add((method, JsonSerializer.SerializeToElement(parameters)));
 
 			if (method == "textDocument/didChange")
+			{
 				_changeNotificationObserved.TrySetResult(true);
+
+				if (ThrowIOExceptionOnNextDidChange)
+				{
+					ThrowIOExceptionOnNextDidChange = false;
+					throw new IOException("Simulated didChange transport failure.");
+				}
+			}
 
 			if (method == "textDocument/didClose")
 				_closeNotificationObserved.TrySetResult(true);

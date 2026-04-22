@@ -92,12 +92,23 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		catch (IOException)
 		{
+			InvalidateDocumentSynchronization(filePath);
 			return false;
 		}
 		catch (ObjectDisposedException)
 		{
+			if (!_isDisposed)
+				InvalidateDocumentSynchronization(filePath);
+
 			return false;
 		}
+	}
+
+	private void InvalidateDocumentSynchronization(string filePath)
+	{
+		_startupSucceeded = false;
+		_documents.InvalidateServerSynchronization(filePath);
+		CancelSemanticTokenRequest(filePath);
 	}
 
 	private async Task<(bool Success, LuaDocumentSnapshot? Document)> SynchronizeDocumentCoreAsync(
