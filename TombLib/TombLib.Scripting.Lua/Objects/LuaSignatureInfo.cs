@@ -18,7 +18,7 @@ public sealed class LuaSignatureInfo
 	public LuaSignatureInfo(string label, string? documentation, IReadOnlyList<LuaParameterInfo> parameters,
 		int activeParameter)
 	{
-		Label = label ?? throw new ArgumentNullException(nameof(label));
+		Label = label;
 		Documentation = documentation;
 		Parameters = parameters ?? [];
 		ActiveParameter = Math.Max(0, activeParameter);
@@ -57,7 +57,7 @@ public sealed class LuaParameterInfo
 	/// <param name="documentation">Optional documentation for the parameter.</param>
 	public LuaParameterInfo(string label, string? documentation)
 	{
-		Label = label ?? string.Empty;
+		Label = label;
 		Documentation = documentation;
 	}
 

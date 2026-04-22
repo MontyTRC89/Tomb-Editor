@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Windows.Media;
 using TombLib.Scripting.Lua.Resources;
 
@@ -7,24 +7,12 @@ namespace TombLib.Scripting.Lua.Objects;
 // Geometry paths below are vendored from microsoft/vscode-codicons under the MIT license.
 internal static class LuaCompletionIconFactory
 {
-	private static readonly Dictionary<string, ImageSource> Cache = [];
+	private static readonly ConcurrentDictionary<string, ImageSource> Cache = new();
 
 	public static ImageSource GetIcon(LuaCompletionIconKind kind, LuaThemeBrushSet brushSet)
-	{
-		string cacheKey = brushSet.ThemeName + ":" + kind;
+		=> Cache.GetOrAdd(brushSet.ThemeName + ":" + kind, _ => CreateIcon(kind, brushSet));
 
-		lock (Cache)
-		{
-			if (Cache.TryGetValue(cacheKey, out ImageSource? image))
-				return image;
-
-			image = CreateIcon(kind, brushSet);
-			Cache[cacheKey] = image;
-			return image;
-		}
-	}
-
-	private static ImageSource CreateIcon(LuaCompletionIconKind kind, LuaThemeBrushSet brushSet)
+	private static DrawingImage CreateIcon(LuaCompletionIconKind kind, LuaThemeBrushSet brushSet)
 	{
 		var drawingGroup = new DrawingGroup();
 

@@ -1,13 +1,12 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Services.LuaIntellisense;
-using TombIDE.Shared;
-using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Objects;
@@ -18,6 +17,8 @@ namespace TombIDE.ScriptingStudio;
 
 public sealed partial class LuaStudio
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly ILuaIntellisenseProvider _intellisenseProvider;
 
 	private void HookLuaIntellisense()
@@ -41,9 +42,23 @@ public sealed partial class LuaStudio
 
 	private ILuaIntellisenseProvider CreateLuaIntellisenseProvider()
 	{
-		TENApiService.InjectTENApi(IDE.Instance.Project, IDE.Instance.Project.GetCurrentEngineVersion());
-
 		string? executablePath = LuaLanguageServerLocator.ResolveExecutablePath();
+
+		if (string.IsNullOrWhiteSpace(executablePath))
+		{
+			// LuaLS is shipped with TombIDE; if the bundled binary is missing the user has no way
+			// of knowing why diagnostics, completion and definition lookups silently stop working.
+			// Log a warning and surface a single non-blocking notification so the failure is visible.
+			Log.Warn("Bundled Lua language server was not found; Lua IntelliSense (diagnostics, completion, hover, go-to-definition) will be unavailable for this session.");
+			DarkUI.Forms.DarkMessageBox.Show(this,
+				"The bundled Lua language server (LuaLS) could not be located.\n\n" +
+				"Lua IntelliSense - including diagnostics, completion, hover and go-to-definition - will be unavailable for this session.\n\n" +
+				"Reinstall TombIDE to restore the bundled language server.",
+				"Lua IntelliSense unavailable",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Warning);
+		}
+
 		return new LuaLanguageServerIntellisenseProvider(ScriptRootDirectoryPath, executablePath);
 	}
 

@@ -13,22 +13,28 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 {
 	private static readonly TextDecorationCollection DeprecatedDecorations = CreateTextDecorations(TextDecorations.Strikethrough);
 
-	private static readonly IReadOnlyDictionary<int, IReadOnlyList<LuaSemanticToken>> EmptyTokensByLine =
-		new Dictionary<int, IReadOnlyList<LuaSemanticToken>>();
+	private static readonly IReadOnlyDictionary<int, IReadOnlyList<StyledSemanticToken>> EmptyTokensByLine =
+		new Dictionary<int, IReadOnlyList<StyledSemanticToken>>();
 
 	private LuaThemeBrushSet _themeBrushSet;
 	private readonly TextView _textView;
-	private IReadOnlyDictionary<int, IReadOnlyList<LuaSemanticToken>> _tokensByLine = EmptyTokensByLine;
+
+	// Tokens are pre-styled at SetTokens time so that ColorizeLine, which runs on every redraw and
+	// for every visible line, can avoid re-resolving brushes and modifier flags per token.
+	private IReadOnlyList<LuaSemanticToken> _rawTokens = [];
+
+	private IReadOnlyDictionary<int, IReadOnlyList<StyledSemanticToken>> _tokensByLine = EmptyTokensByLine;
 
 	public LuaSemanticTokensColorizer(TextView textView, LuaThemeBrushSet themeBrushSet)
 	{
-		_textView = textView ?? throw new ArgumentNullException(nameof(textView));
-		_themeBrushSet = themeBrushSet ?? throw new ArgumentNullException(nameof(themeBrushSet));
+		_textView = textView;
+		_themeBrushSet = themeBrushSet;
 	}
 
 	public void UpdateTheme(LuaThemeBrushSet themeBrushSet)
 	{
-		_themeBrushSet = themeBrushSet ?? throw new ArgumentNullException(nameof(themeBrushSet));
+		_themeBrushSet = themeBrushSet;
+		_tokensByLine = BuildStyledMap(_rawTokens, _themeBrushSet);
 		_textView.Redraw();
 	}
 
@@ -40,96 +46,103 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 			return;
 		}
 
-		var groupedTokens = new Dictionary<int, List<LuaSemanticToken>>();
-
-		for (int i = 0; i < tokens.Count; i++)
-		{
-			LuaSemanticToken token = tokens[i];
-
-			if (!groupedTokens.TryGetValue(token.Line, out List<LuaSemanticToken>? lineTokens) || lineTokens is null)
-			{
-				lineTokens = [];
-				groupedTokens[token.Line] = lineTokens;
-			}
-
-			lineTokens.Add(token);
-		}
-
-		var frozenMap = new Dictionary<int, IReadOnlyList<LuaSemanticToken>>(groupedTokens.Count);
-
-		foreach (KeyValuePair<int, List<LuaSemanticToken>> pair in groupedTokens)
-		{
-			pair.Value.Sort((left, right) =>
-			{
-				int characterComparison = left.Character.CompareTo(right.Character);
-
-				if (characterComparison != 0)
-					return characterComparison;
-
-				return left.Length.CompareTo(right.Length);
-			});
-
-			frozenMap[pair.Key] = pair.Value;
-		}
-
-		_tokensByLine = frozenMap;
+		_rawTokens = tokens;
+		_tokensByLine = BuildStyledMap(tokens, _themeBrushSet);
 		_textView.Redraw();
 	}
 
 	public void ClearTokens()
 	{
-		if (_tokensByLine.Count == 0)
+		if (_tokensByLine.Count == 0 && _rawTokens.Count == 0)
 			return;
 
+		_rawTokens = [];
 		_tokensByLine = EmptyTokensByLine;
 		_textView.Redraw();
 	}
 
 	protected override void ColorizeLine(DocumentLine line)
 	{
-		if (!_tokensByLine.TryGetValue(line.LineNumber - 1, out IReadOnlyList<LuaSemanticToken>? tokens) || tokens is null)
+		if (!_tokensByLine.TryGetValue(line.LineNumber - 1, out IReadOnlyList<StyledSemanticToken>? tokens))
 			return;
 
 		int lineLength = line.Length;
 
 		for (int i = 0; i < tokens.Count; i++)
 		{
-			LuaSemanticToken token = tokens[i];
-			int startIndex = Math.Max(0, Math.Min(token.Character, lineLength));
-			int endIndex = Math.Max(startIndex, Math.Min(token.Character + token.Length, lineLength));
+			StyledSemanticToken styled = tokens[i];
+			int startIndex = Math.Max(0, Math.Min(styled.Character, lineLength));
+			int endIndex = Math.Max(startIndex, Math.Min(styled.Character + styled.Length, lineLength));
 
 			if (endIndex <= startIndex)
 				continue;
 
-			LuaSemanticTokenStyle style = ResolveStyle(token);
-
-			if (!style.HasFormatting)
-				continue;
-
+			LuaSemanticTokenStyle style = styled.Style;
 			ChangeLinePart(line.Offset + startIndex, line.Offset + endIndex, element => ApplyStyle(element, style));
 		}
 	}
 
-	private LuaSemanticTokenStyle ResolveStyle(LuaSemanticToken token)
+	private static IReadOnlyDictionary<int, IReadOnlyList<StyledSemanticToken>> BuildStyledMap(
+		IReadOnlyList<LuaSemanticToken> tokens, LuaThemeBrushSet themeBrushSet)
+	{
+		if (tokens.Count == 0)
+			return EmptyTokensByLine;
+
+		var grouped = new Dictionary<int, List<StyledSemanticToken>>();
+
+		for (int i = 0; i < tokens.Count; i++)
+		{
+			LuaSemanticToken token = tokens[i];
+			LuaSemanticTokenStyle style = ResolveStyle(token, themeBrushSet);
+
+			if (!style.HasFormatting)
+				continue;
+
+			if (!grouped.TryGetValue(token.Line, out List<StyledSemanticToken>? lineTokens))
+			{
+				lineTokens = [];
+				grouped[token.Line] = lineTokens;
+			}
+
+			lineTokens.Add(new StyledSemanticToken(token.Character, token.Length, style));
+		}
+
+		var frozen = new Dictionary<int, IReadOnlyList<StyledSemanticToken>>(grouped.Count);
+
+		foreach (KeyValuePair<int, List<StyledSemanticToken>> pair in grouped)
+		{
+			pair.Value.Sort(static (left, right) =>
+			{
+				int characterComparison = left.Character.CompareTo(right.Character);
+				return characterComparison != 0 ? characterComparison : left.Length.CompareTo(right.Length);
+			});
+
+			frozen[pair.Key] = pair.Value;
+		}
+
+		return frozen;
+	}
+
+	private static LuaSemanticTokenStyle ResolveStyle(LuaSemanticToken token, LuaThemeBrushSet brushSet)
 	{
 		Brush? foreground = token.Type switch
 		{
-			"namespace" => _themeBrushSet.TypeBrush,
-			"type" => _themeBrushSet.TypeBrush,
-			"class" => _themeBrushSet.TypeBrush,
-			"enum" => _themeBrushSet.TypeBrush,
-			"interface" => _themeBrushSet.TypeBrush,
-			"struct" => _themeBrushSet.TypeBrush,
-			"typeParameter" => _themeBrushSet.TypeBrush,
-			"function" => token.HasModifier("defaultLibrary") ? _themeBrushSet.TypeBrush : _themeBrushSet.MethodBrush,
-			"method" => token.HasModifier("defaultLibrary") ? _themeBrushSet.TypeBrush : _themeBrushSet.MethodBrush,
-			"parameter" => _themeBrushSet.VariableBrush,
-			"property" => _themeBrushSet.PropertyBrush,
-			"event" => _themeBrushSet.VariableBrush,
-			"enumMember" => _themeBrushSet.ConstantBrush,
-			"decorator" => _themeBrushSet.KeywordBrush,
-			"macro" => _themeBrushSet.KeywordBrush,
-			"variable" => ResolveVariableBrush(token),
+			"namespace" => brushSet.TypeBrush,
+			"type" => brushSet.TypeBrush,
+			"class" => brushSet.TypeBrush,
+			"enum" => brushSet.TypeBrush,
+			"interface" => brushSet.TypeBrush,
+			"struct" => brushSet.TypeBrush,
+			"typeParameter" => brushSet.TypeBrush,
+			"function" => token.HasModifier("defaultLibrary") ? brushSet.TypeBrush : brushSet.MethodBrush,
+			"method" => token.HasModifier("defaultLibrary") ? brushSet.TypeBrush : brushSet.MethodBrush,
+			"parameter" => brushSet.VariableBrush,
+			"property" => brushSet.PropertyBrush,
+			"event" => brushSet.VariableBrush,
+			"enumMember" => brushSet.ConstantBrush,
+			"decorator" => brushSet.KeywordBrush,
+			"macro" => brushSet.KeywordBrush,
+			"variable" => ResolveVariableBrush(token, brushSet),
 			_ => null
 		};
 
@@ -139,15 +152,15 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 			token.HasModifier("deprecated") ? DeprecatedDecorations : null);
 	}
 
-	private Brush? ResolveVariableBrush(LuaSemanticToken token)
+	private static SolidColorBrush? ResolveVariableBrush(LuaSemanticToken token, LuaThemeBrushSet brushSet)
 	{
 		if (token.HasModifier("defaultLibrary"))
-			return _themeBrushSet.TypeBrush;
+			return brushSet.TypeBrush;
 
 		if (token.HasModifier("global"))
-			return _themeBrushSet.PropertyBrush;
+			return brushSet.PropertyBrush;
 
-		return _themeBrushSet.VariableBrush;
+		return brushSet.VariableBrush;
 	}
 
 	private static void ApplyStyle(VisualLineElement element, LuaSemanticTokenStyle style)
@@ -174,18 +187,18 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 		return clone;
 	}
 
-	private readonly struct LuaSemanticTokenStyle
+	private readonly struct StyledSemanticToken(int character, int length, LuaSemanticTokenStyle style)
 	{
-		public LuaSemanticTokenStyle(Brush? foreground, bool isBold, TextDecorationCollection? textDecorations)
-		{
-			Foreground = foreground;
-			IsBold = isBold;
-			TextDecorations = textDecorations;
-		}
+		public int Character { get; } = character;
+		public int Length { get; } = length;
+		public LuaSemanticTokenStyle Style { get; } = style;
+	}
 
-		public Brush? Foreground { get; }
-		public bool IsBold { get; }
-		public TextDecorationCollection? TextDecorations { get; }
+	private readonly struct LuaSemanticTokenStyle(Brush? foreground, bool isBold, TextDecorationCollection? textDecorations)
+	{
+		public Brush? Foreground { get; } = foreground;
+		public bool IsBold { get; } = isBold;
+		public TextDecorationCollection? TextDecorations { get; } = textDecorations;
 
 		public bool HasFormatting => Foreground is not null || IsBold || TextDecorations is not null;
 	}

@@ -1,10 +1,8 @@
 #nullable enable
 
-using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -18,7 +16,7 @@ internal static class LuaLanguageServerDiagnosticsParser
 	/// Parses a LuaLS diagnostics notification into editor diagnostics for a tracked document.
 	/// </summary>
 	public static bool TryParse(JsonElement parameters, string filePath,
-		string? documentContent, int documentVersion, [NotNullWhen(true)] out LuaPublishedDiagnostics? publishedDiagnostics)
+		string documentContent, int documentVersion, [NotNullWhen(true)] out LuaPublishedDiagnostics? publishedDiagnostics)
 	{
 		publishedDiagnostics = null;
 
@@ -35,43 +33,24 @@ internal static class LuaLanguageServerDiagnosticsParser
 			diagnosticsVersion = parsedVersion;
 		}
 
-		if (diagnosticsVersion > 0 && documentVersion > 0 && diagnosticsVersion > documentVersion)
+		if (diagnosticsVersion > 0 && documentVersion > 0 && diagnosticsVersion != documentVersion)
 			return false;
 
-		IReadOnlyList<TextEditorDiagnostic> diagnostics = Array.Empty<TextEditorDiagnostic>();
-		string resolvedContent = ResolveDocumentContent(filePath, documentContent);
+		IReadOnlyList<TextEditorDiagnostic> diagnostics = [];
 
 		if (parameters.TryGetProperty("diagnostics", out JsonElement diagnosticsElement)
 			&& diagnosticsElement.ValueKind == JsonValueKind.Array)
 		{
-			diagnostics = BuildDiagnostics(resolvedContent, diagnosticsElement);
+			diagnostics = BuildDiagnostics(documentContent, diagnosticsElement);
 		}
 
 		publishedDiagnostics = new LuaPublishedDiagnostics(filePath, diagnostics, diagnosticsVersion);
 		return true;
 	}
 
-	private static string ResolveDocumentContent(string filePath, string? documentContent)
-	{
-		if (!string.IsNullOrEmpty(documentContent))
-			return documentContent;
-
-		if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
-			return string.Empty;
-
-		try
-		{
-			return File.ReadAllText(filePath);
-		}
-		catch
-		{
-			return string.Empty;
-		}
-	}
-
 	private static IReadOnlyList<TextEditorDiagnostic> BuildDiagnostics(string content, JsonElement diagnosticsElement)
 	{
-		var document = new TextDocument(content);
+		LuaDocumentLineOffsets lineOffsets = LuaDocumentLineOffsets.Build(content);
 		var diagnostics = new List<TextEditorDiagnostic>();
 
 		foreach (JsonElement diagnosticElement in diagnosticsElement.EnumerateArray())
@@ -81,7 +60,7 @@ internal static class LuaLanguageServerDiagnosticsParser
 			if (severity > TextEditorDiagnosticSeverity.Warning)
 				continue;
 
-			if (!TryCreateDiagnostic(document, diagnosticElement, severity, out TextEditorDiagnostic? diagnostic))
+			if (!TryCreateDiagnostic(lineOffsets, diagnosticElement, severity, out TextEditorDiagnostic? diagnostic))
 				continue;
 
 			diagnostics.Add(diagnostic);
@@ -92,12 +71,12 @@ internal static class LuaLanguageServerDiagnosticsParser
 			.ThenBy(diagnostic => diagnostic.Severity)];
 	}
 
-	private static bool TryCreateDiagnostic(TextDocument document, JsonElement diagnosticElement,
+	private static bool TryCreateDiagnostic(LuaDocumentLineOffsets lineOffsets, JsonElement diagnosticElement,
 		TextEditorDiagnosticSeverity severity, [NotNullWhen(true)] out TextEditorDiagnostic? diagnostic)
 	{
 		diagnostic = null;
 
-		if (document.LineCount == 0
+		if (lineOffsets.LineCount == 0
 			|| !diagnosticElement.TryGetProperty("range", out JsonElement rangeElement)
 			|| !rangeElement.TryGetProperty("start", out JsonElement startElement)
 			|| startElement.ValueKind != JsonValueKind.Object
@@ -107,7 +86,7 @@ internal static class LuaLanguageServerDiagnosticsParser
 			return false;
 		}
 
-		lineIndex = Math.Max(0, Math.Min(lineIndex, document.LineCount - 1));
+		lineIndex = Math.Max(0, Math.Min(lineIndex, lineOffsets.LineCount - 1));
 
 		int startCharacter = startElement.TryGetProperty("character", out JsonElement characterElement)
 			&& characterElement.TryGetInt32(out int character)
@@ -122,7 +101,7 @@ internal static class LuaLanguageServerDiagnosticsParser
 			&& endElement.TryGetProperty("line", out JsonElement endLineElement)
 			&& endLineElement.TryGetInt32(out int rawEndLineIndex))
 		{
-			endLineIndex = Math.Max(lineIndex, Math.Min(rawEndLineIndex, document.LineCount - 1));
+			endLineIndex = Math.Max(lineIndex, Math.Min(rawEndLineIndex, lineOffsets.LineCount - 1));
 
 			if (endElement.TryGetProperty("character", out JsonElement endCharacterElement)
 				&& endCharacterElement.TryGetInt32(out int endCharacterValue))
@@ -131,7 +110,7 @@ internal static class LuaLanguageServerDiagnosticsParser
 			}
 		}
 
-		if (!TryGetDiagnosticOffsets(document, lineIndex, startCharacter, endLineIndex, endCharacter,
+		if (!TryGetDiagnosticOffsets(lineOffsets, lineIndex, startCharacter, endLineIndex, endCharacter,
 			out int startOffset, out int endOffset))
 		{
 			return false;
@@ -141,35 +120,34 @@ internal static class LuaLanguageServerDiagnosticsParser
 		return true;
 	}
 
-	private static bool TryGetDiagnosticOffsets(TextDocument document,
+	private static bool TryGetDiagnosticOffsets(LuaDocumentLineOffsets lineOffsets,
 		int startLineIndex, int startCharacter, int endLineIndex, int endCharacter,
 		out int startOffset, out int endOffset)
 	{
 		startOffset = 0;
 		endOffset = 0;
 
-		if (document.LineCount == 0)
+		if (lineOffsets.LineCount == 0)
 			return false;
 
-		DocumentLine startLine = document.GetLineByNumber(startLineIndex + 1);
-		DocumentLine endLine = document.GetLineByNumber(endLineIndex + 1);
-		startOffset = startLine.Offset + Math.Max(0, Math.Min(startCharacter, startLine.Length));
-		endOffset = endLine.Offset + Math.Max(0, Math.Min(endCharacter, endLine.Length));
+		startOffset = lineOffsets.GetOffset(startLineIndex, startCharacter);
+		endOffset = lineOffsets.GetOffset(endLineIndex, endCharacter);
 
 		if (endOffset > startOffset)
 			return true;
 
-		string lineText = document.GetText(startLine);
+		string lineText = lineOffsets.GetLineText(startLineIndex);
+		int lineStartOffset = lineOffsets.GetLineStartOffset(startLineIndex);
 
 		if (string.IsNullOrEmpty(lineText))
-			return false;
+			return TryGetEmptyLineFallbackOffsets(lineOffsets, startLineIndex, out startOffset, out endOffset);
 
 		int safeCharacter = Math.Max(0, Math.Min(startCharacter, Math.Max(0, lineText.Length - 1)));
 
 		if (TryGetWordBounds(lineText, safeCharacter, out int wordStart, out int wordEnd))
 		{
-			startOffset = startLine.Offset + wordStart;
-			endOffset = startLine.Offset + wordEnd;
+			startOffset = lineStartOffset + wordStart;
+			endOffset = lineStartOffset + wordEnd;
 			return endOffset > startOffset;
 		}
 
@@ -184,14 +162,45 @@ internal static class LuaLanguageServerDiagnosticsParser
 
 		if (trimmedEnd > trimmedStart)
 		{
-			startOffset = startLine.Offset + trimmedStart;
-			endOffset = startLine.Offset + trimmedEnd;
+			startOffset = lineStartOffset + trimmedStart;
+			endOffset = lineStartOffset + trimmedEnd;
 			return true;
 		}
 
-		startOffset = startLine.Offset + safeCharacter;
-		endOffset = Math.Min(startOffset + 1, document.TextLength);
+		startOffset = lineStartOffset + safeCharacter;
+		endOffset = Math.Min(startOffset + 1, lineOffsets.TextLength);
 		return endOffset > startOffset;
+	}
+
+	private static bool TryGetEmptyLineFallbackOffsets(LuaDocumentLineOffsets lineOffsets, int lineIndex,
+		out int startOffset, out int endOffset)
+	{
+		startOffset = 0;
+		endOffset = 0;
+
+		for (int nextLineIndex = lineIndex + 1; nextLineIndex < lineOffsets.LineCount; nextLineIndex++)
+		{
+			if (lineOffsets.GetLineLength(nextLineIndex) == 0)
+				continue;
+
+			startOffset = lineOffsets.GetLineStartOffset(nextLineIndex);
+			endOffset = Math.Min(startOffset + 1, lineOffsets.TextLength);
+			return endOffset > startOffset;
+		}
+
+		for (int previousLineIndex = lineIndex - 1; previousLineIndex >= 0; previousLineIndex--)
+		{
+			int previousLineLength = lineOffsets.GetLineLength(previousLineIndex);
+
+			if (previousLineLength == 0)
+				continue;
+
+			startOffset = lineOffsets.GetLineStartOffset(previousLineIndex) + previousLineLength - 1;
+			endOffset = Math.Min(startOffset + 1, lineOffsets.TextLength);
+			return endOffset > startOffset;
+		}
+
+		return false;
 	}
 
 	private static bool TryGetWordBounds(string lineText, int index, out int wordStart, out int wordEnd)
@@ -231,11 +240,13 @@ internal static class LuaLanguageServerDiagnosticsParser
 		=> char.IsLetterOrDigit(c) || c == '_' || c == '.' || c == ':' || c == '\'' || c == '"';
 
 	private static TextEditorDiagnosticSeverity GetDiagnosticSeverity(JsonElement diagnosticElement)
-		=> diagnosticElement.TryGetProperty("severity", out JsonElement severityElement)
+	{
+		return diagnosticElement.TryGetProperty("severity", out JsonElement severityElement)
 			&& severityElement.TryGetInt32(out int severity)
 			&& severity > 0
 				? (TextEditorDiagnosticSeverity)severity
 				: TextEditorDiagnosticSeverity.Warning;
+	}
 
 	private static string BuildDiagnosticMessage(JsonElement diagnosticElement, TextEditorDiagnosticSeverity severity)
 	{
@@ -284,11 +295,4 @@ internal static class LuaLanguageServerDiagnosticsParser
 
 		return builder.ToString();
 	}
-}
-
-internal sealed class LuaPublishedDiagnostics(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics, int version)
-{
-	public string FilePath { get; } = filePath;
-	public IReadOnlyList<TextEditorDiagnostic> Diagnostics { get; } = diagnostics ?? [];
-	public int Version { get; } = version;
 }

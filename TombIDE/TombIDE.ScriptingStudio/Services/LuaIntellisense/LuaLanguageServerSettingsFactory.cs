@@ -14,9 +14,7 @@ internal static class LuaLanguageServerSettingsFactory
 	public static object Create(string workspaceRootDirectoryPath)
 	{
 		string apiDirectory = Path.Combine(workspaceRootDirectoryPath, ".API");
-		string[] library = Directory.Exists(apiDirectory)
-			? [Path.GetFullPath(apiDirectory)]
-			: [];
+		string[] library = Directory.Exists(apiDirectory) ? [apiDirectory] : [];
 
 		return new
 		{
@@ -28,7 +26,7 @@ internal static class LuaLanguageServerSettingsFactory
 				},
 				workspace = new
 				{
-					checkThirdParty = false,
+					checkThirdParty = "Disable",
 					library
 				},
 				completion = new
@@ -45,10 +43,6 @@ internal static class LuaLanguageServerSettingsFactory
 				diagnostics = new
 				{
 					disable = new[] { "duplicate-set-field" }
-				},
-				telemetry = new
-				{
-					enable = false
 				}
 			}
 		};

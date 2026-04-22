@@ -1,7 +1,6 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
@@ -24,18 +23,29 @@ public sealed partial class LuaEditor
 	private const int CompletionWindowMinWidth = 420;
 	private const int CompletionWindowMaxWidth = 920;
 	private const int CompletionWindowHeight = 320;
+	private const int CompletionWidthMeasurementSampleCount = 80;
 	private const double CompletionToolTipHorizontalOffset = 10.0;
 	private const double CompletionToolTipResolveDelayInMilliseconds = 120.0;
 	private const double CompletionWindowHorizontalChrome = 52.0;
 	private const double CompletionItemIconWidth = 24.0;
 	private const double CompletionItemDetailSpacing = 12.0;
 
-	private static readonly FieldInfo? CompletionToolTipField =
-		typeof(CompletionWindow).GetField("toolTip", BindingFlags.NonPublic | BindingFlags.Instance);
+	// Reflection target: AvalonEdit's CompletionWindow keeps the documentation tooltip in a private field named "toolTip".
+	// Verified against the AvalonEdit version pinned in TombLib.Scripting.Lua.csproj.
+	private static readonly Lazy<FieldInfo?> CompletionToolTipFieldAccessor = new(() =>
+	{
+		FieldInfo? field = typeof(CompletionWindow).GetField("toolTip", BindingFlags.NonPublic | BindingFlags.Instance);
 
-	private static bool _completionToolTipFieldLoggedMissing;
+		if (field is null)
+			Log?.Debug("AvalonEdit completion tooltip styling is unavailable because the internal tooltip field could not be found.");
+
+		return field;
+	});
+
+	private static FieldInfo? CompletionToolTipField => CompletionToolTipFieldAccessor.Value;
 
 	private CancellationTokenSource? _completionCancellationTokenSource;
+	private CancellationTokenSource? _completionToolTipCancellationTokenSource;
 	private int _completionRequestToken;
 	private int _completionToolTipUpdateToken;
 
@@ -74,10 +84,10 @@ public sealed partial class LuaEditor
 			DismissSignatureHelp();
 			CloseDefinitionToolTip(true);
 
-			(int line, int column) = GetPositionFromOffset(offset);
+			(int Line, int Column) = GetPositionFromOffset(offset);
 
 			var items = await IntellisenseProvider
-				.GetCompletionItemsAsync(FilePath, Text, line, column, triggerCharacter, cancellationToken)
+				.GetCompletionItemsAsync(FilePath, Text, Line, Column, triggerCharacter, cancellationToken)
 				.ConfigureAwait(true);
 
 			if (cancellationToken.IsCancellationRequested || requestToken != _completionRequestToken)
@@ -118,7 +128,7 @@ public sealed partial class LuaEditor
 		catch (Exception exception)
 		{
 			CloseCompletionWindow();
-			WriteDebugFailure("Completion request", exception);
+			LogEditorFailure("Completion request", exception);
 		}
 	}
 
@@ -128,15 +138,7 @@ public sealed partial class LuaEditor
 			return;
 
 		if (CompletionToolTipField?.GetValue(_completionWindow) is not ToolTip tooltip)
-		{
-			if (!_completionToolTipFieldLoggedMissing)
-			{
-				_completionToolTipFieldLoggedMissing = true;
-				Debug.WriteLine("[Lua] AvalonEdit completion tooltip styling is unavailable because the internal tooltip field could not be found.");
-			}
-
 			return;
-		}
 
 		tooltip.Background = DefaultToolTipBackground;
 		tooltip.BorderBrush = DefaultToolTipBorder;
@@ -168,13 +170,14 @@ public sealed partial class LuaEditor
 	private void ScheduleCompletionTooltipUpdate(ToolTip tooltip)
 	{
 		int updateToken = ++_completionToolTipUpdateToken;
+		CancellationToken cancellationToken = ResetCancellationTokenSource(ref _completionToolTipCancellationTokenSource);
 
 		Dispatcher.BeginInvoke(
-			new Action(() => _ = UpdateCompletionTooltipAsync(tooltip, updateToken)),
+			new Action(() => _ = UpdateCompletionTooltipAsync(tooltip, updateToken, cancellationToken)),
 			DispatcherPriority.Background);
 	}
 
-	private async Task UpdateCompletionTooltipAsync(ToolTip tooltip, int updateToken)
+	private async Task UpdateCompletionTooltipAsync(ToolTip tooltip, int updateToken, CancellationToken cancellationToken)
 	{
 		if (_completionWindow?.CompletionList.ListBox is not ListBox listBox)
 			return;
@@ -196,12 +199,12 @@ public sealed partial class LuaEditor
 
 			if (item is LuaCompletionData luaCompletionData && luaCompletionData.CanResolve)
 			{
-				await Task.Delay(TimeSpan.FromMilliseconds(CompletionToolTipResolveDelayInMilliseconds)).ConfigureAwait(true);
+				await Task.Delay(TimeSpan.FromMilliseconds(CompletionToolTipResolveDelayInMilliseconds), cancellationToken).ConfigureAwait(true);
 
 				if (updateToken != _completionToolTipUpdateToken)
 					return;
 
-				object? resolvedDescription = await luaCompletionData.GetDescriptionAsync().ConfigureAwait(true);
+				object? resolvedDescription = await luaCompletionData.GetDescriptionAsync(cancellationToken).ConfigureAwait(true);
 
 				if (updateToken != _completionToolTipUpdateToken)
 					return;
@@ -219,42 +222,51 @@ public sealed partial class LuaEditor
 					tooltip.IsOpen = false;
 			}
 		}
+		catch (OperationCanceledException)
+		{
+			// Newer selection or close superseded this tooltip update.
+		}
 		catch (Exception exception)
 		{
 			tooltip.IsOpen = false;
-			WriteDebugFailure("Completion tooltip update", exception);
+			LogEditorFailure("Completion tooltip update", exception);
 		}
 	}
 
-	private void ResizeCompletionWindow(IReadOnlyList<LuaCompletionData> completionDataItems)
+	private void ResizeCompletionWindow(LuaCompletionData[] completionDataItems)
 	{
-		if (_completionWindow is null || completionDataItems is null || completionDataItems.Count == 0)
+		if (_completionWindow is null || completionDataItems is null || completionDataItems.Length == 0)
 			return;
 
 		double requiredWidth = CompletionWindowMinWidth;
+		int measurementCount = Math.Min(completionDataItems.Length, CompletionWidthMeasurementSampleCount);
+		var textWidthCache = new Dictionary<string, double>(StringComparer.Ordinal);
 
-		for (int i = 0; i < completionDataItems.Count; i++)
-			requiredWidth = Math.Max(requiredWidth, MeasureCompletionItemWidth(completionDataItems[i]));
+		for (int i = 0; i < measurementCount; i++)
+			requiredWidth = Math.Max(requiredWidth, MeasureCompletionItemWidth(completionDataItems[i], textWidthCache));
 
 		_completionWindow.Width = Math.Max(
 			CompletionWindowMinWidth,
 			Math.Min(CompletionWindowMaxWidth, requiredWidth + CompletionWindowHorizontalChrome));
 	}
 
-	private double MeasureCompletionItemWidth(LuaCompletionData completionData)
+	private double MeasureCompletionItemWidth(LuaCompletionData completionData, IDictionary<string, double> textWidthCache)
 	{
-		double width = CompletionItemIconWidth + MeasureCompletionTextWidth(completionData.DisplayText);
+		double width = CompletionItemIconWidth + MeasureCompletionTextWidth(completionData.DisplayText, textWidthCache);
 
 		if (!string.IsNullOrWhiteSpace(completionData.DisplayDetail))
-			width += CompletionItemDetailSpacing + MeasureCompletionTextWidth(completionData.DisplayDetail);
+			width += CompletionItemDetailSpacing + MeasureCompletionTextWidth(completionData.DisplayDetail, textWidthCache);
 
 		return width;
 	}
 
-	private double MeasureCompletionTextWidth(string text)
+	private double MeasureCompletionTextWidth(string text, IDictionary<string, double> textWidthCache)
 	{
 		if (string.IsNullOrWhiteSpace(text))
 			return 0.0;
+
+		if (textWidthCache.TryGetValue(text, out double cachedWidth))
+			return cachedWidth;
 
 		double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
@@ -267,7 +279,9 @@ public sealed partial class LuaEditor
 			Foreground,
 			pixelsPerDip);
 
-		return formattedText.WidthIncludingTrailingWhitespace;
+		double width = formattedText.WidthIncludingTrailingWhitespace;
+		textWidthCache[text] = width;
+		return width;
 	}
 
 	private static void ApplyCompletionToolTipContent(ToolTip tooltip, object content)
@@ -286,7 +300,10 @@ public sealed partial class LuaEditor
 	}
 
 	private void CancelCompletionToolTipUpdate()
-		=> _completionToolTipUpdateToken++;
+	{
+		_completionToolTipUpdateToken++;
+		_completionToolTipCancellationTokenSource?.Cancel();
+	}
 
 	private void ScheduleCloseIfEmpty()
 		=> Dispatcher.BeginInvoke(new Action(() => CloseCompletionWindowIfEmpty()), DispatcherPriority.Background);

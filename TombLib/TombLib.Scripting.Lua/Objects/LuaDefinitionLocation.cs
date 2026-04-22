@@ -15,7 +15,7 @@ public sealed class LuaDefinitionLocation
 	/// <param name="columnNumber">The one-based column number.</param>
 	public LuaDefinitionLocation(string filePath, int lineNumber, int columnNumber)
 	{
-		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+		FilePath = filePath;
 		LineNumber = Math.Max(1, lineNumber);
 		ColumnNumber = Math.Max(1, columnNumber);
 	}

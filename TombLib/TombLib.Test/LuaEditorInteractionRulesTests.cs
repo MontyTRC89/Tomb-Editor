@@ -1,4 +1,3 @@
-using System;
 using ICSharpCode.AvalonEdit.Document;
 using TombLib.Scripting.Lua.Utils;
 
@@ -111,7 +110,8 @@ public class LuaEditorInteractionRulesTests
 	public void TryGetHoverOffset_ReturnsOffsetWhenPointerIsOnIdentifierText()
 	{
 		const string identifier = "targetValue";
-		string text = "return " + identifier;
+		const string text = "return " + identifier;
+
 		var document = CreateDocument(text);
 		int identifierStart = text.IndexOf(identifier, StringComparison.Ordinal);
 		int probeOffset = identifierStart + 2;
@@ -126,7 +126,8 @@ public class LuaEditorInteractionRulesTests
 	public void TryGetHoverOffset_BlocksTrailingWhitespaceAfterIdentifier()
 	{
 		const string identifier = "targetValue";
-		string text = "return " + identifier;
+		const string text = "return " + identifier;
+
 		var document = CreateDocument(text);
 		int probeOffset = document.TextLength;
 
@@ -177,7 +178,8 @@ public class LuaEditorInteractionRulesTests
 	public void TryGetDefinitionStartOffset_ReturnsWordStartFromInsideIdentifier()
 	{
 		const string identifier = "targetValue";
-		string text = "local " + identifier + " = 1";
+		const string text = "local " + identifier + " = 1";
+
 		var document = CreateDocument(text);
 		int identifierStart = text.IndexOf(identifier, StringComparison.Ordinal);
 		int probeOffset = identifierStart + 4;
@@ -192,7 +194,8 @@ public class LuaEditorInteractionRulesTests
 	public void TryGetDefinitionStartOffset_ReturnsWordStartWhenCaretIsAfterIdentifier()
 	{
 		const string identifier = "targetValue";
-		string text = "return " + identifier;
+		const string text = "return " + identifier;
+
 		var document = CreateDocument(text);
 		int identifierStart = text.IndexOf(identifier, StringComparison.Ordinal);
 		int probeOffset = identifierStart + identifier.Length;

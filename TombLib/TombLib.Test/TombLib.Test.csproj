@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TombIDE\TombIDE.ScriptingStudio\TombIDE.ScriptingStudio.csproj" />
     <ProjectReference Include="..\..\TombIDE\TombIDE.Shared\TombIDE.Shared.csproj" />
     <ProjectReference Include="..\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />
     <ProjectReference Include="..\TombLib\TombLib.csproj" />

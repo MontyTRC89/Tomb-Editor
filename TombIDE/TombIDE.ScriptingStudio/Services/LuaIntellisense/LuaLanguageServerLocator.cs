@@ -15,9 +15,6 @@ internal static class LuaLanguageServerLocator
 	public static string? ResolveExecutablePath()
 	{
 		string bundledExecutablePath = Path.Combine(DefaultPaths.TIDEDirectory, "LuaLS", "bin", ExecutableFileName);
-
-		return !string.IsNullOrWhiteSpace(bundledExecutablePath) && File.Exists(bundledExecutablePath)
-			? bundledExecutablePath
-			: null;
+		return File.Exists(bundledExecutablePath) ? bundledExecutablePath : null;
 	}
 }

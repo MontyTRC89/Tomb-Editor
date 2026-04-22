@@ -1,3 +1,4 @@
+using NLog;
 using System;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Highlighting;
@@ -12,6 +13,8 @@ namespace TombLib.Scripting.Lua;
 /// </summary>
 public sealed partial class LuaEditor : TextEditorBase
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	/// <summary>
 	/// Gets the default file extension associated with Lua documents.
 	/// </summary>

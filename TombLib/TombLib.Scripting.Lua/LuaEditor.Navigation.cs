@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -63,10 +62,10 @@ public sealed partial class LuaEditor
 			if (!LuaEditorInteractionRules.TryGetDefinitionStartOffset(Document, offset, out int definitionOffset))
 				return false;
 
-			(int line, int column) = GetPositionFromOffset(definitionOffset);
+			(int Line, int Column) = GetPositionFromOffset(definitionOffset);
 
 			LuaDefinitionLocation? definitionLocation = await IntellisenseProvider
-				.GetDefinitionAsync(FilePath, Text, line, column, cancellationToken)
+				.GetDefinitionAsync(FilePath, Text, Line, Column, cancellationToken)
 				.ConfigureAwait(true);
 
 			if (definitionLocation is null)
@@ -81,7 +80,7 @@ public sealed partial class LuaEditor
 		}
 		catch (Exception exception)
 		{
-			Debug.WriteLine($"[Lua] Go to definition failed: {exception}");
+			LogEditorFailure("Go to definition", exception);
 			return false;
 		}
 	}
@@ -89,6 +88,7 @@ public sealed partial class LuaEditor
 	/// <summary>
 	/// Attempts to resolve and navigate to the symbol definition at the current caret position.
 	/// </summary>
-	public async void NavigateToDefinitionAtCaretAsync()
-		=> await TryNavigateToDefinitionAsync(CaretOffset, CancellationToken.None).ConfigureAwait(true);
+	/// <returns>A task that completes once the navigation attempt finishes.</returns>
+	public Task NavigateToDefinitionAtCaretAsync()
+		=> TryNavigateToDefinitionAsync(CaretOffset, CancellationToken.None);
 }

@@ -1,6 +1,6 @@
+using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Runtime.CompilerServices;
-using ICSharpCode.AvalonEdit.Document;
 
 namespace TombLib.Scripting.Lua.Utils;
 
@@ -34,7 +34,7 @@ internal static class LuaEditorInteractionRules
 		if (document is null || document.TextLength == 0)
 			return false;
 
-		int safeOffset = Math.Max(0, Math.Min(offset, document.TextLength));
+		int safeOffset = ClampOffset(document, offset);
 
 		if (safeOffset >= document.TextLength)
 			return false;
@@ -109,7 +109,7 @@ internal static class LuaEditorInteractionRules
 		if (document is null || document.TextLength == 0)
 			return false;
 
-		int safeOffset = Math.Max(0, Math.Min(offset, document.TextLength));
+		int safeOffset = ClampOffset(document, offset);
 
 		if (IsInsideCommentOrString(document, safeOffset))
 			return false;
@@ -131,7 +131,7 @@ internal static class LuaEditorInteractionRules
 		if (document is null || document.TextLength == 0)
 			return false;
 
-		int safeOffset = Math.Max(0, Math.Min(offset, document.TextLength));
+		int safeOffset = ClampOffset(document, offset);
 		DocumentLine currentLine = document.GetLineByOffset(safeOffset);
 		LuaLineParserState lineStartState = GetLineStartParserState(document, currentLine);
 		int lineStart = currentLine.Offset;
@@ -144,6 +144,9 @@ internal static class LuaEditorInteractionRules
 	private static LuaLineParserState GetLineStartParserState(TextDocument document, DocumentLine currentLine)
 		=> LineStartStateCaches.GetValue(document, static doc => new LuaDocumentLineParserStateCache(doc)).GetLineStartState(currentLine.LineNumber);
 
+	private static int ClampOffset(TextDocument document, int offset)
+		=> Math.Clamp(offset, 0, document.TextLength);
+
 	private static bool TryGetDefinitionWordBounds(TextDocument document, int offset, out int wordStart, out int wordEnd)
 	{
 		wordStart = 0;
@@ -152,7 +155,7 @@ internal static class LuaEditorInteractionRules
 		if (document.TextLength == 0)
 			return false;
 
-		int probeOffset = Math.Max(0, Math.Min(offset, document.TextLength));
+		int probeOffset = ClampOffset(document, offset);
 
 		if (probeOffset >= document.TextLength)
 			probeOffset = document.TextLength - 1;

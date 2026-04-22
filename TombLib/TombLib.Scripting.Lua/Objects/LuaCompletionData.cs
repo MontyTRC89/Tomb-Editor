@@ -63,11 +63,12 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 
 		lock (_resolveSync)
 		{
-			if (!CanResolve)
-				return Description;
-
-			if (_resolveTask is null || _resolveTask.IsCanceled || _resolveTask.IsFaulted)
+			if (_resolveTask is null || _resolveTask.IsFaulted || _resolveTask.IsCanceled)
+			{
+				// Use the caller's token so a stale, abandoned resolve also cancels the underlying LSP request
+				// instead of staying in flight against the language server.
 				_resolveTask = _item.ResolveAsync(cancellationToken);
+			}
 
 			resolveTask = _resolveTask;
 		}
@@ -80,6 +81,17 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 
 			ApplyResolvedItem(resolvedItem);
 			return Description;
+		}
+		catch (OperationCanceledException)
+		{
+			// Allow a future request to retry the resolve when the caller cancels mid-flight.
+			lock (_resolveSync)
+			{
+				if (ReferenceEquals(_resolveTask, resolveTask))
+					_resolveTask = null;
+			}
+
+			throw;
 		}
 		catch
 		{
@@ -102,7 +114,7 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 		return lines.Length == 0 ? null : string.Join(" ", lines).Trim();
 	}
 
-	private object? BuildDescriptionContent()
+	private Border? BuildDescriptionContent()
 	{
 		bool hasDetail = !string.IsNullOrWhiteSpace(_item.Detail);
 		bool hasDescription = !string.IsNullOrWhiteSpace(_item.Description);

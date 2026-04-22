@@ -73,7 +73,7 @@ namespace TombIDE.ScriptingStudio
 			}
 		}
 
-		private bool IsSilentAction(IIDEEvent obj)
+		private static bool IsSilentAction(IIDEEvent obj)
 			=> obj is IDE.ScriptEditor_AppendScriptEvent
 			|| obj is IDE.ScriptEditor_ScriptPresenceCheckEvent
 			|| obj is IDE.ScriptEditor_StringPresenceCheckEvent
@@ -101,7 +101,7 @@ namespace TombIDE.ScriptingStudio
 
 					EndSilentScriptAction(cachedTab, true, false, false);
 				}
-				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
+				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent)
 				{
 					IDE.Instance.ScriptDefined = true; // TEMP !!!
 				}
@@ -302,11 +302,11 @@ namespace TombIDE.ScriptingStudio
 			{
 				case UICommand.GoToDefinition:
 					if (CurrentEditor is LuaEditor luaEditor)
-						luaEditor.NavigateToDefinitionAtCaretAsync();
+						_ = luaEditor.NavigateToDefinitionAtCaretAsync();
 					break;
 
 				case UICommand.LuaBasics:
-					string url = "https://github.com/MontyTRC89/TombEngine/wiki/Basics-of-Lua-Programming";
+					const string url = "https://github.com/MontyTRC89/TombEngine/wiki/Basics-of-Lua-Programming";
 
 					var process = new ProcessStartInfo
 					{

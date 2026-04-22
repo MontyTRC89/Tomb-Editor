@@ -1,5 +1,3 @@
-using System;
-
 namespace TombLib.Scripting.Lua.Objects;
 
 /// <summary>
@@ -14,7 +12,7 @@ public sealed class LuaHoverInfo
 	/// <param name="isMarkdown">Whether the content should be rendered as Markdown.</param>
 	public LuaHoverInfo(string content, bool isMarkdown)
 	{
-		Content = content ?? throw new ArgumentNullException(nameof(content));
+		Content = content;
 		IsMarkdown = isMarkdown;
 	}
 

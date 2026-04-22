@@ -7,11 +7,12 @@ namespace TombLib.Scripting.Lua.Utils;
 /// <summary>
 /// Inserts generated Tomb Engine language strings into an existing Lua strings table.
 /// </summary>
-public sealed class TombEngineLanguageScriptService
+public sealed partial class TombEngineLanguageScriptService
 {
-	private static readonly Regex SetStringsRegex = new(
-		@"TEN\.Flow\.SetStrings\s*\(\s*(?<name>[^)\s]+)\s*\)",
-		RegexOptions.Compiled | RegexOptions.IgnoreCase);
+	[GeneratedRegex(@"TEN\.Flow\.SetStrings\s*\(\s*(?<name>[^)\s]+)\s*\)", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+	private static partial Regex GetSetStringsRegex();
+
+	private static readonly Regex SetStringsRegex = GetSetStringsRegex();
 
 	/// <summary>
 	/// Attempts to insert a generated language entry into the strings table referenced by <c>TEN.Flow.SetStrings(...)</c>.
@@ -78,12 +79,18 @@ public sealed class TombEngineLanguageScriptService
 	{
 		int bracketDepth = 0;
 		bool foundOpeningBracket = false;
+		LuaLineParserState parserState = default;
 
 		for (DocumentLine? line = stringsStartLine; line is not null; line = line.NextLine)
 		{
-			string lineText = LuaLineParser.StripLineComment(document.GetText(line));
+			// Use the raw line text (not StripLineComment) so the structural enumerator can keep
+			// long-string and long-comment continuation state in sync across lines. A multi-line
+			// `[[...]]` entry inside the strings table would otherwise leak `{` / `}` characters
+			// from the string body into our brace counter.
+			string lineText = document.GetText(line);
+			LuaLineParserState capturedState = parserState;
 
-			foreach (char character in LuaLineParser.EnumerateStructuralCharacters(lineText))
+			foreach (char character in LuaLineParser.EnumerateStructuralCharacters(lineText, parserState, state => capturedState = state))
 			{
 				if (character == '{')
 				{
@@ -101,6 +108,8 @@ public sealed class TombEngineLanguageScriptService
 						return line;
 				}
 			}
+
+			parserState = capturedState;
 		}
 
 		return null;
@@ -108,16 +117,39 @@ public sealed class TombEngineLanguageScriptService
 
 	private static DocumentLine? FindLanguageInsertionLine(TextDocument document, DocumentLine stringsStartLine, DocumentLine stopLine)
 	{
-		for (int i = stopLine.LineNumber - 1; i > stringsStartLine.LineNumber; i--)
-		{
-			DocumentLine line = document.GetLineByNumber(i);
-			string cleanLine = LuaLineParser.StripLineComment(document.GetText(line)).TrimEnd();
+		// Walk forward from the strings-table opener so we can keep parser continuation state in
+		// lockstep, then pick the latest line that ends with `}` or `},` while not sitting inside
+		// a long string or comment carried over from earlier lines.
+		LuaLineParserState parserState = default;
+		DocumentLine? bestCandidate = null;
 
-			if (cleanLine.EndsWith("}") || cleanLine.EndsWith("},"))
-				return line;
+		for (DocumentLine? line = stringsStartLine; line is not null && line.LineNumber <= stopLine.LineNumber; line = line.NextLine)
+		{
+			LuaLineParserState capturedState = parserState;
+			bool insideLongBlockAtLineStart = parserState.Kind != LuaLineParserStateKind.None;
+
+			// Drain the enumerator to advance parser state to the next line; ignore the chars.
+			foreach (char _ in LuaLineParser.EnumerateStructuralCharacters(document.GetText(line), parserState, state => capturedState = state))
+			{ }
+
+			if (line.LineNumber <= stringsStartLine.LineNumber || line.LineNumber >= stopLine.LineNumber)
+			{
+				parserState = capturedState;
+				continue;
+			}
+
+			if (!insideLongBlockAtLineStart)
+			{
+				string cleanLine = LuaLineParser.StripLineComment(document.GetText(line)).TrimEnd();
+
+				if (cleanLine.EndsWith('}') || cleanLine.EndsWith("},"))
+					bestCandidate = line;
+			}
+
+			parserState = capturedState;
 		}
 
-		return null;
+		return bestCandidate;
 	}
 
 	private static int InsertLanguageScript(TextDocument document, string languageScript, DocumentLine insertionLine)
@@ -125,7 +157,7 @@ public sealed class TombEngineLanguageScriptService
 		string rawLine = document.GetText(insertionLine);
 		string cleanLine = LuaLineParser.StripLineComment(rawLine).TrimEnd();
 
-		if (cleanLine.EndsWith("}"))
+		if (cleanLine.EndsWith('}'))
 		{
 			int commaOffset = insertionLine.Offset + cleanLine.Length;
 			document.Insert(commaOffset, ",");

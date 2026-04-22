@@ -1,3 +1,4 @@
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,8 @@ namespace TombLib.Scripting.Lua.Resources;
 /// </summary>
 public static class LuaThemeRepository
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private static readonly Lazy<LuaThemeCatalog> Catalog = new(LoadCatalog);
 
 	/// <summary>
@@ -75,9 +78,9 @@ public static class LuaThemeRepository
 					if (theme is not null)
 						themes.Add(theme.Normalize(Path.GetFileNameWithoutExtension(filePath)));
 				}
-				catch (Exception ex)
+				catch (Exception exception)
 				{
-					System.Diagnostics.Debug.WriteLine($"Failed to load Lua theme '{filePath}': {ex.Message}");
+					Log.Warn(exception, "Failed to load Lua theme '{FilePath}'.", filePath);
 				}
 			}
 		}
@@ -109,7 +112,7 @@ public static class LuaThemeRepository
 		return new LuaThemeCatalog(orderedThemes, themesByLookupName, defaultTheme);
 	}
 
-	private static void AddLookupName(IDictionary<string, LuaTheme> themesByLookupName, string lookupName, LuaTheme theme)
+	private static void AddLookupName(Dictionary<string, LuaTheme> themesByLookupName, string lookupName, LuaTheme theme)
 	{
 		if (string.IsNullOrWhiteSpace(lookupName) || themesByLookupName.ContainsKey(lookupName))
 			return;
@@ -117,17 +120,10 @@ public static class LuaThemeRepository
 		themesByLookupName[lookupName] = theme;
 	}
 
-	private sealed class LuaThemeCatalog
+	private sealed class LuaThemeCatalog(IReadOnlyList<LuaTheme> themes, IReadOnlyDictionary<string, LuaTheme> themesByLookupName, LuaTheme defaultTheme)
 	{
-		public LuaThemeCatalog(IReadOnlyList<LuaTheme> themes, IReadOnlyDictionary<string, LuaTheme> themesByLookupName, LuaTheme defaultTheme)
-		{
-			Themes = themes;
-			ThemesByLookupName = themesByLookupName;
-			DefaultTheme = defaultTheme;
-		}
-
-		public IReadOnlyList<LuaTheme> Themes { get; }
-		public IReadOnlyDictionary<string, LuaTheme> ThemesByLookupName { get; }
-		public LuaTheme DefaultTheme { get; }
+		public IReadOnlyList<LuaTheme> Themes { get; } = themes;
+		public IReadOnlyDictionary<string, LuaTheme> ThemesByLookupName { get; } = themesByLookupName;
+		public LuaTheme DefaultTheme { get; } = defaultTheme;
 	}
 }

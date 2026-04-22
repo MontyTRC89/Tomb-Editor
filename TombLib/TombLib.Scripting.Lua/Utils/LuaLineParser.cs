@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,16 +17,10 @@ internal enum LuaLineParserStateKind
 /// <summary>
 /// Stores the parser continuation state needed to evaluate long strings and long comments across line boundaries.
 /// </summary>
-internal readonly struct LuaLineParserState
+internal readonly struct LuaLineParserState(LuaLineParserStateKind kind, int longBracketEqualsCount)
 {
-	public LuaLineParserState(LuaLineParserStateKind kind, int longBracketEqualsCount)
-	{
-		Kind = kind;
-		LongBracketEqualsCount = longBracketEqualsCount;
-	}
-
-	public LuaLineParserStateKind Kind { get; }
-	public int LongBracketEqualsCount { get; }
+	public LuaLineParserStateKind Kind { get; } = kind;
+	public int LongBracketEqualsCount { get; } = longBracketEqualsCount;
 }
 
 /// <summary>
@@ -250,12 +245,27 @@ internal static class LuaLineParser
 	/// <param name="lineText">The line text to inspect.</param>
 	/// <returns>The structural characters that participate in brace and delimiter analysis.</returns>
 	public static IEnumerable<char> EnumerateStructuralCharacters(string lineText)
-	{
-		if (string.IsNullOrEmpty(lineText))
-			yield break;
+		=> EnumerateStructuralCharactersCore(lineText, default, captureFinalState: null);
 
-		ParserState state = ParserState.None;
-		int longBracketEqualsCount = 0;
+	/// <summary>
+	/// Enumerates structural characters from a line while carrying long-string and long-comment
+	/// continuation state across line boundaries. Use the returned <paramref name="finalState"/>
+	/// as the next line's <paramref name="initialState"/> so multi-line <c>[[...]]</c> blocks can
+	/// not break callers that do brace tracking across the whole document.
+	/// </summary>
+	internal static IEnumerable<char> EnumerateStructuralCharacters(string lineText, LuaLineParserState initialState, Action<LuaLineParserState> captureFinalState)
+		=> EnumerateStructuralCharactersCore(lineText, initialState, captureFinalState);
+
+	private static IEnumerable<char> EnumerateStructuralCharactersCore(string lineText, LuaLineParserState initialState, Action<LuaLineParserState>? captureFinalState)
+	{
+		ParserState state = GetInitialParserState(initialState);
+		int longBracketEqualsCount = initialState.LongBracketEqualsCount;
+
+		if (string.IsNullOrEmpty(lineText))
+		{
+			captureFinalState?.Invoke(CreateContinuationState(state, longBracketEqualsCount));
+			yield break;
+		}
 
 		for (int i = 0; i < lineText.Length; i++)
 		{
@@ -267,6 +277,7 @@ internal static class LuaLineParser
 				{
 					i += endTokenLength - 1;
 					state = ParserState.None;
+					longBracketEqualsCount = 0;
 				}
 
 				continue;
@@ -295,7 +306,10 @@ internal static class LuaLineParser
 			}
 
 			if (IsLineCommentStart(lineText, i))
+			{
+				captureFinalState?.Invoke(CreateContinuationState(ParserState.None, 0));
 				yield break;
+			}
 
 			if (TryMatchLongBracketStart(lineText, i, out longBracketEqualsCount, out int longStringStartLength))
 			{
@@ -318,6 +332,13 @@ internal static class LuaLineParser
 
 			yield return currentChar;
 		}
+
+		// Single/double-quoted strings do not legally span lines in Lua, so they implicitly
+		// terminate at the newline; only long-bracket modes are propagated to the next line.
+		if (state != ParserState.LongString && state != ParserState.LongComment)
+			state = ParserState.None;
+
+		captureFinalState?.Invoke(CreateContinuationState(state, longBracketEqualsCount));
 	}
 
 	private static bool TryMatchLongCommentStart(string lineText, int index, out int equalsCount, out int tokenLength)

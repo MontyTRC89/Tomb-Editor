@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using TombLib.Scripting.Lua.Highlighting;
 using TombLib.Scripting.Lua.Objects;
 
@@ -15,7 +16,7 @@ public sealed partial class LuaEditor
 	public void SetSemanticTokens(IReadOnlyList<LuaSemanticToken> tokens)
 	{
 		EnsureSemanticTokensColorizerAttached();
-		_semanticTokensColorizer!.SetTokens(tokens);
+		_semanticTokensColorizer.SetTokens(tokens);
 	}
 
 	/// <summary>
@@ -24,6 +25,7 @@ public sealed partial class LuaEditor
 	public void ClearSemanticTokens()
 		=> _semanticTokensColorizer?.ClearTokens();
 
+	[MemberNotNull(nameof(_semanticTokensColorizer))]
 	private void EnsureSemanticTokensColorizerAttached()
 	{
 		if (_semanticTokensColorizer is null)

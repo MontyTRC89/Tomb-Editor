@@ -34,7 +34,7 @@ public sealed class LuaCompletionItem
 		bool isDescriptionMarkdown = false,
 		Func<CancellationToken, Task<LuaCompletionItem>>? resolveAsync = null)
 	{
-		Label = label ?? throw new ArgumentNullException(nameof(label));
+		Label = label;
 		InsertText = string.IsNullOrWhiteSpace(insertText) ? label : insertText;
 		Detail = string.IsNullOrWhiteSpace(detail) ? null : detail.Trim();
 		Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
@@ -101,4 +101,12 @@ public sealed class LuaCompletionItem
 			? Task.FromResult(this)
 			: _resolveAsync(cancellationToken);
 	}
+
+	/// <summary>
+	/// Returns a copy of this item with the supplied resolve callback attached.
+	/// </summary>
+	/// <param name="resolveAsync">The lazy resolve callback.</param>
+	/// <returns>A new completion item with the resolve callback attached.</returns>
+	public LuaCompletionItem WithResolveCallback(Func<CancellationToken, Task<LuaCompletionItem>> resolveAsync)
+		=> new(Label, InsertText, Detail, Description, FilterText, Priority, IconKind, IsDescriptionMarkdown, resolveAsync);
 }

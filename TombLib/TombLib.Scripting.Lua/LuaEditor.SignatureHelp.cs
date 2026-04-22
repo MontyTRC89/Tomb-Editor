@@ -13,6 +13,8 @@ namespace TombLib.Scripting.Lua;
 
 public sealed partial class LuaEditor
 {
+	private const double SignaturePopupFontSize = 14.0;
+
 	private CancellationTokenSource? _signatureCancellationTokenSource;
 
 	private readonly Popup _signaturePopup = new();
@@ -89,38 +91,28 @@ public sealed partial class LuaEditor
 		panel.Children.Add(BuildSignatureBlock(signatureInfo, brushSet));
 
 		if (!string.IsNullOrWhiteSpace(signatureInfo.Documentation))
-		{
-			panel.Children.Add(new TextBlock
-			{
-				Text = signatureInfo.Documentation,
-				Foreground = brushSet.SignatureParamDocForeground,
-				FontFamily = SystemFonts.MessageFontFamily,
-				FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0),
-				TextWrapping = TextWrapping.Wrap,
-				Margin = new Thickness(0.0, 4.0, 0.0, 0.0)
-			});
-		}
+			panel.Children.Add(CreateSignatureDocumentationBlock(signatureInfo.Documentation, brushSet));
 
 		if (signatureInfo.ActiveParameter < signatureInfo.Parameters.Count)
 		{
 			LuaParameterInfo activeParam = signatureInfo.Parameters[signatureInfo.ActiveParameter];
 
 			if (!string.IsNullOrWhiteSpace(activeParam.Documentation))
-			{
-				panel.Children.Add(new TextBlock
-				{
-					Text = activeParam.Label + ": " + activeParam.Documentation,
-					Foreground = brushSet.SignatureParamDocForeground,
-					FontFamily = SystemFonts.MessageFontFamily,
-					FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0),
-					TextWrapping = TextWrapping.Wrap,
-					Margin = new Thickness(0.0, 4.0, 0.0, 0.0)
-				});
-			}
+				panel.Children.Add(CreateSignatureDocumentationBlock(activeParam.Label + ": " + activeParam.Documentation, brushSet));
 		}
 
 		return panel;
 	}
+
+	private static TextBlock CreateSignatureDocumentationBlock(string text, LuaThemeBrushSet brushSet) => new()
+	{
+		Text = text,
+		Foreground = brushSet.SignatureParamDocForeground,
+		FontFamily = SystemFonts.MessageFontFamily,
+		FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, SignaturePopupFontSize),
+		TextWrapping = TextWrapping.Wrap,
+		Margin = new Thickness(0.0, 4.0, 0.0, 0.0)
+	};
 
 	private void PositionSignaturePopup(Size popupSize)
 	{
@@ -138,14 +130,14 @@ public sealed partial class LuaEditor
 		Point editorPoint = TextArea.TextView.TranslatePoint(caretViewportPoint, this);
 		double lineHeight = Math.Max(TextArea.TextView.DefaultLineHeight, caretRectangle.Height);
 		double lineSlack = Math.Max(0.0, lineHeight - caretRectangle.Height);
-		double horizontalOffset = Math.Max(0.0, editorPoint.X + 2.0f);
-		double maxHorizontalOffset = Math.Max(0.0, ActualWidth - popupSize.Width - 8.0f);
+		double horizontalOffset = Math.Max(0.0, editorPoint.X + 2.0);
+		double maxHorizontalOffset = Math.Max(0.0, ActualWidth - popupSize.Width - 8.0);
 		horizontalOffset = Math.Min(horizontalOffset, maxHorizontalOffset);
 
-		double verticalOffset = editorPoint.Y - popupSize.Height - lineSlack - 8.0f;
+		double verticalOffset = editorPoint.Y - popupSize.Height - lineSlack - 8.0;
 
 		if (verticalOffset < 0.0)
-			verticalOffset = Math.Min(Math.Max(0.0, ActualHeight - popupSize.Height), editorPoint.Y + lineHeight + 4.0f);
+			verticalOffset = Math.Min(Math.Max(0.0, ActualHeight - popupSize.Height), editorPoint.Y + lineHeight + 4.0);
 
 		_signaturePopup.HorizontalOffset = horizontalOffset;
 		_signaturePopup.VerticalOffset = verticalOffset;
@@ -163,10 +155,10 @@ public sealed partial class LuaEditor
 
 		try
 		{
-			(int line, int column) = GetPositionFromOffset(offset);
+			(int Line, int Column) = GetPositionFromOffset(offset);
 
 			LuaSignatureInfo? signatureInfo = await IntellisenseProvider
-				.GetSignatureHelpAsync(FilePath, Text, line, column, cancellationToken)
+				.GetSignatureHelpAsync(FilePath, Text, Line, Column, cancellationToken)
 				.ConfigureAwait(true);
 
 			if (cancellationToken.IsCancellationRequested)
@@ -184,7 +176,7 @@ public sealed partial class LuaEditor
 		{ }
 		catch (Exception exception)
 		{
-			WriteDebugFailure("Signature help", exception);
+			LogEditorFailure("Signature help", exception);
 		}
 	}
 
@@ -196,47 +188,60 @@ public sealed partial class LuaEditor
 		var textBlock = new TextBlock
 		{
 			FontFamily = new FontFamily("Consolas"),
-			FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0),
+			FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, SignaturePopupFontSize),
 			TextWrapping = TextWrapping.Wrap,
 			Foreground = brushSet.SignatureForeground
 		};
 
 		string label = signatureInfo.Label;
-		int paramStart = label.IndexOf('(');
 
-		if (paramStart < 0 || signatureInfo.Parameters.Count == 0)
+		if (signatureInfo.Parameters.Count == 0
+			|| !TryGetActiveParameterRange(label, signatureInfo, out int activeStart, out int activeEnd))
 		{
 			textBlock.Text = label;
 			return textBlock;
 		}
 
-		textBlock.Inlines.Add(new Run(label[..(paramStart + 1)]));
+		if (activeStart > 0)
+			textBlock.Inlines.Add(new Run(label[..activeStart]));
 
-		string paramSection = label[(paramStart + 1)..];
-		int closingParen = paramSection.LastIndexOf(')');
-
-		if (closingParen >= 0)
-			paramSection = paramSection[..closingParen];
-
-		string[] parameterNames = paramSection.Split(',');
-
-		for (int i = 0; i < parameterNames.Length; i++)
+		textBlock.Inlines.Add(new Run(label[activeStart..activeEnd])
 		{
-			if (i > 0)
-				textBlock.Inlines.Add(new Run(", "));
+			FontWeight = FontWeights.Bold,
+			Foreground = brushSet.SignatureActiveParamForeground
+		});
 
-			var run = new Run(parameterNames[i].Trim());
+		if (activeEnd < label.Length)
+			textBlock.Inlines.Add(new Run(label[activeEnd..]));
 
-			if (i == signatureInfo.ActiveParameter)
-			{
-				run.FontWeight = FontWeights.Bold;
-				run.Foreground = brushSet.SignatureActiveParamForeground;
-			}
-
-			textBlock.Inlines.Add(run);
-		}
-
-		textBlock.Inlines.Add(new Run(")"));
 		return textBlock;
+	}
+
+	private static bool TryGetActiveParameterRange(string label, LuaSignatureInfo signatureInfo, out int activeStart, out int activeEnd)
+	{
+		activeStart = 0;
+		activeEnd = 0;
+
+		int activeIndex = Math.Min(signatureInfo.ActiveParameter, signatureInfo.Parameters.Count - 1);
+
+		if (activeIndex < 0)
+			return false;
+
+		string activeLabel = signatureInfo.Parameters[activeIndex].Label;
+
+		if (string.IsNullOrEmpty(activeLabel))
+			return false;
+
+		int searchStart = label.IndexOf('(');
+		searchStart = searchStart < 0 ? 0 : searchStart + 1;
+
+		int matchIndex = label.IndexOf(activeLabel, searchStart, StringComparison.Ordinal);
+
+		if (matchIndex < 0)
+			return false;
+
+		activeStart = matchIndex;
+		activeEnd = matchIndex + activeLabel.Length;
+		return true;
 	}
 }

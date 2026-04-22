@@ -1,6 +1,5 @@
 using ICSharpCode.AvalonEdit.Document;
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Windows;
@@ -173,7 +172,7 @@ public sealed partial class LuaEditor
 		CloseDefinitionToolTip(true);
 	}
 
-	private (int line, int column) GetPositionFromOffset(int offset)
+	private (int Line, int Column) GetPositionFromOffset(int offset)
 	{
 		int safeOffset = Math.Max(0, Math.Min(offset, Document.TextLength));
 		TextLocation location = Document.GetLocation(safeOffset);
@@ -198,6 +197,6 @@ public sealed partial class LuaEditor
 		cancellationTokenSource = null;
 	}
 
-	private static void WriteDebugFailure(string area, Exception exception)
-		=> Debug.WriteLine($"[Lua] {area} failed: {exception}");
+	private static void LogEditorFailure(string area, Exception exception)
+		=> Log.Warn(exception, "Lua editor operation '{Area}' failed.", area);
 }

@@ -1,6 +1,6 @@
+using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
-using ICSharpCode.AvalonEdit.Document;
 
 namespace TombLib.Scripting.Lua.Utils;
 
@@ -8,7 +8,7 @@ internal sealed class LuaDocumentLineParserStateCache
 {
 	private readonly object _syncRoot = new();
 	private readonly TextDocument _document;
-	private readonly List<LuaLineParserState> _cachedLineStartStates = new();
+	private readonly List<LuaLineParserState> _cachedLineStartStates = [];
 
 	public LuaDocumentLineParserStateCache(TextDocument document)
 	{
