@@ -681,7 +681,7 @@ end
 
 -- !Name "Restore a previously swapped skinned mesh"
 -- !Section "Moveable parameters"
--- !Description "Restores a previously swapped skinned mesh swap."
+-- !Description "Restores a previously swapped skinned mesh."
 -- !Arguments "NewLine, Moveables, Destination moveable."
 
 LevelFuncs.Engine.Node.UnswapSkinnedMesh = function(moveable)
