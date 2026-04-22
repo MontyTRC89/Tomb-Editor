@@ -13,6 +13,7 @@ WadTool:
  
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.
+ * Added nodes to swap and restore skinned meshes.
  
 Version 1.11
 ============
