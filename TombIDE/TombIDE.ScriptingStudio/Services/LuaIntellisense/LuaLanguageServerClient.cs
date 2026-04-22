@@ -72,6 +72,7 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 	private int _receiveBufferCount;
 	private Task? _readLoopTask;
 	private Task? _stderrLoopTask;
+	private LuaTextDocumentSyncKind _textDocumentSyncKind = LuaTextDocumentSyncKind.Incremental;
 	private string[] _semanticTokenTypes = [];
 	private string[] _semanticTokenModifiers = [];
 	private bool _supportsCompletionResolve;
@@ -83,6 +84,7 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		private set => _isReady = value;
 	}
 
+	public LuaTextDocumentSyncKind TextDocumentSyncKind => _textDocumentSyncKind;
 	public IReadOnlyList<string> SemanticTokenTypes => _semanticTokenTypes;
 	public IReadOnlyList<string> SemanticTokenModifiers => _semanticTokenModifiers;
 	public bool SupportsCompletionResolve => _supportsCompletionResolve;
@@ -271,11 +273,23 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 	{
 		_supportsCompletionResolve = false;
 		_supportsSemanticTokensDelta = false;
+		_textDocumentSyncKind = LuaTextDocumentSyncKind.Incremental;
 		_semanticTokenTypes = [];
 		_semanticTokenModifiers = [];
 
 		if (!initializeResponse.TryGetProperty("capabilities", out JsonElement capabilities))
 			return;
+
+		if (TryReadTextDocumentSyncKind(capabilities, out LuaTextDocumentSyncKind textDocumentSyncKind))
+		{
+			if (textDocumentSyncKind == LuaTextDocumentSyncKind.None)
+			{
+				throw new NotSupportedException(
+					"The Lua language server does not advertise full or incremental text synchronization required by TombIDE.");
+			}
+
+			_textDocumentSyncKind = textDocumentSyncKind;
+		}
 
 		if (capabilities.TryGetProperty("completionProvider", out JsonElement completionProvider)
 			&& completionProvider.TryGetProperty("resolveProvider", out JsonElement resolveProvider))
@@ -299,6 +313,42 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		_semanticTokenTypes = ReadStringArray(legend, "tokenTypes");
 		_semanticTokenModifiers = ReadStringArray(legend, "tokenModifiers");
 	}
+
+	private static bool TryReadTextDocumentSyncKind(JsonElement capabilities, out LuaTextDocumentSyncKind textDocumentSyncKind)
+	{
+		textDocumentSyncKind = LuaTextDocumentSyncKind.Incremental;
+
+		if (!capabilities.TryGetProperty("textDocumentSync", out JsonElement textDocumentSyncElement))
+			return false;
+
+		if (textDocumentSyncElement.ValueKind == JsonValueKind.Number
+			&& textDocumentSyncElement.TryGetInt32(out int rawSyncKind))
+		{
+			textDocumentSyncKind = ParseTextDocumentSyncKind(rawSyncKind);
+			return true;
+		}
+
+		if (textDocumentSyncElement.ValueKind != JsonValueKind.Object)
+			return false;
+
+		if (!textDocumentSyncElement.TryGetProperty("change", out JsonElement changeElement)
+			|| !changeElement.TryGetInt32(out rawSyncKind))
+		{
+			textDocumentSyncKind = LuaTextDocumentSyncKind.None;
+			return true;
+		}
+
+		textDocumentSyncKind = ParseTextDocumentSyncKind(rawSyncKind);
+		return true;
+	}
+
+	private static LuaTextDocumentSyncKind ParseTextDocumentSyncKind(int rawSyncKind) => rawSyncKind switch
+	{
+		0 => LuaTextDocumentSyncKind.None,
+		1 => LuaTextDocumentSyncKind.Full,
+		2 => LuaTextDocumentSyncKind.Incremental,
+		_ => LuaTextDocumentSyncKind.None
+	};
 
 	private static string[] ReadStringArray(JsonElement parent, string propertyName)
 	{
@@ -480,7 +530,9 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		_receiveBufferCount = 0;
 		_readLoopTask = null;
 		_stderrLoopTask = null;
+		_textDocumentSyncKind = LuaTextDocumentSyncKind.Incremental;
 		_supportsCompletionResolve = false;
+		_supportsSemanticTokensDelta = false;
 		_semanticTokenTypes = [];
 		_semanticTokenModifiers = [];
 	}

@@ -4,6 +4,7 @@ using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using TombLib.Scripting.Lua.Objects;
@@ -19,6 +20,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 	private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(10);
 	private const int HardStartupFailureThreshold = 3;
 
+	private readonly string _workspaceApiDirectoryPath;
 	private readonly string _workspaceRootDirectoryPath;
 	private readonly ILuaLanguageServerClient? _client;
 	private readonly LuaIntellisenseDocumentManager _documents = new();
@@ -30,6 +32,8 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 
 	private bool _startupSucceeded;
 	private int _consecutiveStartupFailures;
+	private bool _permanentStartupFailureReported;
+	private bool _transientStartupFailureReported;
 	private volatile bool _isDisposed;
 
 	public bool IsAvailable => !_isDisposed && _client is not null
@@ -37,6 +41,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 
 	public event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
 	public event Action<string, IReadOnlyList<LuaSemanticToken>>? SemanticTokensUpdated;
+	public event Action<LuaLanguageServerStartupFailure>? StartupFailed;
 
 	public LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, string? serverExecutablePath)
 		: this(workspaceRootDirectoryPath, CreateClient(workspaceRootDirectoryPath, serverExecutablePath))
@@ -45,6 +50,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 	internal LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, ILuaLanguageServerClient? client)
 	{
 		_workspaceRootDirectoryPath = LuaLanguageServerPathHelper.NormalizeLocalPath(workspaceRootDirectoryPath);
+		_workspaceApiDirectoryPath = Path.Combine(_workspaceRootDirectoryPath, ".API");
 		_client = client;
 
 		if (_client is not null)
@@ -104,7 +110,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 
 	private async Task<bool> EnsureStartedAsync(CancellationToken cancellationToken)
 	{
-		if (_client is null)
+		if (_client is null || _consecutiveStartupFailures >= HardStartupFailureThreshold)
 			return false;
 
 		if (_startupSucceeded && _client.IsReady)
@@ -118,6 +124,9 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		try
 		{
 			IReadOnlyList<LuaDocumentSnapshot> documentsToReopen = [];
+
+			if (_consecutiveStartupFailures >= HardStartupFailureThreshold)
+				return false;
 
 			if (_startupSucceeded && _client.IsReady)
 			{
@@ -144,13 +153,16 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 			if (_startupSucceeded)
 			{
 				_consecutiveStartupFailures = 0;
+				_transientStartupFailureReported = false;
+				_permanentStartupFailureReported = false;
 				EnsureWorkspaceFileWatcherStarted();
 			}
 			else
 			{
 				_consecutiveStartupFailures++;
+				bool isPermanentFailure = _consecutiveStartupFailures >= HardStartupFailureThreshold;
 
-				if (_consecutiveStartupFailures >= HardStartupFailureThreshold)
+				if (isPermanentFailure)
 				{
 					Log.Error("Lua language server failed to start {Count} times consecutively for workspace '{Workspace}'; IntelliSense is now disabled until the editor is restarted.",
 						_consecutiveStartupFailures, _workspaceRootDirectoryPath);
@@ -160,6 +172,8 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 					Log.Warn("Failed to start the Lua language server for workspace '{Workspace}' (attempt {Attempt}/{Threshold}).",
 						_workspaceRootDirectoryPath, _consecutiveStartupFailures, HardStartupFailureThreshold);
 				}
+
+				ReportStartupFailure(isPermanentFailure);
 			}
 
 			return _startupSucceeded;
@@ -189,11 +203,14 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 			return;
 
 		var changes = new List<object>(batch.Count);
+		bool shouldRefreshConfiguration = false;
 
 		foreach ((string path, FileChangeKind kind) in batch.Entries)
 		{
 			if (!LuaLanguageServerPathHelper.TryNormalizeLocalPath(path, out string normalizedPath))
 				continue;
+
+			shouldRefreshConfiguration |= IsWorkspaceConfigurationPath(normalizedPath);
 
 			changes.Add(new
 			{
@@ -207,6 +224,13 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 
 		try
 		{
+			if (shouldRefreshConfiguration)
+			{
+				await _client.SendNotificationAsync("workspace/didChangeConfiguration",
+					new { settings = LuaLanguageServerSettingsFactory.Create(_workspaceRootDirectoryPath) },
+					cancellationToken).ConfigureAwait(false);
+			}
+
 			await _client.SendNotificationAsync("workspace/didChangeWatchedFiles",
 				new { changes }, cancellationToken).ConfigureAwait(false);
 		}
@@ -215,6 +239,56 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		catch (Exception exception)
 		{
 			Log.Debug(exception, "Failed to forward workspace file changes to the Lua language server.");
+		}
+	}
+
+	private bool IsWorkspaceConfigurationPath(string normalizedPath)
+	{
+		if (string.Equals(normalizedPath, _workspaceApiDirectoryPath, StringComparison.OrdinalIgnoreCase))
+			return true;
+
+		string apiDirectoryPrefix = _workspaceApiDirectoryPath + Path.DirectorySeparatorChar;
+
+		if (normalizedPath.StartsWith(apiDirectoryPrefix, StringComparison.OrdinalIgnoreCase))
+			return true;
+
+		string fileName = Path.GetFileName(normalizedPath);
+		return string.Equals(fileName, ".luarc.json", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(fileName, ".luarc.jsonc", StringComparison.OrdinalIgnoreCase);
+	}
+
+	private void ReportStartupFailure(bool isPermanentFailure)
+	{
+		if (isPermanentFailure)
+		{
+			if (_permanentStartupFailureReported)
+				return;
+
+			_permanentStartupFailureReported = true;
+		}
+		else
+		{
+			if (_transientStartupFailureReported)
+				return;
+
+			_transientStartupFailureReported = true;
+		}
+
+		LuaLanguageServerStartupFailure failure = isPermanentFailure
+			? new LuaLanguageServerStartupFailure(
+				"The bundled Lua language server failed to start repeatedly and Lua IntelliSense is now disabled until TombIDE is restarted. See the log for technical details.",
+				true)
+			: new LuaLanguageServerStartupFailure(
+				"The bundled Lua language server failed to start. Lua IntelliSense will remain unavailable until TombIDE can start the server successfully. TombIDE will retry automatically when Lua IntelliSense is requested again.",
+				false);
+
+		try
+		{
+			StartupFailed?.Invoke(failure);
+		}
+		catch (Exception exception)
+		{
+			Log.Debug(exception, "Lua IntelliSense startup-failure notification handler threw.");
 		}
 	}
 

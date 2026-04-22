@@ -24,6 +24,8 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 	private static readonly SolidColorBrush DescriptionBackgroundBrush = TextEditorColorPalette.ToolTipBackground;
 	private static readonly SolidColorBrush DescriptionForegroundBrush = TextEditorColorPalette.ToolTipForeground;
 
+	private static readonly object NoDescriptionSentinel = new();
+
 	private readonly object _resolveSync = new();
 
 	private readonly LuaThemeBrushSet _brushSet;
@@ -47,7 +49,18 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 	public string? DisplayDetail => _displayDetail;
 	public Visibility DetailVisibility => string.IsNullOrEmpty(_displayDetail) ? Visibility.Collapsed : Visibility.Visible;
 	public object Content => DisplayText;
-	public object? Description => _cachedDescription ??= BuildDescriptionContent();
+
+	public object? Description
+	{
+		get
+		{
+			// Cache a sentinel for a missing description so subsequent accesses do not keep
+			// rebuilding the same null result on every selection change.
+			_cachedDescription ??= BuildDescriptionContent() ?? NoDescriptionSentinel;
+			return ReferenceEquals(_cachedDescription, NoDescriptionSentinel) ? null : _cachedDescription;
+		}
+	}
+
 	public double Priority => _item.Priority;
 	public bool CanResolve => _item.CanResolve;
 

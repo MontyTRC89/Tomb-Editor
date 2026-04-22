@@ -10,6 +10,146 @@ namespace TombLib.Test;
 public class LuaLanguageServerIntellisenseProviderTests
 {
 	[TestMethod]
+	public async Task GetCompletionItemsAsync_ResolvesCompletionItemDetailsWhenServerSupportsResolve()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			SupportsCompletionResolve = true,
+			CompletionResponse = JsonSerializer.SerializeToElement(new
+			{
+				items = new object[]
+				{
+					new
+					{
+						label = "spawn",
+						kind = 3,
+						insertText = "spawn"
+					}
+				}
+			}),
+			CompletionResolveResponse = JsonSerializer.SerializeToElement(new
+			{
+				label = "spawn",
+				kind = 3,
+				insertText = "spawn",
+				detail = "function",
+				documentation = "Spawn docs."
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		IReadOnlyList<LuaCompletionItem> items = await provider.GetCompletionItemsAsync(filePath, "spa", 0, 3);
+		LuaCompletionItem resolvedItem = await items[0].ResolveAsync();
+
+		Assert.AreEqual(1, items.Count);
+		Assert.IsTrue(items[0].CanResolve);
+		Assert.AreEqual("function", resolvedItem.Detail);
+		Assert.AreEqual("Spawn docs.", resolvedItem.Description);
+
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen", "textDocument/completion", "completionItem/resolve" },
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task DispatchWorkspaceFileChangesAsync_RefreshesConfigurationWhenApiLibraryChanges()
+	{
+		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaConfigRefresh_" + Guid.NewGuid().ToString("N"));
+		string apiDirectory = Path.Combine(workspaceRoot, ".API");
+		string apiFilePath = Path.Combine(apiDirectory, "Generated.lua");
+
+		try
+		{
+			Directory.CreateDirectory(apiDirectory);
+			File.WriteAllText(apiFilePath, "return {}");
+
+			using var client = new FakeLuaLanguageServerClient();
+			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+			var batch = new FileChangeBatch();
+
+			batch.Add(apiFilePath, FileChangeKind.Changed);
+
+			await InvokePrivateTaskAsync(provider, "DispatchWorkspaceFileChangesAsync", batch, CancellationToken.None);
+
+			CollectionAssert.AreEqual(
+				new[] { "workspace/didChangeConfiguration", "workspace/didChangeWatchedFiles" },
+				client.GetSentMethodNames());
+
+			JsonElement settings = client.GetLastNotificationParameters("workspace/didChangeConfiguration")
+				.GetProperty("settings")
+				.GetProperty("Lua")
+				.GetProperty("workspace")
+				.GetProperty("library");
+
+			Assert.AreEqual(1, settings.GetArrayLength());
+			Assert.AreEqual(apiDirectory, settings[0].GetString());
+		}
+		finally
+		{
+			if (Directory.Exists(workspaceRoot))
+				Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	public async Task GetHoverAsync_RaisesTransientAndPermanentStartupFailuresOnceEach()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			IsReady = false,
+			StartResult = false
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+		var failures = new List<LuaLanguageServerStartupFailure>();
+
+		provider.StartupFailed += failure => failures.Add(failure);
+
+		await provider.GetHoverAsync(filePath, content, 0, 0);
+		await provider.GetHoverAsync(filePath, content, 0, 0);
+		await provider.GetHoverAsync(filePath, content, 0, 0);
+		await provider.GetHoverAsync(filePath, content, 0, 0);
+
+		Assert.AreEqual(2, failures.Count);
+		Assert.IsFalse(failures[0].IsPersistent);
+		Assert.IsTrue(failures[1].IsPersistent);
+		Assert.AreEqual(3, client.StartCallCount);
+	}
+
+	[TestMethod]
+	public async Task UpdateDocument_SendsFullTextChangeWhenServerAdvertisesFullSync()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			TextDocumentSyncKind = LuaTextDocumentSyncKind.Full
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		provider.OpenDocument(filePath, "local value = 1");
+		provider.UpdateDocument(filePath, "local value = 2");
+
+		Assert.IsTrue(await client.WaitForNotificationAsync("textDocument/didChange", TimeSpan.FromSeconds(1)));
+
+		JsonElement parameters = client.GetLastNotificationParameters("textDocument/didChange");
+		JsonElement change = parameters.GetProperty("contentChanges")[0];
+
+		Assert.AreEqual("local value = 2", change.GetProperty("text").GetString());
+		Assert.IsFalse(change.TryGetProperty("range", out _));
+	}
+
+	[TestMethod]
 	public async Task GetHoverAsync_ReplaysTrackedDocumentsAfterLanguageServerRestart()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -224,17 +364,33 @@ public class LuaLanguageServerIntellisenseProviderTests
 		return field.GetValue(provider) as LuaWorkspaceFileWatcher;
 	}
 
+	private static async Task InvokePrivateTaskAsync(object instance, string methodName, params object?[] parameters)
+	{
+		MethodInfo method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+			?? throw new InvalidOperationException($"Private method '{methodName}' was not found.");
+
+		Task task = (Task)(method.Invoke(instance, parameters)
+			?? throw new InvalidOperationException($"Private method '{methodName}' returned null instead of a Task."));
+
+		await task.ConfigureAwait(false);
+	}
+
 	private sealed class FakeLuaLanguageServerClient : ILuaLanguageServerClient
 	{
+		private readonly List<(string Method, JsonElement Parameters)> _sentNotifications = [];
 		private readonly List<string> _sentMethodNames = [];
 		private TaskCompletionSource<bool>? _openNotificationGate;
 		private readonly TaskCompletionSource<bool> _changeNotificationObserved = new(TaskCreationOptions.RunContinuationsAsynchronously);
 		private readonly TaskCompletionSource<bool> _closeNotificationObserved = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 		public bool IsReady { get; set; } = true;
+		public bool StartResult { get; set; } = true;
+		public JsonElement CompletionResponse { get; set; }
+		public JsonElement CompletionResolveResponse { get; set; }
+		public LuaTextDocumentSyncKind TextDocumentSyncKind { get; set; } = LuaTextDocumentSyncKind.Incremental;
 		public IReadOnlyList<string> SemanticTokenTypes { get; set; } = [];
 		public IReadOnlyList<string> SemanticTokenModifiers { get; set; } = [];
-		public bool SupportsCompletionResolve => false;
+		public bool SupportsCompletionResolve { get; set; }
 		public bool SupportsSemanticTokensDelta => false;
 		public int StartCallCount { get; private set; }
 
@@ -245,13 +401,14 @@ public class LuaLanguageServerIntellisenseProviderTests
 		public Task<bool> StartAsync(CancellationToken cancellationToken)
 		{
 			StartCallCount++;
-			IsReady = true;
-			return Task.FromResult(true);
+			IsReady = StartResult;
+			return Task.FromResult(StartResult);
 		}
 
 		public Task SendNotificationAsync(string method, object parameters, CancellationToken cancellationToken)
 		{
 			_sentMethodNames.Add(method);
+			_sentNotifications.Add((method, JsonSerializer.SerializeToElement(parameters)));
 
 			if (method == "textDocument/didChange")
 				_changeNotificationObserved.TrySetResult(true);
@@ -269,6 +426,12 @@ public class LuaLanguageServerIntellisenseProviderTests
 		{
 			_sentMethodNames.Add(method);
 
+			if (method == "textDocument/completion" && CompletionResponse.ValueKind != JsonValueKind.Undefined)
+				return Task.FromResult(CompletionResponse);
+
+			if (method == "completionItem/resolve" && CompletionResolveResponse.ValueKind != JsonValueKind.Undefined)
+				return Task.FromResult(CompletionResolveResponse);
+
 			if (method == "textDocument/semanticTokens/full")
 			{
 				return Task.FromResult(JsonSerializer.SerializeToElement(new
@@ -282,6 +445,17 @@ public class LuaLanguageServerIntellisenseProviderTests
 		}
 
 		public string[] GetSentMethodNames() => [.. _sentMethodNames];
+
+		public JsonElement GetLastNotificationParameters(string method)
+		{
+			for (int i = _sentNotifications.Count - 1; i >= 0; i--)
+			{
+				if (string.Equals(_sentNotifications[i].Method, method, StringComparison.Ordinal))
+					return _sentNotifications[i].Parameters;
+			}
+
+			throw new InvalidOperationException($"Notification '{method}' was not observed.");
+		}
 
 		public void BlockNextOpenNotification()
 			=> _openNotificationGate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);

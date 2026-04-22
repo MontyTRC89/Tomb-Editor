@@ -1,6 +1,4 @@
-using System.Text.Json;
 using TombIDE.ScriptingStudio.Services.LuaIntellisense;
-using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.Test;
 
@@ -87,36 +85,5 @@ public class LuaLanguageServerSemanticTokensDeltaParserTests
 
 		Assert.IsNotNull(result);
 		CollectionAssert.AreEqual(new[] { 99, 10, 11, 12, 13, 44, 45 }, result);
-	}
-}
-
-[TestClass]
-public class LuaLanguageServerSemanticTokensParserTests
-{
-	[TestMethod]
-	public void Parse_DecodesDataArrayUsingSharedDecoder()
-	{
-		JsonElement response = JsonSerializer.SerializeToElement(new
-		{
-			data = new[] { 0, 6, 5, 0, 0 }
-		});
-
-		var document = new LuaDocumentSnapshot(
-			@"C:\Workspace\test.lua",
-			new Uri(@"C:\Workspace\test.lua").AbsoluteUri,
-			"local value = 1",
-			1);
-
-		IReadOnlyList<LuaSemanticToken> tokens = LuaLanguageServerSemanticTokensParser.Parse(
-			response,
-			document,
-			["variable"],
-			[]);
-
-		Assert.AreEqual(1, tokens.Count);
-		Assert.AreEqual(0, tokens[0].Line);
-		Assert.AreEqual(6, tokens[0].Character);
-		Assert.AreEqual(5, tokens[0].Length);
-		Assert.AreEqual("variable", tokens[0].Type);
 	}
 }

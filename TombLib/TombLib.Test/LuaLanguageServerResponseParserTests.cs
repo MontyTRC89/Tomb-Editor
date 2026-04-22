@@ -49,6 +49,133 @@ public class LuaLanguageServerResponseParserTests
 		Assert.AreEqual("value", items[1].Label);
 	}
 
+	[TestMethod]
+	public void ParseDefinitionLocation_UsesFirstEntryFromMultiLocationResponse()
+	{
+		string firstPath = Path.GetFullPath(@"C:\Workspace\Scripts\first.lua");
+		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\second.lua");
+
+		LuaDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
+			JsonSerializer.SerializeToElement(new object[]
+			{
+				new
+				{
+					uri = new Uri(firstPath).AbsoluteUri,
+					range = new
+					{
+						start = new { line = 2, character = 4 },
+						end = new { line = 2, character = 10 }
+					}
+				},
+				new
+				{
+					uri = new Uri(secondPath).AbsoluteUri,
+					range = new
+					{
+						start = new { line = 8, character = 1 },
+						end = new { line = 8, character = 5 }
+					}
+				}
+			}));
+
+		Assert.IsNotNull(location);
+		Assert.AreEqual(firstPath, location.FilePath);
+		Assert.AreEqual(3, location.LineNumber);
+		Assert.AreEqual(5, location.ColumnNumber);
+	}
+
+	[TestMethod]
+	public void ParseDefinitionLocation_UsesTargetSelectionRangeFromLocationLink()
+	{
+		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\linked.lua");
+
+		LuaDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
+			JsonSerializer.SerializeToElement(new
+			{
+				targetUri = new Uri(targetPath).AbsoluteUri,
+				targetSelectionRange = new
+				{
+					start = new { line = 4, character = 2 },
+					end = new { line = 4, character = 9 }
+				}
+			}));
+
+		Assert.IsNotNull(location);
+		Assert.AreEqual(targetPath, location.FilePath);
+		Assert.AreEqual(5, location.LineNumber);
+		Assert.AreEqual(3, location.ColumnNumber);
+	}
+
+	[TestMethod]
+	public void ParseSignatureHelp_UsesParameterLabelOffsetsAndActiveParameter()
+	{
+		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
+			JsonSerializer.SerializeToElement(new
+			{
+				activeSignature = 0,
+				activeParameter = 1,
+				signatures = new[]
+				{
+					new
+					{
+						label = "spawn(room, objectName)",
+						documentation = new
+						{
+							kind = "markdown",
+							value = "Spawns an object."
+						},
+						parameters = new object[]
+						{
+							new
+							{
+								label = new[] { 6, 10 },
+								documentation = "Room id."
+							},
+							new
+							{
+								label = new[] { 12, 22 },
+								documentation = "Object name."
+							}
+						}
+					}
+				}
+			}));
+
+		Assert.IsNotNull(signatureInfo);
+		Assert.AreEqual("spawn(room, objectName)", signatureInfo.Label);
+		Assert.AreEqual("Spawns an object.", signatureInfo.Documentation);
+		Assert.AreEqual(1, signatureInfo.ActiveParameter);
+		Assert.AreEqual(2, signatureInfo.Parameters.Count);
+		Assert.AreEqual("objectName", signatureInfo.Parameters[1].Label);
+		Assert.AreEqual("Object name.", signatureInfo.Parameters[1].Documentation);
+	}
+
+	[TestMethod]
+	public void ParseSignatureHelp_UsesSignatureLevelActiveParameterWhenResponseOmitsIt()
+	{
+		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
+			JsonSerializer.SerializeToElement(new
+			{
+				signatures = new[]
+				{
+					new
+					{
+						label = "move(x, y)",
+						activeParameter = 1,
+						parameters = new object[]
+						{
+							new { label = "x" },
+							new { label = "y" }
+						}
+					}
+				}
+			}));
+
+		Assert.IsNotNull(signatureInfo);
+		Assert.AreEqual(1, signatureInfo.ActiveParameter);
+		Assert.AreEqual("y", signatureInfo.Parameters[1].Label);
+	}
+
 	private static JsonElement CreateCompletionItem(string label, int kind, string? detail, string? documentation, string? insertText = null)
 		=> JsonSerializer.SerializeToElement(new Dictionary<string, object?>
 		{

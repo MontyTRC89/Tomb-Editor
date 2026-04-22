@@ -29,6 +29,7 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 	private readonly CancellationTokenSource _lifetimeCts = new();
 
 	private FileSystemWatcher? _luaWatcher;
+	private FileSystemWatcher? _apiDirectoryWatcher;
 	private FileSystemWatcher? _configWatcher;
 	private Timer? _debounceTimer;
 	private volatile bool _isDisposed;
@@ -49,6 +50,7 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 
 		try
 		{
+			_apiDirectoryWatcher = CreateWatcher(".API", includeSubdirectories: false);
 			_luaWatcher = CreateWatcher("*.lua", includeSubdirectories: true);
 			_configWatcher = CreateWatcher(".luarc.*", includeSubdirectories: false);
 			_debounceTimer = new Timer(OnDebounceTick, state: null, dueTime: Timeout.Infinite, period: Timeout.Infinite);
@@ -164,6 +166,7 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 
 		_isDisposed = true;
 
+		TryDispose(_apiDirectoryWatcher, nameof(_apiDirectoryWatcher));
 		TryDispose(_luaWatcher, nameof(_luaWatcher));
 		TryDispose(_configWatcher, nameof(_configWatcher));
 		TryDispose(_debounceTimer, nameof(_debounceTimer));

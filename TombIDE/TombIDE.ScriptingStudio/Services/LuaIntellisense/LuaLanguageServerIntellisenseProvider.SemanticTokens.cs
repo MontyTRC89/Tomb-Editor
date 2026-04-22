@@ -131,11 +131,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 			return (tokens, data, fullResponse.ResultId);
 		}
 
-		// Legacy code path: parser returns the typed token list without exposing the raw int stream.
-		IReadOnlyList<LuaSemanticToken> legacyTokens = LuaLanguageServerSemanticTokensParser.Parse(
-			response, document, _client.SemanticTokenTypes, _client.SemanticTokenModifiers);
-
-		return (legacyTokens, null, fullResponse.ResultId);
+		return ([], null, fullResponse.ResultId);
 	}
 
 	private CancellationToken ReplaceSemanticTokenRequest(string filePath, CancellationToken cancellationToken, out CancellationTokenSource? linkedSource)

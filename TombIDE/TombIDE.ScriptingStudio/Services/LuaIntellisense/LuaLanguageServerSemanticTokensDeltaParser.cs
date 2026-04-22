@@ -65,8 +65,10 @@ internal static class LuaLanguageServerSemanticTokensDeltaParser
 		ArgumentNullException.ThrowIfNull(previousData);
 		ArgumentNullException.ThrowIfNull(edits);
 
-		// LSP guarantees edits are sorted by ascending start, but applying them in reverse keeps the
-		// untouched suffix indices stable and avoids any index shifting on the way through.
+		// LSP requires edits to be sorted by ascending start; we re-sort defensively in case the server
+		// or our own caching layer reorders them. Edits are then applied left-to-right with a running
+		// source/destination cursor so the resulting integer stream stays consistent regardless of
+		// individual edit sizes.
 		var ordered = new List<LuaSemanticTokensEdit>(edits);
 		ordered.Sort(static (a, b) => a.Start.CompareTo(b.Start));
 
@@ -131,8 +133,7 @@ internal static class LuaLanguageServerSemanticTokensDeltaParser
 
 /// <summary>
 /// Decodes a raw LuaLS semantic-token integer stream (already cached on the client) into the typed
-/// <see cref="LuaSemanticToken"/> list expected by the editor's colorizer. Mirrors
-/// <see cref="LuaLanguageServerSemanticTokensParser"/> but operates directly on the cached array.
+/// <see cref="LuaSemanticToken"/> list expected by the editor's colorizer.
 /// </summary>
 internal static class LuaLanguageServerSemanticTokensDecoder
 {

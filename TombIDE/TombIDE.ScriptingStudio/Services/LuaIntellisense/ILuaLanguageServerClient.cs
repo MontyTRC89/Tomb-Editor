@@ -11,6 +11,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 internal interface ILuaLanguageServerClient : IDisposable
 {
 	bool IsReady { get; }
+	LuaTextDocumentSyncKind TextDocumentSyncKind { get; }
 	IReadOnlyList<string> SemanticTokenTypes { get; }
 	IReadOnlyList<string> SemanticTokenModifiers { get; }
 	bool SupportsCompletionResolve { get; }

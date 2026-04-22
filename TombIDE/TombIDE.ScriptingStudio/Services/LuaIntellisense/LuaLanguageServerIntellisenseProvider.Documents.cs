@@ -167,8 +167,9 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		else if (request.Kind == LuaDocumentSynchronizationKind.Change)
 		{
-			object contentChange = request.ChangeRange is { } changeRange
-				? new
+			object contentChange = _client.TextDocumentSyncKind switch
+			{
+				LuaTextDocumentSyncKind.Incremental when request.ChangeRange is { } changeRange => new
 				{
 					range = new
 					{
@@ -176,8 +177,12 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 						end = new { line = changeRange.EndLine, character = changeRange.EndCharacter }
 					},
 					text = changeRange.Text
-				}
-				: new { text = request.Document.Content };
+				},
+				LuaTextDocumentSyncKind.Full => new { text = request.Document.Content },
+				LuaTextDocumentSyncKind.Incremental => new { text = request.Document.Content },
+				_ => throw new InvalidOperationException(
+					"The Lua language server does not support document changes required by TombIDE.")
+			};
 
 			await _client.SendNotificationAsync("textDocument/didChange",
 				new

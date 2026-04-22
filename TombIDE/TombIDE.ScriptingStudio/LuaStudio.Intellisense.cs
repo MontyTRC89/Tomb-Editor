@@ -30,6 +30,12 @@ public sealed partial class LuaStudio
 		_intellisenseProvider.DiagnosticsUpdated += IntellisenseProvider_DiagnosticsUpdated;
 		_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
 		_intellisenseProvider.SemanticTokensUpdated += IntellisenseProvider_SemanticTokensUpdated;
+
+		if (_intellisenseProvider is LuaLanguageServerIntellisenseProvider languageServerProvider)
+		{
+			languageServerProvider.StartupFailed -= IntellisenseProvider_StartupFailed;
+			languageServerProvider.StartupFailed += IntellisenseProvider_StartupFailed;
+		}
 	}
 
 	private void DisposeLuaIntellisense()
@@ -37,6 +43,10 @@ public sealed partial class LuaStudio
 		EditorTabControl.FileOpened -= EditorTabControl_LuaFileOpened;
 		_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
 		_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
+
+		if (_intellisenseProvider is LuaLanguageServerIntellisenseProvider languageServerProvider)
+			languageServerProvider.StartupFailed -= IntellisenseProvider_StartupFailed;
+
 		_intellisenseProvider.Dispose();
 	}
 
@@ -50,6 +60,7 @@ public sealed partial class LuaStudio
 			// of knowing why diagnostics, completion and definition lookups silently stop working.
 			// Log a warning and surface a single non-blocking notification so the failure is visible.
 			Log.Warn("Bundled Lua language server was not found; Lua IntelliSense (diagnostics, completion, hover, go-to-definition) will be unavailable for this session.");
+
 			DarkUI.Forms.DarkMessageBox.Show(this,
 				"The bundled Lua language server (LuaLS) could not be located.\n\n" +
 				"Lua IntelliSense - including diagnostics, completion, hover and go-to-definition - will be unavailable for this session.\n\n" +
@@ -112,6 +123,24 @@ public sealed partial class LuaStudio
 			if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor editor)
 				ApplySemanticTokensToEditor(editor, semanticTokens);
 		}
+	}
+
+	private void IntellisenseProvider_StartupFailed(LuaLanguageServerStartupFailure failure)
+	{
+		if (InvokeRequired)
+		{
+			BeginInvoke(new Action<LuaLanguageServerStartupFailure>(IntellisenseProvider_StartupFailed), failure);
+			return;
+		}
+
+		if (IsDisposed)
+			return;
+
+		DarkUI.Forms.DarkMessageBox.Show(this,
+			failure.Message,
+			failure.IsPersistent ? "Lua IntelliSense disabled" : "Lua IntelliSense unavailable",
+			MessageBoxButtons.OK,
+			MessageBoxIcon.Warning);
 	}
 
 	private void NavigateToDefinition(LuaDefinitionLocation definitionLocation)

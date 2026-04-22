@@ -13,6 +13,42 @@ namespace TombLib.Test;
 public class LuaLanguageServerClientTests
 {
 	[TestMethod]
+	public void CaptureServerCapabilities_UsesFullTextSyncWhenServerAdvertisesFullSync()
+	{
+		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
+
+		InvokePrivateMethod(client, "CaptureServerCapabilities", JsonSerializer.SerializeToElement(new
+		{
+			capabilities = new
+			{
+				textDocumentSync = new
+				{
+					change = 1
+				}
+			}
+		}));
+
+		Assert.AreEqual(LuaTextDocumentSyncKind.Full, client.TextDocumentSyncKind);
+	}
+
+	[TestMethod]
+	public void CaptureServerCapabilities_RejectsMissingDocumentChangeSupport()
+	{
+		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
+
+		TargetInvocationException exception = Assert.ThrowsException<TargetInvocationException>(() =>
+			InvokePrivateMethod(client, "CaptureServerCapabilities", JsonSerializer.SerializeToElement(new
+			{
+				capabilities = new
+				{
+					textDocumentSync = 0
+				}
+			})));
+
+		Assert.IsInstanceOfType(exception.InnerException, typeof(NotSupportedException));
+	}
+
+	[TestMethod]
 	public void Dispose_WritesGracefulShutdownMessages()
 	{
 		using Process process = StartDisposableProcess();
