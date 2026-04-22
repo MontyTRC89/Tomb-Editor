@@ -14,6 +14,8 @@ public sealed partial class LuaEditor
 
 	private void BindLuaIntellisenseEvents()
 	{
+		InitializeCompletionScheduling();
+
 		IsKeyboardFocusWithinChanged += LuaEditor_IsKeyboardFocusWithinChanged;
 		Loaded += LuaEditor_Loaded;
 		TextArea.TextEntering += TextArea_TextEntering;
@@ -63,6 +65,7 @@ public sealed partial class LuaEditor
 		_textMateHighlighting?.Dispose();
 		_textMateHighlighting = null;
 
+		CancelPendingCompletionRequest();
 		CancelAndDispose(ref _hoverCancellationTokenSource);
 		CancelAndDispose(ref _completionCancellationTokenSource);
 
@@ -91,6 +94,7 @@ public sealed partial class LuaEditor
 		if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
 		{
 			e.Handled = true;
+			CancelPendingCompletionRequest();
 
 			if (LuaEditorInteractionRules.IsValidManualCompletionContext(Document, CaretOffset))
 				await RequestCompletionAsync(CaretOffset, null).ConfigureAwait(true);
@@ -104,6 +108,7 @@ public sealed partial class LuaEditor
 
 		if (e.Text == "(" || e.Text == ",")
 		{
+			CancelPendingCompletionRequest();
 			CloseCompletionWindow();
 			await RequestSignatureHelpAsync(CaretOffset).ConfigureAwait(true);
 			return;
@@ -111,6 +116,7 @@ public sealed partial class LuaEditor
 
 		if (e.Text == ")")
 		{
+			CancelPendingCompletionRequest();
 			CloseCompletionWindow();
 			DismissSignatureHelp();
 			return;
@@ -118,6 +124,8 @@ public sealed partial class LuaEditor
 
 		if (_completionWindow is not null)
 		{
+			CancelPendingCompletionRequest();
+
 			if (!ShouldKeepCompletionWindowOpen(e.Text))
 			{
 				CloseCompletionWindow();
@@ -135,7 +143,15 @@ public sealed partial class LuaEditor
 		if (TryGetCompletionTrigger(e.Text, out char? triggerCharacter)
 			&& LuaEditorInteractionRules.IsValidAutocompleteContext(Document, CaretOffset, triggerCharacter))
 		{
-			await RequestCompletionAsync(CaretOffset, triggerCharacter).ConfigureAwait(true);
+			if (triggerCharacter is null)
+			{
+				ScheduleCompletionRequest();
+			}
+			else
+			{
+				CancelPendingCompletionRequest();
+				await RequestCompletionAsync(CaretOffset, triggerCharacter).ConfigureAwait(true);
+			}
 		}
 	}
 
@@ -166,6 +182,7 @@ public sealed partial class LuaEditor
 
 	private void DismissTransientToolTips()
 	{
+		CancelPendingCompletionRequest();
 		CancelAndDispose(ref _hoverCancellationTokenSource);
 		_hoverRequestToken++;
 		DismissSignatureHelp();

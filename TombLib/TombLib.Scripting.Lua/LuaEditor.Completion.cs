@@ -20,6 +20,7 @@ namespace TombLib.Scripting.Lua;
 
 public sealed partial class LuaEditor
 {
+	private const double CompletionRequestDebounceDelayInMilliseconds = 120.0;
 	private const int CompletionWindowMinWidth = 420;
 	private const int CompletionWindowMaxWidth = 920;
 	private const int CompletionWindowHeight = 320;
@@ -45,12 +46,26 @@ public sealed partial class LuaEditor
 	private static FieldInfo? CompletionToolTipField => CompletionToolTipFieldAccessor.Value;
 
 	private CancellationTokenSource? _completionCancellationTokenSource;
-	private CancellationTokenSource? _completionToolTipCancellationTokenSource;
+	private readonly DispatcherTimer _completionRequestTimer = new();
+	private readonly DispatcherTimer _completionToolTipUpdateTimer = new();
 	private int _completionRequestToken;
 	private int _completionToolTipUpdateToken;
+	private ToolTip? _pendingCompletionToolTip;
+
+	private void InitializeCompletionScheduling()
+	{
+		_completionRequestTimer.Interval = TimeSpan.FromMilliseconds(CompletionRequestDebounceDelayInMilliseconds);
+		_completionRequestTimer.Tick -= CompletionRequestTimer_Tick;
+		_completionRequestTimer.Tick += CompletionRequestTimer_Tick;
+
+		_completionToolTipUpdateTimer.Interval = TimeSpan.FromMilliseconds(CompletionToolTipResolveDelayInMilliseconds);
+		_completionToolTipUpdateTimer.Tick -= CompletionToolTipUpdateTimer_Tick;
+		_completionToolTipUpdateTimer.Tick += CompletionToolTipUpdateTimer_Tick;
+	}
 
 	private void CloseCompletionWindow()
 	{
+		CancelPendingCompletionRequest();
 		CancelCompletionToolTipUpdate();
 
 		if (_completionWindow is null)
@@ -69,6 +84,28 @@ public sealed partial class LuaEditor
 		LuaCompletionWindowStyle.Apply(_completionWindow, GetThemeBrushSet());
 		StyleCompletionTooltip();
 		MakeCompletionWindowNonActivatable();
+	}
+
+	private void ScheduleCompletionRequest()
+	{
+		_completionRequestTimer.Stop();
+		_completionRequestTimer.Start();
+	}
+
+	private void CancelPendingCompletionRequest()
+		=> _completionRequestTimer.Stop();
+
+	private async void CompletionRequestTimer_Tick(object? sender, EventArgs e)
+	{
+		_completionRequestTimer.Stop();
+
+		if (!AutocompleteEnabled || !IsIntellisenseAvailable())
+			return;
+
+		if (!LuaEditorInteractionRules.IsValidAutocompleteContext(Document, CaretOffset, triggerCharacter: null))
+			return;
+
+		await RequestCompletionAsync(CaretOffset, null).ConfigureAwait(true);
 	}
 
 	private async Task RequestCompletionAsync(int offset, char? triggerCharacter)
@@ -172,15 +209,23 @@ public sealed partial class LuaEditor
 
 	private void ScheduleCompletionTooltipUpdate(ToolTip tooltip)
 	{
-		int updateToken = ++_completionToolTipUpdateToken;
-		CancellationToken cancellationToken = ResetCancellationTokenSource(ref _completionToolTipCancellationTokenSource);
-
-		Dispatcher.BeginInvoke(
-			new Action(() => _ = UpdateCompletionTooltipAsync(tooltip, updateToken, cancellationToken)),
-			DispatcherPriority.Background);
+		_pendingCompletionToolTip = tooltip;
+		_completionToolTipUpdateToken++;
+		_completionToolTipUpdateTimer.Stop();
+		_completionToolTipUpdateTimer.Start();
 	}
 
-	private async Task UpdateCompletionTooltipAsync(ToolTip tooltip, int updateToken, CancellationToken cancellationToken)
+	private async void CompletionToolTipUpdateTimer_Tick(object? sender, EventArgs e)
+	{
+		_completionToolTipUpdateTimer.Stop();
+
+		if (_pendingCompletionToolTip is not ToolTip tooltip)
+			return;
+
+		await UpdateCompletionTooltipAsync(tooltip, _completionToolTipUpdateToken).ConfigureAwait(true);
+	}
+
+	private async Task UpdateCompletionTooltipAsync(ToolTip tooltip, int updateToken)
 	{
 		if (_completionWindow?.CompletionList.ListBox is not ListBox listBox)
 			return;
@@ -202,12 +247,10 @@ public sealed partial class LuaEditor
 
 			if (item is LuaCompletionData luaCompletionData && luaCompletionData.CanResolve)
 			{
-				await Task.Delay(TimeSpan.FromMilliseconds(CompletionToolTipResolveDelayInMilliseconds), cancellationToken).ConfigureAwait(true);
-
 				if (updateToken != _completionToolTipUpdateToken)
 					return;
 
-				object? resolvedDescription = await luaCompletionData.GetDescriptionAsync(cancellationToken).ConfigureAwait(true);
+				object? resolvedDescription = await luaCompletionData.GetDescriptionAsync().ConfigureAwait(true);
 
 				if (updateToken != _completionToolTipUpdateToken)
 					return;
@@ -224,10 +267,6 @@ public sealed partial class LuaEditor
 				else
 					tooltip.IsOpen = false;
 			}
-		}
-		catch (OperationCanceledException)
-		{
-			// Newer selection or close superseded this tooltip update.
 		}
 		catch (Exception exception)
 		{
@@ -305,7 +344,8 @@ public sealed partial class LuaEditor
 	private void CancelCompletionToolTipUpdate()
 	{
 		_completionToolTipUpdateToken++;
-		_completionToolTipCancellationTokenSource?.Cancel();
+		_pendingCompletionToolTip = null;
+		_completionToolTipUpdateTimer.Stop();
 	}
 
 	private void ScheduleCloseIfEmpty()
