@@ -3,7 +3,7 @@ local Statistics = require("Engine.RingInventory.Statistics")
 -- !Name "Shows end of level statistics"
 -- !Section "User interface"
 -- !Description "Show end of level statistics."
--- !Arguments "NewLine, Numerical, 20, [ 0 | 256 ], Next level"
+-- !Arguments "NewLine, Numerical, 20, [ 0 | 99 ], Next level"
 -- !Arguments "80, SoundTracks, Name of the audiotrack to play"
 LevelFuncs.Engine.Node.ShowEndLevelStatistics = function(level, track)
     Statistics.SetType(false)
