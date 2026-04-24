@@ -69,12 +69,12 @@ namespace TombEditor.Controls.Panel3D
         private void HandleBrushMouseUp()
         {
             if (_brushEngaged)
-				Actions.EndBrushStroke(_editor);
+                Actions.EndBrushStroke(_editor);
 
             _brushEngaged = false;
             _lastBrushWorldPosition = null;
             _lastBrushDirectionAngle = null;
-			Actions.MouseDirectionAngle = null;
+            Actions.MouseDirectionAngle = null;
         }
 
         // Returns true if the scroll event was consumed by the brush handler.
@@ -136,8 +136,8 @@ namespace TombEditor.Controls.Panel3D
 
             if (_editor.Tool.Tool == EditorToolType.Fill)
             {
-				// Fill executes immediately without brush engagement.
-				Actions.ExecuteFill(_editor, _editor.SelectedRoom);
+                // Fill executes immediately without brush engagement.
+                Actions.ExecuteFill(_editor, _editor.SelectedRoom);
             }
             else
             {
@@ -255,7 +255,7 @@ namespace TombEditor.Controls.Panel3D
             else
                 _lastBrushDirectionAngle = angle;
 
-			Actions.MouseDirectionAngle = _lastBrushDirectionAngle;
+            Actions.MouseDirectionAngle = _lastBrushDirectionAngle;
         }
 
         #endregion
