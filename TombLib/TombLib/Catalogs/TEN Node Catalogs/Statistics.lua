@@ -11,13 +11,7 @@ LevelFuncs.Engine.Node.ShowEndLevelStatistics = function(level, track)
     if count == 0 then
         Statistics.SetType(false)
         TEN.Sound.PlayAudioTrack(track)
-        Statistics.SetEndStatistics(true)
-    end
-
-    count = count + 1
-    if count == 3 then
-        count = 0
-        TEN.Flow.EndLevel(level)
+        Statistics.SetEndStatistics(true, level)
     end
 	
 end
@@ -31,13 +25,7 @@ LevelFuncs.Engine.Node.ShowEndGameStatistics = function(track)
     if count == 0 then
         Statistics.SetType(true)
         TEN.Sound.PlayAudioTrack(track)
-        Statistics.SetEndStatistics(true)
-    end
-
-    count = count + 1
-    if count == 3 then
-        count = 0
-        TEN.Flow.EndLevel(999)
+        Statistics.SetEndStatistics(true, 999)
     end
 
 end
