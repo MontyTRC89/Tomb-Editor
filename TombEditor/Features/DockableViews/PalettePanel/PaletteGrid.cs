@@ -28,27 +28,43 @@ public class PaletteGrid : FrameworkElement
     private const double BorderThickness = 1.0;
 
     private static readonly ColorC FallbackSelectedColor = new(128, 128, 128);
-    private static readonly Pen GridPen = WPFUtils.CreateFrozenPen(Color.FromArgb(140, 0, 0, 0), BorderThickness);
-    private static readonly Pen BorderPen = WPFUtils.CreateFrozenPen(Colors.Black, BorderThickness);
-    private static readonly Pen SelectionPen = WPFUtils.CreateFrozenPen(Colors.White, BorderThickness);
+    private static readonly Pen GridPen = BrushHelpers.CreateFrozenPen(Color.FromArgb(140, 0, 0, 0), BorderThickness);
+    private static readonly Pen BorderPen = BrushHelpers.CreateFrozenPen(Colors.Black, BorderThickness);
+    private static readonly Pen SelectionPen = BrushHelpers.CreateFrozenPen(Colors.White, BorderThickness);
+    private static readonly Brush DesignPlaceholderBrush = BrushHelpers.CreateFrozenBrush(Color.FromRgb(50, 50, 50));
 
     private readonly Editor? _editor;
     private List<ColorC> _palette = [];
     private List<Brush> _paletteBrushes = [];
     private int _selectedIndex = -1;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether palette colors can be edited.
+    /// </summary>
     public bool Editable { get; set; } = true;
 
+    /// <summary>
+    /// Gets the selected color as a WPF color.
+    /// </summary>
     public Color SelectedColor => ToWPFColor(SelectedColorC);
 
+    /// <summary>
+    /// Gets the selected color as a TombLib color.
+    /// </summary>
     public ColorC SelectedColorC => HasSelectedPaletteColor ? _palette[_selectedIndex] : FallbackSelectedColor;
 
+    /// <summary>
+    /// Gets a copy of the displayed palette.
+    /// </summary>
     public List<ColorC> Palette => [.. _palette];
 
     private bool HasSelectedPaletteColor => _selectedIndex >= 0 && _selectedIndex < _palette.Count;
     private int ColumnCount => Math.Max(0, (int)((ActualWidth - BorderThickness) / CellWidth));
     private int RowCount => Math.Max(0, (int)((ActualHeight - BorderThickness) / CellHeight));
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PaletteGrid"/> class.
+    /// </summary>
     public PaletteGrid()
     {
         ClipToBounds = true;
@@ -64,9 +80,12 @@ public class PaletteGrid : FrameworkElement
         _editor = Editor.Instance;
     }
 
+    /// <summary>
+    /// Loads the palette displayed by the grid.
+    /// </summary>
     public void LoadPalette(IReadOnlyList<ColorC> palette)
     {
-        _palette = [.. palette.Select(CloneColor)];
+        _palette = [.. palette.Select(NormalizePaletteColor)];
         _paletteBrushes = [.. _palette.Select(CreateBrush)];
 
         if (_palette.Count == 0)
@@ -78,6 +97,9 @@ public class PaletteGrid : FrameworkElement
         InvalidateVisual();
     }
 
+    /// <summary>
+    /// Selects the palette color that matches the selected object, when available.
+    /// </summary>
     public void PickColor()
     {
         var editor = _editor;
@@ -107,6 +129,9 @@ public class PaletteGrid : FrameworkElement
         }
     }
 
+    /// <summary>
+    /// Sets the palette color at the selected cell.
+    /// </summary>
     public void SetColorAtSelection(ColorC color)
     {
         if (_selectedIndex < 0)
@@ -159,10 +184,16 @@ public class PaletteGrid : FrameworkElement
     {
         base.OnMouseLeftButtonUp(e);
 
-        _editor?.ToggleHiddenSelection(false);
-
         if (IsMouseCaptured)
             ReleaseMouseCapture();
+        else
+            _editor?.ToggleHiddenSelection(false);
+    }
+
+    protected override void OnLostMouseCapture(MouseEventArgs e)
+    {
+        base.OnLostMouseCapture(e);
+        _editor?.ToggleHiddenSelection(false);
     }
 
     protected override void OnMouseMove(MouseEventArgs e)
@@ -186,10 +217,8 @@ public class PaletteGrid : FrameworkElement
         if (columns <= 0 || rows <= 0)
             return;
 
-        int x = position.X < 0.0 ? 0 : (int)(position.X / CellWidth);
-        int y = position.Y < 0.0 ? 0 : (int)(position.Y / CellHeight);
-        x = Math.Min(x, columns - 1);
-        y = Math.Min(y, rows - 1);
+        int x = GetCellIndex(position.X, columns, CellWidth);
+        int y = GetCellIndex(position.Y, rows, CellHeight);
 
         _selectedIndex = (y * columns) + x;
 
@@ -250,7 +279,7 @@ public class PaletteGrid : FrameworkElement
                 colorDialog.Color = moveable.Color.ToWinFormsColor();
         }
 
-        if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (colorDialog.ShowDialog(WinFormsDialogHelper.GetOpenFormOwner()) == System.Windows.Forms.DialogResult.OK)
         {
             var picked = colorDialog.Color;
             SetColorAtSelection(new ColorC(picked.R, picked.G, picked.B));
@@ -285,8 +314,9 @@ public class PaletteGrid : FrameworkElement
                 return;
 
             DrawCells(dc, columns, rows);
-            DrawGridLines(dc, columns, rows);
-            DrawOuterBorder(dc, columns, rows);
+            var gridArea = GetGridArea(columns, rows);
+            dc.DrawGridLines(GridPen, gridArea, columns, rows);
+            dc.DrawRectangleInside(BorderPen, gridArea);
             DrawSelectionRect(dc, columns, rows);
         }
         catch (Exception ex)
@@ -303,39 +333,11 @@ public class PaletteGrid : FrameworkElement
             {
                 int index = (y * columns) + x;
 
-                double xPos = (x * CellWidth) + BorderThickness;
-                double yPos = (y * CellHeight) + BorderThickness;
-                var rect = new Rect(xPos, yPos, CellWidth, CellHeight);
+                var rect = GetCellRect(x, y);
 
                 dc.DrawRectangle(GetBrushAtIndex(index), null, rect);
             }
         }
-    }
-
-    private static void DrawGridLines(DrawingContext dc, int columns, int rows)
-    {
-        double totalWidth = columns * CellWidth;
-        double totalHeight = rows * CellHeight;
-
-        for (int x = 1; x < columns; x++)
-        {
-            double xPos = (x * CellWidth) + BorderThickness;
-            dc.DrawLine(GridPen, new Point(xPos, 0.0), new Point(xPos, totalHeight));
-        }
-
-        for (int y = 1; y < rows; y++)
-        {
-            double yPos = (y * CellHeight) + BorderThickness;
-            dc.DrawLine(GridPen, new Point(0.0, yPos), new Point(totalWidth, yPos));
-        }
-    }
-
-    private static void DrawOuterBorder(DrawingContext dc, int columns, int rows)
-    {
-        double totalWidth = columns * CellWidth;
-        double totalHeight = rows * CellHeight;
-        var borderRect = new Rect(BorderThickness, BorderThickness, totalWidth, totalHeight);
-        dc.DrawRectangle(null, BorderPen, borderRect);
     }
 
     private void DrawSelectionRect(DrawingContext dc, int columns, int rows)
@@ -349,11 +351,9 @@ public class PaletteGrid : FrameworkElement
         if (y >= rows)
             return;
 
-        var selectionRect = new Rect(
-            (x * CellWidth) + BorderThickness, (y * CellHeight) + BorderThickness,
-            CellWidth, CellHeight);
+        var selectionRect = GetCellRect(x, y);
 
-        dc.DrawRectangle(null, SelectionPen, selectionRect);
+        dc.DrawRectangleInside(SelectionPen, selectionRect);
     }
 
     private Brush GetBrushAtIndex(int index)
@@ -376,34 +376,42 @@ public class PaletteGrid : FrameworkElement
 
         if (index == _palette.Count)
         {
-            _palette.Add(CloneColor(color));
+            _palette.Add(NormalizePaletteColor(color));
             _paletteBrushes.Add(CreateBrush(color));
             return;
         }
 
-        _palette[index] = CloneColor(color);
+        _palette[index] = NormalizePaletteColor(color);
         _paletteBrushes[index] = CreateBrush(color);
     }
 
-    private static ColorC CloneColor(ColorC color) => new(color.R, color.G, color.B);
+    private static int GetCellIndex(double coordinate, int count, double cellSize)
+        => Math.Clamp((int)Math.Floor((coordinate - BorderThickness) / cellSize), 0, count - 1);
 
-    private static Brush CreateBrush(ColorC color) => WPFUtils.CreateFrozenBrush(ToWPFColor(color));
+    private static Rect GetCellRect(int x, int y)
+        => new((x * CellWidth) + BorderThickness, (y * CellHeight) + BorderThickness, CellWidth, CellHeight);
+
+    private static Rect GetGridArea(int columns, int rows)
+        => new(BorderThickness, BorderThickness, columns * CellWidth, rows * CellHeight);
+
+    private static ColorC NormalizePaletteColor(ColorC color) => new(color.R, color.G, color.B);
+
+    private static Brush CreateBrush(ColorC color) => BrushHelpers.CreateFrozenBrush(ToWPFColor(color));
 
     private static Color ToWPFColor(ColorC color) => Color.FromRgb(color.R, color.G, color.B);
 
     private void DrawDesignPlaceholder(DrawingContext dc)
     {
-        dc.DrawRectangle(WPFUtils.CreateFrozenBrush(Color.FromRgb(50, 50, 50)), BorderPen,
+        dc.DrawRectangle(DesignPlaceholderBrush, BorderPen,
             new Rect(0.0, 0.0, ActualWidth, ActualHeight));
 
-        var text = new FormattedText("Palette",
-            CultureInfo.InvariantCulture,
-            FlowDirection.LeftToRight,
-            new Typeface("Segoe UI"), 12.0, Brushes.Gray,
-            VisualTreeHelper.GetDpi(this).PixelsPerDip);
-
-        dc.DrawText(text, new Point(
-            (ActualWidth - text.Width) / 2.0,
-            (ActualHeight - text.Height) / 2.0));
+        dc.DrawCenteredText(
+            "Palette",
+            new Rect(0.0, 0.0, ActualWidth, ActualHeight),
+            new Typeface("Segoe UI"),
+            12.0,
+            Brushes.Gray,
+            VisualTreeHelper.GetDpi(this).PixelsPerDip,
+            CultureInfo.InvariantCulture);
     }
 }
