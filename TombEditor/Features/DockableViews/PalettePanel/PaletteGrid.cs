@@ -59,8 +59,8 @@ public class PaletteGrid : FrameworkElement
     public List<ColorC> Palette => [.. _palette];
 
     private bool HasSelectedPaletteColor => _selectedIndex >= 0 && _selectedIndex < _palette.Count;
-    private int ColumnCount => Math.Max(0, (int)((ActualWidth - BorderThickness) / CellWidth));
-    private int RowCount => Math.Max(0, (int)((ActualHeight - BorderThickness) / CellHeight));
+    private int ColumnCount => Math.Max(0, (int)((ActualWidth - (BorderThickness * 2)) / CellWidth));
+    private int RowCount => Math.Max(0, (int)((ActualHeight - (BorderThickness * 2)) / CellHeight));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PaletteGrid"/> class.
@@ -69,6 +69,7 @@ public class PaletteGrid : FrameworkElement
     {
         ClipToBounds = true;
         Focusable = true;
+        FocusVisualStyle = null;
         SnapsToDevicePixels = true;
         UseLayoutRounding = true;
 
@@ -389,10 +390,22 @@ public class PaletteGrid : FrameworkElement
         => Math.Clamp((int)Math.Floor((coordinate - BorderThickness) / cellSize), 0, count - 1);
 
     private static Rect GetCellRect(int x, int y)
-        => new((x * CellWidth) + BorderThickness, (y * CellHeight) + BorderThickness, CellWidth, CellHeight);
+    {
+        return new(
+            (x * CellWidth) + BorderThickness,
+            (y * CellHeight) + BorderThickness,
+            CellWidth + BorderThickness,
+            CellHeight + BorderThickness);
+    }
 
     private static Rect GetGridArea(int columns, int rows)
-        => new(BorderThickness, BorderThickness, columns * CellWidth, rows * CellHeight);
+    {
+        return new(
+            BorderThickness,
+            BorderThickness,
+            (columns * CellWidth) + BorderThickness,
+            (rows * CellHeight) + BorderThickness);
+    }
 
     private static ColorC NormalizePaletteColor(ColorC color) => new(color.R, color.G, color.B);
 

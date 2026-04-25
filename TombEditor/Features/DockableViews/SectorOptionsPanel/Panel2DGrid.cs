@@ -80,6 +80,7 @@ public partial class Panel2DGrid : FrameworkElement, IDisposable
     {
         ClipToBounds = true;
         Focusable = true;
+        FocusVisualStyle = null;
         SnapsToDevicePixels = true;
         UseLayoutRounding = true;
 
