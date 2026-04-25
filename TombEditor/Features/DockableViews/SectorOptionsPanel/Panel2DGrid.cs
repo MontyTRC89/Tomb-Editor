@@ -45,11 +45,11 @@ public partial class Panel2DGrid : FrameworkElement, IDisposable
     private Room? _room;
     private bool _doSectorSelection;
     private bool _disposed;
-    private bool _isPanning;
     private double _viewOffsetX;
     private double _viewOffsetY;
     private double _viewScale = 1.0;
     private MouseButton? _panButton;
+    private bool _panThresholdPending;
     private bool _panWarpPending;
     private CursorWarpResult _panWarpTarget;
     private Point _lastDragPosition;

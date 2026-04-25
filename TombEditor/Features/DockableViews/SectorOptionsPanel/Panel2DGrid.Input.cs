@@ -16,6 +16,8 @@ namespace TombEditor.Features.DockableViews.SectorOptionsPanel;
 // Mouse and keyboard interaction.
 public partial class Panel2DGrid
 {
+    private bool IsPanning => _panButton is not null;
+
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
@@ -58,8 +60,11 @@ public partial class Panel2DGrid
             return;
         }
 
-        _doSectorSelection = false;
-        HandleMouseDown(e.GetPosition(this), isRightButton: true);
+        var position = e.GetPosition(this);
+
+        if (!BeginPan(position, MouseButton.Right, requireThreshold: true))
+            HandleMouseDown(position, isRightButton: true);
+
         e.Handled = true;
     }
 
@@ -67,7 +72,7 @@ public partial class Panel2DGrid
     {
         base.OnMouseLeftButtonUp(e);
 
-        if (_isPanning && _panButton == MouseButton.Left)
+        if (IsPanning && _panButton == MouseButton.Left)
         {
             EndPan();
             e.Handled = true;
@@ -100,7 +105,7 @@ public partial class Panel2DGrid
         if (e.ChangedButton != MouseButton.Middle)
             return;
 
-        if (_isPanning && _panButton == MouseButton.Middle)
+        if (IsPanning && _panButton == MouseButton.Middle)
         {
             EndPan();
             e.Handled = true;
@@ -110,6 +115,21 @@ public partial class Panel2DGrid
     protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
     {
         base.OnMouseRightButtonUp(e);
+
+        if (IsPanning && _panButton == MouseButton.Right)
+        {
+            bool shouldHandleClick = _panThresholdPending;
+            var clickPosition = _lastPanPosition;
+
+            EndPan();
+
+            if (shouldHandleClick)
+                HandleMouseDown(clickPosition, isRightButton: true);
+
+            e.Handled = true;
+            return;
+        }
+
         _doSectorSelection = false;
     }
 
@@ -117,7 +137,7 @@ public partial class Panel2DGrid
     {
         base.OnMouseMove(e);
 
-        if (_isPanning)
+        if (IsPanning)
         {
             if (!IsPanButtonPressed(e))
             {
@@ -127,6 +147,23 @@ public partial class Panel2DGrid
             }
 
             var position = e.GetPosition(this);
+
+            if (_panThresholdPending)
+            {
+                if (!HasExceededDragThreshold(_lastPanPosition, position))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                _panThresholdPending = false;
+                _panWarpPending = false;
+                _lastPanPosition = position;
+
+                UpdateCursor();
+                e.Handled = true;
+                return;
+            }
 
             if (TryConsumePendingPanWarp(position))
             {
@@ -261,16 +298,26 @@ public partial class Panel2DGrid
         }
     }
 
-    private void BeginPan(Point position, MouseButton button)
+    private bool BeginPan(Point position, MouseButton button, bool requireThreshold = false)
     {
         CloseSelectionToolTip();
 
         _doSectorSelection = false;
-        _lastPanPosition = position;
+        _panButton = null;
+        _panThresholdPending = false;
         _panWarpPending = false;
-        _isPanning = CaptureMouse();
-        _panButton = _isPanning ? button : null;
+
+        if (!CaptureMouse())
+        {
+            UpdateCursor();
+            return false;
+        }
+
+        _lastPanPosition = position;
+        _panButton = button;
+        _panThresholdPending = requireThreshold;
         UpdateCursor();
+        return true;
     }
 
     private void EndPan()
@@ -283,11 +330,11 @@ public partial class Panel2DGrid
 
     private void CancelPan()
     {
-        if (!_isPanning && _panButton is null)
+        if (_panButton is null)
             return;
 
-        _isPanning = false;
         _panButton = null;
+        _panThresholdPending = false;
         _panWarpPending = false;
         UpdateCursor();
     }
@@ -298,6 +345,7 @@ public partial class Panel2DGrid
         {
             MouseButton.Left => e.LeftButton == MouseButtonState.Pressed,
             MouseButton.Middle => e.MiddleButton == MouseButtonState.Pressed,
+            MouseButton.Right => e.RightButton == MouseButtonState.Pressed,
             _ => false
         };
     }
@@ -374,7 +422,7 @@ public partial class Panel2DGrid
 
     private void UpdateCursor(bool? isCameraRelocate = null)
     {
-        if (_isPanning)
+        if (IsPanning && !_panThresholdPending)
         {
             Cursor = Cursors.SizeAll;
             return;
@@ -391,6 +439,10 @@ public partial class Panel2DGrid
 
     private static bool IsResetKey(Key key)
         => key is Key.D0 or Key.NumPad0;
+
+    private static bool HasExceededDragThreshold(Point startPoint, Point currentPoint)
+        => Math.Abs(currentPoint.X - startPoint.X) >= SystemParameters.MinimumHorizontalDragDistance
+        || Math.Abs(currentPoint.Y - startPoint.Y) >= SystemParameters.MinimumVerticalDragDistance;
 
     private void HandleMouseDown(Point position, bool isRightButton)
     {
