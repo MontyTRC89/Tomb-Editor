@@ -22,7 +22,7 @@ public partial class PaletteViewModel : ObservableObject
 	public ICommand SampleFromTexturesCommand { get; }
 	public ICommand EditObjectColorCommand { get; }
 
-	private List<ColorC>? _lastTexturePalette;
+	private IReadOnlyList<ColorC>? _lastTexturePalette;
 
 	public PaletteViewModel(Editor editor)
 	{
@@ -30,6 +30,7 @@ public partial class PaletteViewModel : ObservableObject
 		_editor.EditorEventRaised += EditorEventRaised;
 
 		var args = new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor);
+
 		ResetPaletteCommand = CommandHandler.GetCommand("ResetPalette", args);
 		SampleFromTexturesCommand = CommandHandler.GetCommand("SamplePaletteFromTextures", args);
 		EditObjectColorCommand = CommandHandler.GetCommand("EditObjectColor", args);
@@ -38,9 +39,7 @@ public partial class PaletteViewModel : ObservableObject
 	}
 
 	public void Cleanup()
-	{
-		_editor.EditorEventRaised -= EditorEventRaised;
-	}
+		=> _editor.EditorEventRaised -= EditorEventRaised;
 
 	private void EditorEventRaised(IEditorEvent obj)
 	{
@@ -57,7 +56,7 @@ public partial class PaletteViewModel : ObservableObject
 			UpdateControlState();
 	}
 
-	public List<ColorC>? GetLastTexturePalette() => _lastTexturePalette;
+	public IReadOnlyList<ColorC>? GetLastTexturePalette() => _lastTexturePalette;
 
 	private void UpdateControlState()
 	{
