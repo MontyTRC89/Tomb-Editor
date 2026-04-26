@@ -223,6 +223,7 @@ public class NumericUpDown : Control
 			ApplyTextBoxProperties();
 
 			TextBox.PreviewTextInput += TextBox_PreviewTextInput;
+			TextBox.KeyDown += TextBox_KeyDown;
 			TextBox.LostFocus += TextBox_LostFocus;
 
 			DataObject.AddPastingHandler(TextBox, TextBox_Pasting);
@@ -334,6 +335,7 @@ public class NumericUpDown : Control
 		if (TextBox is not null)
 		{
 			TextBox.PreviewTextInput -= TextBox_PreviewTextInput;
+			TextBox.KeyDown -= TextBox_KeyDown;
 			TextBox.LostFocus -= TextBox_LostFocus;
 
 			DataObject.RemovePastingHandler(TextBox, TextBox_Pasting);
@@ -362,6 +364,15 @@ public class NumericUpDown : Control
 	{
 		CommitText();
 		ChangeValue(-GetKeyboardIncrement());
+	}
+
+	private void TextBox_KeyDown(object sender, KeyEventArgs e)
+	{
+		if (e.Key != Key.Enter)
+			return;
+
+		CommitText();
+		e.Handled = true;
 	}
 
 	private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
