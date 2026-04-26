@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,7 +11,7 @@ public static class WPFUtils
 {
 	private static readonly System.Windows.Forms.IWin32Window EmptyWin32Window = new EmptyWindow();
 
-	public static System.Windows.Forms.IWin32Window GetWin32WindowFromCaller(INotifyPropertyChanged _)
+	public static System.Windows.Forms.IWin32Window GetWin32WindowOwner()
 	{
 		if (System.Windows.Forms.Form.ActiveForm is { IsDisposed: false } activeForm)
 			return activeForm;

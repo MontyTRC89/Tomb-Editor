@@ -418,7 +418,7 @@ public partial class RoomOptionsViewModel : ObservableObject
         RefreshSelectedRoomLockState();
         RepopulateFlipMaps();
 
-        _commandArgs = new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor);
+        _commandArgs = new CommandArgs(WPFUtils.GetWin32WindowOwner(), _editor);
 
         EditRoomNameCommand = CommandHandler.GetCommand("EditRoomName", _commandArgs);
         AddNewRoomCommand = CommandHandler.GetCommand("AddNewRoom", _commandArgs);

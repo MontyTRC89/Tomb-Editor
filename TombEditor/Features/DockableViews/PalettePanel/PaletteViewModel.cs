@@ -29,7 +29,7 @@ public partial class PaletteViewModel : ObservableObject
 		_editor = editor;
 		_editor.EditorEventRaised += EditorEventRaised;
 
-		var args = new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor);
+		var args = new CommandArgs(WPFUtils.GetWin32WindowOwner(), _editor);
 
 		ResetPaletteCommand = CommandHandler.GetCommand("ResetPalette", args);
 		SampleFromTexturesCommand = CommandHandler.GetCommand("SamplePaletteFromTextures", args);

@@ -135,7 +135,7 @@ namespace TombEditor
         {
             var window = args?.Window;
 
-            if (window == null || window.Handle == IntPtr.Zero || (window is Control control && control.IsDisposed))
+            if (!IsValidWindow(window))
                 window = Form.ActiveForm != null ? (IWin32Window)Form.ActiveForm : EmptyWin32Window.Instance;
 
             return new CommandArgs
@@ -144,6 +144,14 @@ namespace TombEditor
                 Window = window,
                 KeyData = args?.KeyData ?? Keys.None
             };
+        }
+
+        private static bool IsValidWindow(IWin32Window window)
+        {
+            if (window == null || window.Handle == IntPtr.Zero)
+                return false;
+
+            return window is not Control control || !control.IsDisposed;
         }
 
         private sealed class EmptyWin32Window : IWin32Window

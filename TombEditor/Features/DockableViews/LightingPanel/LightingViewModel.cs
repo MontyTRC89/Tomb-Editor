@@ -194,7 +194,7 @@ public partial class LightingViewModel : ObservableObject
 	[RelayCommand]
 	private void EditLightColor()
 	{
-		EditorActions.EditLightColor(WPFUtils.GetWin32WindowFromCaller(this));
+		EditorActions.EditLightColor(WPFUtils.GetWin32WindowOwner());
 	}
 
 	private void EditorEventRaised(IEditorEvent obj)

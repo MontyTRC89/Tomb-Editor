@@ -88,7 +88,7 @@ public partial class SectorOptionsViewModel : ObservableObject
 		_editor = editor;
 		_editor.EditorEventRaised += EditorEventRaised;
 
-		var args = new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor);
+		var args = new CommandArgs(WPFUtils.GetWin32WindowOwner(), _editor);
 
 		SetFloorCommand = CommandHandler.GetCommand("SetFloor", args);
 		SetCeilingCommand = CommandHandler.GetCommand("SetCeiling", args);
