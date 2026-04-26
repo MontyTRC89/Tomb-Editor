@@ -24,10 +24,10 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(_elementHost);
             DockText = "Room Options";
-            MinimumSize = new System.Drawing.Size(284, 236);
+            MinimumSize = new System.Drawing.Size(284, 240);
             Name = "RoomOptions";
             SerializationKey = "RoomOptions";
-            Size = new System.Drawing.Size(284, 236);
+            Size = new System.Drawing.Size(284, 240);
             ResumeLayout(false);
         }
 

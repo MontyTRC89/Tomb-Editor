@@ -25,10 +25,10 @@
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             Controls.Add(_elementHost);
             DockText = "Sector Options";
-            MinimumSize = new System.Drawing.Size(284, 278);
+            MinimumSize = new System.Drawing.Size(284, 280);
             Name = "SectorOptions";
             SerializationKey = "SectorOptions";
-            Size = new System.Drawing.Size(284, 278);
+            Size = new System.Drawing.Size(284, 280);
             ResumeLayout(false);
         }
 
