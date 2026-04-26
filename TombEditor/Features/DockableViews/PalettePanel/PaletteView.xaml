@@ -21,21 +21,18 @@
 
         <controls:SpacedStack Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
             <Button
-                x:Name="butResetToDefaults"
                 Command="{Binding ResetPaletteCommand}"
                 IsEnabled="{Binding CanResetPalette}"
                 Style="{DynamicResource ButtonWithIconOnly}">
                 <Image Source="/TombEditor;component/Resources/icons_actions/actions_refresh-16.png" />
             </Button>
             <ToggleButton
-                x:Name="butSampleFromTextures"
                 Command="{Binding SampleFromTexturesCommand}"
                 IsChecked="{Binding IsTextureSamplingMode, Mode=OneWay}"
                 Style="{DynamicResource ToggleButtonWithIconOnly}">
                 <Image Source="/TombEditor;component/Resources/icons_actions/actions_TextureMode-16.png" />
             </ToggleButton>
             <Button
-                x:Name="butEditColor"
                 Command="{Binding EditObjectColorCommand}"
                 IsEnabled="{Binding CanEditColor}"
                 Style="{DynamicResource ButtonWithIconOnly}">
