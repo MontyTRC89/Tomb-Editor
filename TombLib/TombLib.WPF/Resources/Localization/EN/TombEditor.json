@@ -427,6 +427,12 @@
         "DirectionXTooltip": "Angle around the X axis (vertical rotation)"
     },
 
+    "Palette": {
+        "ResetPaletteTooltip": "Reset palette to defaults",
+        "SamplePaletteFromTexturesTooltip": "Sample palette from textures",
+        "EditObjectColorTooltip": "Edit object color"
+    },
+
     "ItemBrowser": {
         "LocateItem": "Locate item"
     },

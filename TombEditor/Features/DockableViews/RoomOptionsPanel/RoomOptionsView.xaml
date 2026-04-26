@@ -5,6 +5,7 @@
 	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:editor="clr-namespace:TombEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	MinWidth="285"
@@ -123,40 +124,40 @@
 						Content="{tombLib:Localize Skybox}"
 						IsChecked="{Binding Skybox}"
 						IsEnabled="{Binding SupportsHorizon}"
-						ToolTip="{tombLib:Localize SkyboxTooltip}" />
+						ToolTip="{editor:CommandToolTip SetRoomSkybox, Key=SkyboxTooltip}" />
 					<CheckBox
 						Grid.Row="1"
 						Content="{tombLib:Localize Wind}"
 						IsChecked="{Binding Wind}"
 						IsEnabled="{Binding SupportsFlagOutside}"
-						ToolTip="{tombLib:Localize WindTooltip}" />
+						ToolTip="{editor:CommandToolTip SetRoomOutside, Key=WindTooltip}" />
 
 					<CheckBox
 						Grid.Column="1"
 						Content="{tombLib:Localize Damage}"
 						IsChecked="{Binding Damage}"
 						IsEnabled="{Binding SupportsFlagDamage}"
-						ToolTip="{tombLib:Localize DamageTooltip}" />
+						ToolTip="{editor:CommandToolTip SetRoomDamage, Key=DamageTooltip}" />
 					<CheckBox
 						Grid.Row="1"
 						Grid.Column="1"
 						Content="{tombLib:Localize Cold}"
 						IsChecked="{Binding Cold}"
 						IsEnabled="{Binding SupportsFlagCold}"
-						ToolTip="{tombLib:Localize ColdTooltip}" />
+						ToolTip="{editor:CommandToolTip SetRoomCold, Key=ColdTooltip}" />
 
 					<CheckBox
 						Grid.Column="2"
 						Content="{tombLib:Localize NoPathfinding}"
 						IsChecked="{Binding NoPathfinding}"
-						ToolTip="{tombLib:Localize NoPathfindingTooltip}" />
+						ToolTip="{editor:CommandToolTip SetRoomNoPathfinding, Key=NoPathfindingTooltip}" />
 					<CheckBox
 						Grid.Row="1"
 						Grid.Column="2"
 						Content="{tombLib:Localize NoLensflare}"
 						IsChecked="{Binding NoLensflare}"
 						IsEnabled="{Binding SupportsNoLensflare}"
-						ToolTip="{tombLib:Localize NoLensflareTooltip}" />
+						ToolTip="{editor:CommandToolTip SetRoomNoLensflare, Key=NoLensflareTooltip}" />
 
 					<CheckBox
 						Grid.Row="2"
@@ -164,7 +165,7 @@
 						Content="{tombLib:Localize NoCaustics}"
 						IsChecked="{Binding NoCaustics}"
 						IsEnabled="{Binding SupportsNoCaustics}"
-						ToolTip="{tombLib:Localize NoCausticsTooltip}" />
+						ToolTip="{editor:CommandToolTip SetRoomNoCaustics, Key=NoCausticsTooltip}" />
 				</controls:SpacedGrid>
 
 				<controls:SpacedGrid Grid.Row="4" ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
@@ -208,35 +209,35 @@
 				<Button
 					Command="{Binding EditRoomNameCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize EditRoomNameTooltip}">
+					ToolTip="{editor:CommandToolTip EditRoomName, Key=EditRoomNameTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_edit-16.png" />
 				</Button>
 				<Button
 					Grid.Row="1"
 					Command="{Binding DuplicateRoomCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize DuplicateRoomTooltip}">
+					ToolTip="{editor:CommandToolTip DuplicateRoom, Key=DuplicateRoomTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_copy-16.png" />
 				</Button>
 				<Button
 					Grid.Row="2"
 					Command="{Binding CropRoomCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize CropRoomTooltip}">
+					ToolTip="{editor:CommandToolTip CropRoom, Key=CropRoomTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_crop-16.png" />
 				</Button>
 				<Button
 					Grid.Row="3"
 					Command="{Binding SplitRoomCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize SplitRoomTooltip}">
+					ToolTip="{editor:CommandToolTip SplitRoom, Key=SplitRoomTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_actions/actions_Split-16.png" />
 				</Button>
 				<Button
 					Grid.Row="4"
 					Command="{Binding SelectPreviousRoomCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize SelectPreviousRoomTooltip}">
+					ToolTip="{editor:CommandToolTip SelectPreviousRoom, Key=SelectPreviousRoomTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_actions/actions_back-16.png" />
 				</Button>
 
@@ -244,7 +245,7 @@
 					Grid.Column="1"
 					Command="{Binding AddNewRoomCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize AddNewRoomTooltip}">
+					ToolTip="{editor:CommandToolTip AddNewRoom, Key=AddNewRoomTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_plus_math-16.png" />
 				</Button>
 				<Button
@@ -252,7 +253,7 @@
 					Grid.Column="1"
 					Command="{Binding DeleteRoomsCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize DeleteRoomsTooltip}">
+					ToolTip="{editor:CommandToolTip DeleteRooms, Key=DeleteRoomsTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_trash-16.png" />
 				</Button>
 				<Button
@@ -260,7 +261,7 @@
 					Grid.Column="1"
 					Command="{Binding MoveRoomUpCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize MoveRoomUpTooltip}">
+					ToolTip="{editor:CommandToolTip MoveRoomUp, Key=MoveRoomUpTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_ArrowUp-16.png" />
 				</Button>
 				<Button
@@ -268,7 +269,7 @@
 					Grid.Column="1"
 					Command="{Binding MoveRoomDownCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize MoveRoomDownTooltip}">
+					ToolTip="{editor:CommandToolTip MoveRoomDown, Key=MoveRoomDownTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_ArrowDown-16.png" />
 				</Button>
 				<ToggleButton
@@ -278,7 +279,7 @@
 					IsChecked="{Binding Locked, Mode=OneWay}"
 					IsEnabled="{Binding CanLockRoom}"
 					Style="{DynamicResource ToggleButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize LockRoomTooltip}">
+					ToolTip="{editor:CommandToolTip LockRoom, Key=LockRoomTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_Lock-16.png" />
 				</ToggleButton>
 
@@ -288,7 +289,7 @@
 					Command="{Binding HideRoomCommand}"
 					IsChecked="{Binding Hidden, Mode=OneWay}"
 					Style="{DynamicResource ToggleButtonWithIconOnly}"
-					ToolTip="{tombLib:Localize HideRoomTooltip}">
+					ToolTip="{editor:CommandToolTip HideRoom, Key=HideRoomTooltip}">
 					<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Invisible-16.png" />
 				</ToggleButton>
 			</controls:SpacedGrid>
@@ -306,7 +307,7 @@
 				Width="60"
 				Command="{Binding EditAmbientLightCommand}"
 				SelectedColor="{Binding AmbientLightColor, Mode=OneWay}"
-				ToolTip="{tombLib:Localize EditAmbientLightTooltip}" />
+				ToolTip="{editor:CommandToolTip EditAmbientLight, Key=EditAmbientLightTooltip}" />
 			<ComboBox
 				Grid.Column="1"
 				ItemsSource="{Binding PortalShades}"

@@ -14,10 +14,6 @@ using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor.Features.DockableViews.RoomOptionsPanel;
 
-// TODO:
-// - Keyboard shortcuts don't show in tooltips for commands executed from this view model.
-//   This is a regression from the WinForms version. Implement this ASAP.
-
 public partial class RoomOptionsViewModel : ObservableObject
 {
     private readonly record struct UnsupportedRoomTypeWarningKey(Room Room, RoomType Type, TRVersion.Game Version);

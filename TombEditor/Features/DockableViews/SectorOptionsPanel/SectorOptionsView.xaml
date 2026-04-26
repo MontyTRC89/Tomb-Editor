@@ -6,6 +6,7 @@
 	xmlns:conv="clr-namespace:DarkUI.WPF.Converters;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:editor="clr-namespace:TombEditor"
 	xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
 	xmlns:local="clr-namespace:TombEditor.Features.DockableViews.SectorOptionsPanel"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -68,7 +69,7 @@
 				Background="{Binding FloorColor, Converter={StaticResource VectorToBrushConverter}}"
 				Command="{Binding SetFloorCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetFloor}">
+				ToolTip="{editor:CommandToolTip SetFloor}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Trigger}" />
@@ -82,7 +83,7 @@
 				Background="{Binding FloorColor, Converter={StaticResource VectorToBrushConverter}}"
 				Command="{Binding SetCeilingCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetCeiling}">
+				ToolTip="{editor:CommandToolTip SetCeiling}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Trigger}" />
@@ -97,7 +98,7 @@
 				Background="{Binding BoxColor, Converter={StaticResource VectorToBrushConverter}}"
 				Command="{Binding SetBoxCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetBox}">
+				ToolTip="{editor:CommandToolTip SetBox}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Box}" />
@@ -112,7 +113,7 @@
 				Background="{Binding NotWalkableColor, Converter={StaticResource VectorToBrushConverter}}"
 				Command="{Binding SetNotWalkableCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetNotWalkable}">
+				ToolTip="{editor:CommandToolTip SetNotWalkable}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.NotWalkableFloor}" />
@@ -128,7 +129,7 @@
 				Command="{Binding SetMonkeyswingCommand}"
 				IsEnabled="{Binding SupportsMonkeySwing}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetMonkeyswing}">
+				ToolTip="{editor:CommandToolTip SetMonkeyswing}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Monkey}" />
@@ -143,7 +144,7 @@
 				Background="{Binding DeathColor, Converter={StaticResource VectorToBrushConverter}}"
 				Command="{Binding SetDeathCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetDeath}">
+				ToolTip="{editor:CommandToolTip SetDeath}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Death}" />
@@ -158,7 +159,7 @@
 				Background="{Binding PortalColor, Converter={StaticResource VectorToBrushConverter}}"
 				Command="{Binding AddPortalCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize AddPortal}">
+				ToolTip="{editor:CommandToolTip AddPortal}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Portal}" />
@@ -173,7 +174,7 @@
 				Background="{Binding WallColor, Converter={StaticResource VectorToBrushConverter}}"
 				Command="{Binding SetWallCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetWall}">
+				ToolTip="{editor:CommandToolTip SetWall}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Wall}" />
@@ -188,7 +189,7 @@
 				Command="{Binding SetTriggerTriggererCommand}"
 				IsEnabled="{Binding SupportsTriggerTriggerer}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetTriggerTriggerer}">
+				ToolTip="{editor:CommandToolTip SetTriggerTriggerer}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.TriggerTriggerer}" />
@@ -203,7 +204,7 @@
 				Command="{Binding SetBeetleCheckpointCommand}"
 				IsEnabled="{Binding SupportsBeetleCheckpoint}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetBeetleCheckpoint}">
+				ToolTip="{editor:CommandToolTip SetBeetleCheckpoint}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Beetle}" />
@@ -218,7 +219,7 @@
 				Command="{Binding SetClimbPositiveZCommand}"
 				IsEnabled="{Binding SupportsClimbing}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetClimbPositiveZ}">
+				ToolTip="{editor:CommandToolTip SetClimbPositiveZ}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Climb}" />
@@ -233,7 +234,7 @@
 				Command="{Binding SetClimbNegativeZCommand}"
 				IsEnabled="{Binding SupportsClimbing}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetClimbNegativeZ}">
+				ToolTip="{editor:CommandToolTip SetClimbNegativeZ}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Climb}" />
@@ -248,7 +249,7 @@
 				Command="{Binding SetClimbNegativeXCommand}"
 				IsEnabled="{Binding SupportsClimbing}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetClimbNegativeX}">
+				ToolTip="{editor:CommandToolTip SetClimbNegativeX}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Climb}" />
@@ -263,7 +264,7 @@
 				Command="{Binding SetClimbPositiveXCommand}"
 				IsEnabled="{Binding SupportsClimbing}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize SetClimbPositiveX}">
+				ToolTip="{editor:CommandToolTip SetClimbPositiveX}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Climb}" />
@@ -277,7 +278,7 @@
 				Grid.Row="7"
 				Command="{Binding AddGhostBlocksToSelectionCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize AddGhostBlocksToSelection}">
+				ToolTip="{editor:CommandToolTip AddGhostBlocksToSelection}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Trigger}" />
@@ -291,7 +292,7 @@
 				Grid.Column="1"
 				Command="{Binding ToggleForceFloorSolidCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
-				ToolTip="{tombLib:Localize ToggleForceFloorSolid}">
+				ToolTip="{editor:CommandToolTip ToggleForceFloorSolid}">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="MouseEnter">
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.ForceFloorSolid}" />
@@ -314,7 +315,7 @@
 			<Button
 				Command="{Binding FloorStepCommand}"
 				Style="{DynamicResource ButtonWithIconAndText}"
-				ToolTip="{tombLib:Localize FloorStepTooltip}">
+				ToolTip="{editor:CommandToolTip SetDiagonalFloorStep, Key=FloorStepTooltip}">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor;component/Resources/icons_sectortype/sectortype_StepFloor_1-16.png" />
 					<TextBlock Text="{tombLib:Localize FloorStep}" />
@@ -325,7 +326,7 @@
 				Padding="{x:Static darkUI:Defaults.InputControl_DefaultPadding}"
 				Command="{Binding CeilingStepCommand}"
 				Style="{DynamicResource ButtonWithIconAndText}"
-				ToolTip="{tombLib:Localize CeilingStepTooltip}">
+				ToolTip="{editor:CommandToolTip SetDiagonalCeilingStep, Key=CeilingStepTooltip}">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor;component/Resources/icons_sectortype/sectortype_StepCeiling-16.png" />
 					<TextBlock Text="{tombLib:Localize CeilingStep}" />
@@ -335,7 +336,7 @@
 				Grid.Column="2"
 				Command="{Binding DiagonalWallCommand}"
 				Style="{DynamicResource ButtonWithIconAndText}"
-				ToolTip="{tombLib:Localize DiagonalWallTooltip}">
+				ToolTip="{editor:CommandToolTip SetDiagonalWall, Key=DiagonalWallTooltip}">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor;component/Resources/icons_sectortype/sectortype_DiagonalWall2-16.png" />
 					<TextBlock Text="{tombLib:Localize DiagonalWall}" />

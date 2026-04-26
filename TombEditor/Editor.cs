@@ -1062,6 +1062,9 @@ namespace TombEditor
             // Update configuration watcher
             if (obj is ConfigurationChangedEvent)
             {
+                if (((ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    KeyBindingsWrapper.Instance.Invalidate();
+
                 if (((ConfigurationChangedEvent)obj).Save && !_configurationIsLoadedFromFile)
                     Configuration.SaveTry();
 
