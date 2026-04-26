@@ -88,10 +88,13 @@ namespace TombEditor
         }
 
         public static System.Windows.Input.ICommand GetCommand(string name, CommandArgs args)
+            => GetCommand(name, () => ResolveCommandArgs(args));
+
+        public static System.Windows.Input.ICommand GetCommand(string name, Func<CommandArgs> argsFactory)
         {
             var command = GetCommand(name);
             return new CommunityToolkit.Mvvm.Input.RelayCommand(
-                () => command.Execute?.Invoke(args));
+                () => command.Execute?.Invoke(argsFactory?.Invoke()));
         }
 
         public static void ExecuteHotkey(CommandArgs args)
@@ -123,6 +126,28 @@ namespace TombEditor
                     }
                 }
             }
+        }
+
+        private static CommandArgs ResolveCommandArgs(CommandArgs args)
+        {
+            var window = args?.Window;
+
+            if (window == null || window.Handle == IntPtr.Zero || (window is Control control && control.IsDisposed))
+                window = Form.ActiveForm != null ? (IWin32Window)Form.ActiveForm : EmptyWin32Window.Instance;
+
+            return new CommandArgs
+            {
+                Editor = args?.Editor,
+                Window = window,
+                KeyData = args?.KeyData ?? Keys.None
+            };
+        }
+
+        private sealed class EmptyWin32Window : IWin32Window
+        {
+            public static readonly EmptyWin32Window Instance = new EmptyWin32Window();
+
+            public IntPtr Handle => IntPtr.Zero;
         }
 
         private static void GenericDirectionalControlCommand(CommandArgs args, SectorVerticalPart surface, int increment, bool smooth, bool oppositeDiagonal)
