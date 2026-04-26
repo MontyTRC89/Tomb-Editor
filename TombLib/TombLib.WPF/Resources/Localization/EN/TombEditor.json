@@ -368,7 +368,7 @@
         "PortalShadeDefault": "Default",
         "PortalShadeSmooth": "Smooth",
         "PortalShadeSharp": "Sharp",
-        "Effect": "Effect:",
+        "Effect": "Effect",
         "EffectTooltip": "Light / transform effect on room vertices",
         "EffectNone": "None",
         "EffectDefault": "Default",
