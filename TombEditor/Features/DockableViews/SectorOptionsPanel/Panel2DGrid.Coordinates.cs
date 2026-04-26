@@ -99,13 +99,9 @@ public partial class Panel2DGrid
     /// Converts a viewport-space point to a sector coordinate.
     /// </summary>
     /// <param name="point">The mouse position in control coordinates.</param>
-    /// <param name="allowOutsideRoomClamp">
-    /// When <see langword="true"/>, points outside the visible room are clamped to the nearest room edge.
-    /// When <see langword="false"/>, points outside the room are rejected.
-    /// </param>
     /// <param name="sectorCoord">Receives the resolved sector coordinate when the conversion succeeds.</param>
     /// <returns><see langword="true"/> when a sector coordinate could be resolved; otherwise <see langword="false"/>.</returns>
-    private bool TryGetSectorFromVisualCoord(Point point, bool allowOutsideRoomClamp, out VectorInt2 sectorCoord)
+    private bool TryGetSectorFromVisualCoord(Point point, out VectorInt2 sectorCoord)
     {
         sectorCoord = default;
 
@@ -125,9 +121,6 @@ public partial class Panel2DGrid
         if (roomSize.X <= 0 || roomSize.Y <= 0)
             return false;
 
-        if (!allowOutsideRoomClamp && !ContainsInclusive(roomArea, point))
-            return false;
-
         sectorCoord = new VectorInt2(
             (int)Math.Clamp((point.X - roomArea.X) / gridStep, 0.0, roomSize.X - 1),
             (int)Math.Clamp((roomArea.Bottom - point.Y) / gridStep, 0.0, roomSize.Y - 1));
@@ -143,7 +136,4 @@ public partial class Panel2DGrid
             Math.Max(0.0, totalArea.Width - BorderThickness),
             Math.Max(0.0, totalArea.Height - BorderThickness));
     }
-
-    private static bool ContainsInclusive(Rect rect, Point point)
-        => point.X >= rect.Left && point.X <= rect.Right && point.Y >= rect.Top && point.Y <= rect.Bottom;
 }

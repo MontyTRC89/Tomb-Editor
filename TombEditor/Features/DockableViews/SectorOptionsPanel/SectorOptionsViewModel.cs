@@ -12,6 +12,25 @@ namespace TombEditor.Features.DockableViews.SectorOptionsPanel;
 
 public partial class SectorOptionsViewModel : ObservableObject
 {
+	private const float IconSwitchBrightnessThreshold = 0.8f;
+
+	private const string FloorIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Floor_1-16.png";
+	private const string FloorIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Floor_neg-16.png";
+	private const string CeilingIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Roof-16.png";
+	private const string CeilingIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Roof_neg-16.png";
+	private const string BoxIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Box-16.png";
+	private const string BoxIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Box_neg-16.png";
+	private const string NotWalkableIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_NotWalkable-16.png";
+	private const string NotWalkableIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_NotWalkable_neg-16.png";
+	private const string MonkeyIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Monkey-16.png";
+	private const string MonkeyIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Monkey_neg-16.png";
+	private const string DeathIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Death-16.png";
+	private const string DeathIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Death_neg-16.png";
+	private const string PortalIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Portal -16.png";
+	private const string PortalIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Portal_neg -16.png";
+	private const string WallIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Wall_1-16.png";
+	private const string WallIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Wall_neg-16.png";
+
 	[ObservableProperty] private Vector4 floorColor;
 	[ObservableProperty] private Vector4 boxColor;
 	[ObservableProperty] private Vector4 notWalkableColor;
@@ -19,6 +38,15 @@ public partial class SectorOptionsViewModel : ObservableObject
 	[ObservableProperty] private Vector4 deathColor;
 	[ObservableProperty] private Vector4 portalColor;
 	[ObservableProperty] private Vector4 wallColor;
+
+	[ObservableProperty] private string floorIconSource = FloorIcon;
+	[ObservableProperty] private string ceilingIconSource = CeilingIcon;
+	[ObservableProperty] private string boxIconSource = BoxIcon;
+	[ObservableProperty] private string notWalkableIconSource = NotWalkableIcon;
+	[ObservableProperty] private string monkeyIconSource = MonkeyIcon;
+	[ObservableProperty] private string deathIconSource = DeathIcon;
+	[ObservableProperty] private string portalIconSource = PortalIcon;
+	[ObservableProperty] private string wallIconSource = WallIcon;
 
 	[ObservableProperty] private bool supportsClimbing;
 	[ObservableProperty] private bool supportsMonkeySwing;
@@ -60,34 +88,34 @@ public partial class SectorOptionsViewModel : ObservableObject
 		_editor = editor;
 		_editor.EditorEventRaised += EditorEventRaised;
 
-		SetFloorCommand = CommandHandler.GetCommand("SetFloor", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetCeilingCommand = CommandHandler.GetCommand("SetCeiling", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetBoxCommand = CommandHandler.GetCommand("SetBox", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetNotWalkableCommand = CommandHandler.GetCommand("SetNotWalkable", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetMonkeyswingCommand = CommandHandler.GetCommand("SetMonkeyswing", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetDeathCommand = CommandHandler.GetCommand("SetDeath", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddPortalCommand = CommandHandler.GetCommand("AddPortal", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetWallCommand = CommandHandler.GetCommand("SetWall", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetTriggerTriggererCommand = CommandHandler.GetCommand("SetTriggerTriggerer", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetBeetleCheckpointCommand = CommandHandler.GetCommand("SetBeetleCheckpoint", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetClimbPositiveZCommand = CommandHandler.GetCommand("SetClimbPositiveZ", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetClimbPositiveXCommand = CommandHandler.GetCommand("SetClimbPositiveX", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetClimbNegativeZCommand = CommandHandler.GetCommand("SetClimbNegativeZ", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		SetClimbNegativeXCommand = CommandHandler.GetCommand("SetClimbNegativeX", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		AddGhostBlocksToSelectionCommand = CommandHandler.GetCommand("AddGhostBlocksToSelection", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		ToggleForceFloorSolidCommand = CommandHandler.GetCommand("ToggleForceFloorSolid", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		FloorStepCommand = CommandHandler.GetCommand("SetDiagonalFloorStep", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		CeilingStepCommand = CommandHandler.GetCommand("SetDiagonalCeilingStep", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
-		DiagonalWallCommand = CommandHandler.GetCommand("SetDiagonalWall", new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor));
+		var args = new CommandArgs(WPFUtils.GetWin32WindowFromCaller(this), _editor);
+
+		SetFloorCommand = CommandHandler.GetCommand("SetFloor", args);
+		SetCeilingCommand = CommandHandler.GetCommand("SetCeiling", args);
+		SetBoxCommand = CommandHandler.GetCommand("SetBox", args);
+		SetNotWalkableCommand = CommandHandler.GetCommand("SetNotWalkable", args);
+		SetMonkeyswingCommand = CommandHandler.GetCommand("SetMonkeyswing", args);
+		SetDeathCommand = CommandHandler.GetCommand("SetDeath", args);
+		AddPortalCommand = CommandHandler.GetCommand("AddPortal", args);
+		SetWallCommand = CommandHandler.GetCommand("SetWall", args);
+		SetTriggerTriggererCommand = CommandHandler.GetCommand("SetTriggerTriggerer", args);
+		SetBeetleCheckpointCommand = CommandHandler.GetCommand("SetBeetleCheckpoint", args);
+		SetClimbPositiveZCommand = CommandHandler.GetCommand("SetClimbPositiveZ", args);
+		SetClimbPositiveXCommand = CommandHandler.GetCommand("SetClimbPositiveX", args);
+		SetClimbNegativeZCommand = CommandHandler.GetCommand("SetClimbNegativeZ", args);
+		SetClimbNegativeXCommand = CommandHandler.GetCommand("SetClimbNegativeX", args);
+		AddGhostBlocksToSelectionCommand = CommandHandler.GetCommand("AddGhostBlocksToSelection", args);
+		ToggleForceFloorSolidCommand = CommandHandler.GetCommand("ToggleForceFloorSolid", args);
+		FloorStepCommand = CommandHandler.GetCommand("SetDiagonalFloorStep", args);
+		CeilingStepCommand = CommandHandler.GetCommand("SetDiagonalCeilingStep", args);
+		DiagonalWallCommand = CommandHandler.GetCommand("SetDiagonalWall", args);
 
 		SetButtonColors();
 		UpdateVersionSpecificControls();
 	}
 
 	public void Cleanup()
-	{
-		_editor.EditorEventRaised -= EditorEventRaised;
-	}
+		=> _editor.EditorEventRaised -= EditorEventRaised;
 
 	private void EditorEventRaised(IEditorEvent obj)
 	{
@@ -107,7 +135,19 @@ public partial class SectorOptionsViewModel : ObservableObject
 		DeathColor = _editor.Configuration.UI_ColorScheme.ColorDeath;
 		PortalColor = _editor.Configuration.UI_ColorScheme.ColorPortal;
 		WallColor = _editor.Configuration.UI_ColorScheme.ColorWall;
+
+		FloorIconSource = GetContrastAwareIcon(FloorColor, FloorIcon, FloorIconNegative);
+		CeilingIconSource = GetContrastAwareIcon(FloorColor, CeilingIcon, CeilingIconNegative);
+		BoxIconSource = GetContrastAwareIcon(BoxColor, BoxIcon, BoxIconNegative);
+		NotWalkableIconSource = GetContrastAwareIcon(NotWalkableColor, NotWalkableIcon, NotWalkableIconNegative);
+		MonkeyIconSource = GetContrastAwareIcon(MonkeyswingColor, MonkeyIcon, MonkeyIconNegative);
+		DeathIconSource = GetContrastAwareIcon(DeathColor, DeathIcon, DeathIconNegative);
+		PortalIconSource = GetContrastAwareIcon(PortalColor, PortalIcon, PortalIconNegative);
+		WallIconSource = GetContrastAwareIcon(WallColor, WallIcon, WallIconNegative);
 	}
+
+	private static string GetContrastAwareIcon(Vector4 color, string defaultIcon, string negativeIcon)
+		=> color.ToWPFBrush().GetBrightness() > IconSwitchBrightnessThreshold ? negativeIcon : defaultIcon;
 
 	private void UpdateVersionSpecificControls()
 	{

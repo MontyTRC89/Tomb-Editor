@@ -17,6 +17,7 @@ public class AutoCompleteBox : Control
 	public static readonly DependencyProperty IsSuggestionVisibleProperty;
 	public static readonly DependencyProperty ItemsSourceProperty;
 	public static readonly DependencyProperty SelectItemProperty;
+	public static readonly DependencyProperty CharacterCasingProperty;
 
 	public string Text
 	{
@@ -40,6 +41,12 @@ public class AutoCompleteBox : Control
 	{
 		get => (ICommand)GetValue(SelectItemProperty);
 		set => SetValue(SelectItemProperty, value);
+	}
+
+	public CharacterCasing CharacterCasing
+	{
+		get => (CharacterCasing)GetValue(CharacterCasingProperty);
+		set => SetValue(CharacterCasingProperty, value);
 	}
 
 	public TextBox? InputTextBox { get; set; }
@@ -71,6 +78,12 @@ public class AutoCompleteBox : Control
 			typeof(ICommand),
 			typeof(AutoCompleteBox),
 			new PropertyMetadata(null));
+
+		CharacterCasingProperty = DependencyProperty.Register(
+			nameof(CharacterCasing),
+			typeof(CharacterCasing),
+			typeof(AutoCompleteBox),
+			new PropertyMetadata(CharacterCasing.Normal));
 	}
 
 	public override void OnApplyTemplate()
@@ -122,7 +135,12 @@ public class AutoCompleteBox : Control
 	protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 	{
 		if (e.Property == TextProperty && InputTextBox is not null)
-			InputTextBox.Text = (string)e.NewValue;
+		{
+			string newValue = (string)e.NewValue;
+
+			if (!string.Equals(InputTextBox.Text, newValue, StringComparison.Ordinal))
+				InputTextBox.Text = newValue;
+		}
 
 		base.OnPropertyChanged(e);
 	}

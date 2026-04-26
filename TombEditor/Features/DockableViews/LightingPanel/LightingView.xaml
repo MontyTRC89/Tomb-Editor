@@ -37,7 +37,7 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<ComboBox SelectedIndex="{Binding SelectedLightType}">
+					<ComboBox SelectedIndex="{Binding SelectedLightType}" ToolTip="{tombLib:Localize LightTypeTooltip}">
 						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
 								<Image Source="/TombEditor;component/Resources/icons_objects/objects_LightPoint-16.png" />
@@ -84,7 +84,8 @@
 					<Button
 						Grid.Column="1"
 						Command="{Binding AddLightCommand}"
-						Style="{DynamicResource ButtonWithIconOnly}">
+						Style="{DynamicResource ButtonWithIconOnly}"
+						ToolTip="{tombLib:Localize AddLightTooltip}">
 						<Image Source="/TombEditor;component/Resources/icons_general/general_plus_math-16.png" />
 					</Button>
 				</controls:SpacedGrid>
@@ -93,11 +94,12 @@
 					Grid.Row="1"
 					Grid.ColumnSpan="2"
 					IsEnabled="{Binding CanEditQuality}"
-					SelectedIndex="{Binding SelectedLightQuality}">
-					<ComboBoxItem Content="{tombLib:Localize QualityDefault}" />
-					<ComboBoxItem Content="{tombLib:Localize QualityLow}" />
-					<ComboBoxItem Content="{tombLib:Localize QualityMedium}" />
-					<ComboBoxItem Content="{tombLib:Localize QualityHigh}" />
+					SelectedIndex="{Binding SelectedLightQuality}"
+					ToolTip="{tombLib:Localize QualityTooltip}">
+					<ComboBoxItem Content="{tombLib:Localize DefaultQuality}" />
+					<ComboBoxItem Content="{tombLib:Localize LowQuality}" />
+					<ComboBoxItem Content="{tombLib:Localize MediumQuality}" />
+					<ComboBoxItem Content="{tombLib:Localize HighQuality}" />
 				</ComboBox>
 			</controls:SpacedGrid>
 
@@ -120,35 +122,41 @@
 				<CheckBox
 					Content="{tombLib:Localize Enabled}"
 					IsChecked="{Binding LightEnabled}"
-					IsEnabled="{Binding HasLight}" />
+					IsEnabled="{Binding HasLight}"
+					ToolTip="{tombLib:Localize EnabledTooltip}" />
 				<CheckBox
 					Grid.Row="1"
 					Content="{tombLib:Localize Obstruct}"
 					IsChecked="{Binding ObstructedByGeometry}"
-					IsEnabled="{Binding CanCastShadows}" />
+					IsEnabled="{Binding CanCastShadows}"
+					ToolTip="{tombLib:Localize ObstructTooltip}" />
 				<CheckBox
 					Grid.Row="2"
 					Content="{tombLib:Localize Shadow}"
 					IsChecked="{Binding CastsShadow}"
-					IsEnabled="{Binding CanCastDynamicShadows}" />
+					IsEnabled="{Binding CanCastDynamicShadows}"
+					ToolTip="{tombLib:Localize ShadowTooltip}" />
 
 				<CheckBox
 					Grid.Column="1"
 					Content="{tombLib:Localize Static}"
 					IsChecked="{Binding StaticallyUsed}"
-					IsEnabled="{Binding CanIlluminateGeometry}" />
+					IsEnabled="{Binding CanIlluminateGeometry}"
+					ToolTip="{tombLib:Localize StaticTooltip}" />
 				<CheckBox
 					Grid.Row="1"
 					Grid.Column="1"
 					Content="{tombLib:Localize Dynamic}"
 					IsChecked="{Binding DynamicallyUsed}"
-					IsEnabled="{Binding CanIlluminateGeometry}" />
+					IsEnabled="{Binding CanIlluminateGeometry}"
+					ToolTip="{tombLib:Localize DynamicTooltip}" />
 				<CheckBox
 					Grid.Row="2"
 					Grid.Column="1"
 					Content="{tombLib:Localize Imported}"
 					IsChecked="{Binding UsedForImportedGeometry}"
-					IsEnabled="{Binding CanIlluminateGeometry}" />
+					IsEnabled="{Binding CanIlluminateGeometry}"
+					ToolTip="{tombLib:Localize ImportedTooltip}" />
 			</controls:SpacedGrid>
 		</controls:SpacedGrid>
 
@@ -177,7 +185,8 @@
 				Height="22"
 				Command="{Binding EditLightColorCommand}"
 				IsEnabled="{Binding HasLight}"
-				SelectedColor="{Binding LightColor, Mode=OneWay}" />
+				SelectedColor="{Binding LightColor, Mode=OneWay}"
+				ToolTip="{tombLib:Localize ColorTooltip}" />
 			<Label
 				Grid.Row="1"
 				HorizontalAlignment="Right"
@@ -186,9 +195,14 @@
 			<controls:NumericUpDown
 				Grid.Row="1"
 				Grid.Column="1"
+				DecimalPlaces="2"
 				FormatString="F2"
-				Increment="0.01"
+				Increment="0.03"
 				IsEnabled="{Binding HasLight}"
+				LargeIncrement="0.12"
+				Maximum="128"
+				Minimum="-128"
+				ToolTip="{tombLib:Localize IntensityTooltip}"
 				Value="{Binding Intensity}" />
 			<Label
 				Grid.Row="2"
@@ -198,9 +212,14 @@
 			<controls:NumericUpDown
 				Grid.Row="2"
 				Grid.Column="1"
+				DecimalPlaces="2"
 				FormatString="F2"
-				Increment="0.01"
+				Increment="0.03"
 				IsEnabled="{Binding CanEditInRange}"
+				LargeIncrement="1"
+				Maximum="256"
+				Minimum="0"
+				ToolTip="{tombLib:Localize InnerDistanceTooltip}"
 				Value="{Binding InnerRange}" />
 			<Label
 				Grid.Row="3"
@@ -210,9 +229,14 @@
 			<controls:NumericUpDown
 				Grid.Row="3"
 				Grid.Column="1"
+				DecimalPlaces="2"
 				FormatString="F2"
-				Increment="0.01"
+				Increment="0.03"
 				IsEnabled="{Binding CanEditOutRange}"
+				LargeIncrement="1"
+				Maximum="256"
+				Minimum="0"
+				ToolTip="{tombLib:Localize OuterDistanceTooltip}"
 				Value="{Binding OuterRange}" />
 
 			<Label
@@ -226,9 +250,14 @@
 			</Label>
 			<controls:NumericUpDown
 				Grid.Column="3"
+				DecimalPlaces="2"
 				FormatString="F2"
-				Increment="0.01"
+				Increment="1"
 				IsEnabled="{Binding CanEditInOutAngle}"
+				LargeIncrement="10"
+				Maximum="180"
+				Minimum="0"
+				ToolTip="{tombLib:Localize InnerAngleTooltip}"
 				Value="{Binding InnerAngle}" />
 			<Label
 				Grid.Row="1"
@@ -243,9 +272,14 @@
 			<controls:NumericUpDown
 				Grid.Row="1"
 				Grid.Column="3"
+				DecimalPlaces="2"
 				FormatString="F2"
-				Increment="0.01"
+				Increment="1"
 				IsEnabled="{Binding CanEditInOutAngle}"
+				LargeIncrement="10"
+				Maximum="180"
+				Minimum="0"
+				ToolTip="{tombLib:Localize OuterAngleTooltip}"
 				Value="{Binding OuterAngle}" />
 			<Label
 				Grid.Row="2"
@@ -260,9 +294,14 @@
 			<controls:NumericUpDown
 				Grid.Row="2"
 				Grid.Column="3"
+				DecimalPlaces="2"
 				FormatString="F2"
-				Increment="0.01"
+				Increment="1"
 				IsEnabled="{Binding CanEditDirection}"
+				LargeIncrement="10"
+				Maximum="720"
+				Minimum="-360"
+				ToolTip="{tombLib:Localize DirectionYTooltip}"
 				Value="{Binding DirectionY}" />
 			<Label
 				Grid.Row="3"
@@ -277,9 +316,14 @@
 			<controls:NumericUpDown
 				Grid.Row="3"
 				Grid.Column="3"
+				DecimalPlaces="2"
 				FormatString="F2"
-				Increment="0.01"
+				Increment="1"
 				IsEnabled="{Binding CanEditDirection}"
+				LargeIncrement="10"
+				Maximum="90"
+				Minimum="-90"
+				ToolTip="{tombLib:Localize DirectionXTooltip}"
 				Value="{Binding DirectionX}" />
 		</controls:SpacedGrid>
 	</controls:SpacedGrid>

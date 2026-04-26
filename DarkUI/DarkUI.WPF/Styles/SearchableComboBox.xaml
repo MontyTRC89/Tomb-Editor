@@ -46,7 +46,8 @@
 							MaxHeight="{x:Static local:Defaults.ComboBox_Popup_MaxHeight}"
 							AllowsTransparency="True"
 							IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-							Placement="Bottom">
+							Placement="Bottom"
+							PopupAnimation="Slide">
 							<Border
 								Margin="{x:Static local:Defaults.Thickness_ShadowMargin}"
 								Padding="{x:Static local:Defaults.SmallThickness}"

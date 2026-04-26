@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -14,6 +13,10 @@ using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor.Features.DockableViews.RoomOptionsPanel;
+
+// TODO:
+// - Keyboard shortcuts don't show in tooltips for commands executed from this view model.
+//   This is a regression from the WinForms version. Implement this ASAP.
 
 public partial class RoomOptionsViewModel : ObservableObject
 {
@@ -235,10 +238,7 @@ public partial class RoomOptionsViewModel : ObservableObject
         }
         set
         {
-            if (value < -1 || value >= _roomTypes.Count)
-                return;
-
-            if (value == -1)
+            if (value < 0 || value >= _roomTypes.Count)
                 return;
 
             var (newType, newStrength) = value switch
@@ -311,10 +311,12 @@ public partial class RoomOptionsViewModel : ObservableObject
 
     public int SelectedReverb
     {
-        get => _editor.SelectedRoom.Properties.Reverberation;
+        get => _editor.SelectedRoom.Properties.Reverberation < ReverbValues.Count
+            ? _editor.SelectedRoom.Properties.Reverberation
+            : -1;
         set
         {
-            if (value is < 0 or > byte.MaxValue)
+            if (value < 0 || value >= ReverbValues.Count)
                 return;
 
             UpdateSelectedRoomProperty(
@@ -323,6 +325,12 @@ public partial class RoomOptionsViewModel : ObservableObject
                 (byte)value);
         }
     }
+
+    public string? ReverbTooltip => _editor.Level.Settings.GameEnableExtraReverbPresets &&
+        SelectedReverb > 0 &&
+        SelectedReverb < ReverbValues.Count
+            ? ReverbValues[SelectedReverb]
+            : null;
 
     public int SelectedPortalShade
     {
@@ -365,7 +373,7 @@ public partial class RoomOptionsViewModel : ObservableObject
 
     public bool Hidden => _editor.SelectedRoom.Properties.Hidden;
 
-    public Color AmbientLightColor => _editor.SelectedRoom.Properties.AmbientLight.ToWPFColor();
+    public Color AmbientLightColor => (_editor.SelectedRoom.Properties.AmbientLight * 0.5f).ToWPFColor();
 
     [ObservableProperty] private bool supportsHorizon;
     [ObservableProperty] private bool supportsFlagOutside;
@@ -393,7 +401,8 @@ public partial class RoomOptionsViewModel : ObservableObject
     public ICommand HideRoomCommand { get; }
     public ICommand EditAmbientLightCommand { get; }
 
-    public ObservableCollection<string> FlipMaps { get; } = [];
+    private IReadOnlyList<string> _flipMaps = [];
+    public IReadOnlyList<string> FlipMaps => _flipMaps;
 
     public RoomOptionsViewModel(Editor editor, ILocalizationService? localizationService = null)
     {
@@ -492,6 +501,7 @@ public partial class RoomOptionsViewModel : ObservableObject
         OnPropertyChanged(nameof(SelectedRoomType));
         OnPropertyChanged(nameof(SelectedFlipMap));
         OnPropertyChanged(nameof(SelectedReverb));
+        OnPropertyChanged(nameof(ReverbTooltip));
         OnPropertyChanged(nameof(SelectedPortalShade));
         OnPropertyChanged(nameof(SelectedEffect));
         OnPropertyChanged(nameof(EffectStrength));
@@ -574,13 +584,16 @@ public partial class RoomOptionsViewModel : ObservableObject
 
     private void RepopulateFlipMaps()
     {
-        FlipMaps.Clear();
-        FlipMaps.Add(_localizationService["FlipmapNone"]);
-
         int flipmapCount = _editor.Level.Settings.GameVersion is TRVersion.Game.TombEngine ? byte.MaxValue : 15;
 
-        for (int i = 0; i < flipmapCount; i++)
-            FlipMaps.Add(i.ToString());
+        _flipMaps =
+        [
+            _localizationService["FlipmapNone"],
+            .. Enumerable.Range(0, flipmapCount).Select(static i => i.ToString())
+        ];
+
+        OnPropertyChanged(nameof(FlipMaps));
+        OnPropertyChanged(nameof(SelectedFlipMap));
     }
 
     private void UpdateSelectedRoomType(RoomType newType, byte newStrength)
@@ -600,7 +613,11 @@ public partial class RoomOptionsViewModel : ObservableObject
     {
         var room = _editor.SelectedRoom;
         string input = value ?? string.Empty;
-        List<string> newTags = [.. input.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)]; // `null` = split on any whitespace
+
+        List<string> newTags = [.. input
+            .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries) // `null` = split on any whitespace
+            .Select(tag => tag.ToLowerInvariant())];
+
         string normalizedTags = string.Join(' ', newTags);
 
         if (room.Properties.Tags.SequenceEqual(newTags))
@@ -655,6 +672,7 @@ public partial class RoomOptionsViewModel : ObservableObject
             RefreshVersionSpecificState();
             OnPropertyChanged(nameof(RoomTypes));
             OnPropertyChanged(nameof(ReverbValues));
+            OnPropertyChanged(nameof(ReverbTooltip));
             OnPropertyChanged(nameof(Effects));
             OnPropertyChanged(nameof(PortalShades));
             RepopulateFlipMaps();

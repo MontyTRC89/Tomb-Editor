@@ -416,7 +416,7 @@ public partial class Panel2DGrid
         if (editor.SelectedRoom is null || editor.Action is EditorActionRelocateCamera)
             return;
 
-        if (TryGetSectorFromVisualCoord(position, allowOutsideRoomClamp: true, out var sectorPos))
+        if (TryGetSectorFromVisualCoord(position, out var sectorPos))
             editor.SelectedSectors = new SectorSelection { Start = editor.SelectedSectors.Start, End = sectorPos };
     }
 
@@ -454,7 +454,7 @@ public partial class Panel2DGrid
         if (editor is null || room is null)
             return;
 
-        if (!TryGetSectorFromVisualCoord(position, allowOutsideRoomClamp: false, out var sectorPos))
+        if (!TryGetSectorFromVisualCoord(position, out var sectorPos))
             return;
 
         if (editor.Action is EditorActionRelocateCamera)
