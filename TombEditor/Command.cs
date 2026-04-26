@@ -29,6 +29,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
 using TombLib.Utils;
+using TombLib.WPF;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -92,8 +93,7 @@ namespace TombEditor
 
         public static System.Windows.Input.ICommand GetCommand(string name, Func<CommandArgs> argsFactory)
         {
-            if (argsFactory == null)
-                throw new ArgumentNullException(nameof(argsFactory));
+            ArgumentNullException.ThrowIfNull(argsFactory);
 
             var command = GetCommand(name);
             return new CommunityToolkit.Mvvm.Input.RelayCommand(
@@ -136,7 +136,7 @@ namespace TombEditor
             var window = args?.Window;
 
             if (!IsValidWindow(window))
-                window = Form.ActiveForm != null ? (IWin32Window)Form.ActiveForm : EmptyWin32Window.Instance;
+                window = WPFUtils.GetWin32WindowOwner();
 
             return new CommandArgs
             {
@@ -152,13 +152,6 @@ namespace TombEditor
                 return false;
 
             return window is not Control control || !control.IsDisposed;
-        }
-
-        private sealed class EmptyWin32Window : IWin32Window
-        {
-            public static readonly EmptyWin32Window Instance = new EmptyWin32Window();
-
-            public IntPtr Handle => IntPtr.Zero;
         }
 
         private static void GenericDirectionalControlCommand(CommandArgs args, SectorVerticalPart surface, int increment, bool smooth, bool oppositeDiagonal)
