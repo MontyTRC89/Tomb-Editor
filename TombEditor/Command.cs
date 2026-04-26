@@ -92,9 +92,12 @@ namespace TombEditor
 
         public static System.Windows.Input.ICommand GetCommand(string name, Func<CommandArgs> argsFactory)
         {
+            if (argsFactory == null)
+                throw new ArgumentNullException(nameof(argsFactory));
+
             var command = GetCommand(name);
             return new CommunityToolkit.Mvvm.Input.RelayCommand(
-                () => command.Execute?.Invoke(argsFactory?.Invoke()));
+                () => command.Execute?.Invoke(argsFactory()));
         }
 
         public static void ExecuteHotkey(CommandArgs args)

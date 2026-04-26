@@ -12,10 +12,8 @@ public static class WPFUtils
 {
 	private static readonly System.Windows.Forms.IWin32Window EmptyWin32Window = new EmptyWindow();
 
-	public static System.Windows.Forms.IWin32Window GetWin32WindowFromCaller(INotifyPropertyChanged caller)
+	public static System.Windows.Forms.IWin32Window GetWin32WindowFromCaller(INotifyPropertyChanged _)
 	{
-		_ = caller;
-
 		if (System.Windows.Forms.Form.ActiveForm is { IsDisposed: false } activeForm)
 			return activeForm;
 
