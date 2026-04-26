@@ -133,16 +133,18 @@ namespace TombEditor
 
         private static CommandArgs ResolveCommandArgs(CommandArgs args)
         {
-            var window = args?.Window;
+            ArgumentNullException.ThrowIfNull(args);
+
+            var window = args.Window;
 
             if (!IsValidWindow(window))
                 window = WPFUtils.GetWin32WindowOwner();
 
             return new CommandArgs
             {
-                Editor = args?.Editor,
+                Editor = args.Editor,
                 Window = window,
-                KeyData = args?.KeyData ?? Keys.None
+                KeyData = args.KeyData
             };
         }
 
