@@ -212,15 +212,15 @@ public partial class LightingViewModel : ObservableObject
 		var isTEN = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
 		var light = _editor.SelectedObject as LightInstance;
 
-		HasLight = light != null;
-		CanEditInRange = light != null && HasInRange(light);
-		CanEditOutRange = light != null && HasOutRange(light);
-		CanEditInOutAngle = light != null && HasInOutAngle(light);
-		CanEditDirection = light != null && HasDirection(light);
-		CanCastShadows = light != null && CanObstruct(light);
-		CanCastDynamicShadows = light != null && CanDynamicShadow(light, isTEN);
-		CanIlluminateGeometry = light != null && CanIlluminate(light);
-		CanEditQuality = light != null;
+		HasLight = light is not null;
+		CanEditInRange = light is not null && HasInRange(light);
+		CanEditOutRange = light is not null && HasOutRange(light);
+		CanEditInOutAngle = light is not null && HasInOutAngle(light);
+		CanEditDirection = light is not null && HasDirection(light);
+		CanCastShadows = light is not null && CanObstruct(light);
+		CanCastDynamicShadows = light is not null && CanDynamicShadow(light, isTEN);
+		CanIlluminateGeometry = light is not null && CanIlluminate(light);
+		CanEditQuality = light is not null;
 
 		OnPropertyChanged(nameof(SelectedLightType));
 		OnPropertyChanged(nameof(SelectedLightQuality));

@@ -13,12 +13,12 @@ public static class WPFUtils
 
 	public static System.Windows.Forms.IWin32Window GetWin32WindowOwner()
 	{
-		if (System.Windows.Forms.Form.ActiveForm is { IsDisposed: false } activeForm)
+		if (System.Windows.Forms.Form.ActiveForm is { } activeForm && CanOwnDialogs(activeForm))
 			return activeForm;
 
 		foreach (System.Windows.Forms.Form form in System.Windows.Forms.Application.OpenForms)
 		{
-			if (!form.IsDisposed)
+			if (CanOwnDialogs(form))
 				return form;
 		}
 
@@ -77,7 +77,7 @@ public static class WPFUtils
 
 	public static IEnumerable<Control> AllSubControls(DependencyObject depObj)
 	{
-		if (depObj == null)
+		if (depObj is null)
 			yield break;
 
 		foreach (var child in LogicalTreeHelper.GetChildren(depObj))
@@ -97,4 +97,7 @@ public static class WPFUtils
 	{
 		public IntPtr Handle => IntPtr.Zero;
 	}
+
+	private static bool CanOwnDialogs(System.Windows.Forms.Form form)
+		=> !form.IsDisposed && form.Handle != IntPtr.Zero;
 }

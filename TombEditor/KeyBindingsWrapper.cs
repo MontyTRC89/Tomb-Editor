@@ -7,7 +7,7 @@ namespace TombEditor;
 
 public class KeyBindingsWrapper : INotifyPropertyChanged
 {
-	public static KeyBindingsWrapper Instance { get; set; } = new KeyBindingsWrapper();
+	public static KeyBindingsWrapper Instance { get; } = new KeyBindingsWrapper();
 
 	private const string IndexerName = "Item";
 	private const string IndexerArrayName = "Item[]";

@@ -83,13 +83,18 @@ namespace TombEditor
         public static CommandObj GetCommand(string name)
         {
             CommandObj command = _commands.FirstOrDefault(cmd => cmd.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
-            if (command == null)
+            if (command is null)
                 throw new KeyNotFoundException("Command with name '" + name + "' not found.");
+
             return command;
         }
 
         public static System.Windows.Input.ICommand GetCommand(string name, CommandArgs args)
-            => GetCommand(name, () => ResolveCommandArgs(args));
+        {
+            ArgumentNullException.ThrowIfNull(args);
+
+            return GetCommand(name, () => ResolveCommandArgs(args));
+        }
 
         public static System.Windows.Input.ICommand GetCommand(string name, Func<CommandArgs> argsFactory)
         {
@@ -97,7 +102,8 @@ namespace TombEditor
 
             var command = GetCommand(name);
             return new CommunityToolkit.Mvvm.Input.RelayCommand(
-                () => command.Execute?.Invoke(argsFactory()));
+                () => command.Execute?.Invoke(argsFactory()),
+                () => CanExecuteCommand(argsFactory));
         }
 
         public static void ExecuteHotkey(CommandArgs args)
@@ -116,7 +122,7 @@ namespace TombEditor
                 {
                     var command = GetCommand(control.Tag.ToString());
 
-                    if (command != null)
+                    if (command is not null)
                     {
                         var hotkeyLabel = string.Join(", ", editor.Configuration.UI_Hotkeys[control.Tag.ToString()]);
                         var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");
@@ -124,12 +130,15 @@ namespace TombEditor
                         if(!onlyToolTips)
                             control.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = editor, Window = parent.FindForm() }); };
 
-                        if (toolTip != null && !string.IsNullOrEmpty(label))
+                        if (toolTip is not null && !string.IsNullOrEmpty(label))
                             toolTip.SetToolTip(control, label);
                     }
                 }
             }
         }
+
+        private static bool CanExecuteCommand(Func<CommandArgs> argsFactory)
+            => argsFactory() is { Editor: not null };
 
         private static CommandArgs ResolveCommandArgs(CommandArgs args)
         {
@@ -150,7 +159,7 @@ namespace TombEditor
 
         private static bool IsValidWindow(IWin32Window window)
         {
-            if (window == null || window.Handle == IntPtr.Zero)
+            if (window is null || window.Handle == IntPtr.Zero)
                 return false;
 
             return window is not Control control || !control.IsDisposed;

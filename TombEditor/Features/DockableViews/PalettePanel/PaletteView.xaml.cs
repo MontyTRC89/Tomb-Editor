@@ -79,7 +79,7 @@ public partial class PaletteView : UserControl
 		{
 			bool useTexture = _editor.Configuration.Palette_TextureSamplingMode;
 
-			if (useTexture && _lastTexturePalette != null && _lastTexturePalette.Count > 0)
+			if (useTexture && _lastTexturePalette is not null && _lastTexturePalette.Count > 0)
 				PaletteGridControl.LoadPalette(_lastTexturePalette);
 			else
 				PaletteGridControl.LoadPalette(_editor.Level.Settings.Palette);

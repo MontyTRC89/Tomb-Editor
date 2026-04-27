@@ -138,12 +138,12 @@ namespace TombEditor.Features.DockableViews.TexturePanel
 			butDeleteTexture.Enabled =
 			butBrowseTexture.Enabled =
 			butAnimationRanges.Enabled =
-			butMaterialEditor.Enabled = comboCurrentTexture.SelectedItem != null;
+			butMaterialEditor.Enabled = comboCurrentTexture.SelectedItem is not null;
 
-            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null &&
+            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem is not null &&
                 _editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR3;
 
-            butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
+            butBumpMaps.Enabled = comboCurrentTexture.SelectedItem is not null &&
                 (_editor.Level.Settings.GameVersion.Native() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);
 
 			panelMaterials.Visible = _editor.Level.IsTombEngine;
