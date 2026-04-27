@@ -93,7 +93,10 @@ namespace TombEditor
         {
             ArgumentNullException.ThrowIfNull(args);
 
-            return GetCommand(name, () => ResolveCommandArgs(args));
+            var command = GetCommand(name);
+            return new CommunityToolkit.Mvvm.Input.RelayCommand(
+                () => command.Execute?.Invoke(ResolveCommandArgs(args)),
+                () => args.Editor is not null);
         }
 
         public static System.Windows.Input.ICommand GetCommand(string name, Func<CommandArgs> argsFactory)
@@ -102,8 +105,7 @@ namespace TombEditor
 
             var command = GetCommand(name);
             return new CommunityToolkit.Mvvm.Input.RelayCommand(
-                () => command.Execute?.Invoke(argsFactory()),
-                () => CanExecuteCommand(argsFactory));
+                () => command.Execute?.Invoke(argsFactory()));
         }
 
         public static void ExecuteHotkey(CommandArgs args)
@@ -136,9 +138,6 @@ namespace TombEditor
                 }
             }
         }
-
-        private static bool CanExecuteCommand(Func<CommandArgs> argsFactory)
-            => argsFactory() is { Editor: not null };
 
         private static CommandArgs ResolveCommandArgs(CommandArgs args)
         {

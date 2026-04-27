@@ -10,7 +10,7 @@ namespace TombLib.WPF;
 public static class WinFormsDialogHelper
 {
     /// <summary>
-    /// Gets the first open WinForms window that can own modal dialogs.
+    /// Gets a WinForms owner for modal dialogs, falling back to a dummy owner when no open form is available.
     /// </summary>
     public static IWin32Window GetOpenFormOwner()
         => WPFUtils.GetWin32WindowOwner();
