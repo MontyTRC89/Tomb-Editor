@@ -132,9 +132,25 @@ LevelFuncs.Engine.Node.GetBlendMode = function(index)
 		[6] = TEN.Effects.BlendID.EXCLUDE,
 		[7] = TEN.Effects.BlendID.SCREEN,
 		[8] = TEN.Effects.BlendID.LIGHTEN,
-		[9] = TEN.Effects.BlendID.ALPHABLEND
+		[9] = TEN.Effects.BlendID.ALPHABLEND,
+		[10] = TEN.Effects.BlendID.DISTORTION
 	}
 	return blendID[index]
+end
+
+LevelFuncs.Engine.Node.GetSpriteSequence = function(index)
+	local spriteSeq =
+	{
+		[0] = TEN.Objects.ObjID.DEFAULT_SPRITES,
+		[1] = TEN.Objects.ObjID.MISC_SPRITES,
+		[2] = TEN.Objects.ObjID.CUSTOM_SPRITES,
+		[3] = TEN.Objects.ObjID.FIRE_SPRITES,
+		[4] = TEN.Objects.ObjID.SMOKE_SPRITES,
+		[5] = TEN.Objects.ObjID.SPARK_SPRITE,
+		[6] = TEN.Objects.ObjID.DRIP_SPRITE,
+		[7] = TEN.Objects.ObjID.EXPLOSION_SPRITES	
+	}	
+	return spriteSeq[index]
 end
 
 LevelFuncs.Engine.Node.GetDisplaySpriteAlignMode = function(index)

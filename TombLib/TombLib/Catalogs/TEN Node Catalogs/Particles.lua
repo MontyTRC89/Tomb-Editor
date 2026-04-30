@@ -6,7 +6,7 @@
 -- !Arguments "NewLine, Vector3, 60, [ -32000 | 32000 ], Velocity X Y Z"
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
 -- !Arguments "NewLine, Color, 33, Start color", "Color, 34, End color"
--- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
+-- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend | Distortion ], Blending method for particles. \nSee Lua API Documentation for further information."
 -- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 1 | .1 ], Lifetime (in seconds)"
 -- !Arguments "Boolean, 20, Poison" "Boolean, 20, Damage"
 
@@ -19,44 +19,45 @@ end
 
 -- !Name "Particle generator (statics)"
 -- !Section "Particles"
--- !Description "Emit particles from a moveable"
--- !Arguments "NewLine, Statics, 85, The moveable particles will spawn from."
--- !Arguments "Numerical, 15, [ 0 | 100 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
+-- !Description "Emit particles from a static object"
+-- !Arguments "NewLine, Statics, 85, The static object particles will spawn from."
+-- !Arguments "Newline, Enumeration, 80, [ DEFAULT_SPRITES | MISC_SPRITES | CUSTOM_SPRITES | FIRE_SPRITES | SMOKE_SPRITES | SPARK_SPRITE | DRIP_SPRITE | EXPLOSION_SPRITES ] , Sprite sequence" "Numerical, 20, [ 0 | 100 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
 -- !Arguments "NewLine, Vector3, 60, [ -32000 | 32000 ], Velocity X Y Z"
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
--- !Arguments "NewLine, Color, 6, Start color", "Color, 6, End color"
--- !Arguments "Enumeration, 28, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
--- !Arguments "Numerical, 18.2, [ -32000 | 32000 | 0 ], Start size" "Numerical, 18.2, [ -32000 | 32000 | 0 ], End size" "Numerical, 24, [ 0 | 32000 | 1 | 0.1 ], Lifetime (in seconds)"
+-- !Arguments "NewLine, Color, 33, Start color", "Color, 34, End color"
+-- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend | Distortion ], Blending method for particles. \nSee Lua API Documentation for further information."
+-- !Arguments "NewLine, Numerical, 25, [ -32000 | 32000 | 0 ], Start size" "Numerical, 25, [ -32000 | 32000 | 0 ], End size" "Numerical, 25, [ 0 | 32000 | 1 | .1 ], Lifetime (in seconds)" "Numerical, 25, [ -32768 | 32767 | 0 ], Start of life rotation"
 -- !Arguments "NewLine, Boolean, 15, Poison" "Boolean, 17, Damage"
 -- !Arguments "Boolean, 65, Show particle only if static mesh is visible"
 
-LevelFuncs.Engine.Node.ParticleEmitterStatics = function(entity, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, poison, damage,visibility)
+LevelFuncs.Engine.Node.ParticleEmitterStatics = function(entity, spriteSeq, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, startRot, poison, damage, visibility)
 	local origin = TEN.Objects.GetStaticByName(entity):GetPosition()
 	local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
 
 	local shouldEmit = not visibility or LevelFuncs.Engine.Node.TestStaticActivity(entity)
 	if shouldEmit then
-		TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode,
-			startSize, endSize, life, damage, poison)
+		TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize, endSize, life, damage, poison, spriteSequence, startRot)	
 	end
 end
 
 -- !Name "Particle generator (volume)"
 -- !Section "Particles"
 -- !Description "Emit particles from the centre of a volume"
--- !Arguments "NewLine, Volumes, 70, The volume particles will spawn from." "Numerical, 30, [ 0 | 100 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
+-- !Arguments "NewLine, Volumes, 100, The volume particles will spawn from."
+-- !Arguments "Newline, Enumeration, 80, [ DEFAULT_SPRITES | MISC_SPRITES | CUSTOM_SPRITES | FIRE_SPRITES | SMOKE_SPRITES | SPARK_SPRITE | DRIP_SPRITE | EXPLOSION_SPRITES ] , Sprite sequence" "Numerical, 20, [ 0 | 100 | 0 ], Sprite number. Refers to a DEFAULT_SPRITES sequence in a wad."
 -- !Arguments "NewLine, Vector3, 60, [ -32000 | 32000 ], Velocity X Y Z"
 -- !Arguments "Numerical, 20, [ -32768 | 32767 | 0 ], Gravity" "Numerical, 20, [ -32000 | 32000 | 1 ], Rotation"
 -- !Arguments "NewLine, Color, 33, Start color", "Color, 34, End color"
--- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend ], Blending method for particles. \nSee Lua API Documentation for further information."
--- !Arguments "NewLine, Numerical, 20, [ -32000 | 32000 | 0 ], Start size" "Numerical, 20, [ -32000 | 32000 | 0 ], End size" "Numerical, 20, [ 0 | 32000 | 1 | .1 ], Lifetime (in seconds)"
--- !Arguments "Boolean, 20, Poison" "Boolean, 20, Damage"
+-- !Arguments "Enumeration, 33, [ Opaque | Alpha test | Add | Subtract | Exclude | Screen | Lighten | Alpha blend | Distortion ], Blending method for particles. \nSee Lua API Documentation for further information."
+-- !Arguments "NewLine, Numerical, 25, [ -32000 | 32000 | 0 ], Start size" "Numerical, 25, [ -32000 | 32000 | 0 ], End size" "Numerical, 25, [ 0 | 32000 | 1 | .1 ], Lifetime (in seconds)" "Numerical, 25, [ -32768 | 32767 | 0 ], Start of life rotation"
+-- !Arguments "NewLine, Boolean, 50, Poison" "Boolean, 50, Damage"
 
-LevelFuncs.Engine.Node.ParticleEmitterVolume = function(volume, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, poison, damage)
+LevelFuncs.Engine.Node.ParticleEmitterVolume = function(volume, spriteSeq, spriteID, velocity, gravity, rotation, startColor, endColor, blendID, startSize, endSize, life, startRot, poison, damage)
 	local origin = TEN.Objects.GetVolumeByName(volume):GetPosition()
 	local blendmode = LevelFuncs.Engine.Node.GetBlendMode(blendID)
+	local spriteSequence = LevelFuncs.Engine.Node.GetSpriteSequence(spriteSeq)
 
-	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize, endSize, life, damage, poison)
+	TEN.Effects.EmitParticle(origin, velocity, spriteID, gravity, rotation, startColor, endColor, blendmode, startSize, endSize, life, damage, poison, spriteSequence, startRot)
 end
 
 -- !Name "Emit lightning arc"
