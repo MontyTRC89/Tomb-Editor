@@ -311,6 +311,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     DirectionX = (int) Math.Round(position.X + Level.SectorSizeUnit * direction.X),
                     DirectionY = (int)-Math.Round(position.Y + Level.SectorSizeUnit * direction.Y),
                     DirectionZ = (int) Math.Round(position.Z + Level.SectorSizeUnit * direction.Z),
+					DofMode = (int)instance.DofMode,
+					DofDistance = instance.DofDistance,
+                    DofRange = instance.DofRange,
+                    DofStrength = instance.DofStrength
                 });
             }
             _flyByCameras.Sort(new TombEngineFlybyCamera.ComparerFlyBy());
