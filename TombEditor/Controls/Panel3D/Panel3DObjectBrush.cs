@@ -432,7 +432,6 @@ namespace TombEditor.Controls.Panel3D
             effect.Parameters["BrushColor"].SetValue(overlay.Color);
             effect.Parameters["BrushRotation"].SetValue(overlay.Rotation);
             effect.Parameters["BrushLineWidth"].SetValue(_editor.Configuration.Rendering3D_LineWidth);
-            effect.Parameters["DofMode"].SetValue(drawFlybyDof ? flybyDofState.Mode : 0);
             effect.Parameters["DofCenterRange"].SetValue(drawFlybyDof ? flybyDofState.CenterRange : Vector4.Zero);
             effect.Parameters["DofDirectionDistance"].SetValue(drawFlybyDof ? flybyDofState.DirectionDistance : Vector4.Zero);
             effect.Parameters["DofColorStrength"].SetValue(drawFlybyDof ? flybyDofState.ColorStrength : Vector4.Zero);
