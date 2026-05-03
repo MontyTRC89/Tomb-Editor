@@ -11,6 +11,7 @@ Tomb Editor:
  
 WadTool:
  * Added mesh name display in the skeleton editor.
+ * Fixed exception when trying to open an object without meshes in the mesh editor.
  
 TEN nodes:
  * Fixed CLOCKWORK_BEETLE, EXAMINE and WATERSKIN items not appearing in the inventory nodes.
