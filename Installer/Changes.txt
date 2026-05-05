@@ -1,3 +1,4 @@
+===========
 Version 2.0
 ===========
 
@@ -7,6 +8,13 @@ Tomb Editor:
  * Added Flyby Timeline control to edit and preview flyby sequences.
  * Added "Preview flyby sequence" and "Preview camera" context menus for cameras.
  * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
+ 
+ SoundTool:
+ * Updated TR2 Override with fixes to the sounds for explosive weapons and flares.
+ 
+ TEN base WAD:
+ * Fixed GRENADE_ANIM sound effect order to match classic games. You must update your GRENADE_ANIM object from the base WAD2 for this to take effect.
+ * Fixed HARPOON_ANIM sound effects not playing correctly underwater. You must update your HARPOON_ANIM object from the base WAD2 for this to take effect.
 
 WadTool:
  * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
