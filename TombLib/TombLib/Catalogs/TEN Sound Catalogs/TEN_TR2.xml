@@ -3752,5 +3752,43 @@
 			<Global>true</Global>
 			<Indexed>true</Indexed>
 		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1200</Id>
+			<Name>TR2_Rolling_Barrel_Roll</Name>
+			<Volume>80</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>Looped</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>tr2_rolling_barrel_roll_01.wav</FileName>
+				</WadSample>
+			</Samples>
+			<Global>true</Global>
+			<Indexed>true</Indexed>
+		</WadSoundInfo>
+		<WadSoundInfo>
+			<Id>1201</Id>
+			<Name>TR2_Rolling_Barrel_Stop</Name>
+			<Volume>100</Volume>
+			<RangeInSectors>10</RangeInSectors>
+			<Chance>100</Chance>
+			<PitchFactor>0</PitchFactor>
+			<DisablePanning>false</DisablePanning>
+			<RandomizePitch>false</RandomizePitch>
+			<RandomizeVolume>false</RandomizeVolume>
+			<LoopBehaviour>None</LoopBehaviour>
+			<Samples>
+				<WadSample>
+					<FileName>tr2_rolling_barrel_stop_01.wav</FileName>
+				</WadSample>
+			</Samples>
+			<Global>true</Global>
+			<Indexed>true</Indexed>
+		</WadSoundInfo>
 	</SoundInfos>
 </WadSounds>
