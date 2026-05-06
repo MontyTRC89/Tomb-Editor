@@ -84,7 +84,7 @@
     <moveable id="85" name="Spiky moveable wall" essential="false" ten="SPIKY_WALL" />
     <moveable id="86" name="Bounce pad" essential="false" ten="SPRINGBOARD" />
     <moveable id="87" name="Spiky ceiling segment" essential="false" ten="SPIKY_CEILING" />
-    <moveable id="88" name="Tibetan bell" essential="false" ten="SHOOT_SWITCH4" />
+    <moveable id="88" name="Tibetan bell" essential="false" ten="BELL" />
     <moveable id="91" name="Lara and a snowmobile" ten="SNOWMOBILE_LARA_ANIMS" />
     <moveable id="92" name="Wheel knob" essential="false" ten="SWITCH_TYPE1" />
     <moveable id="93" name="Above-water switch" essential="false" ten="SWITCH_TYPE2" />
