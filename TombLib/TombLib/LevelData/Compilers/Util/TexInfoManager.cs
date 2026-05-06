@@ -772,7 +772,7 @@ namespace TombLib.LevelData.Compilers.Util
             if (_dataHasBeenLaidOut)
                 throw new InvalidOperationException("Data has been already laid out for this TexInfoManager. Reinitialize it if you want to restart texture collection.");
 
-            if ((isForTriangle && texture.TriangleCoordsOutOfBounds) || (!isForTriangle && texture.QuadCoordsOutOfBounds))
+            if ((isForTriangle && texture.AreTriangleCoordsOutOfBounds(256.0f)) || (!isForTriangle && texture.AreQuadCoordsOutOfBounds(256.0f)))
             {
                 _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + 
                     texture.TexCoord2 + ", " + texture.TexCoord3 + ") is out of bounds and will be ignored.");
@@ -1470,9 +1470,10 @@ namespace TombLib.LevelData.Compilers.Util
                 ushort attribute = (ushort)texture.BlendMode;
 
                 // Clamp blend modes according to game version
-                if (level.Settings.GameVersion.Native() <= TRVersion.Game.TR2 && attribute > 1)
+                if (level.Settings.GameVersion <= TRVersion.Game.TR2 && attribute > 1)
                     attribute = 1;
-                if ((level.Settings.GameVersion == TRVersion.Game.TR3 || level.Settings.GameVersion == TRVersion.Game.TR5) && attribute > 2)
+                if ((level.Settings.GameVersion == TRVersion.Game.TR3 || level.Settings.GameVersion == TRVersion.Game.TR5
+                    || level.Settings.GameVersion == TRVersion.Game.TR1X || level.Settings.GameVersion == TRVersion.Game.TR2X) && attribute > 2)
                     attribute = 2;
 
                 // Now write the texture

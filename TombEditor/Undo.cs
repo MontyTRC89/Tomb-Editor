@@ -86,7 +86,7 @@ namespace TombEditor
         private PositionBasedObjectInstance UndoObject;
         private bool Created;
 
-        public AddRemoveObjectUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj, bool created) : base(parent, obj.Room)
+        public AddRemoveObjectUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj, bool created, Room room = null) : base(parent, room ?? obj.Room)
         {
             Created = created;
             UndoObject = obj;
@@ -187,7 +187,12 @@ namespace TombEditor
 
                 // Rebuild lighting!
                 if (UndoObject is LightInstance)
-                    Room.BuildGeometry();
+                {
+                    if (Parent.Editor.ShouldRelight)
+                        Room.RebuildLighting(Parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    else
+                        Room.PendingRelight = true;
+                }
 
                 // Move origin of object group, if it contains object
                 if (Parent.Editor.SelectedObject is ObjectGroup)
@@ -237,6 +242,11 @@ namespace TombEditor
                 var uo = (SpriteInstance)UndoObject;
                 Properties = new List<object> { uo.Sequence, uo.Frame };
             }
+            else if (UndoObject is FlybyCameraInstance)
+            {
+                var uo = (FlybyCameraInstance)UndoObject;
+                Properties = new List<object> { uo.Sequence, uo.Number, uo.Timer, uo.Flags, uo.Speed, uo.Fov, uo.Roll, uo.RotationX, uo.RotationY };
+            }
             else if (UndoObject is LightInstance)
                 Properties = new List<object> { ((LightInstance)UndoObject).Color };
             else if (UndoObject is SinkInstance)
@@ -277,6 +287,19 @@ namespace TombEditor
                     var uo = ((SpriteInstance)UndoObject);
                     uo.Sequence = (int)Properties[0];
                     uo.Frame    = (int)Properties[1];
+                }
+                else if (UndoObject is FlybyCameraInstance)
+                {
+                    var uo = ((FlybyCameraInstance)UndoObject);
+                    uo.Sequence = (ushort)Properties[0];
+                    uo.Number = (ushort)Properties[1];
+                    uo.Timer = (short)Properties[2];
+                    uo.Flags = (ushort)Properties[3];
+                    uo.Speed = (float)Properties[4];
+                    uo.Fov = (float)Properties[5];
+                    uo.Roll = (float)Properties[6];
+                    uo.RotationX = (float)Properties[7];
+                    uo.RotationY = (float)Properties[8];
                 }
                 else if (UndoObject is LightInstance)
                 {
@@ -401,12 +424,12 @@ namespace TombEditor
                     for (int z = Area.Y0, j = 0; z < Area.Y1; z++, j++)
                         Room.Sectors[x, z].ReplaceGeometry(Parent.Editor.Level, Sectors[i, j]);
 
-                Room.BuildGeometry();
+                Room.Rebuild(parent.Editor.ShouldRelight, parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 Parent.Editor.RoomGeometryChange(Room);
                 Parent.Editor.RoomSectorPropertiesChange(Room);
                 var relevantRooms = room.Portals.Select(p => p.AdjoiningRoom).Distinct();
-                Parallel.ForEach(relevantRooms, r => r.BuildGeometry());
-                
+                Parallel.ForEach(relevantRooms, r => r.Rebuild(parent.Editor.ShouldRelight, parent.Editor.Configuration.Rendering3D_HighQualityLightPreview));
+
 
                 foreach (Room relevantRoom in relevantRooms)
                     Parent.Editor.RoomGeometryChange(relevantRoom);

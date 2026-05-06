@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace TombLib.Utils
 {
@@ -22,6 +21,11 @@ namespace TombLib.Utils
         {
             var regex = new Regex("^[a-zA-Z0-9. -_?]*$");
             return regex.IsMatch(source);
+        }
+
+        public static string[] SplitLines(this string source)
+        {
+            return source.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
 
         public static string[] SplitParenthesis(this string source)
@@ -124,7 +128,7 @@ namespace TombLib.Utils
             return source.Replace("\\n", Environment.NewLine);
         }
 
-        public static string ToDataSize(int dataSize)
+        public static string ToDataSize(long dataSize)
         {
             return dataSize >= 1024 * 1024 ? $"{dataSize / (1024 * 1024)} MB" : $"{dataSize / 1024} KB";
         }
