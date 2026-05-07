@@ -227,6 +227,15 @@
     <moveable id="297" name="SKATEBOARD_KID" />
     <moveable id="298" name="WINSTON" />
 	<moveable id="299" name="SEAL_MUTANT" />
+	<moveable id="300" name="BOO_MUTANT" />
+	<moveable id="301" name="HYBRID_MUTANT" />
+	<moveable id="302" name="OILRED" />
+	<moveable id="303" name="WHITE_SOLDIER" />
+	<moveable id="304" name="PUNK" />
+	<moveable id="305" name="LONDON_MERCENARY" />
+	<moveable id="306" name="SWAT_GUN" />
+	<moveable id="307" name="PRISONER" />
+	<moveable id="308" name="WASP_MUTANT_EMITTER" />
     <moveable id="320" name="SPRINGBOARD" />
     <moveable id="321" name="ROLLING_SPINDLE" />
     <moveable id="322" name="DISK_SHOOTER" />
@@ -377,6 +386,14 @@
 	<moveable id="467" name="CIRCULAR_SAW" />
 	<moveable id="468" name="ROLLING_BARRELS" />
 	<moveable id="469" name="MULTIPLE_BOULDERS" />
+	<moveable id="470" name="FAN" />
+	<moveable id="471" name="LARGE_FAN" />
+	<moveable id="472" name="FALLING_SPIKES" />
+	<moveable id="473" name="TUNNEL_BORER" />
+	<moveable id="474" name="AIRPLANE_PROPELLER" />
+	<moveable id="475" name="ROTATING_KNIFE_DISK" />
+	<moveable id="476" name="UNDERWATER_MINE" />
+	<moveable id="477" name="FALLING_SANDBAG" />
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
     <moveable id="502" name="PUZZLE_ITEM3" />
