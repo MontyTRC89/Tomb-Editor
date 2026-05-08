@@ -34,11 +34,13 @@ public static class WPFUtils
 
 	public static Brush ToWPFBrush(this Vector4 color, float? alpha = null)
 	{
-		return new SolidColorBrush(Color.FromArgb(
+		var brushColor = Color.FromArgb(
 			(byte)Math.Max(0, Math.Min(255, Math.Round((alpha.HasValue ? Math.Clamp(alpha.Value, 0.0, 1.0) : color.W) * 255.0f))),
 			(byte)Math.Max(0, Math.Min(255, Math.Round(color.X * 255.0f))),
 			(byte)Math.Max(0, Math.Min(255, Math.Round(color.Y * 255.0f))),
-			(byte)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f)))));
+			(byte)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
+
+		return BrushHelpers.CreateFrozenBrush(brushColor);
 	}
 
 	public static Brush ToWPFBrush(this Vector3 color, float alpha)

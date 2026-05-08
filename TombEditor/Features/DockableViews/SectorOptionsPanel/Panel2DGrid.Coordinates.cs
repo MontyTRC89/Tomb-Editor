@@ -4,7 +4,6 @@ using System;
 using System.Windows;
 using TombLib;
 using TombLib.LevelData;
-using TombLib.Utils;
 
 namespace TombEditor.Features.DockableViews.SectorOptionsPanel;
 
