@@ -490,7 +490,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Yaw = ToTrAngle(instance.RotationY),
                             Pitch = ToTrAngle(instance.RotationX),
                             Roll = ToTrAngle(-instance.Roll),
-                            Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
+                            Color = new Vector4(NormalizeColorRange(instance.Color), 1.0f),
                             OCB = instance.Ocb,
                             Flags = unchecked((ushort)flags),
                             LuaName = instance.LuaName ?? string.Empty
