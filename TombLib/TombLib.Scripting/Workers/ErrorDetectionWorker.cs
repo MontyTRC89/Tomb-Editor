@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.ComponentModel;
 using System.Windows.Threading;
 using TombLib.Scripting.Interfaces;
@@ -10,7 +12,7 @@ namespace TombLib.Scripting.Workers
 	{
 		#region Properties
 
-		public IErrorDetector ErrorDetector { get; set; }
+		public IErrorDetector? ErrorDetector { get; set; }
 
 		public TimeSpan IdleDelayInterval
 		{
@@ -24,7 +26,7 @@ namespace TombLib.Scripting.Workers
 
 		#region Fields
 
-		private DispatcherTimer _errorUpdateTimer = new();
+		private readonly DispatcherTimer _errorUpdateTimer = new();
 
 		private string _editorContent = string.Empty;
 
@@ -34,9 +36,9 @@ namespace TombLib.Scripting.Workers
 
 		public ErrorDetectionWorker() : this(null, new Version(0, 0))
 		{ }
-		public ErrorDetectionWorker(IErrorDetector errorDetector, Version engineVersion) : this(errorDetector, engineVersion, new TimeSpan(500))
+		public ErrorDetectionWorker(IErrorDetector? errorDetector, Version engineVersion) : this(errorDetector, engineVersion, new TimeSpan(500))
 		{ }
-		public ErrorDetectionWorker(IErrorDetector errorDetector, Version engineVersion, TimeSpan idleDelayInterval)
+		public ErrorDetectionWorker(IErrorDetector? errorDetector, Version engineVersion, TimeSpan idleDelayInterval)
 		{
 			ErrorDetector = errorDetector;
 			IdleDelayInterval = idleDelayInterval;
@@ -53,32 +55,34 @@ namespace TombLib.Scripting.Workers
 		{
 			base.OnDoWork(e);
 
-			if (ErrorDetector is null)
+			IErrorDetector? errorDetector = ErrorDetector;
+
+			if (errorDetector is null)
 			{
 				e.Result = Array.Empty<TextEditorDiagnostic>();
 				return;
 			}
 
 			string editorContent = e.Argument as string ?? string.Empty;
-			e.Result = ErrorDetector.FindErrors(editorContent, EngineVersion);
+			e.Result = errorDetector.FindErrors(editorContent, EngineVersion);
 		}
 
 		#endregion Override methods
 
 		#region Public methods
 
-		public void RunErrorCheckOnIdle(string editorContent)
+		public void RunErrorCheckOnIdle(string? editorContent)
 		{
 			if (_errorUpdateTimer.IsEnabled)
 				_errorUpdateTimer.Stop();
 
-			_editorContent = editorContent;
+			_editorContent = editorContent ?? string.Empty;
 			_errorUpdateTimer.Start();
 		}
 
-		public void CheckForErrorsAsync(string editorContent)
+		public void CheckForErrorsAsync(string? editorContent)
 		{
-			if (ErrorDetector == null)
+			if (ErrorDetector is null)
 				return;
 
 			base.RunWorkerAsync(editorContent ?? string.Empty);
@@ -88,7 +92,7 @@ namespace TombLib.Scripting.Workers
 
 		#region Events
 
-		private void ErrorUpdateTimer_Tick(object sender, EventArgs e)
+		private void ErrorUpdateTimer_Tick(object? sender, EventArgs e)
 		{
 			if (!IsBusy)
 				CheckForErrorsAsync(_editorContent);

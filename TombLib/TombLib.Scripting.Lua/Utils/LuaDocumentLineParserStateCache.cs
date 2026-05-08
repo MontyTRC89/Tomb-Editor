@@ -35,9 +35,14 @@ internal sealed class LuaDocumentLineParserStateCache
 
 		lock (_syncRoot)
 		{
+			if (_document.LineCount == 0)
+				return default;
+
+			int targetLineNumber = Math.Max(1, Math.Min(lineNumber, _document.LineCount));
+
 			EnsureFirstLineStateCached();
-			EnsureStatesCachedThrough(lineNumber);
-			return _cachedLineStartStates[lineNumber - 1];
+			EnsureStatesCachedThrough(targetLineNumber);
+			return _cachedLineStartStates[targetLineNumber - 1];
 		}
 	}
 
@@ -67,7 +72,10 @@ internal sealed class LuaDocumentLineParserStateCache
 
 	private void EnsureStatesCachedThrough(int lineNumber)
 	{
-		int targetLineNumber = Math.Max(1, Math.Min(lineNumber, _document.LineCount));
+		int targetLineNumber = Math.Min(lineNumber, _document.LineCount);
+
+		if (targetLineNumber <= 0)
+			return;
 
 		while (_cachedLineStartStates.Count < targetLineNumber)
 		{
