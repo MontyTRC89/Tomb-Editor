@@ -12,7 +12,6 @@
     d:DesignWidth="700"
     Background="{DynamicResource Brush_Background}"
     Foreground="{DynamicResource Brush_Text}"
-    RenderOptions.BitmapScalingMode="NearestNeighbor"
     SnapsToDevicePixels="{x:Static darkUI:Defaults.SnapsToDevicePixels}"
     UseLayoutRounding="{x:Static darkUI:Defaults.UseLayoutRounding}"
     mc:Ignorable="d">
