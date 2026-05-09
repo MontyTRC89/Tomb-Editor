@@ -674,7 +674,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Color);
                         }
                     else if (o is FlybyCameraInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectFlyBy, () =>
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectFlyBy3, () =>
                         {
                             var instance = (FlybyCameraInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -689,6 +689,10 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Number);
                             LEB128.Write(chunkIO.Raw, instance.Sequence);
                             LEB128.Write(chunkIO.Raw, instance.Timer);
+                            chunkIO.Raw.Write(instance.DofDistance);
+                            chunkIO.Raw.Write(instance.DofRange);
+                            chunkIO.Raw.Write(instance.DofStrength);
+                            chunkIO.Raw.Write((int)instance.DofMode);
                         });
                     else if (o is MemoInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMemo2, LEB128.MaximumSize3Byte))
