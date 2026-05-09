@@ -594,7 +594,7 @@ namespace WadTool
 
             foreach (var moveable in src.Moveables)
             {
-                string compatibleSlot = TrCatalog.GetMoveableTombEngineSlot(src.GameVersion, moveable.Key.TypeId);
+                string compatibleSlot = TrCatalog.GetMoveableTombEngineSlots(src.GameVersion, moveable.Key.TypeId).FirstOrDefault() ?? string.Empty;
                 if (compatibleSlot == string.Empty)
                     continue;
 
@@ -757,6 +757,7 @@ namespace WadTool
 
             // Figure out the new ids if there are any id collisions
             var newIds = objectIdsToMove.ToArray();
+            var allowedMoveableSlots = new Dictionary<int, HashSet<uint>>();
 
             // If destination is TombEngine, try to remap object IDs
             if (sourceWad.GameVersion != TRVersion.Game.TombEngine && destinationWad.GameVersion == TRVersion.Game.TombEngine)
@@ -768,18 +769,26 @@ namespace WadTool
                     {
                         var moveableId = (WadMoveableId)objectId;
 
-                        // Try to get a compatible slot
-                        string newSlot = TrCatalog.GetMoveableTombEngineSlot(sourceWad.GameVersion, moveableId.TypeId);
-                        if (newSlot == "")
+                        var compatibleSlots = TrCatalog.GetMoveableTombEngineSlots(sourceWad.GameVersion, moveableId.TypeId);
+                        if (compatibleSlots.Count == 0)
                             continue;
 
-                        // Get the new ID
-                        uint? newId = TrCatalog.GetItemIndex(destinationWad.GameVersion, newSlot, out bool isMoveable);
-                        if (!newId.HasValue)
+                        var allowedSlots = new HashSet<uint>();
+                        foreach (var compatibleSlot in compatibleSlots)
+                        {
+                            uint? mappedId = TrCatalog.GetItemIndex(destinationWad.GameVersion, compatibleSlot, out bool isMoveable);
+                            if (mappedId.HasValue && isMoveable)
+                            {
+                                allowedSlots.Add(mappedId.Value);
+                            }
+                        }
+
+                        if (allowedSlots.Count == 0)
                             continue;
 
-                        // Save the new ID
-                        newIds[i] = new WadMoveableId(newId.Value);
+                        allowedMoveableSlots[i] = allowedSlots;
+
+                        newIds[i] = new WadMoveableId(allowedSlots.First());
                     }
                 }
             }
@@ -789,7 +798,11 @@ namespace WadTool
                 if (!sourceWad.Contains(objectIdsToMove[i]))
                     continue;
 
-                if (!alwaysChooseId)
+                var mustChooseCompatibleMoveableSlot = newIds[i] is WadMoveableId &&
+                    allowedMoveableSlots.TryGetValue(i, out var filteredSlots) &&
+                    filteredSlots.Count > 1;
+
+                if (!alwaysChooseId && !mustChooseCompatibleMoveableSlot)
                 {
                     if (!destinationWad.Contains(newIds[i]))
                     {
@@ -798,7 +811,7 @@ namespace WadTool
                     }
                 }
 
-                bool askConfirm = !alwaysChooseId;
+                bool askConfirm = !alwaysChooseId && !mustChooseCompatibleMoveableSlot;
 
                 // Ask for the new slot
                 do
@@ -824,7 +837,11 @@ namespace WadTool
                     }
                     else if (dialogResult == DialogResult.No)
                     {
-                        using (var form = new FormSelectSlot(destinationWad, newIds[i], listInProgress))
+                        IEnumerable<uint> allowedSlots = null;
+                        if (newIds[i] is WadMoveableId && allowedMoveableSlots.TryGetValue(i, out filteredSlots))
+                            allowedSlots = filteredSlots;
+
+                        using (var form = new FormSelectSlot(destinationWad, newIds[i], listInProgress, allowedSlots))
                         {
                             if (form.ShowDialog(owner) != DialogResult.OK)
                                 return null;

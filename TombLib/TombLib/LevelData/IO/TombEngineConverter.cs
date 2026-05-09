@@ -54,7 +54,7 @@ namespace TombLib.LevelData.IO
             if (sourceVersion == TRVersion.Game.TombEngine)
                 return moveable;
 
-            string newSlotName = TrCatalog.GetMoveableTombEngineSlot(sourceVersion, moveable.Id.TypeId);
+            string newSlotName = TrCatalog.GetMoveableTombEngineSlots(sourceVersion, moveable.Id.TypeId).FirstOrDefault() ?? string.Empty;
 
             switch (newSlotName)
             {
@@ -401,7 +401,7 @@ namespace TombLib.LevelData.IO
                     {
                         uint newSlot;
                         string oldId = TrCatalog.GetMoveableName(TRVersion.Game.TR4, moveable.Key.TypeId);
-                        string newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, moveable.Key.TypeId);
+                        string newId = TrCatalog.GetMoveableTombEngineSlots(TRVersion.Game.TR4, moveable.Key.TypeId).FirstOrDefault() ?? string.Empty;
 
                         if (string.IsNullOrEmpty(newId))
                         {
@@ -495,7 +495,7 @@ namespace TombLib.LevelData.IO
                         cancelToken.ThrowIfCancellationRequested();
                         uint newSlot;
                         string oldId = TrCatalog.GetMoveableName(TRVersion.Game.TR4, sequence.Key.TypeId);
-                        string newId = TrCatalog.GetMoveableTombEngineSlot(TRVersion.Game.TR4, sequence.Key.TypeId);
+                        string newId = TrCatalog.GetSpriteSequenceTombEngineSlot(TRVersion.Game.TR4, sequence.Key.TypeId);
 
                         if (string.IsNullOrEmpty(newId))
                         {
