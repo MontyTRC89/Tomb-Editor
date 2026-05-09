@@ -151,7 +151,7 @@ public partial class ContentBrowser : DarkToolWindow
 			return;
 
 		if (selected.WadObject is ImportedGeometry)
-			_editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
+			CommandHandler.GetCommand("AddImportedGeometry").Execute?.Invoke(new CommandArgs { Editor = _editor, Window = FindForm() });
 		else
 			CommandHandler.GetCommand("AddItem").Execute?.Invoke(new CommandArgs { Editor = _editor, Window = FindForm() });
 
