@@ -1163,6 +1163,7 @@ namespace TombLib.LevelData
                 LightType.Effect => CalculateEffectLight(light, position),
                 LightType.Sun => CalculateSunLight(room, light, position, normal, highQuality),
                 LightType.Spot => CalculateSpotLight(room, light, position, normal, highQuality),
+                LightType.Glow or LightType.Move => Vector3.Zero,
                 _ => Vector3.Zero
             };
         }
@@ -1227,6 +1228,28 @@ namespace TombLib.LevelData
 
             float finalIntensity = light.Intensity * IntensityScale * 0.25f;
             return finalIntensity * light.Color * ColorNormalization;
+        }
+
+        // Calculates the strength of a Glow or Move vertex effect at a given position.
+        // Returns a value in [0, 1] based on linear falloff from InnerRange to OuterRange,
+        // scaled by Intensity. Respects IsObstructedByRoomGeometry via raytrace.
+        public static float CalculateVertexEffectStrength(Room room, LightInstance light, Vector3 position)
+        {
+            float distance = Vector3.Distance(position, light.Position);
+            float outerRadius = light.OuterRange * Level.SectorSizeUnit;
+
+            if (distance > outerRadius)
+                return 0.0f;
+
+            float innerRadius = light.InnerRange * Level.SectorSizeUnit;
+            float rangeDelta = outerRadius - innerRadius;
+            float attenuation = rangeDelta > 0 ? Math.Clamp((outerRadius - distance) / rangeDelta, 0.0f, 1.0f) : 1.0f;
+
+            if (attenuation <= 0.0f)
+                return 0.0f;
+
+            float raytraceResult = light.IsObstructedByRoomGeometry && LightRayTrace(room, position, light.Position) ? 0.0f : 1.0f;
+            return Math.Clamp(light.Intensity * attenuation * raytraceResult, 0.0f, 1.0f);
         }
 
         private static Vector3 CalculateSunLight(Room room, LightInstance light, Vector3 position,

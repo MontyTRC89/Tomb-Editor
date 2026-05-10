@@ -9,7 +9,7 @@ namespace TombLib.LevelData
     }
     public enum LightType : byte
     {
-        Point, Shadow, Spot, Effect, Sun, FogBulb
+        Point, Shadow, Spot, Effect, Sun, FogBulb, Glow, Move
     }
 
     public class LightInstance : PositionBasedObjectInstance, IColorable, IReplaceable, IRotateableYX
@@ -64,6 +64,11 @@ namespace TombLib.LevelData
                     IsObstructedByRoomGeometry = false;
                     IsStaticallyUsed = false;
                     IsUsedForImportedGeometry = false;
+                    break;
+                case LightType.Glow:
+                case LightType.Move:
+                    IsDynamicallyUsed = false;
+                    CastDynamicShadows = false;
                     break;
             }
         }

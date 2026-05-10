@@ -282,6 +282,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
             }
 
+            int importedGeometryVertexStart = 0;
+
             // Generate geometry
             {
                 // Add room geometry
@@ -555,6 +557,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Add geometry imported objects
 
+                importedGeometryVertexStart = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (geometry.Model?.DirectXModel == null)
@@ -731,6 +734,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Assign vertex effects
 
+            var vertexEffectLights = room.Objects.OfType<LightInstance>()
+                .Where(l => l.Enabled && (l.Type == LightType.Glow || l.Type == LightType.Move))
+                .ToList();
+
             for (int i = 0; i < newRoom.Vertices.Count; ++i)
             {
                 var trVertex = newRoom.Vertices[i];
@@ -739,9 +746,31 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var xv = (int)(trVertex.Position.X / Level.SectorSizeUnit);
                 var zv = (int)(trVertex.Position.Z / Level.SectorSizeUnit);
 
+                // Apply vertex effects from Glow and Move light objects to all vertices,
+                // including border/wall vertices that are skipped by the sector bounds check below.
+                var vertexPosLocal = new Vector3(trVertex.Position.X, -trVertex.Position.Y - room.WorldPos.Y, trVertex.Position.Z);
+                bool isImportedGeometryVertex = i >= importedGeometryVertexStart;
+                foreach (var effectLight in vertexEffectLights)
+                {
+                    if (isImportedGeometryVertex && !effectLight.IsUsedForImportedGeometry)
+                        continue;
+
+                    float strength = RoomGeometry.CalculateVertexEffectStrength(room, effectLight, vertexPosLocal);
+                    if (strength <= 0f)
+                        continue;
+
+                    if (effectLight.Type == LightType.Glow)
+                        trVertex.Glow = Math.Max(trVertex.Glow, strength);
+                    else if (effectLight.Type == LightType.Move)
+                        trVertex.Move = Math.Max(trVertex.Move, strength);
+                }
+
                 // Check for vertex out of room bounds
                 if (xv <= 0 || zv <= 0 || xv >= room.NumXSectors || zv >= room.NumZSectors)
+                {
+                    newRoom.Vertices[i] = trVertex;
                     continue;
+                }
 
                 foreach (var portal in room.PortalsCache)
                 {
@@ -1001,6 +1030,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         newLight.Out = light.OuterRange * Level.SectorSizeUnit;
                         break;
                     case LightType.Effect:
+                    case LightType.Glow:
+                    case LightType.Move:
                         continue;
                     default:
                         throw new Exception("Unknown light type '" + light.Type + "' encountered.");

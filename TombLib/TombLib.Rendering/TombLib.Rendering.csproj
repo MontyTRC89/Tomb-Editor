@@ -157,6 +157,8 @@
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\imp_geo.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_effect.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_fog.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_glow.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_move.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_point.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_shadow.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_spot.png" />
