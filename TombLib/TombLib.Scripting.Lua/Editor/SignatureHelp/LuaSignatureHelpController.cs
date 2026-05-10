@@ -97,6 +97,9 @@ public sealed partial class LuaEditor
 		return true;
 	}
 
+	/// <summary>
+	/// Owns signature-help popup state, refresh scheduling, and provider request flow for Lua call-site assistance.
+	/// </summary>
 	private sealed class LuaSignatureHelpController
 	{
 		private const double SignatureHelpRefreshDebounceDelayInMilliseconds = 50.0;
@@ -112,16 +115,16 @@ public sealed partial class LuaEditor
 		private readonly ContentPresenter _signaturePopupPresenter = new();
 		private readonly DispatcherTimer _signatureRefreshTimer = new();
 
-		public LuaSignatureHelpController(LuaEditor editor)
+		internal LuaSignatureHelpController(LuaEditor editor)
 		{
 			_editor = editor;
 		}
 
-		public bool IsVisible => _signaturePopup.IsOpen;
+		internal bool IsVisible => _signaturePopup.IsOpen;
 
-		public bool IsActiveOrPending => _signaturePopup.IsOpen || _signatureRequestInFlight || _signatureRefreshPending;
+		internal bool IsActiveOrPending => _signaturePopup.IsOpen || _signatureRequestInFlight || _signatureRefreshPending;
 
-		public void InitializePopup()
+		internal void InitializePopup()
 		{
 			_signaturePopup.AllowsTransparency = true;
 			_signaturePopup.PopupAnimation = PopupAnimation.None;
@@ -143,7 +146,7 @@ public sealed partial class LuaEditor
 			_signatureRefreshTimer.Tick += SignatureRefreshTimer_Tick;
 		}
 
-		public void Dismiss()
+		internal void Dismiss()
 		{
 			CancelPendingRefresh();
 			InvalidateRequests();
@@ -154,10 +157,10 @@ public sealed partial class LuaEditor
 			_signaturePopupPresenter.Content = null;
 		}
 
-		public Task RequestAsync(int offset)
+		internal Task RequestAsync(int offset)
 			=> RequestAsyncCore(offset);
 
-		public void ScheduleRefresh()
+		internal void ScheduleRefresh()
 		{
 			_pendingSignatureHelpOffset = _editor.CaretOffset;
 			_signatureRefreshPending = true;
@@ -165,20 +168,20 @@ public sealed partial class LuaEditor
 			_signatureRefreshTimer.Start();
 		}
 
-		public void CancelPendingRefresh()
+		internal void CancelPendingRefresh()
 		{
 			_signatureRefreshTimer.Stop();
 			_signatureRefreshPending = false;
 			_pendingSignatureHelpOffset = -1;
 		}
 
-		public void InvalidateRequests()
+		internal void InvalidateRequests()
 		{
 			_signatureRequestToken++;
 			_signatureRequestInFlight = false;
 		}
 
-		public void HandleRefreshTimerTick(object? sender, EventArgs e)
+		private void HandleRefreshTimerTick(object? sender, EventArgs e)
 			=> SignatureRefreshTimer_Tick(sender, e);
 
 		private void ShowToolTip(LuaSignatureInfo signatureInfo)

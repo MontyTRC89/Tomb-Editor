@@ -8,24 +8,27 @@ namespace TombLib.Scripting.Lua;
 
 public sealed partial class LuaEditor
 {
+	/// <summary>
+	/// Owns Lua definition-navigation request state and the editor-side flow for F12 and Ctrl+Click navigation.
+	/// </summary>
 	private sealed class LuaDefinitionNavigationController
 	{
 		private readonly LuaEditor _editor;
 		private CancellationTokenSource? _definitionCancellationTokenSource;
 		private int _definitionRequestToken;
 
-		public LuaDefinitionNavigationController(LuaEditor editor)
+		internal LuaDefinitionNavigationController(LuaEditor editor)
 		{
 			_editor = editor;
 		}
 
-		public void CancelPendingRequest()
+		internal void CancelPendingRequest()
 			=> CancelAndDispose(ref _definitionCancellationTokenSource);
 
-		public void InvalidateRequests()
+		internal void InvalidateRequests()
 			=> _definitionRequestToken++;
 
-		public async Task<bool> TryNavigateAsync(int offset, CancellationToken cancellationToken)
+		internal async Task<bool> TryNavigateAsync(int offset, CancellationToken cancellationToken)
 		{
 			if (!_editor.IsIntellisenseAvailable())
 				return false;

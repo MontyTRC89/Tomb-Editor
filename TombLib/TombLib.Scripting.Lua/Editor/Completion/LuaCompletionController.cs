@@ -24,6 +24,9 @@ public sealed partial class LuaEditor
 	private void CloseCompletionWindow()
 		=> _completionController.CloseWindow();
 
+	private void CloseSharedCompletionWindow()
+		=> base.CloseCompletionWindowCore();
+
 	private void ScheduleCompletionRequest()
 		=> _completionController.ScheduleRequest();
 
@@ -63,6 +66,9 @@ public sealed partial class LuaEditor
 	private void ScheduleCloseIfEmpty()
 		=> _completionController.ScheduleCloseIfEmpty();
 
+	/// <summary>
+	/// Owns Lua completion scheduling, popup lifecycle, tooltip resolution, and AvalonEdit-specific completion-window behavior.
+	/// </summary>
 	private sealed class LuaCompletionController
 	{
 		private const double CompletionRequestDebounceDelayInMilliseconds = 120.0;
@@ -95,12 +101,12 @@ public sealed partial class LuaEditor
 		private int _completionToolTipUpdateToken;
 		private ToolTip? _pendingCompletionToolTip;
 
-		public LuaCompletionController(LuaEditor editor)
+		internal LuaCompletionController(LuaEditor editor)
 		{
 			_editor = editor;
 		}
 
-		public void InitializeScheduling()
+		internal void InitializeScheduling()
 		{
 			_completionRequestTimer.Interval = TimeSpan.FromMilliseconds(CompletionRequestDebounceDelayInMilliseconds);
 			_completionRequestTimer.Tick -= CompletionRequestTimer_Tick;
@@ -111,25 +117,25 @@ public sealed partial class LuaEditor
 			_completionToolTipUpdateTimer.Tick += CompletionToolTipUpdateTimer_Tick;
 		}
 
-		public void CloseWindow()
+		internal void CloseWindow()
 		{
 			InvalidateRequests();
 			CloseWindowCore();
 		}
 
-		public void CloseWindowForRefresh()
+		private void CloseWindowForRefresh()
 			=> CloseWindowCore();
 
-		public void ScheduleRequest()
+		internal void ScheduleRequest()
 		{
 			_completionRequestTimer.Stop();
 			_completionRequestTimer.Start();
 		}
 
-		public void CancelPendingRequest()
+		internal void CancelPendingRequest()
 			=> _completionRequestTimer.Stop();
 
-		public async Task RequestAsync(int offset, char? triggerCharacter)
+		internal async Task RequestAsync(int offset, char? triggerCharacter)
 		{
 			CancellationToken cancellationToken = CancellationToken.None;
 			int requestToken = ++_completionRequestToken;
@@ -184,6 +190,10 @@ public sealed partial class LuaEditor
 
 				CloseWindowForRefresh();
 				InitializeWindow();
+
+				if (_editor._completionWindow is null)
+					return;
+
 				ResizeWindow(completionDataItems);
 				SetWindowOffsets(offset);
 
@@ -206,7 +216,7 @@ public sealed partial class LuaEditor
 			}
 		}
 
-		public void RebaseOpenCompletionItems()
+		internal void RebaseOpenCompletionItems()
 		{
 			if (_editor._completionWindow?.CompletionList?.CompletionData is null)
 				return;
@@ -218,18 +228,22 @@ public sealed partial class LuaEditor
 			}
 		}
 
-		public Task UpdateTooltipAsync(ToolTip tooltip, int updateToken)
+		private Task UpdateTooltipAsync(ToolTip tooltip, int updateToken)
 			=> UpdateTooltipCoreAsync(tooltip, updateToken);
 
-		public void ScheduleCloseIfEmpty()
+		internal void ScheduleCloseIfEmpty()
 			=> _editor.Dispatcher.BeginInvoke(new Action(() => CloseWindowIfEmpty()), DispatcherPriority.Background);
 
-		public void InvalidateRequests()
+		internal void InvalidateRequests()
 			=> _completionRequestToken++;
 
 		private void InitializeWindow()
 		{
 			_editor.InitializeCompletionWindow(CompletionWindowMinWidth, CompletionWindowHeight);
+
+			if (_editor._completionWindow is null)
+				return;
+
 			LuaCompletionWindowStyle.Apply(_editor._completionWindow, _editor.GetThemeBrushSet());
 			StyleTooltip();
 			MakeWindowNonActivatable();
@@ -246,8 +260,7 @@ public sealed partial class LuaEditor
 			if (CompletionToolTipField?.GetValue(_editor._completionWindow) is ToolTip tooltip)
 				tooltip.IsOpen = false;
 
-			_editor._completionWindow.Close();
-			_editor._completionWindow = null;
+			_editor.CloseSharedCompletionWindow();
 		}
 
 		private async void CompletionRequestTimer_Tick(object? sender, EventArgs e)
@@ -432,7 +445,7 @@ public sealed partial class LuaEditor
 			}
 		}
 
-		public void CancelTooltipUpdate()
+		internal void CancelTooltipUpdate()
 		{
 			_completionToolTipUpdateToken++;
 			_pendingCompletionToolTip = null;
@@ -453,6 +466,9 @@ public sealed partial class LuaEditor
 
 		private void MakeWindowNonActivatable()
 		{
+			if (_editor._completionWindow is null)
+				return;
+
 			_editor._completionWindow.SourceInitialized += (s, e) =>
 			{
 				if (s is Window window && PresentationSource.FromVisual(window) is HwndSource source)
@@ -503,6 +519,9 @@ public sealed partial class LuaEditor
 
 		private void SetWindowOffsets(int offset)
 		{
+			if (_editor._completionWindow is null)
+				return;
+
 			int startOffset = Math.Max(0, Math.Min(offset, _editor.Document.TextLength));
 
 			while (startOffset > 0)

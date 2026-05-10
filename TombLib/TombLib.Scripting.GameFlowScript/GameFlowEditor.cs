@@ -1,4 +1,5 @@
-using ICSharpCode.AvalonEdit.CodeCompletion;
+#nullable enable
+
 using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Windows;
@@ -11,6 +12,7 @@ using TombLib.Scripting.GameFlowScript.Objects;
 using TombLib.Scripting.GameFlowScript.Parsers;
 using TombLib.Scripting.GameFlowScript.Utils;
 using TombLib.Scripting.Objects;
+using TombLib.Scripting.Utils;
 
 namespace TombLib.Scripting.GameFlowScript
 {
@@ -33,28 +35,7 @@ namespace TombLib.Scripting.GameFlowScript
 
 		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
 		{
-			if (AutocompleteEnabled && e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-			{
-				if (_completionWindow == null)
-				{
-					InitializeCompletionWindow();
-
-					int wordStartOffset =
-						TextUtilities.GetNextCaretPosition(Document, CaretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStartOrSymbol);
-
-					string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
-
-					if (!word.StartsWith(":"))
-						_completionWindow.StartOffset = wordStartOffset;
-
-					foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
-						_completionWindow.CompletionList.CompletionData.Add(item);
-
-					ShowCompletionWindow();
-				}
-
-				e.Handled = true;
-			}
+			TryHandleCtrlSpaceCompletion(e, TryShowAutocompleteWindow);
 		}
 
 		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
@@ -67,23 +48,19 @@ namespace TombLib.Scripting.GameFlowScript
 		{
 			string currentLineText = LineParser.EscapeComments(Document.GetText(Document.GetLineByOffset(CaretOffset))).Trim();
 
-			if (currentLineText.Length == 1)
-			{
-				InitializeCompletionWindow();
+			if (EditorCompletionTriggerHelper.IsSingleCharacterLine(currentLineText))
+				TryShowAutocompleteWindow();
+		}
 
-				int wordStartOffset =
-					TextUtilities.GetNextCaretPosition(Document, CaretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStartOrSymbol);
+		private void TryShowAutocompleteWindow()
+		{
+			int wordStartOffset =
+				TextUtilities.GetNextCaretPosition(Document, CaretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStartOrSymbol);
 
-				string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
+			string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
+			int? startOffset = word.StartsWith(":") ? null : wordStartOffset;
 
-				if (!word.StartsWith(":"))
-					_completionWindow.StartOffset = wordStartOffset;
-
-				foreach (ICompletionData item in Autocomplete.GetAutocompleteData())
-					_completionWindow.CompletionList.CompletionData.Add(item);
-
-				ShowCompletionWindow();
-			}
+			TryOpenCompletionWindow(Autocomplete.GetAutocompleteData(), startOffset);
 		}
 
 		public override void TidyCode(bool trimOnly = false)
@@ -100,7 +77,8 @@ namespace TombLib.Scripting.GameFlowScript
 
 		public override void UpdateSettings(Bases.ConfigurationBase configuration)
 		{
-			var config = configuration as GameFlowEditorConfiguration;
+			if (configuration is not GameFlowEditorConfiguration config)
+				return;
 
 			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
 
@@ -110,11 +88,11 @@ namespace TombLib.Scripting.GameFlowScript
 			base.UpdateSettings(configuration);
 		}
 
-		public override void GoToObject(string objectName, object identifyingObject = null)
+		public override void GoToObject(string objectName, object? identifyingObject = null)
 		{
 			if (identifyingObject is ObjectType type)
 			{
-				DocumentLine objectLine = DocumentParser.FindDocumentLineOfObject(Document, objectName, type);
+				DocumentLine? objectLine = DocumentParser.FindDocumentLineOfObject(Document, objectName, type);
 
 				if (objectLine != null)
 				{

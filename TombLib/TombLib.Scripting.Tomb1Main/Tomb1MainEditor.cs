@@ -1,8 +1,6 @@
 #nullable enable
 
-using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +15,7 @@ using TombLib.Scripting.Tomb1Main.Parsers;
 using TombLib.Scripting.Tomb1Main.Services;
 using TombLib.Scripting.Tomb1Main.Services.Implementations;
 using TombLib.Scripting.Tomb1Main.Utils;
+using TombLib.Scripting.Utils;
 using TombLib.Scripting.Workers;
 
 namespace TombLib.Scripting.Tomb1Main
@@ -71,9 +70,8 @@ namespace TombLib.Scripting.Tomb1Main
 		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
 		{
 			// Handle Ctrl+Space autocomplete
-			if (AutocompleteEnabled && IsCtrlSpaceInput(e.Text, Keyboard.Modifiers))
+			if (TryHandleCtrlSpaceCompletion(e, HandleCtrlSpaceAutocomplete))
 			{
-				HandleCtrlSpaceAutocomplete(e);
 				return;
 			}
 
@@ -143,9 +141,6 @@ namespace TombLib.Scripting.Tomb1Main
 
 		#region Text input handling
 
-		private static bool IsCtrlSpaceInput(string inputText, ModifierKeys modifiers)
-			=> inputText == " " && modifiers.HasFlag(ModifierKeys.Control);
-
 		private static bool ShouldTriggerAutocomplete(string inputText)
 			=> inputText == "\"";
 
@@ -153,7 +148,7 @@ namespace TombLib.Scripting.Tomb1Main
 
 		#region Autocomplete handling
 
-		private void HandleCtrlSpaceAutocomplete(TextCompositionEventArgs e)
+		private void HandleCtrlSpaceAutocomplete()
 		{
 			// Only allow Ctrl+Space if caret is at end of word or in whitespace
 			if (_textAnalysisService.IsValidPositionForCtrlSpaceAutocomplete(Document, CaretOffset) && _completionWindow is null)
@@ -161,8 +156,6 @@ namespace TombLib.Scripting.Tomb1Main
 				string currentWord = _textAnalysisService.GetCurrentWordBeingTyped(Document, CaretOffset);
 				TryShowCompletionWindow(currentWord);
 			}
-
-			e.Handled = true; // Prevents the space character from being inserted
 		}
 
 		private void HandleAutocompleteOnTextEntered(TextCompositionEventArgs e)
@@ -190,8 +183,7 @@ namespace TombLib.Scripting.Tomb1Main
 
 			if (matchingCompletions.Count == 0)
 			{
-				_completionWindow.Close();
-				_completionWindow = null;
+				CloseCompletionWindowCore();
 			}
 		}
 
@@ -204,33 +196,20 @@ namespace TombLib.Scripting.Tomb1Main
 			}
 		}
 
-		private bool TryShowCompletionWindow(string currentWord = "")
+		private void TryShowCompletionWindow(string currentWord = "")
 		{
 			var autocompleteData = _autocompleteService.GetAutocompleteData();
 
 			if (autocompleteData.Count == 0)
-				return false;
+				return;
 
 			var filteredCompletions = _autocompleteManager.FilterCompletions(autocompleteData, currentWord);
 
 			if (filteredCompletions.Count == 0)
-				return false;
+				return;
 
-			InitializeCompletionWindow();
-			SetCompletionWindowOffsets(currentWord);
-
-			foreach (ICompletionData item in filteredCompletions)
-				_completionWindow.CompletionList.CompletionData.Add(item);
-
-			ShowCompletionWindow();
-			return true;
-		}
-
-		private void SetCompletionWindowOffsets(string currentWord)
-		{
 			var (startOffset, endOffset) = _autocompleteManager.GetCompletionWindowOffsets(Document, CaretOffset, currentWord);
-			_completionWindow.StartOffset = startOffset;
-			_completionWindow.EndOffset = endOffset;
+			TryOpenCompletionWindow(filteredCompletions, startOffset, endOffset);
 		}
 
 		#endregion Autocomplete handling

@@ -21,25 +21,28 @@ public sealed partial class LuaEditor
 		? MarkdownToolTipRenderer.CreateContent(hoverInfo.Content, ToolTipForeground, DefaultToolTipBackground)
 		: MarkdownToolTipRenderer.CreatePlainTextContent(hoverInfo.Content, ToolTipForeground);
 
+	/// <summary>
+	/// Owns Lua hover request state, request eligibility checks, and hover-versus-diagnostic tooltip presentation.
+	/// </summary>
 	private sealed class LuaHoverController
 	{
 		private readonly LuaEditor _editor;
 		private CancellationTokenSource? _hoverCancellationTokenSource;
 		private int _hoverRequestToken;
 
-		public LuaHoverController(LuaEditor editor)
+		internal LuaHoverController(LuaEditor editor)
 		{
 			_editor = editor;
 		}
 
-		public async Task HandleMouseHoverAsync(MouseEventArgs e)
+		internal async Task HandleMouseHoverAsync(MouseEventArgs e)
 		{
 			int hoveredOffset = _editor.GetOffsetFromPoint(e.GetPosition(_editor));
 
 			if (hoveredOffset == -1)
 				return;
 
-			bool hasDiagnostic = _editor.TryGetDiagnosticInfo(hoveredOffset, out string diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity, allowLineFallback: false);
+			bool hasDiagnostic = _editor.TryGetDiagnosticInfo(hoveredOffset, out string? diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity, allowLineFallback: false);
 			bool canShowDiagnosticFallback = _editor._completionWindow is null && !_editor._signatureHelpController.IsVisible;
 
 			if (!TryGetRequestOffset(hoveredOffset, out int hoverOffset) || !_editor.IsIntellisenseAvailable())
@@ -79,13 +82,13 @@ public sealed partial class LuaEditor
 			}
 		}
 
-		public void CancelPendingRequest()
+		internal void CancelPendingRequest()
 			=> CancelAndDispose(ref _hoverCancellationTokenSource);
 
-		public void InvalidateRequests()
+		internal void InvalidateRequests()
 			=> _hoverRequestToken++;
 
-		public bool TryGetRequestOffset(int hoveredOffset, out int hoverOffset)
+		private bool TryGetRequestOffset(int hoveredOffset, out int hoverOffset)
 		{
 			hoverOffset = 0;
 
@@ -98,15 +101,17 @@ public sealed partial class LuaEditor
 			return !string.IsNullOrWhiteSpace(_editor.GetWordFromOffset(hoverOffset));
 		}
 
-		public void ShowDiagnosticToolTipIfAvailable(bool canShowDiagnosticFallback, bool hasDiagnostic, string diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
+		private void ShowDiagnosticToolTipIfAvailable(bool canShowDiagnosticFallback, bool hasDiagnostic, string? diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
 		{
-			if (canShowDiagnosticFallback && hasDiagnostic)
+			if (canShowDiagnosticFallback && hasDiagnostic && !string.IsNullOrWhiteSpace(diagnosticMessage))
 				_editor.ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
 		}
 
-		public void ShowBestToolTip(LuaHoverInfo? hoverInfo, bool hasDiagnostic, string diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
+		private void ShowBestToolTip(LuaHoverInfo? hoverInfo, bool hasDiagnostic, string? diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
 		{
 			bool canShowToolTip = _editor._completionWindow is null && !_editor._signatureHelpController.IsVisible;
+			bool hasDisplayableDiagnostic = hasDiagnostic && !string.IsNullOrWhiteSpace(diagnosticMessage);
+			string diagnosticText = diagnosticMessage ?? string.Empty;
 
 			if (!canShowToolTip)
 				return;
@@ -115,12 +120,12 @@ public sealed partial class LuaEditor
 				? hoverInfo
 				: null;
 
-			if (displayableHoverInfo is not null && hasDiagnostic)
-				ShowCombinedToolTip(displayableHoverInfo, diagnosticMessage, diagnosticSeverity);
+			if (displayableHoverInfo is not null && hasDisplayableDiagnostic)
+				ShowCombinedToolTip(displayableHoverInfo, diagnosticText, diagnosticSeverity);
 			else if (displayableHoverInfo is not null)
 				ShowHoverToolTip(displayableHoverInfo);
-			else if (hasDiagnostic)
-				_editor.ShowDiagnosticToolTip(diagnosticMessage, diagnosticSeverity);
+			else if (hasDisplayableDiagnostic)
+				_editor.ShowDiagnosticToolTip(diagnosticText, diagnosticSeverity);
 		}
 
 		private void ShowCombinedToolTip(LuaHoverInfo hoverInfo, string diagnosticMessage, TextEditorDiagnosticSeverity severity)

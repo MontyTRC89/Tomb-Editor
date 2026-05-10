@@ -29,3 +29,14 @@ This note is a maintainer map for the current LuaLS integration layout after the
 - Move files by feature first, then extract new stateful owners only where state is still dense.
 - Keep document tracking centralized instead of splitting version and cache state across several helpers.
 - Prefer feature-oriented folders over a larger set of flat provider partials.
+- Keep XML docs current on provider-facing contracts, result carriers, and other maintainer-facing entry points when responsibilities change.
+
+## Regression checklist
+
+- Completion: verify `.` `:` and manual `Ctrl+Space` requests still open the completion list, refresh correctly after edits, and continue to resolve selected-item tooltip content.
+- Hover: verify symbol hover still shows hover content, and that hover falls back to diagnostics when no hover payload is available.
+- Signature help: verify `(` and `,` open or refresh the popup, `)` dismisses it, and editor deactivation clears transient UI.
+- Definition navigation: verify `F12` and `Ctrl+Click` navigate for valid identifiers and stay inert for comments, strings, or unresolved symbols.
+- Document lifecycle: verify open, update, rename, close, and restart replay keep document versions, URIs, and open references synchronized with LuaLS.
+- Diagnostics: verify published diagnostics replace stale results, clear when documents change or close, and stay attached to the correct file after rename and restart flows.
+- Semantic tokens: verify full refresh, delta apply, and delta fallback all keep coloring stable after edits, file changes, and server restart.

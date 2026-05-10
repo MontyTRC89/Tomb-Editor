@@ -7,6 +7,9 @@ using System.Text.Json;
 
 namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 
+/// <summary>
+/// Converts raw LuaLS JSON payloads into the editor-facing result objects shared by completion, hover, navigation, signature-help, diagnostics, and semantic-token parsing.
+/// </summary>
 internal static partial class LuaLanguageServerResponseParser
 {
 	private readonly struct MarkupContent(string? text, bool isMarkdown)

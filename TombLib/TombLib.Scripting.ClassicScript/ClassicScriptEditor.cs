@@ -1,3 +1,5 @@
+#nullable enable
+
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
@@ -5,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -20,6 +23,7 @@ using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.ClassicScript.Utils;
 using TombLib.Scripting.Helpers;
 using TombLib.Scripting.Objects;
+using TombLib.Scripting.Utils;
 using TombLib.Scripting.Workers;
 
 namespace TombLib.Scripting.ClassicScript
@@ -66,6 +70,8 @@ namespace TombLib.Scripting.ClassicScript
 
 		private IBackgroundRenderer _sectionRenderer;
 
+		private readonly record struct AutocompleteRequest(string Text, int CaretOffset, int ArgumentIndex);
+
 		#endregion Fields
 
 		#region Construction
@@ -80,6 +86,7 @@ namespace TombLib.Scripting.ClassicScript
 			CommentPrefix = ";";
 		}
 
+		[MemberNotNull(nameof(_autocompleteWorker), nameof(_errorDetectionWorker))]
 		private void InitializeBackgroundWorkers()
 		{
 			_autocompleteWorker = new BackgroundWorker();
@@ -90,6 +97,7 @@ namespace TombLib.Scripting.ClassicScript
 			_errorDetectionWorker.RunWorkerCompleted += ErrorWorker_RunWorkerCompleted;
 		}
 
+		[MemberNotNull(nameof(_sectionRenderer))]
 		private void InitializeRenderers()
 		{
 			_sectionRenderer = new SectionRenderer(this);
@@ -112,33 +120,25 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Events
 
-		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+		private void TextArea_TextEntering(object? sender, TextCompositionEventArgs e)
 		{
-			if (AutocompleteEnabled && !SuppressAutocomplete)
-			{
-				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-				{
-					if (_completionWindow == null)
-						HandleAutocompleteAfterSpaceCtrl();
-
-					e.Handled = true;
-				}
-			}
+			if (!SuppressAutocomplete)
+				TryHandleCtrlSpaceCompletion(e, HandleAutocompleteAfterSpaceCtrl);
 		}
 
-		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
+		private void TextEditor_TextEntered(object? sender, TextCompositionEventArgs e)
 		{
 			if (AutocompleteEnabled && !SuppressAutocomplete)
 				HandleAutocomplete(e);
 		}
 
-		private void TextEditor_TextChanged(object sender, EventArgs e)
+		private void TextEditor_TextChanged(object? sender, EventArgs e)
 		{
 			if (LiveErrorUnderlining)
 				_errorDetectionWorker.RunErrorCheckOnIdle(Text);
 		}
 
-		private void TextEditor_KeyDown(object sender, KeyEventArgs e)
+		private void TextEditor_KeyDown(object? sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.F12)
 			{
@@ -167,7 +167,7 @@ namespace TombLib.Scripting.ClassicScript
 			}
 		}
 
-		private void TextEditor_MouseHover(object sender, MouseEventArgs e)
+		private void TextEditor_MouseHover(object? sender, MouseEventArgs e)
 			=> HandleDefinitionToolTips(e);
 
 		#endregion Events
@@ -180,7 +180,7 @@ namespace TombLib.Scripting.ClassicScript
 		{
 			if (_completionWindow == null) // Prevents window duplicates
 			{
-				if (Document.GetLineByOffset(CaretOffset).Length == 1)
+				if (EditorCompletionTriggerHelper.IsSingleCharacterLine(Document.GetText(Document.GetLineByOffset(CaretOffset))))
 					HandleAutocompleteOnEmptyLine();
 				else if (e.Text != "_" && CaretOffset > 1)
 					HandleAutocompleteAfterSpace();
@@ -201,14 +201,7 @@ namespace TombLib.Scripting.ClassicScript
 					HandleAutocompleteOnEmptyLine();
 				else if (!_autocompleteWorker.IsBusy)
 				{
-					var data = new List<object>
-					{
-						Text,
-						CaretOffset,
-						-1
-					};
-
-					_autocompleteWorker.RunWorkerAsync(data);
+					_autocompleteWorker.RunWorkerAsync(new AutocompleteRequest(Text, CaretOffset, -1));
 				}
 			}
 
@@ -230,14 +223,7 @@ namespace TombLib.Scripting.ClassicScript
 				|| Document.GetCharAt(CaretOffset - 2) == '/')
 				&& !_autocompleteWorker.IsBusy)
 			{
-				var data = new List<object>
-				{
-					Text,
-					CaretOffset,
-					-1
-				};
-
-				_autocompleteWorker.RunWorkerAsync(data);
+				_autocompleteWorker.RunWorkerAsync(new AutocompleteRequest(Text, CaretOffset, -1));
 			}
 			else
 				TryHandleIncludeAutocomplete();
@@ -250,10 +236,11 @@ namespace TombLib.Scripting.ClassicScript
 
 			if (Regex.IsMatch(lineText, Patterns.IncludeCommand, RegexOptions.IgnoreCase))
 			{
-				InitializeCompletionWindow();
+				int? startOffset = null;
+				int? endOffset = null;
 
 				if (Document.GetCharAt(CaretOffset - 1) == '\"')
-					_completionWindow.StartOffset = CaretOffset - 1;
+					startOffset = CaretOffset - 1;
 				else if (Document.GetCharAt(CaretOffset - 1) != ' ')
 				{
 					int wordStartOffset =
@@ -263,29 +250,33 @@ namespace TombLib.Scripting.ClassicScript
 
 					if (!word.StartsWith("#"))
 					{
-						_completionWindow.StartOffset = wordStartOffset;
+						startOffset = wordStartOffset;
 
 						if (wordStartOffset - 1 > 0 && Document.GetCharAt(wordStartOffset - 1) == '\"')
-							_completionWindow.StartOffset--;
+							startOffset--;
 					}
 				}
 
 				if (CaretOffset < Document.TextLength && Document.GetCharAt(CaretOffset) == '\"')
-					_completionWindow.EndOffset = CaretOffset + 1;
+					endOffset = CaretOffset + 1;
 
-				string directoryPath = Path.GetDirectoryName(FilePath);
+				string? directoryPath = Path.GetDirectoryName(FilePath);
+
+				if (string.IsNullOrWhiteSpace(directoryPath))
+					return;
+
 				var fileDirectory = new DirectoryInfo(directoryPath);
+				var completionItems = new List<ICompletionData>();
 
 				foreach (FileInfo file in fileDirectory.GetFiles("*.txt", SearchOption.AllDirectories).Where(x => !x.FullName.Equals(FilePath)))
 				{
 					string pathPart = file.FullName.Replace(directoryPath, string.Empty).TrimStart('\\');
 					string completionDataString = $"\"{pathPart}\"";
 
-					_completionWindow.CompletionList.CompletionData.Add(new CompletionData(completionDataString));
+					completionItems.Add(new CompletionData(completionDataString));
 				}
 
-				if (_completionWindow.CompletionList.CompletionData.Count > 0)
-					ShowCompletionWindow();
+				TryOpenCompletionWindow(completionItems, startOffset, endOffset);
 			}
 		}
 
@@ -299,14 +290,13 @@ namespace TombLib.Scripting.ClassicScript
 			if (!MnemonicData.AllConstantFlags.Any(x => x.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
 				return;
 
-			InitializeCompletionWindow();
-			_completionWindow.StartOffset = wordStartOffset;
+			var completionItems = new List<ICompletionData>();
 
 			foreach (string mnemonicConstant in MnemonicData.AllConstantFlags)
 				if (mnemonicConstant.StartsWith(word, StringComparison.OrdinalIgnoreCase))
-					_completionWindow.CompletionList.CompletionData.Add(new CompletionData(mnemonicConstant));
+					completionItems.Add(new CompletionData(mnemonicConstant));
 
-			ShowCompletionWindow();
+			TryOpenCompletionWindow(completionItems, wordStartOffset);
 		}
 
 		private void HandleAutocompleteOnEmptyLine()
@@ -317,27 +307,23 @@ namespace TombLib.Scripting.ClassicScript
 				"Strings", "PSXStrings", "PCStrings", "ExtraNG"))
 				return;
 
-			InitializeCompletionWindow();
-			_completionWindow.StartOffset = Document.GetLineByOffset(CaretOffset).Offset;
-
-			foreach (ICompletionData item in Autocomplete.GetNewLineAutocompleteList())
-				_completionWindow.CompletionList.CompletionData.Add(item);
-
-			ShowCompletionWindow();
+			TryOpenCompletionWindow(Autocomplete.GetNewLineAutocompleteList(), Document.GetLineByOffset(CaretOffset).Offset);
 		}
 
-		private void AutocompleteWorker_DoWork(object sender, DoWorkEventArgs e)
+		private void AutocompleteWorker_DoWork(object? sender, DoWorkEventArgs e)
 		{
-			var data = e.Argument as List<object>;
+			if (e.Argument is not AutocompleteRequest request)
+			{
+				e.Result = new List<ICompletionData>();
+				return;
+			}
 
-			var document = new TextDocument(data[0].ToString());
-			int caretOffset = (int)data[1];
-			int argumentIndex = (int)data[2];
+			var document = new TextDocument(request.Text);
 
-			e.Result = Autocomplete.GetCompletionData(document, caretOffset, argumentIndex);
+			e.Result = Autocomplete.GetCompletionData(document, request.CaretOffset, request.ArgumentIndex);
 		}
 
-		private void AutocompleteWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void AutocompleteWorker_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
 		{
 			var completionData = e.Result as List<ICompletionData>;
 
@@ -347,21 +333,17 @@ namespace TombLib.Scripting.ClassicScript
 			if (completionData.Count == 0)
 				return;
 
-			InitializeCompletionWindow();
-
 			int wordStartOffset =
 				TextUtilities.GetNextCaretPosition(Document, CaretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStart);
 
 			string word = Document.GetText(wordStartOffset, CaretOffset - wordStartOffset);
+			int? startOffset = null;
 
 			if (!word.StartsWith("=") && !word.StartsWith(",") && !word.StartsWith("+")
 				&& !word.StartsWith("-") && !word.StartsWith("*") && !word.StartsWith("/"))
-				_completionWindow.StartOffset = wordStartOffset;
+				startOffset = wordStartOffset;
 
-			foreach (ICompletionData item in completionData)
-				_completionWindow.CompletionList.CompletionData.Add(item);
-
-			ShowCompletionWindow();
+			TryOpenCompletionWindow(completionData, startOffset);
 		}
 
 		#endregion Autocomplete
@@ -374,7 +356,7 @@ namespace TombLib.Scripting.ClassicScript
 				_errorDetectionWorker.CheckForErrorsAsync(Text);
 		}
 
-		private void ErrorWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void ErrorWorker_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
 		{
 			if (e.Result is not IReadOnlyList<TextEditorDiagnostic> diagnostics)
 				return;
@@ -414,7 +396,8 @@ namespace TombLib.Scripting.ClassicScript
 
 		public override void UpdateSettings(Bases.ConfigurationBase configuration)
 		{
-			var config = configuration as ClassicScriptEditorConfiguration;
+			if (configuration is not ClassicScriptEditorConfiguration config)
+				return;
 
 			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
 
@@ -444,7 +427,7 @@ namespace TombLib.Scripting.ClassicScript
 			if (HasDiagnosticsOnLine(hoveredLine))
 				return;
 
-			string hoveredWord = WordParser.GetWordFromOffset(Document, hoveredOffset);
+			string? hoveredWord = WordParser.GetWordFromOffset(Document, hoveredOffset);
 			WordType type = WordParser.GetWordTypeFromOffset(Document, hoveredOffset);
 
 			if (type == WordType.MnemonicConstant && !MnemonicData.AllConstantFlags.Any(x => x.Equals(hoveredWord, StringComparison.OrdinalIgnoreCase)))
@@ -459,11 +442,14 @@ namespace TombLib.Scripting.ClassicScript
 				hoveredWord = hoveredWord.Split(' ')[0];
 			}
 
+			if (string.IsNullOrEmpty(hoveredWord))
+				return;
+
 			if (type != WordType.Unknown)
 			{
 				if (type == WordType.MnemonicConstant || type == WordType.Hexadecimal || type == WordType.Decimal)
 				{
-					string currentFlagPrefix = ArgumentParser.GetFlagPrefixOfCurrentArgument(Document, hoveredOffset);
+					string? currentFlagPrefix = ArgumentParser.GetFlagPrefixOfCurrentArgument(Document, hoveredOffset);
 
 					if (currentFlagPrefix == null)
 					{
@@ -475,25 +461,25 @@ namespace TombLib.Scripting.ClassicScript
 					else
 					{
 						DataTable dataTable = MnemonicData.MnemonicConstantsDataTable;
-						DataRow row = null;
+						DataRow? row = null;
 
 						switch (type)
 						{
 							case WordType.MnemonicConstant:
 								row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
-									=> r[2].ToString().Equals(hoveredWord, StringComparison.OrdinalIgnoreCase));
+									=> string.Equals(r[2]?.ToString(), hoveredWord, StringComparison.OrdinalIgnoreCase));
 								break;
 
 							case WordType.Hexadecimal:
 								row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
-									=> r[1].ToString().Equals(hoveredWord, StringComparison.OrdinalIgnoreCase)
-									&& r[2].ToString().StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase));
+									=> string.Equals(r[1]?.ToString(), hoveredWord, StringComparison.OrdinalIgnoreCase)
+									&& (r[2]?.ToString()?.StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase) ?? false));
 								break;
 
 							case WordType.Decimal:
 								row = dataTable.Rows.Cast<DataRow>().FirstOrDefault(r
-									=> r[0].ToString().Equals(hoveredWord, StringComparison.OrdinalIgnoreCase)
-									&& r[2].ToString().StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase));
+									=> string.Equals(r[0]?.ToString(), hoveredWord, StringComparison.OrdinalIgnoreCase)
+									&& (r[2]?.ToString()?.StartsWith(currentFlagPrefix, StringComparison.OrdinalIgnoreCase) ?? false));
 								break;
 						}
 
@@ -515,22 +501,22 @@ namespace TombLib.Scripting.ClassicScript
 			}
 		}
 
-		private WordDefinitionEventArgs HoveredWordArgs = null;
+		private WordDefinitionEventArgs? HoveredWordArgs;
 
 		public delegate void WordDefinitionRequestedEventHandler(object sender, WordDefinitionEventArgs e);
 
-		public event WordDefinitionRequestedEventHandler WordDefinitionRequested;
+		public event WordDefinitionRequestedEventHandler? WordDefinitionRequested;
 		public void OnWordDefinitionRequested(WordDefinitionEventArgs e) => WordDefinitionRequested?.Invoke(this, e);
 
 		[Obsolete("This method shouldn't be used for ClassicScript.\nUse WordParser.GetWordFromOffset() instead.")]
 		public new void GetWordFromOffset(int offset)
 			=> base.GetWordFromOffset(offset);
 
-		public override void GoToObject(string objectName, object identifyingObject = null)
+		public override void GoToObject(string objectName, object? identifyingObject = null)
 		{
 			if (identifyingObject is ObjectType type)
 			{
-				DocumentLine objectLine = DocumentParser.FindDocumentLineOfObject(Document, objectName, type);
+				DocumentLine? objectLine = DocumentParser.FindDocumentLineOfObject(Document, objectName, type);
 
 				if (objectLine != null)
 				{

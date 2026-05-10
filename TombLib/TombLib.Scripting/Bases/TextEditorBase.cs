@@ -1,7 +1,14 @@
-﻿using DarkUI.Forms;
+﻿#nullable enable
+
+using DarkUI.Forms;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,22 +19,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Rendering;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.Rendering;
 using TombLib.Scripting.Resources;
+using TombLib.Scripting.Services;
 using TombLib.Scripting.Utils;
 using TombLib.Scripting.Workers;
 using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Bases
 {
-	public abstract class TextEditorBase : TextEditor, IEditorControl, ISupportsFindReplace
+	public abstract class TextEditorBase : TextEditor, IEditorControl
 	{
 		protected const double ToolTipTextMaxWidth = 500.0;
 		protected static readonly double ToolTipTextFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
@@ -121,16 +125,16 @@ namespace TombLib.Scripting.Bases
 
 		#region Fields
 
-		protected Popup _specialToolTip = new Popup();
-		protected CompletionWindow _completionWindow;
+		protected Popup _specialToolTip;
+		protected CompletionWindow? _completionWindow;
 
 		private ContentChangedWorker _contentChangedWorker;
+		private readonly CompletionWindowHost _completionWindowHost;
+		private readonly EditorToolTipPresenter _toolTipPresenter;
 
-		private DispatcherTimer _textChangedDelayedTimer = new DispatcherTimer();
-		private DispatcherTimer _toolTipCloseTimer = new DispatcherTimer();
-		private bool _toolTipContentHovered;
-		private readonly Border _specialToolTipBorder = new Border();
-		private readonly ContentPresenter _specialToolTipPresenter = new ContentPresenter();
+		private readonly DispatcherTimer _textChangedDelayedTimer = new DispatcherTimer();
+		private readonly Border _specialToolTipBorder;
+		private readonly ContentPresenter _specialToolTipPresenter;
 		private readonly List<TextAnchor> _bookmarkAnchors = new List<TextAnchor>();
 		private IReadOnlyList<TextEditorDiagnostic> _diagnostics = Array.Empty<TextEditorDiagnostic>();
 
@@ -146,10 +150,14 @@ namespace TombLib.Scripting.Bases
 		public TextEditorBase(Version engineVersion)
 		{
 			SetNewDefaultSettings();
+			_completionWindowHost = new CompletionWindowHost(TextArea);
+			_toolTipPresenter = new EditorToolTipPresenter(this);
+			_specialToolTip = _toolTipPresenter.Popup;
+			_specialToolTipBorder = _toolTipPresenter.Border;
+			_specialToolTipPresenter = _toolTipPresenter.ContentPresenter;
 
 			InitializeBackgroundWorkers();
 			InitializeTimers();
-			InitializeToolTip();
 			InitializeRenderers();
 
 			BindEventMethods();
@@ -174,6 +182,7 @@ namespace TombLib.Scripting.Bases
 			VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 		}
 
+		[MemberNotNull(nameof(_contentChangedWorker))]
 		private void InitializeBackgroundWorkers()
 		{
 			_contentChangedWorker = new ContentChangedWorker();
@@ -184,28 +193,9 @@ namespace TombLib.Scripting.Bases
 		{
 			TextChangedDelayedInterval = new TimeSpan(0, 0, 0, 0, 300);
 			_textChangedDelayedTimer.Tick += TextChangedDelayedTimer_Tick;
-			_toolTipCloseTimer.Interval = new TimeSpan(0, 0, 0, 0, 900);
-			_toolTipCloseTimer.Tick += ToolTipCloseTimer_Tick;
 		}
 
-		private void InitializeToolTip()
-		{
-			_specialToolTip.AllowsTransparency = true;
-			_specialToolTip.PopupAnimation = PopupAnimation.None;
-			_specialToolTip.StaysOpen = true;
-			_specialToolTip.Placement = PlacementMode.RelativePoint;
-
-			_specialToolTipBorder.SnapsToDevicePixels = true;
-			_specialToolTipBorder.CornerRadius = new CornerRadius(3.0);
-			_specialToolTipBorder.BorderThickness = new Thickness(1.0);
-			_specialToolTipBorder.Padding = new Thickness(8.0, 6.0, 8.0, 6.0);
-			_specialToolTipBorder.Child = _specialToolTipPresenter;
-			_specialToolTipBorder.MouseEnter += SpecialToolTip_MouseEnter;
-			_specialToolTipBorder.MouseLeave += SpecialToolTip_MouseLeave;
-
-			_specialToolTip.Child = _specialToolTipBorder;
-		}
-
+		[MemberNotNull(nameof(_bookmarkRenderer), nameof(_errorRenderer))]
 		private void InitializeRenderers()
 		{
 			_bookmarkRenderer = new BookmarkRenderer(this);
@@ -234,39 +224,39 @@ namespace TombLib.Scripting.Bases
 
 		#region Events
 
-		public event EventHandler StatusChanged;
+		public event EventHandler? StatusChanged;
 		protected virtual void OnStatusChanged(EventArgs e)
 			=> StatusChanged?.Invoke(this, e);
 
-		public event EventHandler ZoomChanged;
+		public event EventHandler? ZoomChanged;
 		protected virtual void OnZoomChanged(EventArgs e)
 		{
 			ZoomChanged?.Invoke(this, e);
 			OnStatusChanged(EventArgs.Empty);
 		}
 
-		public event EventHandler TextChangedDelayed;
+		public event EventHandler? TextChangedDelayed;
 		protected virtual void OnTextChangedDelayed(EventArgs e)
 			=> TextChangedDelayed?.Invoke(this, e);
 
-		public event EventHandler ContentChangedWorkerRunCompleted;
+		public event EventHandler? ContentChangedWorkerRunCompleted;
 		protected virtual void OnContentChangedWorkerRunCompleted(EventArgs e)
 			=> ContentChangedWorkerRunCompleted?.Invoke(this, e);
 
-		private void ContentChangedWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void ContentChangedWorker_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
 		{
 			LastModified = DateTime.Now;
-			IsContentChanged = (bool)e.Result;
+			IsContentChanged = e.Result is bool isContentChanged && isContentChanged;
 			OnContentChangedWorkerRunCompleted(EventArgs.Empty);
 		}
 
-		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+		private void TextArea_TextEntering(object? sender, TextCompositionEventArgs e)
 		{
 			CloseDefinitionToolTip(true); // Prevents the ToolTip from covering the screen while typing
 			HandleAutoClosing(e);
 		}
 
-		private void TextEditor_TextChanged(object sender, EventArgs e)
+		private void TextEditor_TextChanged(object? sender, EventArgs e)
 		{
 			IsContentChanged = true;
 
@@ -274,7 +264,7 @@ namespace TombLib.Scripting.Bases
 			_textChangedDelayedTimer.Start();
 		}
 
-		private void TextChangedDelayedTimer_Tick(object sender, EventArgs e)
+		private void TextChangedDelayedTimer_Tick(object? sender, EventArgs e)
 		{
 			TryRunContentChangedWorker();
 
@@ -282,66 +272,41 @@ namespace TombLib.Scripting.Bases
 			_textChangedDelayedTimer.Stop();
 		}
 
-		private void TextEditor_MouseHover(object sender, MouseEventArgs e)
+		private void TextEditor_MouseHover(object? sender, MouseEventArgs e)
 			=> HandleMouseHover(e);
 
 		protected virtual void HandleMouseHover(MouseEventArgs e)
 			=> HandleErrorToolTips(e);
 
-		private void TextEditor_MouseHoverStopped(object sender, MouseEventArgs e)
+		private void TextEditor_MouseHoverStopped(object? sender, MouseEventArgs e)
 			=> ScheduleDefinitionToolTipClose();
 
-		private void TextEditor_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+		private void TextEditor_PreviewMouseWheel(object? sender, MouseWheelEventArgs e)
 		{
 			if (Keyboard.Modifiers == ModifierKeys.Control)
 				HandleZoom(e);
 		}
 
-		private void TextEditor_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+		private void TextEditor_MouseRightButtonDown(object? sender, MouseButtonEventArgs e)
 			=> MoveCaretToMousePosition();
 
-		private void ToolTipCloseTimer_Tick(object sender, EventArgs e)
-		{
-			_toolTipCloseTimer.Stop();
-
-			if (!_toolTipContentHovered && !_specialToolTipBorder.IsMouseOver)
-				CloseDefinitionToolTip(true);
-		}
-
-		private void SpecialToolTip_MouseEnter(object sender, MouseEventArgs e)
-		{
-			_toolTipContentHovered = true;
-			_toolTipCloseTimer.Stop();
-		}
-
-		private void SpecialToolTip_MouseLeave(object sender, MouseEventArgs e)
-		{
-			_toolTipContentHovered = false;
-			ScheduleDefinitionToolTipClose();
-		}
-
 		protected void CloseDefinitionToolTip(bool force = false)
+			=> _toolTipPresenter.Close(force);
+
+		protected bool TryHandleCtrlSpaceCompletion(TextCompositionEventArgs e, Action onTriggered)
 		{
-			_toolTipCloseTimer.Stop();
+			if (!AutocompleteEnabled || !EditorCompletionTriggerHelper.IsCtrlSpaceInput(e.Text, Keyboard.Modifiers))
+				return false;
 
-			if (!force && (_toolTipContentHovered || _specialToolTipBorder.IsMouseOver))
-				return;
+			if (_completionWindow is null)
+				onTriggered();
 
-			if (_specialToolTip.IsOpen)
-				_specialToolTip.IsOpen = false;
-
-			_specialToolTipPresenter.Content = null;
-			_toolTipContentHovered = false;
+			e.Handled = true;
+			return true;
 		}
 
 		private void ScheduleDefinitionToolTipClose()
-		{
-			if (!_specialToolTip.IsOpen)
-				return;
-
-			_toolTipCloseTimer.Stop();
-			_toolTipCloseTimer.Start();
-		}
+			=> _toolTipPresenter.ScheduleClose();
 
 		private void MoveCaretToMousePosition()
 		{
@@ -506,7 +471,7 @@ namespace TombLib.Scripting.Bases
 			TryShowDiagnosticToolTip(hoveredOffset);
 		}
 
-		protected bool TryGetDiagnosticInfo(int hoveredOffset, out string message, out TextEditorDiagnosticSeverity severity, bool allowLineFallback = true)
+		protected bool TryGetDiagnosticInfo(int hoveredOffset, [NotNullWhen(true)] out string? message, out TextEditorDiagnosticSeverity severity, bool allowLineFallback = true)
 		{
 			message = null;
 			severity = TextEditorDiagnosticSeverity.Error;
@@ -545,7 +510,8 @@ namespace TombLib.Scripting.Bases
 
 		protected bool TryShowDiagnosticToolTip(int hoveredOffset)
 		{
-			if (!TryGetDiagnosticInfo(hoveredOffset, out string message, out TextEditorDiagnosticSeverity severity))
+			if (!TryGetDiagnosticInfo(hoveredOffset, out string? message, out TextEditorDiagnosticSeverity severity)
+				|| string.IsNullOrWhiteSpace(message))
 				return false;
 
 			ShowDiagnosticToolTip(message, severity);
@@ -712,7 +678,7 @@ namespace TombLib.Scripting.Bases
 		{
 			DocumentLine currentLine = Document.GetLineByOffset(CaretOffset);
 
-			TextAnchor bookmarkAnchor = FindBookmarkAnchor(currentLine);
+			TextAnchor? bookmarkAnchor = FindBookmarkAnchor(currentLine);
 
 			if (bookmarkAnchor is null)
 				AddBookmark(currentLine);
@@ -799,24 +765,46 @@ namespace TombLib.Scripting.Bases
 		#region CompletionWindow
 
 		public void InitializeCompletionWindow(int width = 300, int height = 300)
-		{
-			_completionWindow = new CompletionWindow(TextArea)
-			{
-				WindowStyle = WindowStyle.None,
-				ResizeMode = ResizeMode.NoResize,
-				BorderThickness = new Thickness(1.0),
-				Background = DefaultToolTipBackground,
-				Foreground = ToolTipForeground,
-				BorderBrush = DefaultToolTipBorder,
-				Width = width,
-				Height = height
-			};
-		}
+			=> _completionWindow = _completionWindowHost.Create(width, height, DefaultToolTipBorder, DefaultToolTipBackground, ToolTipForeground);
 
 		public void ShowCompletionWindow()
 		{
-			_completionWindow.Show();
-			_completionWindow.Closed += delegate { _completionWindow = null; };
+			if (_completionWindow is null)
+				return;
+
+			_completionWindowHost.Show(_completionWindow, () => _completionWindow = null);
+		}
+
+		protected void CloseCompletionWindowCore()
+			=> _completionWindowHost.Close(_completionWindow, () => _completionWindow = null);
+
+		protected bool TryOpenCompletionWindow(IEnumerable<ICompletionData> items,
+			int? startOffset = null,
+			int? endOffset = null,
+			int width = 300,
+			int height = 300)
+		{
+			ICompletionData[] completionItems = items?.ToArray() ?? [];
+
+			if (completionItems.Length == 0)
+				return false;
+
+			InitializeCompletionWindow(width, height);
+
+			if (_completionWindow is null)
+				return false;
+
+			if (startOffset.HasValue)
+				_completionWindow.StartOffset = startOffset.Value;
+
+			if (endOffset.HasValue)
+				_completionWindow.EndOffset = endOffset.Value;
+
+			foreach (ICompletionData item in completionItems)
+				_completionWindow.CompletionList.CompletionData.Add(item);
+
+			ShowCompletionWindow();
+			return true;
 		}
 
 		#endregion CompletionWindow
@@ -894,7 +882,7 @@ namespace TombLib.Scripting.Bases
 			return TextArea.TextView.GetPosition(textViewPoint + TextArea.TextView.ScrollOffset);
 		}
 
-		public string GetWordFromOffset(int offset)
+		public string? GetWordFromOffset(int offset)
 		{
 			int wordStart = TextUtilities.GetNextCaretPosition(Document, offset, LogicalDirection.Backward, CaretPositioningMode.WordBorder);
 			int wordEnd = TextUtilities.GetNextCaretPosition(Document, offset, LogicalDirection.Forward, CaretPositioningMode.WordBorder);
@@ -924,19 +912,7 @@ namespace TombLib.Scripting.Bases
 			=> ShowToolTip(CreateMarkdownToolTipContent(content, foreground, background), border, background);
 
 		protected void ShowToolTip(object content, SolidColorBrush border, SolidColorBrush background)
-		{
-			_toolTipCloseTimer.Stop();
-			_toolTipContentHovered = false;
-			_specialToolTip.PlacementTarget = this;
-			Point mousePosition = Mouse.GetPosition(this);
-			_specialToolTip.HorizontalOffset = mousePosition.X + 14.0;
-			_specialToolTip.VerticalOffset = mousePosition.Y + 20.0;
-
-			_specialToolTipBorder.BorderBrush = border;
-			_specialToolTipBorder.Background = background;
-			_specialToolTipPresenter.Content = content;
-			_specialToolTip.IsOpen = true;
-		}
+			=> _toolTipPresenter.Show(content, border, background);
 
 		private static bool IsSeverityPrefixed(string message)
 			=> !string.IsNullOrWhiteSpace(message)
@@ -972,7 +948,7 @@ namespace TombLib.Scripting.Bases
 
 			foreach (TextAnchor anchor in _bookmarkAnchors)
 			{
-				DocumentLine line = GetBookmarkedLine(anchor);
+				DocumentLine? line = GetBookmarkedLine(anchor);
 
 				if (line is null)
 				{
@@ -1005,14 +981,14 @@ namespace TombLib.Scripting.Bases
 			_bookmarkAnchors.Add(anchor);
 		}
 
-		private TextAnchor FindBookmarkAnchor(DocumentLine line)
+		private TextAnchor? FindBookmarkAnchor(DocumentLine line)
 		{
 			if (line is null)
 				return null;
 
 			foreach (TextAnchor anchor in _bookmarkAnchors)
 			{
-				DocumentLine bookmarkedLine = GetBookmarkedLine(anchor);
+				DocumentLine? bookmarkedLine = GetBookmarkedLine(anchor);
 
 				if (bookmarkedLine is not null && bookmarkedLine.LineNumber == line.LineNumber)
 					return anchor;
@@ -1021,7 +997,7 @@ namespace TombLib.Scripting.Bases
 			return null;
 		}
 
-		private DocumentLine GetBookmarkedLine(TextAnchor anchor)
+		private DocumentLine? GetBookmarkedLine(TextAnchor anchor)
 		{
 			if (anchor is null || anchor.IsDeleted || Document.LineCount == 0)
 				return null;
@@ -1035,7 +1011,7 @@ namespace TombLib.Scripting.Bases
 				.Where(diagnostic => diagnostic.ContainsOffset(offset))
 				.ToList();
 
-		private List<TextEditorDiagnostic> GetDiagnosticsForLine(DocumentLine line)
+		private List<TextEditorDiagnostic> GetDiagnosticsForLine(DocumentLine? line)
 		{
 			if (line is null || _diagnostics.Count == 0)
 				return new List<TextEditorDiagnostic>();
@@ -1087,7 +1063,8 @@ namespace TombLib.Scripting.Bases
 
 		public virtual void UpdateSettings(ConfigurationBase configuration)
 		{
-			var config = configuration as TextEditorConfigBase;
+			if (configuration is not TextEditorConfigBase config)
+				return;
 
 			FontSize = config.FontSize;
 			DefaultFontSize = config.FontSize;
@@ -1123,7 +1100,7 @@ namespace TombLib.Scripting.Bases
 		void IEditorControl.Undo() => Undo();
 		void IEditorControl.Redo() => Redo();
 
-		public virtual void GoToObject(string objectName, object identifyingObject = null)
+		public virtual void GoToObject(string objectName, object? identifyingObject = null)
 		{ } // Bruh
 
 		public void Dispose()

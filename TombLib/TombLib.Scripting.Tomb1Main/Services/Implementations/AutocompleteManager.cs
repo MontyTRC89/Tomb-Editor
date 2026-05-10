@@ -5,6 +5,7 @@ using ICSharpCode.AvalonEdit.Document;
 using System.Collections.Generic;
 using System.Linq;
 using TombLib.Scripting.Tomb1Main.Parsers;
+using TombLib.Scripting.Utils;
 
 namespace TombLib.Scripting.Tomb1Main.Services.Implementations;
 
@@ -54,7 +55,8 @@ public sealed class AutocompleteManager : IAutocompleteManager
 	public bool ShouldTriggerAutocompleteOnEmptyLine(TextDocument document, int caretOffset)
 	{
 		string currentLineText = LineParser.EscapeComments(document.GetText(document.GetLineByOffset(caretOffset))).Trim();
-		return (currentLineText.Length == 1 && char.IsLetter(currentLineText[0])) || currentLineText.Equals("\"\"");
+		return EditorCompletionTriggerHelper.IsSingleCharacterLine(currentLineText, char.IsLetter)
+			|| currentLineText.Equals("\"\"");
 	}
 
 	public (int startOffset, int endOffset) GetCompletionWindowOffsets(TextDocument document, int caretOffset, string currentWord)
