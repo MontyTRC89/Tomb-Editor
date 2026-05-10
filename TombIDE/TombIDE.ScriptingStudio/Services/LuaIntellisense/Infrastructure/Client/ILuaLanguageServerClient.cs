@@ -44,6 +44,21 @@ internal interface ILuaLanguageServerClient : IDisposable
 	bool SupportsCompletionResolve { get; }
 
 	/// <summary>
+	/// Gets a value indicating whether the server supports <c>textDocument/references</c>.
+	/// </summary>
+	bool SupportsReferences { get; }
+
+	/// <summary>
+	/// Gets a value indicating whether the server supports <c>textDocument/rename</c>.
+	/// </summary>
+	bool SupportsRename { get; }
+
+	/// <summary>
+	/// Gets a value indicating whether the server supports <c>textDocument/formatting</c>.
+	/// </summary>
+	bool SupportsFormatting { get; }
+
+	/// <summary>
 	/// Gets a value indicating whether the server supports semantic-token delta responses.
 	/// </summary>
 	bool SupportsSemanticTokensDelta { get; }

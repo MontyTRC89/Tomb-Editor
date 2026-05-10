@@ -205,6 +205,129 @@ public class LuaLanguageServerResponseParserTests
 	}
 
 	[TestMethod]
+	public void ParseReferenceLocations_ParsesFileReferenceRanges()
+	{
+		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\references.lua");
+
+		IReadOnlyList<LuaReferenceLocation> locations = LuaLanguageServerResponseParser.ParseReferenceLocations(
+			JsonSerializer.SerializeToElement(new object[]
+			{
+				new
+				{
+					uri = new Uri(targetPath).AbsoluteUri,
+					range = new
+					{
+						start = new { line = 2, character = 4 },
+						end = new { line = 2, character = 9 }
+					}
+				},
+				new
+				{
+					uri = "https://example.com/not-a-file.lua",
+					range = new
+					{
+						start = new { line = 0, character = 0 },
+						end = new { line = 0, character = 1 }
+					}
+				}
+			}));
+
+		Assert.AreEqual(1, locations.Count);
+		Assert.AreEqual(targetPath, locations[0].FilePath);
+		Assert.AreEqual(3, locations[0].Range.StartLineNumber);
+		Assert.AreEqual(5, locations[0].Range.StartColumnNumber);
+		Assert.AreEqual(3, locations[0].Range.EndLineNumber);
+		Assert.AreEqual(10, locations[0].Range.EndColumnNumber);
+	}
+
+	[TestMethod]
+	public void ParseWorkspaceEdit_MergesChangeMapAndDocumentChanges()
+	{
+		string firstPath = Path.GetFullPath(@"C:\Workspace\Scripts\first.lua");
+		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\second.lua");
+
+		LuaWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(
+			JsonSerializer.SerializeToElement(new
+			{
+				changes = new Dictionary<string, object[]>
+				{
+					[new Uri(firstPath).AbsoluteUri] =
+					[
+						new
+						{
+							range = new
+							{
+								start = new { line = 0, character = 0 },
+								end = new { line = 0, character = 5 }
+							},
+							newText = "local"
+						}
+					]
+				},
+				documentChanges = new object[]
+				{
+					new
+					{
+						textDocument = new { uri = new Uri(secondPath).AbsoluteUri },
+						edits = new object[]
+						{
+							new
+							{
+								range = new
+								{
+									start = new { line = 3, character = 1 },
+									end = new { line = 3, character = 4 }
+								},
+								newText = "name"
+							}
+						}
+					}
+				}
+			}));
+
+		Assert.IsNotNull(workspaceEdit);
+		Assert.AreEqual(2, workspaceEdit.DocumentEdits.Count);
+		Assert.AreEqual(firstPath, workspaceEdit.DocumentEdits[0].FilePath);
+		Assert.AreEqual("local", workspaceEdit.DocumentEdits[0].TextEdits[0].NewText);
+		Assert.AreEqual(secondPath, workspaceEdit.DocumentEdits[1].FilePath);
+		Assert.AreEqual("name", workspaceEdit.DocumentEdits[1].TextEdits[0].NewText);
+	}
+
+	[TestMethod]
+	public void ParseDocumentFormattingEdits_ParsesFormattingTextEdits()
+	{
+		IReadOnlyList<LuaTextEdit> textEdits = LuaLanguageServerResponseParser.ParseDocumentFormattingEdits(
+			JsonSerializer.SerializeToElement(new object[]
+			{
+				new
+				{
+					range = new
+					{
+						start = new { line = 0, character = 0 },
+						end = new { line = 0, character = 0 }
+					},
+					newText = "local value = 1\r\n"
+				},
+				new
+				{
+					range = new
+					{
+						start = new { line = 1, character = 0 },
+						end = new { line = 1, character = 4 }
+					},
+					newText = "    "
+				}
+			}));
+
+		Assert.AreEqual(2, textEdits.Count);
+		Assert.AreEqual("local value = 1\r\n", textEdits[0].NewText);
+		Assert.AreEqual(1, textEdits[0].Range.StartLineNumber);
+		Assert.AreEqual(1, textEdits[0].Range.StartColumnNumber);
+		Assert.AreEqual(2, textEdits[1].Range.StartLineNumber);
+		Assert.AreEqual(5, textEdits[1].Range.EndColumnNumber);
+	}
+
+	[TestMethod]
 	public void ParseSignatureHelp_UsesParameterLabelOffsetsAndActiveParameter()
 	{
 		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(

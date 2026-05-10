@@ -54,6 +54,21 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		&& _consecutiveStartupFailures < HardStartupFailureThreshold;
 
 	/// <summary>
+	/// Gets a value indicating whether reference requests are supported by the active Lua language server.
+	/// </summary>
+	public bool SupportsReferences => !_isDisposed && _client is not null && _client.SupportsReferences;
+
+	/// <summary>
+	/// Gets a value indicating whether rename requests are supported by the active Lua language server.
+	/// </summary>
+	public bool SupportsRename => !_isDisposed && _client is not null && _client.SupportsRename;
+
+	/// <summary>
+	/// Gets a value indicating whether formatting requests are supported by the active Lua language server.
+	/// </summary>
+	public bool SupportsFormatting => !_isDisposed && _client is not null && _client.SupportsFormatting;
+
+	/// <summary>
 	/// Occurs when diagnostics for a tracked document change.
 	/// </summary>
 	public event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;

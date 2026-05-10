@@ -74,6 +74,9 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 	private string[] _semanticTokenTypes = [];
 	private string[] _semanticTokenModifiers = [];
 	private bool _supportsCompletionResolve;
+	private bool? _supportsReferences;
+	private bool? _supportsRename;
+	private bool? _supportsFormatting;
 	private bool _supportsSemanticTokensDelta;
 
 	/// <summary>
@@ -109,6 +112,21 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 	/// Gets a value indicating whether the server supports completion-item resolve requests.
 	/// </summary>
 	public bool SupportsCompletionResolve => _supportsCompletionResolve;
+
+	/// <summary>
+	/// Gets a value indicating whether the server supports reference requests.
+	/// </summary>
+	public bool SupportsReferences => _supportsReferences ?? true;
+
+	/// <summary>
+	/// Gets a value indicating whether the server supports rename requests.
+	/// </summary>
+	public bool SupportsRename => _supportsRename ?? true;
+
+	/// <summary>
+	/// Gets a value indicating whether the server supports document formatting requests.
+	/// </summary>
+	public bool SupportsFormatting => _supportsFormatting ?? true;
 
 	/// <summary>
 	/// Gets a value indicating whether the server supports semantic-token delta responses.
@@ -313,6 +331,19 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 				{
 					linkSupport = true
 				},
+				references = new
+				{
+					dynamicRegistration = false
+				},
+				rename = new
+				{
+					dynamicRegistration = false,
+					prepareSupport = false
+				},
+				formatting = new
+				{
+					dynamicRegistration = false
+				},
 				publishDiagnostics = new
 				{
 					versionSupport = true
@@ -350,6 +381,9 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 	private void CaptureServerCapabilities(JsonElement initializeResponse)
 	{
 		_supportsCompletionResolve = false;
+		_supportsReferences = false;
+		_supportsRename = false;
+		_supportsFormatting = false;
 		_supportsSemanticTokensDelta = false;
 		_textDocumentSyncKind = LuaTextDocumentSyncKind.Incremental;
 		_semanticTokenTypes = [];
@@ -373,6 +407,24 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 			&& completionProvider.TryGetProperty("resolveProvider", out JsonElement resolveProvider))
 		{
 			_supportsCompletionResolve = resolveProvider.ValueKind == JsonValueKind.True;
+		}
+
+		if (capabilities.TryGetProperty("referencesProvider", out JsonElement referencesProvider))
+		{
+			_supportsReferences = referencesProvider.ValueKind == JsonValueKind.True
+				|| referencesProvider.ValueKind == JsonValueKind.Object;
+		}
+
+		if (capabilities.TryGetProperty("renameProvider", out JsonElement renameProvider))
+		{
+			_supportsRename = renameProvider.ValueKind == JsonValueKind.True
+				|| renameProvider.ValueKind == JsonValueKind.Object;
+		}
+
+		if (capabilities.TryGetProperty("documentFormattingProvider", out JsonElement formattingProvider))
+		{
+			_supportsFormatting = formattingProvider.ValueKind == JsonValueKind.True
+				|| formattingProvider.ValueKind == JsonValueKind.Object;
 		}
 
 		if (!capabilities.TryGetProperty("semanticTokensProvider", out JsonElement semanticTokensProvider))

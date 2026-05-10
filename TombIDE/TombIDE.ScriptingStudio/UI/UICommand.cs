@@ -30,6 +30,7 @@
 
 		Reindent,
 		TrimWhiteSpace,
+		ToggleComment,
 		CommentOut,
 		Uncomment,
 		ToggleBookmark,
@@ -60,6 +61,8 @@
 		ReferenceBrowser,
 		CompilerLogs,
 		SearchResults,
+		LuaDiagnostics,
+		LuaReferencesResults,
 
 		StatusStrip, // View end
 
@@ -72,7 +75,11 @@
 
 		// Other:
 
+		NavigateBack,
+		NavigateForward,
 		GoToDefinition,
+		FindReferences,
+		RenameSymbol,
 		TypeFirstAvailableId,
 		NewFileAtCaret
 	}

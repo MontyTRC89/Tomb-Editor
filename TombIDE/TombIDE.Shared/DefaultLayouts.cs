@@ -122,6 +122,25 @@ namespace TombIDE.Shared
 							VisibleContent = "ReferenceBrowser"
 						}
 					}
+				},
+				new DockRegionState
+				{
+					Area = DarkDockArea.Bottom,
+					Size = new Size(320, 220),
+					Groups = new List<DockGroupState>
+					{
+						new DockGroupState
+						{
+							Contents = new List<string>
+							{
+								"SearchResults",
+								"LuaDiagnostics",
+								"LuaReferencesResults"
+							},
+
+							VisibleContent = "LuaDiagnostics"
+						}
+					}
 				}
 			}
 		};

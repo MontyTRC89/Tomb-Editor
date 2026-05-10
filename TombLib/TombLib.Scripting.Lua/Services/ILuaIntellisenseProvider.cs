@@ -18,6 +18,21 @@ public interface ILuaIntellisenseProvider : IDisposable
 	bool IsAvailable { get; }
 
 	/// <summary>
+	/// Gets a value indicating whether the provider supports Lua symbol reference requests.
+	/// </summary>
+	bool SupportsReferences { get; }
+
+	/// <summary>
+	/// Gets a value indicating whether the provider supports Lua symbol rename requests.
+	/// </summary>
+	bool SupportsRename { get; }
+
+	/// <summary>
+	/// Gets a value indicating whether the provider supports Lua document formatting requests.
+	/// </summary>
+	bool SupportsFormatting { get; }
+
+	/// <summary>
 	/// Occurs when diagnostics for a document have changed.
 	/// </summary>
 	event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
@@ -105,6 +120,42 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <returns>The resolved definition location, or <see langword="null"/> when no definition is available.</returns>
 	Task<LuaDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Requests all known reference locations for a symbol at a position within a Lua document.
+	/// </summary>
+	/// <param name="filePath">The document path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The resolved reference locations, or an empty list when none are available.</returns>
+	Task<IReadOnlyList<LuaReferenceLocation>> GetReferencesAsync(string filePath, string content,
+		int line, int column, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Requests workspace edits to rename the symbol at a position within a Lua document.
+	/// </summary>
+	/// <param name="filePath">The document path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="newName">The requested replacement symbol name.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The workspace edit returned by the language server, or <see langword="null"/> when none is available.</returns>
+	Task<LuaWorkspaceEdit?> RenameSymbolAsync(string filePath, string content,
+		int line, int column, string newName, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Requests formatting edits for a Lua document.
+	/// </summary>
+	/// <param name="filePath">The document path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="options">The editor formatting preferences to pass to the language server.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The text edits returned by the language server, or an empty list when none are available.</returns>
+	Task<IReadOnlyList<LuaTextEdit>> FormatDocumentAsync(string filePath, string content,
+		LuaFormattingOptions options, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Requests signature help for a function call at a position within a Lua document.

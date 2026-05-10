@@ -1,26 +1,24 @@
-﻿using DarkUI.Controls;
+﻿#nullable enable
+
+using DarkUI.Controls;
 using DarkUI.Docking;
-using ICSharpCode.AvalonEdit.Document;
-using System.Text.RegularExpressions;
+using System;
 using System.Windows.Forms;
-using TombIDE.ScriptingStudio.Controls;
 using TombIDE.Shared;
-using TombLib.Scripting.Bases;
-using TombLib.Scripting.Enums;
 using TombLib.Scripting.Objects;
 
 namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	public partial class SearchResults : DarkToolWindow
 	{
-		private EditorTabControl _targetTabControl;
+		private readonly Action<string, FindReplaceItem>? _navigateToSearchResult;
 
-		public SearchResults(EditorTabControl targetTabControl)
+		public SearchResults(Action<string, FindReplaceItem>? navigateToSearchResult)
 		{
 			InitializeComponent();
 			DockText = Strings.Default.SearchResults;
 
-			_targetTabControl = targetTabControl;
+			_navigateToSearchResult = navigateToSearchResult;
 		}
 
 		public void UpdateResults(FindReplaceEventArgs e)
@@ -56,43 +54,14 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 				return;
 
 			var item = treeView.SelectedNodes[0].Tag as FindReplaceItem;
+			if (item is null)
+				return;
 
-			if (_targetTabControl != null)
-			{
-				string sourceFilePath = treeView.SelectedNodes[0].ParentNode.Tag.ToString();
-				TabPage tab = _targetTabControl.FindTabPage(sourceFilePath, EditorType.Text);
+			string? sourceFilePath = treeView.SelectedNodes[0].ParentNode?.Tag?.ToString();
+			if (string.IsNullOrWhiteSpace(sourceFilePath))
+				return;
 
-				if (tab != null)
-				{
-					_targetTabControl.SelectTab(tab);
-					HandleJump(_targetTabControl.CurrentEditor as TextEditorBase, item);
-				}
-			}
-		}
-
-		private void HandleJump(TextEditorBase textEditor, FindReplaceItem item)
-		{
-			try
-			{
-				DocumentLine line = textEditor.Document.GetLineByNumber(item.LineNumber);
-				string lineText = textEditor.Document.GetText(line.Offset, line.Length);
-
-				MatchCollection matches = Regex.Matches(lineText, item.MatchSegmentText);
-
-				if (item.MatchSegmentIndex > matches.Count)
-				{
-					textEditor.Select(line.Offset, 0);
-					textEditor.ScrollToLine(line.LineNumber);
-				}
-				else
-				{
-					Match match = matches[item.MatchSegmentIndex];
-
-					textEditor.Select(line.Offset + match.Index, match.Length);
-					textEditor.ScrollToLine(line.LineNumber);
-				}
-			}
-			catch { }
+			_navigateToSearchResult?.Invoke(sourceFilePath, item);
 		}
 
 		private bool IsRootNode()

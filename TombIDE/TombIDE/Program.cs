@@ -1,4 +1,4 @@
-﻿using CustomMessageBox.WPF;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Linq;
@@ -6,7 +6,8 @@ using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
-using WPF = System.Windows;
+using TombLib.WPF;
+using TombLib.WPF.Services;
 
 namespace TombIDE
 {
@@ -18,7 +19,8 @@ namespace TombIDE
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			InitializeWPF();
+			var services = WPFInitializer.InitializeWPF();
+			ServiceLocator.Configure(services.BuildServiceProvider());
 
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -61,33 +63,6 @@ namespace TombIDE
 			}
 			else
 				Application.Run(form);
-		}
-
-		private static void InitializeWPF()
-		{
-			// Initialize WPF resources
-			var wpfApp = new WPF.Application
-			{
-				ShutdownMode = WPF.ShutdownMode.OnExplicitShutdown
-			};
-
-			// Add the DarkUI theme to the WPF application
-			wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
-			{
-				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Generic.xaml")
-			});
-
-			// Use DarkColors theme (default DarkUI look)
-			wpfApp.Resources.MergedDictionaries.Add(new WPF.ResourceDictionary
-			{
-				Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Dictionaries/DarkColors.xaml")
-			});
-
-			CMessageBox.WindowStyleOverride = (WPF.Style)wpfApp.Resources["CustomWindowStyle"];
-			CMessageBox.UsePathIconsByDefault = true;
-
-			if (wpfApp.TryFindResource("Brush_Background_Alternative") is WPF.Media.SolidColorBrush brush)
-				CMessageBox.DefaultButtonsPanelBackground = brush;
 		}
 
 		private static void UpdateNGCompilerPaths()

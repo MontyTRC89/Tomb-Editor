@@ -49,6 +49,26 @@ public class LuaLanguageServerClientTests
 	}
 
 	[TestMethod]
+	public void CaptureServerCapabilities_RecognizesReferenceRenameAndFormattingProviders()
+	{
+		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
+
+		InvokePrivateMethod(client, "CaptureServerCapabilities", JsonSerializer.SerializeToElement(new
+		{
+			capabilities = new
+			{
+				referencesProvider = new { },
+				renameProvider = new { prepareProvider = true },
+				documentFormattingProvider = true
+			}
+		}));
+
+		Assert.IsTrue(client.SupportsReferences);
+		Assert.IsTrue(client.SupportsRename);
+		Assert.IsTrue(client.SupportsFormatting);
+	}
+
+	[TestMethod]
 	public void Dispose_WritesGracefulShutdownMessages()
 	{
 		using Process process = StartDisposableProcess();

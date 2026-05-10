@@ -13,10 +13,14 @@ This note is a maintainer map for the current LuaLS integration layout after the
 - `Completion/`: completion response parsing and snippet-placeholder result shaping.
 - `Hover/`: hover response parsing.
 - `Navigation/`: definition-location response parsing.
+- `References/`: reference-location response parsing for `textDocument/references`.
+- `Rename/`: workspace-edit parsing for `textDocument/rename` results.
+- `Formatting/`: document-formatting edit parsing for `textDocument/formatting` results.
 - `SignatureHelp/`: signature-help response parsing.
 - `Diagnostics/`: diagnostics payload mapping and published diagnostics snapshots.
 - `SemanticTokens/`: semantic-tokens delta parsing plus cached delta and decode result carriers.
 - `LuaLanguageServerResponseParser.Shared.cs`: shared markup parsing helpers used by the response-parser partials.
+- `LuaStudio.Formatting.cs` plus `LuaWorkspaceEditApplier`: host-side reformat command ownership, including selection preservation when formatting edits are applied back into the editor.
 
 ## Extraction naming
 
@@ -37,6 +41,9 @@ This note is a maintainer map for the current LuaLS integration layout after the
 - Hover: verify symbol hover still shows hover content, and that hover falls back to diagnostics when no hover payload is available.
 - Signature help: verify `(` and `,` open or refresh the popup, `)` dismisses it, and editor deactivation clears transient UI.
 - Definition navigation: verify `F12` and `Ctrl+Click` navigate for valid identifiers and stay inert for comments, strings, or unresolved symbols.
+- References: verify Find References opens or refreshes the references results pane, groups locations by file, and keeps activation navigation aligned with the selected result.
+- Rename: verify Rename Symbol applies workspace edits across open and unopened files, preserves diagnostics ownership after the rename, and keeps the global undo action working for the full rename batch.
+- Formatting: verify the existing cleanup command routes Lua documents through LuaLS formatting, preserves caret or selection state in the active editor, and falls back cleanly when formatting is unavailable.
 - Document lifecycle: verify open, update, rename, close, and restart replay keep document versions, URIs, and open references synchronized with LuaLS.
 - Diagnostics: verify published diagnostics replace stale results, clear when documents change or close, and stay attached to the correct file after rename and restart flows.
 - Semantic tokens: verify full refresh, delta apply, and delta fallback all keep coloring stable after edits, file changes, and server restart.

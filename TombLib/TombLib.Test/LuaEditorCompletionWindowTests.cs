@@ -310,6 +310,9 @@ public class LuaEditorCompletionWindowTests
 		private readonly Queue<IReadOnlyList<LuaCompletionItem>> _completionResponses = [];
 
 		public bool IsAvailable { get; set; } = true;
+		public bool SupportsReferences => false;
+		public bool SupportsRename => false;
+		public bool SupportsFormatting => false;
 
 		public List<CompletionRequest> CompletionRequests { get; } = [];
 
@@ -365,6 +368,18 @@ public class LuaEditorCompletionWindowTests
 		public Task<LuaDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
 			int line, int column, CancellationToken cancellationToken = default)
 			=> Task.FromResult<LuaDefinitionLocation?>(null);
+
+		public Task<IReadOnlyList<LuaReferenceLocation>> GetReferencesAsync(string filePath, string content,
+			int line, int column, CancellationToken cancellationToken = default)
+			=> Task.FromResult<IReadOnlyList<LuaReferenceLocation>>([]);
+
+		public Task<LuaWorkspaceEdit?> RenameSymbolAsync(string filePath, string content,
+			int line, int column, string newName, CancellationToken cancellationToken = default)
+			=> Task.FromResult<LuaWorkspaceEdit?>(null);
+
+		public Task<IReadOnlyList<LuaTextEdit>> FormatDocumentAsync(string filePath, string content,
+			LuaFormattingOptions options, CancellationToken cancellationToken = default)
+			=> Task.FromResult<IReadOnlyList<LuaTextEdit>>([]);
 
 		public Task<LuaSignatureInfo?> GetSignatureHelpAsync(string filePath, string content,
 			int line, int column, CancellationToken cancellationToken = default)

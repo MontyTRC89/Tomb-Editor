@@ -590,35 +590,42 @@ namespace TombLib.Scripting.Bases
 
 		public void CommentOutLines()
 		{
+			if (string.IsNullOrWhiteSpace(CommentPrefix))
+				return;
+
+			ApplyLineCommentTransformation(CommentLine);
+		}
+
+		public void UncommentLines()
+		{
+			if (string.IsNullOrWhiteSpace(CommentPrefix))
+				return;
+
+			ApplyLineCommentTransformation(UncommentLine);
+		}
+
+		public void ToggleCommentLines()
+		{
+			if (string.IsNullOrWhiteSpace(CommentPrefix))
+				return;
+
+			ApplyLineCommentTransformation(ShouldUncommentSelectedLines() ? UncommentLine : CommentLine);
+		}
+
+		private void ApplyLineCommentTransformation(Func<string, string, string> transformLine)
+		{
 			DocumentLine startLine = Document.GetLineByOffset(SelectionStart);
 			DocumentLine endLine = Document.GetLineByOffset(SelectionStart + SelectionLength);
 
 			int totalLineLength = 0;
-
 			var builder = new StringBuilder();
 
-			for (int i = startLine.LineNumber; i <= endLine.LineNumber; i++)
+			for (int lineNumber = startLine.LineNumber; lineNumber <= endLine.LineNumber; lineNumber++)
 			{
-				DocumentLine currentLine = Document.GetLineByNumber(i);
+				DocumentLine currentLine = Document.GetLineByNumber(lineNumber);
 				string currentLineText = Document.GetText(currentLine.Offset, currentLine.Length);
 
-				var whitespaceBuilder = new StringBuilder();
-
-				for (int j = 0; j < currentLineText.Length; j++)
-				{
-					char c = currentLineText[j];
-
-					if (char.IsWhiteSpace(c))
-						whitespaceBuilder.Append(c);
-					else
-						break;
-				}
-
-				if (!string.IsNullOrWhiteSpace(currentLineText))
-					builder.AppendLine(whitespaceBuilder.ToString() + CommentPrefix + currentLineText.TrimStart());
-				else
-					builder.AppendLine(whitespaceBuilder.ToString());
-
+				builder.AppendLine(transformLine(currentLineText, CommentPrefix));
 				totalLineLength += currentLine.TotalLength;
 			}
 
@@ -628,44 +635,63 @@ namespace TombLib.Scripting.Bases
 			Select(startLine.Offset, SelectionLength - 1);
 		}
 
-		public void UncommentLines()
+		private bool ShouldUncommentSelectedLines()
 		{
 			DocumentLine startLine = Document.GetLineByOffset(SelectionStart);
 			DocumentLine endLine = Document.GetLineByOffset(SelectionStart + SelectionLength);
+			bool foundCommentableLine = false;
 
-			int totalLineLength = 0;
-
-			var builder = new StringBuilder();
-
-			for (int i = startLine.LineNumber; i <= endLine.LineNumber; i++)
+			for (int lineNumber = startLine.LineNumber; lineNumber <= endLine.LineNumber; lineNumber++)
 			{
-				DocumentLine currentLine = Document.GetLineByNumber(i);
+				DocumentLine currentLine = Document.GetLineByNumber(lineNumber);
 				string currentLineText = Document.GetText(currentLine.Offset, currentLine.Length);
+				string trimmedLineText = currentLineText.TrimStart();
 
-				var whitespaceBuilder = new StringBuilder();
+				if (string.IsNullOrWhiteSpace(trimmedLineText))
+					continue;
 
-				for (int j = 0; j < currentLineText.Length; j++)
-				{
-					char c = currentLineText[j];
+				foundCommentableLine = true;
 
-					if (char.IsWhiteSpace(c))
-						whitespaceBuilder.Append(c);
-					else
-						break;
-				}
-
-				if (currentLineText.TrimStart().StartsWith(CommentPrefix))
-					builder.AppendLine(whitespaceBuilder.ToString() + currentLineText.TrimStart().Remove(0, CommentPrefix.Length));
-				else
-					builder.AppendLine(currentLineText);
-
-				totalLineLength += currentLine.TotalLength;
+				if (!trimmedLineText.StartsWith(CommentPrefix, StringComparison.Ordinal))
+					return false;
 			}
 
-			Select(startLine.Offset, totalLineLength);
-			SelectedText = builder.ToString();
+			return foundCommentableLine;
+		}
 
-			Select(startLine.Offset, SelectionLength - 1);
+		private static string CommentLine(string currentLineText, string commentPrefix)
+		{
+			string leadingWhitespace = GetLeadingWhitespace(currentLineText);
+			return !string.IsNullOrWhiteSpace(currentLineText)
+				? leadingWhitespace + commentPrefix + currentLineText.TrimStart()
+				: leadingWhitespace;
+		}
+
+		private static string UncommentLine(string currentLineText, string commentPrefix)
+		{
+			string leadingWhitespace = GetLeadingWhitespace(currentLineText);
+			string trimmedLineText = currentLineText.TrimStart();
+
+			return trimmedLineText.StartsWith(commentPrefix, StringComparison.Ordinal)
+				? leadingWhitespace + trimmedLineText.Remove(0, commentPrefix.Length)
+				: currentLineText;
+		}
+
+		private static string GetLeadingWhitespace(string currentLineText)
+		{
+			var whitespaceBuilder = new StringBuilder();
+
+			for (int index = 0; index < currentLineText.Length; index++)
+			{
+				char character = currentLineText[index];
+
+				if (char.IsWhiteSpace(character))
+					whitespaceBuilder.Append(character);
+				else
+					break;
+			}
+
+			return whitespaceBuilder.ToString();
 		}
 
 		#endregion Multiline commenting

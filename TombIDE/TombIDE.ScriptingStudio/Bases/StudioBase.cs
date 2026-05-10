@@ -108,6 +108,8 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected ToolStripMenuItem ReferenceBrowserViewItem;
 		protected ToolStripMenuItem CompilerLogsViewItem;
 		protected ToolStripMenuItem SearchResultsViewItem;
+		protected ToolStripMenuItem LuaDiagnosticsViewItem;
+		protected ToolStripMenuItem LuaReferencesResultsViewItem;
 		protected ToolStripMenuItem StatusStripViewItem;
 
 		#endregion Fields
@@ -125,7 +127,7 @@ namespace TombIDE.ScriptingStudio.Bases
 			InitializeFindReplaceForm();
 
 			CompilerLogs = new CompilerLogs();
-			SearchResults = new SearchResults(EditorTabControl);
+			SearchResults = new SearchResults(NavigateToSearchResult);
 
 			IDE.Instance.IDEEventRaised += OnIDEEventRaised;
 
@@ -218,6 +220,7 @@ namespace TombIDE.ScriptingStudio.Bases
 
 			// Apply the current layout
 			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+			OnDockPanelLayoutRestored();
 
 			ApplyMessageFilters();
 		}
@@ -236,6 +239,8 @@ namespace TombIDE.ScriptingStudio.Bases
 			ReferenceBrowserViewItem = MenuStrip.FindItem(UICommand.ReferenceBrowser) as ToolStripMenuItem;
 			CompilerLogsViewItem = MenuStrip.FindItem(UICommand.CompilerLogs) as ToolStripMenuItem;
 			SearchResultsViewItem = MenuStrip.FindItem(UICommand.SearchResults) as ToolStripMenuItem;
+			LuaDiagnosticsViewItem = MenuStrip.FindItem(UICommand.LuaDiagnostics) as ToolStripMenuItem;
+			LuaReferencesResultsViewItem = MenuStrip.FindItem(UICommand.LuaReferencesResults) as ToolStripMenuItem;
 			StatusStripViewItem = MenuStrip.FindItem(UICommand.StatusStrip) as ToolStripMenuItem;
 		}
 
@@ -294,6 +299,21 @@ namespace TombIDE.ScriptingStudio.Bases
 			HandleGlobalCommands(e);
 			HandleDocumentCommands(e);
 		}
+
+		protected virtual void OnDockPanelLayoutRestored()
+		{ }
+
+		protected virtual bool CanExecuteUndo()
+			=> CurrentEditor is not null && CurrentEditor.CanUndo;
+
+		protected virtual bool CanExecuteRedo()
+			=> CurrentEditor is not null && CurrentEditor.CanRedo;
+
+		protected virtual void ExecuteUndo()
+			=> CurrentEditor?.Undo();
+
+		protected virtual void ExecuteRedo()
+			=> CurrentEditor?.Redo();
 
 		#endregion Virtual region
 
@@ -354,6 +374,23 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		private void TextEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
+			if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Alt)
+			{
+				if (e.Key == System.Windows.Input.Key.Left)
+				{
+					OnToolStripItemClicked(UICommand.NavigateBack);
+					e.Handled = true;
+					return;
+				}
+
+				if (e.Key == System.Windows.Input.Key.Right)
+				{
+					OnToolStripItemClicked(UICommand.NavigateForward);
+					e.Handled = true;
+					return;
+				}
+			}
+
 			if ((System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
 			&& (e.Key == System.Windows.Input.Key.F || e.Key == System.Windows.Input.Key.H))
 				FindReplaceForm.Show(this, (CurrentEditor as TextEditorBase).SelectedText);
@@ -424,14 +461,14 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected void UpdateUndoRedoSaveStates()
 		{
 			// Undo buttons
-			UndoMenuItem.Enabled = CurrentEditor != null && CurrentEditor.CanUndo;
+			UndoMenuItem.Enabled = CanExecuteUndo();
 			UndoMenuItem.Text = UndoMenuItem.Enabled ? Strings.Default.Undo : Strings.Default.CantUndo;
 
 			UndoToolStripButton.Enabled = UndoMenuItem.Enabled;
 			UndoToolStripButton.ToolTipText = UndoMenuItem.Text;
 
 			// Redo buttons
-			RedoMenuItem.Enabled = CurrentEditor != null && CurrentEditor.CanRedo;
+			RedoMenuItem.Enabled = CanExecuteRedo();
 			RedoMenuItem.Text = RedoMenuItem.Enabled ? Strings.Default.Redo : Strings.Default.CantRedo;
 
 			RedoToolStripButton.Enabled = RedoMenuItem.Enabled;
@@ -467,8 +504,8 @@ namespace TombIDE.ScriptingStudio.Bases
 				case UICommand.Exit: IDE.Instance.RequestProgramClose(); break;
 
 				// Edit
-				case UICommand.Undo: CurrentEditor?.Undo(); break;
-				case UICommand.Redo: CurrentEditor?.Redo(); break;
+					case UICommand.Undo: ExecuteUndo(); break;
+					case UICommand.Redo: ExecuteRedo(); break;
 				case UICommand.Cut: CurrentEditor?.Cut(); break;
 				case UICommand.Copy: CurrentEditor?.Copy(); break;
 				case UICommand.Paste: CurrentEditor?.Paste(); break;
@@ -506,6 +543,7 @@ namespace TombIDE.ScriptingStudio.Bases
 					case UICommand.SpacesToTabs: textEditor.ConvertSpacesToTabs(); break;
 					case UICommand.Reindent: textEditor.TidyCode(); break;
 					case UICommand.TrimWhiteSpace: textEditor.TidyCode(true); break;
+					case UICommand.ToggleComment: textEditor.ToggleCommentLines(); break;
 					case UICommand.CommentOut: textEditor.CommentOutLines(); break;
 					case UICommand.Uncomment: textEditor.UncommentLines(); break;
 					case UICommand.ToggleBookmark: textEditor.ToggleBookmark(); break;
@@ -530,6 +568,23 @@ namespace TombIDE.ScriptingStudio.Bases
 					case UICommand.ClearString: stringEditor.CurrentDataGrid?.ClearSelectedString(); break;
 					case UICommand.RemoveLastString: stringEditor.CurrentDataGrid?.RemoveLastString(); break;
 				}
+		}
+
+		protected virtual void NavigateToSearchResult(string filePath, FindReplaceItem item)
+		{
+			if (string.IsNullOrWhiteSpace(filePath))
+				return;
+
+			EditorTabControl.OpenFile(filePath);
+
+			if (CurrentEditor is not TextEditorBase textEditor)
+				return;
+
+			if (!EditorNavigationHelper.TryCreateSearchResultLocation(textEditor, filePath, item, out EditorNavigationLocation? location)
+				|| location is null)
+				return;
+
+			EditorNavigationHelper.ApplyLocation(textEditor, location.Value);
 		}
 
 		protected void ToggleItemVisibility(UICommand command)

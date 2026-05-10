@@ -106,6 +106,71 @@ public class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task FormatDocumentAsync_ReturnsFormattingEditsAndPassesEditorOptions()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value=1";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			SupportsFormatting = true,
+			FormattingResponse = JsonSerializer.SerializeToElement(new object[]
+			{
+				new
+				{
+					range = new
+					{
+						start = new { line = 0, character = 0 },
+						end = new { line = 0, character = 0 }
+					},
+					newText = "local value = 1\r\n"
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		IReadOnlyList<LuaTextEdit> edits = await provider.FormatDocumentAsync(filePath, content,
+			new LuaFormattingOptions(tabSize: 3, insertSpaces: false));
+
+		Assert.AreEqual(1, edits.Count);
+		Assert.AreEqual("local value = 1\r\n", edits[0].NewText);
+
+		JsonElement parameters = client.GetLastRequestParameters("textDocument/formatting");
+
+		Assert.AreEqual(new Uri(filePath).AbsoluteUri, parameters.GetProperty("textDocument").GetProperty("uri").GetString());
+		Assert.AreEqual(3, parameters.GetProperty("options").GetProperty("tabSize").GetInt32());
+		Assert.IsFalse(parameters.GetProperty("options").GetProperty("insertSpaces").GetBoolean());
+
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen", "textDocument/formatting" },
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task FormatDocumentAsync_ReturnsEmptyWhenFormattingIsUnsupported()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			SupportsFormatting = false
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		IReadOnlyList<LuaTextEdit> edits = await provider.FormatDocumentAsync(filePath, "local value=1",
+			new LuaFormattingOptions(tabSize: 4, insertSpaces: true));
+
+		Assert.AreEqual(0, edits.Count);
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen" },
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
 	public async Task DispatchWorkspaceFileChangesAsync_RefreshesConfigurationWhenApiLibraryChanges()
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaConfigRefresh_" + Guid.NewGuid().ToString("N"));
@@ -835,6 +900,7 @@ public class LuaLanguageServerIntellisenseProviderTests
 	{
 		private readonly object _syncRoot = new();
 		private readonly List<(string Method, JsonElement Parameters)> _sentNotifications = [];
+		private readonly List<(string Method, JsonElement Parameters)> _sentRequests = [];
 		private readonly List<string> _sentMethodNames = [];
 		private readonly Queue<JsonElement> _semanticTokensDeltaResponses = [];
 		private readonly Queue<JsonElement> _semanticTokensFullResponses = [];
@@ -847,11 +913,15 @@ public class LuaLanguageServerIntellisenseProviderTests
 		public bool StartResult { get; set; } = true;
 		public JsonElement CompletionResponse { get; set; }
 		public JsonElement CompletionResolveResponse { get; set; }
+		public JsonElement FormattingResponse { get; set; }
 		public JsonElement HoverResponse { get; set; }
 		public LuaTextDocumentSyncKind TextDocumentSyncKind { get; set; } = LuaTextDocumentSyncKind.Incremental;
 		public IReadOnlyList<string> SemanticTokenTypes { get; set; } = [];
 		public IReadOnlyList<string> SemanticTokenModifiers { get; set; } = [];
 		public bool SupportsCompletionResolve { get; set; }
+		public bool SupportsReferences { get; set; } = true;
+		public bool SupportsRename { get; set; } = true;
+		public bool SupportsFormatting { get; set; } = true;
 		public bool SupportsSemanticTokensDelta { get; set; }
 		public bool FailStartWhenCancellationRequested { get; set; }
 		public int StartCallCount { get; private set; }
@@ -917,7 +987,10 @@ public class LuaLanguageServerIntellisenseProviderTests
 		public Task<JsonElement> SendRequestAsync(string method, object parameters, CancellationToken cancellationToken)
 		{
 			lock (_syncRoot)
+			{
 				_sentMethodNames.Add(method);
+				_sentRequests.Add((method, JsonSerializer.SerializeToElement(parameters)));
+			}
 
 			if (method == "textDocument/hover")
 			{
@@ -936,6 +1009,9 @@ public class LuaLanguageServerIntellisenseProviderTests
 
 			if (method == "completionItem/resolve" && CompletionResolveResponse.ValueKind != JsonValueKind.Undefined)
 				return Task.FromResult(CompletionResolveResponse);
+
+			if (method == "textDocument/formatting" && FormattingResponse.ValueKind != JsonValueKind.Undefined)
+				return Task.FromResult(FormattingResponse);
 
 			if (method == "textDocument/semanticTokens/full/delta")
 			{
@@ -982,6 +1058,20 @@ public class LuaLanguageServerIntellisenseProviderTests
 			}
 
 			throw new InvalidOperationException($"Notification '{method}' was not observed.");
+		}
+
+		public JsonElement GetLastRequestParameters(string method)
+		{
+			lock (_syncRoot)
+			{
+				for (int i = _sentRequests.Count - 1; i >= 0; i--)
+				{
+					if (string.Equals(_sentRequests[i].Method, method, StringComparison.Ordinal))
+						return _sentRequests[i].Parameters;
+				}
+			}
+
+			throw new InvalidOperationException($"Request '{method}' was not observed.");
 		}
 
 		public void BlockNextOpenNotification()

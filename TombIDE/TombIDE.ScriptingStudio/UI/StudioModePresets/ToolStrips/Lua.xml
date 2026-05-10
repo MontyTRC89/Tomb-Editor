@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Items>
+	<Item LangKey="NavigateBack" Command="NavigateBack" Icon="Left_16" />
+	<Item LangKey="NavigateForward" Command="NavigateForward" Icon="Right_16" />
+	<Separator />
 	<Item LangKey="NewFile" Command="NewFile" Icon="New_16" />
 	<Separator />
 	<Item LangKey="Save" Command="Save" Icon="Save_16" />

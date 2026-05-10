@@ -9,6 +9,7 @@
 		<Item LangKey="Reindent" Command="Reindent" />
 		<Item LangKey="TrimWhitespace" Command="TrimWhitespace" />
 		<Separator />
+		<Item LangKey="ToggleComment" Command="ToggleComment" Icon="Comment_16" Keys="ToggleComment" KeysDisplay="Ctrl+/" />
 		<Item LangKey="CommentOut" Command="CommentOut" Icon="Comment_16" />
 		<Item LangKey="Uncomment" Command="Uncomment" Icon="Uncomment_16" />
 		<Separator />

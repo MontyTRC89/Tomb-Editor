@@ -24,6 +24,7 @@
 
 		Reindent,
 		TrimWhiteSpace,
+		ToggleComment,
 		CommentOut,
 		Uncomment,
 		ToggleBookmark,

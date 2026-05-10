@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DarkUI.Docking;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Windows.Forms;
 using ICSharpCode.AvalonEdit.Document;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.Services;
 using TombIDE.ScriptingStudio.Services.LuaIntellisense;
 using TombIDE.ScriptingStudio.ToolWindows;
 using TombIDE.ScriptingStudio.UI;
@@ -42,8 +44,12 @@ namespace TombIDE.ScriptingStudio
 			FileExplorer.ExcludedDirectoryFilter = "Scripts\\Engine";
 			FileExplorer.Filter = "*.lua";
 			FileExplorer.CommentPrefix = "--";
+			InitializeLuaDiagnostics();
+			InitializeLuaReferencesResults();
 
 			_intellisenseProvider = CreateLuaIntellisenseProvider();
+			_workspaceEditApplier = new LuaWorkspaceEditApplier(EditorTabControl);
+			_workspaceEditHistory = new LuaWorkspaceEditHistoryService(_workspaceEditApplier);
 			HookLuaIntellisense();
 
 			EditorTabControl.CheckPreviousSession();
@@ -245,7 +251,11 @@ namespace TombIDE.ScriptingStudio
 
 			DockPanel.RemoveContent();
 			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+			EnsureLuaToolWindowsInDockPanel();
 		}
+
+		protected override void OnDockPanelLayoutRestored()
+			=> EnsureLuaToolWindowsInDockPanel();
 
 		private void EndSilentScriptAction(TabPage previousTab, bool indicateChange, bool saveAffectedFile, bool closeAffectedTab)
 		{
@@ -270,6 +280,32 @@ namespace TombIDE.ScriptingStudio
 		#endregion IDE Events
 
 		#region Other methods
+
+		private void EnsureLuaToolWindowsInDockPanel()
+		{
+			if (DockPanel is null)
+				return;
+
+			DarkDockGroup bottomGroup = SearchResults?.DockGroup ?? CompilerLogs?.DockGroup;
+
+			bottomGroup = EnsureLuaToolWindowInDockPanel(LuaDiagnostics, bottomGroup);
+			EnsureLuaToolWindowInDockPanel(LuaReferencesResults, bottomGroup);
+		}
+
+		private DarkDockGroup EnsureLuaToolWindowInDockPanel(DarkToolWindow toolWindow, DarkDockGroup bottomGroup)
+		{
+			if (DockPanel.ContainsContent(toolWindow))
+				return bottomGroup ?? toolWindow.DockGroup;
+
+			toolWindow.DockArea = DarkDockArea.Bottom;
+
+			if (bottomGroup is not null)
+				DockPanel.AddContent(toolWindow, bottomGroup);
+			else
+				DockPanel.AddContent(toolWindow);
+
+			return bottomGroup ?? toolWindow.DockGroup;
+		}
 
 		protected override void ApplyUserSettings(IEditorControl editor)
 			=> editor.UpdateSettings(Configs.Lua);
@@ -298,11 +334,33 @@ namespace TombIDE.ScriptingStudio
 
 		protected override void HandleDocumentCommands(UICommand command)
 		{
+			if (command == UICommand.Reindent && CurrentEditor is LuaEditor)
+			{
+				_ = ReformatDocumentAsync();
+				return;
+			}
+
 			switch (command)
 			{
+				case UICommand.NavigateBack:
+					NavigateBack();
+					break;
+
+				case UICommand.NavigateForward:
+					NavigateForward();
+					break;
+
 				case UICommand.GoToDefinition:
 					if (CurrentEditor is LuaEditor luaEditor)
 						_ = luaEditor.NavigateToDefinitionAtCaretAsync();
+					break;
+
+				case UICommand.FindReferences:
+					_ = FindReferencesAsync();
+					break;
+
+				case UICommand.RenameSymbol:
+					_ = RenameSymbolAsync();
 					break;
 
 				case UICommand.LuaBasics:

@@ -85,6 +85,131 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 	}
 
 	/// <summary>
+	/// Requests all known references for the specified document position.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The reference locations returned by LuaLS.</returns>
+	public async Task<IReadOnlyList<LuaReferenceLocation>> GetReferencesAsync(string filePath, string content,
+		int line, int column, CancellationToken cancellationToken = default)
+	{
+		ILuaLanguageServerClient? client = _client;
+
+		if (client is null
+			|| !LuaLanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath)
+			|| !await SynchronizeDocumentAsync(normalizedFilePath, content,
+				acquireOpenReference: false, refreshSemanticTokens: false, cancellationToken).ConfigureAwait(false)
+			|| !client.SupportsReferences)
+		{
+			return [];
+		}
+
+		object textDocument = new { uri = LuaLanguageServerPathHelper.CreateFileUri(normalizedFilePath) };
+		object position = new { line, character = column };
+
+		JsonElement response = await SendBoundedRequestAsync(client, "textDocument/references",
+			new
+			{
+				textDocument,
+				position,
+				context = new
+				{
+					includeDeclaration = true
+				}
+			},
+			cancellationToken).ConfigureAwait(false);
+
+		return LuaLanguageServerResponseParser.ParseReferenceLocations(response);
+	}
+
+	/// <summary>
+	/// Requests workspace edits to rename the symbol at the specified document position.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="newName">The requested replacement symbol name.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The workspace edit returned by LuaLS, or <see langword="null"/> when unavailable.</returns>
+	public async Task<LuaWorkspaceEdit?> RenameSymbolAsync(string filePath, string content,
+		int line, int column, string newName, CancellationToken cancellationToken = default)
+	{
+		if (string.IsNullOrWhiteSpace(newName))
+			return null;
+
+		ILuaLanguageServerClient? client = _client;
+
+		if (client is null
+			|| !LuaLanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath)
+			|| !await SynchronizeDocumentAsync(normalizedFilePath, content,
+				acquireOpenReference: false, refreshSemanticTokens: false, cancellationToken).ConfigureAwait(false)
+			|| !client.SupportsRename)
+		{
+			return null;
+		}
+
+		object textDocument = new { uri = LuaLanguageServerPathHelper.CreateFileUri(normalizedFilePath) };
+		object position = new { line, character = column };
+
+		JsonElement response = await SendBoundedRequestAsync(client, "textDocument/rename",
+			new
+			{
+				textDocument,
+				position,
+				newName
+			},
+			cancellationToken).ConfigureAwait(false);
+
+		return LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
+	}
+
+	/// <summary>
+	/// Requests formatting edits for the specified Lua document.
+	/// </summary>
+	/// <param name="filePath">The local file path.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="options">The editor formatting preferences to pass to LuaLS.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The text edits returned by LuaLS.</returns>
+	public async Task<IReadOnlyList<LuaTextEdit>> FormatDocumentAsync(string filePath, string content,
+		LuaFormattingOptions options, CancellationToken cancellationToken = default)
+	{
+		ArgumentNullException.ThrowIfNull(options);
+
+		ILuaLanguageServerClient? client = _client;
+
+		if (client is null
+			|| !LuaLanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath)
+			|| !await SynchronizeDocumentAsync(normalizedFilePath, content,
+				acquireOpenReference: false, refreshSemanticTokens: false, cancellationToken).ConfigureAwait(false)
+			|| !client.SupportsFormatting)
+		{
+			return [];
+		}
+
+		JsonElement response = await SendBoundedRequestAsync(client, "textDocument/formatting",
+			new
+			{
+				textDocument = new
+				{
+					uri = LuaLanguageServerPathHelper.CreateFileUri(normalizedFilePath)
+				},
+				options = new
+				{
+					tabSize = options.TabSize,
+					insertSpaces = options.InsertSpaces
+				}
+			},
+			cancellationToken).ConfigureAwait(false);
+
+		return LuaLanguageServerResponseParser.ParseDocumentFormattingEdits(response);
+	}
+
+	/// <summary>
 	/// Requests signature-help information for the specified document position.
 	/// </summary>
 	/// <param name="filePath">The local file path.</param>
