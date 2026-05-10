@@ -138,14 +138,16 @@ internal sealed class LuaIntellisenseDocumentManager
 			if (!_documents.TryGetValue(oldFilePath, out DocumentState? state))
 				return null;
 
+			// The host blocks rename-to-existing-path in normal flows. If an external rename still
+			// targets a tracked document, keep both states intact instead of overwriting the destination.
+			if (_documents.ContainsKey(newFilePath))
+				return null;
+
 			string safeContent = content ?? state.Content;
 			bool contentChanged = !string.Equals(state.Content, safeContent, StringComparison.Ordinal);
 			LuaDocumentSnapshot? previousDocument = state.IsOpen ? CreateSnapshot(state) : null;
 
 			_documents.Remove(oldFilePath);
-
-			if (_documents.ContainsKey(newFilePath))
-				ClearCachedState(state);
 
 			state.FilePath = newFilePath;
 			state.Uri = LuaLanguageServerPathHelper.CreateFileUri(newFilePath);

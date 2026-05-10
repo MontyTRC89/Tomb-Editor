@@ -65,6 +65,8 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 
 		try
 		{
+			// .API/*.lua changes are already covered by the recursive Lua watcher.
+			// This watcher exists so creating, deleting, or renaming the .API directory itself is also observed.
 			_apiDirectoryWatcher = CreateWatcher(".API", includeSubdirectories: false);
 			_luaWatcher = CreateWatcher("*.lua", includeSubdirectories: true);
 			_configWatcher = CreateWatcher(".luarc.*", includeSubdirectories: false);
