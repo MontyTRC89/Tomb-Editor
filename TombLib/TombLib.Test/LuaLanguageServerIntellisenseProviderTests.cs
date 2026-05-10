@@ -376,6 +376,69 @@ public class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task UpdateDocument_WithUnchangedContent_DoesNotSendDidChange()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLuaLanguageServerClient();
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		provider.OpenDocument(filePath, content);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 1, TimeSpan.FromSeconds(1)));
+
+		provider.UpdateDocument(filePath, content);
+
+		Assert.IsFalse(await client.WaitForNotificationAsync("textDocument/didChange", TimeSpan.FromMilliseconds(250)));
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen" },
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task UpdateDocument_WithUnchangedContentAfterTransportFailure_ReopensWithFullSemanticTokensRefresh()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			SemanticTokenTypes = ["variable"],
+			SupportsSemanticTokensDelta = true
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		provider.OpenDocument(filePath, "local value = 1");
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/semanticTokens/full", 1, TimeSpan.FromSeconds(1)));
+
+		client.ThrowIOExceptionOnNextDidChange = true;
+
+		provider.UpdateDocument(filePath, "local value = 2");
+
+		Assert.IsTrue(await client.WaitForNotificationAsync("textDocument/didChange", TimeSpan.FromSeconds(1)));
+
+		provider.UpdateDocument(filePath, "local value = 2");
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 2, TimeSpan.FromSeconds(1)));
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/semanticTokens/full", 2, TimeSpan.FromSeconds(1)));
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				"textDocument/didOpen",
+				"textDocument/semanticTokens/full",
+				"textDocument/didChange",
+				"textDocument/didOpen",
+				"textDocument/semanticTokens/full"
+			},
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
 	public async Task GetHoverAsync_ReplaysTrackedDocumentsAfterLanguageServerRestart()
 	{
 		const string workspaceRoot = @"C:\Workspace";

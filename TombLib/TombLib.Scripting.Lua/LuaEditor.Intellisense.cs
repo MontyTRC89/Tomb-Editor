@@ -14,7 +14,7 @@ public sealed partial class LuaEditor
 
 	private void BindLuaIntellisenseEvents()
 	{
-		InitializeCompletionScheduling();
+		_completionController.InitializeScheduling();
 
 		Document.Changed += LuaEditor_DocumentChanged;
 		IsKeyboardFocusWithinChanged += LuaEditor_IsKeyboardFocusWithinChanged;
@@ -78,11 +78,11 @@ public sealed partial class LuaEditor
 		InvalidateAsyncEditorRequests();
 
 		CancelPendingCompletionRequest();
-		CancelAndDispose(ref _hoverCancellationTokenSource);
+		_hoverController.CancelPendingRequest();
 
-		CancelCompletionToolTipUpdate();
+		_completionController.CancelTooltipUpdate();
 
-		CancelAndDispose(ref _definitionCancellationTokenSource);
+		_definitionNavigationController.CancelPendingRequest();
 		CloseCompletionWindow();
 
 		if (_hostWindow is not null)
@@ -121,7 +121,7 @@ public sealed partial class LuaEditor
 		{
 			CancelPendingCompletionRequest();
 			CloseCompletionWindow();
-			CancelPendingSignatureHelpRefresh();
+			_signatureHelpController.CancelPendingRefresh();
 			await RequestSignatureHelpAsync(CaretOffset).ConfigureAwait(true);
 			return;
 		}
@@ -198,8 +198,8 @@ public sealed partial class LuaEditor
 	private void DismissTransientToolTips()
 	{
 		CancelPendingCompletionRequest();
-		CancelAndDispose(ref _hoverCancellationTokenSource);
-		_hoverRequestToken++;
+		_hoverController.CancelPendingRequest();
+		_hoverController.InvalidateRequests();
 		DismissSignatureHelp();
 		CloseDefinitionToolTip(true);
 	}
@@ -245,10 +245,10 @@ public sealed partial class LuaEditor
 	private void InvalidateAsyncEditorRequests()
 	{
 		_editorRequestGeneration++;
-		_completionRequestToken++;
-		_hoverRequestToken++;
-		_signatureRequestToken++;
-		_definitionRequestToken++;
+		_completionController.InvalidateRequests();
+		_hoverController.InvalidateRequests();
+		_signatureHelpController.InvalidateRequests();
+		_definitionNavigationController.InvalidateRequests();
 	}
 
 	private bool IsAsyncEditorResultCurrent(CancellationToken cancellationToken,
@@ -288,7 +288,7 @@ public sealed partial class LuaEditor
 	}
 
 	private bool ShouldRefreshSignatureHelpAfterTextInput(string? inputText)
-		=> ShouldRefreshSignatureHelpAfterTextInput(inputText, _signaturePopup.IsOpen || _signatureRequestInFlight || _signatureRefreshPending);
+		=> ShouldRefreshSignatureHelpAfterTextInput(inputText, _signatureHelpController.IsActiveOrPending);
 
 	private static bool ShouldRefreshSignatureHelpAfterTextInput(string? inputText, bool isSignatureHelpActiveOrPending)
 		=> isSignatureHelpActiveOrPending && inputText?.Length == 1;

@@ -141,7 +141,7 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 
 		if (ContainsLineBreak(insertText))
 		{
-			(string normalizedText, int? normalizedCaretOffset) = LuaIndentationStrategy.NormalizeCompletionInsertion(
+			LuaCompletionNormalizationResult normalizedInsertion = LuaIndentationStrategy.NormalizeCompletionInsertion(
 				insertText,
 				insertCaretOffset,
 				GetCurrentLineIndentation(document, replacementOffset),
@@ -150,8 +150,8 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 					textArea.Options.IndentationSize,
 					4));
 
-			insertText = normalizedText;
-			insertCaretOffset = normalizedCaretOffset;
+			insertText = normalizedInsertion.Text;
+			insertCaretOffset = normalizedInsertion.CaretOffset;
 		}
 
 		document.Replace(replacementOffset, replacementLength, insertText);

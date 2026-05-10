@@ -74,15 +74,15 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 
 		try
 		{
-			(bool success, LuaDocumentSnapshot? document) = await EnqueueDocumentOperationAsync(
+			LuaDocumentSynchronizationResult synchronizationResult = await EnqueueDocumentOperationAsync(
 				token => SynchronizeDocumentCoreAsync(filePath, content, acquireOpenReference, token),
 				cancellationToken).ConfigureAwait(false);
 
-			if (!success)
+			if (!synchronizationResult.Success)
 				return false;
 
-			if (refreshSemanticTokens && document is not null)
-				await RefreshSemanticTokensAsync(document, cancellationToken).ConfigureAwait(false);
+			if (refreshSemanticTokens && synchronizationResult.Document is { } synchronizedDocument)
+				await RefreshSemanticTokensAsync(synchronizedDocument, cancellationToken).ConfigureAwait(false);
 
 			return true;
 		}
@@ -161,22 +161,22 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 	}
 
-	private async Task<(bool Success, LuaDocumentSnapshot? Document)> SynchronizeDocumentCoreAsync(
+	private async Task<LuaDocumentSynchronizationResult> SynchronizeDocumentCoreAsync(
 		string filePath,
 		string content,
 		bool acquireOpenReference,
 		CancellationToken cancellationToken)
 	{
 		if (!await EnsureStartedAsync(cancellationToken).ConfigureAwait(false))
-			return (false, null);
+			return new LuaDocumentSynchronizationResult(false, null);
 
 		LuaDocumentSynchronizationRequest? request = _documents.Synchronize(filePath, content, acquireOpenReference);
 
 		if (request is not { } pendingRequest)
-			return (true, null);
+			return new LuaDocumentSynchronizationResult(true, null);
 
 		await SendDocumentSynchronizationNotificationAsync(pendingRequest, cancellationToken).ConfigureAwait(false);
-		return (true, pendingRequest.Document);
+		return new LuaDocumentSynchronizationResult(true, pendingRequest.Document);
 	}
 
 	private async Task<LuaDocumentRenameRequest?> RenameDocumentCoreAsync(

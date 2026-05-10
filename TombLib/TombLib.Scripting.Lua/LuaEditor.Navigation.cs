@@ -1,20 +1,14 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Lua.Utils;
 
 namespace TombLib.Scripting.Lua;
 
 public sealed partial class LuaEditor
 {
-	private CancellationTokenSource? _definitionCancellationTokenSource;
-	private int _definitionRequestToken;
-
 	private async void TextEditor_KeyDown(object? sender, KeyEventArgs e)
 	{
-		if (e.Key == Key.Escape && (_completionWindow is not null || _signaturePopup.IsOpen || _specialToolTip.IsOpen))
+		if (e.Key == Key.Escape && (_completionWindow is not null || _signatureHelpController.IsVisible || _specialToolTip.IsOpen))
 		{
 			CloseCompletionWindow();
 			DismissTransientToolTips();
@@ -22,12 +16,12 @@ public sealed partial class LuaEditor
 			return;
 		}
 
-		if (_signaturePopup.IsOpen && (e.Key == Key.Back || e.Key == Key.Delete))
+		if (_signatureHelpController.IsVisible && (e.Key == Key.Back || e.Key == Key.Delete))
 			ScheduleSignatureHelpRefresh();
 
 		if (e.Key == Key.F12)
 		{
-			if (await TryNavigateToDefinitionAsync(CaretOffset, CancellationToken.None).ConfigureAwait(true))
+			if (await _definitionNavigationController.TryNavigateAsync(CaretOffset, CancellationToken.None).ConfigureAwait(true))
 				e.Handled = true;
 		}
 	}
@@ -51,54 +45,8 @@ public sealed partial class LuaEditor
 		if (hoveredOffset == -1)
 			return;
 
-		if (await TryNavigateToDefinitionAsync(hoveredOffset, CancellationToken.None).ConfigureAwait(true))
+		if (await _definitionNavigationController.TryNavigateAsync(hoveredOffset, CancellationToken.None).ConfigureAwait(true))
 			e.Handled = true;
-	}
-
-	private async Task<bool> TryNavigateToDefinitionAsync(int offset, CancellationToken cancellationToken)
-	{
-		if (!IsIntellisenseAvailable())
-			return false;
-
-		try
-		{
-			if (!LuaEditorInteractionRules.TryGetDefinitionStartOffset(Document, offset, out int definitionOffset))
-				return false;
-
-			CancellationToken definitionCancellationToken = ResetCancellationTokenSource(ref _definitionCancellationTokenSource);
-			using CancellationTokenSource? linkedCancellationTokenSource = cancellationToken.CanBeCanceled
-				? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, definitionCancellationToken)
-				: null;
-
-			CancellationToken effectiveCancellationToken = linkedCancellationTokenSource?.Token ?? definitionCancellationToken;
-			int requestToken = ++_definitionRequestToken;
-			int requestDocumentVersion = _editorDocumentVersion;
-			int requestGeneration = _editorRequestGeneration;
-
-			(int Line, int Column) = GetPositionFromOffset(definitionOffset);
-
-			LuaDefinitionLocation? definitionLocation = await IntellisenseProvider
-				.GetDefinitionAsync(FilePath, Text, Line, Column, effectiveCancellationToken)
-				.ConfigureAwait(true);
-
-			if (!IsAsyncEditorResultCurrent(effectiveCancellationToken, requestToken, _definitionRequestToken, requestDocumentVersion, requestGeneration))
-				return false;
-
-			if (definitionLocation is null)
-				return false;
-
-			DefinitionNavigationRequested?.Invoke(definitionLocation);
-			return true;
-		}
-		catch (OperationCanceledException)
-		{
-			return false;
-		}
-		catch (Exception exception)
-		{
-			LogEditorFailure("Go to definition", exception);
-			return false;
-		}
 	}
 
 	/// <summary>
@@ -106,5 +54,5 @@ public sealed partial class LuaEditor
 	/// </summary>
 	/// <returns>A task that completes once the navigation attempt finishes.</returns>
 	public Task NavigateToDefinitionAtCaretAsync()
-		=> TryNavigateToDefinitionAsync(CaretOffset, CancellationToken.None);
+		=> _definitionNavigationController.TryNavigateAsync(CaretOffset, CancellationToken.None);
 }

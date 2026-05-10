@@ -40,13 +40,45 @@ public class LuaIndentationStrategyTests
 	[TestMethod]
 	public void NormalizeCompletionInsertion_DedentsEndLineAndPreservesCaretAndCrLf()
 	{
-		(string text, int? caretOffset) = LuaIndentationStrategy.NormalizeCompletionInsertion(
+		LuaCompletionNormalizationResult result = LuaIndentationStrategy.NormalizeCompletionInsertion(
 			"if condition then\r\n\t\r\nend",
 			"if condition then\r\n\t".Length,
 			"    ",
 			"    ");
 
-		Assert.AreEqual("if condition then\r\n        \r\n    end", text);
-		Assert.AreEqual("if condition then\r\n        ".Length, caretOffset);
+		Assert.AreEqual("if condition then\r\n        \r\n    end", result.Text);
+		Assert.AreEqual("if condition then\r\n        ".Length, result.CaretOffset);
+	}
+
+	[TestMethod]
+	public void BuildEnterInsertion_BeforeDedent_SplitsLineAndRemovesExistingIndentation()
+	{
+		LuaEnterInsertionResult result = LuaIndentationStrategy.BuildEnterInsertion(
+			"if condition then",
+			"    end",
+			string.Empty,
+			"    ",
+			"\r\n",
+			useSmartIndent: true);
+
+		Assert.AreEqual("\r\n    \r\n", result.Text);
+		Assert.AreEqual("\r\n    ".Length, result.CaretOffset);
+		Assert.AreEqual(4, result.RemoveFollowingWhitespaceLength);
+	}
+
+	[TestMethod]
+	public void BuildEnterInsertion_WithoutDedentSplit_InsertsIndentedNewLineOnly()
+	{
+		LuaEnterInsertionResult result = LuaIndentationStrategy.BuildEnterInsertion(
+			"if condition then",
+			"value = 1",
+			string.Empty,
+			"    ",
+			"\r\n",
+			useSmartIndent: true);
+
+		Assert.AreEqual("\r\n    ", result.Text);
+		Assert.AreEqual("\r\n    ".Length, result.CaretOffset);
+		Assert.AreEqual(0, result.RemoveFollowingWhitespaceLength);
 	}
 }

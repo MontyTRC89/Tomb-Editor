@@ -68,7 +68,7 @@ internal static class LuaIndentationStrategy
 	/// <summary>
 	/// Builds the text that should be inserted when Enter is pressed inside Lua code.
 	/// </summary>
-	public static (string Text, int CaretOffset, int RemoveFollowingWhitespaceLength) BuildEnterInsertion(
+	public static LuaEnterInsertionResult BuildEnterInsertion(
 		string lineTextBeforeCaret,
 		string lineTextAfterCaret,
 		string currentLineIndentation,
@@ -94,24 +94,27 @@ internal static class LuaIndentationStrategy
 		if (!shouldSplitBeforeDedent)
 		{
 			string text = newLineText + nextLineIndentation;
-			return (text, text.Length, 0);
+			return new LuaEnterInsertionResult(text, text.Length, 0);
 		}
 
 		string splitText = newLineText + nextLineIndentation + newLineText + currentLineIndentation;
-		return (splitText, newLineText.Length + nextLineIndentation.Length, GetLeadingWhitespaceLength(lineTextAfterCaret));
+		return new LuaEnterInsertionResult(
+			splitText,
+			newLineText.Length + nextLineIndentation.Length,
+			GetLeadingWhitespaceLength(lineTextAfterCaret));
 	}
 
 	/// <summary>
 	/// Normalizes multiline completion insertion relative to the current line indentation.
 	/// </summary>
-	public static (string Text, int? CaretOffset) NormalizeCompletionInsertion(
+	public static LuaCompletionNormalizationResult NormalizeCompletionInsertion(
 		string text,
 		int? caretOffset,
 		string currentLineIndentation,
 		string indentationUnit)
 	{
 		if (string.IsNullOrEmpty(text) || !ContainsLineBreak(text))
-			return (text, caretOffset);
+			return new LuaCompletionNormalizationResult(text, caretOffset);
 
 		List<TextLine> lines = SplitLines(text);
 		var builder = new StringBuilder(text.Length + Math.Max(0, lines.Count - 1) * currentLineIndentation.Length);
@@ -151,7 +154,7 @@ internal static class LuaIndentationStrategy
 		if (caretOffset == text.Length)
 			normalizedCaretOffset = builder.Length;
 
-		return (builder.ToString(), normalizedCaretOffset ?? caretOffset);
+		return new LuaCompletionNormalizationResult(builder.ToString(), normalizedCaretOffset ?? caretOffset);
 	}
 
 	private static string BuildIndentation(string currentLineIndentation, string indentationUnit, int indentLevel)

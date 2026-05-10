@@ -306,15 +306,15 @@ internal sealed class LuaIntellisenseDocumentManager
 	/// Used by the provider to send `semanticTokens/full/delta` requests with the previous result id.
 	/// </summary>
 	/// <param name="filePath">The normalized file path.</param>
-	/// <returns>The previous result id and cached integer stream, if available.</returns>
-	public (string? PreviousResultId, int[]? PreviousData) GetSemanticTokensDeltaState(string filePath)
+	/// <returns>The cached delta state, if available.</returns>
+	public LuaSemanticTokensDeltaState GetSemanticTokensDeltaState(string filePath)
 	{
 		lock (_syncRoot)
 		{
 			if (!_documents.TryGetValue(filePath, out DocumentState? state))
-				return (null, null);
+				return new LuaSemanticTokensDeltaState(null, null);
 
-			return (state.SemanticTokensResultId, state.SemanticTokensData);
+			return new LuaSemanticTokensDeltaState(state.SemanticTokensResultId, state.SemanticTokensData);
 		}
 	}
 

@@ -171,7 +171,9 @@ internal static partial class LuaLanguageServerResponseParser
 		if (itemElement.TryGetProperty("insertTextFormat", out JsonElement insertTextFormatElement)
 			&& insertTextFormatElement.TryGetInt32(out int insertTextFormat) && insertTextFormat == 2)
 		{
-			(insertText, insertCaretOffset) = StripSnippetPlaceholders(insertText);
+			LuaSnippetPlaceholderResult snippetResult = StripSnippetPlaceholders(insertText);
+			insertText = snippetResult.Text;
+			insertCaretOffset = snippetResult.CaretOffset;
 		}
 
 		string filterText = itemElement.TryGetProperty("filterText", out JsonElement filterTextElement)
@@ -441,10 +443,10 @@ internal static partial class LuaLanguageServerResponseParser
 			: new MarkupContent(normalizedText, documentation.IsMarkdown);
 	}
 
-	private static (string Text, int? CaretOffset) StripSnippetPlaceholders(string snippet)
+	private static LuaSnippetPlaceholderResult StripSnippetPlaceholders(string snippet)
 	{
 		if (string.IsNullOrWhiteSpace(snippet))
-			return (snippet, null);
+			return new LuaSnippetPlaceholderResult(snippet, null);
 
 		var builder = new StringBuilder(snippet.Length);
 		int? caretOffset = null;
@@ -506,6 +508,6 @@ internal static partial class LuaLanguageServerResponseParser
 			index++;
 		}
 
-		return (builder.ToString(), caretOffset);
+		return new LuaSnippetPlaceholderResult(builder.ToString(), caretOffset);
 	}
 }

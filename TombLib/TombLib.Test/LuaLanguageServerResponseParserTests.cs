@@ -113,6 +113,24 @@ public class LuaLanguageServerResponseParserTests
 	}
 
 	[TestMethod]
+	public void ParseCompletionItem_PreservesUnknownSnippetPlaceholdersAndPlacesCaretAfterDefaultText()
+	{
+		JsonElement itemElement = JsonSerializer.SerializeToElement(new
+		{
+			label = "call",
+			kind = 3,
+			insertText = "call(${name}, ${0:done})",
+			insertTextFormat = 2
+		});
+
+		LuaCompletionItem? item = LuaLanguageServerResponseParser.ParseCompletionItem(itemElement, 0);
+
+		Assert.IsNotNull(item);
+		Assert.AreEqual("call(${name}, done)", item.InsertText);
+		Assert.AreEqual("call(${name}, done".Length, item.InsertCaretOffset);
+	}
+
+	[TestMethod]
 	public void ParseCompletionItems_DeduplicatesLabelAndInsertTextCaseSensitively()
 	{
 		IReadOnlyList<LuaCompletionItem> items = LuaLanguageServerResponseParser.ParseCompletionItems(

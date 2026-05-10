@@ -15,6 +15,10 @@ namespace TombLib.Scripting.Lua;
 public sealed partial class LuaEditor : TextEditorBase
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private readonly LuaCompletionController _completionController;
+	private readonly LuaDefinitionNavigationController _definitionNavigationController;
+	private readonly LuaHoverController _hoverController;
+	private readonly LuaSignatureHelpController _signatureHelpController;
 
 	/// <summary>
 	/// Gets the default file extension associated with Lua documents.
@@ -44,7 +48,11 @@ public sealed partial class LuaEditor : TextEditorBase
 	{
 		CommentPrefix = "--";
 		TextArea.IndentationStrategy = new LuaAutoIndentationStrategy(Options);
-		InitializeSignaturePopup();
+		_completionController = new LuaCompletionController(this);
+		_definitionNavigationController = new LuaDefinitionNavigationController(this);
+		_hoverController = new LuaHoverController(this);
+		_signatureHelpController = new LuaSignatureHelpController(this);
+		_signatureHelpController.InitializePopup();
 		BindLuaIntellisenseEvents();
 	}
 
