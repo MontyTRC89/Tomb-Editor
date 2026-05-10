@@ -10,7 +10,6 @@ using ICSharpCode.AvalonEdit.Document;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Services;
-using TombIDE.ScriptingStudio.Services.LuaIntellisense;
 using TombIDE.ScriptingStudio.ToolWindows;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;

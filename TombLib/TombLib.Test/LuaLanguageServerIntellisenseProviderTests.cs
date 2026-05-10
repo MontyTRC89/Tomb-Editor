@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json;
 using TombIDE.ScriptingStudio.Services.LuaIntellisense;
@@ -9,6 +10,29 @@ namespace TombLib.Test;
 [TestClass]
 public class LuaLanguageServerIntellisenseProviderTests
 {
+	[TestMethod]
+	public async Task OpenDocument_SendsDidOpenPayloadWithLuaLanguageAndVersion()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLuaLanguageServerClient();
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		provider.OpenDocument(filePath, content);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 1, TimeSpan.FromSeconds(1)));
+
+		JsonElement parameters = client.GetLastNotificationParameters("textDocument/didOpen");
+		JsonElement textDocument = parameters.GetProperty("textDocument");
+
+		Assert.AreEqual(new Uri(filePath).AbsoluteUri, textDocument.GetProperty("uri").GetString());
+		Assert.AreEqual("lua", textDocument.GetProperty("languageId").GetString());
+		Assert.AreEqual(1, textDocument.GetProperty("version").GetInt32());
+		Assert.AreEqual(content, textDocument.GetProperty("text").GetString());
+	}
+
 	[TestMethod]
 	public async Task GetCompletionItemsAsync_ResolvesCompletionItemDetailsWhenServerSupportsResolve()
 	{
@@ -106,6 +130,30 @@ public class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task GetCompletionItemsAsync_WithTriggerCharacter_PassesCompletionContext()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			CompletionResponse = JsonSerializer.SerializeToElement(new { items = Array.Empty<object>() })
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		IReadOnlyList<LuaCompletionItem> items = await provider.GetCompletionItemsAsync(filePath, "spawn.", 0, 6, '.');
+		JsonElement parameters = client.GetLastRequestParameters("textDocument/completion");
+
+		Assert.AreEqual(0, items.Count);
+		Assert.AreEqual(new Uri(filePath).AbsoluteUri, parameters.GetProperty("textDocument").GetProperty("uri").GetString());
+		Assert.AreEqual(0, parameters.GetProperty("position").GetProperty("line").GetInt32());
+		Assert.AreEqual(6, parameters.GetProperty("position").GetProperty("character").GetInt32());
+		Assert.AreEqual(2, parameters.GetProperty("context").GetProperty("triggerKind").GetInt32());
+		Assert.AreEqual(".", parameters.GetProperty("context").GetProperty("triggerCharacter").GetString());
+	}
+
+	[TestMethod]
 	public async Task FormatDocumentAsync_ReturnsFormattingEditsAndPassesEditorOptions()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -145,6 +193,77 @@ public class LuaLanguageServerIntellisenseProviderTests
 
 		CollectionAssert.AreEqual(
 			new[] { "textDocument/didOpen", "textDocument/formatting" },
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task RenameSymbolAsync_ReturnsWorkspaceEditFromTypedResponse()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = target\r\nprint(target)";
+		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\other.lua");
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			SupportsRename = true,
+			RenameResponse = JsonSerializer.SerializeToElement(new
+			{
+				changes = new Dictionary<string, object[]>
+				{
+					[new Uri(filePath).AbsoluteUri] =
+					[
+						new
+						{
+							range = new
+							{
+								start = new { line = 0, character = 14 },
+								end = new { line = 0, character = 20 }
+							},
+							newText = "renamed"
+						}
+					]
+				},
+				documentChanges = new object[]
+				{
+					new
+					{
+						textDocument = new { uri = new Uri(secondPath).AbsoluteUri },
+						edits = new object[]
+						{
+							new
+							{
+								range = new
+								{
+									start = new { line = 1, character = 6 },
+									end = new { line = 1, character = 12 }
+								},
+								newText = "renamed"
+							}
+						}
+					}
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		LuaWorkspaceEdit? workspaceEdit = await provider.RenameSymbolAsync(filePath, content, 0, 14, "renamed");
+
+		Assert.IsNotNull(workspaceEdit);
+		Assert.AreEqual(2, workspaceEdit.DocumentEdits.Count);
+		Assert.AreEqual(filePath, workspaceEdit.DocumentEdits[0].FilePath);
+		Assert.AreEqual("renamed", workspaceEdit.DocumentEdits[0].TextEdits[0].NewText);
+		Assert.AreEqual(secondPath, workspaceEdit.DocumentEdits[1].FilePath);
+		Assert.AreEqual("renamed", workspaceEdit.DocumentEdits[1].TextEdits[0].NewText);
+
+		JsonElement parameters = client.GetLastRequestParameters("textDocument/rename");
+
+		Assert.AreEqual(new Uri(filePath).AbsoluteUri, parameters.GetProperty("textDocument").GetProperty("uri").GetString());
+		Assert.AreEqual("renamed", parameters.GetProperty("newName").GetString());
+
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen", "textDocument/rename" },
 			client.GetSentMethodNames());
 	}
 
@@ -237,6 +356,175 @@ public class LuaLanguageServerIntellisenseProviderTests
 		Assert.IsFalse(failures[0].IsPersistent);
 		Assert.IsTrue(failures[1].IsPersistent);
 		Assert.AreEqual(3, client.StartCallCount);
+	}
+
+	[TestMethod]
+	public async Task GetHoverAsync_ReturnsParsedHoverInfoFromTypedResponse()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		LuaHoverInfo? hover = await provider.GetHoverAsync(filePath, content, 0, 0);
+
+		Assert.IsNotNull(hover);
+		Assert.AreEqual("Hover docs.", hover.Content);
+		Assert.IsTrue(hover.IsMarkdown);
+
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen", "textDocument/hover" },
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task GetDefinitionAsync_ReturnsParsedDefinitionLocationFromTypedResponse()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\definitions.lua");
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			DefinitionResponse = JsonSerializer.SerializeToElement(new
+			{
+				uri = new Uri(targetPath).AbsoluteUri,
+				range = new
+				{
+					start = new { line = 4, character = 2 },
+					end = new { line = 4, character = 7 }
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		LuaDefinitionLocation? definition = await provider.GetDefinitionAsync(filePath, "value", 0, 0);
+
+		Assert.IsNotNull(definition);
+		Assert.AreEqual(targetPath, definition.FilePath);
+		Assert.AreEqual(5, definition.LineNumber);
+		Assert.AreEqual(3, definition.ColumnNumber);
+
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen", "textDocument/definition" },
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task GetReferencesAsync_ReturnsParsedReferenceLocationsFromTypedResponse()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\references.lua");
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			ReferencesResponse = JsonSerializer.SerializeToElement(new object[]
+			{
+				new
+				{
+					uri = new Uri(targetPath).AbsoluteUri,
+					range = new
+					{
+						start = new { line = 2, character = 4 },
+						end = new { line = 2, character = 9 }
+					}
+				},
+				new
+				{
+					uri = "https://example.com/not-a-file.lua",
+					range = new
+					{
+						start = new { line = 0, character = 0 },
+						end = new { line = 0, character = 1 }
+					}
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		IReadOnlyList<LuaReferenceLocation> references = await provider.GetReferencesAsync(filePath, "value", 0, 0);
+
+		Assert.AreEqual(1, references.Count);
+		Assert.AreEqual(targetPath, references[0].FilePath);
+		Assert.AreEqual(3, references[0].Range.StartLineNumber);
+		Assert.AreEqual(5, references[0].Range.StartColumnNumber);
+
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen", "textDocument/references" },
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task GetSignatureHelpAsync_ReturnsParsedSignatureHelpFromTypedResponse()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			SignatureHelpResponse = JsonSerializer.SerializeToElement(new
+			{
+				activeSignature = 0,
+				activeParameter = 1,
+				signatures = new[]
+				{
+					new
+					{
+						label = "spawn(room, objectName)",
+						documentation = new
+						{
+							kind = "markdown",
+							value = "Spawns an object."
+						},
+						parameters = new object[]
+						{
+							new
+							{
+								label = new[] { 6, 10 },
+								documentation = "Room id."
+							},
+							new
+							{
+								label = new[] { 12, 22 },
+								documentation = "Object name."
+							}
+						}
+					}
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		LuaSignatureInfo? signature = await provider.GetSignatureHelpAsync(filePath, "spawn(", 0, 6);
+
+		Assert.IsNotNull(signature);
+		Assert.AreEqual("spawn(room, objectName)", signature.Label);
+		Assert.AreEqual("Spawns an object.", signature.Documentation);
+		Assert.AreEqual(1, signature.ActiveParameter);
+		Assert.AreEqual(2, signature.Parameters.Count);
+		Assert.AreEqual("objectName", signature.Parameters[1].Label);
+		Assert.AreEqual("Object name.", signature.Parameters[1].Documentation);
+
+		CollectionAssert.AreEqual(
+			new[] { "textDocument/didOpen", "textDocument/signatureHelp" },
+			client.GetSentMethodNames());
 	}
 
 	[TestMethod]
@@ -539,6 +827,63 @@ public class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task GetHoverAsync_ReplaysUntouchedTrackedDocumentsAfterFailedRestartRetry()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string firstFilePath = @"C:\Workspace\Scripts\first.lua";
+		const string secondFilePath = @"C:\Workspace\Scripts\second.lua";
+		const string firstContent = "local first = 1";
+		const string secondContent = "local second = 2";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		provider.OpenDocument(firstFilePath, firstContent);
+		provider.OpenDocument(secondFilePath, secondContent);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 2, TimeSpan.FromSeconds(1)));
+		Assert.AreEqual(1, client.StartCallCount);
+
+		client.IsReady = false;
+		client.StartResult = false;
+
+		LuaHoverInfo? failedHover = await provider.GetHoverAsync(firstFilePath, firstContent, 0, 0);
+
+		Assert.IsNull(failedHover);
+		Assert.AreEqual(2, client.StartCallCount);
+
+		client.StartResult = true;
+
+		LuaHoverInfo? recoveredHover = await provider.GetHoverAsync(firstFilePath, firstContent, 0, 0);
+
+		Assert.IsNotNull(recoveredHover);
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 4, TimeSpan.FromSeconds(1)));
+		Assert.AreEqual(3, client.StartCallCount);
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				"textDocument/didOpen",
+				"textDocument/didOpen",
+				"textDocument/didOpen",
+				"textDocument/didOpen",
+				"textDocument/hover"
+			},
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
 	public async Task DiagnosticsPublished_IgnoresVersionMismatchAndStoresMatchingVersion()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -681,6 +1026,25 @@ public class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task CloseDocument_SendsDidClosePayloadWithDocumentUri()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLuaLanguageServerClient();
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		provider.OpenDocument(filePath, "local value = 1");
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 1, TimeSpan.FromSeconds(1)));
+
+		provider.CloseDocument(filePath);
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didClose", 1, TimeSpan.FromSeconds(1)));
+
+		JsonElement parameters = client.GetLastNotificationParameters("textDocument/didClose");
+		Assert.AreEqual(new Uri(filePath).AbsoluteUri, parameters.GetProperty("textDocument").GetProperty("uri").GetString());
+	}
+
+	[TestMethod]
 	public async Task GetHoverAsync_RetriesWorkspaceWatcherStartAfterWorkspaceDirectoryAppears()
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherRetry_" + Guid.NewGuid().ToString("N"));
@@ -786,6 +1150,30 @@ public class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task OpenDocument_SemanticTokensFullRequest_OmitsPreviousResultId()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLuaLanguageServerClient
+		{
+			SemanticTokenTypes = ["variable"]
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		provider.OpenDocument(filePath, content);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/semanticTokens/full", 1, TimeSpan.FromSeconds(1)));
+
+		JsonElement parameters = client.GetLastRequestParameters("textDocument/semanticTokens/full");
+
+		Assert.AreEqual(new Uri(filePath).AbsoluteUri, parameters.GetProperty("textDocument").GetProperty("uri").GetString());
+		Assert.IsFalse(parameters.TryGetProperty("previousResultId", out _));
+	}
+
+	[TestMethod]
 	public async Task SemanticTokensRefreshRequested_FallsBackToFullRefreshAfterInvalidDelta()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -857,25 +1245,20 @@ public class LuaLanguageServerIntellisenseProviderTests
 			client.GetSentMethodNames());
 	}
 
-	private static JsonElement CreateDiagnostics(string filePath, int version, int startCharacter, int endCharacter, string message)
-		=> JsonSerializer.SerializeToElement(new
-		{
-			uri = new Uri(filePath).AbsoluteUri,
+	private static LuaPublishDiagnosticsParams CreateDiagnostics(string filePath, int version, int startCharacter, int endCharacter, string message)
+		=> new(
+			new Uri(filePath).AbsoluteUri,
 			version,
-			diagnostics = new[]
-			{
-				new
-				{
-					severity = 2,
+			[
+				new LuaDiagnosticPayload(
+					new LuaProtocolRangePayload(
+						new LuaProtocolNullablePosition(0, startCharacter),
+						new LuaProtocolNullablePosition(0, endCharacter)),
+					2,
 					message,
-					range = new
-					{
-						start = new { line = 0, character = startCharacter },
-						end = new { line = 0, character = endCharacter }
-					}
-				}
-			}
-		});
+					null,
+					null)
+			]);
 
 	private static LuaWorkspaceFileWatcher? GetWorkspaceWatcher(LuaLanguageServerIntellisenseProvider provider)
 	{
@@ -913,8 +1296,12 @@ public class LuaLanguageServerIntellisenseProviderTests
 		public bool StartResult { get; set; } = true;
 		public JsonElement CompletionResponse { get; set; }
 		public JsonElement CompletionResolveResponse { get; set; }
+		public JsonElement DefinitionResponse { get; set; }
 		public JsonElement FormattingResponse { get; set; }
 		public JsonElement HoverResponse { get; set; }
+		public JsonElement ReferencesResponse { get; set; }
+		public JsonElement RenameResponse { get; set; }
+		public JsonElement SignatureHelpResponse { get; set; }
 		public LuaTextDocumentSyncKind TextDocumentSyncKind { get; set; } = LuaTextDocumentSyncKind.Incremental;
 		public IReadOnlyList<string> SemanticTokenTypes { get; set; } = [];
 		public IReadOnlyList<string> SemanticTokenModifiers { get; set; } = [];
@@ -930,7 +1317,7 @@ public class LuaLanguageServerIntellisenseProviderTests
 		public bool ThrowIOExceptionOnNextDidChange { get; set; }
 		public List<bool> StartCancellationTokenCanBeCanceled { get; } = [];
 
-		public event Action<JsonElement>? DiagnosticsPublished;
+		public event Action<LuaPublishDiagnosticsParams>? DiagnosticsPublished;
 
 		public event Action? SemanticTokensRefreshRequested;
 
@@ -984,41 +1371,46 @@ public class LuaLanguageServerIntellisenseProviderTests
 			return Task.CompletedTask;
 		}
 
-		public Task<JsonElement> SendRequestAsync(string method, object parameters, CancellationToken cancellationToken)
+		public Task<TResult> SendRequestAsync<TResult>(string method, object parameters, CancellationToken cancellationToken)
 		{
-			lock (_syncRoot)
-			{
-				_sentMethodNames.Add(method);
-				_sentRequests.Add((method, JsonSerializer.SerializeToElement(parameters)));
-			}
+			RecordRequest(method, parameters);
 
 			if (method == "textDocument/hover")
 			{
 				if (TimedOutHoverRequestsRemaining > 0)
 				{
 					TimedOutHoverRequestsRemaining--;
-					return WaitForCancellationAsync(cancellationToken);
+					return WaitForCancellationAsync<TResult>(cancellationToken);
 				}
 
 				if (HoverResponse.ValueKind != JsonValueKind.Undefined)
-					return Task.FromResult(HoverResponse);
+					return DeserializeResponseAsync<TResult>(HoverResponse);
 			}
 
 			if (method == "textDocument/completion" && CompletionResponse.ValueKind != JsonValueKind.Undefined)
-				return Task.FromResult(CompletionResponse);
+				return DeserializeResponseAsync<TResult>(CompletionResponse);
 
 			if (method == "completionItem/resolve" && CompletionResolveResponse.ValueKind != JsonValueKind.Undefined)
-				return Task.FromResult(CompletionResolveResponse);
+				return DeserializeResponseAsync<TResult>(CompletionResolveResponse);
+
+			if (method == "textDocument/definition" && DefinitionResponse.ValueKind != JsonValueKind.Undefined)
+				return DeserializeResponseAsync<TResult>(DefinitionResponse);
+
+			if (method == "textDocument/references" && ReferencesResponse.ValueKind != JsonValueKind.Undefined)
+				return DeserializeResponseAsync<TResult>(ReferencesResponse);
+
+			if (method == "textDocument/rename" && RenameResponse.ValueKind != JsonValueKind.Undefined)
+				return DeserializeResponseAsync<TResult>(RenameResponse);
 
 			if (method == "textDocument/formatting" && FormattingResponse.ValueKind != JsonValueKind.Undefined)
-				return Task.FromResult(FormattingResponse);
+				return DeserializeResponseAsync<TResult>(FormattingResponse);
 
 			if (method == "textDocument/semanticTokens/full/delta")
 			{
 				if (_semanticTokensDeltaResponses.Count > 0)
-					return Task.FromResult(_semanticTokensDeltaResponses.Dequeue());
+					return DeserializeResponseAsync<TResult>(_semanticTokensDeltaResponses.Dequeue());
 
-				return Task.FromResult(JsonSerializer.SerializeToElement(new
+				return DeserializeResponseAsync<TResult>(JsonSerializer.SerializeToElement(new
 				{
 					edits = Array.Empty<object>(),
 					resultId = "tokens-delta"
@@ -1028,16 +1420,22 @@ public class LuaLanguageServerIntellisenseProviderTests
 			if (method == "textDocument/semanticTokens/full")
 			{
 				if (_semanticTokensFullResponses.Count > 0)
-					return Task.FromResult(_semanticTokensFullResponses.Dequeue());
+					return DeserializeResponseAsync<TResult>(_semanticTokensFullResponses.Dequeue());
 
-				return Task.FromResult(JsonSerializer.SerializeToElement(new
+				return DeserializeResponseAsync<TResult>(JsonSerializer.SerializeToElement(new
 				{
 					data = new[] { 0, 6, 5, 0, 0 },
 					resultId = "tokens-1"
 				}));
 			}
 
-			return Task.FromResult(JsonSerializer.SerializeToElement(new { }));
+			if (method == "textDocument/signatureHelp" && SignatureHelpResponse.ValueKind != JsonValueKind.Undefined)
+				return DeserializeResponseAsync<TResult>(SignatureHelpResponse);
+
+			if (typeof(TResult) == typeof(JsonElement))
+				return Task.FromResult((TResult)(object)JsonSerializer.SerializeToElement(new { }));
+
+			return Task.FromResult(CreateDefaultResponse<TResult>());
 		}
 
 		public string[] GetSentMethodNames()
@@ -1108,7 +1506,7 @@ public class LuaLanguageServerIntellisenseProviderTests
 			return GetSentMethodCount(method) >= expectedCount;
 		}
 
-		public void PublishDiagnostics(JsonElement parameters)
+		public void PublishDiagnostics(LuaPublishDiagnosticsParams parameters)
 			=> DiagnosticsPublished?.Invoke(parameters);
 
 		public void PublishSemanticTokensRefreshRequested()
@@ -1136,10 +1534,41 @@ public class LuaLanguageServerIntellisenseProviderTests
 			return count;
 		}
 
+		private void RecordRequest(string method, object parameters)
+		{
+			lock (_syncRoot)
+			{
+				_sentMethodNames.Add(method);
+				_sentRequests.Add((method, JsonSerializer.SerializeToElement(parameters)));
+			}
+		}
+
+		private static Task<TResult> DeserializeResponseAsync<TResult>(JsonElement response)
+		{
+			if (typeof(TResult) == typeof(JsonElement))
+				return Task.FromResult((TResult)(object)response);
+
+			return Task.FromResult(DeserializeResponse<TResult>(response));
+		}
+
+		[return: MaybeNull]
+		private static TResult DeserializeResponse<TResult>(JsonElement response)
+			=> JsonSerializer.Deserialize<TResult>(response.GetRawText());
+
+		[return: MaybeNull]
+		private static TResult CreateDefaultResponse<TResult>()
+			=> default;
+
 		private static async Task<JsonElement> WaitForCancellationAsync(CancellationToken cancellationToken)
 		{
 			await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken).ConfigureAwait(false);
 			return default;
+		}
+
+		private static async Task<TResult> WaitForCancellationAsync<TResult>(CancellationToken cancellationToken)
+		{
+			await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken).ConfigureAwait(false);
+			return CreateDefaultResponse<TResult>();
 		}
 
 		public void Dispose()

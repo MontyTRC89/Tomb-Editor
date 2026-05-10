@@ -10,8 +10,8 @@ public class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseCompletionItem_AddsLocalAndUpvaluePriorityBonuses()
 	{
-		JsonElement baselineElement = CreateCompletionItem("baseline", kind: 6, detail: "variable", documentation: "plain text");
-		JsonElement boostedElement = CreateCompletionItem("boosted", kind: 6, detail: "local variable", documentation: "upvalue");
+		LuaCompletionItemPayload baselineElement = CreateCompletionItem("baseline", kind: 6, detail: "variable", documentation: "plain text");
+		LuaCompletionItemPayload boostedElement = CreateCompletionItem("boosted", kind: 6, detail: "local variable", documentation: "upvalue");
 
 		LuaCompletionItem? baselineItem = LuaLanguageServerResponseParser.ParseCompletionItem(baselineElement, 0);
 		LuaCompletionItem? boostedItem = LuaLanguageServerResponseParser.ParseCompletionItem(boostedElement, 0);
@@ -24,7 +24,7 @@ public class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseCompletionItem_UsesParameterIconWhenDetailContainsParameter()
 	{
-		JsonElement itemElement = CreateCompletionItem("arg", kind: 6, detail: "parameter", documentation: null);
+		LuaCompletionItemPayload itemElement = CreateCompletionItem("arg", kind: 6, detail: "parameter", documentation: null);
 
 		LuaCompletionItem? item = LuaLanguageServerResponseParser.ParseCompletionItem(itemElement, 0);
 
@@ -35,7 +35,7 @@ public class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseCompletionItem_ParsesTextEditRange()
 	{
-		JsonElement itemElement = JsonSerializer.SerializeToElement(new
+		LuaCompletionItemPayload itemElement = DeserializeCompletionItemPayload(new
 		{
 			label = "print",
 			kind = 3,
@@ -63,7 +63,7 @@ public class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseCompletionItem_ParsesInsertReplaceEditRanges()
 	{
-		JsonElement itemElement = JsonSerializer.SerializeToElement(new
+		LuaCompletionItemPayload itemElement = DeserializeCompletionItemPayload(new
 		{
 			label = "print",
 			kind = 3,
@@ -97,7 +97,7 @@ public class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseCompletionItem_StripsSnippetAndPreservesFinalCaretOffset()
 	{
-		JsonElement itemElement = JsonSerializer.SerializeToElement(new
+		LuaCompletionItemPayload itemElement = DeserializeCompletionItemPayload(new
 		{
 			label = "if",
 			kind = 15,
@@ -115,7 +115,7 @@ public class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseCompletionItem_PreservesUnknownSnippetPlaceholdersAndPlacesCaretAfterDefaultText()
 	{
-		JsonElement itemElement = JsonSerializer.SerializeToElement(new
+		LuaCompletionItemPayload itemElement = DeserializeCompletionItemPayload(new
 		{
 			label = "call",
 			kind = 3,
@@ -154,7 +154,7 @@ public class LuaLanguageServerResponseParserTests
 		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\second.lua");
 
 		LuaDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
-			JsonSerializer.SerializeToElement(new object[]
+			DeserializeDefinitionResponse(new object[]
 			{
 				new
 				{
@@ -188,7 +188,7 @@ public class LuaLanguageServerResponseParserTests
 		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\linked.lua");
 
 		LuaDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
-			JsonSerializer.SerializeToElement(new
+			DeserializeDefinitionResponse(new
 			{
 				targetUri = new Uri(targetPath).AbsoluteUri,
 				targetSelectionRange = new
@@ -210,7 +210,7 @@ public class LuaLanguageServerResponseParserTests
 		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\references.lua");
 
 		IReadOnlyList<LuaReferenceLocation> locations = LuaLanguageServerResponseParser.ParseReferenceLocations(
-			JsonSerializer.SerializeToElement(new object[]
+			DeserializeReferenceResponse(new object[]
 			{
 				new
 				{
@@ -247,7 +247,7 @@ public class LuaLanguageServerResponseParserTests
 		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\second.lua");
 
 		LuaWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(
-			JsonSerializer.SerializeToElement(new
+			DeserializeWorkspaceEditResponse(new
 			{
 				changes = new Dictionary<string, object[]>
 				{
@@ -297,7 +297,7 @@ public class LuaLanguageServerResponseParserTests
 	public void ParseDocumentFormattingEdits_ParsesFormattingTextEdits()
 	{
 		IReadOnlyList<LuaTextEdit> textEdits = LuaLanguageServerResponseParser.ParseDocumentFormattingEdits(
-			JsonSerializer.SerializeToElement(new object[]
+			DeserializeTextEdits(new object[]
 			{
 				new
 				{
@@ -331,7 +331,7 @@ public class LuaLanguageServerResponseParserTests
 	public void ParseSignatureHelp_UsesParameterLabelOffsetsAndActiveParameter()
 	{
 		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
-			JsonSerializer.SerializeToElement(new
+			DeserializeSignatureHelpResponse(new
 			{
 				activeSignature = 0,
 				activeParameter = 1,
@@ -375,7 +375,7 @@ public class LuaLanguageServerResponseParserTests
 	public void ParseSignatureHelp_UsesSignatureLevelActiveParameterWhenResponseOmitsIt()
 	{
 		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
-			JsonSerializer.SerializeToElement(new
+			DeserializeSignatureHelpResponse(new
 			{
 				signatures = new[]
 				{
@@ -397,8 +397,8 @@ public class LuaLanguageServerResponseParserTests
 		Assert.AreEqual("y", signatureInfo.Parameters[1].Label);
 	}
 
-	private static JsonElement CreateCompletionItem(string label, int kind, string? detail, string? documentation, string? insertText = null)
-		=> JsonSerializer.SerializeToElement(new Dictionary<string, object?>
+	private static LuaCompletionItemPayload CreateCompletionItem(string label, int kind, string? detail, string? documentation, string? insertText = null)
+		=> DeserializeCompletionItemPayload(new Dictionary<string, object?>
 		{
 			["label"] = label,
 			["kind"] = kind,
@@ -407,4 +407,23 @@ public class LuaLanguageServerResponseParserTests
 			["insertText"] = insertText ?? label,
 			["filterText"] = label
 		});
+
+	private static LuaCompletionItemPayload DeserializeCompletionItemPayload(object payload)
+		=> JsonSerializer.Deserialize<LuaCompletionItemPayload>(JsonSerializer.Serialize(payload))
+			?? throw new InvalidOperationException("Failed to deserialize the Lua completion-item test payload.");
+
+	private static LuaSignatureHelpResponse? DeserializeSignatureHelpResponse(object payload)
+		=> JsonSerializer.Deserialize<LuaSignatureHelpResponse>(JsonSerializer.Serialize(payload));
+
+	private static LuaWorkspaceEditResponse? DeserializeWorkspaceEditResponse(object payload)
+		=> JsonSerializer.Deserialize<LuaWorkspaceEditResponse>(JsonSerializer.Serialize(payload));
+
+	private static LuaTextEditPayload[]? DeserializeTextEdits(object payload)
+		=> JsonSerializer.Deserialize<LuaTextEditPayload[]>(JsonSerializer.Serialize(payload));
+
+	private static LuaDefinitionResponse DeserializeDefinitionResponse(object payload)
+		=> JsonSerializer.Deserialize<LuaDefinitionResponse>(JsonSerializer.Serialize(payload));
+
+	private static LuaReferenceResponse[]? DeserializeReferenceResponse(object payload)
+		=> JsonSerializer.Deserialize<LuaReferenceResponse[]>(JsonSerializer.Serialize(payload));
 }

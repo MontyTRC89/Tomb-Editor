@@ -27,6 +27,22 @@ public class LuaIntellisenseDocumentManagerTests
 		Assert.AreEqual(1, destinationDocument.Version);
 		Assert.IsTrue(manager.TryClose(oldFilePath, out _));
 		Assert.IsTrue(manager.TryClose(newFilePath, out LuaDocumentSnapshot? closedDestinationDocument));
+		Assert.IsNotNull(closedDestinationDocument);
 		Assert.AreEqual("return 2", closedDestinationDocument.Content);
+	}
+
+	[TestMethod]
+	public void TryClose_RemovesTrackedDocumentWhileRestartReplayIsPending()
+	{
+		var manager = new LuaIntellisenseDocumentManager();
+		const string filePath = @"C:\Workspace\Scripts\pending.lua";
+
+		manager.Synchronize(filePath, "return 1", acquireOpenReference: true);
+		IReadOnlyList<LuaDocumentSnapshot> documentsToReopen = manager.PrepareForRestart();
+
+		Assert.AreEqual(1, documentsToReopen.Count);
+		Assert.IsTrue(manager.TryClose(filePath, out LuaDocumentSnapshot? closingDocument));
+		Assert.IsNull(closingDocument);
+		Assert.IsNull(manager.GetDocumentSnapshot(filePath));
 	}
 }

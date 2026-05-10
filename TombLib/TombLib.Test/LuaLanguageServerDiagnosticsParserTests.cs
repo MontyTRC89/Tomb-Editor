@@ -1,4 +1,3 @@
-using System.Text.Json;
 using TombIDE.ScriptingStudio.Services.LuaIntellisense;
 
 namespace TombLib.Test;
@@ -46,22 +45,19 @@ public class LuaLanguageServerDiagnosticsParserTests
 		Assert.AreEqual(publishedDiagnostics.Diagnostics[0].StartOffset + 1, publishedDiagnostics.Diagnostics[0].EndOffset);
 	}
 
-	private static JsonElement CreateDiagnostics(int line, int startCharacter, int endLine, int endCharacter)
-		=> JsonSerializer.SerializeToElement(new
-		{
-			version = 1,
-			diagnostics = new[]
-			{
-				new
-				{
-					severity = 1,
-					message = "Syntax error.",
-					range = new
-					{
-						start = new { line, character = startCharacter },
-						end = new { line = endLine, character = endCharacter }
-					}
-				}
-			}
-		});
+	private static LuaPublishDiagnosticsParams CreateDiagnostics(int line, int startCharacter, int endLine, int endCharacter)
+		=> new(
+			Uri: null,
+			Version: 1,
+			Diagnostics:
+			[
+				new LuaDiagnosticPayload(
+					new LuaProtocolRangePayload(
+						new LuaProtocolNullablePosition(line, startCharacter),
+						new LuaProtocolNullablePosition(endLine, endCharacter)),
+					1,
+					"Syntax error.",
+					null,
+					null)
+			]);
 }
