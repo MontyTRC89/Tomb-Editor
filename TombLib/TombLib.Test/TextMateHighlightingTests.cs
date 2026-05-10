@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
 using TombLib.Scripting.Highlighting;
@@ -64,20 +66,50 @@ public class TextMateHighlightingTests
 		Assert.AreEqual("#FFD7B8FF", GetForegroundColor(style));
 	}
 
-		private static (int StartLineIndex, int RemovedLineCount, int InsertedLineCount) ApplyChangeAndGetInfo(string originalText, Action<TextDocument> changeAction)
+	[TestMethod]
+	public void DocumentLineList_TracksInsertedAndReplacedLines()
+	{
+		var document = new TextDocument("alpha\r\nbeta");
+		var lineList = new TextMateDocumentLineList(document);
+
+		try
 		{
-			var document = new TextDocument(originalText);
-			DocumentChangeEventArgs? change = null;
+			CollectionAssert.AreEqual(new[] { "alpha\r\n", "beta" }, GetSnapshotLines(lineList));
 
-			document.Changed += (_, args) => change = args;
-			changeAction(document);
+			document.Insert(document.TextLength, "\r\ngamma");
 
-			return TextMateDocumentLineList.GetChangeInfo(document, change!);
+			CollectionAssert.AreEqual(new[] { "alpha\r\n", "beta\r\n", "gamma" }, GetSnapshotLines(lineList));
+			Assert.AreEqual(3, lineList.GetNumberOfLines());
+
+			int replacementOffset = document.Text.IndexOf("beta\r\ngamma", StringComparison.Ordinal);
+			document.Replace(replacementOffset, "beta\r\ngamma".Length, "delta");
+
+			CollectionAssert.AreEqual(new[] { "alpha\r\n", "delta" }, GetSnapshotLines(lineList));
+			Assert.AreEqual(2, lineList.GetNumberOfLines());
 		}
-
-		private static string GetForegroundColor(TextMateHighlightingStyle style)
+		finally
 		{
-			Assert.IsNotNull(style.Foreground);
-			return ((SolidColorBrush)style.Foreground).Color.ToString();
+			lineList.Dispose();
 		}
+	}
+
+	private static (int StartLineIndex, int RemovedLineCount, int InsertedLineCount) ApplyChangeAndGetInfo(string originalText, Action<TextDocument> changeAction)
+	{
+		var document = new TextDocument(originalText);
+		DocumentChangeEventArgs? change = null;
+
+		document.Changed += (_, args) => change = args;
+		changeAction(document);
+
+		return TextMateDocumentLineList.GetChangeInfo(document, change!);
+	}
+
+	private static string[] GetSnapshotLines(TextMateDocumentLineList lineList)
+		=> [.. WpfTestHelper.GetPrivateField<List<string>>(lineList, "_lineTexts")];
+
+	private static string GetForegroundColor(TextMateHighlightingStyle style)
+	{
+		Assert.IsNotNull(style.Foreground);
+		return ((SolidColorBrush)style.Foreground).Color.ToString();
+	}
 }
