@@ -15,8 +15,8 @@ internal sealed class LuaIntellisenseDocumentManager
 {
 	private sealed class DocumentState
 	{
-		public required string FilePath { get; init; }
-		public required string Uri { get; init; }
+		public required string FilePath { get; set; }
+		public required string Uri { get; set; }
 		public string Content { get; set; } = string.Empty;
 		public int Version { get; set; }
 		public bool IsOpen { get; set; }
@@ -117,6 +117,48 @@ internal sealed class LuaIntellisenseDocumentManager
 			}
 
 			return null;
+		}
+	}
+
+	/// <summary>
+	/// Rekeys a tracked document to a new normalized file path and preserves any diagnostics or semantic tokens
+	/// that still match the current content.
+	/// </summary>
+	/// <param name="oldFilePath">The current normalized file path.</param>
+	/// <param name="newFilePath">The replacement normalized file path.</param>
+	/// <param name="content">The latest editor content.</param>
+	/// <returns>The rename request that should be mirrored to LuaLS, or <see langword="null"/> when no document was tracked.</returns>
+	public LuaDocumentRenameRequest? Rename(string oldFilePath, string newFilePath, string? content = null)
+	{
+		if (string.Equals(oldFilePath, newFilePath, StringComparison.OrdinalIgnoreCase))
+			return null;
+
+		lock (_syncRoot)
+		{
+			if (!_documents.TryGetValue(oldFilePath, out DocumentState? state))
+				return null;
+
+			string safeContent = content ?? state.Content;
+			bool contentChanged = !string.Equals(state.Content, safeContent, StringComparison.Ordinal);
+			LuaDocumentSnapshot? previousDocument = state.IsOpen ? CreateSnapshot(state) : null;
+
+			_documents.Remove(oldFilePath);
+
+			if (_documents.ContainsKey(newFilePath))
+				ClearCachedState(state);
+
+			state.FilePath = newFilePath;
+			state.Uri = LuaLanguageServerPathHelper.CreateFileUri(newFilePath);
+
+			if (contentChanged)
+			{
+				state.Content = safeContent;
+				state.Version++;
+				ClearCachedState(state);
+			}
+
+			_documents[newFilePath] = state;
+			return new LuaDocumentRenameRequest(previousDocument, CreateSnapshot(state), previousDocument is not null);
 		}
 	}
 
@@ -313,6 +355,16 @@ internal sealed class LuaIntellisenseDocumentManager
 			state.SemanticTokensData = null;
 			return true;
 		}
+	}
+
+	private static void ClearCachedState(DocumentState state)
+	{
+		state.Diagnostics = [];
+		state.DiagnosticsVersion = 0;
+		state.SemanticTokens = [];
+		state.SemanticTokensVersion = 0;
+		state.SemanticTokensData = null;
+		state.SemanticTokensResultId = null;
 	}
 
 	private static bool IsStaleVersion(int currentVersion, int incomingVersion)

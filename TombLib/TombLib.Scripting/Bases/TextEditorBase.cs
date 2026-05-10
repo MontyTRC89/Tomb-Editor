@@ -506,7 +506,7 @@ namespace TombLib.Scripting.Bases
 			TryShowDiagnosticToolTip(hoveredOffset);
 		}
 
-		protected bool TryGetDiagnosticInfo(int hoveredOffset, out string message, out TextEditorDiagnosticSeverity severity)
+		protected bool TryGetDiagnosticInfo(int hoveredOffset, out string message, out TextEditorDiagnosticSeverity severity, bool allowLineFallback = true)
 		{
 			message = null;
 			severity = TextEditorDiagnosticSeverity.Error;
@@ -516,7 +516,7 @@ namespace TombLib.Scripting.Bases
 
 			List<TextEditorDiagnostic> hoveredDiagnostics = GetDiagnosticsAtOffset(hoveredOffset);
 
-			if (hoveredDiagnostics.Count == 0)
+			if (hoveredDiagnostics.Count == 0 && allowLineFallback)
 				hoveredDiagnostics = GetDiagnosticsForLine(Document.GetLineByOffset(hoveredOffset));
 
 			if (hoveredDiagnostics.Count == 0)
@@ -609,8 +609,12 @@ namespace TombLib.Scripting.Bases
 			{
 				CaretOffset++;
 				e.Handled = true;
+				OnAutoClosingElementSkipped(element);
 			}
 		}
+
+		protected virtual void OnAutoClosingElementSkipped(string element)
+		{ }
 
 		#endregion Auto bracket closing
 

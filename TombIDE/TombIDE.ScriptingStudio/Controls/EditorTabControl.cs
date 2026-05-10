@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using TombIDE.ScriptingStudio.Forms;
 using TombIDE.ScriptingStudio.Helpers;
+using TombIDE.ScriptingStudio.Objects;
 using TombIDE.ScriptingStudio.Properties;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
@@ -363,6 +364,7 @@ namespace TombIDE.ScriptingStudio.Controls
 		public FileSavingResult SaveFileAs(TabPage tab)
 		{
 			IEditorControl editor = GetEditorOfTab(tab);
+			string oldFilePath = editor.FilePath;
 
 			string[] ignoredPaths = Array.Empty<string>();
 
@@ -372,10 +374,37 @@ namespace TombIDE.ScriptingStudio.Controls
 			using (var form = new FormFileCreation(ScriptRootDirectoryPath, FileCreationMode.SavingAs, editor.DefaultFileExtension, null, null, ignoredPaths))
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
+					if (string.IsNullOrWhiteSpace(oldFilePath)
+						|| oldFilePath.Equals(form.NewFilePath, StringComparison.OrdinalIgnoreCase))
+					{
+						editor.FilePath = form.NewFilePath;
+						UpdateTabPageName(tab);
+
+						return SaveFile(tab);
+					}
+
 					editor.FilePath = form.NewFilePath;
 					UpdateTabPageName(tab);
 
-					return SaveFile(tab);
+					FileSavingResult result = SaveFile(tab);
+
+					if (result == FileSavingResult.Success)
+					{
+						if (FindTabPagesOfFile(oldFilePath).Any())
+						{
+							RenameDocumentTabPage(oldFilePath, form.NewFilePath);
+							SaveOtherTabPagesOfFile(editor);
+						}
+						else
+							OnDocumentRenamed(new DocumentRenamedEventArgs(oldFilePath, form.NewFilePath));
+					}
+					else
+					{
+						editor.FilePath = oldFilePath;
+						UpdateTabPageName(tab);
+					}
+
+					return result;
 				}
 				else
 					return FileSavingResult.Canceled;
@@ -519,6 +548,10 @@ namespace TombIDE.ScriptingStudio.Controls
 		public event EventHandler FileOpened;
 		protected virtual void OnFileOpened(EventArgs e)
 			=> FileOpened?.Invoke(CurrentEditor, e);
+
+		public event EventHandler<DocumentRenamedEventArgs> DocumentRenamed;
+		protected virtual void OnDocumentRenamed(DocumentRenamedEventArgs e)
+			=> DocumentRenamed?.Invoke(this, e);
 
 		protected override void OnTabClosing(TabControlCancelEventArgs e)
 		{
@@ -690,7 +723,17 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		public void RenameDocumentTabPage(string oldFilePath, string newFilePath)
 		{
-			IEnumerable<TabPage> tabPages = FindTabPagesOfFile(oldFilePath);
+			if (string.IsNullOrWhiteSpace(oldFilePath)
+				|| string.IsNullOrWhiteSpace(newFilePath)
+				|| oldFilePath.Equals(newFilePath, StringComparison.OrdinalIgnoreCase))
+			{
+				return;
+			}
+
+			List<TabPage> tabPages = FindTabPagesOfFile(oldFilePath).ToList();
+
+			if (tabPages.Count == 0)
+				return;
 
 			foreach (TabPage tab in tabPages)
 			{
@@ -699,6 +742,8 @@ namespace TombIDE.ScriptingStudio.Controls
 
 				UpdateTabPageName(editor);
 			}
+
+			OnDocumentRenamed(new DocumentRenamedEventArgs(oldFilePath, newFilePath));
 		}
 
 		private string BuildTabPageTitleText(string filePath, EditorType editorType)

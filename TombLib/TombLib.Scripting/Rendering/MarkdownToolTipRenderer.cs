@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,7 +45,7 @@ namespace TombLib.Scripting.Rendering
 			Uri.UriSchemeHttp,
 			Uri.UriSchemeHttps
 		};
-		private static readonly Lazy<IHighlightingDefinition> LuaHighlighting = new Lazy<IHighlightingDefinition>(LoadLuaHighlighting);
+		private static readonly Lazy<IHighlightingDefinition?> LuaHighlighting = new Lazy<IHighlightingDefinition?>(LoadLuaHighlighting);
 
 		public static FrameworkElement CreateContent(string content, Brush foreground, Brush background, bool allowScrolling = true)
 		{
@@ -252,7 +254,8 @@ namespace TombLib.Scripting.Rendering
 			{
 				Block nextBlock = currentBlock.NextBlock;
 
-				if (TryCreateReplacementBlock(currentBlock, fencedCodeBlocks, foreground, background, allowScrolling, out Block replacementBlock))
+				if (TryCreateReplacementBlock(currentBlock, fencedCodeBlocks, foreground, background, allowScrolling, out Block? replacementBlock)
+					&& replacementBlock is not null)
 				{
 					blocks.InsertBefore(currentBlock, replacementBlock);
 					blocks.Remove(currentBlock);
@@ -283,7 +286,7 @@ namespace TombLib.Scripting.Rendering
 			}
 		}
 
-		private static bool TryCreateReplacementBlock(Block block, IReadOnlyDictionary<string, CodeBlockInfo> fencedCodeBlocks, Brush foreground, Brush background, bool allowScrolling, out Block replacementBlock)
+		private static bool TryCreateReplacementBlock(Block block, IReadOnlyDictionary<string, CodeBlockInfo> fencedCodeBlocks, Brush foreground, Brush background, bool allowScrolling, out Block? replacementBlock)
 		{
 			replacementBlock = null;
 
@@ -293,7 +296,8 @@ namespace TombLib.Scripting.Rendering
 			string rawText = NormalizeLineEndings(new TextRange(paragraph.ContentStart, paragraph.ContentEnd).Text);
 			string normalizedText = rawText.Trim();
 
-			if (fencedCodeBlocks.TryGetValue(normalizedText, out CodeBlockInfo fencedCodeBlock))
+			if (fencedCodeBlocks.TryGetValue(normalizedText, out CodeBlockInfo? fencedCodeBlock)
+				&& fencedCodeBlock is not null)
 			{
 				replacementBlock = new BlockUIContainer(CreateCodeBlockElement(fencedCodeBlock.Language, fencedCodeBlock.Code, foreground, background, allowScrolling));
 				return true;
@@ -306,41 +310,10 @@ namespace TombLib.Scripting.Rendering
 			return true;
 		}
 
-		private static FrameworkElement CreateCodeBlockElement(string language, string code, Brush foreground, Brush background, bool allowScrolling)
+		private static FrameworkElement CreateCodeBlockElement(string? language, string code, Brush foreground, Brush background, bool allowScrolling)
 		{
-			string normalizedCode = NormalizeCodeBlockText(code);
-
-			var editor = new TextEditor
-			{
-				Text = normalizedCode,
-				IsReadOnly = true,
-				Background = Brushes.Transparent,
-				Foreground = foreground ?? DefaultForeground,
-				BorderThickness = new Thickness(0.0),
-				Margin = new Thickness(0.0),
-				Padding = new Thickness(0.0),
-				Width = ToolTipTextMaxWidth,
-				MaxWidth = ToolTipTextMaxWidth,
-				HorizontalAlignment = HorizontalAlignment.Stretch,
-				HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				FontFamily = CodeFontFamily,
-				FontSize = CodeFontSize,
-				ShowLineNumbers = false,
-				WordWrap = true
-			};
-
-			editor.Options.AllowScrollBelowDocument = false;
-			editor.Options.EnableHyperlinks = false;
-			editor.Options.EnableEmailHyperlinks = false;
-			editor.Options.HighlightCurrentLine = false;
-			editor.Options.ShowBoxForControlCharacters = false;
-			editor.TextArea.Margin = new Thickness(0.0);
-
-			if (!string.Equals(language?.Trim(), "lua", StringComparison.OrdinalIgnoreCase)
-				|| !LuaTextMateSyntaxHighlighting.TryInstall(editor, out _))
-			{
-				editor.SyntaxHighlighting = ResolveHighlighting(language);
-			}
+			TextEditor editor = CreateCodeBlockEditor(language, code, foreground ?? DefaultForeground);
+			string normalizedCode = editor.Text;
 
 			double lineHeight = GetEditorLineHeight(editor);
 			double maxVisibleHeight = Math.Max(lineHeight + 4.0, Math.Ceiling(MaxVisibleCodeBlockLines * lineHeight) + 2.0);
@@ -365,6 +338,53 @@ namespace TombLib.Scripting.Rendering
 				MaxWidth = ToolTipTextMaxWidth,
 				Child = editor
 			};
+		}
+
+		internal static TextEditor CreateCodeBlockEditor(string? language, string code, Brush foreground)
+		{
+			string normalizedCode = NormalizeCodeBlockText(code);
+
+			var editor = new TextEditor
+			{
+				Text = normalizedCode,
+				IsReadOnly = true,
+				Background = Brushes.Transparent,
+				Foreground = foreground ?? DefaultForeground,
+				BorderThickness = new Thickness(0.0),
+				Margin = new Thickness(0.0),
+				Padding = new Thickness(0.0),
+				Width = ToolTipTextMaxWidth,
+				MaxWidth = ToolTipTextMaxWidth,
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				FontFamily = CodeFontFamily,
+				FontSize = CodeFontSize,
+				ShowLineNumbers = false,
+				WordWrap = true,
+				Focusable = false,
+				IsTabStop = false
+			};
+
+			editor.Options.AllowScrollBelowDocument = false;
+			editor.Options.EnableHyperlinks = false;
+			editor.Options.EnableEmailHyperlinks = false;
+			editor.Options.HighlightCurrentLine = false;
+			editor.Options.ShowBoxForControlCharacters = false;
+			editor.TextArea.Margin = new Thickness(0.0);
+			editor.TextArea.Focusable = false;
+			editor.TextArea.IsTabStop = false;
+			KeyboardNavigation.SetIsTabStop(editor, false);
+			KeyboardNavigation.SetIsTabStop(editor.TextArea, false);
+
+			// Tooltip code-block editors are intentionally passive: they reuse TextMate highlighting when available,
+			// but do not own any unload-driven disposal hook because tooltip hosts can unload and reuse the same editor.
+			if (!string.Equals(language?.Trim(), "lua", StringComparison.OrdinalIgnoreCase)
+				|| !LuaTextMateSyntaxHighlighting.TryInstall(editor, out _))
+			{
+				editor.SyntaxHighlighting = ResolveHighlighting(language);
+			}
+
+			return editor;
 		}
 
 		private static double GetEditorLineHeight(TextEditor editor)
@@ -520,15 +540,15 @@ namespace TombLib.Scripting.Rendering
 
 		private static void HyperlinkHost_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			Hyperlink hyperlink = (e.OriginalSource as DependencyObject)?.FindAncestorOrSelf<Hyperlink>();
+			Hyperlink? hyperlink = (e.OriginalSource as DependencyObject)?.FindAncestorOrSelf<Hyperlink>();
 
 			if (hyperlink is not null && TryOpenHyperlink(hyperlink.NavigateUri))
 				e.Handled = true;
 		}
 
-		private static bool TryOpenHyperlink(Uri uri)
+		private static bool TryOpenHyperlink(Uri? uri)
 		{
-			if (!IsSupportedHyperlink(uri))
+			if (uri is null || !IsSupportedHyperlink(uri))
 				return false;
 
 			try
@@ -542,12 +562,12 @@ namespace TombLib.Scripting.Rendering
 			}
 		}
 
-		private static bool IsSupportedHyperlink(Uri uri)
+		private static bool IsSupportedHyperlink(Uri? uri)
 			=> uri is not null && uri.IsAbsoluteUri && SupportedHyperlinkSchemes.Contains(uri.Scheme);
 
 		private static void ScrollHost_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
 		{
-			ScrollViewer scrollViewer = sender as ScrollViewer ?? (sender as DependencyObject)?.FindVisualDescendant<ScrollViewer>();
+			ScrollViewer? scrollViewer = sender as ScrollViewer ?? (sender as DependencyObject)?.FindVisualDescendant<ScrollViewer>();
 
 			if (scrollViewer is null || scrollViewer.ScrollableHeight <= 0.0)
 				return;
@@ -565,7 +585,7 @@ namespace TombLib.Scripting.Rendering
 				.Replace("\r\n", "\n", StringComparison.Ordinal)
 				.Replace('\r', '\n');
 
-		private static IHighlightingDefinition ResolveHighlighting(string language)
+		private static IHighlightingDefinition? ResolveHighlighting(string? language)
 		{
 			if (string.IsNullOrWhiteSpace(language))
 				return null;
@@ -575,7 +595,7 @@ namespace TombLib.Scripting.Rendering
 			if (normalizedLanguage == "lua")
 				return LuaHighlighting.Value;
 
-			IHighlightingDefinition definition = HighlightingManager.Instance.GetDefinition(normalizedLanguage);
+			IHighlightingDefinition? definition = HighlightingManager.Instance.GetDefinition(normalizedLanguage);
 
 			if (definition is not null)
 				return definition;
@@ -598,7 +618,7 @@ namespace TombLib.Scripting.Rendering
 			};
 		}
 
-		private static IHighlightingDefinition LoadLuaHighlighting()
+		private static IHighlightingDefinition? LoadLuaHighlighting()
 		{
 			string xmlFilePath = Path.Combine(AppContext.BaseDirectory, "Configs", "TextEditors", "ColorSchemes", "Lua", "Default.xml");
 

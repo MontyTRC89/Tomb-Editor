@@ -20,7 +20,8 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-	private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(10);
+	private static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(10);
+	private const int DefaultRequestTimeoutRestartThreshold = 2;
 	private const int HardStartupFailureThreshold = 3;
 
 	private readonly string _workspaceApiDirectoryPath;
@@ -28,15 +29,22 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 	private readonly ILuaLanguageServerClient? _client;
 	private readonly LuaIntellisenseDocumentManager _documents = new();
 	private readonly object _documentOperationSyncRoot = new();
+	private readonly object _requestTimeoutSyncRoot = new();
 	private readonly ConcurrentDictionary<string, CancellationTokenSource> _semanticTokenRequests = new(StringComparer.OrdinalIgnoreCase);
 	private readonly SemaphoreSlim _startLock = new(1, 1);
+	private readonly TimeSpan _requestTimeout;
+	private readonly int _requestTimeoutRestartThreshold;
 	private LuaWorkspaceFileWatcher? _workspaceFileWatcher;
 	private Task _queuedDocumentOperation = Task.CompletedTask;
 
 	private bool _startupSucceeded;
 	private int _consecutiveStartupFailures;
+	private int _consecutiveRequestTimeouts;
+	private long _timedOutRequestGeneration = -1;
+	private long _restartRequestedGeneration = -1;
 	private bool _permanentStartupFailureReported;
 	private bool _transientStartupFailureReported;
+	private int _workspaceWatcherFailureReported;
 	private volatile bool _isDisposed;
 
 	/// <summary>
@@ -61,19 +69,30 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 	public event Action<LuaLanguageServerStartupFailure>? StartupFailed;
 
 	/// <summary>
+	/// Occurs when the external workspace watcher becomes unavailable for the rest of the session.
+	/// </summary>
+	public event Action<LuaWorkspaceWatcherFailure>? WorkspaceWatcherFailed;
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="LuaLanguageServerIntellisenseProvider"/> class.
 	/// </summary>
 	/// <param name="workspaceRootDirectoryPath">The root directory of the current Lua script workspace.</param>
 	/// <param name="serverExecutablePath">The LuaLS executable path, or <see langword="null"/> when unavailable.</param>
 	public LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, string? serverExecutablePath)
-		: this(workspaceRootDirectoryPath, CreateClient(workspaceRootDirectoryPath, serverExecutablePath))
+		: this(workspaceRootDirectoryPath,
+			CreateClient(workspaceRootDirectoryPath, serverExecutablePath),
+			DefaultRequestTimeout,
+			DefaultRequestTimeoutRestartThreshold)
 	{ }
 
-	internal LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, ILuaLanguageServerClient? client)
+	internal LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, ILuaLanguageServerClient? client,
+		TimeSpan? requestTimeout = null, int requestTimeoutRestartThreshold = DefaultRequestTimeoutRestartThreshold)
 	{
 		_workspaceRootDirectoryPath = LuaLanguageServerPathHelper.NormalizeLocalPath(workspaceRootDirectoryPath);
 		_workspaceApiDirectoryPath = Path.Combine(_workspaceRootDirectoryPath, ".API");
 		_client = client;
+		_requestTimeout = requestTimeout ?? DefaultRequestTimeout;
+		_requestTimeoutRestartThreshold = Math.Max(1, requestTimeoutRestartThreshold);
 
 		if (_client is not null)
 		{
@@ -159,6 +178,11 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		if (_client is null || _consecutiveStartupFailures >= HardStartupFailureThreshold)
 			return false;
 
+		bool shieldCancellationForRestart = _startupSucceeded && !_client.IsReady;
+		CancellationToken startupCancellationToken = shieldCancellationForRestart
+			? CancellationToken.None
+			: cancellationToken;
+
 		// Fast path: once the client is healthy, keep the workspace watcher alive and avoid taking the startup lock.
 		if (_startupSucceeded && _client.IsReady)
 		{
@@ -166,7 +190,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 			return true;
 		}
 
-		await _startLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+		await _startLock.WaitAsync(startupCancellationToken).ConfigureAwait(false);
 
 		try
 		{
@@ -189,11 +213,11 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 			}
 
 			// Start the transport, then replay tracked documents when this is a restart rather than a cold start.
-			_startupSucceeded = await _client.StartAsync(cancellationToken).ConfigureAwait(false);
+			_startupSucceeded = await _client.StartAsync(startupCancellationToken).ConfigureAwait(false);
 
 			if (_startupSucceeded && documentsToReopen.Count > 0)
 			{
-				_startupSucceeded = await ReopenTrackedDocumentsAsync(documentsToReopen, cancellationToken).ConfigureAwait(false);
+				_startupSucceeded = await ReopenTrackedDocumentsAsync(documentsToReopen, startupCancellationToken).ConfigureAwait(false);
 
 				if (!_startupSucceeded)
 					Log.Warn("Failed to replay tracked documents after Lua language server restart.");
@@ -202,6 +226,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 			if (_startupSucceeded)
 			{
 				_consecutiveStartupFailures = 0;
+				ResetRequestTimeoutTracking(_client.TransportGeneration);
 				_transientStartupFailureReported = false;
 				_permanentStartupFailureReported = false;
 				EnsureWorkspaceFileWatcherStarted();
@@ -239,7 +264,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 		if (_workspaceFileWatcher is not null || _client is null || string.IsNullOrEmpty(_workspaceRootDirectoryPath))
 			return;
 
-		var watcher = new LuaWorkspaceFileWatcher(_workspaceRootDirectoryPath, DispatchWorkspaceFileChangesAsync);
+		var watcher = new LuaWorkspaceFileWatcher(_workspaceRootDirectoryPath, DispatchWorkspaceFileChangesAsync, HandleWorkspaceWatcherFailed);
 
 		if (!watcher.Start())
 			return;
@@ -334,13 +359,62 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntell
 				"The bundled Lua language server failed to start. Lua IntelliSense will remain unavailable until TombIDE can start the server successfully. TombIDE will retry automatically when Lua IntelliSense is requested again.",
 				false);
 
-		try
+		RaiseStartupFailed(failure);
+	}
+
+	private void HandleWorkspaceWatcherFailed(Exception? exception)
+	{
+		if (_isDisposed || Interlocked.Exchange(ref _workspaceWatcherFailureReported, 1) != 0)
+			return;
+
+		Log.Warn(exception,
+			"Lua workspace watching is disabled for '{Workspace}'. Open editors will keep working, but external Lua workspace changes will not be forwarded until TombIDE is restarted.",
+			_workspaceRootDirectoryPath);
+
+		RaiseWorkspaceWatcherFailed(new LuaWorkspaceWatcherFailure(
+			"The Lua workspace file watcher encountered an internal error and has been disabled for this session.\n\n" +
+			"Lua IntelliSense will continue to work for files edited inside TombIDE, but external workspace changes - such as Git pull updates, generated .API files, or .luarc changes - will no longer be forwarded until TombIDE is restarted."));
+	}
+
+	private void RaiseDiagnosticsUpdated(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics)
+		=> InvokeSubscribersSafely(
+			DiagnosticsUpdated,
+			handler => ((Action<string, IReadOnlyList<TextEditorDiagnostic>>)handler)(filePath, diagnostics),
+			"Lua diagnostics subscriber");
+
+	private void RaiseSemanticTokensUpdated(string filePath, IReadOnlyList<LuaSemanticToken> semanticTokens)
+		=> InvokeSubscribersSafely(
+			SemanticTokensUpdated,
+			handler => ((Action<string, IReadOnlyList<LuaSemanticToken>>)handler)(filePath, semanticTokens),
+			"Lua semantic-token subscriber");
+
+	private void RaiseStartupFailed(LuaLanguageServerStartupFailure failure)
+		=> InvokeSubscribersSafely(
+			StartupFailed,
+			handler => ((Action<LuaLanguageServerStartupFailure>)handler)(failure),
+			"Lua IntelliSense startup-failure subscriber");
+
+	private void RaiseWorkspaceWatcherFailed(LuaWorkspaceWatcherFailure failure)
+		=> InvokeSubscribersSafely(
+			WorkspaceWatcherFailed,
+			handler => ((Action<LuaWorkspaceWatcherFailure>)handler)(failure),
+			"Lua workspace-watcher subscriber");
+
+	private void InvokeSubscribersSafely(Delegate? handlers, Action<Delegate> invoke, string subscriberDescription)
+	{
+		if (handlers is null)
+			return;
+
+		foreach (Delegate handler in handlers.GetInvocationList())
 		{
-			StartupFailed?.Invoke(failure);
-		}
-		catch (Exception exception)
-		{
-			Log.Debug(exception, "Lua IntelliSense startup-failure notification handler threw.");
+			try
+			{
+				invoke(handler);
+			}
+			catch (Exception exception)
+			{
+				Log.Warn(exception, "{SubscriberDescription} threw; later subscribers will still be notified.", subscriberDescription);
+			}
 		}
 	}
 

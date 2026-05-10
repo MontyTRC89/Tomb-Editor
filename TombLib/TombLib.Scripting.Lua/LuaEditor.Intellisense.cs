@@ -16,8 +16,10 @@ public sealed partial class LuaEditor
 	{
 		InitializeCompletionScheduling();
 
+		Document.Changed += LuaEditor_DocumentChanged;
 		IsKeyboardFocusWithinChanged += LuaEditor_IsKeyboardFocusWithinChanged;
 		Loaded += LuaEditor_Loaded;
+		TextChanged += LuaEditor_TextChanged;
 		TextArea.TextEntering += TextArea_TextEntering;
 		TextArea.TextEntered += TextArea_TextEntered;
 		AddHandler(PreviewKeyDownEvent, new KeyEventHandler(TextEditor_KeyDown), true);
@@ -28,6 +30,15 @@ public sealed partial class LuaEditor
 
 	private void LuaEditor_Loaded(object? sender, RoutedEventArgs e)
 		=> AttachHostWindowHandlers();
+
+	private void LuaEditor_DocumentChanged(object? sender, DocumentChangeEventArgs e)
+		=> ClearDiagnostics();
+
+	private void LuaEditor_TextChanged(object? sender, EventArgs e)
+	{
+		_editorDocumentVersion++;
+		RebaseOpenCompletionItems();
+	}
 
 	private void LuaEditor_IsKeyboardFocusWithinChanged(object? sender, DependencyPropertyChangedEventArgs e)
 	{
@@ -64,14 +75,14 @@ public sealed partial class LuaEditor
 	{
 		_textMateHighlighting?.Dispose();
 		_textMateHighlighting = null;
+		InvalidateAsyncEditorRequests();
 
 		CancelPendingCompletionRequest();
 		CancelAndDispose(ref _hoverCancellationTokenSource);
-		CancelAndDispose(ref _completionCancellationTokenSource);
 
 		CancelCompletionToolTipUpdate();
 
-		CancelAndDispose(ref _signatureCancellationTokenSource);
+		CancelAndDispose(ref _definitionCancellationTokenSource);
 		CloseCompletionWindow();
 
 		if (_hostWindow is not null)
@@ -110,6 +121,7 @@ public sealed partial class LuaEditor
 		{
 			CancelPendingCompletionRequest();
 			CloseCompletionWindow();
+			CancelPendingSignatureHelpRefresh();
 			await RequestSignatureHelpAsync(CaretOffset).ConfigureAwait(true);
 			return;
 		}
@@ -136,6 +148,9 @@ public sealed partial class LuaEditor
 				return;
 			}
 		}
+
+		if (ShouldRefreshSignatureHelpAfterTextInput(e.Text))
+			ScheduleSignatureHelpRefresh();
 
 		if (!AutocompleteEnabled)
 			return;
@@ -216,4 +231,68 @@ public sealed partial class LuaEditor
 
 	private static void LogEditorFailure(string area, Exception exception)
 		=> Log.Warn(exception, "Lua editor operation '{Area}' failed.", area);
+
+	protected override void OnAutoClosingElementSkipped(string element)
+	{
+		if (!ShouldDismissSignatureHelpOnAutoClosingSkip(element, ParenthesesClosingString))
+			return;
+
+		CancelPendingCompletionRequest();
+		CloseCompletionWindow();
+		DismissSignatureHelp();
+	}
+
+	private void InvalidateAsyncEditorRequests()
+	{
+		_editorRequestGeneration++;
+		_completionRequestToken++;
+		_hoverRequestToken++;
+		_signatureRequestToken++;
+		_definitionRequestToken++;
+	}
+
+	private bool IsAsyncEditorResultCurrent(CancellationToken cancellationToken,
+		int requestToken,
+		int currentRequestToken,
+		int requestDocumentVersion,
+		int requestGeneration)
+	{
+		return IsAsyncEditorResultCurrent(
+			cancellationToken.IsCancellationRequested,
+			requestToken,
+			currentRequestToken,
+			requestDocumentVersion,
+			_editorDocumentVersion,
+			requestGeneration,
+			_editorRequestGeneration,
+			IsLoaded,
+			IsIntellisenseAvailable());
+	}
+
+	private static bool IsAsyncEditorResultCurrent(bool isCancellationRequested,
+		int requestToken,
+		int currentRequestToken,
+		int requestDocumentVersion,
+		int currentDocumentVersion,
+		int requestGeneration,
+		int currentGeneration,
+		bool isEditorLoaded,
+		bool isIntellisenseAvailable)
+	{
+		return !isCancellationRequested
+			&& requestToken == currentRequestToken
+			&& requestDocumentVersion == currentDocumentVersion
+			&& requestGeneration == currentGeneration
+			&& isEditorLoaded
+			&& isIntellisenseAvailable;
+	}
+
+	private bool ShouldRefreshSignatureHelpAfterTextInput(string? inputText)
+		=> ShouldRefreshSignatureHelpAfterTextInput(inputText, _signaturePopup.IsOpen || _signatureRequestInFlight || _signatureRefreshPending);
+
+	private static bool ShouldRefreshSignatureHelpAfterTextInput(string? inputText, bool isSignatureHelpActiveOrPending)
+		=> isSignatureHelpActiveOrPending && inputText?.Length == 1;
+
+	private static bool ShouldDismissSignatureHelpOnAutoClosingSkip(string element, string parenthesesClosingString)
+		=> string.Equals(element, parenthesesClosingString, StringComparison.Ordinal);
 }

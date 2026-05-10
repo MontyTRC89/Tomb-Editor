@@ -111,6 +111,56 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 		CancelSemanticTokenRequest(filePath);
 	}
 
+	public void RenameDocument(string oldFilePath, string newFilePath, string content)
+		=> ObserveBackgroundTask(TryRenameDocumentAsync(oldFilePath, newFilePath, content, CancellationToken.None), "Document rename");
+
+	private Task<bool> TryRenameDocumentAsync(string oldFilePath, string newFilePath, string content, CancellationToken cancellationToken)
+	{
+		if (!LuaLanguageServerPathHelper.TryNormalizeLocalPath(oldFilePath, out string normalizedOldFilePath)
+			|| !LuaLanguageServerPathHelper.TryNormalizeLocalPath(newFilePath, out string normalizedNewFilePath)
+			|| string.Equals(normalizedOldFilePath, normalizedNewFilePath, StringComparison.OrdinalIgnoreCase))
+		{
+			return Task.FromResult(false);
+		}
+
+		return RenameDocumentAsync(normalizedOldFilePath, normalizedNewFilePath, content, cancellationToken);
+	}
+
+	private async Task<bool> RenameDocumentAsync(string oldFilePath, string newFilePath, string content, CancellationToken cancellationToken)
+	{
+		if (_isDisposed || _client is null)
+			return false;
+
+		try
+		{
+			LuaDocumentRenameRequest? request = await EnqueueDocumentOperationAsync(
+				token => RenameDocumentCoreAsync(oldFilePath, newFilePath, content, token),
+				cancellationToken).ConfigureAwait(false);
+
+			if (request is not { } renameRequest)
+				return false;
+
+			PublishTrackedDocumentState(renameRequest.RenamedDocument.FilePath);
+			return true;
+		}
+		catch (OperationCanceledException)
+		{
+			throw;
+		}
+		catch (IOException)
+		{
+			InvalidateDocumentSynchronization(newFilePath);
+			return false;
+		}
+		catch (ObjectDisposedException)
+		{
+			if (!_isDisposed)
+				InvalidateDocumentSynchronization(newFilePath);
+
+			return false;
+		}
+	}
+
 	private async Task<(bool Success, LuaDocumentSnapshot? Document)> SynchronizeDocumentCoreAsync(
 		string filePath,
 		string content,
@@ -127,6 +177,46 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 
 		await SendDocumentSynchronizationNotificationAsync(pendingRequest, cancellationToken).ConfigureAwait(false);
 		return (true, pendingRequest.Document);
+	}
+
+	private async Task<LuaDocumentRenameRequest?> RenameDocumentCoreAsync(
+		string oldFilePath,
+		string newFilePath,
+		string content,
+		CancellationToken cancellationToken)
+	{
+		if (_client is null)
+			return null;
+
+		LuaDocumentRenameRequest? request = _documents.Rename(oldFilePath, newFilePath, content);
+
+		if (request is not { } renameRequest)
+			return null;
+
+		CancelSemanticTokenRequest(oldFilePath);
+		CancelSemanticTokenRequest(newFilePath);
+
+		if (!renameRequest.ReopenServerDocument)
+			return renameRequest;
+
+		if (!_startupSucceeded || !_client.IsReady)
+		{
+			_documents.InvalidateServerSynchronization(newFilePath);
+			return renameRequest;
+		}
+
+		if (renameRequest.PreviousDocument is not null)
+		{
+			await _client.SendNotificationAsync("textDocument/didClose",
+				new { textDocument = new { uri = renameRequest.PreviousDocument.Uri } },
+				cancellationToken).ConfigureAwait(false);
+		}
+
+		await SendDocumentSynchronizationNotificationAsync(
+			new LuaDocumentSynchronizationRequest(LuaDocumentSynchronizationKind.Open, renameRequest.RenamedDocument),
+			cancellationToken).ConfigureAwait(false);
+
+		return renameRequest;
 	}
 
 	private async Task<bool> ReopenTrackedDocumentsAsync(IReadOnlyList<LuaDocumentSnapshot> documents, CancellationToken cancellationToken)
@@ -268,7 +358,13 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 		if (!_documents.TryStoreDiagnostics(publishedDiagnostics))
 			return;
 
-		DiagnosticsUpdated?.Invoke(publishedDiagnostics.FilePath, publishedDiagnostics.Diagnostics);
+		RaiseDiagnosticsUpdated(publishedDiagnostics.FilePath, publishedDiagnostics.Diagnostics);
+	}
+
+	private void PublishTrackedDocumentState(string filePath)
+	{
+		RaiseDiagnosticsUpdated(filePath, _documents.GetDiagnostics(filePath));
+		RaiseSemanticTokensUpdated(filePath, _documents.GetSemanticTokens(filePath));
 	}
 
 	private static void ObserveBackgroundTask(Task task, string operation)

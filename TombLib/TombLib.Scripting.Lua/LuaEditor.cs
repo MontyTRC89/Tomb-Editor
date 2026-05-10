@@ -5,6 +5,7 @@ using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Lua.Resources;
 using TombLib.Scripting.Lua.Services;
+using TombLib.Scripting.Lua.Utils;
 
 namespace TombLib.Scripting.Lua;
 
@@ -22,6 +23,8 @@ public sealed partial class LuaEditor : TextEditorBase
 
 	private LuaTextMateInstallation? _textMateHighlighting;
 	private LuaThemeBrushSet? _themeBrushSet;
+	private int _editorDocumentVersion;
+	private int _editorRequestGeneration;
 
 	/// <summary>
 	/// Gets or sets the IntelliSense provider used to supply completions, hover text, diagnostics, and navigation results.
@@ -40,6 +43,7 @@ public sealed partial class LuaEditor : TextEditorBase
 	public LuaEditor(Version engineVersion) : base(engineVersion)
 	{
 		CommentPrefix = "--";
+		TextArea.IndentationStrategy = new LuaAutoIndentationStrategy(Options);
 		InitializeSignaturePopup();
 		BindLuaIntellisenseEvents();
 	}
@@ -57,7 +61,9 @@ public sealed partial class LuaEditor : TextEditorBase
 		_textMateHighlighting = null;
 
 		LuaTextMateSyntaxHighlighting.TryInstall(this, theme.TextMateTheme, out _textMateHighlighting);
-		SyntaxHighlighting = null;
+		SyntaxHighlighting = _textMateHighlighting is null
+			? LuaTextMateSyntaxHighlighting.LoadFallbackHighlighting()
+			: null;
 
 		EnsureSemanticTokensColorizerAttached();
 

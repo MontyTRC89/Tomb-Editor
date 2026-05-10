@@ -15,7 +15,7 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 
 internal sealed partial class LuaLanguageServerClient
 {
-	private async Task ReadLoopAsync()
+	private async Task ReadLoopAsync(LuaLanguageServerTransportSession session)
 	{
 		Exception? failure = null;
 
@@ -23,18 +23,18 @@ internal sealed partial class LuaLanguageServerClient
 		{
 			while (!_isDisposed)
 			{
-				int? contentLengthValue = await ReadHeadersAsync().ConfigureAwait(false);
+				int? contentLengthValue = await ReadHeadersAsync(session).ConfigureAwait(false);
 
 				if (contentLengthValue is null || !TryAcceptPayloadSize(contentLengthValue.Value, out int contentLength))
 					break;
 
-				byte[]? payloadBytes = await ReadPayloadAsync(contentLength).ConfigureAwait(false);
+				byte[]? payloadBytes = await ReadPayloadAsync(session, contentLength).ConfigureAwait(false);
 
 				if (payloadBytes is null)
 					break;
 
 				using JsonDocument document = JsonDocument.Parse(payloadBytes);
-				await HandleMessageAsync(document.RootElement).ConfigureAwait(false);
+				await HandleMessageAsync(session, document.RootElement).ConfigureAwait(false);
 			}
 		}
 		catch (Exception exception)
@@ -43,20 +43,21 @@ internal sealed partial class LuaLanguageServerClient
 		}
 		finally
 		{
-			IsReady = false;
+			if (IsCurrentSession(session))
+				IsReady = false;
 
-			if (!_pendingRequests.IsEmpty)
-				FailPendingRequests(failure ?? new IOException("The Lua language server connection was closed."));
+			if (!session.PendingRequests.IsEmpty)
+				FailPendingRequests(session, failure ?? new IOException("The Lua language server connection was closed."));
 		}
 	}
 
-	private async Task ReadStandardErrorLoopAsync()
+	private async Task ReadStandardErrorLoopAsync(LuaLanguageServerTransportSession session)
 	{
 		try
 		{
 			while (!_isDisposed)
 			{
-				Process? process = _process;
+				Process? process = session.Process;
 
 				if (process is null || process.HasExited)
 					break;
@@ -78,24 +79,24 @@ internal sealed partial class LuaLanguageServerClient
 		}
 	}
 
-	private async Task<int?> ReadHeadersAsync()
+	private async Task<int?> ReadHeadersAsync(LuaLanguageServerTransportSession session)
 	{
 		while (true)
 		{
-			int headerTerminatorIndex = FindHeaderTerminatorIndex();
+			int headerTerminatorIndex = FindHeaderTerminatorIndex(session);
 
 			if (headerTerminatorIndex >= 0)
-				return ConsumeHeaders(headerTerminatorIndex);
+				return ConsumeHeaders(session, headerTerminatorIndex);
 
-			if (!await ReadIntoReceiveBufferAsync().ConfigureAwait(false))
+			if (!await ReadIntoReceiveBufferAsync(session).ConfigureAwait(false))
 				return null;
 		}
 	}
 
-	private int? ConsumeHeaders(int headerTerminatorIndex)
+	private int? ConsumeHeaders(LuaLanguageServerTransportSession session, int headerTerminatorIndex)
 	{
-		string headerText = Encoding.ASCII.GetString(_receiveBuffer, 0, headerTerminatorIndex);
-		ConsumeReceiveBuffer(headerTerminatorIndex + HeaderTerminator.Length);
+		string headerText = Encoding.ASCII.GetString(session.ReceiveBuffer, 0, headerTerminatorIndex);
+		ConsumeReceiveBuffer(session, headerTerminatorIndex + HeaderTerminator.Length);
 		return ExtractContentLength(headerText);
 	}
 
@@ -124,85 +125,79 @@ internal sealed partial class LuaLanguageServerClient
 		return null;
 	}
 
-	private int FindHeaderTerminatorIndex()
-		=> new ReadOnlySpan<byte>(_receiveBuffer, 0, _receiveBufferCount).IndexOf(HeaderTerminator);
+	private int FindHeaderTerminatorIndex(LuaLanguageServerTransportSession session)
+		=> new ReadOnlySpan<byte>(session.ReceiveBuffer, 0, session.ReceiveBufferCount).IndexOf(HeaderTerminator);
 
-	private async Task<bool> ReadIntoReceiveBufferAsync()
+	private async Task<bool> ReadIntoReceiveBufferAsync(LuaLanguageServerTransportSession session)
 	{
-		if (_inputStream is null)
-			return false;
+		EnsureReceiveBufferCapacity(session, session.ReceiveBufferCount + ReceiveChunkSize);
 
-		EnsureReceiveBufferCapacity(_receiveBufferCount + ReceiveChunkSize);
-
-		int bytesAvailable = _receiveBuffer.Length - _receiveBufferCount;
-		int bytesRead = await _inputStream
-			.ReadAsync(_receiveBuffer.AsMemory(_receiveBufferCount, bytesAvailable), _lifetimeCts.Token)
+		int bytesAvailable = session.ReceiveBuffer.Length - session.ReceiveBufferCount;
+		int bytesRead = await session.InputStream
+			.ReadAsync(session.ReceiveBuffer.AsMemory(session.ReceiveBufferCount, bytesAvailable), _lifetimeCts.Token)
 			.ConfigureAwait(false);
 
 		if (bytesRead == 0)
 			return false;
 
-		_receiveBufferCount += bytesRead;
+		session.ReceiveBufferCount += bytesRead;
 		return true;
 	}
 
-	private void EnsureReceiveBufferCapacity(int requiredCapacity)
+	private void EnsureReceiveBufferCapacity(LuaLanguageServerTransportSession session, int requiredCapacity)
 	{
-		if (_receiveBuffer.Length >= requiredCapacity)
+		if (session.ReceiveBuffer.Length >= requiredCapacity)
 			return;
 
-		int newCapacity = Math.Max(ReceiveChunkSize, _receiveBuffer.Length);
+		int newCapacity = Math.Max(ReceiveChunkSize, session.ReceiveBuffer.Length);
 
 		while (newCapacity < requiredCapacity)
 			newCapacity *= 2;
 
 		byte[] newBuffer = ArrayPool<byte>.Shared.Rent(newCapacity);
 
-		if (_receiveBufferCount > 0)
-			Buffer.BlockCopy(_receiveBuffer, 0, newBuffer, 0, _receiveBufferCount);
+		if (session.ReceiveBufferCount > 0)
+			Buffer.BlockCopy(session.ReceiveBuffer, 0, newBuffer, 0, session.ReceiveBufferCount);
 
-		ReturnReceiveBuffer();
-		_receiveBuffer = newBuffer;
+		ReturnReceiveBuffer(session);
+		session.ReceiveBuffer = newBuffer;
 	}
 
-	private void ReturnReceiveBuffer()
+	private void ReturnReceiveBuffer(LuaLanguageServerTransportSession session)
 	{
-		if (_receiveBuffer.Length == 0)
+		if (session.ReceiveBuffer.Length == 0)
 			return;
 
-		ArrayPool<byte>.Shared.Return(_receiveBuffer, clearArray: false);
-		_receiveBuffer = [];
+		ArrayPool<byte>.Shared.Return(session.ReceiveBuffer, clearArray: false);
+		session.ReceiveBuffer = [];
 	}
 
-	private void ConsumeReceiveBuffer(int bytesToConsume)
+	private void ConsumeReceiveBuffer(LuaLanguageServerTransportSession session, int bytesToConsume)
 	{
-		int remainingBytes = _receiveBufferCount - bytesToConsume;
+		int remainingBytes = session.ReceiveBufferCount - bytesToConsume;
 
 		if (remainingBytes > 0)
-			Buffer.BlockCopy(_receiveBuffer, bytesToConsume, _receiveBuffer, 0, remainingBytes);
+			Buffer.BlockCopy(session.ReceiveBuffer, bytesToConsume, session.ReceiveBuffer, 0, remainingBytes);
 
-		_receiveBufferCount = Math.Max(0, remainingBytes);
+		session.ReceiveBufferCount = Math.Max(0, remainingBytes);
 	}
 
-	private async Task<byte[]?> ReadPayloadAsync(int contentLength)
+	private async Task<byte[]?> ReadPayloadAsync(LuaLanguageServerTransportSession session, int contentLength)
 	{
-		if (_inputStream is null)
-			return null;
-
 		byte[] payloadBytes = new byte[contentLength];
 		int totalBytesRead = 0;
 
-		if (_receiveBufferCount > 0)
+		if (session.ReceiveBufferCount > 0)
 		{
-			int bufferedBytesToCopy = Math.Min(contentLength, _receiveBufferCount);
-			Buffer.BlockCopy(_receiveBuffer, 0, payloadBytes, 0, bufferedBytesToCopy);
-			ConsumeReceiveBuffer(bufferedBytesToCopy);
+			int bufferedBytesToCopy = Math.Min(contentLength, session.ReceiveBufferCount);
+			Buffer.BlockCopy(session.ReceiveBuffer, 0, payloadBytes, 0, bufferedBytesToCopy);
+			ConsumeReceiveBuffer(session, bufferedBytesToCopy);
 			totalBytesRead = bufferedBytesToCopy;
 		}
 
 		while (totalBytesRead < contentLength)
 		{
-			int bytesRead = await _inputStream
+			int bytesRead = await session.InputStream
 				.ReadAsync(payloadBytes.AsMemory(totalBytesRead, contentLength - totalBytesRead), _lifetimeCts.Token)
 				.ConfigureAwait(false);
 
@@ -215,14 +210,14 @@ internal sealed partial class LuaLanguageServerClient
 		return payloadBytes;
 	}
 
-	private async Task HandleMessageAsync(JsonElement message)
+	private async Task HandleMessageAsync(LuaLanguageServerTransportSession session, JsonElement message)
 	{
 		bool hasId = message.TryGetProperty("id", out JsonElement idElement);
 		bool hasMethod = message.TryGetProperty("method", out JsonElement methodElement);
 
 		if (hasId && !hasMethod)
 		{
-			HandleServerResponse(idElement, message);
+			HandleServerResponse(session, idElement, message);
 			return;
 		}
 
@@ -239,17 +234,17 @@ internal sealed partial class LuaLanguageServerClient
 			: default;
 
 		if (hasId)
-			await HandleServerRequestAsync(idElement.Clone(), method, parameters).ConfigureAwait(false);
+			await HandleServerRequestAsync(session, idElement.Clone(), method, parameters).ConfigureAwait(false);
 		else
 			HandleServerNotification(method, parameters);
 	}
 
-	private void HandleServerResponse(JsonElement idElement, JsonElement message)
+	private void HandleServerResponse(LuaLanguageServerTransportSession session, JsonElement idElement, JsonElement message)
 	{
 		if (!idElement.TryGetInt64(out long requestId))
 			return;
 
-		if (!_pendingRequests.TryGetValue(requestId, out TaskCompletionSource<JsonElement>? responseSource))
+		if (!session.PendingRequests.TryGetValue(requestId, out TaskCompletionSource<JsonElement>? responseSource))
 		{
 			Log.Debug("Received Lua language server response with no matching pending request (id={RequestId}).", requestId);
 			return;

@@ -32,7 +32,6 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 	private readonly SemaphoreSlim _startLock = new(1, 1);
 	private readonly SemaphoreSlim _writeLock = new(1, 1);
 	private readonly CancellationTokenSource _lifetimeCts = new();
-	private readonly ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> _pendingRequests = new();
 	private readonly ConcurrentDictionary<string, JsonElement> _pendingDiagnostics = new(StringComparer.OrdinalIgnoreCase);
 
 	// Diagnostics arrive on the LSP read loop and are stored as the latest payload per file URI.
@@ -65,16 +64,12 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 
 	private long _requestId;
 	private long _diagnosticsFallbackSequence;
+	private long _transportGeneration;
+	private long _activeTransportGeneration;
 	private volatile bool _isDisposed;
 	private volatile bool _isReady;
 
-	private Process? _process;
-	private Stream? _inputStream;
-	private Stream? _outputStream;
-	private byte[] _receiveBuffer = [];
-	private int _receiveBufferCount;
-	private Task? _readLoopTask;
-	private Task? _stderrLoopTask;
+	private LuaLanguageServerTransportSession? _activeSession;
 	private LuaTextDocumentSyncKind _textDocumentSyncKind = LuaTextDocumentSyncKind.Incremental;
 	private string[] _semanticTokenTypes = [];
 	private string[] _semanticTokenModifiers = [];
@@ -89,6 +84,11 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		get => _isReady;
 		private set => _isReady = value;
 	}
+
+	/// <summary>
+	/// Gets the current transport generation for the active server session.
+	/// </summary>
+	public long TransportGeneration => Volatile.Read(ref _activeTransportGeneration);
 
 	/// <summary>
 	/// Gets the text-document synchronization mode negotiated with the server.
@@ -155,9 +155,12 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 			if (IsReady)
 				return true;
 
-			// Reset any stale transport state, then spawn the LuaLS process and attach the read loops.
 			ThrowIfDisposed(allowDisposed: false);
-			ResetProcessState();
+
+			LuaLanguageServerTransportSession? previousSession = DetachActiveSession();
+
+			if (previousSession is not null)
+				await DisposeSessionAsync(previousSession).ConfigureAwait(false);
 
 			var startInfo = new ProcessStartInfo
 			{
@@ -170,40 +173,45 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 				RedirectStandardError = true
 			};
 
-			_process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
-			_process.Exited += Process_Exited;
+			var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
 
-			if (!_process.Start())
+			if (!process.Start())
+			{
+				process.Dispose();
 				return false;
+			}
 
 			if (OperatingSystem.IsWindows())
-				LuaProcessJobObject.TryAssignProcess(_process);
+				LuaProcessJobObject.TryAssignProcess(process);
 
-			_inputStream = _process.StandardOutput.BaseStream;
-			_outputStream = _process.StandardInput.BaseStream;
-
-			_readLoopTask = Task.Run(ReadLoopAsync, CancellationToken.None);
-			_stderrLoopTask = Task.Run(ReadStandardErrorLoopAsync, CancellationToken.None);
+			LuaLanguageServerTransportSession session = CreateTransportSession(process);
+			SetActiveSession(session);
 			_diagnosticsPumpTask ??= Task.Run(PumpDiagnosticsAsync, CancellationToken.None);
 
 			// Complete the LSP handshake before marking the client ready for provider requests.
 			using var initializeTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 			initializeTimeout.CancelAfter(TimeSpan.FromSeconds(10));
 
-			JsonElement initializeResponse = await SendRequestAsync("initialize", BuildInitializeParams(), initializeTimeout.Token).ConfigureAwait(false);
+			JsonElement initializeResponse = await SendRequestCoreAsync(session,
+				"initialize", BuildInitializeParams(), initializeTimeout.Token, allowDisposed: false).ConfigureAwait(false);
 			CaptureServerCapabilities(initializeResponse);
 
 			IsReady = true;
 
-			await SendNotificationAsync("initialized", new { }, cancellationToken).ConfigureAwait(false);
-			await SendNotificationAsync("workspace/didChangeConfiguration", new { settings = _settingsProvider() }, cancellationToken).ConfigureAwait(false);
+			await SendNotificationCoreAsync(session, "initialized", new { }, cancellationToken, allowDisposed: false).ConfigureAwait(false);
+
+			await SendNotificationCoreAsync(session,
+				"workspace/didChangeConfiguration",
+				new { settings = _settingsProvider() },
+				cancellationToken,
+				allowDisposed: false).ConfigureAwait(false);
 
 			return true;
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 		{
 			// Caller-driven cancellation should tear down the half-started process so later retries begin cleanly.
-			await DisposeProcessAsync().ConfigureAwait(false);
+			await DisposeActiveSessionAsync().ConfigureAwait(false);
 			throw;
 		}
 		catch (Exception exception)
@@ -211,7 +219,7 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 			Log.Warn(exception, "Failed to start the Lua language server (executable='{Executable}', workspace='{Workspace}').",
 				_serverExecutablePath, _workspaceRootDirectoryPath);
 
-			await DisposeProcessAsync().ConfigureAwait(false);
+			await DisposeActiveSessionAsync().ConfigureAwait(false);
 			return false;
 		}
 		finally
@@ -238,6 +246,17 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 	/// <returns>The raw JSON response payload.</returns>
 	public Task<JsonElement> SendRequestAsync(string method, object parameters, CancellationToken cancellationToken)
 		=> SendRequestCoreAsync(method, parameters, cancellationToken, allowDisposed: false);
+
+	/// <summary>
+	/// Marks the current transport unhealthy so the provider restarts it on the next request.
+	/// </summary>
+	public void MarkTransportUnhealthy()
+	{
+		if (_isDisposed)
+			return;
+
+		IsReady = false;
+	}
 
 	private object BuildInitializeParams() => new
 	{
@@ -430,17 +449,71 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		return [.. values];
 	}
 
-	private void Process_Exited(object? sender, EventArgs e)
+	private LuaLanguageServerTransportSession CreateTransportSession(Process process)
 	{
+		long generation = Interlocked.Increment(ref _transportGeneration);
+		var session = new LuaLanguageServerTransportSession(generation,
+			process,
+			process.StandardOutput.BaseStream,
+			process.StandardInput.BaseStream);
+
+		session.ProcessExitedHandler = (_, _) => Process_Exited(session);
+		process.Exited += session.ProcessExitedHandler;
+		session.ReadLoopTask = Task.Run(() => ReadLoopAsync(session), CancellationToken.None);
+		session.StderrLoopTask = Task.Run(() => ReadStandardErrorLoopAsync(session), CancellationToken.None);
+		return session;
+	}
+
+	private void SetActiveSession(LuaLanguageServerTransportSession session)
+	{
+		_activeSession = session;
+		Volatile.Write(ref _activeTransportGeneration, session.Generation);
+	}
+
+	private LuaLanguageServerTransportSession GetRequiredActiveSession(bool allowDisposed)
+	{
+		ThrowIfDisposed(allowDisposed);
+
+		LuaLanguageServerTransportSession? session = Volatile.Read(ref _activeSession);
+
+		if (session is null)
+			throw new IOException("The Lua language server transport is not available.");
+
+		return session;
+	}
+
+	private LuaLanguageServerTransportSession? DetachActiveSession()
+	{
+		LuaLanguageServerTransportSession? session = Interlocked.Exchange(ref _activeSession, null);
 		IsReady = false;
+		return session;
+	}
 
-		int? exitCode = TryReadProcessExitCode(sender as Process ?? _process);
+	private async Task DisposeActiveSessionAsync()
+	{
+		LuaLanguageServerTransportSession? session = DetachActiveSession();
 
-		if (!_isDisposed)
+		if (session is not null)
+			await DisposeSessionAsync(session).ConfigureAwait(false);
+	}
+
+	private void Process_Exited(LuaLanguageServerTransportSession session)
+	{
+		bool isCurrentSession = IsCurrentSession(session);
+
+		if (isCurrentSession)
+			IsReady = false;
+
+		int? exitCode = TryReadProcessExitCode(session.Process);
+
+		if (!_isDisposed && isCurrentSession)
 			Log.Warn("Lua language server process exited unexpectedly{ExitCodeSuffix}.", exitCode is not null ? $" with code {exitCode.Value}" : string.Empty);
 
-		FailPendingRequests(new IOException("The Lua language server process exited unexpectedly."));
+		FailPendingRequests(session, new IOException("The Lua language server process exited unexpectedly."));
 	}
+
+	private bool IsCurrentSession(LuaLanguageServerTransportSession session)
+		=> ReferenceEquals(Volatile.Read(ref _activeSession), session);
 
 	private static int? TryReadProcessExitCode(Process? process)
 	{
@@ -475,26 +548,41 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		return true;
 	}
 
-	private void FailPendingRequests(Exception exception)
+	private void FailPendingRequests(LuaLanguageServerTransportSession session, Exception exception)
 	{
-		foreach (KeyValuePair<long, TaskCompletionSource<JsonElement>> pendingRequest in _pendingRequests)
+		foreach (KeyValuePair<long, TaskCompletionSource<JsonElement>> pendingRequest in session.PendingRequests)
 			pendingRequest.Value.TrySetException(exception);
 	}
 
-	private async Task DisposeProcessAsync()
+	private async Task DisposeSessionAsync(LuaLanguageServerTransportSession session)
 	{
-		Task? readLoopTask = _readLoopTask;
-		Task? stderrLoopTask = _stderrLoopTask;
+		Task? readLoopTask = session.ReadLoopTask;
+		Task? stderrLoopTask = session.StderrLoopTask;
+		Exception pendingRequestFailure = _isDisposed
+			? new ObjectDisposedException(nameof(LuaLanguageServerClient))
+			: new IOException("The Lua language server transport was closed.");
+
+		FailPendingRequests(session, pendingRequestFailure);
 
 		try
 		{
-			if (_process is not null && !_process.HasExited)
-			{
-				await TrySendShutdownAsync().ConfigureAwait(false);
-				await TrySendExitNotificationAsync().ConfigureAwait(false);
+			if (session.Process is not null && session.ProcessExitedHandler is not null)
+				session.Process.Exited -= session.ProcessExitedHandler;
+		}
+		catch
+		{
+			// Ignore event detach failures.
+		}
 
-				if (!_process.HasExited)
-					_process.Kill(true);
+		try
+		{
+			if (session.Process is not null && !session.Process.HasExited)
+			{
+				await TrySendShutdownAsync(session).ConfigureAwait(false);
+				await TrySendExitNotificationAsync(session).ConfigureAwait(false);
+
+				if (!session.Process.HasExited)
+					session.Process.Kill(true);
 			}
 		}
 		catch
@@ -503,20 +591,38 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		}
 		finally
 		{
-			ResetProcessState();
-			IsReady = false;
+			CleanupSessionResources(session);
 		}
 
-		await WaitForBackgroundLoopsAsync(readLoopTask, stderrLoopTask, _diagnosticsPumpTask).ConfigureAwait(false);
+		await WaitForBackgroundLoopsAsync(readLoopTask, stderrLoopTask).ConfigureAwait(false);
 	}
 
-	private async Task TrySendShutdownAsync()
+	private void CleanupSessionResources(LuaLanguageServerTransportSession session)
+	{
+		try
+		{
+			session.InputStream.Dispose();
+			session.OutputStream.Dispose();
+			session.Process?.Dispose();
+		}
+		catch
+		{
+			// Ignore stream disposal failures.
+		}
+
+		ReturnReceiveBuffer(session);
+		session.ReceiveBufferCount = 0;
+		session.ReadLoopTask = null;
+		session.StderrLoopTask = null;
+	}
+
+	private async Task TrySendShutdownAsync(LuaLanguageServerTransportSession session)
 	{
 		using var shutdownTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(1));
 
 		try
 		{
-			await SendRequestCoreAsync("shutdown", new { }, shutdownTimeout.Token, allowDisposed: true).ConfigureAwait(false);
+			await SendRequestCoreAsync(session, "shutdown", new { }, shutdownTimeout.Token, allowDisposed: true).ConfigureAwait(false);
 		}
 		catch
 		{
@@ -524,13 +630,13 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		}
 	}
 
-	private async Task TrySendExitNotificationAsync()
+	private async Task TrySendExitNotificationAsync(LuaLanguageServerTransportSession session)
 	{
 		using var exitTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(1));
 
 		try
 		{
-			await SendNotificationCoreAsync("exit", new { }, exitTimeout.Token, allowDisposed: true).ConfigureAwait(false);
+			await SendNotificationCoreAsync(session, "exit", new { }, exitTimeout.Token, allowDisposed: true).ConfigureAwait(false);
 		}
 		catch
 		{
@@ -538,12 +644,11 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		}
 	}
 
-	private static async Task WaitForBackgroundLoopsAsync(Task? readLoopTask, Task? stderrLoopTask, Task? diagnosticsPumpTask)
+	private static async Task WaitForBackgroundLoopsAsync(Task? readLoopTask, Task? stderrLoopTask)
 	{
 		Task combined = Task.WhenAll(
 			readLoopTask ?? Task.CompletedTask,
-			stderrLoopTask ?? Task.CompletedTask,
-			diagnosticsPumpTask ?? Task.CompletedTask);
+			stderrLoopTask ?? Task.CompletedTask);
 
 		try
 		{
@@ -557,43 +662,6 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		{
 			// Ignore loop completion failures during disposal.
 		}
-	}
-
-	private void ResetProcessState()
-	{
-		try
-		{
-			if (_process is not null)
-				_process.Exited -= Process_Exited;
-		}
-		catch
-		{
-			// Ignore event detach failures.
-		}
-
-		try
-		{
-			_inputStream?.Dispose();
-			_outputStream?.Dispose();
-			_process?.Dispose();
-		}
-		catch
-		{
-			// Ignore stream disposal failures.
-		}
-
-		_inputStream = null;
-		_outputStream = null;
-		_process = null;
-		ReturnReceiveBuffer();
-		_receiveBufferCount = 0;
-		_readLoopTask = null;
-		_stderrLoopTask = null;
-		_textDocumentSyncKind = LuaTextDocumentSyncKind.Incremental;
-		_supportsCompletionResolve = false;
-		_supportsSemanticTokensDelta = false;
-		_semanticTokenTypes = [];
-		_semanticTokenModifiers = [];
 	}
 
 	private void ThrowIfDisposed(bool allowDisposed)
@@ -611,7 +679,6 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 			return;
 
 		_isDisposed = true;
-		FailPendingRequests(new ObjectDisposedException(nameof(LuaLanguageServerClient)));
 		_diagnosticsSignal.Writer.TryComplete();
 
 		try
@@ -625,7 +692,7 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 		{
 			// DisposeProcessAsync also waits for the read/stderr loops, so by the time it returns no
 			// background task should still be holding the write semaphore. We then release the locks.
-			if (!DisposeProcessAsync().Wait(DisposeWaitTimeout))
+			if (!DisposeActiveSessionAsync().Wait(DisposeWaitTimeout))
 				Log.Warn("Disposing Lua language server timed out; abandoning background tasks.");
 		}
 		catch (AggregateException exception)
@@ -633,8 +700,52 @@ internal sealed partial class LuaLanguageServerClient : ILuaLanguageServerClient
 			Log.Warn(exception.Flatten(), "Disposing Lua language server raised exceptions.");
 		}
 
+		if (_diagnosticsPumpTask is not null)
+		{
+			try
+			{
+				if (!_diagnosticsPumpTask.Wait(DisposeWaitTimeout))
+					Log.Warn("Lua language server diagnostics pump did not complete within the dispose timeout.");
+			}
+			catch (AggregateException exception)
+			{
+				Log.Warn(exception.Flatten(), "Disposing the Lua language server diagnostics pump raised exceptions.");
+			}
+		}
+
 		_lifetimeCts.Dispose();
 		_startLock.Dispose();
 		_writeLock.Dispose();
+	}
+
+	private sealed class LuaLanguageServerTransportSession
+	{
+		public LuaLanguageServerTransportSession(long generation, Process? process, Stream inputStream, Stream outputStream)
+		{
+			Generation = generation;
+			Process = process;
+			InputStream = inputStream;
+			OutputStream = outputStream;
+		}
+
+		public long Generation { get; }
+
+		public Process? Process { get; }
+
+		public Stream InputStream { get; }
+
+		public Stream OutputStream { get; }
+
+		public EventHandler? ProcessExitedHandler { get; set; }
+
+		public ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> PendingRequests { get; } = new();
+
+		public byte[] ReceiveBuffer { get; set; } = [];
+
+		public int ReceiveBufferCount { get; set; }
+
+		public Task? ReadLoopTask { get; set; }
+
+		public Task? StderrLoopTask { get; set; }
 	}
 }

@@ -19,6 +19,11 @@ internal interface ILuaLanguageServerClient : IDisposable
 	bool IsReady { get; }
 
 	/// <summary>
+	/// Gets the current transport generation for the active language-server session.
+	/// </summary>
+	long TransportGeneration { get; }
+
+	/// <summary>
 	/// Gets the text-document synchronization mode negotiated with the language server.
 	/// </summary>
 	LuaTextDocumentSyncKind TextDocumentSyncKind { get; }
@@ -59,6 +64,11 @@ internal interface ILuaLanguageServerClient : IDisposable
 	/// <param name="cancellationToken">A token that can cancel startup.</param>
 	/// <returns><see langword="true"/> when the client is ready; otherwise, <see langword="false"/>.</returns>
 	Task<bool> StartAsync(CancellationToken cancellationToken);
+
+	/// <summary>
+	/// Marks the current transport unhealthy so the next startup check restarts the server session.
+	/// </summary>
+	void MarkTransportUnhealthy();
 
 	/// <summary>
 	/// Sends a JSON-RPC notification to the language server.

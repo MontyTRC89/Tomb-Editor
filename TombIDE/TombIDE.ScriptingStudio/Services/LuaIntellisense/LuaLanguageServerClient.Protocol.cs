@@ -14,46 +14,53 @@ namespace TombIDE.ScriptingStudio.Services.LuaIntellisense;
 internal sealed partial class LuaLanguageServerClient
 {
 	private Task SendNotificationCoreAsync(string method, object parameters, CancellationToken cancellationToken, bool allowDisposed)
-		=> WriteMessageAsync(new { jsonrpc = "2.0", method, @params = parameters }, cancellationToken, allowDisposed);
+		=> SendNotificationCoreAsync(GetRequiredActiveSession(allowDisposed), method, parameters, cancellationToken, allowDisposed);
+
+	private Task SendNotificationCoreAsync(LuaLanguageServerTransportSession session, string method, object parameters, CancellationToken cancellationToken, bool allowDisposed)
+		=> WriteMessageAsync(session, new { jsonrpc = "2.0", method, @params = parameters }, cancellationToken, allowDisposed);
 
 	private async Task<JsonElement> SendRequestCoreAsync(string method, object parameters, CancellationToken cancellationToken, bool allowDisposed)
-	{
-		ThrowIfDisposed(allowDisposed);
+		=> await SendRequestCoreAsync(GetRequiredActiveSession(allowDisposed), method, parameters, cancellationToken, allowDisposed).ConfigureAwait(false);
 
+	private async Task<JsonElement> SendRequestCoreAsync(LuaLanguageServerTransportSession session, string method, object parameters, CancellationToken cancellationToken, bool allowDisposed)
+	{
 		long requestId = Interlocked.Increment(ref _requestId);
 		var responseSource = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-		if (!_pendingRequests.TryAdd(requestId, responseSource))
+		if (!session.PendingRequests.TryAdd(requestId, responseSource))
 			throw new InvalidOperationException("Unable to track a new language server request.");
 
 		await using var registration = cancellationToken.Register(() => responseSource.TrySetCanceled(cancellationToken));
 
 		try
 		{
-			await WriteMessageAsync(new { jsonrpc = "2.0", id = requestId, method, @params = parameters }, cancellationToken, allowDisposed).ConfigureAwait(false);
+			await WriteMessageAsync(session, new { jsonrpc = "2.0", id = requestId, method, @params = parameters }, cancellationToken, allowDisposed).ConfigureAwait(false);
 			return await responseSource.Task.ConfigureAwait(false);
 		}
 		catch (OperationCanceledException)
 		{
-			SendCancelNotification(requestId);
+			SendCancelNotification(session, requestId);
 			throw;
 		}
 		finally
 		{
-			_pendingRequests.TryRemove(requestId, out _);
+			session.PendingRequests.TryRemove(requestId, out _);
 		}
 	}
 
-	private void SendCancelNotification(long requestId)
+	private void SendCancelNotification(LuaLanguageServerTransportSession session, long requestId)
 	{
-		if (_isDisposed || _outputStream is null)
+		if (_isDisposed)
 			return;
 
 		Task.Run(async () =>
 		{
 			try
 			{
-				await WriteMessageAsync(new { jsonrpc = "2.0", method = "$/cancelRequest", @params = new { id = requestId } }, CancellationToken.None, allowDisposed: true).ConfigureAwait(false);
+				await WriteMessageAsync(session,
+					new { jsonrpc = "2.0", method = "$/cancelRequest", @params = new { id = requestId } },
+					CancellationToken.None,
+					allowDisposed: true).ConfigureAwait(false);
 			}
 			catch
 			{
@@ -62,16 +69,16 @@ internal sealed partial class LuaLanguageServerClient
 		});
 	}
 
-	private async Task HandleServerRequestAsync(JsonElement idElement, string method, JsonElement parameters)
+	private async Task HandleServerRequestAsync(LuaLanguageServerTransportSession session, JsonElement idElement, string method, JsonElement parameters)
 	{
 		switch (method)
 		{
 			case "workspace/configuration":
-				await WriteResponseAsync(idElement, BuildConfigurationResponse(parameters)).ConfigureAwait(false);
+				await WriteResponseAsync(session, idElement, BuildConfigurationResponse(parameters)).ConfigureAwait(false);
 				return;
 
 			case "workspace/workspaceFolders":
-				await WriteResponseAsync(idElement, BuildWorkspaceFolderResponse()).ConfigureAwait(false);
+				await WriteResponseAsync(session, idElement, BuildWorkspaceFolderResponse()).ConfigureAwait(false);
 				return;
 
 			case "workspace/semanticTokens/refresh":
@@ -84,28 +91,28 @@ internal sealed partial class LuaLanguageServerClient
 					Log.Warn(exception, "Lua semantic-tokens refresh request handler threw; acknowledging the request anyway.");
 				}
 
-				await WriteResponseAsync(idElement, result: null).ConfigureAwait(false);
+				await WriteResponseAsync(session, idElement, result: null).ConfigureAwait(false);
 				return;
 
 			case "client/registerCapability":
 			case "client/unregisterCapability":
 			case "window/workDoneProgress/create":
 				// Acknowledge with a successful empty result so the server can proceed.
-				await WriteResponseAsync(idElement, result: null).ConfigureAwait(false);
+				await WriteResponseAsync(session, idElement, result: null).ConfigureAwait(false);
 				return;
 
 			default:
 				// Reply with JSON-RPC "Method Not Found" (-32601) for everything else so the server does not block on us.
-				await WriteErrorResponseAsync(idElement, code: -32601, message: $"Method '{method}' is not supported by the client.").ConfigureAwait(false);
+				await WriteErrorResponseAsync(session, idElement, code: -32601, message: $"Method '{method}' is not supported by the client.").ConfigureAwait(false);
 				return;
 		}
 	}
 
-	private Task WriteResponseAsync(JsonElement idElement, object? result)
-		=> WriteMessageAsync(new { jsonrpc = "2.0", id = idElement, result }, CancellationToken.None, allowDisposed: true);
+	private Task WriteResponseAsync(LuaLanguageServerTransportSession session, JsonElement idElement, object? result)
+		=> WriteMessageAsync(session, new { jsonrpc = "2.0", id = idElement, result }, CancellationToken.None, allowDisposed: true);
 
-	private Task WriteErrorResponseAsync(JsonElement idElement, int code, string message)
-		=> WriteMessageAsync(new { jsonrpc = "2.0", id = idElement, error = new { code, message } }, CancellationToken.None, allowDisposed: true);
+	private Task WriteErrorResponseAsync(LuaLanguageServerTransportSession session, JsonElement idElement, int code, string message)
+		=> WriteMessageAsync(session, new { jsonrpc = "2.0", id = idElement, error = new { code, message } }, CancellationToken.None, allowDisposed: true);
 
 	private object[] BuildConfigurationResponse(JsonElement parameters)
 	{
@@ -165,12 +172,9 @@ internal sealed partial class LuaLanguageServerClient
 		}
 	];
 
-	private async Task WriteMessageAsync(object payload, CancellationToken cancellationToken, bool allowDisposed)
+	private async Task WriteMessageAsync(LuaLanguageServerTransportSession session, object payload, CancellationToken cancellationToken, bool allowDisposed)
 	{
 		ThrowIfDisposed(allowDisposed);
-
-		if (_outputStream is null)
-			throw new IOException("The Lua language server output stream is not available.");
 
 		byte[] payloadBytes = JsonSerializer.SerializeToUtf8Bytes(payload);
 
@@ -188,8 +192,8 @@ internal sealed partial class LuaLanguageServerClient
 
 			try
 			{
-				await _outputStream.WriteAsync(frameBuffer.AsMemory(0, frameLength), cancellationToken).ConfigureAwait(false);
-				await _outputStream.FlushAsync(cancellationToken).ConfigureAwait(false);
+				await session.OutputStream.WriteAsync(frameBuffer.AsMemory(0, frameLength), cancellationToken).ConfigureAwait(false);
+				await session.OutputStream.FlushAsync(cancellationToken).ConfigureAwait(false);
 			}
 			finally
 			{

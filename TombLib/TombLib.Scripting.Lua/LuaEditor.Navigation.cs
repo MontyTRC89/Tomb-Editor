@@ -9,6 +9,9 @@ namespace TombLib.Scripting.Lua;
 
 public sealed partial class LuaEditor
 {
+	private CancellationTokenSource? _definitionCancellationTokenSource;
+	private int _definitionRequestToken;
+
 	private async void TextEditor_KeyDown(object? sender, KeyEventArgs e)
 	{
 		if (e.Key == Key.Escape && (_completionWindow is not null || _signaturePopup.IsOpen || _specialToolTip.IsOpen))
@@ -62,11 +65,24 @@ public sealed partial class LuaEditor
 			if (!LuaEditorInteractionRules.TryGetDefinitionStartOffset(Document, offset, out int definitionOffset))
 				return false;
 
+			CancellationToken definitionCancellationToken = ResetCancellationTokenSource(ref _definitionCancellationTokenSource);
+			using CancellationTokenSource? linkedCancellationTokenSource = cancellationToken.CanBeCanceled
+				? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, definitionCancellationToken)
+				: null;
+
+			CancellationToken effectiveCancellationToken = linkedCancellationTokenSource?.Token ?? definitionCancellationToken;
+			int requestToken = ++_definitionRequestToken;
+			int requestDocumentVersion = _editorDocumentVersion;
+			int requestGeneration = _editorRequestGeneration;
+
 			(int Line, int Column) = GetPositionFromOffset(definitionOffset);
 
 			LuaDefinitionLocation? definitionLocation = await IntellisenseProvider
-				.GetDefinitionAsync(FilePath, Text, Line, Column, cancellationToken)
+				.GetDefinitionAsync(FilePath, Text, Line, Column, effectiveCancellationToken)
 				.ConfigureAwait(true);
+
+			if (!IsAsyncEditorResultCurrent(effectiveCancellationToken, requestToken, _definitionRequestToken, requestDocumentVersion, requestGeneration))
+				return false;
 
 			if (definitionLocation is null)
 				return false;

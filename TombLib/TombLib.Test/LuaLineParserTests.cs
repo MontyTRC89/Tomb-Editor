@@ -32,4 +32,12 @@ public class LuaLineParserTests
 		string result = new(LuaLineParser.EnumerateStructuralCharacters("{ [[ignored } text]] }").ToArray());
 		Assert.AreEqual("{  }", result);
 	}
+
+	[TestMethod]
+	public void ExtractCodeText_RemovesQuotedAndCommentText()
+	{
+		string result = LuaLineParser.ExtractCodeText("if value == \"then\" then -- comment");
+
+		Assert.AreEqual("if value ==  then ", result);
+	}
 }

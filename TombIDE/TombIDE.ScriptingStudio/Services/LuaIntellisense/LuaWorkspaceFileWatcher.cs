@@ -24,6 +24,7 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 
 	private readonly string _workspaceRootDirectoryPath;
 	private readonly Func<FileChangeBatch, CancellationToken, Task> _dispatchAsync;
+	private readonly Action<Exception?>? _watcherFailed;
 	private readonly ConcurrentDictionary<string, FileChangeKind> _pendingChanges = new(StringComparer.OrdinalIgnoreCase);
 	private readonly SemaphoreSlim _dispatchGate = new(1, 1);
 	private readonly CancellationTokenSource _lifetimeCts = new();
@@ -32,6 +33,9 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 	private FileSystemWatcher? _apiDirectoryWatcher;
 	private FileSystemWatcher? _configWatcher;
 	private Timer? _debounceTimer;
+	private int _activeDispatchCount;
+	private int _dispatchResourcesDisposed;
+	private int _watcherFailureReported;
 	private volatile bool _isDisposed;
 
 	/// <summary>
@@ -39,10 +43,12 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 	/// </summary>
 	/// <param name="workspaceRootDirectoryPath">The workspace root directory to watch.</param>
 	/// <param name="dispatchAsync">The callback that forwards coalesced changes to LuaLS.</param>
-	public LuaWorkspaceFileWatcher(string workspaceRootDirectoryPath, Func<FileChangeBatch, CancellationToken, Task> dispatchAsync)
+	public LuaWorkspaceFileWatcher(string workspaceRootDirectoryPath, Func<FileChangeBatch, CancellationToken, Task> dispatchAsync,
+		Action<Exception?>? watcherFailed = null)
 	{
 		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
 		_dispatchAsync = dispatchAsync;
+		_watcherFailed = watcherFailed;
 	}
 
 	/// <summary>
@@ -92,7 +98,7 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 			QueueChange(e.OldFullPath, FileChangeKind.Deleted);
 			QueueChange(e.FullPath, FileChangeKind.Created);
 		};
-		watcher.Error += (_, e) => Log.Debug(e.GetException(), "Lua workspace file watcher reported an error.");
+		watcher.Error += (_, e) => HandleWatcherError(e.GetException());
 		watcher.EnableRaisingEvents = true;
 		return watcher;
 	}
@@ -130,6 +136,21 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 
 	private async Task DispatchPendingChangesAsync()
 	{
+		Interlocked.Increment(ref _activeDispatchCount);
+
+		try
+		{
+			await DispatchPendingChangesCoreAsync().ConfigureAwait(false);
+		}
+		finally
+		{
+			if (Interlocked.Decrement(ref _activeDispatchCount) == 0 && _isDisposed)
+				DisposeDispatchResources();
+		}
+	}
+
+	private async Task DispatchPendingChangesCoreAsync()
+	{
 		bool dispatchGateHeld = false;
 
 		try
@@ -164,8 +185,50 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 		finally
 		{
 			if (dispatchGateHeld)
-				_dispatchGate.Release();
+			{
+				try
+				{
+					_dispatchGate.Release();
+				}
+				catch (ObjectDisposedException)
+				{ }
+			}
 		}
+	}
+
+	private void HandleWatcherError(Exception? exception)
+	{
+		if (_isDisposed)
+			return;
+
+		StopWatching();
+
+		if (!_pendingChanges.IsEmpty)
+			_ = DispatchPendingChangesAsync();
+
+		if (Interlocked.Exchange(ref _watcherFailureReported, 1) != 0)
+			return;
+
+		Log.Warn(exception,
+			"Lua workspace file watcher was disabled for '{Workspace}'. External workspace changes will no longer be forwarded to LuaLS until TombIDE is restarted.",
+			_workspaceRootDirectoryPath);
+
+		try
+		{
+			_watcherFailed?.Invoke(exception);
+		}
+		catch (Exception callbackException)
+		{
+			Log.Warn(callbackException, "Lua workspace watcher failure handler threw.");
+		}
+	}
+
+	private void StopWatching()
+	{
+		TryDisposeAndClear(ref _apiDirectoryWatcher, nameof(_apiDirectoryWatcher));
+		TryDisposeAndClear(ref _luaWatcher, nameof(_luaWatcher));
+		TryDisposeAndClear(ref _configWatcher, nameof(_configWatcher));
+		TryDisposeAndClear(ref _debounceTimer, nameof(_debounceTimer));
 	}
 
 	/// <summary>
@@ -178,31 +241,52 @@ internal sealed class LuaWorkspaceFileWatcher : IDisposable
 
 		_isDisposed = true;
 
-		TryDispose(_apiDirectoryWatcher, nameof(_apiDirectoryWatcher));
-		TryDispose(_luaWatcher, nameof(_luaWatcher));
-		TryDispose(_configWatcher, nameof(_configWatcher));
-		TryDispose(_debounceTimer, nameof(_debounceTimer));
+		StopWatching();
 
 		try { _lifetimeCts.Cancel(); } catch (ObjectDisposedException) { }
+
+		if (Volatile.Read(ref _activeDispatchCount) == 0)
+			DisposeDispatchResources();
+	}
+
+	private void DisposeDispatchResources()
+	{
+		if (Interlocked.Exchange(ref _dispatchResourcesDisposed, 1) != 0)
+			return;
 
 		_lifetimeCts.Dispose();
 		_dispatchGate.Dispose();
 	}
 
-	private static void TryDispose(IDisposable? disposable, string resourceName)
+	private static void TryDisposeAndClear<T>(ref T? disposable, string resourceName) where T : class, IDisposable
 	{
-		if (disposable is null)
+		T? value = disposable;
+		disposable = null;
+
+		if (value is null)
 			return;
 
 		try
 		{
-			disposable.Dispose();
+			value.Dispose();
 		}
 		catch (Exception exception)
 		{
 			Log.Debug(exception, "Failed to dispose Lua workspace watcher resource '{ResourceName}'.", resourceName);
 		}
 	}
+
+	internal void QueueChangeForTest(string filePath, FileChangeKind kind)
+		=> QueueChange(filePath, kind);
+
+	internal Task DispatchPendingChangesForTestAsync()
+		=> DispatchPendingChangesAsync();
+
+	internal void ReportErrorForTest(Exception? exception)
+		=> HandleWatcherError(exception);
+
+	internal bool HasActiveWatchers
+		=> _apiDirectoryWatcher is not null || _luaWatcher is not null || _configWatcher is not null;
 }
 
 /// <summary>

@@ -33,6 +33,86 @@ public class LuaLanguageServerResponseParserTests
 	}
 
 	[TestMethod]
+	public void ParseCompletionItem_ParsesTextEditRange()
+	{
+		JsonElement itemElement = JsonSerializer.SerializeToElement(new
+		{
+			label = "print",
+			kind = 3,
+			textEdit = new
+			{
+				newText = "print",
+				range = new
+				{
+					start = new { line = 1, character = 2 },
+					end = new { line = 1, character = 5 }
+				}
+			}
+		});
+
+		LuaCompletionItem? item = LuaLanguageServerResponseParser.ParseCompletionItem(itemElement, 0);
+
+		Assert.IsNotNull(item);
+		Assert.AreEqual("print", item.InsertText);
+		Assert.IsNotNull(item.TextEdit);
+		Assert.AreEqual(new LuaCompletionPosition(1, 2), item.TextEdit.Value.InsertRange.Start);
+		Assert.AreEqual(new LuaCompletionPosition(1, 5), item.TextEdit.Value.InsertRange.End);
+		Assert.IsNull(item.TextEdit.Value.ReplaceRange);
+	}
+
+	[TestMethod]
+	public void ParseCompletionItem_ParsesInsertReplaceEditRanges()
+	{
+		JsonElement itemElement = JsonSerializer.SerializeToElement(new
+		{
+			label = "print",
+			kind = 3,
+			textEdit = new
+			{
+				newText = "print",
+				insert = new
+				{
+					start = new { line = 0, character = 1 },
+					end = new { line = 0, character = 3 }
+				},
+				replace = new
+				{
+					start = new { line = 0, character = 1 },
+					end = new { line = 0, character = 6 }
+				}
+			}
+		});
+
+		LuaCompletionItem? item = LuaLanguageServerResponseParser.ParseCompletionItem(itemElement, 0);
+
+		Assert.IsNotNull(item);
+		Assert.IsNotNull(item.TextEdit);
+		Assert.AreEqual(new LuaCompletionPosition(0, 1), item.TextEdit.Value.InsertRange.Start);
+		Assert.AreEqual(new LuaCompletionPosition(0, 3), item.TextEdit.Value.InsertRange.End);
+		Assert.AreEqual(new LuaCompletionPosition(0, 1), item.TextEdit.Value.ReplaceRange!.Value.Start);
+		Assert.AreEqual(new LuaCompletionPosition(0, 6), item.TextEdit.Value.ReplaceRange!.Value.End);
+		Assert.AreEqual(new LuaCompletionPosition(0, 6), item.TextEdit.Value.ReplacementRange.End);
+	}
+
+	[TestMethod]
+	public void ParseCompletionItem_StripsSnippetAndPreservesFinalCaretOffset()
+	{
+		JsonElement itemElement = JsonSerializer.SerializeToElement(new
+		{
+			label = "if",
+			kind = 15,
+			insertText = "if ${1:condition} then\r\n\t$0\r\nend",
+			insertTextFormat = 2
+		});
+
+		LuaCompletionItem? item = LuaLanguageServerResponseParser.ParseCompletionItem(itemElement, 0);
+
+		Assert.IsNotNull(item);
+		Assert.AreEqual("if condition then\r\n\t\r\nend", item.InsertText);
+		Assert.AreEqual("if condition then\r\n\t".Length, item.InsertCaretOffset);
+	}
+
+	[TestMethod]
 	public void ParseCompletionItems_DeduplicatesLabelAndInsertTextCaseSensitively()
 	{
 		IReadOnlyList<LuaCompletionItem> items = LuaLanguageServerResponseParser.ParseCompletionItems(

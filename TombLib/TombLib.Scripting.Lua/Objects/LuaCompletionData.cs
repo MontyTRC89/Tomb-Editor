@@ -3,6 +3,7 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using TombLib.Scripting.Lua.Resources;
+using TombLib.Scripting.Lua.Utils;
 using TombLib.Scripting.Rendering;
 using TombLib.Scripting.Resources;
 
@@ -28,10 +30,12 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 	private static readonly SolidColorBrush DescriptionForegroundBrush = TextEditorColorPalette.ToolTipForeground;
 
 	private static readonly object NoDescriptionSentinel = new();
+	private static readonly PropertyInfo? OverstrikeModeProperty = typeof(TextArea).GetProperty("OverstrikeMode");
 
 	private readonly object _resolveSync = new();
 
 	private readonly LuaThemeBrushSet _brushSet;
+	private readonly Func<LuaCompletionItem, bool>? _canApplyItem;
 	private LuaCompletionItem _item;
 	private string? _displayDetail;
 	private object? _cachedDescription;
@@ -42,10 +46,12 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 	/// </summary>
 	/// <param name="item">The completion item being adapted.</param>
 	/// <param name="brushSet">The theme brushes used to render the item.</param>
-	public LuaCompletionData(LuaCompletionItem item, LuaThemeBrushSet brushSet)
+	/// <param name="canApplyItem">Validates whether the completion item may still be applied.</param>
+	public LuaCompletionData(LuaCompletionItem item, LuaThemeBrushSet brushSet, Func<LuaCompletionItem, bool>? canApplyItem = null)
 	{
 		_item = item ?? throw new ArgumentNullException(nameof(item));
 		_brushSet = brushSet ?? throw new ArgumentNullException(nameof(brushSet));
+		_canApplyItem = canApplyItem;
 		_displayDetail = FlattenSingleLineText(_item.Detail);
 	}
 
@@ -115,7 +121,42 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 	/// <param name="completionSegment">The segment to replace.</param>
 	/// <param name="insertionRequestEventArgs">The insertion request context.</param>
 	public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
-		=> textArea.Document.Replace(completionSegment, _item.InsertText);
+	{
+		ArgumentNullException.ThrowIfNull(textArea);
+		ArgumentNullException.ThrowIfNull(completionSegment);
+		ArgumentNullException.ThrowIfNull(insertionRequestEventArgs);
+
+		if (!CanApplyCompletionItem(_item, _canApplyItem))
+			return;
+
+		TextDocument document = textArea.Document;
+		string insertText = _item.InsertText;
+		int? insertCaretOffset = _item.InsertCaretOffset;
+		(int replacementOffset, int replacementLength) = ResolveCompletionSegment(
+			document,
+			completionSegment.Offset,
+			completionSegment.Length,
+			_item.TextEdit,
+			ShouldUseReplaceRange(textArea));
+
+		if (ContainsLineBreak(insertText))
+		{
+			(string normalizedText, int? normalizedCaretOffset) = LuaIndentationStrategy.NormalizeCompletionInsertion(
+				insertText,
+				insertCaretOffset,
+				GetCurrentLineIndentation(document, replacementOffset),
+				LuaIndentationStrategy.CreateIndentationUnit(
+					textArea.Options.ConvertTabsToSpaces,
+					textArea.Options.IndentationSize,
+					4));
+
+			insertText = normalizedText;
+			insertCaretOffset = normalizedCaretOffset;
+		}
+
+		document.Replace(replacementOffset, replacementLength, insertText);
+		textArea.Caret.Offset = replacementOffset + (insertCaretOffset ?? insertText.Length);
+	}
 
 	/// <summary>
 	/// Resolves and returns the tooltip content for the completion item.
@@ -173,6 +214,14 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 		}
 	}
 
+	internal void RebaseForCurrentDocument(int requestDocumentVersion, int requestGeneration)
+	{
+		_item = _item.WithFilteredCommitContext(requestDocumentVersion, requestGeneration);
+
+		lock (_resolveSync)
+			_resolveTask = null;
+	}
+
 	private static string? FlattenSingleLineText(string? text)
 	{
 		if (string.IsNullOrWhiteSpace(text))
@@ -181,6 +230,79 @@ internal sealed class LuaCompletionData : ICompletionData, INotifyPropertyChange
 		string[] lines = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 		return lines.Length == 0 ? null : string.Join(" ", lines).Trim();
 	}
+
+	private static bool CanApplyCompletionItem(LuaCompletionItem item, Func<LuaCompletionItem, bool>? canApplyItem)
+		=> canApplyItem?.Invoke(item) ?? true;
+
+	private static bool ContainsLineBreak(string text)
+		=> text.IndexOfAny(['\r', '\n']) >= 0;
+
+	private static string GetCurrentLineIndentation(TextDocument document, int offset)
+	{
+		ArgumentNullException.ThrowIfNull(document);
+
+		DocumentLine line = document.GetLineByOffset(Math.Clamp(offset, 0, document.TextLength));
+		return LuaIndentationStrategy.GetLeadingWhitespace(document.GetText(line));
+	}
+
+	private static (int Offset, int Length) ResolveCompletionSegment(TextDocument document,
+		int fallbackOffset,
+		int fallbackLength,
+		LuaCompletionTextEdit? textEdit,
+		bool useReplaceRange)
+	{
+		ArgumentNullException.ThrowIfNull(document);
+
+		var fallbackSegment = (fallbackOffset, fallbackLength);
+
+		if (textEdit is not LuaCompletionTextEdit completionTextEdit)
+			return fallbackSegment;
+
+		LuaCompletionRange range = useReplaceRange
+			? completionTextEdit.ReplacementRange
+			: completionTextEdit.InsertRange;
+
+		return TryCreateCompletionSegment(document, range, out (int Offset, int Length) replacementSegment)
+			? replacementSegment
+			: fallbackSegment;
+	}
+
+	private static bool TryCreateCompletionSegment(TextDocument document,
+		LuaCompletionRange range,
+		out (int Offset, int Length) segment)
+	{
+		segment = default;
+
+		if (!TryGetCompletionOffset(document, range.Start, out int startOffset)
+			|| !TryGetCompletionOffset(document, range.End, out int endOffset)
+			|| endOffset < startOffset)
+		{
+			return false;
+		}
+
+		segment = (startOffset, endOffset - startOffset);
+		return true;
+	}
+
+	private static bool TryGetCompletionOffset(TextDocument document, LuaCompletionPosition position, out int offset)
+	{
+		offset = 0;
+		int lineNumber = position.Line + 1;
+
+		if (lineNumber < 1 || lineNumber > document.LineCount)
+			return false;
+
+		DocumentLine line = document.GetLineByNumber(lineNumber);
+
+		if (position.Character < 0 || position.Character > line.Length)
+			return false;
+
+		offset = line.Offset + position.Character;
+		return true;
+	}
+
+	private static bool ShouldUseReplaceRange(TextArea textArea)
+		=> OverstrikeModeProperty?.GetValue(textArea) is true;
 
 	private Border? BuildDescriptionContent()
 	{

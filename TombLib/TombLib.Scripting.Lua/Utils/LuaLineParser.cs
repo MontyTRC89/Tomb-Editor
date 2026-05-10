@@ -258,6 +258,88 @@ internal static class LuaLineParser
 	}
 
 	/// <summary>
+	/// Extracts the code-visible characters from a line while skipping comment and string contents.
+	/// </summary>
+	/// <param name="lineText">The line text to process.</param>
+	/// <returns>The characters that remain visible to Lua block-indentation heuristics.</returns>
+	public static string ExtractCodeText(string lineText)
+	{
+		if (string.IsNullOrEmpty(lineText))
+			return string.Empty;
+
+		var builder = new StringBuilder(lineText.Length);
+		ParserState state = ParserState.None;
+		int longBracketEqualsCount = 0;
+
+		for (int i = 0; i < lineText.Length; i++)
+		{
+			char currentChar = lineText[i];
+
+			if (state == ParserState.LongComment || state == ParserState.LongString)
+			{
+				if (TryMatchLongBracketEnd(lineText, i, longBracketEqualsCount, out int endTokenLength))
+				{
+					i += endTokenLength - 1;
+					state = ParserState.None;
+					longBracketEqualsCount = 0;
+				}
+
+				continue;
+			}
+
+			if (state == ParserState.SingleQuotedString || state == ParserState.DoubleQuotedString)
+			{
+				if (currentChar == '\\' && i + 1 < lineText.Length)
+				{
+					i++;
+					continue;
+				}
+
+				if ((state == ParserState.SingleQuotedString && currentChar == '\'')
+					|| (state == ParserState.DoubleQuotedString && currentChar == '"'))
+				{
+					state = ParserState.None;
+				}
+
+				continue;
+			}
+
+			if (TryMatchLongCommentStart(lineText, i, out longBracketEqualsCount, out int longCommentStartLength))
+			{
+				state = ParserState.LongComment;
+				i += longCommentStartLength - 1;
+				continue;
+			}
+
+			if (IsLineCommentStart(lineText, i))
+				break;
+
+			if (TryMatchLongBracketStart(lineText, i, out longBracketEqualsCount, out int longStringStartLength))
+			{
+				state = ParserState.LongString;
+				i += longStringStartLength - 1;
+				continue;
+			}
+
+			if (currentChar == '\'')
+			{
+				state = ParserState.SingleQuotedString;
+				continue;
+			}
+
+			if (currentChar == '"')
+			{
+				state = ParserState.DoubleQuotedString;
+				continue;
+			}
+
+			builder.Append(currentChar);
+		}
+
+		return builder.ToString();
+	}
+
+	/// <summary>
 	/// Enumerates structural characters that remain after stripping comments and string content from a line.
 	/// </summary>
 	/// <param name="lineText">The line text to inspect.</param>

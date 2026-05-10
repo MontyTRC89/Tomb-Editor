@@ -45,7 +45,6 @@ public sealed partial class LuaEditor
 
 	private static FieldInfo? CompletionToolTipField => CompletionToolTipFieldAccessor.Value;
 
-	private CancellationTokenSource? _completionCancellationTokenSource;
 	private readonly DispatcherTimer _completionRequestTimer = new();
 	private readonly DispatcherTimer _completionToolTipUpdateTimer = new();
 	private int _completionRequestToken;
@@ -65,6 +64,15 @@ public sealed partial class LuaEditor
 
 	private void CloseCompletionWindow()
 	{
+		InvalidateCompletionRequests();
+		CloseCompletionWindowCore();
+	}
+
+	private void CloseCompletionWindowForRefresh()
+		=> CloseCompletionWindowCore();
+
+	private void CloseCompletionWindowCore()
+	{
 		CancelPendingCompletionRequest();
 		CancelCompletionToolTipUpdate();
 
@@ -77,6 +85,9 @@ public sealed partial class LuaEditor
 		_completionWindow.Close();
 		_completionWindow = null;
 	}
+
+	private void InvalidateCompletionRequests()
+		=> _completionRequestToken++;
 
 	private void InitializeLuaCompletionWindow()
 	{
@@ -110,8 +121,10 @@ public sealed partial class LuaEditor
 
 	private async Task RequestCompletionAsync(int offset, char? triggerCharacter)
 	{
-		CancellationToken cancellationToken = ResetCancellationTokenSource(ref _completionCancellationTokenSource);
+		CancellationToken cancellationToken = CancellationToken.None;
 		int requestToken = ++_completionRequestToken;
+		int requestDocumentVersion = _editorDocumentVersion;
+		int requestGeneration = _editorRequestGeneration;
 
 		try
 		{
@@ -128,7 +141,8 @@ public sealed partial class LuaEditor
 				.GetCompletionItemsAsync(FilePath, Text, Line, Column, triggerCharacter, cancellationToken)
 				.ConfigureAwait(true);
 
-			if (cancellationToken.IsCancellationRequested || requestToken != _completionRequestToken)
+			if (!IsAsyncEditorResultCurrent(cancellationToken, requestToken, _completionRequestToken,
+				requestDocumentVersion, requestGeneration))
 				return;
 
 			if (items is null || items.Count == 0)
@@ -142,13 +156,17 @@ public sealed partial class LuaEditor
 			var brushSet = GetThemeBrushSet();
 
 			for (int i = 0; i < items.Count; i++)
-				completionDataItems[i] = new LuaCompletionData(items[i], brushSet);
+			{
+				LuaCompletionItem completionItem = items[i].WithRequestContext(requestDocumentVersion, requestGeneration);
+				completionDataItems[i] = new LuaCompletionData(completionItem, brushSet, CanApplyCompletionItem);
+			}
 
-			if (cancellationToken.IsCancellationRequested || requestToken != _completionRequestToken)
+			if (!IsAsyncEditorResultCurrent(cancellationToken, requestToken, _completionRequestToken,
+				requestDocumentVersion, requestGeneration))
 				return;
 
 			// Recreate the popup from scratch so stale selection and tooltip state never leaks between requests.
-			CloseCompletionWindow();
+			CloseCompletionWindowForRefresh();
 
 			InitializeLuaCompletionWindow();
 			ResizeCompletionWindow(completionDataItems);
@@ -170,6 +188,42 @@ public sealed partial class LuaEditor
 			CloseCompletionWindow();
 			LogEditorFailure("Completion request", exception);
 		}
+	}
+
+	private bool CanApplyCompletionItem(LuaCompletionItem item)
+		=> IsCompletionItemCurrent(item.RequestDocumentVersion, _editorDocumentVersion,
+			item.RequestGeneration, _editorRequestGeneration, IsLoaded, IsIntellisenseAvailable());
+
+	private void RebaseOpenCompletionItems()
+	{
+		if (_completionWindow?.CompletionList?.CompletionData is null)
+			return;
+
+		for (int i = 0; i < _completionWindow.CompletionList.CompletionData.Count; i++)
+		{
+			if (_completionWindow.CompletionList.CompletionData[i] is LuaCompletionData completionData)
+				completionData.RebaseForCurrentDocument(_editorDocumentVersion, _editorRequestGeneration);
+		}
+	}
+
+	private static bool IsCompletionItemCurrent(int? requestDocumentVersion,
+		int currentDocumentVersion,
+		int? requestGeneration,
+		int currentGeneration,
+		bool isEditorLoaded,
+		bool isIntellisenseAvailable)
+	{
+		if (!isEditorLoaded || !isIntellisenseAvailable)
+			return false;
+
+		if (!requestDocumentVersion.HasValue && !requestGeneration.HasValue)
+			return true;
+
+		if (!requestDocumentVersion.HasValue || !requestGeneration.HasValue)
+			return false;
+
+		return requestDocumentVersion.Value == currentDocumentVersion
+			&& requestGeneration.Value == currentGeneration;
 	}
 
 	private void StyleCompletionTooltip()

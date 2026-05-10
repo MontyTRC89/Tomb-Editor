@@ -57,9 +57,7 @@ namespace TombLib.Scripting.Highlighting
 
 		private void Document_Changed(object sender, DocumentChangeEventArgs e)
 		{
-			int startLineIndex = GetStartLineIndex(e.Offset);
-			int removedLineCount = GetAffectedLineCount(e.RemovedText?.Text);
-			int insertedLineCount = GetAffectedLineCount(e.InsertedText?.Text);
+			(int startLineIndex, int removedLineCount, int insertedLineCount) = GetChangeInfo(_document, e);
 			int lineDelta = insertedLineCount - removedLineCount;
 
 			lock (_syncRoot)
@@ -84,6 +82,20 @@ namespace TombLib.Scripting.Highlighting
 
 				UpdateLine(Math.Min(startLineIndex, Math.Max(0, GetNumberOfLines() - 1)));
 			}
+		}
+
+		internal static (int StartLineIndex, int RemovedLineCount, int InsertedLineCount) GetChangeInfo(TextDocument document, DocumentChangeEventArgs change)
+		{
+			if (document is null)
+				throw new ArgumentNullException(nameof(document));
+
+			if (change is null)
+				throw new ArgumentNullException(nameof(change));
+
+			return (
+				GetStartLineIndex(document, change.Offset),
+				GetAffectedLineCount(change.RemovedText?.Text),
+				GetAffectedLineCount(change.InsertedText?.Text));
 		}
 
 		private void InitializeSnapshot()
@@ -133,13 +145,13 @@ namespace TombLib.Scripting.Highlighting
 			return _document.GetText(line.Offset, line.TotalLength);
 		}
 
-		private int GetStartLineIndex(int offset)
+		private static int GetStartLineIndex(TextDocument document, int offset)
 		{
-			if (_document.LineCount == 0)
+			if (document.LineCount == 0)
 				return 0;
 
-			int safeOffset = Math.Max(0, Math.Min(offset, _document.TextLength));
-			DocumentLine line = _document.GetLineByOffset(safeOffset);
+			int safeOffset = Math.Max(0, Math.Min(offset, document.TextLength));
+			DocumentLine line = document.GetLineByOffset(safeOffset);
 			return Math.Max(0, line.LineNumber - 1);
 		}
 
@@ -152,10 +164,18 @@ namespace TombLib.Scripting.Highlighting
 
 			for (int i = 0; i < text.Length; i++)
 			{
-				if (text[i] != '\n')
-					continue;
+				if (text[i] == '\r')
+				{
+					count++;
 
-				count++;
+					if (i + 1 < text.Length && text[i + 1] == '\n')
+						i++;
+
+					continue;
+				}
+
+				if (text[i] == '\n')
+					count++;
 			}
 
 			return count;

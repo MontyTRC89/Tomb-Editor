@@ -135,7 +135,7 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 				LuaCompletionItem? parsedItem = LuaLanguageServerResponseParser.ParseCompletionItem(resolvedItem, itemIndex);
 
 				if (parsedItem is not null)
-					return parsedItem;
+					return unresolvedItem.WithResolvedContent(parsedItem);
 			}
 		}
 		catch (OperationCanceledException)
@@ -182,19 +182,75 @@ internal sealed partial class LuaLanguageServerIntellisenseProvider
 		return parseResponse(response);
 	}
 
-	private static async Task<JsonElement> SendBoundedRequestAsync(ILuaLanguageServerClient client, string method, object parameters, CancellationToken cancellationToken)
+	private async Task<JsonElement> SendBoundedRequestAsync(ILuaLanguageServerClient client, string method, object parameters, CancellationToken cancellationToken)
 	{
+		long transportGeneration = client.TransportGeneration;
 		using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-		timeoutCts.CancelAfter(RequestTimeout);
+		timeoutCts.CancelAfter(_requestTimeout);
 
 		try
 		{
-			return await client.SendRequestAsync(method, parameters, timeoutCts.Token).ConfigureAwait(false);
+			JsonElement response = await client.SendRequestAsync(method, parameters, timeoutCts.Token).ConfigureAwait(false);
+			ResetRequestTimeoutTracking(transportGeneration);
+			return response;
 		}
 		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
 		{
-			Log.Debug("Lua language server request '{Method}' timed out after {Timeout}s.", method, RequestTimeout.TotalSeconds);
+			RecordRequestTimeout(client, method, transportGeneration);
 			return default;
+		}
+	}
+
+	private void RecordRequestTimeout(ILuaLanguageServerClient client, string method, long transportGeneration)
+	{
+		int timeoutCount;
+		bool shouldMarkTransportUnhealthy = false;
+
+		lock (_requestTimeoutSyncRoot)
+		{
+			if (_timedOutRequestGeneration != transportGeneration)
+			{
+				_timedOutRequestGeneration = transportGeneration;
+				_consecutiveRequestTimeouts = 0;
+				_restartRequestedGeneration = -1;
+			}
+
+			timeoutCount = ++_consecutiveRequestTimeouts;
+
+			if (timeoutCount >= _requestTimeoutRestartThreshold && _restartRequestedGeneration != transportGeneration)
+			{
+				_restartRequestedGeneration = transportGeneration;
+				shouldMarkTransportUnhealthy = true;
+			}
+		}
+
+		if (shouldMarkTransportUnhealthy)
+		{
+			Log.Warn("Lua language server request '{Method}' timed out after {Timeout}s {Count} times on transport generation {Generation}; the transport will restart on the next IntelliSense request.",
+				method,
+				_requestTimeout.TotalSeconds,
+				timeoutCount,
+				transportGeneration);
+
+			client.MarkTransportUnhealthy();
+			return;
+		}
+
+		Log.Debug("Lua language server request '{Method}' timed out after {Timeout}s (consecutive {Count}/{Threshold}, generation {Generation}).",
+			method,
+			_requestTimeout.TotalSeconds,
+			timeoutCount,
+			_requestTimeoutRestartThreshold,
+			transportGeneration);
+	}
+
+	private void ResetRequestTimeoutTracking(long transportGeneration)
+	{
+		lock (_requestTimeoutSyncRoot)
+		{
+			_timedOutRequestGeneration = transportGeneration;
+			_consecutiveRequestTimeouts = 0;
+			_restartRequestedGeneration = -1;
 		}
 	}
 }

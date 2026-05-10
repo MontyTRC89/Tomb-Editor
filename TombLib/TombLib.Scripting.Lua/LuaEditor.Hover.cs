@@ -24,7 +24,7 @@ public sealed partial class LuaEditor
 		if (hoveredOffset == -1)
 			return;
 
-		bool hasDiagnostic = TryGetDiagnosticInfo(hoveredOffset, out string diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity);
+		bool hasDiagnostic = TryGetDiagnosticInfo(hoveredOffset, out string diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity, allowLineFallback: false);
 		bool canShowDiagnosticFallback = _completionWindow is null && !_signaturePopup.IsOpen;
 
 		if (!TryGetHoverRequestOffset(hoveredOffset, out int hoverOffset) || !IsIntellisenseAvailable())
@@ -51,6 +51,7 @@ public sealed partial class LuaEditor
 				return;
 			}
 
+			hasDiagnostic = TryGetDiagnosticInfo(currentHoveredOffset, out diagnosticMessage, out diagnosticSeverity, allowLineFallback: false);
 			ShowBestHoverToolTip(hoverInfo, hasDiagnostic, diagnosticMessage, diagnosticSeverity);
 		}
 		catch (OperationCanceledException)

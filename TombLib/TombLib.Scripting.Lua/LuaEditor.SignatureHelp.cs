@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Threading;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Lua.Resources;
 
@@ -14,12 +15,17 @@ namespace TombLib.Scripting.Lua;
 public sealed partial class LuaEditor
 {
 	private const double SignaturePopupFontSize = 14.0;
+	private const double SignatureHelpRefreshDebounceDelayInMilliseconds = 50.0;
 
-	private CancellationTokenSource? _signatureCancellationTokenSource;
+	private int _signatureRequestToken;
+	private int _pendingSignatureHelpOffset = -1;
+	private bool _signatureRefreshPending;
+	private bool _signatureRequestInFlight;
 
 	private readonly Popup _signaturePopup = new();
 	private readonly Border _signaturePopupBorder = new();
 	private readonly ContentPresenter _signaturePopupPresenter = new();
+	private readonly DispatcherTimer _signatureRefreshTimer = new();
 
 	private void InitializeSignaturePopup()
 	{
@@ -37,11 +43,16 @@ public sealed partial class LuaEditor
 		_signaturePopupBorder.Child = _signaturePopupPresenter;
 
 		_signaturePopup.Child = _signaturePopupBorder;
+
+		_signatureRefreshTimer.Interval = TimeSpan.FromMilliseconds(SignatureHelpRefreshDebounceDelayInMilliseconds);
+		_signatureRefreshTimer.Tick -= SignatureRefreshTimer_Tick;
+		_signatureRefreshTimer.Tick += SignatureRefreshTimer_Tick;
 	}
 
 	private void DismissSignatureHelp()
 	{
-		CancelAndDispose(ref _signatureCancellationTokenSource);
+		CancelPendingSignatureHelpRefresh();
+		InvalidateSignatureHelpRequests();
 
 		if (_signaturePopup.IsOpen)
 			_signaturePopup.IsOpen = false;
@@ -73,15 +84,13 @@ public sealed partial class LuaEditor
 			Math.Min(availablePopupWidth, panel.DesiredSize.Width + popupHorizontalPadding),
 			panel.DesiredSize.Height + popupVerticalPadding);
 
-		if (_signaturePopup.IsOpen)
-			_signaturePopup.IsOpen = false;
-
 		_signaturePopupPresenter.Content = panel;
 		_signaturePopupPresenter.InvalidateMeasure();
 		_signaturePopupBorder.InvalidateMeasure();
 		PositionSignaturePopup(popupSize);
 
-		_signaturePopup.IsOpen = true;
+		if (!_signaturePopup.IsOpen)
+			_signaturePopup.IsOpen = true;
 	}
 
 	private StackPanel CreateSignaturePanel(LuaSignatureInfo signatureInfo, double contentMaxWidth)
@@ -145,13 +154,26 @@ public sealed partial class LuaEditor
 
 	private async Task RequestSignatureHelpAsync(int offset)
 	{
+		if (_signatureRequestInFlight)
+		{
+			_pendingSignatureHelpOffset = offset;
+			_signatureRefreshPending = true;
+			return;
+		}
+
+		_signatureRequestInFlight = true;
+
 		if (!IsIntellisenseAvailable())
 		{
+			_signatureRequestInFlight = false;
 			DismissSignatureHelp();
 			return;
 		}
 
-		CancellationToken cancellationToken = ResetCancellationTokenSource(ref _signatureCancellationTokenSource);
+		CancellationToken cancellationToken = CancellationToken.None;
+		int requestToken = ++_signatureRequestToken;
+		int requestDocumentVersion = _editorDocumentVersion;
+		int requestGeneration = _editorRequestGeneration;
 
 		try
 		{
@@ -161,7 +183,7 @@ public sealed partial class LuaEditor
 				.GetSignatureHelpAsync(FilePath, Text, Line, Column, cancellationToken)
 				.ConfigureAwait(true);
 
-			if (cancellationToken.IsCancellationRequested)
+			if (!IsAsyncEditorResultCurrent(cancellationToken, requestToken, _signatureRequestToken, requestDocumentVersion, requestGeneration))
 				return;
 
 			if (signatureInfo is null)
@@ -178,10 +200,53 @@ public sealed partial class LuaEditor
 		{
 			LogEditorFailure("Signature help", exception);
 		}
+		finally
+		{
+			_signatureRequestInFlight = false;
+
+			if (_signatureRefreshPending && _pendingSignatureHelpOffset >= 0)
+			{
+				_signatureRefreshTimer.Stop();
+				_signatureRefreshTimer.Start();
+			}
+		}
 	}
 
 	private void ScheduleSignatureHelpRefresh()
-		=> Dispatcher.BeginInvoke(new Action(() => _ = RequestSignatureHelpAsync(CaretOffset)));
+	{
+		_pendingSignatureHelpOffset = CaretOffset;
+		_signatureRefreshPending = true;
+		_signatureRefreshTimer.Stop();
+		_signatureRefreshTimer.Start();
+	}
+
+	private void CancelPendingSignatureHelpRefresh()
+	{
+		_signatureRefreshTimer.Stop();
+		_signatureRefreshPending = false;
+		_pendingSignatureHelpOffset = -1;
+	}
+
+	private void InvalidateSignatureHelpRequests()
+	{
+		_signatureRequestToken++;
+		_signatureRequestInFlight = false;
+	}
+
+	private async void SignatureRefreshTimer_Tick(object? sender, EventArgs e)
+	{
+		_signatureRefreshTimer.Stop();
+
+		if (!_signatureRefreshPending || _pendingSignatureHelpOffset < 0)
+			return;
+
+		if (_signatureRequestInFlight)
+			return;
+
+		int offset = _pendingSignatureHelpOffset;
+		_signatureRefreshPending = false;
+		await RequestSignatureHelpAsync(offset).ConfigureAwait(true);
+	}
 
 	private static TextBlock BuildSignatureBlock(LuaSignatureInfo signatureInfo, LuaThemeBrushSet brushSet)
 	{

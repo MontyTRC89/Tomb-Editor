@@ -62,6 +62,14 @@ public interface ILuaIntellisenseProvider : IDisposable
 	void CloseDocument(string filePath);
 
 	/// <summary>
+	/// Rekeys a tracked document to a new path while preserving any provider-side state that still applies.
+	/// </summary>
+	/// <param name="oldFilePath">The previous document path.</param>
+	/// <param name="newFilePath">The new document path.</param>
+	/// <param name="content">The current document content.</param>
+	void RenameDocument(string oldFilePath, string newFilePath, string content);
+
+	/// <summary>
 	/// Requests completion items for a position within a Lua document.
 	/// </summary>
 	/// <param name="filePath">The document path.</param>

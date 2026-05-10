@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using TombIDE.ScriptingStudio.Objects;
 using TombIDE.ScriptingStudio.Services.LuaIntellisense;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Lua;
@@ -25,6 +26,8 @@ public sealed partial class LuaStudio
 	{
 		EditorTabControl.FileOpened -= EditorTabControl_LuaFileOpened;
 		EditorTabControl.FileOpened += EditorTabControl_LuaFileOpened;
+		EditorTabControl.DocumentRenamed -= EditorTabControl_DocumentRenamed;
+		EditorTabControl.DocumentRenamed += EditorTabControl_DocumentRenamed;
 
 		_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
 		_intellisenseProvider.DiagnosticsUpdated += IntellisenseProvider_DiagnosticsUpdated;
@@ -35,17 +38,23 @@ public sealed partial class LuaStudio
 		{
 			languageServerProvider.StartupFailed -= IntellisenseProvider_StartupFailed;
 			languageServerProvider.StartupFailed += IntellisenseProvider_StartupFailed;
+			languageServerProvider.WorkspaceWatcherFailed -= IntellisenseProvider_WorkspaceWatcherFailed;
+			languageServerProvider.WorkspaceWatcherFailed += IntellisenseProvider_WorkspaceWatcherFailed;
 		}
 	}
 
 	private void DisposeLuaIntellisense()
 	{
 		EditorTabControl.FileOpened -= EditorTabControl_LuaFileOpened;
+		EditorTabControl.DocumentRenamed -= EditorTabControl_DocumentRenamed;
 		_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
 		_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
 
 		if (_intellisenseProvider is LuaLanguageServerIntellisenseProvider languageServerProvider)
+		{
 			languageServerProvider.StartupFailed -= IntellisenseProvider_StartupFailed;
+			languageServerProvider.WorkspaceWatcherFailed -= IntellisenseProvider_WorkspaceWatcherFailed;
+		}
 
 		_intellisenseProvider.Dispose();
 	}
@@ -61,7 +70,7 @@ public sealed partial class LuaStudio
 			// Log a warning and surface a single non-blocking notification so the failure is visible.
 			Log.Warn("Bundled Lua language server was not found; Lua IntelliSense (diagnostics, completion, hover, go-to-definition) will be unavailable for this session.");
 
-			DarkUI.Forms.DarkMessageBox.Show(this,
+			MessageBox.Show(this,
 				"The bundled Lua language server (LuaLS) could not be located.\n\n" +
 				"Lua IntelliSense - including diagnostics, completion, hover and go-to-definition - will be unavailable for this session.\n\n" +
 				"Reinstall TombIDE to restore the bundled language server.",
@@ -93,6 +102,25 @@ public sealed partial class LuaStudio
 	{
 		if (sender is LuaEditor editor)
 			_intellisenseProvider.UpdateDocument(editor.FilePath, editor.Text);
+	}
+
+	private void EditorTabControl_DocumentRenamed(object? sender, DocumentRenamedEventArgs e)
+	{
+		LuaEditor? editor = null;
+
+		foreach (TabPage tabPage in EditorTabControl.FindTabPagesOfFile(e.NewFilePath))
+		{
+			if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor luaEditor)
+			{
+				editor = luaEditor;
+				break;
+			}
+		}
+
+		if (editor is null)
+			return;
+
+		_intellisenseProvider.RenameDocument(e.OldFilePath, e.NewFilePath, editor.Text);
 	}
 
 	private void IntellisenseProvider_DiagnosticsUpdated(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics)
@@ -136,9 +164,27 @@ public sealed partial class LuaStudio
 		if (IsDisposed)
 			return;
 
-		DarkUI.Forms.DarkMessageBox.Show(this,
+		MessageBox.Show(this,
 			failure.Message,
 			failure.IsPersistent ? "Lua IntelliSense disabled" : "Lua IntelliSense unavailable",
+			MessageBoxButtons.OK,
+			MessageBoxIcon.Warning);
+	}
+
+	private void IntellisenseProvider_WorkspaceWatcherFailed(LuaWorkspaceWatcherFailure failure)
+	{
+		if (InvokeRequired)
+		{
+			BeginInvoke(new Action<LuaWorkspaceWatcherFailure>(IntellisenseProvider_WorkspaceWatcherFailed), failure);
+			return;
+		}
+
+		if (IsDisposed)
+			return;
+
+		MessageBox.Show(this,
+			failure.Message,
+			"Lua workspace watching disabled",
 			MessageBoxButtons.OK,
 			MessageBoxIcon.Warning);
 	}
@@ -169,4 +215,19 @@ public sealed partial class LuaStudio
 
 	private static void ApplySemanticTokensToEditor(LuaEditor editor, IReadOnlyList<LuaSemanticToken> semanticTokens)
 		=> editor.SetSemanticTokens(semanticTokens ?? []);
+
+	private void ApplyTrackedDocumentStateToEditors(string filePath)
+	{
+		IReadOnlyList<TextEditorDiagnostic> diagnostics = _intellisenseProvider.GetDiagnostics(filePath);
+		IReadOnlyList<LuaSemanticToken> semanticTokens = _intellisenseProvider.GetSemanticTokens(filePath);
+
+		foreach (TabPage tabPage in EditorTabControl.FindTabPagesOfFile(filePath))
+		{
+			if (EditorTabControl.GetEditorOfTab(tabPage) is LuaEditor editor)
+			{
+				ApplyDiagnosticsToEditor(editor, diagnostics);
+				ApplySemanticTokensToEditor(editor, semanticTokens);
+			}
+		}
+	}
 }

@@ -2,16 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using TextMateSharp.Grammars;
 using TextMateSharp.Model;
 using TextMateSharp.Registry;
 using TextMateSharp.Themes;
+using System.Xml;
 
 namespace TombLib.Scripting.Highlighting
 {
 	public static class LuaTextMateSyntaxHighlighting
 	{
 		private static readonly Lazy<IGrammar> GrammarState = new Lazy<IGrammar>(LoadGrammarState);
+		private static readonly Lazy<IHighlightingDefinition> FallbackHighlightingState = new Lazy<IHighlightingDefinition>(LoadFallbackHighlightingCore);
 		private static readonly TextMateTokenTheme DefaultTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme();
 
 		public static bool TryInstall(TextEditor editor, out LuaTextMateInstallation installation)
@@ -40,6 +44,9 @@ namespace TombLib.Scripting.Highlighting
 			return true;
 		}
 
+		public static IHighlightingDefinition LoadFallbackHighlighting()
+			=> FallbackHighlightingState.Value;
+
 		private static IGrammar LoadGrammarState()
 		{
 			string grammarFilePath = Path.Combine(AppContext.BaseDirectory, "Configs", "TextEditors", "Grammars", "Lua", "lua.tmLanguage.json");
@@ -49,6 +56,18 @@ namespace TombLib.Scripting.Highlighting
 
 			var registry = new Registry(new RegistryOptions(ThemeName.DarkPlus));
 			return registry.LoadGrammarFromPathSync(grammarFilePath, 0, new Dictionary<string, int>());
+		}
+
+		private static IHighlightingDefinition LoadFallbackHighlightingCore()
+		{
+			string fallbackFilePath = Path.Combine(AppContext.BaseDirectory, "Configs", "TextEditors", "ColorSchemes", "Lua", "Default.xml");
+
+			if (!File.Exists(fallbackFilePath))
+				return null;
+
+			using var stream = File.OpenRead(fallbackFilePath);
+			using var reader = XmlReader.Create(stream);
+			return HighlightingLoader.Load(reader, HighlightingManager.Instance);
 		}
 
 	}

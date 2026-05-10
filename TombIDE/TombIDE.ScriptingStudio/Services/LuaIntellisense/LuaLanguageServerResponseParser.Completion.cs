@@ -155,17 +155,23 @@ internal static partial class LuaLanguageServerResponseParser
 		if (string.IsNullOrWhiteSpace(label))
 			return null;
 
-		string insertText = itemElement.TryGetProperty("textEdit", out JsonElement textEditElement)
-			&& textEditElement.TryGetProperty("newText", out JsonElement newTextElement)
-				? newTextElement.GetString() ?? label
-				: itemElement.TryGetProperty("insertText", out JsonElement insertTextElement)
-					? insertTextElement.GetString() ?? label
-					: label;
+		LuaCompletionTextEdit? textEdit = ExtractCompletionTextEdit(itemElement, out string? textEditText);
+
+		string insertText = textEditText ?? string.Empty;
+
+		if (string.IsNullOrWhiteSpace(insertText))
+		{
+			insertText = itemElement.TryGetProperty("insertText", out JsonElement insertTextElement)
+				? insertTextElement.GetString() ?? label
+				: label;
+		}
+
+		int? insertCaretOffset = null;
 
 		if (itemElement.TryGetProperty("insertTextFormat", out JsonElement insertTextFormatElement)
 			&& insertTextFormatElement.TryGetInt32(out int insertTextFormat) && insertTextFormat == 2)
 		{
-			insertText = StripSnippetPlaceholders(insertText);
+			(insertText, insertCaretOffset) = StripSnippetPlaceholders(insertText);
 		}
 
 		string filterText = itemElement.TryGetProperty("filterText", out JsonElement filterTextElement)
@@ -190,7 +196,86 @@ internal static partial class LuaLanguageServerResponseParser
 			BuildCompletionPriority(itemElement, textAnalysis, itemIndex),
 			BuildCompletionIconKind(completionKind, textAnalysis),
 			description.IsMarkdown,
-			resolveAsync);
+			resolveAsync,
+			textEdit,
+			insertCaretOffset: insertCaretOffset);
+	}
+
+	private static LuaCompletionTextEdit? ExtractCompletionTextEdit(JsonElement itemElement, out string? textEditText)
+	{
+		textEditText = null;
+
+		if (!itemElement.TryGetProperty("textEdit", out JsonElement textEditElement)
+			|| textEditElement.ValueKind != JsonValueKind.Object)
+		{
+			return null;
+		}
+
+		textEditText = textEditElement.TryGetProperty("newText", out JsonElement newTextElement)
+			? newTextElement.GetString()
+			: null;
+
+		return ParseCompletionTextEdit(textEditElement);
+	}
+
+	private static LuaCompletionTextEdit? ParseCompletionTextEdit(JsonElement textEditElement)
+	{
+		if (textEditElement.ValueKind != JsonValueKind.Object)
+			return null;
+
+		if (textEditElement.TryGetProperty("range", out JsonElement rangeElement)
+			&& TryParseCompletionRange(rangeElement, out LuaCompletionRange range))
+		{
+			return new LuaCompletionTextEdit(range);
+		}
+
+		if (textEditElement.TryGetProperty("insert", out JsonElement insertRangeElement)
+			&& textEditElement.TryGetProperty("replace", out JsonElement replaceRangeElement)
+			&& TryParseCompletionRange(insertRangeElement, out LuaCompletionRange insertRange)
+			&& TryParseCompletionRange(replaceRangeElement, out LuaCompletionRange replaceRange))
+		{
+			return new LuaCompletionTextEdit(insertRange, replaceRange);
+		}
+
+		return null;
+	}
+
+	private static bool TryParseCompletionRange(JsonElement rangeElement, out LuaCompletionRange range)
+	{
+		range = default;
+
+		if (!TryParseCompletionPosition(rangeElement, "start", out LuaCompletionPosition start)
+			|| !TryParseCompletionPosition(rangeElement, "end", out LuaCompletionPosition end))
+		{
+			return false;
+		}
+
+		range = new LuaCompletionRange(start, end);
+		return true;
+	}
+
+	private static bool TryParseCompletionPosition(JsonElement parentElement, string propertyName, out LuaCompletionPosition position)
+	{
+		position = default;
+
+		if (!parentElement.TryGetProperty(propertyName, out JsonElement positionElement)
+			|| positionElement.ValueKind != JsonValueKind.Object)
+		{
+			return false;
+		}
+
+		if (!positionElement.TryGetProperty("line", out JsonElement lineElement)
+			|| !lineElement.TryGetInt32(out int line)
+			|| !positionElement.TryGetProperty("character", out JsonElement characterElement)
+			|| !characterElement.TryGetInt32(out int character)
+			|| line < 0
+			|| character < 0)
+		{
+			return false;
+		}
+
+		position = new LuaCompletionPosition(line, character);
+		return true;
 	}
 
 	private static class CompletionPriorityWeights
@@ -356,12 +441,13 @@ internal static partial class LuaLanguageServerResponseParser
 			: new MarkupContent(normalizedText, documentation.IsMarkdown);
 	}
 
-	private static string StripSnippetPlaceholders(string snippet)
+	private static (string Text, int? CaretOffset) StripSnippetPlaceholders(string snippet)
 	{
 		if (string.IsNullOrWhiteSpace(snippet))
-			return snippet;
+			return (snippet, null);
 
 		var builder = new StringBuilder(snippet.Length);
+		int? caretOffset = null;
 		int index = 0;
 
 		while (index < snippet.Length)
@@ -376,20 +462,43 @@ internal static partial class LuaLanguageServerResponseParser
 					{
 						string placeholder = snippet[(index + 2)..endIndex];
 						int separatorIndex = placeholder.IndexOf(':');
+						ReadOnlySpan<char> placeholderNumber = separatorIndex >= 0
+							? placeholder.AsSpan(0, separatorIndex)
+							: placeholder.AsSpan();
 
-						if (separatorIndex >= 0 && separatorIndex < placeholder.Length - 1)
-							builder.Append(placeholder[(separatorIndex + 1)..]);
+						if (int.TryParse(placeholderNumber, out int placeholderIndex))
+						{
+							if (separatorIndex >= 0 && separatorIndex < placeholder.Length - 1)
+								builder.Append(placeholder[(separatorIndex + 1)..]);
 
+							if (placeholderIndex == 0)
+								caretOffset ??= builder.Length;
+
+							index = endIndex + 1;
+							continue;
+						}
+
+						builder.Append(snippet, index, endIndex - index + 1);
 						index = endIndex + 1;
 						continue;
 					}
 				}
 
 				index++;
+				int placeholderStart = index;
 
 				while (index < snippet.Length && char.IsDigit(snippet[index]))
 					index++;
 
+				if (placeholderStart < index)
+				{
+					if (index - placeholderStart == 1 && snippet[placeholderStart] == '0')
+						caretOffset ??= builder.Length;
+
+					continue;
+				}
+
+				builder.Append('$');
 				continue;
 			}
 
@@ -397,6 +506,6 @@ internal static partial class LuaLanguageServerResponseParser
 			index++;
 		}
 
-		return builder.ToString();
+		return (builder.ToString(), caretOffset);
 	}
 }

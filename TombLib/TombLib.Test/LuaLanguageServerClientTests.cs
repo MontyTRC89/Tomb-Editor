@@ -54,10 +54,9 @@ public class LuaLanguageServerClientTests
 		using Process process = StartDisposableProcess();
 		using var outputStream = new RecordingStream();
 		using var client = new LuaLanguageServerClient(@"C:\Workspace", process.StartInfo.FileName, static () => new { });
+		object session = CreateTransportSession(1, process, Stream.Null, outputStream);
 
-		SetPrivateField(client, "_process", process);
-		SetPrivateField(client, "_inputStream", Stream.Null);
-		SetPrivateField(client, "_outputStream", outputStream);
+		SetActiveSession(client, session);
 
 		client.Dispose();
 
@@ -72,12 +71,13 @@ public class LuaLanguageServerClientTests
 	{
 		await using var outputStream = new RecordingStream();
 		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
+		object session = CreateTransportSession(1, process: null, Stream.Null, outputStream);
 		bool refreshRequested = false;
 
-		SetPrivateField(client, "_outputStream", outputStream);
 		client.SemanticTokensRefreshRequested += () => refreshRequested = true;
 
 		await InvokePrivateTaskAsync(client, "HandleServerRequestAsync",
+			session,
 			JsonSerializer.SerializeToElement(7L),
 			"workspace/semanticTokens/refresh",
 			default(JsonElement)).ConfigureAwait(false);
@@ -118,11 +118,10 @@ public class LuaLanguageServerClientTests
 		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
 		string payloadJson = "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"value\":42}}";
 		byte[] frame = CreateLspFrame(payloadJson);
+		object session = CreateTransportSession(1, process: null, new ChunkedReadStream(SplitBytes(frame, 5, 7, 11, 3)), Stream.Null);
 
-		SetPrivateField(client, "_inputStream", new ChunkedReadStream(SplitBytes(frame, 5, 7, 11, 3)));
-
-		int? contentLength = await InvokePrivateTaskAsync<int?>(client, "ReadHeadersAsync").ConfigureAwait(false);
-		byte[]? payload = await InvokePrivateTaskAsync<byte[]?>(client, "ReadPayloadAsync", contentLength!.Value).ConfigureAwait(false);
+		int? contentLength = await InvokePrivateTaskAsync<int?>(client, "ReadHeadersAsync", session).ConfigureAwait(false);
+		byte[]? payload = await InvokePrivateTaskAsync<byte[]?>(client, "ReadPayloadAsync", session, contentLength!.Value).ConfigureAwait(false);
 
 		Assert.AreEqual(Encoding.UTF8.GetByteCount(payloadJson), contentLength);
 		Assert.IsNotNull(payload);
@@ -136,12 +135,11 @@ public class LuaLanguageServerClientTests
 		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
 		bool refreshRequested = false;
 		byte[] frame = CreateLspFrame("{\"jsonrpc\":\"2.0\",\"id\":9,\"method\":\"workspace/semanticTokens/refresh\"}");
+		object session = CreateTransportSession(1, process: null, new ChunkedReadStream(SplitBytes(frame, 4, 9, 6, 13)), outputStream);
 
-		SetPrivateField(client, "_inputStream", new ChunkedReadStream(SplitBytes(frame, 4, 9, 6, 13)));
-		SetPrivateField(client, "_outputStream", outputStream);
 		client.SemanticTokensRefreshRequested += () => refreshRequested = true;
 
-		await InvokePrivateTaskAsync(client, "ReadLoopAsync").ConfigureAwait(false);
+		await InvokePrivateTaskAsync(client, "ReadLoopAsync", session).ConfigureAwait(false);
 
 		string writtenPayload = outputStream.GetWrittenText();
 
@@ -155,11 +153,11 @@ public class LuaLanguageServerClientTests
 	{
 		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
 		var pendingRequest = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
+		object session = CreateTransportSession(1, process: null, new ChunkedReadStream(), Stream.Null);
 
-		GetPendingRequests(client).TryAdd(42, pendingRequest);
-		SetPrivateField(client, "_inputStream", new ChunkedReadStream());
+		GetPendingRequests(session).TryAdd(42, pendingRequest);
 
-		await InvokePrivateTaskAsync(client, "ReadLoopAsync").ConfigureAwait(false);
+		await InvokePrivateTaskAsync(client, "ReadLoopAsync", session).ConfigureAwait(false);
 
 		await Assert.ThrowsExceptionAsync<IOException>(() => pendingRequest.Task).ConfigureAwait(false);
 	}
@@ -170,15 +168,34 @@ public class LuaLanguageServerClientTests
 		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
 		var pendingRequest = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
 		byte[] frame = CreateLspFrame("{\"jsonrpc\":\"2.0\",\"id\":42,\"result\":{\"label\":\"ok\"}}");
+		object session = CreateTransportSession(1, process: null, new ChunkedReadStream(SplitBytes(frame, 6, 8, 5, 9)), Stream.Null);
 
-		GetPendingRequests(client).TryAdd(42, pendingRequest);
-		SetPrivateField(client, "_inputStream", new ChunkedReadStream(SplitBytes(frame, 6, 8, 5, 9)));
+		GetPendingRequests(session).TryAdd(42, pendingRequest);
 
-		await InvokePrivateTaskAsync(client, "ReadLoopAsync").ConfigureAwait(false);
+		await InvokePrivateTaskAsync(client, "ReadLoopAsync", session).ConfigureAwait(false);
 
 		JsonElement result = await pendingRequest.Task.ConfigureAwait(false);
 
 		Assert.AreEqual("ok", result.GetProperty("label").GetString());
+	}
+
+	[TestMethod]
+	public async Task ReadLoopAsync_OldTransportGenerationDoesNotFailActiveSessionRequests()
+	{
+		using var client = new LuaLanguageServerClient(@"C:\Workspace", "lua-language-server.exe", static () => new { });
+		object oldSession = CreateTransportSession(1, process: null, new ChunkedReadStream(), Stream.Null);
+		object newSession = CreateTransportSession(2, process: null, new ChunkedReadStream(), Stream.Null);
+		var oldPendingRequest = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var newPendingRequest = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		GetPendingRequests(oldSession).TryAdd(41, oldPendingRequest);
+		GetPendingRequests(newSession).TryAdd(42, newPendingRequest);
+		SetActiveSession(client, newSession);
+
+		await InvokePrivateTaskAsync(client, "ReadLoopAsync", oldSession).ConfigureAwait(false);
+
+		await Assert.ThrowsExceptionAsync<IOException>(() => oldPendingRequest.Task).ConfigureAwait(false);
+		Assert.IsFalse(newPendingRequest.Task.IsCompleted);
 	}
 
 	private static Process StartDisposableProcess()
@@ -198,12 +215,42 @@ public class LuaLanguageServerClientTests
 			?? throw new InvalidOperationException("Unable to start the disposable test process.");
 	}
 
-	private static void SetPrivateField(LuaLanguageServerClient client, string fieldName, object? value)
+	private static void SetPrivateField(object instance, string fieldName, object? value)
 	{
-		FieldInfo field = typeof(LuaLanguageServerClient).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+		FieldInfo field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
 			?? throw new InvalidOperationException($"Private field '{fieldName}' was not found.");
 
-		field.SetValue(client, value);
+		field.SetValue(instance, value);
+	}
+
+	private static object CreateTransportSession(long generation, Process? process, Stream inputStream, Stream outputStream)
+	{
+		Type sessionType = typeof(LuaLanguageServerClient).GetNestedType("LuaLanguageServerTransportSession", BindingFlags.NonPublic)
+			?? throw new InvalidOperationException("Nested type 'LuaLanguageServerTransportSession' was not found.");
+
+		ConstructorInfo constructor = sessionType.GetConstructor(
+			BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+			binder: null,
+			[typeof(long), typeof(Process), typeof(Stream), typeof(Stream)],
+			modifiers: null)
+			?? throw new InvalidOperationException("Lua transport session constructor was not found.");
+
+		return constructor.Invoke([generation, process, inputStream, outputStream]);
+	}
+
+	private static void SetActiveSession(LuaLanguageServerClient client, object session)
+	{
+		SetPrivateField(client, "_activeSession", session);
+		SetPrivateField(client, "_activeTransportGeneration", GetTransportGeneration(session));
+	}
+
+	private static long GetTransportGeneration(object session)
+	{
+		PropertyInfo property = session.GetType().GetProperty("Generation", BindingFlags.Instance | BindingFlags.Public)
+			?? throw new InvalidOperationException("Transport session property 'Generation' was not found.");
+
+		return (long)(property.GetValue(session)
+			?? throw new InvalidOperationException("Transport session generation value was null."));
 	}
 
 	private static void InvokePrivateMethod(object instance, string methodName, params object?[] parameters)
@@ -262,12 +309,13 @@ public class LuaLanguageServerClientTests
 		((CancellationTokenSource)field.GetValue(client)!).Cancel();
 	}
 
-	private static ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> GetPendingRequests(LuaLanguageServerClient client)
+	private static ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> GetPendingRequests(object session)
 	{
-		FieldInfo field = typeof(LuaLanguageServerClient).GetField("_pendingRequests", BindingFlags.Instance | BindingFlags.NonPublic)
-			?? throw new InvalidOperationException("Private field '_pendingRequests' was not found.");
+		PropertyInfo property = session.GetType().GetProperty("PendingRequests", BindingFlags.Instance | BindingFlags.Public)
+			?? throw new InvalidOperationException("Transport session property 'PendingRequests' was not found.");
 
-		return (ConcurrentDictionary<long, TaskCompletionSource<JsonElement>>)field.GetValue(client)!;
+		return (ConcurrentDictionary<long, TaskCompletionSource<JsonElement>>)(property.GetValue(session)
+			?? throw new InvalidOperationException("Transport session pending request map was null."));
 	}
 
 	private static byte[] CreateLspFrame(string json)
