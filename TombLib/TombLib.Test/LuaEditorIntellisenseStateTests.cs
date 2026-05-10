@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +11,7 @@ using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Lua.Services;
 using TombLib.Scripting.Objects;
+using static TombLib.Test.WpfTestHelper;
 
 namespace TombLib.Test;
 
@@ -115,7 +115,7 @@ public class LuaEditorIntellisenseStateTests
 			SetSignatureHelpField(editor, "_signatureRefreshPending", true);
 			SetSignatureHelpField(editor, "_pendingSignatureHelpOffset", 9);
 
-			InvokePrivateInstanceMethod(editor, "DismissSignatureHelp");
+			InvokeInstanceMethod(editor, "DismissSignatureHelp", Type.EmptyTypes);
 
 			Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRequestInFlight"));
 			Assert.AreEqual(6, GetSignatureHelpField<int>(editor, "_signatureRequestToken"));
@@ -368,7 +368,7 @@ public class LuaEditorIntellisenseStateTests
 			object completionController = GetCompletionController(editor);
 
 			SetPrivateField(completionController, "_completionRequestToken", 5);
-			InvokePrivateInstanceMethod(editor, "CloseCompletionWindow");
+			InvokeInstanceMethod(editor, "CloseCompletionWindow", Type.EmptyTypes);
 			Assert.AreEqual(6, GetPrivateField<int>(completionController, "_completionRequestToken"));
 
 			InvokeControllerInstanceMethod(editor, "_completionController", "CloseWindowForRefresh");
@@ -537,7 +537,7 @@ public class LuaEditorIntellisenseStateTests
 			editor.InitializeCompletionWindow();
 			editor.ShowToolTip("Hover docs.");
 
-			InvokePrivateInstanceMethod(editor, "DismissTransientToolTips");
+			InvokeInstanceMethod(editor, "DismissTransientToolTips", Type.EmptyTypes);
 
 			Assert.IsTrue(hoverCancellationTokenSource.IsCancellationRequested);
 			Assert.IsNull(GetHoverFieldValue(editor, "_hoverCancellationTokenSource"));
@@ -654,7 +654,7 @@ public class LuaEditorIntellisenseStateTests
 				presenter.Content = new TextBlock { Text = "signature" };
 				popup.IsOpen = true;
 
-				Task requestTask = (Task)(InvokePrivateInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
+				Task requestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
 					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
 
 				requestTask.GetAwaiter().GetResult();
@@ -706,10 +706,10 @@ public class LuaEditorIntellisenseStateTests
 
 			try
 			{
-				Task firstRequestTask = (Task)(InvokePrivateInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
+				Task firstRequestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
 					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
 
-				Task deferredRequestTask = (Task)(InvokePrivateInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 11)
+				Task deferredRequestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 11)
 					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
 
 				deferredRequestTask.GetAwaiter().GetResult();
@@ -769,7 +769,7 @@ public class LuaEditorIntellisenseStateTests
 
 			try
 			{
-				Task requestTask = (Task)(InvokePrivateInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
+				Task requestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
 					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
 
 				requestTask.GetAwaiter().GetResult();
@@ -792,14 +792,7 @@ public class LuaEditorIntellisenseStateTests
 
 	private static bool InvokePrivateStaticBooleanMethod(string methodName, Type[] parameterTypes, params object?[] arguments)
 	{
-		MethodInfo method = typeof(LuaEditor).GetMethod(methodName,
-			BindingFlags.Static | BindingFlags.NonPublic,
-			binder: null,
-			parameterTypes,
-			modifiers: null)
-			?? throw new InvalidOperationException($"Private static method '{methodName}' was not found.");
-
-		return (bool)(method.Invoke(null, arguments)
+		return (bool)(InvokeStaticMethod(typeof(LuaEditor), methodName, parameterTypes, arguments)
 			?? throw new InvalidOperationException($"Private static method '{methodName}' returned null."));
 	}
 
@@ -839,19 +832,11 @@ public class LuaEditorIntellisenseStateTests
 		return result;
 	}
 
-	private static void InvokePrivateInstanceMethod(object instance, string methodName)
-	{
-		MethodInfo method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-			?? throw new InvalidOperationException($"Private instance method '{methodName}' was not found.");
-
-		method.Invoke(instance, null);
-	}
-
 	private static void InvokeControllerInstanceMethod(LuaEditor editor, string controllerFieldName, string methodName)
-		=> InvokePrivateInstanceMethod(GetPrivateField<object>(editor, controllerFieldName), methodName);
+		=> InvokeInstanceMethod(GetPrivateField<object>(editor, controllerFieldName), methodName, Type.EmptyTypes);
 
 	private static object? InvokeControllerInstanceMethod(LuaEditor editor, string controllerFieldName, string methodName, Type[] parameterTypes, params object?[] arguments)
-		=> InvokePrivateInstanceMethod(GetPrivateField<object>(editor, controllerFieldName), methodName, parameterTypes, arguments);
+		=> InvokeInstanceMethod(GetPrivateField<object>(editor, controllerFieldName), methodName, parameterTypes, arguments);
 
 	private static object GetCompletionController(LuaEditor editor)
 		=> GetPrivateField<object>(editor, "_completionController");
@@ -876,106 +861,6 @@ public class LuaEditorIntellisenseStateTests
 
 	private static void SetSignatureHelpField(LuaEditor editor, string fieldName, object value)
 		=> SetPrivateField(GetSignatureHelpController(editor), fieldName, value);
-
-	private static object? InvokePrivateInstanceMethod(object instance, string methodName, Type[] parameterTypes, params object?[] arguments)
-	{
-		MethodInfo method = instance.GetType().GetMethod(
-			methodName,
-			BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-			binder: null,
-			parameterTypes,
-			modifiers: null)
-			?? throw new InvalidOperationException($"Private instance method '{methodName}' was not found.");
-
-		return method.Invoke(instance, arguments);
-	}
-
-	private static T GetPrivateField<T>(object instance, string fieldName)
-	{
-		FieldInfo field = FindInstanceField(instance.GetType(), fieldName)
-			?? throw new InvalidOperationException($"Private field '{fieldName}' was not found.");
-
-		return (T)(field.GetValue(instance)
-			?? throw new InvalidOperationException($"Private field '{fieldName}' returned null."));
-	}
-
-	private static void SetPrivateField(object instance, string fieldName, object value)
-	{
-		FieldInfo field = FindInstanceField(instance.GetType(), fieldName)
-			?? throw new InvalidOperationException($"Private field '{fieldName}' was not found.");
-
-		field.SetValue(instance, value);
-	}
-
-	private static object? GetPrivateFieldValue(object instance, string fieldName)
-	{
-		FieldInfo field = FindInstanceField(instance.GetType(), fieldName)
-			?? throw new InvalidOperationException($"Private field '{fieldName}' was not found.");
-
-		return field.GetValue(instance);
-	}
-
-	private static FieldInfo? FindInstanceField(Type type, string fieldName)
-	{
-		for (Type? currentType = type; currentType is not null; currentType = currentType.BaseType)
-		{
-			FieldInfo? field = currentType.GetField(
-				fieldName,
-				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
-
-			if (field is not null)
-				return field;
-		}
-
-		return null;
-	}
-
-	private static Window ShowInHostWindow(FrameworkElement content)
-	{
-		var window = new Window
-		{
-			Content = content,
-			Width = 800.0,
-			Height = 600.0,
-			ShowActivated = false,
-			ShowInTaskbar = false,
-			WindowStyle = WindowStyle.None
-		};
-
-		window.Show();
-		window.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() => { }));
-		return window;
-	}
-
-	private static void RunInSta(Action action)
-	{
-		Exception? capturedException = null;
-		using var completed = new ManualResetEventSlim(false);
-
-		var thread = new Thread(() =>
-		{
-			try
-			{
-				action();
-			}
-			catch (Exception exception)
-			{
-				capturedException = exception;
-			}
-			finally
-			{
-				completed.Set();
-			}
-		});
-
-		thread.SetApartmentState(ApartmentState.STA);
-		thread.Start();
-		completed.Wait();
-		thread.Join();
-
-		if (capturedException is not null)
-			ExceptionDispatchInfo.Capture(capturedException).Throw();
-	}
 
 	private readonly record struct ProviderRequest(string FilePath, string Content, int Line, int Column);
 
