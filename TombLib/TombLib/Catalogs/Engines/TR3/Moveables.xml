@@ -284,5 +284,5 @@
     <moveable id="366" name="Yellow shell casing" hidden="true" />
     <moveable id="367" name="Red shell casing" hidden="true" />
     <moveable id="370" name="Tinnos light shaft" essential="false" ten="WATERFALL1" />
-    <moveable id="373" name="Electrical switch box" essential="false" ten="SHOOT_SWITCH2" /> 
+    <moveable id="373" name="Electrical switch box" essential="false" ten="FUSEBOX_SWITCH" /> 
 </moveables>
