@@ -149,6 +149,7 @@
     <moveable id="195" name="CYBORG" />
     <moveable id="196" name="SNIPER" />
     <moveable id="197" name="CHEF" />
+	<moveable id="198" name="TR3_BATS_EMITTER" />
     <moveable id="219" name="KOLD" />
     <moveable id="220" name="WINGED_MUMMY" />
     <moveable id="221" name="CENTAUR_MUTANT" />
