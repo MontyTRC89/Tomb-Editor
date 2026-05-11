@@ -12633,10 +12633,6 @@ No word wrapping will occur if this parameter is default or omitted.</descriptio
 					<summary>Object ID.</summary>
 				</value>
 				<value>
-					<name>TR3_BATS_EMITTER</name>
-					<summary>Object ID.</summary>
-				</value>
-				<value>
 					<name>KOLD</name>
 					<summary>Object ID.</summary>
 				</value>
