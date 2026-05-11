@@ -1,7 +1,7 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System.Numerics;
+﻿using System.Numerics;
 using TombLib;
 using TombLib.Graphics;
+using TombLib.Rendering;
 using WadTool.Controls;
 
 namespace WadTool
@@ -12,9 +12,9 @@ namespace WadTool
         private readonly PanelRenderingSkeleton _control;
         private readonly WadToolClass _tool;
 
-        public GizmoSkeletonEditor(WadToolClass tool, Configuration configuration, GraphicsDevice device,
-                                   Effect effect, PanelRenderingSkeleton control)
-            : base(device, effect)
+        public GizmoSkeletonEditor(WadToolClass tool, Configuration configuration, RenderingDevice device,
+                                   PanelRenderingSkeleton control)
+            : base(device)
         {
             _configuration = configuration;
             _control = control;

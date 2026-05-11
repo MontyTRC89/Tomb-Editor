@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
-using SharpDX.Toolkit.Graphics;
 using TombLib.Graphics;
+using TombLib.Rendering;
 using WadTool.Controls;
 using TombLib;
 
@@ -15,9 +15,9 @@ namespace WadTool
         private Quaternion _pickQuaternion;
         private Vector3 _pickEuler;
 
-        public GizmoAnimationEditor(AnimationEditor editor, GraphicsDevice device,
-                                    Effect effect, PanelRenderingAnimationEditor control)
-            : base(device, effect)
+        public GizmoAnimationEditor(AnimationEditor editor, RenderingDevice device,
+                                    PanelRenderingAnimationEditor control)
+            : base(device)
         {
             _editor = editor;
             _configuration = editor.Tool.Configuration;

@@ -11,6 +11,43 @@ using Vector3 = System.Numerics.Vector3;
 
 namespace TombLib.Rendering.DirectX11
 {
+    // Pre-baked GPU geometry for one Room. Created on demand by Panel3D and cached
+    // (one entry per Room) until something invalidates the room (geometry edit, sector
+    // texture change, light change, portal modification on a neighbour, etc.).
+    //
+    // Memory layout
+    // -------------
+    // The vertex buffer is IMMUTABLE and holds 5 interleaved-but-separately-bound
+    // streams in a single allocation. SoA layout is used because (a) it keeps every
+    // vertex small and cache-aligned and (b) the room shader's input layout uses
+    // distinct slots per attribute, so binding offsets work out cleanly.
+    //
+    //   stream 0  POSITION   float3   12 B
+    //   stream 1  COLOR      uint     4 B   (CompressColor — premultiplied vertex tint)
+    //   stream 2  OVERLAY    uint     4 B   (sector overlay color + 0.4 alpha for hidden rooms)
+    //   stream 3  UVW+BLEND  ulong    8 B   (CompressUvw — atlas X,Y,page,blendMode)
+    //   stream 4  EDITOR_UV  uint     4 B   (low bits: per-vertex editor-grid UV;
+    //                                         high bits: sector texture / highlight flags)
+    // Total: 32 B/vertex, vs. 60+ in a naive layout.
+    //
+    // Geometry layout
+    // ---------------
+    // singleSidedVertexCount = roomGeometry.VertexPositions.Count (one triangle = 3 verts)
+    // Past that, double-sided triangles are duplicated with reversed winding so we don't
+    // need rasterizer-state changes mid-room. The duplicated verts share atlas UVs but
+    // get the back-face winding via reversed vertex order (i*3+2, +1, +0).
+    //
+    // Texture lifecycle
+    // -----------------
+    // The atlas texture allocator can garbage-collect at any time (when it's full).
+    // GarbageCollectTexture() is registered as a callback that:
+    //   1) reads back our entire VB into RAM (immutable buffers can't be partially updated),
+    //   2) reports which atlas entries we still reference (for the GC to keep alive),
+    //   3) returns an "adjust" delegate that the allocator calls AFTER the GC pass with the
+    //      new atlas Map, so we can rewrite all UVWs and rebuild the immutable buffer.
+    // The TexturesInvalidated/TexturesInvalidatedRetried pair handles the case where an
+    // atlas allocation fails MID-construction; we restart texturing once. If it fails
+    // twice we accept some textures will render as "unavailable".
     public class Dx11RenderingDrawingRoom : RenderingDrawingRoom
     {
         public readonly Dx11RenderingDevice Device;
@@ -28,39 +65,71 @@ namespace TombLib.Rendering.DirectX11
             Device = device;
             TextureView = ((Dx11RenderingTextureAllocator)(description.TextureAllocator)).TextureView;
             TextureAllocator = description.TextureAllocator;
+
+            // Reciprocal of atlas size, baked into the UV packing format. The 16777216
+            // constant is 2^24 — see CompressUvw for layout.
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
 
             RoomGeometry roomGeometry = description.Room.RoomGeometry;
+            // TombEngine allows >256 px texture spans across a triangle (out-of-bounds
+            // marker shows on classic engines for this case).
             float maxTexCoordSpan = description.Room.Level?.IsTombEngine == true ? 1024.0f : 256.0f;
 
-            // Create buffer
             Vector3 worldPos = description.Room.WorldPos + description.Offset;
             int singleSidedVertexCount = roomGeometry.VertexPositions.Count;
             int vertexCount = VertexCount = singleSidedVertexCount + roomGeometry.DoubleSidedTriangleCount * 3;
             if (vertexCount == 0)
                 return;
+
+            // Total bytes for the SoA layout described in the class comment.
             VertexBufferSize = vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(uint) + sizeof(ulong) + sizeof(uint));
+            // `fixed (byte* data = new byte[N])` lets us treat the heap-allocated buffer
+            // as a stack-pinned region just for the duration of the scope. The `fixed`
+            // here is what allows the unsafe pointer arithmetic below; it is NOT a stack
+            // allocation (the array is on the GC heap).
             fixed (byte* data = new byte[VertexBufferSize])
             {
-                Vector3* positions = (Vector3*)(data);
-                uint* colors = (uint*)(data + vertexCount * sizeof(Vector3));
-                uint* overlays = (uint*)(data + vertexCount * (sizeof(Vector3) + sizeof(uint)));
-                ulong* uvwAndBlendModes = (ulong*)(data + vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(uint)));
-                uint* editorUVAndSectorTexture = (uint*)(data + vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(uint) + sizeof(ulong)));
+                // Pointers into the 5 contiguous streams. Layout is SoA: stream N starts
+                // right after stream N-1 ends, with each stream sized vertexCount * elemSize.
+                Vector3* positions               = (Vector3*)(data);
+                uint*    colors                  = (uint*)   (data + vertexCount * sizeof(Vector3));
+                uint*    overlays                = (uint*)   (data + vertexCount * (sizeof(Vector3) + sizeof(uint)));
+                ulong*   uvwAndBlendModes        = (ulong*)  (data + vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(uint)));
+                uint*    editorUVAndSectorTexture = (uint*)  (data + vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(uint) + sizeof(ulong)));
 
-                // Setup vertices
+                // Pass 1: per-vertex attributes that don't depend on the triangle's face.
+                // World-space position is baked here so the shader has no model matrix.
                 for (int i = 0; i < singleSidedVertexCount; ++i)
                     positions[i] = roomGeometry.VertexPositions[i] + worldPos;
                 for (int i = 0; i < singleSidedVertexCount; ++i)
                     colors[i] = Dx11RenderingDevice.CompressColor(roomGeometry.VertexColors[i]);
                 for (int i = 0; i < singleSidedVertexCount; ++i)
                 {
+                    // Editor UVs are in {0, 1, 2, 3} per axis (corner indices). Pack into
+                    // 4 bits — the next loop will OR sector flags into the upper 28 bits.
                     Vector2 vertexEditorUv = roomGeometry.VertexEditorUVs[i];
                     uint editorUv = 0;
                     editorUv |= (uint)((int)vertexEditorUv.X) & 3;
                     editorUv |= ((uint)((int)vertexEditorUv.Y) & 3) << 2;
                     editorUVAndSectorTexture[i] = editorUv;
                 }
+
+                // Pass 2: per-triangle face attributes (sector overlay color, highlight,
+                // dim, selection, sector arrow texture). Run as a loop with a 1-deep
+                // cache (lastFaceIdentity) because adjacent triangles in roomGeometry
+                // typically belong to the same SectorFace, so we'd recompute the same
+                // SectorTextureGet result over and over.
+                //
+                // editorUVAndSectorTexture bit layout (after this pass):
+                //   bits 0..3  : per-vertex editor UV (set in pass 1)
+                //   bit  4     : highlighted face
+                //   bit  5     : dimmed face
+                //   bit  6     : has sector overlay texture (vs. solid color)
+                //   bit  7     : selected & textured (draws extra outline)
+                //   bits 8..15 : sector texture index (when bit 6 is set)
+                //              | OR red channel of sector color (when bit 6 is clear)
+                //   bits 16..23: green channel of sector color
+                //   bits 24..31: blue channel of sector color
                 {
                     SectorFaceIdentity lastFaceIdentity = new SectorFaceIdentity(-1, -1, SectorFace.Floor);
                     uint lastSectorTexture = 0;
@@ -105,6 +174,17 @@ namespace TombLib.Rendering.DirectX11
                     }
                 }
 
+                // Pass 3: per-triangle texture allocation. Goto-based retry is here for
+                // a specific corner case: if the atlas runs out of room MID-pass, the
+                // allocator triggers a GC that may invalidate previously-resolved entries
+                // (TexturesInvalidated flag). We restart the entire pass once. Two retries
+                // would mean the atlas is genuinely too small — accept some unavailable
+                // markers and move on (TexturesInvalidatedRetried gates the second retry).
+                //
+                // uvwAndBlendModes sentinel values (matched in shader and by GC adjust):
+                //   < 0x1000000 (== 1ul<<24): non-textured (geometry render or invisible)
+                //                             — GC pass skips these to avoid bogus lookups
+                //   anything else            : real packed atlas UVW
                 RetryTexturing:
                 ;
                 {
@@ -114,20 +194,26 @@ namespace TombLib.Rendering.DirectX11
                         TextureArea texture = roomGeometry.TriangleTextureAreas[i];
 
                         if (texture.Texture == null)
-                        { // Render as geometry
+                        {
+                            // Untextured triangle: shader switches to "geometric view"
+                            // and uses the sector overlay color from editorUVAndSectorTexture.
                             uvwAndBlendModes[i * 3 + 0] = 1ul << 24;
                             uvwAndBlendModes[i * 3 + 1] = 1ul << 24;
                             uvwAndBlendModes[i * 3 + 2] = 1ul << 24;
                         }
                         else if (texture.Texture is TextureInvisible)
-                        { // Render as invisible
+                        {
+                            // Invisible texture: shader discards the fragment.
                             uvwAndBlendModes[i * 3 + 0] = 0ul << 24;
                             uvwAndBlendModes[i * 3 + 1] = 0ul << 24;
                             uvwAndBlendModes[i * 3 + 2] = 0ul << 24;
                         }
                         else
-                        {                             
-                            // Render as textured (the texture may turn out to be unavailable)
+                        {
+                            // Textured triangle. Three failure modes are recoverable
+                            // (unavailable file / out-of-bounds in either of two ways)
+                            // and replaced with a diagnostic placeholder texture so the
+                            // user can spot the problem in the viewport.
                             if (texture.Texture.IsUnavailable)
                             { // Texture is unvailable (i.e. file couldn't be loaded.
                                 ImageC image = Dx11RenderingDevice.TextureUnavailable;
@@ -160,7 +246,11 @@ namespace TombLib.Rendering.DirectX11
                                 uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord2, (uint)texture.BlendMode);
                             }
 
-                            // Duplicate double sided triangles
+                            // Double-sided faces: instead of toggling rasterizer state,
+                            // emit a second triangle with reversed winding (verts in
+                            // order 2, 1, 0) at the tail of the buffer. All other
+                            // attributes are copied verbatim. doubleSidedVertexIndex is
+                            // monotonically advanced and verified at the end of the loop.
                             if (texture.DoubleSided)
                             {
                                 positions[doubleSidedVertexIndex] = positions[i * 3 + 2];
@@ -217,6 +307,15 @@ namespace TombLib.Rendering.DirectX11
                 VertexBuffer.Dispose();
         }
 
+        // Two-phase texture-allocator GC participation. Phase 1 (this method) is called
+        // BEFORE the atlas is rebuilt: we read back our VB, walk the UVW stream and
+        // report which atlas entries we still reference (inOutUsedTextures). Returning
+        // a non-null adjust delegate causes phase 2 to be invoked AFTER the rebuild,
+        // with the new atlas Map; we use it to remap UVWs and rebuild our (immutable) VB.
+        //
+        // Why a readback: vertex buffers are created with ResourceUsage.Immutable so we
+        // can't update them in place. Dx11RenderingDevice.ReadBuffer copies the GPU
+        // resource into a staging buffer and back into a managed byte[].
         public unsafe RenderingTextureAllocator.GarbageCollectionAdjustDelegate GarbageCollectTexture(RenderingTextureAllocator allocator,
             RenderingTextureAllocator.Map map, HashSet<RenderingTextureAllocator.Map.Entry> inOutUsedTextures)
         {
@@ -228,13 +327,14 @@ namespace TombLib.Rendering.DirectX11
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
             int uvwAndBlendModesOffset = VertexBufferBindings[3].Offset;
 
-            // Collect all used textures
             fixed (byte* dataPtr = data)
             {
                 ulong* uvwAndBlendModesPtr = (ulong*)(dataPtr + uvwAndBlendModesOffset);
                 for (int i = 0; i < VertexCount; ++i)
                 {
-                    if (uvwAndBlendModesPtr[i] < 0x1000000) // Very small coordinates make no sense, they are used as a placeholder
+                    // 0x1000000 == 1ul<<24, the sentinel for "geometry / invisible".
+                    // Skipping these avoids feeding bogus UVs into Map.Lookup.
+                    if (uvwAndBlendModesPtr[i] < 0x1000000)
                         continue;
                     var texture = map.Lookup(Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], textureScaling));
                     if (texture == null)

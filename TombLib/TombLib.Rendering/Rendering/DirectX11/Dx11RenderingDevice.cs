@@ -20,10 +20,22 @@ using Vector3 = System.Numerics.Vector3;
 
 namespace TombLib.Rendering.DirectX11
 {
+    // Direct3D 11 implementation of RenderingDevice.
+    //
+    // Lifecycle: a single instance is created at startup (DeviceManager.DefaultDeviceManager)
+    // and shared across every RenderingPanel in the editor. The device is created with
+    // SingleThreaded flag, meaning ALL rendering must happen on the UI thread; do not
+    // touch Context from a worker.
+    //
+    // Feature level is locked to 10.0 to support legacy hardware. Anything that would
+    // require FL11 (compute shaders, structured buffers, etc.) is not available here.
     public class Dx11RenderingDevice : RenderingDevice
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        // All sector overlay textures (arrows, slope markers, etc.) are forced to this
+        // size and packed into a single Texture2DArray. Changing this breaks the embedded
+        // PNG resources because they're loaded in by name and validated by dimension.
         public const int SectorTextureSize = 256;
         private static Assembly ThisAssembly = Assembly.GetExecutingAssembly();
         public static ImageC TextureUnavailable = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_unavailable.png"));
@@ -34,16 +46,43 @@ namespace TombLib.Rendering.DirectX11
         public readonly Dx11PipelineState TextShader;
         public readonly Dx11PipelineState SpriteShader;
         public readonly Dx11PipelineState RoomShader;
+        public readonly Dx11PipelineState LinesShader;
+        public readonly Dx11PipelineState MeshShader;
+        public readonly Dx11PipelineState ImportedGeometryShader;
         public readonly RasterizerState RasterizerBackCulling;
+        // No back-face culling. Used for lines (where culling is irrelevant) and for
+        // double-sided wireframe rendering. Lines are NOT affected by CullMode at all
+        // in D3D11, but we still need a no-cull state for triangle wireframe.
+        public readonly RasterizerState RasterizerNoCull;
+        // Wireframe fill, no cull. Mirrors the legacy `_rasterizerWireframe` used by
+        // Panel3D / WadTool panels for bounding boxes and debug overlays.
+        public readonly RasterizerState RasterizerWireframe;
         public readonly SamplerState SamplerDefault;
         public readonly SamplerState SamplerRoundToNearest;
         public readonly DepthStencilState DepthStencilDefault;
         public readonly DepthStencilState DepthStencilNoZBuffer;
+        // Depth test enabled, depth write disabled — for translucent passes that should
+        // be occluded by opaque geometry but not occlude each other (ghost block bodies,
+        // volume fills, etc.).
+        public readonly DepthStencilState DepthStencilDepthRead;
         public readonly BlendState BlendingDisabled;
         public readonly BlendState BlendingPremultipliedAlpha;
+        // Straight-alpha (non-premultiplied): SrcAlpha / InvSrcAlpha. Caller's vertex
+        // colors are interpreted as straight RGBA; the shader does not need to
+        // pre-multiply RGB by alpha.
+        public readonly BlendState BlendingNonPremultipliedAlpha;
+        // Additive glow: One / One. Alpha is ignored on the destination.
+        public readonly BlendState BlendingAdditive;
         public readonly Texture2D SectorTextureArray;
         public readonly ShaderResourceView SectorTextureArrayView;
         public Dx11RenderingSwapChain CurrentRenderTarget = null;
+
+        // Shared ring buffer for transient per-frame VBs (sprites, glyphs, debug lines).
+        // See Dx11DynamicVertexBufferPool for the rationale. Created lazily because the
+        // ctor body is already long enough; first user constructs it.
+        private Dx11DynamicVertexBufferPool _dynamicVertexBuffers;
+        public Dx11DynamicVertexBufferPool DynamicVertexBuffers
+            => _dynamicVertexBuffers ??= new Dx11DynamicVertexBufferPool(this);
 
         public Dx11RenderingDevice()
         {
@@ -131,10 +170,46 @@ namespace TombLib.Rendering.DirectX11
                 new InputElement("UVWANDBLENDMODE", 0, Format.R32G32_UInt, 0, 3, InputClassification.PerVertexData, 0),
                 new InputElement("EDITORUVANDSECTORTEXTURE", 0, Format.R32_UInt, 0, 4, InputClassification.PerVertexData, 0)
                 });
+                LinesShader = new Dx11PipelineState(this, "LinesShader", new InputElement[]
+                {
+                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
+                new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 0, 1, InputClassification.PerVertexData, 0)
+                });
+                // Single interleaved AOS layout matching MeshVertex (R32G32B32_Float per
+                // Vector3 field; R32G32B32A32_Float per Vector4 field). All in slot 0.
+                MeshShader = new Dx11PipelineState(this, "MeshShader", new InputElement[]
+                {
+                new InputElement("POSITION",     0, Format.R32G32B32_Float,     0, 0, InputClassification.PerVertexData, 0),
+                new InputElement("TEXCOORD",     0, Format.R32G32B32_Float,    12, 0, InputClassification.PerVertexData, 0),
+                new InputElement("NORMAL",       0, Format.R32G32B32_Float,    24, 0, InputClassification.PerVertexData, 0),
+                new InputElement("COLOR",        0, Format.R32G32B32_Float,    36, 0, InputClassification.PerVertexData, 0),
+                new InputElement("BLENDINDICES", 0, Format.R32G32B32A32_Float, 48, 0, InputClassification.PerVertexData, 0),
+                new InputElement("BLENDWEIGHTS", 0, Format.R32G32B32A32_Float, 64, 0, InputClassification.PerVertexData, 0),
+                });
+                // Layout matches RenderingDrawingImportedGeometry.Vertex: Pos@0, UV@12,
+                // Color@20, Normal@32. Total 44 bytes per vertex.
+                ImportedGeometryShader = new Dx11PipelineState(this, "ImportedGeometryShader", new InputElement[]
+                {
+                new InputElement("POSITION", 0, Format.R32G32B32_Float,  0, 0, InputClassification.PerVertexData, 0),
+                new InputElement("TEXCOORD", 0, Format.R32G32_Float,    12, 0, InputClassification.PerVertexData, 0),
+                new InputElement("COLOR",    0, Format.R32G32B32_Float, 20, 0, InputClassification.PerVertexData, 0),
+                new InputElement("NORMAL",   0, Format.R32G32B32_Float, 32, 0, InputClassification.PerVertexData, 0),
+                });
                 RasterizerBackCulling = new RasterizerState(Device, new RasterizerStateDescription
                 {
                     CullMode = CullMode.Back,
                     FillMode = FillMode.Solid,
+                });
+                RasterizerNoCull = new RasterizerState(Device, new RasterizerStateDescription
+                {
+                    CullMode = CullMode.None,
+                    FillMode = FillMode.Solid,
+                });
+                RasterizerWireframe = new RasterizerState(Device, new RasterizerStateDescription
+                {
+                    CullMode = CullMode.None,
+                    FillMode = FillMode.Wireframe,
+                    IsAntialiasedLineEnabled = true,
                 });
                 SamplerDefault = new SamplerState(Device, new SamplerStateDescription
                 {
@@ -168,6 +243,14 @@ namespace TombLib.Rendering.DirectX11
                     desc.IsStencilEnabled = false;
                     DepthStencilNoZBuffer = new DepthStencilState(Device, desc);
                 }
+                {
+                    DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
+                    desc.DepthComparison = Comparison.LessEqual;
+                    desc.DepthWriteMask = DepthWriteMask.Zero; // read but don't write
+                    desc.IsDepthEnabled = true;
+                    desc.IsStencilEnabled = false;
+                    DepthStencilDepthRead = new DepthStencilState(Device, desc);
+                }
                 BlendingDisabled = new BlendState(Device, BlendStateDescription.Default());
                 {
                     BlendStateDescription desc = BlendStateDescription.Default();
@@ -177,6 +260,24 @@ namespace TombLib.Rendering.DirectX11
                     desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
                     desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
                     BlendingPremultipliedAlpha = new BlendState(Device, desc);
+                }
+                {
+                    BlendStateDescription desc = BlendStateDescription.Default();
+                    desc.RenderTarget[0].IsBlendEnabled = true;
+                    desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.SourceAlpha;
+                    desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
+                    desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
+                    desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+                    BlendingNonPremultipliedAlpha = new BlendState(Device, desc);
+                }
+                {
+                    BlendStateDescription desc = BlendStateDescription.Default();
+                    desc.RenderTarget[0].IsBlendEnabled = true;
+                    desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
+                    desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.One;
+                    desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
+                    desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+                    BlendingAdditive = new BlendState(Device, desc);
                 }
             }
             catch (Exception exc)
@@ -266,15 +367,24 @@ namespace TombLib.Rendering.DirectX11
             }
             finally
             {
+                _dynamicVertexBuffers?.Dispose();
                 SectorTextureArrayView.Dispose();
                 SectorTextureArray.Dispose();
                 DepthStencilDefault.Dispose();
                 DepthStencilNoZBuffer.Dispose();
+                DepthStencilDepthRead.Dispose();
                 BlendingDisabled.Dispose();
                 BlendingPremultipliedAlpha.Dispose();
+                BlendingNonPremultipliedAlpha.Dispose();
+                BlendingAdditive.Dispose();
                 SamplerDefault.Dispose();
                 SamplerRoundToNearest.Dispose();
                 RasterizerBackCulling.Dispose();
+                RasterizerNoCull.Dispose();
+                RasterizerWireframe.Dispose();
+                LinesShader.Dispose();
+                MeshShader.Dispose();
+                ImportedGeometryShader.Dispose();
                 RoomShader.Dispose();
                 Context.Dispose();
                 Device.Dispose();
@@ -282,6 +392,11 @@ namespace TombLib.Rendering.DirectX11
             }
         }
 
+        // Packs an RGBA color into a single uint in the same layout the room shader
+        // expects (R8G8B8A8_UNorm). The "average" path uses 128 as multiplier instead
+        // of 255 to leave headroom for additive vertex colours that overflow [0..1] —
+        // the shader recovers values >1.0 from the top half (see RoomShaderPS:58-60).
+        // alpha is independently clamped to [0..1] regardless.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint CompressColor(Vector3 color, float alpha = 1.0f, bool average = true)
         {
@@ -290,6 +405,17 @@ namespace TombLib.Rendering.DirectX11
             return ((uint)color.X) | (((uint)color.Y) << 8) | (((uint)color.Z) << 16) | ((uint)(MathC.Clamp(alpha, 0, 1) * 255.0f) << 24);
         }
 
+        // Packs a 3D atlas coordinate + a 4-bit blend mode flag into 64 bits. Layout:
+        //
+        //   bits  0..23  : X*scale (24 bits, fixed-point with sub-pixel precision)
+        //   bits 24..47  : Y*scale (24 bits, idem)
+        //   bits 48..59  : atlas page index (12 bits, room shader masks 10)
+        //   bits 60..63  : blend mode (0..15)
+        //
+        // The X/Y fields are pre-scaled by `textureScaling` (precomputed as
+        // 16777216 / atlasSize) so the shader can reconstruct float UVs by dividing
+        // back. The 24-bit precision gives ~1/64th-of-a-pixel UVs at 1024px atlases.
+        // `highestBits` carries the blend mode, capped to nibble.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong CompressUvw(VectorInt3 position, Vector2 textureScaling, Vector2 uv, uint highestBits = 0)
         {
@@ -299,6 +425,8 @@ namespace TombLib.Rendering.DirectX11
             return x | ((ulong)y << 24) | ((ulong)position.Z << 48) | ((ulong)blendMode2 << 60);
         }
 
+        // Inverse of CompressUvw — used by the texture allocator GC to find which atlas
+        // entry a packed UVW points at, so it can be remapped after compaction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static VectorInt3 UncompressUvw(ulong value, Vector2 textureScaling)
         {
@@ -307,6 +435,9 @@ namespace TombLib.Rendering.DirectX11
             return new VectorInt3((int)uv.X, (int)uv.Y, w);
         }
 
+        // Variant that gives back the (uv, highestBits) decomposition relative to a
+        // known atlas entry position. Used during the GC adjust pass to re-pack the
+        // same logical UVs into a new atlas slot.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void UncompressUvw(ulong value, VectorInt3 position, Vector2 textureScaling, out Vector2 uv, out uint highestBits)
         {
@@ -413,6 +544,21 @@ namespace TombLib.Rendering.DirectX11
         public override RenderingStateBuffer CreateStateBuffer()
         {
             return new Dx11RenderingStateBuffer(this);
+        }
+
+        public override RenderingDrawingLines CreateDrawingLines(RenderingDrawingLines.Description description)
+        {
+            return new Dx11RenderingDrawingLines(this, description);
+        }
+
+        public override RenderingDrawingMesh CreateDrawingMesh(RenderingDrawingMesh.Description description)
+        {
+            return new Dx11RenderingDrawingMesh(this, description);
+        }
+
+        public override RenderingDrawingImportedGeometry CreateDrawingImportedGeometry(RenderingDrawingImportedGeometry.Description description)
+        {
+            return new Dx11RenderingDrawingImportedGeometry(this, description);
         }
     }
 

@@ -1,5 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -7,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using WadTool.Controls;
 
 namespace WadTool
@@ -16,8 +16,8 @@ namespace WadTool
         private readonly Configuration _configuration;
         private readonly PanelRenderingStaticEditor _control;
 
-        public GizmoStaticEditorLight(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingStaticEditor control)
-            : base(device, effect)
+        public GizmoStaticEditorLight(Configuration configuration, RenderingDevice device, PanelRenderingStaticEditor control)
+            : base(device)
         {
             _configuration = configuration;
             _control = control;

@@ -8,6 +8,28 @@ using TombLib.Utils;
 
 namespace TombLib.Rendering
 {
+    // Texture atlas backed by a Texture2DArray. Each "page" is a 2D atlas of size
+    // PageSize × PageSize, packed independently with a rect packer. New texture entries
+    // are placed in the first page that has room; when ALL pages are full, GC compacts
+    // and reclaims dead entries. If GC can't free enough room, allocation fails silently
+    // and the caller renders with placeholder UVs (handled by Dx11RenderingDrawingRoom).
+    //
+    // Why a Texture2DArray instead of one big atlas:
+    //   - 16384 × 16384 hits hardware/driver limits on older GPUs.
+    //   - With an array we can bind one SRV and pick the slice per fragment via the
+    //     packed UVW's Z component — no need for descriptor changes.
+    //
+    // Why GC and not LRU eviction:
+    //   - Texture entries are pinned by RenderingDrawingRoom batches (one batch per
+    //     room). The set of "alive" entries depends on which batches still exist; an
+    //     LRU pass alone wouldn't see those references. The collect/adjust callback
+    //     pattern lets each batch declare its alive entries and rewrite its VB after
+    //     compaction.
+    //
+    // The MinimumPageCount/MaximumPageCount are negotiation bounds with the GPU memory
+    // budget at startup (see Dx11RenderingDevice.GetAvailableTextureAllocatorSize): we
+    // ask for MaximumPageCount, halve until allocation succeeds, but never go below
+    // MinimumPageCount before throwing.
     public abstract class RenderingTextureAllocator : IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -32,7 +54,9 @@ namespace TombLib.Rendering
             }
         }
 
-        // Texture accessing state
+        // 2-slot quick-access cache. Adjacent triangles in a room often share the same
+        // texture (TR levels are texture-clustered by sector face), so a tiny MRU cache
+        // beats the dictionary lookup measurably without complicating invariants.
         private KeyValuePair<RenderingTexture, VectorInt3> QuickAccessTexture0;
         private KeyValuePair<RenderingTexture, VectorInt3> QuickAccessTexture1;
         private int LastUsedTextureIndex = 0;
@@ -40,9 +64,18 @@ namespace TombLib.Rendering
         private readonly Dictionary<RenderingTexture, VectorInt3> AvailableTextures = new Dictionary<RenderingTexture, VectorInt3>();
         public VectorInt3 Size { get; }
 
-        // Garbage collection state
+        // GC participation hooks.
+        // The COLLECT phase asks every subscriber: "which atlas entries do you still
+        // need?" Subscribers add their entries to inOutUsedTextures and may return an
+        // ADJUST delegate. After compaction the allocator invokes every adjust delegate
+        // with the new Map so subscribers can rewrite their UVs to point at the new
+        // atlas slots.
         public delegate void GarbageCollectionAdjustDelegate(RenderingTextureAllocator allocator, Map map);
         public delegate GarbageCollectionAdjustDelegate GarbageCollectionCollectDelegate(RenderingTextureAllocator allocator, Map map, HashSet<Map.Entry> inOutUsedTextures);
+
+        // Throttle: a full GC pass reads back every subscriber's vertex buffer. Doing
+        // that more than once or twice per second crushes responsiveness. If allocation
+        // fails again within this window, we accept the placeholder rendering.
         private const float GarbageCollectionWaitSeconds = 0.6f;
         private long GarbageCollectionLastTimestamp = Stopwatch.GetTimestamp() - (long)(GarbageCollectionWaitSeconds * Stopwatch.Frequency);
         private bool GarbageCollectionInProgress = false;
@@ -78,18 +111,27 @@ namespace TombLib.Rendering
             return result;
         }
 
+        // Tries to fit a texture into the first page that has room. The +(2,2) on the
+        // requested size reserves a 1-pixel border on each side; the upload helper
+        // (Dx11RenderingTextureAllocator.UploadTexture) duplicates the edge pixels into
+        // that border to prevent atlas-bleeding when the sampler does linear filtering.
+        // The returned position is offset by (1,1,0) for the same reason — callers see
+        // the inner rect, not the bordered one.
         private VectorInt3? AllocateTexture(RenderingTexture texture)
         {
             if (texture.To.X < texture.From.X || texture.To.Y < texture.From.Y)
-                throw new ArgumentOutOfRangeException(); // Avoid totally currupted texture allocator state.
+                throw new ArgumentOutOfRangeException(); // Guard against corrupted state from a malformed input.
             for (int i = 0; i < Pages.Length; ++i)
             {
                 VectorInt2? allocatedPos = Pages[i].Packer.TryAdd(VectorInt2.Max((texture.To - texture.From) + new VectorInt2(2), VectorInt2.One));
                 if (allocatedPos != null)
                 {
                     VectorInt3 pos = new VectorInt3(allocatedPos.Value.X, allocatedPos.Value.Y, i);
+                    // Degenerate (zero-area) textures get a 1×1 placeholder so the GPU
+                    // still has something to sample — easier than special-casing this
+                    // in every consumer.
                     if (texture.To.X == texture.From.X || texture.To.Y == texture.From.Y)
-                        UploadTexture(ImageC.CreateNew(1, 1), pos); // Attempt to handle this situation
+                        UploadTexture(ImageC.CreateNew(1, 1), pos);
                     else
                         UploadTexture(texture, pos);
                     AvailableTextures.Add(texture, pos + new VectorInt3(1, 1, 0));
@@ -134,32 +176,36 @@ namespace TombLib.Rendering
             return new VectorInt3(); // Still not enough space but there is nothing we can do about it.
         }
 
+        // Atlas allocation strategy for a textured triangle:
+        //   - Small source images (<= 256x256, 65k px) get fully uploaded once and shared
+        //     across every triangle that samples them — cheap and avoids fragmenting the
+        //     atlas with near-duplicate sub-rects.
+        //   - Larger images get only the triangle's bounding rect uploaded, and the
+        //     returned coordinates are pre-shifted so the shader can keep using the
+        //     original UVs unchanged.
         public VectorInt3 GetForTriangle(TextureArea texture)
         {
             const int MaxDirectImageArea = 256 * 256;
 
-            // @FIXME: MaxDirectImageArea GREATER comparison against image size area made no sense,
-            // so I changed it to LESS-OR-EQUAL. Addressed to TRTomb. -- Lwmte
-
             VectorInt2 imageSize = texture.Texture.Image.Size;
             if ((imageSize.X * imageSize.Y) <= MaxDirectImageArea &&
                 Size.X >= imageSize.X && Size.Y >= imageSize.Y)
-            { // If the image is small enough, allocate the entire image...
-                VectorInt3 allocatedTexture = Get(new RenderingTexture
+            {
+                return Get(new RenderingTexture
                 {
                     From = new VectorInt2(),
                     To = imageSize,
                     Image = texture.Texture.Image
                 });
-                return allocatedTexture;
             }
             else
-            { // Allocate a part of the image...
-
-                // @FIXME: replace origRect calculation with commented line when bug with texture allocator atlas
-                // corruption is fixed. Addressed to TRTomb. -- Lwmte
-
-                // var origRect = texture.ParentArea.IsZero ? texture.GetRect(true).Round() : texture.ParentArea.Round();
+            {
+                // KNOWN BUG (TRTomb, tracked by Lwmte): using texture.ParentArea here when
+                // available would let texture sets share allocations across triangles, but
+                // it triggers atlas corruption visible as garbage UVs on some sets. Until the
+                // root cause is found, every triangle gets its own bbox allocation.
+                // Replacement once fixed:
+                //     var origRect = texture.ParentArea.IsZero ? texture.GetRect(true).Round() : texture.ParentArea.Round();
                 var origRect = texture.GetRect(true).Round();
 
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
@@ -260,6 +306,10 @@ namespace TombLib.Rendering
             }
         }
 
+        // Spatial index built ONCE at the start of a GC pass: bins every alive atlas
+        // entry into a coarse 64-pixel grid per page. Map.Lookup(pos) returns the
+        // entry whose rect contains `pos` in O(1) average — used by collect callbacks
+        // to translate "I have this packed UVW value" into "this is the entry I depend on".
         /// <summary>Datastructure to quickly lookup which texture can be found at a certain position.</summary>
         public class Map
         {

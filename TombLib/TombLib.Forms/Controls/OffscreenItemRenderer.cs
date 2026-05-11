@@ -1,7 +1,6 @@
 using NLog;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -10,7 +9,6 @@ using TombLib.LevelData;
 using TombLib.Rendering.DirectX11;
 using TombLib.Utils;
 using TombLib.Wad;
-using Texture2D = SharpDX.Direct3D11.Texture2D;
 
 namespace TombLib.Controls
 {
@@ -19,7 +17,6 @@ namespace TombLib.Controls
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Dx11RenderingDevice _device;
-        private readonly GraphicsDevice _legacyDevice;
         private readonly WadRenderer _wadRenderer;
 
         private Texture2D _renderTarget;
@@ -32,8 +29,7 @@ namespace TombLib.Controls
         public OffscreenItemRenderer()
         {
             _device = (Dx11RenderingDevice)DeviceManager.DefaultDeviceManager.Device;
-            _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-            _wadRenderer = new WadRenderer(_legacyDevice, true, true, 1024, 512, false);
+            _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.D3D11Device, true, true, 1024, 512, false);
         }
 
         public ImageC RenderThumbnail(IWadObject wadObject, TRVersion.Game version, Vector4 backColor, int size = 128)
@@ -65,8 +61,12 @@ namespace TombLib.Controls
                 // Get view-projection matrix.
                 var viewProjection = camera.GetViewProjectionMatrix(size, size);
 
-                // Render the object using shared helper.
-                WadObjectRenderHelper.RenderObject(wadObject, _wadRenderer, _legacyDevice, viewProjection, camera.GetPosition(), false);
+                // Render the object using shared helper. RenderTarget=null tells the
+                // unified path to NOT bind a SwapChain — we already bound our offscreen
+                // RTV via BindRenderTarget().
+                using var stateBuffer = _device.CreateStateBuffer();
+                stateBuffer.Set(new TombLib.Rendering.RenderingState { TransformMatrix = viewProjection });
+                WadObjectRenderHelper.RenderObject(wadObject, _wadRenderer, _device, /*swapChain*/ null, stateBuffer, camera.GetPosition(), false);
 
                 // Read back pixels.
                 return ReadPixels(size);

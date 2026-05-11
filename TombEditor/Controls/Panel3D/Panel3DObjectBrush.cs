@@ -1,4 +1,3 @@
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Drawing;
 using System.Numerics;
@@ -421,17 +420,10 @@ namespace TombEditor.Controls.Panel3D
             return new BrushOverlayState { Shape = shape, Center = center, Color = color, Rotation = rot };
         }
 
-        // Apply brush overlay parameters to a model effect shader.
-        internal void ApplyBrushToModelEffect(Effect effect, bool reset = false)
-        {
-            var overlay = ComputeBrushOverlay(reset);
-
-            effect.Parameters["BrushShape"].SetValue(overlay.Shape);
-            effect.Parameters["BrushCenter"].SetValue(overlay.Center);
-            effect.Parameters["BrushColor"].SetValue(overlay.Color);
-            effect.Parameters["BrushRotation"].SetValue(overlay.Rotation);
-            effect.Parameters["BrushLineWidth"].SetValue(_editor.Configuration.Rendering3D_LineWidth);
-        }
+        // ApplyBrushToModelEffect (legacy SharpDX.Toolkit Effect uniform setter) was
+        // removed during the SharpDX.Toolkit cleanup. Brush state now lives in the
+        // shared RenderingStateBuffer (cbuffer slot 0); see DrawScene where
+        // ComputeBrushOverlay's result is plumbed straight into RenderingState.
 
         #endregion
     }

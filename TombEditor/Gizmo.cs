@@ -1,10 +1,10 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Wad.Catalog;
 
 namespace TombEditor
@@ -13,8 +13,8 @@ namespace TombEditor
     {
         private readonly Editor _editor;
 
-        public Gizmo(Effect effect)
-            : base(DeviceManager.DefaultDeviceManager.___LegacyDevice, effect)
+        public Gizmo(RenderingDevice device)
+            : base(device)
         {
             _editor = Editor.Instance;
         }

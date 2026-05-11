@@ -1,9 +1,9 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Numerics;
 using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using WadTool.Controls;
 
 namespace WadTool
@@ -13,8 +13,8 @@ namespace WadTool
         private readonly Configuration _configuration;
         private readonly PanelRenderingMesh _control;
 
-        public GizmoMeshEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingMesh control)
-            : base(device, effect)
+        public GizmoMeshEditor(Configuration configuration, RenderingDevice device, PanelRenderingMesh control)
+            : base(device)
         {
             _configuration = configuration;
             _control = control;

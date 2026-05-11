@@ -6,6 +6,18 @@ using System.Reflection;
 
 namespace TombLib.Rendering.DirectX11
 {
+    // Holds the trio (VS, PS, InputLayout) that makes a complete pipeline state for one
+    // shader pair. Compiled HLSL bytecode is loaded from embedded resources named
+    // "DxShaders.<shaderName>VS" / "<shaderName>PS" — see TombLib.Rendering.csproj's
+    // EmbedShaderFilesTarget for how the .cso files end up under that prefix.
+    //
+    // The InputLayout is created from the VS bytecode (DXGI requires the VS's signature
+    // to validate the IL); the InputElement[] passed in describes the slot layout the
+    // caller will use when binding vertex buffers.
+    //
+    // Apply() sets VS/PS/IL and forces topology to TriangleList — this is currently the
+    // ONLY topology used by the new path. Lines/points still go through the legacy
+    // SharpDX.Toolkit path; that's something the Tappa-1 line/debug abstraction will fix.
     public class Dx11PipelineState : IDisposable
     {
         private static Assembly ThisAssembly = Assembly.GetExecutingAssembly();

@@ -1,4 +1,3 @@
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +12,6 @@ using TombEditor.Controls.FlybyTimeline.Preview;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
-using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
@@ -128,19 +126,16 @@ namespace TombEditor.Controls.Panel3D
 
         // Legacy rendering state
         private WadRenderer _wadRenderer;
-        private RasterizerState _rasterizerStateDepthBias;
-        private GraphicsDevice _legacyDevice;
-        private RasterizerState _rasterizerWireframe;
-        private GeometricPrimitive _sphere;
-        private GeometricPrimitive _cone;
-        private GeometricPrimitive _linesCube;
-        private GeometricPrimitive _littleCube;
-        private GeometricPrimitive _littleSphere;
+        // Raw D3D11 device. Used by WadRenderer for atlas / texture management.
+        private SharpDX.Direct3D11.Device _legacyDevice;
         private bool _drawHeightLine;
-        private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
-        private Buffer<SolidVertex> _flybyPathVertexBuffer;
-        private Buffer<SolidVertex> _ghostBlockVertexBuffer;
-        private Buffer<SolidVertex> _boxVertexBuffer;
+        // Endpoints of the height line, in room-local coordinates. The world translation
+        // (_editor.SelectedObject.Room.WorldPos) is applied at draw time via the lines
+        // batch's World matrix instead of being baked into a GPU buffer.
+        private Vector3 _heightLineFrom, _heightLineTo;
+        // Flyby path vertices, regenerated each frame by AddFlybyPath. The list is
+        // reused across frames (Clear()+Add) so we don't churn allocations.
+        private readonly List<SolidLineVertex> _flybyPathVertices = new List<SolidLineVertex>();
 
         // Flyby stuff
         private const float _flybyPathThickness = 32.0f;
@@ -178,6 +173,25 @@ namespace TombEditor.Controls.Panel3D
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
+
+        // Tappa-1 unified path: shared dynamic line batch reused by every draw method
+        // that previously built one-off SolidVertex buffers through the legacy stack.
+        // SetVertices() + Render() per call site; the underlying ID3D11Buffer is the
+        // device-wide ring (see Dx11DynamicVertexBufferPool).
+        private RenderingDrawingLines _linesBatch;
+
+        // Lazily-built RenderingDrawingMesh per legacy ObjectMesh. The legacy mesh
+        // owns the canonical CPU-side vertex/index data (built by ObjectMesh.FromWad2
+        // through WadRenderer); we mirror it into a unified-path GPU mesh on first
+        // use and hold it until the legacy mesh is invalidated (a new ObjectMesh
+        // reference is created).
+        // NOTE: this introduces a memory duplication (legacy GPU buffer + new GPU
+        // buffer for the same mesh) until the legacy path is removed entirely.
+        // Stale entries are pruned on Panel3D dispose.
+        private readonly Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh> _meshCache = new Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh>();
+        // Same cache pattern but for imported-geometry meshes (different vertex layout
+        // and shader). Keyed by the legacy ImportedGeometryMesh reference.
+        private readonly Dictionary<TombLib.LevelData.ImportedGeometryMesh, RenderingDrawingImportedGeometry> _importedMeshCache = new Dictionary<TombLib.LevelData.ImportedGeometryMesh, RenderingDrawingImportedGeometry>();
 
         // Render stats
         private readonly Stopwatch _watch = new Stopwatch();
@@ -228,19 +242,17 @@ namespace TombEditor.Controls.Panel3D
                 _renderingStateBuffer?.Dispose();
                 _renderingTextures?.Dispose();
                 _renderingCachedRooms?.Dispose();
-                _rasterizerWireframe?.Dispose();
-                _objectHeightLineVertexBuffer?.Dispose();
-                _flybyPathVertexBuffer?.Dispose();
+                _linesBatch?.Dispose();
+                foreach (var m in _meshCache.Values)
+                    m.Dispose();
+                _meshCache.Clear();
+                foreach (var m in _importedMeshCache.Values)
+                    m.Dispose();
+                _importedMeshCache.Clear();
                 _gizmo?.Dispose();
-                _sphere?.Dispose();
-                _cone?.Dispose();
-                _linesCube?.Dispose();
-                _littleCube?.Dispose();
-                _littleSphere?.Dispose();
                 _movementTimer?.Dispose();
                 _flyModeTimer?.Dispose();
                 _flybyPreview?.Dispose();
-                _rasterizerStateDepthBias?.Dispose();
                 _currentContextMenu?.Dispose();
                 _wadRenderer?.Dispose();
             }

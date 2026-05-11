@@ -1,16 +1,19 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace TombLib.Graphics
 {
+    // Plain 32-byte vertex (Vector3 + 4-byte padding + Vector4) historically used by
+    // the legacy SharpDX.Toolkit GeometricPrimitive helpers. After the rendering
+    // unification only the type itself survives — used in a handful of places that
+    // build CPU-side vertex lists for utility purposes (e.g. AddObjectHeightLine).
+    // The renderer no longer consumes this struct directly; SolidLineVertex (in
+    // TombLib.Rendering) is what the unified path expects.
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct SolidVertex : IVertex
     {
-        [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
         private readonly float _unusedPadding;
-        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 16)]
         public Vector4 Color;
 
         Vector3 IVertex.Position => Position;

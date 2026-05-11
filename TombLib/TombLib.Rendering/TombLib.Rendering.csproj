@@ -37,18 +37,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\SharpDX.DXGI.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Toolkit, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\SharpDX.Toolkit.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Toolkit.Compiler, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\SharpDX.Toolkit.Compiler.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Toolkit.Graphics, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
@@ -132,6 +120,30 @@
     </VertexShader>
   </ItemGroup>
   <ItemGroup>
+    <PixelShader Include="Rendering\DirectX11\LinesShaderPS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </PixelShader>
+    <VertexShader Include="Rendering\DirectX11\LinesShaderVS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </VertexShader>
+  </ItemGroup>
+  <ItemGroup>
+    <PixelShader Include="Rendering\DirectX11\MeshShaderPS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </PixelShader>
+    <VertexShader Include="Rendering\DirectX11\MeshShaderVS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </VertexShader>
+  </ItemGroup>
+  <ItemGroup>
+    <PixelShader Include="Rendering\DirectX11\ImportedGeometryShaderPS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </PixelShader>
+    <VertexShader Include="Rendering\DirectX11\ImportedGeometryShaderVS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </VertexShader>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Rendering\SectorTextures\texture_coord_out_of_bounds.png" />
     <EmbeddedResource Include="Rendering\SectorTextures\texture_unavailable.png" />
   </ItemGroup>
@@ -141,16 +153,8 @@
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\ghost_block.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\unknown.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\camera.png" />
+    <!-- Kept: brush overlay #include shared by RoomShaderPS / MeshShaderPS / ImportedGeometryShaderPS. -->
     <Content Include="Rendering\Legacy\BrushOverlay.hlsli">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Rendering\Legacy\Model.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Rendering\Legacy\RoomGeometry.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Rendering\Legacy\Solid.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\flyby_camera.png" />

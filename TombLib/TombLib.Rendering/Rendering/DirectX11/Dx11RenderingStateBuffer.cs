@@ -5,6 +5,19 @@ using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace TombLib.Rendering.DirectX11
 {
+    // Wraps a single constant buffer (cbuffer slot 0) used by every "new path" shader
+    // (RoomShader, SpriteShader, TextShader). The struct layout MUST match the cbuffer
+    // declared in RoomShaderPS.hlsl bit-for-bit — that's why each field has an explicit
+    // FieldOffset and not just sequential ordering.
+    //
+    // HLSL constant buffer packing rules (link below) require that no scalar straddles
+    // a 16-byte boundary; vectors of size 4 must start on a 16-byte boundary; smaller
+    // vectors may pack into the remaining slots. Bools become 4-byte ints in the cbuffer
+    // (which is why we marshal them as `int` here, not C# bool/byte).
+    //
+    // The buffer is created with ResourceUsage.Default + UpdateSubresource — DEFAULT
+    // beats DYNAMIC for cbuffers updated once per frame because UpdateSubresource on
+    // a small constant buffer goes through a fast path on every modern driver.
     public class Dx11RenderingStateBuffer : RenderingStateBuffer
     {
         // Microsoft reference for "Packing Rules for Constant Variables":

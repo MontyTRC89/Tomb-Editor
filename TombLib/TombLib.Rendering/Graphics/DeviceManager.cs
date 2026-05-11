@@ -1,61 +1,41 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
 using TombLib.Rendering;
 
 namespace TombLib.Graphics
 {
+    // Process-wide singleton owning the rendering device.
+    //
+    // STATUS as of the SharpDX.Toolkit removal:
+    //   ✅ ___LegacyEffects (Solid / Model / RoomGeometry .fx) — REMOVED.
+    //   ✅ ___LegacyFont (SpriteFont) — REMOVED.
+    //   ✅ ___LegacyDevice (SharpDX.Toolkit GraphicsDevice) — REMOVED. WadRenderer +
+    //      Mesh family + ImportedGeometry now use raw SharpDX.Direct3D11.Device.
+    //   ✅ Solid.fx, Model.fx, RoomGeometry.fx — REMOVED. Replaced by
+    //      LinesShader / MeshShader / ImportedGeometryShader (HLSL pre-compiled).
+    //
+    // Remaining cleanup:
+    //   STEP A  Drop the SharpDX.Toolkit / SharpDX.Toolkit.Graphics / SharpDX.Toolkit.Compiler
+    //           DLL references from TombLib.Rendering.csproj (the few helpers in those
+    //           DLLs that are still indirectly referenced — VertexElement attribute,
+    //           IVertex interface — can either be removed or replaced with local stubs).
+    //   STEP B  Replace SharpDX 2.4 binaries with Vortice.Direct3D11 (Vortice is the
+    //           maintained drop-in replacement; SharpDX 2.4 has been archived since 2019).
+    //   STEP C  Once on Vortice, plan a Vulkan backend via Silk.NET (Tappa 3 originale).
     public class DeviceManager
     {
-        // to be removed
         public static DeviceManager DefaultDeviceManager = new DeviceManager();
 
-        //public RenderingDevice Device;
         public RenderingDevice Device;
-        public GraphicsDevice ___LegacyDevice { get; set; }
-        public Dictionary<string, Effect> ___LegacyEffects { get; } = new Dictionary<string, Effect>();
-        public SpriteFont ___LegacyFont { get; set; }
+
+        // The raw ID3D11Device. Exposed for components that still need it directly
+        // (WadRenderer, ImportedGeometryTexture). Always equal to
+        // ((Dx11RenderingDevice)Device).Device.
+        public SharpDX.Direct3D11.Device D3D11Device { get; }
 
         public DeviceManager()
         {
             Device = new Rendering.DirectX11.Dx11RenderingDevice();
-
-            // Recreate legacy environment
-            {
-                ___LegacyDevice = GraphicsDevice.New(((Rendering.DirectX11.Dx11RenderingDevice)Device).Device);
-                LevelData.ImportedGeometry.Device = ___LegacyDevice;
-
-                // Load legacy effects
-                string dir = Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location) + "\\Rendering\\Legacy";
-
-                if (!Directory.Exists(dir))
-                {
-                    MessageBox.Show("Shader files are missing. Please reinstall Tomb Editor.", "Error", MessageBoxButtons.OK);
-                    throw new FileNotFoundException();
-                }
-
-                IEnumerable<string> effectFiles = Directory.EnumerateFiles(dir, "*.fx");
-                foreach (string fileName in effectFiles)
-                {
-                    string effectName = Path.GetFileNameWithoutExtension(fileName);
-                    EffectCompilerResult effect = EffectCompiler.CompileFromFile(fileName);
-                    if (effect.HasErrors)
-                    {
-                        string errors = "";
-                        foreach (var err in effect.Logger.Messages)
-                            errors += err + Environment.NewLine;
-                        throw new Exception("Could not compile effect '" + fileName + "'" + Environment.NewLine + errors);
-                    }
-                    ___LegacyEffects.Add(effectName, new Effect(___LegacyDevice, effect.EffectData));
-                }
-
-                // Load legacy font
-                SpriteFontData fontData = SpriteFontData.Load(ResourcesC.ResourcesC.font);
-                fontData.DefaultCharacter = '\n'; // Don't crash on uncommon Unicode values
-                ___LegacyFont = SpriteFont.New(___LegacyDevice, fontData);
-            }
+            D3D11Device = ((Rendering.DirectX11.Dx11RenderingDevice)Device).Device;
+            LevelData.ImportedGeometry.Device = D3D11Device;
         }
     }
 }

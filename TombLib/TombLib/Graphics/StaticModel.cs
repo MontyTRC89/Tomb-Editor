@@ -1,18 +1,13 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using TombLib.Utils;
-using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
+    // CPU-side static model — a flat list of meshes with no animation/skinning.
     public class StaticModel : Model<ObjectMesh, ObjectVertex>
     {
-        public StaticModel(GraphicsDevice device)
-            : base(device, ModelType.Static)
-        {}
+        public StaticModel()
+            : base(ModelType.Static)
+        { }
 
         public override void UpdateBuffers(Vector3? position = null)
         {

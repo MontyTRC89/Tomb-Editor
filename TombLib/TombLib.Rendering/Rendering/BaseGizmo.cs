@@ -1,9 +1,10 @@
-﻿using SharpDX.Toolkit.Graphics;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
-using TombLib.Graphics.Primitives;
+using TombLib.Rendering;
 using TombLib.Utils;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
+// Disambiguate BlendMode (rendering vs. TR engine texture blend mode).
+using BlendMode = TombLib.Rendering.BlendMode;
 
 namespace TombLib.Graphics
 {
@@ -45,25 +46,26 @@ namespace TombLib.Graphics
         }
     }
 
+    // Migrated from the legacy SharpDX.Toolkit + Effect path to RenderingDrawingLines.
+    // The gizmo's geometry (translate axes, scale axes, rotation rings, rotation
+    // indicator fan) is now built CPU-side per Draw call into the device's dynamic
+    // vertex buffer pool — no permanent GeometricPrimitive instances, no Effect
+    // parameter dance.
+    //
+    // Constructor takes a RenderingDevice. Draw takes the active SwapChain + StateBuffer
+    // (the panel passes them in). Subclasses are unchanged in behaviour; only their
+    // constructor signature changed: (GraphicsDevice device, Effect effect) → (RenderingDevice device).
     public abstract class BaseGizmo : IDisposable
     {
         private const int _rotationTrianglesCount = 64;
-        private const int _lineRadiusTesselation = 8;
         private const float _rotationAlpha = 0.58f;
         private const float _scaleSpeed = 0.0004f;
 
-        private readonly RasterizerState _rasterizerWireframe;
+        private readonly RenderingDevice _device;
+        private readonly RenderingDrawingLines _batch;
+        // Reused per-frame triangle list. Cleared at the start of each Draw call.
+        private readonly List<SolidLineVertex> _vertices = new List<SolidLineVertex>();
 
-        private readonly Effect _effect;
-
-        // Geometry of the gizmo
-        private readonly GraphicsDevice _device;
-        private readonly Buffer<SolidVertex> _rotationHelperGeometry;
-        private readonly GeometricPrimitive _cylinder;
-        private readonly GeometricPrimitive _cube;
-        private readonly GeometricPrimitive _cone;
-        private GeometricPrimitive _torus;
-        private float _torusRadius = float.MinValue;
         private static readonly Vector4 _xAxisColor = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
         private static readonly Vector4 _yAxisColor = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
         private static readonly Vector4 _zAxisColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -84,42 +86,15 @@ namespace TombLib.Graphics
 
         private GizmoMode _hoveredMode;
 
-        public BaseGizmo(GraphicsDevice device, Effect effect)
+        public BaseGizmo(RenderingDevice device)
         {
-            _effect = effect;
             _device = device;
-
-            // Create the gizmo geometry
-            _rotationHelperGeometry = Buffer.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
-            _cylinder = GeometricPrimitive.Cylinder.New(_device, 1.0f, 1.0f, _lineRadiusTesselation);
-            _cube = GeometricPrimitive.Cube.New(_device, 1.0f);
-            _cone = GeometricPrimitive.Cone.New(_device, 1.0f, 1.3f, 16);
-
-            // Create the rasterizer state for wireframe drawing
-            var renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
-            {
-                CullMode = SharpDX.Direct3D11.CullMode.None,
-                DepthBias = 0,
-                DepthBiasClamp = 0,
-                FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                IsAntialiasedLineEnabled = true,
-                IsDepthClipEnabled = true,
-                IsFrontCounterClockwise = false,
-                IsMultisampleEnabled = true,
-                IsScissorEnabled = false,
-                SlopeScaledDepthBias = 0
-            };
-            _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
+            _batch = device.CreateDrawingLines(new RenderingDrawingLines.Description { Dynamic = true });
         }
 
         public void Dispose()
         {
-            _rasterizerWireframe?.Dispose();
-            _rotationHelperGeometry?.Dispose();
-            _cylinder?.Dispose();
-            _cube?.Dispose();
-            _cone?.Dispose();
-            _torus?.Dispose();
+            _batch?.Dispose();
         }
 
         private static bool ConstructPlaneIntersection(Vector3 Position, Matrix4x4 viewProjection, Ray ray, Vector3 perpendicularVector0, Vector3 perpendicularVector1, out Vector3 intersection)
@@ -299,9 +274,9 @@ namespace TombLib.Graphics
         }
 
         private void CalculateInitialPosition(Vector3 pickPosition)
-        { 
-            if (_mode == GizmoMode.None) 
-                _initialPosition = pickPosition - Position; 
+        {
+            if (_mode == GizmoMode.None)
+                _initialPosition = pickPosition - Position;
         }
 
         public PickingResultGizmo DoPicking(Ray ray)
@@ -471,340 +446,223 @@ namespace TombLib.Graphics
         private Matrix4x4 RotateMatrixX => RotateMatrixY * Matrix4x4.CreateRotationY(SupportRotationY ? RotationY : 0.0f);
         private Matrix4x4 RotateMatrixZ => RotateMatrixX * Matrix4x4.CreateRotationX(SupportRotationX ? RotationX : 0.0f);
 
-        public void Draw(Matrix4x4 viewProjection)
+        // Renders the gizmo into the supplied SwapChain. The state buffer must already
+        // hold the view-projection matrix as TransformMatrix; the panel sets it up.
+        public void Draw(RenderingSwapChain swapChain, RenderingStateBuffer stateBuffer, Matrix4x4 viewProjection)
         {
             if (!DrawGizmo)
                 return;
 
             bool upside = Orientation == GizmoOrientation.UpsideDown;
-
-            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
-
-            var solidEffect = _effect;
             GizmoMode highlight = _mode == GizmoMode.None ? _hoveredMode : _mode;
 
             var drawRotateMatrixY = _mode == GizmoMode.RotateY ? _frozenRotateMatrixY : RotateMatrixY;
             var drawRotateMatrixX = _mode == GizmoMode.RotateX ? _frozenRotateMatrixX : RotateMatrixX;
             var drawRotateMatrixZ = _mode == GizmoMode.RotateZ ? _frozenRotateMatrixZ : RotateMatrixZ;
 
-            // Rotation
+            _vertices.Clear();
+
+            // Rotation rings (3 tori around the gizmo center).
             if (SupportRotationX | SupportRotationY | SupportRotationZ)
             {
-                // Setup torus model
-                float requiredTorusRadius = LineThickness * 0.5f / Size;
-                if (_torusRadius != requiredTorusRadius)
-                {
-                    _torus?.Dispose();
-                    _torus = GeometricPrimitive.Torus.New(_device, 1.0f, requiredTorusRadius, 48, _lineRadiusTesselation);
-                    _torusRadius = requiredTorusRadius;
-                }
-                _torus.SetupForRendering(_device);
-
-                // Rotation Y
+                float tubeRadius = LineThickness * 0.5f / Size;
                 if (SupportRotationY)
                 {
-                    var model = Matrix4x4.CreateScale(Size * 2.0f) *
-                        drawRotateMatrixY *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.RotateY ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
+                    var world = Matrix4x4.CreateScale(Size * 2.0f) * drawRotateMatrixY * Matrix4x4.CreateTranslation(Position);
+                    var color = _yAxisColor + (highlight == GizmoMode.RotateY ? _hoveredAddition : default);
+                    WireGeometry.AppendSolidTorus(_vertices, world, color, tubeRadius);
                 }
-
-                // Rotation X
                 if (SupportRotationX)
                 {
-                    var model = Matrix4x4.CreateScale(Size * 2.0f) *
-                        Matrix4x4.CreateRotationZ((float)Math.PI / 2.0f) *
-                        drawRotateMatrixX *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.RotateX ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
+                    var world = Matrix4x4.CreateScale(Size * 2.0f) * Matrix4x4.CreateRotationZ((float)Math.PI / 2.0f) * drawRotateMatrixX * Matrix4x4.CreateTranslation(Position);
+                    var color = _xAxisColor + (highlight == GizmoMode.RotateX ? _hoveredAddition : default);
+                    WireGeometry.AppendSolidTorus(_vertices, world, color, tubeRadius);
                 }
-
-                // Rotation Z
                 if (SupportRotationZ)
                 {
-                    var model = Matrix4x4.CreateScale(Size * 2.0f) *
-                        Matrix4x4.CreateRotationX((float)Math.PI / 2.0f) *
-                        drawRotateMatrixZ *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.RotateZ ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
+                    var world = Matrix4x4.CreateScale(Size * 2.0f) * Matrix4x4.CreateRotationX((float)Math.PI / 2.0f) * drawRotateMatrixZ * Matrix4x4.CreateTranslation(Position);
+                    var color = _zAxisColor + (highlight == GizmoMode.RotateZ ? _hoveredAddition : default);
+                    WireGeometry.AppendSolidTorus(_vertices, world, color, tubeRadius);
                 }
             }
 
-            // Scale
+            // Scale axes — short cylinders + cube tips.
             if (SupportScale)
             {
-                _cylinder.SetupForRendering(_device);
+                // Scale-axis cylinder length = Size / 2 along Y axis. Legacy used a
+                // [-0.5, 0.5] cylinder pre-translated by 0.5; our cylinder is [0, 1]
+                // already so no pre-translation is needed.
+                float cylRadius = LineThickness * 1.1f * 0.5f;
+                float cylLen = (upside ? -Size : Size) / 2.0f;
+                AppendAxisCylinder(cylLen, cylRadius, _xAxisColor, highlight, GizmoMode.ScaleX, axisRotZ: -(float)Math.PI / 2.0f);
+                AppendAxisCylinder(cylLen, cylRadius, _yAxisColor, highlight, GizmoMode.ScaleY);
+                AppendAxisCylinder(cylLen, cylRadius, _zAxisColor, highlight, GizmoMode.ScaleZ, axisRotX: -(float)Math.PI / 2.0f);
 
-                // X axis
-                {
-                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix4x4.CreateScale(new Vector3(LineThickness * 1.1f, (upside ? -Size : Size) / 2.0f, LineThickness * 1.1f)) *
-                        Matrix4x4.CreateRotationZ(-(float)Math.PI / 2.0f) *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.ScaleX ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
-                }
-
-                // Y axis
-                {
-                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix4x4.CreateScale(new Vector3(LineThickness * 1.1f, (upside ? -Size : Size) / 2.0f, LineThickness * 1.1f)) *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
-                }
-
-                // Z axis
-                {
-                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix4x4.CreateScale(new Vector3(LineThickness * 1.1f, (upside ? -Size : Size) / 2.0f, LineThickness * 1.1f)) *
-                        Matrix4x4.CreateRotationX(-(float)Math.PI / 2.0f) *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.ScaleZ ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
-                }
-
-                _cube.SetupForRendering(_device);
-
-                // X axis scale
-                {
-                    var model = Matrix4x4.CreateScale(ScaleCubeSize) *
-                        Matrix4x4.CreateTranslation(Position + Vector3.UnitX * (upside ? -Size : Size) / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.ScaleX ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-                }
-
-                // Y axis scale
-                {
-                    var model = Matrix4x4.CreateScale(ScaleCubeSize) *
-                        Matrix4x4.CreateTranslation(Position + Vector3.UnitY * (upside ? -Size : Size) / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-                }
-
-                // Z axis scale
-                {
-                    var model = Matrix4x4.CreateScale(ScaleCubeSize) *
-                        Matrix4x4.CreateTranslation(Position - Vector3.UnitZ * (upside ? -Size : Size) / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.ScaleZ ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-                }
+                // Scale cube tips.
+                AppendScaleCube(Vector3.UnitX,  upside, _xAxisColor, highlight, GizmoMode.ScaleX);
+                AppendScaleCube(Vector3.UnitY,  upside, _yAxisColor, highlight, GizmoMode.ScaleY);
+                AppendScaleCube(-Vector3.UnitZ, upside, _zAxisColor, highlight, GizmoMode.ScaleZ);
             }
 
+            // Translate axes — long cylinders + cone tips.
+            float trCylRadius = LineThickness * 0.5f;
+            float trCylLen = (upside ? -Size : Size) * _arrowHeadOffsetMultiplier;
+            if (SupportTranslateX)
+                AppendAxisCylinder(trCylLen, trCylRadius, _xAxisColor, highlight, GizmoMode.TranslateX, axisRotZ: -(float)Math.PI / 2.0f);
+            if (SupportTranslateY)
+                AppendAxisCylinder(trCylLen, trCylRadius, _yAxisColor, highlight, GizmoMode.TranslateY);
+            if (SupportTranslateZ)
+                AppendAxisCylinder(trCylLen, trCylRadius, _zAxisColor, highlight, GizmoMode.TranslateZ, axisRotX: -(float)Math.PI / 2.0f);
 
-            // Translation
+            if (SupportTranslateX)
+                AppendTranslateCone(Vector3.UnitX,  upside, _xAxisColor, highlight, GizmoMode.TranslateX, axisRotY: (float)(upside ? -Math.PI * 1.5f : -Math.PI * 0.5f));
+            if (SupportTranslateY)
+                AppendTranslateCone(Vector3.UnitY,  upside, _yAxisColor, highlight, GizmoMode.TranslateY, axisRotX: (float)(upside ? Math.PI * 1.5f : Math.PI * 0.5f));
+            if (SupportTranslateZ)
+                AppendTranslateCone(-Vector3.UnitZ, upside, _zAxisColor, highlight, GizmoMode.TranslateZ, axisRotY: (float)(upside ? Math.PI : 0.0f));
+
+            // Submit gizmo body — opaque triangles, depth-tested.
+            if (_vertices.Count > 0)
             {
-                _cylinder.SetupForRendering(_device);
-
-                // X axis
-                if (SupportTranslateX)
+                _batch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_vertices));
+                _batch.Render(new RenderingDrawingLines.RenderArgs
                 {
-                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix4x4.CreateScale(new Vector3(LineThickness, (upside ? -Size : Size) * _arrowHeadOffsetMultiplier, LineThickness)) *
-                        Matrix4x4.CreateRotationZ(-(float)Math.PI / 2.0f) *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
-                }
-
-                // Y axis
-                if (SupportTranslateY)
-                {
-                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix4x4.CreateScale(new Vector3(LineThickness, (upside ? -Size : Size) * _arrowHeadOffsetMultiplier, LineThickness)) *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
-                }
-
-                // Z axis
-                if (SupportTranslateZ)
-                {
-                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix4x4.CreateScale(new Vector3(LineThickness, (upside ? -Size : Size) * _arrowHeadOffsetMultiplier, LineThickness)) *
-                        Matrix4x4.CreateRotationX(-(float)Math.PI / 2.0f) *
-                        Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
-                }
-
-                _cone.SetupForRendering(_device);
-
-                // X axis translation
-                if (SupportTranslateX)
-                {
-                    var model = Matrix4x4.CreateRotationY((float)(upside ? -Math.PI * 1.5f : -Math.PI * 0.5f)) *
-                        Matrix4x4.CreateScale(TranslationConeSize) *
-                        Matrix4x4.CreateTranslation(Position + (Vector3.UnitX + new Vector3(0.1f, 0, 0)) * ((upside ? -Size : Size) * _arrowHeadOffsetMultiplier));
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-                }
-
-                // Y axis translation
-                if (SupportTranslateY)
-                {
-                    var model = Matrix4x4.CreateRotationX((float)(upside ? Math.PI * 1.5f : Math.PI * 0.5f)) *
-                        Matrix4x4.CreateScale(TranslationConeSize) *
-                        Matrix4x4.CreateTranslation(Position + (Vector3.UnitY + new Vector3(0, 0.1f, 0)) * ((upside ? -Size : Size) * _arrowHeadOffsetMultiplier));
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-                }
-
-                // Z axis translation
-                if (SupportTranslateZ)
-                {
-                    var model = Matrix4x4.CreateRotationY((float)(upside ? Math.PI : 0.0f)) *
-                        Matrix4x4.CreateScale(TranslationConeSize) *
-                        Matrix4x4.CreateTranslation(Position - (Vector3.UnitZ + new Vector3(0, 0, 0.1f)) * ((upside ? -Size : Size) * _arrowHeadOffsetMultiplier));
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Vector4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-                }
+                    RenderTarget = swapChain,
+                    StateBuffer = stateBuffer,
+                    Topology = RenderingDrawingLines.Topology.TriangleList,
+                });
             }
 
-            // All time geometry
-            {
-                /*_device.SetVertexBuffer(_cube.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cube.VertexBuffer));
-                _device.SetIndexBuffer(_cube.IndexBuffer, _cube.IsIndex32Bits);
-
-                // center cube
-                {
-                    var model = Matrix4x4.CreateScale(CentreCubeSize) * Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_centerColor);
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-                }*/
-            }
-
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-            // Rotation display vertices
+            // Active rotation indicator: a fan of triangles from the rotation center
+            // covering the angle between the pick start and the current cursor angle.
             switch (_mode)
             {
                 case GizmoMode.RotateY:
                 case GizmoMode.RotateX:
                 case GizmoMode.RotateZ:
-
-                    // Figure out relevant angle
-                    float startAngle;
-                    float endAngle;
-                    float lastMouseAngle;
-                    Matrix4x4 baseMatrix;
-                    Vector4 color;
-                    switch (_mode)
-                    {
-                        case GizmoMode.RotateY:
-                            startAngle = _rotationPickAngle;
-                            endAngle = _rotationLastMouseAngle;
-                            lastMouseAngle = _rotationLastMouseAngle;
-                            baseMatrix = _frozenRotateMatrixY;
-                            color = _yAxisColor;
-                            break;
-                        case GizmoMode.RotateX:
-                            startAngle = -((float)Math.PI * 0.5f) - _rotationPickAngle;
-                            endAngle = -((float)Math.PI * 0.5f) - _rotationLastMouseAngle;
-                            lastMouseAngle = -((float)Math.PI * 0.5f) - _rotationLastMouseAngle;
-                            baseMatrix = Matrix4x4.CreateRotationZ((float)Math.PI / 2.0f) * _frozenRotateMatrixX;
-                            color = _xAxisColor;
-                            break;
-                        case GizmoMode.RotateZ:
-                            startAngle = (float)Math.PI + _rotationPickAngle;
-                            endAngle = (float)Math.PI + _rotationLastMouseAngle;
-                            lastMouseAngle = (float)Math.PI + _rotationLastMouseAngle;
-                            baseMatrix = Matrix4x4.CreateRotationX((float)Math.PI / 2.0f) * _frozenRotateMatrixZ;
-                            color = _zAxisColor;
-                            break;
-                        default:
-                            throw new NotImplementedException();
-                    }
-                    { // Choose shortest path
-                        float shortestAngle = endAngle - startAngle;
-                        shortestAngle = (float)(shortestAngle - Math.Round(shortestAngle / (Math.PI * 2)) * (Math.PI * 2));
-                        endAngle = startAngle + shortestAngle;
-                    }
-                    if (startAngle > endAngle)
-                    {
-                        float temp = startAngle;
-                        startAngle = endAngle;
-                        endAngle = temp;
-                    }
-
-                    // Build rotation geometry
-                    var rotationHelperGeometry = new SolidVertex[_rotationTrianglesCount * 3 + 2];
-                    float angleStep = (endAngle - startAngle) / _rotationTrianglesCount;
-                    var middleVertex = new SolidVertex(new Vector3());
-                    var lastVertex = new SolidVertex(new Vector3((float)Math.Cos(startAngle), 0, (float)-Math.Sin(startAngle)));
-                    for (int i = 0; i < _rotationTrianglesCount; ++i)
-                    {
-                        float currentAngle = startAngle + (i + 1) * angleStep;
-                        var currentVertex = new SolidVertex(new Vector3((float)Math.Cos(currentAngle), 0, (float)-Math.Sin(currentAngle)));
-                        rotationHelperGeometry[i * 3 + 0] = middleVertex;
-                        rotationHelperGeometry[i * 3 + 1] = lastVertex;
-                        rotationHelperGeometry[i * 3 + 2] = currentVertex;
-                        lastVertex = currentVertex;
-                    }
-
-                    rotationHelperGeometry[_rotationTrianglesCount * 3] = new SolidVertex(new Vector3(
-                        _rotationLastMouseRadius / Size * (float)Math.Cos(lastMouseAngle), 0,
-                        _rotationLastMouseRadius / Size * (float)-Math.Sin(lastMouseAngle)));
-                    rotationHelperGeometry[_rotationTrianglesCount * 3 + 1] = middleVertex;
-                    _rotationHelperGeometry.SetData(rotationHelperGeometry);
-
-                    // Draw
-                    _device.SetRasterizerState(_device.RasterizerStates.CullNone);
-                    _device.SetVertexBuffer(_rotationHelperGeometry);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _rotationHelperGeometry));
-                    var model = Matrix4x4.CreateScale(Size) * baseMatrix * Matrix4x4.CreateTranslation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(color * _rotationAlpha);
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.Draw(PrimitiveType.TriangleList, _rotationTrianglesCount * 3);
-
-                    solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.SetRasterizerState(_rasterizerWireframe);
-                    _device.Draw(PrimitiveType.LineList, 2, _rotationTrianglesCount * 3);
-
-                    // FIXME: Temporary fix for text corruption problem! Remove when SharpDX is not used.
-                    _device.SetRasterizerState(_device.RasterizerStates.Default);
+                    DrawRotationIndicator(swapChain, stateBuffer);
                     break;
             }
+        }
+
+        private void AppendAxisCylinder(float length, float radius, Vector4 color, GizmoMode highlight, GizmoMode myMode, float axisRotZ = 0, float axisRotX = 0)
+        {
+            var c = color + (highlight == myMode ? _hoveredAddition : default);
+            // Cylinder is along +Y in [0, 1]. Scale Y by length, X/Z by radius. Then
+            // optional rotation to point along +X (RotZ -PI/2) or -Z (RotX -PI/2).
+            // Finally translate to gizmo Position.
+            var world = Matrix4x4.CreateScale(radius, length, radius) *
+                        (axisRotZ != 0 ? Matrix4x4.CreateRotationZ(axisRotZ) : Matrix4x4.Identity) *
+                        (axisRotX != 0 ? Matrix4x4.CreateRotationX(axisRotX) : Matrix4x4.Identity) *
+                        Matrix4x4.CreateTranslation(Position);
+            WireGeometry.AppendSolidCylinder(_vertices, world, c, segments: 8);
+        }
+
+        private void AppendScaleCube(Vector3 axis, bool upside, Vector4 color, GizmoMode highlight, GizmoMode myMode)
+        {
+            var c = color + (highlight == myMode ? _hoveredAddition : default);
+            var world = Matrix4x4.CreateScale(ScaleCubeSize) *
+                        Matrix4x4.CreateTranslation(Position + axis * (upside ? -Size : Size) / 2.0f);
+            WireGeometry.AppendSolidCube(_vertices, world, c);
+        }
+
+        private void AppendTranslateCone(Vector3 axis, bool upside, Vector4 color, GizmoMode highlight, GizmoMode myMode, float axisRotY = 0, float axisRotX = 0)
+        {
+            var c = color + (highlight == myMode ? _hoveredAddition : default);
+            // Cone primitive (apex at origin, base at z=1 radius 1) with scale = TranslationConeSize.
+            // Position the cone's APEX at the end of the translate axis; the cone
+            // points outwards along +Z post-rotation.
+            var basePos = Position + (axis + axis * 0.1f) * ((upside ? -Size : Size) * _arrowHeadOffsetMultiplier);
+            var world = (axisRotY != 0 ? Matrix4x4.CreateRotationY(axisRotY) : Matrix4x4.Identity) *
+                        (axisRotX != 0 ? Matrix4x4.CreateRotationX(axisRotX) : Matrix4x4.Identity) *
+                        Matrix4x4.CreateScale(TranslationConeSize) *
+                        Matrix4x4.CreateTranslation(basePos);
+            WireGeometry.AppendSolidCone(_vertices, world, c);
+        }
+
+        private void DrawRotationIndicator(RenderingSwapChain swapChain, RenderingStateBuffer stateBuffer)
+        {
+            float startAngle;
+            float endAngle;
+            float lastMouseAngle;
+            Matrix4x4 baseMatrix;
+            Vector4 color;
+            switch (_mode)
+            {
+                case GizmoMode.RotateY:
+                    startAngle = _rotationPickAngle;
+                    endAngle = _rotationLastMouseAngle;
+                    lastMouseAngle = _rotationLastMouseAngle;
+                    baseMatrix = _frozenRotateMatrixY;
+                    color = _yAxisColor;
+                    break;
+                case GizmoMode.RotateX:
+                    startAngle = -((float)Math.PI * 0.5f) - _rotationPickAngle;
+                    endAngle = -((float)Math.PI * 0.5f) - _rotationLastMouseAngle;
+                    lastMouseAngle = -((float)Math.PI * 0.5f) - _rotationLastMouseAngle;
+                    baseMatrix = Matrix4x4.CreateRotationZ((float)Math.PI / 2.0f) * _frozenRotateMatrixX;
+                    color = _xAxisColor;
+                    break;
+                case GizmoMode.RotateZ:
+                    startAngle = (float)Math.PI + _rotationPickAngle;
+                    endAngle = (float)Math.PI + _rotationLastMouseAngle;
+                    lastMouseAngle = (float)Math.PI + _rotationLastMouseAngle;
+                    baseMatrix = Matrix4x4.CreateRotationX((float)Math.PI / 2.0f) * _frozenRotateMatrixZ;
+                    color = _zAxisColor;
+                    break;
+                default:
+                    return;
+            }
+            // Choose shortest path
+            float shortestAngle = endAngle - startAngle;
+            shortestAngle = (float)(shortestAngle - Math.Round(shortestAngle / (Math.PI * 2)) * (Math.PI * 2));
+            endAngle = startAngle + shortestAngle;
+            if (startAngle > endAngle)
+                (startAngle, endAngle) = (endAngle, startAngle);
+
+            var world = Matrix4x4.CreateScale(Size) * baseMatrix * Matrix4x4.CreateTranslation(Position);
+            float angleStep = (endAngle - startAngle) / _rotationTrianglesCount;
+
+            // Triangle fan from origin to ring slice.
+            var fan = new List<SolidLineVertex>(_rotationTrianglesCount * 3);
+            var middle = Vector3.Transform(new Vector3(), world);
+            var lastP = Vector3.Transform(new Vector3((float)Math.Cos(startAngle), 0, (float)-Math.Sin(startAngle)), world);
+            var fanColor = color * _rotationAlpha;
+            for (int i = 0; i < _rotationTrianglesCount; ++i)
+            {
+                float currentAngle = startAngle + (i + 1) * angleStep;
+                var currentP = Vector3.Transform(new Vector3((float)Math.Cos(currentAngle), 0, (float)-Math.Sin(currentAngle)), world);
+                fan.Add(new SolidLineVertex { Position = middle,   Color = fanColor });
+                fan.Add(new SolidLineVertex { Position = lastP,    Color = fanColor });
+                fan.Add(new SolidLineVertex { Position = currentP, Color = fanColor });
+                lastP = currentP;
+            }
+
+            _batch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(fan));
+            _batch.Render(new RenderingDrawingLines.RenderArgs
+            {
+                RenderTarget = swapChain,
+                StateBuffer = stateBuffer,
+                Topology = RenderingDrawingLines.Topology.TriangleList,
+                Blend = BlendMode.NonPremultipliedAlpha,
+            });
+
+            // Pointer line from center to current mouse position.
+            var pointerP = Vector3.Transform(new Vector3(
+                _rotationLastMouseRadius / Size * (float)Math.Cos(lastMouseAngle), 0,
+                _rotationLastMouseRadius / Size * (float)-Math.Sin(lastMouseAngle)), world);
+            var line = new[]
+            {
+                new SolidLineVertex { Position = middle,   Color = Vector4.One },
+                new SolidLineVertex { Position = pointerP, Color = Vector4.One },
+            };
+            _batch.SetVertices(line);
+            _batch.Render(new RenderingDrawingLines.RenderArgs
+            {
+                RenderTarget = swapChain,
+                StateBuffer = stateBuffer,
+                Topology = RenderingDrawingLines.Topology.LineList,
+            });
         }
 
         // They are called both, just leave the implementation empty if not needed, don't use exceptions
@@ -835,6 +693,17 @@ namespace TombLib.Graphics
         protected abstract bool SupportRotationY { get; }
         protected abstract bool SupportRotationX { get; }
         protected abstract bool SupportRotationZ { get; }
-        protected virtual bool DrawGizmo => SupportTranslateX || SupportTranslateY || SupportTranslateZ || SupportScale || SupportRotationY || SupportRotationX || SupportRotationZ;
+
+        public bool DrawGizmo
+        {
+            get
+            {
+                if (Mode == GizmoMode.RotateY || Mode == GizmoMode.RotateX || Mode == GizmoMode.RotateZ)
+                    return SupportRotationY || SupportRotationX || SupportRotationZ;
+                return true;
+            }
+        }
+
+        public GizmoMode Mode => _mode;
     }
 }

@@ -5,6 +5,7 @@ using TombEditor.Controls.FlybyTimeline.Sequence;
 using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Utils;
 
 namespace TombEditor.Controls.Panel3D
@@ -43,39 +44,30 @@ namespace TombEditor.Controls.Panel3D
             }
         }
 
+        // Stores the two endpoints of a vertical line going from `position` down to
+        // the floor of `room`. DrawDebugLines builds the actual SolidLineVertex pair
+        // on the fly each frame — no GPU buffer is allocated here.
         private void AddObjectHeightLine(Room room, Vector3 position)
         {
             int floorHeight = GetFloorHeight(room, position);
-
-            // Get the distance between point and floor in units
-            float height = position.Y - floorHeight;
-
-            // Prepare two vertices for the line
-            var vertices = new[]
-            {
-                new SolidVertex { Position = position, Color = Vector4.One },
-                new SolidVertex { Position = new Vector3(position.X, floorHeight, position.Z), Color = Vector4.One }
-            };
-
-            // Prepare the Vertex Buffer
-            if (_objectHeightLineVertexBuffer != null)
-                _objectHeightLineVertexBuffer.Dispose();
-            _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice,
-                vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
-
+            _heightLineFrom = position;
+            _heightLineTo = new Vector3(position.X, floorHeight, position.Z);
             _drawHeightLine = true;
         }
 
+        // Builds the flyby path geometry (a tube of triangles) into the reusable
+        // _flybyPathVertices list. Returns false if the path is too short to draw.
+        // Caller (DrawFlybyPath) hands the list to the unified RenderingDrawingLines
+        // batch — no GPU buffer is allocated here.
         private bool AddFlybyPath(int sequence)
         {
             var flybyCameras = FlybySequenceHelper.GetCameras(_editor.Level, sequence);
 
-            // Is it actually necessary to show the path?
             if (flybyCameras.Count < 2)
                 return false;
 
-            // Initialize variables for vertex buffer preparation
-            var vertices = new List<SolidVertex>();
+            var vertices = _flybyPathVertices;
+            vertices.Clear();
             var startColor = MathC.GetRandomColorByIndex(sequence, 32, 0.7f);
             var endColor = MathC.GetRandomColorByIndex(sequence, 32, 0.3f);
 
@@ -124,10 +116,11 @@ namespace TombEditor.Controls.Panel3D
 
                         for (int k = 0; k < _flybyPathIndices.Count; k++)
                         {
-                            var v = new SolidVertex();
-                            v.Position = points[_flybyPathIndices[k].Y][_flybyPathIndices[k].X];
-                            v.Color = color;
-                            vertices.Add(v);
+                            vertices.Add(new SolidLineVertex
+                            {
+                                Position = points[_flybyPathIndices[k].Y][_flybyPathIndices[k].X],
+                                Color = color
+                            });
                         }
                     }
 
@@ -139,11 +132,6 @@ namespace TombEditor.Controls.Panel3D
                         camList.Add(cam.Position + cam.Room.WorldPos);
                 }
             }
-
-            // Prepare the Vertex Buffer
-            if (_flybyPathVertexBuffer != null)
-                _flybyPathVertexBuffer.Dispose();
-            _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             return true;
         }

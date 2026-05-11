@@ -1,4 +1,3 @@
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,7 +6,6 @@ using System.Numerics;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
-using TombLib.Graphics.Primitives;
 
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
@@ -17,43 +15,76 @@ using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+// Resolves the BlendMode name conflict between the rendering layer (this is what we
+// want here) and TombLib.Utils.BlendMode (the TR engine's texture blend mode).
+using BlendMode = TombLib.Rendering.BlendMode;
 
 namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D
     {
-        private void DrawDebugLines(Effect effect)
+        // Both branches (height line + room bounding boxes) now go through the unified
+        // RenderingDrawingLines path. The `object effect` parameter is no longer used
+        // and is kept only to minimize the diff at the call site (DrawScene).
+        private void DrawDebugLines(object effect)
         {
             var drawRoomBounds = _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds;
 
             if (!_drawHeightLine && !drawRoomBounds)
                 return;
 
-            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-            Matrix4x4 model = Matrix4x4.CreateTranslation(_editor.SelectedRoom.WorldPos);
-            effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-            effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-
             if (_drawHeightLine)
             {
-                _legacyDevice.SetVertexBuffer(_objectHeightLineVertexBuffer);
-                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _objectHeightLineVertexBuffer));
-                Matrix4x4 model2 = Matrix4x4.CreateTranslation(_editor.SelectedObject.Room.WorldPos);
-                effect.Parameters["ModelViewProjection"].SetValue((model2 * _viewProjection).ToSharpDX());
-                effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.Draw(PrimitiveType.LineList, 2);
+                Span<SolidLineVertex> verts = stackalloc SolidLineVertex[2];
+                verts[0] = new SolidLineVertex { Position = _heightLineFrom, Color = Vector4.One };
+                verts[1] = new SolidLineVertex { Position = _heightLineTo,   Color = Vector4.One };
+                _linesBatch.SetVertices(verts);
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                    World = Matrix4x4.CreateTranslation(_editor.SelectedObject.Room.WorldPos),
+                });
             }
 
             if (!_flyModeTimer.Enabled && drawRoomBounds)
             {
+                _bboxBatchVertices.Clear();
                 if (_editor.SelectedRooms.Count > 0)
                     foreach (Room room in _editor.SelectedRooms)
-                        // Draw room bounding box around every selected Room
-                        DrawRoomBoundingBox(effect, room);
+                        AppendRoomBoundingBox(_bboxBatchVertices, room);
                 else
-                    // Draw room bounding box
-                    DrawRoomBoundingBox(effect, _editor.SelectedRoom);
+                    AppendRoomBoundingBox(_bboxBatchVertices, _editor.SelectedRoom);
+
+                if (_bboxBatchVertices.Count > 0)
+                {
+                    _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_bboxBatchVertices));
+                    _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                    {
+                        RenderTarget = SwapChain,
+                        StateBuffer = _renderingStateBuffer,
+                    });
+                }
             }
+        }
+
+        // Computes the AABB of `room` and appends its 24 wireframe line vertices to the
+        // batch. Caller is responsible for batching multiple rooms into a single draw.
+        private static void AppendRoomBoundingBox(List<SolidLineVertex> vertices, Room room)
+        {
+            float minY = room.WorldPos.Y + room.GetLowestCorner();
+            float maxY = room.WorldPos.Y + room.GetHighestCorner();
+            float sizeX = room.NumXSectors * Level.SectorSizeUnit;
+            float sizeY = maxY - minY;
+            float sizeZ = room.NumZSectors * Level.SectorSizeUnit;
+
+            var world = Matrix4x4.CreateScale(sizeX * 0.5f, sizeY * 0.5f, sizeZ * 0.5f)
+                      * Matrix4x4.CreateTranslation(
+                            room.WorldPos.X + sizeX * 0.5f,
+                            (minY + maxY) * 0.5f,
+                            room.WorldPos.Z + sizeZ * 0.5f);
+
+            WireGeometry.AppendWireCube(vertices, world, Vector4.One);
         }
 
         private void DrawText(Room[] roomsToDraw, List<Text> textToDraw)
@@ -113,92 +144,92 @@ namespace TombEditor.Controls.Panel3D
             SwapChain.RenderText(textToDraw);
         }
 
-        private void DrawRoomBoundingBox(Effect solidEffect, Room room)
-        {
-            _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(_linesCube.InputLayout);
-            _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
-
-            float height = room.GetHighestCorner() - room.GetLowestCorner();
-            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(room.NumXSectors * 4.0f, height / Level.FullClickHeight, room.NumZSectors * 4.0f);
-            float boxX = room.WorldPos.X + room.NumXSectors * Level.SectorSizeUnit / 2.0f;
-            float boxY = room.WorldPos.Y + (room.GetHighestCorner() + room.GetLowestCorner()) / 2.0f;
-            float boxZ = room.WorldPos.Z + room.NumZSectors * Level.SectorSizeUnit / 2.0f;
-            Matrix4x4 translateMatrix = Matrix4x4.CreateTranslation(new Vector3(boxX, boxY, boxZ));
-            solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * _viewProjection).ToSharpDX());
-            solidEffect.CurrentTechnique.Passes[0].Apply();
-            _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
-        }
-
-        private void DrawBoundingBoxes(Effect solidEffect, List<ObjectInstance> objectList)
+        // Bounding boxes for moveables and statics: legacy code did one indexed Draw
+        // per object (N draw calls + N effect parameter changes). Migrated path bakes
+        // every object's 12-edge wireframe into ONE SolidLineVertex list with per-vertex
+        // colour, so the whole list of objects becomes a single LineList draw call.
+        //
+        // Wireframe topology
+        // ------------------
+        // 12 edges × 2 vertices = 24 line vertices per box. The 8 cube corners are
+        // first transformed by the per-object matrix (scale × translation × rot/pos),
+        // then emitted in pairs for each edge.
+        private void DrawBoundingBoxes(object solidEffect, List<ObjectInstance> objectList)
         {
             if (objectList.Count == 0)
                 return;
 
-            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
-            _legacyDevice.SetVertexBuffer(_linesCube.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(_linesCube.InputLayout);
-            _legacyDevice.SetIndexBuffer(_linesCube.IndexBuffer, false);
+            // Reuse a single list across calls — caller is on the UI thread, so this
+            // is single-threaded by construction.
+            _bboxBatchVertices.Clear();
+            var selectionColor = _editor.Configuration.UI_ColorScheme.ColorSelection;
+            var defaultColor = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
 
             foreach (var obj in objectList)
             {
-                if (obj is MoveableInstance)
+                Matrix4x4 worldMatrix;
+                if (obj is MoveableInstance mov)
                 {
-                    var mov = obj as MoveableInstance;
-                    var model = _editor?.Level?.Settings?.WadTryGetMoveable((obj as MoveableInstance).WadObjectId);
+                    var model = _editor?.Level?.Settings?.WadTryGetMoveable(mov.WadObjectId);
                     if (model == null || model.Animations.Count == 0 || model.Animations[0].KeyFrames.Count == 0)
                         continue;
-
                     var frame = model.Animations[0].KeyFrames[0];
-
-                    var rotPosMatrix = Matrix4x4.CreateScale(frame.BoundingBox.Size / _littleCubeRadius / 2.0f) *
-                                       Matrix4x4.CreateTranslation(frame.BoundingBox.Center) *
-                                       mov.RotationPositionMatrix;
-
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((rotPosMatrix * _viewProjection).ToSharpDX());
+                    // _linesCube was a -128..+128 cube; legacy scaled it down by /256
+                    // to get actual size. We use a unit cube directly so the scale is
+                    // simply the bounding box size (no /256 factor).
+                    worldMatrix = Matrix4x4.CreateScale(frame.BoundingBox.Size / 2.0f) *
+                                  Matrix4x4.CreateTranslation(frame.BoundingBox.Center) *
+                                  mov.RotationPositionMatrix;
                 }
-
-                if (obj is StaticInstance)
+                else if (obj is StaticInstance stat)
                 {
-                    var stat = obj as StaticInstance;
-                    var mesh = _editor?.Level?.Settings?.WadTryGetStatic((obj as StaticInstance).WadObjectId);
+                    var mesh = _editor?.Level?.Settings?.WadTryGetStatic(stat.WadObjectId);
                     if (mesh == null || mesh.Mesh == null || mesh.Mesh.BoundingBox.Size.Length() == 0.0f)
                         continue;
-
-                    var rotPosMatrix = Matrix4x4.CreateScale(mesh.CollisionBox.Size * stat.Scale / _littleCubeRadius / 2.0f) *
-                                       Matrix4x4.CreateTranslation(mesh.CollisionBox.Center * stat.Scale) *
-                                       stat.RotationPositionMatrix;
-
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((rotPosMatrix * _viewProjection).ToSharpDX());
+                    worldMatrix = Matrix4x4.CreateScale(mesh.CollisionBox.Size * stat.Scale / 2.0f) *
+                                  Matrix4x4.CreateTranslation(mesh.CollisionBox.Center * stat.Scale) *
+                                  stat.RotationPositionMatrix;
                 }
-
-                if (_highlightedObjects.Contains(obj)) // Selection
-                    solidEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                 else
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                    continue;
 
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
+                var color = _highlightedObjects.Contains(obj) ? selectionColor : defaultColor;
+                WireGeometry.AppendWireCube(_bboxBatchVertices, worldMatrix, color);
             }
+
+            if (_bboxBatchVertices.Count == 0)
+                return;
+
+            _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_bboxBatchVertices));
+            _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+            {
+                RenderTarget = SwapChain,
+                StateBuffer = _renderingStateBuffer,
+                Topology = RenderingDrawingLines.Topology.LineList,
+            });
         }
 
-        private void DrawFlybyPath(Effect effect)
+        // Reused across DrawBoundingBoxes calls to avoid per-frame allocation.
+        private readonly List<SolidLineVertex> _bboxBatchVertices = new List<SolidLineVertex>();
+
+        // Flyby path is a tube of triangles drawn along the spline through the flyby
+        // cameras. Vertex generation lives in AddFlybyPath; this method only draws.
+        // Vertices are already in world space (no World matrix needed).
+        private void DrawFlybyPath(object effect)
         {
             if (!TryGetSelectedFlybySequence(out int sequence))
                 return;
 
-            // Add the path of the flyby
-            if (AddFlybyPath(sequence))
+            if (!AddFlybyPath(sequence))
+                return;
+
+            _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_flybyPathVertices));
+            _linesBatch.Render(new RenderingDrawingLines.RenderArgs
             {
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                _legacyDevice.SetVertexBuffer(_flybyPathVertexBuffer);
-                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
-                effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
-                effect.Parameters["Color"].SetValue(Vector4.One);
-                effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.Draw(PrimitiveType.TriangleList, _flybyPathVertexBuffer.ElementCount);
-            }
+                RenderTarget = SwapChain,
+                StateBuffer = _renderingStateBuffer,
+                Topology = RenderingDrawingLines.Topology.TriangleList,
+            });
         }
 
         private bool TryGetSelectedFlybySequence(out int sequence)
@@ -244,7 +275,11 @@ namespace TombEditor.Controls.Panel3D
             return false;
         }
 
-        private void DrawSectorSplitHighlights(Effect effect)
+        // Triangle ribbons highlighting the sector-split lines on the floor/ceiling.
+        // Each ribbon is 6 vertices (2 triangles); total per call ~dozens of ribbons.
+        // Migrated to the unified RenderingDrawingLines path with TriangleList topology;
+        // the legacy SolidVertex / per-call Buffer<SolidVertex> path is gone.
+        private void DrawSectorSplitHighlights(object effect)
         {
             if (_editor.HighlightedSplit == 0 || _editor.SelectedSectors == SectorSelection.None)
                 return;
@@ -252,7 +287,7 @@ namespace TombEditor.Controls.Panel3D
             int splitIndex = _editor.HighlightedSplit - 2;
             Room currentRoom = _editor.SelectedRoom;
 
-            var vertices = new List<SolidVertex>();
+            var vertices = new List<SolidLineVertex>();
 
             const int
                 XZ_OFFSET = 8,
@@ -261,14 +296,19 @@ namespace TombEditor.Controls.Panel3D
             void DrawRibbon(Vector3 p1, Vector3 p2, int height, int xOffset, int yOffset, int zOffset)
             {
                 float halfHeight = height / 2.0f;
+                var c = Vector4.One;
+                Vector3 p1Top = new Vector3((p1.X * Level.SectorSizeUnit) + xOffset, p1.Y + halfHeight + yOffset, (p1.Z * Level.SectorSizeUnit) + zOffset);
+                Vector3 p2Top = new Vector3((p2.X * Level.SectorSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.SectorSizeUnit) + zOffset);
+                Vector3 p1Bot = new Vector3((p1.X * Level.SectorSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.SectorSizeUnit) + zOffset);
+                Vector3 p2Bot = new Vector3((p2.X * Level.SectorSizeUnit) + xOffset, p2.Y - halfHeight + yOffset, (p2.Z * Level.SectorSizeUnit) + zOffset);
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.SectorSizeUnit) + xOffset, p1.Y + halfHeight + yOffset, (p1.Z * Level.SectorSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.SectorSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.SectorSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.SectorSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.SectorSizeUnit) + zOffset)));
+                vertices.Add(new SolidLineVertex { Position = p1Top, Color = c });
+                vertices.Add(new SolidLineVertex { Position = p2Top, Color = c });
+                vertices.Add(new SolidLineVertex { Position = p1Bot, Color = c });
 
-                vertices.Add(new SolidVertex(new Vector3((p1.X * Level.SectorSizeUnit) + xOffset, p1.Y - halfHeight + yOffset, (p1.Z * Level.SectorSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.SectorSizeUnit) + xOffset, p2.Y + halfHeight + yOffset, (p2.Z * Level.SectorSizeUnit) + zOffset)));
-                vertices.Add(new SolidVertex(new Vector3((p2.X * Level.SectorSizeUnit) + xOffset, p2.Y - halfHeight + yOffset, (p2.Z * Level.SectorSizeUnit) + zOffset)));
+                vertices.Add(new SolidLineVertex { Position = p1Bot, Color = c });
+                vertices.Add(new SolidLineVertex { Position = p2Top, Color = c });
+                vertices.Add(new SolidLineVertex { Position = p2Bot, Color = c });
             }
 
             void HandlePositiveZ(int x, int z, SectorSurface surface, int yOffset)
@@ -484,136 +524,206 @@ namespace TombEditor.Controls.Panel3D
             if (vertices.Count == 0)
                 return;
 
-            using Buffer<SolidVertex> buffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
-
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-            _legacyDevice.SetVertexBuffer(buffer);
-            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, buffer));
-            effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
-            effect.Parameters["Color"].SetValue(Vector4.One);
-            effect.CurrentTechnique.Passes[0].Apply();
-            _legacyDevice.Draw(PrimitiveType.TriangleList, buffer.ElementCount);
+            _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(vertices));
+            _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+            {
+                RenderTarget = SwapChain,
+                StateBuffer = _renderingStateBuffer,
+                Topology = RenderingDrawingLines.Topology.TriangleList,
+            });
         }
 
-        private void DrawLights(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
+        // Lights rendering, fully migrated to RenderingDrawingLines.
+        //
+        // Two batches accumulate independently:
+        //   _lightsBatchVertices     — small placeholder spheres for every light in
+        //                               every room (only used when sprite icons are
+        //                               disabled). All lights collapse into 1 draw.
+        //   _selectedLightVertices   — large overlay (range spheres, projection cones)
+        //                               for the currently selected light only. Always 1
+        //                               draw regardless of light type.
+        //
+        // Sprite icons are rendered via DrawOrQueueServiceObject which still appends
+        // to the global `sprites` list — the legacy code there is left untouched.
+        private void DrawLights(object effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
-            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-            _legacyDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(_littleSphere.InputLayout);
-            _legacyDevice.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
-
             var lights = roomsWhoseObjectsToDraw.SelectMany(r => r.Objects).OfType<LightInstance>();
+            bool useSpriteIcons = _editor.Configuration.Rendering3D_UseSpritesForServiceObjects;
 
+            // === Pass 1: per-light placeholder ===
+            _lightsBatchVertices.Clear();
             foreach (var light in lights)
             {
-                var color = Vector4.One;
-
-                if (light.Type == LightType.Point)
-                    color = new Vector4(1.0f, 1.0f, 0.25f, 1.0f);
-                if (light.Type == LightType.Spot)
-                    color = new Vector4(1.0f, 1.0f, 0.25f, 1.0f);
-                if (light.Type == LightType.FogBulb)
-                    color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f);
-                if (light.Type == LightType.Shadow)
-                    color = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
-                if (light.Type == LightType.Effect)
-                    color = new Vector4(1.0f, 1.0f, 0.25f, 1.0f);
-                if (light.Type == LightType.Sun)
-                    color = new Vector4(1.0f, 0.5f, 0.0f, 1.0f);
+                var color = ColorForLightType(light);
                 if (_highlightedObjects.Contains(light))
                     color = _editor.Configuration.UI_ColorScheme.ColorSelection;
 
-                DrawOrQueueServiceObject(light, _littleSphere, color, effect, sprites);
+                if (useSpriteIcons)
+                {
+                    // Sprite path bypasses 3D placeholder geometry entirely.
+                    DrawOrQueueServiceObject(light, null, color, effect, sprites);
+                }
+                else
+                {
+                    // Wireframe sphere placeholder. Size matches the legacy _littleSphere
+                    // (tessellation 8, half-size 128) — see Panel3DInit. Emit a fully
+                    // UV-tessellated sphere as TRIANGLES; the batch is submitted with
+                    // Wireframe=true so the rasterizer fills only the triangle edges,
+                    // reproducing the legacy "tessellated wire sphere" look (instead of
+                    // the three-great-circles silhouette that AppendWireSphere produces).
+                    var world = Matrix4x4.CreateScale(_littleSphereRadius) * Matrix4x4.CreateTranslation(light.Position + light.Room.WorldPos);
+                    WireGeometry.AppendSolidSphere(_lightsBatchVertices, world, color, latSegments: 8, longSegments: 12);
+                }
             }
 
-            // Draw cone, light spheres etc.
-
-            if (_editor.SelectedObject is LightInstance && lights.Contains(_editor.SelectedObject))
+            // === Pass 2: selected light range overlay ===
+            _selectedLightVertices.Clear();
+            if (_editor.SelectedObject is LightInstance selectedLight && lights.Contains(selectedLight))
             {
-                var light = (LightInstance)_editor.SelectedObject;
                 if (ShowLightMeshes)
-                    if (light.Type == LightType.Point || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
-                    {
-                        _legacyDevice.SetVertexBuffer(_sphere.VertexBuffer);
-                        _legacyDevice.SetVertexInputLayout(_sphere.InputLayout);
-                        _legacyDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
+                    AppendSelectedLightOverlay(selectedLight);
 
-                        Matrix4x4 model;
-
-                        if (light.Type == LightType.Point || light.Type == LightType.Shadow)
-                        {
-                            model = Matrix4x4.CreateScale(light.InnerRange * 2.0f) * light.ObjectMatrix;
-                            effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                            effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
-                            effect.CurrentTechnique.Passes[0].Apply();
-                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-                        }
-
-                        model = Matrix4x4.CreateScale(light.OuterRange * 2.0f) * light.ObjectMatrix;
-                        effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-
-                        effect.CurrentTechnique.Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-                    }
-                    else if (light.Type == LightType.Spot)
-                    {
-                        _legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
-                        _legacyDevice.SetVertexInputLayout(_cone.InputLayout);
-                        _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
-
-                        // Inner cone
-                        float coneAngle = (float)Math.Atan2(512, 1024);
-                        float lenScaleH = light.InnerRange;
-                        float lenScaleW = light.InnerAngle * (float)(Math.PI / 180) / coneAngle * lenScaleH;
-
-                        Matrix4x4 Model = Matrix4x4.CreateScale(lenScaleW, lenScaleW, lenScaleH) * light.ObjectMatrix;
-                        effect.Parameters["ModelViewProjection"].SetValue((Model * _viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
-                        effect.CurrentTechnique.Passes[0].Apply();
-
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-
-                        // Outer cone
-                        float cutoffScaleH = light.OuterRange;
-                        float cutoffScaleW = light.OuterAngle * (float)(Math.PI / 180) / coneAngle * cutoffScaleH;
-
-                        Matrix4x4 model2 = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * light.ObjectMatrix;
-                        effect.Parameters["ModelViewProjection"].SetValue((model2 * _viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-
-                        effect.CurrentTechnique.Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-                    }
-                    else if (light.Type == LightType.Sun)
-                    {
-                        _legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
-                        _legacyDevice.SetVertexInputLayout(_cone.InputLayout);
-                        _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
-
-                        Matrix4x4 model = Matrix4x4.CreateScale(0.01f, 0.01f, 1.0f) * light.ObjectMatrix;
-                        effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
-                        effect.CurrentTechnique.Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-                    }
-
-                // Add text message
                 textToDraw.Add(CreateTextTagForObject(
-                    light.ObjectMatrix * _viewProjection,
-                    light.Type.ToString().SplitCamelcase() + " Light" + "\n" + GetObjectPositionString(light.Room, light)));
+                    selectedLight.ObjectMatrix * _viewProjection,
+                    selectedLight.Type.ToString().SplitCamelcase() + " Light" + "\n" + GetObjectPositionString(selectedLight.Room, selectedLight)));
 
-                // Add the line height of the object
-                AddObjectHeightLine(light.Room, light.Position);
+                AddObjectHeightLine(selectedLight.Room, selectedLight.Position);
             }
 
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+            // === Submit batches ===
+            if (_lightsBatchVertices.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_lightsBatchVertices));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                    Topology = RenderingDrawingLines.Topology.TriangleList,
+                    Wireframe = true,
+                });
+            }
+            if (_selectedLightVertices.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_selectedLightVertices));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                });
+            }
         }
 
-        private void DrawGhostBlocks(Effect effect, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw, List<Sprite> sprites)
+        // Reused list; cleared+filled per frame.
+        private readonly List<SolidLineVertex> _lightsBatchVertices = new List<SolidLineVertex>();
+        private readonly List<SolidLineVertex> _selectedLightVertices = new List<SolidLineVertex>();
+        private readonly List<SolidLineVertex> _placeholderBatchVertices = new List<SolidLineVertex>();
+
+        // Sprite-or-wirecube placeholder for service objects (sinks, cameras, sound
+        // sources, etc.). Mirrors the behaviour of DrawOrQueueServiceObject minus the
+        // legacy mesh draw — caller accumulates wire cubes into _placeholderBatchVertices
+        // for a single batched draw.
+        private void QueueServiceObjectPlaceholder(ISpatial instance, Vector4 color, List<Sprite> sprites)
+        {
+            if (_editor.CameraPreviewMode != CameraPreviewType.None)
+                return;
+
+            // Sprite mode: defer to the existing sprite-only branch of
+            // DrawOrQueueServiceObject. The Effect parameter is unused on that branch.
+            if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
+            {
+                DrawOrQueueServiceObject(instance, null, color, null, sprites);
+                return;
+            }
+
+            Matrix4x4 transform;
+            if (instance is PositionBasedObjectInstance pbi)
+                transform = pbi.RotationPositionMatrix;
+            else if (instance is GhostBlockInstance gbi)
+                transform = gbi.CenterMatrix(true);
+            else
+                return;
+
+            // _littleCube was a 256-unit cube (half-size = _littleCubeRadius = 128); a
+            // unit cube (-1..+1) scaled by the radius reproduces the same world size.
+            var world = Matrix4x4.CreateScale(_littleCubeRadius) * transform;
+            WireGeometry.AppendWireCube(_placeholderBatchVertices, world, color);
+        }
+
+        private static Vector4 ColorForLightType(LightInstance light) => light.Type switch
+        {
+            LightType.Point   => new Vector4(1.0f, 1.0f, 0.25f, 1.0f),
+            LightType.Spot    => new Vector4(1.0f, 1.0f, 0.25f, 1.0f),
+            LightType.FogBulb => new Vector4(1.0f, 0.0f, 1.0f,  1.0f),
+            LightType.Shadow  => new Vector4(0.5f, 0.5f, 0.5f,  1.0f),
+            LightType.Effect  => new Vector4(1.0f, 1.0f, 0.25f, 1.0f),
+            LightType.Sun     => new Vector4(1.0f, 0.5f, 0.0f,  1.0f),
+            _                 => Vector4.One,
+        };
+
+        // Range/projection visualization for the selected light. Each branch matches the
+        // legacy semantics 1:1 (same scale formulas, same colours: green = inner, blue = outer).
+        private void AppendSelectedLightOverlay(LightInstance light)
+        {
+            var greenColor = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+            var blueColor  = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+
+            switch (light.Type)
+            {
+                case LightType.Point:
+                case LightType.Shadow:
+                case LightType.FogBulb:
+                    // Inner range only for Point/Shadow (FogBulb has no inner).
+                    if (light.Type == LightType.Point || light.Type == LightType.Shadow)
+                    {
+                        var inner = Matrix4x4.CreateScale(light.InnerRange * 1024.0f /* TR units */) * light.ObjectMatrix;
+                        WireGeometry.AppendWireSphere(_selectedLightVertices, inner, greenColor, segments: 32);
+                    }
+                    var outer = Matrix4x4.CreateScale(light.OuterRange * 1024.0f) * light.ObjectMatrix;
+                    WireGeometry.AppendWireSphere(_selectedLightVertices, outer, blueColor, segments: 32);
+                    break;
+
+                case LightType.Spot:
+                    {
+                        // Cone unit length convention in the editor: 1024 TR units.
+                        // coneAngle = atan2(512, 1024) is the legacy primitive's half-angle.
+                        const float coneUnit = 1024.0f;
+                        float coneAngle = (float)Math.Atan2(512, 1024);
+                        // Inner cone (green)
+                        float lenH = light.InnerRange * coneUnit;
+                        float lenW = light.InnerAngle * (float)(Math.PI / 180) / coneAngle * lenH * 0.5f;
+                        var innerWorld = Matrix4x4.CreateScale(lenW, lenW, lenH) * light.ObjectMatrix;
+                        WireGeometry.AppendWireCone(_selectedLightVertices, innerWorld, greenColor);
+                        // Outer cone (blue)
+                        float cutoffH = light.OuterRange * coneUnit;
+                        float cutoffW = light.OuterAngle * (float)(Math.PI / 180) / coneAngle * cutoffH * 0.5f;
+                        var outerWorld = Matrix4x4.CreateScale(cutoffW, cutoffW, cutoffH) * light.ObjectMatrix;
+                        WireGeometry.AppendWireCone(_selectedLightVertices, outerWorld, blueColor);
+                    }
+                    break;
+
+                case LightType.Sun:
+                    {
+                        // Long thin cone showing direction. Matches the legacy
+                        // CreateScale(0.01, 0.01, 1.0) on a primitive with base radius
+                        // 512 and length 1024 → effective 5.12 wide, 1024 long.
+                        var world = Matrix4x4.CreateScale(5.12f, 5.12f, 1024.0f) * light.ObjectMatrix;
+                        WireGeometry.AppendWireCone(_selectedLightVertices, world, greenColor);
+                    }
+                    break;
+            }
+        }
+
+        // Center placeholders + corner control cubes for ghost blocks. Migrated to a
+        // single accumulated wire-cube batch:
+        //   - Non-selected ghost block: 1 wire cube at the block center (default colour).
+        //   - Selected ghost block: 8 wire cubes at the corner control matrices
+        //                           (4 floor + 4 ceiling); the SelectedCorner is shown
+        //                           in a brighter highlight color (the legacy used
+        //                           wireframe rasterizer for the same purpose; with our
+        //                           always-wire path we use color instead).
+        // The animated unfold (`_movementTimer.Mode == GhostBlockUnfold`) is preserved
+        // by lerping between center and corner matrices like the legacy code.
+        private void DrawGhostBlocks(object effect, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
             if (ghostBlocksToDraw.Count == 0)
                 return;
@@ -621,75 +731,99 @@ namespace TombEditor.Controls.Panel3D
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorFloor;
             var normalColor = new Vector4(baseColor.To3() * 0.4f, 0.9f);
             var selectColor = new Vector4(baseColor.To3() * 0.5f, 1.0f);
+            // Highlight color for the corner currently being grabbed/dragged. Brightens
+            // the selection color so the user sees which corner is hot.
+            var cornerHighlight = new Vector4(System.Numerics.Vector3.Min(selectColor.To3() * 1.6f, System.Numerics.Vector3.One), 1.0f);
 
-            int selectedIndex = -1;
-            int lastIndex = -1;
-            bool selectedCornerDrawn = false;
+            _ghostBlocksBatchVertices.Clear();
 
-            _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(_littleCube.InputLayout);
-            _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
-
-            // Draw cubes (prioritize over sector!)
-            for (int i = 0; i < ghostBlocksToDraw.Count; i++)
+            foreach (var instance in ghostBlocksToDraw)
             {
-                var instance = ghostBlocksToDraw[i];
+                bool isSelected = _editor.SelectedObject == instance;
 
-                if (_editor.SelectedObject == instance)
-                    selectedIndex = i;
-
-                // Switch colours
-                if (i == selectedIndex && selectedIndex >= 0)
+                if (isSelected)
                 {
-                    effect.Parameters["Color"].SetValue(selectColor);
-
-                    // Add text message
                     textToDraw.Add(CreateTextTagForObject(
                         instance.CenterMatrix(instance.SelectedFloor) * _viewProjection,
                         instance.InfoMessage()));
-                }
-                else if (lastIndex == selectedIndex || lastIndex == -1)
-                    effect.Parameters["Color"].SetValue(normalColor);
-                lastIndex = i;
 
-                if (selectedIndex == i)
-                {
-                    // Corner cubes
+                    // 4 floor corners + 4 ceiling corners.
                     for (int f = 0; f < 2; f++)
                     {
                         bool floor = f == 0;
                         for (int j = 0; j < 4; j++)
                         {
-                            var lastSelectedCorner = instance.SelectedCorner.HasValue && (int)instance.SelectedCorner.Value == j && instance.SelectedFloor == floor;
-                            if (lastSelectedCorner == true || j == 4)
-                                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                            Matrix4x4 currCubeMatrix;
+                            Matrix4x4 cornerMatrix;
                             if (_movementTimer.Mode == AnimationMode.GhostBlockUnfold && !instance.SelectedCorner.HasValue)
-                                currCubeMatrix = Matrix4x4.Lerp(instance.CenterMatrix(true), instance.ControlMatrixes(floor)[j], _movementTimer.MoveMultiplier);
+                                cornerMatrix = Matrix4x4.Lerp(instance.CenterMatrix(true), instance.ControlMatrixes(floor)[j], _movementTimer.MoveMultiplier);
                             else
-                                currCubeMatrix = instance.ControlMatrixes(floor)[j];
-                            currCubeMatrix *= _viewProjection;
+                                cornerMatrix = instance.ControlMatrixes(floor)[j];
 
-                            effect.Parameters["ModelViewProjection"].SetValue(currCubeMatrix.ToSharpDX());
-                            effect.Techniques[0].Passes[0].Apply();
-                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                            bool isThisCornerSelected = instance.SelectedCorner.HasValue
+                                && (int)instance.SelectedCorner.Value == j
+                                && instance.SelectedFloor == floor;
+                            var color = isThisCornerSelected ? cornerHighlight : selectColor;
 
-                            // Bring back solid state and lock it forever
-                            if (lastSelectedCorner != selectedCornerDrawn)
-                            {
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                                selectedCornerDrawn = true;
-                            }
+                            // ControlMatrixes already encode the per-corner translation
+                            // and scale appropriate for a unit cube — the legacy code
+                            // bound _littleCube (256u) directly without extra scale, so
+                            // the matrix is calibrated for a 256u cube. Our unit cube
+                            // (-1..+1, span 2) needs an extra ×128 scale to match.
+                            var world = Matrix4x4.CreateScale(_littleCubeRadius) * cornerMatrix;
+                            WireGeometry.AppendWireCube(_ghostBlocksBatchVertices, world, color);
                         }
                     }
                 }
-                else // Default non-selected cube
-                    DrawOrQueueServiceObject(instance, _littleCube, normalColor, effect, sprites);
+                else
+                {
+                    // Non-selected: single center cube. Reuse the placeholder helper
+                    // so that the sprite-icon mode is honoured here too.
+                    QueueServiceObjectPlaceholderInto(instance, normalColor, sprites, _ghostBlocksBatchVertices);
+                }
             }
+
+            if (_ghostBlocksBatchVertices.Count == 0)
+                return;
+
+            _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_ghostBlocksBatchVertices));
+            _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+            {
+                RenderTarget = SwapChain,
+                StateBuffer = _renderingStateBuffer,
+            });
         }
 
-        private void DrawGhostBlockBodies(Effect effect, List<GhostBlockInstance> ghostBlocksToDraw)
+        private readonly List<SolidLineVertex> _ghostBlocksBatchVertices = new List<SolidLineVertex>();
+
+        // Same as QueueServiceObjectPlaceholder but writes into a caller-supplied list
+        // (so each pass/group can have its own batch with different state).
+        private void QueueServiceObjectPlaceholderInto(ISpatial instance, Vector4 color, List<Sprite> sprites, List<SolidLineVertex> batch)
+        {
+            if (_editor.CameraPreviewMode != CameraPreviewType.None)
+                return;
+            if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
+            {
+                DrawOrQueueServiceObject(instance, null, color, null, sprites);
+                return;
+            }
+            Matrix4x4 transform;
+            if (instance is PositionBasedObjectInstance pbi)
+                transform = pbi.RotationPositionMatrix;
+            else if (instance is GhostBlockInstance gbi)
+                transform = gbi.CenterMatrix(true);
+            else
+                return;
+            var world = Matrix4x4.CreateScale(_littleCubeRadius) * transform;
+            WireGeometry.AppendWireCube(batch, world, color);
+        }
+
+        // Translucent body of each ghost block: 84 triangles per block (4 sides ×
+        // (4 quads + diagonal step + diagonal triangle) totaling 78–84 verts).
+        // Migrated to RenderingDrawingLines with TriangleList topology, NonPremultiplied
+        // blending and DepthRead so blocks fade behind opaque geometry without writing
+        // to depth (matches legacy `_legacyDevice.SetDepthStencilState(DepthRead)`).
+        // All ghost blocks accumulate into a single batch — N draw calls become 1.
+        private void DrawGhostBlockBodies(object effect, List<GhostBlockInstance> ghostBlocksToDraw)
         {
             if (ghostBlocksToDraw.Count == 0)
                 return;
@@ -698,13 +832,7 @@ namespace TombEditor.Controls.Panel3D
             var normalColor = new Vector4(baseColor.To3() * 0.4f, 0.9f);
             var selectColor = new Vector4(baseColor.To3() * 0.5f, 1.0f);
 
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
-            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
-
-            _legacyDevice.SetVertexBuffer(_ghostBlockVertexBuffer);
-            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _ghostBlockVertexBuffer));
-            effect.Parameters["Color"].SetValue(Vector4.One);
+            _ghostBlockBodyVertices.Clear();
 
             foreach (var instance in ghostBlocksToDraw)
             {
@@ -880,15 +1008,47 @@ namespace TombEditor.Controls.Panel3D
 
                 }
 
-                _ghostBlockVertexBuffer.SetData(vtxs);
-
-                effect.Parameters["ModelViewProjection"].SetValue(_viewProjection.ToSharpDX());
-                effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.Draw(PrimitiveType.TriangleList, 84);
+                // Append this block's 84 vertices to the shared batch — vertex colors
+                // already contain the per-vertex alpha; no transform needed because
+                // ControlPositions returns world-space coordinates.
+                for (int v = 0; v < 84; v++)
+                    _ghostBlockBodyVertices.Add(new SolidLineVertex
+                    {
+                        Position = vtxs[v].Position,
+                        Color = vtxs[v].Color,
+                    });
             }
+
+            if (_ghostBlockBodyVertices.Count == 0)
+                return;
+
+            _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_ghostBlockBodyVertices));
+            _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+            {
+                RenderTarget = SwapChain,
+                StateBuffer = _renderingStateBuffer,
+                Topology = RenderingDrawingLines.Topology.TriangleList,
+                Blend = BlendMode.NonPremultipliedAlpha,
+                Depth = DepthMode.DepthRead,
+            });
         }
 
-        private void DrawVolumes(Effect effect, List<VolumeInstance> volumesToDraw, List<Text> textToDraw, List<Sprite> sprites)
+        // Reused across DrawGhostBlockBodies calls.
+        private readonly List<SolidLineVertex> _ghostBlockBodyVertices = new List<SolidLineVertex>();
+
+        // Volumes have three visual layers:
+        //   Layer 1 — small placeholder cube at each volume position. Color encodes
+        //             enabled/disabled and selection. Always rendered.
+        //   Layer 2 — the actual 3D volume extent (Box or Sphere) shown as a
+        //             translucent SOLID fill. TombEngine-only. Submitted as a
+        //             TriangleList batch with low alpha so contents behind the
+        //             volume remain readable while the shape is clearly visible.
+        //   Layer 3 — wireframe outline of the same extent, drawn on top of the
+        //             fill so the volume's edges read sharply against the fill.
+        //
+        // All layers use NonPremultipliedAlpha + DepthRead to fade behind opaque
+        // geometry without writing to depth.
+        private void DrawVolumes(object effect, List<VolumeInstance> volumesToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
             if (volumesToDraw.Count == 0)
                 return;
@@ -900,144 +1060,107 @@ namespace TombEditor.Controls.Panel3D
             var disabledNormalColor = new Vector4(new Vector3(normalColor.To3().GetLuma()), 0.55f);
             var disabledSelectColor = new Vector4(new Vector3(selectColor.To3().GetLuma()), 0.55f);
 
-            var currentShape = VolumeShape.Box;
-            int selectedIndex = -1;
-            int lastIndex = -1;
-            int elementCount = _littleCube.IndexBuffer.ElementCount;
+            _volumeCenterVertices.Clear();
+            _volumeBodyVertices.Clear();
+            _volumeBodySolidVertices.Clear();
 
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
-            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
-            _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(_littleCube.InputLayout);
-            _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
-
-            Vector4 color = normalColor;
-
-            // Draw center cubes
             for (int i = 0; i < volumesToDraw.Count; i++)
             {
                 var instance = volumesToDraw[i];
-                if (_editor.SelectedObject == instance)
-                    selectedIndex = i;
+                bool isSelected = _editor.SelectedObject == instance;
+                bool isHighlighted = _highlightedObjects.Contains(instance);
 
-                color = instance.Enabled ? normalColor : disabledNormalColor;
+                Vector4 placeholderColor = isSelected
+                    ? (instance.Enabled ? selectColor : disabledSelectColor)
+                    : (instance.Enabled ? normalColor : disabledNormalColor);
 
-                // Switch colours
-                if (i == selectedIndex && selectedIndex >= 0)
-                {
-                    color = instance.Enabled ? selectColor : disabledSelectColor;
-                    _legacyDevice.SetRasterizerState(_rasterizerWireframe); // As wireframe if selected
-
-                    // Add text message
+                if (isSelected)
                     textToDraw.Add(CreateTextTagForObject(
                         instance.RotationPositionMatrix * _viewProjection,
                         instance.ToString()));
-                }
-                else if (lastIndex == selectedIndex || lastIndex == -1)
+
+                // Layer 1 — placeholder cube. Wire cube around the volume center.
+                var placeholderWorld = Matrix4x4.CreateScale(_littleCubeRadius) * instance.RotationPositionMatrix;
+                WireGeometry.AppendWireCube(_volumeCenterVertices, placeholderWorld, placeholderColor);
+
+                // Layers 2 & 3 — 3D volume extent: translucent solid fill + wire outline.
+                if (drawVolume)
                 {
-                    _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-                }
-                lastIndex = i;
+                    Vector4 bodyColor = isHighlighted
+                        ? (instance.Enabled ? selectColor : disabledSelectColor)
+                        : (instance.Enabled ? normalColor : disabledNormalColor);
+                    // Fill uses the same hue but a much lower alpha so geometry behind
+                    // the volume remains visible. Matches the legacy translucent body.
+                    Vector4 fillColor = new Vector4(bodyColor.X, bodyColor.Y, bodyColor.Z, 0.18f);
 
-                DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
-            }
-
-            // Reset last index back to default
-            lastIndex = -1;
-
-            // Draw 3D volumes (only for TombEngine version, otherwise we show only disabled center cube)
-            if (drawVolume)
-            {
-                _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-
-                for (int i = 0; i < volumesToDraw.Count; i++)
-                {
-                    Matrix4x4 model;
-                    var instance = volumesToDraw[i];
-                    var shape = instance.Shape();
-
-                    // Switch colours
-                    if (_highlightedObjects.Contains(instance))
-                        color = instance.Enabled ? selectColor : disabledSelectColor;
-                    else
-                        color = instance.Enabled ? normalColor : disabledNormalColor;
-
-                    // Switch vertex buffers (only do it if shape is changed)
-                    if (shape != currentShape)
+                    switch (instance.Shape())
                     {
-                        elementCount = shape == VolumeShape.Box ? _littleCube.IndexBuffer.ElementCount : _sphere.IndexBuffer.ElementCount;
-                        currentShape = shape;
-
-                        switch (currentShape)
-                        {
-                            default:
-                            case VolumeShape.Box:
-                                // Do nothing, we're using same cube shape from above
-                                break;
-                            case VolumeShape.Sphere:
-                                _legacyDevice.SetVertexBuffer(_sphere.VertexBuffer);
-                                _legacyDevice.SetVertexInputLayout(_sphere.InputLayout);
-                                _legacyDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
-                                break;
-                        }
-                    }
-
-                    switch (shape)
-                    {
-                        default:
                         case VolumeShape.Box:
                             {
-                                var bv = instance as BoxVolumeInstance;
-                                model = Matrix4x4.CreateScale(bv.Size / _littleCubeRadius / 2.0f) *
-                                        instance.RotationPositionMatrix;
+                                var bv = (BoxVolumeInstance)instance;
+                                // Legacy scaled the 256-unit _littleCube primitive by
+                                // (Size / _littleCubeRadius / 2). For our unit cube
+                                // (-1..+1) the equivalent scale is (Size / 2).
+                                var world = Matrix4x4.CreateScale(bv.Size / 2.0f) * instance.RotationPositionMatrix;
+                                WireGeometry.AppendSolidCube(_volumeBodySolidVertices, world, fillColor);
+                                WireGeometry.AppendWireCube(_volumeBodyVertices, world, bodyColor);
                             }
                             break;
                         case VolumeShape.Sphere:
                             {
-                                var sv = instance as SphereVolumeInstance;
-                                model = Matrix4x4.CreateScale(sv.Size / (_littleSphereRadius * 8.0f)) *
-                                        instance.RotationPositionMatrix;
+                                var sv = (SphereVolumeInstance)instance;
+                                // Legacy scaled the 1024-unit _sphere by Size / (128*8).
+                                // For our unit sphere (radius 1) the equivalent radius
+                                // scale is sv.Size (the sphere's full size in TR units).
+                                var world = Matrix4x4.CreateScale(sv.Size) * instance.RotationPositionMatrix;
+                                WireGeometry.AppendSolidSphere(_volumeBodySolidVertices, world, fillColor);
+                                WireGeometry.AppendWireSphere(_volumeBodyVertices, world, bodyColor, segments: 24);
                             }
                             break;
                     }
-
-
-                    for (int d = 0; d < 2; d++)
-                    {
-                        if (d == 1)
-                        {
-                            if (shape == VolumeShape.Box)
-                            {
-                                _legacyDevice.SetVertexBuffer(_boxVertexBuffer);
-                                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _boxVertexBuffer));
-                            }
-
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-                            effect.Parameters["Color"].SetValue(new Vector4(color.To3() * 0.5f, 0.5f));
-                        }
-                        else
-                        {
-                            if (shape == VolumeShape.Box)
-                            {
-                                _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
-                                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
-                            }
-
-                            _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-                            effect.Parameters["Color"].SetValue(color);
-                        }
-
-                        effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                        effect.CurrentTechnique.Passes[0].Apply();
-
-                        if (shape == VolumeShape.Box && d == 1)
-                            _legacyDevice.Draw(PrimitiveType.LineList, _boxVertexBuffer.ElementCount);
-                        else
-                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
-                    }
                 }
             }
+
+            // Submit layers in back-to-front order: placeholder wire, fill, outline.
+            if (_volumeCenterVertices.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_volumeCenterVertices));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                    Blend = BlendMode.NonPremultipliedAlpha,
+                    Depth = DepthMode.DepthRead,
+                });
+            }
+            if (_volumeBodySolidVertices.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_volumeBodySolidVertices));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                    Blend = BlendMode.NonPremultipliedAlpha,
+                    Depth = DepthMode.DepthRead,
+                    Topology = RenderingDrawingLines.Topology.TriangleList,
+                });
+            }
+            if (_volumeBodyVertices.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_volumeBodyVertices));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                    Blend = BlendMode.NonPremultipliedAlpha,
+                    Depth = DepthMode.DepthRead,
+                });
+            }
         }
+
+        private readonly List<SolidLineVertex> _volumeCenterVertices = new List<SolidLineVertex>();
+        private readonly List<SolidLineVertex> _volumeBodyVertices = new List<SolidLineVertex>();
+        private readonly List<SolidLineVertex> _volumeBodySolidVertices = new List<SolidLineVertex>();
 
         private void DrawSprites(Room[] roomsWhoseObjectsToDraw, List<Sprite> sprites, bool disableSelection)
         {
@@ -1080,13 +1203,22 @@ namespace TombEditor.Controls.Panel3D
                 }
         }
 
-        private void DrawPlaceholders(Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
+        // Two-pass renderer:
+        //   Pass 1 — small placeholder cube for every supported object type (sprites,
+        //            cameras, flyby cameras, memos, sinks, sound sources, plus 3D
+        //            meshes that fail to load → fallback). Each instance becomes a
+        //            wire cube in a single accumulated batch (or a sprite icon if the
+        //            user enabled Rendering3D_UseSpritesForServiceObjects).
+        //   Pass 2 — flyby camera FOV cones with alpha-blended translucent fill. Still
+        //            on the legacy path because it requires solid translucent triangles
+        //            (RenderingDrawingLines is line-only). Migration deferred until
+        //            RenderingDrawingMesh ships.
+        //
+        // Per-instance state changes (rasterizer mode for selection, vertex buffer
+        // bind/unbind) collapsed into the single accumulated batch.
+        private void DrawPlaceholders(object effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
-            _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(_littleCube.InputLayout);
-            _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
-            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+            _placeholderBatchVertices.Clear();
 
             var groups = roomsWhoseObjectsToDraw.SelectMany(r => r.Objects).GroupBy(o => o.GetType());
             foreach (var group in groups)
@@ -1096,166 +1228,112 @@ namespace TombEditor.Controls.Panel3D
                     {
                         if (_editor.SelectedObject == instance)
                         {
-                            // Add text message
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.WorldPositionMatrix * _viewProjection,
                                 instance.ShortName() +
                                 "\n" + GetObjectPositionString(instance.Room, instance)));
-
-                            // Add the line height of the object
                             AddObjectHeightLine(instance.Room, instance.Position);
                         }
 
                         if (_editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 || !instance.SpriteIsValid)
                         {
-                            Vector4 color;
-                            if (_editor.SelectedObject == instance)
-                            {
-                                color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-                            }
-                            else
-                            {
-                                color = new Vector4(1.0f, 0.5f, 0.0f, 1.0f);
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-                            }
-
-                            DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                            var color = _editor.SelectedObject == instance
+                                ? _editor.Configuration.UI_ColorScheme.ColorSelection
+                                : new Vector4(1.0f, 0.5f, 0.0f, 1.0f);
+                            QueueServiceObjectPlaceholder(instance, color, sprites);
                         }
                     }
 
                 if (group.Key == typeof(CameraInstance) && _editor.CameraPreviewMode == CameraPreviewType.None)
                     foreach (CameraInstance instance in group)
                     {
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
                         var color = new Vector4(0.4f, 0.9f, 0.0f, 1.0f);
                         if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
                             if (_editor.SelectedObject == instance)
                             {
-                                // Add text message
                                 textToDraw.Add(CreateTextTagForObject(
                                     instance.RotationPositionMatrix * _viewProjection,
                                     "Camera " + (instance.CameraMode == CameraInstanceMode.Locked ? "(Locked)" : instance.CameraMode == CameraInstanceMode.Sniper ? "(Sniper)" : "") +
                                     instance.GetScriptIDOrName() + "\n" +
                                     GetObjectPositionString(instance.Room, instance) + GetObjectTriggerString(instance)));
-
-                                // Add the line height of the object
                                 AddObjectHeightLine(instance.Room, instance.Position);
                             }
                         }
-
-                        DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                        QueueServiceObjectPlaceholder(instance, color, sprites);
                     }
 
                 if (group.Key == typeof(FlybyCameraInstance) && _editor.CameraPreviewMode == CameraPreviewType.None)
                     foreach (FlybyCameraInstance instance in group)
                     {
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
                         var color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-
                         if (TryGetSelectedFlybySequence(out int selectedSequence) && selectedSequence == instance.Sequence)
                             color = MathC.GetRandomColorByIndex(instance.Sequence, 32, 0.7f);
-
                         if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
                             if (_editor.SelectedObject == instance)
                             {
-                                // Add text message
                                 textToDraw.Add(CreateTextTagForObject(
                                     instance.RotationPositionMatrix * _viewProjection,
                                     "Flyby cam (" + instance.Sequence + ":" + instance.Number + ") " +
                                     instance.GetScriptIDOrName() + "\n" +
                                     GetObjectPositionString(instance.Room, instance) + GetObjectTriggerString(instance)));
-
-                                // Add the line height of the object
                                 AddObjectHeightLine(instance.Room, instance.Position);
                             }
                         }
-
-                        DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                        QueueServiceObjectPlaceholder(instance, color, sprites);
                     }
 
                 if (group.Key == typeof(MemoInstance))
                     foreach (MemoInstance instance in group)
                     {
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                        Vector4 color = Vector4.One;
-                        if (_highlightedObjects.Contains(instance))
-                        {
-                            color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-                        }
-
-                        // Add text message
+                        var color = _highlightedObjects.Contains(instance)
+                            ? _editor.Configuration.UI_ColorScheme.ColorSelection
+                            : Vector4.One;
                         if (_editor.SelectedObject == instance || instance.AlwaysDisplay)
                             textToDraw.Add(CreateTextTagForObject(instance.RotationPositionMatrix * _viewProjection, instance.Text));
-
-                        DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                        QueueServiceObjectPlaceholder(instance, color, sprites);
                     }
 
                 if (group.Key == typeof(SinkInstance))
                     foreach (SinkInstance instance in group)
                     {
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                        Vector4 color = new Vector4(0.0f, 0.6f, 1.0f, 1.0f);
+                        var color = new Vector4(0.0f, 0.6f, 1.0f, 1.0f);
                         if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                            // Add text message
                             if (_editor.SelectedObject == instance)
                             {
                                 textToDraw.Add(CreateTextTagForObject(
                                     instance.RotationPositionMatrix * _viewProjection,
                                     instance.ToShortString() + "\n" +
                                     GetObjectPositionString(instance.Room, instance) + GetObjectTriggerString(instance)));
-
-                                // Add the line height of the object
                                 AddObjectHeightLine(instance.Room, instance.Position);
                             }
                         }
-
-                        DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                        QueueServiceObjectPlaceholder(instance, color, sprites);
                     }
 
                 if (group.Key == typeof(SoundSourceInstance))
                     foreach (SoundSourceInstance instance in group)
                     {
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                        Vector4 color = new Vector4(1.0f, 0.7f, 0.0f, 1.0f);
+                        var color = new Vector4(1.0f, 0.7f, 0.0f, 1.0f);
                         if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
                             if (_editor.SelectedObject == instance)
                             {
-                                // Add text message
                                 textToDraw.Add(CreateTextTagForObject(
                                     instance.RotationPositionMatrix * _viewProjection,
                                     "Sound source ID " + (instance.SoundId != -1 ? instance.SoundId + ": " + instance.SoundNameToDisplay : "No sound assigned yet") +
                                     instance.GetScriptIDOrName() + "\n" +
                                     GetObjectPositionString(instance.Room, instance)));
-
-                                // Add the line height of the object
                                 AddObjectHeightLine(instance.Room, instance.Position);
                             }
                         }
-
-                        DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                        QueueServiceObjectPlaceholder(instance, color, sprites);
                     }
 
                 if (ShowMoveables && group.Key == typeof(MoveableInstance))
@@ -1263,30 +1341,21 @@ namespace TombEditor.Controls.Panel3D
                     {
                         if (_editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId) != null)
                             continue;
-
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                        Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                        var color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
                         if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
                             if (_editor.SelectedObject == instance)
                             {
-                                // Add text message
                                 textToDraw.Add(CreateTextTagForObject(
                                     instance.RotationPositionMatrix * _viewProjection,
                                     instance.ShortName() + "\nUnavailable " + instance.ItemType +
                                     instance.GetScriptIDOrName() + "\n" +
                                     GetObjectPositionString(instance.Room, instance) + GetObjectTriggerString(instance)));
-
-                                // Add the line height of the object
                                 AddObjectHeightLine(instance.Room, instance.Position);
                             }
                         }
-
-                        DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                        QueueServiceObjectPlaceholder(instance, color, sprites);
                     }
 
                 if (ShowStatics && group.Key == typeof(StaticInstance))
@@ -1294,28 +1363,19 @@ namespace TombEditor.Controls.Panel3D
                     {
                         if (_editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId) != null)
                             continue;
-
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                        Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                        var color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
                         if (_highlightedObjects.Contains(instance))
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
                             if (_editor.SelectedObject == instance)
                             {
-                                // Add text message
                                 textToDraw.Add(CreateTextTagForObject(
                                     instance.RotationPositionMatrix * _viewProjection,
                                     instance.ShortName() + "\nUnavailable " + instance.ItemType + GetObjectTriggerString(instance)));
-
-                                // Add the line height of the object
                                 AddObjectHeightLine(instance.Room, instance.Position);
                             }
                         }
-
-                        DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                        QueueServiceObjectPlaceholder(instance, color, sprites);
                     }
 
                 if (ShowImportedGeometry && group.Key == typeof(ImportedGeometryInstance))
@@ -1323,164 +1383,180 @@ namespace TombEditor.Controls.Panel3D
                     {
                         if (instance.Model?.DirectXModel == null || instance.Model?.DirectXModel.Meshes.Count == 0 || instance.Hidden)
                         {
-                            Vector4 color = new Vector4(0.5f, 0.3f, 1.0f, 1.0f);
+                            var color = new Vector4(0.5f, 0.3f, 1.0f, 1.0f);
                             if (_highlightedObjects.Contains(instance))
                             {
                                 color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
                                 if (_editor.SelectedObject == instance)
                                 {
-                                    // Add text message
                                     textToDraw.Add(CreateTextTagForObject(
                                         instance.RotationPositionMatrix * _viewProjection,
                                         instance.ToString()));
-
-                                    // Add the line height of the object
                                     AddObjectHeightLine(instance.Room, instance.Position);
                                 }
                             }
-
-                            DrawOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                            QueueServiceObjectPlaceholder(instance, color, sprites);
                         }
                     }
+            }
+
+            // Submit pass-1 batch (wire cubes for every placeholder).
+            if (_placeholderBatchVertices.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_placeholderBatchVertices));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                });
             }
 
             if (_editor.CameraPreviewMode != CameraPreviewType.None)
                 return;
 
-            // Draw extra flyby cones (hidden during flyby preview)
+            // Pass 2 — flyby camera FOV cones (hidden during flyby preview).
+            //
+            // Two batches:
+            //   solid (TriangleList) for non-selected flybys — translucent filled cone
+            //   wire  (LineList)     for selected   flybys — wireframe FOV cone + roll pointer
+            // Both use NonPremultipliedAlpha because vertex colors carry straight alpha.
+            //
+            // Coordinate system for the legacy _cone primitive: apex at origin, base
+            // ring at z=1024 with radius 512. Our WireGeometry helpers use a unit cone
+            // (apex at origin, base at z=1, radius 1), so every legacy scale factor S
+            // gets multiplied by the legacy primitive size (512 for radius, 1024 for
+            // length) when building the World matrix for our path.
+            const float legacyConeBaseRadius = 512.0f;
+            const float legacyConeLength = 1024.0f;
 
-            _legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(_cone.InputLayout);
-            _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+            _flybySolidConeVertices.Clear();
+            _flybyWireConeVertices.Clear();
 
-            bool wireframe = false;
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                 {
                     var color = MathC.GetRandomColorByIndex(instance.Sequence, 32, 0.7f);
-                    Matrix4x4 model;
-
                     if (_highlightedObjects.Contains(instance))
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
 
-                    for (int pass = 0; pass < 2; pass++)
+                    // Distance fade: shrink alpha when very close to camera so the cone
+                    // stops obscuring nearby geometry.
+                    float distance = Vector3.Distance(instance.WorldPosition, Camera.GetPosition());
+                    if (distance < (_coneRadius * 0.5f))
+                        color.W *= distance / (_coneRadius * 0.5f);
+
+                    if (_editor.SelectedObject == instance)
                     {
-                        if (_editor.SelectedObject == instance)
-                        {
-                            float coneAngle = (float)Math.Atan2(512, 1024);
-                            float cutoffScaleH = 1;
-                            float cutoffScaleW = instance.Fov * (float)(Math.PI / 360) / coneAngle * cutoffScaleH;
+                        // Selected flyby: wire FOV cone + wire roll pointer.
+                        float coneAngle = (float)Math.Atan2(512, 1024);
+                        float cutoffScaleW = instance.Fov * (float)(Math.PI / 360) / coneAngle;
 
-                            if (pass == 0)
-                            {
-                                // Ordinary cone
-                                model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
-                            }
-                            else
-                            {
-                                // Roll pointer
-                                var step = 1 / _coneRadius;
-                                var scale = _littleCubeRadius * 2;
-                                var pScale = _littleCubeRadius / 5;
-                                var vOffset = -cutoffScaleW / 2 * _coneRadius - scale;
-                                var hOffset = cutoffScaleH * _coneRadius;
+                        var fovWorld = Matrix4x4.CreateScale(
+                                cutoffScaleW * legacyConeBaseRadius,
+                                cutoffScaleW * legacyConeBaseRadius,
+                                legacyConeLength) * instance.ObjectMatrix;
+                        WireGeometry.AppendWireCone(_flybyWireConeVertices, fovWorld, color);
 
-                                model = Matrix4x4.CreateScale(step * pScale, step * pScale, step * scale) *
-                                        Matrix4x4.CreateTranslation(new Vector3(0, hOffset, vOffset)) *
-                                        Matrix4x4.CreateRotationX((float)(Math.PI / 2)) *
-                                        instance.ObjectMatrix;
-                            }
+                        // Roll pointer: small cone offset to the side, rotated 90° on X
+                        // so it points "up" relative to the FOV cone — indicates the
+                        // camera roll axis.
+                        var step = 1f / _coneRadius;
+                        var scaleU = _littleCubeRadius * 2;
+                        var pScale = _littleCubeRadius / 5;
+                        var vOffset = -cutoffScaleW / 2 * _coneRadius - scaleU;
+                        var hOffset = legacyConeLength;
 
-                            if (!wireframe)
-                            {
-                                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-                                wireframe = true;
-                            }
-                        }
-                        else
-                        {
-                            // Don't do second pass for non-selected flybys
-                            if (pass == 1)
-                                break;
+                        var rollWorld = Matrix4x4.CreateScale(
+                                step * pScale * legacyConeBaseRadius,
+                                step * pScale * legacyConeBaseRadius,
+                                step * scaleU * legacyConeLength) *
+                            Matrix4x4.CreateTranslation(new Vector3(0, hOffset, vOffset)) *
+                            Matrix4x4.CreateRotationX((float)(Math.PI / 2)) *
+                            instance.ObjectMatrix;
+                        WireGeometry.AppendWireCone(_flybyWireConeVertices, rollWorld, color);
+                    }
+                    else
+                    {
+                        // Non-selected flyby: small solid translucent cone slightly
+                        // behind the camera position to indicate direction without
+                        // visually dominating the view.
+                        var unselectedScale = 1.0f / _coneRadius * _littleCubeRadius * 2.0f; // = 0.25
+                        var translateBack = -_coneRadius * 1.2f;
+                        var translateExtra = _editor.Configuration.Rendering3D_UseSpritesForServiceObjects
+                            ? -_coneRadius * 0.5f : 0f;
 
-                            // Push unselected cone further away in sprite mode for neatness
-                            model = _editor.Configuration.Rendering3D_UseSpritesForServiceObjects
-                                ? Matrix4x4.CreateTranslation(new Vector3(0, 0, -_coneRadius * 0.5f))
-                                : Matrix4x4.Identity;
-
-                            model *= Matrix4x4.CreateTranslation(new Vector3(0, 0, -_coneRadius * 1.2f)) *
-                                        Matrix4x4.CreateRotationY((float)Math.PI) *
-                                        Matrix4x4.CreateScale(1 / _coneRadius * _littleCubeRadius * 2.0f) *
-                                        instance.ObjectMatrix;
-
-                            if (wireframe)
-                            {
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                                wireframe = false;
-                            }
-                        }
-
-                        // Apply distance-based fade for nearby flyby cameras.
-                        float distance = Vector3.Distance(instance.WorldPosition, Camera.GetPosition());
-                        if (distance < (_coneRadius * 0.5f))
-                            color.W *= distance / (_coneRadius * 0.5f);
-
-                        effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(color);
-                        effect.CurrentTechnique.Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+                        var world = Matrix4x4.CreateScale(
+                                unselectedScale * legacyConeBaseRadius,
+                                unselectedScale * legacyConeBaseRadius,
+                                unselectedScale * legacyConeLength) *
+                            Matrix4x4.CreateRotationY((float)Math.PI) *
+                            Matrix4x4.CreateTranslation(new Vector3(0, 0, translateBack + translateExtra)) *
+                            instance.ObjectMatrix;
+                        WireGeometry.AppendSolidCone(_flybySolidConeVertices, world, color);
                     }
                 }
 
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+            if (_flybySolidConeVertices.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_flybySolidConeVertices));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                    Topology = RenderingDrawingLines.Topology.TriangleList,
+                    Blend = BlendMode.NonPremultipliedAlpha,
+                });
+            }
+            if (_flybyWireConeVertices.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_flybyWireConeVertices));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                    Blend = BlendMode.NonPremultipliedAlpha,
+                });
+            }
         }
 
-        private void DrawOrQueueServiceObject(ISpatial instance, GeometricPrimitive primitive, Vector4 color, Effect effect, List<Sprite> sprites)
+        private readonly List<SolidLineVertex> _flybySolidConeVertices = new List<SolidLineVertex>();
+        private readonly List<SolidLineVertex> _flybyWireConeVertices = new List<SolidLineVertex>();
+
+        // Sprite-icon placeholder for service objects. Used by DrawLights, the
+        // QueueServiceObjectPlaceholder helper, etc. When the user has enabled
+        // Rendering3D_UseSpritesForServiceObjects this is the path that runs;
+        // otherwise the wire-cube/wire-sphere helpers in WireGeometry handle the
+        // placeholder rendering directly.
+        //
+        // The `primitive` and `effect` parameters are kept on the signature for
+        // source compatibility with the older callers — both are unused now.
+        private void DrawOrQueueServiceObject(ISpatial instance, object primitive, Vector4 color, object effect, List<Sprite> sprites)
         {
             if (_editor.CameraPreviewMode != CameraPreviewType.None)
                 return;
+            if (!_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
+                return; // Non-sprite path is handled by WireGeometry helpers in callers.
 
-            if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
+            foreach (bool shadow in new[] { true, false })
             {
-                foreach (bool shadow in new[] { true, false })
+                if (shadow)
                 {
-                    if (shadow)
-                    {
-                        if (_editor.Level.Settings.GameVersion != TRVersion.Game.TombEngine)
-                            continue;
-
-                        if (!(instance is LightInstance) || !(instance as LightInstance).CanCastDynamicShadows)
-                            continue;
-                    }
-
-                    var newSprite = ServiceObjectTextures.GetSprite(instance,
-                                                                    Camera.GetPosition(),
-                                                                    _viewProjection,
-                                                                    ClientSize,
-                                                                    shadow ? new Vector4(Vector3.Zero, 1.0f) : color,
-                                                                    shadow ? new Vector2(8.0f, -8.0f) : Vector2.Zero,
-                                                                    _highlightedObjects.Contains((ObjectInstance)instance));
-                    if (newSprite == null)
-                        return;
-
-                    sprites.Add(newSprite);
+                    if (_editor.Level.Settings.GameVersion != TRVersion.Game.TombEngine)
+                        continue;
+                    if (!(instance is LightInstance) || !(instance as LightInstance).CanCastDynamicShadows)
+                        continue;
                 }
-
-                return;
+                var newSprite = ServiceObjectTextures.GetSprite(instance,
+                    Camera.GetPosition(),
+                    _viewProjection,
+                    ClientSize,
+                    shadow ? new Vector4(Vector3.Zero, 1.0f) : color,
+                    shadow ? new Vector2(8.0f, -8.0f) : Vector2.Zero,
+                    _highlightedObjects.Contains((ObjectInstance)instance));
+                if (newSprite == null)
+                    return;
+                sprites.Add(newSprite);
             }
-
-            if (instance is PositionBasedObjectInstance)
-                effect.Parameters["ModelViewProjection"].SetValue(((instance as PositionBasedObjectInstance).RotationPositionMatrix * _viewProjection).ToSharpDX());
-            else if (instance is GhostBlockInstance)
-                effect.Parameters["ModelViewProjection"].SetValue(((instance as GhostBlockInstance).CenterMatrix(true) * _viewProjection).ToSharpDX());
-
-            effect.Parameters["Color"].SetValue(color);
-            effect.Techniques[0].Passes[0].Apply();
-            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, primitive.IndexBuffer.ElementCount);
         }
 
         private void DrawCardinalDirections(List<Text> textToDraw)
@@ -1515,68 +1591,67 @@ namespace TombEditor.Controls.Panel3D
             }
         }
 
+        // Skybox: the Horizon moveable rendered around the camera at scale 128 with
+        // depth disabled (cleared after the draw so subsequent geometry is drawn over).
+        // Migrated to RenderingDrawingMesh; same per-mesh pattern as DrawMoveables but
+        // with a simpler color/lighting setup (always white tint, no static lighting).
         private void DrawSkybox()
         {
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
-            Effect skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-
-            skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
-            // Get Horizon Id and try to retrieve moveable for skybox rendering
             var version = _editor.Level.Settings.GameVersion;
             WadMoveableId? horizonId = WadMoveableId.GetHorizon(version);
-            WadMoveable moveable = null;
-            if (horizonId.HasValue)
-                moveable = _editor?.Level?.Settings?.WadTryGetMoveable(horizonId.Value);
+            if (!horizonId.HasValue)
+                return;
 
+            var moveable = _editor?.Level?.Settings?.WadTryGetMoveable(horizonId.Value);
             if (moveable == null)
                 return;
 
             AnimatedModel model = _wadRenderer.GetMoveable(moveable);
 
-            skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-            skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
-            skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
-            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(false);
-
             for (int i = 0; i < model.Meshes.Count; i++)
             {
-                var mesh = model.Meshes[i];
-                if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.InputLayout == null || mesh.IndexBuffer == null)
+                var legacyMesh = model.Meshes[i];
+                if (legacyMesh.Vertices.Count == 0)
                     continue;
 
-                _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
-                _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                var drawMesh = GetOrCreateDrawingMesh(legacyMesh);
+                var world = Matrix4x4.CreateScale(128.0f) *
+                            model.AnimationTransforms[i] *
+                            Matrix4x4.CreateTranslation(Camera.GetPosition());
 
-                Matrix4x4 world = Matrix4x4.CreateScale(128.0f) *
-                                  model.AnimationTransforms[i] *
-                                  Matrix4x4.CreateTranslation(Camera.GetPosition());
-
-                skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * _viewProjection).ToSharpDX());
-                skinnedModelEffect.Techniques[0].Passes[0].Apply();
-
-                foreach (var submesh in mesh.Submeshes)
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                drawMesh.Render(new RenderingDrawingMesh.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer,
+                    Atlas = _wadRenderer.Texture,
+                    World = world,
+                    Tint = Vector4.One,
+                    StaticLighting = false,
+                    ColoredVertices = false,
+                    BilinearFilter = BilinearFilter,
+                });
             }
 
+            // Clear depth so the rest of the scene draws over the skybox without being
+            // occluded by it.
             SwapChain.ClearDepth();
         }
 
+        // Moveables: rigid per-mesh draws with per-bone world matrix (the legacy
+        // AnimationTransforms[i] is the per-mesh-bone transform already in world space
+        // when multiplied by ObjectMatrix). Migrated to RenderingDrawingMesh; no GPU
+        // skinning needed because the per-bone matrix is computed CPU-side and applied
+        // as the World transform.
+        //
+        // KNOWN LIMITATION: TombEngine Lara skin (RenderSkin path) is NOT migrated.
+        // It's a separate code path (skin.RenderSkin) that does GPU skinning with
+        // bone matrices on a different mesh. That migration is deferred to a follow-up
+        // because RenderSkin is implemented inside AnimatedModel — touching it would
+        // affect WadTool too.
         private void DrawMoveables(List<MoveableInstance> moveablesToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
             if (moveablesToDraw.Count == 0)
                 return;
-
-            var camPos = Camera.GetPosition();
-            var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-
-            ApplyBrushToModelEffect(skinnedModelEffect);
-
-            skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
-            skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-            skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
 
             var groups = moveablesToDraw.GroupBy(m => m.WadObjectId);
             foreach (var group in groups)
@@ -1590,7 +1665,7 @@ namespace TombEditor.Controls.Panel3D
                 var version = _editor.Level.Settings.GameVersion;
                 var colored = version.Native() <= TRVersion.Game.TR2 && group.First().CanBeColored();
 
-                if (group.Key == WadMoveableId.Lara) // Show Lara
+                if (group.Key == WadMoveableId.Lara) // Lara uses a separate skin moveable when TombEngine
                 {
                     var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(version, group.Key.TypeId));
                     var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
@@ -1601,9 +1676,9 @@ namespace TombEditor.Controls.Panel3D
                     }
                 }
 
+                // Text labels for the selected instance + (TombEngine + Lara) skin.
                 foreach (var instance in group)
                 {
-                    // Add text message
                     if (_editor.SelectedObject == instance)
                     {
                         textToDraw.Add(CreateTextTagForObject(
@@ -1614,109 +1689,130 @@ namespace TombEditor.Controls.Panel3D
                             GetObjectRotationString(instance.Room, instance) +
                             (instance.Ocb == 0 ? string.Empty : "\nOCB: " + instance.Ocb) +
                             GetObjectTriggerString(instance)));
-
-                        // Add the line height of the object
                         AddObjectHeightLine(instance.Room, instance.Position);
                     }
 
                     if (!_editor.Level.IsTombEngine || skin.Skin == null)
                         continue;
 
-                    if (!disableSelection && _highlightedObjects.Contains(instance)) // Selection
-                        skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
-                    else
+                    // GPU skinning for Lara's TombEngine skin mesh. The bone matrices
+                    // are `invBindPose × animTransform` (System.Numerics row-vector
+                    // convention); MeshShader's `mul(blended, position)` form picks up
+                    // the transpose automatically via HLSL's column-major reading, so
+                    // no explicit Matrix4x4.Transpose is needed (in contrast to the
+                    // legacy AnimatedModel.RenderSkin which uses row-vec mul(v, M)).
+                    var skinDraw = GetOrCreateDrawingMesh(skin.Skin);
+                    int boneCount = model.AnimationTransforms.Count;
+                    var bones = new Matrix4x4[boneCount];
+                    for (int b = 0; b < boneCount; ++b)
                     {
-                        if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
-                        {
-                            skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
-                            skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight * instance.Color));
-                        }
+                        if (Matrix4x4.Invert(model.BindPoseTransforms[b], out var invBindPose))
+                            bones[b] = invBindPose * model.AnimationTransforms[b];
                         else
-                        {
-                            skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
-                            skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
-                        }
+                            bones[b] = Matrix4x4.Identity;
                     }
 
-                    skinnedModelEffect.Parameters["WorldMatrix"].SetValue(instance.ObjectMatrix.ToSharpDX());
-                    skin.RenderSkin(_legacyDevice, skinnedModelEffect, (instance.ObjectMatrix * _viewProjection).ToSharpDX(), model);
+                    Vector4 skinTint;
+                    bool skinStaticLighting;
+                    if (!disableSelection && _highlightedObjects.Contains(instance))
+                    {
+                        skinTint = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                        skinStaticLighting = false;
+                    }
+                    else if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
+                    {
+                        skinTint = ConvertColor(instance.Room.Properties.AmbientLight * instance.Color);
+                        skinStaticLighting = true;
+                    }
+                    else
+                    {
+                        skinTint = Vector4.One;
+                        skinStaticLighting = false;
+                    }
+
+                    skinDraw.Render(new RenderingDrawingMesh.RenderArgs
+                    {
+                        RenderTarget = SwapChain,
+                        StateBuffer = _renderingStateBuffer,
+                        Atlas = _wadRenderer.Texture,
+                        World = instance.ObjectMatrix,
+                        Tint = skinTint,
+                        StaticLighting = skinStaticLighting,
+                        ColoredVertices = _editor.Level.IsTombEngine,
+                        AlphaTest = HideTransparentFaces,
+                        BilinearFilter = BilinearFilter,
+                        Skinned = true,
+                        BoneMatrices = bones,
+                    });
                 }
 
+                // === New path: per-mesh draws ===
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
-                    var mesh = skin.Meshes[i];
-                    if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.InputLayout == null || mesh.IndexBuffer == null)
+                    var legacyMesh = skin.Meshes[i];
+                    if (legacyMesh.Vertices.Count == 0)
+                        continue;
+                    if (_editor.Level.IsTombEngine && skin.Skin != null && legacyMesh.Hidden)
                         continue;
 
-                    if (_editor.Level.IsTombEngine && skin.Skin != null && mesh.Hidden)
-                        continue;
-
-                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
-                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    var drawMesh = GetOrCreateDrawingMesh(legacyMesh);
 
                     foreach (var instance in group)
                     {
-                        if (!disableSelection && _highlightedObjects.Contains(instance)) // Selection
-                            skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
-                        else
+                        Vector4 tint;
+                        bool staticLighting;
+                        if (!disableSelection && _highlightedObjects.Contains(instance))
                         {
-                            if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
+                            tint = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                            staticLighting = false;
+                        }
+                        else if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
+                        {
+                            if (colored || movID.Meshes[i].LightingType != WadMeshLightingType.Normals)
                             {
-                                if (colored || movID.Meshes[i].LightingType != WadMeshLightingType.Normals)
-                                {
-                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
-                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
-                                }
-                                else
-                                {
-                                    var color = _editor.Level.IsTombEngine ? instance.Room.Properties.AmbientLight * instance.Color : instance.Room.Properties.AmbientLight;
-                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(_editor.Level.IsTombEngine ? true : false);
-                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(color));
-                                }
+                                tint = ConvertColor(instance.Color);
+                                staticLighting = true;
                             }
                             else
                             {
-                                skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
-                                skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
+                                var color = _editor.Level.IsTombEngine ? instance.Room.Properties.AmbientLight * instance.Color : instance.Room.Properties.AmbientLight;
+                                tint = ConvertColor(color);
+                                staticLighting = _editor.Level.IsTombEngine;
                             }
+                        }
+                        else
+                        {
+                            tint = Vector4.One;
+                            staticLighting = false;
                         }
 
                         var world = model.AnimationTransforms[i] * instance.ObjectMatrix;
-                        skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * _viewProjection).ToSharpDX());
-                        skinnedModelEffect.Parameters["WorldMatrix"].SetValue(world.ToSharpDX());
-                        skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
-                        foreach (var submesh in mesh.Submeshes)
+                        drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                         {
-                            if (submesh.Value.NumIndices == 0)
-                                continue;
-
-                            submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
-                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
+                            RenderTarget = SwapChain,
+                            StateBuffer = _renderingStateBuffer,
+                            Atlas = _wadRenderer.Texture,
+                            World = world,
+                            Tint = tint,
+                            StaticLighting = staticLighting,
+                            ColoredVertices = _editor.Level.IsTombEngine,
+                            AlphaTest = HideTransparentFaces,
+                            BilinearFilter = BilinearFilter,
+                        });
                     }
                 }
             }
-
-            // Reset state.
-            ApplyBrushToModelEffect(skinnedModelEffect, true);
-            skinnedModelEffect.Techniques[0].Passes[0].Apply();
         }
 
+        // Imported geometry — third-party 3D models (FBX/OBJ/COLLADA) loaded into the
+        // level. Migrated to RenderingDrawingImportedGeometry; per-submesh textures
+        // are bound directly (NOT via atlas), so the new abstraction differs from
+        // RenderingDrawingMesh.
         private void DrawImportedGeometry(List<ImportedGeometryInstance> importedGeometryToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
             if (importedGeometryToDraw.Count == 0)
                 return;
-
-            var geometryEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["RoomGeometry"];
-            geometryEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-            geometryEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
-
-            // Before drawing custom geometry, apply a depth bias for reducing Z fighting
-            _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-
-            var camPos = Camera.GetPosition();
 
             var groups = importedGeometryToDraw.GroupBy(g => g.Model.UniqueID);
             foreach (var group in groups)
@@ -1728,115 +1824,147 @@ namespace TombEditor.Controls.Panel3D
                 var meshes = model.Meshes;
                 for (var i = 0; i < meshes.Count; i++)
                 {
-                    var mesh = meshes[i];
-                    if (mesh.Vertices.Count == 0 || mesh.InputLayout == null || mesh.IndexBuffer == null || mesh.VertexBuffer == null)
+                    var legacyMesh = meshes[i];
+                    if (legacyMesh.Vertices.Count == 0)
                         continue;
 
-                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
-                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    var drawMesh = GetOrCreateImportedDrawingMesh(legacyMesh);
 
                     foreach (var instance in group)
                     {
                         if (instance.Hidden)
                             continue;
 
-                        geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * _viewProjection).ToSharpDX());
-
-                        // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
+                        Vector4 tint;
+                        bool useVertexColors;
                         if (!disableSelection && _highlightedObjects.Contains(instance))
                         {
-                            geometryEffect.Parameters["UseVertexColors"].SetValue(false);
-                            geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                            tint = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                            useVertexColors = false;
                         }
                         else if (DisablePickingForImportedGeometry)
                         {
-                            geometryEffect.Parameters["UseVertexColors"].SetValue(false);
-                            geometryEffect.Parameters["Color"].SetValue(new Vector4(0.4f, 0.4f, 1.0f, 1.0f));
+                            tint = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                            useVertexColors = false;
                         }
                         else
                         {
-                            var useVertexColors = _editor.Mode == EditorMode.Lighting && ShowRealTintForObjects && instance.LightingModel == ImportedGeometryLightingModel.VertexColors;
-                            geometryEffect.Parameters["UseVertexColors"].SetValue(useVertexColors);
-
+                            useVertexColors = _editor.Mode == EditorMode.Lighting && ShowRealTintForObjects && instance.LightingModel == ImportedGeometryLightingModel.VertexColors;
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
                             {
                                 switch (instance.LightingModel)
                                 {
                                     case ImportedGeometryLightingModel.NoLighting:
                                     case ImportedGeometryLightingModel.CalculateFromLightsInRoom:
-                                        geometryEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
+                                        tint = ConvertColor(instance.Color * instance.Room.Properties.AmbientLight);
                                         break;
-
                                     case ImportedGeometryLightingModel.VertexColors:
                                     case ImportedGeometryLightingModel.TintAsAmbient:
-                                        geometryEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
+                                        tint = ConvertColor(instance.Color);
+                                        break;
+                                    default:
+                                        tint = Vector4.One;
                                         break;
                                 }
                             }
                             else
-                                geometryEffect.Parameters["Color"].SetValue(Vector4.One);
+                                tint = Vector4.One;
                         }
 
-                        foreach (var submesh in mesh.Submeshes)
+                        drawMesh.Render(new RenderingDrawingImportedGeometry.RenderArgs
                         {
-                            if (submesh.Value.NumIndices == 0)
-                                continue;
+                            RenderTarget = SwapChain,
+                            StateBuffer = _renderingStateBuffer,
+                            World = instance.ObjectMatrix,
+                            Tint = tint,
+                            UseVertexColors = useVertexColors,
+                            AlphaTest = HideTransparentFaces,
+                            BilinearFilter = BilinearFilter,
+                            ForceAdditive = DisablePickingForImportedGeometry,
+                        });
 
-                            var texture = submesh.Value.Material.Texture;
-                            if (texture != null && texture is ImportedGeometryTexture)
-                            {
-                                geometryEffect.Parameters["TextureEnabled"].SetValue(true);
-                                geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
-                                geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
-                            }
-                            else
-                                geometryEffect.Parameters["TextureEnabled"].SetValue(false);
-
-                            geometryEffect.Techniques[0].Passes[0].Apply();
-
-                            submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
-
-                            // If picking for imported geometry is disabled, then draw geometry translucent
-                            if (DisablePickingForImportedGeometry)
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-
-                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
-
-                        // Add text message
                         if (i == 0 && _editor.SelectedObject == instance)
                         {
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" +
                                 GetObjectRotationString(_editor.SelectedRoom, instance) + "\n" +
-								"Scale: " + instance.Scale + "\n" +
-								"Triangles: " + instance.Model.DirectXModel.TotalTriangles));
-
-                            // Add the line height of the object
+                                "Scale: " + instance.Scale + "\n" +
+                                "Triangles: " + instance.Model.DirectXModel.TotalTriangles));
                             AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
                         }
                     }
                 }
             }
-
-            // Reset GPU states
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-            if (DisablePickingForImportedGeometry)
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
         }
 
+        // Per-mesh cached RenderingDrawingImportedGeometry. Each ImportedGeometryMesh
+        // has its OWN per-submesh texture references — when we build the abstraction's
+        // Description we extract texture + size from each submesh's material.
+        private RenderingDrawingImportedGeometry GetOrCreateImportedDrawingMesh(TombLib.LevelData.ImportedGeometryMesh legacyMesh)
+        {
+            if (_importedMeshCache.TryGetValue(legacyMesh, out var cached))
+                return cached;
+
+            var verts = new RenderingDrawingImportedGeometry.Vertex[legacyMesh.Vertices.Count];
+            for (int i = 0; i < legacyMesh.Vertices.Count; ++i)
+            {
+                var s = legacyMesh.Vertices[i];
+                verts[i] = new RenderingDrawingImportedGeometry.Vertex
+                {
+                    Position = s.Position,
+                    UV = s.UV,
+                    Color = s.Color,
+                    Normal = s.Normal,
+                };
+            }
+
+            var subList = new List<RenderingDrawingImportedGeometry.Submesh>(legacyMesh.Submeshes.Count);
+            foreach (var kv in legacyMesh.Submeshes)
+            {
+                if (kv.Value.NumIndices == 0)
+                    continue;
+                var matTexture = kv.Value.Material.Texture;
+                object texObj = null;
+                Vector2 texSize = Vector2.Zero;
+                if (matTexture is TombLib.LevelData.ImportedGeometryTexture igt)
+                {
+                    texObj = igt.DirectXTexture;
+                    texSize = new Vector2(matTexture.Image.Width, matTexture.Image.Height);
+                }
+                subList.Add(new RenderingDrawingImportedGeometry.Submesh
+                {
+                    IndexStart = kv.Value.BaseIndex,
+                    IndexCount = kv.Value.NumIndices,
+                    DoubleSided = kv.Key.DoubleSided,
+                    AdditiveBlending = kv.Key.AdditiveBlending,
+                    Texture = texObj,
+                    TextureSize = texSize,
+                });
+            }
+
+            var mesh = Device.CreateDrawingImportedGeometry(new RenderingDrawingImportedGeometry.Description
+            {
+                Vertices = verts,
+                Indices = legacyMesh.Indices,
+                Submeshes = subList,
+            });
+            _importedMeshCache[legacyMesh] = mesh;
+            return mesh;
+        }
+
+        // Static meshes — no skinning, single ObjectMatrix per instance.
+        // Migrated to RenderingDrawingMesh: the legacy ObjectMesh's CPU-side vertex
+        // data is mirrored into a Dx11RenderingDrawingMesh on first use (cached in
+        // _meshCache). The atlas texture passes through directly from the WadRenderer.
+        //
+        // Brush overlay support: NOT yet ported to MeshShader. ApplyBrushToModelEffect
+        // is still called on the legacy effect (no harm — it's just a parameter set
+        // on a now-unused effect). Caller migration TODO.
         private void DrawStatics(List<StaticInstance> staticsToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
             if (staticsToDraw.Count == 0)
                 return;
-
-            var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-            var camPos = Camera.GetPosition();
-
-            ApplyBrushToModelEffect(staticMeshEffect);
 
             var groups = staticsToDraw.GroupBy(s => s.WadObjectId);
             foreach (var group in groups)
@@ -1848,81 +1976,119 @@ namespace TombEditor.Controls.Panel3D
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
-                    var mesh = model.Meshes[i];
-                    if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.IndexBuffer == null || mesh.InputLayout == null)
+                    var legacyMesh = model.Meshes[i];
+                    if (legacyMesh.Vertices.Count == 0)
                         continue;
 
-                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
-                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    var drawMesh = GetOrCreateDrawingMesh(legacyMesh);
 
                     foreach (var instance in group)
                     {
+                        Vector4 tint;
+                        bool staticLighting;
                         if (!disableSelection && _highlightedObjects.Contains(instance))
-                            staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                        {
+                            tint = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                            staticLighting = false;
+                        }
+                        else if (_editor.Mode == EditorMode.Lighting)
+                        {
+                            var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
+                            if (!ShowRealTintForObjects || entry == null && statID.Mesh.LightingType == WadMeshLightingType.VertexColors || entry != null && entry.Merge && entry.TintAsAmbient)
+                                tint = ConvertColor(instance.Color);
+                            else if (_editor.Level.IsTombEngine)
+                                tint = ConvertColor(instance.Room.Properties.AmbientLight * instance.Color);
+                            else
+                                tint = ConvertColor(instance.Room.Properties.AmbientLight);
+
+                            if (entry != null && entry.Merge)
+                                staticLighting = !entry.ClearShades;
+                            else
+                                staticLighting = _editor.Level.IsTombEngine ? true : statID.Mesh.LightingType == WadMeshLightingType.VertexColors;
+                        }
                         else
                         {
-                            if (_editor.Mode == EditorMode.Lighting)
-                            {
-                                var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
-
-                                if (!ShowRealTintForObjects || entry == null && statID.Mesh.LightingType == WadMeshLightingType.VertexColors || entry != null && entry.Merge && entry.TintAsAmbient)
-                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
-                                else if (_editor.Level.IsTombEngine)
-                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight * instance.Color));
-                                else
-                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
-
-                                if (entry != null && entry.Merge)
-                                    staticMeshEffect.Parameters["StaticLighting"].SetValue(!entry.ClearShades);
-                                else
-                                    staticMeshEffect.Parameters["StaticLighting"].SetValue(_editor.Level.IsTombEngine ? true : statID.Mesh.LightingType == WadMeshLightingType.VertexColors);
-                            }
-                            else
-                            {
-                                staticMeshEffect.Parameters["Color"].SetValue(Vector4.One);
-                                staticMeshEffect.Parameters["StaticLighting"].SetValue(false);
-                            }
+                            tint = Vector4.One;
+                            staticLighting = false;
                         }
 
-                        staticMeshEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * _viewProjection).ToSharpDX());
-                        staticMeshEffect.Parameters["WorldMatrix"].SetValue(instance.ObjectMatrix.ToSharpDX());
-                        staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-                        staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
-                        staticMeshEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
-                        staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                        staticMeshEffect.Techniques[0].Passes[0].Apply();
-
-                        foreach (var submesh in mesh.Submeshes)
+                        drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                         {
-                            if (submesh.Value.NumIndices == 0)
-                                continue;
+                            RenderTarget = SwapChain,
+                            StateBuffer = _renderingStateBuffer,
+                            Atlas = _wadRenderer.Texture,
+                            World = instance.ObjectMatrix,
+                            Tint = tint,
+                            StaticLighting = staticLighting,
+                            ColoredVertices = _editor.Level.IsTombEngine,
+                            AlphaTest = HideTransparentFaces,
+                            BilinearFilter = BilinearFilter,
+                        });
 
-                            submesh.Key.SetStates(_legacyDevice, _editor.Configuration.Rendering3D_HideTransparentFaces && _editor.SelectedObject != instance);
-                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
-
-                        // Add text message
                         if (i == 0 && _editor.SelectedObject == instance)
                         {
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.StaticId.ToString(_editor.Level.Settings.GameVersion) +
-                            instance.GetScriptIDOrName() + "\n" +
-                            GetObjectPositionString(_editor.SelectedRoom, instance) +
+                                instance.GetScriptIDOrName() + "\n" +
+                                GetObjectPositionString(_editor.SelectedRoom, instance) +
                                 "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
                                 GetObjectTriggerString(instance)));
-
-                            // Add the line height of the object
                             AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
                         }
                     }
                 }
             }
+        }
 
-            // Reset state.
-            ApplyBrushToModelEffect(staticMeshEffect, true);
-            staticMeshEffect.Techniques[0].Passes[0].Apply();
+        // Returns a Dx11RenderingDrawingMesh mirroring the legacy ObjectMesh's CPU data.
+        // First call per-mesh builds and caches; subsequent calls hit the cache.
+        // ObjectVertex and MeshVertex have IDENTICAL field layouts (both Vector3×4 +
+        // Vector4×2, sequential, naturally aligned), so the per-vertex copy is just a
+        // field-by-field assignment.
+        private RenderingDrawingMesh GetOrCreateDrawingMesh(TombLib.Graphics.ObjectMesh legacyMesh)
+        {
+            if (_meshCache.TryGetValue(legacyMesh, out var cached))
+                return cached;
+
+            var verts = new MeshVertex[legacyMesh.Vertices.Count];
+            for (int i = 0; i < legacyMesh.Vertices.Count; ++i)
+            {
+                var s = legacyMesh.Vertices[i];
+                verts[i] = new MeshVertex
+                {
+                    Position = s.Position,
+                    UVW = s.UVW,
+                    Normal = s.Normal,
+                    Color = s.Color,
+                    BoneIndex = s.Indices,
+                    BoneWeight = s.Weights,
+                };
+            }
+
+            // Submeshes: convert from Dictionary<Material, Submesh> to a flat array.
+            var subList = new List<RenderingDrawingMesh.Submesh>(legacyMesh.Submeshes.Count);
+            foreach (var kv in legacyMesh.Submeshes)
+            {
+                if (kv.Value.NumIndices == 0)
+                    continue;
+                subList.Add(new RenderingDrawingMesh.Submesh
+                {
+                    IndexStart = kv.Value.BaseIndex,
+                    IndexCount = kv.Value.NumIndices,
+                    DoubleSided = kv.Key.DoubleSided,
+                    AdditiveBlending = kv.Key.AdditiveBlending,
+                });
+            }
+
+            var mesh = Device.CreateDrawingMesh(new RenderingDrawingMesh.Description
+            {
+                Vertices = verts,
+                Indices = legacyMesh.Indices,
+                Submeshes = subList,
+            });
+            _meshCache[legacyMesh] = mesh;
+            return mesh;
         }
 
         private void DrawScene()
@@ -2009,8 +2175,7 @@ namespace TombEditor.Controls.Panel3D
             // Reset
             _drawHeightLine = false;
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
             // Update frustum
             _frustum.Update(Camera, ClientSize);
@@ -2035,24 +2200,24 @@ namespace TombEditor.Controls.Panel3D
             // Determine if selection should be visible or not.
             var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
 
-            // Draw moveables and static meshes
-            {
-                _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-
-                if (ShowMoveables)
-                    DrawMoveables(moveablesToDraw, textToDraw, hiddenSelection);
-                if (ShowStatics)
-                    DrawStatics(staticsToDraw, textToDraw, hiddenSelection);
-
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-            }
+            // Draw moveables and static meshes. The unified mesh path manages its
+            // own rasterizer state per-submesh; the legacy depth-bias rasterizer is
+            // not needed because Z-fighting between rooms and moveables is now
+            // controlled by the renderer's own state.
+            if (ShowMoveables)
+                DrawMoveables(moveablesToDraw, textToDraw, hiddenSelection);
+            if (ShowStatics)
+                DrawStatics(staticsToDraw, textToDraw, hiddenSelection);
 
             // Draw room imported geometry
             if (importedGeometryToDraw.Count != 0 && ShowImportedGeometry)
                 DrawImportedGeometry(importedGeometryToDraw, textToDraw, hiddenSelection);
 
-            // Get common effect for service objects
-            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
+            // Common effect for service objects — kept for source-compat with the
+            // DrawXxx method signatures that still take an `Effect` parameter (the
+            // value is no longer dereferenced by any migrated caller; removing the
+            // signature parameter is mechanical churn for a follow-up).
+            object effect = null;
 
             // Draw volumes
             if (ShowVolumes)
@@ -2088,28 +2253,25 @@ namespace TombEditor.Controls.Panel3D
             // Depth-sort sprites
             spritesToDraw = spritesToDraw.OrderByDescending(s => s.Depth).ToList();
 
-            // Draw depth-dependent sprites
+            // Draw depth-dependent sprites. SwapChain.RenderSprites manages its own
+            // blend / depth state (PremultipliedAlpha + DepthDefault); the legacy
+            // _legacyDevice.SetBlendState pre-call was a no-op pass-through and is
+            // gone now.
             var depthSprites = spritesToDraw.Where(s => s.Depth.HasValue).ToList();
             if (depthSprites.Count > 0)
-            {
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 SwapChain.RenderSprites(_renderingTextures, BilinearFilter, false, depthSprites);
-            }
 
             // Draw ghost block bodies
             if (ShowGhostBlocks)
                 DrawGhostBlockBodies(effect, ghostBlocksToDraw);
 
-            // Draw disabled rooms, so they don't conceal all geometry behind
+            // Hidden rooms (translucent overlay so they don't fully occlude geometry).
+            // The RoomShader honours per-vertex alpha; the dedicated DepthRead state
+            // is set by RenderingDrawingRoom internally when the alpha bit is on.
             var hiddenRooms = roomsToDraw.Where(r => DisablePickingForHiddenRooms && r.Properties.Hidden).ToList();
             if (hiddenRooms.Count > 0)
-            {
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
-                _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
                 foreach (Room room in hiddenRooms)
                     _renderingCachedRooms[room].Render(renderArgs);
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-            }
 
             // Draw the height of the object and room bounding box
             DrawDebugLines(effect);
@@ -2120,16 +2282,13 @@ namespace TombEditor.Controls.Panel3D
             if (CanUseGizmo())
             {
                 SwapChain.ClearDepth();
-                _gizmo.Draw(_viewProjection);
+                _gizmo.Draw(SwapChain, _renderingStateBuffer, _viewProjection);
             }
 
-            // Draw depth-independent sprites
+            // Draw depth-independent sprites (HUD overlays, gizmo helpers).
             var flatSprites = spritesToDraw.Where(s => !s.Depth.HasValue).ToList();
             if (flatSprites.Count > 0)
-            {
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 SwapChain.RenderSprites(_renderingTextures, BilinearFilter, true, flatSprites);
-            }
 
             _watch.Stop();
 

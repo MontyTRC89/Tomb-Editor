@@ -1,6 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System.Numerics;
-using TombLib.Graphics.Primitives;
+﻿using System.Numerics;
 using TombLib.Graphics;
 using TombLib;
 using TombLib.LevelData;
@@ -35,73 +33,28 @@ namespace TombEditor.Controls.Panel3D
                 TextureAllocator = _fontTexture
             });
 
-            // Legacy
+            // Tappa-1 unified path: one shared dynamic line batch for the whole Panel3D.
+            _linesBatch = device.CreateDrawingLines(new RenderingDrawingLines.Description { Dynamic = true });
+
+            _legacyDevice = DeviceManager.DefaultDeviceManager.D3D11Device;
+
+            int atlasSize = objectQuality switch
             {
-                _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
+                ObjectRenderingQuality.High => 4096,
+                ObjectRenderingQuality.Medium => 1024,
+                _ => 512
+            };
+            int maxAllocationSize = objectQuality switch
+            {
+                ObjectRenderingQuality.High => 2048,
+                ObjectRenderingQuality.Medium => 256,
+                _ => 128
+            };
 
-                int atlasSize = objectQuality switch
-                {
-                    ObjectRenderingQuality.High => 4096,
-					ObjectRenderingQuality.Medium => 1024,
-					_ => 512
-                };
+            _wadRenderer = new WadRenderer(_legacyDevice, true, true, atlasSize, maxAllocationSize, false);
+            _gizmo = new Gizmo(device);
 
-                int maxAllocationSize = objectQuality switch
-                {
-                    ObjectRenderingQuality.High => 2048,
-                    ObjectRenderingQuality.Medium => 256,
-                    _ => 128
-                };
-
-                _wadRenderer = new WadRenderer(_legacyDevice, true, true, atlasSize, maxAllocationSize, false);
-                // Initialize vertex buffers
-                _ghostBlockVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 84);
-                _boxVertexBuffer = new BoundingBox(new Vector3(-_littleCubeRadius), new Vector3(_littleCubeRadius)).GetVertexBuffer(_legacyDevice);
-
-                // Maybe I could use this as bounding box, scaling it properly before drawing
-                _linesCube = GeometricPrimitive.LinesCube.New(_legacyDevice, 128, 128, 128);
-
-                // This sphere will be scaled up and down multiple times for using as In & Out of lights
-                _sphere = GeometricPrimitive.Sphere.New(_legacyDevice, 1024, 6);
-
-                //Little cubes and little spheres are used as mesh for lights, cameras, sinks, etc
-                _littleCube = GeometricPrimitive.Cube.New(_legacyDevice, 2 * _littleCubeRadius);
-                _littleSphere = GeometricPrimitive.Sphere.New(_legacyDevice, 2 * _littleSphereRadius, 8);
-
-                _cone = GeometricPrimitive.Cone.New(_legacyDevice, _coneRadius, _coneRadius);
-
-                // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
-                new BasicEffect(_legacyDevice);
-
-                // Initialize the rasterizer state for wireframe drawing
-                var renderStateDesc =
-                    new SharpDX.Direct3D11.RasterizerStateDescription
-                    {
-                        CullMode = SharpDX.Direct3D11.CullMode.None,
-                        DepthBias = 0,
-                        DepthBiasClamp = 0,
-                        FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                        IsAntialiasedLineEnabled = true,
-                        IsDepthClipEnabled = true,
-                        IsFrontCounterClockwise = false,
-                        IsMultisampleEnabled = true,
-                        IsScissorEnabled = false,
-                        SlopeScaledDepthBias = 0
-                    };
-                _rasterizerWireframe = RasterizerState.New(_legacyDevice, renderStateDesc);
-
-                _rasterizerStateDepthBias = RasterizerState.New(_legacyDevice, new SharpDX.Direct3D11.RasterizerStateDescription
-                {
-                    CullMode = SharpDX.Direct3D11.CullMode.Back,
-                    FillMode = SharpDX.Direct3D11.FillMode.Solid,
-                    DepthBias = -2,
-                    SlopeScaledDepthBias = -2
-                });
-
-                _gizmo = new Gizmo(DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
-
-                ResetCamera(true);
-            }
+            ResetCamera(true);
         }
 
         RenderingDrawingRoom CacheRoom(Room room)

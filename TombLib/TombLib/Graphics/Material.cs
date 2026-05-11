@@ -2,6 +2,9 @@
 
 namespace TombLib.Graphics
 {
+    // Material descriptor used by Mesh<T>/Submesh. Pure data — the rendering layer
+    // (Dx11RenderingDrawingMesh / Dx11RenderingDrawingImportedGeometry) reads
+    // AdditiveBlending and DoubleSided to set its own blend / cull state.
     public class Material
     {
         public const string Material_Opaque = "TeOp";
@@ -27,21 +30,6 @@ namespace TombLib.Graphics
             AdditiveBlending = additiveBlending;
             DoubleSided = doubleSided;
             Shininess = shininess;
-        }
-
-        public void SetStates(SharpDX.Toolkit.Graphics.GraphicsDevice device, bool transparent)
-        {
-            if (transparent && AdditiveBlending)
-                device.SetBlendState(device.BlendStates.Additive);
-            else if (transparent)
-                device.SetBlendState(device.BlendStates.NonPremultiplied);
-            else
-                device.SetBlendState(device.BlendStates.Opaque);
-
-            if (DoubleSided)
-                device.SetRasterizerState(device.RasterizerStates.CullNone);
-            else
-                device.SetRasterizerState(device.RasterizerStates.CullBack);
         }
     }
 }

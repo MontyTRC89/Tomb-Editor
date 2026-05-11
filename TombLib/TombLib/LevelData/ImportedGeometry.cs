@@ -1,5 +1,5 @@
 ﻿using NLog;
-using SharpDX.Toolkit.Graphics;
+using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,14 +11,18 @@ using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using Texture = TombLib.Utils.Texture;
 
 namespace TombLib.LevelData
 {
     public class ImportedGeometryTexture : Texture
     {
-        public Texture2D DirectXTexture { get; private set; }
+        // The renderer (Dx11RenderingDrawingImportedGeometry) accepts a SharpDX.Direct3D11
+        // ShaderResourceView directly via Submesh.Texture — so we expose the SRV here
+        // (rather than the underlying Texture2D). The Texture2D + SRV pair is owned by
+        // this object and disposed together (via TextureLoad.LoadedTexture).
+        public ShaderResourceView DirectXTexture => _loaded.View;
+        private TextureLoad.LoadedTexture _loaded;
 
         public ImportedGeometryTexture(string absolutePath)
         {
@@ -29,15 +33,17 @@ namespace TombLib.LevelData
             Image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
             if (SynchronizationContext.Current == null)
-                DirectXTexture = TextureLoad.Load(ImportedGeometry.Device, Image);
+                _loaded = TextureLoad.Load(ImportedGeometry.Device, Image);
             else
                 SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
-                DirectXTexture = TextureLoad.Load(ImportedGeometry.Device, Image), null);
+                _loaded = TextureLoad.Load(ImportedGeometry.Device, Image), null);
         }
 
         private ImportedGeometryTexture(ImportedGeometryTexture other)
         {
-            DirectXTexture = other.DirectXTexture;
+            // Shallow copy: textures shared with the source. The original owner is
+            // responsible for disposing — copies just borrow references.
+            _loaded = other._loaded;
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
         }
@@ -46,7 +52,7 @@ namespace TombLib.LevelData
         {
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
-            DirectXTexture = other.DirectXTexture;
+            _loaded = other._loaded;
         }
 
         public override Texture Clone() => new ImportedGeometryTexture(this);
@@ -54,17 +60,16 @@ namespace TombLib.LevelData
         public override int GetHashCode() => AbsolutePath.GetHashCode();
     }
 
+    // CPU-side vertex layout for imported geometry. The IL declared in
+    // Dx11RenderingDevice.ImportedGeometryShader matches this exactly:
+    // POSITION@0 (R32G32B32_Float), TEXCOORD@12 (R32G32_Float), COLOR@20
+    // (R32G32B32_Float), NORMAL@32 (R32G32B32_Float). Total 44 bytes per vertex.
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct ImportedGeometryVertex : IVertex
     {
-        [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
-        //private readonly float _unusedPadding;
-        [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 12)]
         public Vector2 UV;
-        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32_Float, 20)]
         public Vector3 Color;
-        [VertexElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 32)]
         public Vector3 Normal;
 
         Vector3 IVertex.Position => Position;
@@ -72,12 +77,10 @@ namespace TombLib.LevelData
 
     public class ImportedGeometryMesh : Mesh<ImportedGeometryVertex>
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         public bool HasVertexColors { get; set; }
 
-        public ImportedGeometryMesh(GraphicsDevice device, string name)
-            : base(device, name)
+        public ImportedGeometryMesh(string name)
+            : base(name)
         { }
 
         public void UpdateBuffers(Vector3? position = null)
@@ -89,25 +92,9 @@ namespace TombLib.LevelData
             // we can't depth-sort them, otherwise a race condition may occur which will
             // cause incorrect rendering or occasional SEHExceptions. For more info, see here:
             // https://github.com/MontyTRC89/Tomb-Editor/issues/516
-
             DepthSort(null); // null means no depth-sorting occurs
             UpdateBoundingBox();
-
-            if (VertexBuffer != null)
-                VertexBuffer.Dispose();
-            if (IndexBuffer != null)
-                IndexBuffer.Dispose();
-
-            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
-            InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
-            IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
-
-            if (VertexBuffer == null)
-                logger.Error("Vertex Buffer of Imported Geometry " + Name + " could not be created!");
-            if (InputLayout == null)
-                logger.Error("Input Layout of Imported Geometry " + Name + " could not be created!");
-            if (IndexBuffer == null)
-                logger.Error("Index Buffer of Imported Geometry " + Name + " could not be created!");
+            BumpVersion();
         }
     }
 
@@ -151,7 +138,12 @@ namespace TombLib.LevelData
 
     public class ImportedGeometry : IWadObject, ICloneable, IReloadableResource, IEquatable<ImportedGeometry>
     {
-        public static GraphicsDevice Device;
+        // Raw D3D11 device used by ImportedGeometryTexture to create per-texture
+        // GPU resources. Set once at startup by DeviceManager. Static because the
+        // texture loading runs synchronously inside ImportedGeometryTexture's
+        // constructor — making it instance-scoped would require threading a Device
+        // reference through every loader / level settings reload code path.
+        public static Device Device;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -173,8 +165,8 @@ namespace TombLib.LevelData
                 }
             }
 
-            public Model(GraphicsDevice device, float scale)
-                : base(device, ModelType.RoomGeometry)
+            public Model(float scale)
+                : base(ModelType.RoomGeometry)
             {
                 Scale = scale;
             }
@@ -274,7 +266,7 @@ namespace TombLib.LevelData
                 return false;
 
             // Create a new static model
-            DirectXModel = new Model(Device, info.Scale);
+            DirectXModel = new Model(info.Scale);
             DirectXModel.BoundingBox = tmpModel.BoundingBox;
 
             // Create materials
@@ -294,7 +286,7 @@ namespace TombLib.LevelData
                 if (mesh.Normals.Count == 0)
                     mesh.CalculateNormals();
 
-                var modelMesh = new ImportedGeometryMesh(Device, mesh.Name);
+                var modelMesh = new ImportedGeometryMesh(mesh.Name);
 
                 modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
 

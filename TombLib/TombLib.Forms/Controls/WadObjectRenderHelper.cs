@@ -1,16 +1,26 @@
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Controls
 {
+    // Migrated to the unified rendering path (RenderingDrawingMesh / RenderingDrawingImportedGeometry).
+    // Per-mesh GPU resources are cached in static dictionaries keyed by the legacy
+    // ObjectMesh / ImportedGeometryMesh references (rebuilt automatically when the
+    // legacy mesh is invalidated by WadRenderer).
     public static class WadObjectRenderHelper
     {
+        // Static caches — entries live until process exit (the legacy meshes themselves
+        // are owned by WadRenderer instances and don't currently expose disposal hooks
+        // we could subscribe to). Memory cost: one extra GPU buffer per legacy mesh.
+        private static readonly Dictionary<ObjectMesh, RenderingDrawingMesh> _meshCache = new Dictionary<ObjectMesh, RenderingDrawingMesh>();
+        private static readonly Dictionary<TombLib.LevelData.ImportedGeometryMesh, RenderingDrawingImportedGeometry> _importedCache = new Dictionary<TombLib.LevelData.ImportedGeometryMesh, RenderingDrawingImportedGeometry>();
+
         /// <summary>
         /// Applies optional skin substitute for moveables that need it.
         /// If the object is a WadMoveable and has a skin defined in TrCatalog,
@@ -98,19 +108,22 @@ namespace TombLib.Controls
                 -(float)Math.PI / 2, (float)Math.PI / 2, radius * 3, 50, 1000000, fieldOfView * (float)(Math.PI / 180));
         }
 
+        // Caller passes a stateBuffer with TransformMatrix already set to viewProjection.
         public static void RenderObject(IWadObject wadObject, WadRenderer wadRenderer,
-            GraphicsDevice legacyDevice, Matrix4x4 viewProjection, Vector3 cameraPosition, bool drawTransparency)
+            RenderingDevice device, RenderingSwapChain swapChain, RenderingStateBuffer stateBuffer,
+            Vector3 cameraPosition, bool drawTransparency)
         {
             if (wadObject is WadMoveable moveable)
-                RenderMoveable(moveable, wadRenderer, legacyDevice, viewProjection, cameraPosition, drawTransparency);
+                RenderMoveable(moveable, wadRenderer, device, swapChain, stateBuffer, cameraPosition, drawTransparency);
             else if (wadObject is WadStatic staticObj)
-                RenderStatic(staticObj, wadRenderer, legacyDevice, viewProjection, cameraPosition, drawTransparency);
+                RenderStatic(staticObj, wadRenderer, device, swapChain, stateBuffer, cameraPosition, drawTransparency);
             else if (wadObject is ImportedGeometry impGeo)
-                RenderImportedGeometry(impGeo, legacyDevice, viewProjection, cameraPosition, drawTransparency);
+                RenderImportedGeometry(impGeo, device, swapChain, stateBuffer, cameraPosition, drawTransparency);
         }
 
         public static void RenderMoveable(WadMoveable moveable, WadRenderer wadRenderer,
-            GraphicsDevice legacyDevice, Matrix4x4 viewProjection, Vector3 cameraPosition, bool drawTransparency)
+            RenderingDevice device, RenderingSwapChain swapChain, RenderingStateBuffer stateBuffer,
+            Vector3 cameraPosition, bool drawTransparency)
         {
             if (moveable.Meshes.Count == 0 || (moveable.Meshes.Count == 1 && moveable.Meshes[0] == null))
                 return;
@@ -118,70 +131,71 @@ namespace TombLib.Controls
             var model = wadRenderer.GetMoveable(moveable);
             model.UpdateAnimation(0, 0);
 
-            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-
-            effect.Parameters["AlphaTest"].SetValue(drawTransparency);
-            effect.Parameters["Color"].SetValue(Vector4.One);
-            effect.Parameters["StaticLighting"].SetValue(false);
-            effect.Parameters["ColoredVertices"].SetValue(false);
-            effect.Parameters["Texture"].SetResource(wadRenderer.Texture);
-            effect.Parameters["TextureSampler"].SetResource(legacyDevice.SamplerStates.Default);
-
+            // Per-bone world matrix for non-skinned per-mesh draws.
             var matrices = new List<Matrix4x4>();
             if (model.Animations.Count != 0)
-            {
                 for (var b = 0; b < model.Meshes.Count; b++)
                     matrices.Add(model.AnimationTransforms[b]);
-            }
             else
-            {
                 foreach (var bone in model.Bones)
                     matrices.Add(bone.GlobalTransform);
-            }
 
+            // GPU-skinned skin pass (replaces the legacy AnimatedModel.RenderSkin).
             if (model.Skin != null)
-                model.RenderSkin(legacyDevice, effect, viewProjection.ToSharpDX());
+            {
+                var skinDraw = GetOrCreateMesh(device, model.Skin);
+                int boneCount = model.AnimationTransforms.Count;
+                var bones = new Matrix4x4[boneCount];
+                for (int b = 0; b < boneCount; ++b)
+                {
+                    if (Matrix4x4.Invert(model.BindPoseTransforms[b], out var invBindPose))
+                        bones[b] = invBindPose * model.AnimationTransforms[b];
+                    else
+                        bones[b] = Matrix4x4.Identity;
+                }
+                skinDraw.Render(new RenderingDrawingMesh.RenderArgs
+                {
+                    RenderTarget = swapChain,
+                    StateBuffer = stateBuffer,
+                    Atlas = wadRenderer.Texture,
+                    World = Matrix4x4.Identity,
+                    Tint = Vector4.One,
+                    StaticLighting = false,
+                    ColoredVertices = false,
+                    AlphaTest = drawTransparency,
+                    Skinned = true,
+                    BoneMatrices = bones,
+                });
+            }
 
             for (int i = 0; i < model.Meshes.Count; i++)
             {
                 var mesh = model.Meshes[i];
                 if (mesh.Vertices.Count == 0)
                     continue;
-
                 if (model.Skin != null && mesh.Hidden)
                     continue;
 
-                mesh.UpdateBuffers(cameraPosition);
-
-                legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                legacyDevice.SetVertexInputLayout(mesh.InputLayout);
-
-                effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
-                effect.Techniques[0].Passes[0].Apply();
-
-                foreach (var submesh in mesh.Submeshes)
+                var drawMesh = GetOrCreateMesh(device, mesh);
+                drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                 {
-                    submesh.Value.Material.SetStates(legacyDevice, drawTransparency);
-                    legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                }
+                    RenderTarget = swapChain,
+                    StateBuffer = stateBuffer,
+                    Atlas = wadRenderer.Texture,
+                    World = matrices[i],
+                    Tint = Vector4.One,
+                    StaticLighting = false,
+                    ColoredVertices = false,
+                    AlphaTest = drawTransparency,
+                });
             }
         }
 
         public static void RenderStatic(WadStatic staticObj, WadRenderer wadRenderer,
-            GraphicsDevice legacyDevice, Matrix4x4 viewProjection, Vector3 cameraPosition, bool drawTransparency)
+            RenderingDevice device, RenderingSwapChain swapChain, RenderingStateBuffer stateBuffer,
+            Vector3 cameraPosition, bool drawTransparency)
         {
             var model = wadRenderer.GetStatic(staticObj);
-
-            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-
-            effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-            effect.Parameters["AlphaTest"].SetValue(drawTransparency);
-            effect.Parameters["Color"].SetValue(Vector4.One);
-            effect.Parameters["StaticLighting"].SetValue(false);
-            effect.Parameters["ColoredVertices"].SetValue(false);
-            effect.Parameters["Texture"].SetResource(wadRenderer.Texture);
-            effect.Parameters["TextureSampler"].SetResource(legacyDevice.SamplerStates.Default);
 
             for (int i = 0; i < model.Meshes.Count; i++)
             {
@@ -189,68 +203,135 @@ namespace TombLib.Controls
                 if (mesh.Vertices.Count == 0)
                     continue;
 
-                mesh.UpdateBuffers(cameraPosition);
-
-                legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                legacyDevice.SetVertexInputLayout(mesh.InputLayout);
-
-                effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                effect.Techniques[0].Passes[0].Apply();
-
-                foreach (var submesh in mesh.Submeshes)
+                var drawMesh = GetOrCreateMesh(device, mesh);
+                drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                 {
-                    submesh.Value.Material.SetStates(legacyDevice, drawTransparency);
-                    legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                }
+                    RenderTarget = swapChain,
+                    StateBuffer = stateBuffer,
+                    Atlas = wadRenderer.Texture,
+                    World = Matrix4x4.Identity,
+                    Tint = Vector4.One,
+                    StaticLighting = false,
+                    ColoredVertices = false,
+                    AlphaTest = drawTransparency,
+                });
             }
         }
 
         public static void RenderImportedGeometry(ImportedGeometry geo,
-            GraphicsDevice legacyDevice, Matrix4x4 viewProjection, Vector3 cameraPosition, bool drawTransparency)
+            RenderingDevice device, RenderingSwapChain swapChain, RenderingStateBuffer stateBuffer,
+            Vector3 cameraPosition, bool drawTransparency)
         {
             var model = geo.DirectXModel;
             if (model == null || model.Meshes == null || model.Meshes.Count == 0)
                 return;
 
-            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["RoomGeometry"];
-
-            effect.Parameters["UseVertexColors"].SetValue(true);
-            effect.Parameters["AlphaTest"].SetValue(drawTransparency);
-            effect.Parameters["Color"].SetValue(Vector4.One);
-            effect.Parameters["TextureSampler"].SetResource(legacyDevice.SamplerStates.AnisotropicWrap);
-
             for (int i = 0; i < model.Meshes.Count; i++)
             {
-                var mesh = model.Meshes[i];
-                if (mesh.Vertices.Count == 0)
+                var legacyMesh = model.Meshes[i];
+                if (legacyMesh.Vertices.Count == 0)
                     continue;
-
-                mesh.UpdateBuffers(cameraPosition);
-
-                legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                legacyDevice.SetVertexInputLayout(mesh.InputLayout);
-
-                effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-
-                foreach (var submesh in mesh.Submeshes)
+                var drawMesh = GetOrCreateImported(device, legacyMesh);
+                drawMesh.Render(new RenderingDrawingImportedGeometry.RenderArgs
                 {
-                    var texture = submesh.Value.Material.Texture;
-                    if (texture != null && texture is ImportedGeometryTexture)
-                    {
-                        effect.Parameters["TextureEnabled"].SetValue(true);
-                        effect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
-                        effect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
-                    }
-                    else
-                        effect.Parameters["TextureEnabled"].SetValue(false);
-
-                    effect.Techniques[0].Passes[0].Apply();
-                    submesh.Value.Material.SetStates(legacyDevice, drawTransparency);
-                    legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                }
+                    RenderTarget = swapChain,
+                    StateBuffer = stateBuffer,
+                    World = Matrix4x4.Identity,
+                    Tint = Vector4.One,
+                    UseVertexColors = true,
+                    AlphaTest = drawTransparency,
+                });
             }
+        }
+
+        private static RenderingDrawingMesh GetOrCreateMesh(RenderingDevice device, ObjectMesh legacyMesh)
+        {
+            if (_meshCache.TryGetValue(legacyMesh, out var cached))
+                return cached;
+
+            var verts = new MeshVertex[legacyMesh.Vertices.Count];
+            for (int i = 0; i < legacyMesh.Vertices.Count; ++i)
+            {
+                var s = legacyMesh.Vertices[i];
+                verts[i] = new MeshVertex
+                {
+                    Position = s.Position,
+                    UVW = s.UVW,
+                    Normal = s.Normal,
+                    Color = s.Color,
+                    BoneIndex = s.Indices,
+                    BoneWeight = s.Weights,
+                };
+            }
+            var subList = new List<RenderingDrawingMesh.Submesh>(legacyMesh.Submeshes.Count);
+            foreach (var kv in legacyMesh.Submeshes)
+            {
+                if (kv.Value.NumIndices == 0) continue;
+                subList.Add(new RenderingDrawingMesh.Submesh
+                {
+                    IndexStart = kv.Value.BaseIndex,
+                    IndexCount = kv.Value.NumIndices,
+                    DoubleSided = kv.Key.DoubleSided,
+                    AdditiveBlending = kv.Key.AdditiveBlending,
+                });
+            }
+            var mesh = device.CreateDrawingMesh(new RenderingDrawingMesh.Description
+            {
+                Vertices = verts,
+                Indices = legacyMesh.Indices,
+                Submeshes = subList,
+            });
+            _meshCache[legacyMesh] = mesh;
+            return mesh;
+        }
+
+        private static RenderingDrawingImportedGeometry GetOrCreateImported(RenderingDevice device, TombLib.LevelData.ImportedGeometryMesh legacyMesh)
+        {
+            if (_importedCache.TryGetValue(legacyMesh, out var cached))
+                return cached;
+
+            var verts = new RenderingDrawingImportedGeometry.Vertex[legacyMesh.Vertices.Count];
+            for (int i = 0; i < legacyMesh.Vertices.Count; ++i)
+            {
+                var s = legacyMesh.Vertices[i];
+                verts[i] = new RenderingDrawingImportedGeometry.Vertex
+                {
+                    Position = s.Position,
+                    UV = s.UV,
+                    Color = s.Color,
+                    Normal = s.Normal,
+                };
+            }
+            var subList = new List<RenderingDrawingImportedGeometry.Submesh>(legacyMesh.Submeshes.Count);
+            foreach (var kv in legacyMesh.Submeshes)
+            {
+                if (kv.Value.NumIndices == 0) continue;
+                var matTexture = kv.Value.Material.Texture;
+                object texObj = null;
+                Vector2 texSize = Vector2.Zero;
+                if (matTexture is TombLib.LevelData.ImportedGeometryTexture igt)
+                {
+                    texObj = igt.DirectXTexture;
+                    texSize = new Vector2(matTexture.Image.Width, matTexture.Image.Height);
+                }
+                subList.Add(new RenderingDrawingImportedGeometry.Submesh
+                {
+                    IndexStart = kv.Value.BaseIndex,
+                    IndexCount = kv.Value.NumIndices,
+                    DoubleSided = kv.Key.DoubleSided,
+                    AdditiveBlending = kv.Key.AdditiveBlending,
+                    Texture = texObj,
+                    TextureSize = texSize,
+                });
+            }
+            var mesh = device.CreateDrawingImportedGeometry(new RenderingDrawingImportedGeometry.Description
+            {
+                Vertices = verts,
+                Indices = legacyMesh.Indices,
+                Submeshes = subList,
+            });
+            _importedCache[legacyMesh] = mesh;
+            return mesh;
         }
     }
 }

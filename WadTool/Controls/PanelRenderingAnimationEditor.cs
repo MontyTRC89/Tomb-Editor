@@ -1,5 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,7 +7,6 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
-using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
@@ -66,16 +64,18 @@ namespace WadTool.Controls
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
 
-        // Legacy rendering state
-        private GraphicsDevice _device;
+        // Unified path
+        private RenderingDrawingLines _linesBatch;
+        private readonly List<SolidLineVertex> _lines = new List<SolidLineVertex>();
+        private readonly Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh> _meshCache = new Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh>();
+
+        // Raw D3D11 device. Carried for source-compat with members that still use it.
+        private SharpDX.Direct3D11.Device _device;
         private DeviceManager _deviceManager;
         private WadRenderer _wadRenderer;
         private GizmoAnimationEditor _gizmo;
-        private GeometricPrimitive _plane;
         private AnimatedModel _model;
         private AnimatedModel _skinModel;
-        private RasterizerState _rasterizerWireframe;
-        private Buffer<SolidVertex> _vertexBufferVisibility;
 
         public void InitializeRendering(AnimationEditor editor, DeviceManager deviceManager, WadMoveable skin)
         {
@@ -86,7 +86,7 @@ namespace WadTool.Controls
             ResetCamera();
 
             _editor = editor;
-            _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice, false, true, 4096, 2048, true);
+            _wadRenderer = new WadRenderer(deviceManager.D3D11Device, false, true, 4096, 2048, true);
             _model = _wadRenderer.GetMoveable(editor.Moveable);
 
             Configuration = _editor.Tool.Configuration;
@@ -104,30 +104,13 @@ namespace WadTool.Controls
                 TextureAllocator = _fontTexture
             });
 
-            // Legacy rendering
+            _linesBatch = deviceManager.Device.CreateDrawingLines(new RenderingDrawingLines.Description { Dynamic = true });
+
+            // Legacy rendering — only the gizmo remains on this path.
             {
-                _device = deviceManager.___LegacyDevice;
+                _device = deviceManager.D3D11Device;
                 _deviceManager = deviceManager;
-                new BasicEffect(_device); // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
-                SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
-                    new SharpDX.Direct3D11.RasterizerStateDescription
-                    {
-                        CullMode = SharpDX.Direct3D11.CullMode.None,
-                        DepthBias = 0,
-                        DepthBiasClamp = 0,
-                        FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                        IsAntialiasedLineEnabled = true,
-                        IsDepthClipEnabled = true,
-                        IsFrontCounterClockwise = false,
-                        IsMultisampleEnabled = true,
-                        IsScissorEnabled = false,
-                        SlopeScaledDepthBias = 0
-                    };
-
-                _rasterizerWireframe = RasterizerState.New(deviceManager.___LegacyDevice, renderStateDesc);
-
-                _gizmo = new GizmoAnimationEditor(editor, _device, _deviceManager.___LegacyEffects["Solid"], this);
-                _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
+                _gizmo = new GizmoAnimationEditor(editor, deviceManager.Device, this);
             }
         }
 
@@ -144,172 +127,171 @@ namespace WadTool.Controls
                 _fontTexture?.Dispose();
                 _fontDefault?.Dispose();
                 _gizmo?.Dispose();
-                _plane?.Dispose();
                 _model?.Dispose();
                 _skinModel?.Dispose();
                 _wadRenderer?.Dispose();
-                _vertexBufferVisibility?.Dispose();
+                _linesBatch?.Dispose();
+                foreach (var m in _meshCache.Values)
+                    m.Dispose();
+                _meshCache.Clear();
             }
             base.Dispose(disposing);
+        }
+
+        private RenderingDrawingMesh GetOrCreateDrawingMesh(TombLib.Graphics.ObjectMesh legacyMesh)
+        {
+            if (_meshCache.TryGetValue(legacyMesh, out var cached))
+                return cached;
+            var verts = new MeshVertex[legacyMesh.Vertices.Count];
+            for (int i = 0; i < legacyMesh.Vertices.Count; ++i)
+            {
+                var s = legacyMesh.Vertices[i];
+                verts[i] = new MeshVertex { Position = s.Position, UVW = s.UVW, Normal = s.Normal, Color = s.Color, BoneIndex = s.Indices, BoneWeight = s.Weights };
+            }
+            var subList = new List<RenderingDrawingMesh.Submesh>(legacyMesh.Submeshes.Count);
+            foreach (var kv in legacyMesh.Submeshes)
+            {
+                if (kv.Value.NumIndices == 0) continue;
+                subList.Add(new RenderingDrawingMesh.Submesh
+                {
+                    IndexStart = kv.Value.BaseIndex,
+                    IndexCount = kv.Value.NumIndices,
+                    DoubleSided = kv.Key.DoubleSided,
+                    AdditiveBlending = kv.Key.AdditiveBlending,
+                });
+            }
+            var mesh = Device.CreateDrawingMesh(new RenderingDrawingMesh.Description
+            {
+                Vertices = verts, Indices = legacyMesh.Indices, Submeshes = subList,
+            });
+            _meshCache[legacyMesh] = mesh;
+            return mesh;
         }
 
         protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
 
         protected override void OnDraw()
         {
-            // To make sure things are in a defined state for legacy rendering...
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
-            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-            _device.SetBlendState(_device.BlendStates.Opaque);
-
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-            var solidEffect = _deviceManager.___LegacyEffects["Solid"];
+            using var stateBuffer = Device.CreateStateBuffer();
+            stateBuffer.Set(new RenderingState { TransformMatrix = viewProjection });
+
+            _lines.Clear();
 
             if (_model != null)
             {
                 var skin = (_skinModel != null ? _skinModel : _model);
-                var effect = _deviceManager.___LegacyEffects["Model"];
 
-                effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-                effect.Parameters["StaticLighting"].SetValue(false);
-                effect.Parameters["ColoredVertices"].SetValue(false);
-
-                // Build animation transforms
+                // Build per-mesh world matrix (animation pose vs. bind pose) for each
+                // mesh. Same logic as the legacy code.
                 var matrices = new List<Matrix4x4>();
                 if (_editor.ValidAnimationAndFrames)
-                {
                     for (var b = 0; b < _model.Meshes.Count; b++)
                         matrices.Add(_model.AnimationTransforms[b]);
-                }
                 else
-                {
                     foreach (var bone in _model.Bones)
                         matrices.Add(bone.GlobalTransform);
-                }
 
                 bool showSkin = _editor.Wad.GameVersion == TRVersion.Game.TombEngine && Configuration.AnimationEditor_ShowSkin && skin.Skin != null;
 
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
-                    var mesh = skin.Meshes[i];
-                    if (mesh.Vertices.Count == 0)
-                        continue;
+                    var legacyMesh = skin.Meshes[i];
+                    if (legacyMesh.Vertices.Count == 0) continue;
+                    if (showSkin && legacyMesh.Hidden) continue;
 
-                    if (showSkin && skin.Meshes[i].Hidden)
-                        continue;
+                    var drawMesh = GetOrCreateDrawingMesh(legacyMesh);
+                    var tint = (SelectedMesh == _model.Meshes[i] && _editor.ValidAnimationAndFrames)
+                        ? new Vector4(1, 0, 0, 1)
+                        : Vector4.One;
 
-                    mesh.UpdateBuffers(Camera.GetPosition());
-
-                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
-
-                    if (SelectedMesh == _model.Meshes[i] && _editor.ValidAnimationAndFrames)
-                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-                    else
-                        effect.Parameters["Color"].SetValue(Vector4.One);
-
-                    effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
-
-                    effect.Techniques[0].Passes[0].Apply();
-
-                    foreach (var submesh in mesh.Submeshes)
+                    drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                     {
-                        if (submesh.Value.Material.AdditiveBlending)
-                            _device.SetBlendState(_device.BlendStates.Additive);
-                        else
-                            _device.SetBlendState(_device.BlendStates.Opaque);
-
-                        if (submesh.Value.Material.DoubleSided)
-                            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
-                        else
-                            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                    }
+                        RenderTarget = SwapChain,
+                        StateBuffer = stateBuffer,
+                        Atlas = _wadRenderer.Texture,
+                        World = matrices[i],
+                        Tint = tint,
+                        StaticLighting = false,
+                        ColoredVertices = false,
+                    });
                 }
 
+                // GPU-skinned skin pass — replaces the legacy AnimatedModel.RenderSkin.
                 if (showSkin)
                 {
-                    effect.Parameters["AlphaTest"].SetValue(true);
-                    effect.Parameters["Color"].SetValue(Vector4.One);
-
-                    Skin.Skin.UpdateBuffers(Camera.GetPosition());
-                    Skin.RenderSkin(_device, effect, viewProjection.ToSharpDX(), _model);
+                    var skinDraw = GetOrCreateDrawingMesh(Skin.Skin);
+                    int boneCount = _model.AnimationTransforms.Count;
+                    var bones = new Matrix4x4[boneCount];
+                    for (int b = 0; b < boneCount; ++b)
+                    {
+                        if (Matrix4x4.Invert(_model.BindPoseTransforms[b], out var invBindPose))
+                            bones[b] = invBindPose * _model.AnimationTransforms[b];
+                        else
+                            bones[b] = Matrix4x4.Identity;
+                    }
+                    skinDraw.Render(new RenderingDrawingMesh.RenderArgs
+                    {
+                        RenderTarget = SwapChain,
+                        StateBuffer = stateBuffer,
+                        Atlas = _wadRenderer.Texture,
+                        World = Matrix4x4.Identity,
+                        Tint = Vector4.One,
+                        StaticLighting = false,
+                        ColoredVertices = false,
+                        AlphaTest = true,
+                        Skinned = true,
+                        BoneMatrices = bones,
+                    });
                 }
-
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                _device.SetBlendState(_device.BlendStates.Opaque);
 
                 if (_editor.ValidAnimationAndFrames)
                 {
-                    _device.SetRasterizerState(_rasterizerWireframe);
-
-                    // Draw selection box
                     if (SelectedMesh != null)
                     {
-                        if (_vertexBufferVisibility != null)
-                            _vertexBufferVisibility.Dispose();
                         int meshIndex = _model.Meshes.IndexOf(SelectedMesh);
-                        _vertexBufferVisibility = Skin.Meshes[meshIndex].BoundingBox.GetVertexBuffer(_device);
-
-                        _device.SetVertexBuffer(_vertexBufferVisibility);
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
-                        _device.SetIndexBuffer(null, false);
-
-                        solidEffect.Parameters["ModelViewProjection"].SetValue((_model.AnimationTransforms[meshIndex] * viewProjection).ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-                        solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                        _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
+                        var box = Skin.Meshes[meshIndex].BoundingBox;
+                        var center = (box.Minimum + box.Maximum) * 0.5f;
+                        var halfSize = (box.Maximum - box.Minimum) * 0.5f;
+                        var world = Matrix4x4.CreateScale(halfSize) * Matrix4x4.CreateTranslation(center) * _model.AnimationTransforms[meshIndex];
+                        WireGeometry.AppendWireCube(_lines, world, new Vector4(1, 0, 0, 1));
                     }
-
-                    // Draw collision box
                     if (Configuration.AnimationEditor_ShowCollisionBox)
-                    {
-                        if (_vertexBufferVisibility != null)
-                            _vertexBufferVisibility.Dispose();
-                        _vertexBufferVisibility = _editor.CurrentKeyFrame.BoundingBox.GetVertexBuffer(_device);
-
-                        _device.SetVertexBuffer(_vertexBufferVisibility);
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
-                        _device.SetIndexBuffer(null, false);
-
-                        solidEffect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-                        solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                        _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
-                    }
+                        WireGeometry.AppendWireBoundingBox(_lines, _editor.CurrentKeyFrame.BoundingBox, new Vector4(0, 1, 0, 1));
                 }
             }
 
             if (Configuration.AnimationEditor_ShowGrid)
             {
-                // Draw the grid
-                _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
-                _device.SetIndexBuffer(_plane.IndexBuffer, true);
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                var shift = Matrix4x4.CreateTranslation(new Vector3(-GridPosition.X, GridPosition.Y, -GridPosition.Z));
-                solidEffect.Parameters["ModelViewProjection"].SetValue((shift * viewProjection).ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                solidEffect.Techniques[0].Passes[0].Apply();
-
-                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
+                // Grid at GridPosition (legacy used a translation matrix and the
+                // GridPlane primitive). Bake the translation into the stateBuffer so
+                // we can append to the same _lines batch as the boxes above.
+                var gridLines = new List<SolidLineVertex>();
+                WireGeometry.AppendGrid(gridLines, sizePerSide: 8, divisions: 4, color: Vector4.One);
+                var shift = new Vector3(-GridPosition.X, GridPosition.Y, -GridPosition.Z);
+                foreach (var v in gridLines)
+                    _lines.Add(new SolidLineVertex { Position = v.Position + shift, Color = v.Color });
             }
 
-            if (Configuration.AnimationEditor_ShowGizmo && 
+            if (_lines.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_lines));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = stateBuffer,
+                });
+            }
+
+            if (Configuration.AnimationEditor_ShowGizmo &&
                 SelectedMesh != null && _editor.ValidAnimationAndFrames)
             {
-                // Draw the gizmo
+                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
                 SwapChain.ClearDepth();
-                _gizmo.Draw(viewProjection);
+                _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
             }
 
             if (_editor.CurrentAnim != null && 

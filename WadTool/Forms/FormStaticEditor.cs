@@ -1,5 +1,4 @@
 ﻿using DarkUI.Forms;
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Numerics;
 using System.Windows.Forms;
@@ -19,7 +18,6 @@ namespace WadTool
         private readonly Wad2 _wad;
         private readonly WadStatic _static;
         private readonly WadToolClass _tool;
-        private readonly GraphicsDevice _device;
         private bool _doChangesInLighting = false;
 
         // Info
@@ -33,7 +31,6 @@ namespace WadTool
 
             _wad = wad;
             _tool = tool;
-            _device = deviceManager.___LegacyDevice;
 
             _static = staticMesh.Clone();
             panelRendering.InitializeRendering(tool, deviceManager);

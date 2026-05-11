@@ -1,4 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -75,7 +75,7 @@ namespace TombLib.Controls
         private RenderingTextureAllocator _textureAllocator;
 
         // Legacy rendering state
-        private GraphicsDevice _legacyDevice;
+        private Device _legacyDevice;
         private WadRenderer _wadRenderer;
 
         public PanelItemPreview()
@@ -133,8 +133,8 @@ namespace TombLib.Controls
             // Legacy rendering state
             {
                 // Reset scrollbar
-                _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true, true, 1024, 512, false);
+                _legacyDevice = DeviceManager.DefaultDeviceManager.D3D11Device;
+                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.D3D11Device, true, true, 1024, 512, false);
 
                 ResetCamera();
 
@@ -245,7 +245,9 @@ namespace TombLib.Controls
             }
             else
             {
-                WadObjectRenderHelper.RenderObject(CurrentObject, _wadRenderer, _legacyDevice, viewProjection, Camera.GetPosition(), DrawTransparency);
+                using var stateBuffer = Device.CreateStateBuffer();
+                stateBuffer.Set(new Rendering.RenderingState { TransformMatrix = viewProjection });
+                WadObjectRenderHelper.RenderObject(CurrentObject, _wadRenderer, Device, SwapChain, stateBuffer, Camera.GetPosition(), DrawTransparency);
             }
         }
 

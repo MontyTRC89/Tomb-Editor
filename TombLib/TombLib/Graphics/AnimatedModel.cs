@@ -1,5 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -26,8 +25,8 @@ namespace TombLib.Graphics
         public List<Matrix4x4> BindPoseTransforms { get; set; } = new List<Matrix4x4>();
         public List<Matrix4x4> AnimationTransforms { get; set; } = new List<Matrix4x4>();
 
-        public AnimatedModel(GraphicsDevice device)
-            : base(device, ModelType.Skinned)
+        public AnimatedModel()
+            : base(ModelType.Skinned)
         {
             UpdateBuffers();
         }
@@ -114,17 +113,17 @@ namespace TombLib.Graphics
                 BuildAnimationPose(child, AnimationTransforms[node.Index], frame1, frame2, k);
         }
 
-        public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correctTexture, bool loadAnimations)
+        public static AnimatedModel FromWadMoveable(WadMoveable mov, Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correctTexture, bool loadAnimations)
         {
-            AnimatedModel model = new AnimatedModel(device);
-            List<WadBone> bones = mov.Bones;  
+            AnimatedModel model = new AnimatedModel();
+            List<WadBone> bones = mov.Bones;
 
             // Create meshes
             for (int m = 0; m < bones.Count; m++)
-                model.Meshes.Add(ObjectMesh.FromWad2(device, bones[m].Mesh, allocateTexture, correctTexture));
+                model.Meshes.Add(ObjectMesh.FromWad2(bones[m].Mesh, allocateTexture, correctTexture));
 
             if (mov.Skin != null)
-                model.Skin = ObjectMesh.FromWad2(device, mov.Skin, allocateTexture, correctTexture);
+                model.Skin = ObjectMesh.FromWad2(mov.Skin, allocateTexture, correctTexture);
 
             // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children
             // relations and so we could have meshes count different from matrices count
@@ -240,48 +239,10 @@ namespace TombLib.Graphics
             return model.Bones[0];
         }
 
-        public void RenderSkin(GraphicsDevice device, Effect effect, SharpDX.Matrix world, AnimatedModel animSource = null)
-        {
-            if (Skin == null)
-                return;
-
-            device.SetVertexBuffer(0, Skin.VertexBuffer);
-            device.SetIndexBuffer(Skin.IndexBuffer, true);
-            device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, Skin.VertexBuffer));
-
-            var model = animSource == null ? this : animSource;
-
-            var dxMatrices = model.AnimationTransforms.Select(m =>
-            {
-                if (!Matrix4x4.Invert(model.BindPoseTransforms[model.AnimationTransforms.IndexOf(m)], out Matrix4x4 invBindPose))
-                    return Matrix4x4.Identity;
-
-                return Matrix4x4.Transpose(invBindPose * m);
-            }).ToArray();
-
-            effect.Parameters["Skinned"].SetValue(true);
-            effect.Parameters["Bones"].SetValue(dxMatrices);
-
-            effect.Parameters["ModelViewProjection"].SetValue(world);
-            effect.Techniques[0].Passes[0].Apply();
-
-            foreach (var submesh in Skin.Submeshes)
-            {
-                if (submesh.Value.Material.AdditiveBlending)
-                    device.SetBlendState(device.BlendStates.Additive);
-                else
-                    device.SetBlendState(device.BlendStates.Opaque);
-
-                if (submesh.Value.Material.DoubleSided)
-                    device.SetRasterizerState(device.RasterizerStates.CullNone);
-                else
-                    device.SetRasterizerState(device.RasterizerStates.CullBack);
-
-                device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-            }
-
-            effect.Parameters["Skinned"].SetValue(false);
-        }
+        // RenderSkin (legacy SharpDX.Toolkit + Effect path) was removed during the
+        // unified-path migration. GPU skinning is now handled by the renderer
+        // (Dx11RenderingDrawingMesh) — callers compute the bone matrices CPU-side
+        // (invBindPose × AnimationTransforms[i]) and pass them to RenderArgs.
 
         public List<int[]> GetBonePairs(bool flipZ = false, int symmetryMargin = 16)
         {

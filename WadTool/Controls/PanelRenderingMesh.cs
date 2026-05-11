@@ -1,5 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -9,11 +8,13 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
-using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
+// Disambiguate BlendMode (the rendering one is what we want here; TombLib.Utils.BlendMode
+// is the TR engine's texture blend mode).
+using BlendMode = TombLib.Rendering.BlendMode;
 
 namespace WadTool.Controls
 {
@@ -258,15 +259,17 @@ namespace WadTool.Controls
         private List<Vector3> _lastElementPos = new List<Vector3>();
         private List<int> _clickchain = new List<int>();
 
-        // Legacy rendering state
-        private GraphicsDevice _device;
-        private RasterizerState _rasterizerWireframe;
-        private VertexInputLayout _layout;
-        private GeometricPrimitive _littleSphere;
-        private GeometricPrimitive _bigSphere;
-        private GeometricPrimitive _plane;
+        // Unified path
+        private RenderingDrawingLines _linesBatch;
+        private readonly List<SolidLineVertex> _wireLines = new List<SolidLineVertex>();
+        private readonly List<SolidLineVertex> _filledTriangles = new List<SolidLineVertex>();
+        private readonly List<SolidLineVertex> _depthReadTriangles = new List<SolidLineVertex>();
+        private readonly Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh> _meshCache = new Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh>();
+
+        // Raw D3D11 device. Used to reconstruct the WadRenderer when settings change.
+        private SharpDX.Direct3D11.Device _device;
+        private GizmoMeshEditor _gizmo;
         private float _normalLength = 1.0f;
-        private Buffer<SolidVertex> _faceVertexBuffer;
         private WadRenderer _wadRenderer;
         private WadStatic _dummyStatic = new WadStatic(new WadStaticId(0));
 
@@ -281,9 +284,6 @@ namespace WadTool.Controls
         // Vertex weight preview
         private const int _maxBones = 32;
         private Vector4[] _boneColors = new Vector4[_maxBones];
-
-        // Gizmo
-        private GizmoMeshEditor _gizmo;
 
         // Constants
         private readonly List<int> _oldLaraHairIndices = new List<int>() { 37, 38, 39, 40 };
@@ -305,38 +305,21 @@ namespace WadTool.Controls
             base.InitializeRendering(deviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             _tool = tool;
 
-            // Legacy rendering
+            _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
+            _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description
             {
-                _device = deviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice, false, false, 4096, 2048, false);
+                FontName = _tool.Configuration.Rendering3D_FontName,
+                FontSize = _tool.Configuration.Rendering3D_FontSize,
+                FontIsBold = _tool.Configuration.Rendering3D_FontIsBold,
+                TextureAllocator = _fontTexture
+            });
+            _linesBatch = deviceManager.Device.CreateDrawingLines(new RenderingDrawingLines.Description { Dynamic = true });
 
-                _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-                _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description
-                {
-                    FontName = _tool.Configuration.Rendering3D_FontName,
-                    FontSize = _tool.Configuration.Rendering3D_FontSize,
-                    FontIsBold = _tool.Configuration.Rendering3D_FontIsBold,
-                    TextureAllocator = _fontTexture
-                });
-
-                _rasterizerWireframe = RasterizerState.New(_device, new SharpDX.Direct3D11.RasterizerStateDescription
-                {
-                    CullMode = SharpDX.Direct3D11.CullMode.None,
-                    DepthBias = 0,
-                    DepthBiasClamp = 0,
-                    FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                    IsAntialiasedLineEnabled = true,
-                    IsDepthClipEnabled = true,
-                    IsFrontCounterClockwise = false,
-                    IsMultisampleEnabled = true,
-                    IsScissorEnabled = false,
-                    SlopeScaledDepthBias = 0
-                });
-
-                _littleSphere = GeometricPrimitive.Sphere.New(_device, 2, 4);
-                _bigSphere = GeometricPrimitive.Sphere.New(_device, 1, 10);
-                _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
-                _gizmo = new GizmoMeshEditor(_tool.Configuration, _device, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"], this);
+            // Legacy rendering — only the gizmo remains on this path.
+            {
+                _device = deviceManager.D3D11Device;
+                _wadRenderer = new WadRenderer(deviceManager.D3D11Device, false, false, 4096, 2048, false);
+                _gizmo = new GizmoMeshEditor(_tool.Configuration, deviceManager.Device, this);
             }
         }
 
@@ -348,10 +331,10 @@ namespace WadTool.Controls
                 _previewTimer.Tick -= new EventHandler(PreviewTimer_Tick);
 
                 _gizmo?.Dispose();
-                _rasterizerWireframe?.Dispose();
-                _littleSphere?.Dispose();
-                _bigSphere?.Dispose();
-                _plane?.Dispose();
+                _linesBatch?.Dispose();
+                foreach (var m in _meshCache.Values)
+                    m.Dispose();
+                _meshCache.Clear();
                 _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
@@ -362,40 +345,27 @@ namespace WadTool.Controls
             if (VisibleMesh == null)
                 return;
 
-            // To make sure things are in a defined state for legacy rendering...
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-            var solidEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
+            using var stateBuffer = Device.CreateStateBuffer();
+            stateBuffer.Set(new RenderingState { TransformMatrix = viewProjection });
 
-            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
+            _wireLines.Clear();
+            _filledTriangles.Clear();
+            _depthReadTriangles.Clear();
 
             if (DrawGrid)
-            {
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                // Draw the grid
-                _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
-                _device.SetIndexBuffer(_plane.IndexBuffer, true);
-
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                solidEffect.Techniques[0].Passes[0].Apply();
-
-                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
-            }
+                WireGeometry.AppendGrid(_wireLines, sizePerSide: 8, divisions: 4, color: Vector4.One);
 
             _dummyStatic.Mesh = VisibleMesh;
             _dummyStatic.Version = DataVersion.GetNext();
-            var mesh = _wadRenderer.GetStatic(_dummyStatic);
-            mesh.UpdateBuffers(Camera.GetPosition());
+            var staticModel = _wadRenderer.GetStatic(_dummyStatic);
 
             var world  = Matrix4x4.Identity;
-
             var textToDraw  = new List<Text>();
-            var linesToDraw = new List<SolidVertex>();
+            var linesToDraw = _wireLines; // alias — normals append directly here
 
             // At first, draw either vertex spheres (if mode is set to vertex remap)
             // or individual colored shininess faces (if mode is set to shininess editing).
@@ -405,84 +375,58 @@ namespace WadTool.Controls
                 EditingMode == MeshEditingMode.VertexWeights ||
                 EditingMode == MeshEditingMode.VertexColorsAndNormals)
             {
-                // Draw model first in vertex or sphere modes
-                DrawModel(mesh, world * viewProjection);
+                // Draw model first in vertex modes (so vertex spheres overlay it).
+                DrawModel(staticModel, stateBuffer, world);
 
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                _device.SetBlendState(_device.BlendStates.AlphaBlend);
-                _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-
-                _device.SetVertexBuffer(_littleSphere.VertexBuffer);
-                _device.SetVertexInputLayout(_littleSphere.InputLayout);
-                _device.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
-
-                var safeIndex    = SafeVertexRemapLimit;
+                var safeIndex = SafeVertexRemapLimit;
 
                 for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                 {
                     var selected = (i == _currentElement);
 
-                    // Don't draw vertices from clickchain
+                    // Skip duplicates from the click chain.
                     if (!selected && _currentElement != -1 && _mesh.VertexPositions[i] == _mesh.VertexPositions[_currentElement])
                         continue;
 
-                    var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(VisibleMesh.VertexPositions[i]) * viewProjection;
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(posMatrix.ToSharpDX());
-
+                    Vector4 color;
                     if (selected)
+                        color = new Vector4(1, 0, 0, 0.5f);
+                    else switch (EditingMode)
                     {
-                        // Highlight selection
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0, 0, 0.5f));
-                    }
-                    else
-                    {
-                        switch (EditingMode)
-                        {
-                            case MeshEditingMode.VertexRemap:
-
-                                // Highlight safe remap indices
-                                if (i <= safeIndex)  
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 0.8f));
-                                else
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.8f, 0.8f, 0, 0.8f));
-                                break;
-
-                            case MeshEditingMode.VertexEffects:
-
-                                // Mix glow and move attributes for now as green and blue color components for vertex spheres.
-                                // TODO: If in future there will be more vertex attributes, another way of indication must be invented.
-                                if (_mesh.HasAttributes)
-                                {
-                                    var glowPower = _mesh.VertexAttributes[i].Glow == 0 ? 0 : (_mesh.VertexAttributes[i].Glow + 64.0f) / 128.0f;
-                                    var movePower = _mesh.VertexAttributes[i].Move == 0 ? 0 : (_mesh.VertexAttributes[i].Move + 64.0f) / 128.0f;
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, glowPower, movePower, 0.7f));
-                                }
-                                else
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.8f));
-                                break;
-
-                            case MeshEditingMode.VertexWeights:
-                                if (_mesh.HasWeights)
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 1, 1));
-                                else
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 1));
-
-                                break;
-
-                            case MeshEditingMode.VertexColorsAndNormals:
-
-                                // Simply draw normal color, since we don't need any extra indication for this mode
-                                solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 1, 0.6f));
-                                break;
-                        }
+                        case MeshEditingMode.VertexRemap:
+                            color = (i <= safeIndex)
+                                ? new Vector4(0, 0.3f, 1, 0.8f)
+                                : new Vector4(0.8f, 0.8f, 0, 0.8f);
+                            break;
+                        case MeshEditingMode.VertexEffects:
+                            if (_mesh.HasAttributes)
+                            {
+                                var glowPower = _mesh.VertexAttributes[i].Glow == 0 ? 0 : (_mesh.VertexAttributes[i].Glow + 64.0f) / 128.0f;
+                                var movePower = _mesh.VertexAttributes[i].Move == 0 ? 0 : (_mesh.VertexAttributes[i].Move + 64.0f) / 128.0f;
+                                color = new Vector4(0, glowPower, movePower, 0.7f);
+                            }
+                            else color = new Vector4(0, 0, 0, 0.8f);
+                            break;
+                        case MeshEditingMode.VertexWeights:
+                            color = _mesh.HasWeights ? Vector4.One : new Vector4(0, 0, 0, 1);
+                            break;
+                        case MeshEditingMode.VertexColorsAndNormals:
+                            color = new Vector4(1, 1, 1, 0.6f);
+                            break;
+                        default:
+                            color = Vector4.One;
+                            break;
                     }
 
-                    solidEffect.Techniques[0].Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                    // Vertex sphere sized by VertexSphereRadius (legacy used a
+                    // pre-built _littleSphere primitive of that diameter). Built CPU-side
+                    // per frame so VertexSphereRadius can change without re-init.
+                    var sphereWorld = Matrix4x4.CreateScale(VertexSphereRadius * 0.5f) * Matrix4x4.CreateTranslation(VisibleMesh.VertexPositions[i]);
+                    WireGeometry.AppendSolidSphere(_filledTriangles, sphereWorld, color, latSegments: 8, longSegments: 12);
 
                     if (DrawExtraInfo || selected)
                     {
-                        // Only draw texts which are actually visible
+                        var posMatrix = Matrix4x4.CreateTranslation(VisibleMesh.VertexPositions[i]) * viewProjection;
                         if (posMatrix.TransformPerspectively(new Vector3()).Z <= 1.0f)
                         {
                             var pos = posMatrix.TransformPerspectively(new Vector3()).To2();
@@ -523,21 +467,12 @@ namespace WadTool.Controls
                                     {
                                         if (_mesh.HasNormals)
                                         {
-                                            var color = selected ? new Vector4(1, 0, 0, 1) : Vector4.One;
-
+                                            var nColor = selected ? new Vector4(1, 0, 0, 1) : Vector4.One;
                                             var p = Vector3.Transform(_mesh.VertexPositions[i], world);
                                             var n = Vector3.TransformNormal(_mesh.VertexNormals[i] /
                                                 _mesh.VertexNormals[i].Length(), world);
-
-                                            var v = new SolidVertex();
-                                            v.Position = p;
-                                            v.Color = color;
-                                            linesToDraw.Add(v);
-
-                                            v = new SolidVertex();
-                                            v.Position = p + n * _normalLength;
-                                            v.Color = color;
-                                            linesToDraw.Add(v);
+                                            linesToDraw.Add(new SolidLineVertex { Position = p,                       Color = nColor });
+                                            linesToDraw.Add(new SolidLineVertex { Position = p + n * _normalLength,    Color = nColor });
                                         }
                                     }
                                     break;
@@ -562,32 +497,21 @@ namespace WadTool.Controls
             if (EditingMode == MeshEditingMode.FaceAttributes ||
                 EditingMode == MeshEditingMode.VertexWeights)
             {
-                // Accumulate and draw extra face info (for now, only shininess values)
-
                 if ((DrawExtraInfo || _highlightFace || EditingMode == MeshEditingMode.VertexWeights) && _mesh.Polys.Count > 0)
                 {
-                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                    _device.SetBlendState(_device.BlendStates.Opaque);
-                    _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-
-                    _device.SetVertexBuffer(_faceVertexBuffer);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _faceVertexBuffer));
-
-                    // Create a vertex array
-                    var vtxs = new SolidVertex[_faceVertexBuffer.ElementCount];
-                    int vertexCount = 0;
-
+                    // Build face triangles directly into the unified solid-triangle batch.
+                    // The legacy code used a fixed-size SolidVertex[] sized to a static
+                    // _faceVertexBuffer.ElementCount; we just append per poly.
                     for (int i = 0; i < _mesh.Polys.Count; i++)
                     {
                         var poly = _mesh.Polys[i];
-                        var strength = _mesh.Polys[i].ShineStrength == 0 ? 0 : (_mesh.Polys[i].ShineStrength + 32.0f) / 95.0f;
-                        int vn = 0;
-
-                        // Draw one triangle for triangular face or 2 triangles for quad face
-
-                        for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
+                        var strength = poly.ShineStrength == 0 ? 0 : (poly.ShineStrength + 32.0f) / 95.0f;
+                        int triangleCount = poly.Shape == WadPolygonShape.Quad ? 2 : 1;
+                        for (int j = 0; j < triangleCount; j++)
+                        {
                             for (int v = 0; v < 3; v++)
                             {
+                                int vn = j * 3 + v;
                                 int index = 0;
                                 Vector3 pos = Vector3.Zero;
                                 Vector4 color = Vector4.Zero;
@@ -596,15 +520,13 @@ namespace WadTool.Controls
                                 {
                                     switch (vn)
                                     {
-                                        case 0: index = _mesh.Polys[i].Index0; break;
-                                        case 1: index = _mesh.Polys[i].Index1; break;
-                                        case 2: index = _mesh.Polys[i].Index2; break;
-
-                                        case 3: index = _mesh.Polys[i].Index2; break;
-                                        case 4: index = _mesh.Polys[i].Index3; break;
-                                        case 5: index = _mesh.Polys[i].Index0; break;
+                                        case 0: index = poly.Index0; break;
+                                        case 1: index = poly.Index1; break;
+                                        case 2: index = poly.Index2; break;
+                                        case 3: index = poly.Index2; break;
+                                        case 4: index = poly.Index3; break;
+                                        case 5: index = poly.Index0; break;
                                     }
-
                                     pos = _mesh.VertexPositions[index];
 
                                     if (EditingMode == MeshEditingMode.FaceAttributes)
@@ -612,90 +534,73 @@ namespace WadTool.Controls
                                     else if (_previewMesh != null && _mesh.HasWeights)
                                         color = new Vector4(_previewMesh.VertexColors[index], 1.0f);
                                 }
-
-                                vtxs[vertexCount] = new SolidVertex(pos) { Color = color };
-                                vn++;
-                                vertexCount++;
+                                _filledTriangles.Add(new SolidLineVertex { Position = pos, Color = color });
                             }
+                        }
                     }
-
-                    _faceVertexBuffer.SetData(vtxs);
-
-                    solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                    solidEffect.Techniques[0].Passes[0].Apply();
-
-                    if (!DrawExtraInfo && EditingMode != MeshEditingMode.VertexWeights)
-                    {
-                        _device.SetRasterizerState(_rasterizerWireframe);
-                        _device.SetBlendState(_device.BlendStates.Opaque);
-                    }
-
-                    _device.Draw(PrimitiveType.TriangleList, _faceVertexBuffer.ElementCount);
                 }
 
-                // Draw model last in face editing only if wireframe mode is set or extra mode is unset
                 if (WireframeMode || !DrawExtraInfo)
-                    DrawModel(mesh, world * viewProjection);
+                    DrawModel(staticModel, stateBuffer, world);
             }
             else if (EditingMode == MeshEditingMode.Sphere)
             {
-                // Draw model first
-                DrawModel(mesh, world * viewProjection);
+                DrawModel(staticModel, stateBuffer, world);
 
-                // Now prepare and draw wireframe sphere
-                    
-                _device.SetRasterizerState(_rasterizerWireframe);
-                _device.SetBlendState(_device.BlendStates.AlphaBlend);
-                _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
-
-                _device.SetVertexBuffer(_bigSphere.VertexBuffer);
-                _device.SetVertexInputLayout(_bigSphere.InputLayout);
-                _device.SetIndexBuffer(_bigSphere.IndexBuffer, _bigSphere.IsIndex32Bits);
-
-                var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.BoundingSphere.Center);
-                var finalMatrix = Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius * 2) * posMatrix * viewProjection;
-
-                solidEffect.Parameters["ModelViewProjection"].SetValue(finalMatrix.ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(new Vector4(Vector3.One, 0.5f));
-                solidEffect.Techniques[0].Passes[0].Apply();
-
-                _device.DrawIndexed(PrimitiveType.TriangleList, _bigSphere.IndexBuffer.ElementCount);
-
-                // Draw gizmo if needed
-
-                if (DrawExtraInfo)
-                {
-                    SwapChain.ClearDepth();
-                    _gizmo.Draw(viewProjection);
-                }
+                // Big translucent sphere overlay around mesh bounding sphere. Uses
+                // DepthRead so it's visible behind opaque geometry.
+                var sphereWorld = Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius) * Matrix4x4.CreateTranslation(_mesh.BoundingSphere.Center);
+                WireGeometry.AppendSolidSphere(_depthReadTriangles, sphereWorld, new Vector4(Vector3.One, 0.5f), latSegments: 12, longSegments: 16);
             }
             else if (EditingMode == MeshEditingMode.None)
             {
-                // Simply draw model without any indications
-                DrawModel(mesh, world * viewProjection);
+                DrawModel(staticModel, stateBuffer, world);
+            }
+
+            // Submit the three line/triangle batches. Order: solid filled (filledTriangles)
+            // first → wireframe lines (wireLines) second → DepthRead translucent
+            // (depthReadTriangles) last so it overlays correctly.
+            if (_filledTriangles.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_filledTriangles));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = stateBuffer,
+                    Topology = RenderingDrawingLines.Topology.TriangleList,
+                    Blend = BlendMode.NonPremultipliedAlpha,
+                });
+            }
+            if (_wireLines.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_wireLines));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = stateBuffer,
+                });
+            }
+            if (_depthReadTriangles.Count > 0)
+            {
+                _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_depthReadTriangles));
+                _linesBatch.Render(new RenderingDrawingLines.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = stateBuffer,
+                    Topology = RenderingDrawingLines.Topology.TriangleList,
+                    Blend = BlendMode.NonPremultipliedAlpha,
+                    Depth = DepthMode.DepthRead,
+                });
             }
 
             if (textToDraw.Count > 0)
-            {
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                _device.SetBlendState(_device.BlendStates.AlphaBlend);
                 SwapChain.RenderText(textToDraw);
-            }
 
-            if (linesToDraw.Count > 0)
+            if (EditingMode == MeshEditingMode.Sphere && DrawExtraInfo)
             {
-                var bufferLines = SharpDX.Toolkit.Graphics.Buffer.New(_device, linesToDraw.ToArray(), BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
-
-                _device.SetVertexBuffer(bufferLines);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, bufferLines));
-                _device.SetIndexBuffer(null, false);
-
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                _device.Draw(PrimitiveType.LineList, bufferLines.ElementCount);
+                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+                SwapChain.ClearDepth();
+                _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
             }
         }
 
@@ -718,65 +623,72 @@ namespace WadTool.Controls
                 Invalidate();
         }
 
-        private void DrawModel(StaticModel mesh, Matrix4x4 world)
+        // Draws the whole mesh through the unified RenderingDrawingMesh path.
+        // KNOWN LIMITATION: WireframeMode is no longer rendered as wireframe-rasterized
+        // triangles (the new path doesn't support per-mesh wireframe). When toggled
+        // on, the mesh still renders solid; users can rely on the editor overlays
+        // (face highlights, vertex spheres) to inspect topology. Adding a wireframe
+        // mode to RenderingDrawingMesh would require either rasterizer state on
+        // RenderArgs or a new submesh-wireframe path.
+        private void DrawModel(StaticModel mesh, RenderingStateBuffer stateBuffer, Matrix4x4 world)
         {
             if (mesh.Meshes.Count == 0)
                 return;
-
             if (!WireframeMode && EditingMode == MeshEditingMode.VertexWeights)
                 return;
 
-            // Next, draw whole textured mesh.
-            // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
-
-            if (WireframeMode)
-            {
-                _device.SetRasterizerState(_rasterizerWireframe);
-                _device.SetBlendState(_device.BlendStates.Opaque);
-            }
-
             var showColors = EditingMode == MeshEditingMode.VertexColorsAndNormals || (EditingMode == MeshEditingMode.VertexEffects && _previewTimer.Enabled);
+            var tint = WireframeMode ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One;
+            var coloredVertices = _tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine;
 
-            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-            effect.Parameters["ModelViewProjection"].SetValue(world.ToSharpDX());
-            effect.Parameters["Color"].SetValue(WireframeMode ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One);
-            effect.Parameters["StaticLighting"].SetValue(showColors);
-            effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine);
-            effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-            effect.Parameters["TextureSampler"].SetResource(_bilinear ? _device.SamplerStates.AnisotropicWrap : _device.SamplerStates.PointClamp);
-            effect.Parameters["AlphaTest"].SetValue(!WireframeMode && AlphaTest);
-            effect.Techniques[0].Passes[0].Apply();
-
-            foreach (var mesh_ in mesh.Meshes)
+            foreach (var legacyMesh in mesh.Meshes)
             {
-                if (mesh_.Vertices.Count == 0)
+                if (legacyMesh.Vertices.Count == 0)
                     continue;
-
-                _device.SetVertexBuffer(0, mesh_.VertexBuffer);
-                _device.SetIndexBuffer(mesh_.IndexBuffer, true);
-                _layout = VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer);
-                _device.SetVertexInputLayout(_layout);
-
-                foreach (var submesh in mesh_.Submeshes)
+                var drawMesh = GetOrCreateDrawingMesh(legacyMesh);
+                drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                 {
-                    if (!WireframeMode)
-                    {
-                        if (AlphaTest && submesh.Value.Material.AdditiveBlending)
-                            _device.SetBlendState(_device.BlendStates.Additive);
-                        else if (AlphaTest)
-                            _device.SetBlendState(_device.BlendStates.NonPremultiplied);
-                        else
-                            _device.SetBlendState(_device.BlendStates.Opaque);
-
-                        if (submesh.Value.Material.DoubleSided)
-                            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
-                        else
-                            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                    }
-
-                    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                }
+                    RenderTarget = SwapChain,
+                    StateBuffer = stateBuffer,
+                    Atlas = _wadRenderer.Texture,
+                    World = world,
+                    Tint = tint,
+                    StaticLighting = showColors,
+                    ColoredVertices = coloredVertices,
+                    AlphaTest = !WireframeMode && AlphaTest,
+                    BilinearFilter = _bilinear,
+                });
             }
+        }
+
+        private RenderingDrawingMesh GetOrCreateDrawingMesh(TombLib.Graphics.ObjectMesh legacyMesh)
+        {
+            if (_meshCache.TryGetValue(legacyMesh, out var cached))
+                return cached;
+            var verts = new MeshVertex[legacyMesh.Vertices.Count];
+            for (int i = 0; i < legacyMesh.Vertices.Count; ++i)
+            {
+                var s = legacyMesh.Vertices[i];
+                verts[i] = new MeshVertex { Position = s.Position, UVW = s.UVW, Normal = s.Normal, Color = s.Color, BoneIndex = s.Indices, BoneWeight = s.Weights };
+            }
+            var subList = new List<RenderingDrawingMesh.Submesh>(legacyMesh.Submeshes.Count);
+            foreach (var kv in legacyMesh.Submeshes)
+            {
+                if (kv.Value.NumIndices == 0) continue;
+                subList.Add(new RenderingDrawingMesh.Submesh
+                {
+                    IndexStart = kv.Value.BaseIndex,
+                    IndexCount = kv.Value.NumIndices,
+                    DoubleSided = kv.Key.DoubleSided,
+                    AdditiveBlending = kv.Key.AdditiveBlending,
+                });
+            }
+            var mesh = Device.CreateDrawingMesh(new RenderingDrawingMesh.Description
+            {
+                Vertices = verts, Indices = legacyMesh.Indices, Submeshes = subList,
+            });
+            _meshCache[legacyMesh] = mesh;
+            return mesh;
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -1002,18 +914,13 @@ namespace WadTool.Controls
             }
         }
 
+        // Legacy init for the _faceVertexBuffer and _littleSphere primitives is no
+        // longer needed: face triangles and vertex spheres are built CPU-side per
+        // frame into the _filledTriangles batch (see OnDraw). We still keep this
+        // method (called when the mesh changes) to update _normalLength which is
+        // used by the normals-line drawing.
         public void InitializeVertexBuffer()
         {
-            if (_mesh?.Polys.Count > 0)
-            {
-                var vertexCount = 0;
-                foreach (var poly in _mesh.Polys)
-                    if (poly.IsTriangle) vertexCount += 3; else vertexCount += 6;
-
-                _faceVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertexCount);
-            }
-
-            _littleSphere = GeometricPrimitive.Sphere.New(_device, VertexSphereRadius, 4);
             _normalLength = VertexSphereRadius * 3.0f;
         }
 

@@ -1,21 +1,21 @@
-﻿using NLog;
-using SharpDX.Toolkit.Graphics;
-using System;
+using NLog;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
 using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
+    // CPU-side container for a single moveable / static mesh, built from a WadMesh.
+    // GPU upload is the renderer's responsibility (see Dx11RenderingDrawingMesh).
+    // UpdateBuffers() now only depth-sorts and refreshes bounds; it does not allocate
+    // GPU buffers anymore.
     public class ObjectMesh : Mesh<ObjectVertex>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public ObjectMesh(GraphicsDevice device, string name)
-            : base(device, name)
+        public ObjectMesh(string name)
+            : base(name)
         { }
 
         public void UpdateBuffers(Vector3? position = null)
@@ -25,21 +25,7 @@ namespace TombLib.Graphics
 
             DepthSort(position);
             UpdateBoundingBox();
-
-            if (VertexBuffer != null)
-                VertexBuffer.Dispose();
-            if (IndexBuffer != null)
-                IndexBuffer.Dispose();
-
-            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Immutable);
-            InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
-            IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
-            if (VertexBuffer == null)
-                logger.Error("Vertex Buffer of Mesh " + Name + " could not be created!");
-            if (InputLayout == null)
-                logger.Error("Input Layout of Mesh " + Name + " could not be created!");
-            if (IndexBuffer == null)
-                logger.Error("Index Buffer of Mesh " + Name + " could not be created!");
+            BumpVersion();
         }
 
         private static void PutObjectVertexAndIndex(Vector3 v, Vector3 n, VertexWeight w,
@@ -51,8 +37,8 @@ namespace TombLib.Graphics
             var newVertex = new ObjectVertex();
 
             newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.UVW = new Vector3(((allocation.Position.X + (pixelCoord.X * uFactor)) ) / allocation.AtlasDimension.X ,
-                                       ((allocation.Position.Y + (pixelCoord.Y * vFactor)) ) / allocation.AtlasDimension.Y ,
+            newVertex.UVW = new Vector3(((allocation.Position.X + (pixelCoord.X * uFactor))) / allocation.AtlasDimension.X,
+                                       ((allocation.Position.Y + (pixelCoord.Y * vFactor))) / allocation.AtlasDimension.Y,
                                        allocation.Position.Z);
             newVertex.Normal = n / n.Length();
             newVertex.Color = color;
@@ -64,12 +50,10 @@ namespace TombLib.Graphics
             submesh.Indices.Add(mesh.Vertices.Count - 1);
         }
 
-        public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correct)
+        public static ObjectMesh FromWad2(WadMesh msh, System.Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correct)
         {
-            // Initialize the mesh
-            var mesh = new ObjectMesh(device, msh.Name);
+            var mesh = new ObjectMesh(msh.Name);
 
-            // Prepare materials
             var materialOpaque = new Material(Material.Material_Opaque + "_0_0_0_0", null, false, false, 0);
             var materialOpaqueDoubleSided = new Material(Material.Material_OpaqueDoubleSided + "_0_0_1_0", null, false, true, 0);
             var materialAdditiveBlending = new Material(Material.Material_AdditiveBlending + "_0_1_0_0", null, true, false, 0);
@@ -99,7 +83,6 @@ namespace TombLib.Graphics
                 WadPolygon poly = msh.Polys[j];
                 WadRenderer.AllocationResult positionInPackedTexture = allocateTexture((WadTexture)poly.Texture.Texture);
 
-                // Get the right submesh
                 var submesh = mesh.Submeshes[materialOpaque];
                 if (poly.Texture.BlendMode == BlendMode.Additive)
                 {
@@ -164,7 +147,7 @@ namespace TombLib.Graphics
             }
 
             mesh.UpdateBuffers();
-            
+
             return mesh;
         }
     }

@@ -4,6 +4,14 @@ using System.Numerics;
 
 namespace TombLib.Rendering
 {
+    // Render command for a piece of text. The actual glyph layout is computed by
+    // RenderingFont.ParseString during RenderText() — at the SwapChain layer the only
+    // thing we keep is the source string + positioning intent.
+    //
+    // Position model: Pos is in NDC (-1..+1), PixelPos is an additional pixel offset
+    // applied after Pos. ScreenAlignment is the anchor of the text rectangle relative
+    // to the screen (0,0 = top-left, 1,1 = bottom-right). TextAlignment is the anchor
+    // of the rectangle within itself (0.5,0.5 = centered around the position).
     public class Text
     {
         public RenderingFont Font;
@@ -13,9 +21,15 @@ namespace TombLib.Rendering
         public Vector2 TextAlignment = new Vector2(0.5f);
         public Vector2 ScreenAlignment = new Vector2(0.5f);
         public Vector2 Alignment { set { TextAlignment = ScreenAlignment = value; } }
-        public bool Overlay;
+        public bool Overlay; // draw a solid colored background rectangle behind the text
     }
 
+    // A single textured quad in NDC space.
+    //   Pos00 - Pos10
+    //     |       |
+    //   Pos01 - Pos11
+    // Depth = null means the sprite is depth-independent (drawn after the gizmo with
+    // depth test disabled); a value places it in the depth buffer for proper sorting.
     public class Sprite
     {
         public RenderingTexture Texture;
@@ -29,16 +43,24 @@ namespace TombLib.Rendering
         public Vector4 Tint = Vector4.One;
     }
 
+    // The SwapChain wraps both the DXGI presentation surface AND the high-level 2D
+    // overlay primitives (sprites, glyphs). The overlay primitives live here rather
+    // than on the device because they must render directly into THIS back buffer with
+    // its own depth attachment.
     public abstract class RenderingSwapChain : IDisposable
     {
         public class Description
         {
-            public IntPtr WindowHandle;
+            public IntPtr WindowHandle; // Win32 HWND of the host control
             public VectorInt2 Size;
             public bool Antialias;
         }
 
         public VectorInt2 Size { get; protected set; }
+
+        // Set to non-null on device-removed / device-hung errors. The editor reads it on
+        // every frame and switches to "safe mode" instead of crashing. See
+        // Panel3DDraw.DrawScene for the reading side.
         public Exception RenderException { get; protected set; }
 
         public abstract void Dispose();
@@ -46,29 +68,39 @@ namespace TombLib.Rendering
         public abstract void ClearDepth();
         public abstract void Present();
         public abstract void Resize(VectorInt2 newSize);
+
+        // Renders an unsorted list of sprites in one draw call. Caller is responsible
+        // for depth-sorting if Depth is set. linearFilter=true uses anisotropic mipmap
+        // filtering; false picks nearest-neighbour (e.g. for crisp icons).
         public abstract void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, List<Sprite> sprites);
+
         /// <summary>Note that all fonts used in one call must be in the same texture allocator!</summary>
         public abstract void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays);
+        // High-level entry point: takes Text descriptors, runs the GDI-driven layout via
+        // RenderingFont.ParseString to produce per-glyph quads, batches them all into a
+        // single RenderGlyphs() call. Every Text in one call must share the same font
+        // atlas (RenderingFont.TextureAllocator) — different atlases would need separate
+        // SRV bindings, and we deliberately do not split the batch.
         public void RenderText(IEnumerable<Text> texts)
         {
-            // Collect actual glyphs to render
             var glyphRenderInfos = new List<RenderingFont.GlyphRenderInfo>();
             var overlayRectangles = new List<RectangleInt2>();
             RenderingTextureAllocator textureAllocator = null;
 
             foreach (Text text in texts)
             {
-                // Discard empty texts
                 if (text == null || string.IsNullOrEmpty(text.String))
                     continue;
 
-                // Build glyphs using the right font
+                // Convert from NDC (Pos) + pixel offset to absolute pixel position the
+                // font layout expects. ScreenAlignment is biased by (-1..+1) to produce
+                // an offset relative to the screen anchor (Y is flipped: -0.5 puts the
+                // anchor at top, +0.5 at bottom).
                 Vector2 pixelPos = text.PixelPos + text.Pos * Size * 0.5f;
                 pixelPos += (text.ScreenAlignment * 2 - new Vector2(1)) * Size * new Vector2(0.5f, -0.5f);
                 RectangleInt2 rect = text.Font.ParseString(text.String, text.Overlay, glyphRenderInfos, VectorInt2.FromRounded(pixelPos), text.TextAlignment);
                 if (rect != RectangleInt2.Zero) overlayRectangles.Add(rect);
 
-                // Check texture allocator
                 if (textureAllocator == null)
                     textureAllocator = text.Font.TextureAllocator;
                 else if (textureAllocator != text.Font.TextureAllocator)
