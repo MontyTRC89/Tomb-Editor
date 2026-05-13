@@ -540,7 +540,12 @@ void main() {
               // both sides, and the duplicates would z-fight with the originals
               // and win (drawn last) — flipping each wall inside-out.
               CullMode = CullModeFlags.BackBit,
-              FrontFace = FrontFace.CounterClockwise,   // CW source + Y-flipped viewport → CCW in framebuffer = front
+              // D3D11 default rasterizer treats CW-in-framebuffer as front. In our
+              // Vulkan setup the swap-chain uses a Y-flipped viewport — so source
+              // CCW-in-NDC vertices project to CW-in-framebuffer (= negative signed
+              // area). FrontFace.Clockwise tells the rasterizer "negative area =
+              // front", matching D3D11 default rendering 1:1.
+              FrontFace = FrontFace.Clockwise,
               LineWidth = 1.0f };
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
             { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = SampleCountFlags.Count1Bit };

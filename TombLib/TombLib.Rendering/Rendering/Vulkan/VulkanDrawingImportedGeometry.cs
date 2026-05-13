@@ -364,7 +364,7 @@ void main() {
             PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
             { SType = StructureType.PipelineRasterizationStateCreateInfo, PolygonMode = PolygonMode.Fill,
               CullMode = key.DoubleSided ? CullModeFlags.None : CullModeFlags.BackBit,
-              FrontFace = FrontFace.CounterClockwise,   // CW source + Y-flipped viewport → CCW in framebuffer = front
+              FrontFace = FrontFace.Clockwise,   // matches D3D11 default (CW=front in fb space) given the Y-flipped Vulkan viewport
               LineWidth = 1.0f };
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
             { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = SampleCountFlags.Count1Bit };

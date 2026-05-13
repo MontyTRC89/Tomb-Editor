@@ -477,7 +477,7 @@ void main() {
                 SType = StructureType.PipelineRasterizationStateCreateInfo,
                 PolygonMode = PolygonMode.Fill,
                 CullMode = key.DoubleSided ? CullModeFlags.None : CullModeFlags.BackBit,
-                FrontFace = FrontFace.CounterClockwise,   // source winding is CW (D3D11-style); Y-flipped viewport reverses to CCW in framebuffer, so CCW=front here matches D3D11's CW=front
+                FrontFace = FrontFace.Clockwise,   // matches D3D11 default (CW=front in fb space) given the Y-flipped Vulkan viewport
                 LineWidth = 1.0f,
             };
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
