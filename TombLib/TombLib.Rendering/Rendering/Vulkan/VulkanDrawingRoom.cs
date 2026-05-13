@@ -181,7 +181,10 @@ void main() {
     // faces).
     if (drawOutline > 0) {
         vec2 absUV = abs(fsEditorUv);
-        float lineWidth = (RoomGridLineWidth * 1024.0) / gl_FragCoord.w - 0.5;
+        // HLSL SV_POSITION.w in PS is clip-space W; GLSL gl_FragCoord.w is
+        // 1/clipW. So to match the Dx11 formula `* 1024 / position.w` we
+        // multiply by gl_FragCoord.w here (= 1/clipW = same numerical value).
+        float lineWidth = (RoomGridLineWidth * 1024.0) * gl_FragCoord.w - 0.5;
         float rx = ddAny(fsEditorUv.x);
         float ry = ddAny(fsEditorUv.y);
         float rd = ddAny(fsEditorUv.x + fsEditorUv.y);
