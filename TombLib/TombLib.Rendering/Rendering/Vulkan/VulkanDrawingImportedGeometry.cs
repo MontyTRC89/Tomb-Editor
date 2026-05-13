@@ -104,10 +104,11 @@ void main() {
             public readonly bool DoubleSided;
             public readonly bool Additive;
             public readonly RenderPass RenderPass;
-            public PipelineKey(bool d, bool a, RenderPass r) { DoubleSided = d; Additive = a; RenderPass = r; }
-            public bool Equals(PipelineKey o) => DoubleSided == o.DoubleSided && Additive == o.Additive && RenderPass.Handle == o.RenderPass.Handle;
+            public readonly SampleCountFlags Samples;
+            public PipelineKey(bool d, bool a, RenderPass r, SampleCountFlags s) { DoubleSided = d; Additive = a; RenderPass = r; Samples = s; }
+            public bool Equals(PipelineKey o) => DoubleSided == o.DoubleSided && Additive == o.Additive && RenderPass.Handle == o.RenderPass.Handle && Samples == o.Samples;
             public override bool Equals(object o) => o is PipelineKey k && Equals(k);
-            public override int GetHashCode() => (DoubleSided ? 1 : 0) | (Additive ? 2 : 0) | RenderPass.Handle.GetHashCode();
+            public override int GetHashCode() => (DoubleSided ? 1 : 0) | (Additive ? 2 : 0) | RenderPass.Handle.GetHashCode() | ((int)Samples << 16);
         }
         private readonly Dictionary<PipelineKey, VkPipeline> _pipelineCache = new Dictionary<PipelineKey, VkPipeline>();
 
@@ -312,7 +313,7 @@ void main() {
                 }
 
                 bool additive = sub.AdditiveBlending || arg.ForceAdditive;
-                var key = new PipelineKey(sub.DoubleSided, additive, swapChain.RenderPass);
+                var key = new PipelineKey(sub.DoubleSided, additive, swapChain.RenderPass, swapChain.SampleCount);
                 if (!_pipelineCache.TryGetValue(key, out VkPipeline pipeline))
                 {
                     pipeline = BuildPipeline(key);
@@ -367,7 +368,7 @@ void main() {
               FrontFace = FrontFace.Clockwise,   // matches D3D11 default (CW=front in fb space) given the Y-flipped Vulkan viewport
               LineWidth = 1.0f };
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
-            { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = SampleCountFlags.Count1Bit };
+            { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = key.Samples };
             PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
             { SType = StructureType.PipelineDepthStencilStateCreateInfo, DepthTestEnable = true, DepthWriteEnable = true, DepthCompareOp = CompareOp.LessOrEqual };
             ColorComponentFlags mask = ColorComponentFlags.RBit | ColorComponentFlags.GBit | ColorComponentFlags.BBit | ColorComponentFlags.ABit;

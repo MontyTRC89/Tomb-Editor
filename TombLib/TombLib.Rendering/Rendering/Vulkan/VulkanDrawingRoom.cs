@@ -541,7 +541,7 @@ void main() {
             var cb = swapChain.CurrentCommandBuffer;
 
             if (_pipeline.Handle == 0)
-                _pipeline = BuildPipeline(swapChain.RenderPass);
+                _pipeline = BuildPipeline(swapChain.RenderPass, swapChain.SampleCount);
             if (_cachedStateBuffer.Handle != stateBuffer.Buffer.Handle)
             {
                 _cachedStateBuffer = stateBuffer.Buffer;
@@ -572,7 +572,7 @@ void main() {
             _vk.CmdDraw(cb, (uint)_vertexCount, 1, 0, 0);
         }
 
-        private unsafe VkPipeline BuildPipeline(RenderPass rp)
+        private unsafe VkPipeline BuildPipeline(RenderPass rp, SampleCountFlags samples)
         {
             var entryName = stackalloc byte[5] { (byte)'m', (byte)'a', (byte)'i', (byte)'n', 0 };
             var stages = stackalloc PipelineShaderStageCreateInfo[2]
@@ -621,7 +621,7 @@ void main() {
               FrontFace = FrontFace.Clockwise,
               LineWidth = 1.0f };
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
-            { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = SampleCountFlags.Count1Bit };
+            { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = samples };
             PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
             { SType = StructureType.PipelineDepthStencilStateCreateInfo, DepthTestEnable = true, DepthWriteEnable = true, DepthCompareOp = CompareOp.LessOrEqual };
             ColorComponentFlags mask = ColorComponentFlags.RBit | ColorComponentFlags.GBit | ColorComponentFlags.BBit | ColorComponentFlags.ABit;

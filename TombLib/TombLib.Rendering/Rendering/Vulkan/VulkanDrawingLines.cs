@@ -87,13 +87,15 @@ void main() {
             public readonly Topology Topology;
             public readonly bool Wireframe;
             public readonly RenderPass RenderPass;
-            public PipelineKey(BlendMode b, DepthMode d, Topology t, bool w, RenderPass rp)
-            { Blend = b; Depth = d; Topology = t; Wireframe = w; RenderPass = rp; }
+            public readonly SampleCountFlags Samples;
+            public PipelineKey(BlendMode b, DepthMode d, Topology t, bool w, RenderPass rp, SampleCountFlags s)
+            { Blend = b; Depth = d; Topology = t; Wireframe = w; RenderPass = rp; Samples = s; }
             public bool Equals(PipelineKey o) => Blend == o.Blend && Depth == o.Depth
-                && Topology == o.Topology && Wireframe == o.Wireframe && RenderPass.Handle == o.RenderPass.Handle;
+                && Topology == o.Topology && Wireframe == o.Wireframe && RenderPass.Handle == o.RenderPass.Handle
+                && Samples == o.Samples;
             public override bool Equals(object obj) => obj is PipelineKey k && Equals(k);
             public override int GetHashCode() => ((int)Blend * 73 + (int)Depth) * 71 + (int)Topology
-                + (Wireframe ? 1024 : 0) + RenderPass.Handle.GetHashCode();
+                + (Wireframe ? 1024 : 0) + RenderPass.Handle.GetHashCode() + (int)Samples * 7919;
         }
         private readonly Dictionary<PipelineKey, VkPipeline> _pipelineCache = new Dictionary<PipelineKey, VkPipeline>();
 
@@ -248,8 +250,8 @@ void main() {
             fixed (byte* sp = _staging)
                 System.Buffer.MemoryCopy(sp, _vertexMapped, totalBytes, totalBytes);
 
-            // Pipeline for (blend, depth, topology, wireframe, render-pass).
-            var key = new PipelineKey(arg.Blend, arg.Depth, arg.Topology, arg.Wireframe, swapChain.RenderPass);
+            // Pipeline for (blend, depth, topology, wireframe, render-pass, samples).
+            var key = new PipelineKey(arg.Blend, arg.Depth, arg.Topology, arg.Wireframe, swapChain.RenderPass, swapChain.SampleCount);
             if (!_pipelineCache.TryGetValue(key, out VkPipeline pipeline))
             {
                 pipeline = BuildPipeline(key);
@@ -390,7 +392,7 @@ void main() {
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
             {
                 SType = StructureType.PipelineMultisampleStateCreateInfo,
-                RasterizationSamples = SampleCountFlags.Count1Bit,
+                RasterizationSamples = key.Samples,
             };
 
             PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo

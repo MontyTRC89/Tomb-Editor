@@ -34,14 +34,23 @@ namespace TombLib.Rendering.Vulkan
         public readonly VulkanRenderingDevice DeviceWrapper;
         private readonly Vk _vk;
         private readonly Device _device;
+        private readonly bool _antialiasRequested;
 
         private SurfaceKHR _surface;
         private SwapchainKHR _swapchain;
         private Format _colorFormat;
         private Format _depthFormat;
         private Extent2D _extent;
+        private SampleCountFlags _sampleCount;  // 1 = no MSAA, 4 = MSAA 4x
         private Image[] _images;
         private ImageView[] _imageViews;
+
+        // Multisample color attachment (only created when _sampleCount > 1).
+        // Rendering writes here; subpass resolve copies to the matching swap
+        // image at end-of-pass.
+        private Image _msaaImage;
+        private DeviceMemory _msaaMemory;
+        private ImageView _msaaView;
 
         private Image _depthImage;
         private DeviceMemory _depthMemory;
@@ -70,6 +79,11 @@ namespace TombLib.Rendering.Vulkan
         public Format DepthFormat => _depthFormat;
         public Extent2D Extent => _extent;
 
+        // Sample count of the render pass color/depth attachments. Pipelines
+        // must declare this in PipelineMultisampleStateCreateInfo to match the
+        // render pass — Vulkan rejects mismatched samples at create time.
+        public SampleCountFlags SampleCount => _sampleCount;
+
         // Current frame's command buffer — valid between Clear() and Present()
         // (i.e. inside the render-pass recording window). Drawing* classes call
         // EnsureRecording first, then read this to record their cmd... calls.
@@ -80,16 +94,81 @@ namespace TombLib.Rendering.Vulkan
             DeviceWrapper = device;
             _vk = device.Vk;
             _device = device.Device;
+            _antialiasRequested = description.Antialias;
             Size = description.Size;
             RenderException = null;
 
             CreateSurface(description.WindowHandle);
             CreateSwapchainAndImages();
+            _sampleCount = PickSampleCount(_antialiasRequested);
+            CreateMsaaImage();
             CreateDepthBuffer();
             CreateRenderPass();
             CreateFramebuffers();
             CreateCommandObjects();
             CreateSyncObjects();
+        }
+
+        // Choose the highest sample count up to 4x that BOTH color and depth
+        // attachments support, when MSAA is requested. Pinned to 1x otherwise.
+        private SampleCountFlags PickSampleCount(bool requested)
+        {
+            if (!requested) return SampleCountFlags.Count1Bit;
+            SampleCountFlags supported = DeviceWrapper.PhysicalDeviceProperties.Limits.FramebufferColorSampleCounts
+                                       & DeviceWrapper.PhysicalDeviceProperties.Limits.FramebufferDepthSampleCounts;
+            if ((supported & SampleCountFlags.Count4Bit) != 0) return SampleCountFlags.Count4Bit;
+            if ((supported & SampleCountFlags.Count2Bit) != 0) return SampleCountFlags.Count2Bit;
+            return SampleCountFlags.Count1Bit;
+        }
+
+        // Lazy multi-sample color attachment, sized to _extent, _sampleCount
+        // samples. Drawing writes here; the subpass resolve to the matching
+        // swap-chain image (single-sample) happens automatically at end of
+        // subpass.
+        private unsafe void CreateMsaaImage()
+        {
+            if (_sampleCount == SampleCountFlags.Count1Bit) return;
+            ImageCreateInfo info = new ImageCreateInfo
+            {
+                SType = StructureType.ImageCreateInfo,
+                ImageType = ImageType.Type2D,
+                Extent = new Extent3D(_extent.Width, _extent.Height, 1),
+                MipLevels = 1, ArrayLayers = 1,
+                Format = _colorFormat,
+                Tiling = ImageTiling.Optimal,
+                InitialLayout = ImageLayout.Undefined,
+                // TransientAttachmentBit is a hint that the image's contents need
+                // not be preserved beyond a render pass — the driver may keep it
+                // in tile memory entirely on mobile GPUs.
+                Usage = ImageUsageFlags.ColorAttachmentBit | ImageUsageFlags.TransientAttachmentBit,
+                Samples = _sampleCount,
+                SharingMode = SharingMode.Exclusive,
+            };
+            Image img;
+            VkCheck.Ok(_vk.CreateImage(_device, in info, null, &img));
+            _msaaImage = img;
+            _vk.GetImageMemoryRequirements(_device, _msaaImage, out MemoryRequirements req);
+            MemoryAllocateInfo alloc = new MemoryAllocateInfo
+            {
+                SType = StructureType.MemoryAllocateInfo,
+                AllocationSize = req.Size,
+                MemoryTypeIndex = DeviceWrapper.FindMemoryType(req.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit),
+            };
+            DeviceMemory mem;
+            VkCheck.Ok(_vk.AllocateMemory(_device, in alloc, null, &mem));
+            _msaaMemory = mem;
+            _vk.BindImageMemory(_device, _msaaImage, _msaaMemory, 0);
+            ImageViewCreateInfo viewInfo = new ImageViewCreateInfo
+            {
+                SType = StructureType.ImageViewCreateInfo,
+                Image = _msaaImage,
+                ViewType = ImageViewType.Type2D,
+                Format = _colorFormat,
+                SubresourceRange = new ImageSubresourceRange(ImageAspectFlags.ColorBit, 0, 1, 0, 1),
+            };
+            ImageView v;
+            VkCheck.Ok(_vk.CreateImageView(_device, in viewInfo, null, &v));
+            _msaaView = v;
         }
 
         // ---- Surface --------------------------------------------------------
@@ -250,7 +329,7 @@ namespace TombLib.Rendering.Vulkan
                 Tiling = ImageTiling.Optimal,
                 InitialLayout = ImageLayout.Undefined,
                 Usage = ImageUsageFlags.DepthStencilAttachmentBit,
-                Samples = SampleCountFlags.Count1Bit,
+                Samples = _sampleCount,
                 SharingMode = SharingMode.Exclusive,
             };
             Image image;
@@ -290,24 +369,28 @@ namespace TombLib.Rendering.Vulkan
 
         private unsafe void CreateRenderPass()
         {
-            // Single subpass with two attachments:
-            //   0: color (load=clear, store=store, undefined → present)
-            //   1: depth (load=clear, store=dontcare, undefined → depth_stencil)
+            bool msaa = _sampleCount != SampleCountFlags.Count1Bit;
+
+            // No-MSAA: attachment 0 is the swap image (clear → present).
+            // MSAA: attachment 0 is the MSAA color (clear → resolveSrc),
+            //       attachment 2 is the swap image used as resolve target (no
+            //       clear → present). The driver writes the resolved 1-sample
+            //       result into 2 at end-of-subpass.
             AttachmentDescription colorAttachment = new AttachmentDescription
             {
                 Format = _colorFormat,
-                Samples = SampleCountFlags.Count1Bit,
+                Samples = _sampleCount,
                 LoadOp = AttachmentLoadOp.Clear,
-                StoreOp = AttachmentStoreOp.Store,
+                StoreOp = msaa ? AttachmentStoreOp.DontCare : AttachmentStoreOp.Store,
                 StencilLoadOp = AttachmentLoadOp.DontCare,
                 StencilStoreOp = AttachmentStoreOp.DontCare,
                 InitialLayout = ImageLayout.Undefined,
-                FinalLayout = ImageLayout.PresentSrcKhr,
+                FinalLayout = msaa ? ImageLayout.ColorAttachmentOptimal : ImageLayout.PresentSrcKhr,
             };
             AttachmentDescription depthAttachment = new AttachmentDescription
             {
                 Format = _depthFormat,
-                Samples = SampleCountFlags.Count1Bit,
+                Samples = _sampleCount,
                 LoadOp = AttachmentLoadOp.Clear,
                 StoreOp = AttachmentStoreOp.DontCare,
                 StencilLoadOp = AttachmentLoadOp.DontCare,
@@ -315,10 +398,24 @@ namespace TombLib.Rendering.Vulkan
                 InitialLayout = ImageLayout.Undefined,
                 FinalLayout = ImageLayout.DepthStencilAttachmentOptimal,
             };
-            var attachments = stackalloc AttachmentDescription[2] { colorAttachment, depthAttachment };
+            AttachmentDescription resolveAttachment = new AttachmentDescription
+            {
+                Format = _colorFormat,
+                Samples = SampleCountFlags.Count1Bit,
+                LoadOp = AttachmentLoadOp.DontCare,
+                StoreOp = AttachmentStoreOp.Store,
+                StencilLoadOp = AttachmentLoadOp.DontCare,
+                StencilStoreOp = AttachmentStoreOp.DontCare,
+                InitialLayout = ImageLayout.Undefined,
+                FinalLayout = ImageLayout.PresentSrcKhr,
+            };
+
+            uint attachmentCount = msaa ? 3u : 2u;
+            var attachments = stackalloc AttachmentDescription[3] { colorAttachment, depthAttachment, resolveAttachment };
 
             AttachmentReference colorRef = new AttachmentReference(0, ImageLayout.ColorAttachmentOptimal);
             AttachmentReference depthRef = new AttachmentReference(1, ImageLayout.DepthStencilAttachmentOptimal);
+            AttachmentReference resolveRef = new AttachmentReference(2, ImageLayout.ColorAttachmentOptimal);
 
             SubpassDescription subpass = new SubpassDescription
             {
@@ -326,6 +423,7 @@ namespace TombLib.Rendering.Vulkan
                 ColorAttachmentCount = 1,
                 PColorAttachments = &colorRef,
                 PDepthStencilAttachment = &depthRef,
+                PResolveAttachments = msaa ? &resolveRef : null,
             };
 
             SubpassDependency dep = new SubpassDependency
@@ -341,7 +439,7 @@ namespace TombLib.Rendering.Vulkan
             RenderPassCreateInfo rpInfo = new RenderPassCreateInfo
             {
                 SType = StructureType.RenderPassCreateInfo,
-                AttachmentCount = 2,
+                AttachmentCount = attachmentCount,
                 PAttachments = attachments,
                 SubpassCount = 1,
                 PSubpasses = &subpass,
@@ -357,15 +455,17 @@ namespace TombLib.Rendering.Vulkan
 
         private unsafe void CreateFramebuffers()
         {
+            bool msaa = _sampleCount != SampleCountFlags.Count1Bit;
             _framebuffers = new Framebuffer[_imageViews.Length];
             for (int i = 0; i < _imageViews.Length; i++)
             {
-                var atts = stackalloc ImageView[2] { _imageViews[i], _depthView };
+                // No-MSAA: [swapImage, depth]. MSAA: [msaaColor, depth, swapImage].
+                var atts = stackalloc ImageView[3] { msaa ? _msaaView : _imageViews[i], _depthView, _imageViews[i] };
                 FramebufferCreateInfo fbInfo = new FramebufferCreateInfo
                 {
                     SType = StructureType.FramebufferCreateInfo,
                     RenderPass = _renderPass,
-                    AttachmentCount = 2,
+                    AttachmentCount = msaa ? 3u : 2u,
                     PAttachments = atts,
                     Width = _extent.Width,
                     Height = _extent.Height,
@@ -573,6 +673,7 @@ namespace TombLib.Rendering.Vulkan
             DestroyFramebuffersAndDepth();
             DestroyImageViewsAndSwapchain();
             CreateSwapchainAndImages();
+            CreateMsaaImage();
             CreateDepthBuffer();
             CreateFramebuffers();
         }
@@ -597,6 +698,9 @@ namespace TombLib.Rendering.Vulkan
                     if (fb.Handle != 0) _vk.DestroyFramebuffer(_device, fb, null);
                 _framebuffers = null;
             }
+            if (_msaaView.Handle != 0)   { _vk.DestroyImageView(_device, _msaaView, null);  _msaaView = default; }
+            if (_msaaImage.Handle != 0)  { _vk.DestroyImage(_device, _msaaImage, null);    _msaaImage = default; }
+            if (_msaaMemory.Handle != 0) { _vk.FreeMemory(_device, _msaaMemory, null);     _msaaMemory = default; }
             if (_depthView.Handle != 0) { _vk.DestroyImageView(_device, _depthView, null); _depthView = default; }
             if (_depthImage.Handle != 0) { _vk.DestroyImage(_device, _depthImage, null); _depthImage = default; }
             if (_depthMemory.Handle != 0) { _vk.FreeMemory(_device, _depthMemory, null); _depthMemory = default; }
