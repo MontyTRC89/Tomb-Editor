@@ -60,6 +60,7 @@ layout(location = 2) out vec3  fsUvw;
 layout(location = 3) out flat int fsBlendMode;
 layout(location = 4) out flat int fsEditorSectorTexture;
 layout(location = 5) out vec3  fsWorldPos;
+layout(location = 6) out vec2  fsEditorUv;
 void main() {
     gl_Position = TransformMatrix * vec4(inPosition, 1.0);
 
@@ -84,6 +85,11 @@ void main() {
     fsBlendMode = int(inUvwBlend.y >> 28);
     fsEditorSectorTexture = int(inEditorUv);
     fsWorldPos = inPosition;
+    // 2-bit signed editor-grid UV (corner index in {-2..1}), one bit per axis.
+    // Sign-extend by shifting left to bit 30 then arithmetic right-shift 30.
+    fsEditorUv = vec2(
+        float((int(inEditorUv) << 30) >> 30),
+        float((int(inEditorUv >> 2) << 30) >> 30));
 }
 ";
         private const string FragmentShaderGlsl = @"#version 450
@@ -107,9 +113,12 @@ layout(location = 2) in vec3 fsUvw;
 layout(location = 3) in flat int fsBlendMode;
 layout(location = 4) in flat int fsEditorSectorTexture;
 layout(location = 5) in vec3 fsWorldPos;
+layout(location = 6) in vec2 fsEditorUv;
 layout(location = 0) out vec4 outColor;
+float ddAny(float v) { return length(vec2(dFdx(v), dFdy(v))); }
 void main() {
     vec4 result;
+    int drawOutline = 0;
     if (fsUvw.x != 0.0 && RoomGridForce == 0) {
         // Textured view — sample atlas, apply vertex tint.
         vec4 texel = texture(AtlasSampler, fsUvw);
@@ -126,19 +135,56 @@ void main() {
         result = texel;
         if (texel.a < 0.005 && fsBlendMode < 2) discard;
     } else {
-        // Untextured (geometry view). Use sector-overlay colour from
-        // editor-uv high bits, OR the per-vertex Overlay stream when set.
-        uint sectorBits = uint(fsEditorSectorTexture);
-        uint r = (sectorBits >> 8)  & 0xffu;
-        uint g = (sectorBits >> 16) & 0xffu;
-        uint b = (sectorBits >> 24) & 0xffu;
-        vec3 sectorColor = vec3(float(r), float(g), float(b)) / 255.0;
-        bool hasSectorTex = (sectorBits & 0x40u) != 0u;
-        // We don't yet sample SectorTexture in the Vulkan path — fall back to
-        // the sector color (or the overlay when an arrow would be shown).
-        result = vec4(hasSectorTex ? fsOverlay.rgb : sectorColor, 1.0);
-        if (fsUvw.x == 0.0 && fsColor.a < 0.005) discard; // invisible flag
+        // Untextured (geometry view). Use sector color encoded in EditorUv bits,
+        // or the per-vertex Overlay when an arrow would have been shown (we
+        // don't yet sample SectorTexture).
+        drawOutline = 1;
+        if (fsUvw.y == 0.0 && RoomGridForce == 0) {
+            result = vec4(0.0);
+        } else {
+            uint sectorBits = uint(fsEditorSectorTexture);
+            uint r = (sectorBits >> 8)  & 0xffu;
+            uint g = (sectorBits >> 16) & 0xffu;
+            uint b = (sectorBits >> 24) & 0xffu;
+            vec3 sectorColor = vec3(float(r), float(g), float(b)) / 255.0;
+            bool hasSectorTex = (sectorBits & 0x40u) != 0u;
+            result = vec4(hasSectorTex ? fsOverlay.rgb : sectorColor, 1.0);
+            if ((sectorBits & 0x20u) != 0u) result.rgb *= 0.70;
+        }
     }
+
+    if ((uint(fsEditorSectorTexture) & 0x80u) != 0u && RoomGridForce == 0) {
+        result.rgb = clamp(result.rgb + fsOverlay.rgb * 0.1 * result.a, vec3(0.0), vec3(1.0));
+        drawOutline = 2;
+    }
+    if ((uint(fsEditorSectorTexture) & 0x10u) != 0u)
+        result.rgb = clamp(result.rgb + 0.2, vec3(0.0), vec3(1.0));
+
+    // Sector outline — same math as Dx11 RoomShaderPS: derivative-thickness
+    // black border at each sector edge + diagonal. Produces the editor's
+    // characteristic 'grid' look in Geometry mode (and for selected-textured
+    // faces).
+    if (drawOutline > 0) {
+        vec2 absUV = abs(fsEditorUv);
+        float lineWidth = (RoomGridLineWidth * 1024.0) / gl_FragCoord.w - 0.5;
+        float rx = ddAny(fsEditorUv.x);
+        float ry = ddAny(fsEditorUv.y);
+        float rd = ddAny(fsEditorUv.x + fsEditorUv.y);
+        float dx = min(absUV.x, 1.0 - absUV.x);
+        float dy = min(absUV.y, 1.0 - absUV.y);
+        float dd = min(abs(fsEditorUv.x + fsEditorUv.y + 1.0),
+                       abs(fsEditorUv.x + fsEditorUv.y));
+        float lx = dx / max(rx, 1e-8) - lineWidth;
+        float ly = dy / max(ry, 1e-8) - lineWidth;
+        float ld = dd / max(rd, 1e-8) - lineWidth;
+        float strength = clamp(min(min(lx, ly), ld), 0.0, 1.0);
+        result.rgb *= strength;
+        if (drawOutline == 2)
+            result.rgb -= (strength - 1.0) * fsOverlay.rgb;
+        result.a = 1.0 - (1.0 - result.a) * strength;
+    }
+    result *= fsOverlay.a;
+    if ((result.r + result.g + result.b + result.a) < 0.02) discard;
     outColor = result;
 }
 ";
