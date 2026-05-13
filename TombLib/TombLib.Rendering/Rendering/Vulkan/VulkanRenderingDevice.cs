@@ -60,6 +60,22 @@ namespace TombLib.Rendering.Vulkan
         // command buffers on VulkanSwapChain.
         public CommandPool TransientPool { get; private set; }
 
+        // Shared GLSL → SPIR-V compiler. Each Drawing* keeps its shader source
+        // as inline GLSL strings (set N / binding M annotations) and asks the
+        // compiler to produce the SPIR-V bytecode at init time.
+        public VulkanShaderCompiler ShaderCompiler { get; private set; }
+
+        // Per-frame uniform ring shared by every Drawing* class that uploads
+        // per-batch data (LineData, MeshData, ImportedGeometryData). Reset at
+        // frame start by VulkanSwapChain.Clear().
+        public VulkanFrameUniforms FrameUniforms { get; private set; }
+
+        // Shared samplers used across drawing classes. Bilinear+aniso for
+        // textured rendering at quality, point-sampling for thumbnails / no
+        // filtering. Created once at device init.
+        public Sampler SamplerAniso { get; private set; }
+        public Sampler SamplerPoint { get; private set; }
+
         // Validation layer + debug messenger. Off by default; enable with
         // env var TOMBEDITOR_VK_VALIDATION=1. Heavy CPU cost (~5-10x) so it
         // never ships on by accident.
@@ -79,6 +95,9 @@ namespace TombLib.Rendering.Vulkan
             ResolveSwapchainExtension();
             CreateDescriptorPool();
             CreateTransientPool();
+            ShaderCompiler = new VulkanShaderCompiler();
+            FrameUniforms = new VulkanFrameUniforms(this, 4 * 1024 * 1024);
+            CreateSamplers();
 
             logger.Info("VulkanRenderingDevice initialised. GPU=\"{0}\" validation={1}",
                 GetDeviceName(), _validationEnabled);
@@ -376,6 +395,42 @@ namespace TombLib.Rendering.Vulkan
             return cb;
         }
 
+        private unsafe void CreateSamplers()
+        {
+            SamplerCreateInfo aniso = new SamplerCreateInfo
+            {
+                SType = StructureType.SamplerCreateInfo,
+                MagFilter = Filter.Linear,
+                MinFilter = Filter.Linear,
+                MipmapMode = SamplerMipmapMode.Linear,
+                AddressModeU = SamplerAddressMode.Repeat,
+                AddressModeV = SamplerAddressMode.Repeat,
+                AddressModeW = SamplerAddressMode.Repeat,
+                AnisotropyEnable = true,
+                MaxAnisotropy = 4f,
+                CompareEnable = false,
+                MaxLod = Vk.LodClampNone,
+            };
+            Sampler s1;
+            VkCheck.Ok(Vk.CreateSampler(Device, in aniso, null, &s1));
+            SamplerAniso = s1;
+
+            SamplerCreateInfo point = new SamplerCreateInfo
+            {
+                SType = StructureType.SamplerCreateInfo,
+                MagFilter = Filter.Nearest,
+                MinFilter = Filter.Nearest,
+                MipmapMode = SamplerMipmapMode.Nearest,
+                AddressModeU = SamplerAddressMode.Repeat,
+                AddressModeV = SamplerAddressMode.Repeat,
+                AddressModeW = SamplerAddressMode.Repeat,
+                MaxLod = Vk.LodClampNone,
+            };
+            Sampler s2;
+            VkCheck.Ok(Vk.CreateSampler(Device, in point, null, &s2));
+            SamplerPoint = s2;
+        }
+
         // End + submit + WAIT for completion (synchronous). Used for setup
         // operations only — never on the per-frame hot path.
         public unsafe void EndAndSubmitTransient(CommandBuffer cb)
@@ -399,6 +454,10 @@ namespace TombLib.Rendering.Vulkan
             if (Device.Handle != 0)
             {
                 Vk.DeviceWaitIdle(Device);
+                FrameUniforms?.Dispose(); FrameUniforms = null;
+                ShaderCompiler?.Dispose(); ShaderCompiler = null;
+                if (SamplerAniso.Handle != 0) { Vk.DestroySampler(Device, SamplerAniso, null); SamplerAniso = default; }
+                if (SamplerPoint.Handle != 0) { Vk.DestroySampler(Device, SamplerPoint, null); SamplerPoint = default; }
                 if (TransientPool.Handle != 0) { Vk.DestroyCommandPool(Device, TransientPool, null); TransientPool = default; }
                 if (DescriptorPool.Handle != 0) { Vk.DestroyDescriptorPool(Device, DescriptorPool, null); DescriptorPool = default; }
                 Vk.DestroyDevice(Device, null);
@@ -436,11 +495,20 @@ namespace TombLib.Rendering.Vulkan
         public override RenderingFont CreateFont(RenderingFont.Description description)
             => new RenderingFont(description);
 
+        public override RenderingDrawingLines CreateDrawingLines(RenderingDrawingLines.Description description)
+            => new VulkanDrawingLines(this, description);
+
         public override RenderingDrawingTest CreateDrawingTest(RenderingDrawingTest.Description description)
-            => throw new NotSupportedException("VulkanRenderingDevice.CreateDrawingTest not implemented yet.");
+            => new VulkanDrawingTest(this, description);
 
         public override RenderingDrawingRoom CreateDrawingRoom(RenderingDrawingRoom.Description description)
-            => throw new NotSupportedException("VulkanRenderingDevice.CreateDrawingRoom not implemented yet.");
+            => new VulkanDrawingRoom(this, description);
+
+        public override RenderingDrawingMesh CreateDrawingMesh(RenderingDrawingMesh.Description description)
+            => new VulkanDrawingMesh(this, description);
+
+        public override RenderingDrawingImportedGeometry CreateDrawingImportedGeometry(RenderingDrawingImportedGeometry.Description description)
+            => new VulkanDrawingImportedGeometry(this, description);
 
         // ---- Memory helper --------------------------------------------------
 

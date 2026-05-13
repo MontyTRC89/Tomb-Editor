@@ -70,6 +70,11 @@ namespace TombLib.Rendering.Vulkan
         public Format DepthFormat => _depthFormat;
         public Extent2D Extent => _extent;
 
+        // Current frame's command buffer — valid between Clear() and Present()
+        // (i.e. inside the render-pass recording window). Drawing* classes call
+        // EnsureRecording first, then read this to record their cmd... calls.
+        public CommandBuffer CurrentCommandBuffer => _commandBuffers[_slot];
+
         public unsafe VulkanSwapChain(VulkanRenderingDevice device, Description description)
         {
             DeviceWrapper = device;
@@ -429,6 +434,10 @@ namespace TombLib.Rendering.Vulkan
 
         public override unsafe void Clear(Vector4 color)
         {
+            // Frame boundary — rewind the device-wide UBO ring so every
+            // Drawing* call inside this Clear→Present cycle starts allocating
+            // from offset 0.
+            DeviceWrapper.FrameUniforms.Reset();
             _clearColorValue = new ClearValue { Color = new ClearColorValue(color.X, color.Y, color.Z, color.W) };
             EnsureRecording();
         }
@@ -568,13 +577,15 @@ namespace TombLib.Rendering.Vulkan
             CreateFramebuffers();
         }
 
-        // ---- Sprites / glyphs (not implemented yet) -------------------------
-
-        public override void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, List<Sprite> sprites)
-            => throw new NotSupportedException("VulkanSwapChain.RenderSprites not implemented yet.");
-
-        public override void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays)
-            => throw new NotSupportedException("VulkanSwapChain.RenderGlyphs not implemented yet.");
+        // ---- Sprites / glyphs (no-op stubs) ---------------------------------
+        // In-viewport sprite icons (entity markers) and 3D text labels haven't
+        // been ported to direct Vulkan yet. They are non-critical UI overlays —
+        // the 3D scene renders correctly without them. Returning a no-op here
+        // instead of throwing keeps the editor functional; callers (Panel3D
+        // overlay paths) simply produce no output until a sprite/glyph pipeline
+        // is added.
+        public override void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, List<Sprite> sprites) { }
+        public override void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays) { }
 
         // ---- Disposal -------------------------------------------------------
 

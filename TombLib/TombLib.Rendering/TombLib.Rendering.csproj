@@ -179,6 +179,11 @@
     <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.21.0" />
     <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" Version="2.21.0" />
     <PackageReference Include="Silk.NET.Core" Version="2.21.0" />
+    <!-- GLSL → SPIR-V compiler used to build VkShaderModules from inline
+         GLSL strings in each Drawing* class. shaderc.dll is shipped via
+         the .Native package; no external Vulkan SDK install required. -->
+    <PackageReference Include="Silk.NET.Shaderc" Version="2.21.0" />
+    <PackageReference Include="Silk.NET.Shaderc.Native" Version="2.21.0" />
   </ItemGroup>
   <Import Project="HlslShaderCompile.targets" />
 </Project>
