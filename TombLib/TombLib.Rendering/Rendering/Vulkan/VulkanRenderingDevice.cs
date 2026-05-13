@@ -48,6 +48,18 @@ namespace TombLib.Rendering.Vulkan
         public KhrSwapchain KhrSwapchain { get; private set; }
         public KhrWin32Surface KhrWin32Surface { get; private set; }
 
+        // Process-wide pool of descriptor sets shared across every subsystem.
+        // Sized generously for a typical editor scene: ~thousand UBO-bound
+        // sets + ~thousand image+sampler bound sets is enough headroom.
+        public DescriptorPool DescriptorPool { get; private set; }
+        // Transient command pool for one-shot setup commands (texture upload,
+        // image layout transitions, buffer copies). Subsystems request a
+        // command buffer via BeginTransient(), record their work, and call
+        // EndAndSubmitTransient() which waits for the GPU to finish before
+        // freeing the buffer. Not for hot-path use — that's per-frame
+        // command buffers on VulkanSwapChain.
+        public CommandPool TransientPool { get; private set; }
+
         // Validation layer + debug messenger. Off by default; enable with
         // env var TOMBEDITOR_VK_VALIDATION=1. Heavy CPU cost (~5-10x) so it
         // never ships on by accident.
@@ -65,6 +77,8 @@ namespace TombLib.Rendering.Vulkan
             PickPhysicalDevice();
             CreateLogicalDevice();
             ResolveSwapchainExtension();
+            CreateDescriptorPool();
+            CreateTransientPool();
 
             logger.Info("VulkanRenderingDevice initialised. GPU=\"{0}\" validation={1}",
                 GetDeviceName(), _validationEnabled);
@@ -304,6 +318,80 @@ namespace TombLib.Rendering.Vulkan
             KhrSwapchain = sc;
         }
 
+        // ---- Shared pools ---------------------------------------------------
+
+        private unsafe void CreateDescriptorPool()
+        {
+            var sizes = stackalloc DescriptorPoolSize[3]
+            {
+                new DescriptorPoolSize(DescriptorType.UniformBuffer, 1024),
+                new DescriptorPoolSize(DescriptorType.UniformBufferDynamic, 1024),
+                new DescriptorPoolSize(DescriptorType.CombinedImageSampler, 1024),
+            };
+            DescriptorPoolCreateInfo info = new DescriptorPoolCreateInfo
+            {
+                SType = StructureType.DescriptorPoolCreateInfo,
+                MaxSets = 2048,
+                PoolSizeCount = 3,
+                PPoolSizes = sizes,
+                Flags = DescriptorPoolCreateFlags.FreeDescriptorSetBit,
+            };
+            DescriptorPool pool;
+            VkCheck.Ok(Vk.CreateDescriptorPool(Device, in info, null, &pool));
+            DescriptorPool = pool;
+        }
+
+        private unsafe void CreateTransientPool()
+        {
+            CommandPoolCreateInfo info = new CommandPoolCreateInfo
+            {
+                SType = StructureType.CommandPoolCreateInfo,
+                QueueFamilyIndex = GraphicsQueueFamily,
+                Flags = CommandPoolCreateFlags.TransientBit | CommandPoolCreateFlags.ResetCommandBufferBit,
+            };
+            CommandPool pool;
+            VkCheck.Ok(Vk.CreateCommandPool(Device, in info, null, &pool));
+            TransientPool = pool;
+        }
+
+        // Allocate + begin a one-shot command buffer. Caller records work,
+        // then calls EndAndSubmitTransient(cb).
+        public unsafe CommandBuffer BeginTransient()
+        {
+            CommandBufferAllocateInfo info = new CommandBufferAllocateInfo
+            {
+                SType = StructureType.CommandBufferAllocateInfo,
+                CommandPool = TransientPool,
+                Level = CommandBufferLevel.Primary,
+                CommandBufferCount = 1,
+            };
+            CommandBuffer cb;
+            VkCheck.Ok(Vk.AllocateCommandBuffers(Device, in info, &cb));
+            CommandBufferBeginInfo begin = new CommandBufferBeginInfo
+            {
+                SType = StructureType.CommandBufferBeginInfo,
+                Flags = CommandBufferUsageFlags.OneTimeSubmitBit,
+            };
+            Vk.BeginCommandBuffer(cb, in begin);
+            return cb;
+        }
+
+        // End + submit + WAIT for completion (synchronous). Used for setup
+        // operations only — never on the per-frame hot path.
+        public unsafe void EndAndSubmitTransient(CommandBuffer cb)
+        {
+            Vk.EndCommandBuffer(cb);
+            SubmitInfo submit = new SubmitInfo
+            {
+                SType = StructureType.SubmitInfo,
+                CommandBufferCount = 1,
+                PCommandBuffers = &cb,
+            };
+            VkCheck.Ok(Vk.QueueSubmit(GraphicsQueue, 1, in submit, default));
+            VkCheck.Ok(Vk.QueueWaitIdle(GraphicsQueue));
+            Vk.FreeCommandBuffers(Device, TransientPool, 1, in cb);
+        }
+
         // ---- Cleanup --------------------------------------------------------
 
         public override unsafe void Dispose()
@@ -311,6 +399,8 @@ namespace TombLib.Rendering.Vulkan
             if (Device.Handle != 0)
             {
                 Vk.DeviceWaitIdle(Device);
+                if (TransientPool.Handle != 0) { Vk.DestroyCommandPool(Device, TransientPool, null); TransientPool = default; }
+                if (DescriptorPool.Handle != 0) { Vk.DestroyDescriptorPool(Device, DescriptorPool, null); DescriptorPool = default; }
                 Vk.DestroyDevice(Device, null);
                 Device = default;
             }
@@ -335,19 +425,22 @@ namespace TombLib.Rendering.Vulkan
             => new VulkanSwapChain(this, description);
 
         public override RenderingTextureAllocator CreateTextureAllocator(RenderingTextureAllocator.Description description)
-            => throw new NotSupportedException("VulkanRenderingDevice.CreateTextureAllocator not implemented yet.");
+            => new VulkanTextureAllocator(this, description);
 
         public override RenderingStateBuffer CreateStateBuffer()
-            => throw new NotSupportedException("VulkanRenderingDevice.CreateStateBuffer not implemented yet.");
+            => new VulkanStateBuffer(this);
+
+        // RenderingFont is backend-agnostic — it uses GDI for glyph rasterisation
+        // and uploads via the abstract RenderingTextureAllocator.Get path which
+        // VulkanTextureAllocator implements.
+        public override RenderingFont CreateFont(RenderingFont.Description description)
+            => new RenderingFont(description);
 
         public override RenderingDrawingTest CreateDrawingTest(RenderingDrawingTest.Description description)
             => throw new NotSupportedException("VulkanRenderingDevice.CreateDrawingTest not implemented yet.");
 
         public override RenderingDrawingRoom CreateDrawingRoom(RenderingDrawingRoom.Description description)
             => throw new NotSupportedException("VulkanRenderingDevice.CreateDrawingRoom not implemented yet.");
-
-        public override RenderingFont CreateFont(RenderingFont.Description description)
-            => throw new NotSupportedException("VulkanRenderingDevice.CreateFont not implemented yet.");
 
         // ---- Memory helper --------------------------------------------------
 
