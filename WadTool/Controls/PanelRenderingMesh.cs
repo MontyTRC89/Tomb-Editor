@@ -158,7 +158,7 @@ namespace WadTool.Controls
                     return;
 
                 _wadRenderer.Dispose();
-                _wadRenderer = new WadRenderer(_device, false, value, 4096, 2048, false);
+                _wadRenderer = DeviceManager.DefaultDeviceManager.CreateWadRenderer(false, value, 4096, 2048, false);
                 _bilinear = value;
                 Invalidate();
             }
@@ -318,7 +318,7 @@ namespace WadTool.Controls
             // Legacy rendering — only the gizmo remains on this path.
             {
                 _device = deviceManager.D3D11Device;
-                _wadRenderer = new WadRenderer(deviceManager.D3D11Device, false, false, 4096, 2048, false);
+                _wadRenderer = deviceManager.CreateWadRenderer(false, false, 4096, 2048, false);
                 _gizmo = new GizmoMeshEditor(_tool.Configuration, deviceManager.Device, this);
             }
         }

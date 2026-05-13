@@ -92,7 +92,7 @@ namespace WadTool.Controls
 
             // Legacy rendering — only the gizmo remains on this path.
             {
-                _wadRenderer = new WadRenderer(_device, false, true, 4096, 2048, false);
+                _wadRenderer = _deviceManager.CreateWadRenderer(false, true, 4096, 2048, false);
                 _gizmo = new GizmoSkeletonEditor(_tool, _tool.Configuration, deviceManager.Device, this);
             }
         }

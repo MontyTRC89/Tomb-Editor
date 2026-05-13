@@ -134,7 +134,7 @@ namespace TombLib.Controls
             {
                 // Reset scrollbar
                 _legacyDevice = DeviceManager.DefaultDeviceManager.D3D11Device;
-                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.D3D11Device, true, true, 1024, 512, false);
+                _wadRenderer = DeviceManager.DefaultDeviceManager.CreateWadRenderer(true, true, 1024, 512, false);
 
                 ResetCamera();
 

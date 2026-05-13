@@ -45,5 +45,18 @@ namespace TombLib.Graphics
             logger.Info("Backend: VulkanRenderingDevice (default, Silk.NET.Vulkan direct).");
             Device = new Rendering.Vulkan.VulkanRenderingDevice();
         }
+
+        // WadRenderer factory. Returns the backend-appropriate concrete:
+        // Dx11WadRenderer (SharpDX Texture2DArray) under DX11, VulkanWadRenderer
+        // (VkImage Texture2DArray) under Vulkan. Callers use this so they don't
+        // have to switch on the active backend themselves.
+        public WadRenderer CreateWadRenderer(bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize, bool loadAnimations)
+        {
+            if (Device is Rendering.Vulkan.VulkanRenderingDevice vk)
+                return new Rendering.Vulkan.VulkanWadRenderer(vk, compactTexture, correctTexture, atlasSize, maxAllocationSize, loadAnimations);
+            if (D3D11Device != null)
+                return new Dx11WadRenderer(D3D11Device, compactTexture, correctTexture, atlasSize, maxAllocationSize, loadAnimations);
+            throw new System.NotSupportedException("DeviceManager.CreateWadRenderer: no supported backend.");
+        }
     }
 }

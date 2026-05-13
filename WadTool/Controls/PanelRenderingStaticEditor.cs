@@ -111,7 +111,7 @@ namespace WadTool.Controls
             {
                 _device = deviceManager.D3D11Device;
                 _deviceManager = deviceManager;
-                _wadRenderer = new WadRenderer(_device, false, true, 4096, 2048, false);
+                _wadRenderer = _deviceManager.CreateWadRenderer(false, true, 4096, 2048, false);
                 _gizmo = new GizmoStaticEditor(_tool.Configuration, deviceManager.Device, this);
                 _gizmoLight = new GizmoStaticEditorLight(_tool.Configuration, deviceManager.Device, this);
             }

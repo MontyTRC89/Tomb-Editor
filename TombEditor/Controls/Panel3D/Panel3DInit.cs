@@ -51,7 +51,7 @@ namespace TombEditor.Controls.Panel3D
                 _ => 128
             };
 
-            _wadRenderer = new WadRenderer(_legacyDevice, true, true, atlasSize, maxAllocationSize, false);
+            _wadRenderer = DeviceManager.DefaultDeviceManager.CreateWadRenderer(true, true, atlasSize, maxAllocationSize, false);
             _gizmo = new Gizmo(device);
 
             ResetCamera(true);

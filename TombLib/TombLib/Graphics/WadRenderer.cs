@@ -1,5 +1,4 @@
 using NLog;
-using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using TombLib.Utils;
@@ -7,46 +6,45 @@ using TombLib.Wad;
 
 namespace TombLib.Graphics
 {
-    // WAD asset cache. Owns the texture atlas (Texture2DArray + ShaderResourceView)
-    // shared by every moveable / static / imported geometry rendered via the unified
-    // path. After the SharpDX.Toolkit removal it works on raw SharpDX.Direct3D11.
+    // WAD asset cache, abstract base. Owns the rect-packed atlas algorithm + the
+    // per-WAD AnimatedModel / StaticModel CPU cache. Backend-specific atlas
+    // upload (DX11 Texture2D vs Vulkan VkImage) is delegated through three
+    // virtual hooks: OnInitializeTexture / OnEnsureCapacity / OnUploadSubregion.
     //
-    // Lifecycle:
-    //   - Constructor takes a Device (the underlying ID3D11Device, e.g. obtained via
-    //     Dx11RenderingDevice.Device).
-    //   - GetMoveable / GetStatic build per-WAD models on demand and cache them.
-    //   - When the atlas runs out of room we Dispose the entire cache and rebuild —
-    //     same behavior as the legacy WadRenderer (see GarbageCollect).
-    //   - The renderer (Dx11RenderingDrawingMesh.RenderArgs.Atlas) accepts the
-    //     ShaderResourceView returned by .Texture — bindable directly to a slot.
-    public class WadRenderer : IDisposable
+    // Subclasses:
+    //   - Dx11WadRenderer (TombLib/Graphics/Dx11WadRenderer.cs) — SharpDX Texture2DArray.
+    //   - VulkanWadRenderer (TombLib.Rendering/Rendering/Vulkan) — VkImage Texture2DArray.
+    //
+    // Construct via DeviceManager.CreateWadRenderer(...) so callers don't have
+    // to switch on the active backend themselves.
+    public abstract class WadRenderer : IDisposable
     {
         public record struct AllocationResult(VectorInt3 Position, VectorInt2 OriginalSize, VectorInt2 AllocatedSize, VectorInt2 AtlasDimension);
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public Device Device { get; }
-        // Atlas texture (Texture2DArray) and its SRV. Texture is created on first
-        // upload and grown via EnsureTextureCapacity when more pages are needed.
-        public Texture2D AtlasTexture { get; private set; }
-        public ShaderResourceView Texture { get; private set; }
+        // Atlas resource handle that callers pass to RenderArgs.Atlas. Concrete
+        // type depends on the backend: a SharpDX.Direct3D11.ShaderResourceView
+        // on DX11, a Silk.NET.Vulkan.ImageView on Vulkan. Typed as object so the
+        // abstract layer stays backend-agnostic.
+        public abstract object Texture { get; }
 
         private IDictionary<WadMoveable, AnimatedModel> Moveables { get; } = new Dictionary<WadMoveable, AnimatedModel>();
         private IDictionary<WadStatic, StaticModel> Statics { get; } = new Dictionary<WadStatic, StaticModel>();
 
         private IList<RectPacker> TexturePackers { get; } = new List<RectPacker>();
         private IDictionary<WadTexture, AllocationResult> PackedTextures { get; } = new Dictionary<WadTexture, WadRenderer.AllocationResult>();
-        private bool _compactTexture;
-        private bool _correctTexture;
+        private readonly bool _compactTexture;
+        private readonly bool _correctTexture;
         private bool _disposing = false;
-        private int _textureAtlasSize;
-        private int _maxTextureAllocationSize;
-        public int TextureAtlasSize { get => _textureAtlasSize; }
-        private bool _loadAnimations;
+        private readonly int _textureAtlasSize;
+        private readonly int _maxTextureAllocationSize;
+        public int TextureAtlasSize => _textureAtlasSize;
+        public int CurrentPageCount => TexturePackers.Count;
+        private readonly bool _loadAnimations;
 
-        public WadRenderer(Device device, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize, bool loadAnimations)
+        protected WadRenderer(bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize, bool loadAnimations)
         {
-            Device = device;
             _compactTexture = compactTexture;
             _correctTexture = correctTexture;
             _textureAtlasSize = atlasSize;
@@ -55,22 +53,34 @@ namespace TombLib.Graphics
             AddPacker();
         }
 
+        // ===== Backend hooks =====
+
+        // Create the underlying texture array on first upload (lazy).
+        protected abstract void OnInitializeTexture();
+        // Resize the underlying texture array to at least `pages` slices,
+        // copying every existing slice across.
+        protected abstract void OnEnsureCapacity(int pages);
+        // Copy `image` into slice `position.Z`, at pixel offset (X,Y).
+        protected abstract void OnUploadSubregion(ImageC image, VectorInt3 position);
+        // Free the underlying atlas GPU resource. Called from Dispose() before
+        // we re-add an empty packer for the next rebuild.
+        protected abstract void OnDisposeTexture();
+
+        // ===== Shared logic =====
+
         private void AddPacker()
         {
             var size = new VectorInt2(_textureAtlasSize, _textureAtlasSize);
             TexturePackers.Add(_compactTexture ? new RectPackerTree(size) : new RectPackerSimpleStack(size));
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (_disposing)
                 return;
 
             _disposing = true;
-            Texture?.Dispose();
-            Texture = null;
-            AtlasTexture?.Dispose();
-            AtlasTexture = null;
+            OnDisposeTexture();
 
             foreach (var obj in Moveables.Values)
                 obj.Dispose();
@@ -90,7 +100,7 @@ namespace TombLib.Graphics
         public void GarbageCollect()
         {
             Dispose();
-            InitializeTexture();
+            OnInitializeTexture();
         }
 
         public AnimatedModel GetMoveable(WadMoveable moveable, bool maybeRebuildAll = true)
@@ -195,58 +205,16 @@ namespace TombLib.Graphics
                     throw new TextureAtlasFullException();
             }
 
-            // Upload texture
-            InitializeTexture();
-            EnsureTextureCapacity();
-            TextureLoad.Update(Device.ImmediateContext, AtlasTexture, imageToPack, newPosition.Value);
-            var result = new AllocationResult(newPosition.Value, new VectorInt2(originalWidth, originalHeight), new VectorInt2(imageToPack.Width, imageToPack.Height), new VectorInt2(_textureAtlasSize, _textureAtlasSize));
+            // Upload texture via the backend hook.
+            OnInitializeTexture();
+            OnEnsureCapacity(TexturePackers.Count);
+            OnUploadSubregion(imageToPack, newPosition.Value);
+            var result = new AllocationResult(newPosition.Value,
+                new VectorInt2(originalWidth, originalHeight),
+                new VectorInt2(imageToPack.Width, imageToPack.Height),
+                new VectorInt2(_textureAtlasSize, _textureAtlasSize));
             PackedTextures.Add(texture, result);
             return result;
-        }
-
-        // At runtime we can't be sure how many texture array slices we'll need, so we
-        // start with one slice and grow by allocating a new bigger array and copying
-        // each existing slice across when more pages are needed.
-        private void EnsureTextureCapacity()
-        {
-            int arraySize = AtlasTexture.Description.ArraySize;
-            if (TexturePackers.Count > arraySize)
-            {
-                var newDesc = AtlasTexture.Description;
-                newDesc.ArraySize = TexturePackers.Count;
-                var newTexture = new Texture2D(Device, newDesc);
-                for (int i = 0; i < arraySize; i++)
-                {
-                    int fromSubresource = Texture2D.CalculateSubResourceIndex(0, i, 1);
-                    int toSubresource = Texture2D.CalculateSubResourceIndex(0, i, 1);
-                    Device.ImmediateContext.CopySubresourceRegion(AtlasTexture, fromSubresource, null, newTexture, toSubresource);
-                }
-                Texture?.Dispose();
-                AtlasTexture?.Dispose();
-                AtlasTexture = newTexture;
-                Texture = new ShaderResourceView(Device, AtlasTexture);
-            }
-        }
-
-        private void InitializeTexture()
-        {
-            if (AtlasTexture is null)
-            {
-                AtlasTexture = new Texture2D(Device, new Texture2DDescription
-                {
-                    Width = _textureAtlasSize,
-                    Height = _textureAtlasSize,
-                    MipLevels = 1,
-                    ArraySize = TexturePackers.Count,
-                    Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm,
-                    SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0),
-                    Usage = ResourceUsage.Default,
-                    BindFlags = BindFlags.ShaderResource,
-                    CpuAccessFlags = CpuAccessFlags.None,
-                    OptionFlags = ResourceOptionFlags.None,
-                });
-                Texture = new ShaderResourceView(Device, AtlasTexture);
-            }
         }
 
         public class TextureAtlasFullException : Exception

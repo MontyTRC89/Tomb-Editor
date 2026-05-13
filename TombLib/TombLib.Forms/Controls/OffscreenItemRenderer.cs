@@ -29,7 +29,7 @@ namespace TombLib.Controls
         public OffscreenItemRenderer()
         {
             _device = (Dx11RenderingDevice)DeviceManager.DefaultDeviceManager.Device;
-            _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.D3D11Device, true, true, 1024, 512, false);
+            _wadRenderer = DeviceManager.DefaultDeviceManager.CreateWadRenderer(true, true, 1024, 512, false);
         }
 
         public ImageC RenderThumbnail(IWadObject wadObject, TRVersion.Game version, Vector4 backColor, int size = 128)
