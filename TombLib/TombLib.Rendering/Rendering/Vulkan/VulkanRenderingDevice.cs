@@ -6,7 +6,10 @@ using Silk.NET.Vulkan.Extensions.EXT;
 using Silk.NET.Vulkan.Extensions.KHR;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using TombLib.Utils;
 
 namespace TombLib.Rendering.Vulkan
 {
@@ -76,6 +79,14 @@ namespace TombLib.Rendering.Vulkan
         public Sampler SamplerAniso { get; private set; }
         public Sampler SamplerPoint { get; private set; }
 
+        // Sector-overlay icons (arrows, slides, illegal-slope markers etc.).
+        // 256x256 per-layer Texture2DArray loaded once from embedded PNG
+        // resources at device init. Used exclusively by VulkanDrawingRoom
+        // when EditorSectorTexture bit 0x40 is set.
+        public Image SectorTextureArray { get; private set; }
+        public DeviceMemory SectorTextureArrayMemory { get; private set; }
+        public ImageView SectorTextureArrayView { get; private set; }
+
         // Validation layer + debug messenger. Off by default; enable with
         // env var TOMBEDITOR_VK_VALIDATION=1. Heavy CPU cost (~5-10x) so it
         // never ships on by accident.
@@ -98,6 +109,7 @@ namespace TombLib.Rendering.Vulkan
             ShaderCompiler = new VulkanShaderCompiler();
             FrameUniforms = new VulkanFrameUniforms(this, 4 * 1024 * 1024);
             CreateSamplers();
+            CreateSectorTextureArray();
 
             logger.Info("VulkanRenderingDevice initialised. GPU=\"{0}\" validation={1}",
                 GetDeviceName(), _validationEnabled);
@@ -431,6 +443,145 @@ namespace TombLib.Rendering.Vulkan
             SamplerPoint = s2;
         }
 
+        // Decode every SectorTexture-named PNG embedded into TombLib.Rendering.dll
+        // and pack them into a single Texture2DArray. The RoomShader samples this
+        // by layer index from EditorSectorTexture[15..8] when bit 0x40 is set
+        // (i.e. arrow / climbable / illegal-slope overlay on a sector). 256×256
+        // per-layer, B8G8R8A8_UNorm.
+        private unsafe void CreateSectorTextureArray()
+        {
+            const int Size = 256;
+            // Skip "None" — only the actual texture entries are uploaded.
+            string[] names = Enum.GetNames(typeof(SectorTexture)).Skip(1).ToArray();
+            int layers = names.Length;
+            var assembly = typeof(VulkanRenderingDevice).Assembly;
+
+            ImageCreateInfo imgInfo = new ImageCreateInfo
+            {
+                SType = StructureType.ImageCreateInfo,
+                ImageType = ImageType.Type2D,
+                Format = Format.B8G8R8A8Unorm,
+                Extent = new Extent3D(Size, Size, 1),
+                MipLevels = 1,
+                ArrayLayers = (uint)layers,
+                Samples = SampleCountFlags.Count1Bit,
+                Tiling = ImageTiling.Optimal,
+                Usage = ImageUsageFlags.SampledBit | ImageUsageFlags.TransferDstBit,
+                SharingMode = SharingMode.Exclusive,
+                InitialLayout = ImageLayout.Undefined,
+            };
+            Image img;
+            VkCheck.Ok(Vk.CreateImage(Device, in imgInfo, null, &img));
+            SectorTextureArray = img;
+
+            Vk.GetImageMemoryRequirements(Device, SectorTextureArray, out MemoryRequirements req);
+            MemoryAllocateInfo alloc = new MemoryAllocateInfo
+            {
+                SType = StructureType.MemoryAllocateInfo,
+                AllocationSize = req.Size,
+                MemoryTypeIndex = FindMemoryType(req.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit),
+            };
+            DeviceMemory mem;
+            VkCheck.Ok(Vk.AllocateMemory(Device, in alloc, null, &mem));
+            SectorTextureArrayMemory = mem;
+            Vk.BindImageMemory(Device, SectorTextureArray, SectorTextureArrayMemory, 0);
+
+            ImageViewCreateInfo viewInfo = new ImageViewCreateInfo
+            {
+                SType = StructureType.ImageViewCreateInfo,
+                Image = SectorTextureArray,
+                ViewType = ImageViewType.Type2DArray,
+                Format = Format.B8G8R8A8Unorm,
+                SubresourceRange = new ImageSubresourceRange(ImageAspectFlags.ColorBit, 0, 1, 0, (uint)layers),
+            };
+            ImageView view;
+            VkCheck.Ok(Vk.CreateImageView(Device, in viewInfo, null, &view));
+            SectorTextureArrayView = view;
+
+            // Transition every layer Undefined→TransferDst once, then per-layer upload + final transition to ShaderReadOnly.
+            var cb = BeginTransient();
+            ImageMemoryBarrier toDst = new ImageMemoryBarrier
+            {
+                SType = StructureType.ImageMemoryBarrier,
+                OldLayout = ImageLayout.Undefined, NewLayout = ImageLayout.TransferDstOptimal,
+                SrcQueueFamilyIndex = Vk.QueueFamilyIgnored, DstQueueFamilyIndex = Vk.QueueFamilyIgnored,
+                Image = SectorTextureArray,
+                SubresourceRange = new ImageSubresourceRange(ImageAspectFlags.ColorBit, 0, 1, 0, (uint)layers),
+                SrcAccessMask = 0, DstAccessMask = AccessFlags.TransferWriteBit,
+            };
+            Vk.CmdPipelineBarrier(cb, PipelineStageFlags.TopOfPipeBit, PipelineStageFlags.TransferBit,
+                0, 0, null, 0, null, 1, in toDst);
+
+            // Stage every layer into one big buffer, copy region by region.
+            uint perLayerBytes = (uint)(Size * Size * 4);
+            uint totalBytes = perLayerBytes * (uint)layers;
+            BufferCreateInfo bi = new BufferCreateInfo
+            { SType = StructureType.BufferCreateInfo, Size = totalBytes,
+              Usage = BufferUsageFlags.TransferSrcBit, SharingMode = SharingMode.Exclusive };
+            Silk.NET.Vulkan.Buffer staging;
+            VkCheck.Ok(Vk.CreateBuffer(Device, in bi, null, &staging));
+            Vk.GetBufferMemoryRequirements(Device, staging, out MemoryRequirements bufReq);
+            MemoryAllocateInfo bufAlloc = new MemoryAllocateInfo
+            { SType = StructureType.MemoryAllocateInfo, AllocationSize = bufReq.Size,
+              MemoryTypeIndex = FindMemoryType(bufReq.MemoryTypeBits,
+                  MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit) };
+            DeviceMemory stagingMem;
+            VkCheck.Ok(Vk.AllocateMemory(Device, in bufAlloc, null, &stagingMem));
+            Vk.BindBufferMemory(Device, staging, stagingMem, 0);
+            void* mapped;
+            Vk.MapMemory(Device, stagingMem, 0, totalBytes, 0, &mapped);
+            IntPtr mappedPtr = (IntPtr)mapped;
+
+            for (int i = 0; i < layers; i++)
+            {
+                string resourceName = "TombLib.Rendering.SectorTextures." + names[i] + ".png";
+                using (Stream s = assembly.GetManifestResourceStream(resourceName))
+                {
+                    if (s == null)
+                        throw new InvalidOperationException("Missing embedded resource: " + resourceName);
+                    ImageC img2 = ImageC.FromStream(s);
+                    if (img2.Width != Size || img2.Height != Size)
+                        throw new ArgumentOutOfRangeException("SectorTexture wrong size: " + resourceName);
+                    int layerOffset = i * (int)perLayerBytes;
+                    img2.GetIntPtr(ptr =>
+                    {
+                        unsafe
+                        {
+                            System.Buffer.MemoryCopy((void*)ptr, (byte*)mappedPtr + layerOffset, perLayerBytes, perLayerBytes);
+                        }
+                    });
+
+                    BufferImageCopy copy = new BufferImageCopy
+                    {
+                        BufferOffset = (ulong)layerOffset,
+                        BufferRowLength = 0,
+                        BufferImageHeight = 0,
+                        ImageSubresource = new ImageSubresourceLayers(ImageAspectFlags.ColorBit, 0, (uint)i, 1),
+                        ImageOffset = new Offset3D(0, 0, 0),
+                        ImageExtent = new Extent3D(Size, Size, 1),
+                    };
+                    Vk.CmdCopyBufferToImage(cb, staging, SectorTextureArray, ImageLayout.TransferDstOptimal, 1, in copy);
+                }
+            }
+            Vk.UnmapMemory(Device, stagingMem);
+
+            ImageMemoryBarrier toShader = new ImageMemoryBarrier
+            {
+                SType = StructureType.ImageMemoryBarrier,
+                OldLayout = ImageLayout.TransferDstOptimal, NewLayout = ImageLayout.ShaderReadOnlyOptimal,
+                SrcQueueFamilyIndex = Vk.QueueFamilyIgnored, DstQueueFamilyIndex = Vk.QueueFamilyIgnored,
+                Image = SectorTextureArray,
+                SubresourceRange = new ImageSubresourceRange(ImageAspectFlags.ColorBit, 0, 1, 0, (uint)layers),
+                SrcAccessMask = AccessFlags.TransferWriteBit, DstAccessMask = AccessFlags.ShaderReadBit,
+            };
+            Vk.CmdPipelineBarrier(cb, PipelineStageFlags.TransferBit, PipelineStageFlags.FragmentShaderBit,
+                0, 0, null, 0, null, 1, in toShader);
+            EndAndSubmitTransient(cb);
+
+            Vk.DestroyBuffer(Device, staging, null);
+            Vk.FreeMemory(Device, stagingMem, null);
+        }
+
         // End + submit + WAIT for completion (synchronous). Used for setup
         // operations only — never on the per-frame hot path.
         public unsafe void EndAndSubmitTransient(CommandBuffer cb)
@@ -456,6 +607,9 @@ namespace TombLib.Rendering.Vulkan
                 Vk.DeviceWaitIdle(Device);
                 FrameUniforms?.Dispose(); FrameUniforms = null;
                 ShaderCompiler?.Dispose(); ShaderCompiler = null;
+                if (SectorTextureArrayView.Handle != 0)   { Vk.DestroyImageView(Device, SectorTextureArrayView, null);   SectorTextureArrayView = default; }
+                if (SectorTextureArray.Handle != 0)       { Vk.DestroyImage(Device, SectorTextureArray, null);           SectorTextureArray = default; }
+                if (SectorTextureArrayMemory.Handle != 0) { Vk.FreeMemory(Device, SectorTextureArrayMemory, null);       SectorTextureArrayMemory = default; }
                 if (SamplerAniso.Handle != 0) { Vk.DestroySampler(Device, SamplerAniso, null); SamplerAniso = default; }
                 if (SamplerPoint.Handle != 0) { Vk.DestroySampler(Device, SamplerPoint, null); SamplerPoint = default; }
                 if (TransientPool.Handle != 0) { Vk.DestroyCommandPool(Device, TransientPool, null); TransientPool = default; }

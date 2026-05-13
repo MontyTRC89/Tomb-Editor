@@ -107,6 +107,7 @@ layout(set = 0, binding = 0) uniform FrameData {
     vec4  BrushColor;
 };
 layout(set = 1, binding = 0) uniform sampler2DArray AtlasSampler;
+layout(set = 2, binding = 0) uniform sampler2DArray SectorTextureSampler;
 layout(location = 0) in vec4 fsColor;
 layout(location = 1) in vec4 fsOverlay;
 layout(location = 2) in vec3 fsUvw;
@@ -148,8 +149,22 @@ void main() {
             uint b = (sectorBits >> 24) & 0xffu;
             vec3 sectorColor = vec3(float(r), float(g), float(b)) / 255.0;
             bool hasSectorTex = (sectorBits & 0x40u) != 0u;
-            result = vec4(hasSectorTex ? fsOverlay.rgb : sectorColor, 1.0);
-            if ((sectorBits & 0x20u) != 0u) result.rgb *= 0.70;
+            if (hasSectorTex) {
+                // Sector color + arrow/slide overlay (sampler at layer N-1
+                // where N is extracted from EditorSectorTexture bits 8..15).
+                result = fsOverlay;
+                if ((sectorBits & 0x20u) != 0u) result.rgb *= 0.70;
+                float layer = float((sectorBits >> 8) & 0xffu);
+                vec4 texColor = texture(SectorTextureSampler, vec3(fsEditorUv, layer));
+                // Dx11 RoomShaderPS uses brightness(result) > 0.8 to decide
+                // overlay direction. Match it here.
+                float bri = sqrt(result.r*result.r*0.299 + result.g*result.g*0.587 + result.b*result.b*0.114);
+                if (bri > 0.8) result.rgb = clamp(result.rgb - texColor.rgb, vec3(0.0), vec3(1.0));
+                else           result.rgb = clamp(result.rgb + texColor.rgb, vec3(0.0), vec3(1.0));
+            } else {
+                result = vec4(sectorColor, 1.0);
+                if ((sectorBits & 0x20u) != 0u) result.rgb *= 0.70;
+            }
         }
     }
 
@@ -196,7 +211,7 @@ void main() {
 
         private ShaderModule _vs;
         private ShaderModule _fs;
-        private DescriptorSetLayout _set0, _set1;
+        private DescriptorSetLayout _set0, _set1, _set2;
         private PipelineLayout _pipelineLayout;
         private VkPipeline _pipeline;
 
@@ -207,10 +222,11 @@ void main() {
         // Sub-buffer offsets matching the Dx11 SoA layout.
         private uint _offPositions, _offColors, _offOverlays, _offUvwBlend, _offEditorUv;
 
-        private DescriptorSet _frameSet, _atlasSet;
+        private DescriptorSet _frameSet, _atlasSet, _sectorSet;
         private VkBuffer _cachedStateBuffer;
         private ulong _cachedAtlas;
         private bool _cachedBilinear;
+        private ulong _cachedSectorView;
 
         public unsafe VulkanDrawingRoom(VulkanRenderingDevice device, Description description)
         {
@@ -229,16 +245,18 @@ void main() {
 
             _set0 = CreateSetLayoutSingle(DescriptorType.UniformBuffer,        ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit);
             _set1 = CreateSetLayoutSingle(DescriptorType.CombinedImageSampler, ShaderStageFlags.FragmentBit);
+            _set2 = CreateSetLayoutSingle(DescriptorType.CombinedImageSampler, ShaderStageFlags.FragmentBit);
 
-            var layouts = stackalloc DescriptorSetLayout[2] { _set0, _set1 };
+            var layouts = stackalloc DescriptorSetLayout[3] { _set0, _set1, _set2 };
             PipelineLayoutCreateInfo plci = new PipelineLayoutCreateInfo
-            { SType = StructureType.PipelineLayoutCreateInfo, SetLayoutCount = 2, PSetLayouts = layouts };
+            { SType = StructureType.PipelineLayoutCreateInfo, SetLayoutCount = 3, PSetLayouts = layouts };
             PipelineLayout pl;
             VkCheck.Ok(_vk.CreatePipelineLayout(_device, in plci, null, &pl));
             _pipelineLayout = pl;
 
             _frameSet = AllocateSet(_set0);
             _atlasSet = AllocateSet(_set1);
+            _sectorSet = AllocateSet(_set2);
         }
 
         private unsafe void BuildVertexBuffer(Description description)
@@ -501,6 +519,7 @@ void main() {
             if (_pipelineLayout.Handle != 0) _vk.DestroyPipelineLayout(_device, _pipelineLayout, null);
             if (_set0.Handle != 0) _vk.DestroyDescriptorSetLayout(_device, _set0, null);
             if (_set1.Handle != 0) _vk.DestroyDescriptorSetLayout(_device, _set1, null);
+            if (_set2.Handle != 0) _vk.DestroyDescriptorSetLayout(_device, _set2, null);
             if (_vs.Handle != 0) _vk.DestroyShaderModule(_device, _vs, null);
             if (_fs.Handle != 0) _vk.DestroyShaderModule(_device, _fs, null);
             if (_vertexBuffer.Handle != 0) _vk.DestroyBuffer(_device, _vertexBuffer, null);
@@ -531,6 +550,11 @@ void main() {
                 _cachedBilinear = arg.BilinearFilter;
                 WriteAtlas(_atlasSet, allocator.AtlasView, arg.BilinearFilter ? DeviceWrapper.SamplerAniso : DeviceWrapper.SamplerPoint);
             }
+            if (_cachedSectorView != DeviceWrapper.SectorTextureArrayView.Handle)
+            {
+                _cachedSectorView = DeviceWrapper.SectorTextureArrayView.Handle;
+                WriteAtlas(_sectorSet, DeviceWrapper.SectorTextureArrayView, DeviceWrapper.SamplerAniso);
+            }
 
             _vk.CmdBindPipeline(cb, PipelineBindPoint.Graphics, _pipeline);
 
@@ -539,8 +563,8 @@ void main() {
             var offsets = stackalloc ulong[5] { _offPositions, _offColors, _offOverlays, _offUvwBlend, _offEditorUv };
             _vk.CmdBindVertexBuffers(cb, 0, 5, buffers, offsets);
 
-            var sets = stackalloc DescriptorSet[2] { _frameSet, _atlasSet };
-            _vk.CmdBindDescriptorSets(cb, PipelineBindPoint.Graphics, _pipelineLayout, 0, 2, sets, 0, null);
+            var sets = stackalloc DescriptorSet[3] { _frameSet, _atlasSet, _sectorSet };
+            _vk.CmdBindDescriptorSets(cb, PipelineBindPoint.Graphics, _pipelineLayout, 0, 3, sets, 0, null);
 
             _vk.CmdDraw(cb, (uint)_vertexCount, 1, 0, 0);
         }
