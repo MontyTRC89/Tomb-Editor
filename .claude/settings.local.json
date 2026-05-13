@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(git -C \"D:/Repositories/Tomb-Editor\" show HEAD:TombLib/TombLib/Graphics/BaseGizmo.cs)",
+      "Read(//tmp/**)",
+      "Bash(git -C \"D:/Repositories/Tomb-Editor\" diff --no-index --stat \".claude/orig_BaseGizmo.cs\" \"TombLib/TombLib.Rendering/Rendering/BaseGizmo.cs\")",
+      "Bash(git -C \"D:/Repositories/Tomb-Editor\" log --oneline -5)",
+      "Bash(git -C \"D:/Repositories/Tomb-Editor\" status --short)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(dotnet restore *)"
+    ]
+  }
+}

@@ -1,38 +1,43 @@
+using System;
+using NLog;
 using TombLib.Rendering;
 
 namespace TombLib.Graphics
 {
     // Process-wide singleton owning the rendering device.
     //
-    // STATUS as of the SharpDX.Toolkit removal:
-    //   ✅ ___LegacyEffects (Solid / Model / RoomGeometry .fx) — REMOVED.
-    //   ✅ ___LegacyFont (SpriteFont) — REMOVED.
-    //   ✅ ___LegacyDevice (SharpDX.Toolkit GraphicsDevice) — REMOVED. WadRenderer +
-    //      Mesh family + ImportedGeometry now use raw SharpDX.Direct3D11.Device.
-    //   ✅ Solid.fx, Model.fx, RoomGeometry.fx — REMOVED. Replaced by
-    //      LinesShader / MeshShader / ImportedGeometryShader (HLSL pre-compiled).
+    // Backend selection:
+    //   - default: Dx11RenderingDevice (SharpDX raw D3D11).
+    //   - env TOMBEDITOR_RENDERER=vulkan-direct: VulkanRenderingDevice (Silk.NET.Vulkan
+    //     direct backend). Foundation only at the moment — most Drawing*/Atlas
+    //     subsystems will throw NotSupportedException until they are ported.
     //
-    // Remaining cleanup:
-    //   STEP A  Drop the SharpDX.Toolkit / SharpDX.Toolkit.Graphics / SharpDX.Toolkit.Compiler
-    //           DLL references from TombLib.Rendering.csproj (the few helpers in those
-    //           DLLs that are still indirectly referenced — VertexElement attribute,
-    //           IVertex interface — can either be removed or replaced with local stubs).
-    //   STEP B  Replace SharpDX 2.4 binaries with Vortice.Direct3D11 (Vortice is the
-    //           maintained drop-in replacement; SharpDX 2.4 has been archived since 2019).
-    //   STEP C  Once on Vortice, plan a Vulkan backend via Silk.NET (Tappa 3 originale).
+    // The Vulkan backend lives on the develop_vulkan_direct branch and is being
+    // built up subsystem by subsystem. The legacy Dx11 path stays the production
+    // default until the Vulkan path is feature-complete.
     public class DeviceManager
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static DeviceManager DefaultDeviceManager = new DeviceManager();
 
         public RenderingDevice Device;
 
-        // The raw ID3D11Device. Exposed for components that still need it directly
-        // (WadRenderer, ImportedGeometryTexture). Always equal to
-        // ((Dx11RenderingDevice)Device).Device.
+        // The raw ID3D11Device — non-null only when the Dx11 backend is active.
+        // Components that need direct D3D11 (WadRenderer, ImportedGeometryTexture)
+        // must null-check and skip / throw under the Vulkan backend.
         public SharpDX.Direct3D11.Device D3D11Device { get; }
 
         public DeviceManager()
         {
+            string requested = Environment.GetEnvironmentVariable("TOMBEDITOR_RENDERER");
+            if (string.Equals(requested, "vulkan-direct", StringComparison.OrdinalIgnoreCase))
+            {
+                logger.Info("Backend: VulkanRenderingDevice (direct Silk.NET.Vulkan) — forced via TOMBEDITOR_RENDERER.");
+                Device = new Rendering.Vulkan.VulkanRenderingDevice();
+                return;
+            }
+
             Device = new Rendering.DirectX11.Dx11RenderingDevice();
             D3D11Device = ((Rendering.DirectX11.Dx11RenderingDevice)Device).Device;
             LevelData.ImportedGeometry.Device = D3D11Device;
