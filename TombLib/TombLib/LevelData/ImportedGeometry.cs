@@ -17,12 +17,33 @@ namespace TombLib.LevelData
 {
     public class ImportedGeometryTexture : Texture
     {
-        // The renderer (Dx11RenderingDrawingImportedGeometry) accepts a SharpDX.Direct3D11
-        // ShaderResourceView directly via Submesh.Texture — so we expose the SRV here
-        // (rather than the underlying Texture2D). The Texture2D + SRV pair is owned by
-        // this object and disposed together (via TextureLoad.LoadedTexture).
-        public ShaderResourceView DirectXTexture => _loaded.View;
+        // GPU handle the renderer binds — either a SharpDX.Direct3D11.ShaderResourceView
+        // (DX11 path) or a TombLib.Rendering Vulkan handle (anything that VulkanDrawing-
+        // ImportedGeometry.ResolveTexture recognises). The handle is loaded lazily on
+        // first GpuTexture access so we don't depend on the backend being available at
+        // ImageC-load time.
+        //
+        // GpuTextureFactory is set by TombLib.Rendering.Graphics.DeviceManager at
+        // backend init under Vulkan. Under DX11 it stays null and the constructor
+        // falls back to the legacy TextureLoad.Load path.
+        public static Func<ImageC, object> GpuTextureFactory;
+
+        // Backwards-compatible alias for callers that already typed it loosely as
+        // `object` (Panel3DDraw / WadObjectRenderHelper). Returns either a
+        // ShaderResourceView (DX11) or a Vulkan ImageView / VulkanTexture2D
+        // (Vulkan). Don't assume a SharpDX type here any more.
+        public object DirectXTexture
+        {
+            get
+            {
+                if (_loaded.View != null) return _loaded.View;
+                if (_vulkanGpu == null && Image != null && GpuTextureFactory != null)
+                    _vulkanGpu = GpuTextureFactory(Image);
+                return _vulkanGpu;
+            }
+        }
         private TextureLoad.LoadedTexture _loaded;
+        private object _vulkanGpu;
 
         public ImportedGeometryTexture(string absolutePath)
         {
@@ -31,6 +52,9 @@ namespace TombLib.LevelData
 
             // Replace magenta with transparent color
             Image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+
+            if (ImportedGeometry.Device == null)
+                return; // Vulkan backend — defer GPU upload to GpuTextureFactory.
 
             if (SynchronizationContext.Current == null)
                 _loaded = TextureLoad.Load(ImportedGeometry.Device, Image);
@@ -44,6 +68,7 @@ namespace TombLib.LevelData
             // Shallow copy: textures shared with the source. The original owner is
             // responsible for disposing — copies just borrow references.
             _loaded = other._loaded;
+            _vulkanGpu = other._vulkanGpu;
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
         }
@@ -53,6 +78,7 @@ namespace TombLib.LevelData
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
             _loaded = other._loaded;
+            _vulkanGpu = other._vulkanGpu;
         }
 
         public override Texture Clone() => new ImportedGeometryTexture(this);

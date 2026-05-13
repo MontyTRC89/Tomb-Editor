@@ -43,7 +43,16 @@ namespace TombLib.Graphics
             }
 
             logger.Info("Backend: VulkanRenderingDevice (default, Silk.NET.Vulkan direct).");
-            Device = new Rendering.Vulkan.VulkanRenderingDevice();
+            var vulkanDevice = new Rendering.Vulkan.VulkanRenderingDevice();
+            Device = vulkanDevice;
+
+            // ImportedGeometryTexture lazily uploads its ImageC into a per-texture
+            // VulkanTexture2D on first GpuTexture access. The factory below is
+            // the only TombLib → TombLib.Rendering bridge that side of the
+            // dependency graph; without it, imported-geometry textures would
+            // never reach the GPU under Vulkan.
+            LevelData.ImportedGeometryTexture.GpuTextureFactory = img =>
+                new Rendering.Vulkan.VulkanTexture2D(vulkanDevice, img).View;
         }
 
         // WadRenderer factory. Returns the backend-appropriate concrete:
