@@ -477,7 +477,7 @@ void main() {
                 SType = StructureType.PipelineRasterizationStateCreateInfo,
                 PolygonMode = PolygonMode.Fill,
                 CullMode = key.DoubleSided ? CullModeFlags.None : CullModeFlags.BackBit,
-                FrontFace = FrontFace.CounterClockwise,
+                FrontFace = FrontFace.Clockwise,   // compensates VulkanSwapChain's Y-flipped viewport (CCW in NDC becomes CW in framebuffer space)
                 LineWidth = 1.0f,
             };
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo

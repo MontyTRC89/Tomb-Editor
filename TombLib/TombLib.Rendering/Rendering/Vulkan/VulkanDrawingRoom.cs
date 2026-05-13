@@ -534,7 +534,9 @@ void main() {
             { SType = StructureType.PipelineViewportStateCreateInfo, ViewportCount = 1, ScissorCount = 1 };
             PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
             { SType = StructureType.PipelineRasterizationStateCreateInfo, PolygonMode = PolygonMode.Fill,
-              CullMode = CullModeFlags.None, FrontFace = FrontFace.CounterClockwise, LineWidth = 1.0f };
+              CullMode = CullModeFlags.None,
+              FrontFace = FrontFace.Clockwise,   // compensates VulkanSwapChain's Y-flipped viewport
+              LineWidth = 1.0f };
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
             { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = SampleCountFlags.Count1Bit };
             PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
