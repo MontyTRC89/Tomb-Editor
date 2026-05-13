@@ -28,7 +28,10 @@ namespace TombLib.Controls
 
         public OffscreenItemRenderer()
         {
-            _device = (Dx11RenderingDevice)DeviceManager.DefaultDeviceManager.Device;
+            // Thumbnail rendering is DX11-only — the path uses SharpDX-typed offscreen
+            // render targets that haven't been ported to Vulkan. Under Vulkan we keep
+            // _device null and RenderThumbnail returns a blank ImageC.
+            _device = DeviceManager.DefaultDeviceManager.Device as Dx11RenderingDevice;
             _wadRenderer = DeviceManager.DefaultDeviceManager.CreateWadRenderer(true, true, 1024, 512, false);
         }
 
@@ -36,7 +39,7 @@ namespace TombLib.Controls
         {
             const int FieldOfView = 50;
 
-            if (wadObject == null)
+            if (wadObject == null || _device == null)
                 return ImageC.CreateNew(size, size);
 
             try

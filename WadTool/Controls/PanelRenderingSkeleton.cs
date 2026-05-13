@@ -147,8 +147,8 @@ namespace WadTool.Controls
 
         protected override void OnDraw()
         {
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            SwapChain.BindForce();
+            Device.ResetState();
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             using var stateBuffer = Device.CreateStateBuffer();
@@ -208,7 +208,7 @@ namespace WadTool.Controls
 
             if (DrawGizmo && SelectedNode != null)
             {
-                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+                Device.ResetState();
                 SwapChain.ClearDepth();
                 _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
             }
@@ -216,7 +216,7 @@ namespace WadTool.Controls
             // Draw debug strings
             if (SelectedNode != null)
             {
-                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
+                Device.ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
                 Matrix4x4 worldViewProjection = SelectedNode.GlobalTransform * viewProjection;
                 SwapChain.RenderText(new Text
                 {

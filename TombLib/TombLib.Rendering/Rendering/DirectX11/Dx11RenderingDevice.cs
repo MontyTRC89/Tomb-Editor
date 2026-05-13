@@ -351,7 +351,7 @@ namespace TombLib.Rendering.DirectX11
             logger.Info("Dx11 rendering device created.");
         }
 
-        public void ResetState()
+        public override void ResetState()
         {
             Context.Rasterizer.State = RasterizerBackCulling;
             Context.OutputMerger.SetDepthStencilState(DepthStencilDefault);

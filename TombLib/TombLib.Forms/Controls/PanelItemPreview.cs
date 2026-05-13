@@ -219,8 +219,8 @@ namespace TombLib.Controls
                 return;
 
             // To make sure things are in a defined state for legacy rendering...
-            ((Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            SwapChain.BindForce();
+            Device.ResetState();
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 

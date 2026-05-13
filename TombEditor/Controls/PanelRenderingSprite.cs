@@ -66,7 +66,7 @@ namespace WadTool.Controls
 
         protected override void OnDraw()
         {
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            Device.ResetState();
 
             if (_spriteList.Count <= SpriteID || SpriteID == -1)
                 return;

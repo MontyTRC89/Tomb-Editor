@@ -172,8 +172,8 @@ namespace WadTool.Controls
 
         protected override void OnDraw()
         {
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            SwapChain.BindForce();
+            Device.ResetState();
 
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             using var stateBuffer = Device.CreateStateBuffer();
@@ -289,7 +289,7 @@ namespace WadTool.Controls
             if (Configuration.AnimationEditor_ShowGizmo &&
                 SelectedMesh != null && _editor.ValidAnimationAndFrames)
             {
-                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+                Device.ResetState();
                 SwapChain.ClearDepth();
                 _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
             }
@@ -297,7 +297,7 @@ namespace WadTool.Controls
             if (_editor.CurrentAnim != null && 
                 Configuration.RenderingItem_ShowDebugInfo)
             {
-                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
+                Device.ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
                 string debugMessage = "Frame: " + (_editor.CurrentFrameIndex + 1) + "/" + _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
                 if (SelectedMesh != null)
                 {

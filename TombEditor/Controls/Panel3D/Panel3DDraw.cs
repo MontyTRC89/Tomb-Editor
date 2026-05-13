@@ -2175,8 +2175,8 @@ namespace TombEditor.Controls.Panel3D
 
             // Reset
             _drawHeightLine = false;
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            SwapChain.BindForce();
+            Device.ResetState();
 
             // Update frustum
             _frustum.Update(Camera, ClientSize);
@@ -2194,7 +2194,7 @@ namespace TombEditor.Controls.Panel3D
                 DrawSkybox();
 
             // Draw enabled rooms
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            Device.ResetState();
             foreach (Room room in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden))
                 _renderingCachedRooms[room].Render(renderArgs);
 
@@ -2277,7 +2277,7 @@ namespace TombEditor.Controls.Panel3D
             // Draw the height of the object and room bounding box
             DrawDebugLines(effect);
 
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            Device.ResetState();
 
             // Draw the gizmo (hidden during camera preview)
             if (CanUseGizmo())

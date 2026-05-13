@@ -345,8 +345,8 @@ namespace WadTool.Controls
             if (VisibleMesh == null)
                 return;
 
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            SwapChain.BindForce();
+            Device.ResetState();
 
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             using var stateBuffer = Device.CreateStateBuffer();
@@ -598,7 +598,7 @@ namespace WadTool.Controls
 
             if (EditingMode == MeshEditingMode.Sphere && DrawExtraInfo)
             {
-                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+                Device.ResetState();
                 SwapChain.ClearDepth();
                 _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
             }

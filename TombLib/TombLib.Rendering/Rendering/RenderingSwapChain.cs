@@ -69,6 +69,14 @@ namespace TombLib.Rendering
         public abstract void Present();
         public abstract void Resize(VectorInt2 newSize);
 
+        // Legacy bookkeeping hook from the DX11 backend. DX11 callers need to
+        // re-bind the back-buffer view + reset the depth-stencil state after
+        // any third-party SharpDX.Toolkit usage that may have mutated the
+        // device state. Under Vulkan the equivalent setup happens inside
+        // Clear() (BeginRenderPass + viewport/scissor) so this is a no-op.
+        // Promoted from a DX11-only method so callers can avoid hard-casts.
+        public virtual void BindForce() { }
+
         // Renders an unsorted list of sprites in one draw call. Caller is responsible
         // for depth-sorting if Depth is set. linearFilter=true uses anisotropic mipmap
         // filtering; false picks nearest-neighbour (e.g. for crisp icons).

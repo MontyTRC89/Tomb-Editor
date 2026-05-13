@@ -181,8 +181,8 @@ namespace WadTool.Controls
 
         protected override void OnDraw()
         {
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            SwapChain.BindForce();
+            Device.ResetState();
 
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
 
@@ -281,19 +281,19 @@ namespace WadTool.Controls
             // restored to legacy expectations; ResetState flushes our overrides first.
             if (DrawGizmo)
             {
-                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+                Device.ResetState();
                 SwapChain.ClearDepth();
                 _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
             }
             if (SelectedLight != null)
             {
-                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+                Device.ResetState();
                 SwapChain.ClearDepth();
                 _gizmoLight.Draw(SwapChain, stateBuffer, viewProjection);
             }
 
             // Draw debug strings
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
+            Device.ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
             SwapChain.RenderText(new Text
             {
                 Font = _fontDefault,

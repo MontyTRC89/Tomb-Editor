@@ -17,6 +17,12 @@ namespace TombLib.Rendering
     {
         public abstract void Dispose();
 
+        // Legacy hook from the DX11 backend. Re-establishes rasterizer + depth
+        // states after third-party SharpDX.Toolkit code may have changed them.
+        // No-op on backends with explicit per-draw pipeline state (Vulkan).
+        // Promoted to the abstract so callers avoid hard-casting to Dx11RenderingDevice.
+        public virtual void ResetState() { }
+
         // The caller owns the lifetime of every object created through these factories.
         // SwapChain is bound to a Win32 HWND; one per RenderingPanel.
         public abstract RenderingSwapChain CreateSwapChain(RenderingSwapChain.Description description);
