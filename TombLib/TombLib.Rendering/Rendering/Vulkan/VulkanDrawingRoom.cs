@@ -534,7 +534,12 @@ void main() {
             { SType = StructureType.PipelineViewportStateCreateInfo, ViewportCount = 1, ScissorCount = 1 };
             PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
             { SType = StructureType.PipelineRasterizationStateCreateInfo, PolygonMode = PolygonMode.Fill,
-              CullMode = CullModeFlags.None,
+              // Match Dx11RenderingDrawingRoom: backface culling on, double-sided
+              // triangles are already emitted with a reversed-winding duplicate at
+              // the tail of the VB. CullMode.None would draw every triangle from
+              // both sides, and the duplicates would z-fight with the originals
+              // and win (drawn last) — flipping each wall inside-out.
+              CullMode = CullModeFlags.BackBit,
               FrontFace = FrontFace.CounterClockwise,   // CW source + Y-flipped viewport → CCW in framebuffer = front
               LineWidth = 1.0f };
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
