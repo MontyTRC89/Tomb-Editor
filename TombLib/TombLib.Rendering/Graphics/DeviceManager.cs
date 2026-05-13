@@ -7,14 +7,16 @@ namespace TombLib.Graphics
     // Process-wide singleton owning the rendering device.
     //
     // Backend selection:
-    //   - default: Dx11RenderingDevice (SharpDX raw D3D11).
-    //   - env TOMBEDITOR_RENDERER=vulkan-direct: VulkanRenderingDevice (Silk.NET.Vulkan
-    //     direct backend). Foundation only at the moment — most Drawing*/Atlas
-    //     subsystems will throw NotSupportedException until they are ported.
+    //   - default: VulkanRenderingDevice (Silk.NET.Vulkan direct backend).
+    //   - env TOMBEDITOR_RENDERER=dx11: Dx11RenderingDevice (legacy SharpDX D3D11),
+    //     useful as a fallback while the Vulkan path is being built up
+    //     subsystem by subsystem.
     //
-    // The Vulkan backend lives on the develop_vulkan_direct branch and is being
-    // built up subsystem by subsystem. The legacy Dx11 path stays the production
-    // default until the Vulkan path is feature-complete.
+    // KNOWN STATE (develop_vulkan_direct): the Vulkan backend implements the
+    // foundation only — instance/device/swapchain + Clear/Present cycle. Every
+    // CreateXxx factory below `CreateSwapChain` throws NotSupportedException;
+    // the editor will crash on first subsystem init under Vulkan until those
+    // are ported. Use TOMBEDITOR_RENDERER=dx11 in the meantime.
     public class DeviceManager
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -30,17 +32,18 @@ namespace TombLib.Graphics
 
         public DeviceManager()
         {
-            string requested = Environment.GetEnvironmentVariable("TOMBEDITOR_RENDERER");
-            if (string.Equals(requested, "vulkan-direct", StringComparison.OrdinalIgnoreCase))
+            string requested = Environment.GetEnvironmentVariable("TOMBEDITOR_RENDERER")?.ToLowerInvariant();
+            if (requested == "dx11" || requested == "directx11")
             {
-                logger.Info("Backend: VulkanRenderingDevice (direct Silk.NET.Vulkan) — forced via TOMBEDITOR_RENDERER.");
-                Device = new Rendering.Vulkan.VulkanRenderingDevice();
+                logger.Info("Backend: Dx11RenderingDevice (forced via TOMBEDITOR_RENDERER).");
+                Device = new Rendering.DirectX11.Dx11RenderingDevice();
+                D3D11Device = ((Rendering.DirectX11.Dx11RenderingDevice)Device).Device;
+                LevelData.ImportedGeometry.Device = D3D11Device;
                 return;
             }
 
-            Device = new Rendering.DirectX11.Dx11RenderingDevice();
-            D3D11Device = ((Rendering.DirectX11.Dx11RenderingDevice)Device).Device;
-            LevelData.ImportedGeometry.Device = D3D11Device;
+            logger.Info("Backend: VulkanRenderingDevice (default, Silk.NET.Vulkan direct).");
+            Device = new Rendering.Vulkan.VulkanRenderingDevice();
         }
     }
 }
