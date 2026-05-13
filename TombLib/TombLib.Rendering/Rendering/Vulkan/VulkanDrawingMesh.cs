@@ -158,6 +158,15 @@ void main() {
         private VkBuffer _indexBuffer;
         private DeviceMemory _vertexMemory, _indexMemory;
         private readonly Submesh[] _submeshes;
+
+        // CPU-side staging area for the per-draw MeshData constant buffer.
+        // Layout (byte offsets, matching the GLSL `uniform MeshData` block):
+        //   [  0 ..  63]  World          mat4   (64 bytes)
+        //   [ 64 ..  79]  Tint           vec4   (16 bytes)
+        //   [ 80 .. 2127] Bones[32]      mat4[] (32 * 64 = 2048 bytes)
+        //   [2128 .. 2143] Skinned/StaticLighting/ColoredVertices/AlphaTest
+        //                                ivec4  (4 * 4 = 16 bytes)
+        // Total: 2144 bytes  (= MeshDataSize)
         private readonly byte[] _cbufferStaging = new byte[MeshDataSize];
 
         private VkBuffer _cachedStateBuffer;
@@ -167,6 +176,11 @@ void main() {
         private bool _cachedBilinear;
         private DescriptorSet _atlasSet;
 
+        // Pipelines are cached by (DoubleSided, Additive, RenderPass, Samples)
+        // because those are the only axes that change the Vulkan pipeline state
+        // object between submeshes. Creating a VkPipeline is expensive, so we
+        // build on first use and reuse thereafter. The RenderPass + SampleCount
+        // can change when the swap chain is resized or MSAA settings change.
         private readonly struct PipelineKey : IEquatable<PipelineKey>
         {
             public readonly bool DoubleSided;
@@ -204,6 +218,10 @@ void main() {
             _vs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, vsSpirv);
             _fs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, fsSpirv);
 
+            // Descriptor set layouts — one binding per set:
+            //   set 0: FrameData UBO (frame-wide camera/editor state)
+            //   set 1: MeshData UBO with dynamic offset (per-draw transform/bones)
+            //   set 2: Atlas texture + sampler (shared Texture2DArray)
             _set0 = CreateSetLayoutSingle(DescriptorType.UniformBuffer,        ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit);
             _set1 = CreateSetLayoutSingle(DescriptorType.UniformBufferDynamic, ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit);
             _set2 = CreateSetLayoutSingle(DescriptorType.CombinedImageSampler, ShaderStageFlags.FragmentBit);
@@ -225,6 +243,15 @@ void main() {
             WriteUboDynamic(_meshSet, device.FrameUniforms.Buffer, MeshDataSize);
         }
 
+        // Staging buffer upload pattern:
+        //   1. Create a host-visible (CPU-writable) staging buffer
+        //   2. Map it, memcpy the managed array in, unmap
+        //   3. Create a device-local (GPU-fast) buffer of the same size
+        //   4. Record a vkCmdCopyBuffer inside a transient command buffer
+        //   5. Submit and wait, then destroy the staging buffer
+        // This is the standard Vulkan approach for immutable geometry: device-local
+        // memory is fastest for the GPU but not directly writable by the CPU, so
+        // we bounce through a temporary host-visible buffer.
         private unsafe void CreateImmutableBufferFromArray<T>(IList<T> data, uint sizeBytes, BufferUsageFlags usage, out VkBuffer buffer, out DeviceMemory memory)
         {
             // Staging buffer (host visible)
@@ -281,7 +308,7 @@ void main() {
             VkCheck.Ok(_vk.AllocateMemory(_device, in allocInfo, null, &mem));
             _vk.BindBufferMemory(_device, buf, mem, 0);
 
-            // Copy via transient command
+            // Copy staging → device-local via a transient one-shot command buffer.
             var cb = DeviceWrapper.BeginTransient();
             BufferCopy region = new BufferCopy { Size = sizeBytes };
             _vk.CmdCopyBuffer(cb, staging, buf, 1, in region);
@@ -296,12 +323,23 @@ void main() {
 
         private static T[] ToArray<T>(IList<T> list) { var a = new T[list.Count]; for (int i = 0; i < list.Count; i++) a[i] = list[i]; return a; }
 
+        // Creates a descriptor set layout with a single binding at index 0.
+        // This is the simplest possible layout: one UBO or one sampler per set.
         private unsafe DescriptorSetLayout CreateSetLayoutSingle(DescriptorType type, ShaderStageFlags stages)
         {
             DescriptorSetLayoutBinding b = new DescriptorSetLayoutBinding
-            { Binding = 0, DescriptorCount = 1, DescriptorType = type, StageFlags = stages };
+            {
+                Binding = 0,
+                DescriptorCount = 1,
+                DescriptorType = type,
+                StageFlags = stages,
+            };
             DescriptorSetLayoutCreateInfo info = new DescriptorSetLayoutCreateInfo
-            { SType = StructureType.DescriptorSetLayoutCreateInfo, BindingCount = 1, PBindings = &b };
+            {
+                SType = StructureType.DescriptorSetLayoutCreateInfo,
+                BindingCount = 1,
+                PBindings = &b,
+            };
             DescriptorSetLayout l;
             VkCheck.Ok(_vk.CreateDescriptorSetLayout(_device, in info, null, &l));
             return l;
@@ -321,31 +359,69 @@ void main() {
             return s;
         }
 
+        // Updates a descriptor set to point at a standard (non-dynamic) UBO.
         private unsafe void WriteUbo(DescriptorSet set, VkBuffer buffer, ulong range)
         {
-            DescriptorBufferInfo bi = new DescriptorBufferInfo { Buffer = buffer, Offset = 0, Range = range };
+            DescriptorBufferInfo bi = new DescriptorBufferInfo
+            {
+                Buffer = buffer,
+                Offset = 0,
+                Range = range,
+            };
             WriteDescriptorSet write = new WriteDescriptorSet
-            { SType = StructureType.WriteDescriptorSet, DstSet = set, DstBinding = 0,
-              DescriptorCount = 1, DescriptorType = DescriptorType.UniformBuffer, PBufferInfo = &bi };
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set,
+                DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.UniformBuffer,
+                PBufferInfo = &bi,
+            };
             _vk.UpdateDescriptorSets(_device, 1, in write, 0, null);
         }
 
+        // Updates a descriptor set to point at a dynamic UBO. The actual offset
+        // into the buffer is supplied at bind time via vkCmdBindDescriptorSets'
+        // pDynamicOffsets parameter — this allows reusing one descriptor set for
+        // many per-draw uploads into the FrameUniforms ring buffer.
         private unsafe void WriteUboDynamic(DescriptorSet set, VkBuffer buffer, ulong range)
         {
-            DescriptorBufferInfo bi = new DescriptorBufferInfo { Buffer = buffer, Offset = 0, Range = range };
+            DescriptorBufferInfo bi = new DescriptorBufferInfo
+            {
+                Buffer = buffer,
+                Offset = 0,
+                Range = range,
+            };
             WriteDescriptorSet write = new WriteDescriptorSet
-            { SType = StructureType.WriteDescriptorSet, DstSet = set, DstBinding = 0,
-              DescriptorCount = 1, DescriptorType = DescriptorType.UniformBufferDynamic, PBufferInfo = &bi };
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set,
+                DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.UniformBufferDynamic,
+                PBufferInfo = &bi,
+            };
             _vk.UpdateDescriptorSets(_device, 1, in write, 0, null);
         }
 
+        // Updates a descriptor set to point at a combined image sampler (atlas).
         private unsafe void WriteAtlas(DescriptorSet set, ImageView view, Sampler sampler)
         {
             DescriptorImageInfo ii = new DescriptorImageInfo
-            { Sampler = sampler, ImageView = view, ImageLayout = ImageLayout.ShaderReadOnlyOptimal };
+            {
+                Sampler = sampler,
+                ImageView = view,
+                ImageLayout = ImageLayout.ShaderReadOnlyOptimal,
+            };
             WriteDescriptorSet write = new WriteDescriptorSet
-            { SType = StructureType.WriteDescriptorSet, DstSet = set, DstBinding = 0,
-              DescriptorCount = 1, DescriptorType = DescriptorType.CombinedImageSampler, PImageInfo = &ii };
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set,
+                DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.CombinedImageSampler,
+                PImageInfo = &ii,
+            };
             _vk.UpdateDescriptorSets(_device, 1, in write, 0, null);
         }
 
@@ -413,6 +489,12 @@ void main() {
             _vk.CmdBindVertexBuffers(cb, 0, 1, &vb, &vOff);
             _vk.CmdBindIndexBuffer(cb, _indexBuffer, 0, IndexType.Uint32);
 
+            // Descriptor set binding model:
+            //   set 0 = FrameData UBO (camera matrix + editor uniforms, shared across all draws)
+            //   set 1 = MeshData dynamic UBO (per-draw World/Tint/Bones via ring offset)
+            //   set 2 = Atlas combined image sampler (shared Texture2DArray + sampler)
+            // A single dynamic offset (meshDataOffset) is passed so that set 1
+            // reads the correct slice of the FrameUniforms ring buffer for this draw.
             var sets = stackalloc DescriptorSet[3] { _frameSet, _meshSet, _atlasSet };
             uint dynOff = meshDataOffset;
 
@@ -441,6 +523,7 @@ void main() {
 
         private unsafe VkPipeline BuildPipeline(PipelineKey key)
         {
+            // ---- Shader stages ------------------------------------------------
             var entryName = stackalloc byte[5] { (byte)'m', (byte)'a', (byte)'i', (byte)'n', 0 };
             var stages = stackalloc PipelineShaderStageCreateInfo[2]
             {
@@ -450,6 +533,7 @@ void main() {
                     Stage = ShaderStageFlags.FragmentBit, Module = _fs, PName = entryName },
             };
 
+            // ---- Vertex input -------------------------------------------------
             // MeshVertex: Position@0, UVW@12, Normal@24, Color@36, BoneIdx@48, BoneW@64. Stride 80.
             var binding = new VertexInputBindingDescription { Binding = 0, Stride = 80, InputRate = VertexInputRate.Vertex };
             var attributes = stackalloc VertexInputAttributeDescription[6]
@@ -469,49 +553,118 @@ void main() {
                 VertexAttributeDescriptionCount = 6,
                 PVertexAttributeDescriptions = attributes,
             };
+
+            // ---- Input assembly -----------------------------------------------
+            // All mesh geometry is submitted as indexed triangle lists.
             PipelineInputAssemblyStateCreateInfo iaState = new PipelineInputAssemblyStateCreateInfo
-            { SType = StructureType.PipelineInputAssemblyStateCreateInfo, Topology = PrimitiveTopology.TriangleList };
+            {
+                SType = StructureType.PipelineInputAssemblyStateCreateInfo,
+                Topology = PrimitiveTopology.TriangleList,
+            };
+
+            // ---- Viewport / scissor ------------------------------------------
+            // Both are dynamic state (set per-frame by VulkanSwapChain), so we
+            // just declare count = 1 here without providing actual values.
             PipelineViewportStateCreateInfo vpState = new PipelineViewportStateCreateInfo
-            { SType = StructureType.PipelineViewportStateCreateInfo, ViewportCount = 1, ScissorCount = 1 };
+            {
+                SType = StructureType.PipelineViewportStateCreateInfo,
+                ViewportCount = 1,
+                ScissorCount = 1,
+            };
+
+            // ---- Rasterization ------------------------------------------------
+            // Fill mode, with back-face culling toggled per submesh (DoubleSided
+            // disables culling). FrontFace.Clockwise matches D3D11 default under
+            // the Y-flipped Vulkan viewport.
             PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
             {
                 SType = StructureType.PipelineRasterizationStateCreateInfo,
                 PolygonMode = PolygonMode.Fill,
                 CullMode = key.DoubleSided ? CullModeFlags.None : CullModeFlags.BackBit,
-                FrontFace = FrontFace.Clockwise,   // matches D3D11 default (CW=front in fb space) given the Y-flipped Vulkan viewport
+                FrontFace = FrontFace.Clockwise,
                 LineWidth = 1.0f,
             };
-            PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
-            { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = key.Samples };
-            PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
-            { SType = StructureType.PipelineDepthStencilStateCreateInfo, DepthTestEnable = true, DepthWriteEnable = true, DepthCompareOp = CompareOp.LessOrEqual };
 
+            // ---- Multisampling ------------------------------------------------
+            // Sample count is inherited from the swap chain's current MSAA mode.
+            PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
+            {
+                SType = StructureType.PipelineMultisampleStateCreateInfo,
+                RasterizationSamples = key.Samples,
+            };
+
+            // ---- Depth / stencil ----------------------------------------------
+            // Standard opaque depth testing: write + test with LessOrEqual.
+            PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
+            {
+                SType = StructureType.PipelineDepthStencilStateCreateInfo,
+                DepthTestEnable = true,
+                DepthWriteEnable = true,
+                DepthCompareOp = CompareOp.LessOrEqual,
+            };
+
+            // ---- Color blending -----------------------------------------------
+            // Two modes: additive (Src=One, Dst=One) for glow/laser effects,
+            // or premultiplied alpha (Src=One, Dst=1-SrcAlpha) for normal meshes.
             ColorComponentFlags mask = ColorComponentFlags.RBit | ColorComponentFlags.GBit | ColorComponentFlags.BBit | ColorComponentFlags.ABit;
             PipelineColorBlendAttachmentState att = key.Additive
-                ? new PipelineColorBlendAttachmentState { BlendEnable = true,
-                    SrcColorBlendFactor = BlendFactor.One, DstColorBlendFactor = BlendFactor.One, ColorBlendOp = BlendOp.Add,
-                    SrcAlphaBlendFactor = BlendFactor.One, DstAlphaBlendFactor = BlendFactor.One, AlphaBlendOp = BlendOp.Add,
-                    ColorWriteMask = mask }
-                : new PipelineColorBlendAttachmentState { BlendEnable = true,
-                    SrcColorBlendFactor = BlendFactor.One, DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha, ColorBlendOp = BlendOp.Add,
-                    SrcAlphaBlendFactor = BlendFactor.One, DstAlphaBlendFactor = BlendFactor.OneMinusSrcAlpha, AlphaBlendOp = BlendOp.Add,
-                    ColorWriteMask = mask };
+                ? new PipelineColorBlendAttachmentState
+                {
+                    BlendEnable = true,
+                    SrcColorBlendFactor = BlendFactor.One,
+                    DstColorBlendFactor = BlendFactor.One,
+                    ColorBlendOp = BlendOp.Add,
+                    SrcAlphaBlendFactor = BlendFactor.One,
+                    DstAlphaBlendFactor = BlendFactor.One,
+                    AlphaBlendOp = BlendOp.Add,
+                    ColorWriteMask = mask,
+                }
+                : new PipelineColorBlendAttachmentState
+                {
+                    BlendEnable = true,
+                    SrcColorBlendFactor = BlendFactor.One,
+                    DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                    ColorBlendOp = BlendOp.Add,
+                    SrcAlphaBlendFactor = BlendFactor.One,
+                    DstAlphaBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                    AlphaBlendOp = BlendOp.Add,
+                    ColorWriteMask = mask,
+                };
             PipelineColorBlendStateCreateInfo cb = new PipelineColorBlendStateCreateInfo
-            { SType = StructureType.PipelineColorBlendStateCreateInfo, AttachmentCount = 1, PAttachments = &att };
+            {
+                SType = StructureType.PipelineColorBlendStateCreateInfo,
+                AttachmentCount = 1,
+                PAttachments = &att,
+            };
 
+            // ---- Dynamic state ------------------------------------------------
+            // Viewport and scissor are set every frame so they don't bake into the
+            // pipeline. This avoids recreating pipelines on window resize.
             var dynStates = stackalloc DynamicState[2] { DynamicState.Viewport, DynamicState.Scissor };
             PipelineDynamicStateCreateInfo dyn = new PipelineDynamicStateCreateInfo
-            { SType = StructureType.PipelineDynamicStateCreateInfo, DynamicStateCount = 2, PDynamicStates = dynStates };
+            {
+                SType = StructureType.PipelineDynamicStateCreateInfo,
+                DynamicStateCount = 2,
+                PDynamicStates = dynStates,
+            };
 
+            // ---- Assemble the full pipeline -----------------------------------
             GraphicsPipelineCreateInfo gp = new GraphicsPipelineCreateInfo
             {
                 SType = StructureType.GraphicsPipelineCreateInfo,
-                StageCount = 2, PStages = stages,
-                PVertexInputState = &viState, PInputAssemblyState = &iaState,
-                PViewportState = &vpState, PRasterizationState = &rs,
-                PMultisampleState = &ms, PDepthStencilState = &ds,
-                PColorBlendState = &cb, PDynamicState = &dyn,
-                Layout = _pipelineLayout, RenderPass = key.RenderPass, Subpass = 0,
+                StageCount = 2,
+                PStages = stages,
+                PVertexInputState = &viState,
+                PInputAssemblyState = &iaState,
+                PViewportState = &vpState,
+                PRasterizationState = &rs,
+                PMultisampleState = &ms,
+                PDepthStencilState = &ds,
+                PColorBlendState = &cb,
+                PDynamicState = &dyn,
+                Layout = _pipelineLayout,
+                RenderPass = key.RenderPass,
+                Subpass = 0,
             };
             VkPipeline pipeline;
             VkCheck.Ok(_vk.CreateGraphicsPipelines(_device, default, 1, in gp, null, &pipeline));

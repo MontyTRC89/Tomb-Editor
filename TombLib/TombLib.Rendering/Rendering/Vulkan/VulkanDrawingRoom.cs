@@ -179,6 +179,12 @@ void main() {
     // black border at each sector edge + diagonal. Produces the editor's
     // characteristic 'grid' look in Geometry mode (and for selected-textured
     // faces).
+    //
+    // The approach: for each of the three candidate edges (horizontal, vertical,
+    // diagonal) compute the fragment's distance-to-edge in UV space, then divide
+    // by the screen-space derivative of that coordinate to get a pixel count.
+    // Subtract a line-width threshold (scaled by 1/clipW for perspective) and
+    // clamp to [0,1] — this gives a smooth anti-aliased edge mask.
     if (drawOutline > 0) {
         vec2 absUV = abs(fsEditorUv);
         // HLSL SV_POSITION.w in PS is clip-space W; GLSL gl_FragCoord.w is
@@ -222,7 +228,8 @@ void main() {
         private DeviceMemory _vertexMemory;
         private int _vertexCount;
 
-        // Sub-buffer offsets matching the Dx11 SoA layout.
+        // Sub-buffer offsets into the SoA vertex buffer. Each stream occupies a
+        // contiguous region: [positions | colors | overlays | uvwBlend | editorUv].
         private uint _offPositions, _offColors, _offOverlays, _offUvwBlend, _offEditorUv;
 
         private DescriptorSet _frameSet, _atlasSet, _sectorSet;
@@ -246,13 +253,24 @@ void main() {
             _vs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, vsSpirv);
             _fs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, fsSpirv);
 
+            // Descriptor set layouts — note the difference from DrawingMesh:
+            //   set 0: FrameData UBO (camera matrix + editor uniforms)
+            //   set 1: Atlas combined image sampler (Texture2DArray)
+            //   set 2: Sector texture array sampler (editor arrows/overlays)
+            // Rooms do NOT use a dynamic UBO for per-draw data because room
+            // geometry is drawn in a single vkCmdDraw — all transform state lives
+            // in FrameData (the view-projection matrix) and vertex attributes.
             _set0 = CreateSetLayoutSingle(DescriptorType.UniformBuffer,        ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit);
             _set1 = CreateSetLayoutSingle(DescriptorType.CombinedImageSampler, ShaderStageFlags.FragmentBit);
             _set2 = CreateSetLayoutSingle(DescriptorType.CombinedImageSampler, ShaderStageFlags.FragmentBit);
 
             var layouts = stackalloc DescriptorSetLayout[3] { _set0, _set1, _set2 };
             PipelineLayoutCreateInfo plci = new PipelineLayoutCreateInfo
-            { SType = StructureType.PipelineLayoutCreateInfo, SetLayoutCount = 3, PSetLayouts = layouts };
+            {
+                SType = StructureType.PipelineLayoutCreateInfo,
+                SetLayoutCount = 3,
+                PSetLayouts = layouts,
+            };
             PipelineLayout pl;
             VkCheck.Ok(_vk.CreatePipelineLayout(_device, in plci, null, &pl));
             _pipelineLayout = pl;
@@ -262,6 +280,25 @@ void main() {
             _sectorSet = AllocateSet(_set2);
         }
 
+        // Builds the 5-stream SoA (Structure of Arrays) vertex buffer.
+        //
+        // The SoA layout mirrors the Dx11 path for two reasons:
+        //   1. Interop — a future hybrid renderer could share CPU-side vertex
+        //      assembly code between the two backends.
+        //   2. Cache friendliness — the GPU fetches only the streams it needs per
+        //      shader stage (e.g. the fragment shader never reads positions), which
+        //      reduces memory bandwidth compared to an interleaved AoS layout.
+        //
+        // The five streams are packed contiguously in one VkBuffer:
+        //   positions[N]  — vec3   (12 B each)
+        //   colors[N]     — uint   ( 4 B each, R8G8B8A8_UNorm)
+        //   overlays[N]   — uint   ( 4 B each, R8G8B8A8_UNorm)
+        //   uvwBlend[N]   — ulong  ( 8 B each, R32G32_Uint)
+        //   editorUv[N]   — uint   ( 4 B each, R32_Uint)
+        //
+        // Double-sided triangles are appended at the tail of the buffer with
+        // reversed winding order (v2, v1, v0 instead of v0, v1, v2). This avoids
+        // needing CullMode.None which would z-fight the original face.
         private unsafe void BuildVertexBuffer(Description description)
         {
             RoomGeometry roomGeometry = description.Room.RoomGeometry;
@@ -279,6 +316,7 @@ void main() {
             uint bytesUvw     = (uint)(totalVerts * 8);
             uint bytesEditor  = (uint)(totalVerts * 4);
             uint total = bytesPos + bytesCol + bytesOverlay + bytesUvw + bytesEditor;
+
             _offPositions = 0;
             _offColors    = bytesPos;
             _offOverlays  = bytesPos + bytesCol;
@@ -296,12 +334,23 @@ void main() {
 
                 Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
 
+                // Pass 1: world-space positions and compressed vertex colors.
                 for (int i = 0; i < singleSided; ++i)
                     positions[i] = roomGeometry.VertexPositions[i] + worldPos;
                 for (int i = 0; i < singleSided; ++i)
                     colors[i] = CompressColor(roomGeometry.VertexColors[i]);
 
-                // Pass 2: per-triangle sector overlay + per-vertex editor uv
+                // Pass 2: per-triangle sector overlay + per-vertex editor UV.
+                // The editorUv packing (see CompressEditorUv / inEditorUv in the VS):
+                //   bits [1:0]   — signed 2-bit X corner index (-2..1)
+                //   bits [3:2]   — signed 2-bit Y corner index (-2..1)
+                //   bit  4       — Highlighted flag
+                //   bit  5       — Dimmed flag
+                //   bit  6       — HasSectorTexture flag
+                //   bit  7       — Selected-textured flag
+                //   bits [15:8]  — SectorTexture layer index (or R channel of color)
+                //   bits [23:16] — G channel of sector color
+                //   bits [31:24] — B channel of sector color
                 for (int i = 0; i < singleSided; ++i)
                 {
                     Vector2 vertexEditorUv = roomGeometry.VertexEditorUVs[i];
@@ -384,6 +433,8 @@ void main() {
                                 uvwBlend[i * 3 + 2] = CompressUvw(pos, textureScaling, texture.TexCoord2, (uint)texture.BlendMode);
                             }
 
+                            // Append double-sided triangles with reversed winding
+                            // (v2, v1, v0) at the tail of the vertex buffer.
                             if (texture.DoubleSided)
                             {
                                 positions[dsIdx]   = positions[i * 3 + 2];
@@ -409,15 +460,25 @@ void main() {
                 }
             }
 
-            // Stage + upload to a device-local VkBuffer.
+            // Stage + upload to a device-local VkBuffer (same staging pattern
+            // as VulkanDrawingMesh.CreateImmutableBufferFromArray).
             BufferCreateInfo stagingInfo = new BufferCreateInfo
-            { SType = StructureType.BufferCreateInfo, Size = total, Usage = BufferUsageFlags.TransferSrcBit, SharingMode = SharingMode.Exclusive };
+            {
+                SType = StructureType.BufferCreateInfo,
+                Size = total,
+                Usage = BufferUsageFlags.TransferSrcBit,
+                SharingMode = SharingMode.Exclusive,
+            };
             VkBuffer stagingBuf;
             VkCheck.Ok(_vk.CreateBuffer(_device, in stagingInfo, null, &stagingBuf));
             _vk.GetBufferMemoryRequirements(_device, stagingBuf, out MemoryRequirements stReq);
             MemoryAllocateInfo stAlloc = new MemoryAllocateInfo
-            { SType = StructureType.MemoryAllocateInfo, AllocationSize = stReq.Size,
-              MemoryTypeIndex = DeviceWrapper.FindMemoryType(stReq.MemoryTypeBits, MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit) };
+            {
+                SType = StructureType.MemoryAllocateInfo,
+                AllocationSize = stReq.Size,
+                MemoryTypeIndex = DeviceWrapper.FindMemoryType(stReq.MemoryTypeBits,
+                    MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit),
+            };
             DeviceMemory stMem;
             VkCheck.Ok(_vk.AllocateMemory(_device, in stAlloc, null, &stMem));
             _vk.BindBufferMemory(_device, stagingBuf, stMem, 0);
@@ -427,15 +488,22 @@ void main() {
             _vk.UnmapMemory(_device, stMem);
 
             BufferCreateInfo bufInfo = new BufferCreateInfo
-            { SType = StructureType.BufferCreateInfo, Size = total,
-              Usage = BufferUsageFlags.VertexBufferBit | BufferUsageFlags.TransferDstBit,
-              SharingMode = SharingMode.Exclusive };
+            {
+                SType = StructureType.BufferCreateInfo,
+                Size = total,
+                Usage = BufferUsageFlags.VertexBufferBit | BufferUsageFlags.TransferDstBit,
+                SharingMode = SharingMode.Exclusive,
+            };
             VkBuffer buf;
             VkCheck.Ok(_vk.CreateBuffer(_device, in bufInfo, null, &buf));
             _vk.GetBufferMemoryRequirements(_device, buf, out MemoryRequirements req);
             MemoryAllocateInfo alloc = new MemoryAllocateInfo
-            { SType = StructureType.MemoryAllocateInfo, AllocationSize = req.Size,
-              MemoryTypeIndex = DeviceWrapper.FindMemoryType(req.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit) };
+            {
+                SType = StructureType.MemoryAllocateInfo,
+                AllocationSize = req.Size,
+                MemoryTypeIndex = DeviceWrapper.FindMemoryType(req.MemoryTypeBits,
+                    MemoryPropertyFlags.DeviceLocalBit),
+            };
             DeviceMemory mem;
             VkCheck.Ok(_vk.AllocateMemory(_device, in alloc, null, &mem));
             _vk.BindBufferMemory(_device, buf, mem, 0);
@@ -452,7 +520,11 @@ void main() {
             _vertexMemory = mem;
         }
 
-        // Same packed format the Dx11 path uses.
+        // Compresses a vertex color (range 0..2, HDR-style) into R8G8B8A8_UNorm.
+        // The multiplier 127.5 maps the [0..2] HDR range into [0..255]:
+        //   color=0.0 → 0,  color=1.0 → 127/128,  color=2.0 → 255.
+        // The vertex shader recovers the original range by multiplying * 2.0.
+        // Alpha is fixed to 255 (fully opaque) in this overload.
         private static uint CompressColor(Vector3 c)
         {
             uint r = (uint)Math.Clamp((int)(c.X * 127.5f), 0, 255);
@@ -460,6 +532,10 @@ void main() {
             uint b = (uint)Math.Clamp((int)(c.Z * 127.5f), 0, 255);
             return r | (g << 8) | (b << 16) | (255u << 24);
         }
+
+        // Overload for overlay colors with explicit alpha. Uses standard 255
+        // scaling (not the 127.5 HDR multiplier) because overlay colors are
+        // already in [0..1] range.
         private static uint CompressColor(Vector3 c, float alpha)
         {
             uint r = (uint)Math.Clamp((int)(c.X * 255f), 0, 255);
@@ -468,6 +544,19 @@ void main() {
             uint a = (uint)Math.Clamp((int)(alpha * 255f), 0, 255);
             return r | (g << 8) | (b << 16) | (a << 24);
         }
+
+        // Packs atlas UV + layer index + blend mode into a 64-bit value.
+        //
+        // Bit layout (lo = bits 0..31, hi = bits 32..63):
+        //   lo[23: 0]  U  — 24-bit fixed-point (value / 16777216 = normalized U)
+        //   lo[31:24]  V low 8 bits
+        //   hi[15: 0]  V high 16 bits  (total 24-bit V, same scale as U)
+        //   hi[27:16]  W  — 12-bit unsigned atlas layer index
+        //   hi[31:28]  Blend mode (4 bits, maps to BlendMode enum)
+        //
+        // The VS decompresses with bit shifts and divides by 16777216.0 to get
+        // normalized [0..1] texture coordinates. The 24-bit precision gives
+        // sub-pixel accuracy for atlas sizes up to 16384x16384.
         private static ulong CompressUvw(VectorInt3 pos, Vector2 scale, Vector2 uv, uint blend)
         {
             uint u = (uint)Math.Clamp((int)((pos.X + uv.X) * scale.X), 0, 0xffffff);
@@ -478,40 +567,80 @@ void main() {
             return lo | (hi << 32);
         }
 
+        // Creates a descriptor set layout with a single binding at index 0.
         private unsafe DescriptorSetLayout CreateSetLayoutSingle(DescriptorType type, ShaderStageFlags stages)
         {
             DescriptorSetLayoutBinding b = new DescriptorSetLayoutBinding
-            { Binding = 0, DescriptorCount = 1, DescriptorType = type, StageFlags = stages };
+            {
+                Binding = 0,
+                DescriptorCount = 1,
+                DescriptorType = type,
+                StageFlags = stages,
+            };
             DescriptorSetLayoutCreateInfo info = new DescriptorSetLayoutCreateInfo
-            { SType = StructureType.DescriptorSetLayoutCreateInfo, BindingCount = 1, PBindings = &b };
+            {
+                SType = StructureType.DescriptorSetLayoutCreateInfo,
+                BindingCount = 1,
+                PBindings = &b,
+            };
             DescriptorSetLayout l;
             VkCheck.Ok(_vk.CreateDescriptorSetLayout(_device, in info, null, &l));
             return l;
         }
+
         private unsafe DescriptorSet AllocateSet(DescriptorSetLayout layout)
         {
             DescriptorSetAllocateInfo info = new DescriptorSetAllocateInfo
-            { SType = StructureType.DescriptorSetAllocateInfo, DescriptorPool = DeviceWrapper.DescriptorPool,
-              DescriptorSetCount = 1, PSetLayouts = &layout };
+            {
+                SType = StructureType.DescriptorSetAllocateInfo,
+                DescriptorPool = DeviceWrapper.DescriptorPool,
+                DescriptorSetCount = 1,
+                PSetLayouts = &layout,
+            };
             DescriptorSet s;
             VkCheck.Ok(_vk.AllocateDescriptorSets(_device, in info, &s));
             return s;
         }
+
+        // Updates a descriptor set to point at a standard (non-dynamic) UBO.
         private unsafe void WriteUbo(DescriptorSet set, VkBuffer buffer, ulong range)
         {
-            DescriptorBufferInfo bi = new DescriptorBufferInfo { Buffer = buffer, Offset = 0, Range = range };
+            DescriptorBufferInfo bi = new DescriptorBufferInfo
+            {
+                Buffer = buffer,
+                Offset = 0,
+                Range = range,
+            };
             WriteDescriptorSet w = new WriteDescriptorSet
-            { SType = StructureType.WriteDescriptorSet, DstSet = set, DstBinding = 0,
-              DescriptorCount = 1, DescriptorType = DescriptorType.UniformBuffer, PBufferInfo = &bi };
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set,
+                DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.UniformBuffer,
+                PBufferInfo = &bi,
+            };
             _vk.UpdateDescriptorSets(_device, 1, in w, 0, null);
         }
+
+        // Updates a descriptor set to point at a combined image sampler.
         private unsafe void WriteAtlas(DescriptorSet set, ImageView view, Sampler sampler)
         {
             DescriptorImageInfo ii = new DescriptorImageInfo
-            { Sampler = sampler, ImageView = view, ImageLayout = ImageLayout.ShaderReadOnlyOptimal };
+            {
+                Sampler = sampler,
+                ImageView = view,
+                ImageLayout = ImageLayout.ShaderReadOnlyOptimal,
+            };
             WriteDescriptorSet w = new WriteDescriptorSet
-            { SType = StructureType.WriteDescriptorSet, DstSet = set, DstBinding = 0,
-              DescriptorCount = 1, DescriptorType = DescriptorType.CombinedImageSampler, PImageInfo = &ii };
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set,
+                DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.CombinedImageSampler,
+                PImageInfo = &ii,
+            };
             _vk.UpdateDescriptorSets(_device, 1, in w, 0, null);
         }
 
@@ -542,6 +671,8 @@ void main() {
 
             if (_pipeline.Handle == 0)
                 _pipeline = BuildPipeline(swapChain.RenderPass, swapChain.SampleCount);
+
+            // Re-write descriptors only when the underlying resource changes.
             if (_cachedStateBuffer.Handle != stateBuffer.Buffer.Handle)
             {
                 _cachedStateBuffer = stateBuffer.Buffer;
@@ -561,11 +692,14 @@ void main() {
 
             _vk.CmdBindPipeline(cb, PipelineBindPoint.Graphics, _pipeline);
 
+            // Bind all 5 SoA streams from the same VkBuffer at different offsets.
             VkBuffer vb = _vertexBuffer;
             var buffers  = stackalloc VkBuffer[5] { vb, vb, vb, vb, vb };
             var offsets = stackalloc ulong[5] { _offPositions, _offColors, _offOverlays, _offUvwBlend, _offEditorUv };
             _vk.CmdBindVertexBuffers(cb, 0, 5, buffers, offsets);
 
+            // Bind descriptor sets: set 0 = FrameData, set 1 = atlas, set 2 = sector textures.
+            // No dynamic offsets — rooms have no per-draw UBO.
             var sets = stackalloc DescriptorSet[3] { _frameSet, _atlasSet, _sectorSet };
             _vk.CmdBindDescriptorSets(cb, PipelineBindPoint.Graphics, _pipelineLayout, 0, 3, sets, 0, null);
 
@@ -574,6 +708,7 @@ void main() {
 
         private unsafe VkPipeline BuildPipeline(RenderPass rp, SampleCountFlags samples)
         {
+            // ---- Shader stages ------------------------------------------------
             var entryName = stackalloc byte[5] { (byte)'m', (byte)'a', (byte)'i', (byte)'n', 0 };
             var stages = stackalloc PipelineShaderStageCreateInfo[2]
             {
@@ -582,6 +717,9 @@ void main() {
                 new PipelineShaderStageCreateInfo { SType = StructureType.PipelineShaderStageCreateInfo,
                     Stage = ShaderStageFlags.FragmentBit, Module = _fs, PName = entryName },
             };
+
+            // ---- Vertex input -------------------------------------------------
+            // 5 bindings matching the SoA streams (see BuildVertexBuffer).
             var bindings = stackalloc VertexInputBindingDescription[5]
             {
                 new VertexInputBindingDescription { Binding = 0, Stride = 12, InputRate = VertexInputRate.Vertex },
@@ -599,48 +737,114 @@ void main() {
                 new VertexInputAttributeDescription { Location = 4, Binding = 4, Format = Format.R32Uint,        Offset = 0 },
             };
             PipelineVertexInputStateCreateInfo vi = new PipelineVertexInputStateCreateInfo
-            { SType = StructureType.PipelineVertexInputStateCreateInfo, VertexBindingDescriptionCount = 5,
-              PVertexBindingDescriptions = bindings, VertexAttributeDescriptionCount = 5, PVertexAttributeDescriptions = attrs };
+            {
+                SType = StructureType.PipelineVertexInputStateCreateInfo,
+                VertexBindingDescriptionCount = 5,
+                PVertexBindingDescriptions = bindings,
+                VertexAttributeDescriptionCount = 5,
+                PVertexAttributeDescriptions = attrs,
+            };
+
+            // ---- Input assembly -----------------------------------------------
             PipelineInputAssemblyStateCreateInfo ia = new PipelineInputAssemblyStateCreateInfo
-            { SType = StructureType.PipelineInputAssemblyStateCreateInfo, Topology = PrimitiveTopology.TriangleList };
+            {
+                SType = StructureType.PipelineInputAssemblyStateCreateInfo,
+                Topology = PrimitiveTopology.TriangleList,
+            };
+
+            // ---- Viewport / scissor (dynamic) --------------------------------
             PipelineViewportStateCreateInfo vp = new PipelineViewportStateCreateInfo
-            { SType = StructureType.PipelineViewportStateCreateInfo, ViewportCount = 1, ScissorCount = 1 };
+            {
+                SType = StructureType.PipelineViewportStateCreateInfo,
+                ViewportCount = 1,
+                ScissorCount = 1,
+            };
+
+            // ---- Rasterization ------------------------------------------------
+            // Match Dx11RenderingDrawingRoom: backface culling on, double-sided
+            // triangles are already emitted with a reversed-winding duplicate at
+            // the tail of the VB. CullMode.None would draw every triangle from
+            // both sides, and the duplicates would z-fight with the originals
+            // and win (drawn last) — flipping each wall inside-out.
             PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
-            { SType = StructureType.PipelineRasterizationStateCreateInfo, PolygonMode = PolygonMode.Fill,
-              // Match Dx11RenderingDrawingRoom: backface culling on, double-sided
-              // triangles are already emitted with a reversed-winding duplicate at
-              // the tail of the VB. CullMode.None would draw every triangle from
-              // both sides, and the duplicates would z-fight with the originals
-              // and win (drawn last) — flipping each wall inside-out.
-              CullMode = CullModeFlags.BackBit,
-              // D3D11 default rasterizer treats CW-in-framebuffer as front. In our
-              // Vulkan setup the swap-chain uses a Y-flipped viewport — so source
-              // CCW-in-NDC vertices project to CW-in-framebuffer (= negative signed
-              // area). FrontFace.Clockwise tells the rasterizer "negative area =
-              // front", matching D3D11 default rendering 1:1.
-              FrontFace = FrontFace.Clockwise,
-              LineWidth = 1.0f };
+            {
+                SType = StructureType.PipelineRasterizationStateCreateInfo,
+                PolygonMode = PolygonMode.Fill,
+                CullMode = CullModeFlags.BackBit,
+                // D3D11 default rasterizer treats CW-in-framebuffer as front. In our
+                // Vulkan setup the swap-chain uses a Y-flipped viewport — so source
+                // CCW-in-NDC vertices project to CW-in-framebuffer (= negative signed
+                // area). FrontFace.Clockwise tells the rasterizer "negative area =
+                // front", matching D3D11 default rendering 1:1.
+                FrontFace = FrontFace.Clockwise,
+                LineWidth = 1.0f,
+            };
+
+            // ---- Multisampling ------------------------------------------------
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
-            { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = samples };
+            {
+                SType = StructureType.PipelineMultisampleStateCreateInfo,
+                RasterizationSamples = samples,
+            };
+
+            // ---- Depth / stencil ----------------------------------------------
             PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
-            { SType = StructureType.PipelineDepthStencilStateCreateInfo, DepthTestEnable = true, DepthWriteEnable = true, DepthCompareOp = CompareOp.LessOrEqual };
+            {
+                SType = StructureType.PipelineDepthStencilStateCreateInfo,
+                DepthTestEnable = true,
+                DepthWriteEnable = true,
+                DepthCompareOp = CompareOp.LessOrEqual,
+            };
+
+            // ---- Color blending -----------------------------------------------
+            // Premultiplied alpha: the fragment shader already multiplies RGB by A,
+            // so Src=One, Dst=1-SrcAlpha gives correct compositing.
             ColorComponentFlags mask = ColorComponentFlags.RBit | ColorComponentFlags.GBit | ColorComponentFlags.BBit | ColorComponentFlags.ABit;
             PipelineColorBlendAttachmentState att = new PipelineColorBlendAttachmentState
-            { BlendEnable = true,
-              SrcColorBlendFactor = BlendFactor.One, DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha, ColorBlendOp = BlendOp.Add,
-              SrcAlphaBlendFactor = BlendFactor.One, DstAlphaBlendFactor = BlendFactor.OneMinusSrcAlpha, AlphaBlendOp = BlendOp.Add,
-              ColorWriteMask = mask };
+            {
+                BlendEnable = true,
+                SrcColorBlendFactor = BlendFactor.One,
+                DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                ColorBlendOp = BlendOp.Add,
+                SrcAlphaBlendFactor = BlendFactor.One,
+                DstAlphaBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                AlphaBlendOp = BlendOp.Add,
+                ColorWriteMask = mask,
+            };
             PipelineColorBlendStateCreateInfo cb = new PipelineColorBlendStateCreateInfo
-            { SType = StructureType.PipelineColorBlendStateCreateInfo, AttachmentCount = 1, PAttachments = &att };
+            {
+                SType = StructureType.PipelineColorBlendStateCreateInfo,
+                AttachmentCount = 1,
+                PAttachments = &att,
+            };
+
+            // ---- Dynamic state ------------------------------------------------
             var dynStates = stackalloc DynamicState[2] { DynamicState.Viewport, DynamicState.Scissor };
             PipelineDynamicStateCreateInfo dyn = new PipelineDynamicStateCreateInfo
-            { SType = StructureType.PipelineDynamicStateCreateInfo, DynamicStateCount = 2, PDynamicStates = dynStates };
+            {
+                SType = StructureType.PipelineDynamicStateCreateInfo,
+                DynamicStateCount = 2,
+                PDynamicStates = dynStates,
+            };
+
+            // ---- Assemble the full pipeline -----------------------------------
             GraphicsPipelineCreateInfo gp = new GraphicsPipelineCreateInfo
-            { SType = StructureType.GraphicsPipelineCreateInfo, StageCount = 2, PStages = stages,
-              PVertexInputState = &vi, PInputAssemblyState = &ia, PViewportState = &vp,
-              PRasterizationState = &rs, PMultisampleState = &ms, PDepthStencilState = &ds,
-              PColorBlendState = &cb, PDynamicState = &dyn,
-              Layout = _pipelineLayout, RenderPass = rp, Subpass = 0 };
+            {
+                SType = StructureType.GraphicsPipelineCreateInfo,
+                StageCount = 2,
+                PStages = stages,
+                PVertexInputState = &vi,
+                PInputAssemblyState = &ia,
+                PViewportState = &vp,
+                PRasterizationState = &rs,
+                PMultisampleState = &ms,
+                PDepthStencilState = &ds,
+                PColorBlendState = &cb,
+                PDynamicState = &dyn,
+                Layout = _pipelineLayout,
+                RenderPass = rp,
+                Subpass = 0,
+            };
             VkPipeline pipeline;
             VkCheck.Ok(_vk.CreateGraphicsPipelines(_device, default, 1, in gp, null, &pipeline));
             return pipeline;

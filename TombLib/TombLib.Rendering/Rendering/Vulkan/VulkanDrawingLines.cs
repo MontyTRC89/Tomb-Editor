@@ -228,7 +228,12 @@ void main() {
             cbData.Tint = arg.Tint;
             uint lineDataOffset = DeviceWrapper.FrameUniforms.Upload(ref cbData);
 
-            // Upload vertices. SoA in one buffer: positions[] then colors[].
+            // Upload vertices using SoA (Structure of Arrays) layout in one VkBuffer:
+            //   binding 0 = positions (vec3) at offset 0
+            //   binding 1 = colors (vec4) at offset posBytes
+            // Both bindings read from the same VkBuffer at different offsets.
+            // This layout separates hot data (positions, always read by the VS)
+            // from cold data (colors, only read for interpolation).
             uint posBytes = (uint)(_vertexCount * sizeof(Vector3));
             uint colBytes = (uint)(_vertexCount * sizeof(Vector4));
             uint totalBytes = posBytes + colBytes;
@@ -274,6 +279,15 @@ void main() {
             _vk.CmdDraw(cb, (uint)_vertexCount, 1, 0, 0);
         }
 
+        // Ensures the persistently-mapped vertex buffer is large enough for `size`
+        // bytes. Uses a grow-double strategy: when the buffer is too small, allocate
+        // a new one at max(requested, 2 * old capacity, 4096). This amortizes the
+        // cost of reallocation over many frames.
+        //
+        // DeviceWaitIdle is needed before freeing the old buffer because the GPU
+        // may still be reading from it in a previously submitted command buffer.
+        // This is safe here because Render() is always called from the UI thread,
+        // not from inside an in-flight command list that references this buffer.
         private unsafe void EnsureVertexBufferCapacity(uint size)
         {
             if (_vertexBuffer.Handle != 0 && _vertexBufferCapacity >= size) return;
@@ -281,7 +295,7 @@ void main() {
             // Free the old buffer if any.
             if (_vertexBuffer.Handle != 0)
             {
-                _vk.DeviceWaitIdle(_device); // safe: caller is on UI thread, not in CL recording for this buffer
+                _vk.DeviceWaitIdle(_device);
                 _vk.UnmapMemory(_device, _vertexMemory);
                 _vk.DestroyBuffer(_device, _vertexBuffer, null);
                 _vk.FreeMemory(_device, _vertexMemory, null);
@@ -324,7 +338,7 @@ void main() {
 
         private unsafe VkPipeline BuildPipeline(PipelineKey key)
         {
-            // Shaders
+            // ---- Shader stages ------------------------------------------------
             var entryName = stackalloc byte[5] { (byte)'m', (byte)'a', (byte)'i', (byte)'n', 0 };
             PipelineShaderStageCreateInfo vs = new PipelineShaderStageCreateInfo
             {
@@ -342,7 +356,8 @@ void main() {
             };
             var stages = stackalloc PipelineShaderStageCreateInfo[2] { vs, fs };
 
-            // Vertex input: 2 bindings (SoA — Position float3, Color float4)
+            // ---- Vertex input -------------------------------------------------
+            // 2 bindings (SoA — Position float3, Color float4)
             var bindings = stackalloc VertexInputBindingDescription[2]
             {
                 new VertexInputBindingDescription { Binding = 0, Stride = (uint)sizeof(Vector3), InputRate = VertexInputRate.Vertex },
@@ -362,6 +377,8 @@ void main() {
                 PVertexAttributeDescriptions = attributes,
             };
 
+            // ---- Input assembly -----------------------------------------------
+            // Topology varies: lines for wireframe/gizmos, triangles for solid fills.
             PipelineInputAssemblyStateCreateInfo iaState = new PipelineInputAssemblyStateCreateInfo
             {
                 SType = StructureType.PipelineInputAssemblyStateCreateInfo,
@@ -369,7 +386,8 @@ void main() {
                 PrimitiveRestartEnable = false,
             };
 
-            // Viewport + scissor are dynamic (set on every frame by VulkanSwapChain.EnsureRecording).
+            // ---- Viewport / scissor (dynamic) --------------------------------
+            // Both are set on every frame by VulkanSwapChain.EnsureRecording.
             PipelineViewportStateCreateInfo vpState = new PipelineViewportStateCreateInfo
             {
                 SType = StructureType.PipelineViewportStateCreateInfo,
@@ -377,6 +395,8 @@ void main() {
                 ScissorCount = 1,
             };
 
+            // ---- Rasterization ------------------------------------------------
+            // No face culling (lines have no facing), wireframe support for debug overlay.
             PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
             {
                 SType = StructureType.PipelineRasterizationStateCreateInfo,
@@ -389,12 +409,15 @@ void main() {
                 DepthBiasEnable = false,
             };
 
+            // ---- Multisampling ------------------------------------------------
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
             {
                 SType = StructureType.PipelineMultisampleStateCreateInfo,
                 RasterizationSamples = key.Samples,
             };
 
+            // ---- Depth / stencil ----------------------------------------------
+            // Three modes: Default (test+write), ReadOnly (test only), NoZ (disabled).
             PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
             {
                 SType = StructureType.PipelineDepthStencilStateCreateInfo,
@@ -405,6 +428,7 @@ void main() {
                 StencilTestEnable = false,
             };
 
+            // ---- Color blending -----------------------------------------------
             PipelineColorBlendAttachmentState att = BuildBlendAttachment(key.Blend);
             PipelineColorBlendStateCreateInfo cb = new PipelineColorBlendStateCreateInfo
             {
@@ -414,6 +438,7 @@ void main() {
                 PAttachments = &att,
             };
 
+            // ---- Dynamic state ------------------------------------------------
             var dynStates = stackalloc DynamicState[2] { DynamicState.Viewport, DynamicState.Scissor };
             PipelineDynamicStateCreateInfo dyn = new PipelineDynamicStateCreateInfo
             {
@@ -422,6 +447,7 @@ void main() {
                 PDynamicStates = dynStates,
             };
 
+            // ---- Assemble the full pipeline -----------------------------------
             GraphicsPipelineCreateInfo gp = new GraphicsPipelineCreateInfo
             {
                 SType = StructureType.GraphicsPipelineCreateInfo,
@@ -445,6 +471,17 @@ void main() {
             return pipeline;
         }
 
+        // Builds the color blend attachment state for one of four modes:
+        //
+        //   Opaque:                 Blend disabled, write RGBA as-is.
+        //   NonPremultipliedAlpha:  Classic Src=SrcAlpha, Dst=1-SrcAlpha. Used for
+        //                           UI lines with per-vertex alpha that has NOT been
+        //                           pre-multiplied into the RGB channels.
+        //   Additive:               Src=SrcAlpha, Dst=One. Adds light — used for
+        //                           selection highlights and glow effects.
+        //   PremultipliedAlpha (_): Src=One, Dst=1-SrcAlpha. The default fallback.
+        //                           RGB is already scaled by alpha, so the source
+        //                           factor is One (no double-multiply).
         private static PipelineColorBlendAttachmentState BuildBlendAttachment(BlendMode blend)
         {
             ColorComponentFlags mask =

@@ -10,12 +10,22 @@ using VkPipeline = Silk.NET.Vulkan.Pipeline;
 namespace TombLib.Rendering.Vulkan
 {
     // Vulkan port of imported-geometry drawing (FBX/OBJ/COLLADA dropped meshes).
-    // Differs from VulkanDrawingMesh in two ways: each submesh carries its own
-    // texture (no shared atlas) and UVs come in pixel space (divided in the VS
-    // by the per-submesh reciprocal texture size).
+    //
+    // Differs from VulkanDrawingMesh in two ways:
+    //   1. Each submesh carries its own texture (no shared atlas). The per-submesh
+    //      texture is bound into set 2 as a sampler2D (not sampler2DArray).
+    //   2. UVs come in pixel space — the vertex shader divides them by the
+    //      per-submesh reciprocal texture size (RecipTexSize.xy) to normalize.
     public sealed class VulkanDrawingImportedGeometry : RenderingDrawingImportedGeometry
     {
-        // 64 (World) + 16 (Tint) + 16 (ReciprocalTextureSize/flags) = 96 bytes
+        // Per-draw constant buffer layout (byte offsets):
+        //   [ 0 .. 63]  World             mat4  (64 bytes)
+        //   [64 .. 79]  Tint              vec4  (16 bytes)
+        //   [80 .. 95]  RecipTexSize      vec4  (16 bytes)
+        //       .xy = 1/textureWidth, 1/textureHeight
+        //       .z  = UseVertexColors (0 or 1)
+        //       .w  = AlphaTest (0 or 1)
+        // Total: 96 bytes (= MeshDataSize)
         private const uint MeshDataSize = 96;
 
         private const string VertexShaderGlsl = @"#version 450
@@ -93,12 +103,18 @@ void main() {
         private VkBuffer _cachedStateBuffer;
         private DescriptorSet _frameSet;
         private DescriptorSet _meshSet;
+
         // One texture descriptor set per submesh, lazily updated when the
-        // underlying ImageView changes. Keyed by submesh index because each
-        // submesh has its own Texture.
+        // underlying ImageView changes. Each submesh has its own texture (unlike
+        // DrawingMesh which shares a single atlas), so we need N descriptor sets.
+        // _textureSetCachedView[i] tracks the last-written ImageView handle for
+        // submesh i — we only call vkUpdateDescriptorSets when it differs, to
+        // avoid redundant descriptor writes on every frame.
         private readonly DescriptorSet[] _textureSets;
         private readonly ulong[] _textureSetCachedView;
 
+        // Pipelines are cached by (DoubleSided, Additive, RenderPass, Samples)
+        // — same axes as VulkanDrawingMesh.
         private readonly struct PipelineKey : IEquatable<PipelineKey>
         {
             public readonly bool DoubleSided;
@@ -135,13 +151,21 @@ void main() {
             _vs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, vsSpirv);
             _fs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, fsSpirv);
 
+            // Descriptor set layouts:
+            //   set 0: FrameData UBO (camera matrix + editor uniforms)
+            //   set 1: MeshData dynamic UBO (per-submesh World/Tint/RecipTexSize)
+            //   set 2: Per-submesh texture sampler (sampler2D, not 2DArray)
             _set0 = CreateSetLayoutSingle(DescriptorType.UniformBuffer,        ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit);
             _set1 = CreateSetLayoutSingle(DescriptorType.UniformBufferDynamic, ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit);
             _set2 = CreateSetLayoutSingle(DescriptorType.CombinedImageSampler, ShaderStageFlags.FragmentBit);
 
             var layouts = stackalloc DescriptorSetLayout[3] { _set0, _set1, _set2 };
             PipelineLayoutCreateInfo plci = new PipelineLayoutCreateInfo
-            { SType = StructureType.PipelineLayoutCreateInfo, SetLayoutCount = 3, PSetLayouts = layouts };
+            {
+                SType = StructureType.PipelineLayoutCreateInfo,
+                SetLayoutCount = 3,
+                PSetLayouts = layouts,
+            };
             PipelineLayout pl;
             VkCheck.Ok(_vk.CreatePipelineLayout(_device, in plci, null, &pl));
             _pipelineLayout = pl;
@@ -155,16 +179,32 @@ void main() {
             for (int i = 0; i < _submeshes.Length; i++) _textureSets[i] = AllocateSet(_set2);
         }
 
+        // Staging buffer upload pattern (same as VulkanDrawingMesh):
+        //   1. Create host-visible staging buffer, map it, memcpy data in, unmap
+        //   2. Create device-local destination buffer
+        //   3. Copy via a transient one-shot command buffer
+        //   4. Destroy the staging buffer
+        // Device-local memory is fastest for the GPU but not directly CPU-writable.
         private unsafe void CreateImmutableBufferFromList<T>(IList<T> data, uint sizeBytes, BufferUsageFlags usage, out VkBuffer buffer, out DeviceMemory memory)
         {
+            // Host-visible staging buffer
             BufferCreateInfo stagingInfo = new BufferCreateInfo
-            { SType = StructureType.BufferCreateInfo, Size = sizeBytes, Usage = BufferUsageFlags.TransferSrcBit, SharingMode = SharingMode.Exclusive };
+            {
+                SType = StructureType.BufferCreateInfo,
+                Size = sizeBytes,
+                Usage = BufferUsageFlags.TransferSrcBit,
+                SharingMode = SharingMode.Exclusive,
+            };
             VkBuffer staging;
             VkCheck.Ok(_vk.CreateBuffer(_device, in stagingInfo, null, &staging));
             _vk.GetBufferMemoryRequirements(_device, staging, out MemoryRequirements stReq);
             MemoryAllocateInfo stAlloc = new MemoryAllocateInfo
-            { SType = StructureType.MemoryAllocateInfo, AllocationSize = stReq.Size,
-              MemoryTypeIndex = DeviceWrapper.FindMemoryType(stReq.MemoryTypeBits, MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit) };
+            {
+                SType = StructureType.MemoryAllocateInfo,
+                AllocationSize = stReq.Size,
+                MemoryTypeIndex = DeviceWrapper.FindMemoryType(stReq.MemoryTypeBits,
+                    MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit),
+            };
             DeviceMemory stMem;
             VkCheck.Ok(_vk.AllocateMemory(_device, in stAlloc, null, &stMem));
             _vk.BindBufferMemory(_device, staging, stMem, 0);
@@ -175,19 +215,29 @@ void main() {
             finally { h.Free(); }
             _vk.UnmapMemory(_device, stMem);
 
+            // Device-local destination buffer
             BufferCreateInfo bufInfo = new BufferCreateInfo
-            { SType = StructureType.BufferCreateInfo, Size = sizeBytes,
-              Usage = usage | BufferUsageFlags.TransferDstBit, SharingMode = SharingMode.Exclusive };
+            {
+                SType = StructureType.BufferCreateInfo,
+                Size = sizeBytes,
+                Usage = usage | BufferUsageFlags.TransferDstBit,
+                SharingMode = SharingMode.Exclusive,
+            };
             VkBuffer buf;
             VkCheck.Ok(_vk.CreateBuffer(_device, in bufInfo, null, &buf));
             _vk.GetBufferMemoryRequirements(_device, buf, out MemoryRequirements req);
             MemoryAllocateInfo alloc = new MemoryAllocateInfo
-            { SType = StructureType.MemoryAllocateInfo, AllocationSize = req.Size,
-              MemoryTypeIndex = DeviceWrapper.FindMemoryType(req.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit) };
+            {
+                SType = StructureType.MemoryAllocateInfo,
+                AllocationSize = req.Size,
+                MemoryTypeIndex = DeviceWrapper.FindMemoryType(req.MemoryTypeBits,
+                    MemoryPropertyFlags.DeviceLocalBit),
+            };
             DeviceMemory mem;
             VkCheck.Ok(_vk.AllocateMemory(_device, in alloc, null, &mem));
             _vk.BindBufferMemory(_device, buf, mem, 0);
 
+            // Copy staging → device-local via transient command buffer.
             var cb = DeviceWrapper.BeginTransient();
             BufferCopy region = new BufferCopy { Size = sizeBytes };
             _vk.CmdCopyBuffer(cb, staging, buf, 1, in region);
@@ -202,48 +252,101 @@ void main() {
 
         private static T[] ToArray<T>(IList<T> list) { var a = new T[list.Count]; for (int i = 0; i < list.Count; i++) a[i] = list[i]; return a; }
 
+        // Creates a descriptor set layout with a single binding at index 0.
         private unsafe DescriptorSetLayout CreateSetLayoutSingle(DescriptorType type, ShaderStageFlags stages)
         {
             DescriptorSetLayoutBinding b = new DescriptorSetLayoutBinding
-            { Binding = 0, DescriptorCount = 1, DescriptorType = type, StageFlags = stages };
+            {
+                Binding = 0,
+                DescriptorCount = 1,
+                DescriptorType = type,
+                StageFlags = stages,
+            };
             DescriptorSetLayoutCreateInfo info = new DescriptorSetLayoutCreateInfo
-            { SType = StructureType.DescriptorSetLayoutCreateInfo, BindingCount = 1, PBindings = &b };
+            {
+                SType = StructureType.DescriptorSetLayoutCreateInfo,
+                BindingCount = 1,
+                PBindings = &b,
+            };
             DescriptorSetLayout l;
             VkCheck.Ok(_vk.CreateDescriptorSetLayout(_device, in info, null, &l));
             return l;
         }
+
         private unsafe DescriptorSet AllocateSet(DescriptorSetLayout layout)
         {
             DescriptorSetAllocateInfo info = new DescriptorSetAllocateInfo
-            { SType = StructureType.DescriptorSetAllocateInfo, DescriptorPool = DeviceWrapper.DescriptorPool,
-              DescriptorSetCount = 1, PSetLayouts = &layout };
+            {
+                SType = StructureType.DescriptorSetAllocateInfo,
+                DescriptorPool = DeviceWrapper.DescriptorPool,
+                DescriptorSetCount = 1,
+                PSetLayouts = &layout,
+            };
             DescriptorSet s;
             VkCheck.Ok(_vk.AllocateDescriptorSets(_device, in info, &s));
             return s;
         }
+
+        // Updates a descriptor set to point at a standard (non-dynamic) UBO.
         private unsafe void WriteUbo(DescriptorSet set, VkBuffer buffer, ulong range)
         {
-            DescriptorBufferInfo bi = new DescriptorBufferInfo { Buffer = buffer, Offset = 0, Range = range };
+            DescriptorBufferInfo bi = new DescriptorBufferInfo
+            {
+                Buffer = buffer,
+                Offset = 0,
+                Range = range,
+            };
             WriteDescriptorSet w = new WriteDescriptorSet
-            { SType = StructureType.WriteDescriptorSet, DstSet = set, DstBinding = 0,
-              DescriptorCount = 1, DescriptorType = DescriptorType.UniformBuffer, PBufferInfo = &bi };
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set,
+                DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.UniformBuffer,
+                PBufferInfo = &bi,
+            };
             _vk.UpdateDescriptorSets(_device, 1, in w, 0, null);
         }
+
+        // Updates a descriptor set for a dynamic UBO (offset supplied at bind time).
         private unsafe void WriteUboDynamic(DescriptorSet set, VkBuffer buffer, ulong range)
         {
-            DescriptorBufferInfo bi = new DescriptorBufferInfo { Buffer = buffer, Offset = 0, Range = range };
+            DescriptorBufferInfo bi = new DescriptorBufferInfo
+            {
+                Buffer = buffer,
+                Offset = 0,
+                Range = range,
+            };
             WriteDescriptorSet w = new WriteDescriptorSet
-            { SType = StructureType.WriteDescriptorSet, DstSet = set, DstBinding = 0,
-              DescriptorCount = 1, DescriptorType = DescriptorType.UniformBufferDynamic, PBufferInfo = &bi };
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set,
+                DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.UniformBufferDynamic,
+                PBufferInfo = &bi,
+            };
             _vk.UpdateDescriptorSets(_device, 1, in w, 0, null);
         }
+
+        // Updates a descriptor set to point at a combined image sampler.
         private unsafe void WriteTexture(DescriptorSet set, ImageView view, Sampler sampler)
         {
             DescriptorImageInfo ii = new DescriptorImageInfo
-            { Sampler = sampler, ImageView = view, ImageLayout = ImageLayout.ShaderReadOnlyOptimal };
+            {
+                Sampler = sampler,
+                ImageView = view,
+                ImageLayout = ImageLayout.ShaderReadOnlyOptimal,
+            };
             WriteDescriptorSet w = new WriteDescriptorSet
-            { SType = StructureType.WriteDescriptorSet, DstSet = set, DstBinding = 0,
-              DescriptorCount = 1, DescriptorType = DescriptorType.CombinedImageSampler, PImageInfo = &ii };
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set,
+                DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.CombinedImageSampler,
+                PImageInfo = &ii,
+            };
             _vk.UpdateDescriptorSets(_device, 1, in w, 0, null);
         }
 
@@ -304,6 +407,8 @@ void main() {
                 }
                 uint meshOff = DeviceWrapper.FrameUniforms.Upload(_cbufferStaging, MeshDataSize);
 
+                // Lazy per-submesh descriptor set update: only re-write when the
+                // texture's ImageView handle changes (avoids redundant writes).
                 ImageView texView = ResolveTexture(sub.Texture);
                 if (texView.Handle == 0) continue;
                 if (_textureSetCachedView[i] != texView.Handle)
@@ -338,6 +443,7 @@ void main() {
 
         private unsafe VkPipeline BuildPipeline(PipelineKey key)
         {
+            // ---- Shader stages ------------------------------------------------
             var entryName = stackalloc byte[5] { (byte)'m', (byte)'a', (byte)'i', (byte)'n', 0 };
             var stages = stackalloc PipelineShaderStageCreateInfo[2]
             {
@@ -346,6 +452,8 @@ void main() {
                 new PipelineShaderStageCreateInfo { SType = StructureType.PipelineShaderStageCreateInfo,
                     Stage = ShaderStageFlags.FragmentBit, Module = _fs, PName = entryName },
             };
+
+            // ---- Vertex input -------------------------------------------------
             // Vertex: Position@0 (12), UV@12 (8), Color@20 (12), Normal@32 (12). Stride 44.
             var binding = new VertexInputBindingDescription { Binding = 0, Stride = 44, InputRate = VertexInputRate.Vertex };
             var attributes = stackalloc VertexInputAttributeDescription[4]
@@ -356,41 +464,115 @@ void main() {
                 new VertexInputAttributeDescription { Location = 3, Binding = 0, Format = Format.R32G32B32Sfloat, Offset = 32 },
             };
             PipelineVertexInputStateCreateInfo vi = new PipelineVertexInputStateCreateInfo
-            { SType = StructureType.PipelineVertexInputStateCreateInfo, VertexBindingDescriptionCount = 1, PVertexBindingDescriptions = &binding,
-              VertexAttributeDescriptionCount = 4, PVertexAttributeDescriptions = attributes };
+            {
+                SType = StructureType.PipelineVertexInputStateCreateInfo,
+                VertexBindingDescriptionCount = 1,
+                PVertexBindingDescriptions = &binding,
+                VertexAttributeDescriptionCount = 4,
+                PVertexAttributeDescriptions = attributes,
+            };
+
+            // ---- Input assembly -----------------------------------------------
             PipelineInputAssemblyStateCreateInfo ia = new PipelineInputAssemblyStateCreateInfo
-            { SType = StructureType.PipelineInputAssemblyStateCreateInfo, Topology = PrimitiveTopology.TriangleList };
+            {
+                SType = StructureType.PipelineInputAssemblyStateCreateInfo,
+                Topology = PrimitiveTopology.TriangleList,
+            };
+
+            // ---- Viewport / scissor (dynamic) --------------------------------
             PipelineViewportStateCreateInfo vp = new PipelineViewportStateCreateInfo
-            { SType = StructureType.PipelineViewportStateCreateInfo, ViewportCount = 1, ScissorCount = 1 };
+            {
+                SType = StructureType.PipelineViewportStateCreateInfo,
+                ViewportCount = 1,
+                ScissorCount = 1,
+            };
+
+            // ---- Rasterization ------------------------------------------------
             PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
-            { SType = StructureType.PipelineRasterizationStateCreateInfo, PolygonMode = PolygonMode.Fill,
-              CullMode = key.DoubleSided ? CullModeFlags.None : CullModeFlags.BackBit,
-              FrontFace = FrontFace.Clockwise,   // matches D3D11 default (CW=front in fb space) given the Y-flipped Vulkan viewport
-              LineWidth = 1.0f };
+            {
+                SType = StructureType.PipelineRasterizationStateCreateInfo,
+                PolygonMode = PolygonMode.Fill,
+                CullMode = key.DoubleSided ? CullModeFlags.None : CullModeFlags.BackBit,
+                FrontFace = FrontFace.Clockwise,   // matches D3D11 default (CW=front in fb space) given the Y-flipped Vulkan viewport
+                LineWidth = 1.0f,
+            };
+
+            // ---- Multisampling ------------------------------------------------
             PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
-            { SType = StructureType.PipelineMultisampleStateCreateInfo, RasterizationSamples = key.Samples };
+            {
+                SType = StructureType.PipelineMultisampleStateCreateInfo,
+                RasterizationSamples = key.Samples,
+            };
+
+            // ---- Depth / stencil ----------------------------------------------
             PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
-            { SType = StructureType.PipelineDepthStencilStateCreateInfo, DepthTestEnable = true, DepthWriteEnable = true, DepthCompareOp = CompareOp.LessOrEqual };
+            {
+                SType = StructureType.PipelineDepthStencilStateCreateInfo,
+                DepthTestEnable = true,
+                DepthWriteEnable = true,
+                DepthCompareOp = CompareOp.LessOrEqual,
+            };
+
+            // ---- Color blending -----------------------------------------------
+            // Same two modes as DrawingMesh: additive or premultiplied alpha.
             ColorComponentFlags mask = ColorComponentFlags.RBit | ColorComponentFlags.GBit | ColorComponentFlags.BBit | ColorComponentFlags.ABit;
             PipelineColorBlendAttachmentState att = key.Additive
-                ? new PipelineColorBlendAttachmentState { BlendEnable = true,
-                    SrcColorBlendFactor = BlendFactor.One, DstColorBlendFactor = BlendFactor.One, ColorBlendOp = BlendOp.Add,
-                    SrcAlphaBlendFactor = BlendFactor.One, DstAlphaBlendFactor = BlendFactor.One, AlphaBlendOp = BlendOp.Add, ColorWriteMask = mask }
-                : new PipelineColorBlendAttachmentState { BlendEnable = true,
-                    SrcColorBlendFactor = BlendFactor.One, DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha, ColorBlendOp = BlendOp.Add,
-                    SrcAlphaBlendFactor = BlendFactor.One, DstAlphaBlendFactor = BlendFactor.OneMinusSrcAlpha, AlphaBlendOp = BlendOp.Add, ColorWriteMask = mask };
+                ? new PipelineColorBlendAttachmentState
+                {
+                    BlendEnable = true,
+                    SrcColorBlendFactor = BlendFactor.One,
+                    DstColorBlendFactor = BlendFactor.One,
+                    ColorBlendOp = BlendOp.Add,
+                    SrcAlphaBlendFactor = BlendFactor.One,
+                    DstAlphaBlendFactor = BlendFactor.One,
+                    AlphaBlendOp = BlendOp.Add,
+                    ColorWriteMask = mask,
+                }
+                : new PipelineColorBlendAttachmentState
+                {
+                    BlendEnable = true,
+                    SrcColorBlendFactor = BlendFactor.One,
+                    DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                    ColorBlendOp = BlendOp.Add,
+                    SrcAlphaBlendFactor = BlendFactor.One,
+                    DstAlphaBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                    AlphaBlendOp = BlendOp.Add,
+                    ColorWriteMask = mask,
+                };
             PipelineColorBlendStateCreateInfo cb = new PipelineColorBlendStateCreateInfo
-            { SType = StructureType.PipelineColorBlendStateCreateInfo, AttachmentCount = 1, PAttachments = &att };
+            {
+                SType = StructureType.PipelineColorBlendStateCreateInfo,
+                AttachmentCount = 1,
+                PAttachments = &att,
+            };
+
+            // ---- Dynamic state ------------------------------------------------
             var dynStates = stackalloc DynamicState[2] { DynamicState.Viewport, DynamicState.Scissor };
             PipelineDynamicStateCreateInfo dyn = new PipelineDynamicStateCreateInfo
-            { SType = StructureType.PipelineDynamicStateCreateInfo, DynamicStateCount = 2, PDynamicStates = dynStates };
+            {
+                SType = StructureType.PipelineDynamicStateCreateInfo,
+                DynamicStateCount = 2,
+                PDynamicStates = dynStates,
+            };
 
+            // ---- Assemble the full pipeline -----------------------------------
             GraphicsPipelineCreateInfo gp = new GraphicsPipelineCreateInfo
-            { SType = StructureType.GraphicsPipelineCreateInfo, StageCount = 2, PStages = stages,
-              PVertexInputState = &vi, PInputAssemblyState = &ia, PViewportState = &vp,
-              PRasterizationState = &rs, PMultisampleState = &ms, PDepthStencilState = &ds,
-              PColorBlendState = &cb, PDynamicState = &dyn,
-              Layout = _pipelineLayout, RenderPass = key.RenderPass, Subpass = 0 };
+            {
+                SType = StructureType.GraphicsPipelineCreateInfo,
+                StageCount = 2,
+                PStages = stages,
+                PVertexInputState = &vi,
+                PInputAssemblyState = &ia,
+                PViewportState = &vp,
+                PRasterizationState = &rs,
+                PMultisampleState = &ms,
+                PDepthStencilState = &ds,
+                PColorBlendState = &cb,
+                PDynamicState = &dyn,
+                Layout = _pipelineLayout,
+                RenderPass = key.RenderPass,
+                Subpass = 0,
+            };
             VkPipeline pipeline;
             VkCheck.Ok(_vk.CreateGraphicsPipelines(_device, default, 1, in gp, null, &pipeline));
             return pipeline;
