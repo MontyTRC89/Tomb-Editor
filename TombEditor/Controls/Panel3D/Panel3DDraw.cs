@@ -2094,7 +2094,8 @@ namespace TombEditor.Controls.Panel3D
         private void DrawScene()
         {
             // Verify that editor is ready
-            if (_editor == null || _editor.Level == null || _editor.SelectedRoom == null || _legacyDevice == null)
+            if (_editor == null || _editor.Level == null || _editor.SelectedRoom == null
+                || DeviceManager.DefaultDeviceManager.Device == null)
                 return;
 
             // If any render exceptions were raised, bring app into safe mode and bypass rendering.

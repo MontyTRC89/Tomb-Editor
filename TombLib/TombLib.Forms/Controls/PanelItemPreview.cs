@@ -208,7 +208,7 @@ namespace TombLib.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_legacyDevice == null)
+            if (DeviceManager.DefaultDeviceManager.Device == null)
                 return;
             base.OnPaint(e);
         }
