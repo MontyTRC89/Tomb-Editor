@@ -175,7 +175,7 @@
     <PackageReference Include="Silk.NET.Shaderc" Version="2.21.0" />
     <PackageReference Include="Silk.NET.Shaderc.Native" Version="2.21.0" />
     <!-- OpenGL 4.1 bindings (Silk.NET). Used by the OpenGL/* backend.
-         Activated via TOMBEDITOR_RENDERER=opengl. -->
+         Activated via TOMBEDITOR_GRAPHIC_API=opengl. -->
     <PackageReference Include="Silk.NET.OpenGL" Version="2.21.0" />
   </ItemGroup>
   <Import Project="HlslShaderCompile.targets" />

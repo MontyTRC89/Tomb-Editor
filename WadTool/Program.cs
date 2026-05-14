@@ -25,6 +25,11 @@ namespace WadTool
         [STAThread]
         public static void Main(string[] args)
         {
+            // Parse --gapi <name> / --gapi=<name> and propagate via the
+            // env var. Must happen before any DeviceManager access. Recognised
+            // values: vulkan (default), dx11, directx11, opengl.
+            args = ExtractRendererArg(args);
+
             var services = WPFInitializer.InitializeWPF();
             services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
             ServiceLocator.Configure(services.BuildServiceProvider());
@@ -106,6 +111,29 @@ namespace WadTool
                     }
                 }
             }
+        }
+
+        // Pulls "--gapi <name>" / "--gapi=<name>" out of args (sets the
+        // TOMBEDITOR_GRAPHIC_API env var) and returns the remaining args.
+        private static string[] ExtractRendererArg(string[] args)
+        {
+            var kept = new List<string>(args.Length);
+            for (int i = 0; i < args.Length; i++)
+            {
+                string a = args[i];
+                if (a.StartsWith("--gapi=", StringComparison.OrdinalIgnoreCase))
+                {
+                    Environment.SetEnvironmentVariable("TOMBEDITOR_GRAPHIC_API", a.Substring("--gapi=".Length));
+                    continue;
+                }
+                if (a.Equals("--gapi", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
+                {
+                    Environment.SetEnvironmentVariable("TOMBEDITOR_GRAPHIC_API", args[++i]);
+                    continue;
+                }
+                kept.Add(a);
+            }
+            return kept.ToArray();
         }
     }
 }

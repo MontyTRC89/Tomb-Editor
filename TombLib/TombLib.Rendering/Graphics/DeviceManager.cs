@@ -6,10 +6,11 @@ namespace TombLib.Graphics
 {
     // Process-wide singleton owning the rendering device.
     //
-    // Backend selection:
-    //   - default: Dx11RenderingDevice (Silk.NET D3D11).
-    //   - env TOMBEDITOR_RENDERER=vulkan: VulkanRenderingDevice (Silk.NET.Vulkan).
-    //   - env TOMBEDITOR_RENDERER=opengl: OpenGLRenderingDevice (Silk.NET.OpenGL 4.1).
+    // Backend selection (via env TOMBEDITOR_GRAPHIC_API, set either externally or
+    // from the TombEditor / WadTool `--gapi <name>` command-line switch):
+    //   - default / "vulkan": VulkanRenderingDevice (Silk.NET.Vulkan).
+    //   - "dx11" / "directx11": Dx11RenderingDevice (Silk.NET D3D11).
+    //   - "opengl": OpenGLRenderingDevice (Silk.NET.OpenGL 4.1).
     public class DeviceManager
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -31,11 +32,11 @@ namespace TombLib.Graphics
 
         public unsafe DeviceManager()
         {
-            string requested = Environment.GetEnvironmentVariable("TOMBEDITOR_RENDERER")?.ToLowerInvariant();
-            
-			if (requested == "opengl")
+            string requested = Environment.GetEnvironmentVariable("TOMBEDITOR_GRAPHIC_API")?.ToLowerInvariant();
+
+            if (requested == "opengl")
             {
-                logger.Info("Backend: OpenGLRenderingDevice (forced via TOMBEDITOR_RENDERER).");
+                logger.Info("Backend: OpenGLRenderingDevice (forced via TOMBEDITOR_GRAPHIC_API).");
                 var glDevice = new Rendering.OpenGL.OpenGLRenderingDevice();
                 Device = glDevice;
                 BackendName = "OpenGL 4.1";
@@ -44,29 +45,30 @@ namespace TombLib.Graphics
                     new Rendering.OpenGL.OpenGLTexture2D(glDevice, img).Texture;
                 return;
             }
-            if (requested == "vulkan")
+            if (requested == "dx11" || requested == "directx11")
             {
-                logger.Info("Backend: VulkanRenderingDevice (forced via TOMBEDITOR_RENDERER).");
-                var vulkanDevice = new Rendering.Vulkan.VulkanRenderingDevice();
-                Device = vulkanDevice;
-                BackendName = "Vulkan";
-
-                // ImportedGeometryTexture lazily uploads its ImageC into a per-texture
-                // VulkanTexture2D on first GpuTexture access. The factory below is
-                // the only TombLib → TombLib.Rendering bridge that side of the
-                // dependency graph; without it, imported-geometry textures would
-                // never reach the GPU under Vulkan.
-                LevelData.ImportedGeometryTexture.GpuTextureFactory = img =>
-                    new Rendering.Vulkan.VulkanTexture2D(vulkanDevice, img).View;
+                logger.Info("Backend: Dx11RenderingDevice (forced via TOMBEDITOR_GRAPHIC_API).");
+                var dx11Dev = new Rendering.DirectX11.Dx11RenderingDevice();
+                Device = dx11Dev;
+                D3D11Device = (nint)dx11Dev.Device;
+                LevelData.ImportedGeometry.Device = D3D11Device;
+                BackendName = "DirectX 11";
                 return;
             }
 
-            logger.Info("Backend: Dx11RenderingDevice (default, Silk.NET D3D11).");
-            var dx11Dev = new Rendering.DirectX11.Dx11RenderingDevice();
-            Device = dx11Dev;
-            D3D11Device = (nint)dx11Dev.Device;
-            LevelData.ImportedGeometry.Device = D3D11Device;
-            BackendName = "DirectX 11";
+            // Default (also matches requested == "vulkan").
+            logger.Info("Backend: VulkanRenderingDevice (default, Silk.NET.Vulkan).");
+            var vulkanDevice = new Rendering.Vulkan.VulkanRenderingDevice();
+            Device = vulkanDevice;
+            BackendName = "Vulkan";
+
+            // ImportedGeometryTexture lazily uploads its ImageC into a per-texture
+            // VulkanTexture2D on first GpuTexture access. The factory below is
+            // the only TombLib → TombLib.Rendering bridge that side of the
+            // dependency graph; without it, imported-geometry textures would
+            // never reach the GPU under Vulkan.
+            LevelData.ImportedGeometryTexture.GpuTextureFactory = img =>
+                new Rendering.Vulkan.VulkanTexture2D(vulkanDevice, img).View;
         }
 
         // WadRenderer factory. Returns the backend-appropriate concrete:
