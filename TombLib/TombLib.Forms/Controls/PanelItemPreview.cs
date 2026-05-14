@@ -1,5 +1,4 @@
-﻿using SharpDX.Direct3D11;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -73,9 +72,9 @@ namespace TombLib.Controls
 
         // Rendering state
         private RenderingTextureAllocator _textureAllocator;
+        private RenderingStateBuffer _stateBuffer;
 
         // Legacy rendering state
-        private Device _legacyDevice;
         private WadRenderer _wadRenderer;
 
         public PanelItemPreview()
@@ -129,30 +128,12 @@ namespace TombLib.Controls
             base.InitializeRendering(device, antialias, objectQuality);
 
             _textureAllocator = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(1024, 1024, 1) });
+            _stateBuffer = device.CreateStateBuffer();
 
             // Legacy rendering state
             {
-                // Reset scrollbar
-                _legacyDevice = DeviceManager.DefaultDeviceManager.D3D11Device;
                 _wadRenderer = DeviceManager.DefaultDeviceManager.CreateWadRenderer(true, true, 1024, 512, false);
-
                 ResetCamera();
-
-                // Initialize the rasterizer state for wireframe drawing
-                SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
-                    new SharpDX.Direct3D11.RasterizerStateDescription
-                    {
-                        CullMode = SharpDX.Direct3D11.CullMode.None,
-                        DepthBias = 0,
-                        DepthBiasClamp = 0,
-                        FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                        IsAntialiasedLineEnabled = true,
-                        IsDepthClipEnabled = true,
-                        IsFrontCounterClockwise = false,
-                        IsMultisampleEnabled = true,
-                        IsScissorEnabled = false,
-                        SlopeScaledDepthBias = 0
-                    };
             }
         }
 
@@ -200,6 +181,7 @@ namespace TombLib.Controls
         {
             if (disposing)
             {
+                _stateBuffer?.Dispose();
                 _wadRenderer?.Dispose();
                 _textureAllocator?.Dispose();
             }
@@ -245,9 +227,8 @@ namespace TombLib.Controls
             }
             else
             {
-                using var stateBuffer = Device.CreateStateBuffer();
-                stateBuffer.Set(new Rendering.RenderingState { TransformMatrix = viewProjection });
-                WadObjectRenderHelper.RenderObject(CurrentObject, _wadRenderer, Device, SwapChain, stateBuffer, Camera.GetPosition(), DrawTransparency);
+                _stateBuffer.Set(new Rendering.RenderingState { TransformMatrix = viewProjection });
+                WadObjectRenderHelper.RenderObject(CurrentObject, _wadRenderer, Device, SwapChain, _stateBuffer, Camera.GetPosition(), DrawTransparency);
             }
         }
 

@@ -75,12 +75,11 @@ namespace WadTool.Controls
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
         // Unified-path resources (Tappa-1 abstractions).
+        private RenderingStateBuffer _stateBuffer;
         private RenderingDrawingLines _linesBatch;
         private readonly List<SolidLineVertex> _lines = new List<SolidLineVertex>();
         private readonly Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh> _meshCache = new Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh>();
 
-        // Raw D3D11 device. Used to reconstruct the WadRenderer when settings change.
-        private SharpDX.Direct3D11.Device _device;
         private DeviceManager _deviceManager;
         private GizmoStaticEditor _gizmo;
         private GizmoStaticEditorLight _gizmoLight;
@@ -106,10 +105,10 @@ namespace WadTool.Controls
 
             // Unified path
             _linesBatch = deviceManager.Device.CreateDrawingLines(new RenderingDrawingLines.Description { Dynamic = true });
+            _stateBuffer = deviceManager.Device.CreateStateBuffer();
 
             // Legacy rendering — only the gizmos remain on this path.
             {
-                _device = deviceManager.D3D11Device;
                 _deviceManager = deviceManager;
                 _wadRenderer = _deviceManager.CreateWadRenderer(false, true, 4096, 2048, false);
                 _gizmo = new GizmoStaticEditor(_tool.Configuration, deviceManager.Device, this);
@@ -126,6 +125,7 @@ namespace WadTool.Controls
                 _gizmo?.Dispose();
                 _gizmoLight?.Dispose();
                 _wadRenderer?.Dispose();
+                _stateBuffer?.Dispose();
                 _linesBatch?.Dispose();
                 foreach (var m in _meshCache.Values)
                     m.Dispose();
@@ -185,12 +185,7 @@ namespace WadTool.Controls
             Device.ResetState();
 
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-
-            // We share one StateBuffer for the lifetime of this draw call. Since we
-            // don't have one cached at the panel level, build a transient one — could
-            // be cached if profiling shows it matters.
-            using var stateBuffer = Device.CreateStateBuffer();
-            stateBuffer.Set(new RenderingState { TransformMatrix = viewProjection });
+            _stateBuffer.Set(new RenderingState { TransformMatrix = viewProjection });
 
             // Accumulate every line/wire pass into one batch (grid + lights wireframes
             // + boxes + normals). One Render() at the end.
@@ -238,7 +233,7 @@ namespace WadTool.Controls
                     drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                     {
                         RenderTarget = SwapChain,
-                        StateBuffer = stateBuffer,
+                        StateBuffer = _stateBuffer,
                         Atlas = _wadRenderer.Texture,
                         World = world,
                         Tint = Vector4.One,
@@ -273,7 +268,7 @@ namespace WadTool.Controls
                 _linesBatch.Render(new RenderingDrawingLines.RenderArgs
                 {
                     RenderTarget = SwapChain,
-                    StateBuffer = stateBuffer,
+                    StateBuffer = _stateBuffer,
                 });
             }
 
@@ -283,13 +278,13 @@ namespace WadTool.Controls
             {
                 Device.ResetState();
                 SwapChain.ClearDepth();
-                _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
+                _gizmo.Draw(SwapChain, _stateBuffer, viewProjection);
             }
             if (SelectedLight != null)
             {
                 Device.ResetState();
                 SwapChain.ClearDepth();
-                _gizmoLight.Draw(SwapChain, stateBuffer, viewProjection);
+                _gizmoLight.Draw(SwapChain, _stateBuffer, viewProjection);
             }
 
             // Draw debug strings

@@ -113,7 +113,19 @@ namespace TombLib.Controls
             }
 
             SwapChain.Clear(ClearColor);
-            OnDraw();
+            try
+            {
+                OnDraw();
+            }
+            catch (Exception ex)
+            {
+                // Ensure Present() is always called after Clear() so the
+                // swap chain render pass is properly closed.  Without this,
+                // a single exception in OnDraw permanently breaks the frame
+                // cycle (command buffer left in recording state, fence never
+                // signalled) and the panel stays grey forever.
+                NLog.LogManager.GetCurrentClassLogger().Error(ex, "RenderingPanel.OnDraw");
+            }
             SwapChain.Present();
         }
 

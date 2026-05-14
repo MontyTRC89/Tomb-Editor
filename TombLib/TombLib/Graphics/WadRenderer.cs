@@ -12,7 +12,7 @@ namespace TombLib.Graphics
     // virtual hooks: OnInitializeTexture / OnEnsureCapacity / OnUploadSubregion.
     //
     // Subclasses:
-    //   - Dx11WadRenderer (TombLib/Graphics/Dx11WadRenderer.cs) — SharpDX Texture2DArray.
+    //   - Dx11WadRenderer (TombLib/Graphics/Dx11WadRenderer.cs) — Silk.NET D3D11 Texture2DArray.
     //   - VulkanWadRenderer (TombLib.Rendering/Rendering/Vulkan) — VkImage Texture2DArray.
     //
     // Construct via DeviceManager.CreateWadRenderer(...) so callers don't have

@@ -1,60 +1,79 @@
 using NLog;
-using SharpDX;
-using SharpDX.Direct3D11;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
+using Silk.NET.DXGI;
 using System;
 using System.IO;
 using TombLib.Utils;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
 
 namespace TombLib.Graphics
 {
-    // Raw D3D11 texture loading. Migrated from SharpDX.Toolkit Texture2D to
-    // SharpDX.Direct3D11.Texture2D + ShaderResourceView so the unified rendering path
-    // can bind textures directly without the toolkit wrapper.
+    // Raw D3D11 texture loading using Silk.NET bindings.
     //
     // Caller responsibilities:
-    //   - Provide a SharpDX.Direct3D11.Device.
-    //   - Dispose both the Texture2D AND the ShaderResourceView when done. The pair
-    //     is returned via the LoadedTexture record below.
-    public static class TextureLoad
+    //   - Provide a device pointer as nint (ID3D11Device*).
+    //   - Dispose the returned LoadedTexture when done. Both the Texture2D and
+    //     the ShaderResourceView are released.
+    //
+    // Because this type lives in TombLib (not TombLib.Rendering), the
+    // LoadedTexture record uses nint handles rather than Silk.NET pointer types
+    // so that non-unsafe consumers (ImportedGeometryTexture) can store them.
+    public static unsafe class TextureLoad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public readonly record struct LoadedTexture(Texture2D Texture, ShaderResourceView View) : IDisposable
+        /// <summary>
+        /// Holds an ID3D11Texture2D* and an ID3D11ShaderResourceView* as nint handles.
+        /// Disposing releases both COM objects.
+        /// </summary>
+        public readonly record struct LoadedTexture(nint Texture, nint View) : IDisposable
         {
             public void Dispose()
             {
-                View?.Dispose();
-                Texture?.Dispose();
+                if (View != 0)
+                    ((ID3D11ShaderResourceView*)View)->Release();
+                if (Texture != 0)
+                    ((ID3D11Texture2D*)Texture)->Release();
             }
         }
 
-        public static LoadedTexture Load(Device device, ImageC image, ResourceUsage usage = ResourceUsage.Immutable)
+        public static LoadedTexture Load(nint deviceHandle, ImageC image, D3D11Usage usage = D3D11Usage.Immutable)
         {
-            if (device == null)
+            if (deviceHandle == 0)
                 return default;
+
+            var device = (ID3D11Device*)deviceHandle;
 
             try
             {
                 LoadedTexture result = default;
                 image.GetIntPtr((IntPtr data) =>
                 {
-                    var description = new Texture2DDescription
+                    var description = new Texture2DDesc
                     {
                         ArraySize = 1,
-                        BindFlags = BindFlags.ShaderResource,
-                        CpuAccessFlags = CpuAccessFlags.None,
-                        Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm,
-                        Height = image.Height,
+                        BindFlags = (uint)BindFlag.ShaderResource,
+                        CPUAccessFlags = 0,
+                        Format = Format.FormatB8G8R8A8Unorm,
+                        Height = (uint)image.Height,
                         MipLevels = 1,
-                        OptionFlags = ResourceOptionFlags.None,
-                        SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0),
+                        MiscFlags = 0,
+                        SampleDesc = new SampleDesc(1, 0),
                         Usage = usage,
-                        Width = image.Width,
+                        Width = (uint)image.Width,
                     };
-                    var dataBox = new DataBox(data, image.Width * ImageC.PixelSize, 0);
-                    var tex = new Texture2D(device, description, new[] { dataBox });
-                    var srv = new ShaderResourceView(device, tex);
-                    result = new LoadedTexture(tex, srv);
+                    var subresource = new SubresourceData
+                    {
+                        PSysMem = (void*)data,
+                        SysMemPitch = (uint)(image.Width * ImageC.PixelSize),
+                        SysMemSlicePitch = 0,
+                    };
+                    ID3D11Texture2D* tex;
+                    SilkMarshal.ThrowHResult(device->CreateTexture2D(&description, &subresource, &tex));
+                    ID3D11ShaderResourceView* srv;
+                    SilkMarshal.ThrowHResult(device->CreateShaderResourceView((ID3D11Resource*)tex, null, &srv));
+                    result = new LoadedTexture((nint)tex, (nint)srv);
                 });
                 return result;
             }
@@ -62,39 +81,47 @@ namespace TombLib.Graphics
             {
                 // Fallback to a plain red texture so the editor can keep rendering.
                 if (image != ImageC.Red)
-                    return Load(device, ImageC.Red, usage);
+                    return Load(deviceHandle, ImageC.Red, usage);
                 return default;
             }
         }
 
-        public static LoadedTexture Load(Device device, Stream stream)
+        public static LoadedTexture Load(nint device, Stream stream)
             => Load(device, ImageC.FromStream(stream));
 
-        public static LoadedTexture Load(Device device, string path)
+        public static LoadedTexture Load(nint device, string path)
             => Load(device, ImageC.FromFile(path));
 
         // Updates a sub-region of an existing texture array slice. `position.X/Y` is the
         // pixel offset within the slice; `position.Z` selects the slice (texture array).
         // The texture must be Usage.Default (or Dynamic) — Immutable cannot be updated.
-        public static void Update(DeviceContext context, Texture2D texture, ImageC image, VectorInt3 position)
+        public static void Update(nint contextHandle, nint textureHandle, ImageC image, VectorInt3 position)
         {
             if (image.Width == 0 || image.Height == 0)
                 return;
 
+            var context = (ID3D11DeviceContext*)contextHandle;
+            var texture = (ID3D11Texture2D*)textureHandle;
+
             image.GetIntPtr((IntPtr data) =>
             {
-                var region = new ResourceRegion
+                var box = new Box
                 {
-                    Left = position.X,
-                    Right = position.X + image.Width,
-                    Top = position.Y,
-                    Bottom = position.Y + image.Height,
+                    Left = (uint)position.X,
+                    Right = (uint)(position.X + image.Width),
+                    Top = (uint)position.Y,
+                    Bottom = (uint)(position.Y + image.Height),
                     Front = 0,
                     Back = 1,
                 };
-                var box = new DataBox(data, image.Width * ImageC.PixelSize, 0);
-                int subresourceIndex = position.Z; // mip 0 of slice `position.Z`
-                context.UpdateSubresource(box, texture, subresourceIndex, region);
+                uint subresourceIndex = (uint)position.Z; // mip 0 of slice `position.Z`
+                context->UpdateSubresource(
+                    (ID3D11Resource*)texture,
+                    subresourceIndex,
+                    &box,
+                    (void*)data,
+                    (uint)(image.Width * ImageC.PixelSize),
+                    0);
             });
         }
     }

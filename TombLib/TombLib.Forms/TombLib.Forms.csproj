@@ -17,6 +17,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Configurations>Debug;Release</Configurations>
     <Platforms>x64;x86</Platforms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <OutputPath>..\..\Build ($(Platform))\</OutputPath>
@@ -32,17 +33,6 @@
   <PropertyGroup Condition="'$(Platform)'=='x86'">
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="SharpDX">
-      <HintPath>..\..\Libs\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D11">
-      <HintPath>..\..\Libs\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DXGI">
-      <HintPath>..\..\Libs\SharpDX.DXGI.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
@@ -114,6 +104,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="Silk.NET.Direct3D11" Version="2.21.0" />
+    <PackageReference Include="Silk.NET.DXGI" Version="2.21.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Forms\DarkDataGridViewControls.cs" />

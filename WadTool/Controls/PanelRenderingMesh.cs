@@ -260,14 +260,13 @@ namespace WadTool.Controls
         private List<int> _clickchain = new List<int>();
 
         // Unified path
+        private RenderingStateBuffer _stateBuffer;
         private RenderingDrawingLines _linesBatch;
         private readonly List<SolidLineVertex> _wireLines = new List<SolidLineVertex>();
         private readonly List<SolidLineVertex> _filledTriangles = new List<SolidLineVertex>();
         private readonly List<SolidLineVertex> _depthReadTriangles = new List<SolidLineVertex>();
         private readonly Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh> _meshCache = new Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh>();
 
-        // Raw D3D11 device. Used to reconstruct the WadRenderer when settings change.
-        private SharpDX.Direct3D11.Device _device;
         private GizmoMeshEditor _gizmo;
         private float _normalLength = 1.0f;
         private WadRenderer _wadRenderer;
@@ -314,10 +313,10 @@ namespace WadTool.Controls
                 TextureAllocator = _fontTexture
             });
             _linesBatch = deviceManager.Device.CreateDrawingLines(new RenderingDrawingLines.Description { Dynamic = true });
+            _stateBuffer = deviceManager.Device.CreateStateBuffer();
 
             // Legacy rendering — only the gizmo remains on this path.
             {
-                _device = deviceManager.D3D11Device;
                 _wadRenderer = deviceManager.CreateWadRenderer(false, false, 4096, 2048, false);
                 _gizmo = new GizmoMeshEditor(_tool.Configuration, deviceManager.Device, this);
             }
@@ -331,6 +330,7 @@ namespace WadTool.Controls
                 _previewTimer.Tick -= new EventHandler(PreviewTimer_Tick);
 
                 _gizmo?.Dispose();
+                _stateBuffer?.Dispose();
                 _linesBatch?.Dispose();
                 foreach (var m in _meshCache.Values)
                     m.Dispose();
@@ -349,8 +349,7 @@ namespace WadTool.Controls
             Device.ResetState();
 
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-            using var stateBuffer = Device.CreateStateBuffer();
-            stateBuffer.Set(new RenderingState { TransformMatrix = viewProjection });
+            _stateBuffer.Set(new RenderingState { TransformMatrix = viewProjection });
 
             _wireLines.Clear();
             _filledTriangles.Clear();
@@ -376,7 +375,7 @@ namespace WadTool.Controls
                 EditingMode == MeshEditingMode.VertexColorsAndNormals)
             {
                 // Draw model first in vertex modes (so vertex spheres overlay it).
-                DrawModel(staticModel, stateBuffer, world);
+                DrawModel(staticModel, world);
 
                 var safeIndex = SafeVertexRemapLimit;
 
@@ -541,11 +540,11 @@ namespace WadTool.Controls
                 }
 
                 if (WireframeMode || !DrawExtraInfo)
-                    DrawModel(staticModel, stateBuffer, world);
+                    DrawModel(staticModel, world);
             }
             else if (EditingMode == MeshEditingMode.Sphere)
             {
-                DrawModel(staticModel, stateBuffer, world);
+                DrawModel(staticModel, world);
 
                 // Big translucent sphere overlay around mesh bounding sphere. Uses
                 // DepthRead so it's visible behind opaque geometry.
@@ -554,7 +553,7 @@ namespace WadTool.Controls
             }
             else if (EditingMode == MeshEditingMode.None)
             {
-                DrawModel(staticModel, stateBuffer, world);
+                DrawModel(staticModel, world);
             }
 
             // Submit the three line/triangle batches. Order: solid filled (filledTriangles)
@@ -566,7 +565,7 @@ namespace WadTool.Controls
                 _linesBatch.Render(new RenderingDrawingLines.RenderArgs
                 {
                     RenderTarget = SwapChain,
-                    StateBuffer = stateBuffer,
+                    StateBuffer = _stateBuffer,
                     Topology = RenderingDrawingLines.Topology.TriangleList,
                     Blend = BlendMode.NonPremultipliedAlpha,
                 });
@@ -577,7 +576,7 @@ namespace WadTool.Controls
                 _linesBatch.Render(new RenderingDrawingLines.RenderArgs
                 {
                     RenderTarget = SwapChain,
-                    StateBuffer = stateBuffer,
+                    StateBuffer = _stateBuffer,
                 });
             }
             if (_depthReadTriangles.Count > 0)
@@ -586,7 +585,7 @@ namespace WadTool.Controls
                 _linesBatch.Render(new RenderingDrawingLines.RenderArgs
                 {
                     RenderTarget = SwapChain,
-                    StateBuffer = stateBuffer,
+                    StateBuffer = _stateBuffer,
                     Topology = RenderingDrawingLines.Topology.TriangleList,
                     Blend = BlendMode.NonPremultipliedAlpha,
                     Depth = DepthMode.DepthRead,
@@ -600,7 +599,7 @@ namespace WadTool.Controls
             {
                 Device.ResetState();
                 SwapChain.ClearDepth();
-                _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
+                _gizmo.Draw(SwapChain, _stateBuffer, viewProjection);
             }
         }
 
@@ -630,7 +629,7 @@ namespace WadTool.Controls
         // (face highlights, vertex spheres) to inspect topology. Adding a wireframe
         // mode to RenderingDrawingMesh would require either rasterizer state on
         // RenderArgs or a new submesh-wireframe path.
-        private void DrawModel(StaticModel mesh, RenderingStateBuffer stateBuffer, Matrix4x4 world)
+        private void DrawModel(StaticModel mesh, Matrix4x4 world)
         {
             if (mesh.Meshes.Count == 0)
                 return;
@@ -649,7 +648,7 @@ namespace WadTool.Controls
                 drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                 {
                     RenderTarget = SwapChain,
-                    StateBuffer = stateBuffer,
+                    StateBuffer = _stateBuffer,
                     Atlas = _wadRenderer.Texture,
                     World = world,
                     Tint = tint,

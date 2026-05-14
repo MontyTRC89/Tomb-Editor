@@ -1,8 +1,8 @@
-using SharpDX;
-using SharpDX.Direct3D11;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
 using System;
 using System.Runtime.InteropServices;
-using Buffer = SharpDX.Direct3D11.Buffer;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
 
 namespace TombLib.Rendering.DirectX11
 {
@@ -38,29 +38,37 @@ namespace TombLib.Rendering.DirectX11
     // Sprite/glyph batches in this editor stay well under that. If a single Allocate()
     // ever exceeds capacity we fall back to a one-shot Buffer (slow path, logged) rather
     // than asserting — text overlays should never silently fail.
-    public sealed class Dx11DynamicVertexBufferPool : IDisposable
+    public sealed unsafe class Dx11DynamicVertexBufferPool : IDisposable
     {
-        public readonly Buffer Buffer;
+        public readonly ID3D11Buffer* Buffer;
         public readonly int Capacity;
 
-        private readonly DeviceContext _context;
+        private readonly ID3D11DeviceContext* _context;
+        private readonly ID3D11Device* _device;
         private int _cursor;
 
         public Dx11DynamicVertexBufferPool(Dx11RenderingDevice device, int capacityBytes = 4 * 1024 * 1024, string debugName = "DynamicVB")
         {
             _context = device.Context;
+            _device = device.Device;
             Capacity = capacityBytes;
-            Buffer = new Buffer(device.Device, new BufferDescription(
-                capacityBytes,
-                ResourceUsage.Dynamic,
-                BindFlags.VertexBuffer,
-                CpuAccessFlags.Write,
-                ResourceOptionFlags.None,
-                0));
-            Buffer.SetDebugName(debugName);
+
+            var desc = new BufferDesc
+            {
+                ByteWidth = (uint)capacityBytes,
+                Usage = D3D11Usage.Dynamic,
+                BindFlags = (uint)BindFlag.VertexBuffer,
+                CPUAccessFlags = (uint)CpuAccessFlag.Write,
+                MiscFlags = 0,
+                StructureByteStride = 0,
+            };
+            ID3D11Buffer* buf;
+            SilkMarshal.ThrowHResult(_device->CreateBuffer(&desc, null, &buf));
+            Buffer = buf;
+            Dx11RenderingDevice.SetDebugName((ID3D11DeviceChild*)Buffer, debugName);
         }
 
-        public void Dispose() => Buffer.Dispose();
+        public void Dispose() => Buffer->Release();
 
         // Reserves `size` bytes inside the ring and returns a writable slice. The returned
         // IntPtr stays valid only until Unmap() is called. The slice carries its own
@@ -70,22 +78,24 @@ namespace TombLib.Rendering.DirectX11
             if (size > Capacity)
                 return AllocateOversized(size);
 
-            MapMode mode;
+            Map mode;
             if (_cursor + size > Capacity)
             {
                 _cursor = 0;
-                mode = MapMode.WriteDiscard; // rename: previous contents may still be in flight, GPU keeps them
+                mode = Map.WriteDiscard; // rename: previous contents may still be in flight, GPU keeps them
             }
             else
             {
-                mode = MapMode.WriteNoOverwrite; // safe because cursor never overlaps regions still being read
+                mode = Map.WriteNoOverwrite; // safe because cursor never overlaps regions still being read
             }
 
             int offset = _cursor;
             _cursor += size;
 
-            DataBox box = _context.MapSubresource(Buffer, 0, mode, MapFlags.None);
-            return new Slice(this, IntPtr.Add(box.DataPointer, offset), offset, size, oversized: null);
+            MappedSubresource mapped;
+            SilkMarshal.ThrowHResult(
+                _context->Map((ID3D11Resource*)Buffer, 0, mode, 0, &mapped));
+            return new Slice(this, IntPtr.Add((IntPtr)mapped.PData, offset), offset, size, oversized: null);
         }
 
         // Slow path for the rare batch larger than the ring capacity. We allocate a
@@ -98,7 +108,7 @@ namespace TombLib.Rendering.DirectX11
             byte[] staging = new byte[size];
             GCHandle handle = GCHandle.Alloc(staging, GCHandleType.Pinned);
             return new Slice(this, handle.AddrOfPinnedObject(), 0, size,
-                oversized: new OversizedState(handle, _context.Device));
+                oversized: new OversizedState(handle, _device));
         }
 
         public readonly struct Slice
@@ -120,12 +130,12 @@ namespace TombLib.Rendering.DirectX11
 
             // Returns the buffer the IA should bind. For ring slices that's the shared
             // dynamic buffer; for the oversized fallback it's a freshly built immutable.
-            // The fallback buffer is owned by the slice and must be disposed via DisposeOversized().
-            public Buffer Finish()
+            // The fallback buffer is owned by the slice and must be released via the caller.
+            public ID3D11Buffer* Finish()
             {
                 if (Oversized != null)
                     return Oversized.BuildAndRelease(Data, Size);
-                Pool._context.UnmapSubresource(Pool.Buffer, 0);
+                Pool._context->Unmap((ID3D11Resource*)Pool.Buffer, 0);
                 return Pool.Buffer;
             }
         }
@@ -133,21 +143,36 @@ namespace TombLib.Rendering.DirectX11
         internal sealed class OversizedState
         {
             private GCHandle _handle;
-            private readonly Device _device;
-            public OversizedState(GCHandle handle, Device device)
+            private readonly ID3D11Device* _device;
+            public OversizedState(GCHandle handle, ID3D11Device* device)
             {
                 _handle = handle;
                 _device = device;
             }
 
-            // Caller must Dispose() the returned buffer after the Draw().
-            public Buffer BuildAndRelease(IntPtr data, int size)
+            // Caller must Release() the returned buffer after the Draw().
+            public ID3D11Buffer* BuildAndRelease(IntPtr data, int size)
             {
                 try
                 {
-                    return new Buffer(_device, data, new BufferDescription(
-                        size, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                        CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+                    var desc = new BufferDesc
+                    {
+                        ByteWidth = (uint)size,
+                        Usage = D3D11Usage.Immutable,
+                        BindFlags = (uint)BindFlag.VertexBuffer,
+                        CPUAccessFlags = 0,
+                        MiscFlags = 0,
+                        StructureByteStride = 0,
+                    };
+                    var subresource = new SubresourceData
+                    {
+                        PSysMem = (void*)data,
+                        SysMemPitch = 0,
+                        SysMemSlicePitch = 0,
+                    };
+                    ID3D11Buffer* buf;
+                    SilkMarshal.ThrowHResult(_device->CreateBuffer(&desc, &subresource, &buf));
+                    return buf;
                 }
                 finally
                 {

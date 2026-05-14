@@ -126,8 +126,6 @@ namespace TombEditor.Controls.Panel3D
 
         // Legacy rendering state
         private WadRenderer _wadRenderer;
-        // Raw D3D11 device. Used by WadRenderer for atlas / texture management.
-        private SharpDX.Direct3D11.Device _legacyDevice;
         private bool _drawHeightLine;
         // Endpoints of the height line, in room-local coordinates. The world translation
         // (_editor.SelectedObject.Room.WorldPos) is applied at draw time via the lines

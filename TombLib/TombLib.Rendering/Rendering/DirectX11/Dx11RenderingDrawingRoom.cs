@@ -1,11 +1,14 @@
-﻿using SharpDX.Direct3D11;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
+using Silk.NET.DXGI;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorStructs;
 using TombLib.Utils;
-using Buffer = SharpDX.Direct3D11.Buffer;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 
@@ -48,19 +51,19 @@ namespace TombLib.Rendering.DirectX11
     // The TexturesInvalidated/TexturesInvalidatedRetried pair handles the case where an
     // atlas allocation fails MID-construction; we restart texturing once. If it fails
     // twice we accept some textures will render as "unavailable".
-    public class Dx11RenderingDrawingRoom : RenderingDrawingRoom
+    public unsafe class Dx11RenderingDrawingRoom : RenderingDrawingRoom
     {
         public readonly Dx11RenderingDevice Device;
-        public readonly ShaderResourceView TextureView;
+        public readonly ID3D11ShaderResourceView* TextureView;
         public readonly RenderingTextureAllocator TextureAllocator;
-        public Buffer VertexBuffer;
-        public readonly VertexBufferBinding[] VertexBufferBindings;
+        public ID3D11Buffer* VertexBuffer;
+        public readonly Dx11VertexBufferBinding[] VertexBufferBindings;
         public readonly int VertexCount;
         public readonly int VertexBufferSize;
         public bool TexturesInvalidated = false;
         public bool TexturesInvalidatedRetried = false;
 
-        public unsafe Dx11RenderingDrawingRoom(Dx11RenderingDevice device, Description description)
+        public Dx11RenderingDrawingRoom(Dx11RenderingDevice device, Description description)
         {
             Device = device;
             TextureView = ((Dx11RenderingTextureAllocator)(description.TextureAllocator)).TextureView;
@@ -285,17 +288,31 @@ namespace TombLib.Rendering.DirectX11
                 }
 
                 // Create GPU resources
-                VertexBuffer = new Buffer(device.Device, new IntPtr(data),
-                    new BufferDescription(VertexBufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                    CpuAccessFlags.None, ResourceOptionFlags.None, 0));
-                VertexBufferBindings = new VertexBufferBinding[] {
-                    new VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)colors - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)overlays - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvwAndBlendModes - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)editorUVAndSectorTexture - data))
+                var desc = new BufferDesc
+                {
+                    ByteWidth = (uint)VertexBufferSize,
+                    Usage = D3D11Usage.Immutable,
+                    BindFlags = (uint)BindFlag.VertexBuffer,
+                    CPUAccessFlags = 0,
+                    MiscFlags = 0,
+                    StructureByteStride = 0,
                 };
-                VertexBuffer.SetDebugName("Room " + (description.Room.Name ?? ""));
+                var subresData = new SubresourceData
+                {
+                    PSysMem = data,
+                };
+                ID3D11Buffer* buf;
+                SilkMarshal.ThrowHResult(device.Device->CreateBuffer(&desc, &subresData, &buf));
+                VertexBuffer = buf;
+
+                VertexBufferBindings = new Dx11VertexBufferBinding[] {
+                    new Dx11VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
+                    new Dx11VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)colors - data)),
+                    new Dx11VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)overlays - data)),
+                    new Dx11VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvwAndBlendModes - data)),
+                    new Dx11VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)editorUVAndSectorTexture - data))
+                };
+                Dx11RenderingDevice.SetDebugName((ID3D11DeviceChild*)VertexBuffer, "Room " + (description.Room.Name ?? ""));
             }
             TextureAllocator.GarbageCollectionCollectEvent.Add(GarbageCollectTexture);
         }
@@ -304,7 +321,7 @@ namespace TombLib.Rendering.DirectX11
         {
             TextureAllocator.GarbageCollectionCollectEvent.Remove(GarbageCollectTexture);
             if (VertexBuffer != null)
-                VertexBuffer.Dispose();
+                VertexBuffer->Release();
         }
 
         // Two-phase texture-allocator GC participation. Phase 1 (this method) is called
@@ -316,7 +333,7 @@ namespace TombLib.Rendering.DirectX11
         // Why a readback: vertex buffers are created with ResourceUsage.Immutable so we
         // can't update them in place. Dx11RenderingDevice.ReadBuffer copies the GPU
         // resource into a staging buffer and back into a managed byte[].
-        public unsafe RenderingTextureAllocator.GarbageCollectionAdjustDelegate GarbageCollectTexture(RenderingTextureAllocator allocator,
+        public RenderingTextureAllocator.GarbageCollectionAdjustDelegate GarbageCollectTexture(RenderingTextureAllocator allocator,
             RenderingTextureAllocator.Map map, HashSet<RenderingTextureAllocator.Map.Entry> inOutUsedTextures)
         {
             TexturesInvalidated = true;
@@ -325,7 +342,7 @@ namespace TombLib.Rendering.DirectX11
 
             byte[] data = Device.ReadBuffer(VertexBuffer, VertexBufferSize);
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
-            int uvwAndBlendModesOffset = VertexBufferBindings[3].Offset;
+            int uvwAndBlendModesOffset = (int)VertexBufferBindings[3].Offset;
 
             fixed (byte* dataPtr = data)
             {
@@ -379,12 +396,25 @@ namespace TombLib.Rendering.DirectX11
                 var oldVertexBuffer = VertexBuffer;
                 fixed (byte* dataPtr = data)
                 {
-                    VertexBuffer = new Buffer(Device.Device, new IntPtr(dataPtr),
-                        new BufferDescription(VertexBufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                        CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+                    var desc = new BufferDesc
+                    {
+                        ByteWidth = (uint)VertexBufferSize,
+                        Usage = D3D11Usage.Immutable,
+                        BindFlags = (uint)BindFlag.VertexBuffer,
+                        CPUAccessFlags = 0,
+                        MiscFlags = 0,
+                        StructureByteStride = 0,
+                    };
+                    var subresData = new SubresourceData
+                    {
+                        PSysMem = dataPtr,
+                    };
+                    ID3D11Buffer* buf;
+                    SilkMarshal.ThrowHResult(Device.Device->CreateBuffer(&desc, &subresData, &buf));
+                    VertexBuffer = buf;
 
                     if (oldVertexBuffer != null)
-                        oldVertexBuffer?.Dispose();
+                        oldVertexBuffer->Release();
                 }
 
                 for (int i = 0; i < VertexBufferBindings.Length; ++i)
@@ -402,12 +432,12 @@ namespace TombLib.Rendering.DirectX11
             // Setup state
             ((Dx11RenderingSwapChain)arg.RenderTarget).Bind();
             Device.RoomShader.Apply(context, arg.StateBuffer);
-            context.PixelShader.SetSampler(0, arg.BilinearFilter ? Device.SamplerDefault : Device.SamplerRoundToNearest);
-            context.PixelShader.SetShaderResources(0, TextureView, Device.SectorTextureArrayView);
-            context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
+            { var ss = arg.BilinearFilter ? Device.SamplerDefault : Device.SamplerRoundToNearest; context->PSSetSamplers(0, 1, &ss); }
+            { var srvs = stackalloc ID3D11ShaderResourceView*[] { TextureView, Device.SectorTextureArrayView }; context->PSSetShaderResources(0, 2, srvs); }
+            Dx11RenderingDevice.SetVertexBuffers(context, 0, VertexBufferBindings);
 
             // Render
-            context.Draw(VertexCount, 0);
+            context->Draw((uint)VertexCount, 0);
         }
     }
 }

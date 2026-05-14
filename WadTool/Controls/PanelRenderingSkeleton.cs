@@ -57,12 +57,12 @@ namespace WadTool.Controls
         private RenderingFont _fontDefault;
 
         // Unified path
+        private RenderingStateBuffer _stateBuffer;
         private RenderingDrawingLines _linesBatch;
         private readonly List<SolidLineVertex> _lines = new List<SolidLineVertex>();
         private readonly Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh> _meshCache = new Dictionary<TombLib.Graphics.ObjectMesh, RenderingDrawingMesh>();
 
         // Legacy rendering state — only the gizmo remains on this path.
-        private SharpDX.Direct3D11.Device _device;
         private DeviceManager _deviceManager;
         private GizmoSkeletonEditor _gizmo;
         private WadRenderer _wadRenderer;
@@ -75,7 +75,6 @@ namespace WadTool.Controls
 
             base.InitializeRendering(deviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             _tool = tool;
-            _device = deviceManager.D3D11Device;
             _deviceManager = deviceManager;
 
             // Actual "InitializeRendering"
@@ -88,6 +87,7 @@ namespace WadTool.Controls
                 TextureAllocator = _fontTexture
             });
 
+            _stateBuffer = deviceManager.Device.CreateStateBuffer();
             _linesBatch = deviceManager.Device.CreateDrawingLines(new RenderingDrawingLines.Description { Dynamic = true });
 
             // Legacy rendering — only the gizmo remains on this path.
@@ -101,6 +101,7 @@ namespace WadTool.Controls
         {
             if (disposing)
             {
+                _stateBuffer?.Dispose();
                 _fontTexture?.Dispose();
                 _fontDefault?.Dispose();
                 _gizmo?.Dispose();
@@ -151,8 +152,7 @@ namespace WadTool.Controls
             Device.ResetState();
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-            using var stateBuffer = Device.CreateStateBuffer();
-            stateBuffer.Set(new RenderingState { TransformMatrix = viewProjection });
+            _stateBuffer.Set(new RenderingState { TransformMatrix = viewProjection });
 
             _lines.Clear();
             if (DrawGrid)
@@ -174,7 +174,7 @@ namespace WadTool.Controls
                         drawMesh.Render(new RenderingDrawingMesh.RenderArgs
                         {
                             RenderTarget = SwapChain,
-                            StateBuffer = stateBuffer,
+                            StateBuffer = _stateBuffer,
                             Atlas = _wadRenderer.Texture,
                             World = node.GlobalTransform,
                             Tint = Vector4.One,
@@ -202,7 +202,7 @@ namespace WadTool.Controls
                 _linesBatch.Render(new RenderingDrawingLines.RenderArgs
                 {
                     RenderTarget = SwapChain,
-                    StateBuffer = stateBuffer,
+                    StateBuffer = _stateBuffer,
                 });
             }
 
@@ -210,7 +210,7 @@ namespace WadTool.Controls
             {
                 Device.ResetState();
                 SwapChain.ClearDepth();
-                _gizmo.Draw(SwapChain, stateBuffer, viewProjection);
+                _gizmo.Draw(SwapChain, _stateBuffer, viewProjection);
             }
 
             // Draw debug strings

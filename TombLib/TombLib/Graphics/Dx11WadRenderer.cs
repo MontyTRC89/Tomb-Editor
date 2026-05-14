@@ -1,75 +1,121 @@
-using SharpDX.Direct3D11;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
+using Silk.NET.DXGI;
 using TombLib.Utils;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
 
 namespace TombLib.Graphics
 {
-    // SharpDX/D3D11 implementation of WadRenderer's atlas. Holds a
-    // Texture2DArray + ShaderResourceView. The legacy WadRenderer body now
-    // lives here unchanged in spirit — only the atlas-storage bits.
-    public class Dx11WadRenderer : WadRenderer
+    // Silk.NET/D3D11 implementation of WadRenderer's atlas. Holds a
+    // Texture2DArray + ShaderResourceView as raw COM pointers. The legacy
+    // WadRenderer body now lives in the base class; only the atlas-storage
+    // bits are here.
+    public unsafe class Dx11WadRenderer : WadRenderer
     {
-        public Device Device { get; }
-        public Texture2D AtlasTexture { get; private set; }
-        public ShaderResourceView TextureView { get; private set; }
+        // Raw COM pointers. Stored as nint at the field level so the class
+        // can live in TombLib (which avoids forcing every consumer into an
+        // unsafe context). Internal methods cast to typed pointers.
+        private nint _deviceHandle;
+        private nint _contextHandle;
+        private nint _atlasTextureHandle;
+        private nint _textureViewHandle;
 
-        public override object Texture => TextureView;
+        public override object Texture => _textureViewHandle;
 
-        public Dx11WadRenderer(Device device, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize, bool loadAnimations)
+        public Dx11WadRenderer(nint deviceHandle, bool compactTexture, bool correctTexture, int atlasSize, int maxAllocationSize, bool loadAnimations)
             : base(compactTexture, correctTexture, atlasSize, maxAllocationSize, loadAnimations)
         {
-            Device = device;
+            _deviceHandle = deviceHandle;
+
+            // Cache the immediate context pointer so we don't query it every frame.
+            var device = (ID3D11Device*)deviceHandle;
+            ID3D11DeviceContext* ctx;
+            device->GetImmediateContext(&ctx);
+            _contextHandle = (nint)ctx;
         }
 
         protected override void OnInitializeTexture()
         {
-            if (AtlasTexture is not null) return;
-            AtlasTexture = new Texture2D(Device, new Texture2DDescription
+            if (_atlasTextureHandle != 0) return;
+
+            var device = (ID3D11Device*)_deviceHandle;
+
+            var desc = new Texture2DDesc
             {
-                Width = TextureAtlasSize,
-                Height = TextureAtlasSize,
+                Width = (uint)TextureAtlasSize,
+                Height = (uint)TextureAtlasSize,
                 MipLevels = 1,
-                ArraySize = CurrentPageCount,
-                Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm,
-                SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0),
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.ShaderResource,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None,
-            });
-            TextureView = new ShaderResourceView(Device, AtlasTexture);
+                ArraySize = (uint)CurrentPageCount,
+                Format = Format.FormatB8G8R8A8Unorm,
+                SampleDesc = new SampleDesc(1, 0),
+                Usage = D3D11Usage.Default,
+                BindFlags = (uint)BindFlag.ShaderResource,
+                CPUAccessFlags = 0,
+                MiscFlags = 0,
+            };
+            ID3D11Texture2D* tex;
+            SilkMarshal.ThrowHResult(device->CreateTexture2D(&desc, null, &tex));
+            _atlasTextureHandle = (nint)tex;
+
+            ID3D11ShaderResourceView* srv;
+            SilkMarshal.ThrowHResult(device->CreateShaderResourceView((ID3D11Resource*)tex, null, &srv));
+            _textureViewHandle = (nint)srv;
         }
 
         protected override void OnEnsureCapacity(int pages)
         {
-            int arraySize = AtlasTexture.Description.ArraySize;
+            var oldTex = (ID3D11Texture2D*)_atlasTextureHandle;
+
+            Texture2DDesc oldDesc;
+            oldTex->GetDesc(&oldDesc);
+            int arraySize = (int)oldDesc.ArraySize;
             if (pages <= arraySize) return;
 
-            var newDesc = AtlasTexture.Description;
-            newDesc.ArraySize = pages;
-            var newTexture = new Texture2D(Device, newDesc);
-            for (int i = 0; i < arraySize; i++)
+            var device = (ID3D11Device*)_deviceHandle;
+            var context = (ID3D11DeviceContext*)_contextHandle;
+
+            var newDesc = oldDesc;
+            newDesc.ArraySize = (uint)pages;
+            ID3D11Texture2D* newTex;
+            SilkMarshal.ThrowHResult(device->CreateTexture2D(&newDesc, null, &newTex));
+
+            // Copy existing slices. With MipLevels=1, subresource index == array slice index.
+            for (uint i = 0; i < (uint)arraySize; i++)
             {
-                int from = Texture2D.CalculateSubResourceIndex(0, i, 1);
-                int to = Texture2D.CalculateSubResourceIndex(0, i, 1);
-                Device.ImmediateContext.CopySubresourceRegion(AtlasTexture, from, null, newTexture, to);
+                context->CopySubresourceRegion(
+                    (ID3D11Resource*)newTex, i, 0, 0, 0,
+                    (ID3D11Resource*)oldTex, i, null);
             }
-            TextureView?.Dispose();
-            AtlasTexture?.Dispose();
-            AtlasTexture = newTexture;
-            TextureView = new ShaderResourceView(Device, AtlasTexture);
+
+            // Release old resources.
+            if (_textureViewHandle != 0)
+                ((ID3D11ShaderResourceView*)_textureViewHandle)->Release();
+            oldTex->Release();
+
+            _atlasTextureHandle = (nint)newTex;
+
+            ID3D11ShaderResourceView* srv;
+            SilkMarshal.ThrowHResult(device->CreateShaderResourceView((ID3D11Resource*)newTex, null, &srv));
+            _textureViewHandle = (nint)srv;
         }
 
         protected override void OnUploadSubregion(ImageC image, VectorInt3 position)
         {
-            TextureLoad.Update(Device.ImmediateContext, AtlasTexture, image, position);
+            TextureLoad.Update(_contextHandle, _atlasTextureHandle, image, position);
         }
 
         protected override void OnDisposeTexture()
         {
-            TextureView?.Dispose();
-            TextureView = null;
-            AtlasTexture?.Dispose();
-            AtlasTexture = null;
+            if (_textureViewHandle != 0)
+            {
+                ((ID3D11ShaderResourceView*)_textureViewHandle)->Release();
+                _textureViewHandle = 0;
+            }
+            if (_atlasTextureHandle != 0)
+            {
+                ((ID3D11Texture2D*)_atlasTextureHandle)->Release();
+                _atlasTextureHandle = 0;
+            }
         }
     }
 }

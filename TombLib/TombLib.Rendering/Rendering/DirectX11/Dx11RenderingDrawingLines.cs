@@ -1,9 +1,9 @@
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
+using Silk.NET.DXGI;
 using System;
 using System.Runtime.InteropServices;
-using Buffer = SharpDX.Direct3D11.Buffer;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
 using Matrix4x4 = System.Numerics.Matrix4x4;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
@@ -29,7 +29,7 @@ namespace TombLib.Rendering.DirectX11
     // offsets and per-attribute strides. Doing SoA (rather than packing the C#
     // SolidLineVertex struct) sidesteps any struct-padding mismatch between the
     // managed layout and what D3D expects.
-    public sealed class Dx11RenderingDrawingLines : RenderingDrawingLines
+    public sealed unsafe class Dx11RenderingDrawingLines : RenderingDrawingLines
     {
         // Layout MUST mirror the LineData cbuffer in LinesShaderVS.hlsl. Padded to
         // 16-byte alignment per HLSL packing rules.
@@ -42,7 +42,7 @@ namespace TombLib.Rendering.DirectX11
         private static readonly int LineDataSize = ((Marshal.SizeOf(typeof(LineDataLayout)) + 15) / 16) * 16;
 
         private readonly Dx11RenderingDevice _device;
-        private readonly Buffer _lineDataBuffer;
+        private readonly ID3D11Buffer* _lineDataBuffer;
 
         // Cached vertices from the most recent SetVertices() call. Re-uploaded to the
         // ring on every Render() — cheap because it's a single MapSubresource into
@@ -53,14 +53,24 @@ namespace TombLib.Rendering.DirectX11
         public Dx11RenderingDrawingLines(Dx11RenderingDevice device, Description description)
         {
             _device = device;
-            _lineDataBuffer = new Buffer(device.Device, LineDataSize, ResourceUsage.Default,
-                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-            _lineDataBuffer.SetDebugName("DrawingLines.LineData");
+            var desc = new BufferDesc
+            {
+                ByteWidth = (uint)LineDataSize,
+                Usage = D3D11Usage.Default,
+                BindFlags = (uint)BindFlag.ConstantBuffer,
+                CPUAccessFlags = 0,
+                MiscFlags = 0,
+                StructureByteStride = 0,
+            };
+            ID3D11Buffer* buf;
+            SilkMarshal.ThrowHResult(device.Device->CreateBuffer(&desc, null, &buf));
+            _lineDataBuffer = buf;
+            Dx11RenderingDevice.SetDebugName((ID3D11DeviceChild*)_lineDataBuffer, "DrawingLines.LineData");
         }
 
         public override void Dispose()
         {
-            _lineDataBuffer.Dispose();
+            _lineDataBuffer->Release();
         }
 
         public override void SetVertices(ReadOnlySpan<SolidLineVertex> vertices)
@@ -73,7 +83,7 @@ namespace TombLib.Rendering.DirectX11
             _vertexCount = vertices.Length;
         }
 
-        public override unsafe void Render(RenderArgs arg)
+        public override void Render(RenderArgs arg)
         {
             if (_vertexCount == 0)
                 return;
@@ -86,7 +96,7 @@ namespace TombLib.Rendering.DirectX11
             LineDataLayout cb;
             cb.World = arg.World;
             cb.Tint = arg.Tint;
-            ctx.UpdateSubresource(ref cb, _lineDataBuffer);
+            ctx->UpdateSubresource((ID3D11Resource*)_lineDataBuffer, 0, null, &cb, (uint)sizeof(LineDataLayout), 0);
 
             // Reserve a single contiguous region in the ring buffer big enough for both
             // streams (positions then colors), then write them in SoA order.
@@ -104,49 +114,49 @@ namespace TombLib.Rendering.DirectX11
                 colPtr[i] = _vertices[i].Color;
             }
 
-            Buffer vb = slice.Finish();
-            var bindings = new VertexBufferBinding[] {
-                new VertexBufferBinding(vb, sizeof(Vector3), slice.Offset),
-                new VertexBufferBinding(vb, sizeof(Vector4), slice.Offset + posBytes) };
+            ID3D11Buffer* vb = slice.Finish();
+            var bindings = new Dx11VertexBufferBinding[] {
+                new Dx11VertexBufferBinding(vb, sizeof(Vector3), slice.Offset),
+                new Dx11VertexBufferBinding(vb, sizeof(Vector4), slice.Offset + posBytes) };
 
             _device.LinesShader.Apply(ctx, arg.StateBuffer);
-            ctx.VertexShader.SetConstantBuffer(1, _lineDataBuffer);
+            { var b = _lineDataBuffer; ctx->VSSetConstantBuffers(1, 1, &b); }
 
             // PrimitiveTopology must be set AFTER PipelineState.Apply (which forces
             // TriangleList) so our LineList override sticks.
-            ctx.InputAssembler.PrimitiveTopology = arg.Topology == Topology.TriangleList
-                ? PrimitiveTopology.TriangleList
-                : PrimitiveTopology.LineList;
-            ctx.InputAssembler.SetVertexBuffers(0, bindings);
+            ctx->IASetPrimitiveTopology(arg.Topology == Topology.TriangleList
+                ? D3DPrimitiveTopology.D3DPrimitiveTopologyTrianglelist
+                : D3DPrimitiveTopology.D3DPrimitiveTopologyLinelist);
+            Dx11RenderingDevice.SetVertexBuffers(ctx, 0, bindings);
 
-            ctx.Rasterizer.State = arg.Wireframe ? _device.RasterizerWireframe : _device.RasterizerNoCull;
+            ctx->RSSetState(arg.Wireframe ? _device.RasterizerWireframe : _device.RasterizerNoCull);
 
             // Apply blend + depth state per RenderArgs. Defaults match the device-wide
             // state so callers that don't set them get current behaviour.
-            ctx.OutputMerger.SetBlendState(arg.Blend switch
+            ctx->OMSetBlendState(arg.Blend switch
             {
                 BlendMode.Opaque                 => _device.BlendingDisabled,
                 BlendMode.NonPremultipliedAlpha  => _device.BlendingNonPremultipliedAlpha,
                 BlendMode.Additive               => _device.BlendingAdditive,
                 _                                => _device.BlendingPremultipliedAlpha,
-            });
-            ctx.OutputMerger.SetDepthStencilState(arg.Depth switch
+            }, null, 0xFFFFFFFF);
+            ctx->OMSetDepthStencilState(arg.Depth switch
             {
                 DepthMode.DepthRead => _device.DepthStencilDepthRead,
                 DepthMode.NoZ       => _device.DepthStencilNoZBuffer,
                 _                   => _device.DepthStencilDefault,
-            });
+            }, 0);
 
-            ctx.Draw(_vertexCount, 0);
+            ctx->Draw((uint)_vertexCount, 0);
 
             // Restore the device-wide default rasterizer/blend/depth so downstream code
             // (room rendering, sprites, etc.) does not inherit our overrides.
-            ctx.Rasterizer.State = _device.RasterizerBackCulling;
-            ctx.OutputMerger.SetBlendState(_device.BlendingPremultipliedAlpha);
-            ctx.OutputMerger.SetDepthStencilState(_device.DepthStencilDefault);
-            ctx.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            ctx->RSSetState(_device.RasterizerBackCulling);
+            ctx->OMSetBlendState(_device.BlendingPremultipliedAlpha, null, 0xFFFFFFFF);
+            ctx->OMSetDepthStencilState(_device.DepthStencilDefault, 0);
+            ctx->IASetPrimitiveTopology(D3DPrimitiveTopology.D3DPrimitiveTopologyTrianglelist);
 
-            if (slice.Oversized != null) vb.Dispose();
+            if (slice.Oversized != null) vb->Release();
         }
     }
 }

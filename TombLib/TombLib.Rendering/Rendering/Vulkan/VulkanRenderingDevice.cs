@@ -90,14 +90,19 @@ namespace TombLib.Rendering.Vulkan
         // Validation layer + debug messenger. Off by default; enable with
         // env var TOMBEDITOR_VK_VALIDATION=1. Heavy CPU cost (~5-10x) so it
         // never ships on by accident.
-        private readonly bool _validationEnabled;
+        private bool _validationEnabled;
         private ExtDebugUtils _debugUtils;
         private DebugUtilsMessengerEXT _debugMessenger;
 
         public VulkanRenderingDevice()
         {
             Vk = Vk.GetApi();
-            _validationEnabled = Environment.GetEnvironmentVariable("TOMBEDITOR_VK_VALIDATION") == "1";
+            bool envRequested = Environment.GetEnvironmentVariable("TOMBEDITOR_VK_VALIDATION") == "1";
+#if DEBUG
+            _validationEnabled = Environment.GetEnvironmentVariable("TOMBEDITOR_VK_VALIDATION") != "0";
+#else
+            _validationEnabled = envRequested;
+#endif
 
             CreateInstance();
             if (_validationEnabled) SetupDebugMessenger();
@@ -126,6 +131,24 @@ namespace TombLib.Rendering.Vulkan
 
         // ---- Instance --------------------------------------------------------
 
+        private unsafe bool IsLayerAvailable(string layerName)
+        {
+            uint count = 0;
+            Vk.EnumerateInstanceLayerProperties(&count, null);
+            if (count == 0)
+                return false;
+            var props = new LayerProperties[count];
+            fixed (LayerProperties* p = props)
+                Vk.EnumerateInstanceLayerProperties(&count, p);
+            foreach (var lp in props)
+            {
+                string name = Marshal.PtrToStringAnsi((IntPtr)lp.LayerName);
+                if (name == layerName)
+                    return true;
+            }
+            return false;
+        }
+
         private unsafe void CreateInstance()
         {
             ApplicationInfo appInfo = new ApplicationInfo
@@ -145,10 +168,24 @@ namespace TombLib.Rendering.Vulkan
                 "VK_KHR_surface",
                 "VK_KHR_win32_surface",
             };
-            if (_validationEnabled) extensions.Add("VK_EXT_debug_utils");
 
+            // Check whether the validation layer is actually installed before
+            // requesting it — avoids ErrorLayerNotPresent when the Vulkan SDK
+            // is not present on the machine.
             var layers = new List<string>();
-            if (_validationEnabled) layers.Add("VK_LAYER_KHRONOS_validation");
+            if (_validationEnabled)
+            {
+                if (IsLayerAvailable("VK_LAYER_KHRONOS_validation"))
+                {
+                    layers.Add("VK_LAYER_KHRONOS_validation");
+                    extensions.Add("VK_EXT_debug_utils");
+                }
+                else
+                {
+                    logger.Warn("Validation requested but VK_LAYER_KHRONOS_validation is not installed (install the Vulkan SDK). Continuing without validation.");
+                    _validationEnabled = false;
+                }
+            }
 
             byte** ppExtensions = (byte**)SilkMarshal.StringArrayToPtr(extensions.ToArray());
             byte** ppLayers     = (byte**)SilkMarshal.StringArrayToPtr(layers.ToArray());
@@ -200,6 +237,7 @@ namespace TombLib.Rendering.Vulkan
             {
                 SType = StructureType.DebugUtilsMessengerCreateInfoExt,
                 MessageSeverity =
+                    DebugUtilsMessageSeverityFlagsEXT.InfoBitExt |
                     DebugUtilsMessageSeverityFlagsEXT.WarningBitExt |
                     DebugUtilsMessageSeverityFlagsEXT.ErrorBitExt,
                 MessageType =
@@ -223,8 +261,10 @@ namespace TombLib.Rendering.Vulkan
             string msg = Marshal.PtrToStringAnsi((IntPtr)data->PMessage) ?? "<no message>";
             if ((severity & DebugUtilsMessageSeverityFlagsEXT.ErrorBitExt) != 0)
                 logger.Error("[Vulkan] {0}", msg);
-            else
+            else if ((severity & DebugUtilsMessageSeverityFlagsEXT.WarningBitExt) != 0)
                 logger.Warn("[Vulkan] {0}", msg);
+            else
+                logger.Info("[Vulkan] {0}", msg);
             return 0; // VK_FALSE — do not abort the call
         }
 
@@ -584,17 +624,27 @@ namespace TombLib.Rendering.Vulkan
 
         // End + submit + WAIT for completion (synchronous). Used for setup
         // operations only — never on the per-frame hot path.
+        // Uses a fence (not QueueWaitIdle) so we only wait for *this* CB,
+        // avoiding a deadlock when a QueuePresent is still in-flight and
+        // the Windows presentation engine needs the message pump to retire it.
         public unsafe void EndAndSubmitTransient(CommandBuffer cb)
         {
             Vk.EndCommandBuffer(cb);
+
+            FenceCreateInfo fenceInfo = new FenceCreateInfo { SType = StructureType.FenceCreateInfo };
+            Fence fence;
+            VkCheck.Ok(Vk.CreateFence(Device, in fenceInfo, null, out fence));
+
             SubmitInfo submit = new SubmitInfo
             {
                 SType = StructureType.SubmitInfo,
                 CommandBufferCount = 1,
                 PCommandBuffers = &cb,
             };
-            VkCheck.Ok(Vk.QueueSubmit(GraphicsQueue, 1, in submit, default));
-            VkCheck.Ok(Vk.QueueWaitIdle(GraphicsQueue));
+            VkCheck.Ok(Vk.QueueSubmit(GraphicsQueue, 1, in submit, fence));
+            VkCheck.Ok(Vk.WaitForFences(Device, 1, in fence, true, ulong.MaxValue));
+
+            Vk.DestroyFence(Device, fence, null);
             Vk.FreeCommandBuffers(Device, TransientPool, 1, in cb);
         }
 

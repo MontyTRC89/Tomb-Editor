@@ -1,7 +1,7 @@
-﻿using NLog;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
+using NLog;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
+using Silk.NET.DXGI;
 using System;
 using System.IO;
 using System.Linq;
@@ -11,16 +11,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using TombLib.Utils;
-using Buffer = SharpDX.Direct3D11.Buffer;
-using Factory = SharpDX.DXGI.Factory;
-using Format = SharpDX.DXGI.Format;
-using SampleDescription = SharpDX.DXGI.SampleDescription;
+using Format = Silk.NET.DXGI.Format;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
 
 namespace TombLib.Rendering.DirectX11
 {
-    // Direct3D 11 implementation of RenderingDevice.
+    // Direct3D 11 implementation of RenderingDevice using Silk.NET bindings.
     //
     // Lifecycle: a single instance is created at startup (DeviceManager.DefaultDeviceManager)
     // and shared across every RenderingPanel in the editor. The device is created with
@@ -29,7 +27,7 @@ namespace TombLib.Rendering.DirectX11
     //
     // Feature level is locked to 10.0 to support legacy hardware. Anything that would
     // require FL11 (compute shaders, structured buffers, etc.) is not available here.
-    public class Dx11RenderingDevice : RenderingDevice
+    public unsafe class Dx11RenderingDevice : RenderingDevice
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -40,41 +38,49 @@ namespace TombLib.Rendering.DirectX11
         private static Assembly ThisAssembly = Assembly.GetExecutingAssembly();
         public static ImageC TextureUnavailable = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_unavailable.png"));
         public static ImageC TextureCoordOutOfBounds = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_coord_out_of_bounds.png"));
-        public readonly Device Device;
-        public readonly Factory Factory;
-        public readonly DeviceContext Context;
+
+        // Silk.NET API entry points for D3D11 and DXGI native function loading.
+        public readonly D3D11 D3D11Api;
+        public readonly DXGI DXGIApi;
+
+        // Core COM objects. Stored as raw pointers for minimal overhead in the
+        // rendering hot path. Released in Dispose().
+        public readonly ID3D11Device* Device;
+        public readonly IDXGIFactory* Factory;
+        public readonly ID3D11DeviceContext* Context;
+
         public readonly Dx11PipelineState TextShader;
         public readonly Dx11PipelineState SpriteShader;
         public readonly Dx11PipelineState RoomShader;
         public readonly Dx11PipelineState LinesShader;
         public readonly Dx11PipelineState MeshShader;
         public readonly Dx11PipelineState ImportedGeometryShader;
-        public readonly RasterizerState RasterizerBackCulling;
+        public readonly ID3D11RasterizerState* RasterizerBackCulling;
         // No back-face culling. Used for lines (where culling is irrelevant) and for
         // double-sided wireframe rendering. Lines are NOT affected by CullMode at all
         // in D3D11, but we still need a no-cull state for triangle wireframe.
-        public readonly RasterizerState RasterizerNoCull;
-        // Wireframe fill, no cull. Mirrors the legacy `_rasterizerWireframe` used by
+        public readonly ID3D11RasterizerState* RasterizerNoCull;
+        // Wireframe fill, no cull. Mirrors the legacy _rasterizerWireframe used by
         // Panel3D / WadTool panels for bounding boxes and debug overlays.
-        public readonly RasterizerState RasterizerWireframe;
-        public readonly SamplerState SamplerDefault;
-        public readonly SamplerState SamplerRoundToNearest;
-        public readonly DepthStencilState DepthStencilDefault;
-        public readonly DepthStencilState DepthStencilNoZBuffer;
+        public readonly ID3D11RasterizerState* RasterizerWireframe;
+        public readonly ID3D11SamplerState* SamplerDefault;
+        public readonly ID3D11SamplerState* SamplerRoundToNearest;
+        public readonly ID3D11DepthStencilState* DepthStencilDefault;
+        public readonly ID3D11DepthStencilState* DepthStencilNoZBuffer;
         // Depth test enabled, depth write disabled — for translucent passes that should
         // be occluded by opaque geometry but not occlude each other (ghost block bodies,
         // volume fills, etc.).
-        public readonly DepthStencilState DepthStencilDepthRead;
-        public readonly BlendState BlendingDisabled;
-        public readonly BlendState BlendingPremultipliedAlpha;
+        public readonly ID3D11DepthStencilState* DepthStencilDepthRead;
+        public readonly ID3D11BlendState* BlendingDisabled;
+        public readonly ID3D11BlendState* BlendingPremultipliedAlpha;
         // Straight-alpha (non-premultiplied): SrcAlpha / InvSrcAlpha. Caller's vertex
         // colors are interpreted as straight RGBA; the shader does not need to
         // pre-multiply RGB by alpha.
-        public readonly BlendState BlendingNonPremultipliedAlpha;
+        public readonly ID3D11BlendState* BlendingNonPremultipliedAlpha;
         // Additive glow: One / One. Alpha is ignored on the destination.
-        public readonly BlendState BlendingAdditive;
-        public readonly Texture2D SectorTextureArray;
-        public readonly ShaderResourceView SectorTextureArrayView;
+        public readonly ID3D11BlendState* BlendingAdditive;
+        public readonly ID3D11Texture2D* SectorTextureArray;
+        public readonly ID3D11ShaderResourceView* SectorTextureArrayView;
         public Dx11RenderingSwapChain CurrentRenderTarget = null;
 
         // Shared ring buffer for transient per-frame VBs (sprites, glyphs, debug lines).
@@ -88,36 +94,64 @@ namespace TombLib.Rendering.DirectX11
         {
             logger.Info("Dx11 rendering device creating.");
 #if DEBUG
-            const DeviceCreationFlags DebugFlags = DeviceCreationFlags.Debug;
+            const uint DebugFlags = (uint)CreateDeviceFlag.Debug;
 #else
-            const DeviceCreationFlags DebugFlags = DeviceCreationFlags.None;
+            const uint DebugFlags = 0;
 #endif
             try
             {
-                Factory = new Factory();
-                if (!Factory.Adapters.Any())
+                D3D11Api = D3D11.GetApi();
+                DXGIApi = DXGI.GetApi();
+
+                // Create DXGI factory for adapter enumeration.
+                IDXGIFactory* factory;
+                SilkMarshal.ThrowHResult(
+                    DXGIApi.CreateDXGIFactory(ref SilkMarshal.GuidOf<IDXGIFactory>(), (void**)&factory));
+                Factory = factory;
+
+                // Enumerate adapters.
+                IDXGIAdapter* adapter;
+                int hrAdapter = Factory->EnumAdapters(0, &adapter);
+                if (hrAdapter != 0 || adapter == null)
                 {
                     MessageBox.Show("Your system have no video adapters. Try to install video adapter.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new Exception("There are no valid video adapters in system.");
                 }
 
-                var adapter = Factory.GetAdapter(0);
-                if (adapter == null)
-                {
-                    MessageBox.Show("DirectX wasn't able to acquire video adapter. Try to restart your system.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    throw new Exception("DirectX wasn't able to acquire video adapter.");
-                }
-
-                if (adapter.Outputs == null || !adapter.Outputs.Any())
+                // Check for outputs.
+                IDXGIOutput* output;
+                int hrOutput = adapter->EnumOutputs(0, &output);
+                if (hrOutput != 0)
                 {
                     MessageBox.Show("There are no video displays connected to your system. Try to connect a display.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new Exception("No connected displays found.");
                 }
+                output->Release();
 
-                logger.Info("Creating D3D device: " + adapter.Description.Description + ", " +
-                    (adapter.Description.DedicatedVideoMemory / 1024 / 1024) + " MB GPU RAM.");
+                // Log adapter info.
+                AdapterDesc adapterDesc;
+                adapter->GetDesc(&adapterDesc);
+                string adapterName = new string((char*)adapterDesc.Description);
+                long vramMB = (long)adapterDesc.DedicatedVideoMemory / 1024 / 1024;
+                logger.Info("Creating D3D device: " + adapterName + ", " + vramMB + " MB GPU RAM.");
 
-                Device = new Device(adapter, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
+                // Create D3D11 device at feature level 10.0.
+                D3DFeatureLevel featureLevel = D3DFeatureLevel.Level100;
+                ID3D11Device* device;
+                ID3D11DeviceContext* context;
+                SilkMarshal.ThrowHResult(
+                    D3D11Api.CreateDevice(
+                        (IDXGIAdapter*)adapter,
+                        D3DDriverType.Unknown,
+                        0,
+                        DebugFlags | (uint)CreateDeviceFlag.Singlethreaded,
+                        &featureLevel, 1,
+                        D3D11.SdkVersion,
+                        &device, null, &context));
+                Device = device;
+                Context = context;
+
+                adapter->Release();
             }
             catch (Exception exc)
             {
@@ -142,142 +176,217 @@ namespace TombLib.Rendering.DirectX11
             }
 
 #if DEBUG
-            using (InfoQueue DeviceInfoQueue = Device.QueryInterface<InfoQueue>())
             {
-                DeviceInfoQueue.SetBreakOnSeverity(MessageSeverity.Warning, true);
+                ID3D11InfoQueue* infoQueue;
+                Guid iid = typeof(ID3D11InfoQueue).GUID;
+                int hr = ((IUnknown*)Device)->QueryInterface(&iid, (void**)&infoQueue);
+                if (hr == 0)
+                {
+                    infoQueue->SetBreakOnSeverity(MessageSeverity.Warning, 1);
+                    infoQueue->Release();
+                }
             }
 #endif
 
             try
             {
-                Context = Device.ImmediateContext;
-                TextShader = new Dx11PipelineState(this, "TextShader", new InputElement[]
+                TextShader = new Dx11PipelineState(this, "TextShader", new Dx11InputElement[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
+                new Dx11InputElement("POSITION", 0, Format.FormatR32G32Float, 0, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("UVW", 0, Format.FormatR32G32Uint, 0, 1, InputClassification.PerVertexData, 0)
                 });
-                SpriteShader = new Dx11PipelineState(this, "SpriteShader", new InputElement[]
+                SpriteShader = new Dx11PipelineState(this, "SpriteShader", new Dx11InputElement[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 0, 1, InputClassification.PerVertexData, 0),
-                new InputElement("UVW", 0, Format.R32G32_UInt, 0, 2, InputClassification.PerVertexData, 0)
+                new Dx11InputElement("POSITION", 0, Format.FormatR32G32B32Float, 0, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("COLOR", 0, Format.FormatR32G32B32A32Float, 0, 1, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("UVW", 0, Format.FormatR32G32Uint, 0, 2, InputClassification.PerVertexData, 0)
                 });
-                RoomShader = new Dx11PipelineState(this, "RoomShader", new InputElement[]
+                RoomShader = new Dx11PipelineState(this, "RoomShader", new Dx11InputElement[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0),
-                new InputElement("OVERLAY", 0, Format.R8G8B8A8_UNorm, 0, 2, InputClassification.PerVertexData, 0),
-                new InputElement("UVWANDBLENDMODE", 0, Format.R32G32_UInt, 0, 3, InputClassification.PerVertexData, 0),
-                new InputElement("EDITORUVANDSECTORTEXTURE", 0, Format.R32_UInt, 0, 4, InputClassification.PerVertexData, 0)
+                new Dx11InputElement("POSITION", 0, Format.FormatR32G32B32Float, 0, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("COLOR", 0, Format.FormatR8G8B8A8Unorm, 0, 1, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("OVERLAY", 0, Format.FormatR8G8B8A8Unorm, 0, 2, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("UVWANDBLENDMODE", 0, Format.FormatR32G32Uint, 0, 3, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("EDITORUVANDSECTORTEXTURE", 0, Format.FormatR32Uint, 0, 4, InputClassification.PerVertexData, 0)
                 });
-                LinesShader = new Dx11PipelineState(this, "LinesShader", new InputElement[]
+                LinesShader = new Dx11PipelineState(this, "LinesShader", new Dx11InputElement[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 0, 1, InputClassification.PerVertexData, 0)
+                new Dx11InputElement("POSITION", 0, Format.FormatR32G32B32Float, 0, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("COLOR", 0, Format.FormatR32G32B32A32Float, 0, 1, InputClassification.PerVertexData, 0)
                 });
                 // Single interleaved AOS layout matching MeshVertex (R32G32B32_Float per
                 // Vector3 field; R32G32B32A32_Float per Vector4 field). All in slot 0.
-                MeshShader = new Dx11PipelineState(this, "MeshShader", new InputElement[]
+                MeshShader = new Dx11PipelineState(this, "MeshShader", new Dx11InputElement[]
                 {
-                new InputElement("POSITION",     0, Format.R32G32B32_Float,     0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("TEXCOORD",     0, Format.R32G32B32_Float,    12, 0, InputClassification.PerVertexData, 0),
-                new InputElement("NORMAL",       0, Format.R32G32B32_Float,    24, 0, InputClassification.PerVertexData, 0),
-                new InputElement("COLOR",        0, Format.R32G32B32_Float,    36, 0, InputClassification.PerVertexData, 0),
-                new InputElement("BLENDINDICES", 0, Format.R32G32B32A32_Float, 48, 0, InputClassification.PerVertexData, 0),
-                new InputElement("BLENDWEIGHTS", 0, Format.R32G32B32A32_Float, 64, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("POSITION",     0, Format.FormatR32G32B32Float,    0, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("TEXCOORD",     0, Format.FormatR32G32B32Float,   12, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("NORMAL",       0, Format.FormatR32G32B32Float,   24, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("COLOR",        0, Format.FormatR32G32B32Float,   36, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("BLENDINDICES", 0, Format.FormatR32G32B32A32Float, 48, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("BLENDWEIGHTS", 0, Format.FormatR32G32B32A32Float, 64, 0, InputClassification.PerVertexData, 0),
                 });
                 // Layout matches RenderingDrawingImportedGeometry.Vertex: Pos@0, UV@12,
                 // Color@20, Normal@32. Total 44 bytes per vertex.
-                ImportedGeometryShader = new Dx11PipelineState(this, "ImportedGeometryShader", new InputElement[]
+                ImportedGeometryShader = new Dx11PipelineState(this, "ImportedGeometryShader", new Dx11InputElement[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32B32_Float,  0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("TEXCOORD", 0, Format.R32G32_Float,    12, 0, InputClassification.PerVertexData, 0),
-                new InputElement("COLOR",    0, Format.R32G32B32_Float, 20, 0, InputClassification.PerVertexData, 0),
-                new InputElement("NORMAL",   0, Format.R32G32B32_Float, 32, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("POSITION", 0, Format.FormatR32G32B32Float,  0, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("TEXCOORD", 0, Format.FormatR32G32Float,    12, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("COLOR",    0, Format.FormatR32G32B32Float, 20, 0, InputClassification.PerVertexData, 0),
+                new Dx11InputElement("NORMAL",   0, Format.FormatR32G32B32Float, 32, 0, InputClassification.PerVertexData, 0),
                 });
-                RasterizerBackCulling = new RasterizerState(Device, new RasterizerStateDescription
+
+                // Rasterizer states
                 {
-                    CullMode = CullMode.Back,
-                    FillMode = FillMode.Solid,
-                });
-                RasterizerNoCull = new RasterizerState(Device, new RasterizerStateDescription
-                {
-                    CullMode = CullMode.None,
-                    FillMode = FillMode.Solid,
-                });
-                RasterizerWireframe = new RasterizerState(Device, new RasterizerStateDescription
-                {
-                    CullMode = CullMode.None,
-                    FillMode = FillMode.Wireframe,
-                    IsAntialiasedLineEnabled = true,
-                });
-                SamplerDefault = new SamplerState(Device, new SamplerStateDescription
-                {
-                    AddressU = TextureAddressMode.Mirror,
-                    AddressV = TextureAddressMode.Mirror,
-                    AddressW = TextureAddressMode.Wrap,
-                    Filter = Filter.Anisotropic,
-                    MaximumAnisotropy = 4,
-                });
-                SamplerRoundToNearest = new SamplerState(Device, new SamplerStateDescription
-                {
-                    AddressU = TextureAddressMode.Mirror,
-                    AddressV = TextureAddressMode.Mirror,
-                    AddressW = TextureAddressMode.Wrap,
-                    Filter = Filter.MinMagMipPoint,
-                    MaximumAnisotropy = 4,
-                });
-                {
-                    DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
-                    desc.DepthComparison = Comparison.LessEqual;
-                    desc.DepthWriteMask = DepthWriteMask.All;
-                    desc.IsDepthEnabled = true;
-                    desc.IsStencilEnabled = false;
-                    DepthStencilDefault = new DepthStencilState(Device, desc);
+                    var desc = new RasterizerDesc
+                    {
+                        CullMode = CullMode.Back,
+                        FillMode = FillMode.Solid,
+                    };
+                    ID3D11RasterizerState* rs;
+                    SilkMarshal.ThrowHResult(Device->CreateRasterizerState(&desc, &rs));
+                    RasterizerBackCulling = rs;
                 }
                 {
-                    DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
-                    desc.DepthComparison = Comparison.Always;
-                    desc.DepthWriteMask = DepthWriteMask.Zero;
-                    desc.IsDepthEnabled = false;
-                    desc.IsStencilEnabled = false;
-                    DepthStencilNoZBuffer = new DepthStencilState(Device, desc);
+                    var desc = new RasterizerDesc
+                    {
+                        CullMode = CullMode.None,
+                        FillMode = FillMode.Solid,
+                    };
+                    ID3D11RasterizerState* rs;
+                    SilkMarshal.ThrowHResult(Device->CreateRasterizerState(&desc, &rs));
+                    RasterizerNoCull = rs;
                 }
                 {
-                    DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
-                    desc.DepthComparison = Comparison.LessEqual;
-                    desc.DepthWriteMask = DepthWriteMask.Zero; // read but don't write
-                    desc.IsDepthEnabled = true;
-                    desc.IsStencilEnabled = false;
-                    DepthStencilDepthRead = new DepthStencilState(Device, desc);
+                    var desc = new RasterizerDesc
+                    {
+                        CullMode = CullMode.None,
+                        FillMode = FillMode.Wireframe,
+                        AntialiasedLineEnable = 1,
+                    };
+                    ID3D11RasterizerState* rs;
+                    SilkMarshal.ThrowHResult(Device->CreateRasterizerState(&desc, &rs));
+                    RasterizerWireframe = rs;
                 }
-                BlendingDisabled = new BlendState(Device, BlendStateDescription.Default());
+
+                // Sampler states
                 {
-                    BlendStateDescription desc = BlendStateDescription.Default();
-                    desc.RenderTarget[0].IsBlendEnabled = true;
-                    desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
-                    desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
-                    desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
-                    desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
-                    BlendingPremultipliedAlpha = new BlendState(Device, desc);
+                    var desc = new SamplerDesc
+                    {
+                        AddressU = TextureAddressMode.Mirror,
+                        AddressV = TextureAddressMode.Mirror,
+                        AddressW = TextureAddressMode.Wrap,
+                        Filter = Filter.Anisotropic,
+                        MaxAnisotropy = 4,
+                        MaxLOD = float.MaxValue,
+                    };
+                    ID3D11SamplerState* ss;
+                    SilkMarshal.ThrowHResult(Device->CreateSamplerState(&desc, &ss));
+                    SamplerDefault = ss;
                 }
                 {
-                    BlendStateDescription desc = BlendStateDescription.Default();
-                    desc.RenderTarget[0].IsBlendEnabled = true;
-                    desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.SourceAlpha;
-                    desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
-                    desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
-                    desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
-                    BlendingNonPremultipliedAlpha = new BlendState(Device, desc);
+                    var desc = new SamplerDesc
+                    {
+                        AddressU = TextureAddressMode.Mirror,
+                        AddressV = TextureAddressMode.Mirror,
+                        AddressW = TextureAddressMode.Wrap,
+                        Filter = Filter.MinMagMipPoint,
+                        MaxAnisotropy = 4,
+                        MaxLOD = float.MaxValue,
+                    };
+                    ID3D11SamplerState* ss;
+                    SilkMarshal.ThrowHResult(Device->CreateSamplerState(&desc, &ss));
+                    SamplerRoundToNearest = ss;
+                }
+
+                // Depth stencil states
+                {
+                    var desc = new DepthStencilDesc
+                    {
+                        DepthEnable = 1,
+                        DepthWriteMask = DepthWriteMask.All,
+                        DepthFunc = ComparisonFunc.LessEqual,
+                        StencilEnable = 0,
+                        StencilReadMask = 0xFF,
+                        StencilWriteMask = 0xFF,
+                        FrontFace = DefaultStencilOp(),
+                        BackFace = DefaultStencilOp(),
+                    };
+                    ID3D11DepthStencilState* dss;
+                    SilkMarshal.ThrowHResult(Device->CreateDepthStencilState(&desc, &dss));
+                    DepthStencilDefault = dss;
                 }
                 {
-                    BlendStateDescription desc = BlendStateDescription.Default();
-                    desc.RenderTarget[0].IsBlendEnabled = true;
-                    desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
-                    desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.One;
-                    desc.RenderTarget[0].BlendOperation = desc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
-                    desc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
-                    BlendingAdditive = new BlendState(Device, desc);
+                    var desc = new DepthStencilDesc
+                    {
+                        DepthEnable = 0,
+                        DepthWriteMask = DepthWriteMask.Zero,
+                        DepthFunc = ComparisonFunc.Always,
+                        StencilEnable = 0,
+                        StencilReadMask = 0xFF,
+                        StencilWriteMask = 0xFF,
+                        FrontFace = DefaultStencilOp(),
+                        BackFace = DefaultStencilOp(),
+                    };
+                    ID3D11DepthStencilState* dss;
+                    SilkMarshal.ThrowHResult(Device->CreateDepthStencilState(&desc, &dss));
+                    DepthStencilNoZBuffer = dss;
+                }
+                {
+                    var desc = new DepthStencilDesc
+                    {
+                        DepthEnable = 1,
+                        DepthWriteMask = DepthWriteMask.Zero, // read but don't write
+                        DepthFunc = ComparisonFunc.LessEqual,
+                        StencilEnable = 0,
+                        StencilReadMask = 0xFF,
+                        StencilWriteMask = 0xFF,
+                        FrontFace = DefaultStencilOp(),
+                        BackFace = DefaultStencilOp(),
+                    };
+                    ID3D11DepthStencilState* dss;
+                    SilkMarshal.ThrowHResult(Device->CreateDepthStencilState(&desc, &dss));
+                    DepthStencilDepthRead = dss;
+                }
+
+                // Blend states
+                {
+                    var desc = DefaultBlendDesc();
+                    ID3D11BlendState* bs;
+                    SilkMarshal.ThrowHResult(Device->CreateBlendState(&desc, &bs));
+                    BlendingDisabled = bs;
+                }
+                {
+                    var desc = DefaultBlendDesc();
+                    desc.RenderTarget[0].BlendEnable = 1;
+                    desc.RenderTarget[0].SrcBlend = desc.RenderTarget[0].SrcBlendAlpha = Blend.One;
+                    desc.RenderTarget[0].DestBlend = desc.RenderTarget[0].DestBlendAlpha = Blend.InvSrcAlpha;
+                    desc.RenderTarget[0].BlendOp = desc.RenderTarget[0].BlendOpAlpha = BlendOp.Add;
+                    desc.RenderTarget[0].RenderTargetWriteMask = (byte)ColorWriteEnable.All;
+                    ID3D11BlendState* bs;
+                    SilkMarshal.ThrowHResult(Device->CreateBlendState(&desc, &bs));
+                    BlendingPremultipliedAlpha = bs;
+                }
+                {
+                    var desc = DefaultBlendDesc();
+                    desc.RenderTarget[0].BlendEnable = 1;
+                    desc.RenderTarget[0].SrcBlend = desc.RenderTarget[0].SrcBlendAlpha = Blend.SrcAlpha;
+                    desc.RenderTarget[0].DestBlend = desc.RenderTarget[0].DestBlendAlpha = Blend.InvSrcAlpha;
+                    desc.RenderTarget[0].BlendOp = desc.RenderTarget[0].BlendOpAlpha = BlendOp.Add;
+                    desc.RenderTarget[0].RenderTargetWriteMask = (byte)ColorWriteEnable.All;
+                    ID3D11BlendState* bs;
+                    SilkMarshal.ThrowHResult(Device->CreateBlendState(&desc, &bs));
+                    BlendingNonPremultipliedAlpha = bs;
+                }
+                {
+                    var desc = DefaultBlendDesc();
+                    desc.RenderTarget[0].BlendEnable = 1;
+                    desc.RenderTarget[0].SrcBlend = desc.RenderTarget[0].SrcBlendAlpha = Blend.One;
+                    desc.RenderTarget[0].DestBlend = desc.RenderTarget[0].DestBlendAlpha = Blend.One;
+                    desc.RenderTarget[0].BlendOp = desc.RenderTarget[0].BlendOpAlpha = BlendOp.Add;
+                    desc.RenderTarget[0].RenderTargetWriteMask = (byte)ColorWriteEnable.All;
+                    ID3D11BlendState* bs;
+                    SilkMarshal.ThrowHResult(Device->CreateBlendState(&desc, &bs));
+                    BlendingAdditive = bs;
                 }
             }
             catch (Exception exc)
@@ -286,12 +395,14 @@ namespace TombLib.Rendering.DirectX11
             }
 
             // Sector textures
-            bool support16BitTexture = Device.CheckFormatSupport(Format.B5G5R5A1_UNorm).HasFlag(FormatSupport.Texture2D); // For some reason not all DirectX devices support 16 bit textures.
+            uint formatSupport;
+            Device->CheckFormatSupport(Format.FormatB5G5R5A1Unorm, &formatSupport);
+            bool support16BitTexture = (formatSupport & (uint)FormatSupport.Texture2D) != 0;
             string[] sectorTextureNames = Enum.GetNames(typeof(SectorTexture)).Skip(1).ToArray();
             GCHandle[] handles = new GCHandle[sectorTextureNames.Length];
             try
             {
-                DataBox[] dataBoxes = new DataBox[sectorTextureNames.Length];
+                SubresourceData[] subresources = new SubresourceData[sectorTextureNames.Length];
                 for (int i = 0; i < sectorTextureNames.Length; ++i)
                 {
                     string name = nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures." + sectorTextureNames[i] + ".png";
@@ -302,7 +413,7 @@ namespace TombLib.Rendering.DirectX11
                             throw new ArgumentOutOfRangeException("The embedded resource '" + name + "' is not of a valid size.");
 
                         if (support16BitTexture)
-                        { // Compress image data into B5G5R5A1 format to save a bit of GPU memory. (3 MB saved with currently 23 images)
+                        { // Compress image data into B5G5R5A1 format to save a bit of GPU memory.
                             ushort[] sectorTextureData = new ushort[SectorTextureSize * SectorTextureSize];
                             for (int j = 0; j < (SectorTextureSize * SectorTextureSize); ++j)
                             {
@@ -314,36 +425,55 @@ namespace TombLib.Rendering.DirectX11
                                     ((Color.A >> 7) << 15));
                             }
                             handles[i] = GCHandle.Alloc(sectorTextureData, GCHandleType.Pinned);
-                            dataBoxes[i] = new DataBox(handles[i].AddrOfPinnedObject(), sizeof(ushort) * SectorTextureSize, 0);
+                            subresources[i] = new SubresourceData
+                            {
+                                PSysMem = (void*)handles[i].AddrOfPinnedObject(),
+                                SysMemPitch = (uint)(sizeof(ushort) * SectorTextureSize),
+                            };
                         }
                         else
                         {
                             handles[i] = GCHandle.Alloc(image.ToByteArray(), GCHandleType.Pinned);
-                            dataBoxes[i] = new DataBox(handles[i].AddrOfPinnedObject(), sizeof(uint) * SectorTextureSize, 0);
+                            subresources[i] = new SubresourceData
+                            {
+                                PSysMem = (void*)handles[i].AddrOfPinnedObject(),
+                                SysMemPitch = (uint)(sizeof(uint) * SectorTextureSize),
+                            };
                         }
                     }
                 }
 
-                SectorTextureArray = new Texture2D(Device, new Texture2DDescription
+                var texDesc = new Texture2DDesc
                 {
                     Width = SectorTextureSize,
                     Height = SectorTextureSize,
                     MipLevels = 1,
-                    ArraySize = sectorTextureNames.Length,
-                    Format = support16BitTexture ? Format.B5G5R5A1_UNorm : Format.B8G8R8A8_UNorm,
-                    SampleDescription = new SampleDescription(1, 0),
-                    Usage = ResourceUsage.Immutable,
-                    BindFlags = BindFlags.ShaderResource,
-                    CpuAccessFlags = CpuAccessFlags.None,
-                    OptionFlags = ResourceOptionFlags.None
-                }, dataBoxes);
+                    ArraySize = (uint)sectorTextureNames.Length,
+                    Format = support16BitTexture ? Format.FormatB5G5R5A1Unorm : Format.FormatB8G8R8A8Unorm,
+                    SampleDesc = new SampleDesc(1, 0),
+                    Usage = D3D11Usage.Immutable,
+                    BindFlags = (uint)BindFlag.ShaderResource,
+                    CPUAccessFlags = 0,
+                    MiscFlags = 0,
+                };
+
+                ID3D11Texture2D* tex;
+                fixed (SubresourceData* pSubresources = subresources)
+                {
+                    SilkMarshal.ThrowHResult(Device->CreateTexture2D(&texDesc, pSubresources, &tex));
+                }
+                SectorTextureArray = tex;
             }
             finally
             {
                 foreach (GCHandle handle in handles)
                     handle.Free();
             }
-            SectorTextureArrayView = new ShaderResourceView(Device, SectorTextureArray);
+            {
+                ID3D11ShaderResourceView* srv;
+                SilkMarshal.ThrowHResult(Device->CreateShaderResourceView((ID3D11Resource*)SectorTextureArray, null, &srv));
+                SectorTextureArrayView = srv;
+            }
 
             // Set omni present state
             ResetState();
@@ -351,52 +481,77 @@ namespace TombLib.Rendering.DirectX11
             logger.Info("Dx11 rendering device created.");
         }
 
+        private static DepthStencilopDesc DefaultStencilOp()
+        {
+            return new DepthStencilopDesc
+            {
+                StencilFailOp = StencilOp.Keep,
+                StencilDepthFailOp = StencilOp.Keep,
+                StencilPassOp = StencilOp.Keep,
+                StencilFunc = ComparisonFunc.Always,
+            };
+        }
+
+        private static BlendDesc DefaultBlendDesc()
+        {
+            var desc = new BlendDesc();
+            for (int i = 0; i < 8; i++)
+            {
+                desc.RenderTarget[i].BlendEnable = 0;
+                desc.RenderTarget[i].SrcBlend = Blend.One;
+                desc.RenderTarget[i].DestBlend = Blend.Zero;
+                desc.RenderTarget[i].BlendOp = BlendOp.Add;
+                desc.RenderTarget[i].SrcBlendAlpha = Blend.One;
+                desc.RenderTarget[i].DestBlendAlpha = Blend.Zero;
+                desc.RenderTarget[i].BlendOpAlpha = BlendOp.Add;
+                desc.RenderTarget[i].RenderTargetWriteMask = (byte)ColorWriteEnable.All;
+            }
+            return desc;
+        }
+
         public override void ResetState()
         {
-            Context.Rasterizer.State = RasterizerBackCulling;
-            Context.OutputMerger.SetDepthStencilState(DepthStencilDefault);
-            Context.OutputMerger.SetBlendState(BlendingPremultipliedAlpha);
+            Context->RSSetState(RasterizerBackCulling);
+            Context->OMSetDepthStencilState(DepthStencilDefault, 0);
+            Context->OMSetBlendState(BlendingPremultipliedAlpha, null, 0xFFFFFFFF);
         }
 
         public override void Dispose()
         {
             try
             {
-                Context.ClearState();
-                Context.Flush();
+                Context->ClearState();
+                Context->Flush();
             }
             finally
             {
                 _dynamicVertexBuffers?.Dispose();
-                SectorTextureArrayView.Dispose();
-                SectorTextureArray.Dispose();
-                DepthStencilDefault.Dispose();
-                DepthStencilNoZBuffer.Dispose();
-                DepthStencilDepthRead.Dispose();
-                BlendingDisabled.Dispose();
-                BlendingPremultipliedAlpha.Dispose();
-                BlendingNonPremultipliedAlpha.Dispose();
-                BlendingAdditive.Dispose();
-                SamplerDefault.Dispose();
-                SamplerRoundToNearest.Dispose();
-                RasterizerBackCulling.Dispose();
-                RasterizerNoCull.Dispose();
-                RasterizerWireframe.Dispose();
+                SectorTextureArrayView->Release();
+                SectorTextureArray->Release();
+                DepthStencilDefault->Release();
+                DepthStencilNoZBuffer->Release();
+                DepthStencilDepthRead->Release();
+                BlendingDisabled->Release();
+                BlendingPremultipliedAlpha->Release();
+                BlendingNonPremultipliedAlpha->Release();
+                BlendingAdditive->Release();
+                SamplerDefault->Release();
+                SamplerRoundToNearest->Release();
+                RasterizerBackCulling->Release();
+                RasterizerNoCull->Release();
+                RasterizerWireframe->Release();
                 LinesShader.Dispose();
                 MeshShader.Dispose();
                 ImportedGeometryShader.Dispose();
                 RoomShader.Dispose();
-                Context.Dispose();
-                Device.Dispose();
-                Factory.Dispose();
+                Context->Release();
+                Device->Release();
+                Factory->Release();
             }
         }
 
         // Packs an RGBA color into a single uint in the same layout the room shader
-        // expects (R8G8B8A8_UNorm). The "average" path uses 128 as multiplier instead
-        // of 255 to leave headroom for additive vertex colours that overflow [0..1] —
-        // the shader recovers values >1.0 from the top half (see RoomShaderPS:58-60).
-        // alpha is independently clamped to [0..1] regardless.
+        // expects (R8G8B8A8_UNorm).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint CompressColor(Vector3 color, float alpha = 1.0f, bool average = true)
         {
@@ -405,17 +560,6 @@ namespace TombLib.Rendering.DirectX11
             return ((uint)color.X) | (((uint)color.Y) << 8) | (((uint)color.Z) << 16) | ((uint)(MathC.Clamp(alpha, 0, 1) * 255.0f) << 24);
         }
 
-        // Packs a 3D atlas coordinate + a 4-bit blend mode flag into 64 bits. Layout:
-        //
-        //   bits  0..23  : X*scale (24 bits, fixed-point with sub-pixel precision)
-        //   bits 24..47  : Y*scale (24 bits, idem)
-        //   bits 48..59  : atlas page index (12 bits, room shader masks 10)
-        //   bits 60..63  : blend mode (0..15)
-        //
-        // The X/Y fields are pre-scaled by `textureScaling` (precomputed as
-        // 16777216 / atlasSize) so the shader can reconstruct float UVs by dividing
-        // back. The 24-bit precision gives ~1/64th-of-a-pixel UVs at 1024px atlases.
-        // `highestBits` carries the blend mode, capped to nibble.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong CompressUvw(VectorInt3 position, Vector2 textureScaling, Vector2 uv, uint highestBits = 0)
         {
@@ -425,8 +569,6 @@ namespace TombLib.Rendering.DirectX11
             return x | ((ulong)y << 24) | ((ulong)position.Z << 48) | ((ulong)blendMode2 << 60);
         }
 
-        // Inverse of CompressUvw — used by the texture allocator GC to find which atlas
-        // entry a packed UVW points at, so it can be remapped after compaction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static VectorInt3 UncompressUvw(ulong value, Vector2 textureScaling)
         {
@@ -435,9 +577,6 @@ namespace TombLib.Rendering.DirectX11
             return new VectorInt3((int)uv.X, (int)uv.Y, w);
         }
 
-        // Variant that gives back the (uv, highestBits) decomposition relative to a
-        // known atlas entry position. Used during the GC adjust pass to re-pack the
-        // same logical UVs into a new atlas slot.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void UncompressUvw(ulong value, VectorInt3 position, Vector2 textureScaling, out Vector2 uv, out uint highestBits)
         {
@@ -446,47 +585,61 @@ namespace TombLib.Rendering.DirectX11
         }
 
         ///<summary>Works even on immutable buffers</summary>
-        public byte[] ReadBuffer(Buffer buffer, int size)
+        public byte[] ReadBuffer(ID3D11Buffer* buffer, int size)
         {
-            using (Buffer tempBuffer = new Buffer(Device,
-                new BufferDescription(size, ResourceUsage.Staging, BindFlags.None,
-                CpuAccessFlags.Read, ResourceOptionFlags.None, 0)))
+            var desc = new BufferDesc
             {
-                Context.CopyResource(buffer, tempBuffer);
-                DataBox mappedBuffer = Context.MapSubresource(tempBuffer, 0, MapMode.Read, MapFlags.None);
+                ByteWidth = (uint)size,
+                Usage = D3D11Usage.Staging,
+                BindFlags = 0,
+                CPUAccessFlags = (uint)CpuAccessFlag.Read,
+                MiscFlags = 0,
+                StructureByteStride = 0,
+            };
+            ID3D11Buffer* tempBuffer;
+            SilkMarshal.ThrowHResult(Device->CreateBuffer(&desc, null, &tempBuffer));
+            try
+            {
+                Context->CopyResource((ID3D11Resource*)tempBuffer, (ID3D11Resource*)buffer);
+                MappedSubresource mapped;
+                SilkMarshal.ThrowHResult(Context->Map((ID3D11Resource*)tempBuffer, 0, Map.Read, 0, &mapped));
                 try
                 {
                     byte[] result = new byte[size];
-                    Marshal.Copy(mappedBuffer.DataPointer, result, 0, size);
+                    Marshal.Copy((IntPtr)mapped.PData, result, 0, size);
                     return result;
                 }
                 finally
                 {
-                    Context.UnmapSubresource(tempBuffer, 0);
+                    Context->Unmap((ID3D11Resource*)tempBuffer, 0);
                 }
+            }
+            finally
+            {
+                tempBuffer->Release();
             }
         }
 
-        public Texture2DDescription CreateTextureDescription(VectorInt3 size)
+        public Texture2DDesc CreateTextureDescription(VectorInt3 size)
         {
-            Texture2DDescription dx11Description;
-            dx11Description.Height = size.X;
-            dx11Description.Width = size.Y;
-            dx11Description.ArraySize = size.Z;
-            dx11Description.BindFlags = BindFlags.ShaderResource;
-            dx11Description.CpuAccessFlags = CpuAccessFlags.None;
-            dx11Description.Format = Format.B8G8R8A8_UNorm;
-            dx11Description.MipLevels = 1;
-            dx11Description.OptionFlags = ResourceOptionFlags.None;
-            dx11Description.SampleDescription = new SampleDescription(1, 0);
-            dx11Description.Usage = ResourceUsage.Default; // Perhaps dynamic could be used?
-
-            return dx11Description;
+            return new Texture2DDesc
+            {
+                Height = (uint)size.X,
+                Width = (uint)size.Y,
+                ArraySize = (uint)size.Z,
+                BindFlags = (uint)BindFlag.ShaderResource,
+                CPUAccessFlags = 0,
+                Format = Format.FormatB8G8R8A8Unorm,
+                MipLevels = 1,
+                MiscFlags = 0,
+                SampleDesc = new SampleDesc(1, 0),
+                Usage = D3D11Usage.Default,
+            };
         }
 
         public VectorInt3 GetAvailableTextureAllocatorSize(VectorInt3 size)
         {
-            if (size.Z < RenderingTextureAllocator.MinimumPageCount) // Page count is below minimum page count, no need to process.
+            if (size.Z < RenderingTextureAllocator.MinimumPageCount)
                 return size;
 
             logger.Info("Trying to reserve " + size.Z + " " + size.X + "x" + size.Y + " pages of texture memory...");
@@ -495,19 +648,16 @@ namespace TombLib.Rendering.DirectX11
 
             while (dx11Description.ArraySize >= RenderingTextureAllocator.MinimumPageCount)
             {
-                try
+                ID3D11Texture2D* test;
+                int hr = Device->CreateTexture2D(&dx11Description, null, &test);
+                if (hr == 0)
                 {
-                    // Try to allocate texture space and immediately dispose it.
-                    var test = new Texture2D(Device, dx11Description);
-                    test.Dispose();
-
-                    // Test succeeded, return current page count.
+                    test->Release();
                     logger.Info(dx11Description.ArraySize + " texture pages were successfully reserved.");
-                    return new VectorInt3(size.X, size.Y, dx11Description.ArraySize);
+                    return new VectorInt3(size.X, size.Y, (int)dx11Description.ArraySize);
                 }
-                catch
+                else
                 {
-                    // Test failed, try to dispose texture, decrease page count and try again.
                     logger.Warn("Not enough memory to allocate " + dx11Description.ArraySize + " texture pages. Trying to reduce page count...");
                     dx11Description.ArraySize -= 2;
                 }
@@ -560,15 +710,71 @@ namespace TombLib.Rendering.DirectX11
         {
             return new Dx11RenderingDrawingImportedGeometry(this, description);
         }
+
+        // Helper to set a debug name on a D3D11 device child via SetPrivateData.
+        public static void SetDebugName(ID3D11DeviceChild* child, string debugName)
+        {
+            if (child == null) return;
+            byte[] nameBytes = Encoding.ASCII.GetBytes(debugName);
+            Guid guid = new Guid("429b8c22-9188-4b0c-8742-acb0bf85c200"); // WKPDID_D3DDebugObjectName
+            fixed (byte* ptr = nameBytes)
+                child->SetPrivateData(&guid, (uint)nameBytes.Length, ptr);
+        }
+
+        // Helper to bind vertex buffers from Dx11VertexBufferBinding arrays.
+        public static void SetVertexBuffers(ID3D11DeviceContext* context, uint startSlot, Dx11VertexBufferBinding[] bindings)
+        {
+            int count = bindings.Length;
+            ID3D11Buffer** buffers = stackalloc ID3D11Buffer*[count];
+            uint* strides = stackalloc uint[count];
+            uint* offsets = stackalloc uint[count];
+            for (int i = 0; i < count; i++)
+            {
+                buffers[i] = bindings[i].Buffer;
+                strides[i] = bindings[i].Stride;
+                offsets[i] = bindings[i].Offset;
+            }
+            context->IASetVertexBuffers(startSlot, (uint)count, buffers, strides, offsets);
+        }
     }
 
-    public static class Dx11RenderingDeviceDebugging
+    // Replacement for SharpDX.Direct3D11.VertexBufferBinding.
+    public unsafe struct Dx11VertexBufferBinding
     {
-        public static unsafe void SetDebugName(this DeviceChild child, string debugName)
+        public ID3D11Buffer* Buffer;
+        public uint Stride;
+        public uint Offset;
+
+        public Dx11VertexBufferBinding(ID3D11Buffer* buffer, int stride, int offset)
         {
-            byte[] debugNameBytes = Encoding.ASCII.GetBytes(debugName);
-            fixed (byte* debugNameBytesPtr = debugNameBytes)
-                child.SetPrivateData(CommonGuid.DebugObjectName, debugNameBytes.Length, new IntPtr(debugNameBytesPtr));
+            Buffer = buffer;
+            Stride = (uint)stride;
+            Offset = (uint)offset;
+        }
+    }
+
+    // Managed representation of an input element, carrying the semantic name as a
+    // string. Dx11PipelineState converts these to InputElementDesc (with byte*
+    // SemanticName) during CreateInputLayout.
+    public struct Dx11InputElement
+    {
+        public string SemanticName;
+        public uint SemanticIndex;
+        public Format Format;
+        public uint AlignedByteOffset;
+        public uint InputSlot;
+        public InputClassification InputSlotClass;
+        public uint InstanceDataStepRate;
+
+        public Dx11InputElement(string semanticName, uint semanticIndex, Format format, uint alignedByteOffset, uint inputSlot, InputClassification inputSlotClass, uint instanceDataStepRate)
+        {
+            SemanticName = semanticName;
+            SemanticIndex = semanticIndex;
+            Format = format;
+            AlignedByteOffset = alignedByteOffset;
+            InputSlot = inputSlot;
+            InputSlotClass = inputSlotClass;
+            InstanceDataStepRate = instanceDataStepRate;
         }
     }
 }

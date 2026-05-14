@@ -1,5 +1,4 @@
 ﻿using NLog;
-using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,11 +16,12 @@ namespace TombLib.LevelData
 {
     public class ImportedGeometryTexture : Texture
     {
-        // GPU handle the renderer binds — either a SharpDX.Direct3D11.ShaderResourceView
-        // (DX11 path) or a TombLib.Rendering Vulkan handle (anything that VulkanDrawing-
-        // ImportedGeometry.ResolveTexture recognises). The handle is loaded lazily on
-        // first GpuTexture access so we don't depend on the backend being available at
-        // ImageC-load time.
+        // GPU handle the renderer binds — either an nint wrapping an
+        // ID3D11ShaderResourceView* (DX11 path, stored inside LoadedTexture.View)
+        // or a TombLib.Rendering Vulkan handle (anything that VulkanDrawing-
+        // ImportedGeometry.ResolveTexture recognises). The handle is loaded lazily
+        // on first GpuTexture access so we don't depend on the backend being
+        // available at ImageC-load time.
         //
         // GpuTextureFactory is set by TombLib.Rendering.Graphics.DeviceManager at
         // backend init under Vulkan. Under DX11 it stays null and the constructor
@@ -29,14 +29,14 @@ namespace TombLib.LevelData
         public static Func<ImageC, object> GpuTextureFactory;
 
         // Backwards-compatible alias for callers that already typed it loosely as
-        // `object` (Panel3DDraw / WadObjectRenderHelper). Returns either a
-        // ShaderResourceView (DX11) or a Vulkan ImageView / VulkanTexture2D
-        // (Vulkan). Don't assume a SharpDX type here any more.
+        // `object` (Panel3DDraw / WadObjectRenderHelper). Returns either an nint
+        // wrapping an ID3D11ShaderResourceView* (DX11, boxed) or a Vulkan
+        // ImageView / VulkanTexture2D (Vulkan). Don't assume a specific type here.
         public object DirectXTexture
         {
             get
             {
-                if (_loaded.View != null) return _loaded.View;
+                if (_loaded.View != 0) return _loaded.View;
                 if (_vulkanGpu == null && Image != null && GpuTextureFactory != null)
                     _vulkanGpu = GpuTextureFactory(Image);
                 return _vulkanGpu;
@@ -53,7 +53,7 @@ namespace TombLib.LevelData
             // Replace magenta with transparent color
             Image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
-            if (ImportedGeometry.Device == null)
+            if (ImportedGeometry.Device == 0)
                 return; // Vulkan backend — defer GPU upload to GpuTextureFactory.
 
             if (SynchronizationContext.Current == null)
@@ -164,12 +164,13 @@ namespace TombLib.LevelData
 
     public class ImportedGeometry : IWadObject, ICloneable, IReloadableResource, IEquatable<ImportedGeometry>
     {
-        // Raw D3D11 device used by ImportedGeometryTexture to create per-texture
-        // GPU resources. Set once at startup by DeviceManager. Static because the
-        // texture loading runs synchronously inside ImportedGeometryTexture's
-        // constructor — making it instance-scoped would require threading a Device
-        // reference through every loader / level settings reload code path.
-        public static Device Device;
+        // Raw ID3D11Device* as nint, used by ImportedGeometryTexture to create
+        // per-texture GPU resources via TextureLoad. Set once at startup by
+        // DeviceManager. Static because the texture loading runs synchronously
+        // inside ImportedGeometryTexture's constructor — making it instance-scoped
+        // would require threading a Device reference through every loader / level
+        // settings reload code path.
+        public static nint Device;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -288,7 +289,7 @@ namespace TombLib.LevelData
 
         private bool Update(IOModel tmpModel, ImportedGeometryInfo info)
         {
-            if (Device == null)
+            if (Device == 0)
                 return false;
 
             // Create a new static model

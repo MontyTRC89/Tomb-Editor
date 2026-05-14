@@ -11,6 +11,7 @@ using System.Xml;
 using DarkUI.Docking;
 using DarkUI.Forms;
 using TombLib.Forms;
+using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombEditor.ToolWindows;
@@ -53,7 +54,7 @@ namespace TombEditor.Forms
             // Initialize everything needed
             _editor.RaiseEvent(new Editor.InitEvent());
 
-            Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
+            Text = "Tomb Editor " + Application.ProductVersion + " [" + DeviceManager.DefaultDeviceManager.BackendName + "] - Untitled";
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             // Only show debug menu when a debugger is attached...
@@ -281,7 +282,7 @@ namespace TombEditor.Forms
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     PathC.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
 
-                Text = "Tomb Editor " + Application.ProductVersion + " - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
+                Text = "Tomb Editor " + Application.ProductVersion + " [" + DeviceManager.DefaultDeviceManager.BackendName + "] - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
             }
 
             // Update save button

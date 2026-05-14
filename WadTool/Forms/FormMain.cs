@@ -25,6 +25,7 @@ namespace WadTool
         {
             InitializeComponent();
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            Text = "WadTool [" + DeviceManager.DefaultDeviceManager.BackendName + "]";
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = Debugger.IsAttached;
 
@@ -193,7 +194,7 @@ namespace WadTool
 
         private void UpdateSaveUI(bool hasUnsavedChanges)
         {
-            Text = "WadTool";
+            Text = "WadTool [" + DeviceManager.DefaultDeviceManager.BackendName + "]";
             if (_tool?.DestinationWad != null)
             {
                 var newOrImported = String.IsNullOrEmpty(_tool.DestinationWad.FileName);

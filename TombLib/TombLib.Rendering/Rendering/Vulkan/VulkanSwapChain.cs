@@ -4,8 +4,11 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using Silk.NET.Core;
 using Silk.NET.Core.Native;
+using Silk.NET.Shaderc;
 using Silk.NET.Vulkan;
 using TombLib.Utils;
+using VkBuffer = Silk.NET.Vulkan.Buffer;
+using VkPipeline = Silk.NET.Vulkan.Pipeline;
 
 namespace TombLib.Rendering.Vulkan
 {
@@ -24,9 +27,6 @@ namespace TombLib.Rendering.Vulkan
     // recording, and open the render pass. Drawing classes record their commands
     // into the recording command buffer. Present ends the pass, submits, and
     // calls vkQueuePresentKHR.
-    //
-    // Sprite/glyph overlays are NOT implemented yet — RenderSprites/RenderGlyphs
-    // throw. The session goal is "Clear -> Present cycle works under raw Vulkan."
     public sealed class VulkanSwapChain : RenderingSwapChain
     {
         private const int FramesInFlight = 2;
@@ -74,6 +74,31 @@ namespace TombLib.Rendering.Vulkan
         private ClearValue _clearColorValue;
         private ClearValue _clearDepthValue = new ClearValue { DepthStencil = new ClearDepthStencilValue(1.0f, 0) };
 
+        // ---- Text overlay pipeline resources --------------------------------
+        private ShaderModule _textVs, _textFs;
+        private DescriptorSetLayout _textSetLayout;
+        private PipelineLayout _textPipelineLayout;
+        private VkPipeline _textPipeline;
+        private DescriptorSet _textAtlasSet;
+        private ulong _textCachedAtlasView;
+        private VkBuffer _textVB;
+        private DeviceMemory _textVBMem;
+        private unsafe void* _textVBMapped;
+        private uint _textVBCapacity;
+
+        // ---- Sprite overlay pipeline resources ------------------------------
+        private ShaderModule _spriteVs, _spriteFs;
+        private DescriptorSetLayout _spriteSetLayout;
+        private PipelineLayout _spritePipelineLayout;
+        private readonly Dictionary<bool, VkPipeline> _spritePipelines = new Dictionary<bool, VkPipeline>();
+        private DescriptorSet _spriteAtlasSet;
+        private ulong _spriteCachedAtlasView;
+        private bool _spriteCachedLinear;
+        private VkBuffer _spriteVB;
+        private DeviceMemory _spriteVBMem;
+        private unsafe void* _spriteVBMapped;
+        private uint _spriteVBCapacity;
+
         public RenderPass RenderPass => _renderPass;
         public Format ColorFormat => _colorFormat;
         public Format DepthFormat => _depthFormat;
@@ -88,6 +113,80 @@ namespace TombLib.Rendering.Vulkan
         // (i.e. inside the render-pass recording window). Drawing* classes call
         // EnsureRecording first, then read this to record their cmd... calls.
         public CommandBuffer CurrentCommandBuffer => _commandBuffers[_slot];
+
+        // ---- GLSL shaders (inline) ------------------------------------------
+
+        private const string TextVertGlsl = @"#version 450
+layout(location = 0) in vec2 inPosition;
+layout(location = 1) in uvec2 inUvw;
+
+layout(location = 0) out vec3 fsUvw;
+layout(location = 1) flat out int fsBlendMode;
+
+void main() {
+    gl_Position = vec4(inPosition, 1.0, 1.0);
+
+    uint u = inUvw.x & 0xffffffu;
+    uint v = (inUvw.x >> 24) | ((inUvw.y & 0xffffu) << 8);
+    uint w = (inUvw.y >> 16) & 0xfffu;
+    fsUvw = vec3(float(u) / 16777216.0, float(v) / 16777216.0, float(w));
+    fsBlendMode = int(inUvw.y >> 28);
+}
+";
+        private const string TextFragGlsl = @"#version 450
+layout(set = 0, binding = 0) uniform sampler2DArray FontTexture;
+
+layout(location = 0) in vec3 fsUvw;
+layout(location = 1) flat in int fsBlendMode;
+
+layout(location = 0) out vec4 outColor;
+
+void main() {
+    if (fsBlendMode == 0) {
+        vec4 s = texture(FontTexture, fsUvw);
+        float a = (s.r + s.g + s.b) / 3.0;
+        outColor = vec4(s.rgb * a, a);
+    } else {
+        outColor = vec4(0.0, 0.0, 0.0, 0.6);
+    }
+}
+";
+
+        private const string SpriteVertGlsl = @"#version 450
+layout(location = 0) in vec3 inPosition;
+layout(location = 1) in vec4 inColor;
+layout(location = 2) in uvec2 inUvw;
+
+layout(location = 0) out vec4 fsColor;
+layout(location = 1) out vec3 fsUvw;
+
+void main() {
+    gl_Position = vec4(inPosition, 1.0);
+
+    uint u = inUvw.x & 0xffffffu;
+    uint v = (inUvw.x >> 24) | ((inUvw.y & 0xffffu) << 8);
+    uint w = (inUvw.y >> 16) & 0xfffu;
+    fsUvw = vec3(float(u) / 16777216.0, float(v) / 16777216.0, float(w));
+    fsColor = inColor;
+}
+";
+        private const string SpriteFragGlsl = @"#version 450
+layout(set = 0, binding = 0) uniform sampler2DArray SpriteTexture;
+
+layout(location = 0) in vec4 fsColor;
+layout(location = 1) in vec3 fsUvw;
+
+layout(location = 0) out vec4 outColor;
+
+void main() {
+    vec4 s = texture(SpriteTexture, fsUvw);
+    vec4 result = s * fsColor * s.a;
+    result.rgb *= result.a;
+    if (result.a <= 0.05)
+        discard;
+    outColor = result;
+}
+";
 
         public unsafe VulkanSwapChain(VulkanRenderingDevice device, Description description)
         {
@@ -107,6 +206,8 @@ namespace TombLib.Rendering.Vulkan
             CreateFramebuffers();
             CreateCommandObjects();
             CreateSyncObjects();
+            CreateTextPipeline();
+            CreateSpritePipeline();
         }
 
         // Choose the highest sample count up to 4x that BOTH color and depth
@@ -530,6 +631,409 @@ namespace TombLib.Rendering.Vulkan
             }
         }
 
+        // ---- Text pipeline creation -----------------------------------------
+
+        private unsafe void CreateTextPipeline()
+        {
+            byte[] vsSpirv = DeviceWrapper.ShaderCompiler.CompileGlslToSpirv(TextVertGlsl, ShaderKind.VertexShader, "TextVS");
+            byte[] fsSpirv = DeviceWrapper.ShaderCompiler.CompileGlslToSpirv(TextFragGlsl, ShaderKind.FragmentShader, "TextFS");
+            _textVs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, vsSpirv);
+            _textFs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, fsSpirv);
+
+            // Single descriptor set: CombinedImageSampler for the font atlas.
+            _textSetLayout = CreateSamplerSetLayout();
+
+            var layouts = stackalloc DescriptorSetLayout[1] { _textSetLayout };
+            PipelineLayoutCreateInfo plInfo = new PipelineLayoutCreateInfo
+            {
+                SType = StructureType.PipelineLayoutCreateInfo,
+                SetLayoutCount = 1,
+                PSetLayouts = layouts,
+            };
+            PipelineLayout pl;
+            VkCheck.Ok(_vk.CreatePipelineLayout(_device, in plInfo, null, &pl));
+            _textPipelineLayout = pl;
+
+            _textAtlasSet = AllocateDescriptorSet(_textSetLayout);
+
+            _textPipeline = BuildTextPipeline();
+        }
+
+        private unsafe VkPipeline BuildTextPipeline()
+        {
+            var entryName = stackalloc byte[5] { (byte)'m', (byte)'a', (byte)'i', (byte)'n', 0 };
+            var stages = stackalloc PipelineShaderStageCreateInfo[2]
+            {
+                new PipelineShaderStageCreateInfo
+                {
+                    SType = StructureType.PipelineShaderStageCreateInfo,
+                    Stage = ShaderStageFlags.VertexBit,
+                    Module = _textVs, PName = entryName,
+                },
+                new PipelineShaderStageCreateInfo
+                {
+                    SType = StructureType.PipelineShaderStageCreateInfo,
+                    Stage = ShaderStageFlags.FragmentBit,
+                    Module = _textFs, PName = entryName,
+                },
+            };
+
+            // 2 SoA bindings: position float2, uvw uint2
+            var bindings = stackalloc VertexInputBindingDescription[2]
+            {
+                new VertexInputBindingDescription { Binding = 0, Stride = (uint)sizeof(Vector2), InputRate = VertexInputRate.Vertex },
+                new VertexInputBindingDescription { Binding = 1, Stride = sizeof(ulong), InputRate = VertexInputRate.Vertex },
+            };
+            var attributes = stackalloc VertexInputAttributeDescription[2]
+            {
+                new VertexInputAttributeDescription { Location = 0, Binding = 0, Format = Format.R32G32Sfloat, Offset = 0 },
+                new VertexInputAttributeDescription { Location = 1, Binding = 1, Format = Format.R32G32Uint,   Offset = 0 },
+            };
+            PipelineVertexInputStateCreateInfo viState = new PipelineVertexInputStateCreateInfo
+            {
+                SType = StructureType.PipelineVertexInputStateCreateInfo,
+                VertexBindingDescriptionCount = 2, PVertexBindingDescriptions = bindings,
+                VertexAttributeDescriptionCount = 2, PVertexAttributeDescriptions = attributes,
+            };
+
+            PipelineInputAssemblyStateCreateInfo iaState = new PipelineInputAssemblyStateCreateInfo
+            {
+                SType = StructureType.PipelineInputAssemblyStateCreateInfo,
+                Topology = PrimitiveTopology.TriangleList,
+            };
+
+            PipelineViewportStateCreateInfo vpState = new PipelineViewportStateCreateInfo
+            {
+                SType = StructureType.PipelineViewportStateCreateInfo,
+                ViewportCount = 1, ScissorCount = 1,
+            };
+
+            PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
+            {
+                SType = StructureType.PipelineRasterizationStateCreateInfo,
+                PolygonMode = PolygonMode.Fill,
+                CullMode = CullModeFlags.None,
+                FrontFace = FrontFace.CounterClockwise,
+                LineWidth = 1.0f,
+            };
+
+            PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
+            {
+                SType = StructureType.PipelineMultisampleStateCreateInfo,
+                RasterizationSamples = _sampleCount,
+            };
+
+            // Depth OFF for text overlays.
+            PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
+            {
+                SType = StructureType.PipelineDepthStencilStateCreateInfo,
+                DepthTestEnable = false,
+                DepthWriteEnable = false,
+            };
+
+            // Premultiplied alpha: One / OneMinusSrcAlpha.
+            ColorComponentFlags mask = ColorComponentFlags.RBit | ColorComponentFlags.GBit |
+                                       ColorComponentFlags.BBit | ColorComponentFlags.ABit;
+            PipelineColorBlendAttachmentState att = new PipelineColorBlendAttachmentState
+            {
+                BlendEnable = true,
+                SrcColorBlendFactor = BlendFactor.One,
+                DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                ColorBlendOp = BlendOp.Add,
+                SrcAlphaBlendFactor = BlendFactor.One,
+                DstAlphaBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                AlphaBlendOp = BlendOp.Add,
+                ColorWriteMask = mask,
+            };
+            PipelineColorBlendStateCreateInfo cbState = new PipelineColorBlendStateCreateInfo
+            {
+                SType = StructureType.PipelineColorBlendStateCreateInfo,
+                AttachmentCount = 1, PAttachments = &att,
+            };
+
+            var dynStates = stackalloc DynamicState[2] { DynamicState.Viewport, DynamicState.Scissor };
+            PipelineDynamicStateCreateInfo dyn = new PipelineDynamicStateCreateInfo
+            {
+                SType = StructureType.PipelineDynamicStateCreateInfo,
+                DynamicStateCount = 2, PDynamicStates = dynStates,
+            };
+
+            GraphicsPipelineCreateInfo gp = new GraphicsPipelineCreateInfo
+            {
+                SType = StructureType.GraphicsPipelineCreateInfo,
+                StageCount = 2, PStages = stages,
+                PVertexInputState = &viState,
+                PInputAssemblyState = &iaState,
+                PViewportState = &vpState,
+                PRasterizationState = &rs,
+                PMultisampleState = &ms,
+                PDepthStencilState = &ds,
+                PColorBlendState = &cbState,
+                PDynamicState = &dyn,
+                Layout = _textPipelineLayout,
+                RenderPass = _renderPass,
+                Subpass = 0,
+            };
+
+            VkPipeline pipeline;
+            VkCheck.Ok(_vk.CreateGraphicsPipelines(_device, default, 1, in gp, null, &pipeline));
+            return pipeline;
+        }
+
+        // ---- Sprite pipeline creation ---------------------------------------
+
+        private unsafe void CreateSpritePipeline()
+        {
+            byte[] vsSpirv = DeviceWrapper.ShaderCompiler.CompileGlslToSpirv(SpriteVertGlsl, ShaderKind.VertexShader, "SpriteVS");
+            byte[] fsSpirv = DeviceWrapper.ShaderCompiler.CompileGlslToSpirv(SpriteFragGlsl, ShaderKind.FragmentShader, "SpriteFS");
+            _spriteVs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, vsSpirv);
+            _spriteFs = VulkanShaderCompiler.CreateShaderModule(_vk, _device, fsSpirv);
+
+            _spriteSetLayout = CreateSamplerSetLayout();
+
+            var layouts = stackalloc DescriptorSetLayout[1] { _spriteSetLayout };
+            PipelineLayoutCreateInfo plInfo = new PipelineLayoutCreateInfo
+            {
+                SType = StructureType.PipelineLayoutCreateInfo,
+                SetLayoutCount = 1,
+                PSetLayouts = layouts,
+            };
+            PipelineLayout pl;
+            VkCheck.Ok(_vk.CreatePipelineLayout(_device, in plInfo, null, &pl));
+            _spritePipelineLayout = pl;
+
+            _spriteAtlasSet = AllocateDescriptorSet(_spriteSetLayout);
+        }
+
+        private unsafe VkPipeline BuildSpritePipeline(bool noZ)
+        {
+            var entryName = stackalloc byte[5] { (byte)'m', (byte)'a', (byte)'i', (byte)'n', 0 };
+            var stages = stackalloc PipelineShaderStageCreateInfo[2]
+            {
+                new PipelineShaderStageCreateInfo
+                {
+                    SType = StructureType.PipelineShaderStageCreateInfo,
+                    Stage = ShaderStageFlags.VertexBit,
+                    Module = _spriteVs, PName = entryName,
+                },
+                new PipelineShaderStageCreateInfo
+                {
+                    SType = StructureType.PipelineShaderStageCreateInfo,
+                    Stage = ShaderStageFlags.FragmentBit,
+                    Module = _spriteFs, PName = entryName,
+                },
+            };
+
+            // 3 SoA bindings: position float3, color float4, uvw uint2
+            var bindings = stackalloc VertexInputBindingDescription[3]
+            {
+                new VertexInputBindingDescription { Binding = 0, Stride = (uint)sizeof(Vector3), InputRate = VertexInputRate.Vertex },
+                new VertexInputBindingDescription { Binding = 1, Stride = (uint)sizeof(Vector4), InputRate = VertexInputRate.Vertex },
+                new VertexInputBindingDescription { Binding = 2, Stride = sizeof(ulong), InputRate = VertexInputRate.Vertex },
+            };
+            var attributes = stackalloc VertexInputAttributeDescription[3]
+            {
+                new VertexInputAttributeDescription { Location = 0, Binding = 0, Format = Format.R32G32B32Sfloat,    Offset = 0 },
+                new VertexInputAttributeDescription { Location = 1, Binding = 1, Format = Format.R32G32B32A32Sfloat, Offset = 0 },
+                new VertexInputAttributeDescription { Location = 2, Binding = 2, Format = Format.R32G32Uint,         Offset = 0 },
+            };
+            PipelineVertexInputStateCreateInfo viState = new PipelineVertexInputStateCreateInfo
+            {
+                SType = StructureType.PipelineVertexInputStateCreateInfo,
+                VertexBindingDescriptionCount = 3, PVertexBindingDescriptions = bindings,
+                VertexAttributeDescriptionCount = 3, PVertexAttributeDescriptions = attributes,
+            };
+
+            PipelineInputAssemblyStateCreateInfo iaState = new PipelineInputAssemblyStateCreateInfo
+            {
+                SType = StructureType.PipelineInputAssemblyStateCreateInfo,
+                Topology = PrimitiveTopology.TriangleList,
+            };
+
+            PipelineViewportStateCreateInfo vpState = new PipelineViewportStateCreateInfo
+            {
+                SType = StructureType.PipelineViewportStateCreateInfo,
+                ViewportCount = 1, ScissorCount = 1,
+            };
+
+            PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
+            {
+                SType = StructureType.PipelineRasterizationStateCreateInfo,
+                PolygonMode = PolygonMode.Fill,
+                CullMode = CullModeFlags.None,
+                FrontFace = FrontFace.CounterClockwise,
+                LineWidth = 1.0f,
+            };
+
+            PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
+            {
+                SType = StructureType.PipelineMultisampleStateCreateInfo,
+                RasterizationSamples = _sampleCount,
+            };
+
+            PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
+            {
+                SType = StructureType.PipelineDepthStencilStateCreateInfo,
+                DepthTestEnable = !noZ,
+                DepthWriteEnable = !noZ,
+                DepthCompareOp = CompareOp.LessOrEqual,
+            };
+
+            ColorComponentFlags mask = ColorComponentFlags.RBit | ColorComponentFlags.GBit |
+                                       ColorComponentFlags.BBit | ColorComponentFlags.ABit;
+            PipelineColorBlendAttachmentState att = new PipelineColorBlendAttachmentState
+            {
+                BlendEnable = true,
+                SrcColorBlendFactor = BlendFactor.One,
+                DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                ColorBlendOp = BlendOp.Add,
+                SrcAlphaBlendFactor = BlendFactor.One,
+                DstAlphaBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                AlphaBlendOp = BlendOp.Add,
+                ColorWriteMask = mask,
+            };
+            PipelineColorBlendStateCreateInfo cbState = new PipelineColorBlendStateCreateInfo
+            {
+                SType = StructureType.PipelineColorBlendStateCreateInfo,
+                AttachmentCount = 1, PAttachments = &att,
+            };
+
+            var dynStates = stackalloc DynamicState[2] { DynamicState.Viewport, DynamicState.Scissor };
+            PipelineDynamicStateCreateInfo dyn = new PipelineDynamicStateCreateInfo
+            {
+                SType = StructureType.PipelineDynamicStateCreateInfo,
+                DynamicStateCount = 2, PDynamicStates = dynStates,
+            };
+
+            GraphicsPipelineCreateInfo gp = new GraphicsPipelineCreateInfo
+            {
+                SType = StructureType.GraphicsPipelineCreateInfo,
+                StageCount = 2, PStages = stages,
+                PVertexInputState = &viState,
+                PInputAssemblyState = &iaState,
+                PViewportState = &vpState,
+                PRasterizationState = &rs,
+                PMultisampleState = &ms,
+                PDepthStencilState = &ds,
+                PColorBlendState = &cbState,
+                PDynamicState = &dyn,
+                Layout = _spritePipelineLayout,
+                RenderPass = _renderPass,
+                Subpass = 0,
+            };
+
+            VkPipeline pipeline;
+            VkCheck.Ok(_vk.CreateGraphicsPipelines(_device, default, 1, in gp, null, &pipeline));
+            return pipeline;
+        }
+
+        // ---- Shared helpers -------------------------------------------------
+
+        private unsafe DescriptorSetLayout CreateSamplerSetLayout()
+        {
+            DescriptorSetLayoutBinding b = new DescriptorSetLayoutBinding
+            {
+                Binding = 0, DescriptorCount = 1,
+                DescriptorType = DescriptorType.CombinedImageSampler,
+                StageFlags = ShaderStageFlags.FragmentBit,
+            };
+            DescriptorSetLayoutCreateInfo info = new DescriptorSetLayoutCreateInfo
+            {
+                SType = StructureType.DescriptorSetLayoutCreateInfo,
+                BindingCount = 1, PBindings = &b,
+            };
+            DescriptorSetLayout layout;
+            VkCheck.Ok(_vk.CreateDescriptorSetLayout(_device, in info, null, &layout));
+            return layout;
+        }
+
+        private unsafe DescriptorSet AllocateDescriptorSet(DescriptorSetLayout layout)
+        {
+            DescriptorSetAllocateInfo info = new DescriptorSetAllocateInfo
+            {
+                SType = StructureType.DescriptorSetAllocateInfo,
+                DescriptorPool = DeviceWrapper.DescriptorPool,
+                DescriptorSetCount = 1,
+                PSetLayouts = &layout,
+            };
+            DescriptorSet set;
+            VkCheck.Ok(_vk.AllocateDescriptorSets(_device, in info, &set));
+            return set;
+        }
+
+        private unsafe void WriteAtlasDescriptor(DescriptorSet set, ImageView view, Sampler sampler)
+        {
+            DescriptorImageInfo ii = new DescriptorImageInfo
+            {
+                Sampler = sampler,
+                ImageView = view,
+                ImageLayout = ImageLayout.ShaderReadOnlyOptimal,
+            };
+            WriteDescriptorSet w = new WriteDescriptorSet
+            {
+                SType = StructureType.WriteDescriptorSet,
+                DstSet = set, DstBinding = 0,
+                DescriptorCount = 1,
+                DescriptorType = DescriptorType.CombinedImageSampler,
+                PImageInfo = &ii,
+            };
+            _vk.UpdateDescriptorSets(_device, 1, in w, 0, null);
+        }
+
+        private unsafe void EnsureVertexBuffer(ref VkBuffer buffer, ref DeviceMemory memory,
+            ref void* mapped, ref uint capacity, uint requiredSize)
+        {
+            if (buffer.Handle != 0 && capacity >= requiredSize) return;
+
+            if (buffer.Handle != 0)
+            {
+                _vk.DeviceWaitIdle(_device);
+                _vk.UnmapMemory(_device, memory);
+                _vk.DestroyBuffer(_device, buffer, null);
+                _vk.FreeMemory(_device, memory, null);
+            }
+
+            uint newCap = Math.Max(requiredSize, capacity * 2);
+            if (newCap < 4096) newCap = 4096;
+            capacity = newCap;
+
+            BufferCreateInfo bci = new BufferCreateInfo
+            {
+                SType = StructureType.BufferCreateInfo,
+                Size = newCap,
+                Usage = BufferUsageFlags.VertexBufferBit,
+                SharingMode = SharingMode.Exclusive,
+            };
+            VkBuffer buf;
+            VkCheck.Ok(_vk.CreateBuffer(_device, in bci, null, &buf));
+            buffer = buf;
+
+            _vk.GetBufferMemoryRequirements(_device, buffer, out MemoryRequirements req);
+            MemoryAllocateInfo alloc = new MemoryAllocateInfo
+            {
+                SType = StructureType.MemoryAllocateInfo,
+                AllocationSize = req.Size,
+                MemoryTypeIndex = DeviceWrapper.FindMemoryType(req.MemoryTypeBits,
+                    MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit),
+            };
+            DeviceMemory mem;
+            VkCheck.Ok(_vk.AllocateMemory(_device, in alloc, null, &mem));
+            memory = mem;
+            _vk.BindBufferMemory(_device, buffer, memory, 0);
+
+            void* ptr;
+            VkCheck.Ok(_vk.MapMemory(_device, memory, 0, newCap, 0, &ptr));
+            mapped = ptr;
+        }
+
+        private static ulong CompressUvw(VectorInt3 position, Vector2 textureScaling, Vector2 uv, uint highestBits = 0)
+        {
+            uint blendMode2 = Math.Min(highestBits, 15);
+            uint x = (uint)((position.X + uv.X) * textureScaling.X);
+            uint y = (uint)((position.Y + uv.Y) * textureScaling.Y);
+            return x | ((ulong)y << 24) | ((ulong)position.Z << 48) | ((ulong)blendMode2 << 60);
+        }
+
         // ---- Frame cycle ----------------------------------------------------
 
         public override unsafe void Clear(Vector4 color)
@@ -678,15 +1182,157 @@ namespace TombLib.Rendering.Vulkan
             CreateFramebuffers();
         }
 
-        // ---- Sprites / glyphs (no-op stubs) ---------------------------------
-        // In-viewport sprite icons (entity markers) and 3D text labels haven't
-        // been ported to direct Vulkan yet. They are non-critical UI overlays —
-        // the 3D scene renders correctly without them. Returning a no-op here
-        // instead of throwing keeps the editor functional; callers (Panel3D
-        // overlay paths) simply produce no output until a sprite/glyph pipeline
-        // is added.
-        public override void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, List<Sprite> sprites) { }
-        public override void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays) { }
+        // ---- Sprites / glyphs -----------------------------------------------
+
+        public override unsafe void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, List<Sprite> sprites)
+        {
+            if (sprites.Count == 0 || !_recording) return;
+
+            var vkAllocator = (VulkanTextureAllocator)textureAllocator;
+            Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(textureAllocator.Size.X, textureAllocator.Size.Y);
+
+            int vertexCount = sprites.Count * 6;
+            uint posBytes = (uint)(vertexCount * sizeof(Vector3));
+            uint colBytes = (uint)(vertexCount * sizeof(Vector4));
+            uint uvwBytes = (uint)(vertexCount * sizeof(ulong));
+            uint totalBytes = posBytes + colBytes + uvwBytes;
+
+            EnsureVertexBuffer(ref _spriteVB, ref _spriteVBMem, ref _spriteVBMapped, ref _spriteVBCapacity, totalBytes);
+
+            byte* dst = (byte*)_spriteVBMapped;
+            Vector3* positions = (Vector3*)dst;
+            Vector4* colours   = (Vector4*)(dst + posBytes);
+            ulong*   uvws      = (ulong*)(dst + posBytes + colBytes);
+
+            int count = sprites.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                Sprite sprite = sprites[i];
+                VectorInt3 texPos = textureAllocator.Get(sprite.Texture);
+                VectorInt2 texSize = sprite.Texture.To - sprite.Texture.From;
+                float depth = sprite.Depth.HasValue ? sprite.Depth.Value : 1.0f;
+
+                positions[i * 6 + 0] = new Vector3(sprite.Pos00.X, sprite.Pos00.Y, depth);
+                positions[i * 6 + 2] = positions[i * 6 + 3] = new Vector3(sprite.Pos10.X, sprite.Pos10.Y, depth);
+                positions[i * 6 + 1] = positions[i * 6 + 4] = new Vector3(sprite.Pos01.X, sprite.Pos01.Y, depth);
+                positions[i * 6 + 5] = new Vector3(sprite.Pos11.X, sprite.Pos11.Y, depth);
+                // 0.5px insets prevent atlas-bleeding from neighbouring entries
+                uvws[i * 6 + 1] = uvws[i * 6 + 4] = CompressUvw(texPos, textureScaling, new Vector2(0.5f, 0.5f));
+                uvws[i * 6 + 5] = CompressUvw(texPos, textureScaling, new Vector2(texSize.X - 0.5f, 0.5f));
+                uvws[i * 6 + 0] = CompressUvw(texPos, textureScaling, new Vector2(0.5f, texSize.Y - 0.5f));
+                uvws[i * 6 + 2] = uvws[i * 6 + 3] = CompressUvw(texPos, textureScaling, new Vector2(texSize.X - 0.5f, texSize.Y - 0.5f));
+
+                for (int j = 0; j < 6; j++)
+                    colours[i * 6 + j] = sprite.Tint;
+            }
+
+            // Update descriptor set if atlas view or sampler changed.
+            Sampler sampler = linearFilter ? DeviceWrapper.SamplerAniso : DeviceWrapper.SamplerPoint;
+            if (_spriteCachedAtlasView != vkAllocator.AtlasView.Handle || _spriteCachedLinear != linearFilter)
+            {
+                WriteAtlasDescriptor(_spriteAtlasSet, vkAllocator.AtlasView, sampler);
+                _spriteCachedAtlasView = vkAllocator.AtlasView.Handle;
+                _spriteCachedLinear = linearFilter;
+            }
+
+            // Lazy pipeline creation per noZ variant.
+            if (!_spritePipelines.TryGetValue(noZ, out VkPipeline pipeline))
+            {
+                pipeline = BuildSpritePipeline(noZ);
+                _spritePipelines[noZ] = pipeline;
+            }
+
+            CommandBuffer cb = _commandBuffers[_slot];
+            _vk.CmdBindPipeline(cb, PipelineBindPoint.Graphics, pipeline);
+
+            var bufs = stackalloc VkBuffer[3] { _spriteVB, _spriteVB, _spriteVB };
+            var offs = stackalloc ulong[3] { 0UL, posBytes, posBytes + colBytes };
+            _vk.CmdBindVertexBuffers(cb, 0, 3, bufs, offs);
+
+            _vk.CmdBindDescriptorSets(cb, PipelineBindPoint.Graphics, _spritePipelineLayout,
+                0, 1, in _spriteAtlasSet, 0, null);
+
+            _vk.CmdDraw(cb, (uint)vertexCount, 1, 0, 0);
+        }
+
+        public override unsafe void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays)
+        {
+            int vertexCount = glyphRenderInfos.Count * 6 + overlays.Count * 6;
+            if (vertexCount == 0 || !_recording) return;
+
+            var vkAllocator = (VulkanTextureAllocator)textureAllocator;
+
+            // Snap pixel positions to the actual half-pixel grid of the back buffer.
+            Vector2 posScaling = new Vector2(1.0f) / (Size / 2);
+            Vector2 posOffset = VectorInt2.FromRounded(posScaling * 0.5f);
+            Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(textureAllocator.Size.X, textureAllocator.Size.Y);
+
+            uint posBytes = (uint)(vertexCount * sizeof(Vector2));
+            uint uvwBytes = (uint)(vertexCount * sizeof(ulong));
+            uint totalBytes = posBytes + uvwBytes;
+
+            EnsureVertexBuffer(ref _textVB, ref _textVBMem, ref _textVBMapped, ref _textVBCapacity, totalBytes);
+
+            byte* dst = (byte*)_textVBMapped;
+            Vector2* positions = (Vector2*)dst;
+            ulong* uvws = (ulong*)(dst + posBytes);
+
+            int c = 0;
+
+            // Background overlays: a single packed UVW value with the "solid color"
+            // sentinel (highestBits = 1) is written to all 6 verts of the quad.
+            ulong overlayUvw = CompressUvw(VectorInt3.Zero, Vector2.Zero, Vector2.Zero, 1);
+            for (int i = 0; i < overlays.Count; ++i, ++c)
+            {
+                var overlay = overlays[i];
+                Vector2 posStart = overlay.Start * posScaling + posOffset;
+                Vector2 posEnd = (overlay.End + new Vector2(1)) * posScaling + posOffset;
+
+                positions[c * 6 + 0] = new Vector2(posStart.X, posStart.Y);
+                positions[c * 6 + 2] = positions[c * 6 + 3] = new Vector2(posEnd.X, posStart.Y);
+                positions[c * 6 + 1] = positions[c * 6 + 4] = new Vector2(posStart.X, posEnd.Y);
+                positions[c * 6 + 5] = new Vector2(posEnd.X, posEnd.Y);
+
+                uvws[c * 6 + 0] = uvws[c * 6 + 1] = uvws[c * 6 + 2] =
+                uvws[c * 6 + 3] = uvws[c * 6 + 4] = uvws[c * 6 + 5] = overlayUvw;
+            }
+
+            for (int i = 0; i < glyphRenderInfos.Count; ++i, ++c)
+            {
+                RenderingFont.GlyphRenderInfo info = glyphRenderInfos[i];
+                Vector2 posStart = info.PosStart * posScaling + posOffset;
+                Vector2 posEnd = (info.PosEnd - new Vector2(1)) * posScaling + posOffset;
+
+                positions[c * 6 + 0] = new Vector2(posStart.X, posStart.Y);
+                positions[c * 6 + 2] = positions[c * 6 + 3] = new Vector2(posEnd.X, posStart.Y);
+                positions[c * 6 + 1] = positions[c * 6 + 4] = new Vector2(posStart.X, posEnd.Y);
+                positions[c * 6 + 5] = new Vector2(posEnd.X, posEnd.Y);
+
+                uvws[c * 6 + 0] = CompressUvw(info.TexStart, textureScaling, Vector2.Zero);
+                uvws[c * 6 + 2] = uvws[c * 6 + 3] = CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 1, 0));
+                uvws[c * 6 + 1] = uvws[c * 6 + 4] = CompressUvw(info.TexStart, textureScaling, new Vector2(0, info.TexSize.Y - 1));
+                uvws[c * 6 + 5] = CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 1, info.TexSize.Y - 1));
+            }
+
+            // Update descriptor set if atlas view changed.
+            if (_textCachedAtlasView != vkAllocator.AtlasView.Handle)
+            {
+                WriteAtlasDescriptor(_textAtlasSet, vkAllocator.AtlasView, DeviceWrapper.SamplerPoint);
+                _textCachedAtlasView = vkAllocator.AtlasView.Handle;
+            }
+
+            CommandBuffer cb = _commandBuffers[_slot];
+            _vk.CmdBindPipeline(cb, PipelineBindPoint.Graphics, _textPipeline);
+
+            var bufs = stackalloc VkBuffer[2] { _textVB, _textVB };
+            var offs = stackalloc ulong[2] { 0UL, posBytes };
+            _vk.CmdBindVertexBuffers(cb, 0, 2, bufs, offs);
+
+            _vk.CmdBindDescriptorSets(cb, PipelineBindPoint.Graphics, _textPipelineLayout,
+                0, 1, in _textAtlasSet, 0, null);
+
+            _vk.CmdDraw(cb, (uint)vertexCount, 1, 0, 0);
+        }
 
         // ---- Disposal -------------------------------------------------------
 
@@ -721,9 +1367,38 @@ namespace TombLib.Rendering.Vulkan
             }
         }
 
+        private unsafe void DestroyTextResources()
+        {
+            if (_textVBMapped != null) { _vk.UnmapMemory(_device, _textVBMem); _textVBMapped = null; }
+            if (_textVB.Handle != 0) { _vk.DestroyBuffer(_device, _textVB, null); _textVB = default; }
+            if (_textVBMem.Handle != 0) { _vk.FreeMemory(_device, _textVBMem, null); _textVBMem = default; }
+            if (_textPipeline.Handle != 0) { _vk.DestroyPipeline(_device, _textPipeline, null); _textPipeline = default; }
+            if (_textPipelineLayout.Handle != 0) { _vk.DestroyPipelineLayout(_device, _textPipelineLayout, null); _textPipelineLayout = default; }
+            if (_textSetLayout.Handle != 0) { _vk.DestroyDescriptorSetLayout(_device, _textSetLayout, null); _textSetLayout = default; }
+            if (_textVs.Handle != 0) { _vk.DestroyShaderModule(_device, _textVs, null); _textVs = default; }
+            if (_textFs.Handle != 0) { _vk.DestroyShaderModule(_device, _textFs, null); _textFs = default; }
+        }
+
+        private unsafe void DestroySpriteResources()
+        {
+            if (_spriteVBMapped != null) { _vk.UnmapMemory(_device, _spriteVBMem); _spriteVBMapped = null; }
+            if (_spriteVB.Handle != 0) { _vk.DestroyBuffer(_device, _spriteVB, null); _spriteVB = default; }
+            if (_spriteVBMem.Handle != 0) { _vk.FreeMemory(_device, _spriteVBMem, null); _spriteVBMem = default; }
+            foreach (var p in _spritePipelines.Values)
+                if (p.Handle != 0) _vk.DestroyPipeline(_device, p, null);
+            _spritePipelines.Clear();
+            if (_spritePipelineLayout.Handle != 0) { _vk.DestroyPipelineLayout(_device, _spritePipelineLayout, null); _spritePipelineLayout = default; }
+            if (_spriteSetLayout.Handle != 0) { _vk.DestroyDescriptorSetLayout(_device, _spriteSetLayout, null); _spriteSetLayout = default; }
+            if (_spriteVs.Handle != 0) { _vk.DestroyShaderModule(_device, _spriteVs, null); _spriteVs = default; }
+            if (_spriteFs.Handle != 0) { _vk.DestroyShaderModule(_device, _spriteFs, null); _spriteFs = default; }
+        }
+
         public override unsafe void Dispose()
         {
             _vk.DeviceWaitIdle(_device);
+
+            DestroyTextResources();
+            DestroySpriteResources();
 
             if (_inFlight != null)
                 foreach (var f in _inFlight)

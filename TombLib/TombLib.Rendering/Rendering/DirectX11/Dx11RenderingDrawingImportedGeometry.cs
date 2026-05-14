@@ -1,11 +1,12 @@
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
+using Silk.NET.DXGI;
 using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using Buffer = SharpDX.Direct3D11.Buffer;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
+using Format = Silk.NET.DXGI.Format;
 using Matrix4x4 = System.Numerics.Matrix4x4;
 using Vector2 = System.Numerics.Vector2;
 using Vector4 = System.Numerics.Vector4;
@@ -21,7 +22,7 @@ namespace TombLib.Rendering.DirectX11
     // The cbuffer slot 1 layout (ImportedGeometryData) is updated PER SUBMESH because
     // ReciprocalTextureSize and TextureEnabled change submesh-by-submesh. The header
     // fields (World, Tint, UseVertexColors, AlphaTest) are updated ONCE per Render.
-    public sealed class Dx11RenderingDrawingImportedGeometry : RenderingDrawingImportedGeometry
+    public sealed unsafe class Dx11RenderingDrawingImportedGeometry : RenderingDrawingImportedGeometry
     {
         // Layout MUST mirror the ImportedGeometryData cbuffer in
         // ImportedGeometryShaderVS.hlsl/PS.hlsl.
@@ -39,13 +40,13 @@ namespace TombLib.Rendering.DirectX11
         private static readonly int CbufferSize = ((Marshal.SizeOf<ImportedGeometryDataLayout>() + 15) / 16) * 16;
 
         private readonly Dx11RenderingDevice _device;
-        private readonly Buffer _vertexBuffer;
-        private readonly Buffer _indexBuffer;
-        private readonly Buffer _cbuffer;
-        private readonly VertexBufferBinding _vertexBufferBinding;
+        private readonly ID3D11Buffer* _vertexBuffer;
+        private readonly ID3D11Buffer* _indexBuffer;
+        private readonly ID3D11Buffer* _cbuffer;
+        private readonly Dx11VertexBufferBinding _vertexBufferBinding;
         private readonly Submesh[] _submeshes;
 
-        public unsafe Dx11RenderingDrawingImportedGeometry(Dx11RenderingDevice device, Description description)
+        public Dx11RenderingDrawingImportedGeometry(Dx11RenderingDevice device, Description description)
         {
             _device = device;
             _submeshes = description.Submeshes?.ToArray() ?? Array.Empty<Submesh>();
@@ -63,11 +64,24 @@ namespace TombLib.Rendering.DirectX11
             }
             fixed (byte* dst = vertexData)
             {
-                _vertexBuffer = new Buffer(device.Device, new IntPtr(dst),
-                    new BufferDescription(vertexBytes, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                    CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+                var vbDesc = new BufferDesc
+                {
+                    ByteWidth = (uint)vertexBytes,
+                    Usage = D3D11Usage.Immutable,
+                    BindFlags = (uint)BindFlag.VertexBuffer,
+                    CPUAccessFlags = 0,
+                    MiscFlags = 0,
+                    StructureByteStride = 0,
+                };
+                var subresData = new SubresourceData
+                {
+                    PSysMem = dst,
+                };
+                ID3D11Buffer* buf;
+                SilkMarshal.ThrowHResult(device.Device->CreateBuffer(&vbDesc, &subresData, &buf));
+                _vertexBuffer = buf;
             }
-            _vertexBufferBinding = new VertexBufferBinding(_vertexBuffer, sizeof(Vertex), 0);
+            _vertexBufferBinding = new Dx11VertexBufferBinding(_vertexBuffer, sizeof(Vertex), 0);
 
             int indexBytes = indexCount * sizeof(int);
             byte[] indexData = new byte[indexBytes];
@@ -79,21 +93,46 @@ namespace TombLib.Rendering.DirectX11
             }
             fixed (byte* dst = indexData)
             {
-                _indexBuffer = new Buffer(device.Device, new IntPtr(dst),
-                    new BufferDescription(indexBytes, ResourceUsage.Immutable, BindFlags.IndexBuffer,
-                    CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+                var ibDesc = new BufferDesc
+                {
+                    ByteWidth = (uint)indexBytes,
+                    Usage = D3D11Usage.Immutable,
+                    BindFlags = (uint)BindFlag.IndexBuffer,
+                    CPUAccessFlags = 0,
+                    MiscFlags = 0,
+                    StructureByteStride = 0,
+                };
+                var subresData = new SubresourceData
+                {
+                    PSysMem = dst,
+                };
+                ID3D11Buffer* buf;
+                SilkMarshal.ThrowHResult(device.Device->CreateBuffer(&ibDesc, &subresData, &buf));
+                _indexBuffer = buf;
             }
 
-            _cbuffer = new Buffer(device.Device, CbufferSize, ResourceUsage.Default,
-                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-            _cbuffer.SetDebugName("DrawingImportedGeometry.MaterialData");
+            {
+                var cbDesc = new BufferDesc
+                {
+                    ByteWidth = (uint)CbufferSize,
+                    Usage = D3D11Usage.Default,
+                    BindFlags = (uint)BindFlag.ConstantBuffer,
+                    CPUAccessFlags = 0,
+                    MiscFlags = 0,
+                    StructureByteStride = 0,
+                };
+                ID3D11Buffer* buf;
+                SilkMarshal.ThrowHResult(device.Device->CreateBuffer(&cbDesc, null, &buf));
+                _cbuffer = buf;
+            }
+            Dx11RenderingDevice.SetDebugName((ID3D11DeviceChild*)_cbuffer, "DrawingImportedGeometry.MaterialData");
         }
 
         public override void Dispose()
         {
-            _vertexBuffer.Dispose();
-            _indexBuffer.Dispose();
-            _cbuffer.Dispose();
+            _vertexBuffer->Release();
+            _indexBuffer->Release();
+            _cbuffer->Release();
         }
 
         public override void Render(RenderArgs arg)
@@ -107,23 +146,26 @@ namespace TombLib.Rendering.DirectX11
                 ((Dx11RenderingSwapChain)arg.RenderTarget).Bind();
 
             _device.ImportedGeometryShader.Apply(ctx, arg.StateBuffer);
-            ctx.VertexShader.SetConstantBuffer(1, _cbuffer);
-            ctx.PixelShader.SetConstantBuffer(1, _cbuffer);
-            ctx.PixelShader.SetSampler(0, arg.BilinearFilter ? _device.SamplerDefault : _device.SamplerRoundToNearest);
-            ctx.InputAssembler.SetVertexBuffers(0, _vertexBufferBinding);
-            ctx.InputAssembler.SetIndexBuffer(_indexBuffer, SharpDX.DXGI.Format.R32_UInt, 0);
+            { var b = _cbuffer; ctx->VSSetConstantBuffers(1, 1, &b); }
+            { var b = _cbuffer; ctx->PSSetConstantBuffers(1, 1, &b); }
+            { var ss = arg.BilinearFilter ? _device.SamplerDefault : _device.SamplerRoundToNearest; ctx->PSSetSamplers(0, 1, &ss); }
+            {
+                var bindings = new Dx11VertexBufferBinding[] { _vertexBufferBinding };
+                Dx11RenderingDevice.SetVertexBuffers(ctx, 0, bindings);
+            }
+            ctx->IASetIndexBuffer(_indexBuffer, Format.FormatR32Uint, 0);
 
             CullMode lastCull = CullMode.Back;
-            BlendState lastBlend = _device.BlendingPremultipliedAlpha;
-            ctx.Rasterizer.State = _device.RasterizerBackCulling;
-            ctx.OutputMerger.SetBlendState(lastBlend);
+            ID3D11BlendState* lastBlend = _device.BlendingPremultipliedAlpha;
+            ctx->RSSetState(_device.RasterizerBackCulling);
+            ctx->OMSetBlendState(lastBlend, null, 0xFFFFFFFF);
 
             foreach (var sub in _submeshes)
             {
                 if (sub.IndexCount == 0)
                     continue;
 
-                ShaderResourceView srv = ResolveTextureSrv(sub.Texture);
+                ID3D11ShaderResourceView* srv = ResolveTextureSrv(sub.Texture);
 
                 // Update the per-submesh cbuffer — World/Tint repeat for every
                 // submesh but the shader cost is negligible compared to a context
@@ -137,39 +179,40 @@ namespace TombLib.Rendering.DirectX11
                 cb.TextureEnabled = (srv != null) ? 1 : 0;
                 cb.UseVertexColors = arg.UseVertexColors ? 1 : 0;
                 cb.AlphaTest = arg.AlphaTest ? 1 : 0;
-                ctx.UpdateSubresource(ref cb, _cbuffer);
-                ctx.PixelShader.SetShaderResources(0, srv);
+                ctx->UpdateSubresource((ID3D11Resource*)_cbuffer, 0, null, &cb, (uint)sizeof(ImportedGeometryDataLayout), 0);
+                if (srv != null)
+                { var s = srv; ctx->PSSetShaderResources(0, 1, &s); }
 
                 CullMode wantCull = sub.DoubleSided ? CullMode.None : CullMode.Back;
                 if (wantCull != lastCull)
                 {
-                    ctx.Rasterizer.State = wantCull == CullMode.None
+                    ctx->RSSetState(wantCull == CullMode.None
                         ? _device.RasterizerNoCull
-                        : _device.RasterizerBackCulling;
+                        : _device.RasterizerBackCulling);
                     lastCull = wantCull;
                 }
 
-                BlendState wantBlend = arg.ForceAdditive || sub.AdditiveBlending
+                ID3D11BlendState* wantBlend = arg.ForceAdditive || sub.AdditiveBlending
                     ? _device.BlendingAdditive
                     : _device.BlendingPremultipliedAlpha;
                 if (wantBlend != lastBlend)
                 {
-                    ctx.OutputMerger.SetBlendState(wantBlend);
+                    ctx->OMSetBlendState(wantBlend, null, 0xFFFFFFFF);
                     lastBlend = wantBlend;
                 }
 
-                ctx.DrawIndexed(sub.IndexCount, sub.IndexStart, 0);
+                ctx->DrawIndexed((uint)sub.IndexCount, (uint)sub.IndexStart, 0);
             }
 
-            ctx.Rasterizer.State = _device.RasterizerBackCulling;
-            ctx.OutputMerger.SetBlendState(_device.BlendingPremultipliedAlpha);
+            ctx->RSSetState(_device.RasterizerBackCulling);
+            ctx->OMSetBlendState(_device.BlendingPremultipliedAlpha, null, 0xFFFFFFFF);
         }
 
-        private static ShaderResourceView ResolveTextureSrv(object texture)
+        private static ID3D11ShaderResourceView* ResolveTextureSrv(object texture)
         {
             if (texture == null) return null;
-            if (texture is ShaderResourceView srv) return srv;
-            throw new ArgumentException("Texture must be a SharpDX.Direct3D11.ShaderResourceView, got " + texture.GetType().Name);
+            if (texture is nint ptr) return (ID3D11ShaderResourceView*)ptr;
+            throw new ArgumentException("Texture must be an nint wrapping ID3D11ShaderResourceView*, got " + texture.GetType().Name);
         }
     }
 }

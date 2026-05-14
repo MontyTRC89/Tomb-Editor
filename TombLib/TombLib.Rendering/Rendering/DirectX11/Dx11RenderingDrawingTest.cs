@@ -1,17 +1,19 @@
-﻿using SharpDX;
-using SharpDX.Direct3D11;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
+using Silk.NET.DXGI;
 using System;
-using Buffer = SharpDX.Direct3D11.Buffer;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
+using Vector3 = System.Numerics.Vector3;
 
 namespace TombLib.Rendering.DirectX11
 {
-    public class Dx11RenderingDrawingTest : RenderingDrawingTest
+    public unsafe class Dx11RenderingDrawingTest : RenderingDrawingTest
     {
         public readonly Dx11RenderingDevice Device;
-        public readonly Buffer VertexBuffer;
-        public readonly VertexBufferBinding[] VertexBufferBindings;
+        public readonly ID3D11Buffer* VertexBuffer;
+        public readonly Dx11VertexBufferBinding[] VertexBufferBindings;
 
-        public unsafe Dx11RenderingDrawingTest(Dx11RenderingDevice device, Description description)
+        public Dx11RenderingDrawingTest(Dx11RenderingDevice device, Description description)
         {
             Device = device;
 
@@ -32,19 +34,33 @@ namespace TombLib.Rendering.DirectX11
                 colors[2] = 0xff800000;
 
                 // Create GPU resources
-                VertexBuffer = new Buffer(device.Device, new IntPtr(data),
-                    new BufferDescription(size, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                    CpuAccessFlags.None, ResourceOptionFlags.None, 0));
-                VertexBufferBindings = new VertexBufferBinding[] {
-                    new VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
-                    new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)colors - data))
+                var desc = new BufferDesc
+                {
+                    ByteWidth = (uint)size,
+                    Usage = D3D11Usage.Immutable,
+                    BindFlags = (uint)BindFlag.VertexBuffer,
+                    CPUAccessFlags = 0,
+                    MiscFlags = 0,
+                    StructureByteStride = 0,
+                };
+                var subresData = new SubresourceData
+                {
+                    PSysMem = data,
+                };
+                ID3D11Buffer* buf;
+                SilkMarshal.ThrowHResult(device.Device->CreateBuffer(&desc, &subresData, &buf));
+                VertexBuffer = buf;
+
+                VertexBufferBindings = new Dx11VertexBufferBinding[] {
+                    new Dx11VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
+                    new Dx11VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)colors - data))
                 };
             }
         }
 
         public override void Dispose()
         {
-            VertexBuffer.Dispose();
+            VertexBuffer->Release();
         }
 
         public override void Render(RenderArgs arg)
@@ -54,10 +70,10 @@ namespace TombLib.Rendering.DirectX11
             // Setup state
             ((Dx11RenderingSwapChain)arg.RenderTarget).Bind();
             Device.TestShader.Apply(context, arg.StateBuffer);
-            context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
+            Dx11RenderingDevice.SetVertexBuffers(context, 0, VertexBufferBindings);
 
             // Render
-            context.Draw(3, 0);*/
+            context->Draw(3, 0);*/
         }
     }
 }

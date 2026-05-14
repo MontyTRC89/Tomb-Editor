@@ -36,8 +36,6 @@ namespace TombEditor.Controls.Panel3D
             // Tappa-1 unified path: one shared dynamic line batch for the whole Panel3D.
             _linesBatch = device.CreateDrawingLines(new RenderingDrawingLines.Description { Dynamic = true });
 
-            _legacyDevice = DeviceManager.DefaultDeviceManager.D3D11Device;
-
             int atlasSize = objectQuality switch
             {
                 ObjectRenderingQuality.High => 4096,

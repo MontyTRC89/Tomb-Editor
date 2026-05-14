@@ -26,20 +26,6 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpDX, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D11, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DXGI, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\SharpDX.DXGI.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
@@ -172,6 +158,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.0.0" />
+    <!-- Direct3D 11 bindings (Silk.NET). Replaces the deprecated SharpDX
+         library that was previously used for the DX11 backend. -->
+    <PackageReference Include="Silk.NET.Direct3D11" Version="2.21.0" />
+    <PackageReference Include="Silk.NET.DXGI" Version="2.21.0" />
     <!-- Direct Vulkan bindings (no abstraction layer). Used by the
          Vulkan/* backend. Silk.NET 2.21 supports net6.0+ and ships the latest
          Vulkan 1.3 headers + Win32/X11/Wayland surface extensions. -->
@@ -184,6 +174,9 @@
          the .Native package; no external Vulkan SDK install required. -->
     <PackageReference Include="Silk.NET.Shaderc" Version="2.21.0" />
     <PackageReference Include="Silk.NET.Shaderc.Native" Version="2.21.0" />
+    <!-- OpenGL 4.1 bindings (Silk.NET). Used by the OpenGL/* backend.
+         Activated via TOMBEDITOR_RENDERER=opengl. -->
+    <PackageReference Include="Silk.NET.OpenGL" Version="2.21.0" />
   </ItemGroup>
   <Import Project="HlslShaderCompile.targets" />
 </Project>

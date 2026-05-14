@@ -1,38 +1,43 @@
 using NLog;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
+using Silk.NET.Core.Native;
+using Silk.NET.Direct3D11;
+using Silk.NET.DXGI;
 using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Rendering.DirectX11;
 using TombLib.Utils;
 using TombLib.Wad;
+using D3D11Usage = Silk.NET.Direct3D11.Usage;
 
 namespace TombLib.Controls
 {
-    public class OffscreenItemRenderer : IDisposable
+    public unsafe class OffscreenItemRenderer : IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Dx11RenderingDevice _device;
         private readonly WadRenderer _wadRenderer;
+        private readonly RenderingStateBuffer _stateBuffer;
 
-        private Texture2D _renderTarget;
-        private RenderTargetView _renderTargetView;
-        private Texture2D _depthBuffer;
-        private DepthStencilView _depthBufferView;
-        private Texture2D _stagingTexture;
+        private ID3D11Texture2D* _renderTarget;
+        private ID3D11RenderTargetView* _renderTargetView;
+        private ID3D11Texture2D* _depthBuffer;
+        private ID3D11DepthStencilView* _depthBufferView;
+        private ID3D11Texture2D* _stagingTexture;
         private int _currentSize;
 
         public OffscreenItemRenderer()
         {
-            // Thumbnail rendering is DX11-only — the path uses SharpDX-typed offscreen
+            // Thumbnail rendering is DX11-only — the path uses Silk.NET-typed offscreen
             // render targets that haven't been ported to Vulkan. Under Vulkan we keep
             // _device null and RenderThumbnail returns a blank ImageC.
             _device = DeviceManager.DefaultDeviceManager.Device as Dx11RenderingDevice;
             _wadRenderer = DeviceManager.DefaultDeviceManager.CreateWadRenderer(true, true, 1024, 512, false);
+            _stateBuffer = _device?.CreateStateBuffer();
         }
 
         public ImageC RenderThumbnail(IWadObject wadObject, TRVersion.Game version, Vector4 backColor, int size = 128)
@@ -55,8 +60,13 @@ namespace TombLib.Controls
                 BindRenderTarget(size);
 
                 // Clear
-                _device.Context.ClearRenderTargetView(_renderTargetView, new SharpDX.Color4(backColor.X, backColor.Y, backColor.Z, backColor.W));
-                _device.Context.ClearDepthStencilView(_depthBufferView, DepthStencilClearFlags.Depth, 1.0f, 0);
+                float* clearColor = stackalloc float[4];
+                clearColor[0] = backColor.X;
+                clearColor[1] = backColor.Y;
+                clearColor[2] = backColor.Z;
+                clearColor[3] = backColor.W;
+                _device.Context->ClearRenderTargetView(_renderTargetView, clearColor);
+                _device.Context->ClearDepthStencilView(_depthBufferView, (uint)ClearFlag.Depth, 1.0f, 0);
 
                 // Reset device state.
                 _device.ResetState();
@@ -67,9 +77,8 @@ namespace TombLib.Controls
                 // Render the object using shared helper. RenderTarget=null tells the
                 // unified path to NOT bind a SwapChain — we already bound our offscreen
                 // RTV via BindRenderTarget().
-                using var stateBuffer = _device.CreateStateBuffer();
-                stateBuffer.Set(new TombLib.Rendering.RenderingState { TransformMatrix = viewProjection });
-                WadObjectRenderHelper.RenderObject(wadObject, _wadRenderer, _device, /*swapChain*/ null, stateBuffer, camera.GetPosition(), false);
+                _stateBuffer.Set(new TombLib.Rendering.RenderingState { TransformMatrix = viewProjection });
+                WadObjectRenderHelper.RenderObject(wadObject, _wadRenderer, _device, /*swapChain*/ null, _stateBuffer, camera.GetPosition(), false);
 
                 // Read back pixels.
                 return ReadPixels(size);
@@ -90,76 +99,104 @@ namespace TombLib.Controls
             _currentSize = size;
 
             // Create color render target.
-            _renderTarget = new Texture2D(_device.Device, new Texture2DDescription
+            var rtDesc = new Texture2DDesc
             {
-                Format = Format.B8G8R8A8_UNorm,
-                Width = size,
-                Height = size,
+                Format = Format.FormatB8G8R8A8Unorm,
+                Width = (uint)size,
+                Height = (uint)size,
                 ArraySize = 1,
                 MipLevels = 1,
-                SampleDescription = new SampleDescription(1, 0),
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.RenderTarget,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None
-            });
-            _renderTargetView = new RenderTargetView(_device.Device, _renderTarget);
+                SampleDesc = new SampleDesc(1, 0),
+                Usage = D3D11Usage.Default,
+                BindFlags = (uint)BindFlag.RenderTarget,
+                CPUAccessFlags = 0,
+                MiscFlags = 0,
+            };
+            ID3D11Texture2D* rt;
+            SilkMarshal.ThrowHResult(_device.Device->CreateTexture2D(&rtDesc, null, &rt));
+            _renderTarget = rt;
+
+            ID3D11RenderTargetView* rtv;
+            SilkMarshal.ThrowHResult(_device.Device->CreateRenderTargetView((ID3D11Resource*)rt, null, &rtv));
+            _renderTargetView = rtv;
 
             // Create depth buffer.
-            _depthBuffer = new Texture2D(_device.Device, new Texture2DDescription
+            var dsDesc = new Texture2DDesc
             {
-                Format = Format.D32_Float,
-                Width = size,
-                Height = size,
+                Format = Format.FormatD32Float,
+                Width = (uint)size,
+                Height = (uint)size,
                 ArraySize = 1,
                 MipLevels = 1,
-                SampleDescription = new SampleDescription(1, 0),
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.DepthStencil,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None
-            });
-            _depthBufferView = new DepthStencilView(_device.Device, _depthBuffer);
+                SampleDesc = new SampleDesc(1, 0),
+                Usage = D3D11Usage.Default,
+                BindFlags = (uint)BindFlag.DepthStencil,
+                CPUAccessFlags = 0,
+                MiscFlags = 0,
+            };
+            ID3D11Texture2D* ds;
+            SilkMarshal.ThrowHResult(_device.Device->CreateTexture2D(&dsDesc, null, &ds));
+            _depthBuffer = ds;
+
+            ID3D11DepthStencilView* dsv;
+            SilkMarshal.ThrowHResult(_device.Device->CreateDepthStencilView((ID3D11Resource*)ds, null, &dsv));
+            _depthBufferView = dsv;
 
             // Create staging texture for CPU readback.
-            _stagingTexture = new Texture2D(_device.Device, new Texture2DDescription
+            var stagingDesc = new Texture2DDesc
             {
-                Format = Format.B8G8R8A8_UNorm,
-                Width = size,
-                Height = size,
+                Format = Format.FormatB8G8R8A8Unorm,
+                Width = (uint)size,
+                Height = (uint)size,
                 ArraySize = 1,
                 MipLevels = 1,
-                SampleDescription = new SampleDescription(1, 0),
-                Usage = ResourceUsage.Staging,
-                BindFlags = BindFlags.None,
-                CpuAccessFlags = CpuAccessFlags.Read,
-                OptionFlags = ResourceOptionFlags.None
-            });
+                SampleDesc = new SampleDesc(1, 0),
+                Usage = D3D11Usage.Staging,
+                BindFlags = 0,
+                CPUAccessFlags = (uint)CpuAccessFlag.Read,
+                MiscFlags = 0,
+            };
+            ID3D11Texture2D* staging;
+            SilkMarshal.ThrowHResult(_device.Device->CreateTexture2D(&stagingDesc, null, &staging));
+            _stagingTexture = staging;
         }
 
         private void BindRenderTarget(int size)
         {
-            _device.Context.Rasterizer.SetViewport(0, 0, size, size, 0.0f, 1.0f);
-            _device.Context.OutputMerger.SetTargets(_depthBufferView, _renderTargetView);
+            var viewport = new Viewport
+            {
+                TopLeftX = 0,
+                TopLeftY = 0,
+                Width = size,
+                Height = size,
+                MinDepth = 0.0f,
+                MaxDepth = 1.0f,
+            };
+            _device.Context->RSSetViewports(1, &viewport);
+
+            var rtv = _renderTargetView;
+            _device.Context->OMSetRenderTargets(1, &rtv, _depthBufferView);
             _device.CurrentRenderTarget = null;
         }
 
         private ImageC ReadPixels(int size)
         {
             // Copy render target to staging texture.
-            _device.Context.CopyResource(_renderTarget, _stagingTexture);
+            _device.Context->CopyResource((ID3D11Resource*)_stagingTexture, (ID3D11Resource*)_renderTarget);
 
             // Map and read pixels.
-            var dataBox = _device.Context.MapSubresource(_stagingTexture, 0, MapMode.Read, SharpDX.Direct3D11.MapFlags.None);
+            MappedSubresource mapped;
+            SilkMarshal.ThrowHResult(
+                _device.Context->Map((ID3D11Resource*)_stagingTexture, 0, Map.Read, 0, &mapped));
             try
             {
                 int bytesPerPixel = 4;
-                int rowPitch = dataBox.RowPitch;
+                int rowPitch = (int)mapped.RowPitch;
                 byte[] pixels = new byte[size * size * bytesPerPixel];
 
                 // Copy row by row (rowPitch may differ from size * bytesPerPixel due to alignment).
                 for (int y = 0; y < size; y++)
-                    Marshal.Copy(dataBox.DataPointer + y * rowPitch, pixels, y * size * bytesPerPixel, size * bytesPerPixel);
+                    Marshal.Copy((IntPtr)((byte*)mapped.PData + y * rowPitch), pixels, y * size * bytesPerPixel, size * bytesPerPixel);
 
                 return ImageC.FromByteArray(pixels, size, size);
             }
@@ -170,22 +207,17 @@ namespace TombLib.Controls
             }
             finally
             {
-                _device.Context.UnmapSubresource(_stagingTexture, 0);
+                _device.Context->Unmap((ID3D11Resource*)_stagingTexture, 0);
             }
         }
 
         private void DisposeRenderTargets()
         {
-            _stagingTexture?.Dispose();
-            _stagingTexture = null;
-            _depthBufferView?.Dispose();
-            _depthBufferView = null;
-            _depthBuffer?.Dispose();
-            _depthBuffer = null;
-            _renderTargetView?.Dispose();
-            _renderTargetView = null;
-            _renderTarget?.Dispose();
-            _renderTarget = null;
+            if (_stagingTexture != null) { _stagingTexture->Release(); _stagingTexture = null; }
+            if (_depthBufferView != null) { _depthBufferView->Release(); _depthBufferView = null; }
+            if (_depthBuffer != null) { _depthBuffer->Release(); _depthBuffer = null; }
+            if (_renderTargetView != null) { _renderTargetView->Release(); _renderTargetView = null; }
+            if (_renderTarget != null) { _renderTarget->Release(); _renderTarget = null; }
         }
 
         public void GarbageCollect()
@@ -196,6 +228,7 @@ namespace TombLib.Controls
         public void Dispose()
         {
             DisposeRenderTargets();
+            _stateBuffer?.Dispose();
             _wadRenderer?.Dispose();
         }
     }
