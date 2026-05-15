@@ -209,6 +209,26 @@ public class TrxClimbEntry : TrxSectorEdit
     }
 }
 
+public enum TrxMineCartType
+{
+    None,
+    Left,
+    Right,
+    Stop,
+}
+
+public class TrxMineCartEntry : TrxSectorEdit
+{
+    public override int Command => 14;
+
+    public TrxMineCartType Type { get; set; }
+
+    protected override void SerializeImpl(BinaryWriterEx writer)
+    {
+        writer.Write((int)Type);
+    }
+}
+
 public class TrxTriangulationEntry : TrxSectorEdit
 {
     public override int Command => 13;
