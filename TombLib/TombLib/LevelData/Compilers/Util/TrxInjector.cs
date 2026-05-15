@@ -10,7 +10,7 @@ namespace TombLib.LevelData.Compilers.Util;
 public static class TrxInjector
 {
     private const uint _magic = 'T' | 'R' << 8 | 'X' << 16 | 'J' << 24;
-    private const uint _version = 6;
+    private const uint _version = 8;
     private const uint _injectionType = 0; // Implies no link to a TRX config option
 
     public static void Serialize(TrxInjectionData data, BinaryWriterEx outWriter)
@@ -236,6 +236,20 @@ public class TrxTriangulationEntry : TrxSectorEdit
         {
             writer.Write(val);
         }
+    }
+}
+
+public class TRXRoomPropertyEntry : TrxSectorEdit
+{
+    public override int Command => 5;
+
+    public short Flags { get; set; }
+    public byte ReverbInfo { get; set; }
+
+    protected override void SerializeImpl(BinaryWriterEx writer)
+    {
+        writer.Write(Flags);
+        writer.Write(ReverbInfo);
     }
 }
 

@@ -11,6 +11,8 @@ Tomb Editor:
  * Added indication of the nodes not supported by the current event type.
  * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
  * Added multiple window layout support.
+ * Added support for room reverb in TRX.
+ * Added support for cold and damaging rooms in TRX.
 
 WadTool:
  * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
