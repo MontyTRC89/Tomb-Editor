@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using NLog;
 using Silk.NET.Vulkan;
 
 namespace TombLib.Rendering.Vulkan
@@ -10,11 +11,17 @@ namespace TombLib.Rendering.Vulkan
     // it does not throw on its own).
     internal static class VkCheck
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Ok(Result result, [CallerMemberName] string member = "", [CallerLineNumber] int line = 0)
         {
             if (result != Result.Success)
-                throw new InvalidOperationException($"Vulkan call failed: {result} at {member}:{line}");
+            {
+                string msg = $"Vulkan call failed: {result} at {member}:{line}";
+                logger.Error(msg);
+                throw new InvalidOperationException(msg);
+            }
         }
     }
 }

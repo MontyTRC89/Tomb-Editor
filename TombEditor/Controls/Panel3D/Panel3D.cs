@@ -172,6 +172,15 @@ namespace TombEditor.Controls.Panel3D
         private RenderingFont _fontDefault;
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
+        // Tracks the only Configuration value that actually affects room
+        // rendering (read in CacheRoom). On ConfigurationChangedEvent we
+        // compare against this and invalidate the cache ONLY if it changed —
+        // otherwise toggling ShowHorizon / ShowMoveables / any other config
+        // flag would needlessly rebuild every room's vertex buffer (each
+        // BuildVertexBuffer does a synchronous transient submit, causing a
+        // ~1s stall on a ~100-room level).
+        private bool? _lastProbeAttributesThroughPortals;
+
         // Tappa-1 unified path: shared dynamic line batch reused by every draw method
         // that previously built one-off SolidVertex buffers through the legacy stack.
         // SetVertices() + Render() per call site; the underlying ID3D11Buffer is the
@@ -338,9 +347,21 @@ namespace TombEditor.Controls.Panel3D
             if (obj is Editor.LoadedTexturesChangedEvent ||
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.LevelChangedEvent ||
-                obj is Editor.ConfigurationChangedEvent ||
                 obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
                 _renderingCachedRooms.Clear();
+            else if (obj is Editor.ConfigurationChangedEvent)
+            {
+                // Only invalidate the room cache if a setting that actually
+                // affects room rendering changed. Currently that's just
+                // UI_ProbeAttributesThroughPortals (read in CacheRoom). Other
+                // bool toggles like ShowHorizon don't touch room geometry.
+                bool current = _editor.Configuration.UI_ProbeAttributesThroughPortals;
+                if (_lastProbeAttributesThroughPortals != current)
+                {
+                    _lastProbeAttributesThroughPortals = current;
+                    _renderingCachedRooms.Clear();
+                }
+            }
 
             if (obj is Editor.ObjectBrushSettingsChangedEvent)
                 Invalidate();

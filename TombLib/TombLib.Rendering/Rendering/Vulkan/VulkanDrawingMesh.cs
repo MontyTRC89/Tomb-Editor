@@ -185,12 +185,13 @@ void main() {
         {
             public readonly bool DoubleSided;
             public readonly bool Additive;
+            public readonly bool NoDepth;
             public readonly RenderPass RenderPass;
             public readonly SampleCountFlags Samples;
-            public PipelineKey(bool ds, bool ad, RenderPass rp, SampleCountFlags s) { DoubleSided = ds; Additive = ad; RenderPass = rp; Samples = s; }
-            public bool Equals(PipelineKey o) => DoubleSided == o.DoubleSided && Additive == o.Additive && RenderPass.Handle == o.RenderPass.Handle && Samples == o.Samples;
+            public PipelineKey(bool ds, bool ad, bool nd, RenderPass rp, SampleCountFlags s) { DoubleSided = ds; Additive = ad; NoDepth = nd; RenderPass = rp; Samples = s; }
+            public bool Equals(PipelineKey o) => DoubleSided == o.DoubleSided && Additive == o.Additive && NoDepth == o.NoDepth && RenderPass.Handle == o.RenderPass.Handle && Samples == o.Samples;
             public override bool Equals(object obj) => obj is PipelineKey k && Equals(k);
-            public override int GetHashCode() => (DoubleSided ? 1 : 0) | (Additive ? 2 : 0) | RenderPass.Handle.GetHashCode() | ((int)Samples << 16);
+            public override int GetHashCode() => (DoubleSided ? 1 : 0) | (Additive ? 2 : 0) | (NoDepth ? 4 : 0) | RenderPass.Handle.GetHashCode() | ((int)Samples << 16);
         }
         private readonly Dictionary<PipelineKey, VkPipeline> _pipelineCache = new Dictionary<PipelineKey, VkPipeline>();
 
@@ -501,7 +502,7 @@ void main() {
             foreach (var sub in _submeshes)
             {
                 if (sub.IndexCount == 0) continue;
-                var key = new PipelineKey(sub.DoubleSided, sub.AdditiveBlending, swapChain.RenderPass, swapChain.SampleCount);
+                var key = new PipelineKey(sub.DoubleSided, sub.AdditiveBlending, arg.NoDepth, swapChain.RenderPass, swapChain.SampleCount);
                 if (!_pipelineCache.TryGetValue(key, out VkPipeline pipeline))
                 {
                     pipeline = BuildPipeline(key);
@@ -595,11 +596,13 @@ void main() {
 
             // ---- Depth / stencil ----------------------------------------------
             // Standard opaque depth testing: write + test with LessOrEqual.
+            // NoDepth keys disable both test and write — used by the skybox so
+            // it neither occludes nor is occluded by world geometry.
             PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
             {
                 SType = StructureType.PipelineDepthStencilStateCreateInfo,
-                DepthTestEnable = true,
-                DepthWriteEnable = true,
+                DepthTestEnable = !key.NoDepth,
+                DepthWriteEnable = !key.NoDepth,
                 DepthCompareOp = CompareOp.LessOrEqual,
             };
 

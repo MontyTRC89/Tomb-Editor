@@ -68,9 +68,16 @@ namespace TombLib.Rendering.Vulkan
         // compiler to produce the SPIR-V bytecode at init time.
         public VulkanShaderCompiler ShaderCompiler { get; private set; }
 
-        // Per-frame uniform ring shared by every Drawing* class that uploads
-        // per-batch data (LineData, MeshData, ImportedGeometryData). Reset at
-        // frame start by VulkanSwapChain.Clear().
+        // Device-wide per-frame uniform ring shared across all swap chains.
+        // Reset by VulkanSwapChain.Clear at frame start. (Multi-panel ring
+        // collision is theoretically possible if Panel B's Clear resets while
+        // Panel A's submitted CB still reads from the ring — but in practice
+        // the WinForms UI thread serialises Paint events and the GPU usually
+        // finishes A's small CB before B's reset; reproducing the collision
+        // would require simultaneous Panel A + Panel B with very heavy GPU
+        // work on A. A per-swap-chain ring would solve it but causes a worse
+        // problem: rewriting _meshSet's descriptor when ping-ponging between
+        // swap chains is a spec violation while a CB is pending → flickering.)
         public VulkanFrameUniforms FrameUniforms { get; private set; }
 
         // Shared samplers used across drawing classes. Bilinear+aniso for
@@ -93,6 +100,80 @@ namespace TombLib.Rendering.Vulkan
         private bool _validationEnabled;
         private ExtDebugUtils _debugUtils;
         private DebugUtilsMessengerEXT _debugMessenger;
+
+        // ---- Fence-based deletion queue ------------------------------------
+        //
+        // Drawing*.Dispose() can be called mid-paint (e.g. Panel3D's
+        // _renderingCachedRooms.Clear() fires from ConfigurationChangedEvent
+        // while a swap chain CB is in recording state). DeviceWaitIdle does
+        // NOT cover recording CBs, so immediate destruction invalidates the
+        // CB → device-lost at next Present.
+        //
+        // Solution: callers stash a destroyer lambda via QueueDestroy. At
+        // every swap chain Clear(), TryDrainPendingDestroys checks (non-
+        // blocking, via vkGetFenceStatus) whether ALL registered swap
+        // chains' last-submit fences have signaled. If they have, the GPU
+        // has retired every CB that could possibly reference these resources,
+        // so it's safe to run the destroyers. If any fence is still pending,
+        // the drain skips and tries again next Clear. No DeviceWaitIdle stall
+        // — pending destroys flush naturally within 1-2 frames.
+        private readonly object _pendingDestroysLock = new object();
+        private readonly Queue<Action> _pendingDestroys = new Queue<Action>();
+        private readonly List<VulkanSwapChain> _registeredSwapChains = new List<VulkanSwapChain>();
+
+        internal void RegisterSwapChain(VulkanSwapChain sc)
+        {
+            lock (_pendingDestroysLock) _registeredSwapChains.Add(sc);
+        }
+
+        internal void UnregisterSwapChain(VulkanSwapChain sc)
+        {
+            lock (_pendingDestroysLock) _registeredSwapChains.Remove(sc);
+        }
+
+        public void QueueDestroy(Action destroyer)
+        {
+            if (destroyer == null) return;
+            lock (_pendingDestroysLock) _pendingDestroys.Enqueue(destroyer);
+        }
+
+        public unsafe void TryDrainPendingDestroys()
+        {
+            Action[] toRun;
+            lock (_pendingDestroysLock)
+            {
+                if (_pendingDestroys.Count == 0) return;
+
+                // All registered swap chains must have their last-submit fence
+                // signaled (i.e. GPU is idle on every panel). vkGetFenceStatus
+                // is non-blocking — returns NotReady if work is still pending.
+                foreach (var sc in _registeredSwapChains)
+                {
+                    Fence f = sc.CurrentInFlightFence;
+                    if (f.Handle == 0) continue;
+                    if (Vk.GetFenceStatus(Device, f) != Result.Success)
+                        return; // still pending — try again next Clear
+                }
+
+                toRun = _pendingDestroys.ToArray();
+                _pendingDestroys.Clear();
+            }
+            foreach (var a in toRun) a();
+        }
+
+        public void DrainAllPendingDestroys()
+        {
+            // Called at device shutdown after DeviceWaitIdle — everything is
+            // guaranteed safe to destroy regardless of fence state.
+            Action[] toRun;
+            lock (_pendingDestroysLock)
+            {
+                if (_pendingDestroys.Count == 0) return;
+                toRun = _pendingDestroys.ToArray();
+                _pendingDestroys.Clear();
+            }
+            foreach (var a in toRun) a();
+        }
 
         public VulkanRenderingDevice()
         {
@@ -179,6 +260,7 @@ namespace TombLib.Rendering.Vulkan
                 {
                     layers.Add("VK_LAYER_KHRONOS_validation");
                     extensions.Add("VK_EXT_debug_utils");
+                    extensions.Add("VK_EXT_validation_features");
                 }
                 else
                 {
@@ -190,6 +272,23 @@ namespace TombLib.Rendering.Vulkan
             byte** ppExtensions = (byte**)SilkMarshal.StringArrayToPtr(extensions.ToArray());
             byte** ppLayers     = (byte**)SilkMarshal.StringArrayToPtr(layers.ToArray());
 
+            // Enable GPU-assisted + sync validation. GAV instruments SPIR-V to
+            // bounds-check descriptor reads on the GPU and reports the offending
+            // shader/descriptor right before a device-lost. Sync validation
+            // catches missing barriers between submits / between CB regions.
+            var enabledFeatures = stackalloc ValidationFeatureEnableEXT[3]
+            {
+                ValidationFeatureEnableEXT.GpuAssistedExt,
+                ValidationFeatureEnableEXT.GpuAssistedReserveBindingSlotExt,
+                ValidationFeatureEnableEXT.SynchronizationValidationExt,
+            };
+            ValidationFeaturesEXT validationFeatures = new ValidationFeaturesEXT
+            {
+                SType = StructureType.ValidationFeaturesExt,
+                EnabledValidationFeatureCount = 3,
+                PEnabledValidationFeatures = enabledFeatures,
+            };
+
             InstanceCreateInfo createInfo = new InstanceCreateInfo
             {
                 SType = StructureType.InstanceCreateInfo,
@@ -198,6 +297,7 @@ namespace TombLib.Rendering.Vulkan
                 PpEnabledExtensionNames = ppExtensions,
                 EnabledLayerCount = (uint)layers.Count,
                 PpEnabledLayerNames = ppLayers,
+                PNext = _validationEnabled ? &validationFeatures : null,
             };
 
             try
@@ -351,6 +451,11 @@ namespace TombLib.Rendering.Vulkan
                 SamplerAnisotropy = true,
                 FillModeNonSolid = true,    // wireframe rasterizer
                 IndependentBlend = true,
+                // Required for GPU-assisted validation to instrument shader
+                // stores. Harmless if GAV is off — GPU drivers expose both
+                // on every desktop part.
+                FragmentStoresAndAtomics = _validationEnabled,
+                VertexPipelineStoresAndAtomics = _validationEnabled,
             };
 
             string[] deviceExtensions = { "VK_KHR_swapchain" };
@@ -655,6 +760,7 @@ namespace TombLib.Rendering.Vulkan
             if (Device.Handle != 0)
             {
                 Vk.DeviceWaitIdle(Device);
+                DrainAllPendingDestroys();
                 FrameUniforms?.Dispose(); FrameUniforms = null;
                 ShaderCompiler?.Dispose(); ShaderCompiler = null;
                 if (SectorTextureArrayView.Handle != 0)   { Vk.DestroyImageView(Device, SectorTextureArrayView, null);   SectorTextureArrayView = default; }

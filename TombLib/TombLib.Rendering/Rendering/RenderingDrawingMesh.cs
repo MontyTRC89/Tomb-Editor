@@ -83,6 +83,11 @@ namespace TombLib.Rendering
             // Anisotropic filtering vs. point-sampling. False reproduces the editor's
             // "pixelated" preview mode.
             public bool BilinearFilter = true;
+
+            // Disables both depth test and depth write for this draw. Set to
+            // true for the skybox (so it doesn't occlude subsequent geometry
+            // even if ClearDepth misbehaves) and for "always-on-top" overlays.
+            public bool NoDepth;
         }
 
         public abstract void Dispose();

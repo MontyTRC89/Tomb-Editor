@@ -1,4 +1,5 @@
 using Silk.NET.Vulkan;
+using System.Collections.Generic;
 using TombLib.Graphics;
 using TombLib.Utils;
 using VkBuffer = Silk.NET.Vulkan.Buffer;
@@ -22,6 +23,13 @@ namespace TombLib.Rendering.Vulkan
         private int _currentArrayLayers;
         private readonly Vk _vk;
         private readonly Device _device;
+
+        // No retained-list here — old atlas resources go through the device's
+        // fence-based deletion queue (QueueDestroy), which auto-destroys them
+        // as soon as every registered swap chain's in-flight fence has been
+        // signaled (i.e. GPU has retired any CB that could reference the old
+        // ImageView via a cached descriptor set). Bounded, self-cleaning,
+        // no per-session leak.
 
         // Caller passes this to RenderArgs.Atlas — the Vulkan drawing classes
         // (VulkanDrawingMesh / VulkanDrawingImportedGeometry) recognise both
@@ -113,11 +121,24 @@ namespace TombLib.Rendering.Vulkan
 
             DeviceWrapper.EndAndSubmitTransient(cb);
 
-            // Destroy old resources after the copy commands have completed
-            // (transient submission waits for the queue to go idle).
-            if (oldView.Handle != 0) _vk.DestroyImageView(_device, oldView, null);
-            if (oldImage.Handle != 0) _vk.DestroyImage(_device, oldImage, null);
-            if (oldMemory.Handle != 0) _vk.FreeMemory(_device, oldMemory, null);
+            // Defer destroy via the device-wide fence-based queue. Drained
+            // automatically as soon as no swap chain has any GPU work that
+            // could still reference these handles (cached per-mesh _atlasSet
+            // descriptors that point at oldView).
+            if (oldView.Handle != 0 || oldImage.Handle != 0 || oldMemory.Handle != 0)
+            {
+                var vk = _vk;
+                var dev = _device;
+                ImageView capView = oldView;
+                Image capImage = oldImage;
+                DeviceMemory capMemory = oldMemory;
+                DeviceWrapper.QueueDestroy(() =>
+                {
+                    if (capView.Handle != 0)   vk.DestroyImageView(dev, capView, null);
+                    if (capImage.Handle != 0)  vk.DestroyImage(dev, capImage, null);
+                    if (capMemory.Handle != 0) vk.FreeMemory(dev, capMemory, null);
+                });
+            }
 
             AtlasImage = newImage;
             AtlasMemory = newMemory;
@@ -271,9 +292,34 @@ namespace TombLib.Rendering.Vulkan
 
         protected override unsafe void OnDisposeTexture()
         {
-            if (AtlasView.Handle != 0)  { _vk.DestroyImageView(_device, AtlasView, null);  AtlasView = default; }
-            if (AtlasImage.Handle != 0) { _vk.DestroyImage(_device, AtlasImage, null);     AtlasImage = default; }
-            if (AtlasMemory.Handle != 0){ _vk.FreeMemory(_device, AtlasMemory, null);      AtlasMemory = default; }
+            // OnDisposeTexture is called from MULTIPLE paths:
+            //   1. PanelItemPreview / Panel3D Dispose (end-of-life, between paints)
+            //   2. WadRenderer.GarbageCollect (triggered by LoadedWadsChangedEvent
+            //      / LevelChangedEvent — between paints, usually)
+            //   3. WadRenderer.GetMoveable atlas-full rebuild path — runs MID-PAINT
+            //      from inside a render call, while the swap chain CB has descriptor
+            //      sets bound that reference the current atlas view
+            //
+            // All three cases are handled uniformly via the fence-based deletion
+            // queue. The actual destroyer runs only when every registered swap
+            // chain's GPU work has retired, so a mid-paint dispose is safe.
+            if (AtlasView.Handle != 0 || AtlasImage.Handle != 0 || AtlasMemory.Handle != 0)
+            {
+                var vk = _vk;
+                var dev = _device;
+                ImageView capView = AtlasView;
+                Image capImage = AtlasImage;
+                DeviceMemory capMemory = AtlasMemory;
+                DeviceWrapper.QueueDestroy(() =>
+                {
+                    if (capView.Handle != 0)   vk.DestroyImageView(dev, capView, null);
+                    if (capImage.Handle != 0)  vk.DestroyImage(dev, capImage, null);
+                    if (capMemory.Handle != 0) vk.FreeMemory(dev, capMemory, null);
+                });
+            }
+            AtlasView = default;
+            AtlasImage = default;
+            AtlasMemory = default;
             _currentArrayLayers = 0;
         }
     }

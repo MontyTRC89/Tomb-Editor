@@ -591,6 +591,8 @@ namespace TombEditor.Controls.Panel3D
             }
 
             // === Submit batches ===
+            // Light rings (radius/spot cones) draw on top of world geometry —
+            // depth test disabled so they're visible through walls.
             if (_lightsBatchVertices.Count > 0)
             {
                 _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_lightsBatchVertices));
@@ -600,6 +602,7 @@ namespace TombEditor.Controls.Panel3D
                     StateBuffer = _renderingStateBuffer,
                     Topology = RenderingDrawingLines.Topology.TriangleList,
                     Wireframe = true,
+                    Depth = DepthMode.NoZ,
                 });
             }
             if (_selectedLightVertices.Count > 0)
@@ -609,6 +612,7 @@ namespace TombEditor.Controls.Panel3D
                 {
                     RenderTarget = SwapChain,
                     StateBuffer = _renderingStateBuffer,
+                    Depth = DepthMode.NoZ,
                 });
             }
         }
@@ -1400,7 +1404,9 @@ namespace TombEditor.Controls.Panel3D
                     }
             }
 
-            // Submit pass-1 batch (wire cubes for every placeholder).
+            // Submit pass-1 batch (wire cubes for every placeholder: cameras,
+            // sinks, fog bulbs, sound sources, etc.). Depth disabled so the
+            // markers stay visible through world geometry.
             if (_placeholderBatchVertices.Count > 0)
             {
                 _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_placeholderBatchVertices));
@@ -1408,6 +1414,7 @@ namespace TombEditor.Controls.Panel3D
                 {
                     RenderTarget = SwapChain,
                     StateBuffer = _renderingStateBuffer,
+                    Depth = DepthMode.NoZ,
                 });
             }
 
@@ -1496,6 +1503,7 @@ namespace TombEditor.Controls.Panel3D
                     }
                 }
 
+            // Flyby camera frustum cones — always visible (depth ignored).
             if (_flybySolidConeVertices.Count > 0)
             {
                 _linesBatch.SetVertices(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_flybySolidConeVertices));
@@ -1505,6 +1513,7 @@ namespace TombEditor.Controls.Panel3D
                     StateBuffer = _renderingStateBuffer,
                     Topology = RenderingDrawingLines.Topology.TriangleList,
                     Blend = BlendMode.NonPremultipliedAlpha,
+                    Depth = DepthMode.NoZ,
                 });
             }
             if (_flybyWireConeVertices.Count > 0)
@@ -1515,6 +1524,7 @@ namespace TombEditor.Controls.Panel3D
                     RenderTarget = SwapChain,
                     StateBuffer = _renderingStateBuffer,
                     Blend = BlendMode.NonPremultipliedAlpha,
+                    Depth = DepthMode.NoZ,
                 });
             }
         }
@@ -1629,11 +1639,12 @@ namespace TombEditor.Controls.Panel3D
                     StaticLighting = false,
                     ColoredVertices = false,
                     BilinearFilter = BilinearFilter,
+                    NoDepth = true,
                 });
             }
 
-            // Clear depth so the rest of the scene draws over the skybox without being
-            // occluded by it.
+            // Belt and suspenders: explicit depth clear too, so DX11/OpenGL
+            // (which historically relied on this) keep matching behaviour.
             SwapChain.ClearDepth();
         }
 

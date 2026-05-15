@@ -646,16 +646,51 @@ void main() {
 
         public override unsafe void Dispose()
         {
-            _vk.DeviceWaitIdle(_device);
-            if (_pipeline.Handle != 0) { _vk.DestroyPipeline(_device, _pipeline, null); _pipeline = default; }
-            if (_pipelineLayout.Handle != 0) _vk.DestroyPipelineLayout(_device, _pipelineLayout, null);
-            if (_set0.Handle != 0) _vk.DestroyDescriptorSetLayout(_device, _set0, null);
-            if (_set1.Handle != 0) _vk.DestroyDescriptorSetLayout(_device, _set1, null);
-            if (_set2.Handle != 0) _vk.DestroyDescriptorSetLayout(_device, _set2, null);
-            if (_vs.Handle != 0) _vk.DestroyShaderModule(_device, _vs, null);
-            if (_fs.Handle != 0) _vk.DestroyShaderModule(_device, _fs, null);
-            if (_vertexBuffer.Handle != 0) _vk.DestroyBuffer(_device, _vertexBuffer, null);
-            if (_vertexMemory.Handle != 0) _vk.FreeMemory(_device, _vertexMemory, null);
+            // Dispose can fire mid-paint (e.g. Panel3D._renderingCachedRooms.Clear()
+            // from ConfigurationChangedEvent while a swap chain CB is recording
+            // commands that bind THIS room's _vertexBuffer / descriptor sets).
+            // Destroying now would invalidate that CB → device-lost at next Present.
+            //
+            // Defer all destruction via the device's fence-based deletion queue.
+            // It flushes naturally at the next Clear() of any swap chain, once
+            // every registered swap chain reports its in-flight fence as
+            // signaled (i.e. GPU has retired every CB that could reference these
+            // resources). No DeviceWaitIdle stall.
+            var vk = _vk;
+            var dev = _device;
+            var pool = DeviceWrapper.DescriptorPool;
+            VkPipeline pipeline = _pipeline;
+            PipelineLayout pipelineLayout = _pipelineLayout;
+            DescriptorSetLayout s0 = _set0, s1 = _set1, s2 = _set2;
+            DescriptorSet ds0 = _frameSet, ds1 = _atlasSet, ds2 = _sectorSet;
+            ShaderModule vs = _vs, fs = _fs;
+            VkBuffer vb = _vertexBuffer;
+            DeviceMemory vm = _vertexMemory;
+
+            _pipeline = default; _pipelineLayout = default;
+            _set0 = default; _set1 = default; _set2 = default;
+            _frameSet = default; _atlasSet = default; _sectorSet = default;
+            _vs = default; _fs = default;
+            _vertexBuffer = default; _vertexMemory = default;
+
+            DeviceWrapper.QueueDestroy(() =>
+            {
+                // Descriptor sets MUST be returned to the pool — leaking them
+                // exhausts the 2048-set pool after a few cache invalidations.
+                if (ds0.Handle != 0) vk.FreeDescriptorSets(dev, pool, 1, in ds0);
+                if (ds1.Handle != 0) vk.FreeDescriptorSets(dev, pool, 1, in ds1);
+                if (ds2.Handle != 0) vk.FreeDescriptorSets(dev, pool, 1, in ds2);
+
+                if (pipeline.Handle != 0)       vk.DestroyPipeline(dev, pipeline, null);
+                if (pipelineLayout.Handle != 0) vk.DestroyPipelineLayout(dev, pipelineLayout, null);
+                if (s0.Handle != 0) vk.DestroyDescriptorSetLayout(dev, s0, null);
+                if (s1.Handle != 0) vk.DestroyDescriptorSetLayout(dev, s1, null);
+                if (s2.Handle != 0) vk.DestroyDescriptorSetLayout(dev, s2, null);
+                if (vs.Handle != 0) vk.DestroyShaderModule(dev, vs, null);
+                if (fs.Handle != 0) vk.DestroyShaderModule(dev, fs, null);
+                if (vb.Handle != 0) vk.DestroyBuffer(dev, vb, null);
+                if (vm.Handle != 0) vk.FreeMemory(dev, vm, null);
+            });
         }
 
         public override unsafe void Render(RenderArgs arg)

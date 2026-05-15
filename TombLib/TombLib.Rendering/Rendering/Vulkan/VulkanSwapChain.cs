@@ -29,7 +29,13 @@ namespace TombLib.Rendering.Vulkan
     // calls vkQueuePresentKHR.
     public sealed class VulkanSwapChain : RenderingSwapChain
     {
-        private const int FramesInFlight = 2;
+        // Single-frame model — matches DX11's mental model: at every Clear()
+        // the previous frame's CB has fully completed on the GPU, so resource
+        // Dispose() can simply DeviceWaitIdle and destroy. No deletion queue,
+        // no per-slot fence juggling. Trades a tiny amount of GPU pipelining
+        // for total elimination of resource-lifetime bug surface. Can be
+        // raised back to 2 once everything else is solid.
+        private const int FramesInFlight = 1;
 
         public readonly VulkanRenderingDevice DeviceWrapper;
         private readonly Vk _vk;
@@ -98,6 +104,11 @@ namespace TombLib.Rendering.Vulkan
         private DeviceMemory _spriteVBMem;
         private unsafe void* _spriteVBMapped;
         private uint _spriteVBCapacity;
+        // Per-frame append cursor — reset in Clear(). Each RenderSprites
+        // / RenderGlyphs call writes at the cursor and advances it, so
+        // multiple calls per frame don't trample each other's data.
+        private uint _spriteVBFrameCursor;
+        private uint _textVBFrameCursor;
 
         public RenderPass RenderPass => _renderPass;
         public Format ColorFormat => _colorFormat;
@@ -113,6 +124,22 @@ namespace TombLib.Rendering.Vulkan
         // (i.e. inside the render-pass recording window). Drawing* classes call
         // EnsureRecording first, then read this to record their cmd... calls.
         public CommandBuffer CurrentCommandBuffer => _commandBuffers[_slot];
+
+        // Used by VulkanRenderingDevice.TryDrainPendingDestroys to check whether
+        // this swap chain's GPU work has retired (vkGetFenceStatus). Initial
+        // fence is created signaled, so a freshly-created swap chain reports
+        // "idle" — pending destroys can flush immediately.
+        public Fence CurrentInFlightFence => _inFlight != null && _inFlight.Length > 0 ? _inFlight[_slot] : default;
+
+        // Monotonically bumped in Clear(). Drawing classes that maintain a
+        // per-frame append cursor inside a persistently-mapped vertex buffer
+        // (e.g. VulkanDrawingLines) compare against their last-seen FrameIndex
+        // to know when to rewind the cursor, instead of trampling offset 0 on
+        // every call.
+        public uint FrameIndex { get; private set; }
+
+        // FrameUniforms lives on the device (shared across swap chains).
+        // See VulkanRenderingDevice.FrameUniforms for the rationale.
 
         // ---- GLSL shaders (inline) ------------------------------------------
 
@@ -208,6 +235,10 @@ void main() {
             CreateSyncObjects();
             CreateTextPipeline();
             CreateSpritePipeline();
+
+            // Register so the device-wide fence-based deletion queue can
+            // observe this swap chain's in-flight fence.
+            DeviceWrapper.RegisterSwapChain(this);
         }
 
         // Choose the highest sample count up to 4x that BOTH color and depth
@@ -987,10 +1018,17 @@ void main() {
 
             if (buffer.Handle != 0)
             {
-                _vk.DeviceWaitIdle(_device);
+                // Defer via device-wide deletion queue (fence-based).
                 _vk.UnmapMemory(_device, memory);
-                _vk.DestroyBuffer(_device, buffer, null);
-                _vk.FreeMemory(_device, memory, null);
+                VkBuffer capBuf = buffer;
+                DeviceMemory capMem = memory;
+                var vk = _vk;
+                var dev = _device;
+                DeviceWrapper.QueueDestroy(() =>
+                {
+                    if (capBuf.Handle != 0) vk.DestroyBuffer(dev, capBuf, null);
+                    if (capMem.Handle != 0) vk.FreeMemory(dev, capMem, null);
+                });
             }
 
             uint newCap = Math.Max(requiredSize, capacity * 2);
@@ -1042,17 +1080,45 @@ void main() {
             // Drawing* call inside this Clear→Present cycle starts allocating
             // from offset 0.
             DeviceWrapper.FrameUniforms.Reset();
+            // Rewind the sprite/text VB append cursors so multiple
+            // RenderSprites / RenderGlyphs calls this frame are appended
+            // rather than trampling offset 0.
+            _spriteVBFrameCursor = 0;
+            _textVBFrameCursor = 0;
+            // Bump frame index — Drawing classes with their own per-frame
+            // append cursor (VulkanDrawingLines) reset on FrameIndex change.
+            FrameIndex++;
+            // Try to drain any deferred destroyers from prior mid-frame
+            // Disposes. Non-blocking — only fires if every swap chain's GPU
+            // work has retired.
+            DeviceWrapper.TryDrainPendingDestroys();
             _clearColorValue = new ClearValue { Color = new ClearColorValue(color.X, color.Y, color.Z, color.W) };
             EnsureRecording();
         }
 
-        public override void ClearDepth()
+        public override unsafe void ClearDepth()
         {
-            // The single-subpass render pass already issues a depth clear via
-            // LoadOp.Clear at BeginRenderPass time, so per-frame ClearDepth()
-            // after Clear() is a no-op for this implementation. Caller-explicit
-            // mid-pass depth clears (used in DrawSkybox) need a vkCmdClearAttachments
-            // — left as a TODO until skybox is ported.
+            // Mid-pass depth clear (used before drawing gizmos, light/camera
+            // rings, the skybox tail, etc. so they sit on top of world
+            // geometry). DX11's ClearDepthStencilView equivalent inside a
+            // running render pass is vkCmdClearAttachments — it ignores
+            // attachment indices for the depth aspect (the depth attachment
+            // is implicit in the active subpass).
+            if (!_recording) return;
+
+            ClearAttachment clear = new ClearAttachment
+            {
+                AspectMask = ImageAspectFlags.DepthBit,
+                ColorAttachment = 0, // ignored for depth aspect
+                ClearValue = new ClearValue { DepthStencil = new ClearDepthStencilValue(1.0f, 0) }
+            };
+            ClearRect rect = new ClearRect
+            {
+                Rect = new Rect2D(new Offset2D(0, 0), _extent),
+                BaseArrayLayer = 0,
+                LayerCount = 1,
+            };
+            _vk.CmdClearAttachments(_commandBuffers[_slot], 1, in clear, 1, in rect);
         }
 
         private unsafe void EnsureRecording()
@@ -1197,9 +1263,15 @@ void main() {
             uint uvwBytes = (uint)(vertexCount * sizeof(ulong));
             uint totalBytes = posBytes + colBytes + uvwBytes;
 
-            EnsureVertexBuffer(ref _spriteVB, ref _spriteVBMem, ref _spriteVBMapped, ref _spriteVBCapacity, totalBytes);
+            // Append into the per-frame sprite VB at the current cursor. If
+            // multiple RenderSprites calls happen this frame (e.g. depth-sorted
+            // pass + flat HUD pass in Panel3DDraw), each gets its own slice
+            // instead of trampling the previous one's data — which would draw
+            // huge garbage sprites with stale positions.
+            uint baseOffset = _spriteVBFrameCursor;
+            EnsureVertexBuffer(ref _spriteVB, ref _spriteVBMem, ref _spriteVBMapped, ref _spriteVBCapacity, baseOffset + totalBytes);
 
-            byte* dst = (byte*)_spriteVBMapped;
+            byte* dst = (byte*)_spriteVBMapped + baseOffset;
             Vector3* positions = (Vector3*)dst;
             Vector4* colours   = (Vector4*)(dst + posBytes);
             ulong*   uvws      = (ulong*)(dst + posBytes + colBytes);
@@ -1246,13 +1318,15 @@ void main() {
             _vk.CmdBindPipeline(cb, PipelineBindPoint.Graphics, pipeline);
 
             var bufs = stackalloc VkBuffer[3] { _spriteVB, _spriteVB, _spriteVB };
-            var offs = stackalloc ulong[3] { 0UL, posBytes, posBytes + colBytes };
+            var offs = stackalloc ulong[3] { baseOffset, baseOffset + posBytes, baseOffset + posBytes + colBytes };
             _vk.CmdBindVertexBuffers(cb, 0, 3, bufs, offs);
 
             _vk.CmdBindDescriptorSets(cb, PipelineBindPoint.Graphics, _spritePipelineLayout,
                 0, 1, in _spriteAtlasSet, 0, null);
 
             _vk.CmdDraw(cb, (uint)vertexCount, 1, 0, 0);
+
+            _spriteVBFrameCursor = baseOffset + totalBytes;
         }
 
         public override unsafe void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays)
@@ -1271,9 +1345,11 @@ void main() {
             uint uvwBytes = (uint)(vertexCount * sizeof(ulong));
             uint totalBytes = posBytes + uvwBytes;
 
-            EnsureVertexBuffer(ref _textVB, ref _textVBMem, ref _textVBMapped, ref _textVBCapacity, totalBytes);
+            // Append at frame cursor — same rationale as RenderSprites.
+            uint baseOffset = _textVBFrameCursor;
+            EnsureVertexBuffer(ref _textVB, ref _textVBMem, ref _textVBMapped, ref _textVBCapacity, baseOffset + totalBytes);
 
-            byte* dst = (byte*)_textVBMapped;
+            byte* dst = (byte*)_textVBMapped + baseOffset;
             Vector2* positions = (Vector2*)dst;
             ulong* uvws = (ulong*)(dst + posBytes);
 
@@ -1325,13 +1401,15 @@ void main() {
             _vk.CmdBindPipeline(cb, PipelineBindPoint.Graphics, _textPipeline);
 
             var bufs = stackalloc VkBuffer[2] { _textVB, _textVB };
-            var offs = stackalloc ulong[2] { 0UL, posBytes };
+            var offs = stackalloc ulong[2] { baseOffset, baseOffset + posBytes };
             _vk.CmdBindVertexBuffers(cb, 0, 2, bufs, offs);
 
             _vk.CmdBindDescriptorSets(cb, PipelineBindPoint.Graphics, _textPipelineLayout,
                 0, 1, in _textAtlasSet, 0, null);
 
             _vk.CmdDraw(cb, (uint)vertexCount, 1, 0, 0);
+
+            _textVBFrameCursor = baseOffset + totalBytes;
         }
 
         // ---- Disposal -------------------------------------------------------
@@ -1396,6 +1474,13 @@ void main() {
         public override unsafe void Dispose()
         {
             _vk.DeviceWaitIdle(_device);
+
+            // Unregister BEFORE flushing pending destroys, so TryDrain doesn't
+            // observe a swap chain whose fences we're about to destroy.
+            DeviceWrapper.UnregisterSwapChain(this);
+            // Flush any deferred destroyers now — device is idle, safe to run
+            // even if they reference resources from THIS swap chain.
+            DeviceWrapper.DrainAllPendingDestroys();
 
             DestroyTextResources();
             DestroySpriteResources();

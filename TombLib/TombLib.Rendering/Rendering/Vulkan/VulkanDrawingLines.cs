@@ -75,6 +75,13 @@ void main() {
         private DeviceMemory _vertexMemory;
         private unsafe void* _vertexMapped;
         private uint _vertexBufferCapacity;
+        // Per-frame append cursor — rewound when the owning swap chain's
+        // FrameIndex increments. Without this, every Render() call would
+        // overwrite the previous one's data at offset 0; with Panel3D's
+        // many _linesBatch.Render calls per frame (bbox, lights, ghost
+        // blocks, volumes, …) only the LAST one would draw correctly.
+        private uint _frameCursor;
+        private uint _lastSwapChainFrameIndex = uint.MaxValue;
 
         private SolidLineVertex[] _vertices = Array.Empty<SolidLineVertex>();
         private int _vertexCount;
@@ -237,7 +244,15 @@ void main() {
             uint posBytes = (uint)(_vertexCount * sizeof(Vector3));
             uint colBytes = (uint)(_vertexCount * sizeof(Vector4));
             uint totalBytes = posBytes + colBytes;
-            EnsureVertexBufferCapacity(totalBytes);
+
+            // New frame on this swap chain → rewind the append cursor.
+            if (swapChain.FrameIndex != _lastSwapChainFrameIndex)
+            {
+                _lastSwapChainFrameIndex = swapChain.FrameIndex;
+                _frameCursor = 0;
+            }
+            uint baseOffset = _frameCursor;
+            EnsureVertexBufferCapacity(baseOffset + totalBytes);
 
             if (_staging.Length < totalBytes) _staging = new byte[Math.Max(totalBytes, (uint)_staging.Length * 2)];
             fixed (byte* dst = _staging)
@@ -251,9 +266,10 @@ void main() {
                     colDst[i] = src[i].Color;
                 }
             }
-            // memcpy into the persistently-mapped vertex buffer (host coherent).
+            // memcpy into the persistently-mapped vertex buffer (host coherent)
+            // at the current frame cursor — each Render() call gets its own slice.
             fixed (byte* sp = _staging)
-                System.Buffer.MemoryCopy(sp, _vertexMapped, totalBytes, totalBytes);
+                System.Buffer.MemoryCopy(sp, (byte*)_vertexMapped + baseOffset, totalBytes, totalBytes);
 
             // Pipeline for (blend, depth, topology, wireframe, render-pass, samples).
             var key = new PipelineKey(arg.Blend, arg.Depth, arg.Topology, arg.Wireframe, swapChain.RenderPass, swapChain.SampleCount);
@@ -265,10 +281,11 @@ void main() {
 
             _vk.CmdBindPipeline(cb, PipelineBindPoint.Graphics, pipeline);
 
-            // Two SoA vertex buffer bindings: slot 0 = Position (offset 0),
-            // slot 1 = Color (offset posBytes), both into the same VkBuffer.
+            // Two SoA vertex buffer bindings: slot 0 = Position, slot 1 = Color,
+            // both into the same VkBuffer at offsets relative to this call's
+            // baseOffset.
             var bufs = stackalloc VkBuffer[2] { _vertexBuffer, _vertexBuffer };
-            var offs = stackalloc ulong[2] { 0UL, posBytes };
+            var offs = stackalloc ulong[2] { baseOffset, baseOffset + posBytes };
             _vk.CmdBindVertexBuffers(cb, 0, 2, bufs, offs);
 
             var sets = stackalloc DescriptorSet[2] { _frameDataSet, _lineDataSet };
@@ -277,6 +294,8 @@ void main() {
                 0, 2, sets, 1, in dynOffset);
 
             _vk.CmdDraw(cb, (uint)_vertexCount, 1, 0, 0);
+
+            _frameCursor = baseOffset + totalBytes;
         }
 
         // Ensures the persistently-mapped vertex buffer is large enough for `size`
@@ -292,13 +311,21 @@ void main() {
         {
             if (_vertexBuffer.Handle != 0 && _vertexBufferCapacity >= size) return;
 
-            // Free the old buffer if any.
+            // Free the old buffer if any. Defer via the device-wide fence-based
+            // deletion queue: the recording CB may still reference the old
+            // buffer from an earlier Render this frame.
             if (_vertexBuffer.Handle != 0)
             {
-                _vk.DeviceWaitIdle(_device);
                 _vk.UnmapMemory(_device, _vertexMemory);
-                _vk.DestroyBuffer(_device, _vertexBuffer, null);
-                _vk.FreeMemory(_device, _vertexMemory, null);
+                VkBuffer capBuf = _vertexBuffer;
+                DeviceMemory capMem = _vertexMemory;
+                var vk = _vk;
+                var dev = _device;
+                DeviceWrapper.QueueDestroy(() =>
+                {
+                    if (capBuf.Handle != 0) vk.DestroyBuffer(dev, capBuf, null);
+                    if (capMem.Handle != 0) vk.FreeMemory(dev, capMem, null);
+                });
             }
 
             uint newCap = Math.Max(size, _vertexBufferCapacity * 2);
