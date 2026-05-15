@@ -9,6 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
+using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -39,6 +40,11 @@ namespace TombLib.Forms
 
         protected virtual void InitializeDialog()
         {
+            // Inject the renderer selector if the config exposes a
+            // Rendering_GraphicsApi property. Done before the auto-bind read
+            // so the combo starts with the correct value.
+            InjectRendererSelector();
+
             // Link options list
             tabbedContainer.LinkedControl = optionsList;
 
@@ -196,6 +202,91 @@ namespace TombLib.Forms
                     }
                 }
             }
+        }
+
+        // Adds a "Renderer" combo to the first tab whose text matches one of
+        // the host apps' rendering tabs ("3D window" in TombEditor, "General"
+        // in WadTool). The combo lists only renderers available on the
+        // current platform; changing the selection saves into the config
+        // immediately (independent of the Apply button — the value won't
+        // take effect until the next launch anyway) and shows a "restart
+        // required" MessageBox.
+        private void InjectRendererSelector()
+        {
+            if (_currentConfig == null) return;
+            var prop = _currentConfig.GetType().GetProperty("Rendering_GraphicsApi");
+            if (prop == null) return;
+
+            // Find a suitable tab — prefer "3D window", fall back to "General".
+            TabPage target = null;
+            foreach (TabPage tab in tabbedContainer.TabPages)
+            {
+                if (string.Equals(tab.Text, "3D window", StringComparison.OrdinalIgnoreCase))
+                { target = tab; break; }
+            }
+            if (target == null)
+                foreach (TabPage tab in tabbedContainer.TabPages)
+                {
+                    if (string.Equals(tab.Text, "General", StringComparison.OrdinalIgnoreCase))
+                    { target = tab; break; }
+                }
+            if (target == null) return;
+
+            var group = new DarkGroupBox
+            {
+                Text = "Renderer",
+                Dock = DockStyle.Top,
+                Height = 56,
+            };
+            var label = new DarkLabel
+            {
+                Text = "Graphics API (requires restart):",
+                AutoSize = true,
+                Location = new Point(6, 24),
+                ForeColor = Color.FromArgb(220, 220, 220),
+            };
+            var combo = new DarkComboBox
+            {
+                Location = new Point(180, 21),
+                Size = new Size(170, 23),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+            };
+
+            string currentId = (prop.GetValue(_currentConfig) as string) ?? RendererCatalog.DefaultId;
+            currentId = RendererCatalog.Resolve(currentId).Id;
+            int selectedIdx = 0;
+            for (int i = 0; i < RendererCatalog.Available.Count; ++i)
+            {
+                var entry = RendererCatalog.Available[i];
+                combo.Items.Add(entry);
+                if (entry.Id == currentId) selectedIdx = i;
+            }
+            combo.SelectedIndex = selectedIdx;
+
+            string lastId = currentId;
+            combo.SelectedIndexChanged += (s, e) =>
+            {
+                if (combo.SelectedItem is not RendererCatalog.Entry sel) return;
+                if (sel.Id == lastId) return;
+                lastId = sel.Id;
+                prop.SetValue(_currentConfig, sel.Id);
+                DarkMessageBox.Show(this,
+                    "The selected renderer will be used the next time the application starts.",
+                    "Renderer changed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            };
+
+            group.Controls.Add(label);
+            group.Controls.Add(combo);
+
+            // Find the tab's content panel (Dock=Fill child) so the group
+            // docks above existing groups instead of overlapping the header.
+            Control container = target;
+            foreach (Control c in target.Controls)
+                if (c.Dock == DockStyle.Fill) { container = c; break; }
+            container.Controls.Add(group);
+            group.BringToFront();
         }
 
         private void butApply_Click(object sender, EventArgs e) => WriteConfigFromControls();

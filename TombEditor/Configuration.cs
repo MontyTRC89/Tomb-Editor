@@ -92,6 +92,12 @@ namespace TombEditor
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
         public bool Rendering3D_SafeMode { get; set; } = false;
+
+        // Graphics backend id, applied to TOMBEDITOR_GRAPHIC_API at startup
+        // (unless --gapi overrides it). Valid ids: "vulkan", "dx11", "opengl".
+        // Available choices depend on the platform — see RendererCatalog.
+        // Changing this requires an editor restart to take effect.
+        public string Rendering_GraphicsApi { get; set; } = TombLib.Graphics.RendererCatalog.DefaultId;
         public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnDoubleClickRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnRelocation { get; set; } = true;

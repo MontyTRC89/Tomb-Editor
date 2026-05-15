@@ -65,6 +65,12 @@ namespace TombEditor
             var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
             configuration.EnsureDefaults();
 
+            // Apply persisted renderer choice. --gapi (set above) takes
+            // precedence — only fall back to config if env var is empty.
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TOMBEDITOR_GRAPHIC_API")))
+                Environment.SetEnvironmentVariable("TOMBEDITOR_GRAPHIC_API",
+                    TombLib.Graphics.RendererCatalog.Resolve(configuration.Rendering_GraphicsApi).Id);
+
             // Update DarkUI configuration
             Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
 

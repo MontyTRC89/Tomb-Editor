@@ -42,6 +42,10 @@ namespace WadTool
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
 
+        // Graphics backend id, applied to TOMBEDITOR_GRAPHIC_API at startup
+        // (unless --gapi overrides it). See RendererCatalog. Requires restart.
+        public string Rendering_GraphicsApi { get; set; } = TombLib.Graphics.RendererCatalog.DefaultId;
+
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 800.0f;
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 1500.0f;
