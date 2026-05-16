@@ -199,7 +199,8 @@ public sealed class FlybyPreview : IDisposable
 
         return FlybyFrameState.FromDegrees(
             camera.Position + camera.Room.WorldPos,
-            camera.RotationY, camera.RotationX, camera.Roll, camera.Fov);
+            camera.RotationY, camera.RotationX, camera.Roll, camera.Fov,
+            camera.DofDistance, camera.DofRange, camera.DofStrength, camera.DofMode);
     }
 
     /// <summary>
