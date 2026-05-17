@@ -7,8 +7,6 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using TombLib.LevelData.IO;
-using TombLib.NG;
 using TombLib.Utils;
 using TombLib.Wad;
 using ImportedGeometryUpdateInfo = System.Collections.Generic.KeyValuePair<TombLib.LevelData.ImportedGeometry, TombLib.LevelData.ImportedGeometryInfo>;
@@ -245,7 +243,9 @@ namespace TombLib.LevelData
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
             result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());
             result.AutoStaticMeshMerges = AutoStaticMeshMerges.ConvertAll(entry => entry.Clone());
-            return result;
+			result.CollapsedGlobalEventSetFolders = new HashSet<string>(CollapsedGlobalEventSetFolders);
+			result.CollapsedVolumeEventSetFolders = new HashSet<string>(CollapsedVolumeEventSetFolders);
+			return result;
         }
 
         object ICloneable.Clone()

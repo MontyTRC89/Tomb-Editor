@@ -41,7 +41,7 @@ namespace TombEditor.Forms
         public bool GenericMode => GlobalMode || _instance == null;
 
         private HashSet<string> _backupCollapsedFolders;
-        private HashSet<string> _сollapsedFolders => GlobalMode ? _editor.Level.Settings.CollapsedGlobalEventSetFolders : _editor.Level.Settings.CollapsedVolumeEventSetFolders;
+        private HashSet<string> _collapsedFolders => GlobalMode ? _editor.Level.Settings.CollapsedGlobalEventSetFolders : _editor.Level.Settings.CollapsedVolumeEventSetFolders;
 
         public EventSet SelectedSet
         {
@@ -152,7 +152,7 @@ namespace TombEditor.Forms
             {
                 _editor.EditorEventRaised -= EditorEventRaised;
 
-                if (DialogResult == DialogResult.Cancel)
+                if (DialogResult != DialogResult.OK)
                     RestoreState();
                 else
                     SyncFoldersFromTree();
@@ -329,14 +329,14 @@ namespace TombEditor.Forms
             foreach (var evtSet in _usedList)
                 _backupEventSetList.Add(evtSet.Clone());
 
-            _backupCollapsedFolders = new HashSet<string>(_сollapsedFolders);
+            _backupCollapsedFolders = new HashSet<string>(_collapsedFolders);
         }
 
         private void RestoreState()
         {
-            _сollapsedFolders.Clear();
+            _collapsedFolders.Clear();
             foreach (var path in _backupCollapsedFolders)
-                _сollapsedFolders.Add(path);
+                _collapsedFolders.Add(path);
 
             if (GlobalMode)
             {
@@ -377,7 +377,7 @@ namespace TombEditor.Forms
         {
             _lockSelectionChange = true;
 
-            var collapsed = new HashSet<string>(_сollapsedFolders);
+            var collapsed = new HashSet<string>(_collapsedFolders);
             treeEvents.Nodes.Clear();
 
             foreach (var evtSet in _usedList)
@@ -452,12 +452,12 @@ namespace TombEditor.Forms
 
         private void SyncCollapsedFolders()
         {
-            _сollapsedFolders.Clear();
+            _collapsedFolders.Clear();
 
             foreach (var node in treeEvents.GetAllNodes())
             {
                 if (IsFolderNode(node) && !node.Expanded)
-                    _сollapsedFolders.Add(GetFolderPath(node));
+                    _collapsedFolders.Add(GetFolderPath(node));
             }
         }
 
