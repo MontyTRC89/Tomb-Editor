@@ -461,7 +461,6 @@ namespace TombEditor.Forms
             }
         }
 
-
         private void SyncCollapsedFolders()
         {
             _collapsedFolders.Clear();
@@ -604,7 +603,7 @@ namespace TombEditor.Forms
             var name = "New " + _mode + " event set " + (_usedList.Count + 1).ToString();
 
             // Determine folder from selected node.
-            string folder = string.Empty;
+            var folder = string.Empty;
             if (treeEvents.SelectedNodes.Count > 0)
             {
                 var selected = treeEvents.SelectedNodes[0];
@@ -877,7 +876,7 @@ namespace TombEditor.Forms
 
         private void butNewFolder_Click(object sender, EventArgs e)
         {
-            string parentFolder = string.Empty;
+            var parentFolder = string.Empty;
 
             if (treeEvents.SelectedNodes.Count > 0)
             {
@@ -889,11 +888,11 @@ namespace TombEditor.Forms
             }
 
             var parentCollection = GetOrCreateFolderNodes(parentFolder);
-            string newFolderName = PromptUniqueFolderName("New folder", "Enter folder name:", "New folder", parentCollection);
+            var newFolderName = PromptUniqueFolderName("New folder", "Enter folder name:", "New folder", parentCollection);
             if (newFolderName == null)
                 return;
 
-            string fullPath = string.IsNullOrEmpty(parentFolder) ? newFolderName : parentFolder + _folderSeparator + newFolderName;
+            var fullPath = string.IsNullOrEmpty(parentFolder) ? newFolderName : parentFolder + _folderSeparator + newFolderName;
             GetOrCreateFolderNodes(fullPath);
 
             var newNode = treeEvents.GetAllNodes().LastOrDefault(n => IsFolderNode(n) && n.Text == newFolderName);
@@ -910,7 +909,7 @@ namespace TombEditor.Forms
                 return;
 
             var siblings = node.ParentNode?.Nodes ?? treeEvents.Nodes;
-            string newName = PromptUniqueFolderName("Rename folder", "Enter new folder name:", node.Text, siblings, node);
+            var newName = PromptUniqueFolderName("Rename folder", "Enter new folder name:", node.Text, siblings, node);
             if (newName == null || newName == node.Text)
                 return;
 
@@ -922,7 +921,7 @@ namespace TombEditor.Forms
         // an existing folder in the given collection, or cancels. Returns null on cancel or empty input.
         private string PromptUniqueFolderName(string title, string prompt, string initialValue, ObservableList<DarkTreeNode> collection, DarkTreeNode exclude = null)
         {
-            string current = initialValue;
+            var current = initialValue;
             while (true)
             {
                 using (var inputBox = new FormInputBox(title, prompt, current))
@@ -930,7 +929,7 @@ namespace TombEditor.Forms
                     if (inputBox.ShowDialog(this) != DialogResult.OK)
                         return null;
 
-                    string name = inputBox.Result.Trim();
+                    var name = inputBox.Result.Trim();
                     if (string.IsNullOrEmpty(name))
                         return null;
 

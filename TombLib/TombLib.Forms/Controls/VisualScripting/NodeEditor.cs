@@ -935,7 +935,7 @@ namespace TombLib.Controls.VisualScripting
             var textRect = new Rectangle(rect.X + iconOffset, rect.Y, rect.Width - iconOffset, rect.Height);
             using (var b = new SolidBrush(Colors.LightText.ToFloat3Color().ToWinFormsColor(LabelOpacity)))
                 e.Graphics.DrawString(headerText, Font, b, textRect,
-                        new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center });
+                new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center });
 
             var condNode = node as VisibleNodeCondition;
             if (condNode == null)
