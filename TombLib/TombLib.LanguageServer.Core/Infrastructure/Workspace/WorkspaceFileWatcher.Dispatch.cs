@@ -67,6 +67,8 @@ public sealed partial class WorkspaceFileWatcher
 		catch (Exception exception)
 		{
 			int consecutiveDispatchFailures = 0;
+
+			bool willRetry = false;
 			TimeSpan retryDelay = DispatchDebounce;
 
 			if (batch is not null)
@@ -79,13 +81,25 @@ public sealed partial class WorkspaceFileWatcher
 				else if (CanRequeuePendingChanges())
 				{
 					consecutiveDispatchFailures = ++_consecutiveDispatchFailures;
-					retryDelay = GetDispatchRetryDelay(consecutiveDispatchFailures);
 
-					_pendingChanges.Requeue(batch, retryDelay);
+					if (consecutiveDispatchFailures < DispatchFailureEscalationThreshold)
+					{
+						willRetry = true;
+						retryDelay = GetDispatchRetryDelay(consecutiveDispatchFailures);
+
+						_pendingChanges.Requeue(batch, retryDelay);
+					}
 				}
 			}
 
-			if (consecutiveDispatchFailures >= DispatchFailureWarningThreshold)
+			if (consecutiveDispatchFailures >= DispatchFailureEscalationThreshold)
+			{
+				Log.Warn(exception,
+					"Workspace file watcher dispatch failed for '{Workspace}' {FailureCount} times in a row; no further retries will be attempted and the owner will be notified.",
+					_workspaceRootDirectoryPath,
+					consecutiveDispatchFailures);
+			}
+			else if (consecutiveDispatchFailures >= DispatchFailureWarningThreshold)
 			{
 				Log.Warn(exception,
 					"Workspace file watcher dispatch failed for '{Workspace}' with {Count} queued change(s) {FailureCount} times in a row; retrying in {RetryDelayMs} ms with backoff.",
@@ -94,7 +108,7 @@ public sealed partial class WorkspaceFileWatcher
 					consecutiveDispatchFailures,
 					(int)retryDelay.TotalMilliseconds);
 			}
-			else
+			else if (willRetry)
 			{
 				Log.Debug(exception,
 					"Workspace file watcher dispatch failed for '{Workspace}' with {Count} queued change(s); retrying in {RetryDelayMs} ms.",
@@ -102,6 +116,9 @@ public sealed partial class WorkspaceFileWatcher
 					batch?.Count ?? 0,
 					(int)retryDelay.TotalMilliseconds);
 			}
+
+			if (consecutiveDispatchFailures >= DispatchFailureEscalationThreshold)
+				HandleWatcherError(exception);
 		}
 		finally
 		{

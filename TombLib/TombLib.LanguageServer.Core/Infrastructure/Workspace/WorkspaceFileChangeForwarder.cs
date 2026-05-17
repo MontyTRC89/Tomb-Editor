@@ -11,6 +11,7 @@ public sealed partial class WorkspaceFileChangeForwarder : IDisposable
 	private readonly Func<CancellationToken, Task<bool>> _ensureStartedAsync;
 	private readonly Action _markTransportUnavailable;
 	private readonly Action<Exception>? _logForwardingFailure;
+	private readonly bool _bufferChangesWhileForwardingDisabled;
 
 	// Forwarding and disposal lifecycle state. _disposeRequested blocks new work immediately,
 	// while _disposed tracks when the forwarding gate has been released permanently.
@@ -29,12 +30,14 @@ public sealed partial class WorkspaceFileChangeForwarder : IDisposable
 	/// <param name="ensureStartedAsync">Starts or validates the underlying transport before forwarding.</param>
 	/// <param name="markTransportUnavailable">Marks the current transport as unavailable after forwarding failures.</param>
 	/// <param name="logForwardingFailure">Logs unexpected forwarding failures.</param>
+	/// <param name="bufferChangesWhileForwardingDisabled">Whether changes should be buffered instead of dropped while forwarding is temporarily disallowed.</param>
 	public WorkspaceFileChangeForwarder(
 		Func<bool> canForwardAccessor,
 		Func<bool> isDisposedAccessor,
 		Func<CancellationToken, Task<bool>> ensureStartedAsync,
 		Action markTransportUnavailable,
-		Action<Exception>? logForwardingFailure = null)
+		Action<Exception>? logForwardingFailure = null,
+		bool bufferChangesWhileForwardingDisabled = true)
 	{
 		ArgumentNullException.ThrowIfNull(canForwardAccessor);
 		ArgumentNullException.ThrowIfNull(isDisposedAccessor);
@@ -46,5 +49,6 @@ public sealed partial class WorkspaceFileChangeForwarder : IDisposable
 		_ensureStartedAsync = ensureStartedAsync;
 		_markTransportUnavailable = markTransportUnavailable;
 		_logForwardingFailure = logForwardingFailure;
+		_bufferChangesWhileForwardingDisabled = bufferChangesWhileForwardingDisabled;
 	}
 }

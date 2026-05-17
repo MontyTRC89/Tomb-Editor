@@ -2233,6 +2233,42 @@ public class LanguageServerClientTests
 	}
 
 	[TestMethod]
+	public void BuildConfigurationResponse_ReusesCachedSettingsSnapshotAcrossRepeatedRequests()
+	{
+		int settingsProviderCallCount = 0;
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", new LanguageServerClientOptions(() =>
+		{
+			settingsProviderCallCount++;
+			return new
+			{
+				Lua = new
+				{
+					Runtime = new
+					{
+						Version = "Lua 5.4"
+					}
+				}
+			};
+		}));
+
+		object[] firstResponse = (object[])InvokePrivateMethodWithReturn(client, "BuildConfigurationResponse",
+			new WorkspaceConfigurationParams(
+			[
+				new WorkspaceConfigurationItem("Lua.runtime")
+			]));
+
+		object[] secondResponse = (object[])InvokePrivateMethodWithReturn(client, "BuildConfigurationResponse",
+			new WorkspaceConfigurationParams(
+			[
+				new WorkspaceConfigurationItem("Lua.runtime")
+			]));
+
+		Assert.AreEqual(1, settingsProviderCallCount);
+		Assert.AreEqual("Lua 5.4", JsonSerializer.SerializeToElement(firstResponse[0]).GetProperty("version").GetString());
+		Assert.AreEqual("Lua 5.4", JsonSerializer.SerializeToElement(secondResponse[0]).GetProperty("version").GetString());
+	}
+
+	[TestMethod]
 	public void BuildConfigurationResponse_TypedSettingsObject_MatchesNestedSectionCaseInsensitively()
 	{
 		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", new LanguageServerClientOptions(static () => new TestConfigurationRoot

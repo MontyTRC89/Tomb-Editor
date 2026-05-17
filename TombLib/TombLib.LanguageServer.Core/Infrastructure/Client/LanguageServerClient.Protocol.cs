@@ -14,6 +14,7 @@ public sealed partial class LanguageServerClient
 	public async Task SendNotificationAsync(string method, object parameters, CancellationToken cancellationToken)
 	{
 		LanguageServerTransportSession session = GetRequiredReadySession(allowDisposed: false);
+		TryRefreshCachedSettingsSnapshotFromNotification(method, parameters);
 
 		try
 		{
@@ -139,11 +140,28 @@ public sealed partial class LanguageServerClient
 		if (items.Length == 0)
 			return [];
 
-		JsonElement settingsElement;
-
 		try
 		{
-			settingsElement = JsonSerializer.SerializeToElement(_settingsProvider(), ConfigurationJsonSerializerOptions);
+			JsonElement settingsElement = GetCachedSettingsSnapshot().SettingsElement;
+			var results = new object?[items.Length];
+
+			for (int i = 0; i < items.Length; i++)
+			{
+				try
+				{
+					results[i] = JsonConfigurationSectionReader.GetSection(settingsElement, items[i].Section);
+				}
+				catch (Exception exception)
+				{
+					Log.Warn(exception,
+						"Failed to extract workspace/configuration section '{Section}'; returning null for that section.",
+						string.IsNullOrWhiteSpace(items[i].Section) ? "<root>" : items[i].Section);
+
+					results[i] = null;
+				}
+			}
+
+			return results;
 		}
 		catch (Exception exception)
 		{
@@ -153,25 +171,66 @@ public sealed partial class LanguageServerClient
 
 			return new object?[items.Length];
 		}
+	}
 
-		var results = new object?[items.Length];
-
-		for (int i = 0; i < items.Length; i++)
+	private CachedSettingsSnapshot GetCachedSettingsSnapshot()
+	{
+		lock (_settingsSnapshotSyncRoot)
 		{
-			try
-			{
-				results[i] = JsonConfigurationSectionReader.GetSection(settingsElement, items[i].Section);
-			}
-			catch (Exception exception)
-			{
-				Log.Warn(exception,
-					"Failed to extract workspace/configuration section '{Section}'; returning null for that section.",
-					string.IsNullOrWhiteSpace(items[i].Section) ? "<root>" : items[i].Section);
-
-				results[i] = null;
-			}
+			if (_cachedSettingsSnapshot is { } cachedSettingsSnapshot)
+				return cachedSettingsSnapshot;
 		}
 
-		return results;
+		return RefreshCachedSettingsSnapshotFromProvider();
+	}
+
+	private CachedSettingsSnapshot RefreshCachedSettingsSnapshotFromProvider()
+		=> CacheSettingsSnapshot(_settingsProvider());
+
+	private CachedSettingsSnapshot CacheSettingsSnapshot(object settingsPayload)
+	{
+		CachedSettingsSnapshot settingsSnapshot = CreateCachedSettingsSnapshot(settingsPayload);
+
+		lock (_settingsSnapshotSyncRoot)
+		{
+			_cachedSettingsSnapshot = settingsSnapshot;
+			return settingsSnapshot;
+		}
+	}
+
+	private static CachedSettingsSnapshot CreateCachedSettingsSnapshot(object settingsPayload)
+	{
+		JsonElement settingsElement = settingsPayload is JsonElement jsonElement
+			? jsonElement.Clone()
+			: JsonSerializer.SerializeToElement(settingsPayload, ConfigurationJsonSerializerOptions);
+
+		return new CachedSettingsSnapshot(settingsPayload, settingsElement);
+	}
+
+	private void TryRefreshCachedSettingsSnapshotFromNotification(string method, object parameters)
+	{
+		if (!string.Equals(method, "workspace/didChangeConfiguration", StringComparison.Ordinal))
+			return;
+
+		try
+		{
+			if (parameters is DidChangeConfigurationParams didChangeConfigurationParameters)
+			{
+				CacheSettingsSnapshot(didChangeConfigurationParameters.Settings);
+				return;
+			}
+
+			JsonElement payload = JsonSerializer.SerializeToElement(parameters, ConfigurationJsonSerializerOptions);
+
+			if (!payload.TryGetProperty("settings", out JsonElement settingsElement))
+				return;
+
+			CacheSettingsSnapshot(settingsElement);
+		}
+		catch (Exception exception)
+		{
+			Log.Debug(exception,
+				"Failed to refresh the cached workspace settings snapshot from an outgoing didChangeConfiguration notification.");
+		}
 	}
 }

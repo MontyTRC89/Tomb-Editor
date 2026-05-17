@@ -28,6 +28,7 @@ public sealed partial class LanguageServerClient : ILanguageServerClient
 	private readonly TimeSpan _initializeTimeout;
 	private readonly TimeSpan _shutdownRequestTimeout;
 	private readonly TimeSpan _disposeWaitTimeout;
+	private readonly object _settingsSnapshotSyncRoot = new();
 
 	// Test seams.
 	private readonly Func<Process, CancellationToken, Task>? _processStartedTestHook;
@@ -46,10 +47,16 @@ public sealed partial class LanguageServerClient : ILanguageServerClient
 
 	// Published transport state read by the public capability surface.
 	private readonly object _publishedCapabilitySnapshotSyncRoot = new();
+	private CachedSettingsSnapshot? _cachedSettingsSnapshot;
 	private PublishedCapabilitySnapshot _publishedCapabilitySnapshot = CreateDefaultCapabilitySnapshot();
 	private LanguageServerTransportSession? _activeSession;
 	private volatile bool _isDisposed;
 	private int _disposeStarted;
+
+	/// <summary>
+	/// Stores the current settings payload together with its serialized settings element.
+	/// </summary>
+	private sealed record CachedSettingsSnapshot(object SettingsPayload, JsonElement SettingsElement);
 
 	/// <summary>
 	/// Stores the immutable transport and capability state exposed through the public client surface.

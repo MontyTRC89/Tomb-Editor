@@ -5,7 +5,7 @@ public sealed partial class WorkspaceFileChangeForwarder
 	/// <summary>
 	/// Attempts to forward a new change set immediately.
 	/// The change set is buffered only after forwarding was allowed and startup or transport forwarding failed.
-	/// When forwarding is not currently allowed, the change set is ignored.
+	/// When forwarding is not currently allowed, the change set is either buffered or ignored based on construction options.
 	/// </summary>
 	/// <param name="changes">The file changes to forward.</param>
 	/// <param name="forwardAsync">The transport forwarding callback.</param>
@@ -22,14 +22,23 @@ public sealed partial class WorkspaceFileChangeForwarder
 
 		try
 		{
-			if (changes.Count == 0 || !_canForwardAccessor())
+			if (changes.Count == 0)
 				return;
+
+			if (!_canForwardAccessor())
+			{
+				BufferChangesWhenForwardingDisabled(changes);
+				return;
+			}
 
 			await _forwardingGate.WaitAsync(cancellationToken).ConfigureAwait(false);
 			forwardingGateHeld = true;
 
 			if (!_canForwardAccessor())
+			{
+				BufferChangesWhenForwardingDisabled(changes);
 				return;
+			}
 
 			if (!await _ensureStartedAsync(cancellationToken).ConfigureAwait(false))
 			{
@@ -46,6 +55,12 @@ public sealed partial class WorkspaceFileChangeForwarder
 
 			ExitOperation();
 		}
+	}
+
+	private void BufferChangesWhenForwardingDisabled(IReadOnlyList<WorkspaceFileChange> changes)
+	{
+		if (_bufferChangesWhileForwardingDisabled)
+			_deferredChanges.AddRange(changes);
 	}
 
 	/// <summary>

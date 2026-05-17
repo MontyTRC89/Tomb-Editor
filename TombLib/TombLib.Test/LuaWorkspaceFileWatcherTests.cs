@@ -299,6 +299,50 @@ public class WorkspaceFileWatcherTests
 	}
 
 	[TestMethod]
+	public async Task DispatchPendingChangesForTestAsync_WhenDispatchKeepsFailing_ReportsWatcherFailureAfterBoundedRetries()
+	{
+		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherEscalate_" + Guid.NewGuid().ToString("N"));
+		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
+		int watcherFailedCallCount = 0;
+		Exception? reportedException = null;
+
+		try
+		{
+			Directory.CreateDirectory(workspaceRoot);
+
+			using var watcher = new WorkspaceFileWatcher(
+				workspaceRoot,
+				(_, _) => throw new IOException("Persistent dispatch failure."),
+				watchSpecifications,
+				(_, exception) =>
+				{
+					watcherFailedCallCount++;
+					reportedException = exception;
+				});
+
+			Assert.IsTrue(watcher.Start());
+
+			string filePath = Path.Combine(workspaceRoot, "test.lua");
+
+			#pragma warning disable CS0618
+			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
+
+			for (int i = 0; i < 5; i++)
+				await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
+			#pragma warning restore CS0618
+
+			Assert.AreEqual(1, watcherFailedCallCount);
+			Assert.IsInstanceOfType(reportedException, typeof(IOException));
+			Assert.IsFalse(watcher.HasActiveWatchers);
+		}
+		finally
+		{
+			if (Directory.Exists(workspaceRoot))
+				Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public async Task Dispose_DuringActiveDispatch_DoesNotFaultDispatch()
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDispose_" + Guid.NewGuid().ToString("N"));

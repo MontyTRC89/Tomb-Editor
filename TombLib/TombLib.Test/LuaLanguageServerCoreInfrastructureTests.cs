@@ -43,7 +43,7 @@ public class WorkspaceFileChangeForwarderTests
 	}
 
 	[TestMethod]
-	public async Task DispatchAsync_WhenForwardingNotCurrentlyAllowed_IgnoresChangesWithoutBuffering()
+	public async Task DispatchAsync_WhenForwardingNotCurrentlyAllowed_UsesExplicitDropModeWithoutBuffering()
 	{
 		bool ensureStartedCalled = false;
 		bool forwardCalled = false;
@@ -56,7 +56,8 @@ public class WorkspaceFileChangeForwarderTests
 				ensureStartedCalled = true;
 				return Task.FromResult(true);
 			},
-			markTransportUnavailable: static () => { });
+			markTransportUnavailable: static () => { },
+			bufferChangesWhileForwardingDisabled: false);
 
 		WorkspaceFileChange[] changes = [new(@"C:\Workspace\Scripts\test.lua", FileChangeKind.Changed)];
 
@@ -74,6 +75,37 @@ public class WorkspaceFileChangeForwarderTests
 
 		Assert.IsFalse(ensureStartedCalled);
 		Assert.IsFalse(forwardCalled);
+	}
+
+	[TestMethod]
+	public async Task DispatchAsync_WhenForwardingNotCurrentlyAllowed_BuffersChangesByDefault()
+	{
+		bool canForward = false;
+		IReadOnlyList<WorkspaceFileChange>? replayedChanges = null;
+
+		var forwarder = new WorkspaceFileChangeForwarder(
+			canForwardAccessor: () => canForward,
+			isDisposedAccessor: () => false,
+			ensureStartedAsync: _ => Task.FromResult(true),
+			markTransportUnavailable: static () => { });
+
+		WorkspaceFileChange[] changes = [new(@"C:\Workspace\Scripts\test.lua", FileChangeKind.Changed)];
+
+		await forwarder.DispatchAsync(changes, (_, _) => Task.CompletedTask, CancellationToken.None).ConfigureAwait(false);
+		canForward = true;
+
+		await forwarder.ReplayDeferredAsync(
+			(items, _) =>
+			{
+				replayedChanges = [.. items];
+				return Task.CompletedTask;
+			},
+			CancellationToken.None).ConfigureAwait(false);
+
+		Assert.IsNotNull(replayedChanges);
+		Assert.AreEqual(1, replayedChanges.Count);
+		Assert.AreEqual(changes[0].Path, replayedChanges[0].Path);
+		Assert.AreEqual(changes[0].Kind, replayedChanges[0].Kind);
 	}
 
 	[TestMethod]

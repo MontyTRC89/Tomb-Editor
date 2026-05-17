@@ -95,9 +95,11 @@ public sealed partial class LanguageServerClient
 
 			await SendNotificationCoreAsync(session, "initialized", new EmptyParams(), cancellationToken, allowDisposed: false).ConfigureAwait(false);
 
+			CachedSettingsSnapshot settingsSnapshot = RefreshCachedSettingsSnapshotFromProvider();
+
 			await SendNotificationCoreAsync(session,
 				"workspace/didChangeConfiguration",
-				new DidChangeConfigurationParams(_settingsProvider()),
+				new DidChangeConfigurationParams(settingsSnapshot.SettingsPayload),
 				cancellationToken,
 				allowDisposed: false).ConfigureAwait(false);
 

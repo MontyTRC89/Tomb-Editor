@@ -58,7 +58,8 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			_ensureStartedAsync,
 			_markTransportUnavailable,
 			exception => Log.Debug(exception,
-				"Failed to forward workspace file changes to the Lua language server; the changes were buffered for replay."));
+				"Failed to forward workspace file changes to the Lua language server; the changes were buffered for replay."),
+				bufferChangesWhileForwardingDisabled: false);
 	}
 
 	internal WorkspaceFileWatcher? CurrentWatcher
@@ -125,9 +126,8 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		if (changes.Count == 0)
 			return;
 
-		ApplyWorkspaceSnapshotChanges(changes);
-
 		await _workspaceFileChangeForwarder.DispatchAsync(changes, SendWorkspaceFileChangesAsync, cancellationToken).ConfigureAwait(false);
+		ApplyWorkspaceSnapshotChanges(changes);
 	}
 
 	public async Task ReplayDeferredWorkspaceFileChangesAsync(CancellationToken cancellationToken)

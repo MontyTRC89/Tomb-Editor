@@ -2,6 +2,8 @@ namespace TombLib.LanguageServer.Core;
 
 /// <summary>
 /// Describes the host-specific payload factories used to initialize a language-server client.
+/// The payload factories may be invoked from background transport threads and should be thread-safe,
+/// non-blocking, and cheap to execute.
 /// </summary>
 public sealed class LanguageServerClientOptions
 {
@@ -31,6 +33,9 @@ public sealed class LanguageServerClientOptions
 
 	/// <summary>
 	/// Gets the settings payload factory for <c>workspace/didChangeConfiguration</c>.
+	/// The returned payload is cached after the client sends or derives one configuration snapshot, so hosts should
+	/// route later configuration changes through <c>workspace/didChangeConfiguration</c> notifications to keep server
+	/// callbacks aligned with the latest settings.
 	/// </summary>
 	public Func<object> SettingsProvider { get; }
 
@@ -63,6 +68,7 @@ public sealed class LanguageServerClientOptions
 
 	/// <summary>
 	/// Gets or initializes the client capabilities payload factory for the <c>initialize</c> request.
+	/// This delegate may run on a background transport thread during startup.
 	/// </summary>
 	public Func<string, object?> ClientCapabilitiesProvider
 	{
@@ -72,6 +78,7 @@ public sealed class LanguageServerClientOptions
 
 	/// <summary>
 	/// Gets or initializes the language-specific initialization options factory for the <c>initialize</c> request.
+	/// This delegate may run on a background transport thread during startup.
 	/// </summary>
 	public Func<string, object?> InitializationOptionsProvider
 	{

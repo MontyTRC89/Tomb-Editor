@@ -9,7 +9,10 @@ namespace TombLib.LanguageServer.Core;
 public sealed partial class WorkspaceFileWatcher : IDisposable, IAsyncDisposable
 {
 	private const int DispatchFailureWarningThreshold = 3;
+	private const int DispatchFailureEscalationThreshold = 5;
+
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private static readonly TimeSpan DispatchDebounce = TimeSpan.FromMilliseconds(250);
 	private static readonly TimeSpan MaxDispatchRetryDelay = TimeSpan.FromSeconds(5.0f);
 
