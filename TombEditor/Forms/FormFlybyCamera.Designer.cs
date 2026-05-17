@@ -415,6 +415,7 @@ namespace TombEditor.Forms
             0,
             0});
             this.numRoll.Name = "numRoll";
+            this.numRoll.LoopValues = true;
             this.numRoll.Size = new System.Drawing.Size(71, 22);
             this.numRoll.TabIndex = 5;
             // 
@@ -439,6 +440,7 @@ namespace TombEditor.Forms
             0,
             -2147483648});
             this.numRotationX.Name = "numRotationX";
+            this.numRotationX.LoopValues = true;
             this.numRotationX.Size = new System.Drawing.Size(71, 22);
             this.numRotationX.TabIndex = 6;
             // 
@@ -458,6 +460,7 @@ namespace TombEditor.Forms
             0,
             0});
             this.numRotationY.Name = "numRotationY";
+            this.numRotationY.LoopValues = true;
             this.numRotationY.Size = new System.Drawing.Size(71, 22);
             this.numRotationY.TabIndex = 7;
             // 
