@@ -1463,6 +1463,27 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectFlyBy3)
+                {
+                    var instance = new FlybyCameraInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Roll = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.Speed = chunkIO.Raw.ReadSingle();
+                    instance.Fov = chunkIO.Raw.ReadSingle();
+                    instance.Flags = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Number = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Sequence = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Timer = LEB128.ReadShort(chunkIO.Raw);
+                    instance.DofDistance = chunkIO.Raw.ReadSingle();
+                    instance.DofRange = chunkIO.Raw.ReadSingle();
+                    instance.DofStrength = chunkIO.Raw.ReadSingle();
+                    instance.DofMode = (DofMode)chunkIO.Raw.ReadInt32();
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
                 else if (id3 == Prj2Chunks.ObjectMemo)
                 {
                     var instance = new MemoInstance();

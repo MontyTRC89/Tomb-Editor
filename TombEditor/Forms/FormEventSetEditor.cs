@@ -304,6 +304,18 @@ namespace TombEditor.Forms
                     toolTip.SetToolTip(cbEvents, "Occurs when an item was selected and used in inventory.");
                     break;
 
+                case EventType.OnPickup:
+                    toolTip.SetToolTip(cbEvents, "Occurs when an item was picked up by player.");
+                    break;
+
+                case EventType.OnVehicleEnter:
+                    toolTip.SetToolTip(cbEvents, "Occurs when player enters a vehicle.");
+                    break;
+
+                case EventType.OnVehicleLeave:
+                    toolTip.SetToolTip(cbEvents, "Occurs when player leaves a vehicle.");
+                    break;
+
                 case EventType.OnFreeze:
                     toolTip.SetToolTip(cbEvents, "Occurs when game is running in a freeze mode. \nThis event performs continuously.");
                     break;
