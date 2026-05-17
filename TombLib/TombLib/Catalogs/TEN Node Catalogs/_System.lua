@@ -205,7 +205,18 @@ LevelFuncs.Engine.Node.SetInteractionHighlightType = function(index)
 		[0] = TEN.Objects.InteractionType.PICKUP,
 		[1] = TEN.Objects.InteractionType.TALK,
 		[2] = TEN.Objects.InteractionType.USE,
-	}	
+	}
 	return interactionIconType[index]
 end
-		
+
+LevelFuncs.Engine.Node.GetCreatureMood = function(index)
+	local creatureMood =
+	{
+		[0] = TEN.Objects.MoodType.ATTACK,
+		[1] = TEN.Objects.MoodType.AUTO,
+		[2] = TEN.Objects.MoodType.BORED,
+		[3] = TEN.Objects.MoodType.ESCAPE,
+		[4] = TEN.Objects.MoodType.STALK,
+	}
+	return creatureMood[index]
+end
