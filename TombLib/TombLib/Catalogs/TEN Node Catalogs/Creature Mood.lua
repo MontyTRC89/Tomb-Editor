@@ -31,3 +31,18 @@ LevelFuncs.Engine.Node.SetCreatureMood = function(moveable, index)
     local movAI = Objects.Creature(mov)
     movAI:SetMood(mood)
 end
+
+-- !Name "If creature mood is..."
+-- !Section "Creature AI"
+-- !Description "Checks if creature mood is a specified mood."
+-- !Conditional "True"
+-- !Arguments "Newline, Moveables, 50, Moveable to check mood for."
+-- !Arguments "Enumeration, 50, [ Attack | Auto | Bored | Escape | Stalk ], Mood to check for."
+LevelFuncs.Engine.Node.TestCreatureMood = function(moveable, index)
+
+    local mood = LevelFuncs.Engine.Node.GetCreatureMood(index)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+    local movAI = Objects.Creature(mov)
+
+    return movAI:GetMood() == mood
+end
