@@ -1,20 +1,21 @@
 -- !Name "Set intelligent creature location"
 -- !Section "Creature Mood"
 -- !Description "Sets the location of intelligent enemies to a specified location.\nOnly to be used with GUIDE, Sophia-Leigh or Von Croy.\nPlace AI_X1 objects with an OCB to create a location."
--- !Arguments "Newline, WadSlots, 70, [ GUIDE | SOPHIA_LEIGH | VON_CROY ], Creature to set location for."
--- !Arguments "Numerical, 30, [ 0 | 1000 ], Location to set.
-LevelFuncs.Engine.Node.SetCreatureLocation = function(objectId, location)
-    local moveables = TEN.Objects.GetMoveablesBySlot(objectId)
+-- !Arguments "Newline, Moveables, 60, [ guide | sophia_leigh | von_croy ], Creature to set location for."
+-- !Arguments "Numerical, 20, [ 0 | 1000 ], Location to set.
+-- !Arguments "Boolean, 20, {false}, Debug to console."
+LevelFuncs.Engine.Node.SetCreatureLocation = function(objectId, location,debug)
+    local moveables = TEN.Objects.GetMoveableByName(objectId)
+    if moveables:GetStatus() ==  1 then
+        moveables:SetLocationAI(location)
+    end
 
-    for _, moveable in pairs(moveables) do
-        if moveable:GetStatus() == Objects.MoveableStatus.ACTIVE then
-            moveable:SetLocationAI(location)
-            print("Location set for " .. moveable:GetName() .. " to location: " .. location .. ".")
-        end
-
-        if moveable:GetStatus() == Objects.MoveableStatus.INACTIVE then
-            print("Warning: " .. moveable:GetName() .. " is inactive. Location not set.")
-        end
+    if moveables:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. objectId .. " ] is not active. No location set.",TEN.Util.LogLevel.ERROR)
+    end
+    
+    if moveables:GetStatus() ==  1 and debug == true then
+        TEN.Util.PrintLog("Location of [ " .. objectId .. " ] set to location " .. location,TEN.Util.LogLevel.INFO)
     end
 end
 
