@@ -10,7 +10,8 @@ using LuaLanguageServerLocator = TombIDE.ScriptingStudio.Services.LuaIntellisens
 using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.ScriptingStudio.Objects;
 using TombLib.Scripting.Bases;
-using TombLib.Scripting.Lua.LanguageServer;
+using TombLib.LanguageServer.Core;
+using TombLib.LanguageServer.Lua;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Lua.Services;
@@ -181,11 +182,11 @@ public sealed partial class LuaStudio
 		UpdateLuaFeatureCommandAvailability();
 	}
 
-	private void IntellisenseProvider_StartupFailed(LuaLanguageServerStartupFailure failure)
+	private void IntellisenseProvider_StartupFailed(LanguageServerStartupFailure failure)
 	{
 		if (InvokeRequired)
 		{
-			BeginInvoke(new Action<LuaLanguageServerStartupFailure>(IntellisenseProvider_StartupFailed), failure);
+			BeginInvoke(new Action<LanguageServerStartupFailure>(IntellisenseProvider_StartupFailed), failure);
 			return;
 		}
 
@@ -199,11 +200,11 @@ public sealed partial class LuaStudio
 			MessageBoxIcon.Warning);
 	}
 
-	private void IntellisenseProvider_WorkspaceWatcherFailed(LuaWorkspaceWatcherFailure failure)
+	private void IntellisenseProvider_WorkspaceWatcherFailed(WorkspaceWatcherFailure failure)
 	{
 		if (InvokeRequired)
 		{
-			BeginInvoke(new Action<LuaWorkspaceWatcherFailure>(IntellisenseProvider_WorkspaceWatcherFailed), failure);
+			BeginInvoke(new Action<WorkspaceWatcherFailure>(IntellisenseProvider_WorkspaceWatcherFailed), failure);
 			return;
 		}
 

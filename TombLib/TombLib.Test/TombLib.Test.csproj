@@ -18,7 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TombLib.Scripting.Lua.LanguageServer\TombLib.Scripting.Lua.LanguageServer.csproj" />
+    <ProjectReference Include="..\TombLib.LanguageServer.Core\TombLib.LanguageServer.Core.csproj" />
+    <ProjectReference Include="..\TombLib.LanguageServer.Lua\TombLib.LanguageServer.Lua.csproj" />
     <ProjectReference Include="..\..\TombIDE\TombIDE.ScriptingStudio\TombIDE.ScriptingStudio.csproj" />
     <ProjectReference Include="..\..\TombIDE\TombIDE.Shared\TombIDE.Shared.csproj" />
     <ProjectReference Include="..\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />

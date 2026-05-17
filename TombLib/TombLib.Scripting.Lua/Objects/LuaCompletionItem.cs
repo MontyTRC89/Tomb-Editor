@@ -66,7 +66,7 @@ public sealed class LuaCompletionItem
 		Label = label;
 		InsertText = string.IsNullOrWhiteSpace(insertText) ? label : insertText;
 		Detail = string.IsNullOrWhiteSpace(detail) ? null : detail.Trim();
-		Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+		Description = string.IsNullOrWhiteSpace(description) ? null : isDescriptionMarkdown ? description : description.Trim();
 		FilterText = string.IsNullOrWhiteSpace(filterText) ? label : filterText;
 		Priority = priority;
 		IconKind = iconKind;
