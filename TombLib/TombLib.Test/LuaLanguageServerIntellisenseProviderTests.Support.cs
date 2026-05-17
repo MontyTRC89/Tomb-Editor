@@ -141,6 +141,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		public int StartCallCount { get; private set; }
 		public int MarkTransportUnhealthyCallCount { get; private set; }
 		public int TimedOutHoverRequestsRemaining { get; set; }
+		public int TransportChangedRequestFailuresRemaining { get; set; }
 		public bool ThrowIOExceptionOnNextDidChange { get; set; }
 		public bool ThrowInvalidOperationOnNextWatchedFilesNotification { get; set; }
 		public bool ThrowIOExceptionOnNextWatchedFilesNotification { get; set; }
@@ -223,6 +224,13 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		public Task<TResult> SendRequestAsync<TResult>(string method, object parameters, CancellationToken cancellationToken)
 		{
 			RecordRequest(method, parameters);
+
+			if (TransportChangedRequestFailuresRemaining > 0)
+			{
+				TransportChangedRequestFailuresRemaining--;
+				IsReady = false;
+				throw new LanguageServerTransportChangedException();
+			}
 
 			if (method == "textDocument/hover")
 			{

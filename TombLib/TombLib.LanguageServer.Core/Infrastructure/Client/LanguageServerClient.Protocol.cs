@@ -69,7 +69,7 @@ public sealed partial class LanguageServerClient
 				method,
 				session.Generation);
 
-			throw new IOException("The language server transport changed before the request completed.");
+			throw new LanguageServerTransportChangedException();
 		}
 
 		return result;

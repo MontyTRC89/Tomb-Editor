@@ -451,6 +451,58 @@ public class WorkspaceFileWatcherTests
 	}
 
 	[TestMethod]
+	public async Task DisposeAsync_WhenFinalFlushStalls_CompletesWithoutWaitingIndefinitely()
+	{
+		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDisposeTimedFlush_" + Guid.NewGuid().ToString("N"));
+		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
+		var dispatchStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var allowFirstDispatchToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var finalFlushStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var allowFinalFlushToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		try
+		{
+			Directory.CreateDirectory(workspaceRoot);
+
+			using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
+			{
+				if (!dispatchStarted.Task.IsCompleted)
+				{
+					dispatchStarted.TrySetResult(true);
+					await allowFirstDispatchToFinish.Task.ConfigureAwait(false);
+					throw new IOException("Simulated dispatch failure during disposal.");
+				}
+
+				finalFlushStarted.TrySetResult(true);
+				await allowFinalFlushToFinish.Task.ConfigureAwait(false);
+			}, watchSpecifications);
+
+			string filePath = Path.Combine(workspaceRoot, "test.lua");
+
+			#pragma warning disable CS0618
+			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
+			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
+			#pragma warning restore CS0618
+
+			await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+
+			Task disposeTask = watcher.DisposeAsync().AsTask();
+
+			allowFirstDispatchToFinish.TrySetResult(true);
+
+			await finalFlushStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+			await Task.WhenAll(dispatchTask, disposeTask.WaitAsync(TimeSpan.FromSeconds(5))).ConfigureAwait(false);
+
+			allowFinalFlushToFinish.TrySetResult(true);
+		}
+		finally
+		{
+			if (Directory.Exists(workspaceRoot))
+				Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public void Dispose_WhenPendingChangesExistAndNoDispatchIsActive_DropsBufferedBatch()
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDisposeFlush_" + Guid.NewGuid().ToString("N"));

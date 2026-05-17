@@ -79,7 +79,7 @@ internal sealed class SerializedDiagnosticsSubscriberSet<THandler>
 		}
 
 		for (int i = 0; i < subscriptions.Length; i++)
-			subscriptions[i].Enqueue(documentKey, parameters);
+			subscriptions[i].Enqueue(documentKey, parameters.CreateSnapshot());
 	}
 
 	/// <summary>

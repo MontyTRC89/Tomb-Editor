@@ -91,8 +91,8 @@ public sealed partial class LanguageServerClient
 	private void RaiseDiagnosticsPublished(long transportGeneration, PublishDiagnosticsParams parameters)
 	{
 		// Keep only the newest diagnostics payload per file within one transport generation and wake the pump if it is idle.
-		// Store the deserialized payload as received and treat it as read-only while it flows through the pumps.
-		_pendingDiagnostics[GetDiagnosticsQueueKey(transportGeneration, parameters)] = new QueuedDiagnostics(transportGeneration, parameters);
+		// Store a detached snapshot so queued callbacks never share a caller-owned diagnostics array instance.
+		_pendingDiagnostics[GetDiagnosticsQueueKey(transportGeneration, parameters)] = new QueuedDiagnostics(transportGeneration, parameters.CreateSnapshot());
 		_diagnosticsSignal.Writer.TryWrite(true);
 	}
 

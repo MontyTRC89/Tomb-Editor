@@ -49,7 +49,15 @@ public readonly record struct WindowMessageParams(
 public readonly record struct PublishDiagnosticsParams(
 	[property: JsonPropertyName("uri")] string? Uri,
 	[property: JsonPropertyName("version")] int? Version,
-	[property: JsonPropertyName("diagnostics")] DiagnosticPayload[]? Diagnostics);
+	[property: JsonPropertyName("diagnostics")] DiagnosticPayload[]? Diagnostics)
+{
+	/// <summary>
+	/// Creates a detached diagnostics snapshot so queued subscribers do not share a mutable array instance.
+	/// </summary>
+	/// <returns>The cloned diagnostics payload.</returns>
+	public PublishDiagnosticsParams CreateSnapshot()
+		=> this with { Diagnostics = Diagnostics is null ? null : [.. Diagnostics] };
+}
 
 /// <summary>
 /// Represents a single diagnostic entry from a publish-diagnostics notification.

@@ -185,6 +185,39 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task GetCompletionItemsAsync_WhenRequestCrossesTransportBoundary_RetriesOnce()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLanguageServerClient
+		{
+			TransportChangedRequestFailuresRemaining = 1,
+			CompletionResponse = JsonSerializer.SerializeToElement(new
+			{
+				items = new object[]
+				{
+					new
+					{
+						label = "spawn",
+						kind = 3,
+						insertText = "spawn"
+					}
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		IReadOnlyList<LuaCompletionItem> items = await provider.GetCompletionItemsAsync(filePath, "spa", 0, 3).ConfigureAwait(false);
+
+		Assert.AreEqual(1, items.Count);
+		Assert.AreEqual("spawn", items[0].Label);
+		Assert.AreEqual(2, client.StartCallCount);
+		Assert.AreEqual(2, CountSentMethods(client, "textDocument/completion"));
+	}
+
+	[TestMethod]
 	public async Task GetHoverAsync_RequestOnlyDocument_RemainsTrackedForShortTermFollowUpWork()
 	{
 		const string workspaceRoot = @"C:\Workspace";

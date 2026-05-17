@@ -1980,6 +1980,41 @@ public class LanguageServerClientTests
 	}
 
 	[TestMethod]
+	public async Task PumpDiagnosticsAsync_SubscribersReceiveIndependentDiagnosticsSnapshots()
+	{
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		var firstSubscriberMutated = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var secondSubscriberObserved = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		client.DiagnosticsPublished += parameters =>
+		{
+			if (parameters.Diagnostics is { Length: > 0 } diagnostics)
+			{
+				diagnostics[0] = diagnostics[0] with { Message = "Mutated warning." };
+			}
+
+			firstSubscriberMutated.TrySetResult(true);
+		};
+
+		client.DiagnosticsPublished += parameters =>
+		{
+			firstSubscriberMutated.Task.GetAwaiter().GetResult();
+			secondSubscriberObserved.TrySetResult(parameters.Diagnostics?[0].Message);
+			CancelLifetime(client);
+		};
+
+		Task diagnosticsPumpTask = InvokePrivateTaskAsync(client, "PumpDiagnosticsAsync");
+
+		InvokePrivateMethod(client, "RaiseDiagnosticsPublished", 0L,
+			CreateDiagnosticsParameters("file:///C:/Workspace/test.lua", "Original warning."));
+
+		Assert.AreEqual("Original warning.",
+			await secondSubscriberObserved.Task.WaitAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+		await diagnosticsPumpTask.ConfigureAwait(false);
+	}
+
+	[TestMethod]
 	public async Task InvokeDiagnosticsPublished_WhenSubscriberIsBusy_CoalescesPendingPayloadsPerDocument()
 	{
 		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
@@ -2413,7 +2448,7 @@ public class LanguageServerClientTests
 	}
 
 	[TestMethod]
-	public async Task SendRequestAsync_WhenTransportGenerationIsReplacedBeforeSuccessfulResponse_CompletesWithIOException()
+	public async Task SendRequestAsync_WhenTransportGenerationIsReplacedBeforeSuccessfulResponse_CompletesWithTransportChangedException()
 	{
 		using var deferredServerOutputStream = new DeferredJsonRpcResponseStream();
 		using var serverInputStream = new RecordingStream();
@@ -2435,7 +2470,7 @@ public class LanguageServerClientTests
 		SetReadyState(client, true);
 		deferredServerOutputStream.SetPayload(CreateJsonRpcResultMessage(requestId, "{\"value\":1}"));
 
-		await Assert.ThrowsExceptionAsync<IOException>(async () => await requestTask.ConfigureAwait(false)).ConfigureAwait(false);
+		await Assert.ThrowsExceptionAsync<LanguageServerTransportChangedException>(async () => await requestTask.ConfigureAwait(false)).ConfigureAwait(false);
 	}
 
 	[TestMethod]

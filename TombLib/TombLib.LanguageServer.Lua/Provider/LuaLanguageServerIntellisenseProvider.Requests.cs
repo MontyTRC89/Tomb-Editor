@@ -359,6 +359,40 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			RecordRequestTimeout(client, method, transportGeneration);
 			return timeoutValue;
 		}
+		catch (LanguageServerTransportChangedException) when (!cancellationToken.IsCancellationRequested)
+		{
+			Log.Debug("Lua language server request '{Method}' crossed a transport restart boundary on generation {Generation}; retrying once.",
+				method,
+				transportGeneration);
+		}
+
+		if (!await EnsureStartedAsync(cancellationToken).ConfigureAwait(false))
+			return timeoutValue;
+
+		transportGeneration = client.TransportGeneration;
+
+		using var retryTimeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+		retryTimeoutCts.CancelAfter(_requestTimeout);
+
+		try
+		{
+			TResponse response = await client.SendRequestAsync<TResponse>(method, parameters, retryTimeoutCts.Token).ConfigureAwait(false);
+			ResetRequestTimeoutTracking(transportGeneration);
+			return response;
+		}
+		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+		{
+			RecordRequestTimeout(client, method, transportGeneration);
+			return timeoutValue;
+		}
+		catch (LanguageServerTransportChangedException) when (!cancellationToken.IsCancellationRequested)
+		{
+			Log.Debug("Lua language server request '{Method}' crossed a second transport restart boundary on generation {Generation}; returning the fallback value.",
+				method,
+				transportGeneration);
+
+			return timeoutValue;
+		}
 	}
 
 	private void RecordRequestTimeout(ILanguageServerClient client, string method, long transportGeneration)
