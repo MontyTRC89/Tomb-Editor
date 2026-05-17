@@ -8,7 +8,6 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
-
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
@@ -1974,6 +1973,7 @@ namespace TombEditor.Controls.Panel3D
 
             // Determine brush overlay state.
             var brushState = ComputeBrushOverlay();
+            bool drawFlybyDof = TryGetFlybyDofOverlayState(out FlybyDofOverlayState flybyDofState);
 
             // In ObjectPlacement (brush) mode, use only the brush-specific ShowTextures flag,
             // the global white-lighting override is ignored so it doesn't bleed into brush mode.
@@ -1992,7 +1992,10 @@ namespace TombEditor.Controls.Panel3D
                 BrushShape = brushState.Shape,
                 BrushCenter = brushState.Center,
                 BrushColor = brushState.Color,
-                BrushRotation = brushState.Rotation
+                BrushRotation = brushState.Rotation,
+                DofCenterRange = drawFlybyDof ? flybyDofState.CenterRange : Vector4.Zero,
+                DofDirectionDistance = drawFlybyDof ? flybyDofState.DirectionDistance : Vector4.Zero,
+                DofColorStrength = drawFlybyDof ? flybyDofState.ColorStrength : Vector4.Zero
             });
 
             var renderArgs = new RenderingDrawingRoom.RenderArgs

@@ -582,6 +582,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public ushort Flags;
 
         public int Room;
+        
+        public int   DofMode;
+        public float DofDistance;
+        public float DofRange;
+        public float DofStrength;
 
         public class ComparerFlyBy : IComparer<TombEngineFlybyCamera>
         {
