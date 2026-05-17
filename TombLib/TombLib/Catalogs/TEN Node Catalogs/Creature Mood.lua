@@ -33,7 +33,6 @@ LevelFuncs.Engine.Node.SetCreatureMood = function(moveable, index)
 
     if mov:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No mood set.",TEN.Util.LogLevel.ERROR) 
-        
     end
 
     if mov:GetStatus() ==  1 then
@@ -54,8 +53,7 @@ LevelFuncs.Engine.Node.TestCreatureMood = function(moveable, index)
     local movAI = Objects.Creature(mov)
 
     if mov:GetStatus() ~= 1 then
-        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No mood set.",TEN.Util.LogLevel.ERROR)
-        
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No mood set.",TEN.Util.LogLevel.ERROR)   
     end
 
     if mov:GetStatus() ==  1 then
@@ -78,7 +76,6 @@ LevelFuncs.Engine.Node.SetCreatureTarget = function(moveable, target, retaliate)
 
     if mov:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No target set.",TEN.Util.LogLevel.ERROR)
-        
     end
 
     if mov:GetStatus() == 1 then
