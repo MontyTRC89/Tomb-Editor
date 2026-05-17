@@ -11,13 +11,6 @@ public sealed class CompletionResponseJsonConverter : JsonConverter<CompletionRe
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-	/// <summary>
-	/// Reads a completion response from either array or completion-list wire form.
-	/// </summary>
-	/// <param name="reader">The JSON reader positioned at the response payload.</param>
-	/// <param name="typeToConvert">The target type being deserialized.</param>
-	/// <param name="options">The serializer options used for nested deserialization.</param>
-	/// <returns>The parsed completion response.</returns>
 	public override CompletionResponse? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		if (reader.TokenType == JsonTokenType.Null)
@@ -25,6 +18,7 @@ public sealed class CompletionResponseJsonConverter : JsonConverter<CompletionRe
 
 		using JsonDocument document = JsonDocument.ParseValue(ref reader);
 		JsonElement root = document.RootElement;
+
 		IReadOnlyList<CompletionItemPayload>? items = null;
 		bool isIncomplete = false;
 

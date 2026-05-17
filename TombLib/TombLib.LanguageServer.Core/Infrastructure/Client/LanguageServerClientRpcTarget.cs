@@ -39,7 +39,7 @@ public sealed partial class LanguageServerClient
 		public object?[] WorkspaceConfiguration(WorkspaceConfigurationParams parameters)
 		{
 			if (!_owner.IsActiveTransportGeneration(_transportGeneration))
-				return CreateUnavailableConfigurationResponse(parameters);
+				return new object?[(parameters.Items ?? []).Length];
 
 			return _owner.BuildConfigurationResponse(parameters);
 		}
@@ -60,12 +60,6 @@ public sealed partial class LanguageServerClient
 					LanguageServerPathHelper.CreateFileUri(_owner._workspaceRootDirectoryPath),
 					_owner._workspaceFolderName)
 			];
-		}
-
-		private static object?[] CreateUnavailableConfigurationResponse(WorkspaceConfigurationParams parameters)
-		{
-			WorkspaceConfigurationItem[] items = parameters.Items ?? [];
-			return new object?[items.Length];
 		}
 
 		/// <summary>
@@ -115,6 +109,12 @@ public sealed partial class LanguageServerClient
 				DescribeCapabilityUnregistrations(parameters.Unregistrations));
 		}
 
+		/// <summary>
+		/// Logs and ignores a dynamic capability request that this client deliberately does not support.
+		/// </summary>
+		/// <param name="method">The JSON-RPC method name.</param>
+		/// <param name="requestedCapabilities">The formatted requested capability names.</param>
+		/// <returns><see langword="null"/>.</returns>
 		private object? IgnoreUnsupportedDynamicCapability(string method, string requestedCapabilities)
 		{
 			if (!_owner.IsActiveTransportGeneration(_transportGeneration))
@@ -124,6 +124,7 @@ public sealed partial class LanguageServerClient
 					method,
 					_transportGeneration,
 					requestedCapabilities);
+
 				return null;
 			}
 
@@ -136,15 +137,29 @@ public sealed partial class LanguageServerClient
 			return null;
 		}
 
+		/// <summary>
+		/// Formats one capability-registration payload array for diagnostic logging.
+		/// </summary>
+		/// <param name="registrations">The capability registrations to describe.</param>
+		/// <returns>The comma-separated method list.</returns>
 		private static string DescribeCapabilityRegistrations(CapabilityRegistrationPayload[] registrations)
-			=> string.Join(", ",
+		{
+			return string.Join(", ",
 				Array.ConvertAll(registrations, static registration =>
 					string.IsNullOrWhiteSpace(registration.Method) ? "<unknown>" : registration.Method));
+		}
 
+		/// <summary>
+		/// Formats one capability-unregistration payload array for diagnostic logging.
+		/// </summary>
+		/// <param name="unregistrations">The capability unregistrations to describe.</param>
+		/// <returns>The comma-separated method list.</returns>
 		private static string DescribeCapabilityUnregistrations(CapabilityUnregistrationPayload[] unregistrations)
-			=> string.Join(", ",
+		{
+			return string.Join(", ",
 				Array.ConvertAll(unregistrations, static unregistration =>
 					string.IsNullOrWhiteSpace(unregistration.Method) ? "<unknown>" : unregistration.Method));
+		}
 
 		/// <summary>
 		/// Acknowledges work-done progress creation requests without creating a client-side progress sink.
@@ -203,6 +218,11 @@ public sealed partial class LanguageServerClient
 		public void Progress(EmptyParams parameters)
 			=> LogIgnoredUnsupportedCallback("$/progress", "the lean host-specific wrapper does not surface generic progress notifications");
 
+		/// <summary>
+		/// Logs one unsupported server callback without surfacing it to the host.
+		/// </summary>
+		/// <param name="method">The callback method name.</param>
+		/// <param name="reason">Why the callback is ignored.</param>
 		private void LogIgnoredUnsupportedCallback(string method, string reason)
 		{
 			if (!_owner.IsActiveTransportGeneration(_transportGeneration))
@@ -212,6 +232,7 @@ public sealed partial class LanguageServerClient
 					method,
 					_transportGeneration,
 					reason);
+
 				return;
 			}
 

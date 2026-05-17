@@ -15,8 +15,6 @@ public readonly record struct TextEditPayload(
 /// <summary>
 /// Represents the typed top-level workspace edit response used by rename.
 /// </summary>
-/// <param name="Changes">The simple URI-to-edit map returned by the server.</param>
-/// <param name="DocumentChanges">The structured document-change payload returned by the server.</param>
 public readonly record struct WorkspaceEditResponse
 {
 	/// <summary>
@@ -51,12 +49,6 @@ public readonly record struct WorkspaceEditResponse
 /// <summary>
 /// Represents a structured document-change entry within a workspace edit response.
 /// </summary>
-/// <param name="TextDocument">The target text document descriptor.</param>
-/// <param name="Edits">The edits to apply to the target document.</param>
-/// <param name="Kind">The resource-operation kind when the change is not a text-document edit.</param>
-/// <param name="Uri">The target URI for create or delete operations.</param>
-/// <param name="OldUri">The source URI for rename operations.</param>
-/// <param name="NewUri">The destination URI for rename operations.</param>
 public readonly record struct WorkspaceDocumentChangePayload
 {
 	/// <summary>
@@ -128,7 +120,10 @@ public readonly record struct WorkspaceDocumentChangePayload
 	public bool IsResourceOperation => !string.IsNullOrWhiteSpace(Kind);
 }
 
-internal static class WorkspaceEditPayloadCloner
+/// <summary>
+/// Clones workspace-edit payload collections into defensive read-only snapshots.
+/// </summary>
+file static class WorkspaceEditPayloadCloner
 {
 	public static IReadOnlyDictionary<string, IReadOnlyList<TextEditPayload>?>? CloneChangeMap(
 		IReadOnlyDictionary<string, IReadOnlyList<TextEditPayload>?>? changes)

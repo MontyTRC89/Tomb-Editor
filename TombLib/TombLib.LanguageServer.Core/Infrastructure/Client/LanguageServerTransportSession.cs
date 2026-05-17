@@ -11,6 +11,7 @@ public sealed partial class LanguageServerClient
 	private sealed class LanguageServerTransportSession
 	{
 		private const int MaxRecentStandardErrorLines = 5;
+		private const int MaxRecentStandardErrorLineLength = 200;
 		private readonly object _recentStandardErrorSyncRoot = new();
 		private readonly Queue<string> _recentStandardErrorLines = [];
 
@@ -90,8 +91,8 @@ public sealed partial class LanguageServerClient
 
 			string trimmedLine = line.Trim();
 
-			if (trimmedLine.Length > 200)
-				trimmedLine = trimmedLine[..200] + "...";
+			if (trimmedLine.Length > MaxRecentStandardErrorLineLength)
+				trimmedLine = trimmedLine[..MaxRecentStandardErrorLineLength] + "...";
 
 			lock (_recentStandardErrorSyncRoot)
 			{

@@ -18,13 +18,6 @@ public sealed class DefinitionResponseJsonConverter : JsonConverter<DefinitionRe
 		"range"
 	];
 
-	/// <summary>
-	/// Reads a definition response from location or location-link wire form.
-	/// </summary>
-	/// <param name="reader">The JSON reader positioned at the response payload.</param>
-	/// <param name="typeToConvert">The target type being deserialized.</param>
-	/// <param name="options">The serializer options used for nested deserialization.</param>
-	/// <returns>The parsed definition response.</returns>
 	public override DefinitionResponse Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		if (reader.TokenType == JsonTokenType.Null)
@@ -110,7 +103,9 @@ public sealed class DefinitionResponseJsonConverter : JsonConverter<DefinitionRe
 		if (string.IsNullOrWhiteSpace(uri)
 			|| !Uri.TryCreate(uri, UriKind.Absolute, out _)
 			|| !TryGetOneBasedPosition(definitionElement, out int lineNumber, out int columnNumber))
+		{
 			return false;
+		}
 
 		target = new DefinitionTargetResponse(uri, lineNumber, columnNumber);
 		return true;

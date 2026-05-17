@@ -12,24 +12,25 @@ public static class MarkupContentReader
 	/// </summary>
 	/// <param name="element">The protocol markup payload to interpret.</param>
 	/// <returns>The extracted markup content.</returns>
-	public static MarkupContent ExtractContent(JsonElement element)
+	public static MarkupContent ExtractContent(JsonElement element) => element.ValueKind switch
 	{
-		return element.ValueKind switch
-		{
-			JsonValueKind.String => new MarkupContent(element.GetString(), true),
-			JsonValueKind.Array => CombineArrayMarkupContent(element),
-			JsonValueKind.Object when TryGetStringProperty(element, "value", out string? value)
-				&& TryGetStringProperty(element, "kind", out string? kind)
-					=> new MarkupContent(value,
-						string.Equals(kind, "markdown", StringComparison.OrdinalIgnoreCase)),
-			JsonValueKind.Object when TryGetStringProperty(element, "language", out string? language)
-				&& TryGetStringProperty(element, "value", out string? codeValue)
-					=> new MarkupContent(BuildFencedCodeBlock(language, codeValue), true),
-			JsonValueKind.Object when TryGetStringProperty(element, "value", out string? plainValue)
-				=> new MarkupContent(plainValue, false),
-			_ => default
-		};
-	}
+		JsonValueKind.String => new MarkupContent(element.GetString(), true),
+		JsonValueKind.Array => CombineArrayMarkupContent(element),
+
+		JsonValueKind.Object when TryGetStringProperty(element, "value", out string? value)
+			&& TryGetStringProperty(element, "kind", out string? kind)
+				=> new MarkupContent(value,
+					string.Equals(kind, "markdown", StringComparison.OrdinalIgnoreCase)),
+
+		JsonValueKind.Object when TryGetStringProperty(element, "language", out string? language)
+			&& TryGetStringProperty(element, "value", out string? codeValue)
+				=> new MarkupContent(BuildFencedCodeBlock(language, codeValue), true),
+
+		JsonValueKind.Object when TryGetStringProperty(element, "value", out string? plainValue)
+			=> new MarkupContent(plainValue, false),
+
+		_ => default
+	};
 
 	/// <summary>
 	/// Normalizes Markdown text by standardizing line endings while preserving surrounding whitespace.

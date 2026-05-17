@@ -6,6 +6,76 @@ namespace TombLib.LanguageServer.Core;
 public sealed partial class LanguageServerClient
 {
 	/// <summary>
+	/// Sends a JSON-RPC notification to the language server.
+	/// </summary>
+	/// <param name="method">The LSP method name.</param>
+	/// <param name="parameters">The notification payload.</param>
+	/// <param name="cancellationToken">A token that can cancel the local dispatch attempt while the JSON-RPC notification task is still incomplete.</param>
+	public async Task SendNotificationAsync(string method, object parameters, CancellationToken cancellationToken)
+	{
+		LanguageServerTransportSession session = GetRequiredReadySession(allowDisposed: false);
+
+		try
+		{
+			await SendNotificationCoreAsync(session, method, parameters, cancellationToken, allowDisposed: false).ConfigureAwait(false);
+		}
+		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+		{
+			throw;
+		}
+		catch (Exception exception)
+		{
+			MarkTransportUnhealthyForGeneration(session.Generation);
+			LogTransportOperationFailure("notification", method, session.Generation, exception);
+
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Sends a JSON-RPC request to the language server and returns the typed response payload.
+	/// </summary>
+	/// <typeparam name="TResult">The typed response payload to deserialize.</typeparam>
+	/// <param name="method">The LSP method name.</param>
+	/// <param name="parameters">The request payload.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The typed response payload.</returns>
+	public async Task<TResult> SendRequestAsync<TResult>(string method, object parameters, CancellationToken cancellationToken)
+	{
+		LanguageServerTransportSession session = GetRequiredReadySession(allowDisposed: false);
+
+		TResult result;
+
+		try
+		{
+			result = await SendRequestCoreAsync<TResult>(session, method, parameters, cancellationToken, allowDisposed: false).ConfigureAwait(false);
+		}
+		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+		{
+			throw;
+		}
+		catch (Exception exception)
+		{
+			MarkTransportUnhealthyForGeneration(session.Generation);
+			LogTransportOperationFailure("request", method, session.Generation, exception);
+
+			throw;
+		}
+
+		if (!CanAcceptRequestResultForSession(session))
+		{
+			Log.Debug(
+				"Discarding language server request '{Method}' result from transport generation {Generation} because the transport was superseded or marked unavailable before completion.",
+				method,
+				session.Generation);
+
+			throw new IOException("The language server transport changed before the request completed.");
+		}
+
+		return result;
+	}
+
+	/// <summary>
 	/// Sends a JSON-RPC notification over a specific transport session.
 	/// </summary>
 	/// <param name="session">The target transport session.</param>
@@ -80,7 +150,8 @@ public sealed partial class LanguageServerClient
 			Log.Warn(exception,
 				"Failed to build the workspace/configuration response; returning null values for {SectionCount} requested section(s).",
 				items.Length);
-			return CreateMissingConfigurationResponse(items.Length);
+
+			return new object?[items.Length];
 		}
 
 		var results = new object?[items.Length];
@@ -89,68 +160,18 @@ public sealed partial class LanguageServerClient
 		{
 			try
 			{
-				results[i] = GetConfigurationSection(settingsElement, items[i].Section);
+				results[i] = JsonConfigurationSectionReader.GetSection(settingsElement, items[i].Section);
 			}
 			catch (Exception exception)
 			{
 				Log.Warn(exception,
 					"Failed to extract workspace/configuration section '{Section}'; returning null for that section.",
 					string.IsNullOrWhiteSpace(items[i].Section) ? "<root>" : items[i].Section);
+
 				results[i] = null;
 			}
 		}
 
 		return results;
-	}
-
-	private static object?[] CreateMissingConfigurationResponse(int sectionCount)
-	{
-		return new object?[sectionCount];
-	}
-
-	/// <summary>
-	/// Extracts a nested configuration section from the serialized settings payload.
-	/// </summary>
-	/// <param name="settingsElement">The serialized root settings element.</param>
-	/// <param name="section">The dotted configuration section path.</param>
-	/// <returns>The extracted section object, or <see langword="null"/> when the section is missing.</returns>
-	private static object? GetConfigurationSection(JsonElement settingsElement, string? section)
-	{
-		if (string.IsNullOrWhiteSpace(section))
-			return settingsElement.Clone();
-
-		JsonElement currentSection = settingsElement;
-		string[] parts = section.Split('.');
-
-		foreach (string part in parts)
-		{
-			if (currentSection.ValueKind is not JsonValueKind.Object
-				|| !TryGetProperty(currentSection, part, out JsonElement nextSection))
-			{
-				return null;
-			}
-
-			currentSection = nextSection;
-		}
-
-		return currentSection.Clone();
-	}
-
-	private static bool TryGetProperty(JsonElement element, string propertyName, out JsonElement value)
-	{
-		if (element.TryGetProperty(propertyName, out value))
-			return true;
-
-		foreach (JsonProperty property in element.EnumerateObject())
-		{
-			if (!string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
-				continue;
-
-			value = property.Value;
-			return true;
-		}
-
-		value = default;
-		return false;
 	}
 }

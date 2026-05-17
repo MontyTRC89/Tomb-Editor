@@ -77,7 +77,9 @@ internal static class ProcessJobObject
 			if (handle == IntPtr.Zero)
 			{
 				_initializationFailed = true;
+
 				Log.Debug("CreateJobObject returned NULL (Win32 error {ErrorCode}); the language server will rely on graceful shutdown.", Marshal.GetLastWin32Error());
+
 				return IntPtr.Zero;
 			}
 
@@ -96,9 +98,10 @@ internal static class ProcessJobObject
 					int errorCode = Marshal.GetLastWin32Error();
 
 					CloseHandle(handle);
-
 					_initializationFailed = true;
+
 					Log.Debug("SetInformationJobObject failed with Win32 error {ErrorCode}; the language server will rely on graceful shutdown.", errorCode);
+
 					return IntPtr.Zero;
 				}
 			}
@@ -171,13 +174,17 @@ internal static class ProcessJobObject
 		public UIntPtr PeakProcessMemoryUsed;
 		public UIntPtr PeakJobMemoryUsed;
 	}
+
 	[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 	private static extern IntPtr CreateJobObject(IntPtr lpJobAttributes, string? lpName);
+
 	[DllImport("kernel32.dll", SetLastError = true)]
 	private static extern bool SetInformationJobObject(IntPtr hJob, JobObjectInformationClass infoType, IntPtr lpJobObjectInfo, uint cbJobObjectInfoLength);
+
 	[DllImport("kernel32.dll", SetLastError = true)]
 	[return: MarshalAs(UnmanagedType.Bool)]
 	private static extern bool AssignProcessToJobObject(IntPtr hJob, IntPtr hProcess);
+
 	[DllImport("kernel32.dll", SetLastError = true)]
 	[return: MarshalAs(UnmanagedType.Bool)]
 	private static extern bool CloseHandle(IntPtr hObject);

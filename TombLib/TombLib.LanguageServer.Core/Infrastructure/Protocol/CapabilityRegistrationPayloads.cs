@@ -40,6 +40,9 @@ public readonly record struct CapabilityUnregistrationPayload(
 	[property: JsonPropertyName("id")] string? Id,
 	[property: JsonPropertyName("method")] string? Method);
 
+/// <summary>
+/// Reads capability unregistration payloads while tolerating the historical misspelled property name.
+/// </summary>
 internal sealed class CapabilityUnregistrationParamsJsonConverter : JsonConverter<CapabilityUnregistrationParams>
 {
 	public override CapabilityUnregistrationParams Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

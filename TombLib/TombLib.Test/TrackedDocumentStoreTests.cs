@@ -94,6 +94,65 @@ public class TrackedDocumentStoreTests
 	}
 
 	[TestMethod]
+	public void Synchronize_ReopensTrackedDocumentAfterRestartPreparation()
+	{
+		var store = new TestTrackedDocumentStore();
+		const string filePath = @"C:\Workspace\Scripts\reopen.lua";
+
+		DocumentSynchronizationRequest? initialRequest = store.Synchronize(filePath, "return 1", acquireOpenReference: true);
+
+		Assert.IsNotNull(initialRequest);
+		Assert.AreEqual(DocumentSynchronizationKind.Open, initialRequest.Value.Kind);
+		IReadOnlyList<DocumentSnapshot> documentsToReopen = store.PrepareForRestart();
+
+		DocumentSynchronizationRequest? reopenRequest = store.Synchronize(filePath, "return 2", acquireOpenReference: true);
+
+		Assert.AreEqual(1, documentsToReopen.Count);
+		Assert.AreEqual(filePath, documentsToReopen[0].FilePath);
+		Assert.IsNotNull(reopenRequest);
+		Assert.AreEqual(DocumentSynchronizationKind.Open, reopenRequest.Value.Kind);
+		Assert.AreEqual(filePath, reopenRequest.Value.Document.FilePath);
+		Assert.AreEqual("return 2", reopenRequest.Value.Document.Content);
+		Assert.AreEqual(2, reopenRequest.Value.Document.Version);
+
+		DocumentSnapshot? reopenedDocument = store.GetDocumentSnapshot(filePath);
+
+		Assert.IsNotNull(reopenedDocument);
+		Assert.AreEqual("return 2", reopenedDocument.Content);
+		Assert.AreEqual(2, reopenedDocument.Version);
+		Assert.IsFalse(store.TryClose(filePath, out _));
+		Assert.IsTrue(store.TryClose(filePath, out DocumentSnapshot? finalClosedDocument));
+		Assert.IsNotNull(finalClosedDocument);
+	}
+
+	[TestMethod]
+	public void TrimRequestOnlyDocuments_RemovesOldestIdleRequestOnlyDocuments()
+	{
+		var store = new TestTrackedDocumentStore();
+		const string firstFilePath = @"C:\Workspace\Scripts\first.lua";
+		const string secondFilePath = @"C:\Workspace\Scripts\second.lua";
+		const string thirdFilePath = @"C:\Workspace\Scripts\third.lua";
+
+		store.Synchronize(firstFilePath, "return 1", acquireRequestReference: true);
+		store.ReleaseRequest(firstFilePath);
+		store.Synchronize(secondFilePath, "return 2", acquireRequestReference: true);
+		store.ReleaseRequest(secondFilePath);
+		store.Synchronize(thirdFilePath, "return 3", acquireRequestReference: true);
+		store.ReleaseRequest(thirdFilePath);
+
+		IReadOnlyList<DocumentSnapshot> trimmedDocuments = store.TrimRequestOnlyDocuments(1);
+
+		Assert.AreEqual(2, trimmedDocuments.Count);
+		CollectionAssert.AreEquivalent(
+			new[] { firstFilePath, secondFilePath },
+			new[] { trimmedDocuments[0].FilePath, trimmedDocuments[1].FilePath });
+		Assert.IsNull(store.GetDocumentSnapshot(firstFilePath));
+		Assert.IsNull(store.GetDocumentSnapshot(secondFilePath));
+		Assert.IsNotNull(store.GetDocumentSnapshot(thirdFilePath));
+		Assert.AreEqual(0, store.TrimRequestOnlyDocuments(1).Count);
+	}
+
+	[TestMethod]
 	public void TrimRequestOnlyDocuments_NegativeMaxCount_ThrowsArgumentOutOfRangeException()
 	{
 		var store = new TestTrackedDocumentStore();

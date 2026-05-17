@@ -19,6 +19,7 @@ public sealed partial class LanguageServerClient
 	/// <param name="DocumentKey">The per-document coalescing key.</param>
 	private readonly record struct DiagnosticsQueueKey(long TransportGeneration, string DocumentKey);
 
+	// Queued diagnostics state.
 	private readonly ConcurrentDictionary<DiagnosticsQueueKey, QueuedDiagnostics> _pendingDiagnostics = [];
 	private readonly ConcurrentDictionary<string, QueuedDiagnostics> _pendingCallbackDiagnostics = [];
 
@@ -34,8 +35,10 @@ public sealed partial class LanguageServerClient
 			FullMode = BoundedChannelFullMode.DropWrite
 		});
 
+	// Background callback pump state.
 	private Task _diagnosticsPumpTask = Task.CompletedTask;
 	private int _pendingSemanticTokensRefresh;
+
 	private readonly Channel<bool> _callbackSignal = Channel.CreateBounded<bool>(
 		new BoundedChannelOptions(1)
 		{
@@ -47,9 +50,11 @@ public sealed partial class LanguageServerClient
 
 	private Task _callbackPumpTask = Task.CompletedTask;
 	private long _diagnosticsFallbackSequence;
+
 	private readonly SerializedDiagnosticsSubscriberSet<Action<PublishDiagnosticsParams>> _diagnosticsPublishedSubscribers =
 		new(static (handler, parameters) => handler(parameters),
 			exception => Log.Warn(exception, "Diagnostics handler threw; later subscribers will still be notified."));
+
 	private readonly SerializedSignalSubscriberSet<Action> _semanticTokensRefreshSubscribers =
 		new(static handler => handler(),
 			exception => Log.Warn(exception, "Semantic-tokens refresh request handler threw; later subscribers will still be notified."));
@@ -86,7 +91,7 @@ public sealed partial class LanguageServerClient
 	private void RaiseDiagnosticsPublished(long transportGeneration, PublishDiagnosticsParams parameters)
 	{
 		// Keep only the newest diagnostics payload per file within one transport generation and wake the pump if it is idle.
-		// Parameters were already cloned by the dispatcher in HandleMessageAsync.
+		// Store the deserialized payload as received and treat it as read-only while it flows through the pumps.
 		_pendingDiagnostics[GetDiagnosticsQueueKey(transportGeneration, parameters)] = new QueuedDiagnostics(transportGeneration, parameters);
 		_diagnosticsSignal.Writer.TryWrite(true);
 	}
@@ -174,7 +179,7 @@ public sealed partial class LanguageServerClient
 	}
 
 	/// <summary>
-	/// Dispatches queued client callbacks on a dedicated background thread.
+	/// Dispatches queued client callbacks on the background callback pump.
 	/// </summary>
 	private async Task PumpCallbacksAsync()
 	{
@@ -209,7 +214,7 @@ public sealed partial class LanguageServerClient
 								continue;
 							}
 
-								InvokeDiagnosticsPublished(pendingDiagnostics[i].Key, queuedDiagnostics.Parameters);
+							InvokeDiagnosticsPublished(pendingDiagnostics[i].Key, queuedDiagnostics.Parameters);
 							dispatchedCallbacks = true;
 						}
 					}
@@ -234,306 +239,4 @@ public sealed partial class LanguageServerClient
 
 	private void InvokeDiagnosticsPublished(string documentKey, PublishDiagnosticsParams parameters)
 		=> _diagnosticsPublishedSubscribers.Dispatch(documentKey, parameters);
-
-	private sealed class SerializedSignalSubscriberSet<THandler>
-		where THandler : Delegate
-	{
-		private readonly object _syncRoot = new();
-		private readonly Action<THandler> _invokeHandler;
-		private readonly Action<Exception> _logHandlerFailure;
-		private readonly List<SerializedSignalSubscription<THandler>> _subscriptions = [];
-
-		public SerializedSignalSubscriberSet(Action<THandler> invokeHandler, Action<Exception> logHandlerFailure)
-		{
-			_invokeHandler = invokeHandler;
-			_logHandlerFailure = logHandlerFailure;
-		}
-
-		public void Add(THandler? handler)
-		{
-			if (handler is null)
-				return;
-
-			lock (_syncRoot)
-				_subscriptions.Add(new SerializedSignalSubscription<THandler>(handler, _invokeHandler, _logHandlerFailure));
-		}
-
-		public void Remove(THandler? handler)
-		{
-			if (handler is null)
-				return;
-
-			lock (_syncRoot)
-			{
-				for (int i = _subscriptions.Count - 1; i >= 0; i--)
-				{
-					if (!Equals(_subscriptions[i].Handler, handler))
-						continue;
-
-					_subscriptions[i].Dispose();
-					_subscriptions.RemoveAt(i);
-					break;
-				}
-			}
-		}
-
-		public void Dispatch()
-		{
-			SerializedSignalSubscription<THandler>[] subscriptions;
-
-			lock (_syncRoot)
-			{
-				if (_subscriptions.Count == 0)
-					return;
-
-				subscriptions = [.. _subscriptions];
-			}
-
-			for (int i = 0; i < subscriptions.Length; i++)
-				subscriptions[i].Enqueue();
-		}
-	}
-
-	private sealed class SerializedSignalSubscription<THandler>
-		where THandler : Delegate
-	{
-		private readonly Action<THandler> _invokeHandler;
-		private readonly Action<Exception> _logHandlerFailure;
-		private int _pendingSignal;
-		private int _drainScheduled;
-		private int _isDisposed;
-
-		public SerializedSignalSubscription(THandler handler, Action<THandler> invokeHandler, Action<Exception> logHandlerFailure)
-		{
-			Handler = handler;
-			_invokeHandler = invokeHandler;
-			_logHandlerFailure = logHandlerFailure;
-		}
-
-		public THandler Handler { get; }
-
-		public void Enqueue()
-		{
-			if (Volatile.Read(ref _isDisposed) != 0)
-				return;
-
-			Interlocked.Exchange(ref _pendingSignal, 1);
-			TryScheduleDrain();
-		}
-
-		public void Dispose()
-		{
-			if (Interlocked.Exchange(ref _isDisposed, 1) != 0)
-				return;
-
-			Interlocked.Exchange(ref _pendingSignal, 0);
-		}
-
-		private void TryScheduleDrain()
-		{
-			if (Interlocked.CompareExchange(ref _drainScheduled, 1, 0) != 0)
-				return;
-
-			ThreadPool.QueueUserWorkItem(static state => ((SerializedSignalSubscription<THandler>)state!).Drain(), this, preferLocal: false);
-		}
-
-		private void Drain()
-		{
-			try
-			{
-				while (Interlocked.Exchange(ref _pendingSignal, 0) != 0)
-				{
-					if (Volatile.Read(ref _isDisposed) != 0)
-						return;
-
-					try
-					{
-						_invokeHandler(Handler);
-					}
-					catch (Exception exception)
-					{
-						_logHandlerFailure(exception);
-					}
-				}
-			}
-			finally
-			{
-				Volatile.Write(ref _drainScheduled, 0);
-
-				if (Volatile.Read(ref _isDisposed) == 0 && Volatile.Read(ref _pendingSignal) != 0)
-					TryScheduleDrain();
-			}
-		}
-	}
-
-	private sealed class SerializedDiagnosticsSubscriberSet<THandler>
-		where THandler : Delegate
-	{
-		private readonly object _syncRoot = new();
-		private readonly Action<THandler, PublishDiagnosticsParams> _invokeHandler;
-		private readonly Action<Exception> _logHandlerFailure;
-		private readonly List<SerializedDiagnosticsSubscription<THandler>> _subscriptions = [];
-
-		public SerializedDiagnosticsSubscriberSet(Action<THandler, PublishDiagnosticsParams> invokeHandler, Action<Exception> logHandlerFailure)
-		{
-			_invokeHandler = invokeHandler;
-			_logHandlerFailure = logHandlerFailure;
-		}
-
-		public void Add(THandler? handler)
-		{
-			if (handler is null)
-				return;
-
-			lock (_syncRoot)
-				_subscriptions.Add(new SerializedDiagnosticsSubscription<THandler>(handler, _invokeHandler, _logHandlerFailure));
-		}
-
-		public void Remove(THandler? handler)
-		{
-			if (handler is null)
-				return;
-
-			lock (_syncRoot)
-			{
-				for (int i = _subscriptions.Count - 1; i >= 0; i--)
-				{
-					if (!Equals(_subscriptions[i].Handler, handler))
-						continue;
-
-					_subscriptions[i].Dispose();
-					_subscriptions.RemoveAt(i);
-					break;
-				}
-			}
-		}
-
-		public void Dispatch(string documentKey, PublishDiagnosticsParams parameters)
-		{
-			SerializedDiagnosticsSubscription<THandler>[] subscriptions;
-
-			lock (_syncRoot)
-			{
-				if (_subscriptions.Count == 0)
-					return;
-
-				subscriptions = [.. _subscriptions];
-			}
-
-			for (int i = 0; i < subscriptions.Length; i++)
-				subscriptions[i].Enqueue(documentKey, parameters);
-		}
-	}
-
-	private sealed class SerializedDiagnosticsSubscription<THandler>
-		where THandler : Delegate
-	{
-		private readonly Action<THandler, PublishDiagnosticsParams> _invokeHandler;
-		private readonly Action<Exception> _logHandlerFailure;
-		private readonly ConcurrentDictionary<string, PendingDiagnosticsPayload> _pendingPayloads = new(StringComparer.Ordinal);
-		private int _drainScheduled;
-		private int _isDisposed;
-		private long _nextSequence;
-
-		private readonly record struct PendingDiagnosticsPayload(long Sequence, PublishDiagnosticsParams Parameters);
-
-		private readonly record struct DrainedDiagnosticsPayload(long Sequence, PublishDiagnosticsParams Parameters);
-
-		public SerializedDiagnosticsSubscription(THandler handler, Action<THandler, PublishDiagnosticsParams> invokeHandler, Action<Exception> logHandlerFailure)
-		{
-			Handler = handler;
-			_invokeHandler = invokeHandler;
-			_logHandlerFailure = logHandlerFailure;
-		}
-
-		public THandler Handler { get; }
-
-		public void Enqueue(string documentKey, PublishDiagnosticsParams parameters)
-		{
-			if (Volatile.Read(ref _isDisposed) != 0)
-				return;
-
-			while (true)
-			{
-				if (!_pendingPayloads.TryGetValue(documentKey, out PendingDiagnosticsPayload existingPayload))
-				{
-					long sequence = Interlocked.Increment(ref _nextSequence);
-
-					if (_pendingPayloads.TryAdd(documentKey, new PendingDiagnosticsPayload(sequence, parameters)))
-						break;
-
-					continue;
-				}
-
-				if (_pendingPayloads.TryUpdate(documentKey,
-					existingPayload with { Parameters = parameters },
-					existingPayload))
-				{
-					break;
-				}
-			}
-
-			TryScheduleDrain();
-		}
-
-		public void Dispose()
-		{
-			if (Interlocked.Exchange(ref _isDisposed, 1) != 0)
-				return;
-
-			_pendingPayloads.Clear();
-		}
-
-		private void TryScheduleDrain()
-		{
-			if (Interlocked.CompareExchange(ref _drainScheduled, 1, 0) != 0)
-				return;
-
-			ThreadPool.QueueUserWorkItem(static state => ((SerializedDiagnosticsSubscription<THandler>)state!).Drain(), this, preferLocal: false);
-		}
-
-		private void Drain()
-		{
-			try
-			{
-				while (!_pendingPayloads.IsEmpty)
-				{
-					if (Volatile.Read(ref _isDisposed) != 0)
-						return;
-
-					var drainedPayloads = new List<DrainedDiagnosticsPayload>();
-
-					foreach (KeyValuePair<string, PendingDiagnosticsPayload> entry in _pendingPayloads)
-					{
-						if (_pendingPayloads.TryRemove(entry.Key, out PendingDiagnosticsPayload payload))
-							drainedPayloads.Add(new DrainedDiagnosticsPayload(payload.Sequence, payload.Parameters));
-					}
-
-					drainedPayloads.Sort(static (left, right) => left.Sequence.CompareTo(right.Sequence));
-
-					for (int i = 0; i < drainedPayloads.Count; i++)
-					{
-						if (Volatile.Read(ref _isDisposed) != 0)
-							return;
-
-						try
-						{
-							_invokeHandler(Handler, drainedPayloads[i].Parameters);
-						}
-						catch (Exception exception)
-						{
-							_logHandlerFailure(exception);
-						}
-					}
-				}
-			}
-			finally
-			{
-				Volatile.Write(ref _drainScheduled, 0);
-
-				if (Volatile.Read(ref _isDisposed) == 0 && !_pendingPayloads.IsEmpty)
-					TryScheduleDrain();
-			}
-		}
-	}
 }

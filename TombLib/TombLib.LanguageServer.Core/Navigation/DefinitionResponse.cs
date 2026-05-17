@@ -14,9 +14,7 @@ public sealed record DefinitionResponse
 	/// </summary>
 	/// <param name="targets">The usable definition targets returned by the server.</param>
 	public DefinitionResponse(IReadOnlyList<DefinitionTargetResponse>? targets)
-	{
-		Targets = targets ?? [];
-	}
+		=> Targets = targets ?? [];
 
 	/// <summary>
 	/// Gets the usable definition targets returned by the server, in response order.

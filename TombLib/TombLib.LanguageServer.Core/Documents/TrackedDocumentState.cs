@@ -42,8 +42,9 @@ public abstract class TrackedDocumentState
 		_content = content;
 		_version = version;
 		_isOpen = isOpen;
-		References = new DocumentReferenceTracker(openReferenceCount, requestReferenceCount);
 		_lastAccessStamp = lastAccessStamp;
+
+		References = new DocumentReferenceTracker(openReferenceCount, requestReferenceCount);
 	}
 
 	/// <summary>
@@ -169,6 +170,7 @@ public abstract class TrackedDocumentState
 			string previousContent = _content;
 			_content = content;
 			_version++;
+
 			return previousContent;
 		}
 	}

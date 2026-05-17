@@ -155,12 +155,14 @@ internal sealed class WorkspaceChangeAccumulator
 					FileChangeKind.Deleted => existing with { PrimaryKind = FileChangeKind.Deleted },
 					_ => existing
 				};
+
 				return true;
 
 			case FileChangeKind.Deleted:
 				combined = incoming == FileChangeKind.Created
 					? existing with { SecondaryKind = FileChangeKind.Created }
 					: existing;
+
 				return true;
 
 			default:
