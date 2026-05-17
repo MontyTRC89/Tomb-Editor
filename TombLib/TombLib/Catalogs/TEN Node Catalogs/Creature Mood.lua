@@ -1,5 +1,5 @@
 -- !Name "Set intelligent creature location"
--- !Section "Creature Mood"
+-- !Section "Creature AI"
 -- !Description "Sets the location of intelligent enemies to a specified location.\nOnly to be used with GUIDE, Sophia-Leigh or Von Croy.\nPlace AI_X1 objects with an OCB to create a location."
 -- !Arguments "Newline, Moveables, 60, [ guide | sophia_leigh | von_croy ], Creature to set location for."
 -- !Arguments "Numerical, 20, [ 0 | 1000 ], Location to set.
@@ -20,7 +20,7 @@ LevelFuncs.Engine.Node.SetCreatureLocation = function(objectId, location,debug)
 end
 
 -- !Name "Set creature mood"
--- !Section "Creature Mood"
+-- !Section "Creature AI"
 -- !Description "Set creature mood"
 -- !Arguments "Newline, Moveables, 50, Moveable to set mood for."
 -- !Arguments "Enumeration, 50, [ Attack | Auto | Bored | Escape | Stalk ], Mood to set for creature."
