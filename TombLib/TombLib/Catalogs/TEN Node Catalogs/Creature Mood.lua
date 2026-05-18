@@ -184,11 +184,11 @@ LevelFuncs.Engine.Node.TestCreaturePoisoned = function(moveable)
     return movAI:GetPoisoned()
 end
 
---!Name "Set hurt by player status"
---!Section "Creature AI"
---!Description "Sets whether the creature has been hurt by the player or not."
---!Arguments "Newline, Moveables, 70, Moveable to set hurt by player status for."
---!Arguments "Boolean, 30, {true}, Hurt by player"
+-- !Name "Set hurt by player status"
+-- !Section "Creature AI"
+-- !Description "Sets whether the creature has been hurt by the player or not."
+-- !Arguments "Newline, Moveables, 70, Moveable to set hurt by player status for."
+-- !Arguments "Boolean, 30, {true}, Hurt by player"
 LevelFuncs.Engine.Node.SetHurtByPlayer = function(moveable, hurtByPlayer)
     local mov = TEN.Objects.GetMoveableByName(moveable)
 
