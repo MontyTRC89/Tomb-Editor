@@ -425,6 +425,7 @@ namespace TombEditor.Controls.Panel3D
         // shared RenderingStateBuffer (cbuffer slot 0); see DrawScene where
         // ComputeBrushOverlay's result is plumbed straight into RenderingState.
 
+            effect.Parameters["BrushShape"].SetValue(overlay.Shape);
         #endregion
     }
 }

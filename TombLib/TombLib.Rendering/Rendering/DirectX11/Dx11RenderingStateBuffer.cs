@@ -48,6 +48,12 @@ namespace TombLib.Rendering.DirectX11
             public Vector4 BrushCenter; // xyz = world center, w = radius
             [FieldOffset(112)]
             public Vector4 BrushColor;
+            [FieldOffset(128)]
+            public Vector4 DofCenterRange;
+            [FieldOffset(144)]
+            public Vector4 DofDirectionDistance;
+            [FieldOffset(160)]
+            public Vector4 DofColorStrength;
         };
         public static readonly int Size = ((Marshal.SizeOf(typeof(ConstantBufferLayout)) + 15) / 16) * 16;
 
@@ -91,6 +97,9 @@ namespace TombLib.Rendering.DirectX11
             bufferData.BrushRotation = State.BrushRotation;
             bufferData.BrushCenter = State.BrushCenter;
             bufferData.BrushColor = State.BrushColor;
+            bufferData.DofCenterRange = State.DofCenterRange;
+            bufferData.DofDirectionDistance = State.DofDirectionDistance;
+            bufferData.DofColorStrength = State.DofColorStrength;
             Context->UpdateSubresource((ID3D11Resource*)ConstantBuffer, 0, null, &bufferData, 0, 0);
         }
     }

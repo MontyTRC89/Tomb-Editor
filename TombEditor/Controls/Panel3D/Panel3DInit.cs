@@ -1,10 +1,11 @@
-﻿using System.Numerics;
+using System.Numerics;
 using TombLib.Graphics;
 using TombLib;
+using TombLib.Controls;
+using TombLib.Graphics;
+using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Rendering;
-using TombLib.Controls;
-using System;
 
 namespace TombEditor.Controls.Panel3D
 {

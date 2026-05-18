@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <LangVersion>12</LangVersion>
@@ -140,8 +140,7 @@
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\ghost_block.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\unknown.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\camera.png" />
-    <!-- Kept: brush overlay #include shared by RoomShaderPS / MeshShaderPS / ImportedGeometryShaderPS. -->
-    <Content Include="Rendering\Legacy\BrushOverlay.hlsli">
+    <Content Include="Rendering\Legacy\IndicationOverlay.hlsli">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\flyby_camera.png" />

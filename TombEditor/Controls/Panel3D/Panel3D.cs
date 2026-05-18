@@ -20,7 +20,7 @@ namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D : RenderingPanel
     {
-        private static readonly KeyMessageFilter filter = new KeyMessageFilter();
+        private static readonly KeyMessageFilter _filter = new KeyMessageFilter();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Camera Camera { get; set; }
@@ -69,7 +69,7 @@ namespace TombEditor.Controls.Panel3D
         public bool ShowSlideDirections
         {
             get { return _drawSlideDirections; }
-            set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms.Clear(); }
+            set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms?.Clear(); }
         }
         private bool _drawSlideDirections = false;
 
@@ -77,7 +77,7 @@ namespace TombEditor.Controls.Panel3D
         public bool ShowIllegalSlopes
         {
             get { return _drawIllegalSlopes; }
-            set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms.Clear(); }
+            set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms?.Clear(); }
         }
         private bool _drawIllegalSlopes = false;
 
@@ -85,7 +85,7 @@ namespace TombEditor.Controls.Panel3D
         public bool DisablePickingForHiddenRooms
         {
             get { return _disablePickingForHiddenRooms; }
-            set { if (value == _disablePickingForHiddenRooms) return; _disablePickingForHiddenRooms = value; _renderingCachedRooms.Clear(); }
+            set { if (value == _disablePickingForHiddenRooms) return; _disablePickingForHiddenRooms = value; _renderingCachedRooms?.Clear(); }
         }
         private bool _disablePickingForHiddenRooms = false;
 
@@ -209,13 +209,12 @@ namespace TombEditor.Controls.Panel3D
 
         public Panel3D()
         {
-            Application.AddMessageFilter(filter);
-            _getViewportCamera = () => Camera;
-
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
-            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+            if (Editor.Instance is not null)
             {
+                _getViewportCamera = () => Camera;
+
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
                 _editor.GetViewportCamera = _getViewportCamera;
@@ -230,8 +229,8 @@ namespace TombEditor.Controls.Panel3D
                 _flyModeTimer.Tick += FlyModeTimer_Tick;
 
                 _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024, CacheRoom);
+                Application.AddMessageFilter(_filter);
             }
-
         }
 
         protected override void Dispose(bool disposing)
