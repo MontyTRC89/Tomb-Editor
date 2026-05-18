@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -68,10 +64,10 @@ public class LuaEditorIntellisenseStateTests
 		{
 			var editor = new LuaEditor(new Version(1, 0))
 			{
-				Text = "spawn(room)"
+				Text = "spawn(room)",
+				CaretOffset = 6
 			};
 
-			editor.CaretOffset = 6;
 			InvokeControllerInstanceMethod(editor, "_signatureHelpController", "ScheduleRefresh");
 
 			Assert.IsTrue(GetSignatureHelpField<bool>(editor, "_signatureRefreshPending"));
@@ -87,10 +83,10 @@ public class LuaEditorIntellisenseStateTests
 		{
 			var editor = new LuaEditor(new Version(1, 0))
 			{
-				Text = "spawn(room)"
+				Text = "spawn(room)",
+				CaretOffset = 6
 			};
 
-			editor.CaretOffset = 6;
 			InvokeControllerInstanceMethod(editor, "_signatureHelpController", "ScheduleRefresh");
 			InvokeControllerInstanceMethod(editor, "_signatureHelpController", "CancelPendingRefresh");
 
@@ -164,7 +160,7 @@ public class LuaEditorIntellisenseStateTests
 		Assert.IsFalse(InvokePrivateStaticBooleanMethod(
 			"ShouldKeepCompletionWindowOpen",
 			[typeof(string)],
-			new object?[] { null }));
+			[null]));
 
 		Assert.IsFalse(InvokePrivateStaticBooleanMethod(
 			"ShouldKeepCompletionWindowOpen",
@@ -566,10 +562,10 @@ public class LuaEditorIntellisenseStateTests
 			{
 				FilePath = @"C:\Workspace\Scripts\test.lua",
 				Text = "spawn()",
-				IntellisenseProvider = provider
+				IntellisenseProvider = provider,
+				CaretOffset = 2
 			};
 
-			editor.CaretOffset = 2;
 			LuaDefinitionLocation? navigatedLocation = null;
 
 			editor.DefinitionNavigationRequested += location => navigatedLocation = location;
@@ -606,10 +602,10 @@ public class LuaEditorIntellisenseStateTests
 			{
 				FilePath = @"C:\Workspace\Scripts\test.lua",
 				Text = "spawn()",
-				IntellisenseProvider = provider
+				IntellisenseProvider = provider,
+				CaretOffset = 2
 			};
 
-			editor.CaretOffset = 2;
 			int navigationRequestCount = 0;
 
 			editor.DefinitionNavigationRequested += _ => navigationRequestCount++;
@@ -676,11 +672,13 @@ public class LuaEditorIntellisenseStateTests
 		RunInSta(() =>
 		{
 			var firstResponse = new TaskCompletionSource<LuaSignatureInfo?>(TaskCreationOptions.RunContinuationsAsynchronously);
+
 			LuaSignatureInfo secondSignature = new(
 				"spawn(room, objectName)",
 				"Spawns an object.",
 				[new LuaParameterInfo("room", "Room id."), new LuaParameterInfo("objectName", "Object name.")],
 				1);
+
 			int servedResponses = 0;
 
 			var provider = new FakeLuaIntellisenseProvider
@@ -955,7 +953,6 @@ public class LuaEditorIntellisenseStateTests
 		}
 
 		public void Dispose()
-		{
-		}
+		{ }
 	}
 }

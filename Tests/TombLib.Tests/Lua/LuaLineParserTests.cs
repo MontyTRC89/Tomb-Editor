@@ -37,7 +37,6 @@ public class LuaLineParserTests
 	public void ExtractCodeText_RemovesQuotedAndCommentText()
 	{
 		string result = LuaLineParser.ExtractCodeText("if value == \"then\" then -- comment");
-
 		Assert.AreEqual("if value ==  then ", result);
 	}
 }

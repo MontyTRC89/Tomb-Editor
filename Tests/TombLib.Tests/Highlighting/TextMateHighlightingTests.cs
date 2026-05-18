@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
+using System.Windows.Media;
 using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Lua;
 

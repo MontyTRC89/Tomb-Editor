@@ -1,5 +1,4 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using System;
 using System.Windows;
 using System.Windows.Threading;
 using TombLib.Scripting.ClassicScript;
@@ -18,6 +17,7 @@ public class ClassicScriptEditorCompletionWindowTests
 			{
 				Text = string.Empty
 			};
+
 			Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
 
 			try

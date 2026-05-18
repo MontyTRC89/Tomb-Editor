@@ -21,6 +21,7 @@ public class LuaEditorCompletionWindowTests
 		RunInSta(() =>
 		{
 			var provider = new FakeLuaCompletionProvider();
+
 			provider.EnqueueCompletionResponse(
 			[
 				new LuaCompletionItem("spawn_room", detail: "local variable")
@@ -58,10 +59,12 @@ public class LuaEditorCompletionWindowTests
 		RunInSta(() =>
 		{
 			var provider = new FakeLuaCompletionProvider();
+
 			provider.EnqueueCompletionResponse(
 			[
 				new LuaCompletionItem("spawn_room", detail: "local variable")
 			]);
+
 			provider.EnqueueCompletionResponse(
 			[
 				new LuaCompletionItem("spell_room", detail: "global variable")
@@ -107,10 +110,12 @@ public class LuaEditorCompletionWindowTests
 		RunInSta(() =>
 		{
 			var provider = new FakeLuaCompletionProvider();
+
 			provider.EnqueueCompletionResponse(
 			[
 				new LuaCompletionItem("spawn_room", detail: "local variable")
 			]);
+
 			provider.EnqueueCompletionResponse([]);
 
 			var editor = CreateEditor(provider, "spa");
@@ -143,6 +148,7 @@ public class LuaEditorCompletionWindowTests
 		RunInSta(() =>
 		{
 			var provider = new FakeLuaCompletionProvider();
+
 			provider.EnqueueCompletionResponse(
 			[
 				new LuaCompletionItem("spawn_room", detail: "local variable")
@@ -183,6 +189,7 @@ public class LuaEditorCompletionWindowTests
 		{
 			int resolveCallCount = 0;
 			var provider = new FakeLuaCompletionProvider();
+
 			provider.EnqueueCompletionResponse(
 			[
 				new LuaCompletionItem(
@@ -214,8 +221,7 @@ public class LuaEditorCompletionWindowTests
 				Assert.IsInstanceOfType(toolTip.Content, typeof(Border));
 
 				var contentBorder = (Border)toolTip.Content!;
-				var contentPanel = (StackPanel)(contentBorder.Child
-					?? throw new AssertFailedException("Expected tooltip content panel."));
+				var contentPanel = (StackPanel)(contentBorder.Child ?? throw new AssertFailedException("Expected tooltip content panel."));
 				var detailBlock = (TextBlock)contentPanel.Children[0];
 
 				Assert.AreEqual("resolved detail", detailBlock.Text);
@@ -234,6 +240,7 @@ public class LuaEditorCompletionWindowTests
 		RunInSta(() =>
 		{
 			var provider = new FakeLuaCompletionProvider();
+
 			provider.EnqueueCompletionResponse(
 			[
 				new LuaCompletionItem("spawn_room", detail: "local variable")
@@ -266,13 +273,12 @@ public class LuaEditorCompletionWindowTests
 		});
 	}
 
-	private static LuaEditor CreateEditor(ILuaIntellisenseProvider provider, string text)
-		=> new(new Version(1, 0))
-		{
-			FilePath = @"C:\Workspace\Scripts\test.lua",
-			Text = text,
-			IntellisenseProvider = provider
-		};
+	private static LuaEditor CreateEditor(ILuaIntellisenseProvider provider, string text) => new(new Version(1, 0))
+	{
+		FilePath = @"C:\Workspace\Scripts\test.lua",
+		Text = text,
+		IntellisenseProvider = provider
+	};
 
 	private static Task InvokePrivateTask(object instance, string methodName, Type[] parameterTypes, params object?[] arguments)
 		=> (Task)(InvokeInstanceMethod(instance, methodName, parameterTypes, arguments)
@@ -338,20 +344,16 @@ public class LuaEditorCompletionWindowTests
 			=> [];
 
 		public void OpenDocument(string filePath, string content)
-		{
-		}
+		{ }
 
 		public void UpdateDocument(string filePath, string content)
-		{
-		}
+		{ }
 
 		public void CloseDocument(string filePath)
-		{
-		}
+		{ }
 
 		public void RenameDocument(string oldFilePath, string newFilePath, string content)
-		{
-		}
+		{ }
 
 		public Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
 			int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default)
@@ -386,7 +388,6 @@ public class LuaEditorCompletionWindowTests
 			=> Task.FromResult<LuaSignatureInfo?>(null);
 
 		public void Dispose()
-		{
-		}
+		{ }
 	}
 }

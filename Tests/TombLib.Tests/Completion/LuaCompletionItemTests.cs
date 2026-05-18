@@ -32,8 +32,8 @@ public class LuaCompletionItemTests
 		var item = new LuaCompletionItem(
 			"Color",
 			insertText: "Color",
-			textEdit: textEdit,
-			resolveAsync: _ => Task.FromResult(new LuaCompletionItem("Color", detail: "enum", textEdit: textEdit)))
+			resolveAsync: _ => Task.FromResult(new LuaCompletionItem("Color", detail: "enum", textEdit: textEdit)),
+			textEdit: textEdit)
 			.WithFilteredCommitContext(6, 2);
 
 		Assert.AreEqual(6, item.RequestDocumentVersion);

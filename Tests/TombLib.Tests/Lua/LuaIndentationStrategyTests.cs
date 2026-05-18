@@ -15,6 +15,7 @@ public class LuaIndentationStrategyTests
 			ConvertTabsToSpaces = true,
 			IndentationSize = 4
 		});
+
 		var document = new TextDocument("if value then\r\n");
 
 		strategy.IndentLine(document, document.GetLineByNumber(2));
@@ -30,6 +31,7 @@ public class LuaIndentationStrategyTests
 			ConvertTabsToSpaces = true,
 			IndentationSize = 4
 		});
+
 		var document = new TextDocument("if value then\r\n end");
 
 		strategy.IndentLine(document, document.GetLineByNumber(2));

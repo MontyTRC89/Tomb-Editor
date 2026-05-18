@@ -1,6 +1,4 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 using TombLib.Scripting.GameFlowScript;
@@ -81,6 +79,7 @@ public class GameFlowEditorCompletionWindowTests
 			{
 				Text = "test"
 			};
+
 			Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
 
 			try

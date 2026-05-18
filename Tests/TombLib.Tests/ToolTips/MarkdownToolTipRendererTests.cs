@@ -1,5 +1,5 @@
-using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
+using System.Windows.Media;
 using TombLib.Scripting.Rendering;
 
 namespace TombLib.Tests;
