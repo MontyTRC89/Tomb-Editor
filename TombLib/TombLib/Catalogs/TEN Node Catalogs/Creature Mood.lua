@@ -124,10 +124,6 @@ LevelFuncs.Engine.Node.SetCreatureFriendly = function(moveable, undoIfAttacked)
     if undoIfAttacked and movAI:GetHurtByPlayer() == true then
         movAI:SetFriendly(false)
     end
-
-    if movAI:GetHurtByPlayer() == true then
-        movAI:SetFriendly(false)
-    end
 end
 
 -- !Name "If creature is friendly..."
