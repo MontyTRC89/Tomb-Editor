@@ -13,6 +13,7 @@ WadTool:
  
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.
+ * Added nodes for checking and setting various aspects of creature AI.
  
 Version 1.11
 ============

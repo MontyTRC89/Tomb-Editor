@@ -152,7 +152,7 @@ end
 -- !Section "Creature AI"
 -- !Description "Sets whether the creature is poisoned or not."
 -- !Arguments "Newline, Moveables, 70, Moveable to set poison status for."
--- !Arguments "Boolean, 30, {true}, Poison the creature."
+-- !Arguments "Boolean, 30, {true}, Poison"
 LevelFuncs.Engine.Node.SetCreaturePoisoned = function(moveable, poisoned)
     local mov = TEN.Objects.GetMoveableByName(moveable)
 
@@ -181,5 +181,113 @@ LevelFuncs.Engine.Node.TestCreaturePoisoned = function(moveable)
 
     local movAI = Objects.Creature(mov)
 
-    return movAI:IsPoisoned()
+    return movAI:GetPoisoned()
+end
+
+--!Name "Set hurt by player status"
+--!Section "Creature AI"
+--!Description "Sets whether the creature has been hurt by the player or not."
+--!Arguments "Newline, Moveables, 70, Moveable to set hurt by player status for."
+--!Arguments "Boolean, 30, {true}, Hurt by player"
+LevelFuncs.Engine.Node.SetHurtByPlayer = function(moveable, hurtByPlayer)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+
+    if mov:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot set hurt by player status.",TEN.Util.LogLevel.ERROR)   
+        return
+    end
+
+    local movAI = Objects.Creature(mov)
+
+    movAI:SetHurtByPlayer(hurtByPlayer)
+end
+
+-- !Name "If creature is hurt by player..."
+-- !Section "Creature AI"
+-- !Description "Checks if the creature has been hurt by the player."
+-- !Conditional "True"
+-- !Arguments "Newline, Moveables, Moveable to check hurt by player status for."
+LevelFuncs.Engine.Node.TestHurtByPlayer = function(moveable)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+
+    if mov:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check hurt by player status.",TEN.Util.LogLevel.ERROR)   
+        return false
+    end
+
+    local movAI = Objects.Creature(mov)
+
+    return movAI:GetHurtByPlayer()
+end
+
+-- !Name "If creature is jumping..."
+-- !Section "Creature AI"
+-- !Description "Checks if the creature is currently jumping. Only works for creatures that can jump."
+-- !Conditional "True"
+-- !Arguments "Newline, Moveables, [ baddy | enemy_jeep | mafia | raptor | scientist | skeleton | swat_ | von_croy ], Moveable to check jumping status for."
+LevelFuncs.Engine.Node.TestCreatureJumping = function(moveable)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+
+    if mov:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check jumping status.",TEN.Util.LogLevel.ERROR)   
+        return false
+    end
+
+    local movAI = Objects.Creature(mov)
+
+    return movAI:GetJumping()
+end
+
+-- !Name "If creature is monkey-swinging..."
+-- !Section "Creature AI"
+-- !Description "Checks if the creature is currently monkey-swinging. Only works for creatures that can monkey-swing."
+-- !Conditional "True"
+-- !Arguments "Newline, Moveables, [ baddy | von_croy ], Moveable to check monkey-swinging status for."
+LevelFuncs.Engine.Node.TestCreatureMonkeySwinging = function(moveable)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+
+    if mov:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check monkey-swing status.",TEN.Util.LogLevel.ERROR)   
+        return false
+    end
+
+    local movAI = Objects.Creature(mov)
+
+    return movAI:GetMonkeying()
+end
+
+-- !Name "If creature has reached their goal..."
+-- !Section "Creature AI"
+-- !Description "Checks if the creature has reached their goal.\nThis setting may be used to find out whether a creature that is using AI nullmesh objects has reached its currently specified AI nullmesh."
+-- !Conditional "True"
+-- !Arguments "Newline, Moveables, Moveable to check goal status for."
+LevelFuncs.Engine.Node.TestCreatureReachedGoal = function(moveable)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+
+    if mov:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check location status.",TEN.Util.LogLevel.ERROR)   
+        return false
+    end
+
+    local movAI = Objects.Creature(mov)
+
+    return movAI:GetAtGoal()
+end
+
+-- !Name "Set creature goal status"
+-- !Section "Creature AI"
+-- !Description "Sets whether the creature has reached their goal or not.\nThis setting may be used to break out the creature from reaching the next specified AI object nullmesh."
+-- !Arguments "Newline, Moveables, Moveable to set goal status for."
+-- !Arguments "Boolean, 30, {true}, At goal"
+LevelFuncs.Engine.Node.SetCreatureReachedGoal = function(moveable, goal)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+
+    if mov:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot set location status.",TEN.Util.LogLevel.ERROR)   
+        return
+    end
+
+    local movAI = Objects.Creature(mov)
+
+    movAI:SetAtGoal(goal)
 end
