@@ -1,5 +1,3 @@
-using TombLib.LanguageServer.Core;
-
 namespace TombLib.LanguageServer.Core.Tests;
 
 [TestClass]
@@ -133,8 +131,8 @@ public class TrackedDocumentStoreTests
 
 		Assert.IsNotNull(initialRequest);
 		Assert.AreEqual(DocumentSynchronizationKind.Open, initialRequest.Value.Kind);
-		IReadOnlyList<DocumentSnapshot> documentsToReopen = store.PrepareForRestart();
 
+		IReadOnlyList<DocumentSnapshot> documentsToReopen = store.PrepareForRestart();
 		DocumentSynchronizationRequest? reopenRequest = store.Synchronize(filePath, "return 2", acquireOpenReference: true);
 
 		Assert.AreEqual(1, documentsToReopen.Count);
@@ -165,17 +163,21 @@ public class TrackedDocumentStoreTests
 
 		store.Synchronize(firstFilePath, "return 1", acquireRequestReference: true);
 		store.ReleaseRequest(firstFilePath);
+
 		store.Synchronize(secondFilePath, "return 2", acquireRequestReference: true);
 		store.ReleaseRequest(secondFilePath);
+
 		store.Synchronize(thirdFilePath, "return 3", acquireRequestReference: true);
 		store.ReleaseRequest(thirdFilePath);
 
 		IReadOnlyList<DocumentSnapshot> trimmedDocuments = store.TrimRequestOnlyDocuments(1);
 
 		Assert.AreEqual(2, trimmedDocuments.Count);
+
 		CollectionAssert.AreEquivalent(
 			new[] { firstFilePath, secondFilePath },
 			new[] { trimmedDocuments[0].FilePath, trimmedDocuments[1].FilePath });
+
 		Assert.IsNull(store.GetDocumentSnapshot(firstFilePath));
 		Assert.IsNull(store.GetDocumentSnapshot(secondFilePath));
 		Assert.IsNotNull(store.GetDocumentSnapshot(thirdFilePath));
@@ -186,7 +188,6 @@ public class TrackedDocumentStoreTests
 	public void TrimRequestOnlyDocuments_NegativeMaxCount_ThrowsArgumentOutOfRangeException()
 	{
 		var store = new TestTrackedDocumentStore();
-
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => store.TrimRequestOnlyDocuments(-1));
 	}
 
@@ -227,8 +228,7 @@ public class TrackedDocumentStoreTests
 		public TestTrackedDocumentState(string filePath, string uri, string content, int version, bool isOpen,
 			int openReferenceCount, int requestReferenceCount, long lastAccessStamp)
 			: base(filePath, uri, content, version, isOpen, openReferenceCount, requestReferenceCount, lastAccessStamp)
-		{
-		}
+		{ }
 
 		public void Touch(long lastAccessStamp)
 			=> SetLastAccessStamp(lastAccessStamp);

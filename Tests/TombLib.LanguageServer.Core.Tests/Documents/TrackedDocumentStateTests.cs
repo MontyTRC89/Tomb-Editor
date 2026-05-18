@@ -110,6 +110,7 @@ public class TrackedDocumentStateTests
 
 				bool isA = string.Equals(snapshot.FilePath, @"C:\Workspace\Scripts\a.lua", StringComparison.Ordinal)
 					&& string.Equals(snapshot.Uri, "file:///C:/Workspace/Scripts/a.lua", StringComparison.Ordinal);
+
 				bool isB = string.Equals(snapshot.FilePath, @"C:\Workspace\Scripts\b.lua", StringComparison.Ordinal)
 					&& string.Equals(snapshot.Uri, "file:///C:/Workspace/Scripts/b.lua", StringComparison.Ordinal);
 
@@ -132,8 +133,7 @@ public class TrackedDocumentStateTests
 		public TestTrackedDocumentState(string filePath, string uri, string content, int version, bool isOpen,
 			int openReferenceCount, int requestReferenceCount, long lastAccessStamp)
 			: base(filePath, uri, content, version, isOpen, openReferenceCount, requestReferenceCount, lastAccessStamp)
-		{
-		}
+		{ }
 
 		public void Rename(string filePath, string uri)
 			=> RenameDocument(filePath, uri);

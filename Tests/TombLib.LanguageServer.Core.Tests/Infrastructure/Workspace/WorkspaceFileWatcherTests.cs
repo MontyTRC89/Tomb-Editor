@@ -18,7 +18,7 @@ public class WorkspaceFileWatcherTests
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 			{
 				dispatchedBatch = batch;
 				return Task.CompletedTask;
@@ -26,11 +26,11 @@ public class WorkspaceFileWatcherTests
 
 			string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Deleted);
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Created);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.IsNotNull(dispatchedBatch);
 			Assert.AreEqual(2, dispatchedBatch.Count);
@@ -58,7 +58,7 @@ public class WorkspaceFileWatcherTests
 			Directory.CreateDirectory(workspaceRoot);
 			Directory.CreateDirectory(Path.Combine(workspaceRoot, "Scripts"));
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 			{
 				dispatchedBatch = batch;
 				return Task.CompletedTask;
@@ -67,11 +67,11 @@ public class WorkspaceFileWatcherTests
 			string normalizedPath = Path.Combine(workspaceRoot, "Scripts", "test.lua");
 			string alternatePath = normalizedPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(normalizedPath, FileChangeKind.Changed);
 			watcher.QueueChangeForTest(alternatePath, FileChangeKind.Changed);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.IsNotNull(dispatchedBatch);
 			Assert.AreEqual(1, dispatchedBatch.Count);
@@ -97,7 +97,7 @@ public class WorkspaceFileWatcherTests
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 			{
 				dispatchAttemptCount++;
 
@@ -110,12 +110,12 @@ public class WorkspaceFileWatcherTests
 
 			string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Deleted);
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Created);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.AreEqual(2, dispatchAttemptCount);
 			Assert.IsNotNull(dispatchedBatch);
@@ -156,17 +156,17 @@ public class WorkspaceFileWatcherTests
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-		using var watcher = new WorkspaceFileWatcher(
+			using var watcher = new WorkspaceFileWatcher(
 				workspaceRoot,
-			(_, _) => Task.CompletedTask,
+				(_, _) => Task.CompletedTask,
 				[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: false)],
 				fileSystemWatcherFactory: static (_, _) => throw new InvalidOperationException("Simulated watcher creation failure."));
 
-		WorkspaceWatcherStartStatus startStatus = watcher.Start(out Exception? startupException);
+			WorkspaceWatcherStartStatus startStatus = watcher.Start(out Exception? startupException);
 
-		Assert.AreEqual(WorkspaceWatcherStartStatus.StartupFailed, startStatus);
-		Assert.IsNotNull(startupException);
-		Assert.IsTrue(watcher.IsDisposed);
+			Assert.AreEqual(WorkspaceWatcherStartStatus.StartupFailed, startStatus);
+			Assert.IsNotNull(startupException);
+			Assert.IsTrue(watcher.IsDisposed);
 		}
 		finally
 		{
@@ -213,13 +213,14 @@ public class WorkspaceFileWatcherTests
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		FileChangeBatch? dispatchedBatch = null;
 		int dispatchAttemptCount = 0;
+
 		using var logScope = new NLogMemoryScope(LogLevel.Debug);
 
 		try
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 			{
 				dispatchAttemptCount++;
 
@@ -232,17 +233,18 @@ public class WorkspaceFileWatcherTests
 
 			string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.AreEqual(2, dispatchAttemptCount);
 			Assert.IsNotNull(dispatchedBatch);
 			Assert.AreEqual(1, dispatchedBatch.Count);
 			Assert.AreEqual(filePath, dispatchedBatch.Entries[0].Path);
 			Assert.AreEqual(FileChangeKind.Changed, dispatchedBatch.Entries[0].Kind);
+
 			Assert.IsTrue(logScope.Logs.Any(log => log.Contains("Workspace file watcher dispatch failed", StringComparison.OrdinalIgnoreCase)
 				&& log.Contains("Simulated dispatch failure.", StringComparison.Ordinal)
 				&& log.Contains(workspaceRoot, StringComparison.OrdinalIgnoreCase)
@@ -261,29 +263,32 @@ public class WorkspaceFileWatcherTests
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherBackoff_" + Guid.NewGuid().ToString("N"));
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
+
 		using var logScope = new NLogMemoryScope(LogLevel.Debug);
 
 		try
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, (_, _) => throw new IOException("Persistent dispatch failure."), watchSpecifications);
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (_, _) => throw new IOException("Persistent dispatch failure."), watchSpecifications);
 
 			string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
 			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Debug|", StringComparison.Ordinal)
 				&& log.Contains("retrying in 250 ms", StringComparison.OrdinalIgnoreCase)),
 				string.Join(Environment.NewLine, logScope.Logs));
+
 			Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Debug|", StringComparison.Ordinal)
 				&& log.Contains("retrying in 500 ms", StringComparison.OrdinalIgnoreCase)),
 				string.Join(Environment.NewLine, logScope.Logs));
+
 			Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Warn|", StringComparison.Ordinal)
 				&& log.Contains("3 times in a row", StringComparison.OrdinalIgnoreCase)
 				&& log.Contains("retrying in 1000 ms", StringComparison.OrdinalIgnoreCase)
@@ -309,7 +314,7 @@ public class WorkspaceFileWatcherTests
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(
+			await using var watcher = new WorkspaceFileWatcher(
 				workspaceRoot,
 				(_, _) => throw new IOException("Persistent dispatch failure."),
 				watchSpecifications,
@@ -323,12 +328,12 @@ public class WorkspaceFileWatcherTests
 
 			string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
 
 			for (int i = 0; i < 5; i++)
 				await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.AreEqual(1, watcherFailedCallCount);
 			Assert.IsInstanceOfType(reportedException, typeof(IOException));
@@ -353,16 +358,16 @@ public class WorkspaceFileWatcherTests
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
 			{
 				dispatchStarted.TrySetResult(true);
 				await allowDispatchToFinish.Task.ConfigureAwait(false);
 			}, watchSpecifications);
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
 			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Task completedTask = await Task.WhenAny(dispatchStarted.Task, Task.Delay(TimeSpan.FromSeconds(1))).ConfigureAwait(false);
 			Assert.AreSame(dispatchStarted.Task, completedTask);
@@ -395,7 +400,7 @@ public class WorkspaceFileWatcherTests
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (batch, _) =>
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (batch, _) =>
 			{
 				dispatchAttemptCount++;
 
@@ -411,10 +416,10 @@ public class WorkspaceFileWatcherTests
 
 			string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
 			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
@@ -449,7 +454,7 @@ public class WorkspaceFileWatcherTests
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (batch, _) =>
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (batch, _) =>
 			{
 				dispatchAttemptCount++;
 
@@ -465,10 +470,10 @@ public class WorkspaceFileWatcherTests
 
 			string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
 			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
@@ -507,7 +512,7 @@ public class WorkspaceFileWatcherTests
 		{
 			Directory.CreateDirectory(workspaceRoot);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
+			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
 			{
 				if (!dispatchStarted.Task.IsCompleted)
 				{
@@ -522,10 +527,10 @@ public class WorkspaceFileWatcherTests
 
 			string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
 			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
@@ -562,9 +567,9 @@ public class WorkspaceFileWatcherTests
 				return Task.CompletedTask;
 			}, watchSpecifications);
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.QueueChangeForTest(Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			watcher.Dispose();
 
@@ -595,14 +600,14 @@ public class WorkspaceFileWatcherTests
 
 				try
 				{
-					using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
-					{
-						await Task.Yield();
-					}, watchSpecifications);
+					using var watcher = new WorkspaceFileWatcher(
+						workspaceRoot,
+						async (_, _) => await Task.Yield(),
+						watchSpecifications);
 
-					#pragma warning disable CS0618
+#pragma warning disable CS0618
 					watcher.QueueChangeForTest(Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
-					#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 					watcher.Dispose();
 					disposeCompleted.TrySetResult(true);
@@ -674,17 +679,17 @@ public class WorkspaceFileWatcherTests
 
 			for (int i = 0; i < 50; i++)
 			{
-				using var watcher = new WorkspaceFileWatcher(
+				await using var watcher = new WorkspaceFileWatcher(
 					workspaceRoot,
 					(_, _) => Task.CompletedTask,
 					[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)]);
 
 				Assert.IsTrue(watcher.Start());
 
-				#pragma warning disable CS0618
+#pragma warning disable CS0618
 				Task errorTask = Task.Run(() => watcher.ReportErrorForTest(new IOException("Simulated watcher failure.")));
 				Task disposeTask = Task.Run(watcher.Dispose);
-				#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 				await Task.WhenAll(errorTask, disposeTask).ConfigureAwait(false);
 
@@ -718,9 +723,9 @@ public class WorkspaceFileWatcherTests
 
 			Assert.IsTrue(watcher.Start());
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.ReportErrorForTest(new IOException("Simulated watcher failure."));
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.IsFalse(watcher.HasActiveWatchers);
 			Assert.AreEqual(0, watcher.ActiveWatcherCount);
@@ -753,18 +758,18 @@ public class WorkspaceFileWatcherTests
 
 			Assert.IsTrue(watcher.Start());
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.ReportErrorForTest(new IOException("Simulated watcher failure 1."));
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.AreEqual(1, failureCount);
 			Assert.IsFalse(watcher.HasActiveWatchers);
 
 			Assert.IsTrue(watcher.Start());
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.ReportErrorForTest(new IOException("Simulated watcher failure 2."));
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.AreEqual(2, failureCount);
 			Assert.IsFalse(watcher.HasActiveWatchers);

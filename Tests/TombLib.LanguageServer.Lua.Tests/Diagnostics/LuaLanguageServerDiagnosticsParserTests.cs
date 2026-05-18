@@ -82,19 +82,18 @@ public class LuaLanguageServerDiagnosticsParserTests
 		Assert.AreEqual(11, publishedDiagnostics.Diagnostics[0].EndOffset);
 	}
 
-	private static PublishDiagnosticsParams CreateDiagnostics(int line, int startCharacter, int endLine, int endCharacter)
-		=> new(
-			Uri: null,
-			Version: 1,
-			Diagnostics:
-			[
-				new DiagnosticPayload(
-					new ProtocolRangePayload(
-						new ProtocolNullablePosition(line, startCharacter),
-						new ProtocolNullablePosition(endLine, endCharacter)),
-					1,
-					"Syntax error.",
-					null,
-					null)
-			]);
+	private static PublishDiagnosticsParams CreateDiagnostics(int line, int startCharacter, int endLine, int endCharacter) => new(
+		Uri: null,
+		Version: 1,
+		Diagnostics:
+		[
+			new DiagnosticPayload(
+				new ProtocolRangePayload(
+					new ProtocolNullablePosition(line, startCharacter),
+					new ProtocolNullablePosition(endLine, endCharacter)),
+				1,
+				"Syntax error.",
+				null,
+				null)
+		]);
 }

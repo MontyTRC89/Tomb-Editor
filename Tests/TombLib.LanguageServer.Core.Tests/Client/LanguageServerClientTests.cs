@@ -1,12 +1,11 @@
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Text.Json;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 using StreamJsonRpc;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
 
 namespace TombLib.LanguageServer.Core.Tests;
 
@@ -3552,5 +3551,4 @@ public class LanguageServerClientTests
 			LogManager.ReconfigExistingLoggers();
 		}
 	}
-
 }

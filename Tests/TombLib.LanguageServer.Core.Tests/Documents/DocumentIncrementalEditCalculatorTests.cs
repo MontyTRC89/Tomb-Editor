@@ -142,7 +142,7 @@ public class SemanticTokensDeltaParserTests
 			    }
 			  ]
 			}
-			""")!;
+			""");
 
 		SemanticTokensDeltaResponse result = SemanticTokensDeltaParser.Parse(response);
 

@@ -129,6 +129,7 @@ public class WorkspaceChangeAccumulatorTests
 				@"C:\Workspace\Scripts\third.lua"
 			},
 			drainedChanges.Select(change => change.Path).ToArray());
+
 		CollectionAssert.AreEqual(
 			new[]
 			{

@@ -84,14 +84,13 @@ public class LuaWorkspaceSnapshotTrackerTests
 		}
 	}
 
-	private static LuaWorkspaceSnapshotTracker CreateTracker(string workspaceRootDirectoryPath)
-		=> new(
-			LanguageServerPathHelper.NormalizeLocalPath(workspaceRootDirectoryPath),
-			[
-				new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true),
-				new WorkspaceWatchSpecification(".API", IncludeSubdirectories: false),
-				new WorkspaceWatchSpecification(".luarc.*", IncludeSubdirectories: false)
-			]);
+	private static LuaWorkspaceSnapshotTracker CreateTracker(string workspaceRootDirectoryPath) => new(
+		LanguageServerPathHelper.NormalizeLocalPath(workspaceRootDirectoryPath),
+		[
+			new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true),
+			new WorkspaceWatchSpecification(".API", IncludeSubdirectories: false),
+			new WorkspaceWatchSpecification(".luarc.*", IncludeSubdirectories: false)
+		]);
 
 	private static WorkspaceFileChange GetChange(FileChangeBatch batch, string filePath)
 		=> batch.Entries.First(change => string.Equals(change.Path, filePath, StringComparison.OrdinalIgnoreCase));

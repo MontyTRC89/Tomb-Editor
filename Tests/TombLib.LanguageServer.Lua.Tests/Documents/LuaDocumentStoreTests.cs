@@ -90,5 +90,4 @@ public class LuaDocumentStoreTests
 		Assert.IsNotNull(closedDocument);
 		Assert.IsNull(manager.GetDocumentSnapshot(filePath));
 	}
-
 }

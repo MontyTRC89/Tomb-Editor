@@ -1,6 +1,3 @@
-using System.IO;
-using TombLib.LanguageServer.Core;
-
 namespace TombLib.LanguageServer.Core.Tests;
 
 [TestClass]
@@ -391,6 +388,7 @@ public class WorkspaceFileChangeForwarderTests
 			CancellationToken.None);
 
 		Task completedTask = await Task.WhenAny(dispatchObserved.Task, Task.Delay(TimeSpan.FromMilliseconds(150))).ConfigureAwait(false);
+
 		Assert.AreNotSame(dispatchObserved.Task, completedTask,
 			"A live dispatch should not overtake an older deferred replay while the replay is still in flight.");
 
@@ -440,6 +438,7 @@ public class WorkspaceFileChangeForwarderTests
 			CancellationToken.None).ConfigureAwait(false);
 
 		Assert.IsNotNull(replayedChanges);
+
 		CollectionAssert.AreEqual(
 			new[]
 			{
@@ -447,6 +446,7 @@ public class WorkspaceFileChangeForwarderTests
 				@"C:\Workspace\Scripts\second.lua"
 			},
 			replayedChanges.Select(change => change.Path).ToArray());
+
 		CollectionAssert.AreEqual(
 			new[]
 			{
@@ -619,7 +619,6 @@ public class LanguageServerPathHelperTests
 	public void NormalizeLocalPath_TrimsTrailingDirectorySeparatorForNonRootPath()
 	{
 		string rawPath = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "Path Helper", "Folder")) + Path.DirectorySeparatorChar;
-
 		string normalizedPath = LanguageServerPathHelper.NormalizeLocalPath(rawPath);
 
 		Assert.AreEqual(Path.TrimEndingDirectorySeparator(Path.GetFullPath(rawPath)), normalizedPath);

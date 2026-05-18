@@ -2,8 +2,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Reflection;
-using TombLib.LanguageServer.Core;
-using TombLib.LanguageServer.Lua;
 using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.LanguageServer.Lua.Tests;
@@ -26,12 +24,14 @@ public class LuaLanguageServerRealIntegrationTests
 	public async Task Provider_WithBundledLuaLanguageServer_HandlesLiveWorkflowConfigurationReloadAndShutdown()
 	{
 		using var session = new RealLuaLanguageServerTestSession();
+
 		string filePath = Path.Combine(session.WorkspaceRoot, "Scripts", "test.lua");
 		string apiDirectoryPath = Path.Combine(session.WorkspaceRoot, ".API");
 		string generatedApiFilePath = Path.Combine(apiDirectoryPath, "Generated.lua");
-		string initialContent = "local stable_local =\r\nreturn stable_local\r\n";
-		string updatedContent = "local stable_local = 1\r\nlocal updated_local = stable_local + 1\r\nreturn updated_local\r\nupd";
-		string libraryAwareContent = updatedContent + "\r\ngen";
+
+		const string initialContent = "local stable_local =\r\nreturn stable_local\r\n";
+		const string updatedContent = "local stable_local = 1\r\nlocal updated_local = stable_local + 1\r\nreturn updated_local\r\nupd";
+		const string libraryAwareContent = updatedContent + "\r\ngen";
 
 		Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? session.WorkspaceRoot);
 		File.WriteAllText(filePath, initialContent);
@@ -68,6 +68,7 @@ public class LuaLanguageServerRealIntegrationTests
 		Assert.IsFalse(string.IsNullOrWhiteSpace(hover.Content));
 
 		Directory.CreateDirectory(apiDirectoryPath);
+
 		File.WriteAllText(generatedApiFilePath,
 			"---@meta\r\n" +
 			"function generated_function() end\r\n");
@@ -99,9 +100,11 @@ public class LuaLanguageServerRealIntegrationTests
 	public async Task Provider_WithBundledLuaLanguageServer_RestartsAfterLiveServerCrashAndResumesRequests()
 	{
 		using var session = new RealLuaLanguageServerTestSession();
+
 		string filePath = Path.Combine(session.WorkspaceRoot, "Scripts", "restart.lua");
-		string initialContent = "local restart_probe = 1\r\nres";
-		string restartedContent = "local restart_probe = 1\r\nlocal after_restart = restart_probe + 1\r\naft";
+
+		const string initialContent = "local restart_probe = 1\r\nres";
+		const string restartedContent = "local restart_probe = 1\r\nlocal after_restart = restart_probe + 1\r\naft";
 
 		Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? session.WorkspaceRoot);
 		File.WriteAllText(filePath, initialContent);
@@ -231,6 +234,7 @@ public class LuaLanguageServerRealIntegrationTests
 
 		Assert.Fail(failureMessage + Environment.NewLine + "Last completion labels: "
 			+ string.Join(", ", lastResult.Select(item => item.Label)));
+
 		return [];
 	}
 
@@ -253,7 +257,7 @@ public class LuaLanguageServerRealIntegrationTests
 		}
 
 		Assert.Fail(failureMessage);
-		return null!;
+		return null;
 	}
 
 	private static async Task WaitForConditionAsync(
@@ -312,7 +316,6 @@ public class LuaLanguageServerRealIntegrationTests
 	private sealed class RealLuaLanguageServerTestSession : IDisposable
 	{
 		private readonly string _extractionRoot;
-		private readonly string _workspaceRoot;
 
 		public RealLuaLanguageServerTestSession()
 		{
@@ -322,10 +325,10 @@ public class LuaLanguageServerRealIntegrationTests
 					"See Tests/TombLib.LanguageServer.Lua.Tests/Integration/LuaLanguageServerIntegrationTests.md for prerequisites.");
 
 			_extractionRoot = Path.Combine(Path.GetTempPath(), "LuaLsExtract_" + Guid.NewGuid().ToString("N"));
-			_workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaLsWorkspace_" + Guid.NewGuid().ToString("N"));
+			WorkspaceRoot = Path.Combine(Path.GetTempPath(), "LuaLsWorkspace_" + Guid.NewGuid().ToString("N"));
 
 			ZipFile.ExtractToDirectory(archivePath, _extractionRoot);
-			Directory.CreateDirectory(_workspaceRoot);
+			Directory.CreateDirectory(WorkspaceRoot);
 
 			string executablePath = Path.Combine(_extractionRoot, "bin", "lua-language-server.exe");
 
@@ -339,12 +342,11 @@ public class LuaLanguageServerRealIntegrationTests
 		}
 
 		public string ExecutablePath { get; }
-
-		public string WorkspaceRoot => _workspaceRoot;
+		public string WorkspaceRoot { get; }
 
 		public void Dispose()
 		{
-			TryDeleteDirectory(_workspaceRoot);
+			TryDeleteDirectory(WorkspaceRoot);
 			TryDeleteDirectory(_extractionRoot);
 		}
 	}
@@ -372,10 +374,8 @@ public class LuaLanguageServerRealIntegrationTests
 			Directory.Delete(path, recursive: true);
 		}
 		catch (IOException)
-		{
-		}
+		{ }
 		catch (UnauthorizedAccessException)
-		{
-		}
+		{ }
 	}
 }
