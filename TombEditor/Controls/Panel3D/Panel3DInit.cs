@@ -1,9 +1,6 @@
-using System.Numerics;
 using TombLib.Graphics;
 using TombLib;
 using TombLib.Controls;
-using TombLib.Graphics;
-using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Rendering;
 

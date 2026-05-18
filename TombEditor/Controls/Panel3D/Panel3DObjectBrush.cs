@@ -424,8 +424,6 @@ namespace TombEditor.Controls.Panel3D
         // removed during the SharpDX.Toolkit cleanup. Brush state now lives in the
         // shared RenderingStateBuffer (cbuffer slot 0); see DrawScene where
         // ComputeBrushOverlay's result is plumbed straight into RenderingState.
-
-            effect.Parameters["BrushShape"].SetValue(overlay.Shape);
         #endregion
     }
 }
