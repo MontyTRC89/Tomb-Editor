@@ -4,18 +4,16 @@
 -- !Arguments "Newline, Moveables, 60, [ guide | sophia_leigh | von_croy ], Creature to set location for."
 -- !Arguments "Numerical, 20, [ 0 | 1000 ], Location to set.
 -- !Arguments "Boolean, 20, {false}, Debug to console."
-LevelFuncs.Engine.Node.SetCreatureLocation = function(objectId, location,debug)
+LevelFuncs.Engine.Node.SetCreatureLocation = function(objectId, location, debug)
     local moveables = TEN.Objects.GetMoveableByName(objectId)
-    if moveables:GetStatus() ==  1 then
-        moveables:SetLocationAI(location)
-    end
-
     if moveables:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. objectId .. " ] is not active. No location set.",TEN.Util.LogLevel.ERROR)
-        
+        return
     end
-    
-    if moveables:GetStatus() ==  1 and debug == true then
+
+    moveables:SetLocationAI(location)
+
+    if debug == true then
         TEN.Util.PrintLog("Location of [ " .. objectId .. " ] set to location " .. location,TEN.Util.LogLevel.INFO)
     end
 end
@@ -26,18 +24,17 @@ end
 -- !Arguments "Newline, Moveables, 80, Moveable to set mood for."
 -- !Arguments "Enumeration, 20, [ Attack | Auto | Bored | Escape | Stalk ], Mood to set for creature."
 LevelFuncs.Engine.Node.SetCreatureMood = function(moveable, index)
-
-    local mood = LevelFuncs.Engine.Node.GetCreatureMood(index)
     local mov = TEN.Objects.GetMoveableByName(moveable)
-    local movAI = Objects.Creature(mov)
 
     if mov:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No mood set.",TEN.Util.LogLevel.ERROR) 
+        return
     end
 
-    if mov:GetStatus() ==  1 then
-        movAI:SetMood(mood)
-    end
+    local mood = LevelFuncs.Engine.Node.GetCreatureMood(index)
+    local movAI = Objects.Creature(mov)
+
+    movAI:SetMood(mood)
 end
 
 -- !Name "If creature mood is..."
@@ -47,18 +44,17 @@ end
 -- !Arguments "Newline, Moveables, 80, Moveable to check mood for."
 -- !Arguments "Enumeration, 20, [ Attack | Auto | Bored | Escape | Stalk ], Mood to check for."
 LevelFuncs.Engine.Node.TestCreatureMood = function(moveable, index)
-
-    local mood = LevelFuncs.Engine.Node.GetCreatureMood(index)
     local mov = TEN.Objects.GetMoveableByName(moveable)
-    local movAI = Objects.Creature(mov)
 
     if mov:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No mood set.",TEN.Util.LogLevel.ERROR)   
+        return false
     end
 
-    if mov:GetStatus() ==  1 then
-         return movAI:GetMood() == mood    
-    end
+    local mood = LevelFuncs.Engine.Node.GetCreatureMood(index)
+    local movAI = Objects.Creature(mov)
+
+    return movAI:GetMood() == mood
 end
 
 -- !Name "Set creature target"
@@ -70,19 +66,19 @@ end
 LevelFuncs.Engine.Node.SetCreatureTarget = function(moveable, target, retaliate)
 
     local mov = TEN.Objects.GetMoveableByName(moveable)
-    local movAI = Objects.Creature(mov)
-    local targetMov = TEN.Objects.GetMoveableByName(target)
-    local targetMovAI = Objects.Creature(targetMov)
 
     if mov:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No target set.",TEN.Util.LogLevel.ERROR)
+        return
     end
 
-    if mov:GetStatus() == 1 then
-        movAI:SetTarget(targetMov)
-    end
+    local movAI = Objects.Creature(mov)
+    local targetMov = TEN.Objects.GetMoveableByName(target)
+
+    movAI:SetTarget(targetMov)
 
     if retaliate and targetMov:GetStatus() == 1 then
+        local targetMovAI = Objects.Creature(targetMov)
         targetMovAI:SetTarget(mov)
     end
 end
@@ -96,16 +92,16 @@ end
 LevelFuncs.Engine.Node.TestCreatureTarget = function(moveable, target)
 
     local mov = TEN.Objects.GetMoveableByName(moveable)
-    local movAI = Objects.Creature(mov)
-    local targetMov = TEN.Objects.GetMoveableByName(target)
-
-    if mov:GetStatus() == 1 then
-    return movAI:GetTarget() == targetMov
-    end
 
     if mov:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No target set.",TEN.Util.LogLevel.ERROR)
+        return false
     end
+
+    local movAI = Objects.Creature(mov)
+    local targetMov = TEN.Objects.GetMoveableByName(target)
+
+    return movAI:GetTarget() == targetMov
 end
 
 -- !Name "Set creature as friendly"
@@ -115,22 +111,22 @@ end
 -- !Arguments "Boolean, 30, {true}, Undo friendly if attacked."
 LevelFuncs.Engine.Node.SetCreatureFriendly = function(moveable, undoIfAttacked) 
     local mov = TEN.Objects.GetMoveableByName(moveable)
-    local movAI = Objects.Creature(mov)
 
     if mov:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot set as friendly.",TEN.Util.LogLevel.ERROR)   
+        return
     end
 
-    if mov:GetStatus() == 1 then
-        movAI:SetFriendly(true)
+    local movAI = Objects.Creature(mov)
 
-        if undoIfAttacked and movAI:GetHurtByPlayer() == true then
-            movAI:SetFriendly(false)
-        end
+    movAI:SetFriendly(true)
 
-        if movAI:GetHurtByPlayer() == true then
-            movAI:SetFriendly(false)
-        end
+    if undoIfAttacked and movAI:GetHurtByPlayer() == true then
+        movAI:SetFriendly(false)
+    end
+
+    if movAI:GetHurtByPlayer() == true then
+        movAI:SetFriendly(false)
     end
 end
 
@@ -139,15 +135,51 @@ end
 -- !Description "Checks if creature is friendly to the player."
 -- !Conditional "True"
 -- !Arguments "Newline, Moveables, 50, Moveable to check."
-LevelFuncs.Engine.Node.TestCreatureFriendly = function(moveable) 
+LevelFuncs.Engine.Node.TestCreatureFriendly = function(moveable)
     local mov = TEN.Objects.GetMoveableByName(moveable)
-    local movAI = Objects.Creature(mov)
-
-    if mov:GetStatus() == 1 then
-         return movAI:IsFriendly()
-    end
 
     if mov:GetStatus() ~= 1 then
         TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check if friendly.",TEN.Util.LogLevel.ERROR)
+        return false
     end
+
+    local movAI = Objects.Creature(mov)
+
+    return movAI:IsFriendly()
+end
+
+-- !Name "Set creature poison status"
+-- !Section "Creature AI"
+-- !Description "Sets whether the creature is poisoned or not."
+-- !Arguments "Newline, Moveables, 70, Moveable to set poison status for."
+-- !Arguments "Boolean, 30, {true}, Poison the creature."
+LevelFuncs.Engine.Node.SetCreaturePoisoned = function(moveable, poisoned)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+
+    if mov:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot set poison status.",TEN.Util.LogLevel.ERROR)   
+        return
+    end
+
+    local movAI = Objects.Creature(mov)
+
+    movAI:SetPoisoned(poisoned)
+end
+
+-- !Name "If creature is poisoned..."
+-- !Section "Creature AI"
+-- !Description "Checks if the creature is poisoned."
+-- !Conditional "True"
+-- !Arguments "Newline, Moveables, Moveable to check poison status for."
+LevelFuncs.Engine.Node.TestCreaturePoisoned = function(moveable)
+    local mov = TEN.Objects.GetMoveableByName(moveable)
+
+    if mov:GetStatus() ~= 1 then
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check poison status.",TEN.Util.LogLevel.ERROR)   
+        return false
+    end
+
+    local movAI = Objects.Creature(mov)
+
+    return movAI:IsPoisoned()
 end
