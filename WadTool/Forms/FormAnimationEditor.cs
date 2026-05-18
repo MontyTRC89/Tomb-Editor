@@ -510,7 +510,9 @@ namespace WadTool
                     cbRootPosX.Checked = node.WadAnimation.RootMotion.TranslationX;
                     cbRootPosY.Checked = node.WadAnimation.RootMotion.TranslationY;
                     cbRootPosZ.Checked = node.WadAnimation.RootMotion.TranslationZ;
-                    cbRootRotation.Checked = node.WadAnimation.RootMotion.RotationY;
+                    cbRootRotationX.Checked = node.WadAnimation.RootMotion.RotationY;
+                    cbRootRotationY.Checked = node.WadAnimation.RootMotion.RotationY;
+                    cbRootRotationZ.Checked = node.WadAnimation.RootMotion.RotationZ;
 
                     tbStateId.Text = node.WadAnimation.StateId.ToString();
                     UpdateStateChange();
@@ -2868,11 +2870,6 @@ namespace WadTool
             UpdateUIControls();
         }
 
-        private void cbRootPosX_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
-        private void cbRootPosY_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
-        private void cbRootPosZ_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
-        private void cbRootRotation_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
-
         private void UpdateRootMotionSetting(object sender)
         {
             if (!_allowUpdate || _editor.CurrentAnim == null)
@@ -2888,11 +2885,15 @@ namespace WadTool
             rootMotion.TranslationX = cbRootPosX.Checked;
             rootMotion.TranslationY = cbRootPosY.Checked;
             rootMotion.TranslationZ = cbRootPosZ.Checked;
-            rootMotion.RotationY = cbRootRotation.Checked;
+            rootMotion.RotationX = cbRootRotationX.Checked;
+            rootMotion.RotationY = cbRootRotationY.Checked;
+            rootMotion.RotationZ = cbRootRotationZ.Checked;
             _editor.CurrentAnim.WadAnimation.RootMotion = rootMotion;
 
             Saved = false;
         }
+
+        private void cbRootMotion_CheckedChanged(object sender, EventArgs e) => UpdateRootMotionSetting(sender);
 
         private void cbBlendPreset_SelectedIndexChanged(object sender, EventArgs e)
         {
