@@ -31,7 +31,16 @@ namespace WadTool
         // Info
         private readonly PopUpInfo popup = new PopUpInfo();
 
-        private string GetBoneName(WadMeshBoneNode bone) => bone.Bone.Name + " (" + bone.Mesh.Name + ")";
+        private string GetBoneName(WadMeshBoneNode bone)
+		{
+			string op = "";
+			if (bone.Bone.OpCode == WadLinkOpcode.Pop)  op = "POP ";
+			if (bone.Bone.OpCode == WadLinkOpcode.Push) op = "PUSH ";
+			if (bone.Bone.OpCode == WadLinkOpcode.Read) op = "READ ";
+			
+			var boneName = (bone?.Bone?.Name ?? "<no bone>") + " (" + (bone?.Mesh?.Name ?? "<no mesh>") + ")";
+			return (_bones.FindIndex(b => b == bone).ToString() + ": " + op + boneName);
+		}
 
         public FormSkeletonEditor(WadToolClass tool, DeviceManager manager, Wad2 wad, WadMoveableId moveableId)
         {
@@ -133,7 +142,7 @@ namespace WadTool
             if (_bones.Count == 0)
                 return nodes;
 
-            var rootNode = new DarkTreeNode("0: " + GetBoneName(_bones[0]));
+            var rootNode = new DarkTreeNode(GetBoneName(_bones[0]));
             rootNode.Tag = _bones[0];
             rootNode.Expanded = true;
             nodes.Add(rootNode);
@@ -153,7 +162,7 @@ namespace WadTool
                 if (boneNode.Bone.OpCode == WadLinkOpcode.Push) op = "PUSH ";
                 if (boneNode.Bone.OpCode == WadLinkOpcode.Read) op = "READ ";
 
-                var newNode = new DarkTreeNode(j.ToString() + ": " + op + GetBoneName(_bones[j]));
+                var newNode = new DarkTreeNode(GetBoneName(_bones[j]));
                 newNode.Tag = _bones[j];
 
                 _nodesDictionary.Add(_bones[j], newNode);
