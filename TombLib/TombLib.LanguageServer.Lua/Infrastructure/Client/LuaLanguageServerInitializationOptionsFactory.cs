@@ -1,10 +1,14 @@
 namespace TombLib.LanguageServer.Lua;
 
+/// <summary>
+/// Builds the initialization-options payload sent to the bundled Lua language server.
+/// </summary>
 public static class LuaLanguageServerInitializationOptionsFactory
 {
 	/// <summary>
 	/// Builds LuaLS-specific initialization options.
 	/// </summary>
+	/// <returns>An anonymous initialization-options object serialized into the initialize request.</returns>
 	public static object Create()
 	{
 		return new

@@ -10,8 +10,7 @@
     <UseSharedOutputPath Condition="'$(UseSharedOutputPath)' == ''
         and '$(MSBuildProjectName)' != 'DarkUI.WPF.Demo'
         and '$(MSBuildProjectName)' != 'Example'
-        and '$(MSBuildProjectName)' != 'TombEditor.Tests'
-        and '$(MSBuildProjectName)' != 'TombLib.Test'">true</UseSharedOutputPath>
+        and '$(MSBuildProjectName.EndsWith(`.Tests`))' != 'True'">true</UseSharedOutputPath>
     <SharedDebugOutputRoot Condition="'$(SharedDebugOutputRoot)' == '' and '$(UseSharedOutputPath)' == 'true'">Build</SharedDebugOutputRoot>
     <SharedReleaseOutputRoot Condition="'$(SharedReleaseOutputRoot)' == '' and '$(UseSharedOutputPath)' == 'true'">BuildRelease</SharedReleaseOutputRoot>
     <SharedDebugOutputRoot Condition="'$(UseSharedOutputPath)' == 'true' and '$(MSBuildProjectName)' == 'NgXmlBuilder'">BuildNgXmlBuilder</SharedDebugOutputRoot>

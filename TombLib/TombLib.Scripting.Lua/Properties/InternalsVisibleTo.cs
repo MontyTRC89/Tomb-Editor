@@ -1,3 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("TombLib.Test")]
+[assembly: InternalsVisibleTo("TombLib.Tests")]

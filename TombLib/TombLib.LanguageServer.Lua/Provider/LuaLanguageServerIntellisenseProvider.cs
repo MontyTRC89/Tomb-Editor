@@ -28,7 +28,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 	private readonly string _workspaceRootDirectoryPath;
 	private readonly ILanguageServerClient? _client;
 	private readonly DocumentOperationScheduler _documentScheduler = new();
-	private readonly LuaIntellisenseDocumentManager _documents = new();
+	private readonly LuaDocumentStore _documents = new();
 	private readonly object _requestTimeoutSyncRoot = new();
 	private readonly ConcurrentDictionary<string, CancellationTokenSource> _semanticTokenRequests = new(StringComparer.OrdinalIgnoreCase);
 	private readonly SemaphoreSlim _startLock = new(1, 1);

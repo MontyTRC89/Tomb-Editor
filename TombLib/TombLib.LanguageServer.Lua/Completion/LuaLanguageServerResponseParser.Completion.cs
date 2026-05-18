@@ -147,7 +147,7 @@ public static partial class LuaLanguageServerResponseParser
 
 		string? detail = BuildCompletionDetail(itemPayload);
 		MarkupContent description = BuildCompletionDescription(itemPayload);
-		string? searchableDescription = NormalizeMarkupText(description.Text);
+		string? searchableDescription = LuaMarkupTextHelper.NormalizeMarkupText(description.Text);
 		var textAnalysis = new CompletionTextAnalysis(detail, searchableDescription);
 
 		return new LuaCompletionItem(
@@ -368,8 +368,8 @@ public static partial class LuaLanguageServerResponseParser
 			return default;
 
 		string? normalizedText = documentation.IsMarkdown
-			? NormalizeMarkdownText(documentation.Text)
-			: NormalizeMarkupText(documentation.Text);
+			? LuaMarkupTextHelper.NormalizeMarkdownText(documentation.Text)
+			: LuaMarkupTextHelper.NormalizeMarkupText(documentation.Text);
 
 		return string.IsNullOrWhiteSpace(normalizedText)
 			? default

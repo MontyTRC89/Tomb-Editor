@@ -1,7 +1,12 @@
 namespace TombLib.LanguageServer.Lua;
 
+/// <summary>
+/// Builds the client-capabilities payload advertised to the bundled Lua language server during initialization.
+/// </summary>
 public static class LuaLanguageServerClientCapabilitiesFactory
 {
+	private static readonly string[] SupportedDocumentationFormats = ["markdown", "plaintext"];
+
 	private static readonly string[] SupportedSemanticTokenTypes =
 	[
 		"namespace", "type", "class", "enum", "interface", "struct", "typeParameter",
@@ -19,6 +24,7 @@ public static class LuaLanguageServerClientCapabilitiesFactory
 	/// <summary>
 	/// Builds LuaLS-specific client capability advertisement for the initialize request.
 	/// </summary>
+	/// <returns>An anonymous capabilities object serialized into the initialize request.</returns>
 	public static object Create()
 	{
 		return new
@@ -37,7 +43,7 @@ public static class LuaLanguageServerClientCapabilitiesFactory
 					completionItem = new
 					{
 						snippetSupport = false,
-						documentationFormat = new[] { "markdown", "plaintext" },
+						documentationFormat = SupportedDocumentationFormats,
 						resolveSupport = new
 						{
 							properties = new[] { "detail", "documentation" }
@@ -46,7 +52,7 @@ public static class LuaLanguageServerClientCapabilitiesFactory
 				},
 				hover = new
 				{
-					contentFormat = new[] { "markdown", "plaintext" }
+					contentFormat = SupportedDocumentationFormats
 				},
 				definition = new
 				{
@@ -73,7 +79,7 @@ public static class LuaLanguageServerClientCapabilitiesFactory
 				{
 					signatureInformation = new
 					{
-						documentationFormat = new[] { "markdown", "plaintext" },
+						documentationFormat = SupportedDocumentationFormats,
 						parameterInformation = new
 						{
 							labelOffsetSupport = true

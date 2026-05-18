@@ -26,7 +26,7 @@ public static partial class LuaLanguageServerResponseParser
 		string label = signatureElement.Label;
 
 		string? documentation = signatureElement.Documentation.ValueKind != JsonValueKind.Undefined
-			? ExtractMarkupText(signatureElement.Documentation)
+			? LuaMarkupTextHelper.ExtractMarkupText(signatureElement.Documentation)
 			: null;
 
 		int activeParameter = ResolveActiveParameter(response, signatureElement);
@@ -46,7 +46,7 @@ public static partial class LuaLanguageServerResponseParser
 						: null;
 
 				string? parameterDocumentation = paramElement.Documentation.ValueKind != JsonValueKind.Undefined
-					? ExtractMarkupText(paramElement.Documentation)
+					? LuaMarkupTextHelper.ExtractMarkupText(paramElement.Documentation)
 					: null;
 
 				parameters.Add(new LuaParameterInfo(parameterLabel ?? string.Empty, parameterDocumentation));
