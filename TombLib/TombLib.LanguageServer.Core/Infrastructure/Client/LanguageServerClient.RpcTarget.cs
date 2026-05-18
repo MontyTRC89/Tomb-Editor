@@ -208,7 +208,7 @@ public sealed partial class LanguageServerClient
 		/// <param name="parameters">The empty protocol payload.</param>
 		[JsonRpcMethod("telemetry/event", UseSingleObjectParameterDeserialization = true)]
 		public void TelemetryEvent(EmptyParams parameters)
-			=> LogIgnoredUnsupportedCallback("telemetry/event", "the lean host-specific wrapper does not surface server telemetry events");
+			=> LogIgnoredUnsupportedCallback("telemetry/event", "the wrapper does not surface server telemetry events");
 
 		/// <summary>
 		/// Ignores generic progress notifications that the host does not surface.
@@ -216,7 +216,15 @@ public sealed partial class LanguageServerClient
 		/// <param name="parameters">The empty protocol payload.</param>
 		[JsonRpcMethod("$/progress", UseSingleObjectParameterDeserialization = true)]
 		public void Progress(EmptyParams parameters)
-			=> LogIgnoredUnsupportedCallback("$/progress", "the lean host-specific wrapper does not surface generic progress notifications");
+			=> LogIgnoredUnsupportedCallback("$/progress", "the wrapper does not surface generic progress notifications");
+
+		/// <summary>
+		/// Ignores nonstandard hello notifications that some language servers emit during startup.
+		/// </summary>
+		/// <param name="parameters">The empty protocol payload.</param>
+		[JsonRpcMethod("$/hello", UseSingleObjectParameterDeserialization = true)]
+		public void Hello(EmptyParams parameters)
+			=> LogIgnoredUnsupportedCallback("$/hello", "the wrapper does not surface nonstandard startup notifications");
 
 		/// <summary>
 		/// Logs one unsupported server callback without surfacing it to the host.

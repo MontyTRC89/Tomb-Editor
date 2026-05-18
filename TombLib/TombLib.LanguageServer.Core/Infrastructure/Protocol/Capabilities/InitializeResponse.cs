@@ -103,25 +103,3 @@ public sealed record SemanticTokensLegendCapability
 	[JsonPropertyName("tokenModifiers")]
 	public string[]? TokenModifiers { get; init; }
 }
-
-/// <summary>
-/// Represents a capability that may be advertised as either a boolean or an object.
-/// </summary>
-/// <param name="IsSupported">Whether the capability is supported.</param>
-[JsonConverter(typeof(SupportedCapabilityJsonConverter))]
-public readonly record struct SupportedCapability(bool IsSupported);
-
-/// <summary>
-/// Represents the text-document synchronization capability advertised by the server.
-/// </summary>
-/// <param name="Kind">The negotiated synchronization kind.</param>
-[JsonConverter(typeof(TextDocumentSyncCapabilityJsonConverter))]
-public readonly record struct TextDocumentSyncCapability(TextDocumentSyncKind Kind);
-
-/// <summary>
-/// Represents the semantic-tokens full capability advertised by the server.
-/// </summary>
-/// <param name="IsSupported">Whether full semantic-token requests are supported.</param>
-/// <param name="SupportsDelta">Whether delta refresh is supported.</param>
-[JsonConverter(typeof(SemanticTokensFullCapabilityJsonConverter))]
-public readonly record struct SemanticTokensFullCapability(bool IsSupported, bool SupportsDelta);
