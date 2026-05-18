@@ -2,7 +2,7 @@
 -- !Section "Creature AI"
 -- !Description "Sets the location of intelligent enemies to a specified location.\nOnly to be used with GUIDE, Sophia-Leigh or Von Croy.\nPlace AI_X1 objects with an OCB to create a location."
 -- !Arguments "Newline, Moveables, 60, [ guide | sophia_leigh | von_croy ], Creature to set location for."
--- !Arguments "Numerical, 20, [ 0 | 1000 ], Location to set.
+-- !Arguments "Numerical, 20, [ 0 | 1000 ], Location to set."
 -- !Arguments "Boolean, 20, {false}, Debug to console."
 LevelFuncs.Engine.Node.SetCreatureLocation = function(objectId, location, debug)
     local moveables = TEN.Objects.GetMoveableByName(objectId)
