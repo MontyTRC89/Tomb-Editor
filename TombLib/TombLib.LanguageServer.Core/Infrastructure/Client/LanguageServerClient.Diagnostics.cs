@@ -153,9 +153,7 @@ public sealed partial class LanguageServerClient
 		if (!LanguageServerPathHelper.TryGetFilePath(uri, out string filePath))
 			return uri;
 
-		return OperatingSystem.IsWindows()
-			? filePath.ToUpperInvariant()
-			: filePath;
+		return LanguageServerPathHelper.GetPathKeyFromNormalizedPath(filePath);
 	}
 
 	/// <summary>

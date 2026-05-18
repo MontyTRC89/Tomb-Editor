@@ -34,13 +34,21 @@ public sealed partial class WorkspaceFileChangeForwarder
 			await _forwardingGate.WaitAsync(cancellationToken).ConfigureAwait(false);
 			forwardingGateHeld = true;
 
+			if (IsDisposeRequested())
+				return;
+
 			if (!_canForwardAccessor())
 			{
 				BufferChangesWhenForwardingDisabled(changes);
 				return;
 			}
 
-			if (!await _ensureStartedAsync(cancellationToken).ConfigureAwait(false))
+			bool started = await _ensureStartedAsync(cancellationToken).ConfigureAwait(false);
+
+			if (IsDisposeRequested())
+				return;
+
+			if (!started)
 			{
 				_deferredChanges.AddRange(changes);
 				return;
@@ -89,12 +97,18 @@ public sealed partial class WorkspaceFileChangeForwarder
 			await _forwardingGate.WaitAsync(cancellationToken).ConfigureAwait(false);
 			forwardingGateHeld = true;
 
+			if (IsDisposeRequested())
+				return;
+
 			if (!_canForwardAccessor() || _deferredChanges.IsEmpty)
 				return;
 
 			List<WorkspaceFileChange> deferredChanges = _deferredChanges.DrainChanges();
 
 			if (deferredChanges.Count == 0)
+				return;
+
+			if (IsDisposeRequested())
 				return;
 
 			await TryForwardAsync(deferredChanges, forwardAsync, cancellationToken).ConfigureAwait(false);

@@ -11,7 +11,7 @@ internal sealed class WorkspaceChangeAccumulator
 	/// <summary>
 	/// Stores the latest coalesced change for each normalized path.
 	/// </summary>
-	private readonly ConcurrentDictionary<string, BufferedWorkspaceChange> _changes = new(StringComparer.OrdinalIgnoreCase);
+	private readonly ConcurrentDictionary<string, BufferedWorkspaceChange> _changes = new(LanguageServerPathHelper.LocalPathComparer);
 
 	/// <summary>
 	/// Produces deterministic insertion order for buffered paths.

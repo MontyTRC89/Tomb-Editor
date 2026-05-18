@@ -176,20 +176,21 @@ public sealed partial class DocumentOperationScheduler
 	{
 		Task firstPerDocumentOperation = GetQueuedPerDocumentOperationUnderLock(firstFilePath);
 		Task firstLatestUpdateOperation = GetQueuedLatestUpdateOperationUnderLock(firstFilePath);
+		bool samePath = LanguageServerPathHelper.AreLocalPathsEqual(firstFilePath, secondFilePath);
 
 		Task firstBarrierOperation = includeBarriers
 			? GetQueuedPerDocumentBarrierUnderLock(firstFilePath)
 			: Task.CompletedTask;
 
-		Task secondPerDocumentOperation = string.Equals(firstFilePath, secondFilePath, StringComparison.OrdinalIgnoreCase)
+		Task secondPerDocumentOperation = samePath
 			? Task.CompletedTask
 			: GetQueuedPerDocumentOperationUnderLock(secondFilePath);
 
-		Task secondLatestUpdateOperation = string.Equals(firstFilePath, secondFilePath, StringComparison.OrdinalIgnoreCase)
+		Task secondLatestUpdateOperation = samePath
 			? Task.CompletedTask
 			: GetQueuedLatestUpdateOperationUnderLock(secondFilePath);
 
-		Task secondBarrierOperation = includeBarriers || string.Equals(firstFilePath, secondFilePath, StringComparison.OrdinalIgnoreCase)
+		Task secondBarrierOperation = includeBarriers || samePath
 			? GetQueuedPerDocumentBarrierUnderLock(secondFilePath)
 			: Task.CompletedTask;
 

@@ -1166,20 +1166,20 @@ public class LanguageServerClientTests
 	}
 
 	[TestMethod]
-	public async Task HandleSemanticTokensRefreshRequestAsync_WhenTransportIsAttachedButNotReady_IgnoresRequest()
+	public async Task HandleSemanticTokensRefreshRequestAsync_WhenTransportIsAttachedButNotReady_DeliversRefreshCallback()
 	{
 		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
 		object session = CreateTransportSession(client, 1, process: null, Stream.Null, Stream.Null);
-		int refreshRequestedCount = 0;
+		var refreshRequested = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 		SetActiveSession(client, session);
-		client.SemanticTokensRefreshRequested += () => refreshRequestedCount++;
+		client.SemanticTokensRefreshRequested += () => refreshRequested.TrySetResult(true);
 
 		object rpcTarget = CreateRpcTarget(client, GetTransportGeneration(session));
 		object? result = await InvokePrivateTaskAsync<object?>(rpcTarget, "RefreshSemanticTokensAsync").ConfigureAwait(false);
 
-		Assert.AreEqual(0, refreshRequestedCount);
 		Assert.IsNull(result);
+		await refreshRequested.Task.WaitAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -1440,6 +1440,25 @@ public class LanguageServerClientTests
 			&& log.Contains("failed", StringComparison.OrdinalIgnoreCase)
 			&& log.Contains("generation 7", StringComparison.OrdinalIgnoreCase)),
 			string.Join(Environment.NewLine, logScope.Logs));
+	}
+
+	[TestMethod]
+	public async Task HandleDiagnosticsPublished_WhenTransportIsAttachedButNotReady_QueuesDiagnostics()
+	{
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		object session = CreateTransportSession(client, 6, process: null, Stream.Null, Stream.Null);
+		var publishedMessage = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		SetActiveSession(client, session);
+		InvokePrivateMethod(client, "EnsureTransportBackgroundLoopsRunning", true);
+		client.DiagnosticsPublished += parameters => publishedMessage.TrySetResult(parameters.Diagnostics?[0].Message);
+
+		object rpcTarget = CreateRpcTarget(client, GetTransportGeneration(session));
+		InvokePrivateMethod(rpcTarget,
+			"PublishDiagnostics",
+			CreateDiagnosticsParameters("file:///C:/Workspace/test.lua", "Initial warning."));
+
+		Assert.AreEqual("Initial warning.", await publishedMessage.Task.WaitAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false));
 	}
 
 	[TestMethod]

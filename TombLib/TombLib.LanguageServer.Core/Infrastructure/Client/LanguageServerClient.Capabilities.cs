@@ -157,6 +157,26 @@ public sealed partial class LanguageServerClient
 	}
 
 	/// <summary>
+	/// Creates the published capability snapshot used while one transport generation is active but still completing startup.
+	/// </summary>
+	/// <param name="transportGeneration">The active transport generation.</param>
+	/// <returns>The startup snapshot for the active generation.</returns>
+	private static PublishedCapabilitySnapshot CreateActiveSessionCapabilitySnapshot(long transportGeneration) => new(
+		transportGeneration,
+		IsReady: false,
+		AcceptsServerCallbacks: transportGeneration != 0,
+		TextDocumentSyncKind: TextDocumentSyncKind.None,
+		SemanticTokenTypes: EmptyCapabilityList,
+		SemanticTokenModifiers: EmptyCapabilityList,
+		SupportsCompletionResolve: false,
+		SupportsReferences: null,
+		SupportsRename: null,
+		SupportsFormatting: null,
+		SupportsSemanticTokensFull: false,
+		SupportsSemanticTokensDelta: false
+	);
+
+	/// <summary>
 	/// Creates the default published capability snapshot for one transport generation.
 	/// </summary>
 	/// <param name="transportGeneration">The transport generation to publish.</param>

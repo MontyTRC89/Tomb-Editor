@@ -32,6 +32,36 @@ public class TrackedDocumentStoreTests
 	}
 
 	[TestMethod]
+	public void Rename_PathCaseOnlyDifference_FollowsPlatformPathSensitivity()
+	{
+		var store = new TestTrackedDocumentStore();
+		string directoryPath = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "TrackedDocumentStoreTests"));
+		string originalFilePath = LanguageServerPathHelper.NormalizeLocalPath(Path.Combine(directoryPath, "test.lua"));
+		string renamedFilePath = LanguageServerPathHelper.NormalizeLocalPath(Path.Combine(directoryPath, "TEST.lua"));
+
+		store.Synchronize(originalFilePath, "return 1", acquireOpenReference: true);
+
+		DocumentRenameRequest? renameRequest = store.Rename(originalFilePath, renamedFilePath, "return 1");
+
+		if (LanguageServerPathHelper.UsesCaseSensitiveLocalPaths)
+		{
+			Assert.IsNotNull(renameRequest);
+			Assert.IsNull(store.GetDocumentSnapshot(originalFilePath));
+			Assert.IsNotNull(store.GetDocumentSnapshot(renamedFilePath));
+		}
+		else
+		{
+			Assert.IsNull(renameRequest);
+			Assert.IsNotNull(store.GetDocumentSnapshot(originalFilePath));
+
+			DocumentSnapshot? aliasedDocument = store.GetDocumentSnapshot(renamedFilePath);
+
+			Assert.IsNotNull(aliasedDocument);
+			Assert.AreEqual(originalFilePath, aliasedDocument.FilePath);
+		}
+	}
+
+	[TestMethod]
 	public void TryClose_RemovesTrackedDocumentWhileRestartReplayIsPending()
 	{
 		var store = new TestTrackedDocumentStore();

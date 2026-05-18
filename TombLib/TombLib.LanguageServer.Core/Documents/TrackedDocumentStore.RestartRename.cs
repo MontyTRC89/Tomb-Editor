@@ -12,7 +12,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// <returns>The rename request that should be mirrored to the server, or <see langword="null"/> when no document was tracked.</returns>
 	public DocumentRenameRequest? Rename(string oldFilePath, string newFilePath, string? content = null)
 	{
-		if (string.Equals(oldFilePath, newFilePath, StringComparison.OrdinalIgnoreCase))
+		if (LanguageServerPathHelper.AreLocalPathsEqual(oldFilePath, newFilePath))
 			return null;
 
 		lock (_syncRoot)

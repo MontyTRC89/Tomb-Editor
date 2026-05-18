@@ -549,6 +549,55 @@ public class WorkspaceFileChangeForwarderTests
 		Assert.AreEqual(1, forwardedBatches.Count);
 		Assert.AreEqual(deferredChanges[0].Path, forwardedBatches[0][0].Path);
 	}
+
+	[TestMethod]
+	public async Task Dispose_WhileDispatchWaitsForGate_DoesNotStartForwardingAfterGateOpens()
+	{
+		bool ensureStartedCalled = false;
+		bool forwardCalled = false;
+		var firstForwardEntered = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var allowFirstForwardToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		var forwarder = new WorkspaceFileChangeForwarder(
+			canForwardAccessor: () => true,
+			isDisposedAccessor: () => false,
+			ensureStartedAsync: _ =>
+			{
+				ensureStartedCalled = true;
+				return Task.FromResult(true);
+			},
+			markTransportUnavailable: static () => { });
+
+		Task firstDispatchTask = forwarder.DispatchAsync(
+			[new WorkspaceFileChange(@"C:\Workspace\Scripts\first.lua", FileChangeKind.Changed)],
+			async (_, _) =>
+			{
+				firstForwardEntered.TrySetResult(true);
+				await allowFirstForwardToFinish.Task.ConfigureAwait(false);
+			},
+			CancellationToken.None);
+
+		await firstForwardEntered.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+
+		Task blockedDispatchTask = forwarder.DispatchAsync(
+			[new WorkspaceFileChange(@"C:\Workspace\Scripts\blocked.lua", FileChangeKind.Created)],
+			(_, _) =>
+			{
+				forwardCalled = true;
+				return Task.CompletedTask;
+			},
+			CancellationToken.None);
+
+		await Task.Delay(100).ConfigureAwait(false);
+		forwarder.Dispose();
+		allowFirstForwardToFinish.TrySetResult(true);
+
+		await firstDispatchTask.ConfigureAwait(false);
+		await blockedDispatchTask.ConfigureAwait(false);
+
+		Assert.IsTrue(ensureStartedCalled);
+		Assert.IsFalse(forwardCalled);
+	}
 }
 
 [TestClass]
@@ -567,8 +616,33 @@ public class LanguageServerPathHelperTests
 	}
 
 	[TestMethod]
+	public void NormalizeLocalPath_TrimsTrailingDirectorySeparatorForNonRootPath()
+	{
+		string rawPath = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "Path Helper", "Folder")) + Path.DirectorySeparatorChar;
+
+		string normalizedPath = LanguageServerPathHelper.NormalizeLocalPath(rawPath);
+
+		Assert.AreEqual(Path.TrimEndingDirectorySeparator(Path.GetFullPath(rawPath)), normalizedPath);
+	}
+
+	[TestMethod]
+	public void AreLocalPathsEqual_FollowsConfiguredPlatformCaseSensitivity()
+	{
+		string directoryPath = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "Path Helper"));
+		string lowerCasePath = LanguageServerPathHelper.NormalizeLocalPath(Path.Combine(directoryPath, "case.lua"));
+		string upperCasePath = LanguageServerPathHelper.NormalizeLocalPath(Path.Combine(directoryPath, "CASE.lua"));
+
+		Assert.AreEqual(
+			!LanguageServerPathHelper.UsesCaseSensitiveLocalPaths,
+			LanguageServerPathHelper.AreLocalPathsEqual(lowerCasePath, upperCasePath));
+	}
+
+	[TestMethod]
 	public void NormalizeLocalPath_Uri_HandlesUncPath()
 	{
+		if (!OperatingSystem.IsWindows())
+			return;
+
 		Uri uri = new("file://server/share/folder/test.lua");
 		string expectedPath = Path.GetFullPath(@"\\server\share\folder\test.lua");
 

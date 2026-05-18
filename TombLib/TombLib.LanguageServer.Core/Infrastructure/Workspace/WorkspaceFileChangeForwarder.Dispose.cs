@@ -3,6 +3,16 @@ namespace TombLib.LanguageServer.Core;
 public sealed partial class WorkspaceFileChangeForwarder
 {
 	/// <summary>
+	/// Reports whether disposal has already been requested.
+	/// </summary>
+	/// <returns><see langword="true"/> when new forwarding work should stop; otherwise, <see langword="false"/>.</returns>
+	private bool IsDisposeRequested()
+	{
+		lock (_disposeSyncRoot)
+			return _disposeRequested;
+	}
+
+	/// <summary>
 	/// Releases the owned synchronization gate once no forwarding operations remain active.
 	/// </summary>
 	public void Dispose()

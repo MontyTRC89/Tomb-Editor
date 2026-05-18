@@ -83,7 +83,7 @@ public sealed partial class LanguageServerClient
 		lock (_publishedCapabilitySnapshotSyncRoot)
 		{
 			_activeSession = session;
-			PublishCapabilitySnapshot(CreateDefaultCapabilitySnapshot(session.Generation));
+			PublishCapabilitySnapshot(CreateActiveSessionCapabilitySnapshot(session.Generation));
 		}
 	}
 
@@ -228,10 +228,10 @@ public sealed partial class LanguageServerClient
 		=> transportGeneration != 0 && transportGeneration == TransportGeneration;
 
 	/// <summary>
-	/// Reports whether the supplied transport generation is still the ready session that may publish server callbacks.
+	/// Reports whether the supplied transport generation may currently publish server callbacks.
 	/// </summary>
 	/// <param name="transportGeneration">The transport generation to inspect.</param>
-	/// <returns><see langword="true"/> when the generation still owns the published ready snapshot.</returns>
+	/// <returns><see langword="true"/> when the generation still owns the published callback-enabled snapshot.</returns>
 	private bool CanAcceptServerCallbacksForGeneration(long transportGeneration)
 	{
 		PublishedCapabilitySnapshot snapshot = Volatile.Read(ref _publishedCapabilitySnapshot);
