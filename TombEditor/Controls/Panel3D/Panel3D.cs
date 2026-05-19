@@ -179,6 +179,11 @@ namespace TombEditor.Controls.Panel3D
         private RenderingFont _fontDefault;
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
+        // V2 renderer. Non-null only when Configuration.Rendering3D_UseV2Renderer
+        // was set at panel init. When set, the legacy rendering path is bypassed
+        // entirely (no swapchain / textures / state buffer / legacy device init).
+        internal TombEditor.Rendering.V2.LevelRenderer _v2Renderer;
+
         // Render stats
         private readonly Stopwatch _watch = new Stopwatch();
 
@@ -224,6 +229,7 @@ namespace TombEditor.Controls.Panel3D
                         _editor.GetViewportCamera = null;
                 }
 
+                _v2Renderer?.Dispose();
                 _renderingStateBuffer?.Dispose();
                 _renderingTextures?.Dispose();
                 _renderingCachedRooms?.Dispose();
@@ -514,6 +520,37 @@ namespace TombEditor.Controls.Panel3D
         protected override void OnDraw()
         {
             DrawScene();
+        }
+
+        // When the V2 renderer is active, we bypass RenderingPanel's paint flow
+        // (which assumes the legacy SwapChain is alive) and let V2 own the
+        // entire client area: no background clear, no fallback messages, no
+        // legacy Clear/Present.
+        protected override void OnPaintBackground(System.Windows.Forms.PaintEventArgs e)
+        {
+            if (_v2Renderer is not null) return;
+            base.OnPaintBackground(e);
+        }
+
+        protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+        {
+            if (_v2Renderer is not null)
+            {
+                _v2Renderer.RenderFrame();
+                return;
+            }
+            base.OnPaint(e);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            if (_v2Renderer is not null && ClientSize.Width > 0 && ClientSize.Height > 0)
+            {
+                _v2Renderer.Resize(ClientSize.Width, ClientSize.Height);
+                Invalidate();
+                return;
+            }
+            base.OnResize(e);
         }
     }
 }

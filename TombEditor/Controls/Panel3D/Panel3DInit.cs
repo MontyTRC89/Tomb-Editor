@@ -13,6 +13,17 @@ namespace TombEditor.Controls.Panel3D
     {
         public override void InitializeRendering(RenderingDevice device, bool antialias, ObjectRenderingQuality objectQuality)
         {
+            if (_editor.Configuration.Rendering3D_UseV2Renderer)
+            {
+                // V2 owns the HWND swapchain. Skip the legacy init entirely:
+                // RenderingPanel's SwapChain stays null, the per-room cache stays
+                // empty, and OnPaint dispatches straight to LevelRenderer.
+                _v2Renderer = new TombEditor.Rendering.V2.LevelRenderer(
+                    Handle, ClientSize.Width, ClientSize.Height);
+                ResetCamera(true);
+                return;
+            }
+
             base.InitializeRendering(device, antialias, objectQuality);
 
             // Fall back to half of the max. page count for texture allocation, if editor is in safe mode.
