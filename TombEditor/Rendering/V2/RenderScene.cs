@@ -31,6 +31,7 @@ public readonly struct RenderScene
     public readonly bool               ShowSlideDirections;
     public readonly bool               ProbeAttributesThroughPortals;
     public readonly bool               HideHiddenRooms;
+    public readonly float              GridLineWidth;
 
     public RenderScene(
         Level             level,
@@ -44,7 +45,8 @@ public readonly struct RenderScene
         bool              showIllegalSlopes,
         bool              showSlideDirections,
         bool              probeAttributesThroughPortals,
-        bool              hideHiddenRooms)
+        bool              hideHiddenRooms,
+        float             gridLineWidth)
     {
         Level                         = level;
         Camera                        = camera;
@@ -59,5 +61,6 @@ public readonly struct RenderScene
         ShowSlideDirections           = showSlideDirections;
         ProbeAttributesThroughPortals = probeAttributesThroughPortals;
         HideHiddenRooms               = hideHiddenRooms;
+        GridLineWidth                 = gridLineWidth;
     }
 }

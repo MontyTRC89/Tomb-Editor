@@ -38,7 +38,9 @@ public sealed class LevelRenderer : IDisposable
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 256)]
     private struct ViewParams
     {
-        public Matrix4x4 ViewProjection;
+        public Matrix4x4 ViewProjection;   // 64B
+        public float     GridLineWidth;    // 4B  -- legacy default 10.0
+        public float     _pad0, _pad1, _pad2;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -146,7 +148,11 @@ public sealed class LevelRenderer : IDisposable
         // exactly what mul(M, v_column) expects when the CPU code uses
         // row-vector convention. The legacy renderer follows the same
         // convention — verified against Dx11RenderingStateBuffer.
-        var vp = new ViewParams { ViewProjection = scene.ViewProjection };
+        var vp = new ViewParams
+        {
+            ViewProjection = scene.ViewProjection,
+            GridLineWidth  = scene.GridLineWidth,
+        };
         unsafe
         {
             var span = new ReadOnlySpan<byte>(&vp, sizeof(ViewParams));

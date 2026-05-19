@@ -694,7 +694,8 @@ namespace TombEditor.Controls.Panel3D
                         showIllegalSlopes:             ShowIllegalSlopes,
                         showSlideDirections:           ShowSlideDirections,
                         probeAttributesThroughPortals: _editor.Configuration.UI_ProbeAttributesThroughPortals,
-                        hideHiddenRooms:               DisablePickingForHiddenRooms);
+                        hideHiddenRooms:               DisablePickingForHiddenRooms,
+                        gridLineWidth:                 _editor.Configuration.Rendering3D_LineWidth);
                     _v2Renderer.RenderFrame(scene);
                 }
                 else
