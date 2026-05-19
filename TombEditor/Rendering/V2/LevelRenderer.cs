@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib;
+using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.SectorStructs;
 using TombLib.Rendering;
@@ -34,6 +35,8 @@ public sealed class LevelRenderer : IDisposable
     private TextureAtlas?           _atlas;
     private Level?                  _atlasLevel;
     private readonly Dictionary<Room, RoomMesh> _roomMeshes = new();
+    private readonly Frustum                    _frustum    = new();
+    private readonly List<Room>                 _visibleRooms = new();
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 256)]
     private struct ViewParams
@@ -185,9 +188,9 @@ public sealed class LevelRenderer : IDisposable
                 Samplers        = new[] { _atlas.Sampler },
             });
 
-            // One SectorTextureDefault per room: only the selected room gets
-            // a populated SelectionArea / HighlightArea (matches the legacy
-            // CacheRoom behavior).
+            // One SectorTextureDefault per frame, mutated per room: only the
+            // selected room gets a populated SelectionArea / HighlightArea
+            // (matches the legacy CacheRoom behavior).
             var st = new SectorTextureDefault
             {
                 ColoringInfo                  = scene.ColoringInfo,
@@ -197,10 +200,14 @@ public sealed class LevelRenderer : IDisposable
                 HideHiddenRooms               = scene.HideHiddenRooms,
             };
 
-            foreach (Room room in scene.Level.Rooms)
-            {
-                if (room == null || room.RoomGeometry == null) continue;
+            // Match the legacy visible-room set: with ShowAllRooms off and
+            // no portal walking, only the selected room is drawn — a 50-room
+            // level becomes 1 draw call instead of 50. Frustum-cull the rest
+            // so large levels stay quick when ShowAllRooms is on.
+            CollectVisibleRooms(scene);
 
+            foreach (Room room in _visibleRooms)
+            {
                 if (ReferenceEquals(room, scene.SelectedRoom))
                 {
                     st.SelectionArea  = scene.SelectionArea;
@@ -246,6 +253,38 @@ public sealed class LevelRenderer : IDisposable
         cl.EndPass();
         _device.Submit(cl);
         _device.Present(_swap);
+    }
+
+    private void CollectVisibleRooms(in RenderScene scene)
+    {
+        _visibleRooms.Clear();
+        if (scene.Level == null) return;
+
+        // Default editor view (no ShowAllRooms / no ShowPortals): just the
+        // selected room. Same as the legacy CollectRoomsToDraw fast path.
+        if (!scene.ShowAllRooms && !scene.ShowPortals)
+        {
+            if (scene.SelectedRoom?.RoomGeometry != null)
+                _visibleRooms.Add(scene.SelectedRoom);
+            return;
+        }
+
+        // ShowAllRooms (or ShowPortals — for now treated the same; proper
+        // portal walking from the camera room will come with the portal
+        // pass). Frustum-cull the level's room set.
+        _frustum.Update(scene.Camera, scene.ViewportSize);
+        foreach (Room room in scene.Level.Rooms)
+        {
+            if (room?.RoomGeometry == null) continue;
+            // Skip the alternate/flipped variant book-keeping rooms so we
+            // don't double-draw them. Mirror the legacy ShowAllRooms branch:
+            // when the selected room isn't a flipped-alternate, hide the
+            // alternated rooms (they're shown only when their base is
+            // explicitly switched). For first pass, drop alternated ones.
+            if (room.Alternated && room.AlternateBaseRoom != null) continue;
+            if (!_frustum.Contains(room.WorldBoundingBox)) continue;
+            _visibleRooms.Add(room);
+        }
     }
 
     private void EnsureAtlas(Level level)
