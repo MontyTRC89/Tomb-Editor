@@ -429,7 +429,9 @@ public unsafe sealed class Dx11Device : IRhiDevice
             SlopeScaledDepthBias  = rs.SlopeScaledDepthBias,
             DepthClipEnable       = true,
             ScissorEnable         = rs.ScissorEnable,
-            MultisampleEnable     = false,
+            // Use MSAA-aware coverage rules when the bound render target
+            // is multisampled — harmless on single-sample targets.
+            MultisampleEnable     = true,
             AntialiasedLineEnable = false,
         };
         ComPtr<DX.ID3D11RasterizerState> rsState = default;

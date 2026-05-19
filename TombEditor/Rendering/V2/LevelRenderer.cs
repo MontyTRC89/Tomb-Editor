@@ -80,7 +80,7 @@ public sealed class LevelRenderer : IDisposable
             height:  _height,
             color:   Format.R8G8B8A8_UNorm,
             depth:   Format.D24_UNorm_S8_UInt,
-            samples: 1,
+            samples: 4,        // 4x MSAA — smooths sector grid lines and geometry edges
             vsync:   true));
 
         InitRoomPipeline();
