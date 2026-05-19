@@ -89,6 +89,28 @@ public partial class LanguageServerClientTests
 	}
 
 	[TestMethod]
+	public async Task EnsureTransportBackgroundLoopsRunning_WhenFaultedPumpIsReplaced_ForgetsObservedTermination()
+	{
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		Task faultedCallbackPump = Task.FromException(new IOException("Simulated callback pump failure."));
+
+		SetPrivateField(client, "_callbackPumpTask", faultedCallbackPump);
+		InvokePrivateMethod(client,
+			"ObserveBackgroundLoop",
+			faultedCallbackPump,
+			"callback dispatcher",
+			true);
+
+		await Task.Delay(50).ConfigureAwait(false);
+
+		Assert.IsTrue((bool)InvokePrivateMethodWithReturn(client, "WasObservedBackgroundLoopTermination", faultedCallbackPump));
+
+		InvokePrivateMethod(client, "EnsureTransportBackgroundLoopsRunning", false);
+
+		Assert.IsFalse((bool)InvokePrivateMethodWithReturn(client, "WasObservedBackgroundLoopTermination", faultedCallbackPump));
+	}
+
+	[TestMethod]
 	public async Task EnsureTransportBackgroundLoopsRunning_WhenDiagnosticsPumpFaulted_RestartRecoveryStillPublishesDiagnostics()
 	{
 		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);

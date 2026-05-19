@@ -10,8 +10,11 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 	private readonly List<string> _sentMethodNames = [];
 	private readonly Queue<JsonElement> _semanticTokensDeltaResponses = [];
 	private readonly Queue<JsonElement> _semanticTokensFullResponses = [];
+	private TaskCompletionSource<bool>? _hoverRequestGate;
 	private TaskCompletionSource<bool>? _openNotificationGate;
+	private TaskCompletionSource<bool>? _startGate;
 	private TaskCompletionSource<bool>? _changeNotificationGate;
+	private TaskCompletionSource<bool>? _semanticTokensFullRequestGate;
 	private TaskCompletionSource<bool>? _watchedFilesNotificationGate;
 	private readonly TaskCompletionSource<bool> _changeNotificationObserved = new(TaskCreationOptions.RunContinuationsAsynchronously);
 	private readonly TaskCompletionSource<bool> _closeNotificationObserved = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -43,19 +46,27 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 	public int DisposeCallCount { get; private set; }
 	public int TimedOutHoverRequestsRemaining { get; set; }
 	public int TransportChangedRequestFailuresRemaining { get; set; }
+	public string? ThrowIOExceptionOnNextRequestMethod { get; set; }
+	public string? ThrowInvalidOperationOnNextRequestMethod { get; set; }
 	public bool ThrowIOExceptionOnNextDidChange { get; set; }
 	public bool ThrowInvalidOperationOnNextWatchedFilesNotification { get; set; }
 	public bool ThrowIOExceptionOnNextWatchedFilesNotification { get; set; }
+	public bool ThrowIOExceptionAfterWatchedFilesNotificationGateRelease { get; set; }
 	public List<bool> StartCancellationTokenCanBeCanceled { get; } = [];
 
 	public event Action<PublishDiagnosticsParams>? DiagnosticsPublished;
 
 	public event Action? SemanticTokensRefreshRequested;
 
-	public Task<bool> StartAsync(CancellationToken cancellationToken)
+	public async Task<bool> StartAsync(CancellationToken cancellationToken)
 	{
 		StartCallCount++;
 		StartCancellationTokenCanBeCanceled.Add(cancellationToken.CanBeCanceled);
+
+		TaskCompletionSource<bool>? startGate = _startGate;
+
+		if (startGate is not null)
+			await startGate.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		if (FailStartWhenCancellationRequested && cancellationToken.IsCancellationRequested)
 			throw new OperationCanceledException(cancellationToken);
@@ -65,13 +76,22 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 		if (StartResult)
 			TransportGeneration++;
 
-		return Task.FromResult(StartResult);
+		return StartResult;
 	}
 
 	public void MarkTransportUnhealthy()
 	{
 		MarkTransportUnhealthyCallCount++;
 		IsReady = false;
+	}
+
+	public bool TryMarkTransportUnhealthy(long transportGeneration)
+	{
+		if (transportGeneration != TransportGeneration)
+			return false;
+
+		MarkTransportUnhealthy();
+		return true;
 	}
 
 	public Task SendNotificationAsync(string method, object parameters, CancellationToken cancellationToken)
@@ -114,7 +134,7 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 		}
 
 		if (method == "workspace/didChangeWatchedFiles" && _watchedFilesNotificationGate is not null)
-			return _watchedFilesNotificationGate.Task;
+			return WaitForWatchedFilesNotificationGateAsync();
 
 		if (method == "textDocument/didClose")
 			_closeNotificationObserved.TrySetResult(true);
@@ -129,6 +149,19 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 	{
 		RecordRequest(method, parameters);
 
+		if (string.Equals(ThrowIOExceptionOnNextRequestMethod, method, StringComparison.Ordinal))
+		{
+			ThrowIOExceptionOnNextRequestMethod = null;
+			IsReady = false;
+			throw new LanguageServerTransportUnavailableException($"Simulated {method} transport failure.");
+		}
+
+		if (string.Equals(ThrowInvalidOperationOnNextRequestMethod, method, StringComparison.Ordinal))
+		{
+			ThrowInvalidOperationOnNextRequestMethod = null;
+			throw new InvalidOperationException($"Simulated {method} request failure.");
+		}
+
 		if (TransportChangedRequestFailuresRemaining > 0)
 		{
 			TransportChangedRequestFailuresRemaining--;
@@ -138,6 +171,9 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 
 		if (method == "textDocument/hover")
 		{
+			if (_hoverRequestGate is not null)
+				return WaitForHoverRequestGateAsync<TResult>(cancellationToken);
+
 			if (CancelNextHoverRequestWithoutTimeout)
 			{
 				CancelNextHoverRequestWithoutTimeout = false;
@@ -186,6 +222,9 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 
 		if (method == "textDocument/semanticTokens/full")
 		{
+			if (_semanticTokensFullRequestGate is not null)
+				return WaitForSemanticTokensFullRequestGateAsync<TResult>();
+
 			if (_semanticTokensFullResponses.Count > 0)
 				return DeserializeResponseAsync<TResult>(_semanticTokensFullResponses.Dequeue());
 
@@ -242,14 +281,37 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 	public void BlockNextOpenNotification()
 		=> _openNotificationGate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
+	public void BlockNextStartAsync()
+		=> _startGate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+	public void BlockNextHoverRequest()
+		=> _hoverRequestGate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
 	public void ReleaseOpenNotification()
 		=> _openNotificationGate?.TrySetResult(true);
+
+	public void ReleaseStartAsync()
+	{
+		TaskCompletionSource<bool>? startGate = _startGate;
+		_startGate = null;
+		startGate?.TrySetResult(true);
+	}
+
+	public void ReleaseHoverRequest()
+	{
+		TaskCompletionSource<bool>? hoverRequestGate = _hoverRequestGate;
+		_hoverRequestGate = null;
+		hoverRequestGate?.TrySetResult(true);
+	}
 
 	public void BlockNextChangeNotification()
 		=> _changeNotificationGate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 	public void BlockNextWatchedFilesNotification()
 		=> _watchedFilesNotificationGate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+	public void BlockNextSemanticTokensFullRequest()
+		=> _semanticTokensFullRequestGate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 	public void ReleaseChangeNotification()
 	{
@@ -263,6 +325,13 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 		TaskCompletionSource<bool>? watchedFilesNotificationGate = _watchedFilesNotificationGate;
 		_watchedFilesNotificationGate = null;
 		watchedFilesNotificationGate?.TrySetResult(true);
+	}
+
+	public void ReleaseSemanticTokensFullRequest()
+	{
+		TaskCompletionSource<bool>? semanticTokensFullRequestGate = _semanticTokensFullRequestGate;
+		_semanticTokensFullRequestGate = null;
+		semanticTokensFullRequestGate?.TrySetResult(true);
 	}
 
 	public async Task<bool> WaitForNotificationAsync(string method, TimeSpan timeout)
@@ -352,9 +421,53 @@ internal sealed class FakeLanguageServerClient : ILanguageServerClient
 	private static TResult CreateDefaultResponse<TResult>()
 		=> default!;
 
+	private async Task WaitForWatchedFilesNotificationGateAsync()
+	{
+		TaskCompletionSource<bool>? watchedFilesNotificationGate = _watchedFilesNotificationGate;
+
+		if (watchedFilesNotificationGate is not null)
+			await watchedFilesNotificationGate.Task.ConfigureAwait(false);
+
+		if (ThrowIOExceptionAfterWatchedFilesNotificationGateRelease)
+		{
+			ThrowIOExceptionAfterWatchedFilesNotificationGateRelease = false;
+			throw new IOException("Simulated delayed workspace watcher transport failure.");
+		}
+	}
+
 	private static async Task<TResult> WaitForCancellationAsync<TResult>(CancellationToken cancellationToken)
 	{
 		await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken).ConfigureAwait(false);
+		return CreateDefaultResponse<TResult>();
+	}
+
+	private async Task<TResult> WaitForSemanticTokensFullRequestGateAsync<TResult>()
+	{
+		TaskCompletionSource<bool>? semanticTokensFullRequestGate = _semanticTokensFullRequestGate;
+
+		if (semanticTokensFullRequestGate is not null)
+			await semanticTokensFullRequestGate.Task.ConfigureAwait(false);
+
+		if (_semanticTokensFullResponses.Count > 0)
+			return DeserializeResponse<TResult>(_semanticTokensFullResponses.Dequeue());
+
+		return DeserializeResponse<TResult>(JsonSerializer.SerializeToElement(new
+		{
+			data = new[] { 0, 6, 5, 0, 0 },
+			resultId = "tokens-1"
+		}));
+	}
+
+	private async Task<TResult> WaitForHoverRequestGateAsync<TResult>(CancellationToken cancellationToken)
+	{
+		TaskCompletionSource<bool>? hoverRequestGate = _hoverRequestGate;
+
+		if (hoverRequestGate is not null)
+			await hoverRequestGate.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+		if (HoverResponse.ValueKind != JsonValueKind.Undefined)
+			return DeserializeResponse<TResult>(HoverResponse);
+
 		return CreateDefaultResponse<TResult>();
 	}
 

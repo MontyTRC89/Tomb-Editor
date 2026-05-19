@@ -474,6 +474,38 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task OpenDocument_DisposeDuringInFlightSemanticTokensRequest_DoesNotRaiseSemanticTokensUpdated()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			SupportsSemanticTokensFull = true,
+			SemanticTokenTypes = ["variable"]
+		};
+
+		client.BlockNextSemanticTokensFullRequest();
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+		var semanticTokensUpdated = new TaskCompletionSource<IReadOnlyList<LuaSemanticToken>>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		provider.SemanticTokensUpdated += (_, tokens) => semanticTokensUpdated.TrySetResult(tokens);
+
+		provider.OpenDocument(filePath, content);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/semanticTokens/full", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+		provider.Dispose();
+		client.ReleaseSemanticTokensFullRequest();
+
+		Task completedTask = await Task.WhenAny(semanticTokensUpdated.Task, Task.Delay(TimeSpan.FromMilliseconds(250))).ConfigureAwait(false);
+
+		Assert.AreNotSame(semanticTokensUpdated.Task, completedTask);
+	}
+
+	[TestMethod]
 	public async Task OpenDocument_SemanticTokensFullRequest_OmitsPreviousResultId()
 	{
 		const string workspaceRoot = @"C:\Workspace";

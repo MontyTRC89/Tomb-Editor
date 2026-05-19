@@ -1,3 +1,5 @@
+using NLog;
+
 namespace TombLib.LanguageServer.Lua;
 
 /// <summary>
@@ -5,6 +7,8 @@ namespace TombLib.LanguageServer.Lua;
 /// </summary>
 internal sealed class LuaWorkspaceSnapshotTracker
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly string _workspaceRootDirectoryPath;
 	private readonly IReadOnlyList<WorkspaceWatchSpecification> _watchSpecifications;
 	private readonly object _snapshotSyncRoot = new();
@@ -184,8 +188,10 @@ internal sealed class LuaWorkspaceSnapshotTracker
 				return true;
 			}
 		}
-		catch (Exception)
-		{ }
+		catch (Exception exception)
+		{
+			Log.Debug(exception, "Failed to capture a Lua workspace snapshot entry for '{Path}'.", normalizedPath);
+		}
 
 		return false;
 	}
@@ -209,8 +215,9 @@ internal sealed class LuaWorkspaceSnapshotTracker
 			isMissing = true;
 			return true;
 		}
-		catch (Exception)
+		catch (Exception exception)
 		{
+			Log.Debug(exception, "Failed to determine whether the Lua workspace path '{Path}' is missing.", normalizedPath);
 			return false;
 		}
 	}

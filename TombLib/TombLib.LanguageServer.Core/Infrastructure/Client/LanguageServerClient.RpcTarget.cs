@@ -1,4 +1,5 @@
 using StreamJsonRpc;
+using System.Text.Json;
 
 namespace TombLib.LanguageServer.Core;
 
@@ -164,10 +165,10 @@ public sealed partial class LanguageServerClient
 		/// <summary>
 		/// Acknowledges work-done progress creation requests without creating a client-side progress sink.
 		/// </summary>
-		/// <param name="parameters">The empty protocol payload.</param>
+		/// <param name="parameters">The protocol payload ignored by the host.</param>
 		/// <returns><see langword="null"/>.</returns>
 		[JsonRpcMethod("window/workDoneProgress/create", UseSingleObjectParameterDeserialization = true)]
-		public object? CreateWorkDoneProgress(EmptyParams parameters)
+		public object? CreateWorkDoneProgress(JsonElement parameters)
 		{
 			LogIgnoredUnsupportedCallback("window/workDoneProgress/create", "the lean host-specific wrapper does not expose a client-side progress sink");
 			return null;
@@ -205,25 +206,25 @@ public sealed partial class LanguageServerClient
 		/// <summary>
 		/// Ignores telemetry events that the host does not surface.
 		/// </summary>
-		/// <param name="parameters">The empty protocol payload.</param>
+		/// <param name="parameters">The protocol payload ignored by the host.</param>
 		[JsonRpcMethod("telemetry/event", UseSingleObjectParameterDeserialization = true)]
-		public void TelemetryEvent(EmptyParams parameters)
+		public void TelemetryEvent(JsonElement parameters)
 			=> LogIgnoredUnsupportedCallback("telemetry/event", "the wrapper does not surface server telemetry events");
 
 		/// <summary>
 		/// Ignores generic progress notifications that the host does not surface.
 		/// </summary>
-		/// <param name="parameters">The empty protocol payload.</param>
+		/// <param name="parameters">The protocol payload ignored by the host.</param>
 		[JsonRpcMethod("$/progress", UseSingleObjectParameterDeserialization = true)]
-		public void Progress(EmptyParams parameters)
+		public void Progress(JsonElement parameters)
 			=> LogIgnoredUnsupportedCallback("$/progress", "the wrapper does not surface generic progress notifications");
 
 		/// <summary>
 		/// Ignores nonstandard hello notifications that some language servers emit during startup.
 		/// </summary>
-		/// <param name="parameters">The empty protocol payload.</param>
+		/// <param name="parameters">The protocol payload ignored by the host.</param>
 		[JsonRpcMethod("$/hello", UseSingleObjectParameterDeserialization = true)]
-		public void Hello(EmptyParams parameters)
+		public void Hello(JsonElement parameters)
 			=> LogIgnoredUnsupportedCallback("$/hello", "the wrapper does not surface nonstandard startup notifications");
 
 		/// <summary>

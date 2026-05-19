@@ -89,6 +89,12 @@ public sealed partial class WorkspaceFileWatcher
 
 						_pendingChanges.Requeue(batch, retryDelay);
 					}
+					else
+					{
+						// Preserve the terminal failed batch so the watcher-failure recovery path can
+						// attempt one last owner-driven dispatch instead of silently dropping it.
+						_pendingChanges.Restore(batch);
+					}
 				}
 			}
 

@@ -4,7 +4,7 @@ namespace TombLib.LanguageServer.Lua.Tests;
 
 public partial class LuaLanguageServerIntellisenseProviderTests
 {
-	private static PublishDiagnosticsParams CreateDiagnostics(string filePath, int version, int startCharacter, int endCharacter, string message) => new(
+	private static PublishDiagnosticsParams CreateDiagnostics(string filePath, int? version, int startCharacter, int endCharacter, string message) => new(
 		new Uri(filePath).AbsoluteUri,
 		version,
 		[

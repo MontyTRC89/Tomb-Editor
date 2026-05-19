@@ -10,6 +10,10 @@ namespace TombLib.Scripting.Lua.Services;
 /// <summary>
 /// Defines the language-service contract used by <see cref="LuaEditor"/> to provide Lua IntelliSense features.
 /// </summary>
+/// <remarks>
+/// Implementations may raise callbacks from background threads. Consumers that access UI controls must marshal those
+/// callbacks to the UI thread. Once disposal begins, no further provider callbacks are raised.
+/// </remarks>
 public interface ILuaIntellisenseProvider : IDisposable
 {
 	/// <summary>
@@ -35,11 +39,19 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <summary>
 	/// Occurs when diagnostics for a document have changed.
 	/// </summary>
+	/// <remarks>
+	/// This callback may be raised from a background thread. UI consumers must marshal to the UI thread before touching
+	/// controls. Once disposal begins, this event will not be raised again.
+	/// </remarks>
 	event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
 
 	/// <summary>
 	/// Occurs when semantic tokens for a document have changed.
 	/// </summary>
+	/// <remarks>
+	/// This callback may be raised from a background thread. UI consumers must marshal to the UI thread before touching
+	/// controls. Once disposal begins, this event will not be raised again.
+	/// </remarks>
 	event Action<string, IReadOnlyList<LuaSemanticToken>>? SemanticTokensUpdated;
 
 	/// <summary>

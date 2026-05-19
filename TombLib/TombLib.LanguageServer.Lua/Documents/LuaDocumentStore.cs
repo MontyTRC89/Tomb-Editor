@@ -31,9 +31,14 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// Stores a diagnostics payload when it is not stale for the tracked document version.
 	/// </summary>
 	/// <param name="publishedDiagnostics">The diagnostics payload to cache.</param>
+	/// <param name="expectedDocumentVersion">The tracked document version observed when the payload was parsed.</param>
 	/// <returns><see langword="true"/> when the payload was stored; otherwise, <see langword="false"/>.</returns>
-	public bool TryStoreDiagnostics(LuaPublishedDiagnostics publishedDiagnostics)
-		=> WithTrackedDocument(publishedDiagnostics.FilePath, state => state.DiagnosticsCache.TryStore(publishedDiagnostics), defaultValue: false);
+	public bool TryStoreDiagnostics(LuaPublishedDiagnostics publishedDiagnostics, int expectedDocumentVersion)
+		=> WithTrackedDocument(
+			publishedDiagnostics.FilePath,
+			state => !HasTrackedDocumentVersionAdvanced(state, expectedDocumentVersion)
+				&& state.DiagnosticsCache.TryStore(publishedDiagnostics),
+			defaultValue: false);
 
 	/// <summary>
 	/// Stores semantic tokens when they are not stale for the tracked document version.
@@ -43,7 +48,11 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// <param name="semanticTokens">The semantic tokens to cache.</param>
 	/// <returns><see langword="true"/> when the token set was stored; otherwise, <see langword="false"/>.</returns>
 	public bool TryStoreSemanticTokens(string filePath, int version, IReadOnlyList<LuaSemanticToken> semanticTokens)
-		=> WithTrackedDocument(filePath, state => state.SemanticTokensCache.TryStore(version, semanticTokens), defaultValue: false);
+		=> WithTrackedDocument(
+			filePath,
+			state => !HasTrackedDocumentVersionAdvanced(state, version)
+				&& state.SemanticTokensCache.TryStore(version, semanticTokens),
+			defaultValue: false);
 
 	/// <summary>
 	/// Returns the cached semantic-tokens delta state for <paramref name="filePath"/>, if any.
@@ -127,4 +136,7 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 		state.DiagnosticsCache.Clear();
 		state.SemanticTokensCache.Clear();
 	}
+
+	private static bool HasTrackedDocumentVersionAdvanced(LuaDocumentState state, int expectedVersion)
+		=> expectedVersion > 0 && state.Version > 0 && state.Version != expectedVersion;
 }

@@ -262,6 +262,55 @@ public class WorkspaceFileWatcherTests
 	}
 
 	[TestMethod]
+	public async Task DispatchPendingChangesForTestAsync_WhenDispatchEscalates_PreservesFinalBatchForRecoveryDispatch()
+	{
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherRecoveryBatch_");
+		string workspaceRoot = workspace.DirectoryPath;
+		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
+		var recoveredBatch = new TaskCompletionSource<FileChangeBatch>(TaskCreationOptions.RunContinuationsAsynchronously);
+		int watcherFailedCallCount = 0;
+		int dispatchAttemptCount = 0;
+		int allowRecoveryDispatch = 0;
+
+		await using var watcher = new WorkspaceFileWatcher(
+			workspaceRoot,
+			(batch, _) =>
+			{
+				Interlocked.Increment(ref dispatchAttemptCount);
+
+				if (Volatile.Read(ref allowRecoveryDispatch) == 0)
+					throw new IOException("Persistent dispatch failure.");
+
+				recoveredBatch.TrySetResult(batch);
+				return Task.CompletedTask;
+			},
+			watchSpecifications,
+			(_, _) =>
+			{
+				Interlocked.Increment(ref watcherFailedCallCount);
+				Interlocked.Exchange(ref allowRecoveryDispatch, 1);
+			});
+
+		Assert.IsTrue(watcher.Start());
+
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
+
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Changed);
+
+		for (int i = 0; i < 5; i++)
+			await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
+
+		FileChangeBatch dispatchedBatch = await recoveredBatch.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+
+		Assert.AreEqual(1, watcherFailedCallCount);
+		Assert.AreEqual(6, dispatchAttemptCount);
+		Assert.IsFalse(watcher.HasActiveWatchers);
+		Assert.AreEqual(1, dispatchedBatch.Count);
+		Assert.AreEqual(filePath, dispatchedBatch.Entries[0].Path);
+		Assert.AreEqual(FileChangeKind.Changed, dispatchedBatch.Entries[0].Kind);
+	}
+
+	[TestMethod]
 	public async Task Dispose_DuringActiveDispatch_DoesNotFaultDispatch()
 	{
 		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherDispose_");

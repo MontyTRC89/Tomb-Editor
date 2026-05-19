@@ -99,6 +99,13 @@ public interface ILanguageServerClient : IDisposable, IAsyncDisposable
 	void MarkTransportUnhealthy();
 
 	/// <summary>
+	/// Marks one specific transport generation unhealthy only when it is still the active generation.
+	/// </summary>
+	/// <param name="transportGeneration">The observed transport generation to invalidate.</param>
+	/// <returns><see langword="true"/> when the observed generation was still active and was marked unhealthy; otherwise, <see langword="false"/>.</returns>
+	bool TryMarkTransportUnhealthy(long transportGeneration);
+
+	/// <summary>
 	/// Sends a JSON-RPC notification to the language server.
 	/// </summary>
 	/// <param name="method">The LSP method name.</param>

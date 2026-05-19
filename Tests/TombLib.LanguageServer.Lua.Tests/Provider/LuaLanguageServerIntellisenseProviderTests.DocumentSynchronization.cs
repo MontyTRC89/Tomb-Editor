@@ -136,6 +136,48 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task RenameDocument_DisposeDuringBlockedRenameReopen_DoesNotRaiseMovedDiagnosticsUpdated()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string oldFilePath = @"C:\Workspace\Scripts\test.lua";
+		const string newFilePath = @"C:\Workspace\Scripts\renamed.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			SupportsSemanticTokensFull = false
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+		int movedDiagnosticsUpdatedCount = 0;
+
+		provider.DiagnosticsUpdated += (filePath, _) =>
+		{
+			if (string.Equals(filePath, newFilePath, StringComparison.OrdinalIgnoreCase))
+				movedDiagnosticsUpdatedCount++;
+		};
+
+		provider.OpenDocument(oldFilePath, content);
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+		client.PublishDiagnostics(CreateDiagnostics(oldFilePath, 1, 6, 11, "Current warning."));
+		Assert.AreEqual(1, provider.GetDiagnostics(oldFilePath).Count);
+
+		client.BlockNextOpenNotification();
+		provider.RenameDocument(oldFilePath, newFilePath, content);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didClose", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 2, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+		provider.Dispose();
+		client.ReleaseOpenNotification();
+
+		await Task.Delay(250).ConfigureAwait(false);
+
+		Assert.AreEqual(0, movedDiagnosticsUpdatedCount);
+	}
+
+	[TestMethod]
 	public async Task GetHoverAsync_RestartsAfterConsecutiveTimeoutsOnSameTransportGeneration()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -184,6 +226,62 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			{
 				"textDocument/didOpen",
 				"textDocument/hover",
+				"textDocument/hover",
+				"textDocument/didOpen",
+				"textDocument/hover",
+				"textDocument/hover"
+			},
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task GetHoverAsync_TimeoutFromSupersededGeneration_DoesNotInvalidateReplacementTransport()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			TimedOutHoverRequestsRemaining = 1,
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(
+			workspaceRoot,
+			client,
+			requestTimeout: TimeSpan.FromMilliseconds(200),
+			requestTimeoutRestartThreshold: 1);
+
+		Task<LuaHoverInfo?> timedOutHoverTask = provider.GetHoverAsync(filePath, content, 0, 0);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/hover", 1, TimeSpan.FromSeconds(1)));
+
+		client.MarkTransportUnhealthy();
+
+		LuaHoverInfo? restartedHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		LuaHoverInfo? timedOutHover = await timedOutHoverTask;
+		LuaHoverInfo? thirdHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+
+		Assert.IsNotNull(restartedHover);
+		Assert.AreEqual("Hover docs.", restartedHover.Content);
+		Assert.IsNull(timedOutHover);
+		Assert.IsNotNull(thirdHover);
+		Assert.AreEqual("Hover docs.", thirdHover.Content);
+		Assert.IsTrue(client.IsReady);
+		Assert.AreEqual(2, client.StartCallCount);
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				"textDocument/didOpen",
 				"textDocument/hover",
 				"textDocument/didOpen",
 				"textDocument/hover",
@@ -271,6 +369,47 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 				"textDocument/hover"
 			},
 			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task GetHoverAsync_UserCancellation_DoesNotBlockClosingOpenDocument()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		client.BlockNextHoverRequest();
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+		using var cancellationTokenSource = new CancellationTokenSource();
+
+		provider.OpenDocument(filePath, content);
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+		Task<LuaHoverInfo?> hoverTask = provider.GetHoverAsync(filePath, content, 0, 0, cancellationTokenSource.Token);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/hover", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+		cancellationTokenSource.Cancel();
+
+		await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => hoverTask).ConfigureAwait(false);
+
+		provider.CloseDocument(filePath);
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didClose", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+		Assert.AreEqual(0, GetTrackedDocumentCount(provider));
 	}
 
 	[TestMethod]
@@ -621,6 +760,32 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task DiagnosticsPublished_WithoutVersion_StoresFallbackDiagnosticsForTrackedDocument()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient();
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+		int diagnosticsUpdatedCount = 0;
+
+		provider.DiagnosticsUpdated += (_, _) => diagnosticsUpdatedCount++;
+
+		await provider.GetHoverAsync(filePath, content, 0, 0);
+
+		client.PublishDiagnostics(CreateDiagnostics(filePath, version: null, 6, 11, "Fallback warning."));
+
+		IReadOnlyList<TextEditorDiagnostic> diagnostics = provider.GetDiagnostics(filePath);
+
+		Assert.AreEqual(1, diagnosticsUpdatedCount);
+		Assert.AreEqual(1, diagnostics.Count);
+		Assert.AreEqual(TextEditorDiagnosticSeverity.Warning, diagnostics[0].Severity);
+		Assert.AreEqual(6, diagnostics[0].StartOffset);
+		Assert.AreEqual(11, diagnostics[0].EndOffset);
+	}
+
+	[TestMethod]
 	public async Task DiagnosticsPublished_OneSubscriberExceptionDoesNotSuppressLaterSubscribers()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -646,6 +811,33 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task DiagnosticsPublished_DisposeInFirstSubscriber_DoesNotNotifyLaterSubscribers()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient();
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+		int firstSubscriberCalls = 0;
+		int secondSubscriberCalls = 0;
+
+		provider.DiagnosticsUpdated += (_, _) =>
+		{
+			firstSubscriberCalls++;
+			provider.Dispose();
+		};
+
+		provider.DiagnosticsUpdated += (_, _) => secondSubscriberCalls++;
+
+		await provider.GetHoverAsync(filePath, content, 0, 0);
+		client.PublishDiagnostics(CreateDiagnostics(filePath, 1, 6, 12, "Current warning."));
+
+		Assert.AreEqual(1, firstSubscriberCalls);
+		Assert.AreEqual(0, secondSubscriberCalls);
+	}
+
+	[TestMethod]
 	public async Task UpdateDocument_WaitsForEarlierOpenNotificationToFinish()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -668,6 +860,28 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		CollectionAssert.AreEqual(
 			new[] { "textDocument/didOpen", "textDocument/didChange" },
 			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
+	public async Task UpdateDocument_DisposeBeforeQueuedLatestUpdateRuns_DoesNotSendLateDidChange()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLanguageServerClient();
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		client.BlockNextOpenNotification();
+
+		provider.OpenDocument(filePath, "local value = 1");
+		provider.UpdateDocument(filePath, "local value = 2");
+
+		Assert.IsFalse(await client.WaitForNotificationAsync("textDocument/didChange", TimeSpan.FromMilliseconds(250)).ConfigureAwait(false));
+
+		provider.Dispose();
+		client.ReleaseOpenNotification();
+
+		Assert.IsFalse(await client.WaitForNotificationAsync("textDocument/didChange", TimeSpan.FromMilliseconds(250)).ConfigureAwait(false));
 	}
 
 	[TestMethod]

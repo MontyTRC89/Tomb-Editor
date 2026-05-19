@@ -29,6 +29,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 	private readonly ILanguageServerClient? _client;
 	private readonly DocumentOperationScheduler _documentScheduler = new();
 	private readonly LuaDocumentStore _documents = new();
+	private readonly object _startupStateSyncRoot = new();
 	private readonly object _requestTimeoutSyncRoot = new();
 	private readonly ConcurrentDictionary<string, CancellationTokenSource> _semanticTokenRequests = new(StringComparer.OrdinalIgnoreCase);
 	private readonly SemaphoreSlim _startLock = new(1, 1);
@@ -51,8 +52,17 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 	/// <summary>
 	/// Gets a value indicating whether IntelliSense requests can currently be served.
 	/// </summary>
-	public bool IsAvailable => !_isDisposed && _client is not null
-		&& _consecutiveStartupFailures < HardStartupFailureThreshold;
+	public bool IsAvailable
+	{
+		get
+		{
+			if (_isDisposed || _client is null)
+				return false;
+
+			lock (_startupStateSyncRoot)
+				return _consecutiveStartupFailures < HardStartupFailureThreshold;
+		}
+	}
 
 	/// <summary>
 	/// Gets a value indicating whether reference requests are supported by the active Lua language server.
@@ -72,21 +82,37 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 	/// <summary>
 	/// Occurs when diagnostics for a tracked document change.
 	/// </summary>
+	/// <remarks>
+	/// Diagnostics notifications may be delivered from background work. Consumers that touch UI controls must marshal to
+	/// the UI thread. Once disposal begins, this event will not be raised again.
+	/// </remarks>
 	public event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
 
 	/// <summary>
 	/// Occurs when semantic tokens for a tracked document change.
 	/// </summary>
+	/// <remarks>
+	/// Semantic-token notifications may be delivered from background work. Consumers that touch UI controls must marshal
+	/// to the UI thread. Once disposal begins, this event will not be raised again.
+	/// </remarks>
 	public event Action<string, IReadOnlyList<LuaSemanticToken>>? SemanticTokensUpdated;
 
 	/// <summary>
 	/// Occurs when repeated language-server startup failures should be surfaced to the user.
 	/// </summary>
+	/// <remarks>
+	/// Startup-failure notifications may be delivered from background work. Consumers that touch UI controls must marshal
+	/// to the UI thread. Once disposal begins, this event will not be raised again.
+	/// </remarks>
 	public event Action<LanguageServerStartupFailure>? StartupFailed;
 
 	/// <summary>
 	/// Occurs when the external workspace watcher becomes unavailable for the rest of the session.
 	/// </summary>
+	/// <remarks>
+	/// Workspace-watcher notifications may be delivered from background work. Consumers that touch UI controls must
+	/// marshal to the UI thread. Once disposal begins, this event will not be raised again.
+	/// </remarks>
 	public event Action<WorkspaceWatcherFailure>? WorkspaceWatcherFailed;
 
 	/// <summary>
@@ -226,13 +252,17 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 		ObserveBackgroundTask(CloseDocumentAsync(normalizedFilePath, CancellationToken.None), "Document close");
 	}
 
-	private void MarkWorkspaceTransportUnavailable()
+	private void MarkWorkspaceTransportUnavailable(long transportGeneration)
 	{
-		_startupSucceeded = false;
+		ILanguageServerClient? client = _client;
+
+		if (client is null)
+			return;
 
 		try
 		{
-			_client?.MarkTransportUnhealthy();
+			if (client.TryMarkTransportUnhealthy(transportGeneration))
+				MarkStartupTransportUnavailable();
 		}
 		catch (Exception exception)
 		{
@@ -241,36 +271,59 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 	}
 
 	private void RaiseDiagnosticsUpdated(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics)
-		=> InvokeSubscribersSafely(
+	{
+		if (_isDisposed)
+			return;
+
+		InvokeSubscribersSafely(
 			DiagnosticsUpdated,
 			handler => ((Action<string, IReadOnlyList<TextEditorDiagnostic>>)handler)(filePath, diagnostics),
 			"Lua diagnostics subscriber");
+	}
 
 	private void RaiseSemanticTokensUpdated(string filePath, IReadOnlyList<LuaSemanticToken> semanticTokens)
-		=> InvokeSubscribersSafely(
+	{
+		if (_isDisposed)
+			return;
+
+		InvokeSubscribersSafely(
 			SemanticTokensUpdated,
 			handler => ((Action<string, IReadOnlyList<LuaSemanticToken>>)handler)(filePath, semanticTokens),
 			"Lua semantic-token subscriber");
+	}
 
 	private void RaiseStartupFailed(LanguageServerStartupFailure failure)
-		=> InvokeSubscribersSafely(
+	{
+		if (_isDisposed)
+			return;
+
+		InvokeSubscribersSafely(
 			StartupFailed,
 			handler => ((Action<LanguageServerStartupFailure>)handler)(failure),
 			"Lua IntelliSense startup-failure subscriber");
+	}
 
 	private void RaiseWorkspaceWatcherFailed(WorkspaceWatcherFailure failure)
-		=> InvokeSubscribersSafely(
+	{
+		if (_isDisposed)
+			return;
+
+		InvokeSubscribersSafely(
 			WorkspaceWatcherFailed,
 			handler => ((Action<WorkspaceWatcherFailure>)handler)(failure),
 			"Lua workspace-watcher subscriber");
+	}
 
-	private static void InvokeSubscribersSafely(Delegate? handlers, Action<Delegate> invoke, string subscriberDescription)
+	private void InvokeSubscribersSafely(Delegate? handlers, Action<Delegate> invoke, string subscriberDescription)
 	{
 		if (handlers is null)
 			return;
 
 		foreach (Delegate handler in handlers.GetInvocationList())
 		{
+			if (_isDisposed)
+				return;
+
 			try
 			{
 				invoke(handler);
@@ -280,5 +333,70 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 				Log.Warn(exception, "{SubscriberDescription} threw; later subscribers will still be notified.", subscriberDescription);
 			}
 		}
+	}
+
+	private int GetConsecutiveStartupFailures()
+	{
+		lock (_startupStateSyncRoot)
+			return _consecutiveStartupFailures;
+	}
+
+	private bool GetStartupSucceeded()
+	{
+		lock (_startupStateSyncRoot)
+			return _startupSucceeded;
+	}
+
+	private bool TryMarkStartupFailureReported(bool isPermanentFailure)
+	{
+		lock (_startupStateSyncRoot)
+		{
+			if (isPermanentFailure)
+			{
+				if (_permanentStartupFailureReported)
+					return false;
+
+				_permanentStartupFailureReported = true;
+				return true;
+			}
+
+			if (_transientStartupFailureReported)
+				return false;
+
+			_transientStartupFailureReported = true;
+			return true;
+		}
+	}
+
+	private void MarkStartupTransportUnavailable()
+	{
+		lock (_startupStateSyncRoot)
+			_startupSucceeded = false;
+	}
+
+	private void ResetStartupStateAfterSuccessfulStart()
+	{
+		lock (_startupStateSyncRoot)
+		{
+			_startupSucceeded = true;
+			_consecutiveStartupFailures = 0;
+			_transientStartupFailureReported = false;
+			_permanentStartupFailureReported = false;
+		}
+	}
+
+	private int RegisterStartupFailure()
+	{
+		lock (_startupStateSyncRoot)
+		{
+			_startupSucceeded = false;
+			return ++_consecutiveStartupFailures;
+		}
+	}
+
+	private void SetStartupSucceeded(bool startupSucceeded)
+	{
+		lock (_startupStateSyncRoot)
+			_startupSucceeded = startupSucceeded;
 	}
 }

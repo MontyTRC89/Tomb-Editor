@@ -119,6 +119,61 @@ public partial class LanguageServerClientTests
 	}
 
 	[TestMethod]
+	public async Task SendNotificationAsync_WhenDidChangeConfigurationIsAlreadyCanceled_PreservesCachedSettingsSnapshot()
+	{
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", new LanguageServerClientOptions(static () => new
+		{
+			Lua = new
+			{
+				Runtime = new
+				{
+					Version = "Lua 5.4"
+				}
+			}
+		}));
+
+		using var cancellationSource = new CancellationTokenSource();
+		object session = CreateTransportSession(client, 11, process: null, Stream.Null, Stream.Null);
+
+		SetActiveSession(client, session);
+		SetReadyState(client, true);
+		cancellationSource.Cancel();
+
+		object[] initialResponse = (object[])InvokePrivateMethodWithReturn(client, "BuildConfigurationResponse",
+			new WorkspaceConfigurationParams(
+			[
+				new WorkspaceConfigurationItem("Lua.runtime")
+			]));
+
+		Assert.AreEqual("Lua 5.4", JsonSerializer.SerializeToElement(initialResponse[0]).GetProperty("version").GetString());
+
+		await Assert.ThrowsExceptionAsync<TaskCanceledException>(async () =>
+			await client.SendNotificationAsync(
+				"workspace/didChangeConfiguration",
+				new DidChangeConfigurationParams(new
+				{
+					Lua = new
+					{
+						Runtime = new
+						{
+							Version = "Lua 5.1"
+						}
+					}
+				}),
+				cancellationSource.Token).ConfigureAwait(false)).ConfigureAwait(false);
+
+		object[] responseAfterFailure = (object[])InvokePrivateMethodWithReturn(client, "BuildConfigurationResponse",
+			new WorkspaceConfigurationParams(
+			[
+				new WorkspaceConfigurationItem("Lua.runtime")
+			]));
+
+		Assert.AreEqual("Lua 5.4", JsonSerializer.SerializeToElement(responseAfterFailure[0]).GetProperty("version").GetString());
+		Assert.IsTrue(client.IsReady);
+		Assert.AreEqual(11L, client.TransportGeneration);
+	}
+
+	[TestMethod]
 	public void BuildConfigurationResponse_TypedSettingsObject_MatchesNestedSectionCaseInsensitively()
 	{
 		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", new LanguageServerClientOptions(static () => new TestConfigurationRoot

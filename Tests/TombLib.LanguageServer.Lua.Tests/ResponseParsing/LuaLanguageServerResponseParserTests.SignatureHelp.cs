@@ -73,4 +73,32 @@ public partial class LuaLanguageServerResponseParserTests
 		Assert.AreEqual(1, signatureInfo.ActiveParameter);
 		Assert.AreEqual("y", signatureInfo.Parameters[1].Label);
 	}
+
+	[TestMethod]
+	public void ParseSignatureHelp_ClampsOutOfRangeActiveParameterToLastAvailableParameter()
+	{
+		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
+			DeserializeSignatureHelpResponse(new
+			{
+				activeSignature = 0,
+				activeParameter = 9,
+				signatures = new[]
+				{
+					new
+					{
+						label = "spawn(room, objectName)",
+						parameters = new object[]
+						{
+							new { label = "room" },
+							new { label = "objectName" }
+						}
+					}
+				}
+			}));
+
+		Assert.IsNotNull(signatureInfo);
+		Assert.AreEqual(2, signatureInfo.Parameters.Count);
+		Assert.AreEqual(1, signatureInfo.ActiveParameter);
+		Assert.AreEqual("objectName", signatureInfo.Parameters[signatureInfo.ActiveParameter].Label);
+	}
 }

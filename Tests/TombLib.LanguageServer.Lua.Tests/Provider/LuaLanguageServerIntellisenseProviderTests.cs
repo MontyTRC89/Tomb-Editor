@@ -57,6 +57,71 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task GetHoverAsync_DisposeDuringInFlightRequest_ReturnsNullWithoutLateResult()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLanguageServerClient
+		{
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		client.BlockNextHoverRequest();
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		Task<LuaHoverInfo?> hoverTask = provider.GetHoverAsync(filePath, "local value = 1", 0, 0);
+
+		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/hover", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+		provider.Dispose();
+		client.ReleaseHoverRequest();
+
+		Assert.IsNull(await hoverTask.ConfigureAwait(false));
+	}
+
+	[TestMethod]
+	public async Task GetHoverAsync_DisposeDuringBlockedStart_ReturnsNullWithoutLeakingStartTask()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+
+		using var client = new FakeLanguageServerClient
+		{
+			IsReady = false,
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		client.BlockNextStartAsync();
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		Task<LuaHoverInfo?> hoverTask = provider.GetHoverAsync(filePath, "local value = 1", 0, 0);
+
+		await Task.Delay(50).ConfigureAwait(false);
+		provider.Dispose();
+
+		Assert.IsNull(await hoverTask.ConfigureAwait(false));
+		Assert.AreEqual(1, client.StartCallCount);
+		Assert.AreEqual(1, client.StartCancellationTokenCanBeCanceled.Count);
+	}
+
+	[TestMethod]
 	public void Dispose_DisposesOwnedCancellationSourceAndUnderlyingClientOnce()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -229,6 +294,97 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		Assert.AreEqual("spawn", items[0].Label);
 		Assert.AreEqual(2, client.StartCallCount);
 		Assert.AreEqual(2, CountSentMethods(client, "textDocument/completion"));
+	}
+
+	[TestMethod]
+	public async Task GetHoverAsync_WhenRequestTransportFails_RestartsAndRetriesOnce()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			ThrowIOExceptionOnNextRequestMethod = "textDocument/hover",
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		LuaHoverInfo? recoveredHover = await provider.GetHoverAsync(filePath, content, 0, 0).ConfigureAwait(false);
+
+		Assert.IsNotNull(recoveredHover);
+		Assert.AreEqual("Hover docs.", recoveredHover.Content);
+		Assert.AreEqual(2, client.StartCallCount);
+		Assert.AreEqual(2, CountSentMethods(client, "textDocument/hover"));
+	}
+
+	[TestMethod]
+	public async Task RenameSymbolAsync_WhenRequestTransportFails_RestartsAndRetriesOnce()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\rename.lua";
+		const string content = "local tracked_value = 1\r\nreturn tracked_value\r\n";
+
+		using var client = new FakeLanguageServerClient
+		{
+			ThrowIOExceptionOnNextRequestMethod = "textDocument/rename",
+			RenameResponse = JsonSerializer.SerializeToElement(new
+			{
+				changes = new Dictionary<string, object[]>
+				{
+					[new Uri(filePath).AbsoluteUri] =
+					[
+						new
+						{
+							newText = "renamed_value",
+							range = new
+							{
+								start = new { line = 0, character = 6 },
+								end = new { line = 0, character = 19 }
+							}
+						}
+					]
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		LuaWorkspaceEdit? recoveredRename = await provider.RenameSymbolAsync(filePath, content, 0, 8, "renamed_value").ConfigureAwait(false);
+
+		Assert.IsNotNull(recoveredRename);
+		Assert.IsTrue(recoveredRename.HasEdits);
+		Assert.AreEqual(2, client.StartCallCount);
+		Assert.AreEqual(2, CountSentMethods(client, "textDocument/rename"));
+	}
+
+	[TestMethod]
+	public async Task GetHoverAsync_WhenRequestFailsWithoutTransportLoss_ThrowsWithoutRetrying()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			ThrowInvalidOperationOnNextRequestMethod = "textDocument/hover"
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () =>
+			await provider.GetHoverAsync(filePath, content, 0, 0).ConfigureAwait(false)).ConfigureAwait(false);
+
+		Assert.AreEqual(1, client.StartCallCount);
+		Assert.AreEqual(1, CountSentMethods(client, "textDocument/hover"));
 	}
 
 	[TestMethod]

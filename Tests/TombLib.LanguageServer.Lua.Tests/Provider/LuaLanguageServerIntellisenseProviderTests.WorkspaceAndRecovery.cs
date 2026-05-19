@@ -227,7 +227,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
-	public async Task DispatchWorkspaceFileChangesAsync_UnexpectedTransportFailureMarksTransportUnhealthyAndReplaysChanges()
+	public async Task DispatchWorkspaceFileChangesAsync_UnexpectedNotificationFailureDoesNotMarkTransportUnhealthyAndDropsChanges()
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaDeferredWorkspaceUnexpected_" + Guid.NewGuid().ToString("N"));
 		string changedFilePath = Path.Combine(workspaceRoot, "Scripts", "generated.lua");
@@ -262,18 +262,83 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			LuaHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
 
 			Assert.IsNotNull(hover);
-			Assert.AreEqual(1, client.MarkTransportUnhealthyCallCount);
-			Assert.AreEqual(2, client.StartCallCount);
+			Assert.AreEqual(0, client.MarkTransportUnhealthyCallCount);
+			Assert.AreEqual(1, client.StartCallCount);
 
 			CollectionAssert.AreEqual(
 				new[]
 				{
 					"workspace/didChangeWatchedFiles",
-					"workspace/didChangeWatchedFiles",
 					"textDocument/didOpen",
 					"textDocument/hover"
 				},
 				client.GetSentMethodNames());
+		}
+		finally
+		{
+			if (Directory.Exists(workspaceRoot))
+				Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	public async Task DispatchWorkspaceFileChangesAsync_StaleWatcherTransportFailureDoesNotInvalidateRestartedTransport()
+	{
+		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaDeferredWorkspaceStaleTransport_" + Guid.NewGuid().ToString("N"));
+		string changedFilePath = Path.Combine(workspaceRoot, "Scripts", "generated.lua");
+		string scriptFilePath = Path.Combine(workspaceRoot, "Scripts", "test.lua");
+
+		try
+		{
+			Directory.CreateDirectory(Path.GetDirectoryName(changedFilePath) ?? workspaceRoot);
+
+			using var client = new FakeLanguageServerClient
+			{
+				HoverResponse = JsonSerializer.SerializeToElement(new
+				{
+					contents = new
+					{
+						kind = "markdown",
+						value = "Hover docs."
+					}
+				})
+			};
+
+			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+			client.BlockNextWatchedFilesNotification();
+			client.ThrowIOExceptionAfterWatchedFilesNotificationGateRelease = true;
+
+			var batch = new FileChangeBatch(
+			[
+				new WorkspaceFileChange(changedFilePath, FileChangeKind.Changed)
+			]);
+
+			Task dispatchTask = DispatchWorkspaceFileChangesAsync(provider, batch, CancellationToken.None);
+
+			Assert.IsTrue(await client.WaitForMethodCountAsync("workspace/didChangeWatchedFiles", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
+
+			client.IsReady = false;
+
+			Task<LuaHoverInfo?> hoverTask = provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
+
+			DateTime deadline = DateTime.UtcNow + TimeSpan.FromSeconds(1);
+
+			while (client.StartCallCount < 2 && DateTime.UtcNow < deadline)
+				await Task.Delay(10).ConfigureAwait(false);
+
+			Assert.AreEqual(2, client.StartCallCount);
+
+			client.ReleaseWatchedFilesNotification();
+
+			await dispatchTask.ConfigureAwait(false);
+			Assert.IsNotNull(await hoverTask.ConfigureAwait(false));
+
+			LuaHoverInfo? followUpHover = await provider.GetHoverAsync(scriptFilePath, "local value = 2", 0, 0).ConfigureAwait(false);
+
+			Assert.IsNotNull(followUpHover);
+			Assert.AreEqual(0, client.MarkTransportUnhealthyCallCount);
+			Assert.AreEqual(2, client.StartCallCount);
 		}
 		finally
 		{

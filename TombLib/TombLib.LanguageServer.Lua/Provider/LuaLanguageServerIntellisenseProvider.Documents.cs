@@ -53,7 +53,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 	private void InvalidateDocumentSynchronization(string filePath)
 	{
-		_startupSucceeded = false;
+		MarkStartupTransportUnavailable();
 		_documents.InvalidateServerSynchronization(filePath);
 		CancelQueuedDocumentUpdate(filePath);
 		CancelSemanticTokenRequest(filePath);
@@ -162,7 +162,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		if (!renameRequest.ReopenServerDocument)
 			return renameRequest;
 
-		if (!_startupSucceeded || !_client.IsReady)
+		if (!GetStartupSucceeded() || !_client.IsReady)
 		{
 			_documents.InvalidateServerSynchronization(newFilePath);
 			return renameRequest;
@@ -269,7 +269,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 					// Only forward the close notification if the server is already running.
 					// Starting the server just to send didClose would be wasteful and can race with disposal.
-					if (document is null || !_startupSucceeded || !_client.IsReady)
+					if (document is null || !GetStartupSucceeded() || !_client.IsReady)
 						return false;
 
 					await _client.SendNotificationAsync("textDocument/didClose",
@@ -289,9 +289,9 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		{
 			Log.Debug(exception, "Lua best-effort document close raced with disposal for '{FilePath}'.", filePath);
 		}
-		catch
+		catch (Exception exception)
 		{
-			Log.Warn("Lua best-effort document close failed unexpectedly for '{FilePath}'.", filePath);
+			Log.Warn(exception, "Lua best-effort document close failed unexpectedly for '{FilePath}'.", filePath);
 		}
 	}
 
@@ -306,6 +306,8 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				filePath,
 				async token =>
 				{
+					// Caller cancellation must not skip request-reference cleanup, otherwise a canceled
+					// IntelliSense request can leave a request-only tracked document pinned indefinitely.
 					_documents.ReleaseRequest(filePath);
 					IReadOnlyList<DocumentSnapshot> documentsToClose = _documents.TrimRequestOnlyDocuments(MaxTrackedRequestOnlyDocuments);
 
@@ -314,16 +316,16 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 						DocumentSnapshot document = documentsToClose[i];
 						CancelSemanticTokenRequest(document.FilePath);
 
-						if (!_startupSucceeded || !_client.IsReady)
+						if (!GetStartupSucceeded() || !_client.IsReady)
 							continue;
 
 						await _client.SendNotificationAsync("textDocument/didClose",
-							new DidCloseTextDocumentParams(new TextDocumentIdentifier(document.Uri)), token).ConfigureAwait(false);
+							new DidCloseTextDocumentParams(new TextDocumentIdentifier(document.Uri)), CancellationToken.None).ConfigureAwait(false);
 					}
 
 					return documentsToClose.Count > 0;
 				},
-				cancellationToken).ConfigureAwait(false);
+				CancellationToken.None).ConfigureAwait(false);
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested || _isDisposed)
 		{ }
@@ -335,14 +337,17 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		{
 			Log.Debug(exception, "Lua best-effort request-document release raced with disposal for '{FilePath}'.", filePath);
 		}
-		catch
+		catch (Exception exception)
 		{
-			Log.Warn("Lua best-effort request-document release failed unexpectedly for '{FilePath}'.", filePath);
+			Log.Warn(exception, "Lua best-effort request-document release failed unexpectedly for '{FilePath}'.", filePath);
 		}
 	}
 
 	private void HandleDiagnosticsPublished(PublishDiagnosticsParams parameters)
 	{
+		if (_isDisposed)
+			return;
+
 		if (!LanguageServerPathHelper.TryGetFilePath(parameters.Uri, out string filePath))
 		{
 			Log.Debug("Lua diagnostics could not be matched to a local file path.");
@@ -363,7 +368,10 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			return;
 		}
 
-		if (!_documents.TryStoreDiagnostics(publishedDiagnostics))
+		if (_isDisposed)
+			return;
+
+		if (!_documents.TryStoreDiagnostics(publishedDiagnostics, document.Version))
 			return;
 
 		RaiseDiagnosticsUpdated(publishedDiagnostics.FilePath, publishedDiagnostics.Diagnostics);

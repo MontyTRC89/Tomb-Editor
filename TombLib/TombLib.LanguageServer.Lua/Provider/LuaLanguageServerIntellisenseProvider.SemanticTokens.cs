@@ -36,7 +36,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			SemanticTokensWireResponse? response = await SendSemanticTokensRequestAsync(document, deltaState.PreviousResultId, useDelta, effectiveToken)
 				.ConfigureAwait(false);
 
-			if (response is null)
+			if (response is null || ShouldStopBackgroundSemanticTokensWork(effectiveToken))
 				return;
 
 			LuaSemanticTokensDecodeResult decodeResult = DecodeSemanticTokensResponse(response, document, deltaState.PreviousData, useDelta);
@@ -48,11 +48,14 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				SemanticTokensWireResponse? fullResponse = await SendSemanticTokensRequestAsync(document, previousResultId: null, useDelta: false, effectiveToken)
 					.ConfigureAwait(false);
 
-				if (fullResponse is null)
+				if (fullResponse is null || ShouldStopBackgroundSemanticTokensWork(effectiveToken))
 					return;
 
 				decodeResult = DecodeSemanticTokensResponse(fullResponse, document, previousData: null, deltaWasRequested: false);
 			}
+
+			if (ShouldStopBackgroundSemanticTokensWork(effectiveToken))
+				return;
 
 			_documents.StoreSemanticTokensDeltaState(document.FilePath, decodeResult.ResultId, decodeResult.Data);
 
@@ -88,6 +91,9 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			ClearSemanticTokenRequest(document.FilePath, linkedSource);
 		}
 	}
+
+	private bool ShouldStopBackgroundSemanticTokensWork(CancellationToken cancellationToken)
+		=> _isDisposed || cancellationToken.IsCancellationRequested;
 
 	private Task<SemanticTokensWireResponse?> SendSemanticTokensRequestAsync(
 		DocumentSnapshot document,

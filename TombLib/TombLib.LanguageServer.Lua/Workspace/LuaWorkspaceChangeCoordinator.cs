@@ -22,7 +22,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 	private readonly Func<ILanguageServerClient?> _clientAccessor;
 	private readonly Func<bool> _isDisposedAccessor;
 	private readonly Func<CancellationToken, Task<bool>> _ensureStartedAsync;
-	private readonly Action _markTransportUnavailable;
+	private readonly Action<long> _markTransportUnavailable;
 	private readonly Action<WorkspaceWatcherFailure> _raiseWorkspaceWatcherFailed;
 	private readonly Func<string, Func<FileChangeBatch, CancellationToken, Task>, Action<WorkspaceFileWatcher, Exception?>, WorkspaceFileWatcher> _workspaceFileWatcherFactory;
 	private readonly WorkspaceFileChangeForwarder _workspaceFileChangeForwarder;
@@ -41,7 +41,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 	/// <param name="clientAccessor">Returns the active language-server client when available.</param>
 	/// <param name="isDisposedAccessor">Returns whether the owner has been disposed.</param>
 	/// <param name="ensureStartedAsync">Starts the language server on demand before forwarding file changes.</param>
-	/// <param name="markTransportUnavailable">Marks the transport unhealthy after forwarding failures.</param>
+	/// <param name="markTransportUnavailable">Marks one observed transport generation unhealthy after forwarding failures.</param>
 	/// <param name="raiseWorkspaceWatcherFailed">Reports unrecoverable watcher failures to the owner.</param>
 	public LuaWorkspaceChangeCoordinator(
 		string workspaceRootDirectoryPath,
@@ -50,7 +50,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		Func<ILanguageServerClient?> clientAccessor,
 		Func<bool> isDisposedAccessor,
 		Func<CancellationToken, Task<bool>> ensureStartedAsync,
-		Action markTransportUnavailable,
+		Action<long> markTransportUnavailable,
 		Action<WorkspaceWatcherFailure> raiseWorkspaceWatcherFailed)
 	{
 		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
@@ -68,9 +68,10 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			() => _clientAccessor() is not null && !_isDisposedAccessor(),
 			_isDisposedAccessor,
 			_ensureStartedAsync,
-			_markTransportUnavailable,
+			static () => { },
 			exception => Log.Debug(exception,
-				"Failed to forward workspace file changes to the Lua language server; the changes were buffered for replay."),
+				"Failed to forward workspace file changes for '{Workspace}' to the Lua language server.",
+				_workspaceRootDirectoryPath),
 				bufferChangesWhileForwardingDisabled: false);
 	}
 
@@ -149,8 +150,10 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		if (changes.Count == 0)
 			return;
 
-		await _workspaceFileChangeForwarder.DispatchAsync(changes, SendWorkspaceFileChangesAsync, cancellationToken).ConfigureAwait(false);
-		_workspaceSnapshotTracker.ApplyChanges(changes);
+		bool forwarded = await _workspaceFileChangeForwarder.DispatchAsync(changes, SendWorkspaceFileChangesAsync, cancellationToken).ConfigureAwait(false);
+
+		if (forwarded)
+			_workspaceSnapshotTracker.ApplyChanges(changes);
 	}
 
 	/// <summary>
@@ -162,7 +165,10 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		if (_clientAccessor() is null || _isDisposedAccessor())
 			return;
 
-		await _workspaceFileChangeForwarder.ReplayDeferredAsync(SendWorkspaceFileChangesAsync, cancellationToken).ConfigureAwait(false);
+		IReadOnlyList<WorkspaceFileChange> replayedChanges = await _workspaceFileChangeForwarder.ReplayDeferredAsync(SendWorkspaceFileChangesAsync, cancellationToken).ConfigureAwait(false);
+
+		if (replayedChanges.Count > 0)
+			_workspaceSnapshotTracker.ApplyChanges(replayedChanges);
 	}
 
 	/// <summary>
@@ -189,6 +195,8 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		if (client is null || _isDisposedAccessor() || changes.Count == 0)
 			return;
 
+		long transportGeneration = client.TransportGeneration;
+
 		bool shouldRefreshConfiguration = false;
 		var payloads = new List<FileEventPayload>(changes.Count);
 
@@ -199,15 +207,33 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			payloads.Add(new FileEventPayload(LanguageServerPathHelper.CreateFileUri(change.Path), (int)change.Kind));
 		}
 
-		if (shouldRefreshConfiguration)
+		try
 		{
-			await client.SendNotificationAsync("workspace/didChangeConfiguration",
-				new DidChangeConfigurationParams(LuaLanguageServerSettingsFactory.Create(_workspaceRootDirectoryPath)),
-				cancellationToken).ConfigureAwait(false);
-		}
+			if (shouldRefreshConfiguration)
+			{
+				await client.SendNotificationAsync("workspace/didChangeConfiguration",
+					new DidChangeConfigurationParams(LuaLanguageServerSettingsFactory.Create(_workspaceRootDirectoryPath)),
+					cancellationToken).ConfigureAwait(false);
+			}
 
-		await client.SendNotificationAsync("workspace/didChangeWatchedFiles",
-			new DidChangeWatchedFilesParams([.. payloads]), cancellationToken).ConfigureAwait(false);
+			await client.SendNotificationAsync("workspace/didChangeWatchedFiles",
+				new DidChangeWatchedFilesParams([.. payloads]), cancellationToken).ConfigureAwait(false);
+		}
+		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+		{
+			_markTransportUnavailable(transportGeneration);
+			throw;
+		}
+		catch (IOException)
+		{
+			_markTransportUnavailable(transportGeneration);
+			throw;
+		}
+		catch (ObjectDisposedException) when (!_isDisposedAccessor())
+		{
+			_markTransportUnavailable(transportGeneration);
+			throw;
+		}
 	}
 
 	private bool IsWorkspaceConfigurationPath(string normalizedPath)
@@ -232,7 +258,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			return;
 
 		Log.Warn(exception,
-			"Lua workspace watching failed for '{Workspace}'. Attempting to restart the watcher automatically.",
+			"Lua workspace watching failed for '{Workspace}'. Attempting to restart the watcher automatically and replay any missed tracked changes.",
 			_workspaceRootDirectoryPath);
 
 		WorkspaceWatcherRecoveryResult recoveryResult = RecoverWorkspaceFileWatcher(watcher);
@@ -367,16 +393,17 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		await DispatchWorkspaceFileChangesAsync(batch, CancellationToken.None).ConfigureAwait(false);
 	}
 
-	private static void ObserveBackgroundTask(Task task, string operationName)
+	private void ObserveBackgroundTask(Task task, string operationName)
 	{
 		_ = task.ContinueWith(static (completedTask, state) =>
 			{
 				if (completedTask.Exception is not { } exception)
 					return;
 
-				Log.Warn(exception.Flatten(), "{OperationName} failed.", state);
+				(string OperationName, string Workspace) capturedState = ((string OperationName, string Workspace))state!;
+				Log.Warn(exception.Flatten(), "{OperationName} failed for '{Workspace}'.", capturedState.OperationName, capturedState.Workspace);
 			},
-			operationName,
+			(operationName, _workspaceRootDirectoryPath),
 			CancellationToken.None,
 			TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted,
 			TaskScheduler.Default);

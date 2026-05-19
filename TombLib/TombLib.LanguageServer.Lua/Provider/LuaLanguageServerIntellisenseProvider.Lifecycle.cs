@@ -4,21 +4,24 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 {
 	private async Task<bool> EnsureStartedAsync(CancellationToken cancellationToken)
 	{
-		if (_isDisposed || _client is null || _consecutiveStartupFailures >= HardStartupFailureThreshold)
+		if (_isDisposed || _client is null || GetConsecutiveStartupFailures() >= HardStartupFailureThreshold)
 			return false;
 
-		bool shieldCancellationForRestart = _startupSucceeded && !_client.IsReady;
+		bool shieldCancellationForRestart = GetStartupSucceeded() && !_client.IsReady;
+
 		CancellationToken startupCancellationToken = shieldCancellationForRestart
 			? CancellationToken.None
 			: cancellationToken;
+
 		using var disposeAwareStartupCts = CancellationTokenSource.CreateLinkedTokenSource(startupCancellationToken, _disposeCts.Token);
 		CancellationToken effectiveStartupCancellationToken = disposeAwareStartupCts.Token;
 		bool startLockHeld = false;
 
 		// Fast path: once the client is healthy, keep the workspace watcher alive and avoid taking the startup lock.
-		if (_startupSucceeded && _client.IsReady)
+		if (GetStartupSucceeded() && _client.IsReady)
 		{
 			_workspaceChanges.EnsureWorkspaceFileWatcherStarted();
+			await _workspaceChanges.ReplayDeferredWorkspaceFileChangesAsync(effectiveStartupCancellationToken).ConfigureAwait(false);
 			return true;
 		}
 
@@ -30,42 +33,49 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			IReadOnlyList<DocumentSnapshot> documentsToReopen = [];
 
 			// Re-check state after taking the lock so concurrent callers share the same restart/startup work.
-			if (_consecutiveStartupFailures >= HardStartupFailureThreshold)
+			if (GetConsecutiveStartupFailures() >= HardStartupFailureThreshold)
 				return false;
 
-			if (_startupSucceeded && _client.IsReady)
+			if (GetStartupSucceeded() && _client.IsReady)
 			{
 				_workspaceChanges.EnsureWorkspaceFileWatcherStarted();
+				await _workspaceChanges.ReplayDeferredWorkspaceFileChangesAsync(effectiveStartupCancellationToken).ConfigureAwait(false);
 				return true;
 			}
 
 			if (!_client.IsReady)
 			{
-				if (_startupSucceeded)
-					Log.Info("Lua language server connection dropped, restarting and reopening tracked documents.");
-
 				documentsToReopen = _documents.PrepareForRestart();
+
+				if (GetStartupSucceeded())
+				{
+					Log.Info("Lua language server connection dropped for workspace '{Workspace}'; restarting and reopening {DocumentCount} tracked document(s).",
+						_workspaceRootDirectoryPath,
+						documentsToReopen.Count);
+				}
 			}
 
 			// Start the transport, then replay tracked documents when this is a restart rather than a cold start.
-			_startupSucceeded = await _client.StartAsync(startupCancellationToken).ConfigureAwait(false);
+			bool startupSucceeded = await _client.StartAsync(effectiveStartupCancellationToken).ConfigureAwait(false);
 
-			if (_startupSucceeded && documentsToReopen.Count > 0)
+			if (startupSucceeded && documentsToReopen.Count > 0)
 			{
-				_startupSucceeded = await ReopenTrackedDocumentsAsync(documentsToReopen, effectiveStartupCancellationToken).ConfigureAwait(false);
+				startupSucceeded = await ReopenTrackedDocumentsAsync(documentsToReopen, effectiveStartupCancellationToken).ConfigureAwait(false);
 
-				if (!_startupSucceeded)
-					Log.Warn("Failed to replay tracked documents after Lua language server restart.");
+				if (!startupSucceeded)
+				{
+					Log.Warn("Failed to replay {DocumentCount} tracked document(s) after Lua language server restart for workspace '{Workspace}'.",
+						documentsToReopen.Count,
+						_workspaceRootDirectoryPath);
+				}
 			}
 
-			if (_startupSucceeded)
+			SetStartupSucceeded(startupSucceeded);
+
+			if (startupSucceeded)
 			{
-				_consecutiveStartupFailures = 0;
-
+				ResetStartupStateAfterSuccessfulStart();
 				ResetRequestTimeoutTracking(_client.TransportGeneration);
-
-				_transientStartupFailureReported = false;
-				_permanentStartupFailureReported = false;
 
 				_workspaceChanges.EnsureWorkspaceFileWatcherStarted();
 				await _workspaceChanges.ReplayDeferredWorkspaceFileChangesAsync(effectiveStartupCancellationToken).ConfigureAwait(false);
@@ -73,25 +83,24 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			else
 			{
 				// Record repeated failures so IntelliSense eventually stops advertising availability until restart.
-				_consecutiveStartupFailures++;
-
-				bool isPermanentFailure = _consecutiveStartupFailures >= HardStartupFailureThreshold;
+				int consecutiveStartupFailures = RegisterStartupFailure();
+				bool isPermanentFailure = consecutiveStartupFailures >= HardStartupFailureThreshold;
 
 				if (isPermanentFailure)
 				{
 					Log.Error("Lua language server failed to start {Count} times consecutively for workspace '{Workspace}'; IntelliSense is now disabled until the editor is restarted.",
-						_consecutiveStartupFailures, _workspaceRootDirectoryPath);
+						consecutiveStartupFailures, _workspaceRootDirectoryPath);
 				}
 				else
 				{
 					Log.Warn("Failed to start the Lua language server for workspace '{Workspace}' (attempt {Attempt}/{Threshold}).",
-						_workspaceRootDirectoryPath, _consecutiveStartupFailures, HardStartupFailureThreshold);
+						_workspaceRootDirectoryPath, consecutiveStartupFailures, HardStartupFailureThreshold);
 				}
 
 				ReportStartupFailure(isPermanentFailure);
 			}
 
-			return _startupSucceeded;
+			return startupSucceeded;
 		}
 		catch (OperationCanceledException) when (_isDisposed)
 		{
@@ -106,20 +115,8 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 	private void ReportStartupFailure(bool isPermanentFailure)
 	{
-		if (isPermanentFailure)
-		{
-			if (_permanentStartupFailureReported)
-				return;
-
-			_permanentStartupFailureReported = true;
-		}
-		else
-		{
-			if (_transientStartupFailureReported)
-				return;
-
-			_transientStartupFailureReported = true;
-		}
+		if (!TryMarkStartupFailureReported(isPermanentFailure))
+			return;
 
 		LanguageServerStartupFailure failure = isPermanentFailure
 			? new LanguageServerStartupFailure(

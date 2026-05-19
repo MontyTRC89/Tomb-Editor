@@ -172,6 +172,59 @@ public class WorkspaceFileChangeForwarderTests
 	}
 
 	[TestMethod]
+	public async Task DispatchAsync_WhenEnsureStartedReplaysDeferredChanges_CompletesCurrentDispatchWithoutDeadlock()
+	{
+		bool startupSucceeds = false;
+		var forwardedBatches = new List<IReadOnlyList<WorkspaceFileChange>>();
+		WorkspaceFileChangeForwarder? forwarder = null;
+
+		forwarder = new WorkspaceFileChangeForwarder(
+			canForwardAccessor: () => true,
+			isDisposedAccessor: () => false,
+			ensureStartedAsync: async cancellationToken =>
+			{
+				if (!startupSucceeds)
+					return false;
+
+				await forwarder!.ReplayDeferredAsync(
+					(items, _) =>
+					{
+						forwardedBatches.Add([.. items]);
+						return Task.CompletedTask;
+					},
+					cancellationToken).ConfigureAwait(false);
+
+				return true;
+			},
+			markTransportUnavailable: static () => { });
+
+		WorkspaceFileChange[] deferredChanges = [new(@"C:\Workspace\Scripts\deferred.lua", FileChangeKind.Changed)];
+		WorkspaceFileChange[] currentChanges = [new(@"C:\Workspace\Scripts\current.lua", FileChangeKind.Changed)];
+
+		await forwarder.DispatchAsync(
+			deferredChanges,
+			(_, _) => throw new AssertFailedException("Deferred changes should be buffered while startup fails."),
+			CancellationToken.None).ConfigureAwait(false);
+
+		startupSucceeds = true;
+
+		await forwarder.DispatchAsync(
+			currentChanges,
+			(items, _) =>
+			{
+				forwardedBatches.Add([.. items]);
+				return Task.CompletedTask;
+			},
+			CancellationToken.None).WaitAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+
+		Assert.AreEqual(2, forwardedBatches.Count);
+		Assert.AreEqual(deferredChanges[0].Path, forwardedBatches[0][0].Path);
+		Assert.AreEqual(deferredChanges[0].Kind, forwardedBatches[0][0].Kind);
+		Assert.AreEqual(currentChanges[0].Path, forwardedBatches[1][0].Path);
+		Assert.AreEqual(currentChanges[0].Kind, forwardedBatches[1][0].Kind);
+	}
+
+	[TestMethod]
 	public async Task DispatchAsync_WhenForwardingThrowsObjectDisposedExceptionWhileOwnerAlive_BuffersMarksTransportUnavailableAndReplays()
 	{
 		int markTransportUnavailableCallCount = 0;
@@ -203,11 +256,10 @@ public class WorkspaceFileChangeForwarderTests
 	}
 
 	[TestMethod]
-	public async Task DispatchAsync_WhenForwardingThrowsUnexpectedException_BuffersLogsAndReplays()
+	public async Task DispatchAsync_WhenForwardingThrowsUnexpectedException_LogsAndDropsChangesWithoutReplay()
 	{
 		int markTransportUnavailableCallCount = 0;
 		Exception? loggedException = null;
-		IReadOnlyList<WorkspaceFileChange>? replayedChanges = null;
 
 		var forwarder = new WorkspaceFileChangeForwarder(
 			canForwardAccessor: () => true,
@@ -223,17 +275,11 @@ public class WorkspaceFileChangeForwarderTests
 			CancellationToken.None).ConfigureAwait(false);
 
 		await forwarder.ReplayDeferredAsync(
-			(items, _) =>
-			{
-				replayedChanges = [.. items];
-				return Task.CompletedTask;
-			},
+			(_, _) => throw new AssertFailedException("Unexpected forwarding failures should not be replayed."),
 			CancellationToken.None).ConfigureAwait(false);
 
-		Assert.AreEqual(1, markTransportUnavailableCallCount);
+		Assert.AreEqual(0, markTransportUnavailableCallCount);
 		Assert.IsInstanceOfType(loggedException, typeof(InvalidOperationException));
-		Assert.IsNotNull(replayedChanges);
-		Assert.AreEqual(1, replayedChanges.Count);
 	}
 
 	[TestMethod]

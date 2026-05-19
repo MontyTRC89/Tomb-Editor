@@ -10,51 +10,52 @@ public sealed partial class WorkspaceFileChangeForwarder
 	/// <param name="changes">The file changes to forward.</param>
 	/// <param name="forwardAsync">The transport forwarding callback.</param>
 	/// <param name="cancellationToken">Cancels the forwarding operation.</param>
-	public async Task DispatchAsync(
+	/// <returns><see langword="true"/> when the batch was forwarded immediately; otherwise, <see langword="false"/>.</returns>
+	public async Task<bool> DispatchAsync(
 		IReadOnlyList<WorkspaceFileChange> changes,
 		Func<IReadOnlyList<WorkspaceFileChange>, CancellationToken, Task> forwardAsync,
 		CancellationToken cancellationToken)
 	{
 		if (!TryEnterOperation())
-			return;
+			return false;
 
 		bool forwardingGateHeld = false;
 
 		try
 		{
 			if (changes.Count == 0)
-				return;
+				return false;
 
 			if (!_canForwardAccessor())
 			{
 				BufferChangesWhenForwardingDisabled(changes);
-				return;
+				return false;
+			}
+
+			bool started = await _ensureStartedAsync(cancellationToken).ConfigureAwait(false);
+
+			if (IsDisposeRequested())
+				return false;
+
+			if (!started)
+			{
+				_deferredChanges.AddRange(changes);
+				return false;
 			}
 
 			await _forwardingGate.WaitAsync(cancellationToken).ConfigureAwait(false);
 			forwardingGateHeld = true;
 
 			if (IsDisposeRequested())
-				return;
+				return false;
 
 			if (!_canForwardAccessor())
 			{
 				BufferChangesWhenForwardingDisabled(changes);
-				return;
+				return false;
 			}
 
-			bool started = await _ensureStartedAsync(cancellationToken).ConfigureAwait(false);
-
-			if (IsDisposeRequested())
-				return;
-
-			if (!started)
-			{
-				_deferredChanges.AddRange(changes);
-				return;
-			}
-
-			await TryForwardAsync(changes, forwardAsync, cancellationToken).ConfigureAwait(false);
+			return await TryForwardAsync(changes, forwardAsync, cancellationToken).ConfigureAwait(false);
 		}
 		finally
 		{
@@ -77,20 +78,22 @@ public sealed partial class WorkspaceFileChangeForwarder
 	/// </summary>
 	/// <param name="forwardAsync">The transport forwarding callback.</param>
 	/// <param name="cancellationToken">Cancels the replay operation.</param>
-	public async Task ReplayDeferredAsync(
+	/// <returns>The buffered changes that were replayed successfully, or an empty list when none were forwarded.</returns>
+	public async Task<IReadOnlyList<WorkspaceFileChange>> ReplayDeferredAsync(
 		Func<IReadOnlyList<WorkspaceFileChange>, CancellationToken, Task> forwardAsync,
 		CancellationToken cancellationToken)
 	{
 		if (!TryEnterOperation())
-			return;
+			return [];
 
 		if (!_canForwardAccessor() || _deferredChanges.IsEmpty)
 		{
 			ExitOperation();
-			return;
+			return [];
 		}
 
 		bool forwardingGateHeld = false;
+		List<WorkspaceFileChange>? deferredChanges = null;
 
 		try
 		{
@@ -98,24 +101,29 @@ public sealed partial class WorkspaceFileChangeForwarder
 			forwardingGateHeld = true;
 
 			if (IsDisposeRequested())
-				return;
+				return [];
 
 			if (!_canForwardAccessor() || _deferredChanges.IsEmpty)
-				return;
+				return [];
 
-			List<WorkspaceFileChange> deferredChanges = _deferredChanges.DrainChanges();
+			deferredChanges = _deferredChanges.DrainChanges();
 
 			if (deferredChanges.Count == 0)
-				return;
+				return [];
 
 			if (IsDisposeRequested())
-				return;
+				return [];
 
-			await TryForwardAsync(deferredChanges, forwardAsync, cancellationToken).ConfigureAwait(false);
+			bool forwarded = await TryForwardAsync(deferredChanges, forwardAsync, cancellationToken).ConfigureAwait(false);
+
+			return forwarded ? deferredChanges : [];
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 		{
-			return;
+			if (deferredChanges is not null && !_isDisposedAccessor())
+				_deferredChanges.AddRange(deferredChanges);
+
+			return [];
 		}
 		finally
 		{
@@ -132,7 +140,8 @@ public sealed partial class WorkspaceFileChangeForwarder
 	/// <param name="changes">The file changes to forward.</param>
 	/// <param name="forwardAsync">The transport forwarding callback.</param>
 	/// <param name="cancellationToken">Cancels the forwarding operation.</param>
-	private async Task TryForwardAsync(
+	/// <returns><see langword="true"/> when the batch was forwarded successfully; otherwise, <see langword="false"/>.</returns>
+	private async Task<bool> TryForwardAsync(
 		IReadOnlyList<WorkspaceFileChange> changes,
 		Func<IReadOnlyList<WorkspaceFileChange>, CancellationToken, Task> forwardAsync,
 		CancellationToken cancellationToken)
@@ -140,11 +149,13 @@ public sealed partial class WorkspaceFileChangeForwarder
 		try
 		{
 			await forwardAsync(changes, cancellationToken).ConfigureAwait(false);
+			return true;
 		}
 		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
 		{
 			_deferredChanges.AddRange(changes);
 			_markTransportUnavailable();
+			return false;
 		}
 		catch (IOException exception)
 		{
@@ -152,6 +163,7 @@ public sealed partial class WorkspaceFileChangeForwarder
 			_markTransportUnavailable();
 
 			_logForwardingFailure?.Invoke(exception);
+			return false;
 		}
 		catch (ObjectDisposedException)
 		{
@@ -160,18 +172,20 @@ public sealed partial class WorkspaceFileChangeForwarder
 				_deferredChanges.AddRange(changes);
 				_markTransportUnavailable();
 			}
+
+			return false;
 		}
 		catch (OperationCanceledException)
 		{
 			if (!_isDisposedAccessor())
 				_deferredChanges.AddRange(changes);
+
+			return false;
 		}
 		catch (Exception exception)
 		{
-			_deferredChanges.AddRange(changes);
-			_markTransportUnavailable();
-
 			_logForwardingFailure?.Invoke(exception);
+			return false;
 		}
 	}
 }

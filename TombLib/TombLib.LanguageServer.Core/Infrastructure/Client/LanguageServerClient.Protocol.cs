@@ -14,21 +14,26 @@ public sealed partial class LanguageServerClient
 	public async Task SendNotificationAsync(string method, object parameters, CancellationToken cancellationToken)
 	{
 		LanguageServerTransportSession session = GetRequiredReadySession(allowDisposed: false);
-		TryRefreshCachedSettingsSnapshotFromNotification(method, parameters);
 
 		try
 		{
 			await SendNotificationCoreAsync(session, method, parameters, cancellationToken, allowDisposed: false).ConfigureAwait(false);
+			TryRefreshCachedSettingsSnapshotFromNotification(method, parameters);
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 		{
 			throw;
 		}
-		catch (Exception exception)
+		catch (Exception exception) when (IsTransportOperationFailure(exception))
 		{
-			MarkTransportUnhealthyForGeneration(session.Generation);
+			TryMarkTransportUnhealthy(session.Generation);
 			LogTransportOperationFailure("notification", method, session.Generation, exception);
 
+			throw new LanguageServerTransportUnavailableException(innerException: exception, message: null);
+		}
+		catch (Exception exception)
+		{
+			LogNonTransportNotificationFailure(method, session.Generation, exception);
 			throw;
 		}
 	}
@@ -55,11 +60,16 @@ public sealed partial class LanguageServerClient
 		{
 			throw;
 		}
-		catch (Exception exception)
+		catch (Exception exception) when (IsTransportOperationFailure(exception))
 		{
-			MarkTransportUnhealthyForGeneration(session.Generation);
+			TryMarkTransportUnhealthy(session.Generation);
 			LogTransportOperationFailure("request", method, session.Generation, exception);
 
+			throw new LanguageServerTransportUnavailableException(innerException: exception, message: null);
+		}
+		catch (Exception exception)
+		{
+			LogNonTransportRequestFailure(method, session.Generation, exception);
 			throw;
 		}
 
@@ -127,6 +137,9 @@ public sealed partial class LanguageServerClient
 
 		return jsonRpc.InvokeWithParameterObjectAsync<TResult>(method, parameters, cancellationToken);
 	}
+
+	private static bool IsTransportOperationFailure(Exception exception)
+		=> exception is IOException or ObjectDisposedException;
 
 	/// <summary>
 	/// Builds the configuration response payload requested by the language server.

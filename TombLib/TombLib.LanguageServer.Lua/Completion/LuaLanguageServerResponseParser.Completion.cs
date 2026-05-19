@@ -9,18 +9,63 @@ public static partial class LuaLanguageServerResponseParser
 	// Lua identifiers are case-sensitive, so `Player` and `player` must be reported as distinct
 	// completion items. Use ordinal (case-sensitive) comparison everywhere completion identity
 	// is computed; using OrdinalIgnoreCase here would silently hide legitimate symbols.
-	private sealed class CompletionIdentityComparer : IEqualityComparer<(string Label, string InsertText)>
+	private sealed class CompletionIdentityComparer : IEqualityComparer<CompletionIdentity>
 	{
 		public static CompletionIdentityComparer Instance { get; } = new();
 
-		public bool Equals((string Label, string InsertText) x, (string Label, string InsertText) y)
+		public bool Equals(CompletionIdentity x, CompletionIdentity y)
 			=> StringComparer.Ordinal.Equals(x.Label, y.Label)
-			&& StringComparer.Ordinal.Equals(x.InsertText, y.InsertText);
+			&& StringComparer.Ordinal.Equals(x.InsertText, y.InsertText)
+			&& StringComparer.Ordinal.Equals(x.FilterText, y.FilterText)
+			&& StringComparer.Ordinal.Equals(x.Detail, y.Detail)
+			&& StringComparer.Ordinal.Equals(x.Description, y.Description)
+			&& x.IconKind == y.IconKind
+			&& x.TextEdit.Equals(y.TextEdit);
 
-		public int GetHashCode((string Label, string InsertText) value)
+		public int GetHashCode(CompletionIdentity value)
 			=> HashCode.Combine(
 				StringComparer.Ordinal.GetHashCode(value.Label),
-				StringComparer.Ordinal.GetHashCode(value.InsertText));
+				StringComparer.Ordinal.GetHashCode(value.InsertText),
+				StringComparer.Ordinal.GetHashCode(value.FilterText),
+				StringComparer.Ordinal.GetHashCode(value.Detail),
+				StringComparer.Ordinal.GetHashCode(value.Description),
+				value.IconKind,
+				value.TextEdit);
+	}
+
+	private readonly record struct CompletionIdentity(
+		string Label,
+		string InsertText,
+		string FilterText,
+		string Detail,
+		string Description,
+		LuaCompletionIconKind IconKind,
+		CompletionTextEditIdentity TextEdit)
+	{
+		public static CompletionIdentity Create(LuaCompletionItem item) => new(
+			item.Label,
+			item.InsertText,
+			item.FilterText,
+			item.Detail ?? string.Empty,
+			item.Description ?? string.Empty,
+			item.IconKind,
+			CompletionTextEditIdentity.Create(item.TextEdit));
+	}
+
+	private readonly record struct CompletionTextEditIdentity(
+		LuaCompletionPosition? InsertStart,
+		LuaCompletionPosition? InsertEnd,
+		LuaCompletionPosition? ReplaceStart,
+		LuaCompletionPosition? ReplaceEnd)
+	{
+		public static CompletionTextEditIdentity Create(LuaCompletionTextEdit? textEdit)
+			=> textEdit is not { } value
+				? default
+				: new(
+					value.InsertRange.Start,
+					value.InsertRange.End,
+					value.ReplaceRange?.Start,
+					value.ReplaceRange?.End);
 	}
 
 	private enum LuaLanguageServerCompletionKind
@@ -82,7 +127,7 @@ public static partial class LuaLanguageServerResponseParser
 		Func<LuaCompletionItem, CompletionItemPayload, int, Func<CancellationToken, Task<LuaCompletionItem>>?>? resolveFactory = null)
 	{
 		var items = new List<LuaCompletionItem>();
-		var seenItems = new HashSet<(string Label, string InsertText)>(CompletionIdentityComparer.Instance);
+		var seenItems = new HashSet<CompletionIdentity>(CompletionIdentityComparer.Instance);
 		int itemIndex = 0;
 
 		foreach (CompletionItemPayload itemPayload in itemPayloads)
@@ -101,7 +146,7 @@ public static partial class LuaLanguageServerResponseParser
 					item = item.WithResolveCallback(resolveAsync);
 			}
 
-			if (seenItems.Add((item.Label, item.InsertText)))
+			if (seenItems.Add(CompletionIdentity.Create(item)))
 				items.Add(item);
 		}
 

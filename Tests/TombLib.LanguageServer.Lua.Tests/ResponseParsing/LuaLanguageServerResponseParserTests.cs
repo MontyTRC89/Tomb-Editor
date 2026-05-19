@@ -148,6 +148,48 @@ public partial class LuaLanguageServerResponseParserTests
 	}
 
 	[TestMethod]
+	public void ParseCompletionItems_PreservesDistinctItemsWithDifferentTextEdits()
+	{
+		IReadOnlyList<LuaCompletionItem> items = LuaLanguageServerResponseParser.ParseCompletionItems(
+			[
+				DeserializeCompletionItemPayload(new
+				{
+					label = "spawn",
+					kind = 3,
+					insertText = "spawn",
+					textEdit = new
+					{
+						newText = "spawn",
+						range = new
+						{
+							start = new { line = 0, character = 0 },
+							end = new { line = 0, character = 3 }
+						}
+					}
+				}),
+				DeserializeCompletionItemPayload(new
+				{
+					label = "spawn",
+					kind = 3,
+					insertText = "spawn",
+					textEdit = new
+					{
+						newText = "spawn",
+						range = new
+						{
+							start = new { line = 0, character = 1 },
+							end = new { line = 0, character = 4 }
+						}
+					}
+				})
+			]);
+
+		Assert.AreEqual(2, items.Count);
+		Assert.AreEqual(new LuaCompletionPosition(0, 0), items[0].TextEdit?.InsertRange.Start);
+		Assert.AreEqual(new LuaCompletionPosition(0, 1), items[1].TextEdit?.InsertRange.Start);
+	}
+
+	[TestMethod]
 	public void DeserializeCompletionResponse_PreservesCompletionListMetadata()
 	{
 		CompletionResponse? response = DeserializeCompletionResponse(new

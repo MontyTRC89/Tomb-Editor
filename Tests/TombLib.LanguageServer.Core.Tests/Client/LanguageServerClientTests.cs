@@ -164,6 +164,36 @@ public partial class LanguageServerClientTests
 	}
 
 	[TestMethod]
+	public async Task SendNotificationAsync_WhenPayloadSerializationFails_DoesNotInvalidateTransport()
+	{
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		object session = CreateTransportSession(client, 10, process: null, Stream.Null, Stream.Null);
+		var cyclicPayload = new Dictionary<string, object>();
+
+		cyclicPayload["self"] = cyclicPayload;
+
+		SetActiveSession(client, session);
+		SetReadyState(client, true);
+
+		Exception? observedException = null;
+
+		try
+		{
+			await client.SendNotificationAsync("workspace/didChangeWatchedFiles", cyclicPayload, CancellationToken.None).ConfigureAwait(false);
+			Assert.Fail("Expected the notification serialization to fail.");
+		}
+		catch (Exception exception)
+		{
+			observedException = exception;
+		}
+
+		Assert.IsNotNull(observedException);
+		Assert.IsFalse(observedException is LanguageServerTransportUnavailableException);
+		Assert.IsTrue(client.IsReady);
+		Assert.AreEqual(10L, client.TransportGeneration);
+	}
+
+	[TestMethod]
 	public async Task SendRequestAsync_WhenClientIsNotReady_ThrowsIOException()
 	{
 		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
@@ -281,6 +311,43 @@ public partial class LanguageServerClientTests
 	}
 
 	[TestMethod]
+	public async Task SendRequestAsync_WhenServerReturnsJsonRpcError_DoesNotInvalidateTransport()
+	{
+		using var deferredServerOutputStream = new DeferredPersistentJsonRpcResponseStream();
+		using var serverInputStream = new RecordingStream();
+		await using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		object session = CreateTransportSession(client, 9, process: null, deferredServerOutputStream, serverInputStream, startListening: true);
+
+		SetActiveSession(client, session);
+		SetReadyState(client, true);
+
+		Task<JsonElement> requestTask = client.SendRequestAsync<JsonElement>(
+			"workspace/configuration",
+			new WorkspaceConfigurationParams([]),
+			CancellationToken.None);
+
+		int requestId = await WaitForRequestIdAsync(serverInputStream).ConfigureAwait(false);
+		deferredServerOutputStream.SetPayload(CreateJsonRpcErrorMessage(requestId, -32000, "Simulated request failure."));
+
+		Exception? observedException = null;
+
+		try
+		{
+			await requestTask.ConfigureAwait(false);
+			Assert.Fail("Expected the JSON-RPC request to fail.");
+		}
+		catch (Exception exception)
+		{
+			observedException = exception;
+		}
+
+		Assert.IsNotNull(observedException);
+		Assert.IsFalse(observedException is LanguageServerTransportUnavailableException);
+		Assert.IsTrue(client.IsReady);
+		Assert.AreEqual(9L, client.TransportGeneration);
+	}
+
+	[TestMethod]
 	public void JsonRpc_Disconnected_LocallyDisposedActiveTransport_LogsExpectedShutdownAtInfo()
 	{
 		using var logScope = new NLogMemoryScope(LogLevel.Debug);
@@ -384,7 +451,7 @@ public partial class LanguageServerClientTests
 	}
 
 	[TestMethod]
-	public void MarkTransportUnhealthyForGeneration_StaleGenerationDoesNotOverwriteActiveSnapshot()
+	public void TryMarkTransportUnhealthy_StaleGenerationDoesNotOverwriteActiveSnapshot()
 	{
 		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
 		object oldSession = CreateTransportSession(client, 5, process: null, Stream.Null, Stream.Null);
@@ -406,7 +473,9 @@ public partial class LanguageServerClientTests
 
 		SetReadyState(client, true);
 
-		InvokePrivateMethod(client, "MarkTransportUnhealthyForGeneration", GetTransportGeneration(oldSession));
+		bool markedUnhealthy = client.TryMarkTransportUnhealthy(GetTransportGeneration(oldSession));
+
+		Assert.IsFalse(markedUnhealthy);
 
 		Assert.AreEqual(6L, client.TransportGeneration);
 		Assert.IsTrue(client.IsReady);
@@ -597,6 +666,26 @@ public partial class LanguageServerClientTests
 
 		Assert.IsFalse(logScope.Logs.Any(log => log.StartsWith("Warn|", StringComparison.Ordinal)
 			&& log.Contains("client/registerCapability", StringComparison.Ordinal)),
+			string.Join(Environment.NewLine, logScope.Logs));
+	}
+
+	[TestMethod]
+	public void Hello_IgnoresArrayPayloadWithoutThrowing()
+	{
+		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		object session = CreateTransportSession(client, 5, process: null, Stream.Null, Stream.Null);
+
+		SetActiveSession(client, session);
+		SetReadyState(client, true);
+
+		object rpcTarget = CreateRpcTarget(client, GetTransportGeneration(session));
+
+		InvokePrivateMethod(rpcTarget, "Hello", JsonSerializer.SerializeToElement(new[] { "world" }));
+
+		Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Debug|", StringComparison.Ordinal)
+			&& log.Contains("$/hello", StringComparison.Ordinal)
+			&& log.Contains("generation 5", StringComparison.OrdinalIgnoreCase)),
 			string.Join(Environment.NewLine, logScope.Logs));
 	}
 
@@ -825,6 +914,13 @@ public partial class LanguageServerClientTests
 	private static string CreateJsonRpcResultMessage(int id, string resultJson)
 	{
 		string payload = "{\"jsonrpc\":\"2.0\",\"id\":" + id + ",\"result\":" + resultJson + "}";
+		int payloadLength = Encoding.UTF8.GetByteCount(payload);
+		return "Content-Length: " + payloadLength + "\r\n\r\n" + payload;
+	}
+
+	private static string CreateJsonRpcErrorMessage(int id, int code, string message)
+	{
+		string payload = "{\"jsonrpc\":\"2.0\",\"id\":" + id + ",\"error\":{\"code\":" + code + ",\"message\":" + JsonSerializer.Serialize(message) + "}}";
 		int payloadLength = Encoding.UTF8.GetByteCount(payload);
 		return "Content-Length: " + payloadLength + "\r\n\r\n" + payload;
 	}
@@ -1410,6 +1506,59 @@ public partial class LanguageServerClientTests
 			_payloadBytes.AsMemory(_position, bytesToCopy).CopyTo(buffer);
 			_position += bytesToCopy;
 			return bytesToCopy;
+		}
+
+		public override void Flush()
+		{ }
+
+		public override long Seek(long offset, SeekOrigin origin)
+			=> throw new NotSupportedException();
+
+		public override void SetLength(long value)
+			=> throw new NotSupportedException();
+
+		public override void Write(byte[] buffer, int offset, int count)
+			=> throw new NotSupportedException();
+	}
+
+	private sealed class DeferredPersistentJsonRpcResponseStream : Stream
+	{
+		private readonly TaskCompletionSource<byte[]> _payloadSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		private readonly TaskCompletionSource<bool> _completionSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		private byte[]? _payloadBytes;
+		private int _position;
+
+		public override bool CanRead => true;
+		public override bool CanSeek => false;
+		public override bool CanWrite => false;
+		public override long Length => _payloadBytes?.Length ?? 0;
+
+		public override long Position
+		{
+			get => _position;
+			set => throw new NotSupportedException();
+		}
+
+		public void SetPayload(string payload)
+			=> _payloadSource.TrySetResult(Encoding.UTF8.GetBytes(payload));
+
+		public override int Read(byte[] buffer, int offset, int count)
+			=> throw new NotSupportedException();
+
+		public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+		{
+			_payloadBytes ??= await _payloadSource.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+			if (_position < _payloadBytes.Length)
+			{
+				int bytesToCopy = Math.Min(buffer.Length, _payloadBytes.Length - _position);
+				_payloadBytes.AsMemory(_position, bytesToCopy).CopyTo(buffer);
+				_position += bytesToCopy;
+				return bytesToCopy;
+			}
+
+			await _completionSource.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
+			return 0;
 		}
 
 		public override void Flush()

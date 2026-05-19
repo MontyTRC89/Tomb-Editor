@@ -28,7 +28,20 @@ public sealed partial class LanguageServerClient
 			return;
 
 		PublishedCapabilitySnapshot snapshot = Volatile.Read(ref _publishedCapabilitySnapshot);
-		MarkTransportUnhealthyForGeneration(snapshot.TransportGeneration);
+		TryMarkTransportUnhealthy(snapshot.TransportGeneration);
+	}
+
+	/// <summary>
+	/// Marks one specific transport generation unhealthy only when it is still the active generation.
+	/// </summary>
+	/// <param name="transportGeneration">The observed transport generation to invalidate.</param>
+	/// <returns><see langword="true"/> when the observed generation was still active and was marked unhealthy; otherwise, <see langword="false"/>.</returns>
+	public bool TryMarkTransportUnhealthy(long transportGeneration)
+	{
+		if (_isDisposed)
+			return false;
+
+		return TryMarkTransportUnhealthyForGeneration(transportGeneration, out _);
 	}
 
 	/// <summary>
@@ -246,17 +259,17 @@ public sealed partial class LanguageServerClient
 	/// Marks one transport generation unhealthy only when it still owns the published snapshot.
 	/// </summary>
 	/// <param name="transportGeneration">The generation to mark unhealthy.</param>
-	private void MarkTransportUnhealthyForGeneration(long transportGeneration)
+	private bool TryMarkTransportUnhealthyForGeneration(long transportGeneration, out PublishedCapabilitySnapshot snapshot)
 	{
-		if (!TryGetPublishedCapabilitySnapshotForGeneration(transportGeneration, out PublishedCapabilitySnapshot snapshot))
-			return;
+		if (!TryGetPublishedCapabilitySnapshotForGeneration(transportGeneration, out snapshot))
+			return false;
 
 		lock (_publishedCapabilitySnapshotSyncRoot)
 		{
 			PublishedCapabilitySnapshot currentSnapshot = Volatile.Read(ref _publishedCapabilitySnapshot);
 
 			if (currentSnapshot.TransportGeneration != transportGeneration)
-				return;
+				return false;
 
 			PublishCapabilitySnapshot(new PublishedCapabilitySnapshot(
 				transportGeneration,
@@ -275,6 +288,8 @@ public sealed partial class LanguageServerClient
 
 		if (snapshot.IsReady && transportGeneration != 0)
 			Log.Warn("Marked language server transport generation {Generation} unhealthy; the host will restart it before the next public request.", transportGeneration);
+
+		return true;
 	}
 
 	/// <summary>

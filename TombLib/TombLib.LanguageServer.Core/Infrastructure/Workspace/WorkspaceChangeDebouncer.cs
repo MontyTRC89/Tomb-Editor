@@ -88,6 +88,22 @@ internal sealed class WorkspaceChangeDebouncer : IDisposable
 	}
 
 	/// <summary>
+	/// Restores a drained batch without scheduling another timer tick.
+	/// Callers use this when they will explicitly decide how recovery dispatch should proceed.
+	/// </summary>
+	/// <param name="batch">The batch to restore.</param>
+	public void Restore(FileChangeBatch batch)
+	{
+		ArgumentNullException.ThrowIfNull(batch);
+
+		if (_isDisposed || batch.Count == 0)
+			return;
+
+		for (int i = 0; i < batch.Count; i++)
+			_pendingChanges.Add(batch.Entries[i].Path, batch.Entries[i].Kind);
+	}
+
+	/// <summary>
 	/// Stops the debounce timer without discarding the currently buffered changes.
 	/// </summary>
 	public void Stop()

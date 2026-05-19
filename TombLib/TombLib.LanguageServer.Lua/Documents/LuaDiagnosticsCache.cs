@@ -7,10 +7,12 @@ namespace TombLib.LanguageServer.Lua;
 /// </summary>
 internal sealed class LuaDiagnosticsCache
 {
+	private static readonly IReadOnlyList<TextEditorDiagnostic> EmptyDiagnostics = Array.AsReadOnly(Array.Empty<TextEditorDiagnostic>());
+
 	/// <summary>
 	/// Gets the currently cached diagnostics.
 	/// </summary>
-	public IReadOnlyList<TextEditorDiagnostic> Diagnostics { get; private set; } = [];
+	public IReadOnlyList<TextEditorDiagnostic> Diagnostics { get; private set; } = EmptyDiagnostics;
 
 	/// <summary>
 	/// Gets the synchronized document version associated with the cached diagnostics.
@@ -22,7 +24,7 @@ internal sealed class LuaDiagnosticsCache
 	/// </summary>
 	public void Clear()
 	{
-		Diagnostics = [];
+		Diagnostics = EmptyDiagnostics;
 		Version = 0;
 	}
 
@@ -38,7 +40,12 @@ internal sealed class LuaDiagnosticsCache
 
 		Version = acceptedVersion;
 
-		Diagnostics = publishedDiagnostics.Diagnostics;
+		Diagnostics = CreateReadOnlyDiagnostics(publishedDiagnostics.Diagnostics);
 		return true;
 	}
+
+	private static IReadOnlyList<TextEditorDiagnostic> CreateReadOnlyDiagnostics(IReadOnlyList<TextEditorDiagnostic>? diagnostics)
+		=> diagnostics is null || diagnostics.Count == 0
+			? EmptyDiagnostics
+			: Array.AsReadOnly([.. diagnostics]);
 }

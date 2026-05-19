@@ -21,7 +21,7 @@ public sealed class LuaSignatureInfo
 		Label = label;
 		Documentation = documentation;
 		Parameters = parameters ?? [];
-		ActiveParameter = Math.Max(0, activeParameter);
+		ActiveParameter = Parameters.Count == 0 ? 0 : Math.Clamp(activeParameter, 0, Parameters.Count - 1);
 	}
 
 	/// <summary>

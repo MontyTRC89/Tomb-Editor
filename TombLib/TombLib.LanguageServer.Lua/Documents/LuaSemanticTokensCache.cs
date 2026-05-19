@@ -7,10 +7,12 @@ namespace TombLib.LanguageServer.Lua;
 /// </summary>
 internal sealed class LuaSemanticTokensCache
 {
+	private static readonly IReadOnlyList<LuaSemanticToken> EmptyTokens = Array.AsReadOnly(Array.Empty<LuaSemanticToken>());
+
 	/// <summary>
 	/// Gets the latest decoded semantic tokens.
 	/// </summary>
-	public IReadOnlyList<LuaSemanticToken> Tokens { get; private set; } = [];
+	public IReadOnlyList<LuaSemanticToken> Tokens { get; private set; } = EmptyTokens;
 
 	/// <summary>
 	/// Gets the synchronized document version associated with the cached semantic tokens.
@@ -32,7 +34,7 @@ internal sealed class LuaSemanticTokensCache
 	/// </summary>
 	public void Clear()
 	{
-		Tokens = [];
+		Tokens = EmptyTokens;
 		Version = 0;
 		PreviousData = null;
 		PreviousResultId = null;
@@ -43,7 +45,7 @@ internal sealed class LuaSemanticTokensCache
 	/// </summary>
 	/// <returns>The current delta-request state.</returns>
 	public SemanticTokensDeltaState GetDeltaState()
-		=> new(PreviousResultId, PreviousData);
+		=> new(PreviousResultId, CloneData(PreviousData));
 
 	/// <summary>
 	/// Drops server-side synchronization state while preserving the last decoded token list.
@@ -63,7 +65,7 @@ internal sealed class LuaSemanticTokensCache
 	public void StoreDeltaState(string? resultId, int[]? data)
 	{
 		PreviousResultId = resultId;
-		PreviousData = data;
+		PreviousData = CloneData(data);
 	}
 
 	/// <summary>
@@ -79,7 +81,15 @@ internal sealed class LuaSemanticTokensCache
 
 		Version = acceptedVersion;
 
-		Tokens = semanticTokens ?? [];
+		Tokens = CreateReadOnlyTokens(semanticTokens);
 		return true;
 	}
+
+	private static int[]? CloneData(int[]? data)
+		=> data is null ? null : [.. data];
+
+	private static IReadOnlyList<LuaSemanticToken> CreateReadOnlyTokens(IReadOnlyList<LuaSemanticToken>? semanticTokens)
+		=> semanticTokens is null || semanticTokens.Count == 0
+			? EmptyTokens
+			: Array.AsReadOnly([.. semanticTokens]);
 }

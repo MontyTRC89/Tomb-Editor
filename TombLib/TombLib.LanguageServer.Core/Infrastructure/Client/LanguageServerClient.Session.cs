@@ -366,6 +366,52 @@ public sealed partial class LanguageServerClient
 			_workspaceRootDirectoryPath);
 	}
 
+	private void LogNonTransportRequestFailure(string method, long generation, Exception exception)
+	{
+		if (_isDisposed)
+			return;
+
+		if (generation != 0 && generation != TransportGeneration)
+		{
+			Log.Debug(exception,
+				"Language server request '{Method}' failed on stale transport generation {Generation} for workspace '{Workspace}' without invalidating the active session.",
+				method,
+				generation,
+				_workspaceRootDirectoryPath);
+
+			return;
+		}
+
+		Log.Warn(exception,
+			"Language server request '{Method}' failed on transport generation {Generation} for workspace '{Workspace}' without invalidating the active session.",
+			method,
+			generation,
+			_workspaceRootDirectoryPath);
+	}
+
+	private void LogNonTransportNotificationFailure(string method, long generation, Exception exception)
+	{
+		if (_isDisposed)
+			return;
+
+		if (generation != 0 && generation != TransportGeneration)
+		{
+			Log.Debug(exception,
+				"Language server notification '{Method}' failed on stale transport generation {Generation} for workspace '{Workspace}' without invalidating the active session.",
+				method,
+				generation,
+				_workspaceRootDirectoryPath);
+
+			return;
+		}
+
+		Log.Warn(exception,
+			"Language server notification '{Method}' failed on transport generation {Generation} for workspace '{Workspace}' without invalidating the active session.",
+			method,
+			generation,
+			_workspaceRootDirectoryPath);
+	}
+
 	/// <summary>
 	/// Logs recent stderr context for one session when a transport failure path needs more diagnostics.
 	/// </summary>
@@ -408,6 +454,8 @@ public sealed partial class LanguageServerClient
 		{
 			if (_callbackPumpTask.IsCompleted)
 			{
+				ForgetObservedBackgroundLoopTermination(_callbackPumpTask);
+
 				_callbackPumpTask = StartObservedBackgroundLoop(
 					PumpCallbacksAsync,
 					"callback dispatcher",
@@ -416,6 +464,8 @@ public sealed partial class LanguageServerClient
 
 			if (includeDiagnosticsPump && _diagnosticsPumpTask.IsCompleted)
 			{
+				ForgetObservedBackgroundLoopTermination(_diagnosticsPumpTask);
+
 				_diagnosticsPumpTask = StartObservedBackgroundLoop(
 					PumpDiagnosticsAsync,
 					"diagnostics pump",
@@ -508,6 +558,12 @@ public sealed partial class LanguageServerClient
 	{
 		lock (_observedBackgroundLoopSyncRoot)
 			return _observedBackgroundLoopTerminations.Contains(task);
+	}
+
+	private void ForgetObservedBackgroundLoopTermination(Task task)
+	{
+		lock (_observedBackgroundLoopSyncRoot)
+			_observedBackgroundLoopTerminations.Remove(task);
 	}
 
 	/// <summary>
