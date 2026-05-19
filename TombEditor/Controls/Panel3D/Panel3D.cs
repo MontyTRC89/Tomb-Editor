@@ -574,10 +574,19 @@ namespace TombEditor.Controls.Panel3D
                 Capture = true;
             if (e.Button == MouseButtons.Left)
             {
-                if (!V2PickRaw(e.Location, out var room, out var pos))
+                if (!V2PickFace(e.Location, out var room, out var pos, out var face))
                 {
                     _v2SelDragging     = false;
                     _v2SelClickedOnSel = false;
+                    return;
+                }
+
+                // In FaceEdit mode the click maps to texture actions instead
+                // of sector selection — match the legacy mouse-down branch.
+                if (_editor.Mode == EditorMode.FaceEdit && _editor.Tool.Tool != EditorToolType.Selection)
+                {
+                    if (_editor.SelectedRoom != room) _editor.SelectedRoom = room;
+                    V2HandleTextureClick(room, pos, face);
                     return;
                 }
 
@@ -606,6 +615,24 @@ namespace TombEditor.Controls.Panel3D
                 }
                 Capture = true;
             }
+        }
+
+        // FaceEdit mode click dispatch — same modifier semantics as the
+        // legacy Panel3DMouseDownLeft texturing branch:
+        //   Shift → rotate texture
+        //   Ctrl  → mirror texture
+        //   Alt   → pick texture
+        //   none  → apply currently-selected texture
+        private void V2HandleTextureClick(Room room, VectorInt2 pos, TombLib.LevelData.SectorEnums.SectorFace face)
+        {
+            if (ModifierKeys.HasFlag(Keys.Shift))
+                EditorActions.RotateTexture(room, pos, face);
+            else if (ModifierKeys.HasFlag(Keys.Control))
+                EditorActions.MirrorTexture(room, pos, face);
+            else if (ModifierKeys.HasFlag(Keys.Alt))
+                EditorActions.PickTexture(room, pos, face);
+            else
+                EditorActions.ApplyTexture(room, pos, face, _editor.SelectedTexture);
         }
 
         private void V2MouseUp(MouseEventArgs e)
@@ -700,14 +727,19 @@ namespace TombEditor.Controls.Panel3D
             _lastMousePosition = e.Location;
         }
 
-        // Common ray-pick used by both single-click and drag-select. While
-        // a drag is active, it sticks to the anchor room so the selection
-        // rectangle can't jump into a neighbour. Otherwise it picks within
-        // the currently selected room (legacy default behaviour).
-        private bool V2PickRaw(System.Drawing.Point pos, out Room room, out VectorInt2 sector)
+        // Common ray-pick used by single-click, drag-select and texturing.
+        // While a drag is active it sticks to the anchor room (so the
+        // selection rectangle can't jump into a neighbour); otherwise it
+        // picks within the currently selected room (legacy default).
+        private bool V2PickRaw(System.Drawing.Point pos, out Room room, out VectorInt2 sector) =>
+            V2PickFace(pos, out room, out sector, out _);
+
+        private bool V2PickFace(System.Drawing.Point pos, out Room room, out VectorInt2 sector,
+                                out TombLib.LevelData.SectorEnums.SectorFace face)
         {
             room   = null;
             sector = default;
+            face   = default;
             if (_editor?.Level == null || Camera == null) return false;
             if (ClientSize.Width <= 0 || ClientSize.Height <= 0) return false;
 
@@ -726,6 +758,7 @@ namespace TombEditor.Controls.Panel3D
 
             room   = target;
             sector = hit.Value.Pos;
+            face   = hit.Value.Face;
             return true;
         }
 

@@ -434,26 +434,28 @@ public sealed class LevelRenderer : IDisposable
 
             if (texturing)
             {
-                // Texturing mode: textures shown full-bright so the artist
-                // can see them clearly. Matches the legacy
-                // RoomDisableVertexColors path in FaceEdit. Lighting is
-                // ignored here; selection / highlight still tint a bit.
-                Vector3 baseColor = res.Dimmed ? new Vector3(0.5f) : Vector3.One;
-                if (res.Highlighted) baseColor = Vector3.Lerp(baseColor, _highlightTint, 0.30f);
-                if (res.Selected)    baseColor = Vector3.Lerp(baseColor, _selectionTint, 0.45f);
-                c0 = c1 = c2 = baseColor;
+                // Texturing mode:
+                //   - Textured face → full-bright texture (RoomDisableVertexColors path)
+                //   - Untextured face → fall back to the room lighting so
+                //     the geometry is still visible (otherwise unfinished
+                //     levels would be a uniform sheet of white).
+                Vector3 tint = res.Dimmed ? new Vector3(0.5f) : Vector3.One;
+                if (res.Highlighted) tint = Vector3.Lerp(tint, _highlightTint, 0.30f);
+                if (res.Selected)    tint = Vector3.Lerp(tint, _selectionTint, 0.45f);
 
-                // If the face has a real texture, sample it; otherwise fall
-                // back to the white pixel so the lighting alone is visible.
                 if (ta.Texture != null && !ta.Texture.IsUnavailable && ta.Texture is not TextureInvisible)
                 {
                     uv0 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord0);
                     uv1 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord1);
                     uv2 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord2);
+                    c0 = c1 = c2 = tint;
                 }
                 else
                 {
                     uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
+                    c0 = tint * geom.VertexColors[i * 3 + 0];
+                    c1 = tint * geom.VertexColors[i * 3 + 1];
+                    c2 = tint * geom.VertexColors[i * 3 + 2];
                 }
             }
             else
