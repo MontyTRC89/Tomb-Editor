@@ -25,6 +25,8 @@ internal static class Dx11Mapping
         Format.R32_Float            => DXGI.Format.FormatR32Float,
         Format.R16G16B16A16_UNorm   => DXGI.Format.FormatR16G16B16A16Unorm,
         Format.R8G8B8A8_UInt        => DXGI.Format.FormatR8G8B8A8Uint,
+        Format.R16G16_UNorm         => DXGI.Format.FormatR16G16Unorm,
+        Format.R16G16_Float         => DXGI.Format.FormatR16G16Float,
         Format.Unknown              => DXGI.Format.FormatUnknown,
         _ => throw new ArgumentOutOfRangeException(nameof(f), f, "Unmapped Format"),
     };

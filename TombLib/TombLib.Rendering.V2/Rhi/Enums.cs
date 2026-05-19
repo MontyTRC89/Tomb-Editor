@@ -27,6 +27,8 @@ public enum Format : byte
     R32_Float,
     R16G16B16A16_UNorm,
     R8G8B8A8_UInt,
+    R16G16_UNorm,    // packed atlas UV (0..1 with 1/65535 precision)
+    R16G16_Float,    // packed grid UV (half-precision)
 }
 
 public enum BufferUsage : byte

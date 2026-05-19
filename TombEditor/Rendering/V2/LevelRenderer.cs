@@ -58,14 +58,35 @@ public sealed class LevelRenderer : IDisposable
         public float     _pad0, _pad1, _pad2;
     }
 
+    // Packed vertex layout (24 B vs the 40 B float-only version):
+    //   Position : float3              (12 B)
+    //   Color    : R8G8B8A8_UNorm      ( 4 B)
+    //   AtlasUv  : R16G16_UNorm        ( 4 B)
+    //   GridUv   : R16G16_Float (half) ( 4 B)
+    // Compaction strategy mirrors what the legacy Dx11RenderingDrawingRoom
+    // does: room geometry is heavy on vertex count and the room shader only
+    // needs limited precision for color / UV.
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct RoomVertex
     {
-        public Vector3 Position;
-        public Vector3 Color;
-        public Vector2 Uv;       // atlas UV (texture or overlay sprite)
-        public Vector2 GridUv;   // raw VertexEditorUVs, for sector outlines
+        public Vector3 Position;     // 0..12
+        public uint    ColorRgba8;   // 12..16 (R8G8B8A8_UNorm)
+        public ushort  UvU;          // 16..18 (R16G16_UNorm, atlas)
+        public ushort  UvV;          // 18..20
+        public Half    GridUvU;      // 20..22 (R16G16_Float)
+        public Half    GridUvV;      // 22..24
     }
+
+    private static uint PackColor(Vector3 c)
+    {
+        uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
+        uint g = (uint)Math.Clamp((int)(c.Y * 255f + 0.5f), 0, 255);
+        uint b = (uint)Math.Clamp((int)(c.Z * 255f + 0.5f), 0, 255);
+        return r | (g << 8) | (b << 16) | (0xFFu << 24);
+    }
+
+    private static ushort PackUNorm16(float v) =>
+        (ushort)Math.Clamp((int)(v * 65535f + 0.5f), 0, 65535);
 
     private sealed class RoomMesh : IDisposable
     {
@@ -113,11 +134,11 @@ public sealed class LevelRenderer : IDisposable
             VertexAttributes = new[]
             {
                 new VertexAttribute("POSITION", 0, Format.R32G32B32_Float, bufferSlot: 0, offset: 0),
-                new VertexAttribute("COLOR",    0, Format.R32G32B32_Float, bufferSlot: 0, offset: 12),
-                new VertexAttribute("TEXCOORD", 0, Format.R32G32_Float,    bufferSlot: 0, offset: 24),
-                new VertexAttribute("TEXCOORD", 1, Format.R32G32_Float,    bufferSlot: 0, offset: 32),
+                new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm,  bufferSlot: 0, offset: 12),
+                new VertexAttribute("TEXCOORD", 0, Format.R16G16_UNorm,    bufferSlot: 0, offset: 16),
+                new VertexAttribute("TEXCOORD", 1, Format.R16G16_Float,    bufferSlot: 0, offset: 20),
             },
-            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 40) },
+            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 24) },
             Topology               = PrimitiveTopology.TriangleList,
             // TR room geometry is wound so that triangles face *into* the
             // room. With CullMode.None the back-facing exterior surfaces
@@ -419,26 +440,33 @@ public sealed class LevelRenderer : IDisposable
                 uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
             }
 
+            uint packedColor = PackColor(baseColor);
             verts[outIdx + 0] = new RoomVertex
             {
-                Position = geom.VertexPositions[i * 3 + 0] + wp,
-                Color    = baseColor,
-                Uv       = uv0,
-                GridUv   = eu0,
+                Position   = geom.VertexPositions[i * 3 + 0] + wp,
+                ColorRgba8 = packedColor,
+                UvU        = PackUNorm16(uv0.X),
+                UvV        = PackUNorm16(uv0.Y),
+                GridUvU    = (Half)eu0.X,
+                GridUvV    = (Half)eu0.Y,
             };
             verts[outIdx + 1] = new RoomVertex
             {
-                Position = geom.VertexPositions[i * 3 + 1] + wp,
-                Color    = baseColor,
-                Uv       = uv1,
-                GridUv   = eu1,
+                Position   = geom.VertexPositions[i * 3 + 1] + wp,
+                ColorRgba8 = packedColor,
+                UvU        = PackUNorm16(uv1.X),
+                UvV        = PackUNorm16(uv1.Y),
+                GridUvU    = (Half)eu1.X,
+                GridUvV    = (Half)eu1.Y,
             };
             verts[outIdx + 2] = new RoomVertex
             {
-                Position = geom.VertexPositions[i * 3 + 2] + wp,
-                Color    = baseColor,
-                Uv       = uv2,
-                GridUv   = eu2,
+                Position   = geom.VertexPositions[i * 3 + 2] + wp,
+                ColorRgba8 = packedColor,
+                UvU        = PackUNorm16(uv2.X),
+                UvV        = PackUNorm16(uv2.Y),
+                GridUvU    = (Half)eu2.X,
+                GridUvV    = (Half)eu2.Y,
             };
             outIdx += 3;
         }
