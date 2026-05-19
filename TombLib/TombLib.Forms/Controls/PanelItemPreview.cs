@@ -71,8 +71,13 @@ namespace TombLib.Controls
         private float _lastY;
         private IWadObject _currentObject = null;
 
-        // Rendering state
+        // Rendering state — lazily created on first paint so panels that
+        // never become visible (FormSprite / FormPreviewWad dialogs, hidden
+        // dock panels at startup) don't pay the ~8 MB GPU allocation and
+        // GarbageCollect cost during level load.
         private RenderingTextureAllocator _textureAllocator;
+        private RenderingDevice _pendingDevice;
+        private ObjectRenderingQuality _pendingQuality;
 
         // Legacy rendering state
         private GraphicsDevice _legacyDevice;
@@ -128,40 +133,40 @@ namespace TombLib.Controls
         {
             base.InitializeRendering(device, antialias, objectQuality);
 
-            _textureAllocator = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(1024, 1024, 1) });
+            // Defer the expensive allocations (texture allocator + WadRenderer
+            // atlas) to the first paint. Stash the device for that moment.
+            _pendingDevice  = device;
+            _pendingQuality = objectQuality;
+        }
 
-            // Legacy rendering state
-            {
-                // Reset scrollbar
-                _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true, true, 1024, 512, false);
+        private void EnsureRenderingResources()
+        {
+            if (_wadRenderer != null || _pendingDevice == null) return;
 
-                ResetCamera();
+            _textureAllocator = _pendingDevice.CreateTextureAllocator(
+                new RenderingTextureAllocator.Description { Size = new VectorInt3(1024, 1024, 1) });
 
-                // Initialize the rasterizer state for wireframe drawing
-                SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
-                    new SharpDX.Direct3D11.RasterizerStateDescription
-                    {
-                        CullMode = SharpDX.Direct3D11.CullMode.None,
-                        DepthBias = 0,
-                        DepthBiasClamp = 0,
-                        FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                        IsAntialiasedLineEnabled = true,
-                        IsDepthClipEnabled = true,
-                        IsFrontCounterClockwise = false,
-                        IsMultisampleEnabled = true,
-                        IsScissorEnabled = false,
-                        SlopeScaledDepthBias = 0
-                    };
-            }
+            _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
+            _wadRenderer  = new WadRenderer(_legacyDevice, true, true, 1024, 512, false);
+
+            ResetCamera();
         }
 
         public void ResetCamera()
         {
-            Func<ArcBallCamera> defaultCamera = () =>
-                new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 100, 1000000, FieldOfView * (float)(Math.PI / 180));
+            ArcBallCamera Default() => new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f),
+                0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 100, 1000000,
+                FieldOfView * (float)(Math.PI / 180));
 
-            Camera = WadObjectRenderHelper.CreateCameraForObject(CurrentObject, _wadRenderer, FieldOfView) ?? defaultCamera();
+            // WadRenderer may not exist yet (lazy init). Tight-bounding the
+            // camera around the object requires it; without it, just place
+            // the default arc-ball — the next paint will refine.
+            if (_wadRenderer == null)
+            {
+                Camera = Default();
+                return;
+            }
+            Camera = WadObjectRenderHelper.CreateCameraForObject(CurrentObject, _wadRenderer, FieldOfView) ?? Default();
         }
 
         public void GarbageCollect()
@@ -208,6 +213,10 @@ namespace TombLib.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            // First paint triggers the heavy rendering-resource allocation;
+            // panels that never paint (collapsed docks, never-opened dialogs)
+            // skip the cost entirely.
+            EnsureRenderingResources();
             if (_legacyDevice == null)
                 return;
             base.OnPaint(e);
