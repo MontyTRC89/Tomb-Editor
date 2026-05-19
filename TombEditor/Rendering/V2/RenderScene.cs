@@ -34,6 +34,9 @@ public readonly struct RenderScene
     public readonly bool               HideHiddenRooms;
     public readonly bool               ShowAllRooms;
     public readonly bool               ShowPortals;
+    public readonly bool               ShowMoveables;
+    public readonly bool               ShowStatics;
+    public readonly bool               ShowImportedGeometry;
     public readonly EditorMode         Mode;
     public readonly float              GridLineWidth;
 
@@ -52,6 +55,9 @@ public readonly struct RenderScene
         bool              hideHiddenRooms,
         bool              showAllRooms,
         bool              showPortals,
+        bool              showMoveables,
+        bool              showStatics,
+        bool              showImportedGeometry,
         EditorMode        mode,
         float             gridLineWidth)
     {
@@ -70,6 +76,9 @@ public readonly struct RenderScene
         HideHiddenRooms               = hideHiddenRooms;
         ShowAllRooms                  = showAllRooms;
         ShowPortals                   = showPortals;
+        ShowMoveables                 = showMoveables;
+        ShowStatics                   = showStatics;
+        ShowImportedGeometry          = showImportedGeometry;
         Mode                          = mode;
         GridLineWidth                 = gridLineWidth;
     }

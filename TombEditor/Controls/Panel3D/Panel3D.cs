@@ -814,6 +814,9 @@ namespace TombEditor.Controls.Panel3D
                         hideHiddenRooms:               DisablePickingForHiddenRooms,
                         showAllRooms:                  ShowAllRooms,
                         showPortals:                   ShowPortals,
+                        showMoveables:                 ShowMoveables,
+                        showStatics:                   ShowStatics,
+                        showImportedGeometry:          ShowImportedGeometry,
                         mode:                          _editor.Mode,
                         gridLineWidth:                 _editor.Configuration.Rendering3D_LineWidth);
                     _v2Renderer.RenderFrame(scene);

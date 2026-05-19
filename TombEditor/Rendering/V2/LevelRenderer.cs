@@ -24,7 +24,8 @@ namespace TombEditor.Rendering.V2;
 /// </summary>
 public sealed class LevelRenderer : IDisposable
 {
-    private readonly Dx11Device     _device;
+    private readonly Dx11Device     
+        _device;
     private SwapchainHandle         _swap;
     private int                     _width;
     private int                     _height;
@@ -41,6 +42,8 @@ public sealed class LevelRenderer : IDisposable
     // When the mode changes we invalidate every cached room so it gets
     // rebuilt with the right vertex strategy.
     private bool                                _meshesAreTexturing;
+    // Moveables / statics / imported geometry pass.
+    private ObjectRenderer?                     _objects;
 
     // Reusable per-frame scratch arrays. Keeping these as fields avoids
     // a fresh managed allocation on every Bindings / SetVertexBuffers /
@@ -168,6 +171,8 @@ public sealed class LevelRenderer : IDisposable
                 bindFlags: BufferBindFlags.Constant,
                 debugName: "RoomViewParams"),
             ReadOnlySpan<byte>.Empty);
+
+        _objects = new ObjectRenderer(_device);
     }
 
     public void Resize(int width, int height)
@@ -279,6 +284,13 @@ public sealed class LevelRenderer : IDisposable
                 cl.SetVertexBuffers(_scratchVb);
                 cl.Draw(mesh.VertexCount);
             }
+
+            // Objects (moveables / statics / imported geometry). Reuses the
+            // same view-projection cbuffer bound above; the object pipeline
+            // expects ModelMatrix + Tint via push constants.
+            if (_objects != null)
+                _objects.Render(cl, _visibleRooms, scene.Level,
+                                scene.ShowMoveables, scene.ShowStatics, scene.ShowImportedGeometry);
         }
 
         cl.EndPass();
@@ -381,6 +393,7 @@ public sealed class LevelRenderer : IDisposable
         _atlas?.Dispose();
         _atlas = null;
         _atlasLevel = null;
+        _objects?.InvalidateAll();
     }
 
     // Editor-look tints applied on top of the SectorTextureDefault.Color
@@ -532,6 +545,7 @@ public sealed class LevelRenderer : IDisposable
         _device.WaitIdle();
         InvalidateAllRooms();
         _atlas?.Dispose();
+        _objects?.Dispose();
         if (_viewCb.IsValid)        _device.Destroy(_viewCb);
         if (_roomPipeline.IsValid)  _device.Destroy(_roomPipeline);
         if (_swap.IsValid)          _device.Destroy(_swap);
