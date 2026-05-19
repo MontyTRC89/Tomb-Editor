@@ -91,11 +91,6 @@ namespace TombEditor
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
         public bool Rendering3D_SafeMode { get; set; } = false;
-        // EXPERIMENTAL: when true, Panel3D's main viewport uses the V2 renderer
-        // (TombLib.Rendering.V2) instead of the legacy DX11 path. The V2 stack
-        // is in active development and not yet feature-complete — keep off
-        // unless you are working on it.
-        public bool Rendering3D_UseV2Renderer { get; set; } = false;
         public bool Rendering3D_ResetCameraOnRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnDoubleClickRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnRelocation { get; set; } = true;
