@@ -38,6 +38,18 @@ public sealed class LevelRenderer : IDisposable
     private readonly Frustum                    _frustum    = new();
     private readonly List<Room>                 _visibleRooms = new();
 
+    // Reusable per-frame scratch arrays. Keeping these as fields avoids
+    // a fresh managed allocation on every Bindings / SetVertexBuffers /
+    // BeginPass call — adds up to thousands of GC allocations per second
+    // otherwise.
+    private readonly BufferHandle[]         _scratchCbuf     = new BufferHandle[1];
+    private readonly TextureHandle[]        _scratchTex      = new TextureHandle[1];
+    private readonly SamplerHandle[]        _scratchSamp     = new SamplerHandle[1];
+    private readonly VertexBufferBinding[]  _scratchVb       = new VertexBufferBinding[1];
+    private readonly LoadOp[]               _scratchLoadOps  = { LoadOp.Clear };
+    private readonly StoreOp[]              _scratchStoreOps = { StoreOp.Store };
+    private readonly Vector4[]              _scratchClearCol = new Vector4[1];
+
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 256)]
     private struct ViewParams
     {
@@ -162,15 +174,16 @@ public sealed class LevelRenderer : IDisposable
             cl.UpdateBuffer(_viewCb, 0, span);
         }
 
+        _scratchClearCol[0] = new Vector4(0.08f, 0.08f, 0.12f, 1f);
         cl.BeginPass(new PassDesc
         {
             UseSwapchain   = true,
             Swapchain      = _swap,
-            ColorLoadOps   = new[] { LoadOp.Clear },
-            ColorStoreOps  = new[] { StoreOp.Store },
+            ColorLoadOps   = _scratchLoadOps,
+            ColorStoreOps  = _scratchStoreOps,
             DepthLoadOp    = LoadOp.Clear,
             DepthStoreOp   = StoreOp.Store,
-            ClearColors    = new[] { new Vector4(0.08f, 0.08f, 0.12f, 1f) },
+            ClearColors    = _scratchClearCol,
             ClearDepth     = 1.0f,
             ViewportWidth  = _width,
             ViewportHeight = _height,
@@ -181,11 +194,14 @@ public sealed class LevelRenderer : IDisposable
             EnsureAtlas(scene.Level);
 
             cl.SetPipeline(_roomPipeline);
+            _scratchCbuf[0] = _viewCb;
+            _scratchTex [0] = _atlas!.Texture;
+            _scratchSamp[0] = _atlas.Sampler;
             cl.SetBindings(new Bindings
             {
-                ConstantBuffers = new[] { _viewCb },
-                Textures        = new[] { _atlas!.Texture },
-                Samplers        = new[] { _atlas.Sampler },
+                ConstantBuffers = _scratchCbuf,
+                Textures        = _scratchTex,
+                Samplers        = _scratchSamp,
             });
 
             // One SectorTextureDefault per frame, mutated per room: only the
@@ -223,7 +239,8 @@ public sealed class LevelRenderer : IDisposable
 
                 var mesh = GetOrCreateRoomMesh(room, st.Get);
                 if (mesh.VertexCount == 0) continue;
-                cl.SetVertexBuffers(new[] { new VertexBufferBinding(mesh.Vb, 0) });
+                _scratchVb[0] = new VertexBufferBinding(mesh.Vb, 0);
+                cl.SetVertexBuffers(_scratchVb);
                 cl.Draw(mesh.VertexCount);
             }
         }
