@@ -566,51 +566,27 @@ namespace TombEditor.Controls.Panel3D
 
         private void V2PickSector(System.Drawing.Point pos)
         {
-            if (_editor?.Level == null || Camera == null) return;
+            var room = _editor?.SelectedRoom;
+            if (room?.RoomGeometry == null || Camera == null) return;
             if (ClientSize.Width <= 0 || ClientSize.Height <= 0) return;
 
+            // Same path as the legacy picker: build a ray in room-local
+            // space and let RoomGeometry.RayIntersectsGeometry do the work.
+            // That helper walks the per-face VertexRangeLookup (much smaller
+            // than the full vertex list) and discards back-facing triangles
+            // via the explicit dot(rayDir, normal) check.
             var vp = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             var ray = TombLib.Ray.GetPickRay(
                 new System.Numerics.Vector2(pos.X, pos.Y), vp, ClientSize.Width, ClientSize.Height);
+            ray.Position -= room.WorldPos;
 
-            Room hitRoom = null;
-            int hitX = -1, hitZ = -1;
-            float bestDist = float.PositiveInfinity;
+            var hit = room.RoomGeometry.RayIntersectsGeometry(ray);
+            if (hit == null) return;
 
-            foreach (Room room in _editor.Level.Rooms)
-            {
-                if (room?.RoomGeometry == null) continue;
-                if (DisablePickingForHiddenRooms && room.Properties.Hidden) continue;
-                var geom = room.RoomGeometry;
-                System.Numerics.Vector3 wp = room.WorldPos;
-                int triCount = geom.VertexPositions.Count / 3;
-                for (int i = 0; i < triCount; i++)
-                {
-                    var ta = geom.TriangleTextureAreas[i];
-                    if (ta.Texture is TombLib.Utils.TextureInvisible) continue;
-
-                    var p0 = geom.VertexPositions[i * 3 + 0] + wp;
-                    var p1 = geom.VertexPositions[i * 3 + 1] + wp;
-                    var p2 = geom.VertexPositions[i * 3 + 2] + wp;
-
-                    if (TombLib.Utils.Collision.RayIntersectsTriangle(ray, p0, p1, p2, true, out float d) && d < bestDist)
-                    {
-                        bestDist = d;
-                        hitRoom = room;
-                        var face = geom.TriangleSectorInfo[i];
-                        hitX = face.Position.X;
-                        hitZ = face.Position.Y;
-                    }
-                }
-            }
-
-            if (hitRoom == null || hitX < 0) return;
-
-            if (_editor.SelectedRoom != hitRoom)
-                _editor.SelectedRoom = hitRoom;
             _editor.SelectedSectors = new SectorSelection
             {
-                Area  = new TombLib.RectangleInt2(hitX, hitZ, hitX, hitZ),
+                Area  = new TombLib.RectangleInt2(hit.Value.Pos.X, hit.Value.Pos.Y,
+                                                  hit.Value.Pos.X, hit.Value.Pos.Y),
                 Arrow = TombLib.Rendering.ArrowType.EntireFace,
             };
         }
