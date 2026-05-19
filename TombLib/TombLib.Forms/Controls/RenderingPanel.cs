@@ -133,7 +133,7 @@ namespace TombLib.Controls
         {
             base.Dispose(disposing);
             if (disposing)
-                SwapChain.Dispose();
+                SwapChain?.Dispose();
         }
 
         protected virtual void OnDraw()
