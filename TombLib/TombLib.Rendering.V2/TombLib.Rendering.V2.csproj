@@ -29,4 +29,14 @@
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <HlslShaderV2 Include="Shaders\Hello.hlsl">
+      <EntryVs>vs_main</EntryVs>
+      <EntryPs>ps_main</EntryPs>
+    </HlslShaderV2>
+    <None Include="Shaders\*.hlsli" />
+  </ItemGroup>
+
+  <Import Project="HlslShaderCompile.V2.targets" />
 </Project>
