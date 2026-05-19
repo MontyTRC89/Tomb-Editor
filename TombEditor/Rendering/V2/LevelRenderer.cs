@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using TombLib.LevelData;
 using TombLib.RenderingV2.Backends.Dx11;
 using TombLib.RenderingV2.Rhi;
+using TombLib.Utils;
 
 namespace TombEditor.Rendering.V2;
 
@@ -27,6 +28,8 @@ public sealed class LevelRenderer : IDisposable
     // Room geometry pass resources.
     private PipelineHandle          _roomPipeline;
     private BufferHandle            _viewCb;
+    private TextureAtlas?           _atlas;
+    private Level?                  _atlasLevel;
     private readonly Dictionary<Room, RoomMesh> _roomMeshes = new();
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 256)]
@@ -40,6 +43,7 @@ public sealed class LevelRenderer : IDisposable
     {
         public Vector3 Position;
         public Vector3 Color;
+        public Vector2 Uv;
     }
 
     private sealed class RoomMesh : IDisposable
@@ -89,8 +93,9 @@ public sealed class LevelRenderer : IDisposable
             {
                 new VertexAttribute("POSITION", 0, Format.R32G32B32_Float, bufferSlot: 0, offset: 0),
                 new VertexAttribute("COLOR",    0, Format.R32G32B32_Float, bufferSlot: 0, offset: 12),
+                new VertexAttribute("TEXCOORD", 0, Format.R32G32_Float,    bufferSlot: 0, offset: 24),
             },
-            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 24) },
+            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 32) },
             Topology               = PrimitiveTopology.TriangleList,
             // Rooms are authored with the camera meant to fly *inside* them,
             // so the outward-facing walls are back-facing from outside.
@@ -157,8 +162,15 @@ public sealed class LevelRenderer : IDisposable
 
         if (scene.Level != null)
         {
+            EnsureAtlas(scene.Level);
+
             cl.SetPipeline(_roomPipeline);
-            cl.SetBindings(new Bindings { ConstantBuffers = new[] { _viewCb } });
+            cl.SetBindings(new Bindings
+            {
+                ConstantBuffers = new[] { _viewCb },
+                Textures        = new[] { _atlas!.Texture },
+                Samplers        = new[] { _atlas.Sampler },
+            });
 
             foreach (Room room in scene.Level.Rooms)
             {
@@ -197,6 +209,17 @@ public sealed class LevelRenderer : IDisposable
         _device.Present(_swap);
     }
 
+    private void EnsureAtlas(Level level)
+    {
+        if (_atlas != null && ReferenceEquals(_atlasLevel, level)) return;
+        _atlas?.Dispose();
+        _atlas = new TextureAtlas(_device, level);
+        _atlasLevel = level;
+        // Mesh UVs depend on the atlas layout, so previously cached meshes
+        // (built against the OLD atlas) become invalid the moment we swap.
+        DropRoomMeshes();
+    }
+
     private RoomMesh GetOrCreateRoomMesh(Room room)
     {
         if (_roomMeshes.TryGetValue(room, out var existing))
@@ -206,6 +229,13 @@ public sealed class LevelRenderer : IDisposable
         return mesh;
     }
 
+    private void DropRoomMeshes()
+    {
+        foreach (var m in _roomMeshes.Values)
+            _device.Destroy(m.Vb);
+        _roomMeshes.Clear();
+    }
+
     /// <summary>Invalidate a single room's cached mesh (call on RoomGeometryChanged).</summary>
     public void InvalidateRoom(Room room)
     {
@@ -213,28 +243,67 @@ public sealed class LevelRenderer : IDisposable
             _device.Destroy(mesh.Vb);
     }
 
-    /// <summary>Drop all cached room meshes (call on LevelChanged).</summary>
+    /// <summary>Drop all cached room meshes and the atlas (call on LevelChanged).</summary>
     public void InvalidateAllRooms()
     {
-        foreach (var m in _roomMeshes.Values)
-            _device.Destroy(m.Vb);
-        _roomMeshes.Clear();
+        DropRoomMeshes();
+        _atlas?.Dispose();
+        _atlas = null;
+        _atlasLevel = null;
     }
 
     private RoomMesh BuildRoomMesh(Room room)
     {
         var geom = room.RoomGeometry;
-        int count = geom.VertexPositions.Count;
-        if (count == 0)
+        int singleSidedVertexCount = geom.VertexPositions.Count;
+        if (singleSidedVertexCount == 0 || _atlas == null)
             return new RoomMesh(default, 0);
 
-        // World-space bake: room-local pos + room.WorldPos.
+        // First pass: count visible (non-invisible) triangles.
+        int triCount = singleSidedVertexCount / 3;
+        int visibleTris = 0;
+        for (int i = 0; i < triCount; i++)
+            if (geom.TriangleTextureAreas[i].Texture is not TextureInvisible)
+                visibleTris++;
+
+        if (visibleTris == 0)
+            return new RoomMesh(default, 0);
+
         Vector3 wp = room.WorldPos;
-        var verts = new RoomVertex[count];
-        for (int i = 0; i < count; i++)
+        var verts = new RoomVertex[visibleTris * 3];
+
+        int outIdx = 0;
+        for (int i = 0; i < triCount; i++)
         {
-            verts[i].Position = geom.VertexPositions[i] + wp;
-            verts[i].Color    = geom.VertexColors[i];
+            var ta = geom.TriangleTextureAreas[i];
+            if (ta.Texture is TextureInvisible) continue;
+
+            // Three per-triangle UVs in atlas space. ta.TexCoord{0,1,2} are
+            // source-texture *pixel* coords; the atlas converts them to a
+            // normalized atlas UV (white pixel for null / unknown texture).
+            Vector2 uv0 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord0);
+            Vector2 uv1 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord1);
+            Vector2 uv2 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord2);
+
+            verts[outIdx + 0] = new RoomVertex
+            {
+                Position = geom.VertexPositions[i * 3 + 0] + wp,
+                Color    = geom.VertexColors[i * 3 + 0],
+                Uv       = uv0,
+            };
+            verts[outIdx + 1] = new RoomVertex
+            {
+                Position = geom.VertexPositions[i * 3 + 1] + wp,
+                Color    = geom.VertexColors[i * 3 + 1],
+                Uv       = uv1,
+            };
+            verts[outIdx + 2] = new RoomVertex
+            {
+                Position = geom.VertexPositions[i * 3 + 2] + wp,
+                Color    = geom.VertexColors[i * 3 + 2],
+                Uv       = uv2,
+            };
+            outIdx += 3;
         }
 
         var bytes = MemoryMarshal.AsBytes(verts.AsSpan());
@@ -245,13 +314,14 @@ public sealed class LevelRenderer : IDisposable
                 bindFlags: BufferBindFlags.Vertex,
                 debugName: "Room:" + (room.Name ?? "?")),
             bytes);
-        return new RoomMesh(vb, count);
+        return new RoomMesh(vb, verts.Length);
     }
 
     public void Dispose()
     {
         _device.WaitIdle();
         InvalidateAllRooms();
+        _atlas?.Dispose();
         if (_viewCb.IsValid)        _device.Destroy(_viewCb);
         if (_roomPipeline.IsValid)  _device.Destroy(_roomPipeline);
         if (_swap.IsValid)          _device.Destroy(_swap);
