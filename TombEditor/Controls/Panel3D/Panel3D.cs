@@ -338,8 +338,14 @@ namespace TombEditor.Controls.Panel3D
             }
             if (obj is Editor.SelectedRoomChangedEvent)
             {
-                _renderingCachedRooms.Remove(((Editor.SelectedRoomChangedEvent)obj).Previous);
-                _v2Renderer?.InvalidateRoom(((Editor.SelectedRoomChangedEvent)obj).Previous);
+                var prev = ((Editor.SelectedRoomChangedEvent)obj).Previous;
+                _renderingCachedRooms.Remove(prev);
+                _v2Renderer?.InvalidateRoom(prev);
+                // V2 bakes the SectorTextureDefault state into the mesh, so
+                // entering a new room must also rebuild it (otherwise stale
+                // selection ghosts from the last time this room was current).
+                if (_editor.SelectedRoom != null)
+                    _v2Renderer?.InvalidateRoom(_editor.SelectedRoom);
             }
             if (obj is Editor.RoomSectorPropertiesChangedEvent)
             {
@@ -624,7 +630,18 @@ namespace TombEditor.Controls.Panel3D
                 if (_editor?.Level is not null && Camera is not null && ClientSize.Width > 0 && ClientSize.Height > 0)
                 {
                     var scene = new TombEditor.Rendering.V2.RenderScene(
-                        _editor.Level, Camera, ClientSize);
+                        level:                         _editor.Level,
+                        camera:                        Camera,
+                        viewportSize:                  ClientSize,
+                        selectedRoom:                  _editor.SelectedRoom,
+                        selectionArea:                 _editor.SelectedSectors.Area,
+                        highlightArea:                 _editor.HighlightedSectors.Area,
+                        selectionArrow:                _editor.SelectedSectors.Arrow,
+                        coloringInfo:                  _editor.SectorColoringManager.ColoringInfo,
+                        showIllegalSlopes:             ShowIllegalSlopes,
+                        showSlideDirections:           ShowSlideDirections,
+                        probeAttributesThroughPortals: _editor.Configuration.UI_ProbeAttributesThroughPortals,
+                        hideHiddenRooms:               DisablePickingForHiddenRooms);
                     _v2Renderer.RenderFrame(scene);
                 }
                 else

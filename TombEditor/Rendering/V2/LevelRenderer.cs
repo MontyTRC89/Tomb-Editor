@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.SectorStructs;
+using TombLib.Rendering;
 using TombLib.RenderingV2.Backends.Dx11;
 using TombLib.RenderingV2.Rhi;
 using TombLib.Utils;
@@ -172,10 +175,36 @@ public sealed class LevelRenderer : IDisposable
                 Samplers        = new[] { _atlas.Sampler },
             });
 
+            // One SectorTextureDefault per room: only the selected room gets
+            // a populated SelectionArea / HighlightArea (matches the legacy
+            // CacheRoom behavior).
+            var st = new SectorTextureDefault
+            {
+                ColoringInfo                  = scene.ColoringInfo,
+                DrawIllegalSlopes             = scene.ShowIllegalSlopes,
+                DrawSlideDirections           = scene.ShowSlideDirections,
+                ProbeAttributesThroughPortals = scene.ProbeAttributesThroughPortals,
+                HideHiddenRooms               = scene.HideHiddenRooms,
+            };
+
             foreach (Room room in scene.Level.Rooms)
             {
                 if (room == null || room.RoomGeometry == null) continue;
-                var mesh = GetOrCreateRoomMesh(room);
+
+                if (ReferenceEquals(room, scene.SelectedRoom))
+                {
+                    st.SelectionArea  = scene.SelectionArea;
+                    st.HighlightArea  = scene.HighlightArea;
+                    st.SelectionArrow = scene.SelectionArrow;
+                }
+                else
+                {
+                    st.SelectionArea  = new RectangleInt2(-1, -1, -1, -1);
+                    st.HighlightArea  = new RectangleInt2(-1, -1, -1, -1);
+                    st.SelectionArrow = ArrowType.EntireFace;
+                }
+
+                var mesh = GetOrCreateRoomMesh(room, st.Get);
                 if (mesh.VertexCount == 0) continue;
                 cl.SetVertexBuffers(new[] { new VertexBufferBinding(mesh.Vb, 0) });
                 cl.Draw(mesh.VertexCount);
@@ -220,11 +249,11 @@ public sealed class LevelRenderer : IDisposable
         DropRoomMeshes();
     }
 
-    private RoomMesh GetOrCreateRoomMesh(Room room)
+    private RoomMesh GetOrCreateRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet)
     {
         if (_roomMeshes.TryGetValue(room, out var existing))
             return existing;
-        var mesh = BuildRoomMesh(room);
+        var mesh = BuildRoomMesh(room, sectorTextureGet);
         _roomMeshes[room] = mesh;
         return mesh;
     }
@@ -252,55 +281,90 @@ public sealed class LevelRenderer : IDisposable
         _atlasLevel = null;
     }
 
-    private RoomMesh BuildRoomMesh(Room room)
+    // Editor-look tints applied on top of the SectorTextureDefault.Color
+    // classification. Match the legacy "selection red / highlight yellow"
+    // visual reasonably closely without being pixel-perfect.
+    private static readonly Vector3 _selectionTint   = new(1.0f, 0.15f, 0.15f);
+    private static readonly Vector3 _highlightTint   = new(1.0f, 0.95f, 0.30f);
+
+    private RoomMesh BuildRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet)
     {
         var geom = room.RoomGeometry;
         int singleSidedVertexCount = geom.VertexPositions.Count;
         if (singleSidedVertexCount == 0 || _atlas == null)
             return new RoomMesh(default, 0);
 
-        // First pass: count visible (non-invisible) triangles.
         int triCount = singleSidedVertexCount / 3;
+
+        // Count visible triangles. Hidden / Invisible drop out of the VB.
         int visibleTris = 0;
+        var triResults = new SectorTextureResult[triCount];
         for (int i = 0; i < triCount; i++)
-            if (geom.TriangleTextureAreas[i].Texture is not TextureInvisible)
-                visibleTris++;
+        {
+            var ta = geom.TriangleTextureAreas[i];
+            if (ta.Texture is TextureInvisible) continue;
+
+            SectorFaceIdentity faceId = geom.TriangleSectorInfo[i];
+            triResults[i] = sectorTextureGet(room, faceId.Position.X, faceId.Position.Y, faceId.Face);
+
+            if (triResults[i].Hidden) continue;
+            visibleTris++;
+        }
 
         if (visibleTris == 0)
             return new RoomMesh(default, 0);
 
         Vector3 wp = room.WorldPos;
         var verts = new RoomVertex[visibleTris * 3];
-
         int outIdx = 0;
+
         for (int i = 0; i < triCount; i++)
         {
             var ta = geom.TriangleTextureAreas[i];
             if (ta.Texture is TextureInvisible) continue;
 
-            // Three per-triangle UVs in atlas space. ta.TexCoord{0,1,2} are
-            // source-texture *pixel* coords; the atlas converts them to a
-            // normalized atlas UV (white pixel for null / unknown texture).
-            Vector2 uv0 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord0);
-            Vector2 uv1 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord1);
-            Vector2 uv2 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord2);
+            var res = triResults[i];
+            if (res.Hidden) continue;
+
+            // Per-face base color from the editor classification (gray for
+            // generic floor, blue for portals, etc.). Selection / highlight
+            // overrides are blended on top.
+            Vector3 baseColor = new(res.Color.X, res.Color.Y, res.Color.Z);
+            if (res.Dimmed)      baseColor *= 0.5f;
+            if (res.Highlighted) baseColor = Vector3.Lerp(baseColor, _highlightTint, 0.55f);
+            if (res.Selected)    baseColor = Vector3.Lerp(baseColor, _selectionTint, 0.70f);
+
+            // UV strategy: sector overlay sprite (slope arrow / portal cross
+            // / slide direction / ...) when present; otherwise the white
+            // pixel — the colored face is what the user sees.
+            Vector2 uv0, uv1, uv2;
+            if (res.SectorTexture != SectorTexture.None)
+            {
+                uv0 = _atlas.GetSectorOverlayUv(res.SectorTexture, geom.VertexEditorUVs[i * 3 + 0]);
+                uv1 = _atlas.GetSectorOverlayUv(res.SectorTexture, geom.VertexEditorUVs[i * 3 + 1]);
+                uv2 = _atlas.GetSectorOverlayUv(res.SectorTexture, geom.VertexEditorUVs[i * 3 + 2]);
+            }
+            else
+            {
+                uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
+            }
 
             verts[outIdx + 0] = new RoomVertex
             {
                 Position = geom.VertexPositions[i * 3 + 0] + wp,
-                Color    = geom.VertexColors[i * 3 + 0],
+                Color    = baseColor,
                 Uv       = uv0,
             };
             verts[outIdx + 1] = new RoomVertex
             {
                 Position = geom.VertexPositions[i * 3 + 1] + wp,
-                Color    = geom.VertexColors[i * 3 + 1],
+                Color    = baseColor,
                 Uv       = uv1,
             };
             verts[outIdx + 2] = new RoomVertex
             {
                 Position = geom.VertexPositions[i * 3 + 2] + wp,
-                Color    = geom.VertexColors[i * 3 + 2],
+                Color    = baseColor,
                 Uv       = uv2,
             };
             outIdx += 3;
