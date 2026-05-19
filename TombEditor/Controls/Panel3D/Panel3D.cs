@@ -553,6 +553,14 @@ namespace TombEditor.Controls.Panel3D
 
         private MouseButtons _v2DragButton;
 
+        // Drag-selection state. Left-mouse press anchors a sector (x, z) in
+        // a room; subsequent moves expand the selection rectangle until
+        // mouse-up. Drag never crosses rooms — picking is restricted to the
+        // anchor room while dragging.
+        private Room       _v2SelAnchorRoom;
+        private VectorInt2 _v2SelAnchor;
+        private bool       _v2SelDragging;
+
         private void V2MouseDown(MouseEventArgs e)
         {
             if (!Focused) Focus();
@@ -561,34 +569,21 @@ namespace TombEditor.Controls.Panel3D
             if (e.Button is MouseButtons.Right or MouseButtons.Middle)
                 Capture = true;
             if (e.Button == MouseButtons.Left)
-                V2PickSector(e.Location);
-        }
-
-        private void V2PickSector(System.Drawing.Point pos)
-        {
-            var room = _editor?.SelectedRoom;
-            if (room?.RoomGeometry == null || Camera == null) return;
-            if (ClientSize.Width <= 0 || ClientSize.Height <= 0) return;
-
-            // Same path as the legacy picker: build a ray in room-local
-            // space and let RoomGeometry.RayIntersectsGeometry do the work.
-            // That helper walks the per-face VertexRangeLookup (much smaller
-            // than the full vertex list) and discards back-facing triangles
-            // via the explicit dot(rayDir, normal) check.
-            var vp = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-            var ray = TombLib.Ray.GetPickRay(
-                new System.Numerics.Vector2(pos.X, pos.Y), vp, ClientSize.Width, ClientSize.Height);
-            ray.Position -= room.WorldPos;
-
-            var hit = room.RoomGeometry.RayIntersectsGeometry(ray);
-            if (hit == null) return;
-
-            _editor.SelectedSectors = new SectorSelection
             {
-                Area  = new TombLib.RectangleInt2(hit.Value.Pos.X, hit.Value.Pos.Y,
-                                                  hit.Value.Pos.X, hit.Value.Pos.Y),
-                Arrow = TombLib.Rendering.ArrowType.EntireFace,
-            };
+                if (V2PickRaw(e.Location, out var room, out var pos))
+                {
+                    if (_editor.SelectedRoom != room) _editor.SelectedRoom = room;
+                    _v2SelAnchorRoom = room;
+                    _v2SelAnchor     = pos;
+                    _v2SelDragging   = true;
+                    Capture          = true;
+                    _editor.SelectedSectors = new SectorSelection
+                    {
+                        Area  = new TombLib.RectangleInt2(pos.X, pos.Y, pos.X, pos.Y),
+                        Arrow = TombLib.Rendering.ArrowType.EntireFace,
+                    };
+                }
+            }
         }
 
         private void V2MouseUp(MouseEventArgs e)
@@ -598,12 +593,37 @@ namespace TombEditor.Controls.Panel3D
                 _v2DragButton = MouseButtons.None;
                 Capture = false;
             }
+            if (e.Button == MouseButtons.Left)
+            {
+                _v2SelDragging   = false;
+                _v2SelAnchorRoom = null;
+            }
         }
 
         private void V2MouseMove(MouseEventArgs e)
         {
             if (Camera == null) return;
-            if (_v2DragButton is MouseButtons.Right or MouseButtons.Middle)
+
+            if (_v2SelDragging && (e.Button & MouseButtons.Left) != 0 && _v2SelAnchorRoom != null)
+            {
+                if (V2PickRaw(e.Location, out var hitRoom, out var pos) && hitRoom == _v2SelAnchorRoom)
+                {
+                    int x0 = Math.Min(_v2SelAnchor.X, pos.X);
+                    int z0 = Math.Min(_v2SelAnchor.Y, pos.Y);
+                    int x1 = Math.Max(_v2SelAnchor.X, pos.X);
+                    int z1 = Math.Max(_v2SelAnchor.Y, pos.Y);
+                    var newArea = new TombLib.RectangleInt2(x0, z0, x1, z1);
+                    if (_editor.SelectedSectors.Area != newArea)
+                    {
+                        _editor.SelectedSectors = new SectorSelection
+                        {
+                            Area  = newArea,
+                            Arrow = TombLib.Rendering.ArrowType.EntireFace,
+                        };
+                    }
+                }
+            }
+            else if (_v2DragButton is MouseButtons.Right or MouseButtons.Middle)
             {
                 var delta = Delta(e.Location, _lastMousePosition);
                 if (ModifierKeys.HasFlag(Keys.Shift))
@@ -619,6 +639,35 @@ namespace TombEditor.Controls.Panel3D
                 Invalidate();
             }
             _lastMousePosition = e.Location;
+        }
+
+        // Common ray-pick used by both single-click and drag-select. While
+        // a drag is active, it sticks to the anchor room so the selection
+        // rectangle can't jump into a neighbour. Otherwise it picks within
+        // the currently selected room (legacy default behaviour).
+        private bool V2PickRaw(System.Drawing.Point pos, out Room room, out VectorInt2 sector)
+        {
+            room   = null;
+            sector = default;
+            if (_editor?.Level == null || Camera == null) return false;
+            if (ClientSize.Width <= 0 || ClientSize.Height <= 0) return false;
+
+            var target = _v2SelDragging && _v2SelAnchorRoom != null
+                       ? _v2SelAnchorRoom
+                       : _editor.SelectedRoom;
+            if (target?.RoomGeometry == null) return false;
+
+            var vp = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            var ray = TombLib.Ray.GetPickRay(
+                new System.Numerics.Vector2(pos.X, pos.Y), vp, ClientSize.Width, ClientSize.Height);
+            ray.Position -= target.WorldPos;
+
+            var hit = target.RoomGeometry.RayIntersectsGeometry(ray);
+            if (hit == null) return false;
+
+            room   = target;
+            sector = hit.Value.Pos;
+            return true;
         }
 
         private void V2MouseWheel(MouseEventArgs e)
