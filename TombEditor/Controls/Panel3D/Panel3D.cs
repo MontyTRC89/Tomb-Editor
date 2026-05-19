@@ -480,31 +480,31 @@ namespace TombEditor.Controls.Panel3D
                 _editor.HighlightedSplit = 0;
         }
 
-        // While the V2 renderer is being filled in, the viewport is view-only:
-        // every legacy mouse interaction (gizmo, picking, brush, object move)
-        // dereferences fields that the V2 init path leaves null, so we
-        // short-circuit them all. Camera flight, key bindings and resize
-        // still work because they only touch RHI-agnostic state.
+        // While the V2 renderer is being filled in, the legacy interactions
+        // (gizmo, picking, brush, object move) dereference fields the V2 init
+        // path leaves null. We short-circuit them all, but route the bits
+        // that *don't* depend on legacy state (camera rotate/zoom and
+        // keyboard focus) through V2-specific handlers below.
         private bool LegacyMouseDisabled => _v2Renderer is not null;
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            if (LegacyMouseDisabled) return;
+            if (LegacyMouseDisabled) { V2MouseWheel(e); return; }
             OnMouseWheelScroll(e.Delta, e.Location);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (LegacyMouseDisabled) return;
+            if (LegacyMouseDisabled) { V2MouseDown(e); return; }
             OnMouseButtonDown(e.Button, e.Location);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            if (LegacyMouseDisabled) return;
+            if (LegacyMouseDisabled) { V2MouseUp(e); return; }
             OnMouseButtonUp(e.Button, e.Location);
         }
 
@@ -518,14 +518,14 @@ namespace TombEditor.Controls.Panel3D
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (LegacyMouseDisabled) return;
+            if (LegacyMouseDisabled) { V2MouseMove(e); return; }
             OnMouseMoved(e.Button, e.Location);
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            if (LegacyMouseDisabled) return;
+            if (LegacyMouseDisabled) { if (!Focused) Focus(); return; }
             OnMouseEntered();
         }
 
@@ -541,6 +541,57 @@ namespace TombEditor.Controls.Panel3D
             base.OnDragDrop(e);
             if (LegacyMouseDisabled) return;
             OnMouseDragAndDrop(e);
+        }
+
+        // --- V2 input handlers ------------------------------------------------
+
+        private MouseButtons _v2DragButton;
+
+        private void V2MouseDown(MouseEventArgs e)
+        {
+            if (!Focused) Focus();
+            _lastMousePosition = e.Location;
+            _v2DragButton = e.Button;
+            if (e.Button is MouseButtons.Right or MouseButtons.Middle)
+                Capture = true;
+        }
+
+        private void V2MouseUp(MouseEventArgs e)
+        {
+            if (e.Button == _v2DragButton)
+            {
+                _v2DragButton = MouseButtons.None;
+                Capture = false;
+            }
+        }
+
+        private void V2MouseMove(MouseEventArgs e)
+        {
+            if (Camera == null) return;
+            if (_v2DragButton is MouseButtons.Right or MouseButtons.Middle)
+            {
+                var delta = Delta(e.Location, _lastMousePosition);
+                if (ModifierKeys.HasFlag(Keys.Shift))
+                    Camera.MoveCameraPlane(new System.Numerics.Vector3(delta.X, delta.Y, 0) *
+                        _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
+                else if (ModifierKeys.HasFlag(Keys.Control))
+                    Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? delta.Y : -delta.Y) *
+                        _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
+                else
+                    Camera.Rotate(
+                        delta.X * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
+                       -delta.Y * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
+                Invalidate();
+            }
+            _lastMousePosition = e.Location;
+        }
+
+        private void V2MouseWheel(MouseEventArgs e)
+        {
+            if (Camera == null) return;
+            float dir = e.Delta > 0 ? -1f : 1f;
+            Camera.Zoom(dir * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
+            Invalidate();
         }
 
         protected override void OnLostFocus(EventArgs e)
