@@ -93,14 +93,20 @@ public sealed class TextureAtlas : IDisposable
             BlitInto(atlasBytes, atlasSize, pos.Value, size, tex.Image.ToByteArray());
         }
 
+        // mipLevels = 0 → auto-generate a full mip chain. Without it,
+        // distant textures alias hard (no detail averaging) and anisotropic
+        // filtering can't do its job.
         Texture = device.CreateTexture(
             new TextureDesc(TextureKind.Texture2D, atlasSize, atlasSize,
                             Format.B8G8R8A8_UNorm, TextureBindFlags.ShaderResource,
+                            mipLevels: 0,
                             debugName: "LevelAtlas"),
             atlasBytes);
 
+        // Anisotropic 4x matches the legacy SamplerDefault. Combined with the
+        // mip chain above, this is the legacy "high quality" look.
         Sampler = device.CreateSampler(new SamplerDesc(
-            FilterMode.Linear, AddressMode.Wrap, maxAnisotropy: 4));
+            FilterMode.Anisotropic, AddressMode.Wrap, maxAnisotropy: 4));
     }
 
     private static readonly Assembly RenderingAssembly = typeof(SectorTexture).Assembly;

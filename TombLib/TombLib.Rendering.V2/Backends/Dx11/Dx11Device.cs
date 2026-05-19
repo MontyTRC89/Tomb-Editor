@@ -207,28 +207,47 @@ public unsafe sealed class Dx11Device : IRhiDevice
 
     public TextureHandle CreateTexture(in TextureDesc desc, ReadOnlySpan<byte> initialData)
     {
+        // MipLevels == 0 → auto-generate a full mip chain. Required for
+        // anisotropic filtering to look right at distance. The texture has
+        // to also be a render target so we can call GenerateMips on it.
+        bool autoMip   = desc.MipLevels == 0;
+        bool hasShader = (desc.BindFlags & TextureBindFlags.ShaderResource) != 0;
+        uint bindFlags = (uint)Dx11Mapping.ToBindFlags(desc.BindFlags);
+        uint miscFlags = desc.Kind == TextureKind.TextureCube
+                         ? (uint)DX.ResourceMiscFlag.Texturecube
+                         : 0u;
+        if (autoMip)
+        {
+            // GenerateMips requires SR + RT bind and the GenerateMips misc flag.
+            bindFlags |= (uint)(DX.BindFlag.ShaderResource | DX.BindFlag.RenderTarget);
+            miscFlags |= (uint)DX.ResourceMiscFlag.GenerateMips;
+        }
+
         var td = new DX.Texture2DDesc
         {
             Width            = (uint)desc.Width,
             Height           = (uint)desc.Height,
-            MipLevels        = (uint)desc.MipLevels,
+            MipLevels        = autoMip ? 0u : (uint)desc.MipLevels,
             ArraySize        = (uint)desc.ArrayLayers,
             Format           = Dx11Mapping.ToDxgi(desc.Format),
             SampleDesc       = new DXGI.SampleDesc { Count = (uint)desc.Samples, Quality = 0 },
-            Usage            = initialData.Length > 0 && (desc.BindFlags & (TextureBindFlags.RenderTarget | TextureBindFlags.DepthStencil)) == 0
-                               ? DX.Usage.Immutable
-                               : DX.Usage.Default,
-            BindFlags        = (uint)Dx11Mapping.ToBindFlags(desc.BindFlags),
+            // Auto-mip textures must be Usage.Default (Immutable forbids
+            // GenerateMips / UpdateSubresource), and the initial-data path
+            // can't supply every level, so upload mip 0 separately below.
+            Usage            = autoMip
+                               ? DX.Usage.Default
+                               : initialData.Length > 0 && (desc.BindFlags & (TextureBindFlags.RenderTarget | TextureBindFlags.DepthStencil)) == 0
+                                 ? DX.Usage.Immutable
+                                 : DX.Usage.Default,
+            BindFlags        = bindFlags,
             CPUAccessFlags   = 0,
-            MiscFlags        = desc.Kind == TextureKind.TextureCube
-                               ? (uint)DX.ResourceMiscFlag.Texturecube
-                               : 0u,
+            MiscFlags        = miscFlags,
         };
 
         ComPtr<DX.ID3D11Texture2D> native = default;
         fixed (byte* p = initialData)
         {
-            if (initialData.Length > 0)
+            if (initialData.Length > 0 && !autoMip)
             {
                 // Single-subresource upload path: tight rows, mip 0, layer 0.
                 int bpp = BytesPerPixelOf(desc.Format);
@@ -245,14 +264,28 @@ public unsafe sealed class Dx11Device : IRhiDevice
             }
         }
 
+        // For auto-mip textures, push mip 0 then generate the chain.
+        if (autoMip && initialData.Length > 0)
+        {
+            int bpp = BytesPerPixelOf(desc.Format);
+            fixed (byte* p = initialData)
+            {
+                Context.UpdateSubresource(
+                    (DX.ID3D11Resource*)native.Handle, 0u,
+                    (DX.Box*)null, p, (uint)(desc.Width * bpp), 0u);
+            }
+        }
+
         ComPtr<DX.ID3D11ShaderResourceView> srv = default;
         ComPtr<DX.ID3D11RenderTargetView>   rtv = default;
         ComPtr<DX.ID3D11DepthStencilView>   dsv = default;
 
-        if ((desc.BindFlags & TextureBindFlags.ShaderResource) != 0)
+        if (hasShader || autoMip)
         {
             SilkMarshal.ThrowHResult(Device.CreateShaderResourceView(
                 (DX.ID3D11Resource*)native.Handle, (DX.ShaderResourceViewDesc*)null, srv.GetAddressOf()));
+            if (autoMip)
+                Context.GenerateMips(srv);
         }
         if ((desc.BindFlags & TextureBindFlags.RenderTarget) != 0)
         {
