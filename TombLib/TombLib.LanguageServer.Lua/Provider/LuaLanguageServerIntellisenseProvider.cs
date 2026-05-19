@@ -44,6 +44,8 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 	private long _restartRequestedGeneration = -1;
 	private bool _permanentStartupFailureReported;
 	private bool _transientStartupFailureReported;
+
+	private int _disposeStarted;
 	private volatile bool _isDisposed;
 
 	/// <summary>

@@ -7,6 +7,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 {
 	private readonly string _workspaceRootDirectoryPath;
 	private readonly IReadOnlyList<WorkspaceWatchSpecification> _watchSpecifications;
+	private readonly object _snapshotSyncRoot = new();
 	private Dictionary<string, LuaWorkspaceSnapshotEntry> _trackedSnapshot = new(StringComparer.OrdinalIgnoreCase);
 
 	/// <summary>
@@ -24,14 +25,22 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// Replaces the tracked snapshot with a fresh capture of the current workspace state.
 	/// </summary>
 	public void CaptureTrackedSnapshot()
-		=> _trackedSnapshot = CaptureSnapshot();
+	{
+		Dictionary<string, LuaWorkspaceSnapshotEntry> snapshot = CaptureSnapshot();
+
+		lock (_snapshotSyncRoot)
+			_trackedSnapshot = snapshot;
+	}
 
 	/// <summary>
 	/// Creates a stable clone of the currently tracked workspace snapshot.
 	/// </summary>
 	/// <returns>The cloned snapshot.</returns>
 	public Dictionary<string, LuaWorkspaceSnapshotEntry> CloneTrackedSnapshot()
-		=> CloneSnapshot(_trackedSnapshot);
+	{
+		lock (_snapshotSyncRoot)
+			return CloneSnapshot(_trackedSnapshot);
+	}
 
 	/// <summary>
 	/// Captures the current workspace state, replaces the tracked snapshot, and returns the fresh snapshot.
@@ -40,7 +49,10 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	public Dictionary<string, LuaWorkspaceSnapshotEntry> ReplaceTrackedSnapshotWithCurrent()
 	{
 		Dictionary<string, LuaWorkspaceSnapshotEntry> currentSnapshot = CaptureSnapshot();
-		_trackedSnapshot = currentSnapshot;
+
+		lock (_snapshotSyncRoot)
+			_trackedSnapshot = currentSnapshot;
+
 		return currentSnapshot;
 	}
 
@@ -50,20 +62,23 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// <param name="changes">The normalized forwarded file changes.</param>
 	public void ApplyChanges(IReadOnlyList<WorkspaceFileChange> changes)
 	{
-		for (int i = 0; i < changes.Count; i++)
+		lock (_snapshotSyncRoot)
 		{
-			WorkspaceFileChange change = changes[i];
-
-			if (change.Kind == FileChangeKind.Deleted)
+			for (int i = 0; i < changes.Count; i++)
 			{
-				_trackedSnapshot.Remove(change.Path);
-				continue;
-			}
+				WorkspaceFileChange change = changes[i];
 
-			if (TryCreateSnapshotEntry(change.Path, out LuaWorkspaceSnapshotEntry entry))
-				_trackedSnapshot[change.Path] = entry;
-			else
-				_trackedSnapshot.Remove(change.Path);
+				if (change.Kind == FileChangeKind.Deleted)
+				{
+					_trackedSnapshot.Remove(change.Path);
+					continue;
+				}
+
+				if (TryCreateSnapshotEntry(change.Path, out LuaWorkspaceSnapshotEntry entry))
+					_trackedSnapshot[change.Path] = entry;
+				else if (TryDeterminePathMissing(change.Path, out bool isMissing) && isMissing)
+					_trackedSnapshot.Remove(change.Path);
+			}
 		}
 	}
 
@@ -83,7 +98,9 @@ internal sealed class LuaWorkspaceSnapshotTracker
 		{
 			if (!currentSnapshot.TryGetValue(path, out LuaWorkspaceSnapshotEntry currentEntry))
 			{
-				changes.Add(new WorkspaceFileChange(path, FileChangeKind.Deleted));
+				if (TryDeterminePathMissing(path, out bool isMissing) && isMissing)
+					changes.Add(new WorkspaceFileChange(path, FileChangeKind.Deleted));
+
 				continue;
 			}
 
@@ -171,6 +188,31 @@ internal sealed class LuaWorkspaceSnapshotTracker
 		{ }
 
 		return false;
+	}
+
+	private static bool TryDeterminePathMissing(string normalizedPath, out bool isMissing)
+	{
+		isMissing = false;
+
+		try
+		{
+			_ = File.GetAttributes(normalizedPath);
+			return true;
+		}
+		catch (DirectoryNotFoundException)
+		{
+			isMissing = true;
+			return true;
+		}
+		catch (FileNotFoundException)
+		{
+			isMissing = true;
+			return true;
+		}
+		catch (Exception)
+		{
+			return false;
+		}
 	}
 }
 

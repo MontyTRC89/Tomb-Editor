@@ -1,6 +1,4 @@
 using NLog;
-using NLog.Config;
-using NLog.Targets;
 
 namespace TombLib.LanguageServer.Core.Tests;
 
@@ -10,124 +8,92 @@ public class WorkspaceFileWatcherTests
 	[TestMethod]
 	public async Task DispatchPendingChangesForTestAsync_PreservesDeleteThenCreatePairForSamePath()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherCoalesce_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherCoalesce_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		FileChangeBatch? dispatchedBatch = null;
 
-		try
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			dispatchedBatch = batch;
+			return Task.CompletedTask;
+		}, watchSpecifications);
 
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
-			{
-				dispatchedBatch = batch;
-				return Task.CompletedTask;
-			}, watchSpecifications);
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			string filePath = Path.Combine(workspaceRoot, "test.lua");
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Deleted);
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Created);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Deleted);
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Created);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-#pragma warning restore CS0618
-
-			Assert.IsNotNull(dispatchedBatch);
-			Assert.AreEqual(2, dispatchedBatch.Count);
-			Assert.AreEqual(filePath, dispatchedBatch.Entries[0].Path);
-			Assert.AreEqual(FileChangeKind.Deleted, dispatchedBatch.Entries[0].Kind);
-			Assert.AreEqual(filePath, dispatchedBatch.Entries[1].Path);
-			Assert.AreEqual(FileChangeKind.Created, dispatchedBatch.Entries[1].Kind);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.IsNotNull(dispatchedBatch);
+		Assert.AreEqual(2, dispatchedBatch.Count);
+		Assert.AreEqual(filePath, dispatchedBatch.Entries[0].Path);
+		Assert.AreEqual(FileChangeKind.Deleted, dispatchedBatch.Entries[0].Kind);
+		Assert.AreEqual(filePath, dispatchedBatch.Entries[1].Path);
+		Assert.AreEqual(FileChangeKind.Created, dispatchedBatch.Entries[1].Kind);
 	}
 
 	[TestMethod]
 	public async Task DispatchPendingChangesForTestAsync_NormalizesEquivalentPathFormsBeforeCoalescing()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherNormalize_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherNormalize_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		FileChangeBatch? dispatchedBatch = null;
 
-		try
+		Directory.CreateDirectory(Path.Combine(workspaceRoot, "Scripts"));
+
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
-			Directory.CreateDirectory(Path.Combine(workspaceRoot, "Scripts"));
+			dispatchedBatch = batch;
+			return Task.CompletedTask;
+		}, watchSpecifications);
 
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
-			{
-				dispatchedBatch = batch;
-				return Task.CompletedTask;
-			}, watchSpecifications);
+		string normalizedPath = Path.Combine(workspaceRoot, "Scripts", "test.lua");
+		string alternatePath = normalizedPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			string normalizedPath = Path.Combine(workspaceRoot, "Scripts", "test.lua");
-			string alternatePath = normalizedPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+		QueueChangeForTest(watcher, normalizedPath, FileChangeKind.Changed);
+		QueueChangeForTest(watcher, alternatePath, FileChangeKind.Changed);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(normalizedPath, FileChangeKind.Changed);
-			watcher.QueueChangeForTest(alternatePath, FileChangeKind.Changed);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-#pragma warning restore CS0618
-
-			Assert.IsNotNull(dispatchedBatch);
-			Assert.AreEqual(1, dispatchedBatch.Count);
-			Assert.AreEqual(LanguageServerPathHelper.NormalizeLocalPath(normalizedPath), dispatchedBatch.Entries[0].Path);
-			Assert.AreEqual(FileChangeKind.Changed, dispatchedBatch.Entries[0].Kind);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.IsNotNull(dispatchedBatch);
+		Assert.AreEqual(1, dispatchedBatch.Count);
+		Assert.AreEqual(LanguageServerPathHelper.NormalizeLocalPath(normalizedPath), dispatchedBatch.Entries[0].Path);
+		Assert.AreEqual(FileChangeKind.Changed, dispatchedBatch.Entries[0].Kind);
 	}
 
 	[TestMethod]
 	public async Task DispatchPendingChangesForTestAsync_WhenDeleteCreateRetryIsNeeded_PreservesBothEntries()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherRetryPair_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherRetryPair_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		FileChangeBatch? dispatchedBatch = null;
 		int dispatchAttemptCount = 0;
 
-		try
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			dispatchAttemptCount++;
 
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
-			{
-				dispatchAttemptCount++;
+			if (dispatchAttemptCount == 1)
+				throw new IOException("Simulated dispatch failure.");
 
-				if (dispatchAttemptCount == 1)
-					throw new IOException("Simulated dispatch failure.");
+			dispatchedBatch = batch;
+			return Task.CompletedTask;
+		}, watchSpecifications);
 
-				dispatchedBatch = batch;
-				return Task.CompletedTask;
-			}, watchSpecifications);
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			string filePath = Path.Combine(workspaceRoot, "test.lua");
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Deleted);
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Created);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Deleted);
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Created);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-#pragma warning restore CS0618
-
-			Assert.AreEqual(2, dispatchAttemptCount);
-			Assert.IsNotNull(dispatchedBatch);
-			Assert.AreEqual(2, dispatchedBatch.Count);
-			Assert.AreEqual(FileChangeKind.Deleted, dispatchedBatch.Entries[0].Kind);
-			Assert.AreEqual(FileChangeKind.Created, dispatchedBatch.Entries[1].Kind);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.AreEqual(2, dispatchAttemptCount);
+		Assert.IsNotNull(dispatchedBatch);
+		Assert.AreEqual(2, dispatchedBatch.Count);
+		Assert.AreEqual(FileChangeKind.Deleted, dispatchedBatch.Entries[0].Kind);
+		Assert.AreEqual(FileChangeKind.Created, dispatchedBatch.Entries[1].Kind);
 	}
 
 	[TestMethod]
@@ -150,703 +116,537 @@ public class WorkspaceFileWatcherTests
 	[TestMethod]
 	public void Start_FileSystemWatcherFactoryThrows_ReturnsStartupFailedAndException()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "WorkspaceWatcherFactoryThrow_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherFactoryThrow_");
+		string workspaceRoot = workspace.DirectoryPath;
 
-		try
-		{
-			Directory.CreateDirectory(workspaceRoot);
+		using var watcher = new WorkspaceFileWatcher(
+			workspaceRoot,
+			(_, _) => Task.CompletedTask,
+			[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: false)],
+			fileSystemWatcherFactory: static (_, _) => throw new InvalidOperationException("Simulated watcher creation failure."));
 
-			using var watcher = new WorkspaceFileWatcher(
-				workspaceRoot,
-				(_, _) => Task.CompletedTask,
-				[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: false)],
-				fileSystemWatcherFactory: static (_, _) => throw new InvalidOperationException("Simulated watcher creation failure."));
+		WorkspaceWatcherStartStatus startStatus = watcher.Start(out Exception? startupException);
 
-			WorkspaceWatcherStartStatus startStatus = watcher.Start(out Exception? startupException);
-
-			Assert.AreEqual(WorkspaceWatcherStartStatus.StartupFailed, startStatus);
-			Assert.IsNotNull(startupException);
-			Assert.IsTrue(watcher.IsDisposed);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.AreEqual(WorkspaceWatcherStartStatus.StartupFailed, startStatus);
+		Assert.IsNotNull(startupException);
+		Assert.IsTrue(watcher.IsDisposed);
 	}
 
 	[TestMethod]
 	public void Start_AfterStartupFailureOnSameInstance_ReturnsDisposed()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "WorkspaceWatcherRetryAfterFailure_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherRetryAfterFailure_");
+		string workspaceRoot = workspace.DirectoryPath;
 
-		try
-		{
-			Directory.CreateDirectory(workspaceRoot);
+		using var watcher = new WorkspaceFileWatcher(
+			workspaceRoot,
+			(_, _) => Task.CompletedTask,
+			[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: false)],
+			fileSystemWatcherFactory: static (_, _) => throw new InvalidOperationException("Simulated watcher creation failure."));
 
-			using var watcher = new WorkspaceFileWatcher(
-				workspaceRoot,
-				(_, _) => Task.CompletedTask,
-				[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: false)],
-				fileSystemWatcherFactory: static (_, _) => throw new InvalidOperationException("Simulated watcher creation failure."));
+		WorkspaceWatcherStartStatus firstStartStatus = watcher.Start(out Exception? startupException);
+		WorkspaceWatcherStartStatus retryStatus = watcher.Start(out Exception? retryException);
 
-			WorkspaceWatcherStartStatus firstStartStatus = watcher.Start(out Exception? startupException);
-			WorkspaceWatcherStartStatus retryStatus = watcher.Start(out Exception? retryException);
-
-			Assert.AreEqual(WorkspaceWatcherStartStatus.StartupFailed, firstStartStatus);
-			Assert.IsNotNull(startupException);
-			Assert.AreEqual(WorkspaceWatcherStartStatus.Disposed, retryStatus);
-			Assert.IsNull(retryException);
-			Assert.IsTrue(watcher.IsDisposed);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.AreEqual(WorkspaceWatcherStartStatus.StartupFailed, firstStartStatus);
+		Assert.IsNotNull(startupException);
+		Assert.AreEqual(WorkspaceWatcherStartStatus.Disposed, retryStatus);
+		Assert.IsNull(retryException);
+		Assert.IsTrue(watcher.IsDisposed);
 	}
 
 	[TestMethod]
 	public async Task DispatchPendingChangesForTestAsync_WhenDispatchFails_RetainsBatchForRetry()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherRetry_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherRetry_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		FileChangeBatch? dispatchedBatch = null;
 		int dispatchAttemptCount = 0;
 
 		using var logScope = new NLogMemoryScope(LogLevel.Debug);
 
-		try
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			dispatchAttemptCount++;
 
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
-			{
-				dispatchAttemptCount++;
+			if (dispatchAttemptCount == 1)
+				throw new IOException("Simulated dispatch failure.");
 
-				if (dispatchAttemptCount == 1)
-					throw new IOException("Simulated dispatch failure.");
+			dispatchedBatch = batch;
+			return Task.CompletedTask;
+		}, watchSpecifications);
 
-				dispatchedBatch = batch;
-				return Task.CompletedTask;
-			}, watchSpecifications);
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			string filePath = Path.Combine(workspaceRoot, "test.lua");
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Changed);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-#pragma warning restore CS0618
+		Assert.AreEqual(2, dispatchAttemptCount);
+		Assert.IsNotNull(dispatchedBatch);
+		Assert.AreEqual(1, dispatchedBatch.Count);
+		Assert.AreEqual(filePath, dispatchedBatch.Entries[0].Path);
+		Assert.AreEqual(FileChangeKind.Changed, dispatchedBatch.Entries[0].Kind);
 
-			Assert.AreEqual(2, dispatchAttemptCount);
-			Assert.IsNotNull(dispatchedBatch);
-			Assert.AreEqual(1, dispatchedBatch.Count);
-			Assert.AreEqual(filePath, dispatchedBatch.Entries[0].Path);
-			Assert.AreEqual(FileChangeKind.Changed, dispatchedBatch.Entries[0].Kind);
-
-			Assert.IsTrue(logScope.Logs.Any(log => log.Contains("Workspace file watcher dispatch failed", StringComparison.OrdinalIgnoreCase)
-				&& log.Contains("Simulated dispatch failure.", StringComparison.Ordinal)
-				&& log.Contains(workspaceRoot, StringComparison.OrdinalIgnoreCase)
-				&& log.Contains("1 queued change", StringComparison.OrdinalIgnoreCase)),
-				string.Join(Environment.NewLine, logScope.Logs));
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.IsTrue(logScope.Logs.Any(log => log.Contains("Workspace file watcher dispatch failed", StringComparison.OrdinalIgnoreCase)
+			&& log.Contains("Simulated dispatch failure.", StringComparison.Ordinal)
+			&& log.Contains(workspaceRoot, StringComparison.OrdinalIgnoreCase)
+			&& log.Contains("1 queued change", StringComparison.OrdinalIgnoreCase)),
+			string.Join(Environment.NewLine, logScope.Logs));
 	}
 
 	[TestMethod]
 	public async Task DispatchPendingChangesForTestAsync_WhenDispatchKeepsFailing_EscalatesLogLevelAndBackoff()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherBackoff_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherBackoff_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 
 		using var logScope = new NLogMemoryScope(LogLevel.Debug);
 
-		try
-		{
-			Directory.CreateDirectory(workspaceRoot);
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (_, _) => throw new IOException("Persistent dispatch failure."), watchSpecifications);
 
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (_, _) => throw new IOException("Persistent dispatch failure."), watchSpecifications);
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			string filePath = Path.Combine(workspaceRoot, "test.lua");
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Changed);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
+		await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-			await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-#pragma warning restore CS0618
+		Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Debug|", StringComparison.Ordinal)
+			&& log.Contains("retrying in 250 ms", StringComparison.OrdinalIgnoreCase)),
+			string.Join(Environment.NewLine, logScope.Logs));
 
-			Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Debug|", StringComparison.Ordinal)
-				&& log.Contains("retrying in 250 ms", StringComparison.OrdinalIgnoreCase)),
-				string.Join(Environment.NewLine, logScope.Logs));
+		Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Debug|", StringComparison.Ordinal)
+			&& log.Contains("retrying in 500 ms", StringComparison.OrdinalIgnoreCase)),
+			string.Join(Environment.NewLine, logScope.Logs));
 
-			Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Debug|", StringComparison.Ordinal)
-				&& log.Contains("retrying in 500 ms", StringComparison.OrdinalIgnoreCase)),
-				string.Join(Environment.NewLine, logScope.Logs));
-
-			Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Warn|", StringComparison.Ordinal)
-				&& log.Contains("3 times in a row", StringComparison.OrdinalIgnoreCase)
-				&& log.Contains("retrying in 1000 ms", StringComparison.OrdinalIgnoreCase)
-				&& log.Contains("backoff", StringComparison.OrdinalIgnoreCase)),
-				string.Join(Environment.NewLine, logScope.Logs));
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.IsTrue(logScope.Logs.Any(log => log.StartsWith("Warn|", StringComparison.Ordinal)
+			&& log.Contains("3 times in a row", StringComparison.OrdinalIgnoreCase)
+			&& log.Contains("retrying in 1000 ms", StringComparison.OrdinalIgnoreCase)
+			&& log.Contains("backoff", StringComparison.OrdinalIgnoreCase)),
+			string.Join(Environment.NewLine, logScope.Logs));
 	}
 
 	[TestMethod]
 	public async Task DispatchPendingChangesForTestAsync_WhenDispatchKeepsFailing_ReportsWatcherFailureAfterBoundedRetries()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherEscalate_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherEscalate_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		int watcherFailedCallCount = 0;
 		Exception? reportedException = null;
 
-		try
-		{
-			Directory.CreateDirectory(workspaceRoot);
+		await using var watcher = new WorkspaceFileWatcher(
+			workspaceRoot,
+			(_, _) => throw new IOException("Persistent dispatch failure."),
+			watchSpecifications,
+			(_, exception) =>
+			{
+				watcherFailedCallCount++;
+				reportedException = exception;
+			});
 
-			await using var watcher = new WorkspaceFileWatcher(
-				workspaceRoot,
-				(_, _) => throw new IOException("Persistent dispatch failure."),
-				watchSpecifications,
-				(_, exception) =>
-				{
-					watcherFailedCallCount++;
-					reportedException = exception;
-				});
+		Assert.IsTrue(watcher.Start());
 
-			Assert.IsTrue(watcher.Start());
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			string filePath = Path.Combine(workspaceRoot, "test.lua");
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Changed);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
+		for (int i = 0; i < 5; i++)
+			await DispatchPendingChangesForTestAsync(watcher).ConfigureAwait(false);
 
-			for (int i = 0; i < 5; i++)
-				await watcher.DispatchPendingChangesForTestAsync().ConfigureAwait(false);
-#pragma warning restore CS0618
-
-			Assert.AreEqual(1, watcherFailedCallCount);
-			Assert.IsInstanceOfType(reportedException, typeof(IOException));
-			Assert.IsFalse(watcher.HasActiveWatchers);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.AreEqual(1, watcherFailedCallCount);
+		Assert.IsInstanceOfType(reportedException, typeof(IOException));
+		Assert.IsFalse(watcher.HasActiveWatchers);
 	}
 
 	[TestMethod]
 	public async Task Dispose_DuringActiveDispatch_DoesNotFaultDispatch()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDispose_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherDispose_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		var dispatchStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var allowDispatchToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-		try
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			dispatchStarted.TrySetResult(true);
+			await allowDispatchToFinish.Task.ConfigureAwait(false);
+		}, watchSpecifications);
 
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
-			{
-				dispatchStarted.TrySetResult(true);
-				await allowDispatchToFinish.Task.ConfigureAwait(false);
-			}, watchSpecifications);
+		QueueChangeForTest(watcher, Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
+		Task dispatchTask = DispatchPendingChangesForTestAsync(watcher);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
-			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
-#pragma warning restore CS0618
+		Task completedTask = await Task.WhenAny(dispatchStarted.Task, Task.Delay(TimeSpan.FromSeconds(1))).ConfigureAwait(false);
+		Assert.AreSame(dispatchStarted.Task, completedTask);
 
-			Task completedTask = await Task.WhenAny(dispatchStarted.Task, Task.Delay(TimeSpan.FromSeconds(1))).ConfigureAwait(false);
-			Assert.AreSame(dispatchStarted.Task, completedTask);
+		Task disposeTask = Task.Run(watcher.Dispose);
+		Assert.IsFalse(disposeTask.IsCompleted);
 
-			Task disposeTask = Task.Run(watcher.Dispose);
-			Assert.IsFalse(disposeTask.IsCompleted);
+		allowDispatchToFinish.TrySetResult(true);
 
-			allowDispatchToFinish.TrySetResult(true);
-
-			await Task.WhenAll(dispatchTask, disposeTask).ConfigureAwait(false);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		await Task.WhenAll(dispatchTask, disposeTask).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task DisposeWithoutFinalFlush_DuringActiveDispatch_DropsRequeuedBatch()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDisposeNoFlush_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherDisposeNoFlush_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		var dispatchStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var allowFirstDispatchToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		FileChangeBatch? dispatchedBatch = null;
 		int dispatchAttemptCount = 0;
 
-		try
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (batch, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			dispatchAttemptCount++;
 
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (batch, _) =>
+			if (dispatchAttemptCount == 1)
 			{
-				dispatchAttemptCount++;
+				dispatchStarted.TrySetResult(true);
+				await allowFirstDispatchToFinish.Task.ConfigureAwait(false);
+				throw new IOException("Simulated dispatch failure during no-flush disposal.");
+			}
 
-				if (dispatchAttemptCount == 1)
-				{
-					dispatchStarted.TrySetResult(true);
-					await allowFirstDispatchToFinish.Task.ConfigureAwait(false);
-					throw new IOException("Simulated dispatch failure during no-flush disposal.");
-				}
+			dispatchedBatch = batch;
+		}, watchSpecifications);
 
-				dispatchedBatch = batch;
-			}, watchSpecifications);
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			string filePath = Path.Combine(workspaceRoot, "test.lua");
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Changed);
+		Task dispatchTask = DispatchPendingChangesForTestAsync(watcher);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
-			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
-#pragma warning restore CS0618
+		await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
-			await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+		Task disposeTask = Task.Run(watcher.DisposeWithoutFinalFlush);
+		Assert.IsFalse(disposeTask.IsCompleted);
 
-			Task disposeTask = Task.Run(watcher.DisposeWithoutFinalFlush);
-			Assert.IsFalse(disposeTask.IsCompleted);
+		allowFirstDispatchToFinish.TrySetResult(true);
 
-			allowFirstDispatchToFinish.TrySetResult(true);
+		await Task.WhenAll(dispatchTask, disposeTask).ConfigureAwait(false);
 
-			await Task.WhenAll(dispatchTask, disposeTask).ConfigureAwait(false);
-
-			Assert.AreEqual(1, dispatchAttemptCount);
-			Assert.IsNull(dispatchedBatch);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.AreEqual(1, dispatchAttemptCount);
+		Assert.IsNull(dispatchedBatch);
 	}
 
 	[TestMethod]
 	public async Task DisposeAsync_DuringActiveDispatch_PreservesRequeuedBatchForFinalFlush()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDisposeRetry_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherDisposeRetry_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		var dispatchStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var allowFirstDispatchToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		FileChangeBatch? dispatchedBatch = null;
 		int dispatchAttemptCount = 0;
 
-		try
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (batch, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			dispatchAttemptCount++;
 
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (batch, _) =>
+			if (dispatchAttemptCount == 1)
 			{
-				dispatchAttemptCount++;
+				dispatchStarted.TrySetResult(true);
+				await allowFirstDispatchToFinish.Task.ConfigureAwait(false);
+				throw new IOException("Simulated dispatch failure during disposal.");
+			}
 
-				if (dispatchAttemptCount == 1)
-				{
-					dispatchStarted.TrySetResult(true);
-					await allowFirstDispatchToFinish.Task.ConfigureAwait(false);
-					throw new IOException("Simulated dispatch failure during disposal.");
-				}
+			dispatchedBatch = batch;
+		}, watchSpecifications);
 
-				dispatchedBatch = batch;
-			}, watchSpecifications);
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-			string filePath = Path.Combine(workspaceRoot, "test.lua");
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Changed);
+		Task dispatchTask = DispatchPendingChangesForTestAsync(watcher);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
-			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
-#pragma warning restore CS0618
+		await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
-			await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+		Task disposeTask = watcher.DisposeAsync().AsTask();
 
-			Task disposeTask = watcher.DisposeAsync().AsTask();
+		Assert.IsFalse(disposeTask.IsCompleted);
 
-			Assert.IsFalse(disposeTask.IsCompleted);
+		allowFirstDispatchToFinish.TrySetResult(true);
 
-			allowFirstDispatchToFinish.TrySetResult(true);
+		await Task.WhenAll(dispatchTask, disposeTask).ConfigureAwait(false);
 
-			await Task.WhenAll(dispatchTask, disposeTask).ConfigureAwait(false);
-
-			Assert.AreEqual(2, dispatchAttemptCount);
-			Assert.IsNotNull(dispatchedBatch);
-			Assert.AreEqual(1, dispatchedBatch.Count);
-			Assert.AreEqual(filePath, dispatchedBatch.Entries[0].Path);
-			Assert.AreEqual(FileChangeKind.Changed, dispatchedBatch.Entries[0].Kind);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.AreEqual(2, dispatchAttemptCount);
+		Assert.IsNotNull(dispatchedBatch);
+		Assert.AreEqual(1, dispatchedBatch.Count);
+		Assert.AreEqual(filePath, dispatchedBatch.Entries[0].Path);
+		Assert.AreEqual(FileChangeKind.Changed, dispatchedBatch.Entries[0].Kind);
 	}
 
 	[TestMethod]
 	public async Task DisposeAsync_WhenFinalFlushStalls_CompletesWithoutWaitingIndefinitely()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDisposeTimedFlush_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherDisposeTimedFlush_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		var dispatchStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var allowFirstDispatchToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var finalFlushStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var allowFinalFlushToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-		try
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
-
-			await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
+			if (!dispatchStarted.Task.IsCompleted)
 			{
-				if (!dispatchStarted.Task.IsCompleted)
-				{
-					dispatchStarted.TrySetResult(true);
-					await allowFirstDispatchToFinish.Task.ConfigureAwait(false);
-					throw new IOException("Simulated dispatch failure during disposal.");
-				}
+				dispatchStarted.TrySetResult(true);
+				await allowFirstDispatchToFinish.Task.ConfigureAwait(false);
+				throw new IOException("Simulated dispatch failure during disposal.");
+			}
 
-				finalFlushStarted.TrySetResult(true);
-				await allowFinalFlushToFinish.Task.ConfigureAwait(false);
-			}, watchSpecifications);
+			finalFlushStarted.TrySetResult(true);
+			await allowFinalFlushToFinish.Task.ConfigureAwait(false);
+		}, watchSpecifications);
 
-			string filePath = Path.Combine(workspaceRoot, "test.lua");
+		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(filePath, FileChangeKind.Changed);
-			Task dispatchTask = watcher.DispatchPendingChangesForTestAsync();
-#pragma warning restore CS0618
+		QueueChangeForTest(watcher, filePath, FileChangeKind.Changed);
+		Task dispatchTask = DispatchPendingChangesForTestAsync(watcher);
 
-			await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+		await dispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
-			Task disposeTask = watcher.DisposeAsync().AsTask();
+		Task disposeTask = watcher.DisposeAsync().AsTask();
 
-			allowFirstDispatchToFinish.TrySetResult(true);
+		allowFirstDispatchToFinish.TrySetResult(true);
 
-			await finalFlushStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-			await Task.WhenAll(dispatchTask, disposeTask.WaitAsync(TimeSpan.FromSeconds(5))).ConfigureAwait(false);
+		await finalFlushStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+		await Task.WhenAll(dispatchTask, disposeTask.WaitAsync(TimeSpan.FromSeconds(5))).ConfigureAwait(false);
 
-			allowFinalFlushToFinish.TrySetResult(true);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		allowFinalFlushToFinish.TrySetResult(true);
 	}
 
 	[TestMethod]
 	public void Dispose_WhenPendingChangesExistAndNoDispatchIsActive_DropsBufferedBatch()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDisposeFlush_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherDisposeFlush_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		FileChangeBatch? dispatchedBatch = null;
 
-		try
+		using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			dispatchedBatch = batch;
+			return Task.CompletedTask;
+		}, watchSpecifications);
 
-			using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
-			{
-				dispatchedBatch = batch;
-				return Task.CompletedTask;
-			}, watchSpecifications);
+		QueueChangeForTest(watcher, Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
 
-#pragma warning disable CS0618
-			watcher.QueueChangeForTest(Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
-#pragma warning restore CS0618
+		watcher.Dispose();
 
-			watcher.Dispose();
-
-			Assert.IsNull(dispatchedBatch);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.IsNull(dispatchedBatch);
 	}
 
 	[TestMethod]
 	public void Dispose_WhenBufferedChangesExist_DoesNotDeadlockCallerContext()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherDisposeContext_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherDisposeContext_");
+		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 		var disposeCompleted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		Exception? failure = null;
 
-		try
+		var thread = new Thread(() =>
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			SynchronizationContext.SetSynchronizationContext(new NonPumpingSynchronizationContext());
 
-			var thread = new Thread(() =>
+			try
 			{
-				SynchronizationContext.SetSynchronizationContext(new NonPumpingSynchronizationContext());
+				using var watcher = new WorkspaceFileWatcher(
+					workspaceRoot,
+					async (_, _) => await Task.Yield(),
+					watchSpecifications);
 
-				try
-				{
-					using var watcher = new WorkspaceFileWatcher(
-						workspaceRoot,
-						async (_, _) => await Task.Yield(),
-						watchSpecifications);
+				QueueChangeForTest(watcher, Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
 
-#pragma warning disable CS0618
-					watcher.QueueChangeForTest(Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
-#pragma warning restore CS0618
-
-					watcher.Dispose();
-					disposeCompleted.TrySetResult(true);
-				}
-				catch (Exception exception)
-				{
-					failure = exception;
-					disposeCompleted.TrySetException(exception);
-				}
-				finally
-				{
-					SynchronizationContext.SetSynchronizationContext(null);
-				}
-			})
+				watcher.Dispose();
+				disposeCompleted.TrySetResult(true);
+			}
+			catch (Exception exception)
 			{
-				IsBackground = true
-			};
-
-			thread.Start();
-
-			Assert.IsTrue(disposeCompleted.Task.Wait(TimeSpan.FromSeconds(5)));
-			Assert.IsTrue(thread.Join(TimeSpan.FromSeconds(1)));
-			Assert.IsNull(failure);
-		}
-		finally
+				failure = exception;
+				disposeCompleted.TrySetException(exception);
+			}
+			finally
+			{
+				SynchronizationContext.SetSynchronizationContext(null);
+			}
+		})
 		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+			IsBackground = true
+		};
+
+		thread.Start();
+
+		Assert.IsTrue(disposeCompleted.Task.Wait(TimeSpan.FromSeconds(5)));
+		Assert.IsTrue(thread.Join(TimeSpan.FromSeconds(1)));
+		Assert.IsNull(failure);
 	}
 
 	[TestMethod]
 	public void Start_UsesConfiguredWatchSpecifications()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "WorkspaceWatcherSpecs_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherSpecs_");
+		string workspaceRoot = workspace.DirectoryPath;
 
-		try
-		{
-			Directory.CreateDirectory(workspaceRoot);
+		using var watcher = new WorkspaceFileWatcher(
+			workspaceRoot,
+			(_, _) => Task.CompletedTask,
+			watchSpecifications:
+			[
+				new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true),
+				new WorkspaceWatchSpecification(".luarc.*", IncludeSubdirectories: false)
+			]);
 
-			using var watcher = new WorkspaceFileWatcher(
-				workspaceRoot,
-				(_, _) => Task.CompletedTask,
-				watchSpecifications:
-				[
-					new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true),
-					new WorkspaceWatchSpecification(".luarc.*", IncludeSubdirectories: false)
-				]);
-
-			Assert.IsTrue(watcher.Start());
-			Assert.AreEqual(2, watcher.ActiveWatcherCount);
-			Assert.IsTrue(watcher.HasActiveWatchers);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.IsTrue(watcher.Start());
+		Assert.AreEqual(2, watcher.ActiveWatcherCount);
+		Assert.IsTrue(watcher.HasActiveWatchers);
 	}
 
 	[TestMethod]
 	public async Task ReportErrorForTest_ConcurrentWithDispose_LeavesNoActiveWatchers()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "WorkspaceWatcherErrorDispose_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherErrorDispose_");
+		string workspaceRoot = workspace.DirectoryPath;
 
-		try
+		for (int i = 0; i < 50; i++)
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			await using var watcher = new WorkspaceFileWatcher(
+				workspaceRoot,
+				(_, _) => Task.CompletedTask,
+				[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)]);
 
-			for (int i = 0; i < 50; i++)
-			{
-				await using var watcher = new WorkspaceFileWatcher(
-					workspaceRoot,
-					(_, _) => Task.CompletedTask,
-					[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)]);
+			Assert.IsTrue(watcher.Start());
 
-				Assert.IsTrue(watcher.Start());
+			Task errorTask = Task.Run(() => ReportErrorForTest(watcher, new IOException("Simulated watcher failure.")));
+			Task disposeTask = Task.Run(watcher.Dispose);
 
-#pragma warning disable CS0618
-				Task errorTask = Task.Run(() => watcher.ReportErrorForTest(new IOException("Simulated watcher failure.")));
-				Task disposeTask = Task.Run(watcher.Dispose);
-#pragma warning restore CS0618
+			await Task.WhenAll(errorTask, disposeTask).ConfigureAwait(false);
 
-				await Task.WhenAll(errorTask, disposeTask).ConfigureAwait(false);
-
-				Assert.IsTrue(watcher.IsDisposed);
-				Assert.AreEqual(0, watcher.ActiveWatcherCount);
-				Assert.IsFalse(watcher.HasActiveWatchers);
-			}
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
+			Assert.IsTrue(watcher.IsDisposed);
+			Assert.AreEqual(0, watcher.ActiveWatcherCount);
+			Assert.IsFalse(watcher.HasActiveWatchers);
 		}
 	}
 
 	[TestMethod]
 	public void ReportErrorForTest_WhenFailureHandlerThrows_LogsWarningAndStopsWatching()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "WorkspaceWatcherFailureCallback_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherFailureCallback_");
+		string workspaceRoot = workspace.DirectoryPath;
 		using var logScope = new NLogMemoryScope(LogLevel.Warn);
 
-		try
-		{
-			Directory.CreateDirectory(workspaceRoot);
+		using var watcher = new WorkspaceFileWatcher(
+			workspaceRoot,
+			(_, _) => Task.CompletedTask,
+			[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)],
+			(_, _) => throw new InvalidOperationException("Simulated watcher failure callback exception."));
 
-			using var watcher = new WorkspaceFileWatcher(
-				workspaceRoot,
-				(_, _) => Task.CompletedTask,
-				[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)],
-				(_, _) => throw new InvalidOperationException("Simulated watcher failure callback exception."));
+		Assert.IsTrue(watcher.Start());
 
-			Assert.IsTrue(watcher.Start());
+		ReportErrorForTest(watcher, new IOException("Simulated watcher failure."));
 
-#pragma warning disable CS0618
-			watcher.ReportErrorForTest(new IOException("Simulated watcher failure."));
-#pragma warning restore CS0618
-
-			Assert.IsFalse(watcher.HasActiveWatchers);
-			Assert.AreEqual(0, watcher.ActiveWatcherCount);
-			Assert.IsTrue(logScope.Logs.Any(log => log.Contains("Workspace watcher failure handler threw.", StringComparison.OrdinalIgnoreCase)
-				&& log.Contains("Simulated watcher failure callback exception.", StringComparison.Ordinal)),
-				string.Join(Environment.NewLine, logScope.Logs));
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.IsFalse(watcher.HasActiveWatchers);
+		Assert.AreEqual(0, watcher.ActiveWatcherCount);
+		Assert.IsTrue(logScope.Logs.Any(log => log.Contains("Workspace watcher failure handler threw.", StringComparison.OrdinalIgnoreCase)
+			&& log.Contains("Simulated watcher failure callback exception.", StringComparison.Ordinal)),
+			string.Join(Environment.NewLine, logScope.Logs));
 	}
 
 	[TestMethod]
 	public void Start_AfterFailure_ResetsFailureReportingForNextFailureSequence()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "WorkspaceWatcherRestart_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherRestart_");
+		string workspaceRoot = workspace.DirectoryPath;
 		int failureCount = 0;
 
-		try
-		{
-			Directory.CreateDirectory(workspaceRoot);
+		using var watcher = new WorkspaceFileWatcher(
+			workspaceRoot,
+			(_, _) => Task.CompletedTask,
+			[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)],
+			(_, _) => failureCount++);
 
-			using var watcher = new WorkspaceFileWatcher(
-				workspaceRoot,
-				(_, _) => Task.CompletedTask,
-				[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)],
-				(_, _) => failureCount++);
+		Assert.IsTrue(watcher.Start());
 
-			Assert.IsTrue(watcher.Start());
+		ReportErrorForTest(watcher, new IOException("Simulated watcher failure 1."));
 
-#pragma warning disable CS0618
-			watcher.ReportErrorForTest(new IOException("Simulated watcher failure 1."));
-#pragma warning restore CS0618
+		Assert.AreEqual(1, failureCount);
+		Assert.IsFalse(watcher.HasActiveWatchers);
 
-			Assert.AreEqual(1, failureCount);
-			Assert.IsFalse(watcher.HasActiveWatchers);
+		Assert.IsTrue(watcher.Start());
 
-			Assert.IsTrue(watcher.Start());
+		ReportErrorForTest(watcher, new IOException("Simulated watcher failure 2."));
 
-#pragma warning disable CS0618
-			watcher.ReportErrorForTest(new IOException("Simulated watcher failure 2."));
-#pragma warning restore CS0618
-
-			Assert.AreEqual(2, failureCount);
-			Assert.IsFalse(watcher.HasActiveWatchers);
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
-		}
+		Assert.AreEqual(2, failureCount);
+		Assert.IsFalse(watcher.HasActiveWatchers);
 	}
 
 	[TestMethod]
 	public async Task Start_ConcurrentWithDispose_DoesNotLeaveOwnedWatchersBehind()
 	{
-		string workspaceRoot = Path.Combine(Path.GetTempPath(), "WorkspaceWatcherStartDispose_" + Guid.NewGuid().ToString("N"));
+		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherStartDispose_");
+		string workspaceRoot = workspace.DirectoryPath;
 
-		try
+		for (int i = 0; i < 50; i++)
 		{
-			Directory.CreateDirectory(workspaceRoot);
+			var watcher = new WorkspaceFileWatcher(
+				workspaceRoot,
+				(_, _) => Task.CompletedTask,
+				[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)]);
 
-			for (int i = 0; i < 50; i++)
-			{
-				var watcher = new WorkspaceFileWatcher(
-					workspaceRoot,
-					(_, _) => Task.CompletedTask,
-					[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)]);
+			Task<bool> startTask = Task.Run(watcher.Start);
+			Task disposeTask = Task.Run(watcher.Dispose);
 
-				Task<bool> startTask = Task.Run(watcher.Start);
-				Task disposeTask = Task.Run(watcher.Dispose);
+			await Task.WhenAll(startTask, disposeTask).ConfigureAwait(false);
 
-				await Task.WhenAll(startTask, disposeTask).ConfigureAwait(false);
+			Assert.IsTrue(watcher.IsDisposed);
+			Assert.AreEqual(0, watcher.ActiveWatcherCount);
+			Assert.IsFalse(watcher.HasActiveWatchers);
 
-				Assert.IsTrue(watcher.IsDisposed);
-				Assert.AreEqual(0, watcher.ActiveWatcherCount);
-				Assert.IsFalse(watcher.HasActiveWatchers);
-
-				watcher.Dispose();
-			}
-		}
-		finally
-		{
-			if (Directory.Exists(workspaceRoot))
-				Directory.Delete(workspaceRoot, recursive: true);
+			watcher.Dispose();
 		}
 	}
 
-	private sealed class NLogMemoryScope : IDisposable
+	private static void QueueChangeForTest(WorkspaceFileWatcher watcher, string filePath, FileChangeKind changeKind)
 	{
-		private readonly LoggingConfiguration? _previousConfiguration;
+#pragma warning disable CS0618
+		watcher.QueueChangeForTest(filePath, changeKind);
+#pragma warning restore CS0618
+	}
 
-		public NLogMemoryScope(LogLevel minLevel)
+	private static Task DispatchPendingChangesForTestAsync(WorkspaceFileWatcher watcher)
+	{
+#pragma warning disable CS0618
+		return watcher.DispatchPendingChangesForTestAsync();
+#pragma warning restore CS0618
+	}
+
+	private static void ReportErrorForTest(WorkspaceFileWatcher watcher, Exception exception)
+	{
+#pragma warning disable CS0618
+		watcher.ReportErrorForTest(exception);
+#pragma warning restore CS0618
+	}
+
+	private sealed class TemporaryWorkspaceRoot : IDisposable
+	{
+		public TemporaryWorkspaceRoot(string namePrefix)
 		{
-			_previousConfiguration = LogManager.Configuration;
-
-			var target = new MemoryTarget("WorkspaceWatcherTests")
-			{
-				Layout = "${level}|${message}|${exception:format=Message}"
-			};
-
-			var configuration = new LoggingConfiguration();
-			configuration.AddTarget(target);
-			configuration.AddRule(minLevel, LogLevel.Fatal, target);
-
-			LogManager.Configuration = configuration;
-			LogManager.ReconfigExistingLoggers();
-
-			Target = target;
+			DirectoryPath = Path.Combine(Path.GetTempPath(), namePrefix + Guid.NewGuid().ToString("N"));
+			Directory.CreateDirectory(DirectoryPath);
 		}
 
-		public MemoryTarget Target { get; }
-
-		public IList<string> Logs => Target.Logs;
+		public string DirectoryPath { get; }
 
 		public void Dispose()
 		{
-			LogManager.Configuration = _previousConfiguration;
-			LogManager.ReconfigExistingLoggers();
+			if (Directory.Exists(DirectoryPath))
+				Directory.Delete(DirectoryPath, recursive: true);
 		}
 	}
 

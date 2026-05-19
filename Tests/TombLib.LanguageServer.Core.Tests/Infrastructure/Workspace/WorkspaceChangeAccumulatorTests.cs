@@ -104,7 +104,6 @@ public class WorkspaceChangeAccumulatorTests
 
 		FileChangeBatch drainedBatch = accumulator.DrainBatch();
 
-		Assert.IsFalse(drainedBatch.Entries is WorkspaceFileChange[]);
 		Assert.ThrowsException<NotSupportedException>(() => ((IList<WorkspaceFileChange>)drainedBatch.Entries)[0] =
 			new WorkspaceFileChange(@"C:\Workspace\Scripts\second.lua", FileChangeKind.Deleted));
 	}

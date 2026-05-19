@@ -51,6 +51,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			Directory.CreateDirectory(workspaceRoot);
 
 			using var client = new FakeLanguageServerClient();
+
 			using var provider = new LuaLanguageServerIntellisenseProvider(
 				workspaceRoot,
 				client,
@@ -60,9 +61,10 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 					LuaLanguageServerIntellisenseProvider.WorkspaceWatchSpecifications,
 					watcherFailed,
 					static (_, _) => throw new InvalidOperationException("Simulated watcher creation failure.")));
+
 			var failures = new List<WorkspaceWatcherFailure>();
 
-			provider.WorkspaceWatcherFailed += failure => failures.Add(failure);
+			provider.WorkspaceWatcherFailed += failures.Add;
 
 			await provider.GetHoverAsync(filePath, content, 0, 0);
 			await provider.GetHoverAsync(filePath, content, 0, 0);
@@ -93,7 +95,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
 			var failures = new List<WorkspaceWatcherFailure>();
 
-			provider.WorkspaceWatcherFailed += failure => failures.Add(failure);
+			provider.WorkspaceWatcherFailed += failures.Add;
 
 			await provider.GetHoverAsync(filePath, content, 0, 0);
 
@@ -102,9 +104,9 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 			Assert.IsTrue(watcher.HasActiveWatchers);
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.ReportErrorForTest(new IOException("Simulated watcher failure."));
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			WorkspaceFileWatcher replacementWatcher = GetWorkspaceWatcher(provider)
 				?? throw new AssertFailedException("Expected the workspace watcher to restart.");
@@ -135,6 +137,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			using var client = new FakeLanguageServerClient();
 			var createdWatchers = new List<WorkspaceFileWatcher>();
 			int watcherCreationCount = 0;
+
 			using var provider = new LuaLanguageServerIntellisenseProvider(
 				workspaceRoot,
 				client,
@@ -153,16 +156,16 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 				});
 
 			var failures = new List<WorkspaceWatcherFailure>();
-			provider.WorkspaceWatcherFailed += failure => failures.Add(failure);
+			provider.WorkspaceWatcherFailed += failures.Add;
 
 			await provider.GetHoverAsync(filePath, content, 0, 0);
 
 			WorkspaceFileWatcher watcher = GetWorkspaceWatcher(provider)
 				?? throw new AssertFailedException("Expected the workspace watcher to start.");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			watcher.ReportErrorForTest(new IOException("Simulated watcher failure."));
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			Assert.AreEqual(2, createdWatchers.Count);
 			Assert.IsTrue(createdWatchers[0].IsDisposed);
@@ -194,23 +197,23 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
 			var failures = new List<WorkspaceWatcherFailure>();
 
-			provider.WorkspaceWatcherFailed += failure => failures.Add(failure);
+			provider.WorkspaceWatcherFailed += failures.Add;
 
 			await provider.GetHoverAsync(filePath, content, 0, 0);
 
 			WorkspaceFileWatcher firstWatcher = GetWorkspaceWatcher(provider)
 				?? throw new AssertFailedException("Expected the initial workspace watcher to start.");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			firstWatcher.ReportErrorForTest(new IOException("Simulated watcher failure 1."));
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			WorkspaceFileWatcher secondWatcher = GetWorkspaceWatcher(provider)
 				?? throw new AssertFailedException("Expected the first replacement watcher to start.");
 
-			#pragma warning disable CS0618
+#pragma warning disable CS0618
 			secondWatcher.ReportErrorForTest(new IOException("Simulated watcher failure 2."));
-			#pragma warning restore CS0618
+#pragma warning restore CS0618
 
 			WorkspaceFileWatcher thirdWatcher = GetWorkspaceWatcher(provider)
 				?? throw new AssertFailedException("Expected the second replacement watcher to start.");
@@ -252,7 +255,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			watcher.Dispose();
 			File.WriteAllText(missedFilePath, "return 1");
 
-			bool recovered = InvokePrivateMethodWithReturn<bool>(GetWorkspaceChangeCoordinator(provider), "TryRestartWorkspaceFileWatcher", watcher);
+			bool recovered = InvokePrivateMethodWithReturn<bool>(LuaLanguageServerIntellisenseProviderTestAccess.GetWorkspaceChangeCoordinator(provider), "TryRestartWorkspaceFileWatcher", watcher);
 
 			Assert.IsTrue(recovered);
 			Assert.IsTrue(await client.WaitForMethodCountAsync("workspace/didChangeWatchedFiles", 1, TimeSpan.FromSeconds(1)));
@@ -292,13 +295,14 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			watcher.Dispose();
 			File.WriteAllText(configFilePath, "{\"Lua.workspace.maxPreload\": 1000}");
 
-			bool recovered = InvokePrivateMethodWithReturn<bool>(GetWorkspaceChangeCoordinator(provider), "TryRestartWorkspaceFileWatcher", watcher);
+			bool recovered = InvokePrivateMethodWithReturn<bool>(LuaLanguageServerIntellisenseProviderTestAccess.GetWorkspaceChangeCoordinator(provider), "TryRestartWorkspaceFileWatcher", watcher);
 
 			Assert.IsTrue(recovered);
 			Assert.IsTrue(await client.WaitForMethodCountAsync("workspace/didChangeConfiguration", 1, TimeSpan.FromSeconds(1)));
 			Assert.IsTrue(await client.WaitForMethodCountAsync("workspace/didChangeWatchedFiles", 1, TimeSpan.FromSeconds(1)));
 
 			string[] sentMethods = client.GetSentMethodNames();
+
 			CollectionAssert.AreEqual(
 				new[] { "textDocument/didOpen", "textDocument/hover", "workspace/didChangeConfiguration", "workspace/didChangeWatchedFiles" },
 				sentMethods);
@@ -347,11 +351,81 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 				?? throw new AssertFailedException("Expected the workspace watcher to start.");
 
 			watcher.Dispose();
-			bool recovered = InvokePrivateMethodWithReturn<bool>(GetWorkspaceChangeCoordinator(provider), "TryRestartWorkspaceFileWatcher", watcher);
+			bool recovered = InvokePrivateMethodWithReturn<bool>(LuaLanguageServerIntellisenseProviderTestAccess.GetWorkspaceChangeCoordinator(provider), "TryRestartWorkspaceFileWatcher", watcher);
 
 			Assert.IsTrue(recovered);
 			await Task.Delay(150).ConfigureAwait(false);
 			Assert.AreEqual(1, CountSentMethods(client, "workspace/didChangeWatchedFiles"));
+		}
+		finally
+		{
+			if (Directory.Exists(workspaceRoot))
+				Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	public async Task WorkspaceWatcherRecovery_ConcurrentDispatchDuringRecovery_ConvergesWithoutExtraReplayOnNextRecovery()
+	{
+		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherRecoveryConcurrent_" + Guid.NewGuid().ToString("N"));
+		string filePath = Path.Combine(workspaceRoot, "Scripts", "test.lua");
+		string reconciledFilePath = Path.Combine(workspaceRoot, "Scripts", "reconciled.lua");
+		string liveFilePath = Path.Combine(workspaceRoot, "Scripts", "live.lua");
+		const string content = "local value = 1";
+
+		try
+		{
+			Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? workspaceRoot);
+
+			using var client = new FakeLanguageServerClient();
+			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+			await provider.GetHoverAsync(filePath, content, 0, 0);
+
+			WorkspaceFileWatcher watcher = GetWorkspaceWatcher(provider)
+				?? throw new AssertFailedException("Expected the workspace watcher to start.");
+
+			watcher.Dispose();
+			File.WriteAllText(reconciledFilePath, "return 1");
+			File.WriteAllText(liveFilePath, "return 2");
+
+			client.BlockNextWatchedFilesNotification();
+
+			Task liveDispatchTask = DispatchWorkspaceFileChangesAsync(
+				provider,
+				new FileChangeBatch(
+				[
+					new WorkspaceFileChange(liveFilePath, FileChangeKind.Created)
+				]),
+				CancellationToken.None);
+
+			Assert.IsTrue(await client.WaitForMethodCountAsync("workspace/didChangeWatchedFiles", 1, TimeSpan.FromSeconds(1)));
+
+			bool recovered = InvokePrivateMethodWithReturn<bool>(
+				LuaLanguageServerIntellisenseProviderTestAccess.GetWorkspaceChangeCoordinator(provider),
+				"TryRestartWorkspaceFileWatcher",
+				watcher);
+
+			Assert.IsTrue(recovered);
+
+			client.ReleaseWatchedFilesNotification();
+			await liveDispatchTask.ConfigureAwait(false);
+
+			Assert.IsTrue(await client.WaitForMethodCountAsync("workspace/didChangeWatchedFiles", 2, TimeSpan.FromSeconds(1)));
+
+			WorkspaceFileWatcher replacementWatcher = GetWorkspaceWatcher(provider)
+				?? throw new AssertFailedException("Expected the replacement workspace watcher to start.");
+
+			replacementWatcher.Dispose();
+
+			bool recoveredAgain = InvokePrivateMethodWithReturn<bool>(
+				LuaLanguageServerIntellisenseProviderTestAccess.GetWorkspaceChangeCoordinator(provider),
+				"TryRestartWorkspaceFileWatcher",
+				replacementWatcher);
+
+			Assert.IsTrue(recoveredAgain);
+			await Task.Delay(150).ConfigureAwait(false);
+			Assert.AreEqual(2, CountSentMethods(client, "workspace/didChangeWatchedFiles"));
 		}
 		finally
 		{
@@ -485,6 +559,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		IReadOnlyList<LuaSemanticToken> semanticTokens = await secondRefresh.Task.ConfigureAwait(false);
 
 		Assert.AreEqual(1, semanticTokens.Count);
+
 		CollectionAssert.AreEqual(
 			new[]
 			{
@@ -562,6 +637,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		IReadOnlyList<LuaSemanticToken> semanticTokens = await secondRefresh.Task.ConfigureAwait(false);
 
 		Assert.AreEqual(1, semanticTokens.Count);
+
 		CollectionAssert.AreEqual(
 			new[]
 			{
@@ -640,6 +716,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		IReadOnlyList<LuaSemanticToken> semanticTokens = await secondRefresh.Task.ConfigureAwait(false);
 
 		Assert.AreEqual(1, semanticTokens.Count);
+
 		CollectionAssert.AreEqual(
 			new[]
 			{

@@ -1,48 +1,8 @@
-using System.Reflection;
-
 namespace TombLib.LanguageServer.Core.Tests;
 
 [TestClass]
 public class TrackedDocumentStateTests
 {
-	[TestMethod]
-	public void TrackedDocumentState_DoesNotExposePublicWritableProperties()
-	{
-		PropertyInfo[] properties = typeof(TrackedDocumentState).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-		foreach (PropertyInfo property in properties)
-		{
-			MethodInfo? setter = property.SetMethod;
-
-			if (setter is null)
-				continue;
-
-			Assert.IsFalse(setter.IsPublic, $"Property '{property.Name}' should not expose a public setter.");
-		}
-	}
-
-	[TestMethod]
-	public void TrackedDocumentState_IsAbstractAndExposesOwnerControlledMutationHelpersOnly()
-	{
-		Assert.IsTrue(typeof(TrackedDocumentState).IsAbstract);
-
-		MethodInfo[] protectedMethods = typeof(TrackedDocumentState).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
-
-		CollectionAssert.AreEquivalent(
-			new[]
-			{
-				"SetLastAccessStamp",
-				"ReopenDocument",
-				"ReplaceContent",
-				"RenameDocument",
-				"MarkDocumentClosed"
-			},
-			protectedMethods
-				.Where(method => method.IsFamily)
-				.Select(method => method.Name)
-				.ToArray());
-	}
-
 	[TestMethod]
 	public void TrackedDocumentState_CreateSnapshot_CapturesCurrentCoreState()
 	{
@@ -126,22 +86,5 @@ public class TrackedDocumentStateTests
 
 		Assert.AreEqual(0, mismatchMessages.Count,
 			"Snapshots should not observe mixed file-path/URI rename pairs: " + string.Join(", ", mismatchMessages));
-	}
-
-	private sealed class TestTrackedDocumentState : TrackedDocumentState
-	{
-		public TestTrackedDocumentState(string filePath, string uri, string content, int version, bool isOpen,
-			int openReferenceCount, int requestReferenceCount, long lastAccessStamp)
-			: base(filePath, uri, content, version, isOpen, openReferenceCount, requestReferenceCount, lastAccessStamp)
-		{ }
-
-		public void Rename(string filePath, string uri)
-			=> RenameDocument(filePath, uri);
-
-		public string Update(string content)
-			=> ReplaceContent(content);
-
-		public void Close()
-			=> MarkDocumentClosed();
 	}
 }

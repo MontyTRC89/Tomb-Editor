@@ -162,6 +162,89 @@ public class LuaLanguageServerRealIntegrationTests
 			"Expected the restarted live Lua language-server process to stop on provider disposal.");
 	}
 
+	[TestMethod]
+	[TestCategory("Integration")]
+	public async Task Provider_WithBundledLuaLanguageServer_ResolvesDefinitionAndReferencesForLocalSymbol()
+	{
+		using var session = new RealLuaLanguageServerTestSession();
+
+		string filePath = Path.Combine(session.WorkspaceRoot, "Scripts", "navigation.lua");
+		const string content =
+			"local tracked_value = 1\r\n" +
+			"local combined = tracked_value + tracked_value\r\n" +
+			"return combined\r\n";
+
+		Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? session.WorkspaceRoot);
+		File.WriteAllText(filePath, content);
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(session.WorkspaceRoot, session.ExecutablePath);
+
+		provider.OpenDocument(filePath, content);
+
+		await WaitForConditionAsync(
+			() => provider.SupportsReferences,
+			IntegrationTimeout,
+			"Expected the bundled Lua language server to advertise reference support.");
+
+		LuaDefinitionLocation definition = await WaitForDefinitionAsync(
+			() => provider.GetDefinitionAsync(filePath, content, 1, 19),
+			IntegrationTimeout,
+			"Expected the bundled Lua language server to resolve the local symbol definition.");
+
+		Assert.IsTrue(string.Equals(filePath, definition.FilePath, StringComparison.OrdinalIgnoreCase));
+		Assert.AreEqual(1, definition.LineNumber);
+		Assert.AreEqual(7, definition.ColumnNumber);
+
+		IReadOnlyList<LuaReferenceLocation> references = await WaitForReferencesAsync(
+			() => provider.GetReferencesAsync(filePath, content, 1, 19),
+			referenceLocations => referenceLocations.Count >= 3,
+			IntegrationTimeout,
+			"Expected the bundled Lua language server to return declaration and usage references for the local symbol.");
+
+		Assert.AreEqual(3, references.Count(location => string.Equals(location.FilePath, filePath, StringComparison.OrdinalIgnoreCase)));
+		Assert.IsTrue(references.Any(location => location.Range.StartLineNumber == 1 && location.Range.StartColumnNumber == 7));
+		Assert.AreEqual(2, references.Count(location => location.Range.StartLineNumber == 2));
+	}
+
+	[TestMethod]
+	[TestCategory("Integration")]
+	public async Task Provider_WithBundledLuaLanguageServer_ReturnsWorkspaceEditForRename()
+	{
+		using var session = new RealLuaLanguageServerTestSession();
+
+		string filePath = Path.Combine(session.WorkspaceRoot, "Scripts", "rename.lua");
+		const string content =
+			"local tracked_value = 1\r\n" +
+			"local result = tracked_value + 2\r\n" +
+			"return tracked_value, result\r\n";
+
+		Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? session.WorkspaceRoot);
+		File.WriteAllText(filePath, content);
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(session.WorkspaceRoot, session.ExecutablePath);
+
+		provider.OpenDocument(filePath, content);
+
+		await WaitForConditionAsync(
+			() => provider.SupportsRename,
+			IntegrationTimeout,
+			"Expected the bundled Lua language server to advertise rename support.");
+
+		LuaWorkspaceEdit workspaceEdit = await WaitForWorkspaceEditAsync(
+			() => provider.RenameSymbolAsync(filePath, content, 0, 8, "renamed_value"),
+			IntegrationTimeout,
+			"Expected the bundled Lua language server to return a rename workspace edit for the local symbol.");
+
+		Assert.IsTrue(workspaceEdit.HasEdits);
+		Assert.AreEqual(1, workspaceEdit.DocumentEdits.Count);
+
+		LuaDocumentEdit documentEdit = workspaceEdit.DocumentEdits[0];
+
+		Assert.IsTrue(string.Equals(filePath, documentEdit.FilePath, StringComparison.OrdinalIgnoreCase));
+		Assert.IsTrue(documentEdit.TextEdits.Count >= 3);
+		Assert.IsTrue(documentEdit.TextEdits.All(edit => edit.NewText == "renamed_value"));
+	}
+
 	private static async Task DispatchWorkspaceFileChangeAsync(
 		LuaLanguageServerIntellisenseProvider provider,
 		string filePath,
@@ -173,17 +256,7 @@ public class LuaLanguageServerRealIntegrationTests
 			new WorkspaceFileChange(filePath, kind)
 		]);
 
-		LuaWorkspaceChangeCoordinator coordinator = GetWorkspaceChangeCoordinator(provider);
-		await coordinator.DispatchWorkspaceFileChangesAsync(batch, cancellationToken).ConfigureAwait(false);
-	}
-
-	private static LuaWorkspaceChangeCoordinator GetWorkspaceChangeCoordinator(LuaLanguageServerIntellisenseProvider provider)
-	{
-		FieldInfo field = typeof(LuaLanguageServerIntellisenseProvider).GetField("_workspaceChanges", BindingFlags.Instance | BindingFlags.NonPublic)
-			?? throw new InvalidOperationException("Private field '_workspaceChanges' was not found.");
-
-		return (LuaWorkspaceChangeCoordinator)(field.GetValue(provider)
-			?? throw new InvalidOperationException("Provider workspace change coordinator was null."));
+		await LuaLanguageServerIntellisenseProviderTestAccess.DispatchWorkspaceFileChangesAsync(provider, batch, cancellationToken).ConfigureAwait(false);
 	}
 
 	private static LanguageServerClient GetRequiredClient(LuaLanguageServerIntellisenseProvider provider)
@@ -238,6 +311,28 @@ public class LuaLanguageServerRealIntegrationTests
 		return [];
 	}
 
+	private static async Task<LuaDefinitionLocation> WaitForDefinitionAsync(
+		Func<Task<LuaDefinitionLocation?>> action,
+		TimeSpan timeout,
+		string failureMessage)
+	{
+		Stopwatch stopwatch = Stopwatch.StartNew();
+		LuaDefinitionLocation? lastResult = null;
+
+		while (stopwatch.Elapsed < timeout)
+		{
+			lastResult = await action().ConfigureAwait(false);
+
+			if (lastResult is not null)
+				return lastResult;
+
+			await Task.Delay(PollInterval).ConfigureAwait(false);
+		}
+
+		Assert.Fail(failureMessage);
+		return null;
+	}
+
 	private static async Task<LuaHoverInfo> WaitForHoverAsync(
 		Func<Task<LuaHoverInfo?>> action,
 		TimeSpan timeout,
@@ -251,6 +346,51 @@ public class LuaLanguageServerRealIntegrationTests
 			lastResult = await action().ConfigureAwait(false);
 
 			if (lastResult is not null)
+				return lastResult;
+
+			await Task.Delay(PollInterval).ConfigureAwait(false);
+		}
+
+		Assert.Fail(failureMessage);
+		return null;
+	}
+
+	private static async Task<IReadOnlyList<LuaReferenceLocation>> WaitForReferencesAsync(
+		Func<Task<IReadOnlyList<LuaReferenceLocation>>> action,
+		Func<IReadOnlyList<LuaReferenceLocation>, bool> predicate,
+		TimeSpan timeout,
+		string failureMessage)
+	{
+		Stopwatch stopwatch = Stopwatch.StartNew();
+		IReadOnlyList<LuaReferenceLocation> lastResult = [];
+
+		while (stopwatch.Elapsed < timeout)
+		{
+			lastResult = await action().ConfigureAwait(false);
+
+			if (predicate(lastResult))
+				return lastResult;
+
+			await Task.Delay(PollInterval).ConfigureAwait(false);
+		}
+
+		Assert.Fail(failureMessage + Environment.NewLine + "Last reference count: " + lastResult.Count);
+		return [];
+	}
+
+	private static async Task<LuaWorkspaceEdit> WaitForWorkspaceEditAsync(
+		Func<Task<LuaWorkspaceEdit?>> action,
+		TimeSpan timeout,
+		string failureMessage)
+	{
+		Stopwatch stopwatch = Stopwatch.StartNew();
+		LuaWorkspaceEdit? lastResult = null;
+
+		while (stopwatch.Elapsed < timeout)
+		{
+			lastResult = await action().ConfigureAwait(false);
+
+			if (lastResult?.HasEdits == true)
 				return lastResult;
 
 			await Task.Delay(PollInterval).ConfigureAwait(false);

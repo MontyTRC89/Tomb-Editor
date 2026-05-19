@@ -46,6 +46,34 @@ public class LuaWorkspaceSnapshotTrackerTests
 	}
 
 	[TestMethod]
+	public void BuildDeltaBatch_DoesNotReportDeletionWhenTrackedPathStillExistsButCurrentSnapshotMissesIt()
+	{
+		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWorkspaceSnapshotMissingCurrent_" + Guid.NewGuid().ToString("N"));
+		string scriptsDirectoryPath = Path.Combine(workspaceRoot, "Scripts");
+		string existingFilePath = Path.Combine(scriptsDirectoryPath, "existing.lua");
+
+		try
+		{
+			Directory.CreateDirectory(scriptsDirectoryPath);
+			File.WriteAllText(existingFilePath, "return 1");
+
+			var tracker = CreateTracker(workspaceRoot);
+			tracker.CaptureTrackedSnapshot();
+			Dictionary<string, LuaWorkspaceSnapshotEntry> previousSnapshot = tracker.CloneTrackedSnapshot();
+			var currentSnapshot = new Dictionary<string, LuaWorkspaceSnapshotEntry>(StringComparer.OrdinalIgnoreCase);
+
+			FileChangeBatch batch = LuaWorkspaceSnapshotTracker.BuildDeltaBatch(previousSnapshot, currentSnapshot);
+
+			Assert.AreEqual(0, batch.Count);
+		}
+		finally
+		{
+			if (Directory.Exists(workspaceRoot))
+				Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public void ApplyChanges_UpdatesTrackedSnapshotForSubsequentRecoveryDiff()
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWorkspaceSnapshotApply_" + Guid.NewGuid().ToString("N"));

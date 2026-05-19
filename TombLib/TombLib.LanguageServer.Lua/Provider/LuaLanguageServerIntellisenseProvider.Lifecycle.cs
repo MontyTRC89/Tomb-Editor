@@ -137,7 +137,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 	/// </summary>
 	public void Dispose()
 	{
-		if (_isDisposed)
+		if (Interlocked.Exchange(ref _disposeStarted, 1) != 0)
 			return;
 
 		_isDisposed = true;
@@ -160,6 +160,13 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		CancelAllQueuedDocumentUpdates();
 		CancelAllSemanticTokenRequests();
 
-		_client?.Dispose();
+		try
+		{
+			_client?.Dispose();
+		}
+		finally
+		{
+			_disposeCts.Dispose();
+		}
 	}
 }

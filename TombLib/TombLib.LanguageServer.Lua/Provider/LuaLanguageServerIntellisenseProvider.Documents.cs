@@ -123,8 +123,15 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		bool acquireRequestReference,
 		CancellationToken cancellationToken)
 	{
+		bool shouldTrackLocallyWhileUnavailable = acquireOpenReference || _documents.GetDocumentSnapshot(filePath) is not null;
+
 		if (!await EnsureStartedAsync(cancellationToken).ConfigureAwait(false))
+		{
+			if (shouldTrackLocallyWhileUnavailable)
+				_documents.Synchronize(filePath, content, acquireOpenReference, acquireRequestReference: false);
+
 			return new DocumentSynchronizationResult(false, null);
+		}
 
 		DocumentSynchronizationRequest? request = _documents.Synchronize(filePath, content, acquireOpenReference, acquireRequestReference);
 
@@ -272,9 +279,19 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				},
 				cancellationToken).ConfigureAwait(false);
 		}
+		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested || _isDisposed)
+		{ }
+		catch (IOException exception)
+		{
+			Log.Debug(exception, "Lua best-effort document close failed due to a transport error for '{FilePath}'.", filePath);
+		}
+		catch (ObjectDisposedException exception)
+		{
+			Log.Debug(exception, "Lua best-effort document close raced with disposal for '{FilePath}'.", filePath);
+		}
 		catch
 		{
-			// Ignore best-effort close failures.
+			Log.Warn("Lua best-effort document close failed unexpectedly for '{FilePath}'.", filePath);
 		}
 	}
 
@@ -308,9 +325,19 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				},
 				cancellationToken).ConfigureAwait(false);
 		}
+		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested || _isDisposed)
+		{ }
+		catch (IOException exception)
+		{
+			Log.Debug(exception, "Lua best-effort request-document release failed due to a transport error for '{FilePath}'.", filePath);
+		}
+		catch (ObjectDisposedException exception)
+		{
+			Log.Debug(exception, "Lua best-effort request-document release raced with disposal for '{FilePath}'.", filePath);
+		}
 		catch
 		{
-			// Ignore best-effort request-document release failures.
+			Log.Warn("Lua best-effort request-document release failed unexpectedly for '{FilePath}'.", filePath);
 		}
 	}
 

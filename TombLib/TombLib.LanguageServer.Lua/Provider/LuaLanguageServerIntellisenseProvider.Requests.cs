@@ -276,9 +276,17 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			ResetRequestTimeoutTracking(transportGeneration);
 			return response;
 		}
-		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+		catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
 		{
 			RecordRequestTimeout(client, method, transportGeneration);
+			return timeoutValue;
+		}
+		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+		{
+			Log.Debug("Lua language server request '{Method}' was canceled before the provider timeout elapsed on generation {Generation}; returning the fallback value without counting a timeout.",
+				method,
+				transportGeneration);
+
 			return timeoutValue;
 		}
 		catch (LanguageServerTransportChangedException) when (!cancellationToken.IsCancellationRequested)
@@ -302,9 +310,17 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			ResetRequestTimeoutTracking(transportGeneration);
 			return response;
 		}
-		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+		catch (OperationCanceledException) when (retryTimeoutCts.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
 		{
 			RecordRequestTimeout(client, method, transportGeneration);
+			return timeoutValue;
+		}
+		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+		{
+			Log.Debug("Lua language server request '{Method}' was canceled before the provider timeout elapsed during the retry on generation {Generation}; returning the fallback value without counting a timeout.",
+				method,
+				transportGeneration);
+
 			return timeoutValue;
 		}
 		catch (LanguageServerTransportChangedException) when (!cancellationToken.IsCancellationRequested)

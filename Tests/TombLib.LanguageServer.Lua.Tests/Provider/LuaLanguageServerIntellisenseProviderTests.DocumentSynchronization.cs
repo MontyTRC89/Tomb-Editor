@@ -229,6 +229,51 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task GetHoverAsync_InternalRequestCancellation_DoesNotCountAsTimeoutOrRestart()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			CancelNextHoverRequestWithoutTimeout = true,
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(
+			workspaceRoot,
+			client,
+			requestTimeout: TimeSpan.FromMilliseconds(50),
+			requestTimeoutRestartThreshold: 1);
+
+		LuaHoverInfo? canceledHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		LuaHoverInfo? recoveredHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+
+		Assert.IsNull(canceledHover);
+		Assert.IsNotNull(recoveredHover);
+		Assert.AreEqual("Hover docs.", recoveredHover.Content);
+		Assert.AreEqual(0, client.MarkTransportUnhealthyCallCount);
+		Assert.AreEqual(1, client.StartCallCount);
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				"textDocument/didOpen",
+				"textDocument/hover",
+				"textDocument/hover"
+			},
+			client.GetSentMethodNames());
+	}
+
+	[TestMethod]
 	public async Task UpdateDocument_SendsFullTextChangeWhenServerAdvertisesFullSync()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -270,6 +315,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		provider.UpdateDocument(filePath, content);
 
 		Assert.IsFalse(await client.WaitForNotificationAsync("textDocument/didChange", TimeSpan.FromMilliseconds(250)));
+
 		CollectionAssert.AreEqual(
 			new[] { "textDocument/didOpen" },
 			client.GetSentMethodNames());
@@ -429,6 +475,57 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			client.GetSentMethodNames());
 
 		Assert.AreEqual(2, client.StartCallCount);
+	}
+
+	[TestMethod]
+	public async Task OpenDocument_DuringStartupFailure_ReplaysTrackedDocumentAfterRecovery()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string openedFilePath = @"C:\Workspace\Scripts\opened.lua";
+		const string requestFilePath = @"C:\Workspace\Scripts\request.lua";
+		const string openedContent = "local opened = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			StartResult = false,
+			HoverResponse = JsonSerializer.SerializeToElement(new
+			{
+				contents = new
+				{
+					kind = "markdown",
+					value = "Hover docs."
+				}
+			})
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+		provider.OpenDocument(openedFilePath, openedContent);
+
+		await Task.Delay(100).ConfigureAwait(false);
+
+		Assert.AreEqual(1, client.StartCallCount);
+		Assert.AreEqual(0, CountSentMethods(client, "textDocument/didOpen"));
+		Assert.AreEqual(1, GetTrackedDocumentCount(provider));
+
+		client.StartResult = true;
+
+		LuaHoverInfo? hover = await provider.GetHoverAsync(requestFilePath, "local request = 1", 0, 0);
+
+		Assert.IsNotNull(hover);
+		Assert.AreEqual(2, client.StartCallCount);
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				"textDocument/didOpen",
+				"textDocument/didOpen",
+				"textDocument/hover"
+			},
+			client.GetSentMethodNames());
+
+		JsonElement firstDidOpen = client.GetLastNotificationParameters("textDocument/didOpen");
+		Assert.AreEqual(new Uri(requestFilePath).AbsoluteUri, firstDidOpen.GetProperty("textDocument").GetProperty("uri").GetString());
 	}
 
 	[TestMethod]

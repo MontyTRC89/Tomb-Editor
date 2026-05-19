@@ -1,6 +1,5 @@
 using System.Text.Json;
 using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Objects;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 
@@ -20,6 +19,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 			using var client = new FakeLanguageServerClient();
 			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
 			var batch = new FileChangeBatch(
 			[
 				new WorkspaceFileChange(apiFilePath, FileChangeKind.Changed)
@@ -74,6 +74,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			};
 
 			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
 			var batch = new FileChangeBatch(
 			[
 				new WorkspaceFileChange(apiFilePath, FileChangeKind.Changed)
@@ -131,6 +132,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			};
 
 			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
 			var batch = new FileChangeBatch(
 			[
 				new WorkspaceFileChange(changedFilePath, FileChangeKind.Changed)
@@ -189,6 +191,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			};
 
 			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
 			var batch = new FileChangeBatch(
 			[
 				new WorkspaceFileChange(changedFilePath, FileChangeKind.Changed)
@@ -248,6 +251,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			};
 
 			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
 			var batch = new FileChangeBatch(
 			[
 				new WorkspaceFileChange(changedFilePath, FileChangeKind.Changed)
@@ -305,6 +309,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			for (int i = 1; i <= 3; i++)
 			{
 				string changedFilePath = Path.Combine(workspaceRoot, "Scripts", $"generated{i}.lua");
+
 				var batch = new FileChangeBatch(
 				[
 					new WorkspaceFileChange(changedFilePath, FileChangeKind.Changed)
@@ -349,7 +354,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
 		var failures = new List<LanguageServerStartupFailure>();
 
-		provider.StartupFailed += failure => failures.Add(failure);
+		provider.StartupFailed += failures.Add;
 
 		await provider.GetHoverAsync(filePath, content, 0, 0);
 		await provider.GetHoverAsync(filePath, content, 0, 0);

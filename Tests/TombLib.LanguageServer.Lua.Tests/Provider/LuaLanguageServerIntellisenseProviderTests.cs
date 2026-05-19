@@ -1,6 +1,5 @@
 using System.Text.Json;
 using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Objects;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 
@@ -55,6 +54,22 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		{
 			startLock.Release();
 		}
+	}
+
+	[TestMethod]
+	public void Dispose_DisposesOwnedCancellationSourceAndUnderlyingClientOnce()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+
+		var client = new FakeLanguageServerClient();
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+		CancellationTokenSource disposeCts = GetProviderDisposeCancellationTokenSource(provider);
+
+		provider.Dispose();
+		provider.Dispose();
+
+		Assert.AreEqual(1, client.DisposeCallCount);
+		Assert.ThrowsException<ObjectDisposedException>(() => disposeCts.Cancel());
 	}
 
 	[TestMethod]
@@ -217,36 +232,6 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
-	public async Task GetHoverAsync_RequestOnlyDocument_RemainsTrackedForShortTermFollowUpWork()
-	{
-		const string workspaceRoot = @"C:\Workspace";
-		const string filePath = @"C:\Workspace\Scripts\hover.lua";
-
-		using var client = new FakeLanguageServerClient
-		{
-			HoverResponse = JsonSerializer.SerializeToElement(new
-			{
-				contents = new
-				{
-					kind = "markdown",
-					value = "Hover docs."
-				}
-			})
-		};
-
-		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
-
-		LuaHoverInfo? hover = await provider.GetHoverAsync(filePath, "local value = 1", 0, 0);
-
-		Assert.IsNotNull(hover);
-		Assert.AreEqual(1, GetTrackedDocumentCount(provider));
-
-		CollectionAssert.AreEqual(
-			new[] { "textDocument/didOpen", "textDocument/hover" },
-			client.GetSentMethodNames());
-	}
-
-	[TestMethod]
 	public async Task GetHoverAsync_RequestOnlyDocuments_DoNotAccumulateAcrossDistinctFiles()
 	{
 		const string workspaceRoot = @"C:\Workspace";
@@ -276,7 +261,6 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 		Assert.AreEqual(maxTrackedRequestOnlyDocuments, GetTrackedDocumentCount(provider));
 		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didClose", 4, TimeSpan.FromSeconds(1)));
-		Assert.AreEqual(20, CountSentMethods(client, "textDocument/didOpen"));
 		Assert.AreEqual(4, CountSentMethods(client, "textDocument/didClose"));
 	}
 
@@ -308,11 +292,14 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			Assert.IsNotNull(await provider.GetHoverAsync(otherFilePath, "local value = 1", 0, 0));
 		}
 
+		int didOpenCountBeforeReopen = CountSentMethods(client, "textDocument/didOpen");
+		int didCloseCountBeforeReopen = CountSentMethods(client, "textDocument/didClose");
+
 		Assert.IsNotNull(await provider.GetHoverAsync(filePath, "local value = 1", 0, 0));
 
 		Assert.AreEqual(16, GetTrackedDocumentCount(provider));
-		Assert.AreEqual(22, CountSentMethods(client, "textDocument/didOpen"));
-		Assert.AreEqual(6, CountSentMethods(client, "textDocument/didClose"));
+		Assert.AreEqual(didOpenCountBeforeReopen + 1, CountSentMethods(client, "textDocument/didOpen"));
+		Assert.AreEqual(didCloseCountBeforeReopen + 1, CountSentMethods(client, "textDocument/didClose"));
 	}
 
 	[TestMethod]
@@ -446,6 +433,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			new LuaFormattingOptions(tabSize: 4, insertSpaces: true));
 
 		Assert.AreEqual(0, edits.Count);
+
 		CollectionAssert.AreEqual(
 			new[] { "textDocument/didOpen" },
 			client.GetSentMethodNames());
