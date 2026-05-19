@@ -37,7 +37,11 @@ VK_BINDING(2, 0) SamplerState AtlasSamp : register(s0);
 struct VsIn
 {
     VK_LOCATION(0) float3 PositionWS : POSITION;
-    VK_LOCATION(1) float3 Color      : COLOR;
+    // Color.rgb = vertex tint (sector classification colour, or lighting in
+    // texturing mode). Color.a is a sector-overlay flag (1.0 = sprite is a
+    // SectorTexture arrow/icon and should be additively/subtractively
+    // composited like the legacy shader, 0.0 = plain multiply).
+    VK_LOCATION(1) float4 Color      : COLOR;
     VK_LOCATION(2) float2 Uv         : TEXCOORD0;
     VK_LOCATION(3) float2 GridUv     : TEXCOORD1;
 };
@@ -45,7 +49,7 @@ struct VsIn
 struct VsOut
 {
     float4 PositionCS : SV_Position;
-    float3 Color      : COLOR;
+    float4 Color      : COLOR;
     float2 Uv         : TEXCOORD0;
     float2 GridUv     : TEXCOORD1;
 };
@@ -70,7 +74,24 @@ VsOut vs_main(VsIn input)
 float4 ps_main(VsOut input) : SV_Target
 {
     float4 sampled = Atlas.Sample(AtlasSamp, input.Uv);
-    float4 result  = float4(sampled.rgb * input.Color, sampled.a);
+    float4 result;
+    if (input.Color.a > 0.5)
+    {
+        // Sector overlay sprite (slope arrow / cross / slide / ...). Sprite
+        // is white-on-black; legacy composites it additively on dark sectors
+        // and subtractively on bright ones, so the symbol is always visible.
+        float bright = dot(input.Color.rgb, float3(0.299, 0.587, 0.114));
+        float3 rgb = bright > 0.8
+                   ? saturate(input.Color.rgb - sampled.rgb)
+                   : saturate(input.Color.rgb + sampled.rgb);
+        result = float4(rgb, 1.0);
+    }
+    else
+    {
+        // Regular path: sampled texture (or white pixel) modulated by the
+        // vertex tint. Texturing mode uses this for real room textures.
+        result = float4(sampled.rgb * input.Color.rgb, sampled.a);
+    }
 
     // Grid pass is skipped in texturing mode (GridEnabled == 0). Texturing
     // mode wants a clean view of the room textures without sector dividers.

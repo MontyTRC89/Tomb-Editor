@@ -82,12 +82,15 @@ public sealed class LevelRenderer : IDisposable
         public Half    GridUvV;      // 22..24
     }
 
-    private static uint PackColor(Vector3 c)
+    private static uint PackColor(Vector3 c, bool overlayFlag = false)
     {
         uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
         uint g = (uint)Math.Clamp((int)(c.Y * 255f + 0.5f), 0, 255);
         uint b = (uint)Math.Clamp((int)(c.Z * 255f + 0.5f), 0, 255);
-        return r | (g << 8) | (b << 16) | (0xFFu << 24);
+        // Alpha byte doubles as the sector-overlay flag: 255 → composite
+        // sprite add/sub style in the pixel shader, 0 → plain multiply.
+        uint a = overlayFlag ? 255u : 0u;
+        return r | (g << 8) | (b << 16) | (a << 24);
     }
 
     private static ushort PackUNorm16(float v) =>
@@ -431,6 +434,7 @@ public sealed class LevelRenderer : IDisposable
 
             Vector3 c0, c1, c2;
             Vector2 uv0, uv1, uv2;
+            bool overlay = false;
 
             if (texturing)
             {
@@ -474,6 +478,7 @@ public sealed class LevelRenderer : IDisposable
                     uv0 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu0));
                     uv1 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu1));
                     uv2 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu2));
+                    overlay = true;
                 }
                 else
                 {
@@ -484,7 +489,7 @@ public sealed class LevelRenderer : IDisposable
             verts[outIdx + 0] = new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 0] + wp,
-                ColorRgba8 = PackColor(c0),
+                ColorRgba8 = PackColor(c0, overlay),
                 UvU        = PackUNorm16(uv0.X),
                 UvV        = PackUNorm16(uv0.Y),
                 GridUvU    = (Half)eu0.X,
@@ -493,7 +498,7 @@ public sealed class LevelRenderer : IDisposable
             verts[outIdx + 1] = new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 1] + wp,
-                ColorRgba8 = PackColor(c1),
+                ColorRgba8 = PackColor(c1, overlay),
                 UvU        = PackUNorm16(uv1.X),
                 UvV        = PackUNorm16(uv1.Y),
                 GridUvU    = (Half)eu1.X,
@@ -502,7 +507,7 @@ public sealed class LevelRenderer : IDisposable
             verts[outIdx + 2] = new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 2] + wp,
-                ColorRgba8 = PackColor(c2),
+                ColorRgba8 = PackColor(c2, overlay),
                 UvU        = PackUNorm16(uv2.X),
                 UvV        = PackUNorm16(uv2.Y),
                 GridUvU    = (Half)eu2.X,
