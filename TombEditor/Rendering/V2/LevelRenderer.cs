@@ -128,8 +128,13 @@ public sealed class LevelRenderer : IDisposable
     {
         var cl = _device.BeginCommandList();
 
-        // Upload view-projection.
-        var vp = new ViewParams { ViewProjection = Matrix4x4.Transpose(scene.ViewProjection) };
+        // Upload view-projection. NOTE: no transpose. .NET's Matrix4x4 is
+        // row-major and HLSL matrices default to column-major, so the
+        // raw byte upload is read by the shader as the transpose, which is
+        // exactly what mul(M, v_column) expects when the CPU code uses
+        // row-vector convention. The legacy renderer follows the same
+        // convention — verified against Dx11RenderingStateBuffer.
+        var vp = new ViewParams { ViewProjection = scene.ViewProjection };
         unsafe
         {
             var span = new ReadOnlySpan<byte>(&vp, sizeof(ViewParams));
