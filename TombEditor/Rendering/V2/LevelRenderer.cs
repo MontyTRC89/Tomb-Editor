@@ -46,7 +46,8 @@ public sealed class LevelRenderer : IDisposable
     {
         public Vector3 Position;
         public Vector3 Color;
-        public Vector2 Uv;
+        public Vector2 Uv;       // atlas UV (texture or overlay sprite)
+        public Vector2 GridUv;   // raw VertexEditorUVs, for sector outlines
     }
 
     private sealed class RoomMesh : IDisposable
@@ -97,8 +98,9 @@ public sealed class LevelRenderer : IDisposable
                 new VertexAttribute("POSITION", 0, Format.R32G32B32_Float, bufferSlot: 0, offset: 0),
                 new VertexAttribute("COLOR",    0, Format.R32G32B32_Float, bufferSlot: 0, offset: 12),
                 new VertexAttribute("TEXCOORD", 0, Format.R32G32_Float,    bufferSlot: 0, offset: 24),
+                new VertexAttribute("TEXCOORD", 1, Format.R32G32_Float,    bufferSlot: 0, offset: 32),
             },
-            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 32) },
+            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 40) },
             Topology               = PrimitiveTopology.TriangleList,
             // TR room geometry is wound so that triangles face *into* the
             // room. With CullMode.None the back-facing exterior surfaces
@@ -336,15 +338,19 @@ public sealed class LevelRenderer : IDisposable
             if (res.Highlighted) baseColor = Vector3.Lerp(baseColor, _highlightTint, 0.55f);
             if (res.Selected)    baseColor = Vector3.Lerp(baseColor, _selectionTint, 0.70f);
 
-            // UV strategy: sector overlay sprite (slope arrow / portal cross
-            // / slide direction / ...) when present; otherwise the white
-            // pixel — the colored face is what the user sees.
+            // VertexEditorUVs are signed (-1..1) corner indicators. The
+            // sector overlay sprite expects 0..1 coords, so we abs() them;
+            // the unmodified value goes to GridUv for the outline shader.
+            Vector2 eu0 = geom.VertexEditorUVs[i * 3 + 0];
+            Vector2 eu1 = geom.VertexEditorUVs[i * 3 + 1];
+            Vector2 eu2 = geom.VertexEditorUVs[i * 3 + 2];
+
             Vector2 uv0, uv1, uv2;
             if (res.SectorTexture != SectorTexture.None)
             {
-                uv0 = _atlas.GetSectorOverlayUv(res.SectorTexture, geom.VertexEditorUVs[i * 3 + 0]);
-                uv1 = _atlas.GetSectorOverlayUv(res.SectorTexture, geom.VertexEditorUVs[i * 3 + 1]);
-                uv2 = _atlas.GetSectorOverlayUv(res.SectorTexture, geom.VertexEditorUVs[i * 3 + 2]);
+                uv0 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu0));
+                uv1 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu1));
+                uv2 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu2));
             }
             else
             {
@@ -356,18 +362,21 @@ public sealed class LevelRenderer : IDisposable
                 Position = geom.VertexPositions[i * 3 + 0] + wp,
                 Color    = baseColor,
                 Uv       = uv0,
+                GridUv   = eu0,
             };
             verts[outIdx + 1] = new RoomVertex
             {
                 Position = geom.VertexPositions[i * 3 + 1] + wp,
                 Color    = baseColor,
                 Uv       = uv1,
+                GridUv   = eu1,
             };
             verts[outIdx + 2] = new RoomVertex
             {
                 Position = geom.VertexPositions[i * 3 + 2] + wp,
                 Color    = baseColor,
                 Uv       = uv2,
+                GridUv   = eu2,
             };
             outIdx += 3;
         }

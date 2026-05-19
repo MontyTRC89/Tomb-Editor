@@ -560,6 +560,59 @@ namespace TombEditor.Controls.Panel3D
             _v2DragButton = e.Button;
             if (e.Button is MouseButtons.Right or MouseButtons.Middle)
                 Capture = true;
+            if (e.Button == MouseButtons.Left)
+                V2PickSector(e.Location);
+        }
+
+        private void V2PickSector(System.Drawing.Point pos)
+        {
+            if (_editor?.Level == null || Camera == null) return;
+            if (ClientSize.Width <= 0 || ClientSize.Height <= 0) return;
+
+            var vp = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            var ray = TombLib.Ray.GetPickRay(
+                new System.Numerics.Vector2(pos.X, pos.Y), vp, ClientSize.Width, ClientSize.Height);
+
+            Room hitRoom = null;
+            int hitX = -1, hitZ = -1;
+            float bestDist = float.PositiveInfinity;
+
+            foreach (Room room in _editor.Level.Rooms)
+            {
+                if (room?.RoomGeometry == null) continue;
+                if (DisablePickingForHiddenRooms && room.Properties.Hidden) continue;
+                var geom = room.RoomGeometry;
+                System.Numerics.Vector3 wp = room.WorldPos;
+                int triCount = geom.VertexPositions.Count / 3;
+                for (int i = 0; i < triCount; i++)
+                {
+                    var ta = geom.TriangleTextureAreas[i];
+                    if (ta.Texture is TombLib.Utils.TextureInvisible) continue;
+
+                    var p0 = geom.VertexPositions[i * 3 + 0] + wp;
+                    var p1 = geom.VertexPositions[i * 3 + 1] + wp;
+                    var p2 = geom.VertexPositions[i * 3 + 2] + wp;
+
+                    if (TombLib.Utils.Collision.RayIntersectsTriangle(ray, p0, p1, p2, true, out float d) && d < bestDist)
+                    {
+                        bestDist = d;
+                        hitRoom = room;
+                        var face = geom.TriangleSectorInfo[i];
+                        hitX = face.Position.X;
+                        hitZ = face.Position.Y;
+                    }
+                }
+            }
+
+            if (hitRoom == null || hitX < 0) return;
+
+            if (_editor.SelectedRoom != hitRoom)
+                _editor.SelectedRoom = hitRoom;
+            _editor.SelectedSectors = new SectorSelection
+            {
+                Area  = new TombLib.RectangleInt2(hitX, hitZ, hitX, hitZ),
+                Arrow = TombLib.Rendering.ArrowType.EntireFace,
+            };
         }
 
         private void V2MouseUp(MouseEventArgs e)
