@@ -553,13 +553,17 @@ namespace TombEditor.Controls.Panel3D
 
         private MouseButtons _v2DragButton;
 
-        // Drag-selection state. Left-mouse press anchors a sector (x, z) in
-        // a room; subsequent moves expand the selection rectangle until
-        // mouse-up. Drag never crosses rooms — picking is restricted to the
-        // anchor room while dragging.
+        // Left-mouse interaction state, mirrors the legacy _doSectorSelection
+        // logic:
+        //   - Clicking outside (or with no selection) → reset selection to the
+        //     picked sector, start a drag-select (_v2SelDragging = true).
+        //   - Clicking inside the existing selection → leave the rectangle
+        //     alone (_v2SelDragging = false) and cycle the edit arrow on
+        //     mouse-up. Modifier Ctrl cycles corners instead of edges.
         private Room       _v2SelAnchorRoom;
         private VectorInt2 _v2SelAnchor;
         private bool       _v2SelDragging;
+        private bool       _v2SelClickedOnSel;
 
         private void V2MouseDown(MouseEventArgs e)
         {
@@ -570,19 +574,37 @@ namespace TombEditor.Controls.Panel3D
                 Capture = true;
             if (e.Button == MouseButtons.Left)
             {
-                if (V2PickRaw(e.Location, out var room, out var pos))
+                if (!V2PickRaw(e.Location, out var room, out var pos))
+                {
+                    _v2SelDragging     = false;
+                    _v2SelClickedOnSel = false;
+                    return;
+                }
+
+                bool clickedOnExisting = _editor.SelectedSectors.Valid
+                                      && _editor.SelectedRoom == room
+                                      && _editor.SelectedSectors.Area.Contains(pos);
+                if (clickedOnExisting)
+                {
+                    // Don't reset the rectangle, don't drag. Wait for mouse-up
+                    // to cycle the arrow.
+                    _v2SelDragging     = false;
+                    _v2SelClickedOnSel = true;
+                }
+                else
                 {
                     if (_editor.SelectedRoom != room) _editor.SelectedRoom = room;
                     _v2SelAnchorRoom = room;
                     _v2SelAnchor     = pos;
                     _v2SelDragging   = true;
-                    Capture          = true;
+                    _v2SelClickedOnSel = false;
                     _editor.SelectedSectors = new SectorSelection
                     {
                         Area  = new TombLib.RectangleInt2(pos.X, pos.Y, pos.X, pos.Y),
                         Arrow = TombLib.Rendering.ArrowType.EntireFace,
                     };
                 }
+                Capture = true;
             }
         }
 
@@ -595,9 +617,46 @@ namespace TombEditor.Controls.Panel3D
             }
             if (e.Button == MouseButtons.Left)
             {
-                _v2SelDragging   = false;
-                _v2SelAnchorRoom = null;
+                if (_v2SelClickedOnSel && _editor.SelectedSectors.Valid)
+                    CycleSelectionArrow(ModifierKeys.HasFlag(Keys.Control));
+
+                _v2SelDragging     = false;
+                _v2SelClickedOnSel = false;
+                _v2SelAnchorRoom   = null;
             }
+        }
+
+        // Cycles SelectedSectors.Arrow on each in-selection click. Same order
+        // as Panel3DMouseUp's legacy block: Edge_N → Edge_E → Edge_S → Edge_W
+        // → EntireFace, and Corner_NW → Corner_NE → Corner_SE → Corner_SW
+        // → EntireFace under Ctrl.
+        private void CycleSelectionArrow(bool corners)
+        {
+            var cur = _editor.SelectedSectors.Arrow;
+            TombLib.Rendering.ArrowType next;
+            if (corners)
+            {
+                next = cur switch
+                {
+                    TombLib.Rendering.ArrowType.CornerSW => TombLib.Rendering.ArrowType.EntireFace,
+                    TombLib.Rendering.ArrowType.CornerSE => TombLib.Rendering.ArrowType.CornerSW,
+                    TombLib.Rendering.ArrowType.CornerNE => TombLib.Rendering.ArrowType.CornerSE,
+                    TombLib.Rendering.ArrowType.CornerNW => TombLib.Rendering.ArrowType.CornerNE,
+                    _                                    => TombLib.Rendering.ArrowType.CornerNW,
+                };
+            }
+            else
+            {
+                next = cur switch
+                {
+                    TombLib.Rendering.ArrowType.EdgeW => TombLib.Rendering.ArrowType.EntireFace,
+                    TombLib.Rendering.ArrowType.EdgeS => TombLib.Rendering.ArrowType.EdgeW,
+                    TombLib.Rendering.ArrowType.EdgeE => TombLib.Rendering.ArrowType.EdgeS,
+                    TombLib.Rendering.ArrowType.EdgeN => TombLib.Rendering.ArrowType.EdgeE,
+                    _                                 => TombLib.Rendering.ArrowType.EdgeN,
+                };
+            }
+            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(next);
         }
 
         private void V2MouseMove(MouseEventArgs e)
