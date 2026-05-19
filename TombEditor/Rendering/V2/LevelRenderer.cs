@@ -100,10 +100,12 @@ public sealed class LevelRenderer : IDisposable
             },
             VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 32) },
             Topology               = PrimitiveTopology.TriangleList,
-            // Rooms are authored with the camera meant to fly *inside* them,
-            // so the outward-facing walls are back-facing from outside.
-            // Disable culling for now — proper PVS / portal rendering comes later.
-            Rasterizer             = new RasterizerState(CullMode.None),
+            // TR room geometry is wound so that triangles face *into* the
+            // room. With CullMode.None the back-facing exterior surfaces
+            // overlap the interior ones and the level looks "inside-out".
+            // Match the legacy renderer: cull back faces so walls disappear
+            // when the camera is outside the room.
+            Rasterizer             = new RasterizerState(CullMode.Back),
             DepthStencil           = DepthStencilState.Default,
             BlendStates            = new[] { BlendState.Opaque },
             ColorAttachmentFormats = new[] { Format.R8G8B8A8_UNorm },
