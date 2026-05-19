@@ -4,6 +4,7 @@ using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Rendering;
+using TombEditor;
 
 namespace TombEditor.Rendering.V2;
 
@@ -33,6 +34,7 @@ public readonly struct RenderScene
     public readonly bool               HideHiddenRooms;
     public readonly bool               ShowAllRooms;
     public readonly bool               ShowPortals;
+    public readonly EditorMode         Mode;
     public readonly float              GridLineWidth;
 
     public RenderScene(
@@ -50,6 +52,7 @@ public readonly struct RenderScene
         bool              hideHiddenRooms,
         bool              showAllRooms,
         bool              showPortals,
+        EditorMode        mode,
         float             gridLineWidth)
     {
         Level                         = level;
@@ -67,6 +70,10 @@ public readonly struct RenderScene
         HideHiddenRooms               = hideHiddenRooms;
         ShowAllRooms                  = showAllRooms;
         ShowPortals                   = showPortals;
+        Mode                          = mode;
         GridLineWidth                 = gridLineWidth;
     }
+
+    /// <summary>Texturing mode renders real textures with lighting, grid off.</summary>
+    public bool TexturingMode => Mode == EditorMode.FaceEdit;
 }

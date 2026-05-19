@@ -26,7 +26,7 @@ cbuffer ViewParams : register(b0)
 {
     float4x4 ViewProjection;
     float    GridLineWidth;     // legacy default 10.0
-    float    _pad0;
+    float    GridEnabled;       // 1.0 = draw sector outlines, 0.0 = skip
     float    _pad1;
     float    _pad2;
 };
@@ -71,6 +71,11 @@ float4 ps_main(VsOut input) : SV_Target
 {
     float4 sampled = Atlas.Sample(AtlasSamp, input.Uv);
     float4 result  = float4(sampled.rgb * input.Color, sampled.a);
+
+    // Grid pass is skipped in texturing mode (GridEnabled == 0). Texturing
+    // mode wants a clean view of the room textures without sector dividers.
+    if (GridEnabled < 0.5)
+        return result;
 
     // Sector outline — direct port of legacy RoomShaderPS.hlsl.
     float2 absUV = abs(input.GridUv);

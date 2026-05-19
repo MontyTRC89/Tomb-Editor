@@ -37,6 +37,10 @@ public sealed class LevelRenderer : IDisposable
     private readonly Dictionary<Room, RoomMesh> _roomMeshes = new();
     private readonly Frustum                    _frustum    = new();
     private readonly List<Room>                 _visibleRooms = new();
+    // Mesh content depends on the editor mode (Geometry vs Texturing).
+    // When the mode changes we invalidate every cached room so it gets
+    // rebuilt with the right vertex strategy.
+    private bool                                _meshesAreTexturing;
 
     // Reusable per-frame scratch arrays. Keeping these as fields avoids
     // a fresh managed allocation on every Bindings / SetVertexBuffers /
@@ -55,7 +59,8 @@ public sealed class LevelRenderer : IDisposable
     {
         public Matrix4x4 ViewProjection;   // 64B
         public float     GridLineWidth;    // 4B  -- legacy default 10.0
-        public float     _pad0, _pad1, _pad2;
+        public float     GridEnabled;      // 4B  -- 1=outline, 0=texturing mode
+        public float     _pad1, _pad2;
     }
 
     // Packed vertex layout (24 B vs the 40 B float-only version):
@@ -188,6 +193,7 @@ public sealed class LevelRenderer : IDisposable
         {
             ViewProjection = scene.ViewProjection,
             GridLineWidth  = scene.GridLineWidth,
+            GridEnabled    = scene.TexturingMode ? 0f : 1f,
         };
         unsafe
         {
@@ -213,6 +219,12 @@ public sealed class LevelRenderer : IDisposable
         if (scene.Level != null)
         {
             EnsureAtlas(scene.Level);
+
+            if (_meshesAreTexturing != scene.TexturingMode)
+            {
+                DropRoomMeshes();
+                _meshesAreTexturing = scene.TexturingMode;
+            }
 
             cl.SetPipeline(_roomPipeline);
             _scratchCbuf[0] = _viewCb;
@@ -258,7 +270,7 @@ public sealed class LevelRenderer : IDisposable
                     st.SelectionArrow = ArrowType.EntireFace;
                 }
 
-                var mesh = GetOrCreateRoomMesh(room, st.Get);
+                var mesh = GetOrCreateRoomMesh(room, st.Get, scene.TexturingMode);
                 if (mesh.VertexCount == 0) continue;
                 _scratchVb[0] = new VertexBufferBinding(mesh.Vb, 0);
                 cl.SetVertexBuffers(_scratchVb);
@@ -336,11 +348,11 @@ public sealed class LevelRenderer : IDisposable
         DropRoomMeshes();
     }
 
-    private RoomMesh GetOrCreateRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet)
+    private RoomMesh GetOrCreateRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet, bool texturing)
     {
         if (_roomMeshes.TryGetValue(room, out var existing))
             return existing;
-        var mesh = BuildRoomMesh(room, sectorTextureGet);
+        var mesh = BuildRoomMesh(room, sectorTextureGet, texturing);
         _roomMeshes[room] = mesh;
         return mesh;
     }
@@ -374,7 +386,7 @@ public sealed class LevelRenderer : IDisposable
     private static readonly Vector3 _selectionTint   = new(1.0f, 0.15f, 0.15f);
     private static readonly Vector3 _highlightTint   = new(1.0f, 0.95f, 0.30f);
 
-    private RoomMesh BuildRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet)
+    private RoomMesh BuildRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet, bool texturing)
     {
         var geom = room.RoomGeometry;
         int singleSidedVertexCount = geom.VertexPositions.Count;
@@ -413,38 +425,66 @@ public sealed class LevelRenderer : IDisposable
             var res = triResults[i];
             if (res.Hidden) continue;
 
-            // Per-face base color from the editor classification (gray for
-            // generic floor, blue for portals, etc.). Selection / highlight
-            // overrides are blended on top.
-            Vector3 baseColor = new(res.Color.X, res.Color.Y, res.Color.Z);
-            if (res.Dimmed)      baseColor *= 0.5f;
-            if (res.Highlighted) baseColor = Vector3.Lerp(baseColor, _highlightTint, 0.55f);
-            if (res.Selected)    baseColor = Vector3.Lerp(baseColor, _selectionTint, 0.70f);
-
-            // VertexEditorUVs are signed (-1..1) corner indicators. The
-            // sector overlay sprite expects 0..1 coords, so we abs() them;
-            // the unmodified value goes to GridUv for the outline shader.
             Vector2 eu0 = geom.VertexEditorUVs[i * 3 + 0];
             Vector2 eu1 = geom.VertexEditorUVs[i * 3 + 1];
             Vector2 eu2 = geom.VertexEditorUVs[i * 3 + 2];
 
+            Vector3 c0, c1, c2;
             Vector2 uv0, uv1, uv2;
-            if (res.SectorTexture != SectorTexture.None)
+
+            if (texturing)
             {
-                uv0 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu0));
-                uv1 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu1));
-                uv2 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu2));
+                // Texturing mode: real per-vertex lighting + real atlas UV
+                // from the TextureArea. Selection / highlight still tint
+                // the color (lighter so the texture stays readable).
+                Vector3 baseLight = res.Dimmed ? new Vector3(0.5f) : Vector3.One;
+                if (res.Highlighted) baseLight = Vector3.Lerp(baseLight, _highlightTint, 0.30f);
+                if (res.Selected)    baseLight = Vector3.Lerp(baseLight, _selectionTint, 0.45f);
+
+                c0 = baseLight * geom.VertexColors[i * 3 + 0];
+                c1 = baseLight * geom.VertexColors[i * 3 + 1];
+                c2 = baseLight * geom.VertexColors[i * 3 + 2];
+
+                // If the face has a real texture, sample it; otherwise fall
+                // back to the white pixel so the lighting alone is visible.
+                if (ta.Texture != null && !ta.Texture.IsUnavailable && ta.Texture is not TextureInvisible)
+                {
+                    uv0 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord0);
+                    uv1 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord1);
+                    uv2 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord2);
+                }
+                else
+                {
+                    uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
+                }
             }
             else
             {
-                uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
+                // Geometry / Lighting / ObjectPlacement modes: sector
+                // classification colour + sector overlay sprite (slope
+                // arrows, slide markers, ...).
+                Vector3 baseColor = new(res.Color.X, res.Color.Y, res.Color.Z);
+                if (res.Dimmed)      baseColor *= 0.5f;
+                if (res.Highlighted) baseColor = Vector3.Lerp(baseColor, _highlightTint, 0.55f);
+                if (res.Selected)    baseColor = Vector3.Lerp(baseColor, _selectionTint, 0.70f);
+                c0 = c1 = c2 = baseColor;
+
+                if (res.SectorTexture != SectorTexture.None)
+                {
+                    uv0 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu0));
+                    uv1 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu1));
+                    uv2 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu2));
+                }
+                else
+                {
+                    uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
+                }
             }
 
-            uint packedColor = PackColor(baseColor);
             verts[outIdx + 0] = new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 0] + wp,
-                ColorRgba8 = packedColor,
+                ColorRgba8 = PackColor(c0),
                 UvU        = PackUNorm16(uv0.X),
                 UvV        = PackUNorm16(uv0.Y),
                 GridUvU    = (Half)eu0.X,
@@ -453,7 +493,7 @@ public sealed class LevelRenderer : IDisposable
             verts[outIdx + 1] = new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 1] + wp,
-                ColorRgba8 = packedColor,
+                ColorRgba8 = PackColor(c1),
                 UvU        = PackUNorm16(uv1.X),
                 UvV        = PackUNorm16(uv1.Y),
                 GridUvU    = (Half)eu1.X,
@@ -462,7 +502,7 @@ public sealed class LevelRenderer : IDisposable
             verts[outIdx + 2] = new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 2] + wp,
-                ColorRgba8 = packedColor,
+                ColorRgba8 = PackColor(c2),
                 UvU        = PackUNorm16(uv2.X),
                 UvV        = PackUNorm16(uv2.Y),
                 GridUvU    = (Half)eu2.X,
