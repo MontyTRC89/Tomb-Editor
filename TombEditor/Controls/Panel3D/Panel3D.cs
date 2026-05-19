@@ -461,51 +461,66 @@ namespace TombEditor.Controls.Panel3D
                 _editor.HighlightedSplit = 0;
         }
 
+        // While the V2 renderer is being filled in, the viewport is view-only:
+        // every legacy mouse interaction (gizmo, picking, brush, object move)
+        // dereferences fields that the V2 init path leaves null, so we
+        // short-circuit them all. Camera flight, key bindings and resize
+        // still work because they only touch RHI-agnostic state.
+        private bool LegacyMouseDisabled => _v2Renderer is not null;
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
+            if (LegacyMouseDisabled) return;
             OnMouseWheelScroll(e.Delta, e.Location);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            if (LegacyMouseDisabled) return;
             OnMouseButtonDown(e.Button, e.Location);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            if (LegacyMouseDisabled) return;
             OnMouseButtonUp(e.Button, e.Location);
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
+            if (LegacyMouseDisabled) return;
             OnMouseDoubleClicked(e.Button, e.Location);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (LegacyMouseDisabled) return;
             OnMouseMoved(e.Button, e.Location);
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
+            if (LegacyMouseDisabled) return;
             OnMouseEntered();
         }
 
         protected override void OnDragEnter(DragEventArgs e)
         {
             base.OnDragEnter(e);
+            if (LegacyMouseDisabled) return;
             OnMouseDragEntered(e);
         }
 
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
+            if (LegacyMouseDisabled) return;
             OnMouseDragAndDrop(e);
         }
 
