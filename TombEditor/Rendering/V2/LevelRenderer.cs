@@ -434,16 +434,14 @@ public sealed class LevelRenderer : IDisposable
 
             if (texturing)
             {
-                // Texturing mode: real per-vertex lighting + real atlas UV
-                // from the TextureArea. Selection / highlight still tint
-                // the color (lighter so the texture stays readable).
-                Vector3 baseLight = res.Dimmed ? new Vector3(0.5f) : Vector3.One;
-                if (res.Highlighted) baseLight = Vector3.Lerp(baseLight, _highlightTint, 0.30f);
-                if (res.Selected)    baseLight = Vector3.Lerp(baseLight, _selectionTint, 0.45f);
-
-                c0 = baseLight * geom.VertexColors[i * 3 + 0];
-                c1 = baseLight * geom.VertexColors[i * 3 + 1];
-                c2 = baseLight * geom.VertexColors[i * 3 + 2];
+                // Texturing mode: textures shown full-bright so the artist
+                // can see them clearly. Matches the legacy
+                // RoomDisableVertexColors path in FaceEdit. Lighting is
+                // ignored here; selection / highlight still tint a bit.
+                Vector3 baseColor = res.Dimmed ? new Vector3(0.5f) : Vector3.One;
+                if (res.Highlighted) baseColor = Vector3.Lerp(baseColor, _highlightTint, 0.30f);
+                if (res.Selected)    baseColor = Vector3.Lerp(baseColor, _selectionTint, 0.45f);
+                c0 = c1 = c2 = baseColor;
 
                 // If the face has a real texture, sample it; otherwise fall
                 // back to the white pixel so the lighting alone is visible.

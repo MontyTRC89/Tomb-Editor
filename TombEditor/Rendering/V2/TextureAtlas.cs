@@ -55,8 +55,22 @@ public sealed class TextureAtlas : IDisposable
         // 2) Sector overlay sprites (arrows, crosses, slide directions, ...).
         LoadSectorOverlays(packer, atlasBytes, atlasSize);
 
-        // 3) Level textures.
+        // 3) Level textures. Include EVERY loaded LevelTexture, not only the
+        // ones already applied to a face — otherwise applying a freshly
+        // loaded texture has no effect until the next full atlas rebuild
+        // (it would fall back to the white pixel during meshing).
         var unique = new HashSet<Texture>();
+        if (level.Settings?.Textures != null)
+        {
+            foreach (var tex in level.Settings.Textures)
+            {
+                if (tex == null || tex.IsUnavailable || tex.Image == null) continue;
+                if (tex.Image.Width <= 0 || tex.Image.Height <= 0) continue;
+                unique.Add(tex);
+            }
+        }
+        // Also include any face-referenced texture that isn't in the level
+        // texture list (imported geometry / WAD-embedded etc.).
         foreach (var room in level.Rooms)
         {
             if (room?.RoomGeometry == null) continue;
