@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+using System.Threading.Tasks;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
@@ -14,14 +17,24 @@ namespace TombEditor.Rendering.V2;
 /// <summary>
 /// Single-page atlas owned by the V2 renderer. Packs three classes of texel
 /// data into one BGRA8 page:
-///   1. A reserved 1×1 white pixel (untextured / fallback).
+///   1. A reserved white pixel (untextured / fallback).
 ///   2. All <see cref="SectorTexture"/> overlay sprites loaded from
-///      TombLib.Rendering's embedded resources (slope arrows, slide
-///      directions, illegal-slope markers, etc.).
-///   3. Every unique level <see cref="Texture"/> referenced by any room.
+///      TombLib.Rendering's embedded resources.
+///   3. Every loaded level <see cref="Texture"/> (plus any face-referenced
+///      texture that isn't in the level texture list).
 ///
-/// <para>Triangles whose texture overflows the page or is invisible/null
-/// fall back to the white pixel so the shader can always sample.</para>
+/// <para>Entries get a 1-pixel edge-replicated gutter so bilinear /
+/// anisotropic / mipmap sampling can't bleed pixels from neighbouring
+/// packed textures.</para>
+///
+/// <para>Build pipeline:
+///   1. Pack all sources sequentially (the shelf packer is not thread-safe).
+///   2. Blit + replicate the gutter in parallel via <see cref="Parallel.ForEach"/>
+///      — each job writes to a disjoint atlas region, so the work scales
+///      with core count.
+///   3. Row copies inside each job use AVX2 (32-byte) or SSE2 (16-byte)
+///      stores when supported, scalar fallback otherwise.
+/// </para>
 /// </summary>
 public sealed class TextureAtlas : IDisposable
 {
@@ -34,6 +47,10 @@ public sealed class TextureAtlas : IDisposable
     private readonly Dictionary<SectorTexture, (VectorInt2 Origin, VectorInt2 Size)> _sectorOverlays = new();
     private readonly VectorInt2 _whitePixel;
 
+    private static readonly Assembly RenderingAssembly = typeof(SectorTexture).Assembly;
+
+    private readonly record struct PackJob(VectorInt2 InnerOrigin, ImageC Image);
+
     public TextureAtlas(IRhiDevice device, Level level, int atlasSize = 4096)
     {
         _device = device;
@@ -42,8 +59,7 @@ public sealed class TextureAtlas : IDisposable
         var atlasBytes = new byte[atlasSize * atlasSize * 4];
         var packer = new RectPackerSimpleStack(Size);
 
-        // 1) White pixel. Pad it like the other entries so the surrounding
-        // padded pixels stay white as well.
+        // 1) White pixel + 1-pixel gutter (3×3 white block).
         var wpPadded = packer.TryAdd(new VectorInt2(3, 3))
                        ?? throw new InvalidOperationException("Atlas too small for the reserved white pixel.");
         _whitePixel = new VectorInt2(wpPadded.X + 1, wpPadded.Y + 1);
@@ -57,67 +73,8 @@ public sealed class TextureAtlas : IDisposable
             atlasBytes[idx + 3] = 255;
         }
 
-        // 2) Sector overlay sprites (arrows, crosses, slide directions, ...).
-        LoadSectorOverlays(packer, atlasBytes, atlasSize);
-
-        // 3) Level textures. Include EVERY loaded LevelTexture, not only the
-        // ones already applied to a face — otherwise applying a freshly
-        // loaded texture has no effect until the next full atlas rebuild
-        // (it would fall back to the white pixel during meshing).
-        var unique = new HashSet<Texture>();
-        if (level.Settings?.Textures != null)
-        {
-            foreach (var tex in level.Settings.Textures)
-            {
-                if (tex == null || tex.IsUnavailable || tex.Image == null) continue;
-                if (tex.Image.Width <= 0 || tex.Image.Height <= 0) continue;
-                unique.Add(tex);
-            }
-        }
-        // Also include any face-referenced texture that isn't in the level
-        // texture list (imported geometry / WAD-embedded etc.).
-        foreach (var room in level.Rooms)
-        {
-            if (room?.RoomGeometry == null) continue;
-            foreach (var ta in room.RoomGeometry.TriangleTextureAreas)
-            {
-                var tex = ta.Texture;
-                if (tex == null || tex is TextureInvisible) continue;
-                if (tex.IsUnavailable || tex.Image == null) continue;
-                if (tex.Image.Width <= 0 || tex.Image.Height <= 0) continue;
-                unique.Add(tex);
-            }
-        }
-
-        foreach (var tex in unique)
-        {
-            if (!PackAndBlit(packer, atlasBytes, atlasSize, tex.Image, out var innerOrigin))
-                continue;
-            _origins[tex] = innerOrigin;
-        }
-
-        // mipLevels = 0 → auto-generate a full mip chain. Without it,
-        // distant textures alias hard (no detail averaging) and anisotropic
-        // filtering can't do its job.
-        Texture = device.CreateTexture(
-            new TextureDesc(TextureKind.Texture2D, atlasSize, atlasSize,
-                            Format.B8G8R8A8_UNorm, TextureBindFlags.ShaderResource,
-                            mipLevels: 0,
-                            debugName: "LevelAtlas"),
-            atlasBytes);
-
-        // Anisotropic 4x matches the legacy SamplerDefault. Combined with the
-        // mip chain above, this is the legacy "high quality" look.
-        Sampler = device.CreateSampler(new SamplerDesc(
-            FilterMode.Anisotropic, AddressMode.Wrap, maxAnisotropy: 4));
-    }
-
-    private static readonly Assembly RenderingAssembly = typeof(SectorTexture).Assembly;
-
-    private void LoadSectorOverlays(RectPackerSimpleStack packer, byte[] atlasBytes, int atlasSize)
-    {
-        // SectorTexture.None is not a real sprite; every other enum value
-        // maps to a PNG embedded in TombLib.Rendering.
+        // 2 + 3) Pack everything sequentially (RectPacker is not thread-safe).
+        var overlayJobs = new List<(SectorTexture St, PackJob Job)>();
         foreach (SectorTexture st in Enum.GetValues(typeof(SectorTexture)))
         {
             if (st == SectorTexture.None) continue;
@@ -131,76 +88,137 @@ public sealed class TextureAtlas : IDisposable
             catch { continue; }
             if (img == null || img.Width <= 0 || img.Height <= 0) continue;
 
-            if (!PackAndBlit(packer, atlasBytes, atlasSize, img, out var innerOrigin)) continue;
-            _sectorOverlays[st] = (innerOrigin, new VectorInt2(img.Width, img.Height));
+            if (TryPack(packer, img, out var inner))
+            {
+                _sectorOverlays[st] = (inner, new VectorInt2(img.Width, img.Height));
+                overlayJobs.Add((st, new PackJob(inner, img)));
+            }
         }
+
+        var unique = new HashSet<Texture>();
+        if (level.Settings?.Textures != null)
+            foreach (var tex in level.Settings.Textures)
+                if (tex != null && !tex.IsUnavailable && tex.Image is { Width: > 0, Height: > 0 })
+                    unique.Add(tex);
+        foreach (var room in level.Rooms)
+        {
+            if (room?.RoomGeometry == null) continue;
+            foreach (var ta in room.RoomGeometry.TriangleTextureAreas)
+            {
+                var t = ta.Texture;
+                if (t == null || t is TextureInvisible) continue;
+                if (t.IsUnavailable || t.Image == null) continue;
+                if (t.Image.Width <= 0 || t.Image.Height <= 0) continue;
+                unique.Add(t);
+            }
+        }
+
+        var textureJobs = new List<PackJob>(unique.Count);
+        foreach (var tex in unique)
+        {
+            if (TryPack(packer, tex.Image, out var inner))
+            {
+                _origins[tex] = inner;
+                textureJobs.Add(new PackJob(inner, tex.Image));
+            }
+        }
+
+        // Phase 2 — parallel blit + padding. Each job writes to a disjoint
+        // (W+2)×(H+2) rectangle so there are no overlapping writes.
+        var allJobs = new List<PackJob>(overlayJobs.Count + textureJobs.Count);
+        foreach (var (_, job) in overlayJobs) allJobs.Add(job);
+        allJobs.AddRange(textureJobs);
+
+        Parallel.ForEach(allJobs, job =>
+        {
+            BlitAndPad(atlasBytes, atlasSize, job.InnerOrigin, job.Image);
+        });
+
+        // Auto-mip chain + anisotropic 4x — matches the legacy quality.
+        Texture = device.CreateTexture(
+            new TextureDesc(TextureKind.Texture2D, atlasSize, atlasSize,
+                            Format.B8G8R8A8_UNorm, TextureBindFlags.ShaderResource,
+                            mipLevels: 0,
+                            debugName: "LevelAtlas"),
+            atlasBytes);
+
+        Sampler = device.CreateSampler(new SamplerDesc(
+            FilterMode.Anisotropic, AddressMode.Wrap, maxAnisotropy: 4));
     }
 
-    // Pack <texture image> with a 1-pixel padding gutter (edge-replicated)
-    // around it and blit into the atlas. The padding stops bilinear /
-    // anisotropic / mipmap sampling from bleeding pixels from neighbouring
-    // packed textures — exactly what Dx11RenderingTextureAllocator does in
-    // the legacy renderer.
-    //
-    // <paramref name="innerOrigin"/> is the top-left of the texture proper
-    // (one pixel inside the packed rectangle).
-    private bool PackAndBlit(
-        RectPackerSimpleStack packer, byte[] atlasBytes, int atlasSize,
-        ImageC image, out VectorInt2 innerOrigin)
+    private static bool TryPack(RectPackerSimpleStack packer, ImageC image, out VectorInt2 innerOrigin)
     {
         innerOrigin = default;
-        var inner = new VectorInt2(image.Width, image.Height);
-        var padded = new VectorInt2(inner.X + 2, inner.Y + 2);
+        var padded = new VectorInt2(image.Width + 2, image.Height + 2);
         var pos = packer.TryAdd(padded);
         if (pos == null) return false;
-
-        var origin = new VectorInt2(pos.Value.X + 1, pos.Value.Y + 1);
-        innerOrigin = origin;
-
-        var src = image.ToByteArray();
-        int rowBytes = inner.X * 4;
-        for (int y = 0; y < inner.Y; y++)
-        {
-            int srcRow = y * rowBytes;
-            int dstRow = ((origin.Y + y) * atlasSize + origin.X) * 4;
-            Buffer.BlockCopy(src, srcRow, atlasBytes, dstRow, rowBytes);
-        }
-
-        // 1-pixel replicated border around the texture.
-        for (int x = 0; x < inner.X; x++)
-        {
-            CopyPixel(atlasBytes, atlasSize, origin.X + x, origin.Y - 1,
-                                              origin.X + x, origin.Y);            // top
-            CopyPixel(atlasBytes, atlasSize, origin.X + x, origin.Y + inner.Y,
-                                              origin.X + x, origin.Y + inner.Y - 1); // bottom
-        }
-        for (int y = 0; y < inner.Y; y++)
-        {
-            CopyPixel(atlasBytes, atlasSize, origin.X - 1,         origin.Y + y,
-                                              origin.X,             origin.Y + y); // left
-            CopyPixel(atlasBytes, atlasSize, origin.X + inner.X,   origin.Y + y,
-                                              origin.X + inner.X - 1, origin.Y + y); // right
-        }
-        // Corners.
-        CopyPixel(atlasBytes, atlasSize, origin.X - 1,        origin.Y - 1,
-                                          origin.X,            origin.Y);
-        CopyPixel(atlasBytes, atlasSize, origin.X + inner.X,  origin.Y - 1,
-                                          origin.X + inner.X - 1, origin.Y);
-        CopyPixel(atlasBytes, atlasSize, origin.X - 1,        origin.Y + inner.Y,
-                                          origin.X,            origin.Y + inner.Y - 1);
-        CopyPixel(atlasBytes, atlasSize, origin.X + inner.X,  origin.Y + inner.Y,
-                                          origin.X + inner.X - 1, origin.Y + inner.Y - 1);
+        innerOrigin = new VectorInt2(pos.Value.X + 1, pos.Value.Y + 1);
         return true;
     }
 
-    private static void CopyPixel(byte[] atlas, int atlasSize, int dstX, int dstY, int srcX, int srcY)
+    // Thread-safe: each call writes to a region of the atlas that is
+    // disjoint from any other call's region (the packer guarantees it).
+    // Uses SIMD memcpy for the inner rows.
+    private static unsafe void BlitAndPad(byte[] atlasBytes, int atlasSize, VectorInt2 origin, ImageC image)
     {
-        int s = (srcY * atlasSize + srcX) * 4;
-        int d = (dstY * atlasSize + dstX) * 4;
-        atlas[d + 0] = atlas[s + 0];
-        atlas[d + 1] = atlas[s + 1];
-        atlas[d + 2] = atlas[s + 2];
-        atlas[d + 3] = atlas[s + 3];
+        int w = image.Width;
+        int h = image.Height;
+        byte[] src = image.ToByteArray();
+        int rowBytes = w * 4;
+
+        fixed (byte* atlasPtr = atlasBytes)
+        fixed (byte* srcPtr   = src)
+        {
+            // Inner image — N rows of `rowBytes` each.
+            for (int y = 0; y < h; y++)
+            {
+                byte* dst = atlasPtr + ((origin.Y + y) * atlasSize + origin.X) * 4;
+                byte* s   = srcPtr   + y * rowBytes;
+                SimdMemcpy(dst, s, rowBytes);
+            }
+
+            // Top + bottom edge — replicate the adjacent in-image row.
+            byte* topSrc    = atlasPtr + ( origin.Y         * atlasSize + origin.X) * 4;
+            byte* topDst    = atlasPtr + ((origin.Y - 1)    * atlasSize + origin.X) * 4;
+            byte* botSrc    = atlasPtr + ((origin.Y + h - 1) * atlasSize + origin.X) * 4;
+            byte* botDst    = atlasPtr + ((origin.Y + h)    * atlasSize + origin.X) * 4;
+            SimdMemcpy(topDst, topSrc, rowBytes);
+            SimdMemcpy(botDst, botSrc, rowBytes);
+
+            // Left + right edge — 4 bytes per row, no SIMD payoff.
+            for (int y = -1; y <= h; y++)
+            {
+                int yClamped = y < 0 ? 0 : (y >= h ? h - 1 : y);
+                byte* rowBase = atlasPtr + ((origin.Y + y) * atlasSize) * 4;
+                byte* leftSrc = atlasPtr + ((origin.Y + yClamped) * atlasSize + origin.X) * 4;
+                byte* rightSrc= atlasPtr + ((origin.Y + yClamped) * atlasSize + origin.X + w - 1) * 4;
+                *(uint*)(rowBase + (origin.X - 1) * 4) = *(uint*)leftSrc;
+                *(uint*)(rowBase + (origin.X + w) * 4) = *(uint*)rightSrc;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Block-copy <paramref name="byteCount"/> bytes from <paramref name="src"/>
+    /// to <paramref name="dst"/> using the widest SIMD path available:
+    /// AVX2 (32-byte unaligned stores) → SSE2 (16-byte) → scalar.
+    /// </summary>
+    private static unsafe void SimdMemcpy(byte* dst, byte* src, int byteCount)
+    {
+        int i = 0;
+        if (Avx2.IsSupported)
+        {
+            int n = byteCount & ~31;
+            for (; i < n; i += 32)
+                Avx.Store(dst + i, Avx.LoadVector256(src + i));
+        }
+        else if (Sse2.IsSupported)
+        {
+            int n = byteCount & ~15;
+            for (; i < n; i += 16)
+                Sse2.Store(dst + i, Sse2.LoadVector128(src + i));
+        }
+        for (; i < byteCount; i++) dst[i] = src[i];
     }
 
     /// <summary>UV of the reserved 1×1 white pixel (used as a no-texture fallback).</summary>
@@ -231,7 +249,6 @@ public sealed class TextureAtlas : IDisposable
     {
         if (st == SectorTexture.None || !_sectorOverlays.TryGetValue(st, out var rect))
             return WhitePixelUv;
-        // VertexEditorUVs are 0..1 across the face; map onto the sprite rect.
         return new Vector2(
             (rect.Origin.X + faceUv.X * rect.Size.X) / Size.X,
             (rect.Origin.Y + faceUv.Y * rect.Size.Y) / Size.Y);
