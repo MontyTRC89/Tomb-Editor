@@ -35,6 +35,10 @@
       <EntryVs>vs_main</EntryVs>
       <EntryPs>ps_main</EntryPs>
     </HlslShaderV2>
+    <HlslShaderV2 Include="Shaders\RoomGeometry.hlsl">
+      <EntryVs>vs_main</EntryVs>
+      <EntryPs>ps_main</EntryPs>
+    </HlslShaderV2>
     <None Include="Shaders\*.hlsli" />
   </ItemGroup>
 

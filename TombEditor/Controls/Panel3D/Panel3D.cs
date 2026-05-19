@@ -310,32 +310,51 @@ namespace TombEditor.Controls.Panel3D
                 var room = ((IEditorRoomChangedEvent)obj).Room;
 
                 _renderingCachedRooms.Remove(room);
+                _v2Renderer?.InvalidateRoom(room);
                 if (obj is Editor.RoomGeometryChangedEvent || obj is Editor.RoomPositionChangedEvent)
                     foreach (var portal in room.Portals)
+                    {
                         _renderingCachedRooms.Remove(portal.AdjoiningRoom);
+                        _v2Renderer?.InvalidateRoom(portal.AdjoiningRoom);
+                    }
             }
 
             if (obj is Editor.ObjectChangedEvent)
             {
                 var value = (Editor.ObjectChangedEvent)obj;
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
+                {
                     _renderingCachedRooms.Remove(value.Object.Room);
+                    _v2Renderer?.InvalidateRoom(value.Object.Room);
+                }
             }
 
             // Reset rooms render cache
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.HighlightedSectorChangedEvent)
+            {
                 _renderingCachedRooms.Remove(_editor.SelectedRoom);
+                _v2Renderer?.InvalidateRoom(_editor.SelectedRoom);
+            }
             if (obj is Editor.SelectedRoomChangedEvent)
+            {
                 _renderingCachedRooms.Remove(((Editor.SelectedRoomChangedEvent)obj).Previous);
+                _v2Renderer?.InvalidateRoom(((Editor.SelectedRoomChangedEvent)obj).Previous);
+            }
             if (obj is Editor.RoomSectorPropertiesChangedEvent)
+            {
                 _renderingCachedRooms.Remove(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
+                _v2Renderer?.InvalidateRoom(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
+            }
             if (obj is Editor.LoadedTexturesChangedEvent ||
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.LevelChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent ||
                 obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
+            {
                 _renderingCachedRooms.Clear();
+                _v2Renderer?.InvalidateAllRooms();
+            }
 
             if (obj is Editor.ObjectBrushSettingsChangedEvent)
                 Invalidate();
@@ -551,7 +570,16 @@ namespace TombEditor.Controls.Panel3D
         {
             if (_v2Renderer is not null)
             {
-                _v2Renderer.RenderFrame();
+                if (_editor?.Level is not null && Camera is not null && ClientSize.Width > 0 && ClientSize.Height > 0)
+                {
+                    var scene = new TombEditor.Rendering.V2.RenderScene(
+                        _editor.Level, Camera, ClientSize);
+                    _v2Renderer.RenderFrame(scene);
+                }
+                else
+                {
+                    _v2Renderer.RenderFrame();
+                }
                 return;
             }
             base.OnPaint(e);
