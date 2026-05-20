@@ -1,7 +1,7 @@
 local ladderStates =
 {
 	10, -- hang state
-    19, -- grabbing (pulling up)
+	19, -- grabbing (pulling up)
 	55, -- climbing up
 	56, -- idle on ladder
 	57, -- ladder up
@@ -9,7 +9,7 @@ local ladderStates =
 	59, -- ladder down
 	60, -- ladder right
 	61, -- climbing down
-    88, -- climb off ladder
+	88, -- climb off ladder
 	107, -- shimmy outer left
 	108, -- shimmy outer right
 	109, -- shimmy inner left
@@ -95,7 +95,7 @@ local swimStates =
 
 local tightropeStates =
 {
-	119, -- Tightrope idle 
+	119, -- Tightrope idle
 	120, -- Tightrope turn 180
 	121, -- Tightrope walk
 	122, -- Tightrope unbalance left
@@ -121,9 +121,9 @@ local LaraTraversalMode =
 	HORIZONTAL_BAR = 2,
 	MONKEY_SWING = 3,
 	POLE_VAULT = 4,
-    ROPE_SWING = 5,
+	ROPE_SWING = 5,
 	SWIM = 6,
-	TIGHTROPE = 7,	
+	TIGHTROPE = 7,
 }
 
 local traversalModeTests =
@@ -151,20 +151,20 @@ local traversalModeTests =
 	[LaraTraversalMode.ROPE_SWING] = function(state)
 		return IsStateInList(state, ropeSwingStates)
 	end,
-	
+
 	[LaraTraversalMode.SWIM] = function(state)
-        return IsStateInList(state, swimStates)
-    end,
+		return IsStateInList(state, swimStates)
+	end,
 
 	[LaraTraversalMode.TIGHTROPE] = function(state)
 		return IsStateInList(state, tightropeStates)
 	end,
 }
 -- !Ignore
- -- Helper function to test whether Lara is in a specific traversal mode based on the provided state. Used by TestLaraTraversalState.
+-- Helper function to test whether Lara is in a specific traversal mode based on the provided state. Used by TestLaraTraversalState.
 LevelFuncs.Engine.Node.TestLaraTraversalMode = function(mode, state)
 	local traversalTest = traversalModeTests[mode]
-	
+
 	if (traversalTest == nil) then
 		return false
 	end
