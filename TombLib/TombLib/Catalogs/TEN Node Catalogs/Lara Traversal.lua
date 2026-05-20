@@ -165,6 +165,8 @@ local traversalModeTests =
 		return IsStateInList(state, tightropeStates)
 	end,
 }
+-- !Ignore
+-- Function to test if Lara is in specific traversal mode (climbing, crawling, etc.) based on her current state. Used by more specific nodes like TestLaraClimb, TestLaraCrawl, etc.
 
 LevelFuncs.Engine.Node.TestLaraTraversalMode = function(mode, state)
 	local traversalTest = traversalModeTests[mode]
