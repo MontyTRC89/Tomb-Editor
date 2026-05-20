@@ -165,23 +165,36 @@ public sealed class TextureAtlas : IDisposable
             BlitAndPad(atlasBytes, atlasSize, job.InnerOrigin, job.Image);
         });
 
-        // Auto-mip chain + anisotropic 4x — matches the legacy quality.
+        // No mip chain on purpose. The legacy Dx11RenderingTextureAllocator
+        // (room atlas) uses MipLevels=1 + anisotropic 4× — the small gutter
+        // is enough because the sampler footprint at mip 0 stays inside the
+        // 4-pixel edge replication. With auto-generated mips, lower mip
+        // levels shrink the gutter to sub-pixel (gutter / 2^mip) and the
+        // anisotropic minification blends across neighbouring atlas entries,
+        // which shows up as visible dark lines at sector seams. Trade-off:
+        // textures viewed at extreme distance can alias — the legacy lives
+        // with that and it's never been a reported issue.
         Texture = device.CreateTexture(
             new TextureDesc(TextureKind.Texture2D, atlasSize, atlasSize,
                             Format.B8G8R8A8_UNorm, TextureBindFlags.ShaderResource,
-                            mipLevels: 0,
+                            mipLevels: 1,
                             debugName: "LevelAtlas"),
             atlasBytes);
 
+        // Mirror address mode + anisotropic 4× — the legacy
+        // Dx11RenderingDevice.SamplerDefault uses exactly this combination.
+        // Wrap was reading "around the atlas" on the anisotropic footprint
+        // at oblique angles and showed up as thin lines at polygon seams.
         Sampler = device.CreateSampler(new SamplerDesc(
-            FilterMode.Anisotropic, AddressMode.Wrap, maxAnisotropy: 4));
+            FilterMode.Anisotropic, AddressMode.Mirror, maxAnisotropy: 4));
     }
 
-    // 4-pixel gutter on each side: enough margin for anisotropic filtering
-    // and the first couple of mip levels not to bleed adjacent atlas entries
-    // into the sampled texture. 1-pixel padding (the original value) was
-    // visible as a "border" around packed textures at distance.
-    private const int Gutter = 4;
+    // 8-pixel gutter on each side. With anisotropic 4× the sampler footprint
+    // at oblique floor angles can extend ~6-8 texels in the elongated
+    // direction. 4 px was insufficient to contain that footprint at sector
+    // seams (visible thin dark/light lines on tiled floors). 8 px costs more
+    // atlas area but covers the worst case without artifacts.
+    private const int Gutter = 8;
 
     private static bool TryPack(RectPackerSimpleStack packer, ImageC image, out VectorInt2 innerOrigin)
     {
