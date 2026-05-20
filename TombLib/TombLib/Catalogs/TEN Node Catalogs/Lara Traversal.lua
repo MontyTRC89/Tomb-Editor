@@ -1,4 +1,4 @@
-local ladderStates = 
+local ladderStates =
 {
 	10, -- hang state
     19, -- grabbing (pulling up)
@@ -17,7 +17,7 @@ local ladderStates =
 	138, -- ladder to crouch
 }
 
-local crawlingStates = 
+local crawlingStates =
 {
 	71, -- crouch idle
 	72, -- crouch roll
@@ -26,8 +26,6 @@ local crawlingStates =
 	84, -- crawling turn left
 	85, -- crawling turn right
 	86, -- crawling backwards
-	71, -- crouch idle
-	72, -- crouch roll
 	105, -- crouch turn left
 	106, -- crouch turn right
 	160, -- crawl step up
@@ -80,7 +78,7 @@ local swimStates =
 {
 	13, -- swimming idle
 	17, -- swim forward
-	18, -- swim intertia
+	18, -- swim inertia
 	35, -- dive
 	40, -- use switch
 	42, -- use key
@@ -116,7 +114,7 @@ local function IsStateInList(state, states)
 	return false
 end
 
-local LaraTraversalMode = 
+local LaraTraversalMode =
 {
 	CLIMB = 0,
 	CRAWL = 1,
@@ -128,7 +126,7 @@ local LaraTraversalMode =
 	TIGHTROPE = 7,	
 }
 
-local traversalModeTests = 
+local traversalModeTests =
 {
 	[LaraTraversalMode.CLIMB] = function(state)
 		return IsStateInList(state, ladderStates)
@@ -163,8 +161,7 @@ local traversalModeTests =
 	end,
 }
 -- !Ignore
--- Function to test if Lara is in specific traversal mode (climbing, crawling, etc.) based on her current state. Used by more specific nodes like TestLaraClimb, TestLaraCrawl, etc.
-
+ -- Helper function to test whether Lara is in a specific traversal mode based on the provided state. Used by TestLaraTraversalState.
 LevelFuncs.Engine.Node.TestLaraTraversalMode = function(mode, state)
 	local traversalTest = traversalModeTests[mode]
 	
