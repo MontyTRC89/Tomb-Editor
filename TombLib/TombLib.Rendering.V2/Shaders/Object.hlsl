@@ -1,15 +1,15 @@
 // Object pass: WadStatics, WadMoveables (default pose) and ImportedGeometry.
 //
-// Vertex layout (stride 16):
-//   POSITION : float3   (model-local space)
-//   COLOR    : R8G8B8A8 (vertex tint, .a unused)
+// Vertex layout (stride 20):
+//   POSITION : float3           (model-local space)
+//   COLOR    : R8G8B8A8         (vertex tint, .a unused)
+//   TEXCOORD : R16G16_UNorm     (atlas UV)
 //
 // Bindings:
-//   b0  ViewParams      : ViewProjection
+//   b0  ViewParams      : ViewProjection + grid settings (unused here)
+//   t0  Atlas           : Texture2D (shared with the room pass)
+//   s0  AtlasSamp       : SamplerState (anisotropic 4x + mips)
 //   b4  PushConstants   : ModelMatrix (4×4) + Tint (float4)
-//
-// Untextured for first iteration — texturing for objects (per-poly atlas
-// UV from WadTexture / ImportedGeometryTexture references) comes next.
 
 #include "Bindings.hlsli"
 
@@ -22,10 +22,9 @@ cbuffer ViewParams : register(b0)
     float    _pad1, _pad2;
 };
 
-// Push constants are emulated as a regular cbuffer at b4 on DX11/GL — the
-// RHI Dx11CommandList.PushConstants writes to the dynamic CB bound at this
-// slot. On Vulkan we'll switch to a native [[vk::push_constant]] struct in
-// a follow-up.
+VK_BINDING(1, 0) Texture2D    Atlas     : register(t0);
+VK_BINDING(2, 0) SamplerState AtlasSamp : register(s0);
+
 VK_BINDING(4, 0)
 cbuffer PushConstants : register(b4)
 {
@@ -37,24 +36,28 @@ struct VsIn
 {
     VK_LOCATION(0) float3 PositionMS : POSITION;
     VK_LOCATION(1) float4 Color      : COLOR;
+    VK_LOCATION(2) float2 Uv         : TEXCOORD0;
 };
 
 struct VsOut
 {
     float4 PositionCS : SV_Position;
     float4 Color      : COLOR;
+    float2 Uv         : TEXCOORD0;
 };
 
 VsOut vs_main(VsIn input)
 {
     VsOut o;
-    float4 worldPos  = mul(ModelMatrix, float4(input.PositionMS, 1.0));
+    float4 worldPos = mul(ModelMatrix, float4(input.PositionMS, 1.0));
     o.PositionCS = mul(ViewProjection, worldPos);
     o.Color      = input.Color * Tint;
+    o.Uv         = input.Uv;
     return o;
 }
 
 float4 ps_main(VsOut input) : SV_Target
 {
-    return input.Color;
+    float4 sampled = Atlas.Sample(AtlasSamp, input.Uv);
+    return float4(sampled.rgb * input.Color.rgb, sampled.a * input.Color.a);
 }

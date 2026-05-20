@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
@@ -96,20 +97,50 @@ public sealed class TextureAtlas : IDisposable
         }
 
         var unique = new HashSet<Texture>();
+        void TryAdd(Texture? t)
+        {
+            if (t == null || t is TextureInvisible) return;
+            if (t.IsUnavailable || t.Image == null) return;
+            if (t.Image.Width <= 0 || t.Image.Height <= 0) return;
+            unique.Add(t);
+        }
+
         if (level.Settings?.Textures != null)
-            foreach (var tex in level.Settings.Textures)
-                if (tex != null && !tex.IsUnavailable && tex.Image is { Width: > 0, Height: > 0 })
-                    unique.Add(tex);
+            foreach (var t in level.Settings.Textures) TryAdd(t);
+
         foreach (var room in level.Rooms)
         {
             if (room?.RoomGeometry == null) continue;
             foreach (var ta in room.RoomGeometry.TriangleTextureAreas)
+                TryAdd(ta.Texture);
+        }
+
+        // WAD textures: every static / moveable polygon's texture, so the
+        // object pass can sample them.
+        if (level.Settings?.Wads != null)
+        {
+            foreach (var refWad in level.Settings.Wads)
             {
-                var t = ta.Texture;
-                if (t == null || t is TextureInvisible) continue;
-                if (t.IsUnavailable || t.Image == null) continue;
-                if (t.Image.Width <= 0 || t.Image.Height <= 0) continue;
-                unique.Add(t);
+                if (refWad?.Wad == null) continue;
+                foreach (var s in refWad.Wad.Statics.Values)
+                    if (s.Mesh != null)
+                        foreach (var poly in s.Mesh.Polys) TryAdd(poly.Texture.Texture);
+                foreach (var m in refWad.Wad.Moveables.Values)
+                    foreach (var bone in m.Bones)
+                        if (bone?.Mesh != null)
+                            foreach (var poly in bone.Mesh.Polys) TryAdd(poly.Texture.Texture);
+            }
+        }
+
+        // ImportedGeometry textures.
+        if (level.Settings?.ImportedGeometries != null)
+        {
+            foreach (var ig in level.Settings.ImportedGeometries)
+            {
+                if (ig?.DirectXModel?.Meshes == null) continue;
+                foreach (var mesh in ig.DirectXModel.Meshes)
+                    foreach (var submesh in mesh.Submeshes.Values)
+                        TryAdd(submesh.Material?.Texture);
             }
         }
 
@@ -159,6 +190,7 @@ public sealed class TextureAtlas : IDisposable
     // Thread-safe: each call writes to a region of the atlas that is
     // disjoint from any other call's region (the packer guarantees it).
     // Uses SIMD memcpy for the inner rows.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static unsafe void BlitAndPad(byte[] atlasBytes, int atlasSize, VectorInt2 origin, ImageC image)
     {
         int w = image.Width;
@@ -203,6 +235,7 @@ public sealed class TextureAtlas : IDisposable
     /// to <paramref name="dst"/> using the widest SIMD path available:
     /// AVX2 (32-byte unaligned stores) → SSE2 (16-byte) → scalar.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static unsafe void SimdMemcpy(byte* dst, byte* src, int byteCount)
     {
         int i = 0;

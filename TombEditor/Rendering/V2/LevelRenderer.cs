@@ -116,6 +116,8 @@ public sealed class LevelRenderer : IDisposable
 
     public IRhiDevice     Device    => _device;
     public SwapchainHandle Swapchain => _swap;
+    /// <summary>Rooms drawn by the last RenderFrame call (post visibility + frustum cull).</summary>
+    public IReadOnlyList<Room> LastVisibleRooms => _visibleRooms;
 
     public LevelRenderer(IntPtr hwnd, int width, int height)
     {
@@ -286,10 +288,10 @@ public sealed class LevelRenderer : IDisposable
             }
 
             // Objects (moveables / statics / imported geometry). Reuses the
-            // same view-projection cbuffer bound above; the object pipeline
-            // expects ModelMatrix + Tint via push constants.
+            // same view-projection cbuffer + atlas + sampler bindings; the
+            // object pipeline expects ModelMatrix + Tint via push constants.
             if (_objects != null)
-                _objects.Render(cl, _visibleRooms, scene.Level,
+                _objects.Render(cl, _visibleRooms, scene.Level, _atlas,
                                 scene.ShowMoveables, scene.ShowStatics, scene.ShowImportedGeometry);
         }
 

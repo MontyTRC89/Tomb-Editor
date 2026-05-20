@@ -574,6 +574,16 @@ namespace TombEditor.Controls.Panel3D
                 Capture = true;
             if (e.Button == MouseButtons.Left)
             {
+                // Objects take priority over sectors: clicking a moveable /
+                // static / imported geometry selects the object, not the
+                // floor beneath it. Same priority order as the legacy
+                // DoPicking (gizmo -> objects -> sectors).
+                if (V2PickObject(e.Location, out var pickedObj))
+                {
+                    _editor.SelectedObject = pickedObj;
+                    return;
+                }
+
                 if (!V2PickFace(e.Location, out var room, out var pos, out var face))
                 {
                     _v2SelDragging     = false;
@@ -725,6 +735,157 @@ namespace TombEditor.Controls.Panel3D
                 Invalidate();
             }
             _lastMousePosition = e.Location;
+        }
+
+        // Ray-cast against every visible moveable / static / imported
+        // geometry instance and return the closest one. Each instance is
+        // tested in its own local space via the inverse of ObjectMatrix —
+        // the geometry stays cached in model coordinates so we don't have
+        // to transform vertices on the CPU.
+        private bool V2PickObject(System.Drawing.Point pos, out ObjectInstance picked)
+        {
+            picked = null;
+            ObjectInstance best = null;
+            if (_editor?.Level == null || Camera == null) return false;
+            if (ClientSize.Width <= 0 || ClientSize.Height <= 0) return false;
+
+            var vp = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            var ray = TombLib.Ray.GetPickRay(
+                new System.Numerics.Vector2(pos.X, pos.Y), vp, ClientSize.Width, ClientSize.Height);
+
+            float bestDist = float.PositiveInfinity;
+
+            var rooms = _v2Renderer != null
+                ? _v2Renderer.LastVisibleRooms
+                : (System.Collections.Generic.IReadOnlyList<Room>)Array.Empty<Room>();
+
+            foreach (var room in rooms)
+            {
+                if (room?.Objects == null) continue;
+                foreach (var obj in room.Objects)
+                {
+                    System.Collections.Generic.IList<System.Numerics.Vector3> verts = null;
+                    System.Numerics.Matrix4x4 model = default;
+                    switch (obj)
+                    {
+                        case StaticInstance si when ShowStatics:
+                            {
+                                var s = _editor.Level.Settings?.WadTryGetStatic(si.WadObjectId);
+                                if (s?.Mesh != null)
+                                {
+                                    verts = BuildStaticPickVertices(s);
+                                    model = si.ObjectMatrix;
+                                }
+                                break;
+                            }
+                        case MoveableInstance mi when ShowMoveables:
+                            {
+                                var mv = _editor.Level.Settings?.WadTryGetMoveable(mi.WadObjectId);
+                                if (mv != null)
+                                {
+                                    verts = BuildMoveablePickVertices(mv);
+                                    model = mi.ObjectMatrix;
+                                }
+                                break;
+                            }
+                        case ImportedGeometryInstance ii when ShowImportedGeometry:
+                            {
+                                verts = BuildImportedPickVertices(ii.Model);
+                                if (verts != null)
+                                    model = ii.RotationPositionMatrix * System.Numerics.Matrix4x4.CreateScale(ii.Scale);
+                                break;
+                            }
+                    }
+
+                    if (verts == null || verts.Count < 3) continue;
+                    if (!System.Numerics.Matrix4x4.Invert(model, out var inv)) continue;
+                    var localPos = System.Numerics.Vector3.Transform(ray.Position, inv);
+                    var localDir = System.Numerics.Vector3.Normalize(
+                        System.Numerics.Vector3.TransformNormal(ray.Direction, inv));
+                    var localRay = new TombLib.Ray(localPos, localDir);
+                    for (int i = 0; i + 2 < verts.Count; i += 3)
+                    {
+                        if (TombLib.Utils.Collision.RayIntersectsTriangle(
+                                localRay, verts[i], verts[i + 1], verts[i + 2], true, out float d) && d < bestDist)
+                        {
+                            bestDist = d;
+                            best = obj;
+                        }
+                    }
+                }
+            }
+            picked = best;
+            return picked != null;
+        }
+
+        // CPU-side pick caches — one triangle-list per source asset, reused
+        // every time the picking ray runs. Cleared on level/wad reload via
+        // the existing IEditorRoomChangedEvent / LoadedWadsChangedEvent
+        // handlers (see _v2PickCache.Clear below).
+        private readonly System.Collections.Generic.Dictionary<TombLib.Wad.WadStatic, System.Collections.Generic.List<System.Numerics.Vector3>>          _v2PickStatic   = new();
+        private readonly System.Collections.Generic.Dictionary<TombLib.Wad.WadMoveable, System.Collections.Generic.List<System.Numerics.Vector3>>        _v2PickMoveable = new();
+        private readonly System.Collections.Generic.Dictionary<TombLib.LevelData.ImportedGeometry, System.Collections.Generic.List<System.Numerics.Vector3>> _v2PickImported = new();
+
+        private System.Collections.Generic.List<System.Numerics.Vector3> BuildStaticPickVertices(TombLib.Wad.WadStatic s)
+        {
+            if (_v2PickStatic.TryGetValue(s, out var list)) return list;
+            list = new System.Collections.Generic.List<System.Numerics.Vector3>();
+            AppendTrisFromWadMesh(list, s.Mesh, System.Numerics.Vector3.Zero);
+            _v2PickStatic[s] = list;
+            return list;
+        }
+
+        private System.Collections.Generic.List<System.Numerics.Vector3> BuildMoveablePickVertices(TombLib.Wad.WadMoveable mv)
+        {
+            if (_v2PickMoveable.TryGetValue(mv, out var list)) return list;
+            list = new System.Collections.Generic.List<System.Numerics.Vector3>();
+            var accum = new System.Collections.Generic.Dictionary<TombLib.Wad.WadBone, System.Numerics.Vector3>(mv.Bones.Count);
+            foreach (var bone in mv.Bones)
+            {
+                var parentT = bone.Parent != null && accum.TryGetValue(bone.Parent, out var p)
+                              ? p : System.Numerics.Vector3.Zero;
+                var myT = parentT + bone.Translation;
+                accum[bone] = myT;
+                if (bone.Mesh != null) AppendTrisFromWadMesh(list, bone.Mesh, myT);
+            }
+            _v2PickMoveable[mv] = list;
+            return list;
+        }
+
+        private System.Collections.Generic.List<System.Numerics.Vector3> BuildImportedPickVertices(TombLib.LevelData.ImportedGeometry imp)
+        {
+            if (imp?.DirectXModel == null) return null;
+            if (_v2PickImported.TryGetValue(imp, out var list)) return list;
+            list = new System.Collections.Generic.List<System.Numerics.Vector3>();
+            foreach (var mesh in imp.DirectXModel.Meshes)
+            {
+                foreach (var submesh in mesh.Submeshes.Values)
+                {
+                    for (int k = 0; k < submesh.NumIndices; k++)
+                    {
+                        int vi = mesh.Indices[submesh.BaseIndex + k];
+                        list.Add(mesh.Vertices[vi].Position);
+                    }
+                }
+            }
+            _v2PickImported[imp] = list;
+            return list;
+        }
+
+        private static void AppendTrisFromWadMesh(System.Collections.Generic.List<System.Numerics.Vector3> list,
+                                                  TombLib.Wad.WadMesh mesh, System.Numerics.Vector3 offset)
+        {
+            if (mesh == null) return;
+            var pos = mesh.VertexPositions;
+            foreach (var poly in mesh.Polys)
+            {
+                void P(int i) { if (i >= 0 && i < pos.Count) list.Add(pos[i] + offset); }
+                if (poly.Shape == TombLib.Wad.WadPolygonShape.Triangle)
+                { P(poly.Index0); P(poly.Index1); P(poly.Index2); }
+                else
+                { P(poly.Index0); P(poly.Index1); P(poly.Index2);
+                  P(poly.Index0); P(poly.Index2); P(poly.Index3); }
+            }
         }
 
         // Common ray-pick used by single-click, drag-select and texturing.

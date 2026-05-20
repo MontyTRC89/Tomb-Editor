@@ -34,6 +34,8 @@ internal sealed class ObjectRenderer : IDisposable
     {
         public Vector3 Position;
         public uint    Color;       // R8G8B8A8_UNorm
+        public ushort  UvU;         // R16G16_UNorm atlas UV
+        public ushort  UvV;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 128)]
@@ -65,8 +67,9 @@ internal sealed class ObjectRenderer : IDisposable
             {
                 new VertexAttribute("POSITION", 0, Format.R32G32B32_Float, bufferSlot: 0, offset: 0),
                 new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm,  bufferSlot: 0, offset: 12),
+                new VertexAttribute("TEXCOORD", 0, Format.R16G16_UNorm,    bufferSlot: 0, offset: 16),
             },
-            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 16) },
+            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 20) },
             Topology               = PrimitiveTopology.TriangleList,
             // Object meshes are conventionally wound outward-facing — back-
             // cull as you'd expect for solid props.
@@ -90,17 +93,19 @@ internal sealed class ObjectRenderer : IDisposable
         _imported.Clear();
     }
 
-    public void Render(ICommandList cl, IList<Room> visibleRooms, Level level,
+    private TextureAtlas _atlas;
+
+    public void Render(ICommandList cl, IList<Room> visibleRooms, Level level, TextureAtlas atlas,
                        bool showMoveables, bool showStatics, bool showImportedGeometry)
     {
-        if (level == null) return;
+        if (level == null || atlas == null) return;
+        _atlas = atlas;
 
         cl.SetPipeline(_pipeline);
 
         foreach (var room in visibleRooms)
         {
             if (room?.Objects == null) continue;
-            Matrix4x4 roomTransform = Matrix4x4.CreateTranslation(room.WorldPos);
 
             foreach (var obj in room.Objects)
             {
@@ -188,11 +193,22 @@ internal sealed class ObjectRenderer : IDisposable
     private GpuMesh BuildMoveableMesh(WadMoveable mv)
     {
         var list = new List<ObjectVertex>();
-        // Default pose: each bone's mesh is offset by the accumulated parent
-        // translation, which the WAD already precomputes as AbsoluteTranslation.
+        // Default pose: walk the bone tree summing relative Translation.
+        // WadBone.AbsoluteTranslation isn't populated by TombEditor's WAD
+        // loader (only WadTool fills it), so doing it ourselves is required
+        // — otherwise every bone draws at the model origin and the moveable
+        // collapses to a single overlapping mesh blob.
+        var accum = new Dictionary<WadBone, Vector3>(mv.Bones.Count);
         foreach (var bone in mv.Bones)
-            if (bone?.Mesh != null)
-                AppendWadMesh(list, bone.Mesh, bone.AbsoluteTranslation);
+        {
+            Vector3 parentT = bone.Parent != null && accum.TryGetValue(bone.Parent, out var p)
+                              ? p
+                              : Vector3.Zero;
+            Vector3 myT = parentT + bone.Translation;
+            accum[bone] = myT;
+            if (bone.Mesh != null)
+                AppendWadMesh(list, bone.Mesh, myT);
+        }
         return UploadMesh(list, "Moveable:" + mv.Id);
     }
 
@@ -207,17 +223,26 @@ internal sealed class ObjectRenderer : IDisposable
                 bool hasColors = mesh.HasVertexColors;
                 foreach (var submesh in mesh.Submeshes.Values)
                 {
+                    var igTex = submesh.Material?.Texture;
+                    // ImportedGeometryVertex.UV is 0..1 normalized. The atlas
+                    // wants pixel-space coordinates → multiply by source size.
+                    Vector2 texSize = igTex?.Image is { Width: > 0, Height: > 0 }
+                                      ? new Vector2(igTex.Image.Width, igTex.Image.Height)
+                                      : Vector2.One;
                     int baseIdx = submesh.BaseIndex;
                     int count   = submesh.NumIndices;
                     for (int k = 0; k < count; k++)
                     {
                         int vi = mesh.Indices[baseIdx + k];
                         var v = mesh.Vertices[vi];
-                        Vector3 col = hasColors ? v.Color : new Vector3(0.8f, 0.8f, 0.8f);
+                        Vector3 col = hasColors ? v.Color : Vector3.One;
+                        Vector2 atlasUv = _atlas.GetAtlasUv(igTex, v.UV * texSize);
                         list.Add(new ObjectVertex
                         {
                             Position = v.Position,
                             Color    = PackColorRgba8(col),
+                            UvU      = PackUNorm16(atlasUv.X),
+                            UvV      = PackUNorm16(atlasUv.Y),
                         });
                     }
                 }
@@ -226,7 +251,7 @@ internal sealed class ObjectRenderer : IDisposable
         return UploadMesh(list, "Imported:" + (imp.ToString() ?? "?"));
     }
 
-    private static void AppendWadMesh(List<ObjectVertex> verts, WadMesh mesh, Vector3 offset)
+    private void AppendWadMesh(List<ObjectVertex> verts, WadMesh mesh, Vector3 offset)
     {
         if (mesh == null) return;
         var pos = mesh.VertexPositions;
@@ -234,28 +259,40 @@ internal sealed class ObjectRenderer : IDisposable
         bool hasColors = col != null && col.Count == pos.Count;
         foreach (var poly in mesh.Polys)
         {
+            var ta = poly.Texture;
+            var sampleTex = ta.Texture;
+            Vector2 uv0 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord0);
+            Vector2 uv1 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord1);
+            Vector2 uv2 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord2);
+            Vector2 uv3 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord3);
+
             if (poly.Shape == WadPolygonShape.Triangle)
             {
-                Push(poly.Index0); Push(poly.Index1); Push(poly.Index2);
+                Push(poly.Index0, uv0); Push(poly.Index1, uv1); Push(poly.Index2, uv2);
             }
             else // Quad → two triangles
             {
-                Push(poly.Index0); Push(poly.Index1); Push(poly.Index2);
-                Push(poly.Index0); Push(poly.Index2); Push(poly.Index3);
+                Push(poly.Index0, uv0); Push(poly.Index1, uv1); Push(poly.Index2, uv2);
+                Push(poly.Index0, uv0); Push(poly.Index2, uv2); Push(poly.Index3, uv3);
             }
         }
 
-        void Push(int i)
+        void Push(int i, Vector2 uv)
         {
             if (i < 0 || i >= pos.Count) return;
-            Vector3 c = hasColors ? col[i] : new Vector3(0.8f, 0.8f, 0.8f);
+            Vector3 c = hasColors ? col[i] : Vector3.One;
             verts.Add(new ObjectVertex
             {
                 Position = pos[i] + offset,
                 Color    = PackColorRgba8(c),
+                UvU      = PackUNorm16(uv.X),
+                UvV      = PackUNorm16(uv.Y),
             });
         }
     }
+
+    private static ushort PackUNorm16(float v) =>
+        (ushort)Math.Clamp((int)(v * 65535f + 0.5f), 0, 65535);
 
     private GpuMesh UploadMesh(List<ObjectVertex> verts, string debugName)
     {
