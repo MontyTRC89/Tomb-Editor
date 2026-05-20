@@ -219,13 +219,13 @@ local ladderStates =
 	59, -- ladder down
 	60, -- ladder right
 	61, -- climbing down
-	107, -- Shimmy inner left
-	105, -- Crouch turn left
-	106, -- Crouch turn right
-	107, -- Shimmy outer left
-	108, -- Shimmy outer right
-	109, -- Shimmy inner left
-	110, -- Shimmy inner right
+	107, -- shimmy inner left
+	105, -- crouch turn left
+	106, -- crouch turn right
+	107, -- shimmy outer left
+	108, -- shimmy outer right
+	109, -- shimmy inner left
+	110, -- shimmy inner right
 	138, -- ladder to crouch
 }
 
@@ -355,9 +355,13 @@ local traversalModeTests =
 	end,
 	
 	[LaraTraversalMode.SWIMMING] = function(state)
-		return IsStateInList(state, swimStates)
+		if TEN.Objects.Lara:GetWaterStatus() == true then
+			return IsStateInList(state, swimStates)
+		else
+			return false
+		end
 	end,
-
+	
 	[LaraTraversalMode.TIGHTROPE] = function(state)
 		return IsStateInList(state, tightropeStates)
 	end,
