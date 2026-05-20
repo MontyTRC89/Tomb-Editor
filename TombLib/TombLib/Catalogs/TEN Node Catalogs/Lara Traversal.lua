@@ -92,6 +92,7 @@ local swimStates =
 	66, -- underwater roll
 	67, -- pickup flare
 	89, -- misc control (opening door, trapdoor, kick)
+	93, -- trapdoor floor open
 	104, -- using pulley
 	189, -- remove puzzle
 	198, -- ungrab pulley
@@ -126,7 +127,7 @@ local LaraTraversalMode =
 	MONKEY_SWING = 3,
 	POLE_VAULT = 4,
     ROPE_SWING = 5,
-	SWIMMING = 6,
+	SWIM = 6,
 	TIGHTROPE = 7,	
 }
 
@@ -156,7 +157,7 @@ local traversalModeTests =
 		return IsStateInList(state, ropeSwingStates)
 	end,
 	
-	[LaraTraversalMode.SWIMMING] = function(state)
+	[LaraTraversalMode.SWIM] = function(state)
         return IsStateInList(state, swimStates)
     end,
 
@@ -179,7 +180,7 @@ end
 -- !Section "Lara state"
 -- !Conditional "True"
 -- !Description "Checks Lara's current traversal state."
--- !Arguments "Enumeration, [ Climb | Crawl | Horizontal Bar | Monkey Swing | Pole Vault | Rope Swing | Swimming | Tightrope ], 30, Traversal state to test."
+-- !Arguments "Enumeration, [ Climb | Crawl | Horizontal Bar | Monkey Swing | Pole Vault | Rope Swing | Swim | Tightrope ], 30, Traversal state to test."
 
 LevelFuncs.Engine.Node.TestLaraTraversalState = function(mode)
 	return LevelFuncs.Engine.Node.TestLaraTraversalMode(mode, TEN.Objects.Lara:GetState())
