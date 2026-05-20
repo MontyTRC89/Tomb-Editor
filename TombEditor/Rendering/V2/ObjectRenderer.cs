@@ -153,7 +153,7 @@ internal sealed class ObjectRenderer : IDisposable
                                 _staticBatch[s] = list = new List<InstanceData>();
                             list.Add(new InstanceData
                             {
-                                Model = Matrix4x4.Transpose(si.ObjectMatrix),
+                                Model = si.ObjectMatrix,
                                 Tint  = new Vector4(si.Color.X, si.Color.Y, si.Color.Z, 1f),
                             });
                             break;
@@ -166,7 +166,7 @@ internal sealed class ObjectRenderer : IDisposable
                                 _moveableBatch[mv] = list = new List<InstanceData>();
                             list.Add(new InstanceData
                             {
-                                Model = Matrix4x4.Transpose(mi.ObjectMatrix),
+                                Model = mi.ObjectMatrix,
                                 Tint  = new Vector4(1, 1, 1, 1),
                             });
                             break;
@@ -179,7 +179,7 @@ internal sealed class ObjectRenderer : IDisposable
                             var m = ig.RotationPositionMatrix * Matrix4x4.CreateScale(ig.Scale);
                             list.Add(new InstanceData
                             {
-                                Model = Matrix4x4.Transpose(m),
+                                Model = m,
                                 Tint  = new Vector4(ig.Color.X, ig.Color.Y, ig.Color.Z, 1f),
                             });
                             break;
