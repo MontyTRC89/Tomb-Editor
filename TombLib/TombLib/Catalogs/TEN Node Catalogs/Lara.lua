@@ -205,3 +205,13 @@ end
 LevelFuncs.Engine.Node.TestLaraTargeting = function()
 	return TEN.Objects.Lara:GetTarget() ~= nil
 end
+
+-- !Name "If Lara traversal state is..."
+-- !Section "Lara state"
+-- !Conditional "True"
+-- !Description "Checks Lara's current traversal state."
+-- !Arguments "Enumeration, [ Climbing | Crawling | Monkey Swing | Tightrope ], 30, Traversal state to test."
+
+LevelFuncs.Engine.Node.TestLaraTraversalState = function(mode)
+	return LevelFuncs.Engine.Node.TestLaraTraversalMode(mode, TEN.Objects.Lara:GetState())
+end

@@ -208,4 +208,100 @@ LevelFuncs.Engine.Node.SetInteractionHighlightType = function(index)
 	}	
 	return interactionIconType[index]
 end
-		
+
+local ladderStates = 
+{
+	10, -- hang state
+	55, -- climbing up
+	56, -- idle on ladder
+	57, -- ladder up
+	58, -- ladder left
+	59, -- ladder down
+	60, -- ladder right
+	61, -- climbing down
+	107, -- Shimmy inner left
+	105, -- Crouch turn left
+	106, -- Crouch turn right
+	107, -- Shimmy outer left
+	108, -- Shimmy outer right
+	109, -- Shimmy inner left
+	110, -- Shimmy inner right
+	138, -- ladder to crouch
+}
+
+local crawlingStates = 
+{
+	71, -- crouch idle
+	72, -- crouch roll
+	80, -- crawling idle
+	81, -- crawl forward
+	84, -- crawling turn left
+	85, -- crawling turn right
+	86, -- crawling backwards
+	71, -- crawling idle
+	72, -- crouch roll
+	105, -- crouch turn left
+	106, -- crouch turn right
+	160, -- crawl step up
+	161, -- crawl step down
+	167, -- 1 step crouch vault
+	168, -- 2 step crouch vault
+	169, -- 3 step crouch vault
+	171, -- crouch turn 180
+	172, -- crawl turn 180
+}
+
+local monkeySwingStates =
+{
+	75, -- monkey swing idle
+	76, -- monkey swing forward
+	77, -- monkey swing shimmy left
+	78, -- monkey swing shimmy right
+	79, -- monkey swing turn 180
+	82, -- monkey turn left
+	83, -- monkey turn right
+}
+
+local function IsStateInList(state, states)
+	for _, expectedState in ipairs(states) do
+		if state == expectedState then
+			return true
+		end
+	end
+
+	return false
+end
+
+-- Keep these IDs stable. Node dropdowns serialize numeric enum values, so new
+-- traversal modes must be appended instead of inserted or reordered.
+local LaraTraversalMode = 
+{
+	CLIMBING = 0,
+	CRAWLING = 1,
+	MONKEY_SWING = 2,
+	TIGHTROPE = 3,
+}
+
+local traversalModeTests = {
+	[LaraTraversalMode.CLIMBING] = function(state)
+		return IsStateInList(state, ladderStates)
+	end,
+	[LaraTraversalMode.CRAWLING] = function(state)
+		return IsStateInList(state, crawlingStates)
+	end,
+	[LaraTraversalMode.MONKEY_SWING] = function(state)
+		return IsStateInList(state, monkeySwingStates)
+	end,
+	[LaraTraversalMode.TIGHTROPE] = function(state)
+		return state >= 119 and state <= 127 and state ~= 126
+	end,
+}
+
+LevelFuncs.Engine.Node.TestLaraTraversalMode = function(mode, state)
+	local traversalTest = traversalModeTests[mode]
+	if (traversalTest == nil) then
+		return false
+	end
+
+	return traversalTest(state)
+end
