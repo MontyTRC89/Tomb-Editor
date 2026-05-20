@@ -35,7 +35,7 @@ namespace TombLib.LevelData
 
     public class AutoStaticMeshMergeEntry : ICloneable, IEquatable<AutoStaticMeshMergeEntry>
     {
-        public string StaticMesh => parent.WadTryGetStatic(new WadStaticId(meshId)).ToString(parent.GameVersion);
+        public string StaticMesh => GetStaticMeshName();
 
         private readonly LevelSettings parent;
         public uint meshId;
@@ -53,9 +53,32 @@ namespace TombLib.LevelData
             ClearShades = clearShades;
         }
 
+        private string GetStaticMeshName()
+        {
+            var staticMeshId = new WadStaticId(meshId);
+            var staticMesh = parent?.WadTryGetStatic(staticMeshId);
+
+            if (staticMesh == null)
+            {
+                if (parent == null)
+                {
+                    return staticMeshId.ToString();
+                }
+
+                return staticMeshId.ToString(parent.GameVersion);
+            }
+
+            return staticMesh.ToString(parent.GameVersion);
+        }
+
+        public AutoStaticMeshMergeEntry Clone(LevelSettings newParent)
+        {
+            return new AutoStaticMeshMergeEntry(meshId, Merge, InterpretShadesAsEffect, TintAsAmbient, ClearShades, newParent);
+        }
+
         public AutoStaticMeshMergeEntry Clone()
         {
-            return (AutoStaticMeshMergeEntry)MemberwiseClone();
+            return Clone(parent);
         }
 
         object ICloneable.Clone()
@@ -242,7 +265,7 @@ namespace TombLib.LevelData
             result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
             result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());
-            result.AutoStaticMeshMerges = AutoStaticMeshMerges.ConvertAll(entry => entry.Clone());
+            result.AutoStaticMeshMerges = AutoStaticMeshMerges.ConvertAll(entry => entry.Clone(result));
             return result;
         }
 
