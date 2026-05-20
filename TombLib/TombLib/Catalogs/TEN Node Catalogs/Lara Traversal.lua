@@ -29,7 +29,7 @@ local crawlingStates =
 	84, -- crawling turn left
 	85, -- crawling turn right
 	86, -- crawling backwards
-	71, -- crawling idle
+	71, -- crouch idle
 	72, -- crouch roll
 	105, -- crouch turn left
 	106, -- crouch turn right
