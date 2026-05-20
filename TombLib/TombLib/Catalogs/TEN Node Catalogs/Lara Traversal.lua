@@ -10,9 +10,6 @@ local ladderStates =
 	60, -- ladder right
 	61, -- climbing down
     88, -- climb off ladder
-	107, -- shimmy inner left
-	105, -- crouch turn left
-	106, -- crouch turn right
 	107, -- shimmy outer left
 	108, -- shimmy outer right
 	109, -- shimmy inner left
