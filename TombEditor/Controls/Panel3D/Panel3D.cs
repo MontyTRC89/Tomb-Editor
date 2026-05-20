@@ -830,7 +830,7 @@ namespace TombEditor.Controls.Panel3D
         {
             if (_v2PickStatic.TryGetValue(s, out var list)) return list;
             list = new System.Collections.Generic.List<System.Numerics.Vector3>();
-            AppendTrisFromWadMesh(list, s.Mesh, System.Numerics.Vector3.Zero);
+            AppendTrisFromWadMesh(list, s.Mesh, System.Numerics.Matrix4x4.Identity);
             _v2PickStatic[s] = list;
             return list;
         }
@@ -839,14 +839,34 @@ namespace TombEditor.Controls.Panel3D
         {
             if (_v2PickMoveable.TryGetValue(mv, out var list)) return list;
             list = new System.Collections.Generic.List<System.Numerics.Vector3>();
-            var accum = new System.Collections.Generic.Dictionary<TombLib.Wad.WadBone, System.Numerics.Vector3>(mv.Bones.Count);
+
+            // Same first-frame pose math as ObjectRenderer.BuildMoveableMesh
+            // so the pickable hull lines up with what's drawn on screen.
+            TombLib.Wad.WadKeyFrame frame = (mv.Animations.Count > 0 && mv.Animations[0].KeyFrames.Count > 0)
+                                            ? mv.Animations[0].KeyFrames[0] : null;
+
+            var transforms = new System.Collections.Generic.Dictionary<TombLib.Wad.WadBone, System.Numerics.Matrix4x4>(mv.Bones.Count);
+            int bi = 0;
             foreach (var bone in mv.Bones)
             {
-                var parentT = bone.Parent != null && accum.TryGetValue(bone.Parent, out var p)
-                              ? p : System.Numerics.Vector3.Zero;
-                var myT = parentT + bone.Translation;
-                accum[bone] = myT;
-                if (bone.Mesh != null) AppendTrisFromWadMesh(list, bone.Mesh, myT);
+                var rot = (frame != null && bi < frame.Angles.Count)
+                          ? frame.Angles[bi].RotationMatrix
+                          : System.Numerics.Matrix4x4.Identity;
+                System.Numerics.Matrix4x4 g;
+                if (bone.Parent == null)
+                {
+                    var off = frame != null ? frame.Offset : System.Numerics.Vector3.Zero;
+                    g = rot * System.Numerics.Matrix4x4.CreateTranslation(off);
+                }
+                else
+                {
+                    var pt = transforms.TryGetValue(bone.Parent, out var par)
+                             ? par : System.Numerics.Matrix4x4.Identity;
+                    g = rot * System.Numerics.Matrix4x4.CreateTranslation(bone.Translation) * pt;
+                }
+                transforms[bone] = g;
+                if (bone.Mesh != null) AppendTrisFromWadMesh(list, bone.Mesh, g);
+                bi++;
             }
             _v2PickMoveable[mv] = list;
             return list;
@@ -873,13 +893,13 @@ namespace TombEditor.Controls.Panel3D
         }
 
         private static void AppendTrisFromWadMesh(System.Collections.Generic.List<System.Numerics.Vector3> list,
-                                                  TombLib.Wad.WadMesh mesh, System.Numerics.Vector3 offset)
+                                                  TombLib.Wad.WadMesh mesh, System.Numerics.Matrix4x4 transform)
         {
             if (mesh == null) return;
             var pos = mesh.VertexPositions;
             foreach (var poly in mesh.Polys)
             {
-                void P(int i) { if (i >= 0 && i < pos.Count) list.Add(pos[i] + offset); }
+                void P(int i) { if (i >= 0 && i < pos.Count) list.Add(System.Numerics.Vector3.Transform(pos[i], transform)); }
                 if (poly.Shape == TombLib.Wad.WadPolygonShape.Triangle)
                 { P(poly.Index0); P(poly.Index1); P(poly.Index2); }
                 else

@@ -9,49 +9,59 @@ using TombLib.Wad;
 namespace TombEditor.Rendering.V2;
 
 /// <summary>
-/// Draws the room's <see cref="ObjectInstance"/> contents: moveables in
-/// default pose, statics and imported geometry. Untextured for now — only
-/// position + per-vertex color modulated by a per-instance tint. Textures
-/// (WAD atlas, ImportedGeometryTexture) come in a follow-up.
+/// Draws the rooms' object instances using GPU instancing. One draw call
+/// per unique source asset (WadStatic / WadMoveable / ImportedGeometry)
+/// with N instances each — irrespective of how many copies are placed
+/// across visible rooms.
+///
+/// <para>Per-instance data (model matrix + tint) lives in a single dynamic
+/// vertex buffer that's rewritten every frame; the per-asset vertex buffer
+/// is immutable and cached.</para>
 /// </summary>
 internal sealed class ObjectRenderer : IDisposable
 {
-    private readonly IRhiDevice    _device;
-    private PipelineHandle         _pipeline;
+    private readonly IRhiDevice _device;
+    private PipelineHandle      _pipeline;
+    private TextureAtlas        _atlas;
 
-    // GPU mesh built once per source asset (WadStatic / WadMoveable / ImportedGeometry)
-    // and reused across every instance.
-    private readonly Dictionary<WadStatic, GpuMesh>          _statics      = new();
-    private readonly Dictionary<WadMoveable, GpuMesh>        _moveables    = new();
-    private readonly Dictionary<ImportedGeometry, GpuMesh>   _imported     = new();
+    // Per-asset GPU mesh (immutable VB, mesh in default-pose model space).
+    private readonly Dictionary<WadStatic,        GpuMesh> _statics    = new();
+    private readonly Dictionary<WadMoveable,      GpuMesh> _moveables  = new();
+    private readonly Dictionary<ImportedGeometry, GpuMesh> _imported   = new();
 
-    // Reusable scratch arrays so per-frame drawing doesn't allocate.
-    private readonly VertexBufferBinding[] _scratchVb     = new VertexBufferBinding[1];
-    private byte[]                          _scratchPush   = new byte[128];
+    // Per-frame instance gathering. Cleared at the top of Render().
+    private readonly Dictionary<WadStatic,        List<InstanceData>> _staticBatch    = new();
+    private readonly Dictionary<WadMoveable,      List<InstanceData>> _moveableBatch  = new();
+    private readonly Dictionary<ImportedGeometry, List<InstanceData>> _importedBatch  = new();
+
+    private BufferHandle _instanceVb;
+    private int          _instanceCapacity = 4096;
+    private byte[]       _instanceCpu;
+
+    private readonly VertexBufferBinding[] _scratchVbs = new VertexBufferBinding[2];
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct ObjectVertex
     {
         public Vector3 Position;
         public uint    Color;       // R8G8B8A8_UNorm
-        public ushort  UvU;         // R16G16_UNorm atlas UV
+        public ushort  UvU;
         public ushort  UvV;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 128)]
-    private struct ObjectPush
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    private struct InstanceData
     {
-        public Matrix4x4 ModelMatrix;     // 64B
-        public Vector4   Tint;            // 16B (followed by 48B pad inside Size=128)
+        public Matrix4x4 Model;     // TRANSPOSED before write — see Object.hlsl docs
+        public Vector4   Tint;
     }
+    private const int InstanceStride = 80;
 
     private sealed class GpuMesh : IDisposable
     {
         public BufferHandle Vb;
         public int          VertexCount;
-        public bool         Disposed;
-
-        public void Dispose() => Disposed = true;
+        public void Dispose() { }
     }
 
     public ObjectRenderer(IRhiDevice device)
@@ -65,14 +75,23 @@ internal sealed class ObjectRenderer : IDisposable
             FragmentShader = ps,
             VertexAttributes = new[]
             {
+                // Slot 0 — per-vertex.
                 new VertexAttribute("POSITION", 0, Format.R32G32B32_Float, bufferSlot: 0, offset: 0),
                 new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm,  bufferSlot: 0, offset: 12),
                 new VertexAttribute("TEXCOORD", 0, Format.R16G16_UNorm,    bufferSlot: 0, offset: 16),
+                // Slot 1 — per-instance: 4×float4 model matrix + 1×float4 tint.
+                new VertexAttribute("TEXCOORD", 1, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 0,  perInstance: true),
+                new VertexAttribute("TEXCOORD", 2, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 16, perInstance: true),
+                new VertexAttribute("TEXCOORD", 3, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 32, perInstance: true),
+                new VertexAttribute("TEXCOORD", 4, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 48, perInstance: true),
+                new VertexAttribute("TEXCOORD", 5, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 64, perInstance: true),
             },
-            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 20) },
+            VertexBufferLayouts = new[]
+            {
+                new VertexBufferLayout(strideBytes: 20),
+                new VertexBufferLayout(strideBytes: InstanceStride, perInstance: true),
+            },
             Topology               = PrimitiveTopology.TriangleList,
-            // Object meshes are conventionally wound outward-facing — back-
-            // cull as you'd expect for solid props.
             Rasterizer             = new RasterizerState(CullMode.Back),
             DepthStencil           = DepthStencilState.Default,
             BlendStates            = new[] { BlendState.Opaque },
@@ -80,9 +99,24 @@ internal sealed class ObjectRenderer : IDisposable
             DepthAttachmentFormat  = Format.D24_UNorm_S8_UInt,
             DebugName              = "ObjectPipeline",
         });
+
+        AllocInstanceBuffer(_instanceCapacity);
     }
 
-    /// <summary>Drop every cached object mesh (call on LoadedWadsChanged / LevelChanged).</summary>
+    private void AllocInstanceBuffer(int capacity)
+    {
+        if (_instanceVb.IsValid) _device.Destroy(_instanceVb);
+        _instanceCapacity = capacity;
+        _instanceCpu = new byte[capacity * InstanceStride];
+        _instanceVb = _device.CreateBuffer(
+            new BufferDesc(
+                sizeBytes: capacity * InstanceStride,
+                usage:     BufferUsage.DynamicVertex,
+                bindFlags: BufferBindFlags.Vertex,
+                debugName: "ObjectInstances"),
+            ReadOnlySpan<byte>.Empty);
+    }
+
     public void InvalidateAll()
     {
         foreach (var m in _statics.Values)   _device.Destroy(m.Vb);
@@ -93,121 +127,191 @@ internal sealed class ObjectRenderer : IDisposable
         _imported.Clear();
     }
 
-    private TextureAtlas _atlas;
-
     public void Render(ICommandList cl, IList<Room> visibleRooms, Level level, TextureAtlas atlas,
                        bool showMoveables, bool showStatics, bool showImportedGeometry)
     {
         if (level == null || atlas == null) return;
         _atlas = atlas;
 
-        cl.SetPipeline(_pipeline);
+        // ----- 1. Group instances by source asset.
+        foreach (var v in _staticBatch.Values)   v.Clear();
+        foreach (var v in _moveableBatch.Values) v.Clear();
+        foreach (var v in _importedBatch.Values) v.Clear();
 
         foreach (var room in visibleRooms)
         {
             if (room?.Objects == null) continue;
-
             foreach (var obj in room.Objects)
             {
                 switch (obj)
                 {
-                    case MoveableInstance mv when showMoveables:
-                        DrawMoveable(cl, mv, level);
-                        break;
-                    case StaticInstance st when showStatics:
-                        DrawStatic(cl, st, level);
-                        break;
+                    case StaticInstance si when showStatics:
+                        {
+                            var s = level.Settings?.WadTryGetStatic(si.WadObjectId);
+                            if (s?.Mesh == null) continue;
+                            if (!_staticBatch.TryGetValue(s, out var list))
+                                _staticBatch[s] = list = new List<InstanceData>();
+                            list.Add(new InstanceData
+                            {
+                                Model = Matrix4x4.Transpose(si.ObjectMatrix),
+                                Tint  = new Vector4(si.Color.X, si.Color.Y, si.Color.Z, 1f),
+                            });
+                            break;
+                        }
+                    case MoveableInstance mi when showMoveables:
+                        {
+                            var mv = level.Settings?.WadTryGetMoveable(mi.WadObjectId);
+                            if (mv == null) continue;
+                            if (!_moveableBatch.TryGetValue(mv, out var list))
+                                _moveableBatch[mv] = list = new List<InstanceData>();
+                            list.Add(new InstanceData
+                            {
+                                Model = Matrix4x4.Transpose(mi.ObjectMatrix),
+                                Tint  = new Vector4(1, 1, 1, 1),
+                            });
+                            break;
+                        }
                     case ImportedGeometryInstance ig when showImportedGeometry:
-                        DrawImported(cl, ig);
-                        break;
+                        {
+                            if (ig.Model?.DirectXModel == null) continue;
+                            if (!_importedBatch.TryGetValue(ig.Model, out var list))
+                                _importedBatch[ig.Model] = list = new List<InstanceData>();
+                            var m = ig.RotationPositionMatrix * Matrix4x4.CreateScale(ig.Scale);
+                            list.Add(new InstanceData
+                            {
+                                Model = Matrix4x4.Transpose(m),
+                                Tint  = new Vector4(ig.Color.X, ig.Color.Y, ig.Color.Z, 1f),
+                            });
+                            break;
+                        }
                 }
             }
         }
-    }
 
-    private void DrawMoveable(ICommandList cl, MoveableInstance instance, Level level)
-    {
-        var moveable = level.Settings?.WadTryGetMoveable(instance.WadObjectId);
-        if (moveable == null) return;
-        if (!_moveables.TryGetValue(moveable, out var mesh))
+        // ----- 2. Pack everything into the dynamic instance VB.
+        int totalInstances = 0;
+        foreach (var v in _staticBatch.Values)   totalInstances += v.Count;
+        foreach (var v in _moveableBatch.Values) totalInstances += v.Count;
+        foreach (var v in _importedBatch.Values) totalInstances += v.Count;
+        if (totalInstances == 0) return;
+
+        if (totalInstances > _instanceCapacity)
+            AllocInstanceBuffer(Math.Max(totalInstances, _instanceCapacity * 2));
+
+        int writeOffset = 0;
+        var groupOffsets = new List<(BufferHandle Vb, int VertexCount, int InstanceOffset, int InstanceCount)>(
+            _staticBatch.Count + _moveableBatch.Count + _importedBatch.Count);
+
+        var span = MemoryMarshal.Cast<byte, InstanceData>(_instanceCpu.AsSpan());
+
+        foreach (var kv in _staticBatch)
         {
-            mesh = BuildMoveableMesh(moveable);
-            _moveables[moveable] = mesh;
+            var mesh = GetOrBuildStatic(kv.Key);
+            if (mesh.VertexCount == 0 || kv.Value.Count == 0) continue;
+            int baseOffset = writeOffset;
+            for (int i = 0; i < kv.Value.Count; i++)
+                span[(writeOffset / InstanceStride) + i] = kv.Value[i];
+            writeOffset += kv.Value.Count * InstanceStride;
+            groupOffsets.Add((mesh.Vb, mesh.VertexCount, baseOffset, kv.Value.Count));
         }
-        if (mesh.VertexCount == 0) return;
-        DrawInstance(cl, mesh, instance.ObjectMatrix, new Vector4(1, 1, 1, 1));
-    }
-
-    private void DrawStatic(ICommandList cl, StaticInstance instance, Level level)
-    {
-        var staticObj = level.Settings?.WadTryGetStatic(instance.WadObjectId);
-        if (staticObj?.Mesh == null) return;
-        if (!_statics.TryGetValue(staticObj, out var mesh))
+        foreach (var kv in _moveableBatch)
         {
-            mesh = BuildStaticMesh(staticObj);
-            _statics[staticObj] = mesh;
+            var mesh = GetOrBuildMoveable(kv.Key);
+            if (mesh.VertexCount == 0 || kv.Value.Count == 0) continue;
+            int baseOffset = writeOffset;
+            for (int i = 0; i < kv.Value.Count; i++)
+                span[(writeOffset / InstanceStride) + i] = kv.Value[i];
+            writeOffset += kv.Value.Count * InstanceStride;
+            groupOffsets.Add((mesh.Vb, mesh.VertexCount, baseOffset, kv.Value.Count));
         }
-        if (mesh.VertexCount == 0) return;
-
-        var tint = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1f);
-        DrawInstance(cl, mesh, instance.ObjectMatrix, tint);
-    }
-
-    private void DrawImported(ICommandList cl, ImportedGeometryInstance instance)
-    {
-        if (instance.Model?.DirectXModel == null) return;
-        if (!_imported.TryGetValue(instance.Model, out var mesh))
+        foreach (var kv in _importedBatch)
         {
-            mesh = BuildImportedMesh(instance.Model);
-            _imported[instance.Model] = mesh;
+            var mesh = GetOrBuildImported(kv.Key);
+            if (mesh.VertexCount == 0 || kv.Value.Count == 0) continue;
+            int baseOffset = writeOffset;
+            for (int i = 0; i < kv.Value.Count; i++)
+                span[(writeOffset / InstanceStride) + i] = kv.Value[i];
+            writeOffset += kv.Value.Count * InstanceStride;
+            groupOffsets.Add((mesh.Vb, mesh.VertexCount, baseOffset, kv.Value.Count));
         }
-        if (mesh.VertexCount == 0) return;
-        var tint = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1f);
-        DrawInstance(cl, mesh, instance.RotationPositionMatrix * Matrix4x4.CreateScale(instance.Scale), tint);
-    }
 
-    private void DrawInstance(ICommandList cl, GpuMesh mesh, Matrix4x4 model, Vector4 tint)
-    {
-        var push = new ObjectPush { ModelMatrix = model, Tint = tint };
-        unsafe
+        if (writeOffset == 0) return;
+        cl.UpdateBuffer(_instanceVb, 0, new ReadOnlySpan<byte>(_instanceCpu, 0, writeOffset));
+
+        // ----- 3. Bind pipeline and draw each group.
+        cl.SetPipeline(_pipeline);
+        foreach (var g in groupOffsets)
         {
-            fixed (byte* p = _scratchPush)
-                *(ObjectPush*)p = push;
+            _scratchVbs[0] = new VertexBufferBinding(g.Vb, 0);
+            _scratchVbs[1] = new VertexBufferBinding(_instanceVb, g.InstanceOffset);
+            cl.SetVertexBuffers(_scratchVbs);
+            cl.Draw(g.VertexCount, g.InstanceCount);
         }
-        cl.PushConstants(_scratchPush);
-
-        _scratchVb[0] = new VertexBufferBinding(mesh.Vb, 0);
-        cl.SetVertexBuffers(_scratchVb);
-        cl.Draw(mesh.VertexCount);
     }
 
-    // ------------------------------------------------------------ Mesh builders
+    // ----------------------------------------------------------- Mesh cache
+
+    private GpuMesh GetOrBuildStatic(WadStatic s)
+    {
+        if (_statics.TryGetValue(s, out var m)) return m;
+        m = BuildStaticMesh(s);
+        _statics[s] = m;
+        return m;
+    }
+    private GpuMesh GetOrBuildMoveable(WadMoveable mv)
+    {
+        if (_moveables.TryGetValue(mv, out var m)) return m;
+        m = BuildMoveableMesh(mv);
+        _moveables[mv] = m;
+        return m;
+    }
+    private GpuMesh GetOrBuildImported(ImportedGeometry imp)
+    {
+        if (_imported.TryGetValue(imp, out var m)) return m;
+        m = BuildImportedMesh(imp);
+        _imported[imp] = m;
+        return m;
+    }
+
+    // ------------------------------------------------------------ Mesh build
 
     private GpuMesh BuildStaticMesh(WadStatic stat)
     {
         var list = new List<ObjectVertex>();
-        AppendWadMesh(list, stat.Mesh, Vector3.Zero);
+        AppendWadMesh(list, stat.Mesh, Matrix4x4.Identity);
         return UploadMesh(list, "Static:" + stat.Id);
     }
 
     private GpuMesh BuildMoveableMesh(WadMoveable mv)
     {
         var list = new List<ObjectVertex>();
-        // Default pose: walk the bone tree summing relative Translation.
-        // WadBone.AbsoluteTranslation isn't populated by TombEditor's WAD
-        // loader (only WadTool fills it), so doing it ourselves is required
-        // — otherwise every bone draws at the model origin and the moveable
-        // collapses to a single overlapping mesh blob.
-        var accum = new Dictionary<WadBone, Vector3>(mv.Bones.Count);
+        WadKeyFrame frame = (mv.Animations.Count > 0 && mv.Animations[0].KeyFrames.Count > 0)
+                             ? mv.Animations[0].KeyFrames[0]
+                             : null;
+
+        var transforms = new Dictionary<WadBone, Matrix4x4>(mv.Bones.Count);
+        int bi = 0;
         foreach (var bone in mv.Bones)
         {
-            Vector3 parentT = bone.Parent != null && accum.TryGetValue(bone.Parent, out var p)
-                              ? p
-                              : Vector3.Zero;
-            Vector3 myT = parentT + bone.Translation;
-            accum[bone] = myT;
-            if (bone.Mesh != null)
-                AppendWadMesh(list, bone.Mesh, myT);
+            Matrix4x4 rot = (frame != null && bi < frame.Angles.Count)
+                          ? frame.Angles[bi].RotationMatrix
+                          : Matrix4x4.Identity;
+
+            Matrix4x4 globalT;
+            if (bone.Parent == null)
+            {
+                var offset = frame != null ? frame.Offset : Vector3.Zero;
+                globalT = rot * Matrix4x4.CreateTranslation(offset);
+            }
+            else
+            {
+                var parentT = transforms.TryGetValue(bone.Parent, out var pt)
+                              ? pt : Matrix4x4.Identity;
+                globalT = rot * Matrix4x4.CreateTranslation(bone.Translation) * parentT;
+            }
+            transforms[bone] = globalT;
+            if (bone.Mesh != null) AppendWadMesh(list, bone.Mesh, globalT);
+            bi++;
         }
         return UploadMesh(list, "Moveable:" + mv.Id);
     }
@@ -224,8 +328,6 @@ internal sealed class ObjectRenderer : IDisposable
                 foreach (var submesh in mesh.Submeshes.Values)
                 {
                     var igTex = submesh.Material?.Texture;
-                    // ImportedGeometryVertex.UV is 0..1 normalized. The atlas
-                    // wants pixel-space coordinates → multiply by source size.
                     Vector2 texSize = igTex?.Image is { Width: > 0, Height: > 0 }
                                       ? new Vector2(igTex.Image.Width, igTex.Image.Height)
                                       : Vector2.One;
@@ -251,7 +353,7 @@ internal sealed class ObjectRenderer : IDisposable
         return UploadMesh(list, "Imported:" + (imp.ToString() ?? "?"));
     }
 
-    private void AppendWadMesh(List<ObjectVertex> verts, WadMesh mesh, Vector3 offset)
+    private void AppendWadMesh(List<ObjectVertex> verts, WadMesh mesh, Matrix4x4 transform)
     {
         if (mesh == null) return;
         var pos = mesh.VertexPositions;
@@ -270,7 +372,7 @@ internal sealed class ObjectRenderer : IDisposable
             {
                 Push(poly.Index0, uv0); Push(poly.Index1, uv1); Push(poly.Index2, uv2);
             }
-            else // Quad → two triangles
+            else
             {
                 Push(poly.Index0, uv0); Push(poly.Index1, uv1); Push(poly.Index2, uv2);
                 Push(poly.Index0, uv0); Push(poly.Index2, uv2); Push(poly.Index3, uv3);
@@ -283,16 +385,13 @@ internal sealed class ObjectRenderer : IDisposable
             Vector3 c = hasColors ? col[i] : Vector3.One;
             verts.Add(new ObjectVertex
             {
-                Position = pos[i] + offset,
+                Position = Vector3.Transform(pos[i], transform),
                 Color    = PackColorRgba8(c),
                 UvU      = PackUNorm16(uv.X),
                 UvV      = PackUNorm16(uv.Y),
             });
         }
     }
-
-    private static ushort PackUNorm16(float v) =>
-        (ushort)Math.Clamp((int)(v * 65535f + 0.5f), 0, 65535);
 
     private GpuMesh UploadMesh(List<ObjectVertex> verts, string debugName)
     {
@@ -316,9 +415,13 @@ internal sealed class ObjectRenderer : IDisposable
         return r | (g << 8) | (b << 16) | (0xFFu << 24);
     }
 
+    private static ushort PackUNorm16(float v) =>
+        (ushort)Math.Clamp((int)(v * 65535f + 0.5f), 0, 65535);
+
     public void Dispose()
     {
         InvalidateAll();
-        if (_pipeline.IsValid) _device.Destroy(_pipeline);
+        if (_instanceVb.IsValid) _device.Destroy(_instanceVb);
+        if (_pipeline.IsValid)   _device.Destroy(_pipeline);
     }
 }
