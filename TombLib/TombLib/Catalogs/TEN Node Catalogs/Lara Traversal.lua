@@ -1,6 +1,7 @@
 local ladderStates = 
 {
 	10, -- hang state
+    19, -- grabbing (pulling up)
 	55, -- climbing up
 	56, -- idle on ladder
 	57, -- ladder up
@@ -8,6 +9,7 @@ local ladderStates =
 	59, -- ladder down
 	60, -- ladder right
 	61, -- climbing down
+    88, -- climb off laddder
 	107, -- shimmy inner left
 	105, -- crouch turn left
 	106, -- crouch turn right
@@ -177,7 +179,7 @@ end
 -- !Section "Lara state"
 -- !Conditional "True"
 -- !Description "Checks Lara's current traversal state."
--- !Arguments "Enumeration, [ Climb | Crawl | Horizontal Bar | Monkey Swing | Pole Vault | Swimming | Tightrope | Rope Swing ], 30, Traversal state to test."
+-- !Arguments "Enumeration, [ Climb | Crawl | Horizontal Bar | Monkey Swing | Pole Vault | Rope Swing | Swimming | Tightrope ], 30, Traversal state to test."
 
 LevelFuncs.Engine.Node.TestLaraTraversalState = function(mode)
 	return LevelFuncs.Engine.Node.TestLaraTraversalMode(mode, TEN.Objects.Lara:GetState())
