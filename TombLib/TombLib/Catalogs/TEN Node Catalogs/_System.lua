@@ -251,6 +251,12 @@ local crawlingStates =
 	172, -- crawl turn 180
 }
 
+local horizontalBarStates =
+{
+	128, -- horizontal bar swing
+	129, -- horizontal bar leap
+}
+
 local monkeySwingStates =
 {
 	75, -- monkey swing idle
@@ -260,6 +266,45 @@ local monkeySwingStates =
 	79, -- monkey swing turn 180
 	82, -- monkey turn left
 	83, -- monkey turn right
+}
+
+local poleVaultStates =
+{
+	99, -- pole idle
+	100, -- pole up
+	101, -- pole down
+	102, -- pole turn clockwise
+	103, -- pole turn counterclockwise
+}
+
+local ropeSwingStates =
+{
+	90, -- rope turn clockwise
+	91, -- rope turn counterclockwise
+	111, -- rope idle
+	112, -- rope up
+	113, -- rope down
+	114, -- rope swing
+	115, -- rope unknown
+}
+
+local swimStates =
+{
+	13, -- swimming idle
+	17, -- swim forward
+	18, -- swim intertia
+	66  -- underwater roll
+}
+
+local tightropeStates =
+{
+	119, -- Tightrope idle 
+	120, -- Tightrope turn 180
+	121, -- Tightrope walk
+	122, -- Tightrope unbalance left
+	123, -- Tightrope unbalance right
+	124, -- Tightrope enter
+	125, -- Tightrope dismount
 }
 
 local function IsStateInList(state, states)
@@ -272,33 +317,55 @@ local function IsStateInList(state, states)
 	return false
 end
 
--- Keep these IDs stable. Node dropdowns serialize numeric enum values, so new
--- traversal modes must be appended instead of inserted or reordered.
 local LaraTraversalMode = 
 {
-	CLIMBING = 0,
-	CRAWLING = 1,
-	MONKEY_SWING = 2,
-	TIGHTROPE = 3,
+	CLIMB = 0,
+	CRAWL = 1,
+	HORIZONTAL_BAR = 2,
+	MONKEY_SWING = 3,
+	POLE_VAULT = 4,
+	SWIMMING = 5,
+	TIGHTROPE = 6,
 }
 
-local traversalModeTests = {
-	[LaraTraversalMode.CLIMBING] = function(state)
+local traversalModeTests = 
+{
+	[LaraTraversalMode.CLIMB] = function(state)
 		return IsStateInList(state, ladderStates)
 	end,
-	[LaraTraversalMode.CRAWLING] = function(state)
+
+	[LaraTraversalMode.CRAWL] = function(state)
 		return IsStateInList(state, crawlingStates)
 	end,
+
+	[LaraTraversalMode.HORIZONTAL_BAR] = function(state)
+		return IsStateInList(state, horizontalBarStates)
+	end,
+
 	[LaraTraversalMode.MONKEY_SWING] = function(state)
 		return IsStateInList(state, monkeySwingStates)
 	end,
+
+	[LaraTraversalMode.POLE_VAULT] = function(state)
+		return IsStateInList(state, poleVaultStates)
+	end,
+
+	[LaraTraversalMode.ROPE_SWING] = function(state)
+		return IsStateInList(state, ropeSwingStates)
+	end,
+	
+	[LaraTraversalMode.SWIMMING] = function(state)
+		return IsStateInList(state, swimStates)
+	end,
+
 	[LaraTraversalMode.TIGHTROPE] = function(state)
-		return state >= 119 and state <= 127 and state ~= 126
+		return IsStateInList(state, tightropeStates)
 	end,
 }
 
 LevelFuncs.Engine.Node.TestLaraTraversalMode = function(mode, state)
 	local traversalTest = traversalModeTests[mode]
+	
 	if (traversalTest == nil) then
 		return false
 	end
