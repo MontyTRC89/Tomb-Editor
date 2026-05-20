@@ -4,130 +4,22 @@ using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.LanguageServer.Lua;
 
-public static partial class LuaLanguageServerResponseParser
+/// <summary>
+/// Parses typed Lua language-server responses into editor-facing Lua IntelliSense models.
+/// </summary>
+internal static partial class LuaLanguageServerResponseParser
 {
-	// Lua identifiers are case-sensitive, so `Player` and `player` must be reported as distinct
-	// completion items. Use ordinal (case-sensitive) comparison everywhere completion identity
-	// is computed; using OrdinalIgnoreCase here would silently hide legitimate symbols.
-	private sealed class CompletionIdentityComparer : IEqualityComparer<CompletionIdentity>
-	{
-		public static CompletionIdentityComparer Instance { get; } = new();
-
-		public bool Equals(CompletionIdentity x, CompletionIdentity y)
-			=> StringComparer.Ordinal.Equals(x.Label, y.Label)
-			&& StringComparer.Ordinal.Equals(x.InsertText, y.InsertText)
-			&& StringComparer.Ordinal.Equals(x.FilterText, y.FilterText)
-			&& StringComparer.Ordinal.Equals(x.Detail, y.Detail)
-			&& StringComparer.Ordinal.Equals(x.Description, y.Description)
-			&& x.IconKind == y.IconKind
-			&& x.TextEdit.Equals(y.TextEdit);
-
-		public int GetHashCode(CompletionIdentity value)
-			=> HashCode.Combine(
-				StringComparer.Ordinal.GetHashCode(value.Label),
-				StringComparer.Ordinal.GetHashCode(value.InsertText),
-				StringComparer.Ordinal.GetHashCode(value.FilterText),
-				StringComparer.Ordinal.GetHashCode(value.Detail),
-				StringComparer.Ordinal.GetHashCode(value.Description),
-				value.IconKind,
-				value.TextEdit);
-	}
-
-	private readonly record struct CompletionIdentity(
-		string Label,
-		string InsertText,
-		string FilterText,
-		string Detail,
-		string Description,
-		LuaCompletionIconKind IconKind,
-		CompletionTextEditIdentity TextEdit)
-	{
-		public static CompletionIdentity Create(LuaCompletionItem item) => new(
-			item.Label,
-			item.InsertText,
-			item.FilterText,
-			item.Detail ?? string.Empty,
-			item.Description ?? string.Empty,
-			item.IconKind,
-			CompletionTextEditIdentity.Create(item.TextEdit));
-	}
-
-	private readonly record struct CompletionTextEditIdentity(
-		LuaCompletionPosition? InsertStart,
-		LuaCompletionPosition? InsertEnd,
-		LuaCompletionPosition? ReplaceStart,
-		LuaCompletionPosition? ReplaceEnd)
-	{
-		public static CompletionTextEditIdentity Create(LuaCompletionTextEdit? textEdit)
-			=> textEdit is not { } value
-				? default
-				: new(
-					value.InsertRange.Start,
-					value.InsertRange.End,
-					value.ReplaceRange?.Start,
-					value.ReplaceRange?.End);
-	}
-
-	private enum LuaLanguageServerCompletionKind
-	{
-		Text = 1,
-		Method = 2,
-		Function = 3,
-		Constructor = 4,
-		Field = 5,
-		Variable = 6,
-		Class = 7,
-		Interface = 8,
-		Module = 9,
-		Property = 10,
-		Unit = 11,
-		Value = 12,
-		Enum = 13,
-		Keyword = 14,
-		Snippet = 15,
-		Color = 16,
-		File = 17,
-		Reference = 18,
-		Folder = 19,
-		EnumMember = 20,
-		Constant = 21,
-		Struct = 22,
-		Event = 23,
-		Operator = 24,
-		TypeParameter = 25
-	}
-
-	private readonly struct CompletionTextAnalysis
-	{
-		public CompletionTextAnalysis(string? detail, string? description)
-		{
-			HasLocalScope = ContainsToken(detail, "local")
-				|| ContainsToken(description, "local");
-
-			HasUpvalueOrParameter = ContainsToken(detail, "upvalue")
-				|| ContainsToken(description, "upvalue")
-				|| ContainsToken(detail, "parameter")
-				|| ContainsToken(description, "parameter");
-
-			IconKindOverride = ResolveCompletionIconKind(detail);
-		}
-
-		public bool HasLocalScope { get; }
-		public bool HasUpvalueOrParameter { get; }
-		public LuaCompletionIconKind? IconKindOverride { get; }
-	}
-
 	/// <summary>
 	/// Parses a sequence of typed completion-item payloads into editor completion entries.
 	/// </summary>
 	/// <param name="itemPayloads">The typed completion-item payloads.</param>
 	/// <param name="resolveFactory">Builds an optional lazy-resolve callback for each item.</param>
 	/// <returns>The parsed completion items.</returns>
-	public static IReadOnlyList<LuaCompletionItem> ParseCompletionItems(IEnumerable<CompletionItemPayload> itemPayloads,
+	internal static IReadOnlyList<LuaCompletionItem> ParseCompletionItems(IEnumerable<CompletionItemPayload> itemPayloads,
 		Func<LuaCompletionItem, CompletionItemPayload, int, Func<CancellationToken, Task<LuaCompletionItem>>?>? resolveFactory = null)
 	{
 		var items = new List<LuaCompletionItem>();
-		var seenItems = new HashSet<CompletionIdentity>(CompletionIdentityComparer.Instance);
+		var seenItems = new HashSet<LuaCompletionItemIdentity>(LuaCompletionItemIdentityComparer.Instance);
 		int itemIndex = 0;
 
 		foreach (CompletionItemPayload itemPayload in itemPayloads)
@@ -146,7 +38,7 @@ public static partial class LuaLanguageServerResponseParser
 					item = item.WithResolveCallback(resolveAsync);
 			}
 
-			if (seenItems.Add(CompletionIdentity.Create(item)))
+			if (seenItems.Add(LuaCompletionItemIdentity.Create(item)))
 				items.Add(item);
 		}
 
@@ -160,7 +52,7 @@ public static partial class LuaLanguageServerResponseParser
 	/// <param name="itemIndex">The zero-based response index used for priority weighting.</param>
 	/// <param name="resolveAsync">An optional lazy-resolve callback.</param>
 	/// <returns>The parsed completion item, or <see langword="null"/> when the payload is invalid.</returns>
-	public static LuaCompletionItem? ParseCompletionItem(CompletionItemPayload itemPayload, int itemIndex,
+	internal static LuaCompletionItem? ParseCompletionItem(CompletionItemPayload itemPayload, int itemIndex,
 		Func<CancellationToken, Task<LuaCompletionItem>>? resolveAsync = null)
 	{
 		string? label = itemPayload.Label;
@@ -193,7 +85,7 @@ public static partial class LuaLanguageServerResponseParser
 		string? detail = BuildCompletionDetail(itemPayload);
 		MarkupContent description = BuildCompletionDescription(itemPayload);
 		string? searchableDescription = LuaMarkupTextHelper.NormalizeMarkupText(description.Text);
-		var textAnalysis = new CompletionTextAnalysis(detail, searchableDescription);
+		var textAnalysis = new LuaCompletionTextAnalysis(detail, searchableDescription);
 
 		return new LuaCompletionItem(
 			label,
@@ -263,47 +155,35 @@ public static partial class LuaLanguageServerResponseParser
 		return true;
 	}
 
-	private static class CompletionPriorityWeights
-	{
-		public const double PreselectedBonus = 1000000.0;
-		public const double ResponseOrderWeight = 100000.0;
-		public const double LocalScope = 20000.0;
-		public const double UpvalueOrParameter = 15000.0;
-		public const double VariableKind = 10000.0;
-		public const double FieldOrPropertyKind = 9000.0;
-		public const double MethodOrFunctionKind = 7000.0;
-		public const double KeywordKindPenalty = -5000.0;
-	}
-
 	private static bool CompletionItemNeedsResolve(LuaCompletionItem item)
 		=> string.IsNullOrEmpty(item.Detail) || string.IsNullOrEmpty(item.Description);
 
-	private static double BuildCompletionPriority(CompletionItemPayload itemPayload, CompletionTextAnalysis textAnalysis, int itemIndex)
+	private static double BuildCompletionPriority(CompletionItemPayload itemPayload, LuaCompletionTextAnalysis textAnalysis, int itemIndex)
 	{
-		double priority = CompletionPriorityWeights.ResponseOrderWeight - itemIndex;
+		double priority = LuaCompletionPriorityWeights.ResponseOrderWeight - itemIndex;
 
 		if (itemPayload.Preselect == true)
-			priority += CompletionPriorityWeights.PreselectedBonus;
+			priority += LuaCompletionPriorityWeights.PreselectedBonus;
 
 		if (itemPayload.Kind is int completionKind)
 		{
 			priority += completionKind switch
 			{
-				(int)LuaLanguageServerCompletionKind.Variable => CompletionPriorityWeights.VariableKind,
-				(int)LuaLanguageServerCompletionKind.Field => CompletionPriorityWeights.FieldOrPropertyKind,
-				(int)LuaLanguageServerCompletionKind.Property => CompletionPriorityWeights.FieldOrPropertyKind,
-				(int)LuaLanguageServerCompletionKind.Method => CompletionPriorityWeights.MethodOrFunctionKind,
-				(int)LuaLanguageServerCompletionKind.Function => CompletionPriorityWeights.MethodOrFunctionKind,
-				(int)LuaLanguageServerCompletionKind.Keyword => CompletionPriorityWeights.KeywordKindPenalty,
+				(int)LuaLanguageServerCompletionKind.Variable => LuaCompletionPriorityWeights.VariableKind,
+				(int)LuaLanguageServerCompletionKind.Field => LuaCompletionPriorityWeights.FieldOrPropertyKind,
+				(int)LuaLanguageServerCompletionKind.Property => LuaCompletionPriorityWeights.FieldOrPropertyKind,
+				(int)LuaLanguageServerCompletionKind.Method => LuaCompletionPriorityWeights.MethodOrFunctionKind,
+				(int)LuaLanguageServerCompletionKind.Function => LuaCompletionPriorityWeights.MethodOrFunctionKind,
+				(int)LuaLanguageServerCompletionKind.Keyword => LuaCompletionPriorityWeights.KeywordKindPenalty,
 				_ => 0.0
 			};
 		}
 
 		if (textAnalysis.HasLocalScope)
-			priority += CompletionPriorityWeights.LocalScope;
+			priority += LuaCompletionPriorityWeights.LocalScope;
 
 		if (textAnalysis.HasUpvalueOrParameter)
-			priority += CompletionPriorityWeights.UpvalueOrParameter;
+			priority += LuaCompletionPriorityWeights.UpvalueOrParameter;
 
 		return priority;
 	}
@@ -322,7 +202,7 @@ public static partial class LuaLanguageServerResponseParser
 		return true;
 	}
 
-	private static LuaCompletionIconKind BuildCompletionIconKind(LuaLanguageServerCompletionKind kind, CompletionTextAnalysis textAnalysis)
+	private static LuaCompletionIconKind BuildCompletionIconKind(LuaLanguageServerCompletionKind kind, LuaCompletionTextAnalysis textAnalysis)
 	{
 		if (textAnalysis.IconKindOverride is LuaCompletionIconKind iconKindOverride)
 			return iconKindOverride;
@@ -355,44 +235,6 @@ public static partial class LuaLanguageServerResponseParser
 		};
 	}
 
-	private static bool ContainsToken(string? text, string token)
-		=> !string.IsNullOrEmpty(text) && text.Contains(token, StringComparison.OrdinalIgnoreCase);
-
-	private static LuaCompletionIconKind? ResolveCompletionIconKind(string? detailText)
-	{
-		if (ContainsToken(detailText, "parameter"))
-			return LuaCompletionIconKind.Parameter;
-
-		if (ContainsToken(detailText, "module") || ContainsToken(detailText, "namespace"))
-			return LuaCompletionIconKind.Namespace;
-
-		if (ContainsToken(detailText, "method") || ContainsToken(detailText, "function"))
-			return LuaCompletionIconKind.Method;
-
-		if (ContainsToken(detailText, "field"))
-			return LuaCompletionIconKind.Field;
-
-		if (ContainsToken(detailText, "property") || ContainsToken(detailText, "global")
-			|| ContainsToken(detailText, "default library"))
-		{
-			return LuaCompletionIconKind.Property;
-		}
-
-		if (ContainsToken(detailText, "constant"))
-			return LuaCompletionIconKind.Constant;
-
-		if (ContainsToken(detailText, "keyword"))
-			return LuaCompletionIconKind.Keyword;
-
-		if (ContainsToken(detailText, "class") || ContainsToken(detailText, "interface")
-			|| ContainsToken(detailText, "enum") || ContainsToken(detailText, "struct"))
-		{
-			return LuaCompletionIconKind.Class;
-		}
-
-		return null;
-	}
-
 	private static string? BuildCompletionDetail(CompletionItemPayload itemPayload)
 	{
 		string? detail = itemPayload.Detail;
@@ -421,6 +263,9 @@ public static partial class LuaLanguageServerResponseParser
 			: new MarkupContent(normalizedText, documentation.IsMarkdown);
 	}
 
+	/// <summary>
+	/// Removes Lua snippet placeholders while preserving the first final-caret location needed by the editor.
+	/// </summary>
 	private static LuaSnippetPlaceholderResult StripSnippetPlaceholders(string snippet)
 	{
 		if (string.IsNullOrWhiteSpace(snippet))
@@ -432,6 +277,7 @@ public static partial class LuaLanguageServerResponseParser
 
 		while (index < snippet.Length)
 		{
+			// Parse placeholder markers like ${1:name} or $0 and copy only the visible text.
 			if (snippet[index] == '$')
 			{
 				if (index + 1 < snippet.Length && snippet[index + 1] == '{')
@@ -483,6 +329,7 @@ public static partial class LuaLanguageServerResponseParser
 				continue;
 			}
 
+			// Plain text passes through unchanged.
 			builder.Append(snippet[index]);
 			index++;
 		}

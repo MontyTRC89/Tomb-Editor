@@ -4,7 +4,7 @@ public sealed partial class WorkspaceFileChangeForwarder
 {
 	/// <summary>
 	/// Attempts to forward a new change set immediately.
-	/// The change set is buffered only after forwarding was allowed and startup or transport forwarding failed.
+	/// The change set is buffered only after forwarding was allowed and a transient startup or live transport failure occurred while the owner remained active.
 	/// When forwarding is not currently allowed, the change set is either buffered or ignored based on construction options.
 	/// </summary>
 	/// <param name="changes">The file changes to forward.</param>
@@ -135,7 +135,7 @@ public sealed partial class WorkspaceFileChangeForwarder
 	}
 
 	/// <summary>
-	/// Forwards a change set and converts transport failures into buffered replay state.
+	/// Forwards a change set and converts recoverable transient live-forwarding failures into buffered replay state.
 	/// </summary>
 	/// <param name="changes">The file changes to forward.</param>
 	/// <param name="forwardAsync">The transport forwarding callback.</param>
@@ -162,7 +162,7 @@ public sealed partial class WorkspaceFileChangeForwarder
 			_deferredChanges.AddRange(changes);
 			_markTransportUnavailable();
 
-			_logForwardingFailure?.Invoke(exception);
+			LogForwardingFailure(exception, changes, wasDropped: false);
 			return false;
 		}
 		catch (ObjectDisposedException)
@@ -184,8 +184,17 @@ public sealed partial class WorkspaceFileChangeForwarder
 		}
 		catch (Exception exception)
 		{
-			_logForwardingFailure?.Invoke(exception);
+			// Intentional: unexpected failures are treated as logic/protocol defects rather than
+			// transient transport gaps. Replaying here risks duplicating a partially observed batch
+			// during later recovery, so the batch is logged and dropped on purpose.
+			LogForwardingFailure(exception, changes, wasDropped: true);
 			return false;
 		}
+	}
+
+	private void LogForwardingFailure(Exception exception, IReadOnlyList<WorkspaceFileChange> changes, bool wasDropped)
+	{
+		string? firstPath = changes.Count > 0 ? changes[0].Path : null;
+		_logForwardingFailure?.Invoke(new WorkspaceFileForwardingFailure(exception, changes.Count, firstPath, wasDropped));
 	}
 }

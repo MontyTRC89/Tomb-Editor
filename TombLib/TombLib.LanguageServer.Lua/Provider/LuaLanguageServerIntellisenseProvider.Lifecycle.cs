@@ -2,6 +2,9 @@ namespace TombLib.LanguageServer.Lua;
 
 public sealed partial class LuaLanguageServerIntellisenseProvider
 {
+	/// <summary>
+	/// Ensures the language-server transport is running and that tracked documents and workspace watching are restored after reconnects.
+	/// </summary>
 	private async Task<bool> EnsureStartedAsync(CancellationToken cancellationToken)
 	{
 		if (_isDisposed || _client is null || GetConsecutiveStartupFailures() >= HardStartupFailureThreshold)
@@ -27,6 +30,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 		try
 		{
+			// Serialize startup and restart work so concurrent callers share one recovery flow.
 			await _startLock.WaitAsync(effectiveStartupCancellationToken).ConfigureAwait(false);
 			startLockHeld = true;
 
@@ -70,6 +74,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				}
 			}
 
+			// Update startup bookkeeping before resuming watcher and timeout management.
 			SetStartupSucceeded(startupSucceeded);
 
 			if (startupSucceeded)
@@ -129,9 +134,11 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		RaiseStartupFailed(failure);
 	}
 
-	/// <summary>
-	/// Releases the language-server client, workspace watcher, and any in-flight semantic-token requests.
-	/// </summary>
+	/// <inheritdoc />
+	/// <remarks>
+	/// Disposal stops the workspace watcher, cancels queued document and semantic-token work, and releases the active
+	/// Lua language-server client.
+	/// </remarks>
 	public void Dispose()
 	{
 		if (Interlocked.Exchange(ref _disposeStarted, 1) != 0)

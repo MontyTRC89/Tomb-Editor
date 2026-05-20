@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting.Lua.LanguageServer\TombLib.Scripting.Lua.LanguageServer.csproj" />
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
   </ItemGroup>
 

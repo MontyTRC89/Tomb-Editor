@@ -5,7 +5,7 @@ namespace TombLib.LanguageServer.Lua;
 /// <summary>
 /// Represents a diagnostics payload published by LuaLS for a specific document version.
 /// </summary>
-public sealed class LuaPublishedDiagnostics
+internal sealed class LuaPublishedDiagnostics
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LuaPublishedDiagnostics"/> class.
@@ -13,7 +13,7 @@ public sealed class LuaPublishedDiagnostics
 	/// <param name="filePath">The normalized file path associated with the diagnostics.</param>
 	/// <param name="diagnostics">The parsed diagnostics for that file.</param>
 	/// <param name="version">The synchronized document version that produced the diagnostics.</param>
-	public LuaPublishedDiagnostics(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics, int version)
+	internal LuaPublishedDiagnostics(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics, int version)
 	{
 		FilePath = filePath;
 		Diagnostics = diagnostics ?? [];

@@ -19,7 +19,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// </summary>
 	/// <param name="workspaceRootDirectoryPath">The normalized workspace root directory.</param>
 	/// <param name="watchSpecifications">The file patterns that should participate in the tracked snapshot.</param>
-	public LuaWorkspaceSnapshotTracker(string workspaceRootDirectoryPath, IReadOnlyList<WorkspaceWatchSpecification> watchSpecifications)
+	internal LuaWorkspaceSnapshotTracker(string workspaceRootDirectoryPath, IReadOnlyList<WorkspaceWatchSpecification> watchSpecifications)
 	{
 		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
 		_watchSpecifications = watchSpecifications;
@@ -28,7 +28,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// <summary>
 	/// Replaces the tracked snapshot with a fresh capture of the current workspace state.
 	/// </summary>
-	public void CaptureTrackedSnapshot()
+	internal void CaptureTrackedSnapshot()
 	{
 		Dictionary<string, LuaWorkspaceSnapshotEntry> snapshot = CaptureSnapshot();
 
@@ -40,7 +40,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// Creates a stable clone of the currently tracked workspace snapshot.
 	/// </summary>
 	/// <returns>The cloned snapshot.</returns>
-	public Dictionary<string, LuaWorkspaceSnapshotEntry> CloneTrackedSnapshot()
+	internal Dictionary<string, LuaWorkspaceSnapshotEntry> CloneTrackedSnapshot()
 	{
 		lock (_snapshotSyncRoot)
 			return CloneSnapshot(_trackedSnapshot);
@@ -50,7 +50,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// Captures the current workspace state, replaces the tracked snapshot, and returns the fresh snapshot.
 	/// </summary>
 	/// <returns>The newly captured snapshot.</returns>
-	public Dictionary<string, LuaWorkspaceSnapshotEntry> ReplaceTrackedSnapshotWithCurrent()
+	internal Dictionary<string, LuaWorkspaceSnapshotEntry> ReplaceTrackedSnapshotWithCurrent()
 	{
 		Dictionary<string, LuaWorkspaceSnapshotEntry> currentSnapshot = CaptureSnapshot();
 
@@ -64,7 +64,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// Applies a set of already forwarded file changes to the tracked snapshot.
 	/// </summary>
 	/// <param name="changes">The normalized forwarded file changes.</param>
-	public void ApplyChanges(IReadOnlyList<WorkspaceFileChange> changes)
+	internal void ApplyChanges(IReadOnlyList<WorkspaceFileChange> changes)
 	{
 		lock (_snapshotSyncRoot)
 		{
@@ -92,7 +92,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// <param name="previousSnapshot">The baseline snapshot captured before watcher disruption.</param>
 	/// <param name="currentSnapshot">The replacement snapshot captured after watcher recovery.</param>
 	/// <returns>The sorted workspace change batch needed to reconcile the snapshots.</returns>
-	public static FileChangeBatch BuildDeltaBatch(
+	internal static FileChangeBatch BuildDeltaBatch(
 		IReadOnlyDictionary<string, LuaWorkspaceSnapshotEntry> previousSnapshot,
 		IReadOnlyDictionary<string, LuaWorkspaceSnapshotEntry> currentSnapshot)
 	{

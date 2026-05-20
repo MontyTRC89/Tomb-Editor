@@ -115,6 +115,42 @@ public class DocumentOperationSchedulerTests
 	}
 
 	[TestMethod]
+	public async Task EnqueuePerDocumentAsync_NormalizesEquivalentPathsIntoSameQueue()
+	{
+		var scheduler = new DocumentOperationScheduler();
+		string canonicalFilePath = Path.Combine(Path.GetTempPath(), "DocumentOperationSchedulerTests", "test.lua");
+		string aliasedFilePath = Path.Combine(Path.GetDirectoryName(canonicalFilePath)!, ".", Path.GetFileName(canonicalFilePath));
+		var firstStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var allowFirstToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		int secondOperationCallCount = 0;
+
+		Task<bool> firstTask = scheduler.EnqueuePerDocumentAsync(canonicalFilePath, async _ =>
+		{
+			firstStarted.TrySetResult(true);
+			await allowFirstToFinish.Task.ConfigureAwait(false);
+			return true;
+		}, CancellationToken.None);
+
+		await firstStarted.Task.ConfigureAwait(false);
+
+		Task<bool> secondTask = scheduler.EnqueuePerDocumentAsync(aliasedFilePath, _ =>
+		{
+			Interlocked.Increment(ref secondOperationCallCount);
+			return Task.FromResult(true);
+		}, CancellationToken.None);
+
+		await Task.Delay(50).ConfigureAwait(false);
+
+		Assert.AreEqual(0, secondOperationCallCount);
+
+		allowFirstToFinish.TrySetResult(true);
+
+		Assert.IsTrue(await firstTask.ConfigureAwait(false));
+		Assert.IsTrue(await secondTask.ConfigureAwait(false));
+		Assert.AreEqual(1, secondOperationCallCount);
+	}
+
+	[TestMethod]
 	public async Task QueueLatestUpdateAsync_SerializesRunningWorkAndSkipsSupersededPendingUpdates()
 	{
 		var scheduler = new DocumentOperationScheduler();

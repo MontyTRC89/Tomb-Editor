@@ -13,7 +13,7 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// </summary>
 	/// <param name="filePath">The normalized file path.</param>
 	/// <returns>The cached diagnostics, or an empty list when none are stored.</returns>
-	public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
+	internal IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
 		=> WithTrackedDocument(filePath, static state => state.DiagnosticsCache.Diagnostics, defaultValue: []);
 
 	/// <summary>
@@ -21,7 +21,7 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// </summary>
 	/// <param name="filePath">The normalized file path.</param>
 	/// <returns>The cached semantic tokens, or an empty list when none are stored.</returns>
-	public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
+	internal IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
 		=> WithTrackedDocument(filePath, static state => state.SemanticTokensCache.Tokens, defaultValue: []);
 
 	internal int TrackedDocumentCount
@@ -33,12 +33,14 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// <param name="publishedDiagnostics">The diagnostics payload to cache.</param>
 	/// <param name="expectedDocumentVersion">The tracked document version observed when the payload was parsed.</param>
 	/// <returns><see langword="true"/> when the payload was stored; otherwise, <see langword="false"/>.</returns>
-	public bool TryStoreDiagnostics(LuaPublishedDiagnostics publishedDiagnostics, int expectedDocumentVersion)
-		=> WithTrackedDocument(
+	internal bool TryStoreDiagnostics(LuaPublishedDiagnostics publishedDiagnostics, int expectedDocumentVersion)
+	{
+		return WithTrackedDocument(
 			publishedDiagnostics.FilePath,
 			state => !HasTrackedDocumentVersionAdvanced(state, expectedDocumentVersion)
 				&& state.DiagnosticsCache.TryStore(publishedDiagnostics),
 			defaultValue: false);
+	}
 
 	/// <summary>
 	/// Stores semantic tokens when they are not stale for the tracked document version.
@@ -47,12 +49,14 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// <param name="version">The document version associated with the tokens.</param>
 	/// <param name="semanticTokens">The semantic tokens to cache.</param>
 	/// <returns><see langword="true"/> when the token set was stored; otherwise, <see langword="false"/>.</returns>
-	public bool TryStoreSemanticTokens(string filePath, int version, IReadOnlyList<LuaSemanticToken> semanticTokens)
-		=> WithTrackedDocument(
+	internal bool TryStoreSemanticTokens(string filePath, int version, IReadOnlyList<LuaSemanticToken> semanticTokens)
+	{
+		return WithTrackedDocument(
 			filePath,
 			state => !HasTrackedDocumentVersionAdvanced(state, version)
 				&& state.SemanticTokensCache.TryStore(version, semanticTokens),
 			defaultValue: false);
+	}
 
 	/// <summary>
 	/// Returns the cached semantic-tokens delta state for <paramref name="filePath"/>, if any.
@@ -60,7 +64,7 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// </summary>
 	/// <param name="filePath">The normalized file path.</param>
 	/// <returns>The cached delta state, if available.</returns>
-	public SemanticTokensDeltaState GetSemanticTokensDeltaState(string filePath)
+	internal SemanticTokensDeltaState GetSemanticTokensDeltaState(string filePath)
 		=> WithTrackedDocument(filePath, static state => state.SemanticTokensCache.GetDeltaState(), new SemanticTokensDeltaState(null, null));
 
 	/// <summary>
@@ -70,16 +74,34 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// <param name="filePath">The normalized file path.</param>
 	/// <param name="resultId">The server-provided semantic-token result id.</param>
 	/// <param name="data">The cached integer token stream.</param>
-	public void StoreSemanticTokensDeltaState(string filePath, string? resultId, int[]? data)
+	internal void StoreSemanticTokensDeltaState(string filePath, string? resultId, int[]? data)
 		=> WithTrackedDocument(filePath, state => state.SemanticTokensCache.StoreDeltaState(resultId, data));
+
+	/// <summary>
+	/// Clears the cached semantic tokens for the specified normalized file path.
+	/// </summary>
+	/// <param name="filePath">The normalized file path.</param>
+	/// <returns>The cleared semantic-token list, or an empty list when the document is not tracked.</returns>
+	internal IReadOnlyList<LuaSemanticToken> ClearSemanticTokens(string filePath)
+	{
+		return WithTrackedDocument(
+			filePath,
+			state =>
+			{
+				state.SemanticTokensCache.Clear();
+				return state.SemanticTokensCache.Tokens;
+			},
+			defaultValue: []);
+	}
 
 	/// <summary>
 	/// Marks the specified document as needing a fresh server-side open/sync before incremental updates can resume.
 	/// </summary>
 	/// <param name="filePath">The normalized file path.</param>
 	/// <returns><see langword="true"/> when the document was found and invalidated; otherwise, <see langword="false"/>.</returns>
-	public bool InvalidateServerSynchronization(string filePath)
-		=> WithTrackedDocument(filePath,
+	internal bool InvalidateServerSynchronization(string filePath)
+	{
+		return WithTrackedDocument(filePath,
 			state =>
 			{
 				MarkTrackedDocumentClosed(state);
@@ -87,6 +109,7 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 				return true;
 			},
 			defaultValue: false);
+	}
 
 	protected override LuaDocumentState CreateTrackedDocumentState(
 		string filePath,
@@ -97,7 +120,8 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 		int openReferenceCount,
 		int requestReferenceCount,
 		long lastAccessStamp)
-		=> new(
+	{
+		return new(
 			filePath,
 			uri,
 			content,
@@ -106,6 +130,7 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 			openReferenceCount,
 			requestReferenceCount,
 			lastAccessStamp);
+	}
 
 	protected override long GetLastAccessStamp(LuaDocumentState state)
 		=> state.LastAccessStamp;

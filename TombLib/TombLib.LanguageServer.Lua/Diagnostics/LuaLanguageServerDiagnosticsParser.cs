@@ -5,12 +5,15 @@ using TombLib.Scripting.Objects;
 
 namespace TombLib.LanguageServer.Lua;
 
-public static class LuaLanguageServerDiagnosticsParser
+/// <summary>
+/// Parses Lua language-server diagnostics payloads into editor diagnostics tied to tracked document versions.
+/// </summary>
+internal static class LuaLanguageServerDiagnosticsParser
 {
 	/// <summary>
 	/// Parses a LuaLS diagnostics notification into editor diagnostics for a tracked document.
 	/// </summary>
-	public static bool TryParse(PublishDiagnosticsParams parameters, string filePath,
+	internal static bool TryParse(PublishDiagnosticsParams parameters, string filePath,
 		string documentContent, int documentVersion, [NotNullWhen(true)] out LuaPublishedDiagnostics? publishedDiagnostics)
 	{
 		publishedDiagnostics = null;

@@ -365,6 +365,73 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 	}
 
 	[TestMethod]
+	public async Task WorkspaceWatcherRecovery_ReconcilesDroppedChangesFromUnexpectedForwardingFailure()
+	{
+		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherRecoveryDropped_" + Guid.NewGuid().ToString("N"));
+		string filePath = Path.Combine(workspaceRoot, "Scripts", "test.lua");
+		const string content = "local value = 1";
+		const string updatedContent = "local value = 2";
+
+		try
+		{
+			Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? workspaceRoot);
+			File.WriteAllText(filePath, content);
+
+			using var client = new FakeLanguageServerClient
+			{
+				ThrowInvalidOperationOnNextWatchedFilesNotification = true,
+				HoverResponse = JsonSerializer.SerializeToElement(new
+				{
+					contents = new
+					{
+						kind = "markdown",
+						value = "Hover docs."
+					}
+				})
+			};
+
+			using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+
+			await provider.GetHoverAsync(filePath, content, 0, 0);
+
+			WorkspaceFileWatcher watcher = GetWorkspaceWatcher(provider)
+				?? throw new AssertFailedException("Expected the workspace watcher to start.");
+
+			File.WriteAllText(filePath, updatedContent);
+
+			await DispatchWorkspaceFileChangesAsync(
+				provider,
+				new FileChangeBatch(
+				[
+					new WorkspaceFileChange(filePath, FileChangeKind.Changed)
+				]),
+				CancellationToken.None);
+
+			Assert.AreEqual(1, CountSentMethods(client, "workspace/didChangeWatchedFiles"));
+
+			watcher.Dispose();
+
+			bool recovered = InvokePrivateMethodWithReturn<bool>(
+				LuaLanguageServerIntellisenseProviderTestAccess.GetWorkspaceChangeCoordinator(provider),
+				"TryRestartWorkspaceFileWatcher",
+				watcher);
+
+			Assert.IsTrue(recovered);
+			Assert.IsTrue(await client.WaitForMethodCountAsync("workspace/didChangeWatchedFiles", 2, TimeSpan.FromSeconds(1)));
+
+			JsonElement changes = client.GetLastNotificationParameters("workspace/didChangeWatchedFiles").GetProperty("changes");
+			Assert.AreEqual(1, changes.GetArrayLength());
+			Assert.AreEqual(new Uri(filePath).AbsoluteUri, changes[0].GetProperty("uri").GetString());
+			Assert.AreEqual((int)FileChangeKind.Changed, changes[0].GetProperty("type").GetInt32());
+		}
+		finally
+		{
+			if (Directory.Exists(workspaceRoot))
+				Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public async Task WorkspaceWatcherRecovery_ConcurrentDispatchDuringRecovery_ConvergesWithoutExtraReplayOnNextRecovery()
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWatcherRecoveryConcurrent_" + Guid.NewGuid().ToString("N"));
@@ -503,6 +570,58 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		Task completedTask = await Task.WhenAny(semanticTokensUpdated.Task, Task.Delay(TimeSpan.FromMilliseconds(250))).ConfigureAwait(false);
 
 		Assert.AreNotSame(semanticTokensUpdated.Task, completedTask);
+	}
+
+	[TestMethod]
+	public async Task SemanticTokensRefreshRequested_RequestFailure_ClearsCachedSemanticTokens()
+	{
+		const string workspaceRoot = @"C:\Workspace";
+		const string filePath = @"C:\Workspace\Scripts\test.lua";
+		const string content = "local value = 1";
+
+		using var client = new FakeLanguageServerClient
+		{
+			SupportsSemanticTokensFull = true,
+			SemanticTokenTypes = ["variable"]
+		};
+
+		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
+		var initialTokensUpdated = new TaskCompletionSource<IReadOnlyList<LuaSemanticToken>>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var clearedTokensUpdated = new TaskCompletionSource<IReadOnlyList<LuaSemanticToken>>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		provider.SemanticTokensUpdated += (updatedFilePath, tokens) =>
+		{
+			if (!string.Equals(updatedFilePath, filePath, StringComparison.OrdinalIgnoreCase))
+				return;
+
+			if (tokens.Count > 0)
+				initialTokensUpdated.TrySetResult(tokens);
+			else
+				clearedTokensUpdated.TrySetResult(tokens);
+		};
+
+		provider.OpenDocument(filePath, content);
+
+		Task initialCompletedTask = await Task.WhenAny(initialTokensUpdated.Task, Task.Delay(TimeSpan.FromSeconds(1))).ConfigureAwait(false);
+		Assert.AreSame(initialTokensUpdated.Task, initialCompletedTask);
+		Assert.AreEqual(1, provider.GetSemanticTokens(filePath).Count);
+
+		client.ThrowInvalidOperationOnNextRequestMethod = "textDocument/semanticTokens/full";
+		client.PublishSemanticTokensRefreshRequested();
+
+		Task clearedCompletedTask = await Task.WhenAny(clearedTokensUpdated.Task, Task.Delay(TimeSpan.FromSeconds(1))).ConfigureAwait(false);
+		Assert.AreSame(clearedTokensUpdated.Task, clearedCompletedTask);
+		Assert.AreEqual(0, clearedTokensUpdated.Task.Result.Count);
+		Assert.AreEqual(0, provider.GetSemanticTokens(filePath).Count);
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				"textDocument/didOpen",
+				"textDocument/semanticTokens/full",
+				"textDocument/semanticTokens/full"
+			},
+			client.GetSentMethodNames());
 	}
 
 	[TestMethod]

@@ -2,12 +2,12 @@ using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.LanguageServer.Lua;
 
-public static partial class LuaLanguageServerResponseParser
+internal static partial class LuaLanguageServerResponseParser
 {
 	/// <summary>
 	/// Parses reference locations from a LuaLS references response.
 	/// </summary>
-	public static IReadOnlyList<LuaReferenceLocation> ParseReferenceLocations(IReadOnlyList<ReferenceResponse>? response)
+	internal static IReadOnlyList<LuaReferenceLocation> ParseReferenceLocations(IReadOnlyList<ReferenceResponse>? response)
 	{
 		if (response is not { Count: > 0 })
 			return [];

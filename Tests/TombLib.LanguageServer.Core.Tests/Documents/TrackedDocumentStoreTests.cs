@@ -60,6 +60,27 @@ public class TrackedDocumentStoreTests
 	}
 
 	[TestMethod]
+	public void Synchronize_AndLookup_NormalizeEquivalentPaths()
+	{
+		var store = new TestTrackedDocumentStore();
+		string canonicalFilePath = Path.Combine(Path.GetTempPath(), "TrackedDocumentStoreTests", "scripts", "test.lua");
+		string aliasedFilePath = Path.Combine(Path.GetDirectoryName(canonicalFilePath)!, ".", Path.GetFileName(canonicalFilePath));
+
+		DocumentSynchronizationRequest? synchronizationRequest = store.Synchronize(canonicalFilePath, "return 1", acquireOpenReference: true);
+
+		Assert.IsNotNull(synchronizationRequest);
+		Assert.AreEqual(LanguageServerPathHelper.NormalizeLocalPath(canonicalFilePath), synchronizationRequest.Value.Document.FilePath);
+
+		DocumentSnapshot? snapshot = store.GetDocumentSnapshot(aliasedFilePath);
+
+		Assert.IsNotNull(snapshot);
+		Assert.AreEqual(LanguageServerPathHelper.NormalizeLocalPath(canonicalFilePath), snapshot.FilePath);
+		Assert.IsTrue(store.TryClose(aliasedFilePath, out DocumentSnapshot? closedDocument));
+		Assert.IsNotNull(closedDocument);
+		Assert.IsNull(store.GetDocumentSnapshot(canonicalFilePath));
+	}
+
+	[TestMethod]
 	public void TryClose_RemovesTrackedDocumentWhileRestartReplayIsPending()
 	{
 		var store = new TestTrackedDocumentStore();

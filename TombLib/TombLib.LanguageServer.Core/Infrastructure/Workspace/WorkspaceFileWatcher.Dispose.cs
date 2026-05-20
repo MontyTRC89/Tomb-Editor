@@ -62,17 +62,23 @@ public sealed partial class WorkspaceFileWatcher
 			if (batch.Count == 0)
 				return;
 
-			Task finalFlushTask = _dispatchAsync(batch, CancellationToken.None);
+			bool finalFlushTimedOut = false;
+
+			using var finalFlushTimeout = new CancellationTokenSource(DisposeFinalFlushTimeout);
 
 			try
 			{
-				await finalFlushTask.WaitAsync(DisposeFinalFlushTimeout).ConfigureAwait(false);
+				await _dispatchAsync(batch, finalFlushTimeout.Token).ConfigureAwait(false);
+				finalFlushTimedOut = finalFlushTimeout.IsCancellationRequested;
 			}
-			catch (TimeoutException)
+			catch (OperationCanceledException) when (finalFlushTimeout.IsCancellationRequested)
 			{
-				ObserveLateFinalFlushFailure(finalFlushTask);
+				finalFlushTimedOut = true;
+			}
 
-				Log.Warn("Workspace file watcher final dispose flush timed out after {Timeout} for '{Workspace}'.",
+			if (finalFlushTimedOut)
+			{
+				Log.Warn("Workspace file watcher final dispose flush exceeded {Timeout} for '{Workspace}'; cancellation was requested and disposal waited for the callback to unwind.",
 					DisposeFinalFlushTimeout,
 					_workspaceRootDirectoryPath);
 			}
@@ -219,26 +225,6 @@ public sealed partial class WorkspaceFileWatcher
 		{
 			Log.Debug(exception, "Failed to dispose workspace watcher resource '{ResourceName}'.", resourceName);
 		}
-	}
-
-	/// <summary>
-	/// Observes a timed-out final flush task so late faults are logged instead of going unobserved.
-	/// </summary>
-	/// <param name="finalFlushTask">The timed-out final flush task.</param>
-	private void ObserveLateFinalFlushFailure(Task finalFlushTask)
-	{
-		finalFlushTask.ContinueWith(task =>
-			{
-				if (task.Exception is not null)
-				{
-					Log.Debug(task.Exception,
-						"Workspace file watcher final dispose flush completed after timing out with an error for '{Workspace}'.",
-						_workspaceRootDirectoryPath);
-				}
-			},
-			CancellationToken.None,
-			TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted,
-			TaskScheduler.Default);
 	}
 
 	[Obsolete("For testing purposes only.")]

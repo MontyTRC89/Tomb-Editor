@@ -3,7 +3,7 @@ namespace TombLib.LanguageServer.Lua;
 /// <summary>
 /// Builds the client-capabilities payload advertised to the bundled Lua language server during initialization.
 /// </summary>
-public static class LuaLanguageServerClientCapabilitiesFactory
+internal static class LuaLanguageServerClientCapabilitiesFactory
 {
 	private static readonly string[] SupportedDocumentationFormats = ["markdown", "plaintext"];
 
@@ -25,7 +25,7 @@ public static class LuaLanguageServerClientCapabilitiesFactory
 	/// Builds LuaLS-specific client capability advertisement for the initialize request.
 	/// </summary>
 	/// <returns>An anonymous capabilities object serialized into the initialize request.</returns>
-	public static object Create()
+	internal static object Create()
 	{
 		return new
 		{

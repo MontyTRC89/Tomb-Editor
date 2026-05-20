@@ -438,9 +438,10 @@ public class WorkspaceFileWatcherTests
 		var dispatchStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var allowFirstDispatchToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var finalFlushStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-		var allowFinalFlushToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var finalFlushExited = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		int finalFlushCancellationObserved = 0;
 
-		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, _) =>
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, async (_, cancellationToken) =>
 		{
 			if (!dispatchStarted.Task.IsCompleted)
 			{
@@ -450,7 +451,22 @@ public class WorkspaceFileWatcherTests
 			}
 
 			finalFlushStarted.TrySetResult(true);
-			await allowFinalFlushToFinish.Task.ConfigureAwait(false);
+
+			using CancellationTokenRegistration cancellationRegistration = cancellationToken.Register(
+				() => Interlocked.Exchange(ref finalFlushCancellationObserved, 1));
+
+			try
+			{
+				await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken).ConfigureAwait(false);
+			}
+			catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+			{
+				Interlocked.Exchange(ref finalFlushCancellationObserved, 1);
+			}
+			finally
+			{
+				finalFlushExited.TrySetResult(true);
+			}
 		}, watchSpecifications);
 
 		string filePath = Path.Combine(workspaceRoot, "test.lua");
@@ -467,7 +483,54 @@ public class WorkspaceFileWatcherTests
 		await finalFlushStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 		await Task.WhenAll(dispatchTask, disposeTask.WaitAsync(TimeSpan.FromSeconds(5))).ConfigureAwait(false);
 
-		allowFinalFlushToFinish.TrySetResult(true);
+		Assert.IsTrue(finalFlushExited.Task.IsCompleted);
+		Assert.AreEqual(1, Volatile.Read(ref finalFlushCancellationObserved));
+	}
+
+	[TestMethod]
+	public async Task ReportErrorForTest_WithPendingChanges_WaitsForFailureHandlerBeforeRecoveryDispatch()
+	{
+		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherRecoveryOrdering_");
+		string workspaceRoot = workspace.DirectoryPath;
+		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
+		var failureHandlerEntered = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var allowFailureHandlerToFinish = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var recoveryDispatchStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		int dispatchObservedBeforeFailureHandlerFinished = 0;
+
+		await using var watcher = new WorkspaceFileWatcher(
+			workspaceRoot,
+			(_, _) =>
+			{
+				if (!allowFailureHandlerToFinish.Task.IsCompleted)
+					Interlocked.Exchange(ref dispatchObservedBeforeFailureHandlerFinished, 1);
+
+				recoveryDispatchStarted.TrySetResult(true);
+				return Task.CompletedTask;
+			},
+			watchSpecifications,
+			(_, _) =>
+			{
+				failureHandlerEntered.TrySetResult(true);
+				allowFailureHandlerToFinish.Task.GetAwaiter().GetResult();
+			});
+
+		Assert.IsTrue(watcher.Start());
+
+		QueueChangeForTest(watcher, Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
+		Task errorTask = Task.Run(() => ReportErrorForTest(watcher, new IOException("Simulated watcher failure.")));
+
+		await failureHandlerEntered.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+
+		Task completedTask = await Task.WhenAny(recoveryDispatchStarted.Task, Task.Delay(TimeSpan.FromMilliseconds(200))).ConfigureAwait(false);
+		Assert.AreNotSame(recoveryDispatchStarted.Task, completedTask);
+		Assert.AreEqual(0, Volatile.Read(ref dispatchObservedBeforeFailureHandlerFinished));
+
+		allowFailureHandlerToFinish.TrySetResult(true);
+
+		await errorTask.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+		await recoveryDispatchStarted.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+		Assert.AreEqual(0, Volatile.Read(ref dispatchObservedBeforeFailureHandlerFinished));
 	}
 
 	[TestMethod]
@@ -487,6 +550,27 @@ public class WorkspaceFileWatcherTests
 		QueueChangeForTest(watcher, Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
 
 		watcher.Dispose();
+
+		Assert.IsNull(dispatchedBatch);
+	}
+
+	[TestMethod]
+	public void DisposeWithoutFinalFlush_WhenPendingChangesExistAndNoDispatchIsActive_DropsBufferedBatch()
+	{
+		using var workspace = new TemporaryWorkspaceRoot("LuaWatcherDisposeNoFlushPending_");
+		string workspaceRoot = workspace.DirectoryPath;
+		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
+		FileChangeBatch? dispatchedBatch = null;
+
+		using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
+		{
+			dispatchedBatch = batch;
+			return Task.CompletedTask;
+		}, watchSpecifications);
+
+		QueueChangeForTest(watcher, Path.Combine(workspaceRoot, "test.lua"), FileChangeKind.Changed);
+
+		watcher.DisposeWithoutFinalFlush();
 
 		Assert.IsNull(dispatchedBatch);
 	}

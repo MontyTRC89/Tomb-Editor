@@ -15,22 +15,42 @@ public sealed partial class LanguageServerClient
 	{
 		long generation = Interlocked.Increment(ref _transportGeneration);
 
-		var session = new LanguageServerTransportSession(generation,
+		return new LanguageServerTransportSession(generation,
 			process,
 			process.StandardOutput.BaseStream,
 			process.StandardInput.BaseStream);
+	}
+
+	/// <summary>
+	/// Configures the transport objects and process callbacks for one session before it becomes active.
+	/// </summary>
+	/// <param name="session">The session to configure.</param>
+	private void ConfigureTransportSession(LanguageServerTransportSession session)
+	{
+		Process? process = session.Process;
 
 		session.MessageHandler = CreateMessageHandler(session.ServerInputStream, session.ServerOutputStream);
-		session.RpcTarget = new LanguageServerClientRpcTarget(this, generation);
+		session.RpcTarget = new LanguageServerClientRpcTarget(this, session.Generation);
 		session.JsonRpc = CreateJsonRpc(session);
 		session.RpcCompletionTask = session.JsonRpc.Completion;
 
 		session.ProcessExitedHandler = (_, _) => Process_Exited(session);
-		process.Exited += session.ProcessExitedHandler;
-		session.StderrLoopTask = Task.Run(() => ReadStandardErrorLoopAsync(session), CancellationToken.None);
-		session.JsonRpc.StartListening();
 
-		return session;
+		if (process is not null)
+			process.Exited += session.ProcessExitedHandler;
+	}
+
+	/// <summary>
+	/// Starts the JSON-RPC listener and background stderr loop for one configured session.
+	/// </summary>
+	/// <param name="session">The configured session to start.</param>
+	private void StartTransportSession(LanguageServerTransportSession session)
+	{
+		JsonRpc jsonRpc = session.JsonRpc
+			?? throw new InvalidOperationException("The language server transport session is missing a JSON-RPC transport.");
+
+		jsonRpc.StartListening();
+		session.StderrLoopTask = Task.Run(() => ReadStandardErrorLoopAsync(session), CancellationToken.None);
 	}
 
 	/// <summary>

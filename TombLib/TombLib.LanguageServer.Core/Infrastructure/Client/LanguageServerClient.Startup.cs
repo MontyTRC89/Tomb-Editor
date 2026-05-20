@@ -70,8 +70,10 @@ public sealed partial class LanguageServerClient
 
 			LanguageServerTransportSession session = CreateTransportSession(startedProcess);
 			startedSession = session;
+			ConfigureTransportSession(session);
 			SetActiveSession(session);
 			sessionActivated = true;
+			StartTransportSession(session);
 
 			Log.Info("Activated language server transport generation {Generation} for workspace '{Workspace}'; completing initialization handshake.",
 				session.Generation,

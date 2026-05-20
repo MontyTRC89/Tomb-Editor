@@ -12,31 +12,37 @@ internal static class LuaMarkupTextHelper
 	/// </summary>
 	/// <param name="element">The raw markup payload.</param>
 	/// <returns>The normalized text, or <see langword="null"/> when the payload is empty.</returns>
-	public static string? ExtractMarkupText(JsonElement element)
+	internal static string? ExtractMarkupText(JsonElement element)
 		=> NormalizeMarkupText(MarkupContentReader.ExtractContent(element).Text);
 
 	/// <summary>
 	/// Normalizes plain or markdown-like text emitted by LuaLS into the editor's display format.
+	/// Standalone fenced code-block marker lines are removed, while inline backticks are preserved.
 	/// </summary>
 	/// <param name="text">The text to normalize.</param>
 	/// <returns>The normalized text, or <see langword="null"/> when the input is blank.</returns>
-	public static string? NormalizeMarkupText(string? text)
+	internal static string? NormalizeMarkupText(string? text)
 	{
 		if (string.IsNullOrWhiteSpace(text))
 			return null;
 
-		string normalized = text
-			.Replace("```lua", string.Empty, StringComparison.OrdinalIgnoreCase)
-			.Replace("```", string.Empty, StringComparison.Ordinal)
-			.Replace("`", string.Empty, StringComparison.Ordinal)
+		string[] lines = [.. text
 			.Replace("\r", string.Empty, StringComparison.Ordinal)
-			.Trim();
-
-		string[] lines = [.. normalized
 			.Split('\n')
 			.Select(line => line.TrimEnd())];
 
-		return string.Join(Environment.NewLine, lines).Trim();
+		var normalizedLines = new List<string>(lines.Length);
+
+		for (int i = 0; i < lines.Length; i++)
+		{
+			if (IsFenceLine(lines[i]))
+				continue;
+
+			normalizedLines.Add(lines[i]);
+		}
+
+		string normalized = string.Join(Environment.NewLine, normalizedLines).Trim();
+		return string.IsNullOrWhiteSpace(normalized) ? null : normalized;
 	}
 
 	/// <summary>
@@ -44,6 +50,30 @@ internal static class LuaMarkupTextHelper
 	/// </summary>
 	/// <param name="text">The markdown text to normalize.</param>
 	/// <returns>The normalized markdown text.</returns>
-	public static string? NormalizeMarkdownText(string? text)
+	internal static string? NormalizeMarkdownText(string? text)
 		=> MarkupContentReader.NormalizeMarkdownText(text);
+
+	/// <summary>
+	/// Reports whether one trimmed line is a standalone markdown fence marker.
+	/// </summary>
+	private static bool IsFenceLine(string line)
+	{
+		string trimmedLine = line.Trim();
+
+		if (!trimmedLine.StartsWith("```", StringComparison.Ordinal))
+			return false;
+
+		if (trimmedLine.Length == 3)
+			return true;
+
+		for (int i = 3; i < trimmedLine.Length; i++)
+		{
+			char character = trimmedLine[i];
+
+			if (!char.IsLetterOrDigit(character) && character != '_' && character != '-' && character != '.')
+				return false;
+		}
+
+		return true;
+	}
 }

@@ -11,6 +11,7 @@ public sealed partial class DocumentOperationScheduler
 	/// <returns>A task that represents the active update.</returns>
 	public Task QueueLatestUpdateAsync(string filePath, Func<CancellationToken, Task> operation)
 	{
+		string normalizedFilePath = NormalizeDocumentPath(filePath);
 		var replacementRegistration = new QueuedUpdateRegistration(new CancellationTokenSource());
 
 		QueuedUpdateRegistration? previousRegistration = null;
@@ -19,25 +20,25 @@ public sealed partial class DocumentOperationScheduler
 
 		lock (_syncRoot)
 		{
-			Task previousOperation = _queuedLatestUpdateOperations.TryGetValue(filePath, out Task? queuedOperation)
+			Task previousOperation = _queuedLatestUpdateOperations.TryGetValue(normalizedFilePath, out Task? queuedOperation)
 				? queuedOperation
 				: Task.CompletedTask;
 
-			barrierOperation = GetQueuedPerDocumentBarrierUnderLock(filePath);
+			barrierOperation = GetQueuedPerDocumentBarrierUnderLock(normalizedFilePath);
 
-			if (_queuedDocumentUpdates.TryGetValue(filePath, out QueuedUpdateRegistration? existingRegistration))
+			if (_queuedDocumentUpdates.TryGetValue(normalizedFilePath, out QueuedUpdateRegistration? existingRegistration))
 				previousRegistration = existingRegistration;
 
-			_queuedDocumentUpdates[filePath] = replacementRegistration;
+			_queuedDocumentUpdates[normalizedFilePath] = replacementRegistration;
 
-			scheduledOperation = ExecuteQueuedUpdateAsync(filePath, previousOperation, barrierOperation, replacementRegistration, operation);
-			_queuedLatestUpdateOperations[filePath] = scheduledOperation;
+			scheduledOperation = ExecuteQueuedUpdateAsync(normalizedFilePath, previousOperation, barrierOperation, replacementRegistration, operation);
+			_queuedLatestUpdateOperations[normalizedFilePath] = scheduledOperation;
 		}
 
 		CancelSupersededQueuedUpdate(previousRegistration);
 
 		scheduledOperation.ContinueWith(
-			_ => ClearQueuedLatestUpdateOperation(filePath, scheduledOperation),
+			_ => ClearQueuedLatestUpdateOperation(normalizedFilePath, scheduledOperation),
 			CancellationToken.None,
 			TaskContinuationOptions.ExecuteSynchronously,
 			TaskScheduler.Default);
@@ -51,14 +52,15 @@ public sealed partial class DocumentOperationScheduler
 	/// <param name="filePath">The document path whose queued update should be canceled.</param>
 	public void CancelQueuedUpdate(string filePath)
 	{
+		string normalizedFilePath = NormalizeDocumentPath(filePath);
 		QueuedUpdateRegistration? registration;
 
 		lock (_syncRoot)
 		{
-			if (!_queuedDocumentUpdates.TryGetValue(filePath, out registration))
+			if (!_queuedDocumentUpdates.TryGetValue(normalizedFilePath, out registration))
 				return;
 
-			_queuedDocumentUpdates.Remove(filePath);
+			_queuedDocumentUpdates.Remove(normalizedFilePath);
 		}
 
 		CancelQueuedUpdate(registration);

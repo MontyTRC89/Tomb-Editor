@@ -3,7 +3,7 @@ namespace TombLib.LanguageServer.Lua;
 /// <summary>
 /// Builds the workspace-scoped configuration payload sent to the bundled Lua language server.
 /// </summary>
-public static class LuaLanguageServerSettingsFactory
+internal static class LuaLanguageServerSettingsFactory
 {
 	private const string LuaRuntimeVersion = "Lua 5.4";
 	private const string DisabledSettingValue = "Disable";
@@ -14,7 +14,7 @@ public static class LuaLanguageServerSettingsFactory
 	/// </summary>
 	/// <param name="workspaceRootDirectoryPath">The root directory of the current Lua script workspace.</param>
 	/// <returns>An anonymous settings object serialized into the LuaLS configuration request.</returns>
-	public static object Create(string workspaceRootDirectoryPath)
+	internal static object Create(string workspaceRootDirectoryPath)
 	{
 		string apiDirectory = Path.Combine(workspaceRootDirectoryPath, ".API");
 		string[] library = Directory.Exists(apiDirectory) ? [apiDirectory] : [];

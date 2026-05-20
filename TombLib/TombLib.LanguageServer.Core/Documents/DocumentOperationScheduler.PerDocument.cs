@@ -12,6 +12,7 @@ public sealed partial class DocumentOperationScheduler
 	/// <returns>A task that completes with the queued operation result.</returns>
 	public Task<TResult> EnqueuePerDocumentAsync<TResult>(string filePath, Func<CancellationToken, Task<TResult>> operation, CancellationToken cancellationToken)
 	{
+		string normalizedFilePath = NormalizeDocumentPath(filePath);
 		var completionSource = new TaskCompletionSource<TResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 		Task scheduledOperation;
@@ -19,18 +20,18 @@ public sealed partial class DocumentOperationScheduler
 
 		lock (_syncRoot)
 		{
-			Task previousOperation = _queuedPerDocumentOperations.TryGetValue(filePath, out Task? queuedOperation)
+			Task previousOperation = _queuedPerDocumentOperations.TryGetValue(normalizedFilePath, out Task? queuedOperation)
 				? queuedOperation
 				: Task.CompletedTask;
 
-			barrierOperation = GetQueuedPerDocumentBarrierUnderLock(filePath);
+			barrierOperation = GetQueuedPerDocumentBarrierUnderLock(normalizedFilePath);
 
 			scheduledOperation = RunQueuedOperationAsync(previousOperation, barrierOperation, operation, completionSource, cancellationToken);
-			_queuedPerDocumentOperations[filePath] = scheduledOperation;
+			_queuedPerDocumentOperations[normalizedFilePath] = scheduledOperation;
 		}
 
 		scheduledOperation.ContinueWith(
-			_ => ClearQueuedPerDocumentOperation(filePath, scheduledOperation),
+			_ => ClearQueuedPerDocumentOperation(normalizedFilePath, scheduledOperation),
 			CancellationToken.None,
 			TaskContinuationOptions.ExecuteSynchronously,
 			TaskScheduler.Default);
@@ -54,6 +55,9 @@ public sealed partial class DocumentOperationScheduler
 		Func<CancellationToken, Task<TResult>> operation,
 		CancellationToken cancellationToken)
 	{
+		string normalizedFirstFilePath = NormalizeDocumentPath(firstFilePath);
+		string normalizedSecondFilePath = NormalizeDocumentPath(secondFilePath);
+
 		var completionSource = new TaskCompletionSource<TResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var barrierSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -62,14 +66,14 @@ public sealed partial class DocumentOperationScheduler
 		lock (_syncRoot)
 		{
 			Task previousGlobalOperation = _queuedGlobalOperation;
-			Task[] queuedOperations = GetQueuedOperationsSnapshotUnderLock(firstFilePath, secondFilePath);
+			Task[] queuedOperations = GetQueuedOperationsSnapshotUnderLock(normalizedFirstFilePath, normalizedSecondFilePath);
 
-			SetQueuedPerDocumentBarrierUnderLock(firstFilePath, barrierSource.Task);
-			SetQueuedPerDocumentBarrierUnderLock(secondFilePath, barrierSource.Task);
+			SetQueuedPerDocumentBarrierUnderLock(normalizedFirstFilePath, barrierSource.Task);
+			SetQueuedPerDocumentBarrierUnderLock(normalizedSecondFilePath, barrierSource.Task);
 
 			scheduledOperation = RunExclusivePerDocumentOperationAsync(
-				firstFilePath,
-				secondFilePath,
+				normalizedFirstFilePath,
+				normalizedSecondFilePath,
 				previousGlobalOperation,
 				queuedOperations,
 				barrierSource,
@@ -91,7 +95,10 @@ public sealed partial class DocumentOperationScheduler
 	/// <returns>A task that completes when the queued operations have finished.</returns>
 	public async Task WaitForPerDocumentOperationsAsync(string firstFilePath, string secondFilePath)
 	{
-		Task[] queuedOperations = GetQueuedOperationsSnapshot(firstFilePath, secondFilePath, includeBarriers: true);
+		string normalizedFirstFilePath = NormalizeDocumentPath(firstFilePath);
+		string normalizedSecondFilePath = NormalizeDocumentPath(secondFilePath);
+
+		Task[] queuedOperations = GetQueuedOperationsSnapshot(normalizedFirstFilePath, normalizedSecondFilePath, includeBarriers: true);
 
 		for (int i = 0; i < queuedOperations.Length; i++)
 			await WaitForQueuedOperationAsync(queuedOperations[i]).ConfigureAwait(false);

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace TombLib.Scripting.Lua.Objects;
 
 /// <summary>

@@ -1,14 +1,17 @@
+using NLog;
 using System.Diagnostics.CodeAnalysis;
 using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.LanguageServer.Lua;
 
-public static partial class LuaLanguageServerResponseParser
+internal static partial class LuaLanguageServerResponseParser
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	/// <summary>
 	/// Parses a workspace edit from a LuaLS rename response.
 	/// </summary>
-	public static LuaWorkspaceEdit? ParseWorkspaceEdit(WorkspaceEditResponse? response)
+	internal static LuaWorkspaceEdit? ParseWorkspaceEdit(WorkspaceEditResponse? response)
 	{
 		if (response is null)
 			return null;
@@ -65,7 +68,16 @@ public static partial class LuaLanguageServerResponseParser
 			WorkspaceDocumentChangePayload documentChange = documentChanges[i];
 
 			if (documentChange.IsResourceOperation)
-				return false;
+			{
+				Log.Warn(
+					"Ignoring Lua rename workspace edit because it contains unsupported resource operation '{Kind}' (uri: '{Uri}', oldUri: '{OldUri}', newUri: '{NewUri}').",
+					documentChange.Kind,
+					documentChange.Uri ?? string.Empty,
+					documentChange.OldUri ?? string.Empty,
+					documentChange.NewUri ?? string.Empty);
+
+				return false; // Resource operations are currently unsupported by the editor-side rename flow, so fail closed.
+			}
 
 			if (!LanguageServerPathHelper.TryGetFilePath(documentChange.TextDocument?.Uri, out string filePath))
 				continue;
@@ -99,6 +111,7 @@ public static partial class LuaLanguageServerResponseParser
 		textEdit = new LuaTextEdit(
 			new LuaDocumentRange(range.Value.StartLineNumber, range.Value.StartColumnNumber, range.Value.EndLineNumber, range.Value.EndColumnNumber),
 			edit.NewText ?? string.Empty);
+
 		return true;
 	}
 

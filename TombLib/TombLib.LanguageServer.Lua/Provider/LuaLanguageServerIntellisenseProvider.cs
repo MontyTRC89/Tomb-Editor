@@ -27,16 +27,18 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 
 	private readonly string _workspaceRootDirectoryPath;
 	private readonly ILanguageServerClient? _client;
-	private readonly DocumentOperationScheduler _documentScheduler = new();
-	private readonly LuaDocumentStore _documents = new();
-	private readonly object _startupStateSyncRoot = new();
-	private readonly object _requestTimeoutSyncRoot = new();
-	private readonly ConcurrentDictionary<string, CancellationTokenSource> _semanticTokenRequests = new(StringComparer.OrdinalIgnoreCase);
-	private readonly SemaphoreSlim _startLock = new(1, 1);
-	private readonly CancellationTokenSource _disposeCts = new();
 	private readonly TimeSpan _requestTimeout;
 	private readonly int _requestTimeoutRestartThreshold;
 	private readonly LuaWorkspaceChangeCoordinator _workspaceChanges;
+
+	private readonly DocumentOperationScheduler _documentScheduler = new();
+	private readonly LuaDocumentStore _documents = new();
+	private readonly ConcurrentDictionary<string, CancellationTokenSource> _semanticTokenRequests = new(StringComparer.OrdinalIgnoreCase);
+
+	private readonly object _startupStateSyncRoot = new();
+	private readonly object _requestTimeoutSyncRoot = new();
+	private readonly SemaphoreSlim _startLock = new(1, 1);
+	private readonly CancellationTokenSource _disposeCts = new();
 
 	private bool _startupSucceeded;
 	private int _consecutiveStartupFailures;
@@ -49,9 +51,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 	private int _disposeStarted;
 	private volatile bool _isDisposed;
 
-	/// <summary>
-	/// Gets a value indicating whether IntelliSense requests can currently be served.
-	/// </summary>
 	public bool IsAvailable
 	{
 		get
@@ -64,37 +63,11 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 		}
 	}
 
-	/// <summary>
-	/// Gets a value indicating whether reference requests are supported by the active Lua language server.
-	/// </summary>
 	public bool SupportsReferences => !_isDisposed && _client is not null && _client.SupportsReferences;
-
-	/// <summary>
-	/// Gets a value indicating whether rename requests are supported by the active Lua language server.
-	/// </summary>
 	public bool SupportsRename => !_isDisposed && _client is not null && _client.SupportsRename;
-
-	/// <summary>
-	/// Gets a value indicating whether formatting requests are supported by the active Lua language server.
-	/// </summary>
 	public bool SupportsFormatting => !_isDisposed && _client is not null && _client.SupportsFormatting;
 
-	/// <summary>
-	/// Occurs when diagnostics for a tracked document change.
-	/// </summary>
-	/// <remarks>
-	/// Diagnostics notifications may be delivered from background work. Consumers that touch UI controls must marshal to
-	/// the UI thread. Once disposal begins, this event will not be raised again.
-	/// </remarks>
 	public event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated;
-
-	/// <summary>
-	/// Occurs when semantic tokens for a tracked document change.
-	/// </summary>
-	/// <remarks>
-	/// Semantic-token notifications may be delivered from background work. Consumers that touch UI controls must marshal
-	/// to the UI thread. Once disposal begins, this event will not be raised again.
-	/// </remarks>
 	public event Action<string, IReadOnlyList<LuaSemanticToken>>? SemanticTokensUpdated;
 
 	/// <summary>
@@ -172,13 +145,10 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 		string workspaceRootDirectoryPath,
 		Func<FileChangeBatch, CancellationToken, Task> dispatchAsync,
 		Action<WorkspaceFileWatcher, Exception?> watcherFailed)
-		=> new(workspaceRootDirectoryPath, dispatchAsync, WorkspaceWatchSpecifications, watcherFailed);
+	{
+		return new(workspaceRootDirectoryPath, dispatchAsync, WorkspaceWatchSpecifications, watcherFailed);
+	}
 
-	/// <summary>
-	/// Gets the latest diagnostics cached for the specified document.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <returns>The cached diagnostics, or an empty list when none are available.</returns>
 	public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
 	{
 		if (_isDisposed)
@@ -190,11 +160,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 		return _documents.GetDiagnostics(normalizedFilePath);
 	}
 
-	/// <summary>
-	/// Gets the latest semantic tokens cached for the specified document.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <returns>The cached semantic tokens, or an empty list when none are available.</returns>
 	public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
 	{
 		if (_isDisposed)
@@ -206,11 +171,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 		return _documents.GetSemanticTokens(normalizedFilePath);
 	}
 
-	/// <summary>
-	/// Opens a document in the provider and synchronizes its current content with LuaLS.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The current document content.</param>
 	public void OpenDocument(string filePath, string content)
 	{
 		if (!LanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath))
@@ -225,11 +185,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 			CancellationToken.None), "Document open");
 	}
 
-	/// <summary>
-	/// Pushes updated content for a document that is already tracked by the provider.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The updated document content.</param>
 	public void UpdateDocument(string filePath, string content)
 	{
 		if (!LanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath))
@@ -238,10 +193,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 		ObserveBackgroundTask(QueueLatestDocumentUpdateAsync(normalizedFilePath, content), "Document change");
 	}
 
-	/// <summary>
-	/// Closes a tracked document and releases its server-side state when the last open reference disappears.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
 	public void CloseDocument(string filePath)
 	{
 		if (_isDisposed || _client is null || !LanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath))

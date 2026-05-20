@@ -12,27 +12,27 @@ internal sealed class LuaSemanticTokensCache
 	/// <summary>
 	/// Gets the latest decoded semantic tokens.
 	/// </summary>
-	public IReadOnlyList<LuaSemanticToken> Tokens { get; private set; } = EmptyTokens;
+	internal IReadOnlyList<LuaSemanticToken> Tokens { get; private set; } = EmptyTokens;
 
 	/// <summary>
 	/// Gets the synchronized document version associated with the cached semantic tokens.
 	/// </summary>
-	public int Version { get; private set; }
+	internal int Version { get; private set; }
 
 	/// <summary>
 	/// Gets the previously cached raw semantic-token data stream used for delta requests.
 	/// </summary>
-	public int[]? PreviousData { get; private set; }
+	internal int[]? PreviousData { get; private set; }
 
 	/// <summary>
 	/// Gets the previously cached semantic-token result identifier used for delta requests.
 	/// </summary>
-	public string? PreviousResultId { get; private set; }
+	internal string? PreviousResultId { get; private set; }
 
 	/// <summary>
 	/// Clears the token cache and all delta-request state.
 	/// </summary>
-	public void Clear()
+	internal void Clear()
 	{
 		Tokens = EmptyTokens;
 		Version = 0;
@@ -44,13 +44,13 @@ internal sealed class LuaSemanticTokensCache
 	/// Returns the current semantic-token delta state used for incremental refreshes.
 	/// </summary>
 	/// <returns>The current delta-request state.</returns>
-	public SemanticTokensDeltaState GetDeltaState()
+	internal SemanticTokensDeltaState GetDeltaState()
 		=> new(PreviousResultId, CloneData(PreviousData));
 
 	/// <summary>
 	/// Drops server-side synchronization state while preserving the last decoded token list.
 	/// </summary>
-	public void InvalidateServerSynchronization()
+	internal void InvalidateServerSynchronization()
 	{
 		Version = 0;
 		PreviousData = null;
@@ -62,7 +62,7 @@ internal sealed class LuaSemanticTokensCache
 	/// </summary>
 	/// <param name="resultId">The server-provided result identifier.</param>
 	/// <param name="data">The raw semantic-token integer stream.</param>
-	public void StoreDeltaState(string? resultId, int[]? data)
+	internal void StoreDeltaState(string? resultId, int[]? data)
 	{
 		PreviousResultId = resultId;
 		PreviousData = CloneData(data);
@@ -74,7 +74,7 @@ internal sealed class LuaSemanticTokensCache
 	/// <param name="version">The synchronized document version.</param>
 	/// <param name="semanticTokens">The decoded semantic tokens.</param>
 	/// <returns><see langword="true"/> when the token set was stored; otherwise, <see langword="false"/>.</returns>
-	public bool TryStore(int version, IReadOnlyList<LuaSemanticToken> semanticTokens)
+	internal bool TryStore(int version, IReadOnlyList<LuaSemanticToken> semanticTokens)
 	{
 		if (!LuaDocumentVersionHelper.TryAccept(Version, version, out int acceptedVersion))
 			return false;
@@ -89,7 +89,9 @@ internal sealed class LuaSemanticTokensCache
 		=> data is null ? null : [.. data];
 
 	private static IReadOnlyList<LuaSemanticToken> CreateReadOnlyTokens(IReadOnlyList<LuaSemanticToken>? semanticTokens)
-		=> semanticTokens is null || semanticTokens.Count == 0
+	{
+		return semanticTokens is null || semanticTokens.Count == 0
 			? EmptyTokens
 			: Array.AsReadOnly([.. semanticTokens]);
+	}
 }

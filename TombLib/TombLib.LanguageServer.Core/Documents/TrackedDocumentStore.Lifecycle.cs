@@ -9,9 +9,11 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// </summary>
 	public void ReleaseRequest(string filePath)
 	{
+		string normalizedFilePath = NormalizeTrackedFilePath(filePath);
+
 		lock (_syncRoot)
 		{
-			if (!_documents.TryGetValue(filePath, out TTrackedDocumentState? state))
+			if (!_documents.TryGetValue(normalizedFilePath, out TTrackedDocumentState? state))
 				return;
 
 			state.References.ReleaseRequest();
@@ -27,9 +29,11 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// <returns><see langword="true"/> when the document was removed locally; otherwise, <see langword="false"/>.</returns>
 	public bool TryReleaseRequest(string filePath, out DocumentSnapshot? document)
 	{
+		string normalizedFilePath = NormalizeTrackedFilePath(filePath);
+
 		lock (_syncRoot)
 		{
-			if (!_documents.TryGetValue(filePath, out TTrackedDocumentState? state))
+			if (!_documents.TryGetValue(normalizedFilePath, out TTrackedDocumentState? state))
 			{
 				document = null;
 				return false;
@@ -45,7 +49,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 			}
 
 			document = state.IsOpen ? state.CreateSnapshot() : null;
-			_documents.Remove(filePath);
+			_documents.Remove(normalizedFilePath);
 			return true;
 		}
 	}
@@ -97,9 +101,11 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// <returns><see langword="true"/> when the document was removed locally; otherwise, <see langword="false"/>.</returns>
 	public bool TryClose(string filePath, out DocumentSnapshot? document)
 	{
+		string normalizedFilePath = NormalizeTrackedFilePath(filePath);
+
 		lock (_syncRoot)
 		{
-			if (!_documents.TryGetValue(filePath, out TTrackedDocumentState? state))
+			if (!_documents.TryGetValue(normalizedFilePath, out TTrackedDocumentState? state))
 			{
 				document = null;
 				return false;
@@ -121,7 +127,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 			}
 
 			document = state.IsOpen ? state.CreateSnapshot() : null;
-			_documents.Remove(filePath);
+			_documents.Remove(normalizedFilePath);
 			return true;
 		}
 	}

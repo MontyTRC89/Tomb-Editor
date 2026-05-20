@@ -2,12 +2,12 @@ using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.LanguageServer.Lua;
 
-public static partial class LuaLanguageServerResponseParser
+internal static partial class LuaLanguageServerResponseParser
 {
 	/// <summary>
 	/// Parses a definition location from a LuaLS definition response.
 	/// </summary>
-	public static LuaDefinitionLocation? ParseDefinitionLocation(DefinitionResponse response)
+	internal static LuaDefinitionLocation? ParseDefinitionLocation(DefinitionResponse response)
 	{
 		if (string.IsNullOrWhiteSpace(response.Uri)
 			|| !Uri.TryCreate(response.Uri, UriKind.Absolute, out Uri? parsedUri)

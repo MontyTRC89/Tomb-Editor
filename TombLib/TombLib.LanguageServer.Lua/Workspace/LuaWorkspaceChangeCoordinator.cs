@@ -19,14 +19,17 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 
 	private readonly string _workspaceApiDirectoryPath;
 	private readonly string _workspaceRootDirectoryPath;
+
 	private readonly Func<ILanguageServerClient?> _clientAccessor;
 	private readonly Func<bool> _isDisposedAccessor;
 	private readonly Func<CancellationToken, Task<bool>> _ensureStartedAsync;
 	private readonly Action<long> _markTransportUnavailable;
 	private readonly Action<WorkspaceWatcherFailure> _raiseWorkspaceWatcherFailed;
+
 	private readonly Func<string, Func<FileChangeBatch, CancellationToken, Task>, Action<WorkspaceFileWatcher, Exception?>, WorkspaceFileWatcher> _workspaceFileWatcherFactory;
 	private readonly WorkspaceFileChangeForwarder _workspaceFileChangeForwarder;
 	private readonly LuaWorkspaceSnapshotTracker _workspaceSnapshotTracker;
+
 	private readonly object _watcherSyncRoot = new();
 
 	private WorkspaceFileWatcher? _workspaceFileWatcher;
@@ -43,7 +46,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 	/// <param name="ensureStartedAsync">Starts the language server on demand before forwarding file changes.</param>
 	/// <param name="markTransportUnavailable">Marks one observed transport generation unhealthy after forwarding failures.</param>
 	/// <param name="raiseWorkspaceWatcherFailed">Reports unrecoverable watcher failures to the owner.</param>
-	public LuaWorkspaceChangeCoordinator(
+	internal LuaWorkspaceChangeCoordinator(
 		string workspaceRootDirectoryPath,
 		IReadOnlyList<WorkspaceWatchSpecification> watchSpecifications,
 		Func<string, Func<FileChangeBatch, CancellationToken, Task>, Action<WorkspaceFileWatcher, Exception?>, WorkspaceFileWatcher> workspaceFileWatcherFactory,
@@ -65,14 +68,35 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		_workspaceFileChangeForwarder = new WorkspaceFileChangeForwarder(
 			// Buffering is reserved for temporary startup or transport failures after a client exists.
 			// When there is no client or the provider is disposed, workspace changes are intentionally ignored.
+			// This keeps external-change replay scoped to recoverable transport/startup gaps instead of pre-start noise.
+			// Unexpected forwarding failures are intentionally dropped by the forwarder to avoid ambiguous duplicate
+			// delivery after partial observation; watcher recovery can still reconcile missed filesystem state later.
 			() => _clientAccessor() is not null && !_isDisposedAccessor(),
 			_isDisposedAccessor,
 			_ensureStartedAsync,
 			static () => { },
-			exception => Log.Debug(exception,
-				"Failed to forward workspace file changes for '{Workspace}' to the Lua language server.",
-				_workspaceRootDirectoryPath),
-				bufferChangesWhileForwardingDisabled: false);
+			failure =>
+			{
+				string firstPath = string.IsNullOrWhiteSpace(failure.FirstPath) ? "<unknown>" : failure.FirstPath;
+
+				if (failure.WasDropped)
+				{
+					Log.Warn(failure.Exception,
+						"Dropped {BatchCount} Lua workspace file change(s) for '{Workspace}' after an unexpected forwarding failure. First path: '{FirstPath}'.",
+						failure.BatchCount,
+						_workspaceRootDirectoryPath,
+						firstPath);
+				}
+				else
+				{
+					Log.Debug(failure.Exception,
+						"Failed to forward {BatchCount} Lua workspace file change(s) for '{Workspace}' starting at '{FirstPath}'; the batch was buffered for replay.",
+						failure.BatchCount,
+						_workspaceRootDirectoryPath,
+						firstPath);
+				}
+			},
+			bufferChangesWhileForwardingDisabled: false);
 	}
 
 	/// <summary>
@@ -90,7 +114,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 	/// <summary>
 	/// Starts the external workspace watcher when the language-server client is available.
 	/// </summary>
-	public void EnsureWorkspaceFileWatcherStarted()
+	internal void EnsureWorkspaceFileWatcherStarted()
 	{
 		WorkspaceFileWatcher? watcherToDispose = null;
 		Exception? startupException = null;
@@ -132,7 +156,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 	/// </summary>
 	/// <param name="batch">The coalesced file change batch.</param>
 	/// <param name="cancellationToken">Cancels the forwarding operation.</param>
-	public async Task DispatchWorkspaceFileChangesAsync(FileChangeBatch batch, CancellationToken cancellationToken)
+	internal async Task DispatchWorkspaceFileChangesAsync(FileChangeBatch batch, CancellationToken cancellationToken)
 	{
 		if (_clientAccessor() is null || _isDisposedAccessor() || batch.Count == 0)
 			return;
@@ -160,7 +184,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 	/// Replays any buffered workspace changes once the language server is ready again.
 	/// </summary>
 	/// <param name="cancellationToken">Cancels the replay operation.</param>
-	public async Task ReplayDeferredWorkspaceFileChangesAsync(CancellationToken cancellationToken)
+	internal async Task ReplayDeferredWorkspaceFileChangesAsync(CancellationToken cancellationToken)
 	{
 		if (_clientAccessor() is null || _isDisposedAccessor())
 			return;
@@ -277,6 +301,9 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 	private bool TryRestartWorkspaceFileWatcher(WorkspaceFileWatcher failedWatcher)
 		=> RecoverWorkspaceFileWatcher(failedWatcher) == WorkspaceWatcherRecoveryResult.Recovered;
 
+	/// <summary>
+	/// Attempts to replace a failed watcher, reconcile any missed tracked changes, and classify the recovery outcome.
+	/// </summary>
 	private WorkspaceWatcherRecoveryResult RecoverWorkspaceFileWatcher(WorkspaceFileWatcher failedWatcher)
 	{
 		bool watcherRecovered = false;
@@ -289,6 +316,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		Dictionary<string, LuaWorkspaceSnapshotEntry>? previousSnapshot = null;
 		Dictionary<string, LuaWorkspaceSnapshotEntry>? currentSnapshot = null;
 
+		// Decide under the lock whether recovery is needed and, if so, capture the snapshots required for reconciliation.
 		lock (_watcherSyncRoot)
 		{
 			if (!ReferenceEquals(_workspaceFileWatcher, failedWatcher))
@@ -327,6 +355,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			}
 		}
 
+		// Dispose watcher instances outside the lock so recovery bookkeeping stays responsive.
 		DisposeWatcher(failedWatcherToDispose, "Failed to dispose a Lua workspace file watcher while recovering from a watcher error.", flushPendingChanges: false);
 		DisposeWatcher(replacementWatcherToDispose, "Failed to dispose a Lua workspace file watcher while recovering from a watcher error.", flushPendingChanges: false);
 
@@ -334,6 +363,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		{
 			Log.Info("Lua workspace watching recovered successfully for '{Workspace}'.", _workspaceRootDirectoryPath);
 
+			// Reconcile any tracked changes that may have happened while the watcher was unavailable.
 			if (replacementWatcherStarted && previousSnapshot is not null && currentSnapshot is not null)
 				ObserveBackgroundTask(ReconcileWorkspaceSnapshotAsync(previousSnapshot, currentSnapshot), "Lua workspace watcher recovery reconciliation");
 
@@ -349,6 +379,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			return WorkspaceWatcherRecoveryResult.Unavailable;
 		}
 
+		// Log startup failures separately so the caller can surface the right watcher-failure message.
 		if (startupFailed)
 		{
 			Log.Warn(startupException,
@@ -373,6 +404,9 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			"Lua IntelliSense will continue to work for files edited in the editor, but external workspace changes - such as Git pull updates, generated .API files, or .luarc changes - will not be forwarded until the watcher can be started successfully."));
 	}
 
+	/// <summary>
+	/// Replays the tracked workspace delta detected while the watcher was unavailable.
+	/// </summary>
 	private async Task ReconcileWorkspaceSnapshotAsync(
 		Dictionary<string, LuaWorkspaceSnapshotEntry> previousSnapshot,
 		Dictionary<string, LuaWorkspaceSnapshotEntry> currentSnapshot)
@@ -395,7 +429,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 
 	private void ObserveBackgroundTask(Task task, string operationName)
 	{
-		_ = task.ContinueWith(static (completedTask, state) =>
+		task.ContinueWith(static (completedTask, state) =>
 			{
 				if (completedTask.Exception is not { } exception)
 					return;

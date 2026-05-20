@@ -18,6 +18,9 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			await RefreshSemanticTokensAsync(documents[i], cancellationToken).ConfigureAwait(false);
 	}
 
+	/// <summary>
+	/// Refreshes semantic tokens for a tracked document, falling back to a full refresh when the cached delta chain is no longer usable.
+	/// </summary>
 	private async Task RefreshSemanticTokensAsync(DocumentSnapshot document, CancellationToken cancellationToken)
 	{
 		if (_client is null || !_client.SupportsSemanticTokensFull || _client.SemanticTokenTypes.Count == 0)
@@ -27,6 +30,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 		try
 		{
+			// Choose the cheapest request shape the cached token state can support.
 			SemanticTokensDeltaState deltaState = _documents.GetSemanticTokensDeltaState(document.FilePath);
 
 			bool useDelta = _client.SupportsSemanticTokensDelta
@@ -36,19 +40,32 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			SemanticTokensWireResponse? response = await SendSemanticTokensRequestAsync(document, deltaState.PreviousResultId, useDelta, effectiveToken)
 				.ConfigureAwait(false);
 
-			if (response is null || ShouldStopBackgroundSemanticTokensWork(effectiveToken))
+			if (response is null)
+			{
+				ClearSemanticTokensAfterFailure(document, effectiveToken);
+				return;
+			}
+
+			if (ShouldStopBackgroundSemanticTokensWork(effectiveToken))
 				return;
 
 			LuaSemanticTokensDecodeResult decodeResult = DecodeSemanticTokensResponse(response, document, deltaState.PreviousData, useDelta);
 
 			if (decodeResult.RetryWithFullRefresh)
 			{
+				// If the delta chain is broken, clear the cached delta state and request a full payload.
 				_documents.StoreSemanticTokensDeltaState(document.FilePath, null, null);
 
 				SemanticTokensWireResponse? fullResponse = await SendSemanticTokensRequestAsync(document, previousResultId: null, useDelta: false, effectiveToken)
 					.ConfigureAwait(false);
 
-				if (fullResponse is null || ShouldStopBackgroundSemanticTokensWork(effectiveToken))
+				if (fullResponse is null)
+				{
+					ClearSemanticTokensAfterFailure(document, effectiveToken);
+					return;
+				}
+
+				if (ShouldStopBackgroundSemanticTokensWork(effectiveToken))
 					return;
 
 				decodeResult = DecodeSemanticTokensResponse(fullResponse, document, previousData: null, deltaWasRequested: false);
@@ -57,6 +74,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			if (ShouldStopBackgroundSemanticTokensWork(effectiveToken))
 				return;
 
+			// Persist the accepted result and notify listeners only for the current document version.
 			_documents.StoreSemanticTokensDeltaState(document.FilePath, decodeResult.ResultId, decodeResult.Data);
 
 			if (!_documents.TryStoreSemanticTokens(document.FilePath, document.Version, decodeResult.Tokens))
@@ -74,15 +92,20 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		catch (IOException exception)
 		{
+			ClearSemanticTokensAfterFailure(document, effectiveToken);
+
 			Log.Debug(exception, "Lua semantic tokens request failed for '{FilePath}' due to a transport error; falling back to TextMate highlighting until the next sync.",
 				document.FilePath);
 		}
 		catch (ObjectDisposedException)
 		{
+			ClearSemanticTokensAfterFailure(document, effectiveToken);
 			// The client was torn down between scheduling and dispatch.
 		}
 		catch (Exception exception)
 		{
+			ClearSemanticTokensAfterFailure(document, effectiveToken);
+
 			Log.Warn(exception, "Lua semantic tokens request failed for '{FilePath}'; falling back to TextMate highlighting.",
 				document.FilePath);
 		}
@@ -94,6 +117,15 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 	private bool ShouldStopBackgroundSemanticTokensWork(CancellationToken cancellationToken)
 		=> _isDisposed || cancellationToken.IsCancellationRequested;
+
+	private void ClearSemanticTokensAfterFailure(DocumentSnapshot document, CancellationToken cancellationToken)
+	{
+		if (ShouldStopBackgroundSemanticTokensWork(cancellationToken))
+			return;
+
+		IReadOnlyList<LuaSemanticToken> semanticTokens = _documents.ClearSemanticTokens(document.FilePath);
+		RaiseSemanticTokensUpdated(document.FilePath, semanticTokens);
+	}
 
 	private Task<SemanticTokensWireResponse?> SendSemanticTokensRequestAsync(
 		DocumentSnapshot document,

@@ -3,12 +3,12 @@ using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.LanguageServer.Lua;
 
-public static partial class LuaLanguageServerResponseParser
+internal static partial class LuaLanguageServerResponseParser
 {
 	/// <summary>
 	/// Parses hover content from a LuaLS hover response.
 	/// </summary>
-	public static LuaHoverInfo? ParseHoverInfo(HoverResponse? response)
+	internal static LuaHoverInfo? ParseHoverInfo(HoverResponse? response)
 	{
 		if (response is null || response.Contents.ValueKind == JsonValueKind.Undefined)
 			return null;

@@ -129,4 +129,22 @@ public partial class LuaLanguageServerResponseParserTests
 		Assert.IsTrue(string.IsNullOrEmpty(content.Text));
 		Assert.IsFalse(content.IsMarkdown);
 	}
+
+	[TestMethod]
+	public void NormalizeMarkupText_PreservesInlineBackticksForPlainText()
+	{
+		string? normalized = LuaMarkupTextHelper.NormalizeMarkupText("Call `value` before `other`.");
+		Assert.AreEqual("Call `value` before `other`.", normalized);
+	}
+
+	[TestMethod]
+	public void NormalizeMarkupText_StripsFenceLinesButPreservesCodeContent()
+	{
+		string? normalized = LuaMarkupTextHelper.NormalizeMarkupText(
+			"Summary\n```lua\nlocal value = 1\n```\nTail");
+
+		Assert.AreEqual(
+			$"Summary{Environment.NewLine}local value = 1{Environment.NewLine}Tail",
+			normalized);
+	}
 }

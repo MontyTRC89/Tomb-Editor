@@ -1,3 +1,4 @@
+using NLog;
 using System.Text.Json;
 using TombLib.Scripting.Lua.Objects;
 
@@ -336,37 +337,69 @@ public partial class LuaLanguageServerResponseParserTests
 		string firstPath = Path.GetFullPath(@"C:\Workspace\Scripts\first.lua");
 		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\second.lua");
 
-		LuaWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(
-			DeserializeWorkspaceEditResponse(new
+		WorkspaceEditResponse? response = DeserializeWorkspaceEditResponse(new
+		{
+			documentChanges = new object[]
 			{
-				documentChanges = new object[]
+				new
 				{
-					new
+					textDocument = new { uri = new Uri(firstPath).AbsoluteUri },
+					edits = new object[]
 					{
-						textDocument = new { uri = new Uri(firstPath).AbsoluteUri },
-						edits = new object[]
+						new
 						{
-							new
+							range = new
 							{
-								range = new
-								{
-									start = new { line = 0, character = 0 },
-									end = new { line = 0, character = 5 }
-								},
-								newText = "local"
-							}
+								start = new { line = 0, character = 0 },
+								end = new { line = 0, character = 5 }
+							},
+							newText = "local"
 						}
-					},
-					new
-					{
-						kind = "rename",
-						oldUri = new Uri(firstPath).AbsoluteUri,
-						newUri = new Uri(secondPath).AbsoluteUri
 					}
+				},
+				new
+				{
+					kind = "rename",
+					oldUri = new Uri(firstPath).AbsoluteUri,
+					newUri = new Uri(secondPath).AbsoluteUri
 				}
-			}));
+			}
+		});
+
+		LuaWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
 
 		Assert.IsNull(workspaceEdit);
+	}
+
+	[TestMethod]
+	public void ParseWorkspaceEdit_LogsWarningWhenDocumentChangesContainUnsupportedResourceOperation()
+	{
+		string firstPath = Path.GetFullPath(@"C:\Workspace\Scripts\first.lua");
+		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\second.lua");
+
+		WorkspaceEditResponse? response = DeserializeWorkspaceEditResponse(new
+		{
+			documentChanges = new object[]
+			{
+				new
+				{
+					kind = "rename",
+					oldUri = new Uri(firstPath).AbsoluteUri,
+					newUri = new Uri(secondPath).AbsoluteUri
+				}
+			}
+		});
+
+		using var logScope = new NLogMemoryScope(LogLevel.Warn);
+
+		LuaWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
+
+		Assert.IsNull(workspaceEdit);
+		Assert.AreEqual(1, logScope.Logs.Count);
+		StringAssert.Contains(logScope.Logs[0], "unsupported resource operation");
+		StringAssert.Contains(logScope.Logs[0], "rename workspace edit");
+		StringAssert.Contains(logScope.Logs[0], "first.lua");
+		StringAssert.Contains(logScope.Logs[0], "second.lua");
 	}
 
 	[TestMethod]

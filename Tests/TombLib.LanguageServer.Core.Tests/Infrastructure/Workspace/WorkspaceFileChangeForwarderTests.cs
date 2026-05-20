@@ -142,7 +142,8 @@ public class WorkspaceFileChangeForwarderTests
 	public async Task DispatchAsync_WhenForwardingThrowsIOException_BuffersMarksTransportUnavailableAndReplays()
 	{
 		int markTransportUnavailableCallCount = 0;
-		Exception? loggedException = null;
+		int logForwardingFailureCallCount = 0;
+		WorkspaceFileForwardingFailure? loggedFailure = null;
 		IReadOnlyList<WorkspaceFileChange>? replayedChanges = null;
 
 		var forwarder = new WorkspaceFileChangeForwarder(
@@ -150,7 +151,11 @@ public class WorkspaceFileChangeForwarderTests
 			isDisposedAccessor: () => false,
 			ensureStartedAsync: _ => Task.FromResult(true),
 			markTransportUnavailable: () => markTransportUnavailableCallCount++,
-			logForwardingFailure: exception => loggedException = exception);
+			logForwardingFailure: failure =>
+			{
+				logForwardingFailureCallCount++;
+				loggedFailure = failure;
+			});
 
 		WorkspaceFileChange[] changes = [new(@"C:\Workspace\Scripts\test.lua", FileChangeKind.Changed)];
 
@@ -166,7 +171,12 @@ public class WorkspaceFileChangeForwarderTests
 			CancellationToken.None).ConfigureAwait(false);
 
 		Assert.AreEqual(1, markTransportUnavailableCallCount);
-		Assert.IsInstanceOfType(loggedException, typeof(IOException));
+		Assert.AreEqual(1, logForwardingFailureCallCount);
+		Assert.IsNotNull(loggedFailure);
+		Assert.IsInstanceOfType(loggedFailure.Value.Exception, typeof(IOException));
+		Assert.AreEqual(1, loggedFailure.Value.BatchCount);
+		Assert.AreEqual(changes[0].Path, loggedFailure.Value.FirstPath);
+		Assert.IsFalse(loggedFailure.Value.WasDropped);
 		Assert.IsNotNull(replayedChanges);
 		Assert.AreEqual(1, replayedChanges.Count);
 	}
@@ -256,17 +266,22 @@ public class WorkspaceFileChangeForwarderTests
 	}
 
 	[TestMethod]
-	public async Task DispatchAsync_WhenForwardingThrowsUnexpectedException_LogsAndDropsChangesWithoutReplay()
+	public async Task DispatchAsync_WhenForwardingThrowsUnexpectedException_LogsAndIntentionallyDropsChangesWithoutReplay()
 	{
 		int markTransportUnavailableCallCount = 0;
-		Exception? loggedException = null;
+		int logForwardingFailureCallCount = 0;
+		WorkspaceFileForwardingFailure? loggedFailure = null;
 
 		var forwarder = new WorkspaceFileChangeForwarder(
 			canForwardAccessor: () => true,
 			isDisposedAccessor: () => false,
 			ensureStartedAsync: _ => Task.FromResult(true),
 			markTransportUnavailable: () => markTransportUnavailableCallCount++,
-			logForwardingFailure: exception => loggedException = exception);
+			logForwardingFailure: failure =>
+			{
+				logForwardingFailureCallCount++;
+				loggedFailure = failure;
+			});
 
 		WorkspaceFileChange[] changes = [new(@"C:\Workspace\Scripts\test.lua", FileChangeKind.Changed)];
 
@@ -279,7 +294,12 @@ public class WorkspaceFileChangeForwarderTests
 			CancellationToken.None).ConfigureAwait(false);
 
 		Assert.AreEqual(0, markTransportUnavailableCallCount);
-		Assert.IsInstanceOfType(loggedException, typeof(InvalidOperationException));
+		Assert.AreEqual(1, logForwardingFailureCallCount);
+		Assert.IsNotNull(loggedFailure);
+		Assert.IsInstanceOfType(loggedFailure.Value.Exception, typeof(InvalidOperationException));
+		Assert.AreEqual(1, loggedFailure.Value.BatchCount);
+		Assert.AreEqual(changes[0].Path, loggedFailure.Value.FirstPath);
+		Assert.IsTrue(loggedFailure.Value.WasDropped);
 	}
 
 	[TestMethod]

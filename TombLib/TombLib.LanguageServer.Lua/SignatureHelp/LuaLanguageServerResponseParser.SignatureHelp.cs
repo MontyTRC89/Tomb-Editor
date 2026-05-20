@@ -4,12 +4,12 @@ using TombLib.Scripting.Lua.Objects;
 
 namespace TombLib.LanguageServer.Lua;
 
-public static partial class LuaLanguageServerResponseParser
+internal static partial class LuaLanguageServerResponseParser
 {
 	/// <summary>
 	/// Parses signature help metadata from a LuaLS signature-help response.
 	/// </summary>
-	public static LuaSignatureInfo? ParseSignatureHelp(SignatureHelpResponse? response)
+	internal static LuaSignatureInfo? ParseSignatureHelp(SignatureHelpResponse? response)
 	{
 		if (response?.Signatures is not { Length: > 0 } signatures)
 			return null;

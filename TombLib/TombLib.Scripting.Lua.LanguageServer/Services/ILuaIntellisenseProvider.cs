@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using TombLib.Scripting.Lua.Objects;
 using TombLib.Scripting.Objects;
 
@@ -57,49 +53,49 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <summary>
 	/// Gets the latest diagnostics known for a document.
 	/// </summary>
-	/// <param name="filePath">The path of the document.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <returns>The diagnostics currently cached for the document.</returns>
 	IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath);
 
 	/// <summary>
 	/// Gets the latest semantic tokens known for a document.
 	/// </summary>
-	/// <param name="filePath">The path of the document.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <returns>The semantic tokens currently cached for the document.</returns>
 	IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath);
 
 	/// <summary>
-	/// Opens a document in the provider and starts tracking its contents.
+	/// Opens a document in the provider, starts tracking its contents, and synchronizes it with the underlying language service when available.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The initial document content.</param>
 	void OpenDocument(string filePath, string content);
 
 	/// <summary>
-	/// Pushes updated content for a document that is already open in the provider.
+	/// Pushes updated content for a document that is already open in the provider so the underlying language service can stay synchronized.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The updated document content.</param>
 	void UpdateDocument(string filePath, string content);
 
 	/// <summary>
 	/// Closes a tracked document and releases any provider-side state associated with it.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	void CloseDocument(string filePath);
 
 	/// <summary>
 	/// Rekeys a tracked document to a new path while preserving any provider-side state that still applies.
 	/// </summary>
-	/// <param name="oldFilePath">The previous document path.</param>
-	/// <param name="newFilePath">The new document path.</param>
+	/// <param name="oldFilePath">The previous local file path.</param>
+	/// <param name="newFilePath">The new local file path.</param>
 	/// <param name="content">The current document content.</param>
 	void RenameDocument(string oldFilePath, string newFilePath, string content);
 
 	/// <summary>
 	/// Requests completion items for a position within a Lua document.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The current document content.</param>
 	/// <param name="line">The zero-based line index.</param>
 	/// <param name="column">The zero-based column index.</param>
@@ -112,7 +108,7 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <summary>
 	/// Requests hover information for a position within a Lua document.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The current document content.</param>
 	/// <param name="line">The zero-based line index.</param>
 	/// <param name="column">The zero-based column index.</param>
@@ -124,7 +120,7 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <summary>
 	/// Requests the definition location for a symbol at a position within a Lua document.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The current document content.</param>
 	/// <param name="line">The zero-based line index.</param>
 	/// <param name="column">The zero-based column index.</param>
@@ -136,7 +132,7 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <summary>
 	/// Requests all known reference locations for a symbol at a position within a Lua document.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The current document content.</param>
 	/// <param name="line">The zero-based line index.</param>
 	/// <param name="column">The zero-based column index.</param>
@@ -148,7 +144,7 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <summary>
 	/// Requests workspace edits to rename the symbol at a position within a Lua document.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The current document content.</param>
 	/// <param name="line">The zero-based line index.</param>
 	/// <param name="column">The zero-based column index.</param>
@@ -161,7 +157,7 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <summary>
 	/// Requests formatting edits for a Lua document.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The current document content.</param>
 	/// <param name="options">The editor formatting preferences to pass to the language server.</param>
 	/// <param name="cancellationToken">A token that can cancel the request.</param>
@@ -172,7 +168,7 @@ public interface ILuaIntellisenseProvider : IDisposable
 	/// <summary>
 	/// Requests signature help for a function call at a position within a Lua document.
 	/// </summary>
-	/// <param name="filePath">The document path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The current document content.</param>
 	/// <param name="line">The zero-based line index.</param>
 	/// <param name="column">The zero-based column index.</param>

@@ -17,15 +17,16 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 		bool acquireOpenReference = false,
 		bool acquireRequestReference = false)
 	{
+		string normalizedFilePath = NormalizeTrackedFilePath(filePath);
 		string safeContent = content ?? string.Empty;
 
 		lock (_syncRoot)
 		{
-			if (!_documents.TryGetValue(filePath, out TTrackedDocumentState? state))
+			if (!_documents.TryGetValue(normalizedFilePath, out TTrackedDocumentState? state))
 			{
 				state = CreateTrackedDocumentState(
-					filePath,
-					LanguageServerPathHelper.CreateFileUri(filePath),
+					normalizedFilePath,
+					LanguageServerPathHelper.CreateFileUri(normalizedFilePath),
 					safeContent,
 					version: 1,
 					isOpen: true,
@@ -33,7 +34,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 					requestReferenceCount: acquireRequestReference ? 1 : 0,
 					lastAccessStamp: GetNextAccessStamp());
 
-				_documents[filePath] = state;
+				_documents[normalizedFilePath] = state;
 				return new DocumentSynchronizationRequest(DocumentSynchronizationKind.Open, state.CreateSnapshot());
 			}
 

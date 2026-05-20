@@ -6,7 +6,7 @@ namespace TombLib.LanguageServer.Lua;
 /// Decodes a raw LuaLS semantic-token integer stream (already cached on the client) into the typed
 /// <see cref="LuaSemanticToken"/> list expected by the editor's colorizer.
 /// </summary>
-public static class LuaLanguageServerSemanticTokensDecoder
+internal static class LuaLanguageServerSemanticTokensDecoder
 {
 	private static readonly IReadOnlyList<string> EmptyModifiers = [];
 
@@ -18,7 +18,7 @@ public static class LuaLanguageServerSemanticTokensDecoder
 	/// <param name="tokenTypes">The semantic token types advertised by the server.</param>
 	/// <param name="tokenModifiers">The semantic token modifiers advertised by the server.</param>
 	/// <returns>The decoded semantic tokens.</returns>
-	public static IReadOnlyList<LuaSemanticToken> Decode(int[] data, DocumentSnapshot? document,
+	internal static IReadOnlyList<LuaSemanticToken> Decode(int[] data, DocumentSnapshot? document,
 		IReadOnlyList<string>? tokenTypes, IReadOnlyList<string>? tokenModifiers)
 	{
 		if (data.Length == 0 || document is null || tokenTypes is null || tokenTypes.Count == 0)

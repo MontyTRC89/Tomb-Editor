@@ -54,7 +54,9 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 	private void InvalidateDocumentSynchronization(string filePath)
 	{
 		MarkStartupTransportUnavailable();
+
 		_documents.InvalidateServerSynchronization(filePath);
+
 		CancelQueuedDocumentUpdate(filePath);
 		CancelSemanticTokenRequest(filePath);
 	}

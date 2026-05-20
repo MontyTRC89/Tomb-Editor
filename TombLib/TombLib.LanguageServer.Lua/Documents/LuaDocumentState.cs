@@ -16,7 +16,7 @@ internal sealed class LuaDocumentState : TrackedDocumentState
 	/// <param name="openReferenceCount">The active editor-owned reference count.</param>
 	/// <param name="requestReferenceCount">The active request-owned reference count.</param>
 	/// <param name="lastAccessStamp">The access stamp used for request-only eviction ordering.</param>
-	public LuaDocumentState(
+	internal LuaDocumentState(
 		string filePath,
 		string uri,
 		string content,
@@ -26,8 +26,7 @@ internal sealed class LuaDocumentState : TrackedDocumentState
 		int requestReferenceCount,
 		long lastAccessStamp)
 		: base(filePath, uri, content, version, isOpen, openReferenceCount, requestReferenceCount, lastAccessStamp)
-	{
-	}
+	{ }
 
 	/// <summary>
 	/// Updates the request-only eviction stamp for the tracked document.
@@ -68,10 +67,10 @@ internal sealed class LuaDocumentState : TrackedDocumentState
 	/// <summary>
 	/// Gets the cached diagnostics for the tracked document.
 	/// </summary>
-	public LuaDiagnosticsCache DiagnosticsCache { get; } = new();
+	internal LuaDiagnosticsCache DiagnosticsCache { get; } = new();
 
 	/// <summary>
 	/// Gets the cached semantic-token state for the tracked document.
 	/// </summary>
-	public LuaSemanticTokensCache SemanticTokensCache { get; } = new();
+	internal LuaSemanticTokensCache SemanticTokensCache { get; } = new();
 }

@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TombLib.LanguageServer.Core\TombLib.LanguageServer.Core.csproj" />
-    <ProjectReference Include="..\TombLib.Scripting.Lua.LanguageServer\TombLib.Scripting.Lua.LanguageServer.csproj" />
     <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
   </ItemGroup>
 

@@ -7,16 +7,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 	private const int CompletionTriggerKindInvoked = 1;
 	private const int CompletionTriggerKindTriggerCharacter = 2;
 
-	/// <summary>
-	/// Requests completion items for the specified document position.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The current document content.</param>
-	/// <param name="line">The zero-based line index.</param>
-	/// <param name="column">The zero-based column index.</param>
-	/// <param name="triggerCharacter">The optional trigger character that caused completion.</param>
-	/// <param name="cancellationToken">A token that can cancel the request.</param>
-	/// <returns>The completion items returned by LuaLS.</returns>
 	public async Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
 		int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default)
 	{

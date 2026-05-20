@@ -4,15 +4,6 @@ namespace TombLib.LanguageServer.Lua;
 
 public sealed partial class LuaLanguageServerIntellisenseProvider
 {
-	/// <summary>
-	/// Requests hover information for the specified document position.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The current document content.</param>
-	/// <param name="line">The zero-based line index.</param>
-	/// <param name="column">The zero-based column index.</param>
-	/// <param name="cancellationToken">A token that can cancel the request.</param>
-	/// <returns>The hover payload, or <see langword="null"/> when none exists.</returns>
 	public Task<LuaHoverInfo?> GetHoverAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
@@ -25,15 +16,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken);
 	}
 
-	/// <summary>
-	/// Requests a definition location for the specified document position.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The current document content.</param>
-	/// <param name="line">The zero-based line index.</param>
-	/// <param name="column">The zero-based column index.</param>
-	/// <param name="cancellationToken">A token that can cancel the request.</param>
-	/// <returns>The definition location, or <see langword="null"/> when none exists.</returns>
 	public Task<LuaDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
@@ -46,15 +28,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken);
 	}
 
-	/// <summary>
-	/// Requests all known references for the specified document position.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The current document content.</param>
-	/// <param name="line">The zero-based line index.</param>
-	/// <param name="column">The zero-based column index.</param>
-	/// <param name="cancellationToken">A token that can cancel the request.</param>
-	/// <returns>The reference locations returned by LuaLS.</returns>
 	public async Task<IReadOnlyList<LuaReferenceLocation>> GetReferencesAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
@@ -93,16 +66,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 	}
 
-	/// <summary>
-	/// Requests workspace edits to rename the symbol at the specified document position.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The current document content.</param>
-	/// <param name="line">The zero-based line index.</param>
-	/// <param name="column">The zero-based column index.</param>
-	/// <param name="newName">The requested replacement symbol name.</param>
-	/// <param name="cancellationToken">A token that can cancel the request.</param>
-	/// <returns>The workspace edit returned by LuaLS, or <see langword="null"/> when unavailable.</returns>
 	public async Task<LuaWorkspaceEdit?> RenameSymbolAsync(string filePath, string content,
 		int line, int column, string newName, CancellationToken cancellationToken = default)
 	{
@@ -144,14 +107,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 	}
 
-	/// <summary>
-	/// Requests formatting edits for the specified Lua document.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The current document content.</param>
-	/// <param name="options">The editor formatting preferences to pass to LuaLS.</param>
-	/// <param name="cancellationToken">A token that can cancel the request.</param>
-	/// <returns>The text edits returned by LuaLS.</returns>
 	public async Task<IReadOnlyList<LuaTextEdit>> FormatDocumentAsync(string filePath, string content,
 		LuaFormattingOptions options, CancellationToken cancellationToken = default)
 	{
@@ -189,15 +144,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 	}
 
-	/// <summary>
-	/// Requests signature-help information for the specified document position.
-	/// </summary>
-	/// <param name="filePath">The local file path.</param>
-	/// <param name="content">The current document content.</param>
-	/// <param name="line">The zero-based line index.</param>
-	/// <param name="column">The zero-based column index.</param>
-	/// <param name="cancellationToken">A token that can cancel the request.</param>
-	/// <returns>The signature-help payload, or <see langword="null"/> when none exists.</returns>
 	public Task<LuaSignatureInfo?> GetSignatureHelpAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
@@ -210,6 +156,10 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken);
 	}
 
+	/// <summary>
+	/// Synchronizes the requested document, executes a position-based language-server request,
+	/// and releases the temporary request tracking afterwards.
+	/// </summary>
 	private async Task<TResult> SendPositionRequestAsync<TResponse, TResult>(
 		string filePath, string content, int line, int column,
 		string method,
@@ -229,6 +179,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 		try
 		{
+			// Synchronize the document without triggering post-edit semantic-token refresh.
 			if (
 				// Request-driven sync paths (completion / hover / definition / signature) intentionally
 				// skip the semantic-token refresh: typing a single identifier character can otherwise turn
@@ -241,6 +192,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				return defaultValue;
 			}
 
+			// Dispatch the request against the normalized document URI.
 			var textDocument = new TextDocumentIdentifier(LanguageServerPathHelper.CreateFileUri(normalizedFilePath));
 			var position = new ProtocolPosition(line, column);
 
@@ -258,6 +210,9 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 	}
 
+	/// <summary>
+	/// Sends a language-server request with timeout tracking and a single retry when the active transport changes or becomes unavailable.
+	/// </summary>
 	private async Task<TResponse> SendBoundedRequestAsync<TResponse>(
 		ILanguageServerClient client,
 		string method,
@@ -272,6 +227,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 		try
 		{
+			// Primary attempt on the current transport generation.
 			TResponse response = await client.SendRequestAsync<TResponse>(method, parameters, timeoutCts.Token).ConfigureAwait(false);
 			ResetRequestTimeoutTracking(transportGeneration);
 			return response;
@@ -310,6 +266,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				transportGeneration);
 		}
 
+		// If the transport changed underneath the request, ensure the client is healthy before retrying once.
 		if (!await EnsureStartedAsync(cancellationToken).ConfigureAwait(false))
 			return timeoutValue;
 
@@ -320,6 +277,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 		try
 		{
+			// Retry once on the refreshed transport generation.
 			TResponse response = await client.SendRequestAsync<TResponse>(method, parameters, retryTimeoutCts.Token).ConfigureAwait(false);
 			ResetRequestTimeoutTracking(transportGeneration);
 			return response;

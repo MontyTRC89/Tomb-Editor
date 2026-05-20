@@ -119,9 +119,6 @@ public sealed partial class WorkspaceFileWatcher
 		if (_isDisposed)
 			return;
 
-		if (!_pendingChanges.IsEmpty)
-			_ = DispatchPendingChangesAsync();
-
 		if (Interlocked.Exchange(ref _watcherFailureReported, 1) != 0)
 			return;
 
@@ -137,6 +134,12 @@ public sealed partial class WorkspaceFileWatcher
 		{
 			Log.Warn(callbackException, "Workspace watcher failure handler threw.");
 		}
+
+		if (_isDisposed)
+			return;
+
+		if (!_pendingChanges.IsEmpty)
+			_ = DispatchPendingChangesAsync();
 	}
 
 	/// <summary>
