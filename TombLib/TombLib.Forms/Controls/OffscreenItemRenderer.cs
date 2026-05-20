@@ -21,6 +21,7 @@ namespace TombLib.Controls
         private readonly Dx11RenderingDevice _device;
         private readonly GraphicsDevice _legacyDevice;
         private readonly WadRenderer _wadRenderer;
+        private readonly ImportedGeometryRenderer _importedGeometryRenderer;
 
         private Texture2D _renderTarget;
         private RenderTargetView _renderTargetView;
@@ -34,6 +35,7 @@ namespace TombLib.Controls
             _device = (Dx11RenderingDevice)DeviceManager.DefaultDeviceManager.Device;
             _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
             _wadRenderer = new WadRenderer(_legacyDevice, true, true, 1024, 512, false);
+            _importedGeometryRenderer = new ImportedGeometryRenderer(_legacyDevice);
         }
 
         public ImageC RenderThumbnail(IWadObject wadObject, TRVersion.Game version, Vector4 backColor, int size = 128)
@@ -66,7 +68,7 @@ namespace TombLib.Controls
                 var viewProjection = camera.GetViewProjectionMatrix(size, size);
 
                 // Render the object using shared helper.
-                WadObjectRenderHelper.RenderObject(wadObject, _wadRenderer, _legacyDevice, viewProjection, camera.GetPosition(), false);
+                WadObjectRenderHelper.RenderObject(wadObject, _wadRenderer, _importedGeometryRenderer, _legacyDevice, viewProjection, camera.GetPosition(), false);
 
                 // Read back pixels.
                 return ReadPixels(size);
@@ -188,12 +190,14 @@ namespace TombLib.Controls
         public void GarbageCollect()
         {
             _wadRenderer?.GarbageCollect();
+            _importedGeometryRenderer?.GarbageCollect();
         }
 
         public void Dispose()
         {
             DisposeRenderTargets();
             _wadRenderer?.Dispose();
+            _importedGeometryRenderer?.Dispose();
         }
     }
 }

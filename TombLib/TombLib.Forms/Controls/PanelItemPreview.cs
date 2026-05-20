@@ -77,6 +77,7 @@ namespace TombLib.Controls
         // Legacy rendering state
         private GraphicsDevice _legacyDevice;
         private WadRenderer _wadRenderer;
+        private ImportedGeometryRenderer _importedGeometryRenderer;
 
         public PanelItemPreview()
         {
@@ -135,6 +136,7 @@ namespace TombLib.Controls
                 // Reset scrollbar
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
                 _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true, true, 1024, 512, false);
+                _importedGeometryRenderer = new ImportedGeometryRenderer(_legacyDevice);
 
                 ResetCamera();
 
@@ -167,6 +169,7 @@ namespace TombLib.Controls
         public void GarbageCollect()
         {
             _wadRenderer?.GarbageCollect();
+            _importedGeometryRenderer?.GarbageCollect();
         }
 
         private bool ValidObject(IWadObject obj)
@@ -201,6 +204,7 @@ namespace TombLib.Controls
             if (disposing)
             {
                 _wadRenderer?.Dispose();
+                _importedGeometryRenderer?.Dispose();
                 _textureAllocator?.Dispose();
             }
             base.Dispose(disposing);
@@ -245,7 +249,7 @@ namespace TombLib.Controls
             }
             else
             {
-                WadObjectRenderHelper.RenderObject(CurrentObject, _wadRenderer, _legacyDevice, viewProjection, Camera.GetPosition(), DrawTransparency);
+                WadObjectRenderHelper.RenderObject(CurrentObject, _wadRenderer, _importedGeometryRenderer, _legacyDevice, viewProjection, Camera.GetPosition(), DrawTransparency);
             }
         }
 

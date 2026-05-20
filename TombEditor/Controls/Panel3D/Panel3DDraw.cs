@@ -1720,7 +1720,7 @@ namespace TombEditor.Controls.Panel3D
             var groups = importedGeometryToDraw.GroupBy(g => g.Model.UniqueID);
             foreach (var group in groups)
             {
-                var model = group.First().Model.DirectXModel;
+                var model = _importedGeometryRenderer.GetModel(group.First().Model);
                 if (model == null || model.Meshes == null || model.Meshes.Count == 0)
                     continue;
 
@@ -1786,7 +1786,7 @@ namespace TombEditor.Controls.Panel3D
                             if (texture != null && texture is ImportedGeometryTexture)
                             {
                                 geometryEffect.Parameters["TextureEnabled"].SetValue(true);
-                                geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
+                                geometryEffect.Parameters["Texture"].SetResource(_importedGeometryRenderer.GetTexture((ImportedGeometryTexture)texture));
                                 geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
                             }
                             else

@@ -98,7 +98,7 @@ namespace TombLib.Controls
                 -(float)Math.PI / 2, (float)Math.PI / 2, radius * 3, 50, 1000000, fieldOfView * (float)(Math.PI / 180));
         }
 
-        public static void RenderObject(IWadObject wadObject, WadRenderer wadRenderer,
+        public static void RenderObject(IWadObject wadObject, WadRenderer wadRenderer, ImportedGeometryRenderer importedGeometryRenderer,
             GraphicsDevice legacyDevice, Matrix4x4 viewProjection, Vector3 cameraPosition, bool drawTransparency)
         {
             if (wadObject is WadMoveable moveable)
@@ -106,7 +106,7 @@ namespace TombLib.Controls
             else if (wadObject is WadStatic staticObj)
                 RenderStatic(staticObj, wadRenderer, legacyDevice, viewProjection, cameraPosition, drawTransparency);
             else if (wadObject is ImportedGeometry impGeo)
-                RenderImportedGeometry(impGeo, legacyDevice, viewProjection, cameraPosition, drawTransparency);
+                RenderImportedGeometry(impGeo, importedGeometryRenderer, legacyDevice, viewProjection, cameraPosition, drawTransparency);
         }
 
         public static void RenderMoveable(WadMoveable moveable, WadRenderer wadRenderer,
@@ -206,10 +206,10 @@ namespace TombLib.Controls
             }
         }
 
-        public static void RenderImportedGeometry(ImportedGeometry geo,
+        public static void RenderImportedGeometry(ImportedGeometry geo, ImportedGeometryRenderer importedGeometryRenderer,
             GraphicsDevice legacyDevice, Matrix4x4 viewProjection, Vector3 cameraPosition, bool drawTransparency)
         {
-            var model = geo.DirectXModel;
+            var model = importedGeometryRenderer.GetModel(geo);
             if (model == null || model.Meshes == null || model.Meshes.Count == 0)
                 return;
 
@@ -240,7 +240,7 @@ namespace TombLib.Controls
                     if (texture != null && texture is ImportedGeometryTexture)
                     {
                         effect.Parameters["TextureEnabled"].SetValue(true);
-                        effect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
+                        effect.Parameters["Texture"].SetResource(importedGeometryRenderer.GetTexture((ImportedGeometryTexture)texture));
                         effect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
                     }
                     else
