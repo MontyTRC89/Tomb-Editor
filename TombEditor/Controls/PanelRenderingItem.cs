@@ -1,18 +1,23 @@
-﻿using DarkUI.Config;
+using DarkUI.Config;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombLib.Controls;
+using TombEditor.Rendering.V2;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
-    public class PanelRenderingItem : PanelItemPreview
+    /// <summary>
+    /// Item-browser preview panel — V2 renderer edition. Wires the panel's
+    /// abstract render hooks to the editor configuration and the WAD-loaded
+    /// state of the current level.
+    /// </summary>
+    public class PanelRenderingItem : ItemPreviewPanelV2
     {
         private readonly Editor _editor;
 
@@ -27,18 +32,24 @@ namespace TombEditor.Controls
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && _editor != null)
                 _editor.EditorEventRaised -= EditorEventRaised;
             base.Dispose(disposing);
         }
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            // Update field of view
+            // Update field of view. Guard against transient null Configuration
+            // (e.g. during settings reload) and against a Camera that hasn't
+            // been initialised yet on the V2 panel base.
             if (obj is Editor.ConfigurationChangedEvent)
             {
-                Camera.FieldOfView = _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180);
-                Invalidate();
+                var cfg = _editor?.Configuration;
+                if (cfg != null && Camera != null)
+                {
+                    Camera.FieldOfView = cfg.RenderingItem_FieldOfView * (float)(Math.PI / 180);
+                    Invalidate();
+                }
             }
 
             // Update currently viewed item.
@@ -58,7 +69,12 @@ namespace TombEditor.Controls
 
             if (obj is Editor.LoadedWadsChangedEvent ||
                 obj is Editor.LevelChangedEvent)
-                GarbageCollect();
+            {
+                // Drop the entire shared preview cache: meshes / atlases that
+                // referenced the old WAD textures must be rebuilt against the
+                // newly loaded ones.
+                V2PreviewDevice.InvalidateAll();
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -120,12 +136,21 @@ namespace TombEditor.Controls
             }
         }
 
-        protected override Vector4 ClearColor => _editor.Configuration.UI_ColorScheme.Color3DBackground;
-        public override float FieldOfView => _editor.Configuration.RenderingItem_FieldOfView;
-        public override float NavigationSpeedMouseWheelZoom => _editor.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom;
-        public override float NavigationSpeedMouseZoom => _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom;
-        public override float NavigationSpeedMouseTranslate => _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate;
-        public override float NavigationSpeedMouseRotate => _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate;
-        public override bool ReadOnly => true;
+        // Sensible defaults if Configuration isn't ready yet (designer
+        // session, very early paint before Editor.Configuration is wired).
+        // Each accessor is hit on every paint and on early events so a
+        // transient null must not throw.
+        protected override Vector4 ClearColor =>
+            _editor?.Configuration?.UI_ColorScheme.Color3DBackground ?? new Vector4(0.392f, 0.584f, 0.929f, 1f);
+        public override float FieldOfView =>
+            _editor?.Configuration?.RenderingItem_FieldOfView ?? 45f;
+        public override float NavigationSpeedMouseWheelZoom =>
+            _editor?.Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 1f;
+        public override float NavigationSpeedMouseZoom =>
+            _editor?.Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 1f;
+        public override float NavigationSpeedMouseTranslate =>
+            _editor?.Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1f;
+        public override float NavigationSpeedMouseRotate =>
+            _editor?.Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 1f;
     }
 }

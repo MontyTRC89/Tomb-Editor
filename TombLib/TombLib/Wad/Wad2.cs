@@ -121,6 +121,17 @@ namespace TombLib.Wad
 
         public static Wad2 ImportFromFile(string fileName, bool withSounds, IDialogHandler progressReporter, bool allowTRNGDecryption = false)
         {
+            var __sw = System.Diagnostics.Stopwatch.StartNew();
+            Wad2 __result = ImportFromFileInner(fileName, withSounds, progressReporter, allowTRNGDecryption);
+            __sw.Stop();
+            NLog.LogManager.GetCurrentClassLogger().Info(
+                "[Wad2.ImportFromFile] {0} ms  file={1}",
+                __sw.ElapsedMilliseconds, System.IO.Path.GetFileName(fileName));
+            return __result;
+        }
+
+        private static Wad2 ImportFromFileInner(string fileName, bool withSounds, IDialogHandler progressReporter, bool allowTRNGDecryption = false)
+        {
             if (fileName.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase))
                 return Wad2Loader.LoadFromFile(fileName, withSounds);
             else if (fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase) ||

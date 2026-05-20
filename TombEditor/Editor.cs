@@ -68,6 +68,34 @@ namespace TombEditor
         public StatisticSummary Stats = new StatisticSummary();
         public void RaiseEvent(IEditorEvent eventObj)
         {
+            // Per-subscriber timing for LoadedWadsChangedEvent — that's the
+            // hot dispatch when adding a wad and we want to see which
+            // subscriber is dominating the freeze.
+            if (eventObj is LoadedWadsChangedEvent)
+            {
+                SynchronizationContext.Send(eventObj_ =>
+                {
+                    var handlers = EditorEventRaised?.GetInvocationList();
+                    if (handlers == null) return;
+                    var totalSw = System.Diagnostics.Stopwatch.StartNew();
+                    foreach (var h in handlers)
+                    {
+                        var sw = System.Diagnostics.Stopwatch.StartNew();
+                        try { ((Action<IEditorEvent>)h)((IEditorEvent)eventObj_); }
+                        catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                        sw.Stop();
+                        if (sw.ElapsedMilliseconds >= 5)
+                            NLog.LogManager.GetCurrentClassLogger().Info(
+                                "[WAD-EVT] {0,4} ms  {1}",
+                                sw.ElapsedMilliseconds, h.Target?.GetType().FullName ?? "?");
+                    }
+                    totalSw.Stop();
+                    NLog.LogManager.GetCurrentClassLogger().Info(
+                        "[WAD-EVT] TOTAL dispatch = {0} ms across {1} handlers",
+                        totalSw.ElapsedMilliseconds, handlers.Length);
+                }, eventObj);
+                return;
+            }
             SynchronizationContext.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
         }
 

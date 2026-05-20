@@ -125,6 +125,12 @@ public sealed class LevelRenderer : IDisposable
         _height = Math.Max(1, height);
         _device = new Dx11Device();
 
+        // Share the D3D device with the preview panel + thumbnail renderer.
+        // Without this, V2PreviewDevice would lazily allocate its own
+        // ID3D11Device on the first thumbnail tick (~50-200 ms cold-start hit
+        // that lands right when the user just finished loading a wad).
+        V2PreviewDevice.RegisterSharedDevice(_device);
+
         _swap = _device.CreateSwapchain(new SwapchainDesc(
             hwnd:    hwnd,
             width:   _width,

@@ -153,7 +153,7 @@ internal sealed class ObjectRenderer : IDisposable
                                 _staticBatch[s] = list = new List<InstanceData>();
                             list.Add(new InstanceData
                             {
-                                Model = si.ObjectMatrix,
+                                Model = Matrix4x4.Transpose(si.ObjectMatrix),
                                 Tint  = new Vector4(si.Color.X, si.Color.Y, si.Color.Z, 1f),
                             });
                             break;
@@ -166,7 +166,7 @@ internal sealed class ObjectRenderer : IDisposable
                                 _moveableBatch[mv] = list = new List<InstanceData>();
                             list.Add(new InstanceData
                             {
-                                Model = mi.ObjectMatrix,
+                                Model = Matrix4x4.Transpose(mi.ObjectMatrix),
                                 Tint  = new Vector4(1, 1, 1, 1),
                             });
                             break;
@@ -179,7 +179,7 @@ internal sealed class ObjectRenderer : IDisposable
                             var m = ig.RotationPositionMatrix * Matrix4x4.CreateScale(ig.Scale);
                             list.Add(new InstanceData
                             {
-                                Model = m,
+                                Model = Matrix4x4.Transpose(m),
                                 Tint  = new Vector4(ig.Color.X, ig.Color.Y, ig.Color.Z, 1f),
                             });
                             break;
@@ -288,30 +288,11 @@ internal sealed class ObjectRenderer : IDisposable
         WadKeyFrame frame = (mv.Animations.Count > 0 && mv.Animations[0].KeyFrames.Count > 0)
                              ? mv.Animations[0].KeyFrames[0]
                              : null;
-
-        var transforms = new Dictionary<WadBone, Matrix4x4>(mv.Bones.Count);
-        int bi = 0;
-        foreach (var bone in mv.Bones)
+        var transforms = WadMoveablePoseV2.ComputeBoneTransforms(mv, frame);
+        for (int i = 0; i < mv.Bones.Count; i++)
         {
-            Matrix4x4 rot = (frame != null && bi < frame.Angles.Count)
-                          ? frame.Angles[bi].RotationMatrix
-                          : Matrix4x4.Identity;
-
-            Matrix4x4 globalT;
-            if (bone.Parent == null)
-            {
-                var offset = frame != null ? frame.Offset : Vector3.Zero;
-                globalT = rot * Matrix4x4.CreateTranslation(offset);
-            }
-            else
-            {
-                var parentT = transforms.TryGetValue(bone.Parent, out var pt)
-                              ? pt : Matrix4x4.Identity;
-                globalT = rot * Matrix4x4.CreateTranslation(bone.Translation) * parentT;
-            }
-            transforms[bone] = globalT;
-            if (bone.Mesh != null) AppendWadMesh(list, bone.Mesh, globalT);
-            bi++;
+            var bone = mv.Bones[i];
+            if (bone.Mesh != null) AppendWadMesh(list, bone.Mesh, transforms[i]);
         }
         return UploadMesh(list, "Moveable:" + mv.Id);
     }

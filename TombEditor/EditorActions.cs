@@ -4551,11 +4551,14 @@ namespace TombEditor
             if (paths.Count == 0) // Fast track to avoid unnecessary updates
                 return new ReferencedWad[0];
 
+            var __profStart = System.Diagnostics.Stopwatch.StartNew();
+
             // Load objects (*.wad files) concurrently
             ReferencedWad[] results = new ReferencedWad[paths.Count];
             ReferencedSoundCatalog[] soundsResults = new ReferencedSoundCatalog[paths.Count];
 
             GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
+            var __profParseStart = System.Diagnostics.Stopwatch.StartNew();
             using (var loadingTask = Task.Run(() =>
                 Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler))))
                 while (!loadingTask.IsCompleted)
@@ -4610,6 +4613,7 @@ namespace TombEditor
                     Thread.Sleep(1);
                     Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
                 }
+            __profParseStart.Stop();
 
             var loadedWads = results.Where(result => result != null);
 
@@ -4625,7 +4629,10 @@ namespace TombEditor
             // Update level
             _editor.Level.Settings.Wads.InsertRange(0, results.Where(result => result != null));
             _editor.Level.Settings.SoundCatalogs.InsertRange(0, soundsResults.Where(result => result != null));
+
+            var __profEventsStart = System.Diagnostics.Stopwatch.StartNew();
             _editor.LoadedWadsChange();
+            __profEventsStart.Stop();
 
             // Autoswitch game version if necessary
             if (AutoswitchGameVersion(_editor.Level.Settings))
@@ -4633,6 +4640,13 @@ namespace TombEditor
                 _editor.GameVersionChange();
                 _editor.SendMessage("Game version was changed to " + _editor.Level.Settings.GameVersion + " to match loaded wads version.", PopupType.Info);
             }
+
+            __profStart.Stop();
+            NLog.LogManager.GetCurrentClassLogger().Info(
+                "[AddWad PROFILE] total={0}ms  parse(parallel)={1}ms  LoadedWadsChange(events)={2}ms",
+                __profStart.ElapsedMilliseconds,
+                __profParseStart.ElapsedMilliseconds,
+                __profEventsStart.ElapsedMilliseconds);
 
             return results.Where(result => result != null);
         }

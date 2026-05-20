@@ -28,7 +28,8 @@ namespace TombEditor.ToolWindows
 
         public void InitializeRendering(RenderingDevice device)
         {
-            panelItem.InitializeRendering(device, _editor.Configuration.RenderingItem_Antialias);
+            // V2 preview panel lazily creates its own D3D device + swapchain
+            // on first paint; the legacy device argument is ignored.
         }
 
         protected override void Dispose(bool disposing)
@@ -51,14 +52,25 @@ namespace TombEditor.ToolWindows
                 var allStatics   = _editor.Level.Settings.WadGetAllStatics();
 
                 comboItems.GameVersion = _editor.Level.Settings.GameVersion;
-                comboItems.Items.Clear();
-                foreach (var moveable in allMoveables.Values)
-                    if (!_editor.Configuration.RenderingItem_HideInternalObjects ||
-                        !TrCatalog.IsHidden(_editor.Level.Settings.GameVersion, moveable.Id.TypeId))
-                        comboItems.Items.Add(moveable);
-                
-                foreach (var staticMesh in allStatics.Values)
-                    comboItems.Items.Add(staticMesh);
+                // BeginUpdate/EndUpdate suppress per-Add layout/redraw inside the
+                // combo: N adds become a single layout. Material difference on
+                // big wads where N can be in the hundreds.
+                comboItems.Control.BeginUpdate();
+                try
+                {
+                    comboItems.Items.Clear();
+                    foreach (var moveable in allMoveables.Values)
+                        if (!_editor.Configuration.RenderingItem_HideInternalObjects ||
+                            !TrCatalog.IsHidden(_editor.Level.Settings.GameVersion, moveable.Id.TypeId))
+                            comboItems.Items.Add(moveable);
+
+                    foreach (var staticMesh in allStatics.Values)
+                        comboItems.Items.Add(staticMesh);
+                }
+                finally
+                {
+                    comboItems.Control.EndUpdate();
+                }
 
                 if (comboItems.Items.Count > 0)
                 {
@@ -145,7 +157,7 @@ namespace TombEditor.ToolWindows
             if (comboItems.Items.Count == 0 || comboItems.SelectedIndex < 0 || !(comboItems.SelectedItem is WadMoveable item))
                 return;
 
-            panelItem.CurrentObject = WadObjectRenderHelper.GetRenderObject(item, _editor.Level.Settings);
+            panelItem.CurrentObject = TombEditor.Rendering.V2.WadObjectPreviewHelper.GetRenderObject(item, _editor.Level.Settings);
             panelItem.ResetCamera();
         }
 

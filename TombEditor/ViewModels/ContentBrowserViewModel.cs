@@ -588,26 +588,38 @@ public partial class ContentBrowserViewModel : ObservableObject
 		Task.WaitAll(moveableTask, staticTask);
 
 		// Batch-populate the ObservableCollection (must happen on UI thread).
-		// Detach filter during bulk insert to avoid per-item filtering overhead.
+		// Detach sort + filter so each ObservableCollection notification
+		// doesn't drag the bound ListCollectionView through an O(log N)
+		// sorted insert + filter test per add. With the SortDescriptions
+		// empty the view simply appends each new item; sort + filter get
+		// applied once at the end when we re-attach them.
+		//
+		// Note: do NOT wrap this in DeferRefresh — WPF bindings observing
+		// FilteredItems will enumerate / read CurrentItem in response to
+		// the Reset and Add notifications, and any such access on a view
+		// whose refresh is deferred throws "Cannot change or check the
+		// contents or Current position of CollectionView while Refresh is
+		// being deferred".
+		var savedSorts = FilteredItems.SortDescriptions.ToArray();
 		FilteredItems.Filter = null;
+		FilteredItems.SortDescriptions.Clear();
+
 		AllItems.Clear();
+		foreach (var item in moveableItems) AllItems.Add(item);
+		foreach (var item in staticItems)   AllItems.Add(item);
+		foreach (var item in geoItems)      AllItems.Add(item);
 
-		foreach (var item in moveableItems)
-			AllItems.Add(item);
-		foreach (var item in staticItems)
-			AllItems.Add(item);
-		foreach (var item in geoItems)
-			AllItems.Add(item);
-
+		foreach (var sd in savedSorts) FilteredItems.SortDescriptions.Add(sd);
 		FilteredItems.Filter = FilterPredicate;
 
 		// Track whether any WADs are loaded.
 		HasLoadedWads = AllItems.Count > 0;
 
 		// Apply favorite state from saved settings.
+		var favKeys = settings.Favorites;
 		foreach (var item in AllItems)
 		{
-			if (settings.Favorites.Contains(item.FavoriteKey))
+			if (favKeys.Contains(item.FavoriteKey))
 				item.IsFavorite = true;
 		}
 

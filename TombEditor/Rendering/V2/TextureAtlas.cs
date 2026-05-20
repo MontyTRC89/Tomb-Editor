@@ -177,19 +177,25 @@ public sealed class TextureAtlas : IDisposable
             FilterMode.Anisotropic, AddressMode.Wrap, maxAnisotropy: 4));
     }
 
+    // 4-pixel gutter on each side: enough margin for anisotropic filtering
+    // and the first couple of mip levels not to bleed adjacent atlas entries
+    // into the sampled texture. 1-pixel padding (the original value) was
+    // visible as a "border" around packed textures at distance.
+    private const int Gutter = 4;
+
     private static bool TryPack(RectPackerSimpleStack packer, ImageC image, out VectorInt2 innerOrigin)
     {
         innerOrigin = default;
-        var padded = new VectorInt2(image.Width + 2, image.Height + 2);
+        var padded = new VectorInt2(image.Width + Gutter * 2, image.Height + Gutter * 2);
         var pos = packer.TryAdd(padded);
         if (pos == null) return false;
-        innerOrigin = new VectorInt2(pos.Value.X + 1, pos.Value.Y + 1);
+        innerOrigin = new VectorInt2(pos.Value.X + Gutter, pos.Value.Y + Gutter);
         return true;
     }
 
     // Thread-safe: each call writes to a region of the atlas that is
     // disjoint from any other call's region (the packer guarantees it).
-    // Uses SIMD memcpy for the inner rows.
+    // Uses SIMD memcpy for the inner rows; gutters are 4 px on each side.
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static unsafe void BlitAndPad(byte[] atlasBytes, int atlasSize, VectorInt2 origin, ImageC image)
     {
@@ -209,23 +215,33 @@ public sealed class TextureAtlas : IDisposable
                 SimdMemcpy(dst, s, rowBytes);
             }
 
-            // Top + bottom edge — replicate the adjacent in-image row.
-            byte* topSrc    = atlasPtr + ( origin.Y         * atlasSize + origin.X) * 4;
-            byte* topDst    = atlasPtr + ((origin.Y - 1)    * atlasSize + origin.X) * 4;
-            byte* botSrc    = atlasPtr + ((origin.Y + h - 1) * atlasSize + origin.X) * 4;
-            byte* botDst    = atlasPtr + ((origin.Y + h)    * atlasSize + origin.X) * 4;
-            SimdMemcpy(topDst, topSrc, rowBytes);
-            SimdMemcpy(botDst, botSrc, rowBytes);
+            // Top + bottom gutters — replicate the adjacent in-image row
+            // Gutter times. This pre-computes the same value we'd otherwise
+            // sample at runtime via Address.Clamp, but works inside the atlas.
+            byte* topSrc = atlasPtr + ( origin.Y          * atlasSize + origin.X) * 4;
+            byte* botSrc = atlasPtr + ((origin.Y + h - 1) * atlasSize + origin.X) * 4;
+            for (int g = 1; g <= Gutter; g++)
+            {
+                byte* topDst = atlasPtr + ((origin.Y - g)         * atlasSize + origin.X) * 4;
+                byte* botDst = atlasPtr + ((origin.Y + h - 1 + g) * atlasSize + origin.X) * 4;
+                SimdMemcpy(topDst, topSrc, rowBytes);
+                SimdMemcpy(botDst, botSrc, rowBytes);
+            }
 
-            // Left + right edge — 4 bytes per row, no SIMD payoff.
-            for (int y = -1; y <= h; y++)
+            // Left + right gutters (including the corners). yClamped pulls
+            // the sampled in-image pixel for rows above/below the inner area
+            // so corner pixels still get filled with edge colour.
+            for (int y = -Gutter; y < h + Gutter; y++)
             {
                 int yClamped = y < 0 ? 0 : (y >= h ? h - 1 : y);
                 byte* rowBase = atlasPtr + ((origin.Y + y) * atlasSize) * 4;
-                byte* leftSrc = atlasPtr + ((origin.Y + yClamped) * atlasSize + origin.X) * 4;
-                byte* rightSrc= atlasPtr + ((origin.Y + yClamped) * atlasSize + origin.X + w - 1) * 4;
-                *(uint*)(rowBase + (origin.X - 1) * 4) = *(uint*)leftSrc;
-                *(uint*)(rowBase + (origin.X + w) * 4) = *(uint*)rightSrc;
+                uint  leftPx  = *(uint*)(atlasPtr + ((origin.Y + yClamped) * atlasSize + origin.X)         * 4);
+                uint  rightPx = *(uint*)(atlasPtr + ((origin.Y + yClamped) * atlasSize + origin.X + w - 1) * 4);
+                for (int g = 1; g <= Gutter; g++)
+                {
+                    *(uint*)(rowBase + (origin.X - g)        * 4) = leftPx;
+                    *(uint*)(rowBase + (origin.X + w - 1 + g)* 4) = rightPx;
+                }
             }
         }
     }

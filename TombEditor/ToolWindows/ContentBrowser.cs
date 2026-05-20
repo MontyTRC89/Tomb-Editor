@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using TombEditor.Rendering.V2;
 using TombEditor.ViewModels;
 using TombLib.Controls;
 using TombLib.GeometryIO;
@@ -20,7 +21,7 @@ public partial class ContentBrowser : DarkToolWindow
 
 	private readonly Editor _editor;
 	private readonly ContentBrowserViewModel _viewModel;
-	private OffscreenItemRenderer _renderer;
+	private OffscreenObjectRendererV2 _renderer;
 
 	private Timer _thumbnailTimer;
 	private List<AssetItemViewModel> _thumbnailQueue;
@@ -251,7 +252,7 @@ public partial class ContentBrowser : DarkToolWindow
 	{
 		try
 		{
-			_renderer ??= new OffscreenItemRenderer();
+			_renderer ??= new OffscreenObjectRendererV2();
 
 			int end = Math.Min(_thumbnailQueueIndex + ThumbnailBatchSize, _thumbnailQueue.Count);
 
@@ -266,7 +267,7 @@ public partial class ContentBrowser : DarkToolWindow
 						continue;
 
 					// Apply Lara skin substitution for moveables (shared with ItemBrowser).
-					var renderObject = WadObjectRenderHelper.GetRenderObject(item.WadObject, _editor.Level.Settings);
+					var renderObject = WadObjectPreviewHelper.GetRenderObject(item.WadObject, _editor.Level.Settings);
 
 					var image = _renderer.RenderThumbnail(renderObject, _editor.Level.Settings.GameVersion, _editor.Configuration.UI_ColorScheme.Color3DBackground);
 					var bitmapSource = AssetItemViewModel.ImageCToBitmapSource(image);
@@ -314,6 +315,11 @@ public partial class ContentBrowser : DarkToolWindow
 
 				_renderer?.Dispose();
 				_renderer = null;
+
+				// V2 preview meshes/atlases reference the old WAD textures —
+				// drop the shared cache so the next thumbnail batch rebuilds
+				// against the freshly loaded WADs.
+				V2PreviewDevice.InvalidateAll();
 			}
 
 			_refreshPending = true;

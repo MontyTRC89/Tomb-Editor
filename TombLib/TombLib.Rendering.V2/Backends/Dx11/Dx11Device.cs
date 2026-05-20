@@ -66,9 +66,13 @@ public unsafe sealed class Dx11Device : IRhiDevice
             Silk.NET.Core.Native.D3DFeatureLevel.Level100,
         };
         uint createFlags = (uint)DX.CreateDeviceFlag.BgraSupport;
-#if DEBUG
-        createFlags |= (uint)DX.CreateDeviceFlag.Debug;
-#endif
+        // The D3D11 debug layer validates every API call (UpdateSubresource,
+        // Draw, every Set*) and adds 1-10 µs per call. When a wad load fires
+        // thousands of those in a row the Debug build feels noticeably slower
+        // than Release. Opt-in only: set TOMBEDITOR_D3D_DEBUG=1 (or attach a
+        // GPU debugger like RenderDoc / PIX which sets it themselves).
+        if (Environment.GetEnvironmentVariable("TOMBEDITOR_D3D_DEBUG") == "1")
+            createFlags |= (uint)DX.CreateDeviceFlag.Debug;
 
         ComPtr<DX.ID3D11Device>        dev = default;
         ComPtr<DX.ID3D11DeviceContext> ctx = default;
@@ -345,6 +349,62 @@ public unsafe sealed class Dx11Device : IRhiDevice
     public void Destroy(TextureHandle h)
     {
         if (Textures.Remove(h.Id, out var t)) t.Dispose();
+    }
+
+    public byte[] ReadTexture(TextureHandle handle, int subresource = 0)
+    {
+        var t = Textures[handle.Id];
+        int bpp = BytesPerPixelOf(t.Format);
+        int rowBytes = t.Width * bpp;
+        byte[] pixels = new byte[rowBytes * t.Height];
+
+        // Staging texture (CPU-readable, no bind flags, USAGE_STAGING).
+        var sd = new DX.Texture2DDesc
+        {
+            Width      = (uint)t.Width,
+            Height     = (uint)t.Height,
+            MipLevels  = 1,
+            ArraySize  = 1,
+            Format     = Dx11Mapping.ToDxgi(t.Format),
+            SampleDesc = new DXGI.SampleDesc { Count = 1, Quality = 0 },
+            Usage      = DX.Usage.Staging,
+            BindFlags  = 0,
+            CPUAccessFlags = (uint)DX.CpuAccessFlag.Read,
+        };
+        ComPtr<DX.ID3D11Texture2D> staging = default;
+        SilkMarshal.ThrowHResult(Device.CreateTexture2D(in sd, (DX.SubresourceData*)null, staging.GetAddressOf()));
+        try
+        {
+            // Copy the chosen subresource of the source into mip-0 of the staging texture.
+            Context.CopySubresourceRegion(
+                (DX.ID3D11Resource*)staging.Handle, 0u, 0u, 0u, 0u,
+                (DX.ID3D11Resource*)t.Native.Handle, (uint)subresource,
+                (DX.Box*)null);
+
+            DX.MappedSubresource mapped;
+            SilkMarshal.ThrowHResult(Context.Map(
+                (DX.ID3D11Resource*)staging.Handle, 0u, DX.Map.Read, 0u, &mapped));
+            try
+            {
+                fixed (byte* dst = pixels)
+                {
+                    for (int y = 0; y < t.Height; y++)
+                        Buffer.MemoryCopy(
+                            (byte*)mapped.PData + y * mapped.RowPitch,
+                            dst + y * rowBytes,
+                            rowBytes, rowBytes);
+                }
+            }
+            finally
+            {
+                Context.Unmap((DX.ID3D11Resource*)staging.Handle, 0u);
+            }
+        }
+        finally
+        {
+            staging.Dispose();
+        }
+        return pixels;
     }
 
     // ---------------------------------------------------------------- Samplers

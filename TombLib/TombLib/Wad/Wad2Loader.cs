@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -213,13 +214,30 @@ namespace TombLib.Wad
             return true;
         }
 
+        // Raw-form data captured during the sequential chunk read pass; decoded
+        // and colour-replaced in parallel afterwards. Keeping decode + the
+        // magenta→transparent SIMD scan inside the chunk-reader callback
+        // serialised the most expensive per-texture work on the load thread.
+        private struct RawTextureChunk
+        {
+            public long Index;
+            public int  Width;
+            public int  Height;
+            public string Name;
+            public string RelativePath;
+            public byte[] Data;
+        }
+
         private static bool LoadTextures(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadTexture> outTextures)
         {
             if (idOuter != Wad2Chunks.Textures)
                 return false;
 
-            Dictionary<long, WadTexture> textures = new Dictionary<long,  WadTexture>();
-            long obsoleteIndex = 0; // Move this into each chunk once we got rid of old style *.wad2 files.
+            // Phase 1 — sequential read. ChunkReader can't be parallelised
+            // (single read cursor over the stream), so we just collect raw
+            // bytes here and decode them off-thread below.
+            var raw = new List<RawTextureChunk>();
+            long obsoleteIndex = 0;
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -230,12 +248,13 @@ namespace TombLib.Wad
                 var height = LEB128.ReadInt(chunkIO.Raw);
                 var name = string.Empty;
                 var relativePath = string.Empty;
-
                 byte[] textureData = null;
+                long thisIndex = obsoleteIndex++;
+
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     if (id2 == Wad2Chunks.TextureIndex)
-                        obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
+                        thisIndex = chunkIO.ReadChunkLong(chunkSize2);
                     else if (id2 == Wad2Chunks.TextureName)
                         name = chunkIO.ReadChunkString(chunkSize2);
                     else if (id2 == Wad2Chunks.TextureRelativePath)
@@ -247,48 +266,70 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                // NOTE: we'll always have data there, but it should be loaded 
-                // only if RelativePath is null or empty, meaning that this is 
-                // an embedded texture.
-
-                var texture = ImageC.Magenta;
-                string absolutePath = null;
-                bool textureLoaded = false;
-
-                if (!string.IsNullOrEmpty(relativePath))
+                raw.Add(new RawTextureChunk
                 {
-                    bool absPathExists = PathC.IsTrulyAbsolutePath(name) && File.Exists(name);
-                    absolutePath = Path.GetFullPath(absPathExists ? name : Path.Combine(Path.GetDirectoryName(wad.FileName), relativePath));
+                    Index        = thisIndex,
+                    Width        = width,
+                    Height       = height,
+                    Name         = name,
+                    RelativePath = relativePath,
+                    Data         = textureData,
+                });
+                return true;
+            });
 
+            // Phase 2 — parallel decode + colour replace. The expensive bits
+            // (PNG decode, ToByteArray copy, magenta scan) all run on the
+            // thread pool; each texture is independent.
+            var keys     = new long[raw.Count];
+            var results  = new WadTexture[raw.Count];
+            var magenta  = new ColorC(255, 0, 255, 255);
+            var blank    = new ColorC(0, 0, 0, 0);
+            string wadDir = Path.GetDirectoryName(wad.FileName);
+
+            Parallel.For(0, raw.Count, i =>
+            {
+                var r = raw[i];
+                ImageC texture = ImageC.Magenta;
+                string absolutePath = null;
+                string finalName = r.Name;
+                bool loaded = false;
+
+                if (!string.IsNullOrEmpty(r.RelativePath))
+                {
+                    bool absPathExists = PathC.IsTrulyAbsolutePath(r.Name) && File.Exists(r.Name);
+                    absolutePath = Path.GetFullPath(absPathExists ? r.Name : Path.Combine(wadDir, r.RelativePath));
                     try
                     {
                         texture = ImageC.FromFile(absolutePath);
-                        textureLoaded = true;
+                        loaded = true;
                     }
-                    catch (Exception ex)
+                    catch
                     {
                     }
                 }
 
-                // At this point, if the texture is embedded or if external but an error occurred,
-                // we fallback using the data stored inside the Wad2 file.
-
-                if (!textureLoaded && textureData is not null)
+                if (!loaded && r.Data is not null)
                 {
-                    texture = ImageC.FromByteArray(textureData, width, height);
-                    name = null;
-                    textureLoaded = true;
+                    texture = ImageC.FromByteArray(r.Data, r.Width, r.Height);
+                    finalName = null;
+                    loaded = true;
                 }
 
-                texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
-                texture.FileName = name;
+                texture.ReplaceColor(magenta, blank);
+                texture.FileName = finalName;
 
-                var wadTexture = new WadTexture(texture);
-                wadTexture.AbsolutePath = absolutePath;
-                textures.Add(obsoleteIndex++, wadTexture);
-
-                return true;
+                var wt = new WadTexture(texture);
+                wt.AbsolutePath = absolutePath;
+                keys[i]    = r.Index;
+                results[i] = wt;
             });
+
+            // Phase 3 — single-threaded dictionary assembly (last-write-wins
+            // on duplicate keys, matching the legacy behaviour).
+            var textures = new Dictionary<long, WadTexture>(raw.Count);
+            for (int i = 0; i < raw.Count; i++)
+                textures[keys[i]] = results[i];
 
             outTextures = textures;
             return true;

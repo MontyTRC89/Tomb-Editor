@@ -1,4 +1,4 @@
-// Instanced object pass. Row-vector convention (legacy compatible).
+// Instanced object pass.
 //
 // Slot 0 (per-vertex, stride 20):
 //   POSITION  : float3       (model-local space)
@@ -6,15 +6,13 @@
 //   TEXCOORD0 : R16G16_UNorm (atlas UV)
 //
 // Slot 1 (per-instance, stride 80):
-//   TEXCOORD1..4 : float4 each (rows of the model matrix, in .NET row-major order)
+//   TEXCOORD1..4 : float4 each (rows of the transposed model matrix)
 //   TEXCOORD5    : float4       (RGBA tint)
 //
-// Matrices are declared row_major so the CPU's System.Numerics.Matrix4x4
-// rows map 1:1 to HLSL's logical rows. The math chain is then the same as
-// the legacy Model.fx:   clipPos = v × ModelMatrix × ViewProjection
-// expressed in HLSL as   mul(mul(v, ModelMatrix), ViewProjection).
-
-#pragma pack_matrix(row_major)
+// We upload the transposed model matrix from the CPU so that constructing
+// it as `float4x4(row0, row1, row2, row3)` in HLSL and using mul(M, v)
+// applies the same row-vector convention as the legacy renderer (and
+// matches the cbuffer-uploaded ViewProjection above).
 
 #include "Bindings.hlsli"
 
@@ -53,9 +51,8 @@ VsOut vs_main(VsIn input)
 {
     VsOut o;
     float4x4 model = float4x4(input.InstMat0, input.InstMat1, input.InstMat2, input.InstMat3);
-    float4 v = float4(input.PositionMS, 1.0);
-    float4 world = mul(v,    model);
-    o.PositionCS = mul(world, ViewProjection);
+    float4 worldPos = mul(model, float4(input.PositionMS, 1.0));
+    o.PositionCS = mul(ViewProjection, worldPos);
     o.Color      = input.Color * input.InstTint;
     o.Uv         = input.Uv;
     return o;
