@@ -14,6 +14,7 @@ WadTool:
  
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.
+ * Added a node to check Lara's traversal mode.
  
 Version 1.11
 ============
