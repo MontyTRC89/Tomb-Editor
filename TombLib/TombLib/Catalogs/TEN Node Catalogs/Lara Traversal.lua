@@ -125,9 +125,9 @@ local LaraTraversalMode =
 	HORIZONTAL_BAR = 2,
 	MONKEY_SWING = 3,
 	POLE_VAULT = 4,
-	SWIMMING = 5,
-	TIGHTROPE = 6,
-	ROPE_SWING = 7,
+    ROPE_SWING = 5,
+	SWIMMING = 6,
+	TIGHTROPE = 7,	
 }
 
 local traversalModeTests = 
