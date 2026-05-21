@@ -24,8 +24,10 @@ namespace TombEditor.Rendering.V2;
 /// </summary>
 public sealed class LevelRenderer : IDisposable
 {
-    private readonly Dx11Device     
-        _device;
+    // Concrete device picked by the RhiBackend factory at construction. The
+    // renderer never depends on the specific backend type — only the
+    // IRhiDevice surface — so swapping Vulkan ↔ DX11 is transparent.
+    private readonly IRhiDevice _device;
     private SwapchainHandle         _swap;
     private int                     _width;
     private int                     _height;
@@ -132,7 +134,7 @@ public sealed class LevelRenderer : IDisposable
     {
         _width  = Math.Max(1, width);
         _height = Math.Max(1, height);
-        _device = new Dx11Device();
+        _device = TombLib.RenderingV2.Rhi.RhiBackend.Create();
 
         // Share the D3D device with the preview panel + thumbnail renderer.
         // Without this, V2PreviewDevice would lazily allocate its own

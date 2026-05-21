@@ -22,7 +22,7 @@ namespace TombEditor.Rendering.V2;
 /// </summary>
 public static class V2PreviewDevice
 {
-    private static Dx11Device? _device;
+    private static IRhiDevice? _device;
     private static bool _ownsDevice;
     private static WadObjectPreviewRenderer? _renderer;
     private static readonly object _lock = new();
@@ -38,13 +38,13 @@ public static class V2PreviewDevice
     }
 
     /// <summary>
-    /// Adopt an existing <see cref="Dx11Device"/> instead of creating a fresh
+    /// Adopt an existing <see cref="IRhiDevice"/> instead of creating a fresh
     /// one on first use. Called by <see cref="LevelRenderer"/> at construction
-    /// so the preview panel + thumbnail renderer share the same D3D context as
+    /// so the preview panel + thumbnail renderer share the same device as
     /// the main 3D viewport — one device, one atlas cache, no extra ~100 ms
     /// device-creation hit on the first thumbnail batch.
     /// </summary>
-    public static void RegisterSharedDevice(Dx11Device device)
+    public static void RegisterSharedDevice(IRhiDevice device)
     {
         lock (_lock)
         {
@@ -61,7 +61,7 @@ public static class V2PreviewDevice
         lock (_lock)
         {
             if (_renderer != null) return;
-            _device     = new Dx11Device();
+            _device     = TombLib.RenderingV2.Rhi.RhiBackend.Create();
             _ownsDevice = true;
             _renderer   = new WadObjectPreviewRenderer(_device);
         }
