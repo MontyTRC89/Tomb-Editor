@@ -1,5 +1,6 @@
 using System;
 using TombLib.RenderingV2.Backends.Dx11;
+using TombLib.RenderingV2.Backends.OpenGL;
 using TombLib.RenderingV2.Backends.Vulkan;
 
 namespace TombLib.RenderingV2.Rhi;
@@ -7,36 +8,51 @@ namespace TombLib.RenderingV2.Rhi;
 /// <summary>
 /// Factory + selector for <see cref="IRhiDevice"/> implementations.
 ///
-/// <para>Default backend order is <b>Vulkan → DX11</b>: the editor tries the
-/// native Vulkan backend first and falls back to D3D11 if the system has no
-/// usable Vulkan loader / driver. The order can be forced via the
-/// <c>TOMBEDITOR_RHI</c> environment variable: <c>vulkan</c> or <c>dx11</c>.
-/// On a failed first attempt the chosen backend's exception is rethrown to
-/// surface real driver errors; only a plain "no loader / no device" failure
-/// silently triggers the fallback.</para>
+/// <para>Default backend order is <b>Vulkan → OpenGL → DX11</b>: the editor
+/// tries native Vulkan first, falls back to OpenGL 4.3 if Vulkan init fails
+/// (no loader / no compatible driver), and finally to D3D11 if OpenGL also
+/// fails. The choice can be forced via the <c>TOMBEDITOR_RHI</c> environment
+/// variable: <c>vulkan</c> (or <c>vk</c>), <c>opengl</c> (or <c>gl</c>),
+/// <c>dx11</c>. A forced choice disables the fallback chain so real driver
+/// errors surface instead of being silently swallowed.</para>
 /// </summary>
 public static class RhiBackend
 {
-    /// <summary>Build a device with the configured / default backend, with auto-fallback.</summary>
+    /// <summary>Build a device with the configured / default backend.</summary>
     public static IRhiDevice Create()
     {
         string pref = (Environment.GetEnvironmentVariable("TOMBEDITOR_RHI") ?? "").Trim().ToLowerInvariant();
 
         if (pref == "dx11")
             return new Dx11Device();
+        if (pref == "vulkan" || pref == "vk")
+            return new VkDevice();
+        if (pref == "opengl" || pref == "gl")
+            return new GLDevice();
 
-        // Default + explicit "vulkan" both try Vulkan first.
+        // Default cascade: Vulkan → OpenGL → DX11.
         try
         {
             return new VkDevice();
         }
-        catch (Exception vkEx) when (pref != "vulkan")
+        catch (Exception vkEx)
         {
-            // Fallback: log to stderr (the editor's log surface isn't visible
-            // from TombLib) and try DX11.
-            try { Console.Error.WriteLine("[V2 RHI] Vulkan init failed, falling back to DX11: " + vkEx.Message); }
-            catch { /* ignore */ }
-            return new Dx11Device();
+            LogFallback("Vulkan", vkEx);
+            try
+            {
+                return new GLDevice();
+            }
+            catch (Exception glEx)
+            {
+                LogFallback("OpenGL", glEx);
+                return new Dx11Device();
+            }
         }
+    }
+
+    private static void LogFallback(string backendName, Exception ex)
+    {
+        try { Console.Error.WriteLine($"[V2 RHI] {backendName} init failed, falling back: {ex.Message}"); }
+        catch { /* ignore — logging should never crash startup */ }
     }
 }

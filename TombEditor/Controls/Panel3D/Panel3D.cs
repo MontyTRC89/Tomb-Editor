@@ -420,6 +420,12 @@ namespace TombEditor.Controls.Panel3D
                     obj is Editor.EditorFocusedEvent)
                     Invalidate(false);
 
+            // Level loads must trigger a redraw regardless of mode — they
+            // can fire while Map2D is still the active mode (the form's
+            // mode switch happens after the level is loaded).
+            if (obj is Editor.LevelChangedEvent)
+                Invalidate(false);
+
             // Clean up wad renderer
             if (obj is Editor.LoadedWadsChangedEvent ||
                 obj is Editor.LevelChangedEvent)

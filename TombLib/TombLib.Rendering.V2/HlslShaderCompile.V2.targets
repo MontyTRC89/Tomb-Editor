@@ -106,8 +106,16 @@
          FrontFace.Clockwise work the same as on DX11. -->
     <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -fvk-invert-y -D SPIRV=1 -T vs_6_0 -E %(HlslShaderV2.EntryVs) -Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.spv&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
 
-    <!-- Vertex stage: GLSL 430 via SPIRV-Cross. -->
-    <Exec Command='&quot;$(SpirvCrossExe)&quot; --no-es --version 430 --output &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.glsl&quot; &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.spv&quot;' />
+    <!-- Vertex stage: a SECOND SPIR-V compile WITHOUT -fvk-invert-y, used
+         only as the source for the GLSL output. OpenGL's NDC has Y up (same
+         as HLSL's DX convention) so the shader must NOT flip Y — that's a
+         Vulkan-only fix. Re-using the Vulkan .spv here would render every
+         scene upside-down on the GL backend. The intermediate .gl.spv is
+         not embedded into the assembly; it only feeds spirv-cross. -->
+    <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -D SPIRV=1 -T vs_6_0 -E %(HlslShaderV2.EntryVs) -Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.gl.spv&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
+
+    <!-- Vertex stage: GLSL 430 via SPIRV-Cross (from the GL-flavoured SPIR-V). -->
+    <Exec Command='&quot;$(SpirvCrossExe)&quot; --no-es --version 430 --combined-samplers-inherit-bindings --output &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.glsl&quot; &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.gl.spv&quot;' />
 
     <!-- Pixel stage: DXBC via FXC. -->
     <Exec Command='&quot;$(FxcPath)&quot; /nologo /T ps_5_0 /E %(HlslShaderV2.EntryPs) /Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.dxbc&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
@@ -124,7 +132,7 @@
     <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -fvk-use-dx-position-w -D SPIRV=1 -T ps_6_0 -E %(HlslShaderV2.EntryPs) -Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.spv&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
 
     <!-- Pixel stage: GLSL 430 via SPIRV-Cross. -->
-    <Exec Command='&quot;$(SpirvCrossExe)&quot; --no-es --version 430 --output &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.glsl&quot; &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.spv&quot;' />
+    <Exec Command='&quot;$(SpirvCrossExe)&quot; --no-es --version 430 --combined-samplers-inherit-bindings --output &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.glsl&quot; &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.spv&quot;' />
 
     <ItemGroup>
       <FileWrites Include="$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.dxbc" />
